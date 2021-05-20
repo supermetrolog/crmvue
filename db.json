@@ -1,0 +1,266 @@
+{
+    "posts": [
+        { "id": 1, "title": "json-server", "author": "typicode" },
+        { "id": 2, "title": "json-server", "author": "typicode" }
+    ],
+    "comments": [{
+            "id": 0,
+            "body": "Fuck the police. Mother Fucker Pidor Ebani. Tbi suka poplatishsya za vse. Ya eshe otbIgrausb na tebe tvarb tbI golimaya potoskushka",
+            "postId": 1,
+            "agreementId": 1242,
+            "datetime": "16 фев 15:21",
+            "author": {
+                "img": "6.jpg"
+            }
+        },
+        {
+            "id": 1,
+            "body": "Fuck the police. Mother Fucker Pidor Ebani. Tbi suka poplatishsya za vse. Ya eshe otbIgrausb na tebe tvarb tbI golimaya potoskushka",
+            "postId": 1,
+            "agreementId": 1242,
+            "datetime": "16 фев 15:21",
+            "author": {
+                "img": "6.jpg"
+            }
+        },
+        {
+            "id": 2,
+            "body": "Fuck the police. Mother Fucker Pidor Ebani. Tbi suka poplatishsya za vse. Ya eshe otbIgrausb na tebe tvarb tbI golimaya potoskushka",
+            "postId": 1,
+            "agreementId": 1242,
+            "datetime": "16 фев 15:21",
+            "author": {
+                "img": "6.jpg"
+            }
+        },
+        {
+            "id": 3,
+            "body": "Fuck the police. Mother Fucker Pidor Ebani. Tbi suka poplatishsya za vse. Ya eshe otbIgrausb na tebe tvarb tbI golimaya potoskushka",
+            "postId": 1,
+            "agreementId": 1242,
+            "datetime": "16 фев 15:21",
+            "author": {
+                "img": "6.jpg"
+            }
+        },
+        {
+            "id": 4,
+            "body": "Fuck the police. Mother Fucker Pidor Ebani. Tbi suka poplatishsya za vse. Ya eshe otbIgrausb na tebe tvarb tbI golimaya potoskushka",
+            "postId": 1,
+            "agreementId": 1242,
+            "datetime": "16 фев 15:21",
+            "author": {
+                "img": "6.jpg"
+            }
+        },
+        {
+            "id": 5,
+            "body": "Fuck the police. Mother Fucker Pidor Ebani. Tbi suka poplatishsya za vse. Ya eshe otbIgrausb na tebe tvarb tbI golimaya potoskushka",
+            "postId": 1,
+            "agreementId": 1242,
+            "datetime": "16 фев 15:21",
+            "author": {
+                "img": "6.jpg"
+            }
+        },
+        {
+            "id": 6,
+            "body": "Fuck the police. Mother Fucker Pidor Ebani. Tbi suka poplatishsya za vse. Ya eshe otbIgrausb na tebe tvarb tbI golimaya potoskushka",
+            "postId": 1,
+            "agreementId": 1242,
+            "datetime": "16 фев 15:21",
+            "author": {
+                "img": "6.jpg"
+            }
+        }
+    ],
+    "profile": { "name": "typicode" },
+    "sidebar": [
+        { "id": 0, "name": "Приход", "icon": "fas fa-users", "url": "/comming" },
+        { "id": 1, "name": "Договоры", "icon": "fas fa-handshake", "url": "/agreements" },
+        { "id": 2, "name": "Процесс", "icon": "fas fa-th", "url": "/", "exact": true },
+        { "id": 3, "name": "Касса", "icon": "fas fa-ruble-sign", "url": "/cashbox" },
+        { "id": 4, "name": "Рейтинг", "icon": "fas fa-star", "url": "/rate" },
+        { "id": 5, "name": "Зарплаты", "icon": "fas fa-wallet", "url": "/salary" },
+        { "id": 6, "name": "Суды", "icon": "fas fa-gavel", "url": "/court" },
+        { "id": 7, "name": "Персонал", "icon": "fas fa-address-card", "url": "/personal" }
+    ],
+
+    "header": [
+        { "id": 0, "name": "все", "url": "/personal/", "exact": true },
+        { "id": 1, "name": "it", "url": "/personal/it" },
+        { "id": 2, "name": "ресепшн", "url": "/personal/recep" },
+        { "id": 3, "name": "эпод", "url": "/personal/epod" },
+        { "id": 4, "name": "окк", "url": "/personal/okk" },
+        { "id": 5, "name": "hr", "url": "/personal/hr" },
+        { "id": 6, "name": "представители", "url": "/personal/represent" },
+        { "id": 7, "name": "управление", "url": "/personal/control" }
+    ],
+    "comming": [{
+            "id": 0,
+            "full_name": "Бритик Татьяна Васильевна",
+            "birth_year": "1951",
+            "phone": "89053232233",
+            "call": "5123",
+            "lawyer": "40",
+            "theme": "0",
+            "status": "0",
+            "time": "12:21",
+            "date": "25.03.2021"
+        },
+        {
+            "id": 1,
+            "full_name": "Зыкова Наталья Николаевна",
+            "birth_year": "1951",
+            "phone": "89168314789",
+            "call": "5784",
+            "lawyer": "5",
+            "theme": "1",
+            "status": "1",
+            "time": "10:30",
+            "date": "25.03.2021"
+        },
+        {
+            "id": 3,
+            "full_name": "Бритик Татьяна Васильевна",
+            "birth_year": "1974",
+            "phone": "89053232233",
+            "call": "5123",
+            "lawyer": "40",
+            "theme": "2",
+            "status": "2",
+            "time": "12:21",
+            "date": "24.03.2021"
+        },
+        {
+            "id": 4,
+            "full_name": "Шабалин Анатолий Алексеевич",
+            "birth_year": "1969",
+            "phone": "89619751716",
+            "call": "8185",
+            "lawyer": "26",
+            "theme": "3",
+            "status": "3",
+            "time": "12:21",
+            "date": "24.03.2021"
+
+        },
+        {
+            "id": 5,
+            "full_name": "Вейц Татьяна Леонидовна ",
+            "birth_year": "1950",
+            "phone": "89651962909",
+            "call": "5123",
+            "lawyer": "40",
+            "theme": "5",
+            "status": "",
+            "time": "12:21",
+            "date": "24.03.2021"
+        },
+        {
+            "id": 6,
+            "full_name": "Вейц Татьяна Леонидовна ",
+            "birth_year": "1950",
+            "phone": "89651962909",
+            "call": "5123",
+            "lawyer": "40",
+            "theme": "5",
+            "status": "",
+            "time": "12:21",
+            "date": "23.03.2021"
+        },
+        {
+            "id": 7,
+            "full_name": "Вейц Татьяна Леонидовна ",
+            "birth_year": "1950",
+            "phone": "89651962909",
+            "call": "5123",
+            "lawyer": "40",
+            "theme": "5",
+            "status": "",
+            "time": "12:21",
+            "date": "23.03.2021"
+        }
+    ],
+    "commings": [
+        [{
+            "date": "25.03.2021"
+        }],
+        [{
+                "id": 0,
+                "full_name": "Бритик Татьяна Васильевна",
+                "birth_year": "1951",
+                "phone": "89053232233",
+                "call": "5123",
+                "lawyer": "40",
+                "theme": "0",
+                "status": "0",
+                "time": "12:21",
+                "date": "24.03.2021"
+            },
+            {
+                "id": 1,
+                "full_name": "Зыкова Наталья Николаевна",
+                "birth_year": "1951",
+                "phone": "89168314789",
+                "call": "5784",
+                "lawyer": "5",
+                "theme": "1",
+                "status": "1",
+                "time": "10:30",
+                "date": "24.03.2021"
+            }
+        ],
+        [{
+                "id": 3,
+                "full_name": "Бритик Татьяна Васильевна",
+                "birth_year": "1974",
+                "phone": "89053232233",
+                "call": "5123",
+                "lawyer": "40",
+                "theme": "2",
+                "status": "2",
+                "time": "12:21",
+                "date": "23.03.2021"
+            },
+            {
+                "id": 4,
+                "full_name": "Шабалин Анатолий Алексеевич",
+                "birth_year": "1969",
+                "phone": "89619751716",
+                "call": "8185",
+                "lawyer": "26",
+                "theme": "3",
+                "status": "3",
+                "time": "12:21",
+                "date": "23.03.2021"
+
+            },
+            {
+                "id": 3,
+                "full_name": "Бритик Татьяна Васильевна",
+                "birth_year": "1974",
+                "phone": "89053232233",
+                "call": "5123",
+                "lawyer": "40",
+                "theme": "2",
+                "status": "2",
+                "time": "12:21",
+                "date": "23.03.2021"
+            },
+            {
+                "id": 4,
+                "full_name": "Шабалин Анатолий Алексеевич",
+                "birth_year": "1969",
+                "phone": "89619751716",
+                "call": "8185",
+                "lawyer": "26",
+                "theme": "3",
+                "status": "3",
+                "time": "12:21",
+                "date": "23.03.2021"
+
+            }
+        ]
+    ]
+}
