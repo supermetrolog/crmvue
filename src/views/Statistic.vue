@@ -1,9 +1,10 @@
 <template>
-  <h1>Salary</h1>
+  <h1>Statistic</h1>
+  <router-view />
 </template>
 
 <script>
 export default {
-  name: "Salary",
+  name: "Statistic",
 };
 </script>

@@ -2,13 +2,14 @@
 @import "var.scss";
 //null styles
 @import "null.scss";
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,400;0,700;1,100;1,500&display=swap');
 html {
     font-family: $fontfamily;
 }
 
 .sidebar {
     height: 100vh;
-    width: 55px;
+    width: 70px;
     position: fixed;
     background-color: $color_sidebar_bg;
     box-shadow: 4px 0px 10px rgba(0, 0, 0, 0.25);
@@ -28,8 +29,8 @@ html {
         .image-circle {
             margin: 0 auto;
             margin-bottom: 3px;
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
         }
     }
 }
@@ -51,8 +52,9 @@ html {
         i {
             display: block;
             font-weight: solid;
-            font-size: 18px;
-            margin-bottom: 7px;
+            font-size: 22px;
+            margin-bottom: 15px;
+            margin-top: 5px;
         }
         &.active {
             .nav-link {
@@ -69,8 +71,8 @@ html {
         }
         .nav-link {
             color: $color_light;
-            font-weight: normal;
-            font-size: 10px;
+            font-weight: 700;
+            font-size: 11px;
             letter-spacing: 0.3px;
             width: 100%;
             height: 100%;
@@ -301,7 +303,7 @@ html {
     padding-right: 25px;
 }
 
-.comming {
+.client {
     table {
         border-spacing: unset;
         min-width: 100%;

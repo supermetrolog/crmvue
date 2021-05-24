@@ -22,6 +22,7 @@ export default {
   methods: {
     getInternalMenu() {
       this.nav = InternalMenu.get(this.$route.name);
+      console.log(this.$route.name);
     },
   },
   mounted() {

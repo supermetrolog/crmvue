@@ -2,7 +2,7 @@
   <router-link
     class="nav-item"
     tag="li"
-    exact-active-class="active"
+    active-class="active"
     :to="data.url"
     :exact="data.exact"
   >

@@ -1,80 +1,52 @@
 import { createRouter, createWebHistory } from 'vue-router'
 const routes = [{
-        path: '/process',
-        name: 'process',
+        path: '/statistic',
+        name: 'statistic',
         meta: { layout: 'main' },
         component: () =>
-            import ('../views/Process.vue'),
+            import ('../views/Statistic.vue'),
         children: [{
             path: ':mod',
-            name: 'process',
+            name: 'statistic',
             meta: { layout: 'main' },
             component: () =>
-                import ('../views/Process.vue')
-        }]
+                import ('../views/Setting.vue')
+        }, ]
     },
     {
-        path: '/agreements',
-        name: 'agreements',
+        path: '/setting',
+        name: 'setting',
         meta: { layout: 'main' },
         component: () =>
-            import ('../views/Agreements.vue')
-    },
-    {
-        path: '/cashbox',
-        name: 'cashbox',
-        meta: { layout: 'main' },
-        component: () =>
-            import ('../views/Cashbox.vue')
-    },
-    {
-        path: '/court',
-        name: 'court',
-        meta: { layout: 'main' },
-        component: () =>
-            import ('../views/Court.vue')
-    },
-    {
-        path: '/personal',
-        name: 'personal',
-        meta: { layout: 'main' },
-        component: () =>
-            import ('../views/Personal.vue'),
+            import ('../views/Setting.vue'),
         children: [{
             path: ':mod',
-            name: 'personal',
+            name: 'setting',
             meta: { layout: 'main' },
             component: () =>
-                import ('../views/Personal.vue')
-        }]
+                import ('../views/Setting.vue')
+        }, ]
     },
     {
-        path: '/rate',
-        name: 'rate',
+        path: '/calendar',
+        name: 'calendar',
         meta: { layout: 'main' },
         component: () =>
-            import ('../views/Rate.vue')
+            import ('../views/Calendar.vue'),
     },
     {
-        path: '/salary',
-        name: 'salary',
+        path: '/client',
+        name: 'client',
         meta: { layout: 'main' },
         component: () =>
-            import ('../views/Salary.vue')
-    },
-    {
-        path: '/comming',
-        name: 'comming',
-        meta: { layout: 'main' },
-        component: () =>
-            import ('../views/Comming.vue'),
+            import ('../views/Client.vue'),
         children: [{
             path: ':mod',
-            name: 'comming',
+            name: 'client',
             meta: { layout: 'main' },
             component: () =>
-                import ('../views/Comming.vue')
-        }]
+                import ('../views/Client.vue')
+        }, ]
     },
     {
         path: '/:catchAll(.*)',
@@ -85,7 +57,7 @@ const routes = [{
     },
     {
         path: '/',
-        redirect: { name: "comming" }
+        redirect: { name: "client" }
     },
 
 

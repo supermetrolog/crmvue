@@ -12,7 +12,7 @@
     </div>
     <div class="col-10 message text-left">
       <p class="description">
-        оставил(а) комментарий к договору
+        оставил(а) комментарий к сделке
         <a href="#" class="agreement-number"> № {{ comment.agreementId }} </a>
       </p>
       <a href="#" class="comments-link">
