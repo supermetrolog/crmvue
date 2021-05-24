@@ -384,3 +384,55 @@ html {
 .text-danger {
     color: $color_danger!important;
 }
+
+.btn {
+    color: $color_light;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    border: unset;
+    border-radius: .25rem;
+    padding: .625rem 1.5rem .5rem;
+    line-height: 1.5;
+    box-shadow: 0 2px 5px 0 rgba(100, 100, 100, 1);
+    cursor: pointer;
+    &:active {
+        box-shadow: 0 2px 5px 0 rgba(100, 100, 100, .7);
+    }
+    &.btn-danger {
+        background-color: $color_danger;
+        &:active {
+            background-color: darken($color_danger, 5);
+        }
+    }
+    &.btn-warning {
+        background-color: $color_warning;
+        &:active {
+            background-color: darken($color_warning, 5);
+        }
+    }
+    &.btn-primary {
+        background-color: $color_primary;
+        &:active {
+            background-color: darken($color_primary, 5);
+        }
+    }
+    &.btn-info {
+        background-color: $color_info;
+        &:active {
+            background-color: darken($color_info, 5);
+        }
+    }
+    &.btn-success {
+        background-color: $color_success;
+        &:active {
+            background-color: darken($color_success, 5);
+        }
+    }
+    &.btn-dark {
+        background-color: $color_dark;
+        &:active {
+            background-color: darken($color_dark, 5);
+        }
+    }
+}

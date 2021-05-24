@@ -235,10 +235,10 @@ export default {
       this.selectionEnd = null;
       this.newItemStartDate = CalendarMath.isoYearMonthDay(new Date(d));
       this.newItemEndDate = CalendarMath.isoYearMonthDay(new Date(d));
-      this.message = `You clicked: ${d.toLocaleDateString()}`;
+      this.message = `Вы выбрали: ${d.toLocaleDateString()}`;
     },
     onClickItem(e) {
-      this.message = `You clicked: ${e.title}`;
+      this.message = `Вы выбрали: ${e.title}`;
     },
     setShowDate(d) {
       this.message = `Changing calendar view to ${d.toLocaleDateString()}`;
@@ -256,7 +256,7 @@ export default {
       this.newItemEndDate = CalendarMath.isoYearMonthDay(
         new Date(this.selectionEnd)
       );
-      this.message = `You selected: ${this.selectionStart.toLocaleDateString()} -${this.selectionEnd.toLocaleDateString()}`;
+      this.message = `Вы выделили: ${this.selectionStart.toLocaleDateString()} -${this.selectionEnd.toLocaleDateString()}`;
     },
     onDrop(item, date) {
       this.message = `You dropped ${item.id} on ${date.toLocaleDateString()}`;
