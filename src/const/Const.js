@@ -47,3 +47,25 @@ export const DropdownList = new Map([
         { "value": 6, "name": "Ушел с ресепа" },
     ]],
 ]);
+
+export const Timeline = new Map(
+    [
+        ['param', [
+            [0, { "name": "Звонок", "class": "primary", "icon": "far fa-grin-wink" }, ],
+            [1, { "name": "Встреча", "class": "success", "icon": "far fa-grin-wink" }, ],
+            [2, { "name": "Еще че то", "class": "warning", "icon": "far fa-grin-wink" }, ],
+            [3, { "name": "Еще", "class": "danger", "icon": "far fa-grin-wink" }, ],
+            [4, { "name": "Сделка", "class": "secondary", "icon": "far fa-grin-wink" }, ],
+        ]],
+        ['comming_status', [
+            { "value": 0, "name": "(не выбран)" },
+            { "value": 1, "name": "Договор" },
+            { "value": 2, "name": "БК" },
+            { "value": 3, "name": "Бесплатные документы" },
+            { "value": 4, "name": "Шел в гос учреждение" },
+            { "value": 5, "name": "Нет 18 лет" },
+            { "value": 6, "name": "Ушел с ресепа" },
+        ]],
+
+    ]
+);

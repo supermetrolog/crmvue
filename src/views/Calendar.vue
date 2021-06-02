@@ -11,7 +11,7 @@ export default {
     SimpleCalendar,
   },
   mounted() {
-    console.log(this.$route.params.mod);
+    // console.log(this.$route.params.mod);
   },
 };
 </script>

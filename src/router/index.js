@@ -39,14 +39,36 @@ const routes = [{
         name: 'client',
         meta: { layout: 'main' },
         component: () =>
-            import ('../views/Client.vue'),
+            import ('../views/Client/Client.vue'),
         children: [{
-            path: ':mod',
-            name: 'client',
-            meta: { layout: 'main' },
-            component: () =>
-                import ('../views/Client.vue')
-        }, ]
+                path: '',
+                name: 'ClientAll',
+                meta: { layout: 'main' },
+                component: () =>
+                    import ('../views/Client/All.vue')
+            },
+            {
+                path: 'in-work',
+                name: 'ClientInWork',
+                meta: { layout: 'main' },
+                component: () =>
+                    import ('../views/Client/InWork.vue')
+            },
+            {
+                path: 'deal',
+                name: 'ClientDeal',
+                meta: { layout: 'main' },
+                component: () =>
+                    import ('../views/Client/Deal.vue')
+            },
+            {
+                path: 'brak',
+                name: 'ClientBrak',
+                meta: { layout: 'main' },
+                component: () =>
+                    import ('../views/Client/Brak.vue')
+            },
+        ]
     },
     {
         path: '/:catchAll(.*)',

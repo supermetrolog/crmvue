@@ -6,34 +6,65 @@
           {{ message }}
         </div>
         <div class="field">
-          <label class="label">Title</label>
+          <label class="label">Название</label>
           <div class="control">
             <input v-model="newItemTitle" class="input" type="text" />
           </div>
         </div>
 
         <div class="field">
-          <label class="label">Start date</label>
+          <label class="label">Начало события</label>
           <div class="control">
-            <input v-model="newItemStartDate" class="input" type="date" />
+            <input
+              v-model="newItemStartDate"
+              class="input"
+              type="datetime-local"
+              :max="newItemEndDate"
+            />
           </div>
         </div>
 
         <div class="field">
-          <label class="label">End date</label>
+          <label class="label">Конец события</label>
           <div class="control">
-            <input v-model="newItemEndDate" class="input" type="date" />
+            <input
+              v-model="newItemEndDate"
+              class="input"
+              type="datetime-local"
+              :min="newItemStartDate"
+            />
+          </div>
+        </div>
+        <div class="add-event" v-if="!selectedItem">
+          <button
+            class="btn btn-primary btn-large add-event"
+            @click="clickAddItem"
+          >
+            Добавить событие
+          </button>
+        </div>
+        <div class="update-event row no-gutters" v-else>
+          <div class="col-9 pr-2">
+            <button class="btn btn-success btn-large" @click="clickUpdateItem">
+              Изменить
+            </button>
+          </div>
+          <div class="col-3">
+            <button class="btn btn-danger" @click="clickDeleteItem">
+              <i class="fas fa-trash-alt"></i>
+            </button>
           </div>
         </div>
 
-        <button class="button is-info" @click="clickTestAddItem">
-          Add Item
-        </button>
+        <!-- <div class="calendar-item-info">
+          <input type="text" class="update-item" />
+        </div> -->
       </div>
     </div>
     <div class="calendar-parent">
       <calendar-view
-        :items="items"
+        :items="this.EVENTS"
+        :show-times="true"
         :show-date="showDate"
         :time-format-options="{ hour: 'numeric', minute: '2-digit' }"
         :enable-drag-drop="true"
@@ -81,6 +112,8 @@ import {
   CalendarMath,
 } from "vue-simple-calendar"; // published version
 //} from "../../vue-simple-calendar/src/components/bundle.js" // local repo
+import moment from "moment";
+import { mapActions, mapGetters } from "vuex";
 export default {
   name: "SimpleCalendar",
   components: {
@@ -92,7 +125,7 @@ export default {
       /* Show the current month, and give it some fake items to show */
       showDate: this.thisMonth(1),
       message: "",
-      startingDayOfWeek: 0,
+      startingDayOfWeek: 1,
       disablePast: false,
       disableFuture: false,
       displayPeriodUom: "month",
@@ -106,76 +139,79 @@ export default {
       newItemEndDate: "",
       useDefaultTheme: true,
       useHolidayTheme: true,
-      useTodayIcons: false,
+      useTodayIcons: true,
+      selectedItem: null,
+      dateFormat: "YYYY-MM-DDTHH:mm:ss",
       items: [
         {
-          id: "e0",
-          startDate: "2018-01-05",
+          id: 0,
+          startDate: "2021-05-05 16:30:00",
+          endDate: "2021-05-05 16:40:00",
         },
         {
-          id: "e1",
-          startDate: this.thisMonth(15, 18, 30),
+          id: 1,
+          startDate: this.thisMonth(15, 18, 32),
         },
         {
-          id: "e2",
+          id: 2,
           startDate: this.thisMonth(15),
           title: "Single-day item with a long title",
         },
         {
-          id: "e3",
+          id: 3,
           startDate: this.thisMonth(7, 9, 25),
           endDate: this.thisMonth(10, 16, 30),
           title: "Multi-day item with a long title and times",
         },
         {
-          id: "e4",
+          id: 4,
           startDate: this.thisMonth(20),
           title: "My Birthday!",
           classes: "birthday",
           url: "https://en.wikipedia.org/wiki/Birthday",
         },
         {
-          id: "e5",
+          id: 5,
           startDate: this.thisMonth(5),
           endDate: this.thisMonth(12),
           title: "Multi-day item",
           classes: "purple",
         },
         {
-          id: "foo",
+          id: 6,
           startDate: this.thisMonth(29),
           title: "Same day 1",
         },
         {
-          id: "e6",
+          id: 7,
           startDate: this.thisMonth(29),
           title: "Same day 2",
           classes: "orange",
         },
         {
-          id: "e7",
+          id: 8,
           startDate: this.thisMonth(29),
           title: "Same day 3",
         },
         {
-          id: "e8",
+          id: 9,
           startDate: this.thisMonth(29),
           title: "Same day 4",
           classes: "orange",
         },
         {
-          id: "e9",
+          id: 10,
           startDate: this.thisMonth(29),
           title: "Same day 5",
         },
         {
-          id: "e10",
+          id: 11,
           startDate: this.thisMonth(29),
           title: "Same day 6",
           classes: "orange",
         },
         {
-          id: "e11",
+          id: 12,
           startDate: this.thisMonth(29),
           title: "Same day 7",
         },
@@ -183,6 +219,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(["EVENTS"]),
     userLocale() {
       return CalendarMath.getDefaultBrowserLocale;
     },
@@ -215,10 +252,21 @@ export default {
     },
   },
   mounted() {
-    this.newItemStartDate = CalendarMath.isoYearMonthDay(CalendarMath.today());
-    this.newItemEndDate = CalendarMath.isoYearMonthDay(CalendarMath.today());
+    this.newItemStartDate = moment(CalendarMath.today()).format(
+      this.dateFormat
+    );
+    this.newItemEndDate = moment(CalendarMath.today()).format(this.dateFormat);
+  },
+  beforeMount() {
+    this.FETCH_CALENDAR_EVENTS();
   },
   methods: {
+    ...mapActions([
+      "FETCH_CALENDAR_EVENTS",
+      "ADD_EVENT",
+      "UPDATE_EVENT",
+      "DELETE_EVENT",
+    ]),
     periodChanged() {
       // range, eventSource) {
       // Demo does nothing with this information, just including the method to demonstrate how
@@ -233,11 +281,19 @@ export default {
     onClickDay(d) {
       this.selectionStart = null;
       this.selectionEnd = null;
-      this.newItemStartDate = CalendarMath.isoYearMonthDay(new Date(d));
-      this.newItemEndDate = CalendarMath.isoYearMonthDay(new Date(d));
+      this.newItemTitle = null;
+      this.newItemStartDate = moment(d).format(this.dateFormat);
+      this.newItemEndDate = moment(d).format(this.dateFormat);
+      this.selectedItem = null;
       this.message = `Вы выбрали: ${d.toLocaleDateString()}`;
     },
     onClickItem(e) {
+      this.selectionStart = null;
+      this.selectionEnd = null;
+      this.newItemStartDate = moment(e.startDate).format(this.dateFormat);
+      this.newItemEndDate = moment(e.endDate).format(this.dateFormat);
+      this.newItemTitle = e.title;
+      this.selectedItem = e;
       this.message = `Вы выбрали: ${e.title}`;
     },
     setShowDate(d) {
@@ -250,12 +306,12 @@ export default {
     },
     finishSelection(dateRange) {
       this.setSelection(dateRange);
-      this.newItemStartDate = CalendarMath.isoYearMonthDay(
-        new Date(this.selectionStart)
+      this.newItemStartDate = moment(this.selectionStart).format(
+        this.dateFormat
       );
-      this.newItemEndDate = CalendarMath.isoYearMonthDay(
-        new Date(this.selectionEnd)
-      );
+      this.newItemEndDate = moment(this.selectionEnd).format(this.dateFormat);
+      this.newItemTitle = null;
+      this.selectedItem = null;
       this.message = `Вы выделили: ${this.selectionStart.toLocaleDateString()} -${this.selectionEnd.toLocaleDateString()}`;
     },
     onDrop(item, date) {
@@ -269,14 +325,29 @@ export default {
       );
       item.originalItem.endDate = CalendarMath.addDays(item.endDate, eLength);
     },
-    clickTestAddItem() {
-      this.items.push({
+    clickAddItem() {
+      this.ADD_EVENT({
         startDate: this.newItemStartDate,
         endDate: this.newItemEndDate,
         title: this.newItemTitle,
         id: "e" + Math.random().toString(36).substr(2, 10),
       });
+      this.newItemTitle = null;
       this.message = "You added a calendar item!";
+    },
+    clickUpdateItem() {
+      this.UPDATE_EVENT({
+        id: this.selectedItem.id,
+        startDate: this.newItemStartDate,
+        endDate: this.newItemEndDate,
+        title: this.newItemTitle,
+      });
+
+      this.message = "Вы изменили событие";
+    },
+    clickDeleteItem() {
+      this.DELETE_EVENT(this.selectedItem.id);
+      this.message = "Вы удалили событие";
     },
   },
 };
@@ -299,6 +370,15 @@ body {
   margin-right: 1rem;
   min-width: 14rem;
   max-width: 14rem;
+  input {
+    width: 100%;
+  }
+  button {
+    margin-top: 17px;
+    i {
+      font-size: 15px;
+    }
+  }
 }
 .calendar-parent {
   display: flex;
