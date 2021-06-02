@@ -331,9 +331,10 @@ export default {
         endDate: this.newItemEndDate,
         title: this.newItemTitle,
         id: "e" + Math.random().toString(36).substr(2, 10),
+      }).then(() => {
+        this.newItemTitle = null;
+        this.message = "Вы добавили новое событие!";
       });
-      this.newItemTitle = null;
-      this.message = "You added a calendar item!";
     },
     clickUpdateItem() {
       this.UPDATE_EVENT({
@@ -341,13 +342,16 @@ export default {
         startDate: this.newItemStartDate,
         endDate: this.newItemEndDate,
         title: this.newItemTitle,
+      }).then(() => {
+        this.message = "Вы изменили событие";
       });
-
-      this.message = "Вы изменили событие";
     },
     clickDeleteItem() {
-      this.DELETE_EVENT(this.selectedItem.id);
-      this.message = "Вы удалили событие";
+      this.DELETE_EVENT(this.selectedItem.id).then(() => {
+        this.selectedItem = null;
+        this.newItemTitle = null;
+        this.message = "Вы удалили событие";
+      });
     },
   },
 };
@@ -438,6 +442,7 @@ body {
     }
     .startTime {
       color: $color_light;
+      margin-right: 8px;
     }
   }
 }

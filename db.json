@@ -359,31 +359,31 @@
             "id": 1,
             "startDate": "2021-06-04T16:30:00",
             "endDate": "2021-06-05T16:30:00",
-            "title": "Multi-day item with a long title and times"
+            "title": "Ходить куда-то зачем-то"
         },
         {
             "id": 2,
             "startDate": "2021-06-08T16:30:00",
             "endDate": "2021-06-08T16:30:00",
-            "title": "Multi-day item with a long title and times"
+            "title": "Позвонить 89094223233"
         },
         {
             "id": 3,
             "startDate": "2021-06-09T16:30:00",
             "endDate": "2021-06-09T16:30:00",
-            "title": "Multi-day item with a long title and times"
+            "title": "Позвонить клиенту"
         },
         {
             "id": 4,
             "startDate": "2021-06-21T16:30:00",
             "endDate": "2021-06-21T16:30:00",
-            "title": "Multi-day item with a long title and times"
+            "title": "Показать объект"
         },
         {
             "id": 5,
             "startDate": "2021-06-21T16:30:00",
             "endDate": "2021-06-21T16:30:00",
-            "title": "Multi-day item with a long title and times"
+            "title": "Съездить по морде"
         }
 
     ]
