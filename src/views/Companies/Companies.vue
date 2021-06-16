@@ -1,6 +1,6 @@
 <template>
-  <div class="client">
-    <h1>Client</h1>
+  <div class="companies">
+    <h1>Companies</h1>
 
     <router-view />
   </div>
@@ -8,10 +8,13 @@
 
 <script>
 export default {
-  name: "Client",
+  name: "Companies",
   components: {
     // Table,
     // Timeline,
+  },
+  mounted() {
+    console.log(this.$route.params.mod);
   },
 };
 </script>

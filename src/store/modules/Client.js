@@ -1,5 +1,5 @@
 import axios from "axios"
-const Client = {
+const Companies = {
     state: {
         timeline: {}
     },
@@ -25,4 +25,4 @@ const Client = {
     }
 }
 
-export default Client;
+export default Companies;

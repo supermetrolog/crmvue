@@ -35,38 +35,38 @@ const routes = [{
             import ('../views/Calendar.vue'),
     },
     {
-        path: '/client',
-        name: 'client',
+        path: '/companies',
+        name: 'companies',
         meta: { layout: 'main' },
         component: () =>
-            import ('../views/Client/Client.vue'),
+            import ('../views/Companies/Companies.vue'),
         children: [{
                 path: '',
-                name: 'ClientAll',
+                name: 'CompaniesAll',
                 meta: { layout: 'main' },
                 component: () =>
-                    import ('../views/Client/All.vue')
+                    import ('../views/Companies/All.vue')
             },
             {
                 path: 'in-work',
-                name: 'ClientInWork',
+                name: 'CompaniesInWork',
                 meta: { layout: 'main' },
                 component: () =>
-                    import ('../views/Client/InWork.vue')
+                    import ('../views/Companies/InWork.vue')
             },
             {
                 path: 'deal',
-                name: 'ClientDeal',
+                name: 'CompaniesDeal',
                 meta: { layout: 'main' },
                 component: () =>
-                    import ('../views/Client/Deal.vue')
+                    import ('../views/Companies/Deal.vue')
             },
             {
                 path: 'brak',
-                name: 'ClientBrak',
+                name: 'CompaniesBrak',
                 meta: { layout: 'main' },
                 component: () =>
-                    import ('../views/Client/Brak.vue')
+                    import ('../views/Companies/Brak.vue')
             },
         ]
     },
@@ -79,7 +79,7 @@ const routes = [{
     },
     {
         path: '/',
-        redirect: { name: "client" }
+        redirect: { name: "CompaniesAll" }
     },
 
 

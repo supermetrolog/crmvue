@@ -267,84 +267,115 @@
     "timeline": [
         [{
                 "id": 0,
-                "object_id": 3241,
-                "comment": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam necessitatibus numquam earum ipsa fugiat veniam suscipit, officiis repudiandae, eum recusandae neque dignissimos. Cum fugit laboriosam culpa, repellendus esse commodi deserunt.",
+                "company_id": 3241,
+                "comment": "",
                 "step": 0,
                 "datetime": "16 фев 15:21",
-                "isBranch": false
+                "isBranch": false,
+                "actions": {
+                    "done": 1,
+                    "negative": 0,
+                    "additional": 0,
+                    "feedback_way": 3,
+                    "date": "",
+                    "objects": [{
+                            "object_id": 2412
+                        },
+                        {
+                            "object_id": 5312
+                        },
+                        {
+                            "object_id": 3123
+                        },
+                        {
+                            "object_id": 5222
+                        }
+                    ]
+
+                }
             },
             {
                 "id": 1,
-                "object_id": 3241,
-                "comment": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam necessitatibus numquam earum ipsa fugiat veniam suscipit, officiis repudiandae, eum recusandae neque dignissimos. Cum fugit laboriosam culpa, repellendus esse commodi deserunt.",
+                "company_id": 3241,
+                "comment": "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
                 "step": 1,
                 "datetime": "16 фев 15:21",
-                "isBranch": false
+                "isBranch": false,
+                "actions": {
+                    "done": 1,
+                    "negative": 0,
+                    "additional": 0,
+                    "feedback_way": 3,
+                    "date": "",
+                    "objects": [{
+                            "object_id": 2412
+                        },
+                        {
+                            "object_id": 5312
+                        },
+                        {
+                            "object_id": 3123
+                        },
+                        {
+                            "object_id": 5222
+                        }
+                    ]
+
+                }
             },
             {
                 "id": 2,
-                "object_id": 3241,
-                "comment": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam necessitatibus numquam earum ipsa fugiat veniam suscipit, officiis repudiandae, eum recusandae neque dignissimos. Cum fugit laboriosam culpa, repellendus esse commodi deserunt.",
+                "company_id": 3241,
+                "comment": "Lorem ipsum dolor sit atibus numquam equeepellendus esse commodi deseruntLorem ipsum dolor sit amet, consectetur adipisicing elit..",
                 "step": 2,
                 "datetime": "16 фев 15:21",
                 "isBranch": false
             },
             {
                 "id": 3,
-                "object_id": 3241,
-                "comment": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam necessitatibus numquam earum ipsa fugiat veniam suscipit, officiis repudiandae, eum recusandae neque dignissimos. Cum fugit laboriosam culpa, repellendus esse commodi deserunt.",
+                "company_id": 3241,
+                "comment": "Lorem ipsum dolor sit amet, consecit, officiis repudiandae, eum recusandae neque dignissimos. Cum fugit laboriosam culpa, repellendus esse commodi deserunt.",
                 "step": 3,
-                "datetime": "16 фев 15:21",
-                "isBranch": false
-            },
-            {
-                "id": 4,
-                "object_id": 3241,
-                "comment": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam necessitatibus numquam earum ipsa fugiat veniam suscipit, officiis repudiandae, eum recusandae neque dignissimos. Cum fugit laboriosam culpa, repellendus esse commodi deserunt.",
-                "step": 4,
                 "datetime": "16 фев 15:21",
                 "isBranch": false
             }
         ],
         [{
-                "id": 0,
-                "object_id": 3241,
-                "comment": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam necessitatibus numquam earum ipsa fugiat veniam suscipit, officiis repudiandae, eum recusandae neque dignissimos. Cum fugit laboriosam culpa, repellendus esse commodi deserunt.",
-                "step": 0,
-                "datetime": "16 фев 15:21",
-                "isBranch": false
-            },
-            {
-                "id": 1,
-                "object_id": 3241,
+                "id": 7,
+                "company_id": 3241,
                 "comment": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam necessitatibus numquam earum ipsa fugiat veniam suscipit, officiis repudiandae, eum recusandae neque dignissimos. Cum fugit laboriosam culpa, repellendus esse commodi deserunt.",
                 "step": 1,
                 "datetime": "16 фев 15:21",
-                "isBranch": false
+                "isBranch": true,
+                "actions": {
+                    "done": 1,
+                    "negative": 0,
+                    "additional": 0,
+                    "feedback_way": 3,
+                    "date": "",
+                    "objects": [{
+                            "object_id": 2412
+                        },
+                        {
+                            "object_id": 5312
+                        },
+                        {
+                            "object_id": 3123
+                        },
+                        {
+                            "object_id": 5222
+                        }
+                    ]
+
+                }
             },
             {
-                "id": 2,
-                "object_id": 3241,
+                "id": 8,
+                "company_id": 3241,
                 "comment": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam necessitatibus numquam earum ipsa fugiat veniam suscipit, officiis repudiandae, eum recusandae neque dignissimos. Cum fugit laboriosam culpa, repellendus esse commodi deserunt.",
                 "step": 2,
                 "datetime": "16 фев 15:21",
-                "isBranch": false
-            },
-            {
-                "id": 3,
-                "object_id": 3241,
-                "comment": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam necessitatibus numquam earum ipsa fugiat veniam suscipit, officiis repudiandae, eum recusandae neque dignissimos. Cum fugit laboriosam culpa, repellendus esse commodi deserunt.",
-                "step": 3,
-                "datetime": "16 фев 15:21",
-                "isBranch": false
-            },
-            {
-                "id": 4,
-                "object_id": 3241,
-                "comment": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam necessitatibus numquam earum ipsa fugiat veniam suscipit, officiis repudiandae, eum recusandae neque dignissimos. Cum fugit laboriosam culpa, repellendus esse commodi deserunt.",
-                "step": 4,
-                "datetime": "16 фев 15:21",
-                "isBranch": false
+                "isBranch": true
             }
         ]
     ],

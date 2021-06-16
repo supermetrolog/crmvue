@@ -1,10 +1,12 @@
 import { createStore } from 'vuex'
-import Client from './modules/Client'
 import Calendar from './modules/Calendar'
+import Timeline from './modules/Timeline'
+import CompanyForm from './modules/CompanyForm'
 const store = createStore({
     modules: {
-        Client,
-        Calendar
+        Timeline,
+        Calendar,
+        CompanyForm
     }
 })
 export default store
