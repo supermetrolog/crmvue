@@ -16,7 +16,7 @@ export const InternalMenu = new Map([
         { "id": 2, "name": "брак", "url": "/statistic/brak" },
     ]],
     ['companies', [{ "id": 0, "name": "все", "url": "/companies/", "exact": true },
-        { "id": 1, "name": "в работе", "url": "/companies/in-work" },
+        { "id": 1, "name": "запрос", "url": "/companies/request" },
         { "id": 2, "name": "сделка", "url": "/companies/deal" },
         { "id": 3, "name": "брак", "url": "/companies/brak" },
     ]],
@@ -67,6 +67,19 @@ export const Timeline = new Map(
             { "value": 4, "name": "Шел в гос учреждение" },
             { "value": 5, "name": "Нет 18 лет" },
             { "value": 6, "name": "Ушел с ресепа" },
+        ]],
+
+    ]
+);
+export const CompanyCategories = new Map(
+    [
+        ['param', [
+            [0, "клиент"],
+            [1, "посредник"],
+            [2, "мониторинг"],
+            [3, "собственник"],
+            [4, "оценщик"],
+            [5, "подрядчик"],
         ]],
 
     ]

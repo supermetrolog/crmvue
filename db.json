@@ -100,7 +100,7 @@
             "id": 0,
             "full_name": "Бритик Татьяна Васильевна",
             "birth_year": "1951",
-            "phone": "89053232233",
+            "phone": "+7 (905) 323-22-33",
             "call": "5123",
             "lawyer": "40",
             "theme": "0",
@@ -124,7 +124,7 @@
             "id": 3,
             "full_name": "Бритик Татьяна Васильевна",
             "birth_year": "1974",
-            "phone": "89053232233",
+            "phone": "+7 (905) 323-22-33",
             "call": "5123",
             "lawyer": "40",
             "theme": "2",
@@ -190,7 +190,7 @@
                 "id": 0,
                 "full_name": "Бритик Татьяна Васильевна",
                 "birth_year": "1951",
-                "phone": "89053232233",
+                "phone": "+7 (905) 323-22-33",
                 "call": "5123",
                 "lawyer": "40",
                 "theme": "0",
@@ -215,7 +215,7 @@
                 "id": 3,
                 "full_name": "Бритик Татьяна Васильевна",
                 "birth_year": "1974",
-                "phone": "89053232233",
+                "phone": "+7 (905) 323-22-33",
                 "call": "5123",
                 "lawyer": "40",
                 "theme": "2",
@@ -240,7 +240,7 @@
                 "id": 3,
                 "full_name": "Бритик Татьяна Васильевна",
                 "birth_year": "1974",
-                "phone": "89053232233",
+                "phone": "+7 (905) 323-22-33",
                 "call": "5123",
                 "lawyer": "40",
                 "theme": "2",
@@ -417,5 +417,438 @@
             "title": "Съездить по морде"
         }
 
+    ],
+    "companies": [{
+            "id": 1,
+            "nameEng": "ANAL",
+            "nameRu": "ПенниЛейн",
+            "noName": 0,
+            "formOfOrganization": null,
+            "companyGroup_id": 1,
+            "officeAdress": null,
+            "status": 0,
+            "consultant_id": 3,
+            "broker_id": 3,
+            "legalAddress": null,
+            "ogrn": null,
+            "inn": null,
+            "kpp": null,
+            "checkingAccount": null,
+            "correspondentAccount": null,
+            "inTheBank": null,
+            "bik": null,
+            "okved": null,
+            "okpo": null,
+            "signatoryName": null,
+            "signatoryMiddleName": null,
+            "signatoryLastName": null,
+            "basis": null,
+            "documentNumber": null,
+            "activityGroup": 1,
+            "activityProfile": 3,
+            "description": "Fuck the police Mother Fucker",
+            "created_at": "2021-06-29 14:06:03",
+            "updated_at": null,
+            "deal_count": 4,
+            "request_count": 8,
+            "offer_count": 1,
+            "object_count": 0,
+            "category": 4,
+            "active": 1,
+            "contacts": [{
+                "id": 1,
+                "company_id": 1,
+                "phone": "+7 (905) 323-22-33",
+                "email": "fuck@mail.ru",
+                "first_name": "Петр",
+                "middle_name": "Иванов",
+                "last_name": "Владимирович",
+                "comment": "Конченный человек",
+                "status": 0,
+                "type": 0,
+                "created_at": "2021-06-29 17:04:02",
+                "updated_at": null
+            }],
+            "progress_percent": 42
+        },
+        {
+            "id": 2312,
+            "nameRu": "ПенниЛейн",
+            "nameEng": "PennyLane",
+            "created_at": "24.01.2020",
+            "progress_percent": 14,
+            "deal_count": 4,
+            "request_count": 8,
+            "offer_count": 1,
+            "object_count": 0,
+            "category": 4,
+            "active": 1,
+            "contacts": [{
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Никита",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                },
+                {
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Сергей",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                }
+            ]
+        },
+        {
+            "id": 1231,
+            "nameRu": "СДСА",
+            "nameEng": "SDSA",
+            "created_at": "12.06.2021",
+            "progress_percent": 33,
+            "deal_count": 4,
+            "request_count": 8,
+            "offer_count": 1,
+            "object_count": 0,
+            "category": 2,
+            "active": 1,
+            "contacts": [{
+                "phone": "+7 (905) 323-22-33",
+                "first_name": "Дмитрий",
+                "middle_name": "Щербаков",
+                "last_name": "Алексеевич"
+            }]
+        },
+        {
+            "id": 1231,
+            "nameRu": "AAA",
+            "nameEng": "AAA",
+            "created_at": "12.06.2021",
+            "progress_percent": 58,
+            "deal_count": 4,
+            "request_count": 8,
+            "offer_count": 1,
+            "object_count": 0,
+            "category": 3,
+            "active": 1,
+            "contacts": [{
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Анатолий",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                },
+                {
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Дмитрий",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                },
+                {
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Максим",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                },
+                {
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Дмитрий",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                },
+                {
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Дмитрий",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                },
+                {
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Дмитрий",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                },
+                {
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Дмитрий",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                }
+            ]
+        },
+        {
+            "id": 1231,
+            "nameRu": "Докланд",
+            "nameEng": "Dockland",
+            "created_at": "12.06.2021",
+            "progress_percent": 86,
+            "deal_count": 4,
+            "request_count": 8,
+            "offer_count": 1,
+            "object_count": 0,
+            "category": 4,
+            "active": 0,
+            "contacts": [{
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Дмитрий",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                },
+                {
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Дмитрий",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                },
+                {
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Дмитрий",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                },
+                {
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Дмитрий",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                }
+            ]
+        },
+        {
+            "id": 2312,
+            "nameRu": "ПенниЛейн",
+            "nameEng": "PennyLane",
+            "created_at": "24.01.2020",
+            "progress_percent": 11,
+            "deal_count": 4,
+            "request_count": 8,
+            "offer_count": 1,
+            "object_count": 0,
+            "category": 5,
+            "active": 1,
+            "contacts": [{
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Никита",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                },
+                {
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Сергей",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                }
+            ]
+        },
+        {
+            "id": 1231,
+            "nameRu": "СДСА",
+            "nameEng": "SDSA",
+            "created_at": "12.06.2021",
+            "progress_percent": 79,
+            "deal_count": 4,
+            "request_count": 8,
+            "offer_count": 1,
+            "object_count": 0,
+            "category": 1,
+            "active": 1,
+            "contacts": [{
+                "phone": "+7 (905) 323-22-33",
+                "first_name": "Дмитрий",
+                "middle_name": "Щербаков",
+                "last_name": "Алексеевич"
+            }]
+        },
+        {
+            "id": 1231,
+            "nameRu": "AAA",
+            "nameEng": "AAA",
+            "created_at": "12.06.2021",
+            "progress_percent": 82,
+            "deal_count": 4,
+            "request_count": 8,
+            "offer_count": 1,
+            "object_count": 0,
+            "category": 1,
+            "active": 0,
+            "contacts": [{
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Анатолий",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                },
+                {
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Дмитрий",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                },
+                {
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Максим",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                },
+                {
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Дмитрий",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                },
+                {
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Дмитрий",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                },
+                {
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Дмитрий",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                },
+                {
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Дмитрий",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                }
+            ]
+        },
+        {
+            "id": 1231,
+            "nameRu": "Докланд",
+            "nameEng": "Dockland",
+            "created_at": "12.06.2021",
+            "progress_percent": 99,
+            "deal_count": 4,
+            "request_count": 8,
+            "offer_count": 1,
+            "object_count": 0,
+            "category": 2,
+            "active": 1,
+            "contacts": [{
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Дмитрий",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                },
+                {
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Дмитрий",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                },
+                {
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Дмитрий",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                },
+                {
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Дмитрий",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                }
+            ]
+        },
+        {
+            "id": 2312,
+            "nameRu": "ПенниЛейн",
+            "nameEng": "PennyLane",
+            "created_at": "24.01.2020",
+            "progress_percent": 29,
+            "deal_count": 4,
+            "request_count": 8,
+            "offer_count": 1,
+            "object_count": 0,
+            "category": 1,
+            "active": 1,
+            "contacts": [{
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Никита",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                },
+                {
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Сергей",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                }
+            ]
+        },
+        {
+            "id": 1231,
+            "nameRu": "СДСА",
+            "nameEng": "SDSA",
+            "created_at": "12.06.2021",
+            "progress_percent": 60,
+            "deal_count": 4,
+            "request_count": 8,
+            "offer_count": 1,
+            "object_count": 0,
+            "category": 0,
+            "active": 1,
+            "contacts": [{
+                "phone": "+7 (905) 323-22-33",
+                "first_name": "Дмитрий",
+                "middle_name": "Щербаков",
+                "last_name": "Алексеевич"
+            }]
+        },
+        {
+            "id": 1231,
+            "nameRu": "AAA",
+            "nameEng": "AAA",
+            "created_at": "12.06.2021",
+            "progress_percent": "60",
+            "deal_count": 4,
+            "request_count": 8,
+            "offer_count": 1,
+            "object_count": 0,
+            "category": 1,
+            "active": 0,
+            "contacts": [{
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Анатолий",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                },
+                {
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Дмитрий",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                },
+                {
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Максим",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                },
+                {
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Дмитрий",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                },
+                {
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Дмитрий",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                },
+                {
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Дмитрий",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                },
+                {
+                    "phone": "+7 (905) 323-22-33",
+                    "first_name": "Дмитрий",
+                    "middle_name": "Щербаков",
+                    "last_name": "Алексеевич"
+                }
+            ]
+        }
     ]
 }

@@ -1,290 +1,402 @@
 <template>
   <div class="main-input-list">
-    <div class="input-group row no-gutters" v-if="!this.MAIN.noName">
-      <div class="col-4">
-        <label class="input-label">Название Eng</label>
-      </div>
-      <div class="col-8">
-        <div class="row no-gutters">
-          <div class="col-12">
-            <input
-              :class="{
-                invalid: v.nameEng.$error,
-                valid: v.nameEng.$dirty && !v.nameEng.$error,
-              }"
-              type="text"
-              @input="v.nameEng.$touch"
-              v-model.trim="this.MAIN.nameEng"
-            />
-          </div>
-          <div class="col-12 text-center error-container pt-1 pb-0">
-            <span v-if="v.nameEng.$error">{{
-              v.nameEng.$errors[0].$message
-            }}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="input-group row no-gutters" v-if="!this.MAIN.noName">
-      <div class="col-4">
-        <label class="input-label">Название Ru</label>
-      </div>
-      <div class="col-8">
-        <div class="row no-gutters">
-          <div class="col-12">
-            <input
-              :class="{
-                invalid: v.nameRu.$error,
-                valid: v.nameRu.$dirty && !v.nameRu.$error,
-              }"
-              @input="v.nameRu.$touch"
-              type="text"
-              v-model.trim="this.MAIN.nameRu"
-            />
-          </div>
-          <div class="col-12 text-center error-container pt-1 pb-0">
-            <span v-if="v.nameRu.$error">{{
-              v.nameRu.$errors[0].$message
-            }}</span>
-          </div>
-        </div>
-      </div>
-    </div>
     <div class="input-group row no-gutters">
-      <div class="col-4">
-        <label class="input-label">Нет названия</label>
-      </div>
-      <div class="col-8">
+      <div class="col-1">
+        <label class="input-label" title="Нет названия">Нет</label>
         <input
-          class="checkbox middle"
+          class="checkbox large"
           type="checkbox"
           @change="setDefaultName"
-          v-model="this.MAIN.noName"
+          v-model="this.FORM.noName"
+          title="Нет названия"
         />
+      </div>
+      <div class="col-6 pr-2" v-if="!this.FORM.noName">
+        <label class="input-label required">Название Eng</label>
+        <input
+          :class="{
+            invalid: v.nameEng.$error,
+            valid: v.nameEng.$dirty && !v.nameEng.$error,
+          }"
+          type="text"
+          @input="v.nameEng.$touch"
+          v-model.trim="this.FORM.nameEng"
+        />
+        <div
+          class="col-12 text-center error-container pt-1 pb-0"
+          v-if="v.nameEng.$error"
+        >
+          <span>{{ v.nameEng.$errors[0].$message }}</span>
+        </div>
+      </div>
+      <div class="col-5" v-if="!this.FORM.noName">
+        <label class="input-label required">Название Ru</label>
+        <input
+          :class="{
+            invalid: v.nameRu.$error,
+            valid: v.nameRu.$dirty && !v.nameRu.$error,
+          }"
+          @input="v.nameRu.$touch"
+          type="text"
+          v-model.trim="this.FORM.nameRu"
+        />
+        <div
+          class="col-12 text-center error-container pt-1 pb-0"
+          v-if="v.nameRu.$error"
+        >
+          <span>{{ v.nameRu.$errors[0].$message }}</span>
+        </div>
       </div>
     </div>
     <div class="input-group row no-gutters">
-      <div class="col-4">
+      <div class="col-3">
         <label class="input-label">Форма органиизации</label>
-      </div>
-      <div class="col-8">
-        <select v-model="this.MAIN.formOfOrganization">
-          <option value="0">не выбрано</option>
+        <select v-model="this.FORM.formOfOrganization">
           <option value="1">OOO</option>
           <option value="2">OAO</option>
         </select>
       </div>
-    </div>
-    <div class="input-group row no-gutters">
-      <div class="col-4">
+      <div class="col-5 pl-2 pr-2">
         <label class="input-label">Входит в ГК</label>
+        <input type="text" v-model.trim="this.FORM.companyGroup" />
       </div>
-      <div class="col-8">
-        <input type="text" v-model.trim="this.MAIN.companyGroup" />
+      <div class="col-4">
+        <label class="input-label">Адрес офиса</label>
+        <input type="text" v-model.trim="this.FORM.officeAdress" />
       </div>
     </div>
     <div class="input-group row no-gutters">
-      <div class="col-4">
-        <label class="input-label">Категория</label>
+      <div class="col-7 pr-2">
+        <label class="input-label required">Категория</label>
+        <div
+          class="checkbox-group pb-2"
+          :class="{
+            invalid: v.category.$error,
+          }"
+        >
+          <input
+            class="checkbox ml-0"
+            type="checkbox"
+            v-model="this.FORM.category"
+            value="0"
+            id="checkbox-0"
+          />
+          <label class="checkbox-label" for="checkbox-0">клиент</label>
+          <input
+            class="checkbox"
+            type="checkbox"
+            v-model="this.FORM.category"
+            value="1"
+            id="checkbox-1"
+          />
+          <label class="checkbox-label" for="checkbox-1">посредник</label>
+          <input
+            class="checkbox"
+            type="checkbox"
+            v-model="this.FORM.category"
+            value="2"
+            id="checkbox-2"
+          />
+          <label class="checkbox-label" for="checkbox-2">мониторинг</label>
+          <br />
+          <input
+            class="checkbox ml-0"
+            type="checkbox"
+            v-model="this.FORM.category"
+            value="3"
+            id="checkbox-3"
+          />
+          <label class="checkbox-label" for="checkbox-3">собственник</label>
+          <input
+            class="checkbox"
+            type="checkbox"
+            v-model="this.FORM.category"
+            value="4"
+            id="checkbox-4"
+          />
+          <label class="checkbox-label" for="checkbox-4">оценщик</label>
+          <input
+            class="checkbox"
+            type="checkbox"
+            v-model="this.FORM.category"
+            value="5"
+            id="checkbox-5"
+          />
+          <label class="checkbox-label" for="checkbox-5">подрядчик</label>
+        </div>
+        <div
+          class="col-12 text-center error-container pt-1 pb-0"
+          v-if="v.category.$error"
+        >
+          <span>{{ v.category.$errors[0].$message }}</span>
+        </div>
       </div>
-      <div class="col-8">
-        <div class="row no-gutters">
-          <div class="col-12">
-            <div class="checkbox-group">
-              <input
-                class="checkbox"
-                type="checkbox"
-                v-model="this.MAIN.category"
-                value="0"
-                id="checkbox-0"
-              />
-              <label class="checkbox-label" for="checkbox-0">клиент</label>
-              <input
-                class="checkbox"
-                type="checkbox"
-                v-model="this.MAIN.category"
-                value="1"
-                id="checkbox-1"
-              />
-              <label class="checkbox-label" for="checkbox-1">посредник</label>
-              <input
-                class="checkbox"
-                type="checkbox"
-                v-model="this.MAIN.category"
-                value="2"
-                id="checkbox-2"
-              />
-              <label class="checkbox-label" for="checkbox-2">мониторинг</label>
-              <br />
-              <input
-                class="checkbox"
-                type="checkbox"
-                v-model="this.MAIN.category"
-                value="3"
-                id="checkbox-3"
-              />
-              <label class="checkbox-label" for="checkbox-3">собственник</label>
-              <input
-                class="checkbox"
-                type="checkbox"
-                v-model="this.MAIN.category"
-                value="4"
-                id="checkbox-4"
-              />
-              <label class="checkbox-label" for="checkbox-4">оценщик</label>
-              <input
-                class="checkbox"
-                type="checkbox"
-                v-model="this.MAIN.category"
-                value="5"
-                id="checkbox-5"
-              />
-              <label class="checkbox-label" for="checkbox-5">подрядчик</label>
-            </div>
-          </div>
-          <div class="col-12 text-center error-container pt-1 pb-0">
-            <span v-if="v.category.$error">{{
-              v.category.$errors[0].$message
-            }}</span>
-          </div>
+      <div class="col-2 pr-2">
+        <label class="input-label required">Статус</label>
+        <div
+          class="checkbox-group pb-2"
+          :class="{
+            invalid: v.status.$error,
+          }"
+        >
+          <input
+            class="checkbox ml-0"
+            type="radio"
+            v-model="this.FORM.status"
+            @click="test"
+            value="1"
+            id="radio-0"
+          />
+          <label class="checkbox-label" for="radio-0">актив</label> <br />
+          <input
+            class="checkbox ml-0"
+            type="radio"
+            v-model="this.FORM.status"
+            @click="test"
+            value="0"
+            id="radio-1"
+          />
+          <label class="checkbox-label" for="radio-1">пассив</label>
+        </div>
+        <div
+          class="col-12 text-center error-container pt-1 pb-0"
+          v-if="v.status.$error"
+        >
+          <span>{{ v.status.$errors[0].$message }}</span>
+        </div>
+      </div>
+      <div class="col-3">
+        <label class="input-label required">Консультант</label>
+        <select
+          :class="{
+            invalid: v.consultant.$error,
+            valid: v.consultant.$dirty && !v.consultant.$error,
+          }"
+          @input="v.consultant.$touch"
+          v-model="this.FORM.consultant"
+          @change="test"
+        >
+          <option value="532">АлександрАлександрАлександр</option>
+          <option value="312">Сергей</option>
+          <option value="12">Павел</option>
+          <option value="444">Татьяна</option>
+          <option value="333">Мария</option>
+          <option value="222">Павел</option>
+        </select>
+        <div
+          class="col-12 text-center error-container pt-1 pb-0"
+          v-if="v.consultant.$error"
+        >
+          <span>{{ v.consultant.$errors[0].$message }}</span>
         </div>
       </div>
     </div>
     <div class="input-group row no-gutters">
       <div class="col-4">
-        <label class="input-label">Адрес офиса</label>
+        <label class="input-label">Вебсайт</label>
+        <div
+          class="reproduce-input"
+          v-for="(site, index) of this.FORM.siteList"
+          :key="index"
+        >
+          <i
+            class="fas fa-minus left-input-icon"
+            v-if="index != 0"
+            @click="deleteSiteInput(index)"
+          ></i>
+          <input type="text" v-model.lazy="this.FORM.siteList[index]" />
+          <i
+            class="fas fa-plus right-input-icon"
+            v-if="index == this.FORM.siteList.length - 1"
+            @click="createNewSiteInput"
+          ></i>
+        </div>
       </div>
-      <div class="col-8">
-        <input type="text" v-model.trim="this.MAIN.officeAdress" />
+      <div class="col-4 pl-2 pr-2">
+        <label class="input-label">Общий телефон</label>
+
+        <div
+          class="reproduce-input"
+          v-for="(phone, index) in this.FORM.phoneList"
+          :key="phone"
+        >
+          <i
+            class="fas fa-minus left-input-icon"
+            v-if="index != 0"
+            @click="deleteTelInput(index)"
+          ></i>
+          <input
+            type="tel"
+            v-model.lazy="this.FORM.phoneList[index]"
+            v-maska="[
+              '+# (###) ###-##-##',
+              '+## (###) ###-##-##',
+              '+### (###) ###-##-##',
+            ]"
+          />
+          <i
+            class="fas fa-plus right-input-icon"
+            v-if="index == this.FORM.phoneList.length - 1"
+            @click="createNewTelInput"
+          ></i>
+        </div>
+      </div>
+      <div class="col-4">
+        <label class="input-label">Общий Email</label>
+
+        <div
+          class="reproduce-input"
+          v-for="(item, index) in this.FORM.emailList"
+          :key="item"
+        >
+          <i
+            class="fas fa-minus left-input-icon"
+            v-if="index != 0"
+            @click="deleteEmailInput(index)"
+          ></i>
+          <input type="email" v-model.lazy="this.FORM.emailList[index]" />
+          <i
+            class="fas fa-plus right-input-icon"
+            v-if="index == this.FORM.emailList.length - 1"
+            @click="createNewEmailInput"
+          ></i>
+        </div>
       </div>
     </div>
-    <div
-      class="input-group row no-gutters"
-      v-for="(item, index) in this.MAIN.siteList"
-      :key="item"
-    >
-      <div class="col-4">
-        <label class="input-label" v-if="!index">Вебсайт</label>
-        <label class="input-label" v-else></label>
-      </div>
-      <div class="col-8 reproduce-input">
-        <i
-          class="fas fa-minus left-input-icon"
-          v-if="index != 0"
-          @click="deleteSiteInput(index)"
-        ></i>
-        <input
-          type="url"
-          v-model.lazy="this.MAIN.siteList[index]"
-          v-maska="{
-            mask: 'http://H*#*!*',
-            tokens: { H: { pattern: /[0-9a-zA-Z]/, lowercase: true } },
+    <div class="input-group row no-gutters">
+      <div class="col-4 pr-2">
+        <label class="input-label required">Группа деятельности</label>
+        <select
+          :class="{
+            invalid: v.activityGroup.$error,
+            valid:
+              v.activityGroup.$dirty &&
+              !v.activityGroup.$error &&
+              this.FORM.activityGroup,
           }"
+          @change="v.activityGroup.$touch"
+          v-model="this.FORM.activityGroup"
+        >
+          <option value="0">FUCK</option>
+        </select>
+        <div
+          class="col-12 text-center error-container pt-1 pb-0"
+          v-if="v.activityGroup.$error"
+        >
+          <span>{{ v.activityGroup.$errors[0].$message }}</span>
+        </div>
+      </div>
+      <div class="col-4 pr-2">
+        <label class="input-label required">Профиль деятельности</label>
+        <select
+          :class="{
+            invalid: v.activityProfile.$error,
+            valid:
+              v.activityProfile.$dirty &&
+              !v.activityProfile.$error &&
+              this.FORM.activityProfile,
+          }"
+          @change="v.activityProfile.$touch"
+          v-model="this.FORM.activityProfile"
+        >
+          <option value="0">SUYCK</option>
+        </select>
+        <div
+          class="col-12 text-center error-container pt-1 pb-0"
+          v-if="v.activityProfile.$error"
+        >
+          <span>{{ v.activityProfile.$errors[0].$message }}</span>
+        </div>
+      </div>
+      <div class="col-4">
+        <label class="input-label required">Номенклатура товара</label>
+        <TagsInput
+          :invalid="v.productRange.$error"
+          @addTag="clickAddTag"
+          @deleteTag="clickDeleteTag"
+          :tags="this.FORM.productRange"
         />
-        <i
-          class="fas fa-plus right-input-icon"
-          v-if="index == this.MAIN.siteList.length - 1"
-          @click="createNewSiteInput"
-        ></i>
+        <div
+          class="col-12 text-center error-container pt-1 pb-0"
+          v-if="v.productRange.$error"
+        >
+          <span>{{ v.productRange.$errors[0].$message }}</span>
+        </div>
       </div>
     </div>
-    <div
-      class="input-group row no-gutters"
-      v-for="(phone, index) in this.MAIN.phoneList"
-      :key="phone"
-    >
-      <div class="col-4">
-        <label class="input-label" v-if="!index">Общий телефон</label>
-        <label class="input-label" v-else></label>
+    <div class="input-group row no-gutters">
+      <div class="col-6 pr-2">
+        <label class="input-label">Описание</label>
+        <textarea type="text" v-model="this.FORM.description" />
       </div>
-      <div class="col-8 reproduce-input">
-        <i
-          class="fas fa-minus left-input-icon"
-          v-if="index != 0"
-          @click="deleteTelInput(index)"
-        ></i>
-        <input
-          type="tel"
-          v-model.lazy="this.MAIN.phoneList[index]"
-          v-maska="[
-            '+# (###) ###-##-##',
-            '+## (###) ###-##-##',
-            '+### (###) ###-##-##',
-          ]"
-        />
-        <i
-          class="fas fa-plus right-input-icon"
-          v-if="index == this.MAIN.phoneList.length - 1"
-          @click="createNewTelInput"
-        ></i>
-      </div>
-    </div>
-    <div
-      class="input-group row no-gutters"
-      v-for="(item, index) in this.MAIN.emailList"
-      :key="item"
-    >
-      <div class="col-4">
-        <label class="input-label" v-if="!index">Общий Email</label>
-        <label class="input-label" v-else></label>
-      </div>
-      <div class="col-8 reproduce-input">
-        <i
-          class="fas fa-minus left-input-icon"
-          v-if="index != 0"
-          @click="deleteEmailInput(index)"
-        ></i>
-        <input type="email" v-model.lazy="this.MAIN.emailList[index]" />
-        <i
-          class="fas fa-plus right-input-icon"
-          v-if="index == this.MAIN.emailList.length - 1"
-          @click="createNewEmailInput"
-        ></i>
+      <div class="col-6">
+        <label class="input-label">Документы</label>
+        <!-- <input type="file" class="d-none" />
+        <button @click.prevent class="btn btn-primary btn-large">
+          Открыть
+        </button> -->
+        <FileInput v-model="this.FORM.files" />
+        {{ this.FORM.files }}
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-
+import { mapGetters, mapActions } from "vuex";
+import TagsInput from "@/components/TagsInput";
+import FileInput from "@/components/FileInput";
 export default {
-  name: "MainInputList",
+  name: "FORMInputList",
+  components: {
+    TagsInput,
+    FileInput,
+  },
   props: {
     v: {
       type: Object,
     },
   },
   computed: {
-    ...mapGetters(["MAIN"]),
+    ...mapGetters(["FORM"]),
   },
   methods: {
+    ...mapActions(["ADD_PRODUCT_RANGE_ITEM", "DELETE_PRODUCT_RANGE_ITEM"]),
+    test() {
+      this.v.nameEng.$touch;
+      console.log(this.v.nameEng.$error, this.FORM.nameEng);
+    },
+    clickAddTag(newTag) {
+      this.ADD_PRODUCT_RANGE_ITEM(newTag);
+    },
+    clickDeleteTag(index) {
+      this.DELETE_PRODUCT_RANGE_ITEM(index);
+    },
     setDefaultName() {
-      this.MAIN.nameEng = "";
-      this.MAIN.nameRu = "";
+      this.FORM.nameEng = "";
+      this.FORM.nameRu = "";
     },
     createNewTelInput() {
-      this.MAIN.phoneList.push("");
+      this.FORM.phoneList.push("");
     },
     deleteTelInput(index) {
-      this.MAIN.phoneList = this.MAIN.phoneList.filter(
+      this.FORM.phoneList = this.FORM.phoneList.filter(
         (item, idx) => idx != index
       );
     },
     createNewEmailInput() {
-      this.MAIN.emailList.push("");
+      this.FORM.emailList.push("");
     },
     deleteEmailInput(index) {
-      this.MAIN.emailList = this.MAIN.emailList.filter(
+      this.FORM.emailList = this.FORM.emailList.filter(
         (item, idx) => idx != index
       );
     },
     createNewSiteInput() {
-      this.MAIN.siteList.push("");
+      this.FORM.siteList.push("");
     },
     deleteSiteInput(index) {
-      this.MAIN.siteList = this.MAIN.siteList.filter(
+      this.FORM.siteList = this.FORM.siteList.filter(
         (item, idx) => idx != index
       );
     },

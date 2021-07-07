@@ -10,6 +10,9 @@
             <Tab name="Основное">
               <MainInputList :v="this.v$.FORM" />
             </Tab>
+            <Tab name="Деятельность">
+              <ActivityInputList :v="this.v$.FORM" />
+            </Tab>
             <Tab name="Реквизиты">
               <RequisistesInputList :v="this.v$.FORM" />
             </Tab>
@@ -35,6 +38,7 @@ import useValidate from "@vuelidate/core";
 import { required, helpers, minLength, maxLength } from "@vuelidate/validators";
 import MainInputList from "./MainInputList.vue";
 import RequisistesInputList from "./RequisistesInputList.vue";
+import ActivityInputList from "./ActivityInputList.vue";
 import Modal from "@/components/Modal";
 export default {
   name: "CompanyForm",
@@ -42,6 +46,7 @@ export default {
     Modal,
     MainInputList,
     RequisistesInputList,
+    ActivityInputList,
   },
   data() {
     return {
@@ -183,10 +188,10 @@ export default {
       }
     },
     clickCloseModal() {
-      this.$emit("closeCompanyForm");
+      this.$emit("closeCompanyFormInline");
     },
   },
-  emits: ["closeCompanyForm"],
+  emits: ["closeCompanyFormInline"],
 };
 </script>
 

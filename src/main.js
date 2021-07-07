@@ -6,6 +6,7 @@ import { Tabs, Tab } from 'vue3-tabs-component'
 import Maska from "maska"
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+// import VueFileAgent from 'vue-file-agent'
 import './assets/styles/grid.min.css'
 import './assets/styles/style.scss'
 const app = createApp(App);

@@ -41,6 +41,13 @@ const routes = [{
         component: () =>
             import ('../views/Companies/Companies.vue'),
         children: [{
+                path: '/companies/:id',
+                name: 'company',
+                meta: { layout: 'main' },
+                component: () =>
+                    import ('../views/Companies/Company.vue'),
+            },
+            {
                 path: '',
                 name: 'CompaniesAll',
                 meta: { layout: 'main' },
@@ -48,11 +55,11 @@ const routes = [{
                     import ('../views/Companies/All.vue')
             },
             {
-                path: 'in-work',
-                name: 'CompaniesInWork',
+                path: 'request',
+                name: 'CompaniesRequest',
                 meta: { layout: 'main' },
                 component: () =>
-                    import ('../views/Companies/InWork.vue')
+                    import ('../views/Companies/Request.vue')
             },
             {
                 path: 'deal',
@@ -70,6 +77,7 @@ const routes = [{
             },
         ]
     },
+
     {
         path: '/:catchAll(.*)',
         name: 'notfound',
