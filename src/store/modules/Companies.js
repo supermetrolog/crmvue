@@ -2,7 +2,8 @@ import axios from "axios"
 const Companies = {
     state: {
         companies: [],
-        company: {}
+        company: {},
+        companyRequests: {},
     },
     mutations: {
         updateCompanies(state, data) {
@@ -10,12 +11,15 @@ const Companies = {
         },
         updateCompany(state, data) {
             state.company = data;
+        },
+        updateCompanyRequests(state, data) {
+            state.companyRequests = data;
         }
     },
     actions: {
         async FETCH_COMPANIES(context) {
             await axios
-                .get("http://crmka/companies?expand=contacts.emails,contacts.phones,contacts.contactComments,broker,companyGroup,consultant")
+                .get("companies?expand=contacts.emails,contacts.phones,contacts.contactComments,broker,companyGroup,consultant,productRanges,categories")
                 .then((Response) => {
                     context.commit('updateCompanies', Response.data)
                 });
@@ -27,7 +31,7 @@ const Companies = {
             let legalAddress = "legalAddress=" + param.searchText + "&";
             let contactPhone = "contact.phone=" + param.searchText + "&";
             let searchUrlPart = nameEng + nameRu + officeAdress + legalAddress + contactPhone;
-            let url = "http://crmka/companies/search?" + searchUrlPart + "expand=contacts.emails,contacts.phones,contacts.contactComments,broker,companyGroup,consultant";
+            let url = "companies/search?" + searchUrlPart + "expand=contacts.emails,contacts.phones,contacts.contactComments,broker,companyGroup,consultant";
             await axios
                 .get(url)
                 .then((Response) => {
@@ -35,13 +39,22 @@ const Companies = {
                 });
         },
         async FETCH_COMPANY(context, id) {
-            let url = "http://crmka/companies/" + id + "?expand=contacts.emails,contacts.phones,contacts.contactComments,broker,companyGroup,consultant";
+            let url = "companies/" + id + "?expand=contacts.emails,contacts.phones,contacts.websites,contacts.contactComments,broker,companyGroup,consultant,categories,productRanges";
             await axios
                 .get(url)
                 .then((Response) => {
                     context.commit('updateCompany', Response.data)
                 });
         },
+        async FETCH_COMPANY_REQUESTS(context, id) {
+            const url = "requests/company-requests/" + id + "?expand=consultant,directions,districts,gateTypes,objectClasses,objectTypes,regions";
+            await axios
+                .get(url)
+                .then((Response) => {
+                    console.log(Response.data);
+                    context.commit('updateCompanyRequests', Response.data)
+                });
+        }
     },
     getters: {
         COMPANIES(state) {
@@ -49,6 +62,9 @@ const Companies = {
         },
         COMPANY(state) {
             return state.company;
+        },
+        COMPANY_REQUESTS(state) {
+            return state.companyRequests;
         }
     }
 }

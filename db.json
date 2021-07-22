@@ -273,22 +273,22 @@
                 "datetime": "16 фев 15:21",
                 "isBranch": false,
                 "actions": {
-                    "done": 1,
-                    "negative": 0,
+                    "done": 0,
+                    "negative": 1,
                     "additional": 0,
-                    "feedback_way": 3,
+                    "feedbackWay": [],
                     "date": "",
                     "objects": [{
-                            "object_id": 2412
+                            "id": 2412
                         },
                         {
-                            "object_id": 5312
+                            "id": 5312
                         },
                         {
-                            "object_id": 3123
+                            "id": 3123
                         },
                         {
-                            "object_id": 5222
+                            "id": 5222
                         }
                     ]
 
@@ -305,19 +305,19 @@
                     "done": 1,
                     "negative": 0,
                     "additional": 0,
-                    "feedback_way": 3,
+                    "feedbackWay": [],
                     "date": "",
                     "objects": [{
-                            "object_id": 2412
+                            "id": 2412
                         },
                         {
-                            "object_id": 5312
+                            "id": 5312
                         },
                         {
-                            "object_id": 3123
+                            "id": 3123
                         },
                         {
-                            "object_id": 5222
+                            "id": 5222
                         }
                     ]
 
@@ -329,7 +329,25 @@
                 "comment": "Lorem ipsum dolor sit atibus numquam equeepellendus esse commodi deseruntLorem ipsum dolor sit amet, consectetur adipisicing elit..",
                 "step": 2,
                 "datetime": "16 фев 15:21",
-                "isBranch": false
+                "isBranch": false,
+                "actions": {
+                    "negative": 0,
+                    "feedbackWay": [],
+                    "objects": [{
+                            "id": 2412
+                        },
+                        {
+                            "id": 5312
+                        },
+                        {
+                            "id": 3123
+                        },
+                        {
+                            "id": 5222
+                        }
+                    ]
+
+                }
             },
             {
                 "id": 3,
@@ -337,43 +355,123 @@
                 "comment": "Lorem ipsum dolor sit amet, consecit, officiis repudiandae, eum recusandae neque dignissimos. Cum fugit laboriosam culpa, repellendus esse commodi deserunt.",
                 "step": 3,
                 "datetime": "16 фев 15:21",
-                "isBranch": false
-            }
-        ],
-        [{
-                "id": 7,
-                "company_id": 3241,
-                "comment": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam necessitatibus numquam earum ipsa fugiat veniam suscipit, officiis repudiandae, eum recusandae neque dignissimos. Cum fugit laboriosam culpa, repellendus esse commodi deserunt.",
-                "step": 1,
-                "datetime": "16 фев 15:21",
-                "isBranch": true,
+                "isBranch": false,
                 "actions": {
-                    "done": 1,
                     "negative": 0,
-                    "additional": 0,
-                    "feedback_way": 3,
-                    "date": "",
                     "objects": [{
-                            "object_id": 2412
+                            "id": 2412
                         },
                         {
-                            "object_id": 5312
+                            "id": 5312
                         },
                         {
-                            "object_id": 3123
+                            "id": 3123
                         },
                         {
-                            "object_id": 5222
+                            "id": 5222
                         }
                     ]
 
                 }
             },
             {
-                "id": 8,
+                "id": 4,
+                "company_id": 3241,
+                "comment": "Lorem ipsum dolor sit amet, consecit, officiis repudiandae, eum recusandae neque dignissimos. Cum fugit laboriosam culpa, repellendus esse commodi deserunt.",
+                "step": 4,
+                "datetime": "16 фев 15:21",
+                "isBranch": false,
+                "actions": {
+                    "negative": 0,
+                    "objects": [{
+                            "id": 2412
+                        },
+                        {
+                            "id": 5312
+                        },
+                        {
+                            "id": 3123
+                        },
+                        {
+                            "id": 5222
+                        }
+                    ]
+
+                }
+            },
+            {
+                "id": 5,
+                "company_id": 3241,
+                "comment": "Lorem ipsum dolor sit amet, consecit, officiis repudiandae, eum recusandae neque dignissimos. Cum fugit laboriosam culpa, repellendus esse commodi deserunt.",
+                "step": 5,
+                "datetime": "16 фев 15:21",
+                "isBranch": false,
+                "actions": {
+                    "negative": 0,
+                    "additional": 0,
+                    "objects": [{
+                            "id": 2412,
+                            "type": 0
+                        },
+                        {
+                            "id": 5312,
+                            "type": 0
+                        },
+                        {
+                            "id": 3123,
+                            "type": 1
+                        },
+                        {
+                            "id": 5222,
+                            "type": 1
+                        }
+                    ]
+
+                }
+            },
+            {
+                "id": 6,
+                "company_id": 3241,
+                "comment": "Lorem ipsum dolor sit amet, consecit, officiis repudiandae, eum recusandae neque dignissimos. Cum fugit laboriosam culpa, repellendus esse commodi deserunt.",
+                "step": 6,
+                "datetime": "16 фев 15:21",
+                "isBranch": false,
+                "actions": {
+                    "negative": 0,
+                    "done": 1
+
+                }
+            }
+        ],
+        [{
+                "id": 4,
+                "company_id": 3241,
+                "comment": "Lorem ipsum dolor sit atibus numquam equeepellendus esse commodi deseruntLorem ipsum dolor sit amet, consectetur adipisicing elit..",
+                "step": 2,
+                "datetime": "16 фев 15:21",
+                "isBranch": true,
+                "actions": {
+                    "done": 0,
+                    "negative": 0,
+                    "feedbackWay": [],
+                    "objects": [{
+                            "id": 2412
+                        },
+                        {
+                            "id": 5312
+                        },
+                        {
+                            "id": 3123
+                        }
+                    ]
+
+                }
+            },
+            {
+                "id": 5,
                 "company_id": 3241,
                 "comment": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam necessitatibus numquam earum ipsa fugiat veniam suscipit, officiis repudiandae, eum recusandae neque dignissimos. Cum fugit laboriosam culpa, repellendus esse commodi deserunt.",
-                "step": 2,
+                "step": 3,
                 "datetime": "16 фев 15:21",
                 "isBranch": true
             }

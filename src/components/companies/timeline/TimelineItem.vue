@@ -1,5 +1,8 @@
 <template>
-  <div class="timeline-container" :class="stepParam[data.step][1].class">
+  <div
+    class="timeline-container"
+    :class="[stepParam[data.step][1].class, stepParam[data.step][1].stepName]"
+  >
     <div class="timeline-icon" v-if="!data.isBranch">
       <i :class="stepParam[idx][1].icon"></i>
     </div>
@@ -13,6 +16,7 @@
         :class="{ minimization: data.comment.length == 0 && disabled }"
         :style="textareaHeight"
         :disabled="disabled"
+        @keydown.enter.prevent
         v-model="comment"
       ></textarea>
       <hr />
@@ -25,7 +29,7 @@
         ></slot>
       </div>
 
-      <div class="row">
+      <div class="row mt-2">
         <div class="col-4 align-self-end">
           <p class="timeline-subtitle">{{ data.datetime }}</p>
         </div>
@@ -104,7 +108,6 @@ export default {
   },
   mounted() {
     this.comment = this.data.comment;
-    // console.log(this.stepParam.length);
   },
   methods: {
     toggleDisabled() {

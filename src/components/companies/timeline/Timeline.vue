@@ -1,10 +1,11 @@
 <template>
   <div class="container-timeline">
+    <Loader v-if="loader" />
     <link
       rel="stylesheet"
       href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
     />
-    <div class="row">
+    <div class="row" v-if="!loader">
       <div
         v-for="(items, index) in this.TIMELINE"
         :key="index"
@@ -26,6 +27,7 @@
           <template v-slot:actions="{ stepName, disabled, isConfirmed }">
             <component
               :is="stepName"
+              :branch="index"
               :actions="item.actions"
               :disabled="disabled"
               :isConfirmed="isConfirmed"
@@ -44,14 +46,31 @@ import { mapGetters, mapActions } from "vuex";
 import TimelineItem from "./TimelineItem";
 import Meeting from "./step-actions/Meeting.vue";
 import Offers from "./step-actions/Offers.vue";
+import Feedback from "./step-actions/Feedback.vue";
+import Inspection from "./step-actions/Inspection.vue";
+import Visit from "./step-actions/Visit.vue";
+import Interest from "./step-actions/Interest.vue";
+import Deal from "./step-actions/Deal.vue";
+import Loader from "@/components/Loader.vue";
 export default {
   name: "Timeline",
   components: {
     TimelineItem,
     Meeting,
     Offers,
+    Feedback,
+    Inspection,
+    Visit,
+    Interest,
+    Deal,
+    Loader,
   },
-  varticalOffsetTimeline: 370,
+  data() {
+    return {
+      loader: true,
+    };
+  },
+  varticalOffsetTimeline: 390,
   computed: {
     ...mapGetters(["TIMELINE"]),
   },
@@ -82,8 +101,11 @@ export default {
       this.CREATE_NEW_ITEM(param);
     },
   },
-  async mounted() {
-    this.FETCH_TIMELINE();
+  async created() {
+    this.loader = true;
+    await this.FETCH_TIMELINE();
+    console.log("timeline");
+    this.loader = false;
   },
 };
 </script>

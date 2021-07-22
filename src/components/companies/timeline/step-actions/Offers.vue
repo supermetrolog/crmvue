@@ -2,7 +2,7 @@
   <div class="col">
     <Modal v-show="modalVisible" @close="closeModal" title="Предложения">
       <template #body>
-        <ObjectsGrid @close="closeModal" />
+        <!-- <ObjectsGrid @close="closeModal" /> -->
       </template>
     </Modal>
     <div class="row">
@@ -38,7 +38,7 @@
           :disabled="disabled || additional"
           @click="clickAdditional"
         >
-          <i class="fas fa-infinity"></i>
+          <i class="far fa-frown-open"></i>
           <span class="ml-1">Среди подборки нет подходящих</span>
         </button>
       </div>
@@ -48,12 +48,12 @@
 
 <script>
 import Modal from "@/components/Modal";
-import ObjectsGrid from "@/components/companies/objects/ObjectsGrid";
+// import ObjectsGrid from "@/components/companies/objects/ObjectsGrid";
 export default {
   name: "Meeting",
   components: {
     Modal,
-    ObjectsGrid,
+    // ObjectsGrid,
   },
   data() {
     return {

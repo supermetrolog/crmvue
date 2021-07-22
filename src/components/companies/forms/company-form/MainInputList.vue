@@ -74,55 +74,22 @@
             invalid: v.category.$error,
           }"
         >
-          <input
-            class="checkbox ml-0"
-            type="checkbox"
-            v-model="this.FORM.category"
-            value="0"
-            id="checkbox-0"
-          />
-          <label class="checkbox-label" for="checkbox-0">клиент</label>
-          <input
-            class="checkbox"
-            type="checkbox"
-            v-model="this.FORM.category"
-            value="1"
-            id="checkbox-1"
-          />
-          <label class="checkbox-label" for="checkbox-1">посредник</label>
-          <input
-            class="checkbox"
-            type="checkbox"
-            v-model="this.FORM.category"
-            value="2"
-            id="checkbox-2"
-          />
-          <label class="checkbox-label" for="checkbox-2">мониторинг</label>
-          <br />
-          <input
-            class="checkbox ml-0"
-            type="checkbox"
-            v-model="this.FORM.category"
-            value="3"
-            id="checkbox-3"
-          />
-          <label class="checkbox-label" for="checkbox-3">собственник</label>
-          <input
-            class="checkbox"
-            type="checkbox"
-            v-model="this.FORM.category"
-            value="4"
-            id="checkbox-4"
-          />
-          <label class="checkbox-label" for="checkbox-4">оценщик</label>
-          <input
-            class="checkbox"
-            type="checkbox"
-            v-model="this.FORM.category"
-            value="5"
-            id="checkbox-5"
-          />
-          <label class="checkbox-label" for="checkbox-5">подрядчик</label>
+          <div
+            class="d-inline-block mr-1"
+            v-for="category of categoryList"
+            :key="category[0]"
+          >
+            <input
+              class="checkbox ml-0"
+              type="checkbox"
+              v-model="this.FORM.category"
+              :value="category[0]"
+              :id="'checkbox' + category[0]"
+            />
+            <label class="checkbox-label" :for="'checkbox' + category[0]">{{
+              category[1]
+            }}</label>
+          </div>
         </div>
         <div
           class="col-12 text-center error-container pt-1 pb-0"
@@ -335,8 +302,7 @@
         <button @click.prevent class="btn btn-primary btn-large">
           Открыть
         </button> -->
-        <FileInput v-model="this.FORM.files" />
-        {{ this.FORM.files }}
+        <FileInput v-model="this.FORM.files" is-pdf />
       </div>
     </div>
   </div>
@@ -346,11 +312,17 @@
 import { mapGetters, mapActions } from "vuex";
 import TagsInput from "@/components/TagsInput";
 import FileInput from "@/components/FileInput";
+import { CompanyCategories } from "@/const/Const.js";
 export default {
-  name: "FORMInputList",
+  name: "MainInputList",
   components: {
     TagsInput,
     FileInput,
+  },
+  data() {
+    return {
+      categoryList: CompanyCategories.get("param"),
+    };
   },
   props: {
     v: {

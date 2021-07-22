@@ -30,6 +30,12 @@ export default {
       this.$emit("close");
     },
   },
+  mounted() {
+    document.getElementsByTagName("body")[0].style.overflow = "hidden";
+  },
+  unmounted() {
+    document.getElementsByTagName("body")[0].style.overflow = "auto";
+  },
   emits: ["close"],
 };
 </script>

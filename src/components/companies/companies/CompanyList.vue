@@ -31,20 +31,17 @@
             <div class="row no-gutters">
               <div class="col-12">
                 <div class="row no-gutters header">
-                  <div class="col-lg-6 col-5 category">
-                    <p>{{ categories[company.category][1] }}</p>
+                  <div class="col-lg-7 col-5 category">
+                    <p
+                      v-for="categoryItem of company.categories"
+                      :key="categoryItem.id"
+                      class="mr-1"
+                    >
+                      {{ category(categoryItem.category) }}
+                    </p>
                   </div>
-                  <div class="col-lg-6 col-7 text-right progress pt-1">
-                    <div class="progress-bar ml-auto">
-                      <div
-                        class="percent"
-                        :style="{ width: company.progress_percent + '%' }"
-                        :class="percentClass(company.progress_percent)"
-                      ></div>
-                    </div>
-                    <div class="progress-label">
-                      <p>{{ company.progress_percent }}% Заполнения</p>
-                    </div>
+                  <div class="col-lg-5 col-7 text-right pt-1">
+                    <Progress :percent="company.progress_percent" />
                   </div>
                 </div>
               </div>
@@ -132,12 +129,11 @@
 
 <script>
 import { CompanyCategories } from "@/const/Const";
+import Progress from "@/components/Progress";
 export default {
   name: "CompanyList",
-  data() {
-    return {
-      categories: CompanyCategories.get("param"),
-    };
+  components: {
+    Progress,
   },
   props: {
     companies: {
@@ -155,6 +151,9 @@ export default {
       } else if (percent <= 100) {
         return "bg-success";
       }
+    },
+    category(categoryValue) {
+      return CompanyCategories.get("param")[categoryValue][1];
     },
   },
 };
