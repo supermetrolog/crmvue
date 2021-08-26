@@ -1,8 +1,13 @@
 <template>
   <div class="company-form company-request-form">
-    <form @submit.prevent="submitForm">
-      <Modal title="Создание запроса" @close="clickCloseModal">
+    <Modal
+      :title="!formdata ? 'Создание запроса' : 'Изменение запроса'"
+      @close="clickCloseModal"
+    >
+      <form @submit.prevent="submitForm">
         <div class="company-form-container p-3">
+          <Loader class="center" v-if="loader" />
+
           <div class="main-input-list">
             <div class="input-group row no-gutters">
               <div class="col-5 pr-2">
@@ -114,8 +119,12 @@
                 </label>
                 <input
                   class="checkbox large d-block ml-auto"
-                  type="checkbox"
+                  type="radio"
+                  @click="
+                    form.expressRequest ? (form.expressRequest = null) : ''
+                  "
                   v-model="form.expressRequest"
+                  value="1"
                   title="Срочный запрос"
                 />
               </div>
@@ -126,7 +135,7 @@
                   Удаленность от МКАД (км)
                 </label>
                 <input
-                  v-model="form.distanceFromMKAD"
+                  v-model.number="form.distanceFromMKAD"
                   title="Удаленность от МКАД"
                   @input="v$.form.distanceFromMKAD.$touch"
                   v-maska="'###'"
@@ -151,8 +160,14 @@
                   <div class="col-2">
                     <input
                       class="checkbox large d-inline"
-                      type="checkbox"
+                      type="radio"
+                      @click="
+                        form.distanceFromMKADnotApplicable
+                          ? (form.distanceFromMKADnotApplicable = null)
+                          : ''
+                      "
                       v-model="form.distanceFromMKADnotApplicable"
+                      value="1"
                       title="Неприменимо"
                       id="distanceFromMKADnotApplicable"
                     />
@@ -160,7 +175,6 @@
                   <div class="col-9 pl-2">
                     <label
                       class="input-label additional"
-                      title="Срочный запрос"
                       for="distanceFromMKADnotApplicable"
                     >
                       Неприменимо - регион или Москва
@@ -174,8 +188,12 @@
                 </label>
                 <input
                   class="checkbox large d-block m-auto"
-                  type="checkbox"
-                  v-model="form.firstFloorOnly"
+                  @click="
+                    form.firstFloorOnly ? (form.firstFloorOnly = null) : ''
+                  "
+                  type="radio"
+                  v-model.number="form.firstFloorOnly"
+                  value="1"
                   title="Только 1 этаж"
                 />
               </div>
@@ -296,20 +314,20 @@
                 <div class="checkbox-group pb-2">
                   <div
                     class="d-inline-block mr-1"
-                    v-for="gateType of gateTypeList"
-                    :key="gateType[0]"
+                    v-for="gateTypes of gateTypeList"
+                    :key="gateTypes[0]"
                   >
                     <input
                       class="checkbox ml-0"
                       type="checkbox"
-                      v-model="form.gateType"
-                      :value="gateType[0]"
-                      :id="'checkbox-gate-type' + gateType[0]"
+                      v-model="form.gateTypes"
+                      :value="gateTypes[0]"
+                      :id="'checkbox-gate-type' + gateTypes[0]"
                     />
                     <label
                       class="checkbox-label"
-                      :for="'checkbox-gate-type' + gateType[0]"
-                      >{{ gateType[1] }}</label
+                      :for="'checkbox-gate-type' + gateTypes[0]"
+                      >{{ gateTypes[1] }}</label
                     >
                   </div>
                 </div>
@@ -354,8 +372,10 @@
                 </label>
                 <input
                   class="checkbox large d-block"
-                  type="checkbox"
-                  v-model="form.antiDustOnly"
+                  type="radio"
+                  @click="form.antiDustOnly ? (form.antiDustOnly = null) : ''"
+                  v-model.number="form.antiDustOnly"
+                  value="1"
                   title="Только антипыль"
                 />
               </div>
@@ -465,17 +485,6 @@
                     нет
                   </label>
                 </div>
-                <!-- <div class="extraField">
-                  <label class="input-label" for="radio-trainLine-1">
-                    Длина Ж/Д (м)
-                  </label>
-
-                  <input
-                    type="text"
-                    v-model="form.trainLineLenght"
-                    v-maska="'#########'"
-                  />
-                </div> -->
               </div>
               <div class="col extraField" v-if="this.form.trainLine == 1">
                 <label class="input-label" for="radio-trainLine-1">
@@ -484,7 +493,7 @@
 
                 <input
                   type="text"
-                  v-model="form.trainLineLenght"
+                  v-model="form.trainLineLength"
                   v-maska="'#########'"
                 />
               </div>
@@ -494,7 +503,7 @@
                   <input
                     class="checkbox ml-0"
                     type="radio"
-                    v-model="form.status"
+                    v-model.number="form.status"
                     value="1"
                     id="radio-status-0"
                   />
@@ -506,7 +515,7 @@
                     class="checkbox ml-2"
                     :class="{ 'ml-0': this.form.trainLine != 1 }"
                     type="radio"
-                    v-model="form.status"
+                    v-model.number="form.status"
                     value="0"
                     id="radio-status-1"
                   />
@@ -518,17 +527,60 @@
             </div>
             <div class="input-group row no-gutters">
               <div class="col-5 pr-2">
-                <label class="input-label">Описание</label>
-                <textarea v-model="form.description"></textarea>
+                <label class="input-label">Дата переезда</label>
+                <input
+                  @change="this.form.unknownMovingDate = null"
+                  v-model="form.movingDate"
+                  type="date"
+                  @input="v$.form.movingDate.$touch"
+                  :class="{
+                    invalid: v$.form.movingDate.$error,
+                    valid:
+                      v$.form.movingDate.$dirty &&
+                      !v$.form.movingDate.$error &&
+                      !form.unknownMovingDate,
+                  }"
+                />
+                <div
+                  class="col-12 text-center error-container pt-1 pb-0"
+                  v-if="v$.form.movingDate.$error"
+                >
+                  <span>{{ v$.form.movingDate.$errors[0].$message }}</span>
+                </div>
+                <div class="checkbox-group mt-2">
+                  <input
+                    class="checkbox ml-0"
+                    @click="this.form.movingDate = null"
+                    type="radio"
+                    v-model="form.unknownMovingDate"
+                    value="1"
+                    id="radio-unknownMovingDate-0"
+                  />
+                  <label class="checkbox-label" for="radio-unknownMovingDate-0">
+                    нет конкретики по сроку
+                  </label>
+                  <br />
+                  <input
+                    class="checkbox ml-0"
+                    type="radio"
+                    @click="this.form.movingDate = null"
+                    v-model="form.unknownMovingDate"
+                    value="0"
+                    id="radio-unknownMovingDate-1"
+                  />
+                  <label class="checkbox-label" for="radio-unknownMovingDate-1">
+                    рассматривает постоянно
+                  </label>
+                </div>
               </div>
               <div class="col-7">
                 <label class="input-label">Тип объекта</label>
                 <div class="row no-gutters">
-                  <div class="col-4 pr-1 pl-1">
+                  <div class="col-4 pr-1">
                     <div class="row no-gutters">
                       <div class="col-12">
                         <button
-                          @click.prevent="clickToggleWarehouseTypeContent()"
+                          disabled
                           class="btn btn-light btn-large"
                           :class="{ active: warehouseTypeListVisible }"
                         >
@@ -576,7 +628,7 @@
                     <div class="row">
                       <div class="col-12">
                         <button
-                          @click.prevent="clickToggleProductionTypeContent()"
+                          disabled
                           class="btn btn-light btn-large"
                           :class="{ active: productionTypeListVisible }"
                         >
@@ -624,7 +676,7 @@
                     <div class="row">
                       <div class="col-12">
                         <button
-                          @click.prevent="clickTogglePlotTypeContent()"
+                          disabled
                           class="btn btn-light btn-large"
                           :class="{ active: plotTypeListVisible }"
                         >
@@ -669,21 +721,34 @@
                     </div>
                   </div>
                 </div>
+                <label class="input-label mt-3">Описание</label>
+                <div class="row no-gutters">
+                  <div class="col-12 pr-1">
+                    <textarea v-model="form.description"></textarea>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
           <div class="row mb-4">
             <div class="col-5 text-center m-auto">
               <input
+                v-if="!formdata"
                 class="btn btn-success btn-large"
                 type="submit"
                 value="Создать"
               />
+              <input
+                v-else
+                class="btn btn-success btn-large"
+                type="submit"
+                value="Сохранить изменения"
+              />
             </div>
           </div>
         </div>
-      </Modal>
-    </form>
+      </form>
+    </Modal>
   </div>
 </template>
 
@@ -692,6 +757,8 @@ import { mapGetters, mapActions } from "vuex";
 import useValidate from "@vuelidate/core";
 import { required, helpers } from "@vuelidate/validators";
 import Modal from "@/components/Modal";
+import Utils from "@/utils";
+import Loader from "@/components/Loader";
 import {
   ObjectClassList,
   GateTypeList,
@@ -707,6 +774,7 @@ export default {
   components: {
     Modal,
     Multiselect,
+    Loader,
   },
   data() {
     return {
@@ -720,39 +788,54 @@ export default {
       directionList: DirectionList.get("param"),
       districtList: DistrictList.get("param"),
       dealTypeList: DealTypeList.get("param"),
-      productionTypeListVisible: false,
-      warehouseTypeListVisible: false,
-      plotTypeListVisible: false,
+      productionTypeListVisible: true,
+      warehouseTypeListVisible: true,
+      plotTypeListVisible: true,
       isOpenDealTypeSelect: false,
       isOpenConsultantSelect: false,
+      loader: false,
       form: {
-        dealType: "",
+        company_id: null,
+        id: null,
+        dealType: null,
         regions: [],
-        expressRequest: false,
-        distanceFromMKAD: "",
-        distanceFromMKADnotApplicable: false,
-        minArea: "",
-        maxArea: "",
-        minCeilingHeight: "",
-        maxCeilingHeight: "",
-        firstFloorOnly: false,
+        expressRequest: null,
+        distanceFromMKAD: null,
+        distanceFromMKADnotApplicable: null,
+        minArea: null,
+        maxArea: null,
+        minCeilingHeight: null,
+        maxCeilingHeight: null,
+        firstFloorOnly: null, ///
         objectClasses: [],
         heated: null,
-        gateType: [],
-        antiDustOnly: false,
+        gateTypes: [],
+        antiDustOnly: null,
         electricity: "",
-        haveCranes: false,
-        trainLine: false,
-        trainLineLength: "",
-        status: false,
-        consultant_id: "",
-        description: "",
-        pricePerFloor: "",
+        haveCranes: null,
+        trainLine: null,
+        trainLineLength: null,
+        status: 1, //default
+        consultant_id: null,
+        description: null,
+        pricePerFloor: null,
         objectTypes: [],
         directions: [],
         districts: [],
+        movingDate: null,
+        unknownMovingDate: null,
       },
     };
+  },
+  props: {
+    formdata: {
+      type: Object,
+      default: null,
+    },
+    company_id: {
+      type: Number,
+      default: null,
+    },
   },
   computed: {
     ...mapGetters(["CONSULTANT_LIST"]),
@@ -787,15 +870,60 @@ export default {
         consultant_id: {
           required: helpers.withMessage("Выберите вариант", required),
         },
+        movingDate: {
+          customRequiredForMovingDate: helpers.withMessage(
+            "Заполните поле",
+            this.customRequiredForMovingDate
+          ),
+        },
       },
     };
   },
   methods: {
-    ...mapActions(["FETCH_CONSULTANT_LIST"]),
+    ...mapActions([
+      "FETCH_CONSULTANT_LIST",
+      "CREATE_REQUEST",
+      "UPDATE_REQUEST",
+    ]),
+    async submitForm() {
+      this.v$.$validate();
+      console.log(this.form);
+      if (!this.v$.form.$error) {
+        this.regionNormalize();
+        this.loader = true;
+        if (this.formdata) {
+          this.updateRequest();
+        } else {
+          this.createRequest();
+        }
+      }
+    },
+    regionNormalize() {
+      if (!this.form.regions.includes(0)) {
+        this.form.districts = [];
+      }
+      if (!this.form.regions.includes(1)) {
+        this.form.directions = [];
+      }
+    },
+    async updateRequest() {
+      if (await this.UPDATE_REQUEST(this.form)) {
+        this.$emit("updated");
+        this.loader = false;
+        this.clickCloseModal();
+      }
+    },
+    async createRequest() {
+      if (await this.CREATE_REQUEST(this.form)) {
+        this.$emit("created");
+        this.loader = false;
 
+        this.clickCloseModal();
+      }
+    },
     customRequired(value) {
       if (!this.form.distanceFromMKADnotApplicable) {
-        if (value != "") {
+        if (value != null) {
           return true;
         }
         return false;
@@ -803,10 +931,17 @@ export default {
         return true;
       }
     },
-    submitForm() {
-      this.v$.$validate();
-      console.log(this.v$.form.$error);
+    customRequiredForMovingDate(value) {
+      if (this.form.unknownMovingDate === null) {
+        if (value != null) {
+          return true;
+        }
+        return false;
+      } else {
+        return true;
+      }
     },
+
     clickCloseModal() {
       this.$emit("closeCompanyForm");
     },
@@ -835,30 +970,18 @@ export default {
           break;
       }
     },
-    clickToggleProductionTypeContent() {
-      this.productionTypeListVisible = !this.productionTypeListVisible;
-      this.form.objectTypes = this.form.objectTypes.filter(
-        (value) => value < 11 || value > 23
-      );
-    },
-    clickTogglePlotTypeContent() {
-      this.plotTypeListVisible = !this.plotTypeListVisible;
-      this.form.objectTypes = this.form.objectTypes.filter(
-        (value) => value < 24
-      );
-    },
-    clickToggleWarehouseTypeContent() {
-      this.warehouseTypeListVisible = !this.warehouseTypeListVisible;
-      this.form.objectTypes = this.form.objectTypes.filter(
-        (value) => value > 10
-      );
-    },
   },
-  async mounted() {
+  async created() {
+    this.loader = true;
     await this.FETCH_CONSULTANT_LIST();
+    if (this.formdata) {
+      this.form = Utils.normalizeDataForForm(this.formdata);
+      console.log(this.form);
+    } else {
+      this.form.company_id = this.company_id;
+    }
+    this.loader = false;
   },
-  emits: ["closeCompanyForm"],
+  emits: ["closeCompanyForm", "created", "updated"],
 };
 </script>
-
-<style src="@vueform/multiselect/themes/default.css"></style>

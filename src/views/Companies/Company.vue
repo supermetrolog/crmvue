@@ -1,11 +1,24 @@
 <template>
   <div class="company">
-    <Modal v-if="timelineVisible" @close="closeTimeline">
+    <Modal
+      class="fullscreen"
+      title="Бизнес процесс"
+      v-if="timelineVisible"
+      @close="closeTimeline"
+    >
       <Timeline />
     </Modal>
     <CompanyRequestForm
-      @closeCompanyForm="clickCloseCompanyForm()"
+      @closeCompanyForm="clickCloseCompanyRequestForm()"
+      :company_id="COMPANY[0].id"
+      :formdata="request"
+      @created="createdRequest"
+      @updated="updatedRequest"
       v-if="companyRequestFormVisible"
+    />
+    <CompanyContactForm
+      @closeCompanyForm="clickCloseCompanyContactForm()"
+      v-if="companyContactFormVisible"
     />
     <div class="row no-gutters">
       <div class="col-12 col-lg-3 company-detail-info-container box">
@@ -30,7 +43,8 @@
         <div class="col-12 p-0 mb-3">
           <button
             class="btn btn-primary d-block btn-large"
-            @click.prevent="clickOpenCompanyForm"
+            :disabled="COMPANY[0] ? false : true"
+            @click.prevent="clickOpenCompanyRequestForm"
           >
             Создать запрос
           </button>
@@ -39,6 +53,7 @@
           <Loader v-if="loaderCompanyRequests" class="center" />
           <CompanyRequestList
             :requests="this.COMPANY_REQUESTS"
+            @openCompanyRequestFormForUpdate="openCompanyRequestFormForUpdate"
             v-if="!loaderCompanyRequests"
           />
         </div>
@@ -56,16 +71,16 @@
         <div class="col-12 p-0 mb-3">
           <button
             class="btn btn-primary d-block btn-large"
-            @click.prevent="clickOpenCompanyForm"
+            @click.prevent="clickOpenCompanyContactForm"
           >
             создать контакт
           </button>
         </div>
         <div class="col-12 inner">
-          <Loader v-if="loaderCompanyDetailInfo" class="center" />
-          <CompanyDetailInfo
-            :company="this.COMPANY[0]"
-            v-if="!loaderCompanyDetailInfo"
+          <Loader v-if="loaderCompanyRequests" class="center" />
+          <CompanyContactList
+            :contacts="this.COMPANY_REQUESTS"
+            v-if="!loaderCompanyRequests"
           />
         </div>
       </div>
@@ -79,6 +94,8 @@ import CompanyDetailInfo from "@/components/companies/companies/CompanyDetailInf
 import Loader from "@/components/Loader";
 import CompanyRequestList from "@/components/companies/companies/request/CompanyRequestList.vue";
 import CompanyRequestForm from "@/components/companies/forms/company-request-form/CompanyRequestForm.vue";
+import CompanyContactForm from "@/components/companies/forms/company-contact-form/CompanyContactForm.vue";
+import CompanyContactList from "@/components/companies/companies/contact/CompanyContactList.vue";
 import Modal from "@/components/Modal.vue";
 import Timeline from "@/components/companies/timeline/Timeline.vue";
 export default {
@@ -88,6 +105,8 @@ export default {
     CompanyRequestList,
     Loader,
     CompanyRequestForm,
+    CompanyContactForm,
+    CompanyContactList,
     Modal,
     Timeline,
   },
@@ -96,6 +115,8 @@ export default {
       loaderCompanyDetailInfo: true,
       loaderCompanyRequests: true,
       companyRequestFormVisible: false,
+      request: null,
+      companyContactFormVisible: false,
       timelineVisible: false,
     };
   },
@@ -114,11 +135,30 @@ export default {
       await this.FETCH_COMPANY_REQUESTS(this.$route.params.id);
       this.loaderCompanyRequests = false;
     },
-    clickCloseCompanyForm() {
+    clickCloseCompanyRequestForm() {
       this.companyRequestFormVisible = false;
+      this.request = null;
     },
-    clickOpenCompanyForm() {
+    clickOpenCompanyRequestForm() {
       this.companyRequestFormVisible = true;
+    },
+    openCompanyRequestFormForUpdate(request) {
+      this.request = request;
+      this.clickOpenCompanyRequestForm();
+    },
+    createdRequest() {
+      this.getCompanyRequests();
+      console.log("CREATED");
+    },
+    updatedRequest() {
+      this.getCompanyRequests();
+      console.log("UPDATED");
+    },
+    clickCloseCompanyContactForm() {
+      this.companyContactFormVisible = false;
+    },
+    clickOpenCompanyContactForm() {
+      this.companyContactFormVisible = true;
     },
     timeline() {
       if (this.$route.query.timeline) {

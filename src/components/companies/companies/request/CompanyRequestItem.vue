@@ -1,7 +1,12 @@
 <template>
-  <div class="row item active py-2 mb-2">
+  <div class="row item py-2 mb-2" :class="{ active: request.status }">
     <div class="col-12 text-center">
       <div class="header">
+        <i
+          class="fas fa-pen text-primary edit"
+          @click="openCompanyRequestFormForUpdate"
+        ></i>
+        <i class="fas fa-times text-danger delete" @click="deleteRequest"></i>
         <p>{{ dealType }} {{ request.minArea + " - " + request.maxArea }}</p>
         <span>
           м<sup><small>2</small></sup>
@@ -171,6 +176,21 @@ export default {
     },
   },
   methods: {
+    openCompanyRequestFormForUpdate() {
+      this.$emit("openCompanyRequestFormForUpdate", this.request);
+    },
+    deleteRequest() {
+      let data = {
+        ...this.request,
+      };
+      data.header =
+        this.dealType +
+        " " +
+        this.request.minArea +
+        " - " +
+        this.request.maxArea;
+      this.$emit("deleteRequest", data);
+    },
     openExtraInfo() {
       this.extraInfoVisible = true;
     },
@@ -206,23 +226,34 @@ export default {
     },
     getObjectTypeIcon(objectType) {
       if (objectType < 11) {
-        return this.objectTypeListWareHouse[objectType][1].icon;
+        return this.objectTypeListWareHouse.find(
+          (item) => item[0] == objectType
+        )[1].icon;
       }
       if (objectType < 24) {
-        return this.objectTypeListProduction[objectType][1].icon;
+        return this.objectTypeListProduction.find(
+          (item) => item[0] == objectType
+        )[1].icon;
       }
-      return this.objectTypeListPlot[objectType][1].icon;
+      return this.objectTypeListPlot.find((item) => item[0] == objectType)[1]
+        .icon;
     },
     getObjectTypeName(objectType) {
       if (objectType < 11) {
-        return this.objectTypeListWareHouse[objectType][1].name;
+        return this.objectTypeListWareHouse.find(
+          (item) => item[0] == objectType
+        )[1].name;
       }
       if (objectType < 24) {
-        return this.objectTypeListProduction[objectType][1].name;
+        return this.objectTypeListProduction.find(
+          (item) => item[0] == objectType
+        )[1].name;
       }
-      return this.objectTypeListPlot[objectType][1].name;
+      return this.objectTypeListPlot.find((item) => item[0] == objectType)[1]
+        .name;
     },
   },
+  emits: ["openCompanyRequestFormForUpdate", "deleteRequest"],
 };
 </script>
 

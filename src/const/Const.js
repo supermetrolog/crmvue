@@ -73,7 +73,14 @@ export const FeedbackList = new Map(
             [5, "SMS"],
             [6, "Telegram"],
         ]],
-
+        ['contact', [
+            [7, "Звонок"],
+            [4, "Viber"],
+            [5, "SMS"],
+            [6, "Telegram"],
+            [3, "WhatsApp"],
+            [0, "Email"],
+        ]],
     ]
 );
 export const CompanyCategories = new Map(
@@ -237,6 +244,35 @@ export const DistrictList = new Map(
             [8, "ВАО"],
             [9, "НОВ. МОСКВА"],
             [10, "ЗЕЛЕНОГРАД"],
+        ]],
+
+    ]
+);
+
+export const PositionList = new Map(
+    [
+        ['param', [
+            { value: 0, label: "Акционер" },
+            { value: 1, label: "Генеральный директор" },
+            { value: 2, label: "Коммерческий директор" },
+            { value: 3, label: "Финансовый директор" },
+        ]],
+
+    ]
+);
+
+export const NotificationTypeList = new Map(
+    [
+        ['param', [
+            [0, "fas fa-calendar-alt text-success_alt"], //Calendar
+            [1, "fas fa-calendar-alt text-danger"],
+            [2, "fas fa-calendar-alt text-warning"],
+            [3, "fas fa-city text-success_alt"], // selection
+            [4, "fas fa-city text-danger"],
+            [5, "fas fa-building text-warning"],
+            [6, "fas fa-stream text-success_alt"],
+            [7, "fas fa-stream text-danger"],
+            [8, "fas fa-stream text-warning"],
         ]],
 
     ]

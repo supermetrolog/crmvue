@@ -74,6 +74,77 @@
             }
         }
     ],
+    "notifications": [{
+            "id": 0,
+            "title": "Календарь",
+            "body": "До события <a href='/companies'>\"Позвонить клиенту и въе...\"</a> осталось 5 часов",
+            "consultant": {
+                "img": "6.jpg"
+            },
+            "type": 0,
+            "status": 1,
+            "class": "danger",
+            "created_at": "16 фев 15:21"
+        },
+        {
+            "id": 1,
+            "title": "Календарь",
+            "body": "До события <a href='/companies'>\"Организовать переговоры\"</a> остался 1 день",
+            "consultant": {
+                "img": "6.jpg"
+            },
+            "type": 1,
+            "status": 0,
+            "class": "danger",
+            "created_at": "16 фев 15:21"
+        },
+        {
+            "id": 2,
+            "title": "Таймлайн",
+            "body": "Выполните этап \"Знакомство\" в <a href='/companies/1?timeline=1'>таймлайне</a> для запроса компании <a href='/companies/1'>Пенни Лейн</a>",
+            "consultant": {
+                "img": "6.jpg"
+            },
+            "type": 6,
+            "status": 1,
+            "class": "warning",
+            "created_at": "16 фев 15:21"
+        },
+        {
+            "id": 3,
+            "title": "Подборка",
+            "body": "Для запроса <strong>Ответ-Хранение 10 - 100 м2</strong> компании <a href='/companies/1'>Пенни Лейн</a> появились подходящие <a href='/companies/1?timeline=1'>объекты</a>",
+            "consultant": {
+                "img": "6.jpg"
+            },
+            "type": 3,
+            "status": 0,
+            "class": "success",
+            "created_at": "16 фев 15:21"
+        },
+        {
+            "id": 2,
+            "title": "Сергеев Андрей",
+            "body": "Отказался от запроса <strong>Продажа 1000 - 5000 м2</strong> в компании <a href='/companies/1'>Пенни Лейн</a> по причине: <span>мне не нравится этот клиент</span>",
+            "consultant": {
+                "img": "6.jpg"
+            },
+            "type": 9,
+            "status": 0,
+            "created_at": "16 фев 15:21"
+        },
+        {
+            "id": 2,
+            "title": "Сергеев Андрей",
+            "body": "Отказался от запроса <strong>Продажа 1000 - 5000 м2</strong> в компании <a href='/companies/1'>Пенни Лейн</a> по причине: <span>мне не нравится этот клиент</span>",
+            "consultant": {
+                "img": "6.jpg"
+            },
+            "type": 9,
+            "status": 2,
+            "created_at": "16 фев 15:21"
+        }
+    ],
     "profile": { "name": "typicode" },
     "sidebar": [
         { "id": 0, "name": "Приход", "icon": "fas fa-users", "url": "/comming" },
@@ -477,7 +548,197 @@
             }
         ]
     ],
+    "timelineNew": [{
+            "id": 0,
+            "company_id": 3241,
+            "comment": "",
+            "step": 0,
+            "datetime": "16 фев 15:21",
+            "actions": {
+                "done": 0,
+                "objects": [{
+                        "id": 2412
+                    },
+                    {
+                        "id": 5312
+                    },
+                    {
+                        "id": 3123
+                    },
+                    {
+                        "id": 5222
+                    }
+                ]
 
+            }
+        },
+        {
+            "id": 1,
+            "company_id": 3241,
+            "comment": "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
+            "step": 1,
+            "datetime": "16 фев 15:21",
+            "actions": {
+                "done": 1,
+                "negative": 0,
+                "additional": 0,
+                "feedbackWay": [],
+                "date": "",
+                "objects": [{
+                        "id": 2412
+                    },
+                    {
+                        "id": 1212
+                    },
+                    {
+                        "id": 3123
+                    },
+                    {
+                        "id": 1313
+                    }
+                ]
+
+            }
+        },
+        {
+            "id": 2,
+            "company_id": 3241,
+            "comment": "Lorem ipsum dolor sit atibus numquam equeepellendus esse commodi deseruntLorem ipsum dolor sit amet, consectetur adipisicing elit..",
+            "step": 2,
+            "datetime": "16 фев 15:21",
+            "actions": {
+                "negative": 0,
+                "feedbackWay": [],
+                "objects": [{
+                        "id": 2412
+                    },
+                    {
+                        "id": 5312
+                    },
+                    {
+                        "id": 3123
+                    },
+                    {
+                        "id": 5222
+                    }
+                ]
+
+            }
+        },
+        {
+            "id": 3,
+            "company_id": 3241,
+            "comment": "Lorem ipsum dolor sit amet, consecit, officiis repudiandae, eum recusandae neque dignissimos. Cum fugit laboriosam culpa, repellendus esse commodi deserunt.",
+            "step": 3,
+            "datetime": "16 фев 15:21",
+            "actions": {
+                "negative": 0,
+                "objects": [{
+                        "id": 2412
+                    },
+                    {
+                        "id": 5312
+                    },
+                    {
+                        "id": 3123
+                    },
+                    {
+                        "id": 5222
+                    }
+                ]
+
+            }
+        },
+        {
+            "id": 4,
+            "company_id": 3241,
+            "comment": "Lorem ipsum dolor sit amet, consecit, officiis repudiandae, eum recusandae neque dignissimos. Cum fugit laboriosam culpa, repellendus esse commodi deserunt.",
+            "step": 4,
+            "datetime": "16 фев 15:21",
+            "actions": {
+                "negative": 0,
+                "objects": [{
+                        "id": 2412
+                    },
+                    {
+                        "id": 5312
+                    },
+                    {
+                        "id": 3123
+                    },
+                    {
+                        "id": 5222
+                    }
+                ]
+
+            }
+        },
+        {
+            "id": 5,
+            "company_id": 3241,
+            "comment": "Lorem ipsum dolor sit amet, consecit, officiis repudiandae, eum recusandae neque dignissimos. Cum fugit laboriosam culpa, repellendus esse commodi deserunt.",
+            "step": 5,
+            "datetime": "16 фев 15:21",
+            "actions": {
+                "negative": 0,
+                "additional": 0,
+                "objects": [{
+                        "id": 2412,
+                        "type": 0
+                    },
+                    {
+                        "id": 5312,
+                        "type": 0
+                    },
+                    {
+                        "id": 3123,
+                        "type": 1
+                    },
+                    {
+                        "id": 5222,
+                        "type": 1
+                    }
+                ]
+
+            }
+        },
+        {
+            "id": 6,
+            "company_id": 3241,
+            "comment": "Lorem ipsum dolor sit amet, consecit, officiis repudiandae, eum recusandae neque dignissimos. Cum fugit laboriosam culpa, repellendus esse commodi deserunt.",
+            "step": 6,
+            "datetime": "16 фев 15:21",
+            "actions": {
+                "negative": 0,
+                "done": 1
+            }
+        }
+    ],
+    "objects": [{
+            "id": 2412,
+            "category": "Аренда",
+            "name": "Fuck the Police",
+            "crated_at": "24.02.2021 14:21"
+        },
+        {
+            "id": 5312,
+            "category": "Аренда",
+            "name": "Fuck the Police",
+            "crated_at": "24.02.2021 14:21"
+        },
+        {
+            "id": 3123,
+            "category": "Аренда",
+            "name": "Fuck the Police",
+            "crated_at": "24.02.2021 14:21"
+        },
+        {
+            "id": 5222,
+            "category": "Аренда",
+            "name": "Fuck the Police",
+            "crated_at": "24.02.2021 14:21"
+        }
+    ],
     "calendar": [{
             "id": 0,
             "startDate": "2021-05-05T16:30:00",

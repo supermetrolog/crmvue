@@ -14,7 +14,7 @@
         </button>
       </div>
     </div>
-    <div class="row">
+    <!-- <div class="row">
       <div class="col">
         <p>- Подтвердить желаемые даты переезда/покупки</p>
         <input
@@ -44,7 +44,7 @@
           <span class="ml-1">Рассматривает постоянно</span>
         </button>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 

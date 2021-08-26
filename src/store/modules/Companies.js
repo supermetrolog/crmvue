@@ -2,8 +2,7 @@ import axios from "axios"
 const Companies = {
     state: {
         companies: [],
-        company: {},
-        companyRequests: {},
+        company: {}
     },
     mutations: {
         updateCompanies(state, data) {
@@ -11,9 +10,6 @@ const Companies = {
         },
         updateCompany(state, data) {
             state.company = data;
-        },
-        updateCompanyRequests(state, data) {
-            state.companyRequests = data;
         }
     },
     actions: {
@@ -45,16 +41,8 @@ const Companies = {
                 .then((Response) => {
                     context.commit('updateCompany', Response.data)
                 });
-        },
-        async FETCH_COMPANY_REQUESTS(context, id) {
-            const url = "requests/company-requests/" + id + "?expand=consultant,directions,districts,gateTypes,objectClasses,objectTypes,regions";
-            await axios
-                .get(url)
-                .then((Response) => {
-                    console.log(Response.data);
-                    context.commit('updateCompanyRequests', Response.data)
-                });
         }
+
     },
     getters: {
         COMPANIES(state) {
@@ -62,9 +50,6 @@ const Companies = {
         },
         COMPANY(state) {
             return state.company;
-        },
-        COMPANY_REQUESTS(state) {
-            return state.companyRequests;
         }
     }
 }

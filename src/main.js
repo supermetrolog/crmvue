@@ -6,10 +6,12 @@ import { Tabs, Tab } from 'vue3-tabs-component'
 import Maska from "maska"
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import Notifications from "@kyvg/vue3-notification"
+
 // import VueFileAgent from 'vue-file-agent'
 import './assets/styles/grid.min.css'
 import './assets/styles/style.scss'
-
+import "@vueform/multiselect/themes/default.css"
 axios.defaults.baseURL = "http://crmka/";
 const app = createApp(App);
-app.component('Tabs', Tabs).component('Tab', Tab).use(Maska).use(VueAxios, axios).use(router).use(store).mount('#app');
+app.component('Tabs', Tabs).component('Tab', Tab).use(Notifications).use(Maska).use(VueAxios, axios).use(router).use(store).mount('#app');

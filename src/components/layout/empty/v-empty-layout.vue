@@ -1,5 +1,5 @@
 <template>
-  <div class="fuck">FUCK THE PILICE</div>
+  <div class="fuck">EMPTY LAYOUT</div>
   <router-view />
 </template>
 

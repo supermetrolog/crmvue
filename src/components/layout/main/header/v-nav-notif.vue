@@ -4,32 +4,34 @@
       <li
         class="nav-item comments"
         :class="{
-          active: active === 'comments',
+          active: commentsVisible,
         }"
       >
-        <a href="#" class="nav-link" @click="getComments()">
+        <a href="#" class="nav-link" @click="getComments">
           <div class="nav-link__content">
             <i class="far fa-comments"></i>
-            <span class="badge badge-danger"> 12 </span>
+            <span class="badge badge-warning"> 12 </span>
           </div>
         </a>
-        <vComments
-          v-if="active === 'comments'"
-          :comments="comments"
-          @delete-comment="deleteComment"
-        />
+        <vComments v-if="commentsVisible" :comments="comments" />
       </li>
+
       <li
         class="nav-item notification"
-        @click="active = 'notification'"
-        :class="active === 'notification' ? 'active' : ''"
+        :class="{ active: notificationsVisible }"
       >
-        <a href="# " class="nav-link">
+        <a class="nav-link" @click.prevent="clickNotification">
           <div class="nav-link__content">
             <i class="far fa-bell"></i>
-            <span class="badge badge-warning"> 13 </span>
+            <span class="badge badge-danger" v-if="count">
+              {{ count }}
+            </span>
           </div>
         </a>
+        <Notifications
+          v-if="notificationsVisible"
+          :notifications="this.NOTIFICATIONS"
+        />
       </li>
     </ul>
   </div>
@@ -37,31 +39,48 @@
 
 <script>
 import vComments from "./comments/v-comments.vue";
+import Notifications from "@/components/layout/main/header/notifications/Notifications.vue";
+import { mapActions, mapGetters } from "vuex";
 export default {
   name: "v-nav-notif",
-  components: { vComments },
+  components: { vComments, Notifications },
   data() {
     return {
-      active: null,
-      comments: [],
+      commentsVisible: false,
+      notificationsVisible: false,
     };
   },
-  methods: {
-    async getComments() {
-      this.active = "comments";
-      await this.axios
-        .get("http://localhost:3000/comments")
-        .then((Response) => {
-          this.comments = Response.data;
-          console.log("HUI" + this.comments);
-        });
+  computed: {
+    ...mapGetters(["NOTIFICATIONS"]),
+    count() {
+      return this.NOTIFICATIONS.filter(
+        (item) => item.status == 0 || item.status == -1
+      ).length;
     },
-
+  },
+  methods: {
+    ...mapActions(["FETCH_NOTIFICATIONS", "VIEWED"]),
+    async getComments() {
+      this.commentsVisible = !this.commentsVisible;
+    },
+    clickNotification() {
+      this.notificationsVisible = !this.notificationsVisible;
+      if (!this.notificationsVisible) {
+        this.VIEWED();
+        this.countVisible = true;
+      } else {
+        this.countVisible = false;
+      }
+    },
     deleteComment(comment) {
       this.comments = this.comments.filter((item) => item !== comment);
-      console.log(this.comments);
-      console.log(comment);
     },
+    getNotification() {
+      this.FETCH_NOTIFICATIONS();
+    },
+  },
+  mounted() {
+    this.getNotification();
   },
 };
 </script>

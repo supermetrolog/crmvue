@@ -1,22 +1,33 @@
 // import axios from "axios"
+import api from "@/api/api"
 const Timeline = {
     state: {
         timeline: []
     },
     mutations: {
-        updateTimeline(state, timeline) {
-            state.timeline = timeline
-            console.log(timeline);
+        updateTimeline(state, data) {
+            //Временное решение пока один TImeline
+            if (data.length) {
+                state.timeline = data[0];
+            } else {
+                state.timeline = false;
+            }
         },
         updateItem(state, newItem) {
-            state.timeline = state.timeline.map((branch) => {
-                branch.map((item) => {
-                    if (item.id === newItem.id) {
-                        item = newItem;
-                    }
-                    return item;
-                })
-                return branch;
+            // state.timeline.timelineSteps = state.timeline.timelineSteps.map((branch) => {
+            //     branch.map((item) => {
+            //         if (item.id === newItem.id) {
+            //             item = newItem;
+            //         }
+            //         return item;
+            //     })
+            //     return branch;
+            // })
+            state.timeline.timelineSteps = state.timeline.timelineSteps.map((item) => {
+                if (item.id === newItem.id) {
+                    item = newItem;
+                }
+                return item;
             })
         },
         createNewBranch(state, item) {
@@ -43,226 +54,10 @@ const Timeline = {
         }
     },
     actions: {
-        async FETCH_TIMELINE(context) {
-            // await axios
-            //     .get("http://localhost:3000/timeline")
-            //     .then((Response) => {
-            //         context.commit('updateTimeline', Response.data)
-            //     });
-            const data = [
-                [{
-                        id: 0,
-                        company_id: 3241,
-                        comment: "",
-                        step: 0,
-                        datetime: "16 фев 15:21",
-                        isBranch: false,
-                        actions: {
-                            done: 0,
-                            negative: 1,
-                            additional: 0,
-                            feedbackWay: [],
-                            date: "",
-                            objects: [{
-                                    id: 2412
-                                },
-                                {
-                                    id: 5312
-                                },
-                                {
-                                    id: 3123
-                                },
-                                {
-                                    id: 5222
-                                }
-                            ]
-
-                        }
-                    },
-                    {
-                        id: 1,
-                        company_id: 3241,
-                        comment: "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
-                        step: 1,
-                        datetime: "16 фев 15:21",
-                        isBranch: false,
-                        actions: {
-                            done: 1,
-                            negative: 0,
-                            additional: 0,
-                            feedbackWay: [],
-                            date: "",
-                            objects: [{
-                                    id: 2412
-                                },
-                                {
-                                    id: 5312
-                                },
-                                {
-                                    id: 3123
-                                },
-                                {
-                                    id: 5222
-                                }
-                            ]
-
-                        }
-                    },
-                    {
-                        id: 2,
-                        company_id: 3241,
-                        comment: "Lorem ipsum dolor sit atibus numquam equeepellendus esse commodi deseruntLorem ipsum dolor sit amet, consectetur adipisicing elit..",
-                        step: 2,
-                        datetime: "16 фев 15:21",
-                        isBranch: false,
-                        actions: {
-                            negative: 0,
-                            feedbackWay: [],
-                            objects: [{
-                                    id: 2412
-                                },
-                                {
-                                    id: 5312
-                                },
-                                {
-                                    id: 3123
-                                },
-                                {
-                                    id: 5222
-                                }
-                            ]
-
-                        }
-                    },
-                    {
-                        id: 3,
-                        company_id: 3241,
-                        comment: "Lorem ipsum dolor sit amet, consecit, officiis repudiandae, eum recusandae neque dignissimos. Cum fugit laboriosam culpa, repellendus esse commodi deserunt.",
-                        step: 3,
-                        datetime: "16 фев 15:21",
-                        isBranch: false,
-                        actions: {
-                            negative: 0,
-                            objects: [{
-                                    id: 2412
-                                },
-                                {
-                                    id: 5312
-                                },
-                                {
-                                    id: 3123
-                                },
-                                {
-                                    id: 5222
-                                }
-                            ]
-
-                        }
-                    },
-                    {
-                        id: 4,
-                        company_id: 3241,
-                        comment: "Lorem ipsum dolor sit amet, consecit, officiis repudiandae, eum recusandae neque dignissimos. Cum fugit laboriosam culpa, repellendus esse commodi deserunt.",
-                        step: 4,
-                        datetime: "16 фев 15:21",
-                        isBranch: false,
-                        actions: {
-                            negative: 0,
-                            objects: [{
-                                    id: 2412
-                                },
-                                {
-                                    id: 5312
-                                },
-                                {
-                                    id: 3123
-                                },
-                                {
-                                    id: 5222
-                                }
-                            ]
-
-                        }
-                    },
-                    {
-                        id: 5,
-                        company_id: 3241,
-                        comment: "Lorem ipsum dolor sit amet, consecit, officiis repudiandae, eum recusandae neque dignissimos. Cum fugit laboriosam culpa, repellendus esse commodi deserunt.",
-                        step: 5,
-                        datetime: "16 фев 15:21",
-                        isBranch: false,
-                        actions: {
-                            negative: 0,
-                            additional: 0,
-                            objects: [{
-                                    id: 2412,
-                                    type: 0
-                                },
-                                {
-                                    id: 5312,
-                                    type: 0
-                                },
-                                {
-                                    id: 3123,
-                                    type: 1
-                                },
-                                {
-                                    id: 5222,
-                                    type: 1
-                                }
-                            ]
-
-                        }
-                    },
-                    {
-                        id: 6,
-                        company_id: 3241,
-                        comment: "Lorem ipsum dolor sit amet, consecit, officiis repudiandae, eum recusandae neque dignissimos. Cum fugit laboriosam culpa, repellendus esse commodi deserunt.",
-                        step: 6,
-                        datetime: "16 фев 15:21",
-                        isBranch: false,
-                        actions: {
-                            negative: 0,
-                            done: 1
-
-                        }
-                    }
-                ],
-                [{
-                        id: 4,
-                        company_id: 3241,
-                        comment: "Lorem ipsum dolor sit atibus numquam equeepellendus esse commodi deseruntLorem ipsum dolor sit amet, consectetur adipisicing elit..",
-                        step: 2,
-                        datetime: "16 фев 15:21",
-                        isBranch: true,
-                        actions: {
-                            done: 0,
-                            negative: 0,
-                            feedbackWay: [],
-                            objects: [{
-                                    id: 2412
-                                },
-                                {
-                                    id: 5312
-                                },
-                                {
-                                    id: 3123
-                                }
-                            ]
-
-                        }
-                    },
-                    {
-                        id: 5,
-                        company_id: 3241,
-                        comment: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam necessitatibus numquam earum ipsa fugiat veniam suscipit, officiis repudiandae, eum recusandae neque dignissimos. Cum fugit laboriosam culpa, repellendus esse commodi deserunt.",
-                        step: 3,
-                        datetime: "16 фев 15:21",
-                        isBranch: true
-                    }
-                ]
-            ];
-            context.commit('updateTimeline', data);
+        async FETCH_TIMELINE(context, request_id) {
+            const user = JSON.parse(localStorage.getItem('user')); // Временно
+            const timeline = await api.timeline.getTimeline(user.id, request_id);
+            context.commit('updateTimeline', timeline)
         },
         async UPDATE_ITEM(context, newItem) {
             context.commit('updateItem', newItem)
@@ -283,3 +78,10 @@ const Timeline = {
 }
 
 export default Timeline;
+/*
+   Все делаем без веток
+   Отправляем в любое время новые предложения
+   Не запрещаем все редактировать
+   После отправки новых предложений помечаем все (нужные) этапы, чтобы броке знал что есть необходимость внести новые данные.
+    После отправки новых предложений, уведомляем брокера о том что нужно внести новые данные по новым предложения.
+*/

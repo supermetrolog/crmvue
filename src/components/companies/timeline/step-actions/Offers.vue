@@ -13,13 +13,13 @@
         </p>
         <button
           class="action"
-          :class="{ active: objects.length }"
+          :class="{ active: timelineStepObjects.length }"
           :disabled="disabled"
           @click="clickSelectObjects"
         >
           <i class="far fa-smile"></i>
-          <span class="ml-1" v-if="objects.length"
-            >Отправлено {{ objects.length }}
+          <span class="ml-1" v-if="timelineStepObjects.length"
+            >Отправлено {{ timelineStepObjects.length }}
           </span>
           <span class="ml-1" v-else>Выбрать</span>
         </button>
@@ -48,7 +48,7 @@
 
 <script>
 import Modal from "@/components/Modal";
-// import ObjectsGrid from "@/components/companies/objects/ObjectsGrid";
+// import ObjectsGrid from "@/components/companies/timelineStepObjects/ObjectsGrid";
 export default {
   name: "Meeting",
   components: {
@@ -57,7 +57,7 @@ export default {
   },
   data() {
     return {
-      objects: [],
+      timelineStepObjects: [],
       negative: 0,
       additional: 0,
       modalVisible: false,
@@ -79,24 +79,24 @@ export default {
   },
   methods: {
     setData() {
-      this.objects = this.actions.objects;
+      this.timelineStepObjects = this.actions.timelineStepObjects;
       this.negative = this.actions.negative;
       this.additional = this.actions.additional;
     },
     getData() {
       return {
-        objects: this.objects,
+        timelineStepObjects: this.timelineStepObjects,
         negative: this.negative,
         additional: this.additional,
       };
     },
     clickNegative() {
-      this.objects = [];
+      this.timelineStepObjects = [];
       this.negative = 1;
       this.additional = 0;
     },
     clickAdditional() {
-      this.objects = [];
+      this.timelineStepObjects = [];
       this.additional = 1;
       this.negative = 0;
     },
