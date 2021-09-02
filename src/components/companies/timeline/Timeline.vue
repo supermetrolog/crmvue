@@ -25,19 +25,18 @@
 
           <div class="timeline" v-if="!loader">
             <TimelineItem
-              v-for="(item, idx) in this.TIMELINE.timelineSteps"
-              :key="item.id"
-              :data="item"
+              v-for="(step, idx) in this.TIMELINE.timelineSteps"
+              :key="step.id"
+              :data="step"
               :idx="idx"
-              @updateItem="clickUpdateItem"
-              @createNewBranch="clickCreateNewBranch"
-              @createNewItem="clickCreateNewItem"
-              @clickItem="clickItem"
+              :loader="loaderForStep"
+              @updateItem="clickUpdateStep"
+              @clickItem="clickStep"
             >
               <template v-slot:actions="{ stepName, disabled, isConfirmed }">
                 <component
                   :is="stepName"
-                  :actions="item"
+                  :step="step"
                   :disabled="disabled"
                   :isConfirmed="isConfirmed"
                   ref="actionsComponent"
@@ -70,7 +69,9 @@
         </div>
         <div class="row no-gutters inner">
           <div class="col-12" v-if="selectedStep">
-            <Objects :objects="selectedStep.timelineStepObjects" />
+            <Loader class="center" v-if="loaderForObjects" />
+
+            <Objects :currentStepObjects="CURRENT_STEP_OBJECTS" :allObjects="ALL_OBJECTS" v-else />
           </div>
         </div>
       </div>
@@ -110,13 +111,14 @@ export default {
   data() {
     return {
       loader: true,
+      loaderForStep: false,
+      loaderForObjects: false,
       objects: [],
       timelineNotFoundFlag: false,
     };
   },
-  varticalOffsetTimeline: 390,
   computed: {
-    ...mapGetters(["TIMELINE"]),
+    ...mapGetters(["TIMELINE", "CURRENT_STEP_OBJECTS", "ALL_OBJECTS"]),
     selectedStep() {
       if (this.TIMELINE.timelineSteps) {
         return this.TIMELINE.timelineSteps[this.$route.query.step];
@@ -127,46 +129,54 @@ export default {
   methods: {
     ...mapActions([
       "FETCH_TIMELINE",
-      "UPDATE_ITEM",
-      "CREATE_NEW_BRANCH",
-      "CREATE_NEW_ITEM",
+      "UPDATE_STEP",
+      "FETCH_CURRENT_STEP_OBJECTS",
+      "FETCH_ALL_OBJECTS",
     ]),
-    getMarginTopValue(step, index) {
-      if (index == 0) return;
-      return {
-        marginTop: step * this.$options.varticalOffsetTimeline + "px",
-      };
+    async clickUpdateStep(comment) {
+      let newData = this.$refs.actionsComponent.getData();
+      newData.comment = comment;
+      this.loaderForStep = newData.id;
+      if (await this.UPDATE_STEP(newData)) {
+        await this.getTimeline();
+      }
+      this.loaderForStep = false;
     },
-    existNextBranch(index) {
-      return this.TIMELINE[index + 1] ? true : false;
+    async getCurrentStepObjects() {
+      if (!this.selectedStep) {
+        return;
+      }
+
+      this.loaderForObjects = true;
+
+      await this.FETCH_CURRENT_STEP_OBJECTS(
+        this.selectedStep.timelineStepObjects
+      );
+      await this.FETCH_ALL_OBJECTS();
+      this.loaderForObjects = false;
     },
-    clickUpdateItem(item) {
-      item.actions = this.$refs.actionsComponent.getData();
-      this.UPDATE_ITEM(item);
-    },
-    clickCreateNewBranch(item) {
-      this.CREATE_NEW_BRANCH(item);
-    },
-    clickCreateNewItem(param) {
-      this.CREATE_NEW_ITEM(param);
-    },
-    clickItem(item) {
+    async clickStep(step) {
       let query = {
         timeline: this.$route.query.timeline,
       };
-      if (item.number != this.$route.query.step) {
-        query.step = item.number;
+      if (step.number != this.$route.query.step) {
+        query.step = step.number;
       }
-      this.$router.push({ query: query });
+      await this.$router.push({ query: query });
+      this.$nextTick(() => this.getCurrentStepObjects());
+    },
+    async getTimeline() {
+      await this.FETCH_TIMELINE(this.$route.query.timeline);
+      if (this.TIMELINE === false) {
+        this.timelineNotFoundFlag = true;
+      }
     },
   },
   async created() {
     this.loader = true;
-    await this.FETCH_TIMELINE(this.$route.query.timeline);
-    if (this.TIMELINE === false) {
-      this.timelineNotFoundFlag = true;
-    }
+    await this.getTimeline();
     this.loader = false;
+    this.getCurrentStepObjects();
   },
 };
 </script>

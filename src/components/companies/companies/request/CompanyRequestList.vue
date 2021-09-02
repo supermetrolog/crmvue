@@ -7,9 +7,9 @@
     >
       <div class="row no-gutters">
         <div class="col-12 text-center">
-          <h4 class="text-danger">
+          <h4 class="text-dark">
             Вы уверены что хотите удалить запрос
-            <span class="text-success"
+            <span class="text-grey"
               >"{{ deletedRequestItem.header }}м<sup><small>2</small></sup
               >"</span
             >
@@ -45,7 +45,7 @@
       :key="request.id"
       :request="request"
       @openCompanyRequestFormForUpdate="openCompanyRequestFormForUpdate"
-      @deleteRequest="clickdDeleteRequest"
+      @deleteRequest="clickDeleteRequest"
     />
   </div>
 </template>
@@ -81,7 +81,7 @@ export default {
     clickCloseModal() {
       this.deletedRequestItem = null;
     },
-    clickdDeleteRequest(request) {
+    clickDeleteRequest(request) {
       this.deletedRequestItem = request;
     },
     async deleteRequest(request) {

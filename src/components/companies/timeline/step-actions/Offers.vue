@@ -1,10 +1,5 @@
 <template>
   <div class="col">
-    <Modal v-show="modalVisible" @close="closeModal" title="Предложения">
-      <template #body>
-        <!-- <ObjectsGrid @close="closeModal" /> -->
-      </template>
-    </Modal>
     <div class="row">
       <div class="col">
         <p>
@@ -47,24 +42,17 @@
 </template>
 
 <script>
-import Modal from "@/components/Modal";
-// import ObjectsGrid from "@/components/companies/timelineStepObjects/ObjectsGrid";
 export default {
   name: "Meeting",
-  components: {
-    Modal,
-    // ObjectsGrid,
-  },
   data() {
     return {
       timelineStepObjects: [],
       negative: 0,
       additional: 0,
-      modalVisible: false,
     };
   },
   props: {
-    actions: {
+    step: {
       type: Object,
     },
     disabled: {
@@ -79,16 +67,16 @@ export default {
   },
   methods: {
     setData() {
-      this.timelineStepObjects = this.actions.timelineStepObjects;
-      this.negative = this.actions.negative;
-      this.additional = this.actions.additional;
+      this.timelineStepObjects = this.step.timelineStepObjects;
+      this.negative = this.step.negative;
+      this.additional = this.step.additional;
     },
     getData() {
-      return {
-        timelineStepObjects: this.timelineStepObjects,
-        negative: this.negative,
-        additional: this.additional,
-      };
+      let newData = { ...this.step };
+      newData.timelineStepObjects = this.timelineStepObjects;
+      newData.negative = this.negative;
+      newData.additional = this.additional;
+      return newData;
     },
     clickNegative() {
       this.timelineStepObjects = [];
@@ -99,15 +87,6 @@ export default {
       this.timelineStepObjects = [];
       this.additional = 1;
       this.negative = 0;
-    },
-    clickSelectObjects() {
-      this.showModal();
-    },
-    closeModal() {
-      this.modalVisible = false;
-    },
-    showModal() {
-      this.modalVisible = true;
     },
   },
 

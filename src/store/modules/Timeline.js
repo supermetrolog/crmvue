@@ -13,43 +13,13 @@ const Timeline = {
                 state.timeline = false;
             }
         },
-        updateItem(state, newItem) {
-            // state.timeline.timelineSteps = state.timeline.timelineSteps.map((branch) => {
-            //     branch.map((item) => {
-            //         if (item.id === newItem.id) {
-            //             item = newItem;
-            //         }
-            //         return item;
-            //     })
-            //     return branch;
-            // })
-            state.timeline.timelineSteps = state.timeline.timelineSteps.map((item) => {
-                if (item.id === newItem.id) {
-                    item = newItem;
+        updateStep(state, data) {
+            console.log("UPDATED");
+            state.timeline.timelineSteps = state.timeline.timelineSteps.map((step) => {
+                if (step.id === data.id) {
+                    step = data;
                 }
-                return item;
-            })
-        },
-        createNewBranch(state, item) {
-            state.timeline.push([{
-                //      ID нужно получать с сервера (иначе ID будет повторяться чего нельзя допустить!)
-                id: 231,
-                company_id: item.object_id,
-                comment: "ЫЫЫЫЫЫЫЫЫЫЫ",
-                step: item.step,
-                datetime: "16 фев 15:21",
-                isBranch: true
-            }]);
-        },
-        createNewItem(state, param) {
-            state.timeline[param.currentBranch].push({
-                //      ID нужно получать с сервера (иначе ID будет повторяться чего нельзя допустить!)
-                id: 231,
-                company_id: param.item.object_id,
-                comment: "ЫЫЫЫЫЫЫЫЫЫЫ",
-                step: param.item.step + 1,
-                datetime: "16 фев 15:21",
-                isBranch: true
+                return step;
             })
         }
     },
@@ -59,14 +29,16 @@ const Timeline = {
             const timeline = await api.timeline.getTimeline(user.id, request_id);
             context.commit('updateTimeline', timeline)
         },
-        async UPDATE_ITEM(context, newItem) {
-            context.commit('updateItem', newItem)
+        async UPDATE_STEP(context, newStep) {
+            // context.commit('updateStep', newStep)
+            // console.error(newStep);
+            return await api.timeline.updateTimelineStep(newStep);
         },
-        async CREATE_NEW_BRANCH(context, item) {
-            context.commit('createNewBranch', item);
+        async CREATE_NEW_BRANCH(context, step) {
+            context.commit('createNewBranch', step);
         },
-        async CREATE_NEW_ITEM(context, param) {
-            context.commit('createNewItem', param);
+        async CREATE_NEW_STEP(context, param) {
+            context.commit('createNewStep', param);
         }
     },
     getters: {

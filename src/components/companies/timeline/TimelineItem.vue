@@ -13,6 +13,8 @@
       class="timeline-body"
       :class="{ selected: this.$route.query.step == data.number }"
     >
+      <Loader class="center small" v-if="loader == data.id" />
+
       <h4 class="timeline-title" @click="clickSelectStep()">
         <span class="badge-1">{{ stepParam[data.number][1].name }}</span>
       </h4>
@@ -43,12 +45,12 @@
         </div>
         <div class="col-8 timeline-item-control text-right">
           <div class="disabledAction" v-if="disabled">
-            <a class="btn-action" @click.prevent="toggleDisabled">
+            <a class="btn-action" @click.prevent="clickUnDisabled">
               <i class="fas fa-pencil-alt"></i>
             </a>
           </div>
           <div class="undisabledAction" v-if="!disabled">
-            <a class="btn-action" @click.prevent="clickConfirm(data)">
+            <a class="btn-action" @click.prevent="clickConfirm">
               <i class="fas fa-check"></i>
             </a>
             <a
@@ -60,17 +62,18 @@
           </div>
         </div>
       </div>
-      <a class="btn-action create-new-item" @click.prevent="clickCreateNewItem">
-        <i class="fas fa-caret-down"></i>
-      </a>
     </div>
   </div>
 </template>
 
 <script>
 import { Timeline } from "@/const/Const";
+import Loader from "@/components/Loader";
 export default {
   name: "TimelineItem",
+  components: {
+    Loader,
+  },
   data() {
     return {
       stepParam: Timeline.get("param"),
@@ -85,6 +88,10 @@ export default {
     },
     idx: {
       type: Number,
+    },
+    loader: {
+      type: [Number, Boolean],
+      default: false,
     },
   },
   computed: {
@@ -108,32 +115,28 @@ export default {
     }
   },
   methods: {
-    toggleDisabled() {
-      this.disabled = !this.disabled;
+    clickUnDisabled() {
+      this.disabled = false;
       this.$nextTick(() => this.$refs.timelineCommentTextarea.focus());
+    },
+    clickDisabled() {
+      this.disabled = true;
     },
     clickCancel() {
       this.comment = this.data.comment;
       this.isConfirmed = false;
-      this.toggleDisabled();
+      this.clickDisabled();
     },
-    clickConfirm(data) {
-      this.toggleDisabled();
+    clickConfirm() {
+      this.clickDisabled();
       this.isConfirmed = true;
-      data.comment = this.comment;
-      this.$emit("updateItem", data);
-    },
-    clickCreateNewItem() {
-      this.$emit("createNewItem", {
-        item: this.data,
-        currentBranch: this.currentBranch,
-      });
+      this.$emit("updateItem", this.comment);
     },
     clickSelectStep() {
       this.$emit("clickItem", this.data);
     },
   },
-  emits: ["updateItem", "createNewItem", "clickItem"],
+  emits: ["updateItem", "clickItem"],
 };
 </script>
 

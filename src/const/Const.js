@@ -74,12 +74,12 @@ export const FeedbackList = new Map(
             [6, "Telegram"],
         ]],
         ['contact', [
-            [7, "Звонок"],
-            [4, "Viber"],
-            [5, "SMS"],
-            [6, "Telegram"],
-            [3, "WhatsApp"],
-            [0, "Email"],
+            [0, "Звонок", 'fas fa-phone'],
+            [1, "Viber", 'fab fa-viber'],
+            [2, "SMS", 'fas fa-sms'],
+            [3, "Telegram", 'fab fa-telegram'],
+            [4, "WhatsApp", 'fab fa-whatsapp-square'],
+            [5, "Email", 'fas fa-at'],
         ]],
     ]
 );

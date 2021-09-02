@@ -3,8 +3,10 @@ import Calendar from './modules/Calendar'
 import Timeline from './modules/Timeline'
 import CompanyForm from './modules/CompanyForm'
 import CompanyRequest from './modules/CompanyRequest'
+import CompanyContact from './modules/CompanyContact'
 import Companies from './modules/Companies'
 import Notifications from './modules/Notifications'
+import Objects from './modules/Objects'
 import api from '@/api/api'
 const store = createStore({
     state: {
@@ -60,8 +62,10 @@ const store = createStore({
         Calendar,
         CompanyForm,
         CompanyRequest,
+        CompanyContact,
         Companies,
-        Notifications
+        Notifications,
+        Objects
     }
 })
 export default store

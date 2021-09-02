@@ -1,26 +1,28 @@
 <template>
-  <div class="col-4 px-2">
+  <div class="col-4 px-2 my-2">
     <div
       class="objects-item"
-      :class="{ selected: object.id == selectedObjectId }"
+      :class="{ selected: selectedObjects.includes(object.id) }"
     >
       <div class="header">
         <div class="image">
-          <span>Продажа</span>
-          <div class="icon">
+          <span>{{ object.deal_type_name }}</span>
+          <div class="icon" @click.prevent="clickUnSelectObject">
             <i class="fas fa-check"></i>
           </div>
           <a href="#" @click.prevent="clickSelectObject">
             <!-- <img src="@/assets/image/1.jpg" alt="Фото объекта" /> -->
             <img
-              src="https://pennylane.pro/uploads/objects/2842/2.jpg"
+              :src="object.photos[0]"
               alt="Фото объекта"
+              v-if="mode == 'current'"
             />
+            <img :src="object.building.photos" alt="Фото объекта" v-else />
           </a>
         </div>
       </div>
       <div class="body py-2 success">
-        <p class="text-center title">Logistic Partners</p>
+        <p class="text-center title">{{ object.town_name }}</p>
 
         <p class="text-center mt-1 text-success_alt">| московская область |</p>
         <p class="text-center text-success_alt">| химки cевер |</p>
@@ -39,13 +41,18 @@
         ></i>
         <div class="extraFields text-center" v-if="extraInfoVisible">
           <p>адрес</p>
-          <p class="mt-1 text-center text-success_alt">
-            Россия, Москва, поселение Марушкинское, квартал № 63, дв1с2
+          <p class="text-center value">
+            <!-- Россия, Москва, поселение Марушкинское, квартал № 63, дв1с2 -->
+            {{ object.address }}
           </p>
           <p>площадь</p>
-          <small>25 000 - 150 000 м2.</small>
-          <p>цена за 1 м2</p>
-          <small>25 000 - 150 000 р.</small>
+          <p class="value">
+            {{ object.area_min }} - {{ object.area_max }} м<sup>2</sup>.
+          </p>
+          <p>цена за 1 м<sup>2</sup></p>
+          <p class="value">
+            {{ object.price_floor_min }} - {{ object.price_floor_max }} р.
+          </p>
         </div>
       </div>
     </div>
@@ -64,8 +71,12 @@ export default {
     object: {
       type: Object,
     },
-    selectedObjectId: {
-      type: Number,
+    selectedObjects: {
+      type: Array,
+    },
+    mode: {
+      type: String,
+      required: true,
     },
   },
   methods: {
@@ -75,7 +86,11 @@ export default {
     clickSelectObject() {
       this.$emit("selectObject", this.object);
     },
+    clickUnSelectObject() {
+      this.$emit("unSelectObject", this.object);
+    },
   },
+  emits: ["selectObject", "unSelectObject"],
 };
 </script>
 

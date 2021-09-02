@@ -5,8 +5,6 @@ export default {
             ...data
         };
 
-
-
         newData.directions.map(item => {
             array.push(item.direction)
         });
@@ -44,4 +42,42 @@ export default {
         array = [];
         return newData;
     },
+    normalizeDataForContactForm(data) {
+        let array = [];
+        let newData = {
+            ...data
+        };
+
+        newData.emails.map(item => {
+            array.push(item.email)
+        });
+        if (!array.length) {
+            array.push("");
+        }
+        newData.emails = array;
+        array = [];
+        newData.phones.map(item => {
+            array.push(item.phone)
+        });
+        if (!array.length) {
+            array.push("");
+        }
+        newData.phones = array;
+        array = [];
+        newData.websites.map(item => {
+            array.push(item.website)
+        });
+        if (!array.length) {
+            array.push("");
+        }
+        newData.websites = array;
+        array = [];
+        newData.wayOfInformings.map(item => {
+            array.push(item.way)
+        });
+        newData.wayOfInformings = array;
+        array = [];
+        return newData;
+
+    }
 }

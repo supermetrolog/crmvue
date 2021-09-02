@@ -18,6 +18,10 @@
     />
     <CompanyContactForm
       @closeCompanyForm="clickCloseCompanyContactForm()"
+      :company_id="COMPANY[0].id"
+      :formdata="contact"
+      @created="createdContact"
+      @updated="updatedContact"
       v-if="companyContactFormVisible"
     />
     <div class="row no-gutters">
@@ -26,6 +30,7 @@
           <button
             class="btn btn-primary d-block btn-large"
             @click.prevent="clickOpenCompanyForm"
+            :disabled="COMPANY[0] ? false : true"
           >
             Редактировать информацию
           </button>
@@ -72,14 +77,16 @@
           <button
             class="btn btn-primary d-block btn-large"
             @click.prevent="clickOpenCompanyContactForm"
+            :disabled="COMPANY[0] ? false : true"
           >
             создать контакт
           </button>
         </div>
         <div class="col-12 inner">
-          <Loader v-if="loaderCompanyRequests" class="center" />
+          <Loader v-if="loaderCompanyContacts" class="center" />
           <CompanyContactList
-            :contacts="this.COMPANY_REQUESTS"
+            :contacts="this.COMPANY_CONTACTS"
+            @openContactFormForUpdate="openContactFormForUpdate"
             v-if="!loaderCompanyRequests"
           />
         </div>
@@ -114,17 +121,23 @@ export default {
     return {
       loaderCompanyDetailInfo: true,
       loaderCompanyRequests: true,
+      loaderCompanyContacts: true,
       companyRequestFormVisible: false,
-      request: null,
       companyContactFormVisible: false,
       timelineVisible: false,
+      request: null,
+      contact: null,
     };
   },
   computed: {
-    ...mapGetters(["COMPANY", "COMPANY_REQUESTS"]),
+    ...mapGetters(["COMPANY", "COMPANY_REQUESTS", "COMPANY_CONTACTS"]),
   },
   methods: {
-    ...mapActions(["FETCH_COMPANY", "FETCH_COMPANY_REQUESTS"]),
+    ...mapActions([
+      "FETCH_COMPANY",
+      "FETCH_COMPANY_REQUESTS",
+      "FETCH_COMPANY_CONTACTS",
+    ]),
     async getCompany() {
       this.loaderCompanyDetailInfo = true;
       await this.FETCH_COMPANY(this.$route.params.id);
@@ -134,6 +147,11 @@ export default {
       this.loaderCompanyRequests = true;
       await this.FETCH_COMPANY_REQUESTS(this.$route.params.id);
       this.loaderCompanyRequests = false;
+    },
+    async getCompanyContacts() {
+      this.loaderCompanyContacts = true;
+      await this.FETCH_COMPANY_CONTACTS(this.$route.params.id);
+      this.loaderCompanyContacts = false;
     },
     clickCloseCompanyRequestForm() {
       this.companyRequestFormVisible = false;
@@ -146,6 +164,10 @@ export default {
       this.request = request;
       this.clickOpenCompanyRequestForm();
     },
+    openContactFormForUpdate(contact) {
+      this.contact = contact;
+      this.clickOpenCompanyContactForm();
+    },
     createdRequest() {
       this.getCompanyRequests();
       console.log("CREATED");
@@ -154,8 +176,17 @@ export default {
       this.getCompanyRequests();
       console.log("UPDATED");
     },
+    createdContact() {
+      this.getCompanyContacts();
+      console.log("CREATED");
+    },
+    updatedContact() {
+      this.getCompanyContacts();
+      console.log("UPDATED");
+    },
     clickCloseCompanyContactForm() {
       this.companyContactFormVisible = false;
+      this.contact = null;
     },
     clickOpenCompanyContactForm() {
       this.companyContactFormVisible = true;
@@ -175,6 +206,7 @@ export default {
   created() {
     this.getCompany();
     this.getCompanyRequests();
+    this.getCompanyContacts();
     this.timeline();
   },
   watch: {
