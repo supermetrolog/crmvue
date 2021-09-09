@@ -1,61 +1,138 @@
 <template>
-  <div class="row no-gutters objects">
-    <div class="col-12 px-2" v-if="currentStepObjects.length">
-      <p>Отправленные предложения</p>
-    </div>
-    <ObjectsItem
-      v-for="object in currentStepObjects"
-      :object="object"
+  <div class="objects">
+    <OfferObjects
+      v-if="selectedStep.number == 1"
+      :currentStepObjects="CURRENT_STEP_OBJECTS"
+      :allObjects="ALL_OBJECTS"
       :selectedObjects="selectedObjects"
-      :key="object.id"
-      mode="current"
+      :loader="loader"
+      :pagination="OBJECTS_PAGINATION"
+      :favoritesVisible="favoritesVisible"
+      @clickFavoritesVisibleToggle="clickFavoritesVisibleToggle"
       @selectObject="selectObject"
       @unSelectObject="unSelectObject"
-    />
-    <div class="col-12 px-2 mt-4">
-      <p>Все предложения</p>
-    </div>
-    <ObjectsItem
-      v-for="object in allObjects"
-      :object="object"
-      :selectedObjects="selectedObjects"
-      :key="object.id"
-      mode="all"
-      @selectObject="selectObject"
-      @unSelectObject="unSelectObject"
+      @clickResetSelectObjects="clickResetSelectObjects"
+      @loadMore="loadMore"
+      @sendObjects="sendObjects"
     />
   </div>
 </template>
 
 <script>
-import ObjectsItem from "./ObjectsItem.vue";
+import OfferObjects from "@/components/companies/timeline/step-objects/OfferObjects.vue";
+import { mapActions, mapGetters } from "vuex";
 export default {
   name: "Objects",
   components: {
-    ObjectsItem,
+    OfferObjects,
   },
   data() {
     return {
+      loader: false,
       selectedObjects: [],
     };
   },
   props: {
-    currentStepObjects: {
-      type: Array,
+    selectedStep: {
+      type: [Object, Boolean],
     },
-    allObjects: {
-      type: Array,
+    favoritesVisible: {
+      type: Boolean,
     },
   },
+  computed: {
+    ...mapGetters([
+      "OBJECTS_PAGINATION",
+      "CURRENT_STEP_OBJECTS",
+      "ALL_OBJECTS",
+    ]),
+  },
   methods: {
+    ...mapActions([
+      "FETCH_ALL_OBJECTS",
+      "INCRIMENT_OBJECTS_CURRENT_PAGE",
+      "RETURN_OBJECTS_CURRENT_PAGE_TO_FIRST",
+      "FETCH_CURRENT_STEP_OBJECTS",
+      "FETCH_ALL_OBJECTS",
+      "SEND_OBJECTS",
+      "UPDATE_STEP",
+    ]),
     selectObject(object) {
-      this.selectedObjects.push(object.id);
+      this.selectedObjects.push(object);
     },
     unSelectObject(object) {
       this.selectedObjects = this.selectedObjects.filter(
-        (id) => id != object.id
+        (item) => item.id != object.id
       );
     },
+    loadMore() {
+      console.warn("KASDA");
+      this.INCRIMENT_OBJECTS_CURRENT_PAGE();
+      this.FETCH_ALL_OBJECTS();
+    },
+    clickResetSelectObjects() {
+      this.selectedObjects = [];
+    },
+    async sendObjects() {
+      this.loader = true;
+      let data = {
+        ...this.selectedStep,
+      };
+      data.negative = 0;
+      data.additional = 0;
+      data.timelineStepObjects = [];
+      this.selectedObjects.map((item) => {
+        data.timelineStepObjects.push({
+          timeline_step_id: data.id,
+          object_id: item.original_id,
+          type_id: item.type_id,
+        });
+      });
+      if (await this.UPDATE_STEP(data)) {
+        data.timelineStepObjects = data.timelineStepObjects.concat(
+          this.selectedStep.timelineStepObjects
+        );
+        await this.FETCH_CURRENT_STEP_OBJECTS(data.timelineStepObjects);
+        this.$emit("updated", data);
+
+        this.clickResetSelectObjects();
+        this.loader = false;
+      }
+    },
+    async getCurrentStepObjects() {
+      if (!this.selectedStep) {
+        return;
+      }
+      this.loader = true;
+      await this.FETCH_CURRENT_STEP_OBJECTS(
+        this.selectedStep.timelineStepObjects
+      );
+      await this.FETCH_ALL_OBJECTS();
+      this.loader = false;
+    },
+    clickFavoritesVisibleToggle() {
+      this.$emit("clickFavoritesVisibleToggle");
+    },
+  },
+  watch: {
+    selectedStep(before, after) {
+      if (before.id != after.id) {
+        this.getCurrentStepObjects();
+        this.clickResetSelectObjects();
+        this.RETURN_OBJECTS_CURRENT_PAGE_TO_FIRST();
+      }
+    },
+    updatedFlag() {
+      if (this.updatedFlag === false) {
+        this.loader = false;
+      } else {
+        this.loader = true;
+      }
+    },
+  },
+  async created() {
+    this.getCurrentStepObjects();
+    console.log("AHUETb NE VSTATb");
   },
 };
 </script>

@@ -30,15 +30,14 @@
               :data="step"
               :idx="idx"
               :loader="loaderForStep"
-              @updateItem="clickUpdateStep"
               @clickItem="clickStep"
             >
-              <template v-slot:actions="{ stepName, disabled, isConfirmed }">
+              <template v-slot:actions="{ stepName, disabled }">
                 <component
                   :is="stepName"
                   :step="step"
                   :disabled="disabled"
-                  :isConfirmed="isConfirmed"
+                  @updateItem="clickUpdateStep"
                   ref="actionsComponent"
                 >
                 </component>
@@ -47,33 +46,28 @@
           </div>
         </div>
       </div>
-      <div class="col-3 box">FUCK</div>
-      <div class="col-5 box">
-        <div class="row no-gutters mb-3 p-0">
-          <div class="col-3 pr-1">
-            <button
-              class="btn btn-primary btn-large"
-              @click.prevent="clickOpenCompanyForm"
-            >
-              отправить
-            </button>
-          </div>
-          <div class="col-3 pr-1">
-            <button
-              class="btn btn-danger btn-large"
-              @click.prevent="clickOpenCompanyForm"
-            >
-              отменить
-            </button>
-          </div>
-        </div>
-        <div class="row no-gutters inner">
-          <div class="col-12" v-if="selectedStep">
-            <Loader class="center" v-if="loaderForObjects" />
-
-            <Objects :currentStepObjects="CURRENT_STEP_OBJECTS" :allObjects="ALL_OBJECTS" v-else />
-          </div>
-        </div>
+      <div class="col-8" v-if="!selectedStep && $route.query.step">
+        <Loader class="center" />
+      </div>
+      <div class="col-3 box" v-if="!favoritesVisible && selectedStep">
+        <StepActions :selectedStep="selectedStep" />
+      </div>
+      <div class="col-5 box" v-if="selectedStep">
+        <Objects
+          :selectedStep="selectedStep"
+          :favoritesVisible="favoritesVisible"
+          @clickFavoritesVisibleToggle="clickFavoritesVisibleToggle"
+          @updated="updatedObjects"
+        />
+      </div>
+      <div class="col-3 box" v-if="favoritesVisible">
+        <!-- <Objects
+          v-if="selectedStep"
+          :mode="'favorites'"
+          :selectedStep="selectedStep"
+          :favoritesVisible="favoritesVisible"
+          @clickFavoritesVisibleToggle="clickFavoritesVisibleToggle"
+        /> -->
       </div>
     </div>
     <div class="row no-gutters" v-else>
@@ -85,15 +79,16 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import TimelineItem from "./TimelineItem";
-import Meeting from "./step-actions/Meeting.vue";
-import Offers from "./step-actions/Offers.vue";
-import Feedback from "./step-actions/Feedback.vue";
-import Inspection from "./step-actions/Inspection.vue";
-import Visit from "./step-actions/Visit.vue";
-import Interest from "./step-actions/Interest.vue";
-import Deal from "./step-actions/Deal.vue";
+import Meeting from "./steps/Meeting.vue";
+import Offers from "./steps/Offers.vue";
+import Feedback from "./steps/Feedback.vue";
+import Inspection from "./steps/Inspection.vue";
+import Visit from "./steps/Visit.vue";
+import Interest from "./steps/Interest.vue";
+import Deal from "./steps/Deal.vue";
 import Loader from "@/components/Loader.vue";
 import Objects from "../objects/Objects.vue";
+import StepActions from "./step-actions/StepActions.vue";
 export default {
   name: "Timeline",
   components: {
@@ -107,18 +102,19 @@ export default {
     Deal,
     Loader,
     Objects,
+    StepActions,
   },
   data() {
     return {
       loader: true,
       loaderForStep: false,
-      loaderForObjects: false,
       objects: [],
       timelineNotFoundFlag: false,
+      favoritesVisible: false,
     };
   },
   computed: {
-    ...mapGetters(["TIMELINE", "CURRENT_STEP_OBJECTS", "ALL_OBJECTS"]),
+    ...mapGetters(["TIMELINE"]),
     selectedStep() {
       if (this.TIMELINE.timelineSteps) {
         return this.TIMELINE.timelineSteps[this.$route.query.step];
@@ -127,35 +123,26 @@ export default {
     },
   },
   methods: {
-    ...mapActions([
-      "FETCH_TIMELINE",
-      "UPDATE_STEP",
-      "FETCH_CURRENT_STEP_OBJECTS",
-      "FETCH_ALL_OBJECTS",
-    ]),
-    async clickUpdateStep(comment) {
-      let newData = this.$refs.actionsComponent.getData();
-      newData.comment = comment;
-      this.loaderForStep = newData.id;
-      if (await this.UPDATE_STEP(newData)) {
+    ...mapActions(["FETCH_TIMELINE", "UPDATE_STEP"]),
+    clickFavoritesVisibleToggle() {
+      this.favoritesVisible = !this.favoritesVisible;
+    },
+    async updatedObjects(data) {
+      this.loaderForStep = data.id;
+      await this.getTimeline();
+      this.loaderForStep = false;
+    },
+    async clickUpdateStep(data) {
+      this.loaderForStep = data.id;
+      if (await this.UPDATE_STEP(data)) {
         await this.getTimeline();
       }
       this.loaderForStep = false;
     },
-    async getCurrentStepObjects() {
-      if (!this.selectedStep) {
-        return;
-      }
 
-      this.loaderForObjects = true;
-
-      await this.FETCH_CURRENT_STEP_OBJECTS(
-        this.selectedStep.timelineStepObjects
-      );
-      await this.FETCH_ALL_OBJECTS();
-      this.loaderForObjects = false;
-    },
     async clickStep(step) {
+      this.favoritesVisible = false;
+
       let query = {
         timeline: this.$route.query.timeline,
       };
@@ -163,7 +150,7 @@ export default {
         query.step = step.number;
       }
       await this.$router.push({ query: query });
-      this.$nextTick(() => this.getCurrentStepObjects());
+      // this.$nextTick(() => this.getCurrentStepObjects());
     },
     async getTimeline() {
       await this.FETCH_TIMELINE(this.$route.query.timeline);
@@ -176,7 +163,6 @@ export default {
     this.loader = true;
     await this.getTimeline();
     this.loader = false;
-    this.getCurrentStepObjects();
   },
 };
 </script>

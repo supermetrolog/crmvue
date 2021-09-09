@@ -31,6 +31,9 @@ export default {
   },
   computed: {
     paginationVisible() {
+      if (!this.pagination) {
+        return false;
+      }
       return this.pagination.pageCount > this.pagination.currentPage
         ? true
         : false;

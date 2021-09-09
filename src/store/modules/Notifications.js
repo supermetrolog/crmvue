@@ -59,7 +59,6 @@ const Notifications = {
         },
         RETURN_NOTIFICATION_CURRENT_PAGE_TO_FIRST(context) {
             context.commit('returnCurrentPageToFirst');
-
         },
         async VIEWED(context) {
             if (existNewNotifications(this.getters.NOTIFICATIONS)) {

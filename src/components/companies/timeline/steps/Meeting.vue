@@ -1,11 +1,11 @@
 <template>
   <div class="col">
     <div class="row mb-2">
-      <div class="col">
+      <div class="col" v-if="data">
         <p>- Установить контакт, подтвердить параметры запроса</p>
         <button
           class="action"
-          :class="{ active: done }"
+          :class="{ active: data.done }"
           :disabled="disabled"
           @click="clickToggleDone"
         >
@@ -22,7 +22,7 @@ export default {
   name: "Meeting",
   data() {
     return {
-      done: 0,
+      data: null,
     };
   },
   props: {
@@ -32,34 +32,17 @@ export default {
     disabled: {
       type: Boolean,
     },
-    isConfirmed: {
-      type: Boolean,
-    },
   },
   mounted() {
-    this.setData();
+    this.data = this.step;
   },
   methods: {
-    setData() {
-      this.done = this.step.done;
-    },
-    getData() {
-      let newData = { ...this.step };
-      newData.done = this.done;
-      return newData;
-    },
     clickToggleDone() {
-      this.done ? (this.done = 0) : (this.done = 1);
+      this.data.done ? (this.data.done = 0) : (this.data.done = 1);
+      this.$emit("updateItem", this.data);
     },
   },
-
-  watch: {
-    disabled() {
-      if (!this.isConfirmed) {
-        this.setData();
-      }
-    },
-  },
+  emits: ["updateItem"],
 };
 </script>
 

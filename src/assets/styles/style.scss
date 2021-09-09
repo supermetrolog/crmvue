@@ -2064,6 +2064,10 @@
     }
     
     .objects {
+        hr {
+            height: 2px;
+            background-color: $color_dark;
+        }
         &-item {
             &.selected {
                 .header {
@@ -2100,6 +2104,12 @@
                         color: $color_success_alt;
                         z-index: 2;
                     }
+                    span.duplicate_count {
+                        left: 170px;
+                        padding: 0 6px;
+                        background: #f88d01d5;
+                        color: $color_dark;
+                    }
                     .icon {
                         z-index: 1;
                         position: absolute;
@@ -2122,15 +2132,25 @@
                 }
             }
             .body {
-                border: 2px dotted black;
+                border: 2px dashed black;
                 &.success {
-                    border: 2px dotted $color_success;
+                    border: 2px dashed $color_success;
                 }
                 border-top: none!important;
+                p {
+                    text-transform: lowercase;
+                    i {
+                        cursor: default;
+                    }
+                }
                 p.value {
                     font-weight: normal;
                     letter-spacing: .2px;
                     line-height: 16px;
+                    text-transform: none;
+                }
+                p.title2 {
+                    text-transform: lowercase;
                 }
                 small {
                     font-size: 12px;
@@ -2145,8 +2165,58 @@
                 }
                 .title {
                     font-weight: bold;
+                    text-transform: uppercase;
                 }
             }
             transition: all 0.1s ease-in-out;
+        }
+    }
+    
+    // ********* SCROLLER **********
+    .scroller {
+        overflow-x: hidden;
+        overflow-y: auto;
+        max-height: 85vh;
+    }
+    
+    // ********** REMINDERS **********
+    .reminders {
+        &-list {
+            border-bottom: 1px solid $color_dark;
+            // padding-bottom: 10px;
+            max-height: 200px;
+            &-item {
+                margin-bottom: 10px;
+                i,
+                span,
+                a {
+                    display: block;
+                }
+                span,
+                a {
+                    font-size: 12px;
+                }
+                a {
+                    color: $color_dark;
+                    font-weight: bold;
+                    &:hover {
+                        text-decoration: underline;
+                    }
+                }
+                i {
+                    color: $color_success_alt;
+                }
+            }
+        }
+        &-add {
+            form {
+                input {
+                    &.btn-datetime {
+                        height: 30px;
+                    }
+                    // padding: 2px 2px!important;
+                    font-size: 12px!important;
+                }
+            }
         }
     }

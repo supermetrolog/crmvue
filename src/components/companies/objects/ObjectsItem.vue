@@ -1,33 +1,51 @@
 <template>
-  <div class="col-4 px-2 my-2">
+  <div class="px-2 my-2" :class="col">
     <div
       class="objects-item"
-      :class="{ selected: selectedObjects.includes(object.id) }"
+      :class="{
+        selected: selectedObjects.find((item) => item.id == object.id),
+      }"
     >
-      <div class="header">
+      <div class="header" :title="object.description || 'нет описания'">
         <div class="image">
           <span>{{ object.deal_type_name }}</span>
+          <span
+            class="duplicate_count"
+            title="количество отправлений"
+            v-if="object.duplicate_count > 1"
+          >
+            {{ object.duplicate_count }}
+          </span>
           <div class="icon" @click.prevent="clickUnSelectObject">
             <i class="fas fa-check"></i>
           </div>
           <a href="#" @click.prevent="clickSelectObject">
-            <!-- <img src="@/assets/image/1.jpg" alt="Фото объекта" /> -->
             <img
-              :src="object.photos[0]"
+              :src="
+                object.building.photos
+                  ? object.building.photos
+                  : object.photos[0]
+              "
               alt="Фото объекта"
-              v-if="mode == 'current'"
             />
-            <img :src="object.building.photos" alt="Фото объекта" v-else />
           </a>
         </div>
       </div>
-      <div class="body py-2 success">
-        <p class="text-center title">{{ object.town_name }}</p>
-
-        <p class="text-center mt-1 text-success_alt">| московская область |</p>
-        <p class="text-center text-success_alt">| химки cевер |</p>
-        <p class="text-center text-success_alt">| ленинградское |</p>
-        <p class="text-center text-success_alt">| химки |</p>
+      <div class="body py-2" :class="classList">
+        <p class="text-center title">
+          {{ object.district_name }} - {{ object.direction_name }}
+        </p>
+        <p class="value text-center title2">
+          {{ object.object_type_name }}
+        </p>
+        <p class="value text-center text-success_alt">
+          <i class="fas fa-square-full text-dark d-inline"></i>
+          {{ object.area_min }} - {{ object.area_max }} м<sup>2</sup>
+        </p>
+        <p class="value text-center text-success_alt mt-1">
+          <i class="fas fa-ruble-sign d-inline text-dark"></i>
+          {{ object.price_floor_min }} - {{ object.price_floor_max }} р
+        </p>
 
         <i
           class="far fa-arrow-alt-circle-down text-center mt-1"
@@ -42,16 +60,20 @@
         <div class="extraFields text-center" v-if="extraInfoVisible">
           <p>адрес</p>
           <p class="text-center value">
-            <!-- Россия, Москва, поселение Марушкинское, квартал № 63, дв1с2 -->
             {{ object.address }}
           </p>
-          <p>площадь</p>
-          <p class="value">
-            {{ object.area_min }} - {{ object.area_max }} м<sup>2</sup>.
+          <p>брокер</p>
+          <p class="text-center value">
+            {{ object.agent_name }}
           </p>
-          <p>цена за 1 м<sup>2</sup></p>
-          <p class="value">
-            {{ object.price_floor_min }} - {{ object.price_floor_max }} р.
+          <p class="text-center value mt-1">
+            <a
+              class="text-primary"
+              :href="`https://pennylane.pro/complex/${object.complex_id}?offer_id=[${object.original_id}]`"
+              target="_blanc"
+            >
+              подробнее
+            </a>
           </p>
         </div>
       </div>
@@ -74,9 +96,17 @@ export default {
     selectedObjects: {
       type: Array,
     },
-    mode: {
+    classList: {
       type: String,
-      required: true,
+      default() {
+        return "";
+      },
+    },
+    col: {
+      type: String,
+      default() {
+        return "col-4";
+      },
     },
   },
   methods: {

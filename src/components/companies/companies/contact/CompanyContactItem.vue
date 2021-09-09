@@ -26,6 +26,7 @@
           <i
             class="fas fa-pen text-primary edit"
             @click="openContactFormForUpdate"
+            v-if="!contact.type"
           ></i>
         </div>
       </div>

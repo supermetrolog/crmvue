@@ -65,11 +65,11 @@
       </div>
       <div class="col-12 col-lg-4 company-detail-info-container box">
         <div class="col-12 inner">
-          <Loader v-if="loaderCompanyDetailInfo" class="center" />
+          <!-- <Loader v-if="loaderCompanyDetailInfo" class="center" />
           <CompanyDetailInfo
             :company="this.COMPANY[0]"
             v-if="!loaderCompanyDetailInfo"
-          />
+          /> -->
         </div>
       </div>
       <div class="col-12 col-lg-2 company-detail-info-container box">
