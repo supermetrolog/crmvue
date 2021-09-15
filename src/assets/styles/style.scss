@@ -917,7 +917,6 @@
                         font-size: 16px;
                     }
                     .scroll-list {
-                        // max-height: 55px;
                         overflow-x: auto;
                         padding: 10px;
                         width: auto;
@@ -925,8 +924,6 @@
                         box-shadow: inset 0px 0px 20px 5px rgba(0, 0, 0, 0.9);
                     }
                     .action {
-                        // border: unset;
-                        // border-radius: 2px;
                         user-select: none;
                         cursor: pointer;
                         padding: 2px 5px;
@@ -936,23 +933,19 @@
                             color: $color_dark;
                             min-width: 60px;
                             width: auto;
-                            // border: 1px solid $color_grey;
                             padding: 0 3px;
                         }
                         &:disabled {
-                            // background-color: -internal-light-dark(rgba(239, 239, 239, 0.3), rgba(156, 156, 156, 0.3));
                             background-color: $color_disabled_actions;
                             color: $color_dark;
                             cursor: unset;
                         }
                         &.active:disabled {
                             background-color: darken($color_secondary, 6)!important;
-                            // border: inherit;
                             color: $color_light;
                             font-weight: bold;
                         }
                         &.disabled {
-                            // background-color: -internal-light-dark(rgba(239, 239, 239, 0.3), rgba(156, 156, 156, 0.3));
                             background-color: $color_disabled_actions!important;
                             color: $color_dark;
                             cursor: unset;
@@ -966,11 +959,8 @@
                     }
                     .active {
                         background-color: $color_secondary!important;
-                        // border: unset;
-                        // border-color: $color_secondary;
-                        border: .5px solid darken($color_secondary, 10);
+                        outline: .5px solid darken($color_secondary, 10);
                         color: $color_light!important;
-                        font-weight: bold;
                     }
                 }
             }
@@ -2064,11 +2054,24 @@
     }
     
     .objects {
+        position: static;
         hr {
             height: 2px;
             background-color: $color_dark;
         }
         &-item {
+            &.success {
+                .body {
+                    border: 2px dashed $color_success;
+                }
+                .header {
+                    .image {
+                        span.duplicate_count {
+                            display: block!important;
+                        }
+                    }
+                }
+            }
             &.selected {
                 .header {
                     .icon {
@@ -2095,7 +2098,7 @@
                     }
                     span {
                         padding: 0 4px;
-                        background: rgba(255, 255, 255, 0.9);
+                        background-color: rgba(255, 255, 255, 0.9);
                         font-weight: bold;
                         font-size: 12px;
                         position: absolute;
@@ -2105,6 +2108,7 @@
                         z-index: 2;
                     }
                     span.duplicate_count {
+                        display: none;
                         left: 170px;
                         padding: 0 6px;
                         background: #f88d01d5;
@@ -2133,9 +2137,6 @@
             }
             .body {
                 border: 2px dashed black;
-                &.success {
-                    border: 2px dashed $color_success;
-                }
                 border-top: none!important;
                 p {
                     text-transform: lowercase;

@@ -12,13 +12,16 @@ const Objects = {
             state.currentStepObjects = objects;
         },
         updateAllObjects(state, data) {
-            if (Array.isArray(state.allObjects) || Array.isArray(data.offers)) {
+            if (Array.isArray(state.allObjects) && Array.isArray(data.offers) && state.objectsCurrentPage > 1) {
                 state.allObjects = state.allObjects.concat(data.offers);
 
             } else {
                 state.allObjects = data.offers;
             }
             state.objectPagination = data.pagination;
+        },
+        updateAllObjectForPreventStep(state, objects) {
+            state.allObjects = objects;
         },
         incrimentCurrentPage(state) {
             state.objectsCurrentPage++;
@@ -31,18 +34,49 @@ const Objects = {
     actions: {
         async FETCH_CURRENT_STEP_OBJECTS({ commit }, currentObjects) {
             let array = [];
-            for (const key in currentObjects) {
-                if (Object.hasOwnProperty.call(currentObjects, key)) {
-                    const object = currentObjects[key];
-                    array.push(await api.objects.getCurrentStepObjects(object));
-                }
-            }
-            // console.error(array);
+            currentObjects.map((item) => {
+                array.push(item.offer_id)
+            });
+            const objects = await api.objects.getCurrentStepObjects(array);
+            array = [];
+            currentObjects.map((item) => {
+                objects.map((object) => {
+                    if (item.offer_id == object.id) {
+                        object.duplicate_count = item.duplicate_count;
+                        array.push(object);
+                    }
+                })
+            });
             commit('updateCurrentStepObjects', array);
         },
-        async FETCH_ALL_OBJECTS(context) {
-            const objects = await api.objects.getAllObjects(context.getters.OBJECTS_CURRENT_PAGE);
-            context.commit('updateAllObjects', objects);
+        async FETCH_OBJECTS_FOR_PREVENT_STEP_OBJECTS(context, currentStepNumber) {
+            const preventStepObjects = context.getters.TIMELINE.timelineSteps[currentStepNumber - 1].timelineStepObjects;
+
+            let array = [];
+            preventStepObjects.map((item) => {
+                array.push(item.offer_id)
+            });
+            const objects = await api.objects.getCurrentStepObjects(array);
+            array = [];
+            preventStepObjects.map((item) => {
+                objects.map((object) => {
+                    if (item.offer_id == object.id) {
+                        object.duplicate_count = item.duplicate_count;
+                        array.push(object);
+                    }
+                })
+            });
+            context.commit('updateAllObjectForPreventStep', array);
+        },
+        async FETCH_ALL_OBJECTS(context, currentStepNumber) {
+            let objects = [];
+            if (currentStepNumber == 1) {
+                objects = await api.objects.getAllObjects(context.getters.OBJECTS_CURRENT_PAGE);
+                context.commit('updateAllObjects', objects);
+
+            } else {
+                await context.dispatch('FETCH_OBJECTS_FOR_PREVENT_STEP_OBJECTS', currentStepNumber);
+            }
         },
         async SEND_OBJECTS(context, step_id, objects) {
             await api.objects.sendObjects(step_id, objects);

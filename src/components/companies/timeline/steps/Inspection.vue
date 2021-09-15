@@ -1,37 +1,28 @@
 <template>
-  <div class="col company-form">
-    <div class="row no-gutters">
+  <div class="col">
+    <div class="row" v-if="data">
       <div class="col">
-        <div class="title">
-          <p>- Отметить объекты, которые планируете осмотреть</p>
-        </div>
-        <div :class="{ 'scroll-list': objects.length > 3 }">
-          <button
-            class="ml-1 action"
-            :class="{ active: negative }"
-            :disabled="disabled || negative"
-            @click="clickNegative"
-          >
-            <i class="far fa-frown-open"></i>
-            <span class="ml-1">Нет планов к осмотру</span>
-          </button>
-          <button
-            class="ml-1 action"
-            :disabled="disabled"
-            title="Отметить объекты"
-            @click="clickSelectObjects"
-          >
-            <i class="fas fa-plus"></i>
-          </button>
-          <button
-            class="ml-1 action active"
-            v-for="object of objects"
-            :key="object.id"
-            @click="clickOpenObjectInfo"
-          >
-            <span>{{ object.id }}</span>
-          </button>
-        </div>
+        <p>- Отметить объекты которые планируете осмотреть</p>
+        <button
+          class="action"
+          :class="{ active: data.timelineStepObjects.length && !data.negative }"
+          disabled
+          @click="clickSelectObjects"
+        >
+          <i class="far fa-smile"></i>
+          <span class="ml-1"
+            >Выбрано {{ data.timelineStepObjects.length }}
+          </span>
+        </button>
+        <button
+          class="ml-1 mb-2 action"
+          :class="{ active: data.negative }"
+          :disabled="disabled || data.negative"
+          @click="clickNegative"
+        >
+          <i class="far fa-frown-open"></i>
+          <span class="ml-1">Нет подходящих</span>
+        </button>
       </div>
     </div>
   </div>
@@ -39,59 +30,35 @@
 
 <script>
 export default {
-  name: "Inspection",
+  name: "Offers",
   data() {
     return {
-      negative: 0,
-      objects: [],
+      data: null,
     };
   },
   props: {
-    actions: {
+    step: {
       type: Object,
-      default: () => {
-        return {
-          negative: 0,
-          objects: [],
-        };
-      },
-    },
-    branch: {
-      type: Number,
     },
     disabled: {
       type: Boolean,
     },
-    isConfirmed: {
-      type: Boolean,
-    },
   },
   mounted() {
-    this.setData();
+    this.data = this.step;
   },
   methods: {
-    setData() {
-      this.negative = this.actions.negative;
-      this.objects = this.actions.objects;
-    },
-    getData() {
-      return {
-        negative: this.negative,
-        objects: this.objects,
-      };
-    },
     clickNegative() {
-      this.negative = 1;
-      this.objects = [];
+      this.data.negative = 1;
+      this.$emit("updateItem", this.data);
     },
   },
   watch: {
-    disabled() {
-      if (!this.isConfirmed) {
-        this.setData();
-      }
+    step() {
+      this.data = this.step;
     },
   },
+  emits: ["updateItem"],
 };
 </script>
 

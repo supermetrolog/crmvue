@@ -1,5 +1,5 @@
 <template>
-  <div class="col company-form">
+  <div class="col company-form" v-if="data">
     <div class="row no-gutters mb-0">
       <div class="col">
         <p>- Отметить каким способом была получена обратная связь</p>
@@ -12,59 +12,59 @@
             <input
               class="checkbox ml-0 d-none"
               type="checkbox"
-              v-model="feedbackWay"
+              v-model="ways"
               :value="feedbackWayItem[0]"
-              :id="'checkbox-feedbackWay' + branch + feedbackWayItem[0]"
+              :id="'checkbox-feedbackWay' + feedbackWayItem[0]"
               :disabled="disabled"
             />
             <label
               class="action feedback-way p-1 justify-content-center"
               :class="{
-                active: feedbackWay.includes(feedbackWayItem[0]),
+                active: ways.includes(feedbackWayItem[0]),
                 disabled: disabled,
               }"
-              :for="'checkbox-feedbackWay' + branch + feedbackWayItem[0]"
+              :for="'checkbox-feedbackWay' + feedbackWayItem[0]"
+              @click="inputWay"
             >
               <span class="align-self-center">
                 {{ feedbackWayItem[1] }}
               </span>
             </label>
           </div>
+          <div class="actions d-inline-block" v-if="actionsVisible">
+            <button class="btn-action text-info" @click="confirm">
+              <i class="fas fa-check"></i>
+            </button>
+            <button class="btn-action text-danger" @click="cancel">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>
     <div class="row no-gutters">
       <div class="col">
-        <div class="title">
-          <p>- Отметить объекты, которые заинтересовали клиента</p>
-        </div>
-        <div :class="{ 'scroll-list': objects.length > 3 }">
-          <button
-            class="ml-1 action"
-            :class="{ active: negative }"
-            :disabled="disabled || negative"
-            @click="clickNegative"
-          >
-            <i class="far fa-frown-open"></i>
-            <span class="ml-1">Ничего не подходит</span>
-          </button>
-          <button
-            class="ml-1 action"
-            :disabled="disabled"
-            title="Отметить объекты"
-            @click="clickSelectObjects"
-          >
-            <i class="fas fa-plus"></i>
-          </button>
-          <button
-            class="ml-1 action active"
-            v-for="object of objects"
-            :key="object.id"
-            @click="clickOpenObjectInfo"
-          >
-            <span>{{ object.id }}</span>
-          </button>
-        </div>
+        <p>- Отметить объекты, которые заинтересовали клиента</p>
+        <button
+          class="action"
+          :class="{ active: data.timelineStepObjects.length && !data.negative }"
+          disabled
+          @click="clickSelectObjects"
+        >
+          <i class="far fa-smile"></i>
+          <span class="ml-1"
+            >Выбрано {{ data.timelineStepObjects.length }}
+          </span>
+        </button>
+        <button
+          class="ml-1 mb-2 action"
+          :class="{ active: data.negative }"
+          :disabled="disabled || data.negative"
+          @click="clickNegative"
+        >
+          <i class="far fa-frown-open"></i>
+          <span class="ml-1">Нет подходящих</span>
+        </button>
       </div>
     </div>
   </div>
@@ -77,60 +77,59 @@ export default {
   data() {
     return {
       feedbackWayList: FeedbackList.get("param"),
-      feedbackWay: [],
-      negative: 0,
-      objects: [],
+      ways: [],
+      data: null,
+      actionsVisible: false,
     };
   },
   props: {
-    actions: {
+    step: {
       type: Object,
-      default: () => {
-        return {
-          feedbackWay: [],
-          negative: 0,
-          objects: [],
-        };
-      },
-    },
-    branch: {
-      type: Number,
     },
     disabled: {
       type: Boolean,
     },
-    isConfirmed: {
-      type: Boolean,
-    },
   },
   mounted() {
-    this.setData();
+    this.data = this.step;
+    this.data.timelineStepFeedbackways.map((item) => {
+      this.ways.push(item.way);
+    });
+    console.log(this.data);
   },
   methods: {
-    setData() {
-      this.feedbackWay = this.actions.feedbackWay;
-      this.negative = this.actions.negative;
-      this.objects = this.actions.objects;
-    },
-    getData() {
-      return {
-        feedbackWay: this.feedbackWay,
-        negative: this.negative,
-        objects: this.objects,
-      };
-    },
     clickNegative() {
-      this.negative = 1;
-      this.objects = [];
+      this.data.negative = 1;
+      this.$emit("updateItem", this.data);
+    },
+    cancel() {
+      this.ways = [];
+      this.data.timelineStepFeedbackways.map((item) => {
+        this.ways.push(item.way);
+      });
+      this.actionsVisible = false;
+    },
+    confirm() {
+      this.data.timelineStepFeedbackways = [];
+      this.ways.map((item) => {
+        this.data.timelineStepFeedbackways.push({
+          timeline_step_id: this.data.id,
+          way: item,
+        });
+      });
+      this.$emit("updateItem", this.data);
+      this.actionsVisible = false;
+    },
+    inputWay() {
+      this.actionsVisible = true;
     },
   },
   watch: {
-    disabled() {
-      if (!this.isConfirmed) {
-        this.setData();
-      }
+    step() {
+      this.data = this.step;
     },
   },
+  emits: ["updateItem"],
 };
 </script>
 

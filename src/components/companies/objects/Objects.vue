@@ -15,16 +15,30 @@
       @loadMore="loadMore"
       @sendObjects="sendObjects"
     />
+    <DefaultObjects
+      v-else
+      :currentStepObjects="CURRENT_STEP_OBJECTS"
+      :allObjects="ALL_OBJECTS"
+      :selectedObjects="selectedObjects"
+      :loader="loader"
+      :selectedStepNumber="selectedStep.number"
+      @selectObject="selectObject"
+      @unSelectObject="unSelectObject"
+      @clickResetSelectObjects="clickResetSelectObjects"
+      @sendObjects="sendObjects"
+    />
   </div>
 </template>
 
 <script>
 import OfferObjects from "@/components/companies/timeline/step-objects/OfferObjects.vue";
+import DefaultObjects from "@/components/companies/timeline/step-objects/DefaultObjects.vue";
 import { mapActions, mapGetters } from "vuex";
 export default {
   name: "Objects",
   components: {
     OfferObjects,
+    DefaultObjects,
   },
   data() {
     return {
@@ -53,7 +67,6 @@ export default {
       "INCRIMENT_OBJECTS_CURRENT_PAGE",
       "RETURN_OBJECTS_CURRENT_PAGE_TO_FIRST",
       "FETCH_CURRENT_STEP_OBJECTS",
-      "FETCH_ALL_OBJECTS",
       "SEND_OBJECTS",
       "UPDATE_STEP",
     ]),
@@ -68,7 +81,7 @@ export default {
     loadMore() {
       console.warn("KASDA");
       this.INCRIMENT_OBJECTS_CURRENT_PAGE();
-      this.FETCH_ALL_OBJECTS();
+      this.FETCH_ALL_OBJECTS(this.selectedStep.number);
     },
     clickResetSelectObjects() {
       this.selectedObjects = [];
@@ -85,6 +98,7 @@ export default {
         data.timelineStepObjects.push({
           timeline_step_id: data.id,
           object_id: item.original_id,
+          offer_id: item.id,
           type_id: item.type_id,
         });
       });
@@ -92,14 +106,11 @@ export default {
         data.timelineStepObjects = data.timelineStepObjects.concat(
           this.selectedStep.timelineStepObjects
         );
-        await this.FETCH_CURRENT_STEP_OBJECTS(data.timelineStepObjects);
         this.$emit("updated", data);
-
         this.clickResetSelectObjects();
-        this.loader = false;
       }
     },
-    async getCurrentStepObjects() {
+    async getCurrentStepObjects(getAllObjectsFlag = true) {
       if (!this.selectedStep) {
         return;
       }
@@ -107,7 +118,9 @@ export default {
       await this.FETCH_CURRENT_STEP_OBJECTS(
         this.selectedStep.timelineStepObjects
       );
-      await this.FETCH_ALL_OBJECTS();
+      if (getAllObjectsFlag) {
+        await this.FETCH_ALL_OBJECTS(this.selectedStep.number);
+      }
       this.loader = false;
     },
     clickFavoritesVisibleToggle() {
@@ -120,6 +133,8 @@ export default {
         this.getCurrentStepObjects();
         this.clickResetSelectObjects();
         this.RETURN_OBJECTS_CURRENT_PAGE_TO_FIRST();
+      } else {
+        this.getCurrentStepObjects(false);
       }
     },
     updatedFlag() {
@@ -132,7 +147,6 @@ export default {
   },
   async created() {
     this.getCurrentStepObjects();
-    console.log("AHUETb NE VSTATb");
   },
 };
 </script>

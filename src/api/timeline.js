@@ -4,12 +4,13 @@ import SuccessHandler from "./success";
 
 export default {
     async getTimeline(consultant_id, request_id) {
-        const url = `timeline?consultant_id=${consultant_id}&request_id=${request_id}&expand=timelineSteps,timelineSteps.timelineStepObjects`;
+        const url = `timeline?consultant_id=${consultant_id}&request_id=${request_id}&expand=timelineSteps,timelineSteps.timelineStepObjects,timelineSteps.timelineStepFeedbackways`;
         let data = false;
         await axios
             .get(url)
             .then((Response) => {
                 data = SuccessHandler.getData(Response);
+                console.log("RESPONSE", data);
             })
             .catch((e) => ErrorHandle.setError(e));
         return data;

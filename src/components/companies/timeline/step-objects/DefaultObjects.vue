@@ -17,23 +17,6 @@
           сбросить выделение
         </button>
       </div>
-      <div class="col-3 pr-1">
-        <button
-          class="btn btn-dark btn-large"
-          @click.prevent="$emit('clickFavoritesVisibleToggle')"
-          v-if="!favoritesVisible"
-        >
-          избранное
-          <span class="text-success">{{ selectedObjects.length }}</span>
-        </button>
-        <button
-          class="btn btn-dark btn-large"
-          @click.prevent="$emit('clickFavoritesVisibleToggle')"
-          v-else
-        >
-          левая
-        </button>
-      </div>
     </div>
     <div class="row no-gutters inner scroller">
       <div class="col-12">
@@ -41,7 +24,13 @@
 
         <div class="row no-gutters" v-if="allObjects.length">
           <div class="col-12 px-2" v-if="currentStepObjects.length">
-            <p>Отправленные предложения</p>
+            <p v-if="selectedStepNumber == 2">
+              Предложения, которые заинтересовали клиента
+            </p>
+            <p v-else-if="selectedStepNumber == 3">
+              Оъекты, которые планируются осмотреть
+            </p>
+            <p v-else-if="selectedStepNumber == 4">Оъекты, которые осмотрели</p>
           </div>
           <ObjectsItem
             v-for="object in currentStepObjects"
@@ -54,7 +43,13 @@
           />
           <div class="col-12 px-2 mt-3">
             <hr />
-            <p>Все предложения</p>
+            <p v-if="selectedStepNumber == 2">Отправленные предложения</p>
+            <p v-else-if="selectedStepNumber == 3">
+              Предложения, которые заинтересовали клиента
+            </p>
+            <p v-else-if="selectedStepNumber == 4">
+              Объекты, которые планировалось осмотреть
+            </p>
           </div>
 
           <ObjectsItem
@@ -62,16 +57,9 @@
             :object="object"
             :selectedObjects="selectedObjects"
             :key="object.id"
-            :classList="'all-offers'"
             @selectObject="$emit('selectObject', object)"
             @unSelectObject="$emit('unSelectObject', object)"
           />
-          <div class="col-12 text-center">
-            <Pagination
-              :pagination="pagination"
-              @loadMore="$emit('loadMore')"
-            />
-          </div>
         </div>
       </div>
     </div>
@@ -80,28 +68,17 @@
 
 <script>
 import ObjectsItem from "@/components/companies/objects/ObjectsItem.vue";
-import Pagination from "@/components/Pagination";
 
 import Loader from "@/components/Loader";
 export default {
-  name: "OfferObjects",
+  name: "DefaultObjects",
   components: {
     ObjectsItem,
-    Pagination,
     Loader,
   },
   props: {
     loader: {
       type: Boolean,
-    },
-    pagination: {
-      type: Object,
-    },
-    favoritesVisible: {
-      type: [Boolean, Number],
-      default() {
-        return null;
-      },
     },
     selectedObjects: {
       type: Array,
@@ -121,14 +98,15 @@ export default {
         return [];
       },
     },
+    selectedStepNumber: {
+      type: Number,
+    },
   },
   emits: [
     "sendObjects",
     "clickResetSelectObjects",
-    "clickFavoritesVisibleToggle",
     "selectObject",
     "unSelectObject",
-    "loadMore",
   ],
 };
 </script>

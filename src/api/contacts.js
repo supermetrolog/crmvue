@@ -3,7 +3,7 @@ import ErrorHandle from "./errors";
 import SuccessHandler from "./success";
 export default {
     async getContacts(company_id) {
-        const url = `http://crmka/contacts/company-contacts/${company_id}?expand=contactComments,contactComments.author,emails,phones,websites,consultant,wayOfInformings&sort=-created_at`;
+        const url = `contacts/company-contacts/${company_id}?expand=contactComments,contactComments.author,emails,phones,websites,consultant,wayOfInformings&sort=-created_at`;
         let data = false;
 
         await axios

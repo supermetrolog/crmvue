@@ -40,7 +40,7 @@ const Notifications = {
     },
     actions: {
         FETCH_NOTIFICATIONS(context) {
-            console.warn(context);
+            // console.warn(context);
             context.dispatch('FETCH_NOTIFICATIONS_NO_INTERVAL');
             setInterval(async() => {
                 // console.warn('interval');

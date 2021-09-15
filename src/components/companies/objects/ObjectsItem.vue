@@ -2,9 +2,12 @@
   <div class="px-2 my-2" :class="col">
     <div
       class="objects-item"
-      :class="{
-        selected: selectedObjects.find((item) => item.id == object.id),
-      }"
+      :class="[
+        {
+          selected: selectedObjects.find((item) => item.id == object.id),
+        },
+        classList,
+      ]"
     >
       <div class="header" :title="object.description || 'нет описания'">
         <div class="image">
@@ -31,7 +34,7 @@
           </a>
         </div>
       </div>
-      <div class="body py-2" :class="classList">
+      <div class="body py-2">
         <p class="text-center title">
           {{ object.district_name }} - {{ object.direction_name }}
         </p>

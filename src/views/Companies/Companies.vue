@@ -12,7 +12,7 @@ export default {
     // Timeline,
   },
   mounted() {
-    console.log(this.$route.params.mod);
+    // console.log(this.$route.params.mod);
   },
 };
 </script>

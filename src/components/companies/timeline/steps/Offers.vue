@@ -1,7 +1,7 @@
 <template>
   <div class="col">
-    <div class="row">
-      <div class="col" v-if="data">
+    <div class="row" v-if="data">
+      <div class="col">
         <p>
           - Посмотреть и отправить подходящие предложения клиенту, при
           необходимости добавить варианты вручную
@@ -34,7 +34,7 @@
 
 <script>
 export default {
-  name: "Meeting",
+  name: "Offers",
   data() {
     return {
       data: null,
@@ -54,7 +54,6 @@ export default {
   methods: {
     clickNegative() {
       this.data.negative = 1;
-      this.data.timelineStepObjects = [];
       this.$emit("updateItem", this.data);
     },
   },
