@@ -1,5 +1,4 @@
 import api from "@/api/api"
-import axios from "axios"
 
 const CompanyRequest = {
     state: {
@@ -27,12 +26,8 @@ const CompanyRequest = {
             }
         },
         async FETCH_COMPANY_REQUESTS(context, id) {
-            const url = "requests/company-requests/" + id + "?expand=consultant,directions,districts,gateTypes,objectClasses,objectTypes,regions&sort=-created_at";
-            await axios
-                .get(url)
-                .then((Response) => {
-                    context.commit('updateCompanyRequests', Response.data)
-                });
+            const requests = await api.request.getRequests(id);
+            context.commit('updateCompanyRequests', requests);
         }
     },
 

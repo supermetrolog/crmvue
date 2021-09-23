@@ -6,7 +6,7 @@
           class="btn btn-primary btn-large"
           @click.prevent="$emit('sendObjects')"
         >
-          отправить
+          Подтвердить
         </button>
       </div>
       <div class="col-4 pr-1">
@@ -28,7 +28,7 @@
               Предложения, которые заинтересовали клиента
             </p>
             <p v-else-if="selectedStepNumber == 3">
-              Оъекты, которые планируются осмотреть
+              Объекты, которые планируются осмотреть
             </p>
             <p v-else-if="selectedStepNumber == 4">Оъекты, которые осмотрели</p>
           </div>
@@ -57,6 +57,11 @@
             :object="object"
             :selectedObjects="selectedObjects"
             :key="object.id"
+            :classList="
+              currentStepObjects.find((item) => item.id == object.id)
+                ? 'success'
+                : ''
+            "
             @selectObject="$emit('selectObject', object)"
             @unSelectObject="$emit('unSelectObject', object)"
           />

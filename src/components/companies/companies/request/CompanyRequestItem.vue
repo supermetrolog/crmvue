@@ -1,6 +1,9 @@
 <template>
-  <div class="row item py-2 mb-2" :class="{ active: request.status }">
-    <div class="col-12 text-center">
+  <div
+    class="row item mb-2"
+    :class="{ done: request.status == 2, active: request.status == 1 }"
+  >
+    <div class="col-12 text-center general-info py-2">
       <div class="header">
         <i
           class="fas fa-pen text-primary edit"
@@ -118,7 +121,7 @@
             </div>
           </div>
         </div>
-        <hr />
+        <Progress class="mt-2" :percent="56" />
       </div>
       <div class="footer row mt-1">
         <div class="col-8 consultant text-left">
@@ -135,7 +138,44 @@
         </div>
       </div>
     </div>
-    <div class="col-12"></div>
+    <div class="col-12 deal-info py-2" v-if="request.deal">
+      <div class="row">
+        <div class="col-4 text-center align-self-center">
+          <i class="fas fa-handshake"></i>
+        </div>
+        <div class="col-8 px-0">
+          <div class="row no-gutters">
+            <div class="col-4 text-right pr-2"><p>название:</p></div>
+            <div class="col-8 pl-4">
+              <strong class="">{{ request.deal.name }}</strong>
+            </div>
+            <div class="col-4 text-right pr-2"><p>объект:</p></div>
+            <div class="col-8 pl-4">
+              <strong>
+                <a
+                  :href="`https://pennylane.pro/complex/${request.deal.complex_id}?offer_id=[${request.deal.original_id}]`"
+                  target="_blanc"
+                >
+                  #{{ request.deal.complex_id }}~{{ request.deal.object_id }}
+                </a>
+              </strong>
+            </div>
+            <div class="col-4 text-right pr-2"><p>площадь:</p></div>
+            <div class="col-8 pl-4">
+              <strong class="">{{ request.deal.area }} м<sup>2</sup></strong>
+            </div>
+            <div class="col-4 text-right pr-2"><p>цена пола:</p></div>
+            <div class="col-8 pl-4">
+              <strong class="">{{ request.deal.floorPrice }} р</strong>
+            </div>
+            <div class="col-4 text-right pr-2"><p>консультант:</p></div>
+            <div class="col-8 pl-4">
+              <strong class="">{{ request.deal.consultant.username }}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -149,8 +189,12 @@ import {
   DistrictList,
   DealTypeList,
 } from "@/const/Const.js";
+import Progress from "@/components/Progress.vue";
 export default {
   name: "CompanyRequestItem",
+  components: {
+    Progress,
+  },
   data() {
     return {
       objectClassList: ObjectClassList.get("param"),

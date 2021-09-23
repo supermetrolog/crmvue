@@ -32,30 +32,6 @@
       <div class="row no-gutters">
         <div class="col-12 company-detail-info-item">
           <div class="row no-gutters">
-            <div class="col-3 text-primary">
-              <strong>ID компании: </strong>
-            </div>
-            <div class="col-9 text-right align-self-center">
-              <p class="text-primary">
-                {{ company.id }}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 company-detail-info-item">
-          <div class="row no-gutters">
-            <div class="col-3">
-              <strong>Внес: </strong>
-            </div>
-            <div class="col-9 text-right align-self-center">
-              <p>
-                {{ company.consultant.username }}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 company-detail-info-item">
-          <div class="row no-gutters">
             <div class="col-3">
               <strong> Адрес: </strong>
             </div>
@@ -119,30 +95,6 @@
             </div>
           </div>
         </div>
-        <div class="col-12 company-detail-info-item">
-          <div class="row no-gutters">
-            <div class="col-4">
-              <strong>Поступление: </strong>
-            </div>
-            <div class="col-8 text-right align-self-center">
-              <p>
-                {{ company.created_at }}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 company-detail-info-item">
-          <div class="row no-gutters">
-            <div class="col-4">
-              <strong v-if="company.updated_at">Обновление: </strong>
-            </div>
-            <div class="col-8 text-right align-self-center">
-              <p v-if="company.updated_at">
-                {{ company.updated_at }}
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
     <div class="col-12">
@@ -166,7 +118,7 @@
             </div>
             <div class="col-7 text-right align-self-center">
               <p>
-                {{ company.formOfOrganization }}
+                {{ company.formOfOrganization || "&#8212;" }}
               </p>
             </div>
           </div>
@@ -207,6 +159,42 @@
                 :key="product.id"
               >
                 {{ product.product }}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 company-detail-info-item">
+          <div class="row no-gutters">
+            <div class="col-3">
+              <strong>Внес: </strong>
+            </div>
+            <div class="col-9 text-right align-self-center">
+              <p>
+                {{ company.consultant.username }}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 company-detail-info-item">
+          <div class="row no-gutters">
+            <div class="col-4">
+              <strong>Поступление: </strong>
+            </div>
+            <div class="col-8 text-right align-self-center">
+              <p>
+                {{ company.created_at }}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 company-detail-info-item">
+          <div class="row no-gutters">
+            <div class="col-4">
+              <strong v-if="company.updated_at">Обновление: </strong>
+            </div>
+            <div class="col-8 text-right align-self-center">
+              <p v-if="company.updated_at">
+                {{ company.updated_at }}
               </p>
             </div>
           </div>

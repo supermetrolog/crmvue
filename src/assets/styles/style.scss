@@ -717,62 +717,63 @@
         }
         position: relative;
         // min-width: 420px;
-        width: 100%;
+        // width: 100%;
         display: inline-block;
+        // margin: 0 auto;
+        // margin-left: 20px;
+        padding-left: 70px!important;
         color: $color_light;
         // max-height: 85vh;
         // overflow: hidden;
         // overflow-y: auto;
-        &-comment {
-            &::-webkit-scrollbar {
-                width: 5px;
-                background-color: darken($color_light, 10);
-                // height: 100%;
-            }
-            &::-webkit-scrollbar-thumb {
-                background-color: darken($color_light, 50);
-            }
-            border: unset!important;
-            border-radius: $timeline-body-round;
-            resize: none;
-            font-weight: 600;
-            line-height: 1.5;
-            font-size: 14px!important;
-            opacity: .9;
-            width: 100%!important;
-            max-height: 85px;
-            min-height: 85px;
-            margin-top: 16px;
-            margin-bottom: 5px;
-            &.minimization {
-                margin: 0;
-                height: 0px !important;
-            }
-            padding: 10px;
-            &:disabled {
-                min-height: 0;
-                padding: 0!important;
-                background-color: $timeline-body-bg;
-                color: $color_light!important;
-                &::-webkit-scrollbar {
-                    width: 5px;
-                    background-color: lighten($timeline-body-bg, 20);
-                    // height: 100%;
-                }
-                &::-webkit-scrollbar-thumb {
-                    background-color: darken($timeline-body-bg, 5);
-                    height: 10px;
-                }
-            }
-        }
-        &:not(.branch) {
-            padding-left: 1rem;
-        }
+        // &-comment {
+        //     &::-webkit-scrollbar {
+        //         width: 5px;
+        //         background-color: darken($color_light, 10);
+        //         // height: 100%;
+        //     }
+        //     &::-webkit-scrollbar-thumb {
+        //         background-color: darken($color_light, 50);
+        //     }
+        //     border: unset!important;
+        //     border-radius: $timeline-body-round;
+        //     resize: none;
+        //     font-weight: 600;
+        //     line-height: 1.5;
+        //     font-size: 14px!important;
+        //     opacity: .9;
+        //     width: 100%!important;
+        //     max-height: 85px;
+        //     min-height: 85px;
+        //     margin-top: 16px;
+        //     margin-bottom: 5px;
+        //     &.minimization {
+        //         margin: 0;
+        //         height: 0px !important;
+        //     }
+        //     padding: 10px;
+        //     &:disabled {
+        //         min-height: 0;
+        //         padding: 0!important;
+        //         background-color: $timeline-body-bg;
+        //         color: $color_light!important;
+        //         &::-webkit-scrollbar {
+        //             width: 5px;
+        //             background-color: lighten($timeline-body-bg, 20);
+        //             // height: 100%;
+        //         }
+        //         &::-webkit-scrollbar-thumb {
+        //             background-color: darken($timeline-body-bg, 5);
+        //             height: 10px;
+        //         }
+        //     }
+        // }
+        // padding-left: 1rem;
         // &:not(.branch)::before
-        &:not(.branch)::before {
+        &::before {
             content: '';
             position: absolute;
-            left: 33px;
+            left: 38px;
             top: 0;
             width: 4px;
             height: 100%;
@@ -782,8 +783,8 @@
             position: relative;
             // min-height: 270px;
             // max-height: 270px;
-            max-width: 420px;
-            min-width: 420px;
+            // max-width: 480px;
+            // min-width: 480px;
             margin: 0 auto;
             margin-bottom: 30px;
             .timeline-icon {
@@ -809,9 +810,10 @@
                 }
             }
             .timeline-body {
+                margin: 0;
                 position: relative;
-                max-width: 420px;
-                min-width: 420px;
+                // max-width: 420px;
+                // min-width: 420px;
                 box-sizing: border-box;
                 background: $timeline-body-bg;
                 border-radius: $timeline-body-round;
@@ -969,6 +971,7 @@
                 .badge-1,
                 .timeline-icon {
                     background: $color_primary !important;
+                    font-size: 22px;
                 }
             }
             // Info Timeline
@@ -982,39 +985,58 @@
             &.success {
                 .badge-1,
                 .timeline-icon {
-                    background: $color_success !important;
+                    background: darken($color_success, 5) !important;
+                    font-size: 22px;
                 }
             }
             // Warning Timeline
             &.warning {
                 .badge-1,
                 .timeline-icon {
-                    background: $color_warning !important;
+                    background: #a02121 !important;
+                    font-size: 22px;
                 }
             }
             // Dnager Timeline
             &.danger {
                 .badge-1,
                 .timeline-icon {
-                    background: $color_danger !important;
+                    background: darken($color_danger, 18) !important;
+                    font-size: 25px;
                 }
             }
             &.blue {
                 .badge-1,
                 .timeline-icon {
-                    background: $color_info !important;
+                    background: darken($color_info, 10) !important;
+                    font-size: 30px;
                 }
             }
             &.green {
                 .badge-1,
                 .timeline-icon {
                     background: $color_success_alt !important;
+                    font-size: 25px;
+                }
+            }
+            &.pale-red {
+                .badge-1,
+                .timeline-icon {
+                    background: #812375 !important;
+                    font-size: 25px;
                 }
             }
             &.secondary {
                 .badge-1,
                 .timeline-icon {
                     background: $color_secondary!important;
+                }
+            }
+            &.black {
+                .badge-1,
+                .timeline-icon {
+                    background: black!important;
+                    font-size: 25px;
                 }
             }
         }
@@ -1794,8 +1816,26 @@
                     border-radius: none!important;
                 }
                 font-size: 14px;
-                border: 2px solid lighten($color_grey,
-                35);
+                .general-info {
+                    border: 2px solid lighten($color_grey, 35);
+                }
+                .deal-info {
+                    p {
+                        font-size: 13px;
+                    }
+                    font-size: 12px;
+                    border: 2px solid $color_dark;
+                    border-top: none;
+                    i {
+                        font-size: 45px;
+                    }
+                    a {
+                        color: $color_primary;
+                        &:hover {
+                            text-decoration: underline;
+                        }
+                    }
+                }
                 p {
                     font-weight: normal;
                 }
@@ -1912,15 +1952,19 @@
                     }
                 }
                 &.active {
-                    border-color: $color_success;
-                    .header {
-                        color: $color_success;
+                    .general-info {
+                        border-color: $color_success;
+                        .header {
+                            color: $color_success;
+                        }
                     }
                 }
                 &.done {
-                    border-color: $color_success_alt;
-                    .header {
-                        color: $color_success_alt;
+                    .general-info {
+                        border-color: $color_success_alt;
+                        .header {
+                            color: $color_success_alt;
+                        }
                     }
                 }
             }
@@ -1973,7 +2017,8 @@
                 .category {
                     span {
                         color: $color_light;
-                        background-color: $color_primary;
+                        // background-color: $color_primary;
+                        background-color: $color_dark;
                         padding: 5px 6px 6px 6px;
                         font-size: 12px;
                         font-weight: bold;

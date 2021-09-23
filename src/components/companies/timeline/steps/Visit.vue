@@ -21,7 +21,7 @@
           @click="clickNegative"
         >
           <i class="far fa-frown-open"></i>
-          <span class="ml-1">Нет планов к осмотру</span>
+          <span class="ml-1">На осмотр не выехал</span>
         </button>
       </div>
     </div>

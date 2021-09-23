@@ -20,10 +20,10 @@
             </button>
           </div>
         </div>
-        <div class="row no-gutters inner">
+        <div class="row no-gutters inner" ref="timeline">
           <Loader class="center" v-if="loader" />
 
-          <div class="timeline" v-if="!loader">
+          <div class="timeline col-12" v-if="!loader">
             <TimelineItem
               v-for="(step, idx) in this.TIMELINE.timelineSteps"
               :key="step.id"
@@ -31,6 +31,7 @@
               :idx="idx"
               :loader="loaderForStep"
               @clickItem="clickStep"
+              ref="steps"
             >
               <template v-slot:actions="{ stepName, disabled }">
                 <component
@@ -38,7 +39,6 @@
                   :step="step"
                   :disabled="disabled"
                   @updateItem="clickUpdateStep"
-                  ref="actionsComponent"
                 >
                 </component>
               </template>
@@ -85,10 +85,12 @@ import Feedback from "./steps/Feedback.vue";
 import Inspection from "./steps/Inspection.vue";
 import Visit from "./steps/Visit.vue";
 import Interest from "./steps/Interest.vue";
+import Talk from "./steps/Talk.vue";
 import Deal from "./steps/Deal.vue";
 import Loader from "@/components/Loader.vue";
 import Objects from "../objects/Objects.vue";
 import StepActions from "./step-actions/StepActions.vue";
+import { Timeline } from "@/const/Const";
 export default {
   name: "Timeline",
   components: {
@@ -99,6 +101,7 @@ export default {
     Inspection,
     Visit,
     Interest,
+    Talk,
     Deal,
     Loader,
     Objects,
@@ -106,6 +109,7 @@ export default {
   },
   data() {
     return {
+      stepParam: Timeline.get("param"),
       loader: true,
       loaderForStep: false,
       objects: [],
@@ -130,19 +134,46 @@ export default {
     async updatedObjects(data) {
       this.loaderForStep = data.id;
       await this.getTimeline();
+      if (data.number != 7) {
+        this.nextStep();
+      }
       this.loaderForStep = false;
+    },
+    async nextStep() {
+      let query = {
+        timeline: this.$route.query.timeline,
+        step: +this.$route.query.step + 1,
+      };
+      await this.$router.push({ query: query });
+      this.scrollToSelectedStep();
+    },
+    scrollToSelectedStep() {
+      if (!this.$route.query.step) {
+        return;
+      }
+      const className = this.stepParam[this.$route.query.step][1].stepName;
+      const step = document.querySelector(`.${className}`);
+      let options = {
+        behavior: "smooth",
+        block: "center",
+      };
+      step.scrollIntoView(options);
     },
     async clickUpdateStep(data) {
       this.loaderForStep = data.id;
       if (await this.UPDATE_STEP(data)) {
         await this.getTimeline();
+        console.log("ADS", data);
+        if (data.number == 0 && data.done == 1) {
+          this.nextStep();
+        }
       }
       this.loaderForStep = false;
     },
 
     async clickStep(step) {
       this.favoritesVisible = false;
-
+      // console.error(this.$refs.steps.$el);
       let query = {
         timeline: this.$route.query.timeline,
       };
@@ -150,7 +181,7 @@ export default {
         query.step = step.number;
       }
       await this.$router.push({ query: query });
-      // this.$nextTick(() => this.getCurrentStepObjects());
+      this.scrollToSelectedStep();
     },
     async getTimeline() {
       await this.FETCH_TIMELINE(this.$route.query.timeline);
@@ -163,6 +194,16 @@ export default {
     this.loader = true;
     await this.getTimeline();
     this.loader = false;
+    this.$nextTick(() => {
+      this.scrollToSelectedStep();
+    });
+  },
+  mounted() {
+    // setTimeout(() => {
+    //   const step = document.querySelector(".Deal");
+    //   // step.scrollIntoView();
+    //   console.error(step);
+    // }, 3000);
   },
 };
 </script>

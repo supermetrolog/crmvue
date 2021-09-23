@@ -121,7 +121,9 @@ export default {
       this.actionsVisible = false;
     },
     inputWay() {
-      this.actionsVisible = true;
+      if (!this.disabled) {
+        this.actionsVisible = true;
+      }
     },
   },
   watch: {

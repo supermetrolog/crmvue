@@ -43,8 +43,10 @@ const Timeline = {
     },
     getters: {
         TIMELINE(state) {
-            // console.log(state)
             return state.timeline
+        },
+        TIMELINE_REQUEST_ID(state) {
+            return state.timeline.request_id
         }
     }
 }

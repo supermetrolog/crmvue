@@ -47,6 +47,7 @@ const Objects = {
                     }
                 })
             });
+            console.log(array);
             commit('updateCurrentStepObjects', array);
         },
         async FETCH_OBJECTS_FOR_PREVENT_STEP_OBJECTS(context, currentStepNumber) {
@@ -61,7 +62,7 @@ const Objects = {
             preventStepObjects.map((item) => {
                 objects.map((object) => {
                     if (item.offer_id == object.id) {
-                        object.duplicate_count = item.duplicate_count;
+                        // object.duplicate_count = item.duplicate_count;
                         array.push(object);
                     }
                 })

@@ -57,7 +57,7 @@
         <div class="col-12 inner">
           <Loader v-if="loaderCompanyRequests" class="center" />
           <CompanyRequestList
-            :requests="this.COMPANY_REQUESTS"
+            :requests="COMPANY_REQUESTS"
             @openCompanyRequestFormForUpdate="openCompanyRequestFormForUpdate"
             v-if="!loaderCompanyRequests"
           />

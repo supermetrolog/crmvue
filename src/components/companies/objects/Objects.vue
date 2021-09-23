@@ -15,8 +15,21 @@
       @loadMore="loadMore"
       @sendObjects="sendObjects"
     />
+    <Deal
+      v-else-if="selectedStep.number == 7"
+      :request_id="TIMELINE_REQUEST_ID"
+      :currentStepObjects="CURRENT_STEP_OBJECTS"
+      :allObjects="ALL_OBJECTS"
+      :selectedObjects="selectedObjects"
+      :loader="loader"
+      :selectedStepNumber="selectedStep.number"
+      @selectObjectOne="selectObjectOne"
+      @unSelectObject="unSelectObject"
+      @clickResetSelectObjects="clickResetSelectObjects"
+      @submitDeal="submitDeal"
+    />
     <DefaultObjects
-      v-else
+      v-else-if="selectedStep.number != 0"
       :currentStepObjects="CURRENT_STEP_OBJECTS"
       :allObjects="ALL_OBJECTS"
       :selectedObjects="selectedObjects"
@@ -33,12 +46,14 @@
 <script>
 import OfferObjects from "@/components/companies/timeline/step-objects/OfferObjects.vue";
 import DefaultObjects from "@/components/companies/timeline/step-objects/DefaultObjects.vue";
+import Deal from "@/components/companies/timeline/step-objects/Deal.vue";
 import { mapActions, mapGetters } from "vuex";
 export default {
   name: "Objects",
   components: {
     OfferObjects,
     DefaultObjects,
+    Deal,
   },
   data() {
     return {
@@ -59,6 +74,7 @@ export default {
       "OBJECTS_PAGINATION",
       "CURRENT_STEP_OBJECTS",
       "ALL_OBJECTS",
+      "TIMELINE_REQUEST_ID",
     ]),
   },
   methods: {
@@ -69,14 +85,50 @@ export default {
       "FETCH_CURRENT_STEP_OBJECTS",
       "SEND_OBJECTS",
       "UPDATE_STEP",
+      "FETCH_COMPANY_REQUESTS",
     ]),
     selectObject(object) {
+      this.selectedObjects.push(object);
+    },
+    selectObjectOne(object) {
+      this.selectedObjects = [];
       this.selectedObjects.push(object);
     },
     unSelectObject(object) {
       this.selectedObjects = this.selectedObjects.filter(
         (item) => item.id != object.id
       );
+    },
+    async submitDeal(requestDealData) {
+      this.loader = true;
+      let data = {
+        ...this.selectedStep,
+      };
+      data.requestDealData = requestDealData;
+      data.negative = 0;
+      data.done = 1;
+      data.timelineStepObjects = [];
+      this.selectedObjects.map((item) => {
+        data.timelineStepObjects.push({
+          timeline_step_id: data.id,
+          object_id: item.original_id,
+          offer_id: item.id,
+          complex_id: item.complex_id,
+          type_id: item.type_id,
+        });
+      });
+      data.requestDealData.complex_id = data.timelineStepObjects[0].complex_id;
+      data.requestDealData.object_id = data.timelineStepObjects[0].object_id;
+
+      if (await this.UPDATE_STEP(data)) {
+        data.timelineStepObjects = data.timelineStepObjects.concat(
+          this.selectedStep.timelineStepObjects
+        );
+        this.$emit("updated", data);
+        this.clickResetSelectObjects();
+        await this.FETCH_COMPANY_REQUESTS(this.$route.params.id);
+      }
+      this.loader = false;
     },
     loadMore() {
       console.warn("KASDA");
@@ -99,6 +151,7 @@ export default {
           timeline_step_id: data.id,
           object_id: item.original_id,
           offer_id: item.id,
+          complex_id: item.complex_id,
           type_id: item.type_id,
         });
       });
@@ -134,19 +187,16 @@ export default {
         this.clickResetSelectObjects();
         this.RETURN_OBJECTS_CURRENT_PAGE_TO_FIRST();
       } else {
-        this.getCurrentStepObjects(false);
-      }
-    },
-    updatedFlag() {
-      if (this.updatedFlag === false) {
-        this.loader = false;
-      } else {
-        this.loader = true;
+        if (this.loader && this.selectedStep.number == 7) {
+          this.getCurrentStepObjects(false);
+        }
       }
     },
   },
   async created() {
-    this.getCurrentStepObjects();
+    if (this.selectedStep.number != 0) {
+      this.getCurrentStepObjects();
+    }
   },
 };
 </script>

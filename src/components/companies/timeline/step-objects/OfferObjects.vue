@@ -62,7 +62,11 @@
             :object="object"
             :selectedObjects="selectedObjects"
             :key="object.id"
-            :classList="'all-offers'"
+            :classList="
+              currentStepObjects.find((item) => item.id == object.id)
+                ? 'success'
+                : ''
+            "
             @selectObject="$emit('selectObject', object)"
             @unSelectObject="$emit('unSelectObject', object)"
           />
