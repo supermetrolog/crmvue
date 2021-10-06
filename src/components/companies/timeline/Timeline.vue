@@ -49,13 +49,28 @@
       <div class="col-8" v-if="!selectedStep && $route.query.step">
         <Loader class="center" />
       </div>
-      <div class="col-3 box" v-if="!favoritesVisible && selectedStep">
-        <StepActions :selectedStep="selectedStep" />
+      <div class="col-3 box" v-if="stepActionsPartVisible && selectedStep">
+        <StepActions
+          :selectedStep="selectedStep"
+          @close="toggleStepActionsPartVisible"
+        />
       </div>
-      <div class="col-5 box" v-if="selectedStep">
+      <div
+        class="col-5 box right-box"
+        v-if="selectedStep"
+        :class="{ 'col-8': !stepActionsPartVisible }"
+      >
+        <button
+          class="btn btn-action text-primary btn-close absolute"
+          v-if="!stepActionsPartVisible"
+          @click="toggleStepActionsPartVisible"
+        >
+          <i class="fas fa-angle-double-right"></i>
+        </button>
+
         <Objects
           :selectedStep="selectedStep"
-          :favoritesVisible="favoritesVisible"
+          :stepActionsPartVisible="stepActionsPartVisible"
           @clickFavoritesVisibleToggle="clickFavoritesVisibleToggle"
           @updated="updatedObjects"
         />
@@ -87,6 +102,16 @@ import Visit from "./steps/Visit.vue";
 import Interest from "./steps/Interest.vue";
 import Talk from "./steps/Talk.vue";
 import Deal from "./steps/Deal.vue";
+
+import MeetingTimeline from "./steps/steps-timeline/Meeting.vue";
+import OffersTimeline from "./steps/steps-timeline/Offers.vue";
+import FeedbackTimeline from "./steps/steps-timeline/Feedback.vue";
+import InspectionTimeline from "./steps/steps-timeline/Inspection.vue";
+import VisitTimeline from "./steps/steps-timeline/Visit.vue";
+import InterestTimeline from "./steps/steps-timeline/Interest.vue";
+import TalkTimeline from "./steps/steps-timeline/Talk.vue";
+import DealTimeline from "./steps/steps-timeline/Deal.vue";
+
 import Loader from "@/components/Loader.vue";
 import Objects from "../objects/Objects.vue";
 import StepActions from "./step-actions/StepActions.vue";
@@ -95,6 +120,7 @@ export default {
   name: "Timeline",
   components: {
     TimelineItem,
+
     Meeting,
     Offers,
     Feedback,
@@ -103,6 +129,16 @@ export default {
     Interest,
     Talk,
     Deal,
+
+    MeetingTimeline,
+    OffersTimeline,
+    FeedbackTimeline,
+    InspectionTimeline,
+    VisitTimeline,
+    InterestTimeline,
+    TalkTimeline,
+    DealTimeline,
+
     Loader,
     Objects,
     StepActions,
@@ -115,6 +151,7 @@ export default {
       objects: [],
       timelineNotFoundFlag: false,
       favoritesVisible: false,
+      stepActionsPartVisible: false,
     };
   },
   computed: {
@@ -125,6 +162,12 @@ export default {
       }
       return false;
     },
+    stepName() {
+      return this.stepParam[this.$route.query.step][1].stepName;
+    },
+    // stepNameTimeline() {
+    //   return this.stepParam[this.$route.query.step][1].stepName + "Timeline";
+    // },
   },
   methods: {
     ...mapActions(["FETCH_TIMELINE", "UPDATE_STEP"]),
@@ -188,6 +231,9 @@ export default {
       if (this.TIMELINE === false) {
         this.timelineNotFoundFlag = true;
       }
+    },
+    toggleStepActionsPartVisible() {
+      this.stepActionsPartVisible = !this.stepActionsPartVisible;
     },
   },
   async created() {

@@ -2,17 +2,17 @@
   <h1>REQUEST</h1>
   <div class="row no-gutters">
     <div class="col-12">
-      <CompanyList />
+      <CompanyGridView />
     </div>
   </div>
 </template>
 
 <script>
-import CompanyList from "@/components/companies/companies/CompanyList.vue";
+import CompanyGridView from "@/components/companies/companies/CompanyGridView.vue";
 export default {
   name: "Request",
   components: {
-    CompanyList,
+    CompanyGridView,
   },
 };
 </script>

@@ -1,7 +1,6 @@
 import { createStore } from 'vuex'
 import Calendar from './modules/Calendar'
 import Timeline from './modules/Timeline'
-import CompanyForm from './modules/CompanyForm'
 import CompanyRequest from './modules/CompanyRequest'
 import CompanyContact from './modules/CompanyContact'
 import Companies from './modules/Companies'
@@ -34,6 +33,9 @@ const store = createStore({
     },
     actions: {
         async FETCH_CONSULTANT_LIST(context) {
+            if (context.getters.CONSULTANT_LIST.length) {
+                return;
+            }
             let data = await api.functions.getConsultantList();
             if (data) {
                 context.commit('updateConsultantList', data);
@@ -60,7 +62,6 @@ const store = createStore({
     modules: {
         Timeline,
         Calendar,
-        CompanyForm,
         CompanyRequest,
         CompanyContact,
         Companies,

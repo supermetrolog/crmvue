@@ -5,16 +5,25 @@
       :currentStepObjects="CURRENT_STEP_OBJECTS"
       :allObjects="ALL_OBJECTS"
       :selectedObjects="selectedObjects"
+      :step="selectedStep"
       :loader="loader"
       :pagination="OBJECTS_PAGINATION"
-      :favoritesVisible="favoritesVisible"
-      @clickFavoritesVisibleToggle="clickFavoritesVisibleToggle"
+      :stepActionsPartVisible="stepActionsPartVisible"
       @selectObject="selectObject"
       @unSelectObject="unSelectObject"
       @clickResetSelectObjects="clickResetSelectObjects"
       @loadMore="loadMore"
       @sendObjects="sendObjects"
-    />
+    >
+      <div class="timeline-actions row text-center">
+        <component
+          :is="stepName"
+          :step="selectedStep"
+          @updateItem="clickUpdateStep"
+        >
+        </component>
+      </div>
+    </OfferObjects>
     <Deal
       v-else-if="selectedStep.number == 7"
       :request_id="TIMELINE_REQUEST_ID"
@@ -35,6 +44,7 @@
       :selectedObjects="selectedObjects"
       :loader="loader"
       :selectedStepNumber="selectedStep.number"
+      :stepActionsPartVisible="stepActionsPartVisible"
       @selectObject="selectObject"
       @unSelectObject="unSelectObject"
       @clickResetSelectObjects="clickResetSelectObjects"
@@ -46,17 +56,35 @@
 <script>
 import OfferObjects from "@/components/companies/timeline/step-objects/OfferObjects.vue";
 import DefaultObjects from "@/components/companies/timeline/step-objects/DefaultObjects.vue";
-import Deal from "@/components/companies/timeline/step-objects/Deal.vue";
+import DealObjects from "@/components/companies/timeline/step-objects/Deal.vue";
+import Meeting from "../timeline/steps/Meeting.vue";
+import Offers from "../timeline/steps/Offers.vue";
+import Feedback from "../timeline/steps/Feedback.vue";
+import Inspection from "../timeline/steps/Inspection.vue";
+import Visit from "../timeline/steps/Visit.vue";
+import Interest from "../timeline/steps/Interest.vue";
+import Talk from "../timeline/steps/Talk.vue";
+import Deal from "../timeline/steps/Deal.vue";
+import { Timeline } from "@/const/Const";
 import { mapActions, mapGetters } from "vuex";
 export default {
   name: "Objects",
   components: {
     OfferObjects,
     DefaultObjects,
+    DealObjects,
+    Meeting,
+    Offers,
+    Feedback,
+    Inspection,
+    Visit,
+    Interest,
+    Talk,
     Deal,
   },
   data() {
     return {
+      stepParam: Timeline.get("param"),
       loader: false,
       selectedObjects: [],
     };
@@ -65,7 +93,7 @@ export default {
     selectedStep: {
       type: [Object, Boolean],
     },
-    favoritesVisible: {
+    stepActionsPartVisible: {
       type: Boolean,
     },
   },
@@ -76,6 +104,9 @@ export default {
       "ALL_OBJECTS",
       "TIMELINE_REQUEST_ID",
     ]),
+    stepName() {
+      return this.stepParam[this.$route.query.step][1].stepName;
+    },
   },
   methods: {
     ...mapActions([

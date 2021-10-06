@@ -2,7 +2,7 @@
   <div class="row no-gutters company-detail-info">
     <div class="col-12">
       <div class="row">
-        <div class="col-12 text-center anal mb-4">
+        <div class="col-12 text-center mb-3">
           <p class="d-inline-block pl-2 status">
             <span
               :class="{
@@ -13,7 +13,7 @@
             >
           </p>
           <p
-            class="d-inline-block pl-2 category"
+            class="d-inline-block pl-2 pb-2 category"
             v-for="categoryItem of company.categories"
             :key="categoryItem.id"
           >
@@ -26,7 +26,9 @@
       </div>
     </div>
     <div class="col-12 text-center p-3">
-      <h3>{{ company.nameRu }} - {{ company.nameEng }}</h3>
+      <h3 v-if="!company.noName">
+        {{ company.nameRu }} - {{ company.nameEng }}
+      </h3>
     </div>
     <div class="col-12">
       <div class="row no-gutters">
@@ -37,7 +39,7 @@
             </div>
             <div class="col-9 text-right align-self-center">
               <p>
-                {{ company.officeAdress }}
+                {{ company.officeAdress || "&#8212;" }}
               </p>
             </div>
           </div>
@@ -105,7 +107,7 @@
               <strong>ГК: </strong>
             </div>
             <div class="col-7 text-right align-self-center">
-              <p>
+              <p v-if="company.companyGroup">
                 {{ company.companyGroup.nameRu }}
               </p>
             </div>
@@ -147,7 +149,10 @@
             </div>
           </div>
         </div>
-        <div class="col-12 company-detail-info-item product-range">
+        <div
+          class="col-12 company-detail-info-item"
+          :class="{ 'product-range': company.productRanges.length }"
+        >
           <div class="row no-gutters">
             <div class="col-5">
               <strong>Наменклатура товара: </strong>
@@ -159,6 +164,9 @@
                 :key="product.id"
               >
                 {{ product.product }}
+              </p>
+              <p class="d-inline-block" v-if="!company.productRanges.length">
+                &#8212;
               </p>
             </div>
           </div>
@@ -218,7 +226,7 @@
         class="requisistes-show-btn"
         @click.prevent="toggleRequisistesVisible"
       >
-        Реквизиты
+        дополнительно
         <i class="fas fa-sort-down visible" v-if="!requisistesVisible"></i>
         <i class="fas fa-sort-up unvisible" v-else></i>
       </h4>

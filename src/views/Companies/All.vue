@@ -3,24 +3,48 @@
     <CompanyForm
       v-if="companyFormVisible"
       @closeCompanyForm="clickCloseCompanyForm"
+      @created="createdCompany"
     />
     <div class="row no-gutters search-main-container">
-      <div class="container p-3">
+      <div class="container py-3">
         <div class="col-12 search-container">
           <Search @search="clickSearch" />
         </div>
-        <button class="btn btn-primary mr-5" @click="companyFormVisible = true">
-          Создать
-        </button>
       </div>
     </div>
     <hr />
-    <div class="row no-gutters">
-      <div class="col-12 companies-list-container pt-4">
+
+    <div class="row no-gutters companies-actions">
+      <div class="col-6">
+        <p class="d-inline">Вид:</p>
+        <button
+          class="btn btn-action text-dark"
+          :class="{ active: !viewMode }"
+          @click="viewMode = false"
+        >
+          <i class="fas fa-th-list"></i>
+        </button>
+        <button
+          class="btn btn-action text-primary"
+          :class="{ active: viewMode }"
+          @click="viewMode = true"
+        >
+          <i class="fas fa-th"></i>
+        </button>
+      </div>
+      <div class="col-6 text-right">
+        <button class="btn btn-primary" @click="companyFormVisible = true">
+          Создать компанию
+        </button>
+      </div>
+    </div>
+    <div class="row no-gutters mt-2">
+      <div class="col-12 companies-list-container">
         <Loader v-if="loader" />
-        <CompanyList :companies="this.COMPANIES" />
+        <CompanyGridView :companies="this.COMPANIES" v-if="viewMode" />
+        <CompanyTableView :companies="this.COMPANIES" v-else />
         <h1
-          class="text-center text-primary"
+          class="text-center text-dark py-5"
           v-if="!this.COMPANIES[0] && !loader"
         >
           НИЧЕГО НЕ НАЙДЕНО
@@ -31,7 +55,8 @@
 </template>
 
 <script>
-import CompanyList from "@/components/companies/companies/CompanyList.vue";
+import CompanyGridView from "@/components/companies/companies/CompanyGridView.vue";
+import CompanyTableView from "@/components/companies/companies/CompanyTableView.vue";
 import Loader from "@/components/Loader.vue";
 import Search from "@/components/Search.vue";
 import CompanyForm from "@/components/companies/forms/company-form/CompanyForm.vue";
@@ -43,10 +68,12 @@ export default {
     return {
       loader: true,
       companyFormVisible: false,
+      viewMode: false,
     };
   },
   components: {
-    CompanyList,
+    CompanyGridView,
+    CompanyTableView,
     Loader,
     Search,
     CompanyForm,
@@ -69,6 +96,9 @@ export default {
     },
     clickCloseCompanyForm() {
       this.companyFormVisible = false;
+    },
+    createdCompany() {
+      this.getCompanies();
     },
   },
   computed: {

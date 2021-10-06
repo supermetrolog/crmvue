@@ -81,7 +81,11 @@
                         </div>
                       </div>
                       <div class="col-6 contact-data text-center text-lg-left">
-                        <a v-for="email of contact.emails" :key="email.email">
+                        <a
+                          :href="'mailto:' + email.email"
+                          v-for="email of contact.emails"
+                          :key="email.email"
+                        >
                           {{ email.email }}
                         </a>
                       </div>
@@ -111,7 +115,7 @@
                     <p class="mr-2">ЗАПРОСЫ: {{ company.request_count }}</p>
                     <p class="mr-2">ПРЕДЛОЖЕНИЯ: {{ company.offer_count }}</p>
                     <p class="mr-lg-0 mr-2">
-                      ОБЪЕКТЫ: {{ company.object_count }}
+                      СДЕЛКИ: {{ company.object_count }}
                     </p>
                     <p class="mr-lg-0 mr-2 broker">
                       брокер: Котлинов Павел Джавович
@@ -131,7 +135,7 @@
 import { CompanyCategories } from "@/const/Const";
 import Progress from "@/components/Progress";
 export default {
-  name: "CompanyList",
+  name: "CompanyGridView",
   components: {
     Progress,
   },

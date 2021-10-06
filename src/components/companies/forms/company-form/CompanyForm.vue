@@ -7,19 +7,33 @@
             :invalidIndex="getInvalidTabsList"
             :options="{ useUrlFragment: false }"
           >
+            <Loader class="center" v-if="loader" />
+
             <Tab name="Основное">
-              <MainInputList :v="this.v$.FORM" />
+              <MainInputList
+                :v="v$.form"
+                :formdata="form"
+                @addProductRangeItem="addProductRangeItem"
+                @deleteProductRangeItem="deleteProductRangeItem"
+              />
             </Tab>
             <Tab name="Реквизиты">
-              <RequisistesInputList :v="this.v$.FORM" />
+              <RequisistesInputList :v="v$.form" :formdata="form" />
             </Tab>
           </Tabs>
-          <div class="row mb-4">
+          <div class="row mb-3 mt-0">
             <div class="col-5 text-center m-auto">
               <input
+                v-if="!formdata"
                 class="btn btn-success btn-large"
                 type="submit"
                 value="Создать"
+              />
+              <input
+                v-else
+                class="btn btn-success btn-large"
+                type="submit"
+                value="Сохранить изменения"
               />
             </div>
           </div>
@@ -30,37 +44,112 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import useValidate from "@vuelidate/core";
 import { required, helpers, minLength, maxLength } from "@vuelidate/validators";
 import MainInputList from "./MainInputList.vue";
 import RequisistesInputList from "./RequisistesInputList.vue";
+import Loader from "@/components/Loader";
 import Modal from "@/components/Modal";
+import Utils from "@/utils";
 export default {
   name: "CompanyForm",
   components: {
     Modal,
     MainInputList,
     RequisistesInputList,
+    Loader,
   },
   data() {
     return {
       v$: useValidate(),
+      loader: false,
+      form: {
+        activityGroup: null,
+        activityProfile: null,
+        basis: null,
+        bik: null,
+        categories: [],
+        checkingAccount: null,
+        companyGroup_id: null,
+        consultant_id: null,
+        contacts: { phones: [""], emails: [""], websites: [""] },
+        correspondentAccount: null,
+        description: null,
+        documentNumber: null,
+        formOfOrganization: null,
+        inTheBank: null,
+        inn: null,
+        kpp: null,
+        legalAddress: null,
+        nameEng: null,
+        nameRu: null,
+        noName: 0,
+        officeAdress: null,
+        ogrn: null,
+        okpo: null,
+        okved: null,
+        productRanges: [],
+        signatoryLastName: null,
+        signatoryMiddleName: null,
+        signatoryName: null,
+        status: 1,
+      },
+      // form: {
+      //   nameEng: "",
+      //   nameRu: "",
+      //   noName: 0,
+      //   formOfOrganization: 0,
+      //   companyGroup: "",
+      //   category: [], // -
+      //   officeAdress: "",
+      //   siteList: [""], // -
+      //   phoneList: [""], // -
+      //   emailList: [""], // -
+      //   status: null,
+      //   consultant: null,
+      //   legalAddress: "",
+      //   ogrn: "",
+      //   inn: "",
+      //   kpp: "",
+      //   checkingAccount: "",
+      //   correspondentAccount: "",
+      //   inTheBank: "",
+      //   bik: "",
+      //   okved: "",
+      //   okpo: "",
+      //   signatoryName: "",
+      //   signatoryMiddleName: "",
+      //   signatoryLastName: "",
+      //   basis: "",
+      //   documentNumber: "",
+      //   activityGroup: null,
+      //   activityProfile: null,
+      //   productRange: [], // -
+      //   desctiption: "",
+      //   files: "sdawda",
+      // },
     };
   },
+  props: {
+    formdata: {
+      type: Object,
+      default: null,
+    },
+  },
   computed: {
-    ...mapGetters(["FORM"]),
+    ...mapGetters(["COMPANY"]),
     getInvalidTabsList() {
       let array = [];
-      if (this.v$.FORM.$error) array.push(0);
-      if (this.v$.FORM.$error) array.push(2);
-      if (this.v$.FORM.$error) array.push(1);
+      if (this.v$.form.$error) array.push(0);
+      if (this.v$.form.$error) array.push(2);
+      if (this.v$.form.$error) array.push(1);
       return array;
     },
   },
   validations() {
     return {
-      FORM: {
+      form: {
         nameEng: {
           customRequired: helpers.withMessage(
             "заполните поле",
@@ -89,13 +178,13 @@ export default {
             maxLength(60)
           ),
         },
-        category: {
+        categories: {
           required: helpers.withMessage("выберите категорию", required),
         },
         status: {
           required: helpers.withMessage("Выберите статус", required),
         },
-        consultant: {
+        consultant_id: {
           required: helpers.withMessage("Выберите консультанта", required),
         },
         ogrn: {
@@ -158,7 +247,7 @@ export default {
             required
           ),
         },
-        productRange: {
+        productRanges: {
           required: helpers.withMessage(
             "Выберите наменклатуру товаров",
             required
@@ -168,13 +257,62 @@ export default {
     };
   },
   methods: {
+    ...mapActions([
+      "FETCH_CONSULTANT_LIST",
+      "FETCH_COMPANY_GROUP_LIST",
+      "CREATE_COMPANY",
+      "UPDATE_COMPANY",
+    ]),
     submitForm() {
       this.v$.$validate();
-      console.log(this.v$.FORM.$error);
+      if (!this.v$.form.$error) {
+        console.log(this.form);
+        this.loader = true;
+        this.normalizeContacts();
+        if (this.formdata) {
+          this.updateCompany();
+        } else {
+          this.createCompany();
+        }
+      }
+    },
+    async updateCompany() {
+      if (await this.UPDATE_COMPANY(this.form)) {
+        this.$emit("updated");
+        this.loader = false;
+        this.clickCloseModal();
+      }
+    },
+    async createCompany() {
+      if (await this.CREATE_COMPANY(this.form)) {
+        this.$emit("created");
+        this.loader = false;
+
+        this.clickCloseModal();
+      }
+    },
+    normalizeContacts() {
+      this.form.contacts.phones = this.form.contacts.phones.filter(
+        (item) => item != ""
+      );
+      this.form.contacts.emails = this.form.contacts.emails.filter(
+        (item) => item != ""
+      );
+      this.form.contacts.websites = this.form.contacts.websites.filter(
+        (item) => item != ""
+      );
+    },
+    addProductRangeItem(newItem) {
+      this.form.productRanges.push(newItem);
+    },
+    deleteProductRangeItem(index) {
+      this.form.productRanges = this.form.productRanges.filter(
+        (item, idx) => idx != index
+      );
     },
     customRequired(value) {
-      if (!this.FORM.noName) {
-        if (value != "") {
+      if (!this.form.noName) {
+        if (value != null) {
           return true;
         }
         return false;
@@ -186,7 +324,17 @@ export default {
       this.$emit("closeCompanyForm");
     },
   },
-  emits: ["closeCompanyForm"],
+  async mounted() {
+    this.loader = true;
+    await this.FETCH_CONSULTANT_LIST();
+    await this.FETCH_COMPANY_GROUP_LIST();
+    if (this.formdata) {
+      let clone = JSON.parse(JSON.stringify(this.formdata));
+      this.form = Utils.normalizeDataForCompanyForm(clone);
+    }
+    this.loader = false;
+  },
+  emits: ["closeCompanyForm", "created", "updated"],
 };
 </script>
 

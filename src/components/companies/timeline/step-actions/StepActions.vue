@@ -1,8 +1,13 @@
 <template>
   <div class="step-actions">
-    <div class="row no-gutters mb-3">
-      <div class="col-12">
-        <button class="btn btn-primary btn-large">сохранить изменения</button>
+    <div class="row no-gutters">
+      <div class="col-12 text-right">
+        <button
+          class="btn btn-action text-primary btn-close"
+          @click="$emit('close')"
+        >
+          <i class="fas fa-angle-double-left"></i>
+        </button>
       </div>
     </div>
     <div class="row no-gutters inner">

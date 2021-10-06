@@ -1,9 +1,9 @@
 <template>
-  <div class="requisistes-inputlist">
+  <div class="requisistes-inputlist" v-if="form">
     <div class="input-group row no-gutters">
       <div class="col-7">
         <label class="input-label">Юр. адрес</label>
-        <input type="text" v-model.trim="this.FORM.legalAddress" />
+        <input type="text" v-model.trim="form.legalAddress" />
       </div>
     </div>
     <div class="input-group row no-gutters">
@@ -12,11 +12,11 @@
         ><input
           :class="{
             invalid: v.ogrn.$error,
-            valid: v.ogrn.$dirty && !v.ogrn.$error && this.FORM.ogrn,
+            valid: v.ogrn.$dirty && !v.ogrn.$error && form.ogrn,
           }"
           type="text"
           @input="v.ogrn.$touch"
-          v-model.trim="this.FORM.ogrn"
+          v-model.trim="form.ogrn"
           v-maska="'#############'"
         />
         <div
@@ -31,11 +31,11 @@
         <input
           :class="{
             invalid: v.inn.$error,
-            valid: v.inn.$dirty && !v.inn.$error && this.FORM.inn,
+            valid: v.inn.$dirty && !v.inn.$error && form.inn,
           }"
           type="text"
           @input="v.inn.$touch"
-          v-model.trim="this.FORM.inn"
+          v-model.trim="form.inn"
           v-maska="'############'"
         />
         <div
@@ -50,11 +50,11 @@
         <input
           :class="{
             invalid: v.kpp.$error,
-            valid: v.kpp.$dirty && !v.kpp.$error && this.FORM.kpp,
+            valid: v.kpp.$dirty && !v.kpp.$error && form.kpp,
           }"
           type="text"
           @input="v.kpp.$touch"
-          v-model.trim="this.FORM.kpp"
+          v-model.trim="form.kpp"
           v-maska="'#########'"
         />
         <div
@@ -74,11 +74,11 @@
             valid:
               v.checkingAccount.$dirty &&
               !v.checkingAccount.$error &&
-              this.FORM.checkingAccount,
+              form.checkingAccount,
           }"
           type="text"
           @input="v.checkingAccount.$touch"
-          v-model.trim="this.FORM.checkingAccount"
+          v-model.trim="form.checkingAccount"
           v-maska="'####################'"
         />
         <div
@@ -96,11 +96,11 @@
             valid:
               v.correspondentAccount.$dirty &&
               !v.correspondentAccount.$error &&
-              this.FORM.correspondentAccount,
+              form.correspondentAccount,
           }"
           type="text"
           @input="v.correspondentAccount.$touch"
-          v-model.trim="this.FORM.correspondentAccount"
+          v-model.trim="form.correspondentAccount"
           v-maska="'####################'"
         />
         <div
@@ -112,7 +112,7 @@
       </div>
       <div class="col-4">
         <label class="input-label">В банке</label>
-        <input type="text" v-model.trim="this.FORM.inTheBank" />
+        <input type="text" v-model.trim="form.inTheBank" />
       </div>
     </div>
     <div class="input-group row no-gutters">
@@ -121,11 +121,11 @@
         ><input
           :class="{
             invalid: v.bik.$error,
-            valid: v.bik.$dirty && !v.bik.$error && this.FORM.bik,
+            valid: v.bik.$dirty && !v.bik.$error && form.bik,
           }"
           type="text"
           @input="v.bik.$touch"
-          v-model.trim="this.FORM.bik"
+          v-model.trim="form.bik"
           v-maska="'#########'"
         />
         <div
@@ -140,11 +140,11 @@
         <input
           :class="{
             invalid: v.okpo.$error,
-            valid: v.okpo.$dirty && !v.okpo.$error && this.FORM.okpo,
+            valid: v.okpo.$dirty && !v.okpo.$error && form.okpo,
           }"
           type="text"
           @input="v.okpo.$touch"
-          v-model.trim="this.FORM.okpo"
+          v-model.trim="form.okpo"
           v-maska="'##########'"
         />
         <div
@@ -159,11 +159,11 @@
         <input
           :class="{
             invalid: v.okved.$error,
-            valid: v.okved.$dirty && !v.okved.$error && this.FORM.okved,
+            valid: v.okved.$dirty && !v.okved.$error && form.okved,
           }"
           type="text"
           @input="v.okved.$touch"
-          v-model.trim="this.FORM.okved"
+          v-model.trim="form.okved"
           v-maska="'##############################'"
         />
         <div
@@ -177,36 +177,47 @@
     <div class="input-group row no-gutters">
       <div class="col-4 pr-2">
         <label class="input-label">Имя подписанта</label>
-        <input type="text" v-model.trim="this.FORM.signatodyName" />
+        <input type="text" v-model.trim="form.signatodyName" />
       </div>
       <div class="col-4 pr-2">
         <label class="input-label">Фамилия подписанта</label>
-        <input type="text" v-model.trim="this.FORM.signatodyMiddleName" />
+        <input type="text" v-model.trim="form.signatodyMiddleName" />
       </div>
       <div class="col-4 pr-2">
         <label class="input-label">Отчество подписанта</label>
-        <input type="text" v-model.trim="this.FORM.signatodyLastName" />
+        <input type="text" v-model.trim="form.signatodyLastName" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-
 export default {
   name: "MainInputList",
+  data() {
+    return {
+      form: null,
+    };
+  },
   props: {
     v: {
       type: Object,
     },
-  },
-  computed: {
-    ...mapGetters(["FORM"]),
+    formdata: {
+      type: Object,
+    },
   },
   methods: {
     test() {
-      console.log(this.FORM.nameEng);
+      console.log(this.form.nameEng);
+    },
+  },
+  mounted() {
+    this.form = this.formdata;
+  },
+  watch: {
+    formdata() {
+      this.form = this.formdata;
     },
   },
 };

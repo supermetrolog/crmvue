@@ -18,10 +18,10 @@
         <span class="badge-1">{{ stepParam[data.number][1].name }}</span>
       </h4>
       <hr />
-      <div class="row no-gutters timeline-actions">
+      <div class="row no-gutters">
         <slot
           name="actions"
-          :stepName="stepParam[data.number][1].stepName"
+          :stepName="stepParam[data.number][1].stepName + 'Timeline'"
           :disabled="disabled"
         ></slot>
       </div>

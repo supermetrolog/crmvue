@@ -79,5 +79,59 @@ export default {
         array = [];
         return newData;
 
+    },
+    normalizeDataForCompanyForm(data) {
+        let array = [];
+        let newData = data;
+        newData.productRanges.map(item => {
+            array.push(item.product)
+        });
+        newData.productRanges = array;
+        array = [];
+
+        newData.categories.map(item => {
+            array.push(item.category)
+        });
+        newData.categories = array;
+        array = [];
+
+        if (!newData.contacts.length) {
+            newData.contacts = { phones: [""], emails: [""], websites: [""] };
+            return newData;
+        }
+        newData.contacts = newData.contacts.find(item => item.type == 1);
+        console.error(newData.contacts);
+
+        if (!newData.contacts) {
+            newData.contacts = { phones: [""], emails: [""], websites: [""] };
+            return newData;
+        }
+
+        newData.contacts.emails.map(item => {
+            array.push(item.email)
+        });
+        if (!array.length) {
+            array.push("");
+        }
+        newData.contacts.emails = array;
+        array = [];
+        newData.contacts.phones.map(item => {
+            array.push(item.phone)
+        });
+        if (!array.length) {
+            array.push("");
+        }
+        newData.contacts.phones = array;
+        array = [];
+        newData.contacts.websites.map(item => {
+            array.push(item.website)
+        });
+        if (!array.length) {
+            array.push("");
+        }
+        newData.contacts.websites = array;
+        array = [];
+        return newData;
+
     }
 }

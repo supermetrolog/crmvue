@@ -1,9 +1,9 @@
 <template>
   <div class="col">
     <div class="row" v-if="data">
-      <div class="col">
+      <div class="col text-center">
         <p>
-          - Посмотреть и отправить подходящие предложения клиенту, при
+          - Посмотреть и отправить подходящие предложения клиенту, при <br />
           необходимости добавить варианты вручную
         </p>
         <button
@@ -46,6 +46,9 @@ export default {
     },
     disabled: {
       type: Boolean,
+      default: () => {
+        return false;
+      },
     },
   },
   mounted() {

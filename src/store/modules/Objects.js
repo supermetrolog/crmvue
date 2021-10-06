@@ -76,7 +76,10 @@ const Objects = {
                 context.commit('updateAllObjects', objects);
 
             } else {
-                await context.dispatch('FETCH_OBJECTS_FOR_PREVENT_STEP_OBJECTS', currentStepNumber);
+                if (currentStepNumber != 0) {
+                    await context.dispatch('FETCH_OBJECTS_FOR_PREVENT_STEP_OBJECTS', currentStepNumber);
+
+                }
             }
         },
         async SEND_OBJECTS(context, step_id, objects) {

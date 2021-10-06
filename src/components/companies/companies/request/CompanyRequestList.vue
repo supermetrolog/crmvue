@@ -35,9 +35,24 @@
         </div>
       </div>
     </Modal>
-    <div class="row mb-4">
-      <div class="col-12 text-center">
-        <h4>Запросы (3) - Сделки (2)</h4>
+    <div class="row mb-2" v-if="requests.length">
+      <div class="col-12 p-0">
+        <div class="row no-gutters">
+          <div class="col-6 pr-2">
+            <div class="row no-gutters">
+              <div class="col-6"><p>Запросы</p></div>
+              <div class="col-6 text-right">
+                <p>{{ requests.length }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 pl-2">
+            <div class="row no-gutters">
+              <div class="col-6"><p>Сделки</p></div>
+              <div class="col-6 text-right"><p>1</p></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <CompanyRequestItem

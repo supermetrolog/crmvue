@@ -2,7 +2,7 @@
   <div class="col">
     <div class="row" v-if="data">
       <div class="col">
-        <p>- Отметить объекты, по которым клиент планирует вести переговоры</p>
+        <p>- Отметить объект, по которому произошла сделка</p>
         <button class="action" :class="{ active: data.done }" disabled>
           <i class="far fa-smile"></i>
           <span class="ml-1">Выполнено</span>

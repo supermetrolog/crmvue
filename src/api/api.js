@@ -5,6 +5,7 @@ import functions from "./functions.js";
 import request from "./request.js";
 import objects from "./objects.js";
 import contacts from "./contacts.js";
+import companies from "./companies.js";
 export default {
     auth,
     notifications,
@@ -12,5 +13,6 @@ export default {
     functions,
     request,
     objects,
-    contacts
+    contacts,
+    companies
 }

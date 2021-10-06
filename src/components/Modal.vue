@@ -34,7 +34,7 @@ export default {
     document.getElementsByTagName("body")[0].style.overflow = "hidden";
   },
   unmounted() {
-    document.getElementsByTagName("body")[0].style.overflow = "auto";
+    document.getElementsByTagName("body")[0].style["overflow-y"] = "scroll";
   },
   emits: ["close"],
 };

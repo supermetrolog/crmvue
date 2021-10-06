@@ -50,7 +50,6 @@ export default {
       if (!this.newTag) return;
       this.$emit("addTag", this.newTag);
       this.newTag = null;
-      console.log(this.tags);
     },
     clickDeleteTag(index) {
       this.$emit("deleteTag", index);
