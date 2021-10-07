@@ -767,6 +767,10 @@
                 color: $color_light;
                 font-weight: bold;
             }
+            &.danger {
+                color: $color_danger;
+                border: 1px solid $color_danger;
+            }
             &.disabled {
                 background-color: $color_disabled_actions!important;
                 color: $color_dark;
@@ -781,6 +785,7 @@
         }
         .active {
             background-color: $color_secondary!important;
+            border: 1px solid $color_secondary!important;
             outline: .5px solid darken($color_secondary, 10);
             color: $color_light!important;
         }
@@ -2518,8 +2523,14 @@
     }
     
     .btn-close {
+        padding: 2.5px 10px!important;
+        background-color: transparent;
+        color: $color_primary;
+        &:active {
+            background-color: transparent;
+        }
         i {
-            font-size: 40px;
+            font-size: 30px;
         }
         &.absolute {
             position: absolute;

@@ -1,16 +1,9 @@
 <template>
   <div class="step-actions">
-    <div class="row no-gutters">
-      <div class="col-12 text-right">
-        <button
-          class="btn btn-action text-primary btn-close"
-          @click="$emit('close')"
-        >
-          <i class="fas fa-angle-double-left"></i>
-        </button>
-      </div>
+    <div class="row no-gutters pb-1">
+      <div class="col-12"></div>
     </div>
-    <div class="row no-gutters inner">
+    <div class="row no-gutters inner mt-5">
       <div class="col-12 text-center">
         <h5 class="mt-0 mb-3">Комментарий</h5>
         <textarea v-model.trim="step.comment" @input="inputComment"></textarea>

@@ -19,7 +19,10 @@
       </div>
     </div>
     <div class="row no-gutters inner scroller">
-      <div class="col-12 text-right companies-actions">
+      <div class="col-8">
+        <slot></slot>
+      </div>
+      <div class="col-4 text-right companies-actions">
         <p class="d-inline">Вид:</p>
         <button
           class="btn btn-action text-dark"
@@ -44,16 +47,33 @@
           <div class="col-12 px-2" v-if="currentStepObjects.length">
             <p v-if="selectedStepNumber == 2">
               Предложения, которые заинтересовали клиента
+              <strong v-if="currentStepObjects.length"
+                >({{ currentStepObjects.length }})</strong
+              >
             </p>
             <p v-else-if="selectedStepNumber == 3">
               Объекты, которые планируются осмотреть
+              <strong v-if="currentStepObjects.length"
+                >({{ currentStepObjects.length }})</strong
+              >
             </p>
-            <p v-else-if="selectedStepNumber == 4">Оъекты, которые осмотрели</p>
+            <p v-else-if="selectedStepNumber == 4">
+              Оъекты, которые осмотрели
+              <strong v-if="currentStepObjects.length"
+                >({{ currentStepObjects.length }})</strong
+              >
+            </p>
             <p v-else-if="selectedStepNumber == 5">
               Оъекты, которые заинтересовали клиента при осмотра
+              <strong v-if="currentStepObjects.length"
+                >({{ currentStepObjects.length }})</strong
+              >
             </p>
             <p v-else-if="selectedStepNumber == 6">
               Оъекты, по которым клиент планирует вести переговоры
+              <strong v-if="currentStepObjects.length"
+                >({{ currentStepObjects.length }})</strong
+              >
             </p>
           </div>
           <template v-if="viewMode">

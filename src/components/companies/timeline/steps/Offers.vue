@@ -1,27 +1,10 @@
 <template>
   <div class="col">
     <div class="row" v-if="data">
-      <div class="col text-center">
-        <p>
-          - Посмотреть и отправить подходящие предложения клиенту, при <br />
-          необходимости добавить варианты вручную
-        </p>
+      <div class="col">
         <button
-          class="action"
-          :class="{ active: data.timelineStepObjects.length && !data.negative }"
-          disabled
-          @click="clickSelectObjects"
-        >
-          <i class="far fa-smile"></i>
-          <span class="ml-1" v-if="data.timelineStepObjects.length"
-            >Отправлено {{ data.timelineStepObjects.length }}
-          </span>
-          <span class="ml-1" v-else>Выбрать</span>
-        </button>
-        <button
-          class="ml-1 mb-2 action"
+          class="ml-1 mb-2 action danger"
           :class="{ active: data.negative }"
-          :disabled="disabled || data.negative"
           @click="clickNegative"
         >
           <i class="far fa-frown-open"></i>
@@ -56,7 +39,7 @@ export default {
   },
   methods: {
     clickNegative() {
-      this.data.negative = 1;
+      this.data.negative ? (this.data.negative = 0) : (this.data.negative = 1);
       this.$emit("updateItem", this.data);
     },
   },

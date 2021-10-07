@@ -1,6 +1,18 @@
 <template>
   <div class="offer-objects">
     <div class="row no-gutters mb-3 p-0">
+      <div class="col-1">
+        <button
+          class="btn btn-primary btn-action btn-close"
+          @click="$emit('toggleStepActionsPartVisible')"
+        >
+          <i
+            class="fas fa-angle-double-right"
+            v-if="!stepActionsPartVisible"
+          ></i>
+          <i class="fas fa-angle-double-left" v-if="stepActionsPartVisible"></i>
+        </button>
+      </div>
       <div class="col-3 pr-1">
         <button
           class="btn btn-primary btn-large"
@@ -15,14 +27,6 @@
           @click.prevent="$emit('clickResetSelectObjects')"
         >
           сбросить выделение
-        </button>
-      </div>
-      <div class="col-3 pr-1">
-        <button
-          class="btn btn-danger btn-large"
-          @click.prevent="$emit('clickResetSelectObjects')"
-        >
-          нет подходящих
         </button>
       </div>
     </div>
@@ -52,7 +56,12 @@
 
         <div class="row no-gutters" v-if="allObjects.length">
           <div class="col-12 px-2" v-if="currentStepObjects.length">
-            <p>Отправленные предложения</p>
+            <p>
+              Отправленные предложения
+              <strong v-if="currentStepObjects.length"
+                >({{ currentStepObjects.length }})</strong
+              >
+            </p>
           </div>
           <template v-if="viewMode">
             <ObjectsItem
@@ -193,6 +202,7 @@ export default {
     "selectObject",
     "unSelectObject",
     "loadMore",
+    "toggleStepActionsPartVisible",
   ],
 };
 </script>

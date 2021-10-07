@@ -14,8 +14,9 @@
       @clickResetSelectObjects="clickResetSelectObjects"
       @loadMore="loadMore"
       @sendObjects="sendObjects"
+      @toggleStepActionsPartVisible="$emit('toggleStepActionsPartVisible')"
     >
-      <div class="timeline-actions row text-center">
+      <div class="timeline-actions row">
         <component
           :is="stepName"
           :step="selectedStep"
@@ -36,7 +37,16 @@
       @unSelectObject="unSelectObject"
       @clickResetSelectObjects="clickResetSelectObjects"
       @submitDeal="submitDeal"
-    />
+    >
+      <div class="timeline-actions row">
+        <component
+          :is="stepName"
+          :step="selectedStep"
+          @updateItem="clickUpdateStep"
+        >
+        </component>
+      </div>
+    </Deal>
     <DefaultObjects
       v-else-if="selectedStep.number != 0"
       :currentStepObjects="CURRENT_STEP_OBJECTS"
@@ -49,7 +59,16 @@
       @unSelectObject="unSelectObject"
       @clickResetSelectObjects="clickResetSelectObjects"
       @sendObjects="sendObjects"
-    />
+    >
+      <div class="timeline-actions row">
+        <component
+          :is="stepName"
+          :step="selectedStep"
+          @updateItem="clickUpdateStep"
+        >
+        </component>
+      </div>
+    </DefaultObjects>
   </div>
 </template>
 
@@ -118,6 +137,9 @@ export default {
       "UPDATE_STEP",
       "FETCH_COMPANY_REQUESTS",
     ]),
+    clickUpdateStep(data) {
+      this.$emit("updateStep", data);
+    },
     selectObject(object) {
       this.selectedObjects.push(object);
     },

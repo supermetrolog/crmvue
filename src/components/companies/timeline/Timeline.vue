@@ -1,7 +1,7 @@
 <template>
   <div class="container-timeline">
     <div class="row no-gutters" v-if="!timelineNotFoundFlag">
-      <div class="col-4 left box">
+      <div class="col-3 left box">
         <div class="row no-gutters mb-3 p-0">
           <div class="col-3 pr-1">
             <button
@@ -60,19 +60,13 @@
         v-if="selectedStep"
         :class="{ 'col-8': !stepActionsPartVisible }"
       >
-        <button
-          class="btn btn-action text-primary btn-close absolute"
-          v-if="!stepActionsPartVisible"
-          @click="toggleStepActionsPartVisible"
-        >
-          <i class="fas fa-angle-double-right"></i>
-        </button>
-
         <Objects
           :selectedStep="selectedStep"
           :stepActionsPartVisible="stepActionsPartVisible"
           @clickFavoritesVisibleToggle="clickFavoritesVisibleToggle"
           @updated="updatedObjects"
+          @updateStep="clickUpdateStep"
+          @toggleStepActionsPartVisible="toggleStepActionsPartVisible"
         />
       </div>
       <div class="col-3 box" v-if="favoritesVisible">
@@ -94,14 +88,6 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import TimelineItem from "./TimelineItem";
-import Meeting from "./steps/Meeting.vue";
-import Offers from "./steps/Offers.vue";
-import Feedback from "./steps/Feedback.vue";
-import Inspection from "./steps/Inspection.vue";
-import Visit from "./steps/Visit.vue";
-import Interest from "./steps/Interest.vue";
-import Talk from "./steps/Talk.vue";
-import Deal from "./steps/Deal.vue";
 
 import MeetingTimeline from "./steps/steps-timeline/Meeting.vue";
 import OffersTimeline from "./steps/steps-timeline/Offers.vue";
@@ -120,16 +106,6 @@ export default {
   name: "Timeline",
   components: {
     TimelineItem,
-
-    Meeting,
-    Offers,
-    Feedback,
-    Inspection,
-    Visit,
-    Interest,
-    Talk,
-    Deal,
-
     MeetingTimeline,
     OffersTimeline,
     FeedbackTimeline,
@@ -138,7 +114,6 @@ export default {
     InterestTimeline,
     TalkTimeline,
     DealTimeline,
-
     Loader,
     Objects,
     StepActions,
@@ -151,7 +126,7 @@ export default {
       objects: [],
       timelineNotFoundFlag: false,
       favoritesVisible: false,
-      stepActionsPartVisible: false,
+      stepActionsPartVisible: true,
     };
   },
   computed: {
@@ -162,12 +137,6 @@ export default {
       }
       return false;
     },
-    stepName() {
-      return this.stepParam[this.$route.query.step][1].stepName;
-    },
-    // stepNameTimeline() {
-    //   return this.stepParam[this.$route.query.step][1].stepName + "Timeline";
-    // },
   },
   methods: {
     ...mapActions(["FETCH_TIMELINE", "UPDATE_STEP"]),
