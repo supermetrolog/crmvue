@@ -3,6 +3,7 @@
     <Modal
       :title="!formdata ? 'Создание запроса' : 'Изменение запроса'"
       @close="clickCloseModal"
+      class="normal"
     >
       <form @submit.prevent="submitForm">
         <div class="company-form-container p-3">

@@ -1,5 +1,5 @@
 <template>
-  <div class="px-2 my-2" :class="col">
+  <div class="px-2 mb-3" :class="col">
     <div
       class="objects-item"
       :class="[

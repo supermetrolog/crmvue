@@ -1,11 +1,11 @@
 <template>
   <div class="col company-form" v-if="data">
-    <div class="row no-gutters mb-0">
+    <div class="row no-gutters mb-0" v-if="data.timelineStepObjects.length">
       <div class="col">
         <p>- Отметить каким способом была получена обратная связь</p>
         <div class="checkbox-group no-input">
           <div
-            class="d-inline-block mr-1 mb-2"
+            class="d-inline-block mr-1"
             v-for="feedbackWayItem of feedbackWayList"
             :key="feedbackWayItem[0]"
           >
@@ -15,13 +15,11 @@
               v-model="ways"
               :value="feedbackWayItem[0]"
               :id="'checkbox-feedbackWay' + feedbackWayItem[0]"
-              :disabled="disabled"
             />
             <label
               class="action feedback-way p-1 justify-content-center"
               :class="{
                 active: ways.includes(feedbackWayItem[0]),
-                disabled: disabled,
               }"
               :for="'checkbox-feedbackWay' + feedbackWayItem[0]"
               @click="inputWay"
@@ -32,7 +30,7 @@
             </label>
           </div>
           <div class="actions d-inline-block" v-if="actionsVisible">
-            <button class="btn-action text-info" @click="confirm">
+            <button class="btn-action text-success" @click="confirm">
               <i class="fas fa-check"></i>
             </button>
             <button class="btn-action text-danger" @click="cancel">
@@ -40,31 +38,6 @@
             </button>
           </div>
         </div>
-      </div>
-    </div>
-    <div class="row no-gutters">
-      <div class="col">
-        <p>- Отметить объекты, которые заинтересовали клиента</p>
-        <button
-          class="action"
-          :class="{ active: data.timelineStepObjects.length && !data.negative }"
-          disabled
-          @click="clickSelectObjects"
-        >
-          <i class="far fa-smile"></i>
-          <span class="ml-1"
-            >Выбрано {{ data.timelineStepObjects.length }}
-          </span>
-        </button>
-        <button
-          class="ml-1 mb-2 action"
-          :class="{ active: data.negative }"
-          :disabled="disabled || data.negative"
-          @click="clickNegative"
-        >
-          <i class="far fa-frown-open"></i>
-          <span class="ml-1">Нет подходящих</span>
-        </button>
       </div>
     </div>
   </div>
@@ -86,22 +59,14 @@ export default {
     step: {
       type: Object,
     },
-    disabled: {
-      type: Boolean,
-    },
   },
   mounted() {
     this.data = this.step;
     this.data.timelineStepFeedbackways.map((item) => {
       this.ways.push(item.way);
     });
-    console.log(this.data);
   },
   methods: {
-    clickNegative() {
-      this.data.negative = 1;
-      this.$emit("updateItem", this.data);
-    },
     cancel() {
       this.ways = [];
       this.data.timelineStepFeedbackways.map((item) => {
@@ -117,13 +82,18 @@ export default {
           way: item,
         });
       });
-      this.$emit("updateItem", this.data);
+      this.data.newActionComments = [
+        {
+          timeline_step_id: this.data.id,
+          title: "система",
+          comment: "Отметил способ обратной связи",
+        },
+      ];
+      this.$emit("updateItem", this.data, true);
       this.actionsVisible = false;
     },
     inputWay() {
-      if (!this.disabled) {
-        this.actionsVisible = true;
-      }
+      this.actionsVisible = true;
     },
   },
   watch: {

@@ -47,7 +47,6 @@ const Objects = {
                     }
                 })
             });
-            console.log(array);
             commit('updateCurrentStepObjects', array);
         },
         async FETCH_OBJECTS_FOR_PREVENT_STEP_OBJECTS(context, currentStepNumber) {

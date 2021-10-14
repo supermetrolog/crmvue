@@ -3,12 +3,15 @@
     <div class="wrapper">
       <ul class="sessions">
         <li>
-          <i class="fas fa-check-circle success" v-if="step.done"></i>
+          <i
+            class="fas fa-check-circle success"
+            v-if="step.additional == 1"
+          ></i>
           <i class="fas fa-circle" v-else></i>
-          <div class="time">позвонить клиенту</div>
+          <div class="time">поговорить с клиентом</div>
         </li>
         <li>
-          <i class="fas fa-check-circle success" v-if="step.additional"></i>
+          <i class="fas fa-check-circle success" v-if="step.done"></i>
           <i class="fas fa-circle" v-else></i>
           <div class="time">утвердить запрос</div>
         </li>

@@ -34,7 +34,7 @@ const CompanyRequest = {
     getters: {
         COMPANY_REQUESTS(state) {
             return state.companyRequests;
-        }
+        },
     }
 }
 

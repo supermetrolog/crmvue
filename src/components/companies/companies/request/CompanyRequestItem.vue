@@ -8,8 +8,13 @@
         <i
           class="fas fa-pen text-primary edit"
           @click="openCompanyRequestFormForUpdate"
+          v-if="!reedOnly"
         ></i>
-        <i class="fas fa-times text-danger delete" @click="deleteRequest"></i>
+        <i
+          class="fas fa-times text-danger delete"
+          @click="deleteRequest"
+          v-if="!reedOnly"
+        ></i>
         <p>{{ dealType }} {{ request.minArea + " - " + request.maxArea }}</p>
         <span>
           м<sup><small>2</small></sup>
@@ -128,7 +133,7 @@
           <p>конс: {{ request.consultant.username }}</p>
           <p>{{ request.created_at }}</p>
         </div>
-        <div class="col-4 date text-right">
+        <div class="col-4 date text-right" v-if="!reedOnly">
           <button
             class="btn px-2 btn-primary timeline-btn"
             @click="clickTimeline"
@@ -213,6 +218,12 @@ export default {
     request: {
       type: Object,
     },
+    reedOnly: {
+      type: Boolean,
+      default: () => {
+        return false;
+      },
+    },
   },
   computed: {
     dealType() {
@@ -296,6 +307,9 @@ export default {
       return this.objectTypeListPlot.find((item) => item[0] == objectType)[1]
         .name;
     },
+  },
+  mounted() {
+    this.extraInfoVisible = this.reedOnly;
   },
   emits: ["openCompanyRequestFormForUpdate", "deleteRequest"],
 };

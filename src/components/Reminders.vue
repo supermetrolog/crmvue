@@ -3,13 +3,11 @@
     <ul class="reminders-list scroller">
       <li>
         <div class="row no-gutters reminders-list-item">
-          <div class="col-1 text-right">
-            <i class="far fa-clock"></i>
+          <div class="col-12">
+            <i class="far fa-clock d-inline-block mr-2"></i>
+            <span class="d-inline-block">24 сен. 2021 13:21</span>
           </div>
-          <div class="col-3 text-center">
-            <span>24 сен. 2021 13:21</span>
-          </div>
-          <div class="col-8">
+          <div class="col-12">
             <a href="" title="посмотреть в календаре">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto,
               temporibus aut? Nam vel tempora fuga?
@@ -19,29 +17,11 @@
       </li>
       <li>
         <div class="row no-gutters reminders-list-item">
-          <div class="col-1 text-right">
-            <i class="far fa-clock"></i>
+          <div class="col-12">
+            <i class="far fa-clock d-inline-block mr-2"></i>
+            <span class="d-inline-block">24 сен. 2021 13:21</span>
           </div>
-          <div class="col-3 text-center">
-            <span>24 сен. 2021 13:21</span>
-          </div>
-          <div class="col-8">
-            <a href="" title="посмотреть в календаре">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto,
-              temporibus aut?
-            </a>
-          </div>
-        </div>
-      </li>
-      <li>
-        <div class="row no-gutters reminders-list-item">
-          <div class="col-1 text-right">
-            <i class="far fa-clock"></i>
-          </div>
-          <div class="col-3 text-center">
-            <span>24 сен. 2021 13:21</span>
-          </div>
-          <div class="col-8">
+          <div class="col-12">
             <a href="" title="посмотреть в календаре">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto,
               temporibus aut? Nam vel tempora fuga?
@@ -51,29 +31,11 @@
       </li>
       <li>
         <div class="row no-gutters reminders-list-item">
-          <div class="col-1 text-right">
-            <i class="far fa-clock"></i>
+          <div class="col-12">
+            <i class="far fa-clock d-inline-block mr-2"></i>
+            <span class="d-inline-block">24 сен. 2021 13:21</span>
           </div>
-          <div class="col-3 text-center">
-            <span>24 сен. 2021 13:21</span>
-          </div>
-          <div class="col-8">
-            <a href="" title="посмотреть в календаре">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto,
-              temporibus aut?
-            </a>
-          </div>
-        </div>
-      </li>
-      <li>
-        <div class="row no-gutters reminders-list-item">
-          <div class="col-1 text-right">
-            <i class="far fa-clock"></i>
-          </div>
-          <div class="col-3 text-center">
-            <span>24 сен. 2021 13:21</span>
-          </div>
-          <div class="col-8">
+          <div class="col-12">
             <a href="" title="посмотреть в календаре">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto,
               temporibus aut? Nam vel tempora fuga?
@@ -83,29 +45,25 @@
       </li>
       <li>
         <div class="row no-gutters reminders-list-item">
-          <div class="col-1 text-right">
-            <i class="far fa-clock"></i>
+          <div class="col-12">
+            <i class="far fa-clock d-inline-block mr-2"></i>
+            <span class="d-inline-block">24 сен. 2021 13:21</span>
           </div>
-          <div class="col-3 text-center">
-            <span>24 сен. 2021 13:21</span>
-          </div>
-          <div class="col-8">
+          <div class="col-12">
             <a href="" title="посмотреть в календаре">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto,
-              temporibus aut?
+              temporibus aut? Nam vel tempora fuga?
             </a>
           </div>
         </div>
       </li>
       <li>
         <div class="row no-gutters reminders-list-item">
-          <div class="col-1 text-right">
-            <i class="far fa-clock"></i>
+          <div class="col-12">
+            <i class="far fa-clock d-inline-block mr-2"></i>
+            <span class="d-inline-block">24 сен. 2021 13:21</span>
           </div>
-          <div class="col-3 text-center">
-            <span>24 сен. 2021 13:21</span>
-          </div>
-          <div class="col-8">
+          <div class="col-12">
             <a href="" title="посмотреть в календаре">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto,
               temporibus aut? Nam vel tempora fuga?
@@ -114,6 +72,7 @@
         </div>
       </li>
     </ul>
+
     <div class="reminders-add py-2">
       <form @submit.prevent="submitForm">
         <div class="row no-gutters">

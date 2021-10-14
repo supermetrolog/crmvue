@@ -1,7 +1,7 @@
 <template>
-  <div class="col">
+  <div class="col-10">
     <div class="row" v-if="data">
-      <div class="col">
+      <div class="col-4">
         <button
           class="ml-1 mb-2 action danger"
           :class="{ active: data.negative }"

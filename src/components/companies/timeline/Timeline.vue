@@ -1,9 +1,9 @@
 <template>
   <div class="container-timeline">
     <div class="row no-gutters" v-if="!timelineNotFoundFlag">
-      <div class="col-3 left box">
-        <div class="row no-gutters mb-3 p-0">
-          <div class="col-3 pr-1">
+      <div class="col-3 stage box">
+        <div class="row no-gutters mb-2 p-0">
+          <div class="col-6 pr-1">
             <button
               class="btn btn-primary btn-large"
               @click.prevent="clickOpenCompanyForm"
@@ -11,7 +11,7 @@
               передать
             </button>
           </div>
-          <div class="col-3 pr-1">
+          <div class="col-6 pr-1">
             <button
               class="btn btn-danger btn-large"
               @click.prevent="clickOpenCompanyForm"
@@ -28,55 +28,28 @@
               v-for="(step, idx) in this.TIMELINE.timelineSteps"
               :key="step.id"
               :data="step"
+              :selectedStep="selectedStep"
               :idx="idx"
               :loader="loaderForStep"
               @clickItem="clickStep"
-              ref="steps"
-            >
-              <template v-slot:actions="{ stepName, disabled }">
-                <component
-                  :is="stepName"
-                  :step="step"
-                  :disabled="disabled"
-                  @updateItem="clickUpdateStep"
-                >
-                </component>
-              </template>
-            </TimelineItem>
+            />
           </div>
         </div>
       </div>
       <div class="col-8" v-if="!selectedStep && $route.query.step">
         <Loader class="center" />
       </div>
-      <div class="col-3 box" v-if="stepActionsPartVisible && selectedStep">
-        <StepActions
-          :selectedStep="selectedStep"
-          @close="toggleStepActionsPartVisible"
-        />
-      </div>
-      <div
-        class="col-5 box right-box"
-        v-if="selectedStep"
-        :class="{ 'col-8': !stepActionsPartVisible }"
-      >
-        <Objects
-          :selectedStep="selectedStep"
-          :stepActionsPartVisible="stepActionsPartVisible"
-          @clickFavoritesVisibleToggle="clickFavoritesVisibleToggle"
-          @updated="updatedObjects"
+      <div class="col-7 box step-actions" v-if="selectedStep">
+        <component
+          :is="stepActionsName"
+          :step="selectedStep"
+          @updatedObjects="updatedObjects"
           @updateStep="clickUpdateStep"
-          @toggleStepActionsPartVisible="toggleStepActionsPartVisible"
-        />
+        >
+        </component>
       </div>
-      <div class="col-3 box" v-if="favoritesVisible">
-        <!-- <Objects
-          v-if="selectedStep"
-          :mode="'favorites'"
-          :selectedStep="selectedStep"
-          :favoritesVisible="favoritesVisible"
-          @clickFavoritesVisibleToggle="clickFavoritesVisibleToggle"
-        /> -->
+      <div class="col-2 box timeline-extra-block" v-if="selectedStep">
+        <ExtraBlock :step="selectedStep" />
       </div>
     </div>
     <div class="row no-gutters" v-else>
@@ -89,34 +62,32 @@
 import { mapGetters, mapActions } from "vuex";
 import TimelineItem from "./TimelineItem";
 
-import MeetingTimeline from "./steps/steps-timeline/Meeting.vue";
-import OffersTimeline from "./steps/steps-timeline/Offers.vue";
-import FeedbackTimeline from "./steps/steps-timeline/Feedback.vue";
-import InspectionTimeline from "./steps/steps-timeline/Inspection.vue";
-import VisitTimeline from "./steps/steps-timeline/Visit.vue";
-import InterestTimeline from "./steps/steps-timeline/Interest.vue";
-import TalkTimeline from "./steps/steps-timeline/Talk.vue";
-import DealTimeline from "./steps/steps-timeline/Deal.vue";
+import MeetingActions from "./step-actions/MeetingActions.vue";
+import OffersActions from "./step-actions/OffersActions.vue";
+import FeedbackActions from "./step-actions/FeedbackActions.vue";
+import InspectionActions from "./step-actions/InspectionActions.vue";
+import VisitActions from "./step-actions/VisitActions.vue";
+import InterestActions from "./step-actions/InterestActions.vue";
+import TalkActions from "./step-actions/TalkActions.vue";
+import DealActions from "./step-actions/DealActions.vue";
 
+import ExtraBlock from "./timeline-extra-block/ExtraBlock.vue";
 import Loader from "@/components/Loader.vue";
-import Objects from "../objects/Objects.vue";
-import StepActions from "./step-actions/StepActions.vue";
 import { Timeline } from "@/const/Const";
 export default {
   name: "Timeline",
   components: {
     TimelineItem,
-    MeetingTimeline,
-    OffersTimeline,
-    FeedbackTimeline,
-    InspectionTimeline,
-    VisitTimeline,
-    InterestTimeline,
-    TalkTimeline,
-    DealTimeline,
+    MeetingActions,
+    OffersActions,
+    FeedbackActions,
+    InspectionActions,
+    VisitActions,
+    InterestActions,
+    TalkActions,
+    DealActions,
     Loader,
-    Objects,
-    StepActions,
+    ExtraBlock,
   },
   data() {
     return {
@@ -125,8 +96,6 @@ export default {
       loaderForStep: false,
       objects: [],
       timelineNotFoundFlag: false,
-      favoritesVisible: false,
-      stepActionsPartVisible: true,
     };
   },
   computed: {
@@ -137,17 +106,28 @@ export default {
       }
       return false;
     },
+    stepActionsName() {
+      return this.stepParam[this.$route.query.step][1].stepName + "Actions";
+    },
   },
   methods: {
     ...mapActions(["FETCH_TIMELINE", "UPDATE_STEP"]),
-    clickFavoritesVisibleToggle() {
-      this.favoritesVisible = !this.favoritesVisible;
-    },
-    async updatedObjects(data) {
+    async updatedObjects(data, goToNext = false) {
       this.loaderForStep = data.id;
       await this.getTimeline();
-      if (data.number != 7) {
+      if (goToNext && data.number != 7) {
         this.nextStep();
+      }
+      this.loaderForStep = false;
+    },
+    async clickUpdateStep(data, goToNext = false) {
+      console.log(data);
+      this.loaderForStep = data.id;
+      if (await this.UPDATE_STEP(data)) {
+        await this.getTimeline();
+        if (goToNext) {
+          this.nextStep();
+        }
       }
       this.loaderForStep = false;
     },
@@ -171,17 +151,6 @@ export default {
       };
       step.scrollIntoView(options);
     },
-    async clickUpdateStep(data) {
-      this.loaderForStep = data.id;
-      if (await this.UPDATE_STEP(data)) {
-        await this.getTimeline();
-        console.log("ADS", data);
-        if (data.number == 0 && data.done == 1) {
-          this.nextStep();
-        }
-      }
-      this.loaderForStep = false;
-    },
 
     async clickStep(step) {
       this.favoritesVisible = false;
@@ -201,9 +170,6 @@ export default {
         this.timelineNotFoundFlag = true;
       }
     },
-    toggleStepActionsPartVisible() {
-      this.stepActionsPartVisible = !this.stepActionsPartVisible;
-    },
   },
   async created() {
     this.loader = true;
@@ -212,13 +178,6 @@ export default {
     this.$nextTick(() => {
       this.scrollToSelectedStep();
     });
-  },
-  mounted() {
-    // setTimeout(() => {
-    //   const step = document.querySelector(".Deal");
-    //   // step.scrollIntoView();
-    //   console.error(step);
-    // }, 3000);
   },
 };
 </script>
