@@ -1,23 +1,5 @@
 <template>
   <div class="step-actions">
-    <div class="row no-gutters mb-3">
-      <div class="col-2 pr-1">
-        <button
-          class="btn btn-primary btn-large"
-          @click.prevent="$emit('sendObjects')"
-        >
-          Подтвердить
-        </button>
-      </div>
-      <div class="col-2 pr-1">
-        <button
-          class="btn btn-warning btn-large"
-          @click.prevent="$emit('clickResetSelectObjects')"
-        >
-          сбросить
-        </button>
-      </div>
-    </div>
     <div class="row no-gutters inner scroller">
       <div class="col-12">
         <div class="row px-2">

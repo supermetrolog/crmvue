@@ -15,7 +15,7 @@
         <h5 class="mt-0 mb-1 text-center">
           Напоминания <i class="far fa-bell"></i>
         </h5>
-        <Reminders :data="selectedStep" />
+        <Reminders :data="step" />
       </div>
       <div class="col-12 mt-4">
         <div class="row no-gutters">
@@ -71,7 +71,7 @@ export default {
   },
   props: {
     step: {
-      type: Array,
+      type: Object,
     },
   },
   methods: {

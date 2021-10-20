@@ -11,6 +11,7 @@ const store = createStore({
     state: {
         errors: ["fuck"],
         consultantList: [],
+        thisUser: null,
     },
     mutations: {
         setErrors(state, errorList) {
@@ -29,6 +30,9 @@ const store = createStore({
                 })
             });
             state.consultantList = newConsultantList;
+        },
+        setUser(state, user) {
+            state.thisUser = user;
         }
     },
     actions: {
@@ -49,6 +53,13 @@ const store = createStore({
         },
         DELETE_ERRORS(context) {
             context.commit('deleteErrors');
+        },
+        SET_USER(context) {
+            if (!context.getters.THIS_USER) {
+                const user = JSON.parse(localStorage.getItem('user'));
+                context.commit('setUser', user);
+            }
+            return context.getters.THIS_USER;
         }
     },
     getters: {
@@ -57,6 +68,9 @@ const store = createStore({
         },
         CONSULTANT_LIST(state) {
             return state.consultantList;
+        },
+        THIS_USER(state) {
+            return state.thisUser;
         }
     },
     modules: {

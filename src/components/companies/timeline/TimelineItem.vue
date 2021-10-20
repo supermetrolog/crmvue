@@ -10,7 +10,7 @@
       <i :class="stepParam[idx][1].icon"></i>
     </div>
     <div
-      class="timeline-body"
+      class="timeline-body return"
       :class="{ selected: this.$route.query.step == data.number }"
     >
       <Loader class="center small" v-if="loader == data.id" />

@@ -21,5 +21,8 @@ export default {
       return "v-" + this.$route.meta.layout + "-layout";
     },
   },
+  mounted() {
+    this.$store.dispatch("SET_USER");
+  },
 };
 </script>

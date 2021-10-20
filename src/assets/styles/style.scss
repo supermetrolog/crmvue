@@ -856,6 +856,39 @@
                 border-radius: $timeline-body-round;
                 padding: 10px 20px;
                 box-shadow: $timeline-body-shadow;
+                //*****************************************
+                &.return {
+                    &::after {
+                        content: '';
+                        position: absolute;
+                        width: 35px;
+                        height: 35px;
+                        right: -15px;
+                        top: -15px;
+                        background: radial-gradient($color_info, $color_success_alt);
+                        border-radius: 2px;
+                        border: 1px solid darken($color_success_alt, 5);
+                        animation: animate 4s linear infinite;
+                    }
+                    @keyframes animate {
+                        0% {
+                            transform: rotate(0deg);
+                        }
+                        25% {
+                            transform: rotate(100deg);
+                        }
+                        50% {
+                            transform: rotate(200deg);
+                        }
+                        75% {
+                            transform: rotate(300deg);
+                        }
+                        100% {
+                            transform: rotate(360deg);
+                        }
+                    }
+                }
+                //*********************
                 &.selected {
                     border-radius: 0;
                     outline: 3px solid $color_info;
@@ -2232,12 +2265,22 @@
                         }
                     }
                 }
-                .body {
+                td {
                     border: none!important;
-                    // border-bottom: 1px solid $color_grey!important;
                     .flag {
                         width: 20px;
                         height: 130px;
+                    }
+                    &:nth-child(2) {
+                        min-width: 250px;
+                        max-width: 250px;
+                    }
+                    &:first-child {
+                        min-width: 260px;
+                        max-width: 260px;
+                    }
+                    .last-block {
+                        word-break: break-word;
                     }
                 }
                 &.success {
@@ -2250,18 +2293,32 @@
                             }
                         }
                         .flag {
-                            background-color: $color_success!important;
+                            // background-color: $color_success!important;
+                            background: linear-gradient(to bottom, #009150 0%, #008241 100%);
                         }
                     }
                 }
                 &:nth-child(odd) {
-                    background-color: darken($color_light, 5)!important;
+                    .body {
+                        background: darken($color_light, 5)!important;
+                    }
+                }
+                &:nth-child(even) {
+                    .body {
+                        background: transparent!important;
+                    }
                 }
             }
             &.success {
                 .body {
-                    // border: 2px dashed $color_success;
-                    background-color: $color_success;
+                    border: 2px solid $color_dark;
+                    // background-color: $color_success;
+                    // background-color: darken($color_success, 8);
+                    background: linear-gradient(to bottom, #009150 0%, #008241 100%);
+                    i.extra,
+                    a {
+                        color: $color_info!important;
+                    }
                     p {
                         color: $color_light!important;
                     }

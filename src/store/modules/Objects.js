@@ -43,6 +43,7 @@ const Objects = {
                 objects.map((object) => {
                     if (item.offer_id == object.id) {
                         object.duplicate_count = item.duplicate_count;
+                        object.comment = item.comment;
                         array.push(object);
                     }
                 })
@@ -51,6 +52,7 @@ const Objects = {
         },
         async FETCH_OBJECTS_FOR_PREVENT_STEP_OBJECTS(context, currentStepNumber) {
             const preventStepObjects = context.getters.TIMELINE.timelineSteps[currentStepNumber - 1].timelineStepObjects;
+            const currentStepObjects = context.getters.TIMELINE.timelineSteps[currentStepNumber].timelineStepObjects;
 
             let array = [];
             preventStepObjects.map((item) => {
@@ -58,10 +60,14 @@ const Objects = {
             });
             const objects = await api.objects.getCurrentStepObjects(array);
             array = [];
+            let currentStepObject = null;
             preventStepObjects.map((item) => {
                 objects.map((object) => {
                     if (item.offer_id == object.id) {
-                        // object.duplicate_count = item.duplicate_count;
+                        currentStepObject = currentStepObjects.find(currentObject => currentObject.offer_id == item.offer_id);
+                        if (currentStepObject) {
+                            object.comment = currentStepObject.comment;
+                        }
                         array.push(object);
                     }
                 })

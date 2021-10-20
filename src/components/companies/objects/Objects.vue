@@ -26,14 +26,28 @@
                 </button>
               </div>
               <div class="col-4">
-                <button
+                <!-- <button
                   class="ml-1 action danger"
                   :class="{ active: step.negative }"
                   @click="clickNegative"
                 >
                   <i class="far fa-frown-open"></i>
                   <span class="ml-1">Нет подходящих</span>
-                </button>
+                </button> -->
+                <CustomButton
+                  class="ml-1"
+                  :options="{
+                    btnActive: step.negative,
+                    btnClass: 'danger',
+                    btnVisible: false,
+                  }"
+                  @confirm="selectNegative"
+                >
+                  <template #btnContent>
+                    <i class="far fa-frown-open"></i>
+                    <span class="ml-1">Нет подходящих</span>
+                  </template>
+                </CustomButton>
               </div>
             </div>
           </div>
@@ -134,24 +148,28 @@
             />
           </template>
           <template v-else>
-            <div class="company-table-view px-2">
-              <table>
-                <tbody>
-                  <ObjectsItemTable
-                    v-for="object in ALL_OBJECTS"
-                    :object="object"
-                    :selectedObjects="selectedObjects"
-                    :key="object.id"
-                    :classList="
-                      CURRENT_STEP_OBJECTS.find((item) => item.id == object.id)
-                        ? 'success'
-                        : ''
-                    "
-                    @selectObject="selectObject"
-                    @unSelectObject="unSelectObject"
-                  />
-                </tbody>
-              </table>
+            <div class="col-12 px-2">
+              <div class="company-table-view">
+                <table>
+                  <tbody>
+                    <ObjectsItemTable
+                      v-for="object in ALL_OBJECTS"
+                      :object="object"
+                      :selectedObjects="selectedObjects"
+                      :key="object.id"
+                      :classList="
+                        CURRENT_STEP_OBJECTS.find(
+                          (item) => item.id == object.id
+                        )
+                          ? 'success'
+                          : ''
+                      "
+                      @selectObject="selectObject"
+                      @unSelectObject="unSelectObject"
+                    />
+                  </tbody>
+                </table>
+              </div>
             </div>
           </template>
         </div>
@@ -169,6 +187,7 @@ import ObjectsItem from "@/components/companies/objects/ObjectsItem.vue";
 import ObjectsItemTable from "@/components/companies/objects/ObjectsItemTable.vue";
 import Pagination from "@/components/Pagination";
 import Loader from "@/components/Loader";
+import CustomButton from "@/components/CustomButton.vue";
 
 export default {
   name: "Objects",
@@ -177,6 +196,7 @@ export default {
     ObjectsItemTable,
     Loader,
     Pagination,
+    CustomButton,
   },
   data() {
     return {
@@ -196,6 +216,7 @@ export default {
       "CURRENT_STEP_OBJECTS",
       "ALL_OBJECTS",
       "TIMELINE_REQUEST_ID",
+      "THIS_USER",
     ]),
   },
   methods: {
@@ -209,7 +230,13 @@ export default {
       "FETCH_COMPANY_REQUESTS",
     ]),
 
-    selectObject(object) {
+    selectObject(object, comment = null) {
+      this.selectedObjects = this.selectedObjects.filter(
+        (item) => item.id != object.id
+      );
+      if (comment) {
+        object.comment = comment;
+      }
       this.selectedObjects.push(object);
     },
     selectObjectOne(object) {
@@ -260,18 +287,25 @@ export default {
       this.selectedObjects = [];
     },
 
-    clickNegative() {
+    selectNegative(comment) {
       let data = this.step;
+
       if (data.negative) {
         data.negative = 0;
         data.newActionComments = [];
       } else {
         data.negative = 1;
+        let actionComment = "Нет подходящих";
+        let title = "система";
+        if (comment) {
+          actionComment += ` с комментарием: "${comment}"`;
+          title = this.THIS_USER.username;
+        }
         data.newActionComments = [
           {
             timeline_step_id: data.id,
-            title: "система",
-            comment: "Нет подходящих",
+            title: title,
+            comment: actionComment,
           },
         ];
       }
@@ -292,6 +326,7 @@ export default {
           offer_id: item.id,
           complex_id: item.complex_id,
           type_id: item.type_id,
+          comment: item.comment,
         });
       });
       let comment =

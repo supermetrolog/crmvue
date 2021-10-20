@@ -34,33 +34,53 @@
           </a>
         </div>
       </div>
-      <div class="body py-2">
-        <p class="text-center title">
-          {{ object.district_name }} - {{ object.direction_name }}
-        </p>
-        <p class="value text-center title2">
-          {{ object.object_type_name }}
-        </p>
-        <p class="value text-center text-success_alt">
-          <i class="fas fa-square-full text-dark d-inline"></i>
-          {{ object.area_min }} - {{ object.area_max }} м<sup>2</sup>
-        </p>
-        <p class="value text-center text-success_alt mt-1">
-          <i class="fas fa-ruble-sign d-inline text-dark"></i>
-          {{ object.price_floor_min }} - {{ object.price_floor_max }} р
-        </p>
+      <div class="body">
+        <div
+          v-if="selectedObjects.find((item) => item.id == object.id)"
+          class="comment p-0"
+        >
+          <textarea
+            class="mb-1"
+            v-model.trim="comment"
+            ref="comment"
+            rows="3"
+            @blur="unfocusTextarea"
+            @keypress.enter="enterTextarea"
+            placeholder="Введите ваш комментарий"
+          />
+        </div>
+        <div class="data py-2">
+          <p class="text-center title">
+            {{ object.district_name }} - {{ object.direction_name }}
+          </p>
+          <p class="value text-center title2">
+            {{ object.object_type_name }}
+          </p>
+          <p class="value text-center text-success_alt">
+            <i class="fas fa-square-full text-dark d-inline"></i>
+            {{ object.area_min }} - {{ object.area_max }} м<sup>2</sup>
+          </p>
+          <p class="value text-center text-success_alt mt-1">
+            <i class="fas fa-ruble-sign d-inline text-dark"></i>
+            {{ object.price_floor_min }} - {{ object.price_floor_max }} р
+          </p>
+          <i
+            class="far fa-arrow-alt-circle-down text-center mt-1 extra"
+            @click="toggleExtraInfoVisible"
+            v-if="!extraInfoVisible"
+          ></i>
+          <i
+            class="far fa-arrow-alt-circle-up text-center mt-1 extra"
+            @click="toggleExtraInfoVisible"
+            v-if="extraInfoVisible"
+          ></i>
+        </div>
 
-        <i
-          class="far fa-arrow-alt-circle-down text-center mt-1"
-          @click="toggleExtraInfoVisible"
-          v-if="!extraInfoVisible"
-        ></i>
-        <i
-          class="far fa-arrow-alt-circle-up text-center mt-1"
-          @click="toggleExtraInfoVisible"
-          v-if="extraInfoVisible"
-        ></i>
-        <div class="extraFields text-center" v-if="extraInfoVisible">
+        <div class="extraFields text-center pb-2" v-if="extraInfoVisible">
+          <p v-if="object.comment">комментарий</p>
+          <p class="text-center value">
+            {{ object.comment }}
+          </p>
           <p>адрес</p>
           <p class="text-center value">
             {{ object.address }}
@@ -90,6 +110,7 @@ export default {
   data() {
     return {
       extraInfoVisible: false,
+      comment: null,
     };
   },
   props: {
@@ -117,10 +138,22 @@ export default {
       this.extraInfoVisible = !this.extraInfoVisible;
     },
     clickSelectObject() {
+      setTimeout(() => {
+        this.$refs.comment.focus();
+      });
       this.$emit("selectObject", this.object);
     },
     clickUnSelectObject() {
       this.$emit("unSelectObject", this.object);
+    },
+    enterTextarea() {
+      this.$refs.comment.blur();
+    },
+    unfocusTextarea() {
+      console.warn("fuck");
+      if (this.comment) {
+        this.$emit("selectObject", this.object, this.comment);
+      }
     },
   },
   emits: ["selectObject", "unSelectObject"],

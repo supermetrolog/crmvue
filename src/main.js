@@ -16,4 +16,4 @@ axios.defaults.baseURL = "http://crmka/";
 // axios.defaults.baseURL = "http://api.billypro.beget.tech/";
 const app = createApp(App);
 app.config.devtools = true;
-app.component('Tabs', Tabs).component('Tab', Tab).use(Notifications).use(Maska).use(VueAxios, axios).use(router).use(store).mount('#app');
+app.component('Tabs', Tabs).component('Tab', Tab).use(Notifications).use(Maska).use(VueAxios, axios).use(store).use(router).mount('#app');

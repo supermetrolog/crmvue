@@ -42,6 +42,7 @@
       <p class="value text-center title2">
         {{ object.object_type_name }}
       </p>
+
       <p class="value text-center text-success_alt">
         <i class="fas fa-square-full text-dark d-inline"></i>
         {{ object.area_min }} - {{ object.area_max }} м<sup>2</sup>
@@ -50,28 +51,48 @@
         <i class="fas fa-ruble-sign d-inline text-dark"></i>
         {{ object.price_floor_min }} - {{ object.price_floor_max }} р
       </p>
-    </td>
-    <td class="body px-1">
-      <p class="text-center">брокер</p>
-      <p class="text-center value">
-        {{ object.agent_name }}
-      </p>
-      <p class="text-center">адрес</p>
-      <p class="text-center value">
-        {{ object.address }}
-      </p>
-      <p class="text-center value mt-1">
-        <a
-          class="text-primary"
-          :href="`https://pennylane.pro/complex/${object.complex_id}?offer_id=[${object.original_id}]`"
-          target="_blanc"
-        >
-          подробнее
-        </a>
-      </p>
+      <div
+        v-if="selectedObjects.find((item) => item.id == object.id)"
+        class="comment px-1 mt-2"
+      >
+        <textarea
+          class="pb-0"
+          v-model.trim="comment"
+          ref="comment"
+          rows="3"
+          @blur="unfocusTextarea"
+          @keypress.enter="enterTextarea"
+          placeholder="Введите ваш комментарий"
+        />
+      </div>
     </td>
     <td class="body">
       <div class="flag"></div>
+    </td>
+    <td class="body px-1">
+      <div class="last-block">
+        <p class="text-center" v-if="object.comment">комментарий</p>
+        <p class="text-center value text-success_alt">
+          {{ object.comment }}
+        </p>
+        <p class="text-center">брокер</p>
+        <p class="text-center value">
+          {{ object.agent_name }}
+        </p>
+        <p class="text-center">адрес</p>
+        <p class="text-center value">
+          {{ object.address }}
+        </p>
+        <p class="text-center value mt-1">
+          <a
+            class="text-primary"
+            :href="`https://pennylane.pro/complex/${object.complex_id}?offer_id=[${object.original_id}]`"
+            target="_blanc"
+          >
+            подробнее
+          </a>
+        </p>
+      </div>
     </td>
   </tr>
 </template>
@@ -82,6 +103,7 @@ export default {
   data() {
     return {
       extraInfoVisible: false,
+      comment: null,
     };
   },
   props: {
@@ -109,10 +131,22 @@ export default {
       this.extraInfoVisible = !this.extraInfoVisible;
     },
     clickSelectObject() {
+      setTimeout(() => {
+        this.$refs.comment.focus();
+      });
       this.$emit("selectObject", this.object);
     },
     clickUnSelectObject() {
       this.$emit("unSelectObject", this.object);
+    },
+    enterTextarea() {
+      this.$refs.comment.blur();
+    },
+    unfocusTextarea() {
+      console.warn("fuck");
+      if (this.comment) {
+        this.$emit("selectObject", this.object, this.comment);
+      }
     },
   },
   emits: ["selectObject", "unSelectObject"],

@@ -114,6 +114,8 @@ export default {
         this.loader = true;
         const response = await api.auth.login(this.form);
         if (response !== false) {
+          this.$store.dispatch("SET_USER");
+
           this.$router.push("/");
         }
         this.loader = false;
