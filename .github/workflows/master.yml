@@ -24,6 +24,6 @@ jobs:
     - name: 📂 Sync files
       uses: SamKirkland/FTP-Deploy-Action@4.1.0
       with:
-        server: ftp.billypro.beget.tech
+        server: billypro.beget.tech
         username: ${{ secrets.username }}
         password: ${{ secrets.password }}
