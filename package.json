@@ -22,7 +22,7 @@
         "vue-moment": "^4.1.0",
         "vue-router": "^4.0.0-0",
         "vue-simple-calendar": "^6.0.1",
-        "vue3-tabs-component": "^1.0.1",
+        "vue3-tabs-component": "^1.0.3",
         "vuex": "^4.0.1"
     },
     "devDependencies": {
