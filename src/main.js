@@ -12,8 +12,8 @@ import Notifications from "@kyvg/vue3-notification"
 import './assets/styles/grid.min.css'
 import './assets/styles/style.scss'
 import "@vueform/multiselect/themes/default.css"
-axios.defaults.baseURL = "http://crmka/";
-// axios.defaults.baseURL = "http://api.billypro.beget.tech/";
+// axios.defaults.baseURL = "http://crmka/";
+axios.defaults.baseURL = "http://api.billypro.beget.tech/";
 const app = createApp(App);
 app.config.devtools = true;
 app.component('Tabs', Tabs).component('Tab', Tab).use(Notifications).use(Maska).use(VueAxios, axios).use(store).use(router).mount('#app');
