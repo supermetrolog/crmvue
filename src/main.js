@@ -12,8 +12,8 @@ import Notifications from "@kyvg/vue3-notification"
 import './assets/styles/grid.min.css'
 import './assets/styles/style.scss'
 import "@vueform/multiselect/themes/default.css"
-// axios.defaults.baseURL = "http://crmka/";
-axios.defaults.baseURL = "http://api.billypro.beget.tech/";
+axios.defaults.baseURL = "http://crmka/";
+// axios.defaults.baseURL = "http://api.billypro.beget.tech/";
 console.log('FUCK');
 const app = createApp(App);
 app.config.devtools = true;
