@@ -110,7 +110,7 @@ export default {
   data() {
     return {
       extraInfoVisible: false,
-      comment: null,
+      comment: this.object.comment,
     };
   },
   props: {
@@ -154,6 +154,11 @@ export default {
       if (this.comment) {
         this.$emit("selectObject", this.object, this.comment);
       }
+    },
+  },
+  watch: {
+    object() {
+      this.comment = this.object.comment;
     },
   },
   emits: ["selectObject", "unSelectObject"],

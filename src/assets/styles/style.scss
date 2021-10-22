@@ -857,6 +857,10 @@
                 padding: 10px 20px;
                 box-shadow: $timeline-body-shadow;
                 //*****************************************
+                .done {
+                    position: absolute;
+                    right: 20px;
+                }
                 &.return {
                     &::after {
                         content: '';
@@ -865,24 +869,24 @@
                         height: 35px;
                         right: -15px;
                         top: -15px;
-                        background: radial-gradient($color_info, $color_success_alt);
+                        background: radial-gradient(yellow, $color_warning);
                         border-radius: 2px;
-                        border: 1px solid darken($color_success_alt, 5);
-                        animation: animate 4s linear infinite;
+                        border: 1px solid darken($color_warning, 10);
+                        animation: animate 2s linear infinite;
                     }
                     @keyframes animate {
                         0% {
                             transform: rotate(0deg);
                         }
-                        25% {
-                            transform: rotate(100deg);
-                        }
-                        50% {
-                            transform: rotate(200deg);
-                        }
-                        75% {
-                            transform: rotate(300deg);
-                        }
+                        // 25% {
+                        //     transform: rotate(100deg);
+                        // }
+                        // 50% {
+                        //     transform: rotate(200deg);
+                        // }
+                        // 75% {
+                        //     transform: rotate(300deg);
+                        // }
                         100% {
                             transform: rotate(360deg);
                         }
@@ -1160,6 +1164,12 @@
         // box-shadow: 0px 10px 50px rgba(0, 0, 0, 0.25);
         // padding: 20px;
         // width: 630px;
+        .modal {
+            .modal-body,
+            .modal-container {
+                min-height: unset!important;
+            }
+        }
         &-container {
             width: 650px;
         }
@@ -1170,6 +1180,12 @@
             }
             .company-form-container {
                 width: 700px!important;
+            }
+        }
+        &.company-contact-form {
+            .modal-body,
+            .modal-container {
+                min-height: unset!important;
             }
         }
         .checkbox {
@@ -2557,5 +2573,44 @@
             top: 67px;
             left: 3px;
             z-index: 9;
+        }
+    }
+    
+    .extra-block {
+        .comment {
+            li {
+                border-bottom: none;
+                a {
+                    display: inline-block;
+                    // cursor: pointer;
+                }
+                span {
+                    display: inline-block;
+                }
+            }
+        }
+    }
+    
+    // *************** CALENDAR *****************
+    .calendar {
+        height: 95%;
+    }
+    
+    .animate__animated {
+        &.for__page {
+            animation-duration: .1s;
+        }
+        &.for__modal__fullscreen {
+            animation-duration: .3s;
+        }
+        &.for__modal {
+            animation-duration: .25s;
+            &.absolute {
+                z-index: 999;
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 50%;
+            }
         }
     }

@@ -3,7 +3,20 @@
     <vSideBar />
     <vHeader />
     <section class="content">
-      <router-view />
+      <router-view v-slot="{ Component }">
+        <transition
+          mode="out-in"
+          enter-active-class="animate__animated animate__fadeIn for__page"
+          leave-active-class="animate__animated animate__fadeOut for__page"
+        >
+          <component :is="Component" :key="$route.path"></component>
+        </transition>
+      </router-view>
+      <!-- <router-view v-slot="{ Component }">
+        <transition name="zoom">
+          <component :is="Component" :key="$route.path"></component>
+        </transition>
+      </router-view> -->
     </section>
   </div>
 </template>

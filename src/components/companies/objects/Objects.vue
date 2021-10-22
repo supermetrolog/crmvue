@@ -202,7 +202,7 @@ export default {
     return {
       loader: false,
       selectedObjects: [],
-      viewMode: false,
+      viewMode: true,
     };
   },
   props: {
@@ -234,9 +234,7 @@ export default {
       this.selectedObjects = this.selectedObjects.filter(
         (item) => item.id != object.id
       );
-      if (comment) {
-        object.comment = comment;
-      }
+      object.comment = comment;
       this.selectedObjects.push(object);
     },
     selectObjectOne(object) {
@@ -318,6 +316,7 @@ export default {
       };
       data.negative = 0;
       data.additional = 0;
+      data.status = 1;
       data.timelineStepObjects = [];
       this.selectedObjects.map((item) => {
         data.timelineStepObjects.push({
@@ -329,10 +328,9 @@ export default {
           comment: item.comment,
         });
       });
-      let comment =
-        data.number == 1
-          ? `Отправил клиенту предложения (${data.timelineStepObjects.length})`
-          : `Выбрал предложения (${data.timelineStepObjects.length})`;
+
+      let comment = this.getObjectsComments(data.timelineStepObjects);
+
       data.newActionComments = [
         {
           timeline_step_id: data.id,
@@ -347,6 +345,40 @@ export default {
         this.$emit("updated", data);
         this.clickResetSelectObjects();
       }
+    },
+    getObjectsComments(objects) {
+      let objectsComments = "";
+      let comment = "";
+      if (this.step.number == 1) {
+        comment = `
+        <span>
+          Отправил клиенту предложения (${objects.length})
+        </span>
+        `;
+      } else {
+        comment = `Выбрал предложения  (${objects.length})`;
+      }
+      objects.map((object) => {
+        if (!object.comment) {
+          return;
+        }
+        objectsComments += `<li><a
+              class="text-primary"
+              href="https://pennylane.pro/complex/${object.complex_id}?offer_id=[${object.object_id}]"
+              target="_blanc"
+            >
+              ${object.complex_id}~${object.object_id}
+            </a> - 
+            <span title="комментарий к объекту">
+            ${object.comment}
+           </span>
+            </li>`;
+      });
+
+      if (objectsComments.length) {
+        comment = `${comment} c комментариями: <ul>${objectsComments}</ul>`;
+      }
+      return comment;
     },
     async getCurrentStepObjects(getAllObjectsFlag = true) {
       if (!this.step) {

@@ -10,9 +10,15 @@
       <i :class="stepParam[idx][1].icon"></i>
     </div>
     <div
-      class="timeline-body return"
-      :class="{ selected: this.$route.query.step == data.number }"
+      class="timeline-body"
+      :class="{
+        selected: this.$route.query.step == data.number,
+        return: !data.status,
+      }"
     >
+      <div class="done" v-if="data.status">
+        <i class="fas fa-check text-success"></i>
+      </div>
       <Loader class="center small" v-if="loader == data.id" />
       <h4 class="timeline-title" @click="clickSelectStep">
         <span class="badge-1">{{ stepParam[data.number][1].name }}</span>

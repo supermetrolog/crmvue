@@ -49,14 +49,6 @@
     </div>
     <div class="row no-gutters" v-if="data.additional == 1">
       <div class="col-6 pr-1">
-        <!-- <button
-          class="action"
-          :class="{ active: data.done }"
-          @click="clickToggleDone"
-        >
-          <i class="fas fa-check"></i>
-          Утвердил запрос
-        </button> -->
         <CustomButton
           :options="{
             btnActive: data.done,
@@ -112,26 +104,11 @@ export default {
     }
   },
   methods: {
-    clickToggleDone() {
-      if (this.data.done) {
-        this.data.done = 0;
-        this.data.newActionComments = [];
-      } else {
-        this.data.done = 1;
-        this.data.newActionComments = [
-          {
-            timeline_step_id: this.data.id,
-            title: "система",
-            comment: "Утвердил запрос",
-          },
-        ];
-      }
-      this.$emit("updateItem", this.data, this.data.done);
-    },
     selectDone(comment) {
       if (this.data.done) {
         this.data.done = 0;
         this.data.newActionComments = [];
+        this.data.status = 0;
       } else {
         this.data.done = 1;
         let actionComment = "Утвердил запрос";
@@ -145,6 +122,7 @@ export default {
             comment: actionComment,
           },
         ];
+        this.data.status = 1;
       }
       this.$emit("updateItem", this.data, this.data.done);
     },

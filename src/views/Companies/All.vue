@@ -1,10 +1,16 @@
 <template>
   <div class="all">
-    <CompanyForm
-      v-if="companyFormVisible"
-      @closeCompanyForm="clickCloseCompanyForm"
-      @created="createdCompany"
-    />
+    <transition
+      mode="out-in"
+      enter-active-class="animate__animated animate__lightSpeedInRight for__modal absolute"
+      leave-active-class="animate__animated animate__lightSpeedOutRight for__modal absolute"
+    >
+      <CompanyForm
+        v-if="companyFormVisible"
+        @closeCompanyForm="clickCloseCompanyForm"
+        @created="createdCompany"
+      />
+    </transition>
     <div class="row no-gutters search-main-container">
       <div class="container py-3">
         <div class="col-12 search-container">

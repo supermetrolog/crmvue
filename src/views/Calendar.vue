@@ -1,6 +1,8 @@
 <template>
-  <h1>Calendar</h1>
-  <SimpleCalendar />
+  <div class="calendar">
+    <h1>Calendar</h1>
+    <SimpleCalendar />
+  </div>
 </template>
 
 <script>

@@ -1,6 +1,7 @@
 <template>
-  <h1>Statistic</h1>
-  <router-view />
+  <div class="statisctic">
+    <h1>Statistic</h1>
+  </div>
 </template>
 
 <script>

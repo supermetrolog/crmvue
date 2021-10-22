@@ -1,8 +1,10 @@
 <template>
-  <h1>REQUEST</h1>
-  <div class="row no-gutters">
-    <div class="col-12">
-      <CompanyGridView />
+  <div class="all-request">
+    <h1>REQUEST</h1>
+    <div class="row no-gutters">
+      <div class="col-12">
+        <CompanyGridView />
+      </div>
     </div>
   </div>
 </template>

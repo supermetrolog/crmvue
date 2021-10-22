@@ -40,9 +40,7 @@
                     </div>
 
                     <div class="col-12 comment">
-                      <p>
-                        {{ comment.comment }}
-                      </p>
+                      <p v-html="comment.comment"></p>
                     </div>
                   </div>
                 </li>

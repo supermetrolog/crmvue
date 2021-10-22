@@ -1,35 +1,60 @@
 <template>
   <div class="company">
-    <Modal
-      class="fullscreen"
-      title="Бизнес процесс"
-      v-if="timelineVisible"
-      @close="closeTimeline"
+    <transition
+      mode="out-in"
+      enter-active-class="animate__animated animate__zoomIn for__modal__fullscreen"
+      leave-active-class="animate__animated animate__zoomOut for__modal__fullscreen"
     >
-      <Timeline />
-    </Modal>
-    <CompanyRequestForm
-      @closeCompanyForm="clickCloseCompanyRequestForm"
-      :company_id="COMPANY[0].id"
-      :formdata="request"
-      @created="createdRequest"
-      @updated="updatedRequest"
-      v-if="companyRequestFormVisible"
-    />
-    <CompanyContactForm
-      @closeCompanyForm="clickCloseCompanyContactForm"
-      :company_id="COMPANY[0].id"
-      :formdata="contact"
-      @created="createdContact"
-      @updated="updatedContact"
-      v-if="companyContactFormVisible"
-    />
-    <CompanyForm
-      v-if="companyFormVisible"
-      :formdata="company"
-      @updated="updatedCompany"
-      @closeCompanyForm="clickCloseCompanyForm"
-    />
+      <Modal
+        class="fullscreen"
+        title="Бизнес процесс"
+        v-if="timelineVisible"
+        @close="closeTimeline"
+      >
+        <Timeline />
+      </Modal>
+    </transition>
+    <transition
+      mode="out-in"
+      enter-active-class="animate__animated animate__lightSpeedInRight for__modal absolute"
+      leave-active-class="animate__animated animate__lightSpeedOutRight for__modal absolute"
+    >
+      <CompanyRequestForm
+        @closeCompanyForm="clickCloseCompanyRequestForm"
+        :company_id="COMPANY[0].id"
+        :formdata="request"
+        @created="createdRequest"
+        @updated="updatedRequest"
+        v-if="companyRequestFormVisible"
+      />
+    </transition>
+    <transition
+      mode="out-in"
+      enter-active-class="animate__animated animate__lightSpeedInRight for__modal absolute"
+      leave-active-class="animate__animated animate__lightSpeedOutRight for__modal absolute"
+    >
+      <CompanyContactForm
+        @closeCompanyForm="clickCloseCompanyContactForm"
+        :company_id="COMPANY[0].id"
+        :formdata="contact"
+        @created="createdContact"
+        @updated="updatedContact"
+        v-if="companyContactFormVisible"
+      />
+    </transition>
+    <transition
+      mode="out-in"
+      enter-active-class="animate__animated animate__lightSpeedInRight for__modal absolute"
+      leave-active-class="animate__animated animate__lightSpeedOutRight for__modal absolute"
+    >
+      <CompanyForm
+        v-if="companyFormVisible"
+        :formdata="company"
+        @updated="updatedCompany"
+        @closeCompanyForm="clickCloseCompanyForm"
+      />
+    </transition>
+
     <div class="row no-gutters">
       <div class="col-12 col-lg-3 company-detail-info-container box">
         <div class="col-12 p-0 mb-3">
