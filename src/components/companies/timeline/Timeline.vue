@@ -40,13 +40,19 @@
         <Loader class="center" />
       </div>
       <div class="col-7 box step-actions" v-if="selectedStep">
-        <component
-          :is="stepActionsName"
-          :step="selectedStep"
-          @updatedObjects="updatedObjects"
-          @updateStep="clickUpdateStep"
+        <transition
+          mode="out-in"
+          enter-active-class="animate__animated animate__fadeIn for__page"
+          leave-active-class="animate__animated animate__fadeOut for__page"
         >
-        </component>
+          <component
+            :is="stepActionsName"
+            :step="selectedStep"
+            @updatedObjects="updatedObjects"
+            @updateStep="clickUpdateStep"
+          >
+          </component>
+        </transition>
       </div>
       <div class="col-2 box timeline-extra-block" v-if="selectedStep">
         <ExtraBlock :step="selectedStep" />

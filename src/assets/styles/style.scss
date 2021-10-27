@@ -713,6 +713,14 @@
                 // height: 2px;
                 border-radius: 0!important;
             }
+            .inspection {
+                h3 {
+                    font-size: 22px;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 15px;
+                }
+            }
         }
     }
     
@@ -2611,6 +2619,77 @@
                 left: 0;
                 right: 0;
                 top: 50%;
+            }
+        }
+        &.for__notifications {
+            animation-duration: .2s;
+        }
+    }
+    
+    // ***************** YMAP *******************
+    .ymap {
+        .ymap-container {
+            outline: 1px solid $color_dark;
+            .ymaps-2-1-79-route-pin__text {
+                background-color: rgba($color_dark, 0.7)!important;
+                border-top-left-radius: 10px!important;
+                border-bottom-left-radius: 10px!important;
+                span {
+                    color: $color_info!important;
+                    font-weight: 800!important;
+                }
+            }
+        }
+    }
+    
+    // ************* CAR ROUTES *************
+    .car-routes {
+        h3 {
+            display: inline;
+        }
+        a {
+            margin-left: 5px;
+            color: $color_primary;
+        }
+        ul {
+            li {
+                padding: 5px 15px;
+                margin: 3px 0;
+                list-style-type: upper-alpha;
+                // background-color: darken($color_light, 10);
+                background-color: $body-bg;
+                color: $color_light;
+                border-radius: 3px;
+                &:not(.route) {
+                    color: $color_success_alt;
+                    cursor: default;
+                    b {
+                        color: $color_success_alt;
+                    }
+                    &::marker {
+                        color: $color_success_alt;
+                    }
+                }
+                &::marker {
+                    color: $color_success;
+                    font-weight: bold;
+                }
+                &.route {
+                    border: 2px dashed $color_light;
+                    cursor: move;
+                    &:last-child {
+                        b {
+                            color: $color_danger;
+                        }
+                        &::marker {
+                            color: $color_danger;
+                        }
+                    }
+                }
+                b {
+                    color: $color_success;
+                    text-transform: uppercase;
+                }
             }
         }
     }

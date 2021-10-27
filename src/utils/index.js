@@ -1,3 +1,34 @@
+import { loadYmap } from 'vue-yandex-maps'
+export const yandexmap = {
+    settings: {
+        apiKey: '59572809-066b-46d5-9e5d-269a65751b84',
+        lang: 'ru_RU',
+        coordorder: 'latlong',
+        enterprise: false,
+        version: '2.1'
+    },
+    async init() {
+        await loadYmap({...this.settings, debug: true });
+    },
+    async getOptimizeRoutes(coords) {
+        await this.init();
+        let data = [];
+        coords.map((coord, i) => {
+            data[coord.original_id] = [];
+            coords.map((coordDuplicate, j) => {
+                if (i != j) {
+                    data[coord.original_id].push({
+                        betweenCoord: [coord.original_id, coordDuplicate.original_id],
+                        distance: window.ymaps.formatter.distance(
+                            window.ymaps.coordSystem.geo.getDistance(coord.coord, coordDuplicate.coord)
+                        )
+                    });
+                }
+            })
+        });
+    },
+};
+
 export default {
     normalizeDataForForm(data) {
         let array = [];
@@ -132,6 +163,5 @@ export default {
         newData.contacts.websites = array;
         array = [];
         return newData;
-
-    }
+    },
 }

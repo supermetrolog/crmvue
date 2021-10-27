@@ -25,15 +25,17 @@
                   <span class="ml-1">Готово</span>
                 </button>
               </div>
-              <div class="col-4">
-                <!-- <button
-                  class="ml-1 action danger"
-                  :class="{ active: step.negative }"
-                  @click="clickNegative"
+              <div class="col-2 ml-1" v-if="step.number == 3">
+                <button
+                  class="action success"
+                  @click.prevent="sendObjects"
+                  :disabled="!selectedObjects.length"
                 >
-                  <i class="far fa-frown-open"></i>
-                  <span class="ml-1">Нет подходящих</span>
-                </button> -->
+                  <i class="fas fa-paper-plane"></i>
+                  <span class="ml-1">Отправить</span>
+                </button>
+              </div>
+              <div class="col-4">
                 <CustomButton
                   class="ml-1"
                   :options="{
@@ -236,15 +238,18 @@ export default {
       );
       object.comment = comment;
       this.selectedObjects.push(object);
+      this.$emit("updateSelectedObjectList", this.selectedObjects);
     },
     selectObjectOne(object) {
       this.selectedObjects = [];
       this.selectedObjects.push(object);
+      this.$emit("updateSelectedObjectList", this.selectedObjects);
     },
     unSelectObject(object) {
       this.selectedObjects = this.selectedObjects.filter(
         (item) => item.id != object.id
       );
+      this.$emit("updateSelectedObjectList", this.selectedObjects);
     },
     // async submitDeal(requestDealData) {
     //   this.loader = true;
@@ -316,7 +321,9 @@ export default {
       };
       data.negative = 0;
       data.additional = 0;
-      data.status = 1;
+      if (this.step.number != 2) {
+        data.status = 1;
+      }
       data.timelineStepObjects = [];
       this.selectedObjects.map((item) => {
         data.timelineStepObjects.push({

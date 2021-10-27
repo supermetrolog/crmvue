@@ -28,10 +28,16 @@
             </span>
           </div>
         </a>
-        <Notifications
-          v-if="notificationsVisible"
-          :notifications="this.NOTIFICATIONS"
-        />
+        <transition
+          mode="out-in"
+          enter-active-class="animate__animated animate__fadeInDown for__notifications"
+          leave-active-class="animate__animated animate__fadeOutUp for__notifications"
+        >
+          <Notifications
+            v-if="notificationsVisible"
+            :notifications="this.NOTIFICATIONS"
+          />
+        </transition>
       </li>
     </ul>
   </div>

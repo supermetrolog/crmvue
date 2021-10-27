@@ -89,6 +89,7 @@ export default {
           comment: "Отметил способ обратной связи",
         },
       ];
+      this.data.status = 1;
       this.$emit("updateItem", this.data, true);
       this.actionsVisible = false;
     },

@@ -150,7 +150,6 @@ export default {
       this.$refs.comment.blur();
     },
     unfocusTextarea() {
-      console.warn("fuck");
       if (this.comment) {
         this.$emit("selectObject", this.object, this.comment);
       }

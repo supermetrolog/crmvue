@@ -51,6 +51,7 @@ export default {
         btnActive: false,
         btnVisible: true,
         btnClass: "",
+        defaultBtn: false,
         ...this.options,
       },
     };
@@ -62,7 +63,7 @@ export default {
   },
   methods: {
     clickBtn() {
-      if (this.optionsLocale.btnActive) {
+      if (this.optionsLocale.btnActive || this.optionsLocale.defaultBtn) {
         return this.$emit("confirm");
       }
 
