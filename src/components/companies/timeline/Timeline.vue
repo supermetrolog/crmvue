@@ -40,6 +40,27 @@
         <Loader class="center" />
       </div>
       <div class="col-7 box step-actions" v-if="selectedStep">
+        <div class="row" v-if="selectedStep.number != 0">
+          <div class="col-3 mb-2">
+            <div class="company-form company-request-form">
+              <Multiselect
+                v-model="contactForSendMessage"
+                :options="companyContacts"
+                clearOnSelect="true"
+                class="multiselect-timeline"
+                :multipleLabel="
+                  (n) => {
+                    return `${n.length} ${
+                      n.length == 1 ? 'контакт выбран' : 'контакта выбрано'
+                    }`;
+                  }
+                "
+                placeholder="Выберите контакт"
+                mode="multiple"
+              />
+            </div>
+          </div>
+        </div>
         <transition
           mode="out-in"
           enter-active-class="animate__animated animate__fadeIn for__page"
@@ -48,6 +69,7 @@
           <component
             :is="stepActionsName"
             :step="selectedStep"
+            :contactForSendMessage="contactForSendMessage"
             @updatedObjects="updatedObjects"
             @updateStep="clickUpdateStep"
           >
@@ -67,6 +89,7 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import TimelineItem from "./TimelineItem";
+import Multiselect from "@vueform/multiselect";
 
 import MeetingActions from "./step-actions/MeetingActions.vue";
 import OffersActions from "./step-actions/OffersActions.vue";
@@ -80,6 +103,7 @@ import DealActions from "./step-actions/DealActions.vue";
 import ExtraBlock from "./timeline-extra-block/ExtraBlock.vue";
 import Loader from "@/components/Loader.vue";
 import { Timeline } from "@/const/Const";
+import Utils from "@/utils";
 export default {
   name: "Timeline",
   components: {
@@ -94,6 +118,7 @@ export default {
     DealActions,
     Loader,
     ExtraBlock,
+    Multiselect,
   },
   data() {
     return {
@@ -102,10 +127,12 @@ export default {
       loaderForStep: false,
       objects: [],
       timelineNotFoundFlag: false,
+      companyContacts: null,
+      contactForSendMessage: [],
     };
   },
   computed: {
-    ...mapGetters(["TIMELINE"]),
+    ...mapGetters(["TIMELINE", "COMPANY"]),
     selectedStep() {
       if (this.TIMELINE.timelineSteps) {
         return this.TIMELINE.timelineSteps[this.$route.query.step];
@@ -176,10 +203,20 @@ export default {
         this.timelineNotFoundFlag = true;
       }
     },
+    getCompanyContacts() {
+      if (this.companyContacts) {
+        return;
+      }
+      this.companyContacts = Utils.normalizeContactsForMultiselect(
+        this.COMPANY[0].contacts
+      );
+      console.warn(this.companyContacts);
+    },
   },
   async created() {
     this.loader = true;
     await this.getTimeline();
+    this.getCompanyContacts();
     this.loader = false;
     this.$nextTick(() => {
       this.scrollToSelectedStep();

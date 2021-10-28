@@ -64,6 +64,12 @@
             <i class="fas fa-ruble-sign d-inline text-dark"></i>
             {{ object.price_floor_min }} - {{ object.price_floor_max }} р
           </p>
+          <p v-if="object.comment" class="value text-center text-success_alt">
+            комментарий
+          </p>
+          <p class="text-center value">
+            {{ object.comment }}
+          </p>
           <i
             class="far fa-arrow-alt-circle-down text-center mt-1 extra"
             @click="toggleExtraInfoVisible"
@@ -77,10 +83,6 @@
         </div>
 
         <div class="extraFields text-center pb-2" v-if="extraInfoVisible">
-          <p v-if="object.comment">комментарий</p>
-          <p class="text-center value">
-            {{ object.comment }}
-          </p>
           <p>адрес</p>
           <p class="text-center value">
             {{ object.address }}

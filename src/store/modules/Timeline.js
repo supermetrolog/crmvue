@@ -2,7 +2,7 @@
 import api from "@/api/api"
 const Timeline = {
     state: {
-        timeline: []
+        timeline: [],
     },
     mutations: {
         updateTimeline(state, data) {
@@ -47,7 +47,7 @@ const Timeline = {
         },
         TIMELINE_REQUEST_ID(state) {
             return state.timeline.request_id
-        }
+        },
     }
 }
 

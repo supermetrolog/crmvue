@@ -8,15 +8,18 @@
               <div class="col-2">
                 <button
                   class="action success"
+                  title="Отправить презентации с объектами клиенту"
                   @click.prevent="sendObjects"
-                  :disabled="!selectedObjects.length"
+                  :disabled="
+                    !selectedObjects.length || !contactForSendMessage.length
+                  "
                   v-if="step.number == 1"
                 >
                   <i class="fas fa-paper-plane"></i>
                   <span class="ml-1">Отправить</span>
                 </button>
                 <button
-                  class="action success"
+                  class="action primary"
                   @click.prevent="sendObjects"
                   :disabled="!selectedObjects.length"
                   v-else
@@ -29,7 +32,9 @@
                 <button
                   class="action success"
                   @click.prevent="sendObjects"
-                  :disabled="!selectedObjects.length"
+                  :disabled="
+                    !selectedObjects.length || !contactForSendMessage.length
+                  "
                 >
                   <i class="fas fa-paper-plane"></i>
                   <span class="ml-1">Отправить</span>
@@ -190,6 +195,7 @@ import ObjectsItemTable from "@/components/companies/objects/ObjectsItemTable.vu
 import Pagination from "@/components/Pagination";
 import Loader from "@/components/Loader";
 import CustomButton from "@/components/CustomButton.vue";
+import { notify } from "@kyvg/vue3-notification";
 
 export default {
   name: "Objects",
@@ -211,6 +217,9 @@ export default {
     step: {
       type: [Object, Boolean],
     },
+    contactForSendMessage: {
+      type: Array,
+    },
   },
   computed: {
     ...mapGetters([
@@ -230,6 +239,7 @@ export default {
       "SEND_OBJECTS",
       "UPDATE_STEP",
       "FETCH_COMPANY_REQUESTS",
+      "RESET_CURRENT_STEP_OBJECTS",
     ]),
 
     selectObject(object, comment = null) {
@@ -314,7 +324,24 @@ export default {
       }
       this.$emit("updateItem", data);
     },
-    async sendObjects() {
+    sendObjects(sendClient = true) {
+      console.log(this.contactForSendMessage);
+      if (this.contactForSendMessage.length) {
+        if (sendClient) {
+          this.sendObjectsToClient();
+        }
+      } else {
+        let notifyOptions = {
+          group: "app",
+          type: "error",
+          duration: 5000,
+        };
+        notifyOptions.title = "Ошибка";
+        notifyOptions.text = "Выберите контакт!";
+        notify(notifyOptions);
+      }
+    },
+    async sendObjectsToClient() {
       this.loader = true;
       let data = {
         ...this.step,
@@ -398,6 +425,9 @@ export default {
       }
       this.loader = false;
     },
+  },
+  beforeUnmount() {
+    this.RESET_CURRENT_STEP_OBJECTS();
   },
   watch: {
     step(before, after) {

@@ -5,7 +5,11 @@
         <div class="row px-2 pb-2" v-if="CURRENT_STEP_OBJECTS.length">
           <div class="col-12">
             <div class="timeline-actions row">
-              <Inspection :step="step" @updateItem="clickUpdateStep" />
+              <Inspection
+                :step="step"
+                @updateItem="clickUpdateStep"
+                :contactForSendMessage="contactForSendMessage"
+              />
             </div>
           </div>
         </div>
@@ -14,6 +18,7 @@
           <div class="col-12">
             <Objects
               :step="step"
+              :contactForSendMessage="contactForSendMessage"
               @updated="updatedObjects"
               @updateItem="clickUpdateStep"
             />
@@ -38,6 +43,9 @@ export default {
   props: {
     step: {
       type: [Object, Boolean],
+    },
+    contactForSendMessage: {
+      type: Array,
     },
   },
   computed: {

@@ -8,14 +8,14 @@
 
             <CustomButton
               :options="{
-                btnClass: 'success',
+                btnClass: 'primary',
                 btnVisible: false,
                 defaultBtn: true,
               }"
               @confirm="selectOptimizeRoute"
             >
               <template #btnContent>
-                <i class="fas fa-check"></i>
+                <i class="fas fa-route"></i>
                 оптимизировать
               </template>
             </CustomButton>
@@ -65,10 +65,56 @@
               </ul>
             </div>
           </div>
+          <div class="col-12 mt-3">
+            <div class="row no-gutters">
+              <div class="col-6 pr-1">
+                <CustomButton
+                  title="Отправить маршрут клиенту"
+                  :options="{
+                    btnClass: 'success',
+                    btnVisible: false,
+                    defaultBtn: true,
+                  }"
+                  @confirm="selectOptimizeRoute"
+                >
+                  <template #btnContent>
+                    <i class="fas fa-paper-plane"></i>
+
+                    отправить клиенту
+                  </template>
+                </CustomButton>
+              </div>
+              <div class="col-6">
+                <CustomButton
+                  title="Отправить маршрут себе"
+                  :options="{
+                    btnClass: 'success_alt',
+                    btnVisible: false,
+                    defaultBtn: true,
+                  }"
+                  @confirm="selectOptimizeRoute"
+                >
+                  <template #btnContent>
+                    <i class="fas fa-paper-plane"></i>
+
+                    отправить себе
+                  </template>
+                </CustomButton>
+              </div>
+            </div>
+
+            <!-- <a :href="yandexMapRoutesUrl" target="_blank"
+              >посмотреть на карте<i class="fas fa-route ml-1"></i
+            ></a> -->
+          </div>
         </div>
       </div>
       <div class="col-7 align-self-center">
-        <Ymap :manualRoute="currentStepObjects" :userLocation="userLocation" />
+        <Ymap
+          :manualRoute="currentStepObjects"
+          :userLocation="userLocation"
+          v-if="currentStepObjects.length"
+        />
       </div>
     </div>
     <div v-else>
@@ -103,8 +149,8 @@ export default {
     step: {
       type: Object,
     },
-    disabled: {
-      type: Boolean,
+    contactForSendMessage: {
+      type: Array,
     },
   },
   computed: {
@@ -133,9 +179,9 @@ export default {
         });
       });
       url += lastPartUrl;
-      if (this.currentStepObjects.length) {
-        yandexmap.getOptimizeRoutes(coords);
-      }
+      // if (this.currentStepObjects.length) {
+      //   yandexmap.getOptimizeRoutes(coords);
+      // }
       return url;
     },
   },
@@ -160,13 +206,22 @@ export default {
       this.data.negative = 1;
       this.$emit("updateItem", this.data);
     },
-    selectOptimizeRoute() {
-      this.currentStepObjects = [...this.CURRENT_STEP_OBJECTS];
-      console.log("optimize");
+    async selectOptimizeRoute() {
+      const result = await yandexmap.getOptimizeRoutes(
+        this.currentStepObjects,
+        this.userLocation
+      );
+      console.error("optimize", result);
     },
   },
   mounted() {
-    this.currentStepObjects = [...this.CURRENT_STEP_OBJECTS];
+    setTimeout(() => {
+      this.currentStepObjects = [...this.CURRENT_STEP_OBJECTS];
+      console.log("fuck", this.currentStepObjects);
+    }, 500);
+    // this.currentStepObjects = [...this.CURRENT_STEP_OBJECTS];
+    console.log("fuck", this.currentStepObjects);
+
     this.getLocation();
   },
   watch: {

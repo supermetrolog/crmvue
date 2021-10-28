@@ -30,6 +30,9 @@ const Objects = {
             state.objectsCurrentPage = 1;
             state.allObjects = [];
         },
+        resetCurrentStepObjects(state) {
+            state.currentStepObjects = [];
+        }
     },
     actions: {
         async FETCH_CURRENT_STEP_OBJECTS({ commit }, currentObjects) {
@@ -96,6 +99,9 @@ const Objects = {
         RETURN_OBJECTS_CURRENT_PAGE_TO_FIRST(context) {
             context.commit('returnCurrentPageToFirst');
         },
+        RESET_CURRENT_STEP_OBJECTS(context) {
+            context.commit('resetCurrentStepObjects');
+        }
     },
     getters: {
         CURRENT_STEP_OBJECTS(state) {

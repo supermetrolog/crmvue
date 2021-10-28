@@ -14,6 +14,7 @@
           <div class="col-12">
             <Objects
               :step="step"
+              :contactForSendMessage="contactForSendMessage"
               @updated="updatedObjects"
               @updateItem="clickUpdateStep"
             />
@@ -37,6 +38,9 @@ export default {
   props: {
     step: {
       type: [Object, Boolean],
+    },
+    contactForSendMessage: {
+      type: Array,
     },
   },
   methods: {

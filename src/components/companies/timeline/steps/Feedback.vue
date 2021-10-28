@@ -17,7 +17,14 @@
               :id="'checkbox-feedbackWay' + feedbackWayItem[0]"
             />
             <label
-              class="action feedback-way p-1 justify-content-center"
+              class="
+                action
+                feedback-way
+                p-1
+                justify-content-center
+                text-center
+                m-0
+              "
               :class="{
                 active: ways.includes(feedbackWayItem[0]),
               }"

@@ -2693,3 +2693,12 @@
             }
         }
     }
+    
+    .multiselect {
+        &-timeline {
+            min-height: 35px!important;
+            width: 100%!important;
+            border: 1px solid $color_grey!important;
+            border-radius: 0!important;
+        }
+    }

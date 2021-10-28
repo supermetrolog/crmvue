@@ -4,6 +4,7 @@
       РАССТОЯНИЕ: {{ route.length }}, ВРЕМЯ: {{ route.time }}
     </p>
     <yandex-map
+      v-if="mounted"
       :settings="settings"
       :coords="options.coords"
       :zoom="options.zoom"
