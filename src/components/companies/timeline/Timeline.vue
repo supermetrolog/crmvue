@@ -46,7 +46,7 @@
               <Multiselect
                 v-model="contactForSendMessage"
                 :options="companyContacts"
-                clearOnSelect="true"
+                :clearOnSelect="true"
                 class="multiselect-timeline"
                 :multipleLabel="
                   (n) => {
@@ -70,6 +70,7 @@
             :is="stepActionsName"
             :step="selectedStep"
             :contactForSendMessage="contactForSendMessage"
+            :loaderForStep="loaderForStep"
             @updatedObjects="updatedObjects"
             @updateStep="clickUpdateStep"
           >

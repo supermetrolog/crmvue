@@ -20,7 +20,7 @@
                 </button>
                 <button
                   class="action primary"
-                  @click.prevent="sendObjects"
+                  @click.prevent="sendObjects(false)"
                   :disabled="!selectedObjects.length"
                   v-else
                 >
@@ -219,6 +219,9 @@ export default {
     },
     contactForSendMessage: {
       type: Array,
+      default: () => {
+        return [];
+      },
     },
   },
   computed: {
@@ -243,6 +246,9 @@ export default {
     ]),
 
     selectObject(object, comment = null) {
+      if (this.step.number == 7) {
+        return this.selectObjectOne(object, comment);
+      }
       this.selectedObjects = this.selectedObjects.filter(
         (item) => item.id != object.id
       );
@@ -250,8 +256,9 @@ export default {
       this.selectedObjects.push(object);
       this.$emit("updateSelectedObjectList", this.selectedObjects);
     },
-    selectObjectOne(object) {
+    selectObjectOne(object, comment = null) {
       this.selectedObjects = [];
+      object.comment = comment;
       this.selectedObjects.push(object);
       this.$emit("updateSelectedObjectList", this.selectedObjects);
     },
@@ -326,22 +333,38 @@ export default {
     },
     sendObjects(sendClient = true) {
       console.log(this.contactForSendMessage);
-      if (this.contactForSendMessage.length) {
-        if (sendClient) {
-          this.sendObjectsToClient();
+      if (sendClient) {
+        if (this.contactForSendMessage.length) {
+          this.sendObjectsHandler(sendClient);
+        } else {
+          let notifyOptions = {
+            group: "app",
+            type: "error",
+            duration: 5000,
+          };
+          notifyOptions.title = "Ошибка";
+          notifyOptions.text = "Выберите контакт!";
+          notify(notifyOptions);
         }
       } else {
-        let notifyOptions = {
-          group: "app",
-          type: "error",
-          duration: 5000,
-        };
-        notifyOptions.title = "Ошибка";
-        notifyOptions.text = "Выберите контакт!";
-        notify(notifyOptions);
+        this.sendObjectsHandler(sendClient);
       }
+      // if (this.contactForSendMessage.length) {
+      //   if (sendClient) {
+      //     this.sendObjectsToClient();
+      //   }
+      // } else {
+      //   let notifyOptions = {
+      //     group: "app",
+      //     type: "error",
+      //     duration: 5000,
+      //   };
+      //   notifyOptions.title = "Ошибка";
+      //   notifyOptions.text = "Выберите контакт!";
+      //   notify(notifyOptions);
+      // }
     },
-    async sendObjectsToClient() {
+    async sendObjectsHandler(sendClientFlag) {
       this.loader = true;
       let data = {
         ...this.step,
@@ -372,6 +395,11 @@ export default {
           comment: comment,
         },
       ];
+      if (sendClientFlag) {
+        data.sendClientFlag = true;
+      } else {
+        data.sendClientFlag = false;
+      }
       if (await this.UPDATE_STEP(data)) {
         data.timelineStepObjects = data.timelineStepObjects.concat(
           this.step.timelineStepObjects

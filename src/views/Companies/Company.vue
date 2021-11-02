@@ -8,7 +8,7 @@
       <Modal
         class="fullscreen"
         title="Бизнес процесс"
-        v-if="timelineVisible"
+        v-if="timelineVisible && COMPANY[0] && COMPANY_REQUESTS[0]"
         @close="closeTimeline"
       >
         <Timeline />

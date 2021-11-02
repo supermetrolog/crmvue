@@ -101,7 +101,7 @@ export default {
           required: helpers.withMessage("заполните пароль", required),
           minLength: helpers.withMessage(
             "пароль не может быть меньше 8 символов",
-            minLength(8)
+            minLength(4)
           ),
         },
       },
