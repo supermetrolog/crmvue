@@ -219,6 +219,21 @@
             </div>
           </div>
         </div>
+        <div class="col-12 company-detail-info-item">
+          <div class="row no-gutters">
+            <div class="col-4">
+              <strong>Документы: </strong>
+            </div>
+            <div class="col-8 text-right align-self-center">
+              <p v-if="company.files.length">
+                <FileInput
+                  :alreadyExistingFiles="company.files"
+                  :reedOnly="true"
+                />
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="col-12 text-center mt-3">
@@ -242,7 +257,7 @@
                 </div>
                 <div class="col-9 text-right align-self-center">
                   <p>
-                    {{ company.legalAdress }}
+                    {{ company.legalAddress }}
                   </p>
                 </div>
               </div>
@@ -428,11 +443,13 @@
 
 <script>
 import { CompanyCategories } from "@/const/Const";
+import FileInput from "@/components/FileInput";
 import Progress from "@/components/Progress";
 export default {
   name: "CompanyDetailInfo",
   components: {
     Progress,
+    FileInput,
   },
   data() {
     return {

@@ -304,12 +304,8 @@
       </div>
       <div class="col-6">
         <label class="input-label" @click="testw">Документы</label>
-        <!-- <input type="file" class="d-none" />
-        <button @click.prevent class="btn btn-primary btn-large">
-          Открыть
-        </button> -->
         <FileInput @change="onChangeFiles" :alreadyExistingFiles="form.files">
-          Выбрать файлы
+          {{ !formdata ? "Выбрать файлы" : "Добавить файлы" }}
         </FileInput>
       </div>
     </div>

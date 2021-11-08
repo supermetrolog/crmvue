@@ -340,17 +340,17 @@ export default {
     async updateContact() {
       if (await this.UPDATE_CONTACT(this.form)) {
         this.$emit("updated");
-        this.loader = false;
         this.clickCloseModal();
       }
+      this.loader = false;
     },
     async createContact() {
       if (await this.CREATE_CONTACT(this.form)) {
         this.$emit("created");
-        this.loader = false;
 
         this.clickCloseModal();
       }
+      this.loader = false;
     },
     customRequired() {
       if (this.form.emails.length == 1 && this.form.phones.length == 1) {

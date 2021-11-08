@@ -28,6 +28,7 @@ const CompanyRequest = {
         async FETCH_COMPANY_REQUESTS(context, id) {
             const requests = await api.request.getRequests(id);
             context.commit('updateCompanyRequests', requests);
+            return requests;
         }
     },
 

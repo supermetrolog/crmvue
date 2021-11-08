@@ -159,24 +159,33 @@ export default {
       this.v$.$validate();
       if (!this.v$.form.$error) {
         this.data.requestDealData = this.form;
-        this.$emit("updateItem", this.data);
-        this.FETCH_COMPANY_REQUESTS(this.$route.params.id);
+        this.$emit("updateItem", this.data, false, () => {
+          this.FETCH_COMPANY_REQUESTS(this.$route.params.id);
+        });
+      }
+    },
+    setData() {
+      if (this.deal) {
+        this.form = { ...this.deal };
+      } else {
+        this.form.request_id = this.request_id;
+        this.form.object_id = this.data.timelineStepObjects[0].object_id;
+        this.form.complex_id = this.data.timelineStepObjects[0].complex_id;
       }
     },
   },
   async mounted() {
     this.loader = true;
     await this.FETCH_CONSULTANT_LIST();
-    if (this.deal) {
-      this.form = { ...this.deal };
-    } else {
-      this.form.request_id = this.request_id;
-    }
+    this.setData();
     this.loader = this.loaderForStep;
   },
   watch: {
     step() {
       this.data = this.step;
+    },
+    deal() {
+      this.setData();
     },
     loaderForStep() {
       this.loader = this.loaderForStep;

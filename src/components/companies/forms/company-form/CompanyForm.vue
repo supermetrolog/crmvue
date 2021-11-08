@@ -97,40 +97,6 @@ export default {
         files: [],
         fileList: [],
       },
-      // form: {
-      //   nameEng: "",
-      //   nameRu: "",
-      //   noName: 0,
-      //   formOfOrganization: 0,
-      //   companyGroup: "",
-      //   category: [], // -
-      //   officeAdress: "",
-      //   siteList: [""], // -
-      //   phoneList: [""], // -
-      //   emailList: [""], // -
-      //   status: null,
-      //   consultant: null,
-      //   legalAddress: "",
-      //   ogrn: "",
-      //   inn: "",
-      //   kpp: "",
-      //   checkingAccount: "",
-      //   correspondentAccount: "",
-      //   inTheBank: "",
-      //   bik: "",
-      //   okved: "",
-      //   okpo: "",
-      //   signatoryName: "",
-      //   signatoryMiddleName: "",
-      //   signatoryLastName: "",
-      //   basis: "",
-      //   documentNumber: "",
-      //   activityGroup: null,
-      //   activityProfile: null,
-      //   productRange: [], // -
-      //   desctiption: "",
-      //   files: "sdawda",
-      // },
     };
   },
   props: {
@@ -282,17 +248,16 @@ export default {
     async updateCompany() {
       if (await this.UPDATE_COMPANY(this.form)) {
         this.$emit("updated");
-        this.loader = false;
         this.clickCloseModal();
       }
+      this.loader = false;
     },
     async createCompany() {
       if (await this.CREATE_COMPANY(this.form)) {
         this.$emit("created");
-        this.loader = false;
-
-        // this.clickCloseModal();
+        this.clickCloseModal();
       }
+      this.loader = false;
     },
     normalizeContacts() {
       this.form.contacts.phones = this.form.contacts.phones.filter(

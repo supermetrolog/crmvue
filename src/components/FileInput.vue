@@ -1,18 +1,23 @@
 <template>
   <div class="file-input">
     <div class="file-input_container">
-      <div class="file-input_btn">
-        <button @click.prevent="clickOpenFile" class="primary">
-          <slot></slot>
-        </button>
-        <input
-          type="file"
-          ref="fileInput"
-          :multiple="multiple"
-          :accept="accept"
-          @change.stop="onChange($event)"
-        />
+      <div class="row" v-if="!reedOnly">
+        <div class="col-12">
+          <div class="file-input_btn">
+            <button @click.prevent="clickOpenFile" class="primary btn-large">
+              <slot></slot>
+            </button>
+            <input
+              type="file"
+              ref="fileInput"
+              :multiple="multiple"
+              :accept="accept"
+              @change.stop="onChange($event)"
+            />
+          </div>
+        </div>
       </div>
+
       <div class="row no-gutters file-input_files existing" v-if="files.length">
         <div class="col-3 file" v-for="(file, index) in files" :key="index">
           <div class="row no-gutters">
@@ -25,18 +30,26 @@
                 justify-content-center
               "
             >
-              <img
-                :src="require(`@/assets/image/${file.src}.png`)"
-                alt="file"
-                :class="file.src"
+              <a
+                :href="file.src"
+                target="_blank"
                 :title="file.name"
-                v-if="allowedTypeList.includes(file.src)"
-              />
-              <img :src="file.src" alt="file" class="image" v-else />
+                class="d-flex align-self-center justify-content-center"
+              >
+                <img
+                  :src="require(`@/assets/image/${file.src2}.png`)"
+                  alt="file"
+                  :class="file.src2"
+                  :title="file.name"
+                  v-if="allowedTypeList.includes(file.src2)"
+                />
+                <img :src="file.src2" alt="file" class="image" v-else />
+              </a>
+
               <div class="size-container text-right">
                 <p>{{ formatSize(file.size) }}</p>
               </div>
-              <div class="delete-container">
+              <div class="delete-container" v-if="!reedOnly">
                 <i class="fas fa-times" @click="deleteFile(index)"></i>
               </div>
             </div>
@@ -120,6 +133,10 @@ export default {
         return [];
       },
     },
+    reedOnly: {
+      type: Boolean,
+      default: false,
+    },
   },
   methods: {
     clickOpenFile() {
@@ -137,6 +154,7 @@ export default {
     },
     deleteFile(index) {
       this.files = this.files.filter((_, idx) => idx != index);
+      this.$emit("change", this.files, this.targetFiles);
     },
     onChange(event) {
       this.localFiles = [];
@@ -175,6 +193,30 @@ export default {
         }
       });
     },
+    setSrcForExistionFiles() {
+      this.files.map((file) => {
+        if (file.type.match("image")) {
+          file.src2 = file.src;
+          // this.files.push(file);
+          return file;
+        } else if (file.type.match("application")) {
+          file.src2 = getFileType(file);
+          // this.files.push(file);
+
+          return file;
+        } else {
+          file.src2 = "unknown";
+          // this.files.push(file);
+
+          return file;
+        }
+      });
+    },
+  },
+  mounted() {
+    if (this.files.length) {
+      this.setSrcForExistionFiles();
+    }
   },
   watch: {
     localFiles: {
@@ -186,6 +228,8 @@ export default {
     alreadyExistingFiles() {
       if (!this.files.length) {
         this.files = this.alreadyExistingFiles;
+        this.setSrcForExistionFiles();
+        console.error(this.files);
       }
     },
   },
@@ -245,6 +289,9 @@ $color_success: #00b74a;
         overflow: hidden;
         background-color: $color_dark;
         position: relative;
+        a {
+          display: inline;
+        }
         .size-container,
         .delete-container {
           opacity: 0;

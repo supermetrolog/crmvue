@@ -6,9 +6,9 @@ function getFormDataWithFiles(formdata1, forUpdate = false) {
 
     let formdata = {...formdata1 };
     let FD = new FormData();
-    // for (let i = 0; i < formdata.fileList.length; i++) {
-    //     FD.append("files[]", formdata.fileList[i]);
-    // }
+    for (let i = 0; i < formdata.fileList.length; i++) {
+        FD.append("files[]", formdata.fileList[i]);
+    }
     delete formdata.fileList;
     let files = [];
     formdata.files.map(item => {
@@ -17,7 +17,7 @@ function getFormDataWithFiles(formdata1, forUpdate = false) {
         file.size = item.size;
         file.type = item.type;
         if (forUpdate) {
-            file.id = item.id;
+            file.company_id = item.company_id;
             file.filename = item.filename;
         } else {
             file.src = '';
@@ -75,13 +75,16 @@ export default {
     async updateCompany(formdata) {
         const url = `companies/${formdata.id}`;
         let data = false;
-        // formdata = getFormDataWithFiles(formdata, true);
+        formdata = getFormDataWithFiles(formdata, true);
+        // let FD = new FormData();
+        // FD.append('data', new Blob([JSON.stringify(formdata)]), { type: 'application/x-www-form-urlencoded' });
 
+        // formdata = FD;
         let config = {
-            // headers: {
-            //     'Accept': 'application/json',
-            //     'Content-Type': 'multipart/form-data',
-            // }
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'multipart/form-data',
+            }
         };
         await axios
             .patch(url, formdata, config)

@@ -133,7 +133,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["TIMELINE", "COMPANY"]),
+    ...mapGetters(["TIMELINE", "COMPANY", "COMPANY_CONTACTS"]),
     selectedStep() {
       if (this.TIMELINE.timelineSteps) {
         return this.TIMELINE.timelineSteps[this.$route.query.step];
@@ -154,7 +154,7 @@ export default {
       }
       this.loaderForStep = false;
     },
-    async clickUpdateStep(data, goToNext = false) {
+    async clickUpdateStep(data, goToNext = false, fn = null) {
       console.log(data);
       this.loaderForStep = data.id;
       if (await this.UPDATE_STEP(data)) {
@@ -162,6 +162,9 @@ export default {
         if (goToNext) {
           this.nextStep();
         }
+      }
+      if (fn) {
+        fn();
       }
       this.loaderForStep = false;
     },
@@ -208,10 +211,15 @@ export default {
       if (this.companyContacts) {
         return;
       }
+      console.log("CONTACTS", this.COMPANY_CONTACTS);
+      console.log("COMPANY", this.COMPANY[0].contacts);
+      // this.companyContacts = Utils.normalizeContactsForMultiselect(
+      //   this.COMPANY[0].contacts
+      // );
       this.companyContacts = Utils.normalizeContactsForMultiselect(
-        this.COMPANY[0].contacts
+        this.COMPANY_CONTACTS
       );
-      console.warn(this.companyContacts);
+      // console.warn(this.companyContacts);
     },
   },
   async created() {

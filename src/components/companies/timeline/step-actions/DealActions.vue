@@ -54,8 +54,8 @@ export default {
     },
   },
   methods: {
-    clickUpdateStep(data, flag) {
-      this.$emit("updateStep", data, flag);
+    clickUpdateStep(data, flag, fn) {
+      this.$emit("updateStep", data, flag, fn);
     },
     updatedObjects(data) {
       this.$emit("updatedObjects", data, true);

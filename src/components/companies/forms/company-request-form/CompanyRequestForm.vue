@@ -910,17 +910,17 @@ export default {
     async updateRequest() {
       if (await this.UPDATE_REQUEST(this.form)) {
         this.$emit("updated");
-        this.loader = false;
         this.clickCloseModal();
       }
+      this.loader = false;
     },
     async createRequest() {
       if (await this.CREATE_REQUEST(this.form)) {
         this.$emit("created");
-        this.loader = false;
 
         this.clickCloseModal();
       }
+      this.loader = false;
     },
     customRequired(value) {
       if (!this.form.distanceFromMKADnotApplicable) {
