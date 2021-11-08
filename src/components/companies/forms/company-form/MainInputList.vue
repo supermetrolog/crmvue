@@ -308,7 +308,9 @@
         <button @click.prevent class="btn btn-primary btn-large">
           Открыть
         </button> -->
-        <FileInput v-model="form.files" is-pdf />
+        <FileInput @change="onChangeFiles" :alreadyExistingFiles="form.files">
+          Выбрать файлы
+        </FileInput>
       </div>
     </div>
   </div>
@@ -320,7 +322,6 @@ import TagsInput from "@/components/TagsInput";
 import FileInput from "@/components/FileInput";
 import { CompanyCategories } from "@/const/Const.js";
 import Multiselect from "@vueform/multiselect";
-
 export default {
   name: "MainInputList",
   components: {
@@ -352,6 +353,12 @@ export default {
     ...mapGetters(["CONSULTANT_LIST", "COMPANY_GROUP_LIST"]),
   },
   methods: {
+    onChangeFiles(files, fileList) {
+      this.form.files = files;
+      this.form.fileList = fileList;
+      console.error("FILES", this.form.files);
+      console.error("FILE LIST", this.form.fileList);
+    },
     test() {
       this.v.nameEng.$touch;
       console.log(this.v.nameEng.$error, this.form.nameEng);

@@ -94,6 +94,8 @@ export default {
         signatoryMiddleName: null,
         signatoryName: null,
         status: 1,
+        files: [],
+        fileList: [],
       },
       // form: {
       //   nameEng: "",
@@ -264,6 +266,7 @@ export default {
       "UPDATE_COMPANY",
     ]),
     submitForm() {
+      // this.createCompany();
       this.v$.$validate();
       if (!this.v$.form.$error) {
         console.log(this.form);
@@ -288,7 +291,7 @@ export default {
         this.$emit("created");
         this.loader = false;
 
-        this.clickCloseModal();
+        // this.clickCloseModal();
       }
     },
     normalizeContacts() {
@@ -331,6 +334,7 @@ export default {
     if (this.formdata) {
       let clone = JSON.parse(JSON.stringify(this.formdata));
       this.form = Utils.normalizeDataForCompanyForm(clone);
+      this.form.fileList = [];
     }
     this.loader = false;
   },

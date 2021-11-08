@@ -42,11 +42,11 @@ const Notifications = {
         FETCH_NOTIFICATIONS(context) {
             // console.warn(context);
             context.dispatch('FETCH_NOTIFICATIONS_NO_INTERVAL');
-            setInterval(async() => {
-                // console.warn('interval');
-                context.dispatch('FETCH_NOTIFICATIONS_NO_INTERVAL');
-                // console.error('interval');
-            }, 5000);
+            // setInterval(async() => {
+            //     // console.warn('interval');
+            //     context.dispatch('FETCH_NOTIFICATIONS_NO_INTERVAL');
+            //     // console.error('interval');
+            // }, 5000);
         },
         async FETCH_NOTIFICATIONS_NO_INTERVAL(context) {
             const user = JSON.parse(localStorage.getItem('user'));
