@@ -19,7 +19,11 @@
       </div>
 
       <div class="row no-gutters file-input_files existing" v-if="files.length">
-        <div class="col-3 file" v-for="(file, index) in files" :key="index">
+        <div
+          class="col-3 file ml-auto"
+          v-for="(file, index) in files"
+          :key="index"
+        >
           <div class="row no-gutters">
             <div
               class="
@@ -144,13 +148,16 @@ export default {
       this.$refs.fileInput.click();
     },
     formatSize(length) {
+      length = +length;
       let i = 0,
         type = ["б", "Кб", "Мб", "Гб", "Тб", "Пб"];
       while ((length / 1000) | 0 && i < type.length - 1) {
         length /= 1024;
         i++;
       }
+      console.log(length);
       return length.toFixed(2) + " " + type[i];
+      // return length;
     },
     deleteFile(index) {
       this.files = this.files.filter((_, idx) => idx != index);

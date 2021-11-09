@@ -268,37 +268,6 @@ export default {
       );
       this.$emit("updateSelectedObjectList", this.selectedObjects);
     },
-    // async submitDeal(requestDealData) {
-    //   this.loader = true;
-    //   let data = {
-    //     ...this.step,
-    //   };
-    //   data.requestDealData = requestDealData;
-    //   data.negative = 0;
-    //   data.done = 1;
-    //   data.timelineStepObjects = [];
-    //   this.selectedObjects.map((item) => {
-    //     data.timelineStepObjects.push({
-    //       timeline_step_id: data.id,
-    //       object_id: item.original_id,
-    //       offer_id: item.id,
-    //       complex_id: item.complex_id,
-    //       type_id: item.type_id,
-    //     });
-    //   });
-    //   data.requestDealData.complex_id = data.timelineStepObjects[0].complex_id;
-    //   data.requestDealData.object_id = data.timelineStepObjects[0].object_id;
-
-    //   if (await this.UPDATE_STEP(data)) {
-    //     data.timelineStepObjects = data.timelineStepObjects.concat(
-    //       this.step.timelineStepObjects
-    //     );
-    //     this.$emit("updated", data);
-    //     this.clickResetSelectObjects();
-    //     await this.FETCH_COMPANY_REQUESTS(this.$route.params.id);
-    //   }
-    //   this.loader = false;
-    // },
     loadMore() {
       this.INCRIMENT_OBJECTS_CURRENT_PAGE();
       this.FETCH_ALL_OBJECTS(this.step.number);
@@ -349,20 +318,6 @@ export default {
       } else {
         this.sendObjectsHandler(sendClient);
       }
-      // if (this.contactForSendMessage.length) {
-      //   if (sendClient) {
-      //     this.sendObjectsToClient();
-      //   }
-      // } else {
-      //   let notifyOptions = {
-      //     group: "app",
-      //     type: "error",
-      //     duration: 5000,
-      //   };
-      //   notifyOptions.title = "Ошибка";
-      //   notifyOptions.text = "Выберите контакт!";
-      //   notify(notifyOptions);
-      // }
     },
     async sendObjectsHandler(sendClientFlag) {
       this.loader = true;

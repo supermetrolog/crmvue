@@ -224,13 +224,14 @@
             <div class="col-4">
               <strong>Документы: </strong>
             </div>
-            <div class="col-8 text-right align-self-center">
-              <p v-if="company.files.length">
-                <FileInput
-                  :alreadyExistingFiles="company.files"
-                  :reedOnly="true"
-                />
-              </p>
+            <div
+              class="col-8 text-right align-self-center"
+              v-if="company.files.length"
+            >
+              <FileInput
+                :alreadyExistingFiles="company.files"
+                :reedOnly="true"
+              />
             </div>
           </div>
         </div>

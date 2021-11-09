@@ -33,8 +33,16 @@
 
                       <p class="time">{{ comment.created_at }}</p>
                     </div>
-                    <div class="col-12">
-                      <p class="text-success_alt">
+                    <div
+                      class="col-12 mb-1"
+                      :class="{ 'text-right': comment.title == 'система' }"
+                    >
+                      <p
+                        class="text-success"
+                        :class="{
+                          'text-success_alt': comment.title == 'система',
+                        }"
+                      >
                         {{ comment.title || "&#8212;" }}
                       </p>
                     </div>
