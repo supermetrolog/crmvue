@@ -15,7 +15,13 @@ export default {
       return Math.floor(Math.random() * (52 - 1 + 1)) + 1;
     },
     src() {
-      return "http://crmka/images/" + this.randomNumber + ".jpg";
+      if (process.env.NODE_ENV == "development") {
+        return "http://crmka/images/" + this.randomNumber + ".jpg";
+      } else {
+        return (
+          "http://api.billypro.beget.tech/images/" + this.randomNumber + ".jpg"
+        );
+      }
     },
   },
 };
