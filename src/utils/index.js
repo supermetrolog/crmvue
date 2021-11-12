@@ -241,4 +241,37 @@ export default {
         array = [];
         return newData;
     },
+    normalizeDataForCompanyFormNew(data) {
+        let array = [];
+        data.productRanges.forEach(item => {
+            array.push(item.product)
+        });
+        data.productRanges = array;
+        array = [];
+
+        data.categories.forEach(item => {
+            array.push(item.category)
+        });
+        data.categories = array;
+        array = [];
+
+        data.contacts = data.contacts.find(item => item.type == 1);
+
+        data.contacts.emails.forEach(item => {
+            array.push(item.email)
+        });
+        data.contacts.emails = array;
+        array = [];
+        data.contacts.phones.forEach(item => {
+            array.push(item.phone)
+        });
+        data.contacts.phones = array;
+        array = [];
+        data.contacts.websites.forEach(item => {
+            array.push(item.website)
+        });
+        data.contacts.websites = array;
+        array = [];
+        return data;
+    }
 }

@@ -97,6 +97,28 @@ export const CompanyCategories = new Map(
 
     ]
 );
+export const CompanyFormOrganization = new Map(
+    [
+        ['param', [
+            { value: 0, label: 'ООО' },
+            { value: 1, label: 'ОАО' },
+            { value: 2, label: 'ЗАО' },
+            { value: 3, label: 'ПАО' },
+            { value: 4, label: 'АО' },
+            { value: 5, label: 'ИП' },
+        ]],
+
+    ]
+);
+export const ActivePassive = new Map(
+    [
+        ['param', [
+            [1, "актив"],
+            [0, "пассив"],
+        ]],
+
+    ]
+);
 export const ObjectClassList = new Map(
     [
         ['param', [

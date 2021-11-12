@@ -7,6 +7,7 @@ import Maska from "maska"
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import Notifications from "@kyvg/vue3-notification"
+import Modal from "@/components/Modal";
 
 // import VueFileAgent from 'vue-file-agent'
 import 'animate.css'
@@ -23,4 +24,4 @@ if (process.env.NODE_ENV == 'development') {
 }
 const app = createApp(App);
 app.config.devtools = true;
-app.component('Tabs', Tabs).component('Tab', Tab).use(Notifications).use(Maska).use(VueAxios, axios).use(store).use(router).mount('#app');
+app.component('Tabs', Tabs).component('Modal', Modal).component('Tab', Tab).use(Notifications).use(Maska).use(VueAxios, axios).use(store).use(router).mount('#app');

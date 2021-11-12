@@ -1,16 +1,6 @@
 <template>
   <div class="main-input-list">
     <div class="input-group row no-gutters">
-      <!-- <div class="col-1">
-        <label class="input-label" title="Нет названия">Нет</label>
-        <input
-          class="checkbox large"
-          type="checkbox"
-          @change="setDefaultName"
-          v-model="form.noName"
-          title="Нет названия"
-        />
-      </div> -->
       <div class="col-1">
         <label class="input-label" title="Нет названия"> Нет </label>
         <input
@@ -77,7 +67,7 @@
       </div>
       <div class="col-4">
         <label class="input-label">Адрес офиса</label>
-        <input type="text" v-model.trim="form.officeAdress" />
+        <input type="text" v-model.trim="form.officeAddress" />
       </div>
     </div>
     <div class="input-group row no-gutters">

@@ -85,7 +85,7 @@ export default {
         nameEng: null,
         nameRu: null,
         noName: 0,
-        officeAdress: null,
+        officeAddress: null,
         ogrn: null,
         okpo: null,
         okved: null,

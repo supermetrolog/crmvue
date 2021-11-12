@@ -37,27 +37,23 @@
         }
     }
     
-    input,
-    select,
-    textarea {
-        resize: none;
-        // min-width: 300px;
-        &:not(.checkbox):not(.btn) {
-            font-size: 15px;
-            padding: 5px 10px;
-            color: $color_secondary;
-            border: 1px solid $color_grey;
-            &:focus {
-                border-radius: unset;
-                outline: 1px solid $color_primary;
-                // outline: unset;
-                // border-radius: unset;
-                // outline-color: $primary;
-            }
-            width: 100%;
-        }
-    }
-    
+    // input,
+    // select,
+    // textarea {
+    //     resize: none;
+    //     // min-width: 300px;
+    //     &:not(.checkbox):not(.btn) {
+    //         font-size: 15px;
+    //         padding: 5px 10px;
+    //         color: $color_secondary;
+    //         border: 1px solid $color_grey;
+    //         &:focus {
+    //             border-radius: unset;
+    //             outline: 1px solid $color_primary;
+    //         }
+    //         width: 100%;
+    //     }
+    // }
     // ********* LOGIN LAYOUT ***********
     .login-layout {
         display: flex;
@@ -1167,11 +1163,181 @@
         }
     }
     
+    // ********** NEW FORM ***************
+    .form {
+        &-container {
+            width: 650px;
+        }
+        &-item {
+            .error-container {
+                padding: 0;
+                padding-top: 2px;
+                text-align: center;
+                p {
+                    font-size: 11px;
+                    font-weight: normal;
+                    text-transform: uppercase;
+                    color: $color_danger;
+                }
+            }
+            // padding-left: 0.25rem!important;
+            // padding-right: 0.25rem!important;
+            &-label {
+                display: inline!important;
+                font-size: 15px;
+                width: 100%;
+                font-weight: 600;
+                letter-spacing: .4px;
+                padding-bottom: 10px;
+                color: $color_sidebar_bg;
+                position: relative;
+                &.required {
+                    &::before {
+                        content: '*';
+                        position: absolute;
+                        right: -10px;
+                        color: $color_danger;
+                        font-size: 16px;
+                    }
+                }
+            }
+            input,
+            select,
+            textarea,
+            .multiselect {
+                width: 100%;
+                letter-spacing: .35px;
+                resize: none;
+                font-size: 18px;
+                font-weight: 500;
+                padding: 2px 5px;
+                // color: darken($color_secondary, 15);
+                color: $color_secondary;
+                border: 1px solid $color_grey;
+                border-radius: unset;
+                max-width: 100%;
+                &:not(textarea) {
+                    min-height: 34px!important;
+                }
+                &:not([type=checkbox]) {
+                    &:not([type=radio]) {
+                        &:focus {
+                            border-radius: unset;
+                            outline: 1px solid $color_primary;
+                        }
+                    }
+                }
+            }
+            input,
+            textarea {
+                display: block;
+            }
+            &.checkbox,
+            &.radio {
+                &.large {
+                    input {
+                        display: inline;
+                        width: 33px;
+                    }
+                }
+                label {
+                    display: inline-flex;
+                    align-self: center;
+                    align-items: center;
+                    &:not(.form-item-label) {
+                        cursor: pointer;
+                        font-weight: normal;
+                        text-transform: uppercase;
+                        font-size: 13px;
+                        margin-right: 4px;
+                    }
+                }
+                input {
+                    display: inline;
+                    width: 18px;
+                    margin: 0;
+                    margin-right: 4px;
+                }
+                &.icons {
+                    .extra-label {
+                        padding: 5px;
+                        margin-bottom: 2px;
+                        background-color: $color_success_alt;
+                        color: white;
+                        text-transform: uppercase;
+                        border-radius: 2px;
+                        p {
+                            font-size: 12px;
+                            text-align: center;
+                        }
+                    }
+                    .item-container {
+                        display: flex;
+                        flex-wrap: wrap;
+                        justify-content: center;
+                        align-items: center;
+                        max-width: 100%;
+                        label {
+                            margin: 2px;
+                            padding: 5px;
+                            display: flex;
+                            flex-wrap: wrap;
+                            width: 30px;
+                            height: 30px;
+                            justify-content: center;
+                            align-items: center;
+                            i {
+                                // max-width: 20px;
+                                // min-width: 20px;
+                                font-size: 18px;
+                                display: block;
+                                margin: 0 auto;
+                            }
+                            &.active {
+                                background-color: $color_success;
+                                color: $color_light;
+                            }
+                        }
+                    }
+                    input {
+                        display: none;
+                    }
+                }
+            }
+            &.propogation-input {
+                .item-container {
+                    position: relative;
+                    &:hover {
+                        i {
+                            opacity: 1;
+                        }
+                    }
+                }
+                input {
+                    padding-left: 15px;
+                    padding-right: 15px;
+                }
+                i {
+                    opacity: 0;
+                    position: absolute;
+                    cursor: pointer;
+                    top: 25%;
+                    transition: all .1s ease-in-out;
+                }
+                i.add {
+                    right: 2px;
+                    color: $color_primary;
+                }
+                i.delete {
+                    left: 2px;
+                    color: $color_danger;
+                }
+            }
+        }
+    }
+    
     // ********** COMPANY-FORM ***********
     .company-form {
-        // box-shadow: 0px 10px 50px rgba(0, 0, 0, 0.25);
-        // padding: 20px;
-        // width: 630px;
         .modal {
             .modal-body,
             .modal-container {
@@ -1255,18 +1421,19 @@
                 border-bottom: 1px solid #000;
             }
             .input-label {
-                display: inline-block;
+                display: block;
                 font-size: 15px;
+                width: 100%;
                 font-weight: 600;
-                letter-spacing: 0px;
+                letter-spacing: .4px;
                 padding-bottom: 10px;
                 color: $color_sidebar_bg;
                 position: relative;
                 &.required {
-                    &::after {
+                    &::before {
                         content: '*';
                         position: absolute;
-                        right: -10px;
+                        right: 0px;
                         color: $color_danger;
                         font-size: 16px;
                     }
@@ -1280,7 +1447,8 @@
             select,
             textarea,
             .multiselect {
-                max-width: 600px;
+                // max-width: 600px;
+                // display: block;
                 resize: none;
                 // min-width: 300px;
                 &:not(.checkbox) {
