@@ -160,12 +160,23 @@
             <div class="col-7 text-right align-self-center">
               <p
                 class="d-inline-block"
+                style="
+                  line-break: anywhere;
+                  white-space: break-spaces !important;
+                "
                 v-for="product of company.productRanges"
                 :key="product.id"
               >
                 {{ product.product }}
               </p>
-              <p class="d-inline-block" v-if="!company.productRanges.length">
+              <p
+                class="d-inline-block"
+                v-if="!company.productRanges.length"
+                style="
+                  line-break: anywhere;
+                  white-space: break-spaces !important;
+                "
+              >
                 &#8212;
               </p>
             </div>
@@ -228,10 +239,7 @@
               class="col-8 text-right align-self-center"
               v-if="company.files.length"
             >
-              <FileInput
-                :alreadyExistingFiles="company.files"
-                :reedOnly="true"
-              />
+              <FileInput :data="company.files" :reedOnly="true" />
             </div>
           </div>
         </div>
@@ -444,7 +452,7 @@
 
 <script>
 import { CompanyCategories } from "@/const/Const";
-import FileInput from "@/components/FileInput";
+import FileInput from "@/components/form/FileInput";
 import Progress from "@/components/Progress";
 export default {
   name: "CompanyDetailInfo",

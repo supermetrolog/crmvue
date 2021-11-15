@@ -1,13 +1,27 @@
 <template>
   <div class="form-item">
-    <label class="form-item-label" :class="{ required: required }" v-if="label">
+    <label
+      for="fuck"
+      class="form-item-label"
+      :class="{ required: required }"
+      v-if="label"
+    >
       {{ label }}
       <Multiselect
-        :class="inputClasses"
+        :class="[inputClasses, extraClasses]"
         :placeholder="placeholder"
         v-model="field"
+        :mode="mode"
         :options="options"
-        :canDeselect="localeSettings.canDeselect"
+        :closeOnSelect="closeOnSelect"
+        :searchable="searchable"
+        :createTag="createTag"
+        :canDeselect="canDeselect"
+        :filterResults="filterResults"
+        :minChars="minChars"
+        :resolveOnLoad="resolveOnLoad"
+        :delay="delay"
+        :loading="loading"
       />
     </label>
     <div class="error-container" v-if="v && v.$error">
@@ -59,6 +73,50 @@ export default {
     settings: {
       type: Object,
     },
+    mode: {
+      type: String,
+      default: "single",
+    },
+    closeOnSelect: {
+      type: Boolean,
+      default: true,
+    },
+    searchable: {
+      type: Boolean,
+      default: false,
+    },
+    createTag: {
+      type: Boolean,
+      default: false,
+    },
+    canDeselect: {
+      type: Boolean,
+      default: false,
+    },
+    filterResults: {
+      type: Boolean,
+      default: true,
+    },
+    minChars: {
+      type: Number,
+      default: 1,
+    },
+    resolveOnLoad: {
+      type: Boolean,
+      default: true,
+    },
+    delay: {
+      type: Number,
+      default: 0,
+    },
+    extraClasses: {
+      type: String,
+      default: "",
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     inputClasses() {
@@ -68,7 +126,6 @@ export default {
           valid: this.v.$dirty && !this.v.$error,
         };
       }
-
       return "";
     },
   },

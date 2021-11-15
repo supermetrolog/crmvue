@@ -170,7 +170,6 @@ export default {
       }
       console.log(length);
       return length.toFixed(2) + " " + type[i];
-      // return length;
     },
     deleteFile(index) {
       this.files = this.files.filter((_, idx) => idx != index);
@@ -214,6 +213,9 @@ export default {
       });
     },
     setSrcForExistionFiles() {
+      if (!this.files.length) {
+        return false;
+      }
       this.files.map((file) => {
         if (file.type.match("image")) {
           file.src2 = file.src;
@@ -229,23 +231,20 @@ export default {
     },
   },
   mounted() {
-    if (this.files.length) {
-      this.setSrcForExistionFiles();
-    }
+    console.log("Data", this.data);
+    this.setSrcForExistionFiles();
   },
   watch: {
-    localFiles: {
-      handler() {
-        this.$emit("change", this.files, this.targetFiles);
-      },
-      deep: true,
-    },
+    // localFiles: {
+    //   handler() {
+    //     this.$emit("change", this.files, this.targetFiles);
+    //   },
+    //   deep: true,
+    // },
     data() {
-      if (!this.files.length) {
-        this.files = this.alreadyExistingFiles;
-        this.setSrcForExistionFiles();
-        console.error(this.files);
-      }
+      this.files = this.data;
+      this.setSrcForExistionFiles();
+      // console.log("Data", this.data);
     },
   },
 };

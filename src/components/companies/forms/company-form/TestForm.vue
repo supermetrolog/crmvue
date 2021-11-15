@@ -26,21 +26,34 @@
               />
             </FormGroup>
             <FormGroup>
-              <Input
-                v-model="form.officeAddress"
+              <MultiSelect
+                v-model="form.officeAdress"
+                :title="form.officeAdress"
+                extraClasses="long-text"
                 label="Адрес офиса"
-                class="col-4 pr-1"
+                class="col-6 px-1"
+                :filterResults="false"
+                :minChars="1"
+                :resolveOnLoad="formdata ? true : false"
+                :delay="0"
+                :searchable="true"
+                :options="
+                  async (query) => {
+                    return await getAddress(query);
+                  }
+                "
               />
               <MultiSelect
                 v-model="form.formOfOrganization"
-                label="Форма организации"
-                class="col-4 px-1"
+                label="Форма орг-ции"
+                title="Форма организации"
+                class="col-3 px-1"
                 :options="formOfOrganizationOptions"
               />
               <MultiSelect
                 v-model="form.companyGroup_id"
                 label="Входит в ГК"
-                class="col-4 pl-1"
+                class="col-3 pl-1"
                 :options="COMPANY_GROUP_LIST"
               />
             </FormGroup>
@@ -97,25 +110,31 @@
                 v-model="form.activityGroup"
                 :v="v$.form.activityGroup"
                 required
-                label="Группа деятельности"
-                class="col-4 pr-1"
+                title="Группа деятельности"
+                label="Группа дея-ти"
+                class="col-3 pr-1"
                 :options="CONSULTANT_LIST"
               />
               <MultiSelect
                 v-model="form.activityProfile"
                 :v="v$.form.activityProfile"
                 required
-                label="Профиль деятельности"
-                class="col-4 px-1"
+                title="Профиль деятельности"
+                label="Профиль дея-ти"
+                class="col-3 px-1"
                 :options="CONSULTANT_LIST"
               />
               <MultiSelect
                 v-model="form.productRanges"
                 :v="v$.form.productRanges"
                 required
+                mode="tags"
+                :closeOnSelect="false"
+                :searchable="true"
+                :createTag="true"
                 label="Номенклатура товара"
-                class="col-4 pl-1"
-                :options="CONSULTANT_LIST"
+                class="col-6 pl-1"
+                :options="COMPANY_PRODUCT_RANGE_LIST"
               />
             </FormGroup>
             <FormGroup>
@@ -182,10 +201,14 @@
                 class="col-4 px-1"
                 maska="####################"
               />
-              <Input
+              <MultiSelect
                 v-model="form.inTheBank"
                 label="В банке"
-                class="col-4 pl-1"
+                class="col-4 px-1"
+                :closeOnSelect="false"
+                :searchable="true"
+                :createTag="true"
+                :options="COMPANY_IN_THE_BANK_LIST"
               />
             </FormGroup>
 
@@ -233,7 +256,9 @@
           </Tab>
 
           <FormGroup class="mt-2">
-            <Submit class="col-4 mx-auto"> Создать </Submit>
+            <Submit class="col-4 mx-auto">
+              {{ formdata ? "Сохранить" : "Создать" }}
+            </Submit>
           </FormGroup>
         </Tabs>
       </Form>
@@ -261,7 +286,7 @@ import {
   ActivePassive,
   CompanyFormOrganization,
 } from "@/const/Const.js";
-import Utils from "@/utils";
+import Utils, { yandexmap } from "@/utils";
 
 export default {
   name: "TestForm",
@@ -294,7 +319,7 @@ export default {
         checkingAccount: null,
         companyGroup_id: null,
         consultant_id: null,
-        contacts: { phones: [""], emails: [""], websites: [""] },
+        contacts: { phones: [], emails: [], websites: [] },
         correspondentAccount: null,
         description: null,
         documentNumber: null,
@@ -306,7 +331,7 @@ export default {
         nameEng: null,
         nameRu: null,
         noName: 0,
-        officeAddress: null,
+        officeAdress: null,
         ogrn: null,
         okpo: null,
         okved: null,
@@ -327,7 +352,13 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["COMPANY", "CONSULTANT_LIST", "COMPANY_GROUP_LIST"]),
+    ...mapGetters([
+      "COMPANY",
+      "CONSULTANT_LIST",
+      "COMPANY_GROUP_LIST",
+      "COMPANY_PRODUCT_RANGE_LIST",
+      "COMPANY_IN_THE_BANK_LIST",
+    ]),
   },
   validations() {
     return {
@@ -437,6 +468,8 @@ export default {
     ...mapActions([
       "FETCH_CONSULTANT_LIST",
       "FETCH_COMPANY_GROUP_LIST",
+      "FETCH_COMPANY_PRODUCT_RANGE_LIST",
+      "FETCH_COMPANY_IN_THE_BANK_LIST",
       "CREATE_COMPANY",
       "UPDATE_COMPANY",
     ]),
@@ -469,6 +502,11 @@ export default {
     clickCloseModal() {
       this.$emit("closeCompanyForm");
     },
+    async getAddress(query) {
+      if (this.formdata)
+        return await yandexmap.getAddress(query, this.formdata.officeAdress);
+      return await yandexmap.getAddress(query);
+    },
     customRequired(value) {
       if (!this.form.noName) {
         if (value != null) {
@@ -484,9 +522,14 @@ export default {
     this.loader = true;
     await this.FETCH_CONSULTANT_LIST();
     await this.FETCH_COMPANY_GROUP_LIST();
+    await this.FETCH_COMPANY_PRODUCT_RANGE_LIST();
+    await this.FETCH_COMPANY_IN_THE_BANK_LIST();
     if (this.formdata) {
-      this.form = { ...this.form, ...this.formdata };
+      const cloneFormdata = JSON.stringify(this.formdata);
+      this.form = { ...this.form, ...JSON.parse(cloneFormdata) };
+
       this.form = Utils.normalizeDataForCompanyForm(this.form);
+      console.warn(this.form);
     }
     this.loader = false;
   },

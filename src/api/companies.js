@@ -94,4 +94,27 @@ export default {
             .catch((e) => ErrorHandle.setError(e));
         return data;
     },
+
+    async getCompanyProductRangeList() {
+        const url = "companies/product-range-list";
+        let data = false;
+        await axios
+            .get(url)
+            .then((Response) => {
+                data = SuccessHandler.getData(Response);
+            })
+            .catch((e) => ErrorHandle.setError(e));
+        return data;
+    },
+    async getCompanyInTheBankList() {
+        const url = "companies/in-the-bank-list";
+        let data = false;
+        await axios
+            .get(url)
+            .then((Response) => {
+                data = SuccessHandler.getData(Response);
+            })
+            .catch((e) => ErrorHandle.setError(e));
+        return data;
+    }
 }

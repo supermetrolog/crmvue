@@ -64,23 +64,31 @@ export const yandexmap = {
         const minDistance = await this.getMinimumDistance(distances);
         return minDistance;
     },
-    // async getOptimizeRoutes(coords) {
-    //     await this.init();
-    //     let data = [];
-    //     coords.map((coord, i) => {
-    //         data[coord.original_id] = [];
-    //         coords.map((coordDuplicate, j) => {
-    //             if (i != j) {
-    //                 data[coord.original_id].push({
-    //                     betweenCoord: [coord.original_id, coordDuplicate.original_id],
-    //                     distance: window.ymaps.formatter.distance(
-    //                         window.ymaps.coordSystem.geo.getDistance(coord.coord, coordDuplicate.coord)
-    //                     )
-    //                 });
-    //             }
-    //         })
-    //     });
-    // },
+    async findAddress(query) {
+        // Геокодируем введённые данные.
+        if (!query) {
+            return [];
+        }
+        query = 'россия ' + query;
+        let result = [];
+        await window.ymaps.geocode(query).then(function(res) {
+            let obj = res.geoObjects;
+            obj.each((item) => {
+                result.push(item.getAddressLine());
+            });
+        }, function(e) {
+            console.error(e)
+        })
+        return result;
+    },
+    async getAddress(query, currentAddress = null) {
+        await this.init();
+        let address = await this.findAddress(query);
+        if (currentAddress) {
+            address.push(currentAddress);
+        }
+        return address;
+    }
 };
 
 export default {
@@ -188,60 +196,60 @@ export default {
         return newData;
 
     },
+    // normalizeDataForCompanyForm(data) {
+    //     let array = [];
+    //     let newData = data;
+    //     newData.productRanges.map(item => {
+    //         array.push(item.product)
+    //     });
+    //     newData.productRanges = array;
+    //     array = [];
+
+    //     newData.categories.map(item => {
+    //         array.push(item.category)
+    //     });
+    //     newData.categories = array;
+    //     array = [];
+
+    //     if (!newData.contacts.length) {
+    //         newData.contacts = { phones: [""], emails: [""], websites: [""] };
+    //         return newData;
+    //     }
+    //     newData.contacts = newData.contacts.find(item => item.type == 1);
+    //     console.error(newData.contacts);
+
+    //     if (!newData.contacts) {
+    //         newData.contacts = { phones: [""], emails: [""], websites: [""] };
+    //         return newData;
+    //     }
+
+    //     newData.contacts.emails.map(item => {
+    //         array.push(item.email)
+    //     });
+    //     if (!array.length) {
+    //         array.push("");
+    //     }
+    //     newData.contacts.emails = array;
+    //     array = [];
+    //     newData.contacts.phones.map(item => {
+    //         array.push(item.phone)
+    //     });
+    //     if (!array.length) {
+    //         array.push("");
+    //     }
+    //     newData.contacts.phones = array;
+    //     array = [];
+    //     newData.contacts.websites.map(item => {
+    //         array.push(item.website)
+    //     });
+    //     if (!array.length) {
+    //         array.push("");
+    //     }
+    //     newData.contacts.websites = array;
+    //     array = [];
+    //     return newData;
+    // },
     normalizeDataForCompanyForm(data) {
-        let array = [];
-        let newData = data;
-        newData.productRanges.map(item => {
-            array.push(item.product)
-        });
-        newData.productRanges = array;
-        array = [];
-
-        newData.categories.map(item => {
-            array.push(item.category)
-        });
-        newData.categories = array;
-        array = [];
-
-        if (!newData.contacts.length) {
-            newData.contacts = { phones: [""], emails: [""], websites: [""] };
-            return newData;
-        }
-        newData.contacts = newData.contacts.find(item => item.type == 1);
-        console.error(newData.contacts);
-
-        if (!newData.contacts) {
-            newData.contacts = { phones: [""], emails: [""], websites: [""] };
-            return newData;
-        }
-
-        newData.contacts.emails.map(item => {
-            array.push(item.email)
-        });
-        if (!array.length) {
-            array.push("");
-        }
-        newData.contacts.emails = array;
-        array = [];
-        newData.contacts.phones.map(item => {
-            array.push(item.phone)
-        });
-        if (!array.length) {
-            array.push("");
-        }
-        newData.contacts.phones = array;
-        array = [];
-        newData.contacts.websites.map(item => {
-            array.push(item.website)
-        });
-        if (!array.length) {
-            array.push("");
-        }
-        newData.contacts.websites = array;
-        array = [];
-        return newData;
-    },
-    normalizeDataForCompanyFormNew(data) {
         let array = [];
         data.productRanges.forEach(item => {
             array.push(item.product)
@@ -256,7 +264,15 @@ export default {
         array = [];
 
         data.contacts = data.contacts.find(item => item.type == 1);
-
+        // console.log(data.contacts);
+        if (!data.contacts) {
+            data.contacts = {
+                emails: [],
+                phones: [],
+                websites: []
+            }
+            return data;
+        }
         data.contacts.emails.forEach(item => {
             array.push(item.email)
         });

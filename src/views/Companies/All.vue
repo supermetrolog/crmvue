@@ -5,7 +5,12 @@
       enter-active-class="animate__animated animate__lightSpeedInRight for__modal absolute"
       leave-active-class="animate__animated animate__lightSpeedOutRight for__modal absolute"
     >
-      <CompanyForm
+      <!-- <CompanyForm
+        v-if="companyFormVisible"
+        @closeCompanyForm="clickCloseCompanyForm"
+        @created="createdCompany"
+      /> -->
+      <TestForm
         v-if="companyFormVisible"
         @closeCompanyForm="clickCloseCompanyForm"
         @created="createdCompany"
@@ -65,7 +70,8 @@ import CompanyGridView from "@/components/companies/companies/CompanyGridView.vu
 import CompanyTableView from "@/components/companies/companies/CompanyTableView.vue";
 import Loader from "@/components/Loader.vue";
 import Search from "@/components/Search.vue";
-import CompanyForm from "@/components/companies/forms/company-form/CompanyForm.vue";
+// import CompanyForm from "@/components/companies/forms/company-form/CompanyForm.vue";
+import TestForm from "@/components/companies/forms/company-form/TestForm.vue";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
@@ -82,7 +88,8 @@ export default {
     CompanyTableView,
     Loader,
     Search,
-    CompanyForm,
+    // CompanyForm,
+    TestForm,
   },
   methods: {
     ...mapActions(["FETCH_COMPANIES", "SEARCH_COMPANIES"]),

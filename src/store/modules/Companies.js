@@ -5,7 +5,9 @@ const Companies = {
     state: {
         companies: [],
         company: {},
-        companyGroupList: []
+        companyGroupList: [],
+        companyProductRangeList: [],
+        companyInTheBankList: []
     },
     mutations: {
         updateCompanies(state, data) {
@@ -23,6 +25,12 @@ const Companies = {
                 })
             });
             state.companyGroupList = newCompanyGroupList;
+        },
+        updateCompanyProductRangeList(state, data) {
+            state.companyProductRangeList = data;
+        },
+        updateCompanyInTheBankList(state, data) {
+            state.companyInTheBankList = data;
         }
     },
     actions: {
@@ -69,8 +77,27 @@ const Companies = {
                 console.log(data);
                 context.commit('updateCompanyGroupList', data);
             }
+        },
+        async FETCH_COMPANY_PRODUCT_RANGE_LIST(context) {
+            if (context.getters.COMPANY_PRODUCT_RANGE_LIST.length) {
+                return;
+            }
+            let data = await api.companies.getCompanyProductRangeList();
+            if (data) {
+                console.log(data);
+                context.commit('updateCompanyProductRangeList', data);
+            }
+        },
+        async FETCH_COMPANY_IN_THE_BANK_LIST(context) {
+            // if (context.getters.COMPANY_IN_THE_BANK_LIST.length) {
+            //     return;
+            // }
+            let data = await api.companies.getCompanyInTheBankList();
+            if (data) {
+                console.log(data);
+                context.commit('updateCompanyInTheBankList', data);
+            }
         }
-
     },
     getters: {
         COMPANIES(state) {
@@ -81,6 +108,12 @@ const Companies = {
         },
         COMPANY_GROUP_LIST(state) {
             return state.companyGroupList;
+        },
+        COMPANY_PRODUCT_RANGE_LIST(state) {
+            return state.companyProductRangeList;
+        },
+        COMPANY_IN_THE_BANK_LIST(state) {
+            return state.companyInTheBankList;
         }
     }
 }

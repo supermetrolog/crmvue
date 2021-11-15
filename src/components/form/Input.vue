@@ -53,10 +53,17 @@ export default {
   computed: {
     inputClasses() {
       if (this.v) {
-        return {
-          invalid: this.v.$error,
-          valid: this.v.$dirty && !this.v.$error,
-        };
+        if (this.v.required) {
+          return {
+            invalid: this.v.$error,
+            valid: this.v.$dirty && !this.v.$error,
+          };
+        } else {
+          return {
+            invalid: this.v.$error,
+            valid: this.v.$dirty && !this.v.$error && this.modelValue,
+          };
+        }
       }
       return "";
     },

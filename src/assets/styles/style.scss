@@ -1217,7 +1217,8 @@
                 border-radius: unset;
                 max-width: 100%;
                 &:not(textarea) {
-                    min-height: 34px!important;
+                    min-height: 34px;
+                    max-height: 34px;
                 }
                 &:not([type=checkbox]) {
                     &:not([type=radio]) {
@@ -2383,11 +2384,48 @@
     //*********** MULTISELECT ************
     .multiselect {
         box-shadow: none!important;
+        &.long-text {
+            .multiselect-single-label {
+                overflow: hidden;
+                align-items: unset!important;
+                font-size: 14px;
+            }
+        }
         &-option {
             &.is-selected {
                 background-color: #0075ff!important;
             }
             margin: 2.5px 0 2.5px 0;
+        }
+        max-height: unset!important;
+        &-search {
+            border: none!important;
+            min-height: 25px!important;
+            &:focus {
+                border: 1px solid $color_grey!important;
+            }
+        }
+        &-tag {
+            overflow: hidden;
+            max-width: 100%;
+            line-break: anywhere;
+            white-space: break-spaces !important;
+        }
+        &-tags {
+            max-width: 80%!important;
+            input {
+                margin: 0;
+                padding: 0;
+                border: none;
+                height: 25px;
+                max-height: unset!important;
+                max-width: 100%!important;
+                word-wrap: break-word;
+                min-height: 25px!important;
+                &:focus {
+                    outline: none!important;
+                }
+            }
         }
     }
     

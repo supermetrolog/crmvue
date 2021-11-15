@@ -47,11 +47,17 @@
       enter-active-class="animate__animated animate__lightSpeedInRight for__modal absolute"
       leave-active-class="animate__animated animate__lightSpeedOutRight for__modal absolute"
     >
-      <CompanyForm
+      <!-- <CompanyForm
         v-if="companyFormVisible"
         :formdata="company"
         @updated="updatedCompany"
         @closeCompanyForm="clickCloseCompanyForm"
+      /> -->
+      <TestForm
+        v-if="companyFormVisible"
+        :formdata="company"
+        @closeCompanyForm="clickCloseCompanyForm"
+        @updated="updatedCompany"
       />
     </transition>
 
@@ -141,7 +147,7 @@ import Loader from "@/components/Loader";
 import CompanyRequestList from "@/components/companies/companies/request/CompanyRequestList.vue";
 import CompanyRequestForm from "@/components/companies/forms/company-request-form/CompanyRequestForm.vue";
 import CompanyContactForm from "@/components/companies/forms/company-contact-form/CompanyContactForm.vue";
-import CompanyForm from "@/components/companies/forms/company-form/CompanyForm.vue";
+import TestForm from "@/components/companies/forms/company-form/TestForm.vue";
 import CompanyContactList from "@/components/companies/companies/contact/CompanyContactList.vue";
 import Modal from "@/components/Modal.vue";
 import Timeline from "@/components/companies/timeline/Timeline.vue";
@@ -154,7 +160,7 @@ export default {
     Loader,
     CompanyRequestForm,
     CompanyContactForm,
-    CompanyForm,
+    TestForm,
     CompanyContactList,
     Modal,
     Timeline,
