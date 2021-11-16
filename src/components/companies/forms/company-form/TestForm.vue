@@ -6,7 +6,7 @@
           <Loader class="center" v-if="loader" />
 
           <Tab name="Основное">
-            <FormGroup>
+            <FormGroup class="mb-1">
               <Checkbox v-model="form.noName" label="Нет" class="col-1 large" />
               <Input
                 v-if="!form.noName"
@@ -25,13 +25,13 @@
                 class="col-5 pl-1"
               />
             </FormGroup>
-            <FormGroup>
+            <FormGroup class="mb-1">
               <MultiSelect
                 v-model="form.officeAdress"
                 :title="form.officeAdress"
                 extraClasses="long-text"
                 label="Адрес офиса"
-                class="col-6 px-1"
+                class="col-6 pr-1"
                 :filterResults="false"
                 :minChars="1"
                 :resolveOnLoad="formdata ? true : false"
@@ -45,19 +45,19 @@
               />
               <MultiSelect
                 v-model="form.formOfOrganization"
-                label="Форма орг-ции"
+                label="ФО"
                 title="Форма организации"
-                class="col-3 px-1"
+                class="col-2 px-1"
                 :options="formOfOrganizationOptions"
               />
               <MultiSelect
                 v-model="form.companyGroup_id"
                 label="Входит в ГК"
-                class="col-3 pl-1"
+                class="col-4 pl-1"
                 :options="COMPANY_GROUP_LIST"
               />
             </FormGroup>
-            <FormGroup>
+            <FormGroup class="mb-1">
               <Checkbox
                 v-model="form.categories"
                 :v="v$.form.categories"
@@ -83,7 +83,7 @@
                 :options="CONSULTANT_LIST"
               />
             </FormGroup>
-            <FormGroup>
+            <FormGroup class="mb-1">
               <PropogationInput
                 v-model="form.contacts.phones"
                 :maska="[
@@ -105,7 +105,7 @@
                 class="col-4 pr-1"
               />
             </FormGroup>
-            <FormGroup>
+            <FormGroup class="mb-1">
               <MultiSelect
                 v-model="form.activityGroup"
                 :v="v$.form.activityGroup"
@@ -130,14 +130,15 @@
                 required
                 mode="tags"
                 :closeOnSelect="false"
+                :loading="false"
                 :searchable="true"
                 :createTag="true"
                 label="Номенклатура товара"
-                class="col-6 pl-1"
+                class="col-6 pl-1 tags"
                 :options="COMPANY_PRODUCT_RANGE_LIST"
               />
             </FormGroup>
-            <FormGroup>
+            <FormGroup class="mb-1">
               <Textarea
                 v-model="form.description"
                 label="Описание"
@@ -155,14 +156,14 @@
           </Tab>
 
           <Tab name="Реквизиты">
-            <FormGroup>
+            <FormGroup class="mb-1">
               <Input
                 v-model="form.legalAddress"
                 label="Юр. адрес"
                 class="col-8 pr-1"
               />
             </FormGroup>
-            <FormGroup>
+            <FormGroup class="mb-1">
               <Input
                 v-model="form.ogrn"
                 :v="v$.form.ogrn"
@@ -186,7 +187,7 @@
               />
             </FormGroup>
 
-            <FormGroup>
+            <FormGroup class="mb-1">
               <Input
                 v-model="form.checkingAccount"
                 :v="v$.form.checkingAccount"
@@ -201,18 +202,16 @@
                 class="col-4 px-1"
                 maska="####################"
               />
-              <MultiSelect
+              <Input
                 v-model="form.inTheBank"
                 label="В банке"
-                class="col-4 px-1"
-                :closeOnSelect="false"
+                class="col-4 pl-1"
                 :searchable="true"
-                :createTag="true"
                 :options="COMPANY_IN_THE_BANK_LIST"
               />
             </FormGroup>
 
-            <FormGroup>
+            <FormGroup class="mb-1">
               <Input
                 v-model="form.bik"
                 :v="v$.form.bik"
@@ -236,7 +235,7 @@
               />
             </FormGroup>
 
-            <FormGroup>
+            <FormGroup class="mb-1">
               <Input
                 v-model="form.signatodyName"
                 label="Имя подписанта"
@@ -476,7 +475,6 @@ export default {
     onSubmit() {
       this.v$.$validate();
       if (!this.v$.form.$error) {
-        console.log(this.form);
         this.loader = true;
         if (this.formdata) {
           this.updateCompany();
@@ -529,7 +527,6 @@ export default {
       this.form = { ...this.form, ...JSON.parse(cloneFormdata) };
 
       this.form = Utils.normalizeDataForCompanyForm(this.form);
-      console.warn(this.form);
     }
     this.loader = false;
   },

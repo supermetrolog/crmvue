@@ -157,7 +157,6 @@ export default {
   },
   methods: {
     clickOpenFile() {
-      console.log(this.files);
       this.$refs.fileInput.click();
     },
     formatSize(length) {
@@ -168,7 +167,6 @@ export default {
         length /= 1024;
         i++;
       }
-      console.log(length);
       return length.toFixed(2) + " " + type[i];
     },
     deleteFile(index) {
@@ -181,10 +179,8 @@ export default {
       const files = Array.from($event.target.files);
 
       if (!files.length) {
-        console.error($event);
         return;
       }
-      console.log($event);
       this.$emit("update:native", $event.target.files);
       this.$emit("update:data", this.files);
       this.setSrc(files);
@@ -231,7 +227,6 @@ export default {
     },
   },
   mounted() {
-    console.log("Data", this.data);
     this.setSrcForExistionFiles();
   },
   watch: {
@@ -244,7 +239,6 @@ export default {
     data() {
       this.files = this.data;
       this.setSrcForExistionFiles();
-      // console.log("Data", this.data);
     },
   },
 };

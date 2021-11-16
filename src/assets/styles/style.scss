@@ -1169,6 +1169,48 @@
             width: 650px;
         }
         &-item {
+            &.tags {
+                .multiselect {
+                    border: none!important;
+                    justify-content: start;
+                    padding-left: 0!important;
+                }
+            }
+            .searchable {
+                display: block;
+                width: 100%;
+                position: relative;
+                background-color: black;
+                z-index: 1;
+                &-container {
+                    position: absolute;
+                    left: 0;
+                    right: 0;
+                    background-color: $color_light;
+                    max-height: 200px;
+                    overflow-x: hidden;
+                    overflow-y: auto;
+                    border: 1px solid $color_grey;
+                    border-top: none;
+                }
+                ul {
+                    margin: 0;
+                    padding: 0;
+                    width: 100%;
+                    height: 100%;
+                    li {
+                        color: $color_dark;
+                        padding: 10px 10px;
+                        font-weight: 500;
+                        width: 100%;
+                        list-style: none;
+                        cursor: pointer;
+                        &:hover {
+                            background-color: darken($color_light, 5);
+                        }
+                    }
+                }
+            }
             .error-container {
                 padding: 0;
                 padding-top: 2px;
@@ -2384,12 +2426,10 @@
     //*********** MULTISELECT ************
     .multiselect {
         box-shadow: none!important;
-        &.long-text {
-            .multiselect-single-label {
-                overflow: hidden;
-                align-items: unset!important;
-                font-size: 14px;
-            }
+        .multiselect-single-label {
+            position: relative;
+            margin: 0 auto;
+            font-size: 15px;
         }
         &-option {
             &.is-selected {
@@ -2401,6 +2441,7 @@
         &-search {
             border: none!important;
             min-height: 25px!important;
+            max-height: unset!important;
             &:focus {
                 border: 1px solid $color_grey!important;
             }
@@ -2410,10 +2451,20 @@
             max-width: 100%;
             line-break: anywhere;
             white-space: break-spaces !important;
+            &-remove {
+                padding: 0!important;
+                margin: 0!important;
+            }
         }
         &-tags {
             max-width: 80%!important;
+            padding-left: 0!important;
             input {
+                // background-color: lighten(#10b981, 10);
+                background-color: lighten($color_grey, 40);
+                border-radius: 5px;
+                // color: black;
+                padding: 0 10px!important;
                 margin: 0;
                 padding: 0;
                 border: none;
