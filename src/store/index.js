@@ -6,6 +6,8 @@ import CompanyContact from './modules/CompanyContact'
 import Companies from './modules/Companies'
 import Notifications from './modules/Notifications'
 import Objects from './modules/Objects'
+import Websocket from './modules/Websocket'
+import Call from './modules/Call'
 import api from '@/api/api'
 const store = createStore({
     state: {
@@ -60,7 +62,8 @@ const store = createStore({
                 context.commit('setUser', user);
             }
             return context.getters.THIS_USER;
-        }
+        },
+
     },
     getters: {
         ERRORS(state) {
@@ -80,7 +83,12 @@ const store = createStore({
         CompanyContact,
         Companies,
         Notifications,
-        Objects
+        Objects,
+        Websocket,
+        Call
     }
 })
+store.checkAction = function(name) {
+    return Object.keys(this._actions).includes(name);
+};
 export default store

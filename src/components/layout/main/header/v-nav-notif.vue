@@ -15,6 +15,27 @@
         </a>
         <vComments v-if="commentsVisible" :comments="comments" />
       </li>
+      <li class="nav-item notification" :class="{ active: callsVisible }">
+        <a class="nav-link" @click.prevent="clickCalls">
+          <div class="nav-link__content">
+            <i class="fas fa-phone-alt"></i>
+            <span class="badge badge-danger" v-if="CURRENT_CALLS.length">
+              {{ CURRENT_CALLS.length }}
+            </span>
+          </div>
+        </a>
+        <transition
+          mode="out-in"
+          enter-active-class="animate__animated animate__fadeInDown for__notifications"
+          leave-active-class="animate__animated animate__fadeOutUp for__notifications"
+        >
+          <Calls
+            v-if="callsVisible"
+            :currentCalls="CURRENT_CALLS"
+            :calls="CALLS"
+          />
+        </transition>
+      </li>
 
       <li
         class="nav-item notification"
@@ -23,8 +44,8 @@
         <a class="nav-link" @click.prevent="clickNotification">
           <div class="nav-link__content">
             <i class="far fa-bell"></i>
-            <span class="badge badge-danger" v-if="count">
-              {{ count }}
+            <span class="badge badge-danger" v-if="notif_count">
+              {{ notif_count }}
             </span>
           </div>
         </a>
@@ -35,7 +56,7 @@
         >
           <Notifications
             v-if="notificationsVisible"
-            :notifications="this.NOTIFICATIONS"
+            :notifications="NOTIFICATIONS"
           />
         </transition>
       </li>
@@ -46,37 +67,52 @@
 <script>
 import vComments from "./comments/v-comments.vue";
 import Notifications from "@/components/layout/main/header/notifications/Notifications.vue";
+import Calls from "@/components/layout/main/header/calls/Calls.vue";
 import { mapActions, mapGetters } from "vuex";
 export default {
   name: "v-nav-notif",
-  components: { vComments, Notifications },
+  components: { vComments, Notifications, Calls },
   data() {
     return {
       commentsVisible: false,
       notificationsVisible: false,
+      callsVisible: false,
     };
   },
   computed: {
-    ...mapGetters(["NOTIFICATIONS"]),
-    count() {
+    ...mapGetters(["NOTIFICATIONS", "CURRENT_CALLS", "CALLS"]),
+    notif_count() {
       return this.NOTIFICATIONS.filter(
         (item) => item.status == 0 || item.status == -1
       ).length;
     },
+    calls_count() {
+      return this.CALLS.filter(
+        (item) => item.viewed != 1 && item.status !== null
+      ).length;
+    },
   },
   methods: {
-    ...mapActions(["FETCH_NOTIFICATIONS", "VIEWED"]),
+    ...mapActions([
+      "FETCH_NOTIFICATIONS",
+      "VIEWED_NOTIFICATIONS",
+      "FETCH_CALLS",
+      "VIEWED_CALLS",
+    ]),
     async getComments() {
       this.commentsVisible = !this.commentsVisible;
     },
     clickNotification() {
       this.notificationsVisible = !this.notificationsVisible;
       if (!this.notificationsVisible) {
-        this.VIEWED();
+        this.VIEWED_NOTIFICATIONS();
         this.countVisible = true;
       } else {
         this.countVisible = false;
       }
+    },
+    clickCalls() {
+      this.callsVisible = !this.callsVisible;
     },
     deleteComment(comment) {
       this.comments = this.comments.filter((item) => item !== comment);
@@ -84,9 +120,13 @@ export default {
     getNotification() {
       this.FETCH_NOTIFICATIONS();
     },
+    getCalls() {
+      this.FETCH_CALLS();
+    },
   },
   mounted() {
     this.getNotification();
+    this.getCalls();
   },
 };
 </script>

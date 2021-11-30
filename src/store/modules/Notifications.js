@@ -60,7 +60,7 @@ const Notifications = {
         RETURN_NOTIFICATION_CURRENT_PAGE_TO_FIRST(context) {
             context.commit('returnCurrentPageToFirst');
         },
-        async VIEWED(context) {
+        async VIEWED_NOTIFICATIONS(context) {
             if (existNewNotifications(this.getters.NOTIFICATIONS)) {
                 const user = JSON.parse(localStorage.getItem('user'));
                 await api.notifications.viewed(user.id);

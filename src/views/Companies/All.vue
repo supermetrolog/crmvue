@@ -100,11 +100,9 @@ export default {
       } else {
         await this.SEARCH_COMPANIES(param);
       }
-      console.log(this.COMPANIES[0]);
       this.loader = false;
     },
     clickSearch(param) {
-      console.log(param);
       this.getCompanies(param);
     },
     clickCloseCompanyForm() {
