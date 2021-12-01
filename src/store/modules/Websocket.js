@@ -8,6 +8,7 @@ const Websocket = {
     state: {
         socket: null,
         setedUserIdFlag: false,
+        websocketLoops: []
     },
     mutations: {
         updateSocket(state, data) {
@@ -19,10 +20,34 @@ const Websocket = {
             } else {
                 state.setedUserIdFlag = !state.setedUserIdFlag;
             }
+        },
+        websocketLoopPush(state, setInterval) {
+            state.websocketLoops.push(setInterval);
+        },
+        deleteWebsocketLoops(state) {
+            state.websocketLoops.forEach(interval => {
+                clearInterval(interval.loop);
+            });
+        },
+        deleteSocket(state) {
+            state.socket.close();
+            state.socket = null;
         }
     },
     actions: {
+        WEBSOCKET_LOOP_PUSH(context, setInterval) {
+            context.commit('websocketLoopPush', setInterval);
+        },
+        WEBSOCKET_STOP(context) {
+            console.log('WEBSOCKET_STOP');
+            context.commit('deleteWebsocketLoops');
+            context.commit('deleteSocket');
+            context.commit('toggleSetedUserIdFlag', false);
+        },
         WEBSOCKET_RUN(context) {
+            if (context.getters.SOCKET) {
+                return;
+            }
             let socket = new WebSocket("ws://localhost:8082");
             socket.onopen = function() {
                 return context.dispatch('EVENT_WEBSOCKET_ON_OPEN');
@@ -40,13 +65,14 @@ const Websocket = {
         },
         EVENT_WEBSOCKET_ON_OPEN(context) {
             console.log("Connected websocket server!");
+            notifyOptions.type = 'success';
             notifyOptions.text = "Connected websocket server!";
             notify(notifyOptions);
 
             context.dispatch('CALL_WEBSOCKET_LOOP');
         },
         EVENT_WEBSOCKET_ON_MESSAGE(context, event) {
-            console.warn("Server send:");
+            // console.warn("Server send:");
             let data = JSON.parse(event.data);
             let prefix = 'ACTION_WEBSOCKET_';
             let actionName = prefix + 'info';
@@ -58,11 +84,14 @@ const Websocket = {
                 context.dispatch(actionName, data);
             }
         },
-        EVENT_WEBSOCKET_ON_ERROR(_, error) {
+        EVENT_WEBSOCKET_ON_ERROR(context, error) {
             console.error(`[error] ${error.message}`);
             notifyOptions.text = `[error] ${error.message}`;
             notifyOptions.type = 'error';
             notify(notifyOptions);
+            setTimeout(() => {
+                context.dispatch('WEBSOCKET_RUN');
+            }, 3000);
         },
         EVENT_WEBSOCKET_ON_CLOSE(_, event) {
             if (event.wasClean) {
@@ -93,7 +122,7 @@ const Websocket = {
         },
         SETED_USER_ID_FLAG(state) {
             return state.setedUserIdFlag;
-        }
+        },
     }
 }
 

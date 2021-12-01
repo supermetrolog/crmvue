@@ -49,7 +49,8 @@ const Notifications = {
             // }, 5000);
         },
         async FETCH_NOTIFICATIONS_NO_INTERVAL(context) {
-            const user = JSON.parse(localStorage.getItem('user'));
+            // const user = JSON.parse(localStorage.getItem('user'));
+            const user = context.getters.THIS_USER;
             api.notifications.fetchNewNotificationForNotif(user.id);
             const notifications = await api.notifications.fetchNotifications(user.id, this.getters.NOTIFICATIONS_CURRENT_PAGE);
             context.commit('updateNotifications', notifications);
@@ -62,7 +63,8 @@ const Notifications = {
         },
         async VIEWED_NOTIFICATIONS(context) {
             if (existNewNotifications(this.getters.NOTIFICATIONS)) {
-                const user = JSON.parse(localStorage.getItem('user'));
+                // const user = JSON.parse(localStorage.getItem('user'));
+                const user = context.getters.THIS_USER;
                 await api.notifications.viewed(user.id);
                 context.commit('viewedNotifications');
             }

@@ -404,6 +404,17 @@
                 }
             }
         }
+        &.calls {
+            .comments-panel__content {
+                .item {
+                    .avatar {
+                        i {
+                            color: black;
+                        }
+                    }
+                }
+            }
+        }
     }
     
     .badge {

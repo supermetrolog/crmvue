@@ -69,7 +69,6 @@
 import useValidate from "@vuelidate/core";
 import { required, helpers, minLength } from "@vuelidate/validators";
 import Loader from "@/components/Loader.vue";
-import api from "@/api/api.js";
 export default {
   name: "Login",
   components: {
@@ -112,10 +111,13 @@ export default {
       this.v$.$validate();
       if (!this.v$.form.$error) {
         this.loader = true;
-        const response = await api.auth.login(this.form);
+        const response = await this.$store.dispatch("LOGIN", this.form);
         if (response !== false) {
           this.$store.dispatch("SET_USER");
-
+          this.axios.defaults.headers.common[
+            "Authorization"
+          ] = `Bearer ${this.$store.getters.THIS_USER.access_token}`;
+          this.$store.dispatch("WEBSOCKET_RUN");
           this.$router.push("/");
         }
         this.loader = false;

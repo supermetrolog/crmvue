@@ -1,16 +1,18 @@
 <template>
   <div class="setting">
     <h1>SETTING</h1>
-    <TestForm />
+    <button class="btn btn-danger" @click="clickLogout">Выйти</button>
   </div>
 </template>
 
 <script>
-import TestForm from "@/components/form/TestForm.vue";
 export default {
   name: "Setting",
-  components: {
-    TestForm,
+  methods: {
+    async clickLogout() {
+      await this.$store.dispatch("LOGOUT");
+      this.$router.push("/");
+    },
   },
 };
 </script>

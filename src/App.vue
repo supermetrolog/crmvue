@@ -20,8 +20,15 @@ export default {
     },
   },
   mounted() {
-    this.$store.dispatch("SET_USER");
-    this.$store.dispatch("WEBSOCKET_RUN");
+    // localStorage.removeItem("access_token");
+    // localStorage.removeItem("user");
+    if (localStorage.getItem("user")) {
+      this.$store.dispatch("SET_USER");
+      this.axios.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${this.$store.getters.THIS_USER.access_token}`;
+      this.$store.dispatch("WEBSOCKET_RUN");
+    }
   },
 };
 </script>
