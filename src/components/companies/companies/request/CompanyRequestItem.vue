@@ -135,7 +135,7 @@
         </div>
         <div class="col-4 date text-right" v-if="!reedOnly">
           <button
-            class="btn px-2 btn-primary timeline-btn"
+            class="btn px-2 btn-primary scale timeline-btn"
             @click="clickTimeline"
           >
             таймлайн

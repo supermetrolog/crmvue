@@ -28,6 +28,20 @@
         v-if="companyRequestFormVisible"
       />
     </transition>
+    <!-- <transition
+      mode="out-in"
+      enter-active-class="animate__animated animate__lightSpeedInRight for__modal absolute"
+      leave-active-class="animate__animated animate__lightSpeedOutRight for__modal absolute"
+    >
+      <CompanyContactForm
+        @closeCompanyForm="clickCloseCompanyContactForm"
+        :company_id="COMPANY[0].id"
+        :formdata="contact"
+        @created="createdContact"
+        @updated="updatedContact"
+        v-if="companyContactFormVisible"
+      />
+    </transition> -->
     <transition
       mode="out-in"
       enter-active-class="animate__animated animate__lightSpeedInRight for__modal absolute"
@@ -65,7 +79,7 @@
       <div class="col-12 col-lg-3 company-detail-info-container box">
         <div class="col-12 p-0 mb-3">
           <button
-            class="btn btn-primary d-block btn-large"
+            class="btn btn-primary scale d-block btn-large"
             @click.prevent="openCompanyFormForUpdate(COMPANY[0])"
             :disabled="COMPANY[0] ? false : true"
           >
@@ -84,7 +98,7 @@
       <div class="col-12 col-lg-3 company-request-container box">
         <div class="col-12 p-0 mb-3">
           <button
-            class="btn btn-primary d-block btn-large"
+            class="btn btn-primary scale d-block btn-large"
             :disabled="COMPANY[0] ? false : true"
             @click.prevent="clickOpenCompanyRequestForm"
           >
@@ -113,7 +127,7 @@
       <div class="col-12 col-lg-2 company-detail-info-container box">
         <div class="col-12 p-0 mb-3">
           <button
-            class="btn btn-primary d-block btn-large"
+            class="btn btn-primary scale d-block btn-large"
             @click.prevent="clickOpenCompanyContactForm"
             :disabled="COMPANY[0] ? false : true"
           >

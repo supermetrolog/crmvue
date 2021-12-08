@@ -1,4 +1,3 @@
-import axios from "axios"
 import api from "@/api/api"
 
 const Companies = {
@@ -40,19 +39,29 @@ const Companies = {
                 context.commit('updateCompanies', companies);
             }
         },
-        async SEARCH_COMPANIES(context, param) {
-            let nameEng = "nameEng=" + param.searchText + "&";
-            let nameRu = "nameRu=" + param.searchText + "&";
-            let officeAdress = "officeAdress=" + param.searchText + "&";
-            let legalAddress = "legalAddress=" + param.searchText + "&";
-            let contactPhone = "contact.phone=" + param.searchText + "&";
-            let searchUrlPart = nameEng + nameRu + officeAdress + legalAddress + contactPhone;
-            let url = "companies/search?" + searchUrlPart + "expand=contacts.emails,contacts.phones,contacts.contactComments,broker,companyGroup,consultant";
-            await axios
-                .get(url)
-                .then((Response) => {
-                    context.commit('updateCompanies', Response.data)
-                });
+        // async SEARCH_COMPANIES(context, param, company_id = null) {
+        //     let nameEng = "nameEng=" + param.searchText + "&";
+        //     let nameRu = "nameRu=" + param.searchText + "&";
+        //     let officeAdress = "officeAdress=" + param.searchText + "&";
+        //     let legalAddress = "legalAddress=" + param.searchText + "&";
+        //     let contactPhone = "contact.phone=" + param.searchText + "&";
+        //     let searchUrlPart = nameEng + nameRu + officeAdress + legalAddress + contactPhone;
+        //     let url = "companies/search?" + searchUrlPart + "expand=contacts.emails,contacts.phones,contacts.contactComments,broker,companyGroup,consultant";
+        //     let data = false;
+        //     await axios
+        //         .get(url)
+        //         .then((Response) => {
+        //             context.commit('updateCompanies', Response.data)
+        //         });
+        //     data = context.getters.COMPANIES;
+        //     return data;
+        // },
+        async SEARCH_COMPANIES(context, query, saveState = true) {
+            const result = await api.companies.searchCompanies(query);
+            if (result && saveState) {
+                // context.commit('updateCompanies', result);
+            }
+            return result;
         },
         async FETCH_COMPANY(context, id) {
             const company = await api.companies.getCompany(id);
@@ -60,7 +69,6 @@ const Companies = {
                 context.commit('updateCompany', company);
             }
         },
-
         async CREATE_COMPANY(context, formdata) {
             return await api.companies.createCompany(formdata);
         },

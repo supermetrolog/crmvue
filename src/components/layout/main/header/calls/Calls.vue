@@ -20,17 +20,22 @@
               :key="call.id"
               :call="call"
             />
-            <div class="old header" v-if="newCalls.length">
-              <p class="text-left title">новые звонки</p>
-            </div>
-            <CallItem v-for="call of newCalls" :key="call.id" :call="call" />
-            <div class="new header" v-if="oldCalls.length">
-              <p class="text-left title">просмотренные</p>
-            </div>
-            <CallItem v-for="call of oldCalls" :key="call.id" :call="call" />
-            <div class="col-12 text-center">
-              <Pagination :pagination="CALLS_PAGINATION" @loadMore="loadMore" />
-            </div>
+            <template v-if="!newCurrentCallFlag">
+              <div class="old header" v-if="newCalls.length">
+                <p class="text-left title">новые звонки</p>
+              </div>
+              <CallItem v-for="call of newCalls" :key="call.id" :call="call" />
+              <div class="old header" v-if="oldCalls.length">
+                <p class="text-left title">просмотренные</p>
+              </div>
+              <CallItem v-for="call of oldCalls" :key="call.id" :call="call" />
+              <div class="col-12 text-center">
+                <Pagination
+                  :pagination="CALLS_PAGINATION"
+                  @loadMore="loadMore"
+                />
+              </div>
+            </template>
           </div>
         </div>
       </div>
@@ -56,6 +61,10 @@ export default {
       type: Array,
       default: null,
     },
+    newCurrentCallFlag: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     ...mapGetters(["CALLS_PAGINATION"]),
@@ -72,26 +81,20 @@ export default {
     ...mapActions([
       "INCRIMENT_CALLS_CURRENT_PAGE",
       "FETCH_CALLS",
-      "FETCH_CALLS_NO_INTERVAL",
       "RETURN_CALLS_CURRENT_PAGE_TO_FIRST",
     ]),
     loadMore() {
       this.INCRIMENT_CALLS_CURRENT_PAGE();
-      this.FETCH_CALLS_NO_INTERVAL();
+      this.FETCH_CALLS();
     },
+  },
+  mounted() {
+    this.FETCH_CALLS();
   },
   beforeUnmount() {
     console.warn("UNMOUNT");
     this.RETURN_CALLS_CURRENT_PAGE_TO_FIRST();
-    this.FETCH_CALLS_NO_INTERVAL();
-  },
-  watch: {
-    currentCalls(before, after) {
-      if (before.length != after.length) {
-        this.FETCH_CALLS_NO_INTERVAL();
-        console.log("FUCK");
-      }
-    },
+    this.FETCH_CALLS();
   },
 };
 </script>

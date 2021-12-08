@@ -46,14 +46,12 @@
           ></i>
         </div>
         <div class="phone-list">
-          <a
-            :href="'tel:' + phone.phone"
-            class="d-block"
-            v-for="phone in contact.phones"
+          <PhoneNumber
+            v-for="phone of contact.phones"
             :key="phone.id"
-          >
-            {{ phone.phone }}
-          </a>
+            :phone="phone.phone"
+            :contact="contact"
+          />
         </div>
 
         <div class="email-list">
@@ -121,11 +119,13 @@
 <script>
 import Loader from "@/components/Loader";
 import { FeedbackList, PositionList } from "@/const/Const.js";
+import PhoneNumber from "@/components/PhoneNumber";
 
 export default {
   name: "CompanyContactItem",
   components: {
     Loader,
+    PhoneNumber,
   },
   data() {
     return {
@@ -138,9 +138,6 @@ export default {
   props: {
     contact: {
       type: Object,
-    },
-    idx: {
-      type: Number,
     },
     createCommentLoader: {
       type: Boolean,

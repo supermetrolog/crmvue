@@ -1,5 +1,5 @@
 <template>
-  <div class="test">
+  <div class="fuck">
     <Modal title="Создание компании" @close="clickCloseModal">
       <Form @submit="onSubmit">
         <Tabs :options="{ useUrlFragment: false }">
@@ -254,7 +254,7 @@
             </FormGroup>
           </Tab>
 
-          <FormGroup class="mt-2">
+          <FormGroup class="mt-4">
             <Submit class="col-4 mx-auto">
               {{ formdata ? "Сохранить" : "Создать" }}
             </Submit>

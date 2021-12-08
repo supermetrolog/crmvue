@@ -38,10 +38,9 @@
       </div>
     </div> -->
     <CompanyContactItem
-      v-for="(contact, idx) of contacts"
+      v-for="contact of contacts"
       :key="contact.id"
       :contact="contact"
-      :idx="idx"
       :createCommentLoader="createCommentLoader"
       @openContactFormForUpdate="openContactFormForUpdate"
       @createComment="createComment"
@@ -89,11 +88,13 @@ export default {
     async createComment(data) {
       this.createCommentLoader = true;
       await this.CREATE_CONTACT_COMMENT(data);
+      this.$emit("createComment");
       this.createCommentLoader = false;
     },
     async deleteContact(contact) {
       this.deleteLoader = true;
       await this.DELETE_CONTACT(contact);
+      this.$emit("deleteContact");
       this.deleteLoader = false;
       this.deletedContactItem = null;
     },
@@ -101,7 +102,7 @@ export default {
   mounted() {
     // console.log("anal", this.contacts);
   },
-  emits: ["openContactFormForUpdate"],
+  emits: ["openContactFormForUpdate", "createComment", "deleteContact"],
 };
 </script>
 

@@ -18,8 +18,11 @@
           <td>{{ company.id }}</td>
           <td class="text-left name">
             <router-link :to="'/companies/' + company.id" target="_blank">
-              {{ company.nameRu }} {{ company.nameRu ? " &#8212; " : "" }}
-              {{ company.nameEng }}
+              <h4>
+                {{ company.nameRu }} {{ company.nameRu ? " &#8212; " : "" }}
+                {{ company.nameEng }}
+              </h4>
+
               <p v-if="!company.nameRu" class="text-danger">&#8212;</p>
               <Progress :percent="company.progress_percent" />
             </router-link>
@@ -49,13 +52,19 @@
               >
                 {{ email.email }}
               </a>
-              <a
+              <PhoneNumber
+                v-for="phone of contact.phones"
+                :key="phone.id"
+                :phone="phone.phone"
+                :contact="contact"
+              />
+              <!-- <a
                 :href="'tel:' + phone.phone"
                 v-for="phone of contact.phones"
                 :key="phone.phone"
               >
                 {{ phone.phone }}
-              </a>
+              </a> -->
             </div>
           </td>
           <td>Андреев В. И.</td>

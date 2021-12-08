@@ -50,14 +50,21 @@
               <strong>Телефон: </strong>
             </div>
             <div class="col-8 text-right align-self-center">
-              <template v-if="contactsTypeGeneralPhone[0]">
-                <a
-                  v-for="phone of contactsTypeGeneralPhone"
+              <template v-if="contactsTypeGeneralPhone">
+                <!-- <a
+                  v-for="phone of contactsTypeGeneralPhone.phones"
                   :key="phone"
                   :href="'tel:' + phone.phone"
                 >
                   {{ phone.phone }}
-                </a>
+                </a> -->
+                <PhoneNumber
+                  v-for="phone in contactsTypeGeneralPhone.phones"
+                  :key="phone.id"
+                  :phone="phone.phone"
+                  :contact="contactsTypeGeneralPhone"
+                  classList="text-right"
+                />
               </template>
               <p v-if="!contactsTypeGeneralPhone[0]">&#8212;</p>
             </div>
@@ -475,8 +482,9 @@ export default {
       return this.company.active ? "Автив" : "Пассив";
     },
     contactsTypeGeneralPhone() {
-      const contacts = this.company.contacts.filter((item) => item.type != 0);
-      return contacts[0] ? contacts[0].phones : false;
+      const contacts = this.company.contacts.find((item) => item.type == 1);
+      console.log(contacts);
+      return contacts ? contacts : false;
     },
     contactsTypeGeneralEmail() {
       const contacts = this.company.contacts.filter((item) => item.type != 0);

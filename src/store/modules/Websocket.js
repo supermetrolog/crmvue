@@ -70,6 +70,7 @@ const Websocket = {
             notify(notifyOptions);
 
             context.dispatch('CALL_WEBSOCKET_LOOP');
+            context.dispatch('NOTIFICATION_WEBSOCKET_LOOP');
         },
         EVENT_WEBSOCKET_ON_MESSAGE(context, event) {
             // console.warn("Server send:");

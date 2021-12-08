@@ -15,12 +15,19 @@
         </a>
         <vComments v-if="commentsVisible" :comments="comments" />
       </li>
-      <li class="nav-item notification" :class="{ active: callsVisible }">
+      <li
+        class="nav-item notification"
+        :class="{ active: callsVisible || newCurrentCallFlag }"
+      >
         <a class="nav-link" @click.prevent="clickCalls">
           <div class="nav-link__content">
             <i class="fas fa-phone-alt"></i>
-            <span class="badge badge-danger" v-if="CURRENT_CALLS.length">
-              {{ CURRENT_CALLS.length }}
+            <span
+              class="badge badge-danger"
+              :class="{ 'badge-info': CURRENT_CALLS.length }"
+              v-if="CURRENT_CALLS.length || calls_count"
+            >
+              {{ calls_count ? calls_count : CURRENT_CALLS.length }}
             </span>
           </div>
         </a>
@@ -30,7 +37,8 @@
           leave-active-class="animate__animated animate__fadeOutUp for__notifications"
         >
           <Calls
-            v-if="callsVisible"
+            v-if="callsVisible || newCurrentCallFlag"
+            :newCurrentCallFlag="newCurrentCallFlag"
             :currentCalls="CURRENT_CALLS"
             :calls="CALLS"
           />
@@ -77,10 +85,16 @@ export default {
       commentsVisible: false,
       notificationsVisible: false,
       callsVisible: false,
+      newCurrentCallFlag: false,
     };
   },
   computed: {
-    ...mapGetters(["NOTIFICATIONS", "CURRENT_CALLS", "CALLS"]),
+    ...mapGetters([
+      "NOTIFICATIONS",
+      "NEW_NOTIFICATIONS",
+      "CURRENT_CALLS",
+      "CALLS",
+    ]),
     notif_count() {
       return this.NOTIFICATIONS.filter(
         (item) => item.status == 0 || item.status == -1
@@ -88,7 +102,7 @@ export default {
     },
     calls_count() {
       return this.CALLS.filter(
-        (item) => item.viewed != 1 && item.status !== null
+        (item) => item.viewed != 2 && item.status !== null
       ).length;
     },
   },
@@ -106,13 +120,18 @@ export default {
       this.notificationsVisible = !this.notificationsVisible;
       if (!this.notificationsVisible) {
         this.VIEWED_NOTIFICATIONS();
-        this.countVisible = true;
-      } else {
-        this.countVisible = false;
       }
     },
     clickCalls() {
-      this.callsVisible = !this.callsVisible;
+      console.warn("FLAG", this.newCurrentCallFlag);
+      if (this.newCurrentCallFlag) {
+        this.newCurrentCallFlag = false;
+      } else {
+        this.callsVisible = !this.callsVisible;
+        if (!this.callsVisible) {
+          this.VIEWED_CALLS();
+        }
+      }
     },
     deleteComment(comment) {
       this.comments = this.comments.filter((item) => item !== comment);
@@ -122,6 +141,25 @@ export default {
     },
     getCalls() {
       this.FETCH_CALLS();
+    },
+  },
+  watch: {
+    CURRENT_CALLS(before, after) {
+      if (before.length != after.length) {
+        this.getCalls();
+        console.error(before.length, after.length);
+        if (before.length > after.length) {
+          this.newCurrentCallFlag = true;
+        } else {
+          this.newCurrentCallFlag = false;
+        }
+      }
+    },
+    NEW_NOTIFICATIONS(before, after) {
+      if (before.length != after.length) {
+        this.getNotification();
+        console.error(before.length, after.length);
+      }
     },
   },
   mounted() {

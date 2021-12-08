@@ -160,95 +160,36 @@ export default {
     },
     normalizeDataForContactForm(data) {
         let array = [];
-        let newData = {
-            ...data
-        };
 
-        newData.emails.map(item => {
+        data.emails.map(item => {
             array.push(item.email)
         });
-        if (!array.length) {
-            array.push("");
-        }
-        newData.emails = array;
+        data.emails = array;
+
         array = [];
-        newData.phones.map(item => {
+        data.phones.map(item => {
             array.push(item.phone)
         });
-        if (!array.length) {
-            array.push("");
-        }
-        newData.phones = array;
+        data.phones = array;
+
+
         array = [];
-        newData.websites.map(item => {
+        data.websites.map(item => {
             array.push(item.website)
         });
-        if (!array.length) {
-            array.push("");
-        }
-        newData.websites = array;
+        data.websites = array;
+
+
         array = [];
-        newData.wayOfInformings.map(item => {
+        data.wayOfInformings.map(item => {
             array.push(item.way)
         });
-        newData.wayOfInformings = array;
+        data.wayOfInformings = array;
+
         array = [];
-        return newData;
+        return data;
 
     },
-    // normalizeDataForCompanyForm(data) {
-    //     let array = [];
-    //     let newData = data;
-    //     newData.productRanges.map(item => {
-    //         array.push(item.product)
-    //     });
-    //     newData.productRanges = array;
-    //     array = [];
-
-    //     newData.categories.map(item => {
-    //         array.push(item.category)
-    //     });
-    //     newData.categories = array;
-    //     array = [];
-
-    //     if (!newData.contacts.length) {
-    //         newData.contacts = { phones: [""], emails: [""], websites: [""] };
-    //         return newData;
-    //     }
-    //     newData.contacts = newData.contacts.find(item => item.type == 1);
-    //     console.error(newData.contacts);
-
-    //     if (!newData.contacts) {
-    //         newData.contacts = { phones: [""], emails: [""], websites: [""] };
-    //         return newData;
-    //     }
-
-    //     newData.contacts.emails.map(item => {
-    //         array.push(item.email)
-    //     });
-    //     if (!array.length) {
-    //         array.push("");
-    //     }
-    //     newData.contacts.emails = array;
-    //     array = [];
-    //     newData.contacts.phones.map(item => {
-    //         array.push(item.phone)
-    //     });
-    //     if (!array.length) {
-    //         array.push("");
-    //     }
-    //     newData.contacts.phones = array;
-    //     array = [];
-    //     newData.contacts.websites.map(item => {
-    //         array.push(item.website)
-    //     });
-    //     if (!array.length) {
-    //         array.push("");
-    //     }
-    //     newData.contacts.websites = array;
-    //     array = [];
-    //     return newData;
-    // },
     normalizeDataForCompanyForm(data) {
         let array = [];
         data.productRanges.forEach(item => {
@@ -264,7 +205,6 @@ export default {
         array = [];
 
         data.contacts = data.contacts.find(item => item.type == 1);
-        // console.log(data.contacts);
         if (!data.contacts) {
             data.contacts = {
                 emails: [],

@@ -4,7 +4,7 @@ import SuccessHandler from "./success";
 
 export default {
     async fetchCalls(consultant_id, page) {
-        const url = `calllists/${consultant_id}?per-page=${page * 10}&sort=-created_at`;
+        const url = `calllists/${consultant_id}?expand=caller,phoneFrom,phoneFrom.contact,phoneTo,phoneTo.contact&per-page=${page * 10}&sort=-created_at`;
         let data = false;
         await axios
             .get(url)

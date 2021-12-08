@@ -54,12 +54,6 @@ export default {
     NotificationItem,
     Pagination,
   },
-  data() {
-    return {
-      // newNotification: [],
-      // oldNotification: [],
-    };
-  },
   props: {
     notifications: {
       type: Array,
@@ -83,21 +77,21 @@ export default {
     ...mapActions([
       "INCRIMENT_NOTIFICATIONS_CURRENT_PAGE",
       "FETCH_NOTIFICATIONS",
-      "FETCH_NOTIFICATIONS_NO_INTERVAL",
       "RETURN_NOTIFICATION_CURRENT_PAGE_TO_FIRST",
     ]),
     loadMore() {
       this.INCRIMENT_NOTIFICATIONS_CURRENT_PAGE();
-      this.FETCH_NOTIFICATIONS_NO_INTERVAL();
+      this.FETCH_NOTIFICATIONS();
     },
   },
   mounted() {
     // this.dataSharing();
+    this.FETCH_NOTIFICATIONS();
   },
   beforeUnmount() {
     console.warn("UNMOUNT");
     this.RETURN_NOTIFICATION_CURRENT_PAGE_TO_FIRST();
-    this.FETCH_NOTIFICATIONS_NO_INTERVAL();
+    this.FETCH_NOTIFICATIONS();
   },
 };
 </script>

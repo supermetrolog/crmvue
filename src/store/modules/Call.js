@@ -41,16 +41,7 @@ const Call = {
         },
     },
     actions: {
-        FETCH_CALLS(context) {
-            // console.warn(context);
-            context.dispatch('FETCH_CALLS_NO_INTERVAL');
-            // setInterval(async() => {
-            //     // console.warn('interval');
-            //     context.dispatch('FETCH_NOTIFICATIONS_NO_INTERVAL');
-            //     // console.error('interval');
-            // }, 5000);
-        },
-        async FETCH_CALLS_NO_INTERVAL(context) {
+        async FETCH_CALLS(context) {
             const user = context.getters.THIS_USER;
             const calls = await api.calls.fetchCalls(user.id, this.getters.CALLS_CURRENT_PAGE);
             context.commit('updateCalls', calls);
@@ -63,7 +54,6 @@ const Call = {
         },
         async VIEWED_CALLS(context) {
             if (existNewCalls(this.getters.CALLS)) {
-                // const user = JSON.parse(localStorage.getItem('user'));
                 const user = context.getters.THIS_USER;
                 await api.calls.viewed(user.id);
                 context.commit('viewedCalls');
@@ -90,11 +80,7 @@ const Call = {
             };
             context.dispatch('WEBSOCKET_LOOP_PUSH', interval);
         },
-        ACTION_WEBSOCKET_new_call() {
-            // console.log('ACTION_WEBSOCKET_new_call');
-        },
         ACTION_WEBSOCKET_current_calls(context, data) {
-            // console.log('ACTION_WEBSOCKET_current_call');
             context.commit('updateCurrentCalls', data.message);
         },
     },

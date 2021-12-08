@@ -1,250 +1,119 @@
 <template>
-  <div class="company-form company-contact-form">
-    <Modal title="Создание запроса" @close="clickCloseModal">
-      <form @submit.prevent="submitForm">
-        <div class="company-form-container p-3">
-          <Loader class="center" v-if="loader" />
+  <div class="fuck">
+    <Modal
+      :title="formdata ? 'Изменение контакта' : 'Создание контакта'"
+      @close="clickCloseModal"
+      class="normal"
+    >
+      <Form @submit="onSubmit" class="p-2">
+        <Loader class="center" v-if="loader" />
+        <FormGroup class="mb-1">
+          <Input
+            v-model="form.middle_name"
+            label="Фамилия"
+            class="col-4 pr-1"
+          />
+          <Input
+            v-model="form.first_name"
+            label="Имя"
+            :v="v$.form.first_name"
+            required
+            class="col-4 pr-1"
+          />
+          <Input v-model="form.last_name" label="Отчество" class="col-4" />
+        </FormGroup>
 
-          <div class="main-input-list">
-            <div class="input-group row no-gutters">
-              <div class="col-4 pr-2">
-                <label class="input-label">Фамилия</label>
-                <input type="text" v-model="form.middle_name" />
-              </div>
-              <div class="col-4 pr-2">
-                <label class="input-label" title="Тип сделки">
-                  Должность
-                </label>
-                <Multiselect
-                  v-model="form.position"
-                  :options="positionList"
-                  :canDeselect="false"
-                />
-              </div>
-              <div class="col-4 pr-2 text-center">
-                <label class="input-label"> Статус </label>
-                <div class="checkbox-group pb-2">
-                  <input
-                    class="checkbox m-auto"
-                    type="radio"
-                    v-model="form.status"
-                    value="1"
-                    id="radio-status-0"
-                  />
-                  <label class="checkbox-label" for="radio-status-0">
-                    актив
-                  </label>
-                  <input
-                    class="checkbox"
-                    type="radio"
-                    v-model="form.status"
-                    value="0"
-                    id="radio-status-1"
-                  />
-                  <label class="checkbox-label" for="radio-status-1">
-                    пассив
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div class="input-group row no-gutters">
-              <div class="col-4 pr-2">
-                <label class="input-label required">Имя</label>
-                <input
-                  type="text"
-                  v-model="form.first_name"
-                  @input="v$.form.first_name.$touch"
-                  :class="{
-                    invalid: v$.form.first_name.$error,
-                    valid:
-                      v$.form.first_name.$dirty && !v$.form.first_name.$error,
-                  }"
-                />
-                <div
-                  class="col-12 text-center error-container pt-1 pb-0"
-                  v-if="v$.form.first_name.$error"
-                >
-                  <span>{{ v$.form.first_name.$errors[0].$message }}</span>
-                </div>
-              </div>
-
-              <div class="col-4 pr-2 text-center">
-                <label class="input-label text-warning"> Внимание! </label>
-                <input
-                  class="checkbox large d-block mx-auto"
-                  type="radio"
-                  @click="form.warning ? (form.warning = null) : ''"
-                  value="1"
-                  v-model="form.warning"
-                />
-              </div>
-              <div class="col-4 text-center">
-                <label class="input-label text-success">
-                  Хор. взаимоотношения
-                </label>
-                <input
-                  class="checkbox large d-block mx-auto"
-                  type="radio"
-                  value="1"
-                  @click="form.good ? (form.good = null) : ''"
-                  v-model="form.good"
-                />
-              </div>
-            </div>
-            <div class="input-group row no-gutters">
-              <div class="col-4 pr-2">
-                <label class="input-label">Отчество</label>
-                <input type="text" v-model="form.last_name" />
-              </div>
-
-              <div class="col-4 pr-2 text-center">
-                <label class="input-label d-block" title="Срочный запрос">
-                  Очная встреча
-                </label>
-                <input
-                  class="checkbox large d-block mx-auto"
-                  @click="
-                    form.faceToFaceMeeting
-                      ? (form.faceToFaceMeeting = null)
-                      : ''
-                  "
-                  v-model="form.faceToFaceMeeting"
-                  type="radio"
-                  value="1"
-                  title="Очная встреча"
-                />
-              </div>
-              <div class="col-4">
-                <label class="input-label required" title="Тип сделки">
-                  Консультант
-                </label>
-                <Multiselect
-                  v-model="form.consultant_id"
-                  :options="this.CONSULTANT_LIST"
-                  :canDeselect="false"
-                  @change="v$.form.consultant_id.$touch"
-                  :class="{
-                    invalid: v$.form.consultant_id.$error,
-                    valid:
-                      v$.form.consultant_id.$dirty &&
-                      !v$.form.consultant_id.$error,
-                  }"
-                />
-                <div
-                  class="col-12 text-center error-container pt-1 pb-0"
-                  v-if="v$.form.consultant_id.$error"
-                >
-                  <span>{{ v$.form.consultant_id.$errors[0].$message }}</span>
-                </div>
-              </div>
-            </div>
-            <div class="input-group row no-gutters">
-              <div class="col-4 pr-2">
-                <label class="input-label">Общий телефон</label>
-
-                <div
-                  class="reproduce-input"
-                  v-for="(phone, index) in form.phones"
-                  :key="index"
-                >
-                  <i
-                    class="fas fa-minus left-input-icon"
-                    v-if="index != 0"
-                    @click="deleteTelInput(index)"
-                  ></i>
-                  <input
-                    type="tel"
-                    v-model.lazy="form.phones[index]"
-                    @input="v$.form.emails.$touch"
-                    v-maska="[
-                      '+# (###) ###-##-##',
-                      '+## (###) ###-##-##',
-                      '+### (###) ###-##-##',
-                    ]"
-                  />
-                  <i
-                    class="fas fa-plus right-input-icon"
-                    v-if="index == form.phones.length - 1"
-                    @click="createNewTelInput"
-                  ></i>
-                </div>
-                <div
-                  class="col-12 text-center error-container pt-1 pb-0"
-                  v-if="v$.form.emails.$error"
-                >
-                  <span>{{ v$.form.emails.$errors[0].$message }}</span>
-                </div>
-              </div>
-              <div class="col-4">
-                <label class="input-label">Общий Email</label>
-
-                <div
-                  class="reproduce-input"
-                  v-for="(item, index) in form.emails"
-                  :key="index"
-                >
-                  <i
-                    class="fas fa-minus left-input-icon"
-                    v-if="index != 0"
-                    @click="deleteEmailInput(index)"
-                  ></i>
-                  <input type="email" v-model.lazy="form.emails[index]" />
-                  <i
-                    class="fas fa-plus right-input-icon"
-                    v-if="index == form.emails.length - 1"
-                    @click="createNewEmailInput"
-                  ></i>
-                </div>
-                <div
-                  class="col-12 text-center error-container pt-1 pb-0"
-                  v-if="v$.form.emails.$error"
-                >
-                  <span>{{ v$.form.emails.$errors[0].$message }}</span>
-                </div>
-              </div>
-              <div class="col-4 text-center">
-                <label class="input-label">Способ информирования</label>
-                <div class="checkbox-group pb-2">
-                  <div
-                    class="d-inline-block mr-1"
-                    v-for="way of wayOfInformings"
-                    :key="way[0]"
-                  >
-                    <input
-                      class="checkbox ml-0"
-                      type="checkbox"
-                      v-model="form.wayOfInformings"
-                      :value="way[0]"
-                      :id="'checkbox-gate-type' + way[0]"
-                    />
-                    <label
-                      class="checkbox-label"
-                      :for="'checkbox-gate-type' + way[0]"
-                      >{{ way[1] }}</label
-                    >
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row mb-3 mt-4">
-            <div class="col-5 text-center m-auto">
-              <input
-                v-if="!formdata"
-                class="btn btn-success btn-large"
-                type="submit"
-                value="Создать"
-              />
-              <input
-                v-else
-                class="btn btn-success btn-large"
-                type="submit"
-                value="Сохранить изменения"
-              />
-            </div>
-          </div>
-        </div>
-      </form>
+        <FormGroup class="mb-1">
+          <MultiSelect
+            v-model="form.position"
+            label="Должность"
+            class="col-4 pr-1"
+            :options="positionList"
+          />
+          <MultiSelect
+            v-model="form.consultant_id"
+            label="Консультант"
+            class="col-4 pr-1"
+            :v="v$.form.consultant_id"
+            required
+            :options="CONSULTANT_LIST"
+          />
+          <MultiSelect
+            v-model="form.company_id"
+            extraClasses="long-text"
+            label="Компания"
+            required
+            class="col-4 pr-1"
+            :v="v$.form.company_id"
+            :filterResults="false"
+            :minChars="1"
+            :resolveOnLoad="formdata ? true : false"
+            :delay="0"
+            :searchable="true"
+            :options="
+              async (query) => {
+                return await searchCompany(query);
+              }
+            "
+          />
+        </FormGroup>
+        <FormGroup class="mb-1">
+          <Checkbox
+            v-model="form.warning"
+            label="Внимание!"
+            class="col-3 pr-1 large text-center"
+          />
+          <Checkbox
+            v-model="form.faceToFaceMeeting"
+            label="Оч. встреча"
+            title="Очная встреча"
+            class="col-3 large text-center"
+          />
+          <Checkbox
+            v-model="form.good"
+            label="Хор. взаим."
+            title="Хорошие взаимоотношения"
+            class="col-3 large text-center"
+          />
+          <Radio
+            v-model="form.status"
+            required
+            label="Статус"
+            class="col-3 text-center"
+            :options="statusOptions"
+          />
+        </FormGroup>
+        <FormGroup class="mb-1">
+          <PropogationInput
+            v-model="form.phones"
+            :maska="[
+              '+# (###) ###-##-##',
+              '+## (###) ###-##-##',
+              '+### (###) ###-##-##',
+            ]"
+            label="Телефон"
+            :v="v$.form.emails"
+            class="col-4 pr-1"
+          />
+          <PropogationInput
+            v-model="form.emails"
+            label="Email"
+            :v="v$.form.emails"
+            class="col-4 pr-1"
+          />
+          <Checkbox
+            v-model="form.wayOfInformings"
+            label="Способ информирования"
+            class="col-4"
+            :options="wayOfInformings"
+          />
+        </FormGroup>
+        <FormGroup class="mt-4">
+          <Submit class="col-4 mx-auto">
+            {{ formdata ? "Сохранить" : "Создать" }}
+          </Submit>
+        </FormGroup>
+      </Form>
     </Modal>
   </div>
 </template>
@@ -253,25 +122,40 @@
 import { mapGetters, mapActions } from "vuex";
 import useValidate from "@vuelidate/core";
 import { required, helpers } from "@vuelidate/validators";
-import Modal from "@/components/Modal";
-import Loader from "@/components/Loader";
-import { FeedbackList, PositionList } from "@/const/Const.js";
-import Multiselect from "@vueform/multiselect";
+import { FeedbackList, PositionList, ActivePassive } from "@/const/Const.js";
+import Form from "@/components/form/Form.vue";
+import FormGroup from "@/components/form/FormGroup.vue";
+import Input from "@/components/form/Input.vue";
+import Submit from "@/components/form/Submit.vue";
+import PropogationInput from "@/components/form/PropogationInput.vue";
+import Checkbox from "@/components/form/Checkbox.vue";
+import Radio from "@/components/form/Radio.vue";
+import MultiSelect from "@/components/form/MultiSelect.vue";
 import Utils from "@/utils";
+import api from "@/api/api";
+
 export default {
-  name: "CompanyRequestForm",
+  name: "CompanyContactForm",
   components: {
-    Modal,
-    Multiselect,
-    Loader,
+    FormGroup,
+    Form,
+    Input,
+    Submit,
+    PropogationInput,
+    Checkbox,
+    Radio,
+    MultiSelect,
   },
   data() {
     return {
       v$: useValidate(),
       wayOfInformings: FeedbackList.get("contact"),
       positionList: PositionList.get("param"),
+      statusOptions: ActivePassive.get("param"),
       loader: false,
+      selectedCompany: null,
       form: {
+        company_id: null,
         first_name: null,
         middle_name: null,
         last_name: null,
@@ -282,8 +166,8 @@ export default {
         status: 1,
         wayOfInformings: [],
         consultant_id: null,
-        phones: [""],
-        emails: [""],
+        phones: [],
+        emails: [],
       },
     };
   },
@@ -309,6 +193,9 @@ export default {
         first_name: {
           required: helpers.withMessage("введите имя", required),
         },
+        company_id: {
+          required: helpers.withMessage("Выберите компанию", required),
+        },
         emails: {
           customRequired: helpers.withMessage(
             "дабавьте либо телефон либо email",
@@ -323,13 +210,12 @@ export default {
       "FETCH_CONSULTANT_LIST",
       "CREATE_CONTACT",
       "UPDATE_CONTACT",
+      "SEARCH_COMPANIES",
     ]),
-    async submitForm() {
+    async onSubmit() {
       this.v$.$validate();
       if (!this.v$.form.$error) {
         this.loader = true;
-        this.normalizePhones();
-        this.normalizeEmails();
         if (this.formdata) {
           this.updateContact();
         } else {
@@ -337,6 +223,7 @@ export default {
         }
       }
     },
+
     async updateContact() {
       if (await this.UPDATE_CONTACT(this.form)) {
         this.$emit("updated");
@@ -352,6 +239,33 @@ export default {
       }
       this.loader = false;
     },
+    async searchCompany(query) {
+      let result = null;
+      let array = [];
+      if (!this.selectedCompany) {
+        this.selectedCompany = await api.companies.getCompany(
+          this.formdata.company_id
+        );
+      }
+      if (this.formdata && this.selectedCompany) {
+        array.push({
+          value: this.selectedCompany[0].id,
+          label:
+            this.selectedCompany[0].nameRu +
+            " - " +
+            this.selectedCompany[0].nameEng,
+        });
+      }
+      result = await this.SEARCH_COMPANIES(
+        { nameRu: query, nameEng: query },
+        false
+      );
+      console.log("RESULT: ", array);
+      result.forEach((item) => {
+        array.push({ value: item.id, label: item.nameRu + " " + item.nameEng });
+      });
+      return array;
+    },
     customRequired() {
       if (this.form.emails.length == 1 && this.form.phones.length == 1) {
         if (this.form.emails[0] == "" && this.form.phones[0] == "") {
@@ -360,71 +274,24 @@ export default {
       }
       return true;
     },
-    normalizePhones() {
-      this.form.phones = this.form.phones.filter((item) => item != "");
-    },
-    normalizeEmails() {
-      this.form.emails = this.form.emails.filter((item) => item != "");
-    },
     clickCloseModal() {
       this.$emit("closeCompanyForm");
-    },
-    createNewTelInput() {
-      if (
-        this.form.phones[this.form.phones.length - 1] != "" &&
-        this.form.phones[this.form.phones.length - 1].length > 17
-      ) {
-        this.form.phones.push("");
-      }
-    },
-    deleteTelInput(index) {
-      this.form.phones = this.form.phones.filter((item, idx) => idx != index);
-    },
-    createNewEmailInput() {
-      if (this.form.emails[this.form.emails.length - 1] != "") {
-        this.form.emails.push("");
-      }
-    },
-    deleteEmailInput(index) {
-      this.form.emails = this.form.emails.filter((item, idx) => idx != index);
     },
   },
   async mounted() {
     this.loader = true;
     await this.FETCH_CONSULTANT_LIST();
+    this.form.company_id = this.company_id;
     if (this.formdata) {
-      this.form = Utils.normalizeDataForContactForm(this.formdata);
-      console.log(this.form);
-    } else {
-      this.form.company_id = this.company_id;
+      const cloneFormdata = JSON.stringify(this.formdata);
+      this.form = { ...this.form, ...JSON.parse(cloneFormdata) };
+      this.form = Utils.normalizeDataForContactForm(this.form);
     }
     this.loader = false;
   },
   emits: ["closeCompanyForm", "updated", "created"],
 };
 </script>
-/*
-Запрос открыт только работающему брокеру (открывается если брокер предложил другому брокеру этот запрос)
-Запрос: Беру в работу, Отказаться совсем, Предложить другому брокеру (Эта кнопка должна быть всегда).
-Через пол года бездействий закрывается запрос
-После перехода к другому брокеру ветка закрывается и создается новая
-Если возвращаем к предыдущему брокеру ветка открывается 
 
-Возможность закрытия запроса брокером: 
-    - на любом этапе
-    - запрос может закрыть только администратор 
-    - должна быть кнопка (хочу закрыть запрос + обязательный комментарий) - поступает администратору и так решает закрывать или нет или предложить другому или вести самому его до 5 шага потом надо передать брокеру
-    - администратор может отправлять модератору спорные запросы (он либо перепоручает запрос либо закрывает его)
-
-Знакомство: 
-    Интервал на жизнь знакомства - до полу года, если он не перешел к этапу 3.
-    Если не пошел дальше - пол года
-
-    Если не познакомился в течение после поступления
-
-Условия:
-    Если не прошел шаг 1 (Знакомства) - не созвонился, не дозвонился
-        - уведомлять ежедневно о том что надо позвонить
-    
-*/
-
+<style>
+</style>
