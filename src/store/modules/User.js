@@ -4,6 +4,7 @@ const User = {
     state: {
         consultantList: [],
         thisUser: null,
+        users: [],
     },
     mutations: {
         updateConsultantList(state, data) {
@@ -19,6 +20,9 @@ const User = {
         },
         setUser(state, user) {
             state.thisUser = user;
+        },
+        updateUsers(state, data) {
+            state.users = data;
         }
     },
     actions: {
@@ -29,6 +33,12 @@ const User = {
             let data = await api.functions.getConsultantList();
             if (data) {
                 context.commit('updateConsultantList', data);
+            }
+        },
+        async FETCH_USERS(context) {
+            let data = await api.user.getUsers();
+            if (data) {
+                context.commit('updateUsers', data);
             }
         },
         SET_USER(context) {
@@ -53,7 +63,10 @@ const User = {
                 context.commit('setUser', null);
             }
             return response;
-        }
+        },
+        async CREATE_USER(_, formdata) {
+            return await api.user.createUser(formdata);
+        },
     },
     getters: {
         CONSULTANT_LIST(state) {
@@ -62,7 +75,9 @@ const User = {
         THIS_USER(state) {
             return state.thisUser;
         },
-
+        USERS(state) {
+            return state.users;
+        },
     },
 }
 

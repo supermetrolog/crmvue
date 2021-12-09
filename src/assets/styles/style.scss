@@ -1869,7 +1869,46 @@
         }
     }
     
-    //*************** COMPANY-TABLE-VIEW
+    //*************** TABLE **************
+    .table {
+        table {
+            border-collapse: collapse;
+            // width: 100%;
+            box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.5);
+            thead {
+                border: none;
+                border-radius: 10px;
+                outline: none;
+                background-color: $color_sidebar_bg;
+                color: $color_light;
+                text-transform: uppercase;
+                height: 60px;
+                tr {
+                    th {
+                        font-weight: normal;
+                        font-size: 14px;
+                        &:first-child {
+                            border-top-left-radius: 3px;
+                        }
+                        &:last-child {
+                            border-top-right-radius: 3px;
+                        }
+                    }
+                }
+            }
+            tbody {
+                tr {
+                    height: 60px;
+                    min-height: 60px;
+                    &:nth-child(odd) {
+                        background-color: darken($color_light, 3);
+                    }
+                }
+            }
+        }
+    }
+    
+    //*************** COMPANY-TABLE-VIEW ************
     .company-table-view {
         table {
             border-collapse: collapse;
@@ -3082,11 +3121,11 @@
             &.z-index {
                 z-index: 90!important;
             }
-            .modal-header {
-                .title {
-                    // text-align: left;
-                }
-            }
+            // .modal-header {
+            //     .title {
+            //         // text-align: left;
+            //     }
+            // }
             .modal-container,
             .modal-body {
                 min-height: unset!important;
@@ -3117,6 +3156,25 @@
                         }
                     }
                 }
+            }
+        }
+    }
+    
+    //**************** USERS TABLE ***********
+    .users-table {
+        td {
+            padding: 5px 20px;
+        }
+        .avatar {
+            border-radius: 50%;
+            height: 70px;
+            width: 70px;
+            background-color: red;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            img {
+                width: 100%;
             }
         }
     }

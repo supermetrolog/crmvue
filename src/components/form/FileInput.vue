@@ -20,58 +20,101 @@
           </label>
         </div>
       </div>
-
-      <div class="row no-gutters file-input_files existing" v-if="files.length">
+      <template v-if="multiple">
         <div
-          class="col-3 file ml-auto"
-          v-for="(file, index) in files"
-          :key="index"
+          class="row no-gutters file-input_files existing"
+          v-if="files.length"
         >
-          <div class="row no-gutters">
-            <div
-              class="
-                col-12
-                file_image
-                d-flex
-                align-self-center
-                justify-content-center
-              "
-            >
-              <a
-                :href="file.src"
-                target="_blank"
-                :title="file.name"
-                class="d-flex align-self-center justify-content-center"
+          <div
+            class="col-3 file ml-auto"
+            v-for="(file, index) in files"
+            :key="index"
+          >
+            <div class="row no-gutters">
+              <div
+                class="
+                  col-12
+                  file_image
+                  d-flex
+                  align-self-center
+                  justify-content-center
+                "
               >
-                <img
-                  :src="require(`@/assets/image/${file.src2}.png`)"
-                  alt="file"
-                  :class="file.src2"
+                <a
+                  :href="file.src"
+                  target="_blank"
                   :title="file.name"
-                  v-if="allowedTypeList.includes(file.src2)"
-                />
-                <img :src="file.src2" alt="file" class="image" v-else />
-              </a>
+                  class="d-flex align-self-center justify-content-center"
+                >
+                  <img
+                    :src="require(`@/assets/image/${file.src2}.png`)"
+                    alt="file"
+                    :class="file.src2"
+                    :title="file.name"
+                    v-if="allowedTypeList.includes(file.src2)"
+                  />
+                  <img :src="file.src2" alt="file" class="image" v-else />
+                </a>
 
-              <div class="size-container text-right">
-                <p>{{ formatSize(file.size) }}</p>
+                <div class="size-container text-right">
+                  <p>{{ formatSize(file.size) }}</p>
+                </div>
+                <div class="delete-container" v-if="!reedOnly">
+                  <i class="fas fa-times" @click="deleteFile(index)"></i>
+                </div>
               </div>
-              <div class="delete-container" v-if="!reedOnly">
-                <i class="fas fa-times" @click="deleteFile(index)"></i>
+              <div class="col-12 file_description text-center">
+                <p>{{ file.name }}</p>
               </div>
-            </div>
-            <div class="col-12 file_description text-center">
-              <p>{{ file.name }}</p>
             </div>
           </div>
         </div>
-      </div>
+      </template>
+      <template v-if="!multiple && files">
+        <div class="row no-gutters file-input_files existing">
+          <div class="col-12 file ml-auto">
+            <div class="row no-gutters">
+              <div
+                class="
+                  col-12
+                  file_image
+                  single
+                  d-flex
+                  align-self-center
+                  justify-content-center
+                "
+              >
+                <a
+                  :href="files"
+                  target="_blank"
+                  class="d-flex align-self-center justify-content-center"
+                >
+                  <img
+                    :src="'http://crmka/uploads/' + files"
+                    alt="file"
+                    class="image"
+                  />
+                </a>
+                <div class="delete-container" v-if="!reedOnly">
+                  <i class="fas fa-times" @click="deleteFile(index)"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+      <!-- <template v-else>
+        <div class="row" v-if="files">
+          <img :src="files" alt="img" />
+        </div>
+      </template> -->
       <div
         class="row no-gutters file-input_files target"
         v-if="localFiles.length"
       >
         <div
           class="col-3 file"
+          :class="{ 'col-12': !multiple }"
           v-for="(file, index) in localFiles"
           :key="index"
         >
@@ -84,6 +127,7 @@
                 align-self-center
                 justify-content-center
               "
+              :class="{ single: !multiple }"
             >
               <img
                 :src="require(`@/assets/image/${file.src}.png`)"
@@ -127,7 +171,7 @@ export default {
   },
   props: {
     data: {
-      type: Array,
+      type: [Array, String],
       default: () => [],
     },
     native: {
@@ -170,8 +214,13 @@ export default {
       return length.toFixed(2) + " " + type[i];
     },
     deleteFile(index) {
-      this.files = this.files.filter((_, idx) => idx != index);
+      if (!this.multiple) {
+        this.files = null;
+      } else {
+        this.files = this.files.filter((_, idx) => idx != index);
+      }
       this.$emit("update:data", this.files);
+      console.log(this.data, this.files);
     },
     onChange($event) {
       this.localFiles = [];
@@ -180,6 +229,9 @@ export default {
 
       if (!files.length) {
         return;
+      }
+      if (!this.multiple) {
+        this.files = null;
       }
       this.$emit("update:native", $event.target.files);
       this.$emit("update:data", this.files);
@@ -191,9 +243,11 @@ export default {
           const reader = new FileReader();
           reader.onload = (ev) => {
             file.src = ev.target.result;
+
             this.localFiles.push(file);
           };
           reader.readAsDataURL(file);
+
           return file;
         } else if (file.type.match("application")) {
           file.src = getFileType(file);
@@ -209,6 +263,10 @@ export default {
       });
     },
     setSrcForExistionFiles() {
+      if (!this.multiple) {
+        this.files = this.data;
+        return;
+      }
       if (!this.files.length) {
         return false;
       }
@@ -294,6 +352,10 @@ $color_success: #00b74a;
         position: relative;
         a {
           display: inline;
+        }
+        &.single {
+          height: 100%;
+          max-height: unset;
         }
         .size-container,
         .delete-container {

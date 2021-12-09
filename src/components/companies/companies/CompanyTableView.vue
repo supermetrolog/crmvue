@@ -1,5 +1,5 @@
 <template>
-  <div class="company-table-view">
+  <div class="table company-table-view">
     <table>
       <thead>
         <tr>
