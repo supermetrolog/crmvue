@@ -760,6 +760,23 @@
     }
     
     .timeline-actions {
+        textarea {
+            width: 100%;
+            letter-spacing: .35px;
+            resize: none;
+            font-size: 18px;
+            font-weight: 500;
+            padding: 2px 5px;
+            // color: darken($color_secondary, 15);
+            color: $color_secondary;
+            border: 1px solid $color_grey;
+            border-radius: unset;
+            max-width: 100%;
+            &:focus {
+                border-radius: unset;
+                outline: 1px solid $color_primary;
+            }
+        }
         font-size: 14px;
         p {
             font-size: 11.5px;
@@ -777,6 +794,11 @@
         }
         .actions {
             max-width: 100%;
+            width: 100%;
+            textarea {
+                display: block;
+                margin: 0 auto;
+            }
         }
         .action {
             user-select: none;
@@ -1176,6 +1198,12 @@
                 max-height: 90vh!important;
                 min-height: 90vh!important;
                 padding: 15px 20px!important;
+            }
+        }
+        &.autosize {
+            .modal-body,
+            .modal-container {
+                min-height: unset!important;
             }
         }
         &-header {
@@ -2821,6 +2849,26 @@
                 p.title2 {
                     text-transform: lowercase;
                 }
+                .comment {
+                    textarea {
+                        width: 100%;
+                        width: 100%;
+                        letter-spacing: .35px;
+                        resize: none;
+                        font-size: 18px;
+                        font-weight: 500;
+                        padding: 2px 5px;
+                        // color: darken($color_secondary, 15);
+                        color: $color_secondary;
+                        border: 1px solid $color_grey;
+                        border-radius: unset;
+                        max-width: 100%;
+                        &:focus {
+                            border-radius: unset;
+                            outline: 1px solid $color_primary;
+                        }
+                    }
+                }
                 small {
                     font-size: 12px;
                     line-height: 16px!important;
@@ -3107,6 +3155,9 @@
             &.no-height {
                 min-height: auto;
             }
+            &-default-size {
+                min-height: 300px;
+            }
         }
     }
     
@@ -3160,10 +3211,26 @@
         }
     }
     
+    .square-badge {
+        background-color: $color_success_alt;
+        padding: 0.5rem;
+        color: $color_light;
+        font-size: 12px;
+        font-weight: bold;
+    }
+    
     //**************** USERS TABLE ***********
     .users-table {
         td {
             padding: 5px 20px;
+            font-size: 16px;
+            a {
+                color: $color_primary;
+                font-size: 14px;
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
         }
         .avatar {
             border-radius: 50%;
@@ -3178,3 +3245,23 @@
             }
         }
     }
+    
+    // ************** JOKE ***********
+    .joke {
+        width: 100%;
+        height: 350px;
+        max-height: 100%;
+        user-select: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        // background-color: red;
+        img {
+            max-height: 100%;
+            width: 100%;
+            margin: auto;
+        }
+    }
+    
+    // moderator admin consultant manager 
+    // Консультатн - может редактировать только своих клиентов и объекты

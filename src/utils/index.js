@@ -229,5 +229,12 @@ export default {
         data.contacts.websites = array;
         array = [];
         return data;
-    }
+    },
+    normalizeDataForUserForm(data) {
+        delete data.password;
+        delete data.created_at;
+        delete data.email;
+        return data;
+
+    },
 }

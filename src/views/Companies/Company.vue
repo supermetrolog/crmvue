@@ -115,13 +115,9 @@
           <NoData v-if="!COMPANY_REQUESTS.length && !loaderCompanyRequests" />
         </div>
       </div>
-      <div class="col-12 col-lg-4 company-detail-info-container box">
+      <div class="col-12 col-lg-4 box">
         <div class="col-12 inner">
-          <!-- <Loader v-if="loaderCompanyDetailInfo" class="center" />
-          <CompanyDetailInfo
-            :company="this.COMPANY[0]"
-            v-if="!loaderCompanyDetailInfo"
-          /> -->
+          <Joke />
         </div>
       </div>
       <div class="col-12 col-lg-2 company-detail-info-container box">
@@ -166,6 +162,7 @@ import CompanyContactList from "@/components/companies/companies/contact/Company
 import Modal from "@/components/Modal.vue";
 import Timeline from "@/components/companies/timeline/Timeline.vue";
 import NoData from "@/components/NoData";
+import Joke from "@/components/Joke";
 export default {
   name: "Company",
   components: {
@@ -179,6 +176,7 @@ export default {
     Modal,
     Timeline,
     NoData,
+    Joke
   },
   data() {
     return {

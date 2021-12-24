@@ -84,7 +84,42 @@ const routes = [{
             },
         ]
     },
-
+    {
+        path: '/users',
+        name: 'users',
+        meta: { layout: 'main', auth: { isAuth: true, role: ['moderator', 'administrator'] } },
+        component: () =>
+            import ('../views/Users/Users.vue'),
+        children: [{
+                path: '/users/:id',
+                name: 'user',
+                meta: { layout: 'main', auth: { isAuth: true, role: ['moderator', 'administrator'] } },
+                component: () =>
+                    import ('../views/Users/User.vue'),
+            },
+            {
+                path: '',
+                name: 'UsersAll',
+                meta: { layout: 'main', auth: { isAuth: true, role: ['moderator', 'administrator'] } },
+                component: () =>
+                    import ('../views/Users/All.vue')
+            },
+        ]
+    },
+    {
+        path: '/account',
+        name: 'account',
+        meta: { layout: 'main', auth: { isAuth: true, role: ['moderator', 'administrator'] } },
+        component: () =>
+            import ('../views/Account/Account.vue'),
+        children: [{
+            path: '',
+            name: 'Main',
+            meta: { layout: 'main', auth: { isAuth: true, role: ['moderator', 'administrator'] } },
+            component: () =>
+                import ('../views/Account/Main.vue')
+        }, ]
+    },
     {
         path: '/:catchAll(.*)',
         name: 'notfound',

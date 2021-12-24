@@ -1,8 +1,10 @@
 export const Menu = new Map([
-    ['admin', [{ "id": 0, "name": "Компании", "icon": "fas fa-users", "url": "/companies" },
+    ['admin', [{ "id": 0, "name": "Компании", "icon": "fas fa-industry", "url": "/companies" },
         { "id": 1, "name": "Статистика", "icon": "far fa-chart-bar", "url": "/statistic" },
         { "id": 2, "name": "Календарь", "icon": "fas fa-calendar-alt", "url": "/calendar", "exact": true },
         { "id": 3, "name": "Настройки", "icon": "fas fa-cog", "url": "/setting" },
+        { "id": 4, "name": "Юзеры", "icon": "fas fa-users", "url": "/users" },
+        { "id": 5, "name": "Аккаунт", "icon": "fas fa-user-astronaut", "url": "/account" },
     ]],
     ['agent', [{ "id": 0, "name": "Клиенты", "icon": "fas fa-users", "url": "/companies" },
         { "id": 1, "name": "Статистика", "icon": "fas fa-handshake", "url": "/statistic" },

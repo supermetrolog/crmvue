@@ -32,11 +32,6 @@
         </div>
       </div>
     </Modal>
-    <!-- <div class="row mb-4">
-      <div class="col-12 text-center">
-        <h4>контакты</h4>
-      </div>
-    </div> -->
     <CompanyContactItem
       v-for="contact of contacts"
       :key="contact.id"

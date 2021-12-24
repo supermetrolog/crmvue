@@ -9,6 +9,7 @@
         <Loader class="center" v-if="loader" />
         <FormGroup class="mb-1">
           <Input
+            :disabled="!!formdata"
             v-model="form.username"
             :v="v$.form.username"
             label="Юзернейм"
@@ -19,10 +20,11 @@
             v-model="form.password"
             :v="v$.form.password"
             label="Пароль"
-            required
+            :required="!formdata"
             class="col-4 pr-1"
           />
           <Input
+            :disabled="!!formdata"
             v-model="form.userProfile.caller_id"
             label="Добавочный номер"
             maska="##########"
@@ -51,8 +53,8 @@
           />
         </FormGroup>
         <FormGroup class="mb-1">
-          <Input
-            v-model="form.userProfile.phone"
+          <PropogationInput
+            v-model="form.userProfile.contacts.phones"
             label="Телефон"
             :maska="[
               '+# (###) ###-##-##',
@@ -61,8 +63,8 @@
             ]"
             class="col-4 pr-1"
           />
-          <Input
-            v-model="form.userProfile.email"
+          <PropogationInput
+            v-model="form.userProfile.contacts.emails"
             label="Email"
             class="col-4 pr-1"
           />
@@ -94,9 +96,10 @@ import { required, helpers } from "@vuelidate/validators";
 import Form from "@/components/form/Form.vue";
 import FormGroup from "@/components/form/FormGroup.vue";
 import Input from "@/components/form/Input.vue";
+import PropogationInput from "@/components/form/PropogationInput.vue";
 import Submit from "@/components/form/Submit.vue";
 import FileInput from "@/components/form/FileInput.vue";
-// import Utils from "@/utils";
+import Utils from "@/utils";
 
 export default {
   name: "UserForm",
@@ -106,21 +109,24 @@ export default {
     Input,
     Submit,
     FileInput,
+    PropogationInput,
   },
   data() {
     return {
       v$: useValidate(),
       loader: false,
       form: {
-        username: "fuck",
-        password: "fuck",
+        username: null,
+        password: null,
         userProfile: {
-          first_name: "Fuck",
-          middle_name: "ShIt",
+          first_name: null,
+          middle_name: null,
           last_name: null,
-          email: null,
-          phone: null,
-          caller_id: "123",
+          contacts: {
+            phones: [],
+            emails: [],
+          },
+          caller_id: null,
           avatar: null,
           fileList: [],
         },
@@ -151,13 +157,17 @@ export default {
           required: helpers.withMessage("введите юзернейм", required),
         },
         password: {
-          required: helpers.withMessage("введите пароль", required),
+          customRequired: helpers.withMessage(
+            "введите пароль",
+            this.customRequired
+          ),
         },
       },
     };
   },
   methods: {
     ...mapActions(["CREATE_USER", "UPDATE_USER"]),
+
     async onSubmit() {
       this.v$.$validate();
       if (!this.v$.form.$error) {
@@ -188,14 +198,23 @@ export default {
     clickCloseModal() {
       this.$emit("closeUserForm");
     },
+    customRequired(value) {
+      if (!this.formdata) {
+        if (value != null) {
+          return true;
+        }
+        return false;
+      }
+      return true;
+    },
   },
   async mounted() {
     this.loader = true;
     if (this.formdata) {
       const cloneFormdata = JSON.stringify(this.formdata);
       this.form = { ...this.form, ...JSON.parse(cloneFormdata) };
+      this.form = Utils.normalizeDataForUserForm(this.form);
       console.log(this.form);
-      // this.form = Utils.normalizeDataForContactForm(this.form);
     }
     this.loader = false;
   },

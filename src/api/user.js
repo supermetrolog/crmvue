@@ -7,10 +7,14 @@ function getFormDataWithFiles(formdata1) {
     console.log(formdata1);
     let formdata = {...formdata1 };
     let FD = new FormData();
+    if (!formdata.userProfile.fileList) {
+        FD.append('data', JSON.stringify(formdata));
+        return FD;
+    }
     for (let i = 0; i < formdata.userProfile.fileList.length; i++) {
         FD.append("files[]", formdata.userProfile.fileList[i]);
     }
-    delete formdata.userProfile.fileList;
+    // delete formdata.userProfile.fileList;
     // let files = [];
     // formdata.userProfile.avatar.map(item => {
     //     let file = {};
@@ -86,5 +90,36 @@ export default {
             .catch((e) => ErrorHandle.setError(e));
         return data;
     },
+    async updateUser(formdata) {
+        const url = `users/${formdata.id}`;
+        let data = false;
+        formdata = getFormDataWithFiles(formdata);
 
+        let config = {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'multipart/form-data',
+            }
+        };
+        await axios
+            .patch(url, formdata, config)
+            .then((Response) => {
+                data = SuccessHandler.getData(Response);
+                console.warn('Responce server: ', data);
+            })
+            .catch((e) => ErrorHandle.setError(e));
+        return data;
+    },
+    async deleteUser(id) {
+        const url = `users/${id}`;
+        let data = false;
+        await axios
+            .delete(url)
+            .then((Response) => {
+                data = SuccessHandler.getData(Response);
+                console.warn('Responce server: ', data);
+            })
+            .catch((e) => ErrorHandle.setError(e));
+        return data;
+    },
 }

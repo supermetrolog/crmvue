@@ -231,6 +231,7 @@ export default {
       "ALL_OBJECTS",
       "TIMELINE_REQUEST_ID",
       "THIS_USER",
+      "OBJECTS_CURRENT_PAGE",
     ]),
   },
   methods: {
@@ -405,12 +406,15 @@ export default {
       await this.FETCH_CURRENT_STEP_OBJECTS(this.step.timelineStepObjects);
       if (getAllObjectsFlag) {
         await this.FETCH_ALL_OBJECTS(this.step.number);
+        console.warn(this.ALL_OBJECTS);
+        console.error(this.OBJECTS_CURRENT_PAGE);
       }
       this.loader = false;
     },
   },
   beforeUnmount() {
     this.RESET_CURRENT_STEP_OBJECTS();
+    this.RETURN_OBJECTS_CURRENT_PAGE_TO_FIRST();
   },
   watch: {
     step(before, after) {

@@ -6,6 +6,7 @@
         :class="inputClasses"
         :type="type"
         :placeholder="placeholder"
+        :disabled="disabled"
         @input="onInput($event.target.value.trim())"
         @focus="onFocus"
         @blur="onBlur"
@@ -49,6 +50,10 @@ export default {
       default: "",
     },
     required: {
+      type: Boolean,
+      default: false,
+    },
+    disabled: {
       type: Boolean,
       default: false,
     },

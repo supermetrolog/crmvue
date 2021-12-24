@@ -63,9 +63,11 @@ export default {
   props: {
     manualRoute: {
       type: Array,
+      default: () => [],
     },
     userLocation: {
       type: Array,
+      default: () => [],
     },
   },
   computed: {

@@ -1,5 +1,5 @@
 <template>
-  <div class="setting">
+  <div class="users-all">
     <UserForm
       @closeUserForm="clickCloseUserForm"
       v-if="userFormVisible"
@@ -8,11 +8,6 @@
       @updated="getUsers"
     />
 
-    <div class="row">
-      <div class="col-12">
-        <button class="btn btn-danger" @click="clickLogout">Выйти</button>
-      </div>
-    </div>
     <div class="row mt-5 box">
       <div class="col-12">
         <button class="btn btn-primary scale" @click="clickOpenUserForm">
@@ -38,7 +33,7 @@ import UsersTable from "@/components/users/UsersTable";
 import UserForm from "@/components/users/forms/UserForm";
 import { mapActions, mapGetters } from "vuex";
 export default {
-  name: "Setting",
+  name: "UsersAll",
   data() {
     return {
       userFormVisible: false,

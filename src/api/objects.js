@@ -3,6 +3,8 @@ import ErrorHandle from "./errors";
 import SuccessHandler from "./success";
 export default {
     async getCurrentStepObjects(objectsIdList) {
+        const BearerToken = axios.defaults.headers.common["Authorization"];
+        delete axios.defaults.headers.common["Authorization"];
         const url = `https://pennylane.pro/api/v1/get/list/`;
         const formdata = new FormData();
         const params = {
@@ -17,6 +19,8 @@ export default {
                 data = data.offers;
             })
             .catch((e) => ErrorHandle.setError(e));
+
+        axios.defaults.headers.common["Authorization"] = BearerToken;
         return data;
     },
     async sendObjects(step_id, objects) {
@@ -32,6 +36,8 @@ export default {
         return data;
     },
     async getAllObjects(page_num) {
+        const BearerToken = axios.defaults.headers.common["Authorization"];
+        delete axios.defaults.headers.common["Authorization"];
         const url = `https://pennylane.pro/api/v1/get/list/`;
         const formdata = new FormData();
         const params = {
@@ -55,6 +61,9 @@ export default {
                 };
             })
             .catch((e) => ErrorHandle.setError(e));
+
+        axios.defaults.headers.common["Authorization"] = BearerToken;
+
         return data;
     }
 }

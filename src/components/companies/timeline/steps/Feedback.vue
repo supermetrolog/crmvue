@@ -36,7 +36,7 @@
               </span>
             </label>
           </div>
-          <div class="actions d-inline-block" v-if="actionsVisible">
+          <div class="d-inline-block" v-if="actionsVisible">
             <button class="btn-action text-success" @click="confirm">
               <i class="fas fa-check"></i>
             </button>

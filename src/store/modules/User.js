@@ -67,6 +67,12 @@ const User = {
         async CREATE_USER(_, formdata) {
             return await api.user.createUser(formdata);
         },
+        async UPDATE_USER(_, formdata) {
+            return await api.user.updateUser(formdata);
+        },
+        async DELETE_USER(_, id) {
+            return await api.user.deleteUser(id);
+        },
     },
     getters: {
         CONSULTANT_LIST(state) {
