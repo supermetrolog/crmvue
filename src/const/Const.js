@@ -121,6 +121,24 @@ export const ActivePassive = new Map(
 
     ]
 );
+export const YesNo = new Map(
+    [
+        ['param', [
+            [1, "Да"],
+            [0, "Нет"],
+        ]],
+
+    ]
+);
+export const unknownMovingDate = new Map(
+    [
+        ['param', [
+            [1, "нет конкретики по сроку"],
+            [0, "рассматривает постоянно"],
+        ]],
+
+    ]
+);
 export const ObjectClassList = new Map(
     [
         ['param', [

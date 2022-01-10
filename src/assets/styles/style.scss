@@ -1230,6 +1230,11 @@
         &-container {
             width: 650px;
         }
+        &.center {
+            .form-container {
+                margin: 0 auto;
+            }
+        }
         &-item {
             &.tags {
                 .multiselect {
@@ -1330,6 +1335,9 @@
                             border-radius: unset;
                             outline: 1px solid $color_primary;
                         }
+                        &:disabled {
+                            background-color: rgba($color: $color_grey, $alpha: .2);
+                        }
                     }
                 }
             }
@@ -1337,10 +1345,34 @@
             textarea {
                 display: block;
             }
+            &.checkbox {
+                &.inline {
+                    label {
+                        font-size: 12px;
+                        font-weight: normal;
+                        color: $color_grey;
+                        div {
+                            display: flex;
+                            align-items: start;
+                        }
+                    }
+                }
+            }
             &.checkbox,
             &.radio {
+                &.small {
+                    label {
+                        // text-transform: lowercase;
+                        font-size: 11px!important;
+                        input[type=radio] {
+                            // display: inline-block;
+                            min-height: 18px;
+                        }
+                    }
+                }
                 &.large {
-                    input {
+                    input[type=radio],
+                    input[type=checkbox] {
                         display: inline;
                         width: 33px;
                     }
@@ -1357,7 +1389,8 @@
                         margin-right: 4px;
                     }
                 }
-                input {
+                input[type=radio],
+                input[type=checkbox] {
                     display: inline;
                     width: 18px;
                     margin: 0;

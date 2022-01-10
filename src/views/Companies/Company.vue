@@ -176,7 +176,7 @@ export default {
     Modal,
     Timeline,
     NoData,
-    Joke
+    Joke,
   },
   data() {
     return {

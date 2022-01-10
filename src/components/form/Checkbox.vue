@@ -1,7 +1,7 @@
 <template>
-  <div class="form-item checkbox">
+  <div class="form-item checkbox" :class="mode">
     <label class="form-item-label" :class="{ required: required }" for="fuck">
-      {{ label }}
+      {{ mode == "" ? label : "" }}
       <div v-if="options.length">
         <label v-for="option in options" :key="option[0]">
           <input
@@ -21,6 +21,7 @@
           :true-value="1"
           :false-value="0"
         />
+        {{ mode == "inline" ? label : "" }}
       </div>
     </label>
     <div class="error-container pt-0" v-if="v && v.$error">
@@ -53,6 +54,10 @@ export default {
     label: {
       type: String,
       default: null,
+    },
+    mode: {
+      type: String,
+      default: "",
     },
     options: {
       type: Array,

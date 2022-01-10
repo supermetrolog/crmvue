@@ -12,6 +12,7 @@
           :class="{
             active: field.includes(option[0]),
           }"
+          :title="option[1].name"
         >
           <input
             type="checkbox"

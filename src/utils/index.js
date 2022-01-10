@@ -115,48 +115,46 @@ export default {
         });
         return data;
     },
-    normalizeDataForForm(data) {
+    normalizeDataForRequestForm(data) {
         let array = [];
-        let newData = {
-            ...data
-        };
 
-        newData.directions.map(item => {
+        data.directions.map(item => {
             array.push(item.direction)
         });
-        newData.directions = array;
-        array = [];
+        data.directions = array;
 
-        newData.districts.map(item => {
+        array = [];
+        data.districts.map(item => {
             array.push(item.district)
         });
-        newData.districts = array;
-        array = [];
+        data.districts = array;
 
-        newData.gateTypes.map(item => {
+        array = [];
+        data.gateTypes.map(item => {
             array.push(item.gate_type)
         });
-        newData.gateTypes = array;
-        array = [];
+        data.gateTypes = array;
 
-        newData.objectClasses.map(item => {
+        array = [];
+        data.objectClasses.map(item => {
             array.push(item.object_class)
         });
-        newData.objectClasses = array;
-        array = [];
+        data.objectClasses = array;
 
-        newData.objectTypes.map(item => {
+        array = [];
+        data.objectTypes.map(item => {
             array.push(item.object_type)
         });
-        newData.objectTypes = array;
-        array = [];
+        data.objectTypes = array;
 
-        newData.regions.map(item => {
+        array = [];
+        data.regions.map(item => {
             array.push(item.region)
         });
-        newData.regions = array;
+        data.regions = array;
+
         array = [];
-        return newData;
+        return data;
     },
     normalizeDataForContactForm(data) {
         let array = [];

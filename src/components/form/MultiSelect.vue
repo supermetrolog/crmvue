@@ -27,6 +27,7 @@
     <div class="error-container" v-if="v && v.$error">
       <p>{{ v.$errors[0].$message }}</p>
     </div>
+    <slot />
   </div>
 </template>
 
@@ -136,7 +137,7 @@ export default {
     },
     validate() {
       if (this.v) {
-        this.v.$touch;
+        this.v.$touch();
       }
     },
   },

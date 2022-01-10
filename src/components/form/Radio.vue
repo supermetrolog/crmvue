@@ -20,6 +20,7 @@
     <div class="error-container" v-if="v && v.$error">
       <p>{{ v.$errors[0].$message }}</p>
     </div>
+    <slot />
   </div>
 </template>
 

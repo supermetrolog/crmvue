@@ -1,97 +1,61 @@
 <template>
-  <div class="col">
+  <div class="col mb-2">
     <Loader class="center" v-if="loader" />
+    <Form @submit="onSubmit" class="center" v-if="data">
+      <FormGroup class="mb-1">
+        <Input v-model="form.name" label="Название" class="col-6 pr-1" />
+        <Input
+          v-model="form.area"
+          label="Площадь сделки"
+          class="col-6"
+          maska="##########"
+        />
+      </FormGroup>
+      <FormGroup class="mb-1">
+        <Input
+          v-model="form.clientLegalEntity"
+          label="Юр. лицо клиента в сделке"
+          class="col-6 pr-1"
+        />
+        <Input
+          v-model="form.floorPrice"
+          label="Цена пола"
+          class="col-6"
+          maska="##########"
+        />
+      </FormGroup>
+      <FormGroup class="mb-1">
+        <MultiSelect
+          v-model="form.consultant_id"
+          :v="v$.form.consultant_id"
+          required
+          label="Консультант"
+          class="col-6 pr-1"
+          :options="CONSULTANT_LIST"
+        />
+        <Textarea v-model="form.description" label="Описание" class="col-6" />
+      </FormGroup>
+      <FormGroup class="mb-1">
+        <Input
+          v-model="form.startEventTime"
+          label="Время начала события"
+          type="date"
+          class="col-6 pr-1"
+        />
+        <Input
+          v-model="form.endEventTime"
+          label="Время завершения события"
+          type="date"
+          class="col-6"
+        />
+      </FormGroup>
 
-    <div class="row" v-if="data">
-      <div class="col-12">
-        <button class="btn btn-primary" v-if="!deal" @click="submitForm">
-          создать сделку
-        </button>
-        <button class="btn btn-primary" v-else @click="submitForm">
-          изменить
-        </button>
-      </div>
-      <div class="col-12">
-        <div class="company-form">
-          <form @submit.prevent>
-            <div class="company-form-container">
-              <div class="main-input-list">
-                <div class="input-group row no-gutters">
-                  <div class="col-6 pr-2">
-                    <label class="input-label">Название</label>
-                    <input type="text" v-model.trim="form.name" />
-                  </div>
-                  <div class="col-6">
-                    <label class="input-label">Площадь сделки</label>
-                    <input
-                      type="text"
-                      v-model.number="form.area"
-                      v-maska="'##########'"
-                    />
-                  </div>
-                </div>
-
-                <div class="input-group row no-gutters">
-                  <div class="col-6 pr-2">
-                    <label class="input-label">Юр. лицо клиента в сделке</label>
-                    <input type="text" v-model.trim="form.clientLegalEntity" />
-                  </div>
-                  <div class="col-6">
-                    <label class="input-label">Цена пола</label>
-                    <input
-                      type="text"
-                      v-model.number="form.floorPrice"
-                      v-maska="'##############'"
-                    />
-                  </div>
-                </div>
-                <div class="input-group row no-gutters">
-                  <div class="col-6 pr-2">
-                    <label class="input-label">Время начала события</label>
-                    <input type="date" v-model="form.endEventTime" />
-                  </div>
-                  <div class="col-6">
-                    <label class="input-label">Время завершения события</label>
-                    <input type="date" v-model="form.startEventTime" />
-                  </div>
-                </div>
-                <div class="input-group row no-gutters">
-                  <div class="col-6 pr-2">
-                    <label class="input-label">Описание</label>
-                    <textarea type="text" v-model.trim="form.description" />
-                  </div>
-                  <div class="col-6">
-                    <label class="input-label required" title="Тип сделки">
-                      Консультант
-                    </label>
-                    <Multiselect
-                      v-model="form.consultant_id"
-                      :options="this.CONSULTANT_LIST"
-                      :canDeselect="false"
-                      @change="v$.form.consultant_id.$touch"
-                      :class="{
-                        invalid: v$.form.consultant_id.$error,
-                        valid:
-                          v$.form.consultant_id.$dirty &&
-                          !v$.form.consultant_id.$error,
-                      }"
-                    />
-                    <div
-                      class="col-12 text-center error-container pt-1 pb-0"
-                      v-if="v$.form.consultant_id.$error"
-                    >
-                      <span>{{
-                        v$.form.consultant_id.$errors[0].$message
-                      }}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+      <FormGroup class="mt-4">
+        <Submit class="col-4 mx-auto">
+          {{ deal ? "Сохранить" : "Создать" }}
+        </Submit>
+      </FormGroup>
+    </Form>
   </div>
 </template>
 
@@ -99,13 +63,21 @@
 import { mapGetters, mapActions } from "vuex";
 import useValidate from "@vuelidate/core";
 import { required, helpers } from "@vuelidate/validators";
-import Loader from "@/components/Loader";
-import Multiselect from "@vueform/multiselect";
+import Form from "@/components/form/Form.vue";
+import FormGroup from "@/components/form/FormGroup.vue";
+import Input from "@/components/form/Input.vue";
+import Textarea from "@/components/form/Textarea.vue";
+import MultiSelect from "@/components/form/MultiSelect.vue";
+import Submit from "@/components/form/Submit.vue";
 export default {
   name: "Deal",
   components: {
-    Multiselect,
-    Loader,
+    Form,
+    FormGroup,
+    Input,
+    Textarea,
+    MultiSelect,
+    Submit,
   },
   data() {
     return {
@@ -154,7 +126,7 @@ export default {
   },
   methods: {
     ...mapActions(["FETCH_CONSULTANT_LIST", "FETCH_COMPANY_REQUESTS"]),
-    submitForm() {
+    onSubmit() {
       // console.log(this.deal, this.COMPANY_REQUESTS, this.v$.form.$error);
       this.v$.$validate();
       if (!this.v$.form.$error) {
