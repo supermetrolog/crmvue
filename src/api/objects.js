@@ -23,6 +23,31 @@ export default {
         axios.defaults.headers.common["Authorization"] = BearerToken;
         return data;
     },
+    async getCurrentStepObjectsOneByOne(objectList) {
+        const BearerToken = axios.defaults.headers.common["Authorization"];
+        delete axios.defaults.headers.common["Authorization"];
+
+        const url = `https://pennylane.pro/api/v1/get/index/`;
+        let data = false;
+        let array = [];
+        for (let index = 0; index < objectList.length; index++) {
+            const item = objectList[index];
+            let objectUrl = url + `?id=${item.object_id}&type_id=${item.type_id}`;
+            await axios
+                .get(objectUrl)
+                .then((Response) => {
+                    array.push(SuccessHandler.getData(Response));
+                })
+                .catch((e) => ErrorHandle.setError(e));
+        }
+        if (array.length) {
+            data = array;
+        }
+        console.log(array);
+
+        axios.defaults.headers.common["Authorization"] = BearerToken;
+        return data;
+    },
     async sendObjects(step_id, objects) {
         const url = `timeline/add-objects/${step_id}`;
         let data = false;

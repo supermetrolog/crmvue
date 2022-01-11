@@ -96,7 +96,7 @@
         </div>
       </div>
 
-      <div class="col-12">
+      <div class="col-12 objects-list-container">
         <Loader class="center" v-if="loader" />
         <div
           class="row no-gutters"

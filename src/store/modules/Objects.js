@@ -40,7 +40,8 @@ const Objects = {
             currentObjects.map((item) => {
                 array.push(item.offer_id)
             });
-            const objects = await api.objects.getCurrentStepObjects(array);
+            // const objects = await api.objects.getCurrentStepObjects(array);
+            const objects = await api.objects.getCurrentStepObjectsOneByOne(currentObjects);
             array = [];
             currentObjects.map((item) => {
                 objects.map((object) => {
@@ -61,7 +62,9 @@ const Objects = {
             preventStepObjects.map((item) => {
                 array.push(item.offer_id)
             });
-            const objects = await api.objects.getCurrentStepObjects(array);
+            // const objects = await api.objects.getCurrentStepObjects(array);
+            const objects = await api.objects.getCurrentStepObjectsOneByOne(preventStepObjects);
+            console.warn(objects);
             array = [];
             let currentStepObject = null;
             preventStepObjects.map((item) => {
@@ -75,6 +78,8 @@ const Objects = {
                     }
                 })
             });
+            console.warn("Array:", objects);
+
             context.commit('updateAllObjectForPreventStep', array);
         },
         async FETCH_ALL_OBJECTS(context, currentStepNumber) {

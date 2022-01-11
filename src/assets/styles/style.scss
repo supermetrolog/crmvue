@@ -2719,6 +2719,9 @@
             background-color: $color_light;
             z-index: 12;
         }
+        &-list-container {
+            min-height: 250px;
+        }
         &-item {
             &-table {
                 &.selected {
