@@ -7,6 +7,7 @@
             <div class="timeline-actions row">
               <Deal
                 :step="step"
+                :disabled="disabled"
                 :request_id="+requestId"
                 :loaderForStep="loaderForStep"
                 @updateItem="clickUpdateStep"
@@ -18,6 +19,7 @@
           <div class="col-12">
             <Objects
               :step="step"
+              :disabled="disabled"
               @updated="updatedObjects"
               @updateItem="clickUpdateStep"
             />
@@ -32,17 +34,16 @@
 import Objects from "../../objects/Objects.vue";
 import { mapGetters } from "vuex";
 import Deal from "../steps/Deal.vue";
+import { MixinStepActions } from "../mixins";
 
 export default {
   name: "DealActions",
+  mixins: [MixinStepActions],
   components: {
     Objects,
     Deal,
   },
   props: {
-    step: {
-      type: [Object, Boolean],
-    },
     loaderForStep: {
       type: [Number, Boolean],
     },
@@ -54,14 +55,10 @@ export default {
     },
   },
   methods: {
-    clickUpdateStep(data, flag, fn) {
-      this.$emit("updateStep", data, flag, fn);
-    },
     updatedObjects(data, fn) {
       this.$emit("updatedObjects", data, true, fn);
     },
   },
-  emits: ["updateStep", "updatedObjects"],
 };
 </script>
 

@@ -134,12 +134,17 @@ export default {
         return "col-4";
       },
     },
+    disabled: {
+      type: Boolean,
+      default: true,
+    },
   },
   methods: {
     toggleExtraInfoVisible() {
       this.extraInfoVisible = !this.extraInfoVisible;
     },
     clickSelectObject() {
+      if (this.disabled) return;
       setTimeout(() => {
         this.$refs.comment.focus();
       });

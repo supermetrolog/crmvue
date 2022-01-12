@@ -13,6 +13,7 @@
           <div class="col-12">
             <Objects
               :step="step"
+              :disabled="disabled"
               :contactForSendMessage="contactForSendMessage"
               @updated="updatedObjects"
               @updateItem="clickUpdateStep"
@@ -27,33 +28,20 @@
 <script>
 // import Offers from "../steps/Offers.vue";
 import Objects from "../../objects/Objects.vue";
+import { MixinStepActions } from "../mixins";
 
 export default {
   name: "OffersActions",
+  mixins: [MixinStepActions],
   components: {
     // Offers,
     Objects,
   },
-  props: {
-    step: {
-      type: [Object, Boolean],
-    },
-    currentRequest: {
-      type: Object,
-    },
-    contactForSendMessage: {
-      type: Array,
-    },
-  },
   methods: {
-    clickUpdateStep(data, flag) {
-      this.$emit("updateStep", data, flag);
-    },
     updatedObjects(data) {
       this.$emit("updatedObjects", data, true);
     },
   },
-  emits: ["updateStep", "updatedObjects"],
 };
 </script>
 

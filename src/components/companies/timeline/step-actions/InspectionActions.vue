@@ -7,6 +7,7 @@
             <div class="timeline-actions row">
               <Inspection
                 :step="step"
+                :disabled="disabled"
                 @updateItem="clickUpdateStep"
                 :contactForSendMessage="contactForSendMessage"
               />
@@ -18,6 +19,7 @@
           <div class="col-12">
             <Objects
               :step="step"
+              :disabled="disabled"
               :contactForSendMessage="contactForSendMessage"
               @updated="updatedObjects"
               @updateItem="clickUpdateStep"
@@ -33,33 +35,23 @@
 import Inspection from "../steps/Inspection.vue";
 import Objects from "../../objects/Objects.vue";
 import { mapGetters } from "vuex";
+import { MixinStepActions } from "../mixins";
 
 export default {
   name: "InspectionActions",
+  mixins: [MixinStepActions],
   components: {
     Inspection,
     Objects,
-  },
-  props: {
-    step: {
-      type: [Object, Boolean],
-    },
-    contactForSendMessage: {
-      type: Array,
-    },
   },
   computed: {
     ...mapGetters(["CURRENT_STEP_OBJECTS"]),
   },
   methods: {
-    clickUpdateStep(data, flag) {
-      this.$emit("updateStep", data, flag);
-    },
     updatedObjects(data, fn = null) {
       this.$emit("updatedObjects", data, false, fn);
     },
   },
-  emits: ["updateStep", "updatedObjects"],
 };
 </script>
 

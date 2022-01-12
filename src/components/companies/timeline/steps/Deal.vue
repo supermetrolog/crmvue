@@ -69,8 +69,10 @@ import Input from "@/components/form/Input.vue";
 import Textarea from "@/components/form/Textarea.vue";
 import MultiSelect from "@/components/form/MultiSelect.vue";
 import Submit from "@/components/form/Submit.vue";
+import { MixinSteps } from "../mixins";
 export default {
   name: "Deal",
+  mixins: [MixinSteps],
   components: {
     Form,
     FormGroup,
@@ -81,7 +83,6 @@ export default {
   },
   data() {
     return {
-      data: this.step,
       loader: this.loaderForStep,
       v$: useValidate(),
       form: {
@@ -98,17 +99,11 @@ export default {
     };
   },
   props: {
-    step: {
-      type: Object,
-    },
     request_id: {
       type: Number,
     },
     loaderForStep: {
       type: [Number, Boolean],
-    },
-    disabled: {
-      type: Boolean,
     },
   },
   computed: {
@@ -158,9 +153,6 @@ export default {
     this.loader = this.loaderForStep;
   },
   watch: {
-    step() {
-      this.data = this.step;
-    },
     deal() {
       this.setData();
     },
@@ -168,7 +160,6 @@ export default {
       this.loader = this.loaderForStep;
     },
   },
-  emits: ["updateItem"],
 };
 </script>
 

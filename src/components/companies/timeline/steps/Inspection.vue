@@ -131,8 +131,10 @@ import { mapGetters } from "vuex";
 import CustomButton from "@/components/CustomButton.vue";
 import { VueDraggableNext } from "vue-draggable-next";
 import Ymap from "@/components/Ymap.vue";
+import { MixinSteps } from "../mixins";
 export default {
   name: "Inspection",
+  mixins: [MixinSteps],
   components: {
     Ymap,
     draggable: VueDraggableNext,
@@ -140,20 +142,13 @@ export default {
   },
   data() {
     return {
-      data: this.step,
       currentStepObjects: [],
       userLocation: false,
     };
   },
   props: {
-    step: {
-      type: Object,
-    },
     contactForSendMessage: {
       type: Array,
-    },
-    disabled: {
-      type: Boolean,
     },
   },
   computed: {
@@ -228,14 +223,10 @@ export default {
     this.getLocation();
   },
   watch: {
-    step() {
-      this.data = this.step;
-    },
     CURRENT_STEP_OBJECTS() {
       this.currentStepObjects = [...this.CURRENT_STEP_OBJECTS];
     },
   },
-  emits: ["updateItem"],
 };
 </script>
 

@@ -6,6 +6,7 @@
           <div class="col-12">
             <Objects
               :step="step"
+              :disabled="disabled"
               :contactForSendMessage="contactForSendMessage"
               @updated="updatedObjects"
               @updateItem="clickUpdateStep"
@@ -19,29 +20,19 @@
 
 <script>
 import Objects from "../../objects/Objects.vue";
+import { MixinStepActions } from "../mixins";
 
 export default {
   name: "InterestActions",
+  mixins: [MixinStepActions],
   components: {
     Objects,
   },
-  props: {
-    step: {
-      type: [Object, Boolean],
-    },
-    contactForSendMessage: {
-      type: Array,
-    },
-  },
   methods: {
-    clickUpdateStep(data, flag) {
-      this.$emit("updateStep", data, flag);
-    },
     updatedObjects(data, fn = null) {
       this.$emit("updatedObjects", data, true, fn);
     },
   },
-  emits: ["updateStep", "updatedObjects"],
 };
 </script>
 

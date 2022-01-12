@@ -5,7 +5,11 @@
         <div class="row px-2 pb-2">
           <div class="col-12">
             <div class="timeline-actions row">
-              <Feedback :step="step" @updateItem="clickUpdateStep" />
+              <Feedback
+                :step="step"
+                @updateItem="clickUpdateStep"
+                :disabled="disabled"
+              />
             </div>
           </div>
         </div>
@@ -14,6 +18,7 @@
           <div class="col-12">
             <Objects
               :step="step"
+              :disabled="disabled"
               :contactForSendMessage="contactForSendMessage"
               @updated="updatedObjects"
               @updateItem="clickUpdateStep"
@@ -28,30 +33,20 @@
 <script>
 import Feedback from "../steps/Feedback.vue";
 import Objects from "../../objects/Objects.vue";
+import { MixinStepActions } from "../mixins";
 
 export default {
   name: "FeedbackActions",
+  mixins: [MixinStepActions],
   components: {
     Feedback,
     Objects,
   },
-  props: {
-    step: {
-      type: [Object, Boolean],
-    },
-    contactForSendMessage: {
-      type: Array,
-    },
-  },
   methods: {
-    clickUpdateStep(data, flag) {
-      this.$emit("updateStep", data, flag);
-    },
     updatedObjects(data, fn) {
       this.$emit("updatedObjects", data, false, fn);
     },
   },
-  emits: ["updateStep", "updatedObjects"],
 };
 </script>
 

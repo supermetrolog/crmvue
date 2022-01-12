@@ -87,31 +87,23 @@
 
 <script>
 import CustomButton from "@/components/CustomButton.vue";
+import { MixinSteps } from "../mixins";
 export default {
   name: "Meeting",
+  mixins: [MixinSteps],
   components: {
     CustomButton,
   },
   data() {
     return {
-      data: null,
       callBackDate: null,
     };
-  },
-  props: {
-    step: {
-      type: Object,
-    },
-    disabled: {
-      type: Boolean,
-    },
   },
   mounted() {
     this.setData();
   },
   methods: {
     setData() {
-      this.data = this.step;
       if (this.data.date) {
         this.callBackDate = this.data.date.substr(0, 10);
       }

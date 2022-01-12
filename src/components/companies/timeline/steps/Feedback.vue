@@ -52,26 +52,18 @@
 
 <script>
 import { FeedbackList } from "@/const/Const.js";
+import { MixinSteps } from "../mixins";
 export default {
   name: "Feedback",
+  mixins: [MixinSteps],
   data() {
     return {
       feedbackWayList: FeedbackList.get("param"),
       ways: [],
-      data: null,
       actionsVisible: false,
     };
   },
-  props: {
-    step: {
-      type: Object,
-    },
-    disabled: {
-      type: Boolean,
-    },
-  },
   mounted() {
-    this.data = this.step;
     this.data.timelineStepFeedbackways.map((item) => {
       this.ways.push(item.way);
     });
@@ -107,12 +99,6 @@ export default {
       this.actionsVisible = true;
     },
   },
-  watch: {
-    step() {
-      this.data = this.step;
-    },
-  },
-  emits: ["updateItem"],
 };
 </script>
 

@@ -29,36 +29,16 @@
 </template>
 
 <script>
+import { MixinSteps } from "../mixins";
 export default {
   name: "Offers",
-  data() {
-    return {
-      data: null,
-    };
-  },
-  props: {
-    step: {
-      type: Object,
-    },
-    disabled: {
-      type: Boolean,
-    },
-  },
-  mounted() {
-    this.data = this.step;
-  },
+  mixins: [MixinSteps],
   methods: {
     clickNegative() {
       this.data.negative = 1;
       this.$emit("updateItem", this.data);
     },
   },
-  watch: {
-    step() {
-      this.data = this.step;
-    },
-  },
-  emits: ["updateItem"],
 };
 </script>
 

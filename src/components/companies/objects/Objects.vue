@@ -6,39 +6,53 @@
           <div class="col-8 px-2">
             <div class="timeline-actions row no-gutters">
               <div class="col-2">
-                <button
-                  class="action success"
+                <CustomButton
                   title="Отправить презентации с объектами клиенту"
-                  @click.prevent="sendObjects"
-                  :disabled="
-                    !selectedObjects.length || !contactForSendMessage.length
-                  "
+                  :options="{
+                    btnClass: 'success',
+                    btnVisible: false,
+                    disabled:
+                      !selectedObjects.length || !contactForSendMessage.length,
+                  }"
+                  @confirm="sendObjects"
                   v-if="step.number == 1"
                 >
-                  <i class="fas fa-paper-plane"></i>
-                  <span class="ml-1">Отправить</span>
-                </button>
-                <button
-                  class="action primary"
-                  @click.prevent="sendObjects(false)"
-                  :disabled="!selectedObjects.length"
+                  <template #btnContent>
+                    <i class="fas fa-paper-plane"></i>
+                    <span class="ml-1">Отправить</span>
+                  </template>
+                </CustomButton>
+                <CustomButton
+                  title="Отправить презентации с объектами клиенту"
+                  :options="{
+                    btnClass: 'primary',
+                    btnVisible: false,
+                    disabled: !selectedObjects.length,
+                  }"
+                  @confirm="sendObjects"
                   v-else
                 >
-                  <i class="fas fa-check"></i>
-                  <span class="ml-1">Готово</span>
-                </button>
+                  <template #btnContent>
+                    <i class="fas fa-check"></i>
+                    <span class="ml-1">Готово</span>
+                  </template>
+                </CustomButton>
               </div>
               <div class="col-2 ml-1" v-if="step.number == 3">
-                <button
-                  class="action success"
-                  @click.prevent="sendObjects"
-                  :disabled="
-                    !selectedObjects.length || !contactForSendMessage.length
-                  "
+                <CustomButton
+                  :options="{
+                    btnClass: 'success',
+                    btnVisible: false,
+                    disabled:
+                      !selectedObjects.length || !contactForSendMessage.length,
+                  }"
+                  @confirm="sendObjects"
                 >
-                  <i class="fas fa-paper-plane"></i>
-                  <span class="ml-1">Отправить</span>
-                </button>
+                  <template #btnContent>
+                    <i class="fas fa-paper-plane"></i>
+                    <span class="ml-1">Отправить</span>
+                  </template>
+                </CustomButton>
               </div>
               <div class="col-4">
                 <CustomButton
@@ -47,6 +61,7 @@
                     btnActive: step.negative,
                     btnClass: 'danger',
                     btnVisible: false,
+                    disabled,
                   }"
                   @confirm="selectNegative"
                 >
@@ -108,6 +123,7 @@
           <template v-if="viewMode">
             <ObjectsItem
               v-for="object in currentStepObjects"
+              :disabled="disabled"
               :object="object"
               :selectedObjects="selectedObjects"
               :key="object.id"
@@ -122,6 +138,7 @@
                 <tbody>
                   <ObjectsItemTable
                     v-for="object in currentStepObjects"
+                    :disabled="disabled"
                     :object="object"
                     :selectedObjects="selectedObjects"
                     :key="object.id"
@@ -142,6 +159,7 @@
           <template v-if="viewMode">
             <ObjectsItem
               v-for="object in allObjects"
+              :disabled="disabled"
               :object="object"
               :selectedObjects="selectedObjects"
               :key="object.id"
@@ -161,6 +179,7 @@
                   <tbody>
                     <ObjectsItemTable
                       v-for="object in allObjects"
+                      :disabled="disabled"
                       :object="object"
                       :selectedObjects="selectedObjects"
                       :key="object.id"
@@ -223,6 +242,10 @@ export default {
       default: () => {
         return [];
       },
+    },
+    disabled: {
+      type: Boolean,
+      default: true,
     },
   },
   computed: {
@@ -439,7 +462,6 @@ export default {
     this.clearObjects();
     this.RESET_CURRENT_STEP_OBJECTS();
     this.RETURN_OBJECTS_CURRENT_PAGE_TO_FIRST();
-    console.log("UNMOUNT *****************************************");
   },
   watch: {
     // step(before, after) {

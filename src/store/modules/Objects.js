@@ -12,7 +12,6 @@ const Objects = {
             state.currentStepObjects = objects;
         },
         updateAllObjects(state, data) {
-            console.log("UPDATE ALL OBJECTS", data);
 
             if (Array.isArray(state.allObjects) && Array.isArray(data.offers) && state.objectsCurrentPage > 1) {
                 state.allObjects = state.allObjects.concat(data.offers);
@@ -23,7 +22,6 @@ const Objects = {
             state.objectPagination = data.pagination;
         },
         updateAllObjectForPreventStep(state, objects) {
-            console.log("UPDATE ALL OBJECTS", objects);
             state.allObjects = objects;
         },
         incrimentCurrentPage(state) {

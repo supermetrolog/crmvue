@@ -39,8 +39,10 @@ import CompanyRequestItem from "../../companies/request/CompanyRequestItem.vue";
 import Loader from "@/components/Loader";
 import CompanyRequestForm from "../../forms/company-request-form/CompanyRequestForm.vue";
 import { mapGetters, mapActions } from "vuex";
+import { MixinStepActions } from "../mixins";
 export default {
   name: "MeetingActions",
+  mixins: [MixinStepActions],
   components: {
     Meeting,
     CompanyRequestItem,
@@ -52,14 +54,6 @@ export default {
       companyRequestFormVisible: false,
       loaderCompanyRequests: false,
     };
-  },
-  props: {
-    step: {
-      type: [Object, Boolean],
-    },
-    disabled: {
-      type: Boolean,
-    },
   },
   computed: {
     ...mapGetters(["COMPANY_REQUESTS"]),
@@ -74,9 +68,6 @@ export default {
   },
   methods: {
     ...mapActions(["FETCH_COMPANY_REQUESTS"]),
-    clickUpdateStep(data, flag) {
-      this.$emit("updateStep", data, flag);
-    },
     updatedRequest() {
       this.getCompanyRequests();
       console.log("UPDATED");

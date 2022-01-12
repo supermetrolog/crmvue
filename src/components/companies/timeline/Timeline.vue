@@ -145,10 +145,6 @@ export default {
     ...mapGetters(["TIMELINE", "COMPANY", "COMPANY_CONTACTS", "THIS_USER"]),
     selectedStep() {
       if (this.TIMELINE.timelineSteps) {
-        console.log(
-          "SELECTED STEP: ",
-          this.TIMELINE.timelineSteps[this.$route.query.step].number
-        );
         return this.TIMELINE.timelineSteps[this.$route.query.step];
       }
       return false;
