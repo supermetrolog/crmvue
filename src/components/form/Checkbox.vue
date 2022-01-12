@@ -3,7 +3,12 @@
     <label class="form-item-label" :class="{ required: required }" for="fuck">
       {{ mode == "" ? label : "" }}
       <div v-if="options.length">
-        <label v-for="option in options" :key="option[0]">
+        <label
+          v-for="option in options"
+          :key="option[0]"
+          class="clicked-label"
+          :class="{ checked: field.includes(option[0]) }"
+        >
           <input
             type="checkbox"
             v-model="field"
@@ -80,6 +85,7 @@ export default {
     onChange() {
       this.validate();
       this.$emit("update:modelValue", this.field);
+      this.$emit("change", this.field);
     },
     validate() {
       if (this.v) {

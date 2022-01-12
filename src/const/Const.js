@@ -68,6 +68,14 @@ export const Timeline = new Map(
 export const FeedbackList = new Map(
     [
         ['param', [
+            // [0, { name: "Email", icon: "fas fa-warehouse" }],
+            // [0, { name: "Звонок: Я", icon: "fas fa-warehouse" }],
+            // [0, { name: "Звонок: Он", icon: "fas fa-warehouse" }],
+            // [0, { name: "WhatsApp", icon: "fas fa-warehouse" }],
+            // [0, { name: "Viber", icon: "fas fa-warehouse" }],
+            // [0, { name: "SMS", icon: "fas fa-warehouse" }],
+            // [0, { name: "Telegram", icon: "fas fa-warehouse" }],
+
             [0, "Email"],
             [1, "Звонок: Я"],
             [2, "Звонок: Он"],

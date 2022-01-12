@@ -1406,6 +1406,21 @@
                     margin: 0;
                     margin-right: 4px;
                 }
+                &.text {
+                    input {
+                        display: none;
+                    }
+                    label.clicked-label {
+                        text-transform: none;
+                        border: 1px solid $color_primary;
+                        color: $color_primary;
+                        padding: 3px;
+                        &.checked {
+                            background-color: $color_primary;
+                            color: $color_light;
+                        }
+                    }
+                }
                 &.icons {
                     .extra-label {
                         padding: 5px;

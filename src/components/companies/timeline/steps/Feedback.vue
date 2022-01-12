@@ -1,48 +1,36 @@
 <template>
   <div class="col company-form" v-if="data">
     <div class="row no-gutters mb-0" v-if="data.timelineStepObjects.length">
-      <div class="col">
+      <div class="col-12">
         <p>- Отметить каким способом была получена обратная связь</p>
-        <div class="checkbox-group no-input">
-          <div
-            class="d-inline-block mr-1"
-            v-for="feedbackWayItem of feedbackWayList"
-            :key="feedbackWayItem[0]"
-          >
-            <input
-              class="checkbox ml-0 d-none"
-              type="checkbox"
+      </div>
+      <div class="col-7 pp">
+        <div class="row">
+          <div class="col-9 pr-0">
+            <Checkbox
               v-model="ways"
-              :value="feedbackWayItem[0]"
-              :id="'checkbox-feedbackWay' + feedbackWayItem[0]"
+              :options="feedbackWayList"
+              mode="text"
+              @change="onChange"
             />
-            <label
-              class="
-                action
-                feedback-way
-                p-1
-                justify-content-center
-                text-center
-                m-0
-              "
-              :class="{
-                active: ways.includes(feedbackWayItem[0]),
-              }"
-              :for="'checkbox-feedbackWay' + feedbackWayItem[0]"
-              @click="inputWay"
-            >
-              <span class="align-self-center">
-                {{ feedbackWayItem[1] }}
-              </span>
-            </label>
           </div>
-          <div class="d-inline-block" v-if="actionsVisible">
-            <button class="btn-action text-success" @click="confirm">
-              <i class="fas fa-check"></i>
-            </button>
-            <button class="btn-action text-danger" @click="cancel">
-              <i class="fas fa-times"></i>
-            </button>
+          <div class="col-3 p-0 text-left">
+            <template v-if="actionsVisible">
+              <button
+                id="btn-feedback"
+                class="btn-action text-success p-0 d-inline"
+                @click="confirm"
+              >
+                <i class="fas fa-check"></i>
+              </button>
+              <button
+                id="btn-feedback"
+                class="btn-action text-danger p-0"
+                @click="cancel"
+              >
+                <i class="fas fa-times"></i>
+              </button>
+            </template>
           </div>
         </div>
       </div>
@@ -51,14 +39,19 @@
 </template>
 
 <script>
-import { FeedbackList } from "@/const/Const.js";
+import { FeedbackList, ObjectTypeList } from "@/const/Const.js";
 import { MixinSteps } from "../mixins";
+import Checkbox from "@/components/form/Checkbox.vue";
 export default {
   name: "Feedback",
   mixins: [MixinSteps],
+  components: {
+    Checkbox,
+  },
   data() {
     return {
       feedbackWayList: FeedbackList.get("param"),
+      objectTypeListPlot: ObjectTypeList.get("plot"),
       ways: [],
       actionsVisible: false,
     };
@@ -74,7 +67,9 @@ export default {
       this.data.timelineStepFeedbackways.map((item) => {
         this.ways.push(item.way);
       });
-      this.actionsVisible = false;
+      setTimeout(() => {
+        this.actionsVisible = false;
+      }, 0);
     },
     confirm() {
       this.data.timelineStepFeedbackways = [];
@@ -95,12 +90,15 @@ export default {
       this.$emit("updateItem", this.data, true);
       this.actionsVisible = false;
     },
-    inputWay() {
+    onChange() {
       this.actionsVisible = true;
     },
   },
 };
 </script>
 
-<style>
+<style lang="scss">
+#btn-feedback {
+  padding: 3px 5px !important;
+}
 </style>
