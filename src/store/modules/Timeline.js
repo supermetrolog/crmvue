@@ -2,16 +2,13 @@
 import api from "@/api/api"
 const Timeline = {
     state: {
-        timeline: [],
+        timeline: null,
+        timelineList: [],
     },
     mutations: {
         updateTimeline(state, data) {
-            //Временное решение пока один TImeline
-            if (data.length) {
-                state.timeline = data[0];
-            } else {
-                state.timeline = false;
-            }
+            state.timeline = data.timeline;
+            state.timelineList = data.timelineList;
         },
         updateStep(state, data) {
             console.log("UPDATED");

@@ -144,7 +144,7 @@ export default {
   computed: {
     ...mapGetters(["TIMELINE", "COMPANY", "COMPANY_CONTACTS", "THIS_USER"]),
     selectedStep() {
-      if (this.TIMELINE.timelineSteps) {
+      if (this.TIMELINE) {
         return this.TIMELINE.timelineSteps[this.$route.query.step];
       }
       return false;
