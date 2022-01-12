@@ -66,6 +66,9 @@ export default {
     step: {
       type: Object,
     },
+    disabled: {
+      type: Boolean,
+    },
   },
   mounted() {
     this.data = this.step;

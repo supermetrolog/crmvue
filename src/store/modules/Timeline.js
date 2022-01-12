@@ -24,9 +24,8 @@ const Timeline = {
         }
     },
     actions: {
-        async FETCH_TIMELINE(context, request_id) {
-            const user = JSON.parse(localStorage.getItem('user')); // Временно
-            const timeline = await api.timeline.getTimeline(user.id, request_id);
+        async FETCH_TIMELINE(context, data) {
+            const timeline = await api.timeline.getTimeline(data.consultant_id, data.request_id);
             context.commit('updateTimeline', timeline)
         },
         async UPDATE_STEP(context, newStep) {

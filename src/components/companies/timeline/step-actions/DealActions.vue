@@ -50,15 +50,15 @@ export default {
   computed: {
     ...mapGetters(["CURRENT_STEP_OBJECTS"]),
     requestId() {
-      return this.$route.query.timeline;
+      return this.$route.query.request_id;
     },
   },
   methods: {
     clickUpdateStep(data, flag, fn) {
       this.$emit("updateStep", data, flag, fn);
     },
-    updatedObjects(data) {
-      this.$emit("updatedObjects", data, true);
+    updatedObjects(data, fn) {
+      this.$emit("updatedObjects", data, true, fn);
     },
   },
   emits: ["updateStep", "updatedObjects"],

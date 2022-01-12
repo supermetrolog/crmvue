@@ -271,7 +271,7 @@ export default {
       console.log("UPDATED");
     },
     timeline() {
-      if (this.$route.query.timeline) {
+      if (this.$route.query.request_id) {
         this.timelineVisible = true;
       } else {
         this.timelineVisible = false;

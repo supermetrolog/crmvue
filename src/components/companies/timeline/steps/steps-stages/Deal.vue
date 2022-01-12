@@ -34,7 +34,7 @@ export default {
     ...mapGetters(["COMPANY_REQUESTS"]),
     deal() {
       return this.COMPANY_REQUESTS.find(
-        (item) => item.id == this.$route.query.timeline
+        (item) => item.id == this.$route.query.request_id
       ).deal;
     },
   },

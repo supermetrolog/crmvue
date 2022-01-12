@@ -152,6 +152,9 @@ export default {
     contactForSendMessage: {
       type: Array,
     },
+    disabled: {
+      type: Boolean,
+    },
   },
   computed: {
     ...mapGetters(["CURRENT_STEP_OBJECTS"]),

@@ -835,6 +835,15 @@
                     color: $color_light!important;
                 }
             }
+            &.dark {
+                color: $color_dark;
+                border: 1px solid $color_dark;
+                &.active {
+                    background-color: $color_dark!important;
+                    border: 1px solid $color_dark!important;
+                    color: $color_light!important;
+                }
+            }
             &.success {
                 color: $color_success;
                 border: 1px solid $color_success;

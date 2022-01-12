@@ -37,8 +37,8 @@ export default {
     clickUpdateStep(data, flag) {
       this.$emit("updateStep", data, flag);
     },
-    updatedObjects(data) {
-      this.$emit("updatedObjects", data, true);
+    updatedObjects(data, fn = null) {
+      this.$emit("updatedObjects", data, true, fn);
     },
   },
   emits: ["updateStep", "updatedObjects"],

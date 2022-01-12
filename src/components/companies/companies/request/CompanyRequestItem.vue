@@ -195,6 +195,7 @@ import {
   DealTypeList,
 } from "@/const/Const.js";
 import Progress from "@/components/Progress.vue";
+import { mapGetters } from "vuex";
 export default {
   name: "CompanyRequestItem",
   components: {
@@ -226,6 +227,7 @@ export default {
     },
   },
   computed: {
+    ...mapGetters(["THIS_USER"]),
     dealType() {
       return this.dealTypeList[this.request.dealType].label;
     },
@@ -253,7 +255,13 @@ export default {
       this.extraInfoVisible = false;
     },
     clickTimeline() {
-      this.$router.push({ query: { timeline: this.request.id } });
+      this.$router.push({
+        query: {
+          request_id: this.request.id,
+          consultant_id: this.THIS_USER.id,
+          step: 0,
+        },
+      });
     },
     getRegion(region, index) {
       if (index != this.request.regions.length - 1) {

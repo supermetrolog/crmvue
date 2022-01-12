@@ -87,11 +87,6 @@ export default {
       type: Object,
     },
   },
-  computed: {
-    disabled() {
-      return this.$route.query.step == this.data.number ? false : true;
-    },
-  },
   methods: {
     clickSelectStep() {
       this.$emit("clickItem", this.data);

@@ -22,7 +22,12 @@
         </div>
         <div class="row no-gutters inner" ref="timeline">
           <Loader class="center" v-if="loader" />
-
+          <div class="col-12 mb-4" @click="changeTimeline(3)">
+            <button class="btn btn-primary">user_id = 3</button>
+          </div>
+          <div class="col-12 mb-4" @click="changeTimeline(10)">
+            <button class="btn btn-primary">user_id = 10</button>
+          </div>
           <div class="timeline col-12" v-if="!loader">
             <TimelineItem
               v-for="(step, idx) in this.TIMELINE.timelineSteps"
@@ -36,10 +41,10 @@
           </div>
         </div>
       </div>
-      <div class="col-8" v-if="!selectedStep && $route.query.step">
+      <div class="col-8" v-if="(!selectedStep && $route.query.step) || loader">
         <Loader class="center" />
       </div>
-      <div class="col-7 box step-actions" v-if="selectedStep">
+      <div class="col-7 box step-actions" v-if="selectedStep && !loader">
         <div class="row" v-if="selectedStep.number != 0">
           <div class="col-3 mb-2">
             <div class="company-form company-request-form">
@@ -71,13 +76,17 @@
             :step="selectedStep"
             :contactForSendMessage="contactForSendMessage"
             :loaderForStep="loaderForStep"
+            :disabled="disabled"
             @updatedObjects="updatedObjects"
             @updateStep="clickUpdateStep"
           >
           </component>
         </transition>
       </div>
-      <div class="col-2 box timeline-extra-block" v-if="selectedStep">
+      <div
+        class="col-2 box timeline-extra-block"
+        v-if="selectedStep && !loader"
+      >
         <ExtraBlock :step="selectedStep" />
       </div>
     </div>
@@ -133,9 +142,13 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["TIMELINE", "COMPANY", "COMPANY_CONTACTS"]),
+    ...mapGetters(["TIMELINE", "COMPANY", "COMPANY_CONTACTS", "THIS_USER"]),
     selectedStep() {
       if (this.TIMELINE.timelineSteps) {
+        console.log(
+          "SELECTED STEP: ",
+          this.TIMELINE.timelineSteps[this.$route.query.step].number
+        );
         return this.TIMELINE.timelineSteps[this.$route.query.step];
       }
       return false;
@@ -143,14 +156,20 @@ export default {
     stepActionsName() {
       return this.stepParam[this.$route.query.step][1].stepName + "Actions";
     },
+    disabled() {
+      return this.$route.query.consultant_id != this.THIS_USER.id;
+    },
   },
   methods: {
     ...mapActions(["FETCH_TIMELINE", "UPDATE_STEP"]),
-    async updatedObjects(data, goToNext = false) {
+    async updatedObjects(data, goToNext = false, fn = null) {
       this.loaderForStep = data.id;
       await this.getTimeline();
       if (goToNext && data.number != 7) {
-        this.nextStep();
+        await this.nextStep();
+      }
+      if (fn) {
+        fn();
       }
       this.loaderForStep = false;
     },
@@ -170,9 +189,9 @@ export default {
     },
     async nextStep() {
       let query = {
-        timeline: this.$route.query.timeline,
-        step: +this.$route.query.step + 1,
+        ...this.$route.query,
       };
+      query.step++;
       await this.$router.push({ query: query });
       this.scrollToSelectedStep();
     },
@@ -190,10 +209,8 @@ export default {
     },
 
     async clickStep(step) {
-      this.favoritesVisible = false;
-      // console.error(this.$refs.steps.$el);
       let query = {
-        timeline: this.$route.query.timeline,
+        ...this.$route.query,
       };
       if (step.number != this.$route.query.step) {
         query.step = step.number;
@@ -202,24 +219,27 @@ export default {
       this.scrollToSelectedStep();
     },
     async getTimeline() {
-      await this.FETCH_TIMELINE(this.$route.query.timeline);
+      await this.FETCH_TIMELINE(this.$route.query);
       if (this.TIMELINE === false) {
         this.timelineNotFoundFlag = true;
       }
+    },
+    async changeTimeline(consultant_id) {
+      let query = {
+        ...this.$route.query,
+      };
+      query.consultant_id = consultant_id;
+      query.step = 0;
+      await this.$router.push({ query: query });
+      // this.getTimeline();
     },
     getCompanyContacts() {
       if (this.companyContacts) {
         return;
       }
-      console.log("CONTACTS", this.COMPANY_CONTACTS);
-      console.log("COMPANY", this.COMPANY[0].contacts);
-      // this.companyContacts = Utils.normalizeContactsForMultiselect(
-      //   this.COMPANY[0].contacts
-      // );
       this.companyContacts = Utils.normalizeContactsForMultiselect(
         this.COMPANY_CONTACTS
       );
-      // console.warn(this.companyContacts);
     },
   },
   async created() {
@@ -230,6 +250,15 @@ export default {
     this.$nextTick(() => {
       this.scrollToSelectedStep();
     });
+  },
+  watch: {
+    async $route(after, before) {
+      if (before.query.consultant_id != after.query.consultant_id) {
+        this.loader = true;
+        await this.getTimeline();
+        this.loader = false;
+      }
+    },
   },
 };
 </script>

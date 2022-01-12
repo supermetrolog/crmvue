@@ -13,6 +13,7 @@
             <div class="timeline-actions row">
               <Meeting
                 :step="step"
+                :disabled="disabled"
                 @updateItem="clickUpdateStep"
                 @openRequestFormForUpdate="companyRequestFormVisible = true"
               />
@@ -56,13 +57,16 @@ export default {
     step: {
       type: [Object, Boolean],
     },
+    disabled: {
+      type: Boolean,
+    },
   },
   computed: {
     ...mapGetters(["COMPANY_REQUESTS"]),
     currentRequest() {
       if (Array.isArray(this.COMPANY_REQUESTS)) {
         return this.COMPANY_REQUESTS.find(
-          (item) => item.id == this.$route.query.timeline
+          (item) => item.id == this.$route.query.request_id
         );
       }
       return false;

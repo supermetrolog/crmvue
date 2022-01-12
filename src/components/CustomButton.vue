@@ -7,9 +7,11 @@
           active: optionsLocale.btnActive,
         },
         optionsLocale.btnClass,
+        { disabled: optionsLocale.disabled },
       ]"
       @click="clickBtn"
       v-if="!optionsLocale.extraVisible || optionsLocale.btnVisible"
+      :title="optionsLocale.disabled ? 'нет доступа' : ''"
     >
       <slot name="btnContent"></slot>
     </button>
@@ -52,6 +54,7 @@ export default {
         btnVisible: true,
         btnClass: "",
         defaultBtn: false,
+        disabled: false,
         ...this.options,
       },
     };
@@ -63,6 +66,9 @@ export default {
   },
   methods: {
     clickBtn() {
+      if (this.optionsLocale.disabled) {
+        return;
+      }
       if (this.optionsLocale.btnActive || this.optionsLocale.defaultBtn) {
         return this.$emit("confirm");
       }
@@ -77,6 +83,9 @@ export default {
       this.comment = null;
     },
     confirm() {
+      if (this.optionsLocale.disabled) {
+        return;
+      }
       this.optionsLocale.extraVisible = false;
       this.$emit("confirm", this.comment);
       this.comment = null;

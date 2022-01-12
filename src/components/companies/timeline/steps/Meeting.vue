@@ -3,7 +3,7 @@
     <div class="row no-gutters" v-if="data.additional != 1">
       <div class="col-4 pr-1">
         <CustomButton
-          :options="{ btnActive: data.additional == 1 }"
+          :options="{ btnActive: data.additional == 1, disabled }"
           @confirm="selectPhoned"
         >
           <template #btnContent>
@@ -17,6 +17,7 @@
           :options="{
             btnActive: data.additional == 2,
             btnVisible: true,
+            disabled,
           }"
           @confirm="selectCallback"
         >
@@ -37,7 +38,7 @@
       </div>
       <div class="col-4 pl-1">
         <CustomButton
-          :options="{ btnActive: data.negative, btnClass: 'danger' }"
+          :options="{ btnActive: data.negative, btnClass: 'danger', disabled }"
           @confirm="selectNegative"
         >
           <template #btnContent>
@@ -54,6 +55,7 @@
             btnActive: data.done,
             btnClass: 'success',
             btnVisible: false,
+            disabled,
           }"
           @confirm="selectDone"
         >
@@ -64,13 +66,20 @@
         </CustomButton>
       </div>
       <div class="col-6 pr-1">
-        <button
-          class="action bg-dark text-light"
-          @click="$emit('openRequestFormForUpdate')"
+        <CustomButton
+          :options="{
+            btnActive: true,
+            btnClass: 'dark',
+            btnVisible: false,
+            disabled,
+          }"
+          @confirm="$emit('openRequestFormForUpdate')"
         >
-          <i class="fas fa-pencil-alt"></i>
-          Редактировать запрос
-        </button>
+          <template #btnContent>
+            <i class="fas fa-pencil-alt"></i>
+            Редактировать запрос
+          </template>
+        </CustomButton>
       </div>
     </div>
   </div>
@@ -98,12 +107,15 @@ export default {
     },
   },
   mounted() {
-    this.data = this.step;
-    if (this.data.date) {
-      this.callBackDate = this.data.date.substr(0, 10);
-    }
+    this.setData();
   },
   methods: {
+    setData() {
+      this.data = this.step;
+      if (this.data.date) {
+        this.callBackDate = this.data.date.substr(0, 10);
+      }
+    },
     selectDone(comment) {
       if (this.data.done) {
         this.data.done = 0;
@@ -198,6 +210,11 @@ export default {
       }
       this.data.negative = 0;
       this.$emit("updateItem", this.data);
+    },
+  },
+  watch: {
+    step() {
+      this.setData();
     },
   },
   emits: ["updateItem", "openRequestFormForUpdate"],

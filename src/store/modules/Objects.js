@@ -12,6 +12,8 @@ const Objects = {
             state.currentStepObjects = objects;
         },
         updateAllObjects(state, data) {
+            console.log("UPDATE ALL OBJECTS", data);
+
             if (Array.isArray(state.allObjects) && Array.isArray(data.offers) && state.objectsCurrentPage > 1) {
                 state.allObjects = state.allObjects.concat(data.offers);
 
@@ -21,6 +23,7 @@ const Objects = {
             state.objectPagination = data.pagination;
         },
         updateAllObjectForPreventStep(state, objects) {
+            console.log("UPDATE ALL OBJECTS", objects);
             state.allObjects = objects;
         },
         incrimentCurrentPage(state) {
@@ -32,6 +35,7 @@ const Objects = {
         },
         resetCurrentStepObjects(state) {
             state.currentStepObjects = [];
+            state.allObjects = [];
         }
     },
     actions: {
@@ -53,6 +57,8 @@ const Objects = {
                 })
             });
             commit('updateCurrentStepObjects', array);
+            return array;
+
         },
         async FETCH_OBJECTS_FOR_PREVENT_STEP_OBJECTS(context, currentStepNumber) {
             const preventStepObjects = context.getters.TIMELINE.timelineSteps[currentStepNumber - 1].timelineStepObjects;
@@ -64,7 +70,6 @@ const Objects = {
             });
             // const objects = await api.objects.getCurrentStepObjects(array);
             const objects = await api.objects.getCurrentStepObjectsOneByOne(preventStepObjects);
-            console.warn(objects);
             array = [];
             let currentStepObject = null;
             preventStepObjects.map((item) => {
@@ -78,9 +83,8 @@ const Objects = {
                     }
                 })
             });
-            console.warn("Array:", objects);
-
             context.commit('updateAllObjectForPreventStep', array);
+            return array;
         },
         async FETCH_ALL_OBJECTS(context, currentStepNumber) {
             let objects = [];
@@ -88,10 +92,10 @@ const Objects = {
                 objects = await api.objects.getAllObjects(context.getters.OBJECTS_CURRENT_PAGE);
                 context.commit('updateAllObjects', objects);
 
+                return objects;
             } else {
                 if (currentStepNumber != 0) {
-                    await context.dispatch('FETCH_OBJECTS_FOR_PREVENT_STEP_OBJECTS', currentStepNumber);
-
+                    return await context.dispatch('FETCH_OBJECTS_FOR_PREVENT_STEP_OBJECTS', currentStepNumber);
                 }
             }
         },

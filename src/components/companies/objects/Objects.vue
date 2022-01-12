@@ -100,14 +100,14 @@
         <Loader class="center" v-if="loader" />
         <div
           class="row no-gutters"
-          v-if="CURRENT_STEP_OBJECTS.length && step.number == 1"
+          v-if="currentStepObjects.length && step.number == 1"
         >
           <div class="col-12 px-2 pb-1">
             <h5 class="m-0">Отправленные предложения</h5>
           </div>
           <template v-if="viewMode">
             <ObjectsItem
-              v-for="object in CURRENT_STEP_OBJECTS"
+              v-for="object in currentStepObjects"
               :object="object"
               :selectedObjects="selectedObjects"
               :key="object.id"
@@ -121,7 +121,7 @@
               <table>
                 <tbody>
                   <ObjectsItemTable
-                    v-for="object in CURRENT_STEP_OBJECTS"
+                    v-for="object in currentStepObjects"
                     :object="object"
                     :selectedObjects="selectedObjects"
                     :key="object.id"
@@ -138,15 +138,15 @@
             <h5 class="m-0">Все предложения</h5>
           </div>
         </div>
-        <div class="row no-gutters" v-if="ALL_OBJECTS.length">
+        <div class="row no-gutters" v-if="allObjects.length">
           <template v-if="viewMode">
             <ObjectsItem
-              v-for="object in ALL_OBJECTS"
+              v-for="object in allObjects"
               :object="object"
               :selectedObjects="selectedObjects"
               :key="object.id"
               :classList="
-                CURRENT_STEP_OBJECTS.find((item) => item.id == object.id)
+                currentStepObjects.find((item) => item.id == object.id)
                   ? 'success'
                   : ''
               "
@@ -160,14 +160,12 @@
                 <table>
                   <tbody>
                     <ObjectsItemTable
-                      v-for="object in ALL_OBJECTS"
+                      v-for="object in allObjects"
                       :object="object"
                       :selectedObjects="selectedObjects"
                       :key="object.id"
                       :classList="
-                        CURRENT_STEP_OBJECTS.find(
-                          (item) => item.id == object.id
-                        )
+                        currentStepObjects.find((item) => item.id == object.id)
                           ? 'success'
                           : ''
                       "
@@ -211,6 +209,9 @@ export default {
       loader: false,
       selectedObjects: [],
       viewMode: true,
+      count: 0,
+      allObjects: [],
+      currentStepObjects: [],
     };
   },
   props: {
@@ -271,7 +272,7 @@ export default {
     },
     loadMore() {
       this.INCRIMENT_OBJECTS_CURRENT_PAGE();
-      this.FETCH_ALL_OBJECTS(this.step.number);
+      this.getAllObjects();
     },
     clickResetSelectObjects() {
       this.selectedObjects = [];
@@ -320,7 +321,7 @@ export default {
         this.sendObjectsHandler(sendClient);
       }
     },
-    async sendObjectsHandler(sendClientFlag) {
+    async sendObjectsHandler(sendClientFlag = false) {
       this.loader = true;
       let data = {
         ...this.step,
@@ -351,16 +352,14 @@ export default {
           comment: comment,
         },
       ];
-      if (sendClientFlag) {
-        data.sendClientFlag = true;
-      } else {
-        data.sendClientFlag = false;
-      }
+
+      data.sendClientFlag = sendClientFlag;
+
       if (await this.UPDATE_STEP(data)) {
         data.timelineStepObjects = data.timelineStepObjects.concat(
           this.step.timelineStepObjects
         );
-        this.$emit("updated", data);
+        this.$emit("updated", data, () => this.getObjects());
         this.clickResetSelectObjects();
       }
     },
@@ -398,39 +397,65 @@ export default {
       }
       return comment;
     },
-    async getCurrentStepObjects(getAllObjectsFlag = true) {
+    async getCurrentStepObjects() {
+      this.currentStepObjects = await this.FETCH_CURRENT_STEP_OBJECTS(
+        this.step.timelineStepObjects
+      );
+    },
+    async getAllObjects() {
+      let data = await this.FETCH_ALL_OBJECTS(this.step.number);
+      if (this.step.number == 1) {
+        if (
+          Array.isArray(this.allObjects) &&
+          Array.isArray(data.offers) &&
+          this.OBJECTS_CURRENT_PAGE > 1
+        ) {
+          this.allObjects = this.allObjects.concat(data.offers);
+        } else {
+          this.allObjects = data.offers;
+        }
+      } else {
+        this.allObjects = data;
+      }
+    },
+    async getObjects(getAllObjectsFlag = true) {
+      this.count++;
       if (!this.step) {
         return;
       }
       this.loader = true;
-      await this.FETCH_CURRENT_STEP_OBJECTS(this.step.timelineStepObjects);
+      await this.getCurrentStepObjects(this.step.timelineStepObjects);
       if (getAllObjectsFlag) {
-        await this.FETCH_ALL_OBJECTS(this.step.number);
-        console.warn(this.ALL_OBJECTS);
-        console.error(this.OBJECTS_CURRENT_PAGE);
+        await this.getAllObjects(this.step.number);
       }
       this.loader = false;
     },
-  },
-  beforeUnmount() {
-    this.RESET_CURRENT_STEP_OBJECTS();
-    this.RETURN_OBJECTS_CURRENT_PAGE_TO_FIRST();
-  },
-  watch: {
-    step(before, after) {
-      if (before.id != after.id) {
-        this.getCurrentStepObjects();
-        this.clickResetSelectObjects();
-        this.RETURN_OBJECTS_CURRENT_PAGE_TO_FIRST();
-      } else {
-        if (this.loader) {
-          this.getCurrentStepObjects(false);
-        }
-      }
+    clearObjects() {
+      this.currentStepObjects = [];
+      this.allObjects = [];
     },
   },
+  beforeUnmount() {
+    this.clearObjects();
+    this.RESET_CURRENT_STEP_OBJECTS();
+    this.RETURN_OBJECTS_CURRENT_PAGE_TO_FIRST();
+    console.log("UNMOUNT *****************************************");
+  },
+  watch: {
+    // step(before, after) {
+    //   if (before.id != after.id) {
+    //     this.getObjects();
+    //     this.clickResetSelectObjects();
+    //     this.RETURN_OBJECTS_CURRENT_PAGE_TO_FIRST();
+    //   } else {
+    //     if (this.loader) {
+    //       this.getObjects(false);
+    //     }
+    //   }
+    // },
+  },
   async created() {
-    this.getCurrentStepObjects();
+    await this.getObjects();
   },
 };
 </script>

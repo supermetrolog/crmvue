@@ -107,6 +107,9 @@ export default {
     loaderForStep: {
       type: [Number, Boolean],
     },
+    disabled: {
+      type: Boolean,
+    },
   },
   computed: {
     ...mapGetters(["CONSULTANT_LIST", "COMPANY_REQUESTS"]),
@@ -139,6 +142,8 @@ export default {
     setData() {
       if (this.deal) {
         this.form = { ...this.deal };
+        this.form.object_id = this.data.timelineStepObjects[0].object_id;
+        this.form.complex_id = this.data.timelineStepObjects[0].complex_id;
       } else {
         this.form.request_id = this.request_id;
         this.form.object_id = this.data.timelineStepObjects[0].object_id;

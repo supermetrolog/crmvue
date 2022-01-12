@@ -31,6 +31,8 @@ export default {
         let data = false;
         let array = [];
         for (let index = 0; index < objectList.length; index++) {
+            delete axios.defaults.headers.common["Authorization"];
+
             const item = objectList[index];
             let objectUrl = url + `?id=${item.object_id}&type_id=${item.type_id}`;
             await axios
@@ -43,7 +45,6 @@ export default {
         if (array.length) {
             data = array;
         }
-        console.log(array);
 
         axios.defaults.headers.common["Authorization"] = BearerToken;
         return data;
@@ -55,7 +56,6 @@ export default {
             .post(url, objects)
             .then((Response) => {
                 data = SuccessHandler.getData(Response);
-                console.log("FUCK", data);
             })
             .catch((e) => ErrorHandle.setError(e));
         return data;
