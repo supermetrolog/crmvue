@@ -41,6 +41,9 @@ const Timeline = {
         TIMELINE(state) {
             return state.timeline
         },
+        TIMELINE_LIST(state) {
+            return state.timelineList
+        },
         TIMELINE_REQUEST_ID(state) {
             return state.timeline.request_id
         },

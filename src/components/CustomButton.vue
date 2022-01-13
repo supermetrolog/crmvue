@@ -16,7 +16,10 @@
       <slot name="btnContent"></slot>
     </button>
 
-    <div class="actions d-inline-block text-center">
+    <div
+      class="actions d-inline-block text-center"
+      v-if="optionsLocale.extraVisible"
+    >
       <slot
         name="extraContent"
         :data="{ openned: optionsLocale.extraVisible }"

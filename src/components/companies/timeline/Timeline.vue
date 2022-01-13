@@ -1,8 +1,8 @@
 <template>
   <div class="container-timeline">
-    <div class="row no-gutters" v-if="!timelineNotFoundFlag">
+    <div class="row no-gutters">
       <div class="col-3 stage box">
-        <div class="row no-gutters mb-2 p-0">
+        <div class="row no-gutters mb-2 p-0" v-if="!timelineNotFoundFlag">
           <div class="col-6 pr-1">
             <button
               class="btn btn-primary btn-large"
@@ -22,13 +22,36 @@
         </div>
         <div class="row no-gutters inner" ref="timeline">
           <Loader class="center" v-if="loader" />
-          <div class="col-12 mb-4" @click="changeTimeline(3)">
-            <button class="btn btn-primary">user_id = 3</button>
+          <div class="col-12 mb-3 timeline-list" v-if="TIMELINE_LIST.length">
+            <div class="timeline-actions text-right">
+              <div
+                class="timeline-list-item p-1"
+                v-for="timeline in TIMELINE_LIST"
+                :key="timeline.id"
+              >
+                <CustomButton
+                  :options="{
+                    btnActive:
+                      $route.query.consultant_id == timeline.consultant.id,
+                    btnClass: 'primary',
+                    defaultBtn: true,
+                    disabled: false,
+                  }"
+                  @confirm="changeTimeline(timeline.consultant.id)"
+                >
+                  <template #btnContent>
+                    {{ getUserName(timeline.consultant.userProfile) }}
+                  </template>
+                </CustomButton>
+              </div>
+            </div>
           </div>
-          <div class="col-12 mb-4" @click="changeTimeline(10)">
-            <button class="btn btn-primary">user_id = 10</button>
+          <div class="col-12" v-if="timelineNotFoundFlag">
+            <h4 class="text-danger text-center">
+              Такого таймлайна не существует
+            </h4>
           </div>
-          <div class="timeline col-12" v-if="!loader">
+          <div class="timeline col-12" v-if="!loader && !timelineNotFoundFlag">
             <TimelineItem
               v-for="(step, idx) in this.TIMELINE.timelineSteps"
               :key="step.id"
@@ -41,10 +64,19 @@
           </div>
         </div>
       </div>
-      <div class="col-8" v-if="(!selectedStep && $route.query.step) || loader">
+      <div
+        class="col-8"
+        v-if="
+          (!selectedStep && $route.query.step && !timelineNotFoundFlag) ||
+          loader
+        "
+      >
         <Loader class="center" />
       </div>
-      <div class="col-7 box step-actions" v-if="selectedStep && !loader">
+      <div
+        class="col-7 box step-actions"
+        v-if="selectedStep && !loader && !timelineNotFoundFlag"
+      >
         <div class="row" v-if="selectedStep.number != 0">
           <div class="col-3 mb-2">
             <div class="company-form company-request-form">
@@ -85,13 +117,10 @@
       </div>
       <div
         class="col-2 box timeline-extra-block"
-        v-if="selectedStep && !loader"
+        v-if="selectedStep && !loader && !timelineNotFoundFlag"
       >
         <ExtraBlock :step="selectedStep" />
       </div>
-    </div>
-    <div class="row no-gutters" v-else>
-      <h4 class="text-danger">Такого таймлайна не существует</h4>
     </div>
   </div>
 </template>
@@ -114,6 +143,8 @@ import ExtraBlock from "./timeline-extra-block/ExtraBlock.vue";
 import Loader from "@/components/Loader.vue";
 import { Timeline } from "@/const/Const";
 import Utils from "@/utils";
+import CustomButton from "@/components/CustomButton.vue";
+
 export default {
   name: "Timeline",
   components: {
@@ -129,6 +160,7 @@ export default {
     Loader,
     ExtraBlock,
     Multiselect,
+    CustomButton,
   },
   data() {
     return {
@@ -142,9 +174,16 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["TIMELINE", "COMPANY", "COMPANY_CONTACTS", "THIS_USER"]),
+    ...mapGetters([
+      "TIMELINE",
+      "COMPANY",
+      "COMPANY_CONTACTS",
+      "THIS_USER",
+      "TIMELINE_LIST",
+    ]),
     selectedStep() {
       if (this.TIMELINE) {
+        console.warn("STEPS", this.TIMELINE.timelineSteps);
         return this.TIMELINE.timelineSteps[this.$route.query.step];
       }
       return false;
@@ -216,9 +255,12 @@ export default {
     },
     async getTimeline() {
       await this.FETCH_TIMELINE(this.$route.query);
-      if (this.TIMELINE === false) {
+      if (!this.TIMELINE) {
         this.timelineNotFoundFlag = true;
+        return false;
       }
+      this.timelineNotFoundFlag = false;
+      return true;
     },
     async changeTimeline(consultant_id) {
       let query = {
@@ -237,15 +279,27 @@ export default {
         this.COMPANY_CONTACTS
       );
     },
+    getUserName(userProfile) {
+      let name = `${userProfile.middle_name} ${userProfile.first_name
+        .charAt(0)
+        .toUpperCase()}.`;
+
+      if (userProfile.last_name) {
+        name += ` ${userProfile.last_name.charAt(0).toUpperCase()}.`;
+      }
+      return name;
+    },
   },
   async created() {
     this.loader = true;
-    await this.getTimeline();
+    const result = await this.getTimeline();
     this.getCompanyContacts();
     this.loader = false;
-    this.$nextTick(() => {
-      this.scrollToSelectedStep();
-    });
+    if (result) {
+      this.$nextTick(() => {
+        this.scrollToSelectedStep();
+      });
+    }
   },
   watch: {
     async $route(after, before) {

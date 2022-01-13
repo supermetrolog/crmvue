@@ -7,7 +7,7 @@
     >
       <Modal
         class="fullscreen"
-        title="Бизнес процесс"
+        :title="getTimelineTitle()"
         v-if="timelineVisible && COMPANY[0] && COMPANY_REQUESTS[0]"
         @close="closeTimeline"
       >
@@ -28,20 +28,6 @@
         v-if="companyRequestFormVisible"
       />
     </transition>
-    <!-- <transition
-      mode="out-in"
-      enter-active-class="animate__animated animate__lightSpeedInRight for__modal absolute"
-      leave-active-class="animate__animated animate__lightSpeedOutRight for__modal absolute"
-    >
-      <CompanyContactForm
-        @closeCompanyForm="clickCloseCompanyContactForm"
-        :company_id="COMPANY[0].id"
-        :formdata="contact"
-        @created="createdContact"
-        @updated="updatedContact"
-        v-if="companyContactFormVisible"
-      />
-    </transition> -->
     <transition
       mode="out-in"
       enter-active-class="animate__animated animate__lightSpeedInRight for__modal absolute"
@@ -61,12 +47,6 @@
       enter-active-class="animate__animated animate__lightSpeedInRight for__modal absolute"
       leave-active-class="animate__animated animate__lightSpeedOutRight for__modal absolute"
     >
-      <!-- <CompanyForm
-        v-if="companyFormVisible"
-        :formdata="company"
-        @updated="updatedCompany"
-        @closeCompanyForm="clickCloseCompanyForm"
-      /> -->
       <TestForm
         v-if="companyFormVisible"
         :formdata="company"
@@ -193,7 +173,12 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["COMPANY", "COMPANY_REQUESTS", "COMPANY_CONTACTS"]),
+    ...mapGetters([
+      "COMPANY",
+      "COMPANY_REQUESTS",
+      "COMPANY_CONTACTS",
+      "TIMELINE_LIST",
+    ]),
   },
   methods: {
     ...mapActions([
@@ -280,6 +265,22 @@ export default {
     closeTimeline() {
       this.timelineVisible = false;
       this.$router.push({ name: "company" });
+    },
+    getTimelineTitle() {
+      let title = "Бизнес процесс";
+      const currentTimeline = this.TIMELINE_LIST.find(
+        (timeline) => timeline.consultant.id == this.$route.query.consultant_id
+      );
+      if (!currentTimeline) return title;
+      const userProfile = currentTimeline.consultant.userProfile;
+      title += ` ${userProfile.middle_name} ${userProfile.first_name
+        .charAt(0)
+        .toUpperCase()}.`;
+
+      if (userProfile.last_name) {
+        title += ` ${userProfile.last_name.charAt(0).toUpperCase()}.`;
+      }
+      return title;
     },
   },
   created() {

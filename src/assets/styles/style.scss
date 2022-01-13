@@ -728,10 +728,18 @@
         .stage {
             &.box {
                 .inner {
-                    padding: 30px 5px 30px 5px!important;
+                    padding: 5px 5px 30px 5px!important;
                     max-height: 85vh;
                     overflow: hidden;
                     overflow-y: auto;
+                }
+            }
+        }
+        .stage {
+            .timeline-list {
+                padding: 0 10px;
+                &-item {
+                    display: inline-block;
                 }
             }
         }
