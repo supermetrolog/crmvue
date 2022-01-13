@@ -57,7 +57,7 @@
           <Td>
             <div class="avatar">
               <img
-                :src="`http://crmka/uploads/${user.userProfile.avatar}`"
+                :src="`http://api.billypro.beget.tech/uploads/${user.userProfile.avatar}`"
                 alt="Аватар"
               />
             </div>
