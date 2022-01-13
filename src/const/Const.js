@@ -68,14 +68,6 @@ export const Timeline = new Map(
 export const FeedbackList = new Map(
     [
         ['param', [
-            // [0, { name: "Email", icon: "fas fa-warehouse" }],
-            // [0, { name: "Звонок: Я", icon: "fas fa-warehouse" }],
-            // [0, { name: "Звонок: Он", icon: "fas fa-warehouse" }],
-            // [0, { name: "WhatsApp", icon: "fas fa-warehouse" }],
-            // [0, { name: "Viber", icon: "fas fa-warehouse" }],
-            // [0, { name: "SMS", icon: "fas fa-warehouse" }],
-            // [0, { name: "Telegram", icon: "fas fa-warehouse" }],
-
             [0, "Email"],
             [1, "Звонок: Я"],
             [2, "Звонок: Он"],
@@ -307,11 +299,76 @@ export const PositionList = new Map(
             { value: 1, label: "Генеральный директор" },
             { value: 2, label: "Коммерческий директор" },
             { value: 3, label: "Финансовый директор" },
+            { value: 4, label: "Операционный директор" },
+            { value: 5, label: "Управляющий директор" },
+            { value: 6, label: "Директор по логистике" },
+            { value: 7, label: "Начальник склада" },
+            { value: 8, label: "Менеджер по проектам" },
+            { value: 9, label: "Охранник" },
+            { value: 10, label: "Главный инженер" },
+            { value: 11, label: "Секретарь" },
+            { value: 12, label: "Представитель управляющей компании" },
+            { value: 13, label: "Представитель на объекте" },
+            { value: 14, label: "Бухгалтер" },
+            { value: 15, label: "Юрист" },
+            { value: 16, label: "Агент" },
+
         ]],
 
     ]
 );
+export const ActivityGroupList = new Map(
+    [
+        ['param', [
+            { value: 0, label: "Складирование" },
+            { value: 1, label: "Производство" },
+            { value: 2, label: "Строительство с привлечением" },
+            { value: 3, label: "Строительство собственными силами" },
+            { value: 4, label: "Услуги" },
+            { value: 5, label: "Управление активами/арендный бизнес" },
+            { value: 6, label: "Другое" },
+        ]],
 
+    ]
+);
+export const ActivityProfileList = new Map(
+    [
+        ['param', [
+            { value: 0, label: "Продукты/Напитки" },
+            { value: 1, label: "ТНП" },
+            { value: 2, label: "Стройматериалы" },
+            { value: 3, label: "Электротовары" },
+            { value: 4, label: "Грузоперевозка/логистика" },
+            { value: 5, label: "Алкоголь" },
+            { value: 6, label: "Фармакология" },
+            { value: 7, label: "Автозапчасти" },
+            { value: 8, label: "Инструменты" },
+            { value: 9, label: "Архив" },
+            { value: 10, label: "Косметика" },
+            { value: 11, label: "Бытовая/оргтехника" },
+            { value: 12, label: "Мебель" },
+            { value: 13, label: "Одежда/обувь" },
+            { value: 14, label: "Климатич/вент. оборудование" },
+            { value: 15, label: "Текстиль" },
+            { value: 16, label: "Посуда/Керамика" },
+            { value: 17, label: "Детские/спорт товары" },
+            { value: 18, label: "Оборудование комплектующие" },
+            { value: 19, label: "Досуг/развлечение" },
+            { value: 20, label: "Опасные грузы/химия" },
+            { value: 21, label: "Растения/цветы" },
+            { value: 22, label: "Негабаритный товар" },
+            { value: 23, label: "ПВХ/полимеры/минералы" },
+            { value: 24, label: "Автоуслуги/клининг" },
+            { value: 25, label: "Товары для животных" },
+            { value: 26, label: "Транспорт/прицепная техника" },
+            { value: 27, label: "Металлоизделия" },
+            { value: 28, label: "Полиграфия/Бумага" },
+            { value: 29, label: "ЖБИ/Камень" },
+            { value: 30, label: "Садовая/складская техника" },
+        ]],
+
+    ]
+);
 export const NotificationTypeList = new Map(
     [
         ['param', [

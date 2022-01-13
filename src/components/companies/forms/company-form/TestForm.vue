@@ -113,7 +113,7 @@
                 title="Группа деятельности"
                 label="Группа дея-ти"
                 class="col-3 pr-1"
-                :options="CONSULTANT_LIST"
+                :options="activityGroupOptions"
               />
               <MultiSelect
                 v-model="form.activityProfile"
@@ -122,7 +122,7 @@
                 title="Профиль деятельности"
                 label="Профиль дея-ти"
                 class="col-3 px-1"
-                :options="CONSULTANT_LIST"
+                :options="activityProfileOptions"
               />
               <MultiSelect
                 v-model="form.productRanges"
@@ -284,6 +284,8 @@ import {
   CompanyCategories,
   ActivePassive,
   CompanyFormOrganization,
+  ActivityGroupList,
+  ActivityProfileList,
 } from "@/const/Const.js";
 import Utils, { yandexmap } from "@/utils";
 
@@ -309,6 +311,8 @@ export default {
       categoryOptions: CompanyCategories.get("param"),
       formOfOrganizationOptions: CompanyFormOrganization.get("param"),
       statusOptions: ActivePassive.get("param"),
+      activityGroupOptions: ActivityGroupList.get("param"),
+      activityProfileOptions: ActivityProfileList.get("param"),
       form: {
         activityGroup: null,
         activityProfile: null,

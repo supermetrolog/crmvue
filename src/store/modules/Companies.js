@@ -77,9 +77,6 @@ const Companies = {
             }
         },
         async FETCH_COMPANY_PRODUCT_RANGE_LIST(context) {
-            // if (context.getters.COMPANY_PRODUCT_RANGE_LIST.length) {
-            //     return;
-            // }
             let data = await api.companies.getCompanyProductRangeList();
             if (data) {
                 context.commit('updateCompanyProductRangeList', data);

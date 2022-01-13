@@ -127,7 +127,10 @@ export default {
       }
     },
     onFocus() {
+      console.log("FOCUS");
       if (this.searchable) {
+        console.log("FOCUS2", this.localeOptions);
+
         this.searchableVisible = true;
       }
     },
@@ -151,6 +154,11 @@ export default {
     if (this.searchable) {
       document.removeEventListener("click", this.close);
     }
+  },
+  watch: {
+    options() {
+      this.localeOptions = this.options;
+    },
   },
 };
 </script>
