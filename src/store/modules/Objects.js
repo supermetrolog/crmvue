@@ -38,16 +38,19 @@ const Objects = {
     },
     actions: {
         async FETCH_CURRENT_STEP_OBJECTS({ commit }, currentObjects) {
+            console.error("BEFORE", currentObjects);
             let array = [];
             currentObjects.map((item) => {
                 array.push(item.offer_id)
             });
             // const objects = await api.objects.getCurrentStepObjects(array);
             const objects = await api.objects.getCurrentStepObjectsOneByOne(currentObjects);
+            console.error("MIDDLE", objects);
+
             array = [];
             currentObjects.map((item) => {
                 objects.map((object) => {
-                    if (item.offer_id == object.id) {
+                    if (item.object_id == object.original_id) {
                         object.duplicate_count = item.duplicate_count;
                         object.comment = item.comment;
                         array.push(object);
@@ -55,6 +58,7 @@ const Objects = {
                 })
             });
             commit('updateCurrentStepObjects', array);
+            console.error("AFTER", array);
             return array;
 
         },
@@ -72,7 +76,7 @@ const Objects = {
             let currentStepObject = null;
             preventStepObjects.map((item) => {
                 objects.map((object) => {
-                    if (item.offer_id == object.id) {
+                    if (item.object_id == object.original_id) {
                         currentStepObject = currentStepObjects.find(currentObject => currentObject.offer_id == item.offer_id);
                         if (currentStepObject) {
                             object.comment = currentStepObject.comment;
