@@ -39,27 +39,18 @@ const Companies = {
                 context.commit('updateCompanies', companies);
             }
         },
-        // async SEARCH_COMPANIES(context, param, company_id = null) {
-        //     let nameEng = "nameEng=" + param.searchText + "&";
-        //     let nameRu = "nameRu=" + param.searchText + "&";
-        //     let officeAdress = "officeAdress=" + param.searchText + "&";
-        //     let legalAddress = "legalAddress=" + param.searchText + "&";
-        //     let contactPhone = "contact.phone=" + param.searchText + "&";
-        //     let searchUrlPart = nameEng + nameRu + officeAdress + legalAddress + contactPhone;
-        //     let url = "companies/search?" + searchUrlPart + "expand=contacts.emails,contacts.phones,contacts.contactComments,broker,companyGroup,consultant";
-        //     let data = false;
-        //     await axios
-        //         .get(url)
-        //         .then((Response) => {
-        //             context.commit('updateCompanies', Response.data)
-        //         });
-        //     data = context.getters.COMPANIES;
-        //     return data;
-        // },
         async SEARCH_COMPANIES(context, query, saveState = true) {
-            const result = await api.companies.searchCompanies(query);
+            const search = query.searchText;
+            const queryParams = {
+                nameEng: search,
+                nameRu: search,
+                officeAdress: search,
+                legalAddress: search,
+                "contact.phone": search,
+            };
+            const result = await api.companies.searchCompanies(queryParams);
             if (result && saveState) {
-                // context.commit('updateCompanies', result);
+                context.commit('updateCompanies', result);
             }
             return result;
         },
