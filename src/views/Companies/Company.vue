@@ -283,8 +283,15 @@ export default {
       return title;
     },
   },
-  created() {
-    this.getCompany();
+  async created() {
+    await this.getCompany();
+    if (!Array.isArray(this.COMPANY)) {
+      console.log("ANALllllllllllllllllllllllllllllllllllllllllllllllllll");
+
+      this.$router.push({ name: "company" });
+
+      return;
+    }
     this.getCompanyRequests();
     this.getCompanyContacts();
     this.timeline();

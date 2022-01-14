@@ -56,10 +56,10 @@ const routes = [{
             },
             {
                 path: '',
-                name: 'CompaniesAll',
+                name: 'CompaniesMain',
                 meta: { layout: 'main', auth: { isAuth: true, role: ['moderator', 'administrator'] } },
                 component: () =>
-                    import ('../views/Companies/All.vue')
+                    import ('../views/Companies/Main.vue')
             },
             {
                 path: 'request',
@@ -123,14 +123,14 @@ const routes = [{
     {
         path: '/:catchAll(.*)',
         name: 'notfound',
-        meta: { layout: 'empty' },
+        meta: { layout: 'empty', auth: { isAuth: true, role: ['moderator', 'administrator'] } },
         component: () =>
             import ('../views/NotFound.vue')
     },
     {
         path: '/',
         name: "root",
-        redirect: { name: "CompaniesAll" }
+        redirect: { name: "CompaniesMain" }
     },
 
 

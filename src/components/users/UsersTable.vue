@@ -56,10 +56,7 @@
         <Tr v-for="user in users" :key="user.id">
           <Td>
             <div class="avatar">
-              <img
-                :src="`http://api.billypro.beget.tech/uploads/${user.userProfile.avatar}`"
-                alt="Аватар"
-              />
+              <img :src="src + user.userProfile.avatar" alt="Аватар" />
             </div>
           </Td>
 
@@ -141,6 +138,15 @@ export default {
   props: {
     users: {
       type: Array,
+    },
+  },
+  computed: {
+    src() {
+      if (process.env.NODE_ENV == "development") {
+        return "http://crmka/uploads/";
+      } else {
+        return "http://api.billypro.beget.tech/uploads/";
+      }
     },
   },
   methods: {

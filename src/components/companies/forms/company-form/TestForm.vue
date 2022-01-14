@@ -115,7 +115,7 @@
                 class="col-3 pr-1"
                 :options="activityGroupOptions"
               />
-              <MultiSelect
+              <!-- <MultiSelect
                 v-model="form.activityProfile"
                 :v="v$.form.activityProfile"
                 required
@@ -123,6 +123,14 @@
                 label="Профиль дея-ти"
                 class="col-3 px-1"
                 :options="activityProfileOptions"
+              /> -->
+              <Input
+                v-model="form.activityProfile"
+                title="Профиль деятельности"
+                label="Профиль дея-ти"
+                class="col-3 px-1"
+                :searchable="true"
+                :options="COMPANY_ACTIVITY_PROFILE_LIST"
               />
               <MultiSelect
                 v-model="form.productRanges"
@@ -237,17 +245,17 @@
 
             <FormGroup class="mb-1">
               <Input
-                v-model="form.signatodyName"
+                v-model="form.signatoryName"
                 label="Имя подписанта"
                 class="col-4 pr-1"
               />
               <Input
-                v-model="form.signatodyMiddleName"
+                v-model="form.signatoryMiddleName"
                 label="Фамилия подписанта"
                 class="col-4 px-1"
               />
               <Input
-                v-model="form.signatodyLastName"
+                v-model="form.signatoryLastName"
                 label="Отчество подписанта"
                 class="col-4 pl-1"
               />
@@ -285,7 +293,6 @@ import {
   ActivePassive,
   CompanyFormOrganization,
   ActivityGroupList,
-  ActivityProfileList,
 } from "@/const/Const.js";
 import Utils, { yandexmap } from "@/utils";
 
@@ -312,7 +319,6 @@ export default {
       formOfOrganizationOptions: CompanyFormOrganization.get("param"),
       statusOptions: ActivePassive.get("param"),
       activityGroupOptions: ActivityGroupList.get("param"),
-      activityProfileOptions: ActivityProfileList.get("param"),
       form: {
         activityGroup: null,
         activityProfile: null,
@@ -361,6 +367,7 @@ export default {
       "COMPANY_GROUP_LIST",
       "COMPANY_PRODUCT_RANGE_LIST",
       "COMPANY_IN_THE_BANK_LIST",
+      "COMPANY_ACTIVITY_PROFILE_LIST",
     ]),
   },
   validations() {
@@ -473,6 +480,7 @@ export default {
       "FETCH_COMPANY_GROUP_LIST",
       "FETCH_COMPANY_PRODUCT_RANGE_LIST",
       "FETCH_COMPANY_IN_THE_BANK_LIST",
+      "FETCH_COMPANY_ACTIVITY_PROFILE_LIST",
       "CREATE_COMPANY",
       "UPDATE_COMPANY",
     ]),
@@ -526,6 +534,7 @@ export default {
     await this.FETCH_COMPANY_GROUP_LIST();
     await this.FETCH_COMPANY_PRODUCT_RANGE_LIST();
     await this.FETCH_COMPANY_IN_THE_BANK_LIST();
+    await this.FETCH_COMPANY_ACTIVITY_PROFILE_LIST();
     if (this.formdata) {
       const cloneFormdata = JSON.stringify(this.formdata);
       this.form = { ...this.form, ...JSON.parse(cloneFormdata) };
