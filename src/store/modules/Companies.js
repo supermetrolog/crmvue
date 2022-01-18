@@ -3,7 +3,8 @@ import api from "@/api/api"
 const Companies = {
     state: {
         companies: [],
-        company: {},
+        company: null,
+        companiesGroups: [],
         companyGroupList: [],
         companyProductRangeList: [],
         companyInTheBankList: [],
@@ -25,6 +26,7 @@ const Companies = {
                 })
             });
             state.companyGroupList = newCompanyGroupList;
+            state.companiesGroups = data;
         },
         updateCompanyProductRangeList(state, data) {
             state.companyProductRangeList = data;
@@ -75,7 +77,7 @@ const Companies = {
             if (context.getters.COMPANY_GROUP_LIST.length) {
                 return;
             }
-            let data = await api.functions.getCompanyGroupList();
+            let data = await api.companies.getCompanyGroupList();
             if (data) {
                 context.commit('updateCompanyGroupList', data);
             }
@@ -105,6 +107,9 @@ const Companies = {
         },
         COMPANY(state) {
             return state.company;
+        },
+        COMPANIES_GROUPS(state) {
+            return state.companiesGroups;
         },
         COMPANY_GROUP_LIST(state) {
             return state.companyGroupList;

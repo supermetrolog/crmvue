@@ -1,5 +1,5 @@
 <template>
-  <div class="row no-gutters company-detail-info">
+  <div class="row no-gutters company-detail-info" v-if="company">
     <div class="col-12">
       <div class="row">
         <div class="col-12 text-center mb-3">

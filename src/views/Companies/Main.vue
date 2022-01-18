@@ -75,7 +75,7 @@ import TestForm from "@/components/companies/forms/company-form/TestForm.vue";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
-  name: "Main",
+  name: "CompaniesMain",
   data() {
     return {
       loader: true,

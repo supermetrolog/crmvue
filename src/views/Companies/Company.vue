@@ -8,7 +8,7 @@
       <Modal
         class="fullscreen"
         :title="getTimelineTitle()"
-        v-if="timelineVisible && COMPANY[0] && COMPANY_REQUESTS[0]"
+        v-if="timelineVisible && COMPANY && COMPANY_REQUESTS[0]"
         @close="closeTimeline"
       >
         <Timeline />
@@ -21,7 +21,7 @@
     >
       <CompanyRequestForm
         @closeCompanyForm="clickCloseCompanyRequestForm"
-        :company_id="COMPANY[0].id"
+        :company_id="COMPANY.id"
         :formdata="request"
         @created="createdRequest"
         @updated="updatedRequest"
@@ -35,7 +35,7 @@
     >
       <CompanyContactForm
         @closeCompanyForm="clickCloseCompanyContactForm"
-        :company_id="COMPANY[0].id"
+        :company_id="COMPANY.id"
         :formdata="contact"
         @created="createdContact"
         @updated="updatedContact"
@@ -60,8 +60,8 @@
         <div class="col-12 p-0 mb-3">
           <button
             class="btn btn-primary scale d-block btn-large"
-            @click.prevent="openCompanyFormForUpdate(COMPANY[0])"
-            :disabled="COMPANY[0] ? false : true"
+            @click.prevent="openCompanyFormForUpdate(COMPANY)"
+            :disabled="COMPANY ? false : true"
           >
             Редактировать информацию
           </button>
@@ -69,9 +69,10 @@
         <div class="col-12 inner">
           <Loader v-if="loaderCompanyDetailInfo" class="center" />
           <CompanyDetailInfo
-            :company="this.COMPANY[0]"
+            :company="COMPANY"
             v-if="!loaderCompanyDetailInfo"
           />
+          <NoData v-if="!COMPANY && !loaderCompanyDetailInfo" />
         </div>
       </div>
 
@@ -79,7 +80,7 @@
         <div class="col-12 p-0 mb-3">
           <button
             class="btn btn-primary scale d-block btn-large"
-            :disabled="COMPANY[0] ? false : true"
+            :disabled="COMPANY ? false : true"
             @click.prevent="clickOpenCompanyRequestForm"
           >
             Создать запрос
@@ -105,7 +106,7 @@
           <button
             class="btn btn-primary scale d-block btn-large"
             @click.prevent="clickOpenCompanyContactForm"
-            :disabled="COMPANY[0] ? false : true"
+            :disabled="COMPANY ? false : true"
           >
             создать контакт
           </button>
@@ -190,6 +191,9 @@ export default {
       this.loaderCompanyDetailInfo = true;
       await this.FETCH_COMPANY(this.$route.params.id);
       this.loaderCompanyDetailInfo = false;
+      if (!this.COMPANY) {
+        this.$router.push("/not-found");
+      }
     },
     async getCompanyRequests() {
       this.loaderCompanyRequests = true;
@@ -283,15 +287,8 @@ export default {
       return title;
     },
   },
-  async created() {
-    await this.getCompany();
-    if (!Array.isArray(this.COMPANY)) {
-      console.log("ANALllllllllllllllllllllllllllllllllllllllllllllllllll");
-
-      this.$router.push({ name: "company" });
-
-      return;
-    }
+  created() {
+    this.getCompany();
     this.getCompanyRequests();
     this.getCompanyContacts();
     this.timeline();

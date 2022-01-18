@@ -8,13 +8,13 @@
       @updated="getUsers"
     />
 
-    <div class="row mt-5 box">
+    <div class="row box">
       <div class="col-12">
         <button class="btn btn-primary scale" @click="clickOpenUserForm">
           Создать пользователя
         </button>
       </div>
-      <div class="col-12 inner inner-default-size">
+      <div class="col inner inner-default-size">
         <Loader v-if="loader" class="center" />
 
         <UsersTable
@@ -33,7 +33,7 @@ import UsersTable from "@/components/users/UsersTable";
 import UserForm from "@/components/users/forms/UserForm";
 import { mapActions, mapGetters } from "vuex";
 export default {
-  name: "UsersAll",
+  name: "UsersMain",
   data() {
     return {
       userFormVisible: false,
@@ -50,11 +50,6 @@ export default {
   },
   methods: {
     ...mapActions(["FETCH_USERS", "DELETE_USER"]),
-
-    async clickLogout() {
-      await this.$store.dispatch("LOGOUT");
-      this.$router.push("/");
-    },
     clickOpenUserForm() {
       this.userFormVisible = true;
     },

@@ -62,25 +62,25 @@ const routes = [{
                     import ('../views/Companies/Main.vue')
             },
             {
-                path: 'request',
-                name: 'CompaniesRequest',
+                path: 'requests',
+                name: 'CompaniesRequests',
                 meta: { layout: 'main', auth: { isAuth: true, role: ['moderator', 'administrator'] } },
                 component: () =>
-                    import ('../views/Companies/Request.vue')
+                    import ('../views/Companies/Requests.vue')
             },
             {
-                path: 'deal',
-                name: 'CompaniesDeal',
+                path: 'deals',
+                name: 'CompaniesDeals',
                 meta: { layout: 'main', auth: { isAuth: true, role: ['moderator', 'administrator'] } },
                 component: () =>
-                    import ('../views/Companies/Deal.vue')
+                    import ('../views/Companies/Deals.vue')
             },
             {
-                path: 'brak',
-                name: 'CompaniesBrak',
+                path: 'groups',
+                name: 'CompaniesGroups',
                 meta: { layout: 'main', auth: { isAuth: true, role: ['moderator', 'administrator'] } },
                 component: () =>
-                    import ('../views/Companies/Brak.vue')
+                    import ('../views/Companies/Groups.vue')
             },
         ]
     },
@@ -99,10 +99,10 @@ const routes = [{
             },
             {
                 path: '',
-                name: 'UsersAll',
+                name: 'UsersMain',
                 meta: { layout: 'main', auth: { isAuth: true, role: ['moderator', 'administrator'] } },
                 component: () =>
-                    import ('../views/Users/All.vue')
+                    import ('../views/Users/Main.vue')
             },
         ]
     },

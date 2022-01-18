@@ -1,10 +1,12 @@
 <template>
-  <h1>BRAK</h1>
+  <div>
+    <h1>requests</h1>
+  </div>
 </template>
 
 <script>
 export default {
-  name: "Brak",
+  name: "CompaniesRequests",
 };
 </script>
 
