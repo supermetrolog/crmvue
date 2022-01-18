@@ -1,67 +1,79 @@
 <template>
   <div class="company-groups">
-    <!-- <UserForm
-      @closeUserForm="clickCloseUserForm"
-      v-if="userFormVisible"
-      :formdata="userForUpdate"
-      @created="getUsers"
-      @updated="getUsers"
-    /> -->
+    <CompanyGroupsForm
+      @closeCompanyGroupsForm="clickCloseCompanyGroupsForm"
+      v-if="companyGroupsFormVisible"
+      :formdata="companyGroupsForUpdate"
+      @created="getCompanyGroups"
+      @updated="getCompanyGroups"
+    />
     <div class="row no-gutters box mt-2">
       <div class="col-12">
-        <button class="btn btn-primary scale">Создать группу компаний</button>
+        <button
+          class="btn btn-primary scale"
+          @click="clickOpenCompanyGroupsForm"
+        >
+          Создать группу компаний
+        </button>
       </div>
-      <div class="col-4 inner inner-default-size mt-2">
+      <div class="col-12 inner inner-default-size mt-2">
         <Loader v-if="loader" class="center" />
 
-        <!-- <CompaniesGroupsTable
-          @clickEdit="clickOpenCompaniesGroupsFormForUpdate"
-          @deleted="getCompaniesGroups"
-          :companiesGroups="COMPANIES_GROUPS"
-          v-if="COMPANIES_GROUPS.length"
-        /> -->
+        <CompanyGroupsTable
+          @clickEdit="clickOpenCompanyGroupsFormForUpdate"
+          @deleted="getCompanyGroups"
+          :companyGroups="COMPANY_GROUPS"
+          v-if="COMPANY_GROUPS.length"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-// import CompaniesGroupsTable from "@/components/companies/companies/companies-groups/CompaniesGroupsTable.vue";
+import CompanyGroupsTable from "@/components/companies/companies/company-groups/CompanyGroupsTable.vue";
+import CompanyGroupsForm from "@/components/companies/forms/company-groups-form/CompanyGroupsForm.vue";
 import { mapActions, mapGetters } from "vuex";
 export default {
-  name: "CompaniesGroups",
+  name: "CompanyGroups",
   components: {
-    // CompaniesGroupsTable,
+    CompanyGroupsTable,
+    CompanyGroupsForm,
   },
   data() {
     return {
       loader: false,
+      companyGroupsFormVisible: false,
+      companyGroupsForUpdate: null,
     };
   },
   computed: {
-    ...mapGetters(["COMPANIES_GROUPS"]),
+    ...mapGetters(["COMPANY_GROUPS"]),
   },
   methods: {
-    ...mapActions(["FETCH_COMPANY_GROUP_LIST", "DELETE_COMPANIES_GROUP"]),
+    ...mapActions(["FETCH_COMPANY_GROUP_LIST"]),
 
-    // clickOpenUserForm() {
-    //   this.userFormVisible = true;
-    // },
-    // clickCloseUserForm() {
-    //   this.userForUpdate = null;
-    //   this.userFormVisible = false;
-    // },
-    clickOpenCompaniesGroupsFormForUpdate() {
-      console.log("FUCK");
+    clickOpenCompanyGroupsForm() {
+      this.companyGroupsFormVisible = true;
     },
-    async getCompaniesGroups() {
+    clickCloseCompanyGroupsForm() {
+      this.companyGroupsForUpdate = null;
+      this.companyGroupsFormVisible = false;
+    },
+    clickOpenCompanyGroupsFormForUpdate(companyGroup) {
+      this.companyGroupsForUpdate = companyGroup;
+      this.companyGroupsFormVisible = true;
+    },
+    async getCompanyGroups() {
+      console.error("START");
       this.loader = true;
       await this.FETCH_COMPANY_GROUP_LIST();
+      console.log(this.COMPANY_GROUPS);
       this.loader = false;
     },
   },
   mounted() {
-    this.getCompaniesGroups();
+    this.getCompanyGroups();
   },
 };
 </script>

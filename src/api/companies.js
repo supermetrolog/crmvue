@@ -151,4 +151,26 @@ export default {
             .catch((e) => ErrorHandle.setError(e));
         return data;
     },
+    async createCompanyGroups(formdata) {
+        const url = "companygroups";
+        let data = false;
+        await axios
+            .post(url, formdata)
+            .then((Response) => {
+                data = SuccessHandler.getData(Response);
+            })
+            .catch((e) => ErrorHandle.setError(e));
+        return data;
+    },
+    async updateCompanyGroups(formdata) {
+        const url = `companygroups/${formdata.id}`;
+        let data = false;
+        await axios
+            .patch(url, formdata)
+            .then((Response) => {
+                data = SuccessHandler.getData(Response);
+            })
+            .catch((e) => ErrorHandle.setError(e));
+        return data;
+    },
 }

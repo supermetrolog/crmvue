@@ -1,15 +1,14 @@
 <template>
   <div class="all">
+    <CompanyGroupsForm
+      @closeCompanyGroupsForm="companyGroupsFormVisible = false"
+      v-if="companyGroupsFormVisible"
+    />
     <transition
       mode="out-in"
       enter-active-class="animate__animated animate__lightSpeedInRight for__modal absolute"
       leave-active-class="animate__animated animate__lightSpeedOutRight for__modal absolute"
     >
-      <!-- <CompanyForm
-        v-if="companyFormVisible"
-        @closeCompanyForm="clickCloseCompanyForm"
-        @created="createdCompany"
-      /> -->
       <TestForm
         v-if="companyFormVisible"
         @closeCompanyForm="clickCloseCompanyForm"
@@ -44,6 +43,12 @@
         </button>
       </div>
       <div class="col-6 text-right">
+        <button
+          class="btn btn-primary scale mr-2"
+          @click="companyGroupsFormVisible = true"
+        >
+          Создать группу компаний
+        </button>
         <button class="btn btn-primary" @click="companyFormVisible = true">
           Создать компанию
         </button>
@@ -73,6 +78,7 @@ import Search from "@/components/Search.vue";
 // import CompanyForm from "@/components/companies/forms/company-form/CompanyForm.vue";
 import TestForm from "@/components/companies/forms/company-form/TestForm.vue";
 import { mapGetters, mapActions } from "vuex";
+import CompanyGroupsForm from "@/components/companies/forms/company-groups-form/CompanyGroupsForm.vue";
 
 export default {
   name: "CompaniesMain",
@@ -81,6 +87,7 @@ export default {
       loader: true,
       companyFormVisible: false,
       viewMode: false,
+      companyGroupsFormVisible: false,
     };
   },
   components: {
@@ -90,6 +97,7 @@ export default {
     Search,
     // CompanyForm,
     TestForm,
+    CompanyGroupsForm,
   },
   methods: {
     ...mapActions(["FETCH_COMPANIES", "SEARCH_COMPANIES"]),

@@ -4,7 +4,7 @@ const Companies = {
     state: {
         companies: [],
         company: null,
-        companiesGroups: [],
+        companyGroups: [],
         companyGroupList: [],
         companyProductRangeList: [],
         companyInTheBankList: [],
@@ -26,7 +26,7 @@ const Companies = {
                 })
             });
             state.companyGroupList = newCompanyGroupList;
-            state.companiesGroups = data;
+            state.companyGroups = data;
         },
         updateCompanyProductRangeList(state, data) {
             state.companyProductRangeList = data;
@@ -66,15 +66,20 @@ const Companies = {
                 context.commit('updateCompany', company);
             }
         },
-        async CREATE_COMPANY(context, formdata) {
+        async CREATE_COMPANY(_, formdata) {
             return await api.companies.createCompany(formdata);
         },
-        async UPDATE_COMPANY(context, formdata) {
+        async UPDATE_COMPANY(_, formdata) {
             return await api.companies.updateCompany(formdata);
         },
-
+        async CREATE_COMPANY_GROUPS(_, formdata) {
+            return await api.companies.createCompanyGroups(formdata);
+        },
+        async UPDATE_COMPANY_GROUPS(_, formdata) {
+            return await api.companies.updateCompanyGroups(formdata);
+        },
         async FETCH_COMPANY_GROUP_LIST(context) {
-            if (context.getters.COMPANY_GROUP_LIST.length) {
+            if (context.getters.COMPANY_GROUP_LIST.length && !context.getters.COMPANY_GROUPS.length) {
                 return;
             }
             let data = await api.companies.getCompanyGroupList();
@@ -108,8 +113,8 @@ const Companies = {
         COMPANY(state) {
             return state.company;
         },
-        COMPANIES_GROUPS(state) {
-            return state.companiesGroups;
+        COMPANY_GROUPS(state) {
+            return state.companyGroups;
         },
         COMPANY_GROUP_LIST(state) {
             return state.companyGroupList;

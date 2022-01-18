@@ -3315,6 +3315,31 @@
         }
     }
     
+    .company-groups-table {
+        table {
+            width: 100%;
+        }
+        td {
+            padding: 5px 15px;
+            font-size: 16px;
+            a {
+                color: $color_primary;
+                font-size: 14px;
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+            &.description {
+                max-width: 300px;
+            }
+        }
+        thead {
+            th {
+                padding: 0 15px;
+            }
+        }
+    }
+    
     // ************** JOKE ***********
     .joke {
         width: 100%;
