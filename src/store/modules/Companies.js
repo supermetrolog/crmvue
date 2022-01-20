@@ -29,6 +29,9 @@ const Companies = {
             state.companyGroups = data;
         },
         updateCompanyProductRangeList(state, data) {
+            if (!data.length) {
+                data = ['test'];
+            }
             state.companyProductRangeList = data;
         },
         updateCompanyInTheBankList(state, data) {

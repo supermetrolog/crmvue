@@ -126,9 +126,11 @@
               /> -->
               <Input
                 v-model="form.activityProfile"
+                :v="v$.form.activityProfile"
                 title="Профиль деятельности"
                 label="Профиль дея-ти"
                 class="col-3 px-1"
+                required
                 :searchable="true"
                 :options="COMPANY_ACTIVITY_PROFILE_LIST"
               />
@@ -374,7 +376,10 @@ export default {
     return {
       form: {
         nameEng: {
-          required: helpers.withMessage("заполните поле", this.customRequired),
+          required: helpers.withMessage(
+            "заполните поле",
+            this.customRequiredNameEng
+          ),
           minLength: helpers.withMessage(
             "название не может быть меньше 3 символов",
             minLength(3)
@@ -385,7 +390,10 @@ export default {
           ),
         },
         nameRu: {
-          required: helpers.withMessage("заполните поле", this.customRequired),
+          required: helpers.withMessage(
+            "заполните поле",
+            this.customRequiredNameRu
+          ),
           minLength: helpers.withMessage(
             "название не может быть меньше 3 символов",
             minLength(3)
@@ -517,9 +525,22 @@ export default {
         return await yandexmap.getAddress(query, this.formdata.officeAdress);
       return await yandexmap.getAddress(query);
     },
-    customRequired(value) {
+    customRequiredNameRu(value) {
       if (!this.form.noName) {
-        if (value != null) {
+        if (value != null && value != "") {
+          return true;
+        }
+        return false;
+      } else {
+        return true;
+      }
+    },
+    customRequiredNameEng(value) {
+      if (!this.form.noName) {
+        if (
+          (value != null && value != "") ||
+          (this.form.nameRu != null && this.form.nameRu != "")
+        ) {
           return true;
         }
         return false;
