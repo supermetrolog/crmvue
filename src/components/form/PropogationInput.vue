@@ -106,6 +106,7 @@ export default {
     },
     deleteInput(index) {
       this.field = this.field.filter((_, idx) => idx != index);
+      this.$emit("update:modelValue", this.field);
     },
     addInput(item, index) {
       if (item && item.length && typeof this.field[index + 1] == "undefined") {
