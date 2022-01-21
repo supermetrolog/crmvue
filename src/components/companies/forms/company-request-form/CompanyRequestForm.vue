@@ -124,7 +124,9 @@
           />
           <Radio
             v-model="form.heated"
+            :v="v$.form.heated"
             label="Отапливаемый"
+            required
             class="col-3 pr-1"
             :options="heatedOptions"
           />
@@ -412,6 +414,7 @@ export default {
       this.loader = false;
     },
     async createRequest() {
+      console.log("CREATE");
       if (await this.CREATE_REQUEST(this.form)) {
         this.$emit("created");
 
