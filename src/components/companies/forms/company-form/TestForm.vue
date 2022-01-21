@@ -10,19 +10,35 @@
               <Checkbox v-model="form.noName" label="Нет" class="col-1 large" />
               <Input
                 v-if="!form.noName"
-                v-model="form.nameEng"
-                :v="v$.form.nameEng"
+                v-model="form.nameRu"
+                :v="v$.form.nameRu"
+                :maska="{
+                  mask: 'Z*',
+                  tokens: { Z: { pattern: /[а-яА-Я0-9 ]/ } },
+                }"
                 required
-                label="Название Eng"
-                class="col-6 pr-1"
+                label="Название Ru"
+                class="col-5 px-1"
               />
               <Input
                 v-if="!form.noName"
-                v-model="form.nameRu"
-                :v="v$.form.nameRu"
+                v-model="form.nameEng"
+                :v="v$.form.nameEng"
+                :maska="{
+                  mask: 'Z*',
+                  tokens: { Z: { pattern: /[a-zA-Z0-9 ]/ } },
+                }"
                 required
-                label="Название Ru"
-                class="col-5 pl-1"
+                label="Название Eng"
+                class="col-4 px-1"
+              />
+
+              <MultiSelect
+                v-model="form.formOfOrganization"
+                label="ФО"
+                title="Форма организации"
+                class="col-2 px-1"
+                :options="formOfOrganizationOptions"
               />
             </FormGroup>
             <FormGroup class="mb-1">
@@ -43,13 +59,7 @@
                   }
                 "
               />
-              <MultiSelect
-                v-model="form.formOfOrganization"
-                label="ФО"
-                title="Форма организации"
-                class="col-2 px-1"
-                :options="formOfOrganizationOptions"
-              />
+
               <MultiSelect
                 v-model="form.companyGroup_id"
                 label="Входит в ГК"
@@ -87,10 +97,11 @@
               <PropogationInput
                 v-model="form.contacts.phones"
                 :maska="[
-                  '+# (###) ###-##-##',
-                  '+## (###) ###-##-##',
+                  '+7 (###) ###-##-###',
                   '+### (###) ###-##-##',
+                  '+#### (###) ###-##-##',
                 ]"
+                placeholder="+7 "
                 label="Телефон"
                 class="col-4 pr-1"
               />
@@ -103,6 +114,11 @@
                 v-model="form.contacts.websites"
                 label="Вебсайт"
                 class="col-4 pr-1"
+              />
+              <Checkbox
+                v-model="form.processed"
+                label="Обработано"
+                class="col-1 large"
               />
             </FormGroup>
             <FormGroup class="mb-1">
@@ -346,6 +362,7 @@ export default {
         ogrn: null,
         okpo: null,
         okved: null,
+        processed: 0,
         productRanges: [],
         signatoryLastName: null,
         signatoryMiddleName: null,

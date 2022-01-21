@@ -20,6 +20,7 @@
           class="mb-1"
           v-model.lazy="field[index]"
           v-maska="maska"
+          :placeholder="placeholder"
           :ref="'input' + index"
         />
       </div>
@@ -36,6 +37,7 @@
           class="mb-1"
           v-model.lazy="field[0]"
           v-maska="maska"
+          :placeholder="placeholder"
           :ref="'input' + 0"
         />
       </div>
@@ -73,6 +75,9 @@ export default {
     },
     maska: {
       default: null,
+    },
+    placeholder: {
+      type: String,
     },
   },
   computed: {

@@ -26,8 +26,8 @@
       </div>
     </div>
     <div class="col-12 text-center p-3">
-      <h3 v-if="!company.noName">
-        {{ company.nameRu }} - {{ company.nameEng }}
+      <h3>
+        {{ name }}
       </h3>
     </div>
     <div class="col-12">
@@ -461,6 +461,7 @@
 import { CompanyCategories } from "@/const/Const";
 import FileInput from "@/components/form/FileInput";
 import Progress from "@/components/Progress";
+import { CompanyFormOrganization } from "@/const/Const";
 export default {
   name: "CompanyDetailInfo",
   components: {
@@ -478,6 +479,48 @@ export default {
     },
   },
   computed: {
+    name() {
+      if (this.company.noName) {
+        if (this.company.formOfOrganization !== null) {
+          console.error(
+            CompanyFormOrganization.get("param")[
+              this.company.formOfOrganization
+            ].label
+          );
+          return (
+            CompanyFormOrganization.get("param")[
+              this.company.formOfOrganization
+            ].label + " - "
+          );
+        }
+        return "-";
+      }
+      let name = "";
+      if (this.company.nameRu) {
+        name = this.company.nameRu;
+        if (this.company.formOfOrganization) {
+          name =
+            CompanyFormOrganization.get("param")[
+              this.company.formOfOrganization
+            ].label +
+            " " +
+            this.company.nameRu;
+        }
+        if (this.company.nameEng) {
+          name += " - " + this.company.nameEng;
+        }
+        return name;
+      }
+      if (this.company.nameEng) {
+        if (this.company.formOfOrganization) {
+          name =
+            CompanyFormOrganization.get("param")[
+              this.company.formOfOrganization
+            ].label + this.company.nameEng;
+        }
+      }
+      return name;
+    },
     status() {
       return this.company.active ? "Автив" : "Пассив";
     },

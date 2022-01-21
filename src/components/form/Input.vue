@@ -20,7 +20,7 @@
         <ul>
           <li
             v-for="(item, index) in localeOptions"
-            :key="index"
+            :key="index + 'fuck'"
             @click="selectItem(item)"
           >
             {{ item }}
@@ -105,9 +105,11 @@ export default {
   },
   methods: {
     onInput(value) {
-      this.validate();
-      this.search(value);
-      this.$emit("update:modelValue", value);
+      if (value !== this.modelValue) {
+        this.validate();
+        this.$emit("update:modelValue", value);
+        this.search(value);
+      }
     },
     search(value) {
       if (!this.searchable) {
@@ -127,10 +129,7 @@ export default {
       }
     },
     onFocus() {
-      console.log("FOCUS");
       if (this.searchable) {
-        console.log("FOCUS2", this.localeOptions);
-
         this.searchableVisible = true;
       }
     },
