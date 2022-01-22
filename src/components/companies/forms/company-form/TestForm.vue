@@ -64,6 +64,7 @@
                 v-model="form.companyGroup_id"
                 label="Входит в ГК"
                 class="col-4 pl-1"
+                :searchable="true"
                 :options="COMPANY_GROUP_LIST"
               />
             </FormGroup>
@@ -142,8 +143,6 @@
               />
               <MultiSelect
                 v-model="form.productRanges"
-                :v="v$.form.productRanges"
-                required
                 mode="tags"
                 :closeOnSelect="false"
                 :loading="false"
@@ -478,12 +477,6 @@ export default {
         activityProfile: {
           required: helpers.withMessage(
             "Выберите профиль деятельности",
-            required
-          ),
-        },
-        productRanges: {
-          required: helpers.withMessage(
-            "Выберите наменклатуру товаров",
             required
           ),
         },

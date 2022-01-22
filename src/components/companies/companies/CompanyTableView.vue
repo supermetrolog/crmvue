@@ -120,7 +120,8 @@ export default {
       let name = "";
       if (company.nameRu) {
         name = company.nameRu;
-        if (company.formOfOrganization) {
+        if (company.formOfOrganization !== null) {
+          console.warn("ANAL");
           name =
             CompanyFormOrganization.get("param")[company.formOfOrganization]
               .label +
