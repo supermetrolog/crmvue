@@ -8,7 +8,6 @@ const Companies = {
         companyGroupList: [],
         companyProductRangeList: [],
         companyInTheBankList: [],
-        companyActivityProfileList: []
     },
     mutations: {
         updateCompanies(state, data) {
@@ -37,9 +36,6 @@ const Companies = {
         updateCompanyInTheBankList(state, data) {
             state.companyInTheBankList = data;
         },
-        updateCompanyActivityProfileList(state, data) {
-            state.companyActivityProfileList = data;
-        }
     },
     actions: {
         async FETCH_COMPANIES(context) {
@@ -102,12 +98,6 @@ const Companies = {
                 context.commit('updateCompanyInTheBankList', data);
             }
         },
-        async FETCH_COMPANY_ACTIVITY_PROFILE_LIST(context) {
-            let data = await api.companies.getCompanyActivityProfileList();
-            if (data) {
-                context.commit('updateCompanyActivityProfileList', data);
-            }
-        }
     },
     getters: {
         COMPANIES(state) {
@@ -128,9 +118,6 @@ const Companies = {
         COMPANY_IN_THE_BANK_LIST(state) {
             return state.companyInTheBankList;
         },
-        COMPANY_ACTIVITY_PROFILE_LIST(state) {
-            return state.companyActivityProfileList;
-        }
     }
 }
 

@@ -117,17 +117,6 @@ export default {
             .catch((e) => ErrorHandle.setError(e));
         return data;
     },
-    async getCompanyActivityProfileList() {
-        const url = "companies/activity-profile-list";
-        let data = false;
-        await axios
-            .get(url)
-            .then((Response) => {
-                data = SuccessHandler.getData(Response);
-            })
-            .catch((e) => ErrorHandle.setError(e));
-        return data;
-    },
     async searchCompanies(query) {
         query = new URLSearchParams(query).toString();
         let url = "companies/search?" + query + "&expand=contacts.emails,contacts.phones,contacts.websites,contacts.contactComments,broker,companyGroup,consultant,categories,productRanges,files";
