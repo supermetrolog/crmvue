@@ -99,6 +99,16 @@ export const CompanyCategories = new Map(
 
     ]
 );
+export const PassiveWhy = new Map(
+    [
+        ['param', [
+            { value: 0, label: 'Временно приостановлена' },
+            { value: 1, label: 'Заблокировано модератором' },
+            { value: 2, label: 'Иное' },
+        ]],
+
+    ]
+);
 export const CompanyFormOrganization = new Map(
     [
         ['param', [

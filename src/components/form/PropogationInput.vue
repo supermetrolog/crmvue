@@ -106,7 +106,7 @@ export default {
     },
     validate() {
       if (this.v) {
-        this.v.$touch;
+        this.v.$touch();
       }
     },
     deleteInput(index) {

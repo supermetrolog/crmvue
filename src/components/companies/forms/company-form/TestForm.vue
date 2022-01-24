@@ -37,7 +37,7 @@
                 v-model="form.formOfOrganization"
                 label="ФО"
                 title="Форма организации"
-                class="col-2 px-1"
+                class="col-2 pl-1"
                 :options="formOfOrganizationOptions"
               />
             </FormGroup>
@@ -63,35 +63,24 @@
               <MultiSelect
                 v-model="form.companyGroup_id"
                 label="Входит в ГК"
-                class="col-4 pl-1"
+                class="col-6 pl-1"
                 :searchable="true"
                 :options="COMPANY_GROUP_LIST"
               />
             </FormGroup>
             <FormGroup class="mb-1">
-              <Checkbox
-                v-model="form.categories"
-                :v="v$.form.categories"
-                :options="categoryOptions"
-                required
-                label="Категория"
-                class="col-7"
-              />
-              <Radio
-                v-model="form.status"
-                :v="v$.form.status"
-                required
-                label="Статус"
-                class="col-2"
-                :options="statusOptions"
-              />
               <MultiSelect
                 v-model="form.consultant_id"
                 :v="v$.form.consultant_id"
                 required
                 label="Консультант"
-                class="col-3 pl-1"
+                class="col-6 pr-1"
                 :options="CONSULTANT_LIST"
+              />
+              <PropogationInput
+                v-model="form.contacts.websites"
+                label="Вебсайт"
+                class="col-6 pl-1"
               />
             </FormGroup>
             <FormGroup class="mb-1">
@@ -104,24 +93,62 @@
                 ]"
                 placeholder="+7 "
                 label="Телефон"
-                class="col-4 pr-1"
-              />
-              <PropogationInput
-                v-model="form.contacts.emails"
-                label="Email"
-                class="col-4 pr-1"
-              />
-              <PropogationInput
-                v-model="form.contacts.websites"
-                label="Вебсайт"
-                class="col-4 pr-1"
+                class="col-6 pr-1"
               />
               <Checkbox
                 v-model="form.processed"
                 label="Обработано"
-                class="col-1 large"
+                class="col-2 large text-center"
+              />
+              <PropogationInput
+                v-model="form.contacts.emails"
+                :v="v$.form.contacts.emails"
+                label="Email"
+                class="col-4 pl-1"
               />
             </FormGroup>
+            <FormGroup class="mb-1">
+              <Checkbox
+                v-model="form.categories"
+                :v="v$.form.categories"
+                :options="categoryOptions"
+                required
+                label="Категория"
+                class="col-7"
+              />
+              <Textarea
+                v-model="form.description"
+                label="Описание"
+                class="col-5 pl-1"
+              />
+            </FormGroup>
+
+            <FormGroup class="mb-1">
+              <Radio
+                v-model="form.status"
+                :v="v$.form.status"
+                required
+                label="Статус"
+                class="col-4 pl-1"
+                :options="statusOptions"
+              />
+              <MultiSelect
+                v-if="!form.status"
+                v-model="form.passive_why"
+                :v="v$.form.passive_why"
+                required
+                label="Причина пассива"
+                class="col-4 pl-1"
+                :options="passiveWhyOptions"
+              >
+                <Textarea
+                  v-model="form.passive_why_comment"
+                  class="col-12 p-0 pt-1"
+                />
+              </MultiSelect>
+            </FormGroup>
+          </Tab>
+          <Tab name="Деятельность">
             <FormGroup class="mb-1">
               <MultiSelect
                 v-model="form.activityGroup"
@@ -153,23 +180,7 @@
                 :options="COMPANY_PRODUCT_RANGE_LIST"
               />
             </FormGroup>
-            <FormGroup class="mb-1">
-              <Textarea
-                v-model="form.description"
-                label="Описание"
-                class="col-6 pr-1"
-              />
-              <FileInput
-                v-model:native="form.fileList"
-                v-model:data="form.files"
-                label="Документы"
-                class="col-6 pl-1"
-              >
-                Выбрать файлы
-              </FileInput>
-            </FormGroup>
           </Tab>
-
           <Tab name="Реквизиты">
             <FormGroup class="mb-1">
               <Input
@@ -268,7 +279,18 @@
               />
             </FormGroup>
           </Tab>
-
+          <Tab name="Документы">
+            <FormGroup class="mb-1">
+              <FileInput
+                v-model:native="form.fileList"
+                v-model:data="form.files"
+                label="Документы"
+                class="col-12"
+              >
+                Выбрать файлы
+              </FileInput>
+            </FormGroup>
+          </Tab>
           <FormGroup class="mt-4">
             <Submit class="col-4 mx-auto">
               {{ formdata ? "Сохранить" : "Создать" }}
@@ -301,8 +323,9 @@ import {
   CompanyFormOrganization,
   ActivityGroupList,
   ActivityProfileList,
+  PassiveWhy,
 } from "@/const/Const.js";
-import Utils, { yandexmap } from "@/utils";
+import Utils, { yandexmap, validateEmail } from "@/utils";
 
 export default {
   name: "TestForm",
@@ -328,6 +351,7 @@ export default {
       statusOptions: ActivePassive.get("param"),
       activityGroupOptions: ActivityGroupList.get("param"),
       activityProfileOptions: ActivityProfileList.get("param"),
+      passiveWhyOptions: PassiveWhy.get("param"),
       form: {
         activityGroup: null,
         activityProfile: null,
@@ -359,6 +383,8 @@ export default {
         signatoryMiddleName: null,
         signatoryName: null,
         status: 1,
+        passive_why: null,
+        passive_why_comment: null,
         files: [],
         fileList: [],
       },
@@ -382,6 +408,14 @@ export default {
   validations() {
     return {
       form: {
+        contacts: {
+          emails: {
+            email: helpers.withMessage(
+              "заполните email правильно",
+              this.customEmailValidation
+            ),
+          },
+        },
         nameEng: {
           required: helpers.withMessage(
             "заполните поле",
@@ -524,6 +558,15 @@ export default {
       if (this.formdata)
         return await yandexmap.getAddress(query, this.formdata.officeAdress);
       return await yandexmap.getAddress(query);
+    },
+    customEmailValidation() {
+      let flag = true;
+      this.form.contacts.emails.forEach((item) => {
+        if (!validateEmail(item)) {
+          flag = false;
+        }
+      });
+      return flag;
     },
     customRequiredNameRu(value) {
       if (!this.form.noName) {
