@@ -146,6 +146,12 @@
                   class="col-12 p-0 pt-1"
                 />
               </MultiSelect>
+              <RadioStars
+                v-model="form.rating"
+                label="Рейтинг"
+                class="col-4 pl-1 text-center ml-auto"
+                :options="ratingOptions"
+              />
             </FormGroup>
           </Tab>
           <Tab name="Деятельность">
@@ -312,6 +318,7 @@ import FileInput from "@/components/form/FileInput.vue";
 import PropogationInput from "@/components/form/PropogationInput.vue";
 import Checkbox from "@/components/form/Checkbox.vue";
 import Radio from "@/components/form/Radio.vue";
+import RadioStars from "@/components/form/RadioStars.vue";
 import MultiSelect from "@/components/form/MultiSelect.vue";
 import useValidate from "@vuelidate/core";
 import Loader from "@/components/Loader";
@@ -324,6 +331,7 @@ import {
   ActivityGroupList,
   ActivityProfileList,
   PassiveWhy,
+  RatingList,
 } from "@/const/Const.js";
 import Utils, { yandexmap, validateEmail } from "@/utils";
 
@@ -338,6 +346,7 @@ export default {
     Textarea,
     Checkbox,
     Radio,
+    RadioStars,
     MultiSelect,
     FileInput,
     Loader,
@@ -352,6 +361,7 @@ export default {
       activityGroupOptions: ActivityGroupList.get("param"),
       activityProfileOptions: ActivityProfileList.get("param"),
       passiveWhyOptions: PassiveWhy.get("param"),
+      ratingOptions: RatingList.get("param"),
       form: {
         activityGroup: null,
         activityProfile: null,
@@ -383,6 +393,7 @@ export default {
         signatoryMiddleName: null,
         signatoryName: null,
         status: 1,
+        rating: 5,
         passive_why: null,
         passive_why_comment: null,
         files: [],

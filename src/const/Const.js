@@ -171,6 +171,13 @@ export const GateTypeList = new Map(
 
     ]
 );
+export const RatingList = new Map([
+    ['param', [
+        [1, { name: "", icon: "far fa-star" }],
+        [3, { name: "", icon: "far fa-star" }],
+        [5, { name: "", icon: "far fa-star" }],
+    ]],
+]);
 export const ObjectTypeList = new Map(
     [
         ['warehouse', [
