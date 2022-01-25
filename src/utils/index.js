@@ -97,6 +97,15 @@ export const validateEmail = (email) => {
             /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
         );
 };
+export const validatePropogationInput = (fields, name) => {
+    let flag = true;
+    fields.forEach((item, index) => {
+        if (index > 0 && !item[name].length) {
+            flag = false;
+        }
+    });
+    return flag;
+}
 export default {
     normalizeContactsForMultiselect(contacts) {
         let data = [];
@@ -217,20 +226,20 @@ export default {
             }
             return data;
         }
-        data.contacts.emails.forEach(item => {
-            array.push(item.email)
-        });
-        data.contacts.emails = array;
-        array = [];
-        data.contacts.phones.forEach(item => {
-            array.push(item.phone)
-        });
-        data.contacts.phones = array;
-        array = [];
-        data.contacts.websites.forEach(item => {
-            array.push(item.website)
-        });
-        data.contacts.websites = array;
+        // data.contacts.emails.forEach(item => {
+        //     array.push(item.email)
+        // });
+        // data.contacts.emails = array;
+        // array = [];
+        // data.contacts.phones.forEach(item => {
+        //     array.push(item.phone)
+        // });
+        // data.contacts.phones = array;
+        // array = [];
+        // data.contacts.websites.forEach(item => {
+        //     array.push(item.website)
+        // });
+        // data.contacts.websites = array;
         array = [];
         return data;
     },

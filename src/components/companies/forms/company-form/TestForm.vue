@@ -80,11 +80,12 @@
               <PropogationInput
                 v-model="form.contacts.websites"
                 label="Вебсайт"
+                name="website"
                 class="col-6 pl-1"
               />
             </FormGroup>
             <FormGroup class="mb-1">
-              <PropogationInput
+              <!-- <PropogationInput
                 v-model="form.contacts.phones"
                 :maska="[
                   '+7 (###) ###-##-###',
@@ -92,6 +93,19 @@
                   '+#### (###) ###-##-##',
                 ]"
                 placeholder="+7 "
+                label="Телефон"
+                class="col-6 pr-1"
+              /> -->
+              <PropogationInput
+                v-model="form.contacts.phones"
+                :v="v$.form.contacts.phones"
+                :maska="[
+                  '+7 (###) ###-##-###',
+                  '+### (###) ###-##-##',
+                  '+#### (###) ###-##-##',
+                ]"
+                placeholder="+7 "
+                name="phone"
                 label="Телефон"
                 class="col-6 pr-1"
               />
@@ -103,6 +117,7 @@
               <PropogationInput
                 v-model="form.contacts.emails"
                 :v="v$.form.contacts.emails"
+                name="email"
                 label="Email"
                 class="col-4 pl-1"
               />
@@ -315,6 +330,7 @@ import Input from "@/components/form/Input.vue";
 import Submit from "@/components/form/Submit.vue";
 import Textarea from "@/components/form/Textarea.vue";
 import FileInput from "@/components/form/FileInput.vue";
+// import PropogationInput from "@/components/form/PropogationInput.vue";
 import PropogationInput from "@/components/form/PropogationInput.vue";
 import Checkbox from "@/components/form/Checkbox.vue";
 import Radio from "@/components/form/Radio.vue";
@@ -322,7 +338,13 @@ import RadioStars from "@/components/form/RadioStars.vue";
 import MultiSelect from "@/components/form/MultiSelect.vue";
 import useValidate from "@vuelidate/core";
 import Loader from "@/components/Loader";
-import { required, helpers, minLength, maxLength } from "@vuelidate/validators";
+import {
+  required,
+  helpers,
+  minLength,
+  maxLength,
+  email,
+} from "@vuelidate/validators";
 import { mapGetters, mapActions } from "vuex";
 import {
   CompanyCategories,
@@ -333,7 +355,7 @@ import {
   PassiveWhy,
   RatingList,
 } from "@/const/Const.js";
-import Utils, { yandexmap, validateEmail } from "@/utils";
+import Utils, { yandexmap, validatePropogationInput } from "@/utils";
 
 export default {
   name: "TestForm",
@@ -421,10 +443,28 @@ export default {
       form: {
         contacts: {
           emails: {
+            propogation: helpers.withMessage(
+              "Пустое поле не допустимо",
+              this.validateEmailsPropogation
+            ),
             email: helpers.withMessage(
               "заполните email правильно",
               this.customEmailValidation
             ),
+          },
+          phones: {
+            propogation: helpers.withMessage(
+              "Пустое поле не допустимо",
+              this.validatePhonesPropogation
+            ),
+            $each: {
+              phone: {
+                minLength: helpers.withMessage(
+                  "номер не может быть меньше 11 символов",
+                  minLength(11)
+                ),
+              },
+            },
           },
         },
         nameEng: {
@@ -539,6 +579,7 @@ export default {
     ]),
     onSubmit() {
       this.v$.$validate();
+      console.error(email.$validator("fuck@suck.ru"));
       if (!this.v$.form.$error) {
         this.loader = true;
         if (this.formdata) {
@@ -570,10 +611,16 @@ export default {
         return await yandexmap.getAddress(query, this.formdata.officeAdress);
       return await yandexmap.getAddress(query);
     },
+    validateEmailsPropogation() {
+      return validatePropogationInput(this.form.contacts.emails, "email");
+    },
+    validatePhonesPropogation() {
+      return validatePropogationInput(this.form.contacts.phones, "phone");
+    },
     customEmailValidation() {
       let flag = true;
       this.form.contacts.emails.forEach((item) => {
-        if (!validateEmail(item)) {
+        if (!email.$validator(item.email)) {
           flag = false;
         }
       });
@@ -620,7 +667,7 @@ export default {
   watch: {
     form: {
       handler() {
-        console.log("FORM: ", this.form);
+        console.log("FORM: ", this.form.contacts);
       },
       deep: true,
     },

@@ -1,21 +1,44 @@
 <template>
-  <div class="form-item propogation-input phones">
-    <label class="form-item-label" :class="{ required: required }">
+  <div class="form-item propogation-input">
+    <label
+      class="form-item-label"
+      :class="{ required: required }"
+      v-if="field.length && field.length != 1"
+    >
       {{ label }}
-      <div class="item-container" v-for="(item, index) in field" :key="index">
+      <div v-for="(item, index) in field" :key="index" class="item-container">
         <i class="fas fa-minus delete" @click="deleteInput(index)"></i>
-
-        <i class="fas fa-plus add" @click="addInput(item, index)"></i>
-
+        <i
+          class="fas fa-plus add"
+          @click="addInput(item, index)"
+          v-if="typeof field[index + 1] == 'undefined'"
+        ></i>
         <input
           type="text"
-          @input.stop.prevent="onInput"
+          @change="onChange"
           :class="inputClasses"
           class="mb-1"
-          v-model="field[index][name]"
+          v-model.lazy="field[index]"
           v-maska="maska"
           :placeholder="placeholder"
           :ref="'input' + index"
+        />
+      </div>
+    </label>
+    <label class="form-item-label" :class="{ required: required }" v-else>
+      {{ label }}
+      <div class="item-container">
+        <i class="fas fa-plus add" @click="addInput(field[0], 0)"></i>
+
+        <input
+          type="text"
+          @change="onChange"
+          :class="inputClasses"
+          class="mb-1"
+          v-model.lazy="field[0]"
+          v-maska="maska"
+          :placeholder="placeholder"
+          :ref="'input' + 0"
         />
       </div>
     </label>
@@ -27,16 +50,16 @@
 
 <script>
 export default {
-  name: "PhonesInput",
+  name: "PropogationInput",
   data() {
     return {
-      field: null,
+      field: this.modelValue,
     };
   },
   props: {
     modelValue: {
       type: Array,
-      default: () => this.defaultField(),
+      default: () => [],
     },
     required: {
       type: Boolean,
@@ -56,11 +79,6 @@ export default {
     placeholder: {
       type: String,
     },
-    name: {
-      type: String,
-      required: true,
-      default: "fuck",
-    },
   },
   computed: {
     inputClasses() {
@@ -70,23 +88,20 @@ export default {
           valid: this.v.$dirty && !this.v.$error,
         };
       }
+
       return "";
     },
   },
   methods: {
-    onInput() {
+    onChange() {
       this.validate();
       const array = [];
       this.field.map((item) => {
-        if (item[this.name].length) {
+        if (item.length) {
           array.push(item);
         }
       });
-      if (this.field.length == 1) {
-        this.field = array;
-      }
-      console.log(this.field);
-
+      this.field = array;
       this.$emit("update:modelValue", this.field);
     },
     validate() {
@@ -99,13 +114,8 @@ export default {
       this.$emit("update:modelValue", this.field);
     },
     addInput(item, index) {
-      console.log(item);
-      if (
-        item &&
-        item[this.name].length &&
-        typeof this.field[index + 1] == "undefined"
-      ) {
-        this.field.push({ [this.name]: "" });
+      if (item && item.length && typeof this.field[index + 1] == "undefined") {
+        this.field.push("");
         this.$nextTick(() => {
           setTimeout(() => {
             this.$refs["input" + (index + 1)].focus();
@@ -113,24 +123,10 @@ export default {
         });
       }
     },
-    setData() {
-      if (!this.modelValue.length) {
-        this.field = this.defaultField();
-      } else {
-        this.field = this.modelValue;
-      }
-      console.warn(this.field);
-    },
-    defaultField() {
-      return [{ [this.name]: "" }];
-    },
-  },
-  mounted() {
-    this.setData();
   },
   watch: {
     modelValue() {
-      this.setData();
+      this.field = this.modelValue;
     },
   },
 };
