@@ -200,6 +200,7 @@
                 label="Номенклатура товара"
                 class="col-6 pl-1 tags"
                 :options="COMPANY_PRODUCT_RANGE_LIST"
+                name="product"
               />
             </FormGroup>
           </Tab>

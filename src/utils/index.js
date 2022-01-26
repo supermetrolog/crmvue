@@ -204,18 +204,18 @@ export default {
 
     },
     normalizeDataForCompanyForm(data) {
-        let array = [];
-        data.productRanges.forEach(item => {
-            array.push(item.product)
-        });
-        data.productRanges = array;
+        // let array = [];
+        // data.productRanges.forEach(item => {
+        //     array.push(item.product)
+        // });
+        // data.productRanges = array;
         // array = [];
 
         // data.categories.forEach(item => {
         //     array.push(item.category)
         // });
         // data.categories = array;
-        array = [];
+        // array = [];
 
         data.contacts = data.contacts.find(item => item.type == 1);
         if (!data.contacts) {
@@ -240,7 +240,7 @@ export default {
         //     array.push(item.website)
         // });
         // data.contacts.websites = array;
-        array = [];
+        // array = [];
         return data;
     },
     normalizeDataForUserForm(data) {

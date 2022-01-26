@@ -22,6 +22,7 @@
         :resolveOnLoad="resolveOnLoad"
         :delay="delay"
         :loading="loading"
+        @change="onChange($event)"
       />
     </label>
     <div class="error-container" v-if="v && v.$error">
@@ -118,6 +119,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    name: {
+      type: String,
+      default: null,
+    },
   },
   computed: {
     inputClasses() {
@@ -131,22 +136,46 @@ export default {
     },
   },
   methods: {
-    onChange() {
+    onChange(value) {
+      console.error("CHANGE", value);
+      this.field = value;
+
       this.validate();
-      this.$emit("update:modelValue", this.field);
+      if (this.name) {
+        let array = [];
+        this.field.forEach((item) => {
+          array.push({ [this.name]: item });
+        });
+        this.$emit("update:modelValue", array);
+      } else {
+        this.$emit("update:modelValue", this.field);
+      }
     },
     validate() {
       if (this.v) {
         this.v.$touch();
       }
     },
+    setData() {
+      this.field = [];
+      this.modelValue.forEach((item) => {
+        this.field.push(item[this.name]);
+      });
+      console.warn(this.field);
+    },
+  },
+  mounted() {
+    if (this.name) {
+      this.setData();
+    }
   },
   watch: {
-    field() {
-      this.onChange();
-    },
     modelValue() {
-      this.field = this.modelValue;
+      if (this.name) {
+        this.setData();
+      } else {
+        this.field = this.modelValue;
+      }
     },
   },
 };
