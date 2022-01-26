@@ -96,7 +96,7 @@
                 label="Телефон"
                 class="col-6 pr-1"
               /> -->
-              <PropogationInput
+              <PropogationDoubleInput
                 v-model="form.contacts.phones"
                 :v="v$.form.contacts.phones"
                 :maska="[
@@ -106,6 +106,7 @@
                 ]"
                 placeholder="+7 "
                 name="phone"
+                name2="exten"
                 label="Телефон"
                 class="col-6 pr-1"
               />
@@ -178,7 +179,7 @@
                 required
                 title="Группа деятельности"
                 label="Группа дея-ти"
-                class="col-3 pr-1"
+                class="col-6 pr-1"
                 :options="activityGroupOptions"
               />
               <MultiSelect
@@ -187,9 +188,11 @@
                 required
                 title="Профиль деятельности"
                 label="Профиль дея-ти"
-                class="col-3 px-1"
+                class="col-6 pl-1"
                 :options="activityProfileOptions"
               />
+            </FormGroup>
+            <FormGroup class="mb-1">
               <MultiSelect
                 v-model="form.productRanges"
                 mode="tags"
@@ -198,7 +201,7 @@
                 :searchable="true"
                 :createTag="true"
                 label="Номенклатура товара"
-                class="col-6 pl-1 tags"
+                class="col-10 tags mx-auto text-center"
                 :options="COMPANY_PRODUCT_RANGE_LIST"
                 name="product"
               />
@@ -332,8 +335,8 @@ import Input from "@/components/form/Input.vue";
 import Submit from "@/components/form/Submit.vue";
 import Textarea from "@/components/form/Textarea.vue";
 import FileInput from "@/components/form/FileInput.vue";
-// import PropogationInput from "@/components/form/PropogationInput.vue";
 import PropogationInput from "@/components/form/PropogationInput.vue";
+import PropogationDoubleInput from "@/components/form/PropogationDoubleInput.vue";
 import Checkbox from "@/components/form/Checkbox.vue";
 import Radio from "@/components/form/Radio.vue";
 import RadioStars from "@/components/form/RadioStars.vue";
@@ -367,6 +370,7 @@ export default {
     Input,
     Submit,
     PropogationInput,
+    PropogationDoubleInput,
     Textarea,
     Checkbox,
     Radio,
@@ -669,7 +673,7 @@ export default {
   watch: {
     form: {
       handler() {
-        console.log("FORM: ", this.form);
+        console.log("FORM: ", this.form.contacts.phones);
       },
       deep: true,
     },

@@ -137,7 +137,6 @@ export default {
   },
   methods: {
     onChange(value) {
-      console.error("CHANGE", value);
       this.field = value;
 
       this.validate();
@@ -161,7 +160,6 @@ export default {
       this.modelValue.forEach((item) => {
         this.field.push(item[this.name]);
       });
-      console.warn(this.field);
     },
   },
   mounted() {

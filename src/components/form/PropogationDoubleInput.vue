@@ -1,5 +1,5 @@
 <template>
-  <div class="form-item propogation-input">
+  <div class="form-item propogation-input phones">
     <label class="form-item-label" :class="{ required: required }">
       {{ label }}
       <div class="item-container" v-for="(item, index) in field" :key="index">
@@ -11,11 +11,20 @@
           type="text"
           @input.stop.prevent="onInput"
           :class="inputClasses"
-          class="mb-1"
+          class="main-input mb-1"
           v-model="field[index][name]"
           v-maska="maska"
           :placeholder="placeholder"
           :ref="'input' + index"
+        />
+        <input
+          type="text"
+          @input.stop.prevent="onInput"
+          :class="inputClasses"
+          class="additional-input mb-1"
+          v-model="field[index][name2]"
+          v-maska="'#######'"
+          :title="title2"
         />
       </div>
     </label>
@@ -27,7 +36,7 @@
 
 <script>
 export default {
-  name: "PropogationInput",
+  name: "PropogationDoubleInput",
   data() {
     return {
       field: null,
@@ -59,7 +68,16 @@ export default {
     name: {
       type: String,
       required: true,
-      default: "fuck",
+      default: "phone",
+    },
+    name2: {
+      type: String,
+      required: true,
+      default: "exten",
+    },
+    title2: {
+      type: String,
+      default: "Добавочный номер",
     },
   },
   computed: {
@@ -77,16 +95,23 @@ export default {
     onInput() {
       this.validate();
       const array = [];
+      let data = {};
+
       this.field.map((item) => {
         if (item[this.name].length) {
-          array.push(item);
+          data = { [this.name]: item[this.name], [this.name2]: null };
+          if (item[this.name2] !== null && item[this.name2].length) {
+            data[this.name2] = item[this.name2];
+          }
+          console.error(data);
+          array.push(data);
         }
       });
       if (this.field.length == 1) {
         this.field = array;
       }
 
-      this.$emit("update:modelValue", this.field);
+      this.$emit("update:modelValue", array);
     },
     validate() {
       if (this.v) {
@@ -103,7 +128,7 @@ export default {
         item[this.name].length &&
         typeof this.field[index + 1] == "undefined"
       ) {
-        this.field.push({ [this.name]: "" });
+        this.field.push({ [this.name]: "", [this.name2]: null });
         this.$nextTick(() => {
           setTimeout(() => {
             this.$refs["input" + (index + 1)].focus();
@@ -117,9 +142,10 @@ export default {
       } else {
         this.field = this.modelValue;
       }
+      console.warn(this.field);
     },
     defaultField() {
-      return [{ [this.name]: "" }];
+      return [{ [this.name]: "", [this.name2]: null }];
     },
   },
   mounted() {

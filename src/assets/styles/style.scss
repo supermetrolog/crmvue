@@ -1514,6 +1514,20 @@
                     left: 2px;
                     color: $color_danger;
                 }
+                &.phones {
+                    .item-container {
+                        input {
+                            display: inline-block;
+                        }
+                        .main-input {
+                            width: 70%;
+                        }
+                        .additional-input {
+                            margin-left: 4px;
+                            width: 28%;
+                        }
+                    }
+                }
             }
         }
     }
