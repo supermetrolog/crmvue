@@ -41,30 +41,28 @@
             <p v-else>&#8212;</p>
           </td>
           <td class="contacts">
-            <p v-if="!contacts(company.id)">&#8212;</p>
+            <template v-if="contacts(company.id)">
+              <p v-if="!contacts(company.id).contact.phones.length">&#8212;</p>
 
-            <div v-for="contact in contacts(company.id)" :key="contact.id">
-              <a
-                :href="'mailto:' + email.email"
-                v-for="email of contact.emails"
-                :key="email.email"
-              >
-                {{ email.email }}
-              </a>
-              <PhoneNumber
-                v-for="phone of contact.phones"
-                :key="phone.id"
-                :phone="phone.phone"
-                :contact="contact"
-              />
-              <!-- <a
-                :href="'tel:' + phone.phone"
-                v-for="phone of contact.phones"
-                :key="phone.phone"
-              >
-                {{ phone.phone }}
-              </a> -->
-            </div>
+              <div v-for="contact in contacts(company.id)" :key="contact.id">
+                <a
+                  :href="'mailto:' + email.email"
+                  v-for="email of contact.emails"
+                  :key="email.email"
+                >
+                  {{ email.email }}
+                </a>
+                <PhoneNumber
+                  v-for="phone of contact.phones"
+                  :key="phone.id"
+                  :phone="phone"
+                  :contact="contact"
+                />
+              </div>
+            </template>
+            <template v-else>
+              <p>&#8212;</p>
+            </template>
           </td>
           <td>Андреев В. И.</td>
           <td class="count">
@@ -146,7 +144,11 @@ export default {
       return CompanyCategories.get("param")[categoryValue][1];
     },
     contacts(company_id) {
-      return this.generalContacts.find((item) => item.company_id == company_id);
+      let result = this.generalContacts.find(
+        (item) => item.company_id == company_id
+      );
+      console.log(result);
+      return result;
     },
     normalizeContacts() {
       this.companies.map((company) => {

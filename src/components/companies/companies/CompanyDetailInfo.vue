@@ -61,7 +61,7 @@
                 <PhoneNumber
                   v-for="phone in contactsTypeGeneralPhone.phones"
                   :key="phone.id"
-                  :phone="phone.phone"
+                  :phone="phone"
                   :contact="contactsTypeGeneralPhone"
                   classList="text-right"
                 />

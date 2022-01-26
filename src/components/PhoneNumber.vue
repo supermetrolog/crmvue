@@ -1,5 +1,5 @@
 <template>
-  <div class="phone-number">
+  <div class="phone-number fuck">
     <CompanyContactForm
       @closeCompanyForm="clickCloseCompanyContactForm"
       :formdata="contactForUpdate"
@@ -30,7 +30,11 @@
               <Company :company="company" />
             </div>
           </div>
-          <div class="col-6 text-center box" v-if="contact">
+          <div
+            class="col-6 text-center box"
+            v-if="contact"
+            :class="{ 'col-12': !company }"
+          >
             <h4 class="mb-2">Контакт</h4>
             <div
               class="current-phone inner text-light"
@@ -42,7 +46,9 @@
                 @deleteContact="refreshContacts"
                 @openContactFormForUpdate="openContactFormForUpdate"
               />
-              <p class="mb-1 text-light">{{ phone }}</p>
+              <p class="mb-1 text-light">
+                {{ phone.phone }}{{ phone.exten ? ` => ${phone.exten}` : "" }}
+              </p>
               <button class="btn btn-primary scale">
                 <i class="fas fa-phone-volume mr-1"></i> позвонить
               </button>
@@ -60,7 +66,7 @@
           <div class="col-12 text-center box" v-else>
             <h4 class="mb-2">Нет в базе</h4>
             <div class="current-phone inner text-light">
-              <p class="mb-1 text-light">{{ phone }}</p>
+              <p class="mb-1 text-light">{{ phone.phone }}</p>
               <button class="btn btn-primary scale btn-large">
                 <i class="fas fa-phone-volume mr-1"></i> позвонить
               </button>
@@ -75,9 +81,12 @@
         </div>
       </div>
     </Modal>
-    <a :class="classList" :href="'tel:' + phone" @click.prevent="clickLink">{{
-      text ? text : phone
-    }}</a>
+    <a
+      :class="classList"
+      :href="'tel:' + phone.phone"
+      @click.prevent="clickLink"
+      >{{ phoneText }}</a
+    >
   </div>
 </template>
 
@@ -106,7 +115,7 @@ export default {
   },
   props: {
     phone: {
-      type: String,
+      type: Object,
       default: null,
     },
     text: {
@@ -138,6 +147,16 @@ export default {
         }
       });
       return [currentContact];
+    },
+    phoneText() {
+      if (this.text) {
+        return this.text;
+      }
+      let name = this.phone.phone;
+      if (this.phone.exten) {
+        name += " => " + this.phone.exten;
+      }
+      return name;
     },
   },
   methods: {

@@ -52,7 +52,7 @@
           <PhoneNumber
             v-for="phone of contact.phones"
             :key="phone.id"
-            :phone="phone.phone"
+            :phone="phone"
             :contact="contact"
           />
         </div>
