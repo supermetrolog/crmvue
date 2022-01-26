@@ -128,6 +128,7 @@
                 :v="v$.form.categories"
                 :options="categoryOptions"
                 required
+                name="category"
                 label="Категория"
                 class="col-7"
               />
@@ -667,7 +668,7 @@ export default {
   watch: {
     form: {
       handler() {
-        console.log("FORM: ", this.form.contacts);
+        console.log("FORM: ", this.form);
       },
       deep: true,
     },

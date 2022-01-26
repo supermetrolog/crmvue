@@ -27,7 +27,7 @@
 
 <script>
 export default {
-  name: "PhonesInput",
+  name: "PropogationInput",
   data() {
     return {
       field: null,
@@ -85,7 +85,6 @@ export default {
       if (this.field.length == 1) {
         this.field = array;
       }
-      console.log(this.field);
 
       this.$emit("update:modelValue", this.field);
     },
@@ -99,7 +98,6 @@ export default {
       this.$emit("update:modelValue", this.field);
     },
     addInput(item, index) {
-      console.log(item);
       if (
         item &&
         item[this.name].length &&
@@ -119,7 +117,6 @@ export default {
       } else {
         this.field = this.modelValue;
       }
-      console.warn(this.field);
     },
     defaultField() {
       return [{ [this.name]: "" }];

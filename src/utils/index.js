@@ -209,12 +209,12 @@ export default {
             array.push(item.product)
         });
         data.productRanges = array;
-        array = [];
+        // array = [];
 
-        data.categories.forEach(item => {
-            array.push(item.category)
-        });
-        data.categories = array;
+        // data.categories.forEach(item => {
+        //     array.push(item.category)
+        // });
+        // data.categories = array;
         array = [];
 
         data.contacts = data.contacts.find(item => item.type == 1);

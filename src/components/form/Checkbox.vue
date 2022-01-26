@@ -14,6 +14,7 @@
             v-model="field"
             :class="inputClasses"
             :value="option[0]"
+            @change="onChange"
           />
           {{ option[1] }}
         </label>
@@ -25,6 +26,7 @@
           :class="inputClasses"
           :true-value="1"
           :false-value="0"
+          @change="onChange"
         />
         {{ mode == "inline" ? label : "" }}
       </div>
@@ -68,6 +70,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    name: {
+      type: String,
+      default: null,
+    },
   },
   computed: {
     inputClasses() {
@@ -84,21 +90,43 @@ export default {
   methods: {
     onChange() {
       this.validate();
-      this.$emit("update:modelValue", this.field);
-      this.$emit("change", this.field);
+      if (this.name) {
+        let array = [];
+        this.field.forEach((item) => {
+          array.push({ [this.name]: item });
+        });
+        this.$emit("update:modelValue", array);
+        this.$emit("change", this.field);
+      } else {
+        this.$emit("update:modelValue", this.field);
+        this.$emit("change", this.field);
+      }
     },
     validate() {
       if (this.v) {
         this.v.$touch;
       }
     },
+    setData() {
+      this.field = [];
+      this.modelValue.forEach((item) => {
+        this.field.push(item[this.name]);
+      });
+      console.warn(this.field);
+    },
+  },
+  mounted() {
+    if (this.name) {
+      this.setData();
+    }
   },
   watch: {
-    field() {
-      this.onChange();
-    },
     modelValue() {
-      this.field = this.modelValue;
+      if (this.name) {
+        this.setData();
+      } else {
+        this.field = this.modelValue;
+      }
     },
   },
 };

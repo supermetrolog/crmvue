@@ -45,6 +45,9 @@
             :key="way.id"
           ></i>
         </div>
+        <div v-if="!contact.phones.length && !contact.emails.length">
+          нет данных
+        </div>
         <div class="phone-list">
           <PhoneNumber
             v-for="phone of contact.phones"
