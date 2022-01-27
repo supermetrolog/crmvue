@@ -19,7 +19,7 @@
           <td class="text-left name">
             <router-link :to="'/companies/' + company.id" target="_blank">
               <h4>
-                {{ name(company) }}
+                {{ company.full_name }}
               </h4>
 
               <p v-if="!company.nameRu" class="text-danger">&#8212;</p>
@@ -82,7 +82,7 @@
 
 <script>
 import Progress from "@/components/Progress";
-import { CompanyCategories, CompanyFormOrganization } from "@/const/Const";
+import { CompanyCategories } from "@/const/Const";
 
 export default {
   name: "CompanyTableView",
@@ -101,45 +101,6 @@ export default {
   },
   computed: {},
   methods: {
-    name(company) {
-      if (company.noName) {
-        if (company.formOfOrganization !== null) {
-          console.error(
-            CompanyFormOrganization.get("param")[company.formOfOrganization]
-              .label
-          );
-          return (
-            CompanyFormOrganization.get("param")[company.formOfOrganization]
-              .label + " - "
-          );
-        }
-        return "-";
-      }
-      let name = "";
-      if (company.nameRu) {
-        name = company.nameRu;
-        if (company.formOfOrganization !== null) {
-          console.warn("ANAL");
-          name =
-            CompanyFormOrganization.get("param")[company.formOfOrganization]
-              .label +
-            " " +
-            company.nameRu;
-        }
-        if (company.nameEng) {
-          name += " - " + company.nameEng;
-        }
-        return name;
-      }
-      if (company.nameEng) {
-        if (company.formOfOrganization) {
-          name =
-            CompanyFormOrganization.get("param")[company.formOfOrganization]
-              .label + company.nameEng;
-        }
-      }
-      return name;
-    },
     category(categoryValue) {
       return CompanyCategories.get("param")[categoryValue][1];
     },
@@ -147,7 +108,6 @@ export default {
       let result = this.generalContacts.find(
         (item) => item.company_id == company_id
       );
-      console.log(result);
       return result;
     },
     normalizeContacts() {

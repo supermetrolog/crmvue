@@ -2,6 +2,11 @@
   <div class="row no-gutters company-detail-info" v-if="company">
     <div class="col-12">
       <div class="row">
+        <div class="col-12 text-center mb-2">
+          <i :class="rating(1)"></i>
+          <i :class="rating(3)"></i>
+          <i :class="rating(5)"></i>
+        </div>
         <div class="col-12 text-center mb-3">
           <p class="d-inline-block pl-2 status">
             <span
@@ -27,7 +32,6 @@
     </div>
     <div class="col-12 text-center p-3">
       <h3>
-        <!-- {{ name }} -->
         {{ company.full_name }}
       </h3>
     </div>
@@ -51,23 +55,16 @@
               <strong>Телефон: </strong>
             </div>
             <div class="col-8 text-right align-self-center">
-              <template v-if="contactsTypeGeneralPhone">
-                <!-- <a
-                  v-for="phone of contactsTypeGeneralPhone.phones"
-                  :key="phone"
-                  :href="'tel:' + phone.phone"
-                >
-                  {{ phone.phone }}
-                </a> -->
+              <template v-if="generalContact && generalContact.phones.length">
                 <PhoneNumber
-                  v-for="phone in contactsTypeGeneralPhone.phones"
+                  v-for="phone in generalContact.phones"
                   :key="phone.id"
                   :phone="phone"
-                  :contact="contactsTypeGeneralPhone"
+                  :contact="generalContact"
                   classList="text-right"
                 />
               </template>
-              <p v-if="!contactsTypeGeneralPhone[0]">&#8212;</p>
+              <p v-else>&#8212;</p>
             </div>
           </div>
         </div>
@@ -77,14 +74,16 @@
               <strong>Email: </strong>
             </div>
             <div class="col-8 text-right align-self-center">
-              <a
-                v-for="email of contactsTypeGeneralEmail"
-                :key="email"
-                :href="'mailto:' + email.email"
-              >
-                {{ email.email }}
-              </a>
-              <p v-if="!contactsTypeGeneralEmail[0]">&#8212;</p>
+              <template v-if="generalContact && generalContact.emails.length">
+                <a
+                  v-for="email of generalContact.emails"
+                  :key="email.id"
+                  :href="'mailto:' + email.email"
+                >
+                  {{ email.email }}
+                </a>
+              </template>
+              <p v-else>&#8212;</p>
             </div>
           </div>
         </div>
@@ -94,14 +93,17 @@
               <strong>Вебсайт: </strong>
             </div>
             <div class="col-8 text-right align-self-center">
-              <a
-                v-for="(website, index) of contactsTypeGeneralWebsite"
-                :key="index"
-                :href="website.website"
-              >
-                {{ website.website }}
-              </a>
-              <p v-if="!contactsTypeGeneralWebsite[0]">&#8212;</p>
+              <template v-if="generalContact && generalContact.websites.length">
+                <a
+                  v-for="website of generalContact.websites"
+                  :key="website.id"
+                  :href="website.website"
+                  target="_blank"
+                >
+                  {{ website.website }}
+                </a>
+              </template>
+              <p v-else>&#8212;</p>
             </div>
           </div>
         </div>
@@ -116,8 +118,9 @@
             </div>
             <div class="col-7 text-right align-self-center">
               <p v-if="company.companyGroup">
-                {{ company.companyGroup.nameRu }}
+                {{ company.companyGroup.full_name }}
               </p>
+              <p v-else>&#8212;</p>
             </div>
           </div>
         </div>
@@ -127,9 +130,12 @@
               <strong>Форма Организации: </strong>
             </div>
             <div class="col-7 text-right align-self-center">
-              <p>
-                {{ company.formOfOrganization || "&#8212;" }}
+              <p v-if="company.formOfOrganization !== null">
+                {{
+                  formOfOrganizationOptions[company.formOfOrganization].label
+                }}
               </p>
+              <p v-else>&#8212;</p>
             </div>
           </div>
         </div>
@@ -139,9 +145,10 @@
               <strong>Группа деятельности: </strong>
             </div>
             <div class="col-7 text-right align-self-center">
-              <p>
-                {{ company.activityGroup }}
+              <p v-if="company.activityGroup !== null">
+                {{ activityGroupOptions[company.activityGroup].label }}
               </p>
+              <p v-else>&#8212;</p>
             </div>
           </div>
         </div>
@@ -151,9 +158,10 @@
               <strong>Профиль деятельности: </strong>
             </div>
             <div class="col-7 text-right align-self-center">
-              <p>
-                {{ company.activityProfile }}
+              <p v-if="company.activityProfile !== null">
+                {{ activityProfileOptions[company.activityProfile].label }}
               </p>
+              <p v-else>&#8212;</p>
             </div>
           </div>
         </div>
@@ -197,7 +205,19 @@
             </div>
             <div class="col-9 text-right align-self-center">
               <p>
-                {{ company.consultant.username }}
+                {{ company.consultant.userProfile.short_name }}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 company-detail-info-item">
+          <div class="row no-gutters">
+            <div class="col-4">
+              <strong>Описание: </strong>
+            </div>
+            <div class="col-8 text-right align-self-center">
+              <p>
+                {{ company.description || "&#8212;" }}
               </p>
             </div>
           </div>
@@ -209,7 +229,7 @@
             </div>
             <div class="col-8 text-right align-self-center">
               <p>
-                {{ company.created_at }}
+                {{ company.created_at_format }}
               </p>
             </div>
           </div>
@@ -217,11 +237,11 @@
         <div class="col-12 company-detail-info-item">
           <div class="row no-gutters">
             <div class="col-4">
-              <strong v-if="company.updated_at">Обновление: </strong>
+              <strong>Обновление: </strong>
             </div>
             <div class="col-8 text-right align-self-center">
-              <p v-if="company.updated_at">
-                {{ company.updated_at }}
+              <p>
+                {{ company.updated_at_format || "&#8212;" }}
               </p>
             </div>
           </div>
@@ -229,11 +249,11 @@
         <div class="col-12 company-detail-info-item">
           <div class="row no-gutters">
             <div class="col-4">
-              <strong>Описание: </strong>
+              <strong>Обработано: </strong>
             </div>
             <div class="col-8 text-right align-self-center">
-              <p v-if="company.description">
-                {{ company.description }}
+              <p>
+                {{ company.processed ? "Да" : "Нет" }}
               </p>
             </div>
           </div>
@@ -243,11 +263,13 @@
             <div class="col-4">
               <strong>Документы: </strong>
             </div>
-            <div
-              class="col-8 text-right align-self-center"
-              v-if="company.files.length"
-            >
-              <FileInput :data="company.files" :reedOnly="true" />
+            <div class="col-8 text-right align-self-center">
+              <FileInput
+                :data="company.files"
+                :reedOnly="true"
+                v-if="company.files.length"
+              />
+              <p v-else>&#8212;</p>
             </div>
           </div>
         </div>
@@ -462,7 +484,11 @@
 import { CompanyCategories } from "@/const/Const";
 import FileInput from "@/components/form/FileInput";
 import Progress from "@/components/Progress";
-import { CompanyFormOrganization } from "@/const/Const";
+import {
+  CompanyFormOrganization,
+  ActivityGroupList,
+  ActivityProfileList,
+} from "@/const/Const";
 export default {
   name: "CompanyDetailInfo",
   components: {
@@ -472,6 +498,9 @@ export default {
   data() {
     return {
       requisistesVisible: false,
+      formOfOrganizationOptions: CompanyFormOrganization.get("param"),
+      activityGroupOptions: ActivityGroupList.get("param"),
+      activityProfileOptions: ActivityProfileList.get("param"),
     };
   },
   props: {
@@ -480,50 +509,11 @@ export default {
     },
   },
   computed: {
-    name() {
-      if (this.company.noName) {
-        if (this.company.formOfOrganization !== null) {
-          console.error(
-            CompanyFormOrganization.get("param")[
-              this.company.formOfOrganization
-            ].label
-          );
-          return (
-            CompanyFormOrganization.get("param")[
-              this.company.formOfOrganization
-            ].label + " - "
-          );
-        }
-        return "-";
-      }
-      let name = "";
-      if (this.company.nameRu) {
-        name = this.company.nameRu;
-        if (this.company.formOfOrganization) {
-          name =
-            CompanyFormOrganization.get("param")[
-              this.company.formOfOrganization
-            ].label +
-            " " +
-            this.company.nameRu;
-        }
-        if (this.company.nameEng) {
-          name += " - " + this.company.nameEng;
-        }
-        return name;
-      }
-      if (this.company.nameEng) {
-        if (this.company.formOfOrganization) {
-          name =
-            CompanyFormOrganization.get("param")[
-              this.company.formOfOrganization
-            ].label + this.company.nameEng;
-        }
-      }
-      return name;
-    },
     status() {
-      return this.company.active ? "Автив" : "Пассив";
+      return this.company.active ? "Актив" : "Пассив";
+    },
+    generalContact() {
+      return this.company.contacts.find((item) => item.type == 1);
     },
     contactsTypeGeneralPhone() {
       const contacts = this.company.contacts.find((item) => item.type == 1);
@@ -540,6 +530,12 @@ export default {
     },
   },
   methods: {
+    rating(value) {
+      if (this.company.rating >= value) {
+        return "text-warning fas fa-star";
+      }
+      return "text-dark far fa-star";
+    },
     category(categoryValue) {
       return CompanyCategories.get("param")[categoryValue][1];
     },

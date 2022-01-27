@@ -42,7 +42,7 @@ export default {
         return data;
     },
     async getCompany(id) {
-        const url = "companies/" + id + "?expand=contacts.emails,contacts.phones,contacts.websites,contacts.contactComments,broker,companyGroup,consultant,categories,productRanges,files";
+        const url = "companies/" + id + "?expand=contacts.emails,contacts.phones,contacts.websites,contacts.contactComments,broker,companyGroup,consultant,consultant.userProfile,categories,productRanges,files";
         let data = false;
         await axios
             .get(url)
