@@ -9,7 +9,7 @@
             v-if="!contact.type"
           ></i>
           <i
-            class="fas fa-exclamation-circle mr-2 text-warning"
+            class="fas fa-exclamation-circle mr-2 text-danger"
             v-if="contact.warning"
             title="Внимание"
           ></i>
@@ -31,7 +31,28 @@
         </div>
       </div>
       <div class="name">
-        <strong> {{ name }} </strong>
+        <strong
+          class="d-block text-warning text-left"
+          v-if="!contact.status"
+          title="Причина ПАССИВА"
+          >Пассив:
+          <small class="text-dark">{{
+            passiveWhyOptions[contact.passive_why].label
+          }}</small>
+          <small class="text-grey" v-if="contact.passive_why_comment">
+            => {{ contact.passive_why_comment }}</small
+          ></strong
+        >
+        <strong
+          class="d-block text-danger text-left"
+          v-if="contact.warning"
+          title="Причина ВНИМАНИЯ"
+          >Внимание:
+          <small class="text-grey">{{
+            contact.warning_why_comment
+          }}</small></strong
+        >
+        <strong :title="contact.full_name"> {{ name }} </strong>
         <small class="d-block text-grey">{{ position }}</small>
       </div>
 
@@ -91,7 +112,7 @@
               v-for="comment in contact.contactComments"
               :key="comment.id"
             >
-              <strong>{{ comment.author.username }}</strong>
+              <strong>{{ comment.author.userProfile.short_name }}</strong>
               <p>{{ comment.comment }}</p>
               <small class="text-grey">{{ comment.created_at }}</small>
             </div>
@@ -112,7 +133,7 @@
       </div>
       <div class="footer row mt-1">
         <div class="col-12 consultant text-left" v-if="contact.consultant">
-          <p>ведет: {{ contact.consultant.username }}</p>
+          <p>ведет: {{ contact.consultant.userProfile.short_name }}</p>
         </div>
       </div>
     </div>
@@ -121,7 +142,11 @@
 
 <script>
 import Loader from "@/components/Loader";
-import { FeedbackList, PositionList } from "@/const/Const.js";
+import {
+  FeedbackList,
+  PositionList,
+  PassiveWhyContact,
+} from "@/const/Const.js";
 import PhoneNumber from "@/components/PhoneNumber";
 
 export default {
@@ -134,6 +159,7 @@ export default {
     return {
       wayOfInformings: FeedbackList.get("contact"),
       positionList: PositionList.get("param"),
+      passiveWhyOptions: PassiveWhyContact.get("param"),
       extraInfoVisible: false,
       comment: "",
     };
@@ -151,7 +177,7 @@ export default {
       if (this.contact.type) {
         return "Общий контакт";
       }
-      return this.contact.first_name + " " + this.contact.last_name;
+      return this.contact.first_and_last_name;
     },
     position() {
       return this.positionList[this.contact.position]?.label;

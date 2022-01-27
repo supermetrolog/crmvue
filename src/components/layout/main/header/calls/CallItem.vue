@@ -12,32 +12,43 @@
         Исходящий звонок на номер
         <PhoneNumber
           v-if="call.phoneTo"
-          :phone="call.to"
+          :phone="{ phone: call.to }"
           :text="`${call.to} (${call.phoneTo.contact.first_name} ${call.phoneTo.contact.middle_name})`"
           :contact="call.phoneTo.contact"
           class="d-inline"
           classList="text-center d-inline"
+          @createdContact="$emit('refreshCallList')"
         />
         <!-- <span v-else>{{ call.to }}(нет в базе)</span> -->
         <PhoneNumber
           v-else
-          :phone="call.to"
+          :phone="{ phone: call.to }"
           :text="`${call.to} (нет в базе)`"
           class="d-inline"
           classList="text-center d-inline"
+          @createdContact="$emit('refreshCallList')"
         />
       </p>
       <p class="text" v-else-if="call.type == 1">
         Входящий звонок с номера
         <PhoneNumber
           v-if="call.phoneFrom"
-          :phone="call.from"
+          :phone="{ phone: call.from }"
           :text="`${call.from} (${call.phoneFrom.contact.first_name} ${call.phoneFrom.contact.middle_name})`"
           :contact="call.phoneFrom.contact"
           class="d-inline"
           classList="text-center d-inline"
+          @createdContact="$emit('refreshCallList')"
         />
-        <span v-else>{{ call.from }}(нет в базе)</span>
+        <PhoneNumber
+          v-else
+          :phone="{ phone: call.from }"
+          :text="`${call.from} (нет в базе)`"
+          class="d-inline"
+          classList="text-center d-inline"
+          @createdContact="$emit('refreshCallList')"
+        />
+        <!-- <span v-else>{{ call.from }}(нет в базе)</span> -->
       </p>
       <div class="call-status">
         <p class="text">Статус:</p>

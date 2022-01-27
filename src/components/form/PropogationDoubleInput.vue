@@ -35,7 +35,9 @@
 </template>
 
 <script>
+import Mixin from "./mixins";
 export default {
+  mixins: [Mixin],
   name: "PropogationDoubleInput",
   data() {
     return {
@@ -80,17 +82,6 @@ export default {
       default: "Добавочный номер",
     },
   },
-  computed: {
-    inputClasses() {
-      if (this.v) {
-        return {
-          invalid: this.v.$error,
-          valid: this.v.$dirty && !this.v.$error,
-        };
-      }
-      return "";
-    },
-  },
   methods: {
     onInput() {
       this.validate();
@@ -112,11 +103,6 @@ export default {
       }
 
       this.$emit("update:modelValue", array);
-    },
-    validate() {
-      if (this.v) {
-        this.v.$touch();
-      }
     },
     deleteInput(index) {
       this.field = this.field.filter((_, idx) => idx != index);

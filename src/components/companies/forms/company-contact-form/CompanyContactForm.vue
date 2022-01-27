@@ -24,30 +24,95 @@
         </FormGroup>
 
         <FormGroup class="mb-1">
+          <PropogationDoubleInput
+            v-model="form.phones"
+            :v="v$.form.phones"
+            :maska="[
+              '+7 (###) ###-##-###',
+              '+### (###) ###-##-##',
+              '+#### (###) ###-##-##',
+            ]"
+            placeholder="+7 "
+            name="phone"
+            name2="exten"
+            label="Телефон"
+            class="col-6 pr-1"
+          />
+          <PropogationInput
+            v-model="form.emails"
+            :v="v$.form.emails"
+            name="email"
+            label="Email"
+            class="col-6 pr-1"
+          />
+        </FormGroup>
+        <FormGroup class="mb-1">
+          <Checkbox
+            v-model="form.wayOfInformings"
+            label="Способ информирования"
+            class="col-6 pr-1"
+            name="way"
+            :options="wayOfInformings"
+          />
           <MultiSelect
             v-model="form.position"
             label="Должность"
-            class="col-4 pr-1"
+            class="col-6 pr-1"
             :options="positionList"
           />
+        </FormGroup>
+        <FormGroup class="mb-1">
           <MultiSelect
             v-model="form.consultant_id"
             label="Консультант"
-            class="col-4 pr-1"
+            class="pr-1"
+            :class="{ 'col-5': form.warning, 'col-6': !form.warning }"
             :v="v$.form.consultant_id"
             required
             :options="CONSULTANT_LIST"
           />
+
+          <Checkbox
+            v-model="form.good"
+            label="Хор. взаим."
+            title="Хорошие взаимоотношения"
+            class="col-2 large text-center"
+          />
+          <Checkbox
+            v-model="form.faceToFaceMeeting"
+            label="Оч. встреча"
+            title="Очная встреча"
+            class="col-2 large text-center"
+          />
+
+          <Checkbox
+            v-model="form.warning"
+            label="Внимание!"
+            class="large text-center"
+            :class="{ 'col-3': form.warning, 'col-2': !form.warning }"
+          >
+            <Textarea
+              v-if="form.warning"
+              v-model="form.warning_why_comment"
+              :v="v$.form.warning_why_comment"
+              required
+              label="Причина"
+              class="col-12 p-0 pt-1"
+              placeholder="Опишите причину"
+            />
+          </Checkbox>
+        </FormGroup>
+        <FormGroup class="mb-1">
           <MultiSelect
             v-model="form.company_id"
             extraClasses="long-text"
             label="Компания"
             required
-            class="col-4 pr-1"
+            class="col-6 pr-1"
             :v="v$.form.company_id"
             :filterResults="false"
             :minChars="1"
-            :resolveOnLoad="formdata ? true : false"
+            :resolveOnLoad="true"
             :delay="0"
             :searchable="true"
             :options="
@@ -56,57 +121,29 @@
               }
             "
           />
-        </FormGroup>
-        <FormGroup class="mb-1">
-          <Checkbox
-            v-model="form.warning"
-            label="Внимание!"
-            class="col-3 pr-1 large text-center"
-          />
-          <Checkbox
-            v-model="form.faceToFaceMeeting"
-            label="Оч. встреча"
-            title="Очная встреча"
-            class="col-3 large text-center"
-          />
-          <Checkbox
-            v-model="form.good"
-            label="Хор. взаим."
-            title="Хорошие взаимоотношения"
-            class="col-3 large text-center"
-          />
           <Radio
             v-model="form.status"
             required
             label="Статус"
-            class="col-3 text-center"
+            class="col-6 text-center"
             :options="statusOptions"
-          />
-        </FormGroup>
-        <FormGroup class="mb-1">
-          <PropogationInput
-            v-model="form.phones"
-            :maska="[
-              '+# (###) ###-##-##',
-              '+## (###) ###-##-##',
-              '+### (###) ###-##-##',
-            ]"
-            label="Телефон"
-            :v="v$.form.emails"
-            class="col-4 pr-1"
-          />
-          <PropogationInput
-            v-model="form.emails"
-            label="Email"
-            :v="v$.form.emails"
-            class="col-4 pr-1"
-          />
-          <Checkbox
-            v-model="form.wayOfInformings"
-            label="Способ информирования"
-            class="col-4"
-            :options="wayOfInformings"
-          />
+          >
+            <MultiSelect
+              v-if="!form.status"
+              v-model="form.passive_why"
+              :v="v$.form.passive_why"
+              required
+              label="Причина пассива"
+              class="col-12 p-0"
+              :options="passiveWhyOptions"
+            >
+              <Textarea
+                v-model="form.passive_why_comment"
+                class="col-12 p-0 pt-1"
+                placeholder="Опишите причину"
+              />
+            </MultiSelect>
+          </Radio>
         </FormGroup>
         <FormGroup class="mt-4">
           <Submit class="col-4 mx-auto">
@@ -121,17 +158,24 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import useValidate from "@vuelidate/core";
-import { required, helpers } from "@vuelidate/validators";
-import { FeedbackList, PositionList, ActivePassive } from "@/const/Const.js";
+import { required, helpers, email } from "@vuelidate/validators";
+import {
+  FeedbackList,
+  PositionList,
+  ActivePassive,
+  PassiveWhyContact,
+} from "@/const/Const.js";
 import Form from "@/components/form/Form.vue";
 import FormGroup from "@/components/form/FormGroup.vue";
 import Input from "@/components/form/Input.vue";
 import Submit from "@/components/form/Submit.vue";
 import PropogationInput from "@/components/form/PropogationInput.vue";
+import PropogationDoubleInput from "@/components/form/PropogationDoubleInput.vue";
 import Checkbox from "@/components/form/Checkbox.vue";
+import Textarea from "@/components/form/Textarea.vue";
 import Radio from "@/components/form/Radio.vue";
 import MultiSelect from "@/components/form/MultiSelect.vue";
-import Utils from "@/utils";
+import { validatePropogationInput } from "@/utils";
 import api from "@/api/api";
 
 export default {
@@ -142,9 +186,11 @@ export default {
     Input,
     Submit,
     PropogationInput,
+    PropogationDoubleInput,
     Checkbox,
     Radio,
     MultiSelect,
+    Textarea,
   },
   data() {
     return {
@@ -152,6 +198,7 @@ export default {
       wayOfInformings: FeedbackList.get("contact"),
       positionList: PositionList.get("param"),
       statusOptions: ActivePassive.get("param"),
+      passiveWhyOptions: PassiveWhyContact.get("param"),
       loader: false,
       selectedCompany: null,
       form: {
@@ -168,6 +215,10 @@ export default {
         consultant_id: null,
         phones: [],
         emails: [],
+        websites: [],
+        passive_why: null,
+        passive_why_comment: null,
+        warning_why_comment: null,
       },
     };
   },
@@ -179,6 +230,10 @@ export default {
     company_id: {
       type: Number,
       default: null,
+    },
+    phones: {
+      type: Array,
+      default: () => [],
     },
   },
   computed: {
@@ -197,9 +252,41 @@ export default {
           required: helpers.withMessage("Выберите компанию", required),
         },
         emails: {
-          customRequired: helpers.withMessage(
+          customRequiredEmails: helpers.withMessage(
             "дабавьте либо телефон либо email",
-            this.customRequired
+            this.customRequiredEmails
+          ),
+          propogation: helpers.withMessage(
+            "Пустое поле не допустимо",
+            this.validateEmailsPropogation
+          ),
+          email: helpers.withMessage(
+            "заполните email правильно",
+            this.customEmailValidation
+          ),
+        },
+        phones: {
+          customRequiredPhones: helpers.withMessage(
+            "дабавьте либо телефон либо email",
+            this.customRequiredPhones
+          ),
+          phones: {
+            propogation: helpers.withMessage(
+              "Пустое поле не допустимо",
+              this.validatePhonesPropogation
+            ),
+          },
+        },
+        passive_why: {
+          customRequiredPassiveWhy: helpers.withMessage(
+            "Выберите причину",
+            this.customRequiredPassiveWhy
+          ),
+        },
+        warning_why_comment: {
+          customRequiredWarningWhyComment: helpers.withMessage(
+            "Опишите причину",
+            this.customRequiredWarningWhyComment
           ),
         },
       },
@@ -239,41 +326,92 @@ export default {
       }
       this.loader = false;
     },
+    validateEmailsPropogation() {
+      return validatePropogationInput(this.form.emails, "email");
+    },
+    validatePhonesPropogation() {
+      return validatePropogationInput(this.form.phones, "phone");
+    },
+    customEmailValidation() {
+      let flag = true;
+      this.form.emails.forEach((item) => {
+        if (!email.$validator(item.email)) {
+          flag = false;
+        }
+      });
+      return flag;
+    },
+    customRequiredEmails() {
+      if (this.form.emails.length) {
+        return true;
+      }
+      if (!this.form.phones.length) {
+        return false;
+      }
+      return true;
+    },
+    customRequiredPhones() {
+      if (this.form.phones.length) {
+        return true;
+      }
+      if (!this.form.emails.length) {
+        return false;
+      }
+      return true;
+    },
+    customRequiredPassiveWhy() {
+      if (this.form.status) {
+        return true;
+      }
+      if (!required.$validator(this.form.passive_why)) {
+        return false;
+      }
+      return true;
+    },
+    customRequiredWarningWhyComment() {
+      if (!this.form.warning) {
+        return true;
+      }
+      if (!required.$validator(this.form.warning_why_comment)) {
+        return false;
+      }
+      return true;
+    },
     async searchCompany(query) {
       let result = null;
       let array = [];
-      if (!this.selectedCompany) {
-        this.selectedCompany = await api.companies.getCompany(
-          this.formdata.company_id
-        );
-      }
-      if (this.formdata && this.selectedCompany) {
+      // if (!this.selectedCompany) {
+      //   this.selectedCompany = await api.companies.getCompany(
+      //     this.formdata.company_id
+      //   );
+      // }
+      // if (this.formdata && this.selectedCompany) {
+      //   array.push({
+      //     value: this.selectedCompany.id,
+      //     label:
+      //       this.selectedCompany.nameRu + " - " + this.selectedCompany.nameEng,
+      //   });
+      // }
+      if (this.formdata || this.company_id) {
+        if (!this.selectedCompany) {
+          this.selectedCompany = await api.companies.getCompany(
+            this.formdata ? this.formdata.company_id : this.company_id
+          );
+        }
+
         array.push({
-          value: this.selectedCompany[0].id,
+          value: this.selectedCompany.id,
           label:
-            this.selectedCompany[0].nameRu +
-            " - " +
-            this.selectedCompany[0].nameEng,
+            this.selectedCompany.nameRu + " " + this.selectedCompany.nameEng,
         });
       }
-      result = await this.SEARCH_COMPANIES(
-        { nameRu: query, nameEng: query },
-        false
-      );
-      console.log("RESULT: ", array);
+      result = await this.SEARCH_COMPANIES({ searchText: query }, false);
       result.forEach((item) => {
         array.push({ value: item.id, label: item.nameRu + " " + item.nameEng });
       });
       return array;
     },
-    customRequired() {
-      if (this.form.emails.length == 1 && this.form.phones.length == 1) {
-        if (this.form.emails[0] == "" && this.form.phones[0] == "") {
-          return false;
-        }
-      }
-      return true;
-    },
+
     clickCloseModal() {
       this.$emit("closeCompanyForm");
     },
@@ -282,10 +420,9 @@ export default {
     this.loader = true;
     await this.FETCH_CONSULTANT_LIST();
     this.form.company_id = this.company_id;
+    this.form.phones = this.phones;
     if (this.formdata) {
-      const cloneFormdata = JSON.stringify(this.formdata);
-      this.form = { ...this.form, ...JSON.parse(cloneFormdata) };
-      this.form = Utils.normalizeDataForContactForm(this.form);
+      this.form = { ...this.form, ...this.formdata };
     }
     this.loader = false;
   },

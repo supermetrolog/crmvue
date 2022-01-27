@@ -34,8 +34,10 @@
 
 <script>
 import Multiselect from "@vueform/multiselect";
+import Mixin from "./mixins";
 
 export default {
+  mixins: [Mixin],
   name: "Select",
   data() {
     return {
@@ -124,17 +126,6 @@ export default {
       default: null,
     },
   },
-  computed: {
-    inputClasses() {
-      if (this.v) {
-        return {
-          invalid: this.v.$error,
-          valid: this.v.$dirty && !this.v.$error,
-        };
-      }
-      return "";
-    },
-  },
   methods: {
     onChange(value) {
       this.field = value;
@@ -148,11 +139,6 @@ export default {
         this.$emit("update:modelValue", array);
       } else {
         this.$emit("update:modelValue", this.field);
-      }
-    },
-    validate() {
-      if (this.v) {
-        this.v.$touch();
       }
     },
     setData() {

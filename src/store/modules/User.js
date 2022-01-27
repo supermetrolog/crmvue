@@ -12,7 +12,7 @@ const User = {
             data.map(item => {
                 newConsultantList.push({
                     value: item.id,
-                    label: item.username,
+                    label: item.userProfile.short_name,
                     status: item.status
                 })
             });

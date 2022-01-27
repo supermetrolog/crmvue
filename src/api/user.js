@@ -14,15 +14,6 @@ function getFormDataWithFiles(formdata1) {
     for (let i = 0; i < formdata.userProfile.fileList.length; i++) {
         FD.append("files[]", formdata.userProfile.fileList[i]);
     }
-    // delete formdata.userProfile.fileList;
-    // let files = [];
-    // formdata.userProfile.avatar.map(item => {
-    //     let file = {};
-    //     file.name = item.name;
-    //     files.push(file);
-    // });
-    // formdata.userProfile.avatar = files;
-
     FD.append('data', JSON.stringify(formdata));
     return FD;
 }

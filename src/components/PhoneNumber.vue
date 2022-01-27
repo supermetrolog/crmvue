@@ -3,7 +3,14 @@
     <CompanyContactForm
       @closeCompanyForm="clickCloseCompanyContactForm"
       :formdata="contactForUpdate"
+      :phones="[
+        {
+          phone: this.phone.phone,
+          exten: null,
+        },
+      ]"
       @updated="refreshContacts"
+      @created="$emit('createdContact')"
       v-if="companyContactFormVisible"
     />
     <Modal
@@ -72,7 +79,7 @@
               </button>
               <button
                 class="btn btn-primary scale btn-large d-block mx-auto mt-2"
-                @click="clickCreateContact"
+                @click="clickOpenCompanyContactForm"
               >
                 создать контакт
               </button>

@@ -34,11 +34,14 @@
     <div class="error-container pt-0" v-if="v && v.$error">
       <p>{{ v.$errors[0].$message }}</p>
     </div>
+    <slot />
   </div>
 </template>
 
 <script>
+import Mixin from "./mixins";
 export default {
+  mixins: [Mixin],
   name: "Checkbox",
   data() {
     return {
@@ -75,18 +78,6 @@ export default {
       default: null,
     },
   },
-  computed: {
-    inputClasses() {
-      if (this.v) {
-        return {
-          invalid: this.v.$error,
-          valid: this.v.$dirty && !this.v.$error,
-        };
-      }
-
-      return "";
-    },
-  },
   methods: {
     onChange() {
       this.validate();
@@ -100,11 +91,6 @@ export default {
       } else {
         this.$emit("update:modelValue", this.field);
         this.$emit("change", this.field);
-      }
-    },
-    validate() {
-      if (this.v) {
-        this.v.$touch;
       }
     },
     setData() {

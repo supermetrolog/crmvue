@@ -171,52 +171,7 @@ export default {
         array = [];
         return data;
     },
-    normalizeDataForContactForm(data) {
-        let array = [];
-
-        data.emails.map(item => {
-            array.push(item.email)
-        });
-        data.emails = array;
-
-        array = [];
-        data.phones.map(item => {
-            array.push(item.phone)
-        });
-        data.phones = array;
-
-
-        array = [];
-        data.websites.map(item => {
-            array.push(item.website)
-        });
-        data.websites = array;
-
-
-        array = [];
-        data.wayOfInformings.map(item => {
-            array.push(item.way)
-        });
-        data.wayOfInformings = array;
-
-        array = [];
-        return data;
-
-    },
     normalizeDataForCompanyForm(data) {
-        // let array = [];
-        // data.productRanges.forEach(item => {
-        //     array.push(item.product)
-        // });
-        // data.productRanges = array;
-        // array = [];
-
-        // data.categories.forEach(item => {
-        //     array.push(item.category)
-        // });
-        // data.categories = array;
-        // array = [];
-
         data.contacts = data.contacts.find(item => item.type == 1);
         if (!data.contacts) {
             data.contacts = {
@@ -226,21 +181,6 @@ export default {
             }
             return data;
         }
-        // data.contacts.emails.forEach(item => {
-        //     array.push(item.email)
-        // });
-        // data.contacts.emails = array;
-        // array = [];
-        // data.contacts.phones.forEach(item => {
-        //     array.push(item.phone)
-        // });
-        // data.contacts.phones = array;
-        // array = [];
-        // data.contacts.websites.forEach(item => {
-        //     array.push(item.website)
-        // });
-        // data.contacts.websites = array;
-        // array = [];
         return data;
     },
     normalizeDataForUserForm(data) {

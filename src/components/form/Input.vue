@@ -36,7 +36,9 @@
 </template>
 
 <script>
+import Mixin from "./mixins";
 export default {
+  mixins: [Mixin],
   name: "Input",
   data() {
     return {
@@ -85,24 +87,6 @@ export default {
       default: () => [],
     },
   },
-  computed: {
-    inputClasses() {
-      if (this.v) {
-        if (this.v.required) {
-          return {
-            invalid: this.v.$error,
-            valid: this.v.$dirty && !this.v.$error,
-          };
-        } else {
-          return {
-            invalid: this.v.$error,
-            valid: this.v.$dirty && !this.v.$error && this.modelValue,
-          };
-        }
-      }
-      return "";
-    },
-  },
   methods: {
     onInput(value) {
       if (value !== this.modelValue) {
@@ -122,11 +106,6 @@ export default {
           this.localeOptions.push(item);
         }
       });
-    },
-    validate() {
-      if (this.v) {
-        this.v.$touch();
-      }
     },
     onFocus() {
       if (this.searchable) {

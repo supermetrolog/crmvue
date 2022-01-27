@@ -27,7 +27,8 @@
     </div>
     <div class="col-12 text-center p-3">
       <h3>
-        {{ name }}
+        <!-- {{ name }} -->
+        {{ company.full_name }}
       </h3>
     </div>
     <div class="col-12">

@@ -18,7 +18,9 @@
 </template>
 
 <script>
+import Mixin from "./mixins";
 export default {
+  mixins: [Mixin],
   name: "Textarea",
   props: {
     modelValue: {
@@ -49,27 +51,10 @@ export default {
       default: null,
     },
   },
-  computed: {
-    inputClasses() {
-      if (this.v) {
-        return {
-          invalid: this.v.$error,
-          valid: this.v.$dirty && !this.v.$error,
-        };
-      }
-
-      return "";
-    },
-  },
   methods: {
     onInput($event) {
       this.validate();
       this.$emit("update:modelValue", $event.target.value.trim());
-    },
-    validate() {
-      if (this.v) {
-        this.v.$touch;
-      }
     },
   },
 };

@@ -24,11 +24,21 @@
               <div class="old header" v-if="newCalls.length">
                 <p class="text-left title">новые звонки</p>
               </div>
-              <CallItem v-for="call of newCalls" :key="call.id" :call="call" />
+              <CallItem
+                v-for="call of newCalls"
+                :key="call.id"
+                :call="call"
+                @refreshCallList="FETCH_CALLS"
+              />
               <div class="old header" v-if="oldCalls.length">
                 <p class="text-left title">просмотренные</p>
               </div>
-              <CallItem v-for="call of oldCalls" :key="call.id" :call="call" />
+              <CallItem
+                v-for="call of oldCalls"
+                :key="call.id"
+                :call="call"
+                @refreshCallList="FETCH_CALLS"
+              />
               <div class="col-12 text-center">
                 <Pagination
                   :pagination="CALLS_PAGINATION"

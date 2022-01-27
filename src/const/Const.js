@@ -109,6 +109,17 @@ export const PassiveWhy = new Map(
 
     ]
 );
+export const PassiveWhyContact = new Map(
+    [
+        ['param', [
+            { value: 0, label: 'Телефоны неактуальны' },
+            { value: 1, label: 'Не работает в компании' },
+            { value: 2, label: 'Заблокировано модератором' },
+            { value: 3, label: 'Иное' },
+        ]],
+
+    ]
+);
 export const CompanyFormOrganization = new Map(
     [
         ['param', [

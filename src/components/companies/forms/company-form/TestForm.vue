@@ -463,18 +463,10 @@ export default {
               "Пустое поле не допустимо",
               this.validatePhonesPropogation
             ),
-            $each: {
-              phone: {
-                minLength: helpers.withMessage(
-                  "номер не может быть меньше 11 символов",
-                  minLength(11)
-                ),
-              },
-            },
           },
         },
         nameEng: {
-          required: helpers.withMessage(
+          customRequiredName: helpers.withMessage(
             "заполните поле",
             this.customRequiredNameEng
           ),
@@ -488,7 +480,7 @@ export default {
           ),
         },
         nameRu: {
-          required: helpers.withMessage(
+          customRequiredName: helpers.withMessage(
             "заполните поле",
             this.customRequiredNameRu
           ),
@@ -634,7 +626,10 @@ export default {
     },
     customRequiredNameRu(value) {
       if (!this.form.noName) {
-        if (value != null && value != "") {
+        if (
+          (value != null && value != "") ||
+          (this.form.nameEng != null && this.form.nameEng != "")
+        ) {
           return true;
         }
         return false;

@@ -40,7 +40,9 @@
 </template>
 
 <script>
+import Mixin from "./mixins";
 export default {
+  mixins: [Mixin],
   name: "Checkbox",
   data() {
     return {
@@ -73,27 +75,10 @@ export default {
       default: () => [],
     },
   },
-  computed: {
-    inputClasses() {
-      if (this.v) {
-        return {
-          invalid: this.v.$error,
-          valid: this.v.$dirty && !this.v.$error,
-        };
-      }
-
-      return "";
-    },
-  },
   methods: {
     onChange() {
       this.validate();
       this.$emit("update:modelValue", this.field);
-    },
-    validate() {
-      if (this.v) {
-        this.v.$touch;
-      }
     },
   },
   watch: {
