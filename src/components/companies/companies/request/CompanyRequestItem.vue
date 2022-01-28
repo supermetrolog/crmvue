@@ -320,6 +320,11 @@ export default {
         ...this.request,
       };
       delete data.id;
+      delete data.created_at;
+      delete data.updated_at;
+      data.status = 1;
+      data.passive_why = null;
+      data.passive_why_comment = null;
       data.header =
         this.dealType +
         " " +
