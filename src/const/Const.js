@@ -120,6 +120,19 @@ export const PassiveWhyContact = new Map(
 
     ]
 );
+export const PassiveWhyRequest = new Map(
+    [
+        ['param', [
+            { value: 0, label: 'Заблокировано модератором' },
+            { value: 1, label: 'Сняли' },
+            { value: 2, label: 'Купили' },
+            { value: 3, label: 'Запрос устарел' },
+            { value: 4, label: 'Отложил поиск' },
+            { value: 5, label: 'Иное' },
+        ]],
+
+    ]
+);
 export const CompanyFormOrganization = new Map(
     [
         ['param', [

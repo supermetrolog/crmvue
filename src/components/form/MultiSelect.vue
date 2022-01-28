@@ -22,6 +22,7 @@
         :resolveOnLoad="resolveOnLoad"
         :delay="delay"
         :loading="loading"
+        :multipleLabel="multipleLabel"
         @change="onChange($event)"
       />
     </label>
@@ -124,6 +125,12 @@ export default {
     name: {
       type: String,
       default: null,
+    },
+    multipleLabel: {
+      type: Function,
+      default: (n) => {
+        return `выбрано => ${n.length}`;
+      },
     },
   },
   methods: {

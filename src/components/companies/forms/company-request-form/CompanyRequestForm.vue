@@ -13,13 +13,22 @@
             label="Регионы"
             class="col-4 pr-1"
             mode="multiple"
+            name="region"
             :options="regionList"
           >
+            <small
+              v-for="(region, index) in form.regions"
+              :key="region.region"
+              class="d-block px-3"
+            >
+              {{ index + 1 }}. {{ regionList[region.region].label }}
+            </small>
             <Checkbox
-              v-if="form.regions.includes(1)"
+              v-if="form.regions.find((item) => item.region == 1)"
               v-model="form.directions"
               class="col-12 p-0"
               label="Направления"
+              name="direction"
               :options="directionList"
             />
           </MultiSelect>
@@ -32,10 +41,11 @@
             :options="dealTypeList"
           >
             <Checkbox
-              v-if="form.regions.includes(0)"
+              v-if="form.regions.find((item) => item.region == 0)"
               v-model="form.districts"
               class="col-12 p-0"
               label="Округа Москвы"
+              name="district"
               :options="districtList"
             />
           </MultiSelect>
@@ -108,12 +118,27 @@
             class="col-2 text-center"
             :options="statusOptions"
           />
+          <MultiSelect
+            v-if="!form.status"
+            v-model="form.passive_why"
+            :v="v$.form.passive_why"
+            required
+            label="Причина пассива"
+            class="col-5 ml-auto"
+            :options="passiveWhyOptions"
+          >
+            <Textarea
+              v-model="form.passive_why_comment"
+              class="col-12 p-0 pt-1"
+            />
+          </MultiSelect>
         </FormGroup>
         <FormGroup class="mb-1">
           <Checkbox
             v-model="form.objectClasses"
             class="col-3 pr-1"
             label="Классы"
+            name="object_class"
             :options="objectClassList"
           />
           <Radio
@@ -142,6 +167,7 @@
             v-model="form.gateTypes"
             class="col-6 pr-1"
             label="Тип ворот"
+            name="gate_type"
             :options="gateTypeList"
           />
           <Input
@@ -206,18 +232,21 @@
             label="Тип объекта"
             extraLabel="склад"
             class="col-3 pr-1"
+            name="object_type"
             :options="objectTypeListWareHouse"
           />
           <CheckboxIcons
             v-model="form.objectTypes"
             extraLabel="производство"
             class="col-3 mt-4 pr-1"
+            name="object_type"
             :options="objectTypeListProduction"
           />
           <CheckboxIcons
             v-model="form.objectTypes"
             extraLabel="участок"
             class="col-2 mt-4"
+            name="object_type"
             :options="objectTypeListPlot"
           />
         </FormGroup>
@@ -235,7 +264,6 @@
 import { mapGetters, mapActions } from "vuex";
 import useValidate from "@vuelidate/core";
 import { required, helpers } from "@vuelidate/validators";
-import Utils from "@/utils";
 import {
   ObjectClassList,
   GateTypeList,
@@ -247,6 +275,7 @@ import {
   YesNo,
   ActivePassive,
   unknownMovingDate,
+  PassiveWhyRequest,
 } from "@/const/Const.js";
 import Form from "@/components/form/Form.vue";
 import FormGroup from "@/components/form/FormGroup.vue";
@@ -293,6 +322,7 @@ export default {
       heatedOptions: YesNo.get("param"),
       trainLineOptions: YesNo.get("param"),
       unknownMovingDateOptions: unknownMovingDate.get("param"),
+      passiveWhyOptions: PassiveWhyRequest.get("param"),
       loader: false,
       form: {
         company_id: null,
@@ -324,6 +354,8 @@ export default {
         districts: [],
         movingDate: null,
         unknownMovingDate: null,
+        passive_why: null,
+        passive_why_comment: null,
       },
     };
   },
@@ -376,6 +408,12 @@ export default {
             this.customRequiredForMovingDate
           ),
         },
+        passive_why: {
+          customRequiredPassiveWhy: helpers.withMessage(
+            "Выберите причину",
+            this.customRequiredPassiveWhy
+          ),
+        },
       },
     };
   },
@@ -399,10 +437,10 @@ export default {
       }
     },
     regionNormalize() {
-      if (!this.form.regions.includes(0)) {
+      if (!this.form.regions.find((item) => item.region == 0)) {
         this.form.districts = [];
       }
-      if (!this.form.regions.includes(1)) {
+      if (!this.form.regions.find((item) => item.region == 1)) {
         this.form.directions = [];
       }
     },
@@ -432,6 +470,15 @@ export default {
         return true;
       }
     },
+    customRequiredPassiveWhy() {
+      if (this.form.status) {
+        return true;
+      }
+      if (!required.$validator(this.form.passive_why)) {
+        return false;
+      }
+      return true;
+    },
     customRequiredForMovingDate(value) {
       if (this.form.unknownMovingDate === null) {
         if (value != null) {
@@ -452,9 +499,7 @@ export default {
     await this.FETCH_CONSULTANT_LIST();
     this.form.company_id = this.company_id;
     if (this.formdata) {
-      const cloneFormdata = JSON.stringify(this.formdata);
-      this.form = { ...this.form, ...JSON.parse(cloneFormdata) };
-      this.form = Utils.normalizeDataForRequestForm(this.form);
+      this.form = { ...this.form, ...this.formdata };
     }
     console.log("FORM: ", this.form);
     this.loader = false;
