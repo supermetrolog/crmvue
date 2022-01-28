@@ -5,6 +5,14 @@
   >
     <div class="col-12 text-center general-info py-2">
       <div class="header">
+        <div class="text-center mb-1" v-if="!request.status">
+          <h3 class="text-warning">Пассив!</h3>
+          <p class="text-dark">
+            <b>{{ passiveWhyOptions[request.passive_why].label }}</b>
+          </p>
+          <p class="text-dark d-block">{{ request.passive_why_comment }}</p>
+          <hr />
+        </div>
         <i
           class="fas fa-pen text-primary edit"
           @click="openCompanyRequestFormForUpdate"
@@ -32,15 +40,21 @@
                 {{ getRegion(region.region, index) }}
               </strong>
             </div>
-            <div class="region-parameters">
+            <div class="region-parameters" v-if="request.directions.length">
+              <p class="d-block"><b>Московская область:</b></p>
               <p v-for="direction of request.directions" :key="direction.id">
                 {{ getDirection(direction.direction) }}
               </p>
-              <p v-if="request.distanceFromMKAD">
-                до {{ request.distanceFromMKAD }} км,
-              </p>
+            </div>
+            <div class="region-parameters" v-if="request.districts.length">
+              <p class="d-block"><b>Москва:</b></p>
               <p v-for="district of request.districts" :key="district.id">
                 {{ getDistrict(district.district) }}
+              </p>
+            </div>
+            <div>
+              <p v-if="!request.distanceFromMKADnotApplicable">
+                до {{ request.distanceFromMKAD }} км до МКАД
               </p>
             </div>
           </div>
@@ -62,20 +76,38 @@
           <hr />
           <div class="row parameters">
             <div class="col-6">
-              <p class="single" v-if="request.firstFloorOnly">
+              <!-- <p class="single" v-if="request.firstFloorOnly">
                 только 1-й этаж
               </p>
               <p class="single" v-if="request.antiDustOnly">только антипыль</p>
               <p class="single" v-if="request.heated">отапливаемый</p>
               <p class="single" v-if="request.haveCranes">краны</p>
-              <p>высота потолков</p>
+              <p class="single" v-if="request.trainLine">ж/д ветка</p> -->
+              <p>отапливаемый</p>
+              <p class="parameters-inner">
+                {{ request.heated ? "да" : "нет" }}
+              </p>
+              <p>краны</p>
+              <p class="parameters-inner">
+                {{ request.haveCranes ? "есть" : "нет" }}
+              </p>
+              <p>только антипыль</p>
+              <p class="parameters-inner">
+                {{ request.antiDustOnly ? "да" : "нет" }}
+              </p>
+              <p>высота потолков <small class="text-grey">(м)</small></p>
               <p class="parameters-inner">
                 {{
                   request.minCeilingHeight + " - " + request.maxCeilingHeight
                 }}
-                м
               </p>
-              <p v-if="request.objectClasses">классы</p>
+              <p>
+                площадь пола <small class="text-grey">(м<sup>2</sup>)</small>
+              </p>
+              <p class="parameters-inner">
+                {{ request.minArea + " - " + request.maxArea }}
+              </p>
+              <p>классы</p>
               <div class="parameters-inner">
                 <p
                   v-for="(objectClass, index) of request.objectClasses"
@@ -83,8 +115,9 @@
                 >
                   {{ getObjectClass(objectClass.object_class, index) }}
                 </p>
+                <p v-if="!request.objectClasses.length">нет данных</p>
               </div>
-              <p v-if="request.objectTypes">тип объекта</p>
+              <p>тип объекта</p>
               <div class="parameters-inner" v-if="request.objectTypes">
                 <p
                   v-for="objectType of request.objectTypes"
@@ -93,22 +126,44 @@
                 >
                   <i :class="getObjectTypeIcon(objectType.object_type)"></i>
                 </p>
+                <p v-if="!request.objectTypes.length">нет данных</p>
               </div>
             </div>
             <div class="col-6">
-              <p v-if="request.trainLine">ж/д ветка</p>
+              <p>только 1-й этаж</p>
+              <p class="parameters-inner">
+                {{ request.firstFloorOnly ? "да" : "нет" }}
+              </p>
+              <p>ж/д ветка</p>
+              <p class="parameters-inner">
+                {{ request.trainLine ? "есть" : "нет" }}
+              </p>
+              <p v-if="request.trainLine">
+                длина ж/д ветки <small class="text-grey">(м)</small>
+              </p>
               <p class="parameters-inner" v-if="request.trainLine">
-                {{ request.trainLineLength }} м
+                {{ request.trainLineLength ?? "нет данных" }}
               </p>
-              <p v-if="request.pricePerFloor">цена пола</p>
-              <p class="parameters-inner" v-if="request.pricePerFloor">
-                {{ request.pricePerFloor }} р
+              <p>дата переезда</p>
+              <p class="parameters-inner" v-if="request.movingDate">
+                {{ request.movingDate_format }}
               </p>
-              <p v-if="request.electricity">электричество</p>
-              <p class="parameters-inner" v-if="request.electricity">
-                {{ request.electricity }} кВт
+              <p
+                class="parameters-inner"
+                v-if="request.unknownMovingDate !== null"
+              >
+                {{ unknownMovingDateOptions[request.unknownMovingDate][1] }}
               </p>
-              <p class="font-weight-bold" v-if="request.gateTypes">ворота:</p>
+
+              <p>цена пола <small class="text-grey">(р)</small></p>
+              <p class="parameters-inner">
+                {{ request.pricePerFloor ?? "нет данных" }}
+              </p>
+              <p>электричество <small class="text-grey">(кВт)</small></p>
+              <p class="parameters-inner">
+                {{ request.electricity ?? "нет данных" }}
+              </p>
+              <p class="font-weight-bold">ворота</p>
               <div class="parameters-inner">
                 <p
                   v-for="(gateType, index) of request.gateTypes"
@@ -116,12 +171,13 @@
                 >
                   {{ getGateType(gateType.gate_type, index) }}
                 </p>
+                <p v-if="!request.gateTypes.length">нет данных</p>
               </div>
             </div>
-            <div class="col-12 mt-2" v-if="request.description">
+            <div class="col-12 mt-2">
               <p>Описание</p>
               <p class="parameters-inner">
-                {{ request.description }}
+                {{ request.description ?? "нет данных" }}
               </p>
             </div>
           </div>
@@ -130,8 +186,8 @@
       </div>
       <div class="footer row mt-1">
         <div class="col-8 consultant text-left">
-          <p>конс: {{ request.consultant.username }}</p>
-          <p>{{ request.created_at }}</p>
+          <p>конс: {{ request.consultant.userProfile.short_name }}</p>
+          <p>{{ request.created_at_format }}</p>
         </div>
         <div class="col-4 date text-right" v-if="!reedOnly">
           <button
@@ -193,6 +249,8 @@ import {
   DirectionList,
   DistrictList,
   DealTypeList,
+  PassiveWhyRequest,
+  unknownMovingDate,
 } from "@/const/Const.js";
 import Progress from "@/components/Progress.vue";
 import { mapGetters } from "vuex";
@@ -212,6 +270,8 @@ export default {
       directionList: DirectionList.get("param"),
       districtList: DistrictList.get("param"),
       dealTypeList: DealTypeList.get("param"),
+      passiveWhyOptions: PassiveWhyRequest.get("param"),
+      unknownMovingDateOptions: unknownMovingDate.get("param"),
       extraInfoVisible: false,
     };
   },
@@ -276,6 +336,7 @@ export default {
       return this.districtList[district][1] + ",";
     },
     getObjectClass(objectClass, index) {
+      console.warn(objectClass);
       if (index != this.request.objectClasses.length - 1) {
         return this.objectClassList[objectClass][1] + ",";
       }

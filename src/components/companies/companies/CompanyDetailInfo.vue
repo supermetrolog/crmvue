@@ -8,6 +8,7 @@
             <b>{{ passiveWhyOptions[company.passive_why].label }}</b>
           </p>
           <p class="text-dark">{{ company.passive_why_comment }}</p>
+          <hr />
         </div>
         <div class="col-12 text-center mb-2">
           <i :class="rating(1)"></i>

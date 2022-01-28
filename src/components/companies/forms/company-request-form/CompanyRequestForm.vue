@@ -217,7 +217,7 @@
             type="date"
             required
             class="col-4 pr-1"
-            @change="form.unknownMovingDate = null"
+            @input="form.unknownMovingDate = null"
           >
             <Radio
               v-model="form.unknownMovingDate"

@@ -30,28 +30,20 @@
           ></i>
         </div>
       </div>
+      <div class="text-center mb-1" v-if="!contact.status">
+        <h4 class="text-warning">Пассив!</h4>
+        <p class="text-dark">
+          <b>{{ passiveWhyOptions[contact.passive_why].label }}</b>
+        </p>
+        <p class="text-dark d-block">{{ contact.passive_why_comment }}</p>
+        <hr />
+      </div>
+      <div class="text-center mb-1" v-if="contact.warning">
+        <h4 class="text-danger">Внимание!</h4>
+        <p class="text-dark d-block">{{ contact.warning_why_comment }}</p>
+        <hr />
+      </div>
       <div class="name">
-        <strong
-          class="d-block text-warning text-left"
-          v-if="!contact.status"
-          title="Причина ПАССИВА"
-          >Пассив:
-          <small class="text-dark">{{
-            passiveWhyOptions[contact.passive_why].label
-          }}</small>
-          <small class="text-grey" v-if="contact.passive_why_comment">
-            => {{ contact.passive_why_comment }}</small
-          ></strong
-        >
-        <strong
-          class="d-block text-danger text-left"
-          v-if="contact.warning"
-          title="Причина ВНИМАНИЯ"
-          >Внимание:
-          <small class="text-grey">{{
-            contact.warning_why_comment
-          }}</small></strong
-        >
         <strong :title="contact.full_name"> {{ name }} </strong>
         <small class="d-block text-grey">{{ position }}</small>
       </div>
