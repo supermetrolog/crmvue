@@ -21,7 +21,7 @@ const Companies = {
             data.map(item => {
                 newCompanyGroupList.push({
                     value: item.id,
-                    label: item.nameRu + '-' + item.nameEng,
+                    label: item.full_name,
                 })
             });
             state.companyGroupList = newCompanyGroupList;

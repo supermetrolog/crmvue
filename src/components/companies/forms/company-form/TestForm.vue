@@ -209,10 +209,21 @@
           </Tab>
           <Tab name="Реквизиты">
             <FormGroup class="mb-1">
-              <Input
+              <MultiSelect
                 v-model="form.legalAddress"
+                :title="form.legalAddress"
                 label="Юр. адрес"
-                class="col-8 pr-1"
+                class="col-12"
+                :filterResults="false"
+                :minChars="1"
+                :resolveOnLoad="formdata ? true : false"
+                :delay="0"
+                :searchable="true"
+                :options="
+                  async (query) => {
+                    return await getAddress(query);
+                  }
+                "
               />
             </FormGroup>
             <FormGroup class="mb-1">
@@ -302,6 +313,19 @@
                 v-model="form.signatoryLastName"
                 label="Отчество подписанта"
                 class="col-4 pl-1"
+              />
+            </FormGroup>
+            <FormGroup class="mb-1">
+              <Input
+                v-model="form.documentNumber"
+                label="№ документа"
+                maska="#####################"
+                class="col-6 pr-1"
+              />
+              <Input
+                v-model="form.basis"
+                label="Действует на основе"
+                class="col-6 pl-1"
               />
             </FormGroup>
           </Tab>
@@ -563,6 +587,12 @@ export default {
             required
           ),
         },
+        passive_why: {
+          customRequiredPassiveWhy: helpers.withMessage(
+            "Выберите причину",
+            this.customRequiredPassiveWhy
+          ),
+        },
       },
     };
   },
@@ -649,6 +679,15 @@ export default {
       } else {
         return true;
       }
+    },
+    customRequiredPassiveWhy() {
+      if (this.form.status) {
+        return true;
+      }
+      if (!required.$validator(this.form.passive_why)) {
+        return false;
+      }
+      return true;
     },
   },
   async mounted() {
