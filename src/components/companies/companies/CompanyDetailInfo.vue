@@ -2,6 +2,13 @@
   <div class="row no-gutters company-detail-info" v-if="company">
     <div class="col-12">
       <div class="row">
+        <div class="col-12 text-center mb-3" v-if="!company.status">
+          <h3 class="text-warning">Пассив!</h3>
+          <p class="text-dark">
+            <b>{{ passiveWhyOptions[company.passive_why].label }}</b>
+          </p>
+          <p class="text-dark">{{ company.passive_why_comment }}</p>
+        </div>
         <div class="col-12 text-center mb-2">
           <i :class="rating(1)"></i>
           <i :class="rating(3)"></i>
@@ -488,6 +495,7 @@ import {
   CompanyFormOrganization,
   ActivityGroupList,
   ActivityProfileList,
+  PassiveWhy,
 } from "@/const/Const";
 export default {
   name: "CompanyDetailInfo",
@@ -501,6 +509,7 @@ export default {
       formOfOrganizationOptions: CompanyFormOrganization.get("param"),
       activityGroupOptions: ActivityGroupList.get("param"),
       activityProfileOptions: ActivityProfileList.get("param"),
+      passiveWhyOptions: PassiveWhy.get("param"),
     };
   },
   props: {
