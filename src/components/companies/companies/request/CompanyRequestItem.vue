@@ -7,15 +7,22 @@
       <div class="header">
         <div class="text-center mb-1" v-if="!request.status">
           <h3 class="text-warning">Пассив!</h3>
-          <p class="text-dark">
+          <p class="text-dark normal">
             <b>{{ passiveWhyOptions[request.passive_why].label }}</b>
           </p>
-          <p class="text-dark d-block">{{ request.passive_why_comment }}</p>
+          <p class="text-dark d-block normal">
+            {{ request.passive_why_comment }}
+          </p>
           <hr />
         </div>
         <i
           class="fas fa-pen text-primary edit"
           @click="openCompanyRequestFormForUpdate"
+          v-if="!reedOnly && request.status != 2"
+        ></i>
+        <i
+          class="fas fa-clone text-dark clone"
+          @click="cloneRequest"
           v-if="!reedOnly && request.status != 2"
         ></i>
         <i
@@ -63,12 +70,19 @@
           >
         </div>
         <i
-          class="far fa-arrow-alt-circle-down d-block open-extra-info mt-1"
+          class="
+            far
+            fa-arrow-alt-circle-down
+            d-block
+            open-extra-info
+            mt-1
+            scale
+          "
           @click="openExtraInfo"
           v-if="!extraInfoVisible"
         ></i>
         <i
-          class="far fa-arrow-alt-circle-up d-block open-extra-info mt-1"
+          class="far fa-arrow-alt-circle-up d-block open-extra-info mt-1 scale"
           @click="closeExtraInfo"
           v-if="extraInfoVisible"
         ></i>
@@ -76,13 +90,6 @@
           <hr />
           <div class="row parameters">
             <div class="col-6">
-              <!-- <p class="single" v-if="request.firstFloorOnly">
-                только 1-й этаж
-              </p>
-              <p class="single" v-if="request.antiDustOnly">только антипыль</p>
-              <p class="single" v-if="request.heated">отапливаемый</p>
-              <p class="single" v-if="request.haveCranes">краны</p>
-              <p class="single" v-if="request.trainLine">ж/д ветка</p> -->
               <p>отапливаемый</p>
               <p class="parameters-inner">
                 {{ request.heated ? "да" : "нет" }}
@@ -308,6 +315,19 @@ export default {
         this.request.maxArea;
       this.$emit("deleteRequest", data);
     },
+    cloneRequest() {
+      let data = {
+        ...this.request,
+      };
+      delete data.id;
+      data.header =
+        this.dealType +
+        " " +
+        this.request.minArea +
+        " - " +
+        this.request.maxArea;
+      this.$emit("cloneRequest", data);
+    },
     openExtraInfo() {
       this.extraInfoVisible = true;
     },
@@ -336,7 +356,6 @@ export default {
       return this.districtList[district][1] + ",";
     },
     getObjectClass(objectClass, index) {
-      console.warn(objectClass);
       if (index != this.request.objectClasses.length - 1) {
         return this.objectClassList[objectClass][1] + ",";
       }
@@ -380,7 +399,7 @@ export default {
   mounted() {
     this.extraInfoVisible = this.reedOnly;
   },
-  emits: ["openCompanyRequestFormForUpdate", "deleteRequest"],
+  emits: ["openCompanyRequestFormForUpdate", "deleteRequest", "cloneRequest"],
 };
 </script>
 

@@ -91,6 +91,7 @@
           <CompanyRequestList
             :requests="COMPANY_REQUESTS"
             @openCompanyRequestFormForUpdate="openCompanyRequestFormForUpdate"
+            @cloned="getCompanyRequests"
             v-if="!loaderCompanyRequests"
           />
           <NoData v-if="!COMPANY_REQUESTS.length && !loaderCompanyRequests" />

@@ -2464,15 +2464,25 @@
                         opacity: 1!important;
                     }
                 }
+                i.scale {
+                    &:hover {
+                        transform: scale(1.1);
+                    }
+                    transition: all .07s ease-in-out;
+                }
                 .header {
                     position: relative;
                     i.edit,
-                    i.delete {
+                    i.delete,
+                    i.clone {
                         position: absolute;
                         opacity: 0;
                         padding: 5px;
                         cursor: pointer;
-                        // background-color: black;
+                        &:hover {
+                            transform: scale(1.3);
+                        }
+                        transition: all .07s ease-in-out;
                     }
                     i.edit {
                         top: 5px;
@@ -2481,6 +2491,10 @@
                     i.delete {
                         top: 5px;
                         left: 5px;
+                    }
+                    i.clone {
+                        top: 5px;
+                        right: 30px;
                     }
                     .actions {
                         i {
@@ -2497,6 +2511,9 @@
                     p {
                         text-transform: capitalize;
                         display: inline-block;
+                    }
+                    p.normal {
+                        text-transform: none!important;
                     }
                     span {
                         display: inline-block;
