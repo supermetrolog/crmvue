@@ -31,7 +31,7 @@ function getFormDataWithFiles(formdata1, forUpdate = false) {
 }
 export default {
     async getCompanies() {
-        const url = "companies?expand=contacts.emails,contacts.phones,contacts.contactComments,broker,companyGroup,consultant,productRanges,categories,files";
+        const url = "companies?expand=requests,contacts.emails,contacts.phones,contacts.contactComments,broker,companyGroup,consultant,productRanges,categories,files";
         let data = false;
         await axios
             .get(url)

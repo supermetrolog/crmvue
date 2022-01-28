@@ -11,11 +11,16 @@
           <th>запросов</th>
           <th>сделок</th>
           <th>предложений</th>
+          <th>Дата</th>
         </tr>
       </thead>
       <tbody>
-        <tr class="text-center" v-for="company in companies" :key="company.id">
-          <td>{{ company.id }}</td>
+        <tr
+          class="text-center"
+          v-for="(company, index) in companies"
+          :key="company.id"
+        >
+          <td>{{ index + 1 }}</td>
           <td class="text-left name">
             <router-link :to="'/companies/' + company.id" target="_blank">
               <h4>
@@ -66,13 +71,16 @@
           </td>
           <td>Андреев В. И.</td>
           <td class="count">
-            <span class="p-2">{{ company.request_count }}</span>
+            <span class="p-2">{{ company.requests.length }}</span>
           </td>
           <td class="count">
             <span class="p-2">{{ company.object_count }}</span>
           </td>
           <td class="count">
             <span class="p-2">{{ company.offer_count }}</span>
+          </td>
+          <td>
+            <p class="p-2">{{ company.created_at }}</p>
           </td>
         </tr>
       </tbody>

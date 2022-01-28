@@ -288,9 +288,7 @@ export default {
     },
     reedOnly: {
       type: Boolean,
-      default: () => {
-        return false;
-      },
+      default: false,
     },
   },
   computed: {
@@ -304,16 +302,7 @@ export default {
       this.$emit("openCompanyRequestFormForUpdate", this.request);
     },
     deleteRequest() {
-      let data = {
-        ...this.request,
-      };
-      data.header =
-        this.dealType +
-        " " +
-        this.request.minArea +
-        " - " +
-        this.request.maxArea;
-      this.$emit("deleteRequest", data);
+      this.$emit("deleteRequest", this.request);
     },
     cloneRequest() {
       let data = {
@@ -322,15 +311,6 @@ export default {
       delete data.id;
       delete data.created_at;
       delete data.updated_at;
-      data.status = 1;
-      data.passive_why = null;
-      data.passive_why_comment = null;
-      data.header =
-        this.dealType +
-        " " +
-        this.request.minArea +
-        " - " +
-        this.request.maxArea;
       this.$emit("cloneRequest", data);
     },
     openExtraInfo() {

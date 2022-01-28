@@ -2431,6 +2431,16 @@
             }
         }
         &-request-list {
+            .action-modal {
+                .modal-container {
+                    max-width: 450px;
+                    .modal-body {
+                        padding-left: 35px!important;
+                        padding-right: 35px!important;
+                    }
+                }
+                .item {}
+            }
             .item {
                 hr {
                     border-radius: none!important;

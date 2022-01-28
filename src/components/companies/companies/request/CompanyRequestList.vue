@@ -4,17 +4,12 @@
       title="Удаление запроса "
       @close="clickCloseModal"
       v-if="deletedRequestItem"
+      class="action-modal"
     >
       <div class="row no-gutters">
         <div class="col-12 text-center">
-          <h4 class="text-dark">
-            Вы уверены что хотите удалить запрос
-            <span class="text-grey"
-              >"{{ deletedRequestItem.header }}м<sup><small>2</small></sup
-              >"</span
-            >
-            ?
-          </h4>
+          <h4 class="text-dark">Вы уверены что хотите удалить запрос?</h4>
+          <CompanyRequestItem :request="deletedRequestItem" :reedOnly="true" />
         </div>
         <div class="col-12 mt-4 text-center">
           <Loader class="center small" v-if="deleteLoader" />
@@ -39,17 +34,14 @@
       title="Клонирование запроса "
       @close="clickCloseModal"
       v-if="clonedRequestItem"
+      class="action-modal"
     >
       <div class="row no-gutters">
         <div class="col-12 text-center">
           <h4 class="text-dark">
-            Вы уверены что хотите клонировать запрос
-            <span class="text-grey"
-              >"{{ clonedRequestItem.header }}м<sup><small>2</small></sup
-              >"</span
-            >
-            ?
+            Вы уверены, что хотите клонировать этот запрос?
           </h4>
+          <CompanyRequestItem :request="clonedRequestItem" :reedOnly="true" />
         </div>
         <div class="col-12 mt-4 text-center">
           <Loader class="center small" v-if="cloneLoader" />
