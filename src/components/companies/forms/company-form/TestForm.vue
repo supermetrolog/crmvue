@@ -692,10 +692,12 @@ export default {
   },
   async mounted() {
     this.loader = true;
-    await this.FETCH_CONSULTANT_LIST();
-    await this.FETCH_COMPANY_GROUP_LIST();
-    await this.FETCH_COMPANY_PRODUCT_RANGE_LIST();
-    await this.FETCH_COMPANY_IN_THE_BANK_LIST();
+    await Promise.all([
+      this.FETCH_CONSULTANT_LIST(),
+      this.FETCH_COMPANY_GROUP_LIST(),
+      this.FETCH_COMPANY_PRODUCT_RANGE_LIST(),
+      this.FETCH_COMPANY_IN_THE_BANK_LIST(),
+    ]);
     if (this.formdata) {
       const cloneFormdata = JSON.stringify(this.formdata);
       this.form = { ...this.form, ...JSON.parse(cloneFormdata) };
