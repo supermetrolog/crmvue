@@ -1,5 +1,5 @@
 <template>
-  <div class="step-actions">
+  <div class="step-action">
     <div class="row no-gutters inner scroller">
       <div class="col-12">
         <div class="row px-2">

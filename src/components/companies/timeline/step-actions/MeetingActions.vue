@@ -1,15 +1,23 @@
 <template>
   <div class="step-action">
-    <CompanyRequestForm
-      @closeCompanyForm="clickCloseCompanyRequestForm"
-      :formdata="currentRequest"
-      @updated="updatedRequest"
-      v-if="companyRequestFormVisible"
-    />
+    <teleport to="body">
+      <transition
+        mode="out-in"
+        enter-active-class="animate__animated animate__zoomIn for__modal absolute"
+        leave-active-class="animate__animated animate__zoomOut for__modal absolute"
+      >
+        <CompanyRequestForm
+          @closeCompanyForm="clickCloseCompanyRequestForm"
+          :formdata="currentRequest"
+          @updated="updatedRequest"
+          v-if="companyRequestFormVisible"
+        />
+      </transition>
+    </teleport>
     <div class="row no-gutters">
-      <div class="col-6">
+      <div class="col-12">
         <div class="row no-gutters inner scroller">
-          <div class="col-12">
+          <div class="col-7 mx-auto">
             <div class="timeline-actions row">
               <Meeting
                 :step="step"
@@ -20,7 +28,7 @@
             </div>
           </div>
           <div
-            class="col-12 mx-auto company-request-list mt-4 px-3"
+            class="col-7 mx-auto company-request-list mt-4 px-3"
             v-if="currentRequest"
           >
             <Loader v-if="loaderCompanyRequests" class="center small" />
