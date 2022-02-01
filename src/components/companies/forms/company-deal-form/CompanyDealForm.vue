@@ -7,6 +7,31 @@
     >
       <Loader class="center" v-if="loader" />
       <Form @submit="onSubmit" class="center">
+        <FormGroup class="mb-1" v-if="!isOurDeal">
+          <Checkbox
+            v-model="form.is_our"
+            label="Наша сделка?"
+            class="col-6 large"
+          />
+          <MultiSelect
+            v-if="!form.is_our"
+            v-model="form.competitor_company_id"
+            extraClasses="long-text"
+            label="Компания конкурент"
+            required
+            class="col-6"
+            :filterResults="false"
+            :minChars="1"
+            :resolveOnLoad="true"
+            :delay="0"
+            :searchable="true"
+            :options="
+              async (query) => {
+                return await searchCompetitorCompany(query);
+              }
+            "
+          />
+        </FormGroup>
         <FormGroup class="mb-1">
           <Input v-model="form.name" label="Название" class="col-6 pr-1" />
           <Input
@@ -108,6 +133,7 @@ import FormGroup from "@/components/form/FormGroup.vue";
 import Input from "@/components/form/Input.vue";
 import Textarea from "@/components/form/Textarea.vue";
 import MultiSelect from "@/components/form/MultiSelect.vue";
+import Checkbox from "@/components/form/Checkbox.vue";
 import Submit from "@/components/form/Submit.vue";
 import api from "@/api/api";
 import { DealTypeList } from "@/const/Const.js";
@@ -120,6 +146,7 @@ export default {
     Textarea,
     MultiSelect,
     Submit,
+    Checkbox,
   },
   data() {
     return {
@@ -127,6 +154,7 @@ export default {
       v$: useValidate(),
       selectedCompany: null,
       selectedRequest: null,
+      selectedCompetitorCompany: null,
       form: {
         request_id: null,
         company_id: null,
@@ -138,6 +166,9 @@ export default {
         description: null,
         startEventTime: null,
         endEventTime: null,
+        is_our: 1,
+        is_competitor: 0,
+        competitor_company_id: null,
       },
     };
   },
@@ -217,7 +248,6 @@ export default {
       this.$emit("close");
     },
     async searchCompany(query) {
-      this.loader = true;
       let result = null;
       let array = [];
       if (this.formdata || this.company_id) {
@@ -240,11 +270,36 @@ export default {
       result.forEach((item) => {
         array.push({ value: item.id, label: item.nameRu + " " + item.nameEng });
       });
-      this.loader = false;
+      return array;
+    },
+    async searchCompetitorCompany(query) {
+      let result = null;
+      let array = [];
+      if (this.formdata || this.competitor_company_id) {
+        if (!this.selectedCompany) {
+          this.selectedCompetitorCompany = await api.companies.getCompany(
+            this.formdata ? this.formdata.company_id : this.company_id
+          );
+        }
+
+        array.push({
+          value: this.selectedCompetitorCompany.id,
+          label:
+            this.selectedCompetitorCompany.nameRu +
+            " " +
+            this.selectedCompetitorCompany.nameEng,
+        });
+      }
+      result = await this.SEARCH_COMPANIES({
+        query: { searchText: query },
+        saveState: false,
+      });
+      result.forEach((item) => {
+        array.push({ value: item.id, label: item.nameRu + " " + item.nameEng });
+      });
       return array;
     },
     async searchRequest(query) {
-      this.loader = true;
       let result = null;
       let array = [];
       if (this.formdata || this.request_id) {
@@ -278,7 +333,6 @@ export default {
             " м^2",
         });
       });
-      this.loader = false;
       return array;
     },
   },

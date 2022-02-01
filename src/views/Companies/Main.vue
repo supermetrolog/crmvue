@@ -6,8 +6,8 @@
     />
     <transition
       mode="out-in"
-      enter-active-class="animate__animated animate__lightSpeedInRight for__modal absolute"
-      leave-active-class="animate__animated animate__lightSpeedOutRight for__modal absolute"
+      enter-active-class="animate__animated animate__zoomIn for__modal absolute"
+      leave-active-class="animate__animated animate__zoomOut for__modal absolute"
     >
       <TestForm
         v-if="companyFormVisible"

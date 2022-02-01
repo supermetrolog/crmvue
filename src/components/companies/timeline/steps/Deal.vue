@@ -1,23 +1,25 @@
 <template>
   <div class="col mb-2">
-    <transition
-      mode="out-in"
-      enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-      leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-    >
-      <CompanyDealForm
-        v-if="data && dealFormVisible"
-        :formdata="currentRequest.deal"
-        :company_id="currentRequest.company_id"
-        :request_id="currentRequest.id"
-        :object_id="data.timelineStepObjects[0].object_id"
-        :complex_id="data.timelineStepObjects[0].complex_id"
-        :isOurDeal="true"
-        @close="clickCloseDealForm"
-        @created="updateItem"
-        @updated="updateItem"
-      />
-    </transition>
+    <teleport to="body">
+      <transition
+        mode="out-in"
+        enter-active-class="animate__animated animate__zoomIn for__modal absolute"
+        leave-active-class="animate__animated animate__zoomOut for__modal absolute"
+      >
+        <CompanyDealForm
+          v-if="data && dealFormVisible"
+          :formdata="currentRequest.deal"
+          :company_id="currentRequest.company_id"
+          :request_id="currentRequest.id"
+          :object_id="data.timelineStepObjects[0].object_id"
+          :complex_id="data.timelineStepObjects[0].complex_id"
+          :isOurDeal="true"
+          @close="clickCloseDealForm"
+          @created="updateItem"
+          @updated="updateItem"
+        />
+      </transition>
+    </teleport>
     <Loader class="center" v-if="loader" />
     <div class="row">
       <div class="col-3 mx-auto">

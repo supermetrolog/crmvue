@@ -21,9 +21,11 @@
               </a>
             </strong>
           </div>
-          <div class="col-6 text-right pr-3"><p>площадь:</p></div>
+          <div class="col-6 text-right pr-3">
+            <p>площадь (м<sup>2</sup>):</p>
+          </div>
           <div class="col-6 pl-3">
-            <strong class="">{{ deal.area }} м<sup>2</sup></strong>
+            <strong class="">{{ deal.area || "-" }}</strong>
           </div>
           <div class="col-6 text-right pr-3"><p>цена пола (р):</p></div>
           <div class="col-6 pl-3">
@@ -31,7 +33,9 @@
           </div>
           <div class="col-6 text-right pr-3"><p>консультант:</p></div>
           <div class="col-6 pl-3">
-            <strong class="">{{ deal.consultant.username }}</strong>
+            <strong class="">{{
+              deal.consultant.userProfile.short_name
+            }}</strong>
           </div>
           <div class="col-6 text-right pr-3"><p>дата начала:</p></div>
           <div class="col-6 pl-3">

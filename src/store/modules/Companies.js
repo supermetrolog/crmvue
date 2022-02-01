@@ -45,7 +45,6 @@ const Companies = {
             }
         },
         async SEARCH_COMPANIES(context, { query, saveState = true }) {
-            console.error("SAVE", saveState);
             const search = query.searchText;
             const queryParams = {
                 nameEng: search,

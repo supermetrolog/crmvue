@@ -446,7 +446,7 @@
     }
     
     .content {
-        height: 100vh;
+        min-height: 100vh;
         background-color: $color_overflow;
         padding-left: 100px;
         padding-top: 50px;
@@ -2956,13 +2956,14 @@
         // }
         &.for__modal {
             animation-duration: .25s;
-            // animation-duration: 2s;
+            // animation-duration: 5s;
             &.absolute {
                 z-index: 99;
-                position: absolute;
+                position: fixed;
                 left: 0;
                 right: 0;
-                top: 50%;
+                top: 0;
+                bottom: 0;
             }
         }
         &.for__notifications {
