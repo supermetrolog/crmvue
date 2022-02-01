@@ -119,7 +119,7 @@ export default {
     },
     async searchCompanies(query) {
         query = new URLSearchParams(query).toString();
-        let url = "companies/search?" + query + "&expand=contacts.emails,contacts.phones,contacts.websites,contacts.contactComments,broker,companyGroup,consultant,categories,productRanges,files";
+        let url = "companies/search?" + query + "&expand=requests,contacts.emails,contacts.phones,contacts.contactComments,broker,companyGroup,consultant,productRanges,categories,files";
         let data = false;
         await axios
             .get(url)

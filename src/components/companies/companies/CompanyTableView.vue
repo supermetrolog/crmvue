@@ -19,6 +19,7 @@
           class="text-center"
           v-for="(company, index) in companies"
           :key="company.id"
+          :class="{ inactive: company.active == 0 }"
         >
           <td>{{ index + 1 }}</td>
           <td class="text-left name">
@@ -47,8 +48,14 @@
           </td>
           <td class="contacts">
             <template v-if="contacts(company.id)">
-              <p v-if="!contacts(company.id).contact.phones.length">&#8212;</p>
-
+              <p
+                v-if="
+                  !contacts(company.id).contact.phones.length &&
+                  !contacts(company.id).contact.emails.length
+                "
+              >
+                &#8212;
+              </p>
               <div v-for="contact in contacts(company.id)" :key="contact.id">
                 <a
                   :href="'mailto:' + email.email"
@@ -131,7 +138,9 @@ export default {
       });
     },
   },
-  mounted() {},
+  mounted() {
+    this.normalizeContacts();
+  },
   watch: {
     companies() {
       this.normalizeContacts();

@@ -12,6 +12,7 @@
         :request_id="currentRequest.id"
         :object_id="data.timelineStepObjects[0].object_id"
         :complex_id="data.timelineStepObjects[0].complex_id"
+        :isOurDeal="true"
         @close="clickCloseDealForm"
         @created="updateItem"
         @updated="updateItem"

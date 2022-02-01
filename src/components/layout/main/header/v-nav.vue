@@ -1,5 +1,5 @@
 <template>
-  <div class="col-lg-9 align-self-center">
+  <div class="col-lg-6 align-self-center">
     <ul class="nav-list horizontal">
       <vNavItem v-for="link of nav" :key="link.id" :data="link" />
     </ul>

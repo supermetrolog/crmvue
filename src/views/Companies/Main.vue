@@ -57,8 +57,14 @@
     <div class="row no-gutters mt-2">
       <div class="col-12 companies-list-container">
         <Loader v-if="loader" />
-        <CompanyGridView :companies="this.COMPANIES" v-if="viewMode" />
-        <CompanyTableView :companies="this.COMPANIES" v-else />
+        <CompanyGridView
+          :companies="this.COMPANIES"
+          v-if="viewMode && this.COMPANIES[0]"
+        />
+        <CompanyTableView
+          :companies="this.COMPANIES"
+          v-if="!viewMode && this.COMPANIES[0]"
+        />
         <h1
           class="text-center text-dark py-5"
           v-if="!this.COMPANIES[0] && !loader"

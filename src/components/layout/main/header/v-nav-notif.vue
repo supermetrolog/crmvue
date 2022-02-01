@@ -1,20 +1,6 @@
 <template>
-  <div class="col-lg-3 align-self-center text-right">
+  <div class="col-lg-2 align-self-center text-right">
     <ul class="nav-list horizontal">
-      <li
-        class="nav-item comments"
-        :class="{
-          active: commentsVisible,
-        }"
-      >
-        <a href="#" class="nav-link" @click="getComments">
-          <div class="nav-link__content">
-            <i class="far fa-comments"></i>
-            <span class="badge badge-warning"> 12 </span>
-          </div>
-        </a>
-        <vComments v-if="commentsVisible" :comments="comments" />
-      </li>
       <li
         class="nav-item notification"
         :class="{ active: callsVisible || newCurrentCallFlag }"
@@ -73,13 +59,12 @@
 </template>
 
 <script>
-import vComments from "./comments/v-comments.vue";
 import Notifications from "@/components/layout/main/header/notifications/Notifications.vue";
 import Calls from "@/components/layout/main/header/calls/Calls.vue";
 import { mapActions, mapGetters } from "vuex";
 export default {
   name: "v-nav-notif",
-  components: { vComments, Notifications, Calls },
+  components: { Notifications, Calls },
   data() {
     return {
       commentsVisible: false,

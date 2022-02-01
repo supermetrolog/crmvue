@@ -158,6 +158,10 @@ export default {
     complex_id: {
       type: Number,
     },
+    isOurDeal: {
+      type: Boolean,
+      default: false,
+    },
   },
   validations() {
     return {
@@ -229,7 +233,10 @@ export default {
             this.selectedCompany.nameRu + " " + this.selectedCompany.nameEng,
         });
       }
-      result = await this.SEARCH_COMPANIES({ searchText: query }, false);
+      result = await this.SEARCH_COMPANIES({
+        query: { searchText: query },
+        saveState: false,
+      });
       result.forEach((item) => {
         array.push({ value: item.id, label: item.nameRu + " " + item.nameEng });
       });

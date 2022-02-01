@@ -33,7 +33,7 @@ export default {
       // if (this.param.searchText == "") {
       //   return;
       // }
-      this.$emit("search", this.param);
+      this.$emit("search", { query: this.param });
     },
   },
 };
