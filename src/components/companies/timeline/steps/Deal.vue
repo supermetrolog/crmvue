@@ -1,101 +1,54 @@
 <template>
   <div class="col mb-2">
+    <transition
+      mode="out-in"
+      enter-active-class="animate__animated animate__zoomIn for__modal absolute"
+      leave-active-class="animate__animated animate__zoomOut for__modal absolute"
+    >
+      <CompanyDealForm
+        v-if="data && dealFormVisible"
+        :formdata="currentRequest.deal"
+        :company_id="currentRequest.company_id"
+        :request_id="currentRequest.id"
+        :object_id="data.timelineStepObjects[0].object_id"
+        :complex_id="data.timelineStepObjects[0].complex_id"
+        @close="clickCloseDealForm"
+        @created="updateItem"
+        @updated="updateItem"
+      />
+    </transition>
     <Loader class="center" v-if="loader" />
-    <Form @submit="onSubmit" class="center" v-if="data">
-      <FormGroup class="mb-1">
-        <Input v-model="form.name" label="Название" class="col-6 pr-1" />
-        <Input
-          v-model="form.area"
-          label="Площадь сделки"
-          class="col-6"
-          maska="##########"
-        />
-      </FormGroup>
-      <FormGroup class="mb-1">
-        <Input
-          v-model="form.clientLegalEntity"
-          label="Юр. лицо клиента в сделке"
-          class="col-6 pr-1"
-        />
-        <Input
-          v-model="form.floorPrice"
-          label="Цена пола"
-          class="col-6"
-          maska="##########"
-        />
-      </FormGroup>
-      <FormGroup class="mb-1">
-        <MultiSelect
-          v-model="form.consultant_id"
-          :v="v$.form.consultant_id"
-          required
-          label="Консультант"
-          class="col-6 pr-1"
-          :options="CONSULTANT_LIST"
-        />
-        <Textarea v-model="form.description" label="Описание" class="col-6" />
-      </FormGroup>
-      <FormGroup class="mb-1">
-        <Input
-          v-model="form.startEventTime"
-          label="Время начала события"
-          type="date"
-          class="col-6 pr-1"
-        />
-        <Input
-          v-model="form.endEventTime"
-          label="Время завершения события"
-          type="date"
-          class="col-6"
-        />
-      </FormGroup>
-
-      <FormGroup class="mt-4">
-        <Submit class="col-4 mx-auto">
-          {{ deal ? "Сохранить" : "Создать" }}
-        </Submit>
-      </FormGroup>
-    </Form>
+    <div class="row">
+      <div class="col-3 mx-auto">
+        <button class="btn btn-primary btn-large" @click="clickOpenDealForm">
+          {{ !currentRequest.deal ? "Создать сделку" : "Редактировать сделку" }}
+        </button>
+      </div>
+    </div>
+    <div class="row mt-3" v-if="currentRequest.deal">
+      <div class="col-6 mx-auto">
+        <DealItem :deal="currentRequest.deal" />
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
-import useValidate from "@vuelidate/core";
-import { required, helpers } from "@vuelidate/validators";
-import Form from "@/components/form/Form.vue";
-import FormGroup from "@/components/form/FormGroup.vue";
-import Input from "@/components/form/Input.vue";
-import Textarea from "@/components/form/Textarea.vue";
-import MultiSelect from "@/components/form/MultiSelect.vue";
-import Submit from "@/components/form/Submit.vue";
+import { mapActions, mapGetters } from "vuex";
 import { MixinSteps } from "../mixins";
+import CompanyDealForm from "@/components/companies/forms/company-deal-form/CompanyDealForm";
+import DealItem from "@/components/companies/companies/deal/DealItem";
 export default {
   name: "Deal",
   mixins: [MixinSteps],
   components: {
-    Form,
-    FormGroup,
-    Input,
-    Textarea,
-    MultiSelect,
-    Submit,
+    CompanyDealForm,
+    DealItem,
   },
   data() {
     return {
       loader: this.loaderForStep,
-      v$: useValidate(),
-      form: {
-        request_id: null,
-        consultant_id: null,
-        name: null,
-        area: null,
-        floorPrice: null,
-        clientLegalEntity: null,
-        description: null,
-        startEventTime: null,
-        endEventTime: null,
-      },
+      dealFormVisible: false,
     };
   },
   props: {
@@ -108,54 +61,27 @@ export default {
   },
   computed: {
     ...mapGetters(["CONSULTANT_LIST", "COMPANY_REQUESTS"]),
-    deal() {
-      return this.COMPANY_REQUESTS.find((item) => item.id == this.request_id)
-        .deal;
+    currentRequest() {
+      return this.COMPANY_REQUESTS.find((item) => item.id == this.request_id);
     },
-  },
-  validations() {
-    return {
-      form: {
-        consultant_id: {
-          required: helpers.withMessage("выберите консультанта", required),
-        },
-      },
-    };
   },
   methods: {
-    ...mapActions(["FETCH_CONSULTANT_LIST", "FETCH_COMPANY_REQUESTS"]),
-    onSubmit() {
-      // console.log(this.deal, this.COMPANY_REQUESTS, this.v$.form.$error);
-      this.v$.$validate();
-      if (!this.v$.form.$error) {
-        this.data.requestDealData = this.form;
-        this.$emit("updateItem", this.data, false, () => {
-          this.FETCH_COMPANY_REQUESTS(this.$route.params.id);
-        });
-      }
+    ...mapActions(["FETCH_COMPANY_REQUESTS"]),
+    clickOpenDealForm() {
+      this.dealFormVisible = true;
     },
-    setData() {
-      if (this.deal) {
-        this.form = { ...this.deal };
-        this.form.object_id = this.data.timelineStepObjects[0].object_id;
-        this.form.complex_id = this.data.timelineStepObjects[0].complex_id;
-      } else {
-        this.form.request_id = this.request_id;
-        this.form.object_id = this.data.timelineStepObjects[0].object_id;
-        this.form.complex_id = this.data.timelineStepObjects[0].complex_id;
-      }
+    clickCloseDealForm() {
+      this.dealFormVisible = false;
+    },
+    updateItem(form) {
+      this.data.deal = form;
+      this.$emit("updateItem", this.data, false, () => {
+        this.FETCH_COMPANY_REQUESTS(this.$route.params.id);
+      });
     },
   },
-  async mounted() {
-    this.loader = true;
-    await this.FETCH_CONSULTANT_LIST();
-    this.setData();
-    this.loader = this.loaderForStep;
-  },
+  async mounted() {},
   watch: {
-    deal() {
-      this.setData();
-    },
     loaderForStep() {
       this.loader = this.loaderForStep;
     },

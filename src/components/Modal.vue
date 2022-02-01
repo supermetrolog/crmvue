@@ -1,5 +1,5 @@
 <template>
-  <div class="modal active" role="dialog">
+  <div class="modal active" role="dialog" :class="classes">
     <div class="modal-container">
       <div class="modal-header">
         <div class="row no-gutters">
@@ -23,6 +23,9 @@ export default {
     title: {
       type: String,
       default: "Заголовок",
+    },
+    classes: {
+      type: String,
     },
   },
   methods: {

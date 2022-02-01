@@ -380,18 +380,6 @@ export default {
     async searchCompany(query) {
       let result = null;
       let array = [];
-      // if (!this.selectedCompany) {
-      //   this.selectedCompany = await api.companies.getCompany(
-      //     this.formdata.company_id
-      //   );
-      // }
-      // if (this.formdata && this.selectedCompany) {
-      //   array.push({
-      //     value: this.selectedCompany.id,
-      //     label:
-      //       this.selectedCompany.nameRu + " - " + this.selectedCompany.nameEng,
-      //   });
-      // }
       if (this.formdata || this.company_id) {
         if (!this.selectedCompany) {
           this.selectedCompany = await api.companies.getCompany(

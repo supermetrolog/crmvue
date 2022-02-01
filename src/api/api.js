@@ -7,6 +7,7 @@ import request from "./request.js";
 import objects from "./objects.js";
 import contacts from "./contacts.js";
 import companies from "./companies.js";
+import deal from "./deal.js";
 export default {
     user,
     notifications,
@@ -16,5 +17,6 @@ export default {
     objects,
     contacts,
     companies,
-    calls
+    calls,
+    deal
 }

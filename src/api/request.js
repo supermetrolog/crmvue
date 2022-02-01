@@ -14,6 +14,28 @@ export default {
             .catch((e) => ErrorHandle.setError(e));
         return data;
     },
+    async getRequest(id) {
+        const url = "requests/" + id;
+        let data = false;
+        await axios
+            .get(url)
+            .then((Response) => {
+                data = SuccessHandler.getData(Response);
+            })
+            .catch((e) => ErrorHandle.setError(e));
+        return data;
+    },
+    async searchRequests(query) {
+        query = new URLSearchParams(query).toString();
+        let url = "requests/search?" + query;
+        let data = false;
+        await axios
+            .get(url)
+            .then((Response) => {
+                data = SuccessHandler.getData(Response);
+            });
+        return data;
+    },
     async createRequest(formdata) {
         const url = "requests";
         let data = false;

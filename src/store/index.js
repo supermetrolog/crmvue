@@ -9,6 +9,7 @@ import Objects from './modules/Objects'
 import Websocket from './modules/Websocket'
 import Call from './modules/Call'
 import User from './modules/User'
+import Deal from './modules/Deal'
 const store = createStore({
     state: {},
     mutations: {},
@@ -26,7 +27,8 @@ const store = createStore({
         Objects,
         Websocket,
         Call,
-        User
+        User,
+        Deal
     }
 })
 store.checkAction = function(name) {
