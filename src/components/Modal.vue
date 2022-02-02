@@ -35,9 +35,13 @@ export default {
   },
   mounted() {
     document.getElementsByTagName("body")[0].style.overflow = "hidden";
+    document.getElementsByTagName("body")[0].style.paddingRight = "5px";
+    document.getElementsByClassName("navbar")[0].style.paddingRight = "5px";
   },
   unmounted() {
-    document.getElementsByTagName("body")[0].style["overflow-y"] = "scroll";
+    document.getElementsByTagName("body")[0].style.overflowY = "scroll";
+    document.getElementsByTagName("body")[0].style.paddingRight = "0";
+    document.getElementsByClassName("navbar")[0].style.paddingRight = "0";
   },
   emits: ["close"],
 };
