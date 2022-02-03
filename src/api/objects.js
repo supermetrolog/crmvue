@@ -71,6 +71,29 @@ export default {
 
         return data;
     },
+    async searchObjects(params) {
+        const url = `search/`;
+        const formdata = new FormData();
+        formdata.append("request", JSON.stringify(params));
+        let data = false;
+        await pennylaneAxios
+            .post(url, formdata)
+            .then((Response) => {
+                data = SuccessHandler.getData(Response);
+                data = {
+                    offers: data.offers,
+                    pagination: {
+                        totalCount: data.amount,
+                        perPage: data.pages - data.page,
+                        pageCount: data.pages,
+                        currentPage: data.page,
+                    }
+                };
+            })
+            .catch((e) => ErrorHandle.setError(e));
+
+        return data;
+    },
     async sendObjects(step_id, objects) {
         const url = `timeline/add-objects/${step_id}`;
         let data = false;

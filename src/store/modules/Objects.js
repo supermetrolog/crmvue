@@ -12,11 +12,11 @@ const Objects = {
             state.currentStepObjects = objects;
         },
         updateAllObjects(state, data) {
-
             if (Array.isArray(state.allObjects) && Array.isArray(data.offers) && state.objectsCurrentPage > 1) {
                 state.allObjects = state.allObjects.concat(data.offers);
 
             } else {
+                console.log(data);
                 state.allObjects = data.offers;
             }
             state.objectPagination = data.pagination;
@@ -34,6 +34,9 @@ const Objects = {
         resetCurrentStepObjects(state) {
             state.currentStepObjects = [];
             state.allObjects = [];
+        },
+        updatePagination(state, data) {
+            state.objectPagination = data;
         }
     },
     actions: {
@@ -61,6 +64,18 @@ const Objects = {
             console.error("AFTER", array);
             return array;
 
+        },
+        async SEARCH_OBJECTS(context, { query }) {
+            const search = query.searchText;
+            const queryParams = {
+                search,
+                pages: 1,
+                page_num: context.getters.OBJECTS_CURRENT_PAGE,
+                page_items: 32,
+            };
+            const result = await api.objects.searchObjects(queryParams);
+            context.commit('updatePagination', result.pagination);
+            return result.offers;
         },
         async FETCH_OBJECTS_FOR_PREVENT_STEP_OBJECTS(context, currentStepNumber) {
             const preventStepObjects = context.getters.TIMELINE.timelineSteps[currentStepNumber - 1].timelineStepObjects;

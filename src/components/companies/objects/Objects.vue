@@ -110,7 +110,6 @@
           </div>
         </div>
       </div>
-
       <div class="col-12 objects-list-container">
         <Loader class="center" v-if="loader" />
         <div
@@ -154,8 +153,16 @@
           <div class="col-12 px-2 pb-1">
             <h5 class="m-0">Все предложения</h5>
           </div>
+          <div class="col-12 px-0 pb-1 mb-3" v-if="searchable">
+            <ObjectsSearch v-if="searchable" @search="search" />
+          </div>
         </div>
-        <div class="row no-gutters" v-if="allObjects.length">
+        <div
+          class="row no-gutters all-objects-container"
+          v-if="allObjects.length"
+        >
+          <Loader class="center" v-if="allObjectsLoader" />
+
           <template v-if="viewMode">
             <ObjectsItem
               v-for="object in allObjects"
@@ -197,6 +204,9 @@
             </div>
           </template>
         </div>
+        <div v-if="!allObjects.length && searchable && searchMode">
+          <h2 class="text-warning text-center">НЕТ ДАННЫХ</h2>
+        </div>
       </div>
       <div class="col-12 text-center" v-if="step.number == 1">
         <Pagination :pagination="OBJECTS_PAGINATION" @loadMore="loadMore" />
@@ -209,6 +219,7 @@
 import { mapActions, mapGetters } from "vuex";
 import ObjectsItem from "@/components/companies/objects/ObjectsItem.vue";
 import ObjectsItemTable from "@/components/companies/objects/ObjectsItemTable.vue";
+import ObjectsSearch from "@/components/companies/objects/ObjectsSearch.vue";
 import Pagination from "@/components/Pagination";
 import Loader from "@/components/Loader";
 import CustomButton from "@/components/CustomButton.vue";
@@ -222,11 +233,15 @@ export default {
     Loader,
     Pagination,
     CustomButton,
+    ObjectsSearch,
   },
   data() {
     return {
       loader: false,
+      allObjectsLoader: false,
       selectedObjects: [],
+      searchParams: null,
+      searchMode: false,
       viewMode: true,
       count: 0,
       allObjects: [],
@@ -246,6 +261,10 @@ export default {
     disabled: {
       type: Boolean,
       default: true,
+    },
+    searchable: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {
@@ -268,6 +287,7 @@ export default {
       "UPDATE_STEP",
       "FETCH_COMPANY_REQUESTS",
       "RESET_CURRENT_STEP_OBJECTS",
+      "SEARCH_OBJECTS",
     ]),
 
     selectObject(object, comment = null) {
@@ -295,7 +315,11 @@ export default {
     },
     loadMore() {
       this.INCRIMENT_OBJECTS_CURRENT_PAGE();
-      this.getAllObjects();
+      if (this.searchMode) {
+        this.searchObjects(this.searchParams);
+      } else {
+        this.getAllObjects();
+      }
     },
     clickResetSelectObjects() {
       this.selectedObjects = [];
@@ -453,6 +477,32 @@ export default {
       }
       this.loader = false;
     },
+    async search(params) {
+      this.searchParams = params;
+      this.searchMode = true;
+      this.RETURN_OBJECTS_CURRENT_PAGE_TO_FIRST();
+      this.searchObjects(params);
+    },
+    async searchObjects(params) {
+      this.allObjectsLoader = true;
+      if (params.query.searchText == "") {
+        this.searchMode = false;
+        this.RETURN_OBJECTS_CURRENT_PAGE_TO_FIRST();
+        await this.getAllObjects(this.step.number);
+      } else {
+        let data = await this.SEARCH_OBJECTS({ ...params });
+        if (
+          Array.isArray(this.allObjects) &&
+          Array.isArray(data) &&
+          this.OBJECTS_CURRENT_PAGE > 1
+        ) {
+          this.allObjects = this.allObjects.concat(data);
+        } else {
+          this.allObjects = data;
+        }
+      }
+      this.allObjectsLoader = false;
+    },
     clearObjects() {
       this.currentStepObjects = [];
       this.allObjects = [];
@@ -463,19 +513,6 @@ export default {
     this.RESET_CURRENT_STEP_OBJECTS();
     this.RETURN_OBJECTS_CURRENT_PAGE_TO_FIRST();
   },
-  watch: {
-    // step(before, after) {
-    //   if (before.id != after.id) {
-    //     this.getObjects();
-    //     this.clickResetSelectObjects();
-    //     this.RETURN_OBJECTS_CURRENT_PAGE_TO_FIRST();
-    //   } else {
-    //     if (this.loader) {
-    //       this.getObjects(false);
-    //     }
-    //   }
-    // },
-  },
   async created() {
     await this.getObjects();
   },
@@ -483,4 +520,7 @@ export default {
 </script>
 
 <style>
+.all-objects-container {
+  position: relative;
+}
 </style>

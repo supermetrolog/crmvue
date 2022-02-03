@@ -15,6 +15,7 @@
               :step="step"
               :disabled="disabled"
               :contactForSendMessage="contactForSendMessage"
+              :searchable="true"
               @updated="updatedObjects"
               @updateItem="clickUpdateStep"
             />
