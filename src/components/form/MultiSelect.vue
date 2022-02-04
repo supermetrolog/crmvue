@@ -24,7 +24,14 @@
         :loading="loading"
         :multipleLabel="multipleLabel"
         @change="onChange($event)"
-      />
+      >
+        <template #singlelabel="{ value }">
+          <slot name="singlelabel" :value="value" />
+        </template>
+        <template #option="{ option }">
+          <slot name="option" :option="option" />
+        </template>
+      </Multiselect>
     </label>
     <div class="error-container" v-if="v && v.$error">
       <p>{{ v.$errors[0].$message }}</p>

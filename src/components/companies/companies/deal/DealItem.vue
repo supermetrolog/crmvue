@@ -14,7 +14,7 @@
           <div class="col-6 pl-3">
             <strong>
               <a
-                :href="`https://pennylane.pro/complex/${deal.complex_id}?offer_id=[${deal.original_id}]`"
+                :href="`https://pennylane.pro/complex/${deal.complex_id}?offer_id=[${deal.object_id}]`"
                 target="_blanc"
               >
                 #{{ deal.complex_id }}~{{ deal.object_id }}

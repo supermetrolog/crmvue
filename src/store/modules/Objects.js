@@ -65,7 +65,7 @@ const Objects = {
             return array;
 
         },
-        async SEARCH_OBJECTS(context, { query }) {
+        async SEARCH_OBJECTS(context, { query, saveState = true }) {
             const search = query.searchText;
             const queryParams = {
                 search,
@@ -74,7 +74,10 @@ const Objects = {
                 page_items: 32,
             };
             const result = await api.objects.searchObjects(queryParams);
-            context.commit('updatePagination', result.pagination);
+            if (saveState) {
+                context.commit('updatePagination', result.pagination);
+
+            }
             return result.offers;
         },
         async FETCH_OBJECTS_FOR_PREVENT_STEP_OBJECTS(context, currentStepNumber) {

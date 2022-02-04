@@ -7,11 +7,12 @@
     >
       <Loader class="center" v-if="loader" />
       <Form @submit="onSubmit" class="center">
-        <FormGroup class="mb-1" v-if="!isOurDeal">
+        <FormGroup class="mb-1">
           <Checkbox
+            v-if="!isOurDeal"
             v-model="form.is_our"
             label="Наша сделка?"
-            class="col-6 large"
+            class="col-2 large"
           />
           <MultiSelect
             v-if="!form.is_our"
@@ -19,7 +20,7 @@
             extraClasses="long-text"
             label="Компания конкурент"
             required
-            class="col-6"
+            class="col-5 px-1"
             :filterResults="false"
             :minChars="1"
             :resolveOnLoad="true"
@@ -28,6 +29,26 @@
             :options="
               async (query) => {
                 return await searchCompetitorCompany(query);
+              }
+            "
+          />
+          <ObjectsInput
+            v-model="form.object_id"
+            :v="v$.form.object_id"
+            @selectItem="selectObject"
+            required
+            label="Объект"
+            class="ml-auto"
+            :type_id="form.type_id"
+            :class="{
+              'col-5': !form.is_our,
+              'col-6': form.is_our,
+              'ml-auto': form.is_our,
+              'mx-auto': !form.is_our,
+            }"
+            :options="
+              async (query) => {
+                return await searchObjects(query);
               }
             "
           />
@@ -131,6 +152,7 @@ import { required, helpers } from "@vuelidate/validators";
 import Form from "@/components/form/Form.vue";
 import FormGroup from "@/components/form/FormGroup.vue";
 import Input from "@/components/form/Input.vue";
+import ObjectsInput from "@/components/form/ObjectsInput.vue";
 import Textarea from "@/components/form/Textarea.vue";
 import MultiSelect from "@/components/form/MultiSelect.vue";
 import Checkbox from "@/components/form/Checkbox.vue";
@@ -147,6 +169,7 @@ export default {
     MultiSelect,
     Submit,
     Checkbox,
+    ObjectsInput,
   },
   data() {
     return {
@@ -169,6 +192,9 @@ export default {
         is_our: 1,
         is_competitor: 0,
         competitor_company_id: null,
+        complex_id: null,
+        object_id: null,
+        type_id: null,
       },
     };
   },
@@ -189,6 +215,9 @@ export default {
     complex_id: {
       type: Number,
     },
+    type_id: {
+      type: Number,
+    },
     isOurDeal: {
       type: Boolean,
       default: false,
@@ -202,6 +231,24 @@ export default {
         },
         company_id: {
           required: helpers.withMessage("заполните поле", required),
+        },
+        object_id: {
+          required: helpers.withMessage("выберите предложение", () => {
+            if (
+              this.form.object_id &&
+              this.form.complex_id &&
+              this.form.type_id
+            ) {
+              return true;
+            }
+            return false;
+          }),
+        },
+        type_id: {
+          required: helpers.withMessage("выберите предложение", required),
+        },
+        complex_id: {
+          required: helpers.withMessage("выберите предложение", required),
         },
       },
     };
@@ -218,6 +265,7 @@ export default {
       "SEARCH_REQUESTS",
       "CREATE_DEAL",
       "UPDATE_DEAL",
+      "SEARCH_OBJECTS",
     ]),
     onSubmit() {
       this.v$.$validate();
@@ -335,8 +383,29 @@ export default {
       });
       return array;
     },
+    async searchObjects(query) {
+      let result = null;
+      let array = [];
+      result = await this.SEARCH_OBJECTS({
+        query: { searchText: query },
+        saveState: false,
+      });
+      result.forEach((item) => {
+        array.push({
+          value: item.original_id,
+          label: item.deal_type_name,
+          icon: item.building.photos,
+          info: item,
+        });
+      });
+      console.error(array);
+      return array;
+    },
+    selectObject(complex_id, type_id) {
+      this.form.complex_id = complex_id;
+      this.form.type_id = type_id;
+    },
   },
-
   async mounted() {
     this.loader = true;
     await this.FETCH_CONSULTANT_LIST();
@@ -349,6 +418,7 @@ export default {
     }
     this.form.object_id = this.object_id;
     this.form.complex_id = this.complex_id;
+    this.form.type_id = this.type_id;
     this.loader = false;
   },
   watch: {
