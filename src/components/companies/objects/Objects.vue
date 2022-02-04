@@ -15,6 +15,8 @@
                       !selectedObjects.length || !contactForSendMessage.length,
                   }"
                   @confirm="sendObjects"
+                  @extraVisibleOpen="extraVisibleOpen = true"
+                  @extraVisibleClose="extraVisibleOpen = false"
                   v-if="step.number == 1"
                 >
                   <template #btnContent>
@@ -29,6 +31,8 @@
                     btnVisible: false,
                     disabled: !selectedObjects.length,
                   }"
+                  @extraVisibleOpen="extraVisibleOpen = true"
+                  @extraVisibleClose="extraVisibleOpen = false"
                   @confirm="sendObjects"
                   v-else
                 >
@@ -46,6 +50,8 @@
                     disabled:
                       !selectedObjects.length || !contactForSendMessage.length,
                   }"
+                  @extraVisibleOpen="extraVisibleOpen = true"
+                  @extraVisibleClose="extraVisibleOpen = false"
                   @confirm="sendObjects"
                 >
                   <template #btnContent>
@@ -64,6 +70,8 @@
                     disabled,
                   }"
                   @confirm="selectNegative"
+                  @extraVisibleOpen="extraVisibleOpen = true"
+                  @extraVisibleClose="extraVisibleOpen = false"
                 >
                   <template #btnContent>
                     <i class="far fa-frown-open"></i>
@@ -110,12 +118,12 @@
           </div>
         </div>
       </div>
-      <div class="col-12 objects-list-container">
+      <div
+        class="col-12 objects-list-container"
+        v-if="currentStepObjects.length && step.number == 1"
+      >
         <Loader class="center" v-if="loader" />
-        <div
-          class="row no-gutters"
-          v-if="currentStepObjects.length && step.number == 1"
-        >
+        <div class="row no-gutters">
           <div class="col-12 px-2 pb-1">
             <h5 class="m-0">Отправленные предложения</h5>
           </div>
@@ -153,10 +161,17 @@
           <div class="col-12 px-2 pb-1">
             <h5 class="m-0">Все предложения</h5>
           </div>
-          <div class="col-12 px-0 pb-1 mb-3" v-if="searchable">
-            <ObjectsSearch v-if="searchable" @search="search" />
-          </div>
         </div>
+      </div>
+      <div
+        class="col-12 px-0 py-2 mb-1 objects-search"
+        :class="{ 'action-open': extraVisibleOpen }"
+        v-if="searchable && !loader"
+      >
+        <ObjectsSearch v-if="searchable" @search="search" />
+      </div>
+      <div class="col-12 objects-list-container">
+        <Loader class="center" v-if="loader" />
         <div
           class="row no-gutters all-objects-container"
           v-if="allObjects.length"
@@ -204,6 +219,7 @@
             </div>
           </template>
         </div>
+
         <div v-if="!allObjects.length && searchable && searchMode">
           <h2 class="text-warning text-center">НЕТ ДАННЫХ</h2>
         </div>
@@ -246,6 +262,7 @@ export default {
       count: 0,
       allObjects: [],
       currentStepObjects: [],
+      extraVisibleOpen: false,
     };
   },
   props: {

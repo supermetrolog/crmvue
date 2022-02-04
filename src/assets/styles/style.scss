@@ -2586,6 +2586,15 @@
             background-color: $color_light;
             z-index: 12;
         }
+        &-search {
+            position: sticky;
+            top: 19px;
+            background-color: $color_light;
+            z-index: 12;
+            &.action-open {
+                top: 60px;
+            }
+        }
         &-list-container {
             min-height: 250px;
         }

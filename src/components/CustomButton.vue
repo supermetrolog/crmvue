@@ -77,12 +77,14 @@ export default {
       }
 
       this.optionsLocale.extraVisible = true;
+      this.$emit("extraVisibleOpen");
       setTimeout(() => {
         this.$refs.fuck.focus();
       });
     },
     cancel() {
       this.optionsLocale.extraVisible = false;
+      this.$emit("extraVisibleClose");
       this.comment = null;
     },
     confirm() {
@@ -90,6 +92,7 @@ export default {
         return;
       }
       this.optionsLocale.extraVisible = false;
+      this.$emit("extraVisibleOpen");
       this.$emit("confirm", this.comment);
       this.comment = null;
     },

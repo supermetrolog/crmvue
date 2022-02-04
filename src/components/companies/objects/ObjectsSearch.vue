@@ -1,5 +1,5 @@
 <template>
-  <div class="object-search">
+  <div class="objects-search-input">
     <Form @submit="onSubmit">
       <FormGroup>
         <Input
@@ -9,7 +9,12 @@
           @keyup.enter="onSubmit"
           placeholder="ID, город, направление, округ, район, шоссе, метро, название СК, тип помещения"
         />
-        <Submit class="col-2 align-self-end pl-4 pr-2"> поиск </Submit>
+        <Submit
+          class="col-2 align-self-end pl-4 pr-2"
+          :buttonClasses="'btn-primary'"
+        >
+          поиск
+        </Submit>
       </FormGroup>
     </Form>
   </div>
@@ -44,7 +49,7 @@ export default {
 </script>
 
 <style>
-.form-container {
+.objects-search-input .form-container {
   width: 100%;
 }
 </style>

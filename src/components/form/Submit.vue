@@ -1,6 +1,6 @@
 <template>
   <div class="form-item">
-    <button class="btn btn-large btn-success">
+    <button class="btn btn-large" :class="buttonClasses">
       <slot />
     </button>
   </div>
@@ -9,6 +9,12 @@
 <script>
 export default {
   name: "Submit",
+  props: {
+    buttonClasses: {
+      type: String,
+      default: "btn-success",
+    },
+  },
 };
 </script>
 
