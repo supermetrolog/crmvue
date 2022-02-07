@@ -4,6 +4,7 @@ const Timeline = {
     state: {
         timeline: null,
         timelineList: [],
+        timelineComments: []
     },
     mutations: {
         updateTimeline(state, data) {
@@ -18,6 +19,9 @@ const Timeline = {
                 }
                 return step;
             })
+        },
+        updateTimelineComments(state, data) {
+            state.timelineComments = data;
         }
     },
     actions: {
@@ -35,6 +39,10 @@ const Timeline = {
         },
         async CREATE_NEW_STEP(context, param) {
             context.commit('createNewStep', param);
+        },
+        async FETCH_TIMELINE_COMMENTS(context, timeline_id) {
+            const comments = await api.timeline.getTimelineComments(timeline_id);
+            context.commit('updateTimelineComments', comments);
         }
     },
     getters: {
@@ -47,6 +55,9 @@ const Timeline = {
         TIMELINE_REQUEST_ID(state) {
             return state.timeline.request_id
         },
+        TIMELINE_COMMENTS(state) {
+            return state.timelineComments;
+        }
     }
 }
 

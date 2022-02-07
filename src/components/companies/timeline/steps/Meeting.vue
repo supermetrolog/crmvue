@@ -121,7 +121,9 @@ export default {
         }
         this.data.newActionComments = [
           {
+            timeline_id: this.data.timeline_id,
             timeline_step_id: this.data.id,
+            timeline_step_number: this.data.number,
             title: "система",
             comment: actionComment,
           },
@@ -142,7 +144,9 @@ export default {
         }
         this.data.newActionComments = [
           {
+            timeline_id: this.data.timeline_id,
             timeline_step_id: this.data.id,
+            timeline_step_number: this.data.number,
             title: "система",
             comment: actionComment,
           },
@@ -165,7 +169,9 @@ export default {
         }
         this.data.newActionComments = [
           {
+            timeline_id: this.data.timeline_id,
             timeline_step_id: this.data.id,
+            timeline_step_number: this.data.number,
             title: "система",
             comment: actionComment,
           },
@@ -193,7 +199,9 @@ export default {
         }
         this.data.newActionComments = [
           {
+            timeline_id: this.data.timeline_id,
             timeline_step_id: this.data.id,
+            timeline_step_number: this.data.number,
             title: "система",
             comment: actionComment,
           },

@@ -24,7 +24,11 @@
     <Loader class="center" v-if="loader" />
     <div class="row">
       <div class="col-3 mx-auto">
-        <button class="btn btn-primary btn-large" @click="clickOpenDealForm">
+        <button
+          class="btn btn-primary btn-large"
+          @click="clickOpenDealForm"
+          :disabled="disabled"
+        >
           {{ !currentRequest.deal ? "Создать сделку" : "Редактировать сделку" }}
         </button>
       </div>

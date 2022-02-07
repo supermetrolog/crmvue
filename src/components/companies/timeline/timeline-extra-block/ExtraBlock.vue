@@ -24,13 +24,27 @@
             <div class="reminders">
               <ul class="comments">
                 <li
-                  v-for="comment in step.timelineActionComments"
+                  v-for="comment in TIMELINE.timelineActionComments"
                   :key="comment.id"
                 >
                   <div class="row no-gutters reminders-list-item m-0">
-                    <div class="col-12 text-right">
+                    <div class="col-12 mb-1 text-center">
+                      <span
+                        class="badge autosize"
+                        :class="
+                          'badge-' +
+                          timelineStepOptions[comment.timeline_step_number][1]
+                            .class
+                        "
+                      >
+                        {{
+                          timelineStepOptions[comment.timeline_step_number][1]
+                            .name
+                        }}
+                      </span>
+                    </div>
+                    <div class="col-12 text-center">
                       <i class="far fa-clock d-inline-block mr-1"></i>
-
                       <p class="time">{{ comment.created_at }}</p>
                     </div>
                     <div
@@ -63,7 +77,8 @@
 
 <script>
 import Reminders from "@/components/Reminders";
-
+import { mapGetters } from "vuex";
+import { Timeline } from "@/const/Const";
 export default {
   name: "ExtraBlock",
   components: {
@@ -71,6 +86,7 @@ export default {
   },
   data() {
     return {
+      timelineStepOptions: Timeline.get("param"),
       stepComment: null,
       saveCommentBtnVisible: false,
     };
@@ -79,6 +95,9 @@ export default {
     step: {
       type: Object,
     },
+  },
+  computed: {
+    ...mapGetters(["TIMELINE_COMMENTS", "TIMELINE"]),
   },
   methods: {
     inputComment() {

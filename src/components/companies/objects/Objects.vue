@@ -185,6 +185,7 @@
               :object="object"
               :selectedObjects="selectedObjects"
               :key="object.id"
+              :objectComment="comment(object.original_id)"
               :classList="
                 currentStepObjects.find((item) => item.id == object.id)
                   ? 'success'
@@ -306,7 +307,15 @@ export default {
       "RESET_CURRENT_STEP_OBJECTS",
       "SEARCH_OBJECTS",
     ]),
-
+    comment(original_id) {
+      const result = this.currentStepObjects.find(
+        (item) => item.original_id == original_id
+      );
+      if (result && result.comment) {
+        return result.comment;
+      }
+      return null;
+    },
     selectObject(object, comment = null) {
       if (this.step.number == 7) {
         return this.selectObjectOne(object, comment);
@@ -358,7 +367,9 @@ export default {
         }
         data.newActionComments = [
           {
+            timeline_id: data.timeline_id,
             timeline_step_id: data.id,
+            timeline_step_number: data.number,
             title: title,
             comment: actionComment,
           },
@@ -411,7 +422,9 @@ export default {
 
       data.newActionComments = [
         {
+          timeline_id: data.timeline_id,
           timeline_step_id: data.id,
+          timeline_step_number: data.number,
           title: "система",
           comment: comment,
         },
@@ -489,8 +502,10 @@ export default {
       }
       this.loader = true;
       await this.getCurrentStepObjects(this.step.timelineStepObjects);
+      console.warn("CURRENT", this.currentStepObjects);
       if (getAllObjectsFlag) {
         await this.getAllObjects(this.step.number);
+        console.warn("ALL", this.allObjects);
       }
       this.loader = false;
     },

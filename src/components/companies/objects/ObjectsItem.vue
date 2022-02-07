@@ -64,11 +64,11 @@
             <i class="fas fa-ruble-sign d-inline text-dark"></i>
             {{ object.price_floor_min }} - {{ object.price_floor_max }} р
           </p>
-          <p v-if="object.comment" class="value text-center text-success_alt">
+          <p v-if="comment" class="value text-center text-success_alt">
             комментарий
           </p>
           <p class="text-center value">
-            {{ object.comment }}
+            {{ comment }}
           </p>
           <i
             class="far fa-arrow-alt-circle-down text-center mt-1 extra"
@@ -112,7 +112,7 @@ export default {
   data() {
     return {
       extraInfoVisible: false,
-      comment: this.object.comment,
+      comment: this.objectComment,
     };
   },
   props: {
@@ -137,6 +137,10 @@ export default {
     disabled: {
       type: Boolean,
       default: true,
+    },
+    objectComment: {
+      type: String,
+      default: "",
     },
   },
   methods: {
@@ -164,7 +168,7 @@ export default {
   },
   watch: {
     object() {
-      this.comment = this.object.comment;
+      this.comment = this.objectComment;
     },
   },
   emits: ["selectObject", "unSelectObject"],

@@ -431,6 +431,13 @@
         font-weight: bold;
         border-radius: 5px;
         text-align: center;
+        &.autosize {
+            width: auto;
+            height: auto;
+            display: inline;
+            padding: 5px 10px;
+            border-radius: 0;
+        }
         &.badge-warning {
             background-color: $color_warning;
             color: white;
@@ -441,6 +448,38 @@
         }
         &.badge-info {
             background-color: $color_info;
+            color: white;
+        }
+        &.badge-primary {
+            background-color: $color_primary;
+            color: white;
+        }
+        &.badge-success {
+            background-color: $color_success;
+            color: white;
+        }
+        &.badge-dark-warning {
+            background-color: #a02121;
+            color: white;
+        }
+        &.badge-light-blue {
+            background-color: darken($color_info, 10);
+            color: white;
+        }
+        &.badge-blue-green {
+            background-color: $color_success_alt;
+            color: white;
+        }
+        &.badge-pale-red {
+            background-color: #812375;
+            color: white;
+        }
+        &.badge-secondary {
+            background-color: $color_secondary;
+            color: white;
+        }
+        &.badge-black {
+            background-color: black;
             color: white;
         }
     }
@@ -586,6 +625,9 @@
                 transform: scale(1.02);
             }
             transition: transform .05s ease-in-out;
+        }
+        &:disabled {
+            background-color: $color_grey;
         }
     }
     
@@ -1070,7 +1112,7 @@
                 }
             }
             // Warning Timeline
-            &.warning {
+            &.dark-warning {
                 .badge-1,
                 .timeline-icon {
                     background: #a02121 !important;
@@ -1085,14 +1127,14 @@
                     font-size: 25px;
                 }
             }
-            &.blue {
+            &.light-blue {
                 .badge-1,
                 .timeline-icon {
                     background: darken($color_info, 10) !important;
                     font-size: 30px;
                 }
             }
-            &.green {
+            &.blue-green {
                 .badge-1,
                 .timeline-icon {
                     background: $color_success_alt !important;

@@ -41,16 +41,11 @@ const Objects = {
     },
     actions: {
         async FETCH_CURRENT_STEP_OBJECTS({ commit }, currentObjects) {
-            console.error("BEFORE", currentObjects);
-            let array = [];
-            currentObjects.map((item) => {
-                array.push(item.offer_id)
-            });
-            // const objects = await api.objects.getCurrentStepObjects(array);
+            // console.error("BEFORE", currentObjects);
             const objects = await api.objects.getCurrentStepObjectsOneByOne(currentObjects);
-            console.error("MIDDLE", objects);
+            // console.error("MIDDLE", objects);
 
-            array = [];
+            let array = [];
             currentObjects.map((item) => {
                 objects.map((object) => {
                     if (item.object_id == object.original_id) {
@@ -61,7 +56,7 @@ const Objects = {
                 })
             });
             commit('updateCurrentStepObjects', array);
-            console.error("AFTER", array);
+            // console.error("AFTER", array);
             return array;
 
         },

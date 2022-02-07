@@ -55,9 +55,9 @@ export const Timeline = new Map(
         ['param', [
             [0, { "stepName": "Meeting", "name": "Знакомство с клиентом", "class": "primary", "icon": "fas fa-phone-alt" }, ],
             [1, { "stepName": "Offers", "name": "Предложения", "class": "success", "icon": "fas fa-city" }, ],
-            [2, { "stepName": "Feedback", "name": "Обратная связь", "class": "warning", "icon": "fas fa-bullhorn" }, ],
-            [3, { "stepName": "Inspection", "name": "Организация осмотра", "class": "blue", "icon": "fab fa-watchman-monitoring" }, ],
-            [4, { "stepName": "Visit", "name": "Осмотр", "class": "green", "icon": "fas fa-eye" }, ],
+            [2, { "stepName": "Feedback", "name": "Обратная связь", "class": "dark-warning", "icon": "fas fa-bullhorn" }, ],
+            [3, { "stepName": "Inspection", "name": "Организация осмотра", "class": "light-blue", "icon": "fab fa-watchman-monitoring" }, ],
+            [4, { "stepName": "Visit", "name": "Осмотр", "class": "blue-green", "icon": "fas fa-eye" }, ],
             [5, { "stepName": "Interest", "name": "Заинтересованность", "class": "danger", "icon": "fas fa-heartbeat" }, ],
             [6, { "stepName": "Talk", "name": "Переговоры", "class": "pale-red", "icon": "fas fa-comments-dollar" }, ],
             [7, { "stepName": "Deal", "name": "Сделка", "class": "black", "icon": "far fa-handshake" }, ],

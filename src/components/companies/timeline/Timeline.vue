@@ -98,11 +98,6 @@
             </div>
           </div>
         </div>
-        <!-- <transition
-          mode="out-in"
-          enter-active-class="animate__animated animate__fadeIn for__page"
-          leave-active-class="animate__animated animate__fadeOut for__page"
-        > -->
         <component
           :is="stepActionsName"
           :step="selectedStep"
@@ -113,7 +108,6 @@
           @updateStep="clickUpdateStep"
         >
         </component>
-        <!-- </transition> -->
       </div>
       <div
         class="col-2 box timeline-extra-block"
