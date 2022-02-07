@@ -32,7 +32,7 @@
 
 <script>
 import Objects from "../../objects/Objects.vue";
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import Deal from "../steps/Deal.vue";
 import { MixinStepActions } from "../mixins";
 
@@ -55,8 +55,11 @@ export default {
     },
   },
   methods: {
+    ...mapActions(["FETCH_COMPANY_REQUESTS"]),
     updatedObjects(data, fn) {
-      this.$emit("updatedObjects", data, true, fn);
+      this.$emit("updatedObjects", data, true, fn, () =>
+        this.FETCH_COMPANY_REQUESTS(this.$route.params.id)
+      );
     },
   },
 };

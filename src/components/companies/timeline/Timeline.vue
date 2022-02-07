@@ -191,7 +191,7 @@ export default {
   },
   methods: {
     ...mapActions(["FETCH_TIMELINE", "UPDATE_STEP"]),
-    async updatedObjects(data, goToNext = false, fn = null) {
+    async updatedObjects(data, goToNext = false, fn = null, fn2 = null) {
       this.loaderForStep = data.id;
       await this.getTimeline();
       if (goToNext && data.number != 7) {
@@ -199,6 +199,9 @@ export default {
       }
       if (fn) {
         fn();
+      }
+      if (fn2) {
+        fn2();
       }
       this.loaderForStep = false;
     },
