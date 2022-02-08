@@ -105,7 +105,7 @@
                 <a
                   v-for="website of generalContact.websites"
                   :key="website.id"
-                  :href="website.website"
+                  :href="href(website.website)"
                   target="_blank"
                 >
                   {{ website.website }}
@@ -548,6 +548,12 @@ export default {
     },
     category(categoryValue) {
       return CompanyCategories.get("param")[categoryValue][1];
+    },
+    href(value) {
+      if (value.includes("http://") || value.includes("https://")) {
+        return value;
+      }
+      return "https://" + value;
     },
     toggleRequisistesVisible() {
       this.requisistesVisible = !this.requisistesVisible;
