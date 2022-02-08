@@ -6,7 +6,7 @@
     >
       {{ text }}
     </h3>
-    <img src="http://crmka/images/joke.gif" v-if="clickCount == lastCount" />
+    <img :src="src" v-if="clickCount == lastCount" />
   </div>
 </template>
 
