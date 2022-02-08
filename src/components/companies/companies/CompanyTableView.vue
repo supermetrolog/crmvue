@@ -1,28 +1,23 @@
 <template>
-  <div class="table company-table-view">
-    <table>
-      <thead>
-        <tr>
-          <th>#id</th>
-          <th class="text-left">название компании</th>
-          <th>статус компании</th>
-          <th>контакты</th>
-          <th>брокер</th>
-          <th>запросов</th>
-          <th>сделок</th>
-          <th>предложений</th>
-          <th>Дата</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          class="text-center"
-          v-for="(company, index) in companies"
-          :key="company.id"
-          :class="{ inactive: company.active == 0 }"
-        >
-          <td>{{ index + 1 }}</td>
-          <td class="text-left name">
+  <div class="company-table-view">
+    <Table>
+      <template #thead>
+        <Tr>
+          <Th>#</Th>
+          <Th>название компании</Th>
+          <Th>статус компании</Th>
+          <Th>контакт</Th>
+          <Th>консультант</Th>
+          <Th>актив. запросы</Th>
+          <Th>кол-во сделок</Th>
+          <Th>рейтинг</Th>
+          <Th>Дата</Th>
+        </Tr>
+      </template>
+      <template #tbody>
+        <Tr v-for="(company, index) in companies" :key="company.id">
+          <Td class="px-2 text-center"> {{ index + 1 }} </Td>
+          <Td class="name">
             <router-link :to="'/companies/' + company.id" target="_blank">
               <h4>
                 {{ company.full_name }}
@@ -31,22 +26,20 @@
               <p v-if="!company.nameRu" class="text-danger">&#8212;</p>
               <Progress :percent="company.progress_percent" />
             </router-link>
-          </td>
-
-          <td class="categories">
+          </Td>
+          <Td class="text-center categories">
             <div class="d-inline-block" v-if="company.categories.length">
               <span
                 v-for="categoryItem of company.categories"
                 :key="categoryItem.id"
-                class="p-2 m-1 d-inline-block"
+                class="badge badge-dark autosize py-2 m-2 d-inline-block"
               >
                 {{ category(categoryItem.category) }}
               </span>
             </div>
-
             <p v-else>&#8212;</p>
-          </td>
-          <td class="contacts">
+          </Td>
+          <Td class="text-center contacts">
             <template v-if="contacts(company.id)">
               <p
                 v-if="
@@ -61,6 +54,7 @@
                   :href="'mailto:' + email.email"
                   v-for="email of contact.emails"
                   :key="email.email"
+                  class="d-block"
                 >
                   {{ email.email }}
                 </a>
@@ -72,41 +66,69 @@
                 />
               </div>
             </template>
-            <template v-else>
-              <p>&#8212;</p>
-            </template>
-          </td>
-          <td>Андреев В. И.</td>
-          <td class="count">
-            <span class="p-2">{{ company.requests.length }}</span>
-          </td>
-          <td class="count">
-            <span class="p-2">{{ company.object_count }}</span>
-          </td>
-          <td class="count">
-            <span class="p-2">{{ company.offer_count }}</span>
-          </td>
-          <td>
-            <p class="p-2">{{ company.created_at }}</p>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            <p v-else>&#8212;</p>
+          </Td>
+          <Td class="text-center">
+            {{ company.consultant.userProfile.short_name }}
+          </Td>
+          <Td class="text-center requests">
+            <div class="scroller">
+              <div
+                v-for="request in company.requests"
+                :key="request.id"
+                class="mb-2 align-self-center align-items-center"
+              >
+                <span class="badge badge-blue-green autosize">
+                  {{ request.name }}
+                </span>
+              </div>
+            </div>
+          </Td>
+          <Td class="text-center">
+            <span class="badge badge-blue-green autosize">
+              {{ company.deal_count }}
+            </span>
+          </Td>
+          <Td class="text-center">
+            <i
+              v-for="rating in ratingOptions"
+              :key="rating[0]"
+              class="text-warning far fa-star"
+              :class="{
+                'fas fa-star': company.rating >= rating[0],
+              }"
+            >
+            </i>
+          </Td>
+          <Td class="text-center date">
+            {{ company.created_at_format }}
+          </Td>
+        </Tr>
+      </template>
+    </Table>
   </div>
 </template>
 
 <script>
+import Table from "@/components/table/Table";
+import Tr from "@/components/table/Tr";
+import Th from "@/components/table/Th";
+import Td from "@/components/table/Td";
 import Progress from "@/components/Progress";
-import { CompanyCategories } from "@/const/Const";
-
+import { CompanyCategories, RatingList } from "@/const/Const";
 export default {
   name: "CompanyTableView",
   components: {
+    Table,
+    Tr,
+    Th,
+    Td,
     Progress,
   },
   data() {
     return {
       generalContacts: [],
+      ratingOptions: RatingList.get("param"),
     };
   },
   props: {
@@ -114,7 +136,6 @@ export default {
       type: Array,
     },
   },
-  computed: {},
   methods: {
     category(categoryValue) {
       return CompanyCategories.get("param")[categoryValue][1];

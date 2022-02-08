@@ -438,6 +438,10 @@
             padding: 5px 10px;
             border-radius: 0;
         }
+        &.badge-dark {
+            background-color: $color_dark;
+            color: white;
+        }
         &.badge-warning {
             background-color: $color_warning;
             color: white;
@@ -1854,40 +1858,21 @@
     
     //*************** COMPANY-TABLE-VIEW ************
     .company-table-view {
+        .badge {
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+        // a {
+        //     color: $color_primary;
+        //     &:hover {
+        //         text-decoration: underline;
+        //     }
+        // }
         table {
-            border-collapse: collapse;
             width: 100%;
-            box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.5);
-            thead {
-                border: none;
-                border-radius: 10px;
-                outline: none;
-                background-color: $color_sidebar_bg;
-                color: $color_light;
-                text-transform: uppercase;
-                height: 60px;
-                tr {
-                    th {
-                        font-weight: normal;
-                        font-size: 14px;
-                        &:first-child {
-                            border-top-left-radius: 3px;
-                        }
-                        &:last-child {
-                            border-top-right-radius: 3px;
-                        }
-                    }
-                }
-            }
             tbody {
                 tr {
-                    height: 60px;
-                    min-height: 60px;
-                    &:nth-child(odd) {
-                        background-color: darken($color_light, 3);
-                    }
                     td {
-                        padding: 5px 0;
                         &.name {
                             text-transform: none;
                             font-weight: 500;
@@ -1901,19 +1886,18 @@
                                         text-decoration: underline;
                                     }
                                 }
+                                p {
+                                    &:hover {
+                                        text-decoration: none;
+                                    }
+                                }
                             }
                         }
                         &.categories {
                             div {
                                 max-width: 300px;
-                                height: auto;
-                                // background-color: black;
                             }
                             span {
-                                text-transform: uppercase;
-                                background-color: $color_dark;
-                                color: $color_light;
-                                font-weight: bold;
                                 font-size: 12px;
                             }
                         }
@@ -1925,10 +1909,19 @@
                                 font-size: 12px;
                             }
                         }
+                        &.requests {
+                            .scroller {
+                                height: 60px;
+                            }
+                        }
+                        &.date {
+                            width: 100px;
+                            font-size: 12px;
+                        }
                         &.contacts {
                             a {
                                 display: block;
-                                font-size: 13px;
+                                font-size: 15px;
                                 color: $color_primary;
                                 &:hover {
                                     text-decoration: underline;

@@ -31,7 +31,7 @@ function getFormDataWithFiles(formdata1, forUpdate = false) {
 }
 export default {
     async getCompanies() {
-        const url = "companies?expand=requests,contacts.emails,contacts.phones,contacts.contactComments,broker,companyGroup,consultant,productRanges,categories,files";
+        const url = "companies?sort=-default&expand=requests,contacts.emails,contacts.phones,contacts.contactComments,broker,companyGroup,consultant,consultant.userProfile,productRanges,categories,files";
         let data = false;
         await axios
             .get(url)
@@ -119,7 +119,7 @@ export default {
     },
     async searchCompanies(query) {
         query = new URLSearchParams(query).toString();
-        let url = "companies/search?" + query + "&expand=requests,contacts.emails,contacts.phones,contacts.contactComments,broker,companyGroup,consultant,productRanges,categories,files";
+        let url = "companies?" + query + "&sort=-default&expand=requests,contacts.emails,contacts.phones,contacts.contactComments,broker,companyGroup,consultant,consultant.userProfile,productRanges,categories,files";
         let data = false;
         await axios
             .get(url)
