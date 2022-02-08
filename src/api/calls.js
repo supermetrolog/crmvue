@@ -29,7 +29,4 @@ export default {
 
         return data;
     },
-    logout() {
-        console.log("logout");
-    }
 }

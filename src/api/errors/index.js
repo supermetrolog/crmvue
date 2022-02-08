@@ -1,10 +1,12 @@
 import { notify } from "@kyvg/vue3-notification";
+import router from "@/router";
 let notifyOptions = {
     group: "app",
     type: "error",
     duration: 15000,
 };
 const ValidationErrorHttpStatusCode = 422;
+const AuthErrorHttpStatusCode = 401;
 const getTitle = (data) => {
     return data.name;
     // return data.name + " - [ статус код: " + data.status + " ]";
@@ -39,6 +41,11 @@ export default {
             } else {
                 validationErrorSet(data);
 
+            }
+            if (data.status == AuthErrorHttpStatusCode) {
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('user');
+                router.push('/login');
             }
         }
 

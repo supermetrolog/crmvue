@@ -81,11 +81,17 @@ export default {
       "CALLS",
     ]),
     notif_count() {
+      if (!this.NOTIFICATIONS) {
+        return 0;
+      }
       return this.NOTIFICATIONS.filter(
         (item) => item.status == 0 || item.status == -1
       ).length;
     },
     calls_count() {
+      if (!this.CALLS) {
+        return 0;
+      }
       return this.CALLS.filter(
         (item) => item.viewed != 2 && item.status !== null
       ).length;
@@ -108,7 +114,6 @@ export default {
       }
     },
     clickCalls() {
-      console.warn("FLAG", this.newCurrentCallFlag);
       if (this.newCurrentCallFlag) {
         this.newCurrentCallFlag = false;
       } else {
@@ -132,7 +137,6 @@ export default {
     CURRENT_CALLS(before, after) {
       if (before.length != after.length) {
         this.getCalls();
-        console.error(before.length, after.length);
         if (before.length > after.length) {
           this.newCurrentCallFlag = true;
         } else {
@@ -143,7 +147,6 @@ export default {
     NEW_NOTIFICATIONS(before, after) {
       if (before.length != after.length) {
         this.getNotification();
-        console.error(before.length, after.length);
       }
     },
   },

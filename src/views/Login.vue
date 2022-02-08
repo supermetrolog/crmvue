@@ -99,7 +99,7 @@ export default {
         password: {
           required: helpers.withMessage("заполните пароль", required),
           minLength: helpers.withMessage(
-            "пароль не может быть меньше 8 символов",
+            "пароль не может быть меньше 4 символов",
             minLength(4)
           ),
         },
@@ -113,10 +113,9 @@ export default {
         this.loader = true;
         const response = await this.$store.dispatch("LOGIN", this.form);
         if (response !== false) {
-          this.$store.dispatch("SET_USER");
           this.axios.defaults.headers.common[
             "Authorization"
-          ] = `Bearer ${this.$store.getters.THIS_USER.access_token}`;
+          ] = `Bearer ${localStorage.getItem("access_token")}`;
           this.$store.dispatch("WEBSOCKET_RUN");
           this.$router.push("/");
         }
