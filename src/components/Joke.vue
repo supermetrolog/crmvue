@@ -33,6 +33,13 @@ export default {
     text() {
       return this.array[this.clickCount];
     },
+    src() {
+      if (process.env.NODE_ENV == "development") {
+        return "http://crmka/images/joke.gif";
+      } else {
+        return "http://api.billypro.beget.tech/images/joke.gif";
+      }
+    },
   },
   methods: {
     clickArea() {
