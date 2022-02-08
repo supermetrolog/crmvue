@@ -79,6 +79,7 @@
               />
               <PropogationInput
                 v-model="form.contacts.websites"
+                :v="v$.form.contacts.websites"
                 label="Вебсайт"
                 name="website"
                 class="col-6 pl-1"
@@ -384,7 +385,11 @@ import {
   PassiveWhy,
   RatingList,
 } from "@/const/Const.js";
-import Utils, { yandexmap, validatePropogationInput } from "@/utils";
+import Utils, {
+  yandexmap,
+  validatePropogationInput,
+  validateUrl,
+} from "@/utils";
 
 export default {
   name: "TestForm",
@@ -480,6 +485,16 @@ export default {
             email: helpers.withMessage(
               "заполните email правильно",
               this.customEmailValidation
+            ),
+          },
+          websites: {
+            propogation: helpers.withMessage(
+              "Пустое поле не допустимо",
+              this.validateWebsitesPropogation
+            ),
+            website: helpers.withMessage(
+              "заполните вебсайт правильно",
+              this.customUrlValidation
             ),
           },
           phones: {
@@ -642,6 +657,9 @@ export default {
     validateEmailsPropogation() {
       return validatePropogationInput(this.form.contacts.emails, "email");
     },
+    validateWebsitesPropogation() {
+      return validatePropogationInput(this.form.contacts.websites, "website");
+    },
     validatePhonesPropogation() {
       return validatePropogationInput(this.form.contacts.phones, "phone");
     },
@@ -649,6 +667,15 @@ export default {
       let flag = true;
       this.form.contacts.emails.forEach((item) => {
         if (!email.$validator(item.email)) {
+          flag = false;
+        }
+      });
+      return flag;
+    },
+    customUrlValidation() {
+      let flag = true;
+      this.form.contacts.websites.forEach((item) => {
+        if (!validateUrl(item.website)) {
           flag = false;
         }
       });

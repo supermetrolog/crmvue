@@ -105,7 +105,18 @@ export const validatePropogationInput = (fields, name) => {
         }
     });
     return flag;
-}
+};
+export const validateUrl = (str) => {
+    const with_protocol_regex = new RegExp("^(http[s]?:\\/\\/(www\\.)?|ftp:\\/\\/(www\\.)?|www\\.){1}([0-9A-Za-z-\\.@:%_+~#=]+)+((\\.[a-zA-Z]{2,3})+)(/(.)*)?(\\?(.)*)?");
+
+    const regex = new RegExp(
+        "^([0-9A-Za-z-\\.@:%_+~#=]+)+((\\.[a-zA-Z]{2,3})+)(/(.)*)?(\\?(.)*)?"
+    );
+    if (!regex.test(str) && !with_protocol_regex.test(str)) {
+        return false;
+    }
+    return true;
+};
 export default {
     normalizeContactsForMultiselect(contacts) {
         let data = [];
@@ -188,6 +199,5 @@ export default {
         delete data.created_at;
         delete data.email;
         return data;
-
     },
 }
