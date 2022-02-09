@@ -363,7 +363,7 @@ export default {
         let title = "система";
         if (comment) {
           actionComment += ` с комментарием: "${comment}"`;
-          title = this.THIS_USER.username;
+          title = this.THIS_USER.userProfile.short_name;
         }
         data.newActionComments = [
           {
@@ -428,7 +428,7 @@ export default {
         data.timelineStepObjects
       );
       if (generalComment) {
-        title = this.THIS_USER.username;
+        title = this.THIS_USER.userProfile.short_name;
       }
       data.newActionComments = [
         {

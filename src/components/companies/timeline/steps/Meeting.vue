@@ -123,7 +123,7 @@ export default {
         let title = "система";
         if (comment) {
           actionComment += ` с комментарием: "${comment}"`;
-          title = this.THIS_USER.username;
+          title = this.THIS_USER.userProfile.short_name;
         }
         this.data.newActionComments = [
           {
@@ -149,7 +149,7 @@ export default {
         let title = "система";
         if (comment) {
           actionComment += ` с комментарием: "${comment}"`;
-          title = this.THIS_USER.username;
+          title = this.THIS_USER.userProfile.short_name;
         }
         this.data.newActionComments = [
           {
@@ -177,7 +177,7 @@ export default {
         let title = "система";
         if (comment) {
           actionComment += ` с комментарием: "${comment}"`;
-          title = this.THIS_USER.username;
+          title = this.THIS_USER.userProfile.short_name;
         }
         this.data.newActionComments = [
           {
@@ -210,7 +210,7 @@ export default {
         let title = "система";
         if (comment) {
           actionComment += ` с комментарием: "${comment}"`;
-          title = this.THIS_USER.username;
+          title = this.THIS_USER.userProfile.short_name;
         }
         this.data.newActionComments = [
           {

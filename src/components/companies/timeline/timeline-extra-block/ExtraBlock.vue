@@ -27,7 +27,10 @@
                 v-for="timelineStep in TIMELINE.timelineSteps"
                 :key="timelineStep.id"
               >
-                <li class="text-center">
+                <li
+                  class="text-center"
+                  v-if="timelineStep.timelineActionComments.length"
+                >
                   <span
                     class="badge autosize"
                     :class="

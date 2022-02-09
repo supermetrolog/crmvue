@@ -20,8 +20,7 @@ function getFormDataWithFiles(formdata1) {
 export default {
     auth: {
         async login(formdata) {
-            // const url = "users/login?expand=userProfiles";
-            const url = "users/login";
+            const url = "users/login?expand=userProfile";
             let data = false;
             await axios
                 .post(url, formdata)
