@@ -22,31 +22,30 @@
           <div class="col-12">
             <h5 class="mt-0 mb-1 text-center">Комментарии к действиям</h5>
             <div class="reminders">
-              <ul class="comments">
+              <ul
+                class="comments"
+                v-for="timelineStep in TIMELINE.timelineSteps"
+                :key="timelineStep.id"
+              >
+                <li class="text-center">
+                  <span
+                    class="badge autosize"
+                    :class="
+                      'badge-' +
+                      timelineStepOptions[timelineStep.number][1].class
+                    "
+                  >
+                    {{ timelineStepOptions[timelineStep.number][1].name }}
+                  </span>
+                </li>
                 <li
-                  v-for="comment in TIMELINE.timelineActionComments"
+                  v-for="comment in timelineStep.timelineActionComments"
                   :key="comment.id"
                 >
                   <div class="row no-gutters reminders-list-item m-0">
-                    <div class="col-12 mb-1 text-center">
-                      <span
-                        class="badge autosize"
-                        :class="
-                          'badge-' +
-                          timelineStepOptions[comment.timeline_step_number][1]
-                            .class
-                        "
-                      >
-                        {{
-                          timelineStepOptions[comment.timeline_step_number][1]
-                            .name
-                        }}
-                      </span>
-                    </div>
                     <div class="col-12 text-center">
                       <i class="far fa-clock d-inline-block mr-1"></i>
                       <p class="time">{{ comment.created_at }}</p>
-                      <p>{{ comment.type }}</p>
                     </div>
                     <div
                       class="col-12 mb-1"
