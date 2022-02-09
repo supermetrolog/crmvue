@@ -113,7 +113,7 @@
         class="col-2 box timeline-extra-block"
         v-if="selectedStep && !loader && !timelineNotFoundFlag"
       >
-        <ExtraBlock :step="selectedStep" />
+        <ExtraBlock :step="selectedStep" :disabled="disabled"/>
       </div>
     </div>
   </div>
@@ -191,7 +191,7 @@ export default {
   },
   methods: {
     ...mapActions(["FETCH_TIMELINE", "UPDATE_STEP"]),
-    async updatedObjects(data, goToNext = false, fn = null, fn2 = null) {
+    async updatedObjects(data, goToNext = false, fn = null) {
       this.loaderForStep = data.id;
       await this.getTimeline();
       if (goToNext && data.number != 7) {
@@ -199,9 +199,6 @@ export default {
       }
       if (fn) {
         fn();
-      }
-      if (fn2) {
-        fn2();
       }
       this.loaderForStep = false;
     },

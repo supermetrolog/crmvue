@@ -2970,6 +2970,14 @@
     }
     
     .extra-block {
+        .inner {
+            overflow-y: scroll;
+        }
+        .form {
+            .form-container {
+                width: 100%;
+            }
+        }
         .comment {
             li {
                 border-bottom: none;
@@ -3247,3 +3255,36 @@
     
     // moderator admin consultant manager 
     // Консультатн - может редактировать только своих клиентов и объекты
+    // **************** VERTICAL ACCORDION **************
+    .accordion {
+        &__item {
+            margin-top: 2px;
+            &__title {
+                .badge {
+                    font-size: 14px;
+                    display: block;
+                    width: 100%;
+                    cursor: pointer;
+                    user-select: none;
+                    position: relative;
+                    i {
+                        position: absolute;
+                        top: 25%;
+                        right: 15px;
+                    }
+                }
+            }
+            &__body {
+                max-height: 0px;
+                overflow: hidden;
+                transition: all .25s cubic-bezier(0, 1, 0, 1) -.1s;
+            }
+            &.open {
+                .accordion__item__body {
+                    max-height: 9999px;
+                    transition-timing-function: cubic-bezier(0.5, 0, 1, 0);
+                    transition-delay: 0s;
+                }
+            }
+        }
+    }

@@ -57,9 +57,11 @@ export default {
   methods: {
     ...mapActions(["FETCH_COMPANY_REQUESTS"]),
     updatedObjects(data, fn) {
-      this.$emit("updatedObjects", data, true, fn, () =>
-        this.FETCH_COMPANY_REQUESTS(this.$route.params.id)
-      );
+      const fetchRequest = () => {
+        this.FETCH_COMPANY_REQUESTS(this.$route.params.id);
+        fn();
+      };
+      this.$emit("updatedObjects", data, true, fetchRequest);
     },
   },
 };

@@ -1,6 +1,6 @@
 <template>
   <div class="form-item">
-    <button class="btn btn-large" :class="buttonClasses">
+    <button class="btn btn-large" :class="buttonClasses" :disabled="disabled">
       <slot />
     </button>
   </div>
@@ -13,6 +13,10 @@ export default {
     buttonClasses: {
       type: String,
       default: "btn-success",
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
     },
   },
 };
