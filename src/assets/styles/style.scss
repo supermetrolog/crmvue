@@ -3272,6 +3272,10 @@
                         top: 25%;
                         right: 15px;
                     }
+                    &:hover {
+                        transform: scale(1.01);
+                    }
+                    transition: transform .05s ease-in-out;
                 }
             }
             &__body {
@@ -3284,6 +3288,16 @@
                     max-height: 9999px;
                     transition-timing-function: cubic-bezier(0.5, 0, 1, 0);
                     transition-delay: 0s;
+                }
+            }
+            &.disabled {
+                .accordion__item__title {
+                    .badge {
+                        cursor: default;
+                        &:hover {
+                            transform: none;
+                        }
+                    }
                 }
             }
         }

@@ -1,5 +1,5 @@
 <template>
-  <div class="accordion__item col-12" :class="{ open }">
+  <div class="accordion__item col-12" :class="{ open, disabled }">
     <div class="accordion__item__title text-center" v-if="titleVisible">
       <span class="badge autosize" :class="titleClasses" @click="clickToggle">
         {{ title }}
