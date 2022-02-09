@@ -11,6 +11,7 @@
               v-model="ways"
               :options="feedbackWayList"
               mode="text"
+              :disabled="disabled"
               @change="onChange"
             />
           </div>
@@ -18,6 +19,7 @@
             <template v-if="actionsVisible">
               <button
                 id="btn-feedback"
+                :disabled="disabled"
                 class="btn-action text-success p-0 d-inline"
                 @click="confirm"
               >
@@ -25,6 +27,7 @@
               </button>
               <button
                 id="btn-feedback"
+                :disabled="disabled"
                 class="btn-action text-danger p-0"
                 @click="cancel"
               >
@@ -86,6 +89,7 @@ export default {
           timeline_step_number: this.data.number,
           title: "система",
           comment: "Отметил способ обратной связи",
+          type: 1,
         },
       ];
       this.data.status = 1;

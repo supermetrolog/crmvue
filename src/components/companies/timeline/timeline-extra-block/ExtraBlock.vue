@@ -46,6 +46,7 @@
                     <div class="col-12 text-center">
                       <i class="far fa-clock d-inline-block mr-1"></i>
                       <p class="time">{{ comment.created_at }}</p>
+                      <p>{{ comment.type }}</p>
                     </div>
                     <div
                       class="col-12 mb-1"

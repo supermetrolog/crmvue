@@ -33,7 +33,7 @@
                   }"
                   @extraVisibleOpen="extraVisibleOpen = true"
                   @extraVisibleClose="extraVisibleOpen = false"
-                  @confirm="sendObjects"
+                  @confirm="sendObjects($event, false)"
                   v-else
                 >
                   <template #btnContent>
@@ -372,16 +372,17 @@ export default {
             timeline_step_number: data.number,
             title: title,
             comment: actionComment,
+            type: 0,
           },
         ];
       }
       this.$emit("updateItem", data);
     },
-    sendObjects(sendClient = true) {
-      console.log(this.contactForSendMessage);
+    sendObjects(comment, sendClient = true) {
+      console.error(comment, sendClient);
       if (sendClient) {
         if (this.contactForSendMessage.length) {
-          this.sendObjectsHandler(sendClient);
+          this.sendObjectsHandler(comment, sendClient);
         } else {
           let notifyOptions = {
             group: "app",
@@ -393,16 +394,17 @@ export default {
           notify(notifyOptions);
         }
       } else {
-        this.sendObjectsHandler(sendClient);
+        this.sendObjectsHandler(comment, sendClient);
       }
     },
-    async sendObjectsHandler(sendClientFlag = false) {
+    async sendObjectsHandler(generalComment, sendClientFlag = false) {
       this.loader = true;
       let data = {
         ...this.step,
       };
       data.negative = 0;
       data.additional = 0;
+      let title = "система";
       if (this.step.number != 2) {
         data.status = 1;
       }
@@ -416,17 +418,26 @@ export default {
           type_id: item.type_id,
           comment: item.comment,
         });
+        if (item.comment) {
+          title = this.THIS_USER.username;
+        }
       });
 
-      let comment = this.getObjectsComments(data.timelineStepObjects);
-
+      let comment = this.getObjectsComments(
+        generalComment,
+        data.timelineStepObjects
+      );
+      if (generalComment) {
+        title = this.THIS_USER.username;
+      }
       data.newActionComments = [
         {
           timeline_id: data.timeline_id,
           timeline_step_id: data.id,
           timeline_step_number: data.number,
-          title: "система",
+          title: title,
           comment: comment,
+          type: 0,
         },
       ];
 
@@ -440,7 +451,7 @@ export default {
         this.clickResetSelectObjects();
       }
     },
-    getObjectsComments(objects) {
+    getObjectsComments(generalComment, objects) {
       let objectsComments = "";
       let comment = "";
       if (this.step.number == 1) {
@@ -451,6 +462,9 @@ export default {
         `;
       } else {
         comment = `Выбрал предложения  (${objects.length})`;
+      }
+      if (generalComment) {
+        comment += `<br>с комментарием себе: ${generalComment}`;
       }
       objects.map((object) => {
         if (!object.comment) {
@@ -470,7 +484,7 @@ export default {
       });
 
       if (objectsComments.length) {
-        comment = `${comment} c комментариями: <ul>${objectsComments}</ul>`;
+        comment = `${comment}<br>c комментариями к объектам: <ul>${objectsComments}</ul>`;
       }
       return comment;
     },

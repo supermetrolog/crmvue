@@ -15,6 +15,7 @@
             :class="inputClasses"
             :value="option[0]"
             @change="onChange"
+            :disabled="disabled"
           />
           {{ option[1] }}
         </label>
@@ -26,6 +27,7 @@
           :class="inputClasses"
           :true-value="1"
           :false-value="0"
+          :disabled="disabled"
           @change="onChange"
         />
         {{ mode == "inline" ? label : "" }}
@@ -76,6 +78,10 @@ export default {
     name: {
       type: String,
       default: null,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
     },
   },
   methods: {

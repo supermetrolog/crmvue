@@ -88,6 +88,7 @@
 <script>
 import CustomButton from "@/components/CustomButton.vue";
 import { MixinSteps } from "../mixins";
+import { mapGetters } from "vuex";
 export default {
   name: "Meeting",
   mixins: [MixinSteps],
@@ -98,6 +99,9 @@ export default {
     return {
       callBackDate: null,
     };
+  },
+  computed: {
+    ...mapGetters(["THIS_USER"]),
   },
   mounted() {
     this.setData();
@@ -116,16 +120,19 @@ export default {
       } else {
         this.data.done = 1;
         let actionComment = "Утвердил запрос";
+        let title = "система";
         if (comment) {
           actionComment += ` с комментарием: "${comment}"`;
+          title = this.THIS_USER.username;
         }
         this.data.newActionComments = [
           {
             timeline_id: this.data.timeline_id,
             timeline_step_id: this.data.id,
             timeline_step_number: this.data.number,
-            title: "система",
+            title: title,
             comment: actionComment,
+            type: 1,
           },
         ];
         this.data.status = 1;
@@ -139,16 +146,19 @@ export default {
       } else {
         this.data.negative = 1;
         let actionComment = "Не дозвонился";
+        let title = "система";
         if (comment) {
           actionComment += ` с комментарием: "${comment}"`;
+          title = this.THIS_USER.username;
         }
         this.data.newActionComments = [
           {
             timeline_id: this.data.timeline_id,
             timeline_step_id: this.data.id,
             timeline_step_number: this.data.number,
-            title: "система",
+            title: title,
             comment: actionComment,
+            type: 1,
           },
         ];
       }
@@ -164,16 +174,19 @@ export default {
       } else {
         this.data.additional = 1;
         let actionComment = "Дозвонился";
+        let title = "система";
         if (comment) {
           actionComment += ` с комментарием: "${comment}"`;
+          title = this.THIS_USER.username;
         }
         this.data.newActionComments = [
           {
             timeline_id: this.data.timeline_id,
             timeline_step_id: this.data.id,
             timeline_step_number: this.data.number,
-            title: "система",
+            title: title,
             comment: actionComment,
+            type: 1,
           },
         ];
       }
@@ -194,16 +207,19 @@ export default {
         }
         this.data.additional = 2;
         let actionComment = `Установил напоминание "позвонить к ${this.callBackDate}"`;
+        let title = "система";
         if (comment) {
           actionComment += ` с комментарием: "${comment}"`;
+          title = this.THIS_USER.username;
         }
         this.data.newActionComments = [
           {
             timeline_id: this.data.timeline_id,
             timeline_step_id: this.data.id,
             timeline_step_number: this.data.number,
-            title: "система",
+            title: title,
             comment: actionComment,
+            type: 1,
           },
         ];
         this.data.date = this.callBackDate;
