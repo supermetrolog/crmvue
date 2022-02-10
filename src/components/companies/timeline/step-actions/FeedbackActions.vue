@@ -15,7 +15,7 @@
         </div>
         <hr />
         <div class="row">
-          <div class="col-12">
+          <!-- <div class="col-12">
             <Objects
               :step="step"
               :disabled="disabled"
@@ -23,6 +23,28 @@
               @updated="updatedObjects"
               @updateItem="clickUpdateStep"
             />
+          </div> -->
+          <div class="col-12">
+            <Objects>
+              <ObjectsControllPanel
+                @reset="reset"
+                @done="done"
+                @send="send"
+                @negative="negative"
+                @changeViewMode="changeViewMode"
+              />
+              <ObjectsList
+                :objects="preventStepObjects"
+                :currentObjects="step.timelineStepObjects"
+                :selectedObjects="selectedObjects"
+                :disabled="disabled"
+                :withSeparator="true"
+                :loader="loader"
+                @select="select"
+                @unSelect="unSelect"
+                @addComment="addComment"
+              />
+            </Objects>
           </div>
         </div>
       </div>
@@ -32,15 +54,16 @@
 
 <script>
 import Feedback from "../steps/Feedback.vue";
-import Objects from "../../objects/Objects.vue";
+// import Objects from "../../objects/Objects.vue";
 import { MixinStepActions } from "../mixins";
+import { MixinObject } from "../../objects-new/mixins";
 
 export default {
   name: "FeedbackActions",
-  mixins: [MixinStepActions],
+  mixins: [MixinStepActions, MixinObject],
   components: {
     Feedback,
-    Objects,
+    // Objects,
   },
   methods: {
     updatedObjects(data, fn) {

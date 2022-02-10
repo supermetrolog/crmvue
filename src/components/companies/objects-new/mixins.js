@@ -4,6 +4,7 @@ import ObjectsList from "./ObjectsList.vue";
 import ObjectsControllPanel from "./ObjectsControllPanel.vue";
 import ObjectsSearch from "./ObjectsSearch.vue";
 import Pagination from "@/components/Pagination";
+import { mapGetters } from "vuex";
 export const MixinObject = {
     components: {
         Objects,
@@ -17,7 +18,33 @@ export const MixinObject = {
             loader: false,
         }
     },
+    computed: {
+        ...mapGetters(['TIMELINE']),
+        preventStepTimelineObjects() {
+            if (!this.TIMELINE)
+                return null;
+
+            const preventStep = this.TIMELINE.timelineSteps.find(item => item.number == (this.step.number - 1));
+            return preventStep.timelineStepObjects;
+        }
+    },
     methods: {
+        send() {
+            console.log("SEND");
+        },
+        done() {
+            console.log("DONE");
+        },
+        negative() {
+            console.log("NEGATIVE");
+        },
+        changeViewMode() {
+            console.log("ChangeViewMode");
+        },
+        reset() {
+            console.log("RESET");
+            this.selectedObjects = [];
+        },
         select(object) {
             console.log("SELECT", object);
             this.selectedObjects.push(object);
@@ -40,7 +67,7 @@ export const MixinObject = {
         async getPreventStepObjects() {
             this.loader = true;
             const objects = await api.objects.getCurrentStepObjectsOneByOne(
-                this.step.timelineStepObjects
+                this.preventStepTimelineObjects
             );
             this.includeStepDataInObjectsData(objects);
             this.preventStepObjects = objects;
@@ -58,7 +85,10 @@ export const MixinObject = {
             });
             return data;
         },
-    }
+    },
+    mounted() {
+        this.getPreventStepObjects();
+    },
 };
 
 export const MixinAllObject = {
@@ -84,6 +114,15 @@ export const MixinAllObject = {
             this.includeStepDataInObjectsData(data.offers);
             this.setAllObjects(data);
             this.allObjectsLoader = false;
+        },
+        async getPreventStepObjects() {
+            this.loader = true;
+            const objects = await api.objects.getCurrentStepObjectsOneByOne(
+                this.step.timelineStepObjects
+            );
+            this.includeStepDataInObjectsData(objects);
+            this.preventStepObjects = objects;
+            this.loader = false;
         },
         setAllObjects(data) {
             if (
@@ -137,5 +176,8 @@ export const MixinAllObject = {
         returnCurrentPageToFirst() {
             this.currentPage = 1;
         },
-    }
+    },
+    mounted() {
+        this.getAllObjects();
+    },
 }

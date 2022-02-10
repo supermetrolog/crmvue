@@ -64,26 +64,6 @@ export default {
     updatedObjects(data) {
       this.$emit("updatedObjects", data, true);
     },
-    send() {
-      console.log("SEND");
-    },
-    done() {
-      console.log("DONE");
-    },
-    negative() {
-      console.log("NEGATIVE");
-    },
-    changeViewMode() {
-      console.log("ChangeViewMode");
-    },
-    reset() {
-      console.log("RESET");
-      this.selectedObjects = [];
-    },
-  },
-  mounted() {
-    this.getPreventStepObjects();
-    this.getAllObjects();
   },
 };
 </script>

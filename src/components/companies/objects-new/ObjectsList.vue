@@ -3,7 +3,7 @@
     <div class="col-12 px-2" v-if="label">
       <h4>{{ label }}</h4>
     </div>
-    <div class="col-4 mx-auto" v-if="!objects.length">
+    <div class="col-4 mx-auto" v-if="!objects.length && !loader">
       <h3 class="text-warning text-center">НЕТ ДАННЫХ</h3>
     </div>
     <Loader class="center" v-if="loader" />
@@ -22,7 +22,7 @@
       @unSelect="$emit('unSelect', $event)"
       @addComment="$emit('addComment', $event)"
     />
-    <hr v-if="withSeparator" />
+    <hr v-if="withSeparator && !loader" />
   </div>
 </template>
 
