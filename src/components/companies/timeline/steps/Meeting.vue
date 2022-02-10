@@ -65,7 +65,7 @@
           </template>
         </CustomButton>
       </div>
-      <div class="col-6 pr-1">
+      <div class="col-6 pl-1">
         <CustomButton
           :options="{
             btnActive: true,

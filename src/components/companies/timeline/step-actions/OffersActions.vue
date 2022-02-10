@@ -4,21 +4,48 @@
       <div class="col-12">
         <div class="row px-2">
           <div class="col-6">
-            <div class="timeline-actions row">
-              <!-- <Offers :step="step" @updateItem="clickUpdateStep" /> -->
-            </div>
+            <div class="timeline-actions row"></div>
           </div>
         </div>
         <div class="row">
           <div class="col-12">
-            <Objects
-              :step="step"
-              :disabled="disabled"
-              :contactForSendMessage="contactForSendMessage"
-              :searchable="true"
-              @updated="updatedObjects"
-              @updateItem="clickUpdateStep"
-            />
+            <Objects>
+              <ObjectsControllPanel
+                @reset="reset"
+                @done="done"
+                @send="send"
+                @negative="negative"
+                @changeViewMode="changeViewMode"
+              />
+              <ObjectsList
+                :objects="preventStepObjects"
+                :currentObjects="step.timelineStepObjects"
+                :selectedObjects="selectedObjects"
+                :disabled="disabled"
+                :withSeparator="true"
+                :loader="loader"
+                label="Отправленные предложения"
+                @select="select"
+                @unSelect="unSelect"
+                @addComment="addComment"
+              />
+              <ObjectsSearch @search="search" class="mb-2" />
+              <ObjectsList
+                :objects="allObjects"
+                :currentObjects="step.timelineStepObjects"
+                :selectedObjects="selectedObjects"
+                :disabled="disabled"
+                :loader="allObjectsLoader"
+                @select="select"
+                @unSelect="unSelect"
+                @addComment="addComment"
+              />
+              <Pagination
+                :pagination="pagination"
+                @loadMore="loadMore"
+                class="text-center"
+              />
+            </Objects>
           </div>
         </div>
       </div>
@@ -27,21 +54,36 @@
 </template>
 
 <script>
-// import Offers from "../steps/Offers.vue";
-import Objects from "../../objects/Objects.vue";
 import { MixinStepActions } from "../mixins";
+import { MixinAllObject } from "../../objects-new/mixins";
 
 export default {
   name: "OffersActions",
-  mixins: [MixinStepActions],
-  components: {
-    // Offers,
-    Objects,
-  },
+  mixins: [MixinStepActions, MixinAllObject],
   methods: {
     updatedObjects(data) {
       this.$emit("updatedObjects", data, true);
     },
+    send() {
+      console.log("SEND");
+    },
+    done() {
+      console.log("DONE");
+    },
+    negative() {
+      console.log("NEGATIVE");
+    },
+    changeViewMode() {
+      console.log("ChangeViewMode");
+    },
+    reset() {
+      console.log("RESET");
+      this.selectedObjects = [];
+    },
+  },
+  mounted() {
+    this.getPreventStepObjects();
+    this.getAllObjects();
   },
 };
 </script>

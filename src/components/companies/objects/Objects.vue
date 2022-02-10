@@ -11,8 +11,7 @@
                   :options="{
                     btnClass: 'success',
                     btnVisible: false,
-                    disabled:
-                      !selectedObjects.length || !contactForSendMessage.length,
+                    disabled: !selectedObjects.length,
                   }"
                   @confirm="sendObjects"
                   @extraVisibleOpen="extraVisibleOpen = true"
@@ -47,8 +46,7 @@
                   :options="{
                     btnClass: 'success',
                     btnVisible: false,
-                    disabled:
-                      !selectedObjects.length || !contactForSendMessage.length,
+                    disabled: !selectedObjects.length,
                   }"
                   @extraVisibleOpen="extraVisibleOpen = true"
                   @extraVisibleClose="extraVisibleOpen = false"

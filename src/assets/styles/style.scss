@@ -2615,6 +2615,25 @@
                 box-shadow: none;
             }
         }
+        &-controll-panel {
+            position: sticky;
+            top: -30px;
+            background-color: $color_light;
+            z-index: 12;
+        }
+        &-search-input {
+            position: sticky;
+            top: 19px;
+            background-color: $color_light;
+            z-index: 12;
+            &.action-open {
+                top: 60px;
+            }
+        }
+        &-list {
+            min-height: 300px;
+            position: relative;
+        }
         &-actions {
             position: sticky;
             top: -30px;
