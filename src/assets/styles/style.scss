@@ -2731,6 +2731,9 @@
                     }
                     p {
                         color: $color_light!important;
+                        &.text-grey {
+                            color: $color_dark!important;
+                        }
                     }
                 }
                 .header {

@@ -64,8 +64,17 @@
           <p v-if="comment" class="value text-center text-success_alt">
             комментарий
           </p>
-          <p class="text-center value">
-            {{ comment }}
+          <p
+            class="text-center value"
+            :class="{
+              'text-grey': !object.comments.find(
+                (item) => item.timeline_step_id == comment.timeline_step_id
+              ),
+            }"
+            v-for="comment in object.allComments"
+            :key="comment.id"
+          >
+            {{ comment.comment }}
           </p>
           <i
             class="far fa-arrow-alt-circle-down text-center mt-1 extra"

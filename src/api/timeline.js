@@ -4,7 +4,7 @@ import SuccessHandler from "./success";
 
 export default {
     async getTimeline(consultant_id, request_id) {
-        const url = `timeline?consultant_id=${consultant_id}&request_id=${request_id}&expand=timelineSteps,timelineSteps.timelineStepObjects,timelineSteps.timelineStepFeedbackways,timelineSteps.timelineActionComments,consultant,consultant.userProfile,timelineActionComments`;
+        const url = `timeline?consultant_id=${consultant_id}&request_id=${request_id}&expand=timelineSteps,timelineSteps.timelineStepObjects,timelineSteps.timelineStepObjects.comments,timelineSteps.timelineStepFeedbackways,timelineSteps.timelineActionComments,consultant,consultant.userProfile,timelineActionComments`;
         let data = false;
         await axios
             .get(url)

@@ -101,10 +101,18 @@ export const MixinObject = {
         },
         includeStepDataInObjectsData(data) {
             this.step.timelineStepObjects.forEach((item) => {
+                let comments = [];
+                this.TIMELINE.timelineSteps.forEach(step => {
+                    let result = step.timelineStepObjects.find(thisObject => thisObject.object_id == item.object_id);
+                    if (result && result.comments.length) {
+                        comments.push(...result.comments);
+                    }
+                });
                 data.map((object) => {
                     if (item.object_id == object.original_id) {
                         object.duplicate_count = item.duplicate_count;
-                        object.comment = item.comment;
+                        object.comments = item.comments;
+                        object.allComments = comments;
                         return object;
                     }
                 });

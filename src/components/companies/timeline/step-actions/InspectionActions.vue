@@ -17,13 +17,28 @@
         <hr />
         <div class="row">
           <div class="col-12">
-            <Objects
-              :step="step"
-              :disabled="disabled"
-              :contactForSendMessage="contactForSendMessage"
-              @updated="updatedObjects"
-              @updateItem="clickUpdateStep"
-            />
+            <Objects>
+              <ObjectsControllPanel
+                :viewMode="viewMode"
+                :buttons="buttons"
+                @reset="reset"
+                @done="done"
+                @send="send"
+                @negative="negative"
+                @changeViewMode="changeViewMode"
+              />
+              <ObjectsList
+                :objects="preventStepObjects"
+                :currentObjects="step.timelineStepObjects"
+                :selectedObjects="selectedObjects"
+                :disabled="disabled"
+                :withSeparator="true"
+                :loader="loader"
+                @select="select"
+                @unSelect="unSelect"
+                @addComment="addComment"
+              />
+            </Objects>
           </div>
         </div>
       </div>
@@ -33,16 +48,15 @@
 
 <script>
 import Inspection from "../steps/Inspection.vue";
-import Objects from "../../objects/Objects.vue";
 import { mapGetters } from "vuex";
 import { MixinStepActions } from "../mixins";
+import { MixinObject } from "../../objects-new/mixins";
 
 export default {
   name: "InspectionActions",
-  mixins: [MixinStepActions],
+  mixins: [MixinStepActions, MixinObject],
   components: {
     Inspection,
-    Objects,
   },
   computed: {
     ...mapGetters(["CURRENT_STEP_OBJECTS"]),

@@ -15,15 +15,6 @@
         </div>
         <hr />
         <div class="row">
-          <!-- <div class="col-12">
-            <Objects
-              :step="step"
-              :disabled="disabled"
-              :contactForSendMessage="contactForSendMessage"
-              @updated="updatedObjects"
-              @updateItem="clickUpdateStep"
-            />
-          </div> -->
           <div class="col-12">
             <Objects>
               <ObjectsControllPanel
@@ -56,7 +47,6 @@
 
 <script>
 import Feedback from "../steps/Feedback.vue";
-// import Objects from "../../objects/Objects.vue";
 import { MixinStepActions } from "../mixins";
 import { MixinObject } from "../../objects-new/mixins";
 
@@ -65,7 +55,6 @@ export default {
   mixins: [MixinStepActions, MixinObject],
   components: {
     Feedback,
-    // Objects,
   },
   methods: {
     updatedObjects(data, fn) {
