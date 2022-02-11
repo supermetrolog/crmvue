@@ -16,6 +16,8 @@ export const MixinObject = {
             selectedObjects: [],
             preventStepObjects: [],
             loader: false,
+            viewMode: true,
+
         }
     },
     computed: {
@@ -26,6 +28,29 @@ export const MixinObject = {
 
             const preventStep = this.TIMELINE.timelineSteps.find(item => item.number == (this.step.number - 1));
             return preventStep.timelineStepObjects;
+        },
+        buttons() {
+            return [{
+                    btnClass: "primary",
+                    btnVisible: false,
+                    disabled: !this.selectedObjects.length || this.disabled,
+                    title: "Сохранить",
+                    text: "Готово",
+                    icon: "fas fa-paper-plane",
+                    emited_event: "send",
+                    classes: "col-2",
+                },
+                {
+                    btnClass: "danger",
+                    btnVisible: false,
+                    disabled: this.disabled,
+                    title: "В случае нахождения более подходящих предложений вам придет уведомление!",
+                    text: "Нет подходящих",
+                    icon: "far fa-frown-open",
+                    emited_event: "negative",
+                    classes: "col-4 ml-1",
+                },
+            ];
         }
     },
     methods: {
@@ -38,8 +63,9 @@ export const MixinObject = {
         negative() {
             console.log("NEGATIVE");
         },
-        changeViewMode() {
+        changeViewMode(value) {
             console.log("ChangeViewMode");
+            this.viewMode = value;
         },
         reset() {
             console.log("RESET");
@@ -99,13 +125,37 @@ export const MixinAllObject = {
     },
     data() {
         return {
-            //*************** */
             allObjects: [],
             currentPage: 1,
             pagination: null,
             searchMode: false,
             allObjectsLoader: false,
         };
+    },
+    computed: {
+        buttons() {
+            return [{
+                    btnClass: "success",
+                    btnVisible: false,
+                    disabled: !this.selectedObjects.length || this.disabled,
+                    title: "Отправить презентации с объектами клиенту",
+                    text: "Отправить",
+                    icon: "fas fa-paper-plane",
+                    emited_event: "send",
+                    classes: "col-2",
+                },
+                {
+                    btnClass: "danger",
+                    btnVisible: false,
+                    disabled: this.disabled,
+                    title: "Отправить презентации с объектами клиенту",
+                    text: "Нет подходящих",
+                    icon: "far fa-frown-open",
+                    emited_event: "negative",
+                    classes: "col-4 ml-1",
+                },
+            ];
+        }
     },
     methods: {
         async getAllObjects() {

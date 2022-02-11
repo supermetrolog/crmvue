@@ -11,6 +11,8 @@
           <div class="col-12">
             <Objects>
               <ObjectsControllPanel
+                :viewMode="viewMode"
+                :buttons="buttons"
                 @reset="reset"
                 @done="done"
                 @send="send"

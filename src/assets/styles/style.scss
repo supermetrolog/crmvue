@@ -623,6 +623,12 @@
         cursor: pointer;
         &:active {
             box-shadow: 0 2px 5px 0 rgba(100, 100, 100, .7);
+            transform: scale(0.95)!important;
+            transition: transform .05s ease-in-out;
+        }
+        &:hover {
+            box-shadow: 0 2px 5px 0 rgba(100, 100, 100, .7);
+            // background-color: $color_danger;
         }
         &.scale {
             &:hover {
@@ -862,6 +868,10 @@
             border-radius: 0!important;
             border: 1px solid $color_primary;
             color: $color_primary;
+            &:active {
+                transform: scale(0.95);
+                transition: transform .05s ease-in-out;
+            }
             &.feedback-way {
                 text-transform: capitalize!important;
                 color: $color_primary;
