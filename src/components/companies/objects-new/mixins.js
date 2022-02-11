@@ -4,7 +4,8 @@ import ObjectsList from "./ObjectsList.vue";
 import ObjectsControllPanel from "./ObjectsControllPanel.vue";
 import ObjectsSearch from "./ObjectsSearch.vue";
 import Pagination from "@/components/Pagination";
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
+import { notify } from "@kyvg/vue3-notification";
 export const MixinObject = {
     components: {
         Objects,
@@ -37,7 +38,7 @@ export const MixinObject = {
                     title: "Сохранить",
                     text: "Готово",
                     icon: "fas fa-paper-plane",
-                    emited_event: "send",
+                    emited_event: "done",
                     classes: "col-2",
                 },
                 {
@@ -54,11 +55,24 @@ export const MixinObject = {
         }
     },
     methods: {
-        send() {
+        ...mapActions(['UPDATE_STEP']),
+        send(comment) {
             console.log("SEND");
+            if (!this.contactForSendMessage.length) {
+                let notifyOptions = {
+                    group: "app",
+                    type: "error",
+                    duration: 5000,
+                };
+                notifyOptions.title = "Ошибка";
+                notifyOptions.text = "Выберите контакт!";
+                return notify(notifyOptions);
+            }
+            this.sendObjectsHandler(comment, true);
         },
-        done() {
+        done(comment) {
             console.log("DONE");
+            this.sendObjectsHandler(comment);
         },
         negative() {
             console.log("NEGATIVE");
@@ -71,6 +85,42 @@ export const MixinObject = {
             console.log("RESET");
             this.selectedObjects = [];
         },
+        beforeSend(data) {
+            data.negative = 0;
+            data.additional = 0;
+            data.status = 1;
+            data.timelineStepObjects = [];
+        },
+        normalizeObjectsData(data) {
+            this.selectedObjects.map((item) => {
+                data.timelineStepObjects.push({
+                    timeline_step_id: data.id,
+                    object_id: item.original_id,
+                    offer_id: item.id,
+                    complex_id: item.complex_id,
+                    type_id: item.type_id,
+                    comment: item.comment,
+                });
+            });
+        },
+        sendObjectsHandler(generalComment, sendClient = false) {
+            console.log(generalComment);
+            let data = {
+                ...this.step,
+            };
+            this.beforeSend(data);
+            data.sendClientFlag = sendClient;
+            this.normalizeObjectsData(data);
+            this.sendObjects(data);
+        },
+        async sendObjects(data) {
+            this.loader = true;
+            if (await this.UPDATE_STEP(data)) {
+                this.updatedObjects(data, () => this.includeStepDataInObjectsData(this.preventStepObjects));
+                this.reset();
+            }
+            this.loader = false;
+        },
         select(object) {
             console.log("SELECT", object);
             this.selectedObjects.push(object);
@@ -82,13 +132,15 @@ export const MixinObject = {
             );
         },
         addComment(object, comment) {
-            console.log("ADD COMMENT");
+            console.log("ADD COMMENT", object, comment);
             this.selectedObjects.map((item) => {
                 if (item.id == object.id) {
                     item.comment = comment;
                     return item;
                 }
             });
+            console.log("ADD COMMENT", this.selectedObjects);
+
         },
         async getPreventStepObjects() {
             this.loader = true;
@@ -100,6 +152,9 @@ export const MixinObject = {
             this.loader = false;
         },
         includeStepDataInObjectsData(data) {
+            console.error(this.TIMELINE);
+            if (!this.TIMELINE) return data;
+
             this.step.timelineStepObjects.forEach((item) => {
                 let comments = [];
                 this.TIMELINE.timelineSteps.forEach(step => {
@@ -113,6 +168,7 @@ export const MixinObject = {
                         object.duplicate_count = item.duplicate_count;
                         object.comments = item.comments;
                         object.allComments = comments;
+                        object.comment = item.comment;
                         return object;
                     }
                 });

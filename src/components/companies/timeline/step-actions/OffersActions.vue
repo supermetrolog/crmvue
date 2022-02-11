@@ -63,8 +63,8 @@ export default {
   name: "OffersActions",
   mixins: [MixinStepActions, MixinAllObject],
   methods: {
-    updatedObjects(data) {
-      this.$emit("updatedObjects", data, true);
+    updatedObjects(data, fn) {
+      this.$emit("updatedObjects", data, true, fn);
     },
   },
 };

@@ -12,7 +12,7 @@
             :options="button"
             @extraVisibleOpen="$emit('openExtraVisible')"
             @extraVisibleClose="$emit('closeExtraVisible')"
-            @confirm="$emit(button.emited_event)"
+            @confirm="$emit(button.emited_event, $event)"
           >
             <template #btnContent>
               <i :class="button.icon"></i>

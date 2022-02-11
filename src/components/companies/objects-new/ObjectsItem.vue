@@ -38,12 +38,12 @@
         <div v-if="isSelected" class="comment p-0">
           <textarea
             class="mb-1"
-            v-model.trim="comment"
+            v-model.trim="localComment"
             ref="comment"
             rows="3"
             @blur="unfocusTextarea"
             @keypress.enter="enterTextarea"
-            placeholder="Введите ваш комментарий"
+            placeholder="Комментарий клиенту"
           />
         </div>
         <div class="data py-2">
@@ -60,9 +60,6 @@
           <p class="value text-center text-success_alt mt-1">
             <i class="fas fa-ruble-sign d-inline text-dark"></i>
             {{ object.price_floor_min }} - {{ object.price_floor_max }} р
-          </p>
-          <p v-if="comment" class="value text-center text-success_alt">
-            комментарий
           </p>
           <p
             class="text-center value"
@@ -118,7 +115,7 @@ export default {
   data() {
     return {
       extraInfoVisible: false,
-      comment: this.object.comment,
+      localComment: null,
     };
   },
   props: {
@@ -164,14 +161,9 @@ export default {
       this.$refs.comment.blur();
     },
     unfocusTextarea() {
-      if (this.comment) {
-        this.$emit("addComment", this.object, this.comment);
+      if (this.localComment) {
+        this.$emit("addComment", this.object, this.localComment);
       }
-    },
-  },
-  watch: {
-    object() {
-      this.comment = this.object.comment;
     },
   },
   emits: ["select", "unSelect", "addComment"],

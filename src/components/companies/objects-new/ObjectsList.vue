@@ -20,7 +20,7 @@
       "
       @select="$emit('select', $event)"
       @unSelect="$emit('unSelect', $event)"
-      @addComment="$emit('addComment', $event)"
+      @addComment="(...argv) => this.$emit('addComment', ...argv)"
     />
     <hr v-if="withSeparator && !loader" />
   </div>
@@ -71,7 +71,11 @@ export default {
       default: false,
     },
   },
-  methods: {},
+  methods: {
+    addComment(object, comment) {
+      this.$emit("addComment", object, comment);
+    },
+  },
 };
 </script>
 
