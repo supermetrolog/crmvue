@@ -127,7 +127,6 @@
 
 <script>
 import { yandexmap } from "@/utils";
-import { mapGetters } from "vuex";
 import CustomButton from "@/components/CustomButton.vue";
 import { VueDraggableNext } from "vue-draggable-next";
 import Ymap from "@/components/Ymap.vue";
@@ -150,9 +149,11 @@ export default {
     contactForSendMessage: {
       type: Array,
     },
+    objects: {
+      type: Array,
+    },
   },
   computed: {
-    ...mapGetters(["CURRENT_STEP_OBJECTS"]),
     yandexMapRoutesUrl() {
       let url = "https://yandex.ru/maps/?rtext=~";
       if (this.userLocation) {
@@ -213,18 +214,12 @@ export default {
     },
   },
   mounted() {
-    setTimeout(() => {
-      this.currentStepObjects = [...this.CURRENT_STEP_OBJECTS];
-      console.log("fuck", this.currentStepObjects);
-    }, 500);
-    // this.currentStepObjects = [...this.CURRENT_STEP_OBJECTS];
-    console.log("fuck", this.currentStepObjects);
-
+    this.currentStepObjects = [...this.objects];
     this.getLocation();
   },
   watch: {
-    CURRENT_STEP_OBJECTS() {
-      this.currentStepObjects = [...this.CURRENT_STEP_OBJECTS];
+    objects() {
+      this.currentStepObjects = [...this.objects];
     },
   },
 };

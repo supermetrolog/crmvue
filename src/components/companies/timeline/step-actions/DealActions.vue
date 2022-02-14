@@ -2,7 +2,7 @@
   <div class="step-actions">
     <div class="row no-gutters inner scroller">
       <div class="col-12">
-        <div class="row px-2 pb-2" v-if="CURRENT_STEP_OBJECTS.length">
+        <div class="row px-2 pb-2" v-if="step.timelineStepObjects.length">
           <div class="col-12">
             <div class="timeline-actions row">
               <Deal
@@ -17,12 +17,28 @@
         </div>
         <div class="row">
           <div class="col-12">
-            <Objects
-              :step="step"
-              :disabled="disabled"
-              @updated="updatedObjects"
-              @updateItem="clickUpdateStep"
-            />
+            <Objects>
+              <ObjectsControllPanel
+                :viewMode="viewMode"
+                :buttons="buttons"
+                @reset="reset"
+                @done="done"
+                @send="send"
+                @negative="negative"
+                @changeViewMode="changeViewMode"
+              />
+              <ObjectsList
+                :objects="preventStepObjects"
+                :currentObjects="step.timelineStepObjects"
+                :selectedObjects="selectedObjects"
+                :disabled="disabled"
+                :withSeparator="true"
+                :loader="loader"
+                @select="selectOnlyOne"
+                @unSelect="unSelect"
+                @addComment="addComment"
+              />
+            </Objects>
           </div>
         </div>
       </div>
@@ -35,10 +51,11 @@ import Objects from "../../objects/Objects.vue";
 import { mapActions, mapGetters } from "vuex";
 import Deal from "../steps/Deal.vue";
 import { MixinStepActions } from "../mixins";
+import { MixinObject } from "../../objects-new/mixins";
 
 export default {
   name: "DealActions",
-  mixins: [MixinStepActions],
+  mixins: [MixinStepActions, MixinObject],
   components: {
     Objects,
     Deal,

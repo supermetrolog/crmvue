@@ -40,7 +40,9 @@
                   @confirm="changeTimeline(timeline.consultant.id)"
                 >
                   <template #btnContent>
-                    {{ getUserName(timeline.consultant.userProfile) }}
+                    {{
+                      timeline.consultant.userProfile.short_name
+                    }}
                   </template>
                 </CustomButton>
               </div>
@@ -58,6 +60,7 @@
               :data="step"
               :selectedStep="selectedStep"
               :idx="idx"
+              :ref="'step_' + step.number"
               :loader="loaderForStep"
               @clickItem="clickStep"
             />
@@ -113,7 +116,7 @@
         class="col-2 box timeline-extra-block"
         v-if="selectedStep && !loader && !timelineNotFoundFlag"
       >
-        <ExtraBlock :step="selectedStep" :disabled="disabled"/>
+        <ExtraBlock :step="selectedStep" :disabled="disabled" />
       </div>
     </div>
   </div>
@@ -224,17 +227,21 @@ export default {
       await this.$router.push({ query: query });
       this.scrollToSelectedStep();
     },
-    scrollToSelectedStep() {
+    scrollToSelectedStep(delay = 0) {
       if (!this.$route.query.step) {
         return;
       }
-      const className = this.stepParam[this.$route.query.step][1].stepName;
-      const step = document.querySelector(`.${className}`);
       let options = {
         behavior: "smooth",
         block: "center",
       };
-      step.scrollIntoView(options);
+      setTimeout(
+        () =>
+          this.$refs["step_" + this.$route.query.step].$el.scrollIntoView(
+            options
+          ),
+        delay
+      );
     },
 
     async clickStep(step) {
@@ -273,16 +280,6 @@ export default {
         this.COMPANY_CONTACTS
       );
     },
-    getUserName(userProfile) {
-      let name = `${userProfile.middle_name} ${userProfile.first_name
-        .charAt(0)
-        .toUpperCase()}.`;
-
-      if (userProfile.last_name) {
-        name += ` ${userProfile.last_name.charAt(0).toUpperCase()}.`;
-      }
-      return name;
-    },
   },
   async created() {
     this.loader = true;
@@ -291,7 +288,7 @@ export default {
     this.loader = false;
     if (result) {
       this.$nextTick(() => {
-        this.scrollToSelectedStep();
+        this.scrollToSelectedStep(500);
       });
     }
   },

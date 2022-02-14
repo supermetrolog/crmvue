@@ -18,6 +18,9 @@
                 @send="send"
                 @negative="negative"
                 @changeViewMode="changeViewMode"
+                @openExtraVisible="openExtraVisible"
+                @closeExtraVisible="closeExtraVisible"
+                ref="contoll_panel"
               />
               <ObjectsList
                 :objects="preventStepObjects"
@@ -31,7 +34,11 @@
                 @unSelect="unSelect"
                 @addComment="addComment"
               />
-              <ObjectsSearch @search="search" class="mb-2" />
+              <ObjectsSearch
+                @search="search"
+                class="mb-2"
+                :class="{ 'action-open': controllPanelHeight > 50 }"
+              />
               <ObjectsList
                 :objects="allObjects"
                 :currentObjects="step.timelineStepObjects"
@@ -65,6 +72,16 @@ export default {
   methods: {
     updatedObjects(data, fn) {
       this.$emit("updatedObjects", data, true, fn);
+    },
+    openExtraVisible() {
+      this.$nextTick(() => {
+        this.controllPanelHeight = this.$refs.contoll_panel.$el.clientHeight;
+      });
+    },
+    closeExtraVisible() {
+      this.$nextTick(() => {
+        this.controllPanelHeight = this.$refs.contoll_panel.$el.clientHeight;
+      });
     },
   },
 };

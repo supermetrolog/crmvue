@@ -22,7 +22,7 @@ export const MixinObject = {
         }
     },
     computed: {
-        ...mapGetters(['TIMELINE']),
+        ...mapGetters(['TIMELINE', 'THIS_USER']),
         preventStepTimelineObjects() {
             if (!this.TIMELINE)
                 return null;
@@ -44,6 +44,7 @@ export const MixinObject = {
                 {
                     btnClass: "danger",
                     btnVisible: false,
+                    btnActive: this.step.negative,
                     disabled: this.disabled,
                     title: "В случае нахождения более подходящих предложений вам придет уведомление!",
                     text: "Нет подходящих",
@@ -57,7 +58,7 @@ export const MixinObject = {
     methods: {
         ...mapActions(['UPDATE_STEP']),
         send(comment) {
-            console.log("SEND");
+            console.log("SEND", comment);
             if (!this.contactForSendMessage.length) {
                 let notifyOptions = {
                     group: "app",
@@ -74,8 +75,9 @@ export const MixinObject = {
             console.log("DONE");
             this.sendObjectsHandler(comment);
         },
-        negative() {
+        negative(comment) {
             console.log("NEGATIVE");
+            this.selectNegative(comment);
         },
         changeViewMode(value) {
             console.log("ChangeViewMode");
@@ -85,12 +87,38 @@ export const MixinObject = {
             console.log("RESET");
             this.selectedObjects = [];
         },
+        selectNegative(comment) {
+            let data = this.step;
+            console.warn(comment);
+            if (data.negative) {
+                data.negative = 0;
+                data.newActionComments = [];
+            } else {
+                data.negative = 1;
+                let actionComment = "Нет подходящих";
+                let title = "система";
+                if (comment) {
+                    actionComment += ` с комментарием: <b>${comment}</b>`;
+                    title += "/" + this.THIS_USER.userProfile.short_name;
+                }
+                data.newActionComments = [{
+                    timeline_id: data.timeline_id,
+                    timeline_step_id: data.id,
+                    timeline_step_number: data.number,
+                    title: title,
+                    comment: actionComment,
+                    type: 0,
+                }, ];
+            }
+            this.clickUpdateStep(data);
+        },
         beforeSend(data) {
             data.negative = 0;
             data.additional = 0;
             data.status = 1;
             data.timelineStepObjects = [];
         },
+
         normalizeObjectsData(data) {
             this.selectedObjects.map((item) => {
                 data.timelineStepObjects.push({
@@ -103,6 +131,46 @@ export const MixinObject = {
                 });
             });
         },
+        generateComment(generalComment, sendClient, objects, data) {
+            let objectsComments = "";
+            let comment = "";
+            let title = "система";
+            comment = `
+        <span>
+          ${sendClient ? 'Отправил клиенту': 'Выбрал'} предложения (${objects.length})
+        </span>
+        `;
+            if (generalComment) {
+                title = "система/" + this.THIS_USER.userProfile.short_name;
+                comment += `с комментарием себе: <b>${generalComment}</b>`;
+            }
+            objects.map((object) => {
+                objectsComments += `<li><a
+              class="text-primary"
+              href="https://pennylane.pro/complex/${object.complex_id}?offer_id=[${object.original_id}]"
+              target="_blanc"
+            >
+              ${object.complex_id}~${object.object_id}
+            </a> - 
+            <b title="комментарий к объекту">
+            ${object.comment ? object.comment : '-'}
+           </b>
+            </li>`;
+            });
+
+            if (objectsComments.length) {
+                title = "система/" + this.THIS_USER.userProfile.short_name;
+                comment = `${comment}<ul>${objectsComments}</ul>`;
+            }
+            data.newActionComments = [{
+                timeline_id: data.timeline_id,
+                timeline_step_id: data.id,
+                timeline_step_number: data.number,
+                title: title,
+                comment: comment,
+                type: 0,
+            }, ];
+        },
         sendObjectsHandler(generalComment, sendClient = false) {
             console.log(generalComment);
             let data = {
@@ -111,6 +179,7 @@ export const MixinObject = {
             this.beforeSend(data);
             data.sendClientFlag = sendClient;
             this.normalizeObjectsData(data);
+            this.generateComment(generalComment, sendClient, this.selectedObjects, data);
             this.sendObjects(data);
         },
         async sendObjects(data) {
@@ -124,6 +193,9 @@ export const MixinObject = {
         select(object) {
             console.log("SELECT", object);
             this.selectedObjects.push(object);
+        },
+        selectOnlyOne(object) {
+            this.selectedObjects = [object];
         },
         unSelect(object) {
             console.log("UNSELECT");
@@ -168,7 +240,7 @@ export const MixinObject = {
                         object.duplicate_count = item.duplicate_count;
                         object.comments = item.comments;
                         object.allComments = comments;
-                        object.comment = item.comment;
+                        // object.comment = item.comment;
                         return object;
                     }
                 });
@@ -194,6 +266,7 @@ export const MixinAllObject = {
             pagination: null,
             searchMode: false,
             allObjectsLoader: false,
+            controllPanelHeight: 0,
         };
     },
     computed: {
@@ -211,6 +284,7 @@ export const MixinAllObject = {
                 {
                     btnClass: "danger",
                     btnVisible: false,
+                    btnActive: this.step.negative,
                     disabled: this.disabled,
                     title: "Отправить презентации с объектами клиенту",
                     text: "Нет подходящих",
@@ -219,7 +293,7 @@ export const MixinAllObject = {
                     classes: "col-4 ml-1",
                 },
             ];
-        }
+        },
     },
     methods: {
         async getAllObjects() {

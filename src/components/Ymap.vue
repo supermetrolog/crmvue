@@ -99,8 +99,16 @@ export default {
         }, 500);
       }
     },
+    clearMyMap(map) {
+      if (map.geoObjects) {
+        map.geoObjects.each((object) => {
+          map.geoObjects.remove(object);
+        });
+      }
+    },
     buildRoute() {
       const myMap = this.$refs.map.$options.static.myMap;
+      this.clearMyMap(myMap);
       var multiRoute = new window.ymaps.multiRouter.MultiRoute(
         {
           referencePoints: this.dataForRoute.coords,

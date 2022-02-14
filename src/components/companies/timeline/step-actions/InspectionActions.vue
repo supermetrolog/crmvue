@@ -2,12 +2,13 @@
   <div class="step-action">
     <div class="row no-gutters inner scroller">
       <div class="col-12">
-        <div class="row px-2 pb-2" v-if="CURRENT_STEP_OBJECTS.length">
+        <div class="row px-2 pb-2" v-if="step.timelineStepObjects.length">
           <div class="col-12">
             <div class="timeline-actions row">
               <Inspection
                 :step="step"
                 :disabled="disabled"
+                :objects="currentStepObjects"
                 @updateItem="clickUpdateStep"
                 :contactForSendMessage="contactForSendMessage"
               />
@@ -60,6 +61,54 @@ export default {
   },
   computed: {
     ...mapGetters(["CURRENT_STEP_OBJECTS"]),
+    currentStepObjects() {
+      let array = [];
+      let objectItem = null;
+      this.step.timelineStepObjects.map((item) => {
+        objectItem = this.preventStepObjects.find(
+          (object) => object.original_id == item.object_id
+        );
+        if (objectItem) {
+          array.push(objectItem);
+        }
+      });
+      return array;
+    },
+    buttons() {
+      return [
+        {
+          btnClass: "primary",
+          btnVisible: false,
+          disabled: !this.selectedObjects.length || this.disabled,
+          title: "Сохранить",
+          text: "Готово",
+          icon: "fas fa-paper-plane",
+          emited_event: "done",
+          classes: "col-2",
+        },
+        {
+          btnClass: "success",
+          btnVisible: false,
+          disabled: !this.selectedObjects.length || this.disabled,
+          title: "Отправить презентации с объектами клиенту",
+          text: "Отправить",
+          icon: "fas fa-paper-plane",
+          emited_event: "send",
+          classes: "col-2 ml-1",
+        },
+        {
+          btnClass: "danger",
+          btnVisible: false,
+          btnActive: this.step.negative,
+          disabled: this.disabled,
+          title: "Отправить презентации с объектами клиенту",
+          text: "Нет подходящих",
+          icon: "far fa-frown-open",
+          emited_event: "negative",
+          classes: "col-4 ml-1",
+        },
+      ];
+    },
   },
   methods: {
     updatedObjects(data, fn = null) {

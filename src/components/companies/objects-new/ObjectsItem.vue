@@ -62,17 +62,12 @@
             {{ object.price_floor_min }} - {{ object.price_floor_max }} р
           </p>
           <p
-            class="text-center value"
-            :class="{
-              'text-grey': !object.comments.find(
-                (item) => item.timeline_step_id == comment.timeline_step_id
-              ),
-            }"
-            v-for="comment in object.allComments"
-            :key="comment.id"
+            class="text-center"
+            v-if="object.allComments && object.allComments.length"
           >
-            {{ comment.comment }}
+            комментарии:
           </p>
+
           <i
             class="far fa-arrow-alt-circle-down text-center mt-1 extra"
             @click="toggleExtraInfoVisible"
@@ -86,9 +81,25 @@
         </div>
 
         <div class="extraFields text-center pb-2" v-if="extraInfoVisible">
+          <p
+            class="text-center value"
+            :class="{
+              'text-grey': !object.comments.find(
+                (item) => item.timeline_step_id == comment.timeline_step_id
+              ),
+            }"
+            v-for="comment in object.allComments"
+            :key="comment.id"
+          >
+            {{ comment.comment }}
+          </p>
           <p>адрес</p>
           <p class="text-center value">
-            {{ object.address }}
+            {{
+              object.building[1]
+                ? object.building[1].address[1]
+                : object.address
+            }}
           </p>
           <p>брокер</p>
           <p class="text-center value">
@@ -161,9 +172,7 @@ export default {
       this.$refs.comment.blur();
     },
     unfocusTextarea() {
-      if (this.localComment) {
-        this.$emit("addComment", this.object, this.localComment);
-      }
+      this.$emit("addComment", this.object, this.localComment);
     },
   },
   emits: ["select", "unSelect", "addComment"],
