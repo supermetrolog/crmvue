@@ -107,7 +107,7 @@ export const MixinObject = {
                     timeline_step_number: data.number,
                     title: title,
                     comment: actionComment,
-                    type: 0,
+                    type: 1,
                 }, ];
             }
             this.clickUpdateStep(data);

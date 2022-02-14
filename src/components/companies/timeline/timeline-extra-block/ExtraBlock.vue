@@ -104,7 +104,7 @@ export default {
           timeline_step_number: step.number,
           title: this.THIS_USER.userProfile.short_name,
           comment: this.comment,
-          type: 1,
+          type: 3,
         },
       ];
       this.$emit("createComment", step, false, () => (this.loader = false));
