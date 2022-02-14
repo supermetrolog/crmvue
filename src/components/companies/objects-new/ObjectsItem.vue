@@ -48,6 +48,9 @@
         </div>
         <div class="data py-2">
           <p class="text-center title">
+            {{ object.visual_id }}
+          </p>
+          <p class="text-center title">
             {{ object.district_name }} - {{ object.direction_name }}
           </p>
           <p class="value text-center title2">

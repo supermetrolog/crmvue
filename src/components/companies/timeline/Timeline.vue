@@ -40,9 +40,7 @@
                   @confirm="changeTimeline(timeline.consultant.id)"
                 >
                   <template #btnContent>
-                    {{
-                      timeline.consultant.userProfile.short_name
-                    }}
+                    {{ timeline.consultant.userProfile.short_name }}
                   </template>
                 </CustomButton>
               </div>
@@ -116,7 +114,11 @@
         class="col-2 box timeline-extra-block"
         v-if="selectedStep && !loader && !timelineNotFoundFlag"
       >
-        <ExtraBlock :step="selectedStep" :disabled="disabled" />
+        <ExtraBlock
+          :step="selectedStep"
+          :disabled="disabled"
+          @createComment="clickUpdateStep"
+        />
       </div>
     </div>
   </div>

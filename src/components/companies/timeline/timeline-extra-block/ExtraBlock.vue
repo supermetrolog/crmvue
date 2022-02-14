@@ -17,16 +17,25 @@
                 :disabled="step.id == timelineStep.id"
               >
                 <Comments :data="timelineStep.timelineActionComments" />
-                <Form v-if="step.id == timelineStep.id" ref="form" class="mb-3">
+                <Form
+                  v-if="step.id == timelineStep.id"
+                  ref="form"
+                  class="mb-3"
+                  @submit="onSubmit(step)"
+                >
                   <FormGroup>
-                    <Textarea class="col-12" />
+                    <Textarea class="col-12" v-model="comment" />
                     <Submit
                       class="col-12 mt-1"
                       buttonClasses="btn-primary"
                       :disabled="disabled"
+                      v-if="!loader"
                     >
                       добавить
                     </Submit>
+                    <div class="col-12 mt-4" v-if="loader">
+                      <Loader class="center small py-2 no-absolute" />
+                    </div>
                   </FormGroup>
                 </Form>
               </AccordionItem>
@@ -61,9 +70,9 @@ export default {
   },
   data() {
     return {
+      loader: false,
       timelineStepOptions: Timeline.get("param"),
-      stepComment: null,
-      saveCommentBtnVisible: false,
+      comment: null,
     };
   },
   props: {
@@ -76,16 +85,9 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["TIMELINE_COMMENTS", "TIMELINE"]),
+    ...mapGetters(["TIMELINE_COMMENTS", "TIMELINE", "THIS_USER"]),
   },
   methods: {
-    inputComment() {
-      if (this.step.comment != this.stepComment) {
-        this.saveCommentBtnVisible = true;
-      } else {
-        this.saveCommentBtnVisible = false;
-      }
-    },
     scrollToForm() {
       let options = {
         behavior: "smooth",
@@ -93,9 +95,23 @@ export default {
       };
       this.$refs.form.$el.scrollIntoView(options);
     },
+    onSubmit(step) {
+      this.loader = true;
+      step.newActionComments = [
+        {
+          timeline_id: step.timeline_id,
+          timeline_step_id: step.id,
+          timeline_step_number: step.number,
+          title: this.THIS_USER.userProfile.short_name,
+          comment: this.comment,
+          type: 1,
+        },
+      ];
+      this.$emit("createComment", step, false, () => (this.loader = false));
+      this.comment = null;
+    },
   },
   mounted() {
-    this.stepComment = this.step.comment;
     setTimeout(() => this.scrollToForm(), 300); //Из за анимации нужно подождать 500 мс чтобы элемент появился
   },
   watch: {
