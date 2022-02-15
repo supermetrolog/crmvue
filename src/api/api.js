@@ -8,6 +8,7 @@ import objects from "./objects.js";
 import contacts from "./contacts.js";
 import companies from "./companies.js";
 import deal from "./deal.js";
+import calendar from "./calendar";
 export default {
     user,
     notifications,
@@ -18,5 +19,6 @@ export default {
     contacts,
     companies,
     calls,
-    deal
+    deal,
+    calendar
 }

@@ -237,6 +237,7 @@ export default {
         behavior: "smooth",
         block: "center",
       };
+      console.error("REF", this.$refs["step_" + this.$route.query.step].$el);
       setTimeout(
         () =>
           this.$refs["step_" + this.$route.query.step].$el.scrollIntoView(
@@ -285,12 +286,12 @@ export default {
   },
   async created() {
     this.loader = true;
-    const result = await this.getTimeline();
     this.getCompanyContacts();
+    const result = await this.getTimeline();
     this.loader = false;
     if (result) {
       this.$nextTick(() => {
-        this.scrollToSelectedStep(500);
+        this.scrollToSelectedStep(600);
       });
     }
   },
