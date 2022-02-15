@@ -237,7 +237,8 @@ export default {
         behavior: "smooth",
         block: "center",
       };
-      console.error("REF", this.$refs["step_" + this.$route.query.step].$el);
+      // const overflow = document.getElementsByTagName("body")[0].style.overflow;
+      // console.error("OVERFLOW", overflow);
       setTimeout(
         () =>
           this.$refs["step_" + this.$route.query.step].$el.scrollIntoView(
@@ -291,7 +292,7 @@ export default {
     this.loader = false;
     if (result) {
       this.$nextTick(() => {
-        this.scrollToSelectedStep(600);
+        this.scrollToSelectedStep(0);
       });
     }
   },
