@@ -187,6 +187,24 @@ export default {
       this.$emit("addComment", this.object, this.localComment);
     },
   },
+  mounted() {
+    if (this.object.comment) {
+      this.localComment = this.object.comment;
+    }
+  },
+  watch: {
+    // object() {
+    //   if (this.object.comment) {
+    //     this.localComment = this.object.comment;
+    //   }
+    // },
+    object: {
+      handler() {
+        this.localComment = this.object.comment;
+      },
+      deep: true,
+    },
+  },
   emits: ["select", "unSelect", "addComment"],
 };
 </script>

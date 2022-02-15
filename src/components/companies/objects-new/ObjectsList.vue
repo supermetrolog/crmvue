@@ -20,6 +20,7 @@
       "
       @select="$emit('select', $event)"
       @unSelect="$emit('unSelect', $event)"
+      :col="col"
       @addComment="(...argv) => this.$emit('addComment', ...argv)"
     />
     <hr v-if="withSeparator && !loader" />
@@ -69,6 +70,10 @@ export default {
     loader: {
       type: Boolean,
       default: false,
+    },
+    col: {
+      type: String,
+      default: "col-4",
     },
   },
   methods: {

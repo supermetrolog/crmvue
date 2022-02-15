@@ -267,6 +267,7 @@ export const MixinAllObject = {
             searchMode: false,
             allObjectsLoader: false,
             controllPanelHeight: 0,
+            barVisible: false,
         };
     },
     computed: {
@@ -290,6 +291,17 @@ export const MixinAllObject = {
                     text: "Нет подходящих",
                     icon: "far fa-frown-open",
                     emited_event: "negative",
+                    classes: "col-4 ml-1",
+                },
+                {
+                    btnClass: "primary",
+                    btnVisible: false,
+                    defaultBtn: true,
+                    disabled: this.disabled,
+                    title: "Выбранные предложения",
+                    text: `Избранные (${this.selectedObjects.length})`,
+                    icon: "fas fa-bookmark",
+                    emited_event: "favorites",
                     classes: "col-4 ml-1",
                 },
             ];
@@ -364,6 +376,9 @@ export const MixinAllObject = {
         returnCurrentPageToFirst() {
             this.currentPage = 1;
         },
+        favorites() {
+            this.barVisible = !this.barVisible;
+        }
     },
     mounted() {
         this.getAllObjects();
