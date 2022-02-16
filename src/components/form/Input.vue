@@ -13,6 +13,8 @@
         :value="modelValue"
         v-maska="maska"
         ref="input"
+        :min="min"
+        :max="max"
       />
     </label>
     <div class="searchable" v-if="searchable">
@@ -85,6 +87,12 @@ export default {
     options: {
       type: [Array, Object],
       default: () => [],
+    },
+    min: {
+      type: [String, Number],
+    },
+    max: {
+      type: [String, Number],
     },
   },
   methods: {

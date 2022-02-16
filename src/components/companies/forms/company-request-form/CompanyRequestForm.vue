@@ -229,6 +229,7 @@
 
           <CheckboxIcons
             v-model="form.objectTypes"
+            :v="v$.form.objectTypes"
             label="Тип объекта"
             extraLabel="склад"
             class="col-3 pr-1"
@@ -237,6 +238,7 @@
           />
           <CheckboxIcons
             v-model="form.objectTypes"
+            :v="v$.form.objectTypes"
             extraLabel="производство"
             class="col-3 mt-4 pr-1"
             name="object_type"
@@ -244,6 +246,7 @@
           />
           <CheckboxIcons
             v-model="form.objectTypes"
+            :v="v$.form.objectTypes"
             extraLabel="участок"
             class="col-2 mt-4"
             name="object_type"
@@ -286,6 +289,7 @@ import Radio from "@/components/form/Radio.vue";
 import Textarea from "@/components/form/Textarea.vue";
 import CheckboxIcons from "@/components/form/CheckboxIcons.vue";
 import Submit from "@/components/form/Submit.vue";
+import moment from "moment";
 
 export default {
   name: "CompanyRequestForm",
@@ -378,6 +382,9 @@ export default {
         dealType: {
           required: helpers.withMessage("выберите тип сделки", required),
         },
+        objectTypes: {
+          required: helpers.withMessage("выберите тип объекта", required),
+        },
         distanceFromMKAD: {
           customRequired: helpers.withMessage(
             "Заполните поле",
@@ -406,6 +413,10 @@ export default {
           customRequiredForMovingDate: helpers.withMessage(
             "Заполните поле",
             this.customRequiredForMovingDate
+          ),
+          maxValue: helpers.withMessage(
+            "Неверная дата",
+            this.dateRangeValidator
           ),
         },
         passive_why: {
@@ -459,6 +470,18 @@ export default {
         this.clickCloseModal();
       }
       this.loader = false;
+    },
+    dateRangeValidator(value) {
+      if (value === null) return true;
+
+      const min = Date.parse(moment(new Date()).format("YYYY-MM-DD"));
+      const max = Date.parse(new Date("2030-12-29"));
+      const current = Date.parse(new Date(value));
+      console.log(min, current);
+      if (current >= min && current < max) {
+        return true;
+      }
+      return false;
     },
     customRequired(value) {
       if (!this.form.distanceFromMKADnotApplicable) {
