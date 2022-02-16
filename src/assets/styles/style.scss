@@ -1281,9 +1281,10 @@
         }
         &-item {
             &.tags {
+                margin-bottom: 250px;
                 .multiselect {
                     border: none!important;
-                    justify-content: start;
+                    justify-content: center;
                     padding-left: 0!important;
                 }
             }
@@ -2530,6 +2531,9 @@
     
     //*********** MULTISELECT ************
     .multiselect {
+        &-dropdown {
+            max-height: 300px!important;
+        }
         box-shadow: none!important;
         .multiselect-single-label {
             position: relative;
