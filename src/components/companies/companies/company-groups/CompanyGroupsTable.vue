@@ -12,7 +12,7 @@
           </template>
           <template #tbody>
             <Tr v-for="item in companyGroups" :key="item.id">
-              <Td> {{ item.nameRu }} - {{ item.nameEng }} </Td>
+              <Td> {{ item.full_name }} </Td>
               <Td class="description">
                 {{ item.description }}
               </Td>

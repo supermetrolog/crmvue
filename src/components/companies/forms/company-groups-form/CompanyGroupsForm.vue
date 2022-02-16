@@ -15,14 +15,35 @@
             :v="v$.form.nameRu"
             label="Название Ru"
             required
-            class="col-4 pr-1"
+            class="col-5 pr-1"
+            :maska="{
+              mask: 'Z*',
+              tokens: { Z: { pattern: /[а-яА-Я0-9 ]/ } },
+            }"
           />
           <Input
             v-model="form.nameEng"
             label="Название Eng"
-            class="col-4 pr-1"
+            class="col-5 pr-1"
+            :maska="{
+              mask: 'Z*',
+              tokens: { Z: { pattern: /[a-zA-Z0-9 ]/ } },
+            }"
           />
-          <Textarea v-model="form.description" label="Описание" />
+          <MultiSelect
+            v-model="form.formOfOrganization"
+            label="ФО"
+            title="Форма организации"
+            class="col-2 pl-1"
+            :options="formOfOrganizationOptions"
+          />
+        </FormGroup>
+        <FormGroup class="mb-1">
+          <Textarea
+            v-model="form.description"
+            label="Описание"
+            class="col-12"
+          />
         </FormGroup>
         <FormGroup class="mt-4">
           <Submit class="col-4 mx-auto">
@@ -43,7 +64,8 @@ import FormGroup from "@/components/form/FormGroup.vue";
 import Input from "@/components/form/Input.vue";
 import Textarea from "@/components/form/Textarea.vue";
 import Submit from "@/components/form/Submit.vue";
-
+import MultiSelect from "@/components/form/MultiSelect.vue";
+import { CompanyFormOrganization } from "@/const/Const.js";
 export default {
   name: "UserForm",
   components: {
@@ -52,15 +74,18 @@ export default {
     Input,
     Textarea,
     Submit,
+    MultiSelect,
   },
   data() {
     return {
       v$: useValidate(),
+      formOfOrganizationOptions: CompanyFormOrganization.get("param"),
       loader: false,
       form: {
         nameRu: null,
         nameEng: null,
         description: null,
+        formOfOrganization: null,
       },
     };
   },
