@@ -56,10 +56,22 @@
           />
           <MultiSelect
             v-model="form.position"
+            :v="v$.form.position"
+            @change="changePosition"
+            required
             label="Должность"
             class="col-6 pr-1"
             :options="positionList"
-          />
+          >
+            <Checkbox
+              v-model="form.position_unknown"
+              @change="changePositionUnknown"
+              label="Должность неизвестна"
+              mode="inline"
+              title="Должность неизвестна"
+              class="col-12 p-0 mt-1 large text-center"
+            />
+          </MultiSelect>
         </FormGroup>
         <FormGroup class="mb-1">
           <MultiSelect
@@ -88,6 +100,7 @@
           <Checkbox
             v-model="form.warning"
             label="Внимание!"
+            @change="changeWarning"
             class="large text-center"
             :class="{ 'col-3': form.warning, 'col-2': !form.warning }"
           >
@@ -219,6 +232,7 @@ export default {
         passive_why: null,
         passive_why_comment: null,
         warning_why_comment: null,
+        position_unknown: 0,
       },
     };
   },
@@ -242,6 +256,12 @@ export default {
   validations() {
     return {
       form: {
+        position: {
+          customRequredPosition: helpers.withMessage(
+            "выберите должность",
+            this.customRequiredPosition
+          ),
+        },
         consultant_id: {
           required: helpers.withMessage("выберите консультанта", required),
         },
@@ -326,6 +346,25 @@ export default {
       }
       this.loader = false;
     },
+    changeWarning() {
+      this.form.warning ? (this.form.good = 0) : "";
+    },
+    changePosition() {
+      if (this.form.position !== null) {
+        this.form.position_unknown = 0;
+      }
+    },
+    changePositionUnknown() {
+      if (this.form.position_unknown) {
+        this.form.position = null;
+      }
+    },
+    customRequiredPosition(value) {
+      if (this.form.position_unknown) {
+        return true;
+      }
+      return required.$validator(value);
+    },
     validateEmailsPropogation() {
       return validatePropogationInput(this.form.emails, "email");
     },
@@ -389,11 +428,13 @@ export default {
 
         array.push({
           value: this.selectedCompany.id,
-          label:
-            this.selectedCompany.nameRu + " " + this.selectedCompany.nameEng,
+          label: this.selectedCompany.full_name,
         });
       }
-      result = await this.SEARCH_COMPANIES({ searchText: query }, false);
+      result = await this.SEARCH_COMPANIES({
+        query: { searchText: query },
+        saveState: false,
+      });
       result.forEach((item) => {
         array.push({ value: item.id, label: item.nameRu + " " + item.nameEng });
       });

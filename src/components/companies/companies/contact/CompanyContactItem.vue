@@ -45,7 +45,9 @@
       </div>
       <div class="name">
         <strong :title="contact.full_name"> {{ name }} </strong>
-        <small class="d-block text-grey">{{ position }}</small>
+        <small class="d-block text-grey">{{
+          position ? position : "должность неизвестна"
+        }}</small>
       </div>
 
       <div class="body">

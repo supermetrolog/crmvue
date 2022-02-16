@@ -151,8 +151,10 @@ export default {
           array.push({ [this.name]: item });
         });
         this.$emit("update:modelValue", array);
+        this.$emit("change", array);
       } else {
         this.$emit("update:modelValue", this.field);
+        this.$emit("change", this.field);
       }
     },
     setData() {
