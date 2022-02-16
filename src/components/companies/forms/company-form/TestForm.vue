@@ -34,6 +34,7 @@
               />
 
               <MultiSelect
+                v-if="!form.noName"
                 v-model="form.formOfOrganization"
                 label="ФО"
                 title="Форма организации"
@@ -169,7 +170,23 @@
                 label="Рейтинг"
                 class="col-4 pl-1 text-center ml-auto"
                 :options="ratingOptions"
-              />
+              >
+                <p class="text-left pl-5 mt-2">
+                  <i class="fas fa-star"></i>
+                  - не особо важно
+                </p>
+                <p class="text-left pl-5">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  - важно
+                </p>
+                <p class="text-left pl-5">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  - очень важно
+                </p>
+              </RadioStars>
             </FormGroup>
           </Tab>
           <Tab name="Деятельность">
