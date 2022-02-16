@@ -220,7 +220,11 @@
                 :createTag="true"
                 label="Номенклатура товара"
                 class="col-10 tags mx-auto text-center"
-                :options="COMPANY_PRODUCT_RANGE_LIST"
+                :options="
+                  async () => {
+                    return COMPANY_PRODUCT_RANGE_LIST;
+                  }
+                "
                 name="product"
               />
             </FormGroup>

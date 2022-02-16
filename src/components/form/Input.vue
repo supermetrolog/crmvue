@@ -10,6 +10,7 @@
         @input="onInput($event.target.value.trim())"
         @focus="onFocus"
         @blur="onBlur"
+        @keypress.enter.prevent
         :value="modelValue"
         v-maska="maska"
         ref="input"

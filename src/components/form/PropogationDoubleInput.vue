@@ -10,6 +10,7 @@
         <input
           type="text"
           @input.stop.prevent="onInput"
+          @keypress.enter.prevent
           :class="inputClasses"
           class="main-input mb-1"
           v-model="field[index][name]"
@@ -20,6 +21,7 @@
         <input
           type="text"
           @input.stop.prevent="onInput"
+          @keypress.enter.prevent
           :class="inputClasses"
           class="additional-input mb-1"
           v-model="field[index][name2]"
