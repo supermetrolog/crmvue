@@ -6,7 +6,7 @@
         enter-active-class="animate__animated animate__zoomIn for__modal"
         leave-active-class="animate__animated animate__zoomOut for__modal"
       >
-        <Bar title="Избранное" v-if="barVisible">
+        <Bar title="Избранное" v-if="barVisible" @close="favorites">
           <Objects>
             <ObjectsList
               :objects="selectedObjects"

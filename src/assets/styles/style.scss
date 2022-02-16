@@ -3341,12 +3341,12 @@
         align-items: center;
         justify-content: center;
         position: fixed;
-        bottom: 0;
-        right: 0;
+        bottom: 33px;
+        right: 20px;
         z-index: 99;
-        height: 94%;
-        padding-bottom: 33px;
-        padding-right: 5px;
+        height: 91%;
+        // padding-bottom: 33px;
+        // padding-right: 5px;
         &.active {
             opacity: 1;
             visibility: visible;
@@ -3373,10 +3373,11 @@
         }
         &-body {
             width: 100%;
-            padding: 15px 20px;
+            padding: 15px 20px 40px 20px;
             font-weight: normal;
-            max-height: 90vh;
+            max-height: 100%;
             overflow-y: auto;
+            // padding-bottom: 40px;
         }
         &.fullscreen {
             .modal-container {
