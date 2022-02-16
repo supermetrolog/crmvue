@@ -320,6 +320,7 @@ export const MixinAllObject = {
             const objects = await api.objects.getCurrentStepObjectsOneByOne(
                 this.step.timelineStepObjects
             );
+            console.log("DATA", objects);
             this.includeStepDataInObjectsData(objects);
             this.preventStepObjects = objects;
             this.loader = false;
