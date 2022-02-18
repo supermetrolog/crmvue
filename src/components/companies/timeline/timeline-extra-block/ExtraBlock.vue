@@ -9,7 +9,10 @@
               <AccordionItem
                 v-for="timelineStep in TIMELINE.timelineSteps"
                 :key="timelineStep.id"
-                :title="timelineStepOptions[timelineStep.number][1].name"
+                :title="
+                  timelineStepOptions[timelineStep.number][1].name +
+                  ` (${timelineStep.timelineActionComments.length})`
+                "
                 :titleClasses="
                   'badge-' + timelineStepOptions[timelineStep.number][1].class
                 "

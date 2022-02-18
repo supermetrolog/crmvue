@@ -37,13 +37,15 @@
               deal.consultant.userProfile.short_name
             }}</strong>
           </div>
-          <div class="col-6 text-right pr-3"><p>дата начала:</p></div>
+          <div class="col-6 text-right pr-3"><p>дата сделки:</p></div>
           <div class="col-6 pl-3">
-            <strong class="">{{ deal.startEventTime || "-" }}</strong>
+            <strong class="">{{ deal.dealDate || "-" }}</strong>
           </div>
-          <div class="col-6 text-right pr-3"><p>дата окончания:</p></div>
+          <div class="col-6 text-right pr-3">
+            <p>срок контракта (месяцев):</p>
+          </div>
           <div class="col-6 pl-3">
-            <strong class="">{{ deal.endEventTime || "-" }}</strong>
+            <strong class="">{{ deal.contractTerm || "-" }}</strong>
           </div>
           <div class="col-6 text-right pr-3"><p>юр. лицо клиента:</p></div>
           <div class="col-6 pl-3">

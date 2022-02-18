@@ -122,16 +122,16 @@
         </FormGroup>
         <FormGroup class="mb-1">
           <Input
-            v-model="form.startEventTime"
-            label="Время начала события"
+            v-model="form.dealDate"
+            label="Дата сделки"
             type="date"
             class="col-6 pr-1"
           />
           <Input
-            v-model="form.endEventTime"
-            label="Время завершения события"
-            type="date"
+            v-model="form.contractTerm"
+            label="Срок контракта в месяцах"
             class="col-6"
+            maska="####"
           />
         </FormGroup>
 
@@ -159,6 +159,7 @@ import Checkbox from "@/components/common/form/Checkbox.vue";
 import Submit from "@/components/common/form/Submit.vue";
 import api from "@/api/api";
 import { DealTypeList } from "@/const/Const.js";
+import moment from "moment";
 export default {
   name: "CompanyDealForm",
   components: {
@@ -187,8 +188,8 @@ export default {
         floorPrice: null,
         clientLegalEntity: null,
         description: null,
-        startEventTime: null,
-        endEventTime: null,
+        dealDate: moment(new Date()).format("YYYY-MM-DD"),
+        contractTerm: null,
         is_our: 1,
         is_competitor: 0,
         competitor_company_id: null,
