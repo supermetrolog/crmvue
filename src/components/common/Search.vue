@@ -6,7 +6,7 @@
         type="text"
         id="search"
         placeholder="pennylane"
-        v-model.trim="param.searchText"
+        v-model.trim="param.all"
         @keyup.enter="clickSearch"
       />
       <p>Введите: название компании, ID компании, адрес компании</p>
@@ -24,7 +24,7 @@ export default {
   data() {
     return {
       param: {
-        searchText: "",
+        all: null,
       },
     };
   },
@@ -33,7 +33,14 @@ export default {
       // if (this.param.searchText == "") {
       //   return;
       // }
-      this.$emit("search", { query: this.param });
+      let query = { ...this.$route.query };
+      query.all = this.param.all;
+      if (!query.all) {
+        delete query.all;
+      }
+      console.log(query);
+      this.$router.push({ query });
+      // this.$emit("search", this.param);
     },
   },
 };

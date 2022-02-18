@@ -1,9 +1,15 @@
 <template>
   <div class="all">
-    <CompanyGroupsForm
-      @closeCompanyGroupsForm="companyGroupsFormVisible = false"
-      v-if="companyGroupsFormVisible"
-    />
+    <transition
+      mode="out-in"
+      enter-active-class="animate__animated animate__zoomIn for__modal absolute"
+      leave-active-class="animate__animated animate__zoomOut for__modal absolute"
+    >
+      <CompanyGroupsForm
+        @closeCompanyGroupsForm="companyGroupsFormVisible = false"
+        v-if="companyGroupsFormVisible"
+      />
+    </transition>
     <transition
       mode="out-in"
       enter-active-class="animate__animated animate__zoomIn for__modal absolute"
@@ -18,14 +24,14 @@
     <div class="row no-gutters search-main-container">
       <div class="container py-3">
         <div class="col-12 search-container">
-          <Search @search="clickSearch" />
+          <Search />
         </div>
       </div>
     </div>
     <hr />
 
     <div class="row no-gutters companies-actions">
-      <div class="col-6">
+      <!-- <div class="col-6">
         <p class="d-inline">Вид:</p>
         <button
           class="btn btn-action text-dark"
@@ -41,8 +47,8 @@
         >
           <i class="fas fa-th"></i>
         </button>
-      </div>
-      <div class="col-6 text-right">
+      </div> -->
+      <div class="col-6 text-right ml-auto">
         <button
           class="btn btn-primary scale mr-2"
           @click="companyGroupsFormVisible = true"
@@ -57,17 +63,17 @@
     <div class="row no-gutters mt-2">
       <div class="col-12 companies-list-container">
         <Loader v-if="loader" />
-        <CompanyGridView
+        <!-- <CompanyGridView
           :companies="this.COMPANIES"
           v-if="viewMode && this.COMPANIES[0]"
-        />
+        /> -->
         <CompanyTableView
           :companies="this.COMPANIES"
-          v-if="!viewMode && this.COMPANIES[0]"
+          v-if="this.COMPANIES.length"
         />
         <h1
           class="text-center text-dark py-5"
-          v-if="!this.COMPANIES[0] && !loader"
+          v-if="!this.COMPANIES.length && !loader"
         >
           НИЧЕГО НЕ НАЙДЕНО
         </h1>
@@ -77,10 +83,9 @@
 </template>
 
 <script>
-import CompanyGridView from "@/components/companies/companies/CompanyGridView.vue";
+// import CompanyGridView from "@/components/companies/companies/CompanyGridView.vue";
 import CompanyTableView from "@/components/companies/companies/CompanyTableView.vue";
 import Search from "@/components/common/Search.vue";
-// import CompanyForm from "@/components/companies/forms/company-form/CompanyForm.vue";
 import TestForm from "@/components/companies/forms/company-form/TestForm.vue";
 import { mapGetters, mapActions } from "vuex";
 import CompanyGroupsForm from "@/components/companies/forms/company-groups-form/CompanyGroupsForm.vue";
@@ -96,26 +101,19 @@ export default {
     };
   },
   components: {
-    CompanyGridView,
+    // CompanyGridView,
     CompanyTableView,
     Search,
-    // CompanyForm,
     TestForm,
     CompanyGroupsForm,
   },
   methods: {
     ...mapActions(["FETCH_COMPANIES", "SEARCH_COMPANIES"]),
-    async getCompanies(param = null) {
+    async getCompanies() {
       this.loader = true;
-      if (!param) {
-        await this.FETCH_COMPANIES();
-      } else {
-        await this.SEARCH_COMPANIES(param);
-      }
+      const query = this.$route.query;
+      await this.SEARCH_COMPANIES({ query });
       this.loader = false;
-    },
-    clickSearch(param) {
-      this.getCompanies(param);
     },
     clickCloseCompanyForm() {
       this.companyFormVisible = false;
@@ -129,6 +127,12 @@ export default {
   },
   created() {
     this.getCompanies();
+    console.log(this.$route);
+  },
+  watch: {
+    $route() {
+      this.getCompanies();
+    },
   },
 };
 </script>

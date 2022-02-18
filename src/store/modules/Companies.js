@@ -45,20 +45,35 @@ const Companies = {
             }
         },
         async SEARCH_COMPANIES(context, { query, saveState = true }) {
-            const search = query.searchText;
-            const queryParams = {
-                nameEng: search,
-                nameRu: search,
-                officeAdress: search,
-                legalAddress: search,
-                "contact.phone": search,
-            };
-            const result = await api.companies.searchCompanies(queryParams);
+            // const search = query.searchText;
+            // const queryParams = {
+            //     nameEng: search,
+            //     nameRu: search,
+            //     officeAdress: search,
+            //     legalAddress: search,
+            //     "contact.phone": search,
+            // };
+            const result = await api.companies.searchCompanies(query);
             if (result && saveState) {
                 context.commit('updateCompanies', result);
             }
             return result;
         },
+        // async SEARCH_COMPANIES(context, { query, saveState = true }) {
+        //     const search = query.searchText;
+        //     const queryParams = {
+        //         nameEng: search,
+        //         nameRu: search,
+        //         officeAdress: search,
+        //         legalAddress: search,
+        //         "contact.phone": search,
+        //     };
+        //     const result = await api.companies.searchCompanies(queryParams);
+        //     if (result && saveState) {
+        //         context.commit('updateCompanies', result);
+        //     }
+        //     return result;
+        // },
         async FETCH_COMPANY(context, id) {
             const company = await api.companies.getCompany(id);
             if (company) {
