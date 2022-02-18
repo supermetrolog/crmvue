@@ -49,7 +49,9 @@
           </div>
           <div class="col-6 text-right pr-3"><p>юр. лицо клиента:</p></div>
           <div class="col-6 pl-3">
-            <strong class="">{{ deal.clientLegalEntity || "-" }}</strong>
+            <strong class="">{{
+              deal.clientLegalEntity_full_name || "-"
+            }}</strong>
           </div>
           <div class="col-6 text-right pr-3"><p>описание:</p></div>
           <div class="col-6 pl-3">

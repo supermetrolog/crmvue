@@ -11,6 +11,7 @@
           :formdata="currentRequest.deal"
           :company_id="currentRequest.company_id"
           :request_id="currentRequest.id"
+          :dealType="currentRequest.dealType"
           :object_id="data.timelineStepObjects[0].object_id"
           :complex_id="data.timelineStepObjects[0].complex_id"
           :type_id="data.timelineStepObjects[0].type_id"

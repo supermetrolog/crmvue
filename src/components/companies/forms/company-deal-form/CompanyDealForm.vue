@@ -102,10 +102,17 @@
             label="Юр. лицо клиента в сделке"
             class="col-6 pr-1"
           />
+          <MultiSelect
+            v-model="form.formOfOrganization"
+            label="ФО"
+            title="Форма организации"
+            class="col-2 pr-1"
+            :options="formOfOrganizationOptions"
+          />
           <Input
             v-model="form.floorPrice"
             label="Цена пола"
-            class="col-6"
+            class="col-4"
             maska="##########"
           />
         </FormGroup>
@@ -129,6 +136,7 @@
           />
           <Input
             v-model="form.contractTerm"
+            v-if="contractTermVisible"
             label="Срок контракта в месяцах"
             class="col-6"
             maska="####"
@@ -158,7 +166,7 @@ import MultiSelect from "@/components/common/form/MultiSelect.vue";
 import Checkbox from "@/components/common/form/Checkbox.vue";
 import Submit from "@/components/common/form/Submit.vue";
 import api from "@/api/api";
-import { DealTypeList } from "@/const/Const.js";
+import { DealTypeList, CompanyFormOrganization } from "@/const/Const.js";
 import moment from "moment";
 export default {
   name: "CompanyDealForm",
@@ -178,7 +186,9 @@ export default {
       v$: useValidate(),
       selectedCompany: null,
       selectedRequest: null,
+      lastSearchRequestResult: null,
       selectedCompetitorCompany: null,
+      formOfOrganizationOptions: CompanyFormOrganization.get("param"),
       form: {
         request_id: null,
         company_id: null,
@@ -196,6 +206,7 @@ export default {
         complex_id: null,
         object_id: null,
         type_id: null,
+        formOfOrganization: null,
       },
     };
   },
@@ -222,6 +233,10 @@ export default {
     isOurDeal: {
       type: Boolean,
       default: false,
+    },
+    dealType: {
+      type: Number,
+      default: null,
     },
   },
   validations() {
@@ -256,6 +271,20 @@ export default {
   },
   computed: {
     ...mapGetters(["CONSULTANT_LIST"]),
+    contractTermVisible() {
+      if (!this.lastSearchRequestResult || !this.form.request_id) return false;
+      const currentRequestOption = this.lastSearchRequestResult.find(
+        (item) => item.value == this.form.request_id
+      );
+      if (
+        (currentRequestOption &&
+          currentRequestOption.label.indexOf("аренда") === 0) ||
+        currentRequestOption.label.indexOf("ответ-хранение") === 0
+      ) {
+        return true;
+      }
+      return false;
+    },
   },
   methods: {
     ...mapActions([
@@ -382,6 +411,7 @@ export default {
             " м^2",
         });
       });
+      this.lastSearchRequestResult = array;
       return array;
     },
     async searchObjects(query) {
