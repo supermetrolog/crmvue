@@ -218,6 +218,7 @@
                 :loading="false"
                 :searchable="true"
                 :createTag="true"
+                :resolveOnLoad="true"
                 label="Номенклатура товара"
                 class="col-10 tags mx-auto text-center"
                 :options="
