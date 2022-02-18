@@ -59,12 +59,12 @@
 import { mapActions } from "vuex";
 import useValidate from "@vuelidate/core";
 import { required, helpers } from "@vuelidate/validators";
-import Form from "@/components/form/Form.vue";
-import FormGroup from "@/components/form/FormGroup.vue";
-import Input from "@/components/form/Input.vue";
-import Textarea from "@/components/form/Textarea.vue";
-import Submit from "@/components/form/Submit.vue";
-import MultiSelect from "@/components/form/MultiSelect.vue";
+import Form from "@/components/common/form/Form.vue";
+import FormGroup from "@/components/common/form/FormGroup.vue";
+import Input from "@/components/common/form/Input.vue";
+import Textarea from "@/components/common/form/Textarea.vue";
+import Submit from "@/components/common/form/Submit.vue";
+import MultiSelect from "@/components/common/form/MultiSelect.vue";
 import { CompanyFormOrganization } from "@/const/Const.js";
 export default {
   name: "UserForm",

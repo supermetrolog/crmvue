@@ -5,7 +5,7 @@
         <a href="#" class="link">
           <div class="image-circle">
             <img
-              src="../../../../assets/image/6.jpg"
+              src="../../../../../assets/image/6.jpg"
               alt="USER IMAGE"
               class="img-center"
             />

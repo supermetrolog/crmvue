@@ -139,10 +139,9 @@ import TalkActions from "./step-actions/TalkActions.vue";
 import DealActions from "./step-actions/DealActions.vue";
 
 import ExtraBlock from "./timeline-extra-block/ExtraBlock.vue";
-import Loader from "@/components/Loader.vue";
 import { Timeline } from "@/const/Const";
 import Utils from "@/utils";
-import CustomButton from "@/components/CustomButton.vue";
+import CustomButton from "@/components/common/CustomButton.vue";
 
 export default {
   name: "Timeline",
@@ -156,7 +155,6 @@ export default {
     InterestActions,
     TalkActions,
     DealActions,
-    Loader,
     ExtraBlock,
     Multiselect,
     CustomButton,

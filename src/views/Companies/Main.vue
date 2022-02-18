@@ -79,8 +79,7 @@
 <script>
 import CompanyGridView from "@/components/companies/companies/CompanyGridView.vue";
 import CompanyTableView from "@/components/companies/companies/CompanyTableView.vue";
-import Loader from "@/components/Loader.vue";
-import Search from "@/components/Search.vue";
+import Search from "@/components/common/Search.vue";
 // import CompanyForm from "@/components/companies/forms/company-form/CompanyForm.vue";
 import TestForm from "@/components/companies/forms/company-form/TestForm.vue";
 import { mapGetters, mapActions } from "vuex";
@@ -99,7 +98,6 @@ export default {
   components: {
     CompanyGridView,
     CompanyTableView,
-    Loader,
     Search,
     // CompanyForm,
     TestForm,

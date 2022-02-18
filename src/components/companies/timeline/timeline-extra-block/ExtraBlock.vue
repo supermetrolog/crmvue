@@ -61,13 +61,13 @@
 <script>
 import { mapGetters } from "vuex";
 import { Timeline } from "@/const/Const";
-import Form from "@/components/form/Form";
-import Textarea from "@/components/form/Textarea";
-import Input from "@/components/form/Input";
-import Submit from "@/components/form/Submit";
-import FormGroup from "@/components/form/FormGroup";
-import Accordion from "@/components/accordion/Accordion";
-import AccordionItem from "@/components/accordion/AccordionItem";
+import Form from "@/components/common/form/Form";
+import Textarea from "@/components/common/form/Textarea";
+import Input from "@/components/common/form/Input";
+import Submit from "@/components/common/form/Submit";
+import FormGroup from "@/components/common/form/FormGroup";
+import Accordion from "@/components/common/accordion/Accordion";
+import AccordionItem from "@/components/common/accordion/AccordionItem";
 import Comments from "./Comments.vue";
 import useValidate from "@vuelidate/core";
 import { required, helpers } from "@vuelidate/validators";

@@ -235,9 +235,9 @@ import { mapActions, mapGetters } from "vuex";
 import ObjectsItem from "@/components/companies/objects/ObjectsItem.vue";
 import ObjectsItemTable from "@/components/companies/objects/ObjectsItemTable.vue";
 import ObjectsSearch from "@/components/companies/objects/ObjectsSearch.vue";
-import Pagination from "@/components/Pagination";
-import Loader from "@/components/Loader";
-import CustomButton from "@/components/CustomButton.vue";
+import Pagination from "@/components/common/Pagination";
+import Loader from "@/components/common/Loader";
+import CustomButton from "@/components/common/CustomButton.vue";
 import { notify } from "@kyvg/vue3-notification";
 
 export default {

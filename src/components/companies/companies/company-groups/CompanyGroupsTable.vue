@@ -33,10 +33,10 @@
 </template>
 
 <script>
-import Table from "@/components/table/Table";
-import Tr from "@/components/table/Tr";
-import Th from "@/components/table/Th";
-import Td from "@/components/table/Td";
+import Table from "@/components/common/table/Table";
+import Tr from "@/components/common/table/Tr";
+import Th from "@/components/common/table/Th";
+import Td from "@/components/common/table/Td";
 export default {
   name: "CompanyGroupsTable",
   components: {

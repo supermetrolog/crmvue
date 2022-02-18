@@ -149,14 +149,14 @@
 import { mapActions, mapGetters } from "vuex";
 import useValidate from "@vuelidate/core";
 import { required, helpers } from "@vuelidate/validators";
-import Form from "@/components/form/Form.vue";
-import FormGroup from "@/components/form/FormGroup.vue";
-import Input from "@/components/form/Input.vue";
-import ObjectsInput from "@/components/form/ObjectsInput.vue";
-import Textarea from "@/components/form/Textarea.vue";
-import MultiSelect from "@/components/form/MultiSelect.vue";
-import Checkbox from "@/components/form/Checkbox.vue";
-import Submit from "@/components/form/Submit.vue";
+import Form from "@/components/common/form/Form.vue";
+import FormGroup from "@/components/common/form/FormGroup.vue";
+import Input from "@/components/common/form/Input.vue";
+import ObjectsInput from "@/components/common/form/ObjectsInput.vue";
+import Textarea from "@/components/common/form/Textarea.vue";
+import MultiSelect from "@/components/common/form/MultiSelect.vue";
+import Checkbox from "@/components/common/form/Checkbox.vue";
+import Submit from "@/components/common/form/Submit.vue";
 import api from "@/api/api";
 import { DealTypeList } from "@/const/Const.js";
 export default {

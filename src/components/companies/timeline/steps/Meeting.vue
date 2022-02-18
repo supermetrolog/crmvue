@@ -86,7 +86,7 @@
 </template>
 
 <script>
-import CustomButton from "@/components/CustomButton.vue";
+import CustomButton from "@/components/common/CustomButton.vue";
 import { MixinSteps } from "../mixins";
 import { mapGetters } from "vuex";
 export default {

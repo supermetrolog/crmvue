@@ -59,8 +59,8 @@
 </template>
 
 <script>
-import Notifications from "@/components/layout/main/header/notifications/Notifications.vue";
-import Calls from "@/components/layout/main/header/calls/Calls.vue";
+import Notifications from "@/components/common/layout/main/header/notifications/Notifications.vue";
+import Calls from "@/components/common/layout/main/header/calls/Calls.vue";
 import { mapActions, mapGetters } from "vuex";
 export default {
   name: "v-nav-notif",

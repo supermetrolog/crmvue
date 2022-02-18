@@ -44,7 +44,7 @@
 <script>
 import { FeedbackList, ObjectTypeList } from "@/const/Const.js";
 import { MixinSteps } from "../mixins";
-import Checkbox from "@/components/form/Checkbox.vue";
+import Checkbox from "@/components/common/form/Checkbox.vue";
 export default {
   name: "Feedback",
   mixins: [MixinSteps],

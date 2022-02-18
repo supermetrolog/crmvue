@@ -110,11 +110,11 @@
 </template>
 
 <script>
-import Table from "@/components/table/Table";
-import Tr from "@/components/table/Tr";
-import Th from "@/components/table/Th";
-import Td from "@/components/table/Td";
-import Progress from "@/components/Progress";
+import Table from "@/components/common/table/Table";
+import Tr from "@/components/common/table/Tr";
+import Th from "@/components/common/table/Th";
+import Td from "@/components/common/table/Td";
+import Progress from "@/components/common/Progress";
 import { CompanyCategories, RatingList } from "@/const/Const";
 export default {
   name: "CompanyTableView",

@@ -7,9 +7,9 @@ import Maska from "maska"
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import Notifications from "@kyvg/vue3-notification"
-import Modal from "@/components/Modal";
-import Loader from "@/components/Loader";
-import PhoneNumber from "@/components/PhoneNumber";
+import Modal from "@/components/common/Modal";
+import Loader from "@/components/common/Loader";
+import PhoneNumber from "@/components/common/PhoneNumber";
 
 // import VueFileAgent from 'vue-file-agent'
 import 'animate.css'

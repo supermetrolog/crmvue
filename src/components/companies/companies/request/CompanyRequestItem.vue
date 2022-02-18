@@ -259,7 +259,7 @@ import {
   PassiveWhyRequest,
   unknownMovingDate,
 } from "@/const/Const.js";
-import Progress from "@/components/Progress.vue";
+import Progress from "@/components/common/Progress.vue";
 import { mapGetters } from "vuex";
 export default {
   name: "CompanyRequestItem",

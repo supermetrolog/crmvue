@@ -55,7 +55,7 @@
 
 <script>
 import CallItem from "./CallItem.vue";
-import Pagination from "@/components/Pagination.vue";
+import Pagination from "@/components/common/Pagination.vue";
 import { mapActions, mapGetters } from "vuex";
 export default {
   name: "Calls",

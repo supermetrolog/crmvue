@@ -44,7 +44,6 @@
 <script>
 import Meeting from "../steps/Meeting.vue";
 import CompanyRequestItem from "../../companies/request/CompanyRequestItem.vue";
-import Loader from "@/components/Loader";
 import CompanyRequestForm from "../../forms/company-request-form/CompanyRequestForm.vue";
 import { mapGetters, mapActions } from "vuex";
 import { MixinStepActions } from "../mixins";
@@ -55,7 +54,6 @@ export default {
     Meeting,
     CompanyRequestItem,
     CompanyRequestForm,
-    Loader,
   },
   data() {
     return {

@@ -45,7 +45,6 @@
 
 <script>
 import { Timeline } from "@/const/Const";
-import Loader from "@/components/Loader";
 import MeetingStages from "./steps/steps-stages/Meeting.vue";
 import OffersStages from "./steps/steps-stages/Offers.vue";
 import FeedbackStages from "./steps/steps-stages/Feedback.vue";
@@ -65,7 +64,6 @@ export default {
     InterestStages,
     TalkStages,
     DealStages,
-    Loader,
   },
   data() {
     return {

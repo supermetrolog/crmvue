@@ -133,7 +133,7 @@
 
 <script>
 import { CompanyCategories } from "@/const/Const";
-import Progress from "@/components/Progress";
+import Progress from "@/components/common/Progress";
 export default {
   name: "CompanyGridView",
   components: {

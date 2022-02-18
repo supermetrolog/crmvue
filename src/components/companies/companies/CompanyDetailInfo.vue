@@ -490,8 +490,8 @@
 
 <script>
 import { CompanyCategories } from "@/const/Const";
-import FileInput from "@/components/form/FileInput";
-import Progress from "@/components/Progress";
+import FileInput from "@/components/common/form/FileInput";
+import Progress from "@/components/common/Progress";
 import {
   CompanyFormOrganization,
   ActivityGroupList,

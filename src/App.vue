@@ -4,9 +4,9 @@
 </template>
 
 <script>
-import vEmptyLayout from "./components/layout/empty/v-empty-layout";
-import vMainLayout from "./components/layout/main/v-main-layout";
-import vLoginLayout from "./components/layout/login/v-login-layout";
+import vEmptyLayout from "./components/common/layout/empty/v-empty-layout";
+import vMainLayout from "./components/common/layout/main/v-main-layout";
+import vLoginLayout from "./components/common/layout/login/v-login-layout";
 
 export default {
   components: {

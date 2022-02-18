@@ -46,7 +46,7 @@
 //Для брокеров только кнопка ОТКАЗ и причина отказа - комментарий (галочки - далбаеб, пидорас, не берет трубку)
 //Статистика отказов и причина
 import NotificationItem from "./NotificationItem.vue";
-import Pagination from "@/components/Pagination.vue";
+import Pagination from "@/components/common/Pagination.vue";
 import { mapActions, mapGetters } from "vuex";
 export default {
   name: "Notifications",

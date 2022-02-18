@@ -127,9 +127,9 @@
 
 <script>
 import { yandexmap } from "@/utils";
-import CustomButton from "@/components/CustomButton.vue";
+import CustomButton from "@/components/common/CustomButton.vue";
 import { VueDraggableNext } from "vue-draggable-next";
-import Ymap from "@/components/Ymap.vue";
+import Ymap from "@/components/common/Ymap.vue";
 import { MixinSteps } from "../mixins";
 export default {
   name: "Inspection",

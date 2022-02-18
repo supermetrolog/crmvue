@@ -93,12 +93,12 @@
 import { mapGetters, mapActions } from "vuex";
 import useValidate from "@vuelidate/core";
 import { required, helpers } from "@vuelidate/validators";
-import Form from "@/components/form/Form.vue";
-import FormGroup from "@/components/form/FormGroup.vue";
-import Input from "@/components/form/Input.vue";
-import PropogationInput from "@/components/form/PropogationInput.vue";
-import Submit from "@/components/form/Submit.vue";
-import FileInput from "@/components/form/FileInput.vue";
+import Form from "@/components/common/form/Form.vue";
+import FormGroup from "@/components/common/form/FormGroup.vue";
+import Input from "@/components/common/form/Input.vue";
+import PropogationInput from "@/components/common/form/PropogationInput.vue";
+import Submit from "@/components/common/form/Submit.vue";
+import FileInput from "@/components/common/form/FileInput.vue";
 import Utils from "@/utils";
 
 export default {

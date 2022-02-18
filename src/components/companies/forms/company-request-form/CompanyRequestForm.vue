@@ -280,15 +280,15 @@ import {
   unknownMovingDate,
   PassiveWhyRequest,
 } from "@/const/Const.js";
-import Form from "@/components/form/Form.vue";
-import FormGroup from "@/components/form/FormGroup.vue";
-import Input from "@/components/form/Input.vue";
-import Checkbox from "@/components/form/Checkbox.vue";
-import MultiSelect from "@/components/form/MultiSelect.vue";
-import Radio from "@/components/form/Radio.vue";
-import Textarea from "@/components/form/Textarea.vue";
-import CheckboxIcons from "@/components/form/CheckboxIcons.vue";
-import Submit from "@/components/form/Submit.vue";
+import Form from "@/components/common/form/Form.vue";
+import FormGroup from "@/components/common/form/FormGroup.vue";
+import Input from "@/components/common/form/Input.vue";
+import Checkbox from "@/components/common/form/Checkbox.vue";
+import MultiSelect from "@/components/common/form/MultiSelect.vue";
+import Radio from "@/components/common/form/Radio.vue";
+import Textarea from "@/components/common/form/Textarea.vue";
+import CheckboxIcons from "@/components/common/form/CheckboxIcons.vue";
+import Submit from "@/components/common/form/Submit.vue";
 import moment from "moment";
 
 export default {

@@ -135,18 +135,16 @@
 </template>
 
 <script>
-import Loader from "@/components/Loader";
 import {
   FeedbackList,
   PositionList,
   PassiveWhyContact,
 } from "@/const/Const.js";
-import PhoneNumber from "@/components/PhoneNumber";
+import PhoneNumber from "@/components/common/PhoneNumber";
 
 export default {
   name: "CompanyContactItem",
   components: {
-    Loader,
     PhoneNumber,
   },
   data() {

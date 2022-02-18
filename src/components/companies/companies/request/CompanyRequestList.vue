@@ -96,14 +96,10 @@
 <script>
 import CompanyRequestItem from "./CompanyRequestItem.vue";
 import { mapActions } from "vuex";
-import Modal from "@/components/Modal";
-import Loader from "@/components/Loader";
 export default {
   name: "CompanyRequestList",
   components: {
     CompanyRequestItem,
-    Modal,
-    Loader,
   },
   data() {
     return {

@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import CustomButton from "@/components/CustomButton.vue";
+import CustomButton from "@/components/common/CustomButton.vue";
 export default {
   name: "ObjectsControllPanel",
   emits: [

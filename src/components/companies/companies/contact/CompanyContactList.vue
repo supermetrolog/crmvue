@@ -46,15 +46,11 @@
 
 <script>
 import CompanyContactItem from "./CompanyContactItem.vue";
-import Modal from "@/components/Modal";
-import Loader from "@/components/Loader";
 import { mapActions } from "vuex";
 export default {
   name: "CompanyContactList",
   components: {
     CompanyContactItem,
-    Modal,
-    Loader,
   },
   data() {
     return {

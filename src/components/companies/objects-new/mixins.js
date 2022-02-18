@@ -3,7 +3,7 @@ import Objects from "./Objects.vue";
 import ObjectsList from "./ObjectsList.vue";
 import ObjectsControllPanel from "./ObjectsControllPanel.vue";
 import ObjectsSearch from "./ObjectsSearch.vue";
-import Pagination from "@/components/Pagination";
+import Pagination from "@/components/common/Pagination";
 import { mapActions, mapGetters } from "vuex";
 import { notify } from "@kyvg/vue3-notification";
 export const MixinObject = {

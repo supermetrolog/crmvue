@@ -21,10 +21,10 @@
 </template>
 
 <script>
-import Form from "@/components/form/Form";
-import FormGroup from "@/components/form/FormGroup";
-import Input from "@/components/form/Input";
-import Submit from "@/components/form/Submit";
+import Form from "@/components/common/form/Form";
+import FormGroup from "@/components/common/form/FormGroup";
+import Input from "@/components/common/form/Input";
+import Submit from "@/components/common/form/Submit";
 export default {
   name: "ObjectsSearch",
   components: {
