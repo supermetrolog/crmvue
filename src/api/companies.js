@@ -124,7 +124,9 @@ export default {
         await axios
             .get(url)
             .then((Response) => {
-                data = SuccessHandler.getData(Response);
+                data = {};
+                data.data = SuccessHandler.getData(Response);
+                data.pagination = SuccessHandler.getPaginationData(Response);
 
             });
         return data;

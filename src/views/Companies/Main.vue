@@ -68,12 +68,14 @@
           v-if="viewMode && this.COMPANIES[0]"
         /> -->
         <CompanyTableView
-          :companies="this.COMPANIES"
-          v-if="this.COMPANIES.length"
+          :companies="COMPANIES"
+          :pagination="COMPANIES_PAGINATION"
+          @loadMore="loadMore"
+          v-if="COMPANIES.length"
         />
         <h1
           class="text-center text-dark py-5"
-          v-if="!this.COMPANIES.length && !loader"
+          v-if="!COMPANIES.length && !loader"
         >
           НИЧЕГО НЕ НАЙДЕНО
         </h1>
@@ -109,11 +111,22 @@ export default {
   },
   methods: {
     ...mapActions(["FETCH_COMPANIES", "SEARCH_COMPANIES"]),
-    async getCompanies() {
-      this.loader = true;
+    async getCompanies(concat = false, withLoader = true) {
+      this.loader = withLoader;
       const query = this.$route.query;
-      await this.SEARCH_COMPANIES({ query });
+      await this.SEARCH_COMPANIES({ query, concat });
       this.loader = false;
+    },
+    async loadMore() {
+      let query = { ...this.$route.query };
+      query.page++;
+      await this.$router.push({ query });
+      this.getCompanies(true, false);
+    },
+    async resetRoute() {
+      let query = { ...this.$route.query };
+      query.page = 1;
+      await this.$router.push({ query });
     },
     clickCloseCompanyForm() {
       this.companyFormVisible = false;
@@ -123,17 +136,18 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["COMPANIES"]),
+    ...mapGetters(["COMPANIES", "COMPANIES_PAGINATION"]),
   },
   created() {
+    // await this.resetRoute();
     this.getCompanies();
     console.log(this.$route);
   },
-  watch: {
-    $route() {
-      this.getCompanies();
-    },
-  },
+  // watch: {
+  //   $route() {
+  //     this.getCompanies();
+  //   },
+  // },
 };
 </script>
 

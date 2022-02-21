@@ -4,14 +4,20 @@ const Companies = {
     state: {
         companies: [],
         company: null,
+        pagination: null,
         companyGroups: [],
         companyGroupList: [],
         companyProductRangeList: [],
         companyInTheBankList: [],
     },
     mutations: {
-        updateCompanies(state, data) {
-            state.companies = data;
+        updateCompanies(state, { data, concat }) {
+            state.pagination = data.pagination;
+            if (concat) {
+                state.companies = state.companies.concat(data.data);
+            } else {
+                state.companies = data.data;
+            }
         },
         updateCompany(state, data) {
             state.company = data;
@@ -44,20 +50,12 @@ const Companies = {
                 context.commit('updateCompanies', companies);
             }
         },
-        async SEARCH_COMPANIES(context, { query, saveState = true }) {
-            // const search = query.searchText;
-            // const queryParams = {
-            //     nameEng: search,
-            //     nameRu: search,
-            //     officeAdress: search,
-            //     legalAddress: search,
-            //     "contact.phone": search,
-            // };
-            const result = await api.companies.searchCompanies(query);
-            if (result && saveState) {
-                context.commit('updateCompanies', result);
+        async SEARCH_COMPANIES(context, { query, saveState = true, concat = false }) {
+            const data = await api.companies.searchCompanies(query);
+            if (data && saveState) {
+                context.commit('updateCompanies', { data, concat });
             }
-            return result;
+            return data;
         },
         // async SEARCH_COMPANIES(context, { query, saveState = true }) {
         //     const search = query.searchText;
@@ -120,6 +118,9 @@ const Companies = {
         },
         COMPANY(state) {
             return state.company;
+        },
+        COMPANIES_PAGINATION(state) {
+            return state.pagination;
         },
         COMPANY_GROUPS(state) {
             return state.companyGroups;

@@ -1874,16 +1874,13 @@
             font-size: 14px;
             text-transform: uppercase;
         }
-        // a {
-        //     color: $color_primary;
-        //     &:hover {
-        //         text-decoration: underline;
-        //     }
-        // }
         table {
             width: 100%;
             tbody {
                 tr {
+                    &.passive {
+                        background-color: rgba($color_dark, 0.2);
+                    }
                     td {
                         &.name {
                             text-transform: none;

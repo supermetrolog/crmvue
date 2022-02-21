@@ -120,6 +120,7 @@ export const validateUrl = (str) => {
 export default {
     normalizeContactsForMultiselect(contacts) {
         let data = [];
+        console.error(contacts);
         contacts.map((contact) => {
             data.push({
                 value: -1,

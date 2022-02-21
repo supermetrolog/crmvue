@@ -15,15 +15,20 @@
         </Tr>
       </template>
       <template #tbody>
-        <Tr v-for="(company, index) in companies" :key="company.id">
+        <Tr
+          v-for="(company, index) in companies"
+          :key="company.id"
+          :class="{ passive: !company.status }"
+        >
           <Td class="px-2 text-center"> {{ index + 1 }} </Td>
           <Td class="name">
             <router-link :to="'/companies/' + company.id" target="_blank">
-              <h4>
+              <h4 v-if="!company.status" class="mr-2 d-inline text-warning">
+                ПАССИВ
+              </h4>
+              <h4 class="d-inline">
                 {{ company.full_name }}
               </h4>
-
-              <p v-if="!company.nameRu" class="text-danger">&#8212;</p>
               <Progress :percent="company.progress_percent" />
             </router-link>
           </Td>
@@ -106,6 +111,7 @@
         </Tr>
       </template>
     </Table>
+    <Pagination :pagination="pagination" @loadMore="$emit('loadMore')" />
   </div>
 </template>
 
@@ -134,6 +140,10 @@ export default {
   props: {
     companies: {
       type: Array,
+    },
+    pagination: {
+      type: Object,
+      default: null,
     },
   },
   methods: {
