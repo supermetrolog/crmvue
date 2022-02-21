@@ -67,6 +67,7 @@ export default {
   emits: [
     "reset",
     "send",
+    "alreadySent",
     "done",
     "negative",
     "changeViewMode",

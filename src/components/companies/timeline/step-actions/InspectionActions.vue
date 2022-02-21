@@ -25,6 +25,7 @@
                 @reset="reset"
                 @done="done"
                 @send="send"
+                @alreadySent="alreadySent"
                 @negative="negative"
                 @changeViewMode="changeViewMode"
               />
@@ -82,7 +83,7 @@ export default {
           disabled: !this.selectedObjects.length || this.disabled,
           title: "Сохранить",
           text: "Готово",
-          icon: "fas fa-paper-plane",
+          icon: "fas fa-check",
           emited_event: "done",
           classes: "col-2",
         },
@@ -95,6 +96,16 @@ export default {
           icon: "fas fa-paper-plane",
           emited_event: "send",
           classes: "col-2 ml-1",
+        },
+        {
+          btnClass: "primary",
+          btnVisible: false,
+          disabled: !this.selectedObjects.length || this.disabled,
+          title: "Уже отправил предложения другим способом",
+          text: "Уже отправил",
+          icon: "fas fa-paper-plane",
+          emited_event: "alreadySent",
+          classes: "col-3 ml-1",
         },
         {
           btnClass: "danger",

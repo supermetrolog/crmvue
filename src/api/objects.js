@@ -50,7 +50,6 @@ export default {
         await pennylaneAxios
             .get(objectUrl)
             .then((Response) => {
-                console.log('FUCK', testArray);
                 testArray.push(SuccessHandler.getData(Response));
             })
             .catch((e) => ErrorHandle.setError(e));

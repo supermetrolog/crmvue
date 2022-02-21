@@ -37,7 +37,7 @@ export const MixinObject = {
                     disabled: !this.selectedObjects.length || this.disabled,
                     title: "Сохранить",
                     text: "Готово",
-                    icon: "fas fa-paper-plane",
+                    icon: "fas fa-check",
                     emited_event: "done",
                     classes: "col-2",
                 },
@@ -57,6 +57,9 @@ export const MixinObject = {
     },
     methods: {
         ...mapActions(['UPDATE_STEP']),
+        alreadySent(comment) {
+            this.sendObjectsHandler(comment, false, true);
+        },
         send(comment) {
             console.log("SEND", comment);
             if (!this.contactForSendMessage.length) {
@@ -131,7 +134,7 @@ export const MixinObject = {
                 });
             });
         },
-        generateComment(generalComment, sendClient, objects, data) {
+        generateComment(generalComment, sendClient, objects, data, alreadySent) {
             let objectsComments = "";
             let comment = "";
             let title = "система";
@@ -140,6 +143,9 @@ export const MixinObject = {
           ${sendClient ? 'Отправил клиенту': 'Выбрал'} предложения (${objects.length})
         </span>
         `;
+            if (alreadySent) {
+                comment = `<span>Отправил предложения другим способом (${objects.length})</span>`
+            }
             if (generalComment) {
                 title = "система/" + this.THIS_USER.userProfile.short_name;
                 comment += `с комментарием себе: <b>${generalComment}</b>`;
@@ -171,7 +177,7 @@ export const MixinObject = {
                 type: 0,
             }, ];
         },
-        sendObjectsHandler(generalComment, sendClient = false) {
+        sendObjectsHandler(generalComment, sendClient = false, alreadySent = false) {
             console.log(generalComment);
             let data = {
                 ...this.step,
@@ -179,7 +185,7 @@ export const MixinObject = {
             this.beforeSend(data);
             data.sendClientFlag = sendClient;
             this.normalizeObjectsData(data);
-            this.generateComment(generalComment, sendClient, this.selectedObjects, data);
+            this.generateComment(generalComment, sendClient, this.selectedObjects, data, alreadySent);
             this.sendObjects(data);
         },
         async sendObjects(data) {
@@ -283,6 +289,16 @@ export const MixinAllObject = {
                     classes: "col-2",
                 },
                 {
+                    btnClass: "primary",
+                    btnVisible: false,
+                    disabled: !this.selectedObjects.length || this.disabled,
+                    title: "Уже отправил предложения другим способом",
+                    text: "Уже отправил",
+                    icon: "fas fa-paper-plane",
+                    emited_event: "alreadySent",
+                    classes: "col-3 ml-1",
+                },
+                {
                     btnClass: "danger",
                     btnVisible: false,
                     btnActive: this.step.negative,
@@ -291,7 +307,7 @@ export const MixinAllObject = {
                     text: "Нет подходящих",
                     icon: "far fa-frown-open",
                     emited_event: "negative",
-                    classes: "col-4 ml-1",
+                    classes: "col-3 ml-1",
                 },
                 {
                     btnClass: "primary",
@@ -302,7 +318,7 @@ export const MixinAllObject = {
                     text: `Избранные (${this.selectedObjects.length})`,
                     icon: "fas fa-bookmark",
                     emited_event: "favorites",
-                    classes: "col-4 ml-1",
+                    classes: "col-3 ml-1",
                 },
             ];
         },

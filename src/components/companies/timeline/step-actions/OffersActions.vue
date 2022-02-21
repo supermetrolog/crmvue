@@ -41,6 +41,7 @@
                 @reset="reset"
                 @done="done"
                 @send="send"
+                @alreadySent="alreadySent"
                 @negative="negative"
                 @favorites="favorites"
                 @changeViewMode="changeViewMode"
