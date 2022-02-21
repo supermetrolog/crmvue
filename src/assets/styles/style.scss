@@ -1812,8 +1812,8 @@
     
     .companies-list-container {
         position: relative;
-        min-width: 100vh;
-        min-height: 100vh;
+        // min-width: 100vh;
+        // min-height: 100vh;
     }
     
     //************** COMPANIES **********
@@ -3424,6 +3424,56 @@
             button {
                 box-shadow: unset;
                 border-radius: 2px;
+            }
+        }
+    }
+    
+    // ************ PAGINATION-CLASSIC ***********
+    .pagination-classic {
+        button.btn {
+            border-radius: 0;
+            margin: 0 2px;
+            padding: 5px 0;
+            width: 35px;
+            background-color: lighten($color_grey, 50);
+            color: $color_primary;
+            font-size: 14px;
+            font-weight: bold;
+            outline: 1px solid $color_dark;
+            &:hover {
+                box-shadow: none;
+            }
+            &:active {
+                box-shadow: none;
+            }
+            &.navigate {
+                background-color: $color_primary;
+                border: none;
+                outline: none;
+                color: $color_light;
+            }
+            &.active {
+                background-color: $color_primary;
+                outline: 1px solid $color_primary;
+                border: 1px solid $color_primary;
+                color: $color_light;
+                transform: scale(1.05);
+                margin: 0 4px;
+                &:disabled {
+                    background-color: $color_primary;
+                }
+            }
+            &:disabled {
+                background-color: lighten($color_grey, 20);
+                cursor: default;
+            }
+        }
+        .parameters {
+            margin-left: 5px;
+            p {
+                display: inline-block;
+                font-weight: normal;
+                margin: 0 5px;
             }
         }
     }

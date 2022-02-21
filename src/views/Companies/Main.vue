@@ -48,9 +48,16 @@
           <i class="fas fa-th"></i>
         </button>
       </div> -->
+      <div class="col-6">
+        <PaginationClassic
+          :pagination="COMPANIES_PAGINATION"
+          @next="next"
+          v-if="COMPANIES_PAGINATION"
+        />
+      </div>
       <div class="col-6 text-right ml-auto">
         <button
-          class="btn btn-primary scale mr-2"
+          class="btn btn-primary mr-2"
           @click="companyGroupsFormVisible = true"
         >
           Создать группу компаний
@@ -62,17 +69,12 @@
     </div>
     <div class="row no-gutters mt-2">
       <div class="col-12 companies-list-container">
-        <Loader v-if="loader" />
+        <Loader v-if="loader" class="center" />
         <!-- <CompanyGridView
           :companies="this.COMPANIES"
           v-if="viewMode && this.COMPANIES[0]"
         /> -->
-        <CompanyTableView
-          :companies="COMPANIES"
-          :pagination="COMPANIES_PAGINATION"
-          @loadMore="loadMore"
-          v-if="COMPANIES.length"
-        />
+        <CompanyTableView :companies="COMPANIES" v-if="COMPANIES.length" />
         <h1
           class="text-center text-dark py-5"
           v-if="!COMPANIES.length && !loader"
@@ -80,6 +82,12 @@
           НИЧЕГО НЕ НАЙДЕНО
         </h1>
       </div>
+      <PaginationClassic
+        class="mt-3"
+        :pagination="COMPANIES_PAGINATION"
+        @next="next"
+        v-if="COMPANIES_PAGINATION"
+      />
     </div>
   </div>
 </template>
@@ -111,17 +119,17 @@ export default {
   },
   methods: {
     ...mapActions(["FETCH_COMPANIES", "SEARCH_COMPANIES"]),
-    async getCompanies(concat = false, withLoader = true) {
-      this.loader = withLoader;
+    async getCompanies() {
+      this.loader = true;
       const query = this.$route.query;
-      await this.SEARCH_COMPANIES({ query, concat });
+      await this.SEARCH_COMPANIES({ query });
       this.loader = false;
     },
-    async loadMore() {
+    async next(number) {
       let query = { ...this.$route.query };
-      query.page++;
+      query.page = number;
       await this.$router.push({ query });
-      this.getCompanies(true, false);
+      // this.getCompanies();
     },
     async resetRoute() {
       let query = { ...this.$route.query };
@@ -143,11 +151,11 @@ export default {
     this.getCompanies();
     console.log(this.$route);
   },
-  // watch: {
-  //   $route() {
-  //     this.getCompanies();
-  //   },
-  // },
+  watch: {
+    $route() {
+      this.getCompanies();
+    },
+  },
 };
 </script>
 

@@ -111,7 +111,6 @@
         </Tr>
       </template>
     </Table>
-    <Pagination :pagination="pagination" @loadMore="$emit('loadMore')" />
   </div>
 </template>
 
@@ -140,10 +139,6 @@ export default {
   props: {
     companies: {
       type: Array,
-    },
-    pagination: {
-      type: Object,
-      default: null,
     },
   },
   methods: {
