@@ -193,11 +193,6 @@ export default {
     }
   },
   watch: {
-    // object() {
-    //   if (this.object.comment) {
-    //     this.localComment = this.object.comment;
-    //   }
-    // },
     object: {
       handler() {
         this.localComment = this.object.comment;

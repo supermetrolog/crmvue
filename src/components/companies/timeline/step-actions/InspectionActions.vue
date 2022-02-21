@@ -36,6 +36,7 @@
                 :disabled="disabled"
                 :withSeparator="true"
                 :loader="loader"
+                :viewMode="viewMode"
                 @select="select"
                 @unSelect="unSelect"
                 @addComment="addComment"

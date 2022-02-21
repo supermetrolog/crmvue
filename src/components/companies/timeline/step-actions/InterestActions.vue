@@ -3,7 +3,7 @@
     <div class="row no-gutters inner scroller">
       <div class="col-12">
         <div class="row">
-         <div class="col-12">
+          <div class="col-12">
             <Objects>
               <ObjectsControllPanel
                 :viewMode="viewMode"
@@ -21,6 +21,7 @@
                 :disabled="disabled"
                 :withSeparator="true"
                 :loader="loader"
+                :viewMode="viewMode"
                 @select="select"
                 @unSelect="unSelect"
                 @addComment="addComment"

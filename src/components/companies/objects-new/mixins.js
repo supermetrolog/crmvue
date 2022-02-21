@@ -83,7 +83,7 @@ export const MixinObject = {
             this.selectNegative(comment);
         },
         changeViewMode(value) {
-            console.log("ChangeViewMode");
+            console.log("ChangeViewMode", value);
             this.viewMode = value;
         },
         reset() {

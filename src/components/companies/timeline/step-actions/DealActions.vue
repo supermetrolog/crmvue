@@ -34,6 +34,7 @@
                 :disabled="disabled"
                 :withSeparator="true"
                 :loader="loader"
+                :viewMode="viewMode"
                 @select="selectOnlyOne"
                 @unSelect="unSelect"
                 @addComment="addComment"

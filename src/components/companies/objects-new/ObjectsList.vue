@@ -7,12 +7,14 @@
       <h3 class="text-warning text-center">НЕТ ДАННЫХ</h3>
     </div>
     <Loader class="center" v-if="loader" />
-    <ObjectsItem
+    <component
+      :is="currentComponent"
       v-for="object in objects"
       :disabled="disabled"
       :object="object"
       :isSelected="!!selectedObjects.find((item) => item.id == object.id)"
       :key="object.id"
+      :col="col"
       :classList="
         currentObjects.find((item) => item.object_id == object.original_id)
           ? 'success'
@@ -20,20 +22,37 @@
       "
       @select="$emit('select', $event)"
       @unSelect="$emit('unSelect', $event)"
-      :col="col"
       @addComment="(...argv) => this.$emit('addComment', ...argv)"
     />
+    <!-- <ObjectsItem
+      v-for="object in objects"
+      :disabled="disabled"
+      :object="object"
+      :isSelected="!!selectedObjects.find((item) => item.id == object.id)"
+      :key="object.id"
+      :col="col"
+      :classList="
+        currentObjects.find((item) => item.object_id == object.original_id)
+          ? 'success'
+          : ''
+      "
+      @select="$emit('select', $event)"
+      @unSelect="$emit('unSelect', $event)"
+      @addComment="(...argv) => this.$emit('addComment', ...argv)"
+    /> -->
     <hr v-if="withSeparator && !loader" />
   </div>
 </template>
 
 <script>
 import ObjectsItem from "./ObjectsItem.vue";
+import ObjectsItemTable from "./ObjectsItemTable.vue";
 export default {
   name: "ObjectsList",
   emits: ["select", "unSelect", "addComment"],
   components: {
     ObjectsItem,
+    ObjectsItemTable,
   },
   data() {
     return {};
@@ -74,6 +93,19 @@ export default {
     col: {
       type: String,
       default: "col-4",
+    },
+    viewMode: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  computed: {
+    currentComponent() {
+      console.log(this.viewMode);
+      if (this.viewMode) {
+        return "ObjectsItem";
+      }
+      return "ObjectsItemTable";
     },
   },
   methods: {
