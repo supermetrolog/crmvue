@@ -1889,9 +1889,6 @@
                 td {
                     border-right: 2px solid;
                     border-left: 2px solid;
-                    // color: red;
-                    // background-color: red;
-                    // border-color: lighten($color_light_grey, 10);
                     border-color: inherit;
                     padding: 0 10px;
                     &.sortable {
@@ -1928,6 +1925,8 @@
                     &.passive {
                         background-color: rgba($color_dark, 0.2);
                         border-color: rgba($color_dark, 0.2);
+                        border-left: 2px solid lighten($color_grey, 30);
+                        // border-color: red;
                     }
                     td {
                         &.name {
@@ -1967,8 +1966,13 @@
                             }
                         }
                         &.requests {
+                            padding: 3px 0;
                             .scroller {
                                 height: 60px;
+                            }
+                            span {
+                                font-size: 12px;
+                                margin-bottom: 1px;
                             }
                         }
                         &.date {

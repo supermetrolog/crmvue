@@ -79,15 +79,13 @@
           </Td>
           <Td class="text-center requests">
             <div class="scroller">
-              <div
+              <span
+                class="badge badge-blue-green autosize d-block"
                 v-for="request in company.requests"
                 :key="request.id"
-                class="mb-2 align-self-center align-items-center"
               >
-                <span class="badge badge-blue-green autosize">
-                  {{ request.name }}
-                </span>
-              </div>
+                {{ request.name }}
+              </span>
             </div>
           </Td>
           <Td class="text-center">

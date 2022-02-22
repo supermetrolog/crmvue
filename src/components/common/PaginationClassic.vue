@@ -60,6 +60,7 @@ export default {
   data() {
     return {
       currentPage: 1,
+      disabled: false,
     };
   },
   props: {
@@ -89,14 +90,14 @@ export default {
       if (!this.pagination) {
         return array;
       }
-      const max = this.pagination.pageCount;
+      const max = +this.pagination.pageCount;
       const min = 1;
       let offset = this.offset,
         leftBorder,
         rightBorder;
-      for (let index = 1; index <= this.pagination.pageCount; index++) {
-        leftBorder = +(this.currentPage - offset);
-        rightBorder = +(this.currentPage + offset);
+      for (let index = 1; index <= max; index++) {
+        leftBorder = +this.currentPage - offset;
+        rightBorder = +this.currentPage + offset;
         if (leftBorder < min) {
           rightBorder =
             rightBorder +
@@ -105,37 +106,20 @@ export default {
         if (rightBorder > max) {
           leftBorder = leftBorder + (max - rightBorder);
         }
-
         if (leftBorder <= index && rightBorder >= index) {
           array.push(index);
         }
       }
       return array;
     },
-    // pageList() {
-    //   let array = [];
-    //   if (!this.pagination) {
-    //     return array;
-    //   }
-    //   const max = this.pagination.pageCount;
-    //   const min = 1;
-    //   let leftBorder, rightBorder;
-    //   for (let index = 1; index <= this.pagination.pageCount; index++) {
-    //     const offset = this.offset;
-    //     if (
-    //       this.currentPage + offset >= index &&
-    //       this.currentPage - offset <= index
-    //     ) {
-    //       array.push(index);
-    //     }
-    //   }
-    //   return array;
-    // },
   },
   methods: {
     next(number) {
+      if (this.disabled) return;
       this.currentPage = number;
+      this.disabled = true;
       this.$emit("next", number);
+      setTimeout(() => (this.disabled = false), 300);
     },
   },
   mounted() {
