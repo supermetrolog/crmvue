@@ -21,8 +21,8 @@
           :key="company.id"
           :class="{ passive: !company.status }"
         >
-          <Td class="px-2 text-center"> {{ index + 1 }} </Td>
-          <Td class="name">
+          <Td class="text-center"> {{ index + 1 }} </Td>
+          <Td class="name" sort="nameRu" :class="{ odd: index % 2 }">
             <router-link :to="'/companies/' + company.id" target="_blank">
               <h4 v-if="!company.status" class="mr-2 d-inline text-warning">
                 ПАССИВ
@@ -95,7 +95,7 @@
               {{ company.deal_count }}
             </span>
           </Td>
-          <Td class="text-center">
+          <Td class="text-center" sort="rating" :class="{ odd: index % 2 }">
             <i
               v-for="rating in ratingOptions"
               :key="rating[0]"
@@ -106,7 +106,11 @@
             >
             </i>
           </Td>
-          <Td class="text-center date">
+          <Td
+            class="text-center date"
+            sort="created_at"
+            :class="{ odd: index % 2 }"
+          >
             {{ company.created_at_format }}
           </Td>
         </Tr>

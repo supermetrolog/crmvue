@@ -4,48 +4,21 @@
       <slot />
       <i
         class="fas fa-sort-amount-down ml-1 sortable__icon"
-        v-if="sort && downArrowVisible"
+        v-if="sort && sort_desc"
       ></i>
       <i
-        class="fas fa-sort-amount-up ml-1 sortable__icon"
-        v-if="sort && upArrowVisible"
+        class="fas fa-sort-amount-down-alt ml-1 sortable__icon"
+        v-if="sort && sort_asc"
       ></i>
     </div>
   </th>
 </template>
 
 <script>
+import TableMixin from "./mixins";
 export default {
+  mixins: [TableMixin],
   name: "Th",
-  props: {
-    sort: {
-      type: String,
-    },
-    withRouter: {
-      type: Boolean,
-      default: true,
-    },
-  },
-  computed: {
-    downArrowVisible() {
-      if (!this.withRouter) return false; // Это временно
-      let query = { ...this.$route.query };
-      if (!query.sort) return false;
-      const words = query.sort.split(",");
-      const existThisSortInCurrent = words.find(
-        (item) => item == `-${this.sort}`
-      );
-      return !!existThisSortInCurrent;
-    },
-    upArrowVisible() {
-      if (!this.withRouter) return false; // Это временно
-      let query = { ...this.$route.query };
-      if (!query.sort) return false;
-      const words = query.sort.split(",");
-      const existThisSortInCurrent = words.find((item) => item == this.sort);
-      return !!existThisSortInCurrent;
-    },
-  },
   methods: {
     sortHandle() {
       if (!this.sort) return;
@@ -71,7 +44,6 @@ export default {
           newSortParams.push(item);
         }
       });
-      console.log(newSortParams, existSort);
       if (existSort) {
         query.sort = newSortParams.join();
       } else {

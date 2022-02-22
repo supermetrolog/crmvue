@@ -82,12 +82,12 @@
           НИЧЕГО НЕ НАЙДЕНО
         </h1>
       </div>
-      <!-- <PaginationClassic
+      <PaginationClassic
         class="mt-3 my-3"
         :pagination="COMPANIES_PAGINATION"
         @next="next"
         v-if="COMPANIES_PAGINATION"
-      /> -->
+      />
     </div>
   </div>
 </template>

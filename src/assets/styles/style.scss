@@ -1880,8 +1880,34 @@
                 tr {
                     height: 60px;
                     min-height: 60px;
+                    border-color: $color_light;
                     &:nth-child(odd) {
                         background-color: darken($color_light, 3);
+                        border-color: darken($color_light, 3);
+                    }
+                }
+                td {
+                    border-right: 2px solid;
+                    border-left: 2px solid;
+                    // color: red;
+                    // background-color: red;
+                    // border-color: lighten($color_light_grey, 10);
+                    border-color: inherit;
+                    padding: 0 10px;
+                    &.sortable {
+                        border: none;
+                        &.sort_asc {
+                            background-color: lighten(#a02121, 45);
+                            &.odd {
+                                background-color: lighten(#a02121, 50);
+                            }
+                        }
+                        &.sort_desc {
+                            background-color: lighten($color_warning, 35);
+                            &.odd {
+                                background-color: lighten($color_warning, 40);
+                            }
+                        }
                     }
                 }
             }
@@ -1901,6 +1927,7 @@
                 tr {
                     &.passive {
                         background-color: rgba($color_dark, 0.2);
+                        border-color: rgba($color_dark, 0.2);
                     }
                     td {
                         &.name {
