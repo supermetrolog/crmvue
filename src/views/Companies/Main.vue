@@ -69,12 +69,12 @@
     </div>
     <div class="row no-gutters mt-2">
       <div class="col-12 companies-list-container">
-        <Loader v-if="loader" class="center" />
-        <!-- <CompanyGridView
-          :companies="this.COMPANIES"
-          v-if="viewMode && this.COMPANIES[0]"
-        /> -->
-        <CompanyTableView :companies="COMPANIES" v-if="COMPANIES.length" />
+        <Loader v-if="loader && !COMPANIES.length" class="center" />
+        <CompanyTableView
+          :companies="COMPANIES"
+          v-if="COMPANIES.length"
+          :loader="loader"
+        />
         <h1
           class="text-center text-dark py-5"
           v-if="!COMPANIES.length && !loader"
@@ -82,12 +82,12 @@
           НИЧЕГО НЕ НАЙДЕНО
         </h1>
       </div>
-      <PaginationClassic
-        class="mt-3"
+      <!-- <PaginationClassic
+        class="mt-3 my-3"
         :pagination="COMPANIES_PAGINATION"
         @next="next"
         v-if="COMPANIES_PAGINATION"
-      />
+      /> -->
     </div>
   </div>
 </template>

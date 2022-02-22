@@ -4,17 +4,18 @@
       <template #thead>
         <Tr>
           <Th>#</Th>
-          <Th>название компании</Th>
+          <Th sort="nameRu">название компании</Th>
           <Th>статус компании</Th>
           <Th>контакт</Th>
           <Th>консультант</Th>
           <Th>актив. запросы</Th>
           <Th>кол-во сделок</Th>
-          <Th>рейтинг</Th>
-          <Th>Дата</Th>
+          <Th sort="rating">рейтинг</Th>
+          <Th sort="created_at">Дата</Th>
         </Tr>
       </template>
       <template #tbody>
+        <Loader v-if="loader" class="center" />
         <Tr
           v-for="(company, index) in companies"
           :key="company.id"
@@ -139,6 +140,10 @@ export default {
   props: {
     companies: {
       type: Array,
+    },
+    loader: {
+      type: Boolean,
+      default: false,
     },
   },
   methods: {

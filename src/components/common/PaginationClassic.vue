@@ -4,7 +4,7 @@
       <button
         class="btn btn-primary navigate"
         @click.prevent="next(1)"
-        :disabled="pagination.currentPage == 1"
+        :disabled="currentPage == 1"
       >
         <i class="fas fa-angle-double-left"></i>
       </button>
@@ -89,17 +89,48 @@ export default {
       if (!this.pagination) {
         return array;
       }
+      const max = this.pagination.pageCount;
+      const min = 1;
+      let offset = this.offset,
+        leftBorder,
+        rightBorder;
       for (let index = 1; index <= this.pagination.pageCount; index++) {
-        const offset = this.offset;
-        if (
-          this.currentPage + offset >= index &&
-          this.currentPage - offset <= index
-        ) {
+        leftBorder = +(this.currentPage - offset);
+        rightBorder = +(this.currentPage + offset);
+        if (leftBorder < min) {
+          rightBorder =
+            rightBorder +
+            Math.abs(leftBorder < 0 ? Math.abs(leftBorder) + min : min);
+        }
+        if (rightBorder > max) {
+          leftBorder = leftBorder + (max - rightBorder);
+        }
+
+        if (leftBorder <= index && rightBorder >= index) {
           array.push(index);
         }
       }
       return array;
     },
+    // pageList() {
+    //   let array = [];
+    //   if (!this.pagination) {
+    //     return array;
+    //   }
+    //   const max = this.pagination.pageCount;
+    //   const min = 1;
+    //   let leftBorder, rightBorder;
+    //   for (let index = 1; index <= this.pagination.pageCount; index++) {
+    //     const offset = this.offset;
+    //     if (
+    //       this.currentPage + offset >= index &&
+    //       this.currentPage - offset <= index
+    //     ) {
+    //       array.push(index);
+    //     }
+    //   }
+    //   return array;
+    // },
   },
   methods: {
     next(number) {

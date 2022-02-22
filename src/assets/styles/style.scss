@@ -1853,6 +1853,26 @@
                         &:last-child {
                             border-top-right-radius: 3px;
                         }
+                        &.sortable {
+                            // background-color: red;
+                            .th__content {
+                                color: $color_info;
+                                display: inline-block;
+                                cursor: pointer;
+                                &:hover {
+                                    // border: 1px solid transparent;
+                                    // border-bottom: 1px solid white;
+                                    text-decoration: underline;
+                                }
+                                position: relative;
+                                .sortable__icon {
+                                    position: absolute;
+                                    top: 4px;
+                                    right: -20px;
+                                    color: $color_light;
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1877,6 +1897,7 @@
         table {
             width: 100%;
             tbody {
+                position: relative;
                 tr {
                     &.passive {
                         background-color: rgba($color_dark, 0.2);
