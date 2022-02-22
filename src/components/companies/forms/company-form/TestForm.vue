@@ -223,7 +223,7 @@
                 class="col-10 tags mx-auto text-center"
                 :options="
                   async () => {
-                    return COMPANY_PRODUCT_RANGE_LIST;
+                    return await getProductRangeList();
                   }
                 "
                 name="product"
@@ -411,7 +411,7 @@ import Utils, {
   validatePropogationInput,
   validateUrl,
 } from "@/utils";
-
+import api from "@/api/api";
 export default {
   name: "TestForm",
   components: {
@@ -735,6 +735,9 @@ export default {
         return false;
       }
       return true;
+    },
+    async getProductRangeList() {
+      return await api.companies.getCompanyProductRangeList();
     },
   },
   async mounted() {
