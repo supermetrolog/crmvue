@@ -48,17 +48,15 @@
 </template>
 
 <script>
-import Objects from "../../objects/Objects.vue";
 import { mapActions, mapGetters } from "vuex";
 import Deal from "../steps/Deal.vue";
 import { MixinStepActions } from "../mixins";
-import { MixinObject } from "../../objects-new/mixins";
+import { MixinObject } from "../../objects/mixins";
 
 export default {
   name: "DealActions",
   mixins: [MixinStepActions, MixinObject],
   components: {
-    Objects,
     Deal,
   },
   props: {

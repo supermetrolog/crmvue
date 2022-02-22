@@ -93,7 +93,7 @@
 
 <script>
 import { MixinStepActions } from "../mixins";
-import { MixinAllObject } from "../../objects-new/mixins";
+import { MixinAllObject } from "../../objects/mixins";
 import Bar from "@/components/common/Bar";
 export default {
   name: "OffersActions",

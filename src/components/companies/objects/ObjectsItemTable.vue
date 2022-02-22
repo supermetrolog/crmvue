@@ -1,41 +1,37 @@
 <template>
-  <tr
-    class="text-center objects-item objects-item-table"
+  <div
+    class="row no-gutters objects-item-table mb-2"
     :class="[
       {
-        selected: selectedObjects.find((item) => item.id == object.id),
+        selected: isSelected,
       },
       classList,
     ]"
   >
-    <td>
-      <div class="header" :title="object.description || 'нет описания'">
-        <div class="image">
-          <span>{{ object.deal_type_name }}</span>
-          <span
-            class="duplicate_count"
-            title="количество отправлений"
-            v-if="object.duplicate_count > 1"
-          >
-            {{ object.duplicate_count }}
-          </span>
-          <div class="icon" @click.prevent="clickUnSelectObject">
-            <i class="fas fa-check"></i>
-          </div>
-          <a href="#" @click.prevent="clickSelectObject">
-            <img
-              :src="
-                object.building.photos
-                  ? object.building.photos
-                  : object.photos[0]
-              "
-              alt="Фото объекта"
-            />
-          </a>
+    <div class="col-3" :title="object.description || 'нет описания'">
+      <div class="image">
+        <span>{{ object.deal_type_name }}</span>
+        <span
+          class="duplicate_count"
+          title="количество отправлений"
+          v-if="object.duplicate_count > 1"
+        >
+          {{ object.duplicate_count }}
+        </span>
+        <div class="icon" @click.prevent="clickUnSelectObject">
+          <i class="fas fa-check"></i>
         </div>
+        <a href="#" @click.prevent="clickSelectObject">
+          <img
+            :src="
+              object.building.photos ? object.building.photos : object.photos[0]
+            "
+            alt="Фото объекта"
+          />
+        </a>
       </div>
-    </td>
-    <td class="body">
+    </div>
+    <div class="col-4 align-self-center">
       <p class="text-center title">
         {{ object.district_name }} - {{ object.direction_name }}
       </p>
@@ -51,50 +47,69 @@
         <i class="fas fa-ruble-sign d-inline text-dark"></i>
         {{ object.price_floor_min }} - {{ object.price_floor_max }} р
       </p>
-      <div
-        v-if="selectedObjects.find((item) => item.id == object.id)"
-        class="comment px-1 mt-2"
-      >
+      <div v-if="isSelected" class="comment px-1">
         <textarea
-          class="pb-0"
-          v-model.trim="comment"
+          v-model.trim="localComment"
           ref="comment"
           rows="3"
           @blur="unfocusTextarea"
           @keypress.enter="enterTextarea"
-          placeholder="Введите ваш комментарий"
+          placeholder="Комментарий клиенту"
         />
       </div>
-    </td>
-    <td class="body">
-      <div class="flag"></div>
-    </td>
-    <td class="body px-1">
-      <div class="last-block">
-        <p class="text-center" v-if="object.comment">комментарий</p>
-        <p class="text-center value text-success_alt">
-          {{ object.comment }}
-        </p>
-        <p class="text-center">брокер</p>
-        <p class="text-center value">
+    </div>
+    <div class="col-4 text-center align-self-center">
+      <div>
+        <p>брокер</p>
+        <p class="value">
           {{ object.agent_name }}
         </p>
-        <p class="text-center">адрес</p>
-        <p class="text-center value">
+        <p>адрес</p>
+        <p class="value">
           {{ object.address }}
         </p>
-        <p class="text-center value mt-1">
-          <a
-            class="text-primary"
-            :href="`https://pennylane.pro/complex/${object.complex_id}?offer_id=[${object.original_id}]`"
-            target="_blanc"
+        <a
+          :href="`https://pennylane.pro/complex/${object.complex_id}?offer_id=[${object.original_id}]`"
+          target="_blanc"
+        >
+          подробнее
+        </a>
+        <a
+          :href="`http://crmka/pdfs?original_id=${object.original_id}&type_id=${object.type_id}&consultant=Артур Мандрыка`"
+          target="_blanc"
+          class="d-block"
+        >
+          пдф
+        </a>
+        <a
+          v-if="object.allComments && object.allComments.length"
+          @click.prevent="toggleExtraInfoVisible"
+          href="#"
+        >
+          комментарии
+          <i class="fas fa-angle-down" v-if="!extraInfoVisible"></i>
+          <i class="fas fa-angle-up" v-else></i>
+        </a>
+        <template v-if="extraInfoVisible">
+          <p
+            class="text-center value"
+            :class="{
+              'text-grey': !object.comments.find(
+                (item) => item.timeline_step_id == comment.timeline_step_id
+              ),
+            }"
+            v-for="comment in object.allComments"
+            :key="comment.id"
           >
-            подробнее
-          </a>
-        </p>
+            {{ comment.comment }}
+          </p>
+        </template>
       </div>
-    </td>
-  </tr>
+    </div>
+    <div class="col-1 align-self-center">
+      <div class="flag ml-auto mr-2"></div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -103,15 +118,16 @@ export default {
   data() {
     return {
       extraInfoVisible: false,
-      comment: this.object.comment,
+      localComment: null,
     };
   },
   props: {
     object: {
       type: Object,
     },
-    selectedObjects: {
-      type: Array,
+    isSelected: {
+      type: Boolean,
+      default: false,
     },
     classList: {
       type: String,
@@ -125,36 +141,46 @@ export default {
         return "col-4";
       },
     },
+    disabled: {
+      type: Boolean,
+      default: true,
+    },
   },
   methods: {
     toggleExtraInfoVisible() {
       this.extraInfoVisible = !this.extraInfoVisible;
     },
     clickSelectObject() {
+      if (this.disabled) return;
+      this.$emit("select", this.object);
       setTimeout(() => {
         this.$refs.comment.focus();
       });
-      this.$emit("selectObject", this.object);
     },
     clickUnSelectObject() {
-      this.$emit("unSelectObject", this.object);
+      this.$emit("unSelect", this.object);
     },
     enterTextarea() {
       this.$refs.comment.blur();
     },
     unfocusTextarea() {
-      console.warn("fuck");
-      if (this.comment) {
-        this.$emit("selectObject", this.object, this.comment);
-      }
+      this.$emit("addComment", this.object, this.localComment);
     },
+  },
+  mounted() {
+    if (this.object.comment) {
+      this.localComment = this.object.comment;
+    }
   },
   watch: {
-    object() {
-      this.comment = this.object.comment;
+    object: {
+      handler() {
+        this.localComment = this.object.comment;
+      },
+      deep: true,
     },
   },
-  emits: ["selectObject", "unSelectObject"],
+  emits: ["select", "unSelect", "addComment"],
 };
 </script>
 

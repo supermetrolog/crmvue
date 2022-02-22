@@ -20,8 +20,6 @@ export default {
     },
   },
   mounted() {
-    // localStorage.removeItem("access_token");
-    // localStorage.removeItem("user");
     if (localStorage.getItem("user")) {
       this.$store.dispatch("SET_USER");
       this.axios.defaults.headers.common[

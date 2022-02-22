@@ -4,7 +4,7 @@
       class="objects-item"
       :class="[
         {
-          selected: selectedObjects.find((item) => item.id == object.id),
+          selected: isSelected,
         },
         classList,
       ]"
@@ -35,21 +35,21 @@
         </div>
       </div>
       <div class="body">
-        <div
-          v-if="selectedObjects.find((item) => item.id == object.id)"
-          class="comment p-0"
-        >
+        <div v-if="isSelected" class="comment p-0">
           <textarea
             class="mb-1"
-            v-model.trim="comment"
+            v-model.trim="localComment"
             ref="comment"
             rows="3"
             @blur="unfocusTextarea"
             @keypress.enter="enterTextarea"
-            placeholder="Введите ваш комментарий"
+            placeholder="Комментарий клиенту"
           />
         </div>
         <div class="data py-2">
+          <p class="text-center title">
+            {{ object.visual_id }}
+          </p>
           <p class="text-center title">
             {{ object.district_name }} - {{ object.direction_name }}
           </p>
@@ -64,12 +64,13 @@
             <i class="fas fa-ruble-sign d-inline text-dark"></i>
             {{ object.price_floor_min }} - {{ object.price_floor_max }} р
           </p>
-          <p v-if="comment" class="value text-center text-success_alt">
-            комментарий
+          <p
+            class="text-center"
+            v-if="object.allComments && object.allComments.length"
+          >
+            комментарии:
           </p>
-          <p class="text-center value">
-            {{ comment }}
-          </p>
+
           <i
             class="far fa-arrow-alt-circle-down text-center mt-1 extra"
             @click="toggleExtraInfoVisible"
@@ -83,9 +84,25 @@
         </div>
 
         <div class="extraFields text-center pb-2" v-if="extraInfoVisible">
+          <p
+            class="text-center value"
+            :class="{
+              'text-grey': !object.comments.find(
+                (item) => item.timeline_step_id == comment.timeline_step_id
+              ),
+            }"
+            v-for="comment in object.allComments"
+            :key="comment.id"
+          >
+            {{ comment.comment }}
+          </p>
           <p>адрес</p>
           <p class="text-center value">
-            {{ object.address }}
+            {{
+              object.building[1]
+                ? object.building[1].address[1]
+                : object.address
+            }}
           </p>
           <p>брокер</p>
           <p class="text-center value">
@@ -100,6 +117,15 @@
               подробнее
             </a>
           </p>
+          <p class="text-center value mt-1">
+            <a
+              class="text-primary"
+              :href="`http://crmka/pdfs?original_id=${object.original_id}&type_id=${object.type_id}&consultant=Артур Мандрыка`"
+              target="_blanc"
+            >
+              пдф
+            </a>
+          </p>
         </div>
       </div>
     </div>
@@ -112,15 +138,16 @@ export default {
   data() {
     return {
       extraInfoVisible: false,
-      comment: this.objectComment,
+      localComment: null,
     };
   },
   props: {
     object: {
       type: Object,
     },
-    selectedObjects: {
-      type: Array,
+    isSelected: {
+      type: Boolean,
+      default: false,
     },
     classList: {
       type: String,
@@ -138,10 +165,6 @@ export default {
       type: Boolean,
       default: true,
     },
-    objectComment: {
-      type: String,
-      default: "",
-    },
   },
   methods: {
     toggleExtraInfoVisible() {
@@ -149,29 +172,35 @@ export default {
     },
     clickSelectObject() {
       if (this.disabled) return;
+      this.$emit("select", this.object);
       setTimeout(() => {
         this.$refs.comment.focus();
       });
-      this.$emit("selectObject", this.object);
     },
     clickUnSelectObject() {
-      this.$emit("unSelectObject", this.object);
+      this.$emit("unSelect", this.object);
     },
     enterTextarea() {
       this.$refs.comment.blur();
     },
     unfocusTextarea() {
-      if (this.comment) {
-        this.$emit("selectObject", this.object, this.comment);
-      }
+      this.$emit("addComment", this.object, this.localComment);
     },
+  },
+  mounted() {
+    if (this.object.comment) {
+      this.localComment = this.object.comment;
+    }
   },
   watch: {
-    object() {
-      this.comment = this.objectComment;
+    object: {
+      handler() {
+        this.localComment = this.object.comment;
+      },
+      deep: true,
     },
   },
-  emits: ["selectObject", "unSelectObject"],
+  emits: ["select", "unSelect", "addComment"],
 };
 </script>
 

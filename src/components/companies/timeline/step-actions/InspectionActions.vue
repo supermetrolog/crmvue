@@ -53,7 +53,7 @@
 import Inspection from "../steps/Inspection.vue";
 import { mapGetters } from "vuex";
 import { MixinStepActions } from "../mixins";
-import { MixinObject } from "../../objects-new/mixins";
+import { MixinObject } from "../../objects/mixins";
 
 export default {
   name: "InspectionActions",

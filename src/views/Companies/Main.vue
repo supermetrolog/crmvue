@@ -15,7 +15,7 @@
       enter-active-class="animate__animated animate__zoomIn for__modal absolute"
       leave-active-class="animate__animated animate__zoomOut for__modal absolute"
     >
-      <TestForm
+      <CompanyForm
         v-if="companyFormVisible"
         @closeCompanyForm="clickCloseCompanyForm"
         @created="createdCompany"
@@ -96,7 +96,7 @@
 // import CompanyGridView from "@/components/companies/companies/CompanyGridView.vue";
 import CompanyTableView from "@/components/companies/companies/CompanyTableView.vue";
 import Search from "@/components/common/Search.vue";
-import TestForm from "@/components/companies/forms/company-form/TestForm.vue";
+import CompanyForm from "@/components/companies/forms/company-form/CompanyForm.vue";
 import { mapGetters, mapActions } from "vuex";
 import CompanyGroupsForm from "@/components/companies/forms/company-groups-form/CompanyGroupsForm.vue";
 
@@ -114,7 +114,7 @@ export default {
     // CompanyGridView,
     CompanyTableView,
     Search,
-    TestForm,
+    CompanyForm,
     CompanyGroupsForm,
   },
   methods: {

@@ -49,7 +49,7 @@
 <script>
 import Feedback from "../steps/Feedback.vue";
 import { MixinStepActions } from "../mixins";
-import { MixinObject } from "../../objects-new/mixins";
+import { MixinObject } from "../../objects/mixins";
 
 export default {
   name: "FeedbackActions",

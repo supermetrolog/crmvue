@@ -47,7 +47,7 @@
       enter-active-class="animate__animated animate__zoomIn for__modal absolute"
       leave-active-class="animate__animated animate__zoomOut for__modal absolute"
     >
-      <TestForm
+      <CompanyForm
         v-if="companyFormVisible"
         :formdata="company"
         @closeCompanyForm="clickCloseCompanyForm"
@@ -138,7 +138,7 @@ import CompanyDetailInfo from "@/components/companies/companies/CompanyDetailInf
 import CompanyRequestList from "@/components/companies/companies/request/CompanyRequestList.vue";
 import CompanyRequestForm from "@/components/companies/forms/company-request-form/CompanyRequestForm.vue";
 import CompanyContactForm from "@/components/companies/forms/company-contact-form/CompanyContactForm.vue";
-import TestForm from "@/components/companies/forms/company-form/TestForm.vue";
+import CompanyForm from "@/components/companies/forms/company-form/CompanyForm.vue";
 import CompanyContactList from "@/components/companies/companies/contact/CompanyContactList.vue";
 import Timeline from "@/components/companies/timeline/Timeline.vue";
 import NoData from "@/components/common/NoData";
@@ -150,7 +150,7 @@ export default {
     CompanyRequestList,
     CompanyRequestForm,
     CompanyContactForm,
-    TestForm,
+    CompanyForm,
     CompanyContactList,
     Timeline,
     NoData,
