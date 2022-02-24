@@ -49,7 +49,7 @@ export default {
         return data;
     },
     async createComment(formdata) {
-        const url = "contacts/create-comment?expand=author";
+        const url = "contacts/create-comment?expand=author,author.userProfile";
         let data = false;
         await axios
             .post(url, formdata)

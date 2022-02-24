@@ -41,8 +41,7 @@ const CompanyContact = {
             return response;
         },
         async CREATE_CONTACT_COMMENT(context, formdata) {
-            const user = JSON.parse(localStorage.getItem('user'));
-            formdata.author_id = user.id;
+            formdata.author_id = context.getters.THIS_USER.id;
             const newComment = await api.contacts.createComment(formdata);
             if (newComment) {
                 context.commit('createComment', newComment);
