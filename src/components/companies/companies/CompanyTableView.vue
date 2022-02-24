@@ -5,40 +5,57 @@
         <Tr>
           <Th>#</Th>
           <Th sort="nameRu">название компании</Th>
-          <Th>статус компании</Th>
+          <Th sort="rating">рейтинг</Th>
+          <Th>актив. запросы</Th>
+          <Th>категория</Th>
           <Th>контакт</Th>
           <Th>консультант</Th>
-          <Th>актив. запросы</Th>
-          <Th>кол-во сделок</Th>
-          <Th sort="rating">рейтинг</Th>
           <Th sort="created_at">Дата</Th>
+          <Th sort="status">статус</Th>
         </Tr>
       </template>
       <template #tbody>
         <Loader v-if="loader" class="center" />
-        <Tr
-          v-for="(company, index) in companies"
-          :key="company.id"
-          :class="{ passive: !company.status }"
-        >
-          <Td class="text-center"> {{ index + 1 }} </Td>
+        <Tr v-for="(company, index) in companies" :key="company.id">
+          <Td class="text-center p-0"> {{ company.id }} </Td>
           <Td class="name" sort="nameRu" :class="{ odd: index % 2 }">
             <router-link :to="'/companies/' + company.id" target="_blank">
-              <h4 v-if="!company.status" class="mr-2 d-inline text-warning">
-                ПАССИВ
-              </h4>
-              <h4 class="d-inline">
+              <h4 class="d-inline" :class="{ 'text-warning': !company.status }">
                 {{ company.full_name }}
               </h4>
               <Progress :percent="company.progress_percent" />
             </router-link>
+          </Td>
+          <Td class="text-center" sort="rating" :class="{ odd: index % 2 }">
+            <i
+              v-for="rating in ratingOptions"
+              :key="rating[0]"
+              class="text-warning far fa-star"
+              :class="{
+                'fas fa-star': company.rating >= rating[0],
+              }"
+            >
+            </i>
+          </Td>
+          <Td class="text-center requests">
+            <div class="scroller">
+              <div>
+                <span
+                  class="badge badge-blue-green autosize d-block"
+                  v-for="request in company.requests"
+                  :key="request.id"
+                >
+                  {{ request.name }}
+                </span>
+              </div>
+            </div>
           </Td>
           <Td class="text-center categories">
             <div class="d-inline-block" v-if="company.categories.length">
               <span
                 v-for="categoryItem of company.categories"
                 :key="categoryItem.id"
-                class="badge badge-dark autosize py-2 m-2 d-inline-block"
+                class="badge autosize p-0 mx-1 d-inline-block"
               >
                 {{ category(categoryItem.category) }}
               </span>
@@ -77,39 +94,16 @@
           <Td class="text-center">
             {{ company.consultant.userProfile.short_name }}
           </Td>
-          <Td class="text-center requests">
-            <div class="scroller">
-              <span
-                class="badge badge-blue-green autosize d-block"
-                v-for="request in company.requests"
-                :key="request.id"
-              >
-                {{ request.name }}
-              </span>
-            </div>
-          </Td>
-          <Td class="text-center">
-            <span class="badge badge-blue-green autosize">
-              {{ company.deal_count }}
-            </span>
-          </Td>
-          <Td class="text-center" sort="rating" :class="{ odd: index % 2 }">
-            <i
-              v-for="rating in ratingOptions"
-              :key="rating[0]"
-              class="text-warning far fa-star"
-              :class="{
-                'fas fa-star': company.rating >= rating[0],
-              }"
-            >
-            </i>
-          </Td>
           <Td
             class="text-center date"
             sort="created_at"
             :class="{ odd: index % 2 }"
           >
             {{ company.created_at_format }}
+          </Td>
+          <Td class="text-center" sort="status" :class="{ odd: index % 2 }">
+            <h4 class="text-success" v-if="company.status">Актив</h4>
+            <span class="badge badge-warning autosize" v-else> Пассив </span>
           </Td>
         </Tr>
       </template>

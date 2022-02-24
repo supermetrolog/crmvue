@@ -1968,7 +1968,10 @@
                         &.requests {
                             padding: 3px 0;
                             .scroller {
+                                display: flex;
                                 height: 60px;
+                                align-items: center;
+                                justify-content: center;
                             }
                             span {
                                 font-size: 12px;
