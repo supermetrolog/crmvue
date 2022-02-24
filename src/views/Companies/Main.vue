@@ -26,6 +26,7 @@
         <div class="col-12 search-container">
           <Search />
         </div>
+        <CompanySearchForm />
       </div>
     </div>
     <hr />
@@ -97,6 +98,7 @@
 import CompanyTableView from "@/components/companies/companies/CompanyTableView.vue";
 import Search from "@/components/common/Search.vue";
 import CompanyForm from "@/components/companies/forms/company-form/CompanyForm.vue";
+import CompanySearchForm from "@/components/companies/forms/company-form/CompanySearchForm.vue";
 import { mapGetters, mapActions } from "vuex";
 import CompanyGroupsForm from "@/components/companies/forms/company-groups-form/CompanyGroupsForm.vue";
 
@@ -116,6 +118,7 @@ export default {
     Search,
     CompanyForm,
     CompanyGroupsForm,
+    CompanySearchForm,
   },
   methods: {
     ...mapActions(["FETCH_COMPANIES", "SEARCH_COMPANIES"]),

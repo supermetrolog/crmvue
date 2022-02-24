@@ -28,11 +28,13 @@ const User = {
     actions: {
         async FETCH_CONSULTANT_LIST(context) {
             if (context.getters.CONSULTANT_LIST.length) {
-                return;
+                return context.getters.CONSULTANT_LIST;
             }
             let data = await api.functions.getConsultantList();
             if (data) {
                 context.commit('updateConsultantList', data);
+                return context.getters.CONSULTANT_LIST;
+
             }
         },
         async FETCH_USERS(context) {

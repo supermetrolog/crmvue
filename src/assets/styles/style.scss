@@ -1275,6 +1275,11 @@
         &-container {
             width: 650px;
         }
+        &.autosize {
+            .form-container {
+                width: auto;
+            }
+        }
         &.center {
             .form-container {
                 margin: 0 auto;
@@ -3530,6 +3535,16 @@
                 display: inline-block;
                 font-weight: normal;
                 margin: 0 5px;
+            }
+        }
+    }
+    
+    // ************ COMPANY-SEARCH-FORM *************
+    .company-search-form {
+        .main-input {
+            input {
+                height: 40px;
+                max-height: unset;
             }
         }
     }
