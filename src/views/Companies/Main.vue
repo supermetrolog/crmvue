@@ -23,10 +23,9 @@
     </transition>
     <div class="row no-gutters search-main-container">
       <div class="container py-3">
-        <div class="col-12 search-container">
-          <Search />
+        <div class="col-12 pt-3">
+          <CompanySearchForm />
         </div>
-        <CompanySearchForm />
       </div>
     </div>
     <hr />
@@ -96,7 +95,6 @@
 <script>
 // import CompanyGridView from "@/components/companies/companies/CompanyGridView.vue";
 import CompanyTableView from "@/components/companies/companies/CompanyTableView.vue";
-import Search from "@/components/common/Search.vue";
 import CompanyForm from "@/components/companies/forms/company-form/CompanyForm.vue";
 import CompanySearchForm from "@/components/companies/forms/company-form/CompanySearchForm.vue";
 import { mapGetters, mapActions } from "vuex";
@@ -115,7 +113,6 @@ export default {
   components: {
     // CompanyGridView,
     CompanyTableView,
-    Search,
     CompanyForm,
     CompanyGroupsForm,
     CompanySearchForm,

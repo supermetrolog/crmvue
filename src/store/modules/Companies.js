@@ -50,9 +50,9 @@ const Companies = {
                 context.commit('updateCompanies', companies);
             }
         },
-        async SEARCH_COMPANIES(context, { query, saveState = true, concat = false }) {
+        async SEARCH_COMPANIES(context, { query, concat = false }) {
             const data = await api.companies.searchCompanies(query);
-            if (data && saveState) {
+            if (data) {
                 context.commit('updateCompanies', { data, concat });
             }
             return data;

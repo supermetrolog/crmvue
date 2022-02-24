@@ -431,11 +431,12 @@ export default {
           label: this.selectedCompany.full_name,
         });
       }
-      result = await this.SEARCH_COMPANIES({
-        query: { searchText: query },
-        saveState: false,
-      });
-      result.forEach((item) => {
+      query = {
+        all: query,
+      };
+      result = await api.companies.searchCompanies(query);
+      console.log("RES", result);
+      result.data.forEach((item) => {
         array.push({ value: item.id, label: item.nameRu + " " + item.nameEng });
       });
       return array;

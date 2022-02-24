@@ -34,7 +34,6 @@ const User = {
             if (data) {
                 context.commit('updateConsultantList', data);
                 return context.getters.CONSULTANT_LIST;
-
             }
         },
         async FETCH_USERS(context) {
