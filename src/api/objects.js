@@ -65,7 +65,7 @@ export default {
         return data;
     },
     async getAllObjects(page_num) {
-        const url = `list/`;
+        const url = `list/?all=1`;
         const formdata = new FormData();
         const params = {
             page_num: page_num,

@@ -9,6 +9,7 @@
             v-model="field"
             :class="inputClasses"
             :value="option[0]"
+            @click="onChange($event)"
           />
           {{ option[1] }}
         </label>
@@ -36,7 +37,7 @@ export default {
   },
   props: {
     modelValue: {
-      type: [Array, Number],
+      type: [Array, Number, String],
       default: () => [],
     },
     required: {
@@ -55,17 +56,28 @@ export default {
       type: Array,
       default: () => [],
     },
+    unselectMode: {
+      type: Boolean,
+      default: false,
+    },
   },
   methods: {
-    onChange() {
+    onChange(event) {
       this.validate();
+      console.log(event.target.value, this.field);
+      const value = event.target.value;
+      if (this.unselectMode && value == this.field) {
+        this.field = null;
+      } else {
+        this.field = +value;
+      }
       this.$emit("update:modelValue", this.field);
     },
   },
   watch: {
-    field() {
-      this.onChange();
-    },
+    // field() {
+    //   this.onChange();
+    // },
     modelValue() {
       this.field = this.modelValue;
     },

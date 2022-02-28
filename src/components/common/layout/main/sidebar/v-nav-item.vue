@@ -6,7 +6,7 @@
     :to="data.url"
     :exact="data.exact"
   >
-    <a href="#" class="nav-link">
+    <a class="nav-link" @click="clickedLink">
       <div class="nav-link__content">
         <i :class="data.icon"></i>{{ data.name }}
       </div>
@@ -20,6 +20,13 @@ export default {
   props: {
     data: {
       type: Object,
+    },
+  },
+  methods: {
+    clickedLink(e) {
+      if (this.$route.path == this.data.url) {
+        e.preventDefault();
+      }
     },
   },
 };
