@@ -78,22 +78,15 @@
                 return await searchCompany(query);
               }
             "
+            @change="onChangeCompany"
           />
           <MultiSelect
             v-model="form.request_id"
             extraClasses="long-text"
             label="Запрос"
             class="col-6"
-            :filterResults="false"
-            :minChars="1"
-            :resolveOnLoad="true"
-            :delay="0"
-            :searchable="true"
-            :options="
-              async (query) => {
-                return await searchRequest(query);
-              }
-            "
+            :key="requestOptions.length"
+            :options="requestOptions"
           />
         </FormGroup>
         <FormGroup class="mb-1">
@@ -185,10 +178,9 @@ export default {
       loader: false,
       v$: useValidate(),
       selectedCompany: null,
-      selectedRequest: null,
-      lastSearchRequestResult: null,
       selectedCompetitorCompany: null,
       formOfOrganizationOptions: CompanyFormOrganization.get("param"),
+      requestOptions: [],
       form: {
         request_id: null,
         company_id: null,
@@ -272,8 +264,8 @@ export default {
   computed: {
     ...mapGetters(["CONSULTANT_LIST"]),
     contractTermVisible() {
-      if (!this.lastSearchRequestResult || !this.form.request_id) return false;
-      const currentRequestOption = this.lastSearchRequestResult.find(
+      if (!this.requestOptions.length || !this.form.request_id) return false;
+      const currentRequestOption = this.requestOptions.find(
         (item) => item.value == this.form.request_id
       );
       if (
@@ -325,14 +317,51 @@ export default {
     clickCloseModal() {
       this.$emit("close");
     },
+    async onChangeCompany() {
+      console.log("change");
+      this.form.request_id = null;
+      this.requestOptions = [];
+      if (!this.form.company_id) return;
+      let requestList = null;
+      requestList = await api.request.searchRequests({
+        company_id: this.form.company_id,
+      });
+      requestList.forEach((item) => {
+        this.requestOptions.push({
+          value: item.id,
+          label: item.name,
+        });
+      });
+    },
     async searchCompany(query) {
       let result = null;
       let array = [];
+      let requestList = null;
+      this.requestOptions = [];
       if (this.formdata || this.company_id) {
         if (!this.selectedCompany) {
           this.selectedCompany = await api.companies.getCompany(
             this.formdata ? this.formdata.company_id : this.company_id
           );
+          requestList = await api.request.searchRequests({
+            company_id: this.formdata
+              ? this.formdata.company_id
+              : this.company_id,
+          });
+        }
+        if (Array.isArray(requestList)) {
+          requestList.forEach((item) => {
+            this.requestOptions.push({
+              value: item.id,
+              label:
+                DealTypeList.get("param")[item.dealType].label +
+                " " +
+                item.minArea +
+                "-" +
+                item.maxArea +
+                " м^2",
+            });
+          });
         }
 
         array.push({
@@ -341,11 +370,12 @@ export default {
             this.selectedCompany.nameRu + " " + this.selectedCompany.nameEng,
         });
       }
-      result = await this.SEARCH_COMPANIES({
-        query: { searchText: query },
-        saveState: false,
-      });
-      result.forEach((item) => {
+      query = {
+        all: query,
+      };
+      result = await api.companies.searchCompanies(query);
+      console.log("RES", result);
+      result.data.forEach((item) => {
         array.push({ value: item.id, label: item.nameRu + " " + item.nameEng });
       });
       return array;
@@ -368,52 +398,56 @@ export default {
             this.selectedCompetitorCompany.nameEng,
         });
       }
-      result = await this.SEARCH_COMPANIES({
-        query: { searchText: query },
-        saveState: false,
-      });
-      result.forEach((item) => {
+      query = {
+        all: query,
+      };
+      result = await api.companies.searchCompanies(query);
+      console.log("RES", result);
+      result.data.forEach((item) => {
         array.push({ value: item.id, label: item.nameRu + " " + item.nameEng });
       });
       return array;
     },
-    async searchRequest(query) {
-      let result = null;
-      let array = [];
-      if (this.formdata || this.request_id) {
-        if (!this.selectedRequest) {
-          this.selectedRequest = await api.request.getRequest(
-            this.formdata ? this.formdata.request_id : this.request_id
-          );
-        }
-        console.log("REQUEST", this.selectedRequest);
-        array.push({
-          value: this.selectedRequest.id,
-          label:
-            DealTypeList.get("param")[this.selectedRequest[0].dealType].label +
-            " " +
-            this.selectedRequest.minArea +
-            " " +
-            this.selectedRequest.maxArea +
-            "м^2",
-        });
-      }
-      result = await this.SEARCH_REQUESTS({ searchText: query });
-      result.forEach((item) => {
-        array.push({
-          value: item.id,
-          label:
-            DealTypeList.get("param")[item.dealType].label +
-            " " +
-            item.minArea +
-            "-" +
-            item.maxArea +
-            " м^2",
-        });
-      });
-      this.lastSearchRequestResult = array;
-      return array;
-    },
+    // async searchRequest(query) {
+    //   let result = null;
+    //   let array = [];
+    //   if (this.formdata || this.request_id) {
+    //     if (!this.selectedRequest) {
+    //       this.selectedRequest = await api.request.getRequest(
+    //         this.formdata ? this.formdata.request_id : this.request_id
+    //       );
+    //     }
+    //     console.log("REQUEST", this.selectedRequest);
+    //     array.push({
+    //       value: this.selectedRequest.id,
+    //       label:
+    //         DealTypeList.get("param")[this.selectedRequest[0].dealType].label +
+    //         " " +
+    //         this.selectedRequest.minArea +
+    //         " " +
+    //         this.selectedRequest.maxArea +
+    //         "м^2",
+    //     });
+    //   }
+    //   query = {
+    //     company_id: this.form.company_id,
+    //   };
+    //   result = await api.request.searchRequests(query);
+    //   result.forEach((item) => {
+    //     array.push({
+    //       value: item.id,
+    //       label:
+    //         DealTypeList.get("param")[item.dealType].label +
+    //         " " +
+    //         item.minArea +
+    //         "-" +
+    //         item.maxArea +
+    //         " м^2",
+    //     });
+    //   });
+    //   this.lastSearchRequestResult = array;
+    //   return array;
+    // },
     async searchObjects(query) {
       let result = null;
       let array = [];

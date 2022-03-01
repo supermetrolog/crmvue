@@ -15,15 +15,19 @@ const CompanyRequest = {
     },
     actions: {
         async SEARCH_REQUESTS(_, query) {
-            const search = query.searchText;
-            const queryParams = {
-                minArea: search,
-                dealType: search,
-                maxArea: search,
-            };
-            const result = await api.request.searchRequests(queryParams);
-            return result;
+            const data = await api.request.searchRequests(query);
+            return data;
         },
+        // async SEARCH_REQUESTS(_, query) {
+        //     const search = query.searchText;
+        //     const queryParams = {
+        //         minArea: search,
+        //         dealType: search,
+        //         maxArea: search,
+        //     };
+        //     const result = await api.request.searchRequests(queryParams);
+        //     return result;
+        // },
         async CREATE_REQUEST(context, formdata) {
             return await api.request.createRequest(formdata);
         },

@@ -118,10 +118,7 @@ export default {
       if (!queryLength) {
         query.consultant_id = this.THIS_USER.id;
       }
-      console.log(this.$route.query);
-      query.page = 1;
       await this.$router.push({ query });
-      console.log(this.$route.query);
     },
     clickCloseCompanyForm() {
       this.companyFormVisible = false;

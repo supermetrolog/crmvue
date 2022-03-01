@@ -27,7 +27,7 @@ export default {
     },
     async searchRequests(query) {
         query = new URLSearchParams(query).toString();
-        let url = "requests/search?" + query;
+        let url = "requests?" + query;
         let data = false;
         await axios
             .get(url)
