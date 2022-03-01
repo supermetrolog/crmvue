@@ -17,7 +17,7 @@ export const InternalMenu = new Map([
         { "id": 1, "name": "сделка", "url": "/statistic/deal" },
         { "id": 2, "name": "брак", "url": "/statistic/brak" },
     ]],
-    ['companies', [{ "id": 0, "name": "главная", "url": "/companies/", "exact": true },
+    ['companies', [{ "id": 0, "name": "главная", "url": "/companies", "exact": true },
         { "id": 1, "name": "группы компаний", "url": "/companies/groups" },
         { "id": 2, "name": "запросы", "url": "/companies/requests" },
         { "id": 3, "name": "сделки", "url": "/companies/deals" },
