@@ -222,6 +222,10 @@ export default {
       { deep: true }
     );
   },
+  beforeUnmount() {
+    console.log("UNMOUNT");
+    clearTimeout(this.setTimeout);
+  },
 };
 </script>
 

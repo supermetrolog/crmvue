@@ -118,6 +118,7 @@ export default {
         return data;
     },
     async searchCompanies(query) {
+        console.warn("SEARCH");
         query = new URLSearchParams(query).toString();
         let url = "companies?" + query + "&expand=requests,contacts.emails,contacts.phones,contacts.contactComments,broker,companyGroup,consultant,consultant.userProfile,productRanges,categories,files";
         let data = false;

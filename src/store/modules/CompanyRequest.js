@@ -3,19 +3,33 @@ import api from "@/api/api"
 const CompanyRequest = {
     state: {
         companyRequests: {},
-
+        requests: [],
+        pagination: null
     },
     mutations: {
         updateCompanyRequests(state, data) {
             state.companyRequests = data;
+        },
+        updateRequests(state, { data, concat }) {
+            state.pagination = data.pagination;
+            if (concat) {
+                state.requests = state.requests.concat(data.data);
+            } else {
+                state.requests = data.data;
+            }
+            console.log(concat);
+
         },
         deleteRequest(state, request_id) {
             state.companyRequests = state.companyRequests.filter(item => item.id != request_id);
         }
     },
     actions: {
-        async SEARCH_REQUESTS(_, query) {
+        async SEARCH_REQUESTS(context, { query, concat = false }) {
             const data = await api.request.searchRequests(query);
+            if (data) {
+                context.commit('updateRequests', { data, concat });
+            }
             return data;
         },
         // async SEARCH_REQUESTS(_, query) {
@@ -50,6 +64,12 @@ const CompanyRequest = {
         COMPANY_REQUESTS(state) {
             return state.companyRequests;
         },
+        REQUESTS(state) {
+            return state.requests;
+        },
+        REQUESTS_PAGINATION(state) {
+            return state.pagination;
+        }
     }
 }
 

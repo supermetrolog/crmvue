@@ -81,16 +81,15 @@ import CompanyForm from "@/components/companies/forms/company-form/CompanyForm.v
 import CompanySearchForm from "@/components/companies/forms/company-form/CompanySearchForm.vue";
 import { mapGetters, mapActions } from "vuex";
 import CompanyGroupsForm from "@/components/companies/forms/company-groups-form/CompanyGroupsForm.vue";
-
+import { TableContentMixin } from "@/components/common/mixins.js";
 export default {
+  mixins: [TableContentMixin],
   name: "CompaniesMain",
   data() {
     return {
-      loader: true,
       companyFormVisible: false,
       viewMode: false,
       companyGroupsFormVisible: false,
-      mounted: false,
     };
   },
   components: {
@@ -101,44 +100,25 @@ export default {
   },
   methods: {
     ...mapActions(["FETCH_COMPANIES", "SEARCH_COMPANIES"]),
+    async getContent() {
+      await this.getCompanies();
+    },
     async getCompanies() {
       this.loader = true;
       const query = this.$route.query;
       await this.SEARCH_COMPANIES({ query });
       this.loader = false;
     },
-    async next(number) {
-      let query = { ...this.$route.query };
-      query.page = number;
-      await this.$router.push({ query });
-    },
-    async resetRoute() {
-      let query = { ...this.$route.query };
-      const queryLength = Object.keys(this.$route.query).length;
-      if (!queryLength) {
-        query.consultant_id = this.THIS_USER.id;
-      }
-      await this.$router.push({ query });
-    },
+
     clickCloseCompanyForm() {
       this.companyFormVisible = false;
     },
     createdCompany() {
-      this.getCompanies();
+      this.getContent();
     },
   },
   computed: {
     ...mapGetters(["COMPANIES", "COMPANIES_PAGINATION", "THIS_USER"]),
-  },
-  async mounted() {
-    await this.resetRoute();
-    this.mounted = true;
-    await this.getCompanies();
-    this.$watch("$route", (newValue, oldValue) => {
-      if (newValue.path == oldValue.path) {
-        this.getCompanies();
-      }
-    });
   },
 };
 </script>
