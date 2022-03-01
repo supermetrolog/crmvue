@@ -24,30 +24,13 @@
     <div class="row no-gutters search-main-container">
       <div class="container py-3">
         <div class="col-12 pt-3">
-          <CompanySearchForm />
+          <CompanySearchForm v-if="mounted" />
         </div>
       </div>
     </div>
     <hr />
 
     <div class="row no-gutters companies-actions">
-      <!-- <div class="col-6">
-        <p class="d-inline">Вид:</p>
-        <button
-          class="btn btn-action text-dark"
-          :class="{ active: !viewMode }"
-          @click="viewMode = false"
-        >
-          <i class="fas fa-th-list"></i>
-        </button>
-        <button
-          class="btn btn-action text-primary"
-          :class="{ active: viewMode }"
-          @click="viewMode = true"
-        >
-          <i class="fas fa-th"></i>
-        </button>
-      </div> -->
       <div class="col-6">
         <PaginationClassic
           :pagination="COMPANIES_PAGINATION"
@@ -93,7 +76,6 @@
 </template>
 
 <script>
-// import CompanyGridView from "@/components/companies/companies/CompanyGridView.vue";
 import CompanyTableView from "@/components/companies/companies/CompanyTableView.vue";
 import CompanyForm from "@/components/companies/forms/company-form/CompanyForm.vue";
 import CompanySearchForm from "@/components/companies/forms/company-form/CompanySearchForm.vue";
@@ -108,10 +90,10 @@ export default {
       companyFormVisible: false,
       viewMode: false,
       companyGroupsFormVisible: false,
+      mounted: false,
     };
   },
   components: {
-    // CompanyGridView,
     CompanyTableView,
     CompanyForm,
     CompanyGroupsForm,
@@ -129,12 +111,17 @@ export default {
       let query = { ...this.$route.query };
       query.page = number;
       await this.$router.push({ query });
-      // this.getCompanies();
     },
     async resetRoute() {
       let query = { ...this.$route.query };
+      const queryLength = Object.keys(this.$route.query).length;
+      if (!queryLength) {
+        query.consultant_id = this.THIS_USER.id;
+      }
+      console.log(this.$route.query);
       query.page = 1;
       await this.$router.push({ query });
+      console.log(this.$route.query);
     },
     clickCloseCompanyForm() {
       this.companyFormVisible = false;
@@ -144,17 +131,17 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["COMPANIES", "COMPANIES_PAGINATION"]),
+    ...mapGetters(["COMPANIES", "COMPANIES_PAGINATION", "THIS_USER"]),
   },
-  created() {
-    // await this.resetRoute();
-    this.getCompanies();
-    console.log(this.$route);
-  },
-  watch: {
-    $route() {
-      this.getCompanies();
-    },
+  async mounted() {
+    await this.resetRoute();
+    this.mounted = true;
+    await this.getCompanies();
+    this.$watch("$route", (newValue, oldValue) => {
+      if (newValue.path == oldValue.path) {
+        this.getCompanies();
+      }
+    });
   },
 };
 </script>

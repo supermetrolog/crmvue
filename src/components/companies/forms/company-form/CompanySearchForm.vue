@@ -201,32 +201,26 @@ export default {
         }
       }
     },
-    setQueryFields() {
-      const queryLength = Object.keys(this.$route.query).length;
-      if (!queryLength) {
-        this.form.consultant_id = this.THIS_USER.id;
-      }
+    async setQueryFields() {
       this.form = { ...this.form, ...this.$route.query };
       if (this.form.categories && !Array.isArray(this.form.categories)) {
         this.form.categories = [this.form.categories];
       }
       let query = { ...this.form };
-
       this.deleteEmptyFields(query);
-      this.$router.push({ query });
+      await this.$router.push({ query });
     },
   },
-  mounted() {
-    this.setQueryFields();
-  },
-  watch: {
-    form: {
-      deep: true,
-      handler() {
+  async mounted() {
+    await this.setQueryFields();
+    this.$watch(
+      "form",
+      () => {
         clearTimeout(this.setTimeout);
         this.setTimeout = setTimeout(() => this.onSubmit(), 500);
       },
-    },
+      { deep: true }
+    );
   },
 };
 </script>
