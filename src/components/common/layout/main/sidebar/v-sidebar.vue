@@ -5,7 +5,8 @@
         <a href="#" class="link">
           <div class="image-circle">
             <img
-              src="../../../../../assets/image/6.jpg"
+              v-if="THIS_USER"
+              :src="src"
               alt="USER IMAGE"
               class="img-center"
             />
@@ -19,11 +20,25 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import vNav from "./v-nav";
 export default {
   name: "v-sidebar",
   components: {
     vNav,
+  },
+  computed: {
+    ...mapGetters(["THIS_USER"]),
+    src() {
+      if (process.env.NODE_ENV == "development" && this.THIS_USER) {
+        return "http://crmka/uploads/" + this.THIS_USER.userProfile.avatar;
+      } else {
+        return (
+          "http://api.billypro.beget.tech/uploads/" +
+          this.THIS_USER.userProfile.avatar
+        );
+      }
+    },
   },
 };
 </script>

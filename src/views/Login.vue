@@ -112,12 +112,16 @@ export default {
           this.axios.defaults.headers.common[
             "Authorization"
           ] = `Bearer ${localStorage.getItem("access_token")}`;
+          this.$store.dispatch("WEBSOCKET_STOP");
           this.$store.dispatch("WEBSOCKET_RUN");
           this.$router.push("/");
         }
         this.loader = false;
       }
     },
+  },
+  mounted() {
+    this.$store.dispatch("DROP_USER");
   },
 };
 </script>

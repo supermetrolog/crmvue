@@ -30,7 +30,9 @@ const Websocket = {
             });
         },
         deleteSocket(state) {
-            state.socket.close();
+            if (state.socket) {
+                state.socket.close();
+            }
             state.socket = null;
         }
     },
@@ -45,9 +47,11 @@ const Websocket = {
             context.commit('toggleSetedUserIdFlag', false);
         },
         WEBSOCKET_RUN(context) {
+            console.warn('RUN WEBSOCKET', context.getters.SOCKET);
             if (context.getters.SOCKET) {
                 return;
             }
+            console.log('RUN WEBSOCKET 2');
             let socket = new WebSocket("ws://localhost:8082");
             socket.onopen = function() {
                 return context.dispatch('EVENT_WEBSOCKET_ON_OPEN');

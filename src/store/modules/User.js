@@ -50,6 +50,11 @@ const User = {
             }
             return context.getters.THIS_USER;
         },
+        DROP_USER(context) {
+            console.log("DROP_USER");
+            context.commit('setUser', null);
+            context.dispatch('WEBSOCKET_STOP');
+        },
         async LOGIN(context, formdata) {
             const response = await api.user.auth.login(formdata);
             if (response !== false) {
