@@ -15,6 +15,7 @@
         </Tr>
       </template>
       <template #tbody>
+        <Loader v-if="loader" class="center" />
         <Tr v-for="request in requests" :key="request.id">
           <Td class="text-center pr-0">
             {{ request.id }}
