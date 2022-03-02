@@ -137,6 +137,7 @@
                 margin-top: 5px;
             }
             &.active {
+                cursor: default;
                 .nav-link {
                     &__content {
                         background-color: $color_light;
@@ -218,6 +219,7 @@
             display: inline-block;
             height: 49px;
             &.active {
+                cursor: default;
                 .nav-link {
                     text-transform: uppercase;
                     font-weight: bold;
@@ -3563,5 +3565,69 @@
                 padding: 0;
                 border-radius: 50%;
             }
+        }
+    }
+    
+    // ************ REQUEST-TABLE **********
+    .request-table {
+        table {
+            width: 100%;
+        }
+        a {
+            width: 100%;
+            height: 100%;
+            display: block;
+            color: $color_primary;
+            p {
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+        .badge {
+            font-size: 12px;
+            width: 100%;
+            height: auto;
+            border-radius: 0;
+            padding: 5px 10px;
+            text-transform: uppercase;
+        }
+        p {
+            font-weight: normal;
+        }
+        .dealType {
+            width: 300px;
+            h4 {
+                text-transform: capitalize;
+                color: $color_primary;
+            }
+            .passive-why {
+                p {
+                    font-size: 12px;
+                }
+            }
+        }
+        .location {
+            padding: 5px 0;
+        }
+        .status {
+            width: 130px;
+            .passive-why {
+                p {
+                    font-size: 12px;
+                }
+            }
+        }
+        // .date {
+        //     width: 140px;
+        // }
+        // .company {
+        //     width: 250px;
+        // }
+        .area {
+            max-width: 150px;
+        }
+        .price {
+            max-width: 150px;
         }
     }

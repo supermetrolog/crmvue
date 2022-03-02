@@ -474,9 +474,13 @@ export default {
     dateRangeValidator(value) {
       if (value === null) return true;
 
-      const min = Date.parse(moment(new Date()).format("YYYY-MM-DD"));
+      let min = Date.parse(moment(new Date()).format("YYYY-MM-DD"));
+
       const max = Date.parse(new Date("2030-12-29"));
       const current = Date.parse(new Date(value));
+      if (this.formdata) {
+        min = Date.parse(new Date(this.formdata.movingDate));
+      }
       console.log(min, current);
       if (current >= min && current < max) {
         return true;

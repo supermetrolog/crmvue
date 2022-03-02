@@ -73,6 +73,7 @@ export default {
     "changeViewMode",
     "openExtraVisible",
     "closeExtraVisible",
+    "favorites",
   ],
   components: {
     CustomButton,

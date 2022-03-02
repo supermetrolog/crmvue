@@ -2,14 +2,25 @@
   <div class="companies-requests">
     <div class="row">
       <div class="col-12">
+        <PaginationClassic
+          class="mt-3 my-3"
+          :pagination="REQUESTS_PAGINATION"
+          @next="next"
+          v-if="REQUESTS_PAGINATION"
+        />
+      </div>
+      <div class="col-12">
         <Loader v-if="loader && !REQUESTS.length" class="center" />
         <RequestTable :loader="loader" :requests="REQUESTS" />
       </div>
-      <PaginationClassic
-        :pagination="REQUESTS_PAGINATION"
-        @next="next"
-        v-if="REQUESTS_PAGINATION"
-      />
+      <div class="col-12">
+        <PaginationClassic
+          class="mt-3 my-3"
+          :pagination="REQUESTS_PAGINATION"
+          @next="next"
+          v-if="REQUESTS_PAGINATION"
+        />
+      </div>
     </div>
   </div>
 </template>

@@ -6,7 +6,7 @@
     exact-active-class="active"
     :exact="data.exact"
   >
-    <a href="#" class="nav-link">
+    <a href="#" class="nav-link" @click="clickedLink">
       <div class="nav-link__content">{{ data.name }}</div>
     </a>
   </router-link>
@@ -18,6 +18,13 @@ export default {
   props: {
     data: {
       type: Object,
+    },
+  },
+  methods: {
+    clickedLink(e) {
+      if (this.$route.path == this.data.url) {
+        e.preventDefault();
+      }
     },
   },
 };

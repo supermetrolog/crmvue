@@ -15,6 +15,7 @@
               :disabled="true"
               :withSeparator="true"
               :loader="loader"
+              :viewMode="true"
               col="col-6"
               label="Выбранные предложения"
               @select="select"

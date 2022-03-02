@@ -326,7 +326,7 @@ export default {
       requestList = await api.request.searchRequests({
         company_id: this.form.company_id,
       });
-      requestList.forEach((item) => {
+      requestList.data.forEach((item) => {
         this.requestOptions.push({
           value: item.id,
           label: item.name,
@@ -349,8 +349,8 @@ export default {
               : this.company_id,
           });
         }
-        if (Array.isArray(requestList)) {
-          requestList.forEach((item) => {
+        if (requestList && Array.isArray(requestList.data)) {
+          requestList.data.forEach((item) => {
             this.requestOptions.push({
               value: item.id,
               label:

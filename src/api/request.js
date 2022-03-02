@@ -25,9 +25,10 @@ export default {
             .catch((e) => ErrorHandle.setError(e));
         return data;
     },
-    async searchRequests(query) {
+    async searchRequests(query, expand = null) {
+        expand = expand || "regions,directions,districts,company,consultant.userProfile";
         query = new URLSearchParams(query).toString();
-        let url = "requests?" + query;
+        let url = "requests?" + query + '&expand=' + expand;
         let data = false;
         await axios
             .get(url)
