@@ -25,8 +25,8 @@
           type="checkbox"
           v-model="field"
           :class="inputClasses"
-          :true-value="1"
-          :false-value="0"
+          :true-value="trueValue"
+          :false-value="falseValue"
           :disabled="disabled"
           @change="onChange"
         />
@@ -82,6 +82,14 @@ export default {
     disabled: {
       type: Boolean,
       default: false,
+    },
+    trueValue: {
+      type: [Number, String, Object],
+      default: 1,
+    },
+    falseValue: {
+      type: [Number, String, Object],
+      default: null,
     },
   },
   methods: {

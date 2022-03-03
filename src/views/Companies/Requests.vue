@@ -3,7 +3,7 @@
     <div class="row">
       <div class="container py-3">
         <div class="col-12 px-5 py-3">
-          <CompanyRequestSearchForm />
+          <CompanyRequestSearchForm v-if="mounted" />
         </div>
       </div>
     </div>
@@ -19,6 +19,12 @@
       <div class="col-12">
         <Loader v-if="loader && !REQUESTS.length" class="center" />
         <RequestTable :loader="loader" :requests="REQUESTS" />
+        <h1
+          class="text-center text-dark py-5"
+          v-if="!REQUESTS.length && !loader"
+        >
+          НИЧЕГО НЕ НАЙДЕНО
+        </h1>
       </div>
       <div class="col-12">
         <PaginationClassic

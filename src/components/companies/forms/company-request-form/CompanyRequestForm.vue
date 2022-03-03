@@ -145,22 +145,54 @@
           <Radio
             v-model="form.haveCranes"
             label="Наличие кранов"
-            class="col-3 pr-1"
-            :options="haveCranesOptions"
+            class="col-3 text-center pr-1"
+            :options="yesNoOptions"
           />
           <Radio
             v-model="form.heated"
             :v="v$.form.heated"
             label="Отапливаемый"
             required
-            class="col-3 pr-1"
-            :options="heatedOptions"
+            class="col-3 text-center pr-1"
+            :options="yesNoOptions"
           />
           <Input
             v-model="form.electricity"
             maska="##########"
             label="Электричесвто (квт)"
             class="col-3"
+          />
+        </FormGroup>
+        <FormGroup class="mb-1">
+          <Radio
+            v-model="form.water"
+            label="Наличие воды"
+            class="col pr-1 text-center"
+            :options="yesNoOptions"
+          />
+          <Radio
+            v-model="form.gaz"
+            label="Наличие газа"
+            class="col pr-1 text-center"
+            :options="yesNoOptions"
+          />
+          <Radio
+            v-model="form.steam"
+            label="Наличие пара"
+            class="col pr-1 text-center"
+            :options="yesNoOptions"
+          />
+          <Radio
+            v-model="form.sewerage"
+            label="Наличие КНС"
+            class="col pr-1 text-center"
+            :options="yesNoOptions"
+          />
+          <Radio
+            v-model="form.shelving"
+            label="Наличие стеллажей"
+            class="col-3 text-center pr-1"
+            :options="yesNoOptions"
           />
         </FormGroup>
         <FormGroup class="mb-1">
@@ -181,7 +213,7 @@
             v-model="form.trainLine"
             label="Ж/Д ветка"
             class="col-2 text-center"
-            :options="trainLineOptions"
+            :options="yesNoOptions"
           >
             <Input
               v-if="form.trainLine"
@@ -322,10 +354,8 @@ export default {
       plotTypeListVisible: true,
       isOpenDealTypeSelect: false,
       isOpenConsultantSelect: false,
-      haveCranesOptions: YesNo.get("param"),
+      yesNoOptions: YesNo.get("param"),
       statusOptions: ActivePassive.get("param"),
-      heatedOptions: YesNo.get("param"),
-      trainLineOptions: YesNo.get("param"),
       unknownMovingDateOptions: unknownMovingDate.get("param"),
       passiveWhyOptions: PassiveWhyRequest.get("param"),
       loader: false,
@@ -361,6 +391,11 @@ export default {
         unknownMovingDate: null,
         passive_why: null,
         passive_why_comment: null,
+        water: null,
+        gaz: null,
+        steam: null,
+        sewerage: null,
+        shelving: null,
       },
     };
   },

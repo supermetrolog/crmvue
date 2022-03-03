@@ -131,8 +131,105 @@
           <Input
             v-model="form.maxDistanceFromMKAD"
             maska="###"
+            placeholder="не более"
             label="Удаленность от МКАД"
             class="col-3"
+          />
+        </FormGroup>
+        <FormGroup class="mb-1">
+          <Radio
+            v-model="form.water"
+            :unselectMode="true"
+            label="Наличие воды"
+            class="col-2 pr-1 text-center"
+            :options="yesNoOptions"
+          />
+          <Radio
+            v-model="form.gaz"
+            :unselectMode="true"
+            label="Наличие газа"
+            class="col-2 pr-1 text-center"
+            :options="yesNoOptions"
+          />
+          <Radio
+            v-model="form.steam"
+            :unselectMode="true"
+            label="Наличие пара"
+            class="col pr-1 text-center"
+            :options="yesNoOptions"
+          />
+          <Radio
+            v-model="form.sewerage"
+            :unselectMode="true"
+            label="Наличие КНС"
+            class="col pr-1 text-center"
+            :options="yesNoOptions"
+          />
+          <Radio
+            v-model="form.shelving"
+            :unselectMode="true"
+            label="Наличие стеллажей"
+            class="col-3 text-center pr-1"
+            :options="yesNoOptions"
+          />
+        </FormGroup>
+        <FormGroup class="mb-1">
+          <Checkbox
+            v-model="form.objectClasses"
+            class="col-3 pr-1"
+            label="Классы"
+            :options="objectClassList"
+          />
+          <Radio
+            v-model="form.haveCranes"
+            :unselectMode="true"
+            label="Наличие кранов"
+            class="col-3 text-center pr-1"
+            :options="yesNoOptions"
+          />
+          <Radio
+            v-model="form.heated"
+            :unselectMode="true"
+            label="Отапливаемый"
+            class="col-3 text-center pr-1"
+            :options="yesNoOptions"
+          />
+          <Input
+            v-model="form.maxElectricity"
+            placeholder="не более"
+            maska="##########"
+            label="Электричесвто (квт)"
+            class="col-3"
+          />
+        </FormGroup>
+        <FormGroup class="mb-1">
+          <Checkbox
+            v-model="form.antiDustOnly"
+            class="col-2 large text-center"
+            label="Только антипыль"
+          />
+          <Checkbox
+            v-model="form.firstFloorOnly"
+            class="col-2 pr-1 large text-center"
+            label="Только 1 этаж"
+          />
+          <Checkbox
+            v-model="form.expressRequest"
+            class="col-2 large text-center"
+            label="Срочный запрос"
+          />
+          <Radio
+            v-model="form.trainLine"
+            :unselectMode="true"
+            label="Ж/Д ветка"
+            class="col-2 text-center"
+            :options="yesNoOptions"
+          />
+          <Checkbox
+            v-model="form.gateTypes"
+            class="col-4 pr-1"
+            label="Тип ворот"
+            :options="gateTypeList"
           />
         </FormGroup>
       </div>
@@ -147,7 +244,14 @@ import Input from "@/components/common/form/Input.vue";
 import Radio from "@/components/common/form/Radio.vue";
 import MultiSelect from "@/components/common/form/MultiSelect.vue";
 import CheckboxIcons from "@/components/common/form/CheckboxIcons.vue";
-import { ActivePassive, ObjectTypeList } from "@/const/Const.js";
+import Checkbox from "@/components/common/form/Checkbox.vue";
+import {
+  ActivePassive,
+  ObjectTypeList,
+  YesNo,
+  ObjectClassList,
+  GateTypeList,
+} from "@/const/Const.js";
 import { SearchFormMixin } from "@/components/common/mixins.js";
 export default {
   mixins: [SearchFormMixin],
@@ -159,6 +263,7 @@ export default {
     Radio,
     MultiSelect,
     CheckboxIcons,
+    Checkbox,
   },
   data() {
     return {
@@ -166,6 +271,9 @@ export default {
       objectTypeListWareHouse: ObjectTypeList.get("warehouse"),
       objectTypeListProduction: ObjectTypeList.get("production"),
       objectTypeListPlot: ObjectTypeList.get("plot"),
+      yesNoOptions: YesNo.get("param"),
+      objectClassList: ObjectClassList.get("param"),
+      gateTypeList: GateTypeList.get("param"),
     };
   },
   defaultFormProperties: {
@@ -182,13 +290,34 @@ export default {
     rangeMinCeilingHeight: null,
     rangeMaxCeilingHeight: null,
     maxDistanceFromMKAD: null,
+    water: null,
+    gaz: null,
+    steam: null,
+    sewerage: null,
+    shelving: null,
+    objectClasses: [],
+    haveCranes: null,
+    heated: null,
+    maxElectricity: null,
+    antiDustOnly: null,
+    expressRequest: null,
+    firstFloorOnly: null,
+    trainLine: null,
+    gateTypes: [],
   },
   methods: {
     async setQueryFields() {
       this.form = { ...this.form, ...this.$route.query };
+      if (this.form.objectClasses && !Array.isArray(this.form.objectClasses)) {
+        this.form.objectClasses = [this.form.objectClasses];
+      }
+      if (this.form.gateTypes && !Array.isArray(this.form.gateTypes)) {
+        this.form.gateTypes = [this.form.gateTypes];
+      }
       if (this.form.objectTypes && !Array.isArray(this.form.objectTypes)) {
         this.form.objectTypes = [this.form.objectTypes];
       }
+
       let array = [];
       this.form.objectTypes.forEach((item) => {
         array.push(+item);
