@@ -9,7 +9,7 @@ export const TableContentMixin = {
         async next(number) {
             let query = {...this.$route.query };
             query.page = number;
-            await this.$router.push({ query });
+            await this.$router.replace({ query });
         },
         async initialRouteSettings() {
             let query = {...this.$route.query };
@@ -17,7 +17,7 @@ export const TableContentMixin = {
             if (!queryLength) {
                 query.consultant_id = this.THIS_USER.id;
             }
-            await this.$router.push({ query });
+            await this.$router.replace({ query });
         },
     },
     async mounted() {

@@ -182,7 +182,7 @@ export default {
       this.deleteEmptyFields(query);
 
       query.page = 1;
-      this.$router.push({ query });
+      this.$router.replace({ query });
     },
     resetForm() {
       this.form = { ...defaultFormProperties };
@@ -208,7 +208,7 @@ export default {
       }
       let query = { ...this.form };
       this.deleteEmptyFields(query);
-      await this.$router.push({ query });
+      await this.$router.replace({ query });
     },
   },
   async mounted() {
