@@ -113,26 +113,15 @@ import Input from "@/components/common/form/Input.vue";
 import MultiSelect from "@/components/common/form/MultiSelect.vue";
 import Checkbox from "@/components/common/form/Checkbox.vue";
 import Radio from "@/components/common/form/Radio.vue";
-import { mapActions, mapGetters } from "vuex";
 import {
   CompanyCategories,
   ActivityGroupList,
   ActivityProfileList,
   ActivePassive,
 } from "@/const/Const.js";
-const defaultFormProperties = {
-  all: null,
-  nameRu: null,
-  nameEng: null,
-  consultant_id: null,
-  categories: [],
-  activityGroup: null,
-  activityProfile: null,
-  dateStart: null,
-  dateEnd: null,
-  status: null,
-};
+import { SearchFormMixin } from "@/components/common/mixins.js";
 export default {
+  mixins: [SearchFormMixin],
   name: "CompanySearchForm",
   components: {
     Form,
@@ -144,63 +133,25 @@ export default {
   },
   data() {
     return {
-      setTimeout: null,
       categoryOptions: CompanyCategories.get("param"),
       activityGroupOptions: ActivityGroupList.get("param"),
       activityProfileOptions: ActivityProfileList.get("param"),
       activePassiveOptions: ActivePassive.get("param"),
-      extraVisible: false,
-      form: { ...defaultFormProperties },
     };
   },
-  computed: {
-    ...mapGetters(["THIS_USER"]),
-    filterCount() {
-      let count = 0;
-      for (const key in defaultFormProperties) {
-        if (Object.hasOwnProperty.call(this.form, key)) {
-          const value = this.form[key];
-          if (value !== null && value !== "") {
-            if (Array.isArray(value)) {
-              if (value.length) {
-                count++;
-              }
-            } else {
-              count++;
-            }
-          }
-        }
-      }
-      return count;
-    },
+  defaultFormProperties: {
+    all: null,
+    nameRu: null,
+    nameEng: null,
+    consultant_id: null,
+    categories: [],
+    activityGroup: null,
+    activityProfile: null,
+    dateStart: null,
+    dateEnd: null,
+    status: null,
   },
   methods: {
-    ...mapActions(["FETCH_CONSULTANT_LIST"]),
-    onSubmit() {
-      let query = { ...this.$route.query, ...this.form };
-
-      this.deleteEmptyFields(query);
-
-      query.page = 1;
-      this.$router.replace({ query });
-    },
-    resetForm() {
-      this.form = { ...defaultFormProperties };
-    },
-    deleteEmptyFields(object) {
-      for (const key in object) {
-        if (Object.hasOwnProperty.call(object, key)) {
-          const value = object[key];
-          if (
-            value === null ||
-            value === "" ||
-            (Array.isArray(value) && !value.length)
-          ) {
-            delete object[key];
-          }
-        }
-      }
-    },
     async setQueryFields() {
       this.form = { ...this.form, ...this.$route.query };
       if (this.form.categories && !Array.isArray(this.form.categories)) {
@@ -210,21 +161,6 @@ export default {
       this.deleteEmptyFields(query);
       await this.$router.replace({ query });
     },
-  },
-  async mounted() {
-    await this.setQueryFields();
-    this.$watch(
-      "form",
-      () => {
-        clearTimeout(this.setTimeout);
-        this.setTimeout = setTimeout(() => this.onSubmit(), 500);
-      },
-      { deep: true }
-    );
-  },
-  beforeUnmount() {
-    console.log("UNMOUNT");
-    clearTimeout(this.setTimeout);
   },
 };
 </script>

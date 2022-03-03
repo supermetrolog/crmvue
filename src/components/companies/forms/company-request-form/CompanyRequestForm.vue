@@ -70,6 +70,7 @@
           >
             <Checkbox
               v-model="form.distanceFromMKADnotApplicable"
+              @change="changeDistanceFromMKADnotApplicable"
               class="col-12 large p-0 pt-1"
               label="Неприменимо - регион или Москва"
               mode="inline"
@@ -445,6 +446,11 @@ export default {
         } else {
           this.createRequest();
         }
+      }
+    },
+    changeDistanceFromMKADnotApplicable() {
+      if (this.form.distanceFromMKADnotApplicable) {
+        this.form.distanceFromMKAD = null;
       }
     },
     regionNormalize() {

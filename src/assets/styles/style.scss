@@ -3634,3 +3634,30 @@
             width: 150px;
         }
     }
+    
+    // ************ COMPANY-REQUEST-SEARCH-FORM *************
+    .company-request-search-form {
+        .main-input {
+            input {
+                height: 40px;
+                max-height: unset;
+            }
+        }
+        a {
+            color: $color_primary;
+            &:hover {
+                text-decoration: underline;
+            }
+            position: relative;
+            .badge {
+                position: absolute;
+                right: -25px;
+                // color: $color;
+                font-size: 14px;
+                // width: 18px;
+                // height: 18px;
+                padding: 0;
+                border-radius: 50%;
+            }
+        }
+    }

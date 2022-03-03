@@ -1,6 +1,13 @@
 <template>
   <div class="companies-requests">
     <div class="row">
+      <div class="container py-3">
+        <div class="col-12 px-5 py-3">
+          <CompanyRequestSearchForm />
+        </div>
+      </div>
+    </div>
+    <div class="row">
       <div class="col-12">
         <PaginationClassic
           class="mt-3 my-3"
@@ -29,11 +36,13 @@
 import RequestTable from "@/components/companies/companies/request/RequestTable";
 import { mapGetters, mapActions } from "vuex";
 import { TableContentMixin } from "@/components/common/mixins.js";
+import CompanyRequestSearchForm from "@/components/companies/forms/company-request-form/CompanyRequestSearchForm.vue";
 export default {
   mixins: [TableContentMixin],
   name: "CompaniesRequests",
   components: {
     RequestTable,
+    CompanyRequestSearchForm,
   },
   methods: {
     ...mapActions(["SEARCH_REQUESTS"]),
