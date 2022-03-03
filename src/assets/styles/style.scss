@@ -1891,26 +1891,29 @@
                     &:nth-child(odd) {
                         background-color: darken($color_light, 3);
                         border-color: darken($color_light, 3);
+                        &:nth-child(odd) {
+                            td.sortable {
+                                &.sort_asc {
+                                    background-color: lighten(#a02121, 45);
+                                }
+                                &.sort_desc {
+                                    background-color: lighten($color_warning, 35);
+                                }
+                            }
+                        }
                     }
                 }
                 td {
-                    border-right: 2px solid;
-                    border-left: 2px solid;
-                    border-color: inherit;
                     padding: 0 10px;
                     &.sortable {
-                        border: none;
+                        border-right: 1px solid;
+                        border-left: 1px solid;
+                        border-color: lighten($color_grey, 35);
                         &.sort_asc {
-                            background-color: lighten(#a02121, 45);
-                            &.odd {
-                                background-color: lighten(#a02121, 50);
-                            }
+                            background-color: lighten(#a02121, 50);
                         }
                         &.sort_desc {
-                            background-color: lighten($color_warning, 35);
-                            &.odd {
-                                background-color: lighten($color_warning, 40);
-                            }
+                            background-color: lighten($color_warning, 40);
                         }
                     }
                 }
@@ -3625,9 +3628,9 @@
         //     width: 250px;
         // }
         .area {
-            max-width: 150px;
+            width: 150px;
         }
         .price {
-            max-width: 150px;
+            width: 150px;
         }
     }

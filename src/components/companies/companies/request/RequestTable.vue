@@ -4,14 +4,14 @@
       <template #thead>
         <Tr>
           <Th>#</Th>
-          <Th>тип сделки</Th>
+          <Th sort="dealType">тип сделки</Th>
           <Th>площадь</Th>
-          <Th>цена</Th>
+          <Th sort="pricePerFloor">цена</Th>
           <Th>регион</Th>
           <Th>компания</Th>
           <Th>консультант</Th>
-          <Th>дата обновления</Th>
-          <Th>статус</Th>
+          <Th sort="updated_at">дата обновления</Th>
+          <Th sort="status">статус</Th>
         </Tr>
       </template>
       <template #tbody>
@@ -20,7 +20,7 @@
           <Td class="text-center pr-0">
             {{ request.id }}
           </Td>
-          <Td class="dealType">
+          <Td class="dealType" sort="dealType">
             <div class="row no-gutters">
               <div class="col-6">
                 <h4 :class="{ 'text-warning': !request.status }">
@@ -31,7 +31,7 @@
                 <p
                   class="text-danger d-block"
                   v-if="request.expressRequest"
-                  :class="{ 'text-grey': !request.status }"
+                  :class="{ 'text-grey': request.status !== 1 }"
                 >
                   <b>срочный запрос</b>
                 </p>
@@ -49,7 +49,7 @@
               </b>
             </p>
           </Td>
-          <Td class="text-center price">
+          <Td class="text-center price" sort="pricePerFloor">
             <p>
               {{
                 request.pricePerFloor
@@ -104,7 +104,11 @@
               class="text-primary"
             >
               <p :class="{ 'text-warning': !request.company.status }">
-                {{ request.company.full_name }}
+                {{
+                  request.company.full_name == "-"
+                    ? "&#8212;"
+                    : request.company.full_name
+                }}
               </p>
             </router-link>
           </Td>
@@ -113,12 +117,12 @@
               {{ request.consultant.userProfile.short_name }}
             </p>
           </Td>
-          <Td class="text-center date">
+          <Td class="text-center date" sort="updated_at">
             <p>
-              {{ request.updated_at_format || request.created_at_format }}
+              {{ request.updated_at_format ?? "&#8212;" }}
             </p>
           </Td>
-          <Td class="text-center status">
+          <Td class="text-center status" sort="status">
             <h4 class="text-success" v-if="request.status == 1">Актив</h4>
             <span
               class="badge badge-blue-green"

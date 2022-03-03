@@ -16,9 +16,9 @@
       </template>
       <template #tbody>
         <Loader v-if="loader" class="center" />
-        <Tr v-for="(company, index) in companies" :key="company.id">
+        <Tr v-for="company in companies" :key="company.id">
           <Td class="text-center p-0"> {{ company.id }} </Td>
-          <Td class="name" sort="nameRu" :class="{ odd: index % 2 }">
+          <Td class="name" sort="nameRu">
             <router-link :to="'/companies/' + company.id" target="_blank">
               <h4 class="d-inline" :class="{ 'text-warning': !company.status }">
                 {{ company.full_name }}
@@ -26,7 +26,7 @@
               <Progress :percent="company.progress_percent" />
             </router-link>
           </Td>
-          <Td class="text-center" sort="rating" :class="{ odd: index % 2 }">
+          <Td class="text-center" sort="rating">
             <i
               v-for="rating in ratingOptions"
               :key="rating[0]"
@@ -94,14 +94,10 @@
           <Td class="text-center">
             {{ company.consultant.userProfile.short_name }}
           </Td>
-          <Td
-            class="text-center date"
-            sort="created_at"
-            :class="{ odd: index % 2 }"
-          >
+          <Td class="text-center date" sort="created_at">
             {{ company.created_at_format }}
           </Td>
-          <Td class="text-center" sort="status" :class="{ odd: index % 2 }">
+          <Td class="text-center" sort="status">
             <h4 class="text-success" v-if="company.status">Актив</h4>
             <span class="badge badge-warning autosize" v-else> Пассив </span>
           </Td>
