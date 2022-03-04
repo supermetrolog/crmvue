@@ -12,6 +12,7 @@ import Loader from "@/components/common/Loader";
 import PhoneNumber from "@/components/common/PhoneNumber";
 import Pagination from "@/components/common/Pagination";
 import PaginationClassic from '@/components/common/PaginationClassic';
+import { Formatter } from "@/plugins";
 
 // import VueFileAgent from 'vue-file-agent'
 import 'animate.css'
@@ -28,4 +29,4 @@ if (process.env.NODE_ENV == 'development') {
 }
 const app = createApp(App);
 app.config.devtools = true;
-app.component('Tabs', Tabs).component('Modal', Modal).component('PhoneNumber', PhoneNumber).component('Loader', Loader).component('Pagination', Pagination).component('PaginationClassic', PaginationClassic).component('Tab', Tab).use(Notifications).use(Maska).use(VueAxios, axios).use(store).use(router).mount('#app');
+app.component('Tabs', Tabs).component('Modal', Modal).component('PhoneNumber', PhoneNumber).component('Loader', Loader).component('Pagination', Pagination).component('PaginationClassic', PaginationClassic).component('Tab', Tab).use(Formatter).use(Notifications).use(Maska).use(VueAxios, axios).use(store).use(router).mount('#app');

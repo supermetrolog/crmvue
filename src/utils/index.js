@@ -201,4 +201,4 @@ export default {
         delete data.email;
         return data;
     },
-}
+};

@@ -6,7 +6,7 @@
           v-model="form.all"
           label="Поиск"
           placeholder="название компании, ID компании, ФИО брокера, ФИО контакта, телефон"
-          class="col-12 main-input pr-1"
+          class="col-12 main-input"
           @keydown.enter="onSubmit"
         />
       </FormGroup>
@@ -45,8 +45,15 @@
           <Input
             v-model="form.dateEnd"
             label="Дата до"
-            class="col-2"
+            class="col-2 pr-1"
             type="date"
+          />
+          <MultiSelect
+            v-model="form.dealType"
+            required
+            label="Тип сделки"
+            class="col-4"
+            :options="dealTypeList"
           />
         </FormGroup>
         <FormGroup class="mb-2">
@@ -251,6 +258,7 @@ import {
   YesNo,
   ObjectClassList,
   GateTypeList,
+  DealTypeList,
 } from "@/const/Const.js";
 import { SearchFormMixin } from "@/components/common/mixins.js";
 export default {
@@ -274,6 +282,7 @@ export default {
       yesNoOptions: YesNo.get("param"),
       objectClassList: ObjectClassList.get("param"),
       gateTypeList: GateTypeList.get("param"),
+      dealTypeList: DealTypeList.get("param"),
     };
   },
   defaultFormProperties: {
@@ -304,6 +313,7 @@ export default {
     firstFloorOnly: null,
     trainLine: null,
     gateTypes: [],
+    dealType: null,
   },
   methods: {
     async setQueryFields() {

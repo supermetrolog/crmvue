@@ -45,18 +45,21 @@
           <Td class="text-center area">
             <p>
               <b>
-                {{ request.minArea }} - {{ request.maxArea }} м<sup>2</sup>
+                {{ $formatter.number(request.minArea) }} -
+                {{ $formatter.number(request.maxArea) }} м<sup>2</sup>
               </b>
             </p>
           </Td>
           <Td class="text-center price" sort="pricePerFloor">
-            <p>
-              {{
-                request.pricePerFloor
-                  ? request.pricePerFloor + " р."
-                  : "&#8212;"
-              }}
+            <p v-if="request.pricePerFloor !== null">
+              {{ $formatter.currency(request.pricePerFloor) }}
+              <small class="text-grey"> м<sup>2</sup>/год </small>
+              <br />
+              {{ $formatter.currency(request.pricePerFloorMonth) }}
+              <small class="text-grey"> м<sup>2</sup>/месяц </small>
             </p>
+
+            <p v-else>&#8212;</p>
           </Td>
           <Td class="text-center location">
             <div>
