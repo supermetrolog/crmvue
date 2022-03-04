@@ -222,6 +222,8 @@
                 cursor: default;
                 .nav-link {
                     text-transform: uppercase;
+                    font-size: 11.7px;
+                    transform: scale(1.15);
                     font-weight: bold;
                     color: $color_primary;
                     cursor: unset;
