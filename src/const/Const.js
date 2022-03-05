@@ -344,8 +344,8 @@ export const ActivityGroupList = new Map(
             { value: 2, label: "Строительство с привлечением" },
             { value: 3, label: "Строительство собственными силами" },
             { value: 4, label: "Услуги" },
-            { value: 6, label: "Управление активами/арендный бизнес" },
-            { value: 5, label: "Другое" },
+            { value: 5, label: "Управление активами/арендный бизнес" },
+            { value: 6, label: "Другое" },
         ]],
 
     ]
@@ -384,6 +384,7 @@ export const ActivityProfileList = new Map(
             { value: 28, label: "Полиграфия/бумага" },
             { value: 29, label: "ЖБИ/камень" },
             { value: 30, label: "Садовая/складская техника" },
+            { value: 31, label: "другое" },
         ]],
 
     ]
