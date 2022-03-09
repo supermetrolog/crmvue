@@ -15,6 +15,20 @@ export default {
         return data;
 
     },
+    async searchContacts(query) {
+        console.warn("SEARCH");
+        query = new URLSearchParams(query).toString();
+        const url = `contacts?${query}expand=contactComments,contactComments.author,contactComments.author.userProfile,emails,phones,websites,consultant,consultant.userProfile,wayOfInformings&sort=-created_at`;
+        let data = false;
+
+        await axios
+            .get(url)
+            .then((Response) => {
+                data = SuccessHandler.getData(Response);
+            })
+            .catch((e) => ErrorHandle.setError(e));
+        return data;
+    },
     async createContact(formdata) {
         const url = "contacts";
         let data = false;
