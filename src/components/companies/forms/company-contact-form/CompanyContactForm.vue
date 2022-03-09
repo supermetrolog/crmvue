@@ -158,6 +158,14 @@
             </MultiSelect>
           </Radio>
         </FormGroup>
+        <FormGroup class="mb-1">
+          <Checkbox
+            v-model="form.isMain"
+            label="Основной контакт"
+            title="Очная встреча"
+            class="col-12 large text-center"
+          />
+        </FormGroup>
         <FormGroup class="mt-4">
           <Submit class="col-4 mx-auto">
             {{ formdata ? "Сохранить" : "Создать" }}
@@ -233,6 +241,7 @@ export default {
         passive_why_comment: null,
         warning_why_comment: null,
         position_unknown: 0,
+        isMain: null,
       },
     };
   },
@@ -455,6 +464,14 @@ export default {
       this.form = { ...this.form, ...this.formdata };
     }
     this.loader = false;
+  },
+  watch: {
+    form: {
+      handler() {
+        console.log("FORM: ", this.form);
+      },
+      deep: true,
+    },
   },
   emits: ["closeCompanyForm", "updated", "created"],
 };

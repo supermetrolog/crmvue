@@ -1,5 +1,11 @@
 <template>
-  <div class="row item mb-2" :class="{ active: contact.status }">
+  <div
+    class="row item mb-2"
+    :class="{
+      active: contact.status && !contact.isMain,
+      isMain: contact.isMain,
+    }"
+  >
     <div class="col-12 text-center general-info py-2">
       <div class="header row mb-0">
         <div class="index col-12 p-0 text-center">

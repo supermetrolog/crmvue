@@ -2317,6 +2317,22 @@
                         }
                     }
                 }
+                &.active {
+                    .general-info {
+                        border-color: $color_dark!important;
+                        .header {
+                            color: $color_success;
+                        }
+                    }
+                }
+                &.isMain {
+                    .general-info {
+                        border-color: $color_success;
+                        .header {
+                            color: $color_success;
+                        }
+                    }
+                }
             }
         }
         &-request-list {
