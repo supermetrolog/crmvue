@@ -250,7 +250,7 @@
             type="date"
             required
             class="col-4 pr-1"
-            @input="form.unknownMovingDate = null"
+            @change="form.unknownMovingDate = null"
           >
             <Radio
               v-model="form.unknownMovingDate"
@@ -472,7 +472,6 @@ export default {
     ]),
     async onSubmit() {
       this.v$.$validate();
-      console.log(this.form);
       if (!this.v$.form.$error) {
         this.regionNormalize();
         this.loader = true;

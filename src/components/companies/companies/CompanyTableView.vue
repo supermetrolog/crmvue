@@ -47,6 +47,7 @@
                 >
                   {{ request.name }}
                 </span>
+                <p v-if="!company.requests.length">&#8212;</p>
               </div>
             </div>
           </Td>
