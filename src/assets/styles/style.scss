@@ -3302,27 +3302,43 @@
     
     //**************** USERS TABLE ***********
     .users-table {
-        td {
-            padding: 5px 20px;
-            font-size: 16px;
-            a {
-                color: $color_primary;
-                font-size: 14px;
-                &:hover {
-                    text-decoration: underline;
+        table {
+            width: 100%;
+            tr {
+                td {
+                    text-align: center;
+                    padding: 5px 10px;
+                    font-size: 16px;
+                    a {
+                        color: $color_primary;
+                        font-size: 14px;
+                        &:hover {
+                            text-decoration: underline;
+                        }
+                    }
                 }
-            }
-        }
-        .avatar {
-            border-radius: 50%;
-            height: 70px;
-            width: 70px;
-            background-color: red;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            img {
-                width: 100%;
+                .avatar-container {
+                    width: 100px;
+                }
+                .avatar {
+                    border-radius: 50%;
+                    height: 70px;
+                    width: 70px;
+                    background-color: red;
+                    overflow: hidden;
+                    display: flex;
+                    align-items: center;
+                    img {
+                        width: 100%;
+                    }
+                }
+                .date {
+                    width: 140px;
+                    font-size: 13px;
+                }
+                .action {
+                    width: 80px;
+                }
             }
         }
     }

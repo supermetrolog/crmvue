@@ -1,44 +1,51 @@
 <template>
   <div class="users-table">
-    <Modal
-      title="Удаление контакта"
-      class="autosize"
-      @close="clickCloseModal"
-      v-if="userForDelete"
+    <transition
+      mode="out-in"
+      enter-active-class="animate__animated animate__zoomIn for__modal absolute"
+      leave-active-class="animate__animated animate__zoomOut for__modal absolute"
     >
-      <div class="row no-gutters">
-        <div class="col-12 text-center">
-          <h4 class="text-dark">
-            Вы уверены что хотите удалить пользователя
-            <span class="text-grey"
-              >"{{ userForDelete.userProfile.first_name }}
-              {{ userForDelete.userProfile.middle_name }}"</span
+      <Modal
+        title="Удаление контакта"
+        class="autosize"
+        @close="clickCloseModal"
+        v-if="userForDelete"
+      >
+        <div class="row no-gutters">
+          <div class="col-12 text-center">
+            <h4 class="text-dark">
+              Вы уверены что хотите удалить пользователя
+              <span class="text-grey"
+                >"{{ userForDelete.userProfile.first_name }}
+                {{ userForDelete.userProfile.middle_name }}"</span
+              >
+              ?
+            </h4>
+            <h5 class="m-0 text-success_alt">
+              Username: {{ userForDelete.username }}
+            </h5>
+          </div>
+          <div class="col-12 mt-4 text-center">
+            <Loader class="center small" v-if="deleteLoader" />
+            <button
+              class="btn btn-danger"
+              :disabled="deleteLoader"
+              @click="deleteUser(userForDelete)"
             >
-            ?
-          </h4>
-          <h5 class="m-0 text-success_alt">
-            Username: {{ userForDelete.username }}
-          </h5>
+              Удалить
+            </button>
+            <button
+              class="btn btn-primary ml-1"
+              @click="clickCloseModal"
+              :disabled="deleteLoader"
+            >
+              Нет
+            </button>
+          </div>
         </div>
-        <div class="col-12 mt-4 text-center">
-          <Loader class="center small" v-if="deleteLoader" />
-          <button
-            class="btn btn-danger"
-            :disabled="deleteLoader"
-            @click="deleteUser(userForDelete)"
-          >
-            Удалить
-          </button>
-          <button
-            class="btn btn-primary ml-1"
-            @click="clickCloseModal"
-            :disabled="deleteLoader"
-          >
-            Нет
-          </button>
-        </div>
-      </div>
-    </Modal>
+      </Modal>
+    </transition>
+
     <Table>
       <template #thead>
         <Tr>
@@ -54,45 +61,48 @@
       </template>
       <template #tbody v-if="!loader">
         <Tr v-for="user in users" :key="user.id">
-          <Td>
-            <div class="avatar">
+          <Td class="avatar-container">
+            <div class="avatar mx-auto">
               <img :src="src + user.userProfile.avatar" alt="Аватар" />
             </div>
           </Td>
-
-          <Td>
+          <Td class="text-left">
             {{ user.userProfile.middle_name }}
             {{ user.userProfile.first_name }}
           </Td>
           <Td>
-            <div v-if="user.userProfile.contacts">
+            <div>
               <PhoneNumber
-                v-for="phone in user.userProfile.contacts.phones"
+                v-for="phone in user.userProfile.phones"
                 :key="phone"
                 :phone="phone"
               />
               <a
-                :href="'mailto:' + email"
-                v-for="email in user.userProfile.contacts.emails"
-                :key="email"
+                :href="'mailto:' + email.email"
+                v-for="email in user.userProfile.emails"
+                :key="email.email"
+                class="d-block"
               >
-                {{ email }}
+                {{ email.email }}
               </a>
             </div>
           </Td>
-          <Td> - </Td>
           <Td>
-            <span class="square-badge">
+            <p>&#8212;</p>
+          </Td>
+          <Td>
+            <span class="square-badge" v-if="user.userProfile.caller_id">
               {{ user.userProfile.caller_id }}
             </span>
+            <p v-else>&#8212;</p>
           </Td>
-          <Td>
-            {{ user.created_at }}
+          <Td class="date">
+            {{ user.created_at_format }}
           </Td>
-          <Td>
-            {{ user.updated_at }}
+          <Td class="date">
+            {{ user.updated_at_format }}
           </Td>
-          <Td>
+          <Td class="action">
             <button
               class="btn btn-action text-primary"
               @click="$emit('clickEdit', user)"

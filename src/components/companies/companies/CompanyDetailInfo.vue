@@ -303,9 +303,10 @@
                   <strong>Юр. адрес: </strong>
                 </div>
                 <div class="col-9 text-right align-self-center">
-                  <p>
+                  <p v-if="company.legalAddress">
                     {{ company.legalAddress }}
                   </p>
+                  <p v-else>&#8212;</p>
                 </div>
               </div>
             </div>
@@ -315,9 +316,10 @@
                   <strong>ОГРН: </strong>
                 </div>
                 <div class="col-9 text-right align-self-center">
-                  <p class="text-primary">
+                  <p class="text-primary" v-if="company.ogrn">
                     {{ company.ogrn }}
                   </p>
+                  <p v-else>&#8212;</p>
                 </div>
               </div>
             </div>
@@ -327,9 +329,10 @@
                   <strong>ИНН: </strong>
                 </div>
                 <div class="col-9 text-right align-self-center">
-                  <p>
+                  <p v-if="company.inn">
                     {{ company.inn }}
                   </p>
+                  <p v-else>&#8212;</p>
                 </div>
               </div>
             </div>
@@ -339,9 +342,10 @@
                   <strong>КПП: </strong>
                 </div>
                 <div class="col-9 text-right align-self-center">
-                  <p>
+                  <p v-if="company.kpp">
                     {{ company.kpp }}
                   </p>
+                  <p v-else>&#8212;</p>
                 </div>
               </div>
             </div>
@@ -351,9 +355,10 @@
                   <strong>БИК: </strong>
                 </div>
                 <div class="col-9 text-right align-self-center">
-                  <p>
+                  <p v-if="company.bik">
                     {{ company.bik }}
                   </p>
+                  <p v-else>&#8212;</p>
                 </div>
               </div>
             </div>
@@ -363,9 +368,10 @@
                   <strong>ОКПО: </strong>
                 </div>
                 <div class="col-9 text-right align-self-center">
-                  <p>
+                  <p v-if="company.okpo">
                     {{ company.okpo }}
                   </p>
+                  <p v-else>&#8212;</p>
                 </div>
               </div>
             </div>
@@ -375,9 +381,10 @@
                   <strong>ОКВЭД: </strong>
                 </div>
                 <div class="col-9 text-right align-self-center">
-                  <p>
+                  <p v-if="company.okved">
                     {{ company.okved }}
                   </p>
+                  <p v-else>&#8212;</p>
                 </div>
               </div>
             </div>
@@ -391,9 +398,10 @@
                   <strong>Рсч/сч: </strong>
                 </div>
                 <div class="col-9 text-right align-self-center">
-                  <p>
+                  <p v-if="company.checkingAccount">
                     {{ company.checkingAccount }}
                   </p>
+                  <p v-else>&#8212;</p>
                 </div>
               </div>
             </div>
@@ -403,9 +411,10 @@
                   <strong>Крсп/сч: </strong>
                 </div>
                 <div class="col-9 text-right align-self-center">
-                  <p>
+                  <p v-if="company.correspondentAccount">
                     {{ company.correspondentAccount }}
                   </p>
+                  <p v-else>&#8212;</p>
                 </div>
               </div>
             </div>
@@ -415,9 +424,10 @@
                   <strong>В банке: </strong>
                 </div>
                 <div class="col-9 text-right align-self-center">
-                  <p>
+                  <p v-if="company.inTheBank">
                     {{ company.inTheBank }}
                   </p>
+                  <p v-else>&#8212;</p>
                 </div>
               </div>
             </div>
@@ -427,9 +437,10 @@
                   <strong>Имя подписанта: </strong>
                 </div>
                 <div class="col-7 text-right align-self-center">
-                  <p>
+                  <p v-if="company.signatoryName">
                     {{ company.signatoryName }}
                   </p>
+                  <p v-else>&#8212;</p>
                 </div>
               </div>
             </div>
@@ -439,9 +450,10 @@
                   <strong>Фамилия подписанта: </strong>
                 </div>
                 <div class="col-7 text-right align-self-center">
-                  <p>
+                  <p v-if="company.signatoryMiddleName">
                     {{ company.signatoryMiddleName }}
                   </p>
+                  <p v-else>&#8212;</p>
                 </div>
               </div>
             </div>
@@ -451,9 +463,10 @@
                   <strong>Отчество подписанта: </strong>
                 </div>
                 <div class="col-7 text-right align-self-center">
-                  <p>
+                  <p v-if="company.signatoryLastName">
                     {{ company.signatoryLastName }}
                   </p>
+                  <p v-else>&#8212;</p>
                 </div>
               </div>
             </div>
@@ -463,9 +476,10 @@
                   <strong>№ документа: </strong>
                 </div>
                 <div class="col-9 text-right align-self-center">
-                  <p>
+                  <p v-if="company.documentNumber">
                     {{ company.documentNumber }}
                   </p>
+                  <p v-else>&#8212;</p>
                 </div>
               </div>
             </div>
@@ -475,9 +489,10 @@
                   <strong>Действует на основе: </strong>
                 </div>
                 <div class="col-7 text-right align-self-center">
-                  <p>
+                  <p v-if="company.basis">
                     {{ company.basis }}
                   </p>
+                  <p v-else>&#8212;</p>
                 </div>
               </div>
             </div>

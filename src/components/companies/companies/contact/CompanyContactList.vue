@@ -1,37 +1,44 @@
 <template>
   <div class="company-request-list company-contact-list">
-    <Modal
-      title="Удаление контакта "
-      @close="clickCloseModal"
-      v-if="deletedContactItem"
+    <transition
+      mode="out-in"
+      enter-active-class="animate__animated animate__zoomIn for__modal absolute"
+      leave-active-class="animate__animated animate__zoomOut for__modal absolute"
     >
-      <div class="row no-gutters">
-        <div class="col-12 text-center">
-          <h4 class="text-dark">
-            Вы уверены что хотите удалить контакт
-            <span class="text-grey">"{{ deletedContactItem.header }}"</span>
-            ?
-          </h4>
+      <Modal
+        title="Удаление контакта "
+        @close="clickCloseModal"
+        v-if="deletedContactItem"
+        class="autosize"
+      >
+        <div class="row no-gutters">
+          <div class="col-12 text-center">
+            <h4 class="text-dark">
+              Вы уверены что хотите удалить контакт
+              <span class="text-grey">"{{ deletedContactItem.header }}"</span>
+              ?
+            </h4>
+          </div>
+          <div class="col-12 mt-4 text-center">
+            <Loader class="center small" v-if="deleteLoader" />
+            <button
+              class="btn btn-danger"
+              :disabled="deleteLoader"
+              @click="deleteContact(deletedContactItem)"
+            >
+              Удалить
+            </button>
+            <button
+              class="btn btn-primary ml-1"
+              @click="clickCloseModal"
+              :disabled="deleteLoader"
+            >
+              Нет
+            </button>
+          </div>
         </div>
-        <div class="col-12 mt-4 text-center">
-          <Loader class="center small" v-if="deleteLoader" />
-          <button
-            class="btn btn-danger"
-            :disabled="deleteLoader"
-            @click="deleteContact(deletedContactItem)"
-          >
-            Удалить
-          </button>
-          <button
-            class="btn btn-primary ml-1"
-            @click="clickCloseModal"
-            :disabled="deleteLoader"
-          >
-            Нет
-          </button>
-        </div>
-      </div>
-    </Modal>
+      </Modal>
+    </transition>
     <CompanyContactItem
       v-for="contact of contacts"
       :key="contact.id"

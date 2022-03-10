@@ -1,28 +1,37 @@
 <template>
   <div class="users-all">
-    <UserForm
-      @closeUserForm="clickCloseUserForm"
-      v-if="userFormVisible"
-      :formdata="userForUpdate"
-      @created="getUsers"
-      @updated="getUsers"
-    />
+    <transition
+      mode="out-in"
+      enter-active-class="animate__animated animate__zoomIn for__modal absolute"
+      leave-active-class="animate__animated animate__zoomOut for__modal absolute"
+    >
+      <UserForm
+        @closeUserForm="clickCloseUserForm"
+        v-if="userFormVisible"
+        :formdata="userForUpdate"
+        @created="getUsers"
+        @updated="getUsers"
+      />
+    </transition>
+    <div class="row">
+      <div class="col-7 mx-auto">
+        <div class="row">
+          <div class="col-12 mt-2 mb-4">
+            <button class="btn btn-primary scale" @click="clickOpenUserForm">
+              Создать пользователя
+            </button>
+          </div>
+          <div class="col-12">
+            <Loader v-if="loader" class="center" />
 
-    <div class="row box">
-      <div class="col-12">
-        <button class="btn btn-primary scale" @click="clickOpenUserForm">
-          Создать пользователя
-        </button>
-      </div>
-      <div class="col inner inner-default-size">
-        <Loader v-if="loader" class="center" />
-
-        <UsersTable
-          @clickEdit="clickOpenUserFormForUpdate"
-          @deletedUser="getUsers"
-          :users="USERS"
-          v-if="USERS.length"
-        />
+            <UsersTable
+              @clickEdit="clickOpenUserFormForUpdate"
+              @deletedUser="getUsers"
+              :users="USERS"
+              v-if="USERS.length"
+            />
+          </div>
+        </div>
       </div>
     </div>
   </div>
