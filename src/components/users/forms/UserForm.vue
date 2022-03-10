@@ -54,8 +54,10 @@
         </FormGroup>
         <FormGroup class="mb-1">
           <PropogationInput
-            v-model="form.userProfile.contacts.phones"
+            v-model="form.userProfile.phones"
+            :v="v$.form.userProfile.phones"
             label="Телефон"
+            name="phone"
             :maska="[
               '+# (###) ###-##-##',
               '+## (###) ###-##-##',
@@ -64,15 +66,17 @@
             class="col-4 pr-1"
           />
           <PropogationInput
-            v-model="form.userProfile.contacts.emails"
+            v-model="form.userProfile.emails"
+            :v="v$.form.userProfile.emails"
             label="Email"
+            name="email"
             class="col-4 pr-1"
           />
           <FileInput
             v-model:native="form.userProfile.fileList"
             v-model:data="form.userProfile.avatar"
-            label="Документы"
-            class="col-4"
+            label="Аватар"
+            class="col-4 text-center"
             :multiple="false"
             accept="image/jpeg,image/png,image/jpg"
           >
@@ -92,14 +96,14 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import useValidate from "@vuelidate/core";
-import { required, helpers } from "@vuelidate/validators";
+import { required, helpers, email } from "@vuelidate/validators";
 import Form from "@/components/common/form/Form.vue";
 import FormGroup from "@/components/common/form/FormGroup.vue";
 import Input from "@/components/common/form/Input.vue";
 import PropogationInput from "@/components/common/form/PropogationInput.vue";
 import Submit from "@/components/common/form/Submit.vue";
 import FileInput from "@/components/common/form/FileInput.vue";
-import Utils from "@/utils";
+import Utils, { validatePropogationInput } from "@/utils";
 
 export default {
   name: "UserForm",
@@ -122,10 +126,8 @@ export default {
           first_name: null,
           middle_name: null,
           last_name: null,
-          contacts: {
-            phones: [],
-            emails: [],
-          },
+          phones: [],
+          emails: [],
           caller_id: null,
           avatar: null,
           fileList: [],
@@ -151,6 +153,24 @@ export default {
           },
           middle_name: {
             required: helpers.withMessage("введите фамилию", required),
+          },
+          emails: {
+            propogation: helpers.withMessage(
+              "Пустое поле не допустимо",
+              this.validateEmailsPropogation
+            ),
+            email: helpers.withMessage(
+              "заполните email правильно",
+              this.customEmailValidation
+            ),
+          },
+          phones: {
+            phones: {
+              propogation: helpers.withMessage(
+                "Пустое поле не допустимо",
+                this.validatePhonesPropogation
+              ),
+            },
           },
         },
         username: {
@@ -197,6 +217,21 @@ export default {
     },
     clickCloseModal() {
       this.$emit("closeUserForm");
+    },
+    validateEmailsPropogation() {
+      return validatePropogationInput(this.form.userProfile.emails, "email");
+    },
+    validatePhonesPropogation() {
+      return validatePropogationInput(this.form.userProfile.phones, "phone");
+    },
+    customEmailValidation() {
+      let flag = true;
+      this.form.userProfile.emails.forEach((item) => {
+        if (!email.$validator(item.email)) {
+          flag = false;
+        }
+      });
+      return flag;
     },
     customRequired(value) {
       if (!this.formdata) {

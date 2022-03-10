@@ -50,7 +50,7 @@ export default {
         }
     },
     async getUsers() {
-        const url = "users?expand=userProfile";
+        const url = "users?expand=userProfile.phones,userProfile.emails";
         let data = false;
         await axios
             .get(url)
