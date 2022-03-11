@@ -29,14 +29,18 @@
       <button
         class="btn btn-primary navigate"
         @click.prevent="next(currentPage + 1)"
-        :disabled="pagination.pageCount == currentPage"
+        :disabled="
+          pagination.pageCount == currentPage || pagination.pageCount == 0
+        "
       >
         <i class="fas fa-angle-right"></i>
       </button>
       <button
         class="btn btn-primary navigate"
         @click.prevent="next(pagination.pageCount)"
-        :disabled="pagination.pageCount == currentPage"
+        :disabled="
+          pagination.pageCount == currentPage || pagination.pageCount == 0
+        "
       >
         <i class="fas fa-angle-double-right"></i>
       </button>
