@@ -36,61 +36,28 @@
               }
             "
           />
-          <Input
-            v-model="form.dateStart"
-            label="Дата от"
-            class="col-2 pr-1"
-            type="date"
-          />
-          <Input
-            v-model="form.dateEnd"
-            label="Дата до"
-            class="col-2 pr-1"
-            type="date"
-          />
+
           <MultiSelect
             v-model="form.dealType"
             required
             label="Тип сделки"
-            class="col-4"
+            class="col-2 pr-1"
             :options="dealTypeList"
           />
-        </FormGroup>
-        <FormGroup class="mb-2">
-          <CheckboxIcons
-            v-model="form.objectTypes"
-            label="Тип объекта"
-            extraLabel="склад"
-            class="col-2 pr-2"
-            :options="objectTypeListWareHouse"
+          <Input
+            v-model="form.maxDistanceFromMKAD"
+            maska="###"
+            placeholder="не более"
+            label="Удаленность от МКАД"
+            class="col-3 pr-1"
           />
-          <CheckboxIcons
-            v-model="form.objectTypes"
-            extraLabel="производство"
-            class="col-2 mt-4 pr-2"
-            :options="objectTypeListProduction"
+          <Input
+            v-model="form.maxElectricity"
+            placeholder="не более"
+            maska="##########"
+            label="Электричесвто (квт)"
+            class="col-3"
           />
-          <CheckboxIcons
-            v-model="form.objectTypes"
-            extraLabel="участок"
-            class="col-2 mt-4 pr-2"
-            :options="objectTypeListPlot"
-          />
-          <Radio
-            v-model="form.status"
-            :options="activePassiveOptions"
-            :unselectMode="true"
-            label="Статус"
-            class="col-2 pr-1"
-          />
-          <div class="col-2 align-self-center">
-            <button
-              class="btn btn-warning btn-large"
-              @click.prevent="resetForm"
-            >
-              Сбросить
-            </button>
-          </div>
         </FormGroup>
         <FormGroup class="mb-2">
           <Input
@@ -136,26 +103,63 @@
             />
           </Input>
           <Input
-            v-model="form.maxDistanceFromMKAD"
-            maska="###"
-            placeholder="не более"
-            label="Удаленность от МКАД"
+            v-model="form.dateStart"
+            label="Дата От и До"
             class="col-3"
+            type="date"
+          >
+            <Input v-model="form.dateEnd" class="col-12 p-0 pt-1" type="date" />
+          </Input>
+        </FormGroup>
+        <FormGroup class="mb-2">
+          <Checkbox
+            v-model="form.gateTypes"
+            class="col-4 pr-1"
+            label="Тип ворот"
+            :options="gateTypeList"
+          />
+          <Checkbox
+            v-model="form.objectClasses"
+            class="col-2 pr-1"
+            label="Классы"
+            :options="objectClassList"
+          />
+          <Radio
+            v-model="form.haveCranes"
+            :unselectMode="true"
+            label="Наличие кранов"
+            class="col-2 text-center pr-1"
+            :options="yesNoOptions"
+          />
+
+          <Radio
+            v-model="form.heated"
+            :unselectMode="true"
+            label="Отапливаемый"
+            class="col-2 text-center pr-1"
+            :options="yesNoOptions"
+          />
+          <Radio
+            v-model="form.trainLine"
+            :unselectMode="true"
+            label="Ж/Д ветка"
+            class="col-2 text-center"
+            :options="yesNoOptions"
           />
         </FormGroup>
-        <FormGroup class="mb-1">
+        <FormGroup class="mb-2">
           <Radio
             v-model="form.water"
             :unselectMode="true"
             label="Наличие воды"
-            class="col-2 pr-1 text-center"
+            class="col pr-1 text-center"
             :options="yesNoOptions"
           />
           <Radio
             v-model="form.gaz"
             :unselectMode="true"
             label="Наличие газа"
-            class="col-2 pr-1 text-center"
+            class="col pr-1 text-center"
             :options="yesNoOptions"
           />
           <Radio
@@ -176,40 +180,32 @@
             v-model="form.shelving"
             :unselectMode="true"
             label="Наличие стеллажей"
-            class="col-3 text-center pr-1"
+            class="col text-center pr-1"
             :options="yesNoOptions"
           />
         </FormGroup>
-        <FormGroup class="mb-1">
-          <Checkbox
-            v-model="form.objectClasses"
-            class="col-3 pr-1"
-            label="Классы"
-            :options="objectClassList"
+        <FormGroup class="mb-2">
+          <CheckboxIcons
+            v-model="form.objectTypes"
+            label="Тип объекта"
+            extraLabel="склад"
+            class="col-4 pr-2 mx-auto"
+            :options="objectTypeListWareHouse"
           />
-          <Radio
-            v-model="form.haveCranes"
-            :unselectMode="true"
-            label="Наличие кранов"
-            class="col-3 text-center pr-1"
-            :options="yesNoOptions"
+          <CheckboxIcons
+            v-model="form.objectTypes"
+            extraLabel="производство"
+            class="col-4 mt-4 pr-2 mx-auto"
+            :options="objectTypeListProduction"
           />
-          <Radio
-            v-model="form.heated"
-            :unselectMode="true"
-            label="Отапливаемый"
-            class="col-3 text-center pr-1"
-            :options="yesNoOptions"
-          />
-          <Input
-            v-model="form.maxElectricity"
-            placeholder="не более"
-            maska="##########"
-            label="Электричесвто (квт)"
-            class="col-3"
+          <CheckboxIcons
+            v-model="form.objectTypes"
+            extraLabel="участок"
+            class="col-4 mt-4 mx-auto"
+            :options="objectTypeListPlot"
           />
         </FormGroup>
-        <FormGroup class="mb-1">
+        <FormGroup class="mb-2">
           <Checkbox
             v-model="form.antiDustOnly"
             class="col-2 large text-center"
@@ -222,22 +218,24 @@
           />
           <Checkbox
             v-model="form.expressRequest"
-            class="col-2 large text-center"
+            class="col-2 large text-center pr-1"
             label="Срочный запрос"
           />
           <Radio
-            v-model="form.trainLine"
+            v-model="form.status"
+            :options="activePassiveOptions"
             :unselectMode="true"
-            label="Ж/Д ветка"
-            class="col-2 text-center"
-            :options="yesNoOptions"
+            label="Статус"
+            class="col-4 text-center"
           />
-          <Checkbox
-            v-model="form.gateTypes"
-            class="col-4 pr-1"
-            label="Тип ворот"
-            :options="gateTypeList"
-          />
+          <div class="col-2 align-self-center ml-auto">
+            <button
+              class="btn btn-warning btn-large"
+              @click.prevent="resetForm"
+            >
+              Сбросить
+            </button>
+          </div>
         </FormGroup>
       </div>
     </Form>

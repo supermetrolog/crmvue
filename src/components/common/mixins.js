@@ -38,7 +38,7 @@ export const SearchFormMixin = {
     data() {
         return {
             setTimeout: null,
-            extraVisible: true,
+            extraVisible: false,
             form: {...this.$options.defaultFormProperties },
         };
     },
