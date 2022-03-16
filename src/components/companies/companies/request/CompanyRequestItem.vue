@@ -353,12 +353,12 @@ export default {
       return this.gateTypeList[gateType][1];
     },
     getObjectTypeIcon(objectType) {
-      if (objectType < 11) {
+      if (objectType < 12) {
         return this.objectTypeListWareHouse.find(
           (item) => item[0] == objectType
         )[1].icon;
       }
-      if (objectType < 24) {
+      if (objectType < 25) {
         return this.objectTypeListProduction.find(
           (item) => item[0] == objectType
         )[1].icon;
@@ -367,12 +367,12 @@ export default {
         .icon;
     },
     getObjectTypeName(objectType) {
-      if (objectType < 11) {
+      if (objectType < 12) {
         return this.objectTypeListWareHouse.find(
           (item) => item[0] == objectType
         )[1].name;
       }
-      if (objectType < 24) {
+      if (objectType < 25) {
         return this.objectTypeListProduction.find(
           (item) => item[0] == objectType
         )[1].name;

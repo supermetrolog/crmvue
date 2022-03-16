@@ -5,7 +5,7 @@
         <Input
           v-model="form.all"
           label="Поиск"
-          placeholder="название компании, ID компании, ФИО брокера, ФИО контакта, телефон"
+          placeholder=" ID запроса, название компании"
           class="col-12 main-input"
           @keydown.enter="onSubmit"
         />
