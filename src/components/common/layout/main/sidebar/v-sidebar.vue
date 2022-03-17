@@ -2,17 +2,14 @@
   <div class="v-sidebar">
     <main class="sidebar">
       <div class="sidebar__user-image">
-        <a href="#" class="link">
-          <div class="image-circle">
-            <img
-              v-if="THIS_USER"
-              :src="src"
-              alt="USER IMAGE"
-              class="img-center"
-            />
+        <router-link class="nav-item" to="account">
+          <div class="avatar-container" v-if="THIS_USER">
+            <div class="avatar mx-auto">
+              <img :src="src" alt="Аватар" />
+            </div>
           </div>
-          <hr />
-        </a>
+        </router-link>
+        <hr />
       </div>
       <vNav />
     </main>

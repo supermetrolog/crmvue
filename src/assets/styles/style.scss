@@ -104,13 +104,19 @@
             color: $color_light;
             opacity: .5;
         }
-        &__user-image {
-            padding-top: 5px;
-            .image-circle {
-                margin: 0 auto;
-                margin-bottom: 3px;
-                width: 50px;
-                height: 50px;
+        .avatar-container {
+            width: 100%;
+        }
+        .avatar {
+            border-radius: 50%;
+            height: 65px;
+            width: 65px;
+            background-color: red;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            img {
+                width: 100%;
             }
         }
     }
