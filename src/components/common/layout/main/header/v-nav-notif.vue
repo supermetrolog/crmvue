@@ -4,6 +4,7 @@
       <li
         class="nav-item notification"
         :class="{ active: callsVisible || newCurrentCallFlag }"
+        ref="calls"
       >
         <a class="nav-link" @click.prevent="clickCalls">
           <div class="nav-link__content">
@@ -34,6 +35,7 @@
       <li
         class="nav-item notification"
         :class="{ active: notificationsVisible }"
+        ref="notification"
       >
         <a class="nav-link" @click.prevent="clickNotification">
           <div class="nav-link__content">
@@ -132,6 +134,22 @@ export default {
     getCalls() {
       this.FETCH_CALLS();
     },
+    close(e) {
+      if (!this.$refs.notification.contains(e.target)) {
+        this.notificationsVisible = false;
+      }
+      if (!this.$refs.calls.contains(e.target)) {
+        this.callsVisible = false;
+      }
+    },
+  },
+  mounted() {
+    this.getNotification();
+    this.getCalls();
+    document.addEventListener("click", this.close);
+  },
+  beforeUnmount() {
+    document.removeEventListener("click", this.close);
   },
   watch: {
     CURRENT_CALLS(before, after) {
@@ -149,10 +167,6 @@ export default {
         this.getNotification();
       }
     },
-  },
-  mounted() {
-    this.getNotification();
-    this.getCalls();
   },
 };
 </script>

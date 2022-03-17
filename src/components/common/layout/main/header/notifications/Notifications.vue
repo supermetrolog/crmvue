@@ -89,7 +89,6 @@ export default {
     this.FETCH_NOTIFICATIONS();
   },
   beforeUnmount() {
-    console.warn("UNMOUNT");
     this.RETURN_NOTIFICATION_CURRENT_PAGE_TO_FIRST();
     this.FETCH_NOTIFICATIONS();
   },

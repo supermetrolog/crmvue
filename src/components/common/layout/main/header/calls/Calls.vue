@@ -102,7 +102,6 @@ export default {
     this.FETCH_CALLS();
   },
   beforeUnmount() {
-    console.warn("UNMOUNT");
     this.RETURN_CALLS_CURRENT_PAGE_TO_FIRST();
     this.FETCH_CALLS();
   },
