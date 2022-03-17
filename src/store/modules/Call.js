@@ -76,7 +76,7 @@ const Call = {
                             user_id: context.getters.THIS_USER.id
                         },
                     }));
-                }, 200)
+                }, 5000)
             };
             context.dispatch('WEBSOCKET_LOOP_PUSH', interval);
         },

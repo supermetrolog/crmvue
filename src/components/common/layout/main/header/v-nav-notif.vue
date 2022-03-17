@@ -135,10 +135,17 @@ export default {
       this.FETCH_CALLS();
     },
     close(e) {
+      console.log(e.target);
       if (!this.$refs.notification.contains(e.target)) {
+        if (this.notificationsVisible) {
+          this.VIEWED_NOTIFICATIONS();
+        }
         this.notificationsVisible = false;
       }
       if (!this.$refs.calls.contains(e.target)) {
+        if (this.callsVisible) {
+          this.VIEWED_CALLS();
+        }
         this.callsVisible = false;
       }
     },

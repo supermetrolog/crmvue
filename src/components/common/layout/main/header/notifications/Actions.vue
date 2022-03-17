@@ -5,11 +5,11 @@
         <a
           @click.prevent="clickHandOver"
           class="bg-primary text-light px-2 py-1"
-          v-if="handOverBtnVisisble"
+          v-show="handOverBtnVisisble"
         >
           Передать
         </a>
-        <form v-else @submit.prevent="submitForm">
+        <form v-show="!handOverBtnVisisble" @submit.prevent="submitForm">
           <div class="input-group m-0">
             <p>Выберите нового брокера</p>
             <div class="row no-gutters">
