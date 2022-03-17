@@ -189,7 +189,7 @@ export default {
       await this.FETCH_COMPANY(this.$route.params.id);
       this.loaderCompanyDetailInfo = false;
       if (!this.COMPANY) {
-        this.$router.push("/not-found");
+        this.$router.replace("/not-found");
       }
     },
     async getCompanyRequests() {

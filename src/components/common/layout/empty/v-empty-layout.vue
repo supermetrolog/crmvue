@@ -1,6 +1,7 @@
 <template>
-  <div class="fuck">EMPTY LAYOUT</div>
-  <router-view />
+  <div class="empty-layout">
+    <router-view />
+  </div>
 </template>
 
 <script>
@@ -8,4 +9,7 @@ export default {};
 </script>
 
 <style>
+.empty-layout {
+  height: 100vh;
+}
 </style>
