@@ -72,9 +72,9 @@ const Websocket = {
             notifyOptions.type = 'success';
             notifyOptions.text = "Connected websocket server!";
             notify(notifyOptions);
-
-            context.dispatch('CALL_WEBSOCKET_LOOP');
-            context.dispatch('NOTIFICATION_WEBSOCKET_LOOP');
+            context.dispatch('WEBSOCKET_SET_USER_ID');
+            // context.dispatch('CALL_WEBSOCKET_LOOP');
+            // context.dispatch('NOTIFICATION_WEBSOCKET_LOOP');
         },
         EVENT_WEBSOCKET_ON_MESSAGE(context, event) {
             // console.warn("Server send:");
@@ -106,6 +106,18 @@ const Websocket = {
             } else {
                 console.warn("Соединение прервано");
             }
+        },
+        WEBSOCKET_SET_USER_ID(context) {
+            const socket = context.getters.SOCKET;
+            if (!context.getters.SETED_USER_ID_FLAG) {
+                socket.send(JSON.stringify({
+                    action: "setUserID",
+                    data: {
+                        user_id: context.getters.THIS_USER.id
+                    },
+                }));
+            }
+
         },
         ACTION_WEBSOCKET_info(_, data) {
             if (data.error) {

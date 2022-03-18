@@ -1,6 +1,6 @@
 <template>
   <div class="comments-panel">
-    <div class="comments-panel__content">
+    <div class="comments-panel__content" :class="{ loading: loader }">
       <div class="row header no-gutters">
         <div class="col-6 title text-left align-self-center">
           <p>Уведомления</p>
@@ -9,7 +9,8 @@
           <a href="#" id="readAllButton"> прочитать все </a>
         </div>
       </div>
-      <div class="row no-gutters">
+      <Loader class="center" v-if="loader" />
+      <div class="row no-gutters" v-if="!loader">
         <div class="col-12">
           <div class="comments-item">
             <div class="new header" v-if="newNotification.length">
@@ -54,6 +55,11 @@ export default {
     NotificationItem,
     Pagination,
   },
+  data() {
+    return {
+      loader: false,
+    };
+  },
   props: {
     notifications: {
       type: Array,
@@ -84,9 +90,11 @@ export default {
       this.FETCH_NOTIFICATIONS();
     },
   },
-  mounted() {
+  async mounted() {
     // this.dataSharing();
-    this.FETCH_NOTIFICATIONS();
+    this.loader = true;
+    await this.FETCH_NOTIFICATIONS();
+    this.loader = false;
   },
   beforeUnmount() {
     this.RETURN_NOTIFICATION_CURRENT_PAGE_TO_FIRST();

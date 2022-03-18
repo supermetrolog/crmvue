@@ -3,7 +3,7 @@
     <button
       class="btn btn-primary"
       @click.prevent="clickLoadMore"
-      v-if="!loader"
+      v-show="!loader"
     >
       показать еще
       <i class="fas fa-list-ul d-inline ml-1"></i>

@@ -1,18 +1,6 @@
 import api from "@/api/api";
 import { notify } from "@kyvg/vue3-notification";
 
-function existNewNotifications(notifications) {
-    let result = false;
-    for (let index = 0; index < notifications.length; index++) {
-        const item = notifications[index];
-        if (item.status == 0 || item.status == -1) {
-            result = true;
-            break;
-        }
-    }
-    return result;
-}
-
 function viewNotify(data) {
     let notifyOptions = {
         group: "app",
@@ -37,6 +25,7 @@ function viewNotify(data) {
 const Notifications = {
     state: {
         notifications: [],
+        notificationsCount: 0,
         notificationsPagination: null,
         notificationCurrentPage: 1,
         newNotifications: []
@@ -48,6 +37,9 @@ const Notifications = {
         },
         updateNewNotifications(state, data) {
             state.newNotifications = data;
+        },
+        updateNotificationsCount(state, data) {
+            state.notificationsCount = data;
         },
         incrimentCurrentPage(state) {
             state.notificationCurrentPage++;
@@ -70,6 +62,12 @@ const Notifications = {
             const notifications = await api.notifications.fetchNotifications(user.id, this.getters.NOTIFICATIONS_CURRENT_PAGE);
             context.commit('updateNotifications', notifications);
         },
+        async FETCH_NOTIFICATIONS_COUNT(context) {
+            const user = context.getters.THIS_USER;
+            const count = await api.notifications.fetchNotificationsCount(user.id);
+            console.log(count);
+            context.commit('updateNotificationsCount', count);
+        },
         INCRIMENT_NOTIFICATIONS_CURRENT_PAGE(context) {
             context.commit('incrimentCurrentPage');
         },
@@ -77,45 +75,20 @@ const Notifications = {
             context.commit('returnCurrentPageToFirst');
         },
         async VIEWED_NOTIFICATIONS(context) {
-            if (existNewNotifications(this.getters.NOTIFICATIONS)) {
-                // const user = JSON.parse(localStorage.getItem('user'));
-                const user = context.getters.THIS_USER;
-                await api.notifications.viewed(user.id);
-                context.commit('viewedNotifications');
-            }
-        },
-        NOTIFICATION_WEBSOCKET_LOOP(context) {
-            let socket = context.getters.SOCKET;
-
-            let interval = {
-                loop: setInterval(() => {
-                    if (context.getters.SETED_USER_ID_FLAG) {
-                        socket.send(JSON.stringify({
-                            action: 'checkNewNotifications',
-                        }));
-                        return;
-                    }
-                    socket.send(JSON.stringify({
-                        action: "setUserID",
-                        data: {
-                            user_id: context.getters.THIS_USER.id
-                        },
-                    }));
-                }, 2000)
-            };
-            context.dispatch('WEBSOCKET_LOOP_PUSH', interval);
+            const user = context.getters.THIS_USER;
+            await api.notifications.viewed(user.id);
         },
         ACTION_WEBSOCKET_new_notifications(context, data) {
             viewNotify(data.message);
-            context.commit('updateNewNotifications', data.message);
+            context.dispatch('FETCH_NOTIFICATION_COUNT');
         },
     },
     getters: {
-        NEW_NOTIFICATIONS(state) {
-            return state.newNotifications;
-        },
         NOTIFICATIONS(state) {
             return state.notifications;
+        },
+        NOTIFICATIONS_COUNT(state) {
+            return state.notificationsCount;
         },
         NOTIFICATIONS_CURRENT_PAGE(state) {
             return state.notificationCurrentPage;
@@ -123,9 +96,6 @@ const Notifications = {
         NOTIFICATIONS_PAGINATION(state) {
             return state.notificationsPagination;
         },
-        NOTIFICATIONS_INTERVAL(state) {
-            return state.notificationsPagination;
-        }
     }
 }
 

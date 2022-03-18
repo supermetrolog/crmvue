@@ -15,6 +15,17 @@ export default {
             .catch((e) => ErrorHandle.setError(e));
         return data;
     },
+    async fetchNotificationsCount(consultant_id) {
+        const url = `notifications/${consultant_id}/count`;
+        let data = false;
+        await axios
+            .get(url)
+            .then((Response) => {
+                data = SuccessHandler.getData(Response);
+            })
+            .catch((e) => ErrorHandle.setError(e));
+        return data;
+    },
     async viewed(consultant_id) {
         const url = `notifications/${consultant_id}/viewed`;
         let data = false;

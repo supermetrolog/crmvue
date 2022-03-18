@@ -40,8 +40,8 @@
         <a class="nav-link" @click.prevent="clickNotification">
           <div class="nav-link__content">
             <i class="far fa-bell"></i>
-            <span class="badge badge-danger" v-if="notif_count">
-              {{ notif_count }}
+            <span class="badge badge-danger" v-if="NOTIFICATIONS_COUNT != 0">
+              {{ NOTIFICATIONS_COUNT }}
             </span>
           </div>
         </a>
@@ -69,7 +69,6 @@ export default {
   components: { Notifications, Calls },
   data() {
     return {
-      commentsVisible: false,
       notificationsVisible: false,
       callsVisible: false,
       newCurrentCallFlag: false,
@@ -78,18 +77,11 @@ export default {
   computed: {
     ...mapGetters([
       "NOTIFICATIONS",
+      "NOTIFICATIONS_COUNT",
       "NEW_NOTIFICATIONS",
       "CURRENT_CALLS",
       "CALLS",
     ]),
-    notif_count() {
-      if (!this.NOTIFICATIONS) {
-        return 0;
-      }
-      return this.NOTIFICATIONS.filter(
-        (item) => item.status == 0 || item.status == -1
-      ).length;
-    },
     calls_count() {
       if (!this.CALLS) {
         return 0;
@@ -102,18 +94,13 @@ export default {
   methods: {
     ...mapActions([
       "FETCH_NOTIFICATIONS",
+      "FETCH_NOTIFICATIONS_COUNT",
       "VIEWED_NOTIFICATIONS",
       "FETCH_CALLS",
       "VIEWED_CALLS",
     ]),
-    async getComments() {
-      this.commentsVisible = !this.commentsVisible;
-    },
     clickNotification() {
       this.notificationsVisible = !this.notificationsVisible;
-      if (!this.notificationsVisible) {
-        this.VIEWED_NOTIFICATIONS();
-      }
     },
     clickCalls() {
       if (this.newCurrentCallFlag) {
@@ -135,11 +122,7 @@ export default {
       this.FETCH_CALLS();
     },
     close(e) {
-      console.log(e.target);
       if (!this.$refs.notification.contains(e.target)) {
-        if (this.notificationsVisible) {
-          this.VIEWED_NOTIFICATIONS();
-        }
         this.notificationsVisible = false;
       }
       if (!this.$refs.calls.contains(e.target)) {
@@ -151,8 +134,8 @@ export default {
     },
   },
   mounted() {
-    this.getNotification();
     this.getCalls();
+    this.FETCH_NOTIFICATIONS_COUNT();
     document.addEventListener("click", this.close);
   },
   beforeUnmount() {
@@ -167,11 +150,6 @@ export default {
         } else {
           this.newCurrentCallFlag = false;
         }
-      }
-    },
-    NEW_NOTIFICATIONS(before, after) {
-      if (before.length != after.length) {
-        this.getNotification();
       }
     },
   },

@@ -325,6 +325,9 @@
             height: max-content!important;
         }
         &__content {
+            &.loading {
+                min-height: 300px;
+            }
             .header {
                 border-bottom: 1px solid $color_light_grey;
                 &.new {
