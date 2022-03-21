@@ -1,7 +1,9 @@
 <template>
   <div class="account-main">
     <div class="row">
-      {{ THIS_USER.userProfile.full_name }}
+      <p v-if="THIS_USER">
+        {{ THIS_USER.userProfile.full_name }}
+      </p>
       <div class="col-12">
         <button class="btn btn-danger" @click="clickLogout">Выйти</button>
       </div>

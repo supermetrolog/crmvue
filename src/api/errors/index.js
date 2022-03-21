@@ -1,5 +1,6 @@
 import { notify } from "@kyvg/vue3-notification";
 import router from "@/router";
+import store from "@/store";
 let notifyOptions = {
     group: "app",
     type: "error",
@@ -43,8 +44,7 @@ export default {
 
             }
             if (data.status == AuthErrorHttpStatusCode) {
-                localStorage.removeItem('access_token');
-                localStorage.removeItem('user');
+                store.dispatch('DESTROY');
                 router.push('/login');
             }
         }

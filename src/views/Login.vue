@@ -109,19 +109,12 @@ export default {
         this.loader = true;
         const response = await this.$store.dispatch("LOGIN", this.form);
         if (response !== false) {
-          this.axios.defaults.headers.common[
-            "Authorization"
-          ] = `Bearer ${localStorage.getItem("access_token")}`;
-          this.$store.dispatch("WEBSOCKET_STOP");
-          this.$store.dispatch("WEBSOCKET_RUN");
+          this.$store.dispatch("INIT");
           this.$router.push("/");
         }
         this.loader = false;
       }
     },
-  },
-  mounted() {
-    this.$store.dispatch("DROP_USER");
   },
 };
 </script>

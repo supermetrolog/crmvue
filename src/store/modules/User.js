@@ -51,9 +51,9 @@ const User = {
             return context.getters.THIS_USER;
         },
         DROP_USER(context) {
-            console.log("DROP_USER");
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('user');
             context.commit('setUser', null);
-            context.dispatch('WEBSOCKET_STOP');
         },
         async LOGIN(context, formdata) {
             const response = await api.user.auth.login(formdata);
@@ -64,9 +64,8 @@ const User = {
         },
         async LOGOUT(context) {
             const response = await api.user.auth.logout();
-            context.dispatch('WEBSOCKET_STOP');
             if (response !== false) {
-                context.commit('setUser', null);
+                context.dispatch('DESTROY');
             }
             return response;
         },

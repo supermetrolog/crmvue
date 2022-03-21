@@ -20,13 +20,7 @@ export default {
     },
   },
   mounted() {
-    if (localStorage.getItem("user")) {
-      this.$store.dispatch("SET_USER");
-      this.axios.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${this.$store.getters.THIS_USER.access_token}`;
-      this.$store.dispatch("WEBSOCKET_RUN");
-    }
+    this.$store.dispatch("INIT");
   },
 };
 </script>
