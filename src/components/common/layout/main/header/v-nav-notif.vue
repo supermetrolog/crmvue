@@ -50,10 +50,7 @@
           enter-active-class="animate__animated animate__fadeInDown for__notifications"
           leave-active-class="animate__animated animate__fadeOutUp for__notifications"
         >
-          <Notifications
-            v-if="notificationsVisible"
-            :notifications="NOTIFICATIONS"
-          />
+          <Notifications v-if="notificationsVisible" />
         </transition>
       </li>
     </ul>
@@ -75,13 +72,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      "NOTIFICATIONS",
-      "NOTIFICATIONS_COUNT",
-      "NEW_NOTIFICATIONS",
-      "CURRENT_CALLS",
-      "CALLS",
-    ]),
+    ...mapGetters(["NOTIFICATIONS_COUNT", "CURRENT_CALLS", "CALLS"]),
     calls_count() {
       if (!this.CALLS) {
         return 0;
@@ -92,13 +83,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions([
-      "FETCH_NOTIFICATIONS",
-      "FETCH_NOTIFICATIONS_COUNT",
-      "VIEWED_NOTIFICATIONS",
-      "FETCH_CALLS",
-      "VIEWED_CALLS",
-    ]),
+    ...mapActions(["FETCH_NOTIFICATIONS_COUNT", "FETCH_CALLS", "VIEWED_CALLS"]),
     clickNotification() {
       this.notificationsVisible = !this.notificationsVisible;
     },
@@ -111,12 +96,6 @@ export default {
           this.VIEWED_CALLS();
         }
       }
-    },
-    deleteComment(comment) {
-      this.comments = this.comments.filter((item) => item !== comment);
-    },
-    getNotification() {
-      this.FETCH_NOTIFICATIONS();
     },
     getCalls() {
       this.FETCH_CALLS();

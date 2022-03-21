@@ -27,71 +27,79 @@ const Notifications = {
         notifications: [],
         notificationsCount: 0,
         notificationsPagination: null,
-        notificationCurrentPage: 1,
         newNotifications: []
     },
     mutations: {
-        updateNotifications(state, data) {
-            state.notifications = data.data;
+        updateNotifications(state, { data, concat = false }) {
             state.notificationsPagination = data.pagination;
+            if (concat) {
+                state.notifications = state.notifications.concat(data.data);
+            } else {
+                state.notifications = data.data;
+            }
         },
         updateNewNotifications(state, data) {
-            state.newNotifications = data;
+            state.newNotifications = data.data;
         },
         updateNotificationsCount(state, data) {
             state.notificationsCount = data;
         },
-        incrimentCurrentPage(state) {
-            state.notificationCurrentPage++;
-        },
-        returnCurrentPageToFirst(state) {
-            state.notificationCurrentPage = 1;
-        },
-        viewedNotifications(state) {
-            state.notifications.map((item) => {
-                if (item.status == 0 || item.status == -1) {
-                    item.status = 1;
-                }
-                return item;
-            });
+        reset(state) {
+            state.notifications = [];
+            state.notificationsPagination = null;
         },
     },
     actions: {
         async FETCH_NOTIFICATIONS(context) {
             const user = context.getters.THIS_USER;
-            const notifications = await api.notifications.fetchNotifications(user.id, this.getters.NOTIFICATIONS_CURRENT_PAGE);
-            context.commit('updateNotifications', notifications);
+            const data = await api.notifications.fetch(user.id, this.getters.NOTIFICATIONS_CURRENT_PAGE);
+            context.commit('updateNotifications', { data });
         },
         async FETCH_NOTIFICATIONS_COUNT(context) {
             const user = context.getters.THIS_USER;
-            const count = await api.notifications.fetchNotificationsCount(user.id);
+            const count = await api.notifications.fetchCount(user.id);
             console.log(count);
             context.commit('updateNotificationsCount', count);
         },
-        INCRIMENT_NOTIFICATIONS_CURRENT_PAGE(context) {
-            context.commit('incrimentCurrentPage');
+        async SEARCH_NOTIFICATION(context, { query, concat = false }) {
+            const data = await api.notifications.search(query);
+            context.commit('updateNotifications', { data, concat });
         },
-        RETURN_NOTIFICATION_CURRENT_PAGE_TO_FIRST(context) {
-            context.commit('returnCurrentPageToFirst');
+        async FETCH_NEW_NOTIFICATIONS(context, query) {
+            const data = await api.notifications.search(query);
+            context.commit('updateNewNotifications', data);
         },
-        async VIEWED_NOTIFICATIONS(context) {
-            const user = context.getters.THIS_USER;
-            await api.notifications.viewed(user.id);
+        RESET_NOTIFICATION(context) {
+            context.commit('reset');
+        },
+        async VIEWED_ALL_NOTIFICATIONS(context) {
+            console.log('VIEWED_ALL');
+            const socket = context.getters.SOCKET;
+            if (!context.getters.SETED_USER_ID_FLAG) {
+                return;
+            }
+            await socket.send(JSON.stringify({
+                action: 'viewedAllNotify',
+            }));
         },
         ACTION_WEBSOCKET_new_notifications(context, data) {
             viewNotify(data.message);
-            context.dispatch('FETCH_NOTIFICATION_COUNT');
+            context.dispatch('FETCH_NOTIFICATIONS_COUNT');
+        },
+        ACTION_WEBSOCKET_check_notifications_count(context) {
+            console.log('check_notify_count');
+            context.dispatch('FETCH_NOTIFICATIONS_COUNT');
         },
     },
     getters: {
         NOTIFICATIONS(state) {
             return state.notifications;
         },
+        NEW_NOTIFICATIONS(state) {
+            return state.newNotifications;
+        },
         NOTIFICATIONS_COUNT(state) {
             return state.notificationsCount;
-        },
-        NOTIFICATIONS_CURRENT_PAGE(state) {
-            return state.notificationCurrentPage;
         },
         NOTIFICATIONS_PAGINATION(state) {
             return state.notificationsPagination;

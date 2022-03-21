@@ -29,10 +29,10 @@ export default {
     },
     getPaginationData(Response) {
         return {
-            totalCount: Response.headers["x-pagination-total-count"],
-            perPage: Response.headers["x-pagination-per-page"],
-            pageCount: Response.headers["x-pagination-page-count"],
-            currentPage: Response.headers["x-pagination-current-page"],
+            totalCount: +Response.headers["x-pagination-total-count"],
+            perPage: +Response.headers["x-pagination-per-page"],
+            pageCount: +Response.headers["x-pagination-page-count"],
+            currentPage: +Response.headers["x-pagination-current-page"],
         }
     }
 }

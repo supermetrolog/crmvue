@@ -1,5 +1,5 @@
 <template>
-  <div class="pagination py-4" v-if="paginationVisible">
+  <div class="pagination py-4" v-show="paginationVisible">
     <button
       class="btn btn-primary"
       @click.prevent="clickLoadMore"
@@ -22,6 +22,7 @@ export default {
   data() {
     return {
       loader: false,
+      pageNumber: 1,
     };
   },
   props: {
@@ -34,6 +35,12 @@ export default {
       if (!this.pagination) {
         return false;
       }
+      console.log(
+        "FUCK",
+        this.pagination.pageCount,
+        this.pagination.currentPage,
+        this.pagination.pageCount > this.pagination.currentPage
+      );
       return this.pagination.pageCount > this.pagination.currentPage
         ? true
         : false;
@@ -44,6 +51,8 @@ export default {
       if (this.pagination.pageCount > this.pagination.currentPage) {
         this.loader = true;
         this.$emit("loadMore");
+        this.pageNumber++;
+        this.$emit("next", this.pageNumber);
       }
     },
   },
@@ -52,7 +61,7 @@ export default {
       this.loader = false;
     },
   },
-  emits: ["loadMore"],
+  emits: ["loadMore", "next"],
 };
 </script>
 

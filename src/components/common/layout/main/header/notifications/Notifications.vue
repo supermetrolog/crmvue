@@ -5,35 +5,34 @@
         <div class="col-6 title text-left align-self-center">
           <p>Уведомления</p>
         </div>
-        <div class="col-6 readAll text-right align-self-center">
-          <a href="#" id="readAllButton"> прочитать все </a>
-        </div>
+        <!-- <div class="col-6 readAll text-right align-self-center">
+          <a href="#" id="readAllButton" @click.prevent="viewedAll">
+            прочитать все
+          </a>
+        </div> -->
       </div>
       <Loader class="center" v-if="loader" />
       <div class="row no-gutters" v-if="!loader">
         <div class="col-12">
           <div class="comments-item">
-            <div class="new header" v-if="newNotification.length">
+            <div class="new header" v-if="NEW_NOTIFICATIONS.length">
               <p class="text-left title">новые уведомления</p>
             </div>
             <NotificationItem
-              v-for="notification of newNotification"
+              v-for="notification of NEW_NOTIFICATIONS"
               :key="notification.id"
               :notification="notification"
             />
-            <div class="old header" v-if="newNotification.length">
+            <div class="old header" v-if="NOTIFICATIONS.length">
               <p class="title text-left">просмотренные</p>
             </div>
             <NotificationItem
-              v-for="notification of oldNotification"
+              v-for="notification of NOTIFICATIONS"
               :key="notification.id"
               :notification="notification"
             />
             <div class="col-12 text-center">
-              <Pagination
-                :pagination="NOTIFICATIONS_PAGINATION"
-                @loadMore="loadMore"
-              />
+              <Pagination :pagination="NOTIFICATIONS_PAGINATION" @next="next" />
             </div>
           </div>
         </div>
@@ -58,47 +57,54 @@ export default {
   data() {
     return {
       loader: false,
+      query: null,
+      newNotifyQuery: null,
     };
   },
-  props: {
-    notifications: {
-      type: Array,
-      default: null,
-    },
-  },
   computed: {
-    ...mapGetters(["NOTIFICATIONS_PAGINATION"]),
-    oldNotification() {
-      return this.notifications.filter(
-        (item) => item.status != 0 && item.status != -1
-      );
-    },
-    newNotification() {
-      return this.notifications.filter(
-        (item) => item.status == 0 || item.status == -1
-      );
-    },
+    ...mapGetters([
+      "NOTIFICATIONS_PAGINATION",
+      "THIS_USER",
+      "NEW_NOTIFICATIONS",
+      "NOTIFICATIONS",
+    ]),
   },
   methods: {
     ...mapActions([
-      "INCRIMENT_NOTIFICATIONS_CURRENT_PAGE",
       "FETCH_NOTIFICATIONS",
-      "RETURN_NOTIFICATION_CURRENT_PAGE_TO_FIRST",
+      "RESET_NOTIFICATION",
+      "SEARCH_NOTIFICATION",
+      "FETCH_NEW_NOTIFICATIONS",
+      "VIEWED_ALL_NOTIFICATIONS",
     ]),
-    loadMore() {
-      this.INCRIMENT_NOTIFICATIONS_CURRENT_PAGE();
-      this.FETCH_NOTIFICATIONS();
+    init() {
+      this.query = {
+        page: 1,
+        consultant_id: this.THIS_USER.id,
+        status: [1, 2],
+      };
+      this.newNotifyQuery = {
+        "per-page": 0,
+        consultant_id: this.THIS_USER.id,
+        status: [0, -1],
+      };
+    },
+    next(page) {
+      this.query.page = page;
+      this.SEARCH_NOTIFICATION({ query: this.query, concat: true });
     },
   },
   async mounted() {
-    // this.dataSharing();
+    this.init();
     this.loader = true;
-    await this.FETCH_NOTIFICATIONS();
+    await this.SEARCH_NOTIFICATION({ query: this.query, concat: true });
+    await this.FETCH_NEW_NOTIFICATIONS(this.newNotifyQuery);
+    this.VIEWED_ALL_NOTIFICATIONS(this.THIS_USER.id);
+
     this.loader = false;
   },
   beforeUnmount() {
-    this.RETURN_NOTIFICATION_CURRENT_PAGE_TO_FIRST();
-    this.FETCH_NOTIFICATIONS();
+    this.RESET_NOTIFICATION();
   },
 };
 </script>
