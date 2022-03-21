@@ -72,7 +72,7 @@ const Websocket = {
             notifyOptions.type = 'success';
             notifyOptions.text = "Connected websocket server!";
             notify(notifyOptions);
-            context.dispatch('WEBSOCKET_SET_USER_ID');
+            context.dispatch('WEBSOCKET_SET_USER');
             // context.dispatch('CALL_WEBSOCKET_LOOP');
             // context.dispatch('NOTIFICATION_WEBSOCKET_LOOP');
         },
@@ -107,14 +107,12 @@ const Websocket = {
                 console.warn("Соединение прервано");
             }
         },
-        WEBSOCKET_SET_USER_ID(context) {
+        WEBSOCKET_SET_USER(context) {
             const socket = context.getters.SOCKET;
             if (!context.getters.SETED_USER_ID_FLAG) {
                 socket.send(JSON.stringify({
-                    action: "setUserID",
-                    data: {
-                        user_id: context.getters.THIS_USER.id
-                    },
+                    action: "setUser",
+                    data: { window_id: window.name, user_id: context.getters.THIS_USER.id },
                 }));
             }
 
@@ -128,8 +126,8 @@ const Websocket = {
 
             }
         },
-        ACTION_WEBSOCKET_user_id_seted(context, data) {
-            console.log('ACTION_WEBSOCKET_user_id_seted: ', data.message);
+        ACTION_WEBSOCKET_user_setted(context, data) {
+            console.log('ACTION_WEBSOCKET_user_setted: ', data.message);
             context.commit('toggleSetedUserIdFlag', true);
         },
     },
