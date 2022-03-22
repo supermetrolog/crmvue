@@ -3,8 +3,9 @@ import ErrorHandle from "./errors";
 import SuccessHandler from "./success";
 
 export default {
-    async fetchCalls(consultant_id, page) {
-        const url = `calllists/${consultant_id}?expand=caller,phoneFrom,phoneFrom.contact,phoneTo,phoneTo.contact&per-page=${page * 10}&sort=-created_at`;
+    async search(query) {
+        query = new URLSearchParams(query).toString();
+        const url = `calllists?${query}&expand=caller,phoneFrom,phoneFrom.contact,phoneTo,phoneTo.contact`;
         let data = false;
         await axios
             .get(url)
@@ -16,8 +17,32 @@ export default {
             .catch((e) => ErrorHandle.setError(e));
         return data;
     },
-    async viewed(consultant_id) {
-        const url = `calllists/${consultant_id}/viewed`;
+    async fetchCount(consultant_id) {
+        const url = `calllists/${consultant_id}/count`;
+        let data = false;
+        await axios
+            .get(url)
+            .then((Response) => {
+                data = SuccessHandler.getData(Response);
+            })
+            .catch((e) => ErrorHandle.setError(e));
+        return data;
+    },
+    async viewedNotCount(consultant_id) {
+        const url = `calllists/${consultant_id}/viewed-not-count`;
+        let data = false;
+        await axios
+            .get(url)
+            .then((Response) => {
+                data = SuccessHandler.getData(Response);
+            })
+            .catch((e) =>
+                ErrorHandle.setError(e))
+
+        return data;
+    },
+    async viewedAll(consultant_id) {
+        const url = `calllists/${consultant_id}/viewed-all`;
         let data = false;
         await axios
             .get(url)

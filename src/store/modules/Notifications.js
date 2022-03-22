@@ -46,22 +46,17 @@ const Notifications = {
         },
     },
     actions: {
-        async FETCH_NOTIFICATIONS(context) {
-            const user = context.getters.THIS_USER;
-            const data = await api.notifications.fetch(user.id, this.getters.NOTIFICATIONS_CURRENT_PAGE);
-            context.commit('updateNotifications', { data });
-        },
         async FETCH_NOTIFICATIONS_COUNT(context) {
             const user = context.getters.THIS_USER;
             const count = await api.notifications.fetchCount(user.id);
             console.log(count);
             context.commit('updateNotificationsCount', count);
         },
-        async SEARCH_NOTIFICATION(context, { query, concat = false }) {
+        async SEARCH_NOTIFICATIONS(context, { query, concat = false }) {
             const data = await api.notifications.search(query);
             context.commit('updateNotifications', { data, concat });
         },
-        RESET_NOTIFICATION(context) {
+        RESET_NOTIFICATIONS(context) {
             context.commit('reset');
         },
         async FETCH_NOTIF_COUNT_POOL(context) {

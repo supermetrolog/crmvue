@@ -3,7 +3,7 @@
     <ul class="nav-list horizontal">
       <li
         class="nav-item notification"
-        :class="{ active: callsVisible || newCurrentCallFlag }"
+        :class="{ active: callsVisible }"
         ref="calls"
       >
         <a class="nav-link" @click.prevent="clickCalls">
@@ -11,10 +11,10 @@
             <i class="fas fa-phone-alt"></i>
             <span
               class="badge badge-danger"
-              :class="{ 'badge-info': CURRENT_CALLS.length }"
-              v-if="CURRENT_CALLS.length || calls_count"
+              :class="{ 'badge-info': CALLS_COUNT }"
+              v-if="CALLS_COUNT != 0"
             >
-              {{ calls_count ? calls_count : CURRENT_CALLS.length }}
+              {{ CALLS_COUNT }}
             </span>
           </div>
         </a>
@@ -23,12 +23,7 @@
           enter-active-class="animate__animated animate__fadeInDown for__notifications"
           leave-active-class="animate__animated animate__fadeOutUp for__notifications"
         >
-          <Calls
-            v-if="callsVisible || newCurrentCallFlag"
-            :newCurrentCallFlag="newCurrentCallFlag"
-            :currentCalls="CURRENT_CALLS"
-            :calls="CALLS"
-          />
+          <Calls v-if="callsVisible" />
         </transition>
       </li>
 
@@ -68,69 +63,35 @@ export default {
     return {
       notificationsVisible: false,
       callsVisible: false,
-      newCurrentCallFlag: false,
     };
   },
   computed: {
-    ...mapGetters(["NOTIFICATIONS_COUNT", "CURRENT_CALLS", "CALLS"]),
-    calls_count() {
-      if (!this.CALLS) {
-        return 0;
-      }
-      return this.CALLS.filter(
-        (item) => item.viewed != 2 && item.status !== null
-      ).length;
-    },
+    ...mapGetters(["NOTIFICATIONS_COUNT", "CALLS_COUNT"]),
   },
   methods: {
-    ...mapActions(["FETCH_NOTIFICATIONS_COUNT", "FETCH_CALLS", "VIEWED_CALLS"]),
+    ...mapActions(["FETCH_NOTIFICATIONS_COUNT", "FETCH_CALLS_COUNT"]),
     clickNotification() {
       this.notificationsVisible = !this.notificationsVisible;
     },
     clickCalls() {
-      if (this.newCurrentCallFlag) {
-        this.newCurrentCallFlag = false;
-      } else {
-        this.callsVisible = !this.callsVisible;
-        if (!this.callsVisible) {
-          this.VIEWED_CALLS();
-        }
-      }
-    },
-    getCalls() {
-      this.FETCH_CALLS();
+      this.callsVisible = !this.callsVisible;
     },
     close(e) {
       if (!this.$refs.notification.contains(e.target)) {
         this.notificationsVisible = false;
       }
       if (!this.$refs.calls.contains(e.target)) {
-        if (this.callsVisible) {
-          this.VIEWED_CALLS();
-        }
         this.callsVisible = false;
       }
     },
   },
   mounted() {
-    this.getCalls();
     this.FETCH_NOTIFICATIONS_COUNT();
+    this.FETCH_CALLS_COUNT();
     document.addEventListener("click", this.close);
   },
   beforeUnmount() {
     document.removeEventListener("click", this.close);
-  },
-  watch: {
-    CURRENT_CALLS(before, after) {
-      if (before.length != after.length) {
-        this.getCalls();
-        if (before.length > after.length) {
-          this.newCurrentCallFlag = true;
-        } else {
-          this.newCurrentCallFlag = false;
-        }
-      }
-    },
   },
 };
 </script>

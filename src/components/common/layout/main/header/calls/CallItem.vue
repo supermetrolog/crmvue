@@ -1,7 +1,10 @@
 <template>
   <div class="row item no-gutters">
     <div class="col-2 avatar text-center">
-      <i class="fas fa-phone-alt" :class="[status.iconClass, status.icon]"></i>
+      <i
+        class="fas fa-phone-alt"
+        :class="[call_ended_status.iconClass, call_ended_status.icon]"
+      ></i>
     </div>
     <div class="col-10 message text-left">
       <p class="title">
@@ -52,8 +55,8 @@
       </p>
       <div class="call-status">
         <p class="text">Статус:</p>
-        <p class="text ml-1" :class="status.class">
-          {{ status.text }}
+        <p class="text ml-1" :class="call_ended_status.class">
+          {{ call_ended_status.text }}
         </p>
       </div>
     </div>
@@ -71,43 +74,42 @@ export default {
   },
   computed: {
     ...mapGetters(["THIS_USER"]),
-    status() {
-      let status = {};
-      status.icon = "fas fa-reply";
-      status.iconClass = "text-success";
+    call_ended_status() {
+      let call_ended_status = {};
+      call_ended_status.icon = "fas fa-reply";
+      call_ended_status.iconClass = "text-success";
 
       if (this.call.type == 0) {
-        status.iconClass = "text-success_alt";
-
-        status.icon = "fas fa-share";
+        call_ended_status.iconClass = "text-success_alt";
+        call_ended_status.icon = "fas fa-share";
       }
-      switch (this.call.status) {
+      switch (this.call.call_ended_status) {
         case "ANSWER":
-          status.class = "text-success";
-          status.text = "вызов принят";
+          call_ended_status.class = "text-success";
+          call_ended_status.text = "вызов принят";
           // status.icon = "fas fa-phone-volume";
           break;
         case "BUSY":
-          status.class = "text-danger";
-          status.text = "вызов сброшен";
+          call_ended_status.class = "text-danger";
+          call_ended_status.text = "вызов сброшен";
           break;
         case "CANCEL":
-          status.class = "text-warning";
-          status.text = "вызов отменен";
+          call_ended_status.class = "text-warning";
+          call_ended_status.text = "вызов отменен";
           break;
         case "NOANSWER":
-          status.class = "text-warning";
-          status.text = "абонент не ответил";
+          call_ended_status.class = "text-warning";
+          call_ended_status.text = "абонент не ответил";
           break;
         case null:
-          status.class = "text-info";
-          status.text = "ожидание ответа";
+          call_ended_status.class = "text-info";
+          call_ended_status.text = "ожидание ответа";
           // status.icon = "fas fa-phone-alt";
           break;
         default:
           break;
       }
-      return status;
+      return call_ended_status;
     },
   },
 };

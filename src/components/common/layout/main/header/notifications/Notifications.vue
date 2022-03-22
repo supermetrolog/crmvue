@@ -78,8 +78,8 @@ export default {
   methods: {
     ...mapActions([
       "FETCH_NOTIFICATIONS",
-      "RESET_NOTIFICATION",
-      "SEARCH_NOTIFICATION",
+      "RESET_NOTIFICATIONS",
+      "SEARCH_NOTIFICATIONS",
       "VIEWED_NOT_COUNT_NOTIFICATIONS",
       "VIEWED_ALL_NOTIFICATIONS",
       "FETCH_NOTIF_COUNT_POOL",
@@ -92,14 +92,14 @@ export default {
     },
     async next(page) {
       this.query.page = page;
-      await this.SEARCH_NOTIFICATION({ query: this.query, concat: true });
+      await this.SEARCH_NOTIFICATIONS({ query: this.query, concat: true });
       this.FETCH_NOTIF_COUNT_POOL(this.THIS_USER.id);
     },
     async viewedAll() {
       console.log("viewed all");
       this.loader = true;
       await this.VIEWED_ALL_NOTIFICATIONS(this.THIS_USER.id);
-      this.RESET_NOTIFICATION();
+      this.RESET_NOTIFICATIONS();
       await this.next(1);
       this.loader = false;
     },
@@ -107,13 +107,13 @@ export default {
   async mounted() {
     this.init();
     this.loader = true;
-    await this.SEARCH_NOTIFICATION({ query: this.query, concat: true });
+    await this.SEARCH_NOTIFICATIONS({ query: this.query, concat: true });
     this.FETCH_NOTIF_COUNT_POOL(this.THIS_USER.id);
 
     this.loader = false;
   },
   beforeUnmount() {
-    this.RESET_NOTIFICATION();
+    this.RESET_NOTIFICATIONS();
     this.VIEWED_NOT_COUNT_NOTIFICATIONS(this.THIS_USER.id);
   },
 };

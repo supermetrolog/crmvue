@@ -1,51 +1,37 @@
 <template>
-  <div class="comments-panel calls">
-    <div class="comments-panel__content">
+  <div class="comments-panel">
+    <div class="comments-panel__content" :class="{ loading: loader }">
       <div class="row header no-gutters">
         <div class="col-6 title text-left align-self-center">
-          <p>Звонки</p>
+          <p>Уведомления</p>
         </div>
         <div class="col-6 readAll text-right align-self-center">
-          <a href="#" id="readAllButton"> прочитать все </a>
+          <a href="#" @click.prevent="viewedAll"> прочитать все </a>
         </div>
       </div>
-      <div class="row no-gutters">
+      <Loader class="center" v-if="loader" />
+      <div class="row no-gutters" v-if="!loader">
         <div class="col-12">
           <div class="comments-item">
-            <div class="new header" v-if="currentCalls.length">
-              <p class="text-left title">текущие звонки</p>
+            <div class="new header">
+              <p class="text-left title">новые уведомления</p>
+            </div>
+            <div class="new header mt-4 mb-5" v-if="!newCall.length">
+              <p class="text-center title no-data">нет новых</p>
             </div>
             <CallItem
-              v-for="call of currentCalls"
+              v-for="call of newCall"
               :key="call.id"
               :call="call"
+              isNew
             />
-            <template v-if="!newCurrentCallFlag">
-              <div class="old header" v-if="newCalls.length">
-                <p class="text-left title">новые звонки</p>
-              </div>
-              <CallItem
-                v-for="call of newCalls"
-                :key="call.id"
-                :call="call"
-                @refreshCallList="FETCH_CALLS"
-              />
-              <div class="old header" v-if="oldCalls.length">
-                <p class="text-left title">просмотренные</p>
-              </div>
-              <CallItem
-                v-for="call of oldCalls"
-                :key="call.id"
-                :call="call"
-                @refreshCallList="FETCH_CALLS"
-              />
-              <div class="col-12 text-center">
-                <Pagination
-                  :pagination="CALLS_PAGINATION"
-                  @loadMore="loadMore"
-                />
-              </div>
-            </template>
+            <div class="old header" v-if="oldCall.length">
+              <p class="title text-left">просмотренные</p>
+            </div>
+            <CallItem v-for="call of oldCall" :key="call.id" :call="call" />
+            <div class="col-12 text-center">
+              <Pagination :pagination="CALLS_PAGINATION" @next="next" />
+            </div>
           </div>
         </div>
       </div>
@@ -54,6 +40,9 @@
 </template>
 
 <script>
+//Передать (модератор) Передать админу только с комментарием - передавать с комментарием всем - Там же переать админу
+//Для брокеров только кнопка ОТКАЗ и причина отказа - комментарий (галочки - далбаеб, пидорас, не берет трубку)
+//Статистика отказов и причина
 import CallItem from "./CallItem.vue";
 import Pagination from "@/components/common/Pagination.vue";
 import { mapActions, mapGetters } from "vuex";
@@ -63,47 +52,65 @@ export default {
     CallItem,
     Pagination,
   },
-  props: {
-    currentCalls: {
-      type: Array,
-    },
-    calls: {
-      type: Array,
-      default: null,
-    },
-    newCurrentCallFlag: {
-      type: Boolean,
-      default: false,
-    },
+  data() {
+    return {
+      loader: false,
+      query: null,
+    };
   },
   computed: {
-    ...mapGetters(["CALLS_PAGINATION"]),
-    oldCalls() {
-      return this.calls.filter((item) => item.viewed == 2);
+    ...mapGetters(["CALLS_PAGINATION", "THIS_USER", "CALLS"]),
+    oldCall() {
+      return this.CALLS.filter(
+        (item) => item.status != 0 && item.status != -1 && item.status != 3
+      );
     },
-    newCalls() {
-      return this.calls.filter(
-        (item) => item.viewed != 2 && item.status !== null
+    newCall() {
+      return this.CALLS.filter(
+        (item) => item.status == 0 || item.status == -1 || item.status == 3
       );
     },
   },
   methods: {
     ...mapActions([
-      "INCRIMENT_CALLS_CURRENT_PAGE",
       "FETCH_CALLS",
-      "RETURN_CALLS_CURRENT_PAGE_TO_FIRST",
+      "RESET_CALLS",
+      "SEARCH_CALLS",
+      "VIEWED_NOT_COUNT_CALLS",
+      "VIEWED_ALL_CALLS",
+      "FETCH_CALLS_COUNT_POOL",
     ]),
-    loadMore() {
-      this.INCRIMENT_CALLS_CURRENT_PAGE();
-      this.FETCH_CALLS();
+    init() {
+      this.query = {
+        page: 1,
+        caller_id: this.THIS_USER.userProfile.caller_id,
+      };
+    },
+    async next(page) {
+      this.query.page = page;
+      await this.SEARCH_CALLS({ query: this.query, concat: true });
+      this.FETCH_CALLS_COUNT_POOL(this.THIS_USER.userProfile.caller_id);
+    },
+    async viewedAll() {
+      console.log("viewed all");
+      this.loader = true;
+      await this.VIEWED_ALL_CALLS(this.THIS_USER.userProfile.caller_id);
+      this.RESET_CALLS();
+      await this.next(1);
+      this.loader = false;
     },
   },
-  mounted() {
-    this.FETCH_CALLS();
+  async mounted() {
+    this.init();
+    this.loader = true;
+    await this.SEARCH_CALLS({ query: this.query, concat: true });
+    this.FETCH_CALLS_COUNT_POOL(this.THIS_USER.userProfile.caller_id);
+
+    this.loader = false;
   },
   beforeUnmount() {
-    this.RETURN_CALLS_CURRENT_PAGE_TO_FIRST();
-    this.FETCH_CALLS();
+    this.RESET_CALLS();
+    this.VIEWED_NOT_COUNT_CALLS(this.THIS_USER.userProfile.caller_id);
   },
 };
 </script>
