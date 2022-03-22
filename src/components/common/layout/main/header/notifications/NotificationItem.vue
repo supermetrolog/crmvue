@@ -22,6 +22,7 @@
       <p class="text" v-html="notification.body"></p>
       <Actions :type="notification.type" :status="notification.status" />
     </div>
+    <span class="badge" v-if="isNew"> new </span>
   </div>
 </template>
 
@@ -47,6 +48,10 @@ export default {
     notification: {
       type: Object,
       default: null,
+    },
+    isNew: {
+      type: Boolean,
+      default: false,
     },
   },
   methods: {},

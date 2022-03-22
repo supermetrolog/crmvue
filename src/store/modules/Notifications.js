@@ -27,7 +27,6 @@ const Notifications = {
         notifications: [],
         notificationsCount: 0,
         notificationsPagination: null,
-        newNotifications: []
     },
     mutations: {
         updateNotifications(state, { data, concat = false }) {
@@ -37,9 +36,6 @@ const Notifications = {
             } else {
                 state.notifications = data.data;
             }
-        },
-        updateNewNotifications(state, data) {
-            state.newNotifications = data.data;
         },
         updateNotificationsCount(state, data) {
             state.notificationsCount = data;
@@ -65,22 +61,26 @@ const Notifications = {
             const data = await api.notifications.search(query);
             context.commit('updateNotifications', { data, concat });
         },
-        async FETCH_NEW_NOTIFICATIONS(context, query) {
-            const data = await api.notifications.search(query);
-            context.commit('updateNewNotifications', data);
-        },
         RESET_NOTIFICATION(context) {
             context.commit('reset');
         },
-        async VIEWED_ALL_NOTIFICATIONS(context) {
-            console.log('VIEWED_ALL');
+        async FETCH_NOTIF_COUNT_POOL(context) {
+            console.log('NO_COUNT_ALL');
             const socket = context.getters.SOCKET;
             if (!context.getters.SETED_USER_ID_FLAG) {
                 return;
             }
             await socket.send(JSON.stringify({
-                action: 'viewedAllNotify',
+                action: 'sendPool',
+                data: {
+                    action: 'check_notifications_count',
+                    message: null
+                }
             }));
+        },
+        async VIEWED_ALL_NOTIFICATIONS({ getters }) {
+            console.log('VIEWED_ALL');
+            return await api.notifications.viewed(getters.THIS_USER.id);
         },
         ACTION_WEBSOCKET_new_notifications(context, data) {
             viewNotify(data.message);
@@ -94,9 +94,6 @@ const Notifications = {
     getters: {
         NOTIFICATIONS(state) {
             return state.notifications;
-        },
-        NEW_NOTIFICATIONS(state) {
-            return state.newNotifications;
         },
         NOTIFICATIONS_COUNT(state) {
             return state.notificationsCount;

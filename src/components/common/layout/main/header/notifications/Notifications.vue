@@ -15,19 +15,23 @@
       <div class="row no-gutters" v-if="!loader">
         <div class="col-12">
           <div class="comments-item">
-            <div class="new header" v-if="NEW_NOTIFICATIONS.length">
+            <div class="new header">
               <p class="text-left title">новые уведомления</p>
             </div>
+            <div class="new header mt-4 mb-5" v-if="!newNotification.length">
+              <p class="text-center title no-data">нет новых</p>
+            </div>
             <NotificationItem
-              v-for="notification of NEW_NOTIFICATIONS"
+              v-for="notification of newNotification"
               :key="notification.id"
               :notification="notification"
+              isNew
             />
-            <div class="old header" v-if="NOTIFICATIONS.length">
+            <div class="old header" v-if="oldNotification.length">
               <p class="title text-left">просмотренные</p>
             </div>
             <NotificationItem
-              v-for="notification of NOTIFICATIONS"
+              v-for="notification of oldNotification"
               :key="notification.id"
               :notification="notification"
             />
@@ -58,53 +62,52 @@ export default {
     return {
       loader: false,
       query: null,
-      newNotifyQuery: null,
     };
   },
   computed: {
-    ...mapGetters([
-      "NOTIFICATIONS_PAGINATION",
-      "THIS_USER",
-      "NEW_NOTIFICATIONS",
-      "NOTIFICATIONS",
-    ]),
+    ...mapGetters(["NOTIFICATIONS_PAGINATION", "THIS_USER", "NOTIFICATIONS"]),
+    oldNotification() {
+      return this.NOTIFICATIONS.filter(
+        (item) => item.status != 0 && item.status != -1 && item.status != 3
+      );
+    },
+    newNotification() {
+      return this.NOTIFICATIONS.filter(
+        (item) => item.status == 0 || item.status == -1 || item.status == 3
+      );
+    },
   },
   methods: {
     ...mapActions([
       "FETCH_NOTIFICATIONS",
       "RESET_NOTIFICATION",
       "SEARCH_NOTIFICATION",
-      "FETCH_NEW_NOTIFICATIONS",
       "VIEWED_ALL_NOTIFICATIONS",
+      "FETCH_NOTIF_COUNT_POOL",
     ]),
     init() {
       this.query = {
         page: 1,
         consultant_id: this.THIS_USER.id,
-        status: [1, 2],
-      };
-      this.newNotifyQuery = {
-        "per-page": 0,
-        consultant_id: this.THIS_USER.id,
-        status: [0, -1],
       };
     },
-    next(page) {
+    async next(page) {
       this.query.page = page;
-      this.SEARCH_NOTIFICATION({ query: this.query, concat: true });
+      await this.SEARCH_NOTIFICATION({ query: this.query, concat: true });
+      this.FETCH_NOTIF_COUNT_POOL(this.THIS_USER.id);
     },
   },
   async mounted() {
     this.init();
     this.loader = true;
     await this.SEARCH_NOTIFICATION({ query: this.query, concat: true });
-    await this.FETCH_NEW_NOTIFICATIONS(this.newNotifyQuery);
-    this.VIEWED_ALL_NOTIFICATIONS(this.THIS_USER.id);
+    this.FETCH_NOTIF_COUNT_POOL(this.THIS_USER.id);
 
     this.loader = false;
   },
   beforeUnmount() {
     this.RESET_NOTIFICATION();
+    this.VIEWED_ALL_NOTIFICATIONS(this.THIS_USER.id);
   },
 };
 </script>
