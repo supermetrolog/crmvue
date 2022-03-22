@@ -5,11 +5,9 @@
         <div class="col-6 title text-left align-self-center">
           <p>Уведомления</p>
         </div>
-        <!-- <div class="col-6 readAll text-right align-self-center">
-          <a href="#" id="readAllButton" @click.prevent="viewedAll">
-            прочитать все
-          </a>
-        </div> -->
+        <div class="col-6 readAll text-right align-self-center">
+          <a href="#" @click.prevent="viewedAll"> прочитать все </a>
+        </div>
       </div>
       <Loader class="center" v-if="loader" />
       <div class="row no-gutters" v-if="!loader">
@@ -82,6 +80,7 @@ export default {
       "FETCH_NOTIFICATIONS",
       "RESET_NOTIFICATION",
       "SEARCH_NOTIFICATION",
+      "VIEWED_NOT_COUNT_NOTIFICATIONS",
       "VIEWED_ALL_NOTIFICATIONS",
       "FETCH_NOTIF_COUNT_POOL",
     ]),
@@ -96,6 +95,14 @@ export default {
       await this.SEARCH_NOTIFICATION({ query: this.query, concat: true });
       this.FETCH_NOTIF_COUNT_POOL(this.THIS_USER.id);
     },
+    async viewedAll() {
+      console.log("viewed all");
+      this.loader = true;
+      await this.VIEWED_ALL_NOTIFICATIONS(this.THIS_USER.id);
+      this.RESET_NOTIFICATION();
+      await this.next(1);
+      this.loader = false;
+    },
   },
   async mounted() {
     this.init();
@@ -107,7 +114,7 @@ export default {
   },
   beforeUnmount() {
     this.RESET_NOTIFICATION();
-    this.VIEWED_ALL_NOTIFICATIONS(this.THIS_USER.id);
+    this.VIEWED_NOT_COUNT_NOTIFICATIONS(this.THIS_USER.id);
   },
 };
 </script>

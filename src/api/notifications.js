@@ -40,8 +40,21 @@ export default {
             .catch((e) => ErrorHandle.setError(e));
         return data;
     },
-    async viewed(consultant_id) {
-        const url = `notifications/${consultant_id}/viewed`;
+    async viewedNotCount(consultant_id) {
+        const url = `notifications/${consultant_id}/viewed-not-count`;
+        let data = false;
+        await axios
+            .get(url)
+            .then((Response) => {
+                data = SuccessHandler.getData(Response);
+            })
+            .catch((e) =>
+                ErrorHandle.setError(e))
+
+        return data;
+    },
+    async viewedAll(consultant_id) {
+        const url = `notifications/${consultant_id}/viewed-all`;
         let data = false;
         await axios
             .get(url)

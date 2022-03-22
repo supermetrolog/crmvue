@@ -78,9 +78,13 @@ const Notifications = {
                 }
             }));
         },
+        async VIEWED_NOT_COUNT_NOTIFICATIONS({ getters }) {
+            console.log('VIEWED_NOT_COUNT_NOTIFICATIONS');
+            return await api.notifications.viewedNotCount(getters.THIS_USER.id);
+        },
         async VIEWED_ALL_NOTIFICATIONS({ getters }) {
-            console.log('VIEWED_ALL');
-            return await api.notifications.viewed(getters.THIS_USER.id);
+            console.log('VIEWED_ALL_NOTIFICATIONS');
+            return await api.notifications.viewedAll(getters.THIS_USER.id);
         },
         ACTION_WEBSOCKET_new_notifications(context, data) {
             viewNotify(data.message);
