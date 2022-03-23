@@ -17,7 +17,7 @@
               :class="{ 'badge-info': CURRENT_CALLS.length }"
               v-if="CALLS_COUNT != 0 || CURRENT_CALLS.length"
             >
-              {{ +CALLS_COUNT + CURRENT_CALLS.length }}
+              {{ +CALLS_COUNT }}
             </span>
           </div>
         </a>
