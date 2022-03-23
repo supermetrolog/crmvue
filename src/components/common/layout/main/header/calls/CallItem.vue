@@ -60,6 +60,7 @@
         </p>
       </div>
     </div>
+    <span class="badge" v-if="isNew"> new </span>
   </div>
 </template>
 
@@ -70,6 +71,10 @@ export default {
   props: {
     call: {
       type: Object,
+    },
+    isNew: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {

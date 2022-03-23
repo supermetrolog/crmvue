@@ -293,11 +293,17 @@
                 vertical-align: middle;
             }
             &__content {
-                // display: flex;
                 display: inline-block;
                 text-align: center;
                 justify-content: center;
                 position: relative;
+                &.current-call-exist {
+                    animation: called_scale 1.5s cubic-bezier(0, .31, 1, .67) infinite;
+                    i {
+                        color: darken($color_danger, 20);
+                        animation: called_rotate .3s cubic-bezier(0, .31, 1, .67) infinite;
+                    }
+                }
             }
             &:hover {
                 color: $color_info;
@@ -308,6 +314,30 @@
             i {
                 font-size: 18px;
             }
+        }
+    }
+    
+    @keyframes called_rotate {
+        0% {
+            transform: rotate(0deg);
+        }
+        50% {
+            transform: rotate(40deg);
+        }
+        100% {
+            transform: rotate(0deg);
+        }
+    }
+    
+    @keyframes called_scale {
+        0% {
+            transform: scale(1.0);
+        }
+        50% {
+            transform: scale(1.6);
+        }
+        100% {
+            transform: scale(1.0);
         }
     }
     

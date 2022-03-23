@@ -13,6 +13,15 @@
       <div class="row no-gutters" v-if="!loader">
         <div class="col-12">
           <div class="comments-item">
+            <div class="old header" v-if="CURRENT_CALLS.length">
+              <p class="title text-left">текущие звонки</p>
+            </div>
+            <CallItem
+              v-for="call of CURRENT_CALLS"
+              :key="call.id"
+              :call="call"
+              isNew
+            />
             <div class="new header">
               <p class="text-left title">новые уведомления</p>
             </div>
@@ -59,7 +68,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["CALLS_PAGINATION", "THIS_USER", "CALLS"]),
+    ...mapGetters(["CALLS_PAGINATION", "THIS_USER", "CALLS", "CURRENT_CALLS"]),
     oldCall() {
       return this.CALLS.filter(
         (item) => item.status != 0 && item.status != -1 && item.status != 3

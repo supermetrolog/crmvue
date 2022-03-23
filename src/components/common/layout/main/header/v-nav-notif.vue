@@ -7,14 +7,17 @@
         ref="calls"
       >
         <a class="nav-link" @click.prevent="clickCalls">
-          <div class="nav-link__content">
+          <div
+            class="nav-link__content"
+            :class="{ 'current-call-exist': CURRENT_CALLS.length }"
+          >
             <i class="fas fa-phone-alt"></i>
             <span
               class="badge badge-danger"
-              :class="{ 'badge-info': CALLS_COUNT }"
-              v-if="CALLS_COUNT != 0"
+              :class="{ 'badge-info': CURRENT_CALLS.length }"
+              v-if="CALLS_COUNT != 0 || CURRENT_CALLS.length"
             >
-              {{ CALLS_COUNT }}
+              {{ +CALLS_COUNT + CURRENT_CALLS.length }}
             </span>
           </div>
         </a>
@@ -66,7 +69,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["NOTIFICATIONS_COUNT", "CALLS_COUNT"]),
+    ...mapGetters(["NOTIFICATIONS_COUNT", "CALLS_COUNT", "CURRENT_CALLS"]),
   },
   methods: {
     ...mapActions(["FETCH_NOTIFICATIONS_COUNT", "FETCH_CALLS_COUNT"]),

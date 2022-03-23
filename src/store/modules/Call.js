@@ -7,16 +7,16 @@ function viewNotify(data) {
         type: "success",
         duration: 5000,
     };
-    const newCallCount = data.length;
+    const newCallCount = data;
     if (newCallCount) {
 
         if (newCallCount == 1) {
-            notifyOptions.text = `У вас ${newCallCount} новое оповещение`;
+            notifyOptions.text = `У вас ${newCallCount} новый звонок`;
         } else {
-            notifyOptions.text = `У вас ${newCallCount} новых оповещений`;
+            notifyOptions.text = `У вас ${newCallCount} новых звонков`;
 
         }
-        notifyOptions.title = `Оповещение`;
+        notifyOptions.title = `Звонки`;
         console.log(newCallCount);
 
         notify(notifyOptions);
@@ -27,6 +27,7 @@ const Call = {
         calls: [],
         callsCount: 0,
         callsPagination: null,
+        currentCalls: []
     },
     mutations: {
         updateCalls(state, { data, concat = false }) {
@@ -39,6 +40,9 @@ const Call = {
         },
         updateCallsCount(state, data) {
             state.callsCount = data;
+        },
+        updateCurrentCalls(state, data) {
+            state.currentCalls = data;
         },
         reset(state) {
             state.calls = [];
@@ -86,8 +90,12 @@ const Call = {
             context.dispatch('FETCH_CALLS_COUNT');
         },
         ACTION_WEBSOCKET_check_calls_count(context) {
-            console.log('check_notify_count');
+            console.log('check_calls_count');
             context.dispatch('FETCH_CALLS_COUNT');
+        },
+        ACTION_WEBSOCKET_update_current_calls({ commit }, data) {
+            console.log('update_current_calls');
+            commit('updateCurrentCalls', data.message);
         },
     },
     getters: {
@@ -99,6 +107,9 @@ const Call = {
         },
         CALLS_PAGINATION(state) {
             return state.callsPagination;
+        },
+        CURRENT_CALLS(state) {
+            return state.currentCalls;
         },
     }
 }

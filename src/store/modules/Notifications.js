@@ -7,7 +7,7 @@ function viewNotify(data) {
         type: "success",
         duration: 5000,
     };
-    const newNotificationCount = data.length;
+    const newNotificationCount = data;
     if (newNotificationCount) {
 
         if (newNotificationCount == 1) {
