@@ -15,7 +15,7 @@
             <span
               class="badge badge-danger"
               :class="{ 'badge-info': CURRENT_CALLS.length }"
-              v-if="CALLS_COUNT != 0 || CURRENT_CALLS.length"
+              v-if="CALLS_COUNT != 0"
             >
               {{ +CALLS_COUNT }}
             </span>
