@@ -3,7 +3,7 @@
     <div class="comments-panel__content" :class="{ loading: loader }">
       <div class="row header no-gutters">
         <div class="col-6 title text-left align-self-center">
-          <p>Уведомления</p>
+          <p>Звонки</p>
         </div>
         <div class="col-6 readAll text-right align-self-center">
           <a href="#" @click.prevent="viewedAll"> прочитать все </a>
@@ -23,7 +23,7 @@
               isNew
             />
             <div class="new header">
-              <p class="text-left title">новые уведомления</p>
+              <p class="text-left title">новые звонки</p>
             </div>
             <div class="new header mt-4 mb-5" v-if="!newCall.length">
               <p class="text-center title no-data">нет новых</p>
