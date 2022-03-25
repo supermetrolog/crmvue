@@ -18,7 +18,6 @@ export const MixinObject = {
             preventStepObjects: [],
             loader: false,
             viewMode: true,
-
         }
     },
     computed: {
@@ -184,6 +183,7 @@ export const MixinObject = {
             };
             this.beforeSend(data);
             data.sendClientFlag = sendClient;
+            data.contactsForSendMessage = this.contactForSendMessage;
             this.normalizeObjectsData(data);
             this.generateComment(generalComment, sendClient, this.selectedObjects, data, alreadySent);
             this.sendObjects(data);

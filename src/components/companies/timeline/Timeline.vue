@@ -166,7 +166,7 @@ export default {
       loaderForStep: false,
       objects: [],
       timelineNotFoundFlag: false,
-      companyContacts: null,
+      // companyContacts: null,
       contactForSendMessage: [],
     };
   },
@@ -190,6 +190,9 @@ export default {
     },
     disabled() {
       return this.$route.query.consultant_id != this.THIS_USER.id;
+    },
+    companyContacts() {
+      return Utils.normalizeContactsForMultiselect(this.COMPANY_CONTACTS);
     },
   },
   methods: {
@@ -274,18 +277,18 @@ export default {
       await this.$router.push({ query: query });
       // this.getTimeline();
     },
-    getCompanyContacts() {
-      if (this.companyContacts) {
-        return;
-      }
-      this.companyContacts = Utils.normalizeContactsForMultiselect(
-        this.COMPANY_CONTACTS
-      );
-    },
+    // getCompanyContacts() {
+    //   if (this.companyContacts) {
+    //     return;
+    //   }
+    //   this.companyContacts = Utils.normalizeContactsForMultiselect(
+    //     this.COMPANY_CONTACTS
+    //   );
+    // },
   },
   async created() {
     this.loader = true;
-    this.getCompanyContacts();
+    // this.getCompanyContacts();
     const result = await this.getTimeline();
     this.loader = false;
     if (result) {

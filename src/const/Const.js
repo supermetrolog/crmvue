@@ -427,7 +427,7 @@ export const ActivityProfileList = new Map(
             { value: 28, label: "Полиграфия/бумага" },
             { value: 29, label: "ЖБИ/камень" },
             { value: 30, label: "Садовая/складская техника" },
-            { value: 31, label: "другое" },
+            { value: 31, label: "Другое" },
         ]],
 
     ]
