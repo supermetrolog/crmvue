@@ -59,7 +59,7 @@ export default {
   },
   props: {
     objects: {
-      type: Array,
+      type: [Array, Boolean],
       default: () => [],
     },
     selectedObjects: {

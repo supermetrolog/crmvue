@@ -57,6 +57,17 @@ export const MixinObject = {
     methods: {
         ...mapActions(['UPDATE_STEP']),
         alreadySent(comment) {
+            console.log("ALREADY SEND", comment);
+            if (!this.contactForSendMessage.length) {
+                let notifyOptions = {
+                    group: "app",
+                    type: "error",
+                    duration: 5000,
+                };
+                notifyOptions.title = "Ошибка";
+                notifyOptions.text = "Выберите контакт!";
+                return notify(notifyOptions);
+            }
             this.sendObjectsHandler(comment, false, true);
         },
         send(comment) {
