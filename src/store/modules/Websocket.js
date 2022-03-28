@@ -48,7 +48,7 @@ const Websocket = {
         },
         WEBSOCKET_RUN(context) {
             console.warn('RUN WEBSOCKET', context.getters.SOCKET);
-            if (context.getters.SOCKET) {
+            if (context.getters.SOCKET || !context.getters.THIS_USER) {
                 return;
             }
             console.log('RUN WEBSOCKET 2');
@@ -90,21 +90,35 @@ const Websocket = {
             }
         },
         EVENT_WEBSOCKET_ON_ERROR(context, error) {
-            console.error(`[error] ${error.message}`);
-            notifyOptions.text = `[error] ${error.message}`;
+            console.error(`[error] ${error}`);
+            console.error('Не удалось подключить к Websocket серверу. Обратитесь к администратору.');
+
+            notifyOptions.text = 'Не удалось подключить к Websocket серверу. Обратитесь к администратору.';
+            notifyOptions.title = 'Websocket server';
             notifyOptions.type = 'error';
             notify(notifyOptions);
+
+            context.dispatch('WEBSOCKET_STOP');
             setTimeout(() => {
+                console.warn('WS timeout run');
                 context.dispatch('WEBSOCKET_RUN');
             }, 3000);
         },
-        EVENT_WEBSOCKET_ON_CLOSE(_, event) {
+        EVENT_WEBSOCKET_ON_CLOSE({ getters, dispatch }, event) {
             if (event.wasClean) {
                 console.log(
                     `Соединение закрыто чисто, код=${event.code} причина=${event.reason}`
                 );
             } else {
                 console.warn("Соединение прервано");
+                notifyOptions.text = 'Websocket соединение прервано.';
+                notifyOptions.title = 'Websocket server';
+                notifyOptions.type = 'warn';
+                if (getters.SOCKET) {
+                    notify(notifyOptions);
+                    dispatch('WEBSOCKET_STOP');
+                    dispatch('WEBSOCKET_RUN');
+                }
             }
         },
         WEBSOCKET_SET_USER(context) {

@@ -23,19 +23,19 @@ const store = createStore({
         UNSET_WINDOW_NAME() {
             window.name = '';
         },
-        INIT(context) {
+        async INIT(context) {
             console.log('INIT');
             if (!localStorage.getItem("user")) {
                 console.error('User not found in localStorage!');
                 return false;
             }
-            context.dispatch("SET_USER");
+            await context.dispatch("SET_USER");
             axios.defaults.headers.common[
                 "Authorization"
             ] = `Bearer ${context.getters.THIS_USER.access_token}`;
-            context.dispatch("SET_WINDOW_NAME");
-            context.dispatch("WEBSOCKET_STOP");
-            context.dispatch("WEBSOCKET_RUN");
+            await context.dispatch("SET_WINDOW_NAME");
+            await context.dispatch("WEBSOCKET_STOP");
+            await context.dispatch("WEBSOCKET_RUN");
         },
         DESTROY(context) {
             console.log('DESTROY');
