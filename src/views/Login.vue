@@ -109,8 +109,8 @@ export default {
         this.loader = true;
         const response = await this.$store.dispatch("LOGIN", this.form);
         if (response !== false) {
-          this.$store.dispatch("INIT");
-          this.$router.push("/");
+          await this.$store.dispatch("INIT");
+          await this.$router.push("/");
         }
         this.loader = false;
       }

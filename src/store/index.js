@@ -42,7 +42,7 @@ const store = createStore({
             context.dispatch('WEBSOCKET_STOP');
             context.dispatch("DROP_USER");
             context.dispatch("UNSET_WINDOW_NAME");
-        }
+        },
     },
     getters: {},
     modules: {
