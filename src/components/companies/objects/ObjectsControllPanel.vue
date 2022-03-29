@@ -12,11 +12,22 @@
             :options="button"
             @extraVisibleOpen="$emit('openExtraVisible')"
             @extraVisibleClose="$emit('closeExtraVisible')"
-            @confirm="$emit(button.emited_event, $event)"
+            @confirm="
+              $emit(button.emited_event, { comment: $event, wayOfSending })
+            "
           >
             <template #btnContent>
               <i :class="button.icon"></i>
               <span class="ml-1">{{ button.text }}</span>
+            </template>
+            <template #extraContent="{ data }">
+              <CheckboxIcons
+                v-if="button.withWayOfSending && data.openned"
+                v-model="wayOfSending"
+                label="Способ связи"
+                :options="wayOfSendingOptions"
+                :disabled="!data.openned"
+              />
             </template>
           </CustomButton>
         </div>
@@ -62,6 +73,8 @@
 
 <script>
 import CustomButton from "@/components/common/CustomButton.vue";
+import { WayOfSending } from "@/const/Const.js";
+import CheckboxIcons from "@/components/common/form/CheckboxIcons.vue";
 export default {
   name: "ObjectsControllPanel",
   emits: [
@@ -77,6 +90,7 @@ export default {
   ],
   components: {
     CustomButton,
+    CheckboxIcons,
   },
   props: {
     buttons: {
@@ -122,6 +136,12 @@ export default {
       type: Boolean,
       default: false,
     },
+  },
+  data() {
+    return {
+      wayOfSendingOptions: WayOfSending.get("param"),
+      wayOfSending: [],
+    };
   },
 };
 </script>

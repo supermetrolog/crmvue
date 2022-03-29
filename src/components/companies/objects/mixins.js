@@ -38,6 +38,7 @@ export const MixinObject = {
                     text: "Готово",
                     icon: "fas fa-check",
                     emited_event: "done",
+                    withWayOfSending: false,
                     classes: "col-2",
                 },
                 {
@@ -49,6 +50,7 @@ export const MixinObject = {
                     text: "Нет подходящих",
                     icon: "far fa-frown-open",
                     emited_event: "negative",
+                    withWayOfSending: false,
                     classes: "col-4 ml-1",
                 },
             ];
@@ -56,39 +58,66 @@ export const MixinObject = {
     },
     methods: {
         ...mapActions(['UPDATE_STEP']),
-        alreadySent(comment) {
-            console.log("ALREADY SEND", comment);
-            if (!this.contactForSendMessage.length) {
-                let notifyOptions = {
-                    group: "app",
-                    type: "error",
-                    duration: 5000,
-                };
-                notifyOptions.title = "Ошибка";
-                notifyOptions.text = "Выберите контакт!";
-                return notify(notifyOptions);
-            }
+        alreadySent({ comment }) {
             this.sendObjectsHandler(comment, false, true);
         },
-        send(comment) {
-            console.log("SEND", comment);
+        async send({ comment, wayOfSending }) {
+            console.log("SEND", comment, wayOfSending);
+            if (!this.checkContacts()) {
+                return;
+            }
+            if (!await this.realSendObjects(wayOfSending)) {
+                return;
+            }
+
+            this.sendObjectsHandler(comment, true);
+        },
+        async realSendObjects(wayOfSending) {
+            let notifyOptions = {
+                group: "app",
+                type: "error",
+                duration: 5000,
+                title: 'Ошибка'
+            };
+            if (!wayOfSending.length) {
+                notifyOptions.text = 'Выберите способ отправки!';
+                notify(notifyOptions);
+                return false;
+            }
+            this.loader = true;
+            const isSuccessfuly = await api.timeline.sendObjects({
+                contacts: this.contactForSendMessage,
+                step: this.step.number,
+                wayOfSending
+            });
+            this.loader = false;
+            console.warn(isSuccessfuly);
+            if (!isSuccessfuly) {
+                notifyOptions.text = 'Не удалось отправить объекты!';
+                notify(notifyOptions);
+                return;
+            }
+            return isSuccessfuly;
+        },
+        checkContacts() {
             if (!this.contactForSendMessage.length) {
                 let notifyOptions = {
                     group: "app",
                     type: "error",
                     duration: 5000,
+                    title: 'Ошибка',
+                    text: 'Выберите контакт!'
                 };
-                notifyOptions.title = "Ошибка";
-                notifyOptions.text = "Выберите контакт!";
-                return notify(notifyOptions);
+                notify(notifyOptions);
+                return false;
             }
-            this.sendObjectsHandler(comment, true);
+            return true;
         },
-        done(comment) {
+        done({ comment }) {
             console.log("DONE");
             this.sendObjectsHandler(comment);
         },
-        negative(comment) {
+        negative({ comment }) {
             console.log("NEGATIVE");
             this.selectNegative(comment);
         },
@@ -297,6 +326,7 @@ export const MixinAllObject = {
                     text: "Отправить",
                     icon: "fas fa-paper-plane",
                     emited_event: "send",
+                    withWayOfSending: true,
                     classes: "col-2",
                 },
                 {
@@ -307,6 +337,7 @@ export const MixinAllObject = {
                     text: "Уже отправил",
                     icon: "fas fa-paper-plane",
                     emited_event: "alreadySent",
+                    withWayOfSending: true,
                     classes: "col-3 ml-1",
                 },
                 {
@@ -318,6 +349,7 @@ export const MixinAllObject = {
                     text: "Нет подходящих",
                     icon: "far fa-frown-open",
                     emited_event: "negative",
+                    withWayOfSending: false,
                     classes: "col-3 ml-1",
                 },
                 {
@@ -329,6 +361,7 @@ export const MixinAllObject = {
                     text: `Избранные (${this.selectedObjects.length})`,
                     icon: "fas fa-bookmark",
                     emited_event: "favorites",
+                    withWayOfSending: false,
                     classes: "col-3 ml-1",
                 },
             ];

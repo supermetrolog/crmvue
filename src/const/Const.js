@@ -86,6 +86,17 @@ export const FeedbackList = new Map(
         ]],
     ]
 );
+export const WayOfSending = new Map(
+    [
+        ['param', [
+            [0, { name: "Email", icon: "fas fa-at" }],
+            [1, { name: "SMS", icon: "fas fa-sms" }],
+            [2, { name: "WhatsApp", icon: "fab fa-whatsapp-square" }],
+            [3, { name: "Telegram", icon: "fab fa-telegram" }],
+            [4, { name: "Viber", icon: "fab fa-viber" }],
+        ]],
+    ]
+);
 export const CompanyCategories = new Map(
     [
         ['param', [

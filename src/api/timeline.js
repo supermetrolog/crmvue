@@ -37,6 +37,17 @@ export default {
             })
             .catch((e) => ErrorHandle.setError(e));
         return data;
-    }
+    },
+    async sendObjects(messageData) {
+        const url = `timeline/send-objects`;
+        let data = false;
+        await axios
+            .post(url, messageData)
+            .then((Response) => {
+                data = SuccessHandler.getData(Response);
+            })
+            .catch((e) => ErrorHandle.setError(e));
+        return data;
+    },
 
 }
