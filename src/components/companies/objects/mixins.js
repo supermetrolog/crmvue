@@ -58,21 +58,30 @@ export const MixinObject = {
     },
     methods: {
         ...mapActions(['UPDATE_STEP']),
-        alreadySent({ comment }) {
-            this.sendObjectsHandler(comment, false, true);
-        },
-        async send({ comment, wayOfSending }) {
+        async alreadySent({ comment, wayOfSending }) {
             console.log("SEND", comment, wayOfSending);
+            const sendClientFlag = false;
             if (!this.checkContacts()) {
                 return;
             }
-            if (!await this.realSendObjects(wayOfSending)) {
+            if (!await this.realSendObjects(wayOfSending, sendClientFlag)) {
+                return;
+            }
+            this.sendObjectsHandler(comment, sendClientFlag, true);
+        },
+        async send({ comment, wayOfSending }) {
+            console.log("SEND", comment, wayOfSending);
+            const sendClientFlag = true;
+            if (!this.checkContacts()) {
+                return;
+            }
+            if (!await this.realSendObjects(wayOfSending, sendClientFlag)) {
                 return;
             }
 
-            this.sendObjectsHandler(comment, true);
+            this.sendObjectsHandler(comment, sendClientFlag);
         },
-        async realSendObjects(wayOfSending) {
+        async realSendObjects(wayOfSending, sendClientFlag) {
             let notifyOptions = {
                 group: "app",
                 type: "error",
@@ -88,7 +97,8 @@ export const MixinObject = {
             const isSuccessfuly = await api.timeline.sendObjects({
                 contacts: this.contactForSendMessage,
                 step: this.step.number,
-                wayOfSending
+                wayOfSending,
+                sendClientFlag
             });
             this.loader = false;
             console.warn(isSuccessfuly);
