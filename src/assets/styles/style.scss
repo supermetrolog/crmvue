@@ -116,7 +116,8 @@
             display: flex;
             align-items: center;
             img {
-                width: 100%;
+                min-width: 100%;
+                min-height: 100%;
             }
         }
     }
@@ -3398,7 +3399,8 @@
                     display: flex;
                     align-items: center;
                     img {
-                        width: 100%;
+                        min-width: 100%;
+                        min-height: 100%;
                     }
                 }
                 .date {
