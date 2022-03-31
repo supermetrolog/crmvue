@@ -186,7 +186,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["CREATE_USER", "UPDATE_USER"]),
+    ...mapActions(["CREATE_USER", "UPDATE_USER", "REFRESH_USER"]),
 
     async onSubmit() {
       this.v$.$validate();
@@ -204,6 +204,7 @@ export default {
       if (await this.UPDATE_USER(this.form)) {
         this.$emit("updated");
         this.clickCloseModal();
+        this.REFRESH_USER();
       }
       this.loader = false;
     },

@@ -91,9 +91,9 @@ const Websocket = {
         },
         EVENT_WEBSOCKET_ON_ERROR(context, error) {
             console.error(`[error] ${error}`);
-            console.error('Не удалось подключить к Websocket серверу. Обратитесь к администратору.');
+            console.error('Не удалось подключиться к Websocket серверу. Обратитесь к администратору.');
 
-            notifyOptions.text = 'Не удалось подключить к Websocket серверу. Обратитесь к администратору.';
+            notifyOptions.text = 'Не удалось подключиться к Websocket серверу. Обратитесь к администратору.';
             notifyOptions.title = 'Websocket server';
             notifyOptions.type = 'error';
             notify(notifyOptions);

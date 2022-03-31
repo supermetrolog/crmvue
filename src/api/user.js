@@ -60,6 +60,17 @@ export default {
             .catch((e) => ErrorHandle.setError(e));
         return data;
     },
+    async getUser(id) {
+        const url = "users/" + id + "?expand=userProfile.phones,userProfile.emails";
+        let data = false;
+        await axios
+            .get(url)
+            .then((Response) => {
+                data = SuccessHandler.getData(Response);
+            })
+            .catch((e) => ErrorHandle.setError(e));
+        return data;
+    },
     async createUser(formdata) {
         const url = "users";
         let data = false;
