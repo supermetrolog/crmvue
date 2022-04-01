@@ -99,6 +99,9 @@
       </div>
       <div class="col-12 col-lg-4 box">
         <div class="col-12 inner">
+          <Loader v-if="loaderCompanyObjects" class="center" />
+          <CompanyObjectList :objects="COMPANY_OBJECTS" />
+          <NoData v-if="!COMPANY_OBJECTS.length && !loaderCompanyObjects" />
           <Joke />
         </div>
       </div>
@@ -140,6 +143,7 @@ import CompanyRequestForm from "@/components/companies/forms/company-request-for
 import CompanyContactForm from "@/components/companies/forms/company-contact-form/CompanyContactForm.vue";
 import CompanyForm from "@/components/companies/forms/company-form/CompanyForm.vue";
 import CompanyContactList from "@/components/companies/companies/contact/CompanyContactList.vue";
+import CompanyObjectList from "@/components/companies/objects/company-objects/CompanyObjectList";
 import Timeline from "@/components/companies/timeline/Timeline.vue";
 import NoData from "@/components/common/NoData";
 import Joke from "@/components/common/Joke";
@@ -155,12 +159,14 @@ export default {
     Timeline,
     NoData,
     Joke,
+    CompanyObjectList,
   },
   data() {
     return {
       loaderCompanyDetailInfo: true,
       loaderCompanyRequests: true,
       loaderCompanyContacts: true,
+      loaderCompanyObjects: true,
       companyRequestFormVisible: false,
       companyContactFormVisible: false,
       companyFormVisible: false,
@@ -175,6 +181,7 @@ export default {
       "COMPANY",
       "COMPANY_REQUESTS",
       "COMPANY_CONTACTS",
+      "COMPANY_OBJECTS",
       "TIMELINE_LIST",
     ]),
   },
@@ -183,6 +190,7 @@ export default {
       "FETCH_COMPANY",
       "FETCH_COMPANY_REQUESTS",
       "FETCH_COMPANY_CONTACTS",
+      "FETCH_COMPANY_OBJECTS",
     ]),
     async getCompany() {
       this.loaderCompanyDetailInfo = true;
@@ -201,6 +209,11 @@ export default {
       this.loaderCompanyContacts = withLoader;
       await this.FETCH_COMPANY_CONTACTS(this.$route.params.id);
       this.loaderCompanyContacts = false;
+    },
+    async getCompanyObjects(withLoader = true) {
+      this.loaderCompanyObjects = withLoader;
+      await this.FETCH_COMPANY_OBJECTS(this.$route.params.id);
+      this.loaderCompanyObjects = false;
     },
     openCompanyFormForUpdate(company) {
       this.company = company;
@@ -288,6 +301,7 @@ export default {
     this.getCompany();
     this.getCompanyRequests();
     this.getCompanyContacts();
+    this.getCompanyObjects();
     this.timeline();
   },
   watch: {

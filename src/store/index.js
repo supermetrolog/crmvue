@@ -10,6 +10,7 @@ import Websocket from './modules/Websocket'
 import Call from './modules/Call'
 import User from './modules/User'
 import Deal from './modules/Deal'
+import CompanyObjects from './modules/CompanyObjects'
 import axios from "axios";
 const store = createStore({
     state: {},
@@ -57,7 +58,8 @@ const store = createStore({
         Websocket,
         Call,
         User,
-        Deal
+        Deal,
+        CompanyObjects
     }
 })
 store.checkAction = function(name) {
