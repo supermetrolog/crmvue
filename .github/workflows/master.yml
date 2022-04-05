@@ -27,3 +27,9 @@ jobs:
         server: billypro.beget.tech
         username: ${{ secrets.username }}
         password: ${{ secrets.password }}
+    - name: 📂 Sync files with prod server
+      uses: SamKirkland/FTP-Deploy-Action@4.3.0
+      with:
+        server: 176.99.3.73
+        username: ${{ secrets.ssh_server_username }}
+        password: ${{ secrets.ssh_server_password }}
