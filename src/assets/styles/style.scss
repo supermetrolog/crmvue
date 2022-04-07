@@ -3761,6 +3761,9 @@
     // ****************** COMPANY-OBJECTS ************
     .company-objects-list {
         &__item {
+            .desc {
+                padding-left: 5px;
+            }
             hr {
                 margin-bottom: 0;
             }
@@ -3786,6 +3789,9 @@
                 display: flex;
                 justify-content: space-between;
                 &__item {
+                    &:last-child {
+                        margin-right: 0;
+                    }
                     margin-right: 5px;
                     p {
                         text-align: right;
@@ -3800,5 +3806,51 @@
                     }
                 }
             }
+        }
+    }
+    
+    // *********** OBJECT-OFFER *************
+    .object-offer {
+        position: relative;
+        margin-top: 5px;
+        table {
+            width: 100%;
+        }
+        h5,
+        h4 {
+            margin: 0;
+        }
+        border: 1px solid $color_success;
+        &.main {
+            border: 2px solid $color_dark;
+            .object-offer__area {
+                border-right: 1px solid $color_dark;
+            }
+        }
+        &.passive {
+            border: 1px solid $color_grey;
+            color: $color_grey;
+            .object-offer__area {
+                border-right: 1px solid $color_grey;
+            }
+            .object-offer__visual_id {
+                color: $color_dark;
+            }
+        }
+        &__visual_id {
+            font-size: 12px;
+            color: $color_success_alt;
+            font-weight: bold;
+        }
+        p {
+            font-weight: normal;
+            font-size: 12px;
+        }
+        &__area {
+            border-right: 1px solid $color_success;
+            padding: 10px!important;
+        }
+        &__price {
+            padding: 10px!important;
         }
     }

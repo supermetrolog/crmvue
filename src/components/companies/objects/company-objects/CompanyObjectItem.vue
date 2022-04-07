@@ -6,7 +6,7 @@
           <img :src="imageSrc" alt="image" />
         </div>
       </div>
-      <div class="col-8 p-1">
+      <div class="col-8 desc">
         <div class="item__title">
           <p>ID-{{ object.id }}</p>
           <p>{{ $formatter.number(object.area_building) }} м<sup>2</sup></p>
@@ -38,13 +38,27 @@
         </div>
       </div>
     </div>
+    <div class="row no-gutters" v-if="mainOffer">
+      <CompanyObjectItemOffer :offer="mainOffer" class="main" />
+    </div>
+    <div class="row no-gutters" v-if="offers.length">
+      <CompanyObjectItemOffer
+        :offer="offer"
+        v-for="offer of offers"
+        :key="offer.id"
+      />
+    </div>
     <hr />
   </div>
 </template>
 
 <script>
+import CompanyObjectItemOffer from "./CompanyObjectItemOffer.vue";
 export default {
   name: "CompanyObjectItem",
+  components: {
+    CompanyObjectItemOffer,
+  },
   props: {
     object: {
       type: Object,
@@ -61,6 +75,12 @@ export default {
         return "https://pennylane.pro" + photo[0];
       }
       return "http://crmka/uploads/1.jpg";
+    },
+    mainOffer() {
+      return this.object.offerMix.find((offer) => offer.type_id == 2);
+    },
+    offers() {
+      return this.object.offerMix.filter((offer) => offer.type_id != 2);
     },
   },
 };
