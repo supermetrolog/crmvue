@@ -47,6 +47,14 @@
             </p>
           </div>
         </div>
+        <div class="row no-gutters">
+          <div class="col-7"><p>S - тех</p></div>
+          <div class="col-5">
+            <p>
+              {{ offer.calc_area_tech }} <small>м<sup>2</sup></small>
+            </p>
+          </div>
+        </div>
       </div>
       <div class="col-6 object-offer__price">
         <div class="row no-gutters">
