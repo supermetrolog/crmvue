@@ -95,6 +95,12 @@
             v-if="!loaderCompanyRequests"
           />
           <NoData v-if="!COMPANY_REQUESTS.length && !loaderCompanyRequests" />
+
+          <CompanyObjectItemOfferOnly
+            :offer="offer"
+            v-for="offer of REQUEST_RECOMENDED_OBJECTS"
+            :key="offer.id"
+          />
         </div>
       </div>
       <div class="col-12 col-lg-4 box">
@@ -147,6 +153,7 @@ import CompanyObjectList from "@/components/companies/objects/company-objects/Co
 import Timeline from "@/components/companies/timeline/Timeline.vue";
 import NoData from "@/components/common/NoData";
 import Joke from "@/components/common/Joke";
+import CompanyObjectItemOfferOnly from "@/components/companies/objects/company-objects/CompanyObjectItemOfferOnly.vue";
 export default {
   name: "Company",
   components: {
@@ -160,6 +167,7 @@ export default {
     NoData,
     Joke,
     CompanyObjectList,
+    CompanyObjectItemOfferOnly,
   },
   data() {
     return {
@@ -183,6 +191,7 @@ export default {
       "COMPANY_CONTACTS",
       "COMPANY_OBJECTS",
       "TIMELINE_LIST",
+      "REQUEST_RECOMENDED_OBJECTS",
     ]),
   },
   methods: {
@@ -191,6 +200,7 @@ export default {
       "FETCH_COMPANY_REQUESTS",
       "FETCH_COMPANY_CONTACTS",
       "FETCH_COMPANY_OBJECTS",
+      "FETCH_REQUEST_RECOMENDED_OBJECTS",
     ]),
     async getCompany() {
       this.loaderCompanyDetailInfo = true;
@@ -204,6 +214,13 @@ export default {
       this.loaderCompanyRequests = true;
       await this.FETCH_COMPANY_REQUESTS(this.$route.params.id);
       this.loaderCompanyRequests = false;
+    },
+    async getRequestRecomendedObjects() {
+      // this.loaderCompanyRequests = true;
+      if (this.COMPANY_REQUESTS[0].id == 9327) {
+        await this.FETCH_REQUEST_RECOMENDED_OBJECTS(this.COMPANY_REQUESTS[0]);
+      }
+      // this.loaderCompanyRequests = false;
     },
     async getCompanyContacts(withLoader = true) {
       this.loaderCompanyContacts = withLoader;
@@ -297,11 +314,12 @@ export default {
       return title;
     },
   },
-  created() {
+  async created() {
     this.getCompany();
-    this.getCompanyRequests();
     this.getCompanyContacts();
     this.getCompanyObjects();
+    await this.getCompanyRequests();
+    this.getRequestRecomendedObjects();
     this.timeline();
   },
   watch: {

@@ -1,7 +1,7 @@
 <template>
   <div class="company-objects-list__item" :class="col">
     <div class="row no-gutters">
-      <div class="col-4">
+      <div class="col-4" :title="object.description_auto || 'нет описания'">
         <div class="image-container">
           <img :src="imageSrc" alt="image" />
         </div>

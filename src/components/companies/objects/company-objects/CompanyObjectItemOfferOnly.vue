@@ -1,9 +1,46 @@
 <template>
-  <div
-    class="object-offer col-12"
-    :class="{ passive: offer.status != 1 }"
-    :title="offer.description || 'нет описания'"
-  >
+  <div class="object-offer only col-12" :class="{ passive: offer.status != 1 }">
+    <div class="row no-gutters object-info">
+      <div
+        class="col-4 align-self-center"
+        :title="offer.description || 'нет описания'"
+      >
+        <div class="image-container">
+          <img :src="imageSrc" alt="image" />
+        </div>
+      </div>
+      <div class="col-8 desc">
+        <div class="item__title">
+          <p>ID-{{ offer.object_id }}</p>
+          <p>{{ $formatter.number(offer.area_building) }} м<sup>2</sup></p>
+        </div>
+        <div class="address">
+          <p>{{ offer.address }}</p>
+        </div>
+        <div class="params">
+          <div class="params__item">
+            <p class="title">Этажи:</p>
+            <p class="value">{{ offer.calc_floors }}</p>
+          </div>
+          <div class="params__item">
+            <p class="title">Потолки:</p>
+            <p class="value">{{ offer.calc_ceilingHeight }}</p>
+          </div>
+        </div>
+        <div class="params">
+          <div class="params__item">
+            <p class="title">Электричество:</p>
+            <p class="value">
+              {{ $formatter.number(offer.power_value) }} <small>кВт</small>
+            </p>
+          </div>
+          <div class="params__item">
+            <p class="title">Тип ворот:</p>
+            <p class="value">{{ offer.gate_type }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="row no-gutters">
       <div class="col-12 text-center">
         <span class="object-offer__visual_id">{{ offer.visual_id }}</span>
@@ -132,7 +169,15 @@ export default {
       type: Object,
     },
   },
-  computed: {},
+  computed: {
+    imageSrc() {
+      const photos = this.offer.photos;
+      if (photos && Array.isArray(photos)) {
+        return "https://pennylane.pro" + photos[0];
+      }
+      return "http://crmka/uploads/1.jpg";
+    },
+  },
 };
 </script>
 
