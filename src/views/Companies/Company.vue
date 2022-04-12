@@ -217,7 +217,10 @@ export default {
     },
     async getRequestRecomendedObjects() {
       // this.loaderCompanyRequests = true;
-      if (this.COMPANY_REQUESTS[0].id == 9327) {
+      if (
+        this.COMPANY_REQUESTS[0].id == 9327 ||
+        this.COMPANY_REQUESTS[0].id == 9324
+      ) {
         await this.FETCH_REQUEST_RECOMENDED_OBJECTS(this.COMPANY_REQUESTS[0]);
       }
       // this.loaderCompanyRequests = false;

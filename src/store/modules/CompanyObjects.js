@@ -1,5 +1,18 @@
 import api from "@/api/api"
-
+const deleteEmptyFields = (object) => {
+    for (const key in object) {
+        if (Object.hasOwnProperty.call(object, key)) {
+            const value = object[key];
+            if (
+                value === null ||
+                value === "" ||
+                (Array.isArray(value) && !value.length)
+            ) {
+                delete object[key];
+            }
+        }
+    }
+};
 const CompanyObjects = {
     state: {
         companyObjects: [],
@@ -25,13 +38,20 @@ const CompanyObjects = {
             let query = {
                 rangeMinArea: request.minArea,
                 rangeMaxArea: request.maxArea,
-                type_id: 1,
+                rangeMinCeilingHeight: request.minCeilingHeight,
+                rangeMaxCeilingHeight: request.maxCeilingHeight,
+                type_id: [1, 2],
                 pricePerFloor: request.pricePerFloor,
-                // heated: request.heated,
+                heated: request.heated,
                 status: 1,
-                // has_cranes: request.haveCranes,
-                deal_type: request.dealType
+                deal_type: request.dealType,
+                self_leveling: request.antiDustOnly,
+                approximateDistanceFromMKAD: request.distanceFromMKAD,
+                has_cranes: request.haveCranes,
+                minElectricity: request.electricity,
+                expand: 'object'
             };
+            deleteEmptyFields(query);
             const response = await api.companyObjects.searchOffers(query);
             if (response) {
                 context.commit('updateRequestRecomendedObjects', response.data);

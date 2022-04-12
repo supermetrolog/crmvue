@@ -3853,4 +3853,72 @@
         &__price {
             padding: 10px!important;
         }
+        &.only {
+            border: none;
+            padding: 0;
+            margin-bottom: 20px;
+            .offer-info {
+                border: 1px solid $color_success;
+            }
+            .object-info {
+                border: 1px solid $color_dark;
+                border-bottom: none;
+                .desc {
+                    padding: 7px;
+                }
+                .item__title {
+                    p {
+                        display: inline;
+                        margin-right: 10px;
+                        font-weight: bold;
+                    }
+                }
+                .params {
+                    &__item {
+                        display: inline-block;
+                        margin-right: 10px;
+                        p {
+                            display: inline;
+                            margin-right: 5px;
+                        }
+                        p.value {
+                            font-weight: bold;
+                        }
+                    }
+                }
+                .description,
+                .description-auto {
+                    margin-top: 10px;
+                    font-size: 12px;
+                    overflow: hidden;
+                    p.title {
+                        font-weight: bold;
+                    }
+                    p {
+                        word-wrap: break-word!important;
+                        word-break: break-all;
+                    }
+                }
+            }
+            &.general {
+                .object-info {
+                    background-color: $color_secondary;
+                    color: $color_light;
+                    .item__title {
+                        position: relative;
+                        .badge {
+                            width: auto;
+                            height: auto;
+                            border-radius: 0px;
+                            position: absolute;
+                            right: 10px;
+                            padding: 3px 7px;
+                            font-size: 11px;
+                            text-transform: uppercase;
+                            letter-spacing: 1px;
+                        }
+                    }
+                }
+            }
+        }
     }
