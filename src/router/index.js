@@ -121,6 +121,20 @@ const routes = [{
         }, ]
     },
     {
+        path: '/offers',
+        name: 'offers',
+        meta: { layout: 'main', auth: { isAuth: true, role: ['moderator', 'administrator'] } },
+        component: () =>
+            import ('../views/Offers/Offers.vue'),
+        children: [{
+            path: '',
+            name: 'Main',
+            meta: { layout: 'main', auth: { isAuth: true, role: ['moderator', 'administrator'] } },
+            component: () =>
+                import ('../views/Offers/Main.vue')
+        }, ]
+    },
+    {
         path: '/:catchAll(.*)',
         name: 'notfound',
         meta: { layout: 'empty', auth: { isAuth: true, role: ['moderator', 'administrator'] } },

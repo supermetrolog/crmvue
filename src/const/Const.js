@@ -1,5 +1,6 @@
 export const Menu = new Map([
     ['admin', [{ "id": 0, "name": "Компании", "icon": "fas fa-industry", "url": "/companies" },
+        { "id": 6, "name": "Предложка", "icon": "fas fa-city", "url": "/offers" },
         { "id": 1, "name": "Статистика", "icon": "far fa-chart-bar", "url": "/statistic" },
         { "id": 2, "name": "Календарь", "icon": "fas fa-calendar-alt", "url": "/calendar", "exact": true },
         { "id": 3, "name": "Настройки", "icon": "fas fa-cog", "url": "/setting" },
