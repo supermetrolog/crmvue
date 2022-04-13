@@ -49,7 +49,8 @@ const CompanyObjects = {
                 approximateDistanceFromMKAD: request.distanceFromMKAD,
                 has_cranes: request.haveCranes,
                 minElectricity: request.electricity,
-                expand: 'object'
+                region: request.regions.map(item => item.region),
+                expand: 'object,miniOffersMix'
             };
             deleteEmptyFields(query);
             const response = await api.companyObjects.searchOffers(query);

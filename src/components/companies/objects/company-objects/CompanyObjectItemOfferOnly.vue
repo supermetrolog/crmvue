@@ -29,8 +29,6 @@
             <p class="title">Потолки:</p>
             <p class="value">{{ offer.calc_ceilingHeight }} <small>м</small></p>
           </div>
-        </div>
-        <div class="params">
           <div class="params__item">
             <p class="title">Электричество:</p>
             <p class="value">
