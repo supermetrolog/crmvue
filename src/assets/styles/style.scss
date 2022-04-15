@@ -3922,3 +3922,93 @@
             }
         }
     }
+    
+    // *************** OFFER-TABLE-VIEW ***************
+    .offer-table-view {
+        table {
+            width: 100%;
+            tr {
+                padding: 5px 0;
+                position: relative;
+                &.passive {
+                    color: $color_dark!important;
+                    td {
+                        // color: $color_grey;
+                        opacity: .5;
+                        &.sortable {
+                            opacity: 1;
+                        }
+                        &:first-child {
+                            opacity: 1;
+                        }
+                        &:last-child {
+                            opacity: 1;
+                        }
+                    }
+                }
+            }
+            td {
+                padding: 5px!important;
+                text-align: center;
+                a {
+                    color: $color_primary;
+                    &:hover {
+                        text-decoration: underline;
+                    }
+                }
+            }
+            .passive {
+                color: $color_warning!important;
+            }
+            .id {
+                width: 70px;
+            }
+            .photo {
+                width: 250px;
+                padding-left: 0;
+                position: relative;
+                span {
+                    position: absolute;
+                    padding: 5px;
+                    font-size: 16px;
+                    font-weight: bold;
+                    color: $color_success_alt;
+                    background-color: rgba($color: $color_light, $alpha: .85);
+                    &.deal_type {
+                        top: 10px;
+                        left: 10px;
+                    }
+                    &.object_class {
+                        top: 15px;
+                        right: 10px;
+                        padding: 0px 5px;
+                        color: $color_light;
+                        background-color: rgba($color: $color_danger, $alpha: .85);
+                    }
+                }
+            }
+            .region {
+                width: 250px;
+                p {
+                    font-weight: normal;
+                    text-transform: capitalize;
+                }
+                &_item {
+                    font-weight: bold!important;
+                }
+            }
+            .date {
+                width: 100px;
+                font-size: 12px;
+            }
+            .company {
+                width: 200px;
+            }
+            .status {
+                .badge-warning {
+                    font-size: 14px;
+                    text-transform: uppercase;
+                }
+            }
+        }
+    }

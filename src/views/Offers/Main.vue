@@ -66,7 +66,12 @@ export default {
     },
     async getOffers() {
       this.loader = true;
-      const query = this.$route.query;
+      const query = {
+        ...this.$route.query,
+        type_id: [2],
+        expand:
+          "object,company.mainContact.phones,company.mainContact.emails,miniOffersMix,generalOffersMix.offer,consultant.userProfile",
+      };
       await this.SEARCH_OFFERS({ query });
       this.loader = false;
     },

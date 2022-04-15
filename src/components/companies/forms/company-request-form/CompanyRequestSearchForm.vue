@@ -39,7 +39,6 @@
 
           <MultiSelect
             v-model="form.dealType"
-            required
             label="Тип сделки"
             class="col-2 pr-1"
             :options="dealTypeList"
