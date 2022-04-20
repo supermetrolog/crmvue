@@ -176,6 +176,27 @@ export const YesNo = new Map(
 
     ]
 );
+export const YesNoFUCK = new Map(
+    [
+        ['param', [
+            [2, "Нет"],
+            [1, "Да"],
+        ]],
+
+    ]
+);
+export const FloorTypesFUCK = new Map(
+    [
+        ['param', [
+            [1, "асфальт"],
+            [2, "антипыль"],
+            [3, "бет. плиты"],
+            [4, "тех. плиты"],
+            [5, "стяжка"],
+        ]],
+
+    ]
+);
 export const unknownMovingDate = new Map(
     [
         ['param', [

@@ -45,6 +45,9 @@
             <p v-if="offer.district_name">
               {{ offer.district_name }}
             </p>
+            <p v-if="offer.district_moscow_name">
+              {{ offer.district_moscow_name }}
+            </p>
             <p v-if="offer.direction_name">
               {{ offer.direction_name }}
             </p>
@@ -63,6 +66,7 @@
             </p>
           </Td>
           <Td class="from_mkad" sort="from_mkad">
+            <!-- {{ offer.gates }} -->
             <p v-if="offer.from_mkad">
               {{ offer.from_mkad }} <small>км</small>
             </p>
