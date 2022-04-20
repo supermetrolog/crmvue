@@ -101,113 +101,10 @@
               class="col-12 p-0 pt-1"
             />
           </Input>
-        </FormGroup>
-        <FormGroup class="mb-2">
-          <Checkbox
-            v-model="form.class"
-            class="col-2 pr-1"
-            label="Классы"
-            :options="objectClassList"
-          />
-          <Checkbox
-            v-model="form.gates"
-            class="col-4 pr-1"
-            label="Тип ворот"
-            :options="gateTypeList"
-          />
-          <Radio
-            v-model="form.heated"
-            :unselectMode="true"
-            label="Отапливаемый"
-            class="col-2 text-center pr-1"
-            :options="yesNoFUCKOptions"
-          />
-        </FormGroup>
-        <FormGroup class="mb-2">
-          <Radio
-            v-model="form.water"
-            :unselectMode="true"
-            label="Наличие воды"
-            class="col pr-1 text-center"
-            :options="yesNoOptions"
-          />
-          <Radio
-            v-model="form.gas"
-            :unselectMode="true"
-            label="Наличие газа"
-            class="col pr-1 text-center"
-            :options="yesNoFUCKOptions"
-          />
-          <Radio
-            v-model="form.steam"
-            :unselectMode="true"
-            label="Наличие пара"
-            class="col pr-1 text-center"
-            :options="yesNoFUCKOptions"
-          />
-          <Radio
-            v-model="form.sewage_central"
-            :unselectMode="true"
-            label="Наличие КНС"
-            class="col pr-1 text-center"
-            :options="yesNoFUCKOptions"
-          />
-          <Radio
-            v-model="form.racks"
-            :unselectMode="true"
-            label="Наличие стеллажей"
-            class="col text-center pr-1"
-            :options="yesNoFUCKOptions"
-          />
-        </FormGroup>
-        <FormGroup class="mb-2">
-          <Radio
-            v-model="form.railway"
-            :unselectMode="true"
-            label="Ж/Д ветка"
-            class="col pr-1 text-center"
-            :options="yesNoOptions"
-          />
-          <Radio
-            v-model="form.has_cranes"
-            :unselectMode="true"
-            label="Наличие кранов"
-            class="col pr-1 text-center"
-            :options="yesNoOptions"
-          />
-          <Checkbox
-            v-model="form.floor_types"
-            class="col-4 pr-1"
-            label="Тип пола"
-            :options="floorTypesFUCKOptions"
-          />
-        </FormGroup>
-        <FormGroup class="mb-2">
-          <CheckboxIcons
-            v-model="form.purposes"
-            label="Тип объекта"
-            extraLabel="склад"
-            class="col-4 pr-2 mx-auto"
-            :options="objectTypeListWareHouse"
-          />
-          <CheckboxIcons
-            v-model="form.purposes"
-            extraLabel="производство"
-            class="col-4 mt-4 pr-2 mx-auto"
-            :options="objectTypeListProduction"
-          />
-          <CheckboxIcons
-            v-model="form.purposes"
-            extraLabel="участок"
-            class="col-4 mt-4 mx-auto"
-            :options="objectTypeListPlot"
-          />
-        </FormGroup>
-        <FormGroup class="mb-2">
           <MultiSelect
             v-model="form.region"
             label="Регионы"
-            class="col-4 pr-1"
+            class="col-3"
             mode="multiple"
             :options="regionList"
             @change="changeRegion"
@@ -235,6 +132,107 @@
             />
           </MultiSelect>
         </FormGroup>
+        <FormGroup class="mb-2">
+          <Checkbox
+            v-model="form.class"
+            class="col-2 pr-1"
+            label="Классы"
+            :options="objectClassList"
+          />
+          <Checkbox
+            v-model="form.gates"
+            class="col-4 pr-1"
+            label="Тип ворот"
+            :options="gateTypeList"
+          />
+          <Checkbox
+            v-model="form.floor_types"
+            class="col-4 pr-1"
+            label="Тип пола"
+            :options="floorTypesFUCKOptions"
+          />
+          <Radio
+            v-model="form.heated"
+            :unselectMode="true"
+            label="Отапливаемый"
+            class="col-2 text-center pr-1"
+            :options="yesNoFUCKOptions"
+          />
+        </FormGroup>
+        <FormGroup class="mb-2">
+          <Radio
+            v-model="form.water"
+            :unselectMode="true"
+            label="Вода"
+            class="col pr-1 text-center"
+            :options="yesNoOptions"
+          />
+          <Radio
+            v-model="form.gas"
+            :unselectMode="true"
+            label="Газ"
+            class="col pr-1 text-center"
+            :options="yesNoFUCKOptions"
+          />
+          <Radio
+            v-model="form.steam"
+            :unselectMode="true"
+            label="Пар"
+            class="col pr-1 text-center"
+            :options="yesNoFUCKOptions"
+          />
+          <Radio
+            v-model="form.sewage_central"
+            :unselectMode="true"
+            label="КНС"
+            class="col pr-1 text-center"
+            :options="yesNoFUCKOptions"
+          />
+          <Radio
+            v-model="form.racks"
+            :unselectMode="true"
+            label="Стеллажи"
+            class="col text-center pr-1"
+            :options="yesNoFUCKOptions"
+          />
+          <Radio
+            v-model="form.railway"
+            :unselectMode="true"
+            label="Ж/Д ветка"
+            class="col pr-1 text-center"
+            :options="yesNoOptions"
+          />
+          <Radio
+            v-model="form.has_cranes"
+            :unselectMode="true"
+            label="Краны"
+            class="col pr-1 text-center"
+            :options="yesNoOptions"
+          />
+        </FormGroup>
+        <FormGroup class="mb-2"> </FormGroup>
+        <FormGroup class="mb-2">
+          <CheckboxIcons
+            v-model="form.purposes"
+            label="Тип объекта"
+            extraLabel="склад"
+            class="col-4 pr-2 mx-auto"
+            :options="objectTypeListWareHouse"
+          />
+          <CheckboxIcons
+            v-model="form.purposes"
+            extraLabel="производство"
+            class="col-4 mt-4 pr-2 mx-auto"
+            :options="objectTypeListProduction"
+          />
+          <CheckboxIcons
+            v-model="form.purposes"
+            extraLabel="участок"
+            class="col-4 mt-4 mx-auto"
+            :options="objectTypeListPlot"
+          />
+        </FormGroup>
+        <FormGroup class="mb-2"> </FormGroup>
       </div>
     </Form>
   </div>
