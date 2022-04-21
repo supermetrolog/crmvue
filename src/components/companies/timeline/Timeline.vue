@@ -1,7 +1,7 @@
 <template>
   <div class="container-timeline">
     <div class="row no-gutters">
-      <div class="col-3 stage box">
+      <div class="col-2 stage box">
         <div class="row no-gutters mb-2 p-0" v-if="!timelineNotFoundFlag">
           <div class="col-6 pr-1">
             <button
@@ -75,7 +75,7 @@
         <Loader class="center" />
       </div>
       <div
-        class="col-7 box step-actions"
+        class="col-8 box step-actions"
         v-if="selectedStep && !loader && !timelineNotFoundFlag"
       >
         <div class="row" v-if="selectedStep.number != 0">

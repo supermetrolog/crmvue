@@ -1,23 +1,22 @@
 <template>
   <div
     class="timeline-container col-12"
-    :class="[
-      stepParam[data.number][1].class,
-      stepParam[data.number][1].stepName,
-    ]"
+    :class="[stepParam[data.number][1].stepName]"
   >
-    <div class="timeline-icon">
-      <i :class="stepParam[idx][1].icon"></i>
-    </div>
     <div
       class="timeline-body"
       :class="{
         selected: this.$route.query.step == data.number,
         return: !data.status,
+        done: data.status,
       }"
     >
-      <div class="done" v-if="data.status">
+      <div class="status-check" v-if="data.status">
         <i class="fas fa-check text-success"></i>
+      </div>
+      <div class="status-check" v-else>
+        <!-- <i class="fas fa-check text-warning"></i> -->
+        <i class="fas fa-exclamation-triangle text-warning"></i>
       </div>
       <Loader class="center small" v-if="loader == data.id" />
       <h4 class="timeline-title" @click="clickSelectStep">
