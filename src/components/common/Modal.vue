@@ -3,8 +3,9 @@
     <div class="modal-container">
       <div class="modal-header">
         <div class="row no-gutters">
-          <div class="title col">{{ title }}</div>
-          <div class="col ml-auto text-right">
+          <div class="title col" v-if="title">{{ title }}</div>
+          <slot name="header"></slot>
+          <div class="col-1 ml-auto text-right align-self-center">
             <i class="fas fa-times" @click="clickCancel"></i>
           </div>
         </div>

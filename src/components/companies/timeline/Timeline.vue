@@ -1,127 +1,132 @@
 <template>
-  <div class="container-timeline">
-    <div class="row no-gutters">
-      <div class="col-2 stage box">
-        <div class="row no-gutters mb-2 p-0" v-if="!timelineNotFoundFlag">
-          <div class="col-6 pr-1">
-            <button
-              class="btn btn-primary btn-large"
-              @click.prevent="clickOpenCompanyForm"
-            >
-              передать
-            </button>
-          </div>
-          <div class="col-6 pr-1">
-            <button
-              class="btn btn-danger btn-large"
-              @click.prevent="clickOpenCompanyForm"
-            >
-              отказаться
-            </button>
-          </div>
+  <Modal class="fullscreen" :title="timelineTitle" @close="$emit('close')">
+    <template #header>
+      <div class="col timeline-list pr-5" v-if="TIMELINE_LIST.length">
+        <div
+          class="timeline-actions timeline-list-item p-1"
+          v-for="timeline in TIMELINE_LIST"
+          :key="timeline.id"
+        >
+          <CustomButton
+            :options="{
+              btnActive: $route.query.consultant_id == timeline.consultant.id,
+              btnClass: 'primary',
+              defaultBtn: true,
+              disabled: false,
+            }"
+            @confirm="changeTimeline(timeline.consultant.id)"
+          >
+            <template #btnContent>
+              {{ timeline.consultant.userProfile.short_name }}
+            </template>
+          </CustomButton>
         </div>
-        <div class="row no-gutters inner" ref="timeline">
-          <Loader class="center" v-if="loader" />
-          <div class="col-12 mb-3 timeline-list" v-if="TIMELINE_LIST.length">
-            <div class="timeline-actions text-right">
-              <div
-                class="timeline-list-item p-1"
-                v-for="timeline in TIMELINE_LIST"
-                :key="timeline.id"
-              >
-                <CustomButton
-                  :options="{
-                    btnActive:
-                      $route.query.consultant_id == timeline.consultant.id,
-                    btnClass: 'primary',
-                    defaultBtn: true,
-                    disabled: false,
-                  }"
-                  @confirm="changeTimeline(timeline.consultant.id)"
-                >
-                  <template #btnContent>
-                    {{ timeline.consultant.userProfile.short_name }}
-                  </template>
-                </CustomButton>
-              </div>
+      </div>
+      <div
+        class="col-1 ml-auto pr-1 align-self-center"
+        v-if="!timelineNotFoundFlag"
+      >
+        <button
+          class="btn btn-alt btn-primary btn-large"
+          @click.prevent="clickOpenCompanyForm"
+        >
+          передать
+        </button>
+      </div>
+      <div class="col-1 ml-auto align-self-center" v-if="!timelineNotFoundFlag">
+        <button
+          class="btn btn-alt btn-danger btn-large"
+          @click.prevent="clickOpenCompanyForm"
+        >
+          отказаться
+        </button>
+      </div>
+    </template>
+    <div class="container-timeline">
+      <div class="row no-gutters">
+        <div class="col-2 stage box">
+          <div class="row no-gutters inner" ref="timeline">
+            <Loader class="center" v-if="loader" />
+            <div class="col-12" v-if="timelineNotFoundFlag">
+              <h4 class="text-danger text-center">
+                Такого таймлайна не существует
+              </h4>
             </div>
-          </div>
-          <div class="col-12" v-if="timelineNotFoundFlag">
-            <h4 class="text-danger text-center">
-              Такого таймлайна не существует
-            </h4>
-          </div>
-          <div class="timeline col-12" v-if="!loader && !timelineNotFoundFlag">
-            <TimelineItem
-              v-for="(step, idx) in this.TIMELINE.timelineSteps"
-              :key="step.id"
-              :data="step"
-              :selectedStep="selectedStep"
-              :idx="idx"
-              :ref="'step_' + step.number"
-              :loader="loaderForStep"
-              @clickItem="clickStep"
-            />
-          </div>
-        </div>
-      </div>
-      <div
-        class="col-8"
-        v-if="
-          (!selectedStep && $route.query.step && !timelineNotFoundFlag) ||
-          loader
-        "
-      >
-        <Loader class="center" />
-      </div>
-      <div
-        class="col-8 box step-actions"
-        v-if="selectedStep && !loader && !timelineNotFoundFlag"
-      >
-        <div class="row" v-if="selectedStep.number != 0">
-          <div class="col-3 mb-2">
-            <div class="company-form company-request-form">
-              <Multiselect
-                v-model="contactForSendMessage"
-                :options="companyContacts"
-                :clearOnSelect="true"
-                class="multiselect-timeline"
-                :multipleLabel="
-                  (n) => {
-                    return `${n.length} ${
-                      n.length == 1 ? 'контакт выбран' : 'контакта выбрано'
-                    }`;
-                  }
-                "
-                placeholder="Выберите контакт"
-                mode="multiple"
+            <div
+              class="timeline col-12"
+              v-if="!loader && !timelineNotFoundFlag"
+            >
+              <TimelineItem
+                v-for="(step, idx) in this.TIMELINE.timelineSteps"
+                :key="step.id"
+                :data="step"
+                :selectedStep="selectedStep"
+                :idx="idx"
+                :ref="'step_' + step.number"
+                :loader="loaderForStep"
+                @clickItem="clickStep"
               />
             </div>
           </div>
         </div>
-        <component
-          :is="stepActionsName"
-          :step="selectedStep"
-          :contactForSendMessage="contactForSendMessage"
-          :loaderForStep="loaderForStep"
-          :disabled="disabled"
-          @updatedObjects="updatedObjects"
-          @updateStep="clickUpdateStep"
+        <div
+          class="col-8"
+          v-if="
+            (!selectedStep && $route.query.step && !timelineNotFoundFlag) ||
+            loader
+          "
         >
-        </component>
-      </div>
-      <div
-        class="col-2 box timeline-extra-block"
-        v-if="selectedStep && !loader && !timelineNotFoundFlag"
-      >
-        <ExtraBlock
-          :step="selectedStep"
-          :disabled="disabled"
-          @createComment="clickUpdateStep"
-        />
+          <Loader class="center" />
+        </div>
+        <div
+          class="col-8 box step-actions"
+          v-if="selectedStep && !loader && !timelineNotFoundFlag"
+        >
+          <div class="row" v-if="selectedStep.number != 0">
+            <div class="col-3 mb-2">
+              <div class="company-form company-request-form">
+                <Multiselect
+                  v-model="contactForSendMessage"
+                  :options="companyContacts"
+                  :clearOnSelect="true"
+                  class="multiselect-timeline"
+                  :multipleLabel="
+                    (n) => {
+                      return `${n.length} ${
+                        n.length == 1 ? 'контакт выбран' : 'контакта выбрано'
+                      }`;
+                    }
+                  "
+                  placeholder="Выберите контакт"
+                  mode="multiple"
+                />
+              </div>
+            </div>
+          </div>
+          <component
+            :is="stepActionsName"
+            :step="selectedStep"
+            :contactForSendMessage="contactForSendMessage"
+            :loaderForStep="loaderForStep"
+            :disabled="disabled"
+            @updatedObjects="updatedObjects"
+            @updateStep="clickUpdateStep"
+          >
+          </component>
+        </div>
+        <div
+          class="col-2 box timeline-extra-block"
+          v-if="selectedStep && !loader && !timelineNotFoundFlag"
+        >
+          <ExtraBlock
+            :step="selectedStep"
+            :disabled="disabled"
+            @createComment="clickUpdateStep"
+          />
+        </div>
       </div>
     </div>
-  </div>
+  </Modal>
 </template>
 
 <script>
@@ -193,6 +198,15 @@ export default {
     },
     companyContacts() {
       return Utils.normalizeContactsForMultiselect(this.COMPANY_CONTACTS);
+    },
+    timelineTitle() {
+      let title = "Бизнес процесс ";
+      const currentTimeline = this.TIMELINE_LIST.find(
+        (timeline) => timeline.consultant.id == this.$route.query.consultant_id
+      );
+      if (!currentTimeline) return title;
+      title += currentTimeline.consultant.userProfile.short_name;
+      return title;
     },
   },
   methods: {

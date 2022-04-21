@@ -5,14 +5,10 @@
       enter-active-class="animate__animated animate__zoomIn for__modal__fullscreen"
       leave-active-class="animate__animated animate__zoomOut for__modal__fullscreen"
     >
-      <Modal
-        class="fullscreen"
-        :title="getTimelineTitle()"
+      <Timeline
         v-if="timelineVisible && COMPANY && COMPANY_REQUESTS[0]"
         @close="closeTimeline"
-      >
-        <Timeline />
-      </Modal>
+      />
     </transition>
     <transition
       mode="out-in"
@@ -299,22 +295,6 @@ export default {
     closeTimeline() {
       this.timelineVisible = false;
       this.$router.push({ name: "company" });
-    },
-    getTimelineTitle() {
-      let title = "Бизнес процесс";
-      const currentTimeline = this.TIMELINE_LIST.find(
-        (timeline) => timeline.consultant.id == this.$route.query.consultant_id
-      );
-      if (!currentTimeline) return title;
-      const userProfile = currentTimeline.consultant.userProfile;
-      title += ` ${userProfile.middle_name} ${userProfile.first_name
-        .charAt(0)
-        .toUpperCase()}.`;
-
-      if (userProfile.last_name) {
-        title += ` ${userProfile.last_name.charAt(0).toUpperCase()}.`;
-      }
-      return title;
     },
   },
   async created() {

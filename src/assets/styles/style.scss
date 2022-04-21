@@ -703,7 +703,6 @@
         }
         &:hover {
             box-shadow: 0 2px 5px 0 rgba(100, 100, 100, .7);
-            // background-color: $color_danger;
         }
         &.scale {
             &:hover {
@@ -713,6 +712,9 @@
         }
         &:disabled {
             background-color: $color_grey;
+        }
+        &-alt {
+            padding: .3rem;
         }
     }
     
@@ -845,6 +847,11 @@
     0,
     0,
     .1);
+    .timeline-list {
+        display: flex;
+        justify-content: end;
+    }
+    
     // page container
     .container-timeline {
         padding: 0px 20px;
@@ -853,7 +860,7 @@
         .stage {
             &.box {
                 .inner {
-                    padding: 0!important;
+                    padding: 10px!important;
                     max-height: 85vh;
                     overflow: hidden;
                     overflow-y: auto;
@@ -1047,7 +1054,7 @@
                 box-sizing: border-box;
                 background: $timeline-body-bg;
                 border-radius: $timeline-body-round;
-                padding: 10px 20px;
+                padding: 10px 10px;
                 box-shadow: $timeline-body-shadow;
                 //*****************************************
                 .status-check {
@@ -1074,24 +1081,24 @@
                     border-radius: 0;
                     outline: 3px solid $color_info;
                     // box-shadow: 0px 0px 20px 2px $color_success_alt;
-                    box-shadow: 0px 0px 20px 3px $color_success_alt, inset 0px 0px 10px 2px $color_success_alt;
+                    box-shadow: 0px 0px 20px 3px $color_success_alt;
                     // background-color: darken($color: $color_success_alt, $amount: 30);
                     background-color: darken($timeline-body-bg, 10);
                     &::before {
                         border-bottom: 3px solid $color_info;
                         border-left: 3px solid $color_info;
-                        left: -12px;
+                        left: -9px;
                     }
                 }
                 transition: all 0.05s ease-in-out;
                 &::before {
                     content: '';
                     background: inherit;
-                    width: 20px;
-                    height: 20px;
+                    width: 15px;
+                    height: 15px;
                     display: block;
                     position: absolute;
-                    left: -10px;
+                    left: -8px;
                     top: 20px;
                     transform: rotate(45deg);
                     border-radius: 0 0 0 2px;
