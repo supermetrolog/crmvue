@@ -5,7 +5,7 @@
       <div
         class="extra-label"
         v-if="extraLabel"
-        :class="{ active: isAllSelected }"
+        :class="{ active: isAllSelected || extraLabelSelected }"
         @click="clickExtraLabel"
       >
         <p>{{ extraLabel }}</p>
@@ -54,6 +54,7 @@ export default {
   data() {
     return {
       field: this.modelValue,
+      extraLabelSelected: false,
     };
   },
   props: {
@@ -84,6 +85,10 @@ export default {
     name: {
       type: String,
       default: null,
+    },
+    noAllSelect: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {
@@ -144,6 +149,11 @@ export default {
       this.field = data;
     },
     clickExtraLabel() {
+      if (this.noAllSelect) {
+        this.extraLabelSelected = !this.extraLabelSelected;
+        this.$emit("extraSelect", this.extraLabelSelected);
+        return;
+      }
       if (this.isAllSelected) {
         this.diff();
 

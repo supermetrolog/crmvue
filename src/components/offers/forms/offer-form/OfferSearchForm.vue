@@ -216,18 +216,24 @@
             v-model="form.purposes"
             label="Тип объекта"
             extraLabel="склад"
+            :noAllSelect="true"
+            @extraSelect="selectObjectType($event, 1)"
             class="col-4 pr-2 mx-auto"
             :options="objectTypeListWareHouse"
           />
           <CheckboxIcons
             v-model="form.purposes"
             extraLabel="производство"
+            :noAllSelect="true"
+            @extraSelect="selectObjectType($event, 2)"
             class="col-4 mt-4 pr-2 mx-auto"
             :options="objectTypeListProduction"
           />
           <CheckboxIcons
             v-model="form.purposes"
             extraLabel="участок"
+            :noAllSelect="true"
+            @extraSelect="selectObjectType($event, 3)"
             class="col-4 mt-4 mx-auto"
             :options="objectTypeListPlot"
           />
@@ -312,6 +318,7 @@ export default {
     has_cranes: null,
     floor_types: [],
     purposes: [],
+    object_type: [],
     region: [],
     direction: [],
     district_moscow: [],
@@ -341,6 +348,15 @@ export default {
       if (this.form.region.find((item) => item == 0) != 0) {
         this.form.district_moscow = [];
       }
+    },
+    selectObjectType(isSelected, type) {
+      this.form.object_type = this.form.object_type.filter(
+        (item) => item != type
+      );
+      if (isSelected) {
+        this.form.object_type.push(type);
+      }
+      console.log(isSelected, type);
     },
   },
 };
