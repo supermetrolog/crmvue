@@ -2,6 +2,7 @@
   <div
     class="timeline-container col-12"
     :class="[stepParam[data.number][1].stepName]"
+    @click="clickSelectStep"
   >
     <div
       class="timeline-body"
@@ -15,11 +16,10 @@
         <i class="fas fa-check text-success"></i>
       </div>
       <div class="status-check" v-else>
-        <!-- <i class="fas fa-check text-warning"></i> -->
-        <i class="fas fa-exclamation-triangle text-warning"></i>
+        <i class="fas fa-fire-alt text-danger"></i>
       </div>
       <Loader class="center small" v-if="loader == data.id" />
-      <h4 class="timeline-title" @click="clickSelectStep">
+      <h4 class="timeline-title">
         <span class="badge-1">{{ stepParam[data.number][1].name }}</span>
       </h4>
       <hr />
