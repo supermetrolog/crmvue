@@ -175,8 +175,8 @@ export const MixinObject = {
             this.selectedObjects.map((item) => {
                 data.timelineStepObjects.push({
                     timeline_step_id: data.id,
-                    object_id: item.original_id,
-                    offer_id: item.id,
+                    object_id: item.object_id,
+                    offer_id: item.original_id,
                     complex_id: item.complex_id,
                     type_id: item.type_id,
                     comment: item.comment,
@@ -272,15 +272,30 @@ export const MixinObject = {
         },
         async getPreventStepObjects() {
             this.loader = true;
-            const objects = await api.objects.getCurrentStepObjectsOneByOne(
-                this.preventStepTimelineObjects
-            );
+            // const uniqueObject = [];
+            // this.preventStepTimelineObjects.forEach(item => {
+            //     uniqueObject.push(JSON.stringify({ object_id: item.object_id, type_id: item.type_id }));
+            // });
+            // const response = await api.companyObjects.searchOffers({
+            //     expand: 'object,miniOffersMix',
+            //     uniqueOffer: uniqueObject
+            // });
+            // console.log(response);
+            // const objects = await api.objects.getCurrentStepObjectsOneByOne(
+            //     this.preventStepTimelineObjects
+            // );
+            const objects = [];
+            this.preventStepTimelineObjects.forEach(item => {
+                if (item.offer) {
+                    objects.push(item.offer);
+                }
+            });
             this.includeStepDataInObjectsData(objects);
             this.preventStepObjects = objects;
             this.loader = false;
         },
         includeStepDataInObjectsData(data) {
-            console.error(this.TIMELINE);
+            console.error("data", data);
             if (!this.TIMELINE) return data;
 
             this.step.timelineStepObjects.forEach((item) => {
@@ -378,19 +393,26 @@ export const MixinAllObject = {
         },
     },
     methods: {
-        async getAllObjects() {
+        async getAllObjects(query = {}) {
             this.allObjectsLoader = true;
-            const data = await api.objects.getAllObjects(this.currentPage);
-            this.includeStepDataInObjectsData(data.offers);
+            // const data = await api.objects.getAllObjects(this.currentPage);
+            const data = await api.companyObjects.searchOffers({ type_id: [1, 2], page: this.currentPage, expand: 'object', ...query });
+            this.includeStepDataInObjectsData(data.data);
             this.setAllObjects(data);
             this.allObjectsLoader = false;
         },
         async getPreventStepObjects() {
             this.loader = true;
-            const objects = await api.objects.getCurrentStepObjectsOneByOne(
-                this.step.timelineStepObjects
-            );
-            console.log("DATA", objects);
+            // const objects = await api.objects.getCurrentStepObjectsOneByOne(
+            //     this.step.timelineStepObjects
+            // );
+            // console.log("DATA", objects);
+            const objects = [];
+            this.step.timelineStepObjects.forEach(item => {
+                if (item.offer) {
+                    objects.push(item.offer);
+                }
+            });
             this.includeStepDataInObjectsData(objects);
             this.preventStepObjects = objects;
             this.loader = false;
@@ -398,12 +420,12 @@ export const MixinAllObject = {
         setAllObjects(data) {
             if (
                 Array.isArray(this.allObjects) &&
-                Array.isArray(data.offers) &&
+                Array.isArray(data.data) &&
                 this.currentPage > 1
             ) {
-                this.allObjects = this.allObjects.concat(data.offers);
+                this.allObjects = this.allObjects.concat(data.data);
             } else {
-                this.allObjects = data.offers;
+                this.allObjects = data.data;
             }
 
             this.pagination = data.pagination;
@@ -416,21 +438,22 @@ export const MixinAllObject = {
         },
         async searchAllObjects(params) {
             this.allObjectsLoader = true;
-            if (params.query.searchText == "") {
-                this.searchMode = false;
-                await this.getAllObjects();
-            } else {
-                const search = params.query.searchText;
-                const queryParams = {
-                    search,
-                    pages: 1,
-                    page_num: this.currentPage,
-                    page_items: 32,
-                };
-                const data = await api.objects.searchObjects(queryParams);
-                this.includeStepDataInObjectsData(data.offers);
-                this.setAllObjects(data);
-            }
+            // if (params.query.searchText == "") {
+            //     this.searchMode = false;
+            //     await this.getAllObjects();
+            // } else {
+            //     const search = params.query.searchText;
+            //     const queryParams = {
+            //         search,
+            //         pages: 1,
+            //         page_num: this.currentPage,
+            //         page_items: 32,
+            //     };
+            //     const data = await api.objects.searchObjects(queryParams);
+            //     this.includeStepDataInObjectsData(data.offers);
+            //     this.setAllObjects(data);
+            // }
+            await this.getAllObjects({ all: params.query.searchText });
             this.allObjectsLoader = false;
         },
         loadMore() {

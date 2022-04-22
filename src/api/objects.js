@@ -55,6 +55,7 @@ export default {
             .catch((e) => ErrorHandle.setError(e));
     },
     async getCurrentStepObjectsOneByOne(objectList) {
+        console.log('fuck', objectList);
         let data = false;
         const promises = objectList.map(this.getObject);
         testArray = [];

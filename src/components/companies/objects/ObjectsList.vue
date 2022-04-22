@@ -11,12 +11,15 @@
       :is="currentComponent"
       v-for="object in objects"
       :disabled="disabled"
-      :object="object"
+      :offer="object"
       :isSelected="!!selectedObjects.find((item) => item.id == object.id)"
       :key="object.id"
       :col="col"
       :classList="
-        currentObjects.find((item) => item.object_id == object.original_id)
+        currentObjects.find(
+          (item) =>
+            item.object_id == object.object_id && item.type_id == object.type_id
+        )
           ? 'success'
           : ''
       "
@@ -46,6 +49,7 @@
 
 <script>
 import ObjectsItem from "./ObjectsItem.vue";
+import CompanyObjectItemOfferOnly from "./company-objects/CompanyObjectItemOfferOnly.vue";
 import ObjectsItemTable from "./ObjectsItemTable.vue";
 export default {
   name: "ObjectsList",
@@ -53,6 +57,7 @@ export default {
   components: {
     ObjectsItem,
     ObjectsItemTable,
+    CompanyObjectItemOfferOnly,
   },
   data() {
     return {};
@@ -103,9 +108,9 @@ export default {
     currentComponent() {
       console.log(this.viewMode);
       if (this.viewMode) {
-        return "ObjectsItem";
+        return "CompanyObjectItemOfferOnly";
       }
-      return "ObjectsItemTable";
+      return "CompanyObjectItemOfferOnly";
     },
   },
   methods: {

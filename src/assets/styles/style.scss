@@ -3844,8 +3844,63 @@
             .object-info {
                 border: 1px solid $color_dark;
                 border-bottom: none;
+                .image-container {
+                    min-height: 100px;
+                    position: relative;
+                    img {
+                        z-index: 1;
+                    }
+                    .icon-unselect {
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        background-color: rgba(0, 0, 0, 0.4);
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        z-index: 2;
+                        i {
+                            padding: 0 4px;
+                            font-weight: bold;
+                            font-size: 64px;
+                            color: $color_success;
+                        }
+                        display: none;
+                    }
+                    .params {
+                        position: absolute;
+                        top: 5px;
+                        left: 5px;
+                        z-index: 3;
+                    }
+                    span {
+                        background-color: rgba($color: #fff, $alpha: .8);
+                        color: $color_success_alt;
+                        font-weight: bold;
+                        padding: 5px;
+                        &.object_class {
+                            margin-left: 5px;
+                            padding: 5px 10px;
+                            background-color: rgba($color: $color_danger, $alpha: .8);
+                            color: $color_light;
+                        }
+                        &.duplicate_count {
+                            margin-left: 5px;
+                            padding: 5px 10px;
+                            background-color: rgba($color: $color_warning, $alpha: .8);
+                            color: $color_dark;
+                        }
+                    }
+                }
                 .desc {
                     padding: 7px;
+                }
+                .links {
+                    a {
+                        cursor: pointer;
+                    }
                 }
                 .item__title {
                     p {
@@ -3861,9 +3916,11 @@
                         p {
                             display: inline;
                             margin-right: 5px;
+                            font-style: normal;
                         }
                         p.value {
                             font-weight: bold;
+                            font-style: italic;
                         }
                     }
                 }
@@ -3872,13 +3929,45 @@
                     margin-top: 10px;
                     font-size: 12px;
                     overflow: hidden;
+                    font-style: italic;
                     p.title {
                         font-weight: bold;
+                        font-style: normal;
                     }
                     p {
                         word-wrap: break-word!important;
                         word-break: break-all;
                     }
+                }
+                .address {
+                    font-style: italic;
+                }
+            }
+            &.selected {
+                .icon-unselect {
+                    display: flex!important;
+                    cursor: pointer;
+                }
+                transform: scale(1.02);
+            }
+            &.success {
+                .object-info {
+                    background-color: $color_success!important;
+                    color: $color_dark!important;
+                }
+            }
+            .item__title {
+                position: relative;
+                .badge {
+                    width: auto;
+                    height: auto;
+                    border-radius: 0px;
+                    position: absolute;
+                    right: 10px;
+                    padding: 3px 7px;
+                    font-size: 11px;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
                 }
             }
             &.general {
