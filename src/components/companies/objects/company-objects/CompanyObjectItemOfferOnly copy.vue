@@ -50,31 +50,6 @@
           </div>
           <div class="params">
             <div class="params__item">
-              <p class="title">Цена:</p>
-              <p class="value" v-if="offer.deal_type == 1">
-                {{ offer.calc_price_general }}
-                <small>руб за м<sup>2</sup>/г</small>
-              </p>
-              <p class="value" v-if="offer.deal_type == 2">
-                {{ offer.calc_price_sale }} <small>руб за м<sup>2</sup></small>
-              </p>
-              <p class="value" v-if="offer.deal_type == 3">
-                {{ offer.calc_price_safe_pallet }} <small>руб за 1 п. м.</small>
-              </p>
-              <span>
-                {{ taxForm }}
-              </span>
-            </div>
-            <div class="params__item">
-              <p class="title">Площадь:</p>
-              <p class="value">
-                {{ offer.calc_area_general }}
-                <small>м<sup>2</sup></small>
-              </p>
-            </div>
-          </div>
-          <div class="params">
-            <div class="params__item">
               <p class="title">Этажи:</p>
               <p class="value">{{ offer.calc_floors }}</p>
             </div>
@@ -251,14 +226,8 @@
 </template>
 
 <script>
-import { TaxFormList } from "@/const/Const.js";
 export default {
   name: "CompanyObjectItemOffer",
-  data() {
-    return {
-      taxFormList: TaxFormList,
-    };
-  },
   props: {
     offer: {
       type: Object,
@@ -301,24 +270,6 @@ export default {
         url += "?offer_id=[" + this.offer.original_id + "]";
       }
       return url;
-    },
-
-    taxForm() {
-      // console.log(!!this.offer.generalOffersMix);
-      // if (!this.offer.generalOffersMix) {
-      //   console.log(this.offer.visual_id);
-      // }
-      if (
-        this.offer.generalOffersMix &&
-        this.offer.generalOffersMix.offer &&
-        this.offer.generalOffersMix.offer.tax_form
-      ) {
-        return TaxFormList.find(
-          (item) => item.value == this.offer.generalOffersMix.offer.tax_form
-        ).label;
-      }
-
-      return null;
     },
   },
   methods: {

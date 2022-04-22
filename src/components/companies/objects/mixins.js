@@ -396,7 +396,7 @@ export const MixinAllObject = {
         async getAllObjects(query = {}) {
             this.allObjectsLoader = true;
             // const data = await api.objects.getAllObjects(this.currentPage);
-            const data = await api.companyObjects.searchOffers({ type_id: [1, 2], page: this.currentPage, expand: 'object', ...query });
+            const data = await api.companyObjects.searchOffers({ type_id: [1, 2], page: this.currentPage, expand: 'object,offer,generalOffersMix.offer', ...query });
             this.includeStepDataInObjectsData(data.data);
             this.setAllObjects(data);
             this.allObjectsLoader = false;
