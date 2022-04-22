@@ -1132,8 +1132,8 @@
                 .timeline-subtitle {
                     font-weight: 300;
                     font-style: italic;
-                    opacity: .4;
                     font-size: 11px;
+                    color: darken($color_light, 10);
                 }
                 .disabledAction {
                     opacity: 0;
@@ -3864,6 +3864,7 @@
                     position: relative;
                     img {
                         z-index: 1;
+                        min-height: 100px;
                     }
                     .icon-unselect {
                         position: absolute;
