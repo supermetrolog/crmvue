@@ -26,7 +26,7 @@ export const MixinObject = {
         preventStepTimelineObjects() {
             if (!this.TIMELINE)
                 return null;
-
+            console.error('PREVENT UPDATE');
             const preventStep = this.TIMELINE.timelineSteps.find(item => item.number == (this.step.number - 1));
             return preventStep.timelineStepObjects;
         },
@@ -184,6 +184,16 @@ export const MixinObject = {
                 });
             });
         },
+        offerUrl(offer) {
+            const baseUrl = "https://pennylane.pro/complex/";
+            let url = baseUrl + offer.complex_id;
+            if (offer.generalOffersMix) {
+                url += "?offer_id=[" + offer.generalOffersMix.original_id + "]";
+            } else {
+                url += "?offer_id=[" + offer.original_id + "]";
+            }
+            return url;
+        },
         generateComment(generalComment, sendClient, objects, data, alreadySent) {
             let objectsComments = "";
             let comment = "";
@@ -203,11 +213,11 @@ export const MixinObject = {
             objects.map((object) => {
                 objectsComments += `<li><a
               class="text-primary"
-              href="https://pennylane.pro/complex/${object.complex_id}?offer_id=[${object.original_id}]"
+              href="${this.offerUrl(object)}"
               target="_blanc"
             >
-              ${object.complex_id}~${object.object_id}
-            </a> - 
+              ${object.visual_id}
+            </a> — 
             <b title="комментарий к объекту">
             ${object.comment ? object.comment : '-'}
            </b>
@@ -397,7 +407,7 @@ export const MixinAllObject = {
         async getAllObjects(query = {}) {
             this.allObjectsLoader = true;
             // const data = await api.objects.getAllObjects(this.currentPage);
-            const data = await api.companyObjects.searchOffers({ type_id: [1, 2], page: this.currentPage, 'per-page': 20, expand: 'object,offer,generalOffersMix.offer', ...query });
+            const data = await api.companyObjects.searchOffers({ type_id: [1, 2], page: this.currentPage, 'per-page': 20, expand: 'object,offer,generalOffersMix.offer,comments', ...query });
             this.includeStepDataInObjectsData(data.data);
             this.setAllObjects(data);
             this.allObjectsLoader = false;

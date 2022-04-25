@@ -48,6 +48,17 @@
           <span class="badge badge-warning" v-if="offer.status != 1"
             >Пассив</span
           >
+          <div v-if="isSelected" class="comment">
+            <textarea
+              class="mb-1"
+              v-model.trim="localComment"
+              ref="comment"
+              rows="3"
+              @blur="unfocusTextarea"
+              @keypress.enter="enterTextarea"
+              placeholder="Комментарий клиенту"
+            />
+          </div>
           <div class="location">
             <p v-if="offer.district_name">
               {{ offer.district_name }}
@@ -95,6 +106,19 @@
             <p>
               {{ offer.calc_area_general }}
               <small>м<sup>2</sup></small>
+            </p>
+          </div>
+          <div class="comments" v-if="offer.comments">
+            <p v-if="offer.comments.length" class="title">Комментарии</p>
+            <p
+              v-for="comment in offer.comments"
+              :key="comment.id"
+              :class="{ current: comment.timeline_step_id == currentStepId }"
+            >
+              {{ comment.comment }}
+              {{ comment.timeline_step_id }}
+              -
+              {{ currentStepId }}
             </p>
           </div>
           <div class="extraVisible" @click="toggleExtraInfoVisible">
@@ -190,6 +214,7 @@ export default {
     return {
       taxFormList: TaxFormList,
       extraInfoVisible: false,
+      localComment: null,
     };
   },
   props: {
@@ -215,6 +240,9 @@ export default {
     disabled: {
       type: Boolean,
       default: true,
+    },
+    currentStepId: {
+      type: Number,
     },
   },
   computed: {
@@ -273,6 +301,19 @@ export default {
     },
     unfocusTextarea() {
       this.$emit("addComment", this.offer, this.localComment);
+    },
+  },
+  mounted() {
+    if (this.offer.comment) {
+      this.localComment = this.offer.comment;
+    }
+  },
+  watch: {
+    object: {
+      handler() {
+        this.localComment = this.offer.comment;
+      },
+      deep: true,
     },
   },
   emits: ["select", "unSelect", "addComment"],

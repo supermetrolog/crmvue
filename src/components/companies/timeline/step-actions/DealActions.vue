@@ -35,6 +35,7 @@
                 :withSeparator="true"
                 :loader="loader"
                 :viewMode="viewMode"
+                :currentStepId="step.id"
                 @select="selectOnlyOne"
                 @unSelect="unSelect"
                 @addComment="addComment"

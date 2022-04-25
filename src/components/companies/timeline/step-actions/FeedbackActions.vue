@@ -34,6 +34,7 @@
                 :withSeparator="true"
                 :loader="loader"
                 :viewMode="viewMode"
+                :currentStepId="step.id"
                 @select="select"
                 @unSelect="unSelect"
                 @addComment="addComment"

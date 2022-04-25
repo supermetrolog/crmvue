@@ -3919,10 +3919,12 @@
                             top: 2px;
                             right: 5px;
                             padding: 3px 5px;
+                            z-index: 3;
                             // background-color: rgba($color: $color_success_alt, $alpha: .8);
                             // color: $color_light;
                         }
                         &.isGeneral {
+                            z-index: 3;
                             &.badge-info {
                                 background-color: $color_info;
                             }
@@ -3944,6 +3946,25 @@
                     }
                 }
                 .main {
+                    .comment {
+                        textarea {
+                            width: 100%;
+                            border: 1px solid $color_grey;
+                            outline: none;
+                            &:focus {
+                                border: 1px solid $color_primary;
+                                outline: 1px solid $color_primary;
+                            }
+                        }
+                    }
+                    .comments {
+                        .title {
+                            font-weight: bold;
+                        }
+                        p.current {
+                            color: $color_info;
+                        }
+                    }
                     .badge {
                         color: $color_light;
                         width: auto;

@@ -26,6 +26,7 @@
       :isSelected="!!selectedObjects.find((item) => item.id == object.id)"
       :key="object.id"
       :col="col"
+      :currentStepId="currentStepId"
       :classList="
         currentObjects.find(
           (item) =>
@@ -112,6 +113,9 @@ export default {
     pagination: {
       type: Object,
       default: () => {},
+    },
+    currentStepId: {
+      type: Number,
     },
   },
   computed: {
