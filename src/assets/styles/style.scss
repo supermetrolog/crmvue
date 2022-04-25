@@ -3522,7 +3522,6 @@
             position: relative;
             background-color: $color_dark;
             box-shadow: 0 25px 30px 20px rgba(0, 0, 0, 0.4);
-            color: $color_light;
             min-width: 385px;
             max-width: 700px;
             border-radius: 2px;
@@ -3840,7 +3839,7 @@
         }
         p {
             font-weight: normal;
-            font-size: 12px;
+            font-size: 14px;
         }
         &__area {
             border-right: 1px solid $color_success;
@@ -3857,8 +3856,8 @@
                 border: 1px solid $color_success;
             }
             .object-info {
+                background-color: $color_light;
                 border: 1px solid $color_dark;
-                border-bottom: none;
                 .image-container {
                     min-height: 100px;
                     position: relative;
@@ -3908,10 +3907,73 @@
                             background-color: rgba($color: $color_warning, $alpha: .8);
                             color: $color_dark;
                         }
+                        &.visual_id {
+                            position: absolute;
+                            top: 2px;
+                            right: 5px;
+                            padding: 3px 5px;
+                            // background-color: rgba($color: $color_success_alt, $alpha: .8);
+                            // color: $color_light;
+                        }
+                        &.isGeneral {
+                            &.badge-info {
+                                background-color: $color_info;
+                            }
+                            &.badge-secondary {
+                                background-color: $color_secondary;
+                            }
+                            color: $color_light;
+                            position: absolute;
+                            bottom: 5px;
+                            right: 5px;
+                            width: auto;
+                            height: auto;
+                            border-radius: 0px;
+                            padding: 3px 7px;
+                            font-size: 11px;
+                            text-transform: uppercase;
+                            letter-spacing: 1px;
+                        }
                     }
                 }
-                .desc {
+                .main {
                     padding: 7px;
+                    padding-bottom: 0;
+                    position: relative;
+                    .location {
+                        p {
+                            display: inline;
+                            text-transform: uppercase;
+                            font-weight: bold;
+                        }
+                    }
+                    .object_type {
+                        p {
+                            text-transform: lowercase;
+                        }
+                    }
+                    .price,
+                    .area {
+                        p,
+                        i {
+                            display: inline;
+                        }
+                        p {
+                            margin-left: 5px;
+                            font-weight: bold;
+                        }
+                        small.tax {
+                            margin-left: 5px;
+                            text-transform: uppercase;
+                            color: $color_danger;
+                            font-weight: bold;
+                        }
+                    }
+                    .extraVisible {
+                        cursor: pointer;
+                        color: $color_primary;
+                        font-size: 20px;
+                    }
                 }
                 .links {
                     a {
@@ -3943,7 +4005,7 @@
                 .description,
                 .description-auto {
                     margin-top: 10px;
-                    font-size: 12px;
+                    font-size: 14px;
                     overflow: hidden;
                     font-style: italic;
                     p.title {
@@ -3951,12 +4013,20 @@
                         font-style: normal;
                     }
                     p {
-                        word-wrap: break-word!important;
-                        word-break: break-all;
+                        // word-wrap: break-word!important;
+                        // word-break: break-all;
                     }
                 }
                 .address {
                     font-style: italic;
+                    p.title {
+                        font-weight: bold;
+                        font-style: normal;
+                    }
+                    // p {
+                    //     word-wrap: break-word!important;
+                    //     word-break: break-all;
+                    // }
                 }
             }
             &.selected {
@@ -3988,8 +4058,8 @@
             }
             &.general {
                 .object-info {
-                    background-color: $color_secondary;
-                    color: $color_light;
+                    background-color: lighten($color: $color_secondary, $amount: 40);
+                    // color: $color_light;
                     .item__title {
                         position: relative;
                         .badge {

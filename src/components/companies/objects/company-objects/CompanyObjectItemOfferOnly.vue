@@ -27,7 +27,15 @@
                 {{ offer.duplicate_count }}
               </span>
             </div>
-
+            <span class="visual_id">
+              {{ offer.visual_id }}
+            </span>
+            <span
+              class="badge badge-secondary isGeneral"
+              v-if="offer.type_id == 2"
+              >Общий</span
+            >
+            <span class="badge badge-info isGeneral" v-else>Блок</span>
             <a href="#" @click.prevent="clickSelectObject">
               <img :src="imageSrc" alt="image" />
             </a>
@@ -36,44 +44,74 @@
             </div>
           </div>
         </div>
-        <div class="col-12 desc">
-          <div class="item__title">
-            <p>ID-{{ offer.object_id }}</p>
-            <p>{{ $formatter.number(offer.area_building) }} м<sup>2</sup></p>
-            <span class="badge badge-warning" v-if="offer.type_id == 2"
-              >Общий</span
+        <div class="col-12 main text-center">
+          <div class="item__title"></div>
+          <div class="location">
+            <p v-if="offer.district_name">
+              {{ offer.district_name }}
+            </p>
+            <p
+              class="region_item"
+              v-if="offer.region_name && offer.district_moscow_name"
             >
-            <span class="badge badge-info" v-else>Блок</span>
+              {{ offer.region_name }}
+            </p>
+            —
+            <p v-if="offer.district_moscow_name">
+              {{ offer.district_moscow_name }}
+            </p>
+            <p v-if="offer.direction_name">
+              {{ offer.direction_name }}
+            </p>
           </div>
-          <div class="address">
-            <p>{{ offer.address }}</p>
+          <div class="object_type">
+            <p>
+              {{ offer.object_type_name }}
+            </p>
           </div>
+          <div class="price">
+            <i class="fas fa-ruble-sign"></i>
+            <p class="value" v-if="offer.deal_type == 1">
+              {{ offer.calc_price_general }}
+              <small>руб за м<sup>2</sup>/г</small>
+            </p>
+            <p class="value" v-if="offer.deal_type == 2">
+              {{ offer.calc_price_sale }} <small>руб за м<sup>2</sup></small>
+            </p>
+            <p class="value" v-if="offer.deal_type == 3">
+              {{ offer.calc_price_safe_pallet }} <small>руб за 1 п. м.</small>
+            </p>
+            <small class="tax">
+              {{ taxForm }}
+            </small>
+          </div>
+          <div class="area">
+            <i class="fas fa-square-full"></i>
+            <p>
+              {{ offer.calc_area_general }}
+              <small>м<sup>2</sup></small>
+            </p>
+          </div>
+          <div class="extraVisible" @click="toggleExtraInfoVisible">
+            <i
+              class="far fa-arrow-alt-circle-down text-center mt-1 extra"
+              v-if="!extraInfoVisible"
+            ></i>
+            <i
+              class="far fa-arrow-alt-circle-up text-center mt-1 extra"
+              v-if="extraInfoVisible"
+            ></i>
+          </div>
+        </div>
+        <div class="col-12 text-center" v-if="extraInfoVisible">
           <div class="params">
             <div class="params__item">
-              <p class="title">Цена:</p>
-              <p class="value" v-if="offer.deal_type == 1">
-                {{ offer.calc_price_general }}
-                <small>руб за м<sup>2</sup>/г</small>
-              </p>
-              <p class="value" v-if="offer.deal_type == 2">
-                {{ offer.calc_price_sale }} <small>руб за м<sup>2</sup></small>
-              </p>
-              <p class="value" v-if="offer.deal_type == 3">
-                {{ offer.calc_price_safe_pallet }} <small>руб за 1 п. м.</small>
-              </p>
-              <span>
-                {{ taxForm }}
-              </span>
-            </div>
-            <div class="params__item">
-              <p class="title">Площадь:</p>
+              <p class="title">Площадь объекта:</p>
               <p class="value">
-                {{ offer.calc_area_general }}
-                <small>м<sup>2</sup></small>
+                {{ $formatter.number(offer.area_building) }}
+                <small> м<sup>2</sup></small>
               </p>
             </div>
-          </div>
-          <div class="params">
             <div class="params__item">
               <p class="title">Этажи:</p>
               <p class="value">{{ offer.calc_floors }}</p>
@@ -111,138 +149,27 @@
               <p class="value">{{ offer.from_mkad }} <small>км</small></p>
             </div>
           </div>
+
+          <div class="address">
+            <p class="title">Адрес</p>
+            <p>{{ offer.address }}</p>
+          </div>
           <div class="description">
             <p class="title">Ручное описание</p>
-            {{ offer.object.description || "—" }}
+            <p>
+              {{ offer.object.description || "—" }}
+            </p>
           </div>
           <div class="description-auto">
             <p class="title">Авто описание</p>
-            {{ offer.object.description_auto || "—" }}
+            <p>
+              {{ offer.object.description_auto || "—" }}
+            </p>
           </div>
           <div class="links">
             <p>
               <a :href="offerUrl" target="_blank"> Подробнее </a>
             </p>
-          </div>
-        </div>
-      </div>
-      <div class="offer-info">
-        <div class="row no-gutters">
-          <div class="col-12 text-center">
-            <span class="object-offer__visual_id">{{ offer.visual_id }}</span>
-          </div>
-        </div>
-
-        <div class="row no-gutters">
-          <div class="col-6 object-offer__area">
-            <div class="row no-gutters">
-              <div class="col-12">
-                <p class="d-inline">S предложения</p>
-                <h5 class="d-inline ml-2 text-info">
-                  {{ offer.calc_area_general }} <small>м<sup>2</sup></small>
-                </h5>
-              </div>
-            </div>
-            <div class="row no-gutters">
-              <div class="col-7"><p>S - складская</p></div>
-              <div class="col-5">
-                <p>
-                  {{ offer.calc_area_warehouse }} <small>м<sup>2</sup></small>
-                </p>
-              </div>
-            </div>
-            <div class="row no-gutters">
-              <div class="col-7"><p>S - пола</p></div>
-              <div class="col-5">
-                <p>
-                  {{ offer.calc_area_floor }} <small>м<sup>2</sup></small>
-                </p>
-              </div>
-            </div>
-            <div class="row no-gutters">
-              <div class="col-7"><p>S - мезонина</p></div>
-              <div class="col-5">
-                <p>
-                  {{ offer.calc_area_mezzanine }} <small>м<sup>2</sup></small>
-                </p>
-              </div>
-            </div>
-            <div class="row no-gutters">
-              <div class="col-7"><p>S - офисов</p></div>
-              <div class="col-5">
-                <p>
-                  {{ offer.calc_area_office }} <small>м<sup>2</sup></small>
-                </p>
-              </div>
-            </div>
-            <div class="row no-gutters">
-              <div class="col-7"><p>S - тех</p></div>
-              <div class="col-5">
-                <p>
-                  {{ offer.calc_area_tech }} <small>м<sup>2</sup></small>
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="col-6 object-offer__price">
-            <div class="row no-gutters">
-              <div class="col-12">
-                <p class="d-inline">E предложения</p>
-                <h5 class="d-inline ml-2 text-info">
-                  {{ offer.calc_price_general }}
-                  <small>руб</small>
-                </h5>
-              </div>
-            </div>
-            <div class="row no-gutters">
-              <div class="col-7"><p>E - складская</p></div>
-              <div class="col-5">
-                <p>
-                  {{ offer.calc_price_warehouse
-                  }}<small> руб/м<sup>2</sup> год</small>
-                </p>
-              </div>
-            </div>
-            <div class="row no-gutters">
-              <div class="col-7"><p>E - пола</p></div>
-              <div class="col-5">
-                <p>
-                  {{ offer.calc_price_floor }}
-                  <small>руб/м<sup>2</sup> год</small>
-                </p>
-              </div>
-            </div>
-            <div class="row no-gutters">
-              <div class="col-7"><p>E - мезонин 1 ур</p></div>
-              <div class="col-5">
-                <p>
-                  {{ offer.calc_price_mezzanine }}
-                  <small>руб/м<sup>2</sup> год</small>
-                </p>
-              </div>
-            </div>
-            <div class="row no-gutters">
-              <div class="col-7"><p>E - офисов</p></div>
-              <div class="col-5">
-                <p>
-                  {{ offer.calc_price_office }}
-                  <small>руб/м<sup>2</sup> год</small>
-                </p>
-              </div>
-            </div>
-            <div class="row no-gutters">
-              <div class="col-7">
-                <p>
-                  Цена за м<small><sup>2</sup></small>
-                </p>
-              </div>
-              <div class="col-5">
-                <p>
-                  {{ offer.calc_price_sale }}
-                  <small>руб/м<sup>2</sup></small>
-                </p>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -257,6 +184,7 @@ export default {
   data() {
     return {
       taxFormList: TaxFormList,
+      extraInfoVisible: false,
     };
   },
   props: {
