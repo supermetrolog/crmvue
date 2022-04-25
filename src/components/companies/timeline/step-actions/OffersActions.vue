@@ -65,6 +65,7 @@
               />
               <ObjectsSearch
                 @search="search"
+                noUrl
                 class="mb-2"
                 :class="{ 'action-open': controllPanelHeight > 50 }"
               />
@@ -75,6 +76,7 @@
                 :disabled="disabled"
                 :loader="allObjectsLoader"
                 :viewMode="viewMode"
+                :pagination="pagination"
                 @select="select"
                 @unSelect="unSelect"
                 @addComment="addComment"

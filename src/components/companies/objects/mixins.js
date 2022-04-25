@@ -2,7 +2,8 @@ import api from "@/api/api";
 import Objects from "./Objects.vue";
 import ObjectsList from "./ObjectsList.vue";
 import ObjectsControllPanel from "./ObjectsControllPanel.vue";
-import ObjectsSearch from "./ObjectsSearch.vue";
+// import ObjectsSearch from "./ObjectsSearch.vue";
+import ObjectsSearch from "@/components/offers/forms/offer-form/OfferSearchForm";
 import Pagination from "@/components/common/Pagination";
 import { mapActions, mapGetters } from "vuex";
 import { notify } from "@kyvg/vue3-notification";
@@ -396,7 +397,7 @@ export const MixinAllObject = {
         async getAllObjects(query = {}) {
             this.allObjectsLoader = true;
             // const data = await api.objects.getAllObjects(this.currentPage);
-            const data = await api.companyObjects.searchOffers({ type_id: [1, 2], page: this.currentPage, expand: 'object,offer,generalOffersMix.offer', ...query });
+            const data = await api.companyObjects.searchOffers({ type_id: [1, 2], page: this.currentPage, 'per-page': 20, expand: 'object,offer,generalOffersMix.offer', ...query });
             this.includeStepDataInObjectsData(data.data);
             this.setAllObjects(data);
             this.allObjectsLoader = false;
@@ -453,7 +454,7 @@ export const MixinAllObject = {
             //     this.includeStepDataInObjectsData(data.offers);
             //     this.setAllObjects(data);
             // }
-            await this.getAllObjects({ all: params.query.searchText });
+            await this.getAllObjects(params);
             this.allObjectsLoader = false;
         },
         loadMore() {
@@ -466,6 +467,9 @@ export const MixinAllObject = {
         },
         incrimentCurrentPage() {
             this.currentPage++;
+            if (this.searchParams && this.searchParams.page) {
+                this.searchParams.page++;
+            }
         },
         returnCurrentPageToFirst() {
             this.currentPage = 1;

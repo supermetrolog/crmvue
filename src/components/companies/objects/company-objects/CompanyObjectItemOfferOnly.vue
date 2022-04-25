@@ -45,7 +45,9 @@
           </div>
         </div>
         <div class="col-12 main text-center">
-          <div class="item__title"></div>
+          <span class="badge badge-warning" v-if="offer.status != 1"
+            >Пассив</span
+          >
           <div class="location">
             <p v-if="offer.district_name">
               {{ offer.district_name }}
@@ -60,7 +62,10 @@
             <p v-if="offer.district_moscow_name">
               {{ offer.district_moscow_name }}
             </p>
-            <p v-if="offer.direction_name">
+            <p v-if="offer.direction_name && offer.district_moscow_name">
+              — {{ offer.direction_name }}
+            </p>
+            <p v-if="offer.direction_name && !offer.district_moscow_name">
               {{ offer.direction_name }}
             </p>
           </div>

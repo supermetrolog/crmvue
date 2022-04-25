@@ -6,6 +6,17 @@
     <div class="col-4 mx-auto" v-if="!objects.length && !loader">
       <h3 class="text-warning text-center">НЕТ ДАННЫХ</h3>
     </div>
+    <div class="col-12 px-2 pagination-params" v-if="pagination">
+      <p>
+        <b>{{ pagination.currentPage }}</b> страница из
+        <b>{{ pagination.pageCount }};</b>
+      </p>
+      <p>
+        отображение строк
+        <b>{{ countVisibleRows }}</b> (всего <b>{{ pagination.totalCount }}</b
+        >)
+      </p>
+    </div>
     <Loader class="center" v-if="loader" />
     <component
       :is="currentComponent"
@@ -27,22 +38,17 @@
       @unSelect="$emit('unSelect', $event)"
       @addComment="(...argv) => this.$emit('addComment', ...argv)"
     />
-    <!-- <ObjectsItem
-      v-for="object in objects"
-      :disabled="disabled"
-      :object="object"
-      :isSelected="!!selectedObjects.find((item) => item.id == object.id)"
-      :key="object.id"
-      :col="col"
-      :classList="
-        currentObjects.find((item) => item.object_id == object.original_id)
-          ? 'success'
-          : ''
-      "
-      @select="$emit('select', $event)"
-      @unSelect="$emit('unSelect', $event)"
-      @addComment="(...argv) => this.$emit('addComment', ...argv)"
-    /> -->
+    <div class="col-12 px-2 pagination-params" v-if="pagination">
+      <p>
+        <b>{{ pagination.currentPage }}</b> страница из
+        <b>{{ pagination.pageCount }};</b>
+      </p>
+      <p>
+        отображение строк
+        <b>{{ countVisibleRows }}</b> (всего <b>{{ pagination.totalCount }}</b
+        >)
+      </p>
+    </div>
     <hr v-if="withSeparator && !loader" />
   </div>
 </template>
@@ -103,6 +109,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    pagination: {
+      type: Object,
+      default: () => {},
+    },
   },
   computed: {
     currentComponent() {
@@ -111,6 +121,13 @@ export default {
         return "CompanyObjectItemOfferOnly";
       }
       return "CompanyObjectItemOfferOnly";
+    },
+    countVisibleRows() {
+      let to = this.pagination.perPage * this.pagination.currentPage;
+      if (to > this.pagination.totalCount) {
+        to = this.pagination.totalCount;
+      }
+      return to;
     },
   },
   methods: {

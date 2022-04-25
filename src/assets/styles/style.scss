@@ -2795,6 +2795,13 @@
         &-list {
             min-height: 300px;
             position: relative;
+            .pagination-params {
+                text-align: center;
+                p {
+                    display: inline;
+                    font-weight: normal;
+                }
+            }
         }
         &-actions {
             position: sticky;
@@ -3937,6 +3944,16 @@
                     }
                 }
                 .main {
+                    .badge {
+                        color: $color_light;
+                        width: auto;
+                        height: auto;
+                        border-radius: 0px;
+                        padding: 3px 7px;
+                        font-size: 11px;
+                        text-transform: uppercase;
+                        letter-spacing: 1px;
+                    }
                     padding: 7px;
                     padding-bottom: 0;
                     position: relative;

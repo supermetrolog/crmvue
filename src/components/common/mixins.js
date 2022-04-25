@@ -42,7 +42,12 @@ export const SearchFormMixin = {
             form: {...this.$options.defaultFormProperties },
         };
     },
-
+    props: {
+        noUrl: {
+            type: Boolean,
+            default: false,
+        }
+    },
     computed: {
         ...mapGetters(["THIS_USER"]),
         filterCount() {
@@ -67,12 +72,20 @@ export const SearchFormMixin = {
     methods: {
         ...mapActions(["FETCH_CONSULTANT_LIST"]),
         onSubmit() {
-            let query = {...this.$route.query, ...this.form };
+            let query = {};
+            if (!this.noUrl) {
+                query = {...this.$route.query, ...this.form };
+            } else {
+                query = {...this.form };
+            }
             console.warn(query);
             this.deleteEmptyFields(query);
 
             query.page = 1;
-            this.$router.replace({ query });
+            if (!this.noUrl) {
+                this.$router.replace({ query });
+            }
+            this.$emit('search', query);
         },
         resetForm() {
             this.form = {...this.$options.defaultFormProperties };
@@ -93,7 +106,9 @@ export const SearchFormMixin = {
         },
     },
     async mounted() {
-        await this.setQueryFields();
+        if (!this.noUrl) {
+            await this.setQueryFields();
+        }
         console.log(this.form);
         this.$watch(
             "form",
