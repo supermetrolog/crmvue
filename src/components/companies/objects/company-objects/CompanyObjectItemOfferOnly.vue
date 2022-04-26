@@ -196,6 +196,9 @@
             <p>
               <a :href="offerUrl" target="_blank"> Подробнее </a>
             </p>
+            <p>
+              <a :href="pdfUrl" target="_blank"> PDF </a>
+            </p>
           </div>
         </div>
       </div>
@@ -205,6 +208,7 @@
 
 <script>
 import { TaxFormList } from "@/const/Const.js";
+import { mapGetters } from "vuex";
 export default {
   name: "CompanyObjectItemOffer",
   data() {
@@ -243,6 +247,7 @@ export default {
     },
   },
   computed: {
+    ...mapGetters(["THIS_USER"]),
     imageSrc() {
       const photos = this.offer.photos;
       if (photos && Array.isArray(photos) && photos[0].length > 2) {
@@ -260,7 +265,9 @@ export default {
       }
       return url;
     },
-
+    pdfUrl() {
+      return `http://crmka/pdf/presentations?type_id=${this.offer.type_id}&original_id=${this.offer.original_id}&object_id=${this.offer.object_id}&consultant=${this.THIS_USER.userProfile.full_name}`;
+    },
     taxForm() {
       // console.log(!!this.offer.generalOffersMix);
       // if (!this.offer.generalOffersMix) {
