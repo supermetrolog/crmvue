@@ -6,9 +6,10 @@
           <p>нет комментариев</p>
         </li>
         <CommentItem
-          v-for="comment in data"
+          v-for="(comment, index) in data"
           :key="comment.id"
           :data="comment"
+          :preventComment="getPreventComment(index)"
         />
       </ul>
     </div>
@@ -25,6 +26,17 @@ export default {
   props: {
     data: {
       type: Array,
+    },
+  },
+
+  methods: {
+    getPreventComment(index) {
+      if (!index) {
+        return null;
+      }
+      if (Array.isArray(this.data) && this.data[index - 1]) {
+        return this.data[index - 1];
+      }
     },
   },
 };

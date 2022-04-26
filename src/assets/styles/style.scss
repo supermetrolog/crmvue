@@ -3066,6 +3066,14 @@
             // padding-bottom: 10px;
             max-height: 200px;
             &-item {
+                .main {
+                    text-align: center;
+                    background-color: $color_dark;
+                    color: $color_light;
+                }
+                .noMain {
+                    text-align: right;
+                }
                 margin-bottom: 10px;
                 i,
                 span,
