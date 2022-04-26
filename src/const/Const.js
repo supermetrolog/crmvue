@@ -167,6 +167,15 @@ export const ActivePassive = new Map(
 
     ]
 );
+export const ActivePassiveFUCK = new Map(
+    [
+        ['param', [
+            [1, "актив"],
+            [2, "пассив"],
+        ]],
+
+    ]
+);
 export const YesNo = new Map(
     [
         ['param', [

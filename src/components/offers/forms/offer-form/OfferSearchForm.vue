@@ -6,7 +6,7 @@
           v-model="form.all"
           label="Поиск"
           placeholder="ID, адрес, собственник, телефон, ФИО"
-          class="col-12 main-input pr-1"
+          class="col-12 main-input"
           @keydown.enter="onSubmit"
         />
       </FormGroup>
@@ -209,6 +209,21 @@
             class="col pr-1 text-center"
             :options="yesNoOptions"
           />
+          <Radio
+            v-model="form.status"
+            :options="activePassiveOptions"
+            :unselectMode="true"
+            label="Статус"
+            class="col text-center"
+          />
+          <!-- <div class="col-2 align-self-center ml-auto">
+            <button
+              class="btn btn-warning btn-large"
+              @click.prevent="resetForm"
+            >
+              Сбросить
+            </button>
+          </div> -->
         </FormGroup>
         <FormGroup class="mb-2"> </FormGroup>
         <FormGroup class="mb-2">
@@ -265,6 +280,7 @@ import {
   RegionList,
   DirectionList,
   DistrictList,
+  ActivePassiveFUCK,
 } from "@/const/Const.js";
 export default {
   mixins: [SearchFormMixin],
@@ -292,6 +308,7 @@ export default {
       regionList: RegionList.get("param"),
       directionList: DirectionList.get("param"),
       districtList: DistrictList.get("param"),
+      activePassiveOptions: ActivePassiveFUCK.get("param"),
     };
   },
   defaultFormProperties: {
@@ -322,6 +339,7 @@ export default {
     region: [],
     direction: [],
     district_moscow: [],
+    status: null,
   },
   methods: {
     ...mapActions(["FETCH_CONSULTANT_LIST"]),

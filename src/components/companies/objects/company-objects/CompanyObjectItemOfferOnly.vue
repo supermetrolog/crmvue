@@ -116,9 +116,6 @@
               :class="{ current: comment.timeline_step_id == currentStepId }"
             >
               {{ comment.comment }}
-              {{ comment.timeline_step_id }}
-              -
-              {{ currentStepId }}
             </p>
           </div>
           <div class="extraVisible" @click="toggleExtraInfoVisible">
