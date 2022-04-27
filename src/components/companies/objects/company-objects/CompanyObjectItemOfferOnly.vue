@@ -250,7 +250,12 @@ export default {
     ...mapGetters(["THIS_USER"]),
     imageSrc() {
       const photos = this.offer.photos;
-      if (photos && Array.isArray(photos) && photos[0].length > 2) {
+      if (
+        photos &&
+        Array.isArray(photos) &&
+        typeof photos[0] == "string" &&
+        photos[0].length > 2
+      ) {
         return "https://pennylane.pro" + photos[0];
       }
       return "http://crmka/uploads/1.jpg";
