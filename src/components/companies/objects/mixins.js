@@ -7,6 +7,7 @@ import ObjectsSearch from "@/components/offers/forms/offer-form/OfferSearchForm"
 import Pagination from "@/components/common/Pagination";
 import { mapActions, mapGetters } from "vuex";
 import { notify } from "@kyvg/vue3-notification";
+import crypto from "crypto"
 export const MixinObject = {
     components: {
         Objects,
@@ -350,6 +351,7 @@ export const MixinAllObject = {
             allObjectsLoader: false,
             controllPanelHeight: 0,
             barVisible: false,
+            waitHash: null
         };
     },
     computed: {
@@ -406,10 +408,14 @@ export const MixinAllObject = {
     methods: {
         async getAllObjects(query = {}) {
             this.allObjectsLoader = true;
+            let hash = crypto.createHash('sha256').update(JSON.stringify(query)).digest('base64');
+            this.waitHash = hash;
             // const data = await api.objects.getAllObjects(this.currentPage);
             const data = await api.companyObjects.searchOffers({ type_id: [1, 2], page: this.currentPage, 'per-page': 20, expand: 'object,offer,generalOffersMix.offer,comments', ...query });
-            this.includeStepDataInObjectsData(data.data);
-            this.setAllObjects(data);
+            if (hash == this.waitHash) {
+                this.includeStepDataInObjectsData(data.data);
+                this.setAllObjects(data);
+            }
             this.allObjectsLoader = false;
         },
         async getPreventStepObjects() {

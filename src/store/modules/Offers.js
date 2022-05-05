@@ -1,4 +1,5 @@
 import api from "@/api/api"
+import crypto from "crypto"
 const deleteEmptyFields = (object) => {
     for (const key in object) {
         if (Object.hasOwnProperty.call(object, key)) {
@@ -18,6 +19,7 @@ const Offers = {
         offers: [],
         offer: null,
         pagination: null,
+        wait_hash: null
     },
     mutations: {
         updateOffers(state, { data, concat }) {
@@ -28,12 +30,24 @@ const Offers = {
                 state.offers = data.data;
             }
         },
+        setWaitHash(state, hash) {
+            state.wait_hash = hash;
+            console.warn("SET WAIT HASH", state.wait_hash);
+        },
     },
     actions: {
         async SEARCH_OFFERS(context, { query, concat = false }) {
+            let hash = crypto.createHash('sha256').update(JSON.stringify(query)).digest('base64');
+            context.commit('setWaitHash', hash);
+            console.warn('HASH1', hash, 'HASH2', context.getters);
             const data = await api.offers.search(query);
             if (data) {
-                context.commit('updateOffers', { data, concat });
+                console.error('HASH1', hash, 'HASH2', context.getters.WAIT_HASH);
+                if (hash == context.getters.WAIT_HASH) {
+                    context.commit('updateOffers', { data, concat });
+                } else {
+                    return false;
+                }
             }
             return data;
         },
@@ -73,6 +87,9 @@ const Offers = {
         OFFERS_PAGINATION(state) {
             return state.pagination;
         },
+        WAIT_HASH(state) {
+            return state.wait_hash;
+        }
     }
 }
 

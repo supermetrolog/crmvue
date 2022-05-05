@@ -70,7 +70,7 @@ export default {
         ...this.$route.query,
         type_id: [2],
         expand:
-          "object,company.mainContact.phones,company.mainContact.emails,miniOffersMix,generalOffersMix.offer,consultant.userProfile",
+          "object,company.mainContact.phones,company.mainContact.emails,company.mainContact.phones,miniOffersMix,generalOffersMix.offer,consultant.userProfile",
       };
       await this.SEARCH_OFFERS({ query });
       this.loader = false;
