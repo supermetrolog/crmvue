@@ -74,12 +74,24 @@
               >
                 <CustomButton
                   :options="{
+                    btnActive: recommendedFilter == 6,
+                    btnClass: 'success',
+                    defaultBtn: true,
+                    disabled: false,
+                  }"
+                  class="d-inline"
+                  @confirm="getSortRecommendedObjects()"
+                >
+                  <template #btnContent> SORT</template>
+                </CustomButton>
+                <CustomButton
+                  :options="{
                     btnActive: recommendedFilter == 1,
                     btnClass: 'primary',
                     defaultBtn: true,
                     disabled: false,
                   }"
-                  class="d-inline"
+                  class="d-inline ml-2"
                   @confirm="getFirstRecommendedObjects()"
                 >
                   <template #btnContent> ПОДБОРКА 1</template>
@@ -216,6 +228,11 @@ export default {
     direction: [],
     district_moscow: [],
     status: null,
+    // new fields
+    recommended_sort: null,
+    approximateDistanceFromMKAD: null,
+    pricePerFloor: null,
+    type_id: null,
   },
   methods: {
     updatedObjects(data, fn) {
@@ -232,7 +249,38 @@ export default {
         this.controllPanelHeight = this.$refs.contoll_panel.$el.clientHeight;
       });
     },
-
+    getSortRecommendedObjects() {
+      this.changeRecommendedFilter(6);
+      if (!this.recommendedFilter) {
+        this.queryParams = this.$options.defaultQueryParams;
+        return;
+      }
+      const request = this.currentRequest;
+      const query = {
+        rangeMinElectricity: request.electricity,
+        approximateDistanceFromMKAD: request.distanceFromMKAD,
+        deal_type: request.dealType,
+        rangeMaxArea: request.maxArea,
+        rangeMinArea: request.minArea,
+        pricePerFloor: request.pricePerFloor,
+        rangeMinCeilingHeight: request.minCeilingHeight,
+        rangeMaxCeilingHeight: request.maxCeilingHeight,
+        heated: request.heated,
+        has_cranes: request.haveCranes,
+        floor_types: request.antiDustOnly ? [2] : [],
+        region: request.regions.map((item) => item.region),
+        status: 1,
+        type_id: [1, 2],
+        gates: request.gateTypes.map((item) => item.gate_type),
+        direction: request.directions.map((item) => item.direction),
+        district_moscow: request.districts.map((item) => item.district),
+        recommended_sort: 1, // ФИЛЬТРЫ ПЕРЕСТАНУТ РАБОТАТЬ И БУДЕТ ВЫДАВАТЬСЯ РЕЗУЛЬТАТЫ ОТСОРТИРОВАННЫЕ ПО КОЛЛИЧЕСТВУ СОВПАДЕНИЙ
+      };
+      this.queryParams = {
+        ...this.$options.defaultQueryParams,
+        ...query,
+      };
+    },
     getFirstRecommendedObjects() {
       this.changeRecommendedFilter(1);
       if (!this.recommendedFilter) {
@@ -258,6 +306,7 @@ export default {
         gates: request.gateTypes.map((item) => item.gate_type),
         direction: request.directions.map((item) => item.direction),
         district_moscow: request.districts.map((item) => item.district),
+        recommended_sort: null,
       };
       this.queryParams = {
         ...this.$options.defaultQueryParams,
@@ -289,6 +338,7 @@ export default {
         gates: request.gateTypes.map((item) => item.gate_type),
         direction: request.directions.map((item) => item.direction),
         district_moscow: request.districts.map((item) => item.district),
+        recommended_sort: null,
       };
       this.queryParams = {
         ...this.$options.defaultQueryParams,
@@ -303,10 +353,12 @@ export default {
       }
       const request = this.currentRequest;
       const query = {
+        rangeMinElectricity: null,
         approximateDistanceFromMKAD: request.distanceFromMKAD,
         deal_type: request.dealType,
         rangeMaxArea: request.maxArea,
         rangeMinArea: request.minArea,
+        pricePerFloor: null,
         rangeMinCeilingHeight: request.minCeilingHeight,
         rangeMaxCeilingHeight: request.maxCeilingHeight,
         heated: request.heated,
@@ -315,8 +367,10 @@ export default {
         region: request.regions.map((item) => item.region),
         status: 1,
         type_id: [1, 2],
+        gates: [],
         direction: request.directions.map((item) => item.direction),
         district_moscow: request.districts.map((item) => item.district),
+        recommended_sort: null,
       };
       this.queryParams = {
         ...this.$options.defaultQueryParams,
@@ -331,10 +385,12 @@ export default {
       }
       const request = this.currentRequest;
       const query = {
+        rangeMinElectricity: null,
         approximateDistanceFromMKAD: request.distanceFromMKAD,
         deal_type: request.dealType,
         rangeMaxArea: request.maxArea,
         rangeMinArea: request.minArea,
+        pricePerFloor: null,
         rangeMinCeilingHeight: request.minCeilingHeight,
         rangeMaxCeilingHeight: request.maxCeilingHeight,
         heated: request.heated,
@@ -343,8 +399,10 @@ export default {
         region: request.regions.map((item) => item.region),
         status: 2,
         type_id: [1, 2],
+        gates: [],
         direction: request.directions.map((item) => item.direction),
         district_moscow: request.districts.map((item) => item.district),
+        recommended_sort: null,
       };
       this.queryParams = {
         ...this.$options.defaultQueryParams,
@@ -376,6 +434,7 @@ export default {
         gates: request.gateTypes.map((item) => item.gate_type),
         direction: request.directions.map((item) => item.direction),
         district_moscow: request.districts.map((item) => item.district),
+        recommended_sort: null,
       };
       this.queryParams = {
         ...this.$options.defaultQueryParams,
