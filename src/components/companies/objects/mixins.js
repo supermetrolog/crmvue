@@ -348,6 +348,7 @@ export const MixinAllObject = {
             currentPage: 1,
             pagination: null,
             searchMode: false,
+            searchParams: null,
             allObjectsLoader: false,
             controllPanelHeight: 0,
             barVisible: false,
@@ -355,6 +356,7 @@ export const MixinAllObject = {
         };
     },
     computed: {
+        ...mapGetters(["COMPANY_REQUESTS"]),
         buttons() {
             return [{
                     btnClass: "success",
@@ -404,13 +406,20 @@ export const MixinAllObject = {
                 },
             ];
         },
+        currentRequest() {
+            if (Array.isArray(this.COMPANY_REQUESTS)) {
+                return this.COMPANY_REQUESTS.find(
+                    (item) => item.id == this.$route.query.request_id
+                );
+            }
+            return false;
+        },
     },
     methods: {
         async getAllObjects(query = {}) {
             this.allObjectsLoader = true;
             let hash = crypto.createHash('sha256').update(JSON.stringify(query)).digest('base64');
             this.waitHash = hash;
-            // const data = await api.objects.getAllObjects(this.currentPage);
             const data = await api.companyObjects.searchOffers({ type_id: [1, 2], page: this.currentPage, 'per-page': 20, expand: 'object,offer,generalOffersMix.offer,comments', ...query });
             if (hash == this.waitHash) {
                 this.includeStepDataInObjectsData(data.data);
@@ -420,10 +429,6 @@ export const MixinAllObject = {
         },
         async getPreventStepObjects() {
             this.loader = true;
-            // const objects = await api.objects.getCurrentStepObjectsOneByOne(
-            //     this.step.timelineStepObjects
-            // );
-            // console.log("DATA", objects);
             const objects = [];
             this.step.timelineStepObjects.forEach(item => {
                 if (item.offer) {
@@ -451,7 +456,7 @@ export const MixinAllObject = {
             this.searchParams = params;
             this.searchMode = true;
             this.returnCurrentPageToFirst();
-            this.searchAllObjects(params);
+            this.getAllObjects(params);
         },
         async searchAllObjects(params) {
             this.allObjectsLoader = true;
@@ -492,9 +497,12 @@ export const MixinAllObject = {
         },
         favorites() {
             this.barVisible = !this.barVisible;
+        },
+        getData() {
+            this.getAllObjects();
         }
     },
     mounted() {
-        this.getAllObjects();
+        this.getData();
     },
 }

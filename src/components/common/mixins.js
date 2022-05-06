@@ -46,6 +46,9 @@ export const SearchFormMixin = {
         noUrl: {
             type: Boolean,
             default: false,
+        },
+        queryParams: {
+            type: Object,
         }
     },
     computed: {
@@ -85,10 +88,12 @@ export const SearchFormMixin = {
             if (!this.noUrl) {
                 this.$router.replace({ query });
             }
+
             this.$emit('search', query);
         },
         resetForm() {
             this.form = {...this.$options.defaultFormProperties };
+            this.$emit('reset');
         },
         deleteEmptyFields(object) {
             for (const key in object) {
@@ -104,10 +109,24 @@ export const SearchFormMixin = {
                 }
             }
         },
+
+        setQueryFieldsNoUrl() {
+            if (this.queryParams) {
+                this.form = {...this.form, ...this.queryParams };
+            }
+        }
     },
     async mounted() {
         if (!this.noUrl) {
             await this.setQueryFields();
+        } else {
+            this.$watch(
+                "queryParams",
+                () => {
+                    this.setQueryFieldsNoUrl();
+                }, { deep: true }
+            );
+            this.setQueryFieldsNoUrl();
         }
         console.log(this.form);
         this.$watch(
@@ -117,6 +136,7 @@ export const SearchFormMixin = {
                 this.setTimeout = setTimeout(() => this.onSubmit(), 500);
             }, { deep: true }
         );
+
     },
     beforeUnmount() {
         console.log("UNMOUNT");

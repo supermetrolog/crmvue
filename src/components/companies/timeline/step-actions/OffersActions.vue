@@ -64,9 +64,82 @@
                 @unSelect="unSelect"
                 @addComment="addComment"
               />
+              <div
+                class="
+                  timeline-actions timeline-list-item
+                  p-1
+                  row
+                  justify-content-center
+                "
+              >
+                <CustomButton
+                  :options="{
+                    btnActive: recommendedFilter == 1,
+                    btnClass: 'primary',
+                    defaultBtn: true,
+                    disabled: false,
+                  }"
+                  class="d-inline"
+                  @confirm="getFirstRecommendedObjects()"
+                >
+                  <template #btnContent> ПОДБОРКА 1</template>
+                </CustomButton>
+                <CustomButton
+                  :options="{
+                    btnActive: recommendedFilter == 2,
+                    btnClass: 'warning',
+                    defaultBtn: true,
+                    disabled: false,
+                  }"
+                  class="d-inline ml-2"
+                  @confirm="getTwoRecommendedObjects()"
+                >
+                  <template #btnContent> ПОДБОРКА 2</template>
+                </CustomButton>
+                <CustomButton
+                  :options="{
+                    btnActive: recommendedFilter == 3,
+                    btnClass: 'primary',
+                    defaultBtn: true,
+                    disabled: false,
+                  }"
+                  class="d-inline ml-2"
+                  @confirm="getThreeRecommendedObjects()"
+                >
+                  <template #btnContent> ПОДБОРКА 3</template>
+                </CustomButton>
+                <CustomButton
+                  :options="{
+                    btnActive: recommendedFilter == 4,
+                    btnClass: 'warning',
+                    defaultBtn: true,
+                    disabled: false,
+                  }"
+                  class="d-inline ml-2"
+                  @confirm="getFourRecommendedObjects()"
+                >
+                  <template #btnContent> ПОДБОРКА 4</template>
+                </CustomButton>
+                <CustomButton
+                  v-if="currentRequest.dealType != 1"
+                  :options="{
+                    btnActive: recommendedFilter == 5,
+                    btnClass: 'primary',
+                    defaultBtn: true,
+                    disabled: false,
+                  }"
+                  class="d-inline ml-2"
+                  @confirm="getFiveRecommendedObjects()"
+                >
+                  <template #btnContent> ПОДБОРКА 5</template>
+                </CustomButton>
+              </div>
+
               <ObjectsSearch
                 @search="search"
+                @reset="recommendedFilter = null"
                 noUrl
+                :queryParams="queryParams"
                 class="mb-2"
                 :class="{ 'action-open': controllPanelHeight > 50 }"
               />
@@ -99,12 +172,50 @@
 <script>
 import { MixinStepActions } from "../mixins";
 import { MixinAllObject } from "../../objects/mixins";
+import CustomButton from "@/components/common/CustomButton.vue";
 import Bar from "@/components/common/Bar";
 export default {
   name: "OffersActions",
   mixins: [MixinStepActions, MixinAllObject],
   components: {
     Bar,
+    CustomButton,
+  },
+  data() {
+    return {
+      recommendedFilter: null,
+      queryParams: null,
+    };
+  },
+  defaultQueryParams: {
+    all: null,
+    rangeMinElectricity: null,
+    rangeMaxDistanceFromMKAD: null,
+    deal_type: null,
+    agent_id: null,
+    rangeMaxArea: null,
+    rangeMinArea: null,
+    rangeMaxPricePerFloor: null,
+    rangeMinPricePerFloor: null,
+    rangeMinCeilingHeight: null,
+    rangeMaxCeilingHeight: null,
+    class: [],
+    gates: [],
+    heated: null,
+    water: null,
+    gas: null,
+    steam: null,
+    sewage_central: null,
+    racks: null,
+    railway: null,
+    has_cranes: null,
+    floor_types: [],
+    purposes: [],
+    object_type: [],
+    region: [],
+    direction: [],
+    district_moscow: [],
+    status: null,
   },
   methods: {
     updatedObjects(data, fn) {
@@ -120,6 +231,166 @@ export default {
       this.$nextTick(() => {
         this.controllPanelHeight = this.$refs.contoll_panel.$el.clientHeight;
       });
+    },
+
+    getFirstRecommendedObjects() {
+      this.changeRecommendedFilter(1);
+      if (!this.recommendedFilter) {
+        this.queryParams = this.$options.defaultQueryParams;
+        return;
+      }
+      const request = this.currentRequest;
+      const query = {
+        rangeMinElectricity: request.electricity,
+        approximateDistanceFromMKAD: request.distanceFromMKAD,
+        deal_type: request.dealType,
+        rangeMaxArea: request.maxArea,
+        rangeMinArea: request.minArea,
+        pricePerFloor: request.pricePerFloor,
+        rangeMinCeilingHeight: request.minCeilingHeight,
+        rangeMaxCeilingHeight: request.maxCeilingHeight,
+        heated: request.heated,
+        has_cranes: request.haveCranes,
+        floor_types: request.antiDustOnly ? [2] : [],
+        region: request.regions.map((item) => item.region),
+        status: 1,
+        type_id: [1, 2],
+        gates: request.gateTypes.map((item) => item.gate_type),
+        direction: request.directions.map((item) => item.direction),
+        district_moscow: request.districts.map((item) => item.district),
+      };
+      this.queryParams = {
+        ...this.$options.defaultQueryParams,
+        ...query,
+      };
+    },
+    getTwoRecommendedObjects() {
+      this.changeRecommendedFilter(2);
+      if (!this.recommendedFilter) {
+        this.queryParams = this.$options.defaultQueryParams;
+        return;
+      }
+      const request = this.currentRequest;
+      const query = {
+        rangeMinElectricity: request.electricity,
+        approximateDistanceFromMKAD: request.distanceFromMKAD,
+        deal_type: request.dealType,
+        rangeMaxArea: request.maxArea,
+        rangeMinArea: request.minArea,
+        pricePerFloor: request.pricePerFloor,
+        rangeMinCeilingHeight: request.minCeilingHeight,
+        rangeMaxCeilingHeight: request.maxCeilingHeight,
+        heated: request.heated,
+        has_cranes: request.haveCranes,
+        floor_types: request.antiDustOnly ? [2] : [],
+        region: request.regions.map((item) => item.region),
+        status: 2,
+        type_id: [1, 2],
+        gates: request.gateTypes.map((item) => item.gate_type),
+        direction: request.directions.map((item) => item.direction),
+        district_moscow: request.districts.map((item) => item.district),
+      };
+      this.queryParams = {
+        ...this.$options.defaultQueryParams,
+        ...query,
+      };
+    },
+    getThreeRecommendedObjects() {
+      this.changeRecommendedFilter(3);
+      if (!this.recommendedFilter) {
+        this.queryParams = this.$options.defaultQueryParams;
+        return;
+      }
+      const request = this.currentRequest;
+      const query = {
+        approximateDistanceFromMKAD: request.distanceFromMKAD,
+        deal_type: request.dealType,
+        rangeMaxArea: request.maxArea,
+        rangeMinArea: request.minArea,
+        rangeMinCeilingHeight: request.minCeilingHeight,
+        rangeMaxCeilingHeight: request.maxCeilingHeight,
+        heated: request.heated,
+        has_cranes: request.haveCranes,
+        floor_types: request.antiDustOnly ? [2] : [],
+        region: request.regions.map((item) => item.region),
+        status: 1,
+        type_id: [1, 2],
+        direction: request.directions.map((item) => item.direction),
+        district_moscow: request.districts.map((item) => item.district),
+      };
+      this.queryParams = {
+        ...this.$options.defaultQueryParams,
+        ...query,
+      };
+    },
+    getFourRecommendedObjects() {
+      this.changeRecommendedFilter(4);
+      if (!this.recommendedFilter) {
+        this.queryParams = this.$options.defaultQueryParams;
+        return;
+      }
+      const request = this.currentRequest;
+      const query = {
+        approximateDistanceFromMKAD: request.distanceFromMKAD,
+        deal_type: request.dealType,
+        rangeMaxArea: request.maxArea,
+        rangeMinArea: request.minArea,
+        rangeMinCeilingHeight: request.minCeilingHeight,
+        rangeMaxCeilingHeight: request.maxCeilingHeight,
+        heated: request.heated,
+        has_cranes: request.haveCranes,
+        floor_types: request.antiDustOnly ? [2] : [],
+        region: request.regions.map((item) => item.region),
+        status: 2,
+        type_id: [1, 2],
+        direction: request.directions.map((item) => item.direction),
+        district_moscow: request.districts.map((item) => item.district),
+      };
+      this.queryParams = {
+        ...this.$options.defaultQueryParams,
+        ...query,
+      };
+    },
+    getFiveRecommendedObjects() {
+      this.changeRecommendedFilter(5);
+      if (!this.recommendedFilter) {
+        this.queryParams = this.$options.defaultQueryParams;
+        return;
+      }
+      const request = this.currentRequest;
+      const query = {
+        rangeMinElectricity: request.electricity,
+        approximateDistanceFromMKAD: request.distanceFromMKAD,
+        deal_type: 1,
+        rangeMaxArea: request.maxArea,
+        rangeMinArea: request.minArea,
+        pricePerFloor: request.pricePerFloor,
+        rangeMinCeilingHeight: request.minCeilingHeight,
+        rangeMaxCeilingHeight: request.maxCeilingHeight,
+        heated: request.heated,
+        has_cranes: request.haveCranes,
+        floor_types: request.antiDustOnly ? [2] : [],
+        region: request.regions.map((item) => item.region),
+        status: 1,
+        type_id: [1, 2],
+        gates: request.gateTypes.map((item) => item.gate_type),
+        direction: request.directions.map((item) => item.direction),
+        district_moscow: request.districts.map((item) => item.district),
+      };
+      this.queryParams = {
+        ...this.$options.defaultQueryParams,
+        ...query,
+      };
+    },
+    changeRecommendedFilter(filter) {
+      if (this.recommendedFilter != filter) {
+        this.recommendedFilter = filter;
+      } else {
+        this.recommendedFilter = null;
+      }
+    },
+    getData() {
+      this.getFirstRecommendedObjects();
     },
   },
 };
