@@ -20,17 +20,10 @@ jobs:
       run: |
         npm install
         npm run build
-    
-    - name: 📂 Sync files
-      uses: SamKirkland/FTP-Deploy-Action@4.3.0
-      with:
-        server: billypro.beget.tech
-        username: ${{ secrets.username }}
-        password: ${{ secrets.password }}
-        
+
     - name: 📂 Sync files with prod server
       uses: SamKirkland/FTP-Deploy-Action@4.3.0
       with:
-        server: 176.99.3.73
+        server: 62.113.107.218
         username: ${{ secrets.ftp_prod_server_username }}
         password: ${{ secrets.ftp_prod_server_password }}
