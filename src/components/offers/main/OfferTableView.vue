@@ -187,7 +187,7 @@ export default {
       ) {
         return "https://pennylane.pro" + object_photos[0];
       } else {
-        return "http://crmka/uploads/1.jpg";
+        return this.$apiUrlHelper.fileNotFoundUrl();
       }
     },
     getRegion(region) {

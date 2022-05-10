@@ -63,7 +63,7 @@
         <Tr v-for="user in users" :key="user.id">
           <Td class="avatar-container">
             <div class="avatar mx-auto">
-              <img :src="src + user.userProfile.avatar" alt="Аватар" />
+              <img :src="getAvatarUrl(user.userProfile.avatar)" alt="Аватар" />
             </div>
           </Td>
           <Td class="text-left">
@@ -150,15 +150,6 @@ export default {
       type: Array,
     },
   },
-  computed: {
-    src() {
-      if (process.env.NODE_ENV == "development") {
-        return "http://crmka/uploads/";
-      } else {
-        return "http://api.billypro.beget.tech/uploads/";
-      }
-    },
-  },
   methods: {
     ...mapActions(["DELETE_USER"]),
     clickCloseModal() {
@@ -174,6 +165,9 @@ export default {
       this.$emit("deletedUser");
       this.deleteLoader = false;
       this.userForDelete = null;
+    },
+    getAvatarUrl(avatarName) {
+      return this.$apiUrlHelper.getUserAvatarUrl(avatarName);
     },
   },
 };

@@ -259,7 +259,7 @@ export default {
       if (photos && Array.isArray(photos) && photos[0].length > 2) {
         return "https://pennylane.pro" + photos[0];
       }
-      return "http://crmka/uploads/1.jpg";
+      return this.$apiUrlHelper.fileNotFoundUrl();
     },
     offerUrl() {
       const baseUrl = "https://pennylane.pro/complex/";

@@ -90,7 +90,7 @@
                   class="d-flex align-self-center justify-content-center"
                 >
                   <img
-                    :src="'http://crmka/uploads/' + files"
+                    :src="$apiUrlHelper.getUploadedFileUrl(files)"
                     alt="file"
                     class="image"
                   />

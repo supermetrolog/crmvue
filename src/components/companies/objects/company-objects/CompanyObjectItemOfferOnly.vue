@@ -258,7 +258,7 @@ export default {
       ) {
         return "https://pennylane.pro" + photos[0];
       }
-      return "http://crmka/uploads/1.jpg";
+      return this.$apiUrlHelper.fileNotFoundUrl();
     },
     offerUrl() {
       const baseUrl = "https://pennylane.pro/complex/";
@@ -271,7 +271,10 @@ export default {
       return url;
     },
     pdfUrl() {
-      return `http://crmka/pdf/presentations?type_id=${this.offer.type_id}&original_id=${this.offer.original_id}&object_id=${this.offer.object_id}&consultant=${this.THIS_USER.userProfile.full_name}`;
+      return (
+        this.$apiUrlHelper.url() +
+        `pdf/presentations?type_id=${this.offer.type_id}&original_id=${this.offer.original_id}&object_id=${this.offer.object_id}&consultant=${this.THIS_USER.userProfile.full_name}`
+      );
     },
     taxForm() {
       // console.log(!!this.offer.generalOffersMix);

@@ -75,7 +75,10 @@
           подробнее
         </a>
         <a
-          :href="`http://crmka/pdfs?original_id=${object.original_id}&type_id=${object.type_id}&consultant=Артур Мандрыка`"
+          :href="
+            $apiUrlHelper.url() +
+            `pdfs?original_id=${object.original_id}&type_id=${object.type_id}&consultant=Артур Мандрыка`
+          "
           target="_blanc"
           class="d-block"
         >

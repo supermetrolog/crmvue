@@ -74,7 +74,7 @@ export default {
       if (photo && Array.isArray(photo)) {
         return "https://pennylane.pro" + photo[0];
       }
-      return "http://crmka/uploads/1.jpg";
+      return this.$apiUrlHelper.fileNotFoundUrl();
     },
     mainOffer() {
       return this.object.offerMix.find((offer) => offer.type_id == 2);

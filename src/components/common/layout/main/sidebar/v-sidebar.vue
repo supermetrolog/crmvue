@@ -27,14 +27,12 @@ export default {
   computed: {
     ...mapGetters(["THIS_USER"]),
     src() {
-      if (process.env.NODE_ENV == "development" && this.THIS_USER) {
-        return "http://crmka/uploads/" + this.THIS_USER.userProfile.avatar;
-      } else {
-        return (
-          "http://api.billypro.beget.tech/uploads/" +
+      if (this.THIS_USER) {
+        return this.$apiUrlHelper.getUserAvatarUrl(
           this.THIS_USER.userProfile.avatar
         );
       }
+      return null;
     },
   },
 };

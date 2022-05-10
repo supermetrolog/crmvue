@@ -120,7 +120,10 @@
           <p class="text-center value mt-1">
             <a
               class="text-primary"
-              :href="`http://crmka/pdfs?original_id=${object.original_id}&type_id=${object.type_id}&consultant=Артур Мандрыка`"
+              :href="
+                $apiUrlHelper.url() +
+                `pdfs?original_id=${object.original_id}&type_id=${object.type_id}&consultant=Артур Мандрыка`
+              "
               target="_blanc"
             >
               пдф
