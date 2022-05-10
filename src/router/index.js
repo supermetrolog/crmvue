@@ -114,7 +114,7 @@ const routes = [{
             import ('../views/Account/Account.vue'),
         children: [{
             path: '',
-            name: 'Main',
+            name: 'AccountMain',
             meta: { layout: 'main', auth: { isAuth: true, role: ['moderator', 'administrator'] } },
             component: () =>
                 import ('../views/Account/Main.vue')
@@ -128,7 +128,7 @@ const routes = [{
             import ('../views/Offers/Offers.vue'),
         children: [{
             path: '',
-            name: 'Main',
+            name: 'OffersMain',
             meta: { layout: 'main', auth: { isAuth: true, role: ['moderator', 'administrator'] } },
             component: () =>
                 import ('../views/Offers/Main.vue')

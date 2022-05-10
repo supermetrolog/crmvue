@@ -12,11 +12,6 @@
           <component :is="Component" :key="$route.path"></component>
         </transition>
       </router-view>
-      <!-- <router-view v-slot="{ Component }">
-        <transition name="zoom">
-          <component :is="Component" :key="$route.path"></component>
-        </transition>
-      </router-view> -->
     </section>
   </div>
 </template>
