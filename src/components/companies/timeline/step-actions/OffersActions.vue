@@ -355,7 +355,7 @@ export default {
       const query = {
         rangeMinElectricity: null,
         approximateDistanceFromMKAD: request.distanceFromMKAD,
-        deal_type: request.dealType,
+        deal_type: null,
         rangeMaxArea: request.maxArea,
         rangeMinArea: request.minArea,
         pricePerFloor: null,

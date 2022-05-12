@@ -17,8 +17,8 @@ const formatterObject = {
 
 export const apiUrlHelperObject = {
     prodUrl: "https://api.supermetrolog.ru/",
-    // devApiUrl: "http://crmka/",
-    devUrl: "https://api.supermetrolog.ru/",
+    devUrl: "http://crmka/",
+    // devUrl: "https://api.supermetrolog.ru/",
     uploadsPath: "uploads/",
     imagesPath: "images/",
     notFoundFileName: "no-image.jpg",
