@@ -1,7 +1,9 @@
 <template>
   <div class="form-item checkbox" :class="mode">
     <label class="form-item-label" :class="{ required: required }" for="fuck">
-      {{ mode == "" ? label : "" }}
+      <p v-if="mode == '' && label">
+        {{ mode == "" ? label : "" }}
+      </p>
       <div v-if="options.length">
         <label
           v-for="option in options"

@@ -115,6 +115,7 @@
           </Input>
           <Radio
             v-model="form.status"
+            required
             label="Статус"
             class="col-2 text-center"
             :options="statusOptions"
@@ -261,6 +262,7 @@
           </Input>
 
           <CheckboxIcons
+            required
             v-model="form.objectTypes"
             :v="v$.form.objectTypes"
             label="Тип объекта"

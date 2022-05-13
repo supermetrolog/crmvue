@@ -5,7 +5,9 @@
       :class="{ required: required }"
       v-if="field.length && field.length != 1"
     >
-      {{ label }}
+      <p v-if="label">
+        {{ label }}
+      </p>
       <div v-for="(item, index) in field" :key="index" class="item-container">
         <i class="fas fa-minus delete" @click="deleteInput(index)"></i>
         <i

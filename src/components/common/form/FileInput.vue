@@ -4,7 +4,9 @@
       <div class="row" v-if="!reedOnly">
         <div class="col-12">
           <label class="form-item-label" :class="{ required: required }">
-            {{ label }}
+            <p v-if="label">
+              {{ label }}
+            </p>
             <div class="file-input_btn">
               <button @click.prevent="clickOpenFile" class="primary btn-large">
                 <slot></slot>

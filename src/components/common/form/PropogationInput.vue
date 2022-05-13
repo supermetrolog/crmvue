@@ -1,7 +1,9 @@
 <template>
   <div class="form-item propogation-input">
     <label class="form-item-label" :class="{ required: required }">
-      {{ label }}
+      <p v-if="label">
+        {{ label }}
+      </p>
       <div class="item-container" v-for="(item, index) in field" :key="index">
         <i class="fas fa-minus delete" @click="deleteInput(index)"></i>
 

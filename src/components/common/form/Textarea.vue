@@ -1,7 +1,9 @@
 <template>
   <div class="form-item textarea">
     <label class="form-item-label" :class="{ required: required }">
-      {{ label }}
+      <p v-if="label">
+        {{ label }}
+      </p>
       <textarea
         :class="inputClasses"
         :type="type"

@@ -1,7 +1,9 @@
 <template>
   <div class="form-item checkbox icons">
     <label class="form-item-label" :class="{ required: required }" for="fuck">
-      {{ label }}
+      <p v-if="label">
+        {{ label }}
+      </p>
       <div
         class="extra-label"
         v-if="extraLabel"

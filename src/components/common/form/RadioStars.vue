@@ -1,7 +1,9 @@
 <template>
   <div class="form-item radio radio-stars">
     <label class="form-item-label" :class="{ required: required }" for="fuck">
-      {{ label }}
+      <p v-if="label">
+        {{ label }}
+      </p>
       <div v-if="options.length">
         <label v-for="option in options" :key="option[0]">
           <i

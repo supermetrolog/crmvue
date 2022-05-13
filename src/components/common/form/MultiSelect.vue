@@ -6,7 +6,9 @@
       :class="{ required: required }"
       v-if="label"
     >
-      {{ label }}
+      <p v-if="label">
+        {{ label }}
+      </p>
       <Multiselect
         :class="[inputClasses, extraClasses]"
         :placeholder="placeholder"

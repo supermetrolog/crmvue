@@ -1,7 +1,9 @@
 <template>
   <div class="form-item">
     <label class="form-item-label" :class="{ required: required }">
-      {{ label }}
+      <p v-if="label">
+        {{ label }}
+      </p>
       <input
         :class="inputClasses"
         :type="type"

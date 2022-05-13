@@ -1421,13 +1421,23 @@
                 padding-bottom: 10px;
                 color: $color_sidebar_bg;
                 position: relative;
+                &>p:first-child {
+                    display: inline;
+                    font-size: 15px;
+                    font-weight: 600;
+                    letter-spacing: .4px;
+                    color: $color_sidebar_bg;
+                    position: relative;
+                }
                 &.required {
-                    &::before {
-                        content: '*';
-                        position: absolute;
-                        right: -10px;
-                        color: $color_danger;
-                        font-size: 16px;
+                    &>p:first-child {
+                        &::before {
+                            content: '*';
+                            position: absolute;
+                            right: -10px;
+                            color: $color_danger;
+                            font-size: 16px;
+                        }
                     }
                 }
             }
