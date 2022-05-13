@@ -1,67 +1,84 @@
 <template>
   <div class="deal-item">
+    <i
+      class="fas fa-pen text-primary edit"
+      @click="openDealFormForUpdate"
+      v-if="!reedOnly"
+    ></i>
+    <i
+      class="fas fa-times text-danger delete"
+      @click="deleteDeal"
+      v-if="!reedOnly"
+    ></i>
     <div class="row">
-      <div class="col-12 text-center align-self-center mb-3">
-        <i class="fas fa-handshake icon"></i>
+      <div class="col-4 text-center align-self-center">
+        <i class="fas fa-handshake"></i>
       </div>
-      <div class="col-12 px-0">
+      <div class="col-8 px-0">
         <div class="row no-gutters">
-          <div class="col-6 text-right pr-3"><p>название:</p></div>
-          <div class="col-6 pl-3">
-            <strong class="">{{ deal.name }}</strong>
+          <div class="col-4 text-right pr-2"><p>название:</p></div>
+          <div class="col-8 pl-4">
+            <strong>{{ deal.name || "—" }}</strong>
           </div>
-          <div class="col-6 text-right pr-3"><p>объект:</p></div>
-          <div class="col-6 pl-3">
+          <div class="col-4 text-right pr-2"><p>объект:</p></div>
+          <div class="col-8 pl-4">
             <strong>
-              <a
-                :href="`https://pennylane.pro/complex/${deal.complex_id}?offer_id=[${deal.object_id}]`"
-                target="_blanc"
-              >
-                #{{ deal.complex_id }}~{{ deal.object_id }}
+              <a :href="offerUrl" target="_blanc">
+                {{ deal.offer.visual_id }}
               </a>
             </strong>
           </div>
-          <div class="col-6 text-right pr-3">
-            <p>площадь (м<sup>2</sup>):</p>
+          <div class="col-4 text-right pr-2"><p>площадь:</p></div>
+          <div class="col-8 pl-4">
+            <strong v-if="deal.area"
+              >{{ $formatter.number(deal.area) }} м<sup>2</sup></strong
+            >
+            <strong v-else>—</strong>
           </div>
-          <div class="col-6 pl-3">
-            <strong class="">{{ deal.area || "-" }}</strong>
-          </div>
-          <div class="col-6 text-right pr-3"><p>цена пола (р):</p></div>
-          <div class="col-6 pl-3">
-            <strong class="">{{ deal.floorPrice || "-" }}</strong>
-          </div>
-          <div class="col-6 text-right pr-3"><p>консультант:</p></div>
-          <div class="col-6 pl-3">
-            <strong class="">{{
-              deal.consultant.userProfile.short_name
+          <div class="col-4 text-right pr-2"><p>цена пола:</p></div>
+          <div class="col-8 pl-4">
+            <strong v-if="deal.floorPrice">{{
+              $formatter.currency(deal.floorPrice)
             }}</strong>
+            <strong v-else>—</strong>
           </div>
-          <div class="col-6 text-right pr-3"><p>дата сделки:</p></div>
-          <div class="col-6 pl-3">
-            <strong class="">{{ deal.dealDate || "-" }}</strong>
+          <div class="col-4 text-right pr-2"><p>юр. лицо:</p></div>
+          <div class="col-8 pl-4">
+            <strong>{{ deal.clientLegalEntity_full_name || "—" }}</strong>
           </div>
-          <div class="col-6 text-right pr-3">
-            <p>срок контракта (месяцев):</p>
+          <div
+            class="col-4 text-right pr-2 text-danger"
+            v-if="deal.is_competitor"
+          >
+            <p>конкурент:</p>
           </div>
-          <div class="col-6 pl-3">
-            <strong class="">{{ deal.contractTerm || "-" }}</strong>
+          <div class="col-8 pl-4" v-if="deal.is_competitor">
+            <strong>
+              <router-link :to="'/companies/' + deal.competitor.id">
+                {{ deal.competitor.full_name || "—" }}
+              </router-link>
+            </strong>
           </div>
-          <div class="col-6 text-right pr-3"><p>юр. лицо клиента:</p></div>
-          <div class="col-6 pl-3">
-            <strong class="">{{
-              deal.clientLegalEntity_full_name || "-"
-            }}</strong>
+          <div class="col-4 text-right pr-2"><p>дата сделки:</p></div>
+          <div class="col-8 pl-4">
+            <strong>{{ deal.dealDate || "—" }}</strong>
           </div>
-          <div class="col-6 text-right pr-3"><p>описание:</p></div>
-          <div class="col-6 pl-3">
-            <strong class="">{{ deal.description || "-" }}</strong>
+          <div class="col-4 text-right pr-2"><p>консультант:</p></div>
+          <div class="col-8 pl-4">
+            <strong>{{ deal.consultant.userProfile.short_name || "—" }}</strong>
           </div>
-          <div class="col-6 text-right pr-3" v-if="deal.is_competitor">
-            <p>принадлежит компании:</p>
+          <div
+            class="col-4 text-right pr-2"
+            title="Срок окончания контракта (если это аренда) (в месяцах)"
+          >
+            <p>срок:</p>
           </div>
-          <div class="col-6 pl-3" v-if="deal.is_competitor">
-            <strong class="">{{ deal.competitor_name || "-" }}</strong>
+          <div class="col-8 pl-4">
+            <strong>{{ deal.contractTerm || "—" }}</strong>
+          </div>
+          <div class="col-4 text-right pr-2"><p>описание:</p></div>
+          <div class="col-8 pl-4">
+            <strong>{{ deal.description || "—" }}</strong>
           </div>
         </div>
       </div>
@@ -76,21 +93,35 @@ export default {
     deal: {
       type: Object,
     },
+    reedOnly: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  computed: {
+    offerUrl() {
+      const baseUrl = "https://pennylane.pro/complex/";
+      let url = baseUrl + this.deal.offer.complex_id;
+      if (this.deal.offer.generalOffersMix) {
+        url +=
+          "?offer_id=[" + this.deal.offer.generalOffersMix.original_id + "]";
+      } else {
+        url += "?offer_id=[" + this.deal.offer.original_id + "]";
+      }
+      return url;
+    },
+  },
+
+  methods: {
+    openDealFormForUpdate() {
+      this.$emit("openDealFormForUpdate", this.deal);
+    },
+    deleteDeal() {
+      this.$emit("deleteDeal", this.deal);
+    },
   },
 };
 </script>
 
-<style lang="scss" scoped>
-.icon {
-  font-size: 66px;
-}
-p {
-  margin: 0;
-}
-.col-6 {
-  align-self: center;
-}
-a {
-  color: #11698e;
-}
+<style>
 </style>

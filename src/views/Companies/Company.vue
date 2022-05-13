@@ -91,12 +91,16 @@
             v-if="!loaderCompanyRequests"
           />
           <NoData v-if="!COMPANY_REQUESTS.length && !loaderCompanyRequests" />
-
-          <CompanyObjectItemOfferOnly
-            :offer="offer"
-            v-for="offer of REQUEST_RECOMENDED_OBJECTS"
-            :key="offer.id"
-          />
+          <div class="row" v-if="!loaderCompanyRequests && COMPANY">
+            <div class="col-12 p-0">
+              <DealItem
+                class="mb-2 mt-1"
+                v-for="deal in COMPANY.dealsRequestEmpty"
+                :key="deal.id"
+                :deal="deal"
+              />
+            </div>
+          </div>
         </div>
       </div>
       <div class="col-12 col-lg-4 box">
@@ -147,9 +151,9 @@ import CompanyForm from "@/components/companies/forms/company-form/CompanyForm.v
 import CompanyContactList from "@/components/companies/companies/contact/CompanyContactList.vue";
 import CompanyObjectList from "@/components/companies/objects/company-objects/CompanyObjectList";
 import Timeline from "@/components/companies/timeline/Timeline.vue";
+import DealItem from "@/components/companies/companies/deal/DealItem.vue";
 import NoData from "@/components/common/NoData";
 import Joke from "@/components/common/Joke";
-import CompanyObjectItemOfferOnly from "@/components/companies/objects/company-objects/CompanyObjectItemOfferOnly.vue";
 export default {
   name: "Company",
   components: {
@@ -163,7 +167,7 @@ export default {
     NoData,
     Joke,
     CompanyObjectList,
-    CompanyObjectItemOfferOnly,
+    DealItem,
   },
   data() {
     return {
@@ -187,7 +191,6 @@ export default {
       "COMPANY_CONTACTS",
       "COMPANY_OBJECTS",
       "TIMELINE_LIST",
-      "REQUEST_RECOMENDED_OBJECTS",
     ]),
   },
   methods: {
@@ -196,7 +199,6 @@ export default {
       "FETCH_COMPANY_REQUESTS",
       "FETCH_COMPANY_CONTACTS",
       "FETCH_COMPANY_OBJECTS",
-      "FETCH_REQUEST_RECOMENDED_OBJECTS",
     ]),
     async getCompany() {
       this.loaderCompanyDetailInfo = true;
@@ -210,16 +212,6 @@ export default {
       this.loaderCompanyRequests = true;
       await this.FETCH_COMPANY_REQUESTS(this.$route.params.id);
       this.loaderCompanyRequests = false;
-    },
-    async getRequestRecomendedObjects() {
-      // this.loaderCompanyRequests = true;
-      if (
-        this.COMPANY_REQUESTS[0].id == 9327 ||
-        this.COMPANY_REQUESTS[0].id == 9324
-      ) {
-        await this.FETCH_REQUEST_RECOMENDED_OBJECTS(this.COMPANY_REQUESTS[0]);
-      }
-      // this.loaderCompanyRequests = false;
     },
     async getCompanyContacts(withLoader = true) {
       this.loaderCompanyContacts = withLoader;
@@ -301,8 +293,7 @@ export default {
     this.getCompany();
     this.getCompanyContacts();
     this.getCompanyObjects();
-    await this.getCompanyRequests();
-    this.getRequestRecomendedObjects();
+    this.getCompanyRequests();
     this.timeline();
   },
   watch: {

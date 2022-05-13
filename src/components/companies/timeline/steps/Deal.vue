@@ -12,9 +12,11 @@
           :company_id="currentRequest.company_id"
           :request_id="currentRequest.id"
           :dealType="currentRequest.dealType"
-          :object_id="data.timelineStepObjects[0].object_id"
-          :complex_id="data.timelineStepObjects[0].complex_id"
-          :type_id="data.timelineStepObjects[0].type_id"
+          :object_id="data.timelineStepObjects[0].offer.object_id"
+          :complex_id="data.timelineStepObjects[0].offer.complex_id"
+          :type_id="data.timelineStepObjects[0].offer.type_id"
+          :original_id="data.timelineStepObjects[0].offer.original_id"
+          :visual_id="data.timelineStepObjects[0].offer.visual_id"
           :isOurDeal="true"
           @close="clickCloseDealForm"
           @created="updateItem"
@@ -35,8 +37,8 @@
       </div>
     </div>
     <div class="row mt-3" v-if="currentRequest.deal">
-      <div class="col-6 mx-auto">
-        <DealItem :deal="currentRequest.deal" />
+      <div class="col-5 mx-auto">
+        <DealItem :deal="currentRequest.deal" reedOnly />
       </div>
     </div>
   </div>

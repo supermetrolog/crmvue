@@ -207,42 +207,7 @@
       </div>
     </div>
     <div class="col-12 deal-info py-2" v-if="request.deal">
-      <div class="row">
-        <div class="col-4 text-center align-self-center">
-          <i class="fas fa-handshake"></i>
-        </div>
-        <div class="col-8 px-0">
-          <div class="row no-gutters">
-            <div class="col-4 text-right pr-2"><p>название:</p></div>
-            <div class="col-8 pl-4">
-              <strong class="">{{ request.deal.name }}</strong>
-            </div>
-            <div class="col-4 text-right pr-2"><p>объект:</p></div>
-            <div class="col-8 pl-4">
-              <strong>
-                <a
-                  :href="`https://pennylane.pro/complex/${request.deal.complex_id}?offer_id=[${request.deal.original_id}]`"
-                  target="_blanc"
-                >
-                  #{{ request.deal.complex_id }}~{{ request.deal.object_id }}
-                </a>
-              </strong>
-            </div>
-            <div class="col-4 text-right pr-2"><p>площадь:</p></div>
-            <div class="col-8 pl-4">
-              <strong class="">{{ request.deal.area }} м<sup>2</sup></strong>
-            </div>
-            <div class="col-4 text-right pr-2"><p>цена пола:</p></div>
-            <div class="col-8 pl-4">
-              <strong class="">{{ request.deal.floorPrice }} р</strong>
-            </div>
-            <div class="col-4 text-right pr-2"><p>консультант:</p></div>
-            <div class="col-8 pl-4">
-              <strong class="">{{ request.deal.consultant.username }}</strong>
-            </div>
-          </div>
-        </div>
-      </div>
+      <DealItem :deal="request.deal" />
     </div>
   </div>
 </template>
@@ -260,11 +225,13 @@ import {
   unknownMovingDate,
 } from "@/const/Const.js";
 import Progress from "@/components/common/Progress.vue";
+import DealItem from "@/components/companies/companies/deal/DealItem.vue";
 import { mapGetters } from "vuex";
 export default {
   name: "CompanyRequestItem",
   components: {
     Progress,
+    DealItem,
   },
   data() {
     return {

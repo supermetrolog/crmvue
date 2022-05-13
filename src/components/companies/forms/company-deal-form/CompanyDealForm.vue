@@ -9,22 +9,29 @@
       <Form @submit="onSubmit" class="center">
         <FormGroup class="mb-1">
           <Checkbox
-            v-if="!isOurDeal"
+            :disabled="isOurDeal"
             v-model="form.is_our"
+            :falseValue="0"
+            @change="
+              form.is_our ? (form.is_competitor = 0) : (form.is_competitor = 1)
+            "
             label="Наша сделка?"
-            class="col-2 large"
+            class="col-2 large mx-auto text-center"
           />
+        </FormGroup>
+        <FormGroup class="mb-1">
           <MultiSelect
-            v-if="!form.is_our"
+            :disabled="!!form.is_our"
+            :v="v$.form.competitor_company_id"
             v-model="form.competitor_company_id"
             extraClasses="long-text"
             label="Компания конкурент"
-            required
-            class="col-5 px-1"
+            :required="!form.is_our"
+            class="col-6 pr-1"
             :filterResults="false"
             :minChars="1"
             :resolveOnLoad="true"
-            :delay="0"
+            :delay="500"
             :searchable="true"
             :options="
               async (query) => {
@@ -32,25 +39,39 @@
               }
             "
           />
-          <ObjectsInput
+          <!-- <ObjectsInput
             v-model="form.object_id"
             :v="v$.form.object_id"
             @selectItem="selectObject"
             required
             label="Объект"
-            class="ml-auto"
+            class="col-6 ml-auto"
             :type_id="form.type_id"
-            :class="{
-              'col-5': !form.is_our,
-              'col-6': form.is_our,
-              'ml-auto': form.is_our,
-              'mx-auto': !form.is_our,
-            }"
             :options="
               async (query) => {
                 return await searchObjects(query);
               }
             "
+          /> -->
+          <MultiSelect
+            v-model="form.offerHandler"
+            :v="v$.form.object_id"
+            :disabled="!!object_id"
+            extraClasses="long-text"
+            label="Предложение"
+            required
+            class="col-6"
+            :filterResults="false"
+            :minChars="1"
+            :resolveOnLoad="true"
+            :delay="500"
+            :searchable="true"
+            :options="
+              async (query) => {
+                return await searchOffer(query);
+              }
+            "
+            @change="form = { ...form, ...form.offerHandler }"
           />
         </FormGroup>
         <FormGroup class="mb-1">
@@ -63,6 +84,7 @@
           />
           <MultiSelect
             v-model="form.company_id"
+            :disabled="!!company_id"
             extraClasses="long-text"
             label="Компания"
             required
@@ -71,7 +93,7 @@
             :filterResults="false"
             :minChars="1"
             :resolveOnLoad="true"
-            :delay="0"
+            :delay="500"
             :searchable="true"
             :options="
               async (query) => {
@@ -81,8 +103,11 @@
             @change="onChangeCompany"
           />
           <MultiSelect
+            :disabled="!form.company_id || !!request_id"
             v-model="form.request_id"
             extraClasses="long-text"
+            :v="v$.form.request_id"
+            :required="!!request_id"
             label="Запрос"
             class="col-6"
             :key="requestOptions.length"
@@ -118,21 +143,27 @@
             class="col-6 pr-1"
             :options="CONSULTANT_LIST"
           />
-          <Textarea v-model="form.description" label="Описание" class="col-6" />
-        </FormGroup>
-        <FormGroup class="mb-1">
           <Input
             v-model="form.dealDate"
             label="Дата сделки"
             type="date"
             class="col-6 pr-1"
-          />
-          <Input
-            v-model="form.contractTerm"
-            v-if="contractTermVisible"
-            label="Срок контракта в месяцах"
-            class="col-6"
-            maska="####"
+          >
+            <Input
+              v-model="form.contractTerm"
+              v-if="contractTermVisible"
+              label="Срок контракта в месяцах"
+              class="col-12 p-0 mt-1"
+              maska="####"
+            />
+          </Input>
+        </FormGroup>
+        <FormGroup class="mb-1"> </FormGroup>
+        <FormGroup class="mb-1">
+          <Textarea
+            v-model="form.description"
+            label="Описание"
+            class="col-12"
           />
         </FormGroup>
 
@@ -153,13 +184,13 @@ import { required, helpers } from "@vuelidate/validators";
 import Form from "@/components/common/form/Form.vue";
 import FormGroup from "@/components/common/form/FormGroup.vue";
 import Input from "@/components/common/form/Input.vue";
-import ObjectsInput from "@/components/common/form/ObjectsInput.vue";
+// import ObjectsInput from "@/components/common/form/ObjectsInput.vue";
 import Textarea from "@/components/common/form/Textarea.vue";
 import MultiSelect from "@/components/common/form/MultiSelect.vue";
 import Checkbox from "@/components/common/form/Checkbox.vue";
 import Submit from "@/components/common/form/Submit.vue";
 import api from "@/api/api";
-import { DealTypeList, CompanyFormOrganization } from "@/const/Const.js";
+import { CompanyFormOrganization } from "@/const/Const.js";
 import moment from "moment";
 export default {
   name: "CompanyDealForm",
@@ -171,7 +202,7 @@ export default {
     MultiSelect,
     Submit,
     Checkbox,
-    ObjectsInput,
+    // ObjectsInput,
   },
   data() {
     return {
@@ -179,6 +210,7 @@ export default {
       v$: useValidate(),
       selectedCompany: null,
       selectedCompetitorCompany: null,
+      selectedOffer: null,
       formOfOrganizationOptions: CompanyFormOrganization.get("param"),
       requestOptions: [],
       form: {
@@ -199,6 +231,9 @@ export default {
         object_id: null,
         type_id: null,
         formOfOrganization: null,
+        offerHandler: null,
+        original_id: null,
+        visual_id: null,
       },
     };
   },
@@ -222,6 +257,12 @@ export default {
     type_id: {
       type: Number,
     },
+    original_id: {
+      type: Number,
+    },
+    visual_id: {
+      type: String,
+    },
     isOurDeal: {
       type: Boolean,
       default: false,
@@ -240,12 +281,22 @@ export default {
         company_id: {
           required: helpers.withMessage("заполните поле", required),
         },
+        competitor_company_id: {
+          customRequired: helpers.withMessage("заполните поле", () => {
+            if (!this.form.is_our && !this.form.competitor_company_id) {
+              return false;
+            }
+            return true;
+          }),
+        },
         object_id: {
           required: helpers.withMessage("выберите предложение", () => {
             if (
               this.form.object_id &&
-              this.form.complex_id &&
-              this.form.type_id
+              this.form.original_id &&
+              this.form.type_id &&
+              this.form.visual_id &&
+              this.form.complex_id
             ) {
               return true;
             }
@@ -255,8 +306,22 @@ export default {
         type_id: {
           required: helpers.withMessage("выберите предложение", required),
         },
+        original_id: {
+          required: helpers.withMessage("выберите предложение", required),
+        },
+        visual_id: {
+          required: helpers.withMessage("выберите предложение", required),
+        },
         complex_id: {
           required: helpers.withMessage("выберите предложение", required),
+        },
+        request_id: {
+          customRequired: helpers.withMessage("выберите предложение", () => {
+            if (this.request_id && !this.form.request_id) {
+              return false;
+            }
+            return true;
+          }),
         },
       },
     };
@@ -291,6 +356,7 @@ export default {
     ]),
     onSubmit() {
       this.v$.$validate();
+      console.warn(this.v$.form.$error);
       if (!this.v$.form.$error) {
         this.loader = true;
         if (this.formdata) {
@@ -318,6 +384,7 @@ export default {
       this.$emit("close");
     },
     async onChangeCompany() {
+      if (this.request_id) return;
       console.log("change");
       this.form.request_id = null;
       this.requestOptions = [];
@@ -353,21 +420,14 @@ export default {
           requestList.data.forEach((item) => {
             this.requestOptions.push({
               value: item.id,
-              label:
-                DealTypeList.get("param")[item.dealType].label +
-                " " +
-                item.minArea +
-                "-" +
-                item.maxArea +
-                " м^2",
+              label: item.name + "^2",
             });
           });
         }
 
         array.push({
           value: this.selectedCompany.id,
-          label:
-            this.selectedCompany.nameRu + " " + this.selectedCompany.nameEng,
+          label: this.selectedCompany.full_name,
         });
       }
       query = {
@@ -384,7 +444,7 @@ export default {
       let result = null;
       let array = [];
       if (this.formdata || this.competitor_company_id) {
-        if (!this.selectedCompany) {
+        if (!this.selectedCompetitorCompany) {
           this.selectedCompetitorCompany = await api.companies.getCompany(
             this.formdata ? this.formdata.company_id : this.company_id
           );
@@ -392,10 +452,7 @@ export default {
 
         array.push({
           value: this.selectedCompetitorCompany.id,
-          label:
-            this.selectedCompetitorCompany.nameRu +
-            " " +
-            this.selectedCompetitorCompany.nameEng,
+          label: this.selectedCompetitorCompany.full_name,
         });
       }
       query = {
@@ -408,67 +465,62 @@ export default {
       });
       return array;
     },
-    // async searchRequest(query) {
-    //   let result = null;
-    //   let array = [];
-    //   if (this.formdata || this.request_id) {
-    //     if (!this.selectedRequest) {
-    //       this.selectedRequest = await api.request.getRequest(
-    //         this.formdata ? this.formdata.request_id : this.request_id
-    //       );
-    //     }
-    //     console.log("REQUEST", this.selectedRequest);
-    //     array.push({
-    //       value: this.selectedRequest.id,
-    //       label:
-    //         DealTypeList.get("param")[this.selectedRequest[0].dealType].label +
-    //         " " +
-    //         this.selectedRequest.minArea +
-    //         " " +
-    //         this.selectedRequest.maxArea +
-    //         "м^2",
-    //     });
-    //   }
-    //   query = {
-    //     company_id: this.form.company_id,
-    //   };
-    //   result = await api.request.searchRequests(query);
-    //   result.forEach((item) => {
-    //     array.push({
-    //       value: item.id,
-    //       label:
-    //         DealTypeList.get("param")[item.dealType].label +
-    //         " " +
-    //         item.minArea +
-    //         "-" +
-    //         item.maxArea +
-    //         " м^2",
-    //     });
-    //   });
-    //   this.lastSearchRequestResult = array;
-    //   return array;
-    // },
-    async searchObjects(query) {
+    async searchOffer(query) {
       let result = null;
       let array = [];
-      result = await this.SEARCH_OBJECTS({
-        query: { searchText: query },
-        saveState: false,
-      });
-      result.forEach((item) => {
+      console.log("FFF", this.object_id);
+      if (this.formdata || this.object_id) {
+        if (!this.selectedOffer) {
+          const params = {
+            original_id: this.formdata
+              ? this.formdata.offer.original_id
+              : this.original_id,
+            object_id: this.formdata
+              ? this.formdata.offer.object_id
+              : this.object_id,
+            type_id: this.formdata ? this.formdata.offer.type_id : this.type_id,
+            "per-page": 1,
+          };
+          let data = await api.companyObjects.searchOffers(params);
+          data = data.data;
+          console.log("fuck", data);
+          if (data.length) {
+            this.selectedOffer = data[0];
+            console.log("fuck", this.selectedOffer);
+          }
+        }
+
         array.push({
-          value: item.original_id,
-          label: item.deal_type_name,
-          icon: item.building.photos,
-          info: item,
+          value: {
+            original_id: this.selectedOffer.original_id,
+            object_id: this.selectedOffer.object_id,
+            type_id: this.selectedOffer.type_id,
+            visual_id: this.selectedOffer.visual_id,
+            complex_id: this.selectedOffer.complex_id,
+          },
+          label: this.selectedOffer.visual_id,
+        });
+      }
+      query = {
+        all: query,
+        type_id: [1, 2],
+        "per-page": 10,
+      };
+      result = await api.companyObjects.searchOffers(query);
+      console.log("RES", result);
+      result.data.forEach((item) => {
+        array.push({
+          value: {
+            original_id: item.original_id,
+            object_id: item.object_id,
+            type_id: item.type_id,
+            visual_id: item.visual_id,
+            complex_id: item.complex_id,
+          },
+          label: item.visual_id,
         });
       });
-      console.error(array);
       return array;
-    },
-    selectObject(complex_id, type_id) {
-      this.form.complex_id = complex_id;
-      this.form.type_id = type_id;
     },
   },
   async mounted() {
@@ -482,8 +534,17 @@ export default {
       this.form = { ...this.form, ...this.formdata };
     }
     this.form.object_id = this.object_id;
+    this.form.original_id = this.original_id;
     this.form.complex_id = this.complex_id;
     this.form.type_id = this.type_id;
+    this.form.visual_id = this.visual_id;
+    this.form.offerHandler = {
+      object_id: this.object_id,
+      original_id: this.original_id,
+      complex_id: this.complex_id,
+      type_id: this.type_id,
+      visual_id: this.visual_id,
+    };
     this.loader = false;
   },
   watch: {

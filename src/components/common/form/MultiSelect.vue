@@ -25,6 +25,7 @@
         :delay="delay"
         :loading="loading"
         :multipleLabel="multipleLabel"
+        :disabled="disabled"
         @change="onChange($event)"
       >
         <template #singlelabel="{ value }">
@@ -134,6 +135,10 @@ export default {
     name: {
       type: String,
       default: null,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
     },
     multipleLabel: {
       type: Function,
