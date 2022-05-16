@@ -32,7 +32,7 @@
           сбросить
         </a>
       </FormGroup>
-      <div v-if="extraVisible">
+      <div v-show="extraVisible">
         <FormGroup class="mb-2">
           <MultiSelect
             v-model="form.agent_id"
@@ -233,7 +233,6 @@
             </button>
           </div> -->
         </FormGroup>
-        <FormGroup class="mb-2"> </FormGroup>
         <FormGroup class="mb-2">
           <CheckboxIcons
             v-model="form.purposes"
@@ -244,11 +243,17 @@
             class="col-4 pr-2 mx-auto"
             :options="objectTypeListWareHouse"
           />
-          <CheckboxIcons
+          <!-- <CheckboxIcons
             v-model="form.purposes"
             extraLabel="производство"
             :noAllSelect="true"
             @extraSelect="selectObjectType($event, 2)"
+            class="col-4 mt-4 pr-2 mx-auto"
+            :options="objectTypeListProduction"
+          /> -->
+          <CheckboxIcons
+            v-model="form.purposes"
+            extraLabel="производство"
             class="col-4 mt-4 pr-2 mx-auto"
             :options="objectTypeListProduction"
           />
@@ -261,7 +266,6 @@
             :options="objectTypeListPlot"
           />
         </FormGroup>
-        <FormGroup class="mb-2"> </FormGroup>
       </div>
     </Form>
   </div>
@@ -353,12 +357,39 @@ export default {
     ...mapActions(["FETCH_CONSULTANT_LIST"]),
     async setQueryFields() {
       this.form = { ...this.form, ...this.$route.query };
+      if (this.form.purposes && !Array.isArray(this.form.purposes)) {
+        this.form.purposes = [this.form.purposes];
+      }
       if (this.form.class && !Array.isArray(this.form.class)) {
         this.form.class = [this.form.class];
       }
       if (this.form.gates && !Array.isArray(this.form.gates)) {
         this.form.gates = [this.form.gates];
       }
+      if (this.form.region && !Array.isArray(this.form.region)) {
+        this.form.region = [this.form.region];
+      }
+      if (this.form.direction && !Array.isArray(this.form.direction)) {
+        this.form.direction = [this.form.direction];
+      }
+      if (
+        this.form.district_moscow &&
+        !Array.isArray(this.form.district_moscow)
+      ) {
+        this.form.district_moscow = [this.form.district_moscow];
+      }
+      if (this.form.object_type && !Array.isArray(this.form.object_type)) {
+        this.form.object_type = [this.form.object_type];
+      }
+
+      if (this.form.floor_types && !Array.isArray(this.form.floor_types)) {
+        this.form.floor_types = [this.form.floor_types];
+      }
+      let array = [];
+      this.form.purposes.forEach((item) => {
+        array.push(+item);
+      });
+      this.form.purposes = array;
       let query = { ...this.form };
       this.deleteEmptyFields(query);
       await this.$router.replace({ query });

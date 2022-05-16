@@ -1,4 +1,5 @@
 import api from "@/api/api"
+import { waitHash } from "../../utils";
 
 const Companies = {
     state: {
@@ -9,6 +10,7 @@ const Companies = {
         companyGroupList: [],
         companyProductRangeList: [],
         companyInTheBankList: [],
+        company_wait_hash: null,
     },
     mutations: {
         updateCompanies(state, { data, concat }) {
@@ -42,6 +44,10 @@ const Companies = {
         updateCompanyInTheBankList(state, data) {
             state.companyInTheBankList = data;
         },
+        setCompanyWaitHash(state, hash) {
+            state.company_wait_hash = hash;
+            console.warn("SET WAIT HASH", state.company_wait_hash);
+        },
     },
     actions: {
         async FETCH_COMPANIES(context) {
@@ -51,10 +57,20 @@ const Companies = {
             }
         },
         async SEARCH_COMPANIES(context, { query, concat = false }) {
+            let hash = waitHash(query);
+            context.commit('setCompanyWaitHash', hash);
+            console.warn('HASH1', hash, 'HASH2', context.getters);
             const data = await api.companies.searchCompanies(query);
             if (data) {
-                context.commit('updateCompanies', { data, concat });
+                console.error('HASH1', hash, 'HASH2', context.getters.COMPANY_WAIT_HASH);
+                if (hash == context.getters.COMPANY_WAIT_HASH) {
+                    context.commit('updateCompanies', { data, concat });
+
+                } else {
+                    return false;
+                }
             }
+
             return data;
         },
         // async SEARCH_COMPANIES(context, { query, saveState = true }) {
@@ -134,6 +150,9 @@ const Companies = {
         COMPANY_IN_THE_BANK_LIST(state) {
             return state.companyInTheBankList;
         },
+        COMPANY_WAIT_HASH(state) {
+            return state.company_wait_hash;
+        }
     }
 }
 

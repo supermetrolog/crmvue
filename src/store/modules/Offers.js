@@ -1,5 +1,5 @@
 import api from "@/api/api"
-import crypto from "crypto"
+import { waitHash } from "../../utils";
 const deleteEmptyFields = (object) => {
     for (const key in object) {
         if (Object.hasOwnProperty.call(object, key)) {
@@ -37,7 +37,8 @@ const Offers = {
     },
     actions: {
         async SEARCH_OFFERS(context, { query, concat = false }) {
-            let hash = crypto.createHash('sha256').update(JSON.stringify(query)).digest('base64');
+            // let hash = crypto.createHash('sha256').update(JSON.stringify(query)).digest('base64');
+            let hash = waitHash(query);
             context.commit('setWaitHash', hash);
             console.warn('HASH1', hash, 'HASH2', context.getters);
             const data = await api.offers.search(query);

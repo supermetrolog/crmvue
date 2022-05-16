@@ -119,6 +119,38 @@
           </Input>
         </FormGroup>
         <FormGroup class="mb-2">
+          <MultiSelect
+            v-model="form.regions"
+            label="Регионы"
+            class="col-3 pr-1"
+            mode="multiple"
+            :options="regionList"
+            @change="changeRegion"
+          >
+            <small
+              v-for="(region, index) in form.regions"
+              :key="region"
+              class="d-block px-3"
+            >
+              {{ index + 1 }}. {{ regionList[region].label }}
+            </small>
+          </MultiSelect>
+          <Checkbox
+            v-if="form.regions.find((item) => item == 1)"
+            v-model="form.directions"
+            class="col-4 pr-1"
+            label="Направления"
+            :options="directionList"
+          />
+          <Checkbox
+            v-if="form.regions.find((item) => item == 0) == 0"
+            v-model="form.districts"
+            class="col-5"
+            label="Округа Москвы"
+            :options="districtList"
+          />
+        </FormGroup>
+        <FormGroup class="mb-2">
           <Checkbox
             v-model="form.gateTypes"
             class="col-4 pr-1"
@@ -256,6 +288,9 @@ import {
   ObjectClassList,
   GateTypeList,
   DealTypeList,
+  RegionList,
+  DirectionList,
+  DistrictList,
 } from "@/const/Const.js";
 import { SearchFormMixin } from "@/components/common/mixins.js";
 export default {
@@ -280,6 +315,9 @@ export default {
       objectClassList: ObjectClassList.get("param"),
       gateTypeList: GateTypeList.get("param"),
       dealTypeList: DealTypeList.get("param"),
+      regionList: RegionList.get("param"),
+      directionList: DirectionList.get("param"),
+      districtList: DistrictList.get("param"),
     };
   },
   defaultFormProperties: {
@@ -311,8 +349,23 @@ export default {
     trainLine: null,
     gateTypes: [],
     dealType: null,
+    regions: [],
+    districts: [],
+    directions: [],
   },
   methods: {
+    changeRegion() {
+      if (this.form.regions == null) {
+        this.form.directions = [];
+        this.form.districts = [];
+      }
+      if (!this.form.regions.find((item) => item == 1)) {
+        this.form.directions = [];
+      }
+      if (this.form.regions.find((item) => item == 0) != 0) {
+        this.form.districts = [];
+      }
+    },
     async setQueryFields() {
       this.form = { ...this.form, ...this.$route.query };
       if (this.form.objectClasses && !Array.isArray(this.form.objectClasses)) {
@@ -324,7 +377,15 @@ export default {
       if (this.form.objectTypes && !Array.isArray(this.form.objectTypes)) {
         this.form.objectTypes = [this.form.objectTypes];
       }
-
+      if (this.form.regions && !Array.isArray(this.form.regions)) {
+        this.form.regions = [this.form.regions];
+      }
+      if (this.form.districts && !Array.isArray(this.form.districts)) {
+        this.form.districts = [this.form.districts];
+      }
+      if (this.form.directions && !Array.isArray(this.form.directions)) {
+        this.form.directions = [this.form.directions];
+      }
       let array = [];
       this.form.objectTypes.forEach((item) => {
         array.push(+item);

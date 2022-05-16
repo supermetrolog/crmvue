@@ -1,10 +1,12 @@
 import api from "@/api/api"
+import { waitHash } from "../../utils";
 
 const CompanyRequest = {
     state: {
         companyRequests: {},
         requests: [],
-        pagination: null
+        pagination: null,
+        request_wait_hash: null,
     },
     mutations: {
         updateCompanyRequests(state, data) {
@@ -22,13 +24,26 @@ const CompanyRequest = {
         },
         deleteRequest(state, request_id) {
             state.companyRequests = state.companyRequests.filter(item => item.id != request_id);
-        }
+        },
+        setRequestWaitHash(state, hash) {
+            state.request_wait_hash = hash;
+            console.warn("SET WAIT HASH", state.request_wait_hash);
+        },
     },
     actions: {
         async SEARCH_REQUESTS(context, { query, concat = false }) {
+            let hash = waitHash(query);
+            context.commit('setRequestWaitHash', hash);
+            console.warn('HASH1', hash, 'HASH2', context.getters);
             const data = await api.request.searchRequests(query);
             if (data) {
-                context.commit('updateRequests', { data, concat });
+                console.error('HASH1', hash, 'HASH2', context.getters.REQUEST_WAIT_HASH);
+                if (hash == context.getters.REQUEST_WAIT_HASH) {
+                    context.commit('updateRequests', { data, concat });
+
+                } else {
+                    return false;
+                }
             }
             return data;
         },
@@ -69,6 +84,9 @@ const CompanyRequest = {
         },
         REQUESTS_PAGINATION(state) {
             return state.pagination;
+        },
+        REQUEST_WAIT_HASH(state) {
+            return state.request_wait_hash;
         }
     }
 }

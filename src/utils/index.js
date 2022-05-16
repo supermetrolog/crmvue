@@ -1,4 +1,5 @@
 import { loadYmap } from 'vue-yandex-maps'
+import crypto from "crypto"
 export const yandexmap = {
     settings: {
         apiKey: '59572809-066b-46d5-9e5d-269a65751b84',
@@ -117,6 +118,10 @@ export const validateUrl = (str) => {
     }
     return true;
 };
+
+export const waitHash = (data) => {
+    return crypto.createHash('sha256').update(JSON.stringify(data)).digest('base64');
+}
 export default {
     normalizeContactsForMultiselect(contacts) {
         let data = [];
