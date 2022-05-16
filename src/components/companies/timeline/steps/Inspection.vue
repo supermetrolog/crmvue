@@ -11,6 +11,7 @@
                 btnClass: 'primary',
                 btnVisible: false,
                 defaultBtn: true,
+                disabled: true,
               }"
               @confirm="selectOptimizeRoute"
             >
@@ -36,27 +37,23 @@
                   <transition-group>
                     <li
                       v-for="object in currentStepObjects"
-                      :key="object.id"
+                      :key="object.offer.id"
                       class="route"
                     >
                       <div class="row">
                         <div class="col-4 align-self-center pr-0 pl-2">
                           <img
-                            :src="
-                              object.building.photos
-                                ? object.building.photos
-                                : object.photos[0]
-                            "
+                            :src="getImageSrc(object.offer)"
                             alt="Фото объекта"
                           />
                         </div>
                         <div class="col-8 pl-2">
                           <b>
-                            {{ object.district_name }} -
-                            {{ object.direction_name }}
+                            {{ object.offer.district_name }} -
+                            {{ object.offer.direction_name }}
                           </b>
-                          <p>{{ object.object_type_name }}</p>
-                          <p>{{ object.address }}</p>
+                          <p>{{ object.offer.object_type_name }}</p>
+                          <p>{{ object.offer.address }}</p>
                         </div>
                       </div>
                     </li>
@@ -74,6 +71,7 @@
                     btnClass: 'success',
                     btnVisible: false,
                     defaultBtn: true,
+                    disabled: true,
                   }"
                   @confirm="selectOptimizeRoute"
                 >
@@ -91,6 +89,7 @@
                     btnClass: 'success_alt',
                     btnVisible: false,
                     defaultBtn: true,
+                    disabled: true,
                   }"
                   @confirm="selectOptimizeRoute"
                 >
@@ -212,9 +211,22 @@ export default {
       );
       console.error("optimize", result);
     },
+    getImageSrc(offer) {
+      const photos = offer.photos;
+      if (
+        photos &&
+        Array.isArray(photos) &&
+        typeof photos[0] == "string" &&
+        photos[0].length > 2
+      ) {
+        return "https://pennylane.pro" + photos[0];
+      }
+      return this.$apiUrlHelper.fileNotFoundUrl();
+    },
   },
   mounted() {
     this.currentStepObjects = [...this.objects];
+    console.log("CURRENT", this.currentStepObjects);
     this.getLocation();
   },
   watch: {

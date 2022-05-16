@@ -8,7 +8,7 @@
               <Inspection
                 :step="step"
                 :disabled="disabled"
-                :objects="currentStepObjects"
+                :objects="step.timelineStepObjects"
                 @updateItem="clickUpdateStep"
                 :contactForSendMessage="contactForSendMessage"
               />
@@ -96,6 +96,7 @@ export default {
           title: "Отправить презентации с объектами клиенту",
           text: "Отправить",
           icon: "fas fa-paper-plane",
+          withWayOfSending: true,
           emited_event: "send",
           classes: "col-2 ml-1",
         },
@@ -106,6 +107,7 @@ export default {
           title: "Уже отправил предложения другим способом",
           text: "Уже отправил",
           icon: "fas fa-paper-plane",
+          withWayOfSending: true,
           emited_event: "alreadySent",
           classes: "col-3 ml-1",
         },

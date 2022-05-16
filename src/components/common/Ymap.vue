@@ -78,7 +78,7 @@ export default {
       data.coords.push(this.route.userLocation);
 
       this.manualRoute.map((object) => {
-        data.coords.push([object.latitude, object.longitude]);
+        data.coords.push([object.offer.latitude, object.offer.longitude]);
       });
       //   coords.push(this.route.userLocation);
 
@@ -156,14 +156,14 @@ export default {
             preset: "cluster#balloonTwoColumns",
             iconContentLayout: window.ymaps.templateLayoutFactory.createClass(
               `<div style="width: 100%; height: 100%" title="${
-                this.manualRoute[index - 1].object_type_name +
+                this.manualRoute[index - 1].offer.object_type_name +
                 "\n" +
-                this.manualRoute[index - 1].address
+                this.manualRoute[index - 1].offer.address
               }">
               <span style="color: red; text-transform: uppercase;">${
-                this.manualRoute[index - 1].district_name +
+                this.manualRoute[index - 1].offer.district_name +
                 "-" +
-                this.manualRoute[index - 1].direction_name
+                this.manualRoute[index - 1].offer.direction_name
               }</span></div>`
             ),
             //         balloonContentLayout: window.ymaps.templateLayoutFactory
