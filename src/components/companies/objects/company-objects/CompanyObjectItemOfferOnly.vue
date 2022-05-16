@@ -301,9 +301,9 @@ export default {
     clickSelectObject() {
       if (this.disabled) return;
       this.$emit("select", this.offer);
-      // setTimeout(() => {
-      //   this.$refs.comment.focus();
-      // });
+      setTimeout(() => {
+        this.$refs.comment.focus();
+      });
     },
     clickUnSelectObject() {
       this.$emit("unSelect", this.offer);
