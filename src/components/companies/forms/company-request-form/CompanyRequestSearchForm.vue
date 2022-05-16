@@ -23,6 +23,14 @@
           <i class="fas fa-angle-down" v-if="!extraVisible"></i>
           <i class="fas fa-angle-up" v-else></i>
         </a>
+        <a
+          href="#"
+          @click.prevent="resetForm"
+          class="text-primary ml-5"
+          v-if="filterCount"
+        >
+          сбросить
+        </a>
       </FormGroup>
       <div v-show="extraVisible">
         <FormGroup class="mb-2">
@@ -227,14 +235,6 @@
             label="Статус"
             class="col-4 text-center"
           />
-          <div class="col-2 align-self-center ml-auto">
-            <button
-              class="btn btn-warning btn-large"
-              @click.prevent="resetForm"
-            >
-              Сбросить
-            </button>
-          </div>
         </FormGroup>
       </div>
     </Form>
