@@ -239,21 +239,19 @@
             label="Тип объекта"
             extraLabel="склад"
             :noAllSelect="true"
-            @extraSelect="selectObjectType($event, 1)"
+            :extraValue="1"
+            :extraOptions="form.object_type"
+            @extraSelect="selectObjectType"
             class="col-4 pr-2 mx-auto"
             :options="objectTypeListWareHouse"
           />
-          <!-- <CheckboxIcons
-            v-model="form.purposes"
-            extraLabel="производство"
-            :noAllSelect="true"
-            @extraSelect="selectObjectType($event, 2)"
-            class="col-4 mt-4 pr-2 mx-auto"
-            :options="objectTypeListProduction"
-          /> -->
           <CheckboxIcons
             v-model="form.purposes"
             extraLabel="производство"
+            :noAllSelect="true"
+            :extraValue="2"
+            :extraOptions="form.object_type"
+            @extraSelect="selectObjectType"
             class="col-4 mt-4 pr-2 mx-auto"
             :options="objectTypeListProduction"
           />
@@ -261,7 +259,9 @@
             v-model="form.purposes"
             extraLabel="участок"
             :noAllSelect="true"
-            @extraSelect="selectObjectType($event, 3)"
+            :extraValue="3"
+            :extraOptions="form.object_type"
+            @extraSelect="selectObjectType"
             class="col-4 mt-4 mx-auto"
             :options="objectTypeListPlot"
           />
@@ -390,6 +390,11 @@ export default {
         array.push(+item);
       });
       this.form.purposes = array;
+      array = [];
+      this.form.object_type.forEach((item) => {
+        array.push(+item);
+      });
+      this.form.object_type = array;
       let query = { ...this.form };
       this.deleteEmptyFields(query);
       await this.$router.replace({ query });

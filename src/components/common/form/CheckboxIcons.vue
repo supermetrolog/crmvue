@@ -7,7 +7,12 @@
       <div
         class="extra-label"
         v-if="extraLabel"
-        :class="{ active: isAllSelected || extraLabelSelected }"
+        :class="{
+          active:
+            isAllSelected ||
+            extraLabelSelected ||
+            extraOptions.find((item) => item == extraValue),
+        }"
         @click="clickExtraLabel"
       >
         <p>{{ extraLabel }}</p>
@@ -63,6 +68,13 @@ export default {
     modelValue: {
       type: [Array, Number],
       default: () => [],
+    },
+    extraOptions: {
+      type: Array,
+      default: () => [],
+    },
+    extraValue: {
+      type: Number,
     },
     required: {
       type: Boolean,
@@ -152,8 +164,10 @@ export default {
     },
     clickExtraLabel() {
       if (this.noAllSelect) {
-        this.extraLabelSelected = !this.extraLabelSelected;
-        this.$emit("extraSelect", this.extraLabelSelected);
+        this.extraLabelSelected = !this.extraOptions.find(
+          (item) => item == this.extraValue
+        );
+        this.$emit("extraSelect", this.extraLabelSelected, this.extraValue);
         return;
       }
       if (this.isAllSelected) {
