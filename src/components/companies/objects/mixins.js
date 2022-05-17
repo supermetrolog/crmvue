@@ -83,7 +83,7 @@ export const MixinObject = {
 
             this.sendObjectsHandler(comment, sendClientFlag);
         },
-        async realSendObjects(wayOfSending, sendClientFlag) {
+        async realSendObjects(wayOfSending, sendClientFlag, comment = null) {
             let notifyOptions = {
                 group: "app",
                 type: "error",
@@ -96,9 +96,20 @@ export const MixinObject = {
                 return false;
             }
             this.loader = true;
+            const objectsParams = [];
+            this.selectedObjects.forEach(item => {
+                objectsParams.push({
+                    object_id: item.object_id,
+                    original_id: item.original_id,
+                    type_id: item.type_id,
+                    consultant: this.THIS_USER.userProfile.full_name
+                });
+            });
             const isSuccessfuly = await api.timeline.sendObjects({
                 contacts: this.contactForSendMessage,
                 step: this.step.number,
+                offers: objectsParams,
+                comment,
                 wayOfSending,
                 sendClientFlag
             });
