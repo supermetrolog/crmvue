@@ -87,7 +87,10 @@
           </div>
           <div class="price">
             <i class="fas fa-ruble-sign"></i>
-            <p class="value" v-if="offer.deal_type == 1">
+            <p
+              class="value"
+              v-if="offer.deal_type == 1 || offer.deal_type == 4"
+            >
               {{ offer.calc_price_general }}
               <small>руб за м<sup>2</sup>/г</small>
             </p>

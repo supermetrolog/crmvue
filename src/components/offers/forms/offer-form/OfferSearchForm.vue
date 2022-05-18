@@ -52,10 +52,19 @@
             :options="dealTypeList"
           />
           <Input
+            v-if="typeof form.approximateDistanceFromMKAD == 'undefined'"
             v-model="form.rangeMaxDistanceFromMKAD"
             maska="###"
             placeholder="не более"
             label="Удаленность от МКАД"
+            class="col-3 pr-1"
+          />
+          <Input
+            v-else
+            v-model="form.approximateDistanceFromMKAD"
+            maska="###"
+            placeholder="не более"
+            label="Удаленность от МКАД +30%"
             class="col-3 pr-1"
           />
           <Input
@@ -395,6 +404,7 @@ export default {
         array.push(+item);
       });
       this.form.object_type = array;
+      console.log("AAAAAAAAAAAAA", this.form.approximateDistanceFromMKAD);
       let query = { ...this.form };
       this.deleteEmptyFields(query);
       await this.$router.replace({ query });

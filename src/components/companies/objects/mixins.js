@@ -19,6 +19,7 @@ export const MixinObject = {
             selectedObjects: [],
             preventStepObjects: [],
             loader: false,
+            allObjectsLoader: false,
             viewMode: true,
         }
     },
@@ -66,9 +67,10 @@ export const MixinObject = {
             if (!this.checkContacts()) {
                 return;
             }
-            if (!await this.realSendObjects(wayOfSending, sendClientFlag)) {
-                return;
-            }
+            // if (!await this.realSendObjects(wayOfSending, sendClientFlag)) {
+            //     return;
+            // }
+            this.realSendObjects(wayOfSending, sendClientFlag);
             this.sendObjectsHandler(comment, sendClientFlag, true);
         },
         async send({ comment, wayOfSending }) {
@@ -77,9 +79,10 @@ export const MixinObject = {
             if (!this.checkContacts()) {
                 return;
             }
-            if (!await this.realSendObjects(wayOfSending, sendClientFlag)) {
-                return;
-            }
+            // if (!await this.realSendObjects(wayOfSending, sendClientFlag)) {
+            //     return;
+            // }
+            this.realSendObjects(wayOfSending, sendClientFlag);
 
             this.sendObjectsHandler(comment, sendClientFlag);
         },
@@ -96,6 +99,7 @@ export const MixinObject = {
                 return false;
             }
             this.loader = true;
+            this.allObjectsLoader = true;
             const objectsParams = [];
             this.selectedObjects.forEach(item => {
                 objectsParams.push({
@@ -114,6 +118,7 @@ export const MixinObject = {
                 sendClientFlag
             });
             this.loader = false;
+            this.allObjectsLoader = false;
             console.warn(isSuccessfuly);
             if (!isSuccessfuly) {
                 notifyOptions.text = 'Не удалось отправить объекты!';
