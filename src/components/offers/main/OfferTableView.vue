@@ -175,20 +175,45 @@ export default {
   },
   computed: {},
   methods: {
+    // imageSrc(offer) {
+    //   const photos = offer.photos;
+    //   const object_photos = offer.object.photo;
+    //   if (photos && Array.isArray(photos) && photos[0] != "[]") {
+    //     return "https://pennylane.pro" + photos[0];
+    //   } else if (
+    //     object_photos &&
+    //     Array.isArray(object_photos) &&
+    //     object_photos[0] != "[]"
+    //   ) {
+    //     return "https://pennylane.pro" + object_photos[0];
+    //   } else {
+    //     return this.$apiUrlHelper.fileNotFoundUrl();
+    //   }
+    // },
     imageSrc(offer) {
       const photos = offer.photos;
       const object_photos = offer.object.photo;
-      if (photos && Array.isArray(photos) && photos[0] != "[]") {
-        return "https://pennylane.pro" + photos[0];
-      } else if (
+      let resultImage = null;
+      if (photos && Array.isArray(photos)) {
+        photos.forEach((img) => {
+          if (resultImage == null && typeof img == "string" && img.length > 2) {
+            resultImage = "https://pennylane.pro" + img;
+          }
+        });
+      }
+
+      if (resultImage) {
+        return resultImage;
+      }
+      if (
         object_photos &&
         Array.isArray(object_photos) &&
-        object_photos[0] != "[]"
+        typeof object_photos[0] == "string" &&
+        object_photos[0].length > 2
       ) {
         return "https://pennylane.pro" + object_photos[0];
-      } else {
-        return this.$apiUrlHelper.fileNotFoundUrl();
       }
+      return this.$apiUrlHelper.fileNotFoundUrl();
     },
     getRegion(region) {
       return this.regionList[region].label;

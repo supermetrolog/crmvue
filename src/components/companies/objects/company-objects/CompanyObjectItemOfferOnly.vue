@@ -253,16 +253,41 @@ export default {
     ...mapGetters(["THIS_USER"]),
     imageSrc() {
       const photos = this.offer.photos;
+      const object_photos = this.offer.object.photo;
+      let resultImage = null;
+      if (photos && Array.isArray(photos)) {
+        photos.forEach((img) => {
+          if (resultImage == null && typeof img == "string" && img.length > 2) {
+            resultImage = "https://pennylane.pro" + img;
+          }
+        });
+      }
+
+      if (resultImage) {
+        return resultImage;
+      }
       if (
-        photos &&
-        Array.isArray(photos) &&
-        typeof photos[0] == "string" &&
-        photos[0].length > 2
+        object_photos &&
+        Array.isArray(object_photos) &&
+        typeof object_photos[0] == "string" &&
+        object_photos[0].length > 2
       ) {
-        return "https://pennylane.pro" + photos[0];
+        return "https://pennylane.pro" + object_photos[0];
       }
       return this.$apiUrlHelper.fileNotFoundUrl();
     },
+    // imageSrc() {
+    //   const photos = this.offer.photos;
+    //   if (
+    //     photos &&
+    //     Array.isArray(photos) &&
+    //     typeof photos[0] == "string" &&
+    //     photos[0].length > 2
+    //   ) {
+    //     return "https://pennylane.pro" + photos[0];
+    //   }
+    //   return this.$apiUrlHelper.fileNotFoundUrl();
+    // },
     offerUrl() {
       const baseUrl = "https://pennylane.pro/complex/";
       let url = baseUrl + this.offer.complex_id;
