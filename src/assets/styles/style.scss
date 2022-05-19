@@ -2322,6 +2322,9 @@
         position: relative;
         font-size: 12px;
         border: 2px dashed lighten($color_dark, 40);
+        strong {
+            word-wrap: break-word;
+        }
         &:hover {
             i.edit,
             i.delete {

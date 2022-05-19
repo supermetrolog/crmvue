@@ -14,7 +14,7 @@
       <div class="col-4 text-center align-self-center">
         <i class="fas fa-handshake"></i>
       </div>
-      <div class="col-8 px-0">
+      <div class="col-8 pl-0">
         <div class="row no-gutters">
           <div class="col-4 text-right pr-2"><p>название:</p></div>
           <div class="col-8 pl-4">
