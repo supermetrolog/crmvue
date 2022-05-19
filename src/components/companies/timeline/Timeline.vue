@@ -200,12 +200,13 @@ export default {
       return Utils.normalizeContactsForMultiselect(this.COMPANY_CONTACTS);
     },
     timelineTitle() {
-      let title = "Бизнес процесс ";
+      let title = "Бизнес процесс: " + this.COMPANY.full_name;
       const currentTimeline = this.TIMELINE_LIST.find(
         (timeline) => timeline.consultant.id == this.$route.query.consultant_id
       );
-      if (!currentTimeline) return title;
-      title += currentTimeline.consultant.userProfile.short_name;
+      if (currentTimeline) {
+        title += " - " + currentTimeline.consultant.userProfile.short_name;
+      }
       return title;
     },
   },

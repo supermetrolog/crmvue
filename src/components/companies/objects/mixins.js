@@ -67,10 +67,10 @@ export const MixinObject = {
             if (!this.checkContacts()) {
                 return;
             }
-            // if (!await this.realSendObjects(wayOfSending, sendClientFlag)) {
-            //     return;
-            // }
-            this.realSendObjects(wayOfSending, sendClientFlag);
+            if (!await this.realSendObjects(wayOfSending, sendClientFlag)) {
+                return;
+            }
+            // this.realSendObjects(wayOfSending, sendClientFlag);
             this.sendObjectsHandler(comment, sendClientFlag, true);
         },
         async send({ comment, wayOfSending }) {
@@ -79,10 +79,10 @@ export const MixinObject = {
             if (!this.checkContacts()) {
                 return;
             }
-            // if (!await this.realSendObjects(wayOfSending, sendClientFlag)) {
-            //     return;
-            // }
-            this.realSendObjects(wayOfSending, sendClientFlag);
+            if (!await this.realSendObjects(wayOfSending, sendClientFlag)) {
+                return;
+            }
+            // this.realSendObjects(wayOfSending, sendClientFlag);
 
             this.sendObjectsHandler(comment, sendClientFlag);
         },
