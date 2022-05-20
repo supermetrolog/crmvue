@@ -5,7 +5,7 @@
       enter-active-class="animate__animated animate__zoomIn for__modal absolute"
       leave-active-class="animate__animated animate__zoomOut for__modal absolute"
     >
-      <Modal
+      <!-- <Modal
         title="Удаление контакта "
         @close="clickCloseModal"
         v-if="deletedContactItem"
@@ -18,6 +18,40 @@
               <span class="text-grey">"{{ deletedContactItem.header }}"</span>
               ?
             </h4>
+          </div>
+          <div class="col-12 mt-4 text-center">
+            <Loader class="center small" v-if="deleteLoader" />
+            <button
+              class="btn btn-danger"
+              :disabled="deleteLoader"
+              @click="deleteContact(deletedContactItem)"
+            >
+              Удалить
+            </button>
+            <button
+              class="btn btn-primary ml-1"
+              @click="clickCloseModal"
+              :disabled="deleteLoader"
+            >
+              Нет
+            </button>
+          </div>
+        </div>
+      </Modal> -->
+
+      <Modal
+        title="Удаление контакта"
+        @close="clickCloseModal"
+        v-if="deletedContactItem"
+        class="autosize"
+      >
+        <div class="row no-gutters">
+          <div class="col-12 text-center">
+            <h4 class="text-dark">Вы уверены что хотите удалить контакт?</h4>
+            <CompanyContactItem
+              :contact="deletedContactItem"
+              :reedOnly="true"
+            />
           </div>
           <div class="col-12 mt-4 text-center">
             <Loader class="center small" v-if="deleteLoader" />

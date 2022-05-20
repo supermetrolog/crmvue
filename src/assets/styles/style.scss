@@ -2420,6 +2420,15 @@
             }
         }
         &-contact-list {
+            .modal {
+                .modal-container {
+                    max-width: 300px;
+                    .modal-body {
+                        padding-left: 35px!important;
+                        padding-right: 35px!important;
+                    }
+                }
+            }
             .item {
                 .header {
                     i.edit {

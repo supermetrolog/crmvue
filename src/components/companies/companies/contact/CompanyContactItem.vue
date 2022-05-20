@@ -12,7 +12,7 @@
           <i
             class="fas fa-times text-danger delete"
             @click="deleteContact"
-            v-if="!contact.type"
+            v-if="!contact.type && !reedOnly"
           ></i>
           <i
             class="fas fa-exclamation-circle mr-2 text-danger"
@@ -32,7 +32,7 @@
           <i
             class="fas fa-pen text-primary edit"
             @click="openContactFormForUpdate"
-            v-if="!contact.type"
+            v-if="!contact.type && !reedOnly"
           ></i>
         </div>
       </div>
@@ -168,6 +168,10 @@ export default {
     },
     createCommentLoader: {
       type: Boolean,
+    },
+    reedOnly: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {
