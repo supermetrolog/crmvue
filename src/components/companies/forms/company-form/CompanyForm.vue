@@ -48,7 +48,7 @@
                 :title="form.officeAdress"
                 extraClasses="long-text"
                 label="Адрес офиса"
-                class="col-6 pr-1"
+                class="col-12 text-center"
                 :filterResults="false"
                 :minChars="1"
                 :resolveOnLoad="formdata ? true : false"
@@ -60,44 +60,26 @@
                   }
                 "
               />
-
+            </FormGroup>
+            <FormGroup class="mb-1">
               <MultiSelect
                 v-model="form.companyGroup_id"
                 label="Входит в ГК"
-                class="col-6 pl-1"
+                class="col-6 pr-1"
                 :searchable="true"
                 :options="COMPANY_GROUP_LIST"
               />
-            </FormGroup>
-            <FormGroup class="mb-1">
               <MultiSelect
                 v-model="form.consultant_id"
                 :v="v$.form.consultant_id"
                 required
                 label="Консультант"
-                class="col-6 pr-1"
+                class="col-6 pl-1"
                 :options="CONSULTANT_LIST"
               />
-              <PropogationInput
-                v-model="form.contacts.websites"
-                :v="v$.form.contacts.websites"
-                label="Вебсайт"
-                name="website"
-                class="col-6 pl-1"
-              />
             </FormGroup>
+
             <FormGroup class="mb-1">
-              <!-- <PropogationInput
-                v-model="form.contacts.phones"
-                :maska="[
-                  '+7 (###) ###-##-###',
-                  '+### (###) ###-##-##',
-                  '+#### (###) ###-##-##',
-                ]"
-                placeholder="+7 "
-                label="Телефон"
-                class="col-6 pr-1"
-              /> -->
               <PropogationDoubleInput
                 v-model="form.contacts.phones"
                 :v="v$.form.contacts.phones"
@@ -112,19 +94,16 @@
                 label="Телефон"
                 class="col-6 pr-1"
               />
-              <Checkbox
-                v-model="form.processed"
-                label="Обработано"
-                class="col-2 large text-center"
-              />
+
               <PropogationInput
                 v-model="form.contacts.emails"
                 :v="v$.form.contacts.emails"
                 name="email"
                 label="Email"
-                class="col-4 pl-1"
+                class="col-6 pl-1"
               />
             </FormGroup>
+
             <FormGroup class="mb-1">
               <Checkbox
                 v-model="form.categories"
@@ -135,20 +114,27 @@
                 label="Категория"
                 class="col-7"
               />
-              <Textarea
-                v-model="form.description"
-                label="Описание"
-                class="col-5 pl-1"
+              <PropogationInput
+                v-model="form.contacts.websites"
+                :v="v$.form.contacts.websites"
+                label="Вебсайт"
+                name="website"
+                class="col-5 pr-1"
               />
             </FormGroup>
-
+            <FormGroup class="mb-1"> </FormGroup>
             <FormGroup class="mb-1">
+              <Checkbox
+                v-model="form.processed"
+                label="Обработано"
+                class="col large text-center"
+              />
               <Radio
                 v-model="form.status"
                 :v="v$.form.status"
                 required
                 label="Статус"
-                class="col-4 pl-1"
+                class="col pl-1"
                 :options="statusOptions"
               />
               <MultiSelect
@@ -168,7 +154,7 @@
               <RadioStars
                 v-model="form.rating"
                 label="Рейтинг"
-                class="col-4 pl-1 text-center ml-auto"
+                class="col pl-1 text-center ml-auto"
                 :options="ratingOptions"
               >
                 <p class="text-left pl-5 mt-2">
@@ -187,6 +173,13 @@
                   - очень важно
                 </p>
               </RadioStars>
+            </FormGroup>
+            <FormGroup class="mb-1">
+              <Textarea
+                v-model="form.description"
+                label="Описание"
+                class="col-12 px-0"
+              />
             </FormGroup>
           </Tab>
           <Tab name="Деятельность">

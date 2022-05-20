@@ -7,7 +7,7 @@
     >
       <Form @submit="onSubmit" class="p-2">
         <Loader class="center" v-if="loader" />
-        <FormGroup class="mb-1">
+        <FormGroup class="mb-2">
           <MultiSelect
             v-model="form.regions"
             label="Регионы"
@@ -58,7 +58,7 @@
             :options="CONSULTANT_LIST"
           />
         </FormGroup>
-        <FormGroup class="mb-1">
+        <FormGroup class="mb-2">
           <Input
             :disabled="!!form.distanceFromMKADnotApplicable"
             v-model="form.distanceFromMKAD"
@@ -135,7 +135,7 @@
             />
           </MultiSelect>
         </FormGroup>
-        <FormGroup class="mb-1">
+        <FormGroup class="mb-2">
           <Checkbox
             v-model="form.objectClasses"
             class="col-3 pr-1"
@@ -164,7 +164,7 @@
             class="col-3"
           />
         </FormGroup>
-        <FormGroup class="mb-1">
+        <FormGroup class="mb-2">
           <Radio
             v-model="form.water"
             label="Наличие воды"
@@ -196,7 +196,7 @@
             :options="yesNoOptions"
           />
         </FormGroup>
-        <FormGroup class="mb-1">
+        <FormGroup class="mb-2">
           <Checkbox
             v-model="form.gateTypes"
             class="col-6 pr-1"
@@ -225,23 +225,22 @@
             />
           </Radio>
         </FormGroup>
-        <FormGroup class="mb-1">
+        <FormGroup class="mb-2">
           <Checkbox
             v-model="form.antiDustOnly"
-            class="col-2 large text-center"
+            class="col large text-center"
             label="Только антипыль"
           />
           <Checkbox
             v-model="form.firstFloorOnly"
-            class="col-2 pr-1 large text-center"
+            class="col pr-1 large text-center"
             label="Только 1 этаж"
           />
           <Checkbox
             v-model="form.expressRequest"
-            class="col-2 large text-center"
+            class="col large text-center"
             label="Срочный запрос"
           />
-          <Textarea v-model="form.description" class="col-6" label="Описание" />
         </FormGroup>
         <FormGroup>
           <Input
@@ -288,6 +287,12 @@
             :options="objectTypeListPlot"
           />
         </FormGroup>
+        <Textarea
+          v-model="form.description"
+          class="col-12 px-0"
+          label="Описание"
+        />
+        <FormGroup> </FormGroup>
         <FormGroup class="mt-4">
           <Submit class="col-4 mx-auto">
             {{ formdata ? "Сохранить" : "Создать" }}
