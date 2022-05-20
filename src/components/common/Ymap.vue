@@ -161,9 +161,7 @@ export default {
                 this.manualRoute[index - 1].offer.address
               }">
               <span style="color: red; text-transform: uppercase;">${
-                this.manualRoute[index - 1].offer.district_name +
-                "-" +
-                this.manualRoute[index - 1].offer.direction_name
+                this.manualRoute[index - 1].offer.visual_id
               }</span></div>`
             ),
             //         balloonContentLayout: window.ymaps.templateLayoutFactory

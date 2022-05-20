@@ -47,10 +47,17 @@
                             alt="Фото объекта"
                           />
                         </div>
-                        <div class="col-8 pl-2">
+                        <!-- <div class="col-8 pl-2">
                           <b>
                             {{ object.offer.district_name }} -
                             {{ object.offer.direction_name }}
+                          </b>
+                          <p>{{ object.offer.object_type_name }}</p>
+                          <p>{{ object.offer.address }}</p>
+                        </div> -->
+                        <div class="col-8 pl-2">
+                          <b>
+                            {{ object.offer.visual_id }}
                           </b>
                           <p>{{ object.offer.object_type_name }}</p>
                           <p>{{ object.offer.address }}</p>
@@ -213,13 +220,26 @@ export default {
     },
     getImageSrc(offer) {
       const photos = offer.photos;
+      const object_photos = offer.object.photo;
+      let resultImage = null;
+      if (photos && Array.isArray(photos)) {
+        photos.forEach((img) => {
+          if (resultImage == null && typeof img == "string" && img.length > 2) {
+            resultImage = "https://pennylane.pro" + img;
+          }
+        });
+      }
+
+      if (resultImage) {
+        return resultImage;
+      }
       if (
-        photos &&
-        Array.isArray(photos) &&
-        typeof photos[0] == "string" &&
-        photos[0].length > 2
+        object_photos &&
+        Array.isArray(object_photos) &&
+        typeof object_photos[0] == "string" &&
+        object_photos[0].length > 2
       ) {
-        return "https://pennylane.pro" + photos[0];
+        return "https://pennylane.pro" + object_photos[0];
       }
       return this.$apiUrlHelper.fileNotFoundUrl();
     },
