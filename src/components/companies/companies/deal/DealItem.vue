@@ -61,7 +61,7 @@
           </div>
           <div class="col-4 text-right pr-2"><p>дата сделки:</p></div>
           <div class="col-8 pl-4">
-            <strong>{{ deal.dealDate || "—" }}</strong>
+            <strong>{{ deal.dealDate_format || "—" }}</strong>
           </div>
           <div class="col-4 text-right pr-2"><p>консультант:</p></div>
           <div class="col-8 pl-4">

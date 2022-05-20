@@ -15,6 +15,18 @@
       enter-active-class="animate__animated animate__zoomIn for__modal absolute"
       leave-active-class="animate__animated animate__zoomOut for__modal absolute"
     >
+      <CompanyDealForm
+        @close="clickCloseDealForm"
+        :formdata="deal"
+        @updated="updatedDeal"
+        v-if="dealFormVisible"
+      />
+    </transition>
+    <transition
+      mode="out-in"
+      enter-active-class="animate__animated animate__zoomIn for__modal absolute"
+      leave-active-class="animate__animated animate__zoomOut for__modal absolute"
+    >
       <CompanyRequestForm
         @closeCompanyForm="clickCloseCompanyRequestForm"
         :company_id="COMPANY.id"
@@ -93,11 +105,11 @@
           <NoData v-if="!COMPANY_REQUESTS.length && !loaderCompanyRequests" />
           <div class="row" v-if="!loaderCompanyRequests && COMPANY">
             <div class="col-12 p-0">
-              <DealItem
+              <DealList
                 class="mb-2 mt-1"
-                v-for="deal in COMPANY.dealsRequestEmpty"
-                :key="deal.id"
-                :deal="deal"
+                :deals="COMPANY.dealsRequestEmpty"
+                @openDealFormForUpdate="openDealFormForUpdate"
+                @deleted="getCompany(false)"
               />
             </div>
           </div>
@@ -148,10 +160,12 @@ import CompanyRequestList from "@/components/companies/companies/request/Company
 import CompanyRequestForm from "@/components/companies/forms/company-request-form/CompanyRequestForm.vue";
 import CompanyContactForm from "@/components/companies/forms/company-contact-form/CompanyContactForm.vue";
 import CompanyForm from "@/components/companies/forms/company-form/CompanyForm.vue";
+import CompanyDealForm from "@/components/companies/forms/company-deal-form/CompanyDealForm";
 import CompanyContactList from "@/components/companies/companies/contact/CompanyContactList.vue";
 import CompanyObjectList from "@/components/companies/objects/company-objects/CompanyObjectList";
 import Timeline from "@/components/companies/timeline/Timeline.vue";
-import DealItem from "@/components/companies/companies/deal/DealItem.vue";
+// import DealItem from "@/components/companies/companies/deal/DealItem.vue";
+import DealList from "@/components/companies/companies/deal/DealList.vue";
 import NoData from "@/components/common/NoData";
 import Joke from "@/components/common/Joke";
 export default {
@@ -167,7 +181,8 @@ export default {
     NoData,
     Joke,
     CompanyObjectList,
-    DealItem,
+    DealList,
+    CompanyDealForm,
   },
   data() {
     return {
@@ -178,10 +193,12 @@ export default {
       companyRequestFormVisible: false,
       companyContactFormVisible: false,
       companyFormVisible: false,
+      dealFormVisible: false,
       timelineVisible: false,
       request: null,
       contact: null,
       company: null,
+      deal: null,
     };
   },
   computed: {
@@ -200,8 +217,8 @@ export default {
       "FETCH_COMPANY_CONTACTS",
       "FETCH_COMPANY_OBJECTS",
     ]),
-    async getCompany() {
-      this.loaderCompanyDetailInfo = true;
+    async getCompany(withLoader = true) {
+      this.loaderCompanyDetailInfo = withLoader;
       await this.FETCH_COMPANY(this.$route.params.id);
       this.loaderCompanyDetailInfo = false;
       if (!this.COMPANY) {
@@ -245,6 +262,17 @@ export default {
       this.request = request;
       this.clickOpenCompanyRequestForm();
     },
+    clickOpenDealForm() {
+      this.dealFormVisible = true;
+    },
+    clickCloseDealForm() {
+      this.dealFormVisible = false;
+      this.deal = null;
+    },
+    openDealFormForUpdate(deal) {
+      this.deal = deal;
+      this.clickOpenDealForm();
+    },
     openContactFormForUpdate(contact) {
       this.contact = contact;
       this.clickOpenCompanyContactForm();
@@ -262,6 +290,10 @@ export default {
     },
     updatedRequest() {
       this.getCompanyRequests();
+      console.log("UPDATED");
+    },
+    updatedDeal() {
+      this.getCompany(false);
       console.log("UPDATED");
     },
     createdContact() {

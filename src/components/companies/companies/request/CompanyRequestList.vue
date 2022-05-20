@@ -76,7 +76,9 @@
           <div class="col-6 pl-2">
             <div class="row no-gutters">
               <div class="col-6"><p>Сделки</p></div>
-              <div class="col-6 text-right"><p>1</p></div>
+              <div class="col-6 text-right">
+                <p>{{ dealsCount }}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -112,6 +114,17 @@ export default {
   props: {
     requests: {
       type: Array,
+    },
+  },
+  computed: {
+    dealsCount() {
+      const requestsWithDeal = this.requests.filter(
+        (item) => item.deal != null
+      );
+      if (Array.isArray(requestsWithDeal)) {
+        return requestsWithDeal.length;
+      }
+      return 0;
     },
   },
   methods: {

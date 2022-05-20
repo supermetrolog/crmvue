@@ -16,6 +16,9 @@ const Deal = {
         async UPDATE_DEAL(_, formdata) {
             return await api.deal.updateDeal(formdata, formdata.id);
         },
+        async DELETE_DEAL(_, formdata) {
+            return await api.deal.deleteDeal(formdata, formdata.id);
+        },
 
     },
     getters: {}

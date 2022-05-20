@@ -327,7 +327,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["CONSULTANT_LIST"]),
+    ...mapGetters(["CONSULTANT_LIST", "THIS_USER"]),
     contractTermVisible() {
       if (!this.requestOptions.length || !this.form.request_id) return false;
       const currentRequestOption = this.requestOptions.find(
@@ -357,6 +357,7 @@ export default {
     onSubmit() {
       this.v$.$validate();
       console.warn(this.v$.form.$error);
+      !this.form.clientLegalEntity ? (this.form.formOfOrganization = null) : "";
       if (!this.v$.form.$error) {
         this.loader = true;
         if (this.formdata) {
@@ -529,24 +530,49 @@ export default {
     this.form.request_id = this.request_id;
     console.log("ID", this.request_id);
     this.form.company_id = this.company_id;
-
-    if (this.formdata) {
-      this.form = { ...this.form, ...this.formdata };
-    }
+    this.form.consultant_id = this.THIS_USER.id;
     this.form.object_id = this.object_id;
     this.form.original_id = this.original_id;
     this.form.complex_id = this.complex_id;
     this.form.type_id = this.type_id;
     this.form.visual_id = this.visual_id;
+    if (this.formdata) {
+      this.form = { ...this.form, ...this.formdata };
+    }
+
     this.form.offerHandler = {
-      object_id: this.object_id,
-      original_id: this.original_id,
-      complex_id: this.complex_id,
-      type_id: this.type_id,
-      visual_id: this.visual_id,
+      object_id: this.form.object_id,
+      original_id: this.form.original_id,
+      complex_id: this.form.complex_id,
+      type_id: this.form.type_id,
+      visual_id: this.form.visual_id,
     };
     this.loader = false;
   },
+  // async mounted() {
+  //   this.loader = true;
+  //   await this.FETCH_CONSULTANT_LIST();
+  //   this.form.request_id = this.request_id;
+  //   console.log("ID", this.request_id);
+  //   this.form.company_id = this.company_id;
+  //   this.form.consultant_id = this.THIS_USER.id;
+  //   if (this.formdata) {
+  //     this.form = { ...this.form, ...this.formdata };
+  //   }
+  //   this.form.object_id = this.object_id;
+  //   this.form.original_id = this.original_id;
+  //   this.form.complex_id = this.complex_id;
+  //   this.form.type_id = this.type_id;
+  //   this.form.visual_id = this.visual_id;
+  //   this.form.offerHandler = {
+  //     object_id: this.object_id,
+  //     original_id: this.original_id,
+  //     complex_id: this.complex_id,
+  //     type_id: this.type_id,
+  //     visual_id: this.visual_id,
+  //   };
+  //   this.loader = false;
+  // },
   watch: {
     form: {
       handler() {

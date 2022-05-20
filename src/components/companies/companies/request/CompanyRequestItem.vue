@@ -207,7 +207,7 @@
       </div>
     </div>
     <div class="col-12 deal-info py-2" v-if="request.deal">
-      <DealItem :deal="request.deal" />
+      <DealItem :deal="request.deal" :reedOnly="true" />
     </div>
   </div>
 </template>

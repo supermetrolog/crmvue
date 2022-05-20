@@ -47,4 +47,15 @@ export default {
             .catch((e) => ErrorHandle.setError(e));
         return data;
     },
+    async deleteDeal(formdata, id) {
+        const url = "deals/" + id;
+        let data = false;
+        await axios
+            .delete(url, formdata)
+            .then((Response) => {
+                data = SuccessHandler.getData(Response);
+            })
+            .catch((e) => ErrorHandle.setError(e));
+        return data;
+    },
 }
