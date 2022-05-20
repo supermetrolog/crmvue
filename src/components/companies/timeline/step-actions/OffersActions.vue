@@ -233,6 +233,7 @@ export default {
     approximateDistanceFromMKAD: null,
     pricePerFloor: null,
     type_id: null,
+    firstFloorOnly: null,
   },
   methods: {
     updatedObjects(data, fn) {
@@ -274,6 +275,7 @@ export default {
         gates: request.gateTypes.map((item) => item.gate_type),
         direction: request.directions.map((item) => item.direction),
         district_moscow: request.districts.map((item) => item.district),
+        firstFloorOnly: request.firstFloorOnly ? 1 : null,
         recommended_sort: 1, // ФИЛЬТРЫ ПЕРЕСТАНУТ РАБОТАТЬ И БУДЕТ ВЫДАВАТЬСЯ РЕЗУЛЬТАТЫ ОТСОРТИРОВАННЫЕ ПО КОЛЛИЧЕСТВУ СОВПАДЕНИЙ
       };
       this.queryParams = {
@@ -306,6 +308,7 @@ export default {
         gates: request.gateTypes.map((item) => item.gate_type),
         direction: request.directions.map((item) => item.direction),
         district_moscow: request.districts.map((item) => item.district),
+        firstFloorOnly: request.firstFloorOnly ? 1 : null,
         recommended_sort: null,
       };
       this.queryParams = {
@@ -338,6 +341,7 @@ export default {
         gates: request.gateTypes.map((item) => item.gate_type),
         direction: request.directions.map((item) => item.direction),
         district_moscow: request.districts.map((item) => item.district),
+        firstFloorOnly: request.firstFloorOnly ? 1 : null,
         recommended_sort: null,
       };
       this.queryParams = {
@@ -370,6 +374,7 @@ export default {
         gates: [],
         direction: request.directions.map((item) => item.direction),
         district_moscow: request.districts.map((item) => item.district),
+        firstFloorOnly: request.firstFloorOnly ? 1 : null,
         recommended_sort: null,
       };
       this.queryParams = {
@@ -402,6 +407,7 @@ export default {
         gates: [],
         direction: request.directions.map((item) => item.direction),
         district_moscow: request.districts.map((item) => item.district),
+        firstFloorOnly: request.firstFloorOnly ? 1 : null,
         recommended_sort: null,
       };
       this.queryParams = {
@@ -434,6 +440,7 @@ export default {
         gates: request.gateTypes.map((item) => item.gate_type),
         direction: request.directions.map((item) => item.direction),
         district_moscow: request.districts.map((item) => item.district),
+        firstFloorOnly: request.firstFloorOnly ? 1 : null,
         recommended_sort: null,
       };
       this.queryParams = {

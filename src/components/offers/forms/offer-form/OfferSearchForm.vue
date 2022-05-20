@@ -168,13 +168,6 @@
             label="Тип пола"
             :options="floorTypesFUCKOptions"
           />
-          <Radio
-            v-model="form.heated"
-            :unselectMode="true"
-            label="Отапливаемый"
-            class="col-2 text-center pr-1"
-            :options="yesNoFUCKOptions"
-          />
         </FormGroup>
         <FormGroup class="mb-2">
           <Radio
@@ -226,21 +219,27 @@
             class="col pr-1 text-center"
             :options="yesNoOptions"
           />
+        </FormGroup>
+        <FormGroup class="mb-2">
           <Radio
             v-model="form.status"
             :options="activePassiveOptions"
             :unselectMode="true"
             label="Статус"
-            class="col text-center"
+            class="col pr-1 text-center"
           />
-          <!-- <div class="col-2 align-self-center ml-auto">
-            <button
-              class="btn btn-warning btn-large"
-              @click.prevent="resetForm"
-            >
-              Сбросить
-            </button>
-          </div> -->
+          <Radio
+            v-model="form.heated"
+            :unselectMode="true"
+            label="Отапливаемый"
+            class="col text-center pr-1"
+            :options="yesNoFUCKOptions"
+          />
+          <Checkbox
+            v-model="form.firstFloorOnly"
+            class="col pr-1 large text-center"
+            label="Только 1 этаж"
+          />
         </FormGroup>
         <FormGroup class="mb-2">
           <CheckboxIcons
@@ -361,6 +360,7 @@ export default {
     direction: [],
     district_moscow: [],
     status: null,
+    firstFloorOnly: null,
   },
   methods: {
     ...mapActions(["FETCH_CONSULTANT_LIST"]),
