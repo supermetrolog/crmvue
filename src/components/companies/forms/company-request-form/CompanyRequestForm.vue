@@ -230,16 +230,19 @@
             v-model="form.antiDustOnly"
             class="col large text-center"
             label="Только антипыль"
+            :falseValue="0"
           />
           <Checkbox
             v-model="form.firstFloorOnly"
             class="col pr-1 large text-center"
             label="Только 1 этаж"
+            :falseValue="0"
           />
           <Checkbox
             v-model="form.expressRequest"
             class="col large text-center"
             label="Срочный запрос"
+            :falseValue="0"
           />
         </FormGroup>
         <FormGroup>
@@ -371,21 +374,21 @@ export default {
         id: null,
         dealType: null,
         regions: [],
-        expressRequest: null,
+        expressRequest: 0,
         distanceFromMKAD: null,
-        distanceFromMKADnotApplicable: null,
+        distanceFromMKADnotApplicable: 0,
         minArea: null,
         maxArea: null,
         minCeilingHeight: null,
         maxCeilingHeight: null,
-        firstFloorOnly: null, ///
+        firstFloorOnly: 0, ///
         objectClasses: [],
         heated: null,
         gateTypes: [],
-        antiDustOnly: null,
+        antiDustOnly: 0,
         electricity: "",
-        haveCranes: null,
-        trainLine: null,
+        haveCranes: 0,
+        trainLine: 0,
         trainLineLength: null,
         status: 1, //default
         consultant_id: null,
@@ -398,11 +401,11 @@ export default {
         unknownMovingDate: null,
         passive_why: null,
         passive_why_comment: null,
-        water: null,
-        gaz: null,
-        steam: null,
-        sewerage: null,
-        shelving: null,
+        water: 0,
+        gaz: 0,
+        steam: 0,
+        sewerage: 0,
+        shelving: 0,
       },
     };
   },
