@@ -21,14 +21,14 @@ jobs:
         npm install
         npm run build
 
-    - name: 📂 Sync files with prod server (clients.pennylane.pro)
+    - name: 📂 Sync files with PROD server (clients.pennylane.pro)
       uses: SamKirkland/FTP-Deploy-Action@4.3.0
       with:
         server: 62.113.107.218
         username: ${{ secrets.ftp_prod_server_username }}
         password: ${{ secrets.ftp_prod_server_password }}
 
-    - name: 📂 Sync files with dev server (clients.supermetrolog.ru)
+    - name: 📂 Sync files with DEV server (clients.supermetrolog.ru)
       uses: SamKirkland/FTP-Deploy-Action@4.3.0
       with:
         server: 62.113.107.218
