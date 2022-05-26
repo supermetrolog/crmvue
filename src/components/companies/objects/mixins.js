@@ -159,6 +159,7 @@ export const MixinObject = {
         },
         selectNegative(comment) {
             let data = this.step;
+            data.click_negative = true;
             console.warn(comment);
             if (data.negative) {
                 data.negative = 0;
