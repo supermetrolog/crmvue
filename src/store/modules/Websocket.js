@@ -53,7 +53,11 @@ const Websocket = {
                 return;
             }
             console.log('RUN WEBSOCKET 2');
-            let socket = new WebSocket(apiUrlHelperObject.wsUrl());
+            try {
+                let socket = new WebSocket(apiUrlHelperObject.wsUrl());
+            } catch (error) {
+                console.log(error);
+            }
             socket.onopen = function() {
                 return context.dispatch('EVENT_WEBSOCKET_ON_OPEN');
             };
