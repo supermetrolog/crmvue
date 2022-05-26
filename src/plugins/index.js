@@ -23,6 +23,18 @@ export const apiUrlHelperObject = {
     imagesPath: "images/",
     notFoundFileName: "no-image.jpg",
     notFoundAvatarName: "no-avatar.png",
+
+    // websocket urls
+
+    prodWsUrl: 'ws://62.113.107.218:8082',
+    devWsUrl: 'ws://localhost:8082',
+    wsUrl() {
+        if (process.env.NODE_ENV == 'development') {
+            return this.devWsUrl;
+        } else {
+            return this.prodWsUrl;
+        }
+    },
     url() {
         if (process.env.NODE_ENV == 'development') {
             return this.devUrl;
