@@ -26,7 +26,7 @@ export const apiUrlHelperObject = {
 
     // websocket urls
 
-    prodWsUrl: 'ws://62.113.107.218:8082',
+    prodWsUrl: 'wss://62.113.107.218:8082',
     devWsUrl: 'ws://localhost:8082',
     wsUrl() {
         if (process.env.NODE_ENV == 'development') {
