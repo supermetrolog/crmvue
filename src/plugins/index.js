@@ -26,8 +26,10 @@ export const apiUrlHelperObject = {
 
     // websocket urls
 
-    prodWsUrl: 'wss://62.113.107.218:8082',
-    devWsUrl: 'ws://localhost:8082',
+
+    prodWsUrl: 'wss://api.supermetrolog.ru/websocket',
+    devWsUrl: 'wss://api.supermetrolog.ru/websocket',
+    // devWsUrl: 'ws://localhost:8082',
     wsUrl() {
         if (process.env.NODE_ENV == 'development') {
             return this.devWsUrl;
