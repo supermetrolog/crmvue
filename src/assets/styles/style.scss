@@ -1491,6 +1491,34 @@
                         }
                     }
                 }
+                &.bg {
+                    div {
+                        display: flex;
+                        justify-content: space-around;
+                        label {
+                            display: flex;
+                            justify-content: center;
+                            outline: 1px dashed black;
+                            width: 100%;
+                            text-align: center;
+                            padding: 5px 0;
+                            font-weight: bold;
+                            border-radius: 3px;
+                            font-size: 12px;
+                            &:last-child {
+                                margin-right: 0;
+                            }
+                            &.checked {
+                                background-color: $color_success_alt;
+                                color: $color_light;
+                                outline: none;
+                            }
+                        }
+                        input {
+                            display: none!important;
+                        }
+                    }
+                }
             }
             &.checkbox,
             &.radio {

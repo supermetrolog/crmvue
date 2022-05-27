@@ -237,6 +237,16 @@ export const GateTypeList = new Map(
 
     ]
 );
+export const ObjectTypesGeneralList = new Map(
+    [
+        ['param', [
+            [0, "склад"],
+            [1, "производство"],
+            [2, "участок"],
+        ]],
+
+    ]
+);
 export const RatingList = new Map([
     ['param', [
         [1, { name: "", icon: "far fa-star" }],

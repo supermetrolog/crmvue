@@ -16,7 +16,7 @@
             v-model="field"
             :class="inputClasses"
             :value="option[0]"
-            @change="onChange"
+            @change.stop="onChange"
             :disabled="disabled"
           />
           {{ option[1] }}
@@ -30,7 +30,7 @@
           :true-value="trueValue"
           :false-value="falseValue"
           :disabled="disabled"
-          @change="onChange"
+          @change.stop="onChange"
         />
         {{ mode == "inline" ? label : "" }}
       </div>

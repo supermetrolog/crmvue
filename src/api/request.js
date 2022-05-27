@@ -3,7 +3,7 @@ import ErrorHandle from "./errors";
 import SuccessHandler from "./success";
 export default {
     async getRequests(id) {
-        const url = "requests/company-requests/" + id + "?expand=consultant.userProfile,directions,districts,gateTypes,objectClasses,objectTypes,regions,deal.offer,deal.consultant.userProfile, deal.offer.generalOffersMix,deal.competitor&sort=-created_at";
+        const url = "requests/company-requests/" + id + "?expand=consultant.userProfile,directions,districts,gateTypes,objectClasses,objectTypes,objectTypesGeneral,regions,deal.offer,deal.consultant.userProfile, deal.offer.generalOffersMix,deal.competitor&sort=-created_at";
 
         let data = false;
         await axios

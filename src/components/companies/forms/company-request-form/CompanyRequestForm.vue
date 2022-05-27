@@ -10,6 +10,7 @@
         <FormGroup class="mb-2">
           <MultiSelect
             v-model="form.regions"
+            :v="v$.form.regions"
             label="Регионы"
             class="col-4 pr-1"
             mode="multiple"
@@ -88,7 +89,6 @@
           >
             <Input
               v-model="form.maxCeilingHeight"
-              :v="v$.form.maxCeilingHeight"
               maska="##########"
               placeholder="До:"
               required
@@ -143,17 +143,11 @@
             name="object_class"
             :options="objectClassList"
           />
-          <Radio
-            v-model="form.haveCranes"
-            label="Наличие кранов"
-            class="col-3 text-center pr-1"
-            :options="yesNoOptions"
-          />
+
           <Radio
             v-model="form.heated"
-            :v="v$.form.heated"
             label="Отапливаемый"
-            required
+            :unselectMode="true"
             class="col-3 text-center pr-1"
             :options="yesNoOptions"
           />
@@ -165,36 +159,49 @@
           />
         </FormGroup>
         <FormGroup class="mb-2">
-          <Radio
+          <Checkbox
+            v-model="form.haveCranes"
+            class="col large text-center"
+            label="Краны"
+          />
+          <Checkbox
             v-model="form.water"
-            label="Наличие воды"
-            class="col pr-1 text-center"
-            :options="yesNoOptions"
+            class="col large text-center"
+            label="Вода"
           />
-          <Radio
+          <Checkbox
             v-model="form.gaz"
-            label="Наличие газа"
-            class="col pr-1 text-center"
-            :options="yesNoOptions"
+            class="col large text-center"
+            label="Газ"
           />
-          <Radio
+          <Checkbox
             v-model="form.steam"
-            label="Наличие пара"
-            class="col pr-1 text-center"
-            :options="yesNoOptions"
+            class="col large text-center"
+            label="Пар"
           />
-          <Radio
+          <Checkbox
             v-model="form.sewerage"
-            label="Наличие КНС"
-            class="col pr-1 text-center"
-            :options="yesNoOptions"
+            class="col large text-center"
+            label="КНС"
           />
-          <Radio
+          <Checkbox
             v-model="form.shelving"
-            label="Наличие стеллажей"
-            class="col-3 text-center pr-1"
-            :options="yesNoOptions"
+            class="col large text-center"
+            label="Стеллажи"
           />
+          <Checkbox
+            v-model="form.trainLine"
+            class="col large text-center"
+            label="Ж/Д ветка"
+          >
+            <Input
+              v-if="form.trainLine"
+              v-model="form.trainLineLength"
+              label="Длина ветки"
+              maska="##########"
+              class="col-12 p-0"
+            />
+          </Checkbox>
         </FormGroup>
         <FormGroup class="mb-2">
           <Checkbox
@@ -210,42 +217,25 @@
             label="Цена за пол (м^2/год)"
             class="col-4 pr-1"
           />
-          <Radio
-            v-model="form.trainLine"
-            label="Ж/Д ветка"
-            class="col-2 text-center"
-            :options="yesNoOptions"
-          >
-            <Input
-              v-if="form.trainLine"
-              v-model="form.trainLineLength"
-              label="Длина ветки"
-              maska="##########"
-              class="col-12 p-0"
-            />
-          </Radio>
         </FormGroup>
         <FormGroup class="mb-2">
           <Checkbox
             v-model="form.antiDustOnly"
             class="col large text-center"
             label="Только антипыль"
-            :falseValue="0"
           />
           <Checkbox
             v-model="form.firstFloorOnly"
             class="col pr-1 large text-center"
             label="Только 1 этаж"
-            :falseValue="0"
           />
           <Checkbox
             v-model="form.expressRequest"
             class="col large text-center"
             label="Срочный запрос"
-            :falseValue="0"
           />
         </FormGroup>
-        <FormGroup>
+        <FormGroup class="mb-2">
           <Input
             v-model="form.movingDate"
             :v="v$.form.movingDate"
@@ -262,32 +252,41 @@
               @change.stop="form.movingDate = null"
             />
           </Input>
-
-          <CheckboxIcons
-            required
-            v-model="form.objectTypes"
-            :v="v$.form.objectTypes"
+        </FormGroup>
+        <FormGroup class="mb-2">
+          <Checkbox
+            v-model="form.objectTypesGeneral"
+            :v="v$.form.objectTypesGeneral"
+            class="col-12 large bg"
             label="Тип объекта"
-            extraLabel="склад"
-            class="col-3 pr-1"
+            name="type"
+            @change="changeObjectTypesGeneral"
+            required
+            :options="objectTypesGeneralList"
+          />
+        </FormGroup>
+
+        <FormGroup>
+          <CheckboxIcons
+            v-model="form.objectTypes"
+            class="col pr-1"
             name="object_type"
             :options="objectTypeListWareHouse"
+            @change="changeObjectTypes(0)"
           />
           <CheckboxIcons
             v-model="form.objectTypes"
-            :v="v$.form.objectTypes"
-            extraLabel="производство"
-            class="col-3 mt-4 pr-1"
+            class="col pr-1"
             name="object_type"
             :options="objectTypeListProduction"
+            @change="changeObjectTypes(1)"
           />
           <CheckboxIcons
             v-model="form.objectTypes"
-            :v="v$.form.objectTypes"
-            extraLabel="участок"
-            class="col-2 mt-4"
+            class="col"
             name="object_type"
             :options="objectTypeListPlot"
+            @change="changeObjectTypes(2)"
           />
         </FormGroup>
         <Textarea
@@ -322,6 +321,7 @@ import {
   ActivePassive,
   unknownMovingDate,
   PassiveWhyRequest,
+  ObjectTypesGeneralList,
 } from "@/const/Const.js";
 import Form from "@/components/common/form/Form.vue";
 import FormGroup from "@/components/common/form/FormGroup.vue";
@@ -352,6 +352,7 @@ export default {
       v$: useValidate(),
       objectClassList: ObjectClassList.get("param"),
       gateTypeList: GateTypeList.get("param"),
+      objectTypesGeneralList: ObjectTypesGeneralList.get("param"),
       objectTypeListWareHouse: ObjectTypeList.get("warehouse"),
       objectTypeListProduction: ObjectTypeList.get("production"),
       objectTypeListPlot: ObjectTypeList.get("plot"),
@@ -374,38 +375,39 @@ export default {
         id: null,
         dealType: null,
         regions: [],
-        expressRequest: 0,
+        expressRequest: null,
         distanceFromMKAD: null,
-        distanceFromMKADnotApplicable: 0,
+        distanceFromMKADnotApplicable: null,
         minArea: null,
         maxArea: null,
         minCeilingHeight: null,
         maxCeilingHeight: null,
-        firstFloorOnly: 0, ///
+        firstFloorOnly: null, ///
         objectClasses: [],
         heated: null,
         gateTypes: [],
-        antiDustOnly: 0,
+        antiDustOnly: null,
         electricity: "",
-        haveCranes: 0,
-        trainLine: 0,
+        haveCranes: null,
+        trainLine: null,
         trainLineLength: null,
         status: 1, //default
         consultant_id: null,
         description: null,
         pricePerFloor: null,
         objectTypes: [],
+        objectTypesGeneral: [],
         directions: [],
         districts: [],
         movingDate: null,
         unknownMovingDate: null,
         passive_why: null,
         passive_why_comment: null,
-        water: 0,
-        gaz: 0,
-        steam: 0,
-        sewerage: 0,
-        shelving: 0,
+        water: null,
+        gaz: null,
+        steam: null,
+        sewerage: null,
+        shelving: null,
       },
     };
   },
@@ -425,10 +427,13 @@ export default {
   validations() {
     return {
       form: {
+        regions: {
+          required: helpers.withMessage("выберите регион", required),
+        },
         dealType: {
           required: helpers.withMessage("выберите тип сделки", required),
         },
-        objectTypes: {
+        objectTypesGeneral: {
           required: helpers.withMessage("выберите тип объекта", required),
         },
         distanceFromMKAD: {
@@ -445,12 +450,6 @@ export default {
         },
         minCeilingHeight: {
           required: helpers.withMessage("Заполните поле", required),
-        },
-        maxCeilingHeight: {
-          required: helpers.withMessage("Заполните поле", required),
-        },
-        heated: {
-          required: helpers.withMessage("Выберите вариант", required),
         },
         consultant_id: {
           required: helpers.withMessage("Выберите вариант", required),
@@ -566,7 +565,51 @@ export default {
         return true;
       }
     },
+    diff(list) {
+      let options = [];
+      list.forEach((item) => {
+        options.push(item[0]);
+      });
+      let data = [];
 
+      this.form.objectTypes.forEach((item) => {
+        if (!options.includes(item.object_type)) {
+          data.push(item);
+        }
+      });
+      console.warn(data);
+      return data;
+    },
+    changeObjectTypesGeneral(data) {
+      let warehouse,
+        production,
+        plot = null;
+      console.error("DATA", data);
+      data.forEach((item) => {
+        if (item == 0) {
+          warehouse = 1;
+        } else if (item == 1) {
+          production = 1;
+        } else if (item == 2) {
+          plot = 1;
+        }
+      });
+      if (warehouse == null)
+        this.form.objectTypes = this.diff(this.objectTypeListWareHouse);
+
+      if (production == null)
+        this.form.objectTypes = this.diff(this.objectTypeListProduction);
+
+      if (plot == null)
+        this.form.objectTypes = this.diff(this.objectTypeListPlot);
+    },
+
+    changeObjectTypes(objectTypeGeneral) {
+      this.form.objectTypesGeneral = this.form.objectTypesGeneral.filter(
+        (item) => item.type != objectTypeGeneral
+      );
+      this.form.objectTypesGeneral.push({ type: objectTypeGeneral });
+    },
     clickCloseModal() {
       this.$emit("closeCompanyForm");
     },

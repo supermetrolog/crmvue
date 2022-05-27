@@ -31,7 +31,7 @@
             v-model="field"
             :class="inputClasses"
             :value="option[0]"
-            @change="onChange"
+            @change.stop="onChange"
           />
           <i :class="option[1].icon" class="align-self-center"></i>
         </label>
@@ -43,7 +43,7 @@
           :class="inputClasses"
           :true-value="1"
           :false-value="0"
-          @change="onChange"
+          @change.stop="onChange"
         />
       </div>
     </label>
@@ -150,12 +150,6 @@ export default {
       });
       let data = [];
       this.field.forEach((item) => {
-        // for (let index = 0; index < this.options.length; index++) {
-        //   const element = this.options[index];
-        //   if (!item.includes(element[0])) {
-        //     return item;
-        //   }
-        // }
         if (!options.includes(item)) {
           data.push(item);
         }

@@ -224,6 +224,32 @@
           />
         </FormGroup>
         <FormGroup class="mb-2">
+          <Checkbox
+            v-model="form.objectTypesGeneral"
+            class="col-12 large bg"
+            label="Тип объекта"
+            :options="objectTypesGeneralList"
+          />
+        </FormGroup>
+
+        <FormGroup>
+          <CheckboxIcons
+            v-model="form.objectTypes"
+            class="col pr-1"
+            :options="objectTypeListWareHouse"
+          />
+          <CheckboxIcons
+            v-model="form.objectTypes"
+            class="col pr-1"
+            :options="objectTypeListProduction"
+          />
+          <CheckboxIcons
+            v-model="form.objectTypes"
+            class="col"
+            :options="objectTypeListPlot"
+          />
+        </FormGroup>
+        <!-- <FormGroup class="mb-2">
           <CheckboxIcons
             v-model="form.objectTypes"
             label="Тип объекта"
@@ -243,7 +269,7 @@
             class="col-4 mt-4 mx-auto"
             :options="objectTypeListPlot"
           />
-        </FormGroup>
+        </FormGroup> -->
         <FormGroup class="mb-2">
           <Checkbox
             v-model="form.antiDustOnly"
@@ -291,6 +317,7 @@ import {
   RegionList,
   DirectionList,
   DistrictList,
+  ObjectTypesGeneralList,
 } from "@/const/Const.js";
 import { SearchFormMixin } from "@/components/common/mixins.js";
 export default {
@@ -318,6 +345,7 @@ export default {
       regionList: RegionList.get("param"),
       directionList: DirectionList.get("param"),
       districtList: DistrictList.get("param"),
+      objectTypesGeneralList: ObjectTypesGeneralList.get("param"),
     };
   },
   defaultFormProperties: {
@@ -327,6 +355,7 @@ export default {
     dateStart: null,
     dateEnd: null,
     objectTypes: [],
+    objectTypesGeneral: [],
     rangeMinArea: null,
     rangeMaxArea: null,
     rangeMinPricePerFloor: null,
@@ -373,6 +402,12 @@ export default {
       }
       if (this.form.gateTypes && !Array.isArray(this.form.gateTypes)) {
         this.form.gateTypes = [this.form.gateTypes];
+      }
+      if (
+        this.form.gateTypesGeneral &&
+        !Array.isArray(this.form.gateTypesGeneral)
+      ) {
+        this.form.gateTypesGeneral = [this.form.gateTypesGeneral];
       }
       if (this.form.objectTypes && !Array.isArray(this.form.objectTypes)) {
         this.form.objectTypes = [this.form.objectTypes];
