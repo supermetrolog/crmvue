@@ -35,7 +35,12 @@
               v-if="offer.type_id == 2"
               >Общий</span
             >
-            <span class="badge badge-info isGeneral" v-else>Блок</span>
+            <span
+              class="badge badge-info isGeneral"
+              v-else-if="offer.type_id == 1"
+              >Блок</span
+            >
+            <span class="badge badge-warning isGeneral" v-else>Неизвестно</span>
             <a href="#" @click.prevent="clickSelectObject">
               <img :src="imageSrc" alt="image" />
             </a>
@@ -327,7 +332,7 @@ export default {
       this.extraInfoVisible = !this.extraInfoVisible;
     },
     clickSelectObject() {
-      if (this.disabled) return;
+      if (this.disabled || this.offer.type_id == 3) return;
       this.$emit("select", this.offer);
       setTimeout(() => {
         this.$refs.comment.focus();

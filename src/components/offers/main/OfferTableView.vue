@@ -89,7 +89,11 @@
             <p v-if="offer.deal_type == 3">
               {{ offer.calc_price_safe_pallet }} <small>руб за 1 п. м.</small>
             </p>
-            <span v-if="offer.generalOffersMix.offer.tax_form">
+            <span
+              v-if="
+                offer.generalOffersMix && offer.generalOffersMix.offer.tax_form
+              "
+            >
               {{
                 taxFormList.find(
                   (item) => item.value == offer.generalOffersMix.offer.tax_form
@@ -98,26 +102,31 @@
             </span>
           </Td>
           <Td class="company">
-            <router-link :to="'/companies/' + offer.company.id" target="_blank">
-              {{ offer.company.full_name }}
-            </router-link>
-            <div class="contact" v-if="offer.company.mainContact">
-              {{ offer.company.mainContact.full_name }}
-              <a
-                :href="'mailto:' + email.email"
-                v-for="email of offer.company.mainContact.emails"
-                :key="email.email"
-                class="d-block"
+            <template v-if="offer.company !== null">
+              <router-link
+                :to="'/companies/' + offer.company.id"
+                target="_blank"
               >
-                {{ email.email }}
-              </a>
-              <PhoneNumber
-                v-for="phone of offer.company.mainContact.phones"
-                :key="phone.id"
-                :phone="phone"
-                :contact="offer.company.mainContact"
-              />
-            </div>
+                {{ offer.company.full_name }}
+              </router-link>
+              <div class="contact" v-if="offer.company.mainContact">
+                {{ offer.company.mainContact.full_name }}
+                <a
+                  :href="'mailto:' + email.email"
+                  v-for="email of offer.company.mainContact.emails"
+                  :key="email.email"
+                  class="d-block"
+                >
+                  {{ email.email }}
+                </a>
+                <PhoneNumber
+                  v-for="phone of offer.company.mainContact.phones"
+                  :key="phone.id"
+                  :phone="phone"
+                  :contact="offer.company.mainContact"
+                />
+              </div>
+            </template>
           </Td>
           <Td class="consultant">
             <p v-if="offer.consultant">

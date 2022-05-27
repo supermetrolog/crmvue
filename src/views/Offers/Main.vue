@@ -68,7 +68,7 @@ export default {
       this.loader = true;
       const query = {
         ...this.$route.query,
-        type_id: [2],
+        type_id: [2, 3],
         expand:
           "object,company.mainContact.phones,company.mainContact.emails,company.mainContact.phones,miniOffersMix,generalOffersMix.offer,consultant.userProfile",
       };

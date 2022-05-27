@@ -437,7 +437,7 @@ export const MixinAllObject = {
             this.allObjectsLoader = true;
             let hash = crypto.createHash('sha256').update(JSON.stringify(query)).digest('base64');
             this.waitHash = hash;
-            const data = await api.companyObjects.searchOffers({ type_id: [1, 2], page: this.currentPage, 'per-page': 20, expand: 'object,offer,generalOffersMix.offer,comments', ...query });
+            const data = await api.companyObjects.searchOffers({ type_id: [1, 2, 3], page: this.currentPage, 'per-page': 20, expand: 'object,offer,generalOffersMix.offer,comments', ...query });
             if (hash == this.waitHash) {
                 this.includeStepDataInObjectsData(data.data);
                 this.setAllObjects(data);
