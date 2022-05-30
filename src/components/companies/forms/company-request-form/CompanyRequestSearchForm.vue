@@ -159,70 +159,95 @@
           />
           <Checkbox
             v-model="form.objectClasses"
-            class="col-2 pr-1"
+            class="col"
             label="Классы"
             :options="objectClassList"
           />
-          <Radio
+          <!-- <Radio
             v-model="form.haveCranes"
             :unselectMode="true"
             label="Наличие кранов"
             class="col-2 text-center pr-1"
             :options="yesNoOptions"
-          />
+          /> -->
 
           <Radio
             v-model="form.heated"
             :unselectMode="true"
             label="Отапливаемый"
-            class="col-2 text-center pr-1"
+            class="col text-center"
             :options="yesNoOptions"
           />
           <Radio
+            v-model="form.status"
+            :options="activePassiveOptions"
+            :unselectMode="true"
+            label="Статус"
+            class="col text-center"
+          />
+          <!-- <Radio
             v-model="form.trainLine"
             :unselectMode="true"
             label="Ж/Д ветка"
             class="col-2 text-center"
             :options="yesNoOptions"
+          /> -->
+        </FormGroup>
+        <FormGroup class="mb-2">
+          <Checkbox
+            v-model="form.haveCranes"
+            class="col large text-center"
+            label="Краны"
+          />
+          <Checkbox
+            v-model="form.water"
+            class="col large text-center"
+            label="Вода"
+          />
+          <Checkbox
+            v-model="form.gaz"
+            class="col large text-center"
+            label="Газ"
+          />
+          <Checkbox
+            v-model="form.steam"
+            class="col large text-center"
+            label="Пар"
+          />
+          <Checkbox
+            v-model="form.sewerage"
+            class="col large text-center"
+            label="КНС"
+          />
+          <Checkbox
+            v-model="form.shelving"
+            class="col large text-center"
+            label="Стеллажи"
+          />
+          <Checkbox
+            v-model="form.trainLine"
+            class="col large text-center"
+            label="Ж/Д ветка"
           />
         </FormGroup>
         <FormGroup class="mb-2">
-          <Radio
-            v-model="form.water"
-            :unselectMode="true"
-            label="Наличие воды"
-            class="col pr-1 text-center"
-            :options="yesNoOptions"
+          <Checkbox
+            v-model="form.antiDustOnly"
+            class="col large text-center"
+            label="Только антипыль"
           />
-          <Radio
-            v-model="form.gaz"
-            :unselectMode="true"
-            label="Наличие газа"
-            class="col pr-1 text-center"
-            :options="yesNoOptions"
+          <Checkbox
+            v-model="form.firstFloorOnly"
+            class="col large text-center"
+            label="Только 1 этаж"
           />
-          <Radio
-            v-model="form.steam"
-            :unselectMode="true"
-            label="Наличие пара"
-            class="col pr-1 text-center"
-            :options="yesNoOptions"
-          />
-          <Radio
-            v-model="form.sewerage"
-            :unselectMode="true"
-            label="Наличие КНС"
-            class="col pr-1 text-center"
-            :options="yesNoOptions"
-          />
-          <Radio
-            v-model="form.shelving"
-            :unselectMode="true"
-            label="Наличие стеллажей"
-            class="col text-center pr-1"
-            :options="yesNoOptions"
+          <Checkbox
+            v-model="form.expressRequest"
+            class="col large text-center"
+            label="Срочный запрос"
           />
         </FormGroup>
+
         <FormGroup class="mb-2">
           <Checkbox
             v-model="form.objectTypesGeneral"
@@ -270,30 +295,6 @@
             :options="objectTypeListPlot"
           />
         </FormGroup> -->
-        <FormGroup class="mb-2">
-          <Checkbox
-            v-model="form.antiDustOnly"
-            class="col-2 large text-center"
-            label="Только антипыль"
-          />
-          <Checkbox
-            v-model="form.firstFloorOnly"
-            class="col-2 pr-1 large text-center"
-            label="Только 1 этаж"
-          />
-          <Checkbox
-            v-model="form.expressRequest"
-            class="col-2 large text-center pr-1"
-            label="Срочный запрос"
-          />
-          <Radio
-            v-model="form.status"
-            :options="activePassiveOptions"
-            :unselectMode="true"
-            label="Статус"
-            class="col-4 text-center"
-          />
-        </FormGroup>
       </div>
     </Form>
   </div>
