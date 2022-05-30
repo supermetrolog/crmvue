@@ -138,7 +138,7 @@
         <FormGroup class="mb-2">
           <Checkbox
             v-model="form.objectClasses"
-            class="col-3 pr-1"
+            class="col-3"
             label="Классы"
             name="object_class"
             :options="objectClassList"
@@ -148,13 +148,19 @@
             v-model="form.heated"
             label="Отапливаемый"
             :unselectMode="true"
-            class="col-3 text-center pr-1"
+            class="col-3 text-center"
             :options="yesNoOptions"
           />
           <Input
             v-model="form.electricity"
             maska="##########"
             label="Электричесвто (квт)"
+            class="col-3 pr-1"
+          />
+          <Input
+            v-model="form.pricePerFloor"
+            maska="##########"
+            label="Цена (м^2/год)"
             class="col-3"
           />
         </FormGroup>
@@ -206,33 +212,10 @@
         <FormGroup class="mb-2">
           <Checkbox
             v-model="form.gateTypes"
-            class="col-6 pr-1"
+            class="col-12 text-center"
             label="Тип ворот"
             name="gate_type"
             :options="gateTypeList"
-          />
-          <Input
-            v-model="form.pricePerFloor"
-            maska="##########"
-            label="Цена за пол (м^2/год)"
-            class="col-4 pr-1"
-          />
-        </FormGroup>
-        <FormGroup class="mb-2">
-          <Checkbox
-            v-model="form.antiDustOnly"
-            class="col large text-center"
-            label="Только антипыль"
-          />
-          <Checkbox
-            v-model="form.firstFloorOnly"
-            class="col pr-1 large text-center"
-            label="Только 1 этаж"
-          />
-          <Checkbox
-            v-model="form.expressRequest"
-            class="col large text-center"
-            label="Срочный запрос"
           />
         </FormGroup>
         <FormGroup class="mb-2">
@@ -252,6 +235,21 @@
               @change.stop="form.movingDate = null"
             />
           </Input>
+          <Checkbox
+            v-model="form.antiDustOnly"
+            class="col large text-center"
+            label="Только антипыль"
+          />
+          <Checkbox
+            v-model="form.firstFloorOnly"
+            class="col pr-1 large text-center"
+            label="Только 1 этаж"
+          />
+          <Checkbox
+            v-model="form.expressRequest"
+            class="col large text-center"
+            label="Срочный запрос"
+          />
         </FormGroup>
         <FormGroup class="mb-2">
           <Checkbox
