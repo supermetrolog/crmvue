@@ -712,6 +712,8 @@
         }
         &:disabled {
             background-color: $color_grey;
+            cursor: default;
+            pointer-events: none;
         }
         &-alt {
             padding: .3rem;

@@ -29,6 +29,7 @@
         <button
           class="btn btn-alt btn-primary btn-large"
           @click.prevent="clickOpenCompanyForm"
+          disabled
         >
           передать
         </button>
@@ -37,6 +38,7 @@
         <button
           class="btn btn-alt btn-danger btn-large"
           @click.prevent="clickOpenCompanyForm"
+          disabled
         >
           отказаться
         </button>
