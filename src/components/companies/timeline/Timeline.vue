@@ -1,6 +1,9 @@
 <template>
   <Modal class="fullscreen" :title="timelineTitle" @close="$emit('close')">
     <template #header>
+      <div class="col-1 align-self-center" v-if="TIMELINE_LIST.length">
+        <h3 class="text-success m-0">ЗАВЕРШЕНО</h3>
+      </div>
       <div class="col timeline-list pr-5" v-if="TIMELINE_LIST.length">
         <div
           class="timeline-actions timeline-list-item p-1"
@@ -184,6 +187,7 @@ export default {
       "COMPANY_CONTACTS",
       "THIS_USER",
       "TIMELINE_LIST",
+      "COMPANY_REQUESTS",
     ]),
     selectedStep() {
       if (this.TIMELINE) {
@@ -195,8 +199,19 @@ export default {
     stepActionsName() {
       return this.stepParam[this.$route.query.step][1].stepName + "Actions";
     },
+    currentRequest() {
+      if (Array.isArray(this.COMPANY_REQUESTS)) {
+        return this.COMPANY_REQUESTS.find(
+          (item) => item.id == this.$route.query.request_id
+        );
+      }
+      return false;
+    },
     disabled() {
-      return this.$route.query.consultant_id != this.THIS_USER.id;
+      return (
+        this.$route.query.consultant_id != this.THIS_USER.id ||
+        this.currentRequest.status == 2
+      );
     },
     companyContacts() {
       return Utils.normalizeContactsForMultiselect(this.COMPANY_CONTACTS);
