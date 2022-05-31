@@ -170,6 +170,43 @@
           />
         </FormGroup>
         <FormGroup class="mb-2">
+          <Checkbox
+            v-model="form.water"
+            class="col large text-center"
+            label="Вода"
+          />
+          <Checkbox
+            v-model="form.gas"
+            class="col large text-center"
+            label="Газ"
+          />
+          <Checkbox
+            v-model="form.steam"
+            class="col large text-center"
+            label="Пар"
+          />
+          <Checkbox
+            v-model="form.sewage_central"
+            class="col large text-center"
+            label="КНС"
+          />
+          <Checkbox
+            v-model="form.racks"
+            class="col large text-center"
+            label="Стеллажи"
+          />
+          <Checkbox
+            v-model="form.railway"
+            class="col large text-center"
+            label="Ж/Д ветка"
+          />
+          <Checkbox
+            v-model="form.has_cranes"
+            class="col large text-center"
+            label="Краны"
+          />
+        </FormGroup>
+        <!-- <FormGroup class="mb-2">
           <Radio
             v-model="form.water"
             :unselectMode="true"
@@ -219,7 +256,7 @@
             class="col pr-1 text-center"
             :options="yesNoOptions"
           />
-        </FormGroup>
+        </FormGroup> -->
         <FormGroup class="mb-2">
           <Radio
             v-model="form.status"
