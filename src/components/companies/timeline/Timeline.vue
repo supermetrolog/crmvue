@@ -1,7 +1,7 @@
 <template>
   <Modal class="fullscreen" :title="timelineTitle" @close="$emit('close')">
     <template #header>
-      <div class="col-1 align-self-center" v-if="TIMELINE_LIST.length">
+      <div class="col-1 align-self-center" v-if="currentRequest.status == 2">
         <h3 class="text-success m-0">ЗАВЕРШЕНО</h3>
       </div>
       <div class="col timeline-list pr-5" v-if="TIMELINE_LIST.length">
