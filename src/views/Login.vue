@@ -75,10 +75,10 @@ export default {
       v$: useValidate(),
       loader: false,
       form: {
-        username: "aasdadwa",
-        // username: "aas",
-        password: "sawdawdsawdawd",
-        // password: "sawdawdsawdaw",
+        // username: "aasdadwa",
+        username: null,
+        // password: "sawdawdsawdawd",
+        password: null,
       },
     };
   },
