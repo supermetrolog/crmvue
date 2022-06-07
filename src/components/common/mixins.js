@@ -3,6 +3,7 @@ export const TableContentMixin = {
         return {
             mounted: false,
             loader: true,
+            watcher: null
         }
     },
     methods: {
@@ -24,12 +25,24 @@ export const TableContentMixin = {
         await this.initialRouteSettings();
         this.mounted = true;
         await this.getContent();
-        this.$watch("$route", (newValue, oldValue) => {
+        if (!this.mounted) {
+            return;
+        }
+        this.watcher = this.$watch("$route", (newValue, oldValue) => {
+            console.log("ROUTE UPDATED HANDLER")
             if (newValue.path == oldValue.path) {
                 this.getContent();
             }
         });
     },
+
+    beforeUnmount() {
+        console.log("UNWATCH")
+        this.mounted = false;
+        if (this.watcher != null) {
+            this.watcher()
+        }
+    }
 
 };
 
@@ -81,14 +94,14 @@ export const SearchFormMixin = {
             } else {
                 query = {...this.form };
             }
-            console.warn(query);
+            // console.warn(query);
             this.deleteEmptyFields(query);
 
             query.page = 1;
             if (!this.noUrl) {
                 this.$router.replace({ query });
             }
-
+            console.log("EMIT SEARCH EVENT")
             this.$emit('search', query);
         },
         resetForm() {
@@ -132,6 +145,7 @@ export const SearchFormMixin = {
         this.$watch(
             "form",
             () => {
+                console.log("FORM WATCHER");
                 clearTimeout(this.setTimeout);
                 this.setTimeout = setTimeout(() => this.onSubmit(), 500);
             }, { deep: true }
