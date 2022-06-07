@@ -7,10 +7,9 @@ export const Menu = new Map([
         { "id": 4, "name": "Юзеры", "icon": "fas fa-users", "url": "/users" },
         { "id": 5, "name": "Аккаунт", "icon": "fas fa-user-astronaut", "url": "/account" },
     ]],
-    ['agent', [{ "id": 0, "name": "Клиенты", "icon": "fas fa-users", "url": "/companies" },
-        { "id": 1, "name": "Статистика", "icon": "fas fa-handshake", "url": "/statistic" },
-        { "id": 2, "name": "Календарь", "icon": "fas fa-th", "url": "/calendar", "exact": true },
-        { "id": 3, "name": "Настройки", "icon": "fas fa-ruble-sign", "url": "/setting" },
+    ['agent', [{ "id": 0, "name": "Компании", "icon": "fas fa-industry", "url": "/companies" },
+        { "id": 6, "name": "Предложка", "icon": "fas fa-city", "url": "/offers" },
+        { "id": 5, "name": "Аккаунт", "icon": "fas fa-user-astronaut", "url": "/account" },
     ]],
 ]);
 export const InternalMenu = new Map([
