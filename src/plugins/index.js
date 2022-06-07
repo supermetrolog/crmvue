@@ -18,7 +18,12 @@ const formatterObject = {
 export const apiUrlHelperObject = {
     // prodUrl: "https://api.supermetrolog.ru/",
     prodUrl: "https://api.pennylane.pro/",
-    devUrl: "http://crmka/",
+    devUrl: "https://api.supermetrolog.ru/",
+    localUrl: "http://crmka/",
+
+    devHost: "clients.supermetrolog.ru",
+    prodHost: "clients.pennylane.pro",
+
     uploadsPath: "uploads/",
     imagesPath: "images/",
     notFoundFileName: "no-image.jpg",
@@ -39,8 +44,12 @@ export const apiUrlHelperObject = {
     },
     url() {
         if (process.env.NODE_ENV == 'development') {
-            return this.devUrl;
+            return this.localUrl;
         } else {
+            let host = window.location.host;
+            if (host == this.devHost) {
+                return this.devUrl;
+            }
             return this.prodUrl;
         }
     },
