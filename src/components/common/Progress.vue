@@ -8,7 +8,7 @@
       ></div>
     </div>
     <div class="progress-label">
-      <p>{{ percent }}% Заполнения</p>
+      <p>{{ percent }}% {{ title }}</p>
     </div>
   </div>
 </template>
@@ -19,6 +19,10 @@ export default {
   props: {
     percent: {
       type: Number,
+    },
+    title: {
+      type: String,
+      default: "Заполнения",
     },
   },
   computed: {

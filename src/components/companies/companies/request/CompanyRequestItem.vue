@@ -189,7 +189,11 @@
             </div>
           </div>
         </div>
-        <Progress class="mt-2" :percent="56" />
+        <Progress
+          class="mt-2"
+          :percent="request.timeline_progress"
+          title="Обработано"
+        />
       </div>
       <div class="footer row mt-1">
         <div class="col-8 consultant text-left">

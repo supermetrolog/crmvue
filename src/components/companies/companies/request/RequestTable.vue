@@ -38,7 +38,10 @@
               </div>
 
               <div class="col-12">
-                <Progress :percent="request.progress_percent" />
+                <Progress
+                  :percent="request.timeline_progress"
+                  title="Обработано"
+                />
               </div>
             </div>
           </Td>
