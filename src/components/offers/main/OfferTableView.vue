@@ -80,7 +80,7 @@
           </Td>
           <Td class="price" sort="price">
             <p v-if="offer.deal_type == 1 || offer.deal_type == 4">
-              {{ offer.calc_price_general }}
+              {{ offer.calc_price_warehouse }}
               <small>руб за м<sup>2</sup>/г</small>
             </p>
             <p v-if="offer.deal_type == 2">
