@@ -37,13 +37,10 @@ const Offers = {
     },
     actions: {
         async SEARCH_OFFERS(context, { query, concat = false }) {
-            // let hash = crypto.createHash('sha256').update(JSON.stringify(query)).digest('base64');
             let hash = waitHash(query);
             context.commit('setWaitHash', hash);
-            console.warn('HASH1', hash, 'HASH2', context.getters);
             const data = await api.offers.search(query);
             if (data) {
-                console.error('HASH1', hash, 'HASH2', context.getters.WAIT_HASH);
                 if (hash == context.getters.WAIT_HASH) {
                     context.commit('updateOffers', { data, concat });
                 } else {

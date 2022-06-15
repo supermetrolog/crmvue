@@ -8,8 +8,9 @@
       </div>
     </div>
     <div class="row no-gutters map-container">
+      <div class="map-loader" v-if="allOffersLoader"></div>
       <div class="col-12">
-        <YmapView :list="OFFERS" />
+        <YmapView :list="allOffersForYmap" />
       </div>
     </div>
     <div class="row no-gutters companies-actions mt-4">
@@ -49,6 +50,9 @@ import OfferSearchForm from "@/components/offers/forms/offer-form/OfferSearchFor
 import { mapGetters, mapActions } from "vuex";
 import { TableContentMixin } from "@/components/common/mixins.js";
 import YmapView from "@/components/common/YmapView.vue";
+
+import api from "@/api/api";
+import { waitHash } from "../../utils";
 export default {
   mixins: [TableContentMixin],
   name: "OffersMain",
@@ -57,6 +61,10 @@ export default {
       companyFormVisible: false,
       viewMode: false,
       companyGroupsFormVisible: false,
+      allOffersForYmap: [],
+      ymapOffersSearchHash: null,
+      allOffersLoader: false,
+      prevPage: null,
     };
   },
   components: {
@@ -67,19 +75,58 @@ export default {
   methods: {
     ...mapActions(["SEARCH_OFFERS"]),
     async getContent() {
+      this.getAllOffersForYmap();
       await this.getOffers();
     },
     async getOffers() {
       this.loader = true;
       const query = {
         ...this.$route.query,
-        // type_id: [2, 3],
-        type_id: [2],
+        type_id: [2, 3],
+        // type_id: [2],
         expand:
-          "object,company.mainContact.phones,company.mainContact.emails,company.mainContact.phones,miniOffersMix,generalOffersMix.offer,consultant.userProfile",
+          "object,company.mainContact.phones,company.mainContact.emails,miniOffersMix,generalOffersMix.offer,consultant.userProfile",
       };
       await this.SEARCH_OFFERS({ query });
       this.loader = false;
+    },
+    async getAllOffersForYmap() {
+      console.log(this.$route.query.page, this.prevPage);
+      if (
+        this.prevPage &&
+        this.$route.query.page !== this.prevPage &&
+        this.allOffersForYmap.length
+      ) {
+        this.prevPage = this.$route.query.page;
+        return;
+      }
+      this.prevPage = this.$route.query.page;
+      const query = {
+        ...this.$route.query,
+        type_id: [2],
+        fields: "latitude,longitude,address,complex_id,status,thumb",
+        objectsOnly: 1,
+        page: 1,
+        noWith: 1,
+        "per-page": 0,
+      };
+      this.allOffersLoader = true;
+      const hash = waitHash(query);
+      console.log(hash, this.ymapOffersSearchHash);
+      this.ymapOffersSearchHash = hash;
+      const data = await api.offers.search(query);
+      console.error(Array.isArray(data.data));
+      if (Array.isArray(data.data)) {
+        console.warn(hash, this.ymapOffersSearchHash);
+        if (hash == this.ymapOffersSearchHash) {
+          this.allOffersForYmap = data.data;
+        } else {
+          return false;
+        }
+      }
+      this.allOffersLoader = false;
+      console.error(data);
+      return data;
     },
     initialRouteSettings() {},
     clickCloseCompanyForm() {

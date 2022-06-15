@@ -4328,6 +4328,16 @@
     
     // ************** MAP-CONTAINER *************
     .map-container {
+        position: relative;
+        .map-loader {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba($color: #ffffff, $alpha: .9);
+            z-index: 2;
+        }
         .ymap {
             width: 100%;
             .photo {
