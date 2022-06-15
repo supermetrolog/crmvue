@@ -64,7 +64,6 @@ export default {
       allOffersForYmap: [],
       ymapOffersSearchHash: null,
       allOffersLoader: false,
-      prevPage: null,
     };
   },
   components: {
@@ -91,18 +90,10 @@ export default {
       this.loader = false;
     },
     async getAllOffersForYmap() {
-      console.log(this.$route.query.page, this.prevPage);
-      if (
-        this.prevPage &&
-        this.$route.query.page !== this.prevPage &&
-        this.allOffersForYmap.length
-      ) {
-        this.prevPage = this.$route.query.page;
-        return;
-      }
-      this.prevPage = this.$route.query.page;
+      const routeQuery = { ...this.$route.query };
+      delete routeQuery.page;
       const query = {
-        ...this.$route.query,
+        ...routeQuery,
         type_id: [2],
         fields: "latitude,longitude,address,complex_id,status,thumb",
         objectsOnly: 1,
@@ -110,8 +101,13 @@ export default {
         noWith: 1,
         "per-page": 0,
       };
-      this.allOffersLoader = true;
       const hash = waitHash(query);
+      console.log(hash, this.ymapOffersSearchHash);
+      if (hash == this.ymapOffersSearchHash) {
+        return;
+      }
+      this.allOffersLoader = true;
+
       console.log(hash, this.ymapOffersSearchHash);
       this.ymapOffersSearchHash = hash;
       const data = await api.offers.search(query);
