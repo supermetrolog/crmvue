@@ -4339,7 +4339,29 @@
             z-index: 2;
         }
         .ymap {
+            position: relative;
             width: 100%;
+            .max-size-btn {
+                position: absolute;
+                bottom: -23px;
+                left: 0;
+                right: 0;
+                height: 30px;
+                // background-color: red;
+                z-index: 2;
+                display: flex;
+                justify-content: center;
+                align-items: end;
+                i {
+                    font-size: 35px;
+                    color: $color_primary;
+                    background-color: white;
+                    padding: 5px 50px;
+                    border-radius: 5px;
+                    border: 1px solid lighten($color_grey, 30);
+                    cursor: pointer;
+                }
+            }
             .photo {
                 width: 250px;
                 padding-left: 0;

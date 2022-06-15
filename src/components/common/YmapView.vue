@@ -1,5 +1,9 @@
 <template>
   <div class="ymap" :key="render">
+    <div class="max-size-btn">
+      <i class="far fa-arrow-alt-circle-up" v-if="openned" @click="close"></i>
+      <i class="far fa-arrow-alt-circle-down" v-else @click="open"></i>
+    </div>
     <yandex-map
       v-if="mounted"
       :settings="settings"
@@ -9,7 +13,7 @@
       :behaviors="options.behaviors"
       :cluster-options="options.clusterOptions"
       ref="map"
-      style="width: 100%; height: 400px"
+      :style="styles"
     >
       <ymap-marker
         v-for="offer in list"
@@ -18,7 +22,7 @@
         :coords="[offer.latitude, offer.longitude]"
         :use-html-in-layout="true"
         :balloon="{
-          header: offer.complex_id,
+          header: 'ID: ' + offer.complex_id,
           body: offer.address,
           footer: getFooter(offer),
         }"
@@ -39,6 +43,11 @@ export default {
     return {
       render: 0,
       mounted: false,
+      styles: {
+        width: "100%",
+        height: "100px",
+      },
+      openned: false,
       route: {
         done: false,
         length: null,
@@ -104,6 +113,16 @@ export default {
     },
     getOfferUrl(offer) {
       return "https://pennylane.pro/complex/" + offer.complex_id;
+    },
+    open() {
+      console.log("OPEN");
+      this.openned = true;
+      this.styles.height = "800px";
+    },
+    close() {
+      console.log("CLOSE");
+      this.styles.height = "100px";
+      this.openned = false;
     },
     // imageSrc(offer) {
     //   const photos = offer.photos;
