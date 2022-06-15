@@ -7,9 +7,12 @@
         </div>
       </div>
     </div>
-    <hr />
-
-    <div class="row no-gutters companies-actions">
+    <div class="row no-gutters map-container">
+      <div class="col-12">
+        <YmapView :list="OFFERS" />
+      </div>
+    </div>
+    <div class="row no-gutters companies-actions mt-4">
       <div class="col-6">
         <PaginationClassic
           :pagination="OFFERS_PAGINATION"
@@ -45,6 +48,7 @@ import OfferTableView from "@/components/offers/main/OfferTableView.vue";
 import OfferSearchForm from "@/components/offers/forms/offer-form/OfferSearchForm.vue";
 import { mapGetters, mapActions } from "vuex";
 import { TableContentMixin } from "@/components/common/mixins.js";
+import YmapView from "@/components/common/YmapView.vue";
 export default {
   mixins: [TableContentMixin],
   name: "OffersMain",
@@ -58,6 +62,7 @@ export default {
   components: {
     OfferTableView,
     OfferSearchForm,
+    YmapView,
   },
   methods: {
     ...mapActions(["SEARCH_OFFERS"]),
@@ -68,7 +73,8 @@ export default {
       this.loader = true;
       const query = {
         ...this.$route.query,
-        type_id: [2, 3],
+        // type_id: [2, 3],
+        type_id: [2],
         expand:
           "object,company.mainContact.phones,company.mainContact.emails,company.mainContact.phones,miniOffersMix,generalOffersMix.offer,consultant.userProfile",
       };

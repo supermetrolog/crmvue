@@ -4325,3 +4325,38 @@
             }
         }
     }
+    
+    // ************** MAP-CONTAINER *************
+    .map-container {
+        .ymap {
+            width: 100%;
+            .photo {
+                width: 250px;
+                padding-left: 0;
+                position: relative;
+                span {
+                    position: absolute;
+                    padding: 5px;
+                    font-size: 16px;
+                    font-weight: bold;
+                    color: $color_success_alt;
+                    background-color: rgba($color: $color_light, $alpha: .85);
+                    &.deal_type {
+                        top: 10px;
+                        left: 10px;
+                        &.passive {
+                            background-color: $color_warning;
+                            color: $color_light;
+                        }
+                    }
+                    &.object_class {
+                        top: 15px;
+                        right: 10px;
+                        padding: 0px 5px;
+                        color: $color_light;
+                        background-color: rgba($color: $color_danger, $alpha: .85);
+                    }
+                }
+            }
+        }
+    }
