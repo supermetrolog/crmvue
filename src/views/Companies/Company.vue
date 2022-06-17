@@ -103,7 +103,14 @@
             v-if="!loaderCompanyRequests"
           />
           <NoData v-if="!COMPANY_REQUESTS.length && !loaderCompanyRequests" />
-          <div class="row" v-if="!loaderCompanyRequests && COMPANY">
+          <div
+            class="row"
+            v-if="
+              !loaderCompanyRequests &&
+              COMPANY &&
+              COMPANY.dealsRequestEmpty.length
+            "
+          >
             <div class="col-12 p-0">
               <DealList
                 class="mb-2 mt-1"

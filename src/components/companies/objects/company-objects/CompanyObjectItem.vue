@@ -19,11 +19,11 @@
         <div class="params">
           <div class="params__item">
             <p class="title">Этажи:</p>
-            <p class="value">{{ object.floors }}</p>
+            <p class="value">{{ object.floors || "—" }}</p>
           </div>
           <div class="params__item">
             <p class="title">Потолки:</p>
-            <p class="value">{{ object.floors }}</p>
+            <p class="value">{{ object.calc_ceiling_height || "—" }}</p>
           </div>
         </div>
         <div class="params">
@@ -35,7 +35,7 @@
           </div>
           <div class="params__item">
             <p class="title">Тип ворот:</p>
-            <p class="value">{{ object.floors }}</p>
+            <p class="value">{{ object.calc_gate_type || "—" }}</p>
           </div>
         </div>
       </div>

@@ -5,7 +5,7 @@ export default {
     async search(query) {
         console.warn("SEARCH");
         query = new URLSearchParams(query).toString();
-        let url = "oldDb/objects?" + query + "&expand=offerMix";
+        let url = "oldDb/objects?" + query + "&expand=offerMix,objectFloors";
         let data = false;
         await axios
             .get(url)
