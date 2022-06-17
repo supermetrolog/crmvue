@@ -14,11 +14,11 @@
                 :v="v$.form.nameRu"
                 :maska="{
                   mask: 'Z*',
-                  tokens: { Z: { pattern: /[а-яА-Я0-9 ]/ } },
+                  tokens: { Z: { pattern: /[а-яА-Я0-9 (--)]/ } },
                 }"
-                required
+                :required="!form.nameEng"
                 label="Название Ru"
-                class="col-5 px-1"
+                class="col-6 px-1"
               />
               <Input
                 v-if="!form.noName"
@@ -26,13 +26,30 @@
                 :v="v$.form.nameEng"
                 :maska="{
                   mask: 'Z*',
-                  tokens: { Z: { pattern: /[a-zA-Z0-9 ]/ } },
+                  tokens: { Z: { pattern: /[a-zA-Z0-9 (--)]/ } },
                 }"
-                required
+                :required="!form.nameRu"
                 label="Название Eng"
-                class="col-4 px-1"
+                class="col-5 pl-1"
               />
-
+            </FormGroup>
+            <FormGroup class="mb-1">
+              <Input
+                v-model="form.nameBrand"
+                :maska="{
+                  mask: 'Z*',
+                  tokens: { Z: { pattern: /[а-яА-Яa-zA-Z0-9 (--)]/ } },
+                }"
+                label="Название Brand"
+                class="col-5 pr-1"
+              />
+              <MultiSelect
+                v-model="form.companyGroup_id"
+                label="Входит в ГК"
+                class="col-5 px-1"
+                :searchable="true"
+                :options="COMPANY_GROUP_LIST"
+              />
               <MultiSelect
                 v-if="!form.noName"
                 v-model="form.formOfOrganization"
@@ -63,19 +80,19 @@
             </FormGroup>
             <FormGroup class="mb-1">
               <MultiSelect
-                v-model="form.companyGroup_id"
-                label="Входит в ГК"
-                class="col-6 pr-1"
-                :searchable="true"
-                :options="COMPANY_GROUP_LIST"
-              />
-              <MultiSelect
                 v-model="form.consultant_id"
                 :v="v$.form.consultant_id"
                 required
                 label="Консультант"
-                class="col-6 pl-1"
+                class="col-6 pr-1"
                 :options="CONSULTANT_LIST"
+              />
+              <PropogationInput
+                v-model="form.contacts.websites"
+                :v="v$.form.contacts.websites"
+                label="Вебсайт"
+                name="website"
+                class="col-6 pl-1"
               />
             </FormGroup>
 
@@ -92,7 +109,7 @@
                 name="phone"
                 name2="exten"
                 label="Телефон"
-                class="col-6 pr-1"
+                class="col-6"
               />
 
               <PropogationInput
@@ -112,14 +129,7 @@
                 required
                 name="category"
                 label="Категория"
-                class="col-7"
-              />
-              <PropogationInput
-                v-model="form.contacts.websites"
-                :v="v$.form.contacts.websites"
-                label="Вебсайт"
-                name="website"
-                class="col-5 pr-1"
+                class="col-12 text-center"
               />
             </FormGroup>
             <FormGroup class="mb-1"> </FormGroup>
@@ -450,6 +460,7 @@ export default {
         inn: null,
         kpp: null,
         legalAddress: null,
+        nameBrand: null,
         nameEng: null,
         nameRu: null,
         noName: 0,
