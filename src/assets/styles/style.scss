@@ -3929,6 +3929,15 @@
     
     // *********** OBJECT-OFFER *************
     .object-offer {
+        &-inf {
+            a {
+                color: $color_dark;
+            }
+            span {
+                padding: 0 10px;
+                font-size: 14px;
+            }
+        }
         position: relative;
         margin-top: 5px;
         table {
@@ -3940,9 +3949,9 @@
         }
         border: 1px solid $color_success;
         &.main {
-            border: 2px solid $color_dark;
+            border: 1px solid $color_success;
             .object-offer__area {
-                border-right: 1px solid $color_dark;
+                border-right: 1px solid $color_success;
             }
         }
         &.passive {

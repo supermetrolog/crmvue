@@ -38,17 +38,9 @@
         </div>
       </div>
     </div>
-    <div class="row no-gutters" v-if="mainOffer">
-      <CompanyObjectItemOffer :offer="mainOffer" class="main" />
+    <div class="row no-gutters" v-if="object.offerMix">
+      <CompanyObjectItemOffer :offer="object.offerMix[0]" class="main" />
     </div>
-    <div class="row no-gutters" v-if="offers.length">
-      <CompanyObjectItemOffer
-        :offer="offer"
-        v-for="offer of offers"
-        :key="offer.id"
-      />
-    </div>
-    <hr />
   </div>
 </template>
 
@@ -75,12 +67,6 @@ export default {
         return "https://pennylane.pro" + photo[0];
       }
       return this.$apiUrlHelper.fileNotFoundUrl();
-    },
-    mainOffer() {
-      return this.object.offerMix.find((offer) => offer.type_id == 2);
-    },
-    offers() {
-      return this.object.offerMix.filter((offer) => offer.type_id != 2);
     },
   },
 };
