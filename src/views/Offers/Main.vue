@@ -95,7 +95,7 @@ export default {
       const query = {
         ...routeQuery,
         type_id: [2],
-        fields: "latitude,longitude,address,complex_id,status,thumb",
+        fields: "latitude,longitude,address,complex_id,status,thumb,test_only",
         objectsOnly: 1,
         page: 1,
         noWith: 1,

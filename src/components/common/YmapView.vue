@@ -26,7 +26,7 @@
           body: offer.address,
           footer: getFooter(offer),
         }"
-        :icon="{ color: offer.status != 1 ? 'yellow' : 'green' }"
+        :icon="{ color: getMarkerColor(offer) }"
         :cluster-name="1"
       >
       </ymap-marker>
@@ -95,6 +95,12 @@ export default {
     this.reRender();
   },
   methods: {
+    getMarkerColor(offer) {
+      if (offer.test_only == 1) {
+        return "grey";
+      }
+      return offer.status != 1 ? "yellow" : "green";
+    },
     getFooter(offer) {
       let template = `<a href="${this.getOfferUrl(
         offer
