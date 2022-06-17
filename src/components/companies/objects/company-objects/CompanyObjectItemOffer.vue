@@ -6,7 +6,7 @@
   >
     <div class="row no-gutters px-2 object-offer-inf">
       <div class="col-12 text-left">
-        <a href="">
+        <a :href="offerUrl" target="_blank">
           <span class="object-offer__visual_id">{{ offer.visual_id }}</span>
           <span>{{ offer.deal_type_name }}</span>
           <span>
@@ -37,7 +37,13 @@ export default {
       type: Object,
     },
   },
-  computed: {},
+  computed: {
+    offerUrl() {
+      const baseUrl = "https://pennylane.pro/complex/";
+      let url = baseUrl + this.offer.complex_id;
+      return url + "?offer_id=[" + this.offer.original_id + "]";
+    },
+  },
 };
 </script>
 

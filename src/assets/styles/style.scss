@@ -3924,6 +3924,13 @@
                     }
                 }
             }
+            .image-container {
+                max-height: 130px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                overflow: hidden;
+            }
         }
     }
     

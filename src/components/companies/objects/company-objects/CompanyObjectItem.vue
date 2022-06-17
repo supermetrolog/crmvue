@@ -3,7 +3,9 @@
     <div class="row no-gutters">
       <div class="col-4" :title="object.description_auto || 'нет описания'">
         <div class="image-container">
-          <img :src="imageSrc" alt="image" />
+          <a :href="objectUrl" target="_blank">
+            <img :src="imageSrc" alt="image" />
+          </a>
         </div>
       </div>
       <div class="col-8 desc">
@@ -67,6 +69,10 @@ export default {
         return "https://pennylane.pro" + photo[0];
       }
       return this.$apiUrlHelper.fileNotFoundUrl();
+    },
+
+    objectUrl() {
+      return "https://pennylane.pro/complex/" + this.object.complex_id;
     },
   },
 };
