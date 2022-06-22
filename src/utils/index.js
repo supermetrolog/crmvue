@@ -203,7 +203,6 @@ export default {
     normalizeDataForUserForm(data) {
         delete data.password;
         delete data.created_at;
-        delete data.email;
         return data;
     },
 };

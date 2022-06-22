@@ -53,6 +53,27 @@
           />
         </FormGroup>
         <FormGroup class="mb-1">
+          <Input
+            v-model="form.email"
+            :v="v$.form.email"
+            label="Email для почты"
+            class="col-4 pr-1"
+            title="Необходим для отправки предложений с аккаунта пользователя"
+          />
+          <Input
+            v-model="form.email_username"
+            label="Email логин"
+            class="col-4 pr-1"
+            title="Необходим для отправки предложений с аккаунта пользователя"
+          />
+          <Input
+            v-model="form.email_password"
+            label="Email пароль"
+            class="col-4"
+            title="Необходим для отправки предложений с аккаунта пользователя"
+          />
+        </FormGroup>
+        <FormGroup class="mb-1">
           <PropogationInput
             v-model="form.userProfile.phones"
             :v="v$.form.userProfile.phones"
@@ -68,7 +89,7 @@
           <PropogationInput
             v-model="form.userProfile.emails"
             :v="v$.form.userProfile.emails"
-            label="Email"
+            label="Emails"
             name="email"
             class="col-4 pr-1"
           />
@@ -122,6 +143,9 @@ export default {
       form: {
         username: null,
         password: null,
+        email: null,
+        email_username: null,
+        email_password: null,
         userProfile: {
           first_name: null,
           middle_name: null,
@@ -181,6 +205,9 @@ export default {
             "введите пароль",
             this.customRequired
           ),
+        },
+        email: {
+          email: helpers.withMessage("заполните email правильно", email),
         },
       },
     };
