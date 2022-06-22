@@ -4104,6 +4104,9 @@
                         p.current {
                             color: $color_primary;
                         }
+                        p {
+                            word-wrap: break-word;
+                        }
                     }
                     .badge {
                         color: $color_light;
