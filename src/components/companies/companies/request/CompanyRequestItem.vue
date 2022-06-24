@@ -23,7 +23,8 @@
         <i
           class="fas fa-clone text-dark clone"
           @click="cloneRequest"
-          v-if="!reedOnly && request.status != 2"
+          v-if="!reedOnly"
+          title="Клонировать"
         ></i>
         <i
           class="fas fa-times text-danger delete"
@@ -210,7 +211,7 @@
         </div>
       </div>
     </div>
-    <div class="col-12 deal-info py-2" v-if="request.deal">
+    <div class="col-12 deal-info py-2" v-if="request.deal && withDeal">
       <DealItem :deal="request.deal" :reedOnly="true" />
     </div>
   </div>
@@ -261,6 +262,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    withDeal: {
+      type: Boolean,
+      default: true,
+    },
   },
   computed: {
     ...mapGetters(["THIS_USER"]),
@@ -282,6 +287,7 @@ export default {
       delete data.id;
       delete data.created_at;
       delete data.updated_at;
+      data.status = data.status == 2 ? 1 : data.status;
       this.$emit("cloneRequest", data);
     },
     openExtraInfo() {

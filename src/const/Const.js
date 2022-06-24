@@ -491,9 +491,9 @@ export const ActivityProfileList = new Map(
 export const NotificationTypeList = new Map(
     [
         ['param', [
-            [0, "fas fa-calendar-alt text-success_alt"], //Calendar
-            [1, "fas fa-calendar-alt text-danger"],
-            [2, "fas fa-calendar-alt text-warning"],
+            [0, "fas fa-microchip text-success_alt"], // SERVER
+            [1, "fas fa-microchip text-warning"],
+            [2, "fas fa-microchip text-danger"],
             [3, "fas fa-city text-success_alt"], // selection
             [4, "fas fa-city text-danger"],
             [5, "fas fa-building text-warning"],

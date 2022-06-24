@@ -55,7 +55,11 @@
             <h4 class="text-dark">
               Вы уверены, что хотите клонировать этот запрос?
             </h4>
-            <CompanyRequestItem :request="clonedRequestItem" :reedOnly="true" />
+            <CompanyRequestItem
+              :request="clonedRequestItem"
+              :reedOnly="true"
+              :withDeal="false"
+            />
           </div>
           <div class="col-12 mt-4 text-center">
             <Loader class="center small" v-if="cloneLoader" />
