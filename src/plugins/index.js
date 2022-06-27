@@ -32,13 +32,17 @@ export const apiUrlHelperObject = {
     // websocket urls
 
 
-    prodWsUrl: 'wss://api.supermetrolog.ru/websocket',
-    // devWsUrl: 'wss://api.supermetrolog.ru/websocket',
-    devWsUrl: 'ws://localhost:8082',
+    prodWsUrl: 'wss://api.pennylane.pro/websocket/',
+    devWsUrl: 'wss://api.supermetrolog.pro/websocket/',
+    localWsUrl: 'ws://localhost:8010',
     wsUrl() {
         if (process.env.NODE_ENV == 'development') {
-            return this.devWsUrl;
+            return this.localWsUrl;
         } else {
+            let host = window.location.host;
+            if (host == this.devHost) {
+                return this.devWsUrl;
+            }
             return this.prodWsUrl;
         }
     },
