@@ -31,6 +31,11 @@
               {{ offer.visual_id }}
             </span>
             <span
+              class="badge badge-danger isGeneral test_only"
+              v-if="offer.test_only"
+              >Тестовый лот</span
+            >
+            <span
               class="badge badge-secondary isGeneral"
               v-if="offer.type_id == 2"
               >Общий</span

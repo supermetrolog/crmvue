@@ -4060,6 +4060,13 @@
                             // background-color: rgba($color: $color_success_alt, $alpha: .8);
                             // color: $color_light;
                         }
+                        &.test_only {
+                            position: absolute;
+                            font-size: 14px!important;
+                            right: unset!important;
+                            left: 5px;
+                            letter-spacing: 2px!important;
+                        }
                         &.isGeneral {
                             z-index: 3;
                             &.badge-info {
@@ -4070,6 +4077,9 @@
                             }
                             &.badge-secondary {
                                 background-color: $color_secondary;
+                            }
+                            &.badge-danger {
+                                background-color: $color_danger;
                             }
                             color: $color_light;
                             position: absolute;
@@ -4321,6 +4331,14 @@
                         padding: 0px 5px;
                         color: $color_light;
                         background-color: rgba($color: $color_danger, $alpha: .85);
+                    }
+                    &.test_only {
+                        bottom: 0px;
+                        left: 5px;
+                        right: 5px;
+                        padding: 5px 10px;
+                        color: $color_light;
+                        background-color: rgba($color: $color_danger, $alpha: .7);
                     }
                 }
             }

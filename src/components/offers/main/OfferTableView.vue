@@ -35,6 +35,9 @@
                 <span class="object_class">
                   {{ offer.class_name }}
                 </span>
+                <span class="test_only" v-if="offer.test_only">
+                  Тестовый лот
+                </span>
               </div>
             </a>
           </Td>
