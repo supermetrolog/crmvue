@@ -1,7 +1,12 @@
 <template>
   <div
     class="row item mb-2"
-    :class="{ done: request.status == 2, active: request.status == 1 }"
+    :class="{
+      done: request.status == 2,
+      active: request.status == 1,
+      selected: $route.query.selected_request == request.id && !reedOnly,
+    }"
+    @click="clickOnItem"
   >
     <div class="col-12 text-center general-info py-2">
       <div class="header">
@@ -356,6 +361,25 @@ export default {
       }
       return this.objectTypeListPlot.find((item) => item[0] == objectType)[1]
         .name;
+    },
+    clickOnItem(event) {
+      console.log(event.target.tagName);
+      if (
+        this.reedOnly ||
+        ["I", "BUTTON", "A"].includes(event.target.tagName)
+      ) {
+        return;
+      }
+
+      console.log("click on item");
+      const query = { ...this.$route.query };
+      if (query.selected_request && query.selected_request == this.request.id) {
+        delete query.selected_request;
+      } else {
+        query.selected_request = this.request.id;
+      }
+
+      this.$router.replace({ query });
     },
   },
   mounted() {

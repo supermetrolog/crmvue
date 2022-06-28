@@ -70,9 +70,9 @@ const Websocket = {
         },
         EVENT_WEBSOCKET_ON_OPEN(context) {
             console.log("Connected websocket server!");
-            notifyOptions.type = 'success';
-            notifyOptions.text = "Connected websocket server!";
-            notify(notifyOptions);
+            // notifyOptions.type = 'success';
+            // notifyOptions.text = "Connected websocket server!";
+            // notify(notifyOptions);
             context.dispatch('WEBSOCKET_SET_USER');
             // context.dispatch('CALL_WEBSOCKET_LOOP');
             // context.dispatch('NOTIFICATION_WEBSOCKET_LOOP');
@@ -100,10 +100,10 @@ const Websocket = {
             notify(notifyOptions);
 
             context.dispatch('WEBSOCKET_STOP');
-            // setTimeout(() => {
-            //     console.warn('WS timeout run');
-            //     context.dispatch('WEBSOCKET_RUN');
-            // }, 30000);
+            setTimeout(() => {
+                console.warn('WS timeout run');
+                context.dispatch('WEBSOCKET_RUN');
+            }, 30000);
         },
         EVENT_WEBSOCKET_ON_CLOSE({ getters, dispatch }, event) {
             if (event.wasClean) {

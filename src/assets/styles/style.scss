@@ -2515,6 +2515,9 @@
                 }
             }
         }
+        &-request-container {
+            z-index: 2;
+        }
         &-request-list {
             .action-modal {
                 .modal-container {
@@ -2687,6 +2690,24 @@
                         .header {
                             color: $color_success_alt;
                         }
+                    }
+                }
+                transition: all .1s ease-in-out;
+                &.selected {
+                    // transform: scale(1.15);
+                    transform: scale(1.25);
+                    padding-bottom: 70px;
+                    padding-top: 70px;
+                    .general-info {
+                        background-color: $color_light;
+                        box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.35);
+                        .header {
+                            color: $color_success_alt;
+                        }
+                    }
+                    .deal-info {
+                        background-color: $color_light;
+                        box-shadow: 0 5px 10px 5px rgba(0, 0, 0, 0.35);
                     }
                 }
             }

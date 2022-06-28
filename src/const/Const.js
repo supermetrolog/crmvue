@@ -488,18 +488,32 @@ export const ActivityProfileList = new Map(
 
     ]
 );
+
+//<i class="fas fa-binoculars"></i>
+//<i class="fas fa-clipboard-list"></i>
+//<i class="fas fa-atom"></i>
+//<i class="fas fa-layer-group"></i>
 export const NotificationTypeList = new Map(
     [
         ['param', [
-            [0, "fas fa-microchip text-success_alt"], // SERVER
-            [1, "fas fa-microchip text-warning"],
-            [2, "fas fa-microchip text-danger"],
-            [3, "fas fa-city text-success_alt"], // selection
-            [4, "fas fa-city text-danger"],
-            [5, "fas fa-building text-warning"],
-            [6, "fas fa-stream text-success_alt"],
-            [7, "fas fa-stream text-danger"],
-            [8, "fas fa-stream text-warning"],
+            [0, "fas fa-atom text-success_alt"], // SYSTEM
+            [1, "fas fa-atom text-warning"],
+            [2, "fas fa-atom text-danger"],
+            [3, "fas fa-home text-success_alt"], // COMPANY
+            [4, "fas fa-home text-warning"],
+            [5, "fas fa-home text-danger"],
+            [6, "fas fa-clipboard-list text-success_alt"], // REQUEST
+            [7, "fas fa-clipboard-list text-danger"],
+            [8, "fas fa-clipboard-list text-warning"],
+            [9, "far fa-calendar-alt text-success_alt"], // CALENDAR
+            [10, "far fa-calendar-alt text-danger"],
+            [11, "far fa-calendar-alt text-warning"],
+            [12, "fas fa-stream text-success_alt"], // TIMELINE
+            [13, "fas fa-stream text-danger"],
+            [14, "fas fa-stream text-warning"],
+            [15, "fas fa-binoculars text-success_alt"], // COLLECTION
+            [16, "fas fa-binoculars text-danger"],
+            [17, "fas fa-binoculars text-warning"],
         ]],
 
     ]
