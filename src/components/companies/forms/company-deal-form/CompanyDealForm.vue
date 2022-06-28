@@ -393,6 +393,7 @@ export default {
       let requestList = null;
       requestList = await api.request.searchRequests({
         company_id: this.form.company_id,
+        status: [1, 0],
       });
       requestList.data.forEach((item) => {
         this.requestOptions.push({
