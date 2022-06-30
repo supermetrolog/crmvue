@@ -19,7 +19,8 @@ const Offers = {
         offers: [],
         offer: null,
         pagination: null,
-        wait_hash: null
+        wait_hash: null,
+        favoritesOffers: []
     },
     mutations: {
         updateOffers(state, { data, concat }) {
@@ -34,6 +35,12 @@ const Offers = {
             state.wait_hash = hash;
             console.warn("SET WAIT HASH", state.wait_hash);
         },
+        addFavoritesOffer(state, data) {
+            state.favoritesOffers.push(data)
+        },
+        updateFavoritesOffers(state, data) {
+            state.favoritesOffers = data;
+        }
     },
     actions: {
         async SEARCH_OFFERS(context, { query, concat = false }) {
@@ -74,6 +81,20 @@ const Offers = {
             }
             return response;
         },
+        ADD_FAVORITES_OFFER(context, offer) {
+            context.commit('addFavoritesOffer', offer)
+            localStorage.setItem('favoritesOffers', JSON.stringify(context.getters.FAVORITES_OFFERS));
+        },
+        UPDATE_FAVORITES_OFFERS(context, data) {
+            context.commit('updateFavoritesOffers', data)
+            localStorage.setItem('favoritesOffers', JSON.stringify(context.getters.FAVORITES_OFFERS));
+        },
+
+        LOAD_LOCAL_TO_VUEX(context) {
+            if (localStorage.getItem('favoritesOffers')) {
+                context.commit('updateFavoritesOffers', JSON.parse(localStorage.getItem('favoritesOffers')));
+            }
+        }
     },
     getters: {
         OFFERS(state) {
@@ -87,6 +108,10 @@ const Offers = {
         },
         WAIT_HASH(state) {
             return state.wait_hash;
+        },
+
+        FAVORITES_OFFERS(state) {
+            return state.favoritesOffers;
         }
     }
 }

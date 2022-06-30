@@ -6,14 +6,14 @@
           <Th>#</Th>
           <Th></Th>
           <Th>регион</Th>
-          <Th sort="from_mkad">мкад</Th>
-          <Th sort="area">площадь</Th>
-          <Th sort="price">цена</Th>
+          <Th :sort="sortable ? 'from_mkad' : null">мкад</Th>
+          <Th :sort="sortable ? 'area' : null">площадь</Th>
+          <Th :sort="sortable ? 'price' : null">цена</Th>
           <Th>cобственник</Th>
           <Th>консультант</Th>
           <Th>реклама</Th>
-          <Th sort="last_update">обновление</Th>
-          <Th sort="status">статус</Th>
+          <Th :sort="sortable ? 'last_update' : null">обновление</Th>
+          <Th :sort="sortable ? 'status' : null">статус</Th>
         </Tr>
       </template>
       <template #tbody>
@@ -24,7 +24,21 @@
           :class="{ passive: offer.status != 1 }"
         >
           <Td class="id" :class="{ passive: offer.status != 1 }">
-            {{ offer.visual_id }}
+            <p>
+              {{ offer.visual_id }}
+            </p>
+            <div class="actions" v-if="offer.type_id != 3">
+              <i
+                class="fas fa-star"
+                :class="{
+                  selected: FAVORITES_OFFERS.find(
+                    (item) => item.original_id == offer.original_id
+                  ),
+                }"
+                @click="clickFavotiteOffer(offer)"
+              ></i>
+              <i class="fas fa-file-pdf" @click="clickViewPdf(offer)"></i>
+            </div>
           </Td>
           <Td class="photo">
             <a :href="getOfferUrl(offer)" target="_blank">
@@ -167,6 +181,7 @@ import {
   RegionList,
   TaxFormList,
 } from "@/const/Const.js";
+import { mapGetters, mapActions } from "vuex";
 export default {
   name: "OfferTableView",
   components: {
@@ -191,9 +206,20 @@ export default {
       type: Boolean,
       default: false,
     },
+    sortable: {
+      type: Boolean,
+      default: true,
+    },
   },
-  computed: {},
+  computed: {
+    ...mapGetters(["FAVORITES_OFFERS", "THIS_USER"]),
+  },
   methods: {
+    ...mapActions([
+      "ADD_FAVORITES_OFFER",
+      "UPDATE_FAVORITES_OFFERS",
+      "LOAD_LOCAL_TO_VUEX",
+    ]),
     // imageSrc(offer) {
     //   const photos = offer.photos;
     //   const object_photos = offer.object.photo;
@@ -253,8 +279,33 @@ export default {
       }
       return url;
     },
+
+    clickFavotiteOffer(offer) {
+      if (
+        !this.FAVORITES_OFFERS.find(
+          (item) => item.original_id == offer.original_id
+        )
+      ) {
+        return this.ADD_FAVORITES_OFFER(offer);
+      }
+
+      return this.UPDATE_FAVORITES_OFFERS(
+        this.FAVORITES_OFFERS.filter(
+          (item) => item.original_id != offer.original_id
+        )
+      );
+    },
+    clickViewPdf(offer) {
+      let url =
+        this.$apiUrlHelper.url() +
+        `pdf/presentations?type_id=${offer.type_id}&original_id=${offer.original_id}&object_id=${offer.object_id}&consultant=${this.THIS_USER.userProfile.short_name}`;
+      console.error(url);
+      window.open(url, "_blank");
+    },
   },
-  mounted() {},
+  mounted() {
+    this.LOAD_LOCAL_TO_VUEX();
+  },
 };
 </script>
 

@@ -4326,6 +4326,24 @@
             }
             .id {
                 width: 70px;
+                p {
+                    font-weight: normal;
+                    font-size: 16px;
+                }
+                i {
+                    display: block;
+                    padding: 5px;
+                    font-size: 20px;
+                    margin: 5px 0;
+                    cursor: pointer;
+                    color: $color_dark;
+                    &:hover {
+                        transform: scale(1.05);
+                    }
+                    &.selected {
+                        color: $color_info;
+                    }
+                }
             }
             .photo {
                 width: 250px;
@@ -4377,6 +4395,7 @@
                 width: 200px;
             }
             .status {
+                width: 100px;
                 .badge-warning {
                     font-size: 14px;
                     text-transform: uppercase;
