@@ -206,57 +206,6 @@
             label="Краны"
           />
         </FormGroup>
-        <!-- <FormGroup class="mb-2">
-          <Radio
-            v-model="form.water"
-            :unselectMode="true"
-            label="Вода"
-            class="col pr-1 text-center"
-            :options="yesNoOptions"
-          />
-          <Radio
-            v-model="form.gas"
-            :unselectMode="true"
-            label="Газ"
-            class="col pr-1 text-center"
-            :options="yesNoFUCKOptions"
-          />
-          <Radio
-            v-model="form.steam"
-            :unselectMode="true"
-            label="Пар"
-            class="col pr-1 text-center"
-            :options="yesNoFUCKOptions"
-          />
-          <Radio
-            v-model="form.sewage_central"
-            :unselectMode="true"
-            label="КНС"
-            class="col pr-1 text-center"
-            :options="yesNoFUCKOptions"
-          />
-          <Radio
-            v-model="form.racks"
-            :unselectMode="true"
-            label="Стеллажи"
-            class="col text-center pr-1"
-            :options="yesNoFUCKOptions"
-          />
-          <Radio
-            v-model="form.railway"
-            :unselectMode="true"
-            label="Ж/Д ветка"
-            class="col pr-1 text-center"
-            :options="yesNoOptions"
-          />
-          <Radio
-            v-model="form.has_cranes"
-            :unselectMode="true"
-            label="Краны"
-            class="col pr-1 text-center"
-            :options="yesNoOptions"
-          />
-        </FormGroup> -->
         <FormGroup class="mb-2">
           <Radio
             v-model="form.status"
@@ -278,7 +227,7 @@
             label="Только 1 этаж"
           />
         </FormGroup>
-        <FormGroup class="mb-2">
+        <FormGroup class="mb-3">
           <CheckboxIcons
             v-model="form.purposes"
             label="Тип объекта"
@@ -309,6 +258,42 @@
             @extraSelect="selectObjectType"
             class="col-4 mt-4 mx-auto"
             :options="objectTypeListPlot"
+          />
+        </FormGroup>
+
+        <FormGroup>
+          <div class="col-12 text-center">
+            <h3 class="m-0">Реклама</h3>
+          </div>
+        </FormGroup>
+        <FormGroup class="mb-2">
+          <Radio
+            v-model="form.ad_realtor"
+            :unselectMode="true"
+            label="Realtor.ru"
+            class="col pr-1 text-center"
+            :options="yesNoOptions"
+          />
+          <Radio
+            v-model="form.ad_cian"
+            :unselectMode="true"
+            label="Циан"
+            class="col pr-1 text-center"
+            :options="yesNoOptions"
+          />
+          <Radio
+            v-model="form.ad_yandex"
+            :unselectMode="true"
+            label="Яндекс"
+            class="col pr-1 text-center"
+            :options="yesNoOptions"
+          />
+          <Radio
+            v-model="form.ad_free"
+            :unselectMode="true"
+            label="Бесплатные"
+            class="col pr-1 text-center"
+            :options="yesNoOptions"
           />
         </FormGroup>
       </div>
@@ -398,6 +383,10 @@ export default {
     district_moscow: [],
     status: null,
     firstFloorOnly: null,
+    ad_realtor: null,
+    ad_cian: null,
+    ad_yandex: null,
+    ad_free: null,
   },
   methods: {
     ...mapActions(["FETCH_CONSULTANT_LIST"]),
