@@ -11,6 +11,7 @@
           <Th sort="price">цена</Th>
           <Th>cобственник</Th>
           <Th>консультант</Th>
+          <Th>реклама</Th>
           <Th sort="last_update">обновление</Th>
           <Th sort="status">статус</Th>
         </Tr>
@@ -135,6 +136,12 @@
             <p v-if="offer.consultant">
               {{ offer.consultant.userProfile.full_name }}
             </p>
+          </Td>
+          <Td class="add">
+            <p v-if="offer.ad_realtor">Realtor.ru</p>
+            <p v-if="offer.ad_cian">Циан</p>
+            <p v-if="offer.ad_yandex">Яндекс</p>
+            <p v-if="offer.ad_free">Бесплатные</p>
           </Td>
           <Td class="date" sort="last_update">
             {{ offer.last_update_format }}
