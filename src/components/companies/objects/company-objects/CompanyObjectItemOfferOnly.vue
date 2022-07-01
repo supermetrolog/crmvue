@@ -311,7 +311,7 @@ export default {
     pdfUrl() {
       return (
         this.$apiUrlHelper.url() +
-        `pdf/presentations?type_id=${this.offer.type_id}&original_id=${this.offer.original_id}&object_id=${this.offer.object_id}&consultant=${this.THIS_USER.userProfile.full_name}`
+        `pdf/presentations?type_id=${this.offer.type_id}&original_id=${this.offer.original_id}&object_id=${this.offer.object_id}&consultant=${this.THIS_USER.userProfile.medium_name}`
       );
     },
     taxForm() {

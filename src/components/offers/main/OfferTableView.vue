@@ -298,7 +298,7 @@ export default {
     clickViewPdf(offer) {
       let url =
         this.$apiUrlHelper.url() +
-        `pdf/presentations?type_id=${offer.type_id}&original_id=${offer.original_id}&object_id=${offer.object_id}&consultant=${this.THIS_USER.userProfile.short_name}`;
+        `pdf/presentations?type_id=${offer.type_id}&original_id=${offer.original_id}&object_id=${offer.object_id}&consultant=${this.THIS_USER.userProfile.medium_name}`;
       console.error(url);
       window.open(url, "_blank");
     },
