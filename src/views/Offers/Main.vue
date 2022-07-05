@@ -29,6 +29,7 @@
           :offers="OFFERS"
           v-if="OFFERS.length"
           :loader="loader"
+          @deleteFavoriteOffer="deleteFavoriteOffer"
         />
         <h1 class="text-center text-dark py-5" v-if="!OFFERS.length && !loader">
           НИЧЕГО НЕ НАЙДЕНО
@@ -71,14 +72,23 @@ export default {
     OfferSearchForm,
     YmapView,
   },
+  computed: {
+    ...mapGetters([
+      "OFFERS",
+      "OFFERS_PAGINATION",
+      "THIS_USER",
+      "FAVORITES_OFFERS",
+    ]),
+  },
   methods: {
-    ...mapActions(["SEARCH_OFFERS"]),
-    async getContent() {
-      this.getAllOffersForYmap();
-      await this.getOffers();
+    ...mapActions(["SEARCH_OFFERS", "SEARCH_FAVORITES_OFFERS"]),
+    async getContent(withLoader = true) {
+      this.getAllOffersForYmap(withLoader);
+      await this.getOffers(withLoader);
     },
-    async getOffers() {
-      this.loader = true;
+    async getOffers(withLoader = true) {
+      this.loader = withLoader;
+
       const query = {
         ...this.$route.query,
         type_id: [2, 3],
@@ -86,17 +96,34 @@ export default {
         expand:
           "object,company.mainContact.phones,company.mainContact.emails,miniOffersMix,generalOffersMix.offer,consultant.userProfile",
       };
+      if (this.$route.query.favorites) {
+        console.log("FUUUUCK", this.FAVORITES_OFFERS, !this.FAVORITES_OFFERS);
+        if (!this.FAVORITES_OFFERS.length) {
+          await this.SEARCH_FAVORITES_OFFERS();
+        }
+        query.original_id = this.FAVORITES_OFFERS.map(
+          (item) => item.original_id
+        );
+        query.object_id = this.FAVORITES_OFFERS.map((item) => item.object_id);
+        query.complex_id = this.FAVORITES_OFFERS.map((item) => item.complex_id);
+      }
       await this.SEARCH_OFFERS({ query });
       this.loader = false;
     },
-    async getAllOffersForYmap() {
+    async getAllOffersForYmap(withLoader = true) {
       const routeQuery = { ...this.$route.query };
       delete routeQuery.page;
+      if (routeQuery.favorites) {
+        await this.SEARCH_FAVORITES_OFFERS();
+      }
       const query = {
         ...routeQuery,
         type_id: [2],
         fields: "latitude,longitude,address,complex_id,status,thumb,test_only",
         objectsOnly: 1,
+        original_id: routeQuery.favorites
+          ? this.FAVORITES_OFFERS.map((item) => item.original_id)
+          : null,
         page: 1,
         noWith: 1,
         "per-page": 0,
@@ -106,7 +133,17 @@ export default {
       if (hash == this.ymapOffersSearchHash) {
         return;
       }
-      this.allOffersLoader = true;
+      if (routeQuery.favorites) {
+        if (!this.FAVORITES_OFFERS.length) {
+          await this.SEARCH_FAVORITES_OFFERS();
+        }
+        query.original_id = this.FAVORITES_OFFERS.map(
+          (item) => item.original_id
+        );
+        query.object_id = this.FAVORITES_OFFERS.map((item) => item.object_id);
+        query.complex_id = this.FAVORITES_OFFERS.map((item) => item.complex_id);
+      }
+      this.allOffersLoader = withLoader;
 
       console.log(hash, this.ymapOffersSearchHash);
       this.ymapOffersSearchHash = hash;
@@ -128,9 +165,12 @@ export default {
     clickCloseCompanyForm() {
       this.companyFormVisible = false;
     },
-  },
-  computed: {
-    ...mapGetters(["OFFERS", "OFFERS_PAGINATION", "THIS_USER"]),
+    async deleteFavoriteOffer() {
+      if (this.$route.query.favorites) {
+        await this.SEARCH_FAVORITES_OFFERS();
+        this.getContent(false);
+      }
+    },
   },
 };
 </script>

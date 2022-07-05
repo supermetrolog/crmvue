@@ -25,8 +25,19 @@
         </a>
         <a
           href="#"
+          class="text-primary ml-5 favorites"
+          @click.prevent="clickFavorites"
+          :class="{ selected: form.favorites }"
+        >
+          избранные
+          <span class="badge badge-info" v-if="favoritesCount">
+            {{ favoritesCount }}
+          </span>
+        </a>
+        <a
+          href="#"
           @click.prevent="resetForm"
-          class="text-primary ml-5"
+          class="text-warning ml-5"
           v-if="filterCount"
         >
           сбросить
@@ -310,7 +321,7 @@ import Radio from "@/components/common/form/Radio.vue";
 import MultiSelect from "@/components/common/form/MultiSelect.vue";
 import CheckboxIcons from "@/components/common/form/CheckboxIcons.vue";
 import { SearchFormMixin } from "@/components/common/mixins.js";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import {
   DealTypeList,
   ObjectClassList,
@@ -353,6 +364,12 @@ export default {
       activePassiveOptions: ActivePassiveFUCK.get("param"),
     };
   },
+  computed: {
+    ...mapGetters(["FAVORITES_OFFERS"]),
+    favoritesCount() {
+      return this.FAVORITES_OFFERS.length;
+    },
+  },
   defaultFormProperties: {
     all: null,
     rangeMinElectricity: null,
@@ -387,6 +404,7 @@ export default {
     ad_cian: null,
     ad_yandex: null,
     ad_free: null,
+    favorites: null,
   },
   methods: {
     ...mapActions(["FETCH_CONSULTANT_LIST"]),
@@ -430,7 +448,6 @@ export default {
         array.push(+item);
       });
       this.form.object_type = array;
-      console.log("AAAAAAAAAAAAA", this.form.approximateDistanceFromMKAD);
       let query = { ...this.form };
       this.deleteEmptyFields(query);
       await this.$router.replace({ query });
@@ -455,6 +472,13 @@ export default {
         this.form.object_type.push(type);
       }
       console.log(isSelected, type);
+    },
+    clickFavorites() {
+      if (this.form.favorites) {
+        this.form.favorites = null;
+      } else {
+        this.form.favorites = 1;
+      }
     },
   },
 };

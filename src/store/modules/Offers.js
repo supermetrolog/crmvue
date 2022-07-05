@@ -81,19 +81,45 @@ const Offers = {
             }
             return response;
         },
-        ADD_FAVORITES_OFFER(context, offer) {
+        async ADD_FAVORITES_OFFER(context, offer) {
             context.commit('addFavoritesOffer', offer)
-            localStorage.setItem('favoritesOffers', JSON.stringify(context.getters.FAVORITES_OFFERS));
+            const newOffer = await api.offers.createFavoriteOffer({
+                user_id: context.getters.THIS_USER.id,
+                complex_id: offer.complex_id,
+                object_id: offer.object_id,
+                original_id: offer.original_id
+            });
+
+            context.commit('updateFavoritesOffers',
+                context.getters.FAVORITES_OFFERS.filter(
+                    (item) => item.original_id != offer.original_id
+                )
+            )
+            context.commit('addFavoritesOffer', newOffer)
         },
-        UPDATE_FAVORITES_OFFERS(context, data) {
-            context.commit('updateFavoritesOffers', data)
-            localStorage.setItem('favoritesOffers', JSON.stringify(context.getters.FAVORITES_OFFERS));
+        async DELETE_FAVORITES_OFFERS(context, data) {
+            const deleteId = context.getters.FAVORITES_OFFERS.find(
+                (item) => item.original_id == data.original_id
+            ).id
+            context.commit('updateFavoritesOffers',
+                context.getters.FAVORITES_OFFERS.filter(
+                    (item) => item.original_id != data.original_id
+                )
+            )
+            await api.offers.deleteFavoriteOffer(
+                deleteId
+            )
+
         },
 
-        LOAD_LOCAL_TO_VUEX(context) {
-            if (localStorage.getItem('favoritesOffers')) {
-                context.commit('updateFavoritesOffers', JSON.parse(localStorage.getItem('favoritesOffers')));
+        async SEARCH_FAVORITES_OFFERS(context) {
+            const data = await api.offers.searchFavoriteOffers({
+                user_id: context.getters.THIS_USER.id
+            });
+            if (data.data) {
+                context.commit('updateFavoritesOffers', data.data);
             }
+            return data;
         }
     },
     getters: {

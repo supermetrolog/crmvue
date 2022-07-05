@@ -217,8 +217,8 @@ export default {
   methods: {
     ...mapActions([
       "ADD_FAVORITES_OFFER",
-      "UPDATE_FAVORITES_OFFERS",
-      "LOAD_LOCAL_TO_VUEX",
+      "DELETE_FAVORITES_OFFERS",
+      "SEARCH_FAVORITES_OFFERS",
     ]),
     // imageSrc(offer) {
     //   const photos = offer.photos;
@@ -280,7 +280,7 @@ export default {
       return url;
     },
 
-    clickFavotiteOffer(offer) {
+    async clickFavotiteOffer(offer) {
       if (
         !this.FAVORITES_OFFERS.find(
           (item) => item.original_id == offer.original_id
@@ -288,12 +288,8 @@ export default {
       ) {
         return this.ADD_FAVORITES_OFFER(offer);
       }
-
-      return this.UPDATE_FAVORITES_OFFERS(
-        this.FAVORITES_OFFERS.filter(
-          (item) => item.original_id != offer.original_id
-        )
-      );
+      await this.DELETE_FAVORITES_OFFERS(offer);
+      this.$emit("deleteFavoriteOffer", offer);
     },
     clickViewPdf(offer) {
       let url =
@@ -303,9 +299,7 @@ export default {
       window.open(url, "_blank");
     },
   },
-  mounted() {
-    this.LOAD_LOCAL_TO_VUEX();
-  },
+  mounted() {},
 };
 </script>
 

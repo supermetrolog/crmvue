@@ -3894,6 +3894,14 @@
                 padding: 0;
                 border-radius: 50%;
             }
+            &.favorites {
+                padding: 0 10px;
+            }
+            &.selected {
+                background-color: $color_primary;
+                color: $color_light!important;
+                border-radius: 3px;
+            }
         }
     }
     
