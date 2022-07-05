@@ -96,11 +96,12 @@ export default {
         expand:
           "object,company.mainContact.phones,company.mainContact.emails,miniOffersMix,generalOffersMix.offer,consultant.userProfile",
       };
+      if (!this.FAVORITES_OFFERS.length) {
+        await this.SEARCH_FAVORITES_OFFERS();
+      }
       if (this.$route.query.favorites) {
         console.log("FUUUUCK", this.FAVORITES_OFFERS, !this.FAVORITES_OFFERS);
-        if (!this.FAVORITES_OFFERS.length) {
-          await this.SEARCH_FAVORITES_OFFERS();
-        }
+
         query.original_id = this.FAVORITES_OFFERS.map(
           (item) => item.original_id
         );

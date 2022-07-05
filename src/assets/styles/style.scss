@@ -4167,6 +4167,19 @@
                             font-weight: bold;
                         }
                     }
+                    .actions {
+                        i {
+                            cursor: pointer;
+                            font-size: 24px;
+                            padding: 0 10px;
+                            &.selected {
+                                color: darken($color_info, 10);
+                            }
+                            &:hover {
+                                transform: scale(1.05);
+                            }
+                        }
+                    }
                     .object_type {
                         p {
                             text-transform: lowercase;
@@ -4475,6 +4488,14 @@
                         background-color: rgba($color: $color_danger, $alpha: .85);
                     }
                 }
+            }
+        }
+    }
+    
+    .fas {
+        &.fa-file-pdf {
+            &:hover {
+                color: red;
             }
         }
     }

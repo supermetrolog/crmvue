@@ -167,6 +167,7 @@
                 @select="select"
                 @unSelect="unSelect"
                 @addComment="addComment"
+                @deleteFavoriteOffer="deleteFavoriteOffer"
               />
               <Pagination
                 :pagination="pagination"
@@ -457,6 +458,12 @@ export default {
     },
     getData() {
       this.getFirstRecommendedObjects();
+    },
+    async deleteFavoriteOffer() {
+      if (this.searchParams.favorites) {
+        await this.SEARCH_FAVORITES_OFFERS();
+        this.search(this.searchParams, false);
+      }
     },
   },
 };

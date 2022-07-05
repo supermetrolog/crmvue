@@ -373,7 +373,7 @@ export const MixinAllObject = {
         };
     },
     computed: {
-        ...mapGetters(["COMPANY_REQUESTS"]),
+        ...mapGetters(["COMPANY_REQUESTS", "FAVORITES_OFFERS"]),
         buttons() {
             return [{
                     btnClass: "success",
@@ -433,11 +433,32 @@ export const MixinAllObject = {
         },
     },
     methods: {
-        async getAllObjects(query = {}) {
-            this.allObjectsLoader = true;
+        ...mapActions(["SEARCH_FAVORITES_OFFERS"]),
+        async getAllObjects(query = {}, withLoader = true) {
+            this.allObjectsLoader = withLoader;
             let hash = crypto.createHash('sha256').update(JSON.stringify(query)).digest('base64');
             this.waitHash = hash;
-            const data = await api.companyObjects.searchOffers({ type_id: [1, 2, 3], page: this.currentPage, 'per-page': 20, expand: 'object,offer,generalOffersMix.offer,comments', ...query });
+            query = {
+                type_id: [1, 2, 3],
+                page: this.currentPage,
+                'per-page': 20,
+                expand: 'object,offer,generalOffersMix.offer,comments',
+                ...query
+            };
+            if (!this.FAVORITES_OFFERS.length) {
+                await this.SEARCH_FAVORITES_OFFERS();
+            }
+            if (query.favorites) {
+                query.original_id = this.FAVORITES_OFFERS.map(
+                    (item) => item.original_id
+                );
+                query.object_id = this.FAVORITES_OFFERS.map((item) => item.object_id);
+                query.complex_id = this.FAVORITES_OFFERS.map((item) => item.complex_id);
+            }
+            const data = await api.companyObjects.searchOffers(query);
+
+
+
             if (hash == this.waitHash) {
                 this.includeStepDataInObjectsData(data.data);
                 this.setAllObjects(data);
@@ -469,11 +490,11 @@ export const MixinAllObject = {
 
             this.pagination = data.pagination;
         },
-        async search(params) {
+        async search(params, withLoader = true) {
             this.searchParams = params;
             this.searchMode = true;
             this.returnCurrentPageToFirst();
-            this.getAllObjects(params);
+            this.getAllObjects(params, withLoader);
         },
         async searchAllObjects(params) {
             this.allObjectsLoader = true;

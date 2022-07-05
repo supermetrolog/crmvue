@@ -55,7 +55,7 @@
           </div>
         </div>
         <div class="col-12 main text-center">
-          <span class="badge badge-warning" v-if="offer.status != 1"
+          <span class="badge badge-warning mb-1" v-if="offer.status != 1"
             >Пассив</span
           >
           <div v-if="isSelected" class="comment">
@@ -68,6 +68,20 @@
               @keypress.enter="enterTextarea"
               placeholder="Комментарий клиенту"
             />
+          </div>
+          <div class="actions">
+            <i
+              v-if="offer.type_id != 3"
+              class="fas fa-star"
+              :class="{
+                selected: FAVORITES_OFFERS.find(
+                  (item) => item.original_id == offer.original_id
+                ),
+              }"
+              @click="clickFavotiteOffer(offer)"
+            ></i>
+            <i class="fas fa-file-pdf" @click="clickViewPdf(offer)"></i>
+            <i class="fas fa-eye" @click="clickView(offer)"></i>
           </div>
           <div class="location">
             <p v-if="offer.district_name">
@@ -221,7 +235,7 @@
 
 <script>
 import { TaxFormList } from "@/const/Const.js";
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 export default {
   name: "CompanyObjectItemOffer",
   data() {
@@ -260,7 +274,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["THIS_USER"]),
+    ...mapGetters(["THIS_USER", "FAVORITES_OFFERS"]),
     imageSrc() {
       const photos = this.offer.photos;
       const object_photos = this.offer.object.photo;
@@ -333,6 +347,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions(["ADD_FAVORITES_OFFER", "DELETE_FAVORITES_OFFERS"]),
     toggleExtraInfoVisible() {
       this.extraInfoVisible = !this.extraInfoVisible;
     },
@@ -352,6 +367,23 @@ export default {
     unfocusTextarea() {
       this.$emit("addComment", this.offer, this.localComment);
     },
+    async clickFavotiteOffer(offer) {
+      if (
+        !this.FAVORITES_OFFERS.find(
+          (item) => item.original_id == offer.original_id
+        )
+      ) {
+        return this.ADD_FAVORITES_OFFER(offer);
+      }
+      await this.DELETE_FAVORITES_OFFERS(offer);
+      this.$emit("deleteFavoriteOffer", offer);
+    },
+    clickViewPdf() {
+      window.open(this.pdfUrl, "_blank");
+    },
+    clickView() {
+      window.open(this.offerUrl, "_blank");
+    },
   },
   mounted() {
     if (this.offer.comment) {
@@ -366,7 +398,7 @@ export default {
       deep: true,
     },
   },
-  emits: ["select", "unSelect", "addComment"],
+  emits: ["select", "unSelect", "addComment", "deleteFavoriteOffer"],
 };
 </script>
 

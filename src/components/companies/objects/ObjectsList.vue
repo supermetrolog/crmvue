@@ -38,6 +38,7 @@
       @select="$emit('select', $event)"
       @unSelect="$emit('unSelect', $event)"
       @addComment="(...argv) => this.$emit('addComment', ...argv)"
+      @deleteFavoriteOffer="$emit('deleteFavoriteOffer')"
     />
     <div class="col-12 px-2 pagination-params" v-if="pagination">
       <p>
