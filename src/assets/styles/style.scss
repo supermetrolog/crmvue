@@ -4269,6 +4269,13 @@
                 .object-info {
                     background-color: $color_success!important;
                     color: $color_dark!important;
+                    .actions {
+                        i {
+                            &.selected {
+                                color: lighten($color_info, 10);
+                            }
+                        }
+                    }
                 }
             }
             .item__title {

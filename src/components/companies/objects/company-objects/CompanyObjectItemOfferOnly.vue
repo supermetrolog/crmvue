@@ -219,14 +219,6 @@
               {{ offer.object.description_auto || "—" }}
             </p>
           </div>
-          <div class="links">
-            <p>
-              <a :href="offerUrl" target="_blank"> Подробнее </a>
-            </p>
-            <p>
-              <a :href="pdfUrl" target="_blank"> PDF </a>
-            </p>
-          </div>
         </div>
       </div>
     </div>
