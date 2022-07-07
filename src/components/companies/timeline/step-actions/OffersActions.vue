@@ -311,6 +311,8 @@ export default {
         district_moscow: request.districts.map((item) => item.district),
         firstFloorOnly: request.firstFloorOnly ? 1 : null,
         recommended_sort: null,
+        sort_original_id: this.$route.query.new_original_id,
+        sort: this.$route.query.new_original_id ? "-original_ids" : null,
       };
       this.queryParams = {
         ...this.$options.defaultQueryParams,
