@@ -41,7 +41,9 @@ export default {
   },
   computed: {
     isSystemNotification() {
-      return this.notification.type < 9 ? true : false;
+      return this.notification.type < this.notificationTypeList.length
+        ? true
+        : false;
     },
   },
   props: {

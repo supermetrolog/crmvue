@@ -70,6 +70,11 @@
             />
           </div>
           <div class="actions">
+            <div class="mb-2">
+              <span class="badge badge-success" v-if="isNewRecommended"
+                >новое в подборке</span
+              >
+            </div>
             <i
               v-if="offer.type_id != 3"
               class="fas fa-star"
@@ -267,6 +272,14 @@ export default {
   },
   computed: {
     ...mapGetters(["THIS_USER", "FAVORITES_OFFERS"]),
+    isNewRecommended() {
+      const newRecommended = this.$route.query.new_original_id;
+      if (!newRecommended) return false;
+      if (Array.isArray(newRecommended)) {
+        return newRecommended.includes(this.offer.original_id.toString());
+      }
+      return newRecommended == this.offer.original_id;
+    },
     imageSrc() {
       const photos = this.offer.photos;
       const object_photos = this.offer.object.photo;
@@ -292,18 +305,6 @@ export default {
       }
       return this.$apiUrlHelper.fileNotFoundUrl();
     },
-    // imageSrc() {
-    //   const photos = this.offer.photos;
-    //   if (
-    //     photos &&
-    //     Array.isArray(photos) &&
-    //     typeof photos[0] == "string" &&
-    //     photos[0].length > 2
-    //   ) {
-    //     return "https://pennylane.pro" + photos[0];
-    //   }
-    //   return this.$apiUrlHelper.fileNotFoundUrl();
-    // },
     offerUrl() {
       const baseUrl = "https://pennylane.pro/complex/";
       let url = baseUrl + this.offer.complex_id;
@@ -321,10 +322,6 @@ export default {
       );
     },
     taxForm() {
-      // console.log(!!this.offer.generalOffersMix);
-      // if (!this.offer.generalOffersMix) {
-      //   console.log(this.offer.visual_id);
-      // }
       if (
         this.offer.generalOffersMix &&
         this.offer.generalOffersMix.offer &&
