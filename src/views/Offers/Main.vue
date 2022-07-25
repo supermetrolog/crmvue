@@ -129,6 +129,9 @@ export default {
         noWith: 1,
         "per-page": 0,
       };
+      if (query.original_id == null) {
+        delete query.original_id;
+      }
       const hash = waitHash(query);
       console.log(hash, this.ymapOffersSearchHash);
       if (hash == this.ymapOffersSearchHash) {
