@@ -574,8 +574,8 @@ export default {
         },
         inn: {
           minLength: helpers.withMessage(
-            "инн не может быть меньше 12 символов",
-            minLength(12)
+            "инн не может быть меньше 10 символов",
+            minLength(10)
           ),
         },
         kpp: {
