@@ -63,35 +63,6 @@
             </div>
             <p v-else>&#8212;</p>
           </Td>
-          <!-- <Td class="text-center contacts">
-            <template v-if="contacts(company.id)">
-              <p
-                v-if="
-                  !contacts(company.id).contact.phones.length &&
-                  !contacts(company.id).contact.emails.length
-                "
-              >
-                &#8212;
-              </p>
-              <div v-for="contact in contacts(company.id)" :key="contact.id">
-                <a
-                  :href="'mailto:' + email.email"
-                  v-for="email of contact.emails"
-                  :key="email.email"
-                  class="d-block"
-                >
-                  {{ email.email }}
-                </a>
-                <PhoneNumber
-                  v-for="phone of contact.phones"
-                  :key="phone.id"
-                  :phone="phone"
-                  :contact="contact"
-                />
-              </div>
-            </template>
-            <p v-else>&#8212;</p>
-          </Td> -->
           <Td class="text-center contacts">
             <template v-if="company.mainContact">
               <p
@@ -170,7 +141,6 @@ export default {
   },
   data() {
     return {
-      generalContacts: [],
       ratingOptions: RatingList.get("param"),
       positionOptions: PositionList.get("param"),
     };
@@ -187,32 +157,6 @@ export default {
   methods: {
     category(categoryValue) {
       return CompanyCategories.get("param")[categoryValue][1];
-    },
-    contacts(company_id) {
-      let result = this.generalContacts.find(
-        (item) => item.company_id == company_id
-      );
-      return result;
-    },
-    normalizeContacts() {
-      this.companies.map((company) => {
-        company.contacts.map((contact) => {
-          if (contact.type == 1) {
-            this.generalContacts.push({
-              company_id: company.id,
-              contact: contact,
-            });
-          }
-        });
-      });
-    },
-  },
-  mounted() {
-    this.normalizeContacts();
-  },
-  watch: {
-    companies() {
-      this.normalizeContacts();
     },
   },
 };
