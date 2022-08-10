@@ -2112,6 +2112,13 @@
                                     text-decoration: underline;
                                 }
                             }
+                            .name {
+                                font-weight: normal;
+                            }
+                            .position {
+                                font-weight: normal;
+                                color: darken($color_grey, 10);
+                            }
                         }
                     }
                 }

@@ -71,7 +71,11 @@ export default {
     ...mapGetters(["CALLS_PAGINATION", "THIS_USER", "CALLS", "CURRENT_CALLS"]),
     oldCall() {
       return this.CALLS.filter(
-        (item) => item.status != 0 && item.status != -1 && item.status != 3
+        (item) =>
+          item.status != 0 &&
+          item.status != -1 &&
+          item.status != 3 &&
+          item.status != 2
       );
     },
     newCall() {

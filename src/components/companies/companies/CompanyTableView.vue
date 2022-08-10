@@ -63,7 +63,7 @@
             </div>
             <p v-else>&#8212;</p>
           </Td>
-          <Td class="text-center contacts">
+          <!-- <Td class="text-center contacts">
             <template v-if="contacts(company.id)">
               <p
                 v-if="
@@ -91,6 +91,50 @@
               </div>
             </template>
             <p v-else>&#8212;</p>
+          </Td> -->
+          <Td class="text-center contacts">
+            <template v-if="company.mainContact">
+              <p
+                v-if="
+                  !company.mainContact.phones.length &&
+                  !company.mainContact.emails.length
+                "
+              >
+                &#8212;
+              </p>
+              <p class="name">{{ company.mainContact.first_and_last_name }}</p>
+              <p
+                class="position"
+                v-if="
+                  company.mainContact &&
+                  !company.mainContact.position_unknown &&
+                  positionOptions.find(
+                    (item) => item.value == company.mainContact.position
+                  )
+                "
+              >
+                {{
+                  positionOptions.find(
+                    (item) => item.value == company.mainContact.position
+                  ).label
+                }}
+              </p>
+              <a
+                :href="'mailto:' + email.email"
+                v-for="email of company.mainContact.emails"
+                :key="email.email"
+                class="d-block"
+              >
+                {{ email.email }}
+              </a>
+              <PhoneNumber
+                v-for="phone of company.mainContact.phones"
+                :key="phone.id"
+                :phone="phone"
+                :contact="company.mainContact"
+              />
+            </template>
+            <p v-else>&#8212;</p>
           </Td>
           <Td class="text-center">
             {{ company.consultant.userProfile.short_name }}
@@ -114,7 +158,7 @@ import Tr from "@/components/common/table/Tr";
 import Th from "@/components/common/table/Th";
 import Td from "@/components/common/table/Td";
 import Progress from "@/components/common/Progress";
-import { CompanyCategories, RatingList } from "@/const/Const";
+import { CompanyCategories, RatingList, PositionList } from "@/const/Const";
 export default {
   name: "CompanyTableView",
   components: {
@@ -128,6 +172,7 @@ export default {
     return {
       generalContacts: [],
       ratingOptions: RatingList.get("param"),
+      positionOptions: PositionList.get("param"),
     };
   },
   props: {
