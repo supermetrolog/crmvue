@@ -1,11 +1,17 @@
 <template>
-  <div class="form-item radio">
+  <div class="form-item radio" :class="mode">
     <label class="form-item-label" :class="{ required: required }" for="fuck">
       <p v-if="label">
         {{ label }}
       </p>
       <div v-if="options.length">
-        <label v-for="option in options" :key="option[0]">
+        <label
+          v-for="option in options"
+          :key="option[0]"
+          :class="{
+            checked: mode == 'text' && field == option[0],
+          }"
+        >
           <input
             type="radio"
             v-model="field"
@@ -45,6 +51,10 @@ export default {
     required: {
       type: Boolean,
       default: false,
+    },
+    mode: {
+      type: String,
+      default: "",
     },
     v: {
       type: Object,

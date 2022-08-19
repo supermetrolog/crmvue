@@ -2,6 +2,7 @@
   <div class="v-main-layout">
     <vSideBar />
     <vHeader />
+    <CallerManager />
     <section class="content">
       <router-view v-slot="{ Component }">
         <transition
@@ -19,11 +20,13 @@
 <script>
 import vHeader from "./header/v-header";
 import vSideBar from "./sidebar/v-sidebar";
+import CallerManager from "@/components/common/callermanager/CallerManager";
 export default {
   name: "v-main-layout",
   components: {
     vHeader,
     vSideBar,
+    CallerManager
   },
   props: {
     message: {

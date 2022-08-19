@@ -65,6 +65,19 @@ export const Timeline = new Map(
 
     ]
 );
+export const CallerTypeList = new Map(
+    [
+        ['param', [
+            [0, "клиент"],
+            [1, "собсвтенник"],
+            [2, "подрядчик"],
+            [3, "посредник"],
+            [4, "клиент - нецелевой"],
+            [5, "спам/реклама"],
+            [6, "оценщик"],
+        ]]
+    ]
+);
 export const FeedbackList = new Map(
     [
         ['param', [

@@ -16,7 +16,7 @@
         <PhoneNumber
           v-if="call.phoneTo"
           :phone="{ phone: call.to }"
-          :text="`${call.to} (${call.phoneTo.contact.first_name} ${call.phoneTo.contact.middle_name})`"
+          :text="`${call.to} (${call.phoneTo.contact.first_and_last_name})`"
           :contact="call.phoneTo.contact"
           class="d-inline"
           classList="text-center d-inline"
@@ -37,7 +37,7 @@
         <PhoneNumber
           v-if="call.phoneFrom"
           :phone="{ phone: call.from }"
-          :text="`${call.from} (${call.phoneFrom.contact.first_name} ${call.phoneFrom.contact.middle_name})`"
+          :text="`${call.from} (${call.phoneFrom.contact.first_and_last_name})`"
           :contact="call.phoneFrom.contact"
           class="d-inline"
           classList="text-center d-inline"

@@ -223,6 +223,7 @@ export default {
       "FETCH_COMPANY_REQUESTS",
       "FETCH_COMPANY_CONTACTS",
       "FETCH_COMPANY_OBJECTS",
+      "ADD_TO_TRANSITION_LIST",
     ]),
     async getCompany(withLoader = true) {
       this.loaderCompanyDetailInfo = withLoader;
@@ -230,7 +231,9 @@ export default {
       this.loaderCompanyDetailInfo = false;
       if (!this.COMPANY) {
         this.$router.replace("/not-found");
+        return;
       }
+      this.ADD_TO_TRANSITION_LIST(this.COMPANY);
     },
     async getCompanyRequests() {
       this.loaderCompanyRequests = true;

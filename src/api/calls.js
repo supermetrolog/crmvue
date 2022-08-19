@@ -5,7 +5,7 @@ import SuccessHandler from "./success";
 export default {
     async search(query) {
         query = new URLSearchParams(query).toString();
-        const url = `calllists?${query}&expand=caller,phoneFrom,phoneFrom.contact,phoneTo,phoneTo.contact`;
+        const url = `calllists?${query}&expand=caller,phoneFrom.contact.company,phoneTo.contact.company`;
         let data = false;
         await axios
             .get(url)

@@ -664,8 +664,9 @@ export default {
       this.loader = false;
     },
     async createCompany() {
-      if (await this.CREATE_COMPANY(this.form)) {
-        this.$emit("created");
+      let company_id = await this.CREATE_COMPANY(this.form)
+      if (company_id) {
+        this.$emit("created", company_id);
         this.clickCloseModal();
       }
       this.loader = false;
