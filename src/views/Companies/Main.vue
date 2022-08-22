@@ -36,10 +36,11 @@
           :pagination="COMPANIES_PAGINATION"
           @next="next"
           v-if="COMPANIES_PAGINATION"
+          class="d-inline"
         />
+        <RefreshButton class="ml-3" @click="getCompanies" :disabled="loader" />
       </div>
       <div class="col-6 text-right ml-auto">
-        <RefreshButton @click="getCompanies" :disabled="loader" />
         <button
           class="btn btn-primary mr-2 ml-5"
           @click="companyGroupsFormVisible = true"
