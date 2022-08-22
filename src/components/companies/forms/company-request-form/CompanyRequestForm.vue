@@ -8,6 +8,27 @@
       <Form @submit="onSubmit" class="p-2">
         <Loader class="center" v-if="loader" />
         <FormGroup class="mb-2">
+          <Input v-model="form.name" label="Название" class="col-6 pr-1" />
+          <MultiSelect
+            v-model="form.company_id"
+            extraClasses="long-text"
+            label="Компания"
+            required
+            class="col-6"
+            :v="v$.form.company_id"
+            :filterResults="false"
+            :minChars="1"
+            :resolveOnLoad="true"
+            :delay="0"
+            :searchable="true"
+            :options="
+              async (query) => {
+                return await searchCompany(query);
+              }
+            "
+          />
+        </FormGroup>
+        <FormGroup class="mb-2">
           <MultiSelect
             v-model="form.regions"
             :v="v$.form.regions"
@@ -331,6 +352,7 @@ import Textarea from "@/components/common/form/Textarea.vue";
 import CheckboxIcons from "@/components/common/form/CheckboxIcons.vue";
 import Submit from "@/components/common/form/Submit.vue";
 import moment from "moment";
+import api from "@/api/api";
 
 export default {
   name: "CompanyRequestForm",
@@ -370,6 +392,7 @@ export default {
       loader: false,
       form: {
         company_id: null,
+        name: null,
         id: null,
         dealType: null,
         regions: [],
@@ -439,6 +462,9 @@ export default {
             "Заполните поле",
             this.customRequired
           ),
+        },
+        company_id: {
+          required: helpers.withMessage("Выберите компанию", required),
         },
         minArea: {
           required: helpers.withMessage("Заполните поле", required),
@@ -577,6 +603,31 @@ export default {
       });
       console.warn(data);
       return data;
+    },
+    async searchCompany(query) {
+      let result = null;
+      let array = [];
+      if (this.formdata || this.company_id) {
+        if (!this.selectedCompany) {
+          this.selectedCompany = await api.companies.getCompany(
+            this.formdata ? this.formdata.company_id : this.company_id
+          );
+        }
+
+        array.push({
+          value: this.selectedCompany.id,
+          label: this.selectedCompany.full_name,
+        });
+      }
+      query = {
+        all: query,
+      };
+      result = await api.companies.searchCompanies(query);
+      console.log("RES", result);
+      result.data.forEach((item) => {
+        array.push({ value: item.id, label: item.full_name });
+      });
+      return array;
     },
     changeObjectTypesGeneral(data) {
       let warehouse,
