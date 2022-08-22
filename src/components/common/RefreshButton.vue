@@ -1,5 +1,5 @@
 <template>
-  <button class="btn btn-success_alt btn-refresh" @click="$emit('click')">
+  <button class="btn btn-success_alt btn-refresh">
     <i class="fas fa-sync-alt"></i>
   </button>
 </template>

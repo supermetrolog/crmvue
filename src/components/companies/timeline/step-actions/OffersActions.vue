@@ -72,6 +72,12 @@
                   justify-content-center
                 "
               >
+                <RefreshButton
+                  @click="search(searchParams)"
+                  :disabled="allObjectsLoader"
+                  class="mr-2"
+                />
+
                 <CustomButton
                   :options="{
                     btnActive: recommendedFilter == 6,
@@ -187,12 +193,14 @@ import { MixinStepActions } from "../mixins";
 import { MixinAllObject } from "../../objects/mixins";
 import CustomButton from "@/components/common/CustomButton.vue";
 import Bar from "@/components/common/Bar";
+import RefreshButton from "@/components/common/RefreshButton.vue";
 export default {
   name: "OffersActions",
   mixins: [MixinStepActions, MixinAllObject],
   components: {
     Bar,
     CustomButton,
+    RefreshButton,
   },
   data() {
     return {
@@ -237,6 +245,9 @@ export default {
     firstFloorOnly: null,
   },
   methods: {
+    test() {
+      console.log(this.queryParams);
+    },
     updatedObjects(data, fn) {
       this.barVisible = false;
       this.$emit("updatedObjects", data, true, fn);
