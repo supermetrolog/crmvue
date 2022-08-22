@@ -776,6 +776,16 @@
         }
     }
     
+    .btn-success_alt {
+        background-color: $color_success_alt;
+        color: $color_light;
+        // border: 1px solid darken($color_success, 13);
+        border-color: darken($color_success_alt, 1);
+        &:active {
+            background-color: darken($color_success_alt, 5);
+        }
+    }
+    
     .btn-dark {
         background-color: $color_dark;
         color: $color_light;
