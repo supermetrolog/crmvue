@@ -129,7 +129,7 @@ export default {
         contacts.map((contact) => {
             data.push({
                 value: -1,
-                label: contact.type ? 'Общий контакт' : contact.first_name + ' ' + contact.last_name,
+                label: contact.type ? 'Общий контакт' : contact.first_and_last_name,
                 disabled: true
             });
             contact.phones.map(item => {
