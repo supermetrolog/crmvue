@@ -398,7 +398,7 @@ export default {
       requestList.data.forEach((item) => {
         this.requestOptions.push({
           value: item.id,
-          label: item.name,
+          label: item.format_name + "^2",
         });
       });
     },
@@ -422,7 +422,7 @@ export default {
           requestList.data.forEach((item) => {
             this.requestOptions.push({
               value: item.id,
-              label: item.name + "^2",
+              label: item.format_name + "^2",
             });
           });
         }
