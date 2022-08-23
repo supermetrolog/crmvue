@@ -2822,6 +2822,10 @@
     
     //*********** MULTISELECT ************
     .multiselect {
+        &-caret {
+            padding: 9px 15px;
+            margin-right: 0!important;
+        }
         &.is-disabled {
             background-color: rgba(124, 124, 134, 0.2)!important;
         }

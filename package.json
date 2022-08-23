@@ -9,7 +9,7 @@
     },
     "dependencies": {
         "@kyvg/vue3-notification": "^2.3.3",
-        "@vueform/multiselect": "^2.0.1",
+        "@vueform/multiselect": "2.2.1",
         "@vuelidate/core": "^2.0.0-alpha.19",
         "@vuelidate/validators": "^2.0.0-alpha.17",
         "animate.css": "^4.1.1",
