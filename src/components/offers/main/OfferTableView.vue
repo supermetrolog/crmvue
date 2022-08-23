@@ -220,21 +220,6 @@ export default {
       "DELETE_FAVORITES_OFFERS",
       "SEARCH_FAVORITES_OFFERS",
     ]),
-    // imageSrc(offer) {
-    //   const photos = offer.photos;
-    //   const object_photos = offer.object.photo;
-    //   if (photos && Array.isArray(photos) && photos[0] != "[]") {
-    //     return "https://pennylane.pro" + photos[0];
-    //   } else if (
-    //     object_photos &&
-    //     Array.isArray(object_photos) &&
-    //     object_photos[0] != "[]"
-    //   ) {
-    //     return "https://pennylane.pro" + object_photos[0];
-    //   } else {
-    //     return this.$apiUrlHelper.fileNotFoundUrl();
-    //   }
-    // },
     imageSrc(offer) {
       const photos = offer.photos;
       const object_photos = offer.object.photo;
@@ -272,6 +257,9 @@ export default {
     getOfferUrl(offer) {
       const baseUrl = "https://pennylane.pro/complex/";
       let url = baseUrl + offer.complex_id;
+      if (offer.type_id == 3) {
+        return url;
+      }
       if (offer.generalOffersMix) {
         url += "?offer_id=[" + offer.generalOffersMix.original_id + "]";
       } else {
