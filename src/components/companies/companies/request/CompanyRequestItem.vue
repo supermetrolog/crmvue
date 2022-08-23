@@ -31,11 +31,11 @@
           v-if="!reedOnly"
           title="Клонировать"
         ></i>
-        <i
+        <!-- <i
           class="fas fa-times text-danger delete"
           @click="deleteRequest"
           v-if="!reedOnly && request.status != 2"
-        ></i>
+        ></i> -->
         <p>{{ dealType }} {{ request.minArea + " - " + request.maxArea }}</p>
         <span>
           м<sup><small>2</small></sup>

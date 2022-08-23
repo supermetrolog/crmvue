@@ -36,6 +36,7 @@
             class="col-4 pr-1"
             mode="multiple"
             name="region"
+            required
             :options="regionList"
           >
             <small
