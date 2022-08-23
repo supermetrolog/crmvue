@@ -2822,6 +2822,7 @@
     
     //*********** MULTISELECT ************
     .multiselect {
+        max-height: unset!important;
         &-caret {
             padding: 9px 15px;
             margin-right: 0!important;
@@ -2830,6 +2831,9 @@
             background-color: rgba(124, 124, 134, 0.2)!important;
         }
         &-dropdown {
+            max-height: 300px!important;
+        }
+        &-options {
             max-height: 300px!important;
         }
         box-shadow: none!important;
@@ -2844,7 +2848,6 @@
             }
             margin: 2.5px 0 2.5px 0;
         }
-        max-height: unset!important;
         &-search {
             border: none!important;
             min-height: 25px!important;
