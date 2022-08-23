@@ -163,7 +163,9 @@ export default {
     },
   },
   mounted() {
-    setTimeout(() => this.scrollToForm(), 1000); //Из за анимации нужно подождать 500 мс чтобы элемент появился
+    this.$nextTick(() => {
+      setTimeout(() => this.scrollToForm(), 800); //Из за анимации нужно подождать 500 мс чтобы элемент появился
+    });
   },
   watch: {
     step() {
