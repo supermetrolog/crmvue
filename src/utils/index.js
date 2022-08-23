@@ -67,7 +67,7 @@ export const yandexmap = {
     },
     async findAddress(query) {
         // Геокодируем введённые данные.
-        if (!query) {
+        if (!query || !window.ymaps || !window.ymaps.geocode) {
             return [];
         }
         query = 'россия ' + query;
