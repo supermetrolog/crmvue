@@ -505,7 +505,7 @@ export default {
       }
       query = {
         all: query,
-        type_id: [1, 2],
+        type_id: [1, 2, 3],
         "per-page": 10,
       };
       result = await api.companyObjects.searchOffers(query);

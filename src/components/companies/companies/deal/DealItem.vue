@@ -102,6 +102,9 @@ export default {
     offerUrl() {
       const baseUrl = "https://pennylane.pro/complex/";
       let url = baseUrl + this.deal.offer.complex_id;
+      if (this.deal.offer.type_id == 3) {
+        return url;
+      }
       if (this.deal.offer.generalOffersMix) {
         url +=
           "?offer_id=[" + this.deal.offer.generalOffersMix.original_id + "]";
