@@ -41,7 +41,15 @@ export default {
     offerUrl() {
       const baseUrl = "https://pennylane.pro/complex/";
       let url = baseUrl + this.offer.complex_id;
-      return url + "?offer_id=[" + this.offer.original_id + "]";
+      if (this.offer.type_id == 3) {
+        return url;
+      }
+      if (this.offer.generalOffersMix) {
+        url += "?offer_id=[" + this.offer.generalOffersMix.original_id + "]";
+      } else {
+        url += "?offer_id=[" + this.offer.original_id + "]";
+      }
+      return url;
     },
   },
 };
