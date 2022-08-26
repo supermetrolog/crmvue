@@ -125,24 +125,18 @@ export const waitHash = (data) => {
 export default {
     normalizeContactsForMultiselect(contacts) {
         let data = [];
-        console.error(contacts);
         contacts.map((contact) => {
-            data.push({
-                value: -1,
-                label: contact.type ? 'Общий контакт' : contact.first_and_last_name,
-                disabled: true
-            });
+            let array = [];
+
             contact.phones.map(item => {
-                data.push({
-                    value: item.phone,
-                    label: item.phone
-                });
+                array.push(item.phone);
             });
             contact.emails.map(item => {
-                data.push({
-                    value: item.email,
-                    label: item.email
-                });
+                array.push(item.email);
+            });
+            data.push({
+                label: contact.type ? 'Общий контакт' : contact.first_and_last_name,
+                options: array
             });
         });
         return data;

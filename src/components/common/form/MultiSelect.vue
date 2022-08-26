@@ -26,6 +26,7 @@
         :loading="loading"
         :multipleLabel="multipleLabel"
         :disabled="disabled"
+        :hideSelected="hideSelected"
         @change="onChange($event)"
       >
         <template #singlelabel="{ value }">
@@ -137,6 +138,10 @@ export default {
       default: null,
     },
     disabled: {
+      type: Boolean,
+      default: false,
+    },
+    hideSelected: {
       type: Boolean,
       default: false,
     },

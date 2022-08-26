@@ -184,6 +184,15 @@ export const YesNo = new Map(
 
     ]
 );
+export const OutsideMkad = new Map(
+    [
+        ['param', [
+            [0, "Внутри МКАД"],
+            [1, "Снаружи МКАД"],
+        ]],
+
+    ]
+);
 export const YesNoFUCK = new Map(
     [
         ['param', [
@@ -361,6 +370,7 @@ export const RegionList = new Map(
             { value: 12, label: "владимирский" },
             { value: 13, label: "нижний новгород" },
             { value: 14, label: "башкорторстан республика" },
+            { value: 15, label: "волгоградская область" },
         ]],
 
     ]

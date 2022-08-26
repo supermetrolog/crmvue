@@ -111,7 +111,7 @@ const Websocket = {
                     `Соединение закрыто чисто, код=${event.code} причина=${event.reason}`
                 );
             } else {
-                console.warn("Соединение прервано");
+                console.warn("Соединение прервано", event);
                 notifyOptions.text = 'Websocket соединение прервано.';
                 notifyOptions.title = 'Websocket server';
                 notifyOptions.type = 'warn';

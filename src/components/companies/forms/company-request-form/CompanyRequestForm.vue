@@ -34,6 +34,8 @@
             :v="v$.form.regions"
             label="Регионы"
             class="col-4 pr-1"
+            :closeOnSelect="false"
+            :hideSelected="false"
             mode="multiple"
             name="region"
             required
@@ -44,13 +46,14 @@
               :key="region.region"
               class="d-block px-3"
             >
-              {{ index + 1 }}. {{ regionList[region.region].label }}
+              {{ index + 1 }}.
+              {{ regionList.find((item) => item.value == region.region).label }}
             </small>
             <Checkbox
               v-if="form.regions.find((item) => item.region == 1)"
               v-model="form.directions"
-              class="col-12 p-0"
-              label="Направления"
+              class="col-12 p-0 mt-2 text-center"
+              label="Направления МО"
               name="direction"
               :options="directionList"
             />
@@ -64,12 +67,17 @@
             :options="dealTypeList"
           >
             <Checkbox
+              v-if="form.regions.find((item) => item.region == 1)"
+              label="Регионы рядом c МО"
+              v-model="form.region_neardy"
+              class="col-12 large p-0 mt-2 text-center"
+            />
+            <Radio
               v-if="form.regions.find((item) => item.region == 0)"
-              v-model="form.districts"
-              class="col-12 p-0"
-              label="Округа Москвы"
-              name="district"
-              :options="districtList"
+              v-model="form.outside_mkad"
+              :unselectMode="true"
+              class="col large p-0 mt-2 text-center"
+              :options="outsideMkadOptions"
             />
           </MultiSelect>
           <MultiSelect
@@ -79,7 +87,16 @@
             label="Консультант"
             class="col-4"
             :options="CONSULTANT_LIST"
-          />
+          >
+            <Checkbox
+              v-if="form.regions.find((item) => item.region == 0)"
+              v-model="form.districts"
+              class="col-12 p-0 mt-2 text-center"
+              label="Округа Москвы"
+              name="district"
+              :options="districtList"
+            />
+          </MultiSelect>
         </FormGroup>
         <FormGroup class="mb-2">
           <Input
@@ -338,6 +355,7 @@ import {
   DistrictList,
   DealTypeList,
   YesNo,
+  OutsideMkad,
   ActivePassive,
   unknownMovingDate,
   PassiveWhyRequest,
@@ -387,6 +405,7 @@ export default {
       isOpenDealTypeSelect: false,
       isOpenConsultantSelect: false,
       yesNoOptions: YesNo.get("param"),
+      outsideMkadOptions: OutsideMkad.get("param"),
       statusOptions: ActivePassive.get("param"),
       unknownMovingDateOptions: unknownMovingDate.get("param"),
       passiveWhyOptions: PassiveWhyRequest.get("param"),
@@ -430,6 +449,8 @@ export default {
         steam: null,
         sewerage: null,
         shelving: null,
+        outside_mkad: null,
+        region_neardy: null,
       },
     };
   },
@@ -524,9 +545,11 @@ export default {
     regionNormalize() {
       if (!this.form.regions.find((item) => item.region == 0)) {
         this.form.districts = [];
+        this.form.outside_mkad = null;
       }
       if (!this.form.regions.find((item) => item.region == 1)) {
         this.form.directions = [];
+        this.form.region_neardy = null;
       }
     },
     async updateRequest() {

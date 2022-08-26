@@ -144,12 +144,12 @@
             >
               {{ index + 1 }}. {{ regionList[region].label }}
             </small>
-            <Checkbox
-              v-if="form.region.find((item) => item == 1)"
-              v-model="form.direction"
-              class="col-12 p-0"
-              label="Направления"
-              :options="directionList"
+            <Radio
+              v-if="form.region.find((item) => item == 0) == 0"
+              v-model="form.outside_mkad"
+              :unselectMode="true"
+              class="col-12 large p-0"
+              :options="outsideMkadOptions"
             />
             <Checkbox
               v-if="form.region.find((item) => item == 0) == 0"
@@ -157,6 +157,13 @@
               class="col-12 p-0"
               label="Округа Москвы"
               :options="districtList"
+            />
+            <Checkbox
+              v-if="form.region.find((item) => item == 1)"
+              v-model="form.direction"
+              class="col-12 p-0"
+              label="Направления МО"
+              :options="directionList"
             />
           </MultiSelect>
         </FormGroup>
@@ -334,6 +341,7 @@ import {
   DirectionList,
   DistrictList,
   ActivePassiveFUCK,
+  OutsideMkad,
 } from "@/const/Const.js";
 export default {
   mixins: [SearchFormMixin],
@@ -354,6 +362,7 @@ export default {
       gateTypeList: GateTypeList.get("param"),
       yesNoFUCKOptions: YesNoFUCK.get("param"),
       yesNoOptions: YesNo.get("param"),
+      outsideMkadOptions: OutsideMkad.get("param"),
       floorTypesFUCKOptions: FloorTypesFUCK.get("param"),
       objectTypeListWareHouse: ObjectTypeList.get("warehouse"),
       objectTypeListProduction: ObjectTypeList.get("production"),
