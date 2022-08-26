@@ -381,9 +381,9 @@ export default {
     }
   },
   watch: {
-    object: {
+    offer: {
       handler() {
-        this.localComment = this.offer.comment;
+        console.log("UPDATE OFFER", this.offer.comments);
       },
       deep: true,
     },

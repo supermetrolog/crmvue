@@ -100,6 +100,9 @@
                   v-model="contactForSendMessage"
                   :options="companyContacts"
                   :clearOnSelect="true"
+                  :closeOnSelect="false"
+                  :hideSelected="false"
+                  :groups="true"
                   class="multiselect-timeline"
                   :multipleLabel="
                     (n) => {
@@ -182,7 +185,6 @@ export default {
       loaderForStep: false,
       objects: [],
       timelineNotFoundFlag: false,
-      // companyContacts: null,
       contactForSendMessage: [],
     };
   },

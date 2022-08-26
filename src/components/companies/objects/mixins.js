@@ -301,18 +301,6 @@ export const MixinObject = {
         },
         async getPreventStepObjects() {
             this.loader = true;
-            // const uniqueObject = [];
-            // this.preventStepTimelineObjects.forEach(item => {
-            //     uniqueObject.push(JSON.stringify({ object_id: item.object_id, type_id: item.type_id }));
-            // });
-            // const response = await api.companyObjects.searchOffers({
-            //     expand: 'object,miniOffersMix',
-            //     uniqueOffer: uniqueObject
-            // });
-            // console.log(response);
-            // const objects = await api.objects.getCurrentStepObjectsOneByOne(
-            //     this.preventStepTimelineObjects
-            // );
             const objects = [];
             this.preventStepTimelineObjects.forEach(item => {
                 if (item.offer) {
@@ -443,6 +431,7 @@ export const MixinAllObject = {
                 page: this.currentPage,
                 'per-page': 20,
                 expand: 'object,offer,generalOffersMix.offer,comments',
+                timeline_id: this.TIMELINE.id,
                 ...query
             };
             if (!this.FAVORITES_OFFERS.length) {
