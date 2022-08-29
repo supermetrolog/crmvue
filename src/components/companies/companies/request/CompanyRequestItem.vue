@@ -20,10 +20,15 @@
           </p>
           <hr />
         </div>
-        <i
+        <!-- <i
           class="fas fa-pen text-primary edit"
           @click="openCompanyRequestFormForUpdate"
           v-if="!reedOnly && request.status != 2"
+        ></i> -->
+        <i
+          class="fas fa-pen text-primary edit"
+          @click="openCompanyRequestFormForUpdate"
+          v-if="!reedOnly"
         ></i>
         <i
           class="fas fa-clone text-dark clone"
