@@ -85,7 +85,11 @@
               }"
               @click="clickFavotiteOffer(offer)"
             ></i>
-            <i class="fas fa-file-pdf" @click="clickViewPdf(offer)"></i>
+            <i
+              class="fas fa-file-pdf"
+              v-if="offer.type_id != 3"
+              @click="clickViewPdf(offer)"
+            ></i>
             <i class="fas fa-eye" @click="clickView(offer)"></i>
           </div>
           <div class="location">
@@ -309,6 +313,9 @@ export default {
     offerUrl() {
       const baseUrl = "https://pennylane.pro/complex/";
       let url = baseUrl + this.offer.complex_id;
+      if (this.offer.type_id == 3) {
+        return url;
+      }
       if (this.offer.generalOffersMix) {
         url += "?offer_id=[" + this.offer.generalOffersMix.original_id + "]";
       } else {
