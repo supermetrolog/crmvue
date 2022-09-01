@@ -199,6 +199,22 @@ export const MixinObject = {
                     complex_id: item.complex_id,
                     type_id: item.type_id,
                     comment: item.comment,
+                    timeline_id: data.timeline_id,
+                    class_name: item.class_name,
+                    deal_type_name: item.deal_type_name,
+                    visual_id: item.visual_id,
+                    address: item.address,
+                    area: item.calc_area_general,
+                    price: (() => {
+                        if (item.deal_type == 1 || item.deal_type == 4) {
+                            return item.calc_price_warehouse;
+                        } else if (item.deal_type == 2) {
+                            return item.calc_price_sale;
+                        } else if (item.deal_type == 3) {
+                            return item.calc_price_safe_pallet;
+                        }
+                    })(),
+                    image: item.thumb
                 });
             });
         },
