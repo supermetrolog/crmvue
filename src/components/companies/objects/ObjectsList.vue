@@ -30,7 +30,9 @@
       :classList="
         currentObjects.find(
           (item) =>
-            item.object_id == object.object_id && item.type_id == object.type_id
+            (item.offer_id == object.original_id ||
+              item.offer_id == object.offer_id) &&
+            item.type_id == object.type_id
         )
           ? 'success'
           : ''

@@ -319,8 +319,11 @@ export const MixinObject = {
             this.loader = true;
             const objects = [];
             this.preventStepTimelineObjects.forEach(item => {
-                if (item.offer) {
+                if (item.offer && item.offer.id) {
                     objects.push(item.offer);
+                } else {
+                    objects.push({...item, noOffer: true });
+
                 }
             });
             this.includeStepDataInObjectsData(objects);
@@ -474,8 +477,10 @@ export const MixinAllObject = {
             this.loader = true;
             const objects = [];
             this.step.timelineStepObjects.forEach(item => {
-                if (item.offer) {
+                if (item.offer && item.offer.id) {
                     objects.push(item.offer);
+                } else {
+                    objects.push({...item, noOffer: true });
                 }
             });
             this.includeStepDataInObjectsData(objects);
@@ -543,7 +548,11 @@ export const MixinAllObject = {
         },
         getData() {
             this.getAllObjects();
-        }
+        },
+        select(object) {
+            console.log("SELECT", object);
+            this.selectedObjects.push(object);
+        },
     },
     mounted() {
         this.getData();

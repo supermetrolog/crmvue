@@ -2,6 +2,86 @@
   <div class="px-2" :class="col">
     <div
       class="object-offer only"
+      v-if="offer.noOffer"
+      :class="[
+        {
+          general: offer.type_id == 2,
+        },
+        classList,
+      ]"
+    >
+      <div class="row no-gutters object-info">
+        <div class="col-12 align-self-center">
+          <div class="image-container">
+            <div class="params">
+              <span>{{ offer.deal_type_name }} </span>
+              <span class="object_class">
+                {{ offer.class_name }}
+              </span>
+              <span
+                class="duplicate_count"
+                title="количество отправлений"
+                v-if="offer.duplicate_count > 1"
+              >
+                {{ offer.duplicate_count }}
+              </span>
+            </div>
+            <span class="visual_id">
+              {{ offer.visual_id }}
+            </span>
+            <span
+              class="badge badge-secondary isGeneral"
+              v-if="offer.type_id == 2"
+              >Общий</span
+            >
+            <span
+              class="badge badge-info isGeneral"
+              v-else-if="offer.type_id == 1"
+              >Блок</span
+            >
+            <span class="badge badge-warning isGeneral" v-else>Неизвестно</span>
+            <a href="#" @click.prevent>
+              <img :src="offer.image" alt="image" />
+            </a>
+            <div class="icon-unselect" @click.prevent="clickUnSelectObject">
+              <i class="fas fa-check"></i>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 main text-center">
+          <span class="badge badge-warning mb-1" v-if="offer.status != 1"
+            >В архиве</span
+          >
+          <div class="actions">
+            <i class="fas fa-eye" @click="clickView(offer)"></i>
+          </div>
+          <div class="price">
+            <i class="fas fa-ruble-sign"></i>
+            <p class="value">{{ offer.price }} <small></small></p>
+          </div>
+          <div class="area">
+            <i class="fas fa-square-full"></i>
+            <p>
+              {{ offer.area }}
+              <small>м<sup>2</sup></small>
+            </p>
+          </div>
+          <div class="comments" v-if="offer.comments">
+            <p v-if="offer.comments.length" class="title">Комментарии</p>
+            <p
+              v-for="comment in offer.comments"
+              :key="comment.id"
+              :class="{ current: comment.timeline_step_id == currentStepId }"
+            >
+              {{ comment.comment }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="object-offer only"
+      v-else
       :class="[
         {
           passive: offer.status != 1,
@@ -313,7 +393,7 @@ export default {
     offerUrl() {
       const baseUrl = "https://pennylane.pro/complex/";
       let url = baseUrl + this.offer.complex_id;
-      if (this.offer.type_id == 3) {
+      if (this.offer.type_id == 3 || this.offer.noOffer) {
         return url;
       }
       if (this.offer.generalOffersMix) {
