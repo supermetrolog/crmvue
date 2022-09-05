@@ -76,6 +76,10 @@
               {{ comment.comment }}
             </p>
           </div>
+          <div class="address">
+            <p class="title">Адрес</p>
+            <p>{{ offer.address }}</p>
+          </div>
         </div>
       </div>
     </div>
