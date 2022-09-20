@@ -109,7 +109,7 @@ const Websocket = {
             setTimeout(() => {
                 console.warn('WS timeout run');
                 context.dispatch('WEBSOCKET_RUN');
-            }, 2000);
+            }, 30000);
         },
         EVENT_WEBSOCKET_ON_CLOSE({ getters, dispatch }, event) {
             if (event.wasClean) {
