@@ -4456,6 +4456,56 @@
         }
     }
     
+    // ************** OFFER-TABLE-DROPDOWN *************
+    .OfferTableDropdown {
+        margin: 0;
+        padding: 0;
+        
+        .OfferTableDropdown-wrapper {
+          padding: 0 !important;
+          
+          table {
+            box-shadow: none;
+          }
+          th {
+            background-color: $color_light_blue;
+          }
+          td {
+            background-color: $color_light_blue;
+          }
+          .OfferTableDropdown-header {
+            display: flex;
+            justify-content: space-between;
+            background-color: $color_light_blue;
+            margin: 10px 0;
+            padding: 0 2% 0 7%;
+            .OfferTableDropdown-header-actions {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 5px;
+                margin: 5px;
+            }
+          }
+          .OfferTableDropdown-menu {
+            display: flex;
+            flex-direction: row;
+          
+
+            .OfferTableDropdown-menu-item {
+                display: flex;
+                flex-direction: column;
+                border-left: solid 2px black;
+                padding: 5%;
+                min-width: 100px;
+                white-space: nowrap;
+            }
+            }
+        }
+        
+        
+      }
+
     // ************** MAP-CONTAINER *************
     .map-container {
         position: relative;

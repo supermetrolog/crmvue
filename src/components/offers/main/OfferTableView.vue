@@ -18,163 +18,24 @@
       </template>
       <template #tbody>
         <Loader v-if="loader" class="center" />
-        <Tr
+        <OfferTableItem
           v-for="offer in offers"
           :key="offer.id"
-          :class="{ passive: offer.status != 1 }"
-        >
-          <Td class="id" :class="{ passive: offer.status != 1 }">
-            <p>
-              {{ offer.visual_id }}
-            </p>
-            <div class="actions" v-if="offer.type_id != 3">
-              <i
-                class="fas fa-star"
-                :class="{
-                  selected: FAVORITES_OFFERS.find(
-                    (item) => item.original_id == offer.original_id
-                  ),
-                }"
-                @click="clickFavotiteOffer(offer)"
-              ></i>
-              <i class="fas fa-file-pdf" @click="clickViewPdf(offer)"></i>
-            </div>
-          </Td>
-          <Td class="photo">
-            <a :href="getOfferUrl(offer)" target="_blank">
-              <div class="image-container">
-                <img :src="imageSrc(offer)" alt="image" />
-                <span class="deal_type" :class="{ passive: offer.status != 1 }">
-                  {{ offer.deal_type_name }}
-                </span>
-                <span class="object_class">
-                  {{ offer.class_name }}
-                </span>
-                <span class="test_only" v-if="offer.test_only">
-                  Тестовый лот
-                </span>
-              </div>
-            </a>
-          </Td>
-          <Td class="region">
-            <p class="region_item" v-if="offer.region_name">
-              {{ offer.region_name }}
-            </p>
-            <p v-if="offer.district_name">
-              {{ offer.district_name }}
-            </p>
-            <p v-if="offer.district_moscow_name">
-              {{ offer.district_moscow_name }}
-            </p>
-            <p v-if="offer.direction_name">
-              {{ offer.direction_name }}
-            </p>
-            <p v-if="offer.town_name">
-              {{ offer.town_name }}
-            </p>
-            <p v-if="offer.highway_name">
-              {{ offer.highway_name }} <small>шоссе</small>
-            </p>
-            <p v-if="offer.highway_moscow_name">
-              {{ offer.highway_moscow_name }} <small>шоссе</small>
-            </p>
-            <hr />
-            <p v-if="offer.address">
-              {{ offer.address }}
-            </p>
-          </Td>
-          <Td class="from_mkad" sort="from_mkad">
-            <!-- {{ offer.gates }} -->
-            <p v-if="offer.from_mkad">
-              {{ offer.from_mkad }} <small>км</small>
-            </p>
-            <p v-else>—</p>
-          </Td>
-          <Td class="area" sort="area">
-            <p>
-              {{ offer.calc_area_general }}
-              <small>м<sup>2</sup></small>
-            </p>
-          </Td>
-          <Td class="price" sort="price">
-            <p v-if="offer.deal_type == 1 || offer.deal_type == 4">
-              {{ offer.calc_price_warehouse }}
-              <small>руб за м<sup>2</sup>/г</small>
-            </p>
-            <p v-if="offer.deal_type == 2">
-              {{ offer.calc_price_sale }} <small>руб за м<sup>2</sup></small>
-            </p>
-            <p v-if="offer.deal_type == 3">
-              {{ offer.calc_price_safe_pallet }} <small>руб за 1 п. м.</small>
-            </p>
-            <span
-              v-if="
-                offer.generalOffersMix && offer.generalOffersMix.offer.tax_form
-              "
-            >
-              {{
-                taxFormList.find(
-                  (item) => item.value == offer.generalOffersMix.offer.tax_form
-                ).label
-              }}
-            </span>
-          </Td>
-          <Td class="company">
-            <template v-if="offer.company !== null">
-              <router-link
-                :to="'/companies/' + offer.company.id"
-                target="_blank"
-              >
-                {{ offer.company.full_name }}
-              </router-link>
-              <div class="contact" v-if="offer.company.mainContact">
-                {{ offer.company.mainContact.full_name }}
-                <a
-                  :href="'mailto:' + email.email"
-                  v-for="email of offer.company.mainContact.emails"
-                  :key="email.email"
-                  class="d-block"
-                >
-                  {{ email.email }}
-                </a>
-                <PhoneNumber
-                  v-for="phone of offer.company.mainContact.phones"
-                  :key="phone.id"
-                  :phone="phone"
-                  :contact="offer.company.mainContact"
-                />
-              </div>
-            </template>
-          </Td>
-          <Td class="consultant">
-            <p v-if="offer.consultant">
-              {{ offer.consultant.userProfile.full_name }}
-            </p>
-          </Td>
-          <Td class="add">
-            <p v-if="offer.ad_realtor">Realtor.ru</p>
-            <p v-if="offer.ad_cian">Циан</p>
-            <p v-if="offer.ad_yandex">Яндекс</p>
-            <p v-if="offer.ad_free">Бесплатные</p>
-          </Td>
-          <Td class="date" sort="last_update">
-            {{ offer.last_update_format }}
-          </Td>
-          <Td class="status" sort="status">
-            <h4 class="text-success" v-if="offer.status == 1">Актив</h4>
-            <span class="badge badge-warning autosize" v-else> Пассив </span>
-          </Td>
-        </Tr>
+          :offer="offer"
+          :sortable="sortable"
+          :loader="loader"
+        />
       </template>
     </Table>
   </div>
 </template>
 
 <script>
+import OfferTableItem from "../offer-item/OfferTableItem.vue";
 import Table from "@/components/common/table/Table";
 import Tr from "@/components/common/table/Tr";
 import Th from "@/components/common/table/Th";
-import Td from "@/components/common/table/Td";
+
 import {
   DirectionList,
   DistrictList,
@@ -188,7 +49,7 @@ export default {
     Table,
     Tr,
     Th,
-    Td,
+    OfferTableItem,
   },
   data() {
     return {
