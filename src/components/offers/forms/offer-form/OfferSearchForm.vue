@@ -414,6 +414,8 @@ export default {
     ad_yandex: null,
     ad_free: null,
     favorites: null,
+    outside_mkad: null,
+    region_neardy: null
   },
   methods: {
     ...mapActions(["FETCH_CONSULTANT_LIST"]),
@@ -468,9 +470,11 @@ export default {
       }
       if (!this.form.region.find((item) => item == 1)) {
         this.form.direction = [];
+        this.form.region_neardy = null;
       }
       if (this.form.region.find((item) => item == 0) != 0) {
         this.form.district_moscow = [];
+        this.form.outside_mkad = null;
       }
     },
     selectObjectType(isSelected, type) {
