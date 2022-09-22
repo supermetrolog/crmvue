@@ -22,7 +22,6 @@
           v-for="offer in offers"
           :key="offer.id"
           :offer="offer"
-          :sortable="sortable"
           :loader="loader"
         />
       </template>
@@ -152,5 +151,5 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 </style>

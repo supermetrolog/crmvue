@@ -135,10 +135,7 @@
     </Td>
   </Tr>
   <DropDown
-    ><OfferTableDropdown
-      v-if="dropdownIsOpen"
-      :loader="loader"
-      :sortable="sortable"
+    ><OfferTableDropdown :offer="offer" v-if="dropdownIsOpen"
   /></DropDown>
 </template>
 

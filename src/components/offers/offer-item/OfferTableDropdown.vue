@@ -3,106 +3,90 @@
     <td colspan="11" class="OfferTableDropdown-wrapper">
       <div class="OfferTableDropdown-header">
         <ul class="OfferTableDropdown-menu">
-          <li>
-            <div class="OfferTableDropdown-menu-item">
-              <span>S - объекта</span><span>160</span>
-            </div>
+          <li class="OfferTableDropdown-menu-item">
+            <span>S - объекта</span><span>{{ offer.area_building }}</span>
           </li>
-          <li>
-            <div class="OfferTableDropdown-menu-item">
-              <span>S - объекта</span><span>160</span>
-            </div>
+          <li
+            class="OfferTableDropdown-menu-item"
+            :class="{ 'btn-success_alt': selectedMiniOffers == 'active' }"
+            @click="this.selectedMiniOffers = 'active'"
+          >
+            <span>ТП АРЕНДА АКТИВ</span
+            ><span>{{ activeMiniOffers.length }}</span>
           </li>
-          <li>
-            <div class="OfferTableDropdown-menu-item">
-              <span>S - объекта</span><span>160</span>
-            </div>
+          <li
+            class="OfferTableDropdown-menu-item"
+            :class="{ 'btn-success_alt': selectedMiniOffers == 'archive' }"
+            @click="this.selectedMiniOffers = 'archive'"
+          >
+            <span>ТП Аренда архив</span
+            ><span>{{ archiveMiniOffers.length }}</span>
           </li>
-          <li>
-            <div class="OfferTableDropdown-menu-item">
-              <span>S - объекта</span><span>160</span>
-            </div>
+          <li class="OfferTableDropdown-menu-item text-danger">
+            <span>{{ offerDealType(offer.deal_type) }}</span>
           </li>
-          <li>
-            <div class="OfferTableDropdown-menu-item">
-              <span>S - объекта</span><span>160</span>
-            </div>
-          </li>
-          <li>
-            <div class="OfferTableDropdown-menu-item">
-              <span>S - объекта</span><span>160</span>
-            </div>
+          <li
+            class="OfferTableDropdown-menu-item text-success"
+            v-if="offer.guard"
+          >
+            <span>Есть услуги О/Х</span>
           </li>
         </ul>
         <div class="OfferTableDropdown-header-actions">
-          <div>1</div>
-          <div>2</div>
+          <button title="Гараж какой-то">1</button>
+          <button title="Компания">2</button>
         </div>
       </div>
       <div>
-        <Table>
-          <template #thead>
-            <Tr>
-              <Th>#</Th>
-              <Th>ID блока</Th>
-              <Th>Этаж</Th>
-              <Th>Площадь</Th>
-              <Th>Высота</Th>
-              <Th>Тип пола</Th>
-              <Th>Тип ворот</Th>
-              <Th>Температура</Th>
-              <Th>Цена блока</Th>
-              <Th><button>*</button></Th>
-            </Tr>
-          </template>
-          <template #tbody>
-            <Loader v-if="loader" class="center" /><Tr>
-              <Td>#</Td><Td>123</Td><Td></Td>
-              <Td></Td>
-              <Td></Td>
-              <Td></Td>
-              <Td></Td>
-              <Td></Td>
-              <Td></Td>
-              <Td></Td></Tr
-          ></template>
-        </Table>
+        <MiniOffers
+          :miniOffers="
+            selectedMiniOffers == 'active'
+              ? activeMiniOffers
+              : archiveMiniOffers
+          "
+        />
       </div>
     </td>
   </tr>
 </template>
 
 <script>
-import Loader from "../../common/Loader.vue";
-import Table from "@/components/common/table/Table";
-import Tr from "@/components/common/table/Tr";
-import Th from "@/components/common/table/Th";
-import Td from "@/components/common/table/Td";
+import MiniOffers from "./MiniOffers.vue";
 
 export default {
   name: "OfferTableDropdown",
   components: {
-    Table,
-    Tr,
-    Th,
-    Td,
-    Loader,
+    MiniOffers,
   },
   data() {
-    return {};
+    return {
+      selectedMiniOffers: "active",
+    };
   },
   props: {
-    loader: {
-      type: Boolean,
-      default: false,
-    },
-    sortable: {
-      type: Boolean,
-      default: true,
+    offer: {
+      type: Object,
+      required: true,
     },
   },
-  computed: {},
-  methods: {},
+  computed: {
+    activeMiniOffers() {
+      return this.offer.miniOffersMix.filter((offer) => offer.status);
+    },
+    archiveMiniOffers() {
+      return this.offer.miniOffersMix.filter((offer) => !offer.status);
+    },
+  },
+  methods: {
+    offerDealType(type) {
+      switch (type) {
+        case 1:
+          return "Объект сдается";
+        case 2:
+          return "Объект продается";
+      }
+    },
+  },
   mounted() {},
 };
 </script>
