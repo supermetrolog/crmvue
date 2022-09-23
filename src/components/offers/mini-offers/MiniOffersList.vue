@@ -41,7 +41,9 @@ export default {
     MiniOffersItem,
     BurgerMenuButton,
   },
-  data() {},
+  data() {
+    return {};
+  },
   props: {
     miniOffers: {
       type: Array,

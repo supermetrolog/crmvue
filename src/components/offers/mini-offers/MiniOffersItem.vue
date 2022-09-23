@@ -45,12 +45,14 @@
 </template>
 
 <script>
+import Tr from "../../common/table/Tr.vue";
 import Td from "@/components/common/table/Td";
 
 export default {
   name: "MiniOffersItem",
   components: {
     Td,
+    Tr,
   },
   data() {
     return {};
