@@ -4494,6 +4494,17 @@
                 align-items: center;
                 gap: 5px;
                 margin: 5px;
+                button {
+                    background: none;
+	                color: inherit;
+                    border: none;
+                    cursor: pointer;
+                    outline: inherit;
+                    &:hover {
+                        color: $color_light_blue;
+                        transition: color 0.2s ease;
+                    }
+                }
             }
             .OfferTableDropdown-menu {
                 display: flex;
@@ -4600,7 +4611,7 @@
         }
     }
 
-    // ************** OFFER-TABLE-DROPDOWN *************
+    // ************** MINI-OFFERS-ITEM *************
     .MiniOffersItem-actions {
         display: flex;
         justify-content: space-between;
@@ -4613,6 +4624,7 @@
                 width: 20px;
                 height: 10px;
                 &:hover {
+                    transition-duration: 0.2s;
                     transform: scale(1.2);
                 }
             }

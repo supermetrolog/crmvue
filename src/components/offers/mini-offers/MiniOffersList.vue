@@ -11,7 +11,7 @@
         <Th>Тип ворот</Th>
         <Th>Температура</Th>
         <Th>Цена блока</Th>
-        <Th>*</Th>
+        <Th></Th>
       </Tr>
     </template>
     <template #tbody>
