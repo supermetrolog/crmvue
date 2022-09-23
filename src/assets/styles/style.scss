@@ -4462,22 +4462,22 @@
         padding: 0;
         
         .OfferTableDropdown-wrapper {
-          padding: 0 !important;
-          
+          padding: 10px 0 !important;gap: 10px;
           table {
             box-shadow: none;
           }
           th {
-            background-color: $color_light;
+            background-color: darken($color_light, 3);
+            color: $color_primary;
+              
           }
           td {
-            background-color: $color_light;
+            background-color: darken($color_light, 3);
           }
           .OfferTableDropdown-header {
             display: flex;
             justify-content: space-between;
-            background-color: $color_light_grey;
-            margin: 10px 0;
+            background-color: darken($color_light, 3);
             padding: 0 2% 0 7%;
             .OfferTableDropdown-header-actions {
                 display: flex;
@@ -4486,25 +4486,29 @@
                 gap: 5px;
                 margin: 5px;
             }
-          }
-          .OfferTableDropdown-menu {
-            display: flex;
-            flex-direction: row;
-          
-
-            .OfferTableDropdown-menu-item {
+            .OfferTableDropdown-menu {
                 display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: flex-start;
-                border-left: solid 2px black;
-                padding: 2%;
-                white-space: nowrap;
-                &:hover {
-                    cursor: pointer;
+                flex-direction: row;
+              
+    
+                .OfferTableDropdown-menu-item {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: flex-start;
+                    border-left: solid 2px black;
+                    padding: 2%;
+                    white-space: nowrap;
+                    &:hover {
+                        cursor: pointer;
+                    }
                 }
-            }
-            }
+                }
+          }
+          .OfferTableDropdown-offers {
+            margin-top: 10px;
+          }
+          
         }
         
         

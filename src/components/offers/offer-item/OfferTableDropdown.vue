@@ -4,7 +4,11 @@
       <div class="OfferTableDropdown-header">
         <ul class="OfferTableDropdown-menu">
           <li class="OfferTableDropdown-menu-item">
-            <span>S - объекта</span><span>{{ offer.area_building }}</span>
+            <span>S - объекта</span
+            ><span
+              >{{ offer.area_building.toLocaleString("ru-RU") }}
+              <small>м<sup>2</sup></small></span
+            >
           </li>
           <li
             class="OfferTableDropdown-menu-item"
@@ -37,7 +41,7 @@
           <button title="Компания">2</button>
         </div>
       </div>
-      <div>
+      <div class="OfferTableDropdown-offers">
         <MiniOffers
           :miniOffers="
             selectedMiniOffers == 'active'
@@ -51,7 +55,7 @@
 </template>
 
 <script>
-import MiniOffers from "./MiniOffers.vue";
+import MiniOffers from "../mini-offers/MiniOffersList.vue";
 
 export default {
   name: "OfferTableDropdown",
@@ -84,6 +88,8 @@ export default {
           return "Объект сдается";
         case 2:
           return "Объект продается";
+        case 3:
+          return "Ответственное хранение";
       }
     },
   },
@@ -92,7 +98,4 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-th {
-  color: black;
-}
 </style>
