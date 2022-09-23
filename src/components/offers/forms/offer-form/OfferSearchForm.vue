@@ -134,25 +134,33 @@
             label="Регионы"
             class="col-3"
             mode="multiple"
-            :options="regionList"
+            :options="
+              async () => {
+                await this.FETCH_REGION_LIST();
+                return this.REGION_LIST;
+              }
+            "
             @change="changeRegion"
           >
-            <small
-              v-for="(region, index) in form.region"
-              :key="region"
-              class="d-block px-3"
-            >
-              {{ index + 1 }}. {{ regionList[region].label }}
-            </small>
+            <template v-if="REGION_LIST">
+              <small
+                v-for="(region, index) in form.region"
+                :key="region"
+                class="d-block px-3"
+              >
+                {{ index + 1 }}.
+                {{ REGION_LIST.find((item) => item.value == region).label }}
+              </small>
+            </template>
             <Radio
-              v-if="form.region.find((item) => item == 0) == 0"
+              v-if="form.region.find((item) => item == 6)"
               v-model="form.outside_mkad"
               :unselectMode="true"
               class="col-12 large p-0"
               :options="outsideMkadOptions"
             />
             <Checkbox
-              v-if="form.region.find((item) => item == 0) == 0"
+              v-if="form.region.find((item) => item == 6)"
               v-model="form.district_moscow"
               class="col-12 p-0"
               label="Округа Москвы"
@@ -374,7 +382,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["FAVORITES_OFFERS"]),
+    ...mapGetters(["FAVORITES_OFFERS", "REGION_LIST"]),
     favoritesCount() {
       return this.FAVORITES_OFFERS.length;
     },
@@ -415,10 +423,10 @@ export default {
     ad_free: null,
     favorites: null,
     outside_mkad: null,
-    region_neardy: null
+    region_neardy: null,
   },
   methods: {
-    ...mapActions(["FETCH_CONSULTANT_LIST"]),
+    ...mapActions(["FETCH_CONSULTANT_LIST", "FETCH_REGION_LIST"]),
     async setQueryFields() {
       this.form = { ...this.form, ...this.$route.query };
       if (this.form.purposes && !Array.isArray(this.form.purposes)) {
@@ -472,7 +480,7 @@ export default {
         this.form.direction = [];
         this.form.region_neardy = null;
       }
-      if (this.form.region.find((item) => item == 0) != 0) {
+      if (!this.form.region.find((item) => item == 6)) {
         this.form.district_moscow = [];
         this.form.outside_mkad = null;
       }

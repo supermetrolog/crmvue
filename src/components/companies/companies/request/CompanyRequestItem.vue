@@ -50,24 +50,34 @@
         <div class="main-info">
           <div class="location">
             <div class="region">
-              <strong
-                class="mr-1"
-                v-for="(region, index) of request.regions"
-                :key="region.id"
-              >
-                {{ getRegion(region.region, index) }}
+              <strong>
+                {{
+                  request.regions
+                    .map((elem) =>
+                      this.$formatter.text().ucFirst(elem.info.title)
+                    )
+                    .join(", ")
+                }}
               </strong>
             </div>
             <div class="region-parameters" v-if="request.directions.length">
               <p class="d-block"><b>Московская область:</b></p>
-              <p v-for="direction of request.directions" :key="direction.id">
-                {{ getDirection(direction.direction) }}
+              <p>
+                {{
+                  request.directions
+                    .map((elem) => this.directionList[elem.direction][2])
+                    .join(", ")
+                }}
               </p>
             </div>
             <div class="region-parameters" v-if="request.districts.length">
               <p class="d-block"><b>Москва:</b></p>
-              <p v-for="district of request.districts" :key="district.id">
-                {{ getDistrict(district.district) }}
+              <p>
+                {{
+                  request.districts
+                    .map((elem) => this.districtList[elem.district][1])
+                    .join(", ")
+                }}
               </p>
             </div>
             <div>
@@ -115,9 +125,7 @@
               </p>
               <p>высота потолков <small class="text-grey">(м)</small></p>
               <p class="parameters-inner">
-                {{
-                  request.minCeilingHeight + " - " + request.maxCeilingHeight
-                }}
+                {{ request.format_ceilingHeight }}
               </p>
               <p>
                 площадь пола <small class="text-grey">(м<sup>2</sup>)</small>
@@ -127,11 +135,12 @@
               </p>
               <p>классы</p>
               <div class="parameters-inner">
-                <p
-                  v-for="(objectClass, index) of request.objectClasses"
-                  :key="objectClass.id"
-                >
-                  {{ getObjectClass(objectClass.object_class, index) }}
+                <p>
+                  {{
+                    request.objectClasses
+                      .map((elem) => this.objectClassList[elem.object_class][1])
+                      .join(", ")
+                  }}
                 </p>
                 <p v-if="!request.objectClasses.length">нет данных</p>
               </div>
@@ -183,13 +192,14 @@
               </p>
               <p class="font-weight-bold">ворота</p>
               <div class="parameters-inner">
-                <p
-                  v-for="(gateType, index) of request.gateTypes"
-                  :key="gateType.id"
-                >
-                  {{ getGateType(gateType.gate_type, index) }}
-                </p>
                 <p v-if="!request.gateTypes.length">нет данных</p>
+                <p v-else>
+                  {{
+                    request.gateTypes
+                      .map((elem) => this.gateTypeList[elem.gate_type][1])
+                      .join(", ")
+                  }}
+                </p>
               </div>
             </div>
             <div class="col-12 mt-2">
@@ -314,30 +324,6 @@ export default {
           step: 0,
         },
       });
-    },
-    getRegion(region, index) {
-      if (index != this.request.regions.length - 1) {
-        return this.regionList[region].label + ",";
-      }
-      return this.regionList[region].label;
-    },
-    getDirection(direction) {
-      return this.directionList[direction][2] + ",";
-    },
-    getDistrict(district) {
-      return this.districtList[district][1] + ",";
-    },
-    getObjectClass(objectClass, index) {
-      if (index != this.request.objectClasses.length - 1) {
-        return this.objectClassList[objectClass][1] + ",";
-      }
-      return this.objectClassList[objectClass][1];
-    },
-    getGateType(gateType, index) {
-      if (index != this.request.gateTypes.length - 1) {
-        return this.gateTypeList[gateType][1] + ",";
-      }
-      return this.gateTypeList[gateType][1];
     },
     getObjectTypeIcon(objectType) {
       if (objectType < 12) {

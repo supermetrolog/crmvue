@@ -1,3 +1,8 @@
+const textFormatter = {
+    ucFirst(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1)
+    }
+}
 const formatterObject = {
     currency(number, leng = 'ru', options = {}) {
         const defaultOptions = {
@@ -12,6 +17,9 @@ const formatterObject = {
             ...options
         };
         return new Intl.NumberFormat(leng, defaultOptions).format(number);
+    },
+    text() {
+        return textFormatter;
     }
 };
 

@@ -124,17 +124,24 @@
             label="Регионы"
             class="col-4 pr-1"
             mode="multiple"
-            :options="regionList"
+            :options="
+              async () => {
+                await this.FETCH_REGION_LIST();
+                return this.REGION_LIST;
+              }
+            "
             @change="changeRegion"
           >
-            <small
-              v-for="(region, index) in form.regions"
-              :key="region"
-              class="d-block px-3"
-            >
-              {{ index + 1 }}.
-              {{ regionList.find((item) => item.value == region).label }}
-            </small>
+            <template v-if="REGION_LIST">
+              <small
+                v-for="(region, index) in form.regions"
+                :key="region"
+                class="d-block px-3"
+              >
+                {{ index + 1 }}.
+                {{ REGION_LIST.find((item) => item.value == region).label }}
+              </small>
+            </template>
             <Checkbox
               v-if="form.regions.find((item) => item == 1)"
               label="Регионы рядом с МО"
@@ -142,7 +149,7 @@
               class="col-12 large p-0 mt-2"
             />
             <Radio
-              v-if="form.regions.find((item) => item == 0) == 0"
+              v-if="form.regions.find((item) => item == 6)"
               v-model="form.outside_mkad"
               :unselectMode="true"
               class="col-12 large p-0"
@@ -159,7 +166,7 @@
           />
 
           <Checkbox
-            v-if="form.regions.find((item) => item == 0) == 0"
+            v-if="form.regions.find((item) => item == 6)"
             v-model="form.districts"
             class="col-4 pr-1"
             label="Округа Москвы"
@@ -338,6 +345,7 @@ import {
   OutsideMkad,
 } from "@/const/Const.js";
 import { SearchFormMixin } from "@/components/common/mixins.js";
+import { mapActions, mapGetters } from "vuex";
 export default {
   mixins: [SearchFormMixin],
   name: "CompanyRequestSearchForm",
@@ -366,6 +374,9 @@ export default {
       districtList: DistrictList.get("param"),
       objectTypesGeneralList: ObjectTypesGeneralList.get("param"),
     };
+  },
+  computed: {
+    ...mapGetters(["REGION_LIST"]),
   },
   defaultFormProperties: {
     all: null,
@@ -404,6 +415,7 @@ export default {
     region_neardy: null,
   },
   methods: {
+    ...mapActions(["FETCH_REGION_LIST"]),
     changeRegion() {
       if (this.form.regions == null) {
         this.form.directions = [];
@@ -413,7 +425,7 @@ export default {
         this.form.directions = [];
         this.form.region_neardy = null;
       }
-      if (this.form.regions.find((item) => item == 0) != 0) {
+      if (!this.form.regions.find((item) => item == 6)) {
         this.form.districts = [];
         this.form.outside_mkad = null;
       }

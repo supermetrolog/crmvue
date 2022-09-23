@@ -11,6 +11,7 @@ import deal from "./deal.js";
 import calendar from "./calendar";
 import companyObjects from "./companyObjects";
 import offers from "./offers";
+import location from "./location";
 export default {
     user,
     notifications,
@@ -24,5 +25,6 @@ export default {
     deal,
     calendar,
     companyObjects,
-    offers
+    offers,
+    location
 }
