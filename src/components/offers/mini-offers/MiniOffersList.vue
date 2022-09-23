@@ -2,7 +2,7 @@
   <Table v-if="miniOffers.length">
     <template #thead>
       <Tr>
-        <Th>#</Th>
+        <Th><BurgerMenuButton :size="'small'" /></Th>
         <Th>ID блока</Th>
         <Th>Этаж</Th>
         <Th>Площадь</Th>
@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import BurgerMenuButton from "../../common/BurgerMenuButton.vue";
 import MiniOffersItem from "./MiniOffersItem.vue";
 import Table from "@/components/common/table/Table";
 import Tr from "@/components/common/table/Tr";
@@ -38,6 +39,7 @@ export default {
     Tr,
     Th,
     MiniOffersItem,
+    BurgerMenuButton,
   },
   data() {},
   props: {
@@ -46,8 +48,5 @@ export default {
       default: () => [],
     },
   },
-  computed: {},
-  methods: {},
-  mounted() {},
 };
 </script>

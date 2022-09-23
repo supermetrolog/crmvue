@@ -11,7 +11,7 @@
             >
           </li>
           <li
-            class="OfferTableDropdown-menu-item"
+            class="OfferTableDropdown-menu-item action"
             :class="{ 'btn-success_alt': selectedMiniOffers == 'active' }"
             @click="this.selectedMiniOffers = 'active'"
           >
@@ -19,15 +19,18 @@
             ><span>{{ activeMiniOffers.length }}</span>
           </li>
           <li
-            class="OfferTableDropdown-menu-item"
+            class="OfferTableDropdown-menu-item action"
             :class="{ 'btn-success_alt': selectedMiniOffers == 'archive' }"
             @click="this.selectedMiniOffers = 'archive'"
           >
             <span>ТП Аренда архив</span
             ><span>{{ archiveMiniOffers.length }}</span>
           </li>
-          <li class="OfferTableDropdown-menu-item text-danger">
-            <span>{{ offerDealType(offer.deal_type) }}</span>
+          <li
+            class="OfferTableDropdown-menu-item text-danger action"
+            @click="onMakeDeal(offer.id, offer.deal_type)"
+          >
+            <span>{{ offerDealTypeHandler(offer.deal_type) }}</span>
           </li>
           <li
             class="OfferTableDropdown-menu-item text-success"
@@ -37,8 +40,12 @@
           </li>
         </ul>
         <div class="OfferTableDropdown-header-actions">
-          <button title="Гараж какой-то">1</button>
-          <button title="Компания">2</button>
+          <button title="Строение" @click="clickFavoriteOffer(offer)">
+            <i class="fas fa-warehouse"></i>
+          </button>
+          <button title="Компания" @click="clickFavoriteOffer(offer)">
+            <i class="fas fa-industry"></i>
+          </button>
         </div>
       </div>
       <div class="OfferTableDropdown-offers">
@@ -82,7 +89,23 @@ export default {
     },
   },
   methods: {
-    offerDealType(type) {
+    onMakeDeal(offerId, dealType) {
+      switch (dealType) {
+        case 1:
+          console.log(`Сдаем объект ${offerId}`);
+          break;
+        case 2:
+          console.log(`Продаем объект ${offerId}`);
+          break;
+        case 3:
+          console.log(`Храним объект ${offerId}`);
+          break;
+        case 4:
+          console.log(`Субарендим объект ${offerId}`);
+          break;
+      }
+    },
+    offerDealTypeHandler(type) {
       switch (type) {
         case 1:
           return "Объект сдается";
@@ -90,6 +113,8 @@ export default {
           return "Объект продается";
         case 3:
           return "Ответственное хранение";
+        case 4:
+          return "Субаренда";
       }
     },
   },

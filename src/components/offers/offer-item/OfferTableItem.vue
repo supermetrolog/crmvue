@@ -1,5 +1,5 @@
 <template>
-  <Tr :class="{ passive: offer.status != 1 }">
+  <Tr class="OfferTableRow" :class="{ passive: offer.status != 1 }">
     <Td class="id" :class="{ passive: offer.status != 1 }">
       <p>
         {{ offer.visual_id }}

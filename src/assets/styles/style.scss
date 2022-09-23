@@ -4343,6 +4343,14 @@
     .offer-table-view {
         table {
             width: 100%;
+            .OfferTableRow {
+                tr {
+                    &:nth-child(odd) {
+                        background-color: darken($color_light, 3);
+                        border-color: darken($color_light, 3);
+                    }
+                } 
+            }   
             tr {
                 padding: 5px 0;
                 position: relative;
@@ -4463,6 +4471,7 @@
         
         .OfferTableDropdown-wrapper {
           padding: 10px 0 !important;gap: 10px;
+          background-color: $color_light;
           table {
             box-shadow: none;
           }
@@ -4498,10 +4507,12 @@
                     align-items: flex-start;
                     border-left: solid 2px black;
                     padding: 2%;
-                    white-space: nowrap;
-                    &:hover {
-                        cursor: pointer;
-                    }
+                    white-space: nowrap; 
+                    
+                }
+                .action:hover {
+                    cursor: pointer;
+                    text-decoration: underline;
                 }
                 }
           }
@@ -4586,5 +4597,25 @@
             &:hover {
                 color: red;
             }
+        }
+    }
+
+    // ************** OFFER-TABLE-DROPDOWN *************
+    .MiniOffersItem-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .MiniOffersItem-actions-item {
+            height: 100%;
+            width: 100%;
+            cursor:pointer;
+            .fas {
+                width: 20px;
+                height: 10px;
+                &:hover {
+                    transform: scale(1.2);
+                }
+            }
+            
         }
     }

@@ -10,17 +10,37 @@
     <Td>{{ tempHandler }}</Td>
     <Td><div v-html="generalPrice" /></Td>
     <Td
-      ><div>
-        <i
-          class="fas fa-star"
-          :class="{
-            selected: true,
-          }"
-          @click="clickFavoriteOffer(offer)"
-        ></i
-        ><button>2</button><button>3</button>
-      </div></Td
-    >
+      ><div class="MiniOffersItem-actions">
+        <div class="MiniOffersItem-actions-item">
+          <i
+            class="fas fa-star"
+            :class="{
+              selected: true,
+            }"
+            @click="clickFavoriteOffer(offer)"
+          ></i>
+        </div>
+        <div class="MiniOffersItem-actions-item">
+          <i
+            style="color: blue"
+            class="fas fa-rocket"
+            :class="{
+              selected: true,
+            }"
+            @click="clickFavoriteOffer(offer)"
+          ></i>
+        </div>
+        <div class="MiniOffersItem-actions-item">
+          <i
+            style="color: green"
+            class="fas fa-rocket"
+            :class="{
+              selected: true,
+            }"
+            @click="clickFavoriteOffer(offer)"
+          ></i>
+        </div></div
+    ></Td>
   </Tr>
 </template>
 
