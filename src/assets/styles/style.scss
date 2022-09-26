@@ -4350,6 +4350,21 @@
                         border-color: darken($color_light, 3);
                     }
                 } 
+
+            .actions {
+                .actions-more {
+                    
+                    .actions-more-btn {
+                        border: none;
+                        background-color: transparent;
+                        &:hover {
+                            cursor: pointer;
+                            text-decoration: underline;
+                        }
+                    }
+                }
+                
+            }
             }   
             tr {
                 padding: 5px 0;
@@ -4536,6 +4551,27 @@
         
       }
 
+    // ************** MINI-OFFERS-ITEM *************
+    .MiniOffersItem-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .MiniOffersItem-actions-item {
+            height: 100%;
+            width: 100%;
+            cursor:pointer;
+            .fas {
+                width: 20px;
+                height: 10px;
+                &:hover {
+                    transition-duration: 0.2s;
+                    transform: scale(1.2);
+                }
+            }
+            
+        }
+    }
+
     // ************** MAP-CONTAINER *************
     .map-container {
         position: relative;
@@ -4611,23 +4647,4 @@
         }
     }
 
-    // ************** MINI-OFFERS-ITEM *************
-    .MiniOffersItem-actions {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        .MiniOffersItem-actions-item {
-            height: 100%;
-            width: 100%;
-            cursor:pointer;
-            .fas {
-                width: 20px;
-                height: 10px;
-                &:hover {
-                    transition-duration: 0.2s;
-                    transform: scale(1.2);
-                }
-            }
-            
-        }
-    }
+    
