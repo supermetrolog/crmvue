@@ -168,6 +168,12 @@
             />
             <Checkbox
               v-if="form.region.find((item) => item == 1)"
+              label="Регионы рядом с МО"
+              v-model="form.region_neardy"
+              class="col-12 large p-0 mt-2"
+            />
+            <Checkbox
+              v-if="form.region.find((item) => item == 1)"
               v-model="form.direction"
               class="col-12 p-0"
               label="Направления МО"
