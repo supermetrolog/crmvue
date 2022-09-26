@@ -68,32 +68,34 @@
             <div>
               <p v-if="!request.regions.length">&#8212;</p>
               <div class="region">
-                <p
-                  v-for="(region, index) of request.regions"
-                  :key="region.id"
-                  class="d-inline"
-                >
-                  {{ getRegion(request, region.region, index) }}
+                <p>
+                  {{
+                    request.regions
+                      .map((elem) =>
+                        this.$formatter.text().ucFirst(elem.info.title)
+                      )
+                      .join(", ")
+                  }}
                 </p>
               </div>
               <div class="region-parameters" v-if="request.directions.length">
                 <p class="d-inline"><b>Московская область: </b></p>
-                <p
-                  class="d-inline"
-                  v-for="direction of request.directions"
-                  :key="direction.id"
-                >
-                  {{ getDirection(direction.direction) }}
+                <p class="d-inline">
+                  {{
+                    request.directions
+                      .map((elem) => this.directionList[elem.direction][2])
+                      .join(", ")
+                  }}
                 </p>
               </div>
               <div class="region-parameters" v-if="request.districts.length">
                 <p class="d-inline"><b>Москва: </b></p>
-                <p
-                  class="d-inline"
-                  v-for="district of request.districts"
-                  :key="district.id"
-                >
-                  {{ getDistrict(district.district) }}
+                <p class="d-inline">
+                  {{
+                    request.districts
+                      .map((elem) => this.districtList[elem.district][1])
+                      .join(", ")
+                  }}
                 </p>
               </div>
               <div>
@@ -190,20 +192,6 @@ export default {
     loader: {
       type: Boolean,
       default: false,
-    },
-  },
-  methods: {
-    getRegion(request, region, index) {
-      if (index != request.regions.length - 1) {
-        return this.regionList[region].label + ", ";
-      }
-      return this.regionList[region].label;
-    },
-    getDirection(direction) {
-      return this.directionList[direction][2] + ", ";
-    },
-    getDistrict(district) {
-      return this.districtList[district][1] + ", ";
     },
   },
 };

@@ -3,7 +3,7 @@ import ErrorHandle from "./errors";
 import SuccessHandler from "./success";
 export default {
     async getRequests(id) {
-        const url = "requests/company-requests/" + id + "?expand=consultant.userProfile,directions,districts,gateTypes,objectClasses,objectTypes,objectTypesGeneral,regions,deal.offer,deal.consultant.userProfile, deal.offer.generalOffersMix,deal.competitor,timeline_progress&sort=-created_at";
+        const url = "requests/company-requests/" + id + "?expand=consultant.userProfile,directions,districts,gateTypes,objectClasses,objectTypes,objectTypesGeneral,regions.info,deal.offer,deal.consultant.userProfile,deal.offer.generalOffersMix,deal.competitor,timeline_progress&sort=-created_at";
 
         let data = false;
         await axios
@@ -26,7 +26,7 @@ export default {
         return data;
     },
     async searchRequests(query, expand = null) {
-        expand = expand || "regions,directions,districts,company,consultant.userProfile,timeline_progress";
+        expand = expand || "regions.info,directions,districts,company,consultant.userProfile,timeline_progress";
         query = new URLSearchParams(query).toString();
         let url = "requests?" + query + '&expand=' + expand;
         let data = false;

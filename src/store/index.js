@@ -13,6 +13,7 @@ import Deal from './modules/Deal'
 import CompanyObjects from './modules/CompanyObjects'
 import Offers from './modules/Offers'
 import CallerManager from './modules/CallerManager'
+import Location from './modules/Location'
 import axios from "axios";
 const store = createStore({
     state: {},
@@ -63,7 +64,8 @@ const store = createStore({
         Deal,
         CompanyObjects,
         Offers,
-        CallerManager
+        CallerManager,
+        Location
     }
 })
 store.checkAction = function(name) {

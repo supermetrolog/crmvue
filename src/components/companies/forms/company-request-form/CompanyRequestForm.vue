@@ -39,16 +39,25 @@
             mode="multiple"
             name="region"
             required
-            :options="regionList"
+            :options="
+              async () => {
+                await this.FETCH_REGION_LIST();
+                return this.REGION_LIST;
+              }
+            "
           >
-            <small
-              v-for="(region, index) in form.regions"
-              :key="region.region"
-              class="d-block px-3"
-            >
-              {{ index + 1 }}.
-              {{ regionList.find((item) => item.value == region.region).label }}
-            </small>
+            <template v-if="REGION_LIST">
+              <small
+                v-for="(region, index) in form.regions"
+                :key="region.region"
+                class="d-block px-3"
+              >
+                {{ index + 1 }}.
+                {{
+                  REGION_LIST.find((item) => item.value == region.region).label
+                }}
+              </small>
+            </template>
             <Checkbox
               v-if="form.regions.find((item) => item.region == 1)"
               v-model="form.directions"
@@ -73,7 +82,7 @@
               class="col-12 large p-0 mt-2 text-center"
             />
             <Radio
-              v-if="form.regions.find((item) => item.region == 0)"
+              v-if="form.regions.find((item) => item.region == 6)"
               v-model="form.outside_mkad"
               :unselectMode="true"
               class="col large p-0 mt-2 text-center"
@@ -89,7 +98,7 @@
             :options="CONSULTANT_LIST"
           >
             <Checkbox
-              v-if="form.regions.find((item) => item.region == 0)"
+              v-if="form.regions.find((item) => item.region == 6)"
               v-model="form.districts"
               class="col-12 p-0 mt-2 text-center"
               label="Округа Москвы"
@@ -465,7 +474,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["CONSULTANT_LIST"]),
+    ...mapGetters(["CONSULTANT_LIST", "REGION_LIST"]),
   },
   validations() {
     return {
@@ -524,6 +533,7 @@ export default {
       "FETCH_CONSULTANT_LIST",
       "CREATE_REQUEST",
       "UPDATE_REQUEST",
+      "FETCH_REGION_LIST",
     ]),
     async onSubmit() {
       this.v$.$validate();
@@ -543,7 +553,7 @@ export default {
       }
     },
     regionNormalize() {
-      if (!this.form.regions.find((item) => item.region == 0)) {
+      if (!this.form.regions.find((item) => item.region == 6)) {
         this.form.districts = [];
         this.form.outside_mkad = null;
       }
