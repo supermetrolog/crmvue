@@ -4769,23 +4769,24 @@
                                 border: 1px solid darken($color_success_alt, $amount: 15);
                             }
                         }
-                        // ************** MINI-OFFERS-ITEM *************
-                        .MiniOffersItem-actions {
-                            display: flex;
-                            justify-content: space-between;
-                            align-items: center;
-                            .MiniOffersItem-actions-item {
-                                height: 100%;
-                                width: 100%;
-                                cursor: pointer;
-                                .fas {
-                                    width: 20px;
-                                    height: 10px;
-                                    &:hover {
-                                        transition-duration: 0.2s;
-                                        transform: scale(1.2);
-                                    }
-                                }
+                    }
+                }
+                
+                // ************** MINI-OFFERS-ITEM *************
+                .MiniOffersItem-actions {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    .MiniOffersItem-actions-item {
+                        height: 100%;
+                        width: 100%;
+                        cursor: pointer;
+                        .fas {
+                            width: 20px;
+                            height: 10px;
+                            &:hover {
+                                transition-duration: 0.2s;
+                                transform: scale(1.2);
                             }
                         }
                     }
