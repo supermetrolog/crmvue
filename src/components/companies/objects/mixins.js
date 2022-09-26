@@ -199,6 +199,22 @@ export const MixinObject = {
                     complex_id: item.complex_id,
                     type_id: item.type_id,
                     comment: item.comment,
+                    timeline_id: data.timeline_id,
+                    class_name: item.class_name,
+                    deal_type_name: item.deal_type_name,
+                    visual_id: item.visual_id,
+                    address: item.address,
+                    area: item.calc_area_general,
+                    price: (() => {
+                        if (item.deal_type == 1 || item.deal_type == 4) {
+                            return item.calc_price_warehouse;
+                        } else if (item.deal_type == 2) {
+                            return item.calc_price_sale;
+                        } else if (item.deal_type == 3) {
+                            return item.calc_price_safe_pallet;
+                        }
+                    })(),
+                    image: item.thumb
                 });
             });
         },
@@ -301,22 +317,13 @@ export const MixinObject = {
         },
         async getPreventStepObjects() {
             this.loader = true;
-            // const uniqueObject = [];
-            // this.preventStepTimelineObjects.forEach(item => {
-            //     uniqueObject.push(JSON.stringify({ object_id: item.object_id, type_id: item.type_id }));
-            // });
-            // const response = await api.companyObjects.searchOffers({
-            //     expand: 'object,miniOffersMix',
-            //     uniqueOffer: uniqueObject
-            // });
-            // console.log(response);
-            // const objects = await api.objects.getCurrentStepObjectsOneByOne(
-            //     this.preventStepTimelineObjects
-            // );
             const objects = [];
             this.preventStepTimelineObjects.forEach(item => {
-                if (item.offer) {
+                if (item.offer && item.offer.id) {
                     objects.push(item.offer);
+                } else {
+                    objects.push({...item, noOffer: true });
+
                 }
             });
             this.includeStepDataInObjectsData(objects);
@@ -443,6 +450,7 @@ export const MixinAllObject = {
                 page: this.currentPage,
                 'per-page': 20,
                 expand: 'object,offer,generalOffersMix.offer,comments',
+                timeline_id: this.TIMELINE.id,
                 ...query
             };
             if (!this.FAVORITES_OFFERS.length) {
@@ -469,8 +477,10 @@ export const MixinAllObject = {
             this.loader = true;
             const objects = [];
             this.step.timelineStepObjects.forEach(item => {
-                if (item.offer) {
+                if (item.offer && item.offer.id) {
                     objects.push(item.offer);
+                } else {
+                    objects.push({...item, noOffer: true });
                 }
             });
             this.includeStepDataInObjectsData(objects);
@@ -538,7 +548,11 @@ export const MixinAllObject = {
         },
         getData() {
             this.getAllObjects();
-        }
+        },
+        select(object) {
+            console.log("SELECT", object);
+            this.selectedObjects.push(object);
+        },
     },
     mounted() {
         this.getData();

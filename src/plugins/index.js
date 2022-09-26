@@ -23,6 +23,7 @@ export const apiUrlHelperObject = {
 
     devHost: "clients.supermetrolog.ru",
     prodHost: "clients.pennylane.pro",
+    localDevHost: "localhost:8081",
 
     uploadsPath: "uploads/",
     imagesPath: "images/",
@@ -48,12 +49,17 @@ export const apiUrlHelperObject = {
     },
     url() {
         if (process.env.NODE_ENV == 'development') {
+            let host = window.location.host;
+            if (host == this.localDevHost) {
+                return this.devUrl;
+            }
             return this.localUrl;
         } else {
             let host = window.location.host;
             if (host == this.devHost) {
                 return this.devUrl;
             }
+
             return this.prodUrl;
         }
     },

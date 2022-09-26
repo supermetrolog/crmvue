@@ -36,11 +36,13 @@
           :pagination="COMPANIES_PAGINATION"
           @next="next"
           v-if="COMPANIES_PAGINATION"
+          class="d-inline"
         />
+        <RefreshButton class="ml-3" @click="getCompanies" :disabled="loader" />
       </div>
       <div class="col-6 text-right ml-auto">
         <button
-          class="btn btn-primary mr-2"
+          class="btn btn-primary mr-2 ml-5"
           @click="companyGroupsFormVisible = true"
         >
           Создать группу компаний
@@ -82,6 +84,7 @@ import CompanySearchForm from "@/components/companies/forms/company-form/Company
 import { mapGetters, mapActions } from "vuex";
 import CompanyGroupsForm from "@/components/companies/forms/company-groups-form/CompanyGroupsForm.vue";
 import { TableContentMixin } from "@/components/common/mixins.js";
+import RefreshButton from "@/components/common/RefreshButton.vue";
 export default {
   mixins: [TableContentMixin],
   name: "CompaniesMain",
@@ -97,6 +100,7 @@ export default {
     CompanyForm,
     CompanyGroupsForm,
     CompanySearchForm,
+    RefreshButton,
   },
   methods: {
     ...mapActions(["FETCH_COMPANIES", "SEARCH_COMPANIES"]),

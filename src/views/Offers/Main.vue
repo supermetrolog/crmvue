@@ -19,7 +19,9 @@
           :pagination="OFFERS_PAGINATION"
           @next="next"
           v-if="OFFERS_PAGINATION"
+          class="d-inline"
         />
+        <RefreshButton class="ml-3" @click="getOffers" :disabled="loader" />
       </div>
     </div>
     <div class="row no-gutters mt-2">
@@ -51,6 +53,7 @@ import OfferSearchForm from "@/components/offers/forms/offer-form/OfferSearchFor
 import { mapGetters, mapActions } from "vuex";
 import { TableContentMixin } from "@/components/common/mixins.js";
 import YmapView from "@/components/common/YmapView.vue";
+import RefreshButton from "@/components/common/RefreshButton.vue";
 
 import api from "@/api/api";
 import { waitHash } from "../../utils";
@@ -71,6 +74,7 @@ export default {
     OfferTableView,
     OfferSearchForm,
     YmapView,
+    RefreshButton,
   },
   computed: {
     ...mapGetters([

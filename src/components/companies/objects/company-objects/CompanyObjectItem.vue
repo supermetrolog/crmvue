@@ -41,7 +41,12 @@
       </div>
     </div>
     <div class="row no-gutters" v-if="object.offerMix">
-      <CompanyObjectItemOffer :offer="object.offerMix[0]" class="main" />
+      <CompanyObjectItemOffer
+        v-for="offer in object.offerMix"
+        :key="offer.id"
+        :offer="offer"
+        class="main"
+      />
     </div>
   </div>
 </template>

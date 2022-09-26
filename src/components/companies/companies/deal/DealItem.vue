@@ -22,9 +22,14 @@
           </div>
           <div class="col-4 text-right pr-2"><p>объект:</p></div>
           <div class="col-8 pl-4">
-            <strong>
+            <strong v-if="deal.offer">
               <a :href="offerUrl" target="_blanc">
                 {{ deal.offer.visual_id }}
+              </a>
+            </strong>
+            <strong v-else>
+              <a :href="offerUrl" target="_blanc">
+                {{ deal.object_id }}
               </a>
             </strong>
           </div>
@@ -101,7 +106,10 @@ export default {
   computed: {
     offerUrl() {
       const baseUrl = "https://pennylane.pro/complex/";
-      let url = baseUrl + this.deal.offer.complex_id;
+      let url = baseUrl + this.deal.complex_id;
+      if (this.deal.type_id == 3 || !this.deal.offer) {
+        return url;
+      }
       if (this.deal.offer.generalOffersMix) {
         url +=
           "?offer_id=[" + this.deal.offer.generalOffersMix.original_id + "]";

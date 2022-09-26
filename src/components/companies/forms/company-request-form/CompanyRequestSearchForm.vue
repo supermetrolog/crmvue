@@ -122,7 +122,7 @@
           <MultiSelect
             v-model="form.regions"
             label="Регионы"
-            class="col-3 pr-1"
+            class="col-4 pr-1"
             mode="multiple"
             :options="regionList"
             @change="changeRegion"
@@ -132,20 +132,36 @@
               :key="region"
               class="d-block px-3"
             >
-              {{ index + 1 }}. {{ regionList[region].label }}
+              {{ index + 1 }}.
+              {{ regionList.find((item) => item.value == region).label }}
             </small>
+            <Checkbox
+              v-if="form.regions.find((item) => item == 1)"
+              label="Регионы рядом с МО"
+              v-model="form.region_neardy"
+              class="col-12 large p-0 mt-2"
+            />
+            <Radio
+              v-if="form.regions.find((item) => item == 0) == 0"
+              v-model="form.outside_mkad"
+              :unselectMode="true"
+              class="col-12 large p-0"
+              :options="outsideMkadOptions"
+            />
           </MultiSelect>
+
           <Checkbox
             v-if="form.regions.find((item) => item == 1)"
             v-model="form.directions"
-            class="col-4 pr-1"
-            label="Направления"
+            class="col-2 pr-1"
+            label="Направления МО"
             :options="directionList"
           />
+
           <Checkbox
             v-if="form.regions.find((item) => item == 0) == 0"
             v-model="form.districts"
-            class="col-5"
+            class="col-4 pr-1"
             label="Округа Москвы"
             :options="districtList"
           />
@@ -319,6 +335,7 @@ import {
   DirectionList,
   DistrictList,
   ObjectTypesGeneralList,
+  OutsideMkad,
 } from "@/const/Const.js";
 import { SearchFormMixin } from "@/components/common/mixins.js";
 export default {
@@ -340,6 +357,7 @@ export default {
       objectTypeListProduction: ObjectTypeList.get("production"),
       objectTypeListPlot: ObjectTypeList.get("plot"),
       yesNoOptions: YesNo.get("param"),
+      outsideMkadOptions: OutsideMkad.get("param"),
       objectClassList: ObjectClassList.get("param"),
       gateTypeList: GateTypeList.get("param"),
       dealTypeList: DealTypeList.get("param"),
@@ -382,6 +400,8 @@ export default {
     regions: [],
     districts: [],
     directions: [],
+    outside_mkad: null,
+    region_neardy: null,
   },
   methods: {
     changeRegion() {
@@ -391,9 +411,11 @@ export default {
       }
       if (!this.form.regions.find((item) => item == 1)) {
         this.form.directions = [];
+        this.form.region_neardy = null;
       }
       if (this.form.regions.find((item) => item == 0) != 0) {
         this.form.districts = [];
+        this.form.outside_mkad = null;
       }
     },
     async setQueryFields() {

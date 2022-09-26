@@ -9,7 +9,7 @@ const Websocket = {
     state: {
         socket: null,
         setedUserIdFlag: false,
-        websocketLoops: []
+        pingLoop: null,
     },
     mutations: {
         updateSocket(state, data) {
@@ -22,13 +22,13 @@ const Websocket = {
                 state.setedUserIdFlag = !state.setedUserIdFlag;
             }
         },
-        websocketLoopPush(state, setInterval) {
-            state.websocketLoops.push(setInterval);
+        deletePingLoop(state) {
+            if (state.pingLoop) {
+                clearInterval(state.pingLoop);
+            }
         },
-        deleteWebsocketLoops(state) {
-            state.websocketLoops.forEach(interval => {
-                clearInterval(interval.loop);
-            });
+        setPingLoop(state, data) {
+            state.pingLoop = data;
         },
         deleteSocket(state) {
             if (state.socket) {
@@ -38,13 +38,10 @@ const Websocket = {
         }
     },
     actions: {
-        WEBSOCKET_LOOP_PUSH(context, setInterval) {
-            context.commit('websocketLoopPush', setInterval);
-        },
         WEBSOCKET_STOP(context) {
             console.log('WEBSOCKET_STOP');
-            context.commit('deleteWebsocketLoops');
             context.commit('deleteSocket');
+            context.commit('deletePingLoop');
             context.commit('toggleSetedUserIdFlag', false);
         },
         WEBSOCKET_RUN(context) {
@@ -68,17 +65,26 @@ const Websocket = {
             };
             context.commit('updateSocket', socket);
         },
+        WEBSOCKET_RUN_PING_LOOP(context) {
+            let pingLoop = setInterval(() => {
+                console.log('piing');
+                context.dispatch("WEBSOCKET_PING");
+            }, 50000);
+            context.commit('setPingLoop', pingLoop);
+        },
         EVENT_WEBSOCKET_ON_OPEN(context) {
             console.log("Connected websocket server!");
-            // notifyOptions.type = 'success';
-            // notifyOptions.text = "Connected websocket server!";
-            // notify(notifyOptions);
             context.dispatch('WEBSOCKET_SET_USER');
-            // context.dispatch('CALL_WEBSOCKET_LOOP');
-            // context.dispatch('NOTIFICATION_WEBSOCKET_LOOP');
+            context.dispatch('WEBSOCKET_RUN_PING_LOOP');
+
+        },
+        WEBSOCKET_PING(context) {
+            const socket = context.getters.SOCKET;
+            socket.send(JSON.stringify({
+                action: "ping",
+            }));
         },
         EVENT_WEBSOCKET_ON_MESSAGE(context, event) {
-            // console.warn("Server send:");
             let data = JSON.parse(event.data);
             let prefix = 'ACTION_WEBSOCKET_';
             let actionName = prefix + 'info';
@@ -111,7 +117,7 @@ const Websocket = {
                     `Соединение закрыто чисто, код=${event.code} причина=${event.reason}`
                 );
             } else {
-                console.warn("Соединение прервано");
+                console.warn("Соединение прервано", event);
                 notifyOptions.text = 'Websocket соединение прервано.';
                 notifyOptions.title = 'Websocket server';
                 notifyOptions.type = 'warn';
@@ -138,7 +144,6 @@ const Websocket = {
 
             } else {
                 console.log('ACTION_WEBSOCKET_info: ', data.message);
-
             }
         },
         ACTION_WEBSOCKET_user_setted(context, data) {

@@ -38,7 +38,10 @@
         </div>
       </div>
     </div>
-    <div class="col-12 text-center p-3">
+    <div class="col-12 text-center mt-2">
+      <h4 class="m-0">ID: {{ company.id }}</h4>
+    </div>
+    <div class="col-12 text-center px-3 pb-3 pt-0">
       <h3>
         {{ company.full_name }}
       </h3>

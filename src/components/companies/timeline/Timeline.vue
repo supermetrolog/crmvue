@@ -100,6 +100,9 @@
                   v-model="contactForSendMessage"
                   :options="companyContacts"
                   :clearOnSelect="true"
+                  :closeOnSelect="false"
+                  :hideSelected="false"
+                  :groups="true"
                   class="multiselect-timeline"
                   :multipleLabel="
                     (n) => {
@@ -182,7 +185,6 @@ export default {
       loaderForStep: false,
       objects: [],
       timelineNotFoundFlag: false,
-      // companyContacts: null,
       contactForSendMessage: [],
     };
   },
@@ -324,6 +326,23 @@ export default {
     //     this.COMPANY_CONTACTS
     //   );
     // },
+    getPriorityStep() {
+      let highPriorityTimelineStep = 0;
+      this.TIMELINE.timelineSteps.forEach((step) => {
+        if (step.status == 0 && !highPriorityTimelineStep) {
+          highPriorityTimelineStep = step.number;
+        }
+      });
+      return highPriorityTimelineStep;
+    },
+    async moveToPriorityStep() {
+      let highPriorityTimelineStep = this.getPriorityStep();
+      let query = {
+        ...this.$route.query,
+      };
+      query.step = highPriorityTimelineStep;
+      await this.$router.push({ query: query });
+    },
   },
   async created() {
     this.loader = true;
@@ -331,6 +350,8 @@ export default {
     const result = await this.getTimeline();
     this.loader = false;
     if (result) {
+      this.moveToPriorityStep();
+
       this.$nextTick(() => {
         this.scrollToSelectedStep(0);
       });
