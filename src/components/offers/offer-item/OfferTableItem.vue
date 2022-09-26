@@ -15,7 +15,13 @@
           @click="clickFavoriteOffer(offer)"
         ></i>
         <i class="fas fa-file-pdf" @click="clickViewPdf(offer)"></i>
-        <button @click="clickOpenMore">Подробнее</button>
+        <div class="actions-more" @click="clickOpenMore">
+          <!-- <button class="actions-more-btn" @click="clickOpenMore">
+            Подробнее
+          </button> -->
+          <i class="fa fa-chevron-down" v-if="!dropdownIsOpen"></i>
+          <i class="fa fa-chevron-up" v-if="dropdownIsOpen"></i>
+        </div>
       </div>
     </Td>
     <Td class="photo">
