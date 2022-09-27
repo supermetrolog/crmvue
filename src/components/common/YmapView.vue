@@ -99,7 +99,8 @@ export default {
       if (offer.test_only == 1) {
         return "grey";
       }
-      return offer.status != 1 ? "yellow" : "green";
+      // return offer.status != 1 ? "yellow" : "green";
+      return "red";
     },
     getFooter(offer) {
       let template = `<a href="${this.getOfferUrl(
