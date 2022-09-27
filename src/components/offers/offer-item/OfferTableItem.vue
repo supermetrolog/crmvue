@@ -140,8 +140,12 @@
       <span class="badge badge-warning autosize" v-else> Пассив </span>
     </Td>
   </Tr>
-  <DropDown
-    ><OfferTableDropdown :offer="offer" v-if="dropdownIsOpen"
+  <DropDown>
+    <OfferTableDropdown
+      :offer="offer"
+      :miniOffers="miniOffers"
+      :loader="miniOffersLoader"
+      v-if="dropdownIsOpen"
   /></DropDown>
 </template>
 
@@ -232,13 +236,13 @@ export default {
       }
       this.dropdownIsOpen = true;
       this.miniOffersLoader = true;
-      let data = await api.offers.search({
+      let response = await api.offers.search({
         type_id: [1],
         status: 3, // Нужно чтобы прилетали и активные и пассивные
         object_id: this.offer.object_id,
       });
-      if (data) {
-        this.miniOffers = data.data;
+      if (response) {
+        this.miniOffers = response.data;
       }
       this.miniOffersLoader = false;
     },

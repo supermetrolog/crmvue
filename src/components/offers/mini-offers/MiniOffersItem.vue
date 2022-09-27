@@ -2,7 +2,7 @@
   <Tr>
     <Td>#</Td>
     <Td>{{ offer.visual_id }}</Td>
-    <Td>{{ offer.calc_floors }}</Td>
+    <Td>{{ offer.calc_floors + " " + offer.deal_type }}</Td>
     <Td><div v-html="offersArea" /></Td>
     <Td>{{ heightHandler }}</Td>
     <Td>{{ offer.floor_type }}</Td>
@@ -11,13 +11,15 @@
     <Td><div v-html="generalPrice" /></Td>
     <Td
       ><div class="MiniOffersItem-actions">
-        <div class="MiniOffersItem-actions-item">
+        <div
+          class="MiniOffersItem-actions-item"
+          @click="clickFavoriteOffer(offer)"
+        >
           <i
             class="fas fa-star"
             :class="{
               selected: true,
             }"
-            @click="clickFavoriteOffer(offer)"
           ></i>
         </div>
         <div class="MiniOffersItem-actions-item">
