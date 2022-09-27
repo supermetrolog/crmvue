@@ -19,10 +19,15 @@
       <template #tbody>
         <Loader v-if="loader" class="center" />
         <OfferTableItem
-          v-for="offer in offers"
+          v-for="(offer, idx) in offers"
           :key="offer.id"
           :offer="offer"
           :loader="loader"
+          :odd="!(idx % 2)"
+          :class="{
+            odd_table_row: !(idx % 2),
+            even_table_row: !!(idx % 2),
+          }"
         />
       </template>
     </Table>

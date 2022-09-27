@@ -1,5 +1,12 @@
 <template>
-  <Tr class="OfferTableRow" :class="{ passive: offer.status != 1 }">
+  <Tr
+    class="OfferTableRow"
+    :class="{
+      passive: offer.status != 1,
+      'OfferTableRow-odd': odd,
+      'OfferTableRow-even': !odd,
+    }"
+  >
     <Td class="id" :class="{ passive: offer.status != 1 }">
       <p>
         {{ offer.visual_id }}
@@ -187,6 +194,9 @@ export default {
     sortable: {
       type: Boolean,
       default: true,
+    },
+    odd: {
+      type: Number,
     },
   },
   computed: {

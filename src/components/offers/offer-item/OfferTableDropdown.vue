@@ -1,7 +1,7 @@
 <template>
   <tr class="OfferTableDropdown">
     <td colspan="11" class="OfferTableDropdown-wrapper">
-      <Loader v-if="loader" />
+      <Loader v-if="loader" class="small" />
       <div class="OfferTableDropdown-header-actions">
         <button title="Строение" @click="clickFavoriteOffer(offer)">
           <i class="fas fa-warehouse"></i>

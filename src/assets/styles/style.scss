@@ -4343,11 +4343,10 @@
     .offer-table-view {
         table {
             width: 100%;
+            .odd_table_row {
+                background-color: red;
+            }
             .OfferTableRow {
-                    &:nth-child(odd) {
-                        background-color: darken($color_light, 3);
-                        border-color: darken($color_light, 3);
-                    }
                 .actions {
                     .actions-more {
                         .actions-more-btn {
@@ -4360,6 +4359,14 @@
                         }
                     }
                 }
+            }
+            .OfferTableRow-odd {
+                background-color: darken($color_light, 3) !important;
+                border-color: darken($color_light, 3) !important; 
+            }
+            .OfferTableRow-even {
+                background-color: $color_light !important;
+                border-color: $color_light !important; 
             }
             tr {
                 padding: 5px 0;
@@ -4520,12 +4527,6 @@
                     display: flex;
                     flex-direction: row;
                     list-style-type: none;
-                    .item-active {
-                        background-color: $color_success_alt;
-                        &:hover {
-                            cursor: default;
-                        }
-                    }
                     .OfferTableDropdown-menu-item {
                         display: flex;
                         flex-direction: column;
@@ -4573,7 +4574,15 @@
                           
                         }
                     }
-                    
+                    .item-active {
+                        background-color: $color_success_alt;
+                        &:hover {
+                            cursor: default;
+                        }
+                        a {
+                            color: white !important;
+                        }
+                    }
                 }
             }
             .OfferTableDropdown-offers {
