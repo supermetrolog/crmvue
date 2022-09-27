@@ -123,7 +123,7 @@ export default {
       }
       const query = {
         ...routeQuery,
-        type_id: [2],
+        type_id: [3],
         fields: "latitude,longitude,address,complex_id,status,thumb,test_only",
         objectsOnly: 1,
         original_id: routeQuery.favorites
