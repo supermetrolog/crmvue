@@ -42,7 +42,9 @@
             :options="
               async () => {
                 await this.FETCH_REGION_LIST();
-                return this.REGION_LIST;
+                return this.REGION_LIST.filter((elem) =>
+                  Number.isInteger(elem.value)
+                );
               }
             "
           >
