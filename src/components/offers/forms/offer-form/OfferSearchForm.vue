@@ -130,10 +130,9 @@
             />
           </Input>
           <MultiSelect
-            v-model="form.region"
+            v-model="form.fakeRegion"
             label="Регионы"
             class="col-3"
-            mode="multiple"
             :options="
               async () => {
                 await this.FETCH_REGION_LIST();
@@ -142,35 +141,12 @@
             "
             @change="changeRegion"
           >
-            <template v-if="REGION_LIST">
-              <small
-                v-for="(region, index) in form.region"
-                :key="region"
-                class="d-block px-3"
-              >
-                {{ index + 1 }}.
-                {{ REGION_LIST.find((item) => item.value == region).label }}
-              </small>
-            </template>
-            <Radio
-              v-if="form.region.find((item) => item == 6)"
-              v-model="form.outside_mkad"
-              :unselectMode="true"
-              class="col-12 large p-0"
-              :options="outsideMkadOptions"
-            />
             <Checkbox
               v-if="form.region.find((item) => item == 6)"
               v-model="form.district_moscow"
               class="col-12 p-0"
               label="Округа Москвы"
               :options="districtList"
-            />
-            <Checkbox
-              v-if="form.region.find((item) => item == 1)"
-              label="Регионы рядом с МО"
-              v-model="form.region_neardy"
-              class="col-12 large p-0 mt-2"
             />
             <Checkbox
               v-if="form.region.find((item) => item == 1)"
@@ -385,12 +361,37 @@ export default {
       directionList: DirectionList.get("param"),
       districtList: DistrictList.get("param"),
       activePassiveOptions: ActivePassiveFUCK.get("param"),
+      region: null,
     };
   },
   computed: {
     ...mapGetters(["FAVORITES_OFFERS", "REGION_LIST"]),
     favoritesCount() {
       return this.FAVORITES_OFFERS.length;
+    },
+    filterCount() {
+      let count = 0;
+      for (const key in this.$options.defaultFormProperties) {
+        if (Object.hasOwnProperty.call(this.form, key)) {
+          const value = this.form[key];
+          if (
+            value !== null &&
+            value !== "" &&
+            key != "fakeRegion" &&
+            key != "region_neardy" &&
+            key != "outside_mkad"
+          ) {
+            if (Array.isArray(value)) {
+              if (value.length) {
+                count++;
+              }
+            } else {
+              count++;
+            }
+          }
+        }
+      }
+      return count;
     },
   },
   defaultFormProperties: {
@@ -419,6 +420,7 @@ export default {
     purposes: [],
     object_type: [],
     region: [],
+    fakeRegion: null,
     direction: [],
     district_moscow: [],
     status: null,
@@ -478,18 +480,35 @@ export default {
       await this.$router.replace({ query });
     },
     changeRegion() {
-      if (this.form.region == null) {
+      if (this.form.fakeRegion == null) {
+        this.form.region = [];
         this.form.direction = [];
         this.form.district_moscow = [];
-      }
-      if (!this.form.region.find((item) => item == 1)) {
-        this.form.direction = [];
         this.form.region_neardy = null;
-      }
-      if (!this.form.region.find((item) => item == 6)) {
-        this.form.district_moscow = [];
         this.form.outside_mkad = null;
+        return;
       }
+      this.form.direction = [];
+      this.form.region_neardy = null;
+      this.form.district_moscow = [];
+      this.form.outside_mkad = null;
+      if (this.form.fakeRegion == "mskandmo") {
+        return (this.form.region = [1, 6]);
+      }
+      if (this.form.fakeRegion == "mskinsidemkad") {
+        this.form.region = [6];
+        return (this.form.outside_mkad = 0);
+      }
+      if (this.form.fakeRegion == "moandmskoutsidemkad") {
+        this.form.region = [1, 6];
+        return (this.form.outside_mkad = 1);
+      }
+      if (this.form.fakeRegion == "moandregionneardy") {
+        this.form.region = [1];
+        return (this.form.region_neardy = 1);
+      }
+
+      this.form.region = [this.form.fakeRegion];
     },
     selectObjectType(isSelected, type) {
       this.form.object_type = this.form.object_type.filter(
