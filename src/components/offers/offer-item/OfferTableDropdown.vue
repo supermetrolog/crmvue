@@ -105,13 +105,15 @@ export default {
       return result;
     },
     rentOffers() {
-      return this.miniOffers.filter((offer) => offer.deal_type === 1 || 4);
+      return this.miniOffers.filter(
+        (offer) => offer.deal_type === 1 || offer.deal_type === 4
+      );
     },
     salesOffers() {
-      return this.miniOffers.filter((offer) => offer.deal_type == 2);
+      return this.miniOffers.filter((offer) => offer.deal_type === 2);
     },
     storageOffers() {
-      return this.miniOffers.filter((offer) => offer.deal_type == 3);
+      return this.miniOffers.filter((offer) => offer.deal_type === 3);
     },
     activeOffers() {
       return this.rentOffers.filter((offer) => offer.status === 1);

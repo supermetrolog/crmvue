@@ -2,7 +2,7 @@
   <Tr>
     <Td>#</Td>
     <Td>{{ offer.visual_id }}</Td>
-    <Td>{{ offer.calc_floors + " " + offer.deal_type }}</Td>
+    <Td>{{ offer.calc_floors }}</Td>
     <Td><div v-html="offersArea" /></Td>
     <Td>{{ heightHandler }}</Td>
     <Td>{{ offer.floor_type }}</Td>
@@ -91,7 +91,11 @@ export default {
       }
     },
     generalPrice() {
-      return `<span>${this.offer.calc_price_general} <small>руб за м<sup>2</sup>/год</small></span>`;
+      if (this.offer.deal_type === 2) {
+        return `<span>${this.offer.calc_price_general} <small>руб</small></span>`;
+      } else {
+        return `<span>${this.offer.calc_price_general} <small>руб за м<sup>2</sup>/год</small></span>`;
+      }
     },
   },
   methods: {},
