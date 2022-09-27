@@ -118,6 +118,7 @@ export default {
     async getAllOffersForYmap(withLoader = true) {
       const routeQuery = { ...this.$route.query };
       delete routeQuery.page;
+      delete routeQuery.sort;
       if (routeQuery.favorites) {
         await this.SEARCH_FAVORITES_OFFERS();
       }
