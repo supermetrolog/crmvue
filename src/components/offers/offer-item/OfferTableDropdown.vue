@@ -3,11 +3,15 @@
     <td colspan="11" class="OfferTableDropdown-wrapper">
       <Loader v-if="loader" class="small" />
       <div class="OfferTableDropdown-header-actions">
-        <button title="Строение" @click="clickFavoriteOffer(offer)">
-          <i class="fas fa-warehouse"></i>
+        <button title="Строение">
+          <router-link :to="'/companies/' + offer.company.id" target="_blank">
+            <i class="fas fa-warehouse"></i>
+          </router-link>
         </button>
-        <button title="Компания" @click="clickFavoriteOffer(offer)">
-          <i class="fas fa-industry"></i>
+        <button title="Компания">
+          <router-link :to="'/companies/' + offer.company.id" target="_blank">
+            <i class="fas fa-industry"></i>
+          </router-link>
         </button>
       </div>
       <Tabs
@@ -31,29 +35,37 @@
         ></Tab>
         <Tab
           id="second-tab"
-          :name="`ТП АРЕНДА АКТИВ<br/>${activeOffers.length}`"
+          name="ТП АРЕНДА АКТИВ"
+          :suffix="`<span class='${
+            activeOffers.length ? 'suffix' : 'suffix suffix-none'
+          }'>${activeOffers.length}</span>`"
         >
-          <div class="OfferTableDropdown-offers">
-            <MiniOffers :miniOffers="activeOffers" />
-          </div>
+          <MiniOffers :miniOffers="activeOffers" />
         </Tab>
         <Tab
           id="third-tab"
-          :name="`ТП АРЕНДА АРХИВ<br/>${archiveOffers.length}`"
+          name="ТП АРЕНДА АРХИВ"
+          :suffix="`<span class='${
+            archiveOffers.length ? 'suffix' : 'suffix suffix-none'
+          }'>${archiveOffers.length}</span>`"
         >
-          <div class="OfferTableDropdown-offers">
-            <MiniOffers :miniOffers="archiveOffers" />
-          </div>
+          <MiniOffers :miniOffers="archiveOffers" />
         </Tab>
-        <Tab id="fourth-tab" name="Объект продается!" v-if="salesOffers.length">
-          <div class="OfferTableDropdown-offers">
-            <MiniOffers :miniOffers="salesOffers" />
-          </div>
+        <Tab
+          id="fourth-tab"
+          name="Объект продается!"
+          :suffix="`<span class='suffix'>${salesOffers.length}</span>`"
+          v-if="salesOffers.length"
+        >
+          <MiniOffers :miniOffers="salesOffers" />
         </Tab>
-        <Tab name="Есть услуги О/Х!" v-if="storageOffers.length">
-          <div class="OfferTableDropdown-offers">
-            <MiniOffers :miniOffers="storageOffers" />
-          </div>
+        <Tab
+          id="fifth-tab"
+          name="Есть услуги О/Х!"
+          v-if="storageOffers.length"
+          :suffix="`<span class='suffix'>${storageOffers.length}</span>`"
+        >
+          <MiniOffers :miniOffers="storageOffers" />
         </Tab>
       </Tabs>
     </td>

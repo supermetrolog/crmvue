@@ -4343,9 +4343,6 @@
     .offer-table-view {
         table {
             width: 100%;
-            .odd_table_row {
-                background-color: red;
-            }
             .OfferTableRow {
                 .actions {
                     .actions-more {
@@ -4514,9 +4511,12 @@
                     border: none;
                     cursor: pointer;
                     outline: inherit;
-                    &:hover {
-                        color: $color_light_blue;
-                        transition: color 0.2s ease;
+                    a {
+                        color: black;
+                        &:hover {
+                            color: $color_light_blue;
+                            transition: color 0.2s ease;
+                        }
                     }
                 }
             }
@@ -4543,6 +4543,27 @@
                                 text-decoration: underline;
                                 cursor: pointer;
                                 color: $color_danger;
+                            }
+                            .suffix {
+                                position: relative;
+                                right: -8.7rem;
+                                top: -2.6rem;
+                                background-color: #c03;
+                                color: #fff;
+                                margin-left: 0.35em;
+                                align-items: center;
+                                border-radius: 1.25rem;
+                                display: flex;
+                                font-size: .75rem;
+                                flex-shrink: 0;
+                                height: 1.25rem;
+                                justify-content: center;
+                                line-height: 1.25rem;
+                                width: 1.25rem;
+                                padding: 0 0.1em;
+                            }
+                            .suffix-none {
+                                opacity: 0;
                             }
                         }
                         .link-active {
@@ -4586,7 +4607,7 @@
                 }
             }
             .OfferTableDropdown-offers {
-                margin: 10px;
+                padding: 10px;
             }
         }
     }
