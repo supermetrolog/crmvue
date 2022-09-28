@@ -24,10 +24,6 @@
           :offer="offer"
           :loader="loader"
           :odd="!(idx % 2)"
-          :class="{
-            odd_table_row: !(idx % 2),
-            even_table_row: !!(idx % 2),
-          }"
         />
       </template>
     </Table>

@@ -17,7 +17,7 @@
       <Tabs
         v-model="startTab"
         :options="{ useUrlFragment: false, defaultTabHash: 'second-tab' }"
-        cache-lifetime="0"
+        :cache-lifetime="0"
         wrapper-class="OfferTableDropdown-header"
         nav-class="OfferTableDropdown-menu"
         nav-item-class="OfferTableDropdown-menu-item"
@@ -37,23 +37,24 @@
           id="second-tab"
           name="ТП АРЕНДА АКТИВ"
           :suffix="`<span class='${
-            activeOffers.length ? 'suffix' : 'suffix suffix-none'
-          }'>${activeOffers.length}</span>`"
+            activeRentOffers.length ? 'suffix' : 'suffix suffix-none'
+          }'>${activeRentOffers.length}</span>`"
         >
-          <MiniOffers :miniOffers="activeOffers" />
+          <MiniOffers :miniOffers="activeRentOffers" />
         </Tab>
         <Tab
           id="third-tab"
           name="ТП АРЕНДА АРХИВ"
           :suffix="`<span class='${
-            archiveOffers.length ? 'suffix' : 'suffix suffix-none'
-          }'>${archiveOffers.length}</span>`"
+            archiveRentOffers.length ? 'suffix' : 'suffix suffix-none'
+          }'>${archiveRentOffers.length}</span>`"
+          v-if="archiveRentOffers.length"
         >
-          <MiniOffers :miniOffers="archiveOffers" />
+          <MiniOffers :miniOffers="archiveRentOffers" />
         </Tab>
         <Tab
           id="fourth-tab"
-          name="Объект продается!"
+          name="<span class='sales-link'>Объект продается!</span>"
           :suffix="`<span class='suffix'>${salesOffers.length}</span>`"
           v-if="salesOffers.length"
         >
@@ -61,7 +62,7 @@
         </Tab>
         <Tab
           id="fifth-tab"
-          name="Есть услуги О/Х!"
+          name="<span class='storage-link'>Есть услуги О/Х!</span>"
           v-if="storageOffers.length"
           :suffix="`<span class='suffix'>${storageOffers.length}</span>`"
         >
@@ -106,9 +107,9 @@ export default {
       let result;
       switch (this.picked) {
         case "active":
-          return this.activeOffers;
+          return this.activeRentOffers;
         case "archive":
-          return this.archiveOffers;
+          return this.archiveRentOffers;
         case "sales":
           return this.salesOffers;
         case "storage":
@@ -122,15 +123,19 @@ export default {
       );
     },
     salesOffers() {
-      return this.miniOffers.filter((offer) => offer.deal_type === 2);
+      return this.miniOffers
+        .filter((offer) => offer.deal_type === 2)
+        .sort((a, b) => a.status - b.status);
     },
     storageOffers() {
-      return this.miniOffers.filter((offer) => offer.deal_type === 3);
+      return this.miniOffers
+        .filter((offer) => offer.deal_type === 3)
+        .sort((a, b) => a.status - b.status);
     },
-    activeOffers() {
+    activeRentOffers() {
       return this.rentOffers.filter((offer) => offer.status === 1);
     },
-    archiveOffers() {
+    archiveRentOffers() {
       return this.rentOffers.filter((offer) => offer.status === 2);
     },
     areaBuilding() {

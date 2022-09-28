@@ -1,5 +1,5 @@
 <template>
-  <Tr>
+  <Tr :class="{ 'MiniOffersItem-archive': offer.status === 2 }">
     <Td>#</Td>
     <Td>{{ offer.visual_id }}</Td>
     <Td>{{ offer.calc_floors }}</Td>
@@ -26,20 +26,16 @@
           <i
             style="color: blue"
             class="fas fa-rocket"
-            :class="{
-              selected: true,
-            }"
-            @click="clickFavoriteOffer(offer)"
+            title="Циан"
+            v-if="offer.ad_cian"
           ></i>
         </div>
         <div class="MiniOffersItem-actions-item">
           <i
             style="color: green"
             class="fas fa-rocket"
-            :class="{
-              selected: true,
-            }"
-            @click="clickFavoriteOffer(offer)"
+            title="Яндекс"
+            v-if="offer.ad_yandex"
           ></i>
         </div></div
     ></Td>

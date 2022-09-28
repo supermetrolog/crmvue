@@ -196,7 +196,7 @@ export default {
       default: true,
     },
     odd: {
-      type: Number,
+      type: Boolean,
     },
   },
   computed: {

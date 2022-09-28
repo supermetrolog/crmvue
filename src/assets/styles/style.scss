@@ -4528,10 +4528,7 @@
                     flex-direction: row;
                     list-style-type: none;
                     .OfferTableDropdown-menu-item {
-                        display: flex;
-                        flex-direction: column;
-                        justify-content: center;
-                        align-items: flex-start;
+                        width: 167px;
                         border-left: solid 2px black;
                         white-space: nowrap;
                         padding: 1%;
@@ -4540,9 +4537,13 @@
                             text-align: start;
                             text-decoration: none;
                             &:hover {
-                                text-decoration: underline;
                                 cursor: pointer;
-                                color: $color_danger;
+                            }
+                            .sales-link {
+                                color: $color_danger
+                            }
+                            .storage-link {
+                                color: $color_success;
                             }
                             .suffix {
                                 position: relative;
@@ -4573,6 +4574,12 @@
                                 cursor: default;
                                 color: white;
                             }
+                            .sales-link {
+                                color: white
+                            }
+                            .storage-link {
+                                color: white;
+                            }
                         }
                         .link-disabled:hover {
                             text-decoration: none;
@@ -4581,18 +4588,6 @@
                         }
                         &:nth-child(1) {
                             margin-left: 100px;
-                        }
-                        &:nth-child(4) {
-                            a {
-                                color: $color_danger;
-                            }
-                          
-                        }
-                        &:nth-child(5) {
-                            a {
-                                color: $color_success;
-                            }
-                          
                         }
                     }
                     .item-active {
@@ -4607,16 +4602,20 @@
                 }
             }
             .OfferTableDropdown-offers {
-                padding: 10px;
+                padding: 10px 0;
             }
         }
     }
     
     // ************** MINI-OFFERS-ITEM *************
+    .MiniOffersItem-archive {
+        color: darken($color: $color_disabled_actions, $amount: 20);
+    }
     .MiniOffersItem-actions {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        min-width: 4.5rem;
         .MiniOffersItem-actions-item {
             height: 100%;
             width: 100%;
