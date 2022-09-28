@@ -4528,10 +4528,11 @@
                     flex-direction: row;
                     list-style-type: none;
                     .OfferTableDropdown-menu-item {
-                        width: 167px;
+                        min-width: 167px;
                         border-left: solid 2px black;
                         white-space: nowrap;
                         padding: 1%;
+                        position: relative;
                         .OfferTableDropdown-menu-item-link {
                             color: black;
                             text-align: start;
@@ -4546,9 +4547,9 @@
                                 color: $color_success;
                             }
                             .suffix {
-                                position: relative;
-                                right: -8.7rem;
-                                top: -2.6rem;
+                                position: absolute;
+                                right: -7px;
+                                top: -7px;
                                 background-color: #c03;
                                 color: #fff;
                                 margin-left: 0.35em;

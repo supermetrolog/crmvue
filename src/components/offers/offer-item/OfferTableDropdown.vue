@@ -4,18 +4,13 @@
       <Loader v-if="loader" class="small" />
       <div class="OfferTableDropdown-header-actions">
         <button title="Строение">
-          <router-link :to="'/companies/' + offer.company.id" target="_blank">
-            <i class="fas fa-warehouse"></i>
-          </router-link>
+          <i class="fas fa-warehouse"></i>
         </button>
         <button title="Компания">
-          <router-link :to="'/companies/' + offer.company.id" target="_blank">
-            <i class="fas fa-industry"></i>
-          </router-link>
+          <i class="fas fa-industry"></i>
         </button>
       </div>
       <Tabs
-        v-model="startTab"
         :options="{ useUrlFragment: false, defaultTabHash: 'second-tab' }"
         :cache-lifetime="0"
         wrapper-class="OfferTableDropdown-header"
@@ -45,9 +40,7 @@
         <Tab
           id="third-tab"
           name="ТП АРЕНДА АРХИВ"
-          :suffix="`<span class='${
-            archiveRentOffers.length ? 'suffix' : 'suffix suffix-none'
-          }'>${archiveRentOffers.length}</span>`"
+          :suffix="`<span class='suffix suffix-none'>1</span>`"
           v-if="archiveRentOffers.length"
         >
           <MiniOffers :miniOffers="archiveRentOffers" />
@@ -55,18 +48,22 @@
         <Tab
           id="fourth-tab"
           name="<span class='sales-link'>Объект продается!</span>"
-          :suffix="`<span class='suffix'>${salesOffers.length}</span>`"
-          v-if="salesOffers.length"
+          :suffix="`<span class='${
+            salesOffers.countOfActive ? 'suffix' : 'suffix suffix-none'
+          }'>${salesOffers.countOfActive}</span>`"
+          v-if="salesOffers.array.length"
         >
-          <MiniOffers :miniOffers="salesOffers" />
+          <MiniOffers :miniOffers="salesOffers.array" />
         </Tab>
         <Tab
           id="fifth-tab"
           name="<span class='storage-link'>Есть услуги О/Х!</span>"
-          v-if="storageOffers.length"
-          :suffix="`<span class='suffix'>${storageOffers.length}</span>`"
+          :suffix="`<span class='${
+            storageOffers.countOfActive ? 'suffix' : 'suffix suffix-none'
+          }'>${storageOffers.countOfActive}</span>`"
+          v-if="storageOffers.array.length"
         >
-          <MiniOffers :miniOffers="storageOffers" />
+          <MiniOffers :miniOffers="storageOffers.array" />
         </Tab>
       </Tabs>
     </td>
@@ -82,11 +79,7 @@ export default {
     MiniOffers,
   },
   data() {
-    return {
-      selectedMiniOffers: "active",
-      picked: "active",
-      startTab: "",
-    };
+    return {};
   },
   props: {
     offer: {
@@ -103,40 +96,30 @@ export default {
     },
   },
   computed: {
-    selectedOffers() {
-      let result;
-      switch (this.picked) {
-        case "active":
-          return this.activeRentOffers;
-        case "archive":
-          return this.archiveRentOffers;
-        case "sales":
-          return this.salesOffers;
-        case "storage":
-          return this.storageOffers;
-      }
-      return result;
-    },
     rentOffers() {
       return this.miniOffers.filter(
         (offer) => offer.deal_type === 1 || offer.deal_type === 4
       );
-    },
-    salesOffers() {
-      return this.miniOffers
-        .filter((offer) => offer.deal_type === 2)
-        .sort((a, b) => a.status - b.status);
-    },
-    storageOffers() {
-      return this.miniOffers
-        .filter((offer) => offer.deal_type === 3)
-        .sort((a, b) => a.status - b.status);
     },
     activeRentOffers() {
       return this.rentOffers.filter((offer) => offer.status === 1);
     },
     archiveRentOffers() {
       return this.rentOffers.filter((offer) => offer.status === 2);
+    },
+    salesOffers() {
+      let sales = this.miniOffers.filter((offer) => offer.deal_type === 2);
+      let activeSales = sales.filter((offer) => offer.status === 1);
+      let archiveSales = sales.filter((offer) => offer.status === 2);
+      sales = [...activeSales, ...archiveSales];
+      return { array: sales, countOfActive: activeSales.length };
+    },
+    storageOffers() {
+      let storage = this.miniOffers.filter((offer) => offer.deal_type === 3);
+      let activeStorage = storage.filter((offer) => offer.status === 1);
+      let archiveStorage = storage.filter((offer) => offer.status === 2);
+      storage = [...activeStorage, ...archiveStorage];
+      return { array: storage, countOfActive: activeStorage.length };
     },
     areaBuilding() {
       return this.offer.area_building.toLocaleString("ru-RU");

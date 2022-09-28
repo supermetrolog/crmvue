@@ -10,11 +10,8 @@
     <Td>{{ tempHandler }}</Td>
     <Td><div v-html="generalPrice" /></Td>
     <Td
-      ><div class="MiniOffersItem-actions">
-        <div
-          class="MiniOffersItem-actions-item"
-          @click="clickFavoriteOffer(offer)"
-        >
+      ><div class="MiniOffersItem-actions" v-if="offer.status !== 2">
+        <div class="MiniOffersItem-actions-item">
           <i
             class="fas fa-star"
             :class="{
