@@ -1,5 +1,12 @@
 <template>
-  <Tr class="OfferTableRow" :class="{ passive: offer.status != 1 }">
+  <Tr
+    class="OfferTableRow"
+    :class="{
+      passive: offer.status != 1,
+      'OfferTableRow-odd': odd,
+      'OfferTableRow-even': !odd,
+    }"
+  >
     <Td class="id" :class="{ passive: offer.status != 1 }">
       <p>
         {{ offer.visual_id }}
@@ -15,13 +22,19 @@
           @click="clickFavoriteOffer(offer)"
         ></i>
         <i class="fas fa-file-pdf" @click="clickViewPdf(offer)"></i>
-        <button @click="clickOpenMore">Подробнее</button>
+        <div class="actions-more" @click="clickOpenMore">
+          <!-- <button class="actions-more-btn" @click="clickOpenMore">
+            Подробнее
+          </button> -->
+          <i class="fa fa-chevron-down" v-if="!dropdownIsOpen"></i>
+          <i class="fa fa-chevron-up" v-if="dropdownIsOpen"></i>
+        </div>
       </div>
     </Td>
     <Td class="photo">
       <a :href="getOfferUrl(offer)" target="_blank">
         <div class="image-container">
-          <img :src="imageSrc(offer)" alt="image" />
+          <img :src="offer.thumb" alt="image" />
           <span class="deal_type" :class="{ passive: offer.status != 1 }">
             {{ offer.deal_type_name }}
           </span>
@@ -134,8 +147,12 @@
       <span class="badge badge-warning autosize" v-else> Пассив </span>
     </Td>
   </Tr>
-  <DropDown
-    ><OfferTableDropdown :offer="offer" v-if="dropdownIsOpen"
+  <DropDown>
+    <OfferTableDropdown
+      :offer="offer"
+      :miniOffers="miniOffers"
+      :loader="miniOffersLoader"
+      v-if="dropdownIsOpen"
   /></DropDown>
 </template>
 
@@ -151,6 +168,7 @@ import {
   TaxFormList,
 } from "@/const/Const.js";
 import { mapGetters, mapActions } from "vuex";
+import api from "@/api/api";
 export default {
   name: "OfferTableItem",
   components: { Tr, Td, OfferTableDropdown, DropDown },
@@ -161,6 +179,8 @@ export default {
       districtList: DistrictList.get("param"),
       regionList: RegionList.get("param"),
       taxFormList: TaxFormList,
+      miniOffers: [],
+      miniOffersLoader: false,
     };
   },
   props: {
@@ -175,6 +195,9 @@ export default {
       type: Boolean,
       default: true,
     },
+    odd: {
+      type: Boolean,
+    },
   },
   computed: {
     ...mapGetters(["FAVORITES_OFFERS", "THIS_USER"]),
@@ -185,40 +208,6 @@ export default {
       "DELETE_FAVORITES_OFFERS",
       "SEARCH_FAVORITES_OFFERS",
     ]),
-    imageSrc(offer) {
-      const photos = offer.photos;
-      const object_photos = offer.object.photo;
-      let resultImage = null;
-      if (photos && Array.isArray(photos)) {
-        photos.forEach((img) => {
-          if (resultImage == null && typeof img == "string" && img.length > 2) {
-            resultImage = "https://pennylane.pro" + img;
-          }
-        });
-      }
-
-      if (resultImage) {
-        return resultImage;
-      }
-      if (
-        object_photos &&
-        Array.isArray(object_photos) &&
-        typeof object_photos[0] == "string" &&
-        object_photos[0].length > 2
-      ) {
-        return "https://pennylane.pro" + object_photos[0];
-      }
-      return this.$apiUrlHelper.fileNotFoundUrl();
-    },
-    getRegion(region) {
-      return this.regionList[region].label;
-    },
-    getDirection(direction) {
-      return this.directionList[direction][2];
-    },
-    getDistrict(district) {
-      return this.districtList[district][1];
-    },
     getOfferUrl(offer) {
       const baseUrl = "https://pennylane.pro/complex/";
       let url = baseUrl + offer.complex_id;
@@ -251,8 +240,21 @@ export default {
       console.error(url);
       window.open(url, "_blank");
     },
-    clickOpenMore() {
-      this.dropdownIsOpen = !this.dropdownIsOpen;
+    async clickOpenMore() {
+      if (this.dropdownIsOpen) {
+        return (this.dropdownIsOpen = false);
+      }
+      this.dropdownIsOpen = true;
+      this.miniOffersLoader = true;
+      let response = await api.offers.search({
+        type_id: [1],
+        status: 3, // Нужно чтобы прилетали и активные и пассивные
+        object_id: this.offer.object_id,
+      });
+      if (response) {
+        this.miniOffers = response.data;
+      }
+      this.miniOffersLoader = false;
     },
   },
 };

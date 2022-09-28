@@ -2,7 +2,9 @@
   <Table v-if="miniOffers.length">
     <template #thead>
       <Tr>
-        <Th><BurgerMenuButton :size="'small'" /></Th>
+        <Th
+          ><div class="burger-wrapper"><BurgerMenuButton :size="'small'" /></div
+        ></Th>
         <Th>ID блока</Th>
         <Th>Этаж</Th>
         <Th>Площадь</Th>
@@ -52,3 +54,12 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.burger-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 10px;
+}
+</style>

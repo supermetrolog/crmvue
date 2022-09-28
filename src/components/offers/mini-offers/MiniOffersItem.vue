@@ -1,5 +1,5 @@
 <template>
-  <Tr>
+  <Tr :class="{ 'MiniOffersItem-archive': offer.status === 2 }">
     <Td>#</Td>
     <Td>{{ offer.visual_id }}</Td>
     <Td>{{ offer.calc_floors }}</Td>
@@ -10,34 +10,29 @@
     <Td>{{ tempHandler }}</Td>
     <Td><div v-html="generalPrice" /></Td>
     <Td
-      ><div class="MiniOffersItem-actions">
+      ><div class="MiniOffersItem-actions" v-if="offer.status !== 2">
         <div class="MiniOffersItem-actions-item">
           <i
             class="fas fa-star"
             :class="{
               selected: true,
             }"
-            @click="clickFavoriteOffer(offer)"
           ></i>
         </div>
         <div class="MiniOffersItem-actions-item">
           <i
             style="color: blue"
             class="fas fa-rocket"
-            :class="{
-              selected: true,
-            }"
-            @click="clickFavoriteOffer(offer)"
+            title="Циан"
+            v-if="offer.ad_cian"
           ></i>
         </div>
         <div class="MiniOffersItem-actions-item">
           <i
             style="color: green"
             class="fas fa-rocket"
-            :class="{
-              selected: true,
-            }"
-            @click="clickFavoriteOffer(offer)"
+            title="Яндекс"
+            v-if="offer.ad_yandex"
           ></i>
         </div></div
     ></Td>
@@ -89,7 +84,11 @@ export default {
       }
     },
     generalPrice() {
-      return `<span>${this.offer.calc_price_general} <small>руб за м<sup>2</sup>/год</small></span>`;
+      if (this.offer.deal_type === 2) {
+        return `<span>${this.offer.calc_price_general} <small>руб</small></span>`;
+      } else {
+        return `<span>${this.offer.calc_price_general} <small>руб за м<sup>2</sup>/год</small></span>`;
+      }
     },
   },
   methods: {},

@@ -1,62 +1,71 @@
 <template>
   <tr class="OfferTableDropdown">
     <td colspan="11" class="OfferTableDropdown-wrapper">
-      <div class="OfferTableDropdown-header">
-        <ul class="OfferTableDropdown-menu">
-          <li class="OfferTableDropdown-menu-item">
-            <span>S - объекта</span
-            ><span
-              >{{ offer.area_building.toLocaleString("ru-RU") }}
-              <small>м<sup>2</sup></small></span
-            >
-          </li>
-          <li
-            class="OfferTableDropdown-menu-item action"
-            :class="{ 'btn-success_alt': selectedMiniOffers == 'active' }"
-            @click="this.selectedMiniOffers = 'active'"
-          >
-            <span>ТП АРЕНДА АКТИВ</span
-            ><span>{{ activeMiniOffers.length }}</span>
-          </li>
-          <li
-            class="OfferTableDropdown-menu-item action"
-            :class="{ 'btn-success_alt': selectedMiniOffers == 'archive' }"
-            @click="this.selectedMiniOffers = 'archive'"
-          >
-            <span>ТП Аренда архив</span
-            ><span>{{ archiveMiniOffers.length }}</span>
-          </li>
-          <li
-            class="OfferTableDropdown-menu-item text-danger action"
-            @click="onMakeDeal(offer.id, offer.deal_type)"
-          >
-            <span>{{ offerDealTypeHandler(offer.deal_type) }}</span>
-          </li>
-          <li
-            class="OfferTableDropdown-menu-item text-success"
-            v-if="offer.guard"
-          >
-            <span>Есть услуги О/Х</span>
-          </li>
-        </ul>
-        <div class="OfferTableDropdown-header-actions">
-          <button title="Строение" @click="clickFavoriteOffer(offer)">
-            <i class="fas fa-warehouse"></i>
-          </button>
-          <button title="Компания" @click="clickFavoriteOffer(offer)">
-            <i class="fas fa-industry"></i>
-          </button>
-        </div>
+      <Loader v-if="loader" class="small" />
+      <div class="OfferTableDropdown-header-actions">
+        <button title="Строение">
+          <i class="fas fa-warehouse"></i>
+        </button>
+        <button title="Компания">
+          <i class="fas fa-industry"></i>
+        </button>
       </div>
-      <div class="OfferTableDropdown-offers">
-        <MiniOffers
-          :miniOffers="
-            selectedMiniOffers == 'active'
-              ? activeMiniOffers
-              : archiveMiniOffers
-          "
-        />
-      </div>
+      <Tabs
+        :options="{ useUrlFragment: false, defaultTabHash: 'second-tab' }"
+        :cache-lifetime="0"
+        wrapper-class="OfferTableDropdown-header"
+        nav-class="OfferTableDropdown-menu"
+        nav-item-class="OfferTableDropdown-menu-item"
+        nav-item-active-class="item-active"
+        nav-item-link-class="OfferTableDropdown-menu-item-link"
+        nav-item-link-active-class="link-active"
+        nav-item-link-disabled-class="link-disabled"
+        panels-wrapper-class="OfferTableDropdown-offers"
+      >
+        <Tab
+          id="first-tab"
+          :name="`S - объекта<br/>${areaBuilding} <small>м<sup>2</sup></small></span
+            >`"
+          :is-disabled="true"
+        ></Tab>
+        <Tab
+          id="second-tab"
+          name="ТП АРЕНДА АКТИВ"
+          :suffix="`<span class='${
+            activeRentOffers.length ? 'suffix' : 'suffix suffix-none'
+          }'>${activeRentOffers.length}</span>`"
+        >
+          <MiniOffers :miniOffers="activeRentOffers" />
+        </Tab>
+        <Tab
+          id="third-tab"
+          name="ТП АРЕНДА АРХИВ"
+          :suffix="`<span class='suffix suffix-none'>1</span>`"
+          v-if="archiveRentOffers.length"
+        >
+          <MiniOffers :miniOffers="archiveRentOffers" />
+        </Tab>
+        <Tab
+          id="fourth-tab"
+          name="<span class='sales-link'>Объект продается!</span>"
+          :suffix="`<span class='${
+            salesOffers.countOfActive ? 'suffix' : 'suffix suffix-none'
+          }'>${salesOffers.countOfActive}</span>`"
+          v-if="salesOffers.array.length"
+        >
+          <MiniOffers :miniOffers="salesOffers.array" />
+        </Tab>
+        <Tab
+          id="fifth-tab"
+          name="<span class='storage-link'>Есть услуги О/Х!</span>"
+          :suffix="`<span class='${
+            storageOffers.countOfActive ? 'suffix' : 'suffix suffix-none'
+          }'>${storageOffers.countOfActive}</span>`"
+          v-if="storageOffers.array.length"
+        >
+          <MiniOffers :miniOffers="storageOffers.array" />
+        </Tab>
+      </Tabs>
     </td>
   </tr>
 </template>
@@ -70,57 +79,52 @@ export default {
     MiniOffers,
   },
   data() {
-    return {
-      selectedMiniOffers: "active",
-    };
+    return {};
   },
   props: {
     offer: {
       type: Object,
       required: true,
     },
+    miniOffers: {
+      type: Array,
+      default: () => [],
+    },
+    loader: {
+      type: Boolean,
+      default: true,
+    },
   },
   computed: {
-    activeMiniOffers() {
-      return this.offer.miniOffersMix.filter((offer) => offer.status);
+    rentOffers() {
+      return this.miniOffers.filter(
+        (offer) => offer.deal_type === 1 || offer.deal_type === 4
+      );
     },
-    archiveMiniOffers() {
-      return this.offer.miniOffersMix.filter((offer) => !offer.status);
+    activeRentOffers() {
+      return this.rentOffers.filter((offer) => offer.status === 1);
     },
-  },
-  methods: {
-    onMakeDeal(offerId, dealType) {
-      switch (dealType) {
-        case 1:
-          console.log(`Сдаем объект ${offerId}`);
-          break;
-        case 2:
-          console.log(`Продаем объект ${offerId}`);
-          break;
-        case 3:
-          console.log(`Храним объект ${offerId}`);
-          break;
-        case 4:
-          console.log(`Субарендим объект ${offerId}`);
-          break;
-      }
+    archiveRentOffers() {
+      return this.rentOffers.filter((offer) => offer.status === 2);
     },
-    offerDealTypeHandler(type) {
-      switch (type) {
-        case 1:
-          return "Объект сдается";
-        case 2:
-          return "Объект продается";
-        case 3:
-          return "Ответственное хранение";
-        case 4:
-          return "Субаренда";
-      }
+    salesOffers() {
+      let sales = this.miniOffers.filter((offer) => offer.deal_type === 2);
+      let activeSales = sales.filter((offer) => offer.status === 1);
+      let archiveSales = sales.filter((offer) => offer.status === 2);
+      sales = [...activeSales, ...archiveSales];
+      return { array: sales, countOfActive: activeSales.length };
+    },
+    storageOffers() {
+      let storage = this.miniOffers.filter((offer) => offer.deal_type === 3);
+      let activeStorage = storage.filter((offer) => offer.status === 1);
+      let archiveStorage = storage.filter((offer) => offer.status === 2);
+      storage = [...activeStorage, ...archiveStorage];
+      return { array: storage, countOfActive: activeStorage.length };
+    },
+    areaBuilding() {
+      return this.offer.area_building.toLocaleString("ru-RU");
     },
   },
-  mounted() {},
+  methods: {},
 };
 </script>
-
-<style lang='scss' scoped>
-</style>
