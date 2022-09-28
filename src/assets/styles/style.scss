@@ -4483,7 +4483,7 @@
         margin: 0;
         padding: 0;
         .OfferTableDropdown-wrapper {
-            padding: 10px 0 !important;
+            padding: 15px 0 !important;
             gap: 10px;
             background-color: $color_light;
             table {
@@ -4531,9 +4531,14 @@
                         min-width: 167px;
                         border-left: solid 2px black;
                         white-space: nowrap;
-                        padding: 1%;
                         position: relative;
                         .OfferTableDropdown-menu-item-link {
+                            height: 100%;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: center;
+                            align-items: center;
+                            padding: 10px;
                             color: black;
                             text-align: start;
                             text-decoration: none;
@@ -4548,8 +4553,8 @@
                             }
                             .suffix {
                                 position: absolute;
-                                right: -7px;
-                                top: -7px;
+                                right: 0;
+                                top: -9px;
                                 background-color: #c03;
                                 color: #fff;
                                 margin-left: 0.35em;
@@ -4707,5 +4712,49 @@
             &:hover {
                 color: red;
             }
+        }
+    }
+
+     // ************** MEDIA QUERIES *************
+     @media screen and (max-width: 600px) {
+        .sidebar {
+            height: 100vh;
+            width: 50%;
+            position: absolute;
+            &__navigation {
+                text-align: center;
+                align-content: center;
+                margin-top: 20px;
+            }
+            hr {
+                margin: 0 auto;
+                width: 80%;
+                color: $color_light;
+                opacity: .5;
+            }
+            .avatar-container {
+                width: 100%;
+            }
+            .avatar {
+                border-radius: 50%;
+                height: 65px;
+                width: 65px;
+                background-color: $color_light_grey;
+                overflow: hidden;
+                display: flex;
+                align-items: center;
+                img {
+                    min-width: 100%;
+                    min-height: 100%;
+                }
+            }
+        }
+        .sidebar-active {
+            display: block;
+        }
+        .content {
+            min-height: 100vh;
+            background-color: $color_overflow;
+            padding: 10px
         }
     }

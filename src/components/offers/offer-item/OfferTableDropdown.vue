@@ -2,6 +2,7 @@
   <tr class="OfferTableDropdown">
     <td colspan="11" class="OfferTableDropdown-wrapper">
       <Loader v-if="loader" class="small" />
+
       <div class="OfferTableDropdown-header-actions">
         <button title="Строение">
           <i class="fas fa-warehouse"></i>
@@ -24,8 +25,7 @@
       >
         <Tab
           id="first-tab"
-          :name="`S - объекта<br/>${areaBuilding} <small>м<sup>2</sup></small></span
-            >`"
+          :name="`<span>S - объекта</span><span>${areaBuilding} <small>м<sup>2</sup></small></span>`"
           :is-disabled="true"
         ></Tab>
         <Tab
