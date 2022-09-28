@@ -100,7 +100,7 @@
                   class="d-inline ml-2"
                   @confirm="getFirstRecommendedObjects()"
                 >
-                  <template #btnContent> ПОДБОРКА 1</template>
+                  <template #btnContent>ЛУЧШЕЕ</template>
                 </CustomButton>
                 <CustomButton
                   :options="{
@@ -112,7 +112,7 @@
                   class="d-inline ml-2"
                   @confirm="getTwoRecommendedObjects()"
                 >
-                  <template #btnContent> ПОДБОРКА 2</template>
+                  <template #btnContent>СРЕДНЕЕ</template>
                 </CustomButton>
                 <CustomButton
                   :options="{
@@ -124,32 +124,7 @@
                   class="d-inline ml-2"
                   @confirm="getThreeRecommendedObjects()"
                 >
-                  <template #btnContent> ПОДБОРКА 3</template>
-                </CustomButton>
-                <CustomButton
-                  :options="{
-                    btnActive: recommendedFilter == 4,
-                    btnClass: 'warning',
-                    defaultBtn: true,
-                    disabled: false,
-                  }"
-                  class="d-inline ml-2"
-                  @confirm="getFourRecommendedObjects()"
-                >
-                  <template #btnContent> ПОДБОРКА 4</template>
-                </CustomButton>
-                <CustomButton
-                  v-if="currentRequest.dealType != 1"
-                  :options="{
-                    btnActive: recommendedFilter == 5,
-                    btnClass: 'primary',
-                    defaultBtn: true,
-                    disabled: false,
-                  }"
-                  class="d-inline ml-2"
-                  @confirm="getFiveRecommendedObjects()"
-                >
-                  <template #btnContent> ПОДБОРКА 5</template>
+                  <template #btnContent>ПАССИВ</template>
                 </CustomButton>
               </div>
 
@@ -239,7 +214,6 @@ export default {
     status: null,
     // new fields
     recommended_sort: null,
-    approximateDistanceFromMKAD: null,
     pricePerFloor: null,
     type_id: null,
     firstFloorOnly: null,
@@ -261,6 +235,13 @@ export default {
       this.$nextTick(() => {
         this.controllPanelHeight = this.$refs.contoll_panel.$el.clientHeight;
       });
+    },
+    getPercent(value, percent) {
+      if (!Number.isInteger(value) || !value) {
+        return null;
+      }
+
+      return Math.floor((value * percent) / 100);
     },
     getSortRecommendedObjects() {
       this.changeRecommendedFilter(6);
@@ -304,13 +285,15 @@ export default {
       const request = this.currentRequest;
       const query = {
         rangeMinElectricity: request.electricity,
-        approximateDistanceFromMKAD: request.distanceFromMKAD,
+        rangeMaxDistanceFromMKAD: this.getPercent(
+          request.distanceFromMKAD,
+          130
+        ),
         deal_type: request.dealType,
         rangeMaxArea: request.maxArea,
         rangeMinArea: request.minArea,
-        rangeMaxPricePerFloor: request.pricePerFloor,
+        rangeMaxPricePerFloor: this.getPercent(request.pricePerFloor, 130),
         rangeMinCeilingHeight: request.minCeilingHeight,
-        rangeMaxCeilingHeight: request.maxCeilingHeight,
         heated: request.heated == 0 ? 2 : request.heated,
         has_cranes: request.haveCranes,
         floor_types: request.antiDustOnly ? [2] : [],
@@ -321,8 +304,7 @@ export default {
         direction: request.directions.map((item) => item.direction),
         district_moscow: request.districts.map((item) => item.district),
         firstFloorOnly: request.firstFloorOnly ? 1 : null,
-        recommended_sort: null,
-        sort_original_id: this.$route.query.new_original_id,
+        sort_original_id: this.$route.query.new_original_id ?? null,
         sort: this.$route.query.new_original_id ? "-original_ids" : null,
       };
       this.queryParams = {
@@ -338,25 +320,22 @@ export default {
       }
       const request = this.currentRequest;
       const query = {
-        rangeMinElectricity: request.electricity,
-        approximateDistanceFromMKAD: request.distanceFromMKAD,
+        rangeMaxDistanceFromMKAD: this.getPercent(
+          request.distanceFromMKAD,
+          130
+        ),
         deal_type: request.dealType,
-        rangeMaxArea: request.maxArea,
-        rangeMinArea: request.minArea,
-        rangeMaxPricePerFloor: request.pricePerFloor,
-        rangeMinCeilingHeight: request.minCeilingHeight,
-        rangeMaxCeilingHeight: request.maxCeilingHeight,
-        heated: request.heated == 0 ? 2 : request.heated,
+        rangeMaxArea: this.getPercent(request.maxArea, 120),
+        rangeMinArea: this.getPercent(request.minArea, 80),
+        rangeMinCeilingHeight:
+          request.minCeilingHeight > 3
+            ? request.minCeilingHeight - 2
+            : request.minCeilingHeight,
         has_cranes: request.haveCranes,
         floor_types: request.antiDustOnly ? [2] : [],
-        region: request.regions.map((item) => item.region),
-        status: 2,
+        status: 1,
         type_id: [1, 2],
-        gates: request.gateTypes.map((item) => item.gate_type),
-        direction: request.directions.map((item) => item.direction),
-        district_moscow: request.districts.map((item) => item.district),
         firstFloorOnly: request.firstFloorOnly ? 1 : null,
-        recommended_sort: null,
       };
       this.queryParams = {
         ...this.$options.defaultQueryParams,
@@ -371,91 +350,16 @@ export default {
       }
       const request = this.currentRequest;
       const query = {
-        rangeMinElectricity: null,
-        approximateDistanceFromMKAD: request.distanceFromMKAD,
-        deal_type: request.dealType,
+        rangeMaxDistanceFromMKAD: this.getPercent(
+          request.distanceFromMKAD,
+          130
+        ),
         rangeMaxArea: request.maxArea,
         rangeMinArea: request.minArea,
-        rangeMaxPricePerFloor: null,
-        rangeMinCeilingHeight: request.minCeilingHeight,
-        rangeMaxCeilingHeight: request.maxCeilingHeight,
-        heated: request.heated == 0 ? 2 : request.heated,
-        has_cranes: request.haveCranes,
-        floor_types: request.antiDustOnly ? [2] : [],
         region: request.regions.map((item) => item.region),
-        status: 1,
-        type_id: [1, 2],
-        gates: [],
+        type_id: [3],
         direction: request.directions.map((item) => item.direction),
         district_moscow: request.districts.map((item) => item.district),
-        firstFloorOnly: request.firstFloorOnly ? 1 : null,
-        recommended_sort: null,
-      };
-      this.queryParams = {
-        ...this.$options.defaultQueryParams,
-        ...query,
-      };
-    },
-    getFourRecommendedObjects() {
-      this.changeRecommendedFilter(4);
-      if (!this.recommendedFilter) {
-        this.queryParams = this.$options.defaultQueryParams;
-        return;
-      }
-      const request = this.currentRequest;
-      const query = {
-        rangeMinElectricity: null,
-        approximateDistanceFromMKAD: request.distanceFromMKAD,
-        deal_type: request.dealType,
-        rangeMaxArea: request.maxArea,
-        rangeMinArea: request.minArea,
-        rangeMaxPricePerFloor: null,
-        rangeMinCeilingHeight: request.minCeilingHeight,
-        rangeMaxCeilingHeight: request.maxCeilingHeight,
-        heated: request.heated == 0 ? 2 : request.heated,
-        has_cranes: request.haveCranes,
-        floor_types: request.antiDustOnly ? [2] : [],
-        region: request.regions.map((item) => item.region),
-        status: 2,
-        type_id: [1, 2],
-        gates: [],
-        direction: request.directions.map((item) => item.direction),
-        district_moscow: request.districts.map((item) => item.district),
-        firstFloorOnly: request.firstFloorOnly ? 1 : null,
-        recommended_sort: null,
-      };
-      this.queryParams = {
-        ...this.$options.defaultQueryParams,
-        ...query,
-      };
-    },
-    getFiveRecommendedObjects() {
-      this.changeRecommendedFilter(5);
-      if (!this.recommendedFilter) {
-        this.queryParams = this.$options.defaultQueryParams;
-        return;
-      }
-      const request = this.currentRequest;
-      const query = {
-        rangeMinElectricity: request.electricity,
-        approximateDistanceFromMKAD: request.distanceFromMKAD,
-        deal_type: 1,
-        rangeMaxArea: request.maxArea,
-        rangeMinArea: request.minArea,
-        rangeMaxPricePerFloor: request.pricePerFloor,
-        rangeMinCeilingHeight: request.minCeilingHeight,
-        rangeMaxCeilingHeight: request.maxCeilingHeight,
-        heated: request.heated == 0 ? 2 : request.heated,
-        has_cranes: request.haveCranes,
-        floor_types: request.antiDustOnly ? [2] : [],
-        region: request.regions.map((item) => item.region),
-        status: 1,
-        type_id: [1, 2],
-        gates: request.gateTypes.map((item) => item.gate_type),
-        direction: request.directions.map((item) => item.direction),
-        district_moscow: request.districts.map((item) => item.district),
-        firstFloorOnly: request.firstFloorOnly ? 1 : null,
-        recommended_sort: null,
       };
       this.queryParams = {
         ...this.$options.defaultQueryParams,
@@ -469,6 +373,7 @@ export default {
         this.recommendedFilter = null;
       }
     },
+    // Переопределено из миксина чтобы в первую очередь загрузить подборку
     getData() {
       this.getFirstRecommendedObjects();
     },
