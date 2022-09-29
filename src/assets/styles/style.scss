@@ -4714,47 +4714,68 @@
             }
         }
     }
+    // ************** MOBILE COMPONENTS *************
+    // ************** MOBILE COMPONENTS *************
+    // ************** MOBILE COMPONENTS *************
 
-     // ************** MEDIA QUERIES *************
-     @media screen and (max-width: 600px) {
-        .sidebar {
-            height: 100vh;
-            width: 50%;
-            position: absolute;
-            &__navigation {
-                text-align: center;
-                align-content: center;
-                margin-top: 20px;
-            }
-            hr {
-                margin: 0 auto;
-                width: 80%;
-                color: $color_light;
-                opacity: .5;
-            }
-            .avatar-container {
-                width: 100%;
-            }
-            .avatar {
-                border-radius: 50%;
-                height: 65px;
-                width: 65px;
-                background-color: $color_light_grey;
-                overflow: hidden;
-                display: flex;
-                align-items: center;
-                img {
-                    min-width: 100%;
-                    min-height: 100%;
-                }
-            }
-        }
-        .sidebar-active {
-            display: block;
-        }
+    // ************** MOBILE MAIN LAYOUT *************
+    .MainLayoutMobile {
         .content {
             min-height: 100vh;
             background-color: $color_overflow;
-            padding: 10px
+            padding: 100px 10px;
         }
     }
+
+    // ************** HEADER MOBILE LAYOUT *************
+    .HeaderMobile {
+        .nav-list {
+            padding: 0;
+        }
+        &-nav {
+            height: auto;
+            top: 0;
+            left: 0;
+            width: 100vw;
+        }
+        .btn-large {
+            width: auto;
+          }
+          .btn {
+            padding: 1em;
+            font-size: 0.5rem;
+          }
+    }
+
+    // ************** SIDEBAR MOBILE *************
+    .SidebarMobile {
+        height: 100%;
+        width: 100vw;
+        z-index: 10;
+        margin-top: 80px;
+        .SidebarMobile-wrapper {
+            display: flex;
+            flex-direction: column;
+            .SidebarMobile-user-image {
+                width: 60px;
+            }
+            .SidebarMobile-menu {
+                display: flex;
+            }
+        }
+        .HeaderNavMobile {
+            padding: 0;
+            
+        }
+    }
+
+    // ************** MOBILE HEADER *************
+    .HeaderMobile {
+        
+        .HeaderMobile-nav {
+            height: 80px;
+            display: flex;
+        }
+    }
+    
+    

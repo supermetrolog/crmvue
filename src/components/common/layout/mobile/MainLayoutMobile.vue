@@ -1,7 +1,10 @@
 <template>
-  <div class="v-main-layout">
-    <vSideBar />
-    <vHeader />
+  <div class="v-main-layout MainLayoutMobile">
+    <HeaderMobile
+      @menuButtonClicked="menuButtonClicked"
+      :sidebarIsOpen="sidebarIsOpen"
+    />
+    <SidebarMobile v-if="sidebarIsOpen" @onCloseSidebar="menuButtonClicked" />
     <!-- <CallerManager /> -->
     <section class="content">
       <router-view v-slot="{ Component }">
@@ -18,21 +21,31 @@
 </template>
 
 <script>
-import vHeader from "./header/v-header";
-import vSideBar from "./sidebar/v-sidebar";
+import HeaderMobile from "./header/HeaderMobile.vue";
+import SidebarMobile from "./sidebar/SidebarMobile.vue";
 
 // import CallerManager from "@/components/common/callermanager/CallerManager";
 export default {
-  name: "v-main-layout",
+  name: "MainLayoutMobile",
   components: {
-    vHeader,
-    vSideBar,
-    // CallerManager
+    SidebarMobile,
+    HeaderMobile,
+    // CallerManager,
   },
   props: {
     message: {
       type: String,
       default: "FUCK THE POLICE",
+    },
+  },
+  data() {
+    return {
+      sidebarIsOpen: false,
+    };
+  },
+  methods: {
+    menuButtonClicked() {
+      this.sidebarIsOpen = !this.sidebarIsOpen;
     },
   },
 };
