@@ -46,8 +46,6 @@
                 @negative="negative"
                 @favorites="favorites"
                 @changeViewMode="changeViewMode"
-                @openExtraVisible="openExtraVisible"
-                @closeExtraVisible="closeExtraVisible"
                 ref="contoll_panel"
               />
               <ObjectsList
@@ -98,7 +96,7 @@
                     disabled: false,
                   }"
                   class="d-inline ml-2"
-                  @confirm="getFirstRecommendedObjects()"
+                  @confirm="changeRecommendedFilter(1, firstRecommendedQuery)"
                 >
                   <template #btnContent>ЛУЧШЕЕ</template>
                 </CustomButton>
@@ -110,7 +108,7 @@
                     disabled: false,
                   }"
                   class="d-inline ml-2"
-                  @confirm="getTwoRecommendedObjects()"
+                  @confirm="changeRecommendedFilter(2, twoRecommendedQuery)"
                 >
                   <template #btnContent>СРЕДНЕЕ</template>
                 </CustomButton>
@@ -122,7 +120,7 @@
                     disabled: false,
                   }"
                   class="d-inline ml-2"
-                  @confirm="getThreeRecommendedObjects()"
+                  @confirm="changeRecommendedFilter(3, threeRecommendedQuery)"
                 >
                   <template #btnContent>ПАССИВ</template>
                 </CustomButton>
@@ -183,6 +181,7 @@ export default {
       queryParams: null,
     };
   },
+  // Нужно чтобы сбрасывать лишние фильтры
   defaultQueryParams: {
     all: null,
     rangeMinElectricity: null,
@@ -219,6 +218,104 @@ export default {
     pricePerFloor: null,
     type_id: null,
     firstFloorOnly: null,
+    withoutOffersFromQuery: null,
+  },
+  computed: {
+    firstRecommendedQuery() {
+      const request = this.currentRequest;
+      const query = {
+        rangeMinElectricity: request.electricity,
+        rangeMaxDistanceFromMKAD: this.getPercent(
+          request.distanceFromMKAD,
+          130
+        ),
+        deal_type: request.dealType,
+        rangeMaxArea: request.maxArea,
+        rangeMinArea: request.minArea,
+        rangeMaxPricePerFloor: this.getPercent(request.pricePerFloor, 130),
+        rangeMinCeilingHeight: request.minCeilingHeight,
+        heated: request.heated == 0 ? 2 : request.heated,
+        has_cranes: request.haveCranes,
+        floor_types: request.antiDustOnly ? [2] : [],
+        region: request.regions.map((item) => item.region),
+        status: 1,
+        type_id: [1, 2],
+        gates: request.gateTypes.map((item) => item.gate_type),
+        direction: request.directions.map((item) => item.direction),
+        district_moscow: request.districts.map((item) => item.district),
+        region_neardy: request.region_neardy,
+        outside_mkad: request.outside_mkad,
+        firstFloorOnly: request.firstFloorOnly ? 1 : null,
+        sort_original_id: this.$route.query.new_original_id ?? null,
+        sort: this.$route.query.new_original_id ? "-original_ids" : null,
+      };
+      if (request.dealType == 1) {
+        query.rangeMaxArea = this.getPercent(request.maxArea, 130);
+        query.rangeMinArea = this.getPercent(request.minArea, 80);
+      }
+      return query;
+    },
+    twoRecommendedQuery() {
+      const request = this.currentRequest;
+      const query = {
+        rangeMaxDistanceFromMKAD: this.getPercent(
+          request.distanceFromMKAD,
+          130
+        ),
+        deal_type: request.dealType,
+        rangeMaxArea: this.getPercent(request.maxArea, 120),
+        rangeMinArea: this.getPercent(request.minArea, 80),
+        rangeMinCeilingHeight:
+          request.minCeilingHeight > 3
+            ? request.minCeilingHeight - 2
+            : request.minCeilingHeight,
+        has_cranes: request.haveCranes,
+        floor_types: request.antiDustOnly ? [2] : [],
+        status: 1,
+        type_id: [1, 2],
+        firstFloorOnly: request.firstFloorOnly ? 1 : null,
+        withoutOffersFromQuery: JSON.stringify(this.firstRecommendedQuery),
+      };
+
+      if (request.dealType == 1) {
+        query.rangeMaxPricePerFloor = this.getPercent(
+          request.pricePerFloor,
+          150
+        );
+        query.rangeMaxDistanceFromMKAD = this.getPercent(
+          request.distanceFromMKAD,
+          150
+        );
+        delete query.rangeMinCeilingHeight;
+        delete query.rangeMaxArea;
+        delete query.rangeMinArea;
+        delete query.floor_types;
+        delete query.has_cranes;
+      }
+      return query;
+    },
+    threeRecommendedQuery() {
+      const request = this.currentRequest;
+      const query = {
+        rangeMaxDistanceFromMKAD: this.getPercent(
+          request.distanceFromMKAD,
+          130
+        ),
+        rangeMaxArea: request.maxArea,
+        rangeMinArea: request.minArea,
+        type_id: [3],
+        region: request.regions.map((item) => item.region),
+        direction: request.directions.map((item) => item.direction),
+        district_moscow: request.districts.map((item) => item.district),
+        region_neardy: request.region_neardy,
+        outside_mkad: request.outside_mkad,
+      };
+      if (request.dealType == 1) {
+        query.rangeMaxArea = this.getPercent(request.maxArea, 130);
+        query.rangeMinArea = this.getPercent(request.minArea, 70);
+      }
+      return query;
+    },
   },
   methods: {
     test() {
@@ -227,16 +324,6 @@ export default {
     updatedObjects(data, fn) {
       this.barVisible = false;
       this.$emit("updatedObjects", data, true, fn);
-    },
-    openExtraVisible() {
-      this.$nextTick(() => {
-        this.controllPanelHeight = this.$refs.contoll_panel.$el.clientHeight;
-      });
-    },
-    closeExtraVisible() {
-      this.$nextTick(() => {
-        this.controllPanelHeight = this.$refs.contoll_panel.$el.clientHeight;
-      });
     },
     getPercent(value, percent) {
       if (!Number.isInteger(value) || !value) {
@@ -278,134 +365,23 @@ export default {
     //     ...query,
     //   };
     // },
-    getFirstRecommendedObjects() {
-      this.changeRecommendedFilter(1);
-      if (!this.recommendedFilter) {
-        this.queryParams = this.$options.defaultQueryParams;
-        return;
-      }
-      const request = this.currentRequest;
-      const query = {
-        rangeMinElectricity: request.electricity,
-        rangeMaxDistanceFromMKAD: this.getPercent(
-          request.distanceFromMKAD,
-          130
-        ),
-        deal_type: request.dealType,
-        rangeMaxArea: request.maxArea,
-        rangeMinArea: request.minArea,
-        rangeMaxPricePerFloor: this.getPercent(request.pricePerFloor, 130),
-        rangeMinCeilingHeight: request.minCeilingHeight,
-        heated: request.heated == 0 ? 2 : request.heated,
-        has_cranes: request.haveCranes,
-        floor_types: request.antiDustOnly ? [2] : [],
-        region: request.regions.map((item) => item.region),
-        status: 1,
-        type_id: [1, 2],
-        gates: request.gateTypes.map((item) => item.gate_type),
-        direction: request.directions.map((item) => item.direction),
-        district_moscow: request.districts.map((item) => item.district),
-        region_neardy: request.region_neardy,
-        outside_mkad: request.outside_mkad,
-        firstFloorOnly: request.firstFloorOnly ? 1 : null,
-        sort_original_id: this.$route.query.new_original_id ?? null,
-        sort: this.$route.query.new_original_id ? "-original_ids" : null,
-      };
-      if (request.dealType == 1) {
-        query.rangeMaxArea = this.getPercent(request.maxArea, 130);
-        query.rangeMinArea = this.getPercent(request.minArea, 80);
-      }
-      this.queryParams = {
-        ...this.$options.defaultQueryParams,
-        ...query,
-      };
-    },
-    getTwoRecommendedObjects() {
-      this.changeRecommendedFilter(2);
-      if (!this.recommendedFilter) {
-        this.queryParams = this.$options.defaultQueryParams;
-        return;
-      }
-      const request = this.currentRequest;
-      const query = {
-        rangeMaxDistanceFromMKAD: this.getPercent(
-          request.distanceFromMKAD,
-          130
-        ),
-        deal_type: request.dealType,
-        rangeMaxArea: this.getPercent(request.maxArea, 120),
-        rangeMinArea: this.getPercent(request.minArea, 80),
-        rangeMinCeilingHeight:
-          request.minCeilingHeight > 3
-            ? request.minCeilingHeight - 2
-            : request.minCeilingHeight,
-        has_cranes: request.haveCranes,
-        floor_types: request.antiDustOnly ? [2] : [],
-        status: 1,
-        type_id: [1, 2],
-        firstFloorOnly: request.firstFloorOnly ? 1 : null,
-      };
-
-      if (request.dealType == 1) {
-        query.rangeMaxPricePerFloor = this.getPercent(
-          request.pricePerFloor,
-          150
-        );
-        query.rangeMaxDistanceFromMKAD = this.getPercent(
-          request.distanceFromMKAD,
-          150
-        );
-        delete query.rangeMinCeilingHeight;
-        delete query.rangeMaxArea;
-        delete query.rangeMinArea;
-        delete query.floor_types;
-        delete query.has_cranes;
-      }
-      this.queryParams = {
-        ...this.$options.defaultQueryParams,
-        ...query,
-      };
-    },
-    getThreeRecommendedObjects() {
-      this.changeRecommendedFilter(3);
-      if (!this.recommendedFilter) {
-        this.queryParams = this.$options.defaultQueryParams;
-        return;
-      }
-      const request = this.currentRequest;
-      const query = {
-        rangeMaxDistanceFromMKAD: this.getPercent(
-          request.distanceFromMKAD,
-          130
-        ),
-        rangeMaxArea: request.maxArea,
-        rangeMinArea: request.minArea,
-        type_id: [3],
-        region: request.regions.map((item) => item.region),
-        direction: request.directions.map((item) => item.direction),
-        district_moscow: request.districts.map((item) => item.district),
-        region_neardy: request.region_neardy,
-        outside_mkad: request.outside_mkad,
-      };
-      if (request.dealType == 1) {
-        query.rangeMaxArea = this.getPercent(request.maxArea, 130);
-        query.rangeMinArea = this.getPercent(request.minArea, 70);
-      }
-      this.queryParams = {
-        ...this.$options.defaultQueryParams,
-        ...query,
-      };
-    },
-    changeRecommendedFilter(filter) {
+    changeRecommendedFilter(filter, query) {
       if (this.recommendedFilter != filter) {
         this.recommendedFilter = filter;
       } else {
         this.recommendedFilter = null;
+        this.queryParams = this.$options.defaultQueryParams;
+        return;
       }
+
+      this.queryParams = {
+        ...this.$options.defaultQueryParams,
+        ...query,
+      };
     },
     // Переопределено из миксина чтобы в первую очередь загрузить подборку
     getData() {
-      this.getFirstRecommendedObjects();
+      this.changeRecommendedFilter(1, this.firstRecommendedQuery);
     },
     async deleteFavoriteOffer() {
       if (this.searchParams.favorites) {
