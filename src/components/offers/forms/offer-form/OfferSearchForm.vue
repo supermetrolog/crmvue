@@ -109,7 +109,15 @@
             class="col-3 pr-1"
           >
             <Input
+              v-if="typeof form.approximateMaxPricePerFloor == 'undefined'"
               v-model="form.rangeMaxPricePerFloor"
+              maska="##########"
+              placeholder="До:"
+              class="col-12 p-0 pt-1"
+            />
+            <Input
+              v-else
+              v-model="form.approximateMaxPricePerFloor"
               maska="##########"
               placeholder="До:"
               class="col-12 p-0 pt-1"
