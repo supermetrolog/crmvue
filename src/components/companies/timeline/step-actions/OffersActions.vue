@@ -78,7 +78,7 @@
                   class="mr-2"
                 />
 
-                <CustomButton
+                <!-- <CustomButton
                   :options="{
                     btnActive: recommendedFilter == 6,
                     btnClass: 'success',
@@ -89,7 +89,7 @@
                   @confirm="getSortRecommendedObjects()"
                 >
                   <template #btnContent> SORT</template>
-                </CustomButton>
+                </CustomButton> -->
                 <CustomButton
                   :options="{
                     btnActive: recommendedFilter == 1,
@@ -105,7 +105,7 @@
                 <CustomButton
                   :options="{
                     btnActive: recommendedFilter == 2,
-                    btnClass: 'warning',
+                    btnClass: 'primary',
                     defaultBtn: true,
                     disabled: false,
                   }"
@@ -117,7 +117,7 @@
                 <CustomButton
                   :options="{
                     btnActive: recommendedFilter == 3,
-                    btnClass: 'primary',
+                    btnClass: 'warning',
                     defaultBtn: true,
                     disabled: false,
                   }"
@@ -211,6 +211,8 @@ export default {
     region: [],
     direction: [],
     district_moscow: [],
+    region_neardy: null,
+    outside_mkad: null,
     status: null,
     // new fields
     recommended_sort: null,
@@ -243,39 +245,39 @@ export default {
 
       return Math.floor((value * percent) / 100);
     },
-    getSortRecommendedObjects() {
-      this.changeRecommendedFilter(6);
-      if (!this.recommendedFilter) {
-        this.queryParams = this.$options.defaultQueryParams;
-        return;
-      }
-      const request = this.currentRequest;
-      const query = {
-        rangeMinElectricity: request.electricity,
-        approximateDistanceFromMKAD: request.distanceFromMKAD,
-        deal_type: request.dealType,
-        rangeMaxArea: request.maxArea,
-        rangeMinArea: request.minArea,
-        rangeMaxPricePerFloor: request.pricePerFloor,
-        rangeMinCeilingHeight: request.minCeilingHeight,
-        rangeMaxCeilingHeight: request.maxCeilingHeight,
-        heated: request.heated == 0 ? 2 : request.heated,
-        has_cranes: request.haveCranes,
-        floor_types: request.antiDustOnly ? [2] : [],
-        region: request.regions.map((item) => item.region),
-        status: 1,
-        type_id: [1, 2],
-        gates: request.gateTypes.map((item) => item.gate_type),
-        direction: request.directions.map((item) => item.direction),
-        district_moscow: request.districts.map((item) => item.district),
-        firstFloorOnly: request.firstFloorOnly ? 1 : null,
-        recommended_sort: 1, // ФИЛЬТРЫ ПЕРЕСТАНУТ РАБОТАТЬ И БУДЕТ ВЫДАВАТЬСЯ РЕЗУЛЬТАТЫ ОТСОРТИРОВАННЫЕ ПО КОЛЛИЧЕСТВУ СОВПАДЕНИЙ
-      };
-      this.queryParams = {
-        ...this.$options.defaultQueryParams,
-        ...query,
-      };
-    },
+    // getSortRecommendedObjects() {
+    //   this.changeRecommendedFilter(6);
+    //   if (!this.recommendedFilter) {
+    //     this.queryParams = this.$options.defaultQueryParams;
+    //     return;
+    //   }
+    //   const request = this.currentRequest;
+    //   const query = {
+    //     rangeMinElectricity: request.electricity,
+    //     approximateDistanceFromMKAD: request.distanceFromMKAD,
+    //     deal_type: request.dealType,
+    //     rangeMaxArea: request.maxArea,
+    //     rangeMinArea: request.minArea,
+    //     rangeMaxPricePerFloor: request.pricePerFloor,
+    //     rangeMinCeilingHeight: request.minCeilingHeight,
+    //     rangeMaxCeilingHeight: request.maxCeilingHeight,
+    //     heated: request.heated == 0 ? 2 : request.heated,
+    //     has_cranes: request.haveCranes,
+    //     floor_types: request.antiDustOnly ? [2] : [],
+    //     region: request.regions.map((item) => item.region),
+    //     status: 1,
+    //     type_id: [1, 2],
+    //     gates: request.gateTypes.map((item) => item.gate_type),
+    //     direction: request.directions.map((item) => item.direction),
+    //     district_moscow: request.districts.map((item) => item.district),
+    //     firstFloorOnly: request.firstFloorOnly ? 1 : null,
+    //     recommended_sort: 1, // ФИЛЬТРЫ ПЕРЕСТАНУТ РАБОТАТЬ И БУДЕТ ВЫДАВАТЬСЯ РЕЗУЛЬТАТЫ ОТСОРТИРОВАННЫЕ ПО КОЛЛИЧЕСТВУ СОВПАДЕНИЙ
+    //   };
+    //   this.queryParams = {
+    //     ...this.$options.defaultQueryParams,
+    //     ...query,
+    //   };
+    // },
     getFirstRecommendedObjects() {
       this.changeRecommendedFilter(1);
       if (!this.recommendedFilter) {
@@ -303,10 +305,16 @@ export default {
         gates: request.gateTypes.map((item) => item.gate_type),
         direction: request.directions.map((item) => item.direction),
         district_moscow: request.districts.map((item) => item.district),
+        region_neardy: request.region_neardy,
+        outside_mkad: request.outside_mkad,
         firstFloorOnly: request.firstFloorOnly ? 1 : null,
         sort_original_id: this.$route.query.new_original_id ?? null,
         sort: this.$route.query.new_original_id ? "-original_ids" : null,
       };
+      if (request.dealType == 1) {
+        query.rangeMaxArea = this.getPercent(request.maxArea, 130);
+        query.rangeMinArea = this.getPercent(request.minArea, 80);
+      }
       this.queryParams = {
         ...this.$options.defaultQueryParams,
         ...query,
@@ -337,6 +345,22 @@ export default {
         type_id: [1, 2],
         firstFloorOnly: request.firstFloorOnly ? 1 : null,
       };
+
+      if (request.dealType == 1) {
+        query.rangeMaxPricePerFloor = this.getPercent(
+          request.pricePerFloor,
+          150
+        );
+        query.rangeMaxDistanceFromMKAD = this.getPercent(
+          request.distanceFromMKAD,
+          150
+        );
+        delete query.rangeMinCeilingHeight;
+        delete query.rangeMaxArea;
+        delete query.rangeMinArea;
+        delete query.floor_types;
+        delete query.has_cranes;
+      }
       this.queryParams = {
         ...this.$options.defaultQueryParams,
         ...query,
@@ -356,11 +380,17 @@ export default {
         ),
         rangeMaxArea: request.maxArea,
         rangeMinArea: request.minArea,
-        region: request.regions.map((item) => item.region),
         type_id: [3],
+        region: request.regions.map((item) => item.region),
         direction: request.directions.map((item) => item.direction),
         district_moscow: request.districts.map((item) => item.district),
+        region_neardy: request.region_neardy,
+        outside_mkad: request.outside_mkad,
       };
+      if (request.dealType == 1) {
+        query.rangeMaxArea = this.getPercent(request.maxArea, 130);
+        query.rangeMinArea = this.getPercent(request.minArea, 70);
+      }
       this.queryParams = {
         ...this.$options.defaultQueryParams,
         ...query,
