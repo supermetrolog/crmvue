@@ -147,12 +147,14 @@
       <span class="badge badge-warning autosize" v-else> Пассив </span>
     </Td>
   </Tr>
+  <tr v-if="miniOffersLoader">
+    <Loader v-if="miniOffersLoader" class="small center" />
+  </tr>
   <DropDown>
     <OfferTableDropdown
       :offer="offer"
       :miniOffers="miniOffers"
-      :loader="miniOffersLoader"
-      v-if="dropdownIsOpen"
+      v-if="dropdownIsOpen && !miniOffersLoader"
   /></DropDown>
 </template>
 

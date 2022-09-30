@@ -4775,6 +4775,9 @@
         .HeaderMobile-nav {
             height: 80px;
             display: flex;
+            .comments-panel {
+                width: 80vw;
+            }
         }
     }
     
