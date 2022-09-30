@@ -181,6 +181,7 @@ export default {
       queryParams: null,
     };
   },
+  // Нужно чтобы сбрасывать лишние фильтры
   defaultQueryParams: {
     all: null,
     rangeMinElectricity: null,
@@ -217,6 +218,7 @@ export default {
     pricePerFloor: null,
     type_id: null,
     firstFloorOnly: null,
+    withoutOffersFromQuery: null,
   },
   computed: {
     firstRecommendedQuery() {
@@ -272,6 +274,7 @@ export default {
         status: 1,
         type_id: [1, 2],
         firstFloorOnly: request.firstFloorOnly ? 1 : null,
+        withoutOffersFromQuery: JSON.stringify(this.firstRecommendedQuery),
       };
 
       if (request.dealType == 1) {
