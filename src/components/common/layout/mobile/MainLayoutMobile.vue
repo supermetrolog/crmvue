@@ -1,10 +1,12 @@
 <template>
-  <div class="v-main-layout MainLayoutMobile">
+  <div class="v-main-layout MainLayoutMobile" id="main-mobile">
     <HeaderMobile
       @menuButtonClicked="menuButtonClicked"
       :sidebarIsOpen="sidebarIsOpen"
     />
-    <SidebarMobile v-if="sidebarIsOpen" @onCloseSidebar="menuButtonClicked" />
+    <transition name="sidebar-slide">
+      <SidebarMobile v-if="sidebarIsOpen" @onCloseSidebar="menuButtonClicked" />
+    </transition>
     <!-- <CallerManager /> -->
     <section class="content">
       <router-view v-slot="{ Component }">

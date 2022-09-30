@@ -31,18 +31,22 @@
     <hr />
 
     <div class="row no-gutters companies-actions">
-      <div class="col-6">
+      <div class="col-md-6">
         <PaginationClassic
           :pagination="COMPANIES_PAGINATION"
           @next="next"
           v-if="COMPANIES_PAGINATION"
           class="d-inline"
         />
-        <RefreshButton class="ml-3" @click="getCompanies" :disabled="loader" />
+        <RefreshButton
+          class="ml-md-3 ml-2"
+          @click="getCompanies"
+          :disabled="loader"
+        />
       </div>
-      <div class="col-6 text-right ml-auto">
+      <div class="col-md-6 text-right ml-auto">
         <button
-          class="btn btn-primary mr-2 ml-5"
+          class="btn btn-primary mr-md-2 ml-md-5"
           @click="companyGroupsFormVisible = true"
         >
           Создать группу компаний

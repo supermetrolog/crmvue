@@ -1,10 +1,13 @@
 <template>
   <div class="HeaderMobile v-header">
     <main class="HeaderMobile-nav navbar">
-      <BurgerMenuButton
-        :isActive="this.sidebarIsOpen"
-        @onClick="this.$emit('menuButtonClicked')"
-      />
+      <teleport to="#app">
+        <BurgerMenuButton
+          class="HeaderMobile-burger"
+          :isActive="this.sidebarIsOpen"
+          @onClick="this.$emit('menuButtonClicked')"
+        />
+      </teleport>
       <vNavMiddleInfo />
       <vNavNotif />
     </main>

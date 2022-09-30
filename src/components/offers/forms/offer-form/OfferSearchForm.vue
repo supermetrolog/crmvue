@@ -1,6 +1,6 @@
 <template>
   <div class="company-request-search-form">
-    <Form class="autosize px-5" @submit="onSubmit">
+    <Form class="autosize px-md-5" @submit="onSubmit">
       <FormGroup class="mb-2">
         <Input
           v-model="form.all"
@@ -48,7 +48,7 @@
           <MultiSelect
             v-model="form.agent_id"
             label="Консультант"
-            class="col-4 pr-1"
+            class="col-12 col-md-4 pr-md-1"
             :options="
               async () => {
                 return await FETCH_CONSULTANT_LIST();
@@ -59,7 +59,7 @@
           <MultiSelect
             v-model="form.deal_type"
             label="Тип сделки"
-            class="col-2 pr-1"
+            class="col-md-2 col-12 pr-md-1"
             :options="dealTypeList"
           />
           <Input
@@ -68,7 +68,7 @@
             maska="###"
             placeholder="не более"
             label="Удаленность от МКАД"
-            class="col-3 pr-1"
+            class="col-md-3 col-12 pr-md-1"
           />
           <Input
             v-else
@@ -76,14 +76,14 @@
             maska="###"
             placeholder="не более"
             label="Удаленность от МКАД +30%"
-            class="col-3 pr-1"
+            class="col-md-3 col-12 pr-md-1"
           />
           <Input
             v-model="form.rangeMinElectricity"
             placeholder="не менее"
             maska="##########"
             label="Электричесвто (квт)"
-            class="col-3"
+            class="col-md-3 col-12"
           />
         </FormGroup>
         <FormGroup class="mb-2">
@@ -92,7 +92,7 @@
             maska="##########"
             label="S пола (м^2)"
             placeholder="От:"
-            class="col-3 pr-1"
+            class="col-md-3 col-6 pr-md-1 pt-4 pt-md-0"
           >
             <Input
               v-model="form.rangeMaxArea"
@@ -106,7 +106,7 @@
             maska="##########"
             placeholder="От:"
             label="Цена (продажи, аренды, о-х)"
-            class="col-3 pr-1"
+            class="col-md-3 col-6 pr-md-1"
           >
             <Input
               v-model="form.rangeMaxPricePerFloor"
@@ -120,7 +120,7 @@
             maska="##########"
             label="Высота потолков"
             placeholder="От:"
-            class="col-3 pr-1"
+            class="col-md-3 col-6 pr-1"
           >
             <Input
               v-model="form.rangeMaxCeilingHeight"
@@ -132,7 +132,7 @@
           <MultiSelect
             v-model="form.region"
             label="Регионы"
-            class="col-3"
+            class="col-md-3 col-6"
             mode="multiple"
             :options="
               async () => {
@@ -178,7 +178,7 @@
         <FormGroup class="mb-2">
           <Checkbox
             v-model="form.class"
-            class="col-2 pr-1"
+            class="col-md-2 col-4 pr-1"
             label="Классы"
             :options="objectClassList"
           />
@@ -198,37 +198,37 @@
         <FormGroup class="mb-2">
           <Checkbox
             v-model="form.water"
-            class="col large text-center"
+            class="col-md col-3 large text-center"
             label="Вода"
           />
           <Checkbox
             v-model="form.gas"
-            class="col large text-center"
+            class="col-md col-3 large text-center"
             label="Газ"
           />
           <Checkbox
             v-model="form.steam"
-            class="col large text-center"
+            class="col-md col-3 large text-center"
             label="Пар"
           />
           <Checkbox
             v-model="form.sewage_central"
-            class="col large text-center"
+            class="col-md col-3 large text-center"
             label="КНС"
           />
           <Checkbox
             v-model="form.racks"
-            class="col large text-center"
+            class="col-md col-4 large text-center"
             label="Стеллажи"
           />
           <Checkbox
             v-model="form.railway"
-            class="col large text-center"
+            class="col-md col-4 large text-center"
             label="Ж/Д ветка"
           />
           <Checkbox
             v-model="form.has_cranes"
-            class="col large text-center"
+            class="col-md col-4 large text-center"
             label="Краны"
           />
         </FormGroup>
@@ -262,7 +262,7 @@
             :extraValue="1"
             :extraOptions="form.object_type"
             @extraSelect="selectObjectType"
-            class="col-4 pr-2 mx-auto"
+            class="col-md-4 col-12 pr-2 mx-auto"
             :options="objectTypeListWareHouse"
           />
           <CheckboxIcons
@@ -272,7 +272,7 @@
             :extraValue="2"
             :extraOptions="form.object_type"
             @extraSelect="selectObjectType"
-            class="col-4 mt-4 pr-2 mx-auto"
+            class="col-md-4 col-12 mt-4 pr-2 mx-auto"
             :options="objectTypeListProduction"
           />
           <CheckboxIcons
@@ -282,7 +282,7 @@
             :extraValue="3"
             :extraOptions="form.object_type"
             @extraSelect="selectObjectType"
-            class="col-4 mt-4 mx-auto"
+            class="col-md-4 col-12 mt-4 mx-auto"
             :options="objectTypeListPlot"
           />
         </FormGroup>

@@ -4725,6 +4725,21 @@
             background-color: $color_overflow;
             padding: 100px 10px;
         }
+        .sidebar-slide-enter-active,
+        .sidebar-slide-leave-active
+        {
+            transition: transform 0.2s ease;
+        }
+        .sidebar-slide-enter-from,
+        .sidebar-slide-leave-to {
+            transform: translateX(-100%);
+            transition: all 150ms ease-in 0s
+        }
+        // .company-request-search-form {
+        //     .px-5 {
+        //         padding: 0 !important;
+        //     }
+        // }
     }
 
     // ************** HEADER MOBILE LAYOUT *************
@@ -4741,18 +4756,25 @@
         .btn-large {
             width: auto;
           }
-          .btn {
+        .btn {
             padding: 1em;
             font-size: 0.5rem;
-          }
+        }
+        &-burger {
+            z-index: 100;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 20px;
+        }
     }
 
     // ************** SIDEBAR MOBILE *************
     .SidebarMobile {
         height: 100%;
         width: 100vw;
-        z-index: 10;
-        margin-top: 80px;
+        z-index: 99;
+        padding-top: 80px;
         .SidebarMobile-wrapper {
             display: flex;
             flex-direction: column;
@@ -4766,6 +4788,7 @@
         .HeaderNavMobile {
             padding: 0;
             
+            
         }
     }
 
@@ -4773,6 +4796,7 @@
     .HeaderMobile {
         
         .HeaderMobile-nav {
+            z-index: 20;
             height: 80px;
             display: flex;
             .comments-panel {

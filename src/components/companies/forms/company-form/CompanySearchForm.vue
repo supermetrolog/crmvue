@@ -1,7 +1,7 @@
 <template>
   <div class="company-search-form">
     <Form class="autosize" @submit="onSubmit">
-      <FormGroup class="mb-2 px-5">
+      <FormGroup class="mb-2 px-md-5">
         <Input
           v-model="form.all"
           label="Поиск"
@@ -10,7 +10,7 @@
           @keydown.enter="onSubmit"
         />
       </FormGroup>
-      <FormGroup class="px-5">
+      <FormGroup class="px-md-5">
         <a
           href="#"
           @click.prevent="extraVisible = !extraVisible"
@@ -34,11 +34,11 @@
       </FormGroup>
 
       <div v-show="extraVisible">
-        <FormGroup class="mb-1 px-5">
+        <FormGroup class="mb-1 px-md-5">
           <MultiSelect
             v-model="form.consultant_id"
             label="Консультант"
-            class="col-4 pr-1"
+            class="col-md-4 col-12 pr-1"
             :options="
               async () => {
                 return await FETCH_CONSULTANT_LIST();
@@ -49,56 +49,56 @@
             v-model="form.nameRu"
             label="Название RU"
             placeholder="название ru"
-            class="col-4 pr-1"
+            class="col-md-4 col-6 pr-1"
           />
           <Input
             v-model="form.nameEng"
             label="Название ENG"
             placeholder="название eng"
-            class="col-4"
+            class="col-md-4 col-6"
           />
         </FormGroup>
-        <FormGroup class="mb-1 px-5">
+        <FormGroup class="mb-1 px-md-5">
           <MultiSelect
             v-model="form.activityGroup"
             title="Группа деятельности"
             label="Группа дея-ти"
-            class="col-4 pr-1"
+            class="col-md-4 pr-1"
             :options="activityGroupOptions"
           />
           <MultiSelect
             v-model="form.activityProfile"
             title="Профиль деятельности"
             label="Профиль дея-ти"
-            class="col-4 pr-1"
+            class="col-md-4 pr-1"
             :options="activityProfileOptions"
           />
           <Input
             v-model="form.dateStart"
             label="Дата от"
-            class="col-2 pr-1"
+            class="col-md-2 col-6 pr-1"
             type="date"
           />
           <Input
             v-model="form.dateEnd"
             label="Дата до"
-            class="col-2"
+            class="col-md-2 col-6"
             type="date"
           />
         </FormGroup>
-        <FormGroup class="px-5">
+        <FormGroup class="px-md-5">
           <Checkbox
             v-model="form.categories"
             :options="categoryOptions"
             label="Категория"
-            class="col-8 pr-1"
+            class="col-md-8 pr-1"
           />
           <Radio
             v-model="form.status"
             :options="activePassiveOptions"
             :unselectMode="true"
             label="Статус"
-            class="col-2 pr-1"
+            class="col-md-2 pr-1"
           />
         </FormGroup>
       </div>

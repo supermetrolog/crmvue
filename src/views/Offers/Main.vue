@@ -14,7 +14,7 @@
       </div>
     </div>
     <div class="row no-gutters companies-actions mt-4">
-      <div class="col-6">
+      <div class="col-md-6 col-12 pt-1">
         <PaginationClassic
           :pagination="OFFERS_PAGINATION"
           @next="next"

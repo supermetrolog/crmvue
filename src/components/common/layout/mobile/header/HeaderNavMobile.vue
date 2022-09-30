@@ -1,6 +1,6 @@
 <template>
   <div
-    class="col-lg-7 align-self-center HeaderNavMobile"
+    class="col-lg-7 col-12 align-self-center HeaderNavMobile"
     @click="this.$emit('closeSidebar')"
   >
     <ul class="nav-list vertical">

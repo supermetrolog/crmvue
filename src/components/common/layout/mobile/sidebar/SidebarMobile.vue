@@ -1,6 +1,6 @@
 <template>
   <div class="SidebarMobile sidebar">
-    <main class="SidebarMobile-wrapper">
+    <main class="SidebarMobile-wrapper" @click="closeSidebar">
       <div class="SidebarMobile-user-image">
         <router-link class="nav-item" to="account">
           <div class="avatar-container" v-if="THIS_USER">
@@ -12,8 +12,8 @@
         <hr />
       </div>
       <div class="SidebarMobile-menu">
-        <vNav @click="closeSidebar" />
-        <HeaderNavMobile @closeSidebar="closeSidebar" />
+        <vNav />
+        <HeaderNavMobile />
       </div>
     </main>
   </div>
