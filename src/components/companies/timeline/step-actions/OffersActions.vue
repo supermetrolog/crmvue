@@ -274,9 +274,10 @@ export default {
         status: 1,
         type_id: [1, 2],
         firstFloorOnly: request.firstFloorOnly ? 1 : null,
-        withoutOffersFromQuery: JSON.stringify(this.firstRecommendedQuery),
+        withoutOffersFromQuery: JSON.stringify(
+          this.deleteEmptyFields({ ...this.firstRecommendedQuery })
+        ),
       };
-
       if (request.dealType == 1) {
         query.rangeMaxPricePerFloor = this.getPercent(
           request.pricePerFloor,
@@ -331,6 +332,21 @@ export default {
       }
 
       return Math.floor((value * percent) / 100);
+    },
+    deleteEmptyFields(object) {
+      for (const key in object) {
+        if (Object.hasOwnProperty.call(object, key)) {
+          const value = object[key];
+          if (
+            value === null ||
+            value === "" ||
+            (Array.isArray(value) && !value.length)
+          ) {
+            delete object[key];
+          }
+        }
+      }
+      return object;
     },
     // getSortRecommendedObjects() {
     //   this.changeRecommendedFilter(6);
