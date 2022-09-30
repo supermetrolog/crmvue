@@ -275,7 +275,13 @@ export default {
         type_id: [1, 2],
         firstFloorOnly: request.firstFloorOnly ? 1 : null,
         withoutOffersFromQuery: JSON.stringify(
-          this.deleteEmptyFields({ ...this.firstRecommendedQuery })
+          this.deleteEmptyFields({
+            ...this.firstRecommendedQuery,
+            page: 1,
+            "per-page": 0,
+            expand: "object,offer,generalOffersMix.offer,comments",
+            timeline_id: this.TIMELINE.id,
+          })
         ),
       };
       if (request.dealType == 1) {
