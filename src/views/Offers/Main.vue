@@ -109,6 +109,7 @@ export default {
         query.original_id = this.FAVORITES_OFFERS.map(
           (item) => item.original_id
         );
+        query.type_id = [1, 2];
         query.object_id = this.FAVORITES_OFFERS.map((item) => item.object_id);
         query.complex_id = this.FAVORITES_OFFERS.map((item) => item.complex_id);
       }
