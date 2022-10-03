@@ -16,6 +16,11 @@ export default {
     vLoginLayout,
     MainLayoutMobile,
   },
+  provide() {
+    return {
+      isMobile: this.isMobile,
+    };
+  },
   computed: {
     layout() {
       if (this.isMobile && this.$route.meta.layout === "main") {

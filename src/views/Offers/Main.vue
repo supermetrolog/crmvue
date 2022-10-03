@@ -29,7 +29,13 @@
         <Loader v-if="loader && !OFFERS.length" class="center" />
         <OfferTableView
           :offers="OFFERS"
-          v-if="OFFERS.length"
+          v-if="OFFERS.length && !this.isMobile"
+          :loader="loader"
+          @deleteFavoriteOffer="deleteFavoriteOffer"
+        />
+        <OffersMobileView
+          :offers="OFFERS"
+          v-if="OFFERS.length && this.isMobile"
           :loader="loader"
           @deleteFavoriteOffer="deleteFavoriteOffer"
         />
@@ -48,6 +54,7 @@
 </template>
 
 <script>
+import OffersMobileView from "../../components/offers/mobile/OffersMobileView.vue";
 import OfferTableView from "@/components/offers/main/OfferTableView.vue";
 import OfferSearchForm from "@/components/offers/forms/offer-form/OfferSearchForm.vue";
 import { mapGetters, mapActions } from "vuex";
@@ -70,11 +77,13 @@ export default {
       allOffersLoader: false,
     };
   },
+  inject: ["isMobile"],
   components: {
     OfferTableView,
     OfferSearchForm,
     YmapView,
     RefreshButton,
+    OffersMobileView,
   },
   computed: {
     ...mapGetters([

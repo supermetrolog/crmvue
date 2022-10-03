@@ -4767,6 +4767,14 @@
             left: 0;
             padding: 20px;
         }
+        .HeaderMobile-nav {
+            z-index: 20;
+            height: 80px;
+            display: flex;
+            .comments-panel {
+                width: 80vw;
+            }
+        }
     }
 
     // ************** SIDEBAR MOBILE *************
@@ -4791,18 +4799,66 @@
             
         }
     }
-
-    // ************** MOBILE HEADER *************
-    .HeaderMobile {
-        
-        .HeaderMobile-nav {
-            z-index: 20;
-            height: 80px;
-            display: flex;
-            .comments-panel {
-                width: 80vw;
+    
+    // ************** MOBILE OFFERS VIEW *************
+    .OffersMobileView {
+        table {
+            .photo {
+                width: 100%;
+                span.visual_id {
+                    top: auto;
+                    bottom: 10px;
+                    left: 10px;
+                    font-size: 20px;
+                }
+            }
+            td {
+                text-align: left;
             }
         }
+        
     }
     
-    
+
+    // ************** MOBILE OFFER ITEM *************
+    .OfferMobileItem {
+        .info {
+            display: flex;
+            justify-content: space-between;
+            .id {
+                text-align: center;
+            }
+            .region {
+                p {
+                    font-size: 12px;
+                    span {
+                        font-weight: 400;
+                    }
+                }
+            }
+            .company {
+                font-size: 12px;
+            }
+        }
+        .description {
+            width: 280px;
+            padding: 5px;
+            .price {
+                width: fit-content;
+                display: flex;
+                p {
+                    font-size: 6vw;
+                    small {
+                        white-space: nowrap;
+                    }
+                }
+                .tax-form {
+                    margin-left: 7px;
+                    opacity: 40%;
+                }
+                
+            }
+            
+        }
+        
+    }
