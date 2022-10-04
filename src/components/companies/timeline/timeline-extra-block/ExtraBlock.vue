@@ -126,8 +126,8 @@ export default {
         behavior: "smooth",
         block: "center",
       };
-      console.warn(this.$refs.form.$el);
-      this.$refs.form.$el.scrollIntoView(options);
+      console.warn(this.$refs.form);
+      this.$refs.form[0].$el.scrollIntoView(options);
     },
     async onSubmit(step) {
       this.v$.$validate();
@@ -164,7 +164,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      setTimeout(() => this.scrollToForm(), 800); //Из за анимации нужно подождать 500 мс чтобы элемент появился
+      setTimeout(() => this.scrollToForm(), 500); //Из за анимации нужно подождать 500 мс чтобы элемент появился
     });
   },
   watch: {

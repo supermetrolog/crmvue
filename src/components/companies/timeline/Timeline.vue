@@ -279,11 +279,9 @@ export default {
         behavior: "smooth",
         block: "center",
       };
-      // const overflow = document.getElementsByTagName("body")[0].style.overflow;
-      // console.error("OVERFLOW", overflow);
       setTimeout(
         () =>
-          this.$refs["step_" + this.$route.query.step].$el.scrollIntoView(
+          this.$refs["step_" + this.$route.query.step][0].$el.scrollIntoView(
             options
           ),
         delay
@@ -353,7 +351,7 @@ export default {
       this.moveToPriorityStep();
 
       this.$nextTick(() => {
-        this.scrollToSelectedStep(0);
+        this.scrollToSelectedStep();
       });
     }
   },

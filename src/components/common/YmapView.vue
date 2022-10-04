@@ -99,7 +99,8 @@ export default {
       if (offer.test_only == 1) {
         return "grey";
       }
-      return offer.status != 1 ? "yellow" : "green";
+      // return offer.status != 1 ? "yellow" : "green";
+      return "red";
     },
     getFooter(offer) {
       let template = `<a href="${this.getOfferUrl(
@@ -130,31 +131,6 @@ export default {
       this.styles.height = "100px";
       this.openned = false;
     },
-    // imageSrc(offer) {
-    //   const photos = offer.photos;
-    //   const object_photos = offer.object_small_info.photo;
-    //   let resultImage = null;
-    //   if (photos && Array.isArray(photos)) {
-    //     photos.forEach((img) => {
-    //       if (resultImage == null && typeof img == "string" && img.length > 2) {
-    //         resultImage = "https://pennylane.pro" + img;
-    //       }
-    //     });
-    //   }
-
-    //   if (resultImage) {
-    //     return resultImage;
-    //   }
-    //   if (
-    //     object_photos &&
-    //     Array.isArray(object_photos) &&
-    //     typeof object_photos[0] == "string" &&
-    //     object_photos[0].length > 2
-    //   ) {
-    //     return "https://pennylane.pro" + object_photos[0];
-    //   }
-    //   return this.$apiUrlHelper.fileNotFoundUrl();
-    // },
     reRender() {
       console.log("RE RENDER");
       this.render++;

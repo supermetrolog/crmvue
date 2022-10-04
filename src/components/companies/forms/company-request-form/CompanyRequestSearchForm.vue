@@ -124,10 +124,13 @@
             label="Регионы"
             class="col-4 pr-1"
             mode="multiple"
+            :closeOnSelect="false"
             :options="
               async () => {
                 await this.FETCH_REGION_LIST();
-                return this.REGION_LIST;
+                return this.REGION_LIST.filter((elem) =>
+                  Number.isInteger(elem.value)
+                );
               }
             "
             @change="changeRegion"

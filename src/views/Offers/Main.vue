@@ -127,12 +127,13 @@ export default {
     async getAllOffersForYmap(withLoader = true) {
       const routeQuery = { ...this.$route.query };
       delete routeQuery.page;
+      delete routeQuery.sort;
       if (routeQuery.favorites) {
         await this.SEARCH_FAVORITES_OFFERS();
       }
       const query = {
         ...routeQuery,
-        type_id: [2],
+        type_id: [3],
         fields: "latitude,longitude,address,complex_id,status,thumb,test_only",
         objectsOnly: 1,
         original_id: routeQuery.favorites

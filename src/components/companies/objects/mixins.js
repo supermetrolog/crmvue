@@ -508,21 +508,6 @@ export const MixinAllObject = {
         },
         async searchAllObjects(params) {
             this.allObjectsLoader = true;
-            // if (params.query.searchText == "") {
-            //     this.searchMode = false;
-            //     await this.getAllObjects();
-            // } else {
-            //     const search = params.query.searchText;
-            //     const queryParams = {
-            //         search,
-            //         pages: 1,
-            //         page_num: this.currentPage,
-            //         page_items: 32,
-            //     };
-            //     const data = await api.objects.searchObjects(queryParams);
-            //     this.includeStepDataInObjectsData(data.offers);
-            //     this.setAllObjects(data);
-            // }
             await this.getAllObjects(params);
             this.allObjectsLoader = false;
         },
