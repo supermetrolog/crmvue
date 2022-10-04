@@ -2,10 +2,9 @@
   <div class="offer-table-view OffersMobileView">
     <Table>
       <template #thead>
-        <Tr>
-          <Th :sort="sortable ? 'area' : null">площадь</Th>
-          <Th :sort="sortable ? 'price' : null">цена</Th>
-          <Th>статус</Th>
+        <Tr class="container">
+          <Th class="col-6" :sort="sortable ? 'area' : null">площадь</Th>
+          <Th class="col-6" :sort="sortable ? 'price' : null">цена</Th>
         </Tr>
       </template>
       <template #tbody>

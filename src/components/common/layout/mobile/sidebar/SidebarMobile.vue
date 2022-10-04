@@ -1,7 +1,7 @@
 <template>
   <div class="SidebarMobile sidebar">
-    <main class="SidebarMobile-wrapper" @click="closeSidebar">
-      <div class="SidebarMobile-user-image">
+    <main class="SidebarMobile-wrapper">
+      <div class="SidebarMobile-user-image" @click="closeSidebar">
         <router-link class="nav-item" to="account">
           <div class="avatar-container" v-if="THIS_USER">
             <div class="avatar mx-auto">
@@ -12,22 +12,31 @@
         <hr />
       </div>
       <div class="SidebarMobile-menu">
-        <vNav />
-        <HeaderNavMobile />
+        <SidebarNavMobile
+          @onOpenSection="openSection"
+          @onCloseSidebar="closeSidebar"
+          v-if="!sectionIsOpen"
+        />
+        <HeaderNavMobile v-if="sectionIsOpen" @click="closeSidebar" />
       </div>
     </main>
   </div>
 </template>
 
 <script>
+import SidebarNavMobile from "./SidebarNavMobile.vue";
 import HeaderNavMobile from "../header/HeaderNavMobile.vue";
-import VNav from "../../main/sidebar/v-nav.vue";
 import { mapGetters } from "vuex";
 export default {
   name: "SidebarMobile",
   components: {
-    VNav,
     HeaderNavMobile,
+    SidebarNavMobile,
+  },
+  data() {
+    return {
+      sectionIsOpen: false,
+    };
   },
   computed: {
     ...mapGetters(["THIS_USER"]),
@@ -43,6 +52,12 @@ export default {
   methods: {
     closeSidebar() {
       this.$emit("onCloseSidebar");
+    },
+    openSection() {
+      if (this.sectionIsOpen == true) {
+        this.sectionIsOpen = false;
+      }
+      this.sectionIsOpen = true;
     },
   },
 };

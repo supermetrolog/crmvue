@@ -37,7 +37,7 @@
         <a
           href="#"
           @click.prevent="resetForm"
-          class="text-warning ml-5"
+          class="text-warning ml-md-5 ml-4"
           v-if="filterCount"
         >
           сбросить

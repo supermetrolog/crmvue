@@ -1,13 +1,19 @@
 <template>
-  <Tr class="OfferMobileItem">
-    <td colspan="3" class="OfferMobileItem-wrapper">
+  <Tr
+    class="OfferMobileItem"
+    :class="{
+      passive: offer.status != 1,
+    }"
+  >
+    <td colspan="2" class="OfferMobileItem-wrapper">
       <div class="photo">
         <a :href="getOfferUrl(offer)" target="_blank">
           <div class="image-container">
             <img :src="offer.thumb" alt="image" />
-            <span class="deal_type" :class="{ passive: offer.status != 1 }">
+            <span class="deal_type" v-if="offer.status == 1">
               {{ offer.deal_type_name }}
             </span>
+            <span class="deal_type" v-else>Пассив</span>
             <span class="deal_type visual_id">
               {{ offer.visual_id }}
             </span>
@@ -21,32 +27,7 @@
       <div class="info">
         <div class="description">
           <div class="price" sort="price">
-            <p v-if="offer.deal_type == 1 || offer.deal_type == 4">
-              {{ offer.calc_price_warehouse }}
-              <small>руб за м<sup>2</sup>/г</small>
-            </p>
-            <p v-if="offer.deal_type == 2">
-              {{ offer.calc_price_sale }} <small>руб за м<sup>2</sup></small>
-            </p>
-            <p v-if="offer.deal_type == 3">
-              {{ offer.calc_price_safe_pallet }} <small>руб за 1 п. м.</small>
-            </p>
-            <p v-if="!offer.deal_type">Цена не указана</p>
-            <p class="tax-form">
-              <small
-                v-if="
-                  offer.generalOffersMix &&
-                  offer.generalOffersMix.offer.tax_form
-                "
-              >
-                {{
-                  taxFormList.find(
-                    (item) =>
-                      item.value == offer.generalOffersMix.offer.tax_form
-                  ).label
-                }}
-              </small>
-            </p>
+            <div v-html="priceHandler" />
           </div>
           <div class="area" sort="area">
             <p>
@@ -70,23 +51,6 @@
               >
                 {{ offer.company.full_name }}
               </router-link>
-              <div class="contact" v-if="offer.company.mainContact">
-                {{ offer.company.mainContact.full_name }}
-                <a
-                  :href="'mailto:' + email.email"
-                  v-for="email of offer.company.mainContact.emails"
-                  :key="email.email"
-                  class="d-block"
-                >
-                  {{ email.email }}
-                </a>
-                <PhoneNumber
-                  v-for="phone of offer.company.mainContact.phones"
-                  :key="phone.id"
-                  :phone="phone"
-                  :contact="offer.company.mainContact"
-                />
-              </div>
             </template>
           </div>
         </div>
@@ -109,97 +73,96 @@
           </div>
         </div>
       </div>
-
-      <div class="region">
-        <p class="region_item" v-if="offer.region_name">
-          {{ offer.region_name }}
-        </p>
-        <p v-if="offer.district_name">
-          {{ offer.district_name }}
-        </p>
-        <p v-if="offer.district_moscow_name">
-          {{ offer.district_moscow_name }}
-        </p>
-        <p v-if="offer.direction_name">
-          {{ offer.direction_name }}
-        </p>
-        <p v-if="offer.town_name">
-          {{ offer.town_name }}
-        </p>
-        <p v-if="offer.highway_name">
-          {{ offer.highway_name }} <small>шоссе</small>
-        </p>
-        <p v-if="offer.highway_moscow_name">
-          {{ offer.highway_moscow_name }} <small>шоссе</small>
-        </p>
-        <hr />
-        <p v-if="offer.address">
-          {{ offer.address }}
-        </p>
-      </div>
-      <div class="from_mkad" sort="from_mkad">
-        <!-- {{ offer.gates }} -->
-        <p v-if="offer.from_mkad">{{ offer.from_mkad }} <small>км</small></p>
-        <p v-else>—</p>
-      </div>
-      <div class="company">
-        <template v-if="offer.company !== null">
-          <router-link :to="'/companies/' + offer.company.id" target="_blank">
-            {{ offer.company.full_name }}
-          </router-link>
-          <div class="contact" v-if="offer.company.mainContact">
-            {{ offer.company.mainContact.full_name }}
-            <a
-              :href="'mailto:' + email.email"
-              v-for="email of offer.company.mainContact.emails"
-              :key="email.email"
-              class="d-block"
-            >
-              {{ email.email }}
-            </a>
-            <PhoneNumber
-              v-for="phone of offer.company.mainContact.phones"
-              :key="phone.id"
-              :phone="phone"
-              :contact="offer.company.mainContact"
-            />
-          </div>
-        </template>
-      </div>
-      <div class="consultant">
-        <p v-if="offer.consultant">
-          {{ offer.consultant.userProfile.full_name }}
-        </p>
-      </div>
-      <div class="add">
-        <p v-if="offer.ad_realtor">Realtor.ru</p>
-        <p v-if="offer.ad_cian">Циан</p>
-        <p v-if="offer.ad_yandex">Яндекс</p>
-        <p v-if="offer.ad_free">Бесплатные</p>
-      </div>
-      <div class="date" sort="last_update">
-        {{ offer.last_update_format }}
-      </div>
-      <div class="status" sort="status">
-        <h4 class="text-success" v-if="offer.status == 1">Актив</h4>
-        <span class="badge badge-warning autosize" v-else> Пассив </span>
-      </div>
     </td>
   </Tr>
-  <!-- <tr v-if="miniOffersLoader">
-    <Loader v-if="miniOffersLoader" class="small center" />
-  </tr>
   <DropDown>
-    <OfferTableDropdown
-      :offer="offer"
-      :miniOffers="miniOffers"
-      v-if="dropdownIsOpen && !miniOffersLoader"
-  /></DropDown> -->
+    <tr class="OfferMobileItem-dropdown" v-if="dropdownIsOpen">
+      <td colspan="2" class="container">
+        <!-- <span @click="isVisibleMain = !isVisibleMain">Основное</span> -->
+        <div class="column">
+          <div class="region">
+            <p v-if="offer.district_moscow_name">
+              Москва, {{ offer.district_moscow_name }}
+            </p>
+            <p v-if="offer.direction_name">
+              {{ offer.direction_name }}
+            </p>
+            <p v-if="offer.highway_name">{{ offer.highway_name }} шоссе</p>
+            <p v-if="offer.highway_moscow_name">
+              {{ offer.highway_moscow_name }} шоссе
+            </p>
+            <hr />
+            <div>
+              <strong class="label">Адрес</strong>
+              <br />
+              <a
+                :href="`https://yandex.ru/maps/?pt=${offer.longitude},${offer.latitude}&z=12&l=map`"
+                v-if="offer.address"
+                >{{ offer.address }}</a
+              >
+            </div>
+          </div>
+          <div class="from_mkad" sort="from_mkad">
+            <p v-if="offer.from_mkad">
+              {{ offer.from_mkad }} <small>км от МКАД</small>
+            </p>
+          </div>
+          <div class="company">
+            <template v-if="offer.company !== null">
+              <router-link
+                :to="'/companies/' + offer.company.id"
+                target="_blank"
+              >
+                {{ offer.company.full_name }}
+              </router-link>
+              <br />
+              <strong class="label">Контакты</strong>
+              <div class="contact" v-if="offer.company.mainContact">
+                {{ offer.company.mainContact.full_name }}
+                <a
+                  :href="'mailto:' + email.email"
+                  v-for="email of offer.company.mainContact.emails"
+                  :key="email.email"
+                  class="d-block"
+                >
+                  {{ email.email }}
+                </a>
+                <PhoneNumber
+                  v-for="phone of offer.company.mainContact.phones"
+                  :key="phone.id"
+                  :phone="phone"
+                  :contact="offer.company.mainContact"
+                />
+              </div>
+            </template>
+          </div>
+          <div class="consultant">
+            <strong class="label">Консультант</strong>
+            <p v-if="offer.consultant">
+              {{ offer.consultant.userProfile.full_name }}
+            </p>
+          </div>
+
+          <div class="add">
+            <strong class="label">Реклама</strong>
+            <p v-if="offer.ad_realtor">Realtor.ru</p>
+            <p v-if="offer.ad_cian">Циан</p>
+            <p v-if="offer.ad_yandex">Яндекс</p>
+            <p v-if="offer.ad_free">Бесплатные</p>
+          </div>
+          <strong class="label">Последняя активность</strong>
+          <div class="date" sort="last_update">
+            {{ offer.last_update_format }}
+          </div>
+        </div>
+      </td>
+    </tr>
+  </DropDown>
 </template>
 
 <script>
-// import DropDown from "../../common/DropDown.vue";
-// import OfferTableDropdown from "./OfferTableDropdown.vue";
+import DropDown from "../../common/DropDown.vue";
+
 import Tr from "../../common/table/Tr.vue";
 import {
   DirectionList,
@@ -208,12 +171,12 @@ import {
   TaxFormList,
 } from "@/const/Const.js";
 import { mapGetters, mapActions } from "vuex";
-// import api from "@/api/api";
+
 export default {
   name: "OfferMobileItem",
   components: {
     Tr,
-    //   OfferTableDropdown, DropDown
+    DropDown,
   },
   data() {
     return {
@@ -222,6 +185,7 @@ export default {
       districtList: DistrictList.get("param"),
       regionList: RegionList.get("param"),
       taxFormList: TaxFormList,
+      isVisibleMain: false,
     };
   },
   props: {
@@ -231,6 +195,33 @@ export default {
   },
   computed: {
     ...mapGetters(["FAVORITES_OFFERS", "THIS_USER"]),
+    priceHandler() {
+      let result;
+      if (this.offer.deal_type == 1 || this.offer.deal_type == 4) {
+        result = `${this.offer.calc_price_warehouse} <small>руб за м<sup>2</sup>/г</small>`;
+      }
+      if (this.offer.deal_type == 2) {
+        result = `${this.offer.calc_price_sale} <small>руб за м<sup>2</sup></small>`;
+      }
+      if (this.offer.deal_type == 3) {
+        result = `${this.offer.calc_price_safe_pallet} <small>руб за 1 п. м.</small>`;
+      }
+      if (!this.offer.deal_type) {
+        result = "Цена не указана";
+      }
+      if (this.offer.generalOffersMix?.offer.tax_form) {
+        result =
+          result +
+          " " +
+          `<small class="tax-form">${
+            this.taxFormList.find(
+              (item) => item.value == this.offer.generalOffersMix.offer.tax_form
+            ).label
+          }</small>`;
+      }
+
+      return `<p>${result}</p>`;
+    },
   },
   methods: {
     ...mapActions([

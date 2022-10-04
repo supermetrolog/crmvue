@@ -4787,15 +4787,41 @@
             display: flex;
             flex-direction: column;
             .SidebarMobile-user-image {
-                width: 60px;
+                width: 100%;
             }
             .SidebarMobile-menu {
-                display: flex;
+                .nav-link_mobile {
+                    display: flex;
+                    justify-content: space-around;
+                    align-items: center;
+                    gap: 20px;
+                    font-size: 20px;
+                    .link-name_mobile {
+                        width: 50vw;
+                    }
+                    .link-icon_mobile {
+                        width: 20vw;
+                        font-size: 30px;
+                       .fas {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                       }
+                    }
+                }
             }
         }
         .HeaderNavMobile {
+            margin-top: 20px;
             padding: 0;
-            
+            .nav-list.vertical .nav-item .nav-link__content {
+                padding-left: 20px ;
+            }
+            .nav-item {
+                .nav-link {
+                    font-size: 20px;
+                }
+            }
             
         }
     }
@@ -4811,10 +4837,30 @@
                     left: 10px;
                     font-size: 20px;
                 }
+                img {
+                    width: 100%;
+                    height: 220px;
+                }
             }
             td {
                 text-align: left;
             }
+            .region {
+                width: auto;
+            }
+            tbody {
+                tr:nth-child(n) {
+                    background-color: $color_light;
+                }
+            }
+        }
+        .OfferMobileItem-dropdown {
+            .label {
+                color: darken($color_grey, 3);
+            }
+        }
+        .passive {
+            opacity: .5;
         }
         
     }
@@ -4830,19 +4876,22 @@
             }
             .region {
                 p {
-                    font-size: 12px;
+                    font-size: 14px;
                     span {
                         font-weight: 400;
                     }
                 }
             }
             .company {
-                font-size: 12px;
+                font-size: 15px;
+            }
+            .id {
+                width: auto;
             }
         }
         .description {
-            width: 280px;
-            padding: 5px;
+            width: 100%;
+            padding: 10px;
             .price {
                 width: fit-content;
                 display: flex;
@@ -4852,8 +4901,7 @@
                         white-space: nowrap;
                     }
                 }
-                .tax-form {
-                    margin-left: 7px;
+                .tax-form {                
                     opacity: 40%;
                 }
                 
