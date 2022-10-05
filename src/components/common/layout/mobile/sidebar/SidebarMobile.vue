@@ -13,11 +13,16 @@
       </div>
       <div class="SidebarMobile-menu">
         <SidebarNavMobile
-          @onOpenSection="openSection"
           @onCloseSidebar="closeSidebar"
+          @onOpenSection="openSection"
+          :menu="menuWithSections"
           v-if="!sectionIsOpen"
         />
-        <HeaderNavMobile v-if="sectionIsOpen" @click="closeSidebar" />
+        <HeaderNavMobile
+          @onOpenSidebar="sectionIsOpen"
+          @click="closeSidebar"
+          v-show="sectionIsOpen"
+        />
       </div>
     </main>
   </div>
@@ -27,6 +32,9 @@
 import SidebarNavMobile from "./SidebarNavMobile.vue";
 import HeaderNavMobile from "../header/HeaderNavMobile.vue";
 import { mapGetters } from "vuex";
+import { InternalMenu } from "@/const/Const";
+import { Menu } from "@/const/Const";
+
 export default {
   name: "SidebarMobile",
   components: {
@@ -47,6 +55,25 @@ export default {
         );
       }
       return null;
+    },
+    menu() {
+      if (this.THIS_USER && this.THIS_USER.username == "admin") {
+        return Menu.get("admin");
+      }
+      return Menu.get("agent");
+    },
+    menuWithSections() {
+      let result = this.menu.map(function (item) {
+        let filter = item.url.slice(1);
+        if (InternalMenu.get(filter) != undefined) {
+          item.hasSection = true;
+          return item;
+        } else {
+          item.hasSection = false;
+          return item;
+        }
+      });
+      return result;
     },
   },
   methods: {

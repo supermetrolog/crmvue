@@ -3,8 +3,9 @@
     <div class="sidebar__navigation">
       <ul class="nav-list vertical">
         <SidebarNavItem
-          @click="linkHandler(link.id)"
+          @click="linkHandler(link)"
           v-for="link of menu"
+          :class="{ hasSection: link.hasSection }"
           :key="link.id"
           :data="link"
         />
@@ -15,25 +16,20 @@
 
 <script>
 import SidebarNavItem from "./SidebarNavItem.vue";
-import { Menu } from "@/const/Const";
-import { mapGetters } from "vuex";
 export default {
   name: "SidebarNavMobile",
   components: {
     SidebarNavItem,
   },
-  computed: {
-    ...mapGetters(["THIS_USER"]),
-    menu() {
-      if (this.THIS_USER && this.THIS_USER.username == "admin") {
-        return Menu.get("admin");
-      }
-      return Menu.get("agent");
+  props: {
+    menu: {
+      type: Array,
+      default: () => [],
     },
   },
   methods: {
-    linkHandler(id) {
-      if (id == 0) {
+    linkHandler(link) {
+      if (link.hasSection) {
         this.$emit("onOpenSection");
       } else {
         this.$emit("onCloseSidebar");
