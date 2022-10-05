@@ -37,7 +37,7 @@
           <MultiSelect
             v-model="form.consultant_id"
             label="Консультант"
-            class="col-4 pr-1"
+            class="col-md-4 col-6 pr-1"
             :options="
               async () => {
                 return await FETCH_CONSULTANT_LIST();
@@ -48,7 +48,7 @@
           <MultiSelect
             v-model="form.dealType"
             label="Тип сделки"
-            class="col-2 pr-1"
+            class="col-md-2 col-6 pr-1"
             :options="dealTypeList"
           />
           <Input
@@ -56,14 +56,14 @@
             maska="###"
             placeholder="не более"
             label="Удаленность от МКАД"
-            class="col-3 pr-1"
+            class="col-md-3 col-6 pr-1"
           />
           <Input
             v-model="form.maxElectricity"
             placeholder="не более"
             maska="##########"
             label="Электричесвто (квт)"
-            class="col-3"
+            class="col-md-3 col-6"
           />
         </FormGroup>
         <FormGroup class="mb-2">
@@ -72,7 +72,7 @@
             maska="##########"
             label="S пола (м^2)"
             placeholder="От:"
-            class="col-3 pr-1"
+            class="col-md-3 col-12 pr-1"
           >
             <Input
               v-model="form.rangeMaxArea"
@@ -86,7 +86,7 @@
             maska="##########"
             placeholder="От:"
             label="Цена за пол (м^2/год)"
-            class="col-3 pr-1"
+            class="col-md-3 col-12 pr-1"
           >
             <Input
               v-model="form.rangeMaxPricePerFloor"
@@ -100,7 +100,7 @@
             maska="##########"
             label="Высота потолков"
             placeholder="От:"
-            class="col-3 pr-1"
+            class="col-md-3 col-12 pr-1"
           >
             <Input
               v-model="form.rangeMaxCeilingHeight"
@@ -112,7 +112,7 @@
           <Input
             v-model="form.dateStart"
             label="Дата От и До"
-            class="col-3"
+            class="col-md-3 col-12"
             type="date"
           >
             <Input v-model="form.dateEnd" class="col-12 p-0 pt-1" type="date" />
@@ -122,7 +122,7 @@
           <MultiSelect
             v-model="form.regions"
             label="Регионы"
-            class="col-4 pr-1"
+            class="col-md-4 col-12 pr-1"
             mode="multiple"
             :closeOnSelect="false"
             :options="
@@ -163,7 +163,7 @@
           <Checkbox
             v-if="form.regions.find((item) => item == 1)"
             v-model="form.directions"
-            class="col-2 pr-1"
+            class="col-md-2 col-12 pr-1"
             label="Направления МО"
             :options="directionList"
           />
@@ -179,13 +179,13 @@
         <FormGroup class="mb-2">
           <Checkbox
             v-model="form.gateTypes"
-            class="col-4 pr-1"
+            class="col-md-4 col-12 pr-1"
             label="Тип ворот"
             :options="gateTypeList"
           />
           <Checkbox
             v-model="form.objectClasses"
-            class="col"
+            class="col-md col-12"
             label="Классы"
             :options="objectClassList"
           />

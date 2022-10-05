@@ -4761,7 +4761,7 @@
             font-size: 0.5rem;
         }
         &-burger {
-            z-index: 100;
+            z-index: 99;
             position: fixed;
             top: 0;
             left: 0;
@@ -4909,4 +4909,20 @@
             
         }
         
+    }
+
+    // ************** MOBILE COMPANY VIEW *************
+
+    .CompanyViewItem {
+        border: 2px solid teal;
+        background-color:  darken($color_light, 3);
+        .status {
+            width: 100%;
+        }
+        .dealType {
+            width: auto;
+        }
+        .date {
+            width: auto;
+        }
     }

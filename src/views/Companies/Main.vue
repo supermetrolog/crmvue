@@ -61,7 +61,12 @@
         <Loader v-if="loader && !COMPANIES.length" class="center" />
         <CompanyTableView
           :companies="COMPANIES"
-          v-if="COMPANIES.length"
+          v-if="COMPANIES.length && !this.isMobile"
+          :loader="loader"
+        />
+        <CompanyViewMobile
+          :companies="COMPANIES"
+          v-if="COMPANIES.length && this.isMobile"
           :loader="loader"
         />
         <h1
@@ -82,6 +87,7 @@
 </template>
 
 <script>
+import CompanyViewMobile from "../../components/companies/companies/mobile/CompanyViewMobile.vue";
 import CompanyTableView from "@/components/companies/companies/CompanyTableView.vue";
 import CompanyForm from "@/components/companies/forms/company-form/CompanyForm.vue";
 import CompanySearchForm from "@/components/companies/forms/company-form/CompanySearchForm.vue";
@@ -99,12 +105,14 @@ export default {
       companyGroupsFormVisible: false,
     };
   },
+  inject: ["isMobile"],
   components: {
     CompanyTableView,
     CompanyForm,
     CompanyGroupsForm,
     CompanySearchForm,
     RefreshButton,
+    CompanyViewMobile,
   },
   methods: {
     ...mapActions(["FETCH_COMPANIES", "SEARCH_COMPANIES"]),

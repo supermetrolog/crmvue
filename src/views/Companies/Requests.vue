@@ -2,7 +2,7 @@
   <div class="companies-requests">
     <div class="row">
       <div class="container py-3">
-        <div class="col-12 px-5 py-3">
+        <div class="col-12 px-md-5 py-3">
           <CompanyRequestSearchForm v-if="mounted" />
         </div>
       </div>
@@ -18,7 +18,16 @@
       </div>
       <div class="col-12">
         <Loader v-if="loader && !REQUESTS.length" class="center" />
-        <RequestTable :loader="loader" :requests="REQUESTS" />
+        <RequestTable
+          :loader="loader"
+          :requests="REQUESTS"
+          v-if="!this.isMobile"
+        />
+        <RequestTableMobile
+          :loader="loader"
+          :requests="REQUESTS"
+          v-if="this.isMobile"
+        />
         <h1
           class="text-center text-dark py-5"
           v-if="!REQUESTS.length && !loader"
@@ -39,6 +48,7 @@
 </template>
 
 <script>
+import RequestTableMobile from "../../components/companies/companies/mobile/RequestTableMobile.vue";
 import RequestTable from "@/components/companies/companies/request/RequestTable";
 import { mapGetters, mapActions } from "vuex";
 import { TableContentMixin } from "@/components/common/mixins.js";
@@ -49,7 +59,9 @@ export default {
   components: {
     RequestTable,
     CompanyRequestSearchForm,
+    RequestTableMobile,
   },
+  inject: ["isMobile"],
   methods: {
     ...mapActions(["SEARCH_REQUESTS"]),
     async getContent() {
