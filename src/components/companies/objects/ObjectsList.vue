@@ -63,7 +63,7 @@ import CompanyObjectItemOfferOnly from "./company-objects/CompanyObjectItemOffer
 import ObjectsItemTable from "./ObjectsItemTable.vue";
 export default {
   name: "ObjectsList",
-  emits: ["select", "unSelect", "addComment"],
+  emits: ["select", "unSelect", "addComment", "deleteFavoriteOffer"],
   components: {
     ObjectsItem,
     ObjectsItemTable,

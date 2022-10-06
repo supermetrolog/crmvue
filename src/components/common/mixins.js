@@ -24,16 +24,16 @@ export const TableContentMixin = {
     async mounted() {
         await this.initialRouteSettings();
         this.mounted = true;
-        await this.getContent();
-        if (!this.mounted) {
-            return;
-        }
         this.watcher = this.$watch("$route", (newValue, oldValue) => {
             console.log("ROUTE UPDATED HANDLER")
             if (newValue.path == oldValue.path) {
                 this.getContent();
             }
         });
+        await this.getContent();
+        if (!this.mounted) {
+            return;
+        }
     },
 
     beforeUnmount() {
@@ -146,6 +146,7 @@ export const SearchFormMixin = {
             "form",
             () => {
                 console.log("FORM WATCHER");
+                console.error("SUKA");
                 clearTimeout(this.setTimeout);
                 this.setTimeout = setTimeout(() => this.onSubmit(), 500);
             }, { deep: true }

@@ -107,7 +107,7 @@ export default {
         type_id: [2, 3],
         // type_id: [2],
         expand:
-          "object,company.mainContact.phones,company.mainContact.emails,miniOffersMix,generalOffersMix.offer,consultant.userProfile",
+          "contact.emails,contact.phones,object,company.mainContact.phones,company.mainContact.emails,miniOffersMix,generalOffersMix.offer,consultant.userProfile",
       };
       if (!this.FAVORITES_OFFERS.length) {
         await this.SEARCH_FAVORITES_OFFERS();
@@ -118,6 +118,7 @@ export default {
         query.original_id = this.FAVORITES_OFFERS.map(
           (item) => item.original_id
         );
+        query.type_id = [1, 2];
         query.object_id = this.FAVORITES_OFFERS.map((item) => item.object_id);
         query.complex_id = this.FAVORITES_OFFERS.map((item) => item.complex_id);
       }
@@ -133,7 +134,7 @@ export default {
       }
       const query = {
         ...routeQuery,
-        type_id: [3],
+        type_id: [2, 3],
         fields: "latitude,longitude,address,complex_id,status,thumb,test_only",
         objectsOnly: 1,
         original_id: routeQuery.favorites
