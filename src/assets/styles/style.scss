@@ -4714,47 +4714,222 @@
             }
         }
     }
+    // ************** MOBILE COMPONENTS *************
+    // ************** MOBILE COMPONENTS *************
+    // ************** MOBILE COMPONENTS *************
 
-     // ************** MEDIA QUERIES *************
-     @media screen and (max-width: 600px) {
-        .sidebar {
-            height: 100vh;
-            width: 50%;
-            position: absolute;
-            &__navigation {
-                text-align: center;
-                align-content: center;
-                margin-top: 20px;
-            }
-            hr {
-                margin: 0 auto;
-                width: 80%;
-                color: $color_light;
-                opacity: .5;
-            }
-            .avatar-container {
-                width: 100%;
-            }
-            .avatar {
-                border-radius: 50%;
-                height: 65px;
-                width: 65px;
-                background-color: $color_light_grey;
-                overflow: hidden;
-                display: flex;
-                align-items: center;
-                img {
-                    min-width: 100%;
-                    min-height: 100%;
-                }
-            }
-        }
-        .sidebar-active {
-            display: block;
-        }
+    // ************** MOBILE MAIN LAYOUT *************
+    .MainLayoutMobile {
         .content {
             min-height: 100vh;
             background-color: $color_overflow;
-            padding: 10px
+            padding: 100px 10px;
+        }
+        .sidebar-slide-enter-active,
+        .sidebar-slide-leave-active
+        {
+            transition: transform 0.2s ease;
+        }
+        .sidebar-slide-enter-from,
+        .sidebar-slide-leave-to {
+            transform: translateX(-100%);
+            transition: all 150ms ease-in 0s
+        }
+        // .company-request-search-form {
+        //     .px-5 {
+        //         padding: 0 !important;
+        //     }
+        // }
+    }
+
+    // ************** HEADER MOBILE LAYOUT *************
+    .HeaderMobile {
+        .nav-list {
+            padding: 0;
+        }
+        &-nav {
+            height: auto;
+            top: 0;
+            left: 0;
+            width: 100vw;
+        }
+        .btn-large {
+            width: auto;
+          }
+        .btn {
+            padding: 1em;
+            font-size: 0.5rem;
+        }
+        &-burger {
+            z-index: 99;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 20px;
+        }
+        .HeaderMobile-nav {
+            z-index: 20;
+            height: 80px;
+            display: flex;
+            .comments-panel {
+                width: 80vw;
+            }
+        }
+    }
+
+    // ************** SIDEBAR MOBILE *************
+    .SidebarMobile {
+        height: 100%;
+        width: 100vw;
+        z-index: 99;
+        padding-top: 80px;
+        .SidebarMobile-wrapper {
+            display: flex;
+            flex-direction: column;
+            .SidebarMobile-user-image {
+                width: 100%;
+            }
+            .SidebarMobile-menu {
+                .nav-link_mobile {
+                    display: flex;
+                    justify-content: space-around;
+                    align-items: center;
+                    gap: 20px;
+                    font-size: 20px;
+                    .link-name_mobile {
+                        width: 50vw;
+                    }
+                    .link-icon_mobile {
+                        width: 20vw;
+                        font-size: 30px;
+                       .fas {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                       }
+                    }
+                }
+            }
+        }
+        .HeaderNavMobile {
+            margin-top: 20px;
+            padding: 0;
+            .nav-list.vertical .nav-item .nav-link__content {
+                padding-left: 20px ;
+            }
+            .nav-item {
+                .nav-link {
+                    font-size: 20px;
+                }
+            }
+            
+        }
+    }
+    
+    // ************** MOBILE OFFERS VIEW *************
+    .OffersMobileView {
+        table {
+            .photo {
+                width: 100%;
+                height: 200px;
+                span.visual_id {
+                    top: auto;
+                    bottom: 10px;
+                    left: 10px;
+                    font-size: 20px;
+                }
+                .image-container {
+                    height: 200px;
+                    display: flex;
+                    justify-content: center;
+                    background-color: $color_grey;
+                }
+                img {
+                    height: 100%;
+                    width: auto
+                }
+            }
+            td {
+                text-align: left;
+            }
+            .region {
+                width: auto;
+            }
+            tbody {
+                tr:nth-child(n) {
+                    background-color: $color_light;
+                }
+            }
+        }
+        .OfferMobileItem-dropdown {
+            .label {
+                color: darken($color_grey, 3);
+            }
+        }
+        .passive {
+            opacity: .5;
+        }
+        
+    }
+    
+
+    // ************** MOBILE OFFER ITEM *************
+    .OfferMobileItem {
+        .info {
+            display: flex;
+            justify-content: space-between;
+            .id {
+                text-align: center;
+            }
+            .region {
+                p {
+                    font-size: 14px;
+                    span {
+                        font-weight: 400;
+                    }
+                }
+            }
+            .company {
+                font-size: 15px;
+            }
+            .id {
+                width: auto;
+            }
+        }
+        .description {
+            width: 100%;
+            padding: 10px;
+            .price {
+                width: fit-content;
+                display: flex;
+                p {
+                    font-size: 6vw;
+                    small {
+                        white-space: nowrap;
+                    }
+                }
+                .tax-form {                
+                    opacity: 40%;
+                }
+                
+            }
+            
+        }
+        
+    }
+
+    // ************** MOBILE COMPANY VIEW *************
+
+    .CompanyViewItem {
+        border: 2px solid teal;
+        background-color:  darken($color_light, 3);
+        .status {
+            width: 100%;
+        }
+        .dealType {
+            width: auto;
+        }
+        .date {
+            width: auto;
         }
     }

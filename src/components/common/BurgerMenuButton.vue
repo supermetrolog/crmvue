@@ -1,5 +1,5 @@
 <template>
-  <div class="BurgerMenuButton">
+  <div class="BurgerMenuButton" @click="onClick">
     <div
       class="bar1"
       :class="{ change_bar1: isActive }"
@@ -42,10 +42,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    isClicked: {
-      type: Boolean,
-      default: false,
-    },
   },
   computed: {
     burgerSize() {
@@ -72,6 +68,11 @@ export default {
       return result;
     },
   },
+  methods: {
+    onClick() {
+      this.$emit("onClick");
+    },
+  },
 };
 </script>
 
@@ -80,6 +81,9 @@ export default {
   padding: 5%;
   text-align: center;
   z-index: 15;
+  &:hover {
+    cursor: pointer;
+  }
   .bar1,
   .bar2,
   .bar3 {
@@ -95,8 +99,8 @@ export default {
     opacity: 0;
   }
   .change_bar3 {
-    -webkit-transform: rotate(45deg) translate(-8px, -8px);
-    transform: rotate(45deg) translate(-8px, -8px);
+    -webkit-transform: rotate(45deg) translate(-9px, -7px);
+    transform: rotate(45deg) translate(-9px, -7px);
     width: 46px;
   }
 }

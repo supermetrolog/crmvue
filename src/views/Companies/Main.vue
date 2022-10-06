@@ -31,18 +31,22 @@
     <hr />
 
     <div class="row no-gutters companies-actions">
-      <div class="col-6">
+      <div class="col-md-6">
         <PaginationClassic
           :pagination="COMPANIES_PAGINATION"
           @next="next"
           v-if="COMPANIES_PAGINATION"
           class="d-inline"
         />
-        <RefreshButton class="ml-3" @click="getCompanies" :disabled="loader" />
+        <RefreshButton
+          class="ml-md-3 ml-2"
+          @click="getCompanies"
+          :disabled="loader"
+        />
       </div>
-      <div class="col-6 text-right ml-auto">
+      <div class="col-md-6 text-right ml-auto">
         <button
-          class="btn btn-primary mr-2 ml-5"
+          class="btn btn-primary mr-md-2 ml-md-5"
           @click="companyGroupsFormVisible = true"
         >
           Создать группу компаний
@@ -57,7 +61,12 @@
         <Loader v-if="loader && !COMPANIES.length" class="center" />
         <CompanyTableView
           :companies="COMPANIES"
-          v-if="COMPANIES.length"
+          v-if="COMPANIES.length && !this.isMobile"
+          :loader="loader"
+        />
+        <CompanyViewMobile
+          :companies="COMPANIES"
+          v-if="COMPANIES.length && this.isMobile"
           :loader="loader"
         />
         <h1
@@ -78,6 +87,7 @@
 </template>
 
 <script>
+import CompanyViewMobile from "../../components/companies/companies/mobile/CompanyViewMobile.vue";
 import CompanyTableView from "@/components/companies/companies/CompanyTableView.vue";
 import CompanyForm from "@/components/companies/forms/company-form/CompanyForm.vue";
 import CompanySearchForm from "@/components/companies/forms/company-form/CompanySearchForm.vue";
@@ -95,12 +105,14 @@ export default {
       companyGroupsFormVisible: false,
     };
   },
+  inject: ["isMobile"],
   components: {
     CompanyTableView,
     CompanyForm,
     CompanyGroupsForm,
     CompanySearchForm,
     RefreshButton,
+    CompanyViewMobile,
   },
   methods: {
     ...mapActions(["FETCH_COMPANIES", "SEARCH_COMPANIES"]),
