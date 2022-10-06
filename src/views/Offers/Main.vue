@@ -98,7 +98,7 @@ export default {
         type_id: [2, 3],
         // type_id: [2],
         expand:
-          "object,company.mainContact.phones,company.mainContact.emails,miniOffersMix,generalOffersMix.offer,consultant.userProfile",
+          "contact.emails,contact.phones,object,company.mainContact.phones,company.mainContact.emails,miniOffersMix,generalOffersMix.offer,consultant.userProfile",
       };
       if (!this.FAVORITES_OFFERS.length) {
         await this.SEARCH_FAVORITES_OFFERS();

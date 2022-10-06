@@ -109,21 +109,21 @@
         <router-link :to="'/companies/' + offer.company.id" target="_blank">
           {{ offer.company.full_name }}
         </router-link>
-        <div class="contact" v-if="offer.company.mainContact">
-          {{ offer.company.mainContact.full_name }}
+        <div class="contact" v-if="offer.contact || offer.company.mainContact">
+          {{ this.contact.full_name }}
           <a
             :href="'mailto:' + email.email"
-            v-for="email of offer.company.mainContact.emails"
+            v-for="email of this.contact.emails"
             :key="email.email"
             class="d-block"
           >
             {{ email.email }}
           </a>
           <PhoneNumber
-            v-for="phone of offer.company.mainContact.phones"
+            v-for="phone of this.contact.phones"
             :key="phone.id"
             :phone="phone"
-            :contact="offer.company.mainContact"
+            :contact="this.contact"
           />
         </div>
       </template>
@@ -201,6 +201,10 @@ export default {
   },
   computed: {
     ...mapGetters(["FAVORITES_OFFERS", "THIS_USER"]),
+    contact() {
+      let contact = this.offer.contact || this.offer.company.mainContact;
+      return contact;
+    },
   },
   methods: {
     ...mapActions([
