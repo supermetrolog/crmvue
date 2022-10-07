@@ -117,21 +117,21 @@
               </router-link>
               <br />
               <strong class="label">Контакты</strong>
-              <div class="contact" v-if="offer.company.mainContact">
-                {{ offer.company.mainContact.full_name }}
+              <div class="contact" v-if="this.contact">
+                {{ this.contact.full_name }}
                 <a
                   :href="'mailto:' + email.email"
-                  v-for="email of offer.company.mainContact.emails"
+                  v-for="email of this.contact.emails"
                   :key="email.email"
                   class="d-block"
                 >
                   {{ email.email }}
                 </a>
                 <PhoneNumber
-                  v-for="phone of offer.company.mainContact.phones"
+                  v-for="phone of this.contact.phones"
                   :key="phone.id"
                   :phone="phone"
-                  :contact="offer.company.mainContact"
+                  :contact="this.contact"
                 />
               </div>
             </template>
@@ -164,15 +164,9 @@
 import DropDown from "../../common/DropDown.vue";
 
 import Tr from "../../common/table/Tr.vue";
-import {
-  DirectionList,
-  DistrictList,
-  RegionList,
-  TaxFormList,
-} from "@/const/Const.js";
-import { mapGetters, mapActions } from "vuex";
-
+import { MixinOfferItem } from "../mixins";
 export default {
+  mixins: [MixinOfferItem],
   name: "OfferMobileItem",
   components: {
     Tr,
@@ -180,21 +174,10 @@ export default {
   },
   data() {
     return {
-      dropdownIsOpen: false,
-      directionList: DirectionList.get("param"),
-      districtList: DistrictList.get("param"),
-      regionList: RegionList.get("param"),
-      taxFormList: TaxFormList,
       isVisibleMain: false,
     };
   },
-  props: {
-    offer: {
-      type: Object,
-    },
-  },
   computed: {
-    ...mapGetters(["FAVORITES_OFFERS", "THIS_USER"]),
     priceHandler() {
       let result;
       if (this.offer.deal_type == 1 || this.offer.deal_type == 4) {
@@ -224,43 +207,6 @@ export default {
     },
   },
   methods: {
-    ...mapActions([
-      "ADD_FAVORITES_OFFER",
-      "DELETE_FAVORITES_OFFERS",
-      "SEARCH_FAVORITES_OFFERS",
-    ]),
-    getOfferUrl(offer) {
-      const baseUrl = "https://pennylane.pro/complex/";
-      let url = baseUrl + offer.complex_id;
-      if (offer.type_id == 3) {
-        return url;
-      }
-      if (offer.generalOffersMix) {
-        url += "?offer_id=[" + offer.generalOffersMix.original_id + "]";
-      } else {
-        url += "?offer_id=[" + offer.original_id + "]";
-      }
-      return url;
-    },
-
-    async clickFavoriteOffer(offer) {
-      if (
-        !this.FAVORITES_OFFERS.find(
-          (item) => item.original_id == offer.original_id
-        )
-      ) {
-        return this.ADD_FAVORITES_OFFER(offer);
-      }
-      await this.DELETE_FAVORITES_OFFERS(offer);
-      this.$emit("deleteFavoriteOffer", offer);
-    },
-    clickViewPdf(offer) {
-      let url =
-        this.$apiUrlHelper.url() +
-        `pdf/presentations?type_id=${offer.type_id}&original_id=${offer.original_id}&object_id=${offer.object_id}&consultant=${this.THIS_USER.userProfile.medium_name}`;
-      console.error(url);
-      window.open(url, "_blank");
-    },
     clickOpenMore() {
       if (this.dropdownIsOpen) {
         return (this.dropdownIsOpen = false);
