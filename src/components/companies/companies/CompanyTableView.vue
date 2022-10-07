@@ -124,43 +124,19 @@
 </template>
 
 <script>
+import { MixinCompanyView } from "./mixins";
 import Table from "@/components/common/table/Table";
 import Tr from "@/components/common/table/Tr";
 import Th from "@/components/common/table/Th";
 import Td from "@/components/common/table/Td";
-import Progress from "@/components/common/Progress";
-import { CompanyCategories, RatingList, PositionList } from "@/const/Const";
 export default {
+  mixins: [MixinCompanyView],
   name: "CompanyTableView",
   components: {
     Table,
     Tr,
     Th,
     Td,
-    Progress,
-  },
-  data() {
-    return {
-      ratingOptions: RatingList.get("param"),
-      positionOptions: PositionList.get("param"),
-    };
-  },
-  props: {
-    companies: {
-      type: Array,
-    },
-    loader: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  methods: {
-    category(categoryValue) {
-      return CompanyCategories.get("param")[categoryValue][1];
-    },
   },
 };
 </script>
-
-<style>
-</style>

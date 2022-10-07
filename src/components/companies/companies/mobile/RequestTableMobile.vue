@@ -162,43 +162,10 @@
 </template>
 
 <script>
-import Tr from "../../../common/table/Tr.vue";
-import Table from "@/components/common/table/Table";
-import Th from "@/components/common/table/Th";
-import {
-  DealTypeList,
-  RegionList,
-  DirectionList,
-  DistrictList,
-  PassiveWhyRequest,
-} from "@/const/Const.js";
-import Progress from "@/components/common/Progress";
+import { MixinRequestTable } from "../mixins";
 export default {
+  mixins: [MixinRequestTable],
   name: "RequestTableMobile",
-  components: {
-    Table,
-    Th,
-    Progress,
-    Tr,
-  },
-  data() {
-    return {
-      dealTypeList: DealTypeList.get("param"),
-      regionList: RegionList.get("param"),
-      directionList: DirectionList.get("param"),
-      districtList: DistrictList.get("param"),
-      passiveWhyOptions: PassiveWhyRequest.get("param"),
-    };
-  },
-  props: {
-    requests: {
-      type: Array,
-    },
-    loader: {
-      type: Boolean,
-      default: false,
-    },
-  },
 };
 </script>
 

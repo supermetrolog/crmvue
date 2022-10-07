@@ -155,44 +155,13 @@
 </template>
 
 <script>
-import Table from "@/components/common/table/Table";
-import Tr from "@/components/common/table/Tr";
-import Th from "@/components/common/table/Th";
 import Td from "@/components/common/table/Td";
-import {
-  DealTypeList,
-  RegionList,
-  DirectionList,
-  DistrictList,
-  PassiveWhyRequest,
-} from "@/const/Const.js";
-import Progress from "@/components/common/Progress";
+import { MixinRequestTable } from "../mixins";
 export default {
+  mixins: [MixinRequestTable],
   name: "RequestTable",
   components: {
-    Table,
-    Tr,
-    Th,
     Td,
-    Progress,
-  },
-  data() {
-    return {
-      dealTypeList: DealTypeList.get("param"),
-      regionList: RegionList.get("param"),
-      directionList: DirectionList.get("param"),
-      districtList: DistrictList.get("param"),
-      passiveWhyOptions: PassiveWhyRequest.get("param"),
-    };
-  },
-  props: {
-    requests: {
-      type: Array,
-    },
-    loader: {
-      type: Boolean,
-      default: false,
-    },
   },
 };
 </script>

@@ -99,32 +99,9 @@
 </template>
 
 <script>
-import Progress from "@/components/common/Progress";
-import { CompanyCategories, RatingList, PositionList } from "@/const/Const";
+import { MixinCompanyView } from "../mixins";
 export default {
+  mixins: [MixinCompanyView],
   name: "CompanyViewMobile",
-  components: {
-    Progress,
-  },
-  data() {
-    return {
-      ratingOptions: RatingList.get("param"),
-      positionOptions: PositionList.get("param"),
-    };
-  },
-  props: {
-    companies: {
-      type: Array,
-    },
-    loader: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  methods: {
-    category(categoryValue) {
-      return CompanyCategories.get("param")[categoryValue][1];
-    },
-  },
 };
 </script>
