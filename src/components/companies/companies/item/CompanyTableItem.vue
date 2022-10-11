@@ -1,5 +1,5 @@
 <template>
-  <Tr class="company-table-view">
+  <Tr class="company-table-view CompanyTableItem">
     <Td class="text-center p-0">
       {{ company.id }}
     </Td>
@@ -106,28 +106,65 @@
   <Tr
     ><td colspan="9">
       <div>
-        <div>
-          <span>Запросы</span>
-          <div>
-            <div v-for="request in company.requests" :key="request.id">
-              <div v-for="timeline in request.timelines" :key="timeline.id">
-                <span
-                  v-for="timelineStep in timeline.timelineSteps"
-                  :key="timelineStep.id"
-                  >1</span
-                >
-              </div>
+        <div class="CompanyTableItem-block">
+          <button
+            class="CompanyTableItem-button"
+            @click="requestsIsOpen = !requestsIsOpen"
+          >
+            <i class="fa fa-chevron-down" v-if="!requestsIsOpen"></i>
+            <i class="fa fa-chevron-up" v-if="requestsIsOpen"></i>
+            Запросы ({{ company.requests.length }})
+          </button>
+          <div v-if="requestsIsOpen">
+            <div
+              style="margin-bottom: 10px"
+              v-for="request in company.requests"
+              :key="request.id"
+            >
+              <MiniTimeline
+                :currentSteps="timeline.timelineSteps"
+                v-for="timeline in request.timelines"
+                :key="timeline"
+              />
             </div>
           </div>
         </div>
-        <div>Объекты</div>
-        <div>Услуги</div>
+        <div class="CompanyTableItem-block" v-if="company.objects.length">
+          <button
+            class="CompanyTableItem-button"
+            @click="objectsIsOpen = !objectsIsOpen"
+          >
+            <i class="fa fa-chevron-down" v-if="!objectsIsOpen"></i>
+            <i class="fa fa-chevron-up" v-if="objectsIsOpen"></i>
+            Объекты ({{ company.objects.length }})
+          </button>
+          <div v-if="objectsIsOpen">
+            <CompanyTableObjectItem
+              :object="object"
+              v-for="object in company.objects"
+              :key="object.id"
+            />
+          </div>
+        </div>
+        <!-- <div>
+          <button
+            class="CompanyTableItem-button"
+            @click="objectsIsOpen = !objectsIsOpen"
+          >
+            <i class="fa fa-chevron-down" v-if="!objectsIsOpen"></i>
+            <i class="fa fa-chevron-up" v-if="objectsIsOpen"></i>
+            Услуги ({{ company.requests.length }})
+          </button>
+        </div> -->
       </div>
     </td></Tr
   >
 </template>
 
 <script>
+import CompanyTableObjectItem from "../../objects/company-objects/table-objects/CompanyTableObjectItem.vue";
+import MiniTimeline from "./MiniTimeline.vue";
+import { Timeline } from "@/const/Const";
 import { MixinCompanyView } from "../mixins";
 import Tr from "@/components/common/table/Tr";
 import Td from "@/components/common/table/Td";
@@ -137,12 +174,21 @@ export default {
   components: {
     Tr,
     Td,
+    MiniTimeline,
+    CompanyTableObjectItem,
   },
   props: {
     company: {
       type: Object,
       default: () => {},
     },
+  },
+  data() {
+    return {
+      steps: Timeline.get("param"),
+      requestsIsOpen: true,
+      objectsIsOpen: false,
+    };
   },
 };
 </script>

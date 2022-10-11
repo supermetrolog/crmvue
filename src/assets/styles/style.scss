@@ -2136,6 +2136,28 @@
         }
     }
     
+    // ********** COMPANY TABLE ITEM ***********
+    .CompanyTableItem {
+       &-button {
+        border: medium none;
+        background-image: none; 
+        background: transparent;
+        background-color: transparent;
+        &:hover {
+            cursor: pointer;
+        }
+        }
+        &-block {
+            margin-bottom: 10px;
+        }
+    }
+
+    .CompanyTableObjectOffer {
+        background-color: $color_success_alt;
+        color: $color_light;
+        font-size: 12px;
+    } 
+
     // ********** LOADER ***********
     .loader-container {
         position: absolute;
@@ -4640,6 +4662,66 @@
         }
     }
     
+    // ************** MINI TIMELINE *************
+
+    .MiniTimeline {    
+        display: flex;
+        &-step {
+            display: flex;
+            white-space: nowrap;
+            border-top: 2px solid black;
+            border-bottom: 2px solid black;
+            $step_height: 50px;
+            height: $step_height;
+            padding: 5px;
+            &::after {
+                content: '';
+                border-top: 2px solid;
+                border-right: 2px solid;
+                transform: rotate(45deg) scale(var(--ggs,1));
+                width: $step_height/1.5;
+                height: $step_height/1.4;
+                position: relative;
+                left: $step_height/2.25;                
+            }
+            &:first-child {
+                border-left: 2px solid black;
+            }
+            &:last-child{
+                border-right: 2px solid black;
+                &::after {
+                display: none;
+                }
+                
+            }
+            &-name {
+                display: flex;
+                align-items: center;
+                text-align: center;
+                margin-left: $step_height/2;
+                .fas {
+                    opacity: 0;
+                    margin-left: 10px;
+                    color: white;
+                    background-color: $color_success;
+                }
+                .show {
+                    opacity: 100;
+                }
+            }
+            
+              
+        }
+        &-step_done {
+            background-color: $color_success;
+            &::after {
+                background-color: $color_success;
+            }
+            &-name { 
+                
+            }
+        }
+    }
     // ************** MAP-CONTAINER *************
     .map-container {
         position: relative;
@@ -4933,3 +5015,5 @@
             width: auto;
         }
     }
+
+     
