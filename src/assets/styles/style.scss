@@ -4359,11 +4359,11 @@
             }
             .OfferTableRow-odd {
                 background-color: darken($color_light, 3) !important;
-                border-color: darken($color_light, 3) !important; 
+                border-color: darken($color_light, 3) !important;
             }
             .OfferTableRow-even {
                 background-color: $color_light !important;
-                border-color: $color_light !important; 
+                border-color: $color_light !important;
             }
             tr {
                 padding: 5px 0;
@@ -4522,7 +4522,6 @@
             }
             .OfferTableDropdown-header {
                 background-color: darken($color_light, 3);
-                
                 .OfferTableDropdown-menu {
                     display: flex;
                     flex-direction: row;
@@ -4617,6 +4616,7 @@
     .MiniOffersItem-archive {
         color: darken($color: $color_disabled_actions, $amount: 20);
     }
+    
     .MiniOffersItem-actions {
         display: flex;
         justify-content: space-between;
@@ -4635,7 +4635,6 @@
             .fas {
                 width: 20px;
                 height: 10px;
-                
             }
         }
     }
@@ -4714,10 +4713,10 @@
             }
         }
     }
+    
     // ************** MOBILE COMPONENTS *************
     // ************** MOBILE COMPONENTS *************
     // ************** MOBILE COMPONENTS *************
-
     // ************** MOBILE MAIN LAYOUT *************
     .MainLayoutMobile {
         .content {
@@ -4726,8 +4725,7 @@
             padding: 100px 10px;
         }
         .sidebar-slide-enter-active,
-        .sidebar-slide-leave-active
-        {
+        .sidebar-slide-leave-active {
             transition: transform 0.2s ease;
         }
         .sidebar-slide-enter-from,
@@ -4741,7 +4739,7 @@
         //     }
         // }
     }
-
+    
     // ************** HEADER MOBILE LAYOUT *************
     .HeaderMobile {
         .nav-list {
@@ -4755,7 +4753,7 @@
         }
         .btn-large {
             width: auto;
-          }
+        }
         .btn {
             padding: 1em;
             font-size: 0.5rem;
@@ -4776,7 +4774,7 @@
             }
         }
     }
-
+    
     // ************** SIDEBAR MOBILE *************
     .SidebarMobile {
         height: 100%;
@@ -4802,11 +4800,11 @@
                     .link-icon_mobile {
                         width: 20vw;
                         font-size: 30px;
-                       .fas {
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                       }
+                        .fas {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                        }
                     }
                 }
             }
@@ -4815,14 +4813,13 @@
             margin-top: 20px;
             padding: 0;
             .nav-list.vertical .nav-item .nav-link__content {
-                padding-left: 20px ;
+                padding-left: 20px;
             }
             .nav-item {
                 .nav-link {
                     font-size: 20px;
                 }
             }
-            
         }
     }
     
@@ -4869,10 +4866,8 @@
         .passive {
             opacity: .5;
         }
-        
     }
     
-
     // ************** MOBILE OFFER ITEM *************
     .OfferMobileItem {
         .info {
@@ -4908,21 +4903,17 @@
                         white-space: nowrap;
                     }
                 }
-                .tax-form {                
+                .tax-form {
                     opacity: 40%;
                 }
-                
             }
-            
         }
-        
     }
-
+    
     // ************** MOBILE COMPANY VIEW *************
-
     .CompanyViewItem {
         border: 2px solid teal;
-        background-color:  darken($color_light, 3);
+        background-color: darken($color_light, 3);
         .status {
             width: 100%;
         }
@@ -4931,5 +4922,26 @@
         }
         .date {
             width: auto;
+        }
+    }
+    
+    // ***************** STEP-STAGE *******************
+    .step-stage {
+        &.isDone {
+            background-color: $color_success;
+        }
+        &.isCurrent {
+            background-color: $color_warning;
+        }
+        .wrapper {
+            padding: 5px 10px;
+        }
+        &__title {
+            font-size: 13px!important;
+            font-weight: bold!important;
+        }
+        i.isDone {
+            color: $color_light;
+            font-size: 18px;
         }
     }

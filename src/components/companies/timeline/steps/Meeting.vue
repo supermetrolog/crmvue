@@ -1,107 +1,130 @@
 <template>
   <div class="col-12" v-if="data">
-    <div class="row no-gutters" v-if="data.additional != 1">
-      <div class="col-4 pr-1">
-        <CustomButton
-          :options="{ btnActive: data.additional == 1, disabled }"
-          @confirm="selectPhoned"
+    <teleport to="body">
+      <transition
+        mode="out-in"
+        enter-active-class="animate__animated animate__zoomIn for__modal absolute"
+        leave-active-class="animate__animated animate__zoomOut for__modal absolute"
+      >
+        <NotificationForm
+          @close="closeNotificationForm"
+          v-if="notificationFormVisible"
+        />
+      </transition>
+    </teleport>
+    <div class="row no-gutters">
+      <div class="col-12">
+        <StepStage
+          class="mb-2"
+          title="Шаг 1. Изучите деятельность компании клиента, свяжитесь с контактным лицом и обсудите задачу"
+          :isDone="data.additional == 1"
+          :isCurrent="data.additional != 1"
         >
-          <template #btnContent>
-            <i class="fas fa-phone-volume"></i>
-            Дозвонился
-          </template>
-        </CustomButton>
-      </div>
-      <div class="col-4 px-1">
-        <CustomButton
-          :options="{
-            btnActive: data.additional == 2,
-            btnVisible: true,
-            disabled,
-          }"
-          @confirm="selectCallback"
+          <StepActions
+            :buttons="buttonsOne"
+            @phoned="selectPhoned"
+            @callback="openNotificationForm"
+            @negative="selectNegative"
+          />
+        </StepStage>
+        <StepStage
+          title="Шаг 2. Проверьте правильность заполнения запроса, отредактируйте при необходимости и затем утвердите"
+          :isDone="data.done == 1"
+          :isCurrent="data.additional == 1"
         >
-          <template #btnContent>
-            <i class="fas fa-calendar-alt"></i>
-            Перезвонить
-          </template>
-          <template #extraContent="{ data }">
-            <input
-              v-if="callBackDate || data.openned"
-              type="date"
-              class="action mt-1"
-              v-model="callBackDate"
-              :disabled="!data.openned"
-            />
-          </template>
-        </CustomButton>
-      </div>
-      <div class="col-4 pl-1">
-        <CustomButton
-          :options="{ btnActive: data.negative, btnClass: 'danger', disabled }"
-          @confirm="selectNegative"
-        >
-          <template #btnContent>
-            <i class="fas fa-phone-slash"></i>
-            Не дозвонился
-          </template>
-        </CustomButton>
-      </div>
-    </div>
-    <div class="row no-gutters" v-if="data.additional == 1">
-      <div class="col-6 pr-1">
-        <CustomButton
-          :options="{
-            btnActive: data.done,
-            btnClass: 'success',
-            btnVisible: false,
-            disabled,
-          }"
-          @confirm="selectDone"
-        >
-          <template #btnContent>
-            <i class="fas fa-check"></i>
-            Утвердил запрос
-          </template>
-        </CustomButton>
-      </div>
-      <div class="col-6 pl-1">
-        <CustomButton
-          :options="{
-            btnActive: true,
-            btnClass: 'dark',
-            btnVisible: false,
-            disabled,
-          }"
-          @confirm="$emit('openRequestFormForUpdate')"
-        >
-          <template #btnContent>
-            <i class="fas fa-pencil-alt"></i>
-            Редактировать запрос
-          </template>
-        </CustomButton>
+          <StepActions
+            :buttons="buttonsTwo"
+            @done="selectDone"
+            @updateRequest="openRequestForm"
+          />
+        </StepStage>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import CustomButton from "@/components/common/CustomButton.vue";
+import StepActions from "./actions/StepActions.vue";
+import NotificationForm from "@/components/notifications/forms/NotificationForm.vue";
+import StepStage from "./steps-stages/StepStage.vue";
 import { MixinSteps } from "../mixins";
 import { mapGetters } from "vuex";
 export default {
   name: "Meeting",
   mixins: [MixinSteps],
   components: {
-    CustomButton,
+    StepActions,
+    NotificationForm,
+    StepStage,
   },
   data() {
     return {
       callBackDate: null,
+      notificationFormVisible: false,
     };
   },
   computed: {
     ...mapGetters(["THIS_USER"]),
+    buttonsOne() {
+      return [
+        {
+          btnClass: "success",
+          btnVisible: false,
+          defaultBtn: true,
+          disabled: this.disabled,
+          btnActive: this.data.additional == 1,
+          title: "",
+          text: "Поговорил",
+          icon: "fas fa-phone-volume",
+          emited_event: "phoned",
+          withWayOfSending: false,
+          classes: "col-2 pr-1",
+        },
+        {
+          btnClass: "primary",
+          btnVisible: false,
+          defaultBtn: true,
+          disabled: this.disabled,
+          btnActive: this.data.additional == 2,
+          title: "",
+          text: "Перезвонить",
+          icon: "fas fa-calendar-alt",
+          emited_event: "callback",
+          withWayOfSending: false,
+          classes: "col-2 px-1",
+        },
+        {
+          btnClass: "danger",
+          btnVisible: false,
+          defaultBtn: true,
+          btnActive: this.data.negative,
+          disabled: this.disabled,
+          title: "",
+          text: "Не дозвонился",
+          icon: "fas fa-phone-slash",
+          emited_event: "negative",
+          withWayOfSending: false,
+          classes: "col-2 pl-1",
+        },
+      ];
+    },
+    buttonsTwo() {
+      return [
+        {
+          btnClass: "success",
+          btnVisible: false,
+          defaultBtn: true,
+          disabled: this.disabled,
+          btnActive: this.data.done,
+          title: "",
+          text: "Отлично, идём дальше",
+          icon: "fas fa-check",
+          emited_event: "done",
+          withWayOfSending: false,
+          classes: "col-2 pr-1",
+        },
+      ];
+    },
   },
   mounted() {
     this.setData();
@@ -111,6 +134,15 @@ export default {
       if (this.data.date) {
         this.callBackDate = this.data.date.substr(0, 10);
       }
+    },
+    closeNotificationForm() {
+      this.notificationFormVisible = false;
+    },
+    openNotificationForm() {
+      this.notificationFormVisible = true;
+    },
+    openRequestForm() {
+      this.$emit("openRequestForm");
     },
     selectDone(comment) {
       if (this.data.done) {
@@ -233,7 +265,7 @@ export default {
       this.setData();
     },
   },
-  emits: ["updateItem", "openRequestFormForUpdate"],
+  emits: ["updateItem", "openRequestForm"],
 };
 </script>
 

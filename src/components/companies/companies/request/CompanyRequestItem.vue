@@ -33,7 +33,7 @@
         <i
           class="fas fa-clone text-dark clone"
           @click="cloneRequest"
-          v-if="!reedOnly"
+          v-if="!reedOnly && !editOnly"
           title="Клонировать"
         ></i>
         <!-- <i
@@ -279,6 +279,10 @@ export default {
       type: Object,
     },
     reedOnly: {
+      type: Boolean,
+      default: false,
+    },
+    editOnly: {
       type: Boolean,
       default: false,
     },
