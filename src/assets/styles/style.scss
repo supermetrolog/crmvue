@@ -4666,14 +4666,15 @@
 
     .MiniTimeline {    
         display: flex;
+        font-size: 13px;
         &-step {
             display: flex;
             white-space: nowrap;
             border-top: 2px solid black;
             border-bottom: 2px solid black;
-            $step_height: 50px;
+            $step_height: 33px;
             height: $step_height;
-            padding: 5px;
+            padding: 3px;
             &::after {
                 content: '';
                 border-top: 2px solid;
