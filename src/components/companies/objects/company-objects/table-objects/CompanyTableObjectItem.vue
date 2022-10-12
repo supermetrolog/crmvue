@@ -1,5 +1,5 @@
 <template>
-  <div class="company-objects-list__item" :class="col">
+  <div class="company-objects-list__item CompanyTableObjectItem" :class="col">
     <div class="row no-gutters">
       <div class="col-4" :title="object.description_auto || 'нет описания'">
         <div class="image-container">
@@ -9,10 +9,10 @@
         </div>
       </div>
       <div class="col-6 desc row">
-        <div class="col-6">
+        <div class="col-7">
           <div class="item__title">
             <p>{{ $formatter.number(object.area_building) }} м<sup>2</sup></p>
-            <span>{{ object.object_class }}</span>
+            <span v-if="objectClass">, класс {{ objectClass }}</span>
           </div>
           <div class="address">
             <p>{{ object.address }}</p>
@@ -59,6 +59,27 @@ export default {
 
     objectUrl() {
       return "https://pennylane.pro/complex/" + this.object.complex_id;
+    },
+
+    objectClass() {
+      let result;
+      switch (this.object.object_class) {
+        case 0:
+          break;
+        case 1:
+          result = "A";
+          break;
+        case 2:
+          result = "B";
+          break;
+        case 3:
+          result = "C";
+          break;
+        case 4:
+          result = "D";
+          break;
+      }
+      return result;
     },
   },
 };

@@ -4669,6 +4669,7 @@
         font-size: 13px;
         &-step {
             display: flex;
+            align-items: center;
             white-space: nowrap;
             border-top: 2px solid black;
             border-bottom: 2px solid black;
@@ -4722,7 +4723,33 @@
                 
             }
         }
+        &-big_size {
+            $step_height: 60px;
+            height: $step_height;
+            &::after {
+                content: '';
+                transform: rotate(45deg) scale(var(--ggs,1));
+                width: $step_height/1.45;
+                height: $step_height/1.45;
+                left: $step_height/2.6;                
+            }
+            .MiniTimeline-step-name {
+                margin-left: 40px;}
+        }
     }
+
+     // ************** COMPANY TABLE OBJECT ITEM *************
+
+    .CompanyTableObjectItem {
+        .item__title {
+            p:first-child {
+                border-right: 0;
+                padding-right: 0;
+            }
+           
+        }
+    }
+
     // ************** MAP-CONTAINER *************
     .map-container {
         position: relative;

@@ -8,6 +8,7 @@
         'MiniTimeline-step_done': currentSteps.find(
           (step) => step.number == timelineStep[0]
         ),
+        'MiniTimeline-big_size': bigSize,
       }"
     >
       <span class="MiniTimeline-step-name"
@@ -31,6 +32,10 @@ export default {
     currentSteps: {
       type: Array,
       default: () => [],
+    },
+    bigSize: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
