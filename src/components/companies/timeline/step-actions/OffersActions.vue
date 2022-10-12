@@ -29,45 +29,59 @@
     <div class="row no-gutters inner scroller">
       <div class="col-12">
         <div class="row px-2">
-          <div class="col-6">
-            <div class="timeline-actions row"></div>
-          </div>
+          <div class="col-12"></div>
         </div>
         <div class="row">
           <div class="col-12">
             <Objects>
-              <ObjectsControllPanel
-                :viewMode="viewMode"
-                :buttons="buttons"
-                @reset="reset"
-                @done="done"
-                @send="send"
-                @alreadySent="alreadySent"
-                @negative="negative"
-                @favorites="favorites"
-                @changeViewMode="changeViewMode"
-                ref="contoll_panel"
-              />
+              <StepStage
+                class="mb-2 sticky px-2"
+                :title="
+                  'Шаг 1. Изучите деятельность компании клиента, свяжитесь с контактным лицом и обсудите задачу ' +
+                  step.timelineStepObjects.length
+                "
+                :isDone="!!step.timelineStepObjects.length"
+                :closeSlotWhenDone="false"
+                :isCurrent="!step.timelineStepObjects.length"
+              >
+                <ObjectsControllPanel
+                  :viewMode="viewMode"
+                  :buttons="buttons"
+                  @reset="reset"
+                  @done="done"
+                  @send="send"
+                  @alreadySent="alreadySent"
+                  @negative="negative"
+                  @favorites="favorites"
+                  @changeViewMode="changeViewMode"
+                  ref="contoll_panel"
+                />
+              </StepStage>
               <ObjectsList
                 :objects="preventStepObjects"
-                :currentObjects="step.timelineStepObjects"
                 :selectedObjects="selectedObjects"
                 :disabled="disabled"
                 :withSeparator="true"
                 :loader="loader"
                 :viewMode="viewMode"
                 :currentStepId="step.id"
-                label="Отправленные предложения"
+                :label="
+                  'Отправленные предложения' +
+                  (preventStepObjects.length
+                    ? ` (${preventStepObjects.length})`
+                    : '')
+                "
                 @select="select"
                 @unSelect="unSelect"
                 @addComment="addComment"
+                class="success"
               />
               <div
                 class="
                   timeline-actions timeline-list-item
                   p-1
                   row
-                  justify-content-center
+                  justify-content-end
                 "
               >
                 <RefreshButton
@@ -75,19 +89,6 @@
                   :disabled="allObjectsLoader"
                   class="mr-2"
                 />
-
-                <!-- <CustomButton
-                  :options="{
-                    btnActive: recommendedFilter == 6,
-                    btnClass: 'success',
-                    defaultBtn: true,
-                    disabled: false,
-                  }"
-                  class="d-inline"
-                  @confirm="getSortRecommendedObjects()"
-                >
-                  <template #btnContent> SORT</template>
-                </CustomButton> -->
                 <CustomButton
                   :options="{
                     btnActive: recommendedFilter == 1,
@@ -129,6 +130,18 @@
               <ObjectsSearch
                 @search="search"
                 @reset="recommendedFilter = null"
+                @resetSelected="reset"
+                :additionalButtons="
+                  selectedObjects.length
+                    ? [
+                        {
+                          label: 'сбросить выбранное',
+                          classes: 'text-warning',
+                          event: 'resetSelected',
+                        },
+                      ]
+                    : []
+                "
                 noUrl
                 :queryParams="queryParams"
                 class="mb-2"
@@ -167,6 +180,7 @@ import { MixinAllObject } from "../../objects/mixins";
 import CustomButton from "@/components/common/CustomButton.vue";
 import Bar from "@/components/common/Bar";
 import RefreshButton from "@/components/common/RefreshButton.vue";
+import StepStage from "../steps/steps-stages/StepStage.vue";
 export default {
   name: "OffersActions",
   mixins: [MixinStepActions, MixinAllObject],
@@ -174,6 +188,7 @@ export default {
     Bar,
     CustomButton,
     RefreshButton,
+    StepStage,
   },
   data() {
     return {

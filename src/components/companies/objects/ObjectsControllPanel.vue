@@ -33,41 +33,6 @@
         </div>
       </div>
     </div>
-    <div class="col-4 text-right companies-actions">
-      <div class="row no-gutters">
-        <div class="col-4 align-self-center">
-          <p class="d-inline">Вид:</p>
-          <button
-            class="btn btn-action text-primary"
-            :class="{ active: viewMode }"
-            @click="$emit('changeViewMode', true)"
-          >
-            <i class="fas fa-th"></i>
-          </button>
-          <button
-            class="btn btn-action text-dark"
-            :class="{ active: !viewMode }"
-            @click="$emit('changeViewMode', false)"
-          >
-            <i class="fas fa-th-list"></i>
-          </button>
-        </div>
-        <div class="col-8 pl-1">
-          <div class="timeline-actions row no-gutters">
-            <div class="col-12">
-              <button
-                class="action warning"
-                @click.prevent="$emit('reset')"
-                title="Сбросить выделения предложений"
-              >
-                <i class="fas fa-redo"></i>
-                <span class="ml-1">Сбросить</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 

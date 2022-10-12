@@ -2933,7 +2933,6 @@
         &-controll-panel {
             position: sticky;
             top: -30px;
-            background-color: $color_light;
             z-index: 12;
         }
         &-search-input {
@@ -2946,6 +2945,14 @@
             }
         }
         &-list {
+            &.success {
+                .wrapper {
+                    background-color: $color_success_alt;
+                    .label {
+                        color: $color_light;
+                    }
+                }
+            }
             min-height: 300px;
             position: relative;
             .pagination-params {
@@ -4928,10 +4935,14 @@
     // ***************** STEP-STAGE *******************
     .step-stage {
         &.isDone {
-            background-color: $color_success;
+            .wrapper {
+                background-color: $color_success;
+            }
         }
         &.isCurrent {
-            background-color: $color_warning;
+            .wrapper {
+                background-color: $color_warning;
+            }
         }
         .wrapper {
             padding: 5px 10px;
@@ -4943,5 +4954,10 @@
         i.isDone {
             color: $color_light;
             font-size: 18px;
+        }
+        &.sticky {
+            position: sticky;
+            top: -30px;
+            z-index: 12;
         }
     }

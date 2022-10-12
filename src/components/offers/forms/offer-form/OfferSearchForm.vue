@@ -11,37 +11,50 @@
         />
       </FormGroup>
       <FormGroup>
-        <a
-          href="#"
-          @click.prevent="extraVisible = !extraVisible"
-          class="text-primary"
-        >
-          фильтры
-          <span class="badge badge-danger" v-if="filterCount">
-            {{ filterCount }}
-          </span>
-          <i class="fas fa-angle-down" v-if="!extraVisible"></i>
-          <i class="fas fa-angle-up" v-else></i>
-        </a>
-        <a
-          href="#"
-          class="text-primary ml-5 favorites"
-          @click.prevent="clickFavorites"
-          :class="{ selected: form.favorites }"
-        >
-          избранные
-          <span class="badge badge-info" v-if="favoritesCount">
-            {{ favoritesCount }}
-          </span>
-        </a>
-        <a
-          href="#"
-          @click.prevent="resetForm"
-          class="text-warning ml-md-5 ml-4"
-          v-if="filterCount"
-        >
-          сбросить
-        </a>
+        <div class="col-6">
+          <a
+            href="#"
+            @click.prevent="extraVisible = !extraVisible"
+            class="text-primary mr-2"
+          >
+            фильтры
+            <span class="badge badge-danger" v-if="filterCount">
+              {{ filterCount }}
+            </span>
+            <i class="fas fa-angle-down" v-if="!extraVisible"></i>
+            <i class="fas fa-angle-up" v-else></i>
+          </a>
+          <a
+            href="#"
+            class="text-primary ml-4 favorites"
+            @click.prevent="clickFavorites"
+            :class="{ selected: form.favorites }"
+          >
+            избранные
+            <span class="badge badge-info" v-if="favoritesCount">
+              {{ favoritesCount }}
+            </span>
+          </a>
+          <a
+            href="#"
+            @click.prevent="resetForm"
+            class="text-warning ml-md-5 ml-4"
+            v-if="filterCount"
+          >
+            сбросить фильтры
+          </a>
+        </div>
+        <div class="col-6 text-right">
+          <a
+            v-for="btn in additionalButtons"
+            :key="btn.label"
+            href="#"
+            @click.prevent="$emit(btn.event)"
+            :class="btn.classes"
+          >
+            {{ btn.label }}
+          </a>
+        </div>
       </FormGroup>
       <div v-show="extraVisible">
         <FormGroup class="mb-2">
@@ -372,6 +385,11 @@ export default {
       activePassiveOptions: ActivePassiveFUCK.get("param"),
       region: null,
     };
+  },
+  props: {
+    additionalButtons: {
+      type: Array,
+    },
   },
   computed: {
     ...mapGetters(["FAVORITES_OFFERS", "REGION_LIST"]),

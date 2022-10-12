@@ -12,7 +12,7 @@
           <i class="fas fa-check-circle isDone" v-if="isDone"></i>
         </div>
       </div>
-      <div v-if="!isDone && isCurrent">
+      <div v-if="(!isDone && isCurrent) || !closeSlotWhenDone">
         <slot></slot>
       </div>
     </div>
@@ -34,6 +34,10 @@ export default {
     isCurrent: {
       type: Boolean,
       default: false,
+    },
+    closeSlotWhenDone: {
+      type: Boolean,
+      default: true,
     },
   },
 };
