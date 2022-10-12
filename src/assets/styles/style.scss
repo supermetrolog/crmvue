@@ -2149,6 +2149,10 @@
         }
         &-block {
             margin-bottom: 10px;
+            .company-objects-list__item .image-container {
+                max-height: 100px;
+                max-width: 200px;
+            }
         }
     }
 
@@ -4706,6 +4710,8 @@
                     margin-left: 10px;
                     color: white;
                     background-color: $color_success;
+                    width: 10px;
+                    font-size: 20px;
                 }
                 .show {
                     opacity: 100;
@@ -4721,6 +4727,20 @@
             }
             &-name { 
                 
+            }
+        }
+        &-step_in_process {
+            background-color: $color_warning_alt;
+            border-color: black;
+            text-decoration:solid;
+            &::after {
+                background-color: $color_warning_alt;
+            }
+            .MiniTimeline-step-name {
+                color: $color_light;
+                .fas {
+                    background: none;
+                }
             }
         }
         &-big_size {
@@ -4748,6 +4768,18 @@
             }
            
         }
+        &-wrapper {
+            max-height: 110px;
+            .scroller {
+                max-height: 100px;
+            }
+        }
+        .address p {
+            max-height: 80px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
     }
 
     // ************** MAP-CONTAINER *************

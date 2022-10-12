@@ -6,7 +6,10 @@
       :key="timelineStep[0]"
       :class="{
         'MiniTimeline-step_done': currentSteps.find(
-          (step) => step.number == timelineStep[0]
+          (step) => step.number == timelineStep[0] && step.status === 1
+        ),
+        'MiniTimeline-step_in_process': currentSteps.find(
+          (step) => step.number == timelineStep[0] && step.status === 0
         ),
         'MiniTimeline-big_size': bigSize,
       }"
@@ -14,10 +17,24 @@
       <span class="MiniTimeline-step-name"
         >{{ timelineStep[1].name }}
         <i
-          class="fas fa-check-circle success"
-          :class="{
-            show: currentSteps.find((step) => step.number == timelineStep[0]),
-          }"
+          class="fas fa-check-circle success show"
+          v-if="
+            currentSteps.find(
+              (step) => step.number == timelineStep[0] && step.status === 1
+            )
+          "
+        ></i>
+        <i
+          class="fas fa-hourglass success show"
+          v-if="
+            currentSteps.find(
+              (step) => step.number == timelineStep[0] && step.status === 0
+            )
+          "
+        ></i>
+        <i
+          class="fas fa-hourglass success"
+          v-if="!currentSteps.find((step) => step.number == timelineStep[0])"
         ></i>
       </span>
     </div>

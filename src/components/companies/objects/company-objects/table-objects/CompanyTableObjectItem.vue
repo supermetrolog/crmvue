@@ -1,6 +1,7 @@
 <template>
   <div class="company-objects-list__item CompanyTableObjectItem" :class="col">
-    <div class="row no-gutters">
+    <hr class="mb-1" />
+    <div class="row no-gutters CompanyTableObjectItem-wrapper">
       <div class="col-4" :title="object.description_auto || 'нет описания'">
         <div class="image-container">
           <a :href="objectUrl" target="_blank">
@@ -8,8 +9,8 @@
           </a>
         </div>
       </div>
-      <div class="col-6 desc row">
-        <div class="col-7">
+      <div class="col-8 desc row">
+        <div class="col-6">
           <div class="item__title">
             <p>{{ $formatter.number(object.area_building) }} м<sup>2</sup></p>
             <span v-if="objectClass">, класс {{ objectClass }}</span>
@@ -18,7 +19,7 @@
             <p>{{ object.address }}</p>
           </div>
         </div>
-        <div class="col-6" v-if="this.object.offerMix">
+        <div class="col-6 scroller" v-if="this.object.offerMix">
           <CompanyTableObjectOffer
             v-for="offer in this.object.offerMix.filter(
               (offer) => offer.status == 1
