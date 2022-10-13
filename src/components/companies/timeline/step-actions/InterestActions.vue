@@ -5,14 +5,11 @@
         <div class="row">
           <div class="col-12">
             <Objects>
-              <ObjectsControllPanel
-                :viewMode="viewMode"
+              <Interest
+                :step="step"
                 :buttons="buttons"
-                @reset="reset"
                 @done="done"
-                @send="send"
                 @negative="negative"
-                @changeViewMode="changeViewMode"
               />
               <ObjectsList
                 :objects="preventStepObjects"
@@ -38,10 +35,14 @@
 <script>
 import { MixinStepActions } from "../mixins";
 import { MixinObject } from "../../objects/mixins";
+import Interest from "../steps/Interest.vue";
 
 export default {
   name: "InterestActions",
   mixins: [MixinStepActions, MixinObject],
+  components: {
+    Interest,
+  },
   methods: {
     updatedObjects(data, fn = null) {
       this.$emit("updatedObjects", data, true, fn);

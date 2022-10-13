@@ -32,6 +32,7 @@
 import { MixinSteps } from "../mixins";
 export default {
   name: "Offers",
+  emits: ["done", "negative"],
   mixins: [MixinSteps],
   methods: {
     clickNegative() {

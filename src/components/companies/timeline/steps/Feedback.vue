@@ -68,6 +68,7 @@ import { MixinSteps } from "../mixins";
 import Checkbox from "@/components/common/form/Checkbox.vue";
 export default {
   name: "Feedback",
+  emits: ["done", "negative"],
   mixins: [MixinSteps],
   components: {
     Checkbox,

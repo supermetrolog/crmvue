@@ -151,6 +151,7 @@ import Ymap from "@/components/common/Ymap.vue";
 import { MixinSteps } from "../mixins";
 export default {
   name: "Inspection",
+  emits: ["done", "negative", "send"],
   mixins: [MixinSteps],
   components: {
     Ymap,
