@@ -5,7 +5,6 @@
         <div class="row no-gutters">
           <div class="col-12">
             <h3 class="text-center">Маршрут</h3>
-
             <CustomButton
               :options="{
                 btnClass: 'primary',
@@ -20,9 +19,6 @@
                 оптимизировать
               </template>
             </CustomButton>
-            <!-- <a :href="yandexMapRoutesUrl" target="_blank"
-              >посмотреть на карте<i class="fas fa-route ml-1"></i
-            ></a> -->
           </div>
           <div class="col-12">
             <div class="car-routes">
@@ -47,14 +43,6 @@
                             alt="Фото объекта"
                           />
                         </div>
-                        <!-- <div class="col-8 pl-2">
-                          <b>
-                            {{ object.offer.district_name }} -
-                            {{ object.offer.direction_name }}
-                          </b>
-                          <p>{{ object.offer.object_type_name }}</p>
-                          <p>{{ object.offer.address }}</p>
-                        </div> -->
                         <div class="col-8 pl-2">
                           <b>
                             {{ object.offer.visual_id }}

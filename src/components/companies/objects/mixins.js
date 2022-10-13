@@ -143,13 +143,12 @@ export const MixinObject = {
             }
             return true;
         },
-        done({ comment }) {
-            console.log("DONE");
-            this.sendObjectsHandler(comment);
+        done() {
+            this.sendObjectsHandler();
         },
-        negative({ comment }) {
+        negative() {
             console.log("NEGATIVE");
-            this.selectNegative(comment);
+            this.selectNegative();
         },
         changeViewMode(value) {
             console.log("ChangeViewMode", value);
@@ -159,10 +158,9 @@ export const MixinObject = {
             console.log("RESET");
             this.selectedObjects = [];
         },
-        selectNegative(comment) {
+        selectNegative() {
             let data = this.step;
             data.click_negative = true;
-            console.warn(comment);
             if (data.negative) {
                 data.negative = 0;
                 data.newActionComments = [];
@@ -170,10 +168,6 @@ export const MixinObject = {
                 data.negative = 1;
                 let actionComment = "Нет подходящих";
                 let title = "система";
-                if (comment) {
-                    actionComment += ` с комментарием: <b>${comment}</b>`;
-                    title += "/" + this.THIS_USER.userProfile.short_name;
-                }
                 data.newActionComments = [{
                     timeline_id: data.timeline_id,
                     timeline_step_id: data.id,
@@ -273,8 +267,7 @@ export const MixinObject = {
                 type: 0,
             }, ];
         },
-        sendObjectsHandler(generalComment, sendClient = false, alreadySent = false) {
-            console.log(generalComment);
+        sendObjectsHandler(generalComment = null, sendClient = false, alreadySent = false) {
             let data = {
                 ...this.step,
             };

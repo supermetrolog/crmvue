@@ -1,6 +1,30 @@
 <template>
-  <div class="col company-form" v-if="data">
-    <div class="row no-gutters py-2">
+  <div class="col-12 company-form" v-if="data">
+    <StepStage
+      class="mb-2 sticky px-2"
+      :title="
+        'Шаг 1. отметить объекты, которые заинтересовали клиента' +
+        (data.timelineStepObjects.length
+          ? ` (${data.timelineStepObjects.length})`
+          : '')
+      "
+      :isDone="!!data.timelineStepObjects.length"
+      :closeSlotWhenDone="false"
+      :isCurrent="!data.timelineStepObjects.length"
+    >
+      <ObjectsControllPanel
+        :buttons="buttons"
+        @done="$emit('done')"
+        @negative="$emit('negative')"
+      />
+    </StepStage>
+    <StepStage
+      class="mb-2 px-2"
+      title="Шаг 2. Отметить каким способом была получена обратная связь"
+      :isDone="!!data.timelineStepFeedbackways.length"
+      :closeSlotWhenDone="false"
+      :isCurrent="!data.timelineStepFeedbackways.length"
+    >
       <div class="col-7 pp">
         <div class="row">
           <div class="col-9 pl-2">
@@ -34,19 +58,23 @@
           </div>
         </div>
       </div>
-    </div>
+    </StepStage>
   </div>
 </template>
 
 <script>
 import { FeedbackList, ObjectTypeList } from "@/const/Const.js";
 import { MixinSteps } from "../mixins";
+import StepStage from "./steps-stages/StepStage.vue";
 import Checkbox from "@/components/common/form/Checkbox.vue";
+import ObjectsControllPanel from "../../objects/ObjectsControllPanel.vue";
 export default {
   name: "Feedback",
   mixins: [MixinSteps],
   components: {
     Checkbox,
+    StepStage,
+    ObjectsControllPanel,
   },
   data() {
     return {
@@ -60,6 +88,11 @@ export default {
     this.data.timelineStepFeedbackways.map((item) => {
       this.ways.push(item.way);
     });
+  },
+  props: {
+    buttons: {
+      type: Array,
+    },
   },
   methods: {
     cancel() {
