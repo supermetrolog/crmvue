@@ -9,8 +9,11 @@
                 :step="step"
                 :disabled="disabled"
                 :objects="step.timelineStepObjects"
+                :buttons="buttons"
+                @done="done"
+                @send="send"
+                @negative="negative"
                 @updateItem="clickUpdateStep"
-                :contactForSendMessage="contactForSendMessage"
               />
             </div>
           </div>
@@ -19,16 +22,6 @@
         <div class="row">
           <div class="col-12">
             <Objects>
-              <ObjectsControllPanel
-                :viewMode="viewMode"
-                :buttons="buttons"
-                @reset="reset"
-                @done="done"
-                @send="send"
-                @alreadySent="alreadySent"
-                @negative="negative"
-                @changeViewMode="changeViewMode"
-              />
               <ObjectsList
                 :objects="preventStepObjects"
                 :currentObjects="step.timelineStepObjects"
@@ -82,6 +75,7 @@ export default {
         {
           btnClass: "primary",
           btnVisible: false,
+          defaultBtn: true,
           disabled: !this.selectedObjects.length || this.disabled,
           title: "Сохранить",
           text: "Готово",
@@ -92,28 +86,19 @@ export default {
         {
           btnClass: "success",
           btnVisible: false,
+          defaultBtn: true,
           disabled: !this.selectedObjects.length || this.disabled,
           title: "Отправить презентации с объектами клиенту",
-          text: "Отправить",
+          text: "Отправить клиенту",
           icon: "fas fa-paper-plane",
           withWayOfSending: true,
           emited_event: "send",
           classes: "col-2 ml-1",
         },
         {
-          btnClass: "primary",
-          btnVisible: false,
-          disabled: !this.selectedObjects.length || this.disabled,
-          title: "Уже отправил предложения другим способом",
-          text: "Уже отправил",
-          icon: "fas fa-paper-plane",
-          withWayOfSending: true,
-          emited_event: "alreadySent",
-          classes: "col-3 ml-1",
-        },
-        {
           btnClass: "danger",
           btnVisible: false,
+          defaultBtn: true,
           btnActive: this.step.negative,
           disabled: this.disabled,
           title: "Отправить презентации с объектами клиенту",

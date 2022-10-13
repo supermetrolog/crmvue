@@ -1,3 +1,5 @@
+import StepStage from "./steps/steps-stages/StepStage.vue";
+import ObjectsControllPanel from "../objects/ObjectsControllPanel.vue";
 export const MixinStepActions = {
     props: {
         step: {
@@ -27,6 +29,10 @@ export const MixinSteps = {
             data: this.step,
         };
     },
+    components: {
+        StepStage,
+        ObjectsControllPanel,
+    },
     props: {
         step: {
             type: [Object, Boolean],
@@ -34,6 +40,10 @@ export const MixinSteps = {
         disabled: {
             type: Boolean,
         },
+
+        buttons: {
+            type: Array,
+        }
     },
     watch: {
         step() {

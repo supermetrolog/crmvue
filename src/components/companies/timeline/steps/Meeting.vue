@@ -46,7 +46,6 @@
 <script>
 import StepActions from "./actions/StepActions.vue";
 import NotificationForm from "@/components/notifications/forms/NotificationForm.vue";
-import StepStage from "./steps-stages/StepStage.vue";
 import { MixinSteps } from "../mixins";
 import { mapGetters } from "vuex";
 export default {
@@ -55,7 +54,6 @@ export default {
   components: {
     StepActions,
     NotificationForm,
-    StepStage,
   },
   data() {
     return {
