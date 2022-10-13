@@ -1,58 +1,68 @@
 <template>
   <div class="objects-list row no-gutters">
-    <div class="wrapper row no-gutters px-3">
-      <div class="col-12 py-3" v-if="label">
-        <h4 class="label">{{ label }}</h4>
-      </div>
-      <div class="col-4 mx-auto" v-if="!objects.length && !loader">
-        <h3 class="text-warning text-center">НЕТ ДАННЫХ</h3>
-      </div>
-      <div class="col-12 px-2 pagination-params" v-if="pagination">
-        <p>
-          <b>{{ pagination.currentPage }}</b> страница из
-          <b>{{ pagination.pageCount }};</b>
-        </p>
-        <p>
-          отображение строк
-          <b>{{ countVisibleRows }}</b> (всего <b>{{ pagination.totalCount }}</b
-          >)
-        </p>
-      </div>
-      <Loader class="center" v-if="loader" />
-      <component
-        :is="currentComponent"
-        v-for="object in objects"
-        :disabled="disabled"
-        :offer="object"
-        :isSelected="!!selectedObjects.find((item) => item.id == object.id)"
-        :key="object.id"
-        :col="col"
-        :currentStepId="currentStepId"
-        :classList="
-          currentObjects.find(
-            (item) =>
-              (item.offer_id == object.original_id ||
-                item.offer_id == object.offer_id) &&
-              item.type_id == object.type_id
-          )
-            ? 'success'
-            : ''
-        "
-        @select="$emit('select', $event)"
-        @unSelect="$emit('unSelect', $event)"
-        @addComment="(...argv) => this.$emit('addComment', ...argv)"
-        @deleteFavoriteOffer="$emit('deleteFavoriteOffer')"
-      />
-      <div class="col-12 px-2 pagination-params" v-if="pagination">
-        <p>
-          <b>{{ pagination.currentPage }}</b> страница из
-          <b>{{ pagination.pageCount }};</b>
-        </p>
-        <p>
-          отображение строк
-          <b>{{ countVisibleRows }}</b> (всего <b>{{ pagination.totalCount }}</b
-          >)
-        </p>
+    <div class="wrapper col-12 px-3">
+      <div class="row no-gutters">
+        <div class="col-12 py-3" v-if="label">
+          <h4 class="label">{{ label }}</h4>
+        </div>
+        <div class="col-4 mx-auto" v-if="!objects.length && !loader">
+          <h3 class="text-warning text-center">НЕТ ДАННЫХ</h3>
+        </div>
+        <div
+          class="col-12 px-2 pagination-params"
+          v-if="pagination && pagination.pageCount"
+        >
+          <p>
+            <b>{{ pagination.currentPage }}</b> страница из
+            <b>{{ pagination.pageCount }};</b>
+          </p>
+          <p>
+            отображение строк
+            <b>{{ countVisibleRows }}</b> (всего
+            <b>{{ pagination.totalCount }}</b
+            >)
+          </p>
+        </div>
+        <Loader class="center" v-if="loader" />
+        <component
+          :is="currentComponent"
+          v-for="object in objects"
+          :disabled="disabled"
+          :offer="object"
+          :isSelected="!!selectedObjects.find((item) => item.id == object.id)"
+          :key="object.id"
+          :col="col"
+          :currentStepId="currentStepId"
+          :classList="
+            currentObjects.find(
+              (item) =>
+                (item.offer_id == object.original_id ||
+                  item.offer_id == object.offer_id) &&
+                item.type_id == object.type_id
+            )
+              ? 'success'
+              : ''
+          "
+          @select="$emit('select', $event)"
+          @unSelect="$emit('unSelect', $event)"
+          @addComment="(...argv) => this.$emit('addComment', ...argv)"
+          @deleteFavoriteOffer="$emit('deleteFavoriteOffer')"
+        />
+        <div
+          class="col-12 px-2 pagination-params"
+          v-if="pagination && pagination.pageCount"
+        >
+          <p>
+            <b>{{ pagination.currentPage }}</b> страница из
+            <b>{{ pagination.pageCount }};</b>
+          </p>
+          <p>
+            отображение строк
+            <b>{{ countVisibleRows }}</b> (всего
+            <b>{{ pagination.totalCount }}</b
+            >)
+          </p>
+        </div>
       </div>
     </div>
     <hr v-if="withSeparator && !loader" />

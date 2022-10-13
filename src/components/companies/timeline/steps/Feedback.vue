@@ -1,12 +1,9 @@
 <template>
   <div class="col company-form" v-if="data">
-    <div class="row no-gutters mb-0" v-if="data.timelineStepObjects.length">
-      <div class="col-12">
-        <p>- Отметить каким способом была получена обратная связь</p>
-      </div>
+    <div class="row no-gutters py-2">
       <div class="col-7 pp">
         <div class="row">
-          <div class="col-9 pr-0">
+          <div class="col-9 pl-2">
             <Checkbox
               v-model="ways"
               :options="feedbackWayList"
@@ -20,7 +17,7 @@
               <button
                 id="btn-feedback"
                 :disabled="disabled"
-                class="btn-action text-success p-0 d-inline"
+                class="btn-action text-primary p-0 d-inline"
                 @click="confirm"
               >
                 <i class="fas fa-check"></i>

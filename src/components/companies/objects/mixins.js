@@ -36,6 +36,7 @@ export const MixinObject = {
             return [{
                     btnClass: "primary",
                     btnVisible: false,
+                    defaultBtn: true,
                     disabled: !this.selectedObjects.length || this.disabled,
                     title: "Сохранить",
                     text: "Готово",
@@ -47,6 +48,7 @@ export const MixinObject = {
                 {
                     btnClass: "danger",
                     btnVisible: false,
+                    defaultBtn: true,
                     btnActive: this.step.negative,
                     disabled: this.disabled,
                     title: "В случае нахождения более подходящих предложений вам придет уведомление!",

@@ -53,8 +53,6 @@
                   @alreadySent="alreadySent"
                   @negative="negative"
                   @favorites="favorites"
-                  @changeViewMode="changeViewMode"
-                  ref="contoll_panel"
                 />
               </StepStage>
               <ObjectsList

@@ -2947,6 +2947,7 @@
         &-list {
             &.success {
                 .wrapper {
+                    width: 100%;
                     background-color: $color_success_alt;
                     .label {
                         color: $color_light;
