@@ -118,11 +118,12 @@
           <div v-if="requestsIsOpen">
             <div
               style="margin-bottom: 10px"
-              v-for="request in company.requests"
+              v-for="request in activeRequests"
               :key="request.id"
             >
               <MiniTimeline
                 :currentSteps="timeline.timelineSteps"
+                :requestName="request.format_name"
                 v-for="timeline in request.timelines"
                 :key="timeline"
               />
@@ -189,6 +190,11 @@ export default {
       requestsIsOpen: true,
       objectsIsOpen: false,
     };
+  },
+  computed: {
+    activeRequests() {
+      return this.company.requests.filter((request) => request.status == 1);
+    },
   },
 };
 </script>

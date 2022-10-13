@@ -4731,10 +4731,20 @@
         }
         &-step_in_process {
             background-color: $color_warning_alt;
-            border-color: black;
-            text-decoration:solid;
             &::after {
                 background-color: $color_warning_alt;
+            }
+            .MiniTimeline-step-name {
+                color: $color_light;
+                .fas {
+                    background: none;
+                }
+            }
+        }
+        &-step_attention {
+            background-color: $color_danger;
+            &::after {
+                background-color: $color_danger;
             }
             .MiniTimeline-step-name {
                 color: $color_light;
@@ -4755,6 +4765,14 @@
             }
             .MiniTimeline-step-name {
                 margin-left: 40px;}
+        }
+        &-request {
+            span {
+                color: $color_light;
+                width: 150px;
+                margin-right: 5px;
+                overflow-x: hidden;
+            }
         }
     }
 
@@ -4779,7 +4797,16 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-
+        .object_id {
+            position: absolute;
+            padding: 3px;
+            font-size: 14px;
+            font-weight: bold;
+            color: $color_success_alt;
+            background-color: rgba($color: $color_light, $alpha: .85);
+            top: 0;
+            margin: 5px;
+        }
     }
 
     // ************** MAP-CONTAINER *************

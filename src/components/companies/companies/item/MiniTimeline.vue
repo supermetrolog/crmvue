@@ -1,16 +1,22 @@
 <template>
   <div class="MiniTimeline">
     <div
+      class="MiniTimeline-step MiniTimeline-step_done MiniTimeline-request"
+      :class="{
+        'MiniTimeline-big_size': bigSize,
+      }"
+      v-if="requestName"
+    >
+      <span>{{ requestName.toUpperCase() }}</span>
+    </div>
+    <div
       class="MiniTimeline-step"
       v-for="timelineStep in timelineSteps"
       :key="timelineStep[0]"
       :class="{
-        'MiniTimeline-step_done': currentSteps.find(
-          (step) => step.number == timelineStep[0] && step.status === 1
-        ),
-        'MiniTimeline-step_in_process': currentSteps.find(
-          (step) => step.number == timelineStep[0] && step.status === 0
-        ),
+        'MiniTimeline-step_done': completedStep(timelineStep[0]),
+        'MiniTimeline-step_in_process': inProcessStep(timelineStep[0]),
+        'MiniTimeline-step_attention': attentionStep(timelineStep[0]),
         'MiniTimeline-big_size': bigSize,
       }"
     >
@@ -18,23 +24,19 @@
         >{{ timelineStep[1].name }}
         <i
           class="fas fa-check-circle success show"
-          v-if="
-            currentSteps.find(
-              (step) => step.number == timelineStep[0] && step.status === 1
-            )
-          "
+          v-if="completedStep(timelineStep[0])"
         ></i>
         <i
           class="fas fa-hourglass success show"
-          v-if="
-            currentSteps.find(
-              (step) => step.number == timelineStep[0] && step.status === 0
-            )
-          "
+          v-if="inProcessStep(timelineStep[0])"
+        ></i>
+        <i
+          class="fas fa-exclamation show"
+          v-if="attentionStep(timelineStep[0])"
         ></i>
         <i
           class="fas fa-hourglass success"
-          v-if="!currentSteps.find((step) => step.number == timelineStep[0])"
+          v-if="!currentStep(timelineStep[0])"
         ></i>
       </span>
     </div>
@@ -50,6 +52,9 @@ export default {
       type: Array,
       default: () => [],
     },
+    requestName: {
+      type: String,
+    },
     bigSize: {
       type: Boolean,
       default: false,
@@ -59,6 +64,26 @@ export default {
     return {
       timelineSteps: Timeline.get("param"),
     };
+  },
+  methods: {
+    currentStep(timelineStep) {
+      return this.currentSteps.find((step) => step.number == timelineStep);
+    },
+    completedStep(timelineStep) {
+      return this.currentSteps.find(
+        (step) => step.number == timelineStep && step.status === 1
+      );
+    },
+    inProcessStep(timelineStep) {
+      return this.currentSteps.find(
+        (step) => step.number == timelineStep && step.status === 0
+      );
+    },
+    attentionStep(timelineStep) {
+      return this.currentSteps.find(
+        (step) => step.number == timelineStep && step.status === 2
+      );
+    },
   },
 };
 </script>

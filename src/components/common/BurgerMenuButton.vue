@@ -80,7 +80,6 @@ export default {
 .BurgerMenuButton {
   padding: 5%;
   text-align: center;
-  z-index: 15;
   &:hover {
     cursor: pointer;
   }

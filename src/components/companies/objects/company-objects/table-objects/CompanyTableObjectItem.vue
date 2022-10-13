@@ -6,6 +6,9 @@
         <div class="image-container">
           <a :href="objectUrl" target="_blank">
             <img :src="imageSrc" alt="image" />
+            <span class="object_id">
+              {{ object.id }}
+            </span>
           </a>
         </div>
       </div>
@@ -22,7 +25,7 @@
         <div class="col-6 scroller" v-if="this.object.offerMix">
           <CompanyTableObjectOffer
             v-for="offer in this.object.offerMix.filter(
-              (offer) => offer.status == 1
+              (offer) => offer.status == 1 && offer.type_id == 2
             )"
             :key="offer.id"
             :offer="offer"
