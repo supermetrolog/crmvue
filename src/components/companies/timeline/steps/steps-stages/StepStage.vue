@@ -12,7 +12,7 @@
           <i class="fas fa-check-circle isDone" v-if="isDone"></i>
         </div>
       </div>
-      <div v-if="(!isDone && isCurrent) || !closeSlotWhenDone">
+      <div v-if="(!isDone && isCurrent) || (!closeSlotWhenDone && isDone)">
         <slot></slot>
       </div>
     </div>

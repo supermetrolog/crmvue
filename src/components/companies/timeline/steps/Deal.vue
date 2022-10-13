@@ -24,23 +24,46 @@
         />
       </transition>
     </teleport>
-    <Loader class="center" v-if="loader" />
-    <div class="row">
-      <div class="col-3 mx-auto">
-        <button
-          class="btn btn-primary btn-large"
-          @click="clickOpenDealForm"
-          :disabled="disabled"
-        >
-          {{ !currentRequest.deal ? "Создать сделку" : "Редактировать сделку" }}
-        </button>
+    <StepStage
+      class="mb-2 px-2"
+      title="Шаг 1. Выбрать объект, по которому произошла сделка"
+      :isDone="!!data.timelineStepObjects.length"
+      :closeSlotWhenDone="false"
+      :isCurrent="!data.timelineStepObjects.length"
+    >
+      <ObjectsControllPanel
+        :buttons="buttons"
+        @done="$emit('done')"
+        @negative="$emit('negative')"
+      />
+    </StepStage>
+    <StepStage
+      class="mb-2 px-2"
+      title="Шаг 2. заполнить данные по сделке"
+      :isDone="!!currentRequest.deal"
+      :closeSlotWhenDone="false"
+      :isCurrent="!!data.timelineStepObjects.length"
+    >
+      <Loader class="center" v-if="loader" />
+      <div class="row">
+        <div class="col-3 mx-auto">
+          <button
+            class="btn btn-primary btn-large"
+            @click="clickOpenDealForm"
+            :disabled="disabled"
+          >
+            {{
+              !currentRequest.deal ? "Создать сделку" : "Редактировать сделку"
+            }}
+          </button>
+        </div>
       </div>
-    </div>
-    <div class="row mt-3" v-if="currentRequest.deal">
-      <div class="col-5 mx-auto">
-        <DealItem :deal="currentRequest.deal" reedOnly />
+      <div class="row mt-3" v-if="currentRequest.deal">
+        <div class="col-5 mx-auto">
+          <DealItem :deal="currentRequest.deal" reedOnly />
+        </div>
       </div>
-    </div>
+    </StepStage>
   </div>
 </template>
 
