@@ -1,30 +1,23 @@
 <template>
-  <div class="col">
-    <div class="row" v-if="data">
-      <div class="col">
-        <p>- Отметить объекты, которые осмотрели</p>
-        <button
-          class="action"
-          :class="{ active: data.timelineStepObjects.length && !data.negative }"
-          disabled
-          @click="clickSelectObjects"
-        >
-          <i class="far fa-smile"></i>
-          <span class="ml-1"
-            >Выбрано {{ data.timelineStepObjects.length }}
-          </span>
-        </button>
-        <button
-          class="ml-1 mb-2 action"
-          :class="{ active: data.negative }"
-          :disabled="disabled || data.negative"
-          @click="clickNegative"
-        >
-          <i class="far fa-frown-open"></i>
-          <span class="ml-1">На осмотр не выехал</span>
-        </button>
-      </div>
-    </div>
+  <div class="col-12">
+    <StepStage
+      class="mb-2 px-2"
+      :title="
+        'Шаг 1. Отметить объекты, которые осмотрели' +
+        (data.timelineStepObjects.length
+          ? ` (${data.timelineStepObjects.length})`
+          : '')
+      "
+      :isDone="!!data.timelineStepObjects.length"
+      :closeSlotWhenDone="false"
+      :isCurrent="!data.timelineStepObjects.length"
+    >
+      <ObjectsControllPanel
+        :buttons="buttons"
+        @done="$emit('done')"
+        @negative="$emit('negative')"
+      />
+    </StepStage>
   </div>
 </template>
 
@@ -33,12 +26,6 @@ import { MixinSteps } from "../mixins";
 export default {
   name: "Offers",
   mixins: [MixinSteps],
-  methods: {
-    clickNegative() {
-      this.data.negative = 1;
-      this.$emit("updateItem", this.data);
-    },
-  },
 };
 </script>
 

@@ -5,14 +5,11 @@
         <div class="row">
           <div class="col-12">
             <Objects>
-              <ObjectsControllPanel
-                :viewMode="viewMode"
+              <Visit
+                :step="step"
                 :buttons="buttons"
-                @reset="reset"
                 @done="done"
-                @send="send"
                 @negative="negative"
-                @changeViewMode="changeViewMode"
               />
               <ObjectsList
                 :objects="preventStepObjects"
@@ -38,10 +35,13 @@
 <script>
 import { MixinStepActions } from "../mixins";
 import { MixinObject } from "../../objects/mixins";
-
+import Visit from "../steps/Visit.vue";
 export default {
   name: "VisitActions",
   mixins: [MixinStepActions, MixinObject],
+  components: {
+    Visit,
+  },
   methods: {
     updatedObjects(data) {
       this.$emit("updatedObjects", data, true);
