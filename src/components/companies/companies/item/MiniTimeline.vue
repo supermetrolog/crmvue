@@ -17,6 +17,7 @@
         'MiniTimeline-step_done': completedStep(timelineStep[0]),
         'MiniTimeline-step_in_process': inProcessStep(timelineStep[0]),
         'MiniTimeline-step_attention': attentionStep(timelineStep[0]),
+
         'MiniTimeline-big_size': bigSize,
       }"
     >
@@ -67,22 +68,27 @@ export default {
   },
   methods: {
     currentStep(timelineStep) {
-      return this.currentSteps.find((step) => step.number == timelineStep);
+      return this.currentSteps.find((step) => step.number === timelineStep);
     },
     completedStep(timelineStep) {
       return this.currentSteps.find(
-        (step) => step.number == timelineStep && step.status === 1
+        (step) => step.number === timelineStep && step.status === 1
       );
     },
     inProcessStep(timelineStep) {
       return this.currentSteps.find(
-        (step) => step.number == timelineStep && step.status === 0
+        (step) => step.number === timelineStep && step.status === 0
       );
     },
     attentionStep(timelineStep) {
       return this.currentSteps.find(
-        (step) => step.number == timelineStep && step.status === 2
+        (step) => step.number === timelineStep && step.status === 2
       );
+    },
+  },
+  computed: {
+    screenWidth() {
+      return window.innerWidth < 1400;
     },
   },
 };
