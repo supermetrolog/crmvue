@@ -8,12 +8,7 @@
           noMain: !date.type,
         }"
       >
-        <p class="time">{{ date.value }}</p>
-      </div>
-      <div class="col-12 text-right" v-if="date.type">
-        <p class="time">
-          {{ time }}
-        </p>
+        <p class="time" v-if="date.type">{{ date.value }}</p>
       </div>
       <div class="col-12 mb-1" :class="{ 'text-right': isSystemComment }">
         <p
@@ -27,7 +22,7 @@
       </div>
 
       <div class="col-12 comment">
-        <p v-html="data.comment"></p>
+        <p v-html="timeHTML + data.comment"></p>
       </div>
     </div>
   </li>
@@ -96,6 +91,9 @@ export default {
     time() {
       const timeFormat = "HH:mm";
       return moment(this.data.created_at).format(timeFormat);
+    },
+    timeHTML() {
+      return `<span class="d-inline time">${this.time} </span>`;
     },
   },
 };

@@ -13,9 +13,7 @@
                   timelineStepOptions[timelineStep.number][1].name +
                   ` (${timelineStep.timelineActionComments.length})`
                 "
-                :titleClasses="
-                  'badge-' + timelineStepOptions[timelineStep.number][1].class
-                "
+                :titleClasses="titleClasses(timelineStep)"
                 :openByDefault="step.id == timelineStep.id"
                 :disabled="step.id == timelineStep.id"
               >
@@ -121,6 +119,12 @@ export default {
     };
   },
   methods: {
+    titleClasses(step) {
+      if (step.status == 1) {
+        return "badge-success";
+      }
+      return "badge-warning";
+    },
     scrollToForm() {
       let options = {
         behavior: "smooth",

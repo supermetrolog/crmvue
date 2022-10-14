@@ -90,7 +90,7 @@
           <Loader class="center" />
         </div>
         <div
-          class="col-8 box step-actions"
+          class="col-6 box step-actions"
           v-if="selectedStep && !loader && !timelineNotFoundFlag"
         >
           <div class="row" v-if="selectedStep.number != 0">
@@ -129,7 +129,7 @@
           </component>
         </div>
         <div
-          class="col-2 box timeline-extra-block"
+          class="col-4 box timeline-extra-block"
           v-if="selectedStep && !loader && !timelineNotFoundFlag"
         >
           <ExtraBlock
