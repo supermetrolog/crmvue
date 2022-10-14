@@ -26,115 +26,113 @@
       :closeSlotWhenDone="false"
       :isCurrent="!!data.timelineStepObjects.length"
     >
-      <div class="row" v-if="userLocation">
-        <div class="col-5">
-          <div class="row no-gutters">
-            <div class="col-12">
-              <h3 class="text-center">Маршрут</h3>
-              <CustomButton
-                :options="{
-                  btnClass: 'primary',
-                  btnVisible: false,
-                  defaultBtn: true,
-                  disabled: true,
-                }"
-                @confirm="selectOptimizeRoute"
-              >
-                <template #btnContent>
-                  <i class="fas fa-route"></i>
-                  оптимизировать
-                </template>
-              </CustomButton>
-            </div>
-            <div class="col-12">
-              <div class="car-routes">
-                <ul class="routes mt-1">
-                  <li>
-                    <b> Мое местоположение </b>
-                  </li>
-                  <draggable
-                    class="dragArea list-group w-full"
-                    :list="currentStepObjects"
-                  >
-                    <transition-group>
-                      <li
-                        v-for="object in currentStepObjects"
-                        :key="object.offer.id"
-                        class="route"
-                      >
-                        <div class="row">
-                          <div class="col-4 align-self-center pr-0 pl-2">
-                            <img
-                              :src="getImageSrc(object.offer)"
-                              alt="Фото объекта"
-                            />
-                          </div>
-                          <div class="col-8 pl-2">
-                            <b>
-                              {{ object.offer.visual_id }}
-                            </b>
-                            <p>{{ object.offer.object_type_name }}</p>
-                            <p>{{ object.offer.address }}</p>
-                          </div>
-                        </div>
-                      </li>
-                    </transition-group>
-                  </draggable>
-                </ul>
-              </div>
-            </div>
-            <div class="col-12 mt-3">
-              <div class="row no-gutters">
-                <div class="col-6 pr-1">
-                  <CustomButton
-                    title="Отправить маршрут клиенту"
-                    :options="{
-                      btnClass: 'success',
-                      btnVisible: false,
-                      defaultBtn: true,
-                      disabled: true,
-                    }"
-                    @confirm="selectOptimizeRoute"
-                  >
-                    <template #btnContent>
-                      <i class="fas fa-paper-plane"></i>
+      <div class="row no-gutters">
+        <div class="col-6 pr-1">
+          <CustomButton
+            title="Отправить маршрут клиенту"
+            :options="{
+              btnClass: 'success',
+              btnVisible: false,
+              defaultBtn: true,
+              disabled: true,
+            }"
+            @confirm="selectOptimizeRoute"
+          >
+            <template #btnContent>
+              <i class="fas fa-paper-plane"></i>
 
-                      отправить клиенту
-                    </template>
-                  </CustomButton>
-                </div>
-                <div class="col-6">
-                  <CustomButton
-                    title="Отправить маршрут себе"
-                    :options="{
-                      btnClass: 'success_alt',
-                      btnVisible: false,
-                      defaultBtn: true,
-                      disabled: true,
-                    }"
-                    @confirm="selectOptimizeRoute"
-                  >
-                    <template #btnContent>
-                      <i class="fas fa-paper-plane"></i>
-
-                      отправить себе
-                    </template>
-                  </CustomButton>
-                </div>
-              </div>
-            </div>
-          </div>
+              отправить клиенту
+            </template>
+          </CustomButton>
         </div>
-        <div class="col-7 align-self-center">
-          <Ymap
-            :manualRoute="currentStepObjects"
-            :userLocation="userLocation"
-            v-if="currentStepObjects.length"
-          />
+        <div class="col-6">
+          <CustomButton
+            title="Отправить маршрут себе"
+            :options="{
+              btnClass: 'success_alt',
+              btnVisible: false,
+              defaultBtn: true,
+              disabled: true,
+            }"
+            @confirm="selectOptimizeRoute"
+          >
+            <template #btnContent>
+              <i class="fas fa-paper-plane"></i>
+
+              отправить себе
+            </template>
+          </CustomButton>
         </div>
       </div>
     </StepStage>
-
+    <div class="row" v-if="userLocation">
+      <div class="col-5">
+        <div class="row no-gutters">
+          <div class="col-12">
+            <h3 class="text-center">Маршрут</h3>
+            <CustomButton
+              :options="{
+                btnClass: 'primary',
+                btnVisible: false,
+                defaultBtn: true,
+                disabled: true,
+              }"
+              @confirm="selectOptimizeRoute"
+            >
+              <template #btnContent>
+                <i class="fas fa-route"></i>
+                оптимизировать
+              </template>
+            </CustomButton>
+          </div>
+          <div class="col-12">
+            <div class="car-routes">
+              <ul class="routes mt-1">
+                <li>
+                  <b> Мое местоположение </b>
+                </li>
+                <draggable
+                  class="dragArea list-group w-full"
+                  :list="currentStepObjects"
+                >
+                  <transition-group>
+                    <li
+                      v-for="object in currentStepObjects"
+                      :key="object.offer.id"
+                      class="route"
+                    >
+                      <div class="row">
+                        <div class="col-4 align-self-center pr-0 pl-2">
+                          <img
+                            :src="getImageSrc(object.offer)"
+                            alt="Фото объекта"
+                          />
+                        </div>
+                        <div class="col-8 pl-2">
+                          <b>
+                            {{ object.offer.visual_id }}
+                          </b>
+                          <p>{{ object.offer.object_type_name }}</p>
+                          <p>{{ object.offer.address }}</p>
+                        </div>
+                      </div>
+                    </li>
+                  </transition-group>
+                </draggable>
+              </ul>
+            </div>
+          </div>
+          <div class="col-12 mt-3"></div>
+        </div>
+      </div>
+      <div class="col-7 align-self-center">
+        <Ymap
+          :manualRoute="currentStepObjects"
+          :userLocation="userLocation"
+          v-if="currentStepObjects.length"
+        />
+      </div>
+    </div>
     <div v-if="!userLocation">
       <h3 class="text-danger">
         Разрешите передачу вашего местоположения и перезагрузите страницу!

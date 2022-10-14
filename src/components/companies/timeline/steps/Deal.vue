@@ -1,5 +1,5 @@
 <template>
-  <div class="col mb-2">
+  <div class="col-12 mb-2">
     <teleport to="body">
       <transition
         mode="out-in"
@@ -41,29 +41,22 @@
       class="mb-2 px-2"
       title="Шаг 2. заполнить данные по сделке"
       :isDone="!!currentRequest.deal"
-      :closeSlotWhenDone="false"
       :isCurrent="!!data.timelineStepObjects.length"
     >
       <Loader class="center" v-if="loader" />
-      <div class="row">
-        <div class="col-3 mx-auto">
-          <button
-            class="btn btn-primary btn-large"
-            @click="clickOpenDealForm"
-            :disabled="disabled"
-          >
-            {{
-              !currentRequest.deal ? "Создать сделку" : "Редактировать сделку"
-            }}
-          </button>
-        </div>
-      </div>
-      <div class="row mt-3" v-if="currentRequest.deal">
-        <div class="col-5 mx-auto">
-          <DealItem :deal="currentRequest.deal" reedOnly />
-        </div>
-      </div>
+      <button
+        class="btn btn-primary"
+        @click="clickOpenDealForm"
+        :disabled="disabled"
+      >
+        Создать сделку
+      </button>
     </StepStage>
+    <div class="row mt-3" v-if="currentRequest.deal">
+      <div class="col-5 mx-auto">
+        <DealItem :deal="currentRequest.deal" reedOnly />
+      </div>
+    </div>
   </div>
 </template>
 
