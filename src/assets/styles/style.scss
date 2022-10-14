@@ -87,7 +87,7 @@
     }
     
     .sidebar {
-        height: 100vh;
+        height: 100%;
         width: 70px;
         position: fixed;
         z-index: 8;
@@ -2134,6 +2134,32 @@
                 }
             }
         }
+    }
+    
+    // ********** COMPANY TABLE ITEM ***********
+    .CompanyTableItem {
+        &-button {
+            border: medium none;
+            background-image: none;
+            background: transparent;
+            background-color: transparent;
+            &:hover {
+                cursor: pointer;
+            }
+        }
+        &-block {
+            margin-bottom: 10px;
+            .company-objects-list__item .image-container {
+                max-height: 100px;
+                max-width: 200px;
+            }
+        }
+    }
+    
+    .CompanyTableObjectOffer {
+        background-color: $color_success_alt;
+        color: $color_light;
+        font-size: 12px;
     }
     
     // ********** LOADER ***********
@@ -4644,6 +4670,160 @@
                 width: 20px;
                 height: 10px;
             }
+        }
+    }
+    
+    // ************** MINI TIMELINE *************
+    .MiniTimeline {
+        display: flex;
+        font-size: 13px;
+        &-step {
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            border-top: 2px solid black;
+            border-bottom: 2px solid black;
+            $step_height: 33px;
+            height: $step_height;
+            padding: 3px;
+            &::after {
+                content: '';
+                border-top: 2px solid;
+                border-right: 2px solid;
+                transform: rotate(45deg) scale(var(--ggs, 1));
+                width: $step_height/1.5;
+                height: $step_height/1.4;
+                position: relative;
+                left: $step_height/2.25;
+            }
+            &:first-child {
+                border-left: 2px solid black;
+            }
+            &:last-child {
+                border-right: 2px solid black;
+                &::after {
+                    display: none;
+                }
+            }
+            &-name {
+                display: flex;
+                align-items: center;
+                text-align: center;
+                margin-left: $step_height/2;
+                .fas {
+                    opacity: 0;
+                    margin-left: 10px;
+                    color: white;
+                    background-color: $color_success;
+                    width: 10px;
+                    font-size: 20px;
+                }
+                .show {
+                    opacity: 100;
+                }
+            }
+        }
+        &-step_done {
+            background-color: $color_success;
+            &::after {
+                background-color: $color_success;
+            }
+            &-name {}
+        }
+        &-step_in_process {
+            background-color: $color_warning_alt;
+            &::after {
+                background-color: $color_warning_alt;
+            }
+            .MiniTimeline-step-name {
+                color: $color_light;
+                .fas {
+                    background: none;
+                }
+            }
+        }
+        &-step_attention {
+            background-color: $color_danger;
+            &::after {
+                background-color: $color_danger;
+            }
+            .MiniTimeline-step-name {
+                color: $color_light;
+                .fas {
+                    background: none;
+                }
+            }
+        }
+        &-big_size {
+            $step_height: 60px;
+            height: $step_height;
+            &::after {
+                content: '';
+                transform: rotate(45deg) scale(var(--ggs, 1));
+                width: $step_height/1.45;
+                height: $step_height/1.45;
+                left: $step_height/2.6;
+            }
+            .MiniTimeline-step-name {
+                margin-left: 40px;
+            }
+        }
+        &-request {
+            span {
+                color: $color_light;
+                width: 150px;
+                margin-right: 5px;
+                overflow-x: hidden;
+            }
+        }
+        &-step_pressed {
+            display: none;
+            &:last-child {
+                display: flex;
+            }
+        }
+    }
+    
+    .MiniTimeline-pressed {
+        .MiniTimeline-step_done {
+            display: none;
+            &:first-child {
+                display: flex;
+            }
+            &:last-child {
+                display: flex;
+            }
+        }
+    }
+    
+    // ************** COMPANY TABLE OBJECT ITEM *************
+    .CompanyTableObjectItem {
+        .item__title {
+            p:first-child {
+                border-right: 0;
+                padding-right: 0;
+            }
+        }
+        &-wrapper {
+            max-height: 110px;
+            .scroller {
+                max-height: 100px;
+            }
+        }
+        .address p {
+            max-height: 80px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .object_id {
+            position: absolute;
+            padding: 3px;
+            font-size: 14px;
+            font-weight: bold;
+            color: $color_success_alt;
+            background-color: rgba($color: $color_light, $alpha: .85);
+            top: 0;
+            margin: 5px;
         }
     }
     
