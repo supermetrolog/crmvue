@@ -141,6 +141,22 @@ export default {
         });
         return data;
     },
+    normalizeContactsForMultiselectOnlyEmails(contacts) {
+        let data = [];
+        contacts.map((contact) => {
+            let array = [];
+
+            contact.emails.map(item => {
+                array.push(item.email);
+            });
+            if (!array.length) return;
+            data.push({
+                label: contact.type ? 'Общий контакт' : contact.first_and_last_name,
+                options: array
+            });
+        });
+        return data;
+    },
     normalizeDataForRequestForm(data) {
         let array = [];
 

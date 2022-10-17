@@ -8,9 +8,6 @@ export const MixinStepActions = {
         disabled: {
             type: Boolean,
         },
-        contactForSendMessage: {
-            type: Array,
-        },
     },
     methods: {
         clickUpdateStep(data, flag, fn = null) {

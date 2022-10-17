@@ -26,6 +26,42 @@
         </Bar>
       </transition>
     </teleport>
+    <teleport to="body">
+      <transition
+        mode="out-in"
+        enter-active-class="animate__animated animate__zoomIn for__modal"
+        leave-active-class="animate__animated animate__zoomOut for__modal"
+      >
+        <Modal
+          title="Отправка"
+          v-if="sendObjectsModalVisible"
+          class="autosize"
+          @close="closeSendObjectsModal"
+        >
+          <SendObjects
+            @send="sendOffers"
+            @alreadySent="alreadySentOffers"
+            :alreadySended="alreadySended"
+          >
+            <Objects>
+              <ObjectsList
+                :objects="selectedObjects"
+                :currentObjects="step.timelineStepObjects"
+                :selectedObjects="selectedObjects"
+                :disabled="true"
+                :loader="loader"
+                :viewMode="true"
+                col="col-3"
+                label="Выбранные предложения"
+                @select="select"
+                @unSelect="unSelect"
+                @addComment="addComment"
+              />
+            </Objects>
+          </SendObjects>
+        </Modal>
+      </transition>
+    </teleport>
     <div class="row no-gutters inner scroller">
       <div class="col-12">
         <div class="row px-2">
@@ -49,8 +85,8 @@
                   :buttons="buttons"
                   @reset="reset"
                   @done="done"
-                  @send="send"
-                  @alreadySent="alreadySent"
+                  @send="openSendObjectsModal(false)"
+                  @alreadySent="openSendObjectsModal(true)"
                   @negative="negative"
                   @favorites="favorites"
                 />
@@ -179,6 +215,7 @@ import CustomButton from "@/components/common/CustomButton.vue";
 import Bar from "@/components/common/Bar";
 import RefreshButton from "@/components/common/RefreshButton.vue";
 import StepStage from "../steps/steps-stages/StepStage.vue";
+import SendObjects from "../../objects/send-objects/SendObjects";
 export default {
   name: "OffersActions",
   mixins: [MixinStepActions, MixinAllObject],
@@ -187,11 +224,14 @@ export default {
     CustomButton,
     RefreshButton,
     StepStage,
+    SendObjects,
   },
   data() {
     return {
       recommendedFilter: null,
       queryParams: null,
+      sendObjectsModalVisible: false,
+      alreadySended: false,
     };
   },
   // Нужно чтобы сбрасывать лишние фильтры
@@ -338,6 +378,22 @@ export default {
     },
   },
   methods: {
+    sendOffers(params) {
+      this.closeSendObjectsModal();
+      this.send(params);
+    },
+    alreadySentOffers(params) {
+      this.closeSendObjectsModal();
+      this.alreadySent(params);
+    },
+    openSendObjectsModal(alreadySended = false) {
+      this.sendObjectsModalVisible = true;
+      this.alreadySended = alreadySended;
+    },
+    closeSendObjectsModal() {
+      this.sendObjectsModalVisible = false;
+      this.alreadySended = false;
+    },
     test() {
       console.log(this.queryParams);
     },

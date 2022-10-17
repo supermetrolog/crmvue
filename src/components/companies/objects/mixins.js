@@ -63,30 +63,32 @@ export const MixinObject = {
     },
     methods: {
         ...mapActions(['UPDATE_STEP']),
-        async alreadySent({ comment, wayOfSending }) {
-            console.log("SEND", comment, wayOfSending);
+        async alreadySent({ message, wayOfSending, contactForSendMessage }) {
+            console.log("SEND", message, wayOfSending, contactForSendMessage);
+            this.contactForSendMessage = contactForSendMessage;
             const sendClientFlag = false;
             if (!this.checkContacts()) {
                 return;
             }
-            if (!await this.realSendObjects(wayOfSending, sendClientFlag, comment)) {
+            if (!await this.realSendObjects(wayOfSending, sendClientFlag, message)) {
                 return;
             }
             // this.realSendObjects(wayOfSending, sendClientFlag);
-            this.sendObjectsHandler(comment, sendClientFlag, true);
+            this.sendObjectsHandler(message, sendClientFlag, true);
         },
-        async send({ comment, wayOfSending }) {
-            console.log("SEND", comment, wayOfSending);
+        async send({ message, wayOfSending, contactForSendMessage }) {
+            console.log("SEND", message, wayOfSending);
+            this.contactForSendMessage = contactForSendMessage;
             const sendClientFlag = true;
             if (!this.checkContacts()) {
                 return;
             }
-            if (!await this.realSendObjects(wayOfSending, sendClientFlag, comment)) {
+            if (!await this.realSendObjects(wayOfSending, sendClientFlag, message)) {
                 return;
             }
             // this.realSendObjects(wayOfSending, sendClientFlag);
 
-            this.sendObjectsHandler(comment, sendClientFlag);
+            this.sendObjectsHandler(message, sendClientFlag);
         },
         async realSendObjects(wayOfSending, sendClientFlag, comment = null) {
             let notifyOptions = {
@@ -371,7 +373,8 @@ export const MixinAllObject = {
             allObjectsLoader: false,
             controllPanelHeight: 0,
             barVisible: false,
-            waitHash: null
+            waitHash: null,
+            contactForSendMessage: [],
         };
     },
     computed: {

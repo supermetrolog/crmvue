@@ -93,34 +93,9 @@
           class="col-6 box step-actions"
           v-if="selectedStep && !loader && !timelineNotFoundFlag"
         >
-          <div class="row" v-if="selectedStep.number != 0">
-            <div class="col-3 mb-2">
-              <div class="company-form company-request-form">
-                <Multiselect
-                  v-model="contactForSendMessage"
-                  :options="companyContacts"
-                  :clearOnSelect="true"
-                  :closeOnSelect="false"
-                  :hideSelected="false"
-                  :groups="true"
-                  class="multiselect-timeline"
-                  :multipleLabel="
-                    (n) => {
-                      return `${n.length} ${
-                        n.length == 1 ? 'контакт выбран' : 'контакта выбрано'
-                      }`;
-                    }
-                  "
-                  placeholder="Выберите контакт"
-                  mode="multiple"
-                />
-              </div>
-            </div>
-          </div>
           <component
             :is="stepActionsName"
             :step="selectedStep"
-            :contactForSendMessage="contactForSendMessage"
             :loaderForStep="loaderForStep"
             :disabled="disabled"
             @updatedObjects="updatedObjects"
@@ -185,7 +160,6 @@ export default {
       loaderForStep: false,
       objects: [],
       timelineNotFoundFlag: false,
-      contactForSendMessage: [],
     };
   },
   computed: {

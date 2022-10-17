@@ -4,7 +4,7 @@
       for="fuck"
       class="form-item-label"
       :class="{ required: required }"
-      v-if="label"
+      v-if="label || withoutLabel"
     >
       <p v-if="label">
         {{ label }}
@@ -27,6 +27,7 @@
         :multipleLabel="multipleLabel"
         :disabled="disabled"
         :hideSelected="hideSelected"
+        :groups="groups"
         @change="onChange($event)"
       >
         <template #singlelabel="{ value }">
@@ -79,6 +80,10 @@ export default {
       type: String,
       default: null,
     },
+    withoutLabel: {
+      type: Boolean,
+      default: false,
+    },
     placeholder: {
       type: String,
       default: "",
@@ -96,6 +101,10 @@ export default {
     closeOnSelect: {
       type: Boolean,
       default: true,
+    },
+    clearOnSelect: {
+      type: Boolean,
+      default: false,
     },
     searchable: {
       type: Boolean,
@@ -142,6 +151,10 @@ export default {
       default: false,
     },
     hideSelected: {
+      type: Boolean,
+      default: false,
+    },
+    groups: {
       type: Boolean,
       default: false,
     },
