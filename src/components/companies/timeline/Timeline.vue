@@ -54,10 +54,16 @@
       </div>
     </template>
     <div class="container-timeline">
+      <Loader
+        class="center"
+        v-if="
+          (!selectedStep && $route.query.step && !timelineNotFoundFlag) ||
+          loader
+        "
+      />
       <div class="row no-gutters">
         <div class="col-12">
           <div class="row no-gutters inner" ref="timeline">
-            <Loader class="center" v-if="loader" />
             <div class="col-12" v-if="timelineNotFoundFlag">
               <h4 class="text-danger text-center">
                 Такого таймлайна не существует
@@ -75,17 +81,9 @@
             </div>
           </div>
         </div>
+
         <div
-          class="col-8"
-          v-if="
-            (!selectedStep && $route.query.step && !timelineNotFoundFlag) ||
-            loader
-          "
-        >
-          <Loader class="center" />
-        </div>
-        <div
-          class="col-6 box step-actions"
+          class="col-8 box step-actions"
           v-if="selectedStep && !loader && !timelineNotFoundFlag"
         >
           <component
