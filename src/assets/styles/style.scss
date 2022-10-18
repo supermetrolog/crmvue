@@ -2153,6 +2153,16 @@
                 max-height: 100px;
                 max-width: 200px;
             }
+            &-timeline {
+              &:hover {
+                cursor: pointer;
+                opacity: 70%;
+              }
+              &:active {
+                // border: 2px solid black;
+                opacity: 50%;
+              }
+            }
         }
     }
     
@@ -4675,126 +4685,115 @@
     
     // ************** MINI TIMELINE *************
     .MiniTimeline {
+      font-size: 12px;
+      $step_height: 33px;
+      color: black;
+      .step:first-child {
+        .step-content {
+          margin-left: 0;
+        }
+      }
+      .step {
         display: flex;
-        font-size: 13px;
-        &-step {
-            display: flex;
-            align-items: center;
-            white-space: nowrap;
-            border-top: 2px solid black;
-            border-bottom: 2px solid black;
-            $step_height: 33px;
-            height: $step_height;
-            padding: 3px;
-            &::after {
-                content: '';
-                border-top: 2px solid;
-                border-right: 2px solid;
-                transform: rotate(45deg) scale(var(--ggs, 1));
-                width: $step_height/1.5;
-                height: $step_height/1.4;
-                position: relative;
-                left: $step_height/2.25;
-            }
-            &:first-child {
-                border-left: 2px solid black;
-            }
-            &:last-child {
-                border-right: 2px solid black;
-                &::after {
-                    display: none;
-                }
-            }
-            &-name {
-                display: flex;
-                align-items: center;
-                text-align: center;
-                margin-left: $step_height/2;
-                .fas {
-                    opacity: 0;
-                    margin-left: 10px;
-                    color: white;
-                    background-color: $color_success;
-                    width: 10px;
-                    font-size: 20px;
-                }
-                .show {
-                    opacity: 100;
-                }
-            }
+        align-items: center;
+        white-space: nowrap;
+        height: $step_height;
+        padding:  0;
+        background-color: lighten($color_grey, 30);
+        i {
+          color: $color_light;
         }
-        &-step_done {
-            background-color: $color_success;
-            &::after {
-                background-color: $color_success;
-            }
-            &-name {}
+        &:first-child {
+          padding-left: 5px;
         }
-        &-step_in_process {
-            background-color: $color_warning_alt;
-            &::after {
-                background-color: $color_warning_alt;
-            }
-            .MiniTimeline-step-name {
-                color: $color_light;
-                .fas {
-                    background: none;
-                }
-            }
+        &-content {
+          display:flex;
+          align-items: center;
+          margin-left: $step_height/1.6;
         }
-        &-step_attention {
-            background-color: $color_danger;
-            &::after {
-                background-color: $color_danger;
-            }
-            .MiniTimeline-step-name {
-                color: $color_light;
-                .fas {
-                    background: none;
-                }
-            }
+        &-name {
+          z-index: 2;
         }
-        &-big_size {
-            $step_height: 60px;
-            height: $step_height;
-            &::after {
-                content: '';
-                transform: rotate(45deg) scale(var(--ggs, 1));
-                width: $step_height/1.45;
-                height: $step_height/1.45;
-                left: $step_height/2.6;
-            }
-            .MiniTimeline-step-name {
-                margin-left: 40px;
-            }
+        &-rhombus {
+          content: '';
+          border-top: 2px solid;
+          border-right: 2px solid;
+          transform: rotate(45deg) scale(var(--ggs, 1));
+          width: $step_height/1.4;
+          height: $step_height/1.4;
+          position: absolute;
+          z-index: 1;
+          right: -13px;
         }
-        &-request {
-            span {
-                color: $color_light;
-                width: 150px;
-                margin-right: 5px;
-                overflow-x: hidden;
-            }
-        }
-        &-step_pressed {
+        &:last-child {
+          .step-rhombus {
             display: none;
-            &:last-child {
-                display: flex;
-            }
+          }
         }
+
+        &-done {
+          background-color: $color_success;
+          .step-rhombus {
+            background-color: $color_success;
+          }
+        }
+
+        &-in_process {
+          background-color: $color_warning_alt;
+          .step-rhombus {
+            background-color: $color_warning_alt;
+          }
+        }
+      }
+      &-big_size {
+        font-size: 16px;
+        $step_height: 60px;
+        .step {
+          height: $step_height;
+          &-current {
+            cursor: pointer;
+            &:hover {
+              .step-name {
+              text-decoration: underline;
+              }
+            }
+          }
+          &-content {
+            margin-left: $step_height/1.6;
+          }
+          &-rhombus {
+            width: $step_height/1.39;
+            height: $step_height/1.39;
+            right: -22px;
+          }
+          &-selected {
+            .step-name {
+              font-weight: 600;
+              font-size: 23px;
+            }
+            .step-rhombus {
+              border-top: 4px solid;
+              border-right:4px solid;
+            }
+          }
+          &-prev {
+            .step-rhombus {
+              border-top: 4px solid;
+              border-right:4px solid;
+            }
+          }
+        }
+      }
+      .request {
+            span {
+              color: $color_light;
+              width: 150px;
+              margin-right: 5px;
+              overflow-x: hidden;
+            } }
     }
     
-    .MiniTimeline-pressed {
-        .MiniTimeline-step_done {
-            display: none;
-            &:first-child {
-                display: flex;
-            }
-            &:last-child {
-                display: flex;
-            }
-        }
-    }
+   
     
     // ************** COMPANY TABLE OBJECT ITEM *************
     .CompanyTableObjectItem {
