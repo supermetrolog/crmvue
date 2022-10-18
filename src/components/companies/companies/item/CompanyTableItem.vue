@@ -121,11 +121,13 @@
               v-for="request in activeRequests"
               :key="request.id"
             >
-              <MiniTimeline
-                :currentSteps="timeline.timelineSteps"
-                :requestName="request.format_name"
+              <CompanyTableMiniTimeline
+                @click="clickTimeline(request)"
+                class="CompanyTableItem-block-timeline"
                 v-for="timeline in request.timelines"
                 :key="timeline"
+                :currentSteps="timeline.timelineSteps"
+                :requestName="request.format_name"
               />
             </div>
           </div>
@@ -163,20 +165,22 @@
 </template>
 
 <script>
+import CompanyTableMiniTimeline from "./CompanyTableMiniTimeline.vue";
 import CompanyTableObjectItem from "../../objects/company-objects/table-objects/CompanyTableObjectItem.vue";
-import MiniTimeline from "./MiniTimeline.vue";
 import { Timeline } from "@/const/Const";
 import { MixinCompanyView } from "../mixins";
 import Tr from "@/components/common/table/Tr";
 import Td from "@/components/common/table/Td";
+import { mapGetters } from "vuex";
+
 export default {
   mixins: [MixinCompanyView],
   name: "CompanyTableItem",
   components: {
     Tr,
     Td,
-    MiniTimeline,
     CompanyTableObjectItem,
+    CompanyTableMiniTimeline,
   },
   props: {
     company: {
@@ -192,8 +196,22 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(["THIS_USER"]),
     activeRequests() {
       return this.company.requests.filter((request) => request.status == 1);
+    },
+  },
+  methods: {
+    clickTimeline(request) {
+      let route = this.$router.resolve({
+        path: `/companies/${this.company.id}`,
+        query: {
+          request_id: request.id,
+          consultant_id: this.THIS_USER.id,
+          step: 0,
+        },
+      });
+      window.open(route.href);
     },
   },
 };

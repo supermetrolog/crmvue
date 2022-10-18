@@ -55,7 +55,7 @@
     </template>
     <div class="container-timeline">
       <div class="row no-gutters">
-        <div class="col-2 stage box">
+        <div class="col-12">
           <div class="row no-gutters inner" ref="timeline">
             <Loader class="center" v-if="loader" />
             <div class="col-12" v-if="timelineNotFoundFlag">
@@ -67,14 +67,9 @@
               class="timeline col-12"
               v-if="!loader && !timelineNotFoundFlag"
             >
-              <TimelineItem
-                v-for="(step, idx) in this.TIMELINE.timelineSteps"
-                :key="step.id"
-                :data="step"
+              <MiniTimeline
+                :currentSteps="this.TIMELINE.timelineSteps"
                 :selectedStep="selectedStep"
-                :idx="idx"
-                :ref="'step_' + step.number"
-                :loader="loaderForStep"
                 @clickItem="clickStep"
               />
             </div>
@@ -119,7 +114,8 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import MiniTimeline from "./MiniTimeline.vue";
+import { mapActions, mapGetters } from "vuex";
 import TimelineItem from "./TimelineItem";
 import Multiselect from "@vueform/multiselect";
 
@@ -152,6 +148,7 @@ export default {
     ExtraBlock,
     Multiselect,
     CustomButton,
+    MiniTimeline,
   },
   data() {
     return {
