@@ -4104,16 +4104,20 @@
                 background-color: $color_light;
                 border: 1px solid $color_dark;
                 .image-container {
-                    min-height: 100px;
-                    max-height: 280px;
                     position: relative;
                     overflow: hidden;
                     display: flex;
                     justify-content: center;
                     align-items: center;
+                    a {
+                        width: 100%;
+                    }
                     img {
                         z-index: 1;
-                        min-height: 100px;
+                        height: 200px;
+                        width: 100%;
+                        object-fit: cover;
+                        object-position: center;
                     }
                     .icon-unselect {
                         position: absolute;
