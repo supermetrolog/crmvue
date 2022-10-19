@@ -1,6 +1,6 @@
 <template>
   <div class="objects-controll-panel row px-2 py-2">
-    <div class="col-8">
+    <div class="col-12">
       <div class="timeline-actions row no-gutters">
         <div
           v-for="(button, index) in buttons"

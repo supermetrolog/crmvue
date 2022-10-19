@@ -65,7 +65,7 @@
         </div>
       </div>
     </StepStage>
-    <div class="row" v-if="userLocation">
+    <div class="row" v-if="data.timelineStepObjects.length && userLocation">
       <div class="col-5">
         <div class="row no-gutters">
           <div class="col-12">
@@ -133,7 +133,7 @@
         />
       </div>
     </div>
-    <div v-if="!userLocation">
+    <div v-if="!userLocation && data.timelineStepObjects.length">
       <h3 class="text-danger">
         Разрешите передачу вашего местоположения и перезагрузите страницу!
       </h3>

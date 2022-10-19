@@ -6,32 +6,6 @@
         enter-active-class="animate__animated animate__zoomIn for__modal"
         leave-active-class="animate__animated animate__zoomOut for__modal"
       >
-        <Bar title="Избранное" v-if="barVisible" @close="favorites">
-          <Objects>
-            <ObjectsList
-              :objects="selectedObjects"
-              :currentObjects="step.timelineStepObjects"
-              :selectedObjects="selectedObjects"
-              :disabled="true"
-              :withSeparator="true"
-              :loader="loader"
-              :viewMode="true"
-              col="col-6"
-              label="Выбранные предложения"
-              @select="select"
-              @unSelect="unSelect"
-              @addComment="addComment"
-            />
-          </Objects>
-        </Bar>
-      </transition>
-    </teleport>
-    <teleport to="body">
-      <transition
-        mode="out-in"
-        enter-active-class="animate__animated animate__zoomIn for__modal"
-        leave-active-class="animate__animated animate__zoomOut for__modal"
-      >
         <Modal
           title="Отправка"
           v-if="sendObjectsModalVisible"
@@ -71,7 +45,7 @@
           <div class="col-12">
             <Objects>
               <StepStage
-                class="mb-2 sticky px-2"
+                class="mb-2 sticky"
                 :title="
                   'Шаг 1. Изучите деятельность компании клиента, свяжитесь с контактным лицом и обсудите задачу ' +
                   step.timelineStepObjects.length
@@ -212,7 +186,6 @@
 import { MixinStepActions } from "../mixins";
 import { MixinAllObject } from "../../objects/mixins";
 import CustomButton from "@/components/common/CustomButton.vue";
-import Bar from "@/components/common/Bar";
 import RefreshButton from "@/components/common/RefreshButton.vue";
 import StepStage from "../steps/steps-stages/StepStage.vue";
 import SendObjects from "../../objects/send-objects/SendObjects";
@@ -220,7 +193,6 @@ export default {
   name: "OffersActions",
   mixins: [MixinStepActions, MixinAllObject],
   components: {
-    Bar,
     CustomButton,
     RefreshButton,
     StepStage,

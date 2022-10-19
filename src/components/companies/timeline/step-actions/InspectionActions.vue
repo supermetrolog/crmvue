@@ -105,7 +105,7 @@ export default {
           text: "Нет подходящих",
           icon: "far fa-frown-open",
           emited_event: "negative",
-          classes: "col-4 ml-1",
+          classes: "col-2 ml-1",
         },
       ];
     },

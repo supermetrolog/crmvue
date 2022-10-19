@@ -23,7 +23,7 @@
       title="Шаг 2. Отметить каким способом была получена обратная связь"
       :isDone="!!data.timelineStepFeedbackways.length"
       :closeSlotWhenDone="false"
-      :isCurrent="!data.timelineStepFeedbackways.length"
+      :isCurrent="!!data.timelineStepObjects.length"
     >
       <div class="col-7 pp">
         <div class="row">

@@ -892,6 +892,9 @@
             }
         }
         .step-actions {
+            .scroller {
+                max-height: 84vh;
+            }
             hr {
                 border-radius: 0!important;
             }
@@ -2158,14 +2161,14 @@
                 max-width: 200px;
             }
             &-timeline {
-              &:hover {
-                cursor: pointer;
-                opacity: 70%;
-              }
-              &:active {
-                // border: 2px solid black;
-                opacity: 50%;
-              }
+                &:hover {
+                    cursor: pointer;
+                    opacity: 70%;
+                }
+                &:active {
+                    // border: 2px solid black;
+                    opacity: 50%;
+                }
             }
         }
     }
@@ -3373,6 +3376,9 @@
     }
     
     .extra-block {
+        .scroller {
+            max-height: 84vh;
+        }
         .inner {
             overflow-y: scroll;
         }
@@ -4694,115 +4700,112 @@
     
     // ************** MINI TIMELINE *************
     .MiniTimeline {
-      font-size: 12px;
-      $step_height: 33px;
-      color: black;
-      .step:first-child {
-        .step-content {
-          margin-left: 0;
+        font-size: 12px;
+        $step_height: 33px;
+        color: black;
+        .step:first-child {
+            .step-content {
+                margin-left: 0;
+            }
         }
-      }
-      .step {
-        display: flex;
-        align-items: center;
-        white-space: nowrap;
-        height: $step_height;
-        padding:  0;
-        background-color: lighten($color_grey, 30);
-        i {
-          color: $color_light;
-        }
-        &:first-child {
-          padding-left: 5px;
-        }
-        &-content {
-          display:flex;
-          align-items: center;
-          margin-left: $step_height/1.6;
-        }
-        &-name {
-          z-index: 2;
-        }
-        &-rhombus {
-          content: '';
-          border-top: 2px solid;
-          border-right: 2px solid;
-          transform: rotate(45deg) scale(var(--ggs, 1));
-          width: $step_height/1.4;
-          height: $step_height/1.4;
-          position: absolute;
-          z-index: 1;
-          right: -13px;
-        }
-        &:last-child {
-          .step-rhombus {
-            display: none;
-          }
-        }
-
-        &-done {
-          background-color: $color_success;
-          .step-rhombus {
-            background-color: $color_success;
-          }
-        }
-
-        &-in_process {
-          background-color: $color_warning_alt;
-          .step-rhombus {
-            background-color: $color_warning_alt;
-          }
-        }
-      }
-      &-big_size {
-        font-size: 16px;
-        $step_height: 60px;
         .step {
-          height: $step_height;
-          &-current {
-            cursor: pointer;
-            &:hover {
-              .step-name {
-              text-decoration: underline;
-              }
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            height: $step_height;
+            padding: 0;
+            background-color: lighten($color_grey, 30);
+            i {
+                color: $color_light;
             }
-          }
-          &-content {
-            margin-left: $step_height/1.6;
-          }
-          &-rhombus {
-            width: $step_height/1.39;
-            height: $step_height/1.39;
-            right: -22px;
-          }
-          &-selected {
-            .step-name {
-              font-weight: 600;
-              font-size: 23px;
+            &:first-child {
+                padding-left: 5px;
             }
-            .step-rhombus {
-              border-top: 4px solid;
-              border-right:4px solid;
+            &-content {
+                display: flex;
+                align-items: center;
+                margin-left: $step_height/1.6;
             }
-          }
-          &-prev {
-            .step-rhombus {
-              border-top: 4px solid;
-              border-right:4px solid;
+            &-name {
+                z-index: 2;
             }
-          }
+            &-rhombus {
+                content: '';
+                border-top: 2px solid;
+                border-right: 2px solid;
+                transform: rotate(45deg) scale(var(--ggs, 1));
+                width: $step_height/1.4;
+                height: $step_height/1.4;
+                position: absolute;
+                z-index: 1;
+                right: -13px;
+            }
+            &:last-child {
+                .step-rhombus {
+                    display: none;
+                }
+            }
+            &-done {
+                background-color: $color_success;
+                .step-rhombus {
+                    background-color: $color_success;
+                }
+            }
+            &-in_process {
+                background-color: $color_warning_alt;
+                .step-rhombus {
+                    background-color: $color_warning_alt;
+                }
+            }
         }
-      }
-      .request {
+        &-big_size {
+            font-size: 16px;
+            $step_height: 60px;
+            .step {
+                height: $step_height;
+                &-current {
+                    cursor: pointer;
+                    &:hover {
+                        .step-name {
+                            text-decoration: underline;
+                        }
+                    }
+                }
+                &-content {
+                    margin-left: $step_height/1.6;
+                }
+                &-rhombus {
+                    width: $step_height/1.39;
+                    height: $step_height/1.39;
+                    right: -22px;
+                }
+                &-selected {
+                    .step-name {
+                        font-weight: 600;
+                        font-size: 23px;
+                    }
+                    .step-rhombus {
+                        border-top: 4px solid;
+                        border-right: 4px solid;
+                    }
+                }
+                &-prev {
+                    .step-rhombus {
+                        border-top: 4px solid;
+                        border-right: 4px solid;
+                    }
+                }
+            }
+        }
+        .request {
             span {
-              color: $color_light;
-              width: 150px;
-              margin-right: 5px;
-              overflow-x: hidden;
-            } }
+                color: $color_light;
+                width: 150px;
+                margin-right: 5px;
+                overflow-x: hidden;
+            }
+        }
     }
-    
-   
     
     // ************** COMPANY TABLE OBJECT ITEM *************
     .CompanyTableObjectItem {

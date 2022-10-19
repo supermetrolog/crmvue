@@ -56,7 +56,7 @@ export const MixinObject = {
                     icon: "far fa-frown-open",
                     emited_event: "negative",
                     withWayOfSending: false,
-                    classes: "col-4 ml-1",
+                    classes: "col-2 ml-1",
                 },
             ];
         }
@@ -415,19 +415,7 @@ export const MixinAllObject = {
                     icon: "far fa-frown-open",
                     emited_event: "negative",
                     withWayOfSending: false,
-                    classes: "col-3 ml-1",
-                },
-                {
-                    btnClass: "primary",
-                    btnVisible: false,
-                    defaultBtn: true,
-                    disabled: this.disabled,
-                    title: "Выбранные предложения",
-                    text: `Избранные (${this.selectedObjects.length})`,
-                    icon: "fas fa-bookmark",
-                    emited_event: "favorites",
-                    withWayOfSending: false,
-                    classes: "col-3 ml-1",
+                    classes: "col-2 ml-1",
                 },
             ];
         },
