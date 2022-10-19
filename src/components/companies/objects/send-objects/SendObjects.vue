@@ -49,11 +49,11 @@
               placeholder="Тема письма"
             />
           </FormGroup>
-          <FormGroup class="mb-2" v-if="!alreadySended">
-            <Textarea
-              v-model="form.message"
+          <FormGroup class="mb-2 pb-5" v-if="!alreadySended">
+            <VueEditor
               class="col-12"
-              placeholder="Текст письма"
+              :editorToolbar="customToolbar"
+              v-model="form.message"
             />
           </FormGroup>
         </Form>
@@ -72,8 +72,8 @@ import Form from "@/components/common/form/Form.vue";
 import FormGroup from "@/components/common/form/FormGroup.vue";
 import MultiSelect from "@/components/common/form/MultiSelect.vue";
 import CheckboxIcons from "@/components/common/form/CheckboxIcons.vue";
-import Textarea from "@/components/common/form/Textarea.vue";
 import Input from "@/components/common/form/Input.vue";
+import { VueEditor } from "vue3-editor";
 import { mapGetters } from "vuex";
 import { WayOfSending } from "@/const/Const.js";
 import Utils from "@/utils";
@@ -85,9 +85,9 @@ export default {
     MultiSelect,
     Form,
     FormGroup,
-    Textarea,
     Input,
     CheckboxIcons,
+    VueEditor,
   },
   props: {
     alreadySended: {
@@ -103,6 +103,18 @@ export default {
       v$: useValidate(),
       loader: false,
       wayOfSendingOptions: WayOfSending.get("param"),
+      customToolbar: [
+        [{ header: [false, 1, 2, 3, 4, 5, 6] }],
+        ["bold", "italic", "underline", "strike"], // toggled buttons
+        [
+          { align: "" },
+          { align: "center" },
+          { align: "right" },
+          { align: "justify" },
+        ],
+        [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+        ["clean"], // remove formatting button
+      ],
       form: {
         contactForSendMessage: [],
         wayOfSending: [0],
@@ -140,6 +152,8 @@ export default {
       this.v$.$validate();
       if (this.v$.form.$error) return;
       if (this.alreadySended) {
+        this.form.message = null;
+        this.form.subject = null;
         this.$emit("alreadySent", this.form);
       } else {
         this.$emit("send", this.form);

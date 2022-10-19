@@ -253,7 +253,7 @@ export default {
       return {
         contactForSendMessage: [this.defaultContactForSend],
         subject: "Список предложений от Pennylane Realty",
-        message: `\n\n\n\n\nС уважением, ${this.THIS_USER.userProfile.medium_name} \nменеджер PLR`,
+        message: `<p>С уважением, ${this.THIS_USER.userProfile.medium_name}</p><p>менеджер PLR</p>`,
       };
     },
     defaultContactForSend() {
