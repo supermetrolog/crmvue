@@ -4728,15 +4728,16 @@
           z-index: 2;
         }
         &-rhombus {
-          content: '';
-          border-top: 2px solid;
-          border-right: 2px solid;
-          transform: rotate(45deg) scale(var(--ggs, 1));
-          width: $step_height/1.4;
-          height: $step_height/1.4;
-          position: absolute;
-          z-index: 1;
-          right: -13px;
+            background-color: lighten($color_grey, 30);
+            content: '';
+            border-top: 2px solid;
+            border-right: 2px solid;
+            transform: rotate(45deg) scale(var(--ggs, 1));
+            width: $step_height/1.4;
+            height: $step_height/1.4;
+            position: absolute;
+            z-index: 1;
+            right: -13px;
         }
         &:last-child {
           .step-rhombus {
@@ -4780,21 +4781,23 @@
             right: -22px;
           }
           &-selected {
+            $color_selected: $color_info;
+            background-color: $color_selected;
             .step-name {
-              font-weight: 600;
-              font-size: 23px;
+                font-weight: 600;
             }
             .step-rhombus {
-              border-top: 4px solid;
-              border-right:4px solid;
+                background-color: $color_selected;
+                // border-top: 4px groove gray;
+                // border-right:4px groove gray;
             }
           }
-          &-prev {
-            .step-rhombus {
-              border-top: 4px solid;
-              border-right:4px solid;
-            }
-          }
+        //   &-prev {
+        //     .step-rhombus {
+        //         border-top: 4px groove gray;
+        //         border-right:4px groove gray;
+        //     }
+        //   }
         }
       }
       .request {
