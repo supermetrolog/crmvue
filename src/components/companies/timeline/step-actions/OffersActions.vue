@@ -16,6 +16,7 @@
             @send="sendOffers"
             @alreadySent="alreadySentOffers"
             :alreadySended="alreadySended"
+            :formdata="sendObjectsFormdata"
           >
             <Objects>
               <ObjectsList
@@ -189,6 +190,7 @@ import CustomButton from "@/components/common/CustomButton.vue";
 import RefreshButton from "@/components/common/RefreshButton.vue";
 import StepStage from "../steps/steps-stages/StepStage.vue";
 import SendObjects from "../../objects/send-objects/SendObjects";
+import { mapGetters } from "vuex";
 export default {
   name: "OffersActions",
   mixins: [MixinStepActions, MixinAllObject],
@@ -246,6 +248,23 @@ export default {
     withoutOffersFromQuery: null,
   },
   computed: {
+    ...mapGetters(["THIS_USER"]),
+    sendObjectsFormdata() {
+      return {
+        contactForSendMessage: [this.defaultContactForSend],
+        subject: "Список предложений от Pennylane Realty",
+        message: `\n\n\n\n\nС уважением, ${this.THIS_USER.userProfile.medium_name} \nменеджер PLR`,
+      };
+    },
+    defaultContactForSend() {
+      if (
+        !this.currentRequest ||
+        !this.currentRequest.contact ||
+        !this.currentRequest.contact.emails
+      )
+        return null;
+      return this.currentRequest.contact.emails[0].email;
+    },
     firstRecommendedQuery() {
       const request = this.currentRequest;
       const query = {

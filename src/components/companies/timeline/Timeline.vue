@@ -238,23 +238,6 @@ export default {
       };
       query.step++;
       await this.$router.push({ query: query });
-      this.scrollToSelectedStep();
-    },
-    scrollToSelectedStep(delay = 0) {
-      if (!this.$route.query.step) {
-        return;
-      }
-      let options = {
-        behavior: "smooth",
-        block: "center",
-      };
-      setTimeout(
-        () =>
-          this.$refs["step_" + this.$route.query.step][0].$el.scrollIntoView(
-            options
-          ),
-        delay
-      );
     },
 
     async clickStep(step) {
@@ -265,7 +248,6 @@ export default {
         query.step = step.number;
       }
       await this.$router.push({ query: query });
-      this.scrollToSelectedStep();
     },
     async getTimeline() {
       await this.FETCH_TIMELINE(this.$route.query);
@@ -318,10 +300,6 @@ export default {
     this.loader = false;
     if (result) {
       this.moveToPriorityStep();
-
-      this.$nextTick(() => {
-        this.scrollToSelectedStep();
-      });
     }
   },
   watch: {

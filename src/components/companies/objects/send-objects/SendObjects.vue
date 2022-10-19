@@ -94,6 +94,9 @@ export default {
       type: Boolean,
       default: false,
     },
+    formdata: {
+      type: Object,
+    },
   },
   data() {
     return {
@@ -133,6 +136,7 @@ export default {
 
   methods: {
     onSubmit() {
+      console.log(this.form);
       this.v$.$validate();
       if (this.v$.form.$error) return;
       if (this.alreadySended) {
@@ -141,6 +145,10 @@ export default {
         this.$emit("send", this.form);
       }
     },
+  },
+  mounted() {
+    console.log(this.formdata);
+    this.form = { ...this.form, ...this.formdata };
   },
 };
 </script>

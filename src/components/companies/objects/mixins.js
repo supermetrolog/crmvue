@@ -76,21 +76,21 @@ export const MixinObject = {
             // this.realSendObjects(wayOfSending, sendClientFlag);
             this.sendObjectsHandler(message, sendClientFlag, true);
         },
-        async send({ message, wayOfSending, contactForSendMessage }) {
+        async send({ message, wayOfSending, contactForSendMessage, subject }) {
             console.log("SEND", message, wayOfSending);
             this.contactForSendMessage = contactForSendMessage;
             const sendClientFlag = true;
             if (!this.checkContacts()) {
                 return;
             }
-            if (!await this.realSendObjects(wayOfSending, sendClientFlag, message)) {
+            if (!await this.realSendObjects(wayOfSending, sendClientFlag, message, subject)) {
                 return;
             }
             // this.realSendObjects(wayOfSending, sendClientFlag);
 
             this.sendObjectsHandler(message, sendClientFlag);
         },
-        async realSendObjects(wayOfSending, sendClientFlag, comment = null) {
+        async realSendObjects(wayOfSending, sendClientFlag, comment = null, subject = null) {
             let notifyOptions = {
                 group: "app",
                 type: "error",
@@ -119,7 +119,8 @@ export const MixinObject = {
                 offers: objectsParams,
                 comment,
                 wayOfSending,
-                sendClientFlag
+                sendClientFlag,
+                subject
             });
             this.loader = false;
             this.allObjectsLoader = false;
