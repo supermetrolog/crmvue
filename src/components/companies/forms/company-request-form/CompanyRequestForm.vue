@@ -8,13 +8,15 @@
       <Form @submit="onSubmit" class="p-2">
         <Loader class="center" v-if="loader" />
         <FormGroup class="mb-2">
-          <Input v-model="form.name" label="Название" class="col-6 pr-1" />
+          <Input v-model="form.name" label="Название" class="col-12" />
+        </FormGroup>
+        <FormGroup class="mb-2">
           <MultiSelect
             v-model="form.company_id"
             extraClasses="long-text"
             label="Компания"
             required
-            class="col-6"
+            class="col-6 pr-1"
             :v="v$.form.company_id"
             :filterResults="false"
             :minChars="1"
@@ -26,6 +28,17 @@
                 return await searchCompany(query);
               }
             "
+            @change="onChangeCompany"
+          />
+          <MultiSelect
+            v-model="form.contact_id"
+            extraClasses="long-text"
+            label="Контакт"
+            required
+            class="col-6"
+            :disabled="!form.company_id"
+            :v="v$.form.contact_id"
+            :options="contactOptions"
           />
         </FormGroup>
         <FormGroup class="mb-2">
@@ -421,6 +434,7 @@ export default {
       unknownMovingDateOptions: unknownMovingDate.get("param"),
       passiveWhyOptions: PassiveWhyRequest.get("param"),
       loader: false,
+      contactOptions: [],
       form: {
         company_id: null,
         name: null,
@@ -462,6 +476,7 @@ export default {
         shelving: null,
         outside_mkad: null,
         region_neardy: null,
+        contact_id: null,
       },
     };
   },
@@ -498,6 +513,9 @@ export default {
         },
         company_id: {
           required: helpers.withMessage("Выберите компанию", required),
+        },
+        contact_id: {
+          required: helpers.withMessage("Выберите контакт", required),
         },
         minArea: {
           required: helpers.withMessage("Заполните поле", required),
@@ -641,29 +659,41 @@ export default {
       return data;
     },
     async searchCompany(query) {
-      let result = null;
-      let array = [];
-      if (this.formdata || this.company_id) {
-        if (!this.selectedCompany) {
-          this.selectedCompany = await api.companies.getCompany(
-            this.formdata ? this.formdata.company_id : this.company_id
-          );
-        }
-
-        array.push({
-          value: this.selectedCompany.id,
-          label: this.selectedCompany.full_name,
-        });
+      if (query == null) {
+        query = {
+          id: this.formdata ? this.formdata.company_id : this.company_id,
+        };
+        this.searchContact(query.id);
+      } else {
+        query = { all: query };
       }
-      query = {
-        all: query,
-      };
-      result = await api.companies.searchCompanies(query);
-      console.log("RES", result);
-      result.data.forEach((item) => {
-        array.push({ value: item.id, label: item.full_name });
+      const companies = await api.companies.searchCompanies(query);
+      return this.multiselectAdapter(companies.data, "id", "full_name");
+    },
+    multiselectAdapter(array, valueProp, labelProp) {
+      return array.map((item) => {
+        return { value: item[valueProp], label: item[labelProp] };
       });
-      return array;
+    },
+    onChangeCompany() {
+      console.log("ON  CHANGE COMPANY");
+      this.form.contact_id = null;
+      this.searchContact(this.form.company_id);
+    },
+    async searchContact(query) {
+      if (query == null) {
+        query = {
+          id: this.formdata ? this.formdata.company_id : this.company_id,
+        };
+      } else {
+        query = { company_id: query };
+      }
+      const contacts = await api.contacts.searchContacts(query);
+      this.contactOptions = this.multiselectAdapter(
+        contacts.data,
+        "id",
+        "first_and_last_name"
+      );
     },
     changeObjectTypesGeneral(data) {
       let warehouse,

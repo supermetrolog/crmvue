@@ -18,13 +18,16 @@ export default {
     async searchContacts(query) {
         console.warn("SEARCH");
         query = new URLSearchParams(query).toString();
-        const url = `contacts?${query}expand=contactComments,contactComments.author,contactComments.author.userProfile,emails,phones,websites,consultant,consultant.userProfile,wayOfInformings&sort=-created_at`;
+        // const url = `contacts?${query}expand=contactComments,contactComments.author,contactComments.author.userProfile,emails,phones,websites,consultant,consultant.userProfile,wayOfInformings&sort=-created_at`;
+        const url = `contacts?${query}`;
         let data = false;
 
         await axios
             .get(url)
             .then((Response) => {
-                data = SuccessHandler.getData(Response);
+                data = {};
+                data.data = SuccessHandler.getData(Response);
+                data.pagination = SuccessHandler.getPaginationData(Response);
             })
             .catch((e) => ErrorHandle.setError(e));
         return data;
