@@ -114,7 +114,6 @@
 <script>
 import MiniTimeline from "./MiniTimeline.vue";
 import { mapActions, mapGetters } from "vuex";
-import TimelineItem from "./TimelineItem";
 import Multiselect from "@vueform/multiselect";
 
 import MeetingActions from "./step-actions/MeetingActions.vue";
@@ -134,7 +133,6 @@ import CustomButton from "@/components/common/CustomButton.vue";
 export default {
   name: "Timeline",
   components: {
-    TimelineItem,
     MeetingActions,
     OffersActions,
     FeedbackActions,
