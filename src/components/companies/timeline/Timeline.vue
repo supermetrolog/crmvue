@@ -85,7 +85,7 @@
           <Loader class="center" />
         </div>
         <div
-          class="col-6 box step-actions"
+          class="col-8 box step-actions"
           v-if="selectedStep && !loader && !timelineNotFoundFlag"
         >
           <component

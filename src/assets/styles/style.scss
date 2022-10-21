@@ -2856,7 +2856,18 @@
                         }
                     }
                 }
+                &.alt {
+                    border: 2px solid black;
+                    a {
+                        color: black;
+                        font-weight: 600;
+                    }
+                    .name {
+                        color: darken($color_success, 10);
+                    }
+                }
             }
+            
         }
     }
     
@@ -4730,8 +4741,8 @@
         &-rhombus {
             background-color: lighten($color_grey, 30);
             content: '';
-            border-top: 2px solid;
-            border-right: 2px solid;
+            border-top: 0.5px solid;
+            border-right: 0.5px solid;
             transform: rotate(45deg) scale(var(--ggs, 1));
             width: $step_height/1.4;
             height: $step_height/1.4;
@@ -4754,6 +4765,9 @@
 
         &-in_process {
           background-color: $color_warning_alt;
+          .step-name {
+            color: $color_light;
+          }
           .step-rhombus {
             background-color: $color_warning_alt;
           }
@@ -4767,9 +4781,10 @@
           &-current {
             cursor: pointer;
             &:hover {
-              .step-name {
-              text-decoration: underline;
-              }
+                .step-name {
+                    transition-duration: 0.3s;
+                    transform: scale(1.1);
+                }
             }
           }
           &-content {

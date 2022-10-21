@@ -1,90 +1,47 @@
 <template>
-  <div class="row no-gutters company-detail-info" v-if="company">
-    <div class="col-12">
-      <div class="row">
-        <div class="col-12 text-center mb-3" v-if="!company.status">
-          <h3 class="text-warning">Пассив!</h3>
-          <p class="text-dark">
-            <b>{{ passiveWhyOptions[company.passive_why].label }}</b>
-          </p>
-          <p class="text-dark">{{ company.passive_why_comment }}</p>
-          <hr />
-        </div>
-        <div class="col-12 text-center mb-2">
-          <i :class="rating(1)"></i>
-          <i :class="rating(3)"></i>
-          <i :class="rating(5)"></i>
-        </div>
-        <div class="col-12 text-center mb-3">
-          <p class="d-inline-block pl-2 status">
-            <span
-              :class="{
-                'bg-dark': !company.active,
-                'bg-success': company.active,
-              }"
-              >{{ status }}</span
-            >
-          </p>
-          <p
-            class="d-inline-block pl-2 pb-2 category"
-            v-for="categoryItem of company.categories"
-            :key="categoryItem.id"
-          >
-            <span>{{ category(categoryItem.category) }}</span>
-          </p>
-        </div>
-        <div class="col-12 text-center">
-          <Progress :percent="company.progress_percent" />
-        </div>
-      </div>
-    </div>
-    <div class="col-12 text-center mt-2">
-      <h4 class="m-0">ID: {{ company.id }}</h4>
-    </div>
-    <div class="col-12 text-center px-3 pb-3 pt-0">
-      <h3>
-        {{ company.full_name }}
-      </h3>
+  <div class="row no-gutters company-detail-info alt px-3 py-2" v-if="company">
+    <div class="col-12 name">
+      <h4 class="m-0">{{ company.id }} {{ company.full_name }}</h4>
     </div>
     <div class="col-12">
       <div class="row no-gutters">
         <div class="col-12 company-detail-info-item">
           <div class="row no-gutters">
-            <div class="col-3">
-              <strong> Адрес: </strong>
+            <div class="col-5">
+              <p>Адрес:</p>
             </div>
-            <div class="col-9 text-right align-self-center">
-              <p>
+            <div class="col-7 align-self-center">
+              <strong>
                 {{ company.officeAdress || "&#8212;" }}
-              </p>
+              </strong>
             </div>
           </div>
         </div>
         <div class="col-12 company-detail-info-item">
           <div class="row no-gutters">
-            <div class="col-4">
-              <strong>Телефон: </strong>
+            <div class="col-5">
+              <p>Общий телефон:</p>
             </div>
-            <div class="col-8 text-right align-self-center">
-              <template v-if="generalContact && generalContact.phones.length">
+            <div class="col-7 text-left align-self-center">
+              <strong v-if="generalContact && generalContact.phones.length">
                 <PhoneNumber
                   v-for="phone in generalContact.phones"
                   :key="phone.id"
                   :phone="phone"
                   :contact="generalContact"
-                  classList="text-right"
+                  classList="text-left"
                 />
-              </template>
+              </strong>
               <p v-else>&#8212;</p>
             </div>
           </div>
         </div>
         <div class="col-12 company-detail-info-item">
           <div class="row no-gutters">
-            <div class="col-4">
-              <strong>Email: </strong>
+            <div class="col-5">
+              <p>Email:</p>
             </div>
-            <div class="col-8 text-right align-self-center">
+            <div class="col-7 text-left align-self-center">
               <template v-if="generalContact && generalContact.emails.length">
                 <a
                   v-for="email of generalContact.emails"
@@ -100,10 +57,10 @@
         </div>
         <div class="col-12 company-detail-info-item">
           <div class="row no-gutters">
-            <div class="col-4">
-              <strong>Вебсайт: </strong>
+            <div class="col-5">
+              <p>Вебсайт:</p>
             </div>
-            <div class="col-8 text-right align-self-center">
+            <div class="col-7 text-left align-self-center">
               <template v-if="generalContact && generalContact.websites.length">
                 <a
                   v-for="website of generalContact.websites"
@@ -125,12 +82,12 @@
         <div class="col-12 company-detail-info-item">
           <div class="row no-gutters">
             <div class="col-5">
-              <strong>ГК: </strong>
+              <p>ГК:</p>
             </div>
-            <div class="col-7 text-right align-self-center">
-              <p v-if="company.companyGroup">
+            <div class="col-7 text-left align-self-center">
+              <strong v-if="company.companyGroup">
                 {{ company.companyGroup.full_name }}
-              </p>
+              </strong>
               <p v-else>&#8212;</p>
             </div>
           </div>
@@ -138,14 +95,14 @@
         <div class="col-12 company-detail-info-item">
           <div class="row no-gutters">
             <div class="col-5">
-              <strong>Форма Организации: </strong>
+              <p>Форма Организации:</p>
             </div>
-            <div class="col-7 text-right align-self-center">
-              <p v-if="company.formOfOrganization !== null">
+            <div class="col-7 text-left align-self-center">
+              <strong v-if="company.formOfOrganization !== null">
                 {{
                   formOfOrganizationOptions[company.formOfOrganization].label
                 }}
-              </p>
+              </strong>
               <p v-else>&#8212;</p>
             </div>
           </div>
@@ -153,12 +110,12 @@
         <div class="col-12 company-detail-info-item">
           <div class="row no-gutters">
             <div class="col-5">
-              <strong>Группа деятельности: </strong>
+              <p>Группа деятельности:</p>
             </div>
-            <div class="col-7 text-right align-self-center">
-              <p v-if="company.activityGroup !== null">
+            <div class="col-7 text-left align-self-center">
+              <strong v-if="company.activityGroup !== null">
                 {{ activityGroupOptions[company.activityGroup].label }}
-              </p>
+              </strong>
               <p v-else>&#8212;</p>
             </div>
           </div>
@@ -166,12 +123,12 @@
         <div class="col-12 company-detail-info-item">
           <div class="row no-gutters">
             <div class="col-5">
-              <strong>Профиль деятельности: </strong>
+              <p>Профиль деятельности:</p>
             </div>
-            <div class="col-7 text-right align-self-center">
-              <p v-if="company.activityProfile !== null">
+            <div class="col-7 text-left align-self-center">
+              <strong v-if="company.activityProfile !== null">
                 {{ activityProfileOptions[company.activityProfile].label }}
-              </p>
+              </strong>
               <p v-else>&#8212;</p>
             </div>
           </div>
@@ -182,10 +139,10 @@
         >
           <div class="row no-gutters">
             <div class="col-5">
-              <strong>Наменклатура товара: </strong>
+              <p>Наменклатура товара:</p>
             </div>
-            <div class="col-7 text-right align-self-center">
-              <p
+            <div class="col-7 text-left align-self-center">
+              <strong
                 class="d-inline-block"
                 style="
                   line-break: anywhere;
@@ -195,8 +152,8 @@
                 :key="product.id"
               >
                 {{ product.product }}
-              </p>
-              <p
+              </strong>
+              <strong
                 class="d-inline-block"
                 v-if="!company.productRanges.length"
                 style="
@@ -205,83 +162,63 @@
                 "
               >
                 &#8212;
-              </p>
+              </strong>
             </div>
           </div>
         </div>
         <div class="col-12 company-detail-info-item">
           <div class="row no-gutters">
-            <div class="col-3">
-              <strong>Внес: </strong>
+            <div class="col-5">
+              <p>Внес:</p>
             </div>
-            <div class="col-9 text-right align-self-center">
-              <p>
+            <div class="col-7 text-left align-self-center">
+              <strong>
                 {{ company.consultant.userProfile.short_name }}
-              </p>
+              </strong>
             </div>
           </div>
         </div>
         <div class="col-12 company-detail-info-item">
           <div class="row no-gutters">
-            <div class="col-4">
-              <strong>Описание: </strong>
+            <div class="col-5">
+              <p>Поступление:</p>
             </div>
-            <div class="col-8 text-right align-self-center">
-              <p>
-                {{ company.description || "&#8212;" }}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 company-detail-info-item">
-          <div class="row no-gutters">
-            <div class="col-4">
-              <strong>Поступление: </strong>
-            </div>
-            <div class="col-8 text-right align-self-center">
-              <p>
+            <div class="col-7 text-left align-self-center">
+              <strong>
                 {{ company.created_at_format }}
-              </p>
+              </strong>
             </div>
           </div>
         </div>
         <div class="col-12 company-detail-info-item">
           <div class="row no-gutters">
-            <div class="col-4">
-              <strong>Обновление: </strong>
+            <div class="col-5">
+              <p>Обновление:</p>
             </div>
-            <div class="col-8 text-right align-self-center">
-              <p>
+            <div class="col-7 text-left align-self-center">
+              <strong>
                 {{ company.updated_at_format || "&#8212;" }}
-              </p>
+              </strong>
             </div>
           </div>
         </div>
         <div class="col-12 company-detail-info-item">
           <div class="row no-gutters">
-            <div class="col-4">
-              <strong>Обработано: </strong>
+            <div class="col-5">
+              <p>Обработано:</p>
             </div>
-            <div class="col-8 text-right align-self-center">
-              <p>
+            <div class="col-7 text-left align-self-center">
+              <strong>
                 {{ company.processed ? "Да" : "Нет" }}
-              </p>
+              </strong>
             </div>
           </div>
         </div>
-        <div class="col-12 company-detail-info-item">
+        <div class="col-12 company-detail-info-item mt-4">
           <div class="row no-gutters">
-            <div class="col-4">
-              <strong>Документы: </strong>
-            </div>
-            <div class="col-8 text-right align-self-center">
-              <FileInput
-                :data="company.files"
-                :reedOnly="true"
-                v-if="company.files.length"
-              />
-              <p v-else>&#8212;</p>
-            </div>
+            <p>
+              {{ company.description || "&#8212;" }}
+            </p>
           </div>
         </div>
       </div>
@@ -302,10 +239,10 @@
           <div class="row no-gutters">
             <div class="col-12 company-detail-info-item">
               <div class="row no-gutters">
-                <div class="col-3">
+                <div class="col-5">
                   <strong>Юр. адрес: </strong>
                 </div>
-                <div class="col-9 text-right align-self-center">
+                <div class="col-7 text-left align-self-center">
                   <p v-if="company.legalAddress">
                     {{ company.legalAddress }}
                   </p>
@@ -315,10 +252,10 @@
             </div>
             <div class="col-12 company-detail-info-item">
               <div class="row no-gutters">
-                <div class="col-3">
+                <div class="col-5">
                   <strong>ОГРН: </strong>
                 </div>
-                <div class="col-9 text-right align-self-center">
+                <div class="col-7 text-left align-self-center">
                   <p class="text-primary" v-if="company.ogrn">
                     {{ company.ogrn }}
                   </p>
@@ -328,10 +265,10 @@
             </div>
             <div class="col-12 company-detail-info-item">
               <div class="row no-gutters">
-                <div class="col-3">
+                <div class="col-5">
                   <strong>ИНН: </strong>
                 </div>
-                <div class="col-9 text-right align-self-center">
+                <div class="col-7 text-left align-self-center">
                   <p v-if="company.inn">
                     {{ company.inn }}
                   </p>
@@ -341,10 +278,10 @@
             </div>
             <div class="col-12 company-detail-info-item">
               <div class="row no-gutters">
-                <div class="col-3">
+                <div class="col-5">
                   <strong>КПП: </strong>
                 </div>
-                <div class="col-9 text-right align-self-center">
+                <div class="col-7 text-left align-self-center">
                   <p v-if="company.kpp">
                     {{ company.kpp }}
                   </p>
@@ -354,10 +291,10 @@
             </div>
             <div class="col-12 company-detail-info-item">
               <div class="row no-gutters">
-                <div class="col-3">
+                <div class="col-5">
                   <strong>БИК: </strong>
                 </div>
-                <div class="col-9 text-right align-self-center">
+                <div class="col-7 text-left align-self-center">
                   <p v-if="company.bik">
                     {{ company.bik }}
                   </p>
@@ -367,10 +304,10 @@
             </div>
             <div class="col-12 company-detail-info-item">
               <div class="row no-gutters">
-                <div class="col-3">
+                <div class="col-5">
                   <strong>ОКПО: </strong>
                 </div>
-                <div class="col-9 text-right align-self-center">
+                <div class="col-7 text-left align-self-center">
                   <p v-if="company.okpo">
                     {{ company.okpo }}
                   </p>
@@ -380,10 +317,10 @@
             </div>
             <div class="col-12 company-detail-info-item">
               <div class="row no-gutters">
-                <div class="col-3">
+                <div class="col-5">
                   <strong>ОКВЭД: </strong>
                 </div>
-                <div class="col-9 text-right align-self-center">
+                <div class="col-7 text-left align-self-center">
                   <p v-if="company.okved">
                     {{ company.okved }}
                   </p>
@@ -397,10 +334,10 @@
           <div class="row no-gutters">
             <div class="col-12 company-detail-info-item">
               <div class="row no-gutters">
-                <div class="col-3">
+                <div class="col-5">
                   <strong>Рсч/сч: </strong>
                 </div>
-                <div class="col-9 text-right align-self-center">
+                <div class="col-7 text-left align-self-center">
                   <p v-if="company.checkingAccount">
                     {{ company.checkingAccount }}
                   </p>
@@ -410,10 +347,10 @@
             </div>
             <div class="col-12 company-detail-info-item">
               <div class="row no-gutters">
-                <div class="col-3">
+                <div class="col-5">
                   <strong>Крсп/сч: </strong>
                 </div>
-                <div class="col-9 text-right align-self-center">
+                <div class="col-7 text-left align-self-center">
                   <p v-if="company.correspondentAccount">
                     {{ company.correspondentAccount }}
                   </p>
@@ -423,10 +360,10 @@
             </div>
             <div class="col-12 company-detail-info-item">
               <div class="row no-gutters">
-                <div class="col-3">
+                <div class="col-5">
                   <strong>В банке: </strong>
                 </div>
-                <div class="col-9 text-right align-self-center">
+                <div class="col-7 text-left align-self-center">
                   <p v-if="company.inTheBank">
                     {{ company.inTheBank }}
                   </p>
@@ -439,7 +376,7 @@
                 <div class="col-5">
                   <strong>Имя подписанта: </strong>
                 </div>
-                <div class="col-7 text-right align-self-center">
+                <div class="col-7 text-left align-self-center">
                   <p v-if="company.signatoryName">
                     {{ company.signatoryName }}
                   </p>
@@ -452,7 +389,7 @@
                 <div class="col-5">
                   <strong>Фамилия подписанта: </strong>
                 </div>
-                <div class="col-7 text-right align-self-center">
+                <div class="col-7 text-left align-self-center">
                   <p v-if="company.signatoryMiddleName">
                     {{ company.signatoryMiddleName }}
                   </p>
@@ -465,7 +402,7 @@
                 <div class="col-5">
                   <strong>Отчество подписанта: </strong>
                 </div>
-                <div class="col-7 text-right align-self-center">
+                <div class="col-7 text-left align-self-center">
                   <p v-if="company.signatoryLastName">
                     {{ company.signatoryLastName }}
                   </p>
@@ -475,10 +412,10 @@
             </div>
             <div class="col-12 company-detail-info-item">
               <div class="row no-gutters">
-                <div class="col-3">
+                <div class="col-5">
                   <strong>№ документа: </strong>
                 </div>
-                <div class="col-9 text-right align-self-center">
+                <div class="col-7 text-left align-self-center">
                   <p v-if="company.documentNumber">
                     {{ company.documentNumber }}
                   </p>
@@ -491,7 +428,7 @@
                 <div class="col-5">
                   <strong>Действует на основе: </strong>
                 </div>
-                <div class="col-7 text-right align-self-center">
+                <div class="col-7 text-left align-self-center">
                   <p v-if="company.basis">
                     {{ company.basis }}
                   </p>
@@ -510,6 +447,7 @@
 import { MixinCompanyDetailInfo } from "./mixins";
 export default {
   mixins: [MixinCompanyDetailInfo],
-  name: "CompanyDetailInfo",
+  name: "CompanyDetailInfoAlternative",
+  components: {},
 };
 </script>
