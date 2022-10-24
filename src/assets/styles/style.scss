@@ -2859,6 +2859,16 @@
                         }
                     }
                 }
+                &.alt {
+                    border: 2px solid black;
+                    a {
+                        color: black;
+                        font-weight: 600;
+                    }
+                    .name {
+                        color: darken($color_success, 10);
+                    }
+                }
             }
         }
     }
@@ -4110,16 +4120,20 @@
                 background-color: $color_light;
                 border: 1px solid $color_dark;
                 .image-container {
-                    min-height: 100px;
-                    max-height: 280px;
                     position: relative;
                     overflow: hidden;
                     display: flex;
                     justify-content: center;
                     align-items: center;
+                    a {
+                        width: 100%;
+                    }
                     img {
                         z-index: 1;
-                        min-height: 100px;
+                        height: 200px;
+                        width: 100%;
+                        object-fit: cover;
+                        object-position: center;
                     }
                     .icon-unselect {
                         position: absolute;
@@ -4730,9 +4744,10 @@
                 z-index: 2;
             }
             &-rhombus {
+                background-color: lighten($color_grey, 30);
                 content: '';
-                border-top: 2px solid;
-                border-right: 2px solid;
+                border-top: 0.5px solid;
+                border-right: 0.5px solid;
                 transform: rotate(45deg) scale(var(--ggs, 1));
                 width: $step_height/1.4;
                 height: $step_height/1.4;
@@ -4753,6 +4768,9 @@
             }
             &-in_process {
                 background-color: $color_warning_alt;
+                .step-name {
+                    color: $color_light;
+                }
                 .step-rhombus {
                     background-color: $color_warning_alt;
                 }
@@ -4767,7 +4785,8 @@
                     cursor: pointer;
                     &:hover {
                         .step-name {
-                            text-decoration: underline;
+                            transition-duration: 0.3s;
+                            transform: scale(1.1);
                         }
                     }
                 }
@@ -4780,21 +4799,23 @@
                     right: -22px;
                 }
                 &-selected {
+                    $color_selected: $color_info;
+                    background-color: $color_selected;
                     .step-name {
                         font-weight: 600;
-                        font-size: 23px;
                     }
                     .step-rhombus {
-                        border-top: 4px solid;
-                        border-right: 4px solid;
+                        background-color: $color_selected;
+                        // border-top: 4px groove gray;
+                        // border-right:4px groove gray;
                     }
                 }
-                &-prev {
-                    .step-rhombus {
-                        border-top: 4px solid;
-                        border-right: 4px solid;
-                    }
-                }
+                //   &-prev {
+                //     .step-rhombus {
+                //         border-top: 4px groove gray;
+                //         border-right:4px groove gray;
+                //     }
+                //   }
             }
         }
         .request {

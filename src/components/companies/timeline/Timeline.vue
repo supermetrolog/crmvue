@@ -81,7 +81,6 @@
             </div>
           </div>
         </div>
-
         <div
           class="col-8 box step-actions"
           v-if="selectedStep && !loader && !timelineNotFoundFlag"
