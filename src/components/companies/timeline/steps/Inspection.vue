@@ -12,7 +12,7 @@
       :closeSlotWhenDone="false"
       :isCurrent="!data.timelineStepObjects.length"
     >
-      <ObjectsControllPanel
+      <ButtonList
         :buttons="buttons"
         @done="$emit('done')"
         @send="$emit('send')"

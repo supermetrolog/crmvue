@@ -15,7 +15,7 @@
           :isDone="data.additional == 1"
           :isCurrent="data.additional != 1"
         >
-          <StepActions
+          <ButtonList
             :buttons="buttonsOne"
             @phoned="selectPhoned"
             @callback="openNotificationForm"
@@ -27,7 +27,7 @@
           :isDone="data.done == 1"
           :isCurrent="data.additional == 1"
         >
-          <StepActions
+          <ButtonList
             :buttons="buttonsTwo"
             @done="selectDone"
             @updateRequest="openRequestForm"
@@ -39,7 +39,6 @@
 </template>
 
 <script>
-import StepActions from "./actions/StepActions.vue";
 import EventFormInModal from "@/components/calendar/forms/event/EventFormInModal.vue";
 import { MixinSteps } from "../mixins";
 import { mapGetters } from "vuex";
@@ -53,7 +52,6 @@ export default {
   name: "Meeting",
   mixins: [MixinSteps],
   components: {
-    StepActions,
     EventFormInModal,
   },
   data() {

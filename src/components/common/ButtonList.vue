@@ -1,5 +1,5 @@
 <template>
-  <div class="step-actions row no-gutters">
+  <div class="objects-controll-panel row px-2 py-2">
     <div class="col-12">
       <div class="timeline-actions row no-gutters">
         <div
@@ -10,7 +10,11 @@
           <CustomButton
             :title="button.title"
             :options="button"
-            @confirm="$emit(button.emited_event, $event)"
+            @extraVisibleOpen="$emit('openExtraVisible')"
+            @extraVisibleClose="$emit('closeExtraVisible')"
+            @confirm="
+              $emit(button.emited_event, { comment: $event, wayOfSending })
+            "
           >
             <template #btnContent>
               <i :class="button.icon"></i>
@@ -26,15 +30,17 @@
 <script>
 import CustomButton from "@/components/common/CustomButton.vue";
 export default {
-  name: "StepActions",
+  name: "ButtonList",
   emits: [
     "reset",
+    "send",
+    "alreadySent",
     "done",
     "negative",
-    "updateRequest",
-    "callback",
+    "changeViewMode",
     "openExtraVisible",
     "closeExtraVisible",
+    "favorites",
   ],
   components: {
     CustomButton,
@@ -42,7 +48,7 @@ export default {
   props: {
     buttons: {
       type: Array,
-      required: true,
+      default: () => [],
     },
     disabled: {
       type: Boolean,

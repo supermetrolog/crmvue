@@ -1,6 +1,10 @@
 import StepStage from "./steps/steps-stages/StepStage.vue";
-import ObjectsControllPanel from "../objects/ObjectsControllPanel.vue";
+import ButtonList from "@/components/common/ButtonList";
 export const MixinStepActions = {
+    components: {
+        StepStage,
+        ButtonList,
+    },
     props: {
         step: {
             type: [Object, Boolean],
@@ -9,6 +13,7 @@ export const MixinStepActions = {
             type: Boolean,
         },
     },
+
     methods: {
         clickUpdateStep(data, flag, fn = null) {
             this.$emit("updateStep", data, flag, fn);
@@ -28,7 +33,7 @@ export const MixinSteps = {
     },
     components: {
         StepStage,
-        ObjectsControllPanel,
+        ButtonList,
     },
     props: {
         step: {

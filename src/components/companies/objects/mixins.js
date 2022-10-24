@@ -1,8 +1,6 @@
 import api from "@/api/api";
 import Objects from "./Objects.vue";
 import ObjectsList from "./ObjectsList.vue";
-import ObjectsControllPanel from "./ObjectsControllPanel.vue";
-// import ObjectsSearch from "./ObjectsSearch.vue";
 import ObjectsSearch from "@/components/offers/forms/offer-form/OfferSearchForm";
 import Pagination from "@/components/common/Pagination";
 import { mapActions, mapGetters } from "vuex";
@@ -12,7 +10,6 @@ export const MixinObject = {
     components: {
         Objects,
         ObjectsList,
-        ObjectsControllPanel
     },
     data() {
         return {

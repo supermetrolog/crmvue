@@ -55,8 +55,7 @@
                 :closeSlotWhenDone="false"
                 :isCurrent="!step.timelineStepObjects.length"
               >
-                <ObjectsControllPanel
-                  :viewMode="viewMode"
+                <ButtonList
                   :buttons="buttons"
                   @reset="reset"
                   @done="done"
@@ -188,7 +187,6 @@ import { MixinStepActions } from "../mixins";
 import { MixinAllObject } from "../../objects/mixins";
 import CustomButton from "@/components/common/CustomButton.vue";
 import RefreshButton from "@/components/common/RefreshButton.vue";
-import StepStage from "../steps/steps-stages/StepStage.vue";
 import SendObjects from "../../objects/send-objects/SendObjects";
 import { mapGetters } from "vuex";
 export default {
@@ -197,7 +195,6 @@ export default {
   components: {
     CustomButton,
     RefreshButton,
-    StepStage,
     SendObjects,
   },
   data() {
