@@ -1,17 +1,12 @@
 <template>
   <div class="col-12" v-if="data">
-    <teleport to="body">
-      <transition
-        mode="out-in"
-        enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-        leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-      >
-        <NotificationForm
-          @close="closeNotificationForm"
-          v-if="notificationFormVisible"
-        />
-      </transition>
-    </teleport>
+    <EventFormInModal
+      @close="closeNotificationForm"
+      @created="createdOrUpdatedEvent"
+      @updated="createdOrUpdatedEvent"
+      :formdata="{ consultant_id: THIS_USER.id }"
+      v-if="notificationFormVisible"
+    />
     <div class="row no-gutters">
       <div class="col-12">
         <StepStage
@@ -45,19 +40,24 @@
 
 <script>
 import StepActions from "./actions/StepActions.vue";
-import NotificationForm from "@/components/notifications/forms/NotificationForm.vue";
+import EventFormInModal from "@/components/calendar/forms/event/EventFormInModal.vue";
 import { MixinSteps } from "../mixins";
 import { mapGetters } from "vuex";
+import {
+  PhonedComment,
+  CallbackComment,
+  CallingErrorComment,
+  MeetingDoneComment,
+} from "../comments/commenst";
 export default {
   name: "Meeting",
   mixins: [MixinSteps],
   components: {
     StepActions,
-    NotificationForm,
+    EventFormInModal,
   },
   data() {
     return {
-      callBackDate: null,
       notificationFormVisible: false,
     };
   },
@@ -124,15 +124,7 @@ export default {
       ];
     },
   },
-  mounted() {
-    this.setData();
-  },
   methods: {
-    setData() {
-      if (this.data.date) {
-        this.callBackDate = this.data.date.substr(0, 10);
-      }
-    },
     closeNotificationForm() {
       this.notificationFormVisible = false;
     },
@@ -142,125 +134,66 @@ export default {
     openRequestForm() {
       this.$emit("openRequestForm");
     },
-    selectDone(comment) {
+    createdOrUpdatedEvent(newCalendarEvent) {
+      console.log(newCalendarEvent);
+      this.closeNotificationForm();
+      this.selectCallback(newCalendarEvent);
+    },
+    selectDone() {
       if (this.data.done) {
         this.data.done = 0;
         this.data.newActionComments = [];
         this.data.status = 0;
       } else {
         this.data.done = 1;
-        let actionComment = "Утвердил запрос";
-        let title = "система";
-        if (comment) {
-          actionComment += ` с комментарием: "${comment}"`;
-          title = "система/" + this.THIS_USER.userProfile.short_name;
-        }
-        this.data.newActionComments = [
-          {
-            timeline_id: this.data.timeline_id,
-            timeline_step_id: this.data.id,
-            timeline_step_number: this.data.number,
-            title: title,
-            comment: actionComment,
-            type: 1,
-          },
-        ];
         this.data.status = 1;
+        this.data.newActionComments = [new MeetingDoneComment(this.data)];
       }
       this.$emit("updateItem", this.data, this.data.done);
     },
-    selectNegative(comment) {
+    selectNegative() {
       if (this.data.negative) {
         this.data.negative = 0;
         this.data.newActionComments = [];
       } else {
         this.data.negative = 1;
-        let actionComment = "Не дозвонился";
-        let title = "система";
-        if (comment) {
-          actionComment += ` с комментарием: "${comment}"`;
-          title = "система/" + this.THIS_USER.userProfile.short_name;
-        }
-        this.data.newActionComments = [
-          {
-            timeline_id: this.data.timeline_id,
-            timeline_step_id: this.data.id,
-            timeline_step_number: this.data.number,
-            title: title,
-            comment: actionComment,
-            type: 1,
-          },
-        ];
+        this.data.additional = 0;
+        this.data.date = null;
+        this.data.newActionComments = [new CallingErrorComment(this.data)];
       }
-      this.data.additional = 0;
-      this.data.date = null;
-      this.callBackDate = null;
+
       this.$emit("updateItem", this.data);
     },
-    selectPhoned(comment) {
+
+    selectPhoned() {
       if (this.data.additional == 1) {
         this.data.additional = 0;
         this.data.newActionComments = [];
       } else {
         this.data.additional = 1;
-        let actionComment = "Дозвонился";
-        let title = "система";
-        if (comment) {
-          actionComment += ` с комментарием: "${comment}"`;
-          title = "система/" + this.THIS_USER.userProfile.short_name;
-        }
-        this.data.newActionComments = [
-          {
-            timeline_id: this.data.timeline_id,
-            timeline_step_id: this.data.id,
-            timeline_step_number: this.data.number,
-            title: title,
-            comment: actionComment,
-            type: 1,
-          },
-        ];
+        this.data.newActionComments = [new PhonedComment(this.data)];
       }
       this.data.negative = 0;
       this.data.date = null;
-      this.callBackDate = null;
       this.$emit("updateItem", this.data);
     },
-    selectCallback(comment) {
-      if (this.data.additional == 2) {
-        this.data.additional = 0;
-        this.data.newActionComments = [];
-        this.data.date = null;
-        this.callBackDate = null;
-      } else {
-        if (!this.callBackDate) {
-          return;
-        }
-        this.data.additional = 2;
-        let actionComment = `Установил напоминание "позвонить к ${this.callBackDate}"`;
-        let title = "система";
-        if (comment) {
-          actionComment += ` с комментарием: "${comment}"`;
-          title = "система/" + this.THIS_USER.userProfile.short_name;
-        }
-        this.data.newActionComments = [
-          {
-            timeline_id: this.data.timeline_id,
-            timeline_step_id: this.data.id,
-            timeline_step_number: this.data.number,
-            title: title,
-            comment: actionComment,
-            type: 1,
-          },
-        ];
-        this.data.date = this.callBackDate;
-      }
+    selectCallback(newCalendarEvent) {
+      this.data.additional = 2;
+      this.data.date = newCalendarEvent.startDate;
+      this.data.newActionComments = [
+        new CallbackComment(
+          this.data,
+          this.$formatter.date().locale(this.data.date, "ru-RU", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+          })
+        ),
+      ];
       this.data.negative = 0;
       this.$emit("updateItem", this.data);
-    },
-  },
-  watch: {
-    step() {
-      this.setData();
     },
   },
   emits: ["updateItem", "openRequestForm"],

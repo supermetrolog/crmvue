@@ -16,7 +16,7 @@ export default {
             .catch((e) => ErrorHandle.setError(e));
         return data;
     },
-    async createCalendar(formdata) {
+    async createEvent(formdata) {
         const url = `calendars`;
         let data = false;
         await axios

@@ -1,4 +1,5 @@
 import axios from "axios"
+import api from "@/api/api.js";
 const Calendar = {
     state: {
         events: []
@@ -43,6 +44,9 @@ const Calendar = {
         async DELETE_EVENT(context, eventId) {
             // console.log(eventId);
             context.commit('deleteEvent', eventId);
+        },
+        async CREATE_CALENDAR_EVENT(_, formdata) {
+            return await api.calendar.createEvent(formdata);
         }
     },
     getters: {

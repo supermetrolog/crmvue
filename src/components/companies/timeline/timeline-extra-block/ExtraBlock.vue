@@ -145,7 +145,7 @@ export default {
         comment = `<p class="text-center d-block">Уведомление<p>`;
         comment += `<p class="d-block">Комментарий: <b>${this.form.comment}</b><p>`;
         comment += `<p class="d-block">Дата: <b>${startDate}</b><p>`;
-        await api.calendar.createCalendar({
+        await api.calendar.createEvent({
           title: this.form.comment,
           startDate: startDate,
           consultant_id: this.THIS_USER.id,

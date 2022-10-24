@@ -3,6 +3,12 @@ const textFormatter = {
         return string.charAt(0).toUpperCase() + string.slice(1)
     }
 }
+const dateFormatter = {
+    locale(date, locale, options) {
+        const localDate = new Date(date);
+        return localDate.toLocaleString(locale, options);
+    }
+}
 const formatterObject = {
     currency(number, leng = 'ru', options = {}) {
         const defaultOptions = {
@@ -20,6 +26,9 @@ const formatterObject = {
     },
     text() {
         return textFormatter;
+    },
+    date() {
+        return dateFormatter;
     }
 };
 
