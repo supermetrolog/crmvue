@@ -2868,7 +2868,17 @@
                     .name {
                         color: darken($color_success, 10);
                     }
+                    .product-range-alt {
+                        strong {
+                            padding: 2px;
+                            border: 1px solid #2D2F34;
+                            color: #2D2F34;
+                            margin-right: 2px;
+                            margin-top: 2px;
+                        }
+                    }
                 }
+
             }
         }
     }

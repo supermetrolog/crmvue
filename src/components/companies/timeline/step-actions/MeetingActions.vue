@@ -81,7 +81,7 @@
             <CompanyContactForm
               @closeCompanyForm="clickCloseCompanyContactForm"
               :company_id="COMPANY.id"
-              :formdata="contact"
+              :formdata="editContact"
               @created="createdContact"
               @updated="updatedContact"
               v-if="companyContactFormVisible"
@@ -94,6 +94,7 @@
 </template>
 
 <script>
+import CompanyContactForm from "../../forms/company-contact-form/CompanyContactForm.vue";
 import CompanyDetailInfoAlternative from "../../companies/CompanyDetailInfoAlternative.vue";
 import CompanyContactItem from "../../companies/contact/CompanyContactItem.vue";
 import Meeting from "../steps/Meeting.vue";
@@ -110,6 +111,7 @@ export default {
     CompanyRequestForm,
     CompanyContactItem,
     CompanyDetailInfoAlternative,
+    CompanyContactForm,
   },
   data() {
     return {
@@ -118,6 +120,7 @@ export default {
       companyFormVisible: false,
       loaderCompany: false,
       companyContactFormVisible: false,
+      editContact: null,
     };
   },
   computed: {
@@ -170,12 +173,12 @@ export default {
     },
 
     openContactFormForUpdate(contact) {
-      this.contact = contact;
+      this.editContact = contact;
       this.clickOpenCompanyContactForm();
     },
     clickCloseCompanyContactForm() {
       this.companyContactFormVisible = false;
-      this.contact = null;
+      this.editContact = null;
     },
     clickOpenCompanyContactForm() {
       this.companyContactFormVisible = true;

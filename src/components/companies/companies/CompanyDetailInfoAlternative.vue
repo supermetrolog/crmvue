@@ -135,11 +135,11 @@
         </div>
         <div
           class="col-12 company-detail-info-item"
-          :class="{ 'product-range': company.productRanges.length }"
+          :class="{ 'product-range-alt': company.productRanges.length }"
         >
           <div class="row no-gutters">
             <div class="col-5">
-              <p>Наменклатура товара:</p>
+              <p>Номенклатура товара:</p>
             </div>
             <div class="col-7 text-left align-self-center">
               <strong
