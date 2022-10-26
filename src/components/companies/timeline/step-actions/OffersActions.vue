@@ -57,12 +57,9 @@
               >
                 <ButtonList
                   :buttons="buttons"
-                  @reset="reset"
-                  @done="done"
                   @send="openSendObjectsModal(false)"
                   @alreadySent="openSendObjectsModal(true)"
                   @negative="negative"
-                  @favorites="favorites"
                 />
               </StepStage>
               <ObjectsList
