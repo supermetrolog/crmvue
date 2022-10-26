@@ -1,7 +1,11 @@
 <template>
   <div class="row no-gutters company-detail-info alt px-3 py-2" v-if="company">
-    <div class="col-12 name">
+    <div class="col-12 name d-flex justify-content-between">
       <h4 class="m-0">{{ company.id }} {{ company.full_name }}</h4>
+      <i
+        class="fas fa-pen text-primary edit"
+        @click.prevent="clickUpdateCompany"
+      ></i>
     </div>
     <div class="col-12">
       <div class="row no-gutters">
@@ -449,5 +453,10 @@ export default {
   mixins: [MixinCompanyDetailInfo],
   name: "CompanyDetailInfoAlternative",
   components: {},
+  methods: {
+    clickUpdateCompany() {
+      this.$emit("openCompanyFormForUpdate");
+    },
+  },
 };
 </script>

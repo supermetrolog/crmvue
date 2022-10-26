@@ -14,20 +14,6 @@
         />
       </transition>
     </teleport>
-    <teleport to="body">
-      <transition
-        mode="out-in"
-        enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-        leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-      >
-        <CompanyRequestForm
-          @closeCompanyForm="clickCloseCompanyForm"
-          :formdata="currentCompany"
-          @updated="updatedCompany"
-          v-if="companyFormVisible"
-        />
-      </transition>
-    </teleport>
     <div class="row no-gutters">
       <div class="col-12">
         <div class="row no-gutters inner scroller">
@@ -44,7 +30,10 @@
             ><div class="col-9 mx-auto" v-if="COMPANY && step.additional != 1">
               <Loader v-if="loaderCompany" class="center small" />
 
-              <CompanyDetailInfoAlternative :company="COMPANY" />
+              <CompanyDetailInfoAlternative
+                :company="COMPANY"
+                @openCompanyFormForUpdate="companyFormVisible = true"
+              />
             </div>
             <div
               class="col-9 mx-auto company-request-list mt-4 px-3"
@@ -87,6 +76,18 @@
               v-if="companyContactFormVisible"
             />
           </transition>
+          <transition
+            mode="out-in"
+            enter-active-class="animate__animated animate__zoomIn for__modal absolute"
+            leave-active-class="animate__animated animate__zoomOut for__modal absolute"
+          >
+            <CompanyForm
+              v-if="companyFormVisible"
+              :formdata="COMPANY"
+              @closeCompanyForm="clickCloseCompanyForm"
+              @updated="updatedCompany"
+            />
+          </transition>
         </div>
       </div>
     </div>
@@ -94,6 +95,7 @@
 </template>
 
 <script>
+import CompanyForm from "../../forms/company-form/CompanyForm.vue";
 import CompanyContactForm from "../../forms/company-contact-form/CompanyContactForm.vue";
 import CompanyDetailInfoAlternative from "../../companies/CompanyDetailInfoAlternative.vue";
 import CompanyContactItem from "../../companies/contact/CompanyContactItem.vue";
@@ -112,6 +114,7 @@ export default {
     CompanyContactItem,
     CompanyDetailInfoAlternative,
     CompanyContactForm,
+    CompanyForm,
   },
   data() {
     return {
@@ -141,6 +144,7 @@ export default {
       "FETCH_COMPANY_CONTACTS",
       "DELETE_CONTACT",
       "CREATE_CONTACT_COMMENT",
+      "ADD_TO_TRANSITION_LIST",
     ]),
     updatedRequest() {
       this.getCompanyRequests();
@@ -148,6 +152,7 @@ export default {
     },
     updatedCompany() {
       this.getCompany();
+      this.getCompanyContacts(false);
       console.log("UPDATED");
     },
     async getCompany() {
@@ -162,6 +167,9 @@ export default {
     },
     clickCloseCompanyRequestForm() {
       this.companyRequestFormVisible = false;
+    },
+    clickOpenCompanyForm() {
+      this.companyFormVisible = true;
     },
     clickCloseCompanyForm() {
       this.companyFormVisible = false;

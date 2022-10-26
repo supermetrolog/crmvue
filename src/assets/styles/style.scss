@@ -2867,6 +2867,20 @@
                     }
                     .name {
                         color: darken($color_success, 10);
+                        .fa-pen {
+                            opacity: 0;
+                            padding: 5px;
+                            cursor: pointer;
+                            transition: all .07s ease-in-out;
+                            &:hover {
+                                transform: scale(1.3);
+                            }
+                        }
+                    }
+                    &:hover {
+                        .fa-pen {
+                            opacity: 100%;
+                        }
                     }
                     .product-range-alt {
                         strong {
