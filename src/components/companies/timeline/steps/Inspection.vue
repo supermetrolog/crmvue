@@ -9,8 +9,10 @@
           : '')
       "
       :isDone="!!data.timelineStepObjects.length"
-      :closeSlotWhenDone="false"
       :isCurrent="!data.timelineStepObjects.length"
+      :id="1"
+      :isClicked="clickedStage === 1"
+      @stageClicked="stageClicked"
     >
       <ButtonList
         :buttons="buttons"
@@ -23,8 +25,10 @@
       class="mb-2 px-2"
       title="Шаг 1. Отправить всю необходимую информацию по объектам клиенту"
       :isDone="!!data.additional"
-      :closeSlotWhenDone="false"
       :isCurrent="!!data.timelineStepObjects.length"
+      :id="2"
+      :isClicked="clickedStage === 2"
+      @stageClicked="stageClicked"
     >
       <div class="row no-gutters">
         <div class="col-6 pr-1">
@@ -65,7 +69,12 @@
         </div>
       </div>
     </StepStage>
-    <div class="row" v-if="data.timelineStepObjects.length && userLocation">
+    <div
+      class="row"
+      v-if="
+        data.timelineStepObjects.length && userLocation && clickedStage !== 1
+      "
+    >
       <div class="col-5">
         <div class="row no-gutters">
           <div class="col-12">
@@ -160,6 +169,7 @@ export default {
     return {
       currentStepObjects: [],
       userLocation: false,
+      clickedStage: null,
     };
   },
   props: {
@@ -247,6 +257,10 @@ export default {
         return "https://pennylane.pro" + object_photos[0];
       }
       return this.$apiUrlHelper.fileNotFoundUrl();
+    },
+    stageClicked(id) {
+      this.clickedStage = id;
+      console.log(id, "12312313");
     },
   },
   mounted() {

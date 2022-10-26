@@ -5181,6 +5181,15 @@
                 background-color: $color_warning;
             }
         }
+        &.readyToClick {
+            cursor: pointer;
+            &:hover {
+                opacity: 70%;
+            }
+            &:active {
+                transform: scale(0.99);
+            }
+        }
         .wrapper {
             padding: 5px 10px;
         }

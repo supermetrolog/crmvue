@@ -23,21 +23,39 @@
                 :step="step"
                 :disabled="disabled"
                 @updateItem="clickUpdateStep"
+                @stageChanged="changeStage"
               />
             </div>
           </div>
           <template class="row"
-            ><div class="col-9 mx-auto" v-if="COMPANY && step.additional != 1">
+            ><div
+              class="col-12 row mt-4 mx-auto"
+              v-if="(COMPANY && step.additional != 1) || currentStage === 1"
+            >
               <Loader v-if="loaderCompany" class="center small" />
 
-              <CompanyDetailInfoAlternative
-                :company="COMPANY"
-                @openCompanyFormForUpdate="companyFormVisible = true"
-              />
+              <div class="col-9">
+                <CompanyDetailInfoAlternative
+                  :company="COMPANY"
+                  @openCompanyFormForUpdate="companyFormVisible = true"
+                />
+              </div>
+              <div class="col-3 company-request-list company-contact-list">
+                <CompanyContactItem
+                  v-for="contact of this.COMPANY_CONTACTS"
+                  :key="contact.id"
+                  :contact="contact"
+                  @openContactFormForUpdate="openContactFormForUpdate"
+                  @createComment="createComment"
+                  @deleteContact="clickDeleteContact"
+                />
+              </div>
             </div>
             <div
               class="col-9 mx-auto company-request-list mt-4 px-3"
-              v-if="currentRequest && step.additional == 1"
+              v-if="
+                currentRequest && step.additional == 1 && currentStage !== 1
+              "
             >
               <Loader v-if="loaderCompanyRequests" class="center small" />
 
@@ -49,19 +67,7 @@
                 "
               />
             </div>
-            <div
-              class="col-3 company-request-list company-contact-list"
-              v-if="COMPANY && step.additional != 1"
-            >
-              <CompanyContactItem
-                v-for="contact of this.COMPANY_CONTACTS"
-                :key="contact.id"
-                :contact="contact"
-                @openContactFormForUpdate="openContactFormForUpdate"
-                @createComment="createComment"
-                @deleteContact="clickDeleteContact"
-              /></div
-          ></template>
+          </template>
           <transition
             mode="out-in"
             enter-active-class="animate__animated animate__zoomIn for__modal absolute"
@@ -124,6 +130,7 @@ export default {
       loaderCompany: false,
       companyContactFormVisible: false,
       editContact: null,
+      currentStage: null,
     };
   },
   computed: {
@@ -208,6 +215,10 @@ export default {
       this.$emit("deleteContact");
       this.deleteLoader = false;
       this.deletedContactItem = null;
+    },
+    changeStage(stage) {
+      this.currentStage = stage;
+      console.log(stage, "стейдж");
     },
   },
   async created() {

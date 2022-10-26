@@ -14,6 +14,9 @@
           title="Шаг 1. Изучите деятельность компании клиента, свяжитесь с контактным лицом и обсудите задачу"
           :isDone="data.additional == 1"
           :isCurrent="data.additional != 1"
+          :id="1"
+          :isClicked="clickedStage === 1"
+          @stageClicked="stageClicked"
         >
           <ButtonList
             :buttons="buttonsOne"
@@ -26,6 +29,9 @@
           title="Шаг 2. Проверьте правильность заполнения запроса, отредактируйте при необходимости и затем утвердите"
           :isDone="data.done == 1"
           :isCurrent="data.additional == 1"
+          :id="2"
+          :isClicked="clickedStage === 2"
+          @stageClicked="stageClicked"
         >
           <ButtonList
             :buttons="buttonsTwo"
@@ -57,6 +63,7 @@ export default {
   data() {
     return {
       notificationFormVisible: false,
+      clickedStage: null,
     };
   },
   computed: {
@@ -193,8 +200,13 @@ export default {
       this.data.negative = 0;
       this.$emit("updateItem", this.data);
     },
+    stageClicked(id) {
+      this.clickedStage = id;
+      console.log(id, "жопа");
+      this.$emit("stageChanged", id);
+    },
   },
-  emits: ["updateItem", "openRequestForm"],
+  emits: ["updateItem", "openRequestForm", "stageChanged"],
 };
 </script>
 
