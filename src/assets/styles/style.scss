@@ -4022,6 +4022,28 @@
         }
     }
     
+    // ****************** COMPANY-REQUEST-ITEM-ALT ************
+    .CompanyRequestItemAlt {
+        background-color: $color_success;
+        &:hover {
+            .fa-pen {
+                opacity: 100%;
+            }
+        }
+        .fa-pen {
+            position: absolute;
+            top: 0;
+            right: 0;
+            opacity: 0;
+            cursor: pointer;
+            transition: all .07s ease-in-out;
+                            &:hover {
+                                transform: scale(1.3);
+                            }
+            
+        }
+    }
+
     // ****************** COMPANY-OBJECTS ************
     .company-objects-list {
         &__item {

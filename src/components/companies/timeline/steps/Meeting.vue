@@ -202,7 +202,6 @@ export default {
     },
     stageClicked(id) {
       this.clickedStage = id;
-      console.log(id, "жопа");
       this.$emit("stageChanged", id);
     },
   },

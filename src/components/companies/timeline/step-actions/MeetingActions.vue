@@ -13,6 +13,32 @@
           v-if="companyRequestFormVisible"
         />
       </transition>
+      <transition
+        mode="out-in"
+        enter-active-class="animate__animated animate__zoomIn for__modal absolute"
+        leave-active-class="animate__animated animate__zoomOut for__modal absolute"
+      >
+        <CompanyContactForm
+          @closeCompanyForm="clickCloseCompanyContactForm"
+          :company_id="COMPANY.id"
+          :formdata="editContact"
+          @created="createdContact"
+          @updated="updatedContact"
+          v-if="companyContactFormVisible"
+        />
+      </transition>
+      <transition
+        mode="out-in"
+        enter-active-class="animate__animated animate__zoomIn for__modal absolute"
+        leave-active-class="animate__animated animate__zoomOut for__modal absolute"
+      >
+        <CompanyForm
+          v-if="companyFormVisible"
+          :formdata="COMPANY"
+          @closeCompanyForm="clickCloseCompanyForm"
+          @updated="updatedCompany"
+        />
+      </transition>
     </teleport>
     <div class="row no-gutters">
       <div class="col-12">
@@ -27,73 +53,44 @@
               />
             </div>
           </div>
-          <template class="row"
-            ><div
-              class="col-12 row mt-4 mx-auto"
-              v-if="(COMPANY && step.additional != 1) || currentStage === 1"
-            >
-              <Loader v-if="loaderCompany" class="center small" />
 
-              <div class="col-9">
-                <CompanyDetailInfoAlternative
-                  :company="COMPANY"
-                  @openCompanyFormForUpdate="companyFormVisible = true"
-                />
-              </div>
-              <div class="col-3 company-request-list company-contact-list">
-                <CompanyContactItem
-                  v-for="contact of this.COMPANY_CONTACTS"
-                  :key="contact.id"
-                  :contact="contact"
-                  @openContactFormForUpdate="openContactFormForUpdate"
-                  @createComment="createComment"
-                  @deleteContact="clickDeleteContact"
-                />
-              </div>
-            </div>
-            <div
-              class="col-9 mx-auto company-request-list mt-4 px-3"
-              v-if="
-                currentRequest && step.additional == 1 && currentStage !== 1
-              "
-            >
-              <Loader v-if="loaderCompanyRequests" class="center small" />
+          <div
+            class="col-12 mx-auto row mt-4 pl-0"
+            v-if="(COMPANY && step.additional != 1) || currentStage === 1"
+          >
+            <Loader v-if="loaderCompany" class="center small" />
 
-              <CompanyRequestItem
-                :request="currentRequest"
-                :editOnly="true"
-                @openCompanyRequestFormForUpdate="
-                  companyRequestFormVisible = true
-                "
+            <div class="col-9 pl-0">
+              <CompanyDetailInfoAlternative
+                :company="COMPANY"
+                @openCompanyFormForUpdate="companyFormVisible = true"
               />
             </div>
-          </template>
-          <transition
-            mode="out-in"
-            enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-            leave-active-class="animate__animated animate__zoomOut for__modal absolute"
+            <div class="col-3 company-request-list company-contact-list">
+              <CompanyContactItem
+                v-for="contact of this.COMPANY_CONTACTS"
+                :key="contact.id"
+                :contact="contact"
+                @openContactFormForUpdate="openContactFormForUpdate"
+                @createComment="createComment"
+                @deleteContact="clickDeleteContact"
+              />
+            </div>
+          </div>
+          <div
+            class="col-12 mx-auto mt-4"
+            v-if="currentRequest && step.additional == 1 && currentStage !== 1"
           >
-            <CompanyContactForm
-              @closeCompanyForm="clickCloseCompanyContactForm"
-              :company_id="COMPANY.id"
-              :formdata="editContact"
-              @created="createdContact"
-              @updated="updatedContact"
-              v-if="companyContactFormVisible"
+            <Loader v-if="loaderCompanyRequests" class="center small" />
+
+            <CompanyRequestItemAlt
+              :request="currentRequest"
+              :editOnly="true"
+              @openCompanyRequestFormForUpdate="
+                companyRequestFormVisible = true
+              "
             />
-          </transition>
-          <transition
-            mode="out-in"
-            enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-            leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-          >
-            <CompanyForm
-              v-if="companyFormVisible"
-              :formdata="COMPANY"
-              @closeCompanyForm="clickCloseCompanyForm"
-              @updated="updatedCompany"
-            />
-          </transition>
+          </div>
         </div>
       </div>
     </div>
@@ -101,12 +98,12 @@
 </template>
 
 <script>
+import CompanyRequestItemAlt from "../../companies/request/CompanyRequestItemAlt.vue";
 import CompanyForm from "../../forms/company-form/CompanyForm.vue";
 import CompanyContactForm from "../../forms/company-contact-form/CompanyContactForm.vue";
 import CompanyDetailInfoAlternative from "../../companies/CompanyDetailInfoAlternative.vue";
 import CompanyContactItem from "../../companies/contact/CompanyContactItem.vue";
 import Meeting from "../steps/Meeting.vue";
-import CompanyRequestItem from "../../companies/request/CompanyRequestItem.vue";
 import CompanyRequestForm from "../../forms/company-request-form/CompanyRequestForm.vue";
 import { mapGetters, mapActions } from "vuex";
 import { MixinStepActions } from "../mixins";
@@ -115,12 +112,12 @@ export default {
   mixins: [MixinStepActions],
   components: {
     Meeting,
-    CompanyRequestItem,
     CompanyRequestForm,
     CompanyContactItem,
     CompanyDetailInfoAlternative,
     CompanyContactForm,
     CompanyForm,
+    CompanyRequestItemAlt,
   },
   data() {
     return {
@@ -218,7 +215,6 @@ export default {
     },
     changeStage(stage) {
       this.currentStage = stage;
-      console.log(stage, "стейдж");
     },
   },
   async created() {
