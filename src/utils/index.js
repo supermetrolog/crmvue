@@ -129,10 +129,16 @@ export default {
             let array = [];
 
             contact.phones.map(item => {
-                array.push(item.phone);
+                array.push({
+                    label: item.phone,
+                    value: item.phone,
+                });
             });
             contact.emails.map(item => {
-                array.push(item.email);
+                array.push({
+                    label: item.email,
+                    value: item.email,
+                });
             });
             data.push({
                 label: contact.type ? 'Общий контакт' : contact.first_and_last_name,
@@ -147,7 +153,10 @@ export default {
             let array = [];
 
             contact.emails.map(item => {
-                array.push(item.email);
+                array.push({
+                    label: item.email,
+                    value: item.email,
+                });
             });
             if (!array.length) return;
             data.push({

@@ -3,6 +3,7 @@
     <div class="row no-gutters">
       <div class="col-12">
         <Form class="autosize" @submit="onSubmit">
+          <Loader class="center" v-if="loader" />
           <FormGroup class="mb-2">
             <div class="col-2">
               <button class="btn btn-primary">Отправить</button>
@@ -29,7 +30,7 @@
               mode="multiple"
             >
               <div class="col-12 align-self-center">
-                {{ form.contactForSendMessage.join(", ") }}
+                {{ selectedContacts.join(", ") }}
               </div>
             </MultiSelect>
             <CheckboxIcons
@@ -97,11 +98,14 @@ export default {
     formdata: {
       type: Object,
     },
+    loader: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
       v$: useValidate(),
-      loader: false,
       wayOfSendingOptions: WayOfSending.get("param"),
       customToolbar: [
         [{ header: [false, 1, 2, 3, 4, 5, 6] }],
@@ -116,8 +120,12 @@ export default {
         ["clean"], // remove formatting button
       ],
       form: {
+        contacts: {
+          emails: [],
+          phones: [],
+        },
         contactForSendMessage: [],
-        wayOfSending: [0],
+        wayOfSending: [],
         message: null,
         subject: null,
       },
@@ -137,9 +145,26 @@ export default {
   },
   computed: {
     ...mapGetters(["COMPANY_CONTACTS"]),
+    selectedContacts() {
+      let array = [];
+      this.form.contactForSendMessage.forEach((id) => {
+        this.companyContacts.find((group) => {
+          group.options.find((contact) => {
+            if (contact.value == id) {
+              array.push(contact.label);
+              return true;
+            }
+            return false;
+          });
+        });
+      });
+
+      return array;
+    },
     companyContacts() {
       if (this.alreadySended)
         return Utils.normalizeContactsForMultiselect(this.COMPANY_CONTACTS);
+
       return Utils.normalizeContactsForMultiselectOnlyEmails(
         this.COMPANY_CONTACTS
       );
@@ -148,9 +173,11 @@ export default {
 
   methods: {
     onSubmit() {
-      console.log(this.form);
       this.v$.$validate();
+
       if (this.v$.form.$error) return;
+
+      this.normalizeContacts();
       if (this.alreadySended) {
         this.form.message = null;
         this.form.subject = null;
@@ -159,9 +186,29 @@ export default {
         this.$emit("send", this.form);
       }
     },
+    normalizeContacts() {
+      for (const contact of this.COMPANY_CONTACTS) {
+        for (const email of contact.emails) {
+          if (
+            this.form.contactForSendMessage.find((item) => item == email.email)
+          ) {
+            this.form.contacts.emails.push(email.id);
+            break;
+          }
+        }
+        for (const phone of contact.phones) {
+          if (
+            this.form.contactForSendMessage.find((item) => item == phone.phone)
+          ) {
+            this.form.contacts.phones.push(phone.id);
+            break;
+          }
+        }
+      }
+      console.error(this.form.contacts);
+    },
   },
   mounted() {
-    console.log(this.formdata);
     this.form = { ...this.form, ...this.formdata };
   },
 };

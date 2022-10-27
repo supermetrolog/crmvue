@@ -17,15 +17,13 @@
             @alreadySent="alreadySentOffers"
             :alreadySended="alreadySended"
             :formdata="sendObjectsFormdata"
+            :loader="loader"
           >
             <Objects>
               <ObjectsList
                 :objects="selectedObjects"
-                :currentObjects="step.timelineStepObjects"
                 :selectedObjects="selectedObjects"
                 :disabled="true"
-                :loader="loader"
-                :viewMode="true"
                 col="col-3"
                 label="Выбранные предложения"
                 @select="select"
@@ -247,6 +245,7 @@ export default {
       return {
         contactForSendMessage: [this.defaultContactForSend],
         subject: "Список предложений от Pennylane Realty",
+        wayOfSending: [0],
         message: `<p>С уважением, ${this.THIS_USER.userProfile.medium_name}</p><p>менеджер PLR</p>`,
       };
     },
@@ -364,11 +363,11 @@ export default {
   },
   methods: {
     sendOffers(params) {
-      this.closeSendObjectsModal();
+      // this.closeSendObjectsModal();
       this.send(params);
     },
     alreadySentOffers(params) {
-      this.closeSendObjectsModal();
+      // this.closeSendObjectsModal();
       this.alreadySent(params);
     },
     openSendObjectsModal(alreadySended = false) {
@@ -454,6 +453,10 @@ export default {
         ...this.$options.defaultQueryParams,
         ...query,
       };
+    },
+    // Переопределено из миксина
+    afterSend() {
+      this.closeSendObjectsModal();
     },
     // Переопределено из миксина чтобы в первую очередь загрузить подборку
     getData() {

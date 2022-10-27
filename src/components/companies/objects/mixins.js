@@ -6,7 +6,7 @@ import Pagination from "@/components/common/Pagination";
 import { mapActions, mapGetters } from "vuex";
 import { notify } from "@kyvg/vue3-notification";
 import crypto from "crypto"
-import { ObjectsNotFoundComment, SendObjectsComment } from "../timeline/comments/commenst";
+import { AlreadySendOffersComment, ObjectsNotFoundComment, SendOffersComment } from "../timeline/comments/commenst";
 export const MixinObject = {
     components: {
         Objects,
@@ -22,7 +22,7 @@ export const MixinObject = {
         }
     },
     computed: {
-        ...mapGetters(['TIMELINE', 'THIS_USER']),
+        ...mapGetters(['TIMELINE', 'THIS_USER', "COMPANY_CONTACTS"]),
         preventStepTimelineObjects() {
             if (!this.TIMELINE)
                 return null;
@@ -61,30 +61,35 @@ export const MixinObject = {
     },
     methods: {
         ...mapActions(['UPDATE_STEP']),
-        async alreadySent({ id = 1, wayOfSending, contactForSendMessage }) {
+        async alreadySent({ wayOfSending, contactForSendMessage, contacts }) {
             const sendClientFlag = false;
-            if (!await this.realSendObjects(wayOfSending, sendClientFlag, contactForSendMessage)) {
-                return;
-            }
-            this.step.newActionComments = [new SendObjectsComment(this.step, this.selectedObjects.length, contactForSendMessage, wayOfSending, true, id)]
+
+            const letterID = await this.realSendObjects(wayOfSending, sendClientFlag, contacts);
+            if (!letterID) return;
+
+            this.step.newActionComments = [new AlreadySendOffersComment(this.step, this.selectedObjects.length, contactForSendMessage, wayOfSending, letterID)]
             this.sendObjectsHandler();
         },
-        async send({ message, wayOfSending, contactForSendMessage, subject }) {
+        async send({ message, wayOfSending, contactForSendMessage, contacts, subject }) {
             const sendClientFlag = true;
-            if (!await this.realSendObjects(wayOfSending, sendClientFlag, contactForSendMessage, message, subject)) {
-                return;
-            }
-            this.sendObjectsHandler(message, contactForSendMessage, sendClientFlag);
+
+            const letterID = await this.realSendObjects(wayOfSending, sendClientFlag, contacts, message, subject);
+            if (!letterID) return;
+
+            this.step.newActionComments = [new SendOffersComment(this.step, this.selectedObjects.length, contactForSendMessage, wayOfSending, letterID)]
+            this.sendObjectsHandler();
         },
-        async realSendObjects(wayOfSending, sendClientFlag, contactForSendMessage, comment = null, subject = null) {
+        async realSendObjects(wayOfSending, sendClientFlag, contacts, comment = null, subject = null) {
             let notifyOptions = {
                 group: "app",
                 type: "error",
                 duration: 5000,
-                title: 'Ошибка'
+                title: 'Ошибка',
+                text: 'Не удалось отправить объекты!'
             };
             this.loader = true;
             this.allObjectsLoader = true;
+
             const objectsParams = [];
             this.selectedObjects.forEach(item => {
                 objectsParams.push({
@@ -94,20 +99,21 @@ export const MixinObject = {
                     consultant: this.THIS_USER.userProfile.full_name
                 });
             });
+
             const isSuccessfuly = await api.timeline.sendObjects({
-                contacts: contactForSendMessage,
-                step: this.step.number,
+                contacts,
+                shipping_method: sendClientFlag ? 1 : 0,
                 offers: objectsParams,
-                comment,
-                wayOfSending,
+                body: comment,
+                ways: wayOfSending,
                 sendClientFlag,
                 subject
             });
+
             this.loader = false;
             this.allObjectsLoader = false;
-            console.warn(isSuccessfuly);
+
             if (!isSuccessfuly) {
-                notifyOptions.text = 'Не удалось отправить объекты!';
                 notify(notifyOptions);
                 return isSuccessfuly;
             }
@@ -185,49 +191,6 @@ export const MixinObject = {
             }
             return url;
         },
-        // generateComment(generalComment, sendClient, objects, data, alreadySent) {
-        //     let objectsComments = "";
-        //     let comment = "";
-        //     let title = "система";
-        //     comment = `
-        // <span>
-        //   ${sendClient ? 'Отправил клиенту': 'Выбрал'} предложения (${objects.length})
-        // </span>
-        // `;
-        //     if (alreadySent) {
-        //         comment = `<span>Отправил предложения другим способом (${objects.length})</span>`
-        //     }
-        //     if (generalComment) {
-        //         title = "система/" + this.THIS_USER.userProfile.short_name;
-        //         comment += `с комментарием себе: <b>${generalComment}</b>`;
-        //     }
-        //     objects.map((object) => {
-        //         objectsComments += `<li><a
-        //       class="text-primary"
-        //       href="${this.offerUrl(object)}"
-        //       target="_blanc"
-        //     >
-        //       ${object.visual_id}
-        //     </a> — 
-        //     <b title="комментарий к объекту">
-        //     ${object.comment ? object.comment : '-'}
-        //    </b>
-        //     </li>`;
-        //     });
-
-        //     if (objectsComments.length) {
-        //         title = "система/" + this.THIS_USER.userProfile.short_name;
-        //         comment = `${comment}<ul>${objectsComments}</ul>`;
-        //     }
-        //     data.newActionComments = [{
-        //         timeline_id: data.timeline_id,
-        //         timeline_step_id: data.id,
-        //         timeline_step_number: data.number,
-        //         title: title,
-        //         comment: comment,
-        //         type: 0,
-        //     }, ];
-        // },
         sendObjectsHandler() {
             let data = {
                 ...this.step,
@@ -236,9 +199,13 @@ export const MixinObject = {
             this.normalizeObjectsData(data);
             this.sendObjects(data);
         },
+        afterSend() {
+
+        },
         async sendObjects(data) {
             this.loader = true;
             if (await this.UPDATE_STEP(data)) {
+                this.afterSend();
                 this.updatedObjects(data, () => this.includeStepDataInObjectsData(this.preventStepObjects));
                 this.reset();
             }
