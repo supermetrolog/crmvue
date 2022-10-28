@@ -1,6 +1,6 @@
 <template>
   <div class="extra-block">
-    <div class="row no-gutters inner scroller">
+    <div class="row no-gutters scroller">
       <div class="col-12 mt-4">
         <div class="row no-gutters">
           <div class="col-12">

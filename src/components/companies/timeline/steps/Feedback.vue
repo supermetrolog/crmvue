@@ -1,7 +1,7 @@
 <template>
-  <div class="col-12 company-form" v-if="data">
+  <div class="col-12 company-form px-0" v-if="data">
     <StepStage
-      class="mb-2 px-2"
+      class="mb-2"
       :title="
         'Шаг 1. отметить объекты, которые заинтересовали клиента' +
         (data.timelineStepObjects.length
@@ -19,7 +19,7 @@
       />
     </StepStage>
     <StepStage
-      class="mb-2 px-2"
+      class="mb-2"
       title="Шаг 2. Отметить каким способом была получена обратная связь"
       :isDone="!!data.timelineStepFeedbackways.length"
       :closeSlotWhenDone="false"

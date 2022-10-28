@@ -1,5 +1,5 @@
 <template>
-  <div class="col-12 mb-2">
+  <div class="col-12 mb-2 px-0">
     <teleport to="body">
       <transition
         mode="out-in"
@@ -25,7 +25,7 @@
       </transition>
     </teleport>
     <StepStage
-      class="mb-2 px-2"
+      class="mb-2"
       title="Шаг 1. Выбрать объект, по которому произошла сделка"
       :isDone="!!data.timelineStepObjects.length"
       :closeSlotWhenDone="false"
@@ -38,7 +38,7 @@
       />
     </StepStage>
     <StepStage
-      class="mb-2 px-2"
+      class="mb-2"
       title="Шаг 2. заполнить данные по сделке"
       :isDone="!!currentRequest.deal"
       :isCurrent="!!data.timelineStepObjects.length"

@@ -1,5 +1,5 @@
 <template>
-  <div class="MiniTimeline MiniTimeline-big_size row no-gutters col-12">
+  <div class="MiniTimeline MiniTimeline-big_size row no-gutters col-12 px-0">
     <div
       @click.stop="selectStep(timelineStep[0])"
       class="step col justify-content-center"

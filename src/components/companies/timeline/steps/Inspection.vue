@@ -1,7 +1,7 @@
 <template>
-  <div class="col inspection" v-if="data">
+  <div class="col inspection px-0" v-if="data">
     <StepStage
-      class="mb-2 px-2"
+      class="mb-2"
       :title="
         'Шаг 1. Отметить объекты, которые заинтересовали клиента' +
         (data.timelineStepObjects.length
@@ -22,7 +22,7 @@
       />
     </StepStage>
     <StepStage
-      class="mb-2 px-2"
+      class="mb-2"
       title="Шаг 2. Отправить всю необходимую информацию по объектам клиенту"
       :isDone="!!data.additional"
       :isCurrent="!!data.timelineStepObjects.length"
@@ -143,6 +143,7 @@
       </div>
     </div>
     <div
+      class="px-3"
       v-if="
         !userLocation && data.timelineStepObjects.length && clickedStage !== 1
       "
