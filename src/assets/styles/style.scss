@@ -4024,7 +4024,7 @@
     
     // ****************** COMPANY-REQUEST-ITEM-ALT ************
     .CompanyRequestItemAlt {
-        background-color: $color_success;
+        background-color: $color_success_dark;
         &:hover {
             .fa-pen {
                 opacity: 100%;
@@ -4807,18 +4807,18 @@
                 }
             }
             &-done {
-                background-color: $color_success;
+                background-color: $color_success_dark;
                 .step-rhombus {
-                    background-color: $color_success;
+                    background-color: $color_success_dark;
                 }
             }
             &-in_process {
-                background-color: $color_warning_alt;
+                background-color: $color_warning_dark;
                 .step-name {
                     color: $color_light;
                 }
                 .step-rhombus {
-                    background-color: $color_warning_alt;
+                    background-color: $color_warning_dark;
                 }
             }
         }
@@ -4845,15 +4845,27 @@
                     right: -22px;
                 }
                 &-selected {
-                    $color_selected: $color_info;
-                    background-color: $color_selected;
+                    
                     .step-name {
                         font-weight: 600;
+                        color: black;
+                        // filter: invert(100%);
                     }
-                    .step-rhombus {
-                        background-color: $color_selected;
-                        // border-top: 4px groove gray;
-                        // border-right:4px groove gray;
+                    
+                    &.step-done {
+                        background-color: lighten($color_success_dark, 20);
+                        .step-rhombus {
+                            background-color: lighten($color_success_dark, 20);  
+                        }
+                        
+                    }
+                    &.step-in_process {
+                        // background-color: lighten($color_warning_dark, 20);
+                        background-color: #ffc87c;
+                        .step-rhombus {
+                            background-color: #ffc87c;
+                            // background-color: lighten($color_warning_dark, 20);  
+                        }
                     }
                 }
                 //   &-prev {
@@ -5195,21 +5207,26 @@
     .step-stage {
         &.isDone {
             .wrapper {
-                background-color: $color_success;
+                background-color: $color_success_dark;
             }
         }
         &.isCurrent {
             .wrapper {
-                background-color: $color_warning;
+                background-color: $color_warning_dark;
             }
         }
         &.readyToClick {
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            
             &:hover {
-                opacity: 70%;
+                
+                filter: brightness(1.2);
             }
             &:active {
                 transform: scale(0.99);
+                filter: brightness(1.2);
             }
         }
         .wrapper {

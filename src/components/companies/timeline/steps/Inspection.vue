@@ -23,7 +23,7 @@
     </StepStage>
     <StepStage
       class="mb-2 px-2"
-      title="Шаг 1. Отправить всю необходимую информацию по объектам клиенту"
+      title="Шаг 2. Отправить всю необходимую информацию по объектам клиенту"
       :isDone="!!data.additional"
       :isCurrent="!!data.timelineStepObjects.length"
       :id="2"
@@ -142,7 +142,11 @@
         />
       </div>
     </div>
-    <div v-if="!userLocation && data.timelineStepObjects.length">
+    <div
+      v-if="
+        !userLocation && data.timelineStepObjects.length && clickedStage !== 1
+      "
+    >
       <h3 class="text-danger">
         Разрешите передачу вашего местоположения и перезагрузите страницу!
       </h3>

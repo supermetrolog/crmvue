@@ -80,10 +80,10 @@
         </div> -->
       <div class="d-flex justify-content-between">
         <span>Цена пола</span>
-        <strong class="parameters-inner">
-          {{ request.pricePerFloor ?? "нет данных" }}
-          <small>руб. за м<sup>2</sup>/год</small>
+        <strong v-if="request.pricePerFloor">
+          {{ request.pricePerFloor }} <small>руб. за м<sup>2</sup>/год</small>
         </strong>
+        <strong v-else>нет данных</strong>
       </div>
       <div class="d-flex justify-content-between">
         <span>Только 1-й этаж</span>
