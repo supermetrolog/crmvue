@@ -38,6 +38,10 @@
 import Feedback from "../steps/Feedback.vue";
 import { MixinStepActions } from "../mixins";
 import { MixinObject } from "../../objects/mixins";
+import {
+  FeedbackDoneComment,
+  FeedbackOffersNotFoundComment,
+} from "../comments/commenst";
 
 export default {
   name: "FeedbackActions",
@@ -48,6 +52,12 @@ export default {
   methods: {
     updatedObjects(data, fn) {
       this.$emit("updatedObjects", data, false, fn);
+    },
+    getNegativeComment(step) {
+      return new FeedbackOffersNotFoundComment(step);
+    },
+    getDoneComment(step) {
+      return [new FeedbackDoneComment(step)];
     },
   },
 };

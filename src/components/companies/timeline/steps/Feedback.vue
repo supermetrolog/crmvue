@@ -66,6 +66,7 @@
 import { FeedbackList, ObjectTypeList } from "@/const/Const.js";
 import { MixinSteps } from "../mixins";
 import Checkbox from "@/components/common/form/Checkbox.vue";
+import { FeedbackWaysConfirmedComment } from "../comments/commenst";
 export default {
   name: "Feedback",
   emits: ["done", "negative"],
@@ -106,14 +107,7 @@ export default {
         });
       });
       this.data.newActionComments = [
-        {
-          timeline_id: this.data.timeline_id,
-          timeline_step_id: this.data.id,
-          timeline_step_number: this.data.number,
-          title: "система",
-          comment: "Отметил способ обратной связи",
-          type: 1,
-        },
+        new FeedbackWaysConfirmedComment(this.data),
       ];
       this.data.status = 1;
       this.$emit("updateItem", this.data, true);

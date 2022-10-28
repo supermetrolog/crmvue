@@ -6,7 +6,7 @@ import Pagination from "@/components/common/Pagination";
 import { mapActions, mapGetters } from "vuex";
 import { notify } from "@kyvg/vue3-notification";
 import crypto from "crypto"
-import { AlreadySendOffersComment, ObjectsNotFoundComment, SendOffersComment } from "../timeline/comments/commenst";
+import CommentWithAutoSetComment, { AlreadySendOffersComment, DONE_COMMENT_TYPE, OffersNotFoundComment, SendOffersComment } from "../timeline/comments/commenst";
 export const MixinObject = {
     components: {
         Objects,
@@ -119,7 +119,11 @@ export const MixinObject = {
             }
             return isSuccessfuly;
         },
+        getDoneComment(step) {
+            return [new CommentWithAutoSetComment(step, DONE_COMMENT_TYPE)];
+        },
         done() {
+            this.step.newActionComments = this.getDoneComment(this.step);
             this.sendObjectsHandler();
         },
         negative() {
@@ -134,6 +138,9 @@ export const MixinObject = {
             console.log("RESET");
             this.selectedObjects = [];
         },
+        getNegativeComment(step) {
+            return new OffersNotFoundComment(step);
+        },
         selectNegative() {
             let data = this.step;
             data.click_negative = true;
@@ -142,7 +149,7 @@ export const MixinObject = {
                 data.newActionComments = [];
             } else {
                 data.negative = 1;
-                data.newActionComments = [new ObjectsNotFoundComment(data)];
+                data.newActionComments = [this.getNegativeComment(data)];
             }
             this.clickUpdateStep(data);
         },

@@ -1,11 +1,12 @@
 import { WayOfSending } from "../../../../const/Const";
 
-const DEFAULT_COMMENT_TYPE = 1;
-const NOTIFICATION_COMMENT_TYPE = 2;
-const ALREADY_SEND_OFFERS_COMMENT_TYPE = 3;
-const SEND_OFFERS_COMMENT_TYPE = 4;
+export const DEFAULT_COMMENT_TYPE = 1;
+export const NOTIFICATION_COMMENT_TYPE = 2;
+export const ALREADY_SEND_OFFERS_COMMENT_TYPE = 3;
+export const SEND_OFFERS_COMMENT_TYPE = 4;
+export const DONE_COMMENT_TYPE = 5;
 
-export default class Comment {
+class Comment {
     constructor(step, type = DEFAULT_COMMENT_TYPE) {
         this.timeline_id = step.timeline_id;
         this.timeline_step_id = step.id;
@@ -15,70 +16,57 @@ export default class Comment {
         this.type = type;
     }
 
-    setSystemTitle() {
+    _setSystemTitle() {
         this.title = 'система';
     }
-    setUserTitle(username) {
+    _setUserTitle(username) {
         this.title = 'система/' + username;
     }
 
-    setComment(comment) {
-        this.comment = comment;
+    _setComment() {
+        this.comment = "default comment";
     }
 }
 
-export class PhonedComment extends Comment {
+export default class CommentWithAutoSetComment extends Comment {
     constructor(step, type = DEFAULT_COMMENT_TYPE) {
         super(step, type);
-        this.setComment();
+        this._setComment();
     }
+}
 
-    setComment() {
+export class PhonedComment extends CommentWithAutoSetComment {
+    _setComment() {
         this.comment = "Состоялся первичный диалог с клиентом";
     }
 }
 
 export class CallbackComment extends Comment {
-    constructor(step, date, type = NOTIFICATION_COMMENT_TYPE) {
-        super(step, type);
+    constructor(step, date) {
+        super(step, NOTIFICATION_COMMENT_TYPE);
         this.callBackDate = date;
-        this.setComment();
+        this._setComment();
     }
 
-    setComment() {
+    _setComment() {
         this.comment = "Устанвовлено напоминание о звонке: " + this.callBackDate;
     }
 }
 
-export class CallingErrorComment extends Comment {
-    constructor(step, type = DEFAULT_COMMENT_TYPE) {
-        super(step, type);
-        this.setComment();
-    }
-
-    setComment() {
+export class CallingErrorComment extends CommentWithAutoSetComment {
+    _setComment() {
         this.comment = "Не удалось дозвониться, попытайтесь позднее";
     }
 }
 
-export class MeetingDoneComment extends Comment {
-    constructor(step, type = DEFAULT_COMMENT_TYPE) {
-        super(step, type);
-        this.setComment();
-    }
-
-    setComment() {
+export class MeetingDoneComment extends CommentWithAutoSetComment {
+    _setComment() {
         this.comment = "Запрос утвержден, переходим к отправке предложений";
     }
 }
 
-export class ObjectsNotFoundComment extends Comment {
-    constructor(step, type = DEFAULT_COMMENT_TYPE) {
-        super(step, type);
-        this.setComment();
-    }
-
-    setComment() {
+export class OffersNotFoundComment extends CommentWithAutoSetComment {
+    _setComment() {
         this.comment = "Не удалось найти подходищие объекты, посмотрите у конкурентов или на ЦИАН";
     }
 }
@@ -136,4 +124,25 @@ export class SendOffersComment extends AlreadySendOffersComment {
         this.comment = `Отправлено ${sendOffersLengthStr} ${contactsStr} по ${wayOfSendingStr}, ${link}`;
     }
 
+}
+
+
+export class FeedbackOffersNotFoundComment extends CommentWithAutoSetComment {
+    _setComment() {
+        this.comment = "Предложения клиента не заинтересовали, попробуйте поискать еще варианты";
+    }
+}
+
+export class FeedbackDoneComment extends CommentWithAutoSetComment {
+    _setComment() {
+        this.type = DONE_COMMENT_TYPE;
+        this.comment = "Получена обратная связь от клиента по объектам";
+    }
+}
+
+export class FeedbackWaysConfirmedComment extends CommentWithAutoSetComment {
+    _setComment() {
+        this.type = DONE_COMMENT_TYPE;
+        this.comment = "Отметил способ получения обратной связи";
+    }
 }
