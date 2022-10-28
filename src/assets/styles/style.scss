@@ -517,7 +517,7 @@
             color: white;
         }
         &.badge-warning {
-            background-color: $color_warning;
+            background-color: $color_warning_dark;
             color: white;
         }
         &.badge-danger {
@@ -537,7 +537,7 @@
             color: white;
         }
         &.badge-success {
-            background-color: $color_success;
+            background-color: $color_success_dark;
             color: white;
         }
         &.badge-dark-warning {
@@ -1609,6 +1609,7 @@
                         border: 1px solid $color_primary;
                         color: $color_primary;
                         padding: 3px;
+                        background-color: $color_light;
                         &.checked {
                             background-color: $color_primary;
                             color: $color_light;

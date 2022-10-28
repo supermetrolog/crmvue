@@ -90,6 +90,7 @@
                   p-1
                   row
                   justify-content-end
+                  mx-4
                 "
               >
                 <RefreshButton
