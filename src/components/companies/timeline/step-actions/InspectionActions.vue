@@ -48,6 +48,7 @@ import Inspection from "../steps/Inspection.vue";
 import { mapGetters } from "vuex";
 import { MixinStepActions } from "../mixins";
 import { MixinObject } from "../../objects/mixins";
+import { InspectionDoneComment, InspectionOffersNotFound } from "../comments/commenst";
 
 export default {
   name: "InspectionActions",
@@ -113,6 +114,12 @@ export default {
   methods: {
     updatedObjects(data, fn = null) {
       this.$emit("updatedObjects", data, false, fn);
+    },
+    getNegativeComment(step) {
+      return [new InspectionOffersNotFound(step)];
+    },
+    getDoneComment(step) {
+      return [new InspectionDoneComment(step, this.selectedObjects)];
     },
   },
 };

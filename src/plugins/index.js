@@ -9,7 +9,7 @@ const dateFormatter = {
         return localDate.toLocaleString(locale, options);
     }
 }
-const formatterObject = {
+export const formatterObject = {
     currency(number, leng = 'ru', options = {}) {
         const defaultOptions = {
             style: 'currency',
@@ -48,11 +48,12 @@ export const apiUrlHelperObject = {
     notFoundAvatarName: "no-avatar.png",
 
     // websocket urls
-
-
     prodWsUrl: 'wss://api.pennylane.pro/websocket/',
     devWsUrl: 'wss://api.supermetrolog.pro/websocket/',
     localWsUrl: 'ws://localhost:8010',
+
+    prodObjectsUrl: "https://pennylane.pro",
+    devObjectsUrl: "http://objects/",
     wsUrl() {
         if (process.env.NODE_ENV == 'development') {
             return this.localWsUrl;
@@ -78,6 +79,13 @@ export const apiUrlHelperObject = {
             }
 
             return this.prodUrl;
+        }
+    },
+    objectsUrl() {
+        if (process.env.NODE_ENV == 'development') {
+            return this.devObjectsUrl;
+        } else {
+            return this.prodObjectsUrl;
         }
     },
     uploadsUrl() {

@@ -1,4 +1,5 @@
 import { WayOfSending } from "../../../../const/Const";
+import { apiUrlHelperObject, formatterObject } from "../../../../plugins";
 
 export const DEFAULT_COMMENT_TYPE = 1;
 export const NOTIFICATION_COMMENT_TYPE = 2;
@@ -144,5 +145,46 @@ export class FeedbackWaysConfirmedComment extends CommentWithAutoSetComment {
     _setComment() {
         this.type = DONE_COMMENT_TYPE;
         this.comment = "Отметил способ получения обратной связи";
+    }
+}
+
+export class InspectionOffersNotFound extends CommentWithAutoSetComment {
+    _setComment() {
+        this.comment = "Клиент передумал осматривать, заинтересовавшие его помещения, разберите ситуацию, попробуйте понять причину или подберите новые предложения";
+    }
+}
+
+export class InspectionDoneComment extends Comment {
+    constructor(step, selectedObjects) {
+        super(step, DONE_COMMENT_TYPE)
+        this._selectedObjects = selectedObjects;
+        this._setComment();
+    }
+    _setComment() {
+        this.comment = `Организован показ по объектам: ${this._getObjectsStr()}`;
+    }
+
+    _getObjectsStr() {
+        return this._selectedObjects.map(elem => this._getObjectLink(elem)).join(", ");
+    }
+    _getObjectLink(offer) {
+        let region = formatterObject.text().ucFirst(offer.region_name);
+        let town = formatterObject.text().ucFirst(offer.town_name);
+        let id = offer.visual_id;
+
+        return `<a target="_blank" class="text-primary d-inline" href="${this._getOfferUrl(offer)}">${id} - ${region}, ${town}</a>`
+    }
+    _getOfferUrl(offer) {
+        const baseUrl = apiUrlHelperObject.prodObjectsUrl + "complex/";
+        let url = baseUrl + offer.complex_id;
+        if (offer.type_id == 3) {
+            return url;
+        }
+        if (offer.generalOffersMix) {
+            url += "?offer_id=[" + offer.generalOffersMix.original_id + "]";
+        } else {
+            url += "?offer_id=[" + offer.original_id + "]";
+        }
+        return url;
     }
 }

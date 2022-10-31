@@ -54,7 +54,7 @@ export default {
       this.$emit("updatedObjects", data, false, fn);
     },
     getNegativeComment(step) {
-      return new FeedbackOffersNotFoundComment(step);
+      return [new FeedbackOffersNotFoundComment(step)];
     },
     getDoneComment(step) {
       return [new FeedbackDoneComment(step)];

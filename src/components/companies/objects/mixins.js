@@ -139,7 +139,7 @@ export const MixinObject = {
             this.selectedObjects = [];
         },
         getNegativeComment(step) {
-            return new OffersNotFoundComment(step);
+            return [new OffersNotFoundComment(step)];
         },
         selectNegative() {
             let data = this.step;
@@ -149,7 +149,7 @@ export const MixinObject = {
                 data.newActionComments = [];
             } else {
                 data.negative = 1;
-                data.newActionComments = [this.getNegativeComment(data)];
+                data.newActionComments = this.getNegativeComment(data);
             }
             this.clickUpdateStep(data);
         },
