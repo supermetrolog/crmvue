@@ -1,7 +1,12 @@
 <template>
   <div
     class="step-stage"
-    :class="{ isDone: isDone, isCurrent: isCurrent && !isDone }"
+    :class="{
+      isDone: isDone,
+      isCurrent: isCurrent && !isDone,
+      readyToClick: !stageIsActive,
+    }"
+    @click="stageClicked"
   >
     <div class="wrapper">
       <div class="row no-gutters">
@@ -12,7 +17,7 @@
           <i class="fas fa-check-circle isDone" v-if="isDone"></i>
         </div>
       </div>
-      <div v-if="(!isDone && isCurrent) || (!closeSlotWhenDone && isDone)">
+      <div v-if="stageIsActive" @click.stop>
         <slot></slot>
       </div>
     </div>
@@ -39,7 +44,33 @@ export default {
       type: Boolean,
       default: true,
     },
+    isClicked: {
+      type: Boolean,
+      default: false,
+    },
+    id: {
+      type: Number,
+      default: null,
+    },
   },
+  computed: {
+    stageIsActive() {
+      return (
+        (!this.isDone && this.isCurrent) ||
+        (!this.closeSlotWhenDone && this.isDone) ||
+        (this.isClicked && this.isDone) ||
+        (this.isClicked && this.isCurrent)
+      );
+    },
+  },
+  methods: {
+    stageClicked() {
+      if (this.id) {
+        this.$emit("stageClicked", this.id);
+      }
+    },
+  },
+  emits: ["stageClicked"],
 };
 </script>
 

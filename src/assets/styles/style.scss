@@ -517,7 +517,7 @@
             color: white;
         }
         &.badge-warning {
-            background-color: $color_warning;
+            background-color: $color_warning_dark;
             color: white;
         }
         &.badge-danger {
@@ -537,7 +537,7 @@
             color: white;
         }
         &.badge-success {
-            background-color: $color_success;
+            background-color: $color_success_dark;
             color: white;
         }
         &.badge-dark-warning {
@@ -892,6 +892,10 @@
             }
         }
         .step-actions {
+            &.box {
+                padding-right: 0 !important; 
+            padding-left: 0 !important;
+            } 
             .scroller {
                 max-height: 84vh;
             }
@@ -906,6 +910,14 @@
                     letter-spacing: 15px;
                 }
             }
+            div {
+                &.inner {
+                
+                    padding: 0 !important;
+                
+            }
+            }
+            
         }
     }
     
@@ -1597,6 +1609,7 @@
                         border: 1px solid $color_primary;
                         color: $color_primary;
                         padding: 3px;
+                        background-color: $color_light;
                         &.checked {
                             background-color: $color_primary;
                             color: $color_light;
@@ -2867,8 +2880,32 @@
                     }
                     .name {
                         color: darken($color_success, 10);
+                        .fa-pen {
+                            opacity: 0;
+                            padding: 5px;
+                            cursor: pointer;
+                            transition: all .07s ease-in-out;
+                            &:hover {
+                                transform: scale(1.3);
+                            }
+                        }
+                    }
+                    &:hover {
+                        .fa-pen {
+                            opacity: 100%;
+                        }
+                    }
+                    .product-range-alt {
+                        strong {
+                            padding: 2px;
+                            border: 1px solid #2D2F34;
+                            color: #2D2F34;
+                            margin-right: 2px;
+                            margin-top: 2px;
+                        }
                     }
                 }
+
             }
         }
     }
@@ -3998,6 +4035,28 @@
         }
     }
     
+    // ****************** COMPANY-REQUEST-ITEM-ALT ************
+    .CompanyRequestItemAlt {
+        background-color: $color_success_dark;
+        &:hover {
+            .fa-pen {
+                opacity: 100%;
+            }
+        }
+        .fa-pen {
+            position: absolute;
+            top: 25px;
+            right: 0;
+            opacity: 0;
+            cursor: pointer;
+            transition: all .07s ease-in-out;
+                            &:hover {
+                                transform: scale(1.3);
+                            }
+            
+        }
+    }
+
     // ****************** COMPANY-OBJECTS ************
     .company-objects-list {
         &__item {
@@ -4761,18 +4820,18 @@
                 }
             }
             &-done {
-                background-color: $color_success;
+                background-color: $color_success_dark;
                 .step-rhombus {
-                    background-color: $color_success;
+                    background-color: $color_success_dark;
                 }
             }
             &-in_process {
-                background-color: $color_warning_alt;
+                background-color: $color_warning_dark;
                 .step-name {
                     color: $color_light;
                 }
                 .step-rhombus {
-                    background-color: $color_warning_alt;
+                    background-color: $color_warning_dark;
                 }
             }
         }
@@ -4799,15 +4858,27 @@
                     right: -22px;
                 }
                 &-selected {
-                    $color_selected: $color_info;
-                    background-color: $color_selected;
+                    
                     .step-name {
                         font-weight: 600;
+                        color: black;
+                        // filter: invert(100%);
                     }
-                    .step-rhombus {
-                        background-color: $color_selected;
-                        // border-top: 4px groove gray;
-                        // border-right:4px groove gray;
+                    
+                    &.step-done {
+                        background-color: lighten($color_success_dark, 20);
+                        .step-rhombus {
+                            background-color: lighten($color_success_dark, 20);  
+                        }
+                        
+                    }
+                    &.step-in_process {
+                        // background-color: lighten($color_warning_dark, 20);
+                        background-color: #ffc87c;
+                        .step-rhombus {
+                            background-color: #ffc87c;
+                            // background-color: lighten($color_warning_dark, 20);  
+                        }
                     }
                 }
                 //   &-prev {
@@ -5149,12 +5220,26 @@
     .step-stage {
         &.isDone {
             .wrapper {
-                background-color: $color_success;
+                background-color: $color_success_dark;
             }
         }
         &.isCurrent {
             .wrapper {
-                background-color: $color_warning;
+                background-color: $color_warning_dark;
+            }
+        }
+        &.readyToClick {
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            
+            &:hover {
+                
+                filter: brightness(1.2);
+            }
+            &:active {
+                transform: scale(0.99);
+                filter: brightness(1.2);
             }
         }
         .wrapper {

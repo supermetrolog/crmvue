@@ -1,7 +1,11 @@
 <template>
   <div class="row no-gutters company-detail-info alt px-3 py-2" v-if="company">
-    <div class="col-12 name">
+    <div class="col-12 name d-flex justify-content-between">
       <h4 class="m-0">{{ company.id }} {{ company.full_name }}</h4>
+      <i
+        class="fas fa-pen text-primary edit"
+        @click.prevent="clickUpdateCompany"
+      ></i>
     </div>
     <div class="col-12">
       <div class="row no-gutters">
@@ -135,11 +139,11 @@
         </div>
         <div
           class="col-12 company-detail-info-item"
-          :class="{ 'product-range': company.productRanges.length }"
+          :class="{ 'product-range-alt': company.productRanges.length }"
         >
           <div class="row no-gutters">
             <div class="col-5">
-              <p>Наменклатура товара:</p>
+              <p>Номенклатура товара:</p>
             </div>
             <div class="col-7 text-left align-self-center">
               <strong
@@ -449,5 +453,10 @@ export default {
   mixins: [MixinCompanyDetailInfo],
   name: "CompanyDetailInfoAlternative",
   components: {},
+  methods: {
+    clickUpdateCompany() {
+      this.$emit("openCompanyFormForUpdate");
+    },
+  },
 };
 </script>

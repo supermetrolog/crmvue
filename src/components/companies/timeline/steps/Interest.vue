@@ -1,7 +1,7 @@
 <template>
-  <div class="col-12">
+  <div class="col-12 px-0">
     <StepStage
-      class="mb-2 px-2"
+      class="mb-2"
       :title="
         'Шаг 1. Отметить объекты, которые осмотрели' +
         (data.timelineStepObjects.length

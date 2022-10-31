@@ -2,7 +2,7 @@
   <div class="step-actions">
     <div class="row no-gutters inner scroller">
       <div class="col-12">
-        <div class="row px-2 pb-2" v-if="step.timelineStepObjects.length">
+        <div class="row px-2" v-if="step.timelineStepObjects.length">
           <div class="col-12">
             <div class="timeline-actions row"></div>
           </div>

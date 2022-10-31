@@ -82,7 +82,7 @@
           </div>
         </div>
         <div
-          class="col-8 box step-actions"
+          class="col-8 box step-actions px-0"
           v-if="selectedStep && !loader && !timelineNotFoundFlag"
         >
           <component

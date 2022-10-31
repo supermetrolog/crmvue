@@ -10,7 +10,7 @@
       >
         <p class="time" v-if="date.type">{{ date.value }}</p>
       </div>
-      <div class="col-12 mb-1" :class="{ 'text-right': isSystemComment }">
+      <div class="col-12 mb-1 px-2" :class="{ 'text-right': isSystemComment }">
         <p
           class="text-success"
           :class="{
@@ -21,7 +21,7 @@
         </p>
       </div>
 
-      <div class="col-12 comment">
+      <div class="col-12 comment px-2">
         <p v-html="timeHTML + data.comment"></p>
       </div>
     </div>
