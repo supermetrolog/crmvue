@@ -204,3 +204,39 @@ export class VisitOffersNotFound extends CommentWithAutoSetComment {
         this.comment = "Клиент передумал осматривать, заинтересовавшие его помещения, разберите ситуацию, попробуйте понять причину или подберите новые предложения";
     }
 }
+
+export class InterestDoneComment extends DoneComment {
+    _setComment() {
+        this.comment = `Есть интерес к объектам: ${this._getObjectsStr()}`;
+    }
+}
+
+export class InterestOffersNotFound extends CommentWithAutoSetComment {
+    _setComment() {
+        this.comment = "Клиенту не подошли помещения, которые осмотрели, не беда, разберите ситуацию, попробуйте понять причину и подберите новые предложения";
+    }
+}
+
+export class TalkDoneComment extends DoneComment {
+    _setComment() {
+        this.comment = `Ведутся переговоры по объектам: ${this._getObjectsStr()}`;
+    }
+}
+
+export class TalkOffersNotFound extends CommentWithAutoSetComment {
+    _setComment() {
+        this.comment = "Переговоры не состоялись, разберите ситуацию, попробуйте понять причину и подберите новые предложения";
+    }
+}
+
+export class DealDoneComment extends CommentWithAutoSetComment {
+    _setComment() {
+        this.comment = "Ура! Супер, вы завершили успешно текущий бизнес процесс";
+    }
+}
+
+export class DealOffersNotFound extends CommentWithAutoSetComment {
+    _setComment() {
+        this.comment = "Сделка провалилась, не отчаивайтесь, разберите ситуацию, начните все заново и у вас все получится";
+    }
+}

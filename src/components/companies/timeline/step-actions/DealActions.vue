@@ -46,6 +46,7 @@ import { mapActions, mapGetters } from "vuex";
 import Deal from "../steps/Deal.vue";
 import { MixinStepActions } from "../mixins";
 import { MixinObject } from "../../objects/mixins";
+import { DealDoneComment, DealOffersNotFound } from "../comments/commenst";
 
 export default {
   name: "DealActions",
@@ -71,8 +72,7 @@ export default {
           defaultBtn: true,
           disabled: !this.selectedObjects.length || this.disabled,
           title: "Сохранить",
-          text: "Готово",
-          icon: "fas fa-check",
+          text: "Победа!",
           emited_event: "done",
           withWayOfSending: false,
           classes: "col-2",
@@ -85,10 +85,9 @@ export default {
           disabled: this.disabled,
           title: "",
           text: "Сделка провалилась",
-          icon: "far fa-frown-open",
           emited_event: "negative",
           withWayOfSending: false,
-          classes: "col-4 ml-1",
+          classes: "col-2 ml-1",
         },
       ];
     },
@@ -101,6 +100,12 @@ export default {
         fn();
       };
       this.$emit("updatedObjects", data, true, fetchRequest);
+    },
+    getNegativeComment(step) {
+      return [new DealOffersNotFound(step)];
+    },
+    getDoneComment(step) {
+      return [new DealDoneComment(step)];
     },
   },
 };

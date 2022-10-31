@@ -36,6 +36,7 @@
 import { MixinStepActions } from "../mixins";
 import { MixinObject } from "../../objects/mixins";
 import Talk from "../steps/Talk.vue";
+import { TalkDoneComment, TalkOffersNotFound } from "../comments/commenst";
 
 export default {
   name: "TalkActions",
@@ -46,6 +47,12 @@ export default {
   methods: {
     updatedObjects(data) {
       this.$emit("updatedObjects", data, true);
+    },
+    getNegativeComment(step) {
+      return [new TalkOffersNotFound(step)];
+    },
+    getDoneComment(step) {
+      return [new TalkDoneComment(step, this.selectedObjects)];
     },
   },
 };
