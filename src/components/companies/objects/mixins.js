@@ -22,7 +22,7 @@ export const MixinObject = {
         }
     },
     computed: {
-        ...mapGetters(['TIMELINE', 'THIS_USER', "COMPANY_CONTACTS"]),
+        ...mapGetters(['TIMELINE', 'THIS_USER', "COMPANY_CONTACTS", "COMPANY_REQUESTS"]),
         preventStepTimelineObjects() {
             if (!this.TIMELINE)
                 return null;
@@ -57,7 +57,15 @@ export const MixinObject = {
                     classes: "col-2 ml-1",
                 },
             ];
-        }
+        },
+        currentRequest() {
+            if (Array.isArray(this.COMPANY_REQUESTS)) {
+                return this.COMPANY_REQUESTS.find(
+                    (item) => item.id == this.$route.query.request_id
+                );
+            }
+            return false;
+        },
     },
     methods: {
         ...mapActions(['UPDATE_STEP']),
@@ -286,9 +294,34 @@ export const MixinObject = {
         this.getPreventStepObjects();
     },
 };
-
-export const MixinAllObject = {
+export const MixinWithSendLetter = {
     mixins: [MixinObject],
+    data() {
+        return {
+            sendObjectsModalVisible: false,
+        };
+    },
+    methods: {
+        openSendObjectsModal() {
+            this.sendObjectsModalVisible = true;
+        },
+        closeSendObjectsModal() {
+            this.sendObjectsModalVisible = false;
+        },
+        // Переопределено из миксина
+        afterSend() {
+            this.closeSendObjectsModal();
+        },
+        sendOffers(params) {
+            this.send(params);
+        },
+        alreadySentOffers(params) {
+            this.alreadySent(params);
+        },
+    }
+}
+export const MixinAllObject = {
+    mixins: [MixinWithSendLetter],
     components: {
         ObjectsSearch,
         Pagination
@@ -348,14 +381,6 @@ export const MixinAllObject = {
                     classes: "col-2 ml-1",
                 },
             ];
-        },
-        currentRequest() {
-            if (Array.isArray(this.COMPANY_REQUESTS)) {
-                return this.COMPANY_REQUESTS.find(
-                    (item) => item.id == this.$route.query.request_id
-                );
-            }
-            return false;
         },
     },
     methods: {

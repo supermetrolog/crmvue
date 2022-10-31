@@ -1,5 +1,38 @@
 <template>
   <div class="step-action">
+    <teleport to="body">
+      <transition
+        mode="out-in"
+        enter-active-class="animate__animated animate__zoomIn for__modal"
+        leave-active-class="animate__animated animate__zoomOut for__modal"
+      >
+        <Modal
+          title="Отправка"
+          v-if="sendObjectsModalVisible"
+          class="autosize"
+          @close="closeSendObjectsModal"
+        >
+          <SendObjects
+            @send="sendOffers"
+            :formdata="sendObjectsFormdata"
+            :loader="loader"
+          >
+            <Objects>
+              <ObjectsList
+                :objects="selectedObjects"
+                :selectedObjects="selectedObjects"
+                :disabled="true"
+                col="col-3"
+                label="Выбранные предложения"
+                @select="select"
+                @unSelect="unSelect"
+                @addComment="addComment"
+              />
+            </Objects>
+          </SendObjects>
+        </Modal>
+      </transition>
+    </teleport>
     <div class="row no-gutters inner scroller">
       <div class="col-12">
         <div class="row pb-2 mx-0">
@@ -11,7 +44,7 @@
                 :objects="step.timelineStepObjects"
                 :buttons="buttons"
                 @done="done"
-                @send="send"
+                @send="openSendObjectsModal"
                 @negative="negative"
                 @updateItem="clickUpdateStep"
               />
@@ -47,15 +80,21 @@
 import Inspection from "../steps/Inspection.vue";
 import { mapGetters } from "vuex";
 import { MixinStepActions } from "../mixins";
-import { MixinObject } from "../../objects/mixins";
-import { InspectionDoneComment, InspectionOffersNotFound } from "../comments/commenst";
+import { MixinWithSendLetter } from "../../objects/mixins";
+import {
+  InspectionDoneComment,
+  InspectionOffersNotFound,
+} from "../comments/commenst";
+import SendObjects from "../../objects/send-objects/SendObjects";
 
 export default {
   name: "InspectionActions",
-  mixins: [MixinStepActions, MixinObject],
+  mixins: [MixinStepActions, MixinWithSendLetter],
   components: {
     Inspection,
+    SendObjects,
   },
+
   computed: {
     ...mapGetters(["CURRENT_STEP_OBJECTS"]),
     currentStepObjects() {
@@ -109,6 +148,23 @@ export default {
           classes: "col-2 ml-1",
         },
       ];
+    },
+    sendObjectsFormdata() {
+      return {
+        contactForSendMessage: [this.defaultContactForSend],
+        subject: "Список предложений от Pennylane Realty",
+        wayOfSending: [0],
+        message: `<p>С уважением, ${this.THIS_USER.userProfile.medium_name}</p><p>менеджер PLR</p>`,
+      };
+    },
+    defaultContactForSend() {
+      if (
+        !this.currentRequest ||
+        !this.currentRequest.contact ||
+        !this.currentRequest.contact.emails
+      )
+        return null;
+      return this.currentRequest.contact.emails[0].email;
     },
   },
   methods: {
