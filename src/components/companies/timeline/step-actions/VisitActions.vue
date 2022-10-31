@@ -36,6 +36,7 @@
 import { MixinStepActions } from "../mixins";
 import { MixinObject } from "../../objects/mixins";
 import Visit from "../steps/Visit.vue";
+import { VisitDoneComment, VisitOffersNotFound } from "../comments/commenst";
 export default {
   name: "VisitActions",
   mixins: [MixinStepActions, MixinObject],
@@ -45,6 +46,12 @@ export default {
   methods: {
     updatedObjects(data) {
       this.$emit("updatedObjects", data, true);
+    },
+    getNegativeComment(step) {
+      return [new VisitOffersNotFound(step)];
+    },
+    getDoneComment(step) {
+      return [new VisitDoneComment(step, this.selectedObjects)];
     },
   },
 };

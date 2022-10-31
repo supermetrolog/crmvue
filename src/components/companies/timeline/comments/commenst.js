@@ -154,15 +154,13 @@ export class InspectionOffersNotFound extends CommentWithAutoSetComment {
     }
 }
 
-export class InspectionDoneComment extends Comment {
+class DoneComment extends Comment {
     constructor(step, selectedObjects) {
         super(step, DONE_COMMENT_TYPE)
         this._selectedObjects = selectedObjects;
         this._setComment();
     }
-    _setComment() {
-        this.comment = `Организован показ по объектам: ${this._getObjectsStr()}`;
-    }
+    _setComment() {}
 
     _getObjectsStr() {
         return this._selectedObjects.map(elem => this._getObjectLink(elem)).join(", ");
@@ -186,5 +184,23 @@ export class InspectionDoneComment extends Comment {
             url += "?offer_id=[" + offer.original_id + "]";
         }
         return url;
+    }
+}
+
+export class InspectionDoneComment extends DoneComment {
+    _setComment() {
+        this.comment = `Организован показ по объектам: ${this._getObjectsStr()}`;
+    }
+}
+
+export class VisitDoneComment extends DoneComment {
+    _setComment() {
+        this.comment = `Осмотрели объекты: ${this._getObjectsStr()}`;
+    }
+}
+
+export class VisitOffersNotFound extends CommentWithAutoSetComment {
+    _setComment() {
+        this.comment = "Клиент передумал осматривать, заинтересовавшие его помещения, разберите ситуацию, попробуйте понять причину или подберите новые предложения";
     }
 }
