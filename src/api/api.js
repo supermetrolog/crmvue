@@ -12,19 +12,21 @@ import calendar from "./calendar";
 import companyObjects from "./companyObjects";
 import offers from "./offers";
 import location from "./location";
+import letters from "./letters";
 export default {
-    user,
-    notifications,
-    timeline,
-    functions,
-    request,
-    objects,
-    contacts,
-    companies,
-    calls,
-    deal,
-    calendar,
-    companyObjects,
-    offers,
-    location
-}
+  user,
+  notifications,
+  timeline,
+  functions,
+  request,
+  objects,
+  contacts,
+  companies,
+  calls,
+  deal,
+  calendar,
+  companyObjects,
+  offers,
+  location,
+  letters,
+};
