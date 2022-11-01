@@ -4804,10 +4804,10 @@
                 border-right: 0.5px solid;
                 transform: rotate(45deg) scale(var(--ggs, 1));
                 width: $step_height/1.46;
-                height: $step_height/1.47;
+                height: $step_height/1.46;
                 position: absolute;
                 z-index: 1;
-                right: -13px;
+                right: -11px;
             }
             &:last-child {
                 .step-rhombus {
