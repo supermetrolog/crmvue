@@ -36,6 +36,10 @@
 import { MixinStepActions } from "../mixins";
 import { MixinObject } from "../../objects/mixins";
 import Interest from "../steps/Interest.vue";
+import {
+  InterestDoneComment,
+  InterestOffersNotFound,
+} from "../comments/commenst";
 
 export default {
   name: "InterestActions",
@@ -46,6 +50,12 @@ export default {
   methods: {
     updatedObjects(data, fn = null) {
       this.$emit("updatedObjects", data, true, fn);
+    },
+    getNegativeComment(step) {
+      return [new InterestOffersNotFound(step)];
+    },
+    getDoneComment(step) {
+      return [new InterestDoneComment(step, this.selectedObjects)];
     },
   },
 };

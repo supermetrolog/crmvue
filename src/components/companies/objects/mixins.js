@@ -22,7 +22,7 @@ export const MixinObject = {
         }
     },
     computed: {
-        ...mapGetters(['TIMELINE', 'THIS_USER', "COMPANY_CONTACTS"]),
+        ...mapGetters(['TIMELINE', 'THIS_USER', "COMPANY_CONTACTS", "COMPANY_REQUESTS"]),
         preventStepTimelineObjects() {
             if (!this.TIMELINE)
                 return null;
@@ -38,7 +38,6 @@ export const MixinObject = {
                     disabled: !this.selectedObjects.length || this.disabled,
                     title: "Сохранить",
                     text: "Готово",
-                    icon: "fas fa-check",
                     emited_event: "done",
                     withWayOfSending: false,
                     classes: "col-2",
@@ -51,13 +50,20 @@ export const MixinObject = {
                     disabled: this.disabled,
                     title: "В случае нахождения более подходящих предложений вам придет уведомление!",
                     text: "Нет подходящих",
-                    icon: "far fa-frown-open",
                     emited_event: "negative",
                     withWayOfSending: false,
                     classes: "col-2 ml-1",
                 },
             ];
-        }
+        },
+        currentRequest() {
+            if (Array.isArray(this.COMPANY_REQUESTS)) {
+                return this.COMPANY_REQUESTS.find(
+                    (item) => item.id == this.$route.query.request_id
+                );
+            }
+            return false;
+        },
     },
     methods: {
         ...mapActions(['UPDATE_STEP']),
@@ -286,9 +292,34 @@ export const MixinObject = {
         this.getPreventStepObjects();
     },
 };
-
-export const MixinAllObject = {
+export const MixinWithSendLetter = {
     mixins: [MixinObject],
+    data() {
+        return {
+            sendObjectsModalVisible: false,
+        };
+    },
+    methods: {
+        openSendObjectsModal() {
+            this.sendObjectsModalVisible = true;
+        },
+        closeSendObjectsModal() {
+            this.sendObjectsModalVisible = false;
+        },
+        // Переопределено из миксина
+        afterSend() {
+            this.closeSendObjectsModal();
+        },
+        sendOffers(params) {
+            this.send(params);
+        },
+        alreadySentOffers(params) {
+            this.alreadySent(params);
+        },
+    }
+}
+export const MixinAllObject = {
+    mixins: [MixinWithSendLetter],
     components: {
         ObjectsSearch,
         Pagination
@@ -317,7 +348,6 @@ export const MixinAllObject = {
                     disabled: !this.selectedObjects.length || this.disabled,
                     title: "Отправить презентации с объектами клиенту",
                     text: "Отправить" + (this.selectedObjects.length ? ` (${this.selectedObjects.length })` : ''),
-                    icon: "fas fa-paper-plane",
                     emited_event: "send",
                     withWayOfSending: false,
                     classes: "col-2",
@@ -330,7 +360,6 @@ export const MixinAllObject = {
                     title: "Уже отправил предложения другим способом",
                     text: "Отметить как отправленные" + (this.selectedObjects.length ? ` (${this.selectedObjects.length })` : ''),
                     icon: "fas fa-paper-plane",
-                    emited_event: "alreadySent",
                     withWayOfSending: true,
                     classes: "col-3 ml-1",
                 },
@@ -342,20 +371,11 @@ export const MixinAllObject = {
                     disabled: this.disabled,
                     title: "Отправить презентации с объектами клиенту",
                     text: "Нет подходящих",
-                    icon: "far fa-frown-open",
                     emited_event: "negative",
                     withWayOfSending: false,
                     classes: "col-2 ml-1",
                 },
             ];
-        },
-        currentRequest() {
-            if (Array.isArray(this.COMPANY_REQUESTS)) {
-                return this.COMPANY_REQUESTS.find(
-                    (item) => item.id == this.$route.query.request_id
-                );
-            }
-            return false;
         },
     },
     methods: {

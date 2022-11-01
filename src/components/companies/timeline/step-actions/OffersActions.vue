@@ -197,7 +197,6 @@ export default {
     return {
       recommendedFilter: null,
       queryParams: null,
-      sendObjectsModalVisible: false,
       alreadySended: false,
     };
   },
@@ -363,14 +362,6 @@ export default {
     },
   },
   methods: {
-    sendOffers(params) {
-      // this.closeSendObjectsModal();
-      this.send(params);
-    },
-    alreadySentOffers(params) {
-      // this.closeSendObjectsModal();
-      this.alreadySent(params);
-    },
     openSendObjectsModal(alreadySended = false) {
       this.sendObjectsModalVisible = true;
       this.alreadySended = alreadySended;
@@ -378,9 +369,6 @@ export default {
     closeSendObjectsModal() {
       this.sendObjectsModalVisible = false;
       this.alreadySended = false;
-    },
-    test() {
-      console.log(this.queryParams);
     },
     updatedObjects(data, fn) {
       this.barVisible = false;
@@ -408,39 +396,6 @@ export default {
       }
       return object;
     },
-    // getSortRecommendedObjects() {
-    //   this.changeRecommendedFilter(6);
-    //   if (!this.recommendedFilter) {
-    //     this.queryParams = this.$options.defaultQueryParams;
-    //     return;
-    //   }
-    //   const request = this.currentRequest;
-    //   const query = {
-    //     rangeMinElectricity: request.electricity,
-    //     approximateDistanceFromMKAD: request.distanceFromMKAD,
-    //     deal_type: request.dealType,
-    //     rangeMaxArea: request.maxArea,
-    //     rangeMinArea: request.minArea,
-    //     rangeMaxPricePerFloor: request.pricePerFloor,
-    //     rangeMinCeilingHeight: request.minCeilingHeight,
-    //     rangeMaxCeilingHeight: request.maxCeilingHeight,
-    //     heated: request.heated == 0 ? 2 : request.heated,
-    //     has_cranes: request.haveCranes,
-    //     floor_types: request.antiDustOnly ? [2] : [],
-    //     region: request.regions.map((item) => item.region),
-    //     status: 1,
-    //     type_id: [1, 2],
-    //     gates: request.gateTypes.map((item) => item.gate_type),
-    //     direction: request.directions.map((item) => item.direction),
-    //     district_moscow: request.districts.map((item) => item.district),
-    //     firstFloorOnly: request.firstFloorOnly ? 1 : null,
-    //     recommended_sort: 1, // ФИЛЬТРЫ ПЕРЕСТАНУТ РАБОТАТЬ И БУДЕТ ВЫДАВАТЬСЯ РЕЗУЛЬТАТЫ ОТСОРТИРОВАННЫЕ ПО КОЛЛИЧЕСТВУ СОВПАДЕНИЙ
-    //   };
-    //   this.queryParams = {
-    //     ...this.$options.defaultQueryParams,
-    //     ...query,
-    //   };
-    // },
     changeRecommendedFilter(filter, query) {
       if (this.recommendedFilter != filter) {
         this.recommendedFilter = filter;
@@ -454,10 +409,6 @@ export default {
         ...this.$options.defaultQueryParams,
         ...query,
       };
-    },
-    // Переопределено из миксина
-    afterSend() {
-      this.closeSendObjectsModal();
     },
     // Переопределено из миксина чтобы в первую очередь загрузить подборку
     getData() {

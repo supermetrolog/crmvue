@@ -28,7 +28,7 @@
       class="mb-2"
       title="Шаг 1. Выбрать объект, по которому произошла сделка"
       :isDone="!!data.timelineStepObjects.length"
-      :closeSlotWhenDone="false"
+      :closeSlotWhenDone="!!currentRequest.deal"
       :isCurrent="!data.timelineStepObjects.length"
     >
       <ButtonList
