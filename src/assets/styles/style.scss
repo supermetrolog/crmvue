@@ -893,9 +893,9 @@
         }
         .step-actions {
             &.box {
-                padding-right: 0 !important; 
-            padding-left: 0 !important;
-            } 
+                padding-right: 0 !important;
+                padding-left: 0 !important;
+            }
             .scroller {
                 max-height: 84vh;
             }
@@ -912,12 +912,9 @@
             }
             div {
                 &.inner {
-                
                     padding: 0 !important;
-                
+                }
             }
-            }
-            
         }
     }
     
@@ -2176,11 +2173,11 @@
             &-timeline {
                 &:hover {
                     cursor: pointer;
-                    opacity: 70%;
+                    opacity: .7;
                 }
                 &:active {
                     // border: 2px solid black;
-                    opacity: 50%;
+                    opacity: .5;
                 }
             }
         }
@@ -2905,7 +2902,6 @@
                         }
                     }
                 }
-
             }
         }
     }
@@ -4050,13 +4046,12 @@
             opacity: 0;
             cursor: pointer;
             transition: all .07s ease-in-out;
-                            &:hover {
-                                transform: scale(1.3);
-                            }
-            
+            &:hover {
+                transform: scale(1.3);
+            }
         }
     }
-
+    
     // ****************** COMPANY-OBJECTS ************
     .company-objects-list {
         &__item {
@@ -4858,19 +4853,16 @@
                     right: -22px;
                 }
                 &-selected {
-                    
                     .step-name {
                         font-weight: 600;
                         color: black;
                         // filter: invert(100%);
                     }
-                    
                     &.step-done {
                         background-color: lighten($color_success_dark, 20);
                         .step-rhombus {
-                            background-color: lighten($color_success_dark, 20);  
+                            background-color: lighten($color_success_dark, 20);
                         }
-                        
                     }
                     &.step-in_process {
                         // background-color: lighten($color_warning_dark, 20);
@@ -5232,9 +5224,7 @@
             cursor: pointer;
             position: relative;
             overflow: hidden;
-            
             &:hover {
-                
                 filter: brightness(1.2);
             }
             &:active {
