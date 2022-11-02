@@ -72,4 +72,16 @@ export default {
             .catch((e) => ErrorHandle.setError(e));
         return data;
     },
+
+    async disable(request_id, formdata) {
+        const url = `requests/disable/${request_id}`;
+        let data = false;
+        await axios
+            .patch(url, formdata)
+            .then((Response) => {
+                data = SuccessHandler.getData(Response);
+            })
+            .catch((e) => ErrorHandle.setError(e));
+        return data;
+    },
 }

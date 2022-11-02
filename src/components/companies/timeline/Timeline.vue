@@ -1,8 +1,28 @@
 <template>
   <Modal class="fullscreen" :title="timelineTitle" @close="$emit('close')">
     <template #header>
+      <CompanyRequestDisableFormModal
+        v-if="disableFormVisible"
+        title="Завершение таймлана"
+        :request_id="currentRequest.id"
+        @disabled="disabledTimeline"
+        @close="clickCloseDisableForm"
+      />
       <div class="col-1 align-self-center" v-if="currentRequest.status == 2">
         <h3 class="text-success m-0">ЗАВЕРШЕН</h3>
+      </div>
+      <div class="col-3 align-self-center" v-if="currentRequest.status == 0">
+        <h3 class="text-warning m-0 d-inline">ПАССИВ</h3>
+        <i class="ml-1 text-dark m-0 d-inline"
+          >({{
+            passiveWhyOptions.find(
+              (elem) => elem.value == currentRequest.passive_why
+            ).label
+          }})</i
+        >
+        <i class="ml-1 text-dark m-0 d-inline">
+          - {{ currentRequest.passive_why_comment }}</i
+        >
       </div>
       <div
         class="col-1 align-self-center"
@@ -30,6 +50,15 @@
             </template>
           </CustomButton>
         </div>
+      </div>
+      <div class="col-1 ml-auto align-self-center" v-if="!timelineNotFoundFlag">
+        <button
+          class="btn btn-alt btn-danger btn-large"
+          @click.prevent="clickOpenDisableForm"
+          :disabled="disabled"
+        >
+          завершить
+        </button>
       </div>
       <div
         class="col-1 ml-auto pr-1 align-self-center"
@@ -113,7 +142,6 @@
 <script>
 import MiniTimeline from "./MiniTimeline.vue";
 import { mapActions, mapGetters } from "vuex";
-import Multiselect from "@vueform/multiselect";
 
 import MeetingActions from "./step-actions/MeetingActions.vue";
 import OffersActions from "./step-actions/OffersActions.vue";
@@ -125,10 +153,10 @@ import TalkActions from "./step-actions/TalkActions.vue";
 import DealActions from "./step-actions/DealActions.vue";
 
 import ExtraBlock from "./timeline-extra-block/ExtraBlock.vue";
-import { Timeline } from "@/const/Const";
+import { Timeline, PassiveWhyRequest } from "@/const/Const";
 import Utils from "@/utils";
 import CustomButton from "@/components/common/CustomButton.vue";
-
+import CompanyRequestDisableFormModal from "@/components/companies/forms/company-request-form/CompanyRequestDisableFormModal";
 export default {
   name: "Timeline",
   components: {
@@ -141,9 +169,9 @@ export default {
     TalkActions,
     DealActions,
     ExtraBlock,
-    Multiselect,
     CustomButton,
     MiniTimeline,
+    CompanyRequestDisableFormModal,
   },
   data() {
     return {
@@ -152,6 +180,8 @@ export default {
       loaderForStep: false,
       objects: [],
       timelineNotFoundFlag: false,
+      passiveWhyOptions: PassiveWhyRequest.get("param"),
+      disableFormVisible: false,
     };
   },
   computed: {
@@ -185,6 +215,7 @@ export default {
       return (
         this.$route.query.consultant_id != this.THIS_USER.id ||
         this.currentRequest.status == 2 ||
+        this.currentRequest.status == 0 ||
         this.TIMELINE.status == 0
       );
     },
@@ -203,7 +234,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["FETCH_TIMELINE", "UPDATE_STEP"]),
+    ...mapActions(["FETCH_TIMELINE", "UPDATE_STEP", "FETCH_COMPANY_REQUESTS"]),
     async updatedObjects(data, goToNext = false, fn = null) {
       this.loaderForStep = data.id;
       await this.getTimeline();
@@ -262,16 +293,8 @@ export default {
       query.consultant_id = consultant_id;
       query.step = 0;
       await this.$router.push({ query: query });
-      // this.getTimeline();
     },
-    // getCompanyContacts() {
-    //   if (this.companyContacts) {
-    //     return;
-    //   }
-    //   this.companyContacts = Utils.normalizeContactsForMultiselect(
-    //     this.COMPANY_CONTACTS
-    //   );
-    // },
+
     getPriorityStep() {
       let highPriorityTimelineStep = 0;
       this.TIMELINE.timelineSteps.forEach((step) => {
@@ -288,6 +311,18 @@ export default {
       };
       query.step = highPriorityTimelineStep;
       await this.$router.push({ query: query });
+    },
+    clickOpenDisableForm() {
+      this.disableFormVisible = true;
+    },
+    clickCloseDisableForm() {
+      this.disableFormVisible = false;
+    },
+    async disabledTimeline() {
+      if (await this.FETCH_COMPANY_REQUESTS(this.$route.params.id)) {
+        this.clickCloseDisableForm();
+        this.$emit("close");
+      }
     },
   },
   async created() {
