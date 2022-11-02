@@ -1,86 +1,13 @@
 <template>
   <Modal class="fullscreen" :title="timelineTitle" @close="$emit('close')">
     <template #header>
-      <CompanyRequestDisableFormModal
-        v-if="disableFormVisible"
-        title="Завершение таймлана"
-        :request_id="currentRequest.id"
-        @disabled="disabledTimeline"
-        @close="clickCloseDisableForm"
+      <TimelineHeader
+        class="col-12"
+        :disabled="disabled"
+        :currentRequest="currentRequest"
+        @close="$emit('close')"
+        :timelineExist="timelineNotFoundFlag"
       />
-      <div class="col-1 align-self-center" v-if="currentRequest.status == 2">
-        <h3 class="text-success m-0">ЗАВЕРШЕН</h3>
-      </div>
-      <div class="col-3 align-self-center" v-if="currentRequest.status == 0">
-        <h3 class="text-warning m-0 d-inline">ПАССИВ</h3>
-        <i class="ml-1 text-dark m-0 d-inline"
-          >({{
-            passiveWhyOptions.find(
-              (elem) => elem.value == currentRequest.passive_why
-            ).label
-          }})</i
-        >
-        <i class="ml-1 text-dark m-0 d-inline">
-          - {{ currentRequest.passive_why_comment }}</i
-        >
-      </div>
-      <div
-        class="col-1 align-self-center"
-        v-else-if="TIMELINE && TIMELINE.status == 0"
-      >
-        <h3 class="text-warning m-0">НЕАКТИВЕН</h3>
-      </div>
-      <div class="col timeline-list pr-5" v-if="TIMELINE_LIST.length">
-        <div
-          class="timeline-actions timeline-list-item p-1"
-          v-for="timeline in TIMELINE_LIST"
-          :key="timeline.id"
-        >
-          <CustomButton
-            :options="{
-              btnActive: $route.query.consultant_id == timeline.consultant.id,
-              btnClass: 'primary',
-              defaultBtn: true,
-              disabled: false,
-            }"
-            @confirm="changeTimeline(timeline.consultant.id)"
-          >
-            <template #btnContent>
-              {{ timeline.consultant.userProfile.short_name }}
-            </template>
-          </CustomButton>
-        </div>
-      </div>
-      <div class="col-1 ml-auto align-self-center" v-if="!timelineNotFoundFlag">
-        <button
-          class="btn btn-alt btn-danger btn-large"
-          @click.prevent="clickOpenDisableForm"
-          :disabled="disabled"
-        >
-          завершить
-        </button>
-      </div>
-      <div
-        class="col-1 ml-auto pr-1 align-self-center"
-        v-if="!timelineNotFoundFlag"
-      >
-        <button
-          class="btn btn-alt btn-primary btn-large"
-          @click.prevent="clickOpenCompanyForm"
-          disabled
-        >
-          передать
-        </button>
-      </div>
-      <div class="col-1 ml-auto align-self-center" v-if="!timelineNotFoundFlag">
-        <button
-          class="btn btn-alt btn-danger btn-large"
-          @click.prevent="clickOpenCompanyForm"
-          disabled
-        >
-          отказаться
-        </button>
-      </div>
     </template>
     <div class="container-timeline">
       <Loader
@@ -153,10 +80,10 @@ import TalkActions from "./step-actions/TalkActions.vue";
 import DealActions from "./step-actions/DealActions.vue";
 
 import ExtraBlock from "./timeline-extra-block/ExtraBlock.vue";
-import { Timeline, PassiveWhyRequest } from "@/const/Const";
+import { Timeline } from "@/const/Const";
 import Utils from "@/utils";
-import CustomButton from "@/components/common/CustomButton.vue";
-import CompanyRequestDisableFormModal from "@/components/companies/forms/company-request-form/CompanyRequestDisableFormModal";
+import TimelineHeader from "./TimelineHeader.vue";
+
 export default {
   name: "Timeline",
   components: {
@@ -169,9 +96,8 @@ export default {
     TalkActions,
     DealActions,
     ExtraBlock,
-    CustomButton,
     MiniTimeline,
-    CompanyRequestDisableFormModal,
+    TimelineHeader,
   },
   data() {
     return {
@@ -180,8 +106,6 @@ export default {
       loaderForStep: false,
       objects: [],
       timelineNotFoundFlag: false,
-      passiveWhyOptions: PassiveWhyRequest.get("param"),
-      disableFormVisible: false,
     };
   },
   computed: {
@@ -286,14 +210,6 @@ export default {
       this.timelineNotFoundFlag = false;
       return true;
     },
-    async changeTimeline(consultant_id) {
-      let query = {
-        ...this.$route.query,
-      };
-      query.consultant_id = consultant_id;
-      query.step = 0;
-      await this.$router.push({ query: query });
-    },
 
     getPriorityStep() {
       let highPriorityTimelineStep = 0;
@@ -312,22 +228,9 @@ export default {
       query.step = highPriorityTimelineStep;
       await this.$router.push({ query: query });
     },
-    clickOpenDisableForm() {
-      this.disableFormVisible = true;
-    },
-    clickCloseDisableForm() {
-      this.disableFormVisible = false;
-    },
-    async disabledTimeline() {
-      if (await this.FETCH_COMPANY_REQUESTS(this.$route.params.id)) {
-        this.clickCloseDisableForm();
-        this.$emit("close");
-      }
-    },
   },
   async created() {
     this.loader = true;
-    // this.getCompanyContacts();
     const result = await this.getTimeline();
     this.loader = false;
     if (result) {
