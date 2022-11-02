@@ -81,7 +81,7 @@ export default {
       const query = {
         ...this.$route.query,
         expand:
-          "users.userProfile,letterContacts,letterEmails,letterPhones,letterWays,letterOffers",
+          "letterContacts.email,letterEmails.email,letterPhones.phone,letterOffers.offer,letterContacts.phone,user.userProfile,letterWays",
       };
       await this.SEARCH_LETTERS(query);
       this.loader = false;
