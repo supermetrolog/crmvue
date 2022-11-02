@@ -518,7 +518,7 @@
         }
         &.badge-warning {
             background-color: $color_warning_dark;
-            color: white;
+            
         }
         &.badge-danger {
             background-color: $color_danger;
@@ -897,7 +897,7 @@
                 padding-left: 0 !important;
             }
             .scroller {
-                max-height: 84vh;
+                max-height: 80vh;
             }
             hr {
                 border-radius: 0!important;
@@ -972,7 +972,10 @@
             cursor: pointer;
             padding: 5px 8px;
             width: 100%;
-            border-radius: 0!important;
+            height: 40px;
+            white-space: nowrap;
+            overflow: hidden;
+            border-radius: 10px !important;
             border: 1px solid $color_primary;
             color: $color_primary;
             &:active {
@@ -2507,7 +2510,7 @@
     
     .company {
         .box {
-            padding: 10px!important;
+            padding: 10px 0 10px 10px !important;
             .inner {
                 background-color: $color_light;
                 box-shadow: 0px 7px 20px rgba(0, 0, 0, 0.25);
@@ -3420,7 +3423,7 @@
     
     .extra-block {
         .scroller {
-            max-height: 84vh;
+            max-height: 80vh;
         }
         .inner {
             overflow-y: scroll;
@@ -3727,6 +3730,9 @@
     // **************** VERTICAL ACCORDION **************
     .accordion {
         &__item {
+            &:first-child {
+                margin-top: 0;
+            }
             margin-top: 2px;
             &__title {
                 .badge {
@@ -4800,8 +4806,8 @@
             &-rhombus {
                 background-color: lighten($color_grey, 30);
                 content: '';
-                border-top: 0.5px solid;
-                border-right: 0.5px solid;
+                border-top: 0.3px solid;
+                border-right: 0.3px solid;
                 transform: rotate(45deg) scale(var(--ggs, 1));
                 width: $step_height/1.46;
                 height: $step_height/1.46;
@@ -4809,6 +4815,7 @@
                 z-index: 1;
                 right: -11px;
             }
+           
             &:last-child {
                 .step-rhombus {
                     display: none;
@@ -4823,7 +4830,7 @@
             &-in_process {
                 background-color: $color_warning_dark;
                 .step-name {
-                    color: $color_light;
+                   
                 }
                 .step-rhombus {
                     background-color: $color_warning_dark;
@@ -4832,7 +4839,8 @@
         }
         &-big_size {
             font-size: 16px;
-            $step_height: 60px;
+            $step_height: 80px;
+            margin-top: 15px;
             .step {
                 height: $step_height;
                 &-current {
@@ -4848,30 +4856,39 @@
                     margin-left: $step_height/1.6;
                 }
                 &-rhombus {
-                    width: $step_height/1.39;
-                    height: $step_height/1.39;
-                    right: -22px;
+                    width: $step_height/1.42;
+                    height: $step_height/1.41;
+                    right: -$step_height/2.85  ;
+                }
+                &-parallelogram {
+                    content: '';
+                    // width: 100px;
+                    height: 15px;
+                    transform: skew(45deg);
+                    background: #d86f57;
+                    position: absolute;
+                    bottom: $step_height;
+                    left: -$step_height/9.5;
                 }
                 &-selected {
                     .step-name {
-                        font-weight: 600;
-                        color: black;
+                        
                         // filter: invert(100%);
                     }
-                    &.step-done {
-                        background-color: lighten($color_success_dark, 20);
-                        .step-rhombus {
-                            background-color: lighten($color_success_dark, 20);
-                        }
-                    }
-                    &.step-in_process {
-                        // background-color: lighten($color_warning_dark, 20);
-                        background-color: #ffc87c;
-                        .step-rhombus {
-                            background-color: #ffc87c;
-                            // background-color: lighten($color_warning_dark, 20);  
-                        }
-                    }
+                    // &.step-done {
+                    //     background-color: lighten($color_success_dark, 20);
+                    //     .step-rhombus {
+                    //         background-color: lighten($color_success_dark, 20);
+                    //     }
+                    // }
+                    // &.step-in_process {
+                    //     // background-color: lighten($color_warning_dark, 20);
+                    //     background-color: #ffc87c;
+                    //     .step-rhombus {
+                    //         background-color: #ffc87c;
+                    //         // background-color: lighten($color_warning_dark, 20);  
+                    //     }
+                    // }
                 }
                 //   &-prev {
                 //     .step-rhombus {

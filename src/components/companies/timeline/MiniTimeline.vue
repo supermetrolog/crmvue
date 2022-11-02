@@ -31,6 +31,10 @@
           ></i>
         </span>
       </div>
+      <div
+        class="step-parallelogram col-12"
+        v-if="this.selectedStep.number === timelineStep[0]"
+      ></div>
       <div class="step-rhombus"></div>
     </div>
   </div>
