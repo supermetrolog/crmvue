@@ -40,29 +40,43 @@
           </CustomButton>
         </div>
       </div>
-      <div class="col-3 align-self-center text-right">
-        <button
-          v-if="!timelineExist"
-          class="btn btn-danger d-inline mx-1 px-2"
-          @click.prevent="clickOpenDisableForm"
-          :disabled="disabled"
-        >
-          завершить
-        </button>
-        <button
-          class="btn btn-primary d-inline mx-1 px-2"
-          disabled
-          v-if="!timelineExist"
-        >
-          передать
-        </button>
-        <button
-          class="btn btn-danger d-inline mx-1 px-2"
-          disabled
-          v-if="!timelineExist"
-        >
-          отказаться
-        </button>
+      <div class="col-3 align-self-center text-right timeline-list">
+        <div class="timeline-actions timeline-list-item px-1">
+          <CustomButton
+            :options="{
+              btnClass: 'danger',
+              defaultBtn: true,
+              disabled: disabled,
+            }"
+            @confirm="clickOpenDisableForm"
+          >
+            <template #btnContent> завершить </template>
+          </CustomButton>
+        </div>
+        <div class="timeline-actions timeline-list-item px-1">
+          <CustomButton
+            :options="{
+              btnClass: 'warning',
+              defaultBtn: true,
+              disabled: true,
+            }"
+            @confirm="clickOpenDisableForm"
+          >
+            <template #btnContent> передать </template>
+          </CustomButton>
+        </div>
+        <div class="timeline-actions timeline-list-item px-1">
+          <CustomButton
+            :options="{
+              btnClass: 'warning',
+              defaultBtn: true,
+              disabled: true,
+            }"
+            @confirm="clickOpenDisableForm"
+          >
+            <template #btnContent> отказаться </template>
+          </CustomButton>
+        </div>
       </div>
     </div>
   </div>

@@ -517,7 +517,7 @@
             color: white;
         }
         &.badge-warning {
-            background-color: $color_warning_dark;
+            background-color: $color_warning;
         }
         &.badge-danger {
             background-color: $color_danger;
@@ -3053,7 +3053,9 @@
             &.success {
                 .wrapper {
                     width: 100%;
-                    background-color: $color_success_alt;
+                    background-color: $color_success_dark;
+                    border-bottom: 3px solid $color_dark;
+                    padding-bottom: 20px;
                     .label {
                         color: $color_light;
                     }
@@ -3758,6 +3760,9 @@
         &__item {
             &__title {
                 .badge {
+                    &-warning {
+                        background-color: $color_warning_dark;
+                    }
                     padding: 12px 5px;
                     font-size: 16px;
                     font-weight: normal;
@@ -5314,11 +5319,15 @@
             }
         }
         .wrapper {
-            padding: 5px 10px;
+            padding: 10.5px 16px;
+            max-height: 98px;
         }
         &__title {
             font-size: 14px!important;
             font-weight: normal!important;
+            i {
+                margin-right: 5px;
+            }
         }
         i.isDone {
             color: $color_light;

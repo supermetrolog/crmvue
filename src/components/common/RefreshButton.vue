@@ -1,5 +1,5 @@
 <template>
-  <button class="btn btn-success_alt btn-refresh">
+  <button class="btn btn-success_alt btn-refresh" title="Обновить">
     <i class="fas fa-sync-alt"></i>
   </button>
 </template>

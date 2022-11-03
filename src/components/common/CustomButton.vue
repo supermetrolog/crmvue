@@ -11,7 +11,7 @@
       ]"
       @click="clickBtn"
       v-if="!optionsLocale.extraVisible || optionsLocale.btnVisible"
-      :title="optionsLocale.disabled ? 'нет доступа' : ''"
+      :title="optionsLocale.disabled ? 'нет доступа' : optionsLocale.title"
     >
       <slot name="btnContent"></slot>
     </button>
