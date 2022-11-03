@@ -78,7 +78,7 @@
             </div>
           </div>
           <div
-            class="col-12 mx-auto mt-4"
+            class="col-12 mx-auto mt-4 p-3"
             v-if="currentRequest && step.additional == 1 && currentStage !== 1"
           >
             <Loader v-if="loaderCompanyRequests" class="center small" />

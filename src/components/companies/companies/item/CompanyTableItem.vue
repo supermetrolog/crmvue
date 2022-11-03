@@ -8,10 +8,9 @@
         <h4 class="d-inline" :class="{ 'text-warning': !company.status }">
           {{ company.full_name }}
         </h4>
-        <Progress :percent="company.progress_percent" />
       </router-link>
-    </Td>
-    <Td class="text-center" sort="rating">
+      <span>Грузоперевозки</span>
+
       <i
         v-for="rating in ratingOptions"
         :key="rating[0]"
@@ -21,20 +20,6 @@
         }"
       >
       </i>
-    </Td>
-    <Td class="text-center requests">
-      <div class="scroller">
-        <div>
-          <span
-            class="badge badge-blue-green autosize d-block"
-            v-for="request in company.requests"
-            :key="request.id"
-          >
-            {{ request.format_name }}
-          </span>
-          <p v-if="!company.requests.length">&#8212;</p>
-        </div>
-      </div>
     </Td>
     <Td class="text-center categories">
       <div class="d-inline-block" v-if="company.categories.length">
@@ -92,19 +77,18 @@
       </template>
       <p v-else>&#8212;</p>
     </Td>
+    <Td class="text-center">бла</Td>
     <Td class="text-center">
       {{ company.consultant.userProfile.short_name }}
     </Td>
+    <Td>Пора позвонить клиенту</Td>
     <Td class="text-center date" sort="created_at">
       {{ company.created_at_format }}
     </Td>
-    <Td class="text-center" sort="status">
-      <h4 class="text-success" v-if="company.status">Актив</h4>
-      <span class="badge badge-warning autosize" v-else> Пассив </span>
-    </Td>
   </Tr>
-  <Tr
-    ><td colspan="9">
+  <Tr>
+    <td></td>
+    <td colspan="5">
       <div>
         <div class="CompanyTableItem-block">
           <button
@@ -114,6 +98,14 @@
             <i class="fa fa-chevron-down" v-if="!requestsIsOpen"></i>
             <i class="fa fa-chevron-up" v-if="requestsIsOpen"></i>
             Запросы ({{ company.requests.length }})
+          </button>
+          <button
+            class="CompanyTableItem-button"
+            @click="objectsIsOpen = !objectsIsOpen"
+          >
+            <i class="fa fa-chevron-down" v-if="!objectsIsOpen"></i>
+            <i class="fa fa-chevron-up" v-if="objectsIsOpen"></i>
+            Объекты ({{ company.objects.length }})
           </button>
           <div v-if="requestsIsOpen">
             <div
@@ -132,7 +124,10 @@
             </div>
           </div>
         </div>
-        <div class="CompanyTableItem-block" v-if="company.objects.length">
+        <div
+          class="CompanyTableItem-block"
+          v-if="company.objects.length && objectsIsOpen"
+        >
           <button
             class="CompanyTableItem-button"
             @click="objectsIsOpen = !objectsIsOpen"
@@ -191,7 +186,7 @@ export default {
   data() {
     return {
       steps: Timeline.get("param"),
-      requestsIsOpen: true,
+      requestsIsOpen: false,
       objectsIsOpen: false,
     };
   },
