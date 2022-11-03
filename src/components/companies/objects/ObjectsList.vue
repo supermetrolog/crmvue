@@ -119,7 +119,7 @@ export default {
     },
     col: {
       type: String,
-      default: "col-4",
+      default: "col-6 col-xl-3",
     },
     viewMode: {
       type: Boolean,

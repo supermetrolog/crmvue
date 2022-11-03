@@ -38,7 +38,7 @@
           </div>
         </div>
         <div
-          class="col-8 box step-actions px-0"
+          class="col-9 box step-actions px-0"
           v-if="selectedStep && !loader && !timelineNotFoundFlag"
         >
           <component
@@ -52,7 +52,7 @@
           </component>
         </div>
         <div
-          class="col-4 box timeline-extra-block"
+          class="col-3 box timeline-extra-block"
           v-if="selectedStep && !loader && !timelineNotFoundFlag"
         >
           <ExtraBlock
