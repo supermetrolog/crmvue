@@ -5,13 +5,12 @@
         <Tr>
           <Th>#</Th>
           <Th sort="nameRu">название компании</Th>
-          <Th sort="rating">рейтинг</Th>
-          <Th>актив. запросы</Th>
           <Th>категория</Th>
           <Th>контакт</Th>
+          <Th>опросник</Th>
           <Th>консультант</Th>
+          <Th>Задачи бд</Th>
           <Th sort="created_at">Дата</Th>
-          <Th sort="status">статус</Th>
         </Tr>
       </template>
       <template #tbody>

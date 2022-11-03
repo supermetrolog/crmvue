@@ -4047,13 +4047,21 @@
         }
         .fa-pen {
             position: absolute;
-            top: 25px;
-            right: 0;
+            top: 10%;
+            right: 3%;
             opacity: 0;
             cursor: pointer;
             transition: all .07s ease-in-out;
             &:hover {
                 transform: scale(1.3);
+            }
+        }
+        &-info {
+            &-right {
+                span {
+                    width: 200px;
+                }
+                
             }
         }
     }
@@ -4793,7 +4801,7 @@
                 color: $color_light;
             }
             &:first-child {
-                padding-left: 5px;
+                padding-left: 10px;
             }
             &-content {
                 display: flex;
@@ -4829,8 +4837,8 @@
             }
             &-in_process {
                 background-color: $color_warning_dark;
-                .step-name {
-                   
+                i {
+                    color: black;
                 }
                 .step-rhombus {
                     background-color: $color_warning_dark;
@@ -4849,6 +4857,8 @@
                         .step-name {
                             transition-duration: 0.3s;
                             transform: scale(1.1);
+                            
+                            
                         }
                     }
                 }
@@ -4870,32 +4880,10 @@
                     bottom: $step_height;
                     left: -$step_height/9.5;
                 }
-                &-selected {
-                    .step-name {
-                        
-                        // filter: invert(100%);
-                    }
-                    // &.step-done {
-                    //     background-color: lighten($color_success_dark, 20);
-                    //     .step-rhombus {
-                    //         background-color: lighten($color_success_dark, 20);
-                    //     }
-                    // }
-                    // &.step-in_process {
-                    //     // background-color: lighten($color_warning_dark, 20);
-                    //     background-color: #ffc87c;
-                    //     .step-rhombus {
-                    //         background-color: #ffc87c;
-                    //         // background-color: lighten($color_warning_dark, 20);  
-                    //     }
-                    // }
-                }
-                //   &-prev {
-                //     .step-rhombus {
-                //         border-top: 4px groove gray;
-                //         border-right:4px groove gray;
-                //     }
-                //   }
+                // &-selected {
+                   
+                // }
+                
             }
         }
         .request {
@@ -4905,9 +4893,65 @@
                 margin-right: 5px;
                 overflow-x: hidden;
             }
+            &.step-in_process {
+                span {
+                    color: black;
+                }
+            }
         }
     }
     
+    @media screen and (max-width: 1560px) {
+        .MiniTimeline.media {
+            .step {
+                white-space: nowrap;
+               &-name {
+                width: 70px;
+                overflow: hidden;
+               }
+            }
+        }
+        .MiniTimeline-big_size {
+            .step {
+                white-space: unset;
+            }
+            i {
+                display: none;
+            }
+        }
+    }
+
+    @media screen and (max-width: 1360px) { 
+        .MiniTimeline.media {
+            .step {
+                &-name {
+                    width: 40px;
+                }
+            }
+        }
+        .MiniTimeline-big_size {
+            font-size: 13px;
+            
+        }
+    }
+    @media screen and (max-width: 1000px) {
+        .MiniTimeline-big_size {
+            font-size: 10px;
+            $step_height: 40px;
+            .step {
+                height: $step_height;
+                &-rhombus {
+                    width: $step_height/1.42;
+                    height: $step_height/1.41;
+                    right: -$step_height/2.85  ;
+                }
+                &-name {
+                    max-width: 50px;
+                    overflow: hidden;
+                }
+            }
+        }
+    }
     // ************** COMPANY TABLE OBJECT ITEM *************
     .CompanyTableObjectItem {
         .item__title {

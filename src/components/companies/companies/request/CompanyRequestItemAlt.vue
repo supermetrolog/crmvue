@@ -4,7 +4,7 @@
       class="fas fa-pen m-2 text-primary edit"
       @click="openCompanyRequestFormForUpdate"
     ></i>
-    <div class="col-6">
+    <div class="col-4">
       <p class="text-danger">
         {{ dealType.toUpperCase() }}
         {{ request.minArea + " - " + request.maxArea }}
@@ -72,44 +72,44 @@
         <p v-if="!request.objectTypes.length">нет данных</p>
       </div>
     </div>
-    <div class="col-5">
+    <div class="col-5 CompanyRequestItemAlt-info-right">
       <!-- <div class="main-info">
           <strong class="text-danger" v-if="request.expressRequest"
             >Срочный запрос</strong
           >
         </div> -->
-      <div class="d-flex justify-content-between">
+      <div class="d-flex mb-4">
         <span>Цена пола</span>
-        <strong v-if="request.pricePerFloor">
+        <strong v-if="request.pricePerFloor" class="text-left">
           {{ request.pricePerFloor }} <small>руб. за м<sup>2</sup>/год</small>
         </strong>
         <strong v-else>нет данных</strong>
       </div>
-      <div class="d-flex justify-content-between">
+      <div class="d-flex">
         <span>Только 1-й этаж</span>
         <strong class="parameters-inner">
           {{ request.firstFloorOnly ? "да" : "нет" }}
         </strong>
       </div>
-      <div class="d-flex justify-content-between">
+      <div class="d-flex">
         <span>Отапливаемый</span>
         <strong class="parameters-inner">
           {{ request.heated ? "да" : "нет" }}
         </strong>
       </div>
-      <div class="d-flex justify-content-between">
+      <div class="d-flex">
         <span>Высота потолков <small class="text-grey">(м)</small></span>
         <strong class="parameters-inner">
           {{ request.format_ceilingHeight }}
         </strong>
       </div>
-      <div class="d-flex justify-content-between">
+      <div class="d-flex">
         <span>Только антипыль</span>
         <strong class="parameters-inner">
           {{ request.antiDustOnly ? "да" : "нет" }}
         </strong>
       </div>
-      <div class="d-flex justify-content-between">
+      <div class="d-flex mb-4">
         <span>Ворота</span>
         <div>
           <strong v-if="!request.gateTypes.length">нет данных</strong>
@@ -122,19 +122,19 @@
           </strong>
         </div>
       </div>
-      <div class="d-flex justify-content-between">
+      <div class="d-flex">
         <span>Электричество <small class="text-grey">(кВт)</small></span>
         <strong class="parameters-inner">
           {{ request.electricity ?? "нет данных" }}
         </strong>
       </div>
-      <div class="d-flex justify-content-between">
+      <div class="d-flex">
         <span>Наличие крана</span>
         <strong class="parameters-inner">
           {{ request.haveCranes ? "есть" : "нет" }}
         </strong>
       </div>
-      <div class="d-flex justify-content-between">
+      <div class="d-flex">
         <span>Ж/д ветка</span>
         <strong class="parameters-inner">
           {{ request.trainLine ? "есть" : "нет" }}
