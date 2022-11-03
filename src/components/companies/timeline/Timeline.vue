@@ -137,6 +137,8 @@ export default {
     },
     disabled() {
       return (
+        !this.TIMELINE ||
+        !this.currentRequest ||
         this.$route.query.consultant_id != this.THIS_USER.id ||
         this.currentRequest.status == 2 ||
         this.currentRequest.status == 0 ||

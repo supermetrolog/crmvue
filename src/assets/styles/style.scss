@@ -1312,19 +1312,6 @@
                 color: $color_dark!important;
             }
         }
-        &-header {
-            position: relative;
-            padding-right: 40px;
-            .times-container {
-                position: absolute;
-                right: 10px;
-                top: 0;
-                bottom: 0;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
-        }
         &-body {
             width: 100%;
             padding: 15px 20px;
@@ -1365,10 +1352,21 @@
         &-header {
             border-bottom: 1px solid lighten($color_grey, 35);
             font-size: 18px;
-            i {
-                cursor: pointer;
-                &:hover {
-                    color: $color_primary;
+            position: relative;
+            padding-right: 40px;
+            .times-container {
+                position: absolute;
+                right: 10px;
+                top: 0;
+                bottom: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                i {
+                    cursor: pointer;
+                    &:hover {
+                        color: $color_primary;
+                    }
                 }
             }
         }
