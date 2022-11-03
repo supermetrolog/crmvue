@@ -58,7 +58,7 @@
           <ExtraBlock
             :step="selectedStep"
             :disabled="disabled"
-            @createComment="clickUpdateStep"
+            @commentAdded="getTimeline"
           />
         </div>
       </div>
@@ -173,7 +173,6 @@ export default {
       this.loaderForStep = false;
     },
     async clickUpdateStep(data, goToNext = false, fn = null) {
-      console.log(data);
       this.loaderForStep = data.id;
       if (await this.UPDATE_STEP(data)) {
         await this.getTimeline();

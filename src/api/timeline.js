@@ -49,5 +49,15 @@ export default {
             .catch((e) => ErrorHandle.setError(e));
         return data;
     },
-
+    async addActionComments(comments) {
+        const url = `timeline/add-action-comments`;
+        let data = false;
+        await axios
+            .post(url, comments)
+            .then((Response) => {
+                data = SuccessHandler.getData(Response);
+            })
+            .catch((e) => ErrorHandle.setError(e));
+        return data;
+    },
 }

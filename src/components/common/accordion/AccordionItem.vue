@@ -1,6 +1,6 @@
 <template>
   <div class="accordion__item col-12" :class="{ open, disabled }">
-    <div class="accordion__item__title text-center" v-if="titleVisible">
+    <div class="accordion__item__title" v-if="titleVisible">
       <span class="badge autosize" :class="titleClasses" @click="clickToggle">
         {{ title }}
         <i class="fas fa-angle-up" v-if="open && !disabled"></i>
