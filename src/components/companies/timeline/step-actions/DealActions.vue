@@ -101,6 +101,11 @@ export default {
       };
       this.$emit("updatedObjects", data, true, fetchRequest);
     },
+    beforeSend(data) {
+      data.negative = 0;
+      data.additional = 0;
+      data.timelineStepObjects = [];
+    },
     getNegativeComment(step) {
       return [new DealOffersNotFound(step)];
     },
