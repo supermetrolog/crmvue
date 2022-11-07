@@ -2011,6 +2011,7 @@
                     th {
                         font-weight: normal;
                         font-size: 14px;
+                        padding: 0 10px;
                         &:first-child {
                             border-top-left-radius: 3px;
                         }
@@ -2199,6 +2200,27 @@
                     opacity: .5;
                 }
             }
+        }
+        &-dropdown {
+             
+                height: auto !important;
+                min-height: auto !important;
+            
+            
+        }
+        .name {
+            &-type {
+                color: $color_grey;
+                font-size: 12px;
+                font-weight: normal;
+            }
+        }
+        &-notif {
+            white-space: nowrap;
+            font-size: 12px;
+        }
+        &-consultant {
+            white-space: nowrap;
         }
     }
     
@@ -4930,8 +4952,9 @@
             .step {
                 white-space: nowrap;
                 &-name {
-                    width: 70px;
+                    width: 80px;
                     overflow: hidden;
+                    text-overflow: ellipsis;
                 }
             }
         }
@@ -4945,11 +4968,11 @@
         }
     }
     
-    @media screen and (max-width: 1360px) {
+    @media screen and (max-width: 1390px) {
         .MiniTimeline.media {
             .step {
                 &-name {
-                    width: 40px;
+                    width: 50px;
                 }
             }
         }
@@ -4970,8 +4993,9 @@
                     right: -$step_height/2.85;
                 }
                 &-name {
-                    max-width: 50px;
+                    max-width: 40px;
                     overflow: hidden;
+                    text-overflow: ellipsis;
                 }
             }
         }
@@ -4979,6 +5003,7 @@
     
     // ************** COMPANY TABLE OBJECT ITEM *************
     .CompanyTableObjectItem {
+        max-height: 115px;
         .item__title {
             p:first-child {
                 border-right: 0;
@@ -4996,6 +5021,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+        
         .object_id {
             position: absolute;
             padding: 3px;

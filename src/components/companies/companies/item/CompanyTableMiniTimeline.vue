@@ -1,5 +1,5 @@
 <template>
-  <div class="MiniTimeline media row no-gutters col-12">
+  <div class="MiniTimeline media row no-gutters col-12 px-0">
     <div
       class="step request col"
       :class="{

@@ -4,7 +4,7 @@
       <template #thead>
         <Tr>
           <Th>#</Th>
-          <Th sort="nameRu">название компании</Th>
+          <Th class="text-left" sort="nameRu">название компании</Th>
           <Th>категория</Th>
           <Th>контакт</Th>
           <Th>опросник</Th>
