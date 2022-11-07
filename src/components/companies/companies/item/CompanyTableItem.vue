@@ -94,38 +94,43 @@
     <td colspan="5" class="p-0 m-0">
       <div>
         <div class="CompanyTableItem-block">
-          <button
-            class="CompanyTableItem-button"
-            @click="requestsIsOpen = !requestsIsOpen"
-          >
-            <i class="fa fa-chevron-down" v-if="!requestsIsOpen"></i>
-            <i class="fa fa-chevron-up" v-if="requestsIsOpen"></i>
-            Запросы ({{ activeRequests.length
-            }}{{ archiveRequests.length ? `/${archiveRequests.length}` : "" }})
-          </button>
-          <button
-            class="CompanyTableItem-button text-warning"
-            @click="objectsIsOpen = !objectsIsOpen"
-            v-if="company.objects.length"
-          >
-            <i class="fa fa-chevron-down" v-if="!objectsIsOpen"></i>
-            <i class="fa fa-chevron-up" v-if="objectsIsOpen"></i>
-            Объекты ({{ company.objects.length }})
-          </button>
+          <div class="CompanyTableItem-block-actions">
+            <button
+              class="CompanyTableItem-block-actions-button"
+              @click="requestsIsOpen = !requestsIsOpen"
+            >
+              <i class="fa fa-chevron-down" v-if="!requestsIsOpen"></i>
+              <i class="fa fa-chevron-up" v-if="requestsIsOpen"></i>
+              Запросы ({{ activeRequests.length
+              }}{{
+                archiveRequests.length ? `/${archiveRequests.length}` : ""
+              }})
+            </button>
+            <button
+              class="CompanyTableItem-block-actions-button text-warning"
+              @click="objectsIsOpen = !objectsIsOpen"
+              v-if="company.objects.length"
+            >
+              <i class="fa fa-chevron-down" v-if="!objectsIsOpen"></i>
+              <i class="fa fa-chevron-up" v-if="objectsIsOpen"></i>
+              Объекты ({{ company.objects.length }})
+            </button>
+          </div>
           <div v-if="requestsIsOpen">
             <div
               style="margin-bottom: 10px"
-              v-for="request in activeRequests"
-              :key="request.id"
+              v-for="activeRequest in activeRequests"
+              :key="activeRequest.id"
             >
               <CompanyTableMiniTimeline
-                @click="clickTimeline(request)"
+                @click="clickTimeline(activeRequest)"
                 class="CompanyTableItem-block-timeline"
-                v-for="timeline in request.timelines"
+                v-for="timeline in activeRequest.timelines"
                 :key="timeline"
                 :currentSteps="timeline.timelineSteps"
-                :requestName="request.format_name"
+                :requestName="activeRequest.format_name"
               />
+              <hr v-if="activeRequest.timelines.length > 1" />
             </div>
           </div>
           <button
@@ -137,6 +142,23 @@
             <i class="fa fa-chevron-up" v-if="archiveRequestsIsOpen"></i>
             Архивные ({{ archiveRequests.length }})
           </button>
+          <div v-if="requestsIsOpen && archiveRequestsIsOpen">
+            <div
+              v-for="archiveRequest in archiveRequests"
+              :key="archiveRequest.id"
+            >
+              <CompanyTableMiniTimeline
+                style="margin-bottom: 10px"
+                @click="clickTimeline(archiveRequest)"
+                class="CompanyTableItem-block-timeline"
+                v-for="timeline in archiveRequest.timelines"
+                :key="timeline"
+                :currentSteps="timeline.timelineSteps"
+                :requestName="archiveRequest.format_name"
+              />
+              <hr v-if="archiveRequest.timelines.length > 1" />
+            </div>
+          </div>
         </div>
         <div
           class="CompanyTableItem-block"
@@ -211,10 +233,10 @@ export default {
   computed: {
     ...mapGetters(["THIS_USER"]),
     activeRequests() {
-      return this.company.requests.filter((request) => request.status == 1);
+      return this.company.requests.filter((request) => request.status === 1);
     },
     archiveRequests() {
-      return this.company.requests.filter((request) => request.status == 2);
+      return this.company.requests.filter((request) => request.status === 2);
     },
     formattedDate() {
       let date = new Date(this.company.created_at);

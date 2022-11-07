@@ -902,6 +902,12 @@
             }
             .scroller {
                 max-height: 80vh;
+                // @media screen and (max-width: $laptop_size) {
+                //     max-height: 70vh;
+                // }
+                // @media screen and (max-height: $tablet_size) {
+                //     max-height: 60vh;
+                // }
             }
             hr {
                 border-radius: 0!important;
@@ -2200,6 +2206,18 @@
                     opacity: .5;
                 }
             }
+            &-actions {
+                padding-left: $table_inner_padding;
+                &-button {
+                    border: medium none;
+            background-image: none;
+            background: transparent;
+            background-color: transparent;
+            &:hover {
+                cursor: pointer;
+            }
+                }
+            }
         }
         &-dropdown {
              
@@ -3319,7 +3337,7 @@
     .scroller {
         overflow-x: hidden;
         overflow-y: auto;
-        max-height: 85vh;
+        max-height: 85vh;   
     }
     
     // ********** REMINDERS **********
