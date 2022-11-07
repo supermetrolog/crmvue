@@ -22,7 +22,7 @@
             v-if="completedStep(timelineStep[0])"
           ></i>
           <i
-            class="fas fa-hourglass success show"
+            class="fas fa-hourglass-half success show"
             v-if="inProcessStep(timelineStep[0])"
           ></i>
           <i
