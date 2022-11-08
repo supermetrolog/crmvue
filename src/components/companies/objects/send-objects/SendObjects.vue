@@ -172,12 +172,12 @@ export default {
   },
 
   methods: {
-    onSubmit() {
-      this.v$.$validate();
-
+    async onSubmit() {
+      await this.v$.$validate();
       if (this.v$.form.$error) return;
 
       this.normalizeContacts();
+
       if (this.alreadySended) {
         this.form.message = null;
         this.form.subject = null;

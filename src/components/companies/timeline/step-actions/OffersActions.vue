@@ -314,7 +314,9 @@ export default {
     },
     sendObjectsFormdata() {
       return {
-        contactForSendMessage: [this.defaultContactForSend],
+        contactForSendMessage: this.defaultContactForSend
+          ? [this.defaultContactForSend]
+          : [],
         subject: "Список предложений от Pennylane Realty",
         wayOfSending: [0],
         message: `<p>С уважением, ${this.THIS_USER.userProfile.medium_name}</p><p>менеджер PLR</p>`,
