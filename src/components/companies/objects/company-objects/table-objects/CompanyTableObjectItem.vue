@@ -15,7 +15,7 @@
         </div>
       </div>
       <div class="col-10 desc row">
-        <div class="col-6 scroller">
+        <div class="col-8 scroller">
           <div class="item__title">
             <p>{{ $formatter.number(object.area_building) }} м<sup>2</sup></p>
             <span v-if="objectClass">, класс {{ objectClass }}</span>
@@ -26,7 +26,7 @@
         </div>
         <div
           class="
-            col-6
+            col-4
             scroller
             d-flex
             justify-content-center
@@ -43,7 +43,7 @@
         </div>
         <div
           class="
-            col-6
+            col-4
             text-grey text-center
             none
             d-flex

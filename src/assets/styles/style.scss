@@ -2286,7 +2286,7 @@
         border-color: $color_light !important;
     }
     .CompanyTableObjectOffer {
-        background-color: $color_success_alt;
+        background-color: $color_success_dark;
         color: $color_light;
         font-size: 12px;
     }
@@ -2296,11 +2296,16 @@
         height: 110% !important;
         min-height: 80% !important;
         td {
-            padding-bottom: 10px !important;
+            padding: 0 0 10px 0 !important;
         }
 
     }
 
+    tr.TableObjectRow {
+        td {
+            padding: 0 0 10px 0 !important;
+        }
+    }
     // ********** DropdownSwitcherRow *********** 
     tr.DropdownSwitcherRow {
         height: 110% !important;

@@ -58,6 +58,7 @@
     <DropdownSwitcherRow
       :class="{ CompanyTableOdd: odd, CompanyTableEven: !odd }"
       :colspan="7"
+      v-if="requestsIsOpen"
     >
       <DropdownSwitcher
         v-model="objectsIsOpen"

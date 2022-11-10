@@ -1,5 +1,5 @@
 <template>
-  <tr>
+  <tr class="TableObjectRow">
     <td></td>
     <td colspan="2">
       <CompanyTableObjectItem :object="object" :col="'col-12'" />
