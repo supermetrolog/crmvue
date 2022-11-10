@@ -1,8 +1,10 @@
 <template>
-  <div class="company-objects-list__item CompanyTableObjectItem" :class="col">
-    <hr class="mb-1" />
+  <div
+    class="company-objects-list__item CompanyTableObjectItem px-0 mb-2"
+    :class="col"
+  >
     <div class="row no-gutters CompanyTableObjectItem-wrapper">
-      <div class="col-4" :title="object.description_auto || 'нет описания'">
+      <div class="col-2" :title="object.description_auto || 'нет описания'">
         <div class="image-container">
           <a :href="objectUrl" target="_blank">
             <img :src="imageSrc" alt="image" />
@@ -12,8 +14,8 @@
           </a>
         </div>
       </div>
-      <div class="col-8 desc row">
-        <div class="col-6">
+      <div class="col-10 desc row">
+        <div class="col-6 scroller">
           <div class="item__title">
             <p>{{ $formatter.number(object.area_building) }} м<sup>2</sup></p>
             <span v-if="objectClass">, класс {{ objectClass }}</span>
@@ -22,14 +24,35 @@
             <p>{{ object.address }}</p>
           </div>
         </div>
-        <div class="col-6 scroller" v-if="this.object.offerMix">
+        <div
+          class="
+            col-6
+            scroller
+            d-flex
+            justify-content-center
+            align-items-center
+          "
+          v-if="activeOfferMix.length"
+        >
           <CompanyTableObjectOffer
-            v-for="offer in this.object.offerMix.filter(
-              (offer) => offer.status == 1 && offer.type_id == 2
-            )"
+            class="text-center"
+            v-for="offer in activeOfferMix"
             :key="offer.id"
             :offer="offer"
           />
+        </div>
+        <div
+          class="
+            col-6
+            text-grey text-center
+            none
+            d-flex
+            justify-content-center
+            align-items-center
+          "
+          v-else
+        >
+          нет активных
         </div>
       </div>
     </div>
@@ -84,6 +107,12 @@ export default {
           break;
       }
       return result;
+    },
+
+    activeOfferMix() {
+      return this.object.offerMix.filter(
+        (offer) => offer.status == 1 && offer.type_id == 2
+      );
     },
   },
 };

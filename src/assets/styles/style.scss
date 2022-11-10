@@ -680,6 +680,10 @@
         color: $color_success_alt!important;
     }
     
+    .text-success_dark {
+        color: $color_success_dark !important;
+    }
+
     .text-grey {
         color: $color_grey!important;
     }
@@ -687,7 +691,11 @@
     .text-light {
         color: $color_light!important;
     }
-    
+
+    .content-archive {
+        filter: grayscale(1);
+    }
+
     .btn {
         color: $color_light;
         font-weight: 600;
@@ -2177,24 +2185,42 @@
                 }
             }
         }
+        &-sharp {
+            width: 3%;
+        }
+        &-name {
+            width: 30%;
+        }
+        &-category {
+            width: 17%;
+        }
+        &-contact {
+            width: 10%;
+        }
+        &-qa {
+            width: 10%;
+        }
+        &-consultant {
+            width: 10%;
+        }
+        &-tasks {
+            width: 10%;
+        }
+        &-date {
+            width: 10%;
+        }
     }
     
     // ********** COMPANY TABLE ITEM ***********
     .CompanyTableItem {
-        &-button {
-            border: medium none;
-            background-image: none;
-            background: transparent;
-            background-color: transparent;
-            &:hover {
-                cursor: pointer;
-            }
-        }
         &-block {
             margin-bottom: 10px;
             .company-objects-list__item .image-container {
-                max-height: 100px;
-                max-width: 200px;
+                height: 100px;
+                width: 100%;
+                a {
+                    width: 100%;
+                }
             }
             &-timeline {
                 &:hover {
@@ -2207,15 +2233,16 @@
                 }
             }
             &-actions {
-                padding-left: $table_inner_padding;
-                &-button {
+                button {
                     border: medium none;
-            background-image: none;
-            background: transparent;
-            background-color: transparent;
-            &:hover {
-                cursor: pointer;
-            }
+                    background-image: none;
+                    background: transparent;
+                    background-color: transparent;
+                    padding: 0;
+                    padding-left: $table_inner_padding;
+                    &:hover {
+                        cursor: pointer;
+                    }
                 }
             }
         }
@@ -2234,20 +2261,64 @@
             }
         }
         &-notif {
-            white-space: nowrap;
-            font-size: 12px;
+            // white-space: nowrap;
+            font-size: 11px;
+            text-align: center !important;
         }
         &-consultant {
             white-space: nowrap;
         }
     }
-    
+    table {
+        tr.CompanyTableItem {
+            td {
+                padding: 10px;
+                vertical-align: top;
+            }
+        }
+    }
+    tr.CompanyTableOdd {
+        background-color: darken($color_light, 3) !important;
+        border-color: darken($color_light, 3) !important;
+    }
+    tr.CompanyTableEven {
+        background-color: $color_light !important;
+        border-color: $color_light !important;
+    }
     .CompanyTableObjectOffer {
         background-color: $color_success_alt;
         color: $color_light;
         font-size: 12px;
     }
     
+    // ********** Table Request Row *********** 
+    tr.TableRequestRow {
+        height: 110% !important;
+        min-height: 80% !important;
+        td {
+            padding-bottom: 10px !important;
+        }
+
+    }
+
+    // ********** DropdownSwitcherRow *********** 
+    tr.DropdownSwitcherRow {
+        height: 110% !important;
+        min-height: 80% !important;
+        td {
+            padding-bottom: 5px !important;
+        }
+    }
+
+    // ********** DropdownSwitcher *********** 
+    .DropdownSwitcher {
+        font-weight: 500;
+        font-size: 14px;
+        .side_number {
+            color: gray !important;
+          }
+      }
+      
     // ********** LOADER ***********
     .loader-container {
         position: absolute;
@@ -5028,6 +5099,19 @@
             .scroller {
                 max-height: 100px;
             }
+            .image-container {
+                position: relative;
+                overflow: hidden;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                img {
+                    height: 100px;
+                    width: 100%;
+                    object-fit: cover;
+                    object-position: center;
+                }
+            }
         }
         .address p {
             max-height: 80px;
@@ -5044,6 +5128,10 @@
             background-color: rgba($color: $color_light, $alpha: .85);
             top: 0;
             margin: 5px;
+        }
+
+        .none {
+            vertical-align: middle;
         }
     }
     
@@ -5370,7 +5458,7 @@
         }
         &.sticky {
             position: sticky;
-            top: -30px;
+            top: 0;
             z-index: 12;
         }
     }

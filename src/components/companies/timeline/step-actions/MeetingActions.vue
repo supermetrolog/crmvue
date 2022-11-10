@@ -83,7 +83,7 @@
           >
             <Loader v-if="loaderCompanyRequests" class="center small" />
             <strong>{{
-              currentRequest.name + " #" + currentRequest.id
+              currentRequest.name || "Запрос" + " #" + currentRequest.id
             }}</strong>
             <CompanyRequestItemAlt
               :request="currentRequest"
