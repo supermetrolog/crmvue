@@ -910,12 +910,12 @@
             }
             .scroller {
                 max-height: 80vh;
-                // @media screen and (max-width: $laptop_size) {
-                //     max-height: 70vh;
-                // }
-                // @media screen and (max-height: $tablet_size) {
-                //     max-height: 60vh;
-                // }
+                @media screen and (max-width: $laptop_size) {
+                    max-height: 75vh;
+                }
+                @media screen and (max-height: $tablet_size) {
+                    max-height: 70vh;
+                }
             }
             hr {
                 border-radius: 0!important;
@@ -3566,6 +3566,12 @@
         border: 1px solid $color_grey;
         .scroller {
             max-height: 80vh;
+            @media screen and (max-width: $laptop_size) {
+                max-height: 75vh;
+            }
+            @media screen and (max-height: $tablet_size) {
+                max-height: 70vh;
+            }
         }
         .inner {
             overflow-y: scroll;
