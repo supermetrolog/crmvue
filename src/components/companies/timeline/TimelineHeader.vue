@@ -40,7 +40,7 @@
           </CustomButton>
         </div>
       </div>
-      <div class="col-3 align-self-center text-right">
+      <div class="col-3 align-self-center text-right timeline-header-actions">
         <button
           v-if="!timelineExist"
           class="btn btn-danger d-inline mx-1 px-2"
