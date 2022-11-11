@@ -4581,6 +4581,9 @@
                     //     word-break: break-all;
                     // }
                 }
+                .badge {
+                    background-color: $color_warning;
+                }
             }
             &.selected {
                 .icon-unselect {

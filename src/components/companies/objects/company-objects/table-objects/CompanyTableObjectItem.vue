@@ -28,9 +28,7 @@
           class="
             col-4
             scroller
-            d-flex
-            justify-content-center
-            align-items-center
+            
           "
           v-if="activeOfferMix.length"
         >
