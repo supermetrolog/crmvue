@@ -1302,6 +1302,7 @@
                 display: flex;
                 .btn {
                     @media screen and (max-width: $laptop_size) {
+                        padding: 5px 1px !important;
                         font-size: 10px;
                     }
                     @media screen and (max-width: $tablet_size) {
@@ -2302,6 +2303,12 @@
         background-color: $color_success_dark;
         color: $color_light;
         font-size: 12px;
+        @media screen and (max-width: $laptop_size) {
+            font-size: 10px;
+        }
+        @media screen and (max-width: $tablet_size) {
+            font-size: 8px;
+        }
     }
     
     // ********** Table Request Row *********** 
