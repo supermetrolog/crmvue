@@ -21,10 +21,11 @@
     <div class="row no-gutters mt-2">
       <div class="col-12 companies-list-container">
         <Loader v-if="loader && !LETTERS.length" class="center" />
-        <LettersTableView
+        <LettersList
           :letters="LETTERS"
           v-if="LETTERS.length && !this.isMobile"
           :loader="loader"
+          @letterClicked="letterSelected"
         />
         <!-- <OffersMobileView
           :offers="OFFERS"
@@ -50,7 +51,7 @@
 </template>
 
 <script>
-import LettersTableView from "../../components/letters/main/LettersTableView.vue";
+import LettersList from "../../components/letters/main/LettersList.vue";
 import { mapGetters, mapActions } from "vuex";
 import { TableContentMixin } from "@/components/common/mixins.js";
 import RefreshButton from "@/components/common/RefreshButton.vue";
@@ -59,12 +60,14 @@ export default {
   mixins: [TableContentMixin],
   name: "LettersMain",
   data() {
-    return {};
+    return {
+      currentLetterId: null,
+    };
   },
   inject: ["isMobile"],
   components: {
     RefreshButton,
-    LettersTableView,
+    LettersList,
   },
   computed: {
     ...mapGetters(["LETTERS", "LETTERS_PAGINATION", "THIS_USER", "USERS"]),
@@ -85,6 +88,10 @@ export default {
       };
       await this.SEARCH_LETTERS(query);
       this.loader = false;
+    },
+
+    letterSelected(id) {
+      this.currentLetterId = id;
     },
   },
 };

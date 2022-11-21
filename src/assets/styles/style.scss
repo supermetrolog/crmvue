@@ -4922,6 +4922,82 @@
         }
     }
     
+
+    // ************** LETTERS *************
+    .LettersList {
+        width: 20%;
+        min-width: 200px;
+        border: 1px solid black;
+        border-radius: 10px;
+        height: 80vh;
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+    }
+    .LettersListItem {
+        padding: 5% 5% 5% 15%;
+        height: 150px;
+        &:hover {
+            cursor: pointer;
+        }
+        &-header {
+            display: flex;
+            justify-content: space-between;
+            &-email {
+                width: 45%;
+                margin-right: 20px;
+                p {
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    overflow-x: hidden;
+                }
+            }
+            &-date {
+               
+                p {
+                    font-weight: 400;
+                    font-size: 12px;
+                    white-space: nowrap;
+                }
+            }
+        }
+        &-from {
+            font-size: 13px;
+        }
+        &-body {
+            font-size: 12px;
+            height: 40%;
+            text-overflow: ellipsis;
+            overflow-y: clip;
+            display: block;
+            p {
+                font-size: unset;
+                font-weight: unset;
+                line-height: unset;
+            }
+        }
+        &-offers {
+            height: 15%;
+            color: $color_primary;
+            font-size: 13px;
+            i {
+                margin-right: 5px;
+            }
+        }
+        &-selected {
+            background: $color_light_grey;
+            border-radius: 10px;
+            &:hover {
+                cursor: auto;
+            }
+        }
+    }
+    // .LettersListItem + hr {
+    //     width: 80%;
+    // }
+
     // ************** MAP-CONTAINER *************
     .map-container {
         position: relative;
