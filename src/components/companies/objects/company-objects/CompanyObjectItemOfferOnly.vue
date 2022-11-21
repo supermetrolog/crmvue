@@ -229,16 +229,6 @@
               <small>м<sup>2</sup></small>
             </p>
           </div>
-          <div class="comments" v-if="offer.comments">
-            <p v-if="offer.comments.length" class="title">Комментарии</p>
-            <p
-              v-for="comment in offer.comments"
-              :key="comment.id"
-              :class="{ current: comment.timeline_step_id == currentStepId }"
-            >
-              {{ comment.comment }}
-            </p>
-          </div>
           <div class="extraVisible" @click="toggleExtraInfoVisible">
             <i
               class="far fa-arrow-alt-circle-down text-center mt-1 extra"
@@ -251,6 +241,16 @@
           </div>
         </div>
         <div class="col-12 text-center" v-if="extraInfoVisible">
+          <div class="address" v-if="offer.comments">
+            <p v-if="offer.comments.length" class="title">Комментарии</p>
+            <p
+              v-for="comment in offer.comments"
+              :key="comment.id"
+              :class="{ current: comment.timeline_step_id == currentStepId }"
+            >
+              {{ comment.comment }}
+            </p>
+          </div>
           <div class="params">
             <div class="params__item">
               <p class="title">Площадь объекта:</p>
