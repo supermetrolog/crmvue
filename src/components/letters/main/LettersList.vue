@@ -1,6 +1,6 @@
 <template>
   <div class="LettersList">
-    <ul>
+    <ul class="LettersList-scroller">
       <LettersListItem
         v-for="letter in letters"
         :key="letter.id"
@@ -9,7 +9,7 @@
         :mailTo="letter.letterEmails"
         :offersCount="letter.letterOffers.length"
         :body="letter.body"
-        :letterIsCurrent="letter.id === this.currentLetterId"
+        :letterIsCurrent="letter.id === this.selectedLetterId"
         @click="onClickLetter(letter.id)"
       />
     </ul>
@@ -32,6 +32,9 @@ export default {
   props: {
     letters: {
       type: Array,
+    },
+    selectedLetterId: {
+      type: Number,
     },
   },
   methods: {

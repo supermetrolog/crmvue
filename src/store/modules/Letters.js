@@ -5,6 +5,7 @@ const Letters = {
     letters: [],
     wait_hash: null,
     pagination: null,
+    selectedLetterId: null,
   },
   mutations: {
     updateLetters(state, data) {
@@ -14,6 +15,9 @@ const Letters = {
     setWaitHash(state, hash) {
       state.wait_hash = hash;
       console.warn("SET WAIT HASH", state.wait_hash);
+    },
+    selectLetter(state, letterId) {
+      state.selectedLetterId = letterId;
     },
   },
   actions: {
@@ -30,6 +34,9 @@ const Letters = {
       }
       return data;
     },
+    SELECT_LETTER(context, letterId) {
+      context.commit("selectLetter", letterId);
+    },
   },
   getters: {
     LETTERS(state) {
@@ -40,6 +47,11 @@ const Letters = {
     },
     WAIT_HASH(state) {
       return state.wait_hash;
+    },
+    SELECTED_LETTER_ID(state) {
+      return state.selectedLetterId
+        ? state.selectedLetterId
+        : state.letters[0].id;
     },
   },
 };

@@ -22,3 +22,11 @@ $color_info_dark: #43d0d3;
 $color_secondary: #4f537b;
 // $color_disabled_actions: #c4c2c2;
 $color_disabled_actions: #dbdbdb;
+
+@mixin letters-border-preset {
+    border: 1px solid black;
+  }
+$letter-border-radius: 10px;
+@mixin letters-border-radius {
+    border-radius: $letter-border-radius;
+}

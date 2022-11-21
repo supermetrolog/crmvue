@@ -7,25 +7,22 @@
         </div>
       </div>
     </div> -->
-    <div class="row no-gutters companies-actions mt-4">
-      <div class="col-md-6 col-12 pt-1">
-        <PaginationClassic
-          :pagination="LETTERS_PAGINATION"
-          @next="next"
-          v-if="LETTERS_PAGINATION"
-          class="d-inline"
-        />
-        <RefreshButton class="ml-3" @click="getLetters" :disabled="loader" />
-      </div>
-    </div>
+    <div class="row no-gutters companies-actions mt-4"></div>
     <div class="row no-gutters mt-2">
-      <div class="col-12 companies-list-container">
+      <div class="col-12 Letters-container">
         <Loader v-if="loader && !LETTERS.length" class="center" />
         <LettersList
           :letters="LETTERS"
           v-if="LETTERS.length && !this.isMobile"
           :loader="loader"
+          :selectedLetterId="SELECTED_LETTER_ID"
           @letterClicked="letterSelected"
+        />
+        <LetterView
+          v-if="selectedLetter"
+          :letter="selectedLetter"
+          :offers="selectedLetter.letterOffers"
+          :emails="selectedLetterEmails"
         />
         <!-- <OffersMobileView
           :offers="OFFERS"
@@ -46,11 +43,13 @@
         @next="next"
         v-if="LETTERS_PAGINATION"
       />
+      <RefreshButton class="ml-3" @click="getLetters" :disabled="loader" />
     </div>
   </div>
 </template>
 
 <script>
+import LetterView from "../../components/letters/letter-view/LetterView.vue";
 import LettersList from "../../components/letters/main/LettersList.vue";
 import { mapGetters, mapActions } from "vuex";
 import { TableContentMixin } from "@/components/common/mixins.js";
@@ -60,20 +59,33 @@ export default {
   mixins: [TableContentMixin],
   name: "LettersMain",
   data() {
-    return {
-      currentLetterId: null,
-    };
+    return {};
   },
   inject: ["isMobile"],
   components: {
     RefreshButton,
     LettersList,
+    LetterView,
   },
   computed: {
-    ...mapGetters(["LETTERS", "LETTERS_PAGINATION", "THIS_USER", "USERS"]),
+    ...mapGetters([
+      "LETTERS",
+      "LETTERS_PAGINATION",
+      "THIS_USER",
+      "USERS",
+      "SELECTED_LETTER_ID",
+    ]),
+    selectedLetter() {
+      return this.LETTERS.find(
+        (letter) => letter.id === this.SELECTED_LETTER_ID
+      );
+    },
+    selectedLetterEmails() {
+      return this.selectedLetter.letterEmails.map((email) => email.email.email);
+    },
   },
   methods: {
-    ...mapActions(["SEARCH_LETTERS", "FETCH_USERS"]),
+    ...mapActions(["SEARCH_LETTERS", "FETCH_USERS", "SELECT_LETTER"]),
     async getContent(withLoader = true) {
       await this.FETCH_USERS();
       await this.getLetters(withLoader);
@@ -91,7 +103,7 @@ export default {
     },
 
     letterSelected(id) {
-      this.currentLetterId = id;
+      this.SELECT_LETTER(id);
     },
   },
 };
