@@ -414,7 +414,6 @@ export const MixinAllObject = {
                         (this.selectedObjects.length ?
                             ` (${this.selectedObjects.length})` :
                             ""),
-                    emited_event: "alreadySent",
                     withWayOfSending: true,
                     classes: "ml-1",
                 },
