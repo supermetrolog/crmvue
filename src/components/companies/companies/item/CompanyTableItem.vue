@@ -1,6 +1,9 @@
 <template>
-  <Tr class="company-table-view CompanyTableItem">
-    <Td class="text-center p-0">
+  <Tr
+    class="company-table-view CompanyTableItem"
+    :class="{ CompanyTableOdd: odd, CompanyTableEven: !odd }"
+  >
+    <Td class="text-center">
       {{ company.id }}
     </Td>
     <Td class="name column" sort="nameRu">
@@ -89,116 +92,18 @@
       {{ formattedDate }}
     </Td>
   </Tr>
-  <Tr class="CompanyTableItem-dropdown">
-    <td></td>
-    <td colspan="5" class="p-0 m-0">
-      <div>
-        <div class="CompanyTableItem-block">
-          <div class="CompanyTableItem-block-actions">
-            <button
-              class="CompanyTableItem-block-actions-button"
-              @click="requestsIsOpen = !requestsIsOpen"
-            >
-              <i class="fa fa-chevron-down" v-if="!requestsIsOpen"></i>
-              <i class="fa fa-chevron-up" v-if="requestsIsOpen"></i>
-              Запросы ({{ activeRequests.length
-              }}{{
-                archiveRequests.length ? `/${archiveRequests.length}` : ""
-              }})
-            </button>
-            <button
-              class="CompanyTableItem-block-actions-button text-warning"
-              @click="objectsIsOpen = !objectsIsOpen"
-              v-if="company.objects.length"
-            >
-              <i class="fa fa-chevron-down" v-if="!objectsIsOpen"></i>
-              <i class="fa fa-chevron-up" v-if="objectsIsOpen"></i>
-              Объекты ({{ company.objects.length }})
-            </button>
-          </div>
-          <div v-if="requestsIsOpen">
-            <div
-              style="margin-bottom: 10px"
-              v-for="activeRequest in activeRequests"
-              :key="activeRequest.id"
-            >
-              <CompanyTableMiniTimeline
-                @click="clickTimeline(activeRequest)"
-                class="CompanyTableItem-block-timeline"
-                v-for="timeline in activeRequest.timelines"
-                :key="timeline"
-                :currentSteps="timeline.timelineSteps"
-                :requestName="activeRequest.format_name"
-              />
-              <hr v-if="activeRequest.timelines.length > 1" />
-            </div>
-          </div>
-          <button
-            class="CompanyTableItem-button"
-            @click="archiveRequestsIsOpen = !archiveRequestsIsOpen"
-            v-if="requestsIsOpen && archiveRequests.length"
-          >
-            <i class="fa fa-chevron-down" v-if="!archiveRequestsIsOpen"></i>
-            <i class="fa fa-chevron-up" v-if="archiveRequestsIsOpen"></i>
-            Архивные ({{ archiveRequests.length }})
-          </button>
-          <div v-if="requestsIsOpen && archiveRequestsIsOpen">
-            <div
-              v-for="archiveRequest in archiveRequests"
-              :key="archiveRequest.id"
-            >
-              <CompanyTableMiniTimeline
-                style="margin-bottom: 10px"
-                @click="clickTimeline(archiveRequest)"
-                class="CompanyTableItem-block-timeline"
-                v-for="timeline in archiveRequest.timelines"
-                :key="timeline"
-                :currentSteps="timeline.timelineSteps"
-                :requestName="archiveRequest.format_name"
-              />
-              <hr v-if="archiveRequest.timelines.length > 1" />
-            </div>
-          </div>
-        </div>
-        <div
-          class="CompanyTableItem-block"
-          v-if="company.objects.length && objectsIsOpen"
-        >
-          <button
-            class="CompanyTableItem-button text-warning"
-            @click="objectsIsOpen = !objectsIsOpen"
-          >
-            <i class="fa fa-chevron-down" v-if="!objectsIsOpen"></i>
-            <i class="fa fa-chevron-up" v-if="objectsIsOpen"></i>
-            Объекты ({{ company.objects.length }})
-          </button>
-          <div v-if="objectsIsOpen">
-            <CompanyTableObjectItem
-              :object="object"
-              v-for="object in company.objects"
-              :key="object.id"
-            />
-          </div>
-        </div>
-        <!-- <div>
-          <button
-            class="CompanyTableItem-button"
-            @click="objectsIsOpen = !objectsIsOpen"
-          >
-            <i class="fa fa-chevron-down" v-if="!objectsIsOpen"></i>
-            <i class="fa fa-chevron-up" v-if="objectsIsOpen"></i>
-            Услуги ({{ company.requests.length }})
-          </button>
-        </div> -->
-      </div>
-    </td></Tr
-  >
+  <CompanyTableDropdown
+    :odd="odd"
+    :activeRequests="activeRequests"
+    :archiveRequests="archiveRequests"
+    :objects="company.objects"
+    @clickTimeline="clickTimeline"
+    v-if="isThereDropdown"
+  />
 </template>
 
 <script>
-import CompanyTableMiniTimeline from "./CompanyTableMiniTimeline.vue";
-import CompanyTableObjectItem from "../../objects/company-objects/table-objects/CompanyTableObjectItem.vue";
-import { Timeline } from "@/const/Const";
+import CompanyTableDropdown from "./CompanyTableDropdown.vue";
 import { MixinCompanyView } from "../mixins";
 import Tr from "@/components/common/table/Tr";
 import Td from "@/components/common/table/Td";
@@ -212,21 +117,17 @@ export default {
   components: {
     Tr,
     Td,
-    CompanyTableObjectItem,
-    CompanyTableMiniTimeline,
+    CompanyTableDropdown,
   },
   props: {
     company: {
       type: Object,
       default: () => {},
     },
+    odd: Boolean,
   },
   data() {
     return {
-      steps: Timeline.get("param"),
-      requestsIsOpen: false,
-      archiveRequestsIsOpen: false,
-      objectsIsOpen: false,
       activityProfileOptions: ActivityProfileList.get("param"),
     };
   },
@@ -240,7 +141,14 @@ export default {
     },
     formattedDate() {
       let date = new Date(this.company.created_at);
-      return moment(date).format("DD-MM-YYYY");
+      return moment(date).format("DD.MM.YYYY");
+    },
+    isThereDropdown() {
+      return (
+        this.activeRequests.length ||
+        this.archiveRequests.length ||
+        this.company.objects.length
+      );
     },
   },
   methods: {
@@ -258,3 +166,4 @@ export default {
   },
 };
 </script>
+

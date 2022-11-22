@@ -1,5 +1,5 @@
 <template>
-  <div class="CompanyTableObjectOffer mt-0 mb-2 col-12">
+  <div class="CompanyTableObjectOffer mt-0 mb-2 col-12 p-0">
     <div class="object-offer-inf">
       <div>
         <b
