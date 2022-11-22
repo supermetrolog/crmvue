@@ -4970,7 +4970,7 @@
             display: flex;
             justify-content: space-between;
             &-email {
-                width: 45%;
+                overflow-x: hidden;
                 margin-right: 20px;
                 p {
                     white-space: nowrap;
