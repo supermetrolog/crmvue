@@ -4207,28 +4207,30 @@
     // ****************** COMPANY-REQUEST-ITEM-ALT ************
     .CompanyRequestItemAlt {
         background-color: $color_success_dark;
-        &:hover {
-            .fa-pen {
-                opacity: 1;
-            }
+       .edit-btn {
+        position: absolute;
+        z-index: 2;
+        right: 30px;
+        padding: 2px;
+        border-radius: 100%;
+        background-color: $color_light;
+        .fas {
+            color: black;
         }
-        .fa-pen {
-            position: absolute;
-            top: 10%;
-            right: 3%;
-            opacity: 0;
-            cursor: pointer;
-            transition: all .07s ease-in-out;
-            &:hover {
-                transform: scale(1.3);
-            }
-        }
+        
+       }
         &-info {
             &-right {
                 span {
                     width: 200px;
                 }
             }
+        }
+        .object-type-box {
+            padding: 2px 4px 2px 4px;
+            border-radius: 2px;
+            border: 1px solid black;
+            margin-right: 3px;
         }
     }
     

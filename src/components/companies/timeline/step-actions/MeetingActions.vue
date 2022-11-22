@@ -82,9 +82,11 @@
             v-if="currentRequest && step.additional == 1 && currentStage !== 1"
           >
             <Loader v-if="loaderCompanyRequests" class="center small" />
-            <strong>{{
-              currentRequest.name || "Запрос" + " #" + currentRequest.id
-            }}</strong>
+            <div class="mb-2">
+              <strong>{{
+                currentRequest.name || "Запрос" + " #" + currentRequest.id
+              }}</strong>
+            </div>
             <CompanyRequestItemAlt
               :request="currentRequest"
               :editOnly="true"
