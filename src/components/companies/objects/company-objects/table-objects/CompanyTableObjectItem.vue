@@ -1,6 +1,6 @@
 <template>
   <div
-    class="company-objects-list__item CompanyTableObjectItem px-0 mb-2"
+    class="company-objects-list__item CompanyTableObjectItem px-0"
     :class="col"
   >
     <div class="row no-gutters CompanyTableObjectItem-wrapper">
@@ -24,14 +24,7 @@
             <p>{{ object.address }}</p>
           </div>
         </div>
-        <div
-          class="
-            col-4
-            scroller
-            
-          "
-          v-if="activeOfferMix.length"
-        >
+        <div class="col-4 scroller" v-if="activeOfferMix.length">
           <CompanyTableObjectOffer
             class="text-center"
             v-for="offer in activeOfferMix"

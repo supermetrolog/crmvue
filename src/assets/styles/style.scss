@@ -1651,9 +1651,11 @@
                     label.clicked-label {
                         text-transform: none;
                         border: 1px solid $color_primary;
+                        border-radius: 10px;
                         color: $color_primary;
-                        padding: 3px;
+                        padding: 5px 9px;
                         background-color: $color_light;
+                        margin-bottom: 4px;
                         &.checked {
                             background-color: $color_primary;
                             color: $color_light;
@@ -2278,6 +2280,8 @@
             // white-space: nowrap;
             font-size: 11px;
             text-align: center !important;
+            border-right: $grey_thin_border;
+            border-left: $grey_thin_border;
         }
         &-consultant {
             white-space: nowrap;
@@ -2313,17 +2317,30 @@
     
     // ********** Table Request Row *********** 
     tr.TableRequestRow {
-        height: 110% !important;
+        height: 1px !important;
         min-height: 80% !important;
         td {
             padding: 0 0 10px 0 !important;
+            height: inherit;
+            & > div {
+                border-top: $grey_thin_border;
+                border-bottom: $grey_thin_border;
+                height: 100%;
+            }
         }
 
     }
 
     tr.TableObjectRow {
+        height: 1px !important;
         td {
             padding: 0 0 10px 0 !important;
+            height: inherit;
+            & > div {
+                border-top: $grey_thin_border;
+                border-bottom: $grey_thin_border;
+                height: 100%;
+            }
         }
     }
     // ********** DropdownSwitcherRow *********** 
@@ -4214,6 +4231,7 @@
         padding: 2px;
         border-radius: 100%;
         background-color: $color_light;
+        cursor: pointer;
         .fas {
             color: black;
         }

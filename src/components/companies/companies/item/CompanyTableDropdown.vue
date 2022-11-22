@@ -1,7 +1,7 @@
 <template>
   <DropdownSwitcherRow
     :class="{ CompanyTableOdd: odd, CompanyTableEven: !odd }"
-    :colspan="7"
+    :colspan="5"
   >
     <DropdownSwitcher
       v-model="requestsIsOpen"
@@ -33,7 +33,7 @@
   <template v-if="requestsIsOpen && archiveRequests.length">
     <DropdownSwitcherRow
       :class="{ CompanyTableOdd: odd, CompanyTableEven: !odd }"
-      :colspan="7"
+      :colspan="5"
     >
       <DropdownSwitcher
         v-model="archiveRequestsIsOpen"
@@ -57,7 +57,7 @@
   <template v-if="objects.length && objectsIsOpen">
     <DropdownSwitcherRow
       :class="{ CompanyTableOdd: odd, CompanyTableEven: !odd }"
-      :colspan="7"
+      :colspan="5"
       v-if="requestsIsOpen"
     >
       <DropdownSwitcher

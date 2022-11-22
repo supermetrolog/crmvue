@@ -4,11 +4,11 @@
     <td colspan="2">
       <CompanyTableObjectItem :object="object" :col="'col-12'" />
     </td>
-    <td colspan="3"></td>
+    <td colspan="3"><div></div></td>
     <td class="text-warning CompanyTableItem-notif">
-      {{ attention ? "Объект давно не обновляли!" : "" }}
+      <div>{{ attention ? "Объект давно не обновляли!" : "" }}</div>
     </td>
-    <td class="date text-center">дата</td>
+    <td class="date text-center"><div>дата</div></td>
   </tr>
 </template>
 

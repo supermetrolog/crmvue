@@ -12,9 +12,13 @@
       />
     </td>
     <td class="text-warning CompanyTableItem-notif">
-      {{ attention ? "Уделите внимание запросу!" : "" }}
+      <div class="d-flex justify-content-center align-items-center">
+        {{ attention ? "Уделите внимание запросу!" : "" }}
+      </div>
     </td>
-    <td class="date text-center">{{ formattedDate }}</td>
+    <td class="date text-center">
+      <div>{{ formattedDate }}</div>
+    </td>
   </tr>
 </template>
 
