@@ -1,18 +1,17 @@
 <template>
-  <div class="CompanyRequestItemAlt row m-0 py-3">
-    <i
-      class="fas fa-pen m-2 text-primary edit"
-      @click="openCompanyRequestFormForUpdate"
-    ></i>
+  <div class="CompanyRequestItemAlt row m-0 py-4 pb-5 px-2">
+    <div class="edit-btn" @click="openCompanyRequestFormForUpdate">
+      <i class="fas fa-pen m-2 edit"></i>
+    </div>
     <div class="col-4">
-      <p class="text-danger">
+      <p class="text-danger mb-1">
         {{ dealType.toUpperCase() }}
         {{ request.minArea + " - " + request.maxArea }}
         <span>
           м<sup><small>2</small></sup>
         </span>
       </p>
-      <div class="location">
+      <div class="location mb-4">
         <div class="region">
           <strong>
             {{
@@ -44,35 +43,41 @@
         </div>
         <div>
           <p v-if="!request.distanceFromMKADnotApplicable">
-            до {{ request.distanceFromMKAD }} км от МКАД
+            До {{ request.distanceFromMKAD }} км от МКАД
           </p>
         </div>
       </div>
       <div>
-        <span>Классы объектов - </span>
+        <span class="mr-3">Класс объекта</span>
         <strong>
           {{
             request.objectClasses
               .map((elem) => this.objectClassList[elem.object_class][1])
-              .join(", ")
+              .join(",")
           }}
         </strong>
         <strong v-if="!request.objectClasses.length">нет данных</strong>
       </div>
 
-      <div class="parameters-inner" v-if="request.objectTypes">
-        <span>Тип объекта - </span>
-        <strong
-          v-for="objectType of request.objectTypes"
-          :key="objectType.id"
-          :title="getObjectTypeName(objectType.object_type)"
-        >
-          <i :class="getObjectTypeIcon(objectType.object_type)"></i>
-        </strong>
+      <div
+        class="parameters-inner d-flex flex-column"
+        v-if="request.objectTypes"
+      >
+        <span class="mb-1">Тип объекта</span>
+        <div>
+          <strong
+            class="object-type-box"
+            v-for="objectType of request.objectTypes"
+            :key="objectType.id"
+            :title="getObjectTypeName(objectType.object_type)"
+          >
+            <i :class="getObjectTypeIcon(objectType.object_type)"></i>
+          </strong>
+        </div>
         <p v-if="!request.objectTypes.length">нет данных</p>
       </div>
     </div>
-    <div class="col-5 CompanyRequestItemAlt-info-right">
+    <div class="col-8 CompanyRequestItemAlt-info-right">
       <!-- <div class="main-info">
           <strong class="text-danger" v-if="request.expressRequest"
             >Срочный запрос</strong
@@ -81,32 +86,34 @@
       <div class="d-flex mb-4">
         <span>Цена пола</span>
         <strong v-if="request.pricePerFloor" class="text-left">
-          {{ request.pricePerFloor }} <small>руб. за м<sup>2</sup>/год</small>
+          <small>до</small> {{ request.pricePerFloor }}
+          <small>руб. за м<sup>2</sup>/год</small>
         </strong>
         <strong v-else>нет данных</strong>
       </div>
       <div class="d-flex">
-        <span>Только 1-й этаж</span>
+        <span>Этажность</span>
         <strong class="parameters-inner">
-          {{ request.firstFloorOnly ? "да" : "нет" }}
+          {{ request.firstFloorOnly ? "только 1" : "нет данных" }}
         </strong>
       </div>
       <div class="d-flex">
-        <span>Отапливаемый</span>
+        <span>Темп. режим</span>
         <strong class="parameters-inner">
-          {{ request.heated ? "да" : "нет" }}
+          {{ request.heated ? "отапливаемый" : "холодный" }}
         </strong>
       </div>
       <div class="d-flex">
-        <span>Высота потолков <small class="text-grey">(м)</small></span>
+        <span>Высота потолков</span>
         <strong class="parameters-inner">
           {{ request.format_ceilingHeight }}
+          <span>м</span>
         </strong>
       </div>
       <div class="d-flex">
-        <span>Только антипыль</span>
+        <span>Качество пола</span>
         <strong class="parameters-inner">
-          {{ request.antiDustOnly ? "да" : "нет" }}
+          {{ request.antiDustOnly ? "только антипыль" : "нет данных" }}
         </strong>
       </div>
       <div class="d-flex mb-4">
@@ -123,21 +130,21 @@
         </div>
       </div>
       <div class="d-flex">
-        <span>Электричество <small class="text-grey">(кВт)</small></span>
+        <span>Электричество</span>
         <strong class="parameters-inner">
-          {{ request.electricity ?? "нет данных" }}
+          {{ `от ${request.electricity} кВт` ?? "нет данных" }}
         </strong>
       </div>
       <div class="d-flex">
         <span>Наличие крана</span>
         <strong class="parameters-inner">
-          {{ request.haveCranes ? "есть" : "нет" }}
+          {{ request.haveCranes ? "да" : "нет" }}
         </strong>
       </div>
       <div class="d-flex">
         <span>Ж/д ветка</span>
         <strong class="parameters-inner">
-          {{ request.trainLine ? "есть" : "нет" }}
+          {{ request.trainLine ? "да" : "нет" }}
         </strong>
       </div>
 
@@ -156,7 +163,7 @@
       </p> -->
     </div>
     <div class="col-12 mt-5 d-flex flex-column">
-      <span>Описание</span>
+      <span>Описание:</span>
       <strong class="parameters-inner">
         {{ request.description ?? "нет данных" }}
       </strong>

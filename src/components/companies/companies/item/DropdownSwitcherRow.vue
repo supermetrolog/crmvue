@@ -6,6 +6,8 @@
         <slot />
       </div>
     </td>
+    <td class="CompanyTableItem-notif"></td>
+    <td></td>
   </tr>
 </template>
 
