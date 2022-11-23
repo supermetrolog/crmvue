@@ -41,15 +41,21 @@
           class="col-9 box step-actions px-0"
           v-if="selectedStep && !loader && !timelineNotFoundFlag"
         >
-          <component
-            :is="stepActionsName"
-            :step="selectedStep"
-            :loaderForStep="loaderForStep"
-            :disabled="disabled"
-            @updatedObjects="updatedObjects"
-            @updateStep="clickUpdateStep"
+          <transition
+            mode="out-in"
+            enter-active-class="animate__animated animate__fadeInRightBig for__modal__fullscreen"
+            leave-active-class="animate__animated animate__fadeOutLeft for__modal__fullscreen "
           >
-          </component>
+            <component
+              :is="stepActionsName"
+              :step="selectedStep"
+              :loaderForStep="loaderForStep"
+              :disabled="disabled"
+              @updatedObjects="updatedObjects"
+              @updateStep="clickUpdateStep"
+            >
+            </component>
+          </transition>
         </div>
         <div
           class="col-3 box timeline-extra-block"
@@ -106,6 +112,7 @@ export default {
       loaderForStep: false,
       objects: [],
       timelineNotFoundFlag: false,
+      completeStep: false,
     };
   },
   computed: {
@@ -190,6 +197,7 @@ export default {
         ...this.$route.query,
       };
       query.step++;
+      this.completeStep = true;
       await this.$router.push({ query: query });
     },
 
