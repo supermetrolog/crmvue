@@ -5030,6 +5030,13 @@
         &-header {
             margin-bottom: 10px;
         }
+        &-body {
+            p {
+                font-weight: unset;
+                line-height: unset;
+                font-size: unset;
+            }
+        }
     }
     // .LettersListItem + hr {
     //     width: 80%;
