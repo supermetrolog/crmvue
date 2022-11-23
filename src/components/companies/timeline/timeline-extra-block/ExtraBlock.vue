@@ -13,12 +13,12 @@
                   ` (${timelineStep.timelineActionComments.length})`
                 "
                 :titleClasses="titleClasses(timelineStep)"
-                :openByDefault="step.id == timelineStep.id"
-                :disabled="step.id == timelineStep.id"
+                :openByDefault="this.currentTimelineStepId == timelineStep.id"
+                @onOpen="openAccordionItem(timelineStep.id)"
               >
                 <Comments :data="timelineStep.timelineActionComments" />
                 <Form
-                  v-if="step.id == timelineStep.id"
+                  v-if="this.currentTimelineStepId == timelineStep.id"
                   ref="form"
                   class="mb-3 p-2"
                   @submit="onSubmit(step)"
@@ -84,6 +84,7 @@ export default {
       form: {
         comment: null,
       },
+      currentTimelineStepId: this.step.id,
     };
   },
   props: {
@@ -117,7 +118,8 @@ export default {
     scrollToForm() {
       let options = {
         behavior: "smooth",
-        block: "center",
+        block: "end",
+        alignToTop: false,
       };
       console.warn(this.$refs.form);
       this.$refs.form[0].$el.scrollIntoView(options);
@@ -145,6 +147,14 @@ export default {
       }
       this.loader = false;
     },
+
+    openAccordionItem(id) {
+      if (this.currentTimelineStepId == id) {
+        this.currentTimelineStepId = null;
+        return;
+      }
+      this.currentTimelineStepId = id;
+    },
   },
   mounted() {
     this.$nextTick(() => {
@@ -153,6 +163,9 @@ export default {
   },
   watch: {
     step() {
+      this.currentTimelineStepId = this.step.id;
+    },
+    currentTimelineStepId() {
       setTimeout(() => this.scrollToForm(), 300);
     },
   },

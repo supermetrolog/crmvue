@@ -913,6 +913,7 @@
             }
         }
         .step-actions {
+            overflow-x: hidden;
             &.box {
                 padding-right: 0 !important;
                 padding-left: 0 !important;

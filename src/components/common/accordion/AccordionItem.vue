@@ -48,7 +48,8 @@ export default {
       if (this.disabled) {
         return;
       }
-      this.open = !this.open;
+      this.$emit("onOpen");
+      // this.open = !this.open;
     },
   },
   watch: {
@@ -61,3 +62,4 @@ export default {
 
 <style>
 </style>
+
