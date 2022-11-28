@@ -21,7 +21,22 @@
                 @updateItem="clickUpdateStep"
               />
               <ObjectsList
-                :objects="preventStepObjects"
+                :objects="submittedObjects"
+                :disabled="true"
+                :loader="loader"
+                :viewMode="viewMode"
+                :currentStepId="step.id"
+                :label="
+                  'Выбранные предложения' +
+                  (submittedObjects.length
+                    ? ` (${submittedObjects.length})`
+                    : '')
+                "
+                class="success"
+                v-if="submittedObjects?.length"
+              />
+              <ObjectsList
+                :objects="notSubmittedObjects"
                 :currentObjects="step.timelineStepObjects"
                 :selectedObjects="selectedObjects"
                 :disabled="disabled"
@@ -29,9 +44,18 @@
                 :loader="loader"
                 :viewMode="viewMode"
                 :currentStepId="step.id"
+                :label="
+                  submittedObjects?.length
+                    ? `Оставшиеся предложения (${notSubmittedObjects.length})`
+                    : ''
+                "
                 @select="selectOnlyOne"
                 @unSelect="unSelect"
                 @addComment="addComment"
+                v-if="
+                  notSubmittedObjects.length ||
+                  (!submittedObjects.length && !notSubmittedObjects.length)
+                "
               />
             </Objects>
           </div>

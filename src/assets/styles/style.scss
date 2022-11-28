@@ -3499,7 +3499,7 @@
             max-height: 200px;
             &-item {
                 .comment {
-                    padding-bottom: 50px;
+                    padding-bottom: 20px;
                     .time {
                         font-weight: bold!important;
                     }
@@ -3507,12 +3507,11 @@
                 .main {
                     text-align: center;
                     color: $color_dark;
-                    padding: 10px;
-                    padding-top: 15px;
+                    padding: 3px;
                     margin-bottom: 10px;
                     border-bottom: 1px solid $color_light_grey;
                     .time {
-                        font-size: 14px;
+                        font-size: 12px !important;
                         font-weight: bold!important;
                     }
                 }
@@ -3539,6 +3538,7 @@
                 }
                 i {
                     color: $color_success_alt;
+                    font-size: 14px;
                 }
             }
         }
@@ -3640,6 +3640,25 @@
                 span {
                     display: inline-block;
                 }
+            }
+        }
+        textarea {
+            height: 35px;
+            font-weight: 400;
+            transition: height .2s ease-in-out;
+            &::placeholder {
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+            }
+            &:placeholder-shown {
+                    text-overflow: ellipsis;
+                  }
+            &:focus {
+                height: 200px;
+                &::placeholder {
+                    color: transparent;
+                  }
             }
         }
     }
@@ -5517,7 +5536,7 @@
         }
         .wrapper {
             padding: 10.5px 16px;
-            max-height: 98px;
+            max-height: 105px;
         }
         &__title {
             font-size: 14px!important;
