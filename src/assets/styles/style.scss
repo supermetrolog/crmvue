@@ -873,6 +873,18 @@
     .timeline-list {
         display: flex;
         justify-content: end;
+        @media screen and (max-width: $laptop_size) {
+            flex-direction: column;
+            &-item {
+                height: unset;
+                padding: 1px 2px;
+                font-size: 10px !important;
+            }
+            .timeline-actions .action {
+                padding: 1px 2px;
+                height: unset;
+            }
+        }
     }
     .step-complete {
         position: absolute;
