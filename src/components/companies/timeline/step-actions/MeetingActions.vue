@@ -78,13 +78,15 @@
             </div>
           </div>
           <div
-            class="col-12 mx-auto mt-4"
+            class="col-12 mx-auto mt-4 p-3"
             v-if="currentRequest && step.additional == 1 && currentStage !== 1"
           >
             <Loader v-if="loaderCompanyRequests" class="center small" />
-            <strong>{{
-              currentRequest.name + " #" + currentRequest.id
-            }}</strong>
+            <div class="mb-2">
+              <strong>{{
+                currentRequest.name || "Запрос" + " #" + currentRequest.id
+              }}</strong>
+            </div>
             <CompanyRequestItemAlt
               :request="currentRequest"
               :editOnly="true"

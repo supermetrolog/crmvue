@@ -3,11 +3,15 @@
     <div class="modal-container">
       <div class="modal-header">
         <div class="row no-gutters">
-          <div class="title col align-self-center" v-if="title">
+          <div class="col-4 title align-self-center" v-if="title">
             {{ title }}
           </div>
-          <slot name="header"></slot>
-          <div class="col-1 ml-auto text-right align-self-center">
+          <div class="col-8 align-self-center">
+            <div class="row no-gutters">
+              <slot name="header"></slot>
+            </div>
+          </div>
+          <div class="times-container">
             <i class="fas fa-times" @click="clickCancel"></i>
           </div>
         </div>

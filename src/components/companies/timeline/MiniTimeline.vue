@@ -22,7 +22,7 @@
             v-if="completedStep(timelineStep[0])"
           ></i>
           <i
-            class="fas fa-hourglass success show"
+            class="fas fa-hourglass-half success show"
             v-if="inProcessStep(timelineStep[0])"
           ></i>
           <i
@@ -31,6 +31,10 @@
           ></i>
         </span>
       </div>
+      <div
+        class="step-parallelogram col-12"
+        v-if="this.selectedStep.number === timelineStep[0]"
+      ></div>
       <div class="step-rhombus"></div>
     </div>
   </div>

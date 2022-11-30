@@ -1,57 +1,13 @@
 <template>
   <Modal class="fullscreen" :title="timelineTitle" @close="$emit('close')">
     <template #header>
-      <div class="col-1 align-self-center" v-if="currentRequest.status == 2">
-        <h3 class="text-success m-0">ЗАВЕРШЕН</h3>
-      </div>
-      <div
-        class="col-1 align-self-center"
-        v-else-if="TIMELINE && TIMELINE.status == 0"
-      >
-        <h3 class="text-warning m-0">НЕАКТИВЕН</h3>
-      </div>
-      <div class="col timeline-list pr-5" v-if="TIMELINE_LIST.length">
-        <div
-          class="timeline-actions timeline-list-item p-1"
-          v-for="timeline in TIMELINE_LIST"
-          :key="timeline.id"
-        >
-          <CustomButton
-            :options="{
-              btnActive: $route.query.consultant_id == timeline.consultant.id,
-              btnClass: 'primary',
-              defaultBtn: true,
-              disabled: false,
-            }"
-            @confirm="changeTimeline(timeline.consultant.id)"
-          >
-            <template #btnContent>
-              {{ timeline.consultant.userProfile.short_name }}
-            </template>
-          </CustomButton>
-        </div>
-      </div>
-      <div
-        class="col-1 ml-auto pr-1 align-self-center"
-        v-if="!timelineNotFoundFlag"
-      >
-        <button
-          class="btn btn-alt btn-primary btn-large"
-          @click.prevent="clickOpenCompanyForm"
-          disabled
-        >
-          передать
-        </button>
-      </div>
-      <div class="col-1 ml-auto align-self-center" v-if="!timelineNotFoundFlag">
-        <button
-          class="btn btn-alt btn-danger btn-large"
-          @click.prevent="clickOpenCompanyForm"
-          disabled
-        >
-          отказаться
-        </button>
-      </div>
+      <TimelineHeader
+        class="col-12"
+        :disabled="disabled"
+        :currentRequest="currentRequest"
+        @close="$emit('close')"
+        :timelineExist="timelineNotFoundFlag"
+      />
     </template>
     <div class="container-timeline">
       <Loader
@@ -82,27 +38,33 @@
           </div>
         </div>
         <div
-          class="col-8 box step-actions px-0"
+          class="col-9 box step-actions px-0"
           v-if="selectedStep && !loader && !timelineNotFoundFlag"
         >
-          <component
-            :is="stepActionsName"
-            :step="selectedStep"
-            :loaderForStep="loaderForStep"
-            :disabled="disabled"
-            @updatedObjects="updatedObjects"
-            @updateStep="clickUpdateStep"
+          <transition
+            mode="out-in"
+            enter-active-class="animate__animated animate__fadeInRightBig for__modal__fullscreen"
+            leave-active-class="animate__animated animate__fadeOutLeft for__modal__fullscreen "
           >
-          </component>
+            <component
+              :is="stepActionsName"
+              :step="selectedStep"
+              :loaderForStep="loaderForStep"
+              :disabled="disabled"
+              @updatedObjects="updatedObjects"
+              @updateStep="clickUpdateStep"
+            >
+            </component>
+          </transition>
         </div>
         <div
-          class="col-4 box timeline-extra-block"
+          class="col-3 box timeline-extra-block"
           v-if="selectedStep && !loader && !timelineNotFoundFlag"
         >
           <ExtraBlock
             :step="selectedStep"
             :disabled="disabled"
-            @createComment="clickUpdateStep"
+            @commentAdded="getTimeline"
           />
         </div>
       </div>
@@ -113,7 +75,6 @@
 <script>
 import MiniTimeline from "./MiniTimeline.vue";
 import { mapActions, mapGetters } from "vuex";
-import Multiselect from "@vueform/multiselect";
 
 import MeetingActions from "./step-actions/MeetingActions.vue";
 import OffersActions from "./step-actions/OffersActions.vue";
@@ -127,7 +88,7 @@ import DealActions from "./step-actions/DealActions.vue";
 import ExtraBlock from "./timeline-extra-block/ExtraBlock.vue";
 import { Timeline } from "@/const/Const";
 import Utils from "@/utils";
-import CustomButton from "@/components/common/CustomButton.vue";
+import TimelineHeader from "./TimelineHeader.vue";
 
 export default {
   name: "Timeline",
@@ -141,9 +102,8 @@ export default {
     TalkActions,
     DealActions,
     ExtraBlock,
-    Multiselect,
-    CustomButton,
     MiniTimeline,
+    TimelineHeader,
   },
   data() {
     return {
@@ -152,6 +112,7 @@ export default {
       loaderForStep: false,
       objects: [],
       timelineNotFoundFlag: false,
+      completeStep: false,
     };
   },
   computed: {
@@ -183,8 +144,11 @@ export default {
     },
     disabled() {
       return (
+        !this.TIMELINE ||
+        !this.currentRequest ||
         this.$route.query.consultant_id != this.THIS_USER.id ||
         this.currentRequest.status == 2 ||
+        this.currentRequest.status == 0 ||
         this.TIMELINE.status == 0
       );
     },
@@ -203,7 +167,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["FETCH_TIMELINE", "UPDATE_STEP"]),
+    ...mapActions(["FETCH_TIMELINE", "UPDATE_STEP", "FETCH_COMPANY_REQUESTS"]),
     async updatedObjects(data, goToNext = false, fn = null) {
       this.loaderForStep = data.id;
       await this.getTimeline();
@@ -216,7 +180,6 @@ export default {
       this.loaderForStep = false;
     },
     async clickUpdateStep(data, goToNext = false, fn = null) {
-      console.log(data);
       this.loaderForStep = data.id;
       if (await this.UPDATE_STEP(data)) {
         await this.getTimeline();
@@ -234,6 +197,7 @@ export default {
         ...this.$route.query,
       };
       query.step++;
+      this.completeStep = true;
       await this.$router.push({ query: query });
     },
 
@@ -255,23 +219,7 @@ export default {
       this.timelineNotFoundFlag = false;
       return true;
     },
-    async changeTimeline(consultant_id) {
-      let query = {
-        ...this.$route.query,
-      };
-      query.consultant_id = consultant_id;
-      query.step = 0;
-      await this.$router.push({ query: query });
-      // this.getTimeline();
-    },
-    // getCompanyContacts() {
-    //   if (this.companyContacts) {
-    //     return;
-    //   }
-    //   this.companyContacts = Utils.normalizeContactsForMultiselect(
-    //     this.COMPANY_CONTACTS
-    //   );
-    // },
+
     getPriorityStep() {
       let highPriorityTimelineStep = 0;
       this.TIMELINE.timelineSteps.forEach((step) => {
@@ -292,7 +240,6 @@ export default {
   },
   async created() {
     this.loader = true;
-    // this.getCompanyContacts();
     const result = await this.getTimeline();
     this.loader = false;
     if (result) {

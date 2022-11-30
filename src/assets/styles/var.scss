@@ -10,10 +10,10 @@ $color_danger: #f93154;
 $color_danger_dark: #e44f4a;
 $color_success: #00b74a;
 $color_success_alt: teal;
-$color_success_dark: #56ab70;
+$color_success_dark: #8ec293;
 $color_warning: #F88F01;
 $color_warning_alt: lighten($color_warning, 10);
-$color_warning_dark: #feaa00;
+$color_warning_dark: #fdf1b0;
 $color_dark: #2D2F34;
 $color_primary: #11698e;
 $color_light_blue: #3a9dd0;
@@ -22,6 +22,13 @@ $color_info_dark: #43d0d3;
 $color_secondary: #4f537b;
 // $color_disabled_actions: #c4c2c2;
 $color_disabled_actions: #dbdbdb;
+// POSITIONING 
+$table_inner_padding: 10px;
+// MEDIA QUERIES
+$laptop_size: 1560px;
+$tablet_size: 1000px;
+// TABLES
+$grey_thin_border: 0.5px solid $color_grey;
 
 @mixin letters-border-preset {
     border: 1px solid black;

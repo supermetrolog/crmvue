@@ -1,5 +1,5 @@
 <template>
-  <div class="MiniTimeline row no-gutters col-12">
+  <div class="MiniTimeline media row no-gutters col-12 px-0">
     <div
       class="step request col"
       :class="{
@@ -30,7 +30,7 @@
             v-if="completedStep(timelineStep[0])"
           ></i>
           <i
-            class="fas fa-hourglass success show"
+            class="fas fa-hourglass-half success show"
             v-if="inProcessStep(timelineStep[0])"
           ></i>
           <i

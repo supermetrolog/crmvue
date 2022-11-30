@@ -61,10 +61,10 @@
                 />
               </StepStage>
               <ObjectsList
+                v-if="preventStepObjects && preventStepObjects.length"
                 :objects="preventStepObjects"
                 :selectedObjects="selectedObjects"
                 :disabled="disabled"
-                :withSeparator="true"
                 :loader="loader"
                 :viewMode="viewMode"
                 :currentStepId="step.id"
@@ -82,10 +82,10 @@
               <div
                 class="
                   timeline-actions timeline-list-item
-                  p-1
                   row
                   justify-content-end
                   mx-4
+                  mt-4
                 "
               >
                 <RefreshButton
@@ -99,6 +99,7 @@
                     btnClass: 'primary',
                     defaultBtn: true,
                     disabled: false,
+                    title: firstRecommendedDescription,
                   }"
                   class="d-inline ml-2"
                   @confirm="changeRecommendedFilter(1, firstRecommendedQuery)"
@@ -111,6 +112,7 @@
                     btnClass: 'primary',
                     defaultBtn: true,
                     disabled: false,
+                    title: twoRecommendedDescription,
                   }"
                   class="d-inline ml-2"
                   @confirm="changeRecommendedFilter(2, twoRecommendedQuery)"
@@ -123,6 +125,7 @@
                     btnClass: 'warning',
                     defaultBtn: true,
                     disabled: false,
+                    title: threeRecommendedDescription,
                   }"
                   class="d-inline ml-2"
                   @confirm="changeRecommendedFilter(3, threeRecommendedQuery)"
@@ -148,7 +151,7 @@
                 "
                 noUrl
                 :queryParams="queryParams"
-                class="mb-2"
+                class="mb-2 px-4"
                 :class="{ 'action-open': controllPanelHeight > 50 }"
               />
               <ObjectsList
@@ -239,11 +242,81 @@ export default {
     firstFloorOnly: null,
     withoutOffersFromQuery: null,
   },
+  firstRecommendedDescriptionRent: `Учитывается:
+      - вид сделки
+      - цена +30%
+      - площадь
+      - направление и регион
+      - высота потолков
+      - качество пола
+      - расстояние от МКАД +30%
+      - тип ворот
+      - этажность
+      - наличие к/б
+      - отапливаемость
+      - электричество
+      `,
+  twoRecommendedDescriptionRent: `Учитывается:
+      - вид сделки
+      - площадь -20%, +20%
+      - высота потолков -2 метра
+      - качество пола
+      - расстояние от МКАД +30%
+      - этажность
+      - наличие к/б
+      `,
+  threeRecommendedDescriptionRent: `Учитывается:
+      - площадь объекта целиком
+      - направление и регион
+      - расстояние от МКАД +30%
+      `,
+  firstRecommendedDescriptionSale: `Учитывается:
+      - вид сделки
+      - цена +30%
+      - площадь -20%, +30%
+      - направление и регион
+      - высота потолков
+      - качество пола
+      - расстояние от МКАД +30%
+      - тип ворот
+      - этажность
+      - наличие к/б
+      - отапливаемость
+      - электричество
+      `,
+  twoRecommendedDescriptionSale: `Учитывается:
+      - вид сделки
+      - цена +50%
+      - расстояние от МКАД +50%
+      - этажность
+      `,
+  threeRecommendedDescriptionSale: `Учитывается:
+      - площадь объекта целиком -30%, +30%
+      - направление и регион
+      - расстояние от МКАД +50%
+      `,
   computed: {
     ...mapGetters(["THIS_USER"]),
+    firstRecommendedDescription() {
+      return this.currentRequest.dealType != 1
+        ? this.$options.firstRecommendedDescriptionRent
+        : this.$options.firstRecommendedDescriptionSale;
+    },
+    twoRecommendedDescription() {
+      return this.currentRequest.dealType != 1
+        ? this.$options.twoRecommendedDescriptionRent
+        : this.$options.twoRecommendedDescriptionSale;
+    },
+    threeRecommendedDescription() {
+      return this.currentRequest.dealType != 1
+        ? this.$options.threeRecommendedDescriptionRent
+        : this.$options.threeRecommendedDescriptionSale;
+    },
     sendObjectsFormdata() {
       return {
-        contactForSendMessage: [this.defaultContactForSend],
+        contactForSendMessage: this.defaultContactForSend
+          ? [this.defaultContactForSend]
+          : [],
         subject: "Список предложений от Pennylane Realty",
         wayOfSending: [0],
         message: `<p>С уважением, ${this.THIS_USER.userProfile.medium_name}</p><p>менеджер PLR</p>`,

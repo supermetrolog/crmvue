@@ -1,6 +1,6 @@
 <template>
   <div class="company-request-search-form">
-    <Form class="autosize px-md-5" @submit="onSubmit">
+    <Form class="autosize" @submit="onSubmit">
       <FormGroup class="mb-2">
         <Input
           v-model="form.all"

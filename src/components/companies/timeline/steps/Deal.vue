@@ -102,6 +102,7 @@ export default {
     },
     updateItem(form) {
       this.data.deal = form;
+      this.data.status = 1;
       this.$emit("updateItem", this.data, false, () => {
         this.FETCH_COMPANY_REQUESTS(this.$route.params.id);
       });

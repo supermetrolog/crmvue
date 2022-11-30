@@ -138,7 +138,10 @@
             </div>
           </div>
         </div>
-        <div class="col-12 main text-center">
+        <div
+          class="col-12 main text-center"
+          :class="{ 'animated-background': isNewRecommended }"
+        >
           <span class="badge badge-warning mb-1" v-if="offer.status != 1"
             >Пассив</span
           >
@@ -229,16 +232,6 @@
               <small>м<sup>2</sup></small>
             </p>
           </div>
-          <div class="comments" v-if="offer.comments">
-            <p v-if="offer.comments.length" class="title">Комментарии</p>
-            <p
-              v-for="comment in offer.comments"
-              :key="comment.id"
-              :class="{ current: comment.timeline_step_id == currentStepId }"
-            >
-              {{ comment.comment }}
-            </p>
-          </div>
           <div class="extraVisible" @click="toggleExtraInfoVisible">
             <i
               class="far fa-arrow-alt-circle-down text-center mt-1 extra"
@@ -251,6 +244,16 @@
           </div>
         </div>
         <div class="col-12 text-center" v-if="extraInfoVisible">
+          <div class="address" v-if="offer.comments">
+            <p v-if="offer.comments.length" class="title">Комментарии</p>
+            <p
+              v-for="comment in offer.comments"
+              :key="comment.id"
+              :class="{ current: comment.timeline_step_id == currentStepId }"
+            >
+              {{ comment.comment }}
+            </p>
+          </div>
           <div class="params">
             <div class="params__item">
               <p class="title">Площадь объекта:</p>
@@ -484,4 +487,21 @@ export default {
 </script>
 
 <style>
+.animated-background {
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradient 5s ease infinite;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
 </style>

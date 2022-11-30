@@ -11,13 +11,15 @@
     <div class="wrapper">
       <div class="row no-gutters">
         <div class="col-11">
-          <p class="step-stage__title">{{ title }}</p>
+          <p class="step-stage__title">
+            <i class="fas fa-caret-right"></i>{{ title }}
+          </p>
         </div>
         <div class="col-1 text-right align-self-center">
           <i class="fas fa-check-circle isDone" v-if="isDone"></i>
         </div>
       </div>
-      <div v-if="stageIsActive" @click.stop>
+      <div class="slot" v-if="stageIsActive" @click.stop>
         <slot></slot>
       </div>
     </div>

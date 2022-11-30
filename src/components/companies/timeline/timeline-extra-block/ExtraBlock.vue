@@ -4,40 +4,39 @@
       <div class="col-12">
         <div class="row no-gutters">
           <div class="col-12">
-            <Accordion>
+            <Accordion :defaultTabHash="this.step.id" @changed="tabSwitched">
               <AccordionItem
                 v-for="timelineStep in TIMELINE.timelineSteps"
                 :key="timelineStep.id"
+                :id="timelineStep.id"
                 :title="
                   timelineStepOptions[timelineStep.number][1].name +
                   ` (${timelineStep.timelineActionComments.length})`
                 "
                 :titleClasses="titleClasses(timelineStep)"
-                :openByDefault="step.id == timelineStep.id"
-                :disabled="step.id == timelineStep.id"
               >
                 <Comments :data="timelineStep.timelineActionComments" />
                 <Form
-                  v-if="step.id == timelineStep.id"
-                  ref="form"
-                  class="mb-3"
+                  :ref="'#' + timelineStep.id"
+                  class="mb-3 p-2"
                   @submit="onSubmit(step)"
                 >
+                  <!--  @click="
+                    tabSwitched({
+                      tab: {
+                        hash: `#${timelineStep.id}`,
+                      },
+                    })
+                  " -->
                   <FormGroup>
                     <Textarea
                       class="col-12"
                       v-model="form.comment"
                       :v="v$.form.comment"
-                      placeholder="введите комментарий"
-                    />
-                    <Input
-                      class="col-12 mt-1"
-                      v-model="form.startDate"
-                      label="Уведомить"
-                      type="datetime-local"
+                      placeholder="Добавьте комментарий по процессу"
                     />
                     <Submit
-                      class="col-12 mt-1"
+                      class="mt-1"
                       buttonClasses="btn-primary"
                       :disabled="disabled"
                       v-if="!loader"
@@ -63,7 +62,6 @@ import { mapGetters } from "vuex";
 import { Timeline } from "@/const/Const";
 import Form from "@/components/common/form/Form";
 import Textarea from "@/components/common/form/Textarea";
-import Input from "@/components/common/form/Input";
 import Submit from "@/components/common/form/Submit";
 import FormGroup from "@/components/common/form/FormGroup";
 import Accordion from "@/components/common/accordion/Accordion";
@@ -71,14 +69,12 @@ import AccordionItem from "@/components/common/accordion/AccordionItem";
 import Comments from "./Comments.vue";
 import useValidate from "@vuelidate/core";
 import { required, helpers } from "@vuelidate/validators";
-import moment from "moment";
-import api from "@/api/api.js";
+import api from "@/api/api";
 export default {
   name: "ExtraBlock",
   components: {
     Form,
     Textarea,
-    Input,
     Submit,
     FormGroup,
     Accordion,
@@ -92,8 +88,8 @@ export default {
       timelineStepOptions: Timeline.get("param"),
       form: {
         comment: null,
-        startDate: null,
       },
+      currentTimelineStepId: this.step.id,
     };
   },
   props: {
@@ -118,19 +114,25 @@ export default {
     };
   },
   methods: {
+    tabSwitched(item) {
+      setTimeout(() => this.scrollToForm(item.tab.hash), 500);
+    },
     titleClasses(step) {
       if (step.status == 1) {
         return "badge-success";
       }
       return "badge-warning";
     },
-    scrollToForm() {
+    scrollToForm(hash) {
       let options = {
         behavior: "smooth",
-        block: "center",
+        block: "end",
+        alignToTop: false,
       };
-      console.warn(this.$refs.form);
-      this.$refs.form[0].$el.scrollIntoView(options);
+      if (hash) {
+        console.warn(this.$refs[hash]);
+        this.$refs[hash][0].$el.scrollIntoView(options);
+      }
     },
     async onSubmit(step) {
       this.v$.$validate();
@@ -138,31 +140,22 @@ export default {
         return;
       }
       this.loader = true;
-      let comment = this.form.comment;
-      let startDate = moment(this.form.startDate).format("YYYY-MM-DD HH:mm:ss");
-      if (this.form.startDate) {
-        comment = `<p class="text-center d-block">Уведомление<p>`;
-        comment += `<p class="d-block">Комментарий: <b>${this.form.comment}</b><p>`;
-        comment += `<p class="d-block">Дата: <b>${startDate}</b><p>`;
-        await api.calendar.createEvent({
-          title: this.form.comment,
-          startDate: startDate,
-          consultant_id: this.THIS_USER.id,
-        });
-      }
-      step.newActionComments = [
+      const comments = [
         {
           timeline_id: step.timeline_id,
           timeline_step_id: step.id,
           timeline_step_number: step.number,
           title: this.THIS_USER.userProfile.short_name,
-          comment: comment,
+          comment: this.form.comment,
           type: 3,
         },
       ];
-      this.$emit("createComment", step, false, () => (this.loader = false));
-      this.form.comment = null;
-      this.v$.$reset();
+      if (await api.timeline.addActionComments(comments)) {
+        this.$emit("commentAdded");
+        this.form.comment = null;
+        this.v$.$reset();
+      }
+      this.loader = false;
     },
   },
   mounted() {
@@ -172,6 +165,9 @@ export default {
   },
   watch: {
     step() {
+      this.currentTimelineStepId = this.step.id;
+    },
+    currentTimelineStepId() {
       setTimeout(() => this.scrollToForm(), 300);
     },
   },

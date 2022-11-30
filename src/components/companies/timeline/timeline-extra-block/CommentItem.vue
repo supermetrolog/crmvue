@@ -10,18 +10,18 @@
       >
         <p class="time" v-if="date.type">{{ date.value }}</p>
       </div>
-      <div class="col-12 mb-1 px-2" :class="{ 'text-right': isSystemComment }">
-        <p
-          class="text-success"
+      <div class="col-12 mb-1 px-3 text-right">
+        <i
+          class="text-dark"
           :class="{
             'text-success_alt': isSystemComment,
           }"
         >
           {{ data.title || "&#8212;" }}
-        </p>
+        </i>
       </div>
 
-      <div class="col-12 comment px-2">
+      <div class="col-12 comment px-3">
         <p v-html="timeHTML + data.comment"></p>
       </div>
     </div>
