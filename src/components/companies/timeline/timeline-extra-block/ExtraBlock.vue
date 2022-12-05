@@ -21,13 +21,6 @@
                   class="mb-3 p-2"
                   @submit="onSubmit(step)"
                 >
-                  <!--  @click="
-                    tabSwitched({
-                      tab: {
-                        hash: `#${timelineStep.id}`,
-                      },
-                    })
-                  " -->
                   <FormGroup>
                     <Textarea
                       class="col-12"
