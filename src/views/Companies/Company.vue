@@ -63,8 +63,25 @@
       />
     </transition>
 
-    <div class="row no-gutters">
-      <div class="col-12 col-lg-3 company-detail-info-container box">
+    <div class="company-wrapper">
+      <Loader v-if="loaderCompanyDetailInfo"></Loader>
+      <CompanyBoxMain :company="COMPANY" v-if="!loaderCompanyDetailInfo" />
+      <CompanyBoxLayout :class="'grid-b'">
+        <template #header>
+          <span>Лог работы с контанта</span>
+        </template>
+      </CompanyBoxLayout>
+
+      <CompanyBoxLayout class="objects" :class="'grid-c'">
+        <template #header></template>
+      </CompanyBoxLayout>
+      <CompanyBoxLayout class="requests" :class="'grid-d'">
+        <template #header></template>
+      </CompanyBoxLayout>
+      <CompanyBoxLayout class="services" :class="'grid-e'">
+        <template #header></template>
+      </CompanyBoxLayout>
+      <!-- <div class="company-detail-info-container box">
         <div class="col-12 p-0 mb-3">
           <button
             class="btn btn-primary scale d-block btn-large"
@@ -155,41 +172,45 @@
             v-if="!COMPANY_CONTACTS.length && !loaderCompanyContacts"
           />
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
 
 <script>
+import CompanyBoxLayout from "../../components/companies/company-boxes/CompanyBoxLayout.vue";
+import CompanyBoxMain from "../../components/companies/company-boxes/CompanyBoxMain.vue";
 import { mapActions, mapGetters } from "vuex";
-import CompanyDetailInfo from "@/components/companies/companies/CompanyDetailInfo.vue";
-import CompanyRequestList from "@/components/companies/companies/request/CompanyRequestList.vue";
+// import CompanyDetailInfo from "@/components/companies/companies/CompanyDetailInfo.vue";
+// import CompanyRequestList from "@/components/companies/companies/request/CompanyRequestList.vue";
 import CompanyRequestForm from "@/components/companies/forms/company-request-form/CompanyRequestForm.vue";
 import CompanyContactForm from "@/components/companies/forms/company-contact-form/CompanyContactForm.vue";
 import CompanyForm from "@/components/companies/forms/company-form/CompanyForm.vue";
 import CompanyDealForm from "@/components/companies/forms/company-deal-form/CompanyDealForm";
-import CompanyContactList from "@/components/companies/companies/contact/CompanyContactList.vue";
-import CompanyObjectList from "@/components/companies/objects/company-objects/CompanyObjectList";
+// import CompanyContactList from "@/components/companies/companies/contact/CompanyContactList.vue";
+// import CompanyObjectList from "@/components/companies/objects/company-objects/CompanyObjectList";
 import Timeline from "@/components/companies/timeline/Timeline.vue";
 // import DealItem from "@/components/companies/companies/deal/DealItem.vue";
-import DealList from "@/components/companies/companies/deal/DealList.vue";
-import NoData from "@/components/common/NoData";
-import Joke from "@/components/common/Joke";
+// import DealList from "@/components/companies/companies/deal/DealList.vue";
+// import NoData from "@/components/common/NoData";
+// import Joke from "@/components/common/Joke";
 export default {
   name: "Company",
   components: {
-    CompanyDetailInfo,
-    CompanyRequestList,
+    // CompanyDetailInfo,
+    // CompanyRequestList,
     CompanyRequestForm,
     CompanyContactForm,
     CompanyForm,
-    CompanyContactList,
+    // CompanyContactList,
     Timeline,
-    NoData,
-    Joke,
-    CompanyObjectList,
-    DealList,
+    // NoData,
+    // Joke,
+    // CompanyObjectList,
+    // DealList,
     CompanyDealForm,
+    CompanyBoxLayout,
+    CompanyBoxMain,
   },
   data() {
     return {

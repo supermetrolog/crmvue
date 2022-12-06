@@ -2699,20 +2699,62 @@
         }
     }
     
-    .company {
+    .company {  
+        height: 90vh;
+        margin-top: 25px;
+        &-wrapper {
+            height: 100%;
+            display: grid;
+            gap: $grid_gap;
+            grid-template-columns: repeat(3, 26%) 20%; 
+            grid-template-rows: repeat(4, 24%); 
+            grid-template-areas:
+            "A A A B"
+            "A A A B"
+            "C D E B"
+            "C D E B";
+             
+            .grid-a {
+                grid-area: A;
+            }
+            .grid-b {
+                grid-area: B;
+            }
+            .grid-c {
+                grid-area: C;
+            }
+            .grid-d {
+                grid-area: D;
+            }
+            .grid-e {
+                grid-area: E;
+            }
+        }
         .box {
-            padding: 10px 0 10px 10px !important;
+            padding: 0 !important;
             .inner {
                 background-color: $color_light;
                 box-shadow: 0px 7px 20px rgba(0, 0, 0, 0.25);
                 position: relative;
-                padding: 30px!important;
-                min-height: 400px;
+                padding: 0 !important;
+                height: 100%;
                 &.no-height {
                     min-height: auto;
                 }
             }
         }
+        
+        &-business-info {
+            display: grid;
+            gap: $grid_gap;
+            grid-template-columns: 1fr 1fr 1fr;
+            .box {
+                .inner {
+                    height: 100%;
+                }
+            }
+        }
+        
         &-contact-list {
             .modal {
                 .modal-container {
@@ -3099,7 +3141,72 @@
             }
         }
     }
-    
+    .CompanyBoxLayout {
+        &-header {
+            background-color: #333333;
+            color: $color_light;
+            padding: 1em;
+        }
+        &-content {
+            padding: 10px;
+        }
+    //     &-shine {
+    //         &:before {
+    //             content:'';
+
+    //             top:0;
+    //             transform:translateX(100%);
+    //                 width:100%;
+    //                 height:20%;
+    //                 position: absolute;
+    //                 z-index:1;
+	// animation: slide 1s infinite;
+    // background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(50%,rgba(255,255,255,0.8)), color-stop(99%,rgba(128,186,232,0)), color-stop(100%,rgba(125,185,232,0)));
+    //         }
+            
+    //         /* animation */
+            
+    //         @keyframes slide {
+    //             0% {transform:translateX(-100%);}
+    //             100% {transform:translateX(100%);}
+    //         }
+    //     }
+    }
+
+    .CompanyBoxMain {
+        &-content {
+            display: flex;
+            padding: 20px;
+        }
+        &-left {
+           width: 50%;
+            &-list{
+                list-style: none;
+                display: table;
+                li {
+                    display: table-row;
+                    span {
+                        display: table-cell;
+                        width: 50%; 
+                        float: left;
+                        &:last-child {
+                            color: $color_grey;
+                        }
+                    }
+                }
+                &-range {
+                    span {
+                        margin-bottom: 30px;
+                    }
+                }
+            }
+           
+            
+        }
+        &-right {
+            width: 50%;
+        }
+    }
     //*********** MULTISELECT ************
     .multiselect {
         max-height: unset!important;
