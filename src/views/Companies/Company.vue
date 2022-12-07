@@ -65,7 +65,11 @@
 
     <div class="company-wrapper">
       <Loader v-if="loaderCompanyDetailInfo"></Loader>
-      <CompanyBoxMain :company="COMPANY" v-if="!loaderCompanyDetailInfo" />
+      <CompanyBoxMain
+        v-if="!loaderCompanyDetailInfo"
+        :company="COMPANY"
+        :contacts="this.COMPANY_CONTACTS"
+      />
       <CompanyBoxLayout :class="'grid-b'">
         <template #header>
           <span>Лог работы с контанта</span>
@@ -179,7 +183,7 @@
 
 <script>
 import CompanyBoxLayout from "../../components/companies/company-boxes/CompanyBoxLayout.vue";
-import CompanyBoxMain from "../../components/companies/company-boxes/CompanyBoxMain.vue";
+import CompanyBoxMain from "../../components/companies/company-boxes/main/CompanyBoxMain.vue";
 import { mapActions, mapGetters } from "vuex";
 // import CompanyDetailInfo from "@/components/companies/companies/CompanyDetailInfo.vue";
 // import CompanyRequestList from "@/components/companies/companies/request/CompanyRequestList.vue";

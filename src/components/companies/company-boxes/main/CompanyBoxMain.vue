@@ -85,23 +85,29 @@
         </div>
       </div>
       <hr />
-      <span>12323</span>
+      <div class="CompanyBoxMain-contacts">
+        <CompanyBoxContactList :contacts="contacts" />
+      </div>
     </template>
   </CompanyBoxLayout>
 </template>
 
 <script>
-import CompanyBoxLayout from "./CompanyBoxLayout.vue";
-import { MixinCompanyDetailInfo } from "../companies/mixins";
+import CompanyBoxContactList from "./CompanyBoxContactList.vue";
+import CompanyBoxLayout from "../CompanyBoxLayout.vue";
+import { MixinCompanyDetailInfo } from "../../companies/mixins";
 import moment from "moment";
 export default {
   mixins: [MixinCompanyDetailInfo],
   name: "CompanyBoxMain",
-  components: { CompanyBoxLayout },
+  components: { CompanyBoxLayout, CompanyBoxContactList },
   props: {
     company: {
       type: Object,
       default: () => {},
+    },
+    contacts: {
+      type: Array,
     },
   },
   computed: {
