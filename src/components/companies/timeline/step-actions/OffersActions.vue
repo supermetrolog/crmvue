@@ -46,8 +46,10 @@
               <StepStage
                 class="mb-2 sticky"
                 :title="
-                  'Шаг 1. Изучите деятельность компании клиента, свяжитесь с контактным лицом и обсудите задачу ' +
-                  step.timelineStepObjects.length
+                  'Шаг 1. Изучите деятельность компании клиента, свяжитесь с контактным лицом' +
+                  (step.timelineStepObjects.length
+                    ? ` и обсудите ${step.timelineStepObjects.length} задачи `
+                    : '')
                 "
                 :isDone="!!step.timelineStepObjects.length"
                 :closeSlotWhenDone="false"
