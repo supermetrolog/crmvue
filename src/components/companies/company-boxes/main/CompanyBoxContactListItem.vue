@@ -1,5 +1,17 @@
 <template>
-  <div class="CompanyBoxContactListItem">
+  <div
+    class="CompanyBoxContactListItem"
+    :class="{
+      'CompanyBoxContactListItem-is_main': contact.isMain,
+      'CompanyBoxContactListItem-good': !contact.good,
+    }"
+  >
+    <div
+      class="CompanyBoxContactListItem-status text-danger"
+      v-if="!contact.warning"
+    >
+      <span>ВНИМАНИЕ!!!</span>
+    </div>
     <strong class="CompanyBoxContactListItem-name">{{
       contact.full_name || "Имя неизвестно"
     }}</strong>
@@ -22,6 +34,9 @@
       >
         {{ email.email }}
       </a>
+    </div>
+    <div class="CompanyBoxContactListItem-actions">
+      <span>Показать доп контакты (2)</span>
     </div>
     <hr />
     <div class="CompanyBoxContactListItem-consultant" v-if="contact.consultant">

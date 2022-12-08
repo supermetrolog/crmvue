@@ -1,7 +1,23 @@
 <template>
   <CompanyBoxLayout :class="'grid-a'" class="CompanyBoxMain">
     <template #header>
-      <span>{{ this.company.full_name }}</span>
+      <div class="CompanyBoxMain-header">
+        <span>{{ this.company.full_name }}</span>
+        <div class="CompanyBoxMain-header-about">
+          <span>{{ categoryHandler }} ID {{ company.id }}</span>
+          <div class="rating">
+            <i
+              v-for="rating in ratingOptions"
+              :key="rating[0]"
+              class="text-warning far fa-star"
+              :class="{
+                'fas fa-star': contact.company.rating >= rating[0],
+              }"
+            >
+            </i>
+          </div>
+        </div>
+      </div>
     </template>
     <template #content>
       <div class="CompanyBoxMain-content">
@@ -96,7 +112,9 @@
 import CompanyBoxContactList from "./CompanyBoxContactList.vue";
 import CompanyBoxLayout from "../CompanyBoxLayout.vue";
 import { MixinCompanyDetailInfo } from "../../companies/mixins";
+import { CompanyCategories } from "@/const/Const";
 import moment from "moment";
+
 export default {
   mixins: [MixinCompanyDetailInfo],
   name: "CompanyBoxMain",
@@ -118,6 +136,14 @@ export default {
       });
       result = result.join(", ");
       return result;
+    },
+    categoryHandler() {
+      return this.company.categories
+        .map((item) => CompanyCategories.get("param")[item.category][1])
+        .join(" ")
+        .toUpperCase();
+
+      //  .join(", ");
     },
   },
   methods: {

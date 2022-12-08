@@ -1,4 +1,5 @@
 <template>
+  <strong>Контакты</strong>
   <div class="CompanyBoxContactList">
     <CompanyBoxContactListItem
       v-for="contact in contacts"
