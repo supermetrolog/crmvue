@@ -255,14 +255,7 @@ export const MixinObject = {
             });
         },
         offerUrl(offer) {
-            const baseUrl = this.$apiUrlHelper.objectsUrl() + "complex/";
-            let url = baseUrl + offer.complex_id;
-            if (offer.generalOffersMix) {
-                url += "?offer_id=[" + offer.generalOffersMix.original_id + "]";
-            } else {
-                url += "?offer_id=[" + offer.original_id + "]";
-            }
-            return url;
+            return this.$apiUrlHelper.generator().offerUrl(offer);
         },
         sendObjectsHandler() {
             let data = {

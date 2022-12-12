@@ -39,20 +39,6 @@
               }
             "
           />
-          <!-- <ObjectsInput
-            v-model="form.object_id"
-            :v="v$.form.object_id"
-            @selectItem="selectObject"
-            required
-            label="Объект"
-            class="col-6 ml-auto"
-            :type_id="form.type_id"
-            :options="
-              async (query) => {
-                return await searchObjects(query);
-              }
-            "
-          /> -->
           <MultiSelect
             v-model="form.offerHandler"
             :v="v$.form.object_id"
@@ -184,7 +170,6 @@ import { required, helpers } from "@vuelidate/validators";
 import Form from "@/components/common/form/Form.vue";
 import FormGroup from "@/components/common/form/FormGroup.vue";
 import Input from "@/components/common/form/Input.vue";
-// import ObjectsInput from "@/components/common/form/ObjectsInput.vue";
 import Textarea from "@/components/common/form/Textarea.vue";
 import MultiSelect from "@/components/common/form/MultiSelect.vue";
 import Checkbox from "@/components/common/form/Checkbox.vue";
@@ -202,7 +187,6 @@ export default {
     MultiSelect,
     Submit,
     Checkbox,
-    // ObjectsInput,
   },
   data() {
     return {
