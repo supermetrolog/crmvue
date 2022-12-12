@@ -2,6 +2,7 @@
   <strong>Контакты</strong>
   <div class="CompanyBoxContactList">
     <CompanyBoxContactListItem
+      @openContactFormForUpdate="this.$emit('openContactFormForUpdate')"
       v-for="contact in contacts"
       :key="contact.id"
       :contact="contact"
@@ -22,5 +23,6 @@ export default {
   components: {
     CompanyBoxContactListItem,
   },
+  emits: ["openContactFormForUpdate"],
 };
 </script>

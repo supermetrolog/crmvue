@@ -1,5 +1,5 @@
 <template>
-  <div class="box CompanyBoxLayout" :class="this.class">
+  <div class="CompanyBoxLayout" :class="this.class">
     <div class="inner">
       <div class="CompanyBoxLayout-header">
         <slot name="header" />

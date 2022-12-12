@@ -104,7 +104,7 @@
         }}
       </span>
     </Td>
-    <Td class="company">
+    <Td class="company_about">
       <template v-if="offer.company !== null">
         <router-link :to="'/companies/' + offer.company.id" target="_blank">
           {{ offer.company.full_name }}

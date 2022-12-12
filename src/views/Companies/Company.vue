@@ -57,7 +57,7 @@
     >
       <CompanyForm
         v-if="companyFormVisible"
-        :formdata="company"
+        :formdata="COMPANY"
         @closeCompanyForm="clickCloseCompanyForm"
         @updated="updatedCompany"
       />
@@ -69,16 +69,18 @@
         v-if="!loaderCompanyDetailInfo"
         :company="COMPANY"
         :contacts="this.COMPANY_CONTACTS"
+        @editCompany="clickOpenCompanyForm"
+        @openContactFormForUpdate="openContactFormForUpdate"
       />
       <CompanyBoxLayout :class="'grid-b'">
         <template #header>
           <span>Лог работы с контанта</span>
         </template>
       </CompanyBoxLayout>
-
-      <CompanyBoxLayout class="objects" :class="'grid-c'">
-        <template #header></template>
-      </CompanyBoxLayout>
+      <CompanyBoxObjects
+        v-if="!loaderCompanyObjects"
+        :objects="COMPANY_OBJECTS"
+      />
       <CompanyBoxLayout class="requests" :class="'grid-d'">
         <template #header></template>
       </CompanyBoxLayout>
@@ -182,6 +184,7 @@
 </template>
 
 <script>
+import CompanyBoxObjects from "../../components/companies/company-boxes/objects/CompanyBoxObjects.vue";
 import CompanyBoxLayout from "../../components/companies/company-boxes/CompanyBoxLayout.vue";
 import CompanyBoxMain from "../../components/companies/company-boxes/main/CompanyBoxMain.vue";
 import { mapActions, mapGetters } from "vuex";
@@ -215,6 +218,7 @@ export default {
     CompanyDealForm,
     CompanyBoxLayout,
     CompanyBoxMain,
+    CompanyBoxObjects,
   },
   data() {
     return {

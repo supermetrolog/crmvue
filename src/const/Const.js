@@ -557,6 +557,16 @@ export const DirectionList = new Map([
     ],
   ],
 ]);
+export const OldDbDirectionList = {
+  2: { short: "С", long: "Север" },
+  3: { short: "В", long: "Восток" },
+  4: { short: "Ю", long: "Юг" },
+  5: { short: "З", long: "Запад" },
+  6: { short: "С-В", long: "Северо-Восток" },
+  7: { short: "Ю-В", long: "Юго-Восток" },
+  8: { short: "С-З", long: "Северо-Запад" },
+  9: { short: "Ю-З", long: "Юго-Запад" },
+};
 export const DistrictList = new Map([
   [
     "param",

@@ -2,19 +2,22 @@
   <CompanyBoxLayout :class="'grid-a'" class="CompanyBoxMain">
     <template #header>
       <div class="CompanyBoxMain-header">
-        <span>{{ this.company.full_name }}</span>
+        <div class="CompanyBoxMain-header-name">
+          <span
+            >{{ this.company.full_name }}
+            <small
+              @click="this.$emit('editCompany')"
+              class="CompanyBoxMain-header-name-edit"
+              >[редактировать]</small
+            ></span
+          >
+        </div>
         <div class="CompanyBoxMain-header-about">
           <span>{{ categoryHandler }} ID {{ company.id }}</span>
-          <div class="rating">
-            <i
-              v-for="rating in ratingOptions"
-              :key="rating[0]"
-              class="text-warning far fa-star"
-              :class="{
-                'fas fa-star': contact.company.rating >= rating[0],
-              }"
-            >
-            </i>
+          <div class="CompanyBoxMain-header-about-rating">
+            <i :class="rating(1)"></i>
+            <i :class="rating(3)"></i>
+            <i :class="rating(5)"></i>
           </div>
         </div>
       </div>
@@ -23,13 +26,15 @@
       <div class="CompanyBoxMain-content">
         <div class="CompanyBoxMain-left">
           <ul class="CompanyBoxMain-left-list">
-            <li>
-              <span v-if="!!company.website"
+            <li class="CompanyBoxMain-left-list-websites">
+              <span v-if="!!websitesHandler"
                 ><a
-                  :href="`http://${company.website}`"
+                  :href="`http://${website}`"
                   target="_blank"
                   rel="noopener noreferrer"
-                  >{{ company.website }}</a
+                  v-for="website in websitesHandler"
+                  :key="website"
+                  >{{ website }}</a
                 ></span
               >
               <span v-else>Нет данных</span>
@@ -83,7 +88,10 @@
           <Tabs :options="{ useUrlFragment: false }">
             <Tab name="Описание"
               ><div>
-                <span>{{ company.description }}</span>
+                <span v-if="company.description">{{
+                  company.description
+                }}</span>
+                <span v-else>Не указано</span>
               </div></Tab
             >
             <Tab name="Адрес"
@@ -102,7 +110,10 @@
       </div>
       <hr />
       <div class="CompanyBoxMain-contacts">
-        <CompanyBoxContactList :contacts="contacts" />
+        <CompanyBoxContactList
+          :contacts="contacts"
+          @openContactFormForUpdate="this.$emit('openContactFormForUpdate')"
+        />
       </div>
     </template>
   </CompanyBoxLayout>
@@ -142,8 +153,16 @@ export default {
         .map((item) => CompanyCategories.get("param")[item.category][1])
         .join(" ")
         .toUpperCase();
-
-      //  .join(", ");
+    },
+    websitesHandler() {
+      let commonContact = this.company.contacts.find(
+        (contact) => contact.type == 1
+      );
+      if (commonContact) {
+        return commonContact.websites.map((item) => item.website);
+      } else {
+        return false;
+      }
     },
   },
   methods: {
@@ -151,5 +170,6 @@ export default {
       return moment(date).format("DD.MM.YYYY");
     },
   },
+  emits: ["openContactFormForUpdate", "editCompany"],
 };
 </script>

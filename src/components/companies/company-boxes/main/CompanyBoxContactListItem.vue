@@ -1,14 +1,15 @@
 <template>
   <div
+    @click="this.$emit('openContactFormForUpdate', contact)"
     class="CompanyBoxContactListItem"
     :class="{
       'CompanyBoxContactListItem-is_main': contact.isMain,
-      'CompanyBoxContactListItem-good': !contact.good,
+      'CompanyBoxContactListItem-good': !!contact.good,
     }"
   >
     <div
       class="CompanyBoxContactListItem-status text-danger"
-      v-if="!contact.warning"
+      v-if="!!contact.warning"
     >
       <span>ВНИМАНИЕ!!!</span>
     </div>
@@ -18,11 +19,16 @@
     <span class="CompanyBoxContactListItem-position">{{
       position || "Должность неизвестна"
     }}</span>
-    <PhoneNumber
+    <!-- <PhoneNumber
       v-for="phone of contact.phones"
       class="CompanyBoxContactListItem-phone"
       :key="phone.id"
       :phone="phone"
+      :contact="contact"
+    /> -->
+    <PhoneNumber
+      class="CompanyBoxContactListItem-phone"
+      :phone="contact.phones[0]"
       :contact="contact"
     />
     <div class="CompanyBoxContactListItem-email">
@@ -35,14 +41,11 @@
         {{ email.email }}
       </a>
     </div>
-    <div class="CompanyBoxContactListItem-actions">
-      <span>Показать доп контакты (2)</span>
-    </div>
     <hr />
     <div class="CompanyBoxContactListItem-consultant" v-if="contact.consultant">
       <span>
         конс: {{ contact.consultant.userProfile.short_name }}
-        {{ updateDate }}
+        <template v-if="updateDate">{{ updateDate }}</template>
       </span>
     </div>
   </div>
@@ -71,7 +74,13 @@ export default {
       return this.positionList[this.contact.position]?.label;
     },
     updateDate() {
-      return moment(this.contact.updated_at).format("DD.MM.YYYY");
+      let date = this.contact.updated_at
+        ? this.contact.updated_at
+        : this.contact.created_at;
+      if (!date) {
+        return false;
+      }
+      return moment(date).format("DD.MM.YYYY");
     },
   },
 };
