@@ -73,6 +73,8 @@
         :class="{ open: rentersIsOpen }"
       >
         <CompanyBoxObjectsRenter />
+        <CompanyBoxObjectsRenter />
+        <CompanyBoxObjectsRenter />
       </div>
     </div>
   </div>
