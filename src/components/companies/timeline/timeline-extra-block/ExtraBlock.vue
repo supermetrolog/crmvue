@@ -4,22 +4,20 @@
       <div class="col-12">
         <div class="row no-gutters">
           <div class="col-12">
-            <Accordion>
+            <Accordion :defaultTabHash="this.step.id" @changed="tabSwitched">
               <AccordionItem
                 v-for="timelineStep in TIMELINE.timelineSteps"
                 :key="timelineStep.id"
+                :id="timelineStep.id"
                 :title="
                   timelineStepOptions[timelineStep.number][1].name +
                   ` (${timelineStep.timelineActionComments.length})`
                 "
                 :titleClasses="titleClasses(timelineStep)"
-                :openByDefault="this.currentTimelineStepId == timelineStep.id"
-                @onOpen="openAccordionItem(timelineStep.id)"
               >
                 <Comments :data="timelineStep.timelineActionComments" />
                 <Form
-                  v-if="this.currentTimelineStepId == timelineStep.id"
-                  ref="form"
+                  :ref="'#' + timelineStep.id"
                   class="mb-3 p-2"
                   @submit="onSubmit(step)"
                 >
@@ -109,20 +107,25 @@ export default {
     };
   },
   methods: {
+    tabSwitched(item) {
+      setTimeout(() => this.scrollToForm(item.tab.hash), 500);
+    },
     titleClasses(step) {
       if (step.status == 1) {
         return "badge-success";
       }
       return "badge-warning";
     },
-    scrollToForm() {
+    scrollToForm(hash) {
       let options = {
         behavior: "smooth",
         block: "end",
         alignToTop: false,
       };
-      console.warn(this.$refs.form);
-      this.$refs.form[0].$el.scrollIntoView(options);
+      if (hash) {
+        console.warn(this.$refs[hash]);
+        this.$refs[hash][0].$el.scrollIntoView(options);
+      }
     },
     async onSubmit(step) {
       this.v$.$validate();
@@ -146,14 +149,6 @@ export default {
         this.v$.$reset();
       }
       this.loader = false;
-    },
-
-    openAccordionItem(id) {
-      if (this.currentTimelineStepId == id) {
-        this.currentTimelineStepId = null;
-        return;
-      }
-      this.currentTimelineStepId = id;
     },
   },
   mounted() {
