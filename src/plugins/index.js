@@ -35,12 +35,12 @@ export const formatterObject = {
 export const apiUrlHelperObject = {
     // prodUrl: "https://api.supermetrolog.ru/",
     prodUrl: "https://api.pennylane.pro/",
-    devUrl: "https://api.supermetrolog.ru/",
-    localUrl: "http://crmka/",
+    stageUrl: "https://api.supermetrolog.ru/",
+    devUrl: "http://crmka/",
 
-    devHost: "clients.supermetrolog.ru",
+    stageHost: "clients.supermetrolog.ru",
     prodHost: "clients.pennylane.pro",
-    localDevHost: "localhost:8081",
+    devHost: "localhost:8081",
 
     uploadsPath: "uploads/",
     imagesPath: "images/",
@@ -49,42 +49,45 @@ export const apiUrlHelperObject = {
 
     // websocket urls
     prodWsUrl: 'wss://api.pennylane.pro/websocket/',
-    devWsUrl: 'wss://api.supermetrolog.pro/websocket/',
-    localWsUrl: 'ws://localhost:8010',
+    stageWsUrl: 'wss://api.supermetrolog.pro/websocket/',
+    devWsUrl: 'ws://localhost:8010',
 
     prodObjectsUrl: "https://pennylane.pro/",
+    stageObjectsUrl: "https://supermetrolog.ru/",
     devObjectsUrl: "http://objects/",
     wsUrl() {
         if (process.env.NODE_ENV == 'development') {
-            return this.localWsUrl;
+            return this.devWsUrl;
         } else {
             let host = window.location.host;
-            if (host == this.devHost) {
-                return this.devWsUrl;
+            if (host == this.stageHost) {
+                return this.stageWsUrl;
             }
             return this.prodWsUrl;
         }
     },
     url() {
+        let host = window.location.host;
         if (process.env.NODE_ENV == 'development') {
-            let host = window.location.host;
-            if (host == this.localDevHost) {
-                return this.devUrl;
+            if (host == this.stageHost) {
+                return this.stageUrl;
             }
-            return this.localUrl;
+            return this.devUrl;
         } else {
-            let host = window.location.host;
-            if (host == this.devHost) {
-                return this.devUrl;
+            if (host == this.stageHost) {
+                return this.stageUrl;
             }
-
             return this.prodUrl;
         }
     },
     objectsUrl() {
+        let host = window.location.host;
         if (process.env.NODE_ENV == 'development') {
             return this.devObjectsUrl;
         } else {
+            if (host == this.stageHost) {
+                return this.stageObjectsUrl;
+            }
             return this.prodObjectsUrl;
         }
     },
