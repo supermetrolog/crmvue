@@ -102,7 +102,7 @@ export class AlreadySendOffersComment extends Comment {
     }
 
     _getContacts() {
-        const str = this._contacts.map((elem) => `<span class="d-inline"><b>${elem}</b></span>`).join(", ");
+        const str = this._contacts.map((elem) => `<span class="d-inline"><b>${elem.value}</b></span>`).join(", ");
         if (this._contacts.length > 1) {
             return `контактам: ${str}`;
         }
