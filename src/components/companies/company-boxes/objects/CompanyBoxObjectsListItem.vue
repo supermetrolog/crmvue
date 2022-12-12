@@ -41,18 +41,58 @@
     <!-- </div> -->
     <div class="CompanyBoxObjectsListItem-dropdown">
       <hr />
-      <div><button>Предложения</button><button>Арендаторы</button></div>
+      <div class="CompanyBoxObjectsListItem-dropdown-switchers">
+        <DropdownSwitcher
+          v-model="offersIsOpen"
+          :title="'Предложения'"
+          :mainNumber="object.offerMix.length"
+        />
+        <DropdownSwitcher
+          v-model="rentersIsOpen"
+          :title="'Арендаторы'"
+          :mainNumber="1"
+        />
+      </div>
+      <div
+        class="CompanyBoxObjectsListItem-dropdown-offers"
+        :class="{ open: offersIsOpen }"
+      >
+        <!-- <CompanyBoxObjectsOffer
+          v-for="offer in object.offerMix"
+          :key="offer.id"
+          :offer="offer"
+        /> -->
+        <CompanyObjectItemOffer
+          v-for="offer in object.offerMix"
+          :key="offer.id"
+          :offer="offer"
+        />
+      </div>
+      <div
+        class="CompanyBoxObjectsListItem-dropdown-offers"
+        :class="{ open: rentersIsOpen }"
+      >
+        <CompanyBoxObjectsRenter />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import CompanyBoxObjectsRenter from "./CompanyBoxObjectsRenter.vue";
+import CompanyObjectItemOffer from "../../objects/company-objects/CompanyObjectItemOffer.vue";
+// import CompanyBoxObjectsOffer from "./CompanyBoxObjectsOffer.vue";
+import DropdownSwitcher from "../../../common/dropdown/DropdownSwitcher.vue";
 import { OldDbDirectionList, DistrictList } from "@/const/Const.js";
 // import CompanyObjectItemOffer from "./CompanyObjectItemOffer.vue";
 export default {
   name: "CompanyObjectItem",
   components: {
     // CompanyObjectItemOffer,
+    DropdownSwitcher,
+    // CompanyBoxObjectsOffer,
+    CompanyObjectItemOffer,
+    CompanyBoxObjectsRenter,
   },
   props: {
     object: {
@@ -63,6 +103,8 @@ export default {
     return {
       directionList: OldDbDirectionList,
       districtList: DistrictList.get("param"),
+      offersIsOpen: false,
+      rentersIsOpen: false,
     };
   },
   computed: {

@@ -2,9 +2,11 @@
   <button class="DropdownSwitcher" @click="switchDropdown">
     <i class="fa fa-chevron-down" v-if="!modelValue"></i>
     <i class="fa fa-chevron-up" v-if="modelValue"></i>
-    {{ title }} ({{ mainNumber
-    }}<span class="side_number" v-if="sideNumber">{{ `/${sideNumber}` }}</span
-    >)
+    <template v-if="title && mainNumber">
+      <span> </span> {{ title }} ({{ mainNumber
+      }}<span class="side_number" v-if="sideNumber">{{ `/${sideNumber}` }}</span
+      >)
+    </template>
   </button>
 </template>
 
@@ -18,7 +20,7 @@ export default {
     },
     mainNumber: {
       type: Number,
-      required: true,
+      default: null,
     },
     sideNumber: {
       type: Number,
