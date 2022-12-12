@@ -63,7 +63,9 @@
                   </p>
                   <small>
                     <a
-                      :href="`https://pennylane.pro/complex/${item.info.complex_id}?offer_id=[${item.info.original_id}]`"
+                      :href="`${$apiUrlHelper.objectsUrl()}complex/${
+                        item.info.complex_id
+                      }?offer_id=[${item.info.original_id}]`"
                       class="text-primary"
                       target="_blanc"
                     >
@@ -116,7 +118,9 @@
             </p>
             <small>
               <a
-                :href="`https://pennylane.pro/complex/${selectedItem.complex_id}?offer_id=[${selectedItem.original_id}]`"
+                :href="`${$apiUrlHelper.objectsUrl()}complex/${
+                  selectedItem.complex_id
+                }?offer_id=[${selectedItem.original_id}]`"
                 class="text-primary"
                 target="_blanc"
               >

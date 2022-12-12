@@ -3,8 +3,11 @@
     <div class="row no-gutters">
       <div class="col-4" :title="object.description_auto || 'нет описания'">
         <div class="image-container">
-          <a :href="objectUrl" target="_blank">
-            <img :src="imageSrc" alt="image" />
+          <a
+            :href="$apiUrlHelper.generator().objectUrl(object.complex_id)"
+            target="_blank"
+          >
+            <img :src="object.thumb" alt="image" />
           </a>
         </div>
       </div>
@@ -65,19 +68,6 @@ export default {
     col: {
       type: String,
       default: "col-12",
-    },
-  },
-  computed: {
-    imageSrc() {
-      const photo = this.object.photo;
-      if (photo && Array.isArray(photo)) {
-        return "https://pennylane.pro" + photo[0];
-      }
-      return this.$apiUrlHelper.fileNotFoundUrl();
-    },
-
-    objectUrl() {
-      return "https://pennylane.pro/complex/" + this.object.complex_id;
     },
   },
 };

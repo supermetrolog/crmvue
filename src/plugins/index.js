@@ -114,8 +114,33 @@ export const apiUrlHelperObject = {
             return this.imagesUrl() + this.notFoundFileName;
         }
         return this.uploadsUrl() + filename;
+    },
+    generator() {
+        return generator;
     }
 };
+const generator = {
+    urlHelper: apiUrlHelperObject,
+    offerUrl(offer) {
+        const baseUrl = this.urlHelper.objectsUrl() + "complex/";
+        let url = baseUrl + offer.complex_id;
+        if (offer.type_id == 3 || !offer) {
+            return url;
+        }
+        if (offer.generalOffersMix) {
+            url += "?offer_id=[" + offer.generalOffersMix.original_id + "]";
+        } else {
+            url += "?offer_id=[" + offer.original_id + "]";
+        }
+        return url;
+    },
+    objectUrl(complex_id) {
+        const baseUrl = this.urlHelper.objectsUrl() + "complex/";
+        let url = baseUrl + complex_id;
+        return url;
+    }
+}
+
 export const Formatter = {
     install(app, options) {
         console.log(app, options);
