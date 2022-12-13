@@ -1,28 +1,32 @@
 <template>
   <div class="MiniTimeline media row no-gutters col-12 px-0">
     <div
-      class="step request col"
+      class="MiniTimeline-step col"
       :class="{
-        'step-done': this.currentSteps[0].status === 1,
-        'step-in_process': this.currentSteps[0].status === 0,
-        'step-attention': this.currentSteps[0].status === 2,
+        'MiniTimeline-step-done': this.currentSteps[0].status === 1,
+        'MiniTimeline-step-in_process': this.currentSteps[0].status === 0,
+        'MiniTimeline-step-attention': this.currentSteps[0].status === 2,
       }"
       v-if="requestName"
     >
-      <span>{{ requestName.toUpperCase() }}</span>
-      <div class="step-rhombus"></div>
+      <div class="MiniTimeline-arrow MiniTimeline-arrow-top"></div>
+      <div class="MiniTimeline-step-content">
+        <span class="step-name">{{ requestName.toUpperCase() }}</span>
+      </div>
+      <div class="MiniTimeline-arrow MiniTimeline-arrow-bottom"></div>
     </div>
     <div
-      class="step col"
+      class="MiniTimeline-step col"
       :class="{
-        'step-done': completedStep(timelineStep[0]),
-        'step-in_process': inProcessStep(timelineStep[0]),
-        'step-attention': attentionStep(timelineStep[0]),
+        'MiniTimeline-step-done': completedStep(timelineStep[0]),
+        'MiniTimeline-step-in_process': inProcessStep(timelineStep[0]),
+        'MiniTimeline-step-attention': attentionStep(timelineStep[0]),
       }"
       v-for="timelineStep in timelineSteps"
       :key="timelineStep[0]"
     >
-      <div class="step-content">
+      <div class="MiniTimeline-arrow MiniTimeline-arrow-top"></div>
+      <div class="MiniTimeline-step-content">
         <span class="step-name"
           >{{ timelineStep[1].name }}
           <i
@@ -39,7 +43,7 @@
           ></i>
         </span>
       </div>
-      <div class="step-rhombus"></div>
+      <div class="MiniTimeline-arrow MiniTimeline-arrow-bottom"></div>
     </div>
   </div>
 </template>

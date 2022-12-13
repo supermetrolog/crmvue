@@ -870,6 +870,10 @@
     0,
     0,
     .1);
+    $basic_step_border: 0.5px solid black;
+    $basic_step_color: lighten($color_grey, 30);
+    $done_step_border: 2px solid $color_success;
+    $warning_step_border: 2px solid $color_warning;
     .timeline-list {
         display: flex;
         justify-content: end;
@@ -5025,115 +5029,174 @@
     
     // ************** MINI TIMELINE *************
     .MiniTimeline {
-        font-size: 12px;
         $step_height: 33px;
+        font-size: 10px;
         color: black;
-        .step:first-child {
-            .step-content {
-                margin-left: 0;
+        overflow-x: clip;
+        &-arrow {
+            width: 100%;
+            height: 50%;
+            background-color: $basic_step_color;
+            &-top {
+                transform: skew(45deg, 0deg);
+                border-left: $basic_step_border;
+               
+            }
+            &-bottom {
+                transform: skew(-45deg, 0deg);
+                border-left: $basic_step_border;
             }
         }
-        .step {
+        &-step {
             display: flex;
+            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            white-space: nowrap;
+            position: relative;
             height: $step_height;
-            padding: 0;
-            background-color: lighten($color_grey, 30);
-            i {
-                color: $color_light;
+            &-content {
+                position: absolute;
+                z-index: 5;
             }
             &:first-child {
-                padding-left: 10px;
-            }
-            &-content {
-                display: flex;
-                align-items: center;
-                margin-left: $step_height/1.6;
-            }
-            &-name {
-                z-index: 2;
-            }
-            &-rhombus {
-                background-color: lighten($color_grey, 30);
-                content: '';
-                border-top: 0.3px solid;
-                border-right: 0.3px solid;
-                transform: rotate(45deg) scale(var(--ggs, 1));
-                width: $step_height/1.46;
-                height: $step_height/1.46;
-                position: absolute;
-                z-index: 1;
-                right: -11px;
+                &::before {
+                    content: '';
+                    height: $step_height;
+                    width: $step_height/2;
+                    background-color: $basic_step_color;
+                    position: absolute;
+                    z-index: 2;
+                    left: 0;
+                }
+                
             }
             &:last-child {
-                .step-rhombus {
-                    display: none;
+                &::after {
+                    content: '';
+                    height: $step_height;
+                    width: $step_height/2;
+                    background-color: $basic_step_color;
+                    position: absolute;
+                    z-index: 2;
+                    right: 0;
                 }
             }
             &-done {
-                background-color: $color_success_dark;
-                .step-rhombus {
-                    background-color: $color_success_dark;
+                &::before {
+                    border-left: $done_step_border;
+                    border-bottom: $done_step_border;
+                    border-top: $done_step_border;
+                }
+                &::after {
+                    border-right: $done_step_border;
+                    border-bottom: $done_step_border;
+                    border-top: $done_step_border;
+                }
+                .MiniTimeline-arrow {
+                    &-top {
+                        border-left: $done_step_border;
+                        border-right: $done_step_border;
+                        border-top: $done_step_border;
+                    }
+                    &-bottom {
+                        border-left: $done_step_border;
+                        border-right: $done_step_border;
+                        border-bottom: $done_step_border;
+                    }
+                }
+                i {
+                    margin-left: 5px;
+                    color: $color_success;
+                    background: rgb(255,255,255);
+                    background: radial-gradient(circle, rgba(255,255,255,1) 50%, rgba(253,29,29,0) 49%, rgba(252,176,69,0) 52%);
                 }
             }
             &-in_process {
-                background-color: $color_warning_dark;
+                &::before {
+                    background-color: $color_warning_dark !important;
+                    border-left: $warning_step_border;
+                    border-top: $warning_step_border;
+                    border-bottom: $warning_step_border;
+                }
+                &::after {
+                    background-color: $color_warning_dark !important;
+                    border-top: $warning_step_border;
+                    border-right: $warning_step_border;
+                    border-bottom: $warning_step_border;
+                }
+                .MiniTimeline-arrow {
+                    &-top {
+                        background-color: $color_warning_dark;
+                        border-left: $warning_step_border;
+                        border-right: $warning_step_border;
+                        border-top: $warning_step_border;
+                    }
+                    &-bottom {
+                        background-color: $color_warning_dark;
+                        border-left: $warning_step_border;
+                        border-right: $warning_step_border;
+                        border-bottom: $warning_step_border;
+                    }
+                }
                 i {
+                    margin-left: 5px;
                     color: black;
                 }
-                .step-rhombus {
-                    background-color: $color_warning_dark;
-                }
+                
             }
         }
         &-big_size {
-            font-size: 16px;
-            $step_height: 80px;
+            font-size: 14px;
+            $step_height: 60px;
             margin-top: 15px;
-            .step {
+            .MiniTimeline-step {
                 height: $step_height;
                 &-current {
                     cursor: pointer;
                     &:hover {
-                        .step-name {
-                            transition-duration: 0.3s;
-                            transform: scale(1.1);
+                        .MiniTimeline-step-content {
+                            transform: scale(1.05);
+                            transition: all .3s ;
                         }
                     }
                 }
                 &-content {
-                    margin-left: $step_height/1.6;
+                    margin-left: $step_height/4;
                 }
-                &-rhombus {
-                    width: $step_height/1.42;
-                    height: $step_height/1.41;
-                    right: -$step_height/2.85;
+                &:first-child {
+                    &::before {
+                        height: $step_height;
+                        width: $step_height;
+                    }
+                }
+                &:last-child {
+                    &::after {
+                        height: $step_height;
+                        width: $step_height;
+                    }
                 }
                 &-parallelogram {
                     content: '';
-                    // width: 100px;
                     height: 15px;
                     transform: skew(45deg);
                     background: #d86f57;
                     position: absolute;
                     bottom: $step_height;
-                    left: -$step_height/9.5;
+                    left: -$step_height/2.9;
                 }
-                // &-selected {
-                // }
             }
         }
-        .request {
-            span {
-                color: $color_light;
-                width: 150px;
-                margin-right: 5px;
-                overflow-x: hidden;
-            }
-            &.step-in_process {
-                span {
-                    color: black;
+        &.media {
+            white-space: nowrap;
+            .MiniTimeline-step-content {
+                width: 84%;
+                text-align: center;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                .step-name {
+                    max-width: 40px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                 }
             }
         }
@@ -5141,17 +5204,16 @@
     
     @media screen and (max-width: 1560px) {
         .MiniTimeline.media {
-            .step {
+            .MiniTimeline-step {
                 white-space: nowrap;
-                &-name {
-                    width: 80px;
+                &-content {
                     overflow: hidden;
                     text-overflow: ellipsis;
                 }
             }
         }
         .MiniTimeline-big_size {
-            .step {
+            .MiniTimeline-step {
                 white-space: unset;
             }
             i {
@@ -5162,10 +5224,8 @@
     
     @media screen and (max-width: 1390px) {
         .MiniTimeline.media {
-            .step {
-                &-name {
-                    width: 50px;
-                }
+            i {
+                display: none;
             }
         }
         .MiniTimeline-big_size {
@@ -5177,18 +5237,8 @@
         .MiniTimeline-big_size {
             font-size: 10px;
             $step_height: 40px;
-            .step {
+            .MiniTimeline-step {
                 height: $step_height;
-                &-rhombus {
-                    width: $step_height/1.42;
-                    height: $step_height/1.41;
-                    right: -$step_height/2.85;
-                }
-                &-name {
-                    max-width: 40px;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                }
             }
         }
     }

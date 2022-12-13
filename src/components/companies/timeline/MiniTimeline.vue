@@ -2,19 +2,22 @@
   <div class="MiniTimeline MiniTimeline-big_size row no-gutters col-12 px-0">
     <div
       @click.stop="selectStep(timelineStep[0])"
-      class="step col justify-content-center"
+      class="MiniTimeline-step col justify-content-center"
       :class="{
-        'step-current': currentStep(timelineStep[0]),
-        'step-done': completedStep(timelineStep[0]),
-        'step-in_process': inProcessStep(timelineStep[0]),
-        'step-attention': attentionStep(timelineStep[0]),
-        'step-selected': this.selectedStep.number === timelineStep[0],
-        'step-prev': this.selectedStep.number === timelineStep[0] + 1,
+        'MiniTimeline-step-current': currentStep(timelineStep[0]),
+        'MiniTimeline-step-done': completedStep(timelineStep[0]),
+        'MiniTimeline-step-in_process': inProcessStep(timelineStep[0]),
+        'MiniTimeline-step-attention': attentionStep(timelineStep[0]),
+        'MiniTimeline-step-selected':
+          this.selectedStep.number === timelineStep[0],
+        'MiniTimeline-step-prev':
+          this.selectedStep.number === timelineStep[0] + 1,
       }"
       v-for="timelineStep in timelineSteps"
       :key="timelineStep[0]"
     >
-      <div class="step-content">
+      <div class="MiniTimeline-arrow MiniTimeline-arrow-top"></div>
+      <div class="MiniTimeline-step-content">
         <span class="step-name"
           >{{ timelineStep[1].name }}
           <i
@@ -31,11 +34,11 @@
           ></i>
         </span>
       </div>
+      <div class="MiniTimeline-arrow MiniTimeline-arrow-bottom"></div>
       <div
-        class="step-parallelogram col-12"
+        class="MiniTimeline-step-parallelogram col-12"
         v-if="this.selectedStep.number === timelineStep[0]"
       ></div>
-      <div class="step-rhombus"></div>
     </div>
   </div>
 </template>
