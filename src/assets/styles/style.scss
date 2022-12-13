@@ -878,6 +878,16 @@
         background-color: $basic_step_color;
         border: $done_step_border;
       }
+    .success_block {
+        @include success_block;
+    }
+    @mixin warning_block {
+        background-color: $color_warning_dark;
+        border: $warning_step_border;
+    }
+    .warning_block {
+        @include warning_block;
+    }
     .timeline-list {
         display: flex;
         justify-content: end;
@@ -5587,13 +5597,12 @@
     .step-stage {
         &.isDone {
             .wrapper {
-                
                 @include success_block;
             }
         }
         &.isCurrent {
             .wrapper {
-                background-color: $color_warning_dark;
+                @include warning_block;
             }
         }
         &.readyToClick {
