@@ -29,6 +29,7 @@
         :hideSelected="hideSelected"
         :groups="groups"
         @change="onChange($event)"
+        ref="multiselect"
       >
         <template #singlelabel="{ value }">
           <slot name="singlelabel" :value="value" />

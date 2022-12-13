@@ -70,15 +70,11 @@
 </template>
 
 <script>
-import ObjectsItem from "./ObjectsItem.vue";
 import CompanyObjectItemOfferOnly from "./company-objects/CompanyObjectItemOfferOnly.vue";
-import ObjectsItemTable from "./ObjectsItemTable.vue";
 export default {
   name: "ObjectsList",
   emits: ["select", "unSelect", "addComment", "deleteFavoriteOffer"],
   components: {
-    ObjectsItem,
-    ObjectsItemTable,
     CompanyObjectItemOfferOnly,
   },
   data() {

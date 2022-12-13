@@ -119,7 +119,7 @@ export default {
       return "";
     },
     getOfferUrl(offer) {
-      return "https://pennylane.pro/complex/" + offer.complex_id;
+      return this.$apiUrlHelper.generator().objectUrl(offer.complex_id);
     },
     open() {
       console.log("OPEN");

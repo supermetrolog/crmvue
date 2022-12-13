@@ -6,7 +6,7 @@
   >
     <div class="row no-gutters px-2 object-offer-inf">
       <div class="col-12 text-left">
-        <a :href="offerUrl" target="_blank">
+        <a :href="$apiUrlHelper.generator().offerUrl(offer)" target="_blank">
           <span class="object-offer__visual_id">{{ offer.visual_id }}</span>
           <span>{{ offer.deal_type_name }}</span>
           <span>
@@ -39,21 +39,6 @@ export default {
   props: {
     offer: {
       type: Object,
-    },
-  },
-  computed: {
-    offerUrl() {
-      const baseUrl = "https://pennylane.pro/complex/";
-      let url = baseUrl + this.offer.complex_id;
-      if (this.offer.type_id == 3) {
-        return url;
-      }
-      if (this.offer.generalOffersMix) {
-        url += "?offer_id=[" + this.offer.generalOffersMix.original_id + "]";
-      } else {
-        url += "?offer_id=[" + this.offer.original_id + "]";
-      }
-      return url;
     },
   },
 };

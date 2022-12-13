@@ -28,9 +28,14 @@
               "
               placeholder="Выберите контакт"
               mode="multiple"
+              ref="contactSelect"
             >
               <div class="col-12 align-self-center">
-                {{ selectedContacts.join(", ") }}
+                {{
+                  form.contactForSendMessage
+                    .map((elem) => elem.value)
+                    .join(", ")
+                }}
               </div>
             </MultiSelect>
             <CheckboxIcons
@@ -77,7 +82,7 @@ import Input from "@/components/common/form/Input.vue";
 import { VueEditor } from "vue3-editor";
 import { mapGetters } from "vuex";
 import { WayOfSending } from "@/const/Const.js";
-import Utils from "@/utils";
+import Utils, { contains } from "@/utils";
 import useValidate from "@vuelidate/core";
 import { required, helpers } from "@vuelidate/validators";
 export default {
@@ -119,6 +124,7 @@ export default {
         [{ color: [] }, { background: [] }], // dropdown with defaults from theme
         ["clean"], // remove formatting button
       ],
+      // companyContacts: null,
       form: {
         contacts: {
           emails: [],
@@ -138,29 +144,21 @@ export default {
           required: helpers.withMessage("выберите контакт", required),
         },
         wayOfSending: {
-          required: helpers.withMessage("выберите способ отправки", required),
+          required: helpers.withMessage("выберите способ связи", required),
+          requiredPhone: helpers.withMessage(
+            "Выберите способ связи для номеров телефона",
+            this.requiredPhone
+          ),
+          requiredEmail: helpers.withMessage(
+            "Выберите способ связи для электронной почты",
+            this.requiredEmail
+          ),
         },
       },
     };
   },
   computed: {
     ...mapGetters(["COMPANY_CONTACTS"]),
-    selectedContacts() {
-      let array = [];
-      this.form.contactForSendMessage.forEach((id) => {
-        this.companyContacts.find((group) => {
-          group.options.find((contact) => {
-            if (contact.value == id) {
-              array.push(contact.label);
-              return true;
-            }
-            return false;
-          });
-        });
-      });
-
-      return array;
-    },
     companyContacts() {
       if (this.alreadySended)
         return Utils.normalizeContactsForMultiselect(this.COMPANY_CONTACTS);
@@ -187,28 +185,56 @@ export default {
       }
     },
     normalizeContacts() {
-      for (const contact of this.COMPANY_CONTACTS) {
-        for (const email of contact.emails) {
-          if (
-            this.form.contactForSendMessage.find((item) => item == email.email)
-          ) {
-            this.form.contacts.emails.push(email.id);
-            break;
-          }
-        }
-        for (const phone of contact.phones) {
-          if (
-            this.form.contactForSendMessage.find((item) => item == phone.phone)
-          ) {
-            this.form.contacts.phones.push(phone.id);
-            break;
-          }
-        }
+      let emails = this.form.contactForSendMessage.filter(
+        (elem) => elem.type === 1
+      );
+      console.log(emails);
+      if (emails) {
+        this.form.contacts.emails = emails.map((elem) => elem.id);
       }
-      console.error(this.form.contacts);
+
+      let phones = this.form.contactForSendMessage.filter(
+        (elem) => elem.type === 0
+      );
+      if (phones) {
+        this.form.contacts.phones = phones.map((elem) => elem.id);
+      }
+    },
+    requiredPhone() {
+      if (
+        this.form.contactForSendMessage.find((elem) => elem.type === 0) &&
+        !contains(this.form.wayOfSending, [1, 2, 3, 4])
+      ) {
+        return false;
+      }
+      return true;
+    },
+    requiredEmail() {
+      if (
+        this.form.contactForSendMessage.find((elem) => elem.type === 1) &&
+        !contains(this.form.wayOfSending, [0])
+      ) {
+        return false;
+      }
+      return true;
+    },
+    setDefaultContact() {
+      if (this.formdata && this.formdata.defaultContactForSend) {
+        this.companyContacts.forEach((group) => {
+          let findedContact = group.options.find(
+            (contact) =>
+              contact.value.id === this.formdata.defaultContactForSend.id &&
+              contact.value.type === this.formdata.defaultContactForSend.type
+          );
+          if (findedContact) {
+            this.$refs.contactSelect.$refs.multiselect.select(findedContact);
+          }
+        });
+      }
     },
   },
   mounted() {
+    this.setDefaultContact();
     this.form = { ...this.form, ...this.formdata };
   },
 };
