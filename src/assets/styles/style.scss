@@ -871,9 +871,13 @@
     0,
     .1);
     $basic_step_border: 0.5px solid black;
-    $basic_step_color: lighten($color_grey, 30);
+    $basic_step_color: $color_grey_alt;
     $done_step_border: 2px solid $color_success;
     $warning_step_border: 2px solid $color_warning;
+    @mixin success_block {
+        background-color: $basic_step_color;
+        border: $done_step_border;
+      }
     .timeline-list {
         display: flex;
         justify-content: end;
@@ -4281,7 +4285,8 @@
     
     // ****************** COMPANY-REQUEST-ITEM-ALT ************
     .CompanyRequestItemAlt {
-        background-color: $color_success_dark;
+        @include success_block;
+        border-radius: 10px;
         .edit-btn {
             position: absolute;
             z-index: 2;
@@ -5582,7 +5587,8 @@
     .step-stage {
         &.isDone {
             .wrapper {
-                background-color: $color_success_dark;
+                
+                @include success_block;
             }
         }
         &.isCurrent {
