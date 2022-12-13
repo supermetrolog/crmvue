@@ -40,7 +40,8 @@ export const apiUrlHelperObject = {
 
     stageHost: "clients.supermetrolog.ru",
     prodHost: "clients.pennylane.pro",
-    devHost: "localhost:8081",
+    devHost: "localhost:8080",
+    devHostWithoutLocalApi: "localhost:8081",
 
     uploadsPath: "uploads/",
     imagesPath: "images/",
@@ -69,9 +70,10 @@ export const apiUrlHelperObject = {
     url() {
         let host = window.location.host;
         if (process.env.NODE_ENV == 'development') {
-            if (host == this.stageHost) {
+            if (host == this.stageHost || host == this.devHostWithoutLocalApi) {
                 return this.stageUrl;
             }
+
             return this.devUrl;
         } else {
             if (host == this.stageHost) {
