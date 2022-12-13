@@ -35,6 +35,10 @@
         </span>
       </div>
       <div class="MiniTimeline-arrow MiniTimeline-arrow-bottom"></div>
+      <div
+        class="MiniTimeline-step-parallelogram col-12"
+        v-if="this.selectedStep.number === timelineStep[0]"
+      ></div>
     </div>
   </div>
 </template>

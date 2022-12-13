@@ -870,6 +870,10 @@
     0,
     0,
     .1);
+    $basic_step_border: 0.5px solid black;
+    $basic_step_color: lighten($color_grey, 30);
+    $done_step_border: 2px solid $color_success;
+    $warning_step_border: 2px solid $color_warning;
     .timeline-list {
         display: flex;
         justify-content: end;
@@ -5023,11 +5027,7 @@
     // ************** MINI TIMELINE *************
     .MiniTimeline {
         $step_height: 33px;
-        $basic_step_border: 0.5px solid black;
-        $basic_step_color: lighten($color_grey, 30);
-        $done_step_border: 2px solid $color_success;
-        $warning_step_border: 2px solid $color_warning;
-        font-size: 12px;
+        font-size: 10px;
         color: black;
         overflow-x: clip;
         &-arrow {
@@ -5059,7 +5059,7 @@
                 &::before {
                     content: '';
                     height: $step_height;
-                    width: $step_height;
+                    width: $step_height/2;
                     background-color: $basic_step_color;
                     position: absolute;
                     z-index: 2;
@@ -5071,7 +5071,7 @@
                 &::after {
                     content: '';
                     height: $step_height;
-                    width: $step_height;
+                    width: $step_height/2;
                     background-color: $basic_step_color;
                     position: absolute;
                     z-index: 2;
@@ -5151,9 +5151,10 @@
                 &-current {
                     cursor: pointer;
                     &:hover {
-                            transition-duration: 0.3s;
-                            transform: scale(1.1);
-                            z-index: 3;
+                        .MiniTimeline-step-content {
+                            transform: scale(1.05);
+                            transition: all .3s ;
+                        }
                     }
                 }
                 &-content {
@@ -5171,18 +5172,28 @@
                         width: $step_height;
                     }
                 }
+                &-parallelogram {
+                    content: '';
+                    height: 15px;
+                    transform: skew(45deg);
+                    background: #d86f57;
+                    position: absolute;
+                    bottom: $step_height;
+                    left: -$step_height/2.9;
+                }
             }
         }
-        .request {
-            span {
-                color: $color_light;
-                width: 150px;
-                margin-right: 5px;
-                overflow-x: hidden;
-            }
-            &.step-in_process {
-                span {
-                    color: black;
+        &.media {
+            white-space: nowrap;
+            .MiniTimeline-step-content {
+                width: 84%;
+                text-align: center;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                .step-name {
+                    max-width: 40px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                 }
             }
         }
@@ -5190,17 +5201,16 @@
     
     @media screen and (max-width: 1560px) {
         .MiniTimeline.media {
-            .step {
+            .MiniTimeline-step {
                 white-space: nowrap;
-                &-name {
-                    width: 80px;
+                &-content {
                     overflow: hidden;
                     text-overflow: ellipsis;
                 }
             }
         }
         .MiniTimeline-big_size {
-            .step {
+            .MiniTimeline-step {
                 white-space: unset;
             }
             i {
@@ -5211,10 +5221,8 @@
     
     @media screen and (max-width: 1390px) {
         .MiniTimeline.media {
-            .step {
-                &-name {
-                    width: 50px;
-                }
+            i {
+                display: none;
             }
         }
         .MiniTimeline-big_size {
@@ -5226,18 +5234,8 @@
         .MiniTimeline-big_size {
             font-size: 10px;
             $step_height: 40px;
-            .step {
+            .MiniTimeline-step {
                 height: $step_height;
-                &-rhombus {
-                    width: $step_height/1.42;
-                    height: $step_height/1.41;
-                    right: -$step_height/2.85;
-                }
-                &-name {
-                    max-width: 40px;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                }
             }
         }
     }
