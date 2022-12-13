@@ -244,7 +244,7 @@
           </div>
         </div>
         <div class="col-12 text-center" v-if="extraInfoVisible">
-          <div class="address" v-if="offer.comments">
+          <div class="comments" v-if="offer.comments">
             <p v-if="offer.comments.length" class="title">Комментарии</p>
             <p
               v-for="comment in offer.comments"

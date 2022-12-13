@@ -683,7 +683,7 @@
     .text-success_dark {
         color: $color_success_dark !important;
     }
-
+    
     .text-grey {
         color: $color_grey!important;
     }
@@ -691,11 +691,11 @@
     .text-light {
         color: $color_light!important;
     }
-
+    
     .content-archive {
         filter: grayscale(1);
     }
-
+    
     .btn {
         color: $color_light;
         font-weight: 600;
@@ -886,6 +886,7 @@
             }
         }
     }
+    
     .step-complete {
         position: absolute;
         top: 0;
@@ -896,6 +897,7 @@
         width: 100%;
         background-color: black;
     }
+    
     // page container
     .container-timeline {
         padding: 0px 20px;
@@ -2285,11 +2287,8 @@
             }
         }
         &-dropdown {
-             
-                height: auto !important;
-                min-height: auto !important;
-            
-            
+            height: auto !important;
+            min-height: auto !important;
         }
         .name {
             &-type {
@@ -2309,6 +2308,7 @@
             white-space: nowrap;
         }
     }
+    
     table {
         tr.CompanyTableItem {
             td {
@@ -2317,14 +2317,17 @@
             }
         }
     }
+    
     tr.CompanyTableOdd {
         background-color: darken($color_light, 3) !important;
         border-color: darken($color_light, 3) !important;
     }
+    
     tr.CompanyTableEven {
         background-color: $color_light !important;
         border-color: $color_light !important;
     }
+    
     .CompanyTableObjectOffer {
         background-color: $color_success_dark;
         color: $color_light;
@@ -2344,27 +2347,27 @@
         td {
             padding: 0 0 10px 0 !important;
             height: inherit;
-            & > div {
+            &>div {
                 border-top: $grey_thin_border;
                 border-bottom: $grey_thin_border;
                 height: 100%;
             }
         }
-
     }
-
+    
     tr.TableObjectRow {
         height: 1px !important;
         td {
             padding: 0 0 10px 0 !important;
             height: inherit;
-            & > div {
+            &>div {
                 border-top: $grey_thin_border;
                 border-bottom: $grey_thin_border;
                 height: 100%;
             }
         }
     }
+    
     // ********** DropdownSwitcherRow *********** 
     tr.DropdownSwitcherRow {
         height: 110% !important;
@@ -2373,16 +2376,16 @@
             padding-bottom: 5px !important;
         }
     }
-
+    
     // ********** DropdownSwitcher *********** 
     .DropdownSwitcher {
         font-weight: 500;
         font-size: 14px;
         .side_number {
             color: gray !important;
-          }
-      }
-      
+        }
+    }
+    
     // ********** LOADER ***********
     .loader-container {
         position: absolute;
@@ -3472,7 +3475,7 @@
     .scroller {
         overflow-x: hidden;
         overflow-y: auto;
-        max-height: 85vh;   
+        max-height: 85vh;
     }
     
     // ********** REMINDERS **********
@@ -3664,13 +3667,13 @@
                 overflow: hidden;
             }
             &:placeholder-shown {
-                    text-overflow: ellipsis;
-                  }
+                text-overflow: ellipsis;
+            }
             &:focus {
                 height: 200px;
                 &::placeholder {
                     color: transparent;
-                  }
+                }
             }
         }
         .scroller {
@@ -4275,19 +4278,18 @@
     // ****************** COMPANY-REQUEST-ITEM-ALT ************
     .CompanyRequestItemAlt {
         background-color: $color_success_dark;
-       .edit-btn {
-        position: absolute;
-        z-index: 2;
-        right: 30px;
-        padding: 2px;
-        border-radius: 100%;
-        background-color: $color_light;
-        cursor: pointer;
-        .fas {
-            color: black;
+        .edit-btn {
+            position: absolute;
+            z-index: 2;
+            right: 30px;
+            padding: 2px;
+            border-radius: 100%;
+            background-color: $color_light;
+            cursor: pointer;
+            .fas {
+                color: black;
+            }
         }
-        
-       }
         &-info {
             &-right {
                 span {
@@ -4418,6 +4420,18 @@
             border: none;
             padding: 0;
             margin-bottom: 20px;
+            .comments {
+                .title {
+                    font-weight: bold;
+                }
+                p.current {
+                    color: $color_primary;
+                    font-weight: bold;
+                }
+                p {
+                    word-wrap: break-word;
+                }
+            }
             .offer-info {
                 border: 1px solid $color_success;
             }
@@ -4536,17 +4550,6 @@
                                 border: 1px solid $color_primary;
                                 outline: 1px solid $color_primary;
                             }
-                        }
-                    }
-                    .comments {
-                        .title {
-                            font-weight: bold;
-                        }
-                        p.current {
-                            color: $color_primary;
-                        }
-                        p {
-                            word-wrap: break-word;
                         }
                     }
                     .badge {
@@ -5224,7 +5227,6 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        
         .object_id {
             position: absolute;
             padding: 3px;
@@ -5235,7 +5237,6 @@
             top: 0;
             margin: 5px;
         }
-
         .none {
             vertical-align: middle;
         }
