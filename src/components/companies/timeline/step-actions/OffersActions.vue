@@ -46,8 +46,10 @@
               <StepStage
                 class="mb-2 sticky"
                 :title="
-                  'Шаг 1. Изучите деятельность компании клиента, свяжитесь с контактным лицом и обсудите задачу ' +
-                  step.timelineStepObjects.length
+                  'Шаг 1. Изучите деятельность компании клиента, свяжитесь с контактным лицом' +
+                  (step.timelineStepObjects.length
+                    ? ` и обсудите ${step.timelineStepObjects.length} задачи `
+                    : '')
                 "
                 :isDone="!!step.timelineStepObjects.length"
                 :closeSlotWhenDone="false"
@@ -314,9 +316,10 @@ export default {
     },
     sendObjectsFormdata() {
       return {
-        contactForSendMessage: this.defaultContactForSend
-          ? [this.defaultContactForSend]
-          : [],
+        defaultContactForSend: {
+          id: this.defaultContactForSend.id,
+          type: 1,
+        },
         subject: "Список предложений от Pennylane Realty",
         wayOfSending: [0],
         message: `<p>С уважением, ${this.THIS_USER.userProfile.medium_name}</p><p>менеджер PLR</p>`,
@@ -329,7 +332,7 @@ export default {
         !this.currentRequest.contact.emails
       )
         return null;
-      return this.currentRequest.contact.emails[0].email;
+      return this.currentRequest.contact.emails[0];
     },
     firstRecommendedQuery() {
       const request = this.currentRequest;

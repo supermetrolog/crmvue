@@ -112,9 +112,9 @@ export default {
     },
     titleClasses(step) {
       if (step.status == 1) {
-        return "badge-success";
+        return "success_block";
       }
-      return "badge-warning";
+      return "warning_block";
     },
     scrollToForm(hash) {
       let options = {

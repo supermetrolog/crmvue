@@ -35,12 +35,13 @@ export const formatterObject = {
 export const apiUrlHelperObject = {
     // prodUrl: "https://api.supermetrolog.ru/",
     prodUrl: "https://api.pennylane.pro/",
-    devUrl: "https://api.supermetrolog.ru/",
-    localUrl: "http://crmka/",
+    stageUrl: "https://api.supermetrolog.ru/",
+    devUrl: "http://crmka/",
 
-    devHost: "clients.supermetrolog.ru",
+    stageHost: "clients.supermetrolog.ru",
     prodHost: "clients.pennylane.pro",
-    localDevHost: "localhost:8081",
+    devHost: "localhost:8080",
+    devHostWithoutLocalApi: "localhost:8081",
 
     uploadsPath: "uploads/",
     imagesPath: "images/",
@@ -49,42 +50,46 @@ export const apiUrlHelperObject = {
 
     // websocket urls
     prodWsUrl: 'wss://api.pennylane.pro/websocket/',
-    devWsUrl: 'wss://api.supermetrolog.pro/websocket/',
-    localWsUrl: 'ws://localhost:8010',
+    stageWsUrl: 'wss://api.supermetrolog.pro/websocket/',
+    devWsUrl: 'ws://localhost:8010',
 
     prodObjectsUrl: "https://pennylane.pro/",
+    stageObjectsUrl: "https://supermetrolog.ru/",
     devObjectsUrl: "http://objects/",
     wsUrl() {
         if (process.env.NODE_ENV == 'development') {
-            return this.localWsUrl;
+            return this.devWsUrl;
         } else {
             let host = window.location.host;
-            if (host == this.devHost) {
-                return this.devWsUrl;
+            if (host == this.stageHost) {
+                return this.stageWsUrl;
             }
             return this.prodWsUrl;
         }
     },
     url() {
+        let host = window.location.host;
         if (process.env.NODE_ENV == 'development') {
-            let host = window.location.host;
-            if (host == this.localDevHost) {
-                return this.devUrl;
-            }
-            return this.localUrl;
-        } else {
-            let host = window.location.host;
-            if (host == this.devHost) {
-                return this.devUrl;
+            if (host == this.stageHost || host == this.devHostWithoutLocalApi) {
+                return this.stageUrl;
             }
 
+            return this.devUrl;
+        } else {
+            if (host == this.stageHost) {
+                return this.stageUrl;
+            }
             return this.prodUrl;
         }
     },
     objectsUrl() {
+        let host = window.location.host;
         if (process.env.NODE_ENV == 'development') {
             return this.devObjectsUrl;
         } else {
+            if (host == this.stageHost) {
+                return this.stageObjectsUrl;
+            }
             return this.prodObjectsUrl;
         }
     },
@@ -111,8 +116,33 @@ export const apiUrlHelperObject = {
             return this.imagesUrl() + this.notFoundFileName;
         }
         return this.uploadsUrl() + filename;
+    },
+    generator() {
+        return generator;
     }
 };
+const generator = {
+    urlHelper: apiUrlHelperObject,
+    offerUrl(offer) {
+        const baseUrl = this.urlHelper.objectsUrl() + "complex/";
+        let url = baseUrl + offer.complex_id;
+        if (offer.type_id == 3 || !offer) {
+            return url;
+        }
+        if (offer.generalOffersMix) {
+            url += "?offer_id=[" + offer.generalOffersMix.original_id + "]";
+        } else {
+            url += "?offer_id=[" + offer.original_id + "]";
+        }
+        return url;
+    },
+    objectUrl(complex_id) {
+        const baseUrl = this.urlHelper.objectsUrl() + "complex/";
+        let url = baseUrl + complex_id;
+        return url;
+    }
+}
+
 export const Formatter = {
     install(app, options) {
         console.log(app, options);

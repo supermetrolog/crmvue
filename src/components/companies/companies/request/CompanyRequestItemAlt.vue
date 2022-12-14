@@ -64,7 +64,7 @@
         v-if="request.objectTypes"
       >
         <span class="mb-1">Тип объекта</span>
-        <div>
+        <div v-if="!!request.objectTypes.length">
           <strong
             class="object-type-box"
             v-for="objectType of request.objectTypes"
@@ -74,15 +74,21 @@
             <i :class="getObjectTypeIcon(objectType.object_type)"></i>
           </strong>
         </div>
-        <p v-if="!request.objectTypes.length">нет данных</p>
+        <div v-if="!!request.objectTypesGeneral.length">
+          <strong>{{
+            getObjectTypesGeneral(request.objectTypesGeneral)
+          }}</strong>
+        </div>
+        <div
+          v-if="
+            !request.objectTypes.length && !request.objectTypesGeneral.length
+          "
+        >
+          <p>нет данных</p>
+        </div>
       </div>
     </div>
     <div class="col-8 CompanyRequestItemAlt-info-right">
-      <!-- <div class="main-info">
-          <strong class="text-danger" v-if="request.expressRequest"
-            >Срочный запрос</strong
-          >
-        </div> -->
       <div class="d-flex mb-4">
         <span>Цена пола</span>
         <strong v-if="request.pricePerFloor" class="text-left">
@@ -100,7 +106,7 @@
       <div class="d-flex">
         <span>Темп. режим</span>
         <strong class="parameters-inner">
-          {{ request.heated ? "отапливаемый" : "холодный" }}
+          {{ temperatureHandler }}
         </strong>
       </div>
       <div class="d-flex">
@@ -132,7 +138,9 @@
       <div class="d-flex">
         <span>Электричество</span>
         <strong class="parameters-inner">
-          {{ `от ${request.electricity} кВт` ?? "нет данных" }}
+          {{
+            request.electricity ? `от ${request.electricity} кВт` : "нет данных"
+          }}
         </strong>
       </div>
       <div class="d-flex">
@@ -147,7 +155,6 @@
           {{ request.trainLine ? "да" : "нет" }}
         </strong>
       </div>
-
       <!-- <p v-if="request.trainLine">
         длина ж/д ветки <small class="text-grey">(м)</small>
       </p>
@@ -176,6 +183,7 @@ import {
   ObjectClassList,
   GateTypeList,
   ObjectTypeList,
+  ObjectTypesGeneralList,
   RegionList,
   DirectionList,
   DistrictList,
@@ -191,6 +199,7 @@ export default {
     return {
       objectClassList: ObjectClassList.get("param"),
       gateTypeList: GateTypeList.get("param"),
+      objectTypesGeneralList: ObjectTypesGeneralList.get("param"),
       objectTypeListWareHouse: ObjectTypeList.get("warehouse"),
       objectTypeListProduction: ObjectTypeList.get("production"),
       objectTypeListPlot: ObjectTypeList.get("plot"),
@@ -224,6 +233,16 @@ export default {
     dealType() {
       return this.dealTypeList[this.request.dealType].label;
     },
+    temperatureHandler() {
+      if (this.request.heated === 0) {
+        return "холодный";
+      }
+      if (this.request.heated === 1) {
+        return "отапливаемый";
+      } else {
+        return "нет данных";
+      }
+    },
   },
   methods: {
     openCompanyRequestFormForUpdate() {
@@ -250,6 +269,15 @@ export default {
           step: 0,
         },
       });
+    },
+    getObjectTypesGeneral(types) {
+      return types
+        .map((type) => type.type)
+        .map(
+          (type) =>
+            this.objectTypesGeneralList.find((item) => item[0] == type)[1]
+        )
+        .join(", ");
     },
     getObjectTypeIcon(objectType) {
       if (objectType < 12) {

@@ -105,18 +105,7 @@ export default {
   },
   computed: {
     offerUrl() {
-      const baseUrl = "https://pennylane.pro/complex/";
-      let url = baseUrl + this.deal.complex_id;
-      if (this.deal.type_id == 3 || !this.deal.offer) {
-        return url;
-      }
-      if (this.deal.offer.generalOffersMix) {
-        url +=
-          "?offer_id=[" + this.deal.offer.generalOffersMix.original_id + "]";
-      } else {
-        url += "?offer_id=[" + this.deal.offer.original_id + "]";
-      }
-      return url;
+      return this.$apiUrlHelper.generator().offerUrl(this.deal.offer);
     },
   },
 

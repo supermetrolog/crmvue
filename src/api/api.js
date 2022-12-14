@@ -4,7 +4,6 @@ import calls from "./calls.js";
 import timeline from "./timeline.js";
 import functions from "./functions.js";
 import request from "./request.js";
-import objects from "./objects.js";
 import contacts from "./contacts.js";
 import companies from "./companies.js";
 import deal from "./deal.js";
@@ -18,7 +17,6 @@ export default {
     timeline,
     functions,
     request,
-    objects,
     contacts,
     companies,
     calls,

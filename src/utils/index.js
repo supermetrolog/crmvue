@@ -122,6 +122,16 @@ export const validateUrl = (str) => {
 export const waitHash = (data) => {
     return crypto.createHash('sha256').update(JSON.stringify(data)).digest('base64');
 }
+
+export const contains = (target, pattern = []) => {
+    let exist = false;
+    pattern.forEach(word => {
+        if (!exist)
+            exist = !!target.includes(word);
+    })
+    return exist;
+}
+
 export default {
     normalizeContactsForMultiselect(contacts) {
         let data = [];
@@ -131,13 +141,21 @@ export default {
             contact.phones.map(item => {
                 array.push({
                     label: item.phone,
-                    value: item.phone,
+                    value: {
+                        id: item.id,
+                        type: 0,
+                        value: item.phone,
+                    }
                 });
             });
             contact.emails.map(item => {
                 array.push({
                     label: item.email,
-                    value: item.email,
+                    value: {
+                        id: item.id,
+                        type: 1,
+                        value: item.email,
+                    }
                 });
             });
             data.push({
@@ -155,7 +173,11 @@ export default {
             contact.emails.map(item => {
                 array.push({
                     label: item.email,
-                    value: item.email,
+                    value: {
+                        id: item.id,
+                        type: 1,
+                        value: item.email,
+                    }
                 });
             });
             if (!array.length) return;

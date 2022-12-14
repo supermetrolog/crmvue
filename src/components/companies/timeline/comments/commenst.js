@@ -102,7 +102,7 @@ export class AlreadySendOffersComment extends Comment {
     }
 
     _getContacts() {
-        const str = this._contacts.map((elem) => `<span class="d-inline"><b>${elem}</b></span>`).join(", ");
+        const str = this._contacts.map((elem) => `<span class="d-inline"><b>${elem.value}</b></span>`).join(", ");
         if (this._contacts.length > 1) {
             return `контактам: ${str}`;
         }
@@ -173,17 +173,7 @@ class DoneComment extends Comment {
         return `<a target="_blank" class="text-primary d-inline" href="${this._getOfferUrl(offer)}">${id} - ${region}, ${town}</a>`
     }
     _getOfferUrl(offer) {
-        const baseUrl = apiUrlHelperObject.prodObjectsUrl + "complex/";
-        let url = baseUrl + offer.complex_id;
-        if (offer.type_id == 3) {
-            return url;
-        }
-        if (offer.generalOffersMix) {
-            url += "?offer_id=[" + offer.generalOffersMix.original_id + "]";
-        } else {
-            url += "?offer_id=[" + offer.original_id + "]";
-        }
-        return url;
+        return apiUrlHelperObject.generator().offerUrl(offer);
     }
 }
 

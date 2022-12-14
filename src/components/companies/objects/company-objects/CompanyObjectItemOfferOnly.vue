@@ -131,7 +131,7 @@
             >
             <span class="badge badge-warning isGeneral" v-else>Неизвестно</span>
             <a href="#" @click.prevent="clickSelectObject">
-              <img :src="imageSrc" alt="image" />
+              <img :src="offer.thumb" alt="image" />
             </a>
             <div class="icon-unselect" @click.prevent="clickUnSelectObject">
               <i class="fas fa-check"></i>
@@ -244,7 +244,7 @@
           </div>
         </div>
         <div class="col-12 text-center" v-if="extraInfoVisible">
-          <div class="address" v-if="offer.comments">
+          <div class="comments" v-if="offer.comments">
             <p v-if="offer.comments.length" class="title">Комментарии</p>
             <p
               v-for="comment in offer.comments"
@@ -372,43 +372,8 @@ export default {
       }
       return newRecommended == this.offer.original_id;
     },
-    imageSrc() {
-      const photos = this.offer.photos;
-      const object_photos = this.offer.object.photo;
-      let resultImage = null;
-      if (photos && Array.isArray(photos)) {
-        photos.forEach((img) => {
-          if (resultImage == null && typeof img == "string" && img.length > 2) {
-            resultImage = "https://pennylane.pro" + img;
-          }
-        });
-      }
-
-      if (resultImage) {
-        return resultImage;
-      }
-      if (
-        object_photos &&
-        Array.isArray(object_photos) &&
-        typeof object_photos[0] == "string" &&
-        object_photos[0].length > 2
-      ) {
-        return "https://pennylane.pro" + object_photos[0];
-      }
-      return this.$apiUrlHelper.fileNotFoundUrl();
-    },
     offerUrl() {
-      const baseUrl = "https://pennylane.pro/complex/";
-      let url = baseUrl + this.offer.complex_id;
-      if (this.offer.type_id == 3 || this.offer.noOffer) {
-        return url;
-      }
-      if (this.offer.generalOffersMix) {
-        url += "?offer_id=[" + this.offer.generalOffersMix.original_id + "]";
-      } else {
-        url += "?offer_id=[" + this.offer.original_id + "]";
-      }
-      return url;
+      return this.$apiUrlHelper.generator().offerUrl(this.offer);
     },
     pdfUrl() {
       return (

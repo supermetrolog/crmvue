@@ -112,10 +112,7 @@
                     >
                       <div class="row">
                         <div class="col-4 align-self-center pr-0 pl-2">
-                          <img
-                            :src="getImageSrc(object.offer)"
-                            alt="Фото объекта"
-                          />
+                          <img :src="object.offer.thumb" alt="Фото объекта" />
                         </div>
                         <div class="col-8 pl-2">
                           <b>
@@ -237,31 +234,6 @@ export default {
         this.userLocation
       );
       console.error("optimize", result);
-    },
-    getImageSrc(offer) {
-      const photos = offer.photos;
-      const object_photos = offer.object.photo;
-      let resultImage = null;
-      if (photos && Array.isArray(photos)) {
-        photos.forEach((img) => {
-          if (resultImage == null && typeof img == "string" && img.length > 2) {
-            resultImage = "https://pennylane.pro" + img;
-          }
-        });
-      }
-
-      if (resultImage) {
-        return resultImage;
-      }
-      if (
-        object_photos &&
-        Array.isArray(object_photos) &&
-        typeof object_photos[0] == "string" &&
-        object_photos[0].length > 2
-      ) {
-        return "https://pennylane.pro" + object_photos[0];
-      }
-      return this.$apiUrlHelper.fileNotFoundUrl();
     },
     stageClicked(id) {
       this.clickedStage = id;
