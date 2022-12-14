@@ -16,7 +16,7 @@
           </p>
         </div>
         <div class="col-1 text-right align-self-center">
-          <i class="fas fa-check-circle isDone" v-if="isDone"></i>
+          <i class="fas fa-check-circle success_check" v-if="isDone"></i>
         </div>
       </div>
       <div class="slot" v-if="stageIsActive" @click.stop>
