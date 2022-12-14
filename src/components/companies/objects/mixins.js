@@ -42,7 +42,13 @@ export const MixinObject = {
             return preventStep.timelineStepObjects;
         },
         submittedObjects() {
-            return this.step.timelineStepObjects.map((object) => object.offer);
+            return this.step.timelineStepObjects.map((item) => {
+                if (item.offer && item.offer.id) {
+                    return item.offer;
+                } else {
+                    return {...item, noOffer: true };
+                }
+            });
         },
         notSubmittedObjects() {
             return this.preventStepObjects.filter(
@@ -305,6 +311,7 @@ export const MixinObject = {
                 if (item.offer && item.offer.id) {
                     objects.push(item.offer);
                 } else {
+                    console.log("SUKA", item);
                     objects.push({...item, noOffer: true });
                 }
             });
