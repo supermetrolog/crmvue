@@ -871,9 +871,31 @@
     0,
     .1);
     $basic_step_border: 0.5px solid black;
-    $basic_step_color: lighten($color_grey, 30);
+    $basic_step_color: $color_grey_alt;
     $done_step_border: 2px solid $color_success;
     $warning_step_border: 2px solid $color_warning;
+    @mixin success_block {
+        background-color: $basic_step_color;
+        border: $done_step_border;
+      }
+    .success_block {
+        @include success_block;
+    }
+    @mixin warning_block {
+        background-color: $color_warning_dark;
+        border: $warning_step_border;
+    }
+    .warning_block {
+        @include warning_block;
+    }
+    @mixin success_check {
+        color: $color_success;
+        background: rgb(255,255,255);
+        background: radial-gradient(circle, rgba(255,255,255,1) 50%, rgba(253,29,29,0) 49%, rgba(252,176,69,0) 52%);
+    }
+    .success_check {
+        @include success_check;
+    }
     .timeline-list {
         display: flex;
         justify-content: end;
@@ -4281,7 +4303,8 @@
     
     // ****************** COMPANY-REQUEST-ITEM-ALT ************
     .CompanyRequestItemAlt {
-        background-color: $color_success_dark;
+        @include success_block;
+        border-radius: 10px;
         .edit-btn {
             position: absolute;
             z-index: 2;
@@ -5106,9 +5129,7 @@
                 }
                 i {
                     margin-left: 5px;
-                    color: $color_success;
-                    background: rgb(255,255,255);
-                    background: radial-gradient(circle, rgba(255,255,255,1) 50%, rgba(253,29,29,0) 49%, rgba(252,176,69,0) 52%);
+                    @include success_check
                 }
             }
             &-in_process {
@@ -5582,12 +5603,12 @@
     .step-stage {
         &.isDone {
             .wrapper {
-                background-color: $color_success_dark;
+                @include success_block;
             }
         }
         &.isCurrent {
             .wrapper {
-                background-color: $color_warning_dark;
+                @include warning_block;
             }
         }
         &.readyToClick {
