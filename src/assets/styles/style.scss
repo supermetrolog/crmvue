@@ -3244,6 +3244,11 @@
                         display: table-cell;
                         width: 50%; 
                         float: left;
+                        overflow-x: clip;
+                        a:hover {
+                            overflow: inherit;
+                            text-decoration: underline;
+                        }
                         &:last-child {
                             color: $color_grey;
                         }
@@ -3349,9 +3354,12 @@
             font-weight: 600;
         }
         &-name {
+            cursor: pointer;
+            text-align: center;
             white-space: nowrap;
             z-index: 1; 
-            
+            width: 100%;
+            overflow-x: clip;
         }
         &-position {
             font-size: 12px;
@@ -3452,12 +3460,16 @@
             &-switchers {
                 display: flex;
                 gap: 10px;
+                margin-bottom: 5px;
             }
             &-offers {
                 max-height: 0px;
                 padding: 0;
                 overflow: hidden;
                 transition: all .3s cubic-bezier(0, 1, 0, 1) -.1s;
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
                 &.open {
                     max-height: 9999px;
                     transition-timing-function: cubic-bezier(0.5, 0, 1, 0);
@@ -3475,20 +3487,36 @@
             text-decoration: none;
             color: #2D2F34;
             display: flex;
+            justify-content: center;
             flex-wrap: wrap;
             gap: 10px;
             align-items: center;
         }
         &-visual_id {
             float: left;
+            font-weight: bold;
+            color: $color_success_alt;
+        }
+        &-block {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: nowrap;
+            white-space: nowrap;
         }
     }
     .CompanyBoxObjectsRenter {
         position: relative;
         padding: 5px; 
-        margin-bottom: 3px;
         border: 1px solid $color_grey;
         display: flex;
+        &:first-child {
+            margin-top: 20px;
+        }
+        &:last-child {
+            margin-bottom: 20px;
+        }
         &-danger {
             background-color: lighten($color_danger_dark, 6);
         }
@@ -3507,6 +3535,13 @@
             justify-content: center;
             align-items: center;
             font-size: 10px;
+            overflow: hidden;
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                object-position: center;
+            }
         }
         &-info {
             padding: 5px;

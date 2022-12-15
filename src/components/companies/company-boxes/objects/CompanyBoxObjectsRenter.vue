@@ -10,8 +10,9 @@
       <img
         src="https://upload.wikimedia.org/wikipedia/sco/thumb/b/bf/KFC_logo.svg/1200px-KFC_logo.svg.png"
         alt="нет лого"
+        v-if="true"
       />
-      <!-- <span>нет лого</span> -->
+      <span v-else>нет лого</span>
     </a>
     <div class="CompanyBoxObjectsRenter-info">
       <span class="CompanyBoxObjectsRenter-info-name"

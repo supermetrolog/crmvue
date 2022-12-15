@@ -28,17 +28,14 @@
         >
           <span>{{ locationHandler }}</span>
         </div>
-        <div class="CompanyBoxObjectsListItem-info-mkad">18 км от МКАД</div>
+        <div
+          class="CompanyBoxObjectsListItem-info-mkad"
+          v-if="!!object.from_mkad"
+        >
+          {{ object.from_mkad }} км от МКАД
+        </div>
       </div>
     </div>
-    <!-- <div class="row no-gutters" v-if="object.offerMix"> -->
-    <!-- <CompanyObjectItemOffer
-        v-for="offer in object.offerMix"
-        :key="offer.id"
-        :offer="offer"
-        class="main"
-      /> -->
-    <!-- </div> -->
     <div class="CompanyBoxObjectsListItem-dropdown">
       <hr />
       <div class="CompanyBoxObjectsListItem-dropdown-switchers">
@@ -46,6 +43,7 @@
           v-model="offersIsOpen"
           :title="'Предложения'"
           :mainNumber="object.offerMix.length"
+          v-if="!!object.offerMix.length"
         />
         <DropdownSwitcher
           v-model="rentersIsOpen"
@@ -57,12 +55,7 @@
         class="CompanyBoxObjectsListItem-dropdown-offers"
         :class="{ open: offersIsOpen }"
       >
-        <!-- <CompanyBoxObjectsOffer
-          v-for="offer in object.offerMix"
-          :key="offer.id"
-          :offer="offer"
-        /> -->
-        <CompanyObjectItemOffer
+        <CompanyBoxObjectsOffer
           v-for="offer in object.offerMix"
           :key="offer.id"
           :offer="offer"
@@ -73,16 +66,14 @@
         :class="{ open: rentersIsOpen }"
       >
         <CompanyBoxObjectsRenter />
-        <CompanyBoxObjectsRenter />
-        <CompanyBoxObjectsRenter />
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import CompanyBoxObjectsOffer from "./CompanyBoxObjectsOffer.vue";
 import CompanyBoxObjectsRenter from "./CompanyBoxObjectsRenter.vue";
-import CompanyObjectItemOffer from "../../objects/company-objects/CompanyObjectItemOffer.vue";
 // import CompanyBoxObjectsOffer from "./CompanyBoxObjectsOffer.vue";
 import DropdownSwitcher from "../../../common/dropdown/DropdownSwitcher.vue";
 import { OldDbDirectionList, DistrictList } from "@/const/Const.js";
@@ -93,8 +84,8 @@ export default {
     // CompanyObjectItemOffer,
     DropdownSwitcher,
     // CompanyBoxObjectsOffer,
-    CompanyObjectItemOffer,
     CompanyBoxObjectsRenter,
+    CompanyBoxObjectsOffer,
   },
   props: {
     object: {
@@ -125,7 +116,9 @@ export default {
         typeof this.object.complex.location.direction === "number"
           ? this.directionList[this.object.complex.location.direction].long
           : null;
-      let highway = this.object.complex.location.highwayRel.title;
+      let highway = this.object.complex.location.highwayRel?.title
+        ? this.object.complex.location.highwayRel.title
+        : null;
       highway
         ? (highway = highway[0].toUpperCase() + highway.slice(1) + " ш.")
         : highway;

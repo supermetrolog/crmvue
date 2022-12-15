@@ -32,6 +32,7 @@
                   :href="`http://${website}`"
                   target="_blank"
                   rel="noopener noreferrer"
+                  :title="website"
                   v-for="website in websitesHandler"
                   :key="website"
                   >{{ website }}</a

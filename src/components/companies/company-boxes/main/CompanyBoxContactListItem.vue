@@ -13,9 +13,11 @@
     >
       <span>ВНИМАНИЕ!!!</span>
     </div>
-    <strong class="CompanyBoxContactListItem-name">{{
-      contact.full_name || "Имя неизвестно"
-    }}</strong>
+    <strong
+      class="CompanyBoxContactListItem-name"
+      :title="contact.full_name || ''"
+      >{{ contact.full_name || "Имя неизвестно" }}</strong
+    >
     <span class="CompanyBoxContactListItem-position">{{
       position || "Должность неизвестна"
     }}</span>
@@ -27,6 +29,7 @@
       :contact="contact"
     /> -->
     <PhoneNumber
+      v-if="contact.phones[0]"
       class="CompanyBoxContactListItem-phone"
       :phone="contact.phones[0]"
       :contact="contact"

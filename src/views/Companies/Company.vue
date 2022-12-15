@@ -81,9 +81,10 @@
         v-if="!loaderCompanyObjects"
         :objects="COMPANY_OBJECTS"
       />
-      <CompanyBoxLayout class="requests" :class="'grid-d'">
-        <template #header></template>
-      </CompanyBoxLayout>
+      <CompanyBoxRequests
+        v-if="!loaderCompanyRequests"
+        :requests="COMPANY_REQUESTS"
+      />
       <CompanyBoxLayout class="services" :class="'grid-e'">
         <template #header></template>
       </CompanyBoxLayout>
@@ -184,6 +185,7 @@
 </template>
 
 <script>
+import CompanyBoxRequests from "../../components/companies/company-boxes/requests/CompanyBoxRequests.vue";
 import CompanyBoxObjects from "../../components/companies/company-boxes/objects/CompanyBoxObjects.vue";
 import CompanyBoxLayout from "../../components/companies/company-boxes/CompanyBoxLayout.vue";
 import CompanyBoxMain from "../../components/companies/company-boxes/main/CompanyBoxMain.vue";
@@ -219,6 +221,7 @@ export default {
     CompanyBoxLayout,
     CompanyBoxMain,
     CompanyBoxObjects,
+    CompanyBoxRequests,
   },
   data() {
     return {
