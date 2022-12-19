@@ -30,7 +30,7 @@
         </div>
         <div
           class="CompanyBoxObjectsListItem-info-mkad"
-          v-if="!!object.from_mkad"
+          v-if="object.from_mkad"
         >
           {{ object.from_mkad }} км от МКАД
         </div>
@@ -43,12 +43,13 @@
           v-model="offersIsOpen"
           :title="'Предложения'"
           :mainNumber="object.offerMix.length"
-          v-if="!!object.offerMix.length"
+          v-if="object.offerMix.length"
         />
         <DropdownSwitcher
           v-model="rentersIsOpen"
           :title="'Арендаторы'"
-          :mainNumber="1"
+          :mainNumber="object.deals.length"
+          v-if="object.deals.length"
         />
       </div>
       <div
@@ -65,7 +66,12 @@
         class="CompanyBoxObjectsListItem-dropdown-offers"
         :class="{ open: rentersIsOpen }"
       >
-        <CompanyBoxObjectsRenter />
+        <CompanyBoxObjectsRenter
+          v-for="deal in object.deals"
+          :key="deal.id"
+          :deal="deal"
+        />
+        {{ object.deals }}
       </div>
     </div>
   </div>

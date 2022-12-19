@@ -59,7 +59,12 @@ import DropdownSwitcher from "../../../common/dropdown/DropdownSwitcher.vue";
 export default {
   name: "CompanyBoxObjectsRenter",
   components: { DropdownSwitcher },
-  props: {},
+  props: {
+    deal: {
+      type: Object,
+      required: true,
+    },
+  },
   data() {
     return {
       extraIsOpen: false,

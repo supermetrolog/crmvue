@@ -84,6 +84,7 @@
       <CompanyBoxRequests
         v-if="!loaderCompanyRequests"
         :requests="COMPANY_REQUESTS"
+        :deals="COMPANY.dealsRequestEmpty"
       />
       <CompanyBoxLayout class="services" :class="'grid-e'">
         <template #header></template>
