@@ -2764,6 +2764,7 @@
             "A A A B"
             "C D E B"
             "C D E B";
+            padding-bottom: 20px;
              
             .grid-a {
                 grid-area: A;
@@ -3191,6 +3192,9 @@
                 }
             }
         }
+        .no-data-container img {
+            box-shadow: none;
+        }
     }
 
     // *****  COMPANY PAGE BOXES ******
@@ -3316,6 +3320,21 @@
                 color: $color_grey;
             }
         }
+        &-requisites {
+            list-style: none;
+            // height: 100%;
+            // overflow-y: scroll;
+            li {
+                display: table-row;
+                span {
+                    display: table-cell;
+                    width: 50%;
+                    &:last-child {
+                        color: black;
+                    }
+                }
+            }
+        }
         &-contacts {     
             
         }
@@ -3405,12 +3424,12 @@
         hr {
             position: absolute;
             bottom: 25px;
-            width: 225px;
+            width: 90%;
         }
         &-consultant {
             position: absolute;
             bottom: 12px;
-            left: 10px;
+            left: 5%;
             font-size: 13px;
             color: $color_grey;
         }
@@ -3528,6 +3547,7 @@
         padding: 5px; 
         border: 1px solid $color_grey;
         display: flex;
+        gap: 5px;
         &:first-child {
             margin-top: 20px;
         }
@@ -3563,6 +3583,7 @@
         &-info {
             padding: 5px;
             font-size: 12px;
+            width: 100%;
             &-name {
                 font-weight: bold;
             }
@@ -3574,11 +3595,11 @@
                     display: table-row;
                     span {
                         display: table-cell;
-                        width: 50%; 
+                        width: 65%; 
                         float: left;
                         &:first-child {
                             font-weight: 300;
-                            width: 45%;
+                            width: 30%;
                             margin-right: 5%;
                         }
                     }

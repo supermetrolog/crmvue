@@ -2,7 +2,9 @@
   <CompanyBoxLayout class="CompanyBoxObjects" :class="'grid-c'">
     <template #header>
       <div class="CompanyBoxObjects-header">
-        <span>ОБЪЕКТЫ ({{ objects.length }}), АРЕНДАТОРЫ (ХЗ)</span>
+        <span
+          >ОБЪЕКТЫ ({{ objects.length }}), АРЕНДАТОРЫ ({{ rentersCount }})</span
+        >
       </div>
     </template>
     <template #content>
@@ -22,7 +24,14 @@ export default {
   props: {
     objects: {
       type: Array,
-      default: () => [{}],
+      default: () => [],
+    },
+  },
+  computed: {
+    rentersCount() {
+      return this.objects.reduce(function (acc, object) {
+        return acc + (object.deals.length ? object.deals.length : 0);
+      }, 0);
     },
   },
 };

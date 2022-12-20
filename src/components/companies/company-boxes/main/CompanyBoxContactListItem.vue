@@ -1,6 +1,6 @@
 <template>
   <div
-    @click="this.$emit('openContactFormForUpdate', contact)"
+    @click="clickContact"
     class="CompanyBoxContactListItem"
     :class="{
       'CompanyBoxContactListItem-is_main': contact.isMain,
@@ -72,6 +72,7 @@ export default {
       positionList: PositionList.get("param"),
     };
   },
+  inject: ["openContact"],
   computed: {
     position() {
       return this.positionList[this.contact.position]?.label;
@@ -84,6 +85,11 @@ export default {
         return false;
       }
       return moment(date).format("DD.MM.YYYY");
+    },
+  },
+  methods: {
+    clickContact() {
+      this.openContact(this.contact);
     },
   },
 };

@@ -41,11 +41,11 @@ export default {
   props: {
     requests: {
       type: Array,
-      default: () => [{}],
+      default: () => [],
     },
     deals: {
       type: Array,
-      default: () => [{}],
+      default: () => [],
     },
   },
   computed: {

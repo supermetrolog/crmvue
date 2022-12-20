@@ -16,7 +16,7 @@ export default {
   props: {
     requests: {
       type: Array,
-      default: () => [{}],
+      default: () => [],
     },
   },
 };

@@ -103,18 +103,107 @@
                 <span v-else>Не указан</span>
               </div></Tab
             >
-            <Tab name="Ревизиты"
-              ><div><span>хуйвизиты</span></div></Tab
-            >
+            <Tab name="Ревизиты">
+              <div>
+                <ul class="CompanyBoxMain-requisites">
+                  <li>
+                    <span>Юр. адрес</span>
+                    <span v-if="company.legalAddress">{{
+                      company.legalAddress
+                    }}</span
+                    ><span v-else>нет данных</span>
+                  </li>
+                  <li>
+                    <span>ОГРН</span>
+                    <span v-if="company.ogrn">{{ company.ogrn }}</span>
+                    <span v-else>нет данных</span>
+                  </li>
+                  <li>
+                    <span>ИНН</span>
+                    <span v-if="company.inn">{{ company.inn }}</span>
+                    <span v-else>нет данных</span>
+                  </li>
+                  <li>
+                    <span>КПП</span>
+                    <span v-if="company.kpp">{{ company.kpp }}</span
+                    ><span v-else>нет данных</span>
+                  </li>
+                  <li>
+                    <span>Расчетный счет</span>
+                    <span v-if="company.checkingAccount">{{
+                      company.checkingAccount
+                    }}</span
+                    ><span v-else>нет данных</span>
+                  </li>
+                  <li>
+                    <span>Кор. счет</span>
+                    <span v-if="company.correspondentAccount">{{
+                      company.correspondentAccount
+                    }}</span
+                    ><span v-else>нет данных</span>
+                  </li>
+                  <li>
+                    <span>В банке</span>
+                    <span v-if="company.inTheBank">{{ company.inTheBank }}</span
+                    ><span v-else>нет данных</span>
+                  </li>
+                  <li>
+                    <span>БИК</span>
+                    <span v-if="company.bik">{{ company.bik }}</span
+                    ><span v-else>нет данных</span>
+                  </li>
+                  <li>
+                    <span>ОКПО</span>
+                    <span v-if="company.okpo">{{ company.okpo }}</span
+                    ><span v-else>нет данных</span>
+                  </li>
+                  <li>
+                    <span>ОКВЭД</span>
+                    <span v-if="company.okved">{{ company.okved }}</span
+                    ><span v-else>нет данных</span>
+                  </li>
+                  <li>
+                    <span>Имя подписанта</span>
+                    <span v-if="company.signatoryName">{{
+                      company.signatoryName
+                    }}</span
+                    ><span v-else>нет данных</span>
+                  </li>
+                  <li>
+                    <span>Фамилия подписанта</span>
+                    <span v-if="company.signatoryMiddleName">{{
+                      company.signatoryMiddleName
+                    }}</span
+                    ><span v-else>нет данных</span>
+                  </li>
+                  <li>
+                    <span>Отчество подписанта</span>
+                    <span v-if="company.signatoryLastName">{{
+                      company.signatoryLastName
+                    }}</span
+                    ><span v-else>нет данных</span>
+                  </li>
+                  <li>
+                    <span>№ документа</span>
+                    <span v-if="company.documentNumber">{{
+                      company.documentNumber
+                    }}</span
+                    ><span v-else>нет данных</span>
+                  </li>
+                  <li>
+                    <span>Действует на основе</span>
+                    <span v-if="company.basis">{{ company.basis }}</span
+                    ><span v-else>нет данных</span>
+                  </li>
+                </ul>
+              </div>
+            </Tab>
           </Tabs>
         </div>
       </div>
       <hr />
       <div class="CompanyBoxMain-contacts">
-        <CompanyBoxContactList
-          :contacts="contacts"
-          @openContactFormForUpdate="this.$emit('openContactFormForUpdate')"
-        />
+        <CompanyBoxContactList :contacts="contacts" />
       </div>
     </template>
   </CompanyBoxLayout>
@@ -171,6 +260,6 @@ export default {
       return moment(date).format("DD.MM.YYYY");
     },
   },
-  emits: ["openContactFormForUpdate", "editCompany"],
+  emits: ["editCompany"],
 };
 </script>

@@ -16,7 +16,7 @@ export default {
   props: {
     objects: {
       type: Array,
-      default: () => [{}],
+      default: () => [],
     },
   },
 };

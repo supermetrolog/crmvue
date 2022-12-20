@@ -71,7 +71,6 @@
           :key="deal.id"
           :deal="deal"
         />
-        {{ object.deals }}
       </div>
     </div>
   </div>

@@ -70,11 +70,10 @@
         :company="COMPANY"
         :contacts="this.COMPANY_CONTACTS"
         @editCompany="clickOpenCompanyForm"
-        @openContactFormForUpdate="openContactFormForUpdate"
       />
-      <CompanyBoxLayout :class="'grid-b'">
+      <CompanyBoxLayout :class="'grid-b'" v-if="!loaderCompanyDetailInfo">
         <template #header>
-          <span>Лог работы с контанта</span>
+          <span>Лог работы с {{ this.COMPANY.nameRu }}</span>
         </template>
       </CompanyBoxLayout>
       <CompanyBoxObjects
@@ -86,9 +85,8 @@
         :requests="COMPANY_REQUESTS"
         :deals="COMPANY.dealsRequestEmpty"
       />
-      <CompanyBoxLayout class="services" :class="'grid-e'">
-        <template #header></template>
-      </CompanyBoxLayout>
+      <CompanyBoxServices v-if="!loaderCompanyRequests" />
+
       <!-- <div class="company-detail-info-container box">
         <div class="col-12 p-0 mb-3">
           <button
@@ -186,6 +184,7 @@
 </template>
 
 <script>
+import CompanyBoxServices from "../../components/companies/company-boxes/services/CompanyBoxServices.vue";
 import CompanyBoxRequests from "../../components/companies/company-boxes/requests/CompanyBoxRequests.vue";
 import CompanyBoxObjects from "../../components/companies/company-boxes/objects/CompanyBoxObjects.vue";
 import CompanyBoxLayout from "../../components/companies/company-boxes/CompanyBoxLayout.vue";
@@ -223,6 +222,7 @@ export default {
     CompanyBoxMain,
     CompanyBoxObjects,
     CompanyBoxRequests,
+    CompanyBoxServices,
   },
   data() {
     return {
@@ -239,6 +239,11 @@ export default {
       contact: null,
       company: null,
       deal: null,
+    };
+  },
+  provide() {
+    return {
+      openContact: (contact) => this.openContact(contact),
     };
   },
   computed: {
@@ -315,6 +320,10 @@ export default {
     openDealFormForUpdate(deal) {
       this.deal = deal;
       this.clickOpenDealForm();
+    },
+    openContact(contact) {
+      console.log(contact);
+      this.openContactFormForUpdate(contact);
     },
     openContactFormForUpdate(contact) {
       this.contact = contact;
