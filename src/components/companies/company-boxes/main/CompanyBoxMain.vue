@@ -24,7 +24,7 @@
     </template>
     <template #content>
       <div class="CompanyBoxMain-content">
-        <div class="CompanyBoxMain-left">
+        <div class="CompanyBoxMain-left" id="left-box">
           <ul class="CompanyBoxMain-left-list">
             <li class="CompanyBoxMain-left-list-websites">
               <span v-if="!!websitesHandler"
@@ -85,7 +85,7 @@
             </li>
           </ul>
         </div>
-        <div class="CompanyBoxMain-right">
+        <div class="CompanyBoxMain-right" id="right-box">
           <Tabs :options="{ useUrlFragment: false }">
             <Tab name="Описание"
               ><div>
@@ -220,6 +220,11 @@ export default {
   mixins: [MixinCompanyDetailInfo],
   name: "CompanyBoxMain",
   components: { CompanyBoxLayout, CompanyBoxContactList },
+  data() {
+    return {
+      leftBoxHeight: null,
+    };
+  },
   props: {
     company: {
       type: Object,
@@ -259,6 +264,14 @@ export default {
     dateFormatter(date) {
       return moment(date).format("DD.MM.YYYY");
     },
+  },
+  mounted() {
+    let divElement = document.querySelector("#left-box");
+    let elemHeight = divElement.offsetHeight;
+    this.leftBoxHeight = elemHeight;
+    document.querySelector(
+      "#right-box"
+    ).style.height = `${this.leftBoxHeight}px`;
   },
   emits: ["editCompany"],
 };

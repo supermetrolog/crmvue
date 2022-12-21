@@ -13,6 +13,11 @@
     >
       <span>ВНИМАНИЕ!!!</span>
     </div>
+    <i
+      class="fas fa-street-view mr-2 text-dark CompanyBoxContactListItem-status"
+      v-if="contact.faceToFaceMeeting"
+      title="Очная встреча"
+    ></i>
     <strong
       class="CompanyBoxContactListItem-name"
       :title="contact.full_name || ''"

@@ -3299,6 +3299,10 @@
         }
         &-right {
             width: 50%;
+            position: relative;
+            .tabs-component {
+                height: 100%;
+            }
             .tabs-component-tab-a {
                 padding: 0;
                 padding-right: 12px;
@@ -3318,19 +3322,22 @@
             .tabs-component-panels {
                 padding: 0;
                 color: $color_grey;
+                height: 100%;
+                overflow-y: auto;
+                
             }
         }
         &-requisites {
             list-style: none;
-            // height: 100%;
-            // overflow-y: scroll;
             li {
                 display: table-row;
                 span {
                     display: table-cell;
-                    width: 50%;
+                    width: 40%;
                     &:last-child {
                         color: black;
+                        margin-left: 10%;
+                        width: 50%;
                     }
                 }
             }
@@ -3388,6 +3395,9 @@
             position: absolute;
             top: 5px;
             font-weight: 600;
+            &.fa-street-view {
+                right: 0;
+            }
         }
         &-name {
             cursor: pointer;
