@@ -26,6 +26,7 @@
           <PropogationDoubleInput
             v-model="form.phones"
             :v="v$.form.phones"
+            @change="changePhones"
             :maska="[
               '+7 (###) ###-##-###',
               '+### (###) ###-##-##',
@@ -50,6 +51,7 @@
           </div>
           <PropogationInput
             v-model="form.emails"
+            @change="changeEmails"
             :v="v$.form.emails"
             name="email"
             label="Email"
@@ -512,6 +514,18 @@ export default {
         elem.isMain = null;
         return elem;
       });
+    },
+    changePhones() {
+      console.log("CHANGE PHONES");
+      if (this.form.phones.length === 1) {
+        this.form.phones[0].isMain = 1;
+      }
+    },
+    changeEmails() {
+      console.log("CHANGE PHONES");
+      if (this.form.emails.length === 1) {
+        this.form.emails[0].isMain = 1;
+      }
     },
   },
   async mounted() {

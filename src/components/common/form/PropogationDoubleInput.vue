@@ -98,7 +98,6 @@ export default {
           if (item[this.name2] !== null && item[this.name2].length) {
             data[this.name2] = item[this.name2];
           }
-          console.error(data);
           array.push(data);
         }
       });
