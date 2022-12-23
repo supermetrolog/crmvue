@@ -79,7 +79,6 @@ export default {
       if (this.field.length == 1) {
         this.field = array;
       }
-
       this.$emit("update:modelValue", this.field);
     },
     deleteInput(index) {
@@ -95,7 +94,7 @@ export default {
         this.field.push({ [this.name]: "" });
         this.$nextTick(() => {
           setTimeout(() => {
-            this.$refs["input" + (index + 1)].focus();
+            this.$refs["input" + (index + 1)][0].focus();
           }, 0);
         });
       }

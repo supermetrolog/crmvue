@@ -94,7 +94,7 @@ export default {
 
       this.field.map((item) => {
         if (item[this.name].length) {
-          data = { [this.name]: item[this.name], [this.name2]: null };
+          data = { ...item, [this.name]: item[this.name], [this.name2]: null };
           if (item[this.name2] !== null && item[this.name2].length) {
             data[this.name2] = item[this.name2];
           }
@@ -121,8 +121,8 @@ export default {
         this.field.push({ [this.name]: "", [this.name2]: null });
         this.$nextTick(() => {
           setTimeout(() => {
-            this.$refs["input" + (index + 1)].focus();
-          }, 0);
+            this.$refs["input" + (index + 1)][0].focus();
+          }, 500);
         });
       }
     },
