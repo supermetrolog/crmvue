@@ -8,7 +8,7 @@ export default {
     let url =
       "oldDb/objects?" +
       query +
-      "&expand=offerMix.generalOffersMix,objectFloors,complex.location.highwayRel,deals.company,deals.competitor";
+      "&expand=offerMix.generalOffersMix,objectFloors,complex.location.highwayRel,deals.company,deals.competitor, deals.consultant.userProfile";
     let data = false;
     await axios
       .get(url)

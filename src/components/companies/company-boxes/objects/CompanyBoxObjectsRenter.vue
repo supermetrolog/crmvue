@@ -43,7 +43,9 @@
           </li>
           <li>
             <span>консультант:</span>
-            <span v-if="deal.consultant_id">{{ deal.consultant_id }}</span>
+            <span v-if="deal.consultant?.userProfile">{{
+              deal.consultant.userProfile.short_name
+            }}</span>
             <span v-else>нет данных</span>
           </li>
           <li>

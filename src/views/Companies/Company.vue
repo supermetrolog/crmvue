@@ -62,6 +62,18 @@
         @updated="updatedCompany"
       />
     </transition>
+    <transition
+      mode="out-in"
+      enter-active-class="animate__animated animate__zoomIn for__modal absolute"
+      leave-active-class="animate__animated animate__zoomOut for__modal absolute"
+    >
+      <CompanyContactModal
+        v-if="contactModalVisible"
+        :contact="contact"
+        @closeContactModal="clickCloseContactModal"
+        @clickEditContact="openContactFormForUpdate"
+      />
+    </transition>
 
     <div class="company-wrapper">
       <Loader v-if="loaderCompanyDetailInfo"></Loader>
@@ -184,45 +196,32 @@
 </template>
 
 <script>
+import CompanyContactModal from "../../components/companies/companies/contact/CompanyContactModal.vue";
 import CompanyBoxServices from "../../components/companies/company-boxes/services/CompanyBoxServices.vue";
 import CompanyBoxRequests from "../../components/companies/company-boxes/requests/CompanyBoxRequests.vue";
 import CompanyBoxObjects from "../../components/companies/company-boxes/objects/CompanyBoxObjects.vue";
 import CompanyBoxLayout from "../../components/companies/company-boxes/CompanyBoxLayout.vue";
 import CompanyBoxMain from "../../components/companies/company-boxes/main/CompanyBoxMain.vue";
 import { mapActions, mapGetters } from "vuex";
-// import CompanyDetailInfo from "@/components/companies/companies/CompanyDetailInfo.vue";
-// import CompanyRequestList from "@/components/companies/companies/request/CompanyRequestList.vue";
 import CompanyRequestForm from "@/components/companies/forms/company-request-form/CompanyRequestForm.vue";
 import CompanyContactForm from "@/components/companies/forms/company-contact-form/CompanyContactForm.vue";
 import CompanyForm from "@/components/companies/forms/company-form/CompanyForm.vue";
 import CompanyDealForm from "@/components/companies/forms/company-deal-form/CompanyDealForm";
-// import CompanyContactList from "@/components/companies/companies/contact/CompanyContactList.vue";
-// import CompanyObjectList from "@/components/companies/objects/company-objects/CompanyObjectList";
 import Timeline from "@/components/companies/timeline/Timeline.vue";
-// import DealItem from "@/components/companies/companies/deal/DealItem.vue";
-// import DealList from "@/components/companies/companies/deal/DealList.vue";
-// import NoData from "@/components/common/NoData";
-// import Joke from "@/components/common/Joke";
 export default {
   name: "Company",
   components: {
-    // CompanyDetailInfo,
-    // CompanyRequestList,
     CompanyRequestForm,
     CompanyContactForm,
     CompanyForm,
-    // CompanyContactList,
     Timeline,
-    // NoData,
-    // Joke,
-    // CompanyObjectList,
-    // DealList,
     CompanyDealForm,
     CompanyBoxLayout,
     CompanyBoxMain,
     CompanyBoxObjects,
     CompanyBoxRequests,
     CompanyBoxServices,
+    CompanyContactModal,
   },
   data() {
     return {
@@ -232,6 +231,7 @@ export default {
       loaderCompanyObjects: true,
       companyRequestFormVisible: false,
       companyContactFormVisible: false,
+      contactModalVisible: false,
       companyFormVisible: false,
       dealFormVisible: false,
       timelineVisible: false,
@@ -244,6 +244,7 @@ export default {
   provide() {
     return {
       openContact: (contact) => this.openContact(contact),
+      createContactComment: (data) => this.createContactComment(data),
     };
   },
   computed: {
@@ -262,6 +263,7 @@ export default {
       "FETCH_COMPANY_CONTACTS",
       "FETCH_COMPANY_OBJECTS",
       "ADD_TO_TRANSITION_LIST",
+      "CREATE_CONTACT_COMMENT",
     ]),
     async getCompany(withLoader = true) {
       this.loaderCompanyDetailInfo = withLoader;
@@ -322,8 +324,13 @@ export default {
       this.clickOpenDealForm();
     },
     openContact(contact) {
+      this.contactModalVisible = true;
+      this.contact = contact;
       console.log(contact);
-      this.openContactFormForUpdate(contact);
+      // this.openContactFormForUpdate(contact);
+    },
+    clickCloseContactModal() {
+      this.contactModalVisible = false;
     },
     openContactFormForUpdate(contact) {
       this.contact = contact;
@@ -334,6 +341,7 @@ export default {
       this.contact = null;
     },
     clickOpenCompanyContactForm() {
+      this.contactModalVisible = false;
       this.companyContactFormVisible = true;
     },
     createdRequest() {
@@ -371,6 +379,9 @@ export default {
     closeTimeline() {
       this.timelineVisible = false;
       this.$router.push({ name: "company" });
+    },
+    async createContactComment(data) {
+      await this.CREATE_CONTACT_COMMENT(data);
     },
   },
   async created() {
