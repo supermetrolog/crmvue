@@ -2670,7 +2670,7 @@
             }
 
             &-timeline {
-                border: none !important;
+                border-color: transparent !important;
                 &:hover {
                     cursor: pointer;
                     opacity: .7;
