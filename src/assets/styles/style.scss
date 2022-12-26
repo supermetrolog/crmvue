@@ -2670,6 +2670,7 @@
             }
 
             &-timeline {
+                border: none !important;
                 &:hover {
                     cursor: pointer;
                     opacity: .7;
@@ -6000,7 +6001,7 @@
 
             i {
                 margin-left: 10px;
-                font-size: 20px;
+                font-size: 15px;
             }
 
             &-content {
@@ -6110,7 +6111,10 @@
 
             .MiniTimeline-step {
                 height: $step_height;
-
+                i {
+                    margin-left: 5px;
+                    font-size: 20px;
+                }
                 &-current {
                     cursor: pointer;
 
@@ -6162,7 +6166,6 @@
                 text-overflow: ellipsis;
 
                 .step-name {
-                    max-width: 40px;
                     overflow: hidden;
                     text-overflow: ellipsis;
                 }
@@ -6178,6 +6181,9 @@
                 &-content {
                     overflow: hidden;
                     text-overflow: ellipsis;
+                }
+                .step-name {
+                    max-width: 80px;
                 }
             }
         }
