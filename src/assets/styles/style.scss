@@ -6041,6 +6041,11 @@
             }
 
             &-done {
+                &::before {
+                    border-left: $done_step_border;
+                    border-bottom: $done_step_border;
+                    border-top: $done_step_border;
+                }
                 &::after {
                     border-right: $done_step_border;
                     border-bottom: $done_step_border;
@@ -6067,7 +6072,6 @@
             }
 
             &-in_process {
-               
                 &::before {
                     background-color: $color_warning_dark !important;
                     border-left: $warning_step_border;
