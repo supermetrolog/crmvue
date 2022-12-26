@@ -6010,19 +6010,27 @@
             }
 
             &:first-child {
-                &::before {
-                    content: '';
-                    height: $step_height;
-                    width: $step_height/2;
-                    background-color: $basic_step_color;
-                    position: absolute;
-                    z-index: 2;
-                    left: 0;
+                background-color: $basic_step_color;
+                .MiniTimeline-arrow {
+                    border-left: none !important;
                 }
+                // &::before {
+                //     content: '';
+                //     height: $step_height;
+                //     width: $step_height/2;
+                //     background-color: $basic_step_color;
+                //     position: absolute;
+                //     z-index: 2;
+                //     left: 0;
+                // }
 
             }
 
             &:last-child {
+                background-color: $basic_step_color;
+                .MiniTimeline-arrow {
+                    border-right: none !important;
+                }
                 &::after {
                     content: '';
                     height: $step_height;
