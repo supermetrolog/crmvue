@@ -5964,7 +5964,7 @@
 
     // ************** MINI TIMELINE *************
     .MiniTimeline {
-        $step_height: 33px;
+        $step_height: 34px;
         font-size: 10px;
         color: black;
         overflow-x: clip;
@@ -6027,7 +6027,7 @@
             }
 
             &:last-child {
-                background-color: $basic_step_color;
+               
                 .MiniTimeline-arrow {
                     border-right: none !important;
                 }
