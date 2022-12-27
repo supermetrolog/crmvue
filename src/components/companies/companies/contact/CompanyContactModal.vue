@@ -1,12 +1,38 @@
 <template>
   <div class="fuck">
-    <Modal :title="'Контакт'" @close="clickCloseModal" class="normal">
+    <Modal
+      :title="contact.isMain ? 'Основной контакт' : 'Контакт'"
+      @close="clickCloseModal"
+      class="normal"
+    >
       <div class="CompanyContactModal">
+        <div class="CompanyContactModal-edit" v-if="!reedOnly">
+          <i
+            class="fas fa-pen text-primary edit"
+            @click="this.$emit('clickEditContact', this.contact)"
+            v-if="!contact.type"
+          ></i>
+        </div>
         <div class="CompanyContactModal-left">
           <p class="CompanyContactModal-left-name">
             {{ contact.full_name ? contact.full_name : "Общий контакт" }}
+            <span
+              ><i
+                class="fas fa-smile mr-2 text-success"
+                v-if="contact.good"
+                title="Хорошие взаимоотношения"
+              ></i>
+              <i
+                class="fas fa-street-view mr-2 text-dark"
+                v-if="contact.faceToFaceMeeting"
+                title="Очная встреча"
+              ></i
+            ></span>
           </p>
-
+          <div>
+            <span v-if="!contact.position_unknown">{{ position }}</span>
+            <span v-if="contact.position_unknown">Должость неизвестна</span>
+          </div>
           <div v-if="contact.phones">
             <PhoneNumber
               v-for="phone of contact.phones"
@@ -26,28 +52,6 @@
               {{ email.email }}
             </a>
           </div>
-          <div class="CompanyContactModal-left-icons">
-            <i
-              class="fas fa-exclamation-circle mr-2 text-danger"
-              v-if="contact.warning"
-              title="Внимание"
-            ></i>
-            <i
-              class="fas fa-smile mr-2 text-success"
-              v-if="contact.good"
-              title="Хорошие взаимоотношения"
-            ></i>
-            <i
-              class="fas fa-street-view mr-2 text-dark"
-              v-if="contact.faceToFaceMeeting"
-              title="Очная встреча"
-            ></i>
-            <i
-              class="fas fa-pen text-primary edit"
-              @click="this.$emit('clickEditContact', this.contact)"
-              v-if="!contact.type && !reedOnly"
-            ></i>
-          </div>
           <div>
             <div class="way-list">
               <i
@@ -59,74 +63,66 @@
               ></i>
             </div>
           </div>
-          <div>
-            <span v-if="!contact.position_unknown">{{ position }}</span>
-            <span v-if="contact.position_unknown">Должость неизвестна</span>
-          </div>
-
-          <div>
-            <span
-              >{{ contact.good }} {{ contact.faceToFaceMeeting }}
-              {{ contact.warning }} {{ contact.warning_why_comment }}</span
+          <div v-if="!contact.status">
+            <span>Пассив</span>
+            <span v-if="contact.passive_why !== null"
+              >({{
+                passiveWhyOptions.find(
+                  (elem) => elem.value == contact.passive_why
+                ).label
+              }})</span
+            >
+            <span v-if="contact.passive_why_comment">
+              по причине {{ contact.passive_why_comment }}</span
             >
           </div>
-          <div>
-            <span>компания {{ contact.company_id }}</span>
-          </div>
-          <div>
-            <span>{{ contact.status }}</span>
-          </div>
-          <div>
-            <span>{{ contact.passive_why_comment }}</span>
-          </div>
-          <div>
-            <span>{{ contact.isMain }}</span>
-          </div>
-          <div>
-            <span v-if="contact.websites"
+          <div></div>
+          <div class="CompanyContactModal-websites">
+            <template v-if="contact.websites"
               ><a
-                :href="`http://${website}`"
+                :href="`http://${website.website}`"
                 target="_blank"
                 rel="noopener noreferrer"
                 :title="website"
                 v-for="website in contact.websites"
                 :key="website"
-                >{{ website }}</a
-              ></span
+                >{{ website.website }}</a
+              ></template
             >
           </div>
         </div>
         <div class="CompanyContactModal-right">
           <div
-            class="col-12 comment-list text-left"
-            v-if="contact.contactComments.length"
+            class="CompanyContactModal-warning text-danger"
+            v-if="contact.warning"
           >
-            <div
-              class="comment"
-              v-for="comment in contact.contactComments"
-              :key="comment.id"
+            <span>ВНИМАНИЕ!!!</span>
+            <span v-if="contact.warning_why_comment">
+              - {{ contact.warning_why_comment }}</span
             >
+          </div>
+          <div
+            class="CompanyContactModal-right-comments"
+            v-if="contact.contactComments.length"
+            ref="comments"
+          >
+            <div v-for="comment in contact.contactComments" :key="comment.id">
               <strong>{{ comment.author.userProfile.short_name }}</strong>
               <p>{{ comment.comment }}</p>
               <small class="text-grey">{{ comment.created_at }}</small>
             </div>
           </div>
-          <div class="col-12 mt-2">
+          <div class="CompanyContactModal-right-send_comment">
             <textarea v-model="comment"></textarea>
-            <button
-              class="btn btn-primary btn-large"
-              @click="clickCreateComment"
-            >
-              Отправить
-            </button>
+            <button @click="clickCreateComment">Отправить</button>
           </div>
         </div>
 
         <div class="CompanyContactModal-footer">
           <hr />
-          <span v-if="contact.consultant?.userProfile.short_name">{{
-            contact.consultant.userProfile.short_name
-          }}</span>
+          <span v-if="contact.consultant?.userProfile.short_name"
+            >конс: {{ contact.consultant.userProfile.short_name }}</span
+          >
           <span v-else>хз</span>
         </div>
       </div>
@@ -144,16 +140,6 @@ import {
   ActivePassive,
   PassiveWhyContact,
 } from "@/const/Const.js";
-// import Form from "@/components/common/form/Form.vue";
-// import FormGroup from "@/components/common/form/FormGroup.vue";
-// import Input from "@/components/common/form/Input.vue";
-// import Submit from "@/components/common/form/Submit.vue";
-// import PropogationInput from "@/components/common/form/PropogationInput.vue";
-// import PropogationDoubleInput from "@/components/common/form/PropogationDoubleInput.vue";
-// import Checkbox from "@/components/common/form/Checkbox.vue";
-// import Textarea from "@/components/common/form/Textarea.vue";
-// import Radio from "@/components/common/form/Radio.vue";
-// import MultiSelect from "@/components/common/form/MultiSelect.vue";
 import api from "@/api/api";
 
 export default {
@@ -170,6 +156,7 @@ export default {
       passiveWhyOptions: PassiveWhyContact.get("param"),
       loader: false,
       selectedCompany: null,
+      comment: "",
     };
   },
   inject: ["createContactComment"],
@@ -177,6 +164,10 @@ export default {
     contact: {
       type: Object,
       default: null,
+    },
+    reedOnly: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {
@@ -237,26 +228,21 @@ export default {
     clickCloseModal() {
       this.$emit("closeContactModal");
     },
-  },
-  async mounted() {
-    this.loader = true;
-    await this.FETCH_CONSULTANT_LIST();
-    this.form.company_id = this.company_id;
-    this.form.phones = this.phones;
-    if (this.formdata) {
-      this.form = { ...this.form, ...this.formdata };
-    }
-    this.loader = false;
-  },
-  watch: {
-    form: {
-      handler() {
-        console.log("FORM: ", this.form);
-      },
-      deep: true,
+    scrollToElement() {
+      const el = this.$refs.comments;
+      if (el) {
+        el.scrollTop = 9999999;
+      }
     },
   },
-  emits: ["closeCompanyForm"],
+  mounted() {
+    this.scrollToElement();
+  },
+  updated() {
+    this.scrollToElement();
+    console.log("гавно");
+  },
+  emits: ["closeContactModal"],
 };
 </script>
 

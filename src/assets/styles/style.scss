@@ -3379,16 +3379,14 @@
             filter: brightness(1);
             background-size: 50%;
             background-repeat: no-repeat; 
-            
-                content: "";
-                
-                opacity: 0.3;
-                top: 0;
-                left: 0;
-                bottom: 0;
-                right: 0;
-                position: absolute;
-                z-index: 0;   
+            content: "";
+            opacity: 0.3;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            position: absolute;
+            z-index: 0;   
               
         }
         &-status {
@@ -3454,14 +3452,45 @@
         grid-template-areas: 
           "left right"
           "footer footer";
+        position: relative;
+        &-warning {
+            position: absolute;
+            top: 0;
+            right: 0;
+            font-weight: bolder;
+        }
+        &-edit {
+            position: absolute;
+            top: -20px;
+        }
         &-left {
             grid-area: left;
             &-name {
                 font-size: 20px;
             }
         }
+        &-websites {
+            display: flex;
+            flex-direction: column;
+        }
         &-right {
+            margin-top: 30px;
+            max-height: 350px;
             grid-area: right;
+            &-comments {
+                max-height: 250px;
+                overflow-y: auto;
+            }
+            &-send_comment {
+                textarea {
+                    width: 100%;
+                    resize: none;
+                    border-radius: 0;
+                    &:focus-visible {
+                        outline: none;
+                    }
+                }
+            }
         }
         &-footer {
             grid-area: footer;

@@ -97,7 +97,7 @@
         :requests="COMPANY_REQUESTS"
         :deals="COMPANY.dealsRequestEmpty"
       />
-      <CompanyBoxServices v-if="!loaderCompanyRequests" />
+      <CompanyBoxServices v-if="!loaderCompanyDetailInfo" />
 
       <!-- <div class="company-detail-info-container box">
         <div class="col-12 p-0 mb-3">
