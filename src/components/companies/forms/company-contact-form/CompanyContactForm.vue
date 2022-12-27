@@ -22,11 +22,11 @@
           />
           <Input v-model="form.last_name" label="Отчество" class="col-4" />
         </FormGroup>
-
         <FormGroup class="mb-1">
           <PropogationDoubleInput
             v-model="form.phones"
             :v="v$.form.phones"
+            @change="changePhones"
             :maska="[
               '+7 (###) ###-##-###',
               '+### (###) ###-##-##',
@@ -38,13 +38,36 @@
             label="Телефон"
             class="col-6 pr-1"
           />
+          <div class="col-1">
+            <FormGroup class="label-padding">
+              <Checkbox
+                @change="changeIsMainPhone(phone)"
+                v-for="phone in form.phones"
+                :key="phone.phone"
+                v-model="phone.isMain"
+                class="col-12 large"
+              />
+            </FormGroup>
+          </div>
           <PropogationInput
             v-model="form.emails"
+            @change="changeEmails"
             :v="v$.form.emails"
             name="email"
             label="Email"
-            class="col-6 pr-1"
+            class="col-4 pr-1"
           />
+          <div class="col-1">
+            <FormGroup class="label-padding">
+              <Checkbox
+                @change="changeIsMainEmail(email)"
+                v-for="email in form.emails"
+                :key="email.email"
+                v-model="email.isMain"
+                class="col-12 large"
+              />
+            </FormGroup>
+          </div>
         </FormGroup>
         <FormGroup class="mb-1">
           <Checkbox
@@ -293,6 +316,15 @@ export default {
             "заполните email правильно",
             this.customEmailValidation
           ),
+          requiredIsMain: helpers.withMessage("Выберите главный email", () => {
+            if (
+              this.form.emails.length &&
+              !this.form.emails.find((elem) => elem.isMain === 1)
+            ) {
+              return false;
+            }
+            return true;
+          }),
         },
         phones: {
           customRequiredPhones: helpers.withMessage(
@@ -305,6 +337,15 @@ export default {
               this.validatePhonesPropogation
             ),
           },
+          requiredIsMain: helpers.withMessage("Выберите главный номер", () => {
+            if (
+              this.form.phones.length &&
+              !this.form.phones.find((elem) => elem.isMain === 1)
+            ) {
+              return false;
+            }
+            return true;
+          }),
         },
         passive_why: {
           customRequiredPassiveWhy: helpers.withMessage(
@@ -453,6 +494,38 @@ export default {
 
     clickCloseModal() {
       this.$emit("closeCompanyForm");
+    },
+    changeIsMainEmail(changedEmail) {
+      this.form.emails = this.form.emails.map((elem) => {
+        if (elem.email == changedEmail.email) {
+          elem.isMain = changedEmail.isMain ? 1 : null;
+          return elem;
+        }
+        elem.isMain = null;
+        return elem;
+      });
+    },
+    changeIsMainPhone(changedPhone) {
+      this.form.phones = this.form.phones.map((elem) => {
+        if (elem.phone == changedPhone.phone) {
+          elem.isMain = changedPhone.isMain ? 1 : null;
+          return elem;
+        }
+        elem.isMain = null;
+        return elem;
+      });
+    },
+    changePhones() {
+      console.log("CHANGE PHONES");
+      if (this.form.phones.length === 1) {
+        this.form.phones[0].isMain = 1;
+      }
+    },
+    changeEmails() {
+      console.log("CHANGE PHONES");
+      if (this.form.emails.length === 1) {
+        this.form.emails[0].isMain = 1;
+      }
     },
   },
   async mounted() {
