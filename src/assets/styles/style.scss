@@ -2670,6 +2670,7 @@
             }
 
             &-timeline {
+                border-color: transparent !important;
                 &:hover {
                     cursor: pointer;
                     opacity: .7;
@@ -5963,7 +5964,7 @@
 
     // ************** MINI TIMELINE *************
     .MiniTimeline {
-        $step_height: 33px;
+        $step_height: 34px;
         font-size: 10px;
         color: black;
         overflow-x: clip;
@@ -5992,15 +5993,14 @@
             align-items: center;
             position: relative;
             height: $step_height;
-
             .step-name {
                 display: flex;
                 align-items: center;
             }
 
             i {
-                margin-left: 10px;
-                font-size: 20px;
+                margin-left: 3px;
+                font-size: 15px;
             }
 
             &-content {
@@ -6009,6 +6009,9 @@
             }
 
             &:first-child {
+                .MiniTimeline-arrow {
+                    border-left: none !important;
+                }
                 &::before {
                     content: '';
                     height: $step_height;
@@ -6022,6 +6025,9 @@
             }
 
             &:last-child {
+                .MiniTimeline-arrow {
+                    border-right: none !important;
+                }
                 &::after {
                     content: '';
                     height: $step_height;
@@ -6039,7 +6045,6 @@
                     border-bottom: $done_step_border;
                     border-top: $done_step_border;
                 }
-
                 &::after {
                     border-right: $done_step_border;
                     border-bottom: $done_step_border;
@@ -6110,7 +6115,10 @@
 
             .MiniTimeline-step {
                 height: $step_height;
-
+                i {
+                    margin-left: 5px;
+                    font-size: 20px;
+                }
                 &-current {
                     cursor: pointer;
 
@@ -6162,7 +6170,6 @@
                 text-overflow: ellipsis;
 
                 .step-name {
-                    max-width: 40px;
                     overflow: hidden;
                     text-overflow: ellipsis;
                 }
@@ -6178,6 +6185,9 @@
                 &-content {
                     overflow: hidden;
                     text-overflow: ellipsis;
+                }
+                .step-name {
+                    max-width: 80px;
                 }
             }
         }
