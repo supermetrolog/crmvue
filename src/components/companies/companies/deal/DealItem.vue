@@ -105,7 +105,9 @@ export default {
   },
   computed: {
     offerUrl() {
-      return this.$apiUrlHelper.generator().offerUrl(this.deal.offer);
+      return this.$apiUrlHelper
+        .generator()
+        .offerUrl(this.deal.offer ? this.deal.offer : this.deal);
     },
   },
 
