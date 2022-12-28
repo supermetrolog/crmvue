@@ -134,7 +134,6 @@
             >
               {{ unknownMovingDateOptions[request.unknownMovingDate][1] }}
             </span>
-
             <p>цена пола <small class="text-grey">(р)</small></p>
             <span class="parameters-inner">
               {{ request.pricePerFloor ?? "нет данных" }}
@@ -210,6 +209,7 @@ import {
   ObjectTypeList,
   ObjectClassList,
   GateTypeList,
+  unknownMovingDate,
 } from "@/const/Const.js";
 import moment from "moment";
 import { mapGetters } from "vuex";
@@ -232,6 +232,7 @@ export default {
       objectTypeListPlot: ObjectTypeList.get("plot"),
       objectClassList: ObjectClassList.get("param"),
       gateTypeList: GateTypeList.get("param"),
+      unknownMovingDateOptions: unknownMovingDate.get("param"),
       dealIsOpen: false,
       moreIsOpen: false,
     };

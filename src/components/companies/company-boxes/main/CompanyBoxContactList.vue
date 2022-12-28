@@ -29,5 +29,6 @@ export default {
   components: {
     CompanyBoxContactListItem,
   },
+  emits: ["clickCreateContact"],
 };
 </script>

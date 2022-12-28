@@ -276,6 +276,6 @@ export default {
       "#right-box"
     ).style.height = `${this.leftBoxHeight}px`;
   },
-  emits: ["editCompany"],
+  emits: ["editCompany", "clickCreateContact"],
 };
 </script>
