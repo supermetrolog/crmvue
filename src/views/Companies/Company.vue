@@ -1,5 +1,17 @@
 <template>
   <div class="company">
+    <p
+      v-if="!loaderCompanyDetailInfo && this.COMPANY.status === 0"
+      class="company-passive"
+    >
+      <span>Пассив</span>
+      <span v-if="COMPANY.passive_why !== null">
+        ({{ passiveWhyList[COMPANY.passive_why].label }})</span
+      >
+      <span v-if="COMPANY.passive_why_comment !== null">
+        комм: {{ COMPANY.passive_why_comment }}</span
+      >
+    </p>
     <transition
       mode="out-in"
       enter-active-class="animate__animated animate__zoomIn for__modal__fullscreen"
@@ -57,139 +69,79 @@
     >
       <CompanyForm
         v-if="companyFormVisible"
-        :formdata="company"
+        :formdata="COMPANY"
         @closeCompanyForm="clickCloseCompanyForm"
         @updated="updatedCompany"
       />
     </transition>
+    <transition
+      mode="out-in"
+      enter-active-class="animate__animated animate__zoomIn for__modal absolute"
+      leave-active-class="animate__animated animate__zoomOut for__modal absolute"
+    >
+      <CompanyContactModal
+        v-if="contactModalVisible"
+        :contact="contact"
+        @closeContactModal="clickCloseContactModal"
+        @clickEditContact="openContactFormForUpdate"
+      />
+    </transition>
 
-    <div class="row no-gutters">
-      <div class="col-12 col-lg-3 company-detail-info-container box">
-        <div class="col-12 p-0 mb-3">
-          <button
-            class="btn btn-primary scale d-block btn-large"
-            @click.prevent="openCompanyFormForUpdate(COMPANY)"
-            :disabled="COMPANY ? false : true"
-          >
-            Редактировать информацию
-          </button>
-        </div>
-        <div class="col-12 inner">
-          <Loader v-if="loaderCompanyDetailInfo" class="center" />
-          <CompanyDetailInfo
-            :company="COMPANY"
-            v-if="!loaderCompanyDetailInfo"
-          />
-          <NoData v-if="!COMPANY && !loaderCompanyDetailInfo" />
-        </div>
-      </div>
-
-      <div class="col-12 col-lg-3 company-request-container box">
-        <div class="col-12 p-0 mb-3">
-          <button
-            class="btn btn-primary scale d-block btn-large"
-            :disabled="COMPANY ? false : true"
-            @click.prevent="clickOpenCompanyRequestForm"
-          >
-            Создать запрос
-          </button>
-        </div>
-        <div class="col-12 inner">
-          <Loader v-if="loaderCompanyRequests" class="center" />
-          <CompanyRequestList
-            :requests="COMPANY_REQUESTS"
-            @openCompanyRequestFormForUpdate="openCompanyRequestFormForUpdate"
-            @cloned="getCompanyRequests"
-            v-if="!loaderCompanyRequests"
-          />
-          <NoData v-if="!COMPANY_REQUESTS.length && !loaderCompanyRequests" />
-          <div
-            class="row"
-            v-if="
-              !loaderCompanyRequests &&
-              COMPANY &&
-              COMPANY.dealsRequestEmpty.length
-            "
-          >
-            <div class="col-12 p-0">
-              <DealList
-                class="mb-2 mt-1"
-                :deals="COMPANY.dealsRequestEmpty"
-                @openDealFormForUpdate="openDealFormForUpdate"
-                @deleted="getCompany(false)"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-12 col-lg-4 box">
-        <div class="col-12 inner">
-          <Loader v-if="loaderCompanyObjects" class="center" />
-          <CompanyObjectList :objects="COMPANY_OBJECTS" />
-          <NoData v-if="!COMPANY_OBJECTS.length && !loaderCompanyObjects" />
-          <Joke />
-        </div>
-      </div>
-      <div class="col-12 col-lg-2 company-detail-info-container box">
-        <div class="col-12 p-0 mb-3">
-          <button
-            class="btn btn-primary scale d-block btn-large"
-            @click.prevent="clickOpenCompanyContactForm"
-            :disabled="COMPANY ? false : true"
-          >
-            создать контакт
-          </button>
-        </div>
-        <div
-          class="col-12 inner"
-          :class="{ 'no-height': !loaderCompanyContacts }"
-        >
-          <Loader v-if="loaderCompanyContacts" class="center" />
-          <CompanyContactList
-            :contacts="this.COMPANY_CONTACTS"
-            @openContactFormForUpdate="openContactFormForUpdate"
-            v-if="!loaderCompanyContacts"
-          />
-          <NoData
-            class="text-small"
-            v-if="!COMPANY_CONTACTS.length && !loaderCompanyContacts"
-          />
-        </div>
-      </div>
+    <div class="company-wrapper">
+      <Loader v-if="loaderCompanyDetailInfo"></Loader>
+      <CompanyBoxMain
+        v-if="!loaderCompanyDetailInfo"
+        :company="COMPANY"
+        :contacts="this.COMPANY_CONTACTS"
+        @editCompany="clickOpenCompanyForm"
+      />
+      <CompanyBoxLayout :class="'grid-b'" v-if="!loaderCompanyDetailInfo">
+        <template #header>
+          <span>Лог работы с {{ this.COMPANY.nameRu }}</span>
+        </template>
+      </CompanyBoxLayout>
+      <CompanyBoxObjects
+        v-if="!loaderCompanyObjects"
+        :objects="COMPANY_OBJECTS"
+      />
+      <CompanyBoxRequests
+        v-if="!loaderCompanyRequests"
+        :requests="COMPANY_REQUESTS"
+        :deals="COMPANY.dealsRequestEmpty"
+      />
+      <CompanyBoxServices v-if="!loaderCompanyDetailInfo" />
     </div>
   </div>
 </template>
 
 <script>
+import CompanyContactModal from "../../components/companies/companies/contact/CompanyContactModal.vue";
+import CompanyBoxServices from "../../components/companies/company-boxes/services/CompanyBoxServices.vue";
+import CompanyBoxRequests from "../../components/companies/company-boxes/requests/CompanyBoxRequests.vue";
+import CompanyBoxObjects from "../../components/companies/company-boxes/objects/CompanyBoxObjects.vue";
+import CompanyBoxLayout from "../../components/companies/company-boxes/CompanyBoxLayout.vue";
+import CompanyBoxMain from "../../components/companies/company-boxes/main/CompanyBoxMain.vue";
 import { mapActions, mapGetters } from "vuex";
-import CompanyDetailInfo from "@/components/companies/companies/CompanyDetailInfo.vue";
-import CompanyRequestList from "@/components/companies/companies/request/CompanyRequestList.vue";
 import CompanyRequestForm from "@/components/companies/forms/company-request-form/CompanyRequestForm.vue";
 import CompanyContactForm from "@/components/companies/forms/company-contact-form/CompanyContactForm.vue";
 import CompanyForm from "@/components/companies/forms/company-form/CompanyForm.vue";
 import CompanyDealForm from "@/components/companies/forms/company-deal-form/CompanyDealForm";
-import CompanyContactList from "@/components/companies/companies/contact/CompanyContactList.vue";
-import CompanyObjectList from "@/components/companies/objects/company-objects/CompanyObjectList";
 import Timeline from "@/components/companies/timeline/Timeline.vue";
-// import DealItem from "@/components/companies/companies/deal/DealItem.vue";
-import DealList from "@/components/companies/companies/deal/DealList.vue";
-import NoData from "@/components/common/NoData";
-import Joke from "@/components/common/Joke";
+import { PassiveWhy } from "@/const/Const.js";
 export default {
   name: "Company",
   components: {
-    CompanyDetailInfo,
-    CompanyRequestList,
     CompanyRequestForm,
     CompanyContactForm,
     CompanyForm,
-    CompanyContactList,
     Timeline,
-    NoData,
-    Joke,
-    CompanyObjectList,
-    DealList,
     CompanyDealForm,
+    CompanyBoxLayout,
+    CompanyBoxMain,
+    CompanyBoxObjects,
+    CompanyBoxRequests,
+    CompanyBoxServices,
+    CompanyContactModal,
   },
   data() {
     return {
@@ -199,6 +151,7 @@ export default {
       loaderCompanyObjects: true,
       companyRequestFormVisible: false,
       companyContactFormVisible: false,
+      contactModalVisible: false,
       companyFormVisible: false,
       dealFormVisible: false,
       timelineVisible: false,
@@ -206,6 +159,13 @@ export default {
       contact: null,
       company: null,
       deal: null,
+      passiveWhyList: PassiveWhy.get("param"),
+    };
+  },
+  provide() {
+    return {
+      openContact: (contact) => this.openContact(contact),
+      createContactComment: (data) => this.createContactComment(data),
     };
   },
   computed: {
@@ -224,6 +184,7 @@ export default {
       "FETCH_COMPANY_CONTACTS",
       "FETCH_COMPANY_OBJECTS",
       "ADD_TO_TRANSITION_LIST",
+      "CREATE_CONTACT_COMMENT",
     ]),
     async getCompany(withLoader = true) {
       this.loaderCompanyDetailInfo = withLoader;
@@ -283,15 +244,26 @@ export default {
       this.deal = deal;
       this.clickOpenDealForm();
     },
+    openContact(contact) {
+      this.contactModalVisible = true;
+      this.contact = contact;
+      console.log(contact);
+      // this.openContactFormForUpdate(contact);
+    },
+    clickCloseContactModal() {
+      this.contactModalVisible = false;
+    },
     openContactFormForUpdate(contact) {
       this.contact = contact;
       this.clickOpenCompanyContactForm();
     },
     clickCloseCompanyContactForm() {
       this.companyContactFormVisible = false;
+
       this.contact = null;
     },
     clickOpenCompanyContactForm() {
+      this.contactModalVisible = false;
       this.companyContactFormVisible = true;
     },
     createdRequest() {
@@ -329,6 +301,9 @@ export default {
     closeTimeline() {
       this.timelineVisible = false;
       this.$router.push({ name: "company" });
+    },
+    async createContactComment(data) {
+      await this.CREATE_CONTACT_COMMENT(data);
     },
   },
   async created() {

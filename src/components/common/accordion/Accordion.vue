@@ -1,5 +1,5 @@
 <template>
-  <div class="accordion row no-gutters">
+  <div class="row no-gutters">
     <slot />
   </div>
 </template>

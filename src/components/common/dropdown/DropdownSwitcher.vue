@@ -2,9 +2,16 @@
   <button class="DropdownSwitcher" @click="switchDropdown">
     <i class="fa fa-chevron-down" v-if="!modelValue"></i>
     <i class="fa fa-chevron-up" v-if="modelValue"></i>
-    {{ title }} ({{ mainNumber
-    }}<span class="side_number" v-if="sideNumber">{{ `/${sideNumber}` }}</span
-    >)
+    <template v-if="title">
+      <span>{{ title }}</span>
+      <span v-if="mainNumber"
+        >({{ mainNumber
+        }}<span class="side_number" v-if="sideNumber">{{
+          `/${sideNumber}`
+        }}</span
+        >)</span
+      >
+    </template>
   </button>
 </template>
 
@@ -18,7 +25,7 @@ export default {
     },
     mainNumber: {
       type: Number,
-      required: true,
+      default: null,
     },
     sideNumber: {
       type: Number,
@@ -29,7 +36,7 @@ export default {
   emits: ["update:modelValue"],
   methods: {
     switchDropdown() {
-      this.$emit("update:modelValue", !this.modelValue); // раньше было `this.$emit('input', title)`
+      this.$emit("update:modelValue", !this.modelValue);
     },
   },
 };
