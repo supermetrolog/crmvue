@@ -203,7 +203,10 @@
       </div>
       <hr />
       <div class="CompanyBoxMain-contacts">
-        <CompanyBoxContactList :contacts="contacts" />
+        <CompanyBoxContactList
+          @clickCreateContact="this.$emit('createContact')"
+          :contacts="contacts"
+        />
       </div>
     </template>
   </CompanyBoxLayout>

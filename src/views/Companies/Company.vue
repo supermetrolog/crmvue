@@ -94,6 +94,7 @@
         :company="COMPANY"
         :contacts="this.COMPANY_CONTACTS"
         @editCompany="clickOpenCompanyForm"
+        @createContact="clickOpenCompanyContactForm"
       />
       <CompanyBoxLayout :class="'grid-b'" v-if="!loaderCompanyDetailInfo">
         <template #header>

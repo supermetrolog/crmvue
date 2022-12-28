@@ -1,5 +1,12 @@
 <template>
-  <strong>Контакты</strong>
+  <strong
+    >Контакты
+    <small
+      @click="this.$emit('clickCreateContact')"
+      style="color: blue; font-size: 12px"
+      >[создать]</small
+    ></strong
+  >
   <div class="CompanyBoxContactList">
     <CompanyBoxContactListItem
       v-for="contact in contacts"
