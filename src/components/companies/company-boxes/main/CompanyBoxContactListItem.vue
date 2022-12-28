@@ -26,27 +26,15 @@
     <span class="CompanyBoxContactListItem-position">{{
       position || "Должность неизвестна"
     }}</span>
-    <!-- <PhoneNumber
-      v-for="phone of contact.phones"
-      class="CompanyBoxContactListItem-phone"
-      :key="phone.id"
-      :phone="phone"
-      :contact="contact"
-    /> -->
     <PhoneNumber
-      v-if="contact.phones[0]"
+      v-if="contact.phones.length"
       class="CompanyBoxContactListItem-phone"
-      :phone="contact.phones[0]"
+      :phone="mainPhone || contact.phones[0]"
       :contact="contact"
     />
-    <div class="CompanyBoxContactListItem-email">
-      <a
-        :href="'mailto:' + email.email"
-        class="d-block"
-        v-for="email in contact.emails"
-        :key="email.id"
-      >
-        {{ email.email }}
+    <div class="CompanyBoxContactListItem-email" v-if="contact.emails.length">
+      <a :href="'mailto:' + mainMail" class="d-block">
+        {{ mainMail }}
       </a>
     </div>
     <hr />
@@ -90,6 +78,17 @@ export default {
         return false;
       }
       return moment(date).format("DD.MM.YYYY");
+    },
+    mainPhone() {
+      return this.contact.phones.find((phone) => phone.isMain);
+    },
+    mainMail() {
+      let mainMail = this.contact.emails.find((email) => email.isMain);
+      if (mainMail) {
+        return mainMail.email;
+      } else {
+        return this.contact.emails[0].email;
+      }
     },
   },
   methods: {

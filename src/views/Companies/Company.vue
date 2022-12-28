@@ -1,5 +1,17 @@
 <template>
   <div class="company">
+    <p
+      v-if="!loaderCompanyDetailInfo && this.COMPANY.status === 0"
+      class="company-passive"
+    >
+      <span>Пассив</span>
+      <span v-if="COMPANY.passive_why !== null">
+        ({{ passiveWhyList[COMPANY.passive_why].label }})</span
+      >
+      <span v-if="COMPANY.passive_why_comment !== null">
+        комм: {{ COMPANY.passive_why_comment }}</span
+      >
+    </p>
     <transition
       mode="out-in"
       enter-active-class="animate__animated animate__zoomIn for__modal__fullscreen"
@@ -98,99 +110,6 @@
         :deals="COMPANY.dealsRequestEmpty"
       />
       <CompanyBoxServices v-if="!loaderCompanyDetailInfo" />
-
-      <!-- <div class="company-detail-info-container box">
-        <div class="col-12 p-0 mb-3">
-          <button
-            class="btn btn-primary scale d-block btn-large"
-            @click.prevent="openCompanyFormForUpdate(COMPANY)"
-            :disabled="COMPANY ? false : true"
-          >
-            Редактировать информацию
-          </button>
-        </div>
-        <div class="col-12 inner">
-          <Loader v-if="loaderCompanyDetailInfo" class="center" />
-          <CompanyDetailInfo
-            :company="COMPANY"
-            v-if="!loaderCompanyDetailInfo"
-          />
-          <NoData v-if="!COMPANY && !loaderCompanyDetailInfo" />
-        </div>
-      </div>
-
-      <div class="col-12 col-lg-3 company-request-container box">
-        <div class="col-12 p-0 mb-3">
-          <button
-            class="btn btn-primary scale d-block btn-large"
-            :disabled="COMPANY ? false : true"
-            @click.prevent="clickOpenCompanyRequestForm"
-          >
-            Создать запрос
-          </button>
-        </div>
-        <div class="col-12 inner">
-          <Loader v-if="loaderCompanyRequests" class="center" />
-          <CompanyRequestList
-            :requests="COMPANY_REQUESTS"
-            @openCompanyRequestFormForUpdate="openCompanyRequestFormForUpdate"
-            @cloned="getCompanyRequests"
-            v-if="!loaderCompanyRequests"
-          />
-          <NoData v-if="!COMPANY_REQUESTS.length && !loaderCompanyRequests" />
-          <div
-            class="row"
-            v-if="
-              !loaderCompanyRequests &&
-              COMPANY &&
-              COMPANY.dealsRequestEmpty.length
-            "
-          >
-            <div class="col-12 p-0">
-              <DealList
-                class="mb-2 mt-1"
-                :deals="COMPANY.dealsRequestEmpty"
-                @openDealFormForUpdate="openDealFormForUpdate"
-                @deleted="getCompany(false)"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-12 col-lg-4 box">
-        <div class="col-12 inner">
-          <Loader v-if="loaderCompanyObjects" class="center" />
-          <CompanyObjectList :objects="COMPANY_OBJECTS" />
-          <NoData v-if="!COMPANY_OBJECTS.length && !loaderCompanyObjects" />
-          <Joke />
-        </div>
-      </div>
-      <div class="col-12 col-lg-2 company-detail-info-container box">
-        <div class="col-12 p-0 mb-3">
-          <button
-            class="btn btn-primary scale d-block btn-large"
-            @click.prevent="clickOpenCompanyContactForm"
-            :disabled="COMPANY ? false : true"
-          >
-            создать контакт
-          </button>
-        </div>
-        <div
-          class="col-12 inner"
-          :class="{ 'no-height': !loaderCompanyContacts }"
-        >
-          <Loader v-if="loaderCompanyContacts" class="center" />
-          <CompanyContactList
-            :contacts="this.COMPANY_CONTACTS"
-            @openContactFormForUpdate="openContactFormForUpdate"
-            v-if="!loaderCompanyContacts"
-          />
-          <NoData
-            class="text-small"
-            v-if="!COMPANY_CONTACTS.length && !loaderCompanyContacts"
-          />
-        </div>
-      </div> -->
     </div>
   </div>
 </template>
@@ -208,6 +127,7 @@ import CompanyContactForm from "@/components/companies/forms/company-contact-for
 import CompanyForm from "@/components/companies/forms/company-form/CompanyForm.vue";
 import CompanyDealForm from "@/components/companies/forms/company-deal-form/CompanyDealForm";
 import Timeline from "@/components/companies/timeline/Timeline.vue";
+import { PassiveWhy } from "@/const/Const.js";
 export default {
   name: "Company",
   components: {
@@ -239,6 +159,7 @@ export default {
       contact: null,
       company: null,
       deal: null,
+      passiveWhyList: PassiveWhy.get("param"),
     };
   },
   provide() {
@@ -338,6 +259,7 @@ export default {
     },
     clickCloseCompanyContactForm() {
       this.companyContactFormVisible = false;
+
       this.contact = null;
     },
     clickOpenCompanyContactForm() {

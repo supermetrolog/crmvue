@@ -2795,6 +2795,16 @@
                 }
             }
         }
+        &-passive {
+            margin-bottom: 2px;
+            span {
+                &:first-child {
+                    font-size: larger;
+                    background-color: $color_warning;
+                    padding: 3px;
+                }
+            }
+        }
         
         &-business-info {
             display: grid;
@@ -3454,9 +3464,7 @@
           "footer footer";
         position: relative;
         &-warning {
-            position: absolute;
-            top: 0;
-            right: 0;
+            width: 100%;
             font-weight: bolder;
         }
         &-edit {
@@ -3468,20 +3476,54 @@
             &-name {
                 font-size: 20px;
             }
+            .edit {
+                &:hover {
+                    transform: scale(1.1);
+                    transition: all 150ms ease-in 0s;
+                    cursor: pointer;
+                }
+            }
+            &-phone {
+                a {
+                    font-size: 18px;
+                }
+                &-main {
+                    &::after {
+                        content: ' основной';
+                        font-size: 12px;
+                        font-weight: bolder;
+                        color: $color_danger_dark;
+                    }
+                }
+            }
+            &-email {
+                &-main {
+                    &::after {
+                        content: ' основной';
+                        font-size: 12px;
+                        font-weight: bolder;
+                        color: $color_danger_dark;
+                    }
+                }
+            }
         }
         &-websites {
             display: flex;
             flex-direction: column;
         }
         &-right {
-            margin-top: 30px;
-            max-height: 350px;
             grid-area: right;
             &-comments {
                 max-height: 250px;
                 overflow-y: auto;
+                .contact-comment {
+                    p {
+                        font-weight: normal;
+                    }
+                }
             }
             &-send_comment {
+                margin-top: 10px;
                 textarea {
                     width: 100%;
                     resize: none;
@@ -3613,11 +3655,11 @@
         &:last-child {
             margin-bottom: 20px;
         }
-        &-danger {
-            background-color: lighten($color_danger_dark, 6);
-        }
         &-success {
             background-color: $color_success_dark;
+        }
+        &-danger {
+            background-color: lighten($color_danger_dark, 6);
         }
         &-logo {
             $renter_logo_size: 60px;
@@ -3669,6 +3711,11 @@
             position: absolute;
             right: 6px;
             bottom: 3px;
+        }
+        .fa-bolt {
+            position: absolute;
+            right: 5px;
+            color: $color_light;
         }
     }
 
@@ -3741,7 +3788,6 @@
             border: none;
             padding: 0;
         }
-        
     }
 
 

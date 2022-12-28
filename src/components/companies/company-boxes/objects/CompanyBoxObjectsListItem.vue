@@ -42,13 +42,15 @@
         <DropdownSwitcher
           v-model="offersIsOpen"
           :title="'Предложения'"
-          :mainNumber="object.offerMix.length"
+          :mainNumber="activeOffers.length"
+          :sideNumber="archiveOffers.length"
           v-if="object.offerMix.length"
         />
         <DropdownSwitcher
           v-model="rentersIsOpen"
           :title="'Арендаторы'"
-          :mainNumber="object.deals.length"
+          :mainNumber="ourDeals.length"
+          :sideNumber="enemyDeals.length"
           v-if="object.deals.length"
         />
       </div>
@@ -135,6 +137,18 @@ export default {
       } else {
         return "";
       }
+    },
+    activeOffers() {
+      return this.object.offerMix.filter((offer) => offer.status == 1);
+    },
+    archiveOffers() {
+      return this.object.offerMix.filter((offer) => offer.status != 1);
+    },
+    ourDeals() {
+      return this.object.deals.filter((deal) => deal.is_our);
+    },
+    enemyDeals() {
+      return this.object.deals.filter((deal) => !deal.is_our);
     },
   },
 };

@@ -2,10 +2,16 @@
   <div
     class="CompanyBoxObjectsRenter"
     :class="{
-      'CompanyBoxObjectsRenter-danger': false,
-      'CompanyBoxObjectsRenter-success': true,
+      'CompanyBoxObjectsRenter-success': deal.is_our,
+      'CompanyBoxObjectsRenter-danger':
+        deal.restOfTheTerm < 60 && deal.restOfTheTerm > 1,
     }"
   >
+    <i
+      class="fas fa-bolt fa-solid"
+      v-if="deal.restOfTheTerm < 60 && deal.restOfTheTerm > 1"
+      title="Скоро истечет!"
+    ></i>
     <a class="CompanyBoxObjectsRenter-logo">
       <img
         src="https://upload.wikimedia.org/wikipedia/sco/thumb/b/bf/KFC_logo.svg/1200px-KFC_logo.svg.png"

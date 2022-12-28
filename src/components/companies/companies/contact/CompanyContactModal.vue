@@ -6,13 +6,6 @@
       class="normal"
     >
       <div class="CompanyContactModal">
-        <div class="CompanyContactModal-edit" v-if="!reedOnly">
-          <i
-            class="fas fa-pen text-primary edit"
-            @click="this.$emit('clickEditContact', this.contact)"
-            v-if="!contact.type"
-          ></i>
-        </div>
         <div class="CompanyContactModal-left">
           <p class="CompanyContactModal-left-name">
             {{ contact.full_name ? contact.full_name : "Общий контакт" }}
@@ -26,8 +19,13 @@
                 class="fas fa-street-view mr-2 text-dark"
                 v-if="contact.faceToFaceMeeting"
                 title="Очная встреча"
-              ></i
-            ></span>
+              ></i>
+              <i
+                class="fas fa-pen text-primary edit"
+                @click="this.$emit('clickEditContact', this.contact)"
+                v-if="!contact.type && !reedOnly"
+              ></i>
+            </span>
           </p>
           <div>
             <span v-if="!contact.position_unknown">{{ position }}</span>
@@ -37,7 +35,11 @@
             <PhoneNumber
               v-for="phone of contact.phones"
               :key="phone"
-              class="CompanyBoxContactListItem-phone"
+              class="
+                CompanyContactModal-left-phone
+                CompanyBoxContactListItem-phone
+              "
+              :class="{ 'CompanyContactModal-left-phone-main': phone.isMain }"
               :phone="phone"
               :contact="contact"
             />
@@ -46,6 +48,7 @@
             <a
               :href="'mailto:' + email.email"
               class="d-block"
+              :class="{ 'CompanyContactModal-left-email-main': email.isMain }"
               v-for="email in contact.emails"
               :key="email.id"
             >
@@ -101,15 +104,23 @@
               - {{ contact.warning_why_comment }}</span
             >
           </div>
+          <p>Комментарии</p>
+          <hr />
           <div
             class="CompanyContactModal-right-comments"
             v-if="contact.contactComments.length"
             ref="comments"
           >
-            <div v-for="comment in contact.contactComments" :key="comment.id">
+            <div
+              class="contact-comment"
+              v-for="comment in contact.contactComments"
+              :key="comment.id"
+            >
               <strong>{{ comment.author.userProfile.short_name }}</strong>
               <p>{{ comment.comment }}</p>
-              <small class="text-grey">{{ comment.created_at }}</small>
+              <small class="text-grey">{{
+                dateHandler(comment.created_at)
+              }}</small>
             </div>
           </div>
           <div class="CompanyContactModal-right-send_comment">
@@ -141,6 +152,7 @@ import {
   PassiveWhyContact,
 } from "@/const/Const.js";
 import api from "@/api/api";
+import moment from "moment";
 
 export default {
   name: "CompanyContactModal",
@@ -231,18 +243,26 @@ export default {
     scrollToElement() {
       const el = this.$refs.comments;
       if (el) {
-        el.scrollTop = 9999999;
+        el.scrollTop = el.scrollHeight;
       }
+    },
+
+    dateHandler(date) {
+      return moment(date).format("DD.MM.YYYY");
     },
   },
   mounted() {
     this.scrollToElement();
   },
-  updated() {
-    this.scrollToElement();
-    console.log("гавно");
+  watch: {
+    "contact.contactComments": {
+      handler() {
+        setTimeout(this.scrollToElement, 0);
+      },
+      deep: true,
+    },
   },
-  emits: ["closeContactModal"],
+  emits: ["closeContactModal", "clickEditContact"],
 };
 </script>
 
