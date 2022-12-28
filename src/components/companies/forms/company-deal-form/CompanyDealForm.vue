@@ -317,10 +317,14 @@ export default {
       const currentRequestOption = this.requestOptions.find(
         (item) => item.value == this.form.request_id
       );
+      console.log(
+        currentRequestOption,
+        currentRequestOption.label.indexOf("хуй")
+      );
       if (
         (currentRequestOption &&
-          currentRequestOption.label.indexOf("аренда") === 0) ||
-        currentRequestOption.label.indexOf("ответ-хранение") === 0
+          currentRequestOption.label.indexOf("аренда") !== -1) ||
+        currentRequestOption.label.indexOf("ответ-хранение") !== -1
       ) {
         return true;
       }
