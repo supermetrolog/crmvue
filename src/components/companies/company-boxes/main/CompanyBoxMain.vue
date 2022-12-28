@@ -203,7 +203,10 @@
       </div>
       <hr />
       <div class="CompanyBoxMain-contacts">
-        <CompanyBoxContactList :contacts="contacts" />
+        <CompanyBoxContactList
+          @clickCreateContact="this.$emit('createContact')"
+          :contacts="contacts"
+        />
       </div>
     </template>
   </CompanyBoxLayout>
@@ -273,6 +276,6 @@ export default {
       "#right-box"
     ).style.height = `${this.leftBoxHeight}px`;
   },
-  emits: ["editCompany"],
+  emits: ["editCompany", "clickCreateContact"],
 };
 </script>
