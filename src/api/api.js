@@ -11,6 +11,7 @@ import calendar from "./calendar";
 import companyObjects from "./companyObjects";
 import offers from "./offers";
 import location from "./location";
+import letter from "./letter";
 export default {
     user,
     notifications,
@@ -24,5 +25,6 @@ export default {
     calendar,
     companyObjects,
     offers,
-    location
+    location,
+    letter
 }

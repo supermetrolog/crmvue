@@ -1,5 +1,10 @@
 <template>
   <li>
+    <LetterViewModal
+      v-if="letterViewVisible"
+      :letter="letter"
+      @close="closeLetterView"
+    />
     <div class="row no-gutters reminders-list-item m-0">
       <div
         class="col-12"
@@ -23,11 +28,12 @@
 
       <div class="col-12 comment px-3">
         <p v-html="timeHTML + data.comment" class="d-inline"></p>
-        <router-link
+        <a
           v-if="data.letter_id"
+          @click="openLetterView"
           class="d-inline text-primary ml-2"
-          :to="'/letters/' + data.letter_id"
-          >посмотреть</router-link
+          :href="'/letters/' + data.letter_id"
+          >посмотреть</a
         >
       </div>
     </div>
@@ -36,10 +42,18 @@
 
 <script>
 import moment from "moment";
+import LetterViewModal from "@/components/letter/view/LetterViewModal";
+import api from "@/api/api.js";
 export default {
   name: "CommentItem",
+  components: {
+    LetterViewModal,
+  },
   data() {
-    return {};
+    return {
+      letterViewVisible: false,
+      letter: null,
+    };
   },
   props: {
     data: {
@@ -100,6 +114,21 @@ export default {
     },
     timeHTML() {
       return `<span class="d-inline time">${this.time} </span>`;
+    },
+  },
+  methods: {
+    async openLetterView(e) {
+      e.preventDefault();
+      let letter = await api.letter.get(this.data.letter_id);
+      if (letter === false) {
+        return;
+      }
+      this.letter = letter;
+      this.letterViewVisible = true;
+    },
+    closeLetterView() {
+      this.letterViewVisible = false;
+      this.letter = null;
     },
   },
 };
