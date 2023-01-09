@@ -28,7 +28,9 @@
         <li>
           <span>чья сделка:</span>
           <span v-if="deal.is_our == 1">PENNY LANE REALTY</span>
-          <span v-else-if="deal.is_competitor">{{ deal.competitor }}</span>
+          <span v-else-if="deal.is_competitor">{{
+            deal.competitor.full_name || "неизвестно"
+          }}</span>
           <span v-else>нет данных</span>
         </li>
         <li>
