@@ -22,7 +22,7 @@
     </a>
     <div class="CompanyBoxObjectsRenter-info">
       <span class="CompanyBoxObjectsRenter-info-name">{{
-        deal.company.nameRu
+        deal.company.nameRu || deal.company.nameEng
       }}</span>
       <ul class="CompanyBoxObjectsRenter-info-list">
         <li>

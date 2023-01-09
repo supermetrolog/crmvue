@@ -94,7 +94,7 @@
         :company="COMPANY"
         :contacts="this.COMPANY_CONTACTS"
         @editCompany="clickOpenCompanyForm"
-        @createContact="clickOpenCompanyContactForm"
+        @createContact="openContactFormForCreate"
       />
       <CompanyBoxLayout :class="'grid-b'" v-if="!loaderCompanyDetailInfo">
         <template #header>
@@ -109,6 +109,8 @@
         v-if="!loaderCompanyRequests"
         :requests="COMPANY_REQUESTS"
         :deals="COMPANY.dealsRequestEmpty"
+        @openDealFormForUpdate="openDealFormForUpdate"
+        @dealDeleted="getCompany(false)"
       />
       <CompanyBoxServices v-if="!loaderCompanyDetailInfo" />
     </div>
@@ -166,6 +168,7 @@ export default {
   provide() {
     return {
       openContact: (contact) => this.openContact(contact),
+      editContact: (contact) => this.openContactFormForUpdate(contact),
       createContactComment: (data) => this.createContactComment(data),
     };
   },
@@ -262,6 +265,10 @@ export default {
       this.companyContactFormVisible = false;
 
       this.contact = null;
+    },
+    openContactFormForCreate() {
+      this.contact = null;
+      this.clickOpenCompanyContactForm();
     },
     clickOpenCompanyContactForm() {
       this.contactModalVisible = false;

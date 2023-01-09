@@ -8,6 +8,12 @@
     }"
   >
     <div
+      class="CompanyBoxContactListItem-edit"
+      @click.stop="editContact(this.contact)"
+    >
+      [ред.]
+    </div>
+    <div
       class="CompanyBoxContactListItem-status text-danger"
       v-if="!!contact.warning"
     >
@@ -69,7 +75,7 @@ export default {
       positionList: PositionList.get("param"),
     };
   },
-  inject: ["openContact"],
+  inject: ["openContact", "editContact"],
   computed: {
     position() {
       return this.positionList[this.contact.position]?.label;

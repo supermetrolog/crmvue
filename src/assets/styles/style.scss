@@ -1818,6 +1818,11 @@
                 min-height: unset!important;
             }
         }
+        .label-padding {
+            & > p {
+                font-size: 15px;
+            }
+        }
     }
     
     .invalid {
@@ -3365,6 +3370,11 @@
            background-color: unset;
             height: 5px;
         }
+        &-create {
+            font-size: 12px;
+            color: $color_light_blue;
+            cursor: pointer;
+        }
 
     }
     .CompanyBoxContactListItem {
@@ -3450,6 +3460,21 @@
             left: 5%;
             font-size: 13px;
             color: $color_grey;
+        }
+        &-edit {
+            position: absolute;
+            font-size: 12px;
+            color: $color_light_blue;
+            left: 10px;
+            top: 5px;
+            cursor: pointer;
+            z-index: 1;
+            display: none;
+        }
+        &:hover {
+            .CompanyBoxContactListItem-edit {
+                display: block;
+            }
         }
 
     }
@@ -3620,6 +3645,9 @@
         border: 1px solid $color_success;
         font-size: 14px;
         padding: 5px;
+        &.passive {
+            filter: grayscale(1);
+        }
         &-wrapper {
             text-decoration: none;
             color: #2D2F34;

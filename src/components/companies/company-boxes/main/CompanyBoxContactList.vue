@@ -2,8 +2,8 @@
   <strong
     >Контакты
     <small
+      class="CompanyBoxContactList-create"
       @click="this.$emit('clickCreateContact')"
-      style="color: blue; font-size: 12px"
       >[создать]</small
     ></strong
   >

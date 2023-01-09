@@ -12,13 +12,11 @@
     <template #content>
       <CompanyBoxRequestsList :requests="requests" />
       <template v-if="deals.length">
-        <DealList :deals="deals" />
-        <!-- <DealList
-          class="mb-2 mt-1"
+        <DealList
           :deals="deals"
           @openDealFormForUpdate="openDealFormForUpdate"
-          @deleted="getCompany(false)"
-        /> -->
+          @deleted="dealDeleted"
+        />
       </template>
       <NoData v-if="!requests.length" />
     </template>
@@ -57,6 +55,14 @@ export default {
         return requestsWithDeal.length;
       }
       return 0;
+    },
+  },
+  methods: {
+    openDealFormForUpdate(deal) {
+      this.$emit("openDealFormForUpdate", deal);
+    },
+    dealDeleted() {
+      this.$emit("dealDeleted");
     },
   },
 };
