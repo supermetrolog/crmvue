@@ -22,7 +22,13 @@
       </div>
 
       <div class="col-12 comment px-3">
-        <p v-html="timeHTML + data.comment"></p>
+        <p v-html="timeHTML + data.comment" class="d-inline"></p>
+        <router-link
+          v-if="data.letter_id"
+          class="d-inline text-primary ml-2"
+          :to="'/letters/' + data.letter_id"
+          >посмотреть</router-link
+        >
       </div>
     </div>
   </li>

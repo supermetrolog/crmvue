@@ -79,19 +79,15 @@ export class AlreadySendOffersComment extends Comment {
         this._contacts = contacts;
         this._wayOfSending = wayOfSending;
         this._letterID = letterID;
-
+        this.letter_id = letterID;
         this._setComment();
     }
 
     _setComment() {
-        const link = this._getLink();
         const contactsStr = this._getContacts();
         const wayOfSendingStr = this._getWayOfSending();
         const sendOffersLengthStr = this._getSendOffersLength();
-        this.comment = `Отправлено ${sendOffersLengthStr} не через текущий безнес процесс ${contactsStr} по ${wayOfSendingStr}, ${link}`;
-    }
-    _getLink() {
-        return `<a class="text-primary d-inline" href='/letters/${this._letterID}'>просмотреть</a>`;
+        this.comment = `Отправлено ${sendOffersLengthStr} не через текущий безнес процесс ${contactsStr} по ${wayOfSendingStr}`;
     }
     _getSendOffersLength() {
         if (this._sendOffersLength == 1)
@@ -118,11 +114,10 @@ export class AlreadySendOffersComment extends Comment {
 export class SendOffersComment extends AlreadySendOffersComment {
     _setComment() {
         this.type = SEND_OFFERS_COMMENT_TYPE;
-        const link = this._getLink();
         const contactsStr = this._getContacts();
         const wayOfSendingStr = this._getWayOfSending()
         const sendOffersLengthStr = this._getSendOffersLength();
-        this.comment = `Отправлено ${sendOffersLengthStr} ${contactsStr} по ${wayOfSendingStr}, ${link}`;
+        this.comment = `Отправлено ${sendOffersLengthStr} ${contactsStr} по ${wayOfSendingStr}`;
     }
 
 }
@@ -160,7 +155,7 @@ class DoneComment extends Comment {
         this._selectedObjects = selectedObjects;
         this._setComment();
     }
-    _setComment() {}
+    _setComment() { }
 
     _getObjectsStr() {
         return this._selectedObjects.map(elem => this._getObjectLink(elem)).join(", ");
