@@ -3324,7 +3324,7 @@
             }
             .tabs-component-tab-a.is-active {
                 color: black;
-                font-weight: bolder;
+                text-shadow: 0.8px 0px 0px black;
                 &:hover {
                     background-color: unset;
                 }

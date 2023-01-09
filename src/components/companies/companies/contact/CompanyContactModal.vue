@@ -8,7 +8,11 @@
       <div class="CompanyContactModal">
         <div class="CompanyContactModal-left">
           <p class="CompanyContactModal-left-name">
-            {{ contact.full_name ? contact.full_name : "Общий контакт" }}
+            {{
+              contact.type
+                ? "Общий контакт"
+                : contact.full_name || "Имя неизвестно"
+            }}
             <span
               ><i
                 class="fas fa-smile mr-2 text-success"
@@ -134,7 +138,7 @@
           <span v-if="contact.consultant?.userProfile.short_name"
             >конс: {{ contact.consultant.userProfile.short_name }}</span
           >
-          <span v-else>хз</span>
+          <span v-else></span>
         </div>
       </div>
     </Modal>

@@ -21,10 +21,14 @@
     <strong
       class="CompanyBoxContactListItem-name"
       :title="contact.full_name || ''"
+      v-if="!contact.type"
       >{{ contact.full_name || "Имя неизвестно" }}</strong
     >
+    <strong v-if="contact.type" class="CompanyBoxContactListItem-name"
+      >Общий контакт</strong
+    >
     <span class="CompanyBoxContactListItem-position">{{
-      position || "Должность неизвестна"
+      contact.position_unknown ? "Должность неизвестна" : position
     }}</span>
     <PhoneNumber
       v-if="contact.phones.length"
