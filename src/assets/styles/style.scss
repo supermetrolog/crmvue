@@ -5098,6 +5098,10 @@
         }
 
         .comment {
+            p {
+                word-break: break-all;
+            }
+
             li {
                 border-bottom: none;
 

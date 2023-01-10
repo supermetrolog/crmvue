@@ -108,7 +108,7 @@ export default {
   },
   methods: {
     tabSwitched(item) {
-      setTimeout(() => this.scrollToForm(item.tab.hash), 500);
+      this.scrollToFormDelay(item.tab.hash);
     },
     titleClasses(step) {
       if (step.status == 1) {
@@ -116,16 +116,19 @@ export default {
       }
       return "warning_block";
     },
+    scrollToFormDelay(hash) {
+      setTimeout(() => this.scrollToForm(hash), 500);
+    },
     scrollToForm(hash) {
+      if (!hash) {
+        return;
+      }
       let options = {
         behavior: "smooth",
         block: "end",
         alignToTop: false,
       };
-      if (hash) {
-        console.warn(this.$refs[hash]);
-        this.$refs[hash][0].$el.scrollIntoView(options);
-      }
+      this.$refs[hash][0].$el.scrollIntoView(options);
     },
     async onSubmit(step) {
       this.v$.$validate();
@@ -147,24 +150,14 @@ export default {
         this.$emit("commentAdded");
         this.form.comment = null;
         this.v$.$reset();
+        this.scrollToFormDelay("#" + step.id);
       }
       this.loader = false;
     },
   },
-  updated() {
-    console.log("CURRENT STEP ID: ", this.currentTimelineStepId);
-  },
-  mounted() {
-    this.$nextTick(() => {
-      setTimeout(() => this.scrollToForm(), 500); //Из за анимации нужно подождать 500 мс чтобы элемент появился
-    });
-  },
   watch: {
     step() {
       this.currentTimelineStepId = this.step.id;
-    },
-    currentTimelineStepId() {
-      setTimeout(() => this.scrollToForm(), 300);
     },
   },
 };
