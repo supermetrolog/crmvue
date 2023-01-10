@@ -40,7 +40,10 @@
           </CustomButton>
         </div>
       </div>
-      <div class="col-3 align-self-center text-right timeline-list">
+      <div
+        class="col-3 align-self-center text-right timeline-list"
+        v-if="!disabled"
+      >
         <div class="timeline-actions timeline-list-item px-1">
           <CustomButton
             :options="{

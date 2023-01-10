@@ -21,7 +21,7 @@
                   class="mb-3 p-2"
                   @submit="onSubmit(step)"
                 >
-                  <FormGroup>
+                  <FormGroup v-if="!disabled">
                     <Textarea
                       class="col-12"
                       v-model="form.comment"
