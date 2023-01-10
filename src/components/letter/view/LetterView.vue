@@ -37,17 +37,26 @@
             :class="[getWayByIndex(lWay.way).icon, 'way']"
           ></i>
         </Value>
-        <Key> Тема: </Key>
+        <Key> Метод: </Key>
         <Value>
-          <p>{{ letter.subject || "—" }}</p>
+          <span class="shipping-method success" v-if="letter.shipping_method">
+            CRM
+          </span>
+          <span class="shipping-method dark" v-else>Другими методами</span>
         </Value>
-        <Key> Контент: </Key>
-        <Value>
-          <p>{{ letter.body || "—" }}</p>
-        </Value>
+        <template v-if="letter.shipping_method">
+          <Key> Тема: </Key>
+          <Value>
+            <p v-html="letter.subject"></p>
+          </Value>
+          <Key> Контент: </Key>
+          <Value>
+            <p v-html="letter.body"></p>
+          </Value>
+        </template>
       </KeyValue>
     </div>
-    <div class="letter-view-offers">
+    <div class="letter-view-offers mt-3">
       <Objects>
         <ObjectsList :objects="getOffers()" :disabled="true" col="col-3" />
       </Objects>

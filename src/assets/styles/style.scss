@@ -7496,6 +7496,23 @@
             margin-right: 10px;
         }
 
+        .shipping-method {
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 13px;
+            color: $color_light;
+            padding: 2px 5px;
+            background-color: $color_dark;
+
+            &.success {
+                background-color: $color_success;
+            }
+
+            &.dark {
+                background-color: $color_dark;
+            }
+        }
+
     }
 
 
