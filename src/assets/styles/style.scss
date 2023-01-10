@@ -7467,7 +7467,7 @@
             width: 1200px;
         }
 
-        .contact-value {
+        .letter-contact-value {
             display: inline-block;
             padding: 3px 10px;
             margin-right: 10px;
@@ -7476,27 +7476,40 @@
             font-weight: normal;
             font-size: 15px;
 
-            &.from {
+            &.letter-from {
                 background-color: rgba($color_success, .3);
             }
 
-            &.target {
+            &.letter-target {
                 background-color: rgba($color_primary, .3);
             }
 
-            .c-value {
+            .letter-c-value {
                 font-weight: bold;
                 text-decoration: underline;
             }
         }
 
-        .way {
+        .letter-way {
             color: $color_primary;
             font-size: 24px;
             margin-right: 10px;
         }
 
-        .shipping-method {
+        .letter-subject,
+        .letter-content {
+            font-weight: normal;
+            font-size: 16px;
+        }
+
+        .letter-content {
+            p {
+                font-size: inherit;
+                font-weight: inherit;
+            }
+        }
+
+        .letter-shipping-method {
             font-weight: bold;
             text-transform: uppercase;
             font-size: 13px;
@@ -7533,4 +7546,14 @@
             font-weight: normal !important;
         }
 
+    }
+
+    // ************** QL EDITOR **************
+
+    .ql-editor {
+        p {
+            font-weight: inherit;
+            font-size: inherit;
+            line-height: inherit;
+        }
     }

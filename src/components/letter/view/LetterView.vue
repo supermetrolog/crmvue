@@ -4,28 +4,28 @@
       <KeyValue>
         <Key> От: </Key>
         <Value>
-          <p class="contact-value from">
+          <p class="letter-contact-value letter-from">
             {{ letter.user.userProfile.short_name }}
-            <span class="c-value">{{ letter.sender_email }}</span>
+            <span class="letter-c-value">{{ letter.sender_email }}</span>
           </p>
         </Value>
         <Key> Кому: </Key>
         <Value>
           <p
-            class="contact-value target"
+            class="letter-contact-value letter-target"
             v-for="lEmail in letter.letterEmails"
             :key="lEmail.id"
           >
             {{ lEmail.email.contact.first_and_last_name }}
-            <span class="c-value">{{ lEmail.email.email }}</span>
+            <span class="letter-c-value">{{ lEmail.email.email }}</span>
           </p>
           <p
-            class="contact-value target"
+            class="letter-contact-value letter-target"
             v-for="lPhone in letter.letterPhones"
             :key="lPhone.id"
           >
             {{ lPhone.phone.contact.first_and_last_name }}
-            <span class="c-value">{{ lPhone.phone.phone }}</span>
+            <span class="letter-c-value">{{ lPhone.phone.phone }}</span>
           </p>
         </Value>
         <Key> Способ: </Key>
@@ -34,24 +34,29 @@
             v-for="lWay in letter.letterWays"
             :key="lWay.id"
             :title="getWayByIndex(lWay.way).name"
-            :class="[getWayByIndex(lWay.way).icon, 'way']"
+            :class="[getWayByIndex(lWay.way).icon, 'letter-way']"
           ></i>
         </Value>
         <Key> Метод: </Key>
         <Value>
-          <span class="shipping-method success" v-if="letter.shipping_method">
+          <span
+            class="letter-shipping-method success"
+            v-if="letter.shipping_method"
+          >
             CRM
           </span>
-          <span class="shipping-method dark" v-else>Другими методами</span>
+          <span class="letter-shipping-method dark" v-else
+            >Другими методами</span
+          >
         </Value>
         <template v-if="letter.shipping_method">
           <Key> Тема: </Key>
           <Value>
-            <p v-html="letter.subject"></p>
+            <p class="letter-subject" v-html="letter.subject"></p>
           </Value>
           <Key> Контент: </Key>
           <Value>
-            <p v-html="letter.body"></p>
+            <p class="letter-content" v-html="letter.body"></p>
           </Value>
         </template>
       </KeyValue>
