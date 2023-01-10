@@ -15,6 +15,7 @@
       @stageClicked="stageClicked"
     >
       <ButtonList
+        v-if="!disabled"
         :buttons="buttons"
         @done="$emit('done')"
         @send="$emit('send')"
@@ -30,7 +31,7 @@
       :isClicked="clickedStage === 2"
       @stageClicked="stageClicked"
     >
-      <div class="row no-gutters">
+      <div class="row no-gutters" v-if="!disabled">
         <div class="col-6 pr-1">
           <CustomButton
             title="Отправить маршрут клиенту"

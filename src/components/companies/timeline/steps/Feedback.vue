@@ -13,6 +13,7 @@
       :isCurrent="!data.timelineStepObjects.length"
     >
       <ButtonList
+        v-if="!disabled"
         :buttons="buttons"
         @done="$emit('done')"
         @negative="$emit('negative')"
@@ -25,7 +26,7 @@
       :closeSlotWhenDone="false"
       :isCurrent="!!data.timelineStepObjects.length"
     >
-      <div class="col-7 pp">
+      <div class="col-7 pp" v-if="!disabled">
         <div class="row">
           <div class="col-9 pl-2">
             <Checkbox

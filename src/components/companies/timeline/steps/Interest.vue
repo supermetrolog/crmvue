@@ -13,6 +13,7 @@
       :isCurrent="!data.timelineStepObjects.length"
     >
       <ButtonList
+        v-if="!disabled"
         :buttons="buttons"
         @done="$emit('done')"
         @negative="$emit('negative')"

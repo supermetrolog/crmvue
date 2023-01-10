@@ -56,6 +56,7 @@
                 :isCurrent="!step.timelineStepObjects.length"
               >
                 <ButtonList
+                  v-if="!disabled"
                   :buttons="buttons"
                   @send="openSendObjectsModal(false)"
                   @alreadySent="openSendObjectsModal(true)"

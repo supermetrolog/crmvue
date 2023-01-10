@@ -19,6 +19,7 @@
           @stageClicked="stageClicked"
         >
           <ButtonList
+            v-if="!disabled"
             :buttons="buttonsOne"
             @phoned="selectPhoned"
             @callback="openNotificationForm"
@@ -34,6 +35,7 @@
           @stageClicked="stageClicked"
         >
           <ButtonList
+            v-if="!disabled"
             :buttons="buttonsTwo"
             @done="selectDone"
             @updateRequest="openRequestForm"

@@ -121,7 +121,9 @@ export default {
     updatedObjects(data, fn) {
       const fetchRequest = () => {
         this.FETCH_COMPANY_REQUESTS(this.$route.params.id);
-        fn();
+        if (fn) {
+          fn();
+        }
       };
       this.$emit("updatedObjects", data, true, fetchRequest);
     },

@@ -8,6 +8,7 @@
               <Visit
                 :step="step"
                 :buttons="buttons"
+                :disabled="disabled"
                 @done="done"
                 @negative="negative"
               />
