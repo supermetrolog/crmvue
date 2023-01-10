@@ -1,6 +1,6 @@
 <template>
   <teleport to="body">
-    <Modal class="autosize" @close="$emit('close')">
+    <Modal class="autosize" @close="$emit('close')" title="Письмо">
       <div class="letter-view-modal-wrapper">
         <LetterView :letter="letter" />
       </div>

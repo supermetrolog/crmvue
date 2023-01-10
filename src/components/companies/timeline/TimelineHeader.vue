@@ -1,12 +1,34 @@
 <template>
   <div class="timeline-header">
-    <CompanyRequestDisableFormModal
-      v-if="disableFormVisible"
-      title="Завершение таймлана"
-      :request_id="currentRequest.id"
-      @disabled="disabledTimeline"
-      @close="clickCloseDisableForm"
-    />
+    <teleport to="body">
+      <transition
+        mode="out-in"
+        enter-active-class="animate__animated animate__zoomIn for__modal absolute"
+        leave-active-class="animate__animated animate__zoomOut for__modal absolute"
+      >
+        <CompanyRequestDisableFormModal
+          v-if="disableFormVisible"
+          title="Завершение таймлана"
+          :request_id="currentRequest.id"
+          @disabled="disabledTimeline"
+          @close="clickCloseDisableForm"
+        />
+      </transition>
+    </teleport>
+    <teleport to="body">
+      <transition
+        mode="out-in"
+        enter-active-class="animate__animated animate__zoomIn for__modal absolute"
+        leave-active-class="animate__animated animate__zoomOut for__modal absolute"
+      >
+        <CompanyDealForm
+          v-if="dealFormVisible"
+          :company_id="currentRequest.company_id"
+          :request_id="currentRequest.id"
+          @close="clickCloseDealForm"
+        />
+      </transition>
+    </teleport>
     <div>
       <TimelineStatus
         v-if="currentRequest && TIMELINE"
@@ -58,7 +80,7 @@
               defaultBtn: true,
               disabled: disabled,
             }"
-            @confirm="clickOpenDisableForm"
+            @confirm="clickOpenDealForm"
           >
             <template #btnContent> создать сделку </template>
           </CustomButton>
@@ -95,6 +117,7 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 import CompanyRequestDisableFormModal from "@/components/companies/forms/company-request-form/CompanyRequestDisableFormModal";
+import CompanyDealForm from "@/components/companies/forms/company-deal-form/CompanyDealForm";
 import CustomButton from "@/components/common/CustomButton.vue";
 import TimelineStatus from "./TimelineStatus";
 export default {
@@ -103,10 +126,12 @@ export default {
     CompanyRequestDisableFormModal,
     CustomButton,
     TimelineStatus,
+    CompanyDealForm,
   },
   data() {
     return {
       disableFormVisible: false,
+      dealFormVisible: false,
     };
   },
   props: {
@@ -133,6 +158,12 @@ export default {
     },
     clickCloseDisableForm() {
       this.disableFormVisible = false;
+    },
+    clickOpenDealForm() {
+      this.dealFormVisible = true;
+    },
+    clickCloseDealForm() {
+      this.dealFormVisible = false;
     },
     async disabledTimeline() {
       if (await this.FETCH_COMPANY_REQUESTS(this.$route.params.id)) {

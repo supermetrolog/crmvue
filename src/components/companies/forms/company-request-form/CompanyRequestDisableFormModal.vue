@@ -1,20 +1,12 @@
 <template>
-  <teleport to="body">
-    <transition
-      mode="out-in"
-      enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-      leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-    >
-      <div class="company-request-disable-form-modal">
-        <Modal class="autosize" :title="title" @close="$emit('close')">
-          <CompanyRequestDisableForm
-            @disabled="$emit('disabled')"
-            :request_id="request_id"
-          />
-        </Modal>
-      </div>
-    </transition>
-  </teleport>
+  <div class="company-request-disable-form-modal">
+    <Modal class="autosize" :title="title" @close="$emit('close')">
+      <CompanyRequestDisableForm
+        @disabled="$emit('disabled')"
+        :request_id="request_id"
+      />
+    </Modal>
+  </div>
 </template>
 
 <script>
