@@ -19,7 +19,7 @@
                 <Form
                   :ref="'#' + timelineStep.id"
                   class="mb-3 p-2"
-                  @submit="onSubmit(step)"
+                  @submit="onSubmit(timelineStep)"
                 >
                   <FormGroup v-if="!disabled">
                     <Textarea
@@ -150,6 +150,9 @@ export default {
       }
       this.loader = false;
     },
+  },
+  updated() {
+    console.log("CURRENT STEP ID: ", this.currentTimelineStepId);
   },
   mounted() {
     this.$nextTick(() => {
