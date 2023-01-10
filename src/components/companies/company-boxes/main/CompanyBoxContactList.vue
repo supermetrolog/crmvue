@@ -2,7 +2,7 @@
   <strong
     >Контакты
     <small
-      class="CompanyBoxContactList-create"
+      class="edit_btn CompanyBoxContactList-create"
       @click="this.$emit('clickCreateContact')"
       >[создать]</small
     ></strong

@@ -3210,6 +3210,11 @@
         .no-data-container img {
             box-shadow: none;
         }
+        .edit_btn {
+            font-size: 10px;
+            color: $color_info;
+            cursor: pointer;
+        }
     }
 
     // *****  COMPANY PAGE BOXES ******
@@ -3371,9 +3376,7 @@
             height: 5px;
         }
         &-create {
-            font-size: 12px;
-            color: $color_light_blue;
-            cursor: pointer;
+            color: $color_light_blue !important;
         }
 
     }

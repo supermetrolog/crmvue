@@ -111,6 +111,7 @@
         :deals="COMPANY.dealsRequestEmpty"
         @openDealFormForUpdate="openDealFormForUpdate"
         @dealDeleted="getCompany(false)"
+        @clickCreateRequest="clickOpenCompanyRequestForm"
       />
       <CompanyBoxServices v-if="!loaderCompanyDetailInfo" />
     </div>

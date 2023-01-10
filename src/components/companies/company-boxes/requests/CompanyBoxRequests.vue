@@ -6,7 +6,7 @@
           >ЗАПРОСЫ ({{ requests.length }}), СДЕЛКИ ({{
             dealsCount + deals.length
           }})</span
-        >
+        ><small class="edit_btn" @click="clickCreateRequest"> [создать]</small>
       </div>
     </template>
     <template #content>
@@ -63,6 +63,9 @@ export default {
     },
     dealDeleted() {
       this.$emit("dealDeleted");
+    },
+    clickCreateRequest() {
+      this.$emit("clickCreateRequest");
     },
   },
 };
