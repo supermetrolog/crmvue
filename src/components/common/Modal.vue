@@ -2,10 +2,10 @@
   <div class="modal active" role="dialog" :class="classes">
     <div class="modal-container">
       <div class="modal-header">
-        <div v-if="title" class="modal-header-title">
+        <div v-if="title">
           {{ title }}
         </div>
-        <div class="modal-header-content">
+        <div>
           <slot name="header"></slot>
         </div>
         <div class="times-container">

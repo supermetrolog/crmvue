@@ -1031,21 +1031,6 @@
     .timeline-list {
         display: flex;
         justify-content: end;
-
-        @media screen and (max-width: $laptop_size) {
-            flex-direction: column;
-
-            &-item {
-                height: unset;
-                padding: 1px 2px;
-                font-size: 10px !important;
-            }
-
-            .timeline-actions .action {
-                padding: 1px 2px;
-                height: unset;
-            }
-        }
     }
 
     .step-complete {
@@ -1563,20 +1548,11 @@
         }
 
         &-header {
-            &-actions {
-                display: flex;
-
-                .btn {
-                    @media screen and (max-width: $laptop_size) {
-                        padding: 5px 1px !important;
-                        font-size: 10px;
-                    }
-
-                    @media screen and (max-width: $tablet_size) {
-                        font-size: 8px;
-                    }
-                }
-            }
+            display: grid;
+            grid-template-columns: 2fr auto auto;
+            grid-gap: 1em;
+            align-items: center;
+            justify-items: end;
         }
     }
 
@@ -1673,12 +1649,6 @@
             grid-template-columns: auto 1fr;
             grid-gap: 1em;
             align-items: center;
-
-            &-title,
-            &-content {
-                text-align: center;
-                vertical-align: middle;
-            }
 
             .times-container {
                 position: absolute;

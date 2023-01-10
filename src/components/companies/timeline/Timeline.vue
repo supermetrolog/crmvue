@@ -2,7 +2,6 @@
   <Modal class="fullscreen" :title="timelineTitle" @close="$emit('close')">
     <template #header>
       <TimelineHeader
-        class="col-12"
         :disabled="disabled"
         :currentRequest="currentRequest"
         @close="$emit('close')"

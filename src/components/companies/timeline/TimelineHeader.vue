@@ -1,25 +1,21 @@
 <template>
   <div class="timeline-header">
-    <div class="row no-gutters">
-      <CompanyRequestDisableFormModal
-        v-if="disableFormVisible"
-        title="Завершение таймлана"
-        :request_id="currentRequest.id"
-        @disabled="disabledTimeline"
-        @close="clickCloseDisableForm"
+    <CompanyRequestDisableFormModal
+      v-if="disableFormVisible"
+      title="Завершение таймлана"
+      :request_id="currentRequest.id"
+      @disabled="disabledTimeline"
+      @close="clickCloseDisableForm"
+    />
+    <div>
+      <TimelineStatus
+        v-if="currentRequest && TIMELINE"
+        :request="currentRequest"
+        :timeline="TIMELINE"
       />
-      <div class="col-6 align-self-center">
-        <TimelineStatus
-          v-if="currentRequest && TIMELINE"
-          :request="currentRequest"
-          :timeline="TIMELINE"
-        />
-      </div>
-
-      <div
-        class="col-3 align-self-center timeline-list"
-        v-if="TIMELINE_LIST.length"
-      >
+    </div>
+    <div>
+      <div class="timeline-list" v-if="TIMELINE_LIST.length">
         <div
           class="timeline-actions timeline-list-item p-1"
           v-for="timeline in TIMELINE_LIST"
@@ -40,10 +36,9 @@
           </CustomButton>
         </div>
       </div>
-      <div
-        class="col-3 align-self-center text-right timeline-list"
-        v-if="!disabled"
-      >
+    </div>
+    <div>
+      <div class="timeline-list" v-if="!disabled">
         <div class="timeline-actions timeline-list-item px-1">
           <CustomButton
             :options="{
@@ -54,6 +49,18 @@
             @confirm="clickOpenDisableForm"
           >
             <template #btnContent> завершить </template>
+          </CustomButton>
+        </div>
+        <div class="timeline-actions timeline-list-item px-1">
+          <CustomButton
+            :options="{
+              btnClass: 'primary',
+              defaultBtn: true,
+              disabled: disabled,
+            }"
+            @confirm="clickOpenDisableForm"
+          >
+            <template #btnContent> создать сделку </template>
           </CustomButton>
         </div>
         <div class="timeline-actions timeline-list-item px-1">
