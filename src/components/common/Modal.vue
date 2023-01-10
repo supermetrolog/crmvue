@@ -2,18 +2,14 @@
   <div class="modal active" role="dialog" :class="classes">
     <div class="modal-container">
       <div class="modal-header">
-        <div class="row no-gutters">
-          <div class="col-4 title align-self-center" v-if="title">
-            {{ title }}
-          </div>
-          <div class="col-8 align-self-center">
-            <div class="row no-gutters">
-              <slot name="header"></slot>
-            </div>
-          </div>
-          <div class="times-container">
-            <i class="fas fa-times" @click="clickCancel"></i>
-          </div>
+        <div v-if="title" class="modal-header-title">
+          {{ title }}
+        </div>
+        <div class="modal-header-content">
+          <slot name="header"></slot>
+        </div>
+        <div class="times-container">
+          <i class="fas fa-times" @click="clickCancel"></i>
         </div>
       </div>
       <div class="modal-body">

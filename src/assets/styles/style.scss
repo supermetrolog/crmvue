@@ -1669,6 +1669,16 @@
             font-size: 18px;
             position: relative;
             padding-right: 40px;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            grid-gap: 1em;
+            align-items: center;
+
+            &-title,
+            &-content {
+                text-align: center;
+                vertical-align: middle;
+            }
 
             .times-container {
                 position: absolute;
