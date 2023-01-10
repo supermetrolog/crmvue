@@ -3776,6 +3776,48 @@
         & > div {
             padding: 10px;
         }
+        .header {
+            &:hover {
+                .actions {
+                    display: flex;
+                }
+            }
+            .actions {
+                display: none;
+                gap: 3px;
+                position: absolute;
+                top: -7px;
+                right: 2px;
+                &:hover {
+                    display: flex;
+                }
+                .fas {
+                    border-radius: 100%;
+                    border: black 0.5px solid;
+                    font-size: 8px;
+                    padding: 4px;
+                    width: 15px;
+                    height: 15px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    cursor: pointer;
+                    opacity: .4;
+                    &:hover {
+                        opacity: 1;
+                    }
+                    &.fa-pen {
+                        background-color: $color_info;
+                    }
+                    &.fa-clone {
+                        background-color: $color_success_dark;
+                    }
+                    &.fa-times {
+                        background-color: $color_danger;
+                    }
+                }
+            }
+        }
         &.done {
             .header {
                 background-color: $color_success_dark;

@@ -14,6 +14,19 @@
       </p>
     </div>
     <div class="CompanyBoxRequestsListItem-type header">
+      <div class="actions">
+        <i
+          class="fas fa-pen"
+          title="редактировать"
+          @click="clickUpdateRequest"
+        ></i>
+        <i
+          class="fas fa-clone"
+          title="клонировать"
+          @click="clickCloneRequest"
+        ></i>
+        <i class="fas fa-times" title="удалить" @click="clickDeleteRequest"></i>
+      </div>
       <p>{{ status }}</p>
     </div>
     <div class="CompanyBoxRequestsListItem-location">
@@ -301,6 +314,16 @@ export default {
     dealTitle(dealName, dealDate) {
       return `Сделка: компания ${dealName}, ${this.dateFormatter(dealDate)}`;
     },
+    clickUpdateRequest() {
+      this.$emit("clickUpdateRequest", this.request);
+    },
+    clickCloneRequest() {
+      this.$emit("clickCloneRequest", this.request);
+    },
+    clickDeleteRequest() {
+      this.$emit("clickDeleteRequest", this.request);
+    },
   },
+  emits: ["clickUpdateRequest", "clickDeleteRequest", "clickCloneRequest"],
 };
 </script>

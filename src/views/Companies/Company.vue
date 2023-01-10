@@ -112,6 +112,8 @@
         @openDealFormForUpdate="openDealFormForUpdate"
         @dealDeleted="getCompany(false)"
         @clickCreateRequest="clickOpenCompanyRequestForm"
+        @openCompanyRequestFormForUpdate="openCompanyRequestFormForUpdate"
+        @requestCloned="getCompanyRequests"
       />
       <CompanyBoxServices v-if="!loaderCompanyDetailInfo" />
     </div>

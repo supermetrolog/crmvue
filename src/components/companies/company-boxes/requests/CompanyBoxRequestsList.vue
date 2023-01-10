@@ -4,6 +4,9 @@
       v-for="request of requests"
       :key="request.id"
       :request="request"
+      @clickUpdateRequest="clickUpdateRequest(request)"
+      @clickCloneRequest="clickCloneRequest(request)"
+      @clickDeleteRequest="clickDeleteRequest(request)"
     />
   </div>
 </template>
@@ -17,6 +20,17 @@ export default {
     requests: {
       type: Array,
       default: () => [],
+    },
+  },
+  methods: {
+    clickUpdateRequest(request) {
+      this.$emit("clickUpdateRequest", request);
+    },
+    clickCloneRequest(request) {
+      this.$emit("clickCloneRequest", request);
+    },
+    clickDeleteRequest(request) {
+      this.$emit("clickDeleteRequest", request);
     },
   },
 };
