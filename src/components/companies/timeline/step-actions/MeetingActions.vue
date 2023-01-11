@@ -22,8 +22,7 @@
           @closeCompanyForm="clickCloseCompanyContactForm"
           :company_id="COMPANY.id"
           :formdata="editContact"
-          @created="createdContact"
-          @updated="updatedContact"
+          @updated="getCompanyContacts"
           v-if="companyContactFormVisible"
         />
       </transition>
