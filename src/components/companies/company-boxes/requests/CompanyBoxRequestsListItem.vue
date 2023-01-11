@@ -16,6 +16,7 @@
     <div class="CompanyBoxRequestsListItem-type header">
       <div class="actions">
         <i
+          v-if="request.status != 2"
           class="fas fa-pen"
           title="редактировать"
           @click="clickUpdateRequest"
@@ -26,6 +27,7 @@
           @click="clickCloneRequest"
         ></i>
         <i
+          v-if="request.status != 2"
           class="fas"
           :class="{
             'fa-undo': request.status == 0,
