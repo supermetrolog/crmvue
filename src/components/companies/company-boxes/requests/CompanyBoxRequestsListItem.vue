@@ -14,6 +14,27 @@
       </p>
     </div>
     <div class="CompanyBoxRequestsListItem-type header">
+      <div class="actions">
+        <i
+          class="fas fa-pen"
+          title="редактировать"
+          @click="clickUpdateRequest"
+        ></i>
+        <i
+          class="fas fa-clone"
+          title="клонировать"
+          @click="clickCloneRequest"
+        ></i>
+        <i
+          class="fas"
+          :class="{
+            'fa-undo': request.status == 0,
+            'fa-times': request.status != 0,
+          }"
+          :title="request.status == 0 ? 'восстановить' : 'удалить'"
+          @click="clickDisableRequest"
+        ></i>
+      </div>
       <p>{{ status }}</p>
     </div>
     <div class="CompanyBoxRequestsListItem-location">
@@ -305,6 +326,16 @@ export default {
     dateFormatter(date) {
       return moment(date).format("DD.MM.YYYY");
     },
+    clickUpdateRequest() {
+      this.$emit("clickUpdateRequest", this.request);
+    },
+    clickCloneRequest() {
+      this.$emit("clickCloneRequest", this.request);
+    },
+    clickDisableRequest() {
+      this.$emit("clickDisableRequest", this.request);
+    },
   },
+  emits: ["clickUpdateRequest", "clickDisableRequest", "clickCloneRequest"],
 };
 </script>

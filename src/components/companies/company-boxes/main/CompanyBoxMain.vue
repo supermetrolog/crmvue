@@ -5,9 +5,7 @@
         <div class="CompanyBoxMain-header-name">
           <span
             >{{ this.company.full_name }}
-            <small
-              @click="this.$emit('editCompany')"
-              class="CompanyBoxMain-header-name-edit"
+            <small class="edit_btn" @click="this.$emit('editCompany')"
               >[редактировать]</small
             ></span
           >

@@ -2090,6 +2090,11 @@
                 min-height: unset !important;
             }
         }
+        .label-padding {
+            & > p {
+                font-size: 15px;
+            }
+        }
     }
 
     .invalid {
@@ -3742,6 +3747,11 @@
         .no-data-container img {
             box-shadow: none;
         }
+        .edit_btn {
+            font-size: 10px;
+            color: $color_info;
+            cursor: pointer;
+        }
     }
 
     // *****  COMPANY PAGE BOXES ******
@@ -3883,8 +3893,7 @@
 
             .tabs-component-tab-a.is-active {
                 color: black;
-                font-weight: bolder;
-
+                text-shadow: 0.8px 0px 0px black;
                 &:hover {
                     background-color: unset;
                 }
@@ -3930,6 +3939,9 @@
         &::-webkit-scrollbar {
             background-color: unset;
             height: 5px;
+        }
+        &-create {
+            color: $color_light_blue !important;
         }
 
     }
@@ -4030,6 +4042,21 @@
             left: 5%;
             font-size: 13px;
             color: $color_grey;
+        }
+        &-edit {
+            position: absolute;
+            font-size: 12px;
+            color: $color_light_blue;
+            left: 10px;
+            top: 5px;
+            cursor: pointer;
+            z-index: 1;
+            display: none;
+        }
+        &:hover {
+            .CompanyBoxContactListItem-edit {
+                display: block;
+            }
         }
 
     }
@@ -4227,7 +4254,9 @@
         border: 1px solid $color_success;
         font-size: 14px;
         padding: 5px;
-
+        &.passive {
+            filter: grayscale(1);
+        }
         &-wrapper {
             text-decoration: none;
             color: #2D2F34;
@@ -4371,7 +4400,51 @@
         &>div {
             padding: 10px;
         }
-
+        .header {
+            &:hover {
+                .actions {
+                    display: flex;
+                }
+            }
+            .actions {
+                display: none;
+                gap: 3px;
+                position: absolute;
+                top: -7px;
+                right: 2px;
+                &:hover {
+                    display: flex;
+                }
+                .fas {
+                    border-radius: 100%;
+                    border: black 0.5px solid;
+                    font-size: 8px;
+                    padding: 4px;
+                    width: 15px;
+                    height: 15px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    cursor: pointer;
+                    opacity: .4;
+                    &:hover {
+                        opacity: 1;
+                    }
+                    &.fa-pen {
+                        background-color: $color_info;
+                    }
+                    &.fa-clone {
+                        background-color: $color_success_dark;
+                    }
+                    &.fa-times {
+                        background-color: $color_danger;
+                    }
+                    &.fa-undo {
+                        background-color: $color_warning;
+                    }
+                }
+            }
+        }
         &.done {
             .header {
                 background-color: $color_success_dark;

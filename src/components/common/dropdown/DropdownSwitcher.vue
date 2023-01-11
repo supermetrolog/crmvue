@@ -4,7 +4,7 @@
     <i class="fa fa-chevron-up" v-if="modelValue"></i>
     <template v-if="title">
       <span>{{ title }}</span>
-      <span v-if="mainNumber"
+      <span v-if="mainNumber || sideNumber"
         >({{ mainNumber
         }}<span class="side_number" v-if="sideNumber">{{
           `/${sideNumber}`

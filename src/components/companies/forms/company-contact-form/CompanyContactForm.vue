@@ -40,6 +40,7 @@
           />
           <div class="col-1">
             <FormGroup class="label-padding">
+              <p>Осн.</p>
               <Checkbox
                 @change="changeIsMainPhone(phone)"
                 v-for="phone in form.phones"
@@ -59,6 +60,7 @@
           />
           <div class="col-1">
             <FormGroup class="label-padding">
+              <p>Осн.</p>
               <Checkbox
                 @change="changeIsMainEmail(email)"
                 v-for="email in form.emails"
