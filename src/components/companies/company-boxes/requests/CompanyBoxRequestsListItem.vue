@@ -187,7 +187,7 @@
     <div class="CompanyBoxRequestsListItem-footer" v-if="request.deal">
       <DropdownSwitcher
         v-model="dealIsOpen"
-        :title="dealTitle(request.deal.company_id, request.deal.dealDate)"
+        :title="dealTitle"
         v-if="request.deal"
       />
       <DropdownContainer v-model="dealIsOpen">
@@ -256,6 +256,13 @@ export default {
         return "";
       }
     },
+    dealTitle() {
+      let company_name =
+        this.request.deal.company.nameRu || this.request.deal.company.nameEng;
+      return `Сделка: компания ${company_name}, ${this.dateFormatter(
+        this.request.deal.dealDate
+      )}`;
+    },
   },
   methods: {
     clickTimeline() {
@@ -297,9 +304,6 @@ export default {
     },
     dateFormatter(date) {
       return moment(date).format("DD.MM.YYYY");
-    },
-    dealTitle(dealName, dealDate) {
-      return `Сделка: компания ${dealName}, ${this.dateFormatter(dealDate)}`;
     },
   },
 };
