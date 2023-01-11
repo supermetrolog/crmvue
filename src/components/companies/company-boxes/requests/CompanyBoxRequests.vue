@@ -81,9 +81,7 @@
 <script>
 import CompanyRequestDisableFormModal from "../../forms/company-request-form/CompanyRequestDisableFormModal.vue";
 import { mapActions } from "vuex";
-import Loader from "../../../common/Loader.vue";
 import CompanyRequestItem from "../../companies/request/CompanyRequestItem.vue";
-import Modal from "../../../common/Modal.vue";
 import DealList from "../../companies/deal/DealList.vue";
 import CompanyBoxRequestsList from "./CompanyBoxRequestsList.vue";
 import NoData from "../../../common/NoData.vue";
@@ -96,9 +94,7 @@ export default {
     NoData,
     CompanyBoxRequestsList,
     DealList,
-    Modal,
     CompanyRequestItem,
-    Loader,
     CompanyRequestDisableFormModal,
   },
   props: {
@@ -177,6 +173,9 @@ export default {
       this.disabledRequestItem = null;
       this.$emit("requestDisabled");
     },
+  },
+  mounted() {
+    console.log("mounted");
   },
   emits: [
     "clickCreateRequest",

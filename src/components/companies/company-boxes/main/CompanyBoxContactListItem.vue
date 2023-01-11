@@ -8,6 +8,7 @@
     }"
   >
     <div
+      v-if="!contact.type"
       class="CompanyBoxContactListItem-edit"
       @click.stop="editContact(this.contact)"
     >

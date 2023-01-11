@@ -1002,7 +1002,7 @@
 
     @mixin success_block {
         background-color: $basic_step_color;
-        border: $done_step_border;
+        // border: $done_step_border;
     }
 
     .success_block {
@@ -1074,6 +1074,9 @@
         .timeline-extra-block {
             &.box {
                 padding-right: 0 !important;
+            }
+            .badge {
+                font-size: 13px;
             }
         }
 
@@ -4652,14 +4655,10 @@
         &-list {
             &.success {
                 .wrapper {
+                    @include success_block;
                     width: 100%;
-                    background-color: $color_success_dark;
                     border-bottom: 3px solid $color_dark;
                     padding-bottom: 20px;
-
-                    .label {
-                        color: $color_light;
-                    }
                 }
             }
 
