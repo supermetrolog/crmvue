@@ -148,7 +148,7 @@
             label="Высота потолков"
             placeholder="От:"
             required
-            class="col-3 pr-1"
+            class="col-4 pr-1"
           >
             <Input
               v-model="form.maxCeilingHeight"
@@ -165,7 +165,7 @@
             label="S пола (м^2)"
             placeholder="От:"
             required
-            class="col-3 pr-1"
+            class="col-4 pr-1"
           >
             <Input
               v-model="form.maxArea"
@@ -176,13 +176,6 @@
               class="col-12 p-0 pt-1"
             />
           </Input>
-          <Radio
-            v-model="form.status"
-            required
-            label="Статус"
-            class="col-2 text-center"
-            :options="statusOptions"
-          />
           <MultiSelect
             v-if="!form.status"
             v-model="form.passive_why"
@@ -380,7 +373,6 @@ import {
   DealTypeList,
   YesNo,
   OutsideMkad,
-  ActivePassive,
   unknownMovingDate,
   PassiveWhyRequest,
   ObjectTypesGeneralList,
@@ -430,7 +422,6 @@ export default {
       isOpenConsultantSelect: false,
       yesNoOptions: YesNo.get("param"),
       outsideMkadOptions: OutsideMkad.get("param"),
-      statusOptions: ActivePassive.get("param"),
       unknownMovingDateOptions: unknownMovingDate.get("param"),
       passiveWhyOptions: PassiveWhyRequest.get("param"),
       loader: false,
