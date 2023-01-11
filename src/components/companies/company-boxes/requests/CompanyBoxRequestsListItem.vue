@@ -14,7 +14,7 @@
       </p>
     </div>
     <div class="CompanyBoxRequestsListItem-type header">
-      <div class="actions">
+      <div class="actions" v-if="!reedOnly">
         <i
           class="fas fa-pen"
           title="редактировать"
@@ -201,6 +201,7 @@
       <button
         class="btn px-2 btn-primary scale timeline-btn"
         @click="clickTimeline"
+        v-if="!reedOnly"
       >
         таймлайн
       </button>
@@ -241,6 +242,10 @@ export default {
     request: {
       type: Object,
       default: () => {},
+    },
+    reedOnly: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {

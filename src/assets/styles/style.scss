@@ -2090,8 +2090,9 @@
                 min-height: unset !important;
             }
         }
+
         .label-padding {
-            & > p {
+            &>p {
                 font-size: 15px;
             }
         }
@@ -3747,6 +3748,7 @@
         .no-data-container img {
             box-shadow: none;
         }
+
         .edit_btn {
             font-size: 10px;
             color: $color_info;
@@ -3894,6 +3896,7 @@
             .tabs-component-tab-a.is-active {
                 color: black;
                 text-shadow: 0.8px 0px 0px black;
+
                 &:hover {
                     background-color: unset;
                 }
@@ -3940,6 +3943,7 @@
             background-color: unset;
             height: 5px;
         }
+
         &-create {
             color: $color_light_blue !important;
         }
@@ -4043,6 +4047,7 @@
             font-size: 13px;
             color: $color_grey;
         }
+
         &-edit {
             position: absolute;
             font-size: 12px;
@@ -4053,6 +4058,7 @@
             z-index: 1;
             display: none;
         }
+
         &:hover {
             .CompanyBoxContactListItem-edit {
                 display: block;
@@ -4254,9 +4260,11 @@
         border: 1px solid $color_success;
         font-size: 14px;
         padding: 5px;
+
         &.passive {
             filter: grayscale(1);
         }
+
         &-wrapper {
             text-decoration: none;
             color: #2D2F34;
@@ -4400,21 +4408,25 @@
         &>div {
             padding: 10px;
         }
+
         .header {
             &:hover {
                 .actions {
                     display: flex;
                 }
             }
+
             .actions {
                 display: none;
                 gap: 3px;
                 position: absolute;
                 top: -7px;
                 right: 2px;
+
                 &:hover {
                     display: flex;
                 }
+
                 .fas {
                     border-radius: 100%;
                     border: black 0.5px solid;
@@ -4427,24 +4439,30 @@
                     align-items: center;
                     cursor: pointer;
                     opacity: .4;
+
                     &:hover {
                         opacity: 1;
                     }
+
                     &.fa-pen {
                         background-color: $color_info;
                     }
+
                     &.fa-clone {
                         background-color: $color_success_dark;
                     }
+
                     &.fa-times {
                         background-color: $color_danger;
                     }
+
                     &.fa-undo {
                         background-color: $color_warning;
                     }
                 }
             }
         }
+
         &.done {
             .header {
                 background-color: $color_success_dark;
@@ -5842,6 +5860,11 @@
         .date {
             width: 140px;
         }
+    }
+
+    // ************ COMPANY REQUEST CLONE FORM **************
+    .company-request-clone-form {
+        max-width: 550px;
     }
 
     // ************ COMPANY-REQUEST-SEARCH-FORM *************
