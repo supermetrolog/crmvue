@@ -54,7 +54,7 @@ export const apiUrlHelperObject = {
     devWsUrl: 'ws://localhost:8010',
 
     prodObjectsUrl: "https://pennylane.pro/",
-    stageObjectsUrl: "https://supermetrolog.ru/",
+    stageObjectsUrl: "https://pennylane.pro/",
     devObjectsUrl: "http://objects/",
     wsUrl() {
         if (process.env.NODE_ENV == 'development') {
