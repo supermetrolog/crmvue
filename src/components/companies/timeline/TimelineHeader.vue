@@ -26,6 +26,7 @@
           :company_id="currentRequest.company_id"
           :request_id="currentRequest.id"
           @close="clickCloseDealForm"
+          @created="createdDeal"
         />
       </transition>
     </teleport>
@@ -164,6 +165,11 @@ export default {
     },
     clickCloseDealForm() {
       this.dealFormVisible = false;
+    },
+    async createdDeal() {
+      if (await this.FETCH_COMPANY_REQUESTS(this.$route.params.id)) {
+        this.$emit("close");
+      }
     },
     async disabledTimeline() {
       if (await this.FETCH_COMPANY_REQUESTS(this.$route.params.id)) {
