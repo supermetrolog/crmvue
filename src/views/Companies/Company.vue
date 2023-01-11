@@ -109,6 +109,7 @@
         v-if="!loaderCompanyRequests"
         :requests="COMPANY_REQUESTS"
         :deals="COMPANY.dealsRequestEmpty"
+        :loading="loaderCompanyRequests"
         @openDealFormForUpdate="openDealFormForUpdate"
         @dealDeleted="getCompany(false)"
         @clickCreateRequest="clickOpenCompanyRequestForm"

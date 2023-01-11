@@ -3815,6 +3815,9 @@
                     &.fa-times {
                         background-color: $color_danger;
                     }
+                    &.fa-undo {
+                        background-color: $color_warning;
+                    }
                 }
             }
         }

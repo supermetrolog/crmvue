@@ -23,10 +23,10 @@
             />
           </div>
           <div class="col-12 mt-4 text-center">
-            <Loader class="center small" v-if="cloneLoader" />
+            <Loader class="center small" v-if="loader" />
             <button
               class="btn btn-success"
-              :disabled="cloneLoader"
+              :disabled="loader"
               @click="cloneRequest(clonedRequestItem)"
             >
               Клонировать
@@ -34,7 +34,7 @@
             <button
               class="btn btn-primary ml-1"
               @click="clickCloseModal"
-              :disabled="cloneLoader"
+              :disabled="loader"
             >
               Нет
             </button>
@@ -88,6 +88,7 @@ import DealList from "../../companies/deal/DealList.vue";
 import CompanyBoxRequestsList from "./CompanyBoxRequestsList.vue";
 import NoData from "../../../common/NoData.vue";
 import CompanyBoxLayout from "../CompanyBoxLayout.vue";
+import api from "@/api/api";
 export default {
   name: "CompanyBoxRequests",
   components: {
@@ -109,12 +110,16 @@ export default {
       type: Array,
       default: () => [],
     },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
       disabledRequestItem: null,
       clonedRequestItem: null,
-      cloneLoader: false,
+      loader: false,
     };
   },
   computed: {
@@ -146,8 +151,14 @@ export default {
       this.disabledRequestItem = null;
       this.clonedRequestItem = null;
     },
-    clickDisableRequest(request) {
-      this.disabledRequestItem = request;
+    async clickDisableRequest(request) {
+      if (request.status == 0) {
+        if (await api.request.undisable(request.id)) {
+          this.onRequestIsDisabled();
+        }
+      } else {
+        this.disabledRequestItem = request;
+      }
     },
     closeDisableForm() {
       this.disabledRequestItem = null;
@@ -156,9 +167,9 @@ export default {
       this.clonedRequestItem = request;
     },
     async cloneRequest(request) {
-      this.cloneLoader = true;
+      this.loader = true;
       await this.CREATE_REQUEST(request);
-      this.cloneLoader = false;
+      this.loader = false;
       this.clonedRequestItem = null;
       this.$emit("requestCloned");
     },

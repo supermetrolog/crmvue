@@ -26,8 +26,12 @@
           @click="clickCloneRequest"
         ></i>
         <i
-          class="fas fa-times"
-          title="удалить"
+          class="fas"
+          :class="{
+            'fa-undo': request.status == 0,
+            'fa-times': request.status != 0,
+          }"
+          :title="request.status == 0 ? 'восстановить' : 'удалить'"
           @click="clickDisableRequest"
         ></i>
       </div>
