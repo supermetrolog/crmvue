@@ -114,6 +114,7 @@
         @clickCreateRequest="clickOpenCompanyRequestForm"
         @openCompanyRequestFormForUpdate="openCompanyRequestFormForUpdate"
         @requestCloned="getCompanyRequests"
+        @requestDisabled="getCompanyRequests"
       />
       <CompanyBoxServices v-if="!loaderCompanyDetailInfo" />
     </div>

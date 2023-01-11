@@ -25,7 +25,11 @@
           title="клонировать"
           @click="clickCloneRequest"
         ></i>
-        <i class="fas fa-times" title="удалить" @click="clickDeleteRequest"></i>
+        <i
+          class="fas fa-times"
+          title="удалить"
+          @click="clickDisableRequest"
+        ></i>
       </div>
       <p>{{ status }}</p>
     </div>
@@ -320,10 +324,10 @@ export default {
     clickCloneRequest() {
       this.$emit("clickCloneRequest", this.request);
     },
-    clickDeleteRequest() {
-      this.$emit("clickDeleteRequest", this.request);
+    clickDisableRequest() {
+      this.$emit("clickDisableRequest", this.request);
     },
   },
-  emits: ["clickUpdateRequest", "clickDeleteRequest", "clickCloneRequest"],
+  emits: ["clickUpdateRequest", "clickDisableRequest", "clickCloneRequest"],
 };
 </script>

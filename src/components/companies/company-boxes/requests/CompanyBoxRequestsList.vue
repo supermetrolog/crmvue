@@ -6,7 +6,7 @@
       :request="request"
       @clickUpdateRequest="clickUpdateRequest(request)"
       @clickCloneRequest="clickCloneRequest(request)"
-      @clickDeleteRequest="clickDeleteRequest(request)"
+      @clickDisableRequest="clickDisableRequest(request)"
     />
   </div>
 </template>
@@ -29,8 +29,8 @@ export default {
     clickCloneRequest(request) {
       this.$emit("clickCloneRequest", request);
     },
-    clickDeleteRequest(request) {
-      this.$emit("clickDeleteRequest", request);
+    clickDisableRequest(request) {
+      this.$emit("clickDisableRequest", request);
     },
   },
 };
