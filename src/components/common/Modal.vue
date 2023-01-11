@@ -22,6 +22,11 @@
 <script>
 export default {
   name: "Modal",
+  data() {
+    return {
+      alreadyHidden: false,
+    };
+  },
   props: {
     title: {
       type: String,
@@ -37,12 +42,19 @@ export default {
     },
   },
   mounted() {
+    if (document.getElementsByTagName("body")[0].style.overflow == "hidden") {
+      this.alreadyHidden = true;
+      return;
+    }
     document.getElementsByTagName("body")[0].style.overflow = "hidden";
     document.getElementsByTagName("body")[0].style.paddingRight = "5px";
     document.getElementsByClassName("navbar")[0].style.paddingRight = "5px";
   },
   unmounted() {
-    document.getElementsByTagName("body")[0].style.overflowY = "scroll";
+    if (this.alreadyHidden) {
+      return;
+    }
+    document.getElementsByTagName("body")[0].style.overflow = "scroll";
     document.getElementsByTagName("body")[0].style.paddingRight = "0";
     document.getElementsByClassName("navbar")[0].style.paddingRight = "0";
   },
