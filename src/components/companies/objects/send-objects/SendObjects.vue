@@ -134,6 +134,7 @@ export default {
         wayOfSending: [],
         message: null,
         subject: null,
+        company_id: null,
       },
     };
   },
@@ -153,6 +154,9 @@ export default {
             "Выберите способ связи для электронной почты",
             this.requiredEmail
           ),
+        },
+        company_id: {
+          required: helpers.withMessage("выберите компанию", required),
         },
       },
     };
@@ -185,19 +189,24 @@ export default {
       }
     },
     normalizeContacts() {
+      console.log(this.form.contactForSendMessage);
       let emails = this.form.contactForSendMessage.filter(
         (elem) => elem.type === 1
       );
       console.log(emails);
       if (emails) {
-        this.form.contacts.emails = emails.map((elem) => elem.id);
+        this.form.contacts.emails = emails.map((elem) => {
+          return { contact_id: elem.contact_id, value: elem.value };
+        });
       }
 
       let phones = this.form.contactForSendMessage.filter(
         (elem) => elem.type === 0
       );
       if (phones) {
-        this.form.contacts.phones = phones.map((elem) => elem.id);
+        this.form.contacts.phones = phones.map((elem) => {
+          return { contact_id: elem.contact_id, value: elem.value };
+        });
       }
     },
     requiredPhone() {
@@ -236,6 +245,14 @@ export default {
   mounted() {
     this.setDefaultContact();
     this.form = { ...this.form, ...this.formdata };
+  },
+  watch: {
+    form: {
+      handler() {
+        console.log("FORM CONTACTS: ", this.form.contactForSendMessage);
+      },
+      deep: true,
+    },
   },
 };
 </script>

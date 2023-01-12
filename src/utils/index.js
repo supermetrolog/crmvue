@@ -9,7 +9,7 @@ export const yandexmap = {
         version: '2.1'
     },
     async init() {
-        await loadYmap({...this.settings, debug: true });
+        await loadYmap({ ...this.settings, debug: true });
     },
     getObjectsCoords(objects, userLocation) {
         let coords = [];
@@ -72,12 +72,12 @@ export const yandexmap = {
         }
         query = 'россия ' + query;
         let result = [];
-        await window.ymaps.geocode(query).then(function(res) {
+        await window.ymaps.geocode(query).then(function (res) {
             let obj = res.geoObjects;
             obj.each((item) => {
                 result.push(item.getAddressLine());
             });
-        }, function(e) {
+        }, function (e) {
             console.error(e)
         })
         return result;
@@ -142,6 +142,7 @@ export default {
                 array.push({
                     label: item.phone,
                     value: {
+                        contact_id: item.contact_id,
                         id: item.id,
                         type: 0,
                         value: item.phone,
@@ -152,6 +153,7 @@ export default {
                 array.push({
                     label: item.email,
                     value: {
+                        contact_id: item.contact_id,
                         id: item.id,
                         type: 1,
                         value: item.email,
@@ -174,6 +176,7 @@ export default {
                 array.push({
                     label: item.email,
                     value: {
+                        contact_id: item.contact_id,
                         id: item.id,
                         type: 1,
                         value: item.email,

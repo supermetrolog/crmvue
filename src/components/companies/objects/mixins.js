@@ -46,42 +46,42 @@ export const MixinObject = {
                 if (item.offer && item.offer.id) {
                     return item.offer;
                 } else {
-                    return {...item, noOffer: true };
+                    return { ...item, noOffer: true };
                 }
             });
         },
         notSubmittedObjects() {
             return this.preventStepObjects.filter(
                 (object) =>
-                !this.submittedObjects.find(
-                    (item) => item.original_id == object.original_id
-                )
+                    !this.submittedObjects.find(
+                        (item) => item.original_id == object.original_id
+                    )
             );
         },
         buttons() {
             return [{
-                    btnClass: "primary",
-                    btnVisible: false,
-                    defaultBtn: true,
-                    disabled: !this.selectedObjects.length || this.disabled,
-                    title: "Сохранить",
-                    text: "Готово",
-                    emited_event: "done",
-                    withWayOfSending: false,
-                    classes: "col-2",
-                },
-                {
-                    btnClass: "danger",
-                    btnVisible: false,
-                    defaultBtn: true,
-                    btnActive: this.step.negative,
-                    disabled: this.disabled,
-                    title: "В случае нахождения более подходящих предложений вам придет уведомление!",
-                    text: "Нет подходящих",
-                    emited_event: "negative",
-                    withWayOfSending: false,
-                    classes: "col-2 ml-1",
-                },
+                btnClass: "primary",
+                btnVisible: false,
+                defaultBtn: true,
+                disabled: !this.selectedObjects.length || this.disabled,
+                title: "Сохранить",
+                text: "Готово",
+                emited_event: "done",
+                withWayOfSending: false,
+                classes: "col-2",
+            },
+            {
+                btnClass: "danger",
+                btnVisible: false,
+                defaultBtn: true,
+                btnActive: this.step.negative,
+                disabled: this.disabled,
+                title: "В случае нахождения более подходящих предложений вам придет уведомление!",
+                text: "Нет подходящих",
+                emited_event: "negative",
+                withWayOfSending: false,
+                classes: "col-2 ml-1",
+            },
             ];
         },
         currentRequest() {
@@ -95,13 +95,14 @@ export const MixinObject = {
     },
     methods: {
         ...mapActions(["UPDATE_STEP"]),
-        async alreadySent({ wayOfSending, contactForSendMessage, contacts }) {
+        async alreadySent({ wayOfSending, contactForSendMessage, contacts, company_id }) {
             const sendClientFlag = false;
 
             const letterID = await this.realSendObjects(
                 wayOfSending,
                 sendClientFlag,
-                contacts
+                contacts,
+                company_id
             );
             if (!letterID) return;
 
@@ -122,6 +123,7 @@ export const MixinObject = {
             contactForSendMessage,
             contacts,
             subject,
+            company_id
         }) {
             const sendClientFlag = true;
 
@@ -129,6 +131,7 @@ export const MixinObject = {
                 wayOfSending,
                 sendClientFlag,
                 contacts,
+                company_id,
                 message,
                 subject
             );
@@ -149,6 +152,7 @@ export const MixinObject = {
             wayOfSending,
             sendClientFlag,
             contacts,
+            company_id,
             comment = null,
             subject = null
         ) {
@@ -180,6 +184,7 @@ export const MixinObject = {
                 ways: wayOfSending,
                 sendClientFlag,
                 subject,
+                company_id,
             });
 
             this.loader = false;
@@ -271,7 +276,7 @@ export const MixinObject = {
             this.normalizeObjectsData(data);
             this.sendObjects(data);
         },
-        afterSend() {},
+        afterSend() { },
         async sendObjects(data) {
             this.loader = true;
             if (await this.UPDATE_STEP(data)) {
@@ -312,7 +317,7 @@ export const MixinObject = {
                     objects.push(item.offer);
                 } else {
                     console.log("SUKA", item);
-                    objects.push({...item, noOffer: true });
+                    objects.push({ ...item, noOffer: true });
                 }
             });
             this.preventStepObjects = objects;
@@ -373,45 +378,45 @@ export const MixinAllObject = {
         ...mapGetters(["COMPANY_REQUESTS", "FAVORITES_OFFERS"]),
         buttons() {
             return [{
-                    btnClass: "success",
-                    btnVisible: false,
-                    defaultBtn: true,
-                    disabled: !this.selectedObjects.length || this.disabled,
-                    title: "Отправить презентации с объектами клиенту",
-                    text: "Отправить" +
-                        (this.selectedObjects.length ?
-                            ` (${this.selectedObjects.length})` :
-                            ""),
-                    emited_event: "send",
-                    withWayOfSending: false,
-                    classes: "",
-                },
-                {
-                    btnClass: "primary",
-                    btnVisible: false,
-                    defaultBtn: true,
-                    disabled: !this.selectedObjects.length || this.disabled,
-                    title: "Уже отправил предложения другим способом",
-                    text: "Отметить как отправленные" +
-                        (this.selectedObjects.length ?
-                            ` (${this.selectedObjects.length})` :
-                            ""),
-                    emited_event: "alreadySent",
-                    withWayOfSending: true,
-                    classes: "ml-1",
-                },
-                {
-                    btnClass: "danger",
-                    btnVisible: false,
-                    defaultBtn: true,
-                    btnActive: this.step.negative,
-                    disabled: this.disabled,
-                    title: "Отправить презентации с объектами клиенту",
-                    text: "Нет подходящих",
-                    emited_event: "negative",
-                    withWayOfSending: false,
-                    classes: "ml-1",
-                },
+                btnClass: "success",
+                btnVisible: false,
+                defaultBtn: true,
+                disabled: !this.selectedObjects.length || this.disabled,
+                title: "Отправить презентации с объектами клиенту",
+                text: "Отправить" +
+                    (this.selectedObjects.length ?
+                        ` (${this.selectedObjects.length})` :
+                        ""),
+                emited_event: "send",
+                withWayOfSending: false,
+                classes: "",
+            },
+            {
+                btnClass: "primary",
+                btnVisible: false,
+                defaultBtn: true,
+                disabled: !this.selectedObjects.length || this.disabled,
+                title: "Уже отправил предложения другим способом",
+                text: "Отметить как отправленные" +
+                    (this.selectedObjects.length ?
+                        ` (${this.selectedObjects.length})` :
+                        ""),
+                emited_event: "alreadySent",
+                withWayOfSending: true,
+                classes: "ml-1",
+            },
+            {
+                btnClass: "danger",
+                btnVisible: false,
+                defaultBtn: true,
+                btnActive: this.step.negative,
+                disabled: this.disabled,
+                title: "Отправить презентации с объектами клиенту",
+                text: "Нет подходящих",
+                emited_event: "negative",
+                withWayOfSending: false,
+                classes: "ml-1",
+            },
             ];
         },
     },
@@ -456,7 +461,7 @@ export const MixinAllObject = {
                 if (item.offer && item.offer.id) {
                     objects.push(item.offer);
                 } else {
-                    objects.push({...item, noOffer: true });
+                    objects.push({ ...item, noOffer: true });
                 }
             });
             this.preventStepObjects = objects;

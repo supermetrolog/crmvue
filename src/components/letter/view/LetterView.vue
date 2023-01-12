@@ -16,16 +16,16 @@
             v-for="lEmail in letter.letterEmails"
             :key="lEmail.id"
           >
-            {{ lEmail.email.contact.first_and_last_name }}
-            <span class="letter-c-value">{{ lEmail.email.email }}</span>
+            {{ lEmail.contact.first_and_last_name }}
+            <span class="letter-c-value">{{ lEmail.email }}</span>
           </p>
           <p
             class="letter-contact-value letter-target"
             v-for="lPhone in letter.letterPhones"
             :key="lPhone.id"
           >
-            {{ lPhone.phone.contact.first_and_last_name }}
-            <span class="letter-c-value">{{ lPhone.phone.phone }}</span>
+            {{ lPhone.contact.first_and_last_name }}
+            <span class="letter-c-value">{{ lPhone.phone }}</span>
           </p>
         </Value>
         <Key> Способ: </Key>
@@ -47,6 +47,15 @@
           </span>
           <span class="letter-shipping-method dark" v-else
             >Другими методами</span
+          >
+        </Value>
+        <Key> Компания: </Key>
+        <Value>
+          <a
+            class="letter-company"
+            :href="'companies/' + letter.company_id"
+            target="_blank"
+            >{{ letter.company.full_name }}</a
           >
         </Value>
         <template v-if="letter.shipping_method">
