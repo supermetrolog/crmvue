@@ -70,7 +70,7 @@
               ></i>
             </div>
           </div>
-          <div v-if="!contact.status">
+          <div v-if="!contact.status" class="CompanyContactModal-left-passive">
             <span>Пассив</span>
             <span v-if="contact.passive_why !== null"
               >({{

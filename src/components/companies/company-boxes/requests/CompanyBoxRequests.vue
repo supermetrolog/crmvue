@@ -141,6 +141,9 @@ export default {
       this.$emit("requestDisabled");
     },
   },
+  mounted() {
+    console.log("mounted");
+  },
   emits: [
     "clickCreateRequest",
     "openCompanyRequestFormForUpdate",

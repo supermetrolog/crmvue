@@ -7,7 +7,11 @@
       'CompanyBoxContactListItem-good': !!contact.good,
     }"
   >
+    <span v-if="!contact.status" class="CompanyBoxContactListItem-passive"
+      >Пассив</span
+    >
     <div
+      v-if="!contact.type"
       class="CompanyBoxContactListItem-edit"
       @click.stop="editContact(this.contact)"
     >
@@ -15,7 +19,7 @@
     </div>
     <div
       class="CompanyBoxContactListItem-status text-danger"
-      v-if="!!contact.warning"
+      v-if="!!contact.warning && contact.status"
     >
       <span>ВНИМАНИЕ!!!</span>
     </div>

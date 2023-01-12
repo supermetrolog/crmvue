@@ -106,8 +106,8 @@
         :objects="COMPANY_OBJECTS"
       />
       <CompanyBoxRequests
-        v-if="!loaderCompanyRequests"
-        :requests="COMPANY_REQUESTS"
+        v-if="companyRequests.length"
+        :requests="companyRequests"
         :deals="COMPANY.dealsRequestEmpty"
         :loading="loaderCompanyRequests"
         @openDealFormForUpdate="openDealFormForUpdate"
@@ -185,6 +185,9 @@ export default {
       "COMPANY_OBJECTS",
       "TIMELINE_LIST",
     ]),
+    companyRequests() {
+      return this.COMPANY_REQUESTS;
+    },
   },
   methods: {
     ...mapActions([

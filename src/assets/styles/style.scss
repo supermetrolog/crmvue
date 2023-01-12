@@ -1002,7 +1002,7 @@
 
     @mixin success_block {
         background-color: $basic_step_color;
-        border: $done_step_border;
+        // border: $done_step_border;
     }
 
     .success_block {
@@ -1074,6 +1074,9 @@
         .timeline-extra-block {
             &.box {
                 padding-right: 0 !important;
+            }
+            .badge {
+                font-size: 13px;
             }
         }
 
@@ -3984,12 +3987,19 @@
             z-index: 0;
 
         }
+        
+        &-passive {
+            background-color: $color_warning;
+            font-weight: bolder;
+            padding: 2px 6px;
+            position: absolute;
+            top: 5px;
+        }
 
         &-status {
             position: absolute;
             top: 5px;
             font-weight: 600;
-
             &.fa-street-view {
                 right: 0;
             }
@@ -4125,6 +4135,17 @@
                         font-size: 12px;
                         font-weight: bolder;
                         color: $color_danger_dark;
+                    }
+                }
+            }
+
+            &-passive {
+                
+                span {
+                    &:first-child {
+                        background-color: $color_warning;
+                        padding: 2px 6px;
+                        font-weight: bolder;
                     }
                 }
             }
@@ -4517,6 +4538,48 @@
         }
     }
 
+    // COMPANY VIEW MEDIA QUERIES
+
+    @media screen and (max-width: $phone_size) {
+        .company {
+            &-wrapper {
+                grid-template-columns: 1fr;
+                grid-template-areas:
+                    "A"
+                    "C"
+                    "D"
+                    "E"
+                    "B";
+            }
+        }
+        .CompanyBoxMain {
+            &-content {
+                flex-direction: column;
+            }
+            &-contacts {
+                // display: flex;
+                // flex-direction: column;
+            }
+            &-left {
+                width: 100%;
+                margin-bottom: 20px;
+                &-list {
+                    width: 100%;
+                }
+            }
+            &-right {
+                width: 100%;
+            }
+            .CompanyBoxContactList {
+                flex-direction: column;
+                gap: 5px;
+                &Item {
+                    margin: 0;
+                }
+            }
+        }
+    }
+
 
     //*********** MULTISELECT ************
     .multiselect {
@@ -4670,14 +4733,10 @@
         &-list {
             &.success {
                 .wrapper {
+                    @include success_block;
                     width: 100%;
-                    background-color: $color_success_dark;
                     border-bottom: 3px solid $color_dark;
                     padding-bottom: 20px;
-
-                    .label {
-                        color: $color_light;
-                    }
                 }
             }
 
