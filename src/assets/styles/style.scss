@@ -4502,6 +4502,48 @@
         }
     }
 
+    // COMPANY VIEW MEDIA QUERIES
+
+    @media screen and (max-width: $phone_size) {
+        .company {
+            &-wrapper {
+                grid-template-columns: 1fr;
+                grid-template-areas:
+                    "A"
+                    "C"
+                    "D"
+                    "E"
+                    "B";
+            }
+        }
+        .CompanyBoxMain {
+            &-content {
+                flex-direction: column;
+            }
+            &-contacts {
+                // display: flex;
+                // flex-direction: column;
+            }
+            &-left {
+                width: 100%;
+                margin-bottom: 20px;
+                &-list {
+                    width: 100%;
+                }
+            }
+            &-right {
+                width: 100%;
+            }
+            .CompanyBoxContactList {
+                flex-direction: column;
+                gap: 5px;
+                &Item {
+                    margin: 0;
+                }
+            }
+        }
+    }
+
 
     //*********** MULTISELECT ************
     .multiselect {

@@ -221,6 +221,7 @@ export default {
   mixins: [MixinCompanyDetailInfo],
   name: "CompanyBoxMain",
   components: { CompanyBoxLayout, CompanyBoxContactList },
+  inject: ["isMobile"],
   data() {
     return {
       leftBoxHeight: null,
@@ -267,12 +268,16 @@ export default {
     },
   },
   mounted() {
-    let divElement = document.querySelector("#left-box");
-    let elemHeight = divElement.offsetHeight;
-    this.leftBoxHeight = elemHeight;
-    document.querySelector(
-      "#right-box"
-    ).style.height = `${this.leftBoxHeight}px`;
+    if (this.isMobile) {
+      return;
+    } else {
+      let divElement = document.querySelector("#left-box");
+      let elemHeight = divElement.offsetHeight;
+      this.leftBoxHeight = elemHeight;
+      document.querySelector(
+        "#right-box"
+      ).style.height = `${this.leftBoxHeight}px`;
+    }
   },
   emits: ["editCompany", "clickCreateContact"],
 };
