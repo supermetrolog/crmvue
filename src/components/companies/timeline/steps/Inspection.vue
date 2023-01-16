@@ -85,7 +85,7 @@
                 btnClass: 'primary',
                 btnVisible: false,
                 defaultBtn: true,
-                disabled: true,
+                disabled: false,
               }"
               @confirm="selectOptimizeRoute"
             >
@@ -103,11 +103,11 @@
                 </li>
                 <draggable
                   class="dragArea list-group w-full"
-                  :list="currentStepObjects"
+                  :list="manualRoute"
                 >
                   <transition-group>
                     <li
-                      v-for="object in currentStepObjects"
+                      v-for="object in manualRoute"
                       :key="object.offer.id"
                       class="route"
                     >
@@ -133,8 +133,9 @@
         </div>
       </div>
       <div class="col-7 align-self-center">
+        <a :href="routeLink">Маршрут </a>
         <Ymap
-          :manualRoute="currentStepObjects"
+          :manualRoute="manualRoute"
           :userLocation="userLocation"
           v-if="currentStepObjects.length"
         />
@@ -173,6 +174,7 @@ export default {
       currentStepObjects: [],
       userLocation: false,
       clickedStage: null,
+      optimizedObjects: [],
     };
   },
   props: {
@@ -207,6 +209,17 @@ export default {
       url += lastPartUrl;
       return url;
     },
+    manualRoute() {
+      return this.optimizedObjects.length
+        ? this.optimizedObjects
+        : this.currentStepObjects;
+    },
+    routeLink() {
+      let array = this.manualRoute
+        .map((object) => `${object.offer.latitude},${object.offer.longitude}`)
+        .join("~");
+      return `https://yandex.ru/maps/?rtext=${this.userLocation[0]},${this.userLocation[1]}~${array}&rtt=auto`;
+    },
   },
   methods: {
     getLocation() {
@@ -234,7 +247,14 @@ export default {
         this.currentStepObjects,
         this.userLocation
       );
-      console.error("optimize", result);
+      console.log(result, "результат");
+      this.optimizedObjects = result.map((id) =>
+        this.currentStepObjects.find(
+          (object) => object.offer.original_id === id
+        )
+      );
+      // this.currentStepObjects = this.optimizedObjects;
+      // console.error("optimize", result);
     },
     stageClicked(id) {
       this.clickedStage = id;
