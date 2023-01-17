@@ -1075,6 +1075,7 @@
             &.box {
                 padding-right: 0 !important;
             }
+
             .badge {
                 font-size: 13px;
             }
@@ -3987,7 +3988,7 @@
             z-index: 0;
 
         }
-        
+
         &-passive {
             background-color: $color_warning;
             font-weight: bolder;
@@ -4000,6 +4001,7 @@
             position: absolute;
             top: 5px;
             font-weight: 600;
+
             &.fa-street-view {
                 right: 0;
             }
@@ -4140,7 +4142,7 @@
             }
 
             &-passive {
-                
+
                 span {
                     &:first-child {
                         background-color: $color_warning;
@@ -4552,27 +4554,34 @@
                     "B";
             }
         }
+
         .CompanyBoxMain {
             &-content {
                 flex-direction: column;
             }
+
             &-contacts {
                 // display: flex;
                 // flex-direction: column;
             }
+
             &-left {
                 width: 100%;
                 margin-bottom: 20px;
+
                 &-list {
                     width: 100%;
                 }
             }
+
             &-right {
                 width: 100%;
             }
+
             .CompanyBoxContactList {
                 flex-direction: column;
                 gap: 5px;
+
                 &Item {
                     margin: 0;
                 }
