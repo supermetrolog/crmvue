@@ -8,16 +8,18 @@
       >
         <Modal
           title="Отправка"
-          v-if="sendObjectsModalVisible"
+          v-if="sendObjectsModalVisible || sendRouteModalVisible"
           class="autosize"
-          @close="closeSendObjectsModal"
+          @close="closeSendModal"
         >
           <SendObjects
-            @send="sendOffers"
-            :formdata="sendObjectsFormdata"
+            @send="sendBebris"
+            :formdata="
+              sendRouteModalVisible ? sendRouteFormData : sendObjectsFormdata
+            "
             :loader="loader"
           >
-            <Objects>
+            <Objects v-if="sendObjectsModalVisible">
               <ObjectsList
                 :objects="selectedObjects"
                 :selectedObjects="selectedObjects"
@@ -45,6 +47,7 @@
                 :buttons="buttons"
                 @done="done"
                 @send="openSendObjectsModal"
+                @sendRoute="openSendRouteModal"
                 @negative="negative"
                 @updateItem="clickUpdateStep"
               />
@@ -118,7 +121,11 @@ export default {
     Inspection,
     SendObjects,
   },
-
+  data() {
+    return {
+      sendRouteModalVisible: false,
+    };
+  },
   computed: {
     ...mapGetters(["CURRENT_STEP_OBJECTS"]),
     currentStepObjects() {
@@ -184,6 +191,18 @@ export default {
         message: `<p>С уважением, ${this.THIS_USER.userProfile.medium_name}</p><p>менеджер PLR</p>`,
       };
     },
+    sendRouteFormData() {
+      let routeLink = "www.google.com";
+      return {
+        defaultContactForSend: {
+          id: this.defaultContactForSend.id,
+          type: 1,
+        },
+        subject: "Маршрут по предложенным объектам от Pennylane Realty",
+        wayOfSending: [0],
+        message: `<a href=${routeLink}>Маршрут.Яндекс-Карты</a><p>С уважением, ${this.THIS_USER.userProfile.medium_name}</p><p>менеджер PLR</p>`,
+      };
+    },
     defaultContactForSend() {
       if (
         !this.currentRequest ||
@@ -203,6 +222,21 @@ export default {
     },
     getDoneComment(step) {
       return [new InspectionDoneComment(step, this.selectedObjects)];
+    },
+    openSendRouteModal(sendToClient) {
+      if (sendToClient) {
+        this.sendRouteModalVisible = true;
+      } else {
+        return;
+      }
+    },
+    closeSendModal() {
+      this.sendRouteModalVisible = false;
+      this.closeSendObjectsModal();
+    },
+    sendBebris(form) {
+      this.sendOffers(form);
+      console.log(form, "13232323");
     },
   },
 };

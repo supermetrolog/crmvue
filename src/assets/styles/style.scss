@@ -5355,9 +5355,10 @@
                 margin: 3px 0;
                 list-style-type: upper-alpha;
                 // background-color: darken($color_light, 10);
-                background-color: $body-bg;
-                color: $color_light;
+                // background-color: $body-bg;
+                // color: $color_light;
                 border-radius: 3px;
+                
 
                 &:not(.route) {
                     color: $color_success_alt;
@@ -5378,7 +5379,8 @@
                 }
 
                 &.route {
-                    border: 2px dashed $color_light;
+                    // border: 2px dashed $color_light;
+                    border: black solid 1px;
                     cursor: move;
 
                     &:last-child {
@@ -7560,6 +7562,11 @@
                 transform: scale(0.99);
                 filter: brightness(1.2);
             }
+        }
+
+        &.isClicked {
+            .step-stage__title {
+            font-weight: bold !important;}
         }
 
         .wrapper {

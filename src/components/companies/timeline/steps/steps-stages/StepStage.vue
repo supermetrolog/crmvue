@@ -5,6 +5,7 @@
       isDone: isDone,
       isCurrent: isCurrent && !isDone,
       readyToClick: !stageIsActive,
+      isClicked: isClicked,
     }"
     @click="stageClicked"
   >

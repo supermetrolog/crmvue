@@ -39,9 +39,9 @@
               btnClass: 'success',
               btnVisible: false,
               defaultBtn: true,
-              disabled: true,
+              disabled: false,
             }"
-            @confirm="selectOptimizeRoute"
+            @confirm="sendRoute()"
           >
             <template #btnContent>
               <i class="fas fa-paper-plane"></i>
@@ -57,9 +57,9 @@
               btnClass: 'success_alt',
               btnVisible: false,
               defaultBtn: true,
-              disabled: true,
+              disabled: false,
             }"
-            @confirm="selectOptimizeRoute"
+            @confirm="sendRoute(false)"
           >
             <template #btnContent>
               <i class="fas fa-paper-plane"></i>
@@ -68,6 +68,9 @@
             </template>
           </CustomButton>
         </div>
+        <span class="text-danger" v-if="manualRoute.length > 9"
+          >У вас более 9-ти объектов, маршрут будет построен некорректно!</span
+        >
       </div>
     </StepStage>
     <div
@@ -109,7 +112,7 @@
                     <li
                       v-for="object in manualRoute"
                       :key="object.offer.id"
-                      class="route"
+                      class="route success_block"
                     >
                       <div class="row">
                         <div class="col-4 align-self-center pr-0 pl-2">
@@ -133,7 +136,9 @@
         </div>
       </div>
       <div class="col-7 align-self-center">
-        <a :href="routeLink">Маршрут </a>
+        <a :href="routeLink" target="_blank"
+          >Открыть маршрут на Яндекс.Картах
+        </a>
         <Ymap
           :manualRoute="manualRoute"
           :userLocation="userLocation"
@@ -162,7 +167,7 @@ import Ymap from "@/components/common/Ymap.vue";
 import { MixinSteps } from "../mixins";
 export default {
   name: "Inspection",
-  emits: ["done", "negative", "send"],
+  emits: ["done", "negative", "send", "sendRoute"],
   mixins: [MixinSteps],
   components: {
     Ymap,
@@ -259,6 +264,9 @@ export default {
     stageClicked(id) {
       this.clickedStage = id;
       console.log(id, "12312313");
+    },
+    sendRoute(sendToClient = true) {
+      this.$emit("sendRoute", sendToClient);
     },
   },
   mounted() {

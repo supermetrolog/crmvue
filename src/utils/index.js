@@ -29,28 +29,10 @@ export const yandexmap = {
     return coords;
   },
   getDistances(coords) {
-    // let minDistances = [];
-    // let restCoords = [...coords];
-    // restCoords.shift();
-    // minDistances.push(coords[0]);
-
-    // coords.forEach((coord) => {
-    //   //   let minWay;
-    //   let waysArray = restCoords.map((restCoord) => {
-    //     window.ymaps.coordSystem.geo.getDistance(
-    //       (coord.coord, restCoord.coord) / 1000
-    //     );
-    //   });
-
-    //   //   minWay = waysArray;
-    //   minDistances = waysArray;
-    // });
-    // console.log(123, "результ");
-    // return minDistances;
     let distances = [];
-    coords.map((coord, i) => {
+    coords.forEach((coord, i) => {
       distances.push({ startPoint: coord.original_id, routes: [] });
-      coords.map((coordDuplicate, j) => {
+      coords.forEach((coordDuplicate, j) => {
         if (i != j) {
           distances[i].routes.push({
             id: coordDuplicate.original_id,
@@ -61,34 +43,13 @@ export const yandexmap = {
               )
             ),
           });
-          //   distances[coord.original_id][coordDuplicate.original_id] =
-          //   );
-          // distances[coord.original_id].push({
-          //     betweenCoord: coordDuplicate.original_id,
-          //     distance: parseInt(window.ymaps.coordSystem.geo.getDistance(coord.coord, coordDuplicate.coord) / 1000)
-          // });
         }
       });
+      // coords = coords.filter((item) => item.original_id !== coord.original_id);
     });
     return distances;
   },
   getMinimumDistance(distances) {
-    // if (i < 0) {
-    //   return distances;
-    // }
-    // const startPoint = distances[idx];
-    // startPoint.map((distance, index) => {
-    //   count += distance;
-    //   i--;
-    //   this.getMinimumDistance(distances, index, i, count);
-    // });
-    // console.warn(startPoint, idx, 4, count);
-    // // this.getMinimumDistance(startPoint, index, i);
-    // // distances.map((item, index) => {
-    // //     console.warn(item, index);
-    // // });
-    // return minimum;
-
     let resultArray = [];
     function getMin(distances, idx, i = distances.length - 2, count = 0) {
       if (i < 0) {
@@ -97,8 +58,6 @@ export const yandexmap = {
       const startPoint = distances.find((way) => way.startPoint === idx);
       startPoint.routes.sort((a, b) => {
         return a.distance - b.distance;
-
-        //   this.getMinimumDistance(distances, index, i, count);
       });
       i--;
       count += startPoint.routes[0].distance;
@@ -116,15 +75,13 @@ export const yandexmap = {
     return resultArray;
   },
   async getOptimizeRoutes(objects, userLocation) {
-    console.log(objects, userLocation);
     const coords = await this.getObjectsCoords(objects, userLocation);
     console.log(coords);
-    // // console.log(coords, "координаты пришли");
     await this.init();
     const distances = await this.getDistances(coords);
     console.log(distances, "дистанция");
     const minDistance = await this.getMinimumDistance(distances);
-    console.log(minDistance, "минималочка");
+    // console.log(minDistance, "минималочка");
     return [...minDistance.map((item) => item.id)];
   },
   async findAddress(query) {
