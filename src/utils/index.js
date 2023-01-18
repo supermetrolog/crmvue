@@ -104,6 +104,42 @@ export const yandexmap = {
     );
     return result;
   },
+  async findCoordinates(query) {
+    if (!query || !window.ymaps || !window.ymaps.geocode) {
+      return [];
+    }
+    query = "россия " + query;
+    let result = await window.ymaps.geocode(query).then(
+      function (res) {
+        var firstGeoObject = res.geoObjects.get(0),
+          coords = firstGeoObject.geometry.getCoordinates(),
+          result = coords;
+        return result;
+      },
+      function (e) {
+        console.error(e);
+      }
+    );
+    return result;
+  },
+  async findByCoordinates(query) {
+    console.log(query, 123123123123);
+    // if (!query || !window.ymaps || !window.ymaps.geocode) {
+    //   return [];
+    // }
+    // let result = await window.ymaps.geocode(query).then(
+    //   function (res) {
+    //     var firstGeoObject = res.geoObjects.add(0),
+    //       coords = firstGeoObject.geometry.getCoordinates(),
+    //       result = coords;
+    //     return result;
+    //   },
+    //   function (e) {
+    //     console.error(e);
+    //   }
+    // );
+    // return result;
+  },
   async getAddress(query, currentAddress = null) {
     await this.init();
     let address = await this.findAddress(query);

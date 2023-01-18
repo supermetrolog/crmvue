@@ -103,6 +103,15 @@
               <ul class="routes mt-1">
                 <li>
                   <b> Мое местоположение </b>
+                  <small @click="openUserLocationForm">[ред.]</small>
+                </li>
+                <li style="width: 100%" v-if="userLocationForm">
+                  <input
+                    style="width: 100%"
+                    type="text"
+                    v-model="newUserLocation"
+                  />
+                  <button @click="editUserLocation">отправить</button>
                 </li>
                 <draggable
                   class="dragArea list-group w-full"
@@ -180,6 +189,8 @@ export default {
       userLocation: false,
       clickedStage: null,
       optimizedObjects: [],
+      newUserLocation: "",
+      userLocationForm: false,
     };
   },
   props: {
@@ -258,8 +269,6 @@ export default {
           (object) => object.offer.original_id === id
         )
       );
-      // this.currentStepObjects = this.optimizedObjects;
-      // console.error("optimize", result);
     },
     stageClicked(id) {
       this.clickedStage = id;
@@ -267,6 +276,14 @@ export default {
     },
     sendRoute(sendToClient = true) {
       this.$emit("sendRoute", sendToClient);
+    },
+    openUserLocationForm() {
+      this.userLocationForm = true;
+    },
+    async editUserLocation() {
+      const result = await yandexmap.getAddress(this.newUserLocation);
+      this.userLocation = await yandexmap.findCoordinates(result[0]);
+      this.newUserLocation = result[0];
     },
   },
   mounted() {
