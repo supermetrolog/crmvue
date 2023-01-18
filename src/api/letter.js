@@ -13,4 +13,15 @@ export default {
             .catch((e) => ErrorHandle.setError(e));
         return data;
     },
+    async send(formdata) {
+        const url = `letters/send`;
+        let data = false;
+        await axios
+            .post(url, formdata)
+            .then((Response) => {
+                data = SuccessHandler.getData(Response);
+            })
+            .catch((e) => ErrorHandle.setError(e));
+        return data;
+    },
 }

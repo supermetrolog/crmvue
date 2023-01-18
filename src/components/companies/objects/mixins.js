@@ -176,7 +176,7 @@ export const MixinObject = {
                 });
             });
 
-            const isSuccessfuly = await api.timeline.sendObjects({
+            const isSuccessfuly = await api.letter.send({
                 contacts,
                 shipping_method: sendClientFlag ? 1 : 0,
                 offers: objectsParams,

@@ -12,7 +12,7 @@
           class="autosize"
           @close="closeSendObjectsModal"
         >
-          <SendObjects
+          <LetterSendForm
             @send="sendOffers"
             :formdata="sendObjectsFormdata"
             :loader="loader"
@@ -29,7 +29,7 @@
                 @addComment="addComment"
               />
             </Objects>
-          </SendObjects>
+          </LetterSendForm>
         </Modal>
       </transition>
     </teleport>
@@ -109,14 +109,14 @@ import {
   InspectionDoneComment,
   InspectionOffersNotFound,
 } from "../comments/commenst";
-import SendObjects from "../../objects/send-objects/SendObjects";
+import LetterSendForm from "@/components/letter/form/LetterSendForm";
 
 export default {
   name: "InspectionActions",
   mixins: [MixinStepActions, MixinWithSendLetter],
   components: {
     Inspection,
-    SendObjects,
+    LetterSendForm,
   },
 
   computed: {
