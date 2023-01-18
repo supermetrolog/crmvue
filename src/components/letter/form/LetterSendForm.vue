@@ -44,6 +44,7 @@
               @change="clickSendMe"
               label="Отправить себе"
               class="col-1 large ml-5"
+              :falseValue="0"
               mode="inline"
             />
             <CheckboxIcons
@@ -136,7 +137,7 @@ export default {
       ],
       contactsOptions: this.companyContacts,
       form: {
-        selfSend: 0,
+        selfSend: 1,
         contacts: {
           emails: [],
           phones: [],
@@ -187,6 +188,7 @@ export default {
   methods: {
     async onSubmit() {
       await this.v$.$validate();
+      console.log(this.form);
       if (this.v$.form.$error) return;
 
       this.normalizeContacts();
@@ -240,7 +242,13 @@ export default {
     },
     clickSendMe() {
       console.log("SEND ME");
-      if (!this.THIS_USER.userProfile.emails) {
+      if (
+        !this.THIS_USER.userProfile.emails ||
+        !this.THIS_USER.userProfile.emails.length
+      ) {
+        console.log("FUCK YOU", this.form.selfSend);
+        setTimeout(() => (this.form.selfSend = 0), 0);
+        console.log("FUCK YOU", this.form.selfSend);
         return;
       }
       let groupName = "Себе: " + this.THIS_USER.userProfile.short_name;
