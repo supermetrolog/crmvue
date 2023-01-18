@@ -8,12 +8,13 @@
             <div class="col-2">
               <button class="btn btn-primary">Отправить</button>
             </div>
+
             <MultiSelect
               :withoutLabel="true"
               required
               :v="v$.form.contactForSendMessage"
               v-model="form.contactForSendMessage"
-              :options="companyContacts"
+              :options="contactsOptions"
               :clearOnSelect="true"
               :closeOnSelect="false"
               :hideSelected="false"
@@ -38,6 +39,13 @@
                 }}
               </div>
             </MultiSelect>
+            <Checkbox
+              v-model="form.selfSend"
+              @change="clickSendMe"
+              label="Отправить себе"
+              class="col-1 large ml-5"
+              mode="inline"
+            />
             <CheckboxIcons
               v-if="alreadySended"
               v-model="form.wayOfSending"
@@ -85,8 +93,9 @@ import { WayOfSending } from "@/const/Const.js";
 import Utils, { contains } from "@/utils";
 import useValidate from "@vuelidate/core";
 import { required, helpers } from "@vuelidate/validators";
+import Checkbox from "@/components/common/form/Checkbox.vue";
 export default {
-  name: "SendObjects",
+  name: "LetterSendForm",
   components: {
     MultiSelect,
     Form,
@@ -94,6 +103,7 @@ export default {
     Input,
     CheckboxIcons,
     VueEditor,
+    Checkbox,
   },
   props: {
     alreadySended: {
@@ -124,8 +134,9 @@ export default {
         [{ color: [] }, { background: [] }], // dropdown with defaults from theme
         ["clean"], // remove formatting button
       ],
-      // companyContacts: null,
+      contactsOptions: this.companyContacts,
       form: {
+        selfSend: 0,
         contacts: {
           emails: [],
           phones: [],
@@ -162,7 +173,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["COMPANY_CONTACTS"]),
+    ...mapGetters(["COMPANY_CONTACTS", "THIS_USER"]),
     companyContacts() {
       if (this.alreadySended)
         return Utils.normalizeContactsForMultiselect(this.COMPANY_CONTACTS);
@@ -227,6 +238,61 @@ export default {
       }
       return true;
     },
+    clickSendMe() {
+      console.log("SEND ME");
+      if (!this.THIS_USER.userProfile.emails) {
+        return;
+      }
+      let groupName = "Себе: " + this.THIS_USER.userProfile.short_name;
+      const alreadyPushedSelfContacts = this.contactsOptions.find(
+        (group) => group.label === groupName
+      );
+      const contacts = [];
+      this.THIS_USER.userProfile.emails.forEach((email) => {
+        contacts.push({
+          label: email.email,
+          value: {
+            type: 1,
+            id: "hui",
+            contact_id: null,
+            value: email.email,
+          },
+        });
+      });
+      if (alreadyPushedSelfContacts) {
+        console.log("ALREADY", this.contactsOptions);
+        this.contactsOptions = this.contactsOptions.filter(
+          (group) => group.label != groupName
+        );
+        let beforeSelectedContacts = [...this.form.contactForSendMessage];
+        this.$refs.contactSelect.$refs.multiselect.clear();
+        beforeSelectedContacts = beforeSelectedContacts.filter(
+          (elem) => elem.id != "hui"
+        );
+        beforeSelectedContacts.forEach((elem) =>
+          this.$refs.contactSelect.$refs.multiselect.select({
+            label: elem.email,
+            value: elem,
+          })
+        );
+        contacts.forEach((elem) => {
+          console.log(elem);
+          this.$refs.contactSelect.$refs.multiselect.remove(elem);
+        });
+        console.log("ALREADY", this.contactsOptions);
+        return;
+      }
+
+      this.contactsOptions.push({
+        label: groupName,
+        options: contacts,
+      });
+      setTimeout(
+        () => this.$refs.contactSelect.$refs.multiselect.select(contacts[0]),
+        100
+      );
+      //   this.form.contactForSendMessage.push(contact);
+    },
     setDefaultContact() {
       if (this.formdata && this.formdata.defaultContactForSend) {
         this.companyContacts.forEach((group) => {
@@ -244,7 +310,11 @@ export default {
   },
   mounted() {
     this.setDefaultContact();
+    this.contactsOptions = this.companyContacts;
     this.form = { ...this.form, ...this.formdata };
+    if (this.form.selfSend === 1) {
+      this.clickSendMe();
+    }
   },
   watch: {
     form: {
@@ -252,6 +322,9 @@ export default {
         console.log("FORM CONTACTS: ", this.form.contactForSendMessage);
       },
       deep: true,
+    },
+    companyContacts() {
+      this.contactsOptions = this.companyContacts;
     },
   },
 };

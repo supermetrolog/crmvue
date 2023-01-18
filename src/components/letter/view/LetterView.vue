@@ -16,7 +16,9 @@
             v-for="lEmail in letter.letterEmails"
             :key="lEmail.id"
           >
-            {{ lEmail.contact.first_and_last_name }}
+            <template v-if="lEmail.contact">
+              {{ lEmail.contact.first_and_last_name }}
+            </template>
             <span class="letter-c-value">{{ lEmail.email }}</span>
           </p>
           <p
@@ -24,7 +26,9 @@
             v-for="lPhone in letter.letterPhones"
             :key="lPhone.id"
           >
-            {{ lPhone.contact.first_and_last_name }}
+            <template v-if="lPhone.contact">
+              {{ lPhone.contact.first_and_last_name }}
+            </template>
             <span class="letter-c-value">{{ lPhone.phone }}</span>
           </p>
         </Value>

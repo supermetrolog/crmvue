@@ -12,7 +12,7 @@
           class="autosize"
           @close="closeSendObjectsModal"
         >
-          <SendObjects
+          <LetterSendForm
             @send="sendOffers"
             @alreadySent="alreadySentOffers"
             :alreadySended="alreadySended"
@@ -31,7 +31,7 @@
                 @addComment="addComment"
               />
             </Objects>
-          </SendObjects>
+          </LetterSendForm>
         </Modal>
       </transition>
     </teleport>
@@ -189,7 +189,7 @@ import { MixinStepActions } from "../mixins";
 import { MixinAllObject } from "../../objects/mixins";
 import CustomButton from "@/components/common/CustomButton.vue";
 import RefreshButton from "@/components/common/RefreshButton.vue";
-import SendObjects from "../../objects/send-objects/SendObjects";
+import LetterSendForm from "@/components/letter/form/LetterSendForm";
 import { mapGetters } from "vuex";
 export default {
   name: "OffersActions",
@@ -197,7 +197,7 @@ export default {
   components: {
     CustomButton,
     RefreshButton,
-    SendObjects,
+    LetterSendForm,
   },
   data() {
     return {

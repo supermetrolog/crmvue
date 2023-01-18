@@ -26,12 +26,7 @@
           <PropogationDoubleInput
             v-model="form.phones"
             :v="v$.form.phones"
-            @change="changePhones"
-            :maska="[
-              '+7 (###) ###-##-###',
-              '+### (###) ###-##-##',
-              '+#### (###) ###-##-##',
-            ]"
+            maska="+7 (###) ###-##-##"
             placeholder="+7 "
             name="phone"
             name2="exten"
@@ -52,7 +47,6 @@
           </div>
           <PropogationInput
             v-model="form.emails"
-            @change="changeEmails"
             :v="v$.form.emails"
             name="email"
             label="Email"
@@ -70,6 +64,16 @@
               />
             </FormGroup>
           </div>
+        </FormGroup>
+        <FormGroup class="mb-1">
+          <PropogationDoubleInput
+            v-model="form.invalidPhones"
+            maska="#################################"
+            name="phone"
+            name2="exten"
+            label="Невалидный телефон"
+            class="col-6 pr-1"
+          />
         </FormGroup>
         <FormGroup class="mb-1">
           <Checkbox
@@ -261,6 +265,7 @@ export default {
         consultant_id: null,
         phones: [],
         emails: [],
+        invalidPhones: [],
         websites: [],
         passive_why: null,
         passive_why_comment: null,
@@ -329,6 +334,25 @@ export default {
           }),
         },
         phones: {
+          minItemLength: helpers.withMessage(
+            "телефон должен состоять из 11 цифр",
+            () => {
+              let flag = true;
+              this.form.phones.forEach((elem) => {
+                if (!flag) {
+                  return;
+                }
+                if (!elem.phone) {
+                  flag = false;
+                }
+                if (elem.phone.length !== 18) {
+                  flag = false;
+                }
+              });
+              console.log("FLAAG", flag);
+              return flag;
+            }
+          ),
           customRequiredPhones: helpers.withMessage(
             "дабавьте либо телефон либо email",
             this.customRequiredPhones
@@ -516,18 +540,6 @@ export default {
         elem.isMain = null;
         return elem;
       });
-    },
-    changePhones() {
-      console.log("CHANGE PHONES");
-      if (this.form.phones.length === 1) {
-        this.form.phones[0].isMain = 1;
-      }
-    },
-    changeEmails() {
-      console.log("CHANGE PHONES");
-      if (this.form.emails.length === 1) {
-        this.form.emails[0].isMain = 1;
-      }
     },
   },
   async mounted() {
