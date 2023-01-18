@@ -241,14 +241,11 @@ export default {
       return true;
     },
     clickSendMe() {
-      console.log("SEND ME");
       if (
         !this.THIS_USER.userProfile.emails ||
         !this.THIS_USER.userProfile.emails.length
       ) {
-        console.log("FUCK YOU", this.form.selfSend);
-        setTimeout(() => (this.form.selfSend = 0), 0);
-        console.log("FUCK YOU", this.form.selfSend);
+        setTimeout(() => (this.form.selfSend = 0), 0); // Без этого watcher в компоненте Checkbox не срабатывает
         return;
       }
       let groupName = "Себе: " + this.THIS_USER.userProfile.short_name;
@@ -299,7 +296,6 @@ export default {
         () => this.$refs.contactSelect.$refs.multiselect.select(contacts[0]),
         100
       );
-      //   this.form.contactForSendMessage.push(contact);
     },
     setDefaultContact() {
       if (this.formdata && this.formdata.defaultContactForSend) {
