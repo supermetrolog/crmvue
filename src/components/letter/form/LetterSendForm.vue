@@ -44,6 +44,7 @@
               @change="clickSendMe"
               label="Отправить себе"
               class="col-1 large ml-5"
+              :falseValue="0"
               mode="inline"
             />
             <CheckboxIcons
@@ -136,7 +137,7 @@ export default {
       ],
       contactsOptions: this.companyContacts,
       form: {
-        selfSend: 0,
+        selfSend: 1,
         contacts: {
           emails: [],
           phones: [],
@@ -187,9 +188,8 @@ export default {
   methods: {
     async onSubmit() {
       await this.v$.$validate();
-      if (this.v$.form.$error) {
-        return;
-      }
+      console.log(this.form);
+      if (this.v$.form.$error) return;
 
       this.normalizeContacts();
 
@@ -242,8 +242,11 @@ export default {
       return true;
     },
     clickSendMe() {
-      console.log("SEND ME");
-      if (!this.THIS_USER.userProfile.emails) {
+      if (
+        !this.THIS_USER.userProfile.emails ||
+        !this.THIS_USER.userProfile.emails.length
+      ) {
+        setTimeout(() => (this.form.selfSend = 0), 0); // Без этого watcher в компоненте Checkbox не срабатывает
         return;
       }
       let groupName = "Себе: " + this.THIS_USER.userProfile.short_name;
@@ -294,7 +297,6 @@ export default {
         () => this.$refs.contactSelect.$refs.multiselect.select(contacts[0]),
         100
       );
-      //   this.form.contactForSendMessage.push(contact);
     },
     setDefaultContact() {
       if (this.formdata && this.formdata.defaultContactForSend) {
