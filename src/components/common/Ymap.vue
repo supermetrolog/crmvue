@@ -3,7 +3,6 @@
     <p class="text-info">
       РАССТОЯНИЕ: {{ route.length }}, ВРЕМЯ: {{ route.time }}
     </p>
-    <span>{{ this.route.userLocation }}</span>
     <yandex-map
       v-if="mounted"
       :settings="settings"
