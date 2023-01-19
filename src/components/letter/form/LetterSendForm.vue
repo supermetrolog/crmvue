@@ -188,7 +188,6 @@ export default {
     async onSubmit() {
       await this.v$.$validate();
       if (this.v$.form.$error) {
-        console.log(this.form);
         return;
       }
 
