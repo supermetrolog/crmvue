@@ -76,12 +76,9 @@ export const yandexmap = {
   },
   async getOptimizeRoutes(objects, userLocation) {
     const coords = await this.getObjectsCoords(objects, userLocation);
-    console.log(coords);
     await this.init();
     const distances = await this.getDistances(coords);
-    console.log(distances, "дистанция");
     const minDistance = await this.getMinimumDistance(distances);
-    // console.log(minDistance, "минималочка");
     return [...minDistance.map((item) => item.id)];
   },
   async findAddress(query) {
