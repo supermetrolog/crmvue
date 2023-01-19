@@ -59,7 +59,7 @@
               defaultBtn: true,
               disabled: false,
             }"
-            @confirm="sendRoute(false)"
+            @confirm="sendRoute(true)"
           >
             <template #btnContent>
               <i class="fas fa-paper-plane"></i>
@@ -274,8 +274,8 @@ export default {
       this.clickedStage = id;
       console.log(id, "12312313");
     },
-    sendRoute(sendToClient = true) {
-      this.$emit("sendRoute", sendToClient);
+    sendRoute(sendToClient = false) {
+      this.$emit("sendRoute", this.routeLink, sendToClient);
     },
     openUserLocationForm() {
       this.userLocationForm = true;

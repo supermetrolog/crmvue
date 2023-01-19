@@ -7606,7 +7606,8 @@
 
     // ****************** SEND OBJECTS ********************
     .send-objects {
-        width: 1500px;
+        min-width: 1000px;
+        max-width: 1500px;
     }
 
     // **************** NOTIFICATION FORM ******************

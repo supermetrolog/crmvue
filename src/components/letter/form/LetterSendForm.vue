@@ -187,7 +187,10 @@ export default {
   methods: {
     async onSubmit() {
       await this.v$.$validate();
-      if (this.v$.form.$error) return;
+      if (this.v$.form.$error) {
+        console.log(this.form);
+        return;
+      }
 
       this.normalizeContacts();
 
@@ -219,6 +222,7 @@ export default {
           return { contact_id: elem.contact_id, value: elem.value };
         });
       }
+      this.form.selfSend = this.formdata.selfSend;
     },
     requiredPhone() {
       if (

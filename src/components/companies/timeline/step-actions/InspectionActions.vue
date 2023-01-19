@@ -13,8 +13,10 @@
           @close="closeSendModal"
         >
           <LetterSendForm
-            @send="sendOffers"
-            :formdata="sendObjectsFormdata"
+            @send="sendLetter"
+            :formdata="
+              sendRouteModalVisible ? sendRouteFormData : sendObjectsFormdata
+            "
             :loader="loader"
           >
             <Objects v-if="sendObjectsModalVisible">
@@ -122,6 +124,8 @@ export default {
   data() {
     return {
       sendRouteModalVisible: false,
+      routeLink: null,
+      sendRouteFormData: null,
     };
   },
   computed: {
@@ -186,19 +190,8 @@ export default {
         },
         subject: "Список предложений от Pennylane Realty",
         wayOfSending: [0],
+        company_id: this.currentRequest.company_id,
         message: `<p>С уважением, ${this.THIS_USER.userProfile.medium_name}</p><p>менеджер PLR</p>`,
-      };
-    },
-    sendRouteFormData() {
-      let routeLink = "www.google.com";
-      return {
-        defaultContactForSend: {
-          id: this.defaultContactForSend.id,
-          type: 1,
-        },
-        subject: "Маршрут по предложенным объектам от Pennylane Realty",
-        wayOfSending: [0],
-        message: `<a href=${routeLink}>Маршрут.Яндекс-Карты</a><p>С уважением, ${this.THIS_USER.userProfile.medium_name}</p><p>менеджер PLR</p>`,
       };
     },
     defaultContactForSend() {
@@ -221,20 +214,34 @@ export default {
     getDoneComment(step) {
       return [new InspectionDoneComment(step, this.selectedObjects)];
     },
-    openSendRouteModal(sendToClient) {
-      if (sendToClient) {
-        this.sendRouteModalVisible = true;
-      } else {
-        return;
-      }
+    openSendRouteModal(routeLink, sendToClient) {
+      this.routeLink = routeLink;
+      this.setSendRouteFormData(sendToClient);
+      this.sendRouteModalVisible = true;
+      return;
+    },
+    setSendRouteFormData(selfSend) {
+      this.sendRouteFormData = {
+        defaultContactForSend: selfSend
+          ? {}
+          : {
+              id: this.defaultContactForSend.id,
+              type: 1,
+            },
+        subject: "Маршрут по предложенным объектам от Pennylane Realty",
+        wayOfSending: [0],
+        selfSend: selfSend ? 1 : 0,
+        company_id: this.currentRequest.company_id,
+        message: `<span>Маршрут на Яндекс-Картах по предложенным объектам доступен по <a href=${this.routeLink}>ссылке</a></span><p>С уважением, ${this.THIS_USER.userProfile.medium_name}</p><p>менеджер PLR</p>`,
+      };
     },
     closeSendModal() {
       this.sendRouteModalVisible = false;
       this.closeSendObjectsModal();
     },
-    sendBebris(form) {
+    sendLetter(form) {
       this.sendOffers(form);
-      console.log(form, "13232323");
+      this.closeSendModal();
     },
   },
 };
