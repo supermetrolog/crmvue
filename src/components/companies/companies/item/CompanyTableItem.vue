@@ -87,7 +87,9 @@
     <Td class="text-center CompanyTableItem-consultant">
       {{ company.consultant.userProfile.short_name }}
     </Td>
-    <Td class="CompanyTableItem-notif text-warning">Пора позвонить клиенту</Td>
+    <Td class="CompanyTableItem-notif text-warning"
+      ><span v-if="false">Пора позвонить клиенту</span></Td
+    >
     <Td class="text-center date" sort="created_at">
       {{ formattedDate }}
     </Td>

@@ -8,11 +8,14 @@
     <td class="text-warning CompanyTableItem-notif">
       <div>{{ attention ? "Объект давно не обновляли!" : "" }}</div>
     </td>
-    <td class="date text-center"><div>дата</div></td>
+    <td class="date text-center">
+      <div>{{ formattedDate }}</div>
+    </td>
   </tr>
 </template>
 
 <script>
+import moment from "moment";
 import CompanyTableObjectItem from "../../objects/company-objects/table-objects/CompanyTableObjectItem.vue";
 export default {
   name: "TableObjectRow",
@@ -24,7 +27,16 @@ export default {
     },
     attention: {
       type: Boolean,
-      default: true,
+      default: false,
+    },
+  },
+  computed: {
+    formattedDate() {
+      let date = new Date(this.object.last_update * 1000);
+      if (!date) {
+        return "Нет данных";
+      }
+      return moment(date).format("DD.MM.YYYY");
     },
   },
 };
