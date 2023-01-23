@@ -316,18 +316,21 @@ export default {
         : this.$options.threeRecommendedDescriptionSale;
     },
     sendObjectsFormdata() {
-      return {
-        defaultContactForSend: {
-          contact_id: this.defaultContactForSend.contact_id,
-          id: this.defaultContactForSend.id,
-          value: this.defaultContactForSend.email,
-          type: 1,
-        },
+      const formdata = {
         company_id: this.currentRequest.company_id,
         subject: "Список предложений от Pennylane Realty",
         wayOfSending: [0],
         message: `<p>С уважением, ${this.THIS_USER.userProfile.medium_name}</p><p>менеджер PLR</p>`,
       };
+      if (this.defaultContactForSend !== null) {
+        formdata.defaultContactForSend = {
+          contact_id: this.defaultContactForSend.contact_id,
+          id: this.defaultContactForSend.id,
+          value: this.defaultContactForSend.email,
+          type: 1,
+        };
+      }
+      return formdata;
     },
     defaultContactForSend() {
       if (
