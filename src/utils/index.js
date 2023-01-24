@@ -30,54 +30,51 @@ export const yandexmap = {
   },
   getDistances(coords) {
     let distances = [];
-    coords.forEach((coord, i) => {
-      distances.push({ startPoint: coord.original_id, routes: [] });
-      coords.forEach((coordDuplicate, j) => {
-        if (i != j) {
-          distances[i].routes.push({
-            id: coordDuplicate.original_id,
-            distance: parseInt(
-              window.ymaps.coordSystem.geo.getDistance(
-                coord.coord,
-                coordDuplicate.coord
-              )
-            ),
-          });
-        }
+
+    function getMinDistances(coords, idx = -1, i = coords.length - 2) {
+      if (i < 0) {
+        return;
+      }
+
+      const startPoint = coords.find((item) => item.original_id === idx);
+      coords = coords.filter(
+        (coord) => coord.original_id !== startPoint.original_id
+      );
+      i--;
+
+      let routes = [];
+      coords.forEach((coordDuplicate) => {
+        routes.push({
+          id: coordDuplicate.original_id,
+          distance: parseInt(
+            window.ymaps.coordSystem.geo.getDistance(
+              startPoint.coord,
+              coordDuplicate.coord
+            )
+          ),
+        });
       });
-      // coords = coords.filter((item) => item.original_id !== coord.original_id);
-    });
+
+      distances.push({ id: startPoint.original_id, routes: routes });
+
+      let nextPoint = routes.sort((a, b) => a.distance - b.distance)[0];
+      if (nextPoint) {
+        getMinDistances(coords, nextPoint.id, i);
+      }
+    }
+    getMinDistances(coords, -1);
     return distances;
   },
   getMinimumDistance(distances) {
     let resultArray = [];
-    function getMin(distances, idx, i = distances.length - 2, count = 0) {
-      if (i < 0) {
-        return distances;
-      }
-      const startPoint = distances.find((way) => way.startPoint === idx);
-      startPoint.routes.sort((a, b) => {
-        return a.distance - b.distance;
-      });
-      i--;
-      count += startPoint.routes[0].distance;
-      resultArray.push(startPoint.routes[0]);
-      distances = distances.map(function (item) {
-        return {
-          startPoint: item.startPoint,
-          routes: item.routes.filter((r) => r.id !== idx),
-        };
-      });
-
-      getMin(distances, startPoint.routes[0].id, i, count);
-    }
-    getMin(distances, -1);
+    distances.forEach((item) => resultArray.push(item.routes[0]));
     return resultArray;
   },
   async getOptimizeRoutes(objects, userLocation) {
     const coords = await this.getObjectsCoords(objects, userLocation);
     await this.init();
     const distances = await this.getDistances(coords);
+    console.log(distances, "дистанции");
     const minDistance = await this.getMinimumDistance(distances);
     return [...minDistance.map((item) => item.id)];
   },
