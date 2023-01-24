@@ -263,7 +263,6 @@ export default {
         this.currentStepObjects,
         this.userLocation
       );
-      console.log(result, "результат");
       this.optimizedObjects = result.map((id) =>
         this.currentStepObjects.find(
           (object) => object.offer.original_id === id
