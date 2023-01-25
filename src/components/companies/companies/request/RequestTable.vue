@@ -105,7 +105,7 @@
               </div>
             </div>
           </Td>
-          <Td class="text-center company">
+          <Td class="text-center">
             <router-link
               :to="'/companies/' + request.company.id"
               target="_blank"
