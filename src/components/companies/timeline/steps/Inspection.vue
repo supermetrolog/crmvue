@@ -103,16 +103,27 @@
               <ul class="routes mt-1">
                 <li>
                   <b> Мое местоположение </b>
-                  <small @click="openUserLocationForm">[ред.]</small>
+                  <small class="edit-btn" @click="openUserLocationForm"
+                    >[ред.]</small
+                  >
                 </li>
-                <li style="width: 100%" v-if="userLocationForm">
-                  <input
-                    style="width: 100%"
-                    type="text"
+                <FormGroup class="mb-1" v-if="userLocationForm">
+                  <MultiSelect
                     v-model="newUserLocation"
+                    extraClasses="long-text"
+                    label="Ваше местоположение"
+                    :filterResults="false"
+                    :minChars="1"
+                    :resolveOnLoad="false"
+                    :delay="0"
+                    :searchable="true"
+                    :options="
+                      async (query) => {
+                        return await getAddress(query);
+                      }
+                    "
                   />
-                  <button @click="editUserLocation">отправить</button>
-                </li>
+                </FormGroup>
                 <draggable
                   class="dragArea list-group w-full"
                   :list="manualRoute"
@@ -169,6 +180,8 @@
 </template>
 
 <script>
+import FormGroup from "../../../common/form/FormGroup.vue";
+import MultiSelect from "../../../common/form/MultiSelect.vue";
 import { yandexmap } from "@/utils";
 import CustomButton from "@/components/common/CustomButton.vue";
 import { VueDraggableNext } from "vue-draggable-next";
@@ -182,6 +195,8 @@ export default {
     Ymap,
     draggable: VueDraggableNext,
     CustomButton,
+    FormGroup,
+    MultiSelect,
   },
   data() {
     return {
@@ -191,6 +206,7 @@ export default {
       optimizedObjects: [],
       newUserLocation: "",
       userLocationForm: false,
+      userLocationSearchOption: [],
     };
   },
   props: {
@@ -280,10 +296,17 @@ export default {
     openUserLocationForm() {
       this.userLocationForm = true;
     },
-    async editUserLocation() {
-      const result = await yandexmap.getAddress(this.newUserLocation);
-      this.userLocation = await yandexmap.findCoordinates(result[0]);
-      this.newUserLocation = result[0];
+    // async editUserLocation() {
+    //   const result = await yandexmap.getAddress(this.newUserLocation);
+    //   this.userLocation = await yandexmap.findCoordinates(result[0]);
+    //   this.newUserLocation = result[0];
+    //   this.userLocationSearchOption = result;
+    // },
+    async getAddress(query) {
+      return await yandexmap.getAddress(query);
+    },
+    async getCoords() {
+      this.userLocation = await yandexmap.findCoordinates(this.newUserLocation);
     },
   },
   mounted() {
@@ -293,6 +316,12 @@ export default {
   watch: {
     objects() {
       this.currentStepObjects = [...this.objects];
+    },
+    newUserLocation() {
+      if (!this.newUserLocation) {
+        this.getLocation();
+      }
+      this.getCoords();
     },
   },
 };

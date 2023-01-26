@@ -137,7 +137,7 @@ export default {
       ],
       contactsOptions: this.companyContacts,
       form: {
-        selfSend: 1,
+        selfSend: 0,
         contacts: {
           emails: [],
           phones: [],
