@@ -998,7 +998,9 @@
     $basic_step_border: 0.5px solid black;
     $basic_step_color: $color_grey_alt;
     $done_step_border: 2px solid $color_success;
+    $done_step_thin_border: 1px solid $color_success;
     $warning_step_border: 2px solid $color_warning;
+    $warning_step_thin_border: 1px solid $color_warning;
 
     @mixin success_block {
         background-color: $basic_step_color;
@@ -1011,7 +1013,7 @@
 
     @mixin warning_block {
         background-color: $color_warning_dark;
-        border: $warning_step_border;
+        // border: $warning_step_border;
     }
 
     .warning_block {
@@ -6959,29 +6961,29 @@
             }
 
             &-done {
-                &::before {
-                    border-left: $done_step_border;
-                    border-bottom: $done_step_border;
-                    border-top: $done_step_border;
-                }
+                // &::before {
+                //     border-left: $done_step_border;
+                //     border-bottom: $done_step_border;
+                //     border-top: $done_step_border;
+                // }
 
-                &::after {
-                    border-right: $done_step_border;
-                    border-bottom: $done_step_border;
-                    border-top: $done_step_border;
-                }
+                // &::after {
+                //     border-right: $done_step_border;
+                //     border-bottom: $done_step_border;
+                //     border-top: $done_step_border;
+                // }
 
                 .MiniTimeline-arrow {
                     &-top {
-                        border-left: $done_step_border;
-                        border-right: $done_step_border;
-                        border-top: $done_step_border;
+                        border-left: $done_step_thin_border;
+                        border-right: $done_step_thin_border;
+                        // border-top: $done_step_border;
                     }
 
                     &-bottom {
-                        border-left: $done_step_border;
-                        border-right: $done_step_border;
-                        border-bottom: $done_step_border;
+                        border-left: $done_step_thin_border;
+                        border-right: $done_step_thin_border;
+                        // border-bottom: $done_step_border;
                     }
                 }
 
@@ -6993,31 +6995,32 @@
             &-in_process {
                 &::before {
                     background-color: $color_warning_dark !important;
-                    border-left: $warning_step_border;
-                    border-top: $warning_step_border;
-                    border-bottom: $warning_step_border;
+                    // border-left: $warning_step_border;
+                    // border-top: $warning_step_border;
+                    // border-bottom: $warning_step_border;
                 }
 
                 &::after {
                     background-color: $color_warning_dark !important;
-                    border-top: $warning_step_border;
-                    border-right: $warning_step_border;
-                    border-bottom: $warning_step_border;
+                    // border-top: $warning_step_border;
+                    // border-right: $warning_step_border;
+                    // border-bottom: $warning_step_border;
                 }
 
                 .MiniTimeline-arrow {
+                   
                     &-top {
                         background-color: $color_warning_dark;
-                        border-left: $warning_step_border;
-                        border-right: $warning_step_border;
-                        border-top: $warning_step_border;
+                        border-left: $warning_step_thin_border;
+                        border-right: $warning_step_thin_border;
+                        // border-top: $warning_step_thin_border;
                     }
 
                     &-bottom {
                         background-color: $color_warning_dark;
-                        border-left: $warning_step_border;
-                        border-right: $warning_step_border;
-                        border-bottom: $warning_step_border;
+                        border-left: $warning_step_thin_border;
+                        border-right: $warning_step_thin_border;
+                        // border-bottom: $warning_step_thin_border;
                     }
                 }
 
@@ -7033,9 +7036,41 @@
             $step_height: 60px;
             margin-top: 15px;
 
+           
+
             .MiniTimeline-step {
                 height: $step_height;
 
+                &-done {
+                    .MiniTimeline-arrow {
+                        &-top {
+                            border-left: $done_step_border;
+                            border-right: $done_step_border;
+                            // border-top: $done_step_border;
+                        }
+        
+                        &-bottom {
+                            border-left: $done_step_border;
+                            border-right: $done_step_border;
+                            // border-bottom: $done_step_border;
+                        }
+                    }
+                }
+
+                &-in_process {
+    
+                    .MiniTimeline-arrow {
+                        &-top {
+                            border-left: $warning_step_border;
+                            border-right: $warning_step_border;
+                        }
+    
+                        &-bottom {
+                            border-left: $warning_step_border;
+                            border-right: $warning_step_border;
+                        }
+                    } 
+                }
                 &-current {
                     cursor: pointer;
 
