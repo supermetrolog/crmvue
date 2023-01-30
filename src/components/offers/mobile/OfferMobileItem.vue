@@ -43,7 +43,7 @@
               </span>
             </p>
           </div>
-          <div class="company">
+          <div class="company_about">
             <template v-if="offer.company !== null">
               <router-link
                 :to="'/companies/' + offer.company.id"
@@ -107,7 +107,7 @@
               {{ offer.from_mkad }} <small>км от МКАД</small>
             </p>
           </div>
-          <div class="company">
+          <div class="company_about">
             <template v-if="offer.company !== null">
               <router-link
                 :to="'/companies/' + offer.company.id"

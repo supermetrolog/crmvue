@@ -37,11 +37,13 @@ export const apiUrlHelperObject = {
     prodUrl: "https://api.pennylane.pro/",
     stageUrl: "https://api.supermetrolog.ru/",
     devUrl: "http://crmka/",
+    reservUrl: "https://reserve-api.supermetrolog.ru/",
 
     stageHost: "clients.supermetrolog.ru",
     prodHost: "clients.pennylane.pro",
     devHost: "localhost:8080",
     devHostWithoutLocalApi: "localhost:8081",
+    reserveHost: "reserve-clients.supermetrolog.ru",
 
     uploadsPath: "uploads/",
     imagesPath: "images/",
@@ -52,17 +54,21 @@ export const apiUrlHelperObject = {
     prodWsUrl: 'wss://api.pennylane.pro/websocket/',
     stageWsUrl: 'wss://api.supermetrolog.pro/websocket/',
     devWsUrl: 'ws://localhost:8010',
+    reserveWsUrl: 'wss://api.supermetrolog.pro/websocket/',
 
     prodObjectsUrl: "https://pennylane.pro/",
     stageObjectsUrl: "https://pennylane.pro/",
     devObjectsUrl: "http://objects/",
+    reserveObjectsUrl: "https://reserve-objects.supermetrolog.ru/",
     wsUrl() {
+        let host = window.location.host;
         if (process.env.NODE_ENV == 'development') {
             return this.devWsUrl;
         } else {
-            let host = window.location.host;
             if (host == this.stageHost) {
                 return this.stageWsUrl;
+            } else if (host == this.reserveHost) {
+                return this.reserveWsUrl;
             }
             return this.prodWsUrl;
         }
@@ -78,6 +84,8 @@ export const apiUrlHelperObject = {
         } else {
             if (host == this.stageHost) {
                 return this.stageUrl;
+            } else if (host == this.reserveHost) {
+                return this.reservUrl;
             }
             return this.prodUrl;
         }
@@ -89,6 +97,8 @@ export const apiUrlHelperObject = {
         } else {
             if (host == this.stageHost) {
                 return this.stageObjectsUrl;
+            } else if (host == this.reserveHost) {
+                return this.reserveObjectsUrl;
             }
             return this.prodObjectsUrl;
         }

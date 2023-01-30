@@ -106,7 +106,7 @@
         :objects="COMPANY_OBJECTS"
       />
       <CompanyBoxRequests
-        v-if="companyRequests.length"
+        v-if="!loaderCompanyRequests"
         :requests="companyRequests"
         :deals="COMPANY.dealsRequestEmpty"
         :loading="loaderCompanyRequests"

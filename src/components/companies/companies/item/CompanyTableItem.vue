@@ -83,7 +83,7 @@
       </template>
       <p v-else>&#8212;</p>
     </Td>
-    <Td class="text-center">бла</Td>
+    <Td class="text-center"><span></span></Td>
     <Td class="text-center CompanyTableItem-consultant">
       {{ company.consultant.userProfile.short_name }}
     </Td>

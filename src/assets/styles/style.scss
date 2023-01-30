@@ -5369,7 +5369,7 @@
                 // background-color: $body-bg;
                 // color: $color_light;
                 border-radius: 3px;
-                
+
 
                 &:not(.route) {
                     color: $color_success_alt;
@@ -6890,7 +6890,7 @@
 
     // ************** MINI TIMELINE *************
     .MiniTimeline {
-        $step_height: 33px;
+        $step_height: 34px;
         font-size: 10px;
         color: black;
         overflow-x: clip;
@@ -6926,8 +6926,8 @@
             }
 
             i {
-                margin-left: 10px;
-                font-size: 20px;
+                margin-left: 3px;
+                font-size: 15px;
             }
 
             &-content {
@@ -6936,6 +6936,10 @@
             }
 
             &:first-child {
+                .MiniTimeline-arrow {
+                    border-left: none !important;
+                }
+
                 &::before {
                     content: '';
                     height: $step_height;
@@ -6949,6 +6953,10 @@
             }
 
             &:last-child {
+                .MiniTimeline-arrow {
+                    border-right: none !important;
+                }
+
                 &::after {
                     content: '';
                     height: $step_height;
@@ -7041,6 +7049,11 @@
             .MiniTimeline-step {
                 height: $step_height;
 
+                i {
+                    margin-left: 5px;
+                    font-size: 20px;
+                }
+
                 &-done {
                     .MiniTimeline-arrow {
                         &-top {
@@ -7122,7 +7135,6 @@
                 text-overflow: ellipsis;
 
                 .step-name {
-                    max-width: 40px;
                     overflow: hidden;
                     text-overflow: ellipsis;
                 }
@@ -7138,6 +7150,10 @@
                 &-content {
                     overflow: hidden;
                     text-overflow: ellipsis;
+                }
+
+                .step-name {
+                    max-width: 80px;
                 }
             }
         }
@@ -7620,7 +7636,8 @@
 
         &.isClicked {
             .step-stage__title {
-            font-weight: bold !important;}
+                font-weight: bold !important;
+            }
         }
 
         .wrapper {

@@ -183,16 +183,19 @@ export default {
       ];
     },
     sendObjectsFormdata() {
-      return {
-        defaultContactForSend: {
-          id: this.defaultContactForSend.id,
-          type: 1,
-        },
+      const formdata = {
+        company_id: this.currentRequest.company_id,
         subject: "Список предложений от Pennylane Realty",
         wayOfSending: [0],
-        company_id: this.currentRequest.company_id,
         message: `<p>С уважением, ${this.THIS_USER.userProfile.medium_name}</p><p>менеджер PLR</p>`,
       };
+      if (this.defaultContactForSend !== null) {
+        formdata.defaultContactForSend = {
+          id: this.defaultContactForSend.id,
+          type: 1,
+        };
+      }
+      return formdata;
     },
     defaultContactForSend() {
       if (
@@ -221,19 +224,23 @@ export default {
       return;
     },
     setSendRouteFormData(selfSend) {
-      this.sendRouteFormData = {
-        defaultContactForSend: selfSend
-          ? {}
-          : {
-              id: this.defaultContactForSend.id,
-              type: 1,
-            },
+      const formdata = {
         subject: "Маршрут по предложенным объектам от Pennylane Realty",
         wayOfSending: [0],
         selfSend: selfSend ? 1 : 0,
         company_id: this.currentRequest.company_id,
         message: `<span>Маршрут на Яндекс-Картах по предложенным объектам доступен по <a href=${this.routeLink}>ссылке</a></span><p>С уважением, ${this.THIS_USER.userProfile.medium_name}</p><p>менеджер PLR</p>`,
       };
+      if (this.defaultContactForSend !== null) {
+        formdata.defaultContactForSend = selfSend
+          ? {}
+          : {
+              id: this.defaultContactForSend.id,
+              type: 1,
+            };
+      }
+
+      this.sendRouteFormData = formdata;
     },
     closeSendModal() {
       this.sendRouteModalVisible = false;
