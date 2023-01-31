@@ -20,6 +20,7 @@
           @next="next"
           v-if="OFFERS_PAGINATION"
           class="d-inline"
+          ref="firstPagination"
         />
         <RefreshButton class="ml-3" @click="getOffers" :disabled="loader" />
       </div>
@@ -46,7 +47,7 @@
       <PaginationClassic
         class="mt-3 my-3"
         :pagination="OFFERS_PAGINATION"
-        @next="next"
+        @next="nextAndScrollToStart"
         v-if="OFFERS_PAGINATION"
       />
     </div>
@@ -179,6 +180,18 @@ export default {
       this.allOffersLoader = false;
       console.error(data);
       return data;
+    },
+    nextAndScrollToStart(page) {
+      this.next(page);
+      this.scrollToStart();
+    },
+    scrollToStart() {
+      let options = {
+        behavior: "smooth",
+        block: "end",
+        alignToTop: false,
+      };
+      this.$refs.firstPagination.$el.scrollIntoView(options);
     },
     initialRouteSettings() {},
     clickCloseCompanyForm() {
