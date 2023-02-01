@@ -135,7 +135,9 @@ export default {
         [{ color: [] }, { background: [] }], // dropdown with defaults from theme
         ["clean"], // remove formatting button
       ],
-      contactsOptions: this.companyContacts,
+      contactsOptions: () => {
+        this.companyContacts;
+      },
       form: {
         selfSend: 0,
         contacts: {
