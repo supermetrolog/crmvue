@@ -1032,7 +1032,7 @@
 
     .timeline-list {
         display: flex;
-        justify-content: end;
+        justify-content: flex-end;
     }
 
     .step-complete {
@@ -1558,7 +1558,7 @@
             grid-template-columns: 2fr auto auto;
             grid-gap: 1em;
             align-items: center;
-            justify-items: end;
+            justify-items: flex-end;
         }
     }
 
@@ -1854,7 +1854,7 @@
 
                         div {
                             display: flex;
-                            align-items: start;
+                            align-items: flex-end;
                         }
                     }
                 }
@@ -6944,7 +6944,7 @@
                 &::before {
                     content: '';
                     height: $step_height;
-                    width: $step_height/2;
+                    width: calc($step_height / 2);
                     background-color: $basic_step_color;
                     position: absolute;
                     z-index: 2;
@@ -6961,7 +6961,7 @@
                 &::after {
                     content: '';
                     height: $step_height;
-                    width: $step_height/2;
+                    width: calc($step_height / 2);
                     background-color: $basic_step_color;
                     position: absolute;
                     z-index: 2;
@@ -7097,7 +7097,7 @@
                 }
 
                 &-content {
-                    margin-left: $step_height/4;
+                    margin-left: calc($step_height / 4);
                 }
 
                 &:first-child {
@@ -7122,7 +7122,7 @@
                     background: #d86f57;
                     position: absolute;
                     bottom: $step_height;
-                    left: -$step_height/2.9;
+                    left: calc(($step_height / 2.9) * -1);
                 }
             }
         }
@@ -7206,7 +7206,7 @@
                 &-parallelogram {
                     height: 7px;
                     bottom: $step_height;
-                    left: -$step_height/3.2;
+                    left: calc(($step_height / 3.2) * -1);
                 }
             }
         }
@@ -7297,7 +7297,7 @@
                 z-index: 2;
                 display: flex;
                 justify-content: center;
-                align-items: end;
+                align-items: flex-end;
 
                 i {
                     font-size: 35px;
