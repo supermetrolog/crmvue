@@ -26,7 +26,6 @@
             <router-link
               :to="'/companies/' + company.id"
               target="_blank"
-              :tag="'h4'"
               class="mb-2 text-center title text-primary d-block"
             >
               Компания #{{ company.id }}
