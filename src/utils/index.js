@@ -289,3 +289,42 @@ export default {
     return data;
   },
 };
+
+export const arrayDataMapper = (array, rules) => {
+  const newArray = [];
+  for (const key in array) {
+    const object = array[key];
+    if (typeof object !== "object" || object === null) {
+      throw "element must be Object";
+    }
+    newArray.push(dataMapper(object, rules));
+  }
+  return newArray;
+}
+export const dataMapper = (object, rules) => {
+  const newObject = { ...object };
+
+  for (const key in rules) {
+    if (
+      Object.hasOwnProperty.call(rules, key) &&
+      Object.hasOwnProperty.call(newObject, key)
+    ) {
+      const newKey = rules[key];
+      if (typeof newKey === "object" && newKey !== null) {
+        if (typeof newObject[key] !== "object" || newObject[key] === null) {
+          continue;
+        }
+        if (Array.isArray(newObject[key])) {
+          newObject[key] = arrayDataMapper(newObject[key], newKey);
+        } else {
+          newObject[key] = dataMapper(newObject[key], newKey);
+        }
+      } else {
+        newObject[newKey] = newObject[key];
+        delete newObject[key];
+      }
+    }
+  }
+
+  return newObject;
+}

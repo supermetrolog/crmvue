@@ -1,59 +1,64 @@
 <template>
   <div class="statisctic">
-    <h1>Statistic</h1>
-    <button class="btn btn-primary" @click="wsConnect">
-      Connect to SERVER
-    </button>
-    <button class="btn btn-primary" @click="getName">get ws client name</button>
+    <h1>NIGGA</h1>
+    <button class="btn-primary btn" @click="run">Test</button>
   </div>
 </template>
 
 <script>
+import { dataMapper } from "@/utils";
 export default {
   name: "Statistic",
   methods: {
-    wsConnect() {
-      // let socket = new WebSocket("ws://websocket/");
-      let socket = new WebSocket("ws://localhost:8082");
-
-      socket.onopen = function () {
-        console.log("Connected websocket serve!");
-        let request = {
-          action: "getName",
-        };
-        socket.send(JSON.stringify(request));
-        request = {
-          action: "setUserID",
-          data: "2312",
-        };
-        socket.send(JSON.stringify(request));
-
-        request = {
-          action: "getName",
-        };
-        socket.send(JSON.stringify(request));
+    run() {
+      const object = {
+        company_id: 12,
+        text: "nigger 1234",
+        flag: false,
+        suka: {
+          nigger: 123,
+        },
+        test: "sdadwad",
+        ACDC: [
+          {
+            ppp: 444,
+            ccc: 666,
+            uuu: [{ lll: "dsadaw" }],
+          },
+          {
+            ppp: 111,
+            ccc: 888,
+            uuu: [{ lll: "dsadaw" }],
+          },
+          {
+            ppp: 111,
+            ccc: 888,
+          },
+        ],
       };
-
-      socket.onmessage = function (event) {
-        console.log("Данные получены с сервера:");
-        console.log(JSON.parse(event.data));
+      const rules = {
+        company_id: "company",
+        text: "content",
+        flag: "truefalse",
+        suka: "aaa",
+        aaa: {
+          nigger: "white",
+        },
+        test: "store",
+        store: {
+          fuck: "suck",
+        },
+        ACDC: {
+          ppp: "iii",
+          uuu: "eee",
+          eee: {
+            lll: "fuckthepolice",
+          },
+        },
       };
-
-      socket.onclose = function (event) {
-        if (event.wasClean) {
-          console.log(
-            `Соединение закрыто чисто, код=${event.code} причина=${event.reason}`
-          );
-        } else {
-          // например, сервер убил процесс или сеть недоступна
-          // обычно в этом случае event.code 1006
-          console.warn("Соединение прервано");
-        }
-      };
-
-      socket.onerror = function (error) {
-        console.error(`[error] ${error.message}`);
-      };
+      const newObject = dataMapper(object, rules);
+      console.log(object);
+      console.log(newObject);
     },
   },
 };
