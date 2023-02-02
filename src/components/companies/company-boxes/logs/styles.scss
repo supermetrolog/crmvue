@@ -1,0 +1,38 @@
+.CompanyBoxLogs {
+    position: sticky;
+    top: 50px;
+    height: 90vh;
+    // &-content {
+    //     display: flex;
+    //     flex-direction: column;
+    //     justify-content: space-between;
+    //     height: 100%;
+
+    // }
+    &-form {
+        // position: absolute;
+        // bottom: 10px;
+        // width: 100%;
+        .form-container {
+            width: 100%;
+        }
+        .form-item {
+            textarea {
+                height: 50px;
+            }
+        }
+    }
+
+    .CompanyBoxLayout-header {
+        height: 5%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .CompanyBoxLayout-content {
+        height: 95%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+}

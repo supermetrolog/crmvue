@@ -1,16 +1,16 @@
 <template>
   <div class="calendar">
     <h1>Calendar</h1>
-    <SimpleCalendar />
+    <!-- <SimpleCalendar /> -->
   </div>
 </template>
 
 <script>
-import SimpleCalendar from "../components/calendar/SimpleCalendar";
+// import SimpleCalendar from "../components/calendar/SimpleCalendar";
 export default {
   name: "Calendar",
   components: {
-    SimpleCalendar,
+    // SimpleCalendar,
   },
   mounted() {
     // console.log(this.$route.params.mod);

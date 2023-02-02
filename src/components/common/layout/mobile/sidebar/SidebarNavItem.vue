@@ -1,7 +1,6 @@
 <template>
   <router-link
     class="nav-item"
-    tag="li"
     active-class="active"
     :to="data.url"
     :exact="data.exact"

@@ -96,11 +96,12 @@
         @editCompany="clickOpenCompanyForm"
         @createContact="openContactFormForCreate"
       />
-      <CompanyBoxLayout :class="'grid-b'" v-if="!loaderCompanyDetailInfo">
-        <template #header>
-          <span>Лог работы с {{ this.COMPANY.nameRu }}</span>
-        </template>
-      </CompanyBoxLayout>
+      <CompanyBoxLogs
+        v-if="!loaderCompanyLogs && !loaderCompanyDetailInfo"
+        :logs="this.COMPANY_LOGS"
+        :company="this.COMPANY"
+        @logCommentAdded="this.getCompanyLogs"
+      />
       <CompanyBoxObjects
         v-if="!loaderCompanyObjects"
         :objects="COMPANY_OBJECTS"
@@ -123,11 +124,11 @@
 </template>
 
 <script>
+import CompanyBoxLogs from "../../components/companies/company-boxes/logs/CompanyBoxLogs.vue";
 import CompanyContactModal from "../../components/companies/companies/contact/CompanyContactModal.vue";
 import CompanyBoxServices from "../../components/companies/company-boxes/services/CompanyBoxServices.vue";
 import CompanyBoxRequests from "../../components/companies/company-boxes/requests/CompanyBoxRequests.vue";
 import CompanyBoxObjects from "../../components/companies/company-boxes/objects/CompanyBoxObjects.vue";
-import CompanyBoxLayout from "../../components/companies/company-boxes/CompanyBoxLayout.vue";
 import CompanyBoxMain from "../../components/companies/company-boxes/main/CompanyBoxMain.vue";
 import { mapActions, mapGetters } from "vuex";
 import CompanyRequestForm from "@/components/companies/forms/company-request-form/CompanyRequestForm.vue";
@@ -144,12 +145,12 @@ export default {
     CompanyForm,
     Timeline,
     CompanyDealForm,
-    CompanyBoxLayout,
     CompanyBoxMain,
     CompanyBoxObjects,
     CompanyBoxRequests,
     CompanyBoxServices,
     CompanyContactModal,
+    CompanyBoxLogs,
   },
   data() {
     return {
@@ -157,6 +158,7 @@ export default {
       loaderCompanyRequests: true,
       loaderCompanyContacts: true,
       loaderCompanyObjects: true,
+      loaderCompanyLogs: true,
       companyRequestFormVisible: false,
       companyContactFormVisible: false,
       contactModalVisible: false,
@@ -183,6 +185,7 @@ export default {
       "COMPANY_REQUESTS",
       "COMPANY_CONTACTS",
       "COMPANY_OBJECTS",
+      "COMPANY_LOGS",
       "TIMELINE_LIST",
     ]),
     companyRequests() {
@@ -195,6 +198,7 @@ export default {
       "FETCH_COMPANY_REQUESTS",
       "FETCH_COMPANY_CONTACTS",
       "FETCH_COMPANY_OBJECTS",
+      "FETCH_COMPANY_LOGS",
       "ADD_TO_TRANSITION_LIST",
       "CREATE_CONTACT_COMMENT",
     ]),
@@ -222,6 +226,11 @@ export default {
       this.loaderCompanyObjects = withLoader;
       await this.FETCH_COMPANY_OBJECTS(this.$route.params.id);
       this.loaderCompanyObjects = false;
+    },
+    async getCompanyLogs(withLoader = true) {
+      this.loaderCompanyLogs = withLoader;
+      await this.FETCH_COMPANY_LOGS(this.$route.params.id);
+      this.loaderCompanyLogs = false;
     },
     openCompanyFormForUpdate(company) {
       this.company = company;
@@ -327,6 +336,7 @@ export default {
     this.getCompanyContacts();
     this.getCompanyObjects();
     this.getCompanyRequests();
+    this.getCompanyLogs();
     this.timeline();
   },
   watch: {

@@ -1,0 +1,13 @@
+.CompanyLogsList {
+    height: auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    &::-webkit-scrollbar {
+        background-color: unset;
+        &-thumb {
+            background-color: unset;
+        }
+    }
+}
