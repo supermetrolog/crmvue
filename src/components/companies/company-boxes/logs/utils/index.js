@@ -12,7 +12,7 @@ export const logHandler = {
   logListFormat(array) {
     return array.map((item) =>
       this.logItemFormat(
-        item.user_id,
+        item.user.userProfile.short_name,
         item.message,
         item.type,
         item.created_at,

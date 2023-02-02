@@ -1,13 +1,25 @@
 .CompanyLogsItem {
-    .date {
+    &-date {
         display: flex;
         justify-content: center;
     }
-    .message {
-        padding-bottom: 20px;
-
-        .time {
+    &-user {
+        display: flex;
+        justify-content: flex-end;
+        i {
+            font-size: 14px;
+        }
+    }
+    &-message {
+        * {
+            font-size: 16px;
+        }
+        &-time {
             font-weight: bold !important;
+            margin-right: 3px;
+        }
+        &-text {
+            font-weight: normal;
         }
     }
 
@@ -21,6 +33,7 @@
         .time {
             font-size: 12px;
             font-weight: bold;
+            
         }
     }
 
@@ -28,19 +41,11 @@
         text-align: right;
     }
 
-    margin-bottom: 10px;
-
-    i,
-    span,
-    a {
-        display: block;
-    }
-
-    span,
-    a,
-    p {
-        font-size: 12px;
-    }
+    // i,
+    // span,
+    // a {
+    //     display: block;
+    // }
 
     a {
         color: $color_dark;

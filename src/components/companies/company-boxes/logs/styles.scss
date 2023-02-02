@@ -10,17 +10,20 @@
 
     // }
     &-form {
+        // position: absolute;
+        // bottom: 10px;
+        // width: 100%;
         .form-container {
             width: 100%;
         }
         .form-item {
             textarea {
-                height: unset;
+                height: 50px;
             }
         }
     }
     .CompanyBoxLayout-content {
-        height: 94%;
+        // height: 94%;
         display: flex;
         flex-direction: column;
         justify-content: space-between;

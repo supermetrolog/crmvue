@@ -3,7 +3,7 @@ import ErrorHandle from "./errors";
 import SuccessHandler from "./success";
 export default {
   async getCompanyLogs(id) {
-    const url = `company-events-log?company_id=${id}`;
+    const url = `company-events-log?company_id=${id}&expand=user.userProfile`;
     let data = false;
     await axios
       .get(url)

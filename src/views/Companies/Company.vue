@@ -100,6 +100,7 @@
         v-if="!loaderCompanyLogs && !loaderCompanyDetailInfo"
         :logs="this.COMPANY_LOGS"
         :company="this.COMPANY"
+        @logCommentAdded="this.getCompanyLogs"
       />
       <CompanyBoxObjects
         v-if="!loaderCompanyObjects"

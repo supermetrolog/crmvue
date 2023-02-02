@@ -1,7 +1,7 @@
 <template>
   <div class="CompanyLogsItem">
     <div
-      class="date"
+      class="CompanyLogsItem-date"
       :class="{
         main: date.type,
         noMain: !date.type,
@@ -9,33 +9,25 @@
     >
       <p v-if="date.type">{{ date.value }}</p>
     </div>
-    <div class="user">
-      <i
-        class="text-dark"
-        :class="{
-          'text-success_alt': isSystemComment,
-        }"
-      >
+    <div class="CompanyLogsItem-user" v-if="!isSameUser">
+      <i class="text-dark">
         {{ logItem.user || "&#8212;" }}
       </i>
     </div>
-
-    <div class="message">
-      <p v-html="timeHTML + logItem.message" class="d-inline"></p>
-      <!-- <a
-        v-if="logItem.letter_id"
-        @click="openLetterView"
-        class="d-inline text-primary ml-2"
-        :href="'/letters/' + data.letter_id"
-        >посмотреть</a
-      > -->
+    <div class="CompanyLogsItem-message">
+      <span class="CompanyLogsItem-message-time">{{ time }}</span>
+      <span
+        v-html="logItem.message"
+        class="CompanyLogsItem-message-text"
+      ></span>
+      <!-- <a class="d-inline text-primary ml-2" :href="'/letters/'">посмотреть</a> -->
     </div>
   </div>
 </template>
 
 <script>
 import moment from "moment";
-// import "./styles.scss";
+import "./styles.scss";
 
 export default {
   name: "CompanyLogsItem",
@@ -52,21 +44,12 @@ export default {
     return {};
   },
   computed: {
-    isSystemComment() {
-      if (!this.logItem.user) {
-        return true;
-      }
-      //   if (this.logItem.user.includes("система")) {
-      //     return true;
-      //   }
-      return false;
-    },
     date() {
       const result = {
         value: null,
         type: 1,
       };
-      const dateFormat = "YYYY-MM-DD";
+      const dateFormat = "DD.MM.YYYY";
       const timeFormat = "HH:mm";
       let date = moment(this.logItem.created_at).format(dateFormat);
 
@@ -91,22 +74,20 @@ export default {
         result.value = "вчера";
         return result;
       }
-      result.value = this.date;
+      result.value = date;
       return result;
+    },
+    isSameUser() {
+      if (this.preventLogItem?.user === this.logItem.user) {
+        return true;
+      } else {
+        return false;
+      }
     },
     time() {
       const timeFormat = "HH:mm";
       return moment(this.logItem.created_at).format(timeFormat);
     },
-    timeHTML() {
-      return `<span class="d-inline time">${this.time} </span>`;
-    },
   },
 };
 </script>
-
-<style lang="scss">
-.message {
-  color: $color_dark;
-}
-</style>
