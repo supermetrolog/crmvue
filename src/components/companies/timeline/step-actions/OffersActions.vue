@@ -336,7 +336,8 @@ export default {
       if (
         !this.currentRequest ||
         !this.currentRequest.contact ||
-        !this.currentRequest.contact.emails
+        !this.currentRequest.contact.emails ||
+        !this.currentRequest.contact.emails.length
       )
         return null;
       return this.currentRequest.contact.emails[0];
