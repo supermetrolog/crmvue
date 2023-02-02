@@ -22,8 +22,15 @@
             }
         }
     }
+
+    .CompanyBoxLayout-header {
+        height: 5%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
     .CompanyBoxLayout-content {
-        // height: 94%;
+        height: 95%;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
