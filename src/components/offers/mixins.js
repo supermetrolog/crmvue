@@ -39,19 +39,15 @@ export const MixinOfferItem = {
 
         async clickFavoriteOffer(offer) {
             if (!this.FAVORITES_OFFERS.find(
-                    (item) => item.original_id == offer.original_id
-                )) {
+                (item) => item.original_id == offer.original_id
+            )) {
                 return this.ADD_FAVORITES_OFFER(offer);
             }
             await this.DELETE_FAVORITES_OFFERS(offer);
             this.$emit("deleteFavoriteOffer", offer);
         },
         clickViewPdf(offer) {
-            let url =
-                this.$apiUrlHelper.url() +
-                `pdf/presentations?type_id=${offer.type_id}&original_id=${offer.original_id}&object_id=${offer.object_id}&consultant=${this.THIS_USER.userProfile.medium_name}`;
-            console.error(url);
-            window.open(url, "_blank");
+            window.open(this.$apiUrlHelper.generator().pdfUrl(offer, this.THIS_USER.id), "_blank");
         },
     },
 };

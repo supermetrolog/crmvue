@@ -150,6 +150,10 @@ const generator = {
         const baseUrl = this.urlHelper.objectsUrl() + "complex/";
         let url = baseUrl + complex_id;
         return url;
+    },
+    pdfUrl(offer, user_id) {
+        return this.urlHelper.url() +
+            `pdf/presentations?type_id=${offer.type_id}&original_id=${offer.original_id}&object_id=${offer.object_id}&consultant=${user_id}&is_new=1`;
     }
 }
 
