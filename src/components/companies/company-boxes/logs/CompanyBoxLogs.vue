@@ -4,7 +4,11 @@
       <span>Лог работы с {{ headerTitle }}</span>
     </template>
     <template #content>
-      <CompanyLogsList :logs="logs" />
+      <CompanyLogsList
+        :logs="this.COMPANY_LOGS"
+        :logsCount="this.COMPANY_LOGS_COUNT"
+        @infinite="load"
+      />
       <Form class="CompanyBoxLogs-form" @submit="onSubmit(this.company.id)">
         <FormGroup>
           <Textarea
@@ -29,9 +33,8 @@
 </template>
 
 <script>
-import "./styles.scss";
-import { mapGetters } from "vuex";
 import CompanyLogsList from "./logsList/CompanyLogsList.vue";
+import { mapGetters, mapActions } from "vuex";
 import Textarea from "../../../common/form/Textarea.vue";
 import Form from "../../../common/form/Form.vue";
 import FormGroup from "../../../common/form/FormGroup.vue";
@@ -39,7 +42,7 @@ import Submit from "../../../common/form/Submit.vue";
 import CompanyBoxLayout from "../CompanyBoxLayout.vue";
 import useValidate from "@vuelidate/core";
 import { required, helpers } from "@vuelidate/validators";
-import api from "@/api/api";
+import "./styles.scss";
 
 export default {
   name: "CompanyBoxLogs",
@@ -68,8 +71,10 @@ export default {
       form: {
         comment: null,
       },
+      loaderMoreLogs: false,
     };
   },
+
   validations() {
     return {
       form: {
@@ -80,12 +85,13 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["THIS_USER"]),
+    ...mapGetters(["THIS_USER", "COMPANY_LOGS", "COMPANY_LOGS_COUNT"]),
     headerTitle() {
       return this.company.nameRu || this.company.nameEng;
     },
   },
   methods: {
+    ...mapActions(["POST_COMPANY_LOG", "FETCH_COMPANY_LOGS"]),
     async onSubmit(companyId) {
       this.v$.$validate();
       if (this.v$.form.$error) {
@@ -98,13 +104,26 @@ export default {
         message: this.form.comment,
         type: 1,
       };
-      if (await api.companyLogs.addLogComment(logComment)) {
-        this.$emit("logCommentAdded");
+      let response = await this.POST_COMPANY_LOG(logComment);
+      if (response) {
         this.form.comment = null;
         this.v$.$reset();
-        // this.scrollToFormDelay("#" + step.id);
       }
       this.loader = false;
+    },
+    async load($state, id = this.company.id) {
+      console.log("loading more...");
+      try {
+        const response = await this.FETCH_COMPANY_LOGS(id);
+        if (response === "complete") {
+          $state.complete();
+        }
+        if (response === "loaded") {
+          $state.loaded();
+        }
+      } catch (error) {
+        $state.error();
+      }
     },
   },
 };

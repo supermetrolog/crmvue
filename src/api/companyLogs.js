@@ -2,13 +2,15 @@ import axios from "axios";
 import ErrorHandle from "./errors";
 import SuccessHandler from "./success";
 export default {
-  async getCompanyLogs(id) {
-    const url = `company-events-log?company_id=${id}&expand=user.userProfile`;
+  async getCompanyLogs(id, page) {
+    const url = `company-events-log?company_id=${id}&expand=user.userProfile&page=${page}`;
     let data = false;
     await axios
       .get(url)
       .then((Response) => {
-        data = SuccessHandler.getData(Response);
+        data = {};
+        data.data = SuccessHandler.getData(Response);
+        data.pagination = SuccessHandler.getPaginationData(Response);
       })
       .catch((e) => ErrorHandle.setError(e));
     return data;

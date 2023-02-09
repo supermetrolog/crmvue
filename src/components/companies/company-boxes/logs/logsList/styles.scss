@@ -3,11 +3,28 @@
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    &::-webkit-scrollbar {
-        background-color: unset;
-        &-thumb {
-            background-color: unset;
-        }
-    }
+    gap: 15px;
+    align-items: center;
+    padding-right: 8px;
+  &-empty {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  &::-webkit-scrollbar-track {
+    border-radius: 4px;
+    background: $color_light_grey;
+  }
+  
+  &::-webkit-scrollbar {
+    border-radius: 4px;
+    width: 8px;
+    background: #7e7e7e;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background: #7e7e7e;
+  }
 }
