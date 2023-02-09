@@ -78,7 +78,7 @@ export default {
       return result;
     },
     isSameUser() {
-      if (this.preventLogItem?.user === this.logItem.user) {
+      if (this.preventLogItem?.user === this.logItem.user && !this.date.type) {
         return true;
       } else {
         return false;

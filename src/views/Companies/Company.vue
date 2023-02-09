@@ -86,7 +86,6 @@
         @clickEditContact="openContactFormForUpdate"
       />
     </transition>
-
     <div class="company-wrapper">
       <Loader v-if="loaderCompanyDetailInfo"></Loader>
       <CompanyBoxMain
@@ -97,10 +96,9 @@
         @createContact="openContactFormForCreate"
       />
       <CompanyBoxLogs
-        v-if="!loaderCompanyLogs && !loaderCompanyDetailInfo"
+        v-if="!loaderCompanyDetailInfo"
         :logs="this.COMPANY_LOGS"
         :company="this.COMPANY"
-        @logCommentAdded="this.getCompanyLogs"
       />
       <CompanyBoxObjects
         v-if="!loaderCompanyObjects"
@@ -186,6 +184,7 @@ export default {
       "COMPANY_CONTACTS",
       "COMPANY_OBJECTS",
       "COMPANY_LOGS",
+      "COMPANY_LOGS_PAGE",
       "TIMELINE_LIST",
     ]),
     companyRequests() {
@@ -229,7 +228,7 @@ export default {
     },
     async getCompanyLogs(withLoader = true) {
       this.loaderCompanyLogs = withLoader;
-      await this.FETCH_COMPANY_LOGS(this.$route.params.id);
+      // await this.FETCH_COMPANY_LOGS(this.$route.params.id);
       this.loaderCompanyLogs = false;
     },
     openCompanyFormForUpdate(company) {

@@ -4,7 +4,7 @@
       <span>Лог работы с {{ headerTitle }}</span>
     </template>
     <template #content>
-      <CompanyLogsList :logs="logs" />
+      <CompanyLogsList :logs="this.COMPANY_LOGS" @infinite="load" />
       <Form class="CompanyBoxLogs-form" @submit="onSubmit(this.company.id)">
         <FormGroup>
           <Textarea
@@ -29,9 +29,9 @@
 </template>
 
 <script>
-import "./styles.scss";
-import { mapGetters } from "vuex";
 import CompanyLogsList from "./logsList/CompanyLogsList.vue";
+import "./styles.scss";
+import { mapGetters, mapActions } from "vuex";
 import Textarea from "../../../common/form/Textarea.vue";
 import Form from "../../../common/form/Form.vue";
 import FormGroup from "../../../common/form/FormGroup.vue";
@@ -39,7 +39,6 @@ import Submit from "../../../common/form/Submit.vue";
 import CompanyBoxLayout from "../CompanyBoxLayout.vue";
 import useValidate from "@vuelidate/core";
 import { required, helpers } from "@vuelidate/validators";
-import api from "@/api/api";
 
 export default {
   name: "CompanyBoxLogs",
@@ -68,8 +67,10 @@ export default {
       form: {
         comment: null,
       },
+      loaderMoreLogs: false,
     };
   },
+
   validations() {
     return {
       form: {
@@ -80,12 +81,13 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["THIS_USER"]),
+    ...mapGetters(["THIS_USER", "COMPANY_LOGS"]),
     headerTitle() {
       return this.company.nameRu || this.company.nameEng;
     },
   },
   methods: {
+    ...mapActions(["POST_COMPANY_LOG", "FETCH_COMPANY_LOGS"]),
     async onSubmit(companyId) {
       this.v$.$validate();
       if (this.v$.form.$error) {
@@ -98,13 +100,40 @@ export default {
         message: this.form.comment,
         type: 1,
       };
-      if (await api.companyLogs.addLogComment(logComment)) {
-        this.$emit("logCommentAdded");
+      // let response = await api.companyLogs.addLogComment(logComment);
+      let response = await this.POST_COMPANY_LOG(logComment);
+      if (response) {
+        console.log(response, 1234);
+        // this.comments.push(response);
         this.form.comment = null;
         this.v$.$reset();
         // this.scrollToFormDelay("#" + step.id);
       }
       this.loader = false;
+    },
+    // async getCompanyLogs(id, withLoader = true) {
+    //   this.loaderMoreLogs = withLoader;
+    //   await this.FETCH_COMPANY_LOGS(id);
+    //   this.loaderMoreLogs = false;
+    // },
+    async load($state, id = this.company.id) {
+      console.log("loading more...");
+      try {
+        // const response = await api.companyLogs.getCompanyLogs(id, this.page);
+        const response = await this.FETCH_COMPANY_LOGS(id);
+        console.log(response, 123123123123123);
+        // this.page = response.pagination.currentPage;
+        // this.pageCount = response.pagination.pageCount;
+        if (response === "complete") {
+          $state.complete();
+        }
+        if (response === "loaded") {
+          // this.comments = [...response.data.reverse(), ...this.comments];
+          $state.loaded();
+        }
+      } catch (error) {
+        $state.error();
+      }
     },
   },
 };
