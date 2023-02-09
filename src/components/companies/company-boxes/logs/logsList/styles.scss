@@ -6,6 +6,12 @@
     gap: 15px;
     align-items: center;
     padding-right: 8px;
+  &-empty {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+  }
   &::-webkit-scrollbar-track {
     border-radius: 4px;
     background: $color_light_grey;
