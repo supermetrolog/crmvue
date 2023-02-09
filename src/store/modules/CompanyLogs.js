@@ -38,6 +38,9 @@ const CompanyLogs = {
     },
     async POST_COMPANY_LOG(context, formdata) {
       const log = await api.companyLogs.addLogComment(formdata);
+      if (log == false) {
+        return;
+      }
       context.commit("addLogComment", log);
       return log;
     },
