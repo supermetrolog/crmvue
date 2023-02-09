@@ -8,25 +8,25 @@ jobs:
     name: 🎉 Deploy
     runs-on: ubuntu-latest
     steps:
-    - name: 🚚 Get latest code
-      uses: actions/checkout@v2
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v2
 
-    - name: Use Node.js 12
-      uses: actions/setup-node@v2-beta
-      with:
-        node-version: '12'
-      
-    - name: 🔨 Build Project
-      run: |
-        npm install
-        npm run build
+      - name: Use Node.js 16
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: "16"
 
-    - name: 📂 Sync files with PROD server (clients.pennylane.pro)
-      uses: SamKirkland/FTP-Deploy-Action@4.3.0
-      with:
-        server: 62.113.107.218
-        username: ${{ secrets.ftp_prod_server_username }}
-        password: ${{ secrets.ftp_prod_server_password }}
+      - name: 🔨 Build Project
+        run: |
+          npm install
+          npm run build
+
+      - name: 📂 Sync files with PROD server (clients.pennylane.pro)
+        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        with:
+          server: 62.113.107.218
+          username: ${{ secrets.ftp_prod_server_username }}
+          password: ${{ secrets.ftp_prod_server_password }}
 
     # - name: 📂 Sync files with DEV server (clients.supermetrolog.ru)
     #   uses: SamKirkland/FTP-Deploy-Action@4.3.0
