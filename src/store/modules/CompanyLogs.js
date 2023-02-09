@@ -9,16 +9,9 @@ const CompanyLogs = {
   mutations: {
     updateCompanyLogs(state, response) {
       state.companyLogs.unshift(...response.data.reverse());
-      //  =
-      //   state.page === 0
-      //     ? response.data.reverse()
-      //     : [...response.data.reverse(), ...state.companyLogs];
       state.pagination = response.pagination.pageCount;
       state.page = response.pagination.currentPage;
     },
-    // pageUp(state) {
-    //   state.page++;
-    // },
     addLogComment(state, log) {
       state.companyLogs.push(log);
     },

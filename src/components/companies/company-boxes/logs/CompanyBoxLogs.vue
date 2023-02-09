@@ -30,7 +30,6 @@
 
 <script>
 import CompanyLogsList from "./logsList/CompanyLogsList.vue";
-import "./styles.scss";
 import { mapGetters, mapActions } from "vuex";
 import Textarea from "../../../common/form/Textarea.vue";
 import Form from "../../../common/form/Form.vue";
@@ -39,6 +38,7 @@ import Submit from "../../../common/form/Submit.vue";
 import CompanyBoxLayout from "../CompanyBoxLayout.vue";
 import useValidate from "@vuelidate/core";
 import { required, helpers } from "@vuelidate/validators";
+import "./styles.scss";
 
 export default {
   name: "CompanyBoxLogs",
@@ -100,35 +100,22 @@ export default {
         message: this.form.comment,
         type: 1,
       };
-      // let response = await api.companyLogs.addLogComment(logComment);
       let response = await this.POST_COMPANY_LOG(logComment);
       if (response) {
         console.log(response, 1234);
-        // this.comments.push(response);
         this.form.comment = null;
         this.v$.$reset();
-        // this.scrollToFormDelay("#" + step.id);
       }
       this.loader = false;
     },
-    // async getCompanyLogs(id, withLoader = true) {
-    //   this.loaderMoreLogs = withLoader;
-    //   await this.FETCH_COMPANY_LOGS(id);
-    //   this.loaderMoreLogs = false;
-    // },
     async load($state, id = this.company.id) {
       console.log("loading more...");
       try {
-        // const response = await api.companyLogs.getCompanyLogs(id, this.page);
         const response = await this.FETCH_COMPANY_LOGS(id);
-        console.log(response, 123123123123123);
-        // this.page = response.pagination.currentPage;
-        // this.pageCount = response.pagination.pageCount;
         if (response === "complete") {
           $state.complete();
         }
         if (response === "loaded") {
-          // this.comments = [...response.data.reverse(), ...this.comments];
           $state.loaded();
         }
       } catch (error) {

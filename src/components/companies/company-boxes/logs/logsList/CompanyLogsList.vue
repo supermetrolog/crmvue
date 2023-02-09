@@ -1,7 +1,7 @@
 <template>
   <div class="CompanyLogsList" :class="[target]">
     <InfiniteLoading class="loader" top v-bind="$attrs" :target="`.${target}`">
-      <template #complete>Логов больше нет</template>
+      <template #complete><span></span></template>
     </InfiniteLoading>
     <CompanyLogsItem
       v-for="(comment, idx) in formattedLogs"
