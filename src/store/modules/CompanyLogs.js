@@ -16,6 +16,7 @@ const CompanyLogs = {
     },
     addLogComment(state, log) {
       state.companyLogs.push(log);
+      state.totalCount++;
     },
   },
   actions: {
