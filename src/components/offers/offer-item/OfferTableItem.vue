@@ -94,13 +94,9 @@
       <p v-if="offer.deal_type == 3">
         {{ offer.calc_price_safe_pallet }} <small>руб за 1 п. м.</small>
       </p>
-      <span
-        v-if="offer.generalOffersMix && offer.generalOffersMix.offer.tax_form"
-      >
+      <span v-if="offer.offer && offer.offer.tax_form">
         {{
-          taxFormList.find(
-            (item) => item.value == offer.generalOffersMix.offer.tax_form
-          ).label
+          taxFormList.find((item) => item.value == offer.offer.tax_form).label
         }}
       </span>
     </Td>

@@ -5,12 +5,14 @@ const CompanyLogs = {
     companyLogs: [],
     pagination: -1,
     page: 0,
+    totalCount: null,
   },
   mutations: {
     updateCompanyLogs(state, response) {
       state.companyLogs.unshift(...response.data.reverse());
       state.pagination = response.pagination.pageCount;
       state.page = response.pagination.currentPage;
+      state.totalCount = response.pagination.totalCount;
     },
     addLogComment(state, log) {
       state.companyLogs.push(log);
@@ -18,14 +20,17 @@ const CompanyLogs = {
   },
   actions: {
     async FETCH_COMPANY_LOGS(context, id) {
-      if (context.state.page === context.state.pagination) {
+      if (
+        context.state.page === context.state.pagination ||
+        context.state.totalCount === 0
+      ) {
         return "complete";
       } else {
-        const logs = await api.companyLogs.getCompanyLogs(
+        const response = await api.companyLogs.getCompanyLogs(
           id,
           context.state.page + 1
         );
-        context.commit("updateCompanyLogs", logs);
+        context.commit("updateCompanyLogs", response);
         return "loaded";
       }
     },
@@ -43,8 +48,8 @@ const CompanyLogs = {
     COMPANY_LOGS(state) {
       return state.companyLogs;
     },
-    COMPANY_LOGS_PAGE(state) {
-      return `${state.pagination} и ${state.page}`;
+    COMPANY_LOGS_COUNT(state) {
+      return state.totalCount;
     },
   },
 };

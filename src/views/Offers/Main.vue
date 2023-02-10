@@ -22,7 +22,11 @@
           class="d-inline"
           ref="firstPagination"
         />
-        <RefreshButton class="ml-3" @click="getOffers" :disabled="loader" />
+        <RefreshButton
+          class="ml-3"
+          @click="getOffers(true)"
+          :disabled="loader"
+        />
       </div>
     </div>
     <div class="row no-gutters mt-2">
@@ -108,7 +112,7 @@ export default {
         type_id: [2, 3],
         // type_id: [2],
         expand:
-          "contact.emails,contact.phones,object,company.mainContact.phones,company.mainContact.emails,miniOffersMix,generalOffersMix.offer,consultant.userProfile",
+          "contact.emails,contact.phones,object,company.mainContact.phones,company.mainContact.emails,offer,consultant.userProfile",
       };
       if (!this.FAVORITES_OFFERS.length) {
         await this.SEARCH_FAVORITES_OFFERS();

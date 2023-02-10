@@ -3,6 +3,10 @@
     <InfiniteLoading class="loader" top v-bind="$attrs" :target="`.${target}`">
       <template #complete><span></span></template>
     </InfiniteLoading>
+    <div class="CompanyLogsList-empty" v-if="logsCount == 0">
+      <span>Будьте первым!</span>
+      <span>Не оставлено ни единого комментария.</span>
+    </div>
     <CompanyLogsItem
       v-for="(comment, idx) in formattedLogs"
       :key="comment.id"
@@ -27,7 +31,10 @@ export default {
   props: {
     logs: {
       type: Array,
-      default: () => [],
+      required: true,
+    },
+    logsCount: {
+      type: Number,
     },
     target: {
       type: String,

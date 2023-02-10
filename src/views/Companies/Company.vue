@@ -95,11 +95,7 @@
         @editCompany="clickOpenCompanyForm"
         @createContact="openContactFormForCreate"
       />
-      <CompanyBoxLogs
-        v-if="!loaderCompanyDetailInfo"
-        :logs="this.COMPANY_LOGS"
-        :company="this.COMPANY"
-      />
+      <CompanyBoxLogs v-if="!loaderCompanyDetailInfo" :company="this.COMPANY" />
       <CompanyBoxObjects
         v-if="!loaderCompanyObjects"
         :objects="COMPANY_OBJECTS"
@@ -156,7 +152,6 @@ export default {
       loaderCompanyRequests: true,
       loaderCompanyContacts: true,
       loaderCompanyObjects: true,
-      loaderCompanyLogs: true,
       companyRequestFormVisible: false,
       companyContactFormVisible: false,
       contactModalVisible: false,
@@ -183,8 +178,6 @@ export default {
       "COMPANY_REQUESTS",
       "COMPANY_CONTACTS",
       "COMPANY_OBJECTS",
-      "COMPANY_LOGS",
-      "COMPANY_LOGS_PAGE",
       "TIMELINE_LIST",
     ]),
     companyRequests() {
@@ -197,7 +190,6 @@ export default {
       "FETCH_COMPANY_REQUESTS",
       "FETCH_COMPANY_CONTACTS",
       "FETCH_COMPANY_OBJECTS",
-      "FETCH_COMPANY_LOGS",
       "ADD_TO_TRANSITION_LIST",
       "CREATE_CONTACT_COMMENT",
     ]),
@@ -225,11 +217,6 @@ export default {
       this.loaderCompanyObjects = withLoader;
       await this.FETCH_COMPANY_OBJECTS(this.$route.params.id);
       this.loaderCompanyObjects = false;
-    },
-    async getCompanyLogs(withLoader = true) {
-      this.loaderCompanyLogs = withLoader;
-      // await this.FETCH_COMPANY_LOGS(this.$route.params.id);
-      this.loaderCompanyLogs = false;
     },
     openCompanyFormForUpdate(company) {
       this.company = company;
@@ -335,7 +322,6 @@ export default {
     this.getCompanyContacts();
     this.getCompanyObjects();
     this.getCompanyRequests();
-    this.getCompanyLogs();
     this.timeline();
   },
   watch: {

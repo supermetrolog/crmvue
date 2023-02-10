@@ -4,7 +4,11 @@
       <span>Лог работы с {{ headerTitle }}</span>
     </template>
     <template #content>
-      <CompanyLogsList :logs="this.COMPANY_LOGS" @infinite="load" />
+      <CompanyLogsList
+        :logs="this.COMPANY_LOGS"
+        :logsCount="this.COMPANY_LOGS_COUNT"
+        @infinite="load"
+      />
       <Form class="CompanyBoxLogs-form" @submit="onSubmit(this.company.id)">
         <FormGroup>
           <Textarea
@@ -81,7 +85,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["THIS_USER", "COMPANY_LOGS"]),
+    ...mapGetters(["THIS_USER", "COMPANY_LOGS", "COMPANY_LOGS_COUNT"]),
     headerTitle() {
       return this.company.nameRu || this.company.nameEng;
     },
@@ -102,7 +106,6 @@ export default {
       };
       let response = await this.POST_COMPANY_LOG(logComment);
       if (response) {
-        console.log(response, 1234);
         this.form.comment = null;
         this.v$.$reset();
       }
