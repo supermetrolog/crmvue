@@ -41,6 +41,13 @@
           <span class="object_class">
             {{ offer.class_name }}
           </span>
+          <span
+            class="hide_from_market"
+            v-if="offer.hide_from_market"
+            title="Не выгружается"
+          >
+            <i class="fas fa-eye-slash"></i>
+          </span>
           <span class="test_only" v-if="offer.test_only"> Тестовый лот </span>
         </div>
       </a>

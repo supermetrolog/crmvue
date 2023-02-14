@@ -6654,6 +6654,14 @@
                         background-color: rgba($color: $color_danger, $alpha: .85);
                     }
 
+                    &.hide_from_market {
+                        top: 15px;
+                        right: 40px;
+                        padding: 0px 5px;
+                        color: $color_dark;
+                        background-color: rgba($color: $color_warning, $alpha: .85);
+                    }
+
                     &.test_only {
                         bottom: 0px;
                         left: 5px;
@@ -7017,7 +7025,7 @@
                 }
 
                 .MiniTimeline-arrow {
-                   
+
                     &-top {
                         background-color: $color_warning_dark;
                         border-left: $warning_step_thin_border;
@@ -7045,7 +7053,7 @@
             $step_height: 60px;
             margin-top: 15px;
 
-           
+
 
             .MiniTimeline-step {
                 height: $step_height;
@@ -7062,7 +7070,7 @@
                             border-right: $done_step_border;
                             // border-top: $done_step_border;
                         }
-        
+
                         &-bottom {
                             border-left: $done_step_border;
                             border-right: $done_step_border;
@@ -7072,19 +7080,20 @@
                 }
 
                 &-in_process {
-    
+
                     .MiniTimeline-arrow {
                         &-top {
                             border-left: $warning_step_border;
                             border-right: $warning_step_border;
                         }
-    
+
                         &-bottom {
                             border-left: $warning_step_border;
                             border-right: $warning_step_border;
                         }
-                    } 
+                    }
                 }
+
                 &-current {
                     cursor: pointer;
 
