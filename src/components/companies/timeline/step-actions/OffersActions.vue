@@ -191,9 +191,11 @@ import CustomButton from "@/components/common/CustomButton.vue";
 import RefreshButton from "@/components/common/RefreshButton.vue";
 import LetterSendForm from "@/components/letter/form/LetterSendForm";
 import { mapGetters } from "vuex";
+import {LetterSenderMixin} from "./mixins.js";
+
 export default {
   name: "OffersActions",
-  mixins: [MixinStepActions, MixinAllObject],
+  mixins: [MixinStepActions, MixinAllObject, LetterSenderMixin],
   components: {
     CustomButton,
     RefreshButton,
@@ -314,33 +316,6 @@ export default {
       return this.currentRequest.dealType != 1
         ? this.$options.threeRecommendedDescriptionRent
         : this.$options.threeRecommendedDescriptionSale;
-    },
-    sendObjectsFormdata() {
-      const formdata = {
-        company_id: this.currentRequest.company_id,
-        subject: "Список предложений от Pennylane Realty",
-        wayOfSending: [0],
-        message: `<p>С уважением, ${this.THIS_USER.userProfile.medium_name}</p><p>менеджер PLR</p>`,
-      };
-      if (this.defaultContactForSend !== null) {
-        formdata.defaultContactForSend = {
-          contact_id: this.defaultContactForSend.contact_id,
-          id: this.defaultContactForSend.id,
-          value: this.defaultContactForSend.email,
-          type: 1,
-        };
-      }
-      return formdata;
-    },
-    defaultContactForSend() {
-      if (
-        !this.currentRequest ||
-        !this.currentRequest.contact ||
-        !this.currentRequest.contact.emails ||
-        !this.currentRequest.contact.emails.length
-      )
-        return null;
-      return this.currentRequest.contact.emails[0];
     },
     firstRecommendedQuery() {
       const request = this.currentRequest;

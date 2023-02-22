@@ -113,10 +113,11 @@ import {
   InspectionOffersNotFound,
 } from "../comments/commenst";
 import LetterSendForm from "@/components/letter/form/LetterSendForm";
+import {LetterSenderMixin} from "./mixins.js";
 
 export default {
   name: "InspectionActions",
-  mixins: [MixinStepActions, MixinWithSendLetter],
+  mixins: [MixinStepActions, MixinWithSendLetter, LetterSenderMixin],
   components: {
     Inspection,
     LetterSendForm,
@@ -181,31 +182,6 @@ export default {
           classes: "col-2 ml-1",
         },
       ];
-    },
-    sendObjectsFormdata() {
-      const formdata = {
-        company_id: this.currentRequest.company_id,
-        subject: "Список предложений от Pennylane Realty",
-        wayOfSending: [0],
-        message: `<p>С уважением, ${this.THIS_USER.userProfile.medium_name}</p><p>менеджер PLR</p>`,
-      };
-      if (this.defaultContactForSend !== null) {
-        formdata.defaultContactForSend = {
-          id: this.defaultContactForSend.id,
-          type: 1,
-        };
-      }
-      return formdata;
-    },
-    defaultContactForSend() {
-      if (
-        !this.currentRequest ||
-        !this.currentRequest.contact ||
-        !this.currentRequest.contact.emails ||
-        !this.currentRequest.contact.emails.length
-      )
-        return null;
-      return this.currentRequest.contact.emails[0];
     },
   },
   methods: {
