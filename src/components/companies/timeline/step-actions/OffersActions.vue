@@ -45,12 +45,7 @@
             <Objects>
               <StepStage
                 class="mb-2 sticky"
-                :title="
-                  'Шаг 1. Изучите деятельность компании клиента, свяжитесь с контактным лицом' +
-                  (step.timelineStepObjects.length
-                    ? ` и обсудите ${step.timelineStepObjects.length} задачи `
-                    : '')
-                "
+                title="Шаг 1. Внимательно изучите автоподборки CRM или подберите варианты вручную и отправьте клиенту"
                 :isDone="!!step.timelineStepObjects.length"
                 :closeSlotWhenDone="false"
                 :isCurrent="!step.timelineStepObjects.length"
