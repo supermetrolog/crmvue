@@ -104,6 +104,14 @@
             Выбрать аватар
           </FileInput>
         </FormGroup>
+        <FormGroup class="mb-1">
+          <Radio
+              v-model="form.role"
+              class="col-12 p-0 mt-2 text-center"
+              label="Роль"
+              :options="roleOptions"
+            />
+          </FormGroup>
         <FormGroup class="mt-4">
           <Submit class="col-4 mx-auto">
             {{ formdata ? "Сохранить" : "Создать" }}
@@ -123,9 +131,10 @@ import FormGroup from "@/components/common/form/FormGroup.vue";
 import Input from "@/components/common/form/Input.vue";
 import PropogationInput from "@/components/common/form/PropogationInput.vue";
 import Submit from "@/components/common/form/Submit.vue";
+import Radio from "@/components/common/form/Radio.vue";
 import FileInput from "@/components/common/form/FileInput.vue";
 import Utils, { validatePropogationInput } from "@/utils";
-
+import {RoleList} from "@/const/Const.js";
 export default {
   name: "UserForm",
   components: {
@@ -135,17 +144,20 @@ export default {
     Submit,
     FileInput,
     PropogationInput,
+    Radio
   },
   data() {
     return {
       v$: useValidate(),
       loader: false,
+      roleOptions: RoleList.get("param"),
       form: {
         username: null,
         password: null,
         email: null,
         email_username: null,
         email_password: null,
+        role: 2,
         userProfile: {
           first_name: null,
           middle_name: null,

@@ -557,6 +557,25 @@ export const DirectionList = new Map([
     ],
   ],
 ]);
+export const RoleList = new Map([
+  [
+    "param",
+    [
+      [1, "Просмотр"],
+      [2, "Консультант"],
+      [3, "Модератор"],
+      [4, "Директор"],
+      [5, "Админ"],
+    ],
+  ],
+]);
+// export const RoleList = {
+//   1: [1, "Просмотр"],
+//   2: [2, "Консультант"],
+//   3: [3, "Модератор"],
+//   4: [4, "Директор"],
+//   5: [5, "Админ"],
+// };
 export const OldDbDirectionList = {
   2: { short: "С", long: "Север" },
   3: { short: "В", long: "Восток" },
