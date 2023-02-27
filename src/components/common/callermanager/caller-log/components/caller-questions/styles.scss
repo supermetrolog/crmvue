@@ -1,0 +1,14 @@
+.CallerQuestions {
+    color: $color_success_alt;
+    display: flex;
+    flex-direction: column;
+    &-header {
+    //    border-bottom: 1px solid ;
+    }
+    &-item {
+        cursor: pointer;
+        &:hover {
+            opacity: 50%;
+        }
+    }
+}

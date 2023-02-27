@@ -10,6 +10,10 @@
           v-if="activeItem && activeItem.type == 0"
           :call="activeItem"
         />
+        <CallerLog
+          :call="activeItem"
+          v-if="activeItem?.phoneFrom || activeItem?.phoneTo"
+        />
       </div>
       <div class="col-1"></div>
       <div class="col-1 list">
@@ -24,6 +28,7 @@
 </template>
 
 <script>
+import CallerLog from "./caller-log/CallerLog.vue";
 import CallerManagerIncomingItem from "./caller-info/CallerManagerIncomingItem.vue";
 import CallerManagerOutcomingItem from "./caller-info/CallerManagerOutcomingItem.vue";
 import CallerManagerList from "./CallerManagerList.vue";
@@ -33,6 +38,7 @@ export default {
     CallerManagerIncomingItem,
     CallerManagerOutcomingItem,
     CallerManagerList,
+    CallerLog,
   },
   data() {
     return {

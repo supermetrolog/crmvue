@@ -1,0 +1,24 @@
+.CallerForm {
+    display: flex;
+    flex-direction: column;
+    background-color: darken($color_light, 5);
+    position: relative;
+    &-reply {
+        background-color: darken($color_light, 5);
+        position: absolute;
+        border-radius: 15px 15px 0 0 ;
+        bottom: 100%;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+    }
+    .form-item {
+        textarea {
+            height: unset;
+        }
+    }
+    .form-container {
+        width: unset;
+    }
+}

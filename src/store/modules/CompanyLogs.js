@@ -18,6 +18,12 @@ const CompanyLogs = {
       state.companyLogs.push(log);
       state.totalCount++;
     },
+    refreshAll(state) {
+      state.companyLogs = [];
+      state.pagination = -1;
+      state.page = 0;
+      state.totalCount = null;
+    },
   },
   actions: {
     async FETCH_COMPANY_LOGS(context, id) {
@@ -42,6 +48,9 @@ const CompanyLogs = {
       }
       context.commit("addLogComment", log);
       return log;
+    },
+    REFRESH_COMPANY_LOGS(context) {
+      context.commit("refreshAll");
     },
   },
 

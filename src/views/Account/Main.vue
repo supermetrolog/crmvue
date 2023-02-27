@@ -1,5 +1,6 @@
 <template>
   <div class="account-main">
+    <CallerManager />
     <div class="row">
       <p v-if="THIS_USER">
         {{ THIS_USER.userProfile.full_name }}
@@ -12,9 +13,11 @@
 </template>
 
 <script>
+import CallerManager from "../../components/common/callermanager/CallerManager.vue";
 import { mapGetters } from "vuex";
 export default {
   name: "AccountMain",
+  components: { CallerManager },
   computed: {
     ...mapGetters(["THIS_USER"]),
   },
