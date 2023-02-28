@@ -1,12 +1,9 @@
 <template>
   <div class="ChatListItem">
-    <div
-      class="ChatListItem-date"
-      :class="{
-        main: date.type,
-        noMain: !date.type,
-      }"
-    >
+    <div class="ChatListItem-date" :class="{
+      main: date.type,
+      noMain: !date.type,
+    }">
       <p v-if="date.type">{{ date.value }}</p>
     </div>
     <div class="ChatListItem-user" v-if="!isSameUser">
@@ -14,11 +11,22 @@
         {{ item.user || "&#8212;" }}
       </i>
     </div>
-    <div class="ChatListItem-message">
-      <span class="ChatListItem-message-time">{{ time }}</span>
-      <span v-html="item.message" class="ChatListItem-message-text"></span>
-      <!-- <a class="d-inline text-primary ml-2" :href="'/letters/'">посмотреть</a> -->
+    <div class="ChatListItem-body">
+      <div class="ChatListItem-message">
+        <div class="ChatListItem-reply" v-if="item.type == 1">
+          <div class="vertical-reply-line" />
+          <div class="ChatListItem-reply-content">
+            <span class="ChatListItem-reply-title">Вопрос</span>
+            <span class="ChatListItem-reply-text">Есть ли сейчас свободная площадь?</span>
+          </div>
+        </div>
+        <span v-html="item.message" class="ChatListItem-message-text"></span>
+      </div>
+      <div class="ChatListItem-time">
+        {{ time }}
+      </div>
     </div>
+    <!-- <a class="d-inline text-primary ml-2" :href="'/letters/'">посмотреть</a> -->
   </div>
 </template>
 

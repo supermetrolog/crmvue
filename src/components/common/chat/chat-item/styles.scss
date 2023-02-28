@@ -6,22 +6,43 @@
     }
     &-user {
         display: flex;
-        justify-content: flex-end;
+        justify-content: flex-start;
         i {
             font-size: 14px;
         }
+    }
+    &-body {
+        display: flex;
+        justify-content: space-between;
+    }
+    &-time {
+        font-weight: bold !important;
+        margin-right: 3px;
+        font-size: 14px;
     }
     &-message {
         * {
             font-size: 16px;
         }
-        &-time {
-            font-weight: bold !important;
-            margin-right: 3px;
-        }
+       
         &-text {
             font-weight: normal;
         }
+    }
+    &-reply {
+        display: flex;
+        gap: 5px;
+        &-content {
+            display: flex;
+            flex-direction: column;
+        }
+        &-title {
+            font-size: 12px;
+        }
+        &-text {
+            font-size: 13px;
+        }
+
     }
 
     .main {

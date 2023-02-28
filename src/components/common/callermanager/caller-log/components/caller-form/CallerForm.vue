@@ -64,21 +64,26 @@ export default {
   },
   methods: {
     ...mapActions([""]),
-    async onSubmit(questionId, companyId) {
+    async onSubmit(questionId, questionParent, companyId) {
       this.v$.$validate();
       if (this.v$.form.$error) {
         return;
       }
-      const comments = [
-        {
+      this.loader = true;
+      const comment = {
           company_id: companyId,
-          question_id: { id: questionId, subId: null },
+          question_id: questionId,
+          question_parent: questionParent,
           title: this.THIS_USER.userProfile.short_name,
           comment: this.form.comment,
-          type: 3,
-        },
-      ];
-      console.log(comments);
+          type: 1,
+        };
+      let response = await this.POST_COMPANY_LOG(comment);
+      if (response) {
+        this.form.comment = null;
+        this.v$.$reset();
+      }
+      this.loader = false;
       // if (await api.timeline.addActionComments(comments)) {
       //   this.$emit("commentAdded");
       //   this.form.comment = null;
@@ -86,6 +91,7 @@ export default {
       //   this.scrollToFormDelay("#" + step.id);
       // }
       // this.loader = false;
+      
     },
     cancelReply() {
       this.$emit("cancelReply");

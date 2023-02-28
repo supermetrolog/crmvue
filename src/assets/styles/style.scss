@@ -976,6 +976,11 @@
         background-color: $color_success_alt;
     }
 
+    .vertical-reply-line {
+        border-left: 3px solid $color_dark;
+        min-height: 20px;
+        max-height: 100%;
+      }
     //TIMELINE
     // @import url('https://fonts.googleapis.com/css?family=Niramit:300,300i,700');
     // reset some browser default styles
