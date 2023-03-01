@@ -1,9 +1,9 @@
 <template>
   <div class="CallerForm">
-    <div class="CallerForm-reply px-2" v-if="replyText">
+    <div class="CallerForm-reply px-2" v-if="replyItem">
       <div>
         <i class="fas fa-reply"></i>
-        <span class="CallerForm-reply-text">{{ replyText }} </span>
+        <span class="CallerForm-reply-text">{{ replyItem.body }} </span>
       </div>
       <button class="btn-action text-danger" @click="cancelReply">
         <i class="fas fa-times"></i>
@@ -37,8 +37,8 @@ export default {
   name: "CallerForm",
   components: { Form, FormGroup, Textarea, Submit },
   props: {
-    replyText: {
-      type: String,
+    replyItem: {
+      type: Object,
       default: null,
     },
   },
@@ -48,6 +48,7 @@ export default {
       form: {
         comment: null,
       },
+      loader: false
     };
   },
   validations() {
@@ -64,20 +65,30 @@ export default {
   },
   methods: {
     ...mapActions([""]),
-    async onSubmit(questionId, questionParent, companyId) {
+    async onSubmit(companyId) {
       this.v$.$validate();
       if (this.v$.form.$error) {
         return;
       }
       this.loader = true;
-      const comment = {
+      let comment = {};
+      if (this.replyItem) {
+         comment = {
           company_id: companyId,
-          question_id: questionId,
-          question_parent: questionParent,
+          question_id: this.replyItem.id,
+          question_parent: this.replyItem.parentId,
+          title: this.THIS_USER.userProfile.short_name,
+          comment: this.form.comment,
+          type: 2,
+        };
+      } else {
+        comment = {
+          company_id: companyId,
           title: this.THIS_USER.userProfile.short_name,
           comment: this.form.comment,
           type: 1,
-        };
+        }
+      }
       let response = await this.POST_COMPANY_LOG(comment);
       if (response) {
         this.form.comment = null;

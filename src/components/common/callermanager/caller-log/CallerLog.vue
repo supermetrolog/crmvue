@@ -2,15 +2,15 @@
   <div class="CallerLog">
     <Accordion>
       <AccordionItem
-        v-for="issueSection in issueSections"
-        :key="issueSection.id"
-        :id="issueSection.id"
-        :title="issueSection.name"
+        v-for="questionBranch in questionsTree"
+        :key="questionBranch.id"
+        :id="questionBranch.id"
+        :title="questionBranch.name"
       >
         <div class="CallerLog-section">
           <CallerQuestions
-            :questionsList="issueSection.questionsList"
-            :sectionId="issueSection.id"
+            :questionsList="questionBranch.questionsList"
+            :sectionId="questionBranch.id"
             @questionClicked="onQuestionClicked"
           />
           <div class="CallerLog-chat">
@@ -22,7 +22,7 @@
             />
           </div>
           <CallerForm
-            :replyText="replyItem?.text"
+            :replyItem="replyItem"
             @cancelReply="onCancelReply"
           />
         </div>
@@ -38,6 +38,7 @@ import { mapActions, mapGetters } from "vuex";
 import ChatList from "../../chat/chat-list/ChatList.vue";
 import AccordionItem from "../../accordion/AccordionItem.vue";
 import Accordion from "../../accordion/Accordion.vue";
+import {questions} from '../const/questions';
 import "./styles.scss";
 
 export default {
@@ -57,52 +58,7 @@ export default {
   },
   data() {
     return {
-      issueSections: [
-        {
-          id: 1,
-          name: "ПЛОЩАДЬ. Аренда",
-          questionsList: [
-            { id: 1, text: "Есть ли сейчас свободная площадь?" },
-            { id: 2, text: "Освободится ли в течение года?" },
-            { id: 3, text: "Уточнить ценообразование аренды" },
-            {
-              id: 4,
-              text: "Консультировать в случае существенных расхождений по цене",
-            },
-            {
-              id: 5,
-              text: "Предложить короткую аналитику рынка, либо отправить бесплатную подборку объектов",
-            },
-          ],
-        },
-        {
-          id: 2,
-          name: "ПЛОЩАДЬ. Продажа",
-          questionsList: [
-            { id: 1, text: "Есть ли сейчас площади на продажу?" },
-            {
-              id: 2,
-              text: "Если не продает, уточнить почему. Поговорить о возможной цене его объекта.",
-            },
-            {
-              id: 3,
-              text: "Если продает, уточнить почему. Не устраивает экономика? Пересдадим, изучим, улучшим!",
-            },
-            {
-              id: 4,
-              text: "Рассказать про ситуацию на рынке, кол-во предложений на рынке. Обсудить конкурентов.",
-            },
-            {
-              id: 5,
-              text: "Консультировать в случае существенных расхождений по цене.",
-            },
-            {
-              id: 6,
-              text: "Предложить короткую аналитику рынка, либо бесплатную подборку объектов",
-            },
-          ],
-        },
-      ],
+      questionsTree: questions,
       replyItem: null,
     };
   },
@@ -131,10 +87,14 @@ export default {
         $state.error();
       }
     },
-    onQuestionClicked(questionId, sectionId) {
-      this.replyItem = this.issueSections
-        .find((item) => item.id == sectionId)
-        .questionsList.find((item) => item.id == questionId);
+    onQuestionClicked(questionId, questionBranchId) {
+      this.replyItem = {
+        id: questionId,
+        parentId: questionBranchId,
+        body: this.questionsTree
+        .find((item) => item.id == questionBranchId)
+        .questionsList.find((item) => item.id == questionId).text
+      }
     },
     onCancelReply() {
       console.log(123);

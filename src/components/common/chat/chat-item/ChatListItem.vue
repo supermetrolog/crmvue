@@ -46,7 +46,9 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      
+    };
   },
   computed: {
     date() {
@@ -93,6 +95,17 @@ export default {
       const timeFormat = "HH:mm";
       return moment(this.item.created_at).format(timeFormat);
     },
+    replyData() {
+      if (this.item.type == 2) {
+        let replyItem = {
+          title: 'Вопрос',
+          text: this.item.parent_id,
+      };
+      return replyItem;
+      } else {
+        return null;
+      }
+    }
   },
 };
 </script>
