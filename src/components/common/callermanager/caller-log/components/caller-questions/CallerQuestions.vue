@@ -7,7 +7,7 @@
       class="CallerQuestions-item"
       @click="clickQuestion(question.id)"
     >
-      - {{ question.text }}
+      - {{ question.body }}
     </span>
   </div>
 </template>

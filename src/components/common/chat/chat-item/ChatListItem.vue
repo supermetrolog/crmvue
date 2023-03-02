@@ -13,7 +13,7 @@
     </div>
     <div class="ChatListItem-body">
       <div class="ChatListItem-message">
-        <div class="ChatListItem-reply" v-if="item.type == 1">
+        <div class="ChatListItem-reply" v-if="item.type == 2">
           <div class="vertical-reply-line" />
           <div class="ChatListItem-reply-content">
             <span class="ChatListItem-reply-title">Вопрос</span>
@@ -36,6 +36,7 @@ import "./styles.scss";
 
 export default {
   name: "ChatListItem",
+  inject: ['questionsTree'],
   props: {
     item: {
       type: Object,
@@ -47,7 +48,6 @@ export default {
   },
   data() {
     return {
-      
     };
   },
   computed: {
@@ -99,7 +99,7 @@ export default {
       if (this.item.type == 2) {
         let replyItem = {
           title: 'Вопрос',
-          text: this.item.parent_id,
+          body: this.questionsTree.find(parent => parent.id == this.item.question_parent).questions.find(quest => quest.id == this.item.question_id).body,
       };
       return replyItem;
       } else {

@@ -598,6 +598,11 @@
             color: white;
         }
 
+        &.badge-light {
+            background-color: $color_light;
+            color: $color_dark;
+        }
+        
         &.badge-warning {
             background-color: $color_warning;
         }

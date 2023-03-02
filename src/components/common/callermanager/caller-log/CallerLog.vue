@@ -17,8 +17,9 @@
             <ChatList
               @infinite="load"
               @chatMounted="refreshChat"
-              :items="this.COMPANY_LOGS"
-              :key="this.company.id"
+              :items="COMPANY_LOGS"
+              :itemsCount="COMPANY_LOGS_COUNT"
+              :key="company.id"
             />
           </div>
           <CallerForm
@@ -62,8 +63,11 @@ export default {
       replyItem: null,
     };
   },
+  provide: {
+    questionsTree: questions
+  },
   computed: {
-    ...mapGetters(["THIS_USER", "COMPANY_LOGS"]),
+    ...mapGetters(["THIS_USER", "COMPANY_LOGS", "COMPANY_LOGS_COUNT"]),
     company() {
       let company =
         this.call.phoneFrom?.contact.company ||
@@ -93,7 +97,7 @@ export default {
         parentId: questionBranchId,
         body: this.questionsTree
         .find((item) => item.id == questionBranchId)
-        .questionsList.find((item) => item.id == questionId).text
+        .questionsList.find((item) => item.id == questionId).body
       }
     },
     onCancelReply() {

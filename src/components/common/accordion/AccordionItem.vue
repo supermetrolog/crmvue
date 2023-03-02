@@ -36,7 +36,7 @@ export default {
     },
     titleClasses: {
       type: String,
-      default: "badge-danger",
+      default: "badge-light",
     },
     titleVisible: {
       type: Boolean,
