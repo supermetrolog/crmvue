@@ -97,7 +97,7 @@ export const questions = [
     ],
   },
   {
-    id: 4,
+    id: 5,
     name: "БИЗНЕС. Планы",
     questionsList: [
       {
