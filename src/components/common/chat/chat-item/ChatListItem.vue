@@ -16,8 +16,8 @@
         <div class="ChatListItem-reply" v-if="item.type == 2">
           <div class="vertical-reply-line" />
           <div class="ChatListItem-reply-content">
-            <span class="ChatListItem-reply-title">Вопрос</span>
-            <span class="ChatListItem-reply-text">Есть ли сейчас свободная площадь?</span>
+            <span class="ChatListItem-reply-title">{{replyData.title}}</span>
+            <span class="ChatListItem-reply-text">{{ replyData.body }}</span>
           </div>
         </div>
         <span v-html="item.message" class="ChatListItem-message-text"></span>
@@ -99,7 +99,7 @@ export default {
       if (this.item.type == 2) {
         let replyItem = {
           title: 'Вопрос',
-          body: this.questionsTree.find(parent => parent.id == this.item.question_parent).questions.find(quest => quest.id == this.item.question_id).body,
+          body: this.questionsTree.find(parent => parent.id == this.item.question_parent).questionsList.find(quest => quest.id == this.item.question_id).body,
       };
       return replyItem;
       } else {

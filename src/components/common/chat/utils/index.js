@@ -1,5 +1,14 @@
 export const logHandler = {
-  logItemFormat(user, message, type, created_at, updated_at, id) {
+  logItemFormat(
+    user,
+    message,
+    type,
+    created_at,
+    updated_at,
+    id,
+    question_id,
+    question_parent
+  ) {
     return {
       user,
       message,
@@ -7,6 +16,8 @@ export const logHandler = {
       created_at,
       updated_at,
       id,
+      question_id,
+      question_parent,
     };
   },
   logListFormat(array) {
@@ -17,7 +28,9 @@ export const logHandler = {
         item.type,
         item.created_at,
         item.updated_at,
-        item.id
+        item.id,
+        item.question_id,
+        item.question_parent
       )
     );
   },

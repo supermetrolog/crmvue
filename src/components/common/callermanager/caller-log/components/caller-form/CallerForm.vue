@@ -9,14 +9,10 @@
         <i class="fas fa-times"></i>
       </button>
     </div>
-    <Form class="mb-3 p-2" @submit="onSubmit(question.id)">
+    <Form class="mb-3 p-2" @submit="onSubmit()">
       <FormGroup>
-        <Textarea
-          class="col-12"
-          v-model="form.comment"
-          :v="v$.form.comment"
-          placeholder="Добавьте комментарий по процессу"
-        />
+        <Textarea class="col-12" v-model="form.comment" :v="v$.form.comment"
+          placeholder="Добавьте комментарий по процессу" />
         <Submit buttonClasses="btn-primary"> добавить </Submit>
       </FormGroup>
     </Form>
@@ -41,6 +37,10 @@ export default {
       type: Object,
       default: null,
     },
+    company: {
+      type: Object,
+      default: () => { }
+    }
   },
   data() {
     return {
@@ -64,8 +64,8 @@ export default {
     ...mapGetters(["THIS_USER"]),
   },
   methods: {
-    ...mapActions([""]),
-    async onSubmit(companyId) {
+    ...mapActions(["POST_COMPANY_LOG"]),
+    async onSubmit(companyId = this.company.id) {
       this.v$.$validate();
       if (this.v$.form.$error) {
         return;
@@ -73,26 +73,30 @@ export default {
       this.loader = true;
       let comment = {};
       if (this.replyItem) {
-         comment = {
+        comment = {
           company_id: companyId,
           question_id: this.replyItem.id,
           question_parent: this.replyItem.parentId,
-          title: this.THIS_USER.userProfile.short_name,
-          comment: this.form.comment,
+          user_id: this.THIS_USER.userProfile.user_id,
+          message: this.form.comment,
           type: 2,
         };
       } else {
         comment = {
           company_id: companyId,
-          title: this.THIS_USER.userProfile.short_name,
-          comment: this.form.comment,
+          user_id: this.THIS_USER.userProfile.user_id,
+          message: this.form.comment,
           type: 1,
         }
+
       }
       let response = await this.POST_COMPANY_LOG(comment);
       if (response) {
         this.form.comment = null;
         this.v$.$reset();
+        if (this.replyItem) {
+          this.$emit('cancelReply');
+        }
       }
       this.loader = false;
       // if (await api.timeline.addActionComments(comments)) {
@@ -102,7 +106,7 @@ export default {
       //   this.scrollToFormDelay("#" + step.id);
       // }
       // this.loader = false;
-      
+
     },
     cancelReply() {
       this.$emit("cancelReply");

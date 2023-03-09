@@ -13,7 +13,7 @@
       <ChatList @infinite="load" @chatMounted="refreshChat" :items="COMPANY_LOGS" :itemsCount="COMPANY_LOGS_COUNT"
         :key="company.id" />
     </div>
-    <CallerForm :replyItem="replyItem" @cancelReply="onCancelReply" />
+    <CallerForm :replyItem="replyItem" :company="company" @cancelReply="onCancelReply" />
   </div>
 </template>
 
