@@ -507,7 +507,7 @@ export default {
       await this.$router.replace({ query });
     },
     changeRegion() {
-      if (this.form.fakeRegion == null) {
+      if (this.form.fakeRegion == null || (Array.isArray(this.form.fakeRegion) && this.form.fakeRegion.length == 0)) {
         this.form.region = [];
         this.form.direction = [];
         this.form.district_moscow = [];
@@ -554,6 +554,11 @@ export default {
       }
     },
   },
+  watch: {
+    'form.region'() {
+      console.log(this.form.fakeRegion, 'ЕБУЧИЙ РЕГИОН')
+    }
+  }
 };
 </script>
 
