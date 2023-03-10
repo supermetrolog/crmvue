@@ -4,23 +4,12 @@
       <span>Лог работы с {{ headerTitle }}</span>
     </template>
     <template #content>
-      <CompanyLogsList
-        :logs="this.COMPANY_LOGS"
-        :logsCount="this.COMPANY_LOGS_COUNT"
-        @infinite="load"
-      />
+      <ChatList :items="COMPANY_LOGS" :itemsCount="COMPANY_LOGS_COUNT" :questionsTree="questionsTree" @infinite="load" />
       <Form class="CompanyBoxLogs-form" @submit="onSubmit(this.company.id)">
         <FormGroup>
-          <Textarea
-            class="CompanyBoxLogs-form-text col-12"
-            v-model="form.comment"
-            :v="v$.form.comment"
-            placeholder="Добавьте комментарий"
-          />
-          <Submit
-            class="CompanyBoxLogs-form-btn mt-1"
-            buttonClasses="btn-primary"
-          >
+          <Textarea class="CompanyBoxLogs-form-text col-12" v-model="form.comment" :v="v$.form.comment"
+            placeholder="Добавьте комментарий" />
+          <Submit class="CompanyBoxLogs-form-btn mt-1" buttonClasses="btn-primary">
             добавить
           </Submit>
           <div class="col-12 mt-4" v-if="loader">
@@ -33,7 +22,7 @@
 </template>
 
 <script>
-import CompanyLogsList from "./logsList/CompanyLogsList.vue";
+import ChatList from '../../../common/chat/chat-list/ChatList.vue'
 import { mapGetters, mapActions } from "vuex";
 import Textarea from "../../../common/form/Textarea.vue";
 import Form from "../../../common/form/Form.vue";
@@ -42,6 +31,7 @@ import Submit from "../../../common/form/Submit.vue";
 import CompanyBoxLayout from "../CompanyBoxLayout.vue";
 import useValidate from "@vuelidate/core";
 import { required, helpers } from "@vuelidate/validators";
+import { questions } from "@/const/questions";
 import "./styles.scss";
 
 export default {
@@ -52,7 +42,7 @@ export default {
     FormGroup,
     Form,
     Textarea,
-    CompanyLogsList,
+    ChatList
   },
   props: {
     logs: {
@@ -61,7 +51,7 @@ export default {
     },
     company: {
       type: Object,
-      default: () => {},
+      default: () => { },
     },
   },
   data() {
@@ -72,6 +62,7 @@ export default {
         comment: null,
       },
       loaderMoreLogs: false,
+      questionsTree: questions
     };
   },
 

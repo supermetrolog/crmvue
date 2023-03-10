@@ -13,6 +13,7 @@
       class="result"
       :item="item"
       :preventItem="getPreventItem(idx)"
+      :questionsTree="questionsTree"
     />
     <div class="ChatList-scroll"></div>
   </div>
@@ -41,6 +42,10 @@ export default {
       type: String,
       default: "infinite-loading",
     },
+    questionsTree: {
+      type: Array,
+      default: () => []
+    }
   },
   computed: {
     formattedItems() {
