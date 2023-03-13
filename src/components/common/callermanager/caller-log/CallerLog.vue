@@ -1,36 +1,23 @@
 <template>
   <div class="CallerLog">
-    <Accordion>
-      <AccordionItem
-        v-for="questionBranch in questionsTree"
-        :key="questionBranch.id"
-        :id="questionBranch.id"
-        :title="questionBranch.name"
-      >
-        <div class="CallerLog-section">
-          <CallerQuestions
-            :questionsList="questionBranch.questionsList"
-            :sectionId="questionBranch.id"
-            @questionClicked="onQuestionClicked"
-          />
-        </div>
-      </AccordionItem>
-    </Accordion>
-    <div class="CallerLog-chat">
-      <ChatList
-        :items="COMPANY_LOGS"
-        :itemsCount="COMPANY_LOGS_COUNT"
-        :key="company.id"
-        :questionsTree="questionsTree"
-        @infinite="load"
-        @chatMounted="refreshChat"
-      />
+    <div>
+      <Accordion>
+        <AccordionItem v-for="questionBranch in questionsTree" :key="questionBranch.id" :id="questionBranch.id"
+          :title="questionBranch.name">
+          <div class="CallerLog-section">
+            <CallerQuestions :questionsList="questionBranch.questionsList" :sectionId="questionBranch.id"
+              @questionClicked="onQuestionClicked" />
+          </div>
+        </AccordionItem>
+      </Accordion>
     </div>
-    <CallerForm
-      :replyItem="replyItem"
-      :company="company"
-      @cancelReply="onCancelReply"
-    />
+    <div class="CallerLog-half">
+      <div class="CallerLog-chat">
+        <ChatList :items="COMPANY_LOGS" :itemsCount="COMPANY_LOGS_COUNT" :key="company.id" :questionsTree="questionsTree"
+          @infinite="load" @chatMounted="refreshChat" />
+      </div>
+      <CallerForm :replyItem="replyItem" :company="company" @cancelReply="onCancelReply" />
+    </div>
   </div>
 </template>
 
@@ -56,7 +43,7 @@ export default {
   props: {
     call: {
       type: Object,
-      default: () => {},
+      default: () => { },
     },
   },
   data() {

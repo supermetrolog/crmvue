@@ -7,7 +7,7 @@
       <p v-if="date.type">{{ date.value }}</p>
     </div>
     <div class="ChatListItem-user" v-if="!isSameUser">
-      <i class="text-dark">
+      <i>
         {{ item.user || "&#8212;" }}
       </i>
     </div>
