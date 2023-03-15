@@ -1,6 +1,6 @@
 <template>
   <div class="CallerLog">
-    <div>
+    <div class="CallerLog-questions">
       <Accordion>
         <AccordionItem v-for="questionBranch in questionsTree" :key="questionBranch.id" :id="questionBranch.id"
           :title="questionBranch.name">

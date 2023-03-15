@@ -1,6 +1,5 @@
 .CallerLog {
     width: 40vw;
-    height: 100%;
     z-index: 999;
     position: fixed;
     top: 50px;
@@ -16,15 +15,19 @@
         background: none;
         width: 0;
     }
+    &-questions {
+        height: 30vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
     &-half {
-        height: 50%;
+        height: auto;
+    }
+    &-chat {
+        height: 40vh
     }
     &-section {
         display: flex;
         flex-flow: column;
-    }
-    &-chat {
-        flex-grow: 1;
-        height: 90%;
     }
 }
