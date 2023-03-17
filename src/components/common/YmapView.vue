@@ -4,9 +4,9 @@
       <i class="far fa-arrow-alt-circle-up" v-if="openned" @click="close"></i>
       <i class="far fa-arrow-alt-circle-down" v-else @click="open"></i>
     </div>
-    <yandex-map v-if="mounted" :settings="settings" :coords="options.coords" :zoom="options.zoom"
-      :controls="options.controls" :behaviors="options.behaviors" :cluster-options="options.clusterOptions" ref="map"
-      :style="styles">
+    <yandex-map v-if="mounted" :settings="settings" :options="options.mapOptions" :coords="options.coords"
+      :zoom="options.zoom" :controls="options.controls" :detailed-controls="options.detailedControls"
+      :behaviors="options.behaviors" :cluster-options="options.clusterOptions" ref="map" :style="styles">
       <ymap-marker v-for="offer in list" :key="offer.complex_id" :marker-id="offer.complex_id"
         :coords="[offer.latitude, offer.longitude]" :use-html-in-layout="true" :balloon="{
           header: 'ID: ' + offer.complex_id,
@@ -48,8 +48,22 @@ export default {
       options: {
         coords: [55.75554289958026, 37.619346417968764],
         zoom: 10,
-        controls: ["mediumMapDefaultSet"],
-        behaviors: ["drag"],
+        mapOptions: {
+          suppressObsoleteBrowserNotifier: true,
+          suppressMapOpenBlock: true
+        },
+        controls: [
+          "mediumMapDefaultSet",
+        ],
+        detailedControls: {
+          zoomControl: {
+            position: {
+              right: '10px',
+              top: '100px'
+            },
+          }
+        },
+        behaviors: ["drag", "scrollZoom", "multiTouch"],
         clusterOptions: {
           1: {
             clusterDisableClickZoom: false,

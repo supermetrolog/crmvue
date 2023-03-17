@@ -3,15 +3,9 @@
     <p class="text-info">
       РАССТОЯНИЕ: {{ route.length }}, ВРЕМЯ: {{ route.time }}
     </p>
-    <yandex-map
-      v-if="mounted"
-      :settings="settings"
-      :coords="options.coords"
-      :zoom="options.zoom"
-      :controls="options.controls"
-      ref="map"
-      style="width: 100%; height: 400px"
-    >
+    <yandex-map v-if="mounted" :settings="settings" :options="options.mapOptions" :coords="options.coords"
+      :zoom="options.zoom" :controls="options.controls" :detailed-controls="options.detailedControls" ref="map"
+      style="width: 100%; height: 400px">
       <!-- <ymap-marker
         v-for="object in CURRENT_STEP_OBJECTS"
         :key="object.original_id"
@@ -54,10 +48,23 @@ export default {
         version: "2.1",
       },
       options: {
+        mapOptions: {
+          suppressObsoleteBrowserNotifier: true,
+          suppressMapOpenBlock: true
+        },
         coords: [55.75554289958026, 37.619346417968764],
         zoom: 7,
         controls: ["trafficControl", "zoomControl"],
+        detailedControls: {
+          zoomControl: {
+            position: {
+              right: '10px',
+              top: '100px'
+            },
+          }
+        },
       },
+
     };
   },
   props: {
@@ -155,13 +162,11 @@ export default {
           wayPoint.options.set({
             preset: "cluster#balloonTwoColumns",
             iconContentLayout: window.ymaps.templateLayoutFactory.createClass(
-              `<div style="width: 100%; height: 100%" title="${
-                this.manualRoute[index - 1].offer.object_type_name +
-                "\n" +
-                this.manualRoute[index - 1].offer.address
+              `<div style="width: 100%; height: 100%" title="${this.manualRoute[index - 1].offer.object_type_name +
+              "\n" +
+              this.manualRoute[index - 1].offer.address
               }">
-              <span style="color: red; text-transform: uppercase;">${
-                this.manualRoute[index - 1].offer.visual_id
+              <span style="color: red; text-transform: uppercase;">${this.manualRoute[index - 1].offer.visual_id
               }</span></div>`
             ),
             //         balloonContentLayout: window.ymaps.templateLayoutFactory
@@ -195,5 +200,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>
