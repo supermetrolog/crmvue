@@ -4,31 +4,15 @@
       <i class="far fa-arrow-alt-circle-up" v-if="openned" @click="close"></i>
       <i class="far fa-arrow-alt-circle-down" v-else @click="open"></i>
     </div>
-    <yandex-map
-      v-if="mounted"
-      :settings="settings"
-      :coords="options.coords"
-      :zoom="options.zoom"
-      :controls="options.controls"
-      :behaviors="options.behaviors"
-      :cluster-options="options.clusterOptions"
-      ref="map"
-      :style="styles"
-    >
-      <ymap-marker
-        v-for="offer in list"
-        :key="offer.complex_id"
-        :marker-id="offer.complex_id"
-        :coords="[offer.latitude, offer.longitude]"
-        :use-html-in-layout="true"
-        :balloon="{
+    <yandex-map v-if="mounted" :settings="settings" :coords="options.coords" :zoom="options.zoom"
+      :controls="options.controls" :behaviors="options.behaviors" :cluster-options="options.clusterOptions" ref="map"
+      :style="styles">
+      <ymap-marker v-for="offer in list" :key="offer.complex_id" :marker-id="offer.complex_id"
+        :coords="[offer.latitude, offer.longitude]" :use-html-in-layout="true" :balloon="{
           header: 'ID: ' + offer.complex_id,
           body: offer.address,
           footer: getFooter(offer),
-        }"
-        :icon="{ color: getMarkerColor(offer) }"
-        :cluster-name="1"
-      >
+        }" :icon="{ color: getMarkerColor(offer) }" :cluster-name="1">
       </ymap-marker>
     </yandex-map>
   </div>
@@ -64,7 +48,7 @@ export default {
       options: {
         coords: [55.75554289958026, 37.619346417968764],
         zoom: 10,
-        controls: ["trafficControl", "zoomControl"],
+        controls: ["mediumMapDefaultSet"],
         behaviors: ["drag"],
         clusterOptions: {
           1: {
@@ -151,5 +135,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>
