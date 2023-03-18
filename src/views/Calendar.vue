@@ -1,19 +1,17 @@
 <template>
   <div class="calendar">
     <h1>Calendar</h1>
-    <!-- <SimpleCalendar /> -->
+    <YmapView />
   </div>
 </template>
 
 <script>
-// import SimpleCalendar from "../components/calendar/SimpleCalendar";
+import YmapView from "@/components/common/YmapWithSelection.vue";
 export default {
   name: "Calendar",
   components: {
-    // SimpleCalendar,
+    YmapView,
   },
-  mounted() {
-    // console.log(this.$route.params.mod);
-  },
+  mounted() {},
 };
 </script>
