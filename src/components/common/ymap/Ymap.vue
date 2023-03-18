@@ -27,11 +27,10 @@
 import { yandexMap, loadYmap } from "vue-yandex-maps";
 import YmapSelectionBehavior from "./YmapSelectionBehavior.vue";
 export default {
-  name: "YmapView",
+  name: "Ymap",
   components: { yandexMap, YmapSelectionBehavior },
   data() {
     return {
-      selectionActive: false,
       render: 0,
       mounted: false,
     };

@@ -10,7 +10,7 @@
     <div class="row no-gutters map-container">
       <div class="map-loader" v-if="allOffersLoader"></div>
       <div class="col-12">
-        <YmapView :list="allOffersForYmap" />
+        <YmapOffersView :list="allOffersForYmap" />
       </div>
     </div>
     <div class="row no-gutters companies-actions mt-4">
@@ -64,7 +64,7 @@ import OfferTableView from "@/components/offers/main/OfferTableView.vue";
 import OfferSearchForm from "@/components/offers/forms/offer-form/OfferSearchForm.vue";
 import { mapGetters, mapActions } from "vuex";
 import { TableContentMixin } from "@/components/common/mixins.js";
-import YmapView from "@/components/common/YmapView.vue";
+import YmapOffersView from "@/components/offers/map/YmapOffersView.vue";
 import RefreshButton from "@/components/common/RefreshButton.vue";
 
 import api from "@/api/api";
@@ -86,7 +86,7 @@ export default {
   components: {
     OfferTableView,
     OfferSearchForm,
-    YmapView,
+    YmapOffersView,
     RefreshButton,
     OffersMobileView,
   },
