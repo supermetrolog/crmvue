@@ -1,16 +1,25 @@
 <template>
   <div class="calendar">
     <h1>Calendar</h1>
-    <YmapView />
+    <Ymap
+      :settings="{
+        apiKey: '59572809-066b-46d5-9e5d-269a65751b84',
+        lang: 'ru_RU',
+        coordorder: 'latlong',
+        enterprise: false,
+        version: '2.1',
+      }"
+      :behaviors="['drag', 'scrollZoom', 'multiTouch', 'selection']"
+    />
   </div>
 </template>
 
 <script>
-import YmapView from "@/components/common/YmapWithSelection.vue";
+import Ymap from "@/components/common/ymap/Ymap";
 export default {
   name: "Calendar",
   components: {
-    YmapView,
+    Ymap,
   },
   mounted() {},
 };
