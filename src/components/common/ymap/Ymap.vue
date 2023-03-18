@@ -11,6 +11,8 @@
       :behaviors="behaviors.filter((elem) => elem != 'selection')"
       :cluster-options="clusterOptions"
       :style="styles"
+      :use-object-manager="useObjectManager"
+      :object-manager-clusterize="objectManagerClusterize"
       ref="map"
     >
       <YmapSelectionBehavior
@@ -42,11 +44,11 @@ export default {
     },
     coords: {
       type: Array,
-      default: () => [55.75554289958026, 37.619346417968764],
+      default: () => [55.75554289958026, 37.619346417968764], // moscow center
     },
     zoom: {
       type: Number,
-      default: 10,
+      default: 8,
     },
     options: {
       type: Object,
@@ -82,16 +84,50 @@ export default {
       type: Object,
       default: () => {
         return {
-          1: {
-            clusterDisableClickZoom: false,
+          // point -> cluster-name in ymap-marker
+          point: {
+            // balloonContentLayout: "cluster",
+            // gridSize: 16,
+            hasBalloon: true,
+            margin: 300,
+            clusterIcons: [
+              {
+                href: require("@/assets/image/ymap-cluster-icon.svg"),
+                size: [40, 40],
+                offset: [-20, -20],
+              },
+            ],
+            preset: "islands#invertedVioletClusterIcons",
+            useMapMargin: true,
+            // zoomMargin: 100,
+            // viewportMargin: 200,
+            // hasHint: false,
+            // minClusterSize: 10,
+            sableClickZoom: false,
             clusterOpenBalloonOnClick: true,
             layout:
               "<h3 class=ballon_header>{{ properties.balloonContentHeader|raw }}</h3>" +
               "<div class=ballon_body>{{ properties.balloonContentBody|raw }}</div>" +
               "<div class=ballon_footer>{{ properties.balloonContentFooter|raw }}</div>",
+            // clusterIconContentLayout: '<i class="fas fa-circle"></i>',
+            // clusterBalloonLayout: [
+            //   "<ul class=list>",
+            //   "{% for geoObject in properties.geoObjects %}",
+            //   '<li><a href=# class="list_item">{{ geoObject.properties.balloonContentHeader|raw }}</a></li>',
+            //   "{% endfor %}",
+            //   "</ul>",
+            // ].join(""),
           },
         };
       },
+    },
+    useObjectManager: {
+      type: Boolean,
+      default: true,
+    },
+    objectManagerClusterize: {
+      type: Boolean,
+      default: true,
     },
     polygonOptions: {
       type: Object,

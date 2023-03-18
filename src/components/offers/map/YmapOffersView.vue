@@ -2,6 +2,7 @@
   <Ymap
     :settings="$options.ymapOptions.settings"
     :styles="$options.ymapOptions.styles"
+    :controls="$options.ymapOptions.controls"
     :behaviors="['drag', 'scrollZoom', 'multiTouch', 'selection']"
     ref="map"
   >
@@ -16,8 +17,14 @@
         body: offer.address,
         footer: getFooter(offer),
       }"
-      :icon="{ color: getMarkerColor(offer) }"
-      :cluster-name="1"
+      :icon="{
+        layout: 'default#imageWithContent',
+        imageOffset: [0, 0],
+        contentLayout: `<div style=' background: white; border-radius: 50%; width: 30px; heigth: 30px; color: #FFFFFF; font-weight: bold;'><i class='far fa-circle' style='color: ${getMarkerColor(
+          offer
+        )}; font-size: 30px;'></i></div>`,
+      }"
+      cluster-name="point"
     />
   </Ymap>
 </template>
@@ -46,16 +53,24 @@ export default {
       version: "2.1",
     },
     styles: {
-      height: "200px",
+      height: "100vh",
       width: "100%",
     },
+    controls: [
+      "geolocationControl",
+      "searchControl",
+      "trafficControl",
+      "typeSelector",
+      "zoomControl",
+      "rulerControl",
+    ],
   },
   methods: {
     getMarkerColor(offer) {
       if (offer.test_only == 1) {
         return "grey";
       }
-      return "red";
+      return "#00a1fe";
     },
     getFooter(offer) {
       let template = `<a href="${this.getOfferUrl(

@@ -8,7 +8,16 @@
         coordorder: 'latlong',
         enterprise: false,
         version: '2.1',
+        fullscreenControl: false,
       }"
+      :controls="[
+        'geolocationControl',
+        'searchControl',
+        'trafficControl',
+        'typeSelector',
+        'zoomControl',
+        'rulerControl',
+      ]"
       :behaviors="['drag', 'scrollZoom', 'multiTouch', 'selection']"
     />
   </div>
