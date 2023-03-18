@@ -140,9 +140,9 @@ export default {
     },
     // Упрощение линии, чтобы уменьшить кол-во координат
     simplifyCoords(coordinates) {
-      return coordinates.filter(function (_, index) {
-        return index % 3 === 0;
-      });
+      return coordinates.filter(
+        (_, index) => index % this.options.accuracy === 0
+      );
     },
     triggerCreatedPolygonEvenet(coordinates) {
       this.$emit("selectionDone", coordinates);

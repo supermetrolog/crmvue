@@ -10,7 +10,10 @@
     <div class="row no-gutters map-container">
       <div class="map-loader" v-if="allOffersLoader"></div>
       <div class="col-12">
-        <YmapOffersView :list="allOffersForYmap" />
+        <YmapOffersView
+          :list="allOffersForYmap"
+          @selectionDone="filterByPolygon"
+        />
       </div>
     </div>
   </div>
@@ -49,6 +52,12 @@ export default {
   },
   methods: {
     ...mapActions(["SEARCH_OFFERS", "SEARCH_FAVORITES_OFFERS"]),
+    filterByPolygon(coordinates) {
+      console.log(coordinates);
+      const query = { ...this.$route.query };
+      query.polygon = coordinates;
+      this.$router.replace({ query });
+    },
     getContent(withLoader = true) {
       this.getAllOffersForYmap(withLoader);
     },

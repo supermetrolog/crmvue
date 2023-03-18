@@ -4,6 +4,7 @@
     :styles="$options.ymapOptions.styles"
     :controls="$options.ymapOptions.controls"
     :behaviors="['drag', 'scrollZoom', 'multiTouch', 'selection']"
+    @selectionDone="$emit('selectionDone')"
     ref="map"
   >
     <YmapMarker
@@ -95,7 +96,7 @@ export default {
   watch: {
     list: {
       handler() {
-        this.$refs.map.reRender();
+        // this.$refs.map.reRender();
       },
       deep: true,
     },

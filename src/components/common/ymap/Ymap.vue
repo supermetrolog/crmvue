@@ -19,6 +19,7 @@
         v-if="behaviors.includes('selection')"
         :map="$refs.map.$options.static.myMap"
         :options="polygonOptions"
+        @selectionDone="selectionDone"
       />
       <slot />
     </yandex-map>
@@ -138,6 +139,7 @@ export default {
           interactivityModel: "default#transparent",
           strokeWidth: 4,
           opacity: 0.7,
+          accuracy: 50,
         };
       },
     },
@@ -159,6 +161,9 @@ export default {
   methods: {
     reRender() {
       this.render++;
+    },
+    selectionDone(coordinates) {
+      this.$emit("selectionDone", coordinates);
     },
   },
 };
