@@ -71,7 +71,8 @@ export default {
       const query = {
         ...routeQuery,
         type_id: [2, 3],
-        fields: "latitude,longitude,address,complex_id,status,thumb,test_only",
+        fields:
+          "latitude,longitude,address,complex_id,status,thumb,test_only,id",
         objectsOnly: 1,
         original_id: routeQuery.favorites
           ? this.FAVORITES_OFFERS.map((item) => item.original_id)

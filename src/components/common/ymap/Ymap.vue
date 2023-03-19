@@ -38,6 +38,14 @@ export default {
       mounted: false,
     };
   },
+  provide() {
+    return {
+      deleteMarker: (id) => {
+        console.log("DELETE MARKER: ", id);
+        this.$refs.map.deleteMarkers([id]);
+      },
+    };
+  },
   props: {
     settings: {
       type: Object,
@@ -124,11 +132,11 @@ export default {
     },
     useObjectManager: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     objectManagerClusterize: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     polygonOptions: {
       type: Object,
@@ -139,7 +147,7 @@ export default {
           interactivityModel: "default#transparent",
           strokeWidth: 4,
           opacity: 0.7,
-          accuracy: 50,
+          accuracy: 10,
         };
       },
     },
@@ -160,7 +168,13 @@ export default {
   },
   methods: {
     reRender() {
-      this.render++;
+      if (this.$refs.map) {
+        this.$refs.map.$options.static.myMap.geoObjects.each((collection) => {
+          console.log("COLLECTION", collection);
+        });
+      }
+
+      // this.render++;
     },
     selectionDone(coordinates) {
       this.$emit("selectionDone", coordinates);

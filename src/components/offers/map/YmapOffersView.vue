@@ -9,8 +9,8 @@
   >
     <YmapMarker
       v-for="offer in list"
-      :key="offer.complex_id"
-      :marker-id="offer.complex_id"
+      :key="offer.id"
+      :marker-id="offer.id"
       :coords="[offer.latitude, offer.longitude]"
       :use-html-in-layout="true"
       :balloon="{
@@ -32,7 +32,7 @@
 
 <script>
 import Ymap from "@/components/common/ymap/Ymap";
-import { ymapMarker as YmapMarker } from "vue-yandex-maps";
+import YmapMarker from "@/components/common/ymap/YmapMarker";
 export default {
   name: "YmapOffersView",
   components: {
@@ -96,7 +96,7 @@ export default {
   watch: {
     list: {
       handler() {
-        // this.$refs.map.reRender();
+        this.$refs.map.reRender();
       },
       deep: true,
     },
