@@ -1,4 +1,4 @@
-
+// Полностью скопированный компонент из библиотеки ради того, чтобы переопределить метод beforeUnmount (beforeDestroy) и вызывать новую функцию удаление deleteMarker2 вместо deleteMarker. Иначе не работает.
 <script>
 import { h } from "vue";
 import * as utils from "/node_modules/vue-yandex-maps/src/utils.js";
@@ -33,6 +33,7 @@ export default {
     "deleteMarker",
     "compareValues",
     "makeComponentBalloonTemplate",
+    "deleteMarker2",
   ],
   props: {
     coords: Array,
@@ -262,9 +263,11 @@ export default {
       return mapMarker;
     },
   },
+
+  // переопределено
   beforeUnmount() {
     this.unwatchArr.forEach((f) => f());
-    this.deleteMarker(this.markerId);
+    this.deleteMarker2(this.markerId);
   },
 };
 </script>

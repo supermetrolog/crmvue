@@ -38,10 +38,10 @@ export default {
       mounted: false,
     };
   },
+  // Пришлось переопределить метод удаления, чтобы заработало все. Иначе ошибка при рендере после того как построится полигон
   provide() {
     return {
-      deleteMarker: (id) => {
-        console.log("DELETE MARKER: ", id);
+      deleteMarker2: (id) => {
         this.$refs.map.deleteMarkers([id]);
       },
     };
@@ -147,7 +147,7 @@ export default {
           interactivityModel: "default#transparent",
           strokeWidth: 4,
           opacity: 0.7,
-          accuracy: 10,
+          accuracy: 3,
         };
       },
     },
@@ -164,18 +164,8 @@ export default {
   async mounted() {
     await loadYmap({ ...this.settings, debug: true });
     this.mounted = true;
-    this.reRender();
   },
   methods: {
-    reRender() {
-      if (this.$refs.map) {
-        this.$refs.map.$options.static.myMap.geoObjects.each((collection) => {
-          console.log("COLLECTION", collection);
-        });
-      }
-
-      // this.render++;
-    },
     selectionDone(coordinates) {
       this.$emit("selectionDone", coordinates);
     },

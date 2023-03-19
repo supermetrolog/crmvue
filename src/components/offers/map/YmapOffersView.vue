@@ -93,14 +93,6 @@ export default {
       return this.$apiUrlHelper.generator().objectUrl(offer.complex_id);
     },
   },
-  watch: {
-    list: {
-      handler() {
-        this.$refs.map.reRender();
-      },
-      deep: true,
-    },
-  },
 };
 </script>
 
