@@ -1,25 +1,20 @@
 <template>
   <div class="account-main">
-    <div class="row">
-      <p v-if="THIS_USER">
-        {{ THIS_USER.userProfile.full_name }}
-      </p>
-      <div class="col-12">
-        <button class="btn btn-danger" @click="clickLogout">Выйти</button>
-      </div>
-    </div>
+    <UserProfile :user="THIS_USER" @logOut="onLogOut" />
   </div>
 </template>
 
 <script>
+import UserProfile from '../../components/account/user-profile/UserProfile.vue'
 import { mapGetters } from "vuex";
 export default {
   name: "AccountMain",
+  components: { UserProfile },
   computed: {
     ...mapGetters(["THIS_USER"]),
   },
   methods: {
-    async clickLogout() {
+    async onLogOut() {
       await this.$store.dispatch("LOGOUT");
       this.$router.push("/");
     },
@@ -28,4 +23,8 @@ export default {
 </script>
 
 <style>
+.account-list {
+  display: flex;
+  flex-direction: column;
+}
 </style>
