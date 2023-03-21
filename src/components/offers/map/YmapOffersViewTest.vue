@@ -1,21 +1,14 @@
 <template>
   <Ymap
-    :settings="$options.ymapOptions.settings"
-    :styles="$options.ymapOptions.styles"
-    :controls="$options.ymapOptions.controls"
-    :behaviors="['drag', 'scrollZoom', 'multiTouch', 'selection']"
-    @selectionDone="$emit('selectionDone')"
-    ref="map"
+    v-if="ismounted"
+    :coords="[55.75554289958026, 37.619346417968764]"
+    style="width: 100%; height: 400px"
   >
     <YmapMarker
       v-for="offer in list"
       :key="offer.id"
       :marker-id="offer.id"
       :coords="[offer.latitude, offer.longitude]"
-      :balloonContentBody="offer.address"
-      :balloonContentHeader="'ID: ' + offer.complex_id"
-      :balloonContentFooter="getFooter(offer)"
-      ref="markers"
     />
     <!-- <YmapMarker
       v-for="offer in list"
@@ -41,13 +34,22 @@
 </template>
 
 <script>
-import Ymap from "@/components/common/ymap/Ymap";
-import YmapMarker from "@/components/common/ymap/YmapMarkerNew";
+import {
+  yandexMap as Ymap,
+  ymapMarker as YmapMarker,
+  loadYmap,
+} from "vue-yandex-maps";
+
 export default {
-  name: "YmapOffersView",
+  name: "YmapOffersViewTest",
   components: {
     Ymap,
     YmapMarker,
+  },
+  data() {
+    return {
+      ismounted: false,
+    };
   },
   props: {
     list: {
@@ -76,32 +78,10 @@ export default {
       "rulerControl",
     ],
   },
-  methods: {
-    getMarkerColor(offer) {
-      if (offer.test_only == 1) {
-        return "grey";
-      }
-      return "#00a1fe";
-    },
-    getFooter(offer) {
-      let template = `<a href="${this.getOfferUrl(
-        offer
-      )}" target="_blank" class="photo">
-              <div class="image-container">
-                <img src="${offer.thumb}" alt="image" />
-              </div>
-            </a>`;
-      return template;
-    },
-    getClass(offer) {
-      if (offer.status != 1) {
-        return "passive";
-      }
-      return "";
-    },
-    getOfferUrl(offer) {
-      return this.$apiUrlHelper.generator().objectUrl(offer.complex_id);
-    },
+  async mounted() {
+    await loadYmap({ ...this.$options.ymapOptions.settings, debug: true });
+    this.ismounted = true;
+    // здесь доступна переменная ymaps
   },
 };
 </script>

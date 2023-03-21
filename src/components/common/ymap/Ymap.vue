@@ -31,20 +31,29 @@ import { yandexMap, loadYmap } from "vue-yandex-maps";
 import YmapSelectionBehavior from "./YmapSelectionBehavior.vue";
 export default {
   name: "Ymap",
-  components: { yandexMap, YmapSelectionBehavior },
+  components: {
+    yandexMap,
+    YmapSelectionBehavior,
+  },
   data() {
     return {
+      addTimeout: null,
+      removeTimeout: null,
       render: 0,
       mounted: false,
+      addMarkers: [],
+      removeMarkers: [],
     };
   },
   // Пришлось переопределить метод удаления, чтобы заработало все. Иначе ошибка при рендере после того как построится полигон
   provide() {
     return {
-      deleteMarker2: (id) => {
-        this.$refs.map.deleteMarkers([id]);
-      },
+      add: this.addMarker,
+      remove: this.removeMarker,
     };
+  },
+  static: {
+    cluster: null,
   },
   props: {
     settings: {
@@ -168,6 +177,50 @@ export default {
   methods: {
     selectionDone(coordinates) {
       this.$emit("selectionDone", coordinates);
+    },
+    add() {
+      const addMarkers = [...this.addMarkers];
+      this.addMarkers = [];
+
+      let cluster = this.$options.static.cluster;
+      const map = this.$refs.map.$options.static.myMap;
+      if (!cluster) {
+        cluster = new window.ymaps.ObjectManager({
+          // Чтобы метки начали кластеризоваться, выставляем опцию.
+          clusterize: true,
+          // ObjectManager принимает те же опции, что и кластеризатор.
+          gridSize: 32,
+          clusterDisableClickZoom: true,
+        });
+      }
+
+      cluster.add(addMarkers);
+      if (this.$options.static.cluster == null) {
+        map.geoObjects.add(cluster);
+      }
+      this.$options.static.cluster = cluster;
+    },
+    addMarker(marker) {
+      if (this.addTimeout) {
+        clearTimeout(this.addTimeout);
+      }
+      this.addMarkers.push(marker);
+      this.addTimeout = setTimeout(this.add, 100);
+    },
+    remove() {
+      const removeMarkers = [...this.removeMarkers];
+      this.removeMarkers = [];
+      const cluster = this.$options.static.cluster;
+      if (cluster) {
+        cluster.remove(removeMarkers);
+      }
+    },
+    removeMarker(marker) {
+      if (this.removeTimeout) {
+        clearTimeout(this.removeTimeout);
+      }
+      this.removeMarkers.push(marker);
+      this.removeTimeout = setTimeout(this.remove, 100);
     },
   },
 };

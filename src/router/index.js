@@ -139,6 +139,13 @@ const routes = [{
         meta: { layout: 'main', auth: { isAuth: true, role: ['moderator', 'administrator'] } },
         component: () =>
             import('../views/Offers/Map.vue'),
+    },
+    {
+        path: 'maptest',
+        name: 'OffersMapTest',
+        meta: { layout: 'main', auth: { isAuth: true, role: ['moderator', 'administrator'] } },
+        component: () =>
+            import('../views/Offers/MapTest.vue'),
     }
     ]
 },
