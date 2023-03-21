@@ -61,6 +61,13 @@ export const InternalMenu = new Map([
     ],
   ],
   [
+    "offers",
+    [
+      { "id": 0, "name": "главная", "url": "/offers/", "exact": true },
+      { "id": 1, "name": "карта", "url": "/offers/map" },
+    ],
+  ],
+  [
     "companies",
     [
       { "id": 0, "name": "главная", "url": "/companies", "exact": true },
