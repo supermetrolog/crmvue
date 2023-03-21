@@ -15,6 +15,7 @@
       :balloonContentBody="offer.address"
       :balloonContentHeader="'ID: ' + offer.complex_id"
       :balloonContentFooter="getFooter(offer)"
+      :hintContent="offer.address"
       ref="markers"
     />
     <!-- <YmapMarker

@@ -23,6 +23,7 @@ export default {
     balloonContentBody: String,
     balloonContentHeader: String,
     balloonContentFooter: String,
+    hintContent: String,
   },
   geoObjects: [],
   mounted() {
@@ -60,7 +61,21 @@ export default {
           balloonContentHeader: this.balloonContentHeader,
           balloonContentBody: this.balloonContentBody,
           balloonContentFooter: this.balloonContentFooter,
+          hintContent: this.hintContent,
         },
+        options: {
+          preset: "islands#circleIcon",
+          icon: {
+            layout: "default#imageWithContent",
+            imageOffset: [0, 0],
+            contentLayout: `<div style=' background: white; border-radius: 50%; width: 30px; heigth: 30px; color: #FFFFFF; font-weight: bold;'><i class='far fa-circle' style='color:; font-size: 30px;'></i></div>`,
+          },
+        },
+        // icon: {
+        //   layout: "default#imageWithContent",
+        //   imageOffset: [0, 0],
+        //   contentLayout: `<div style=' background: white; border-radius: 50%; width: 30px; heigth: 30px; color: #FFFFFF; font-weight: bold;'><i class='far fa-circle' style='color:; font-size: 30px;'></i></div>`,
+        // },
       };
 
       this.$options.geoObjects.push(marker);

@@ -9,7 +9,7 @@
       :controls="controls"
       :detailed-controls="detailedControls"
       :behaviors="behaviors.filter((elem) => elem != 'selection')"
-      :cluster-options="clusterOptions"
+      :objectManager-options="clusterOptions"
       :style="styles"
       :use-object-manager="useObjectManager"
       :object-manager-clusterize="objectManagerClusterize"
@@ -45,7 +45,6 @@ export default {
       removeMarkers: [],
     };
   },
-  // Пришлось переопределить метод удаления, чтобы заработало все. Иначе ошибка при рендере после того как построится полигон
   provide() {
     return {
       add: this.addMarker,
@@ -53,7 +52,7 @@ export default {
     };
   },
   static: {
-    cluster: null,
+    objectManager: null,
   },
   props: {
     settings: {
@@ -102,40 +101,33 @@ export default {
       type: Object,
       default: () => {
         return {
-          // point -> cluster-name in ymap-marker
-          point: {
-            // balloonContentLayout: "cluster",
-            // gridSize: 16,
-            hasBalloon: true,
-            margin: 300,
-            clusterIcons: [
-              {
-                href: require("@/assets/image/ymap-cluster-icon.svg"),
-                size: [40, 40],
-                offset: [-20, -20],
-              },
-            ],
-            preset: "islands#invertedVioletClusterIcons",
-            useMapMargin: true,
-            // zoomMargin: 100,
-            // viewportMargin: 200,
-            // hasHint: false,
-            // minClusterSize: 10,
-            sableClickZoom: false,
-            clusterOpenBalloonOnClick: true,
-            layout:
-              "<h3 class=ballon_header>{{ properties.balloonContentHeader|raw }}</h3>" +
-              "<div class=ballon_body>{{ properties.balloonContentBody|raw }}</div>" +
-              "<div class=ballon_footer>{{ properties.balloonContentFooter|raw }}</div>",
-            // clusterIconContentLayout: '<i class="fas fa-circle"></i>',
-            // clusterBalloonLayout: [
-            //   "<ul class=list>",
-            //   "{% for geoObject in properties.geoObjects %}",
-            //   '<li><a href=# class="list_item">{{ geoObject.properties.balloonContentHeader|raw }}</a></li>',
-            //   "{% endfor %}",
-            //   "</ul>",
-            // ].join(""),
-          },
+          // balloonContentLayout: "objectManager",
+          gridSize: 64,
+          hasBalloon: true,
+          margin: 10,
+          clusterIcons: [
+            {
+              href: require("@/assets/image/ymap-cluster-icon.svg"),
+              size: [30, 30],
+              offset: [-20, -20],
+            },
+          ],
+          preset: "islands#blueCircleDotIcon",
+          useMapMargin: true,
+          // zoomMargin: 100,
+          // viewportMargin: 200,
+          // hasHint: false,
+          // minClusterSize: 10,
+          sableClickZoom: false,
+          clusterOpenBalloonOnClick: true,
+          // clusterIconContentLayout: '<i class="fas fa-circle"></i>',
+          // clusterBalloonLayout: [
+          //   "<ul class=list>",
+          //   "{% for geoObject in properties.geoObjects %}",
+          //   '<li><a href=# class="list_item">{{ geoObject.properties.balloonContentHeader|raw }}</a></li>',
+          //   "{% endfor %}",
+          //   "</ul>",
+          // ].join(""),
         };
       },
     },
@@ -182,23 +174,22 @@ export default {
       const addMarkers = [...this.addMarkers];
       this.addMarkers = [];
 
-      let cluster = this.$options.static.cluster;
+      let objectManager = this.$options.static.objectManager;
       const map = this.$refs.map.$options.static.myMap;
-      if (!cluster) {
-        cluster = new window.ymaps.ObjectManager({
+      if (!objectManager) {
+        objectManager = new window.ymaps.ObjectManager({
           // Чтобы метки начали кластеризоваться, выставляем опцию.
           clusterize: true,
           // ObjectManager принимает те же опции, что и кластеризатор.
-          gridSize: 32,
-          clusterDisableClickZoom: true,
+          ...this.clusterOptions,
         });
       }
 
-      cluster.add(addMarkers);
-      if (this.$options.static.cluster == null) {
-        map.geoObjects.add(cluster);
+      objectManager.add(addMarkers);
+      if (this.$options.static.objectManager == null) {
+        map.geoObjects.add(objectManager);
       }
-      this.$options.static.cluster = cluster;
+      this.$options.static.objectManager = objectManager;
     },
     addMarker(marker) {
       if (this.addTimeout) {
@@ -210,9 +201,9 @@ export default {
     remove() {
       const removeMarkers = [...this.removeMarkers];
       this.removeMarkers = [];
-      const cluster = this.$options.static.cluster;
-      if (cluster) {
-        cluster.remove(removeMarkers);
+      const objectManager = this.$options.static.objectManager;
+      if (objectManager) {
+        objectManager.remove(removeMarkers);
       }
     },
     removeMarker(marker) {
