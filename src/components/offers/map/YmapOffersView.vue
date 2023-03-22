@@ -43,7 +43,7 @@
 
 <script>
 import Ymap from "@/components/common/ymap/Ymap";
-import YmapMarker from "@/components/common/ymap/YmapMarkerNew";
+import YmapMarker from "@/components/common/ymap/YmapMarker";
 export default {
   name: "YmapOffersView",
   components: {

@@ -3,7 +3,7 @@
     <div class="row no-gutters search-main-container">
       <div class="container py-3">
         <div class="col-12 pt-3">
-          <OfferSearchForm v-if="mounted" />
+          <OfferSearchForm v-if="mounted" ref="search" />
         </div>
       </div>
     </div>
@@ -57,6 +57,11 @@ export default {
       const query = { ...this.$route.query };
       query.polygon = coordinates;
       this.$router.replace({ query });
+      const search = this.$refs.search;
+
+      if (search) {
+        search.form.polygon = coordinates;
+      }
     },
     getContent(withLoader = true) {
       this.getAllOffersForYmap(withLoader);
