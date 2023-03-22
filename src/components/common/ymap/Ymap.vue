@@ -9,10 +9,7 @@
       :controls="controls"
       :detailed-controls="detailedControls"
       :behaviors="behaviors.filter((elem) => elem != 'selection')"
-      :objectManager-options="clusterOptions"
       :style="styles"
-      :use-object-manager="useObjectManager"
-      :object-manager-clusterize="objectManagerClusterize"
       ref="map"
     >
       <YmapSelectionBehavior
@@ -101,8 +98,9 @@ export default {
       type: Object,
       default: () => {
         return {
-          // balloonContentLayout: "objectManager",
+          balloonContentLayout: null,
           gridSize: 64,
+          hasHint: true,
           hasBalloon: true,
           margin: 10,
           clusterIcons: [
@@ -112,22 +110,15 @@ export default {
               offset: [-20, -20],
             },
           ],
+          minClusterSize: 2,
           preset: "islands#blueCircleDotIcon",
           useMapMargin: true,
-          // zoomMargin: 100,
-          // viewportMargin: 200,
-          // hasHint: false,
-          // minClusterSize: 10,
+          zoomMargin: null,
+          viewportMargin: null,
           sableClickZoom: false,
-          clusterOpenBalloonOnClick: true,
-          // clusterIconContentLayout: '<i class="fas fa-circle"></i>',
-          // clusterBalloonLayout: [
-          //   "<ul class=list>",
-          //   "{% for geoObject in properties.geoObjects %}",
-          //   '<li><a href=# class="list_item">{{ geoObject.properties.balloonContentHeader|raw }}</a></li>',
-          //   "{% endfor %}",
-          //   "</ul>",
-          // ].join(""),
+          clusterOpenBalloonOnClick: false,
+          // clusterIconContentLayout: null
+          clusterBalloonLayout: null,
         };
       },
     },
@@ -170,26 +161,34 @@ export default {
     selectionDone(coordinates) {
       this.$emit("selectionDone", coordinates);
     },
-    add() {
-      const addMarkers = [...this.addMarkers];
-      this.addMarkers = [];
-
+    getObjectManager() {
       let objectManager = this.$options.static.objectManager;
-      const map = this.$refs.map.$options.static.myMap;
       if (!objectManager) {
         objectManager = new window.ymaps.ObjectManager({
-          // Чтобы метки начали кластеризоваться, выставляем опцию.
           clusterize: true,
-          // ObjectManager принимает те же опции, что и кластеризатор.
           ...this.clusterOptions,
         });
       }
+      return objectManager;
+    },
+    addMarkersToObjectManager(markers) {
+      const objectManager = this.getObjectManager();
+      objectManager.add(markers);
+      this.addObjectManagerToMap(objectManager);
+    },
+    addObjectManagerToMap(objectManager) {
+      const map = this.$refs.map.$options.static.myMap;
 
-      objectManager.add(addMarkers);
       if (this.$options.static.objectManager == null) {
         map.geoObjects.add(objectManager);
       }
+
       this.$options.static.objectManager = objectManager;
+    },
+    add() {
+      const markers = [...this.addMarkers];
+      this.addMarkers = [];
+      this.addMarkersToObjectManager(markers);
     },
     addMarker(marker) {
       if (this.addTimeout) {
@@ -210,7 +209,7 @@ export default {
       if (this.removeTimeout) {
         clearTimeout(this.removeTimeout);
       }
-      this.removeMarkers.push(marker);
+      this.removeMarkers.push(marker.id);
       this.removeTimeout = setTimeout(this.remove, 100);
     },
   },

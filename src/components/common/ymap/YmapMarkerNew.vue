@@ -25,7 +25,7 @@ export default {
     balloonContentFooter: String,
     hintContent: String,
   },
-  geoObjects: [],
+  geoObjects: {},
   mounted() {
     this.createGeoObject();
   },
@@ -35,24 +35,6 @@ export default {
 
   methods: {
     createGeoObject() {
-      //   const geoObject = new window.ymaps.GeoObject({
-      //     geometry: {
-      //       type: "Point", // тип геометрии - точка
-      //       coordinates: this.coords, // координаты точки
-      //     },
-      //     hideIcon: false,
-      //     properties: {
-      //       balloonContentHeader: "Заголовок",
-      //       balloonContentBody: "Содержимое",
-      //       balloonContentFooter: "Подвал",
-      //       hintContent: "Подсказка",
-      //       iconLayout: "default#image",
-      //       iconImageHref: "/map.png",
-      //       iconImageSize: [30, 44],
-      //       iconImageOffset: [-15, -44],
-      //     },
-      //   });
-
       const marker = {
         type: "Feature",
         id: this.markerId,
@@ -65,32 +47,18 @@ export default {
         },
         options: {
           preset: "islands#circleIcon",
-          icon: {
-            layout: "default#imageWithContent",
-            imageOffset: [0, 0],
-            contentLayout: `<div style=' background: white; border-radius: 50%; width: 30px; heigth: 30px; color: #FFFFFF; font-weight: bold;'><i class='far fa-circle' style='color:; font-size: 30px;'></i></div>`,
-          },
         },
-        // icon: {
-        //   layout: "default#imageWithContent",
-        //   imageOffset: [0, 0],
-        //   contentLayout: `<div style=' background: white; border-radius: 50%; width: 30px; heigth: 30px; color: #FFFFFF; font-weight: bold;'><i class='far fa-circle' style='color:; font-size: 30px;'></i></div>`,
-        // },
       };
 
-      this.$options.geoObjects.push(marker);
-
+      this.$options.geoObjects[this.markerId] = marker;
       this.add(marker);
     },
     removeGeoObject() {
-      const thisGeoObject = this.$options.geoObjects.find(
-        (o) => o.id === this.markerId
-      );
+      const thisGeoObject = this.$options.geoObjects[this.markerId];
+
       if (this.$options.geoObjects && thisGeoObject) {
         this.remove(thisGeoObject);
-        this.$options.geoObjects = this.$options.geoObjects.filter(
-          (o) => o.id !== this.markerId
-        );
+        delete this.$options.geoObjects[this.markerId];
       }
     },
   },
