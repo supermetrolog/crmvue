@@ -154,12 +154,19 @@ export default {
     },
   },
   async mounted() {
-    await loadYmap({ ...this.settings, debug: true });
+    await loadYmap({ ...this.settings });
     this.mounted = true;
   },
   methods: {
+    destroyMap() {
+      this.getMap().destroy();
+      this.$options.static.objectManager = null;
+    },
     selectionDone(coordinates) {
       this.$emit("selectionDone", coordinates);
+    },
+    getMap() {
+      return this.$refs.map.$options.static.myMap;
     },
     getObjectManager() {
       let objectManager = this.$options.static.objectManager;
@@ -177,7 +184,7 @@ export default {
       this.addObjectManagerToMap(objectManager);
     },
     addObjectManagerToMap(objectManager) {
-      const map = this.$refs.map.$options.static.myMap;
+      const map = this.getMap();
 
       if (this.$options.static.objectManager == null) {
         map.geoObjects.add(objectManager);
@@ -212,6 +219,10 @@ export default {
       this.removeMarkers.push(marker.id);
       this.removeTimeout = setTimeout(this.remove, 100);
     },
+  },
+
+  beforeUnmount() {
+    this.destroyMap();
   },
 };
 </script>

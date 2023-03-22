@@ -10,10 +10,10 @@
     <div class="row no-gutters map-container">
       <div class="map-loader" v-if="allOffersLoader"></div>
       <div class="col-12">
-        <YmapOffersView
+        <!-- <YmapOffersView
           :list="allOffersForYmap"
           @selectionDone="filterByPolygon"
-        />
+        /> -->
       </div>
     </div>
   </div>
@@ -23,7 +23,7 @@
 import OfferSearchForm from "@/components/offers/forms/offer-form/OfferSearchForm.vue";
 import { mapGetters, mapActions } from "vuex";
 import { TableContentMixin } from "@/components/common/mixins.js";
-import YmapOffersView from "@/components/offers/map/YmapOffersViewTest.vue";
+// import YmapOffersView from "@/components/offers/map/YmapOffersViewTest.vue";
 
 import api from "@/api/api";
 import { waitHash } from "../../utils";
@@ -40,7 +40,7 @@ export default {
   inject: ["isMobile"],
   components: {
     OfferSearchForm,
-    YmapOffersView,
+    // YmapOffersView,
   },
   computed: {
     ...mapGetters([

@@ -459,6 +459,7 @@ export default {
     favorites: null,
     outside_mkad: null,
     region_neardy: null,
+    polygon: null,
   },
   methods: {
     ...mapActions(["FETCH_CONSULTANT_LIST", "FETCH_REGION_LIST"]),
@@ -478,6 +479,9 @@ export default {
       }
       if (this.form.direction && !Array.isArray(this.form.direction)) {
         this.form.direction = [this.form.direction];
+      }
+      if (this.form.polygon && !Array.isArray(this.form.polygon)) {
+        this.form.polygon = [this.form.polygon];
       }
       if (
         this.form.district_moscow &&
@@ -507,7 +511,11 @@ export default {
       await this.$router.replace({ query });
     },
     changeRegion() {
-      if (this.form.fakeRegion == null || (Array.isArray(this.form.fakeRegion) && this.form.fakeRegion.length == 0)) {
+      if (
+        this.form.fakeRegion == null ||
+        (Array.isArray(this.form.fakeRegion) &&
+          this.form.fakeRegion.length == 0)
+      ) {
         this.form.region = [];
         this.form.direction = [];
         this.form.district_moscow = [];
@@ -555,10 +563,10 @@ export default {
     },
   },
   watch: {
-    'form.region'() {
-      console.log(this.form.fakeRegion, 'ЕБУЧИЙ РЕГИОН')
-    }
-  }
+    "form.region"() {
+      console.log(this.form.fakeRegion, "ЕБУЧИЙ РЕГИОН");
+    },
+  },
 };
 </script>
 
