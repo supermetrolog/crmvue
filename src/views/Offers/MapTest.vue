@@ -23,13 +23,13 @@
 import OfferSearchForm from "@/components/offers/forms/offer-form/OfferSearchForm.vue";
 import { mapGetters, mapActions } from "vuex";
 import { TableContentMixin } from "@/components/common/mixins.js";
-import YmapOffersView from "@/components/offers/map/YmapOffersView.vue";
+import YmapOffersView from "@/components/offers/map/YmapOffersViewTest.vue";
 
 import api from "@/api/api";
 import { waitHash } from "../../utils";
 export default {
   mixins: [TableContentMixin],
-  name: "OffersMap",
+  name: "OffersMapTest",
   data() {
     return {
       allOffersForYmap: [],

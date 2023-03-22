@@ -93,6 +93,9 @@ export const apiUrlHelperObject = {
     objectsUrl() {
         let host = window.location.host;
         if (process.env.NODE_ENV == 'development') {
+            if (host == this.stageHost || host == this.devHostWithoutLocalApi) {
+                return this.stageObjectsUrl;
+            }
             return this.devObjectsUrl;
         } else {
             if (host == this.stageHost) {

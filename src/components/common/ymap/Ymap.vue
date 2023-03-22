@@ -9,10 +9,7 @@
       :controls="controls"
       :detailed-controls="detailedControls"
       :behaviors="behaviors.filter((elem) => elem != 'selection')"
-      :cluster-options="clusterOptions"
       :style="styles"
-      :use-object-manager="useObjectManager"
-      :object-manager-clusterize="objectManagerClusterize"
       ref="map"
     >
       <YmapSelectionBehavior
@@ -31,20 +28,28 @@ import { yandexMap, loadYmap } from "vue-yandex-maps";
 import YmapSelectionBehavior from "./YmapSelectionBehavior.vue";
 export default {
   name: "Ymap",
-  components: { yandexMap, YmapSelectionBehavior },
+  components: {
+    yandexMap,
+    YmapSelectionBehavior,
+  },
   data() {
     return {
+      addTimeout: null,
+      removeTimeout: null,
       render: 0,
       mounted: false,
+      addMarkers: [],
+      removeMarkers: [],
     };
   },
-  // Пришлось переопределить метод удаления, чтобы заработало все. Иначе ошибка при рендере после того как построится полигон
   provide() {
     return {
-      deleteMarker2: (id) => {
-        this.$refs.map.deleteMarkers([id]);
-      },
+      add: this.addMarker,
+      remove: this.removeMarker,
     };
+  },
+  static: {
+    objectManager: null,
   },
   props: {
     settings: {
@@ -93,40 +98,27 @@ export default {
       type: Object,
       default: () => {
         return {
-          // point -> cluster-name in ymap-marker
-          point: {
-            // balloonContentLayout: "cluster",
-            // gridSize: 16,
-            hasBalloon: true,
-            margin: 300,
-            clusterIcons: [
-              {
-                href: require("@/assets/image/ymap-cluster-icon.svg"),
-                size: [40, 40],
-                offset: [-20, -20],
-              },
-            ],
-            preset: "islands#invertedVioletClusterIcons",
-            useMapMargin: true,
-            // zoomMargin: 100,
-            // viewportMargin: 200,
-            // hasHint: false,
-            // minClusterSize: 10,
-            sableClickZoom: false,
-            clusterOpenBalloonOnClick: true,
-            layout:
-              "<h3 class=ballon_header>{{ properties.balloonContentHeader|raw }}</h3>" +
-              "<div class=ballon_body>{{ properties.balloonContentBody|raw }}</div>" +
-              "<div class=ballon_footer>{{ properties.balloonContentFooter|raw }}</div>",
-            // clusterIconContentLayout: '<i class="fas fa-circle"></i>',
-            // clusterBalloonLayout: [
-            //   "<ul class=list>",
-            //   "{% for geoObject in properties.geoObjects %}",
-            //   '<li><a href=# class="list_item">{{ geoObject.properties.balloonContentHeader|raw }}</a></li>',
-            //   "{% endfor %}",
-            //   "</ul>",
-            // ].join(""),
-          },
+          balloonContentLayout: null,
+          gridSize: 64,
+          hasHint: true,
+          hasBalloon: true,
+          margin: 10,
+          clusterIcons: [
+            {
+              href: require("@/assets/image/ymap-cluster-icon.svg"),
+              size: [30, 30],
+              offset: [-20, -20],
+            },
+          ],
+          minClusterSize: 2,
+          preset: "islands#blueCircleDotIcon",
+          useMapMargin: true,
+          zoomMargin: null,
+          viewportMargin: null,
+          sableClickZoom: false,
+          clusterOpenBalloonOnClick: false,
+          // clusterIconContentLayout: null
+          clusterBalloonLayout: null,
         };
       },
     },
@@ -168,6 +160,57 @@ export default {
   methods: {
     selectionDone(coordinates) {
       this.$emit("selectionDone", coordinates);
+    },
+    getObjectManager() {
+      let objectManager = this.$options.static.objectManager;
+      if (!objectManager) {
+        objectManager = new window.ymaps.ObjectManager({
+          clusterize: true,
+          ...this.clusterOptions,
+        });
+      }
+      return objectManager;
+    },
+    addMarkersToObjectManager(markers) {
+      const objectManager = this.getObjectManager();
+      objectManager.add(markers);
+      this.addObjectManagerToMap(objectManager);
+    },
+    addObjectManagerToMap(objectManager) {
+      const map = this.$refs.map.$options.static.myMap;
+
+      if (this.$options.static.objectManager == null) {
+        map.geoObjects.add(objectManager);
+      }
+
+      this.$options.static.objectManager = objectManager;
+    },
+    add() {
+      const markers = [...this.addMarkers];
+      this.addMarkers = [];
+      this.addMarkersToObjectManager(markers);
+    },
+    addMarker(marker) {
+      if (this.addTimeout) {
+        clearTimeout(this.addTimeout);
+      }
+      this.addMarkers.push(marker);
+      this.addTimeout = setTimeout(this.add, 100);
+    },
+    remove() {
+      const removeMarkers = [...this.removeMarkers];
+      this.removeMarkers = [];
+      const objectManager = this.$options.static.objectManager;
+      if (objectManager) {
+        objectManager.remove(removeMarkers);
+      }
+    },
+    removeMarker(marker) {
+      if (this.removeTimeout) {
+        clearTimeout(this.removeTimeout);
+      }
+      this.removeMarkers.push(marker.id);
+      this.removeTimeout = setTimeout(this.remove, 100);
     },
   },
 };
