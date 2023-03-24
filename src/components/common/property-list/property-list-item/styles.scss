@@ -1,0 +1,20 @@
+.PropertyListItem {
+    padding: 2px 10px;
+    display: flex;
+    align-items: center;
+
+    &-name {
+        width: 55%;
+        margin-right: 5%;
+        color: $color_grey;
+    }
+    &-value {
+        width: 40%;
+        span {
+            color: $color_grey;
+        }
+    }
+    &:nth-child(odd) {
+        background-color: $color_light_grey;
+    }
+}

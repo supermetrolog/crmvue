@@ -196,16 +196,16 @@ const routes = [
         },
         component: () => import("../views/Offers/MapTest.vue"),
       },
-      {
-        path: "/offers/:id",
-        name: "OfferView",
-        meta: {
-          layout: "main",
-          auth: { isAuth: true, role: ["moderator", "administrator"] },
-        },
-        component: () => import("@/views/OfferView/OfferView.vue"),
-      },
     ],
+  },
+  {
+    path: "/objects/:id",
+    name: "ObjectView",
+    meta: {
+      layout: "main",
+      auth: { isAuth: true, role: ["moderator", "administrator"] },
+    },
+    component: () => import("@/views/ObjectView/ObjectView.vue"),
   },
   {
     path: "/:catchAll(.*)",

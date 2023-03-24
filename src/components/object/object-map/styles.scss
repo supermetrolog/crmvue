@@ -1,0 +1,40 @@
+.ObjectMap {
+    height: 100px;
+    margin: 10px 0;
+    border: 1px solid black;
+    position: relative;
+    background-image: url("../../../assets/image/icon-hug.png");
+    &-description {
+        position: absolute;
+        z-index: 10;
+        padding: 20px;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        overflow-x: auto;
+        &-item {
+            border: 0.5px solid $color_grey;
+            background-color: $color_light_trans;
+            border-radius: 5px;
+            padding: 10px 10px;
+            text-decoration: underline;
+            font-weight: bold;
+            font-size: 18px;
+            white-space: nowrap;
+            &[title] {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                div {
+                    width: max-content;
+                    img {
+                        height: 15px;
+                        width: auto;
+                    }
+                }
+            }
+        }
+    }
+}

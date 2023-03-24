@@ -1,0 +1,16 @@
+.ObjectHeader {
+    padding: 20px 30px;
+    &-content {
+        width: 80%;
+    }
+    &-name {
+        font-size: xx-large;
+    }
+    &-description {
+        font-size: small;
+        color: $color_grey;
+        strong {
+            color: black;
+        }
+    }
+}
