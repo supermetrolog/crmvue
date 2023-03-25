@@ -1,5 +1,5 @@
 <template>
-  <div class="ymap" :key="render">
+  <div class="ymap">
     <yandex-map
       v-if="mounted"
       :settings="settings"
@@ -36,14 +36,10 @@ export default {
   },
   data() {
     return {
-      addTimeout: null,
-      removeTimeout: null,
       updateTimeour: null,
-      render: 0,
       mounted: false,
       addMarkers: [],
       removeMarkers: [],
-      runnedRemoveOrAdd: false,
       markers: [],
     };
   },
