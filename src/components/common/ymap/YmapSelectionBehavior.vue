@@ -172,9 +172,13 @@ export default {
       this.getBtn().state.set("selected", active);
     },
     zoomToPolygon(coordinates) {
-      this.map.setCenter(this.getCenterOfPolygon(coordinates), 11, {
-        duration: 100,
-      });
+      this.map.setCenter(
+        this.getCenterOfPolygon(coordinates),
+        this.options.polygonZoom,
+        {
+          duration: this.options.polygonZoomDuration,
+        }
+      );
     },
     getCenterOfPolygon(polygon) {
       const PI = 22 / 7;

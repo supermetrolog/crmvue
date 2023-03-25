@@ -141,6 +141,8 @@ export default {
           strokeWidth: 4,
           opacity: 0.7,
           accuracy: 3,
+          polygonZoom: 10,
+          polygonZoomDuration: 100,
         };
       },
     },

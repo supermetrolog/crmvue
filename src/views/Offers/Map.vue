@@ -82,6 +82,11 @@ export default {
         delete query.polygon;
         this.$router.replace({ query });
       }
+      const search = this.$refs.search;
+
+      if (search) {
+        search.form.polygon = null;
+      }
     },
     getContent(withLoader = true) {
       this.getAllOffersForYmap(withLoader);
