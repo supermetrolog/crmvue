@@ -15,7 +15,6 @@
           :polygonCoordinates="polygonCoordinates"
           @selectionDone="filterByPolygon"
           @removedDone="removedPolygonFromFilters"
-          @updated="updated"
         />
       </div>
     </div>
@@ -38,7 +37,6 @@ export default {
       allOffersForYmap: [],
       ymapOffersSearchHash: null,
       allOffersLoader: false,
-      actionPolygon: false,
     };
   },
   inject: ["isMobile"],
@@ -68,7 +66,6 @@ export default {
   methods: {
     ...mapActions(["SEARCH_OFFERS", "SEARCH_FAVORITES_OFFERS"]),
     async filterByPolygon(coordinates) {
-      this.actionPolygon = true;
       console.log("QUERY POLYGON", this.polygonCoordinates);
       const query = { ...this.$route.query };
       query.polygon = coordinates;
@@ -80,15 +77,11 @@ export default {
       }
     },
     removedPolygonFromFilters() {
-      this.actionPolygon = true;
       const query = { ...this.$route.query };
       if (query.polygon) {
         delete query.polygon;
         this.$router.replace({ query });
       }
-    },
-    updated() {
-      this.allOffersLoader = false;
     },
     getContent(withLoader = true) {
       this.getAllOffersForYmap(withLoader);
@@ -136,7 +129,6 @@ export default {
       console.log(hash, this.ymapOffersSearchHash);
       this.ymapOffersSearchHash = hash;
       const data = await api.offers.search(query);
-      console.error(data.data);
       console.error(Array.isArray(data.data));
       if (Array.isArray(data.data)) {
         console.warn(hash, this.ymapOffersSearchHash);
@@ -146,10 +138,8 @@ export default {
           return false;
         }
       }
-      if (this.actionPolygon) {
-        this.allOffersLoader = false;
-        this.actionPolygon = false;
-      }
+      this.allOffersLoader = false;
+      console.error(data);
       return data;
     },
     // Переопределено из миксина (судя по всему)

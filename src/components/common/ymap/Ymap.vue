@@ -38,11 +38,13 @@ export default {
     return {
       addTimeout: null,
       removeTimeout: null,
+      updateTimeour: null,
       render: 0,
       mounted: false,
       addMarkers: [],
       removeMarkers: [],
       runnedRemoveOrAdd: false,
+      markers: [],
     };
   },
   provide() {
@@ -202,56 +204,41 @@ export default {
     triggerUpdated() {
       this.$emit("updated");
     },
-    add() {
-      let removeRun = true;
-
-      if (!this.runnedRemoveOrAdd) {
-        removeRun = false;
-        this.runnedRemoveOrAdd = true;
-      }
-
-      const markers = [...this.addMarkers];
-      this.addMarkers = [];
-      this.addMarkersToObjectManager(markers);
-
-      if (!removeRun) {
-        this.runnedRemoveOrAdd = false;
-        this.triggerUpdated();
-      }
-    },
     addMarker(marker) {
-      if (this.addTimeout) {
-        clearTimeout(this.addTimeout);
+      if (this.updateTimeour) {
+        clearTimeout(this.updateTimeour);
       }
       this.addMarkers.push(marker);
-      this.addTimeout = setTimeout(this.add, 100);
-    },
-    remove() {
-      let addRun = true;
-
-      if (!this.runnedRemoveOrAdd) {
-        addRun = false;
-        this.runnedRemoveOrAdd = true;
-      }
-
-      const removeMarkers = [...this.removeMarkers];
-      this.removeMarkers = [];
-      const objectManager = this.$options.static.objectManager;
-      if (objectManager) {
-        objectManager.remove(removeMarkers);
-      }
-
-      if (!addRun) {
-        this.runnedRemoveOrAdd = false;
-        this.triggerUpdated();
-      }
+      this.updateTimeour = setTimeout(this.update, 100);
     },
     removeMarker(marker) {
-      if (this.removeTimeout) {
-        clearTimeout(this.removeTimeout);
+      if (this.updateTimeour) {
+        clearTimeout(this.updateTimeour);
       }
       this.removeMarkers.push(marker.id);
-      this.removeTimeout = setTimeout(this.remove, 100);
+      this.updateTimeour = setTimeout(this.update, 100);
+    },
+    removeObjectManager() {
+      const objectManager = this.$options.static.objectManager;
+      if (objectManager) {
+        this.getMap().geoObjects.remove(objectManager);
+        this.$options.static.objectManager = null;
+      }
+    },
+    update() {
+      this.removeObjectManager();
+
+      this.markers = this.markers.filter(
+        (marker) => !this.removeMarkers.includes(marker.id)
+      );
+
+      this.markers.push(...this.addMarkers);
+
+      this.addMarkersToObjectManager(this.markers);
+
+      this.removeMarkers = [];
+      this.addMarkers = [];
+      this.triggerUpdated();
     },
   },
 
