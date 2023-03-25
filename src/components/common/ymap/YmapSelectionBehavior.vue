@@ -10,6 +10,7 @@
 <script>
 export default {
   polygon: null,
+  btn: null,
   props: {
     // Ymap object
     map: {
@@ -20,13 +21,32 @@ export default {
       type: Object,
       required: true,
     },
+    coordinates: {
+      type: Array,
+      default: () => [],
+    },
   },
   mounted() {
     this.addSelectionControllButton();
+    this.addPolygonIfExistsCoordinates();
   },
   methods: {
+    addPolygonIfExistsCoordinates() {
+      this.removePolygon();
+      if (this.coordinates.length) {
+        this.createPolygon(this.coordinates);
+      }
+    },
     addSelectionControllButton() {
-      const btn = new window.ymaps.control.Button({
+      this.map.controls.add(this.getBtn(), {
+        float: "right",
+      });
+    },
+    getBtn() {
+      if (this.$options.btn) {
+        return this.$options.btn;
+      }
+      this.$options.btn = new window.ymaps.control.Button({
         data: {
           // Изображение иконки кнопки.
           content: `<svg
@@ -50,11 +70,9 @@ export default {
         },
       });
 
-      btn.events.add("click", this.onClickDrawButton);
+      this.$options.btn.events.add("click", this.onClickDrawButton);
 
-      this.map.controls.add(btn, {
-        float: "right",
-      });
+      return this.$options.btn;
     },
     drawLineOverMap(map) {
       const canvas = this.$refs.canvas;
@@ -122,7 +140,7 @@ export default {
         coordinates = this.normalizeCoords(coordinates, this.map.getBounds());
         coordinates = this.simplifyCoords(coordinates);
         this.removePolygon();
-        this.createPolygon(coordinates);
+        // this.createPolygon(coordinates);
         this.triggerCreatedPolygonEvenet(coordinates);
       });
     },
@@ -147,19 +165,56 @@ export default {
     triggerCreatedPolygonEvenet(coordinates) {
       this.$emit("selectionDone", coordinates);
     },
+    triggerRemovedPolygonEvenet() {
+      this.$emit("removedDone");
+    },
+    toggleBtn(active) {
+      this.getBtn().state.set("selected", active);
+    },
+    zoomToPolygon(coordinates) {
+      this.map.setCenter(this.getCenterOfPolygon(coordinates), 11, {
+        duration: 100,
+      });
+    },
+    getCenterOfPolygon(polygon) {
+      const PI = 22 / 7;
+      let X = 0;
+      let Y = 0;
+      let Z = 0;
+      polygon.forEach(function (coords) {
+        let lat1 = coords[0];
+        let lon1 = coords[1];
+        lat1 = (lat1 * PI) / 180;
+        lon1 = (lon1 * PI) / 180;
+        X += Math.cos(lat1) * Math.cos(lon1);
+        Y += Math.cos(lat1) * Math.sin(lon1);
+        Z += Math.sin(lat1);
+      });
+
+      let Lon = Math.atan2(Y, X);
+      let Hyp = Math.sqrt(X * X + Y * Y);
+      let Lat = Math.atan2(Z, Hyp);
+      Lat = (Lat * 180) / PI;
+      Lon = (Lon * 180) / PI;
+      return [Lat, Lon];
+    },
     createPolygon(coordinates) {
+      console.log("CREATE", coordinates);
       this.$options.polygon = new window.ymaps.Polygon(
         [coordinates],
         {},
         this.options
       );
       this.map.geoObjects.add(this.$options.polygon);
+      this.toggleBtn(true);
+      this.zoomToPolygon(coordinates);
     },
     removePolygon() {
       if (this.$options.polygon) {
         this.map.geoObjects.remove(this.$options.polygon);
         this.$options.polygon = null;
       }
+      this.toggleBtn(false);
     },
     polygonAlreadyExists() {
       return !!this.$options.polygon;
@@ -169,6 +224,16 @@ export default {
         this.runDraw();
       }
       this.removePolygon();
+      this.triggerRemovedPolygonEvenet();
+    },
+  },
+  watch: {
+    coordinates: {
+      handler() {
+        console.log("CHANGE POLYGON");
+        this.addPolygonIfExistsCoordinates();
+      },
+      deep: true,
     },
   },
 };

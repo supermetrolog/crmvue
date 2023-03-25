@@ -4,7 +4,10 @@
     :styles="$options.ymapOptions.styles"
     :controls="$options.ymapOptions.controls"
     :behaviors="['drag', 'scrollZoom', 'multiTouch', 'selection']"
+    :polygonCoordinates="polygonCoordinates"
     @selectionDone="$emit('selectionDone')"
+    @removedDone="$emit('removedDone')"
+    @updated="$emit('updated')"
     ref="map"
   >
     <YmapMarker
@@ -18,26 +21,6 @@
       :hintContent="offer.address"
       ref="markers"
     />
-    <!-- <YmapMarker
-      v-for="offer in list"
-      :key="offer.id"
-      :marker-id="offer.id"
-      :coords="[offer.latitude, offer.longitude]"
-      :use-html-in-layout="true"
-      :balloon="{
-        header: 'ID: ' + offer.complex_id,
-        body: offer.address,
-        footer: getFooter(offer),
-      }"
-      :icon="{
-        layout: 'default#imageWithContent',
-        imageOffset: [0, 0],
-        contentLayout: `<div style=' background: white; border-radius: 50%; width: 30px; heigth: 30px; color: #FFFFFF; font-weight: bold;'><i class='far fa-circle' style='color: ${getMarkerColor(
-          offer
-        )}; font-size: 30px;'></i></div>`,
-      }"
-      cluster-name="point"
-    /> -->
   </Ymap>
 </template>
 
@@ -54,6 +37,10 @@ export default {
     list: {
       type: Array,
       required: true,
+    },
+    polygonCoordinates: {
+      type: Array,
+      default: () => [],
     },
   },
   ymapOptions: {

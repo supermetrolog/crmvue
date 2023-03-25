@@ -16,7 +16,9 @@
         v-if="behaviors.includes('selection')"
         :map="$refs.map.$options.static.myMap"
         :options="polygonOptions"
+        :coordinates="polygonCoordinates"
         @selectionDone="selectionDone"
+        @removedDone="$emit('removedDone')"
       />
       <slot />
     </yandex-map>
@@ -40,6 +42,7 @@ export default {
       mounted: false,
       addMarkers: [],
       removeMarkers: [],
+      runnedRemoveOrAdd: false,
     };
   },
   provide() {
@@ -143,6 +146,10 @@ export default {
         };
       },
     },
+    polygonCoordinates: {
+      type: Array,
+      default: () => [],
+    },
     styles: {
       type: Object,
       default: () => {
@@ -192,10 +199,25 @@ export default {
 
       this.$options.static.objectManager = objectManager;
     },
+    triggerUpdated() {
+      this.$emit("updated");
+    },
     add() {
+      let removeRun = true;
+
+      if (!this.runnedRemoveOrAdd) {
+        removeRun = false;
+        this.runnedRemoveOrAdd = true;
+      }
+
       const markers = [...this.addMarkers];
       this.addMarkers = [];
       this.addMarkersToObjectManager(markers);
+
+      if (!removeRun) {
+        this.runnedRemoveOrAdd = false;
+        this.triggerUpdated();
+      }
     },
     addMarker(marker) {
       if (this.addTimeout) {
@@ -205,11 +227,23 @@ export default {
       this.addTimeout = setTimeout(this.add, 100);
     },
     remove() {
+      let addRun = true;
+
+      if (!this.runnedRemoveOrAdd) {
+        addRun = false;
+        this.runnedRemoveOrAdd = true;
+      }
+
       const removeMarkers = [...this.removeMarkers];
       this.removeMarkers = [];
       const objectManager = this.$options.static.objectManager;
       if (objectManager) {
         objectManager.remove(removeMarkers);
+      }
+
+      if (!addRun) {
+        this.runnedRemoveOrAdd = false;
+        this.triggerUpdated();
       }
     },
     removeMarker(marker) {

@@ -12,7 +12,10 @@
       <div class="col-12">
         <YmapOffersView
           :list="allOffersForYmap"
+          :polygonCoordinates="polygonCoordinates"
           @selectionDone="filterByPolygon"
+          @removedDone="removedPolygonFromFilters"
+          @updated="updated"
         />
       </div>
     </div>
@@ -35,6 +38,7 @@ export default {
       allOffersForYmap: [],
       ymapOffersSearchHash: null,
       allOffersLoader: false,
+      actionPolygon: false,
     };
   },
   inject: ["isMobile"],
@@ -49,19 +53,42 @@ export default {
       "THIS_USER",
       "FAVORITES_OFFERS",
     ]),
+    polygonCoordinates() {
+      if (
+        this.$route.query.polygon &&
+        Array.isArray(this.$route.query.polygon)
+      ) {
+        return this.$route.query.polygon.map((coords) => {
+          return coords.split(",");
+        });
+      }
+      return [];
+    },
   },
   methods: {
     ...mapActions(["SEARCH_OFFERS", "SEARCH_FAVORITES_OFFERS"]),
-    filterByPolygon(coordinates) {
-      console.log(coordinates);
+    async filterByPolygon(coordinates) {
+      this.actionPolygon = true;
+      console.log("QUERY POLYGON", this.polygonCoordinates);
       const query = { ...this.$route.query };
       query.polygon = coordinates;
-      this.$router.replace({ query });
+      await this.$router.replace({ query });
       const search = this.$refs.search;
 
       if (search) {
         search.form.polygon = coordinates;
       }
+    },
+    removedPolygonFromFilters() {
+      this.actionPolygon = true;
+      const query = { ...this.$route.query };
+      if (query.polygon) {
+        delete query.polygon;
+        this.$router.replace({ query });
+      }
+    },
+    updated() {
+      this.allOffersLoader = false;
     },
     getContent(withLoader = true) {
       this.getAllOffersForYmap(withLoader);
@@ -109,6 +136,7 @@ export default {
       console.log(hash, this.ymapOffersSearchHash);
       this.ymapOffersSearchHash = hash;
       const data = await api.offers.search(query);
+      console.error(data.data);
       console.error(Array.isArray(data.data));
       if (Array.isArray(data.data)) {
         console.warn(hash, this.ymapOffersSearchHash);
@@ -118,8 +146,10 @@ export default {
           return false;
         }
       }
-      this.allOffersLoader = false;
-      console.error(data);
+      if (this.actionPolygon) {
+        this.allOffersLoader = false;
+        this.actionPolygon = false;
+      }
       return data;
     },
     // Переопределено из миксина (судя по всему)
