@@ -1,5 +1,6 @@
 .ObjectHeader {
     padding: 20px 30px;
+    display: flex;
     &-content {
         width: 80%;
     }
@@ -11,6 +12,19 @@
         color: $color_grey;
         strong {
             color: black;
+        }
+    }
+    &-actions {
+        width: 20%;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        button {
+            cursor: pointer;
+            font-size: 15px;
+            border-radius: 100%;
+            width: 30px;
+            height: 30px;
         }
     }
 }

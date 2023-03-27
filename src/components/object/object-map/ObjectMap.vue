@@ -1,6 +1,6 @@
 <template>
     <div class="ObjectMap">
-        <div class="ObjectMap-description">
+        <div class="ObjectMap-description" :class="{ 'disabled': mapIsOpened }">
             <div class="ObjectMap-description-item" v-if="region">{{ region }}</div>
             <div class="ObjectMap-description-item" v-if="district">{{ district }}</div>
             <div class="ObjectMap-description-item" v-if="districtMoscow">{{ districtMoscow }}</div>
@@ -10,42 +10,148 @@
             <div class="ObjectMap-description-item" v-if="highwayMoscow">{{ highwayMoscow }}</div>
             <div class="ObjectMap-description-item" :title="metro" v-if="metro">
                 <div>
-                    <img src="../../../assets/image/metro.png" alt="123">
+                    <!-- <img :src="require(metroLogo)" v-if="metroLogo"> -->
+                    <img :src="metroLogoSrc" alt="" v-if="metroLogoSrc">
                 </div>
                 <span>{{ metro }}</span>
             </div>
-            <div class="ObjectMap-description-item" v-if="fromMkad">{{ fromMkad }}</div>
+            <div class="ObjectMap-description-item" v-if="fromMkad">{{ fromMkad }} км от МКАД</div>
         </div>
-        <Ymap :manualRoute="manualRoute" />
+        <Ymap :settings="map.settings" :styles="map.styles" :detailedControls="map.detailedControls"
+            :behaviors="map.behaviors" :coords="coords" :key="randKey" />
+        <div class="ObjectMap-button">
+            <i class="far fa-arrow-alt-circle-up" v-if="mapIsOpened" @click="openMap"></i>
+            <i class="far fa-arrow-alt-circle-down" v-else @click="openMap"></i>
+        </div>
     </div>
 </template>
 
 <script>
-import Ymap from '../../common/Ymap.vue'
+import Ymap from '../../common/ymap/Ymap.vue'
 import './styles.scss'
 
 export default {
     name: 'ObjectMap',
     components: { Ymap },
     props: {
-        region: { type: String, default: 'Московская область' },
-        district: { type: String, default: 'Северо-восток' },
-        districtMoscow: { type: String, default: 'Павловская-Слобода' },
-        direction: { type: String, default: 'Симферопольское' },
-        town: { type: String, default: 'Московская область' },
-        highway: { type: String, default: 'Московская область' },
-        highwayMoscow: { type: String, default: 'Московская область' },
-        metro: { type: String, default: 'Бабушкинская' },
+        region: { type: String, default: null },
+        district: { type: String, default: null },
+        districtMoscow: { type: String, default: null },
+        direction: { type: String, default: null },
+        town: { type: String, default: null },
+        highway: { type: String, default: null },
+        highwayMoscow: { type: String, default: null },
+        metro: { type: String, default: null },
         fromMkad: {
-            type: [String, Number], default: '120 км от МКАД'
-        }
+            type: [String, Number], default: null
+        },
+        coords: {
+            type: Array,
+            default: () => [55.75554289958026, 37.619346417968764], // moscow center
+        },
 
     },
     data() {
         return {
+            map: {
+                settings: {
+                    height: '100px'
+                },
+                styles: {
+                    width: "100%",
+                    height: "100px",
+                },
+                detailedControls: {
+                    zoomControl: {
+                        position: {
+                            right: "10px",
+                            top: "140px",
+                        },
+                        visible: false
+                    },
+                    geolocationControl: {
+                        position: {
+                            top: "100px",
+                            left: "10px"
+                        },
+                        visible: false
+                    },
+                    trafficControl: {
+                        position: {
+                            top: "100px",
+                            right: "140px"
+                        },
+                        visible: false
+                    },
+                    typeSelector: {
+                        position: {
+                            top: "100px",
+                            right: "45px"
+                        },
+                        visible: false
+                    },
+                    searchControl: {
+                        position: {
+                            top: "100px",
+                            left: '45px'
+                        },
+                        visible: false
+                    },
+                    fullscreenControl: {
+                        position: {
+                            top: '100px',
+                            right: "10px"
+                        },
+                        visible: false
+                    },
+                    rulerControl: {
+                        visible: false
+                    }
+                },
+                behaviors: []
+
+            },
+            mapIsOpened: false,
+            randKey: 0
         }
     },
-    computed: {},
-    methods: {}
+    computed: {
+        metroLogoSrc() {
+            // return this.$apiUrlHelper.getImageUrl("1.jpg");
+            if (this.town.toLowerCase().includes("москва")) {
+                return this.$apiUrlHelper.getImageUrl("1.jpg");
+                // return 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fru.m.wikipedia.org%2Fwiki%2F%25D0%25A4%25D0%25B0%25D0%25B9%25D0%25BB%3AMoscow_Metro.svg&psig=AOvVaw0Tvaq3OUXhLHE4faTys-II&ust=1680015148743000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCMDiiqOu_P0CFQAAAAAdAAAAABAE';
+            } if (this.town.toLowerCase().includes("санкт")) {
+                return this.$apiUrlHelper.getImageUrl("2.jpg");
+                // return 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fru.wikipedia.org%2Fwiki%2F%25D0%25A4%25D0%25B0%25D0%25B9%25D0%25BB%3ASpb_metro_logo.svg&psig=AOvVaw10IJSBFryZIdO8werX1KOs&ust=1680015167061000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCKjrwqyu_P0CFQAAAAAdAAAAABAE';
+            } else {
+                return null;
+            }
+            // return this.$apiUrlHelper.getImageUrl("metro.png");
+        }
+    },
+    methods: {
+        openMap() {
+            if (this.mapIsOpened) {
+                this.mapIsOpened = false;
+                this.map.styles.height = "100px";
+                this.randKey = Math.round(Math.random() * 1000);
+                for (const [key, value] of Object.entries(this.map.detailedControls)) {
+                    this.map.detailedControls[key] = { ...value, visible: false }
+                }
+                this.map.behaviors = [];
+            } else {
+                this.mapIsOpened = true;
+                this.map.styles.height = "500px";
+                this.randKey = Math.round(Math.random() * 1000);
+                for (const [key, value] of Object.entries(this.map.detailedControls)) {
+                    this.map.detailedControls[key] = { ...value, visible: true }
+                }
+                this.map.behaviors = ["drag", "multiTouch", "scrollZoom"]
+            }
+        },
+    }
 }
 </script>
+
+<style scoped></style>

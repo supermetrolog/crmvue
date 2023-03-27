@@ -1,23 +1,10 @@
 <template>
   <div class="ymap" :key="render">
-    <yandex-map
-      v-if="mounted"
-      :settings="settings"
-      :options="options"
-      :coords="coords"
-      :zoom="zoom"
-      :controls="controls"
-      :detailed-controls="detailedControls"
-      :behaviors="behaviors.filter((elem) => elem != 'selection')"
-      :style="styles"
-      ref="map"
-    >
-      <YmapSelectionBehavior
-        v-if="behaviors.includes('selection')"
-        :map="$refs.map.$options.static.myMap"
-        :options="polygonOptions"
-        @selectionDone="selectionDone"
-      />
+    <yandex-map v-if="mounted" :settings="settings" :options="options" :coords="coords" :zoom="zoom" :controls="controls"
+      :detailed-controls="detailedControls" :behaviors="behaviors.filter((elem) => elem != 'selection')" :style="styles"
+      ref="map">
+      <YmapSelectionBehavior v-if="behaviors.includes('selection')" :map="$refs.map.$options.static.myMap"
+        :options="polygonOptions" @selectionDone="selectionDone" />
       <slot />
     </yandex-map>
   </div>
@@ -227,5 +214,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>
