@@ -9,8 +9,8 @@
             <div class="ObjectMap-description-item" v-if="highway">{{ highway }}</div>
             <div class="ObjectMap-description-item" v-if="highwayMoscow">{{ highwayMoscow }}</div>
             <div class="ObjectMap-description-item" :title="metro" v-if="metro">
-                <div>
-                    <img :src="require(`../../../assets/image/${metroLogo}.png`)" alt="">
+                <div v-if="metroLogo">
+                    <img :src="require(`../../../assets/image/${metroLogo}.png`)" alt="метро">
                 </div>
                 <span>{{ metro }}</span>
             </div>
@@ -112,7 +112,6 @@ export default {
             },
             mapIsOpened: false,
             randKey: 0,
-            bebra: 'metro_spb'
         }
     },
     computed: {

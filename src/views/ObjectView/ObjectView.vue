@@ -6,17 +6,19 @@
             :direction="'Симферопольское'" :town="'Санкт-Петербург'" :highway="'Симферопольское'"
             :highway-moscow="'Киевское'" :metro="'Адмиралтейская'" :from-mkad="228" />
         <ObjectAbout />
+        <ObjectBuilding />
     </div>
 </template>
 
 <script>
+import ObjectBuilding from '../../components/object/object-building/ObjectBuilding.vue'
 import ObjectAbout from '../../components/object/object-about/ObjectAbout.vue'
 import ObjectMap from '../../components/object/object-map/ObjectMap.vue'
 import ObjectHeader from '../../components/object/object-header/ObjectHeader.vue'
 import './styles.scss'
 export default {
     name: 'ObjectView',
-    components: { ObjectHeader, ObjectMap, ObjectAbout },
+    components: { ObjectHeader, ObjectMap, ObjectAbout, ObjectBuilding },
     data() {
         return {}
     },

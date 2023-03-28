@@ -1,0 +1,19 @@
+.ObjectBuilding {
+    &-header {
+        @include black-header;
+        font-size: 20px;
+        display: flex;
+        span {
+            width: 50%;
+        }
+        margin-bottom: 20px;
+    }
+    &-content {
+        padding: 1em;
+        background-color: $color_grey_alt;
+        .carousel {
+            display: flex;
+            overflow-x: auto;
+        }
+    }
+}
