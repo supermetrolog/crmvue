@@ -10,8 +10,7 @@
             <div class="ObjectMap-description-item" v-if="highwayMoscow">{{ highwayMoscow }}</div>
             <div class="ObjectMap-description-item" :title="metro" v-if="metro">
                 <div>
-                    <!-- <img :src="require(metroLogo)" v-if="metroLogo"> -->
-                    <img :src="metroLogoSrc" alt="" v-if="metroLogoSrc">
+                    <img :src="require(`../../../assets/image/${metroLogo}.png`)" alt="">
                 </div>
                 <span>{{ metro }}</span>
             </div>
@@ -112,22 +111,19 @@ export default {
 
             },
             mapIsOpened: false,
-            randKey: 0
+            randKey: 0,
+            bebra: 'metro_spb'
         }
     },
     computed: {
-        metroLogoSrc() {
-            // return this.$apiUrlHelper.getImageUrl("1.jpg");
+        metroLogo() {
             if (this.town.toLowerCase().includes("москва")) {
-                return this.$apiUrlHelper.getImageUrl("1.jpg");
-                // return 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fru.m.wikipedia.org%2Fwiki%2F%25D0%25A4%25D0%25B0%25D0%25B9%25D0%25BB%3AMoscow_Metro.svg&psig=AOvVaw0Tvaq3OUXhLHE4faTys-II&ust=1680015148743000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCMDiiqOu_P0CFQAAAAAdAAAAABAE';
+                return "metro";
             } if (this.town.toLowerCase().includes("санкт")) {
-                return this.$apiUrlHelper.getImageUrl("2.jpg");
-                // return 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fru.wikipedia.org%2Fwiki%2F%25D0%25A4%25D0%25B0%25D0%25B9%25D0%25BB%3ASpb_metro_logo.svg&psig=AOvVaw10IJSBFryZIdO8werX1KOs&ust=1680015167061000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCKjrwqyu_P0CFQAAAAAdAAAAABAE';
+                return "metro_spb";
             } else {
                 return null;
             }
-            // return this.$apiUrlHelper.getImageUrl("metro.png");
         }
     },
     methods: {
