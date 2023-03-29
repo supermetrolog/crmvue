@@ -12,19 +12,18 @@
             <div class="ObjectBuilding-header-labels"></div>
         </div>
         <div class="ObjectBuilding-content">
-            <div class="carousel">
-                <img v-for="idx in 6" :key="idx" :src="require(`@/assets/image/${idx}.jpg`)" alt="" style="height: 300px">
-            </div>
+            <Carousel />
         </div>
     </div>
 </template>
 
 <script>
+import Carousel from '../../common/carousel/Carousel.vue'
 import './styles.scss'
 
 export default {
     name: 'ObjectBuilding',
-    components: {},
+    components: { Carousel },
     props: {
         buildings: {
             type: Array,
