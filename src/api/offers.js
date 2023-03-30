@@ -17,7 +17,21 @@ export default {
             .catch((e) => ErrorHandle.setError(e));
         return data;
     },
-
+    async searchMap(query) {
+        console.warn("SEARCH OFFERS");
+        query = new URLSearchParams(query).toString();
+        let url = "oldDb/objects/offers-map?" + query;
+        let data = false;
+        await axios
+            .get(url)
+            .then((Response) => {
+                data = {};
+                data.data = SuccessHandler.getData(Response);
+                data.pagination = SuccessHandler.getPaginationData(Response);
+            })
+            .catch((e) => ErrorHandle.setError(e));
+        return data;
+    },
     async searchFavoriteOffers(query) {
         query = new URLSearchParams(query).toString();
         let url = "favorite-offers?" + query;

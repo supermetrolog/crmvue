@@ -133,7 +133,7 @@ export default {
 
       console.log(hash, this.ymapOffersSearchHash);
       this.ymapOffersSearchHash = hash;
-      const data = await api.offers.search(query);
+      const data = await api.offers.searchMap(query);
       console.error(Array.isArray(data.data));
       if (Array.isArray(data.data)) {
         console.warn(hash, this.ymapOffersSearchHash);
