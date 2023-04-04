@@ -1,0 +1,43 @@
+.ObjectHoldingsParameters {
+    $color_left: #f8f8f8;
+    $color_left-aside: #e1e8ec;
+    padding: 20px;
+    background-color: $color_left;
+    height: 80%;
+    border: 1px solid $color_light_grey;
+    &-floors {
+        height: 20%;
+        padding: 20px;
+        background-color: $color_left-aside;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        border: 1px solid $color_light_grey;
+    }
+    &-floor {
+        border: 2px solid $color_success;
+        padding: 5px 15px;
+        background-color: $color_light;
+        position: relative;
+        &.danger {
+            border-color: $color_danger;
+        }
+        & > i {
+            position: absolute;
+            top: 0;
+            right: 0;
+            transform: translate(-10%, -50%);
+            border-radius: 50%;
+            background-color: white;
+        }
+    }
+    &-types {
+        .object-type-box {
+            padding: 2px 4px 2px 4px;
+            border-radius: 2px;
+            border: 1px solid black;
+            margin-right: 3px;
+            background-color: #ffffff;
+        }
+    }
+}

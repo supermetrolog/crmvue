@@ -15,9 +15,10 @@
 </template>
 
 <script>
-import './styles.scss'
+import './styles.scss';
+
 export default {
-    name: 'ObjectHeader',
+    name: "ObjectHeader",
     components: {},
     props: {
         name: {

@@ -6,7 +6,7 @@
         </div>
         <transition mode="out-in" enter-active-class="animate__animated animate__zoomIn for__modal absolute"
             leave-active-class="animate__animated animate__zoomOut for__modal absolute">
-            <Modal v-show="lightboxActive" :title="'Имя объекта'" @close="clickCloseModal" class="autosize">
+            <Modal v-if="lightboxActive" :title="'Имя объекта'" @close="clickCloseModal" class="autosize">
                 <img class="currImg" :src="imgList[currImgIdx].src" />
                 <div>
                     <transition-group class="CROP" :name="transition_name" tag="div">
