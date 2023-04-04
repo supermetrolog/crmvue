@@ -1,8 +1,8 @@
 <template>
     <div class="ObjectHoldingsParameters">
-        <div class="ObjectHoldingsParameters-address">
-            <p>12652 м<sup>2</sup> (по этажам: 12662 м<sup>2</sup>)</p>
-            <span>Московская область, Фрязино, Свидетельская 34</span>
+        <div class="ObjectHoldingsParameters-main">
+            <p class="ObjectHoldingsParameters-main-area">12652 м<sup>2</sup> (по этажам: 12662 м<sup>2</sup>)</p>
+            <span class="ObjectHoldingsParameters-main-address">Московская область, Фрязино, Свидетельская 34</span>
         </div>
         <div class="ObjectHoldingsParameters-types" v-if="holdingTypes">
             <div v-if="holdingTypes.length > 0">
