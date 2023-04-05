@@ -20,7 +20,6 @@ export default {
             default: null
         },
         value: {
-            type: Number || String,
             default: null
         },
         unit: {

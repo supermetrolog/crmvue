@@ -1,8 +1,8 @@
 <template>
-    <div class="ObjectAbout">
+    <div class="ObjectAbout" id="ObjectAbout">
         <Tabs :options="{ useUrlFragment: false }">
             <Tab name="О комплексе">
-                <div class="ObjectAbout-info" id="bebra">
+                <div class="ObjectAbout-info">
                     <template v-if="aboutList.length > 0">
                         <PropertyList :title="'Площади'">
                             <PropertyListItem v-for="(prop, idx) in aboutList[0]" :key="prop.name + idx" :name="prop.name"
@@ -65,8 +65,31 @@ export default {
         return {
         }
     },
-    computed: {},
-    methods: {
+    computed: {
+        listLength() {
+            return this.aboutList.length;
+        }
     },
+    methods: {},
+    mounted() {
+        if (this.isMobile) {
+            return;
+        } else {
+            requestAnimationFrame(() => {
+                const listElement = document.getElementById("ObjectAbout");
+                const listHeight = listElement.clientHeight;
+                document.getElementById("ObjectAbout").style.height = `${listHeight}px`;
+                console.log('List height:', listHeight)
+            })
+        }
+    },
+    watch: {
+        listLength: {
+            handler() {
+                console.log(123)
+            },
+            deep: true,
+        },
+    }
 }
 </script>

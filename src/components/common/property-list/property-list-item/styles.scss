@@ -7,6 +7,9 @@
         width: 55%;
         margin-right: 5%;
         color: $color_grey;
+        white-space: nowrap;
+        overflow-x: clip;
+        text-overflow: ellipsis;
     }
     &-value {
         width: 40%;

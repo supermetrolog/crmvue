@@ -721,4 +721,5 @@ export const UnitTypesList = new Map([
   [4, "кВт"],
   [5, "м<sup>3</sup>/ч"],
   [6, "бар"],
+  [7, "этаж(а)"],
 ]);

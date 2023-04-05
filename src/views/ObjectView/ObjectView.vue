@@ -8,10 +8,12 @@
         <ObjectAbout :aboutList="aboutList" />
         <ObjectHoldings :buildings="buildings" :sections="sections" :objectId="objectId" :objectOwners="objectOwners"
             :holdingTypes="holdingTypes" :holdingTypesGeneral="holdingTypesGeneral" :floors="objectFloors" />
+        <ObjectHoldingsTabs :holdingsProperties="holdingsProperties" />
     </div>
 </template>
 
 <script>
+import ObjectHoldingsTabs from '../../components/object/object-holdings/object-holdings-tabs/ObjectHoldingsTabs.vue'
 import ObjectHoldings from '../../components/object/object-holdings/ObjectHoldings.vue'
 import ObjectAbout from '../../components/object/object-about/ObjectAbout.vue'
 import ObjectMap from '../../components/object/object-map/ObjectMap.vue'
@@ -19,7 +21,7 @@ import ObjectHeader from '../../components/object/object-header/ObjectHeader.vue
 import './styles.scss'
 export default {
     name: 'ObjectView',
-    components: { ObjectHeader, ObjectMap, ObjectAbout, ObjectHoldings },
+    components: { ObjectHeader, ObjectMap, ObjectAbout, ObjectHoldings, ObjectHoldingsTabs },
     data() {
         return {
             aboutList: [
@@ -77,6 +79,29 @@ export default {
             buildings: [1, 2, 3],
             sections: [1, 2, 3, 4],
             objectId: 1488,
+            holdingsProperties: [
+                [
+                    { name: 'Общая площадь', value: 2974, unitType: 1 },
+                    { name: 'S - пола', value: 449750, unitType: 1 },
+                    { name: 'S - мезонина', value: 449750, unitType: 1 },
+                ],
+                [
+                    { name: 'S - офисов', value: 2974, unitType: 1 },
+                    { name: 'S - техническая', value: 449750, unitType: 1 },
+                    { name: 'Этажность склада', value: 1, unitType: 7 },
+                    { name: 'Класс объекта', value: "B" },
+                ],
+                [
+                    { name: 'Внешняя отделка', value: 'Сендвич-панели' },
+                    { name: 'Год постройки', value: null },
+                    { name: 'Год последнего ремонта', value: null },
+                ],
+                [
+                    { name: 'Кадастровый номер', value: 1 },
+                    { name: 'Правовой статус строения', value: "Бетонная залупа" },
+                    { name: 'Ограничения', value: "Запрещено срать" },
+                ],
+            ]
         }
     },
     computed: {},
