@@ -2,7 +2,7 @@
     <div class="ObjectAbout" id="ObjectAbout">
         <Tabs :options="{ useUrlFragment: false }">
             <Tab name="О комплексе">
-                <div class="ObjectAbout-info">
+                <div class="ObjectAbout-content">
                     <template v-if="aboutList.length > 0">
                         <PropertyList :title="'Площади'">
                             <PropertyListItem v-for="(prop, idx) in aboutList[0]" :key="prop.name + idx" :name="prop.name"
@@ -31,15 +31,15 @@
                 </div>
             </Tab>
             <Tab name="План Территории">
-                <div class="ObjectAbout-info">123</div>
+                <div class="ObjectAbout-content">123</div>
             </Tab>
             <Tab name="Презентации">
-                <div class="ObjectAbout-info">
+                <div class="ObjectAbout-content">
                     123
                 </div>
             </Tab>
             <Tab name="Документы">
-                <div class="ObjectAbout-info">
+                <div class="ObjectAbout-content">
                     123
                 </div>
             </Tab>
@@ -78,7 +78,7 @@ export default {
             requestAnimationFrame(() => {
                 const listElement = document.getElementById("ObjectAbout");
                 const listHeight = listElement.clientHeight;
-                document.getElementById("ObjectAbout").style.height = `${listHeight}px`;
+                // document.getElementById("ObjectAbout").style.height = `${listHeight}px`;
                 console.log('List height:', listHeight)
             })
         }
