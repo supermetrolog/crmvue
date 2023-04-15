@@ -147,7 +147,7 @@
             v-model="form.fakeRegion"
             label="Регионы"
             class="col-md-3 col-6"
-            mode="multiple"
+            mode="single"
             :options="
               async () => {
                 await this.FETCH_REGION_LIST();

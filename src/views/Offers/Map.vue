@@ -1,5 +1,5 @@
 <template>
-  <div class="all">
+  <div class="all" v-if="mounted">
     <div class="row no-gutters search-main-container">
       <OfferSearchModalForm
         v-if="mounted && searchFormModalVisible"
@@ -36,31 +36,127 @@ import { TableContentMixin } from "@/components/common/mixins.js";
 import YmapOffersView from "@/components/offers/map/YmapOffersView.vue";
 import List from "@/components/common/list-horizontal/List.vue";
 import api from "@/api/api";
-import { waitHash } from "../../utils";
+import { waitHash } from "@/utils";
+import {
+  DealTypeList,
+  // ObjectClassList,
+  // GateTypeList,
+  // YesNoFUCK,
+  // YesNo,
+  // FloorTypesFUCK,
+  // ObjectTypeList,
+  // RegionList,
+  // DirectionList,
+  // DistrictList,
+  // ActivePassiveFUCK,
+  // OutsideMkad,
+} from "@/const/Const.js";
+
 export default {
-  mixins: [TableContentMixin],
   name: "OffersMap",
-  data() {
-    return {
-      allOffersForYmap: [],
-      ymapOffersSearchHash: null,
-      allOffersLoader: false,
-      searchFormModalVisible: false,
-    };
-  },
-  inject: ["isMobile"],
+  mixins: [TableContentMixin],
   components: {
     List,
     OfferSearchModalForm,
     OfferSearchExternalForm,
-    YmapOffersView,
+    YmapOffersView
   },
+  data() {
+    return {
+      mounted: false,
+      allOffersForYmap: [],
+      ymapOffersSearchHash: null,
+      allOffersLoader: false,
+      searchFormModalVisible: false,
+      filtersValueGetter: {
+          rangeMinElectricity: (value) => value + ' кВт',
+          rangeMaxDistanceFromMKAD: (value) => value + ' км',
+          deal_type: (value) => DealTypeList.get('param').find(el => el.value == value).label.toUpperCase(),
+          agent_id: (value) => this.CONSULTANT_LIST.length ? this.CONSULTANT_LIST.find(elem => elem.value == value).label : null,
+          rangeMaxArea: (value) => value + ' м',
+          rangeMinArea: (value) => value + ' м',
+          rangeMaxPricePerFloor: (value) => value + ' Н',
+          rangeMinPricePerFloor: (value) => value + ' р',
+          rangeMinCeilingHeight: (value) => value + ' м',
+          rangeMaxCeilingHeight: (value) => value + ' м',
+          // class: [],
+          // gates: [],
+          // heated: null,
+          // water: null,
+          // gas: null,
+          // steam: null,
+          // sewage_central: null,
+          // racks: null,
+          // railway: null,
+          // has_cranes: null,
+          // floor_types: [],
+          // purposes: [],
+          // object_type: "Тип объекта",
+          region: (value) => {
+            console.log(value);
+            if (!value) return null;
+            return this.REGION_LIST.find(reg => reg.value == value).label;
+          } ,
+          // fakeRegion: null,
+          // direction: [],
+          // district_moscow: [],
+          // status: null,
+          // firstFloorOnly: null,
+          // ad_realtor: null,
+          // ad_cian: null,
+          // ad_yandex: null,
+          // ad_free: null,
+          // favorites: null,
+          // polygon: "Область на карте",
+      },
+    };
+  },
+  filtersAliases: {
+    polygon: "Область на карте",
+    rangeMaxArea: 'До:',
+    rangeMinArea: 'От:',
+    rangeMaxDistanceFromMKAD: 'От МКАД:',
+    rangeMinElectricity: 'От:',
+    rangeMaxPricePerFloor: 'До:',
+    rangeMinPricePerFloor: 'От:',
+    rangeMinCeilingHeight: 'От:',
+    rangeMaxCeilingHeight: 'До:',
+    // class: [],
+    // gates: [],
+    // heated: null,
+    // water: null,
+    // gas: null,
+    // steam: null,
+    // sewage_central: null,
+    // racks: null,
+    // railway: null,
+    // has_cranes: null,
+    // floor_types: [],
+    // purposes: [],
+    // object_type: "Тип объекта",
+    // region: 'Регион',
+    // fakeRegion: null,
+    // direction: [],
+    // district_moscow: [],
+    // status: null,
+    // firstFloorOnly: null,
+    // ad_realtor: null,
+    // ad_cian: null,
+    // ad_yandex: null,
+    // ad_free: null,
+    // favorites: null,
+    // polygon: "Область на карте",
+  },
+  inject: ["isMobile"],
+  
   computed: {
     ...mapGetters([
       "OFFERS",
       "OFFERS_PAGINATION",
       "THIS_USER",
       "FAVORITES_OFFERS",
+      "CONSULTANT_LIST",
+      "REGION_LIST"
     ]),
     polygonCoordinates() {
       if (
@@ -78,78 +174,62 @@ export default {
       for (const key in this.$route.query) {
         if (Object.hasOwnProperty.call(this.$route.query, key)) {
           const value = this.$route.query[key];
+          if (key === 'region'){
+            console.log(this.$route.query['fakeRegion']);
+            list.push(this.getFilterListOption('region', this.$route.query['fakeRegion']));
+            continue;
+          }
           if (
             value !== null &&
             value !== "" &&
-            key != "fakeRegion" &&
-            key != "region_neardy" &&
-            key != "all" &&
-            key != "page" &&
-            key != "outside_mkad"
+            key !== "fakeRegion" &&
+            key !== "region_neardy" &&
+            key !== "all" &&
+            key !== "page" &&
+            key !== "outside_mkad" &&
+            !(Array.isArray(value) && !value.length)
           ) {
-            if (Array.isArray(value)) {
-              if (value.length) {
-                list.push(this.getFilterListOption(key, value));
-              }
-            } else {
-              list.push(this.getFilterListOption(key, value));
-            }
+            list.push(this.getFilterListOption(key, value));
           }
         }
       }
       return list;
     },
   },
-  filtersAliases: {
-    rangeMinElectricity: "Электричество от",
-    rangeMaxDistanceFromMKAD: "Удаленность от МКАД",
-    deal_type: null,
-    agent_id: null,
-    rangeMaxArea: "Площадь до",
-    rangeMinArea: "Площадь от",
-    rangeMaxPricePerFloor: null,
-    rangeMinPricePerFloor: null,
-    rangeMinCeilingHeight: null,
-    rangeMaxCeilingHeight: null,
-    class: [],
-    gates: [],
-    heated: null,
-    water: null,
-    gas: null,
-    steam: null,
-    sewage_central: null,
-    racks: null,
-    railway: null,
-    has_cranes: null,
-    floor_types: [],
-    purposes: [],
-    object_type: "Тип объекта",
-    region: [],
-    fakeRegion: null,
-    direction: [],
-    district_moscow: [],
-    status: null,
-    firstFloorOnly: null,
-    ad_realtor: null,
-    ad_cian: null,
-    ad_yandex: null,
-    ad_free: null,
-    favorites: null,
-    polygon: "Область на карте",
+  
+  filtersRangeKeyList: {
+  
   },
   methods: {
-    ...mapActions(["SEARCH_OFFERS", "SEARCH_FAVORITES_OFFERS"]),
+    ...mapActions([
+      "SEARCH_OFFERS",
+      "SEARCH_FAVORITES_OFFERS",
+      "FETCH_CONSULTANT_LIST",
+      "FETCH_REGION_LIST"
+    ]),
     removeFilter(filter) {
+      const query = {...this.$route.query};
+      if (filter == 'fakeRegion'){
+        delete query['region'];
+      }
+      if (filter == 'region'){
+        delete query['fakeRegion'];
+      }
+      delete query[filter];
+      
+      this.$router.replace({query});
       console.log(filter);
     },
     getFilterListOption(key, value) {
-      const stops = ["polygon"];
-      const option = {
-        label: this.$options.filtersAliases[key],
-        value: key,
-      };
-      if (!stops.includes(key)) {
-        option.label += " - " + value;
+      const option = {};
+      option.value = key;
+      const label = this.$options.filtersAliases[key] ?? null;
+      const valueFn = this.filtersValueGetter[key] ? this.filtersValueGetter[key](value) : null;
+
+      if(!label && !valueFn){
+        option.label = 'undefined';
+      }else{
+        option.label = [label, valueFn].filter(el => el !== null).join(' ');
       }
       return option;
     },
@@ -207,7 +287,7 @@ export default {
       }
       const hash = waitHash(query);
       console.log(hash, this.ymapOffersSearchHash);
-      if (hash == this.ymapOffersSearchHash) {
+      if (hash === this.ymapOffersSearchHash) {
         return;
       }
       if (routeQuery.favorites) {
@@ -228,7 +308,7 @@ export default {
       console.error(Array.isArray(data.data));
       if (Array.isArray(data.data)) {
         console.warn(hash, this.ymapOffersSearchHash);
-        if (hash == this.ymapOffersSearchHash) {
+        if (hash === this.ymapOffersSearchHash) {
           this.allOffersForYmap = data.data;
         } else {
           return false;
@@ -247,6 +327,11 @@ export default {
       }
     },
   },
+  async mounted() {
+    await this.FETCH_CONSULTANT_LIST();
+    await this.FETCH_REGION_LIST();
+    this.mounted = true;
+  }
 };
 </script>
 
