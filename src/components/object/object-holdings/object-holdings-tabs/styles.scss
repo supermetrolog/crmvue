@@ -5,6 +5,15 @@
         grid-template-columns: 1fr 1fr 1fr 1fr;
         gap: 10px;
     }
+
+    .tabs-component-tabs {
+        position: sticky;
+        top: 220px;
+        z-index: 4;
+
+        background-color: $color_overflow;
+    }
+
     .tabs-component-panels {
         padding: 10px;
     }
@@ -15,22 +24,22 @@
         color: $color_success;
     }
     @media screen and (max-width: $laptop_size) {
-        .ObjectAbout {
-            &-info {
+        .ObjectHoldingsTabs {
+            &-content {
                 grid-template-columns: 1fr 1fr 1fr;
             }
         }
     }
     @media screen and (max-width: $tablet_size) {
-        .ObjectAbout {
-            &-info {
+        .ObjectHoldingsTabs {
+            &-content {
                 grid-template-columns: 1fr 1fr;
             }
         }
     }
     @media screen and (max-width: $phone_size) {
-        .ObjectAbout {
-            &-info {
+        .ObjectHoldingsTabs {
+            &-content {
                 grid-template-columns: 1fr;
             }
         }

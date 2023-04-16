@@ -1,121 +1,305 @@
 <template>
-    <div class="ObjectView">
-        <ObjectHeader :name="'СК Северное шереметьево'" :id="4566" :creation-date="'01-02-2014'" :updateDate="'01.01.2043'"
-            :consultant="'Матвеев Павел'" :editAccess="false" />
-        <ObjectMap :region="'Московская область'" :district="'Северо-восток'" :district-moscow="'Павловская-Слобода'"
-            :direction="'Симферопольское'" :town="'Санкт-Петербург'" :highway="'Симферопольское'"
-            :highway-moscow="'Киевское'" :metro="'Адмиралтейская'" :from-mkad="228" />
-        <ObjectAbout :aboutList="aboutList" />
-        <ObjectHoldings :buildings="buildings" :sections="sections" :objectId="objectId" :objectOwners="objectOwners"
-            :holdingTypes="holdingTypes" :holdingTypesGeneral="holdingTypesGeneral" :floors="objectFloors" />
-        <ObjectHoldingsTabs :holdingsProperties="holdingsProperties" />
-    </div>
+  <div class="ObjectView" @scroll="onScroll">
+    <ObjectHeader
+      :name="'СК Северное шереметьево'"
+      :id="4566"
+      :creation-date="'01-02-2014'"
+      :updateDate="'01.01.2043'"
+      :consultant="'Матвеев Павел'"
+      :editAccess="false"
+    />
+    <ObjectMap
+      :region="'Московская область'"
+      :district="'Северо-восток'"
+      :district-moscow="'Павловская-Слобода'"
+      :direction="'Симферопольское'"
+      :town="'Санкт-Петербург'"
+      :highway="'Симферопольское'"
+      :highway-moscow="'Киевское'"
+      :metro="'Адмиралтейская'"
+      :from-mkad="228"
+    />
+    <ObjectAbout :aboutList="aboutList" />
+    <ObjectHoldings :holdings="holdings" />
+  </div>
 </template>
 
 <script>
-import ObjectHoldingsTabs from '../../components/object/object-holdings/object-holdings-tabs/ObjectHoldingsTabs.vue'
-import ObjectHoldings from '../../components/object/object-holdings/ObjectHoldings.vue'
-import ObjectAbout from '../../components/object/object-about/ObjectAbout.vue'
-import ObjectMap from '../../components/object/object-map/ObjectMap.vue'
-import ObjectHeader from '../../components/object/object-header/ObjectHeader.vue'
-import './styles.scss'
+import ObjectHoldings from "../../components/object/object-holdings/ObjectHoldings.vue";
+import ObjectAbout from "../../components/object/object-about/ObjectAbout.vue";
+import ObjectMap from "../../components/object/object-map/ObjectMap.vue";
+import ObjectHeader from "../../components/object/object-header/ObjectHeader.vue";
+import "./styles.scss";
 export default {
-    name: 'ObjectView',
-    components: { ObjectHeader, ObjectMap, ObjectAbout, ObjectHoldings, ObjectHoldingsTabs },
-    data() {
-        return {
-            aboutList: [
-                [
-                    { name: 'S - участка общая', value: 449750, unitType: 1 },
-                    { name: 'S - строений в комплексе', value: 449750, unitType: 2 },
-                    { name: 'Управляющая компания', value: 449750 },
-                ],
-                [
-                    { name: 'S - участка общая', value: 449750, unitType: 1 },
-                    { name: 'S - строений в комплексе', value: 449750, unitType: 2 },
-                    { name: 'S - участка общая', value: 449750, unitType: 3 },
-                    { name: 'S - участка общая', value: 449750, unitType: 3 },
-                    { name: 'S - участка общая', value: 449750, unitType: 3 },
-                    { name: 'S - участка общая', value: 449750, unitType: 3 },
-                    { name: 'S - участка общая', value: 449750, unitType: 3 },
-                    { name: 'S - участка общая', value: 449750, unitType: 3 },
-                    { name: 'S - участка общая', value: 449750, unitType: 3 },
-                    { name: 'S - участка общая', value: 449750, unitType: 3 },
-                    { name: 'S - участка общая', value: 449750, unitType: 3 },
-                ],
-                [
-                    { name: 'S - участка общая', value: 449750, unitType: 1 },
-                    { name: 'S - строений в комплексе', value: 449750, unitType: 2 },
-                    { name: 'S - участка общая', value: 449750, unitType: 3 },
-                    { name: 'S - участка общая', value: 449750, unitType: 3 },
-                    { name: 'S - участка общая', value: 449750, unitType: 3 },
-                    { name: 'S - участка общая', value: 449750, unitType: 3 },
-                ],
-                [
-                    { name: 'S - участка общая', value: 449750, unitType: 1 },
-                    { name: 'S - строений в комплексе', value: 449750, unitType: 2 },
-                    { name: 'S - участка общая', value: 449750, unitType: 3 },
-                ],
-                [
-                    { name: 'S - участка общая', value: 449750, unitType: 1 },
-                    { name: 'S - строений в комплексе', value: 449750, unitType: 2 },
-                    { name: 'S - участка общая', value: 449750, unitType: 3 },
-                    { name: 'S - участка общая', value: 449750, unitType: 1 },
-                    { name: 'S - строений в комплексе', value: 449750, unitType: 2 },
-                    { name: 'S - участка общая', value: 449750, unitType: 3 },
-                ],
+  name: "ObjectView",
+  components: { ObjectHeader, ObjectMap, ObjectAbout, ObjectHoldings },
+  data() {
+    return {
+      aboutList: [
+        [
+          { name: "S - участка общая", value: 449750, unitType: 1 },
+          { name: "S - строений в комплексе", value: 449750, unitType: 2 },
+          { name: "Управляющая компания", value: 449750 },
+        ],
+        [
+          { name: "S - участка общая", value: 449750, unitType: 1 },
+          { name: "S - строений в комплексе", value: 449750, unitType: 2 },
+          { name: "S - участка общая", value: 449750, unitType: 3 },
+          { name: "S - участка общая", value: 449750, unitType: 3 },
+          { name: "S - участка общая", value: 449750, unitType: 3 },
+          { name: "S - участка общая", value: 449750, unitType: 3 },
+          { name: "S - участка общая", value: 449750, unitType: 3 },
+          { name: "S - участка общая", value: 449750, unitType: 3 },
+          { name: "S - участка общая", value: 449750, unitType: 3 },
+          { name: "S - участка общая", value: 449750, unitType: 3 },
+          { name: "S - участка общая", value: 449750, unitType: 3 },
+        ],
+        [
+          { name: "S - участка общая", value: 449750, unitType: 1 },
+          { name: "S - строений в комплексе", value: 449750, unitType: 2 },
+          { name: "S - участка общая", value: 449750, unitType: 3 },
+          { name: "S - участка общая", value: 449750, unitType: 3 },
+          { name: "S - участка общая", value: 449750, unitType: 3 },
+          { name: "S - участка общая", value: 449750, unitType: 3 },
+        ],
+        [
+          { name: "S - участка общая", value: 449750, unitType: 1 },
+          { name: "S - строений в комплексе", value: 449750, unitType: 2 },
+          { name: "S - участка общая", value: 449750, unitType: 3 },
+        ],
+        [
+          { name: "S - участка общая", value: 449750, unitType: 1 },
+          { name: "S - строений в комплексе", value: 449750, unitType: 2 },
+          { name: "S - участка общая", value: 449750, unitType: 3 },
+          { name: "S - участка общая", value: 449750, unitType: 1 },
+          { name: "S - строений в комплексе", value: 449750, unitType: 2 },
+          { name: "S - участка общая", value: 449750, unitType: 3 },
+        ],
+      ],
+      holdings: [
+        {
+          id: 1488,
+          type: 1,
+          owners: [
+            {
+              name: "ОАО Матье Бал",
+              rating: 3,
+              contacts: [1],
+              requests: [1, 2, 3],
+              objects: [1, 2, 3, 4, 5],
+            },
+            {
+              name: "ЗАО Тсослю Бойво Pros.",
+              rating: 1,
+              contacts: [1, 2, 3],
+              requests: [1, 2, 3],
+              objects: [1],
+            },
+            {
+              name: "ЗАО Тсослю Бойво Pros.",
+              rating: 5,
+              contacts: [1, 2, 3, 4, 5],
+              requests: [1],
+              objects: [1, 2, 3, 4, 5],
+            },
+            {
+              name: "ЗАО Тсослю Бойво Pros.",
+              rating: 3,
+              contacts: [1],
+              requests: [1, 2, 3, 4, 5],
+              objects: [1, 2, 3],
+            },
+          ],
+          types: [
+            { "id": 644760, "request_id": 9520, "object_type": 4 },
+            { "id": 644761, "request_id": 9520, "object_type": 0 },
+            { "id": 644762, "request_id": 9520, "object_type": 6 },
+            { "id": 644763, "request_id": 9520, "object_type": 7 },
+            { "id": 644764, "request_id": 9520, "object_type": 21 },
+            { "id": 644765, "request_id": 9520, "object_type": 23 },
+            { "id": 644766, "request_id": 9520, "object_type": 25 },
+            { "id": 644767, "request_id": 9520, "object_type": 27 },
+          ],
+          typesGeneral: [
+            { "id": 21074, "request_id": 9520, "type": 0 },
+            { "id": 21075, "request_id": 9520, "type": 1 },
+            { "id": 21076, "request_id": 9520, "type": 2 },
+          ],
+          floors: [
+            { number: -1, danger: true },
+            { number: 1, danger: false },
+            { number: 2, danger: false },
+          ],
+          properties: [
+            [
+              { name: "Общая площадь", value: 2974, unitType: 1 },
+              { name: "S - пола", value: 449750, unitType: 1 },
+              { name: "S - мезонина", value: 449750, unitType: 1 },
             ],
-            objectOwners: [{ name: 'ОАО Матье Бал', rating: 3, contacts: [1], requests: [1, 2, 3], objects: [1, 2, 3, 4, 5], },
-            { name: 'ЗАО Тсослю Бойво Pros.', rating: 1, contacts: [1, 2, 3], requests: [1, 2, 3], objects: [1], },
-            { name: 'ЗАО Тсослю Бойво Pros.', rating: 5, contacts: [1, 2, 3, 4, 5], requests: [1], objects: [1, 2, 3, 4, 5], },
-            { name: 'ЗАО Тсослю Бойво Pros.', rating: 3, contacts: [1], requests: [1, 2, 3, 4, 5], objects: [1, 2, 3], },],
-            holdingTypes: [{ "id": 644760, "request_id": 9520, "object_type": 4 }, { "id": 644761, "request_id": 9520, "object_type": 0 }, { "id": 644762, "request_id": 9520, "object_type": 6 }, { "id": 644763, "request_id": 9520, "object_type": 7 }, { "id": 644764, "request_id": 9520, "object_type": 21 }, { "id": 644765, "request_id": 9520, "object_type": 23 }, { "id": 644766, "request_id": 9520, "object_type": 25 }, { "id": 644767, "request_id": 9520, "object_type": 27 }],
-            holdingTypesGeneral: [{ "id": 21074, "request_id": 9520, "type": 0 }, { "id": 21075, "request_id": 9520, "type": 1 }, { "id": 21076, "request_id": 9520, "type": 2 }],
-            objectFloors: [
-                { number: -1, danger: true },
-                { number: 1, danger: false },
-                { number: 2, danger: false },
+            [
+              { name: "S - офисов", value: 2974, unitType: 1 },
+              { name: "S - техническая", value: 449750, unitType: 1 },
+              { name: "Этажность склада", value: 1, unitType: 7 },
+              { name: "Класс объекта", value: "B" },
             ],
-            buildings: [1, 2, 3],
-            sections: [1, 2, 3, 4],
-            objectId: 1488,
-            holdingsProperties: [
-                [
-                    { name: 'Общая площадь', value: 2974, unitType: 1 },
-                    { name: 'S - пола', value: 449750, unitType: 1 },
-                    { name: 'S - мезонина', value: 449750, unitType: 1 },
-                ],
-                [
-                    { name: 'S - офисов', value: 2974, unitType: 1 },
-                    { name: 'S - техническая', value: 449750, unitType: 1 },
-                    { name: 'Этажность склада', value: 1, unitType: 7 },
-                    { name: 'Класс объекта', value: "B" },
-                ],
-                [
-                    { name: 'Внешняя отделка', value: 'Сендвич-панели' },
-                    { name: 'Год постройки', value: null },
-                    { name: 'Год последнего ремонта', value: null },
-                ],
-                [
-                    { name: 'Кадастровый номер', value: 1 },
-                    { name: 'Правовой статус строения', value: "Бетонная залупа" },
-                    { name: 'Ограничения', value: "Запрещено срать" },
-                ],
+            [
+              { name: "Внешняя отделка", value: "Сендвич-панели" },
+              { name: "Год постройки", value: null },
+              { name: "Год последнего ремонта", value: null },
             ],
-            landProperties: [
-                [
-                    { name: 'Площадь участка', value: 2974, unitType: 1 },
-                    { name: 'Габариты участка', value: 123 },
-                    { name: 'Кадастровый номер участка', value: 123 },
-                    { name: 'Правовой статус участка', value: "Собственность" },
-                    { name: 'Категория земли', value: "Земли промышленности" },
-                    { name: 'Рельеф участка', value: "ровный" },
-                    { name: 'Ограничения', value: "есть", },
-                ],
-            ]
-        }
-    },
-    computed: {},
-    methods: {}
-}
+            [
+              { name: "Кадастровый номер", value: 1 },
+              { name: "Правовой статус строения", value: "Бетонная залупа" },
+              { name: "Ограничения", value: "Запрещено срать" },
+            ],
+          ],
+        },
+        {
+          id: 1337,
+          type: 2,
+          owners: [
+            {
+              name: "ОАО Матье Бал",
+              rating: 3,
+              contacts: [1],
+              requests: [1, 2, 3],
+              objects: [1, 2, 3, 4, 5],
+            },
+            {
+              name: "ЗАО Тсослю Бойво Pros.",
+              rating: 1,
+              contacts: [1, 2, 3],
+              requests: [1, 2, 3],
+              objects: [1],
+            },
+            {
+              name: "ЗАО Тсослю Бойво Pros.",
+              rating: 5,
+              contacts: [1, 2, 3, 4, 5],
+              requests: [1],
+              objects: [1, 2, 3, 4, 5],
+            },
+            {
+              name: "ЗАО Тсослю Бойво Pros.",
+              rating: 3,
+              contacts: [1],
+              requests: [1, 2, 3, 4, 5],
+              objects: [1, 2, 3],
+            },
+          ],
+          types: [
+            { "id": 644760, "request_id": 9520, "object_type": 4 },
+            { "id": 644761, "request_id": 9520, "object_type": 0 },
+            { "id": 644762, "request_id": 9520, "object_type": 6 },
+            { "id": 644763, "request_id": 9520, "object_type": 7 },
+            { "id": 644764, "request_id": 9520, "object_type": 21 },
+            { "id": 644765, "request_id": 9520, "object_type": 23 },
+            { "id": 644766, "request_id": 9520, "object_type": 25 },
+            { "id": 644767, "request_id": 9520, "object_type": 27 },
+          ],
+          typesGeneral: [
+            { "id": 21074, "request_id": 9520, "type": 0 },
+            { "id": 21075, "request_id": 9520, "type": 1 },
+            { "id": 21076, "request_id": 9520, "type": 2 },
+          ],
+          floors: [
+            { number: -1, danger: true },
+            { number: 1, danger: false },
+            { number: 2, danger: false },
+          ],
+          properties: [
+            [
+              { name: "Площадь участка", value: 2974, unitType: 1 },
+              { name: "Габариты участка", value: 123 },
+              { name: "Кадастровый номер участка", value: 123 },
+              { name: "Правовой статус участка", value: "Собственность" },
+              { name: "Категория земли", value: "Земли промышленности" },
+              { name: "Рельеф участка", value: "ровный" },
+              { name: "Ограничения", value: "есть" },
+            ],
+          ],
+        },
+        {
+          id: 228,
+          type: 1,
+          owners: [
+            {
+              name: "ОАО Матье Бал",
+              rating: 3,
+              contacts: [1],
+              requests: [1, 2, 3],
+              objects: [1, 2, 3, 4, 5],
+            },
+            {
+              name: "ЗАО Тсослю Бойво Pros.",
+              rating: 1,
+              contacts: [1, 2, 3],
+              requests: [1, 2, 3],
+              objects: [1],
+            },
+            {
+              name: "ЗАО Тсослю Бойво Pros.",
+              rating: 5,
+              contacts: [1, 2, 3, 4, 5],
+              requests: [1],
+              objects: [1, 2, 3, 4, 5],
+            },
+            {
+              name: "ЗАО Тсослю Бойво Pros.",
+              rating: 3,
+              contacts: [1],
+              requests: [1, 2, 3, 4, 5],
+              objects: [1, 2, 3],
+            },
+          ],
+          types: [
+            { "id": 644760, "request_id": 9520, "object_type": 4 },
+            { "id": 644761, "request_id": 9520, "object_type": 0 },
+            { "id": 644762, "request_id": 9520, "object_type": 6 },
+            { "id": 644763, "request_id": 9520, "object_type": 7 },
+            { "id": 644764, "request_id": 9520, "object_type": 21 },
+            { "id": 644765, "request_id": 9520, "object_type": 23 },
+            { "id": 644766, "request_id": 9520, "object_type": 25 },
+            { "id": 644767, "request_id": 9520, "object_type": 27 },
+          ],
+          typesGeneral: [
+            { "id": 21074, "request_id": 9520, "type": 0 },
+            { "id": 21075, "request_id": 9520, "type": 1 },
+            { "id": 21076, "request_id": 9520, "type": 2 },
+          ],
+          floors: [
+            { number: -1, danger: true },
+            { number: 1, danger: false },
+            { number: 2, danger: false },
+          ],
+          properties: [
+            [
+              { name: "Общая площадь", value: 2974, unitType: 1 },
+              { name: "S - пола", value: 449750, unitType: 1 },
+              { name: "S - мезонина", value: 449750, unitType: 1 },
+            ],
+            [
+              { name: "S - офисов", value: 2974, unitType: 1 },
+              { name: "S - техническая", value: 449750, unitType: 1 },
+              { name: "Этажность склада", value: 1, unitType: 7 },
+              { name: "Класс объекта", value: "B" },
+            ],
+            [
+              { name: "Внешняя отделка", value: "Сендвич-панели" },
+              { name: "Год постройки", value: null },
+              { name: "Год последнего ремонта", value: null },
+            ],
+            [
+              { name: "Кадастровый номер", value: 1 },
+              { name: "Правовой статус строения", value: "Бетонная залупа" },
+              { name: "Ограничения", value: "Запрещено срать" },
+            ],
+          ],
+        },
+      ],
+    };
+  },
+  computed: {},
+  methods: {},
+};
 </script>

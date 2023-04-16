@@ -1,6 +1,15 @@
 .ObjectHeader {
-    padding: 20px 30px;
     display: flex;
+
+    position: sticky;
+    top: 50px;
+    z-index: 6;
+
+    height: 120px;
+    padding: 20px 30px;
+    margin: 0 -5px;
+
+    background: #f7faff;
     &-content {
         width: 80%;
     }

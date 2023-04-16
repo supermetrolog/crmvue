@@ -16,21 +16,21 @@
     }
     @media screen and (max-width: $laptop_size) {
         .ObjectAbout {
-            &-info {
+            &-content {
                 grid-template-columns: 1fr 1fr 1fr;
             }
         }
     }
     @media screen and (max-width: $tablet_size) {
         .ObjectAbout {
-            &-info {
+            &-content {
                 grid-template-columns: 1fr 1fr;
             }
         }
     }
     @media screen and (max-width: $phone_size) {
         .ObjectAbout {
-            &-info {
+            &-content {
                 grid-template-columns: 1fr;
             }
         }

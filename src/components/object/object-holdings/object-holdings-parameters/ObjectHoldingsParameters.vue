@@ -17,8 +17,8 @@
                 }}</strong>
             </div> -->
             <div v-if="
-            holdingTypes.length == 0 && holdingTypesGeneral.length == 0
-                ">
+                holdingTypes.length == 0 && holdingTypesGeneral.length == 0
+            ">
                 <p>нет данных</p>
             </div>
         </div>

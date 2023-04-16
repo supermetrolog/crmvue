@@ -1,44 +1,29 @@
 .ObjectHoldings {
-    $gap: 1em;
+    $gap: 2em;
     &-header {
-        @include black-header;
-        font-size: 17px;
+        font-size: 20px;
+        font-weight: bold;
+
         display: flex;
-        span {
-            width: 50%;
-        }
+        flex-direction: column;
+        align-items: center;
+
         margin-bottom: 20px;
-    }
-    &-body {
-        padding: $gap;
-        background-color: $color_grey_alt;
-        position: relative;
-    }
-    &-carousel {
-        margin-bottom: 20px;
-        &-label {
-            position: absolute;
-            z-index: 3;
-            top: $gap;
-            padding: 10px;
-            width: 100px;
-            background-color: #982e06;
+        padding: 10px;
+
+        &-name {
             display: flex;
             justify-content: center;
-            font-weight: bold;
-            color: white;
+        }
+
+        &-line {
+            width: 80%;
+            border-bottom: 2px solid black;
         }
     }
-    &-info {
+    &-body {
         display: flex;
-        &-left {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            width: 70%;
-        }
-        &-right {
-            width: 30%;
-        }
+        flex-direction: column;
+        gap: $gap;
     }
 }
