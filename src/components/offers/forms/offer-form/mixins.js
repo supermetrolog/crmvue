@@ -129,6 +129,9 @@ export default {
     },
     methods: {
         ...mapActions(["FETCH_CONSULTANT_LIST", "FETCH_REGION_LIST"]),
+        setDefaultFields(){
+            this.form = {...this.$options.defaultFormProperties};
+        },
         async setQueryFields() {
             this.form = { ...this.form, ...this.$route.query };
             if (this.form.purposes && !Array.isArray(this.form.purposes)) {

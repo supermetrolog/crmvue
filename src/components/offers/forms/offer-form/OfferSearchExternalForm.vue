@@ -14,6 +14,9 @@
           buttonClasses="btn filters"
           @click.prevent="$emit('openFilters')"
         >
+          <span class="badge badge-danger">
+            {{filterCount}}
+          </span>
           <i class="fas fa-filter"></i>
         </Submit>
       </FormGroup>
@@ -24,10 +27,19 @@
 <script>
 import Submit from "@/components/common/form/Submit.vue";
 import FormMixixn from "./mixins";
+import { waitHash } from "@/utils";
 export default {
   components: { Submit },
   name: "OfferSearchExternalForm",
   mixins: [FormMixixn],
+  watch: {
+    "$route.query": function (newQuery, oldQuery) {
+      if (waitHash(newQuery) !== waitHash(oldQuery)){
+        this.setDefaultFields();
+        this.setQueryFields();
+      }
+    }
+  }
 };
 </script>
 
@@ -40,5 +52,19 @@ button.filters {
   height: 34px;
   color: $color_dark;
   border: 1px solid $color_grey;
+  position: relative;
+  span.badge {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    top: -13px;
+    right: -13px;
+    border-radius: 50%;
+    font-size: 15px;
+    font-weight: bold;
+  }
 }
 </style>

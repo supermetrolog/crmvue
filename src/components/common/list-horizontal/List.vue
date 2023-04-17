@@ -28,8 +28,7 @@ export default {
 <style lang="scss" scoped>
 .list {
   display: flex;
-  .item {
-    margin-right: 10px;
-  }
+  flex-wrap: wrap;
+  gap: 10px;
 }
 </style>

@@ -20,21 +20,25 @@ export default {
 
 <style lang="scss" scoped>
 .item {
-  padding: 5px;
-  padding-right: 25px;
+  padding: 5px 25px 5px 5px;
   border: 1px solid $color_grey;
-  background-color: $color_light_grey;
+  background-color: $color_light;
+  border-radius: 4px;
   color: $color_dark;
   display: flex;
   position: relative;
+  text-transform: capitalize;
+  p{
+    font-weight: 400;
+  }
   i {
-    color: $color_danger;
+    color: lightcoral;
     position: absolute;
     right: 5px;
     top: 8px;
     cursor: pointer;
     &:hover {
-      transform: scale(1.1);
+      color: $color_danger  ;
     }
   }
 }

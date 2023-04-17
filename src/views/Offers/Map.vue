@@ -8,10 +8,11 @@
       />
       <div class="container mx-0 px-0 py-2">
         <OfferSearchExternalForm
+          class="ext-search-form"
           v-if="mounted"
           @openFilters="toggleSearchFormModalVisible"
         />
-        <List :data="selectedFilterList" @remove="removeFilter" />
+        <List class="list" :data="selectedFilterList" @remove="removeFilter" />
       </div>
     </div>
     <div class="row no-gutters map-container">
@@ -71,8 +72,8 @@ export default {
         rangeMaxDistanceFromMKAD: (value) => value + ' км',
         deal_type: (value) => DealTypeList.get('param').find(el => el.value == value).label.toUpperCase(),
         agent_id: (value) => this.CONSULTANT_LIST.length ? this.CONSULTANT_LIST.find(elem => elem.value == value).label : null,
-        rangeMinArea: (value) => value + ' м',
-        rangeMaxArea: (value) => value + ' м',
+        rangeMinArea: (value) => value + ' м<sup>2</sup>',
+        rangeMaxArea: (value) => value + ' м<sup>2</sup>',
         rangeMinPricePerFloor: (value) => value + ' р',
         rangeMaxPricePerFloor: (value) => value + ' р',
         rangeMinCeilingHeight: (value) => value + ' м',
@@ -272,7 +273,6 @@ export default {
       delete query[filter];
       
       this.$router.replace({query});
-      console.log(filter);
     },
     getFilterListOption(key, value) {
       const option = {};
@@ -389,5 +389,5 @@ export default {
 };
 </script>
 
-<style>
+<style scoped lang="scss">
 </style>
