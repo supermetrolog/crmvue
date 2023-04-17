@@ -1,7 +1,6 @@
 <template>
   <div class="item">
-    <p>
-      {{ item.label }}
+    <p v-html="item.label">
     </p>
     <i class="fas fa-times" @click="$emit('remove', item.value)"></i>
   </div>

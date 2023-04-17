@@ -39,17 +39,15 @@ import api from "@/api/api";
 import { waitHash } from "@/utils";
 import {
   DealTypeList,
-  // ObjectClassList,
-  // GateTypeList,
-  // YesNoFUCK,
-  // YesNo,
-  // FloorTypesFUCK,
-  // ObjectTypeList,
-  // RegionList,
-  // DirectionList,
-  // DistrictList,
-  // ActivePassiveFUCK,
-  // OutsideMkad,
+  ObjectClassList,
+  GateTypeList,
+  YesNoFUCK,
+  YesNo,
+  FloorTypesFUCK,
+  ObjectTypeList,
+  DirectionList,
+  DistrictList,
+  ActivePassiveFUCK,
 } from "@/const/Const.js";
 
 export default {
@@ -69,46 +67,102 @@ export default {
       allOffersLoader: false,
       searchFormModalVisible: false,
       filtersValueGetter: {
-          rangeMinElectricity: (value) => value + ' кВт',
-          rangeMaxDistanceFromMKAD: (value) => value + ' км',
-          deal_type: (value) => DealTypeList.get('param').find(el => el.value == value).label.toUpperCase(),
-          agent_id: (value) => this.CONSULTANT_LIST.length ? this.CONSULTANT_LIST.find(elem => elem.value == value).label : null,
-          rangeMaxArea: (value) => value + ' м',
-          rangeMinArea: (value) => value + ' м',
-          rangeMaxPricePerFloor: (value) => value + ' Н',
-          rangeMinPricePerFloor: (value) => value + ' р',
-          rangeMinCeilingHeight: (value) => value + ' м',
-          rangeMaxCeilingHeight: (value) => value + ' м',
-          // class: [],
-          // gates: [],
-          // heated: null,
-          // water: null,
-          // gas: null,
-          // steam: null,
-          // sewage_central: null,
-          // racks: null,
-          // railway: null,
-          // has_cranes: null,
-          // floor_types: [],
-          // purposes: [],
-          // object_type: "Тип объекта",
-          region: (value) => {
-            console.log(value);
-            if (!value) return null;
-            return this.REGION_LIST.find(reg => reg.value == value).label;
-          } ,
-          // fakeRegion: null,
-          // direction: [],
-          // district_moscow: [],
-          // status: null,
-          // firstFloorOnly: null,
-          // ad_realtor: null,
-          // ad_cian: null,
-          // ad_yandex: null,
-          // ad_free: null,
-          // favorites: null,
-          // polygon: "Область на карте",
+        rangeMinElectricity: (value) => value + ' кВт',
+        rangeMaxDistanceFromMKAD: (value) => value + ' км',
+        deal_type: (value) => DealTypeList.get('param').find(el => el.value == value).label.toUpperCase(),
+        agent_id: (value) => this.CONSULTANT_LIST.length ? this.CONSULTANT_LIST.find(elem => elem.value == value).label : null,
+        rangeMinArea: (value) => value + ' м',
+        rangeMaxArea: (value) => value + ' м',
+        rangeMinPricePerFloor: (value) => value + ' р',
+        rangeMaxPricePerFloor: (value) => value + ' р',
+        rangeMinCeilingHeight: (value) => value + ' м',
+        rangeMaxCeilingHeight: (value) => value + ' м',
+        class: (value) => {
+          if (!value) return null;
+          if (!Array.isArray(value)) value = [value]
+          return value.map(elem => ObjectClassList.get('param')[elem][1]).join(', ');
+        },
+        gates: (value) => {
+          if (!value) return null;
+          if (!Array.isArray(value)) value = [value]
+          return value.map(elem => GateTypeList.get('param')[elem][1]).join(', ');
+        },
+        heated: (value) => {
+          if (!value) return null;
+          return YesNoFUCK.get('param').find(param => param[0] == value)[1];
+        },
+        // water: null,
+        // gas: null,
+        // steam: null,
+        // sewage_central: null,
+        // racks: null,
+        // railway: null,
+        // has_cranes: null,
+        floor_types: (value) => {
+          if (!value) return null;
+          if (!Array.isArray(value)) value = [value]
+          return value.map(elem => FloorTypesFUCK.get('param').find(param => param[0] == elem)[1]).join(', ');
+        },
+        purposes: (value) => {
+          if (!value) return null;
+          if (!Array.isArray(value)) value = [value];
+          const options = [
+            ...ObjectTypeList.get('warehouse'),
+            ...ObjectTypeList.get('production'),
+            ...ObjectTypeList.get('plot'),
+          ];
+          
+          return value.map(elem => {
+            const param = options.find(el => el[0] == elem)[1];
+            return `<i title="${param.name}"" class="' ${param.icon} '"></i>`;
+          }).join(', ');
+        },
+        object_type: (value) => {
+          if (!value) return null;
+          if (!Array.isArray(value)) value = [value]
+          const options = {1: "Склад", 2: "Производство", 3: "Участок"};
+          return value.map(elem => options[elem]).join(', ');
+        },
+        region: (value) => {
+          if (!value || !this.REGION_LIST) return null;
+          return this.REGION_LIST.find(reg => reg.value == value).label;
+        },
+        // fakeRegion: null,
+        district_moscow: (value) => {
+          if (!value) return null;
+          if (!Array.isArray(value)) value = [value]
+          return value.map(elem => DistrictList.get('param')[elem][1]).join(', ');
+        },
+        direction: (value) => {
+          if (!value) return null;
+          if (!Array.isArray(value)) value = [value]
+          return value.map(elem => DirectionList.get('param')[elem][1]).join(', ');
+        },
+        status: (value) => {
+          if (!value) return null;
+          return ActivePassiveFUCK.get('param').find(param => param[0] == value)[1];
+        },
+        // firstFloorOnly: null,
+        ad_realtor: (value) => {
+          if (!value) return null;
+          return YesNo.get('param').find(param => param[0] == value)[1];
+        },
+        ad_cian: (value) => {
+          if (!value) return null;
+          return YesNo.get('param').find(param => param[0] == value)[1];
+        },
+        ad_yandex: (value) => {
+          if (!value) return null;
+          return YesNo.get('param').find(param => param[0] == value)[1];
+        },
+        ad_free: (value) => {
+          if (!value) return null;
+          return YesNo.get('param').find(param => param[0] == value)[1];
+        },
+        // favorites: null,
+        // polygon: "Область на карте",
       },
+      
     };
   },
   filtersAliases: {
@@ -119,18 +173,18 @@ export default {
     rangeMinElectricity: 'От:',
     rangeMaxPricePerFloor: 'До:',
     rangeMinPricePerFloor: 'От:',
-    rangeMinCeilingHeight: 'От:',
-    rangeMaxCeilingHeight: 'До:',
-    // class: [],
+    rangeMinCeilingHeight: 'Потолки От:',
+    rangeMaxCeilingHeight: 'Потолки До:',
+    class: 'Класс:',
     // gates: [],
-    // heated: null,
-    // water: null,
-    // gas: null,
-    // steam: null,
-    // sewage_central: null,
-    // racks: null,
-    // railway: null,
-    // has_cranes: null,
+    heated: 'Отопление:',
+    water: 'Вода',
+    gas: "Газ",
+    steam: "Пар",
+    sewage_central: "КНС",
+    racks: "Стеллажи",
+    railway: "Ж/Д ветка",
+    has_cranes: "Краны",
     // floor_types: [],
     // purposes: [],
     // object_type: "Тип объекта",
@@ -139,11 +193,11 @@ export default {
     // direction: [],
     // district_moscow: [],
     // status: null,
-    // firstFloorOnly: null,
-    // ad_realtor: null,
-    // ad_cian: null,
-    // ad_yandex: null,
-    // ad_free: null,
+    firstFloorOnly: "Только 1 этаж",
+    ad_realtor: 'Realtor.ru:',
+    ad_cian: 'Циан:',
+    ad_yandex: 'Яндекс:',
+    ad_free: 'Бесплатно:',
     // favorites: null,
     // polygon: "Область на карте",
   },
