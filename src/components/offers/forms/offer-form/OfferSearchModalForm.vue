@@ -1,62 +1,55 @@
 <template>
   <div class="company-request-search-form">
-    <Form class="autosize" @submit="onSubmit">
-      <FormGroup class="mb-2">
-        <Input
-          v-model="form.all"
-          label="Поиск"
-          placeholder="ID, адрес, собственник, телефон, ФИО"
-          class="col-12 main-input"
-          @keydown.enter="onSubmit"
-        />
-      </FormGroup>
-      <FormGroup>
-        <div class="col-6">
-          <a
-            href="#"
-            @click.prevent="extraVisible = !extraVisible"
-            class="text-primary mr-2"
-          >
-            фильтры
-            <span class="badge badge-danger" v-if="filterCount">
-              {{ filterCount }}
-            </span>
-            <i class="fas fa-angle-down" v-if="!extraVisible"></i>
-            <i class="fas fa-angle-up" v-else></i>
-          </a>
-          <a
-            href="#"
-            class="text-primary ml-4 favorites"
-            @click.prevent="clickFavorites"
-            :class="{ selected: form.favorites }"
-          >
-            избранные
-            <span class="badge badge-info" v-if="favoritesCount">
-              {{ favoritesCount }}
-            </span>
-          </a>
-          <a
-            href="#"
-            @click.prevent="resetForm"
-            class="text-warning ml-md-5 ml-4"
-            v-if="filterCount"
-          >
-            сбросить фильтры
-          </a>
-        </div>
-        <div class="col-6 text-right">
-          <a
-            v-for="btn in additionalButtons"
-            :key="btn.label"
-            href="#"
-            @click.prevent="$emit(btn.event)"
-            :class="btn.classes"
-          >
-            {{ btn.label }}
-          </a>
-        </div>
-      </FormGroup>
-      <div v-show="extraVisible">
+    <Modal class="autosize" @close="$emit('close')" title="Фильтры">
+      <template #header>
+        <span class="badge badge-danger" v-if="filterCount">
+          {{ filterCount }}
+        </span>
+      </template>
+      <Form class="autosize" @submit="onSubmit">
+        <FormGroup class="mb-2">
+          <Input
+            v-model="form.all"
+            label="Поиск"
+            placeholder="ID, адрес, собственник, телефон, ФИО"
+            class="col-12 main-input"
+            @keydown.enter="onSubmit"
+          />
+        </FormGroup>
+        <FormGroup>
+          <div class="col-6">
+            <a
+              href="#"
+              class="text-primary favorites"
+              @click.prevent="clickFavorites"
+              :class="{ selected: form.favorites }"
+            >
+              избранные
+              <span class="badge badge-info" v-if="favoritesCount">
+                {{ favoritesCount }}
+              </span>
+            </a>
+            <a
+              href="#"
+              @click.prevent="resetForm"
+              class="text-warning ml-md-5 ml-4"
+              v-if="filterCount"
+            >
+              сбросить фильтры
+            </a>
+          </div>
+          <div class="col-6 text-right">
+            <a
+              v-for="btn in additionalButtons"
+              :key="btn.label"
+              href="#"
+              @click.prevent="$emit(btn.event)"
+              :class="btn.classes"
+            >
+              {{ btn.label }}
+            </a>
+          </div>
+        </FormGroup>
         <FormGroup class="mb-2">
           <MultiSelect
             v-model="form.agent_id"
@@ -154,7 +147,7 @@
             v-model="form.fakeRegion"
             label="Регионы"
             class="col-md-3 col-6"
-            mode="multiple"
+            mode="single"
             :options="
               async () => {
                 await this.FETCH_REGION_LIST();
@@ -326,18 +319,30 @@
             :options="yesNoOptions"
           />
         </FormGroup>
-      </div>
-    </Form>
+      </Form>
+    </Modal>
   </div>
 </template>
 
 <script>
 import FormMixixn from "./mixins";
 export default {
-  name: "OfferSearchForm",
+  name: "OfferSearchModalForm",
   mixins: [FormMixixn],
 };
 </script>
 
-<style>
+<style lang="scss">
+.modal-header {
+  div {
+    position: relative;
+    .badge {
+      position: absolute;
+      top: -10px;
+      font-size: 14px;
+      border-radius: 50%;
+      padding: 0;
+    }
+  }
+}
 </style>

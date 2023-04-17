@@ -52,7 +52,7 @@ export default {
       version: "2.1",
     },
     styles: {
-      height: "100vh",
+      height: "75vh",
       width: "100%",
     },
     controls: [
