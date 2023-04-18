@@ -6,7 +6,7 @@
         ref="search"
         @close="toggleSearchFormModalVisible"
       />
-      <div class="container mx-0 px-0 py-2">
+      <div class="container mx-0 px-0 py-2" ref="searchContainer">
         <OfferSearchExternalForm
           class="ext-search-form"
           v-if="mounted"
@@ -21,6 +21,7 @@
         <YmapOffersView
           :list="allOffersForYmap"
           :polygonCoordinates="polygonCoordinates"
+          :styles="ymapStyles"
           @selectionDone="filterByPolygon"
           @removedDone="removedPolygonFromFilters"
         />
@@ -67,6 +68,10 @@ export default {
       ymapOffersSearchHash: null,
       allOffersLoader: false,
       searchFormModalVisible: false,
+      ymapStyles: {
+          width: '100%',
+          height: '100vh'
+      },
       filtersValueGetter: {
         rangeMinElectricity: (value) => value + ' кВт',
         rangeMaxDistanceFromMKAD: (value) => value + ' км',
@@ -251,10 +256,7 @@ export default {
       return list;
     },
   },
-  
-  filtersRangeKeyList: {
-  
-  },
+
   methods: {
     ...mapActions([
       "SEARCH_OFFERS",
@@ -381,10 +383,20 @@ export default {
       }
     },
   },
-  async mounted() {
+  async created() {
     await this.FETCH_CONSULTANT_LIST();
     await this.FETCH_REGION_LIST();
     this.mounted = true;
+  },
+  watch: {
+    mounted(){
+      if (!this.mounted) return;
+      
+      this.$nextTick(() => {
+        this.ymapStyles.height = (window.innerHeight -
+         this.$refs.searchContainer.getClientRects()[0].height - 60) + "px";
+      });
+    }
   }
 };
 </script>

@@ -1,7 +1,7 @@
 <template>
   <Ymap
     :settings="$options.ymapOptions.settings"
-    :styles="$options.ymapOptions.styles"
+    :styles="styles"
     :controls="$options.ymapOptions.controls"
     :behaviors="['drag', 'scrollZoom', 'multiTouch', 'selection']"
     :polygonCoordinates="polygonCoordinates"
@@ -42,6 +42,16 @@ export default {
       type: Array,
       default: () => [],
     },
+    
+    styles: {
+      type: Object,
+      default: () => {
+        return {
+          height: "75vh",
+          width: "100%",
+        }
+      },
+    }
   },
   ymapOptions: {
     settings: {
@@ -91,6 +101,10 @@ export default {
       return this.$apiUrlHelper.generator().objectUrl(offer.complex_id);
     },
   },
+  
+  mounted() {
+    console.log(this.styles);
+  }
 };
 </script>
 
