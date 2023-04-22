@@ -14,10 +14,10 @@
           buttonClasses="btn filters"
           @click.prevent="$emit('openFilters')"
         >
-          <span class="badge badge-danger">
+          <span class="badge badge-danger" v-if="filterCount">
             {{filterCount}}
           </span>
-          <i class="fas fa-filter"></i>
+          <i class="fas fa-sliders-h"></i>
         </Submit>
       </FormGroup>
     </Form>
@@ -53,6 +53,7 @@ button.filters {
   color: $color_dark;
   border: 1px solid $color_grey;
   position: relative;
+  border-radius: 4px;
   span.badge {
     display: flex;
     justify-content: center;
@@ -65,6 +66,7 @@ button.filters {
     border-radius: 50%;
     font-size: 15px;
     font-weight: bold;
+    border: 2px solid $color_light;
   }
 }
 </style>

@@ -2,6 +2,7 @@
   <div>
     <canvas
       ref="canvas"
+      class="canvas"
       style="position: absolute; left: 0; top: 0; display: none"
     ></canvas>
   </div>
@@ -250,5 +251,9 @@ export default {
 }
 [class$="float-button-text"] {
   padding: 0 !important;
+}
+
+.canvas {
+  background-color: red;
 }
 </style>

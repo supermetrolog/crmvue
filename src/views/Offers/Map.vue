@@ -131,18 +131,30 @@ export default {
         },
         region: (value) => {
           if (!value || !this.REGION_LIST) return null;
-          return this.REGION_LIST.find(reg => reg.value == value).label;
+          const result = this.REGION_LIST.find(reg => reg.value == value).label
+          if(this.$route.query.polygon) {
+            return '<p class="text-danger">' + result + '</p>';
+          }
+          return result;
         },
         // fakeRegion: null,
         district_moscow: (value) => {
           if (!value) return null;
           if (!Array.isArray(value)) value = [value]
-          return value.map(elem => DistrictList.get('param')[elem][1]).join(', ');
+          const result = value.map(elem => DistrictList.get('param')[elem][1]).join(', ')
+          if(this.$route.query.polygon) {
+            return '<p class="text-danger">' + result + '</p>';
+          }
+          return result;
         },
         direction: (value) => {
           if (!value) return null;
           if (!Array.isArray(value)) value = [value]
-          return value.map(elem => DirectionList.get('param')[elem][1]).join(', ');
+          const result = value.map(elem => DirectionList.get('param')[elem][2]).join(', ')
+          if(this.$route.query.polygon) {
+            return '<p class="text-danger">' + result + '</p>';
+          }
+          return result;
         },
         status: (value) => {
           if (!value) return null;
