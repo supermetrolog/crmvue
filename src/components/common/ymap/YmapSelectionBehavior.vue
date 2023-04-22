@@ -3,7 +3,7 @@
     <canvas
       ref="canvas"
       class="canvas"
-      style="position: absolute; left: 0; top: 0; display: none"
+      style="position: absolute; left: 0; top: 0;"
     ></canvas>
   </div>
 </template>
@@ -28,6 +28,7 @@ export default {
     },
   },
   mounted() {
+    console.log("MOUNTED BEHAVIOR");
     this.addSelectionControllButton();
     this.addPolygonIfExistsCoordinates();
   },
@@ -76,7 +77,9 @@ export default {
       return this.$options.btn;
     },
     drawLineOverMap(map) {
-      const canvas = this.$refs.canvas;
+      console.log("Draw start");
+      const canvas = document.getElementsByClassName('canvas')[0];
+      console.log("REF CANVAS", this.$refs, this.$refs.canvas, canvas, canvas.getContext("2d"));
       const ctx2d = canvas.getContext("2d");
       const canvasOptions = {
         strokeStyle: this.options.strokeColor,
@@ -88,6 +91,7 @@ export default {
 
       // Задаем размеры канвасу как у карты.
       const rect = map.container.getParentElement().getBoundingClientRect();
+      console.log()
       canvas.style.width = rect.width + "px";
       canvas.style.height = rect.height + "px";
       canvas.width = rect.width;
@@ -101,7 +105,9 @@ export default {
 
       // Показываем канвас. Он будет сверху карты из-за position: absolute.
       canvas.style.display = "block";
-
+      console.log("Canvas position", canvas.getBoundingClientRect());
+      console.log("Canvas visibility");
+  
       canvas.onmousedown = (e) => {
         // При нажатии мыши запоминаем, что мы начали рисовать и координаты.
         drawing = true;
@@ -126,6 +132,7 @@ export default {
         canvas.onmouseup = (e) => {
           coordinates.push([e.offsetX, e.offsetY]);
           canvas.style.display = "none";
+          console.log("Canvas unvisible");
           drawing = false;
 
           coordinates = coordinates.map(function (x) {
@@ -138,6 +145,7 @@ export default {
     },
     runDraw() {
       this.drawLineOverMap(this.map).then((coordinates) => {
+        console.log("Draw done");
         coordinates = this.normalizeCoords(coordinates, this.map.getBounds());
         coordinates = this.simplifyCoords(coordinates);
         this.removePolygon();
@@ -253,7 +261,4 @@ export default {
   padding: 0 !important;
 }
 
-.canvas {
-  background-color: red;
-}
 </style>

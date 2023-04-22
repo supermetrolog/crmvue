@@ -19,6 +19,40 @@
           </span>
           <i class="fas fa-sliders-h"></i>
         </Submit>
+        <div class="col-3 align-self-center pt-3">
+          <a
+              :href="$router.resolve({name: 'OffersMain', query: $route.query}).href"
+              class="btn btn-light p-3">
+            <i class="fas fa-list"></i>
+            Объекты списком
+          </a>
+        </div>
+        <div class="col-2 align-self-end pt-3">
+          <div class="row no-gutters">
+            <div class="col-12">
+              <a
+                  href="#"
+                  @click.prevent="resetForm"
+                  class="text-primary"
+                  v-if="filterCount"
+              >
+                <i class="fas fa-heart"></i>
+                Сохранить поиск
+              </a>
+            </div>
+            <div class="col-12">
+              <a
+                  href="#"
+                  @click.prevent="resetForm"
+                  class="text-danger"
+                  v-if="filterCount"
+              >
+                <i class="fas fa-times-circle"></i>
+                Сбросить фильтры
+              </a>
+            </div>
+          </div>
+        </div>
       </FormGroup>
     </Form>
   </div>
@@ -32,6 +66,11 @@ export default {
   components: { Submit },
   name: "OfferSearchExternalForm",
   mixins: [FormMixixn],
+  methods: {
+    changeLocationToList() {
+      this.$router.push({name: 'OffersMain', query: this.$route.query});
+    }
+  },
   watch: {
     "$route.query": function (newQuery, oldQuery) {
       if (waitHash(newQuery) !== waitHash(oldQuery)){

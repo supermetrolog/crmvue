@@ -10,6 +10,7 @@
         <OfferSearchExternalForm
           class="ext-search-form"
           v-if="mounted"
+          :objectsCount="objectsCount"
           @openFilters="toggleSearchFormModalVisible"
         />
         <List class="list" :data="selectedFilterList" @remove="removeFilter" />
@@ -68,6 +69,7 @@ export default {
       ymapOffersSearchHash: null,
       allOffersLoader: false,
       searchFormModalVisible: false,
+      objectsCount: null,
       ymapStyles: {
           width: '100%',
           height: '100vh'
@@ -216,7 +218,7 @@ export default {
     ad_cian: 'Циан:',
     ad_yandex: 'Яндекс:',
     ad_free: 'Бесплатно:',
-    // favorites: null,
+    favorites: 'Избранные',
     // polygon: "Область на карте",
   },
   inject: ["isMobile"],
@@ -384,6 +386,7 @@ export default {
       }
       this.allOffersLoader = false;
       console.error(data);
+      this.objectsCount = data.pagination.totalCount;
       return data;
     },
     // Переопределено из миксина (судя по всему)

@@ -26,7 +26,7 @@
           </a>
           <a
             href="#"
-            class="text-primary ml-4 favorites"
+            class="text-primary ml-4 favorites px-0"
             @click.prevent="clickFavorites"
             :class="{ selected: form.favorites }"
           >
@@ -42,6 +42,12 @@
             v-if="filterCount"
           >
             сбросить фильтры
+          </a>
+          <a
+              :href="$router.resolve({name: 'OffersMap', query: $route.query}).href"
+              class="text-dark ml-5"
+          >
+           на карте
           </a>
         </div>
         <div class="col-6 text-right">
@@ -336,6 +342,11 @@ import FormMixixn from "./mixins";
 export default {
   name: "OfferSearchForm",
   mixins: [FormMixixn],
+  methods: {
+    changeLocationToMap() {
+      this.$router.push({name: 'OffersMap', query: this.$route.query});
+    }
+  }
 };
 </script>
 
