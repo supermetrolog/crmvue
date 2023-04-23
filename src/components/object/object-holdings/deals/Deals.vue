@@ -14,16 +14,18 @@
         :isCurrent="currentDealId === deal.id"
       />
     </div>
+    <DealItem :deal="currentDeal" />
   </div>
 </template>
 
 <script>
+import DealItem from "./deal-item/ObjectHoldingDealItem.vue";
 import DealPreviewCard from "../../ui/deal-preview/DealPreview.vue";
 import "./styles.scss";
 
 export default {
   name: "ObjectHoldingDeals",
-  components: { DealPreviewCard },
+  components: { DealPreviewCard, DealItem },
   props: {
     deals: {
       type: Array,
@@ -35,6 +37,83 @@ export default {
           area: 12000,
           price: { count: 1200, type: 1 },
           status: 1,
+          floors: [
+            {
+              name: "Мезонин 2",
+              area: 3000,
+              checked: false,
+              sections: [
+                {
+                  company: { name: "Объебос" },
+                  area: 345,
+                  status: 1,
+                  checked: true,
+                },
+                {
+                  company: { name: "Портос" },
+                  area: 228,
+                  status: 2,
+                  checked: true,
+                },
+                {
+                  company: { name: "Арамис" },
+                  area: 1000,
+                  status: 3,
+                  checked: true,
+                },
+              ],
+            },
+            {
+              name: "Мезонин 1",
+              area: 3000,
+              checked: false,
+              sections: [
+                {
+                  company: { name: "Объебос" },
+                  area: 345,
+                  status: 1,
+                  checked: true,
+                },
+                {
+                  company: { name: "Портос" },
+                  area: 228,
+                  status: 2,
+                  checked: true,
+                },
+                {
+                  company: { name: "Арамис" },
+                  area: 1000,
+                  status: 3,
+                  checked: true,
+                },
+              ],
+            },
+            {
+              name: "1 этаж",
+              area: 3000,
+              checked: false,
+              sections: [
+                {
+                  company: { name: "Объебос" },
+                  area: 345,
+                  status: 1,
+                  checked: true,
+                },
+                {
+                  company: { name: "Портос" },
+                  area: 228,
+                  status: 2,
+                  checked: true,
+                },
+                {
+                  company: { name: "Арамис" },
+                  area: 1000,
+                  status: 3,
+                  checked: true,
+                },
+              ],
+            },
+          ],
         },
         {
           id: 2,
@@ -43,6 +122,33 @@ export default {
           area: 12000,
           price: { count: 1200, type: 1 },
           status: 2,
+          floors: [
+            {
+              name: "Мезонин 1",
+              area: 3000,
+              checked: false,
+              sections: [
+                {
+                  company: { name: "Объебос" },
+                  area: 345,
+                  status: 1,
+                  checked: true,
+                },
+                {
+                  company: { name: "Портос" },
+                  area: 228,
+                  status: 2,
+                  checked: true,
+                },
+                {
+                  company: { name: "Арамис" },
+                  area: 1000,
+                  status: 3,
+                  checked: true,
+                },
+              ],
+            },
+          ],
         },
         {
           id: 3,
@@ -51,6 +157,33 @@ export default {
           area: 12000,
           price: { count: null, type: 1 },
           status: 3,
+          floors: [
+            {
+              name: "Мезонин 1",
+              area: 3000,
+              checked: false,
+              sections: [
+                {
+                  company: { name: "Объебос" },
+                  area: 345,
+                  status: 1,
+                  checked: true,
+                },
+                {
+                  company: { name: "Портос" },
+                  area: 228,
+                  status: 2,
+                  checked: true,
+                },
+                {
+                  company: { name: "Арамис" },
+                  area: 1000,
+                  status: 3,
+                  checked: true,
+                },
+              ],
+            },
+          ],
         },
       ],
     },
@@ -62,7 +195,7 @@ export default {
   },
   computed: {
     currentDeal() {
-      return this.deals.find((deal) => deal.id === this.currentDeal);
+      return this.deals.find((deal) => deal.id === this.currentDealId);
     },
   },
   methods: {

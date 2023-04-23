@@ -1,12 +1,17 @@
 .ObjectHoldingsParameters {
     $color_left: #f8f8f8;
     $color_left-aside: #e1e8ec;
+    $icon-size: 1.5em;
+    $font-size: 1em;
     padding: 20px;
     background-color: $color_left;
     height: 80%;
     border: 1px solid $color_light_grey;
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
     &-main {
-        margin-bottom: 20px;
         &-area {
             font-size: 1.8em;
             font-weight: bold;
@@ -18,7 +23,7 @@
     }
     &-types {
         .object-type-box {
-            font-size: 1.8em;
+            font-size: $icon-size;
             padding: 4px 8px;
             border-radius: 2px;
             border: 1px solid black;
@@ -26,6 +31,39 @@
             background-color: #ffffff;
         }
     }
+
+    &-provision {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+
+        &-item {
+            font-size: $font-size;
+            font-weight: bold;
+
+            min-height: 30px;
+            min-width: 100px;
+
+            padding: 5px;
+
+            // border: 1px solid black;
+
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px;
+
+            i {
+                font-size: $icon-size;
+
+                color: lighten($color: $color_grey, $amount: 20);
+            }
+        }
+    }
+
+    &-equipment {
+    }
+
     &-floors {
         height: 20%;
         padding: 20px;
