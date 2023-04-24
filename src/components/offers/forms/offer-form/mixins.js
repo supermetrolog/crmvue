@@ -56,6 +56,10 @@ export default {
         additionalButtons: {
             type: Array,
         },
+        objectsCount: {
+            type: Number,
+            default: 0
+        }
     },
     computed: {
         ...mapGetters(["FAVORITES_OFFERS", "REGION_LIST"]),

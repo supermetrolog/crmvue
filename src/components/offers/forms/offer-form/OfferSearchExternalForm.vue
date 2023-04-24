@@ -24,7 +24,7 @@
               :href="$router.resolve({name: 'OffersMain', query: $route.query}).href"
               class="btn btn-light p-3">
             <i class="fas fa-list"></i>
-            Объекты списком
+            <span class="ml-1" v-if="offersCount">{{offersCount}} ({{objectsCount}})</span> Предложений списком
           </a>
         </div>
         <div class="col-2 align-self-end pt-3">
@@ -66,6 +66,12 @@ export default {
   components: { Submit },
   name: "OfferSearchExternalForm",
   mixins: [FormMixixn],
+  props: {
+      offersCount: {
+        type: Number,
+        default: 0
+      }
+  },
   methods: {
     changeLocationToList() {
       this.$router.push({name: 'OffersMain', query: this.$route.query});

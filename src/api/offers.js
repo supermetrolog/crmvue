@@ -17,6 +17,19 @@ export default {
             .catch((e) => ErrorHandle.setError(e));
         return data;
     },
+    async searchCount(query) {
+        console.warn("SEARCH OFFERS COUNT");
+        query = new URLSearchParams(query).toString();
+        let url = "oldDb/objects/offers-count?" + query;
+        let data = false;
+        await axios
+            .get(url)
+            .then((Response) => {
+                data = SuccessHandler.getData(Response);
+            })
+            .catch((e) => ErrorHandle.setError(e));
+        return data;
+    },
     async searchMap(query) {
         console.warn("SEARCH OFFERS");
         query = new URLSearchParams(query).toString();
@@ -28,6 +41,20 @@ export default {
                 data = {};
                 data.data = SuccessHandler.getData(Response);
                 data.pagination = SuccessHandler.getPaginationData(Response);
+            })
+            .catch((e) => ErrorHandle.setError(e));
+        return data;
+    },
+
+    async searchMapCount(query) {
+        console.warn("SEARCH OFFERS COUNT");
+        query = new URLSearchParams(query).toString();
+        let url = "oldDb/objects/offers-map-count?" + query;
+        let data = false;
+        await axios
+            .get(url)
+            .then((Response) => {
+                data = SuccessHandler.getData(Response);
             })
             .catch((e) => ErrorHandle.setError(e));
         return data;

@@ -47,7 +47,7 @@
               :href="$router.resolve({name: 'OffersMap', query: $route.query}).href"
               class="text-dark ml-5"
           >
-           на карте
+           <span v-if="objectsCount">{{objectsCount}}</span> на карте
           </a>
         </div>
         <div class="col-6 text-right">

@@ -10,6 +10,7 @@
         <OfferSearchExternalForm
           class="ext-search-form"
           v-if="mounted"
+          :offersCount="offersCount"
           :objectsCount="objectsCount"
           @openFilters="toggleSearchFormModalVisible"
         />
@@ -70,6 +71,7 @@ export default {
       allOffersLoader: false,
       searchFormModalVisible: false,
       objectsCount: null,
+      offersCount: null,
       ymapStyles: {
           width: '100%',
           height: '100vh'
@@ -377,16 +379,18 @@ export default {
       const data = await api.offers.searchMap(query);
       console.error(Array.isArray(data.data));
       if (Array.isArray(data.data)) {
+        delete query.objectsOnly;
+        const offersCount = await api.offers.searchCount(query);
         console.warn(hash, this.ymapOffersSearchHash);
         if (hash === this.ymapOffersSearchHash) {
           this.allOffersForYmap = data.data;
+          this.objectsCount = data.pagination.totalCount;
+          this.offersCount = +offersCount;
         } else {
           return false;
         }
       }
       this.allOffersLoader = false;
-      console.error(data);
-      this.objectsCount = data.pagination.totalCount;
       return data;
     },
     // Переопределено из миксина (судя по всему)

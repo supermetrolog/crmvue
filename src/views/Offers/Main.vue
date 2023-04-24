@@ -3,7 +3,7 @@
     <div class="row no-gutters search-main-container">
       <div class="container py-3">
         <div class="col-12 pt-3">
-          <OfferSearchForm v-if="mounted" />
+          <OfferSearchForm v-if="mounted" :objectsCount="OFFERS_PAGINATION?.totalCount ?? 0" />
         </div>
       </div>
     </div>
