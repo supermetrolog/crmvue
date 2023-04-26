@@ -13,8 +13,8 @@
             <a
                 href="#"
                 @click.prevent="clickFavorites"
-                class="text-primary"
-                :class="{ 'text-warning': form.favorites }"
+                class="mini"
+                :class="{ 'text-warning': !form.favorites, 'bg-warning text-light': form.favorites}"
             >
               <i class="fas fa-star"></i>
               Избранные
@@ -22,6 +22,7 @@
             <a
                 href="#"
                 @click.prevent
+                class="mini"
                 :class="{'text-dark': !filterCount, 'text-primary': filterCount}"
             >
               <i class="fas fa-heart"></i>
@@ -30,6 +31,7 @@
             <a
                 href="#"
                 @click.prevent="resetForm"
+                class="mini"
                 :class="{'text-dark': !filterCount, 'text-danger': filterCount}"
             >
               <i class="fas fa-times-circle"></i>
@@ -49,7 +51,7 @@
         </Submit>
         <div>
           <a
-              :href="$router.resolve({name: 'OffersMain', query: $route.query}).href"
+              :href="$router.resolve({name: isMap ? 'OffersMain' : 'OffersMap', query: $route.query}).href"
               class="btn btn-light list"
           >
             <i v-if="isMap" class="fas fa-list mr-1"></i>
@@ -111,6 +113,9 @@ a.btn.list {
   align-items: center;
   height: 34px;
   text-transform: capitalize;
+}
+a.mini {
+  margin: 0 3px;
 }
 button.filters {
   padding: 2px !important;
