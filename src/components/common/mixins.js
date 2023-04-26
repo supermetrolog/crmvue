@@ -8,6 +8,7 @@ export const TableContentMixin = {
     },
     methods: {
         async next(number) {
+            console.log("NEXXXXXXXXXXXX");
             let query = {...this.$route.query };
             query.page = number;
             await this.$router.replace({ query });
@@ -136,6 +137,7 @@ export const SearchFormMixin = {
             this.$watch(
                 "queryParams",
                 () => {
+                    console.log("QUERY PARAM")
                     this.setQueryFieldsNoUrl();
                 }, { deep: true }
             );

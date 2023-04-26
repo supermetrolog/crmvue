@@ -6,15 +6,16 @@
         ref="search"
         @close="toggleSearchFormModalVisible"
       />
-      <div class="container mx-0 px-0 py-2" ref="searchContainer">
+      <div class="container-fluid p-0" ref="searchContainer">
         <OfferSearchExternalForm
           class="ext-search-form"
           v-if="mounted"
           :offersCount="offersCount"
           :objectsCount="objectsCount"
+          :isMap="true"
           @openFilters="toggleSearchFormModalVisible"
         />
-        <List class="list" :data="selectedFilterList" @remove="removeFilter" />
+        <List class="list mb-2" :data="selectedFilterList" @remove="removeFilter" />
       </div>
     </div>
     <div class="row no-gutters map-container">
@@ -35,7 +36,7 @@
 <script>
 import OfferSearchModalForm from "@/components/offers/forms/offer-form/OfferSearchModalForm.vue";
 import OfferSearchExternalForm from "@/components/offers/forms/offer-form/OfferSearchExternalForm.vue";
-import { mapGetters, mapActions } from "vuex";
+import { mapActions } from "vuex";
 import { TableContentMixin } from "@/components/common/mixins.js";
 import YmapOffersView from "@/components/offers/map/YmapOffersView.vue";
 import List from "@/components/common/list-horizontal/List.vue";
@@ -70,14 +71,6 @@ export default {
   inject: ["isMobile"],
   
   computed: {
-    ...mapGetters([
-      "OFFERS",
-      "OFFERS_PAGINATION",
-      "THIS_USER",
-      "FAVORITES_OFFERS",
-      "CONSULTANT_LIST",
-      "REGION_LIST"
-    ]),
     polygonCoordinates() {
       if (
         this.$route.query.polygon &&
@@ -90,7 +83,7 @@ export default {
       return [];
     },
   },
-
+  
   methods: {
     ...mapActions([
       "SEARCH_OFFERS",
@@ -192,15 +185,24 @@ export default {
         this.getContent(false);
       }
     },
+    setYmapSize() {
+      this.$nextTick(() => {
+        console.log("ASSSSSSSSSSSSSSSSS");
+        this.ymapStyles.height = (window.innerHeight -
+            this.$refs.searchContainer.getClientRects()[0].height - 60) + "px";
+        
+      });
+    }
   },
-  
+  beforeUnmount() {
+    this.$refs.searchContainer.removeEventListener('resize', this.setYmapSize);
+  },
   watch: {
     mounted(){
       if (!this.mounted) return;
-      
+      this.setYmapSize();
       this.$nextTick(() => {
-        this.ymapStyles.height = (window.innerHeight -
-         this.$refs.searchContainer.getClientRects()[0].height - 60) + "px";
+        new ResizeObserver(this.setYmapSize).observe(this.$refs.searchContainer);
       });
     }
   }

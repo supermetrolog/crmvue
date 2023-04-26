@@ -3,11 +3,27 @@
     <div class="row no-gutters search-main-container">
       <div class="container py-3">
         <div class="col-12 pt-3">
-          <OfferSearchForm v-if="mounted" :objectsCount="OFFERS_PAGINATION?.totalCount ?? 0" />
+          <div class="row no-gutters search-main-container">
+            <OfferSearchModalForm
+                v-if="mounted && searchFormModalVisible"
+                ref="search"
+                @close="toggleSearchFormModalVisible"
+            />
+            <div class="container-fluid p-0" ref="searchContainer">
+              <OfferSearchExternalForm
+                  class="ext-search-form"
+                  v-if="mounted"
+                  :offersCount="OFFERS_PAGINATION?.totalCount ?? 0"
+                  :objectsCount="OFFERS_PAGINATION?.totalCount ?? 0"
+                  @openFilters="toggleSearchFormModalVisible"
+              />
+              <List class="list mb-2" :data="selectedFilterList" @remove="removeFilter" />
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <div class="row no-gutters companies-actions mt-4">
+    <div class="row no-gutters companies-actions">
       <div class="col-md-6 col-12 pt-1">
         <PaginationClassic
           :pagination="OFFERS_PAGINATION"
@@ -55,28 +71,26 @@
 <script>
 import OffersMobileView from "../../components/offers/mobile/OffersMobileView.vue";
 import OfferTableView from "@/components/offers/main/OfferTableView.vue";
-import OfferSearchForm from "@/components/offers/forms/offer-form/OfferSearchForm.vue";
-import { mapGetters, mapActions } from "vuex";
+import {mapActions, mapGetters} from "vuex";
 import { TableContentMixin } from "@/components/common/mixins.js";
 import RefreshButton from "@/components/common/RefreshButton.vue";
+import FilterMixin from "./mixins";
+import OfferSearchModalForm from "@/components/offers/forms/offer-form/OfferSearchModalForm.vue";
+import List from "@/components/common/list-horizontal/List.vue";
+import OfferSearchExternalForm from "@/components/offers/forms/offer-form/OfferSearchExternalForm.vue";
 
 export default {
-  mixins: [TableContentMixin],
+  mixins: [TableContentMixin, FilterMixin],
   name: "OffersMain",
   inject: ["isMobile"],
   components: {
+    OfferSearchExternalForm, List, OfferSearchModalForm,
     OfferTableView,
-    OfferSearchForm,
     RefreshButton,
     OffersMobileView,
   },
   computed: {
-    ...mapGetters([
-      "OFFERS",
-      "OFFERS_PAGINATION",
-      "THIS_USER",
-      "FAVORITES_OFFERS",
-    ]),
+    ...mapGetters(["OFFERS_PAGINATION", "OFFERS"])
   },
   methods: {
     ...mapActions(["SEARCH_OFFERS", "SEARCH_FAVORITES_OFFERS"]),
@@ -96,6 +110,7 @@ export default {
       if (!this.FAVORITES_OFFERS.length) {
         await this.SEARCH_FAVORITES_OFFERS();
       }
+      console.error("sssssssssssssssssssssssss");
       if (this.$route.query.favorites) {
         console.log("FUUUUCK", this.FAVORITES_OFFERS, !this.FAVORITES_OFFERS);
 

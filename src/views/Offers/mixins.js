@@ -8,7 +8,7 @@ import {
     ObjectTypeList, YesNo,
     YesNoFUCK
 } from "@/const/Const";
-import {mapActions} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 
 export default {
     data(){
@@ -116,6 +116,14 @@ export default {
         }
     },
     computed: {
+        ...mapGetters([
+            "OFFERS",
+            "OFFERS_PAGINATION",
+            "THIS_USER",
+            "FAVORITES_OFFERS",
+            "CONSULTANT_LIST",
+            "REGION_LIST"
+        ]),
         selectedFilterList() {
             let list = [];
             for (const key in this.$route.query) {

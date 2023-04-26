@@ -1,16 +1,44 @@
 <template>
   <div class="offer-search-external-form">
     <Form class="autosize" @submit="onSubmit">
-      <FormGroup class="mb-2">
+      <FormGroup class="mb-2 formgroup d-flex">
         <Input
           v-model="form.all"
           label="Поиск"
           placeholder="ID, адрес, собственник, телефон, ФИО"
-          class="col-4 p-0 main-input"
+          class="main-input col-5"
           @keydown.enter="onSubmit"
-        />
+        >
+          <div>
+            <a
+                href="#"
+                @click.prevent="clickFavorites"
+                class="text-primary"
+                :class="{ 'text-warning': form.favorites }"
+            >
+              <i class="fas fa-star"></i>
+              Избранные
+            </a>
+            <a
+                href="#"
+                @click.prevent
+                :class="{'text-dark': !filterCount, 'text-primary': filterCount}"
+            >
+              <i class="fas fa-heart"></i>
+              Сохранить поиск
+            </a>
+            <a
+                href="#"
+                @click.prevent="resetForm"
+                :class="{'text-dark': !filterCount, 'text-danger': filterCount}"
+            >
+              <i class="fas fa-times-circle"></i>
+              Сбросить фильтры
+            </a>
+          </div>
+          
+        </Input>
         <Submit
-          class="col-1 mt-4 ml-4"
           buttonClasses="btn filters"
           @click.prevent="$emit('openFilters')"
         >
@@ -19,39 +47,17 @@
           </span>
           <i class="fas fa-sliders-h"></i>
         </Submit>
-        <div class="col-3 align-self-center pt-3">
+        <div>
           <a
               :href="$router.resolve({name: 'OffersMain', query: $route.query}).href"
-              class="btn btn-light p-3">
-            <i class="fas fa-list"></i>
-            <span class="ml-1" v-if="offersCount">{{offersCount}} ({{objectsCount}})</span> Предложений списком
+              class="btn btn-light list"
+          >
+            <i v-if="isMap" class="fas fa-list mr-1"></i>
+            <i v-else class="fas fa-map mr-1"></i>
+            {{isMap ? 'Списком' : 'На карте'}}
+            <span v-if="isMap" class="ml-1">{{offersCount}} ({{objectsCount}})</span>
+            <span v-else class="ml-1">{{offersCount ?? objectsCount}}</span>
           </a>
-        </div>
-        <div class="col-2 align-self-end pt-3">
-          <div class="row no-gutters">
-            <div class="col-12">
-              <a
-                  href="#"
-                  @click.prevent="resetForm"
-                  class="text-primary"
-                  v-if="filterCount"
-              >
-                <i class="fas fa-heart"></i>
-                Сохранить поиск
-              </a>
-            </div>
-            <div class="col-12">
-              <a
-                  href="#"
-                  @click.prevent="resetForm"
-                  class="text-danger"
-                  v-if="filterCount"
-              >
-                <i class="fas fa-times-circle"></i>
-                Сбросить фильтры
-              </a>
-            </div>
-          </div>
         </div>
       </FormGroup>
     </Form>
@@ -70,15 +76,25 @@ export default {
       offersCount: {
         type: Number,
         default: 0
-      }
+      },
+    isMap: {
+        type: Boolean,
+      default: false
+    }
   },
   methods: {
-    changeLocationToList() {
-      this.$router.push({name: 'OffersMain', query: this.$route.query});
-    }
+    clickFavorites() {
+      if (this.form.favorites) {
+        this.form.favorites = null;
+      } else {
+        this.form.favorites = 1;
+      }
+    },
   },
   watch: {
     "$route.query": function (newQuery, oldQuery) {
+      delete newQuery.page;
+      delete oldQuery.page;
       if (waitHash(newQuery) !== waitHash(oldQuery)){
         this.setDefaultFields();
         this.setQueryFields();
@@ -89,6 +105,13 @@ export default {
 </script>
 
 <style lang="scss">
+a.btn.list {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  height: 34px;
+  text-transform: capitalize;
+}
 button.filters {
   padding: 2px !important;
   padding-top: 3px !important;
@@ -113,5 +136,12 @@ button.filters {
     font-weight: bold;
     border: 2px solid $color_light;
   }
+}
+
+.formgroup {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
 }
 </style>

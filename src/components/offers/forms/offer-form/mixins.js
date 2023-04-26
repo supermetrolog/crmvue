@@ -135,6 +135,7 @@ export default {
         ...mapActions(["FETCH_CONSULTANT_LIST", "FETCH_REGION_LIST"]),
         setDefaultFields(){
             this.form = {...this.$options.defaultFormProperties};
+            console.log(this.form.page);
         },
         async setQueryFields() {
             this.form = { ...this.form, ...this.$route.query };
@@ -233,11 +234,6 @@ export default {
             } else {
                 this.form.favorites = 1;
             }
-        },
-    },
-    watch: {
-        "form.region"() {
-            console.log(this.form.fakeRegion, "ЕБУЧИЙ РЕГИОН");
         },
     },
 };
