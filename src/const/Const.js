@@ -41,7 +41,7 @@ export const Menu = new Map([
         "icon": "fas fa-industry",
         "url": "/companies",
       },
-      { "id": 6, "name": "Предложка", "icon": "fas fa-city", "url": "/offers" },
+      { "id": 6, "name": "Предложка", "icon": "fas fa-city", "url": "/offers/map" },
       {
         "id": 5,
         "name": "Аккаунт",
@@ -58,13 +58,6 @@ export const InternalMenu = new Map([
       { "id": 0, "name": "общая", "url": "/statistic/", "exact": true },
       { "id": 1, "name": "сделка", "url": "/statistic/deal" },
       { "id": 2, "name": "брак", "url": "/statistic/brak" },
-    ],
-  ],
-  [
-    "offers",
-    [
-      { "id": 0, "name": "главная", "url": "/offers/", "exact": true },
-      { "id": 1, "name": "карта", "url": "/offers/map" },
     ],
   ],
   [

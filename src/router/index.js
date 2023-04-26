@@ -171,21 +171,21 @@ const routes = [
     children: [
       {
         path: "",
-        name: "OffersMain",
-        meta: {
-          layout: "main",
-          auth: { isAuth: true, role: ["moderator", "administrator"] },
-        },
-        component: () => import("../views/Offers/Main.vue"),
-      },
-      {
-        path: "map",
         name: "OffersMap",
         meta: {
           layout: "main",
           auth: { isAuth: true, role: ["moderator", "administrator"] },
         },
         component: () => import("../views/Offers/Map.vue"),
+      },
+      {
+        path: "list",
+        name: "OffersMain",
+        meta: {
+          layout: "main",
+          auth: { isAuth: true, role: ["moderator", "administrator"] },
+        },
+        component: () => import("../views/Offers/Main.vue"),
       },
       {
         path: "maptest",
