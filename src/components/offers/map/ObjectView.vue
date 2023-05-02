@@ -51,7 +51,7 @@ export default {
             
             query = {
                 object_id: offers.map(el => el.object_id),
-                expand: "contact.emails,contact.phones,object,company.mainContact.phones,company.mainContact.emails,offer,consultant.userProfile"
+                expand: "generalOffersMix,contact.emails,contact.phones,object,company.mainContact.phones,company.mainContact.emails,offer,consultant.userProfile"
             };
 
             const { data: allOffers } = await this.SEARCH_OFFERS({ query });
