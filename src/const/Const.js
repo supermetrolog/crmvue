@@ -706,3 +706,13 @@ export const NotificationTypeList = new Map([
     ],
   ],
 ]);
+
+export const UnitTypesList = new Map([
+  [1, "м<sup>2</sup>"],
+  [2, "₽/мес"],
+  [3, "м"],
+  [4, "кВт"],
+  [5, "м<sup>3</sup>/ч"],
+  [6, "бар"],
+  [7, "этаж(а)"],
+]);

@@ -1,0 +1,50 @@
+.DealPreviewCard {
+    display: flex;
+    flex-direction: column;
+
+    padding: 10px;
+
+    width: 300px;
+
+    background-color: lighten($color_light_grey, 5);
+    border-left: 1px solid $color_grey;
+
+    &-status {
+        color: $color_grey;
+
+        &.success {
+            color: $color_success;
+        }
+
+        &.danger {
+            color: $color_danger;
+        }
+    }
+
+    &:hover {
+        background-color: $color_light_grey;
+
+        cursor: pointer;
+    }
+
+    &.active {
+        position: relative;
+
+        background-color: $color_olive_light;
+
+        &::after {
+            content: "";
+
+            position: absolute;
+            bottom: -15px;
+            left: 30px;
+
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+
+            border-top: 15px solid $color_olive_light;
+        }
+    }
+}

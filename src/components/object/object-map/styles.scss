@@ -1,0 +1,96 @@
+.ObjectMap {
+    margin: 10px 0;
+    position: relative;
+    min-height: 100px;
+    &-description {
+        position: absolute;
+        top: 0;
+        z-index: 2;
+
+        padding: 20px;
+
+        height: 100px;
+        width: 90%;
+
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        &.disabled {
+            pointer-events: none;
+        }
+        &-item {
+            border: 0.5px solid $color_grey;
+            background-color: $color_light_trans;
+            border-radius: 5px;
+            padding: 10px 10px;
+            text-decoration: underline;
+            font-weight: bold;
+            font-size: 18px;
+            white-space: nowrap;
+            &[title] {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                div {
+                    width: max-content;
+                    img {
+                        height: 15px;
+                        width: auto;
+                    }
+                }
+            }
+        }
+
+        &-actions {
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 2;
+
+            padding: 15px;
+
+            height: 100px;
+            width: 10%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            &-item {
+                height: 30px;
+                width: 30px;
+
+                border-radius: 100%;
+            }
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background-color: transparent;
+        }
+        &::-webkit-scrollbar {
+            background-color: transparent;
+        }
+    }
+
+    &-button {
+        position: absolute;
+        bottom: -13px;
+        left: 0;
+        right: 0;
+        height: 30px;
+        font-size: 30px;
+        z-index: 3;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        i {
+            cursor: pointer;
+            &:hover {
+                opacity: 0.5;
+            }
+        }
+    }
+}
