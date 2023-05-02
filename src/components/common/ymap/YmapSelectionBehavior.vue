@@ -260,5 +260,7 @@ export default {
 [class$="float-button-text"] {
   padding: 0 !important;
 }
-
+.canvas {
+  display: none;
+}
 </style>

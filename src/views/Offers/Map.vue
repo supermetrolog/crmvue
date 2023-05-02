@@ -187,7 +187,6 @@ export default {
     },
     setYmapSize() {
       this.$nextTick(() => {
-        console.log("ASSSSSSSSSSSSSSSSS");
         this.ymapStyles.height = (window.innerHeight -
             this.$refs.searchContainer.getClientRects()[0].height - 60) + "px";
         

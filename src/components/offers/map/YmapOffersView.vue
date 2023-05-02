@@ -8,6 +8,8 @@
     @selectionDone="$emit('selectionDone')"
     @removedDone="$emit('removedDone')"
     @updated="$emit('updated')"
+    @objectClick="objectClickHandler"
+    @clusterClick="clusterClickHandler"
     ref="map"
   >
     <YmapMarker
@@ -15,23 +17,28 @@
       :key="offer.id"
       :marker-id="offer.id"
       :coords="[offer.latitude, offer.longitude]"
-      :balloonContentBody="offer.address"
-      :balloonContentHeader="'ID: ' + offer.complex_id"
-      :balloonContentFooter="getFooter(offer)"
       :hintContent="offer.address"
       ref="markers"
     />
+    <ObjectView :offerIds="offerIds" />
   </Ymap>
 </template>
 
 <script>
 import Ymap from "@/components/common/ymap/Ymap";
 import YmapMarker from "@/components/common/ymap/YmapMarker";
+import ObjectView from "@/components/offers/map/ObjectView.vue";
 export default {
   name: "YmapOffersView",
   components: {
+    ObjectView,
     Ymap,
     YmapMarker,
+  },
+  data() {
+    return {
+      offerIds: [],
+    }
   },
   props: {
     list: {
@@ -97,14 +104,18 @@ export default {
       }
       return "";
     },
+    
+    objectClickHandler(objectID) {
+      this.offerIds = [objectID];
+      console.log(objectID);
+    },
+    clusterClickHandler(clusterId) {
+      console.log(clusterId);
+    },
     getOfferUrl(offer) {
       return this.$apiUrlHelper.generator().objectUrl(offer.complex_id);
     },
   },
-  
-  mounted() {
-    console.log(this.styles);
-  }
 };
 </script>
 

@@ -36,7 +36,7 @@ export default {
   },
   data() {
     return {
-      updateTimeour: null,
+      updateTimeout: null,
       mounted: false,
       addMarkers: [],
       removeMarkers: [],
@@ -88,6 +88,12 @@ export default {
               top: "100px",
             },
           },
+          geolocationControl: {
+            float: "right"
+          },
+          searchControl: {
+            float: "right"
+          }
         };
       },
     },
@@ -100,19 +106,21 @@ export default {
       default: () => {
         return {
           balloonContentLayout: null,
-          gridSize: 64,
+          gridSize: 32,
           hasHint: true,
           hasBalloon: true,
-          margin: 10,
+          margin: 5,
           clusterIcons: [
             {
               href: require("@/assets/image/ymap-cluster-icon.svg"),
-              size: [30, 30],
+              size: [25, 25],
               offset: [-20, -20],
             },
           ],
-          minClusterSize: 2,
-          preset: "islands#blueCircleDotIcon",
+          iconLayout: {},
+          minClusterSize: 4,
+          preset: "islands#invertedVioletClusterIcons",
+          groupByCoordinates: false,
           useMapMargin: true,
           zoomMargin: null,
           viewportMargin: null,
@@ -182,9 +190,22 @@ export default {
           clusterize: true,
           ...this.clusterOptions,
         });
+        objectManager.objects.events.add(['click'], this.objectEventHandler);
+        objectManager.clusters.events.add(['click'], this.clusterEventHandler);
       }
+     
       return objectManager;
     },
+    //emit objectClick
+    objectEventHandler(event) {
+      this.$emit('object-' + event.get('type'), event.get('objectId'), this.getObjectManager());
+    },
+    
+    //emit clusterClick
+    clusterEventHandler(event) {
+      this.$emit('cluster-' + event.get('type'), event.get('objectId'), this.getObjectManager());
+    },
+    
     addMarkersToObjectManager(markers) {
       const objectManager = this.getObjectManager();
       objectManager.add(markers);
@@ -203,18 +224,18 @@ export default {
       this.$emit("updated");
     },
     addMarker(marker) {
-      if (this.updateTimeour) {
-        clearTimeout(this.updateTimeour);
+      if (this.updateTimeout) {
+        clearTimeout(this.updateTimeout);
       }
       this.addMarkers.push(marker);
-      this.updateTimeour = setTimeout(this.update, 100);
+      this.updateTimeout = setTimeout(this.update, 100);
     },
     removeMarker(marker) {
-      if (this.updateTimeour) {
-        clearTimeout(this.updateTimeour);
+      if (this.updateTimeout) {
+        clearTimeout(this.updateTimeout);
       }
       this.removeMarkers.push(marker.id);
-      this.updateTimeour = setTimeout(this.update, 100);
+      this.updateTimeout = setTimeout(this.update, 100);
     },
     removeObjectManager() {
       const objectManager = this.$options.static.objectManager;
