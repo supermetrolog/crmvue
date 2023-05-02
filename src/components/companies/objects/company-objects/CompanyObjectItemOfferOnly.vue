@@ -326,7 +326,7 @@
 import { TaxFormList } from "@/const/Const.js";
 import { mapActions, mapGetters } from "vuex";
 export default {
-  name: "CompanyObjectItemOffer",
+  name: "CompanyObjectItemOfferOnly",
   data() {
     return {
       taxFormList: TaxFormList,
