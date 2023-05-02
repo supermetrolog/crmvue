@@ -1,0 +1,56 @@
+.DealFloors {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    &-item {
+        height: 100px;
+        display: flex;
+
+        gap: 10px;
+        &-head {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            padding: 4px;
+
+            border: 1px solid black;
+
+            width: 100px;
+        }
+    }
+
+    &-separator {
+    }
+
+    &-sections {
+        position: relative;
+
+        display: flex;
+        gap: 5px;
+
+        width: 100%;
+    }
+
+    &-section {
+        position: relative;
+
+        display: flex;
+        flex-direction: column;
+
+        padding: 4px 4px 15px;
+
+        border: 1px solid black;
+        border-left: 3px solid black;
+
+        height: 100%;
+        min-width: 100px;
+
+        .edit {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+        }
+    }
+}

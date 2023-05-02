@@ -1,0 +1,9 @@
+.ObjectHoldingsOwnerList {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+    padding: 20px;
+    background-color: $color_olive_light;
+    border: 1px solid $color_light_grey;
+}

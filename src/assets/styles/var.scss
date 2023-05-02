@@ -1,30 +1,33 @@
 $fontfamily: "Roboto";
 $color_sidebar_bg: #243539;
 $color_overflow: #f7faff;
-$color_light: #F7F7F7;
-$color_grey: #7C7C86;
+$color_light: #f7f7f7;
+$color_grey: #7c7c86;
 // $color_light_grey: #C5C1C1;
 $color_light_grey: #d6d6d6;
+$color_light_trans: rgba(245, 249, 244, 0.8);
 $color_grey_alt: #e7e7e7;
-$color_danger_alt: #EC4646;
+$color_danger_alt: #ec4646;
 $color_danger: #f93154;
 $color_danger_dark: #e44f4a;
 $color_success: #00b74a;
 $color_success_alt: teal;
 $color_success_dark: #8ec293;
-$color_warning: #F88F01;
+$color_warning: #f88f01;
 $color_warning_alt: lighten($color_warning, 10);
 $color_warning_dark: #fcd89f;
-$color_dark: #2D2F34;
+$color_dark: #2d2f34;
 $color_primary: #11698e;
 $color_light_blue: #3a9dd0;
-$color_info: #46CDCF;
+$color_info: #46cdcf;
 $color_info_dark: #43d0d3;
 $color_secondary: #4f537b;
+$color_default_link: #0000ee;
 // $color_disabled_actions: #c4c2c2;
 $color_disabled_actions: #dbdbdb;
 $color_olive: #699133;
-// POSITIONING 
+$color_olive_light: #e7ece0;
+// POSITIONING
 $table_inner_padding: 10px;
 // MEDIA QUERIES
 $laptop_size: 1560px;
@@ -34,3 +37,12 @@ $phone_size: 800px;
 $grey_thin_border: 0.5px solid $color_grey;
 // COMPANY PAGE
 $grid_gap: 10px;
+
+// Mixins
+// cause import mixins didn't work
+
+@mixin black-header {
+    background-color: #333333;
+    color: $color_light;
+    padding: 1em;
+}
