@@ -1,29 +1,44 @@
 .ObjectHoldings {
-    $gap: 2em;
-    &-header {
-        font-size: 20px;
-        font-weight: bold;
+  $gap: 2em;
+  &-header {
+    @include black-header;
 
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+    display: flex;
+    justify-content: space-between;
 
-        margin-bottom: 20px;
-        padding: 10px;
+    font-size: 14px;
+    line-height: 53px;
+    font-weight: 900;
+    font-family: $fontfamily;
 
-        &-name {
-            display: flex;
-            justify-content: center;
-        }
+    position: sticky;
+    top: 170px;
+    z-index: 5;
+    margin-bottom: 20px;
 
-        &-line {
-            width: 80%;
-            border-bottom: 2px solid black;
-        }
+    height: 50px;
+
+    color: $color_light;
+
+    &-icons {
+      display: flex;
+      gap: 15px;
     }
-    &-body {
-        display: flex;
-        flex-direction: column;
-        gap: $gap;
+    &-button {
+      padding: 0;
+      align-items: center;
+      display: flex;
+      width: 20px;
+      justify-content: center;
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
     }
+  }
+  &-body {
+    display: flex;
+    flex-direction: column;
+    gap: $gap;
+  }
 }
