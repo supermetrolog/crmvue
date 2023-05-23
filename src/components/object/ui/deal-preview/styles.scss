@@ -1,50 +1,115 @@
 .DealPreviewCard {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  position: relative;
 
-    padding: 10px;
+  padding: 10px;
 
-    width: 300px;
+  width: 300px;
 
-    background-color: lighten($color_light_grey, 5);
-    border-left: 1px solid $color_grey;
+  background-color: lighten($color_light_grey, 5);
+  border-right: 1px solid #989898;
+  &:first-of-type {
+    border-left: 1px solid #989898;
+  }
 
-    &-status {
-        color: $color_grey;
+  font-size: 13px;
+  line-height: 17px;
+  &:hover &-edit {
+    visibility: visible;
+    display: block;
+  }
 
-        &.success {
-            color: $color_success;
-        }
-
-        &.danger {
-            color: $color_danger;
-        }
-    }
-
+  &-edit {
+    position: absolute;
+    top: 7px;
+    right: 5px;
+    background: inherit;
+    border: 1px solid $color_light_grey;
+    border-radius: 50%;
+    height: 26px;
+    width: 26px;
+    cursor: pointer;
+    visibility: hidden;
     &:hover {
-        background-color: $color_light_grey;
+      opacity: 0.6;
+    }
+  }
 
-        cursor: pointer;
+  &-type {
+    color: #989898;
+    font-size: 11px;
+    line-height: 14px;
+    font-weight: 400;
+    margin-bottom: 5px;
+  }
+
+  &-company {
+    white-space: nowrap; /* Текст не переносится */
+    overflow: hidden; /* Обрезаем всё за пределами блока */
+    text-overflow: ellipsis;
+    max-width: 18ch;
+  }
+
+  &-area {
+  }
+
+  &-price {
+    font-weight: 500;
+    &-unit {
+      font-size: 10px;
+      &::before {
+        content: " ";
+      }
+    }
+  }
+
+  &-status {
+    color: $color_grey;
+    font-weight: 700;
+    font-size: 13px;
+
+    &.success {
+      color: $color_success;
     }
 
-    &.active {
-        position: relative;
-
-        background-color: $color_olive_light;
-
-        &::after {
-            content: "";
-
-            position: absolute;
-            bottom: -15px;
-            left: 30px;
-
-            width: 0;
-            height: 0;
-            border-left: 15px solid transparent;
-            border-right: 15px solid transparent;
-
-            border-top: 15px solid $color_olive_light;
-        }
+    &.danger {
+      color: $color_danger;
     }
+  }
+
+  &:hover {
+    background-color: $color_light_grey;
+
+    cursor: pointer;
+  }
+
+  &.active {
+    position: relative;
+    z-index: 2;
+
+    background-color: $color_olive_light;
+    box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.2);
+    border: none;
+  }
+
+  &.active &-triangle {
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    bottom: -13px;
+    left: 35px;
+
+    overflow: hidden;
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 9px;
+      width: 15px;
+      height: 15px;
+      background-color: $color_olive_light;
+      transform: rotate(45deg);
+      box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.2);
+    }
+  }
 }

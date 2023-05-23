@@ -1,11 +1,40 @@
 .ObjectHoldingDeals {
-    &-actions {
+  &-actions {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+    &-label {
+      color: $color_grey;
+      font-size: 13px;
     }
-
     &-list {
-        display: flex;
-
-        margin-top: 10px;
-        margin-bottom: 40px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
     }
+
+    &-item {
+    }
+
+    &-button {
+      background: none;
+      border: none;
+      font-size: 13px;
+      color: $color_default_link;
+      text-decoration: underline;
+      cursor: pointer;
+      padding: 0px;
+    }
+  }
+
+  &-list {
+    display: flex;
+
+    margin-top: 10px;
+    margin-bottom: 40px;
+    background-color: lighten($color_light_grey, 5);
+    width: 100%;
+  }
 }

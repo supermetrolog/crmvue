@@ -2,7 +2,7 @@
   <div class="ObjectHoldingsTabs">
     <Tabs :options="{ useUrlFragment: false }">
       <Tab name="Характеристики">
-        <div class="ObjectHoldingsTabs-content">
+        <div class="ObjectHoldingsTabs-content-properties">
           <PropertyList>
             <PropertyListItem
               v-for="(prop, idx) in holdingsProperties[0]"

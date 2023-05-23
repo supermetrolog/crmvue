@@ -1,9 +1,23 @@
 <template>
   <div class="ObjectHoldingDeals">
     <div class="ObjectHoldingDeals-actions">
-      <button>
-        <span>Создать сделку</span>
-      </button>
+      <p class="ObjectHoldingDeals-actions-label">Создать сделку:</p>
+      <ul class="ObjectHoldingDeals-actions-list">
+        <li class="ObjectHoldingDeals-actions-item">
+          <button class="ObjectHoldingDeals-actions-button">аренда</button>
+        </li>
+        <li class="ObjectHoldingDeals-actions-item">
+          <button class="ObjectHoldingDeals-actions-button">субаренда</button>
+        </li>
+        <li class="ObjectHoldingDeals-actions-item">
+          <button class="ObjectHoldingDeals-actions-button">продажа</button>
+        </li>
+        <li class="ObjectHoldingDeals-actions-item">
+          <button class="ObjectHoldingDeals-actions-button">
+            ответ-хранение
+          </button>
+        </li>
+      </ul>
     </div>
     <div class="ObjectHoldingDeals-list">
       <DealPreviewCard
@@ -33,9 +47,9 @@ export default {
         {
           id: 1,
           type: 1,
-          company: { name: "Арахис Каприз Лук 123" },
-          area: 12000,
-          price: { count: 1200, type: 1 },
+          company: { name: "ОАО Арахис Каприз Лук" },
+          area: "32400 - 125000",
+          price: { value: 1200, type: 8 },
           status: 1,
           floors: [
             {
@@ -118,9 +132,11 @@ export default {
         {
           id: 2,
           type: 2,
-          company: { name: "ЦСКа гавно Спартак гавно" },
-          area: 12000,
-          price: { count: 1200, type: 1 },
+          company: {
+            name: "ООО БелТрастИнвестТТТТТТТТТТТТТТТТТТТТТТТТТТТТТТТТ",
+          },
+          area: "12000",
+          price: { value: 3500 },
           status: 2,
           floors: [
             {
@@ -154,8 +170,8 @@ export default {
           id: 3,
           type: 1,
           company: null,
-          area: 12000,
-          price: { count: null, type: 1 },
+          area: "45500 - 100000",
+          price: { value: null, type: 1 },
           status: 3,
           floors: [
             {
