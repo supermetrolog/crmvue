@@ -4,36 +4,14 @@
       <ul class="DealFloors-head-list">
         <li
           class="DealFloors-head-list-item"
-          v-for="(floor, idx) in floorWithSortedSections"
+          v-for="floor in floorWithSortedSections"
           :key="floor.name"
         >
-          <div class="DealFloors-head-list-card">
-            <div class="DealFloors-head-list-card-top">
-              <p class="DealFloors-text DealFloors-text_head-label">
-                {{ floor.name }}
-              </p>
-              <p class="DealFloors-text DealFloors-text_head-area">
-                {{ formatterObject.number(floor.area) }}
-                <span v-html="UnitTypesList.get(1)" />
-              </p>
-            </div>
-            <div class="DealFloors-head-list-card-bottom">
-              <div class="edit">
-                <input
-                  class="DealFloors-checkbox"
-                  type="checkbox"
-                  name=""
-                  :checked="floor.checked"
-                  :id="'check_' + floor.name + idx"
-                />
-                <label
-                  class="DealFloors-checkbox-label"
-                  :for="'check_' + floor.name + idx"
-                />
-                <i class="fas fa-pen"></i>
-              </div>
-            </div>
-          </div>
+          <DealFloorHead
+            :area="floor.area"
+            :checked="floor.checked"
+            :name="floor.name"
+          />
           <div class="DealFloors-separator">
             <i class="fas fa-arrow-right"></i>
           </div>
@@ -80,10 +58,11 @@
 import { formatterObject } from "@/plugins";
 import { UnitTypesList, DealStatusList } from "@/const/Const.js";
 import DealFloorSection from "./section/DealFloorSection.vue";
+import DealFloorHead from "./head/DealFloorHead.vue";
 
 export default {
   name: "DealFloors",
-  components: { DealFloorSection },
+  components: { DealFloorSection, DealFloorHead },
   props: {
     floors: { type: Array, default: () => [] },
   },
