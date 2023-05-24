@@ -56,3 +56,6 @@ export default {
   },
 };
 </script>
+<style lang="scss">
+@import url("./assets/styles/null.scss");
+</style>

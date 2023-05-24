@@ -18,6 +18,7 @@ import { Formatter, ApiUrlHelper, apiUrlHelperObject } from "@/plugins";
 import "animate.css";
 
 import "./assets/styles/grid.min.css";
+// import "./assets/styles/null.scss";
 import "./assets/styles/style.scss";
 // import "./assets/styles/var.scss";
 import "@vueform/multiselect/themes/default.css";

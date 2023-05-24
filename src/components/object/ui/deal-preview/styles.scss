@@ -5,9 +5,9 @@
 
   padding: 10px;
 
-  width: 300px;
+  width: 225px;
 
-  background-color: lighten($color_light_grey, 5);
+  background-color: lighten($color_light_grey, 9);
   border-right: 1px solid #989898;
   &:first-of-type {
     border-left: 1px solid #989898;
@@ -52,6 +52,7 @@
   }
 
   &-area {
+    font-weight: 600;
   }
 
   &-price {

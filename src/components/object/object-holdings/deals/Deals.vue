@@ -54,13 +54,13 @@ export default {
           floors: [
             {
               name: "Мезонин 2",
-              area: 3000,
+              area: 5000,
               checked: false,
               sections: [
                 {
-                  company: { name: "Объебос" },
+                  company: { name: "Сияние Чистоты" },
                   area: 345,
-                  status: 1,
+                  status: 2,
                   checked: true,
                 },
                 {
@@ -74,6 +74,18 @@ export default {
                   area: 1000,
                   status: 3,
                   checked: true,
+                },
+                {
+                  company: { name: "MEGA GROUP" },
+                  area: null,
+                  status: 2,
+                  checked: null,
+                },
+                {
+                  company: { name: "ИП Пушкин" },
+                  area: null,
+                  status: 2,
+                  checked: null,
                 },
               ],
             },
@@ -83,9 +95,9 @@ export default {
               checked: false,
               sections: [
                 {
-                  company: { name: "Объебос" },
+                  company: { name: "Сияние Чистоты" },
                   area: 345,
-                  status: 1,
+                  status: 2,
                   checked: true,
                 },
                 {
@@ -99,30 +111,42 @@ export default {
                   area: 1000,
                   status: 3,
                   checked: true,
+                },
+                {
+                  company: { name: "MEGA GROUP" },
+                  area: null,
+                  status: 2,
+                  checked: null,
+                },
+                {
+                  company: { name: "ИП Пушкин" },
+                  area: null,
+                  status: 2,
+                  checked: null,
                 },
               ],
             },
             {
               name: "1 этаж",
-              area: 3000,
+              area: 3500,
               checked: false,
               sections: [
                 {
-                  company: { name: "Объебос" },
+                  company: { name: "Сияние чистоты" },
                   area: 345,
-                  status: 1,
-                  checked: true,
-                },
-                {
-                  company: { name: "Портос" },
-                  area: 228,
                   status: 2,
                   checked: true,
                 },
                 {
-                  company: { name: "Арамис" },
-                  area: 1000,
-                  status: 3,
+                  company: null,
+                  area: 1500,
+                  status: 5,
+                  checked: false,
+                },
+                {
+                  company: null,
+                  area: 930,
+                  status: 5,
                   checked: true,
                 },
               ],
@@ -147,7 +171,7 @@ export default {
                 {
                   company: { name: "Объебос" },
                   area: 345,
-                  status: 1,
+                  status: 2,
                   checked: true,
                 },
                 {
@@ -176,13 +200,13 @@ export default {
           floors: [
             {
               name: "Мезонин 1",
-              area: 3000,
+              area: 2000,
               checked: false,
               sections: [
                 {
                   company: { name: "Объебос" },
                   area: 345,
-                  status: 1,
+                  status: 2,
                   checked: true,
                 },
                 {
@@ -216,7 +240,6 @@ export default {
   },
   methods: {
     choseDeal(id) {
-      console.log(id);
       this.currentDealId = id;
     },
   },

@@ -1,56 +1,117 @@
 .DealFloors {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  &-text {
+    font-size: 14px;
+    line-height: 14px;
+    &_head-label {
+      color: white;
+      font-weight: 700;
+    }
+
+    &_head-area {
+      color: white;
+      line-height: 16px;
+      font-weight: 100;
+    }
+  }
+
+  &-checkbox {
+    border-radius: 50%;
+    position: relative;
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+    display: block;
+    width: 0;
+    height: 0;
+    &-label {
+      width: 13px;
+      height: 13px;
+      background-color: inherit;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 1px solid black;
+      box-sizing: border-box;
+
+      input[type="checkbox"]:checked + & {
+        background-color: $checkbox_active;
+      }
+    }
+  }
+  &-body {
+    display: flex;
+
+    gap: 10px;
+  }
+
+  &-head-list {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
+    padding-bottom: 20px;
+
     &-item {
-        height: 100px;
-        display: flex;
-
-        gap: 10px;
-        &-head {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-
-            padding: 4px;
-
-            border: 1px solid black;
-
-            width: 100px;
-        }
+      display: flex;
+      gap: 13px;
+      align-items: center;
     }
 
-    &-separator {
+    &-card {
+      & p {
+        white-space: nowrap;
+      }
+
+      border: 1px solid black;
+
+      &-top {
+        background-color: $color_dark_grey;
+        padding: 5px 15px;
+        text-align: center;
+        width: 100px;
+      }
+
+      &-bottom .edit {
+        padding: 7px 6px;
+      }
+    }
+  }
+
+  &-separator {
+  }
+
+  &-sections {
+    overflow-x: scroll;
+    padding-bottom: 10px;
+    // height: 100%;
+    flex-grow: 2;
+    &-body {
+      padding-left: 14px;
+      box-shadow: inset 0 0px 15px -10px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 1000px;
+      height: 100%;
+      width: 100%;
     }
 
-    &-sections {
-        position: relative;
+    &-line {
+      position: relative;
+      height: 100%;
 
-        display: flex;
-        gap: 5px;
+      display: flex;
+      gap: 4px;
 
-        width: 100%;
+      width: 100%;
     }
+  }
 
-    &-section {
-        position: relative;
-
-        display: flex;
-        flex-direction: column;
-
-        padding: 4px 4px 15px;
-
-        border: 1px solid black;
-        border-left: 3px solid black;
-
-        height: 100%;
-        min-width: 100px;
-
-        .edit {
-            position: absolute;
-            bottom: 2px;
-            right: 2px;
-        }
-    }
+  .edit {
+    display: flex;
+    justify-content: flex-end;
+    gap: 7px;
+    align-items: center;
+  }
 }

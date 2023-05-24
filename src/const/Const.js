@@ -725,3 +725,11 @@ export const UnitTypesList = new Map([
   [8, "м<sup>2</sup>/год"],
   [9, "₽"],
 ]);
+
+export const DealStatusList = new Map([
+  [1, "Сдается"],
+  [2, "Сдано"],
+  [3, "Продано"],
+  [4, "Неизвестно"],
+  [5, "Свободно, размечено"],
+]);
