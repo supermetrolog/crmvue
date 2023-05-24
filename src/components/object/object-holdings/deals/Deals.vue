@@ -29,17 +29,19 @@
       />
     </div>
     <DealItem :deal="currentDeal" />
+    <DealInfo />
   </div>
 </template>
 
 <script>
 import DealItem from "./deal-item/ObjectHoldingDealItem.vue";
 import DealPreviewCard from "../../ui/deal-preview/DealPreview.vue";
+import DealInfo from "../deal-info/DealInfo.vue";
 import "./styles.scss";
 
 export default {
   name: "ObjectHoldingDeals",
-  components: { DealPreviewCard, DealItem },
+  components: { DealPreviewCard, DealItem, DealInfo },
   props: {
     deals: {
       type: Array,
