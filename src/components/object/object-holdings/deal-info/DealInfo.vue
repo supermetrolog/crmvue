@@ -1,10 +1,12 @@
 <template>
   <div class="deal-info">
     <deal-info-header :company="company" :consultant="consultant" />
-    <div class="deal-info__content">
-      <deal-detailed-info />
+    <div class="deal-info__body">
+      <div class="deal-info__content">
+        <deal-detailed-info />
+      </div>
+      <div class="deal-info__aside"></div>
     </div>
-    <div class="deal-info__aside"></div>
   </div>
 </template>
 

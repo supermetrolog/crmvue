@@ -3,7 +3,7 @@
     <div class="building-info__table-list">
       <PropertyList class="building-info__table">
         <p class="building-info__heading">
-          {{ area.sum.value }}
+          {{ formatValue(area.sum.value) }}
           <span v-html="UnitTypesList.get(area.sum.unitType)"></span>
         </p>
         <PropertyListItem
@@ -14,11 +14,9 @@
           :unit="prop.unitType"
         />
       </PropertyList>
-    </div>
-    <div class="building-info__table-list">
       <PropertyList class="building-info__table">
         <p class="building-info__heading">
-          {{ price.sum.value }}
+          {{ formatValue(price.sum.value) }}
           <span v-html="UnitTypesList.get(price.sum.unitType)"></span>
         </p>
         <PropertyListItem
@@ -36,11 +34,14 @@
 <script>
 import { UnitTypesList } from "@/const/Const";
 import PropertyList from "@/components/common/property-list/PropertyList.vue";
+import PropertyListItem from "@/components/common/property-list/property-list-item/PropertyListItem.vue";
+import { formatterObject } from "@/plugins";
 
 export default {
   name: "BuildingInfo",
   components: {
     PropertyList,
+    PropertyListItem,
   },
   props: {
     area: {
@@ -55,7 +56,18 @@ export default {
       UnitTypesList,
     };
   },
-  methods: {},
+  methods: {
+    formatValue(value) {
+      if (!isNaN(value)) return formatterObject.number(value);
+      if (value.includes("-")) {
+        const splittedValue = value.split("-");
+        if (!isNaN(splittedValue[0].trim()) && !isNaN(splittedValue[1].trim()))
+          return formatterObject.numberRange(value);
+      }
+
+      return value;
+    },
+  },
 };
 </script>
 

@@ -86,7 +86,7 @@ export default {
             },
             {
               label: "E - офисов",
-              value: "не заполнено",
+              value: null,
             },
           ],
         },

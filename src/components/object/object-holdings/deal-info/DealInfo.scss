@@ -1,0 +1,11 @@
+.deal-info {
+  &__content {
+  }
+  &__aside {
+  }
+
+  &__body {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+  }
+}
