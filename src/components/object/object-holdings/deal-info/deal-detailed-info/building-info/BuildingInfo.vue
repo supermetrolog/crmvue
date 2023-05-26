@@ -35,7 +35,7 @@
 import { UnitTypesList } from "@/const/Const";
 import PropertyList from "@/components/common/property-list/PropertyList.vue";
 import PropertyListItem from "@/components/common/property-list/property-list-item/PropertyListItem.vue";
-import { formatterObject } from "@/plugins";
+import { formatValue } from "@/utils";
 
 export default {
   name: "BuildingInfo",
@@ -54,20 +54,10 @@ export default {
   data() {
     return {
       UnitTypesList,
+      formatValue,
     };
   },
-  methods: {
-    formatValue(value) {
-      if (!isNaN(value)) return formatterObject.number(value);
-      if (value.includes("-")) {
-        const splittedValue = value.split("-");
-        if (!isNaN(splittedValue[0].trim()) && !isNaN(splittedValue[1].trim()))
-          return formatterObject.numberRange(value);
-      }
-
-      return value;
-    },
-  },
+  methods: {},
 };
 </script>
 
