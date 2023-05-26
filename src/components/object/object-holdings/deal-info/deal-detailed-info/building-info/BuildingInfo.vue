@@ -34,11 +34,14 @@
 </template>
 
 <script>
-import { UnitTypesList } from "../../../../../../const/Const";
+import { UnitTypesList } from "@/const/Const";
+import PropertyList from "@/components/common/property-list/PropertyList.vue";
 
 export default {
   name: "BuildingInfo",
-  components: {},
+  components: {
+    PropertyList,
+  },
   props: {
     area: {
       type: Object,
