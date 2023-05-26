@@ -54,9 +54,9 @@ export default {
     if (this.alreadyHidden) {
       return;
     }
-    document.getElementsByTagName("body")[0].style.overflow = "scroll";
-    document.getElementsByTagName("body")[0].style.paddingRight = "0";
-    document.getElementsByClassName("navbar")[0].style.paddingRight = "0";
+    document.getElementsByTagName("body")[0].style.overflow = null;
+    document.getElementsByTagName("body")[0].style.paddingRight = null;
+    document.getElementsByClassName("navbar")[0].style.paddingRight = null;
   },
   emits: ["close"],
 };

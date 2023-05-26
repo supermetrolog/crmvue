@@ -1,10 +1,25 @@
 <template>
-  <div class="ymap" :key="render">
-    <yandex-map v-if="mounted" :settings="settings" :options="options" :coords="coords" :zoom="zoom" :controls="controls"
-      :detailed-controls="detailedControls" :behaviors="behaviors.filter((elem) => elem != 'selection')" :style="styles"
-      ref="map">
-      <YmapSelectionBehavior v-if="behaviors.includes('selection')" :map="$refs.map.$options.static.myMap"
-        :options="polygonOptions" @selectionDone="selectionDone" />
+  <div class="ymap">
+    <yandex-map
+      v-if="mounted"
+      :settings="settings"
+      :options="options"
+      :coords="coords"
+      :zoom="zoom"
+      :controls="controls"
+      :detailed-controls="detailedControls"
+      :behaviors="behaviors.filter((elem) => elem != 'selection')"
+      :style="styles"
+      ref="map"
+    >
+      <YmapSelectionBehavior
+        v-if="behaviors.includes('selection')"
+        :map="$refs.map.$options.static.myMap"
+        :options="polygonOptions"
+        :coordinates="polygonCoordinates"
+        @selectionDone="selectionDone"
+        @removedDone="$emit('removedDone')"
+      />
       <slot />
     </yandex-map>
   </div>
@@ -21,12 +36,11 @@ export default {
   },
   data() {
     return {
-      addTimeout: null,
-      removeTimeout: null,
-      render: 0,
+      updateTimeout: null,
       mounted: false,
       addMarkers: [],
       removeMarkers: [],
+      markers: [],
     };
   },
   provide() {
@@ -74,6 +88,12 @@ export default {
               top: "100px",
             },
           },
+          geolocationControl: {
+            float: "right"
+          },
+          searchControl: {
+            float: "right"
+          }
         };
       },
     },
@@ -86,19 +106,21 @@ export default {
       default: () => {
         return {
           balloonContentLayout: null,
-          gridSize: 64,
+          gridSize: 32,
           hasHint: true,
           hasBalloon: true,
-          margin: 10,
+          margin: 5,
           clusterIcons: [
             {
               href: require("@/assets/image/ymap-cluster-icon.svg"),
-              size: [30, 30],
+              size: [25, 25],
               offset: [-20, -20],
             },
           ],
-          minClusterSize: 2,
-          preset: "islands#blueCircleDotIcon",
+          iconLayout: {},
+          minClusterSize: 4,
+          preset: "islands#invertedVioletClusterIcons",
+          groupByCoordinates: false,
           useMapMargin: true,
           zoomMargin: null,
           viewportMargin: null,
@@ -127,8 +149,14 @@ export default {
           strokeWidth: 4,
           opacity: 0.7,
           accuracy: 3,
+          polygonZoom: 10,
+          polygonZoomDuration: 100,
         };
       },
+    },
+    polygonCoordinates: {
+      type: Array,
+      default: () => [],
     },
     styles: {
       type: Object,
@@ -162,9 +190,22 @@ export default {
           clusterize: true,
           ...this.clusterOptions,
         });
+        objectManager.objects.events.add(['click'], this.objectEventHandler);
+        objectManager.clusters.events.add(['click'], this.clusterEventHandler);
       }
+     
       return objectManager;
     },
+    //emit objectClick
+    objectEventHandler(event) {
+      this.$emit('object-' + event.get('type'), event.get('objectId'), this.getObjectManager());
+    },
+    
+    //emit clusterClick
+    clusterEventHandler(event) {
+      this.$emit('cluster-' + event.get('type'), event.get('objectId'), this.getObjectManager());
+    },
+    
     addMarkersToObjectManager(markers) {
       const objectManager = this.getObjectManager();
       objectManager.add(markers);
@@ -179,32 +220,44 @@ export default {
 
       this.$options.static.objectManager = objectManager;
     },
-    add() {
-      const markers = [...this.addMarkers];
-      this.addMarkers = [];
-      this.addMarkersToObjectManager(markers);
+    triggerUpdated() {
+      this.$emit("updated");
     },
     addMarker(marker) {
-      if (this.addTimeout) {
-        clearTimeout(this.addTimeout);
+      if (this.updateTimeout) {
+        clearTimeout(this.updateTimeout);
       }
       this.addMarkers.push(marker);
-      this.addTimeout = setTimeout(this.add, 100);
-    },
-    remove() {
-      const removeMarkers = [...this.removeMarkers];
-      this.removeMarkers = [];
-      const objectManager = this.$options.static.objectManager;
-      if (objectManager) {
-        objectManager.remove(removeMarkers);
-      }
+      this.updateTimeout = setTimeout(this.update, 100);
     },
     removeMarker(marker) {
-      if (this.removeTimeout) {
-        clearTimeout(this.removeTimeout);
+      if (this.updateTimeout) {
+        clearTimeout(this.updateTimeout);
       }
       this.removeMarkers.push(marker.id);
-      this.removeTimeout = setTimeout(this.remove, 100);
+      this.updateTimeout = setTimeout(this.update, 100);
+    },
+    removeObjectManager() {
+      const objectManager = this.$options.static.objectManager;
+      if (objectManager) {
+        this.getMap().geoObjects.remove(objectManager);
+        this.$options.static.objectManager = null;
+      }
+    },
+    update() {
+      this.removeObjectManager();
+
+      this.markers = this.markers.filter(
+        (marker) => !this.removeMarkers.includes(marker.id)
+      );
+
+      this.markers.push(...this.addMarkers);
+
+      this.addMarkersToObjectManager(this.markers);
+
+      this.removeMarkers = [];
+      this.addMarkers = [];
+      this.triggerUpdated();
     },
   },
 

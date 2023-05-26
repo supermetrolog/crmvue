@@ -1,10 +1,15 @@
 <template>
   <Ymap
     :settings="$options.ymapOptions.settings"
-    :styles="$options.ymapOptions.styles"
+    :styles="styles"
     :controls="$options.ymapOptions.controls"
     :behaviors="['drag', 'scrollZoom', 'multiTouch', 'selection']"
+    :polygonCoordinates="polygonCoordinates"
     @selectionDone="$emit('selectionDone')"
+    @removedDone="$emit('removedDone')"
+    @updated="$emit('updated')"
+    @objectClick="objectClickHandler"
+    @clusterClick="clusterClickHandler"
     ref="map"
   >
     <YmapMarker
@@ -12,49 +17,48 @@
       :key="offer.id"
       :marker-id="offer.id"
       :coords="[offer.latitude, offer.longitude]"
-      :balloonContentBody="offer.address"
-      :balloonContentHeader="'ID: ' + offer.complex_id"
-      :balloonContentFooter="getFooter(offer)"
       :hintContent="offer.address"
       ref="markers"
     />
-    <!-- <YmapMarker
-      v-for="offer in list"
-      :key="offer.id"
-      :marker-id="offer.id"
-      :coords="[offer.latitude, offer.longitude]"
-      :use-html-in-layout="true"
-      :balloon="{
-        header: 'ID: ' + offer.complex_id,
-        body: offer.address,
-        footer: getFooter(offer),
-      }"
-      :icon="{
-        layout: 'default#imageWithContent',
-        imageOffset: [0, 0],
-        contentLayout: `<div style=' background: white; border-radius: 50%; width: 30px; heigth: 30px; color: #FFFFFF; font-weight: bold;'><i class='far fa-circle' style='color: ${getMarkerColor(
-          offer
-        )}; font-size: 30px;'></i></div>`,
-      }"
-      cluster-name="point"
-    /> -->
+    <ObjectView :offerIds="offerIds" />
   </Ymap>
 </template>
 
 <script>
 import Ymap from "@/components/common/ymap/Ymap";
 import YmapMarker from "@/components/common/ymap/YmapMarker";
+import ObjectView from "@/components/offers/map/ObjectView.vue";
 export default {
   name: "YmapOffersView",
   components: {
+    ObjectView,
     Ymap,
     YmapMarker,
+  },
+  data() {
+    return {
+      offerIds: [],
+    }
   },
   props: {
     list: {
       type: Array,
       required: true,
     },
+    polygonCoordinates: {
+      type: Array,
+      default: () => [],
+    },
+    
+    styles: {
+      type: Object,
+      default: () => {
+        return {
+          height: "75vh",
+          width: "100%",
+        }
+      },
+    }
   },
   ymapOptions: {
     settings: {
@@ -65,7 +69,7 @@ export default {
       version: "2.1",
     },
     styles: {
-      height: "100vh",
+      height: "75vh",
       width: "100%",
     },
     controls: [
@@ -99,6 +103,14 @@ export default {
         return "passive";
       }
       return "";
+    },
+    
+    objectClickHandler(objectID) {
+      this.offerIds = [objectID];
+      console.log(objectID);
+    },
+    clusterClickHandler(clusterId) {
+      console.log(clusterId);
     },
     getOfferUrl(offer) {
       return this.$apiUrlHelper.generator().objectUrl(offer.complex_id);

@@ -2,7 +2,8 @@
   <div>
     <canvas
       ref="canvas"
-      style="position: absolute; left: 0; top: 0; display: none"
+      class="canvas"
+      style="position: absolute; left: 0; top: 0;"
     ></canvas>
   </div>
 </template>
@@ -10,6 +11,7 @@
 <script>
 export default {
   polygon: null,
+  btn: null,
   props: {
     // Ymap object
     map: {
@@ -20,13 +22,33 @@ export default {
       type: Object,
       required: true,
     },
+    coordinates: {
+      type: Array,
+      default: () => [],
+    },
   },
   mounted() {
+    console.log("MOUNTED BEHAVIOR");
     this.addSelectionControllButton();
+    this.addPolygonIfExistsCoordinates();
   },
   methods: {
+    addPolygonIfExistsCoordinates() {
+      this.removePolygon();
+      if (this.coordinates.length) {
+        this.createPolygon(this.coordinates);
+      }
+    },
     addSelectionControllButton() {
-      const btn = new window.ymaps.control.Button({
+      this.map.controls.add(this.getBtn(), {
+        float: "right",
+      });
+    },
+    getBtn() {
+      if (this.$options.btn) {
+        return this.$options.btn;
+      }
+      this.$options.btn = new window.ymaps.control.Button({
         data: {
           // Изображение иконки кнопки.
           content: `<svg
@@ -50,14 +72,14 @@ export default {
         },
       });
 
-      btn.events.add("click", this.onClickDrawButton);
+      this.$options.btn.events.add("click", this.onClickDrawButton);
 
-      this.map.controls.add(btn, {
-        float: "right",
-      });
+      return this.$options.btn;
     },
     drawLineOverMap(map) {
-      const canvas = this.$refs.canvas;
+      console.log("Draw start");
+      const canvas = document.getElementsByClassName('canvas')[0];
+      console.log("REF CANVAS", this.$refs, this.$refs.canvas, canvas, canvas.getContext("2d"));
       const ctx2d = canvas.getContext("2d");
       const canvasOptions = {
         strokeStyle: this.options.strokeColor,
@@ -69,6 +91,7 @@ export default {
 
       // Задаем размеры канвасу как у карты.
       const rect = map.container.getParentElement().getBoundingClientRect();
+      console.log()
       canvas.style.width = rect.width + "px";
       canvas.style.height = rect.height + "px";
       canvas.width = rect.width;
@@ -82,7 +105,9 @@ export default {
 
       // Показываем канвас. Он будет сверху карты из-за position: absolute.
       canvas.style.display = "block";
-
+      console.log("Canvas position", canvas.getBoundingClientRect());
+      console.log("Canvas visibility");
+  
       canvas.onmousedown = (e) => {
         // При нажатии мыши запоминаем, что мы начали рисовать и координаты.
         drawing = true;
@@ -107,6 +132,7 @@ export default {
         canvas.onmouseup = (e) => {
           coordinates.push([e.offsetX, e.offsetY]);
           canvas.style.display = "none";
+          console.log("Canvas unvisible");
           drawing = false;
 
           coordinates = coordinates.map(function (x) {
@@ -119,10 +145,11 @@ export default {
     },
     runDraw() {
       this.drawLineOverMap(this.map).then((coordinates) => {
+        console.log("Draw done");
         coordinates = this.normalizeCoords(coordinates, this.map.getBounds());
         coordinates = this.simplifyCoords(coordinates);
         this.removePolygon();
-        this.createPolygon(coordinates);
+        // this.createPolygon(coordinates);
         this.triggerCreatedPolygonEvenet(coordinates);
       });
     },
@@ -147,19 +174,60 @@ export default {
     triggerCreatedPolygonEvenet(coordinates) {
       this.$emit("selectionDone", coordinates);
     },
+    triggerRemovedPolygonEvenet() {
+      this.$emit("removedDone");
+    },
+    toggleBtn(active) {
+      this.getBtn().state.set("selected", active);
+    },
+    zoomToPolygon(coordinates) {
+      this.map.setCenter(
+        this.getCenterOfPolygon(coordinates),
+        this.options.polygonZoom,
+        {
+          duration: this.options.polygonZoomDuration,
+        }
+      );
+    },
+    getCenterOfPolygon(polygon) {
+      const PI = 22 / 7;
+      let X = 0;
+      let Y = 0;
+      let Z = 0;
+      polygon.forEach(function (coords) {
+        let lat1 = coords[0];
+        let lon1 = coords[1];
+        lat1 = (lat1 * PI) / 180;
+        lon1 = (lon1 * PI) / 180;
+        X += Math.cos(lat1) * Math.cos(lon1);
+        Y += Math.cos(lat1) * Math.sin(lon1);
+        Z += Math.sin(lat1);
+      });
+
+      let Lon = Math.atan2(Y, X);
+      let Hyp = Math.sqrt(X * X + Y * Y);
+      let Lat = Math.atan2(Z, Hyp);
+      Lat = (Lat * 180) / PI;
+      Lon = (Lon * 180) / PI;
+      return [Lat, Lon];
+    },
     createPolygon(coordinates) {
+      console.log("CREATE", coordinates);
       this.$options.polygon = new window.ymaps.Polygon(
         [coordinates],
         {},
         this.options
       );
       this.map.geoObjects.add(this.$options.polygon);
+      this.toggleBtn(true);
+      this.zoomToPolygon(coordinates);
     },
     removePolygon() {
       if (this.$options.polygon) {
         this.map.geoObjects.remove(this.$options.polygon);
         this.$options.polygon = null;
       }
+      this.toggleBtn(false);
     },
     polygonAlreadyExists() {
       return !!this.$options.polygon;
@@ -169,6 +237,16 @@ export default {
         this.runDraw();
       }
       this.removePolygon();
+      this.triggerRemovedPolygonEvenet();
+    },
+  },
+  watch: {
+    coordinates: {
+      handler() {
+        console.log("CHANGE POLYGON");
+        this.addPolygonIfExistsCoordinates();
+      },
+      deep: true,
     },
   },
 };
@@ -181,5 +259,8 @@ export default {
 }
 [class$="float-button-text"] {
   padding: 0 !important;
+}
+.canvas {
+  display: none;
 }
 </style>

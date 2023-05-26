@@ -102,9 +102,7 @@
         {{ offer.calc_price_safe_pallet }} <small>руб за 1 п. м.</small>
       </p>
       <span v-if="offer.offer && offer.offer.tax_form">
-        {{
-          taxFormList.find((item) => item.value == offer.offer.tax_form).label
-        }}
+        {{ taxForm }}
       </span>
     </Td>
     <Td class="company_about">
@@ -195,7 +193,20 @@ export default {
       type: Boolean,
     },
   },
+  computed: {
+    taxForm() {
+      if (this.offer && this.offer.offer) {
+        const taxForm = this.taxFormList.find(
+          (item) => item.value == this.offer.offer.tax_form
+        );
+        if (taxForm) {
+          return taxForm.label;
+        }
+      }
 
+      return null;
+    },
+  },
   methods: {
     async clickOpenMore() {
       if (this.dropdownIsOpen) {
