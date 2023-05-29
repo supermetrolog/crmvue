@@ -6841,6 +6841,55 @@ tr.DropdownSwitcherRow {
   align-items: center;
   min-width: 4.5rem;
 
+  .MiniOffersItem-actions-item_avito {
+    display: flex;
+    align-items: center;
+    .MiniOffersItem-actions-toggler {
+      cursor: pointer;
+      width: 50px;
+      height: 22px;
+      border: 1px solid $color_danger;
+      border-radius: 20px;
+      padding: 1px;
+      position: relative;
+      box-sizing: border-box;
+      transition: color 0.1s ease-in-out;
+
+      & > div {
+        background-color: $color_danger;
+        left: 1px;
+        top: 1px;
+      }
+
+      &__loading,
+      &:disabled {
+        border-color: $color_grey;
+
+        & > div {
+          background-color: $color_grey;
+        }
+      }
+
+      &__active {
+        border-color: $color_success;
+
+        & > div {
+          background-color: $color_success;
+          left: 29px;
+        }
+      }
+
+      .MiniOffersItem-actions-toggler-circle {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        position: absolute;
+        box-sizing: border-box;
+        transition: 0.1s ease-in-out;
+      }
+    }
+  }
+
   .MiniOffersItem-actions-item {
     height: 100%;
     width: 100%;
@@ -6859,7 +6908,6 @@ tr.DropdownSwitcherRow {
     }
   }
 }
-
 // ************** MINI TIMELINE *************
 .MiniTimeline {
   $step_height: 34px;
