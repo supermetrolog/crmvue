@@ -34,6 +34,22 @@
             title="Яндекс"
             v-if="offer.ad_yandex"
           ></i>
+        </div>
+        <div
+          class="MiniOffersItem-actions-item MiniOffersItem-actions-item_avito"
+        >
+          <button
+            class="MiniOffersItem-actions-toggler"
+            :class="{
+              'MiniOffersItem-actions-toggler__active': offer.ad_avito === 1,
+              'MiniOffersItem-actions-toggler__loading': avitoLoading,
+            }"
+            :disabled="avitoLoading"
+            @click="handleClickAvito"
+            title="Авито"
+          >
+            <div class="MiniOffersItem-actions-toggler-circle"></div>
+          </button>
         </div></div
     ></Td>
   </Tr>
@@ -42,6 +58,7 @@
 <script>
 import Tr from "../../common/table/Tr.vue";
 import Td from "@/components/common/table/Td";
+import { mapActions } from "vuex";
 
 export default {
   name: "MiniOffersItem",
@@ -49,8 +66,11 @@ export default {
     Td,
     Tr,
   },
+  // emits: ["toggle-avito"],
   data() {
-    return {};
+    return {
+      avitoLoading: false,
+    };
   },
   props: {
     offer: {
@@ -91,7 +111,19 @@ export default {
       }
     },
   },
-  methods: {},
+  methods: {
+    ...mapActions(["TOGGLE_AVITO_AD"]),
+    async handleClickAvito() {
+      if (!this.avitoLoading) {
+        this.avitoLoading = true;
+        const status = await this.TOGGLE_AVITO_AD(this.offer.original_id);
+        if (status && status === 200) {
+          this.$emit("toggleAvito", this.offer.original_id);
+        }
+        this.avitoLoading = false;
+      }
+    },
+  },
   mounted() {},
 };
 </script>

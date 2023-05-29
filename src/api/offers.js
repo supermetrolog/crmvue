@@ -95,4 +95,14 @@ export default {
       .catch((e) => ErrorHandle.setError(e));
     return data;
   },
+
+  async toggleAvitoAd(id) {
+    let url = `oldDb/objects/toggle-avito-ad/${id}`;
+    try {
+      const res = await axios.post(url, {});
+      return res.status;
+    } catch (e) {
+      ErrorHandle.setError(e);
+    }
+  },
 };

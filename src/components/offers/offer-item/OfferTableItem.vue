@@ -156,6 +156,7 @@
       :offer="offer"
       :miniOffers="miniOffers"
       v-if="dropdownIsOpen && !miniOffersLoader"
+      @toggleAvito="handleAvitoToggle"
   /></DropDown>
 </template>
 
@@ -223,6 +224,19 @@ export default {
         this.miniOffers = response.data;
       }
       this.miniOffersLoader = false;
+    },
+    handleAvitoToggle(id) {
+      const offerIndex = this.miniOffers.findIndex(
+        (offer) => offer.original_id === id
+      );
+      this.miniOffers = [
+        ...this.miniOffers.slice(0, offerIndex),
+        {
+          ...this.miniOffers[offerIndex],
+          ad_avito: this.miniOffers[offerIndex].ad_avito === 0 ? 1 : 0,
+        },
+        ...this.miniOffers.slice(offerIndex + 1),
+      ];
     },
   },
 };

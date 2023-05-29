@@ -33,7 +33,10 @@
             activeRentOffers.length ? 'suffix' : 'suffix suffix-none'
           }'>${activeRentOffers.length}</span>`"
         >
-          <MiniOffers :miniOffers="activeRentOffers" />
+          <MiniOffers
+            :miniOffers="activeRentOffers"
+            @toggleAvito="handleToggleAvito"
+          />
         </Tab>
         <Tab
           id="third-tab"
@@ -41,7 +44,10 @@
           :suffix="`<span class='suffix suffix-none'>1</span>`"
           v-if="archiveRentOffers.length"
         >
-          <MiniOffers :miniOffers="archiveRentOffers" />
+          <MiniOffers
+            :miniOffers="archiveRentOffers"
+            @toggleAvito="handleToggleAvito"
+          />
         </Tab>
         <Tab
           id="fourth-tab"
@@ -51,7 +57,10 @@
           }'>${salesOffers.countOfActive}</span>`"
           v-if="salesOffers.array.length"
         >
-          <MiniOffers :miniOffers="salesOffers.array" />
+          <MiniOffers
+            :miniOffers="salesOffers.array"
+            @toggleAvito="handleToggleAvito"
+          />
         </Tab>
         <Tab
           id="fifth-tab"
@@ -61,7 +70,10 @@
           }'>${storageOffers.countOfActive}</span>`"
           v-if="storageOffers.array.length"
         >
-          <MiniOffers :miniOffers="storageOffers.array" />
+          <MiniOffers
+            :miniOffers="storageOffers.array"
+            @toggleAvito="handleToggleAvito"
+          />
         </Tab>
       </Tabs>
     </td>
@@ -119,6 +131,10 @@ export default {
       return this.offer.area_building.toLocaleString("ru-RU");
     },
   },
-  methods: {},
+  methods: {
+    handleToggleAvito(id) {
+      this.$emit("toggleAvito", id);
+    },
+  },
 };
 </script>
