@@ -5,7 +5,7 @@
         {{ name }}
       </p>
       <p class="DealFloorHead-text DealFloorHead-text_area">
-        {{ formatterObject.number(area) }}
+        {{ $formatter.number(area) }}
         <span v-html="UnitTypesList.get(1)" />
       </p>
     </div>
@@ -29,7 +29,6 @@
 </template>
 
 <script>
-import { formatterObject } from "@/plugins";
 import { UnitTypesList } from "@/const/Const.js";
 import uuid4 from "uuid4";
 
@@ -48,7 +47,6 @@ export default {
   },
   data() {
     return {
-      formatterObject,
       UnitTypesList,
       id: uuid4(),
     };

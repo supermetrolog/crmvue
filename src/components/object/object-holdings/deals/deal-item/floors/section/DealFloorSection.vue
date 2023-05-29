@@ -7,8 +7,8 @@
       {{ section.company.name }}
     </p>
     <p class="DealFloorSection-text DealFloorSection-text_area">
-      {{ formatterObject.number(section.area) }}
-      <span v-html="UnitTypesList.get(1)" />
+      {{ formattedArea }}
+      м<sup>2</sup>
     </p>
     <p
       class="DealFloorSection-status"
@@ -19,14 +19,10 @@
         black: !section.status,
       }"
     >
-      {{
-        section.status
-          ? DealStatusList.get(section.status)
-          : "Сдано или нераспределено"
-      }}
+      {{ sectionStatus }}
     </p>
     <p
-      v-if="Array.isArray(section.company) && section.company.length > 0"
+      v-if="presenceOfSurrendedTerWithUnknownArea"
       class="DealFloorSection-text DealFloorSection-text_label"
     >
       ???: {{ section.company.join(", ") }}
@@ -37,18 +33,17 @@
         type="checkbox"
         name=""
         :checked="section.checked"
-        :id="'section-check_' + floorName + id"
+        :id="genSectionInputId(floorName, id)"
       />
       <label
         class="DealFloorSection-checkbox-label"
-        :for="'section-check_' + floorName + id"
+        :for="genSectionInputId(floorName, id)"
       />
       <i class="fas fa-pen"></i>
     </div>
   </div>
 </template>
 <script>
-import { formatterObject } from "@/plugins";
 import { UnitTypesList, DealStatusList } from "@/const/Const.js";
 import uuid4 from "uuid4";
 export default {
@@ -66,7 +61,6 @@ export default {
   },
   data() {
     return {
-      formatterObject,
       UnitTypesList,
       DealStatusList,
       id: uuid4(),
@@ -75,7 +69,25 @@ export default {
   mounted() {
     console.log(Array.isArray(this.section.company));
   },
+  computed: {
+    sectionStatus() {
+      return this.section.status
+        ? DealStatusList.get(this.status)
+        : "Сдано или нераспределено";
+    },
+    presenceOfSurrendedTerWithUnknownArea() {
+      return (
+        Array.isArray(this.section.company) && this.section.company.length > 0
+      );
+    },
+    formattedArea() {
+      return this.$formatter.number(this.section.area);
+    },
+  },
   methods: {
+    genSectionInputId(floorName, id) {
+      return "section-check_" + floorName + id;
+    },
     getAppropriateSectionClass(section) {
       switch (section.status) {
         case 5:

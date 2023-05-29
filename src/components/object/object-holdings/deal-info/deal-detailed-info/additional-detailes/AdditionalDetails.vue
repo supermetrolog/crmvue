@@ -11,10 +11,11 @@
         :key="item.label + idx"
       >
         <p class="additional-details__item-label">{{ item.label }}</p>
-        <p class="additional-details__item-value">
-          {{ item.value }}
-          <span v-html="renderCorrectUnitTypes(item.unitType)"></span>
-        </p>
+        <with-unit-type
+          class="additional-details__item-value"
+          :value="item.value"
+          :unitType="item.unitType"
+        />
       </li>
     </ul>
     <ul v-if="specialTerms" class="additional-details__list">
@@ -27,10 +28,11 @@
         :key="item.label + idx"
       >
         <p class="additional-details__item-label">{{ item.label }}</p>
-        <p class="additional-details__item-value">
-          {{ item.value }}
-          <span v-html="renderCorrectUnitTypes(item.unitType)"></span>
-        </p>
+        <with-unit-type
+          class="additional-details__item-value"
+          :value="item.value"
+          :unitType="item.unitType"
+        />
       </li>
     </ul>
     <ul
@@ -47,10 +49,11 @@
         :key="item.label + idx"
       >
         <p class="additional-details__item-label">{{ item.label }}</p>
-        <p class="additional-details__item-value">
-          {{ item.value }}
-          <span v-html="renderCorrectUnitTypes(item.unitType)"></span>
-        </p>
+        <with-unit-type
+          class="additional-details__item-value"
+          :value="item.value"
+          :unitType="item.unitType"
+        />
       </li>
     </ul>
   </div>
@@ -58,10 +61,11 @@
 
 <script>
 import { formatValue } from "@/utils";
-import { UnitTypesList } from "@/const/Const";
 import { formatterObject } from "@/plugins";
+import WithUnitType from "@/components/common/with-unit-type/WithUnitType.vue";
 export default {
   name: "AdditionalDetails",
+  components: { WithUnitType },
   props: {
     label: {
       type: String,
@@ -83,29 +87,13 @@ export default {
       type: Object,
     },
   },
-  components: {},
   data() {
     return {
       formatValue,
-      UnitTypesList,
       ucFirstTextFormatter: formatterObject.text(),
     };
   },
-  methods: {
-    renderCorrectUnitTypes: (unitType) => {
-      if (!unitType) return;
-      if (Array.isArray(unitType)) {
-        return `
-            ${UnitTypesList.get(unitType[0])}
-            <span
-              class='additional-details__item-value additional-details__item-value_small'>
-              ${UnitTypesList.get(unitType[1])}</span>`;
-      }
-      return `<span
-              class='additional-details__item-value additional-details__item-value_small'>
-              ${UnitTypesList.get(unitType)}</span>`;
-    },
-  },
+  methods: {},
 };
 </script>
 

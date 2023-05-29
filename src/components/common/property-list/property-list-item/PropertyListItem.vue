@@ -14,7 +14,7 @@
 
 <script>
 import { UnitTypesList } from "@/const/Const";
-import { formatterObject } from "@/plugins";
+import { formatValue } from "@/utils";
 import "./styles.scss";
 
 export default {
@@ -35,21 +35,10 @@ export default {
   data() {
     return {
       unitTypesList: UnitTypesList,
+      formatValue,
     };
   },
 
-  methods: {
-    formatValue(value) {
-      if (value === null) return;
-      if (!isNaN(value)) return formatterObject.number(value);
-      if (value.includes("-")) {
-        const splittedValue = value.split("-");
-        if (!isNaN(splittedValue[0].trim()) && !isNaN(splittedValue[1].trim()))
-          return formatterObject.numberRange(value);
-      }
-
-      return value;
-    },
-  },
+  methods: {},
 };
 </script>

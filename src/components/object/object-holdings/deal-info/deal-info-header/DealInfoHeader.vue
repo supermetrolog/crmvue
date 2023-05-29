@@ -2,22 +2,24 @@
   <div class="deal-info-header">
     <p class="deal-info-header__text deal-info-header__text_color_red">
       <i class="fas fa-briefcase"></i>
-      {{ company.name }}/{{ company.duration }}
+      {{ headCompany }}
       <span class="deal-info-header__text_size_small"
-        >-
-        {{
-          company.projectAvailability ? "проект имеется" : "проекта нет"
-        }}</span
+        >- {{ projectAvailability }}</span
       >
     </p>
     <ul class="deal-info-header__list">
       <li class="deal-info-header__item">
-        <button class="deal-info-header__button" id="per_square_meter_per_year">
+        <button
+          class="deal-info-header__button"
+          id="per_square_meter_per_year"
+          :class="{ active: activeFilter === 'per_square_meter_per_year' }"
+        >
           м<sup>2</sup>/год
         </button>
         <button
           class="deal-info-header__button"
           id="per_square_meter_per_month"
+          :class="{ active: activeFilter === 'per_square_meter_per_month' }"
         >
           м<sup>2</sup>/месяц
         </button>
@@ -56,6 +58,16 @@ export default {
     return {
       activeFilter: "per_month",
     };
+  },
+  computed: {
+    headCompany() {
+      return `${this.company.name}/${this.company.duration}`;
+    },
+    projectAvailability() {
+      return this.company.projectAvailability
+        ? "проект имеется"
+        : "проекта нет";
+    },
   },
 };
 </script>

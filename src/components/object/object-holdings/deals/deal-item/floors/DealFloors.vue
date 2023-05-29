@@ -55,7 +55,6 @@
 </template>
 
 <script>
-import { formatterObject } from "@/plugins";
 import { UnitTypesList, DealStatusList } from "@/const/Const.js";
 import DealFloorSection from "./section/DealFloorSection.vue";
 import DealFloorHead from "./head/DealFloorHead.vue";
@@ -68,7 +67,6 @@ export default {
   },
   data() {
     return {
-      formatterObject,
       UnitTypesList,
       DealStatusList,
     };
