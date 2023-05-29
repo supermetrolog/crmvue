@@ -6853,6 +6853,7 @@ tr.DropdownSwitcherRow {
       padding: 1px;
       position: relative;
       box-sizing: border-box;
+      transition: color 0.1s ease-in-out;
 
       & > div {
         background-color: $color_danger;
@@ -6874,8 +6875,7 @@ tr.DropdownSwitcherRow {
 
         & > div {
           background-color: $color_success;
-          right: 1px;
-          left: auto;
+          left: 29px;
         }
       }
 
@@ -6885,6 +6885,7 @@ tr.DropdownSwitcherRow {
         border-radius: 50%;
         position: absolute;
         box-sizing: border-box;
+        transition: 0.1s ease-in-out;
       }
     }
   }

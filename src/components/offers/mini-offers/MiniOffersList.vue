@@ -21,6 +21,7 @@
         v-for="offer in miniOffers"
         :key="offer.id"
         :offer="offer"
+        @toggleAvito="handleToggleAvito"
       />
     </template>
   </Table>
@@ -50,6 +51,11 @@ export default {
     miniOffers: {
       type: Array,
       default: () => [],
+    },
+  },
+  methods: {
+    handleToggleAvito(id) {
+      this.$emit("toggleAvito", id);
     },
   },
 };
