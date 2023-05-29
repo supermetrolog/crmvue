@@ -45,8 +45,8 @@
   }
 
   &-company {
-    white-space: nowrap; /* Текст не переносится */
-    overflow: hidden; /* Обрезаем всё за пределами блока */
+    white-space: nowrap;
+    overflow: hidden;
     text-overflow: ellipsis;
     max-width: 18ch;
   }

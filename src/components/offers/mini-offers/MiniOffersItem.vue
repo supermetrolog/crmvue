@@ -34,6 +34,20 @@
             title="Яндекс"
             v-if="offer.ad_yandex"
           ></i>
+        </div>
+        <div
+          class="MiniOffersItem-actions-item MiniOffersItem-actions-item_avito"
+        >
+          <button
+            class="MiniOffersItem-actions-toggler"
+            :class="{
+              'MiniOffersItem-actions-toggler__active': offer.ad_avito === 1,
+              'MiniOffersItem-actions-toggler__loading': false,
+            }"
+            title="Авито"
+          >
+            <div class="MiniOffersItem-actions-toggler-circle"></div>
+          </button>
         </div></div
     ></Td>
   </Tr>

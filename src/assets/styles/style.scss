@@ -6841,6 +6841,54 @@ tr.DropdownSwitcherRow {
   align-items: center;
   min-width: 4.5rem;
 
+  .MiniOffersItem-actions-item_avito {
+    display: flex;
+    align-items: center;
+    .MiniOffersItem-actions-toggler {
+      cursor: pointer;
+      width: 50px;
+      height: 22px;
+      border: 1px solid $color_danger;
+      border-radius: 20px;
+      padding: 1px;
+      position: relative;
+      box-sizing: border-box;
+
+      & > div {
+        background-color: $color_danger;
+        left: 1px;
+        top: 1px;
+      }
+
+      &__loading,
+      &:disabled {
+        border-color: $color_grey;
+
+        & > div {
+          background-color: $color_grey;
+        }
+      }
+
+      &__active {
+        border-color: $color_success;
+
+        & > div {
+          background-color: $color_success;
+          right: 1px;
+          left: auto;
+        }
+      }
+
+      .MiniOffersItem-actions-toggler-circle {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        position: absolute;
+        box-sizing: border-box;
+      }
+    }
+  }
+
   .MiniOffersItem-actions-item {
     height: 100%;
     width: 100%;
