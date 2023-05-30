@@ -156,6 +156,7 @@
       :offer="offer"
       :miniOffers="miniOffers"
       v-if="dropdownIsOpen && !miniOffersLoader"
+      @toggleAvito="handleAvitoToggle"
   /></DropDown>
 </template>
 
@@ -214,7 +215,10 @@ export default {
       }
       this.dropdownIsOpen = true;
       this.miniOffersLoader = true;
-      let response = await api.offers.search({
+      await this.searchMiniOffers();
+    },
+    async searchMiniOffers() {
+      const response = await api.offers.search({
         type_id: [1],
         status: 3, // Нужно чтобы прилетали и активные и пассивные
         object_id: this.offer.object_id,
@@ -223,6 +227,9 @@ export default {
         this.miniOffers = response.data;
       }
       this.miniOffersLoader = false;
+    },
+    async handleAvitoToggle() {
+      await this.searchMiniOffers();
     },
   },
 };
