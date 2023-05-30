@@ -5,7 +5,7 @@
       v-if="unitType"
       class="with-unit-type__unit"
       v-html="UnitTypesList.get(unitType[0])"
-    />
+    />&nbsp;
     <span
       v-if="unitType"
       class="with-unit-type__unit with-unit-type__unit_size_small"

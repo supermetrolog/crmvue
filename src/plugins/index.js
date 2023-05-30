@@ -39,6 +39,16 @@ export const formatterObject = {
       this.number(numbers[1], leng, options)
     );
   },
+  numberOrRange(value) {
+    if (!isNaN(value)) return formatterObject.number(value);
+    if (value.includes("-")) {
+      const splittedValue = value.split("-");
+      if (!isNaN(splittedValue[0].trim()) && !isNaN(splittedValue[1].trim()))
+        return formatterObject.numberRange(value);
+    }
+
+    return value;
+  },
 };
 
 export const apiUrlHelperObject = {
