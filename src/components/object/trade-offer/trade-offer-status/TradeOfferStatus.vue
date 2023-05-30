@@ -1,6 +1,9 @@
 <template>
   <div class="trade-offer-status">
-    <p class="trade-offer-status__text trade-offer-status__text_color_red">
+    <p
+      class="trade-offer-status__text trade-offer-status__text_label"
+      :class="{ 'trade-offer-status__text_color_red': status }"
+    >
       {{ offerStatus }}
     </p>
     <p class="trade-offer-status__text">
@@ -31,7 +34,7 @@ export default {
     return {};
   },
   methods: {},
-  computer: {
+  computed: {
     offerStatus() {
       return this.status ? "Сделка завершена" : "Активная сделка";
     },

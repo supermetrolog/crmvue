@@ -3,7 +3,7 @@
     <p class="trade-offer-table__subtitle">{{ subtitle }}</p>
     <with-unit-type
       class="trade-offer-table__title"
-      :value="title.value"
+      :value="$formatter.numberOrRange(title.value)"
       :unitType="title.unitType"
     />
     <ul class="trade-offer-table__list">
@@ -16,6 +16,7 @@
           {{ property.label }}
         </p>
         <with-unit-type
+          class="trade-offer-table__text"
           :value="$formatter.numberOrRange(property.value)"
           :unitType="property.unitType"
         />

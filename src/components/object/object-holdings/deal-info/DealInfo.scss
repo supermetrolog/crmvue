@@ -1,11 +1,17 @@
 .deal-info {
-  &__content {
-  }
-  &__aside {
-  }
-
   &__body {
+    max-width: 100%;
     display: grid;
     grid-template-columns: 1.5fr 0.5fr;
+    gap: 35px;
+  }
+  &__content {
+  }
+  &__detailed-info {
+  }
+  &__trade-offer {
+    margin-top: 55px;
+  }
+  &__aside {
   }
 }

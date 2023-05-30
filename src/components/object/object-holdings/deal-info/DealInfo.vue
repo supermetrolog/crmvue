@@ -4,10 +4,11 @@
     <div class="deal-info__body">
       <div class="deal-info__content">
         <deal-detailed-info
+          class="deal-info__detailed-info"
           :area="buildingInfo.area"
           :price="buildingInfo.price"
         />
-        <trade-offer />
+        <trade-offer class="deal-info__trade-offer" />
       </div>
       <div class="deal-info__aside">
         <additional-details
