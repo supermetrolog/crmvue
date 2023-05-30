@@ -54,8 +54,8 @@ export default {
     },
   },
   methods: {
-    handleToggleAvito(id) {
-      this.$emit("toggleAvito", id);
+    handleToggleAvito() {
+      this.$emit("toggleAvito");
     },
   },
 };

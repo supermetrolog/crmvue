@@ -215,7 +215,10 @@ export default {
       }
       this.dropdownIsOpen = true;
       this.miniOffersLoader = true;
-      let response = await api.offers.search({
+      await this.searchMiniOffers();
+    },
+    async searchMiniOffers() {
+      const response = await api.offers.search({
         type_id: [1],
         status: 3, // Нужно чтобы прилетали и активные и пассивные
         object_id: this.offer.object_id,
@@ -225,18 +228,8 @@ export default {
       }
       this.miniOffersLoader = false;
     },
-    handleAvitoToggle(id) {
-      const offerIndex = this.miniOffers.findIndex(
-        (offer) => offer.original_id === id
-      );
-      this.miniOffers = [
-        ...this.miniOffers.slice(0, offerIndex),
-        {
-          ...this.miniOffers[offerIndex],
-          ad_avito: this.miniOffers[offerIndex].ad_avito === 0 ? 1 : 0,
-        },
-        ...this.miniOffers.slice(offerIndex + 1),
-      ];
+    async handleAvitoToggle() {
+      await this.searchMiniOffers();
     },
   },
 };

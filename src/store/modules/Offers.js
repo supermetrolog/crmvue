@@ -124,7 +124,7 @@ const Offers = {
 
     async TOGGLE_AVITO_AD(_, id) {
       const status = await api.offers.toggleAvitoAd(id);
-      return status;
+      return status === 200;
     },
 
     async SEARCH_FAVORITES_OFFERS(context) {

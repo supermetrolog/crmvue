@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import Tr from "../../common/table/Tr.vue";
+import Tr from "@/components/common/table/Tr.vue";
 import Td from "@/components/common/table/Td";
 import { mapActions } from "vuex";
 
@@ -117,8 +117,8 @@ export default {
       if (!this.avitoLoading) {
         this.avitoLoading = true;
         const status = await this.TOGGLE_AVITO_AD(this.offer.original_id);
-        if (status && status === 200) {
-          this.$emit("toggleAvito", this.offer.original_id);
+        if (status) {
+          this.$emit("toggleAvito");
         }
         this.avitoLoading = false;
       }
