@@ -509,12 +509,12 @@ export const ObjectTypeList = new Map([
 //         ]],
 //     ]
 // );
-export const TaxFormList = [
-  { value: 1, label: "triple net" },
-  { value: 2, label: "усн" },
-  { value: 3, label: "с ндс" },
-  { value: 4, label: "без ндс" },
-];
+export const TaxFormList = new Map([
+  [1, "Triple Net"],
+  [2, "усн"],
+  [3, "с ндс"],
+  [4, "без ндс"],
+]);
 export const RegionList = new Map([
   [
     "param",
@@ -730,10 +730,18 @@ export const UnitTypesList = new Map([
   [13, "в год"],
 ]);
 
-export const DealStatusList = new Map([
-  [1, "Сдается"],
-  [2, "Сдано"],
-  [3, "Продано"],
-  [4, "Неизвестно"],
-  [5, "Свободно, размечено"],
-]);
+export const DealStatusType = {
+  FOR_RENT: 1,
+  RENTED_OUT: 2,
+  SOLD_OUT: 3,
+  UNKNOWN: 4,
+  FREE: 5,
+};
+
+export const DealStatusList = {
+  [DealStatusType.FOR_RENT]: "Сдается",
+  [DealStatusType.RENTED_OUT]: "Сдано",
+  [DealStatusType.SOLD_OUT]: "Продано",
+  [DealStatusType.UNKNOWN]: "Неизвестно",
+  [DealStatusType.FREE]: "Свободно, размечено",
+};

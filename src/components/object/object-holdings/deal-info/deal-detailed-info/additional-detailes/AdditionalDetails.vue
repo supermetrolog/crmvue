@@ -1,6 +1,6 @@
 <template>
   <div class="additional-details">
-    <h2 class="additonal-deatils__heading">{{ label }}</h2>
+    <h2 class="additonal-deatils__heading">{{ taxForm }}</h2>
     <ul v-if="extraCosts" class="additional-details__list">
       <li class="additional-details__item additional-details__item_heading">
         Дополнительные расходы
@@ -63,6 +63,7 @@
 import { formatValue } from "@/utils";
 import { formatterObject } from "@/plugins";
 import WithUnitType from "@/components/common/with-unit-type/WithUnitType.vue";
+import { TaxFormList } from "@/const/Const";
 export default {
   name: "AdditionalDetails",
   components: { WithUnitType },
@@ -91,7 +92,13 @@ export default {
     return {
       formatValue,
       ucFirstTextFormatter: formatterObject.text(),
+      TaxFormList,
     };
+  },
+  computed: {
+    taxForm() {
+      return TaxFormList.get(this.label);
+    },
   },
   methods: {},
 };

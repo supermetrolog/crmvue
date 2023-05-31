@@ -29,205 +29,22 @@
       />
     </div>
     <DealItem :deal="currentDeal" />
-    <DealInfo />
   </div>
 </template>
 
 <script>
 import DealItem from "./deal-item/ObjectHoldingDealItem.vue";
 import DealPreviewCard from "../../ui/deal-preview/DealPreview.vue";
-import DealInfo from "../deal-info/DealInfo.vue";
+import dealData from "./deal.data.json";
 import "./styles.scss";
 
 export default {
   name: "ObjectHoldingDeals",
-  components: { DealPreviewCard, DealItem, DealInfo },
+  components: { DealPreviewCard, DealItem },
   props: {
     deals: {
       type: Array,
-      default: () => [
-        {
-          id: 1,
-          type: 1,
-          company: { name: "ОАО Арахис Каприз Лук" },
-          area: "32400 - 125000",
-          price: { value: 1200, type: 8 },
-          status: 1,
-          floors: [
-            {
-              name: "Мезонин 2",
-              area: 5000,
-              checked: false,
-              sections: [
-                {
-                  company: { name: "Сияние Чистоты" },
-                  area: 345,
-                  status: 2,
-                  checked: true,
-                },
-                {
-                  company: { name: "Портос" },
-                  area: 228,
-                  status: 2,
-                  checked: true,
-                },
-                {
-                  company: { name: "Арамис" },
-                  area: 1000,
-                  status: 3,
-                  checked: true,
-                },
-                {
-                  company: { name: "MEGA GROUP" },
-                  area: null,
-                  status: 2,
-                  checked: null,
-                },
-                {
-                  company: { name: "ИП Пушкин" },
-                  area: null,
-                  status: 2,
-                  checked: null,
-                },
-              ],
-            },
-            {
-              name: "Мезонин 1",
-              area: 3000,
-              checked: false,
-              sections: [
-                {
-                  company: { name: "Сияние Чистоты" },
-                  area: 345,
-                  status: 2,
-                  checked: true,
-                },
-                {
-                  company: { name: "Портос" },
-                  area: 228,
-                  status: 2,
-                  checked: true,
-                },
-                {
-                  company: { name: "Арамис" },
-                  area: 1000,
-                  status: 3,
-                  checked: true,
-                },
-                {
-                  company: { name: "MEGA GROUP" },
-                  area: null,
-                  status: 2,
-                  checked: null,
-                },
-                {
-                  company: { name: "ИП Пушкин" },
-                  area: null,
-                  status: 2,
-                  checked: null,
-                },
-              ],
-            },
-            {
-              name: "1 этаж",
-              area: 3500,
-              checked: false,
-              sections: [
-                {
-                  company: { name: "Сияние чистоты" },
-                  area: 345,
-                  status: 2,
-                  checked: true,
-                },
-                {
-                  company: null,
-                  area: 1500,
-                  status: 5,
-                  checked: false,
-                },
-                {
-                  company: null,
-                  area: 930,
-                  status: 5,
-                  checked: true,
-                },
-              ],
-            },
-          ],
-        },
-        {
-          id: 2,
-          type: 2,
-          company: {
-            name: "ООО БелТрастИнвестТТТТТТТТТТТТТТТТТТТТТТТТТТТТТТТТ",
-          },
-          area: "12000",
-          price: { value: 3500 },
-          status: 2,
-          floors: [
-            {
-              name: "Мезонин 1",
-              area: 3000,
-              checked: false,
-              sections: [
-                {
-                  company: { name: "Объебос" },
-                  area: 345,
-                  status: 2,
-                  checked: true,
-                },
-                {
-                  company: { name: "Портос" },
-                  area: 228,
-                  status: 2,
-                  checked: true,
-                },
-                {
-                  company: { name: "Арамис" },
-                  area: 1000,
-                  status: 3,
-                  checked: true,
-                },
-              ],
-            },
-          ],
-        },
-        {
-          id: 3,
-          type: 1,
-          company: null,
-          area: "45500 - 100000",
-          price: { value: null, type: 1 },
-          status: 3,
-          floors: [
-            {
-              name: "Мезонин 1",
-              area: 2000,
-              checked: false,
-              sections: [
-                {
-                  company: { name: "Объебос" },
-                  area: 345,
-                  status: 2,
-                  checked: true,
-                },
-                {
-                  company: { name: "Портос" },
-                  area: 228,
-                  status: 2,
-                  checked: true,
-                },
-                {
-                  company: { name: "Арамис" },
-                  area: 1000,
-                  status: 3,
-                  checked: true,
-                },
-              ],
-            },
-          ],
-        },
-      ],
+      default: dealData,
     },
   },
   data() {

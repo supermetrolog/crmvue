@@ -27,8 +27,10 @@
     <p
       class="DealPreviewCard-status"
       :class="{
-        success: deal.status === 1,
-        danger: deal.status === 2 || deal.status === 3,
+        success: deal.status === DealStatusType.FOR_RENT,
+        danger:
+          deal.status === DealStatusType.RENTED_OUT ||
+          deal.status === DealStatusType.SOLD_OUT,
       }"
     >
       {{ dealStatus }}
@@ -39,7 +41,7 @@
 
 <script>
 import "./styles.scss";
-import { DealTypeList, UnitTypesList } from "@/const/Const.js";
+import { DealTypeList, DealStatusType, UnitTypesList } from "@/const/Const.js";
 
 export default {
   name: "DealPreviewCard",
@@ -57,6 +59,7 @@ export default {
     return {
       dealTypeList: DealTypeList.get("param"),
       unitTypesList: UnitTypesList,
+      DealStatusType,
     };
   },
   computed: {
