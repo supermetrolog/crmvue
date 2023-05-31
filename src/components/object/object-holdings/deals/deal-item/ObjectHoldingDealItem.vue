@@ -14,7 +14,7 @@
 <script>
 import DealFloors from "./floors/DealFloors.vue";
 import DealInfo from "../../deal-info/DealInfo.vue";
-import "./styles.scss";
+// import "./styles.scss";
 
 export default {
   name: "DealItem",

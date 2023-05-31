@@ -1,16 +1,23 @@
 <template>
-  <div class="deal-deatiled-info">
-    <building-info :area="area" :price="price" />
+  <div class="deal-deatailed-info">
+    <building-info
+      class="deal-detailed-info__building-info"
+      :area="area"
+      :price="price"
+    />
+    <trade-offer class="deal-detailed-info__trade-offer" />
   </div>
 </template>
 
 <script>
 import BuildingInfo from "./building-info/BuildingInfo.vue";
+import TradeOffer from "../../../trade-offer/TradeOffer.vue";
 
 export default {
   name: "DealDetailedInfo",
   components: {
     BuildingInfo,
+    TradeOffer,
   },
   props: {
     area: {

@@ -197,9 +197,7 @@ export default {
   computed: {
     taxForm() {
       if (this.offer && this.offer.offer) {
-        const taxForm = this.taxFormList.find(
-          (item) => item.value == this.offer.offer.tax_form
-        );
+        const taxForm = this.taxFormList.get(this.offer.offer.tax_form);
         if (taxForm) {
           return taxForm.label;
         }

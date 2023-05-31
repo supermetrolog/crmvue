@@ -8,7 +8,6 @@
           :area="buildingInfo.area"
           :price="buildingInfo.price"
         />
-        <trade-offer class="deal-info__trade-offer" />
       </div>
       <div class="deal-info__aside">
         <additional-details
@@ -28,7 +27,7 @@
 import DealDetailedInfo from "./deal-detailed-info/DealDetailedInfo.vue";
 import AdditionalDetails from "./deal-detailed-info/additional-detailes/AdditionalDetails.vue";
 import DealInfoHeader from "./deal-info-header/DealInfoHeader.vue";
-import TradeOffer from "../../trade-offer/TradeOffer.vue";
+// import TradeOffer from "../../trade-offer/TradeOffer.vue";
 
 export default {
   name: "DealInfo",
@@ -36,7 +35,7 @@ export default {
     DealInfoHeader,
     DealDetailedInfo,
     AdditionalDetails,
-    TradeOffer,
+    // TradeOffer,
   },
   props: {
     company: {
