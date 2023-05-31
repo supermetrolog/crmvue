@@ -1,16 +1,24 @@
 <template>
   <div class="DealItem">
     <DealFloors :floors="deal.floors" />
+    <deal-info
+      v-if="deal.additionalDetails"
+      :company="deal.builder"
+      :consultant="deal.consultant"
+      :additionalDetails="deal.additionalDetails"
+      :buildingInfo="deal.buildingInfo"
+    />
   </div>
 </template>
 
 <script>
 import DealFloors from "./floors/DealFloors.vue";
+import DealInfo from "../../deal-info/DealInfo.vue";
 import "./styles.scss";
 
 export default {
   name: "DealItem",
-  components: { DealFloors },
+  components: { DealFloors, DealInfo },
   props: {
     deal: {
       type: Object,

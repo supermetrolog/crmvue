@@ -509,12 +509,12 @@ export const ObjectTypeList = new Map([
 //         ]],
 //     ]
 // );
-export const TaxFormList = [
-  { value: 1, label: "triple net" },
-  { value: 2, label: "усн" },
-  { value: 3, label: "с ндс" },
-  { value: 4, label: "без ндс" },
-];
+export const TaxFormList = new Map([
+  [1, "Triple Net"],
+  [2, "усн"],
+  [3, "с ндс"],
+  [4, "без ндс"],
+]);
 export const RegionList = new Map([
   [
     "param",
