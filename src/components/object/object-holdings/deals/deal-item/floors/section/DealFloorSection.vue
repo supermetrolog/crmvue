@@ -13,9 +13,11 @@
     <p
       class="DealFloorSection-status"
       :class="{
-        success: section.status === 1,
-        danger: section.status === 2 || section.status === 3,
-        white: section.status === 5,
+        success: section.status === DealStatusType.FOR_RENT,
+        danger:
+          section.status === DealStatusType.RENTED_OUT ||
+          section.status === DealStatusType.SOLD_OUT,
+        white: section.status === DealStatusType.FREE,
         black: !section.status,
       }"
     >
@@ -44,7 +46,11 @@
   </div>
 </template>
 <script>
-import { UnitTypesList, DealStatusList } from "@/const/Const.js";
+import {
+  UnitTypesList,
+  DealStatusType,
+  DealStatusList,
+} from "@/const/Const.js";
 import uuid4 from "uuid4";
 export default {
   name: "DealFloorSection",
@@ -62,6 +68,7 @@ export default {
   data() {
     return {
       UnitTypesList,
+      DealStatusType,
       DealStatusList,
       id: uuid4(),
     };
@@ -71,8 +78,11 @@ export default {
   },
   computed: {
     sectionStatus() {
+      // console.log(this.status);
+      // console.log(DealStatusList[this.status]);
+      // console.log(DealStatusList[1]);
       return this.section.status
-        ? DealStatusList.get(this.status)
+        ? DealStatusList[this.section.status]
         : "Сдано или нераспределено";
     },
     presenceOfSurrendedTerWithUnknownArea() {
