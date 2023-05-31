@@ -78,9 +78,6 @@ export default {
   },
   computed: {
     sectionStatus() {
-      // console.log(this.status);
-      // console.log(DealStatusList[this.status]);
-      // console.log(DealStatusList[1]);
       return this.section.status
         ? DealStatusList[this.section.status]
         : "Сдано или нераспределено";

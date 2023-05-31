@@ -5,19 +5,19 @@
       :area="area"
       :price="price"
     />
-    <trade-offer class="deal-detailed-info__trade-offer" />
+    <trade-offer-tabs class="deal-detailed-info__trade-offer-tabs" />
   </div>
 </template>
 
 <script>
 import BuildingInfo from "./building-info/BuildingInfo.vue";
-import TradeOffer from "../../../trade-offer/TradeOffer.vue";
+import TradeOfferTabs from "@/components/object/trade-offer-tabs/TradeOfferTabs.vue";
 
 export default {
   name: "DealDetailedInfo",
   components: {
     BuildingInfo,
-    TradeOffer,
+    TradeOfferTabs,
   },
   props: {
     area: {
