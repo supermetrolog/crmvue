@@ -97,7 +97,7 @@ export default {
   },
   computed: {
     taxForm() {
-      return TaxFormList.get(this.label);
+      return TaxFormList.find((item) => item.value === this.label).label;
     },
   },
   methods: {},

@@ -2,7 +2,7 @@
   <li class="PropertyListItem">
     <div class="PropertyListItem-name">{{ name }}</div>
     <p class="PropertyListItem-value" :class="{ 'not-filled': !value }">
-      {{ formatValue(value) || "не заполнено" }}
+      {{ propertyValue }}
       <span
         class="PropertyListItem-value_small"
         v-if="unit"
@@ -40,5 +40,10 @@ export default {
   },
 
   methods: {},
+  computed: {
+    propertyValue() {
+      return this.value ? formatValue(this.value) : "не заполнено";
+    },
+  },
 };
 </script>
