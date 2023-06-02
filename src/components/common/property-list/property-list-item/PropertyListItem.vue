@@ -3,6 +3,7 @@
     <div class="PropertyListItem-name">{{ name }}:</div>
     <p class="PropertyListItem-value" :class="{ 'not-filled': !value }">
       {{ propertyValue }}
+      <span v-if="addRubUnit"> ₽ </span>
       <span
         v-if="unitType === unitTypes.SQUARE_METERS"
         class="PropertyListItem-value_small"
@@ -105,6 +106,10 @@ export default {
       type: Number,
       required: true,
     },
+    addRub: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -117,6 +122,9 @@ export default {
   computed: {
     propertyValue() {
       return this.value ? formatValue(this.value) : "не заполнено";
+    },
+    addRubUnit() {
+      return this.addRub && this.value;
     },
   },
 };
