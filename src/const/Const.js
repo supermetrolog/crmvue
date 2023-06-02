@@ -509,12 +509,12 @@ export const ObjectTypeList = new Map([
 //         ]],
 //     ]
 // );
-export const TaxFormList = new Map([
-  [1, "Triple Net"],
-  [2, "усн"],
-  [3, "с ндс"],
-  [4, "без ндс"],
-]);
+export const TaxFormList = [
+  { value: 1, label: "Triple Net" },
+  { value: 2, label: "усн" },
+  { value: 3, label: "с ндс" },
+  { value: 4, label: "без ндс" },
+];
 export const RegionList = new Map([
   [
     "param",
@@ -714,21 +714,21 @@ export const NotificationTypeList = new Map([
   ],
 ]);
 
-export const UnitTypesList = new Map([
-  [1, "м<sup>2</sup>"],
-  [2, "₽/мес"],
-  [3, "м"],
-  [4, "кВт"],
-  [5, "м<sup>3</sup>/ч"],
-  [6, "бар"],
-  [7, "этаж(а)"],
-  [8, "м<sup>2</sup>/год"],
-  [9, "₽"],
-  [10, "мес"],
-  [11, "%"],
-  [12, "год"],
-  [13, "в год"],
-]);
+// export const UnitTypesList = new Map([
+//   [1, "м<sup>2</sup>"],
+//   [2, "₽/мес"],
+//   [3, "м"],
+//   [4, "кВт"],
+//   [5, "м<sup>3</sup>/ч"],
+//   [6, "бар"],
+//   [7, "этаж(а)"],
+//   [8, "м<sup>2</sup>/год"],
+//   [9, "₽"],
+//   [10, "мес"],
+//   [11, "%"],
+//   [12, "год"],
+//   [13, "в год"],
+// ]);
 
 export const DealStatusType = {
   FOR_RENT: 1,

@@ -20,9 +20,10 @@
       <span v-if="deal.price.value">₽</span>
       <span
         class="DealPreviewCard-price-unit"
-        v-if="typePresence"
-        v-html="unitTypesList.get(deal.price.type)"
-      ></span>
+        v-if="deal.price.type === unitTypes.SQUARE_METERS_PER_YEAR"
+      >
+        м<sup>2</sup>/год
+      </span>
     </p>
     <p
       class="DealPreviewCard-status"
@@ -40,8 +41,9 @@
 </template>
 
 <script>
+import { unitTypes } from "@/const/unitTypes";
 import "./styles.scss";
-import { DealTypeList, DealStatusType, UnitTypesList } from "@/const/Const.js";
+import { DealTypeList, DealStatusType } from "@/const/Const.js";
 
 export default {
   name: "DealPreviewCard",
@@ -58,8 +60,8 @@ export default {
   data() {
     return {
       dealTypeList: DealTypeList.get("param"),
-      unitTypesList: UnitTypesList,
       DealStatusType,
+      unitTypes,
     };
   },
   computed: {

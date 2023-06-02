@@ -9,7 +9,7 @@
               :key="prop.name + idx"
               :name="prop.name"
               :value="prop.value"
-              :unit="prop.unitType"
+              :unitType="prop.unitType"
             />
           </PropertyList>
           <PropertyList>
@@ -18,7 +18,7 @@
               :key="prop.name + idx"
               :name="prop.name"
               :value="prop.value"
-              :unit="prop.unitType"
+              :unitType="prop.unitType"
             />
           </PropertyList>
           <PropertyList>
@@ -27,7 +27,7 @@
               :key="prop.name + idx"
               :name="prop.name"
               :value="prop.value"
-              :unit="prop.unitType"
+              :unitType="prop.unitType"
             />
           </PropertyList>
           <PropertyList>
@@ -36,7 +36,7 @@
               :key="prop.name + idx"
               :name="prop.name"
               :value="prop.value"
-              :unit="prop.unitType"
+              :unitType="prop.unitType"
             />
           </PropertyList>
         </div>

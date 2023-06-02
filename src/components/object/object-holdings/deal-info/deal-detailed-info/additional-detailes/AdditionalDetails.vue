@@ -60,8 +60,6 @@
 </template>
 
 <script>
-import { formatValue } from "@/utils";
-import { formatterObject } from "@/plugins";
 import WithUnitType from "@/components/common/with-unit-type/WithUnitType.vue";
 import { TaxFormList } from "@/const/Const";
 export default {
@@ -90,14 +88,13 @@ export default {
   },
   data() {
     return {
-      formatValue,
-      ucFirstTextFormatter: formatterObject.text(),
+      ucFirstTextFormatter: this.$formatter.text(),
       TaxFormList,
     };
   },
   computed: {
     taxForm() {
-      return TaxFormList.get(this.label);
+      return TaxFormList.find((item) => item.value === this.label).label;
     },
   },
   methods: {},
