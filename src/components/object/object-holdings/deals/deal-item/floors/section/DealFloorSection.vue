@@ -1,7 +1,7 @@
 <template>
   <div class="DealFloorSection" :class="getAppropriateSectionClass(section)">
     <p
-      v-if="section.company"
+      v-if="this.section.company"
       class="DealFloorSection-text DealFloorSection-text_label"
     >
       {{ section.company.name }}
@@ -10,24 +10,14 @@
       {{ formattedArea }}
       м<sup>2</sup>
     </p>
-    <p
-      class="DealFloorSection-status"
-      :class="{
-        success: section.status === DealStatusType.FOR_RENT,
-        danger:
-          section.status === DealStatusType.RENTED_OUT ||
-          section.status === DealStatusType.SOLD_OUT,
-        white: section.status === DealStatusType.FREE,
-        black: !section.status,
-      }"
-    >
+    <p class="DealFloorSection-status" :class="sectionAdditionalClass">
       {{ sectionStatus }}
     </p>
     <p
       v-if="presenceOfSurrendedTerWithUnknownArea"
       class="DealFloorSection-text DealFloorSection-text_label"
     >
-      ???: {{ section.company.join(", ") }}
+      ???: {{ joinedCompanies }}
     </p>
     <div v-if="section.status" class="edit">
       <input
@@ -35,23 +25,18 @@
         type="checkbox"
         name=""
         :checked="section.checked"
-        :id="genSectionInputId(floorName, id)"
+        :id="genSectionInputId(floorName)"
       />
       <label
         class="DealFloorSection-checkbox-label"
-        :for="genSectionInputId(floorName, id)"
+        :for="genSectionInputId(floorName)"
       />
       <i class="fas fa-pen"></i>
     </div>
   </div>
 </template>
 <script>
-import {
-  UnitTypesList,
-  DealStatusType,
-  DealStatusList,
-} from "@/const/Const.js";
-import uuid4 from "uuid4";
+import { DealStatusType, DealStatusList } from "@/const/Const.js";
 export default {
   name: "DealFloorSection",
   components: {},
@@ -59,52 +44,64 @@ export default {
     section: {
       type: Object,
       default: () => {},
+      required: true,
     },
     floorName: {
       type: String,
       default: null,
     },
+    unknownAreaCompanies: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
-      UnitTypesList,
       DealStatusType,
       DealStatusList,
-      id: uuid4(),
     };
   },
-  mounted() {
-    console.log(Array.isArray(this.section.company));
-  },
+  mounted() {},
   computed: {
     sectionStatus() {
-      // console.log(this.status);
-      // console.log(DealStatusList[this.status]);
-      // console.log(DealStatusList[1]);
       return this.section.status
         ? DealStatusList[this.section.status]
         : "Сдано или нераспределено";
     },
     presenceOfSurrendedTerWithUnknownArea() {
       return (
-        Array.isArray(this.section.company) && this.section.company.length > 0
+        Array.isArray(this.unknownAreaCompanies) &&
+        this.unknownAreaCompanies.length > 0
       );
     },
     formattedArea() {
       return this.$formatter.number(this.section.area);
     },
+    sectionAdditionalClass() {
+      return {
+        success: this.section.status === DealStatusType.FOR_RENT,
+        danger:
+          this.section.status === DealStatusType.RENTED_OUT ||
+          this.section.status === DealStatusType.SOLD_OUT,
+        white: this.section.status === DealStatusType.FREE,
+        black: !this.section.status,
+      };
+    },
+    joinedCompanies() {
+      return this.unknownAreaCompanies.join(", ");
+    },
   },
   methods: {
-    genSectionInputId(floorName, id) {
-      return "section-check_" + floorName + id;
+    genSectionInputId(floorName) {
+      return "section-check_" + floorName;
     },
     getAppropriateSectionClass(section) {
       switch (section.status) {
-        case 5:
+        case DealStatusType.FREE:
           return "DealFloorSection_green";
-        case 2:
+        case DealStatusType.RENTED_OUT:
           return "DealFloorSection_purple";
-        case 3:
+        case DealStatusType.SOLD_OUT:
           return "DealFloorSection_purple";
         default:
           return "DealFloorSection_grey";

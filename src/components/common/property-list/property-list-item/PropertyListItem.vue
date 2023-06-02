@@ -88,7 +88,6 @@
 
 <script>
 import { unitTypes } from "@/const/unitTypes";
-import { formatValue } from "@/utils";
 import "./styles.scss";
 
 export default {
@@ -114,14 +113,15 @@ export default {
   data() {
     return {
       unitTypes,
-      formatValue,
     };
   },
 
   methods: {},
   computed: {
     propertyValue() {
-      return this.value ? formatValue(this.value) : "не заполнено";
+      return this.value
+        ? this.$formatter.formatValue(this.value)
+        : "не заполнено";
     },
     addRubUnit() {
       return this.addRub && this.value;

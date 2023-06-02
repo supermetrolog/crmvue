@@ -3,7 +3,7 @@
     <div class="building-info__table-list">
       <PropertyList class="building-info__table">
         <p class="building-info__heading">
-          {{ formatValue(area.sum.value) }}
+          {{ formattedAreaSum }}
           <span> м<sup>2</sup> </span>
         </p>
         <PropertyListItem
@@ -16,7 +16,7 @@
       </PropertyList>
       <PropertyList class="building-info__table">
         <p class="building-info__heading">
-          {{ formatValue(price.sum.value) }}
+          {{ formattedPriceSum }}
           <span> ₽ </span>
         </p>
         <PropertyListItem
@@ -33,10 +33,8 @@
 </template>
 
 <script>
-import { UnitTypesList } from "@/const/Const";
 import PropertyList from "@/components/common/property-list/PropertyList.vue";
 import PropertyListItem from "@/components/common/property-list/property-list-item/PropertyListItem.vue";
-import { formatValue } from "@/utils";
 import { unitTypes } from "@/const/unitTypes";
 
 export default {
@@ -55,12 +53,18 @@ export default {
   },
   data() {
     return {
-      UnitTypesList,
-      formatValue,
       unitTypes,
     };
   },
   methods: {},
+  computed: {
+    formattedAreaSum() {
+      return this.$formatter.formatValue(this.area.sum.value);
+    },
+    formattedPriceSum() {
+      return this.$formatter.formatValue(this.price.sum.value);
+    },
+  },
 };
 </script>
 

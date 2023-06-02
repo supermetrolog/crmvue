@@ -1,6 +1,5 @@
 import { loadYmap } from "vue-yandex-maps";
 import crypto from "crypto";
-import { formatterObject } from "@/plugins";
 export const yandexmap = {
   settings: {
     apiKey: "59572809-066b-46d5-9e5d-269a65751b84",
@@ -329,14 +328,3 @@ export const dataMapper = (object, rules) => {
 
   return newObject;
 };
-
-export function formatValue(value) {
-  if (!isNaN(value)) return formatterObject.number(value);
-  if (value.includes("-")) {
-    const splittedValue = value.split("-");
-    if (!isNaN(splittedValue[0].trim()) && !isNaN(splittedValue[1].trim()))
-      return formatterObject.numberRange(value);
-  }
-
-  return value;
-}

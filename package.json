@@ -19,7 +19,6 @@
         "maska": "^1.4.2",
         "moment": "^2.29.1",
         "plural-ru": "^2.0.2",
-        "uuid4": "^2.0.3",
         "v3-infinite-loading": "^1.2.2",
         "vue": "^3.0.0",
         "vue-axios": "^3.2.4",

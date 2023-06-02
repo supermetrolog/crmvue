@@ -40,12 +40,14 @@
                 ),
               }"
               :section="{
-                company: getSectionsNameWithUnKnownArea(floor.sections),
                 area: getUnknownSectionArea(floor.sections, floor.area),
                 status: null,
                 checked: null,
               }"
               :floorName="floor.name"
+              :unknownAreaCompanies="
+                getSectionsNameWithUnKnownArea(floor.sections)
+              "
             />
           </div>
         </div>
@@ -55,7 +57,7 @@
 </template>
 
 <script>
-import { UnitTypesList, DealStatusList } from "@/const/Const.js";
+import { DealStatusType } from "@/const/Const.js";
 import DealFloorSection from "./section/DealFloorSection.vue";
 import DealFloorHead from "./head/DealFloorHead.vue";
 
@@ -67,8 +69,7 @@ export default {
   },
   data() {
     return {
-      UnitTypesList,
-      DealStatusList,
+      DealStatusType,
     };
   },
   computed: {
@@ -109,7 +110,7 @@ export default {
     },
     getAppropriateSectionClass(section) {
       switch (section.status) {
-        case 5:
+        case DealStatusType.FREE:
           return "DealFloors-section_green";
         default:
           if (section.company) {

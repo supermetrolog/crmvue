@@ -6,7 +6,7 @@
       </p>
       <p class="DealFloorHead-text DealFloorHead-text_area">
         {{ $formatter.number(area) }}
-        <span v-html="UnitTypesList.get(1)" />
+        <span>м<sup>2</sup></span>
       </p>
     </div>
     <div class="DealFloorHead-bottom">
@@ -16,11 +16,11 @@
           type="checkbox"
           name=""
           :checked="checked"
-          :id="'check_head_' + name + id"
+          :id="'check_head_' + name"
         />
         <label
           class="DealFloorHead-checkbox-label"
-          :for="'check_head_' + name + id"
+          :for="'check_head_' + name"
         />
         <i class="fas fa-pen"></i>
       </div>
@@ -29,9 +29,6 @@
 </template>
 
 <script>
-import { UnitTypesList } from "@/const/Const.js";
-import uuid4 from "uuid4";
-
 export default {
   name: "DealFloorHead",
   props: {
@@ -46,10 +43,7 @@ export default {
     },
   },
   data() {
-    return {
-      UnitTypesList,
-      id: uuid4(),
-    };
+    return {};
   },
   methods: {},
 };
