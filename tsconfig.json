@@ -15,7 +15,16 @@
     "baseUrl": ".",
     "types": ["webpack-env"],
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@/views": ["src/views/*"],
+      "@/components": ["src/components/*"],
+      "@/assets": ["src/assets/*"],
+      "@/store": ["src/store/*"],
+      "@/utils": ["src/utils/*"],
+      "@/styles": ["src/styles/*"],
+      "@/router": ["src/router/*"],
+      "@/const": ["src/const/*"],
+      "@/plugins": ["src/plugins/*"]
     },
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
   },

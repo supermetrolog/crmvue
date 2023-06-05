@@ -26,7 +26,6 @@
 </template>
 
 <script>
-import { UnitTypesList } from "@/const/Const.js";
 import WithUnitType from "@/components/common/with-unit-type/WithUnitType.vue";
 
 export default {
@@ -44,9 +43,7 @@ export default {
     },
   },
   data() {
-    return {
-      UnitTypesList,
-    };
+    return {};
   },
   methods: {},
   computed: {},
