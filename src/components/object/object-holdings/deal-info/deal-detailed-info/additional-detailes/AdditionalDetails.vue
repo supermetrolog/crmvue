@@ -41,7 +41,7 @@
     >
       <li class="additional-details__item additional-details__item_heading">
         <i class="fa-solid fa-briefcase-blank"></i
-        >{{ ucFirstTextFormatter.ucFirst(business.type) }} бизнес
+        >{{ ucFirstCharBusinessType }} бизнес
       </li>
       <li
         class="additional-details__item"
@@ -95,6 +95,9 @@ export default {
   computed: {
     taxForm() {
       return TaxFormList.find((item) => item.value === this.label).label;
+    },
+    ucFirstCharBusinessType() {
+      return this.ucFirstTextFormatter.ucFirst(this.business.type);
     },
   },
   methods: {},

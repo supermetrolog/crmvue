@@ -42,7 +42,12 @@ export default {
   components: { ObjectHeader, ObjectMap, ObjectAbout, ObjectHoldings },
   data() {
     return {
-      ...data,
+      area: data.area,
+      communications: data.communications,
+      safety: data.safety,
+      railway: data.railway,
+      infrastructure: data.infrastructure,
+      holdings: data.holdings,
     };
   },
   computed: {},

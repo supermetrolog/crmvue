@@ -6,10 +6,11 @@
     >
       {{ section.company.name }}
     </p>
-    <p class="DealFloorSection-text DealFloorSection-text_area">
-      {{ formattedArea }}
-      м<sup>2</sup>
-    </p>
+    <with-unit-type
+      class="DealFloorSection-text DealFloorSection-text_area"
+      :unitType="unitTypes.SQUARE_METERS"
+      :value="formattedArea"
+    />
     <p class="DealFloorSection-status" :class="sectionAdditionalClass">
       {{ sectionStatus }}
     </p>
@@ -37,9 +38,13 @@
 </template>
 <script>
 import { DealStatusType, DealStatusList } from "@/const/Const.js";
+import { unitTypes } from "@/const/unitTypes";
+import WithUnitType from "@/components/common/with-unit-type/WithUnitType.vue";
 export default {
   name: "DealFloorSection",
-  components: {},
+  components: {
+    WithUnitType,
+  },
   props: {
     section: {
       type: Object,
@@ -59,6 +64,7 @@ export default {
     return {
       DealStatusType,
       DealStatusList,
+      unitTypes,
     };
   },
   mounted() {},
