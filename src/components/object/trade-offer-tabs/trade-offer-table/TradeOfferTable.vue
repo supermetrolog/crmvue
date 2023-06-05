@@ -28,10 +28,13 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import WithUnitType from "@/components/common/with-unit-type/WithUnitType.vue";
+import { PropType, defineComponent } from "vue";
+import { unitTypes } from "@/const/unitTypes";
+import { IProperty } from "../tradeOfferTabs.interface";
 
-export default {
+export default defineComponent({
   name: "TradeOfferTable",
   components: { WithUnitType },
   props: {
@@ -40,21 +43,21 @@ export default {
       required: true,
     },
     titleUnitType: {
-      type: Number,
+      type: Number as PropType<unitTypes>,
     },
     propertyUnitType: {
-      type: Number,
+      type: Number as PropType<unitTypes>,
     },
     subtitle: {
       type: String,
       required: true,
     },
     propertyList: {
-      type: Array,
+      type: Array as PropType<IProperty[]>,
       required: true,
     },
     additionalUnit: {
-      type: Number,
+      type: Number as PropType<unitTypes>,
     },
   },
   data() {
@@ -62,7 +65,7 @@ export default {
   },
   methods: {},
   computed: {},
-};
+});
 </script>
 
 <style src="./TradeOfferTable.scss" lang="scss"></style>

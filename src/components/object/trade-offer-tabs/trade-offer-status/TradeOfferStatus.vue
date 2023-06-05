@@ -21,13 +21,16 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { PropType, defineComponent } from "vue";
+import { ITradeOfferStatus } from "../tradeOfferTabs.interface";
+
+export default defineComponent({
   name: "TradeOfferStatus",
   components: {},
   props: {
     status: {
-      type: Object,
+      type: Object as PropType<ITradeOfferStatus>,
     },
   },
   data() {
@@ -39,19 +42,23 @@ export default {
       return this.status ? "Сделка завершена" : "Активная сделка";
     },
     offerCompany() {
-      return this.status?.company || "--";
+      return this.status
+        ? `${this.status.company.organization_type} ${this.status.company.name}`
+        : "--";
     },
     offerDate() {
-      return this.status?.date || "--";
+      return this.status
+        ? this.$formatter.date().locale(this.status.date)
+        : "--";
     },
     offerRealtor() {
-      return this.status?.realtor || "--";
+      return this.status ? this.status.realtor : "--";
     },
     offerConsultant() {
-      return this.status?.consultant || "--";
+      return this.status ? this.status.consultant : "--";
     },
   },
-};
+});
 </script>
 
 <style src="./TradeOfferStatus.scss" lang="scss"></style>

@@ -6,9 +6,9 @@ export interface ITradeOffer {
   id: string;
   active: boolean;
   lastUpdate: Date;
-  area: ITradeOfferTable;
-  price: ITradeOfferTable;
-  status?: IStatus;
+  area: ITradeOfferPropeties;
+  price: ITradeOfferPropeties;
+  status?: ITradeOfferStatus;
 }
 
 interface IRange {
@@ -16,23 +16,23 @@ interface IRange {
   valueMax: number | string;
 }
 
-interface IProperty extends IRange {
+export interface IProperty extends IRange {
   label: string;
 }
 
-interface IStatus {
-  company: ICompany;
+export interface ITradeOfferStatus {
+  company: ITradeOfferCompany;
   date: Date;
   realtor: string;
   consultant: string;
 }
 
-interface ICompany {
+export interface ITradeOfferCompany {
   name: string;
   organization_type: string;
 }
 
-interface ITradeOfferTable {
+export interface ITradeOfferPropeties {
   sum: IRange;
   properties: IProperty[];
 }

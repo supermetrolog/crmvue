@@ -37,7 +37,7 @@
 import { defineComponent } from "vue";
 import TradeOfferItem from "./trade-offer-item/TradeOfferItem.vue";
 import { ITradeOffer, ITradeOfferTabs } from "./tradeOfferTabs.interface";
-import data from "./trade-offer";
+import data from "./trade-offer.data";
 
 export default defineComponent({
   name: "TradeOfferTabs",

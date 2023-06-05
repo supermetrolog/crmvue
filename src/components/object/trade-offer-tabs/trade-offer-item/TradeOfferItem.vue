@@ -33,21 +33,23 @@
             {{ formattedLastUpdate }}
           </span>
         </p>
-        <trade-offer-status
-          class="trade-offer-item__status"
-          :status="tradeOfferStatus"
-        />
+        <trade-offer-status class="trade-offer-item__status" :status="status" />
       </div>
     </div>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import TradeOfferTable from "../trade-offer-table/TradeOfferTable.vue";
 import TradeOfferStatus from "../trade-offer-status/TradeOfferStatus.vue";
 import { unitTypes } from "@/const/unitTypes";
+import { PropType, defineComponent } from "vue";
+import {
+  ITradeOfferPropeties,
+  ITradeOfferStatus,
+} from "../tradeOfferTabs.interface";
 
-export default {
+export default defineComponent({
   name: "TradeOfferItem",
   components: {
     TradeOfferTable,
@@ -55,11 +57,11 @@ export default {
   },
   props: {
     area: {
-      type: Object,
+      type: Object as PropType<ITradeOfferPropeties>,
       required: true,
     },
     price: {
-      type: Object,
+      type: Object as PropType<ITradeOfferPropeties>,
       required: true,
     },
     id: {
@@ -71,7 +73,7 @@ export default {
       required: true,
     },
     status: {
-      type: Object,
+      type: Object as PropType<ITradeOfferStatus>,
     },
   },
   data() {
@@ -80,16 +82,6 @@ export default {
     };
   },
   computed: {
-    tradeOfferStatus() {
-      return this.status
-        ? {
-            company: `${this.status.company.organization_type} ${this.status.company.name}`,
-            date: this.$formatter.date().locale(this.status.date),
-            realtor: this.status.realtor,
-            consultant: this.status.consultant,
-          }
-        : undefined;
-    },
     areaTableTitle() {
       return this.$formatter.numberOrRangeNew(
         this.area.sum.valueMin,
@@ -107,7 +99,7 @@ export default {
     },
   },
   methods: {},
-};
+});
 </script>
 
 <style src="./TradeOfferItem.scss" lang="scss"></style>

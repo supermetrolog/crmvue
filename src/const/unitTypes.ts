@@ -12,4 +12,7 @@ export enum unitTypes {
   PERCENTS = 11,
   YEAR = 12,
   PER_YEAR = 13,
+  TON_PER_SQUARE_METER = 14,
+  PIECES = 15,
+  CELCIUS = 16,
 }
