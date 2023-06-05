@@ -39,16 +39,16 @@ export default {
       return this.status ? "Сделка завершена" : "Активная сделка";
     },
     offerCompany() {
-      return this.status.company || "--";
+      return this.status?.company || "--";
     },
     offerDate() {
-      return this.status.date || "--";
+      return this.status?.date || "--";
     },
     offerRealtor() {
-      return this.status.realtor || "--";
+      return this.status?.realtor || "--";
     },
     offerConsultant() {
-      return this.status.consultant || "--";
+      return this.status?.consultant || "--";
     },
   },
 };

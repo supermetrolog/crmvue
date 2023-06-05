@@ -4,10 +4,11 @@
       <p class="DealFloorHead-text DealFloorHead-text_label">
         {{ name }}
       </p>
-      <p class="DealFloorHead-text DealFloorHead-text_area">
-        {{ $formatter.number(area) }}
-        <span>м<sup>2</sup></span>
-      </p>
+      <with-unit-type
+        :unitType="unitTypes.SQUARE_METERS"
+        :value="formattedArea"
+        class="DealFloorHead-text DealFloorHead-text_area"
+      />
     </div>
     <div class="DealFloorHead-bottom">
       <div class="edit">
@@ -29,8 +30,13 @@
 </template>
 
 <script>
+import WithUnitType from "@/components/common/with-unit-type/WithUnitType.vue";
+import { unitTypes } from "@/const/unitTypes";
 export default {
   name: "DealFloorHead",
+  components: {
+    WithUnitType,
+  },
   props: {
     name: {
       type: String,
@@ -43,9 +49,16 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      unitTypes,
+    };
   },
   methods: {},
+  computed: {
+    formattedArea() {
+      return this.$formatter.number(this.area);
+    },
+  },
 };
 </script>
 

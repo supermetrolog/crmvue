@@ -3,8 +3,8 @@
     <p class="trade-offer-table__subtitle">{{ subtitle }}</p>
     <with-unit-type
       class="trade-offer-table__title"
-      :value="$formatter.numberOrRange(title.value)"
-      :unitType="title.unitType"
+      :value="title"
+      :unitType="titleUnitType"
     />
     <ul class="trade-offer-table__list">
       <li
@@ -17,8 +17,11 @@
         </p>
         <with-unit-type
           class="trade-offer-table__text"
-          :value="$formatter.numberOrRange(property.value)"
-          :unitType="property.unitType"
+          :value="
+            $formatter.numberOrRangeNew(property.valueMin, property.valueMax)
+          "
+          :unitType="propertyUnitType"
+          :additionalUnit="additionalUnit"
         />
       </li>
     </ul>
@@ -34,12 +37,24 @@ export default {
   props: {
     title: {
       type: String,
+      required: true,
+    },
+    titleUnitType: {
+      type: Number,
+    },
+    propertyUnitType: {
+      type: Number,
     },
     subtitle: {
       type: String,
+      required: true,
     },
     propertyList: {
       type: Array,
+      required: true,
+    },
+    additionalUnit: {
+      type: Number,
     },
   },
   data() {

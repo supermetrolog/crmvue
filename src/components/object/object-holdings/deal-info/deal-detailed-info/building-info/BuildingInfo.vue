@@ -23,7 +23,7 @@
           v-for="(prop, idx) in price.list"
           :key="prop.label + idx"
           :name="prop.label"
-          :addRub="true"
+          :additionalUnit="unitTypes.RUB"
           :value="prop.value"
           :unitType="prop.unitType"
         />

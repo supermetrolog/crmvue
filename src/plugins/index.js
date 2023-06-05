@@ -6,7 +6,7 @@ const textFormatter = {
 const dateFormatter = {
   locale(date, locale, options) {
     const localDate = new Date(date);
-    return localDate.toLocaleString(locale, options);
+    return localDate.toLocaleDateString(locale, options);
   },
 };
 export const formatterObject = {
@@ -48,6 +48,10 @@ export const formatterObject = {
     }
 
     return value;
+  },
+  numberOrRangeNew(valueMin, valueMax) {
+    if (valueMin === valueMax) return this.number(valueMin);
+    return this.number(valueMin) + " - " + this.number(valueMax);
   },
 };
 
