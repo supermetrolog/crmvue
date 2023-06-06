@@ -124,12 +124,12 @@
         {
           "label": "Орех",
           "value": "890-1200",
-          "unitType": 8
+          "unitType": 14
         },
         {
           "label": "Ком платежи",
           "value": "150-200",
-          "unitType": 8
+          "unitType": 14
         }
       ],
       "specialTerms": [
@@ -159,7 +159,7 @@
           {
             "label": "Средняя ставка аренды",
             "value": 7800,
-            "unitType": 8,
+            "unitType": 14,
             "addRub": true
           },
           {
@@ -233,31 +233,32 @@
           {
             "label": "E - пол 1 эт.",
             "value": "500-800",
-            "unitType": 8
+            "unitType": 14
           },
           {
             "label": "E - пол 2 эт.",
             "value": "6500-12000",
-            "unitType": 8
+            "unitType": 14
           },
           {
             "label": "E - пол 3 эт.",
             "value": "1100000-16100000",
-            "unitType": 8
+            "unitType": 14
           },
           {
             "label": "E - пол 6 эт.",
             "value": "2500-4500",
-            "unitType": 8
+            "unitType": 14
           },
           {
             "label": "E - мезон 1 яр.",
             "value": "3250",
-            "unitType": 8
+            "unitType": 14
           },
           {
             "label": "E - офисов",
-            "value": null
+            "value": null,
+            "unitType": 14
           }
         ]
       }

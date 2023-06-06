@@ -77,6 +77,24 @@
   >
     в год
   </span>
+  <template v-else-if="unitType === unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR">
+    <span class="unit-type__unit"> ₽ </span>
+    <span class="unit-type__unit unit-type__unit_size_small">
+      м<sup>2</sup>/год
+    </span>
+  </template>
+  <template v-else-if="unitType === unitTypes.RUB_PER_SQUARE_METERS_PER_MONTH">
+    <span class="unit-type__unit"> ₽ </span>
+    <span class="unit-type__unit unit-type__unit_size_small">
+      м<sup>2</sup>/мес
+    </span>
+  </template>
+  <span
+    v-else-if="unitType === unitTypes.RUB_PER_YEAR"
+    class="unit-type__unit unit-type__unit_size_small"
+  >
+    ₽/год
+  </span>
 </template>
 
 <script>

@@ -12,6 +12,9 @@ export const unitTypes = {
   PERCENTS: 11,
   YEAR: 12,
   PER_YEAR: 13,
+  RUB_PER_SQUARE_METERS_PER_YEAR: 14,
+  RUB_PER_SQUARE_METERS_PER_MONTH: 15,
+  RUB_PER_YEAR: 16,
 };
 
 // Будет переписан на enum после добавления ts

@@ -20,30 +20,33 @@
     >
       ???: {{ joinedCompanies }}
     </p>
-    <div v-if="section.status" class="edit">
+    <Form v-if="section.status && section.company" class="edit">
       <input
         class="DealFloorSection-checkbox"
         type="checkbox"
         name=""
-        :checked="section.checked"
-        :id="genSectionInputId(floorName)"
+        v-model="isChecked"
+        :checked="isChecked"
+        :id="genSectionInputId(section.company.name)"
       />
       <label
         class="DealFloorSection-checkbox-label"
-        :for="genSectionInputId(floorName)"
+        :for="genSectionInputId(section.company.name)"
       />
       <i class="fas fa-pen"></i>
-    </div>
+    </Form>
   </div>
 </template>
 <script>
 import { DealStatusType, DealStatusList } from "@/const/Const.js";
 import { unitTypes } from "@/const/unitTypes";
 import WithUnitType from "@/components/common/with-unit-type/WithUnitType.vue";
+import Form from "@/components/common/form/Form.vue";
 export default {
   name: "DealFloorSection",
   components: {
     WithUnitType,
+    Form,
   },
   props: {
     section: {
@@ -65,6 +68,7 @@ export default {
       DealStatusType,
       DealStatusList,
       unitTypes,
+      isChecked: this.section.checked,
     };
   },
   mounted() {},
@@ -98,8 +102,8 @@ export default {
     },
   },
   methods: {
-    genSectionInputId(floorName) {
-      return "section-check_" + floorName;
+    genSectionInputId(companyName) {
+      return "section-check_" + companyName;
     },
     getAppropriateSectionClass(section) {
       switch (section.status) {
