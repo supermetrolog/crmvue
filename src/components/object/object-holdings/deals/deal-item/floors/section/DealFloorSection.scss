@@ -1,0 +1,111 @@
+.DealFloorSection {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 4px 4px 15px;
+
+  border: 1px solid;
+  border-left: 14px solid;
+
+  height: 100%;
+  min-width: 100px;
+
+  &_purple {
+    border-color: $floor_section_purple;
+  }
+  &_grey {
+    border-color: lighten($color_grey, 5);
+  }
+  &_green {
+    // border-left: 1px;
+    background-color: #56a03c;
+    border-color: #56a03c;
+  }
+
+  &_green &-text {
+    color: white;
+  }
+
+  .form.edit {
+    & .form-container {
+      position: absolute;
+      bottom: 7px;
+      right: 6px;
+      width: auto;
+    }
+    & > .form-container > form {
+      display: flex;
+      justify-content: flex-end;
+      gap: 7px;
+      align-items: center;
+    }
+  }
+
+  &-status {
+    color: $color_grey;
+    font-weight: 400;
+    font-size: 13px;
+
+    &.success {
+      color: $color_success;
+    }
+
+    &.danger {
+      color: $color_danger;
+    }
+    &.white {
+      color: white;
+    }
+    &.black {
+      color: #ffde00;
+      display: inline-block;
+      width: 24ch;
+      margin: 2px 0;
+      padding: 0 1px;
+      background-color: black;
+    }
+  }
+
+  &-checkbox {
+    border-radius: 50%;
+    position: relative;
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+    display: block;
+    width: 0;
+    height: 0;
+    &-label {
+      width: 13px;
+      height: 13px;
+      background-color: white;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 1px solid black;
+      box-sizing: border-box;
+
+      input[type="checkbox"]:checked + & {
+        background-color: $checkbox_active;
+      }
+    }
+  }
+
+  &-text {
+    font-size: 14px;
+    line-height: 14px;
+
+    &_label {
+      font-weight: 400;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+    }
+
+    &_area {
+      font-weight: 600;
+    }
+  }
+}

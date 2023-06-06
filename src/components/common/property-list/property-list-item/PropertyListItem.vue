@@ -1,36 +1,55 @@
 <template>
-    <li class="PropertyListItem">
-        <div class="PropertyListItem-name">{{ name }}</div>
-        <div class="PropertyListItem-value">
-            {{ value }}
-            <span v-if="unit" v-html="unitTypesList.get(unit)"></span>
-        </div>
-    </li>
+  <li class="PropertyListItem">
+    <div class="PropertyListItem-name">{{ name }}:</div>
+    <with-unit-type
+      class="PropertyListItem-value"
+      :class="{ 'not-filled': !value }"
+      :unitType="displayUnit"
+      :value="propertyValue"
+    />
+  </li>
 </template>
 
 <script>
-import { UnitTypesList } from '@/const/Const'
-import './styles.scss'
+import { unitTypes } from "@/const/unitTypes";
+import WithUnitType from "../../with-unit-type/WithUnitType.vue";
+import "./styles.scss";
 
 export default {
-    name: 'PropertyListItem',
-    props: {
-        name: {
-            type: String,
-            default: null
-        },
-        value: {
-            default: null
-        },
-        unit: {
-            type: Number,
-            default: null
-        }
+  name: "PropertyListItem",
+  components: {
+    WithUnitType,
+  },
+  props: {
+    name: {
+      type: String,
+      default: null,
     },
-    data() {
-        return {
-            unitTypesList: UnitTypesList
-        }
+    value: {
+      type: String,
+      required: true,
     },
-}
+    unitType: {
+      type: Number,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      unitTypes,
+    };
+  },
+
+  methods: {},
+  computed: {
+    propertyValue() {
+      return this.value
+        ? this.$formatter.formatValue(this.value)
+        : "не заполнено";
+    },
+    displayUnit() {
+      return this.value ? this.unitType : null;
+    },
+  },
+};
 </script>

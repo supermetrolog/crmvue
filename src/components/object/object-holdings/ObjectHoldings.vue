@@ -1,16 +1,15 @@
 <template>
   <div class="ObjectHoldings">
     <div class="ObjectHoldings-header">
-      <span class="ObjectHoldings-header-name">
-        СТРОЕНИЯ
-        <template v-if="buildingsCount">
-          {{ `(${buildingsCount})` }},
-        </template>
-        УЧАСТКИ
-        <template v-if="landsCount"> {{ `(${landsCount})` }}</template>
-      </span>
-      <div class="ObjectHoldings-header-labels"></div>
-      <div class="ObjectHoldings-header-line"></div>
+      <p>СТРОЕНИЯ ({{ buildingsCount }}), УЧАСТКИ ({{ landsCount }})</p>
+      <div class="ObjectHoldings-header-icons">
+        <button class="ObjectHoldings-header-button">
+          <i class="fas fa-warehouse"></i>
+        </button>
+        <button class="ObjectHoldings-header-button">
+          <i class="fas fa-tree"></i>
+        </button>
+      </div>
     </div>
     <div class="ObjectHoldings-body">
       <ObjectHolding
@@ -47,12 +46,10 @@ export default {
   computed: {
     buildingsCount() {
       let buildings = this.holdings.filter((holding) => holding.type === 1);
-      return buildings.length || null;
+      return buildings.length;
     },
     landsCount() {
-      return (
-        this.holdings.filter((holding) => holding.type === 2).length || null
-      );
+      return this.holdings.filter((holding) => holding.type === 2).length;
     },
   },
 };

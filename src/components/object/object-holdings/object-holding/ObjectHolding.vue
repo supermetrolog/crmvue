@@ -1,12 +1,8 @@
 <template>
   <div class="ObjectHolding">
-    <div class="ObjectHolding-header">
-      <span v-if="type === 1">СТРОЕНИЕ</span>
-      <span v-if="type === 2">УЧАСТОК</span>
-      <span>ID {{ id }}</span>
-    </div>
     <div class="ObjectHolding-body">
       <div class="ObjectHolding-carousel">
+        <div class="ObjectHolding-label">ID {{ id }}</div>
         <Carousel />
       </div>
       <div class="ObjectHolding-info">

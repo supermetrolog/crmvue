@@ -4,28 +4,46 @@
     :class="{ active: isCurrent }"
     @click="onChooseDeal"
   >
+    <button v-if="isCurrent" class="DealPreviewCard-edit">
+      <i class="fas fa-pen"></i>
+    </button>
     <span class="DealPreviewCard-type">{{ dealType }}</span>
-    <span class="DealPreviewCard-company">{{
-      deal.company?.name || "--"
-    }}</span>
-    <span class="DealPreviewCard-area">{{ deal.area || "--" }}</span>
-    <span class="DealPreviewCard-price"
-      >{{ deal.price.count }} {{ deal.price.type }}</span
-    >
-    <span
+    <p class="DealPreviewCard-company">{{ deal.company?.name || "--" }}</p>
+    <p class="DealPreviewCard-area">
+      {{ deal.area ? dealArea : "--" }}
+      <span v-if="deal.area" class="DealPreviewCard-price-unit"
+        >м<sup>2</sup></span
+      >
+    </p>
+    <p class="DealPreviewCard-price">
+      {{ dealPrice }}
+      <span v-if="deal.price.value">₽</span>
+      <span
+        class="DealPreviewCard-price-unit"
+        v-if="deal.price.type === unitTypes.SQUARE_METERS_PER_YEAR"
+      >
+        м<sup>2</sup>/год
+      </span>
+    </p>
+    <p
       class="DealPreviewCard-status"
       :class="{
-        success: deal.status === 1,
-        danger: deal.status === 2 || deal.status === 3,
+        success: deal.status === DealStatusType.FOR_RENT,
+        danger:
+          deal.status === DealStatusType.RENTED_OUT ||
+          deal.status === DealStatusType.SOLD_OUT,
       }"
-      >{{ dealStatus }}</span
     >
+      {{ dealStatus }}
+    </p>
+    <div class="DealPreviewCard-triangle"></div>
   </div>
 </template>
 
 <script>
+import { unitTypes } from "@/const/unitTypes";
 import "./styles.scss";
-import { DealTypeList } from "@/const/Const.js";
+import { DealTypeList, DealStatusType } from "@/const/Const.js";
 
 export default {
   name: "DealPreviewCard",
@@ -42,6 +60,8 @@ export default {
   data() {
     return {
       dealTypeList: DealTypeList.get("param"),
+      DealStatusType,
+      unitTypes,
     };
   },
   computed: {
@@ -60,6 +80,20 @@ export default {
         default:
           return "Неизвестно";
       }
+    },
+    dealArea() {
+      if (this.deal.area.includes("-")) {
+        return this.$formatter.numberRange(this.deal.area);
+      }
+      return this.$formatter.number(this.deal.area);
+    },
+    dealPrice() {
+      return this.deal.price.value
+        ? this.$formatter.number(this.deal.price.value)
+        : "нет данных";
+    },
+    typePresence() {
+      return this.deal.price.type && this.deal.price.value;
     },
   },
   methods: {

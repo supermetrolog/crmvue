@@ -1,0 +1,18 @@
+.building-info {
+  &__table-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 30px;
+  }
+  &__table {
+  }
+  &__heading {
+    font-size: 22px;
+    font-weight: 900;
+    line-height: 35px;
+    padding-left: 15px;
+    height: 42px;
+    display: table-cell;
+    vertical-align: middle;
+  }
+}

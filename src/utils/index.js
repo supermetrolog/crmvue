@@ -300,7 +300,7 @@ export const arrayDataMapper = (array, rules) => {
     newArray.push(dataMapper(object, rules));
   }
   return newArray;
-}
+};
 export const dataMapper = (object, rules) => {
   const newObject = { ...object };
 
@@ -327,4 +327,4 @@ export const dataMapper = (object, rules) => {
   }
 
   return newObject;
-}
+};

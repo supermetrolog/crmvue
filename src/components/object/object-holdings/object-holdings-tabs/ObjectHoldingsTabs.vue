@@ -2,14 +2,14 @@
   <div class="ObjectHoldingsTabs">
     <Tabs :options="{ useUrlFragment: false }">
       <Tab name="Характеристики">
-        <div class="ObjectHoldingsTabs-content">
+        <div class="ObjectHoldingsTabs-content-properties">
           <PropertyList>
             <PropertyListItem
               v-for="(prop, idx) in holdingsProperties[0]"
               :key="prop.name + idx"
               :name="prop.name"
               :value="prop.value"
-              :unit="prop.unitType"
+              :unitType="prop.unitType"
             />
           </PropertyList>
           <PropertyList>
@@ -18,7 +18,7 @@
               :key="prop.name + idx"
               :name="prop.name"
               :value="prop.value"
-              :unit="prop.unitType"
+              :unitType="prop.unitType"
             />
           </PropertyList>
           <PropertyList>
@@ -27,7 +27,7 @@
               :key="prop.name + idx"
               :name="prop.name"
               :value="prop.value"
-              :unit="prop.unitType"
+              :unitType="prop.unitType"
             />
           </PropertyList>
           <PropertyList>
@@ -36,7 +36,7 @@
               :key="prop.name + idx"
               :name="prop.name"
               :value="prop.value"
-              :unit="prop.unitType"
+              :unitType="prop.unitType"
             />
           </PropertyList>
         </div>
