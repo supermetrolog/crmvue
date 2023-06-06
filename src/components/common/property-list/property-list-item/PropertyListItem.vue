@@ -4,8 +4,7 @@
     <with-unit-type
       class="PropertyListItem-value"
       :class="{ 'not-filled': !value }"
-      :additionalUnit="addAdditionalUnit"
-      :unitType="unitType"
+      :unitType="displayUnit"
       :value="propertyValue"
     />
   </li>
@@ -35,9 +34,6 @@ export default defineComponent({
       type: Number,
       required: true,
     },
-    additionalUnit: {
-      type: Number,
-    },
   },
   data() {
     return {
@@ -52,8 +48,8 @@ export default defineComponent({
         ? this.$formatter.numberOrRange(this.value)
         : "не заполнено";
     },
-    addAdditionalUnit() {
-      return this.value && this.additionalUnit;
+    displayUnit() {
+      return this.value ? this.unitType : undefined;
     },
   },
 });

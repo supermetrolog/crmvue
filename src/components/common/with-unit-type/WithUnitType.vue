@@ -1,8 +1,7 @@
 <template>
   <p class="with-unit-type">
     {{ value }}
-    <unit-type v-if="additionalUnit" :unitType="additionalUnit" />
-    <unit-type :unitType="unitType" />
+    <unit-type v-if="value" :unitType="unitType" />
   </p>
 </template>
 
@@ -22,9 +21,6 @@ export default {
     value: {
       type: [Number, String],
       reuqired: true,
-    },
-    additionalUnit: {
-      type: [Number, undefined],
     },
   },
   data() {
