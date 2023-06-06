@@ -1,4 +1,6 @@
+import { floorTypes } from "@/types/floorTypes.enum";
 import { unitTypes } from "./unitTypes";
+import { gateTypes } from "@/types/gateTypes.enum";
 
 export interface ITradeOfferCharacteristics
   extends Record<string, Record<string, ICharacterictic>> {}
@@ -7,6 +9,12 @@ export interface ICharacterictic {
   name: string;
   required: boolean;
   unitType?: unitTypes;
+  floorType?: floorTypes;
+  gateType?: gateTypes;
+  liftingDevicesWeight?: number[];
+  valueMin?: number;
+  valueMax?: number;
+  value?: string;
 }
 
 export const tradeOfferCharacteristics: ITradeOfferCharacteristics = {
@@ -115,6 +123,58 @@ export const tradeOfferCharacteristics: ITradeOfferCharacteristics = {
     },
     telephony: {
       name: "Телефония",
+      required: false,
+    },
+  },
+  securitySystems: {
+    firefighting: {
+      name: "Пожаротушение",
+      required: false,
+    },
+    smokeКemoval: {
+      name: "Дымоудаление",
+      required: false,
+    },
+    internalVideoSurveillance: {
+      name: "Видеонаблюдение внутр.",
+      required: false,
+    },
+    internalAccessControll: {
+      name: "Контроль доступа внутр.",
+      required: false,
+    },
+    securityAlarm: {
+      name: "Охранная сигнализация",
+      required: false,
+    },
+    fireAlarm: {
+      name: "Пожарная сигнализация",
+      required: false,
+    },
+  },
+  liftingDevices: {
+    lifts: {
+      name: "Лифты/Подъемники",
+      required: false,
+      unitType: unitTypes.PIECES,
+    },
+    bridgeCranes: {
+      name: "Мостовые краны",
+      required: false,
+      unitType: unitTypes.PIECES,
+    },
+    beamCranes: {
+      name: "Кран-балки",
+      required: false,
+      unitType: unitTypes.PIECES,
+    },
+    Telphers: {
+      name: "Тельферы",
+      required: false,
+      unitType: unitTypes.PIECES,
+    },
+    craneRunways: {
+      name: "Подкрановые пути",
       required: false,
     },
   },

@@ -21,6 +21,7 @@ module.exports = {
         "@/router": path.join(__dirname, "src/router/"),
         "@/const": path.join(__dirname, "src/const/"),
         "@/plugins": path.join(__dirname, "src/plugins/"),
+        "@/types": path.join(__dirname, "src/types/"),
       },
       extensions: [".js", ".vue", ".json"],
     },

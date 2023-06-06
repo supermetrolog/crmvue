@@ -24,7 +24,8 @@
       "@/styles": ["src/styles/*"],
       "@/router": ["src/router/*"],
       "@/const": ["src/const/*"],
-      "@/plugins": ["src/plugins/*"]
+      "@/plugins": ["src/plugins/*"],
+      "@/types": ["src/types/*"]
     },
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
   },
