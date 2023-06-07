@@ -11,6 +11,7 @@
             :id="tradeOffer.id"
             :lastUpdate="tradeOffer.lastUpdate"
             :status="tradeOffer.status"
+            :parameters="tradeOffer.parameters"
           />
         </div>
       </Tab>
@@ -25,7 +26,8 @@
             :price="tradeOffer.price"
             :id="tradeOffer.id"
             :lastUpdate="tradeOffer.lastUpdate"
-            :status="tradeOffer?.status"
+            :status="tradeOffer.status"
+            :parameters="tradeOffer.parameters"
           />
         </div>
       </Tab>

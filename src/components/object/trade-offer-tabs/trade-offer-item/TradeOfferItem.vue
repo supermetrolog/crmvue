@@ -37,7 +37,17 @@
       </div>
     </div>
     <div class="trade-offer-item__line">
-      <parameters />
+      <parameters
+        :height="parameters.characteristics.height"
+        :floorType="parameters.characteristics.floorType"
+        :gatesNumber="parameters.characteristics.gatesNumber"
+        :electricity="parameters.communications.electricity"
+        :heating="parameters.communications.heating"
+        :sewage="parameters.communications.sewage"
+        :gasForProduction="parameters.communications.gasForProduction"
+        :liftingDevices="parameters.liftingDevices.lifts"
+        :shelving="parameters.facilities.shelving"
+      />
     </div>
   </div>
 </template>
@@ -52,6 +62,7 @@ import {
   ITradeOfferStatus,
 } from "../tradeOfferTabs.interface";
 import Parameters from "../../ui/parameters/Parameters.vue";
+import { ITradeOfferCharacteristics } from "@/const/tradeOfferCharacteristics";
 
 export default defineComponent({
   name: "TradeOfferItem",
@@ -79,6 +90,10 @@ export default defineComponent({
     },
     status: {
       type: Object as PropType<ITradeOfferStatus>,
+    },
+    parameters: {
+      type: Object as PropType<ITradeOfferCharacteristics>,
+      required: true,
     },
   },
   data() {

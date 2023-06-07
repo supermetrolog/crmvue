@@ -1,15 +1,21 @@
 <template>
   <ul class="object-parameters">
-    <li v-if="height && height.value" class="object-parameters__item">
+    <li v-if="height && height.valueMin" class="object-parameters__item">
       <i class="fas fa-arrow-up" />
-      <with-unit-type :unit-type="height.unitType" :value="height.value" />
+      <with-unit-type
+        :unit-type="height.unitType"
+        :value="$formatter.numberOrRangeNew(height.valueMin, height.valueMax)"
+      />
     </li>
     <li
-      v-if="gatesNumber && gatesNumber?.value"
+      v-if="gatesNumber && gatesNumber.valueMin"
       class="object-parameters__item"
     >
       <i class="fas fa-dungeon" />
-      {{ gatesNumber.value }} ворот(а)
+      {{
+        $formatter.numberOrRangeNew(gatesNumber.valueMin, gatesNumber.valueMax)
+      }}
+      ворот(а)
     </li>
     <li v-if="floorType && floorType?.value" class="object-parameters__item">
       <i class="fas fa-arrow-down" />
@@ -22,11 +28,19 @@
       <i class="fas fa-fire" />
       Газ в цеху
     </li>
-    <li v-if="electricity && electricity.value" class="object-parameters__item">
+    <li
+      v-if="electricity && electricity.valueMin"
+      class="object-parameters__item"
+    >
       <i class="fas fa-bolt" />
       <with-unit-type
         :unit-type="electricity.unitType"
-        :value="electricity.value"
+        :value="
+          $formatter.numberOrRangeNew(
+            electricity.valueMin,
+            electricity.valueMax
+          )
+        "
       />
     </li>
     <li v-if="heating && heating.value" class="object-parameters__item">
@@ -38,21 +52,29 @@
       Канализация
     </li>
     <li
-      v-if="liftingDevices && liftingDevices.value"
+      v-if="liftingDevices && liftingDevices.valueMin"
       class="object-parameters__item"
     >
       <i class="fas fa-angle-double-up" />
       Подъемники
       <with-unit-type
         :unit-type="liftingDevices.unitType"
-        :value="liftingDevices.value"
+        :value="
+          $formatter.numberOrRangeNew(
+            liftingDevices.valueMin,
+            liftingDevices.valueMax
+          )
+        "
       />
-      <with-unit-type
-        v-for="weight in liftingDevices.liftingDevicesWeight"
-        :unit-type="unitTypes.TON"
-        :key="weight"
-        :value="weight"
-      />
+      -
+      <p class="object-parameters__item object-parameters__item_list">
+        <with-unit-type
+          v-for="weight in liftingDevices.liftingDevicesWeight"
+          :unit-type="unitTypes.TON"
+          :key="weight"
+          :value="weight"
+        />
+      </p>
     </li>
     <li v-if="shelving && shelving.value" class="object-parameters__item">
       <i class="fa fa-th" />
