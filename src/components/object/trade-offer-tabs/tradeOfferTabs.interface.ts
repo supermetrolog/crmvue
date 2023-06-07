@@ -1,3 +1,5 @@
+import { ITradeOfferCharacteristics } from "@/const/tradeOfferCharacteristics";
+
 export interface ITradeOfferTabs {
   tradeOffers: ITradeOffer[];
 }
@@ -8,6 +10,7 @@ export interface ITradeOffer {
   lastUpdate: Date;
   area: ITradeOfferPropeties;
   price: ITradeOfferPropeties;
+  parameters: ITradeOfferCharacteristics;
   status?: ITradeOfferStatus;
 }
 

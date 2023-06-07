@@ -14,7 +14,7 @@ export interface ICharacterictic {
   liftingDevicesWeight?: number[];
   valueMin?: number;
   valueMax?: number;
-  value?: string;
+  value?: string | boolean;
 }
 
 export const tradeOfferCharacteristics: ITradeOfferCharacteristics = {
@@ -168,7 +168,7 @@ export const tradeOfferCharacteristics: ITradeOfferCharacteristics = {
       required: false,
       unitType: unitTypes.PIECES,
     },
-    Telphers: {
+    telphers: {
       name: "Тельферы",
       required: false,
       unitType: unitTypes.PIECES,

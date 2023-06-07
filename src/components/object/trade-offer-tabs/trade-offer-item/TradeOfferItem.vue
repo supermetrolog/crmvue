@@ -36,6 +36,9 @@
         <trade-offer-status class="trade-offer-item__status" :status="status" />
       </div>
     </div>
+    <div class="trade-offer-item__line">
+      <parameters />
+    </div>
   </div>
 </template>
 
@@ -48,12 +51,14 @@ import {
   ITradeOfferPropeties,
   ITradeOfferStatus,
 } from "../tradeOfferTabs.interface";
+import Parameters from "../../ui/parameters/Parameters.vue";
 
 export default defineComponent({
   name: "TradeOfferItem",
   components: {
     TradeOfferTable,
     TradeOfferStatus,
+    Parameters,
   },
   props: {
     area: {

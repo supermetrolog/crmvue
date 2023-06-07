@@ -1,12 +1,11 @@
 .additional-details {
-  padding-left: 20px;
-  padding-top: 15px;
+  padding: 15px 20px;
   &__list {
     margin-top: 15px;
   }
   &__item {
     display: flex;
-    gap: 40px;
+    gap: 25px;
     &_color_red {
       color: $color_danger;
     }
@@ -32,6 +31,7 @@
   &__item-value {
     font-size: 14px;
     font-weight: 400;
+    white-space: nowrap;
     & span:last-of-type {
       font-weight: 400;
       font-size: 12px;
