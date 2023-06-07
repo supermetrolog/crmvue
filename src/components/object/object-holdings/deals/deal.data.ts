@@ -125,24 +125,28 @@ export default [
       extraCosts: [
         {
           label: "Орех",
-          value: "890-1200",
+          valueMin: 890,
+          valueMax: 1200,
           unitType: unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR,
         },
         {
           label: "Ком платежи",
-          value: "150-200",
+          valueMin: 150,
+          valueMax: 200,
           unitType: unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR,
         },
       ],
       specialTerms: [
         {
           label: "Каникулы",
-          value: "3-7",
+          valueMin: 3,
+          valueMax: 7,
           unitType: unitTypes.MONTH,
         },
         {
           label: "Депозит",
-          value: "2",
+          valueMin: 2,
+          valueMax: 2,
           unitType: unitTypes.MONTH,
         },
         {
@@ -155,18 +159,20 @@ export default [
         info: [
           {
             label: "% заполняемости объекта",
-            value: 80,
+            valueMin: 80,
+            valueMax: 80,
             unitType: unitTypes.PERCENTS,
           },
           {
             label: "Средняя ставка аренды",
-            value: 7800,
+            valueMin: 7800,
+            valueMax: 7800,
             unitType: unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR,
-            addRub: true,
           },
           {
             label: "% долгих контрактов",
-            value: 80,
+            valueMin: 80,
+            valueMax: 80,
             unitType: unitTypes.PERCENTS,
           },
           {
@@ -176,13 +182,15 @@ export default [
           },
           {
             label: "EBITDA",
-            value: 47800000,
-            unitType: unitTypes.PER_YEAR,
+            valueMin: 47800000,
+            valueMax: 47800000,
+            unitType: unitTypes.RUB_PER_YEAR,
           },
           {
             label: "Чистая прибыль",
-            value: 35800000,
-            unitType: unitTypes.PER_YEAR,
+            valueMin: 35800000,
+            valueMax: 35800000,
+            unitType: unitTypes.RUB_PER_YEAR,
           },
         ],
       },

@@ -6,9 +6,11 @@
     gap: 35px;
   }
   &__content {
+    padding-top: 15px;
   }
   &__detailed-info {
   }
   &__aside {
+    border-left: 1px solid $color_light_grey;
   }
 }
