@@ -16,8 +16,7 @@
           :title="priceTableTitle"
           :titleUnitType="unitTypes.RUB"
           :propertyList="price.properties"
-          :propertyUnitType="unitTypes.SQUARE_METERS_PER_YEAR"
-          :additionalUnit="unitTypes.RUB"
+          :propertyUnitType="unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR"
           type="price"
           class="trade-offer-item__table"
         />

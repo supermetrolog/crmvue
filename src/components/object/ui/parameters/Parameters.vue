@@ -1,37 +1,28 @@
 <template>
   <ul class="object-parameters">
-    <li v-if="height && height.valueMin" class="object-parameters__item">
+    <li v-if="height?.valueMin" class="object-parameters__item">
       <i class="fas fa-arrow-up" />
       <with-unit-type
         :unit-type="height.unitType"
         :value="$formatter.numberOrRangeNew(height.valueMin, height.valueMax)"
       />
     </li>
-    <li
-      v-if="gatesNumber && gatesNumber.valueMin"
-      class="object-parameters__item"
-    >
+    <li v-if="gatesNumber?.valueMin" class="object-parameters__item">
       <i class="fas fa-dungeon" />
       {{
         $formatter.numberOrRangeNew(gatesNumber.valueMin, gatesNumber.valueMax)
       }}
       ворот(а)
     </li>
-    <li v-if="floorType && floorType?.value" class="object-parameters__item">
+    <li v-if="floorType?.value" class="object-parameters__item">
       <i class="fas fa-arrow-down" />
       {{ floorType.value }}
     </li>
-    <li
-      v-if="gasForProduction && gasForProduction?.value"
-      class="object-parameters__item"
-    >
+    <li v-if="gasForProduction?.value" class="object-parameters__item">
       <i class="fas fa-fire" />
       Газ в цеху
     </li>
-    <li
-      v-if="electricity && electricity.valueMin"
-      class="object-parameters__item"
-    >
+    <li v-if="electricity?.valueMin" class="object-parameters__item">
       <i class="fas fa-bolt" />
       <with-unit-type
         :unit-type="electricity.unitType"
@@ -43,18 +34,15 @@
         "
       />
     </li>
-    <li v-if="heating && heating.value" class="object-parameters__item">
+    <li v-if="heating?.value" class="object-parameters__item">
       <i class="fa fa-thermometer-full" />
       Отопление
     </li>
-    <li v-if="sewage && sewage.value" class="object-parameters__item">
+    <li v-if="sewage?.value" class="object-parameters__item">
       <i class="fas fa-shower" />
       Канализация
     </li>
-    <li
-      v-if="liftingDevices && liftingDevices.valueMin"
-      class="object-parameters__item"
-    >
+    <li v-if="liftingDevices?.valueMin" class="object-parameters__item">
       <i class="fas fa-angle-double-up" />
       Подъемники
       <with-unit-type
@@ -76,7 +64,7 @@
         />
       </p>
     </li>
-    <li v-if="shelving && shelving.value" class="object-parameters__item">
+    <li v-if="shelving?.value" class="object-parameters__item">
       <i class="fa fa-th" />
       Стеллажи
     </li>

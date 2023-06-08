@@ -24,7 +24,7 @@
                   <span>{{ company.id }}</span>
                 </div>
                 <div class="col-12 title text-center mt-1 mb-1">
-                  <h3>{{ company.nameRu }} - {{ company.nameEng }}</h3>
+                  <h3>{{ companyName(company) }}</h3>
                 </div>
                 <div class="col-12 pt-1 footer align-self-end">
                   <p>{{ company.created_at }}</p>
@@ -158,6 +158,10 @@ export default {
     },
     category(categoryValue) {
       return CompanyCategories.get("param")[categoryValue][1];
+    },
+    companyName({ nameRu, nameEng }) {
+      if (nameRu && nameRu) return `${nameRu} - ${nameEng}`;
+      return nameRu ? nameRu : nameEng;
     },
   },
 };

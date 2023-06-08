@@ -21,7 +21,6 @@
             $formatter.numberOrRangeNew(property.valueMin, property.valueMax)
           "
           :unitType="propertyUnitType"
-          :additionalUnit="additionalUnit"
         />
       </li>
     </ul>
@@ -55,9 +54,6 @@ export default defineComponent({
     propertyList: {
       type: Array as PropType<IProperty[]>,
       required: true,
-    },
-    additionalUnit: {
-      type: Number as PropType<unitTypes>,
     },
   },
   data() {
