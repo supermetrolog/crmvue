@@ -5,26 +5,26 @@
       nav-class="trade-offers-item-tabs__list"
       nav-item-link-class="trade-offers-item-tabs__link"
     >
-      <Tab name="Свобдка">
-        <div class="trade-offers-item-tabs__tab-body">123</div>
+      <Tab name="Сводка">
+        <div class="trade-offers-item-tabs__tab-body"></div>
       </Tab>
       <Tab name="Подробно">
-        <div class="trade-offers-item-tabs__tab-body">123</div>
+        <div class="trade-offers-item-tabs__tab-body"></div>
       </Tab>
       <Tab name="Описание">
-        <div class="trade-offers-item-tabs__tab-body">123</div>
+        <div class="trade-offers-item-tabs__tab-body"></div>
       </Tab>
       <Tab name="Фото">
-        <div class="trade-offers-item-tabs__tab-body">123</div>
+        <div class="trade-offers-item-tabs__tab-body"></div>
       </Tab>
       <Tab name="Клиенты">
-        <div class="trade-offers-item-tabs__tab-body">123</div>
+        <div class="trade-offers-item-tabs__tab-body"></div>
       </Tab>
       <Tab name="Задачи">
-        <div class="trade-offers-item-tabs__tab-body">123</div>
+        <div class="trade-offers-item-tabs__tab-body"></div>
       </Tab>
       <Tab name="Парам. Сделки">
-        <div class="trade-offers-item-tabs__tab-body">123</div>
+        <div class="trade-offers-item-tabs__tab-body"></div>
       </Tab>
     </Tabs>
   </div>

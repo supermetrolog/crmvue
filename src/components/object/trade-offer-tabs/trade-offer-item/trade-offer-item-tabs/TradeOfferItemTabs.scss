@@ -9,7 +9,7 @@
     display: inline-block;
     position: relative;
     text-decoration: none;
-    padding: 11px 20px;
+    padding: 0 15px;
     text-transform: capitalize;
     font-weight: bolder;
     font-size: 14px;
@@ -24,7 +24,7 @@
 
       transition: border-top-color 0.3s ease-in-out, top 0.3s ease-in-out;
       left: 50%;
-      top: 30px;
+      top: 15px;
       border: 5px solid transparent;
       border-top: 5px solid inherit;
       transform: translateX(-50%);
@@ -34,7 +34,7 @@
       transition: background-color 0.3s ease-in-out;
       &::before {
         border-top: 5px solid $color_danger;
-        top: 35px;
+        top: 25px;
       }
     }
   }
