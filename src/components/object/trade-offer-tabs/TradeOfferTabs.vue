@@ -1,7 +1,11 @@
 <template>
   <div class="trade-offer-tabs">
-    <Tabs :options="{ useUrlFragment: false }">
-      <Tab :name="`Активные (${activeOffers.length})`">
+    <Tabs
+      :options="{ useUrlFragment: false }"
+      nav-class="trade-offer-tabs__list"
+      nav-item-link-class="trade-offer-tabs__link"
+    >
+      <Tab :name="`Активных ТП (${activeOffers.length} шт.)`">
         <div class="trade-offer-tabs__tab-body">
           <trade-offer-item
             v-for="tradeOffer in activeOffers"
@@ -15,7 +19,7 @@
           />
         </div>
       </Tab>
-      <Tab :name="`Архив (${archiveOffers.length})`">
+      <Tab :name="`Архив (${archiveOffers.length}  шт.)`">
         <div
           class="trade-offer-tabs__tab-body trade-offer-tabs__tab-body_opacity"
         >

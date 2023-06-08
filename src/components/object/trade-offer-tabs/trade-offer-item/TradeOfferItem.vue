@@ -48,12 +48,16 @@
         :shelving="parameters.facilities.shelving"
       />
     </div>
+    <div class="trade-offer-item__line">
+      <trade-offer-item-tabs class="trade-offer-item__tabs" />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import TradeOfferTable from "../trade-offer-table/TradeOfferTable.vue";
 import TradeOfferStatus from "../trade-offer-status/TradeOfferStatus.vue";
+import TradeOfferItemTabs from "./trade-offer-item-tabs/TradeOfferItemTabs.vue";
 import { unitTypes } from "@/const/unitTypes";
 import { PropType, defineComponent } from "vue";
 import {
@@ -69,6 +73,7 @@ export default defineComponent({
     TradeOfferTable,
     TradeOfferStatus,
     Parameters,
+    TradeOfferItemTabs,
   },
   props: {
     area: {

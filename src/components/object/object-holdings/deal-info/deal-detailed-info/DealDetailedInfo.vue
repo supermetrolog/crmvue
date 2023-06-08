@@ -1,5 +1,5 @@
 <template>
-  <div class="deal-deatailed-info">
+  <div class="deal-detailed-info">
     <building-info
       class="deal-detailed-info__building-info"
       :area="area"
