@@ -50,6 +50,15 @@
     </div>
     <div class="trade-offer-item__line">
       <trade-offer-item-tabs class="trade-offer-item__tabs" />
+      <action-buttons
+        :edit="true"
+        :advert="true"
+        :dislike="true"
+        :favorite="true"
+        :notifications="true"
+        :pdf="true"
+        class="trade-offer-item__buttons"
+      />
     </div>
   </div>
 </template>
@@ -66,6 +75,7 @@ import {
 } from "../tradeOfferTabs.interface";
 import Parameters from "../../ui/parameters/Parameters.vue";
 import { ITradeOfferCharacteristics } from "@/const/tradeOfferCharacteristics";
+import ActionButtons from "@/components/common/action-buttons/ActionButtons.vue";
 
 export default defineComponent({
   name: "TradeOfferItem",
@@ -74,6 +84,7 @@ export default defineComponent({
     TradeOfferStatus,
     Parameters,
     TradeOfferItemTabs,
+    ActionButtons,
   },
   props: {
     area: {
