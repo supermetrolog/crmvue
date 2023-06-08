@@ -1,0 +1,35 @@
+.trade-offer-item {
+  background-color: #f7f7f7;
+  border: 2px solid #ebebeb;
+  padding: 10px;
+  margin-bottom: 25px;
+  &__line {
+    display: flex;
+  }
+  &__status {
+    text-align: start;
+  }
+  &__tables {
+    display: flex;
+  }
+  &__table:first-of-type {
+    border-right: none;
+  }
+  &__info {
+    width: 100%;
+    text-align: end;
+    margin-left: 20px;
+  }
+  &__text {
+    font-size: 13px;
+    line-height: 22px;
+    font-weight: 300;
+    &_color_grey {
+      color: $color_grey;
+    }
+  }
+}
+.fas {
+}
+.fa-undo-alt {
+}

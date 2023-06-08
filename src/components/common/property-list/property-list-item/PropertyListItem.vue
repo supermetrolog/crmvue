@@ -10,12 +10,13 @@
   </li>
 </template>
 
-<script>
+<script lang="ts">
 import { unitTypes } from "@/const/unitTypes";
+import { defineComponent } from "vue";
 import WithUnitType from "../../with-unit-type/WithUnitType.vue";
 import "./styles.scss";
 
-export default {
+export default defineComponent({
   name: "PropertyListItem",
   components: {
     WithUnitType,
@@ -44,12 +45,12 @@ export default {
   computed: {
     propertyValue() {
       return this.value
-        ? this.$formatter.formatValue(this.value)
+        ? this.$formatter.numberOrRange(this.value)
         : "не заполнено";
     },
     displayUnit() {
-      return this.value ? this.unitType : null;
+      return this.value ? this.unitType : undefined;
     },
   },
-};
+});
 </script>

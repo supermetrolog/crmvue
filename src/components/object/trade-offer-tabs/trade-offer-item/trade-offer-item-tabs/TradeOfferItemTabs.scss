@@ -1,0 +1,44 @@
+.trade-offers-item-tabs {
+  //   background-color: black;
+  &__list {
+    position: static;
+    background-color: inherit;
+  }
+
+  &__link {
+    display: inline-block;
+    position: relative;
+    text-decoration: none;
+    padding: 0 15px;
+    text-transform: capitalize;
+    font-weight: bolder;
+    font-size: 14px;
+    color: $color_grey;
+    &::before {
+      display: block;
+      position: absolute;
+      content: "";
+      background-color: inherit;
+      height: 3px;
+      width: 0;
+
+      transition: border-top-color 0.3s ease-in-out, top 0.3s ease-in-out;
+      left: 50%;
+      top: 15px;
+      border: 5px solid transparent;
+      border-top: 5px solid inherit;
+      transform: translateX(-50%);
+    }
+    &.is-active {
+      color: $color_danger;
+      transition: background-color 0.3s ease-in-out;
+      &::before {
+        border-top: 5px solid $color_danger;
+        top: 25px;
+      }
+    }
+  }
+
+  &__tab-body {
+  }
+}

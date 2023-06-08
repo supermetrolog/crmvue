@@ -58,10 +58,10 @@ export default {
   methods: {},
   computed: {
     formattedAreaSum() {
-      return this.$formatter.formatValue(this.area.sum.value);
+      return this.$formatter.numberOrRange(this.area.sum.value);
     },
     formattedPriceSum() {
-      return this.$formatter.formatValue(this.price.sum.value);
+      return this.$formatter.numberOrRange(this.price.sum.value);
     },
   },
 };

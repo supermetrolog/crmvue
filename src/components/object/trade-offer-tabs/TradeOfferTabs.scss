@@ -1,0 +1,47 @@
+.trade-offer-tabs {
+  &__list {
+    padding-left: 15px;
+    position: static;
+    background-color: inherit;
+    display: flex;
+    column-gap: 20px;
+    margin-bottom: 15px;
+  }
+
+  &__link {
+    display: inline-block;
+    position: relative;
+    text-decoration: none;
+    padding: 0;
+    text-transform: capitalize;
+    font-weight: bolder;
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 500;
+    color: black;
+    &::before {
+      background-color: darken($color: $color_success, $amount: 12);
+      display: block;
+      position: absolute;
+      content: "";
+      height: 2px;
+      width: 0;
+      transition: width 0.5s ease-in-out, left 0.5s ease-in-out;
+      left: 0;
+      bottom: 0;
+    }
+    &.is-active {
+      color: darken($color: $color_success, $amount: 12);
+      font-weight: 700;
+      transition: background-color 0.3s ease-in-out;
+      &::before {
+        width: 100%;
+      }
+    }
+  }
+  &__tab-body {
+    &_opacity {
+      opacity: 0.5;
+    }
+  }
+}

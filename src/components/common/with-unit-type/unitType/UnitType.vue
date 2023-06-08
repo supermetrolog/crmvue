@@ -95,6 +95,18 @@
   >
     ₽/год
   </span>
+  <span
+    v-else-if="unitType === unitTypes.TON"
+    class="unit-type__unit unit-type__unit_size_small"
+  >
+    т.
+  </span>
+  <span
+    v-else-if="unitType === unitTypes.PIECES"
+    class="unit-type__unit unit-type__unit_size_small"
+  >
+    шт.
+  </span>
 </template>
 
 <script>

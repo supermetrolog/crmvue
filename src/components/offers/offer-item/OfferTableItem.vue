@@ -167,6 +167,7 @@ import Td from "../../common/table/Td.vue";
 import Tr from "../../common/table/Tr.vue";
 import api from "@/api/api";
 import { MixinOfferItem } from "../mixins";
+import { TaxFormList } from "@/const/Const";
 
 export default {
   mixins: [MixinOfferItem],
@@ -176,6 +177,7 @@ export default {
     return {
       miniOffers: [],
       miniOffersLoader: false,
+      TaxFormList,
     };
   },
   props: {
@@ -197,8 +199,8 @@ export default {
   computed: {
     taxForm() {
       if (this.offer && this.offer.offer) {
-        const taxForm = this.taxFormList.find(
-          (item) => item.value == this.offer.offer.tax_form
+        const taxForm = this.TaxFormList.find(
+          (item) => item.value === this.offer.offer.tax_form
         );
         if (taxForm) {
           return taxForm.label;

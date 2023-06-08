@@ -9,21 +9,26 @@
       >
         <div class="row no-gutters card">
           <router-link
-            tag="div"
+            custom
+            v-slot="{ navigate }"
             :to="'/companies/' + company.id"
-            class="col-lg-4 col-12 d-flex card-left pr-4 pl-4 pt-3 pb-3"
             target="_blank"
           >
-            <div class="row">
-              <div class="col-12 id">
-                <p>ID:</p>
-                <span>{{ company.id }}</span>
-              </div>
-              <div class="col-12 title text-center mt-1 mb-1">
-                <h3>{{ company.nameRu }} - {{ company.nameEng }}</h3>
-              </div>
-              <div class="col-12 pt-1 footer align-self-end">
-                <p>{{ company.created_at }}</p>
+            <div
+              class="col-lg-4 col-12 d-flex card-left pr-4 pl-4 pt-3 pb-3"
+              @click="navigate"
+            >
+              <div class="row">
+                <div class="col-12 id">
+                  <p>ID:</p>
+                  <span>{{ company.id }}</span>
+                </div>
+                <div class="col-12 title text-center mt-1 mb-1">
+                  <h3>{{ companyName(company) }}</h3>
+                </div>
+                <div class="col-12 pt-1 footer align-self-end">
+                  <p>{{ company.created_at }}</p>
+                </div>
               </div>
             </div>
           </router-link>
@@ -90,12 +95,7 @@
                         </a>
                       </div>
                       <div
-                        class="
-                          col-6
-                          contact-data
-                          text-center text-lg-right
-                          pr-1
-                        "
+                        class="col-6 contact-data text-center text-lg-right pr-1"
                       >
                         <a
                           :href="'tel:' + phone.phone"
@@ -159,9 +159,12 @@ export default {
     category(categoryValue) {
       return CompanyCategories.get("param")[categoryValue][1];
     },
+    companyName({ nameRu, nameEng }) {
+      if (nameRu && nameRu) return `${nameRu} - ${nameEng}`;
+      return nameRu ? nameRu : nameEng;
+    },
   },
 };
 </script>
 
-<style>
-</style>
+<style></style>

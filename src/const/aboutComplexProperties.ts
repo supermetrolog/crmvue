@@ -1,20 +1,19 @@
 import { unitTypes } from "./unitTypes";
 
-// после добавления ts
-// export interface IAboutComlexProperties {
-//   area: IProperty[];
-//   communications: IProperty[];
-//   safety: IProperty[];
-//   railway: IProperty[];
-//   infrastructure: IProperty[];
-// }
+export interface IAboutComlexProperties {
+  area: IProperty[];
+  communications: IProperty[];
+  safety: IProperty[];
+  railway: IProperty[];
+  infrastructure: IProperty[];
+}
 
-// interface IProperty {
-//   name: string;
-//   unitType: unitTypes | null;
-// }
+interface IProperty {
+  name: string;
+  unitType: unitTypes | null;
+}
 
-export const aboutComplexProperties = {
+export const aboutComplexProperties: IAboutComlexProperties = {
   area: [
     {
       name: "S - участка общая",

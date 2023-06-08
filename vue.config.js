@@ -11,7 +11,7 @@ module.exports = {
   configureWebpack: {
     resolve: {
       alias: {
-        "@": path.join(__dirname, "src/"),
+        "@/": path.join(__dirname, "src/"),
         "@/views": path.join(__dirname, "src/views/"),
         "@/components": path.join(__dirname, "src/components/"),
         "@/assets": path.join(__dirname, "src/assets/"),
@@ -21,6 +21,7 @@ module.exports = {
         "@/router": path.join(__dirname, "src/router/"),
         "@/const": path.join(__dirname, "src/const/"),
         "@/plugins": path.join(__dirname, "src/plugins/"),
+        "@/types": path.join(__dirname, "src/types/"),
       },
       extensions: [".js", ".vue", ".json"],
     },

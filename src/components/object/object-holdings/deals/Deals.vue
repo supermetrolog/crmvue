@@ -35,7 +35,7 @@
 <script>
 import DealItem from "./deal-item/ObjectHoldingDealItem.vue";
 import DealPreviewCard from "../../ui/deal-preview/DealPreview.vue";
-import dealData from "./deal.data.json";
+import dealData from "./deal.data";
 import "./styles.scss";
 
 export default {

@@ -7,12 +7,12 @@ import Maska from "maska";
 import axios from "axios";
 import VueAxios from "vue-axios";
 import Notifications from "@kyvg/vue3-notification";
-import Modal from "@/components/common/Modal";
-import Loader from "@/components/common/Loader";
-import PhoneNumber from "@/components/common/PhoneNumber";
-import Pagination from "@/components/common/Pagination";
-import PaginationClassic from "@/components/common/PaginationClassic";
-import { Formatter, ApiUrlHelper, apiUrlHelperObject } from "@/plugins";
+import Modal from "@/components/common/Modal.vue";
+import Loader from "@/components/common/Loader.vue";
+import PhoneNumber from "@/components/common/PhoneNumber.vue";
+import Pagination from "@/components/common/Pagination.vue";
+import PaginationClassic from "@/components/common/PaginationClassic.vue";
+import { Formatter, ApiUrlHelper, apiUrlHelperObject } from "@/plugins/index";
 
 // import VueFileAgent from 'vue-file-agent'
 import "animate.css";
@@ -26,7 +26,7 @@ import "@vueform/multiselect/themes/default.css";
 axios.defaults.baseURL = apiUrlHelperObject.url();
 
 const app = createApp(App);
-app.config.devtools = true;
+app.config.performance = true;
 app
   .component("Tabs", Tabs)
   .component("Modal", Modal)
