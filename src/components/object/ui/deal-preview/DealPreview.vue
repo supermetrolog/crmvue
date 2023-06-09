@@ -10,20 +10,13 @@
     <span class="DealPreviewCard-type">{{ dealType }}</span>
     <p class="DealPreviewCard-company">{{ deal.company?.name || "--" }}</p>
     <p class="DealPreviewCard-area">
-      {{ deal.area ? dealArea : "--" }}
+      {{ dealArea }}
       <span v-if="deal.area" class="DealPreviewCard-price-unit"
         >м<sup>2</sup></span
       >
     </p>
     <p class="DealPreviewCard-price">
-      {{ dealPrice }}
-      <span v-if="deal.price.value">₽</span>
-      <span
-        class="DealPreviewCard-price-unit"
-        v-if="deal.price.type === unitTypes.SQUARE_METERS_PER_YEAR"
-      >
-        м<sup>2</sup>/год
-      </span>
+      <with-unit-type :value="dealPrice" :unit-type="deal.price.unitType" />
     </p>
     <p
       class="DealPreviewCard-status"
@@ -40,13 +33,18 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { unitTypes } from "@/const/unitTypes";
 import "./styles.scss";
 import { DealTypeList, DealStatusType } from "@/const/Const.js";
+import { defineComponent } from "vue";
+import WithUnitType from "@/components/common/with-unit-type/WithUnitType.vue";
 
-export default {
+export default defineComponent({
   name: "DealPreviewCard",
+  components: {
+    WithUnitType,
+  },
   props: {
     deal: {
       type: Object,
@@ -66,7 +64,7 @@ export default {
   },
   computed: {
     dealType() {
-      return this.deal.type ? this.dealTypeList[this.deal.type].label : null;
+      return this.deal.type ? this.dealTypeList![this.deal.type].label : null;
     },
 
     dealStatus() {
@@ -82,18 +80,19 @@ export default {
       }
     },
     dealArea() {
-      if (this.deal.area.includes("-")) {
-        return this.$formatter.numberRange(this.deal.area);
-      }
-      return this.$formatter.number(this.deal.area);
+      const { valueMin, valueMax } = this.deal.area;
+      if (valueMin && valueMax)
+        return this.$formatter.numberOrRangeNew(valueMin, valueMax);
+      return "--";
     },
     dealPrice() {
-      return this.deal.price.value
-        ? this.$formatter.number(this.deal.price.value)
-        : "нет данных";
+      const { valueMin, valueMax } = this.deal.price;
+      if (valueMin && valueMax)
+        return this.$formatter.numberOrRangeNew(valueMin, valueMax);
+      return "нет данных";
     },
     typePresence() {
-      return this.deal.price.type && this.deal.price.value;
+      return this.deal.price.type && this.deal.price.valueMin;
     },
   },
   methods: {
@@ -105,7 +104,7 @@ export default {
     },
   },
   emits: ["choose", "edit"],
-};
+});
 </script>
 
 <style lang="scss" scoped></style>

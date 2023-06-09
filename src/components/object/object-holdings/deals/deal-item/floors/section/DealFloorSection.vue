@@ -85,7 +85,10 @@ export default {
       );
     },
     formattedArea() {
-      return this.$formatter.number(this.section.area);
+      return this.$formatter.numberOrRangeNew(
+        this.section.area.valueMin,
+        this.section.area.valueMax
+      );
     },
     sectionAdditionalClass() {
       return {

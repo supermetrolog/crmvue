@@ -1,34 +1,54 @@
 import { unitTypes } from "@/const/unitTypes";
+import { IDeal } from "./deal.interface";
 
-export default [
+const dealData: IDeal[] = [
   {
     id: 1,
     type: 1,
     company: { name: "ОАО Арахис Каприз Лук" },
-    area: "32400 - 125000",
-    price: { value: 1200, type: 8 },
+    area: {
+      valueMin: 32400,
+      valueMax: 125000,
+    },
+    price: {
+      valueMin: 1200,
+      valueMax: 1200,
+      unitType: unitTypes.RUB_PER_YEAR,
+    },
     status: 1,
     floors: [
       {
         name: "Мезонин 2",
-        area: 5000,
+        area: {
+          valueMin: 5000,
+          valueMax: 5000,
+        },
         checked: false,
         sections: [
           {
             company: { name: "Сияние Чистоты" },
-            area: 345,
+            area: {
+              valueMin: 345,
+              valueMax: 345,
+            },
             status: 2,
             checked: true,
           },
           {
             company: { name: "Портос" },
-            area: 228,
+            area: {
+              valueMin: 228,
+              valueMax: 228,
+            },
             status: 2,
             checked: true,
           },
           {
             company: { name: "Арамис" },
-            area: 1000,
+            area: {
+              valueMin: 1000,
+              valueMax: 1000,
+            },
             status: 3,
             checked: true,
           },
@@ -48,24 +68,36 @@ export default [
       },
       {
         name: "Мезонин 1",
-        area: 3000,
+        area: {
+          valueMin: 3000,
+          valueMax: 3000,
+        },
         checked: false,
         sections: [
           {
             company: { name: "Сияние Чистоты" },
-            area: 345,
+            area: {
+              valueMin: 345,
+              valueMax: 345,
+            },
             status: 2,
             checked: true,
           },
           {
             company: { name: "Портос" },
-            area: 228,
+            area: {
+              valueMin: 228,
+              valueMax: 228,
+            },
             status: 2,
             checked: true,
           },
           {
             company: { name: "Арамис" },
-            area: 1000,
+            area: {
+              valueMin: 1000,
+              valueMax: 1000,
+            },
             status: 3,
             checked: true,
           },
@@ -85,24 +117,36 @@ export default [
       },
       {
         name: "1 этаж",
-        area: 3500,
+        area: {
+          valueMin: 3500,
+          valueMax: 3500,
+        },
         checked: false,
         sections: [
           {
             company: { name: "Сияние чистоты" },
-            area: 345,
+            area: {
+              valueMin: 345,
+              valueMax: 345,
+            },
             status: 2,
             checked: true,
           },
           {
             company: null,
-            area: 1500,
+            area: {
+              valueMin: 1500,
+              valueMax: 1500,
+            },
             status: 5,
             checked: false,
           },
           {
             company: null,
-            area: 930,
+            area: {
+              valueMin: 930,
+              valueMax: 930,
+            },
             status: 5,
             checked: true,
           },
@@ -198,77 +242,76 @@ export default [
     buildingInfo: {
       area: {
         sum: {
-          value: "2000 - 15000",
-          unitType: unitTypes.SQUARE_METERS,
+          valueMin: 2000,
+          valueMax: 15000,
         },
-        list: [
+        properties: [
           {
             label: "S - пол 1 эт.",
-            value: "1000-3600",
-            unitType: unitTypes.SQUARE_METERS,
+            valueMin: 1000,
+            valueMax: 3600,
           },
           {
             label: "S - пол 2 эт.",
-            value: "1000-3600",
-            unitType: unitTypes.SQUARE_METERS,
+            valueMin: 1000,
+            valueMax: 3600,
           },
           {
             label: "S - пол 3 эт.",
-            value: "1000-3600",
-            unitType: unitTypes.SQUARE_METERS,
+            valueMin: 1000,
+            valueMax: 3600,
           },
           {
             label: "S - пол 6 эт.",
-            value: "1920",
-            unitType: unitTypes.SQUARE_METERS,
+            valueMin: 1920,
+            valueMax: 1920,
           },
           {
             label: "S - мезон 1 яр.",
-            value: "1000-3600",
-            unitType: unitTypes.SQUARE_METERS,
+            valueMin: 1000,
+            valueMax: 3600,
           },
           {
             label: "S - офисов",
-            value: "1200-2000",
-            unitType: unitTypes.SQUARE_METERS,
+            valueMin: 1200,
+            valueMax: 2000,
           },
         ],
       },
       price: {
         sum: {
-          value: "1200000 - 16500685",
-          unitType: unitTypes.RUB,
+          valueMin: 1200000,
+          valueMax: 16500685,
         },
-        list: [
+        properties: [
           {
             label: "E - пол 1 эт.",
-            value: "500-800",
-            unitType: unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR,
+            valueMin: 500,
+            valueMax: 800,
           },
           {
             label: "E - пол 2 эт.",
-            value: "6500-12000",
-            unitType: unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR,
+            valueMin: 6500,
+            valueMax: 1200,
           },
           {
             label: "E - пол 3 эт.",
-            value: "1100000-16100000",
-            unitType: unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR,
+            valueMin: 1100000,
+            valueMax: 16100000,
           },
           {
             label: "E - пол 6 эт.",
-            value: "2500-4500",
-            unitType: unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR,
+            valueMin: 2500,
+            valueMax: 4500,
           },
           {
             label: "E - мезон 1 яр.",
-            value: "3250",
-            unitType: unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR,
+            valueMin: 3250,
+            valueMax: 3250,
           },
           {
             label: "E - офисов",
             value: null,
-            unitType: unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR,
           },
         ],
       },
@@ -280,31 +323,50 @@ export default [
     company: {
       name: "ООО БелТрастИнвестТТТТТТТТТТТТТТТТТТТТТТТТТТТТТТТТ",
     },
-    area: "12000",
-    price: { value: 3500 },
-    status: 2,
+    area: {
+      valueMin: 12000,
+      valueMax: 12000,
+    },
+    price: {
+      valueMin: 3500,
+      valueMax: 3500,
+      unitType: unitTypes.RUB_PER_YEAR,
+    },
+    status: 1,
     floors: [
       {
-        name: "Мезонин 1",
-        area: 3000,
+        name: "1 этаж",
+        area: {
+          valueMin: 3500,
+          valueMax: 3500,
+        },
         checked: false,
         sections: [
           {
-            company: { name: "Объебос" },
-            area: 345,
+            company: { name: "Сияние чистоты" },
+            area: {
+              valueMin: 345,
+              valueMax: 345,
+            },
             status: 2,
             checked: true,
           },
           {
-            company: { name: "Портос" },
-            area: 228,
-            status: 2,
-            checked: true,
+            company: null,
+            area: {
+              valueMin: 1500,
+              valueMax: 1500,
+            },
+            status: 5,
+            checked: false,
           },
           {
-            company: { name: "Арамис" },
-            area: 1000,
-            status: 3,
+            company: null,
+            area: {
+              valueMin: 930,
+              valueMax: 930,
+            },
+            status: 5,
             checked: true,
           },
         ],
@@ -315,31 +377,99 @@ export default [
     id: 3,
     type: 1,
     company: null,
-    area: "45500 - 100000",
-    price: { value: null, type: 1 },
-    status: 3,
+    area: {
+      valueMin: 45500,
+      valueMax: 100000,
+    },
+    price: {
+      valueMin: 1000,
+      valueMax: 3500,
+      unitType: unitTypes.RUB_PER_YEAR,
+    },
+    status: 1,
     floors: [
       {
         name: "Мезонин 1",
-        area: 2000,
+        area: {
+          valueMin: 3000,
+          valueMax: 3000,
+        },
         checked: false,
         sections: [
           {
-            company: { name: "Объебос" },
-            area: 345,
+            company: { name: "Сияние Чистоты" },
+            area: {
+              valueMin: 345,
+              valueMax: 345,
+            },
             status: 2,
             checked: true,
           },
           {
             company: { name: "Портос" },
-            area: 228,
+            area: {
+              valueMin: 228,
+              valueMax: 228,
+            },
             status: 2,
             checked: true,
           },
           {
             company: { name: "Арамис" },
-            area: 1000,
+            area: {
+              valueMin: 1000,
+              valueMax: 1000,
+            },
             status: 3,
+            checked: true,
+          },
+          {
+            company: { name: "MEGA GROUP" },
+            area: null,
+            status: 2,
+            checked: null,
+          },
+          {
+            company: { name: "ИП Пушкин" },
+            area: null,
+            status: 2,
+            checked: null,
+          },
+        ],
+      },
+      {
+        name: "1 этаж",
+        area: {
+          valueMin: 3500,
+          valueMax: 3500,
+        },
+        checked: false,
+        sections: [
+          {
+            company: { name: "Сияние чистоты" },
+            area: {
+              valueMin: 345,
+              valueMax: 345,
+            },
+            status: 2,
+            checked: true,
+          },
+          {
+            company: null,
+            area: {
+              valueMin: 1500,
+              valueMax: 1500,
+            },
+            status: 5,
+            checked: false,
+          },
+          {
+            company: null,
+            area: {
+              valueMin: 930,
+              valueMax: 930,
+            },
+            status: 5,
             checked: true,
           },
         ],
@@ -347,3 +477,5 @@ export default [
     ],
   },
 ];
+
+export default dealData;

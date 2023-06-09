@@ -18,7 +18,10 @@ import DealInfo from "../../deal-info/DealInfo.vue";
 
 export default {
   name: "DealItem",
-  components: { DealFloors, DealInfo },
+  components: {
+    DealFloors,
+    DealInfo,
+  },
   props: {
     deal: {
       type: Object,

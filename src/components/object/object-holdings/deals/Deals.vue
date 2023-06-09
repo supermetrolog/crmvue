@@ -40,7 +40,10 @@ import "./styles.scss";
 
 export default {
   name: "ObjectHoldingDeals",
-  components: { DealPreviewCard, DealItem },
+  components: {
+    DealPreviewCard,
+    DealItem,
+  },
   props: {
     deals: {
       type: Array,

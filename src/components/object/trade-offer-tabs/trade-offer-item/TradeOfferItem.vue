@@ -49,7 +49,7 @@
       />
     </div>
     <div class="trade-offer-item__line">
-      <trade-offer-item-tabs class="trade-offer-item__tabs" />
+      <offer-tabs class="trade-offer-item__tabs" />
       <action-buttons
         :edit="true"
         :advert="true"
@@ -66,7 +66,7 @@
 <script lang="ts">
 import TradeOfferTable from "../trade-offer-table/TradeOfferTable.vue";
 import TradeOfferStatus from "../trade-offer-status/TradeOfferStatus.vue";
-import TradeOfferItemTabs from "./trade-offer-item-tabs/TradeOfferItemTabs.vue";
+import OfferTabs from "@/components/object/ui/offer-tabs/OfferTabs.vue";
 import { unitTypes } from "@/const/unitTypes";
 import { PropType, defineComponent } from "vue";
 import {
@@ -83,7 +83,7 @@ export default defineComponent({
     TradeOfferTable,
     TradeOfferStatus,
     Parameters,
-    TradeOfferItemTabs,
+    OfferTabs,
     ActionButtons,
   },
   props: {

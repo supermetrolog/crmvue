@@ -5,7 +5,7 @@
       nav-class="trade-offer-tabs__list"
       nav-item-link-class="trade-offer-tabs__link"
     >
-      <Tab :name="`Активных ТП (${activeOffers.length} шт.)`">
+      <Tab :name="activeTradeOffersTitle">
         <div class="trade-offer-tabs__tab-body">
           <trade-offer-item
             v-for="tradeOffer in activeOffers"
@@ -19,7 +19,7 @@
           />
         </div>
       </Tab>
-      <Tab :name="`Архив (${archiveOffers.length}  шт.)`">
+      <Tab :name="archiveTradeOffersTitle">
         <div
           class="trade-offer-tabs__tab-body trade-offer-tabs__tab-body_opacity"
         >
@@ -60,6 +60,12 @@ export default defineComponent({
     },
     archiveOffers(): ITradeOffer[] {
       return this.tradeOffers.filter((offer) => !offer.active);
+    },
+    activeTradeOffersTitle(): string {
+      return `Активных ТП (${this.activeOffers.length} шт.)`;
+    },
+    archiveTradeOffersTitle(): string {
+      return `Архив (${this.archiveOffers.length}  шт.)`;
     },
   },
 });
