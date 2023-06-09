@@ -33,10 +33,21 @@
       </PropertyList>
     </div>
     <div class="building-info__line">
-      <parameters />
+      <parameters
+        :height="parameters.characteristics.height"
+        :floorType="parameters.characteristics.floorType"
+        :gatesNumber="parameters.characteristics.gatesNumber"
+        :electricity="parameters.communications.electricity"
+        :heating="parameters.communications.heating"
+        :sewage="parameters.communications.sewage"
+        :gasForProduction="parameters.communications.gasForProduction"
+        :liftingDevices="parameters.liftingDevices.lifts"
+        :shelving="parameters.facilities.shelving"
+      />
     </div>
     <div class="building-info__line">
       <offer-tabs class="building-info__tabs" />
+      <action-buttons v-bind="actionButtons" class="building-info__buttons" />
     </div>
   </div>
 </template>
@@ -49,6 +60,8 @@ import Parameters from "@/components/object/ui/parameters/Parameters.vue";
 import { unitTypes } from "@/const/unitTypes";
 import { ITradeOfferPropeties } from "@/components/object/trade-offer-tabs/tradeOfferTabs.interface";
 import { PropType, defineComponent } from "vue";
+import { ITradeOfferCharacteristics } from "@/const/tradeOfferCharacteristics";
+import ActionButtons from "@/components/common/action-buttons/ActionButtons.vue";
 
 export default defineComponent({
   name: "BuildingInfo",
@@ -57,6 +70,7 @@ export default defineComponent({
     PropertyListItem,
     OfferTabs,
     Parameters,
+    ActionButtons,
   },
   props: {
     area: {
@@ -68,7 +82,8 @@ export default defineComponent({
       required: true,
     },
     parameters: {
-      type: Object,
+      type: Object as PropType<ITradeOfferCharacteristics>,
+      required: true,
     },
   },
   data() {
@@ -78,6 +93,15 @@ export default defineComponent({
   },
   methods: {},
   computed: {
+    actionButtons() {
+      return {
+        advert: { value: true },
+        dislike: { value: true },
+        favorite: { value: true },
+        notifications: { value: true },
+        pdf: { value: true },
+      };
+    },
     formattedAreaSum() {
       const { valueMin, valueMax } = this.area.sum;
       return this.$formatter.numberOrRangeNew(valueMin, valueMax);

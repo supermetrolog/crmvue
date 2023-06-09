@@ -51,12 +51,7 @@
     <div class="trade-offer-item__line">
       <offer-tabs class="trade-offer-item__tabs" />
       <action-buttons
-        :edit="true"
-        :advert="true"
-        :dislike="true"
-        :favorite="true"
-        :notifications="true"
-        :pdf="true"
+        v-bind="actionButtons"
         class="trade-offer-item__buttons"
       />
     </div>
@@ -117,6 +112,16 @@ export default defineComponent({
     };
   },
   computed: {
+    actionButtons() {
+      return {
+        edit: { value: true },
+        advert: { value: true },
+        dislike: { value: true },
+        favorite: { value: true },
+        notifications: { value: true },
+        pdf: { value: true },
+      };
+    },
     areaTableTitle() {
       return this.$formatter.numberOrRangeNew(
         this.area.sum.valueMin,
