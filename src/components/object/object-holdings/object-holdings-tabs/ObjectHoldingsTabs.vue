@@ -1,5 +1,6 @@
 <template>
   <div class="ObjectHoldingsTabs">
+    <action-buttons v-bind="actionButtons" class="ObjectHoldingsTabs-buttons" />
     <Tabs :options="{ useUrlFragment: false }">
       <Tab name="Характеристики">
         <div class="ObjectHoldingsTabs-content-properties">
@@ -61,11 +62,17 @@
 import PropertyListItem from "../../../common/property-list/property-list-item/PropertyListItem.vue";
 import PropertyList from "../../../common/property-list/PropertyList.vue";
 import ObjectHoldingDeals from "../deals/Deals.vue";
+import ActionButtons from "@/components/common/action-buttons/ActionButtons.vue";
 import "./styles.scss";
 
 export default {
   name: "ObjectHoldingsTabs",
-  components: { PropertyList, PropertyListItem, ObjectHoldingDeals },
+  components: {
+    PropertyList,
+    PropertyListItem,
+    ObjectHoldingDeals,
+    ActionButtons,
+  },
   props: {
     holdingsProperties: {
       type: Array,
@@ -75,7 +82,17 @@ export default {
   data() {
     return {};
   },
-  computed: {},
+  computed: {
+    actionButtons() {
+      return {
+        edit: { value: true },
+        advert: { value: true },
+        dislike: { value: true },
+        notifications: { value: true },
+        pdf: { value: true },
+      };
+    },
+  },
   methods: {},
 };
 </script>

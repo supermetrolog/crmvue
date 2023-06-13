@@ -29,6 +29,10 @@
     padding: $gap;
     background-color: $color_grey_alt;
     position: relative;
+    $border: 1px solid #cacaca;
+    border-top: $border;
+    border-left: $border;
+    border-right: $border;
   }
 
   &-label {
