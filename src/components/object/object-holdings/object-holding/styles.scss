@@ -61,14 +61,17 @@
 
   &-info {
     display: flex;
+    max-height: 300px;
     &-left {
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
       width: 70%;
     }
     &-right {
       width: 30%;
+      padding: 20px;
+      background-color: $color_olive_light;
+      border: 1px solid $color_light_grey;
     }
   }
 }

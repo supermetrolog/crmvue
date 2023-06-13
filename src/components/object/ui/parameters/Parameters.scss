@@ -12,6 +12,12 @@
     line-height: 15px;
     font-weight: 700;
 
+    & .with-unit-type {
+      font-size: 13px;
+      line-height: 15px;
+      font-weight: 700;
+    }
+
     &_list {
       display: flex;
       gap: 4px;

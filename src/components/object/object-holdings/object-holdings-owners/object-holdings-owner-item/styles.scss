@@ -1,19 +1,19 @@
 .ObjectHoldingsOwnerItem {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  &-header {
+    font-weight: bold;
+  }
+  &-name {
     font-size: 14px;
-    &-header {
-        font-weight: bold;
+  }
+  &-rating {
+  }
+  &-links {
+    & > * {
+      text-decoration: underline;
+      color: $color_default_link;
     }
-    &-name {
-        font-size: larger;
-    }
-    &-rating {
-    }
-    &-links {
-        & > * {
-            text-decoration: underline;
-            color: $color_default_link;
-        }
-    }
+  }
 }
