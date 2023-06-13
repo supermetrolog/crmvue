@@ -27,7 +27,7 @@
         :key="number"
         class="deal-owner__text"
       >
-        {{ number }}
+        {{ $formatter.formatPhoneNumber(number) }}
       </li>
     </ul>
   </div>
