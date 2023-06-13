@@ -1,17 +1,17 @@
 <template>
   <div class="deal-owner">
-    <p class="deal-owner__text">{{ owner.name }}</p>
+    <p :title="owner.name" class="deal-owner__text">{{ owner.name }}</p>
     <rating :rating="owner.rating" class="deal-owner__rating" />
     <ul class="deal-owner__links">
-      <li class="deal-owner__link">
+      <li class="deal-owner__text deal-owner__text_link">
         {{
           plural(owner.contacts, "%d контакт", "%d контакта", "%d контактов")
         }},
       </li>
-      <li class="deal-owner__link">
+      <li class="deal-owner__text deal-owner__text_link">
         {{ plural(owner.requests, "%d запрос", "%d запроса", "%d запросов") }},
       </li>
-      <li class="deal-owner__link">
+      <li class="deal-owner__text deal-owner__text_link">
         {{ plural(owner.objects, "%d объект", "%d объекта", "%d объектов") }}
       </li>
     </ul>

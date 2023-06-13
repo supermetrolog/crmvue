@@ -6,7 +6,7 @@
       class="far fa-star"
       :class="{
         'fas fa-star': value <= rating,
-        rating__color_red: value <= rating,
+        red: value <= rating,
       }"
     >
     </i>
