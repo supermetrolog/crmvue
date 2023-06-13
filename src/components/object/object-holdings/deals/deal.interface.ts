@@ -11,10 +11,26 @@ export interface IDeal {
   price: IDealPrice;
   status: 1;
   floors: IFloor[];
+  owner?: IOwner;
   builder?: IBuilder;
   consultant?: IConsultant;
   additionalDetails?: IAdditionalDetails;
   buildingInfo?: IBuildingInfo;
+}
+
+export interface IOwner {
+  name: string;
+  rating: number;
+  contacts: number;
+  requests: number;
+  objects: number;
+  representative: IRepresentative;
+  phoneNumbers: string[];
+}
+
+interface IRepresentative {
+  name: string;
+  post: string;
 }
 
 interface IDealPrice extends IRange {

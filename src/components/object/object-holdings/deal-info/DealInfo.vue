@@ -19,6 +19,7 @@
           :specialTerms="additionalDetails.specialTerms"
           :business="additionalDetails.business"
         />
+        <deal-owner :owner="owner" />
       </div>
     </div>
   </div>
@@ -27,6 +28,7 @@
 <script>
 import DealDetailedInfo from "./deal-detailed-info/DealDetailedInfo.vue";
 import AdditionalDetails from "./deal-detailed-info/additional-detailes/AdditionalDetails.vue";
+import DealOwner from "./deal-detailed-info/deal-owner/DealOwner.vue";
 import DealInfoHeader from "./deal-info-header/DealInfoHeader.vue";
 
 export default {
@@ -35,6 +37,7 @@ export default {
     DealInfoHeader,
     DealDetailedInfo,
     AdditionalDetails,
+    DealOwner,
   },
   props: {
     company: {
@@ -47,6 +50,9 @@ export default {
       type: Object,
     },
     buildingInfo: {
+      type: Object,
+    },
+    owner: {
       type: Object,
     },
   },

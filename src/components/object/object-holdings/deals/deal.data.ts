@@ -164,6 +164,18 @@ const dealData: IDeal[] = [
       name: "Артур Мандрыка",
       visitType: "Личное посещение",
     },
+    owner: {
+      name: "ОАО Альстом - Атомконстракшн Энергомаш",
+      rating: 2,
+      contacts: 3,
+      requests: 2,
+      objects: 16,
+      representative: {
+        name: "Смолянинов Илья",
+        post: "Начальник производства",
+      },
+      phoneNumbers: ["89161257487", "84997535421", "89267663467"],
+    },
     additionalDetails: {
       taxForm: 1,
       exploitation: true,

@@ -7,6 +7,7 @@
       :consultant="deal.consultant"
       :additionalDetails="deal.additionalDetails"
       :buildingInfo="deal.buildingInfo"
+      :owner="deal.owner"
     />
   </div>
 </template>
