@@ -4,6 +4,58 @@
   border-bottom: 1px dashed $color_grey;
   border-top: 1px dashed $color_grey;
   display: flex;
+  .form-container {
+    width: auto;
+  }
+
+  &__form {
+    & form {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+
+  &__button {
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    box-sizing: border-box;
+    border: 1px solid $color_light_grey;
+    font-size: 14px;
+    color: $color_grey;
+    position: absolute;
+    right: 9px;
+    top: 8px;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+
+  &__checkbox .form-item-label {
+    display: flex !important;
+    align-items: center;
+    padding-bottom: 0;
+
+    & p {
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: normal;
+      color: $color_grey;
+    }
+
+    & div {
+      order: -1;
+      display: flex;
+      align-items: center;
+      & input {
+        min-height: auto;
+        max-height: auto;
+        height: 14px;
+        margin-bottom: 2px !important;
+      }
+    }
+  }
   &__column {
     width: 140px;
     &_head {
@@ -19,8 +71,10 @@
     font-size: 14px;
     line-height: 22px;
     font-weight: normal;
-    color: $color_grey;
     position: relative;
+    &_color_grey {
+      color: $color_grey;
+    }
     &_weight_bold {
       font-weight: bold;
       color: black;
@@ -35,12 +89,14 @@
   &__section {
     border-top: 1px dashed $color_grey;
     border-right: 1px dashed $color_grey;
-    padding: 5px 9px;
+    padding: 10px 9px;
     display: flex;
     flex-direction: column;
     width: 100%;
+    position: relative;
 
-    &_label {
+    &_values {
+      padding-top: 32px;
     }
   }
   &__head {
