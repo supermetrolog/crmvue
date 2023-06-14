@@ -11,7 +11,7 @@
       <Tab name="Подробно">
         <div class="offers-tabs__tab-body">
           <trade-offer-details-table
-            :parameters="parameters"
+            :blocks="parameters.blocks"
             class="offers-tabs__offer-details"
           />
         </div>

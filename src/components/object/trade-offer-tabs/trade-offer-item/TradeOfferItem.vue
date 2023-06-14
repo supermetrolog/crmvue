@@ -37,15 +37,15 @@
     </div>
     <div class="trade-offer-item__line">
       <parameters
-        :height="parameters.characteristics.height"
-        :floorType="parameters.characteristics.floorType"
-        :gatesNumber="parameters.characteristics.gatesNumber"
-        :electricity="parameters.communications.electricity"
-        :heating="parameters.communications.heating"
-        :sewage="parameters.communications.sewage"
-        :gasForProduction="parameters.communications.gasForProduction"
-        :liftingDevices="parameters.liftingDevices.lifts"
-        :shelving="parameters.facilities.shelving"
+        :height="parameters.summary.characteristics.height"
+        :floorType="parameters.summary.characteristics.floorType"
+        :gatesNumber="parameters.summary.characteristics.gatesNumber"
+        :electricity="parameters.summary.communications.electricity"
+        :heating="parameters.summary.communications.heating"
+        :sewage="parameters.summary.communications.sewage"
+        :gasForProduction="parameters.summary.communications.gasForProduction"
+        :liftingDevices="parameters.summary.liftingDevices.lifts"
+        :shelving="parameters.summary.facilities.shelving"
       />
     </div>
     <div class="trade-offer-item__line">
@@ -65,11 +65,11 @@ import OfferTabs from "@/components/object/ui/offer-tabs/OfferTabs.vue";
 import { unitTypes } from "@/const/unitTypes";
 import { PropType, defineComponent } from "vue";
 import {
+  ITradeOfferParameters,
   ITradeOfferPropeties,
   ITradeOfferStatus,
 } from "../tradeOfferTabs.interface";
 import Parameters from "../../ui/parameters/Parameters.vue";
-import { ITradeOfferCharacteristics } from "@/const/tradeOfferCharacteristics";
 import ActionButtons from "@/components/common/action-buttons/ActionButtons.vue";
 
 export default defineComponent({
@@ -102,7 +102,7 @@ export default defineComponent({
       type: Object as PropType<ITradeOfferStatus>,
     },
     parameters: {
-      type: Object as PropType<ITradeOfferCharacteristics>,
+      type: Object as PropType<ITradeOfferParameters>,
       required: true,
     },
   },

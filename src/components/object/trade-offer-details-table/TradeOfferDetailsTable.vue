@@ -3,15 +3,15 @@
 </template>
 
 <script lang="ts">
-import { ITradeOfferCharacteristics } from "@/const/tradeOfferCharacteristics";
+import { ITradeOfferBlock } from "../trade-offer-tabs/tradeOfferTabs.interface";
 import { PropType, defineComponent } from "vue";
 
 export default defineComponent({
   name: "TradeOfferDetailsTable",
   components: {},
   props: {
-    parameters: {
-      type: Object as PropType<ITradeOfferCharacteristics>,
+    blocks: {
+      type: Object as PropType<ITradeOfferBlock>,
       requrired: true,
     },
   },

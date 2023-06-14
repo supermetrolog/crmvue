@@ -1,7 +1,9 @@
 import { IProperty, IRange } from "@/types/property.interface";
-import { ITradeOfferPropeties } from "../../trade-offer-tabs/tradeOfferTabs.interface";
+import {
+  ITradeOfferParameters,
+  ITradeOfferPropeties,
+} from "../../trade-offer-tabs/tradeOfferTabs.interface";
 import { unitTypes } from "@/const/unitTypes";
-import { ITradeOfferCharacteristics } from "@/const/tradeOfferCharacteristics";
 
 export interface IDeal {
   id: number;
@@ -49,7 +51,7 @@ export interface IAdditionalDetails {
 export interface IBuildingInfo {
   area: ITradeOfferPropeties;
   price: ITradeOfferPropeties;
-  parameters: ITradeOfferCharacteristics;
+  parameters: ITradeOfferParameters;
 }
 
 interface IBusiness {

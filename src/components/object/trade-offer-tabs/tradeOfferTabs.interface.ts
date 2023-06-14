@@ -20,10 +20,10 @@ export interface ITradeOffer {
 
 export interface ITradeOfferParameters {
   summary: ITradeOfferCharacteristics;
-  blocks: IOfferBlock[];
+  blocks: ITradeOfferBlock[];
 }
 
-export interface IOfferBlock {
+export interface ITradeOfferBlock {
   title: string;
   number: string;
   properties: ITradeOfferCharacteristics;
