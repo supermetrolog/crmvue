@@ -3,10 +3,15 @@
   border-right: 1px solid $color_light_grey;
   border-bottom: 1px dashed $color_grey;
   border-top: 1px dashed $color_grey;
+  display: flex;
   &__column {
     width: 140px;
     &_head {
+      width: 200px;
     }
+  }
+  &__content {
+    display: flex;
   }
   &__text {
     white-space: nowrap;
@@ -15,9 +20,15 @@
     line-height: 22px;
     font-weight: normal;
     color: $color_grey;
+    position: relative;
     &_weight_bold {
       font-weight: bold;
       color: black;
+    }
+    &_color_red {
+      position: absolute;
+      right: 0;
+      color: $color_danger;
     }
   }
 
@@ -25,9 +36,11 @@
     border-top: 1px dashed $color_grey;
     border-right: 1px dashed $color_grey;
     padding: 5px 9px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 
     &_label {
-      width: 200px;
     }
   }
   &__head {
@@ -37,13 +50,13 @@
     line-height: 22px;
     font-weight: bold;
     border-right: 1px dashed $color_grey;
+    color: white;
     &:last-of-type {
       border-right: none;
     }
     &_color_grey {
       background-color: #e1e1e1;
       color: black;
-      min-width: 200px;
     }
     &_color_green {
       background-color: #3ca96f;

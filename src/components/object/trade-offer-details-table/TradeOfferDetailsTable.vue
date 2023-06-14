@@ -1,6 +1,8 @@
 <template>
   <div class="trade-offer-details-table">
-    <ul class="trade-offer-details-table__column">
+    <ul
+      class="trade-offer-details-table__column trade-offer-details-table__column_head"
+    >
       <li
         class="trade-offer-details-table__head trade-offer-details-table__head_color_grey"
       >
@@ -21,8 +23,38 @@
         >
           {{ parameterTypes[parameter] }}
         </p>
+        <p
+          v-for="subparameter in Object.keys(
+            tradeOfferCharacteristics[parameter]
+          )"
+          :key="subparameter"
+          class="trade-offer-details-table__text"
+        >
+          {{ tradeOfferCharacteristics[parameter][subparameter].name }}
+          <span
+            v-if="tradeOfferCharacteristics[parameter][subparameter].required"
+            class="trade-offer-details-table__text trade-offer-details-table__text_color_red"
+            >*</span
+          >
+        </p>
       </li>
     </ul>
+    <div class="trade-offer-details-table__content">
+      <ul
+        v-for="(block, idx) in blocks"
+        :key="block.number"
+        class="trade-offer-details-table__column"
+      >
+        <li
+          class="trade-offer-details-table__head"
+          :class="
+            'trade-offer-details-table__head_color_' + tableHeadColors[idx]
+          "
+        >
+          {{ block.title }}
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
