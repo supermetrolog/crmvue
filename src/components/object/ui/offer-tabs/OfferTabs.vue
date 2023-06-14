@@ -9,7 +9,12 @@
         <div class="offers-tabs__tab-body"></div>
       </Tab>
       <Tab name="Подробно">
-        <div class="offers-tabs__tab-body"></div>
+        <div class="offers-tabs__tab-body">
+          <trade-offer-details-table
+            :parameters="parameters"
+            class="offers-tabs__offer-details"
+          />
+        </div>
       </Tab>
       <Tab name="Описание">
         <div class="offers-tabs__tab-body"></div>
@@ -31,12 +36,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { ITradeOfferCharacteristics } from "@/const/tradeOfferCharacteristics";
+import TradeOfferDetailsTable from "../../trade-offer-details-table/TradeOfferDetailsTable.vue";
+import { PropType, defineComponent } from "vue";
 
 export default defineComponent({
   name: "OfferTabs",
-  components: {},
-  // props: {},
+  components: {
+    TradeOfferDetailsTable,
+  },
+  props: {
+    parameters: {
+      type: Object as PropType<ITradeOfferCharacteristics>,
+      required: true,
+    },
+  },
   data() {
     return {};
   },

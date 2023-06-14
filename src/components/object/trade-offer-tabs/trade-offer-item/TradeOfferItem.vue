@@ -49,7 +49,7 @@
       />
     </div>
     <div class="trade-offer-item__line">
-      <offer-tabs class="trade-offer-item__tabs" />
+      <offer-tabs :parameters="parameters" class="trade-offer-item__tabs" />
       <action-buttons
         v-bind="actionButtons"
         class="trade-offer-item__buttons"

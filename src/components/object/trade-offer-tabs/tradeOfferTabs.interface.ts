@@ -1,4 +1,7 @@
-import { ITradeOfferCharacteristics } from "@/const/tradeOfferCharacteristics";
+import {
+  ICharacterictic,
+  ITradeOfferCharacteristics,
+} from "@/const/tradeOfferCharacteristics";
 import { IProperty, IRange } from "@/types/property.interface";
 
 export interface ITradeOfferTabs {
@@ -11,8 +14,19 @@ export interface ITradeOffer {
   lastUpdate: Date;
   area: ITradeOfferPropeties;
   price: ITradeOfferPropeties;
-  parameters: ITradeOfferCharacteristics;
+  parameters: ITradeOfferParameters;
   status?: ITradeOfferStatus;
+}
+
+export interface ITradeOfferParameters {
+  summary: ITradeOfferCharacteristics;
+  blocks: IOfferBlock[];
+}
+
+export interface IOfferBlock {
+  title: string;
+  number: string;
+  properties: ITradeOfferCharacteristics;
 }
 
 export interface ITradeOfferStatus {
