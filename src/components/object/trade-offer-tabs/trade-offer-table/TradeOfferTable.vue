@@ -31,7 +31,7 @@
 import WithUnitType from "@/components/common/with-unit-type/WithUnitType.vue";
 import { PropType, defineComponent } from "vue";
 import { unitTypes } from "@/const/unitTypes";
-import { IProperty } from "../tradeOfferTabs.interface";
+import { IProperty } from "@/types/property.interface";
 
 export default defineComponent({
   name: "TradeOfferTable",

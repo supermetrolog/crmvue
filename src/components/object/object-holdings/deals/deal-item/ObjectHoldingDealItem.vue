@@ -7,6 +7,7 @@
       :consultant="deal.consultant"
       :additionalDetails="deal.additionalDetails"
       :buildingInfo="deal.buildingInfo"
+      :owner="deal.owner"
     />
   </div>
 </template>
@@ -18,7 +19,10 @@ import DealInfo from "../../deal-info/DealInfo.vue";
 
 export default {
   name: "DealItem",
-  components: { DealFloors, DealInfo },
+  components: {
+    DealFloors,
+    DealInfo,
+  },
   props: {
     deal: {
       type: Object,

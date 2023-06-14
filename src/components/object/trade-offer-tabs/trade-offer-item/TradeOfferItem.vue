@@ -49,14 +49,9 @@
       />
     </div>
     <div class="trade-offer-item__line">
-      <trade-offer-item-tabs class="trade-offer-item__tabs" />
+      <offer-tabs class="trade-offer-item__tabs" />
       <action-buttons
-        :edit="true"
-        :advert="true"
-        :dislike="true"
-        :favorite="true"
-        :notifications="true"
-        :pdf="true"
+        v-bind="actionButtons"
         class="trade-offer-item__buttons"
       />
     </div>
@@ -66,7 +61,7 @@
 <script lang="ts">
 import TradeOfferTable from "../trade-offer-table/TradeOfferTable.vue";
 import TradeOfferStatus from "../trade-offer-status/TradeOfferStatus.vue";
-import TradeOfferItemTabs from "./trade-offer-item-tabs/TradeOfferItemTabs.vue";
+import OfferTabs from "@/components/object/ui/offer-tabs/OfferTabs.vue";
 import { unitTypes } from "@/const/unitTypes";
 import { PropType, defineComponent } from "vue";
 import {
@@ -83,7 +78,7 @@ export default defineComponent({
     TradeOfferTable,
     TradeOfferStatus,
     Parameters,
-    TradeOfferItemTabs,
+    OfferTabs,
     ActionButtons,
   },
   props: {
@@ -117,6 +112,16 @@ export default defineComponent({
     };
   },
   computed: {
+    actionButtons() {
+      return {
+        edit: { value: true },
+        advert: { value: true },
+        dislike: { value: true },
+        favorite: { value: true },
+        notifications: { value: true },
+        pdf: { value: true },
+      };
+    },
     areaTableTitle() {
       return this.$formatter.numberOrRangeNew(
         this.area.sum.valueMin,

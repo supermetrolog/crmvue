@@ -11,6 +11,10 @@
             :holdingTypes="types"
             :holdingTypesGeneral="typesGeneral"
             :floors="floors"
+            :parameters="parameters"
+            :area="area"
+            :floorArea="floorArea"
+            :address="address"
           />
         </div>
         <div class="ObjectHolding-info-right">
@@ -48,23 +52,33 @@ export default {
     },
     owners: {
       type: Array,
-      default: () => [],
     },
     types: {
       type: Array,
-      default: () => [],
     },
     typesGeneral: {
       type: Array,
-      default: () => [],
     },
     floors: {
       type: Array,
-      default: () => [],
+    },
+    parameters: {
+      type: Array,
     },
     properties: {
       type: Array,
-      default: () => [],
+    },
+    area: {
+      type: Object,
+      required: true,
+    },
+    floorArea: {
+      type: Object,
+      required: true,
+    },
+    address: {
+      type: Object,
+      required: true,
     },
   },
 };

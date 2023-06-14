@@ -15,13 +15,7 @@
       <ObjectHolding
         v-for="holding in holdings"
         :key="holding.id"
-        :id="holding.id"
-        :type="holding.type"
-        :owners="holding.owners"
-        :types="holding.types"
-        :typesGeneral="holding.typesGeneral"
-        :floors="holding.floors"
-        :properties="holding.properties"
+        v-bind="holding"
       />
     </div>
   </div>

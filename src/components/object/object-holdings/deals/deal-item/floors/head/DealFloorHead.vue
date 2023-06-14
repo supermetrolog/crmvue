@@ -57,7 +57,10 @@ export default {
   methods: {},
   computed: {
     formattedArea() {
-      return this.$formatter.number(this.area);
+      return this.$formatter.numberOrRangeNew(
+        this.area.valueMin,
+        this.area.valueMax
+      );
     },
     headInputId() {
       return "floor-check_" + this.name;

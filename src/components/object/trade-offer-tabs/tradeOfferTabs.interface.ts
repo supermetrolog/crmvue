@@ -1,4 +1,5 @@
 import { ITradeOfferCharacteristics } from "@/const/tradeOfferCharacteristics";
+import { IProperty, IRange } from "@/types/property.interface";
 
 export interface ITradeOfferTabs {
   tradeOffers: ITradeOffer[];
@@ -12,15 +13,6 @@ export interface ITradeOffer {
   price: ITradeOfferPropeties;
   parameters: ITradeOfferCharacteristics;
   status?: ITradeOfferStatus;
-}
-
-interface IRange {
-  valueMin: number | string;
-  valueMax: number | string;
-}
-
-export interface IProperty extends IRange {
-  label: string;
 }
 
 export interface ITradeOfferStatus {

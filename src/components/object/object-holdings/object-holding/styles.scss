@@ -29,6 +29,10 @@
     padding: $gap;
     background-color: $color_grey_alt;
     position: relative;
+    $border: 1px solid #cacaca;
+    border-top: $border;
+    border-left: $border;
+    border-right: $border;
   }
 
   &-label {
@@ -61,14 +65,17 @@
 
   &-info {
     display: flex;
+    max-height: 300px;
     &-left {
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
       width: 70%;
     }
     &-right {
       width: 30%;
+      padding: 20px;
+      background-color: $color_olive_light;
+      border: 1px solid $color_light_grey;
     }
   }
 }

@@ -26,21 +26,31 @@
           >
             <DealFloorSection
               v-for="(section, idx) in getSectionsWithKnownArea(floor.sections)"
-              :style="{ width: getSectionWidth(floor.area, section.area) }"
+              :style="{
+                width: getSectionWidth(
+                  floor.area.valueMax,
+                  section.area.valueMax
+                ),
+              }"
               :key="idx"
               :section="section"
               :floorName="floor.name"
             />
             <DealFloorSection
-              v-if="getUnknownSectionArea(floor.sections, floor.area) > 0"
+              v-if="
+                getUnknownSectionArea(floor.sections, floor.area.valueMax) > 0
+              "
               :style="{
                 width: getSectionWidth(
-                  floor.area,
-                  getUnknownSectionArea(floor.sections, floor.area)
+                  floor.area.valueMax,
+                  getUnknownSectionArea(floor.sections, floor.area.valueMax)
                 ),
               }"
               :section="{
-                area: getUnknownSectionArea(floor.sections, floor.area),
+                area: getUnknownSectionArea(
+                  floor.sections,
+                  floor.area.valueMax
+                ),
                 status: null,
                 checked: null,
               }"
@@ -80,7 +90,9 @@ export default {
           ...floor.sections.filter(
             (section) => section.company && section.area
           ),
-          ...floor.sections.filter((section) => section.status === 5),
+          ...floor.sections.filter(
+            (section) => section.status === DealStatusType.FREE
+          ),
           ...floor.sections.filter((section) => !section.area),
         ],
       }));
@@ -94,7 +106,7 @@ export default {
       return sections
         .filter((section) => section.area)
         .reduce(
-          (accumulator, section) => accumulator - section.area,
+          (accumulator, section) => accumulator - section.area.valueMax,
           floorArea
         );
     },

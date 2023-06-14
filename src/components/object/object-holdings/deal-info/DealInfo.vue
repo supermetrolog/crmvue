@@ -7,6 +7,7 @@
           class="deal-info__detailed-info"
           :area="buildingInfo.area"
           :price="buildingInfo.price"
+          :parameters="buildingInfo.parameters"
         />
       </div>
       <div class="deal-info__aside">
@@ -18,6 +19,7 @@
           :specialTerms="additionalDetails.specialTerms"
           :business="additionalDetails.business"
         />
+        <deal-owner :owner="owner" />
       </div>
     </div>
   </div>
@@ -26,8 +28,8 @@
 <script>
 import DealDetailedInfo from "./deal-detailed-info/DealDetailedInfo.vue";
 import AdditionalDetails from "./deal-detailed-info/additional-detailes/AdditionalDetails.vue";
+import DealOwner from "./deal-detailed-info/deal-owner/DealOwner.vue";
 import DealInfoHeader from "./deal-info-header/DealInfoHeader.vue";
-// import TradeOffer from "../../trade-offer/TradeOffer.vue";
 
 export default {
   name: "DealInfo",
@@ -35,7 +37,7 @@ export default {
     DealInfoHeader,
     DealDetailedInfo,
     AdditionalDetails,
-    // TradeOffer,
+    DealOwner,
   },
   props: {
     company: {
@@ -48,6 +50,9 @@ export default {
       type: Object,
     },
     buildingInfo: {
+      type: Object,
+    },
+    owner: {
       type: Object,
     },
   },
