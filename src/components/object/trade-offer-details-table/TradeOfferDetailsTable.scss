@@ -3,7 +3,8 @@
   border-right: 1px solid $color_light_grey;
   border-bottom: 1px dashed $color_grey;
   border-top: 1px dashed $color_grey;
-  display: flex;
+  display: grid;
+  grid-template-columns: 200px 1fr;
   .form-container {
     width: auto;
   }
@@ -64,6 +65,13 @@
   }
   &__content {
     display: flex;
+    overflow: auto;
+    box-shadow: 12px 0 8px -9px rgba(0, 0, 0, 0.2) inset,
+      -12px 0 8px -9px rgba(0, 0, 0, 0.2) inset;
+    border-right: 1px solid $color_light_grey;
+    // pointer-events: none;
+    // position: relative;
+    // z-index: 2;
   }
   &__text .with-unit-type {
     white-space: nowrap;
@@ -141,9 +149,6 @@
     font-weight: bold;
     border-right: 1px dashed $color_grey;
     color: white;
-    &:last-of-type {
-      border-right: none;
-    }
     &_color_grey {
       background-color: #e1e1e1;
       color: black;
@@ -162,6 +167,9 @@
     }
     &_color_red {
       background-color: #9f3f56;
+    }
+    &_color_purple {
+      background-color: #9f3f87;
     }
   }
 }

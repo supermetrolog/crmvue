@@ -331,6 +331,27 @@ const dealData: IDeal[] = [
       },
       parameters: {
         summary: {
+          warehouseArea: {
+            floor: {
+              ...tradeOfferCharacteristics.warehouseArea.floor,
+              valueMin: 1000,
+              valueMax: 3600,
+            },
+            office: {
+              ...tradeOfferCharacteristics.warehouseArea.office,
+              value: "--",
+            },
+            technical: {
+              ...tradeOfferCharacteristics.warehouseArea.technical,
+              valueMin: 120,
+              valueMax: 260,
+            },
+            palletPlaces: {
+              ...tradeOfferCharacteristics.warehouseArea.palletPlaces,
+              valueMin: 16000,
+              valueMax: 16000,
+            },
+          },
           characteristics: {
             height: {
               ...tradeOfferCharacteristics.characteristics.height,
@@ -503,6 +524,27 @@ const dealData: IDeal[] = [
             title: "1 этаж",
             number: "838-1",
             properties: {
+              warehouseArea: {
+                floor: {
+                  ...tradeOfferCharacteristics.warehouseArea.floor,
+                  valueMin: 1000,
+                  valueMax: 3600,
+                },
+                office: {
+                  ...tradeOfferCharacteristics.warehouseArea.office,
+                  value: "--",
+                },
+                technical: {
+                  ...tradeOfferCharacteristics.warehouseArea.technical,
+                  valueMin: 120,
+                  valueMax: 260,
+                },
+                palletPlaces: {
+                  ...tradeOfferCharacteristics.warehouseArea.palletPlaces,
+                  valueMin: 16000,
+                  valueMax: 16000,
+                },
+              },
               characteristics: {
                 height: {
                   ...tradeOfferCharacteristics.characteristics.height,
@@ -676,6 +718,27 @@ const dealData: IDeal[] = [
             title: "2 этаж",
             number: "838-2",
             properties: {
+              warehouseArea: {
+                floor: {
+                  ...tradeOfferCharacteristics.warehouseArea.floor,
+                  valueMin: 1000,
+                  valueMax: 3600,
+                },
+                office: {
+                  ...tradeOfferCharacteristics.warehouseArea.office,
+                  value: "--",
+                },
+                technical: {
+                  ...tradeOfferCharacteristics.warehouseArea.technical,
+                  valueMin: 120,
+                  valueMax: 260,
+                },
+                palletPlaces: {
+                  ...tradeOfferCharacteristics.warehouseArea.palletPlaces,
+                  valueMin: 16000,
+                  valueMax: 16000,
+                },
+              },
               characteristics: {
                 height: {
                   ...tradeOfferCharacteristics.characteristics.height,
@@ -849,6 +912,27 @@ const dealData: IDeal[] = [
             title: "мезонин 1 ярус",
             number: "838-3",
             properties: {
+              warehouseArea: {
+                floor: {
+                  ...tradeOfferCharacteristics.warehouseArea.floor,
+                  valueMin: 1000,
+                  valueMax: 3600,
+                },
+                office: {
+                  ...tradeOfferCharacteristics.warehouseArea.office,
+                  value: "--",
+                },
+                technical: {
+                  ...tradeOfferCharacteristics.warehouseArea.technical,
+                  valueMin: 120,
+                  valueMax: 260,
+                },
+                palletPlaces: {
+                  ...tradeOfferCharacteristics.warehouseArea.palletPlaces,
+                  valueMin: 16000,
+                  valueMax: 16000,
+                },
+              },
               characteristics: {
                 height: {
                   ...tradeOfferCharacteristics.characteristics.height,

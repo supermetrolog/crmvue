@@ -80,7 +80,7 @@
           >
             <with-unit-type
               :value="formattedParameter(subparameter)"
-              :unit-type="subparameter.unitType"
+              :unit-type="subparameter.value !== '--' && subparameter.unitType"
             />
             <span v-if="subparameter.floorType"
               >/{{ subparameter.floorType }}</span
@@ -90,8 +90,7 @@
             >
             <span
               v-if="
-                subparameter.liftingDevicesWeight &&
-                subparameter.liftingDevicesWeight.length > 0
+                displayLiftingDevicesWeight(subparameter.liftingDevicesWeight)
               "
               class="trade-offer-details-table__text trade-offer-details-table__text_weight"
             >
@@ -123,7 +122,7 @@ import Checkbox from "@/components/common/form/Checkbox.vue";
 import WithUnitType from "@/components/common/with-unit-type/WithUnitType.vue";
 import { unitTypes } from "@/const/unitTypes";
 
-const tableHeadColors = ["green", "blue", "cyan", "orange", "red"];
+const tableHeadColors = ["green", "blue", "cyan", "orange", "red", "purple"];
 
 export default defineComponent({
   name: "TradeOfferDetailsTable",
@@ -147,7 +146,7 @@ export default defineComponent({
     };
   },
   methods: {
-    formattedParameter(parameter: ICharacterictic) {
+    formattedParameter(parameter: ICharacterictic): string {
       if (
         parameter.value !== undefined &&
         typeof parameter.value === "boolean"
@@ -160,6 +159,9 @@ export default defineComponent({
         parameter.valueMin,
         parameter.valueMax
       );
+    },
+    displayLiftingDevicesWeight(liftingDevicesWeight?: number[]) {
+      return liftingDevicesWeight && liftingDevicesWeight.length > 0;
     },
   },
 });
