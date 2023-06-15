@@ -83,6 +83,12 @@
     flex-wrap: nowrap;
     display: flex;
 
+    &_weight {
+      & .with-unit-type {
+        margin-right: 5px;
+      }
+    }
+
     & span {
       max-width: 10ch;
       white-space: nowrap;
@@ -99,7 +105,6 @@
     & .with-unit-type span {
       font-size: 13px;
       color: $color_grey;
-      margin-left: 5px;
     }
     &_color_grey {
       color: $color_grey;

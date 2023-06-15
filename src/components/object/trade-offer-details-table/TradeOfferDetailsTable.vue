@@ -88,6 +88,21 @@
             <span v-if="subparameter.gateType"
               >/{{ subparameter.gateType }}</span
             >
+            <span
+              v-if="
+                subparameter.liftingDevicesWeight &&
+                subparameter.liftingDevicesWeight.length > 0
+              "
+              class="trade-offer-details-table__text trade-offer-details-table__text_weight"
+            >
+              &nbsp;-&nbsp;
+              <with-unit-type
+                v-for="(weight, idx) in subparameter.liftingDevicesWeight"
+                :key="idx"
+                :value="weight"
+                :unit-type="unitTypes.TON"
+              />
+            </span>
           </p>
         </li>
       </ul>
@@ -106,6 +121,7 @@ import { parameterTypes } from "@/const/parameterTypes";
 import Form from "@/components/common/form/Form.vue";
 import Checkbox from "@/components/common/form/Checkbox.vue";
 import WithUnitType from "@/components/common/with-unit-type/WithUnitType.vue";
+import { unitTypes } from "@/const/unitTypes";
 
 const tableHeadColors = ["green", "blue", "cyan", "orange", "red"];
 
@@ -127,11 +143,15 @@ export default defineComponent({
       tableHeadColors,
       tradeOfferCharacteristics,
       parameterTypes,
+      unitTypes,
     };
   },
   methods: {
     formattedParameter(parameter: ICharacterictic) {
-      if (parameter.value && typeof parameter.value === "boolean") {
+      if (
+        parameter.value !== undefined &&
+        typeof parameter.value === "boolean"
+      ) {
         return parameter.value ? "есть" : "нет";
       }
       if (parameter.value && typeof parameter.value === "string")
