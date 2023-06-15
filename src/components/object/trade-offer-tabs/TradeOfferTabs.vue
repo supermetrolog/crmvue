@@ -48,7 +48,9 @@ import data from "./trade-offer.data";
 export default defineComponent({
   name: "TradeOfferTabs",
   props: {},
-  components: { TradeOfferItem },
+  components: {
+    TradeOfferItem,
+  },
   data(): ITradeOfferTabs {
     return {
       tradeOffers: data,

@@ -107,6 +107,18 @@
   >
     шт.
   </span>
+  <span
+    v-else-if="unitType === unitTypes.CELCIUS"
+    class="unit-type__unit unit-type__unit_size_small"
+  >
+    °C
+  </span>
+  <span
+    v-else-if="unitType === unitTypes.PALLET_PLACE"
+    class="unit-type__unit unit-type__unit_size_small"
+  >
+    п.м.
+  </span>
 </template>
 
 <script>
@@ -128,4 +140,10 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+sup {
+  vertical-align: top;
+  position: relative;
+  top: -0.2em;
+}
+</style>

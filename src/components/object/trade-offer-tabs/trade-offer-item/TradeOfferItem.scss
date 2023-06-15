@@ -5,6 +5,15 @@
   margin-bottom: 25px;
   &__line {
     display: flex;
+    position: relative;
+  }
+  &__buttons {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  &__tabs {
+    width: 100%;
   }
   &__status {
     text-align: start;
@@ -28,8 +37,4 @@
       color: $color_grey;
     }
   }
-}
-.fas {
-}
-.fa-undo-alt {
 }

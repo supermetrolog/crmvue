@@ -34,19 +34,19 @@
     </div>
     <div class="building-info__line">
       <parameters
-        :height="parameters.characteristics.height"
-        :floorType="parameters.characteristics.floorType"
-        :gatesNumber="parameters.characteristics.gatesNumber"
-        :electricity="parameters.communications.electricity"
-        :heating="parameters.communications.heating"
-        :sewage="parameters.communications.sewage"
-        :gasForProduction="parameters.communications.gasForProduction"
-        :liftingDevices="parameters.liftingDevices.lifts"
-        :shelving="parameters.facilities.shelving"
+        :height="parameters.summary.characteristics.height"
+        :floorType="parameters.summary.characteristics.floorType"
+        :gatesNumber="parameters.summary.characteristics.gatesNumber"
+        :electricity="parameters.summary.communications.electricity"
+        :heating="parameters.summary.communications.heating"
+        :sewage="parameters.summary.communications.sewage"
+        :gasForProduction="parameters.summary.communications.gasForProduction"
+        :liftingDevices="parameters.summary.liftingDevices.lifts"
+        :shelving="parameters.summary.facilities.shelving"
       />
     </div>
     <div class="building-info__line">
-      <offer-tabs class="building-info__tabs" />
+      <offer-tabs :parameters="parameters" class="building-info__tabs" />
       <action-buttons v-bind="actionButtons" class="building-info__buttons" />
     </div>
   </div>
@@ -58,9 +58,11 @@ import PropertyListItem from "@/components/common/property-list/property-list-it
 import OfferTabs from "@/components/object/ui/offer-tabs/OfferTabs.vue";
 import Parameters from "@/components/object/ui/parameters/Parameters.vue";
 import { unitTypes } from "@/const/unitTypes";
-import { ITradeOfferPropeties } from "@/components/object/trade-offer-tabs/tradeOfferTabs.interface";
+import {
+  ITradeOfferParameters,
+  ITradeOfferPropeties,
+} from "@/components/object/trade-offer-tabs/tradeOfferTabs.interface";
 import { PropType, defineComponent } from "vue";
-import { ITradeOfferCharacteristics } from "@/const/tradeOfferCharacteristics";
 import ActionButtons from "@/components/common/action-buttons/ActionButtons.vue";
 
 export default defineComponent({
@@ -82,7 +84,7 @@ export default defineComponent({
       required: true,
     },
     parameters: {
-      type: Object as PropType<ITradeOfferCharacteristics>,
+      type: Object as PropType<ITradeOfferParameters>,
       required: true,
     },
   },

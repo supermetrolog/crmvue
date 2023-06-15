@@ -19,4 +19,5 @@ export enum unitTypes {
   RUB_PER_SQUARE_METERS_PER_MONTH,
   RUB_PER_YEAR,
   TON,
+  PALLET_PLACE,
 }

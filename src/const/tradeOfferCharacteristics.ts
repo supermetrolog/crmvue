@@ -18,6 +18,28 @@ export interface ICharacterictic {
 }
 
 export const tradeOfferCharacteristics: ITradeOfferCharacteristics = {
+  warehouseArea: {
+    floor: {
+      name: "S - пола",
+      required: true,
+      unitType: unitTypes.SQUARE_METERS,
+    },
+    office: {
+      name: "S - офисов",
+      required: false,
+      unitType: unitTypes.SQUARE_METERS,
+    },
+    technical: {
+      name: "S - техническая",
+      required: false,
+      unitType: unitTypes.SQUARE_METERS,
+    },
+    palletPlaces: {
+      name: "E - паллет-мест",
+      required: false,
+      unitType: unitTypes.PALLET_PLACE,
+    },
+  },
   characteristics: {
     height: {
       name: "Высота хранения",
