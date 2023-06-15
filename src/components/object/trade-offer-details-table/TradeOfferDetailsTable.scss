@@ -65,13 +65,42 @@
   &__content {
     display: flex;
   }
-  &__text {
+  &__text .with-unit-type {
     white-space: nowrap;
     display: inline-block;
     font-size: 14px;
     line-height: 22px;
     font-weight: normal;
     position: relative;
+    flex-wrap: nowrap;
+  }
+  &__text {
+    white-space: nowrap;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: normal;
+    position: relative;
+    flex-wrap: nowrap;
+    display: flex;
+
+    & span {
+      max-width: 10ch;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    & .with-unit-type {
+      max-width: 15ch;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    & .with-unit-type span {
+      font-size: 13px;
+      color: $color_grey;
+      margin-left: 5px;
+    }
     &_color_grey {
       color: $color_grey;
     }

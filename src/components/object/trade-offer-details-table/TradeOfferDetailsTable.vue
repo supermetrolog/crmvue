@@ -78,7 +78,16 @@
             :key="subparameter.name"
             class="trade-offer-details-table__text"
           >
-            {{ subparameter.valueMin || subparameter.value }}
+            <with-unit-type
+              :value="formattedParameter(subparameter)"
+              :unit-type="subparameter.unitType"
+            />
+            <span v-if="subparameter.floorType"
+              >/{{ subparameter.floorType }}</span
+            >
+            <span v-if="subparameter.gateType"
+              >/{{ subparameter.gateType }}</span
+            >
           </p>
         </li>
       </ul>
@@ -89,10 +98,14 @@
 <script lang="ts">
 import { ITradeOfferBlock } from "../trade-offer-tabs/tradeOfferTabs.interface";
 import { PropType, defineComponent } from "vue";
-import { tradeOfferCharacteristics } from "@/const/tradeOfferCharacteristics";
+import {
+  ICharacterictic,
+  tradeOfferCharacteristics,
+} from "@/const/tradeOfferCharacteristics";
 import { parameterTypes } from "@/const/parameterTypes";
 import Form from "@/components/common/form/Form.vue";
 import Checkbox from "@/components/common/form/Checkbox.vue";
+import WithUnitType from "@/components/common/with-unit-type/WithUnitType.vue";
 
 const tableHeadColors = ["green", "blue", "cyan", "orange", "red"];
 
@@ -101,6 +114,7 @@ export default defineComponent({
   components: {
     Form,
     Checkbox,
+    WithUnitType,
   },
   props: {
     blocks: {
@@ -114,6 +128,19 @@ export default defineComponent({
       tradeOfferCharacteristics,
       parameterTypes,
     };
+  },
+  methods: {
+    formattedParameter(parameter: ICharacterictic) {
+      if (parameter.value && typeof parameter.value === "boolean") {
+        return parameter.value ? "есть" : "нет";
+      }
+      if (parameter.value && typeof parameter.value === "string")
+        return parameter.value;
+      return this.$formatter.numberOrRangeNew(
+        parameter.valueMin,
+        parameter.valueMax
+      );
+    },
   },
 });
 </script>

@@ -107,6 +107,12 @@
   >
     шт.
   </span>
+  <span
+    v-else-if="unitType === unitTypes.CELCIUS"
+    class="unit-type__unit unit-type__unit_size_small"
+  >
+    °C
+  </span>
 </template>
 
 <script>
