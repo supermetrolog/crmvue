@@ -23,6 +23,25 @@
           />
         </PropertyList>
       </div>
+      <div class="trade-offer-summary__column">
+        <div class="trade-offer-summary__description">
+          <p class="trade-offer-summary__title">Описание</p>
+          <p class="trade-offer-summary__text">{{ offerDesciption }}</p>
+        </div>
+        <div
+          v-if="plan_scheme && plan_scheme.length > 0"
+          class="trade-offer-summary__scheme"
+        >
+          <p class="trade-offer-summary__title">На планировках</p>
+          <img
+            v-for="(imgSrc, idx) in plan_scheme"
+            :src="imgSrc"
+            alt="схема"
+            :key="idx"
+            class="trade-offer-summary__image"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -46,9 +65,21 @@ export default defineComponent({
       type: Object as PropType<ITradeOfferCharacteristics>,
       required: true,
     },
+    description: {
+      type: String,
+      required: true,
+    },
+    plan_scheme: {
+      type: Array,
+    },
   },
   data() {
     return {};
+  },
+  computed: {
+    offerDesciption(): string {
+      return this.description || "нет описания";
+    },
   },
 });
 </script>

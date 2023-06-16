@@ -7,7 +7,11 @@
     >
       <Tab name="Сводка">
         <div class="offers-tabs__tab-body">
-          <trade-offer-summary :parameters="parameters.summary" />
+          <trade-offer-summary
+            :parameters="parameters.summary.parameters"
+            :description="parameters.summary.description"
+            :plan_scheme="parameters.summary.plan_scheme"
+          />
         </div>
       </Tab>
       <Tab name="Подробно">
