@@ -38,13 +38,8 @@
       </div>
     </div>
     <div class="ObjectMap-control">
-      <div class="ObjectMap-button" title="Open map">
-        <i
-          class="fas fa-map-marker-alt active"
-          v-if="mapIsOpened"
-          @click="openMap"
-        ></i>
-        <i class="fas fa-map-marker-alt" v-else @click="openMap"></i>
+      <div class="ObjectMap-button" title="Open map" @click="openMap">
+        <i class="fas fa-map-marker-alt" :class="{ active: mapIsOpened }"></i>
       </div>
     </div>
     <Ymap

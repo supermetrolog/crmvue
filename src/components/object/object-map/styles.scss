@@ -93,11 +93,9 @@
     border-radius: 5px;
     color: $color_grey;
     opacity: 0.8;
-    i {
-      cursor: pointer;
-      &:hover {
-        opacity: 0.5;
-      }
+    cursor: pointer;
+    &:hover {
+      opacity: 0.5;
     }
 
     & i.active {
