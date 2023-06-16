@@ -199,7 +199,7 @@ const routes = [
     ],
   },
   {
-    path: "/objects/:id",
+    path: "/complex/:complex_id",
     name: "ObjectView",
     meta: {
       layout: "main",
