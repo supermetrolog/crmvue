@@ -6,7 +6,9 @@
       nav-item-link-class="offers-tabs__link"
     >
       <Tab name="Сводка">
-        <div class="offers-tabs__tab-body"></div>
+        <div class="offers-tabs__tab-body">
+          <trade-offer-summary :parameters="parameters.summary" />
+        </div>
       </Tab>
       <Tab name="Подробно">
         <div class="offers-tabs__tab-body">
@@ -39,11 +41,13 @@
 import { ITradeOfferCharacteristics } from "@/const/tradeOfferCharacteristics";
 import TradeOfferDetailsTable from "../../trade-offer-details-table/TradeOfferDetailsTable.vue";
 import { PropType, defineComponent } from "vue";
+import TradeOfferSummary from "../../trade-offer-summary/TradeOfferSummary.vue";
 
 export default defineComponent({
   name: "OfferTabs",
   components: {
     TradeOfferDetailsTable,
+    TradeOfferSummary,
   },
   props: {
     parameters: {

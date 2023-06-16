@@ -1,12 +1,25 @@
 <template>
   <li class="PropertyListItem">
     <div class="PropertyListItem-name">{{ name }}:</div>
-    <with-unit-type
-      class="PropertyListItem-value"
-      :class="{ 'not-filled': !value && !valueMin }"
-      :unitType="displayUnit"
-      :value="propertyValue"
-    />
+    <div class="PropertyListItem-value">
+      <with-unit-type
+        :class="{ 'not-filled': !value && !valueMin }"
+        :unitType="displayUnit"
+        :value="propertyValue"
+      />
+      <span v-if="valueDetails && typeof valueDetails === 'string'">
+        /{{ valueDetails }}
+      </span>
+      <p class="PropertyListItem-value-lift" v-if="Array.isArray(valueDetails)">
+        &nbsp;-&nbsp;
+        <with-unit-type
+          v-for="(weight, idx) in valueDetails"
+          :key="idx"
+          :value="weight"
+          :unit-type="unitTypes.TON"
+        />
+      </p>
+    </div>
   </li>
 </template>
 
@@ -34,6 +47,9 @@ export default defineComponent({
     },
     valueMax: {
       type: Number,
+    },
+    valueDetails: {
+      type: [String, Array],
     },
     unitType: {
       type: Number,

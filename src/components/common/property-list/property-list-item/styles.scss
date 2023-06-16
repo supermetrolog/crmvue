@@ -18,7 +18,19 @@
     font-weight: 400;
     overflow-x: clip;
     text-overflow: ellipsis;
-    span {
+    display: flex;
+    flex-wrap: nowrap;
+    p {
+      font-weight: 400;
+    }
+    &-lift {
+      display: flex;
+      flex-wrap: nowrap;
+      & span {
+        color: $color_grey;
+      }
+    }
+    & > p > span {
       color: $color_grey;
     }
     &_small {

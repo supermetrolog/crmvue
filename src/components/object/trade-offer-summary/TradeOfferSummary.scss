@@ -1,0 +1,16 @@
+.trade-offer-summary {
+  &__content {
+  }
+  &__column {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    &:first-of-type {
+      max-width: 340px;
+    }
+  }
+  &__table {
+  }
+  &__item {
+  }
+}
