@@ -1,21 +1,21 @@
 <template>
   <div class="ObjectMap">
-    <div class="ObjectMap-description" :class="{ 'disabled': mapIsOpened }">
+    <div class="ObjectMap-description" :class="{ disabled: mapIsOpened }">
       <div class="ObjectMap-description-item" v-if="region">{{ region }}</div>
       <div class="ObjectMap-description-item" v-if="district">
         {{ district }}
       </div>
-      <div class="ObjectMap-description-item" v-if="districtMoscow">
+      <!-- <div class="ObjectMap-description-item" v-if="districtMoscow">
         {{ districtMoscow }}
-      </div>
+      </div> -->
       <div class="ObjectMap-description-item" v-if="direction">
         {{ direction }}
       </div>
       <div class="ObjectMap-description-item" v-if="town">{{ town }}</div>
       <div class="ObjectMap-description-item" v-if="highway">{{ highway }}</div>
-      <div class="ObjectMap-description-item" v-if="highwayMoscow">
+      <!-- <div class="ObjectMap-description-item" v-if="highwayMoscow">
         {{ highwayMoscow }}
-      </div>
+      </div> -->
       <div class="ObjectMap-description-item" :title="metro" v-if="metro">
         <div v-if="metroLogo">
           <img
@@ -28,10 +28,24 @@
       <div class="ObjectMap-description-item" v-if="fromMkad">
         {{ fromMkad }} км от МКАД
       </div>
+      <div class="ObjectMap-description-actions" v-if="isAdmin">
+        <button class="ObjectMap-description-actions-item" title="See more">
+          <i class="fas fa-angle-down" />
+        </button>
+        <button class="ObjectMap-description-actions-item" title="Add new">
+          <i class="fas fa-plus-circle" />
+        </button>
+      </div>
     </div>
-    <div class="ObjectMap-description-actions" v-if="isAdmin">
-      <button class="ObjectMap-description-actions-item">more</button>
-      <button class="ObjectMap-description-actions-item">add</button>
+    <div class="ObjectMap-control">
+      <div class="ObjectMap-button" title="Open map">
+        <i
+          class="fas fa-map-marker-alt active"
+          v-if="mapIsOpened"
+          @click="openMap"
+        ></i>
+        <i class="fas fa-map-marker-alt" v-else @click="openMap"></i>
+      </div>
     </div>
     <Ymap
       :settings="map.settings"
@@ -41,14 +55,6 @@
       :coords="coords"
       :key="randKey"
     />
-    <div class="ObjectMap-button">
-      <i
-        class="far fa-arrow-alt-circle-up"
-        v-if="mapIsOpened"
-        @click="openMap"
-      ></i>
-      <i class="far fa-arrow-alt-circle-down" v-else @click="openMap"></i>
-    </div>
   </div>
 </template>
 
@@ -81,51 +87,51 @@ export default {
     return {
       map: {
         settings: {
-          height: "100px",
+          height: "70px",
         },
         styles: {
           width: "100%",
-          height: "100px",
+          height: "70px",
         },
         detailedControls: {
           zoomControl: {
             position: {
               right: "10px",
-              top: "140px",
+              top: "110px",
             },
             visible: false,
           },
           geolocationControl: {
             position: {
-              top: "100px",
+              top: "70px",
               left: "10px",
             },
             visible: false,
           },
           trafficControl: {
             position: {
-              top: "100px",
+              top: "70px",
               right: "140px",
             },
             visible: false,
           },
           typeSelector: {
             position: {
-              top: "100px",
+              top: "70px",
               right: "45px",
             },
             visible: false,
           },
           searchControl: {
             position: {
-              top: "100px",
+              top: "70px",
               left: "45px",
             },
             visible: false,
           },
           fullscreenControl: {
             position: {
-              top: "100px",
+              top: "70px",
               right: "10px",
             },
             visible: false,
@@ -157,7 +163,7 @@ export default {
     openMap() {
       if (this.mapIsOpened) {
         this.mapIsOpened = false;
-        this.map.styles.height = "100px";
+        this.map.styles.height = "70px";
         this.randKey = Math.round(Math.random() * 1000);
         for (const [key, value] of Object.entries(this.map.detailedControls)) {
           this.map.detailedControls[key] = { ...value, visible: false };
