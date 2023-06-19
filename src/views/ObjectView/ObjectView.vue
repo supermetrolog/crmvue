@@ -37,6 +37,8 @@ import ObjectMap from "@/components/object/object-map/ObjectMap.vue";
 import ObjectHeader from "@/components/object/object-header/ObjectHeader.vue";
 import data from "./object-view.data";
 import "./styles.scss";
+import { ComplexActionTypes } from "@/store/modules/complex/actions";
+import { ComplexGettersTypes } from "@/store/modules/complex/getters";
 export default {
   name: "ObjectView",
   components: { ObjectHeader, ObjectMap, ObjectAbout, ObjectHoldings },
@@ -48,7 +50,14 @@ export default {
       railway: data.railway,
       infrastructure: data.infrastructure,
       holdings: data.holdings,
+      objects: [],
     };
+  },
+  mounted() {
+    this.$store.dispatch(ComplexActionTypes.FETCH_COMPLEX_OBJECTS, {
+      complexId: 3315,
+    });
+    this.objects = this.$store.getters[ComplexGettersTypes.COMPLEX_OBJECTS];
   },
   computed: {},
   methods: {},

@@ -17,17 +17,9 @@ export default {
     }
   },
   async getComplexObjects(complexId: string) {
-    const query = new URLSearchParams({
+    const result = await this.search({
       complex_id: complexId,
-    }).toString();
-    const url = "objects?" + query;
-    try {
-      const response = await axios.get(url);
-      const result = SuccessHandler.getData(response);
-      console.log(result);
-      return result;
-    } catch (e) {
-      ErrorHandle.setError(e);
-    }
+    });
+    return result;
   },
 };

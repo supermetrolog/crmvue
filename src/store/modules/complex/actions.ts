@@ -23,7 +23,7 @@ export const actions: ActionTree<IComplexState, IComplexState> &
       payload.complexId.toString()
     );
     if (response) {
-      context.commit(ComplexMutationTypes.SET_COPMLEX_OBJECTS, response);
+      context.commit(ComplexMutationTypes.SET_COPMLEX_OBJECTS, response.data);
     }
     return response;
   },
