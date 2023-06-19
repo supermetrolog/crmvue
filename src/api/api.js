@@ -7,12 +7,13 @@ import request from "./request.js";
 import contacts from "./contacts.js";
 import companies from "./companies.js";
 import deal from "./deal.js";
-import calendar from "./calendar";
-import companyObjects from "./companyObjects";
-import offers from "./offers";
-import location from "./location";
-import letter from "./letter";
-import companyLogs from "./companyLogs";
+import calendar from "./calendar.js";
+import companyObjects from "./companyObjects.js";
+import offers from "./offers.js";
+import location from "./location.js";
+import letter from "./letter.js";
+import companyLogs from "./companyLogs.js";
+import complexObjects from "./complexObjects";
 export default {
   user,
   notifications,
@@ -29,4 +30,5 @@ export default {
   location,
   letter,
   companyLogs,
+  complexObjects,
 };

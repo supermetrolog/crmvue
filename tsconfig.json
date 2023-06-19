@@ -36,7 +36,8 @@
     "tests/**/*.ts",
     "tests/**/*.tsx",
     "src/main.js",
-    "src/main.js"
+    "src/main.js",
+    "src/api/api.js"
   ],
   "exclude": ["node_modules"]
 }
