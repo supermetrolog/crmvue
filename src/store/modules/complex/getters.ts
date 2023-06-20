@@ -1,5 +1,6 @@
 import { GetterTree } from "vuex";
-import { IComplex, IComplexState } from "./state";
+import { IComplexState } from "./state";
+import IComplex from "@/interfaces/IComplex";
 
 export enum ComplexGettersTypes {
   COMPLEX = "COMPLEX",

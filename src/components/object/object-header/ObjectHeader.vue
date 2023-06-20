@@ -1,78 +1,37 @@
 <template>
   <div class="ObjectHeader">
     <div class="ObjectHeader-content">
-      <h1 class="ObjectHeader-name">{{ complexName }}</h1>
+      <h1 class="ObjectHeader-name">{{ complex.name || 'Нет названия' }}</h1>
       <span class="ObjectHeader-description">
-        <strong>ID комплекса {{ id }}, </strong>
-        поступление {{ complexPublDate }}, {{ consultant }}, последнее
-        обновление {{ complexLastUpdate }}</span
+        <strong>ID комплекса {{ complex.id }}, </strong>
+        поступление {{ complex.createdAt }}, {{ complex.consultantName }}, последнее
+        обновление {{ complex.lastUpdatedAt }}</span
       >
     </div>
     <div class="ObjectHeader-actions" v-if="editAccess">
-      <button @click.prevent="clickUpdate">
+      <button>
         <i class="fas fa-pen text-primary edit"></i>
       </button>
     </div>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import "./styles.scss";
+import {PropType} from "vue";
+import IComplex from "@/interfaces/IComplex";
 
 export default {
   name: "ObjectHeader",
   components: {},
   props: {
-    name: {
-      type: String,
-      default: "Нет названия",
+	complex: {
+      type: Object as PropType<IComplex>,
       required: true,
-    },
-    id: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
-    creationDate: {
-      type: [Number, String],
-      default: "неизвестно",
-    },
-    updateDate: {
-      type: [Number, String],
-      default: "неизвестно",
-    },
-    consultant: {
-      type: String,
-      default: "неизвестен",
-    },
+	},
     editAccess: {
       type: Boolean,
       default: false,
-    },
-  },
-  data() {
-    return {
-      dateFormatter: this.$formatter.date(),
-    };
-  },
-  computed: {
-    complexName() {
-      return this.name ? this.name : "Нет названия";
-    },
-    complexLastUpdate() {
-      return this.updateDate
-        ? this.dateFormatter.locale(this.updateDate * 1000)
-        : "нет данных";
-    },
-    complexPublDate() {
-      return this.creationDate
-        ? this.dateFormatter.locale(this.creationDate * 1000)
-        : "нет данных";
-    },
-  },
-  methods: {
-    clickUpdate() {
-      this.$emit("updateObject");
     },
   },
 };

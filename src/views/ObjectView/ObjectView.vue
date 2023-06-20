@@ -1,12 +1,8 @@
 <template>
   <div class="ObjectView" @scroll="onScroll">
     <ObjectHeader
-      :name="complex.title"
-      :id="complex.id"
-      :creation-date="complex.publ_time"
-      :updateDate="complex.last_update"
-      :consultant="'Матвеев Павел'"
       :editAccess="false"
+      :complex="complex"
     />
     <ObjectMap
       :address="splittedAddress"
@@ -43,7 +39,6 @@ import ObjectAbout from "@/components/object/object-about/ObjectAbout.vue";
 import ObjectMap from "@/components/object/object-map/ObjectMap.vue";
 import ObjectHeader from "@/components/object/object-header/ObjectHeader.vue";
 import data from "./object-view.data";
-import { mapComplexAboutInfo } from "./complexMapper";
 import "./styles.scss";
 import { ComplexActionTypes } from "@/store/modules/complex/actions";
 import { ComplexGettersTypes } from "@/store/modules/complex/getters";
@@ -62,7 +57,6 @@ export default {
       complexId: 1106,
     });
     this.complex = this.$store.getters[ComplexGettersTypes.COMPLEX];
-    this.aboutComplexProperties = mapComplexAboutInfo(this.complex);
   },
   computed: {
     splittedAddress() {
