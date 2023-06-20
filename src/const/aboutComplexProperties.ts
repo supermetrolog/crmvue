@@ -11,7 +11,7 @@ export interface IAboutComlexProperties {
 interface IProperty {
   name: string;
   unitType: unitTypes | null;
-  value?: string | boolean | null;
+  value?: string | boolean | number | null;
   valueMin?: number | null;
   valueMax?: number | null;
 }
@@ -49,7 +49,11 @@ export const aboutComplexProperties: IAboutComlexProperties = {
       unitType: unitTypes.KILOWATT,
     },
     {
-      name: "Отопление",
+      name: "Отопление центральное",
+      unitType: null,
+    },
+    {
+      name: "Отопление автономное",
       unitType: null,
     },
     {
@@ -58,7 +62,7 @@ export const aboutComplexProperties: IAboutComlexProperties = {
     },
     {
       name: "Водоснабжение",
-      unitType: unitTypes.CUBE_METERS_PER_HOUR,
+      unitType: null,
     },
     {
       name: "Канализация",
@@ -70,7 +74,7 @@ export const aboutComplexProperties: IAboutComlexProperties = {
     },
     {
       name: "Газ",
-      unitType: null,
+      unitType: unitTypes.CUBE_METERS_PER_HOUR,
     },
     {
       name: "Пар",
@@ -78,7 +82,7 @@ export const aboutComplexProperties: IAboutComlexProperties = {
     },
     {
       name: "Телефония",
-      unitType: unitTypes.BAR,
+      unitType: null,
     },
     {
       name: "Интернет",

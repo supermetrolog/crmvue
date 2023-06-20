@@ -77,7 +77,7 @@ export default {
   components: { WithUnitType },
   props: {
     label: {
-      type: String,
+      type: [Number, String],
       default: "не задано",
     },
     exploitation: {

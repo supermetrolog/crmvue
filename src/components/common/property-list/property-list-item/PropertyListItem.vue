@@ -29,7 +29,7 @@ export default defineComponent({
       default: null,
     },
     value: {
-      type: [String, Number],
+      type: [String, Number, Boolean],
     },
     valueMin: {
       type: Number,
@@ -38,8 +38,8 @@ export default defineComponent({
       type: Number,
     },
     unitType: {
-      type: Number,
-      required: true,
+      type: [Number],
+      // required: true,
     },
   },
   data() {
@@ -55,14 +55,23 @@ export default defineComponent({
   },
   computed: {
     propertyValue() {
-      if (!this.isNullish(this.value)) return this.value;
+      if (!this.isNullish(this.value) && typeof this.value === "string")
+        return this.value;
+      if (!this.isNullish(this.value) && typeof this.value === "boolean")
+        return this.value ? "есть" : "нет";
+      if (!this.isNullish(this.value) && typeof this.value === "number")
+        return this.$formatter.numberOrRangeNew(this.value, this.value);
       if (!this.isNullish(this.valueMin) && !this.isNullish(this.valueMax)) {
         return this.$formatter.numberOrRangeNew(this.valueMin, this.valueMax);
       }
       return "не заполнено";
     },
     displayUnit() {
-      return this.valueExists ? this.unitType : undefined;
+      return this.valueExists &&
+        this.propertyValue !== "есть" &&
+        this.propertyValue !== "нет"
+        ? this.unitType
+        : undefined;
     },
     valueExists() {
       return !(

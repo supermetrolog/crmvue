@@ -15,7 +15,7 @@ export default {
   },
   props: {
     unitType: {
-      type: Number,
+      type: [Number, Boolean],
       reuqired: true,
     },
     value: {

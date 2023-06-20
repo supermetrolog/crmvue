@@ -72,8 +72,9 @@ export default {
     address: {
       type: Array,
       required: true,
+      default: () => [],
     },
-    metro: { type: String, default: null },
+    metro: { type: Number, default: null },
     fromMkad: {
       type: [String, Number],
       default: null,

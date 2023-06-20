@@ -6,7 +6,6 @@ const textFormatter = {
 const dateFormatter = {
   locale(date, locale, options) {
     const localDate = new Date(date);
-    console.log(localDate);
     return localDate.toLocaleDateString(locale, options);
   },
 };

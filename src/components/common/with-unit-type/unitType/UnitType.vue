@@ -134,7 +134,7 @@ export default defineComponent({
   name: "WithUnitType",
   props: {
     unitType: {
-      type: Number,
+      type: [Number, Boolean],
       reuqired: true,
     },
   },

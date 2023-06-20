@@ -42,7 +42,8 @@ import ObjectHoldings from "@/components/object/object-holdings/ObjectHoldings.v
 import ObjectAbout from "@/components/object/object-about/ObjectAbout.vue";
 import ObjectMap from "@/components/object/object-map/ObjectMap.vue";
 import ObjectHeader from "@/components/object/object-header/ObjectHeader.vue";
-import data, { mapComplexAboutInfo } from "./object-view.data";
+import data from "./object-view.data";
+import { mapComplexAboutInfo } from "./complexMapper";
 import "./styles.scss";
 import { ComplexActionTypes } from "@/store/modules/complex/actions";
 import { ComplexGettersTypes } from "@/store/modules/complex/getters";

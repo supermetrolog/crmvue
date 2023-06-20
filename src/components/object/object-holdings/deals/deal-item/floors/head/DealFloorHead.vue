@@ -42,7 +42,7 @@ export default {
       type: String,
     },
     area: {
-      type: Number,
+      type: Object,
     },
     checked: {
       type: Boolean,

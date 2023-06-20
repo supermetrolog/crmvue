@@ -63,7 +63,7 @@ export default {
       type: Array,
     },
     parameters: {
-      type: Array,
+      type: Object,
     },
     properties: {
       type: Array,

@@ -31,6 +31,7 @@ export default {
     id: {
       type: Number,
       required: true,
+      default: 0,
     },
     creationDate: {
       type: [Number, String],
