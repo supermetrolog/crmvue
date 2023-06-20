@@ -1,21 +1,22 @@
 <template>
   <div class="ObjectMap">
     <div class="ObjectMap-description" :class="{ disabled: mapIsOpened }">
-      <div class="ObjectMap-description-item" v-if="region">{{ region }}</div>
+      <div
+        class="ObjectMap-description-item"
+        v-for="item in address"
+        :key="item"
+      >
+        {{ item }}
+      </div>
+      <!-- <div class="ObjectMap-description-item" v-if="region">{{ region }}</div>
       <div class="ObjectMap-description-item" v-if="district">
         {{ district }}
       </div>
-      <!-- <div class="ObjectMap-description-item" v-if="districtMoscow">
-        {{ districtMoscow }}
-      </div> -->
       <div class="ObjectMap-description-item" v-if="direction">
         {{ direction }}
       </div>
       <div class="ObjectMap-description-item" v-if="town">{{ town }}</div>
-      <div class="ObjectMap-description-item" v-if="highway">{{ highway }}</div>
-      <!-- <div class="ObjectMap-description-item" v-if="highwayMoscow">
-        {{ highwayMoscow }}
-      </div> -->
+      <div class="ObjectMap-description-item" v-if="highway">{{ highway }}</div> -->
       <div class="ObjectMap-description-item" :title="metro" v-if="metro">
         <div v-if="metroLogo">
           <img
@@ -61,13 +62,17 @@ export default {
   name: "ObjectMap",
   components: { Ymap },
   props: {
-    region: { type: String, default: null },
-    district: { type: String, default: null },
-    districtMoscow: { type: String, default: null },
-    direction: { type: String, default: null },
-    town: { type: String, default: null },
-    highway: { type: String, default: null },
-    highwayMoscow: { type: String, default: null },
+    // region: { type: String, default: null },
+    // district: { type: String, default: null },
+    // districtMoscow: { type: String, default: null },
+    // direction: { type: String, default: null },
+    // town: { type: String, default: null },
+    // highway: { type: String, default: null },
+    // highwayMoscow: { type: String, default: null },
+    address: {
+      type: Array,
+      required: true,
+    },
     metro: { type: String, default: null },
     fromMkad: {
       type: [String, Number],
@@ -144,10 +149,16 @@ export default {
   },
   computed: {
     metroLogo() {
-      if (this.town.toLowerCase().includes("москва")) {
+      if (
+        this.address.includes("Москва") ||
+        this.address.includes("Московская область")
+      ) {
         return "metro";
       }
-      if (this.town.toLowerCase().includes("санкт")) {
+      if (
+        this.address.includes("Санкт Петербург") ||
+        this.address.includes("Ленинградская область")
+      ) {
         return "metro_spb";
       } else {
         return null;

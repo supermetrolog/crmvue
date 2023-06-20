@@ -1,9 +1,9 @@
 export interface IComplexState {
-  complexObjects: IComplexObject[];
+  complex: IComplex | null;
 }
 
-export interface IComplexObject extends Record<string, any> {}
+export interface IComplex extends Record<string, any> {}
 
 export const state: IComplexState = {
-  complexObjects: [],
+  complex: null,
 };

@@ -13,7 +13,7 @@ import offers from "./offers.js";
 import location from "./location.js";
 import letter from "./letter.js";
 import companyLogs from "./companyLogs.js";
-import complexObjects from "./complexObjects";
+import complex from "./complex";
 export default {
   user,
   notifications,
@@ -30,5 +30,5 @@ export default {
   location,
   letter,
   companyLogs,
-  complexObjects,
+  complex,
 };

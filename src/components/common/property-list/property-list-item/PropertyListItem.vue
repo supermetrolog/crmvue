@@ -3,7 +3,9 @@
     <div class="PropertyListItem-name">{{ name }}:</div>
     <with-unit-type
       class="PropertyListItem-value"
-      :class="{ 'not-filled': !value && !valueMin }"
+      :class="{
+        'not-filled': !valueExists,
+      }"
       :unitType="displayUnit"
       :value="propertyValue"
     />
@@ -27,7 +29,7 @@ export default defineComponent({
       default: null,
     },
     value: {
-      type: [String, Number, Boolean],
+      type: [String, Number],
     },
     valueMin: {
       type: Number,
@@ -46,17 +48,28 @@ export default defineComponent({
     };
   },
 
-  methods: {},
+  methods: {
+    isNullish(value: any): boolean {
+      return value === null || value === undefined;
+    },
+  },
   computed: {
     propertyValue() {
-      if (this.value) return this.value;
-      if (this.valueMin && this.valueMax) {
+      if (!this.isNullish(this.value)) return this.value;
+      if (!this.isNullish(this.valueMin) && !this.isNullish(this.valueMax)) {
         return this.$formatter.numberOrRangeNew(this.valueMin, this.valueMax);
       }
       return "не заполнено";
     },
     displayUnit() {
-      return this.value || this.valueMin ? this.unitType : undefined;
+      return this.valueExists ? this.unitType : undefined;
+    },
+    valueExists() {
+      return !(
+        this.isNullish(this.value) &&
+        this.isNullish(this.valueMin) &&
+        this.isNullish(this.valueMax)
+      );
     },
   },
 });

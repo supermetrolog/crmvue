@@ -11,6 +11,9 @@ export interface IAboutComlexProperties {
 interface IProperty {
   name: string;
   unitType: unitTypes | null;
+  value?: string | boolean | null;
+  valueMin?: number | null;
+  valueMax?: number | null;
 }
 
 export const aboutComplexProperties: IAboutComlexProperties = {
@@ -21,7 +24,19 @@ export const aboutComplexProperties: IAboutComlexProperties = {
     },
     {
       name: "S - строений в комплексе",
-      unitType: unitTypes.RUB_PER_MONTH,
+      unitType: unitTypes.SQUARE_METERS,
+    },
+    {
+      name: "S - этажей общая",
+      unitType: unitTypes.SQUARE_METERS,
+    },
+    {
+      name: "S - оффисов общая",
+      unitType: unitTypes.SQUARE_METERS,
+    },
+    {
+      name: "S - техническая общая",
+      unitType: unitTypes.SQUARE_METERS,
     },
     {
       name: "Управляющая компания",

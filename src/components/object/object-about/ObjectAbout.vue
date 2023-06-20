@@ -10,6 +10,8 @@
                 :key="prop.name + idx"
                 :name="prop.name"
                 :value="prop.value"
+                :valueMin="prop.valueMin"
+                :valueMax="prop.valueMax"
                 :unitType="prop.unitType"
               />
             </PropertyList>

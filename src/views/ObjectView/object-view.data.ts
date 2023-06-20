@@ -1,8 +1,149 @@
-import { aboutComplexProperties } from "@/const/aboutComplexProperties";
+import {
+  IAboutComlexProperties,
+  aboutComplexProperties,
+} from "@/const/aboutComplexProperties";
 import { unitTypes } from "../../const/unitTypes";
 import { tradeOfferCharacteristics } from "@/const/tradeOfferCharacteristics";
 import { gateTypes } from "@/types/gateTypes.enum";
+import { IComplex } from "@/store/modules/complex/state";
 
+export const mapComplexAboutInfo = (
+  complex: IComplex
+): IAboutComlexProperties => {
+  return {
+    area: [
+      {
+        ...aboutComplexProperties.area[0],
+        valueMin: complex.area_field_full,
+        valueMax: complex.area_field_full,
+      },
+      {
+        ...aboutComplexProperties.area[1],
+        valueMin: complex.area_building,
+        valueMax: complex.area_building,
+      },
+      {
+        ...aboutComplexProperties.area[2],
+        valueMin: complex.area_floor_full,
+        valueMax: complex.area_floor_full,
+      },
+      {
+        ...aboutComplexProperties.area[3],
+        valueMin: complex.area_office_full,
+        valueMax: complex.area_office_full,
+      },
+      {
+        ...aboutComplexProperties.area[4],
+        valueMin: complex.area_tech_full,
+        valueMax: complex.area_tech_full,
+      },
+      {
+        ...aboutComplexProperties.area[5],
+        value: complex.managment_company ? "да" : "нет",
+      },
+    ],
+    communications: [
+      {
+        ...aboutComplexProperties.communications[0],
+        value: "3 000",
+      },
+      {
+        ...aboutComplexProperties.communications[1],
+        value: "центрально",
+      },
+      {
+        ...aboutComplexProperties.communications[2],
+        value: "газовое",
+      },
+      {
+        ...aboutComplexProperties.communications[3],
+        value: "центр., 3 000",
+      },
+      {
+        ...aboutComplexProperties.communications[4],
+        value: "септик",
+      },
+      {
+        ...aboutComplexProperties.communications[5],
+        value: "есть",
+      },
+      {
+        ...aboutComplexProperties.communications[6],
+        value: "приточно-вытяжная",
+      },
+      {
+        ...aboutComplexProperties.communications[7],
+        value: "есть, 1 000",
+      },
+      {
+        ...aboutComplexProperties.communications[8],
+        value: "есть, 700",
+      },
+      {
+        ...aboutComplexProperties.communications[9],
+        value: "есть",
+      },
+    ],
+    safety: [
+      {
+        ...aboutComplexProperties.safety[0],
+        value: "местная",
+      },
+      {
+        ...aboutComplexProperties.safety[1],
+        value: "сприклерное",
+      },
+      {
+        ...aboutComplexProperties.safety[2],
+        value: "есть",
+      },
+      {
+        ...aboutComplexProperties.safety[3],
+        value: "есть",
+      },
+      {
+        ...aboutComplexProperties.safety[4],
+        value: "есть",
+      },
+      {
+        ...aboutComplexProperties.safety[5],
+        value: "нет",
+      },
+    ],
+    railway: [
+      {
+        ...aboutComplexProperties.railway[0],
+        value: "есть, 200",
+      },
+    ],
+    infrastructure: [
+      {
+        ...aboutComplexProperties.infrastructure[0],
+        value: "платный",
+      },
+      {
+        ...aboutComplexProperties.infrastructure[1],
+        value: "есть, 2 500",
+      },
+      {
+        ...aboutComplexProperties.infrastructure[2],
+        value: "есть, бесплатная",
+      },
+      {
+        ...aboutComplexProperties.infrastructure[3],
+        value: "нет",
+      },
+      {
+        ...aboutComplexProperties.infrastructure[4],
+        value: "есть",
+      },
+      {
+        ...aboutComplexProperties.infrastructure[5],
+        value: "нет",
+      },
+    ],
+  };
+};
 export default {
   area: [
     {

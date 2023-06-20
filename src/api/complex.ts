@@ -2,9 +2,9 @@ import axios from "axios";
 import ErrorHandle from "./errors";
 import SuccessHandler from "./success";
 export default {
-  async search(params: Record<string, string>) {
+  async fetch(id: string, params?: Record<string, string>) {
     const query = new URLSearchParams(params).toString();
-    const url = "objects?" + query;
+    const url = query ? `complex/${id}?${query}` : `comples/${id}`;
     try {
       const response = await axios.get(url);
       const result = {
@@ -16,9 +16,9 @@ export default {
       ErrorHandle.setError(e);
     }
   },
-  async getComplexObjects(complexId: string) {
-    const result = await this.search({
-      complex_id: complexId,
+  async getComplexWithObjects(complexId: string) {
+    const result = await this.fetch(complexId, {
+      expand: "objects",
     });
     return result;
   },

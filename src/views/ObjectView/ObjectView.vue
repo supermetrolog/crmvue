@@ -1,30 +1,37 @@
 <template>
   <div class="ObjectView" @scroll="onScroll">
     <ObjectHeader
-      :name="'СК Северное шереметьево'"
-      :id="4566"
-      :creation-date="'01-02-2014'"
-      :updateDate="'01.01.2043'"
+      :name="complex.title"
+      :id="complex.id"
+      :creation-date="complex.publ_time"
+      :updateDate="complex.last_update"
       :consultant="'Матвеев Павел'"
       :editAccess="false"
     />
     <ObjectMap
+      :address="splittedAddress"
+      :metro="complex.metro"
+      :from-mkad="complex.from_mkad"
+      :coords="copmlexCoords"
+    />
+    <!-- <ObjectMap
       :region="'Московская область'"
       :district="'Северо-восток'"
       :district-moscow="'Павловская-Слобода'"
       :direction="'Симферопольское'"
       :town="'Санкт-Петербург'"
       :highway="'Симферопольское'"
-      :highway-moscow="'Киевское'"
-      :metro="'Адмиралтейская'"
-      :from-mkad="228"
-    />
+      :highway-secondary="'Киевское'"
+      :village="''"
+      :metro="complex.metro"
+      :from-mkad="complex.from_mkad"
+    /> -->
     <ObjectAbout
-      :area="area"
-      :communications="communications"
-      :safety="safety"
-      :railway="railway"
-      :infrastructure="infrastructure"
+      :area="aboutComplexProperties.area"
+      :communications="aboutComplexProperties.communications"
+      :safety="aboutComplexProperties.safety"
+      :railway="aboutComplexProperties.railway"
+      :infrastructure="aboutComplexProperties.infrastructure"
     />
     <ObjectHoldings :holdings="holdings" />
   </div>
@@ -35,7 +42,7 @@ import ObjectHoldings from "@/components/object/object-holdings/ObjectHoldings.v
 import ObjectAbout from "@/components/object/object-about/ObjectAbout.vue";
 import ObjectMap from "@/components/object/object-map/ObjectMap.vue";
 import ObjectHeader from "@/components/object/object-header/ObjectHeader.vue";
-import data from "./object-view.data";
+import data, { mapComplexAboutInfo } from "./object-view.data";
 import "./styles.scss";
 import { ComplexActionTypes } from "@/store/modules/complex/actions";
 import { ComplexGettersTypes } from "@/store/modules/complex/getters";
@@ -44,22 +51,26 @@ export default {
   components: { ObjectHeader, ObjectMap, ObjectAbout, ObjectHoldings },
   data() {
     return {
-      area: data.area,
-      communications: data.communications,
-      safety: data.safety,
-      railway: data.railway,
-      infrastructure: data.infrastructure,
+      aboutComplexProperties: {},
       holdings: data.holdings,
-      objects: [],
+      complex: {},
     };
   },
-  mounted() {
-    this.$store.dispatch(ComplexActionTypes.FETCH_COMPLEX_OBJECTS, {
-      complexId: 3315,
+  async mounted() {
+    await this.$store.dispatch(ComplexActionTypes.FETCH_COMPLEX, {
+      complexId: 1106,
     });
-    this.objects = this.$store.getters[ComplexGettersTypes.COMPLEX_OBJECTS];
+    this.complex = this.$store.getters[ComplexGettersTypes.COMPLEX];
+    this.aboutComplexProperties = mapComplexAboutInfo(this.complex);
   },
-  computed: {},
+  computed: {
+    splittedAddress() {
+      return this.complex?.address?.split(", ").filter((el) => isNaN(+el));
+    },
+    copmlexCoords() {
+      return [this.complex.latitude, this.complex.longitude];
+    },
+  },
   methods: {},
 };
 </script>

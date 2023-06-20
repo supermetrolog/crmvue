@@ -1,19 +1,16 @@
 import { MutationTree } from "vuex";
-import { IComplexObject, IComplexState } from "./state";
+import { IComplex, IComplexState } from "./state";
 
 export enum ComplexMutationTypes {
-  SET_COPMLEX_OBJECTS = "SET_COPMLEX_OBJECTS",
+  SET_COPMLEX = "SET_COPMLEX",
 }
 
 export interface IComplexMutations<S = IComplexState> {
-  [ComplexMutationTypes.SET_COPMLEX_OBJECTS]: (
-    state: S,
-    payload: IComplexObject[]
-  ) => void;
+  [ComplexMutationTypes.SET_COPMLEX]: (state: S, payload: IComplex) => void;
 }
 
 export const mutations: MutationTree<IComplexState> & IComplexMutations = {
-  [ComplexMutationTypes.SET_COPMLEX_OBJECTS](state, payload) {
-    state.complexObjects = payload;
+  [ComplexMutationTypes.SET_COPMLEX](state, payload) {
+    state.complex = payload;
   },
 };

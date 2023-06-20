@@ -1,17 +1,17 @@
 import { GetterTree } from "vuex";
-import { IComplexObject, IComplexState } from "./state";
+import { IComplex, IComplexState } from "./state";
 
 export enum ComplexGettersTypes {
-  COMPLEX_OBJECTS = "COMPLEX_OBJECTS",
+  COMPLEX = "COMPLEX",
 }
 
 export interface IComplexGetters<S = IComplexState> {
-  [ComplexGettersTypes.COMPLEX_OBJECTS]: (state: S) => IComplexObject[];
+  [ComplexGettersTypes.COMPLEX]: (state: S) => IComplex | null;
 }
 
 export const getters: GetterTree<IComplexState, IComplexState> &
   IComplexGetters = {
-  [ComplexGettersTypes.COMPLEX_OBJECTS](state) {
-    return state.complexObjects;
+  [ComplexGettersTypes.COMPLEX](state) {
+    return state.complex;
   },
 };

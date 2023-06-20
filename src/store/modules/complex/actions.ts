@@ -4,11 +4,11 @@ import { ComplexMutationTypes } from "./mutations";
 import api from "@/api/api";
 
 export enum ComplexActionTypes {
-  FETCH_COMPLEX_OBJECTS = "FETCH_COMPLEX_OBJECTS",
+  FETCH_COMPLEX = "FETCH_COMPLEX",
 }
 
 export interface IComplexActions<S = IComplexState> {
-  [ComplexActionTypes.FETCH_COMPLEX_OBJECTS]: (
+  [ComplexActionTypes.FETCH_COMPLEX]: (
     context: ActionContext<S, S>,
     payload: {
       complexId: number;
@@ -18,12 +18,12 @@ export interface IComplexActions<S = IComplexState> {
 
 export const actions: ActionTree<IComplexState, IComplexState> &
   IComplexActions = {
-  async [ComplexActionTypes.FETCH_COMPLEX_OBJECTS](context, payload) {
-    const response = await api.complexObjects.getComplexObjects(
+  async [ComplexActionTypes.FETCH_COMPLEX](context, payload) {
+    const response = await api.complex.getComplexWithObjects(
       payload.complexId.toString()
     );
     if (response) {
-      context.commit(ComplexMutationTypes.SET_COPMLEX_OBJECTS, response.data);
+      context.commit(ComplexMutationTypes.SET_COPMLEX, response.data);
     }
     return response;
   },
