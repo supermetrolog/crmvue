@@ -1,8 +1,69 @@
 import { unitTypes } from "../../const/unitTypes";
 import { tradeOfferCharacteristics } from "@/const/tradeOfferCharacteristics";
 import { gateTypes } from "@/types/gateTypes.enum";
+import {aboutComplexProperties} from "@/const/aboutComplexProperties";
 
 export default {
+  parameters: {
+    safety: [
+      {
+        ...aboutComplexProperties.safety[0],
+        value: "местная",
+      },
+      {
+        ...aboutComplexProperties.safety[1],
+        value: "сприклерное",
+      },
+      {
+        ...aboutComplexProperties.safety[2],
+        value: "есть",
+      },
+      {
+        ...aboutComplexProperties.safety[3],
+        value: "есть",
+      },
+      {
+        ...aboutComplexProperties.safety[4],
+        value: "есть",
+      },
+      {
+        ...aboutComplexProperties.safety[5],
+        value: "нет",
+      },
+    ],
+    railway: [
+      {
+        ...aboutComplexProperties.railway[0],
+        value: "есть, 200",
+      },
+    ],
+    infrastructure: [
+      {
+        ...aboutComplexProperties.infrastructure[0],
+        value: "платный",
+      },
+      {
+        ...aboutComplexProperties.infrastructure[1],
+        value: "есть, 2 500",
+      },
+      {
+        ...aboutComplexProperties.infrastructure[2],
+        value: "есть, бесплатная",
+      },
+      {
+        ...aboutComplexProperties.infrastructure[3],
+        value: "нет",
+      },
+      {
+        ...aboutComplexProperties.infrastructure[4],
+        value: "есть",
+      },
+      {
+        ...aboutComplexProperties.infrastructure[5],
+        value: "нет",
+      },
+    ],
+  },
   holdings: [
     {
       id: 1488,

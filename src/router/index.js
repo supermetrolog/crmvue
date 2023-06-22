@@ -200,12 +200,12 @@ const routes = [
   },
   {
     path: "/complex/:complex_id",
-    name: "ObjectView",
+    name: "ComplexView",
     meta: {
       layout: "main",
       auth: { isAuth: true, role: ["moderator", "administrator"] },
     },
-    component: () => import("@/views/ObjectView/ObjectView.vue"),
+    component: () => import("@/views/ComplexView/ComplexView.vue"),
   },
   {
     path: "/:catchAll(.*)",

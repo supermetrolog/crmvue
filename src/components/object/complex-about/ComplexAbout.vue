@@ -1,29 +1,29 @@
 <template>
-  <div class="ObjectAbout" id="ObjectAbout">
+  <div class="ComplexAbout" id="ComplexAbout">
     <Tabs :options="{ useUrlFragment: false }">
       <Tab name="О комплексе">
-        <div class="ObjectAbout-content">
+        <div class="ComplexAbout-content">
           <template v-if="dataAvailable">
-            <PropertyList :title="'Площади'">
-              <PropertyListItem
-                v-for="(prop, idx) in area"
-                :key="prop.name + idx"
-                :name="prop.name"
-                :value="prop.value"
-                :valueMin="prop.valueMin"
-                :valueMax="prop.valueMax"
-                :unitType="prop.unitType"
-              />
-            </PropertyList>
-            <PropertyList :title="'Коммуникации'">
-              <PropertyListItem
-                v-for="(prop, idx) in communications"
-                :key="prop.name + idx"
-                :name="prop.name"
-                :value="prop.value"
-                :unitType="prop.unitType"
-              />
-            </PropertyList>
+<!--            <PropertyList :title="'Площади'">-->
+<!--              <PropertyListItem-->
+<!--                v-for="(prop, idx) in area"-->
+<!--                :key="prop.name + idx"-->
+<!--                :name="prop.name"-->
+<!--                :value="prop.value"-->
+<!--                :valueMin="prop.valueMin"-->
+<!--                :valueMax="prop.valueMax"-->
+<!--                :unitType="prop.unitType"-->
+<!--              />-->
+<!--            </PropertyList>-->
+<!--            <PropertyList :title="'Коммуникации'">-->
+<!--              <PropertyListItem-->
+<!--                v-for="(prop, idx) in communications"-->
+<!--                :key="prop.name + idx"-->
+<!--                :name="prop.name"-->
+<!--                :value="prop.value"-->
+<!--                :unitType="prop.unitType"-->
+<!--              />-->
+<!--            </PropertyList>-->
             <PropertyList :title="'Безопасность'">
               <PropertyListItem
                 v-for="(prop, idx) in safety"
@@ -58,13 +58,13 @@
         </div>
       </Tab>
       <Tab name="План Территории">
-        <div class="ObjectAbout-content">123</div>
+        <div class="ComplexAbout-content">123</div>
       </Tab>
       <Tab name="Презентации">
-        <div class="ObjectAbout-content">123</div>
+        <div class="ComplexAbout-content">123</div>
       </Tab>
       <Tab name="Документы">
-        <div class="ObjectAbout-content">123</div>
+        <div class="ComplexAbout-content">123</div>
       </Tab>
     </Tabs>
   </div>
@@ -76,14 +76,11 @@ import PropertyList from "../../common/property-list/PropertyList.vue";
 import "./styles.scss";
 
 export default {
-  name: "ObjectAbout",
+  name: "ComplexAbout",
   components: { PropertyList, PropertyListItem },
   props: {
-    area: {
-      type: Array,
-    },
-    communications: {
-      type: Array,
+    complex: {
+      type: Object
     },
     safety: {
       type: Array,
@@ -99,13 +96,10 @@ export default {
     return {};
   },
   computed: {
-    listLength() {
-      return this.aboutList.length;
-    },
     dataAvailable() {
       return (
-        this.area &&
-        this.communications &&
+        // this.area &&
+        // this.communications &&
         this.safety &&
         this.railway &&
         this.infrastructure
@@ -118,20 +112,12 @@ export default {
       return;
     } else {
       requestAnimationFrame(() => {
-        const listElement = document.getElementById("ObjectAbout");
+        const listElement = document.getElementById("ComplexAbout");
         const listHeight = listElement.clientHeight;
-        // document.getElementById("ObjectAbout").style.height = `${listHeight}px`;
+        // document.getElementById("ComplexAbout").style.height = `${listHeight}px`;
         console.log("List height:", listHeight);
       });
     }
   },
-  //   watch: {
-  //     listLength: {
-  //       handler() {
-  //         console.log(123);
-  //       },
-  //       deep: true,
-  //     },
-  //   },
 };
 </script>

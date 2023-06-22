@@ -1,45 +1,51 @@
 <template>
-  <div class="ObjectMap">
-    <div class="ObjectMap-description" :class="{ disabled: mapIsOpened }">
+  <div class="ComplexMap">
+    <div class="ComplexMap-description" :class="{ disabled: mapIsOpened }">
+      <div class="ComplexMap-description-item" v-if="complex.region">
+        {{ complex.region }}
+      </div>
+      <div class="ComplexMap-description-item" v-if="complex.district">
+        {{ complex.district }}
+      </div>
+      <div class="ComplexMap-description-item" v-if="complex.direction">
+        {{ complex.direction }}
+      </div>
+      <div class="ComplexMap-description-item" v-if="complex.locality">
+        {{ complex.locality }}
+      </div>
+      <div class="ComplexMap-description-item" v-if="complex.highway">
+        {{ complex.highway }}
+      </div>
+      <div class="ComplexMap-description-item" v-if="complex.highwaySecondary">
+        {{ complex.highwaySecondary }}
+      </div>
       <div
-        class="ObjectMap-description-item"
-        v-for="item in address"
-        :key="item"
+        class="ComplexMap-description-item"
+        :title="complex.metro"
+        v-if="complex.metro"
       >
-        {{ item }}
-      </div>
-      <!-- <div class="ObjectMap-description-item" v-if="region">{{ region }}</div>
-      <div class="ObjectMap-description-item" v-if="district">
-        {{ district }}
-      </div>
-      <div class="ObjectMap-description-item" v-if="direction">
-        {{ direction }}
-      </div>
-      <div class="ObjectMap-description-item" v-if="town">{{ town }}</div>
-      <div class="ObjectMap-description-item" v-if="highway">{{ highway }}</div> -->
-      <div class="ObjectMap-description-item" :title="metro" v-if="metro">
         <div v-if="metroLogo">
           <img
             :src="require(`../../../assets/image/${metroLogo}.png`)"
             alt="метро"
           />
         </div>
-        <span>{{ metro }}</span>
+        <span>{{ complex.metro }}</span>
       </div>
-      <div class="ObjectMap-description-item" v-if="fromMkad">
-        {{ fromMkad }} км от МКАД
+      <div class="ComplexMap-description-item" v-if="complex.fromMkad">
+        {{ complex.fromMkad }} км от МКАД
       </div>
-      <div class="ObjectMap-description-actions" v-if="isAdmin">
-        <button class="ObjectMap-description-actions-item" title="See more">
+      <div class="ComplexMap-description-actions" v-if="isAdmin">
+        <button class="ComplexMap-description-actions-item" title="See more">
           <i class="fas fa-angle-down" />
         </button>
-        <button class="ObjectMap-description-actions-item" title="Add new">
+        <button class="ComplexMap-description-actions-item" title="Add new">
           <i class="fas fa-plus-circle" />
         </button>
       </div>
     </div>
-    <div class="ObjectMap-control">
-      <div class="ObjectMap-button" title="Open map" @click="openMap">
+    <div class="ComplexMap-control">
+      <div class="ComplexMap-button" title="Open map" @click="openMap">
         <i class="fas fa-map-marker-alt" :class="{ active: mapIsOpened }"></i>
       </div>
     </div>
@@ -48,40 +54,34 @@
       :styles="map.styles"
       :detailedControls="map.detailedControls"
       :behaviors="map.behaviors"
-      :coords="coords"
+      :coords="complexCoords"
       :key="randKey"
     />
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import ComplexInterface from "@/interfaces/complex.interface";
 import Ymap from "../../common/ymap/Ymap.vue";
 import "./styles.scss";
+import { PropType, defineComponent } from "vue";
 
-export default {
-  name: "ObjectMap",
+interface IMapDetailedControlsItem {
+  position?: {
+    top: string;
+    right?: string;
+    left?: string;
+  };
+  visible: boolean;
+}
+
+export default defineComponent({
+  name: "ComplexMap",
   components: { Ymap },
   props: {
-    // region: { type: String, default: null },
-    // district: { type: String, default: null },
-    // districtMoscow: { type: String, default: null },
-    // direction: { type: String, default: null },
-    // town: { type: String, default: null },
-    // highway: { type: String, default: null },
-    // highwayMoscow: { type: String, default: null },
-    address: {
-      type: Array,
+    complex: {
+      type: Object as PropType<ComplexInterface>,
       required: true,
-      default: () => [],
-    },
-    metro: { type: Number, default: null },
-    fromMkad: {
-      type: [String, Number],
-      default: null,
-    },
-    coords: {
-      type: Array,
-      default: () => [55.75554289958026, 37.619346417968764], // moscow center
     },
   },
   data() {
@@ -140,8 +140,8 @@ export default {
           rulerControl: {
             visible: false,
           },
-        },
-        behaviors: [],
+        } as Record<string, IMapDetailedControlsItem>,
+        behaviors: [] as string[],
       },
       mapIsOpened: false,
       randKey: 0,
@@ -151,19 +151,25 @@ export default {
   computed: {
     metroLogo() {
       if (
-        this.address.includes("Москва") ||
-        this.address.includes("Московская область")
+        this.complex.locality === "Москва" ||
+        this.complex.region === "Московская область"
       ) {
         return "metro";
       }
       if (
-        this.address.includes("Санкт Петербург") ||
-        this.address.includes("Ленинградская область")
+        this.complex.locality === "Санкт Петербург" ||
+        this.complex.region === "Ленинградская область"
       ) {
         return "metro_spb";
       } else {
         return null;
       }
+    },
+    complexCoords() {
+      const { latitude, longitude } = this.complex;
+      return latitude && longitude
+        ? [latitude, longitude]
+        : [55.75554289958026, 37.619346417968764];
     },
   },
   methods: {
@@ -187,7 +193,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <style scoped></style>

@@ -24,8 +24,10 @@
       "@/styles": ["src/styles/*"],
       "@/router": ["src/router/*"],
       "@/const": ["src/const/*"],
-      "@/plugins": ["src/plugins/*"],
-      "@/types": ["src/types/*"]
+      "@/plugins": ["src/plugins"],
+      "@/types": ["src/types/*"],
+      "@/entities": ["src/entities/*"],
+      "@/interfaces": ["src/interfaces/*"]
     },
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
   },

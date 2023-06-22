@@ -1,24 +1,26 @@
-import { MutationTree } from "vuex";
-import { IComplexState } from "./state";
-import Complex from "@/entities/Complex";
+import {MutationTree} from "vuex";
+import {IComplexState} from "./state";
+import ComplexEntity from "@/entities/complex.entity";
 
 export enum ComplexMutationTypes {
-  SET_COPMLEX = "SET_COPMLEX",
+    SET_COPMLEX = "SET_COPMLEX",
 }
 
 export interface IComplexMutations<S = IComplexState> {
-  [ComplexMutationTypes.SET_COPMLEX]: (state: S, payload: Object) => void;
+    [ComplexMutationTypes.SET_COPMLEX]: (state: S, payload: Object) => void;
 }
 
 export const mutations: MutationTree<IComplexState> & IComplexMutations = {
-  [ComplexMutationTypes.SET_COPMLEX](state, payload: any) {
-    console.log(payload);
-    const complex: Complex =new Complex();
-    complex.id = payload.id;
-    complex.name = payload.title;
-    complex.lastUpdatedAt = new Date(payload.last_update).toString();
-    complex.createdAt = payload.created_at;
-    complex.consultantName = 'MATVEEV';
-    state.complex = complex;
-  },
+    [ComplexMutationTypes.SET_COPMLEX](state, payload: any) {
+        const splittedAddress = payload.address.split(', ');
+        state.complex = new ComplexEntity({
+            ...payload,
+            consultant_name: "Иванов Иван",
+            managment_company_value: null,
+            region: splittedAddress[1],
+            district: splittedAddress[2],
+            locality: splittedAddress[3],
+            highway: splittedAddress[4],
+        });
+    },
 };

@@ -3,7 +3,7 @@ const textFormatter = {
     return string.charAt(0).toUpperCase() + string.slice(1);
   },
 };
-const dateFormatter = {
+export const dateFormatter = {
   locale(date, locale, options) {
     const localDate = new Date(date);
     return localDate.toLocaleDateString(locale, options);

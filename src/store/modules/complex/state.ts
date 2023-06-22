@@ -1,4 +1,4 @@
-import IComplex from "@/interfaces/IComplex";
+import IComplex from "@/interfaces/complex.interface";
 
 export interface IComplexState {
   complex: IComplex | null;
