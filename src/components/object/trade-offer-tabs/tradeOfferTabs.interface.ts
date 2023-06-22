@@ -19,8 +19,14 @@ export interface ITradeOffer {
 }
 
 export interface ITradeOfferParameters {
-  summary: ITradeOfferCharacteristics;
+  summary: ITradeOfferSummary;
   blocks: ITradeOfferBlock[];
+}
+
+export interface ITradeOfferSummary {
+  parameters: ITradeOfferCharacteristics;
+  description: string;
+  plan_scheme: string[];
 }
 
 export interface ITradeOfferBlock {

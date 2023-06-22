@@ -112,20 +112,17 @@
 <script lang="ts">
 import { ITradeOfferBlock } from "../trade-offer-tabs/tradeOfferTabs.interface";
 import { PropType, defineComponent } from "vue";
-import {
-  ICharacterictic,
-  tradeOfferCharacteristics,
-} from "@/const/tradeOfferCharacteristics";
-import { parameterTypes } from "@/const/parameterTypes";
+import { tradeOfferCharacteristics } from "@/const/tradeOfferCharacteristics";
 import Form from "@/components/common/form/Form.vue";
 import Checkbox from "@/components/common/form/Checkbox.vue";
 import WithUnitType from "@/components/common/with-unit-type/WithUnitType.vue";
-import { unitTypes } from "@/const/unitTypes";
+import { OfferParametersMixin } from "../offer-parameters.mixin";
 
 const tableHeadColors = ["green", "blue", "cyan", "orange", "red", "purple"];
 
 export default defineComponent({
   name: "TradeOfferDetailsTable",
+  mixins: [OfferParametersMixin],
   components: {
     Form,
     Checkbox,
@@ -141,28 +138,7 @@ export default defineComponent({
     return {
       tableHeadColors,
       tradeOfferCharacteristics,
-      parameterTypes,
-      unitTypes,
     };
-  },
-  methods: {
-    formattedParameter(parameter: ICharacterictic): string {
-      if (
-        parameter.value !== undefined &&
-        typeof parameter.value === "boolean"
-      ) {
-        return parameter.value ? "есть" : "нет";
-      }
-      if (parameter.value && typeof parameter.value === "string")
-        return parameter.value;
-      return this.$formatter.numberOrRangeNew(
-        parameter.valueMin,
-        parameter.valueMax
-      );
-    },
-    displayLiftingDevicesWeight(liftingDevicesWeight?: number[]) {
-      return liftingDevicesWeight && liftingDevicesWeight.length > 0;
-    },
   },
 });
 </script>

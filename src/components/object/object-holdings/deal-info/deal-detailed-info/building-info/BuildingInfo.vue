@@ -34,15 +34,17 @@
     </div>
     <div class="building-info__line">
       <parameters
-        :height="parameters.summary.characteristics.height"
-        :floorType="parameters.summary.characteristics.floorType"
-        :gatesNumber="parameters.summary.characteristics.gatesNumber"
-        :electricity="parameters.summary.communications.electricity"
-        :heating="parameters.summary.communications.heating"
-        :sewage="parameters.summary.communications.sewage"
-        :gasForProduction="parameters.summary.communications.gasForProduction"
-        :liftingDevices="parameters.summary.liftingDevices.lifts"
-        :shelving="parameters.summary.facilities.shelving"
+        :height="parameters.summary.parameters.characteristics.height"
+        :floorType="parameters.summary.parameters.characteristics.floorType"
+        :gatesNumber="parameters.summary.parameters.characteristics.gatesNumber"
+        :electricity="parameters.summary.parameters.communications.electricity"
+        :heating="parameters.summary.parameters.communications.heating"
+        :sewage="parameters.summary.parameters.communications.sewage"
+        :gasForProduction="
+          parameters.summary.parameters.communications.gasForProduction
+        "
+        :liftingDevices="parameters.summary.parameters.liftingDevices.lifts"
+        :shelving="parameters.summary.parameters.facilities.shelving"
       />
     </div>
     <div class="building-info__line">
