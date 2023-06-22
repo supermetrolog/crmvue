@@ -5,6 +5,13 @@
     grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 10px;
   }
+
+  &-property {
+    color: black;
+    & > span {
+      color: $color_grey;
+    }
+  }
   .tabs-component-panels {
     padding: 10px;
   }

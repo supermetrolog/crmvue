@@ -11,21 +11,18 @@
     white-space: nowrap;
     overflow-x: clip;
     text-overflow: ellipsis;
+    font-weight: normal;
   }
   &-value {
     width: 40%;
     white-space: nowrap;
-    font-weight: 400;
     overflow-x: clip;
     text-overflow: ellipsis;
-    span {
-      color: $color_grey;
-    }
-    &_small {
-      font-size: 12px;
-    }
-    &.not-filled {
-      color: $color_grey;
+    font-weight: normal;
+    color: $color_grey;
+
+    & p {
+      font-weight: normal;
     }
   }
   &:nth-child(odd) {
