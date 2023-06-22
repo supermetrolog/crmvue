@@ -80,7 +80,7 @@
           >
             <with-unit-type
               :value="formattedParameter(subparameter)"
-              :unit-type="subparameter.value !== '--' && subparameter.unitType"
+              :unit-type="subparameter.value !== '--' && subparameter.unitType || unitTypes.NONE"
             />
             <span v-if="subparameter.floorType"
               >/{{ subparameter.floorType }}</span
@@ -110,17 +110,14 @@
 </template>
 
 <script lang="ts">
-import { ITradeOfferBlock } from "../trade-offer-tabs/tradeOfferTabs.interface";
-import { PropType, defineComponent } from "vue";
-import {
-  ICharacterictic,
-  tradeOfferCharacteristics,
-} from "@/const/tradeOfferCharacteristics";
-import { parameterTypes } from "@/const/parameterTypes";
+import {ITradeOfferBlock} from "../trade-offer-tabs/tradeOfferTabs.interface";
+import {defineComponent, PropType} from "vue";
+import {ICharacterictic, tradeOfferCharacteristics,} from "@/const/tradeOfferCharacteristics";
+import {parameterTypes} from "@/const/parameterTypes";
 import Form from "@/components/common/form/Form.vue";
 import Checkbox from "@/components/common/form/Checkbox.vue";
 import WithUnitType from "@/components/common/with-unit-type/WithUnitType.vue";
-import { unitTypes } from "@/const/unitTypes";
+import {unitTypes} from "@/const/unitTypes";
 
 const tableHeadColors = ["green", "blue", "cyan", "orange", "red", "purple"];
 
