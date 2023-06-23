@@ -1,6 +1,7 @@
 import {MutationTree} from "vuex";
 import {IComplexState} from "./state";
 import ComplexEntity from "@/entities/complex.entity";
+import ObjectEntity from "@/entities/objects.entity";
 
 export enum ComplexMutationTypes {
 	SET_COPMLEX = "SET_COPMLEX",
@@ -14,6 +15,11 @@ export const mutations: MutationTree<IComplexState> & IComplexMutations = {
 	[ComplexMutationTypes.SET_COPMLEX](state, payload: any) {
 		const splittedAddress = payload.address.split(', ');
 		const complex = new ComplexEntity();
+		const objects = payload.objects.map((el: Record<string, any>) => {
+			const object = new ObjectEntity();
+			object.load(el);
+			return object
+		});
 		complex.load({
 			...payload,
 			consultant_name: "Иванов Иван",
@@ -26,7 +32,8 @@ export const mutations: MutationTree<IComplexState> & IComplexMutations = {
 			water_type: ["Скважина", "Центральное"],
 			entrance_type: payload.entrance_type ? "Платный" : "Бесплатный",
 			internet_type: ["Опто-волокно"],
-			guard_type: ["ЧОП"]
+			guard_type: ["ЧОП"],
+			objects
 		});
 		state.complex = complex;
 	},

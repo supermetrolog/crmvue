@@ -1,3 +1,5 @@
+import IObject from "@/interfaces/object.interface";
+
 export default interface IComplex {
   id: bigint | null;
   name: string | null;
@@ -54,4 +56,5 @@ export default interface IComplex {
   canteen: boolean | null;
   hostel: boolean | null;
   entryFee: string | null;
+  objects: IObject[] | null;
 }

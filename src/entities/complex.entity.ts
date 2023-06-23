@@ -1,5 +1,6 @@
 import IComplex from "@/interfaces/complex.interface";
 import BaseEntity from "@/entities/base.entity";
+import IObject from "@/interfaces/object.interface";
 
 export default class ComplexEntity extends BaseEntity implements IComplex {
   get id(): bigint | null {
@@ -278,4 +279,5 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
   private _canteen: number | null = null;
   private _hostel: number | null = null;
   private _entrance_type: string | null = null;
+  public objects: IObject[] | null = null;
 }
