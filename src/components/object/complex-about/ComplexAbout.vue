@@ -115,33 +115,97 @@
 								</template>
 							</PropertyListItem>
 						</PropertyList>
-						<PropertyList :title="'Безопасность'">
-							<PropertyListItem
-								v-for="(prop, idx) in safety"
-								:key="prop.name + idx"
-								:name="prop.name"
-								:value="prop.value"
-								:unitType="prop.unitType"
-							/>
+						<PropertyList title="Безопасность">
+							<PropertyListItem name="Охрана объекта">
+								<template v-if="complex.guard !== null">
+									<p v-if="complex.guard" class="ComplexAbout-property">
+										есть, <span class="ComplexAbout-property-grey">{{ complex.guardType }}</span>
+									</p>
+									<p v-else class="ComplexAbout-property">
+										нет
+									</p>
+								</template>
+							</PropertyListItem>
+							<PropertyListItem name="Видеонабл. наруж.">
+								<p v-if="complex.videoControl !== null" class="ComplexAbout-property">
+									{{ isExists(complex.videoControl) }}
+								</p>
+							</PropertyListItem>
+							<PropertyListItem name="Контр. дост. наруж.">
+								<p v-if="complex.accessControl !== null" class="ComplexAbout-property">
+									{{ isExists(complex.accessControl) }}
+								</p>
+							</PropertyListItem>
+							<PropertyListItem name="Охран. сигнал. наруж.">
+								<p v-if="complex.securityAlert !== null" class="ComplexAbout-property">
+									{{ isExists(complex.securityAlert) }}
+								</p>
+							</PropertyListItem>
+							<PropertyListItem name="Шлагбаум">
+								<p v-if="complex.barrier !== null" class="ComplexAbout-property">
+									{{ isExists(complex.barrier) }}
+								</p>
+							</PropertyListItem>
+							<PropertyListItem name="Забор по периметру">
+								<p v-if="complex.fenceAroundPerimeter !== null" class="ComplexAbout-property">
+									{{ isExists(complex.fenceAroundPerimeter) }}
+								</p>
+							</PropertyListItem>
+							<PropertyListItem name="Пожарная сигнализация">
+								<p v-if="complex.fireAlert !== null" class="ComplexAbout-property">
+									{{ isExists(complex.fireAlert) }}
+								</p>
+							</PropertyListItem>
 						</PropertyList>
 						<PropertyList :title="['Ж/Д на территории', 'Инфраструктура']">
 							<template #0>
-								<PropertyListItem
-									v-for="(prop, idx) in railway"
-									:key="prop.name + idx"
-									:name="prop.name"
-									:value="prop.value"
-									:unitType="prop.unitType"
-								/>
+								<PropertyListItem name="Ж/Д ветка">
+									<p v-if="complex.railway !== null" class="ComplexAbout-property">
+										{{ isExists(complex.railway) }}
+									</p>
+								</PropertyListItem>
 							</template>
 							<template #1>
-								<PropertyListItem
-									v-for="(prop, idx) in infrastructure"
-									:key="prop.name + idx"
-									:name="prop.name"
-									:value="prop.value"
-									:unitType="prop.unitType"
-								/>
+								<PropertyListItem name="Въезд на территорию">
+									<template v-if="complex.entryTerritory !== null">
+										<p v-if="complex.entryTerritory" class="ComplexAbout-property">
+											complex.entryTerritoryType }}
+										</p>
+										<p v-else class="ComplexAbout-property">
+											нет
+										</p>
+									</template>
+								</PropertyListItem>
+								<PropertyListItem name="Плата за въезд">
+									<p v-if="complex.entryFee !== null && complex.entryTerritory" class="ComplexAbout-property">
+										{{ complex.entryFee }}
+									</p>
+								</PropertyListItem>
+								<PropertyListItem name="«P» легковая">
+									<p v-if="complex.parkingCar !== null" class="ComplexAbout-property">
+										{{ isExists(complex.parkingCar) }}
+									</p>
+								</PropertyListItem>
+								<PropertyListItem name="«P» 3-10 тонн">
+									<p v-if="complex.parkingLorry !== null" class="ComplexAbout-property">
+										{{ isExists(complex.parkingLorry) }}
+									</p>
+								</PropertyListItem>
+								<PropertyListItem name="«P» от 10 тонн">
+									<p v-if="complex.parkingTruck !== null" class="ComplexAbout-property">
+										{{ isExists(complex.parkingTruck) }}
+									</p>
+								</PropertyListItem>
+								<PropertyListItem name="Столовая/кафе">
+									<p v-if="complex.canteen !== null" class="ComplexAbout-property">
+										{{ isExists(complex.canteen) }}
+									</p>
+								</PropertyListItem>
+								<PropertyListItem name="Общежитие">
+									<p v-if="complex.hostel !== null" class="ComplexAbout-property">
+										{{ isExists(complex.hostel) }}
+									</p>
+								</PropertyListItem>
 							</template>
 						</PropertyList>
 					</template>

@@ -22,6 +22,7 @@ export const mutations: MutationTree<IComplexState> & IComplexMutations = {
 			district: splittedAddress[2],
 			locality: splittedAddress[3],
 			highway: splittedAddress[4],
+			entrance_type: payload.entrance_type ? "Платный" : "Бесплатный"
 		});
 		state.complex = complex;
 	},

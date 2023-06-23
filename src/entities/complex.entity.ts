@@ -91,7 +91,7 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
   }
 
   get heating(): boolean | null {
-    return this.processBooleanField(this._heating);
+    return this.processBooleanField(this._heating_central);
   }
 
   get heatingAutonomous(): boolean | null {
@@ -150,6 +150,75 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
     return this._longitude;
   }
 
+  get fenceAroundPerimeter(): boolean | null {
+    return this.processBooleanField(this._fence_around_perimeter);
+  }
+
+  get guard(): boolean | null {
+    return this.processBooleanField(this._guard);
+  }
+
+  get guardType(): string | null {
+    return this._guard_type;
+  }
+
+  get videoControl(): boolean | null {
+    return this.processBooleanField(this._video_control);
+  }
+
+  get accessControl(): boolean | null {
+    return this.processBooleanField(this._access_control);
+  }
+
+  get securityAlert(): boolean | null {
+    return this.processBooleanField(this._security_alert);
+  }
+
+  get fireAlert(): boolean | null {
+    return this.processBooleanField(this._fire_alert);
+  }
+
+  get barrier(): boolean | null {
+    return this.processBooleanField(this._barrier);
+  }
+
+  get railway(): boolean | null {
+    return this.processBooleanField(this._railway);
+  }
+
+
+  get entryTerritory(): boolean | null {
+    return this.processBooleanField(this._entry_territory);
+  }
+
+  get entryTerritoryType(): string | null {
+    return this._entry_territory_type;
+  }
+
+  get parkingCar(): boolean | null {
+    return this.processBooleanField(this._parking_car);
+  }
+
+  get parkingLorry(): boolean | null {
+    return this.processBooleanField(this._parking_lorry);
+  }
+
+  get parkingTruck(): boolean | null {
+    return this.processBooleanField(this._parking_truck);
+  }
+
+  get canteen(): boolean | null {
+    return this.processBooleanField(this._canteen);
+  }
+
+  get hostel(): boolean | null {
+    return this.processBooleanField(this._hostel);
+  }
+
+  get entryFee(): string | null {
+    return this._entrance_type;
+  }
+
   private _id: bigint | null = null;
   private _consultant_name: string | null = null;
   private _last_update: number | null = null;
@@ -172,7 +241,7 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
   private _managment_company_value: string | null = null;
   private _power: number | null = null;
   private _power_value: string | null = null;
-  private _heating: number | null = null;
+  private _heating_central: number | null = null;
   private _heating_autonomous: number | null = null;
   private _heating_autonomous_type: string | null = null;
   private _water: number | null = null;
@@ -187,4 +256,21 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
   private _internet_type: string | null = null;
   private _latitude: number | null = null;
   private _longitude: number | null = null;
+  private _fence_around_perimeter: number | null = null;
+  private _guard: number | null = null;
+  private _guard_type: string | null = null;
+  private _video_control: number | null = null;
+  private _access_control: number | null = null;
+  private _security_alert: number | null = null;
+  private _fire_alert: number | null = null;
+  private _barrier: number | null = null;
+  private _railway: number | null = null;
+  private _entry_territory: number | null = null;
+  private _entry_territory_type: string | null = null;
+  private _parking_car: number | null = null;
+  private _parking_lorry: number | null = null;
+  private _parking_truck: number | null = null;
+  private _canteen: number | null = null;
+  private _hostel: number | null = null;
+  private _entrance_type: string | null = null;
 }

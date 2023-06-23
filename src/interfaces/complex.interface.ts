@@ -36,4 +36,21 @@ export default interface IComplex {
   internetType: string | null;
   latitude: number | null;
   longitude: number | null;
+  fenceAroundPerimeter: boolean | null;
+  guard: boolean | null;
+  guardType: string | null;
+  videoControl: boolean | null;
+  accessControl: boolean | null;
+  securityAlert: boolean | null;
+  fireAlert: boolean | null;
+  barrier: boolean | null;
+  railway: boolean | null;
+  entryTerritory: boolean | null;
+  entryTerritoryType: string | null;
+  parkingCar: boolean | null;
+  parkingLorry: boolean | null;
+  parkingTruck: boolean | null;
+  canteen: boolean | null;
+  hostel: boolean | null;
+  entryFee: string | null;
 }
