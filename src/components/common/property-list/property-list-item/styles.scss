@@ -15,14 +15,14 @@
   }
   &-value {
     width: 40%;
-    white-space: nowrap;
-    overflow-x: clip;
-    text-overflow: ellipsis;
     font-weight: normal;
     color: $color_grey;
 
     & p {
       font-weight: normal;
+      white-space: nowrap;
+      overflow-x: hidden;
+      text-overflow: ellipsis;
     }
   }
   &:nth-child(odd) {

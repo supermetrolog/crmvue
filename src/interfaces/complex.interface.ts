@@ -25,6 +25,7 @@ export default interface IComplex {
   heatingAutonomous: boolean | null;
   heatingAutonomousType: string | null;
   water: boolean | null;
+  waterType: string[] | null;
   sewage: boolean | null;
   sewageRain: boolean | null;
   gas: boolean | null;
@@ -33,12 +34,12 @@ export default interface IComplex {
   steamValue: number | null;
   phoneLine: boolean | null;
   internet: boolean | null;
-  internetType: string | null;
+  internetType: string[] | null;
   latitude: number | null;
   longitude: number | null;
   fenceAroundPerimeter: boolean | null;
   guard: boolean | null;
-  guardType: string | null;
+  guardType: string[] | null;
   videoControl: boolean | null;
   accessControl: boolean | null;
   securityAlert: boolean | null;

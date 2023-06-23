@@ -65,9 +65,17 @@
 								</template>
 							</PropertyListItem>
 							<PropertyListItem name="Водоснабжение">
-								<p v-if="complex.water !== null" class="ComplexAbout-property">
-									{{ isExists(complex.water) }}
-								</p>
+								<template v-if="complex.water !== null">
+									<p v-if="complex.water" class="ComplexAbout-property" :title="'есть, ' + joinedWaterType">
+										есть, <span
+													class="ComplexAbout-property-grey">{{
+											joinedWaterType
+										}}</span>
+									</p>
+									<p v-else class="ComplexAbout-property">
+										нет
+									</p>
+								</template>
 							</PropertyListItem>
 							<PropertyListItem name="Канализация">
 								<p v-if="complex.sewage !== null" class="ComplexAbout-property">
@@ -106,8 +114,11 @@
 							</PropertyListItem>
 							<PropertyListItem name="Интернет">
 								<template v-if="complex.internet !== null">
-									<p v-if="complex.internet" class="ComplexAbout-property">
-										есть, <span class="ComplexAbout-property-grey">{{ complex.internetType }}</span>
+									<p v-if="complex.internet" class="ComplexAbout-property" :title="'есть, ' + joinedInternetType">
+										есть, <span
+										class="ComplexAbout-property-grey">{{
+											joinedInternetType
+										}}</span>
 									</p>
 									<p v-else class="ComplexAbout-property">
 										нет
@@ -118,8 +129,11 @@
 						<PropertyList title="Безопасность">
 							<PropertyListItem name="Охрана объекта">
 								<template v-if="complex.guard !== null">
-									<p v-if="complex.guard" class="ComplexAbout-property">
-										есть, <span class="ComplexAbout-property-grey">{{ complex.guardType }}</span>
+									<p v-if="complex.guard" class="ComplexAbout-property" :title="'есть, ' + joinedGuardType">
+										есть, <span
+										class="ComplexAbout-property-grey">{{
+											joinedGuardType
+										}}</span>
 									</p>
 									<p v-else class="ComplexAbout-property">
 										нет
@@ -177,7 +191,8 @@
 									</template>
 								</PropertyListItem>
 								<PropertyListItem name="Плата за въезд">
-									<p v-if="complex.entryFee !== null && complex.entryTerritory" class="ComplexAbout-property">
+									<p v-if="complex.entryFee !== null && complex.entryTerritory"
+									   class="ComplexAbout-property">
 										{{ complex.entryFee }}
 									</p>
 								</PropertyListItem>
@@ -270,7 +285,16 @@ export default defineComponent({
 		},
 		managmentCompany() {
 			return this.complex?.managmentCompany ? this.complex.managmentCompanyValue : "нет"
-		}
+		},
+		joinedGuardType(): string {
+			return this.complex?.guardType ? this.complex.guardType.join(", ") : ""
+		},
+		joinedInternetType(): string {
+			return this.complex?.internetType ? this.complex.internetType.join(", ") : ""
+		},
+		joinedWaterType(): string {
+			return this.complex?.waterType ? this.complex.waterType.join(", ") : ""
+		},
 	},
 	methods: {
 		isExists(value: boolean): string {

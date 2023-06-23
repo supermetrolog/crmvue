@@ -106,6 +106,10 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
     return this.processBooleanField(this._water);
   }
 
+  get waterType(): string[] | null {
+    return this._water_type;
+  }
+
   get sewage(): boolean | null {
     return this.processBooleanField(this._sewage);
   }
@@ -138,7 +142,7 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
     return this.processBooleanField(this._internet);
   }
 
-  get internetType(): string | null {
+  get internetType(): string[] | null {
     return this._internet_type;
   }
   
@@ -158,7 +162,7 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
     return this.processBooleanField(this._guard);
   }
 
-  get guardType(): string | null {
+  get guardType(): string[] | null {
     return this._guard_type;
   }
 
@@ -245,6 +249,7 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
   private _heating_autonomous: number | null = null;
   private _heating_autonomous_type: string | null = null;
   private _water: number | null = null;
+  private _water_type: string[] | null = null;
   private _sewage: number | null = null;
   private _sewage_rain: number | null = null;
   private _gas: number | null = null;
@@ -253,12 +258,12 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
   private _steam_value: number | null = null;
   private _phone_line: number | null = null;
   private _internet: number | null = null;
-  private _internet_type: string | null = null;
+  private _internet_type: string[] | null = null;
   private _latitude: number | null = null;
   private _longitude: number | null = null;
   private _fence_around_perimeter: number | null = null;
   private _guard: number | null = null;
-  private _guard_type: string | null = null;
+  private _guard_type: string[] | null = null;
   private _video_control: number | null = null;
   private _access_control: number | null = null;
   private _security_alert: number | null = null;
