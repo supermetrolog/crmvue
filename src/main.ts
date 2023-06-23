@@ -12,7 +12,7 @@ import Loader from "@/components/common/Loader.vue";
 import PhoneNumber from "@/components/common/PhoneNumber.vue";
 import Pagination from "@/components/common/Pagination.vue";
 import PaginationClassic from "@/components/common/PaginationClassic.vue";
-import { Formatter, ApiUrlHelper, apiUrlHelperObject } from "@/plugins/index";
+import { Formatter, ApiUrlHelper, apiUrlHelperObject } from "@/plugins";
 
 // import VueFileAgent from 'vue-file-agent'
 import "animate.css";

@@ -1,14 +1,11 @@
+import {dateFormatter} from "@/utils/dateFormatter";
+
 const textFormatter = {
   ucFirst(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   },
 };
-export const dateFormatter = {
-  locale(date, locale, options) {
-    const localDate = new Date(date);
-    return localDate.toLocaleDateString(locale, options);
-  },
-};
+
 export const formatterObject = {
   currency(number, leng = "ru", options = {}) {
     const defaultOptions = {

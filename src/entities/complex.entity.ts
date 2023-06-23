@@ -2,16 +2,6 @@ import IComplex from "@/interfaces/complex.interface";
 import BaseEntity from "@/entities/base.entity";
 
 export default class ComplexEntity extends BaseEntity implements IComplex {
-
-  constructor(config: Record<string, any> = {}) {
-    super();
-    for (const configKey in config) {
-      const key = '_' + configKey;
-      if (key in this) {
-        this[key as keyof this] = config[configKey];
-      }
-    }
-  }
   get id(): bigint | null {
     return this._id;
   }
@@ -85,7 +75,7 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
   }
 
   get managmentCompany(): boolean | null {
-    return this.setBooleanField(this._managment_company);
+    return this.processBooleanField(this._managment_company);
   }
 
   get managmentCompanyValue(): string | null {
@@ -93,7 +83,7 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
   }
 
   get power(): boolean | null {
-    return this.setBooleanField(this._power);
+    return this.processBooleanField(this._power);
   }
 
   get powerValue(): number | null {
@@ -101,11 +91,11 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
   }
 
   get heating(): boolean | null {
-    return this.setBooleanField(this._heating);
+    return this.processBooleanField(this._heating);
   }
 
   get heatingAutonomous(): boolean | null {
-    return this.setBooleanField(this._heating_autonomous);
+    return this.processBooleanField(this._heating_autonomous);
   }
 
   get heatingAutonomousType(): string | null {
@@ -113,19 +103,19 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
   }
 
   get water(): boolean | null {
-    return this.setBooleanField(this._water);
+    return this.processBooleanField(this._water);
   }
 
   get sewage(): boolean | null {
-    return this.setBooleanField(this._sewage);
+    return this.processBooleanField(this._sewage);
   }
 
   get sewageRain(): boolean | null {
-    return this.setBooleanField(this._sewage_rain);
+    return this.processBooleanField(this._sewage_rain);
   }
 
   get gas(): boolean | null {
-    return this.setBooleanField(this._gas);
+    return this.processBooleanField(this._gas);
   }
 
   get gasValue(): number | null {
@@ -133,7 +123,7 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
   }
 
   get steam(): boolean | null {
-    return this.setBooleanField(this._steam);
+    return this.processBooleanField(this._steam);
   }
 
   get steamValue(): number | null {
@@ -141,11 +131,11 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
   }
 
   get phoneLine(): boolean | null {
-    return this.setBooleanField(this._phone_line);
+    return this.processBooleanField(this._phone_line);
   }
 
   get internet(): boolean | null {
-    return this.setBooleanField(this._internet);
+    return this.processBooleanField(this._internet);
   }
 
   get internetType(): string | null {

@@ -1,15 +1,15 @@
 <template>
-  <div v-if="complex" class="ComplexView" @scroll="onScroll">
-    <ComplexHeader :complex="complex" :editAccess="false"/>
-    <ComplexMap :complex="complex"/>
-    <ComplexAbout
-        :complex="complex"
-        :infrastructure="data.parameters.infrastructure"
-        :railway="data.parameters.railway"
-        :safety="data.parameters.safety"
-    />
-    <ObjectHoldings :holdings="holdings"/>
-  </div>
+	<div v-if="complex" class="ComplexView" @scroll="onScroll">
+		<ComplexHeader :complex="complex" :editAccess="false"/>
+		<ComplexMap :complex="complex"/>
+		<ComplexAbout
+			:complex="complex"
+			:infrastructure="data.parameters.infrastructure"
+			:railway="data.parameters.railway"
+			:safety="data.parameters.safety"
+		/>
+		<ObjectHoldings :holdings="holdings"/>
+	</div>
 </template>
 
 <script>
@@ -20,29 +20,28 @@ import ComplexHeader from "@/components/object/complex-header/ComplexHeader.vue"
 import data from "./object-view.data";
 import "./styles.scss";
 import {ComplexActionTypes} from "@/store/modules/complex/actions";
-import {ComplexGettersTypes} from "@/store/modules/complex/getters";
-import {mapGetters} from "vuex";
+// import {mapGetters} from "vuex";
 
 export default {
-  name: "ComplexView",
-  components: {ComplexHeader, ComplexMap, ComplexAbout, ObjectHoldings},
-  data() {
-    return {
-      aboutComplexProperties: {},
-      holdings: data.holdings,
-      data
-    };
-  },
-  mounted() {
-    this.$store.dispatch(ComplexActionTypes.FETCH_COMPLEX, {
-      complexId: 1106,
-    });
-  },
-  computed: {
-    ...mapGetters({
-      complex: ComplexGettersTypes.COMPLEX
-    })
-  },
-  methods: {},
+	name: "ComplexView",
+	components: {ComplexHeader, ComplexMap, ComplexAbout, ObjectHoldings},
+	data() {
+		return {
+			aboutComplexProperties: {},
+			holdings: data.holdings,
+			data
+		};
+	},
+	mounted() {
+		this.$store.dispatch(ComplexActionTypes.FETCH_COMPLEX, {
+			complexId: 1106,
+		});
+	},
+	computed: {
+		complex() {
+			return this.$store.getters.complex;
+		}
+	},
+	methods: {},
 };
 </script>
