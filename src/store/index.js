@@ -30,7 +30,6 @@ const store = createStore({
       window.name = "";
     },
     async INIT(context) {
-      console.log("INIT");
       if (!localStorage.getItem("user")) {
         console.error("User not found in localStorage!");
         return false;
@@ -45,7 +44,6 @@ const store = createStore({
       context.dispatch("REFRESH_USER");
     },
     DESTROY(context) {
-      console.log("DESTROY");
       context.dispatch("WEBSOCKET_STOP");
       context.dispatch("DROP_USER");
       context.dispatch("UNSET_WINDOW_NAME");

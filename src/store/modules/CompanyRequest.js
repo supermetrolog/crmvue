@@ -19,7 +19,6 @@ const CompanyRequest = {
             } else {
                 state.requests = data.data;
             }
-            console.log(concat);
 
         },
         deleteRequest(state, request_id) {

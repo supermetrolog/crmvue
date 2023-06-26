@@ -195,15 +195,13 @@ const generator = {
 };
 
 export const Formatter = {
-  install(app, options) {
-    console.log(app, options);
+  install(app) {
     app.config.globalProperties.$formatter = formatterObject;
   },
 };
 
 export const ApiUrlHelper = {
-  install(app, options) {
-    console.log(app, options);
+  install(app) {
     app.config.globalProperties.$apiUrlHelper = apiUrlHelperObject;
   },
 };

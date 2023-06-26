@@ -39,7 +39,6 @@ const Websocket = {
     },
     actions: {
         WEBSOCKET_STOP(context) {
-            console.log('WEBSOCKET_STOP');
             context.commit('deleteSocket');
             context.commit('deletePingLoop');
             context.commit('toggleSetedUserIdFlag', false);
@@ -49,7 +48,6 @@ const Websocket = {
             if (context.getters.SOCKET || !context.getters.THIS_USER) {
                 return;
             }
-            console.log('RUN WEBSOCKET 2');
             let socket = new WebSocket(apiUrlHelperObject.wsUrl());
             socket.onopen = function() {
                 return context.dispatch('EVENT_WEBSOCKET_ON_OPEN');
@@ -67,13 +65,11 @@ const Websocket = {
         },
         WEBSOCKET_RUN_PING_LOOP(context) {
             let pingLoop = setInterval(() => {
-                console.log('piing');
                 context.dispatch("WEBSOCKET_PING");
             }, 50000);
             context.commit('setPingLoop', pingLoop);
         },
         EVENT_WEBSOCKET_ON_OPEN(context) {
-            console.log("Connected websocket server!");
             context.dispatch('WEBSOCKET_SET_USER');
             context.dispatch('WEBSOCKET_RUN_PING_LOOP');
 

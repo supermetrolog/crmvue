@@ -112,7 +112,6 @@ export default {
       this.loader = false;
     },
     async load($state, id = this.company.id) {
-      console.log("loading more...");
       try {
         const response = await this.FETCH_COMPANY_LOGS(id);
         if (response === "complete") {

@@ -107,10 +107,9 @@ export default {
     
     objectClickHandler(objectID) {
       this.offerIds = [objectID];
-      console.log(objectID);
     },
     clusterClickHandler(clusterId) {
-      console.log(clusterId);
+			return clusterId;
     },
     getOfferUrl(offer) {
       return this.$apiUrlHelper.generator().objectUrl(offer.complex_id);

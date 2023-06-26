@@ -306,9 +306,9 @@ export default defineComponent({
 			return;
 		} else {
 			requestAnimationFrame(() => {
-				const listElement = document.getElementById("ComplexAbout");
-				const listHeight = listElement?.clientHeight;
-				console.log("List height:", listHeight);
+				// const listElement = document.getElementById("ComplexAbout");
+				// const listHeight = listElement?.clientHeight;
+				// console.log("List height:", listHeight);
 			});
 		}
 	},

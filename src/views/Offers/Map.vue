@@ -92,7 +92,6 @@ export default {
     
     
     async filterByPolygon(coordinates) {
-      console.log("QUERY POLYGON", this.polygonCoordinates);
       const query = { ...this.$route.query };
       query.polygon = coordinates;
       await this.$router.replace({ query });
@@ -142,7 +141,6 @@ export default {
         delete query.original_id;
       }
       const hash = waitHash(query);
-      console.log(hash, this.ymapOffersSearchHash);
       if (hash === this.ymapOffersSearchHash) {
         return;
       }
@@ -158,14 +156,11 @@ export default {
       }
       this.allOffersLoader = withLoader;
 
-      console.log(hash, this.ymapOffersSearchHash);
       this.ymapOffersSearchHash = hash;
       const data = await api.offers.searchMap(query);
-      console.error(Array.isArray(data.data));
       if (Array.isArray(data.data)) {
         delete query.objectsOnly;
         const offersCount = await api.offers.searchCount(query);
-        console.warn(hash, this.ymapOffersSearchHash);
         if (hash === this.ymapOffersSearchHash) {
           this.allOffersForYmap = data.data;
           this.objectsCount = data.pagination.totalCount;

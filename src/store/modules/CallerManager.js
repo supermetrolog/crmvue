@@ -8,7 +8,6 @@ const CallerManager = {
                 state.transitionList.shift()
             }
             state.transitionList.push(data)
-            console.log(state.transitionList);
         },
     },
     actions: {

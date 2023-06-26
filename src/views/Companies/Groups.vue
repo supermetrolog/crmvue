@@ -68,7 +68,6 @@ export default {
       console.error("START");
       this.loader = true;
       await this.FETCH_COMPANY_GROUP_LIST();
-      console.log(this.COMPANY_GROUPS);
       this.loader = false;
     },
   },

@@ -17,7 +17,6 @@ function viewNotify(data) {
 
         }
         notifyOptions.title = `Звонки`;
-        console.log(newCallCount);
 
         notify(notifyOptions);
     }
@@ -293,7 +292,6 @@ const Call = {
         async FETCH_CALLS_COUNT(context) {
             const user = context.getters.THIS_USER;
             const count = await api.calls.fetchCount(user.userProfile.caller_id);
-            console.log(count);
             context.commit('updateCallsCount', count);
         },
         async SEARCH_CALLS(context, { query, concat = false }) {
@@ -304,7 +302,6 @@ const Call = {
             context.commit('reset');
         },
         async FETCH_CALLS_COUNT_POOL(context) {
-            console.log('NO_COUNT_ALL');
             const socket = context.getters.SOCKET;
             if (!context.getters.SETED_USER_ID_FLAG) {
                 return;
@@ -318,11 +315,9 @@ const Call = {
             }));
         },
         async VIEWED_NOT_COUNT_CALLS({ getters }) {
-            console.log('VIEWED_NOT_COUNT_CALLS');
             return await api.calls.viewedNotCount(getters.THIS_USER.userProfile.caller_id);
         },
         async VIEWED_ALL_CALLS({ getters }) {
-            console.log('VIEWED_ALL_CALLS');
             return await api.calls.viewedAll(getters.THIS_USER.userProfile.caller_id);
         },
         async UPDATE_SESSION_CALLS(context) {
@@ -336,11 +331,9 @@ const Call = {
             context.dispatch('FETCH_CALLS_COUNT');
         },
         ACTION_WEBSOCKET_check_calls_count(context) {
-            console.log('check_calls_count');
             context.dispatch('FETCH_CALLS_COUNT');
         },
         ACTION_WEBSOCKET_update_current_calls({ commit, dispatch }, data) {
-            console.log('update_current_calls');
             commit('updateCurrentCalls', data.message);
             commit('pushSessionCalls', data.message);
             dispatch("UPDATE_SESSION_CALLS");

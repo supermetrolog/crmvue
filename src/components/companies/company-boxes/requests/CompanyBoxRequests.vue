@@ -113,7 +113,6 @@ export default {
       this.$emit("openCompanyRequestFormForUpdate", request);
     },
     clickCloseModal() {
-      console.log("CLOSE MODAL");
       this.disabledRequestItem = null;
       this.clonedRequestItem = null;
     },
@@ -142,7 +141,6 @@ export default {
     },
   },
   mounted() {
-    console.log("mounted");
   },
   emits: [
     "clickCreateRequest",
