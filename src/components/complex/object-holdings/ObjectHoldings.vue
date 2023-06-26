@@ -13,9 +13,9 @@
     </div>
     <div class="ObjectHoldings-body">
       <ObjectHolding
-        v-for="holding in holdings"
-        :key="holding.id"
-        v-bind="holding"
+        v-for="object in objects"
+        :key="object.id"
+        :object="object"
       />
     </div>
   </div>
@@ -29,7 +29,7 @@ export default {
   name: "ObjectHoldings",
   components: { ObjectHolding },
   props: {
-    holdings: {
+		objects: {
       type: Array,
       default: () => [],
     },
@@ -39,11 +39,11 @@ export default {
   },
   computed: {
     buildingsCount() {
-      let buildings = this.holdings.filter((holding) => holding.type === 1);
+      let buildings = this.objects.filter((holding) => holding.type === 1);
       return buildings.length;
     },
     landsCount() {
-      return this.holdings.filter((holding) => holding.type === 2).length;
+      return this.objects.filter((holding) => holding.type === 2).length;
     },
   },
 };

@@ -1,9 +1,9 @@
 import { GetterTree } from "vuex";
 import { IComplexState } from "./state";
-import ComplexInterface from "@/interfaces/complex.interface";
+import IComplex from "@/interfaces/complex.interface";
 
 export interface IComplexGetters<S = IComplexState> {
-  complex: (state: S) => ComplexInterface | null;
+  complex: (state: S) => IComplex | null;
 }
 
 export const getters: GetterTree<IComplexState, IComplexState> &

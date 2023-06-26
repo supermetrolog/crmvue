@@ -8,7 +8,7 @@
 			:railway="data.parameters.railway"
 			:safety="data.parameters.safety"
 		/>
-		<ObjectHoldings :holdings="holdings"/>
+		<ObjectHoldings :objects="[...complex.objects,...holdings]"/>
 	</div>
 </template>
 
@@ -20,7 +20,6 @@ import ComplexHeader from "@/components/complex/complex-header/ComplexHeader.vue
 import data from "./complex-view.data";
 import "./styles.scss";
 import {ComplexActionTypes} from "@/store/modules/complex/actions";
-// import {mapGetters} from "vuex";
 
 export default {
 	name: "ComplexView",

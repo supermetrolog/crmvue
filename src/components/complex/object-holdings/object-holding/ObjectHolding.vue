@@ -2,38 +2,40 @@
   <div class="ObjectHolding">
     <div class="ObjectHolding-body">
       <div class="ObjectHolding-carousel">
-        <div class="ObjectHolding-label">ID {{ id }}</div>
-        <Carousel />
+        <div class="ObjectHolding-label">ID {{ object.id }}</div>
+        <Carousel :list="object.photo" />
       </div>
       <div class="ObjectHolding-info">
         <div class="ObjectHolding-info-left">
           <ObjectHoldingsParameters
-            :holdingTypes="types"
-            :holdingTypesGeneral="typesGeneral"
-            :floors="floors"
-            :parameters="parameters"
-            :area="area"
-            :floorArea="floorArea"
-            :address="address"
+            :holdingTypes="object.types"
+            :holdingTypesGeneral="object.typesGeneral"
+            :floors="object.floors"
+            :parameters="object.parameters"
+            :area="object.area"
+            :floorArea="object.floorArea"
+            :address="object.address"
           />
         </div>
         <div class="ObjectHolding-info-right">
-          <ObjectHoldingsOwnerList :owners="owners" />
+          <ObjectHoldingsOwnerList v-if="false" :owners="object.owners" />
         </div>
       </div>
     </div>
-    <ObjectHoldingsTabs :holdingsProperties="properties" />
+    <ObjectHoldingsTabs :holdingsProperties="object.properties" v-if="object.properties" />
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import ObjectHoldingsTabs from "../object-holdings-tabs/ObjectHoldingsTabs.vue";
 import ObjectHoldingsOwnerList from "../object-holdings-owners/ObjectHoldingsOwnerList.vue";
 import ObjectHoldingsParameters from "../object-holdings-parameters/ObjectHoldingsParameters.vue";
 import Carousel from "../../../common/carousel/Carousel.vue";
+import {defineComponent, PropType} from "vue";
 import "./styles.scss";
+import IObject from "@/interfaces/object.interface";
 
-export default {
+export default defineComponent({
   name: "ObjectHolding",
   components: {
     Carousel,
@@ -42,44 +44,10 @@ export default {
     ObjectHoldingsTabs,
   },
   props: {
-    id: {
-      type: Number,
-      default: 1488,
-    },
-    type: {
-      type: Number,
-      default: null,
-    },
-    owners: {
-      type: Array,
-    },
-    types: {
-      type: Array,
-    },
-    typesGeneral: {
-      type: Array,
-    },
-    floors: {
-      type: Array,
-    },
-    parameters: {
-      type: Object,
-    },
-    properties: {
-      type: Array,
-    },
-    area: {
-      type: Object,
-      required: true,
-    },
-    floorArea: {
-      type: Object,
-      required: true,
-    },
-    address: {
-      type: Object,
-      required: true,
-    },
+    object: {
+			type: Object as PropType<Record<string, any> & IObject>,
+			required: true
+		}
   },
-};
+});
 </script>
