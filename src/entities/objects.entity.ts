@@ -10,4 +10,5 @@ export default class ObjectEntity extends BaseEntity implements IObject {
 	public purposes: number[] | null = null;
 	public object_type: number[] | null = null;
 	public owners: number[] | null = null;
+	public photos: string[] | null = null;
 }

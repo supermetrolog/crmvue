@@ -18,7 +18,8 @@ export default {
   },
   async getComplexWithObjects(complexId: string) {
     return await this.fetch(complexId, {
-      expand: "objects",
+      expand: "objects,location.regionRecord,location.highwayRecord,location.directionRecord,location.districtRecord,location.districtMoscowRecord,location.townRecord.townTypeRecord,location.townCentralRecord,location.metroRecord",
+
     });
   },
 };

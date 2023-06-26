@@ -63,7 +63,7 @@
 <script lang="ts">
 import TradeOfferTable from "../trade-offer-table/TradeOfferTable.vue";
 import TradeOfferStatus from "../trade-offer-status/TradeOfferStatus.vue";
-import OfferTabs from "@/components/object/ui/offer-tabs/OfferTabs.vue";
+import OfferTabs from "@/components/complex/ui/offer-tabs/OfferTabs.vue";
 import { unitTypes } from "@/const/unitTypes";
 import { PropType, defineComponent } from "vue";
 import {

@@ -6,13 +6,13 @@ export default interface IComplex {
   consultantName: string | null;
   lastUpdatedAt: string | null;
   createdAt: string | null;
-  region: string | null;
-  district: string | null;
-  direction: string | null;
-  locality: string | null;
-  highway: string | null;
-  metro: string | null;
-  highwaySecondary: string | null;
+  region: IAddressItem | null;
+  district: IAddressItem | null;
+  direction: IAddressItem | null;
+  locality: IAddressItem | null;
+  highway: IAddressItem | null;
+  metro: IAddressItem | null;
+  districtMoscow: IAddressItem | null;
   fromMkad: number | null;
   areaFieldFull: number | null;
   areaBuilding: number | null;
@@ -57,4 +57,9 @@ export default interface IComplex {
   hostel: boolean | null;
   entryFee: string | null;
   objects: IObject[] | null;
+}
+
+export interface IAddressItem {
+  title: string;
+  type?: string
 }

@@ -13,7 +13,6 @@ export interface IComplexMutations<S = IComplexState> {
 
 export const mutations: MutationTree<IComplexState> & IComplexMutations = {
 	[ComplexMutationTypes.SET_COPMLEX](state, payload: any) {
-		const splittedAddress = payload.address.split(', ');
 		const complex = new ComplexEntity();
 		const objects = payload.objects.map((el: Record<string, any>) => {
 			const object = new ObjectEntity();
@@ -24,16 +23,14 @@ export const mutations: MutationTree<IComplexState> & IComplexMutations = {
 			...payload,
 			consultant_name: "Иванов Иван",
 			managment_company_value: null,
-			region: splittedAddress[1],
-			district: splittedAddress[2],
-			locality: splittedAddress[3],
-			highway: splittedAddress[4],
-			heating_autonomous_type: "Газовое",
-			water_type: ["Скважина", "Центральное"],
-			entrance_type: payload.entrance_type ? "Платный" : "Бесплатный",
-			internet_type: ["Опто-волокно"],
-			guard_type: ["ЧОП"],
-			objects
+			objects,
+			...payload.location,
+			districtRecord: {
+				...payload.location.districtRecord,
+				districtTypeRecord: {
+					"title": "городской округ"
+				}
+			}
 		});
 		state.complex = complex;
 	},

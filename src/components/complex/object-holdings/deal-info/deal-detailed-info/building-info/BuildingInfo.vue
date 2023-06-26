@@ -57,13 +57,13 @@
 <script lang="ts">
 import PropertyList from "@/components/common/property-list/PropertyList.vue";
 import PropertyListItem from "@/components/common/property-list/property-list-item/PropertyListItem.vue";
-import OfferTabs from "@/components/object/ui/offer-tabs/OfferTabs.vue";
-import Parameters from "@/components/object/ui/parameters/Parameters.vue";
+import OfferTabs from "@/components/complex/ui/offer-tabs/OfferTabs.vue";
+import Parameters from "@/components/complex/ui/parameters/Parameters.vue";
 import { unitTypes } from "@/const/unitTypes";
 import {
   ITradeOfferParameters,
   ITradeOfferPropeties,
-} from "@/components/object/trade-offer-tabs/tradeOfferTabs.interface";
+} from "@/components/complex/trade-offer-tabs/tradeOfferTabs.interface";
 import { PropType, defineComponent } from "vue";
 import ActionButtons from "@/components/common/action-buttons/ActionButtons.vue";
 

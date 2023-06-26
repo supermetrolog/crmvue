@@ -6,4 +6,5 @@ export default interface IObject {
 	area_floor_full: number | null;
 	address: string | null;
 	owners: number[] | null;
+	photos: string[] | null;
 }

@@ -13,11 +13,11 @@
 </template>
 
 <script>
-import ObjectHoldings from "@/components/object/object-holdings/ObjectHoldings.vue";
-import ComplexAbout from "@/components/object/complex-about/ComplexAbout.vue";
-import ComplexMap from "@/components/object/complex-map/ComplexMap.vue";
-import ComplexHeader from "@/components/object/complex-header/ComplexHeader.vue";
-import data from "./object-view.data";
+import ObjectHoldings from "@/components/complex/object-holdings/ObjectHoldings.vue";
+import ComplexAbout from "@/components/complex/complex-about/ComplexAbout.vue";
+import ComplexMap from "@/components/complex/complex-map/ComplexMap.vue";
+import ComplexHeader from "@/components/complex/complex-header/ComplexHeader.vue";
+import data from "./complex-view.data";
 import "./styles.scss";
 import {ComplexActionTypes} from "@/store/modules/complex/actions";
 // import {mapGetters} from "vuex";

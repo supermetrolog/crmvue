@@ -12,7 +12,7 @@
 
 <script>
 import BuildingInfo from "./building-info/BuildingInfo.vue";
-import TradeOfferTabs from "@/components/object/trade-offer-tabs/TradeOfferTabs.vue";
+import TradeOfferTabs from "@/components/complex/trade-offer-tabs/TradeOfferTabs.vue";
 
 export default {
   name: "DealDetailedInfo",

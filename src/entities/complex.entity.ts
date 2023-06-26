@@ -1,283 +1,309 @@
-import IComplex from "@/interfaces/complex.interface";
 import BaseEntity from "@/entities/base.entity";
 import IObject from "@/interfaces/object.interface";
+import IComplex, {IAddressItem} from "@/interfaces/complex.interface";
+
+
+interface IComplexAddress extends Record<string, any> {}
+
 
 export default class ComplexEntity extends BaseEntity implements IComplex {
-  get id(): bigint | null {
-    return this._id;
-  }
+	get id(): bigint | null {
+		return this._id;
+	}
 
-  get consultantName(): string | null {
-    return this._consultant_name;
-  }
+	get consultantName(): string | null {
+		return this._consultant_name;
+	}
 
-  get lastUpdatedAt(): string | null {
-    return this._last_update !== null ? this.dateFormatter.locale(this._last_update * 1000) : null;
-  }
+	get lastUpdatedAt(): string | null {
+		return this._last_update !== null ? this.dateFormatter.locale(this._last_update * 1000) : null;
+	}
 
-  get createdAt(): string | null {
-    return this._publ_time !== null ? this.dateFormatter.locale(this._publ_time * 1000) : null;
-  }
+	get createdAt(): string | null {
+		return this._publ_time !== null ? this.dateFormatter.locale(this._publ_time * 1000) : null;
+	}
 
-  get name(): string | null {
-    return this._name;
-  }
+	get name(): string | null {
+		return this._name;
+	}
 
-  get region(): string | null {
-    return this._region;
-  }
+	get fromMkad(): number | null {
+		return this._from_mkad;
+	}
 
-  get district(): string | null {
-    return this._district;
-  }
+	get areaFieldFull(): number | null {
+		return this._area_field_full;
+	}
 
-  get direction(): string | null {
-    return this._direction;
-  }
+	get areaBuilding(): number | null {
+		return this._area_building;
+	}
 
-  get locality(): string | null {
-    return this._locality;
-  }
+	get areaFloorFull(): number | null {
+		return this._area_floor_full;
+	}
 
-  get highway(): string | null {
-    return this._highway;
-  }
+	get areaOfficeFull(): number | null {
+		return this._area_office_full;
+	}
 
-  get metro(): string | null {
-    return this._metro;
-  }
+	get areaTechFull(): number | null {
+		return this._area_tech_full;
+	}
 
-  get highwaySecondary(): string | null {
-    return this._highway_secondary;
-  }
+	get managmentCompany(): boolean | null {
+		return this.processBooleanField(this._managment_company);
+	}
 
-  get fromMkad(): number | null {
-    return this._from_mkad;
-  }
+	get managmentCompanyValue(): string | null {
+		return this._managment_company_value;
+	}
 
-  get areaFieldFull(): number | null {
-    return this._area_field_full;
-  }
+	get power(): boolean | null {
+		return this.processBooleanField(this._power);
+	}
 
-  get areaBuilding(): number | null {
-    return this._area_building;
-  }
+	get powerValue(): number | null {
+		return this._power_value !== null ? parseInt(this._power_value) : null;
+	}
 
-  get areaFloorFull(): number | null {
-    return this._area_floor_full;
-  }
+	get heating(): boolean | null {
+		return this.processBooleanField(this._heating_central);
+	}
 
-  get areaOfficeFull(): number | null {
-    return this._area_office_full;
-  }
+	get heatingAutonomous(): boolean | null {
+		return this.processBooleanField(this._heating_autonomous);
+	}
 
-  get areaTechFull(): number | null {
-    return this._area_tech_full;
-  }
+	get heatingAutonomousType(): string | null {
+		// return this._heating_autonomous_type;
+		return "Газовое";
+	}
 
-  get managmentCompany(): boolean | null {
-    return this.processBooleanField(this._managment_company);
-  }
+	get water(): boolean | null {
+		return this.processBooleanField(this._water);
+	}
 
-  get managmentCompanyValue(): string | null {
-    return this._managment_company_value;
-  }
+	get waterType(): string[] | null {
+		// return this._water_type;
+		return ["Скважина", "Центральное"]
+	}
 
-  get power(): boolean | null {
-    return this.processBooleanField(this._power);
-  }
+	get sewage(): boolean | null {
+		return this.processBooleanField(this._sewage);
+	}
 
-  get powerValue(): number | null {
-    return this._power_value !== null ? parseInt(this._power_value) : null;
-  }
+	get sewageRain(): boolean | null {
+		return this.processBooleanField(this._sewage_rain);
+	}
 
-  get heating(): boolean | null {
-    return this.processBooleanField(this._heating_central);
-  }
+	get gas(): boolean | null {
+		return this.processBooleanField(this._gas);
+	}
 
-  get heatingAutonomous(): boolean | null {
-    return this.processBooleanField(this._heating_autonomous);
-  }
+	get gasValue(): number | null {
+		return this._gas_value;
+	}
 
-  get heatingAutonomousType(): string | null {
-    return this._heating_autonomous_type;
-  }
+	get steam(): boolean | null {
+		return this.processBooleanField(this._steam);
+	}
 
-  get water(): boolean | null {
-    return this.processBooleanField(this._water);
-  }
+	get steamValue(): number | null {
+		return this._steam_value;
+	}
 
-  get waterType(): string[] | null {
-    return this._water_type;
-  }
+	get phoneLine(): boolean | null {
+		return this.processBooleanField(this._phone_line);
+	}
 
-  get sewage(): boolean | null {
-    return this.processBooleanField(this._sewage);
-  }
+	get internet(): boolean | null {
+		return this.processBooleanField(this._internet);
+	}
 
-  get sewageRain(): boolean | null {
-    return this.processBooleanField(this._sewage_rain);
-  }
+	get internetType(): string[] | null {
+		// return this._internet_type;
+		return ["Опто-волокно"];
+	}
 
-  get gas(): boolean | null {
-    return this.processBooleanField(this._gas);
-  }
+	get latitude(): number | null {
+		return this._latitude;
+	}
 
-  get gasValue(): number | null {
-    return this._gas_value;
-  }
+	get longitude(): number | null {
+		return this._longitude;
+	}
 
-  get steam(): boolean | null {
-    return this.processBooleanField(this._steam);
-  }
+	get fenceAroundPerimeter(): boolean | null {
+		return this.processBooleanField(this._fence_around_perimeter);
+	}
 
-  get steamValue(): number | null {
-    return this._steam_value;
-  }
+	get guard(): boolean | null {
+		return this.processBooleanField(this._guard);
+	}
 
-  get phoneLine(): boolean | null {
-    return this.processBooleanField(this._phone_line);
-  }
+	get guardType(): string[] | null {
+		// return this._guard_type;
+		return ["ЧОП"]
+	}
 
-  get internet(): boolean | null {
-    return this.processBooleanField(this._internet);
-  }
+	get videoControl(): boolean | null {
+		return this.processBooleanField(this._video_control);
+	}
 
-  get internetType(): string[] | null {
-    return this._internet_type;
-  }
-  
-  get latitude(): number | null {
-    return this._latitude;
-  }
+	get accessControl(): boolean | null {
+		return this.processBooleanField(this._access_control);
+	}
 
-  get longitude(): number | null {
-    return this._longitude;
-  }
+	get securityAlert(): boolean | null {
+		return this.processBooleanField(this._security_alert);
+	}
 
-  get fenceAroundPerimeter(): boolean | null {
-    return this.processBooleanField(this._fence_around_perimeter);
-  }
+	get fireAlert(): boolean | null {
+		return this.processBooleanField(this._fire_alert);
+	}
 
-  get guard(): boolean | null {
-    return this.processBooleanField(this._guard);
-  }
+	get barrier(): boolean | null {
+		return this.processBooleanField(this._barrier);
+	}
 
-  get guardType(): string[] | null {
-    return this._guard_type;
-  }
-
-  get videoControl(): boolean | null {
-    return this.processBooleanField(this._video_control);
-  }
-
-  get accessControl(): boolean | null {
-    return this.processBooleanField(this._access_control);
-  }
-
-  get securityAlert(): boolean | null {
-    return this.processBooleanField(this._security_alert);
-  }
-
-  get fireAlert(): boolean | null {
-    return this.processBooleanField(this._fire_alert);
-  }
-
-  get barrier(): boolean | null {
-    return this.processBooleanField(this._barrier);
-  }
-
-  get railway(): boolean | null {
-    return this.processBooleanField(this._railway);
-  }
+	get railway(): boolean | null {
+		return this.processBooleanField(this._railway);
+	}
 
 
-  get entryTerritory(): boolean | null {
-    return this.processBooleanField(this._entry_territory);
-  }
+	get entryTerritory(): boolean | null {
+		return this.processBooleanField(this._entry_territory);
+	}
 
-  get entryTerritoryType(): string | null {
-    return this._entry_territory_type;
-  }
+	get entryTerritoryType(): string | null {
+		return this._entry_territory_type;
+	}
 
-  get parkingCar(): boolean | null {
-    return this.processBooleanField(this._parking_car);
-  }
+	get parkingCar(): boolean | null {
+		return this.processBooleanField(this._parking_car);
+	}
 
-  get parkingLorry(): boolean | null {
-    return this.processBooleanField(this._parking_lorry);
-  }
+	get parkingLorry(): boolean | null {
+		return this.processBooleanField(this._parking_lorry);
+	}
 
-  get parkingTruck(): boolean | null {
-    return this.processBooleanField(this._parking_truck);
-  }
+	get parkingTruck(): boolean | null {
+		return this.processBooleanField(this._parking_truck);
+	}
 
-  get canteen(): boolean | null {
-    return this.processBooleanField(this._canteen);
-  }
+	get canteen(): boolean | null {
+		return this.processBooleanField(this._canteen);
+	}
 
-  get hostel(): boolean | null {
-    return this.processBooleanField(this._hostel);
-  }
+	get hostel(): boolean | null {
+		return this.processBooleanField(this._hostel);
+	}
 
-  get entryFee(): string | null {
-    return this._entrance_type;
-  }
+	get entryFee(): string | null {
+		// return this._entrance_type;
+		return this._entrance_type ? "Платный" : "Бесплатный"
+	}
 
-  private _id: bigint | null = null;
-  private _consultant_name: string | null = null;
-  private _last_update: number | null = null;
-  private _publ_time: number | null = null;
-  private _name: string | null = null;
-  private _region: string | null = null;
-  private _district: string | null = null;
-  private _direction: string | null = null;
-  private _locality: string | null = null;
-  private _highway: string | null = null;
-  private _metro: string | null = null;
-  private _highway_secondary: string | null = null;
-  private _from_mkad: number | null = null;
-  private _area_field_full: number | null = null;
-  private _area_building: number | null = null;
-  private _area_floor_full: number | null = null;
-  private _area_office_full: number | null = null;
-  private _area_tech_full: number | null = null;
-  private _managment_company: number | null = null;
-  private _managment_company_value: string | null = null;
-  private _power: number | null = null;
-  private _power_value: string | null = null;
-  private _heating_central: number | null = null;
-  private _heating_autonomous: number | null = null;
-  private _heating_autonomous_type: string | null = null;
-  private _water: number | null = null;
-  private _water_type: string[] | null = null;
-  private _sewage: number | null = null;
-  private _sewage_rain: number | null = null;
-  private _gas: number | null = null;
-  private _gas_value: number | null = null;
-  private _steam: number | null = null;
-  private _steam_value: number | null = null;
-  private _phone_line: number | null = null;
-  private _internet: number | null = null;
-  private _internet_type: string[] | null = null;
-  private _latitude: number | null = null;
-  private _longitude: number | null = null;
-  private _fence_around_perimeter: number | null = null;
-  private _guard: number | null = null;
-  private _guard_type: string[] | null = null;
-  private _video_control: number | null = null;
-  private _access_control: number | null = null;
-  private _security_alert: number | null = null;
-  private _fire_alert: number | null = null;
-  private _barrier: number | null = null;
-  private _railway: number | null = null;
-  private _entry_territory: number | null = null;
-  private _entry_territory_type: string | null = null;
-  private _parking_car: number | null = null;
-  private _parking_lorry: number | null = null;
-  private _parking_truck: number | null = null;
-  private _canteen: number | null = null;
-  private _hostel: number | null = null;
-  private _entrance_type: string | null = null;
-  public objects: IObject[] | null = null;
+
+	get region(): IAddressItem | null {
+		return this._regionRecord ? {
+			title: this._regionRecord.title,
+		} : null;
+	}
+
+	get highway(): IAddressItem | null {
+		return this._highwayRecord ? {
+			title: this._highwayRecord.title
+		} : null;
+	}
+
+	get direction(): IAddressItem | null {
+		return this._directionRecord ? {
+			title: this._directionRecord.title
+		} : null;
+	}
+
+	get district(): IAddressItem | null {
+		return this._districtRecord ? {
+			title: this._districtRecord.title,
+			type: this._districtRecord.districtTypeRecord.title
+		} : null;
+	}
+
+	get districtMoscow(): IAddressItem | null {
+		return this._districtMoscowRecord ? {
+			title: this._districtMoscowRecord.title,
+		} : null;
+	}
+
+	get locality(): IAddressItem | null {
+		return this._townRecord ? {
+			title: this._townRecord.title,
+			type: this._townRecord.townTypeRecord.title
+		} : null;
+	}
+
+	get metro(): IAddressItem | null {
+		return this._metroRecord ? {
+			title: this._metroRecord.title
+		} : null;
+	}
+
+	private _id: bigint | null = null;
+	private _consultant_name: string | null = null;
+	private _last_update: number | null = null;
+	private _publ_time: number | null = null;
+	private _name: string | null = null;
+	private _from_mkad: number | null = null;
+	private _area_field_full: number | null = null;
+	private _area_building: number | null = null;
+	private _area_floor_full: number | null = null;
+	private _area_office_full: number | null = null;
+	private _area_tech_full: number | null = null;
+	private _managment_company: number | null = null;
+	private _managment_company_value: string | null = null;
+	private _power: number | null = null;
+	private _power_value: string | null = null;
+	private _heating_central: number | null = null;
+	private _heating_autonomous: number | null = null;
+	private _heating_autonomous_type: number | null = null;
+	private _water: number | null = null;
+	private _water_type: number[] | null = null;
+	private _sewage: number | null = null;
+	private _sewage_rain: number | null = null;
+	private _gas: number | null = null;
+	private _gas_value: number | null = null;
+	private _steam: number | null = null;
+	private _steam_value: number | null = null;
+	private _phone_line: number | null = null;
+	private _internet: number | null = null;
+	private _internet_type: number[] | null = null;
+	private _latitude: number | null = null;
+	private _longitude: number | null = null;
+	private _fence_around_perimeter: number | null = null;
+	private _guard: number | null = null;
+	private _guard_type: number[] | null = null;
+	private _video_control: number | null = null;
+	private _access_control: number | null = null;
+	private _security_alert: number | null = null;
+	private _fire_alert: number | null = null;
+	private _barrier: number | null = null;
+	private _railway: number | null = null;
+	private _entry_territory: number | null = null;
+	private _entry_territory_type: string | null = null;
+	private _parking_car: number | null = null;
+	private _parking_lorry: number | null = null;
+	private _parking_truck: number | null = null;
+	private _canteen: number | null = null;
+	private _hostel: number | null = null;
+	private _entrance_type: string | null = null;
+	public objects: IObject[] | null = null;
+	private _regionRecord: IComplexAddress | null = null;
+	private _highwayRecord: IComplexAddress | null = null;
+	private _directionRecord: IComplexAddress | null = null;
+	private _districtRecord: IComplexAddress | null = null;
+	private _districtMoscowRecord: IComplexAddress | null = null;
+	private _townRecord: IComplexAddress | null = null;
+	private _metroRecord: IComplexAddress | null = null;
 }

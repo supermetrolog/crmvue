@@ -78,7 +78,7 @@
 <script>
 import { ObjectTypeList } from "@/const/Const.js";
 import "./styles.scss";
-import Parameters from "../../ui/parameters/Parameters.vue";
+import Parameters from "@/components/complex/ui/parameters/Parameters.vue";
 import WithUnitType from "@/components/common/with-unit-type/WithUnitType.vue";
 import { unitTypes } from "@/const/unitTypes";
 export default {
