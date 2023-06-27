@@ -182,8 +182,11 @@
 							<template #1>
 								<PropertyListItem name="Въезд на территорию">
 									<template v-if="complex.entryTerritory !== null">
-										<p v-if="complex.entryTerritory" class="ComplexAbout-property">
-											complex.entryTerritoryType }}
+										<p v-if="complex.entryTerritory && complex.entryTerritoryType" class="ComplexAbout-property">
+											{{ complex.entryTerritoryType }}
+										</p>
+										<p v-else-if="complex.entryTerritory" class="ComplexAbout-property">
+											есть
 										</p>
 										<p v-else class="ComplexAbout-property">
 											нет
