@@ -11,7 +11,7 @@ export default interface IObject {
 	areaMezanin: number | null;
 	areaOffice: number | null;
 	areaTech: number | null;
-	floors: number | null;
+	floorsCount: number | null;
 	facing: string | null;
 	yearBuild: number | null;
 	yearRepair: number | null;

@@ -4,51 +4,51 @@
 			<div class="ObjectHoldingsParameters-main">
 				<p class="ObjectHoldingsParameters-main-area">
 					<with-unit-type
-							v-if="area !== null"
+							v-if="object.area !== null"
 							:value="formattedArea"
 							:unitType="unitTypes.SQUARE_METERS"
 					/>
 					<span v-else>не заполнено</span>
 					(по этажам:
 					<with-unit-type
-							v-if="floorArea !== null"
+							v-if="object.floorArea !== null"
 							:value="formattedFloorArea"
 							:unitType="unitTypes.SQUARE_METERS"
 					/>
 					<span v-else>не заполнено</span>
 					)
 				</p>
-				<p class="ObjectHoldingsParameters-main-address">{{ address || "Адрес не заполнен" }}</p>
+				<p class="ObjectHoldingsParameters-main-address">{{ object.address || "Адрес не заполнен" }}</p>
 			</div>
-			<div class="ObjectHoldingsParameters-types" v-if="holdingTypes">
-				<template v-if="holdingTypes.length > 0">
+			<div class="ObjectHoldingsParameters-types" v-if="object.purposes">
+				<template v-if="object.purposes?.length > 0">
 					<strong
 							class="object-type-box"
-							v-for="objectType of holdingTypes"
-							:key="objectType.id"
-							:title="getObjectTypeName(objectType.object_type)"
+							v-for="purpose of object.purposes"
+							:key="purpose"
+							:title="getObjectTypeName(purpose)"
 					>
-						<i :class="getObjectTypeIcon(objectType.object_type)"></i>
+						<i :class="getObjectTypeIcon(purpose)"></i>
 					</strong>
 				</template>
-				<div v-if="holdingTypes.length == 0 && holdingTypesGeneral.length == 0">
+				<div v-if="object.purposes.length == 0 && object.purposes.length == 0">
 					<p>нет данных</p>
 				</div>
 			</div>
-			<div class="ObjectHoldingsParameters-provision">
-				<parameters
-						v-if="parameters"
-						:height="parameters.characteristics.height"
-						:floorType="parameters.characteristics.floorType"
-						:gatesNumber="parameters.characteristics.gatesNumber"
-						:electricity="parameters.communications.electricity"
-						:heating="parameters.communications.heating"
-						:sewage="parameters.communications.sewage"
-						:gasForProduction="parameters.communications.gasForProduction"
-						:liftingDevices="parameters.liftingDevices.lifts"
-						:shelving="parameters.facilities.shelving"
-				/>
-			</div>
+<!--			<div class="ObjectHoldingsParameters-provision">-->
+<!--				<parameters-->
+<!--						v-if="object.parameters"-->
+<!--						:height="object.parameters.characteristics.height"-->
+<!--						:floorType="object.parameters.characteristics.floorType"-->
+<!--						:gatesNumber="object.parameters.characteristics.gatesNumber"-->
+<!--						:electricity="object.parameters.communications.electricity"-->
+<!--						:heating="object.parameters.communications.heating"-->
+<!--						:sewage="object.parameters.communications.sewage"-->
+<!--						:gasForProduction="object.parameters.communications.gasForProduction"-->
+<!--						:liftingDevices="object.parameters.liftingDevices.lifts"-->
+<!--						:shelving="object.parameters.facilities.shelving"-->
+<!--				/>-->
+<!--			</div>-->
 			<!-- <div class="ObjectHoldingsParameters-equipment">
 				<p>Краны</p>
 				<div>
@@ -62,129 +62,82 @@
 				</div>
 			</div> -->
 		</div>
-		<div class="ObjectHoldingsParameters-floors" v-if="floors.length > 0">
-			<div
-					class="ObjectHoldingsParameters-floor"
-					:class="{ danger: floor.danger }"
-					v-for="floor in floors"
-					:key="floor.number"
-			>
-				<span>{{ floor.number }} этаж</span>
-				<i
-						class="fas fa-exclamation-circle text-danger"
-						v-if="floor.danger"
-						title="Внимание"
-				></i>
-			</div>
-		</div>
+<!--		<div class="ObjectHoldingsParameters-floors" v-if="object.floors.length > 0">-->
+<!--			<div-->
+<!--					class="ObjectHoldingsParameters-floor"-->
+<!--					:class="{ danger: object.floors.danger }"-->
+<!--					v-for="floor in object.floors"-->
+<!--					:key="floor.number"-->
+<!--			>-->
+<!--				<span>{{ floor.number }} этаж</span>-->
+<!--				<i-->
+<!--						class="fas fa-exclamation-circle text-danger"-->
+<!--						v-if="floor.danger"-->
+<!--						title="Внимание"-->
+<!--				></i>-->
+<!--			</div>-->
+<!--		</div>-->
 	</div>
 </template>
 
-<script>
-import {ObjectTypeList} from "@/const/Const.js";
+<script lang="ts">
 import "./styles.scss";
-import Parameters from "@/components/complex/ui/parameters/Parameters.vue";
+// import Parameters from "@/components/complex/ui/parameters/Parameters.vue";
 import WithUnitType from "@/components/common/with-unit-type/WithUnitType.vue";
 import {unitTypes} from "@/const/unitTypes";
+import {defineComponent, PropType} from "vue";
+import IObject from "@/interfaces/object.interface";
+import {ObjectTypes} from "@/types/objectTypes.enum";
+import {objectPurposes} from "@/const/constTypes";
 
-export default {
+export default defineComponent({
 	name: "ObjectHoldingsParameters",
 	components: {
-		Parameters,
+		// Parameters,
 		WithUnitType,
 	},
 	props: {
-		holdingTypes: {
-			type: Array,
-			default: () => [],
-			required: true,
-		},
-		holdingTypesGeneral: {
-			type: Array,
-			default: () => [],
-			required: true,
-		},
-		floors: {
-			type: Array,
-			default: () => [],
-			required: true,
-		},
-		parameters: {
-			type: Object,
-			required: true,
-		},
-		area: {
-			type: [Number, null],
+		object: {
+			type: Object as PropType<IObject>,
 			required: true
-		},
-		floorArea: {
-			type: [Number, null],
-			required: true
-		},
-		address: {
-			type: [String, null],
-			required: true
-		},
+		}
 	},
 	data() {
 		return {
-			objectTypeListWareHouse: ObjectTypeList.get("warehouse"),
-			objectTypeListProduction: ObjectTypeList.get("production"),
-			objectTypeListPlot: ObjectTypeList.get("plot"),
 			unitTypes,
-			// objectTypesGeneralList: ObjectTypesGeneralList.get("param"),
 		};
 	},
 	methods: {
-		getObjectTypeIcon(objectType) {
-			if (objectType < 12) {
-				return this.objectTypeListWareHouse.find(
-						(item) => item[0] == objectType
-				)[1].icon;
+		getObjectTypeIcon(purpose: number) {
+			if (purpose < 12) {
+				return objectPurposes[ObjectTypes.WAREHOUSE][purpose].icon
 			}
-			if (objectType < 25) {
-				return this.objectTypeListProduction.find(
-						(item) => item[0] == objectType
-				)[1].icon;
+			if (purpose < 25) {
+				return objectPurposes[ObjectTypes.PRODUCTION][purpose].icon
 			}
-			return this.objectTypeListPlot.find((item) => item[0] == objectType)[1]
-					.icon;
+			return objectPurposes[ObjectTypes.PLOT][purpose].icon
 		},
-		getObjectTypeName(objectType) {
-			if (objectType < 12) {
-				return this.objectTypeListWareHouse.find(
-						(item) => item[0] == objectType
-				)[1].name;
+		getObjectTypeName(purpose: number) {
+			if (purpose < 12) {
+				return objectPurposes[ObjectTypes.WAREHOUSE][purpose].name
 			}
-			if (objectType < 25) {
-				return this.objectTypeListProduction.find(
-						(item) => item[0] == objectType
-				)[1].name;
+			if (purpose < 25) {
+				return objectPurposes[ObjectTypes.PRODUCTION][purpose].name
 			}
-			return this.objectTypeListPlot.find((item) => item[0] == objectType)[1]
-					.name;
+			return objectPurposes[ObjectTypes.PLOT][purpose].name
 		},
-		// getObjectTypesGeneral(types) {
-		//     return types
-		//         .map((type) => type.type)
-		//         .map(
-		//             (type) =>
-		//                 this.objectTypesGeneralList.find((item) => item[0] == type)[1]
-		//         )
-		//         .join(", ");
-		// },
 	},
 	computed: {
 		formattedArea() {
 			return this.$formatter.number(
-					this.area
+					this.object.area
 			);
 		},
 		formattedFloorArea() {
 			return this.$formatter.number(
-					this.floorArea
+					this.object.floorArea
 			);
 		},
 	},
-};
+})
 </script>

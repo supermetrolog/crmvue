@@ -261,7 +261,8 @@ export default defineComponent({
 	components: {WithUnitType, PropertyList, PropertyListItem},
 	props: {
 		complex: {
-			type: Object as PropType<IComplex>
+			type: Object as PropType<IComplex>,
+			required: true
 		},
 		safety: {
 			type: Array,

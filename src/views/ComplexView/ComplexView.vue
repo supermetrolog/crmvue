@@ -33,7 +33,7 @@ export default {
 	},
 	mounted() {
 		this.$store.dispatch(ComplexActionTypes.FETCH_COMPLEX, {
-			complexId: 1973,
+			complexId: 1106,
 		});
 	},
 	computed: {

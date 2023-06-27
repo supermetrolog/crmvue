@@ -42,18 +42,18 @@
 	</div>
 </template>
 
-<script>
+<script lang="ts">
 import Modal from '../Modal.vue'
 import './styles.scss'
-// const imgList = Array.from({ length: 33 }, (v, i) => ({ src: `//raw.githubusercontent.com/codrops/HoverEffectIdeas/master/img/${i + 1}.jpg` }))
+import {defineComponent, PropType} from "vue";
 
-export default {
+export default defineComponent({
 	name: 'Carousel',
 	components: {Modal},
 	props: {
 		list: {
-			type: Array,
-			default: () => []
+			type: Array as PropType<{src: string}[]>,
+			required: true
 		},
 		chunkSize: {
 			type: Number,
@@ -98,14 +98,14 @@ export default {
 			this.transition_name = "slide_next";
 			this.currSlide = this.currSlide == this.arrChunk.length - 1 ? 0 : this.currSlide + 1;
 		},
-		goToImg(n) {
+		goToImg(n: number) {
 			this.currLightboxImg = n < 0 ? this.imgList.length - 1 : n % this.imgList.length;
 		},
-		goToChunk(idx) {
+		goToChunk(idx: number) {
 			this.transition_name = (idx < this.currSlide) ? "slide_prev" : "slide_next";
 			this.currSlide = idx;
 		},
-		openModal(idx) {
+		openModal(idx: number) {
 			this.lightboxActive = true;
 			this.currImgIdx = idx;
 			this.currSlide = Math.floor(idx / this.chunkSize)
@@ -115,5 +115,5 @@ export default {
 			this.currLightboxImg = this.currImgIdx
 		}
 	}
-}
+})
 </script>

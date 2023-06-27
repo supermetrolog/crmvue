@@ -62,14 +62,17 @@ export default class ObjectEntity extends BaseEntity implements IObject {
 		return this._own_type_land ? ownTypes[this._own_type_land] : null;
 	}
 
+	get floorsCount(): number | null {
+		return this._floors;
+	}
+
 
 	public id: bigint | null = null;
 	public address: string | null = null;
 	public purposes: number[] | null = null;
 	public owners: number[] | null = null;
-	public floors: number | null = null;
 
-
+	private _floors: number | null = null;
 	private _photo: string[] | null = null;
 	private _object_type: number[] | null = null;
 	private _area_building: number | null = null;

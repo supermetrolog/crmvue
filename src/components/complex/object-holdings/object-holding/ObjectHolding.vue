@@ -3,18 +3,12 @@
     <div class="ObjectHolding-body">
       <div class="ObjectHolding-carousel">
         <div class="ObjectHolding-label">ID {{ object.id }}</div>
-        <Carousel :list="object.photo" />
+        <Carousel :list="object.photo || []" />
       </div>
       <div class="ObjectHolding-info">
         <div class="ObjectHolding-info-left">
           <ObjectHoldingsParameters
-            :holdingTypes="object.types"
-            :holdingTypesGeneral="object.typesGeneral"
-            :floors="object.floors"
-            :parameters="object.parameters"
-            :area="object.area"
-            :floorArea="object.floorArea"
-            :address="object.address"
+            :object="object"
           />
         </div>
         <div class="ObjectHolding-info-right">
