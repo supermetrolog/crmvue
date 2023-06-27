@@ -7,6 +7,7 @@ export default interface IObject {
 	address: string | null;
 	owners: number[] | null;
 	photo: { src: string }[] | null;
+	objectType: number[] | null;
 	objectClass: string | null;
 	areaMezanin: number | null;
 	areaOffice: number | null;

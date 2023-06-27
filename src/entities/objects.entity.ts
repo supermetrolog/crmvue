@@ -66,6 +66,10 @@ export default class ObjectEntity extends BaseEntity implements IObject {
 		return this._floors;
 	}
 
+	get objectType(): number[] | null {
+		return this._object_type;
+	}
+
 
 	public id: bigint | null = null;
 	public address: string | null = null;
