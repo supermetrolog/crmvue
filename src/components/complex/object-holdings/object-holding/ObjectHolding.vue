@@ -16,7 +16,7 @@
         </div>
       </div>
     </div>
-    <ObjectHoldingsTabs :holdingsProperties="object.properties" v-if="object.properties" />
+    <ObjectHoldingsTabs :object="object"/>
   </div>
 </template>
 

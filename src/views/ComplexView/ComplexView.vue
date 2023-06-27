@@ -8,7 +8,7 @@
 			:railway="data.parameters.railway"
 			:safety="data.parameters.safety"
 		/>
-		<ObjectHoldings :objects="[...complex.objects,...holdings]"/>
+		<ObjectHoldings :objects="complex.objects"/>
 	</div>
 </template>
 

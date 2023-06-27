@@ -51,7 +51,7 @@ export default class ObjectEntity extends BaseEntity implements IObject {
 	}
 
 	get cadastralNumber(): string | null {
-		return this._cadastral_number_land || null;
+		return this._cadastral_number || null;
 	}
 
 	get restrictions(): boolean | null {
@@ -59,7 +59,7 @@ export default class ObjectEntity extends BaseEntity implements IObject {
 	}
 
 	get ownType(): string | null {
-		return this._own_type_land ? ownTypes[this._own_type_land] : null;
+		return this._own_type ? ownTypes[this._own_type] : null;
 	}
 
 	get floorsCount(): number | null {
@@ -88,7 +88,7 @@ export default class ObjectEntity extends BaseEntity implements IObject {
 	private _facing_type: number | null = null;
 	private _year_build: number | null = null;
 	private _year_repair: number | null = null;
-	private _cadastral_number_land: string | null = null;
+	private _cadastral_number: string | null = null;
 	private _land_use_restriction: boolean | null = null;
-	private _own_type_land: number | null = null;
+	private _own_type: number | null = null;
 }
