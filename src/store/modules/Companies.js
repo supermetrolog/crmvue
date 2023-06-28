@@ -46,7 +46,6 @@ const Companies = {
         },
         setCompanyWaitHash(state, hash) {
             state.company_wait_hash = hash;
-            console.warn("SET WAIT HASH", state.company_wait_hash);
         },
     },
     actions: {
@@ -59,10 +58,8 @@ const Companies = {
         async SEARCH_COMPANIES(context, { query, concat = false }) {
             let hash = waitHash(query);
             context.commit('setCompanyWaitHash', hash);
-            console.warn('HASH1', hash, 'HASH2', context.getters);
             const data = await api.companies.searchCompanies(query);
             if (data) {
-                console.error('HASH1', hash, 'HASH2', context.getters.COMPANY_WAIT_HASH);
                 if (hash == context.getters.COMPANY_WAIT_HASH) {
                     context.commit('updateCompanies', { data, concat });
 

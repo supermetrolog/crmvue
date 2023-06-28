@@ -105,7 +105,6 @@ export default {
       this.FETCH_CALLS_COUNT_POOL(this.THIS_USER.userProfile.caller_id);
     },
     async viewedAll() {
-      console.log("viewed all");
       this.loader = true;
       await this.VIEWED_ALL_CALLS(this.THIS_USER.userProfile.caller_id);
       this.RESET_CALLS();

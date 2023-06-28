@@ -96,7 +96,6 @@ export default {
       this.FETCH_NOTIF_COUNT_POOL(this.THIS_USER.id);
     },
     async viewedAll() {
-      console.log("viewed all");
       this.loader = true;
       await this.VIEWED_ALL_NOTIFICATIONS(this.THIS_USER.id);
       this.RESET_NOTIFICATIONS();

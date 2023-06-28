@@ -185,7 +185,6 @@ export default {
   watch: {
     manualRoute: {
       handler() {
-        console.log("CHANGED");
         if (this.mounted) {
           this.runBuildRoute();
         }

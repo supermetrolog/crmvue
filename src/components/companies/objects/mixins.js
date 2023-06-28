@@ -35,7 +35,6 @@ export const MixinObject = {
     ]),
     preventStepTimelineObjects() {
       if (!this.TIMELINE) return null;
-      console.error("PREVENT UPDATE");
       const preventStep = this.TIMELINE.timelineSteps.find(
         (item) => item.number == this.step.number - 1
       );
@@ -211,15 +210,12 @@ export const MixinObject = {
       this.sendObjectsHandler();
     },
     negative() {
-      console.log("NEGATIVE");
       this.selectNegative();
     },
     changeViewMode(value) {
-      console.log("ChangeViewMode", value);
       this.viewMode = value;
     },
     reset() {
-      console.log("RESET");
       this.selectedObjects = [];
     },
     getNegativeComment(step) {
@@ -294,27 +290,23 @@ export const MixinObject = {
       this.loader = false;
     },
     select(object) {
-      console.log("SELECT", object);
       this.selectedObjects.push(object);
     },
     selectOnlyOne(object) {
       this.selectedObjects = [object];
     },
     unSelect(object) {
-      console.log("UNSELECT");
       this.selectedObjects = this.selectedObjects.filter(
         (item) => item.id != object.id
       );
     },
     addComment(object, comment) {
-      console.log("ADD COMMENT", object, comment);
       this.selectedObjects.map((item) => {
         if (item.id == object.id) {
           item.comment = comment;
           return item;
         }
       });
-      console.log("ADD COMMENT", this.selectedObjects);
     },
     async getPreventStepObjects() {
       this.loader = true;
@@ -323,7 +315,6 @@ export const MixinObject = {
         if (item.offer && item.offer.id) {
           objects.push(item.offer);
         } else {
-          console.log("SUKA", item);
           objects.push({ ...item, noOffer: true });
         }
       });
@@ -525,7 +516,6 @@ export const MixinAllObject = {
       this.getAllObjects();
     },
     select(object) {
-      console.log("SELECT", object);
       this.selectedObjects.push(object);
     },
   },

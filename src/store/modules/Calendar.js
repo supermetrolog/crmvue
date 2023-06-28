@@ -42,7 +42,6 @@ const Calendar = {
             context.commit('updateEvent', event);
         },
         async DELETE_EVENT(context, eventId) {
-            // console.log(eventId);
             context.commit('deleteEvent', eventId);
         },
         async CREATE_CALENDAR_EVENT(_, formdata) {

@@ -228,7 +228,6 @@ const router = createRouter({
   routes,
 });
 router.beforeEach((to, from, next) => {
-  // console.log("To:", to, "From:", from, next);
   const access_token = localStorage.getItem("access_token");
   if (to.meta.auth.isAuth && !access_token) {
     return next({ name: "login", replace: true });

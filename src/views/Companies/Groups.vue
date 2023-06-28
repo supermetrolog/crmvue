@@ -65,7 +65,6 @@ export default {
       this.companyGroupsFormVisible = true;
     },
     async getCompanyGroups() {
-      console.error("START");
       this.loader = true;
       await this.FETCH_COMPANY_GROUP_LIST();
       this.loader = false;

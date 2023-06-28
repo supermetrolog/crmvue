@@ -76,7 +76,6 @@ export default {
   methods: {
     onChange(event) {
       this.validate();
-      console.log(event.target.value, this.field);
       const value = event.target.value;
       if (this.unselectMode && value == this.field) {
         this.field = null;

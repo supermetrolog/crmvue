@@ -30,8 +30,6 @@ const otherErrorSet = (data) => {
 }
 export default {
     setError(e) {
-        console.error(e);
-
         // e -> message, config, code, request, response
         if (e.response) {
             let data = e.response.data;

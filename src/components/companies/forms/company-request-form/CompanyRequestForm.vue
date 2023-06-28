@@ -581,7 +581,6 @@ export default {
       this.loader = false;
     },
     async createRequest() {
-      console.log("CREATE");
       if (await this.CREATE_REQUEST(this.form)) {
         this.$emit("created");
 
@@ -599,7 +598,6 @@ export default {
       if (this.formdata) {
         min = Date.parse(new Date(this.formdata.movingDate));
       }
-      console.log(min, current);
       if (current >= min && current < max) {
         return true;
       }
@@ -646,7 +644,6 @@ export default {
           data.push(item);
         }
       });
-      console.warn(data);
       return data;
     },
     async searchCompany(query) {
@@ -667,7 +664,6 @@ export default {
       });
     },
     onChangeCompany() {
-      console.log("ON  CHANGE COMPANY");
       this.form.contact_id = null;
       this.searchContact(this.form.company_id);
     },
@@ -690,7 +686,6 @@ export default {
       let warehouse,
         production,
         plot = null;
-      console.error("DATA", data);
       data.forEach((item) => {
         if (item == 0) {
           warehouse = 1;
@@ -727,14 +722,12 @@ export default {
     if (this.formdata) {
       this.form = { ...this.form, ...this.formdata };
     }
-    console.log("FORM: ", this.form);
     this.loader = false;
   },
   watch: {
     form: {
       deep: true,
       handler() {
-        console.log("FORM:", this.form);
       },
     },
   },

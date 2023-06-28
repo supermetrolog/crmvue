@@ -76,7 +76,6 @@ export const yandexmap = {
 		const coords = await this.getObjectsCoords(objects, userLocation);
 		await this.init();
 		const distances = await this.getDistances(coords);
-		console.log(distances, "дистанции");
 		const minDistance = await this.getMinimumDistance(distances);
 		return [...minDistance.map((item) => item.id)];
 	},
@@ -94,9 +93,6 @@ export const yandexmap = {
 				obj.each((item) => {
 					result.push(item.getAddressLine());
 				});
-			},
-			function (e) {
-				console.error(e);
 			}
 		);
 		return result;
@@ -112,9 +108,6 @@ export const yandexmap = {
 					coords = firstGeoObject.geometry.getCoordinates(),
 					result = coords;
 				return result;
-			},
-			function (e) {
-				console.error(e);
 			}
 		);
 		return result;

@@ -289,7 +289,6 @@ export default {
       const cloneFormdata = JSON.stringify(this.formdata);
       this.form = { ...this.form, ...JSON.parse(cloneFormdata) };
       this.form = Utils.normalizeDataForUserForm(this.form);
-      console.log(this.form);
     }
     this.loader = false;
   },

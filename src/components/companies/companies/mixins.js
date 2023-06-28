@@ -96,7 +96,6 @@ export const MixinCompanyDetailInfo = {
     },
     contactsTypeGeneralPhone() {
       const contacts = this.company.contacts.find((item) => item.type == 1);
-      console.log(contacts);
       return contacts ? contacts : false;
     },
     contactsTypeGeneralEmail() {

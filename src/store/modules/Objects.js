@@ -16,7 +16,6 @@ const Objects = {
                 state.allObjects = state.allObjects.concat(data.offers);
 
             } else {
-                console.log(data);
                 state.allObjects = data.offers;
             }
             state.objectPagination = data.pagination;
@@ -41,9 +40,7 @@ const Objects = {
     },
     actions: {
         async FETCH_CURRENT_STEP_OBJECTS({ commit }, currentObjects) {
-            // console.error("BEFORE", currentObjects);
             const objects = await api.objects.getCurrentStepObjectsOneByOne(currentObjects);
-            // console.error("MIDDLE", objects);
 
             let array = [];
             currentObjects.map((item) => {
@@ -56,7 +53,6 @@ const Objects = {
                 })
             });
             commit('updateCurrentStepObjects', array);
-            // console.error("AFTER", array);
             return array;
 
         },

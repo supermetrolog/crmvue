@@ -131,7 +131,6 @@ export default {
       } else {
         this.field = this.modelValue;
       }
-      console.warn(this.field);
     },
     defaultField() {
       return [{ [this.name]: "", [this.name2]: null }];

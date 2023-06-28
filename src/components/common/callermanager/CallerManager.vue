@@ -42,7 +42,6 @@ export default {
 
   methods: {
     clickItem(call) {
-      console.log(call);
       if (this.activeItem == call) {
         this.activeItem = null;
       } else {

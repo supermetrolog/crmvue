@@ -138,7 +138,6 @@ export default {
       this.$emit("openRequestForm");
     },
     createdOrUpdatedEvent(newCalendarEvent) {
-      console.log(newCalendarEvent);
       this.closeNotificationForm();
       this.selectCallback(newCalendarEvent);
     },

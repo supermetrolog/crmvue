@@ -44,7 +44,6 @@ const Websocket = {
             context.commit('toggleSetedUserIdFlag', false);
         },
         WEBSOCKET_RUN(context) {
-            console.warn('RUN WEBSOCKET', context.getters.SOCKET);
             if (context.getters.SOCKET || !context.getters.THIS_USER) {
                 return;
             }
@@ -92,9 +91,7 @@ const Websocket = {
                 context.dispatch(actionName, data);
             }
         },
-        EVENT_WEBSOCKET_ON_ERROR(context, error) {
-            console.error(`[error] ${error}`);
-            console.error('Не удалось подключиться к Websocket серверу. Обратитесь к администратору.');
+        EVENT_WEBSOCKET_ON_ERROR(context) {
 
             notifyOptions.text = 'Не удалось подключиться к Websocket серверу. Обратитесь к администратору.';
             notifyOptions.title = 'Websocket server';
@@ -103,17 +100,13 @@ const Websocket = {
 
             context.dispatch('WEBSOCKET_STOP');
             setTimeout(() => {
-                console.warn('WS timeout run');
                 context.dispatch('WEBSOCKET_RUN');
             }, 30000);
         },
         EVENT_WEBSOCKET_ON_CLOSE({ getters, dispatch }, event) {
             if (event.wasClean) {
-                console.log(
-                    `Соединение закрыто чисто, код=${event.code} причина=${event.reason}`
-                );
+                return;
             } else {
-                console.warn("Соединение прервано", event);
                 notifyOptions.text = 'Websocket соединение прервано.';
                 notifyOptions.title = 'Websocket server';
                 notifyOptions.type = 'warn';
@@ -134,16 +127,7 @@ const Websocket = {
             }
 
         },
-        ACTION_WEBSOCKET_info(_, data) {
-            if (data.error) {
-                console.error('ACTION_WEBSOCKET_info: ', data.message);
-
-            } else {
-                console.log('ACTION_WEBSOCKET_info: ', data.message);
-            }
-        },
-        ACTION_WEBSOCKET_user_setted(context, data) {
-            console.log('ACTION_WEBSOCKET_user_setted: ', data.message);
+        ACTION_WEBSOCKET_user_setted(context) {
             context.commit('toggleSetedUserIdFlag', true);
         },
     },

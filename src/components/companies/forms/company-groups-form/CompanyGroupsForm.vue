@@ -143,7 +143,6 @@ export default {
     if (this.formdata) {
       const cloneFormdata = JSON.stringify(this.formdata);
       this.form = { ...this.form, ...JSON.parse(cloneFormdata) };
-      console.log(this.form);
     }
     this.loader = false;
   },

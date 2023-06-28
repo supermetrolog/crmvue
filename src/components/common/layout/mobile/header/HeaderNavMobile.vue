@@ -25,8 +25,6 @@ export default {
   methods: {
     getInternalMenu() {
       this.nav = InternalMenu.get(this.$route.matched[0].name);
-
-      console.log(this.$route);
     },
   },
   mounted() {

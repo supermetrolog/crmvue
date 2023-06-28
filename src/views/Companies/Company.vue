@@ -254,7 +254,6 @@ export default {
     openContact(contact) {
       this.contactModalVisible = true;
       this.contact = contact;
-      console.log(contact);
       // this.openContactFormForUpdate(contact);
     },
     clickCloseContactModal() {
@@ -279,28 +278,22 @@ export default {
     },
     createdRequest() {
       this.getCompanyRequests();
-      console.log("CREATED");
     },
     updatedRequest() {
       this.getCompanyRequests();
-      console.log("UPDATED");
     },
     updatedDeal() {
       this.getCompany(false);
-      console.log("UPDATED");
     },
     createdContact() {
       this.getCompanyContacts();
-      console.log("CREATED");
     },
     updatedContact() {
       this.getCompanyContacts();
-      console.log("UPDATED");
     },
     updatedCompany() {
       this.getCompany();
       this.getCompanyContacts(false);
-      console.log("UPDATED");
     },
     timeline() {
       if (this.$route.query.request_id) {

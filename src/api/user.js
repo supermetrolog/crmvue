@@ -3,8 +3,6 @@ import ErrorHandle from "./errors";
 import SuccessHandler from "./success";
 
 function getFormDataWithFiles(formdata1) {
-
-    console.log(formdata1);
     let formdata = {...formdata1 };
     let FD = new FormData();
     if (!formdata.userProfile.fileList) {
@@ -26,7 +24,6 @@ export default {
                 .post(url, formdata)
                 .then((Response) => {
                     data = SuccessHandler.getData(Response);
-                    console.log("USER", data);
                     localStorage.setItem('access_token', data.access_token);
                     localStorage.setItem('user', JSON.stringify(data.user));
                 })
@@ -34,8 +31,6 @@ export default {
             return data;
         },
         async logout() {
-            console.log("logout");
-
             const url = "users/logout";
             let data = false;
             await axios
@@ -86,7 +81,6 @@ export default {
             .post(url, formdata, config)
             .then((Response) => {
                 data = SuccessHandler.getData(Response);
-                console.warn('Responce server: ', data);
             })
             .catch((e) => ErrorHandle.setError(e));
         return data;
@@ -106,7 +100,6 @@ export default {
             .patch(url, formdata, config)
             .then((Response) => {
                 data = SuccessHandler.getData(Response);
-                console.warn('Responce server: ', data);
             })
             .catch((e) => ErrorHandle.setError(e));
         return data;
@@ -118,7 +111,6 @@ export default {
             .delete(url)
             .then((Response) => {
                 data = SuccessHandler.getData(Response);
-                console.warn('Responce server: ', data);
             })
             .catch((e) => ErrorHandle.setError(e));
         return data;

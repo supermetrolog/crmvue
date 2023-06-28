@@ -31,7 +31,6 @@ const store = createStore({
     },
     async INIT(context) {
       if (!localStorage.getItem("user")) {
-        console.error("User not found in localStorage!");
         return false;
       }
       await context.dispatch("SET_USER");

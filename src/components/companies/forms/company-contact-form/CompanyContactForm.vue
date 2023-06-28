@@ -349,7 +349,6 @@ export default {
                   flag = false;
                 }
               });
-              console.log("FLAAG", flag);
               return flag;
             }
           ),
@@ -511,7 +510,6 @@ export default {
         all: query,
       };
       result = await api.companies.searchCompanies(query);
-      console.log("RES", result);
       result.data.forEach((item) => {
         array.push({ value: item.id, label: item.full_name });
       });
@@ -555,7 +553,6 @@ export default {
   watch: {
     form: {
       handler() {
-        console.log("FORM: ", this.form);
       },
       deep: true,
     },

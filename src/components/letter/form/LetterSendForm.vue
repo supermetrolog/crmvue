@@ -188,7 +188,6 @@ export default {
   methods: {
     async onSubmit() {
       await this.v$.$validate();
-      console.log(this.form);
       if (this.v$.form.$error) return;
 
       this.normalizeContacts();
@@ -202,11 +201,9 @@ export default {
       }
     },
     normalizeContacts() {
-      console.log(this.form.contactForSendMessage);
       let emails = this.form.contactForSendMessage.filter(
         (elem) => elem.type === 1
       );
-      console.log(emails);
       if (emails) {
         this.form.contacts.emails = emails.map((elem) => {
           return { contact_id: elem.contact_id, value: elem.value };
@@ -266,7 +263,6 @@ export default {
         });
       });
       if (alreadyPushedSelfContacts) {
-        console.log("ALREADY", this.contactsOptions);
         this.contactsOptions = this.contactsOptions.filter(
           (group) => group.label != groupName
         );
@@ -282,10 +278,8 @@ export default {
           })
         );
         contacts.forEach((elem) => {
-          console.log(elem);
           this.$refs.contactSelect.$refs.multiselect.remove(elem);
         });
-        console.log("ALREADY", this.contactsOptions);
         return;
       }
 
@@ -324,7 +318,6 @@ export default {
   watch: {
     form: {
       handler() {
-        console.log("FORM CONTACTS: ", this.form.contactForSendMessage);
       },
       deep: true,
     },

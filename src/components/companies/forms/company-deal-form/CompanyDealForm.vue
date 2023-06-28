@@ -317,10 +317,6 @@ export default {
       const currentRequestOption = this.requestOptions.find(
         (item) => item.value == this.form.request_id
       );
-      console.log(
-        currentRequestOption,
-        currentRequestOption.label.indexOf("хуй")
-      );
       if (
         (currentRequestOption &&
           currentRequestOption.label.indexOf("аренда") !== -1) ||
@@ -344,7 +340,6 @@ export default {
     ]),
     onSubmit() {
       this.v$.$validate();
-      console.warn(this.v$.form.$error);
       !this.form.clientLegalEntity ? (this.form.formOfOrganization = null) : "";
       if (!this.v$.form.$error) {
         this.loader = true;
@@ -374,7 +369,6 @@ export default {
     },
     async onChangeCompany() {
       if (this.request_id) return;
-      console.log("change");
       this.form.request_id = null;
       this.requestOptions = [];
       if (!this.form.company_id) return;
@@ -424,7 +418,6 @@ export default {
         all: query,
       };
       result = await api.companies.searchCompanies(query);
-      console.log("RES", result);
       result.data.forEach((item) => {
         array.push({ value: item.id, label: item.full_name });
       });
@@ -449,7 +442,6 @@ export default {
         all: query,
       };
       result = await api.companies.searchCompanies(query);
-      console.log("RES", result);
       result.data.forEach((item) => {
         array.push({ value: item.id, label: item.full_name });
       });
@@ -458,7 +450,6 @@ export default {
     async searchOffer(query) {
       let result = null;
       let array = [];
-      console.log("FFF", this.object_id);
       if (this.formdata || this.object_id) {
         if (!this.selectedOffer) {
           const params = {
@@ -473,10 +464,8 @@ export default {
           };
           let data = await api.companyObjects.searchOffers(params);
           data = data.data;
-          console.log("fuck", data);
           if (data.length) {
             this.selectedOffer = data[0];
-            console.log("fuck", this.selectedOffer);
           }
         }
 
@@ -497,7 +486,6 @@ export default {
         "per-page": 10,
       };
       result = await api.companyObjects.searchOffers(query);
-      console.log("RES", result);
       result.data.forEach((item) => {
         array.push({
           value: {
@@ -517,7 +505,6 @@ export default {
     this.loader = true;
     await this.FETCH_CONSULTANT_LIST();
     this.form.request_id = this.request_id;
-    console.log("ID", this.request_id);
     this.form.company_id = this.company_id;
     this.form.consultant_id = this.THIS_USER.id;
     this.form.object_id = this.object_id;
@@ -542,7 +529,6 @@ export default {
   //   this.loader = true;
   //   await this.FETCH_CONSULTANT_LIST();
   //   this.form.request_id = this.request_id;
-  //   console.log("ID", this.request_id);
   //   this.form.company_id = this.company_id;
   //   this.form.consultant_id = this.THIS_USER.id;
   //   if (this.formdata) {
@@ -565,7 +551,6 @@ export default {
   watch: {
     form: {
       handler() {
-        console.log("FORM: ", this.form);
       },
       deep: true,
     },
