@@ -60,3 +60,56 @@ export const objectPurposes: Record<number, { name: string, icon: string }> = {
 		33: {name: "АЗС (стройка)", icon: "fas fa-gas-pump"},
 	}
 ;
+
+export const ownTypesLand: Record<number, string> = {
+	1: "Аренда",
+	2: "Собственность",
+	3: "Безвозмездное пользование",
+	4: "Бессрочная аренда",
+}
+export const landCategoryTypes: Record<number, string> = {
+	1: "Земли запаса",
+	2: "Земли лесного фонда",
+	3: "Земли особо охраняемых территорий и объектов",
+	4: "Земли населенных пунктов",
+	5: "Земли промышленности",
+	6: "Земли сельхозназначения",
+}
+
+export const landscapeTypes: Record<number, string> = {
+	1: "Ровный",
+	2: "С перепадами",
+}
+
+export const entryTerritoryTypes: Record<number, string> = {
+	1: "Свободный",
+	2: "По пропускам",
+}
+
+export const entryFeeTypes: Record<number, string> = {
+	1: "Платный",
+	2: "Бесплатный"
+}
+
+export const waterTypes: Record<number, string> = {
+	1: "Скважина",
+	2: "Центральное"
+}
+
+export const gasTypes: Record<number, string> = {
+	1: "внутри",
+	2: "газопр. рядом",
+	3: "по границе"
+}
+
+export const internetTypes: Record<number, string> = {
+	1: "Опто-волокно",
+	2: "Беспроводной"
+}
+
+export const guardTypes: Record<number, string> = {
+	1: "МВД",
+	2: "ЧОП",
+	3: "Охрана собственника"
+}
+

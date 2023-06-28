@@ -19,4 +19,10 @@ export default interface IObject {
 	cadastralNumber: string | null;
 	restrictions: boolean | null;
 	ownType: string | null;
+	landLength: number | null;
+	landWidth: number | null;
+	cadastralNumberLand: string | null;
+	ownTypeLand: string | null;
+	landCategory: string | null;
+	landscapeType: string | null;
 }

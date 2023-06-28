@@ -8,8 +8,16 @@
 
   &-property {
     color: black;
-    & > span {
+    display: flex;
+    gap: 5px;
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    & span {
       color: $color_grey;
+      white-space: nowrap;
+      overflow-x: hidden;
+      text-overflow: ellipsis;
     }
   }
   .tabs-component-panels {

@@ -7,28 +7,28 @@
 						<PropertyList title="Площади">
 							<PropertyListItem name="S - участка общая">
 								<with-unit-type class="ComplexAbout-property" v-if="complex.areaFieldFull !== null"
-												:unit-type="unitTypes.SQUARE_METERS"
-												:value="$formatter.number(complex.areaFieldFull)"/>
+																:unit-type="unitTypes.SQUARE_METERS"
+																:value="$formatter.number(complex.areaFieldFull)"/>
 							</PropertyListItem>
 							<PropertyListItem name="S - строений в комплексе">
 								<with-unit-type class="ComplexAbout-property" v-if="complex.areaBuilding !== null"
-												:unit-type="unitTypes.SQUARE_METERS"
-												:value="$formatter.number(complex.areaBuilding)"/>
+																:unit-type="unitTypes.SQUARE_METERS"
+																:value="$formatter.number(complex.areaBuilding)"/>
 							</PropertyListItem>
 							<PropertyListItem name="S - этажей общая">
 								<with-unit-type class="ComplexAbout-property" v-if="complex.areaFloorFull !== null"
-												:unit-type="unitTypes.SQUARE_METERS"
-												:value="$formatter.number(complex.areaFloorFull)"/>
+																:unit-type="unitTypes.SQUARE_METERS"
+																:value="$formatter.number(complex.areaFloorFull)"/>
 							</PropertyListItem>
 							<PropertyListItem name="S - оффисов общая">
 								<with-unit-type class="ComplexAbout-property" v-if="complex.areaOfficeFull !== null"
-												:unit-type="unitTypes.SQUARE_METERS"
-												:value="$formatter.number(complex.areaOfficeFull)"/>
+																:unit-type="unitTypes.SQUARE_METERS"
+																:value="$formatter.number(complex.areaOfficeFull)"/>
 							</PropertyListItem>
 							<PropertyListItem name="S - техническая общая">
 								<with-unit-type class="ComplexAbout-property" v-if="complex.areaTechFull !== null"
-												:unit-type="unitTypes.SQUARE_METERS"
-												:value="$formatter.number(complex.areaTechFull)"/>
+																:unit-type="unitTypes.SQUARE_METERS"
+																:value="$formatter.number(complex.areaTechFull)"/>
 							</PropertyListItem>
 							<PropertyListItem name="Управляющая компания">
 								<p v-if="complex.managmentCompany !== null" class="ComplexAbout-property">
@@ -40,8 +40,8 @@
 							<PropertyListItem name="Электричество">
 								<template v-if="complex.power !== null">
 									<with-unit-type class="ComplexAbout-property" v-if="complex.power"
-													:unit-type="unitTypes.KILOWATT"
-													:value="$formatter.number(complex.powerValue)"/>
+																	:unit-type="unitTypes.KILOWATT"
+																	:value="$formatter.number(complex.powerValue)"/>
 									<p v-else class="ComplexAbout-property">
 										нет
 									</p>
@@ -66,11 +66,16 @@
 							</PropertyListItem>
 							<PropertyListItem name="Водоснабжение">
 								<template v-if="complex.water !== null">
-									<p v-if="complex.water" class="ComplexAbout-property" :title="'есть, ' + joinedWaterType">
-										есть, <span
-													class="ComplexAbout-property-grey">{{
-											joinedWaterType
-										}}</span>
+									<p class="ComplexAbout-property" v-if="complex.water" :title="'есть, ' + joinedWaterType">
+										есть,
+										<with-unit-type
+												v-if="complex.waterValue"
+												:unit-type="unitTypes.CUBE_METERS_PER_HOUR"
+												:value="$formatter.number(complex.waterValue)"/>
+										<span
+												class="ComplexAbout-property-grey">{{
+												joinedWaterType
+											}}</span>
 									</p>
 									<p v-else class="ComplexAbout-property">
 										нет
@@ -89,9 +94,17 @@
 							</PropertyListItem>
 							<PropertyListItem name="Газ">
 								<template v-if="complex.gas !== null">
-									<with-unit-type class="ComplexAbout-property" v-if="complex.gas"
-													:unit-type="unitTypes.CUBE_METERS_PER_HOUR"
-													:value="$formatter.number(complex.gasValue)"/>
+									<p class="ComplexAbout-property" v-if="complex.gas" :title="'есть, ' + complex.gasType">
+										есть,
+										<with-unit-type
+												v-if="complex.gasValue"
+												:unit-type="unitTypes.CUBE_METERS_PER_HOUR"
+												:value="$formatter.number(complex.gasValue)"/>
+										<span
+												class="ComplexAbout-property-grey">{{
+												complex.gasType
+											}}</span>
+									</p>
 									<p v-else class="ComplexAbout-property">
 										нет
 									</p>
@@ -99,9 +112,13 @@
 							</PropertyListItem>
 							<PropertyListItem name="Пар">
 								<template v-if="complex.steam !== null">
-									<with-unit-type class="ComplexAbout-property" v-if="complex.steam"
-													:unit-type="unitTypes.CUBE_METERS_PER_HOUR"
-													:value="$formatter.number(complex.steamValue)"/>
+									<p class="ComplexAbout-property" v-if="complex.steam">
+										есть{{ complex.steamValue ? ',' : '' }}
+										<with-unit-type
+												v-if="complex.steamValue"
+												:unit-type="unitTypes.CUBE_METERS_PER_HOUR"
+												:value="$formatter.number(complex.steamValue)"/>
+									</p>
 									<p v-else class="ComplexAbout-property">
 										нет
 									</p>
@@ -116,7 +133,7 @@
 								<template v-if="complex.internet !== null">
 									<p v-if="complex.internet" class="ComplexAbout-property" :title="'есть, ' + joinedInternetType">
 										есть, <span
-										class="ComplexAbout-property-grey">{{
+											class="ComplexAbout-property-grey">{{
 											joinedInternetType
 										}}</span>
 									</p>
@@ -131,7 +148,7 @@
 								<template v-if="complex.guard !== null">
 									<p v-if="complex.guard" class="ComplexAbout-property" :title="'есть, ' + joinedGuardType">
 										есть, <span
-										class="ComplexAbout-property-grey">{{
+											class="ComplexAbout-property-grey">{{
 											joinedGuardType
 										}}</span>
 									</p>
@@ -195,7 +212,7 @@
 								</PropertyListItem>
 								<PropertyListItem name="Плата за въезд">
 									<p v-if="complex.entryFee !== null && complex.entryTerritory"
-									   class="ComplexAbout-property">
+										 class="ComplexAbout-property">
 										{{ complex.entryFee }}
 									</p>
 								</PropertyListItem>
@@ -284,9 +301,9 @@ export default defineComponent({
 	computed: {
 		dataAvailable() {
 			return (
-				this.safety &&
-				this.railway &&
-				this.infrastructure
+					this.safety &&
+					this.railway &&
+					this.infrastructure
 			);
 		},
 		managmentCompany() {

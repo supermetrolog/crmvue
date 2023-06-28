@@ -29,10 +29,12 @@ export default interface IComplex {
   heatingAutonomousType: string | null;
   water: boolean | null;
   waterType: string[] | null;
+  waterValue: number | null;
   sewage: boolean | null;
   sewageRain: boolean | null;
   gas: boolean | null;
   gasValue: number | null;
+  gasType: string | null;
   steam: boolean | null;
   steamValue: number | null;
   phoneLine: boolean | null;

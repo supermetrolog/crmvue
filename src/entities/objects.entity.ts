@@ -1,6 +1,13 @@
 import BaseEntity from "@/entities/base.entity";
 import IObject from "@/interfaces/object.interface";
-import {facingTypes, objectClassTypes, ownTypes} from "@/const/constTypes";
+import {
+	facingTypes,
+	landCategoryTypes,
+	landscapeTypes,
+	objectClassTypes,
+	ownTypes,
+	ownTypesLand
+} from "@/const/constTypes";
 
 
 export default class ObjectEntity extends BaseEntity implements IObject {
@@ -71,6 +78,30 @@ export default class ObjectEntity extends BaseEntity implements IObject {
 	}
 
 
+	get landLength(): number | null {
+		return this._land_length;
+	}
+
+	get landWidth(): number | null {
+		return this._land_width;
+	}
+
+	get cadastralNumberLand(): string | null {
+		return this._cadastral_number_land || null;
+	}
+
+	get ownTypeLand(): string | null {
+		return this._own_type_land ? ownTypesLand[this._own_type_land] : null;
+	}
+
+	get landCategory(): string | null {
+		return this._land_category ? landCategoryTypes[this._land_category] :null;
+	}
+
+	get landscapeType(): string | null {
+		return this._landscape_type ? landscapeTypes[this._landscape_type] : null;
+	}
+
 	public id: bigint | null = null;
 	public address: string | null = null;
 	public purposes: number[] | null = null;
@@ -91,4 +122,10 @@ export default class ObjectEntity extends BaseEntity implements IObject {
 	private _cadastral_number: string | null = null;
 	private _land_use_restriction: boolean | null = null;
 	private _own_type: number | null = null;
+	private _land_length: number | null = null;
+	private _land_width: number | null = null;
+	private _cadastral_number_land: string | null = null;
+	private _own_type_land: number | null = null;
+	private _land_category: number | null = null;
+	private _landscape_type: number | null = null;
 }

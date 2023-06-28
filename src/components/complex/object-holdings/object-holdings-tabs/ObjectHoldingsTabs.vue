@@ -3,73 +3,76 @@
 		<action-buttons v-bind="actionButtons" class="ObjectHoldingsTabs-buttons"/>
 		<Tabs :options="{ useUrlFragment: false }">
 			<Tab name="Характеристики">
-				<div class="ObjectHoldingsTabs-content-properties">
+				<div class="ObjectHoldingsTabs-content-properties" v-if="!isPlot">
 					<PropertyList>
 						<PropertyListItem name="Общая площадь">
-							<with-unit-type class="ComplexAbout-property" v-if="object.area !== null"
+							<with-unit-type class="ObjectHoldingsTabs-content-property" v-if="object.area !== null"
 															:unit-type="unitTypes.SQUARE_METERS"
 															:value="$formatter.number(object.area)"/>
 						</PropertyListItem>
 						<PropertyListItem name="S - пола">
-							<with-unit-type class="ComplexAbout-property" v-if="object.floorArea !== null"
+							<with-unit-type class="ObjectHoldingsTabs-content-property" v-if="object.floorArea !== null"
 															:unit-type="unitTypes.SQUARE_METERS"
 															:value="$formatter.number(object.floorArea)"/>
 						</PropertyListItem>
 						<PropertyListItem name="S - мезонина">
-							<with-unit-type class="ComplexAbout-property" v-if="object.areaMezanin !== null"
+							<with-unit-type class="ObjectHoldingsTabs-content-property" v-if="object.areaMezanin !== null"
 															:unit-type="unitTypes.SQUARE_METERS"
 															:value="$formatter.number(object.areaMezanin)"/>
 						</PropertyListItem>
 					</PropertyList>
 					<PropertyList>
 						<PropertyListItem name="S - офисов">
-							<with-unit-type class="ComplexAbout-property" v-if="object.areaOffice !== null"
+							<with-unit-type class="ObjectHoldingsTabs-content-property" v-if="object.areaOffice !== null"
 															:unit-type="unitTypes.SQUARE_METERS"
 															:value="$formatter.number(object.areaOffice)"/>
 						</PropertyListItem>
 						<PropertyListItem name="S - техническая">
-							<with-unit-type class="ComplexAbout-property" v-if="object.areaTech !== null"
+							<with-unit-type class="ObjectHoldingsTabs-content-property" v-if="object.areaTech !== null"
 															:unit-type="unitTypes.SQUARE_METERS"
 															:value="$formatter.number(object.areaTech)"/>
 						</PropertyListItem>
 						<PropertyListItem name="Этажность склада">
-							<with-unit-type class="ComplexAbout-property" v-if="object.floorsCount !== null"
+							<with-unit-type class="ObjectHoldingsTabs-content-property" v-if="object.floorsCount !== null"
 															:unit-type="unitTypes.FLOORS"
 															:value="$formatter.number(object.floorsCount)"/>
 						</PropertyListItem>
 						<PropertyListItem name="Класс объекта">
-							<p class="ComplexAbout-property" v-if="object.objectClass !== null">{{ object.objectClass }}</p>
+							<p class="ObjectHoldingsTabs-content-property" v-if="object.objectClass !== null">{{ object.objectClass }}</p>
 						</PropertyListItem>
 					</PropertyList>
 					<PropertyList>
 						<PropertyListItem name="Внешняя отделка">
-							<p class="ComplexAbout-property" :title="object.facing" v-if="object.facing !== null">{{
+							<p class="ObjectHoldingsTabs-content-property" :title="object.facing" v-if="object.facing !== null">{{
 									object.facing
 								}}</p>
 						</PropertyListItem>
 						<PropertyListItem name="Год постройки">
-							<with-unit-type class="ComplexAbout-property" v-if="object.yearBuild !== null"
+							<with-unit-type class="ObjectHoldingsTabs-content-property" v-if="object.yearBuild !== null"
 															:unit-type="unitTypes.YEAR"
 															:value="object.yearBuild"/>
 						</PropertyListItem>
 						<PropertyListItem name="Год последнего ремонта">
-							<with-unit-type class="ComplexAbout-property" v-if="object.yearRepair !== null"
+							<with-unit-type class="ObjectHoldingsTabs-content-property" v-if="object.yearRepair !== null"
 															:unit-type="unitTypes.YEAR"
 															:value="object.yearRepair"/>
 						</PropertyListItem>
 					</PropertyList>
 					<PropertyList>
 						<PropertyListItem name="Кадастровый №">
-							<p class="ComplexAbout-property" :title="object.cadastralNumber" v-if="object.cadastralNumber !== null">
+							<p class="ObjectHoldingsTabs-content-property" :title="object.cadastralNumber" v-if="object.cadastralNumber !== null">
 								{{ object.cadastralNumber }}</p>
 						</PropertyListItem>
 						<PropertyListItem name="Правовой статус строения" :title="object.ownType">
-							<p class="ComplexAbout-property" v-if="object.ownType !== null">{{ object.ownType }}</p>
+							<p class="ObjectHoldingsTabs-content-property" v-if="object.ownType !== null">{{ object.ownType }}</p>
 						</PropertyListItem>
 						<PropertyListItem name="Ограничения">
-							<p class="ComplexAbout-property" v-if="object.restrictions !== null">{{ object.restrictions }}</p>
+							<p class="ObjectHoldingsTabs-content-property" v-if="object.restrictions !== null">{{ object.restrictions }}</p>
 						</PropertyListItem>
 					</PropertyList>
+				</div>
+				<div class="ObjectHoldingsTabs-content-properties" v-else>
+					Plot
 				</div>
 			</Tab>
 			<Tab name="Сделки">
@@ -98,6 +101,7 @@ import {defineComponent, PropType} from "vue";
 import IObject from "@/interfaces/object.interface";
 import WithUnitType from "@/components/common/with-unit-type/WithUnitType.vue";
 import {unitTypes} from "@/const/unitTypes";
+import {ObjectTypes} from "@/types/objectTypes.enum";
 
 export default defineComponent({
 	name: "ObjectHoldingsTabs",
@@ -129,6 +133,9 @@ export default defineComponent({
 				pdf: {value: true},
 			};
 		},
+		isPlot() {
+			return this.object.objectType?.includes(ObjectTypes.PLOT)
+		}
 	},
 	methods: {},
 });

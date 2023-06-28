@@ -1,6 +1,7 @@
 import BaseEntity from "@/entities/base.entity";
 import IObject from "@/interfaces/object.interface";
 import IComplex, {IAddressItem} from "@/interfaces/complex.interface";
+import {entryFeeTypes, entryTerritoryTypes, gasTypes, guardTypes, internetTypes, waterTypes} from "@/const/constTypes";
 
 
 interface IComplexAddress extends Record<string, any> {
@@ -86,8 +87,12 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
 	}
 
 	get waterType(): string[] | null {
-		// return this._water_type;
+		// return this._water_type?.map(el => waterTypes[el]) || null;
 		return ["Скважина", "Центральное"]
+	}
+
+	get waterValue(): number | null {
+		return  this._water_value;
 	}
 
 	get sewage(): boolean | null {
@@ -100,6 +105,10 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
 
 	get gas(): boolean | null {
 		return this.processBooleanField(this._gas);
+	}
+
+	get gasType(): string | null {
+		return this._gas_type ? gasTypes[this._gas_type] : null;
 	}
 
 	get gasValue(): number | null {
@@ -123,8 +132,8 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
 	}
 
 	get internetType(): string[] | null {
-		// return this._internet_type;
-		return ["Опто-волокно"];
+		return this._internet_type?.map(el => internetTypes[el]) || null;
+
 	}
 
 	get latitude(): number | null {
@@ -144,8 +153,7 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
 	}
 
 	get guardType(): string[] | null {
-		// return this._guard_type;
-		return ["ЧОП"]
+		return this._guard_type?.map(el => guardTypes[el]) || null;
 	}
 
 	get videoControl(): boolean | null {
@@ -178,7 +186,7 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
 	}
 
 	get entryTerritoryType(): string | null {
-		return this._entry_territory_type;
+		return this._entry_territory_type ? entryTerritoryTypes[this._entry_territory_type] : null;
 	}
 
 	get parkingCar(): boolean | null {
@@ -202,8 +210,7 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
 	}
 
 	get entryFee(): string | null {
-		// return this._entrance_type;
-		return this._entrance_type ? "Платный" : "Бесплатный"
+		return this._entrance_type ? entryFeeTypes[this._entrance_type] : null;
 	}
 
 
@@ -288,10 +295,12 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
 	private _heating_autonomous_type: number | null = null;
 	private _water: number | null = null;
 	private _water_type: number[] | null = null;
+	private _water_value: number | null = null;
 	private _sewage: number | null = null;
 	private _sewage_rain: number | null = null;
 	private _gas: number | null = null;
 	private _gas_value: number | null = null;
+	private _gas_type: number | null = null;
 	private _steam: number | null = null;
 	private _steam_value: number | null = null;
 	private _phone_line: number | null = null;
@@ -309,13 +318,13 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
 	private _barrier: number | null = null;
 	private _railway: number | null = null;
 	private _entry_territory: number | null = null;
-	private _entry_territory_type: string | null = null;
+	private _entry_territory_type: number | null = null;
 	private _parking_car: number | null = null;
 	private _parking_lorry: number | null = null;
 	private _parking_truck: number | null = null;
 	private _canteen: number | null = null;
 	private _hostel: number | null = null;
-	private _entrance_type: string | null = null;
+	private _entrance_type: number | null = null;
 	public objects: IObject[] | null = null;
 	private _regionRecord: IComplexAddress | null = null;
 	private _highwayRecord: IComplexAddress | null = null;
