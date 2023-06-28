@@ -19,7 +19,7 @@ export default class ObjectEntity extends BaseEntity implements IObject {
 	}
 
 	get photo(): { src: string }[] | null {
-		return this._photo ? this._photo.map(link => ({src: "https://pennylane.pro" + link})) : null;
+		return this._photo ? this._photo.map(link => ({src: link})) : null;
 	}
 
 	get objectClass(): string | null {

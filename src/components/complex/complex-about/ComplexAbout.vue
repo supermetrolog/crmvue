@@ -249,13 +249,14 @@ import PropertyList from "../../common/property-list/PropertyList.vue";
 import "./styles.scss";
 import WithUnitType from "@/components/common/with-unit-type/WithUnitType.vue";
 import {unitTypes} from "@/const/unitTypes";
-import {defineComponent, inject, PropType} from "vue";
+import {defineComponent, PropType} from "vue";
 import IComplex from "@/interfaces/complex.interface";
 
 export default defineComponent({
-	setup() {
-		const isMobile = inject('isMobile')
-		return {isMobile}
+	inject: {
+		injectedIsMobile: {
+			from: "isMobile"
+		}
 	},
 	name: "ComplexAbout",
 	components: {WithUnitType, PropertyList, PropertyListItem},
@@ -276,7 +277,8 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			unitTypes
+			unitTypes,
+			isMobile: this.injectedIsMobile
 		};
 	},
 	computed: {

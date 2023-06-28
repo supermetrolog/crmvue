@@ -12,6 +12,7 @@ export default interface IComplex {
   locality: IAddressItem | null;
   highway: IAddressItem | null;
   metro: IAddressItem | null;
+  getMetroLogoName: () => string | null;
   districtMoscow: IAddressItem | null;
   fromMkad: number | null;
   areaFieldFull: number | null;

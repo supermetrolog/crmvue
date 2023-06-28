@@ -3,7 +3,8 @@ import IObject from "@/interfaces/object.interface";
 import IComplex, {IAddressItem} from "@/interfaces/complex.interface";
 
 
-interface IComplexAddress extends Record<string, any> {}
+interface IComplexAddress extends Record<string, any> {
+}
 
 
 export default class ComplexEntity extends BaseEntity implements IComplex {
@@ -248,6 +249,23 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
 		return this._metroRecord ? {
 			title: this._metroRecord.title
 		} : null;
+	}
+
+	getMetroLogoName(): string | null {
+		if (
+			this.locality?.title === "москва" ||
+			this.region?.title === "московская область"
+		) {
+			return "metro";
+		}
+		if (
+			this.locality?.title === "санкт Петербург" ||
+			this.region?.title === "ленинградская область"
+		) {
+			return "metro_spb";
+		} else {
+			return null;
+		}
 	}
 
 	private _id: bigint | null = null;

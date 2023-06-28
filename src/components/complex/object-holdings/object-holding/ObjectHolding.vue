@@ -3,7 +3,7 @@
     <div class="ObjectHolding-body">
       <div class="ObjectHolding-carousel">
         <div class="ObjectHolding-label">ID {{ object.id }}</div>
-        <Carousel :list="object.photo || []" />
+        <Carousel :list="objectPhoto" />
       </div>
       <div class="ObjectHolding-info">
         <div class="ObjectHolding-info-left">
@@ -43,5 +43,12 @@ export default defineComponent({
 			required: true
 		}
   },
+	computed: {
+		objectPhoto() {
+			return this.object.photo ? this.object.photo.map(el => ({
+				src: this.$apiUrlHelper.objectsUrl() + el.src,
+			})) : []
+		}
+	}
 });
 </script>

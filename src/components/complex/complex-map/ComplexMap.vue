@@ -24,9 +24,9 @@
 					:title="complex.metro"
 					v-if="complex.metro"
 			>
-				<div v-if="metroLogo">
+				<div v-if="complex.getMetroLogoName()">
 					<img
-							:src="require(`@/assets/image/${metroLogo}.png`)"
+							:src="require(`@/assets/image/${complex.getMetroLogoName()}.png`)"
 							alt="метро"
 					/>
 				</div>
@@ -150,22 +150,6 @@ export default defineComponent({
 		};
 	},
 	computed: {
-		metroLogo() {
-			if (
-					this.complex.locality?.title === "москва" ||
-					this.complex.region?.title === "московская область"
-			) {
-				return "metro";
-			}
-			if (
-					this.complex.locality?.title === "санкт Петербург" ||
-					this.complex.region?.title === "ленинградская область"
-			) {
-				return "metro_spb";
-			} else {
-				return null;
-			}
-		},
 		complexCoords() {
 			const {latitude, longitude} = this.complex;
 			return latitude && longitude
