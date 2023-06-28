@@ -2,7 +2,8 @@ export default interface IObject {
 	id: bigint | null;
 	type: number | null;
 	purposes: number[] | null;
-	area: number | null;
+	areaBuilding: number | null;
+	areaField: number | null;
 	floorArea: number | null;
 	address: string | null;
 	owners: number[] | null;

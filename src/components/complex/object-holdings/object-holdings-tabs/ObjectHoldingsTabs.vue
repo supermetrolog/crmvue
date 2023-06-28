@@ -6,9 +6,9 @@
 				<div class="ObjectHoldingsTabs-content-properties" v-if="!isPlot">
 					<PropertyList>
 						<PropertyListItem name="Общая площадь">
-							<with-unit-type class="ObjectHoldingsTabs-content-property" v-if="object.area !== null"
+							<with-unit-type class="ObjectHoldingsTabs-content-property" v-if="object.areaBuilding !== null"
 															:unit-type="unitTypes.SQUARE_METERS"
-															:value="$formatter.number(object.area)"/>
+															:value="$formatter.number(object.areaBuilding)"/>
 						</PropertyListItem>
 						<PropertyListItem name="S - пола">
 							<with-unit-type class="ObjectHoldingsTabs-content-property" v-if="object.floorArea !== null"
@@ -38,7 +38,9 @@
 															:value="$formatter.number(object.floorsCount)"/>
 						</PropertyListItem>
 						<PropertyListItem name="Класс объекта">
-							<p class="ObjectHoldingsTabs-content-property" v-if="object.objectClass !== null">{{ object.objectClass }}</p>
+							<p class="ObjectHoldingsTabs-content-property" v-if="object.objectClass !== null">{{
+									object.objectClass
+								}}</p>
 						</PropertyListItem>
 					</PropertyList>
 					<PropertyList>
@@ -60,19 +62,55 @@
 					</PropertyList>
 					<PropertyList>
 						<PropertyListItem name="Кадастровый №">
-							<p class="ObjectHoldingsTabs-content-property" :title="object.cadastralNumber" v-if="object.cadastralNumber !== null">
+							<p class="ObjectHoldingsTabs-content-property"
+								 :title="object.cadastralNumber"
+								 v-if="object.cadastralNumber !== null">
 								{{ object.cadastralNumber }}</p>
 						</PropertyListItem>
 						<PropertyListItem name="Правовой статус строения" :title="object.ownType">
 							<p class="ObjectHoldingsTabs-content-property" v-if="object.ownType !== null">{{ object.ownType }}</p>
 						</PropertyListItem>
 						<PropertyListItem name="Ограничения">
-							<p class="ObjectHoldingsTabs-content-property" v-if="object.restrictions !== null">{{ object.restrictions }}</p>
+							<p class="ObjectHoldingsTabs-content-property" v-if="object.restrictions !== null">{{
+									object.restrictions
+								}}</p>
 						</PropertyListItem>
 					</PropertyList>
 				</div>
 				<div class="ObjectHoldingsTabs-content-properties" v-else>
-					Plot
+					<PropertyList>
+						<PropertyListItem name="Площадь участка">
+							<with-unit-type class="ObjectHoldingsTabs-content-property" v-if="object.areaField !== null"
+															:unit-type="unitTypes.SQUARE_METERS"
+															:value="$formatter.number(object.areaField)"/>
+						</PropertyListItem>
+						<PropertyListItem name="Кадастровый № участка">
+							<p class="ObjectHoldingsTabs-content-property"
+								 :title="object.cadastralNumberLand"
+								 v-if="object.cadastralNumberLand !== null">
+								{{ object.cadastralNumberLand }}</p>
+						</PropertyListItem>
+						<PropertyListItem name="Правовой статус зем. уч.">
+							<p class="ObjectHoldingsTabs-content-property"
+								 :title="object.ownTypeLand"
+								 v-if="object.ownTypeLand !== null">{{ object.ownTypeLand }}</p>
+						</PropertyListItem>
+						<PropertyListItem name="Категория земли">
+							<p class="ObjectHoldingsTabs-content-property"
+								 :title="object.landCategory"
+								 v-if="object.landCategory !== null">{{ object.landCategory }}</p>
+						</PropertyListItem>
+						<PropertyListItem name="Рельеф участка">
+							<p class="ObjectHoldingsTabs-content-property"
+								 :title="object.landscapeType"
+								 v-if="object.landscapeType !== null">{{ object.landscapeType }}</p>
+						</PropertyListItem>
+						<PropertyListItem name="Ограничения">
+							<p class="ObjectHoldingsTabs-content-property" v-if="object.restrictions !== null">{{
+									object.restrictions
+								}}</p>
+						</PropertyListItem>
+					</PropertyList>
 				</div>
 			</Tab>
 			<Tab name="Сделки">

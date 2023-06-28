@@ -1,5 +1,4 @@
 // Продолжение файла Const.js но с типизацией(чтобы не сломалось, то что на js написано)
-import {ObjectTypes} from "@/types/objectTypes.enum"
 
 export const facingTypes: Record<number, string> = {
 	1: "Кирпич",
@@ -62,8 +61,8 @@ export const objectPurposes: Record<number, { name: string, icon: string }> = {
 ;
 
 export const ownTypesLand: Record<number, string> = {
-	1: "Аренда",
-	2: "Собственность",
+	1: "Собственность",
+	2: "Аренда",
 	3: "Безвозмездное пользование",
 	4: "Бессрочная аренда",
 }

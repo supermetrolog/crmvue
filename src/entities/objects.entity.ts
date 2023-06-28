@@ -13,8 +13,12 @@ import {
 export default class ObjectEntity extends BaseEntity implements IObject {
 
 
-	get area(): number | null {
+	get areaBuilding(): number | null {
 		return this._area_building;
+	}
+
+	get areaField(): number | null {
+		return this._area_field_full;
 	}
 
 	get floorArea(): number | null {
@@ -95,7 +99,7 @@ export default class ObjectEntity extends BaseEntity implements IObject {
 	}
 
 	get landCategory(): string | null {
-		return this._land_category ? landCategoryTypes[this._land_category] :null;
+		return this._land_category ? landCategoryTypes[this._land_category] : null;
 	}
 
 	get landscapeType(): string | null {
@@ -110,6 +114,7 @@ export default class ObjectEntity extends BaseEntity implements IObject {
 	private _floors: number | null = null;
 	private _photo: string[] | null = null;
 	private _object_type: number[] | null = null;
+	private _area_field_full: number | null = null;
 	private _area_building: number | null = null;
 	private _area_floor_full: number | null = null;
 	private _object_class: number | null = null;

@@ -4,11 +4,12 @@
 			<div class="ObjectHoldingsParameters-main">
 				<p class="ObjectHoldingsParameters-main-area">
 					<with-unit-type
-							v-if="object.area !== null"
+							v-if="object.areaBuilding !== null || object.areaField !== null"
 							:value="formattedArea"
 							:unitType="unitTypes.SQUARE_METERS"
 					/>
 					<span v-else>не заполнено</span>
+					<template v-if="!object.objectType?.includes(3)">
 					(по этажам:
 					<with-unit-type
 							v-if="object.floorArea !== null"
@@ -17,6 +18,7 @@
 					/>
 					<span v-else>не заполнено</span>
 					)
+					</template>
 				</p>
 				<p class="ObjectHoldingsParameters-main-address">{{ object.address || "Адрес не заполнен" }}</p>
 			</div>
@@ -116,9 +118,15 @@ export default defineComponent({
 	},
 	computed: {
 		formattedArea() {
-			return this.$formatter.number(
-					this.object.area
-			);
+			if (this.object.objectType?.includes(3)) {
+				return this.$formatter.number(
+						this.object.areaField
+				);
+			} else {
+					return this.$formatter.number(
+							this.object.areaBuilding
+					);
+			}
 		},
 		formattedFloorArea() {
 			return this.$formatter.number(
