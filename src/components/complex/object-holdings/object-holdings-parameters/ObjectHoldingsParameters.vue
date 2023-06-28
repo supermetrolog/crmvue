@@ -33,24 +33,12 @@
 						<i :class="getObjectTypeIcon(purpose)"></i>
 					</strong>
 				</template>
-				<div v-if="object.purposes.length == 0 && object.purposes.length == 0">
-					<p>нет данных</p>
-				</div>
 			</div>
-<!--			<div class="ObjectHoldingsParameters-provision">-->
-<!--				<parameters-->
-<!--						v-if="object.parameters"-->
-<!--						:height="object.parameters.characteristics.height"-->
-<!--						:floorType="object.parameters.characteristics.floorType"-->
-<!--						:gatesNumber="object.parameters.characteristics.gatesNumber"-->
-<!--						:electricity="object.parameters.communications.electricity"-->
-<!--						:heating="object.parameters.communications.heating"-->
-<!--						:sewage="object.parameters.communications.sewage"-->
-<!--						:gasForProduction="object.parameters.communications.gasForProduction"-->
-<!--						:liftingDevices="object.parameters.liftingDevices.lifts"-->
-<!--						:shelving="object.parameters.facilities.shelving"-->
-<!--				/>-->
-<!--			</div>-->
+			<div class="ObjectHoldingsParameters-provision" v-if="object">
+				<parameters
+						:object="object"
+				/>
+			</div>
 			<!-- <div class="ObjectHoldingsParameters-equipment">
 				<p>Краны</p>
 				<div>
@@ -84,7 +72,7 @@
 
 <script lang="ts">
 import "./styles.scss";
-// import Parameters from "@/components/complex/ui/parameters/Parameters.vue";
+import Parameters from "@/components/complex/ui/parameters/Parameters.vue";
 import WithUnitType from "@/components/common/with-unit-type/WithUnitType.vue";
 import {unitTypes} from "@/const/unitTypes";
 import {defineComponent, PropType} from "vue";
@@ -94,7 +82,7 @@ import {objectPurposes} from "@/const/constTypes";
 export default defineComponent({
 	name: "ObjectHoldingsParameters",
 	components: {
-		// Parameters,
+		Parameters,
 		WithUnitType,
 	},
 	props: {

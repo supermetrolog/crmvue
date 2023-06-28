@@ -1,7 +1,6 @@
 import { unitTypes } from "@/const/unitTypes";
 import { IDeal } from "./deal.interface";
 import { tradeOfferCharacteristics } from "@/const/tradeOfferCharacteristics";
-import { gateTypes } from "@/types/gateTypes.enum";
 
 const dealData: IDeal[] = [
   {
@@ -361,7 +360,7 @@ const dealData: IDeal[] = [
                 ...tradeOfferCharacteristics.characteristics.gatesNumber,
                 valueMin: 5,
                 valueMax: 5,
-                gateType: gateTypes.DOCK_TYPE,
+                gateType: "док. типа",
               },
               temperature: {
                 ...tradeOfferCharacteristics.characteristics.temperature,
@@ -555,7 +554,7 @@ const dealData: IDeal[] = [
                   ...tradeOfferCharacteristics.characteristics.gatesNumber,
                   valueMin: 5,
                   valueMax: 5,
-                  gateType: gateTypes.DOCK_TYPE,
+                  gateType: "док. типа",
                 },
                 temperature: {
                   ...tradeOfferCharacteristics.characteristics.temperature,
@@ -749,7 +748,7 @@ const dealData: IDeal[] = [
                   ...tradeOfferCharacteristics.characteristics.gatesNumber,
                   valueMin: 5,
                   valueMax: 5,
-                  gateType: gateTypes.DOCK_TYPE,
+                  gateType: "док. типа",
                 },
                 temperature: {
                   ...tradeOfferCharacteristics.characteristics.temperature,
@@ -943,7 +942,7 @@ const dealData: IDeal[] = [
                   ...tradeOfferCharacteristics.characteristics.gatesNumber,
                   valueMin: 5,
                   valueMax: 5,
-                  gateType: gateTypes.DOCK_TYPE,
+                  gateType: "док. типа",
                 },
                 temperature: {
                   ...tradeOfferCharacteristics.characteristics.temperature,

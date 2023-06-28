@@ -33,19 +33,20 @@
       </PropertyList>
     </div>
     <div class="building-info__line">
-      <parameters
-        :height="parameters.summary.parameters.characteristics.height"
-        :floorType="parameters.summary.parameters.characteristics.floorType"
-        :gatesNumber="parameters.summary.parameters.characteristics.gatesNumber"
-        :electricity="parameters.summary.parameters.communications.electricity"
-        :heating="parameters.summary.parameters.communications.heating"
-        :sewage="parameters.summary.parameters.communications.sewage"
-        :gasForProduction="
-          parameters.summary.parameters.communications.gasForProduction
-        "
-        :liftingDevices="parameters.summary.parameters.liftingDevices.lifts"
-        :shelving="parameters.summary.parameters.facilities.shelving"
-      />
+<!--      <parameters-->
+<!--					-->
+<!--        :height="parameters.summary.parameters.characteristics.height"-->
+<!--        :floorType="parameters.summary.parameters.characteristics.floorType"-->
+<!--        :gatesNumber="parameters.summary.parameters.characteristics.gatesNumber"-->
+<!--        :electricity="parameters.summary.parameters.communications.electricity"-->
+<!--        :heating="parameters.summary.parameters.communications.heating"-->
+<!--        :sewage="parameters.summary.parameters.communications.sewage"-->
+<!--        :gasForProduction="-->
+<!--          parameters.summary.parameters.communications.gasForProduction-->
+<!--        "-->
+<!--        :liftingDevices="parameters.summary.parameters.liftingDevices.lifts"-->
+<!--        :shelving="parameters.summary.parameters.facilities.shelving"-->
+<!--      />-->
     </div>
     <div class="building-info__line">
       <offer-tabs :parameters="parameters" class="building-info__tabs" />
@@ -58,7 +59,7 @@
 import PropertyList from "@/components/common/property-list/PropertyList.vue";
 import PropertyListItem from "@/components/common/property-list/property-list-item/PropertyListItem.vue";
 import OfferTabs from "@/components/complex/ui/offer-tabs/OfferTabs.vue";
-import Parameters from "@/components/complex/ui/parameters/Parameters.vue";
+// import Parameters from "@/components/complex/ui/parameters/Parameters.vue";
 import { unitTypes } from "@/const/unitTypes";
 import {
   ITradeOfferParameters,
@@ -73,7 +74,7 @@ export default defineComponent({
     PropertyList,
     PropertyListItem,
     OfferTabs,
-    Parameters,
+    // Parameters,
     ActionButtons,
   },
   props: {

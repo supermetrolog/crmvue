@@ -1,7 +1,7 @@
 import BaseEntity from "@/entities/base.entity";
 import IObject from "@/interfaces/object.interface";
 import {
-	facingTypes,
+	facingTypes, floorTypes, internetTypes,
 	landCategoryTypes,
 	landscapeTypes,
 	objectClassTypes,
@@ -106,6 +106,51 @@ export default class ObjectEntity extends BaseEntity implements IObject {
 		return this._landscape_type ? landscapeTypes[this._landscape_type] : null;
 	}
 
+	get ceilingHeight(): number | null {
+		return this._calc_ceiling_height ? parseInt(this._calc_ceiling_height) : null;
+	}
+
+	get gateType(): string | null {
+		return this._calc_gate_type;
+	}
+
+	get floorType(): string | null {
+		return this._floor_type ? floorTypes[this._floor_type] : null;
+	}
+
+	get water(): boolean | null {
+		return this.processBooleanField(this._water);
+	}
+
+	get sewage(): boolean | null {
+		return this.processBooleanField(this._sewage);
+	}
+
+	get gas(): boolean | null {
+		return this.processBooleanField(this._gas);
+	}
+
+	get steam(): boolean | null {
+		return this.processBooleanField(this._steam);
+	}
+
+	get internet(): boolean | null {
+		return this.processBooleanField(this._internet);
+	}
+
+	get internetType(): string | null {
+		return this._internet_type ? internetTypes[this._internet_type] : null;
+
+	}
+
+	get powerValue(): number | null {
+		return this._power ? parseInt(this._power) : null;
+	}
+
+	get heating(): boolean | null {
+		return this.processBooleanField(this._heating);
+	}
+
 	public id: bigint | null = null;
 	public address: string | null = null;
 	public purposes: number[] | null = null;
@@ -133,4 +178,16 @@ export default class ObjectEntity extends BaseEntity implements IObject {
 	private _own_type_land: number | null = null;
 	private _land_category: number | null = null;
 	private _landscape_type: number | null = null;
+	private _calc_ceiling_height: string | null = null;
+	private _calc_gate_type: string | null = null;
+	private _floor_type: number | null = null;
+	private _power: string | null = null;
+	private _water: number | null = null;
+	private _heating: number | null = null;
+	private _sewage: number | null = null;
+	private _gas: number | null = null;
+	private _steam: number | null = null;
+	private _internet: number | null = null;
+	private _internet_type: number | null = null;
+
 }

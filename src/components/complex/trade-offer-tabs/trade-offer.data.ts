@@ -1,6 +1,5 @@
 import { tradeOfferCharacteristics } from "@/const/tradeOfferCharacteristics";
 import { ITradeOffer } from "./tradeOfferTabs.interface";
-import { gateTypes } from "@/types/gateTypes.enum";
 // @ts-ignore
 import schemaOneSrc from "@/assets/image/schema_1.png";
 // @ts-ignore
@@ -107,7 +106,7 @@ const tradeOffers: ITradeOffer[] = [
               ...tradeOfferCharacteristics.characteristics.gatesNumber,
               valueMin: 5,
               valueMax: 5,
-              gateType: gateTypes.DOCK_TYPE,
+              gateType: "док. типа",
             },
             temperature: {
               ...tradeOfferCharacteristics.characteristics.temperature,
@@ -301,7 +300,7 @@ const tradeOffers: ITradeOffer[] = [
                 ...tradeOfferCharacteristics.characteristics.gatesNumber,
                 valueMin: 5,
                 valueMax: 5,
-                gateType: gateTypes.DOCK_TYPE,
+                gateType: "док. типа",
               },
               temperature: {
                 ...tradeOfferCharacteristics.characteristics.temperature,
@@ -494,7 +493,7 @@ const tradeOffers: ITradeOffer[] = [
                 ...tradeOfferCharacteristics.characteristics.gatesNumber,
                 valueMin: 5,
                 valueMax: 5,
-                gateType: gateTypes.DOCK_TYPE,
+                gateType: "док. типа",
               },
               temperature: {
                 ...tradeOfferCharacteristics.characteristics.temperature,
@@ -687,7 +686,7 @@ const tradeOffers: ITradeOffer[] = [
                 ...tradeOfferCharacteristics.characteristics.gatesNumber,
                 valueMin: 5,
                 valueMax: 5,
-                gateType: gateTypes.DOCK_TYPE,
+                gateType: "док. типа",
               },
               temperature: {
                 ...tradeOfferCharacteristics.characteristics.temperature,
@@ -880,7 +879,7 @@ const tradeOffers: ITradeOffer[] = [
                 ...tradeOfferCharacteristics.characteristics.gatesNumber,
                 valueMin: 5,
                 valueMax: 5,
-                gateType: gateTypes.DOCK_TYPE,
+                gateType: "док. типа",
               },
               temperature: {
                 ...tradeOfferCharacteristics.characteristics.temperature,
@@ -1073,7 +1072,7 @@ const tradeOffers: ITradeOffer[] = [
                 ...tradeOfferCharacteristics.characteristics.gatesNumber,
                 valueMin: 5,
                 valueMax: 5,
-                gateType: gateTypes.DOCK_TYPE,
+                gateType: "док. типа",
               },
               temperature: {
                 ...tradeOfferCharacteristics.characteristics.temperature,
@@ -1266,7 +1265,7 @@ const tradeOffers: ITradeOffer[] = [
                 ...tradeOfferCharacteristics.characteristics.gatesNumber,
                 valueMin: 5,
                 valueMax: 5,
-                gateType: gateTypes.DOCK_TYPE,
+                gateType: "док. типа",
               },
               temperature: {
                 ...tradeOfferCharacteristics.characteristics.temperature,
@@ -1506,7 +1505,7 @@ const tradeOffers: ITradeOffer[] = [
               ...tradeOfferCharacteristics.characteristics.gatesNumber,
               valueMin: 5,
               valueMax: 5,
-              gateType: gateTypes.DOCK_TYPE,
+              gateType: "док. типа",
             },
             temperature: {
               ...tradeOfferCharacteristics.characteristics.temperature,
@@ -1700,7 +1699,7 @@ const tradeOffers: ITradeOffer[] = [
                 ...tradeOfferCharacteristics.characteristics.gatesNumber,
                 valueMin: 5,
                 valueMax: 5,
-                gateType: gateTypes.DOCK_TYPE,
+                gateType: "док. типа",
               },
               temperature: {
                 ...tradeOfferCharacteristics.characteristics.temperature,
@@ -1949,7 +1948,7 @@ const tradeOffers: ITradeOffer[] = [
               ...tradeOfferCharacteristics.characteristics.gatesNumber,
               valueMin: 5,
               valueMax: 5,
-              gateType: gateTypes.DOCK_TYPE,
+              gateType: "док. типа",
             },
             temperature: {
               ...tradeOfferCharacteristics.characteristics.temperature,
@@ -2143,7 +2142,7 @@ const tradeOffers: ITradeOffer[] = [
                 ...tradeOfferCharacteristics.characteristics.gatesNumber,
                 valueMin: 5,
                 valueMax: 5,
-                gateType: gateTypes.DOCK_TYPE,
+                gateType: "док. типа",
               },
               temperature: {
                 ...tradeOfferCharacteristics.characteristics.temperature,

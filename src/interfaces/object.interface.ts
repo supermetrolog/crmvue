@@ -26,4 +26,17 @@ export default interface IObject {
 	ownTypeLand: string | null;
 	landCategory: string | null;
 	landscapeType: string | null;
+	ceilingHeight: number | null;
+	gateType: string | null;
+	floorType: string | null;
+
+	powerValue: number | null;
+	heating: boolean | null;
+	water: boolean | null;
+	sewage: boolean | null;
+	gas: boolean | null;
+	steam: boolean | null;
+	internet: boolean | null;
+	internetType: string | null;
+
 }

@@ -1,6 +1,5 @@
 import { unitTypes } from "../../const/unitTypes";
 import { tradeOfferCharacteristics } from "@/const/tradeOfferCharacteristics";
-import { gateTypes } from "@/types/gateTypes.enum";
 import {aboutComplexProperties} from "@/const/aboutComplexProperties";
 
 export default {
@@ -186,7 +185,7 @@ export default {
             ...tradeOfferCharacteristics.characteristics.gatesNumber,
             valueMin: 5,
             valueMax: 5,
-            gateType: gateTypes.DOCK_TYPE,
+            gateType: "док. типа",
           },
           temperature: {
             ...tradeOfferCharacteristics.characteristics.temperature,
@@ -432,7 +431,7 @@ export default {
             ...tradeOfferCharacteristics.characteristics.gatesNumber,
             valueMin: 5,
             valueMax: 5,
-            gateType: gateTypes.DOCK_TYPE,
+            gateType: "док. типа",
           },
           temperature: {
             ...tradeOfferCharacteristics.characteristics.temperature,
@@ -667,7 +666,7 @@ export default {
             ...tradeOfferCharacteristics.characteristics.gatesNumber,
             valueMin: 5,
             valueMax: 5,
-            gateType: gateTypes.DOCK_TYPE,
+            gateType: "док. типа",
           },
           temperature: {
             ...tradeOfferCharacteristics.characteristics.temperature,

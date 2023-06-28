@@ -112,3 +112,17 @@ export const guardTypes: Record<number, string> = {
 	3: "Охрана собственника"
 }
 
+export const floorTypes: Record<number, string> = {
+	1: "Асфальт",
+	2: "Антипыль",
+	3: "Бет. плиты",
+	4: "Тех. плитка",
+	5: "Стяжка",
+}
+
+export const gateTypes: Record<number, string> = {
+	1: "док. типа",
+	2: "нулевой уровень",
+	3: "авторампа",
+	4: "ж/д рампа",
+}

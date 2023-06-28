@@ -36,19 +36,19 @@
       </div>
     </div>
     <div class="trade-offer-item__line">
-      <parameters
-        :height="parameters.summary.parameters.characteristics.height"
-        :floorType="parameters.summary.parameters.characteristics.floorType"
-        :gatesNumber="parameters.summary.parameters.characteristics.gatesNumber"
-        :electricity="parameters.summary.parameters.communications.electricity"
-        :heating="parameters.summary.parameters.communications.heating"
-        :sewage="parameters.summary.parameters.communications.sewage"
-        :gasForProduction="
-          parameters.summary.parameters.communications.gasForProduction
-        "
-        :liftingDevices="parameters.summary.parameters.liftingDevices.lifts"
-        :shelving="parameters.summary.parameters.facilities.shelving"
-      />
+<!--      <parameters-->
+<!--        :height="parameters.summary.parameters.characteristics.height"-->
+<!--        :floorType="parameters.summary.parameters.characteristics.floorType"-->
+<!--        :gatesNumber="parameters.summary.parameters.characteristics.gatesNumber"-->
+<!--        :electricity="parameters.summary.parameters.communications.electricity"-->
+<!--        :heating="parameters.summary.parameters.communications.heating"-->
+<!--        :sewage="parameters.summary.parameters.communications.sewage"-->
+<!--        :gasForProduction="-->
+<!--          parameters.summary.parameters.communications.gasForProduction-->
+<!--        "-->
+<!--        :liftingDevices="parameters.summary.parameters.liftingDevices.lifts"-->
+<!--        :shelving="parameters.summary.parameters.facilities.shelving"-->
+<!--      />-->
     </div>
     <div class="trade-offer-item__line">
       <offer-tabs :parameters="parameters" class="trade-offer-item__tabs" />
@@ -71,7 +71,7 @@ import {
   ITradeOfferPropeties,
   ITradeOfferStatus,
 } from "../tradeOfferTabs.interface";
-import Parameters from "../../ui/parameters/Parameters.vue";
+// import Parameters from "../../ui/parameters/Parameters.vue";
 import ActionButtons from "@/components/common/action-buttons/ActionButtons.vue";
 
 export default defineComponent({
@@ -79,7 +79,7 @@ export default defineComponent({
   components: {
     TradeOfferTable,
     TradeOfferStatus,
-    Parameters,
+    // Parameters,
     OfferTabs,
     ActionButtons,
   },

@@ -1,6 +1,5 @@
-import { floorTypes } from "@/types/floorTypes.enum";
+
 import { unitTypes } from "./unitTypes";
-import { gateTypes } from "@/types/gateTypes.enum";
 
 export interface ITradeOfferCharacteristics
   extends Record<string, Record<string, ICharacterictic>> {}
@@ -9,8 +8,8 @@ export interface ICharacterictic {
   name: string;
   required: boolean;
   unitType?: unitTypes;
-  floorType?: floorTypes;
-  gateType?: gateTypes;
+  floorType?: number;
+  gateType?: string;
   liftingDevicesWeight?: number[];
   valueMin?: number;
   valueMax?: number;
