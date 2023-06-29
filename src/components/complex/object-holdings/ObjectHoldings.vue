@@ -3,7 +3,7 @@
     <div class="ObjectHoldings-header">
       <p>СТРОЕНИЯ ({{ buildingsCount }}), УЧАСТКИ ({{ landsCount }})</p>
       <div class="ObjectHoldings-header-icons">
-        <button class="ObjectHoldings-header-button">
+        <button class="ObjectHoldings-header-button" @click="clickOpenCreateBuildingForm">
           <i class="fas fa-warehouse"></i>
         </button>
         <button class="ObjectHoldings-header-button">
@@ -11,6 +11,15 @@
         </button>
       </div>
     </div>
+		<teleport to="body">
+			<transition
+					mode="out-in"
+					enter-active-class="animate__animated animate__zoomIn for__modal absolute"
+					leave-active-class="animate__animated animate__zoomOut for__modal absolute"
+			>
+		<BuildingCreateForm v-if="createBuildingFormVisible" @close="clickCloseCreateBuildingForm" />
+			</transition>
+		</teleport>
     <div class="ObjectHoldings-body">
       <ObjectHolding
         v-for="object in objects"
@@ -24,10 +33,11 @@
 <script>
 import ObjectHolding from "./object-holding/ObjectHolding.vue";
 import "./styles.scss";
+import BuildingCreateForm from "@/components/complex/object-holdings/building-create-form/BuildingCreateForm.vue";
 
 export default {
   name: "ObjectHoldings",
-  components: { ObjectHolding },
+  components: {BuildingCreateForm, ObjectHolding },
   props: {
 		objects: {
       type: Array,
@@ -35,7 +45,9 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+			createBuildingFormVisible: false
+		};
   },
   computed: {
     buildingsCount() {
@@ -46,6 +58,14 @@ export default {
       return this.objects.filter((holding) => holding.type === 2).length;
     },
   },
+	methods: {
+		clickOpenCreateBuildingForm() {
+			this.createBuildingFormVisible = true;
+		},
+		clickCloseCreateBuildingForm() {
+			this.createBuildingFormVisible = false;
+		},
+	}
 };
 </script>
 
