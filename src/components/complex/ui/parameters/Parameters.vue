@@ -7,13 +7,6 @@
         :value="$formatter.number(object.ceilingHeight)"
       />
     </li>
-<!--    <li v-if="gatesNumber?.valueMin" class="object-parameters__item">-->
-<!--      <i class="fas fa-dungeon" />-->
-<!--      {{-->
-<!--        $formatter.numberOrRangeNew(gatesNumber.valueMin, gatesNumber.valueMax)-->
-<!--      }}-->
-<!--      ворот(а)-->
-<!--    </li>-->
     <li v-if="object.floorType" class="object-parameters__item">
       <i class="fas fa-arrow-down" />
       {{ object.floorType }}
@@ -41,32 +34,14 @@
       <i class="fas fa-shower" />
       Канализация
     </li>
-<!--    <li v-if="liftingDevices?.valueMin" class="object-parameters__item">-->
-<!--      <i class="fas fa-angle-double-up" />-->
-<!--      Подъемники-->
-<!--      <with-unit-type-->
-<!--        :unit-type="liftingDevices.unitType"-->
-<!--        :value="-->
-<!--          $formatter.numberOrRangeNew(-->
-<!--            liftingDevices.valueMin,-->
-<!--            liftingDevices.valueMax-->
-<!--          )-->
-<!--        "-->
-<!--      />-->
-<!--      - -->
-<!--      <p class="object-parameters__item object-parameters__item_list">-->
-<!--        <with-unit-type-->
-<!--          v-for="weight in liftingDevices.liftingDevicesWeight"-->
-<!--          :unit-type="unitTypes.TON"-->
-<!--          :key="weight"-->
-<!--          :value="weight"-->
-<!--        />-->
-<!--      </p>-->
-<!--    </li>-->
-<!--    <li v-if="shelving?.value" class="object-parameters__item">-->
-<!--      <i class="fa fa-th" />-->
-<!--      Стеллажи-->
-<!--    </li>-->
+		<li v-if="object.water" class="object-parameters__item">
+			<i class="fas fa-tint"></i>
+			Водоснабжение
+    </li>
+		<li v-if="object.water" class="object-parameters__item">
+			<i class="fas fa-wifi"></i>
+			Интернет, {{object.internetType}}
+    </li>
   </ul>
 </template>
 
@@ -87,40 +62,14 @@ export default defineComponent({
 			required: true,
 			default: () => {}
 		}
-    // height: {
-    //   type: Object as PropType<ICharacterictic>,
-    // },
-    // floorType: {
-    //   type: Object as PropType<ICharacterictic>,
-    // },
-    // gatesNumber: {
-    //   type: Object as PropType<ICharacterictic>,
-    // },
-    // electricity: {
-    //   type: Object as PropType<ICharacterictic>,
-    // },
-    // heating: {
-    //   type: Object as PropType<ICharacterictic>,
-    // },
-    // sewage: {
-    //   type: Object as PropType<ICharacterictic>,
-    // },
-    // gasForProduction: {
-    //   type: Object as PropType<ICharacterictic>,
-    // },
-    // liftingDevices: {
-    //   type: Object as PropType<ICharacterictic>,
-    // },
-    // shelving: {
-    //   type: Object as PropType<ICharacterictic>,
-    // },
   },
   data() {
     return {
       unitTypes,
     };
   },
-  computed: {},
+  computed: {
+	},
 });
 </script>
 
