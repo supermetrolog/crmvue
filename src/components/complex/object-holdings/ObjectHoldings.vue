@@ -77,10 +77,10 @@ export default {
 			this.createBuildingFormVisible = false;
 		},
 		clickOpenCreatePlotForm() {
-			this.createBuildingFormVisible = true;
+			this.createPlotFormVisible = true;
 		},
 		clickCloseCreatePlotForm() {
-			this.createBuildingFormVisible = false;
+			this.createPlotFormVisible = false;
 		},
 	}
 };

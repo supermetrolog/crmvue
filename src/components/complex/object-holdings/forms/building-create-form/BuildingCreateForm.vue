@@ -250,7 +250,7 @@
 <script>
 import {defineComponent} from "vue";
 import {helpers, required, minValue, maxValue} from "@vuelidate/validators";
-import {facingTypes, objectClassTypes, objectPurposes, ownTypes} from "@/const/constTypes";
+import {objectPurposes} from "@/const/constTypes";
 import {ObjectTypes} from "@/types/objectTypes.enum";
 import {ObjectForms} from "@/components/complex/object-holdings/forms/mixin";
 
@@ -322,13 +322,13 @@ export default defineComponent({
 			return result
 		},
 		objectClassOptions() {
-			return Object.values(objectClassTypes)
+			return Object.values(this.objectClassTypes)
 		},
 		facingTypeOptions() {
-			return Object.values(facingTypes)
+			return Object.values(this.facingTypes)
 		},
 		ownTypeOptions() {
-			return Object.values(ownTypes);
+			return Object.values(this.ownTypes);
 		}
 	}
 })

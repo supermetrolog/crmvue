@@ -1,4 +1,8 @@
 .plot-create-form {
+  &__text {
+    padding-top: 30px;
+    white-space: nowrap;
+  }
   &__form-group {
     & .multiselect-single-label {
     }
