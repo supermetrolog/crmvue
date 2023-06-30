@@ -45,12 +45,10 @@ const User = {
         async REFRESH_USER({ getters, commit }) {
             const access_token = localStorage.getItem('access_token');
             if (!getters.THIS_USER || !access_token) {
-                console.error("Can not refreshed user because THIS_USER not exist");
                 return;
             }
             let newUserData = await api.user.getUser(getters.THIS_USER.id);
             if (!newUserData) {
-                console.error("User not found");
                 return;
             }
             localStorage.setItem('user', JSON.stringify(newUserData));

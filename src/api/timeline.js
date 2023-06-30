@@ -10,7 +10,6 @@ export default {
             .get(url)
             .then((Response) => {
                 data = SuccessHandler.getData(Response);
-                console.log("Timeline", data);
             })
             .catch((e) => ErrorHandle.setError(e));
         return data;
@@ -22,7 +21,6 @@ export default {
             .get(url)
             .then((Response) => {
                 data = SuccessHandler.getData(Response);
-                console.log("comments", data);
             })
             .catch((e) => ErrorHandle.setError(e));
         return data;

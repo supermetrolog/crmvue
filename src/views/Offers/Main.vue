@@ -110,9 +110,7 @@ export default {
       if (!this.FAVORITES_OFFERS.length) {
         await this.SEARCH_FAVORITES_OFFERS();
       }
-      console.error("sssssssssssssssssssssssss");
       if (this.$route.query.favorites) {
-        console.log("FUUUUCK", this.FAVORITES_OFFERS, !this.FAVORITES_OFFERS);
 
         query.original_id = this.FAVORITES_OFFERS.map(
           (item) => item.original_id

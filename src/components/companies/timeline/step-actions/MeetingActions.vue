@@ -155,12 +155,10 @@ export default {
     ]),
     updatedRequest() {
       this.getCompanyRequests();
-      console.log("UPDATED");
     },
     updatedCompany() {
       this.getCompany();
       this.getCompanyContacts(false);
-      console.log("UPDATED");
     },
     async getCompany() {
       this.loaderCompany = true;
@@ -200,7 +198,6 @@ export default {
     },
 
     clickDeleteContact(contact) {
-      console.log(contact);
       this.deletedContactItem = contact;
     },
     async createComment(data) {

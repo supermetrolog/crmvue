@@ -8,7 +8,6 @@ export const TableContentMixin = {
     },
     methods: {
         async next(number) {
-            console.log("NEXXXXXXXXXXXX");
             let query = {...this.$route.query };
             query.page = number;
             await this.$router.replace({ query });
@@ -26,7 +25,6 @@ export const TableContentMixin = {
         await this.initialRouteSettings();
         this.mounted = true;
         this.watcher = this.$watch("$route", (newValue, oldValue) => {
-            console.log("ROUTE UPDATED HANDLER")
             if (newValue.path == oldValue.path) {
                 this.getContent();
             }
@@ -38,7 +36,6 @@ export const TableContentMixin = {
     },
 
     beforeUnmount() {
-        console.log("UNWATCH")
         this.mounted = false;
         if (this.watcher != null) {
             this.watcher()
@@ -95,14 +92,12 @@ export const SearchFormMixin = {
             } else {
                 query = {...this.form };
             }
-            // console.warn(query);
             this.deleteEmptyFields(query);
 
             query.page = 1;
             if (!this.noUrl) {
                 this.$router.replace({ query });
             }
-            console.log("EMIT SEARCH EVENT")
             this.$emit('search', query);
         },
         resetForm() {
@@ -137,18 +132,14 @@ export const SearchFormMixin = {
             this.$watch(
                 "queryParams",
                 () => {
-                    console.log("QUERY PARAM")
                     this.setQueryFieldsNoUrl();
                 }, { deep: true }
             );
             this.setQueryFieldsNoUrl();
         }
-        console.log(this.form);
         this.$watch(
             "form",
             () => {
-                console.log("FORM WATCHER");
-                console.error("SUKA");
                 clearTimeout(this.setTimeout);
                 this.setTimeout = setTimeout(() => this.onSubmit(), 500);
             }, { deep: true }
@@ -156,7 +147,6 @@ export const SearchFormMixin = {
 
     },
     beforeUnmount() {
-        console.log("UNMOUNT");
         clearTimeout(this.setTimeout);
     },
 };

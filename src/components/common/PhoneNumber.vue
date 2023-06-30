@@ -177,7 +177,6 @@ export default {
         );
         this.loader = false;
       }
-      console.log("CLICK LINK");
     },
     async refreshContacts() {
       this.companyContacts = await api.contacts.getContacts(

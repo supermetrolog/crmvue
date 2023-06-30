@@ -71,7 +71,6 @@ export default {
       this.loader = true;
       const query = this.$route.query;
       await this.SEARCH_REQUESTS({ query });
-      console.error(this.REQUESTS);
       this.loader = false;
     },
   },

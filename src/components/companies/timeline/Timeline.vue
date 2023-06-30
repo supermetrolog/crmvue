@@ -125,7 +125,6 @@ export default {
     ]),
     selectedStep() {
       if (this.TIMELINE) {
-        console.warn("STEPS", this.TIMELINE.timelineSteps);
         return this.TIMELINE.timelineSteps[this.$route.query.step];
       }
       return false;

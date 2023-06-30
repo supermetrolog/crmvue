@@ -264,8 +264,7 @@ export default {
         (pos) => {
           this.userLocation = [pos.coords.latitude, pos.coords.longitude];
         },
-        (err) => {
-          console.warn(`ERROR(${err.code}): ${err.message}`);
+        () => {
         },
         options
       );
@@ -287,7 +286,6 @@ export default {
     },
     stageClicked(id) {
       this.clickedStage = id;
-      console.log(id, "12312313");
     },
     sendRoute(sendToClient = false) {
       this.$emit("sendRoute", this.routeLink, sendToClient);

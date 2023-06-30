@@ -443,7 +443,6 @@ export default {
     onSubmit() {
       this.v$.$validate();
       if (!this.v$.form.$error) {
-        console.log(this.form);
         this.loader = true;
         if (this.formdata) {
           this.updateCompany();
@@ -493,7 +492,6 @@ export default {
   watch: {
     form: {
       handler() {
-        console.log("FORM: ", this.form);
       },
       deep: true,
     },

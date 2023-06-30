@@ -199,13 +199,13 @@ const routes = [
     ],
   },
   {
-    path: "/objects/:id",
-    name: "ObjectView",
+    path: "/complex/:complex_id",
+    name: "ComplexView",
     meta: {
       layout: "main",
       auth: { isAuth: true, role: ["moderator", "administrator"] },
     },
-    component: () => import("@/views/ObjectView/ObjectView.vue"),
+    component: () => import("@/views/ComplexView/ComplexView.vue"),
   },
   {
     path: "/:catchAll(.*)",
@@ -228,7 +228,6 @@ const router = createRouter({
   routes,
 });
 router.beforeEach((to, from, next) => {
-  // console.log("To:", to, "From:", from, next);
   const access_token = localStorage.getItem("access_token");
   if (to.meta.auth.isAuth && !access_token) {
     return next({ name: "login", replace: true });

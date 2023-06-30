@@ -70,7 +70,6 @@ export default {
       .post(url, formdata, config)
       .then((Response) => {
         data = SuccessHandler.getData(Response);
-        console.warn("Responce server: ", data);
       })
       .catch((e) => ErrorHandle.setError(e));
     return data;
@@ -121,7 +120,6 @@ export default {
     return data;
   },
   async searchCompanies(query) {
-    console.warn("SEARCH");
     query = new URLSearchParams(query).toString();
     let url =
       "companies?" +

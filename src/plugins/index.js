@@ -1,14 +1,11 @@
+import {dateFormatter} from "@/utils/dateFormatter";
+
 const textFormatter = {
   ucFirst(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   },
 };
-const dateFormatter = {
-  locale(date, locale, options) {
-    const localDate = new Date(date);
-    return localDate.toLocaleDateString(locale, options);
-  },
-};
+
 export const formatterObject = {
   currency(number, leng = "ru", options = {}) {
     const defaultOptions = {
@@ -198,15 +195,13 @@ const generator = {
 };
 
 export const Formatter = {
-  install(app, options) {
-    console.log(app, options);
+  install(app) {
     app.config.globalProperties.$formatter = formatterObject;
   },
 };
 
 export const ApiUrlHelper = {
-  install(app, options) {
-    console.log(app, options);
+  install(app) {
     app.config.globalProperties.$apiUrlHelper = apiUrlHelperObject;
   },
 };

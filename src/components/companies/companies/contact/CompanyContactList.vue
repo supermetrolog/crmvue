@@ -114,7 +114,6 @@ export default {
       this.deletedContactItem = null;
     },
     clickDeleteContact(contact) {
-      console.log(contact);
       this.deletedContactItem = contact;
     },
     async createComment(data) {
@@ -132,7 +131,6 @@ export default {
     },
   },
   mounted() {
-    // console.log("anal", this.contacts);
   },
   emits: ["openContactFormForUpdate", "createComment", "deleteContact"],
 };

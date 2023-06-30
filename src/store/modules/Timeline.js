@@ -12,7 +12,6 @@ const Timeline = {
             state.timelineList = data.timelineList;
         },
         updateStep(state, data) {
-            console.log("UPDATED");
             state.timeline.timelineSteps = state.timeline.timelineSteps.map((step) => {
                 if (step.id === data.id) {
                     step = data;
@@ -31,7 +30,6 @@ const Timeline = {
         },
         async UPDATE_STEP(context, newStep) {
             // context.commit('updateStep', newStep)
-            // console.error(newStep);
             return await api.timeline.updateTimelineStep(newStep);
         },
         async CREATE_NEW_BRANCH(context, step) {

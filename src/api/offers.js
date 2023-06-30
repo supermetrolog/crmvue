@@ -3,7 +3,6 @@ import ErrorHandle from "./errors";
 import SuccessHandler from "./success";
 export default {
   async search(query) {
-    console.warn("SEARCH OFFERS");
     query = new URLSearchParams(query).toString();
     let url = "oldDb/objects/offers?" + query;
     let data = false;
@@ -18,7 +17,6 @@ export default {
     return data;
   },
   async searchCount(query) {
-    console.warn("SEARCH OFFERS COUNT");
     query = new URLSearchParams(query).toString();
     let url = "oldDb/objects/offers-count?" + query;
     let data = false;
@@ -31,7 +29,6 @@ export default {
     return data;
   },
   async searchMap(query) {
-    console.warn("SEARCH OFFERS");
     query = new URLSearchParams(query).toString();
     let url = "oldDb/objects/offers-map?" + query;
     let data = false;
@@ -47,7 +44,6 @@ export default {
   },
 
   async searchMapCount(query) {
-    console.warn("SEARCH OFFERS COUNT");
     query = new URLSearchParams(query).toString();
     let url = "oldDb/objects/offers-map-count?" + query;
     let data = false;

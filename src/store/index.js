@@ -15,6 +15,7 @@ import CompanyObjects from "./modules/CompanyObjects";
 import Offers from "./modules/Offers";
 import CallerManager from "./modules/CallerManager";
 import Location from "./modules/Location";
+import Complex from "./modules/complex";
 import axios from "axios";
 const store = createStore({
   state: {},
@@ -29,9 +30,7 @@ const store = createStore({
       window.name = "";
     },
     async INIT(context) {
-      console.log("INIT");
       if (!localStorage.getItem("user")) {
-        console.error("User not found in localStorage!");
         return false;
       }
       await context.dispatch("SET_USER");
@@ -44,7 +43,6 @@ const store = createStore({
       context.dispatch("REFRESH_USER");
     },
     DESTROY(context) {
-      console.log("DESTROY");
       context.dispatch("WEBSOCKET_STOP");
       context.dispatch("DROP_USER");
       context.dispatch("UNSET_WINDOW_NAME");
@@ -68,6 +66,7 @@ const store = createStore({
     Offers,
     CallerManager,
     Location,
+    Complex,
   },
 });
 store.checkAction = function (name) {

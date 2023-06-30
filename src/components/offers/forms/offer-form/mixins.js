@@ -135,7 +135,6 @@ export default {
         ...mapActions(["FETCH_CONSULTANT_LIST", "FETCH_REGION_LIST"]),
         setDefaultFields(){
             this.form = {...this.$options.defaultFormProperties};
-            console.log(this.form.page);
         },
         async setQueryFields() {
             this.form = { ...this.form, ...this.$route.query };
@@ -226,7 +225,6 @@ export default {
             if (isSelected) {
                 this.form.object_type.push(type);
             }
-            console.log(isSelected, type);
         },
         clickFavorites() {
             if (this.form.favorites) {

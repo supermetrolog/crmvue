@@ -130,7 +130,6 @@ export default {
                 if (Object.hasOwnProperty.call(this.$route.query, key)) {
                     const value = this.$route.query[key];
                     if (key === 'region'){
-                        console.log(this.$route.query['fakeRegion']);
                         list.push(this.getFilterListOption('region', this.$route.query['fakeRegion']));
                         continue;
                     }

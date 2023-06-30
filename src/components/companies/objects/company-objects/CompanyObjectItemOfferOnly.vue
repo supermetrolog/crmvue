@@ -441,7 +441,6 @@ export default {
   watch: {
     offer: {
       handler() {
-        console.log("UPDATE OFFER", this.offer.comments);
       },
       deep: true,
     },

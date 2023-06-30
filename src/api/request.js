@@ -90,7 +90,6 @@ export default {
 
   async undisable(request_id) {
     const url = `requests/undisable/${request_id}`;
-    console.log(request_id, 13);
     let data = false;
     await axios
       .patch(url)

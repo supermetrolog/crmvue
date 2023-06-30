@@ -27,7 +27,6 @@ export default {
   },
 
   mounted() {
-    console.error(this.call.phoneTo);
   },
 };
 </script>

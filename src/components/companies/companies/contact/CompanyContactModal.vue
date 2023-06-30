@@ -234,7 +234,6 @@ export default {
         all: query,
       };
       result = await api.companies.searchCompanies(query);
-      console.log("RES", result);
       result.data.forEach((item) => {
         array.push({ value: item.id, label: item.full_name });
       });

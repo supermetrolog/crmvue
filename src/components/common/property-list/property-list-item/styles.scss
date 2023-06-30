@@ -11,33 +11,16 @@
     white-space: nowrap;
     overflow-x: clip;
     text-overflow: ellipsis;
+    font-weight: normal;
   }
   &-value {
     width: 40%;
-    white-space: nowrap;
-    font-weight: 400;
-    overflow-x: clip;
-    text-overflow: ellipsis;
-    display: flex;
-    flex-wrap: nowrap;
-    p {
-      font-weight: 400;
-    }
-    &-lift {
-      display: flex;
-      flex-wrap: nowrap;
-      & span {
-        color: $color_grey;
-      }
-    }
-    & > p > span {
-      color: $color_grey;
-    }
-    &_small {
-      font-size: 12px;
-    }
-    &.not-filled {
-      color: $color_grey;
+    font-weight: normal;
+    color: $color_grey;
+
+    & p {
+      font-weight: normal;
+      white-space: nowrap;
     }
   }
   &:nth-child(odd) {

@@ -125,7 +125,6 @@ export default {
   methods: {
     ...mapActions(["FETCH_CONSULTANT_LIST", "FETCH_COMPANY_REQUESTS"]),
     onSubmit() {
-      // console.log(this.deal, this.COMPANY_REQUESTS, this.v$.form.$error);
       this.v$.$validate();
       if (!this.v$.form.$error) {
         this.data.requestDealData = this.form;

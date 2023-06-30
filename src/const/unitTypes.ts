@@ -1,5 +1,6 @@
 export enum unitTypes {
-  SQUARE_METERS = 1,
+  NONE,
+  SQUARE_METERS,
   RUB_PER_MONTH,
   METERS,
   KILOWATT,

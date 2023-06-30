@@ -646,7 +646,6 @@ export default {
     ]),
     onSubmit() {
       this.v$.$validate();
-      console.error(email.$validator("fuck@suck.ru"));
       if (!this.v$.form.$error) {
         this.loader = true;
         if (this.formdata) {
@@ -764,7 +763,6 @@ export default {
   watch: {
     form: {
       handler() {
-        console.log("FORM: ", this.form.contacts.phones);
       },
       deep: true,
     },

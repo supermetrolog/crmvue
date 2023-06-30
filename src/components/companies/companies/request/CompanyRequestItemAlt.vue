@@ -308,7 +308,6 @@ export default {
         .name;
     },
     clickOnItem(event) {
-      console.log(event.target.tagName);
       if (
         this.reedOnly ||
         ["I", "BUTTON", "A"].includes(event.target.tagName)
@@ -316,7 +315,6 @@ export default {
         return;
       }
 
-      console.log("click on item");
       const query = { ...this.$route.query };
       if (query.selected_request && query.selected_request == this.request.id) {
         delete query.selected_request;

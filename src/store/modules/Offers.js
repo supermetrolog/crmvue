@@ -44,7 +44,6 @@ const Offers = {
     },
     setWaitHash(state, hash) {
       state.wait_hash = hash;
-      console.warn("SET WAIT HASH", state.wait_hash);
     },
     addFavoritesOffer(state, data) {
       state.favoritesOffers.push(data);

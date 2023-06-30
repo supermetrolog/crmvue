@@ -1,0 +1,36 @@
+.ComplexHeader {
+  display: flex;
+
+  z-index: 6;
+
+  padding: 30px 20px 15px;
+  margin: 0 -5px;
+
+  background: #f7faff;
+  &-content {
+    width: 80%;
+  }
+  &-name {
+    font-size: 26px;
+  }
+  &-description {
+    font-size: 12px;
+    color: $color_grey;
+    strong {
+      color: black;
+    }
+  }
+  &-actions {
+    width: 20%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    button {
+      cursor: pointer;
+      font-size: 15px;
+      border-radius: 100%;
+      width: 30px;
+      height: 30px;
+    }
+  }
+}

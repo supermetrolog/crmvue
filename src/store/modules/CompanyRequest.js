@@ -19,7 +19,6 @@ const CompanyRequest = {
             } else {
                 state.requests = data.data;
             }
-            console.log(concat);
 
         },
         deleteRequest(state, request_id) {
@@ -27,17 +26,14 @@ const CompanyRequest = {
         },
         setRequestWaitHash(state, hash) {
             state.request_wait_hash = hash;
-            console.warn("SET WAIT HASH", state.request_wait_hash);
         },
     },
     actions: {
         async SEARCH_REQUESTS(context, { query, concat = false }) {
             let hash = waitHash(query);
             context.commit('setRequestWaitHash', hash);
-            console.warn('HASH1', hash, 'HASH2', context.getters);
             const data = await api.request.searchRequests(query);
             if (data) {
-                console.error('HASH1', hash, 'HASH2', context.getters.REQUEST_WAIT_HASH);
                 if (hash == context.getters.REQUEST_WAIT_HASH) {
                     context.commit('updateRequests', { data, concat });
 

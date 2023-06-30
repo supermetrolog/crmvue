@@ -156,7 +156,6 @@ export default {
       this.userForDelete = null;
     },
     clickDeleteUser(user) {
-      console.log(user);
       this.userForDelete = user;
     },
     async deleteUser(user) {

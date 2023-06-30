@@ -102,6 +102,12 @@
     т.
   </span>
   <span
+    v-else-if="unitType === unitTypes.TON_PER_SQUARE_METER"
+    class="unit-type__unit unit-type__unit_size_small"
+  >
+    т./м<sup>2</sup>
+  </span>
+  <span
     v-else-if="unitType === unitTypes.PIECES"
     class="unit-type__unit unit-type__unit_size_small"
   >
@@ -129,7 +135,6 @@ export default defineComponent({
   props: {
     unitType: {
       type: Number,
-      reuqired: true,
     },
   },
   data() {

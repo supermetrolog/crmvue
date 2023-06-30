@@ -1,0 +1,53 @@
+.ComplexAbout {
+  margin-bottom: 20px;
+  &-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 10px;
+  }
+
+  &-property {
+    color: black;
+    display: flex;
+    gap: 5px;
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    & span {
+      color: $color_grey;
+      white-space: nowrap;
+      overflow-x: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+  .tabs-component-panels {
+    padding: 10px;
+  }
+  .tabs-component-tab-a::before {
+    background-color: $color_success;
+  }
+  .tabs-component-tab-a.is-active {
+    color: $color_success;
+  }
+  @media screen and (max-width: $laptop_size) {
+    .ComplexAbout {
+      &-content {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+    }
+  }
+  @media screen and (max-width: $tablet_size) {
+    .ComplexAbout {
+      &-content {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  }
+  @media screen and (max-width: $phone_size) {
+    .ObjectAbout {
+      &-content {
+        grid-template-columns: 1fr;
+      }
+    }
+  }
+}

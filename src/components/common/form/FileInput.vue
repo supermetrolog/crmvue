@@ -222,7 +222,6 @@ export default {
         this.files = this.files.filter((_, idx) => idx != index);
       }
       this.$emit("update:data", this.files);
-      console.log(this.data, this.files);
     },
     onChange($event) {
       this.localFiles = [];

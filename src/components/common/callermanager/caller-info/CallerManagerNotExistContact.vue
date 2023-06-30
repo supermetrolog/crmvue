@@ -81,7 +81,6 @@ export default {
       this.companyFormVisible = false;
     },
     createdCompany(company_id) {
-      console.log(company_id);
       this.createdCompanyId = company_id;
     },
   },

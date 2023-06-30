@@ -131,7 +131,6 @@ export default {
   },
   computed: {
     currentComponent() {
-      console.log(this.viewMode);
       if (this.viewMode) {
         return "CompanyObjectItemOfferOnly";
       }

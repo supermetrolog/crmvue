@@ -53,7 +53,6 @@ export default {
   methods: {
     ...mapActions(["SEARCH_OFFERS", "SEARCH_FAVORITES_OFFERS"]),
     filterByPolygon(coordinates) {
-      console.log(coordinates);
       const query = { ...this.$route.query };
       query.polygon = coordinates;
       this.$router.replace({ query });
@@ -85,7 +84,6 @@ export default {
         delete query.original_id;
       }
       const hash = waitHash(query);
-      console.log(hash, this.ymapOffersSearchHash);
       if (hash == this.ymapOffersSearchHash) {
         return;
       }
@@ -101,12 +99,9 @@ export default {
       }
       this.allOffersLoader = withLoader;
 
-      console.log(hash, this.ymapOffersSearchHash);
       this.ymapOffersSearchHash = hash;
       const data = await api.offers.search(query);
-      console.error(Array.isArray(data.data));
       if (Array.isArray(data.data)) {
-        console.warn(hash, this.ymapOffersSearchHash);
         if (hash == this.ymapOffersSearchHash) {
           this.allOffersForYmap = data.data;
         } else {
@@ -114,7 +109,6 @@ export default {
         }
       }
       this.allOffersLoader = false;
-      console.error(data);
       return data;
     },
     // Переопределено из миксина (судя по всему)

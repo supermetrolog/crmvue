@@ -3,7 +3,6 @@ import ErrorHandle from "./errors";
 import SuccessHandler from "./success";
 export default {
   async search(query) {
-    console.warn("SEARCH");
     query = new URLSearchParams(query).toString();
     let url =
       "oldDb/objects?" +
@@ -21,7 +20,6 @@ export default {
     return data;
   },
   async searchOffers(query) {
-    console.warn("SEARCH OFFERS");
     query = new URLSearchParams(query).toString();
     let url = "oldDb/objects/offers?" + query;
     let data = false;
