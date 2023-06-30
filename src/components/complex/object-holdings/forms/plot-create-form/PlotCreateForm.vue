@@ -1,16 +1,16 @@
 <template>
-	<div class="building-create-form">
+	<div class="plot-create-form">
 		<Modal
-				:title="false ? 'Редактирование строения' : 'Создание строения'"
+				:title="false ? 'Редактирование участка' : 'Создание участка'"
 				@close="$emit('close')"
 				classes="autosize"
 		>
 			<Loader class="center" v-if="loader"/>
 			<Form @submit="onSubmit" class="center">
-				<Tabs :options="{ useUrlFragment: false, defaultTabHash: 'main' }" nav-class="building-create-form__tab-list"
-							nav-item-link-class="building-create-form__tab-link">
+				<Tabs :options="{ useUrlFragment: false, defaultTabHash: 'main' }" nav-class="plot-create-form__tab-list"
+							nav-item-link-class="plot-create-form__tab-link">
 					<Tab name="Основное" id="main">
-						<FormGroup class="mb-1 building-create-form__form-group building-create-form__form-group_long">
+						<FormGroup class="mb-1 plot-create-form__form-group plot-create-form__form-group_long">
 							<MultiSelect
 									v-model="form.address"
 									extraClasses="long-text"
@@ -29,7 +29,7 @@
 									@change="onChangeAddress"
 							/>
 						</FormGroup>
-						<FormGroup class="mb-1 building-create-form__form-group building-create-form__form-group_long">
+						<FormGroup class="mb-1 plot-create-form__form-group plot-create-form__form-group_long">
 							<MultiSelect
 									v-model="form.company_id"
 									extraClasses="long-text"
@@ -256,7 +256,7 @@ import {ObjectForms} from "@/components/complex/object-holdings/forms/mixin";
 
 
 export default defineComponent({
-	name: "BuildingCreateForm",
+	name: "PlotCreateForm",
 	mixins: [ObjectForms],
 	data() {
 		return {
@@ -334,4 +334,4 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss" src="./BuildingCreateForm.scss"/>
+<style lang="scss" src="./PlotCreateForm.scss"/>

@@ -1,0 +1,117 @@
+import Checkbox from "@/components/common/form/Checkbox.vue";
+import Textarea from "@/components/common/form/Textarea.vue";
+import Radio from "@/components/common/form/Radio.vue";
+import Input from "@/components/common/form/Input.vue";
+import FileInput from "@/components/common/form/FileInput.vue";
+import CheckboxIcons from "@/components/common/form/CheckboxIcons.vue";
+import MultiSelect from "@/components/common/form/MultiSelect.vue";
+import Submit from "@/components/common/form/Submit.vue";
+import Form from "@/components/common/form/Form.vue";
+import FormGroup from "@/components/common/form/FormGroup.vue";
+import useValidate from "@vuelidate/core";
+import {
+	entryFeeTypes,
+	entryTerritoryTypes,
+	facingTypes, gasTypes, guardTypes, internetTypes, landCategoryTypes, landscapeTypes,
+	objectClassTypes,
+	objectPurposes,
+	ownTypes, ownTypesLand, waterTypes
+} from "@/const/constTypes";
+import {helpers, required} from "@vuelidate/validators";
+import {mapActions} from "vuex";
+import {yandexmap} from "@/utils/index.js";
+
+export const ObjectForms = {
+	components: {Checkbox, Textarea, Radio, Input, FileInput, CheckboxIcons, MultiSelect, Submit, Form, FormGroup},
+	data() {
+		return {
+			loader: false,
+			v$: useValidate(),
+			selectedCompany: null,
+			objectPurposes,
+			objectClassTypes,
+			facingTypes,
+			ownTypesLand,
+			landCategoryTypes,
+			landscapeTypes,
+			entryTerritoryTypes,
+			entryFeeTypes,
+			waterTypes,
+			gasTypes,
+			internetTypes,
+			guardTypes,
+			ownTypes,
+			form: {
+				address: null,
+				company_id: null,
+				object_type: [],
+				purposes: [],
+				area_building: null,
+				area_floor_full: null,
+				area_mezzanine_full: null,
+				area_office_full: null,
+				area_tech_full: null,
+				object_class: null,
+				facing_type: null,
+				own_type: null,
+				year_build: null,
+				year_repair: null,
+				cadastral_number: null,
+				test_only: null,
+				land_use_restrictions: null,
+				description: null,
+				layouts: [],
+				layoutsList: [],
+				panoramas: [],
+				panoramasList: [],
+				presentations: [],
+				presentationsList: [],
+				ownerShipDocuments: [],
+				ownerShipDocumentsList: [],
+				photos: [],
+				photosList: [],
+
+			},
+		}
+	},
+	validations() {
+		return {
+			form: {
+				address: {
+					required: helpers.withMessage("заполните поле", required),
+				},
+				company_id: {
+					required: helpers.withMessage("заполните поле", required),
+				},
+			}
+		}
+	},
+	methods: {
+		...mapActions([
+			"SEARCH_COMPANIES",
+		]),
+		onSubmit() {
+			console.log("SUBMIT");
+		},
+		onChangeAddress() {
+			console.log("CHANGE ADDRESS")
+		},
+		async onChangeCompany() {
+			console.log("CHANGE COMPANY")
+		},
+		async searchCompany() {
+			return ["ОАО Тореадор", "ЗАО ИнкЛомМет"]
+		},
+		async searchAddress(query) {
+			return await yandexmap.getAddress(query);
+		},
+		selectObjectType(isSelected, type) {
+			this.form.object_type = this.form.object_type.filter(
+				(item) => item !== type
+			);
+			if (isSelected) {
+				this.form.object_type.push(type);
+			}
+		},
+	},
+}
