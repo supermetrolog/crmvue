@@ -26,7 +26,7 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
 	}
 
 	get name(): string | null {
-		return this._name;
+		return this._title;
 	}
 
 	get fromMkad(): number | null {
@@ -279,7 +279,7 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
 	private _consultant_name: string | null = null;
 	private _last_update: number | null = null;
 	private _publ_time: number | null = null;
-	private _name: string | null = null;
+	private _title: string | null = null;
 	private _from_mkad: number | null = null;
 	private _area_field_full: number | null = null;
 	private _area_building: number | null = null;

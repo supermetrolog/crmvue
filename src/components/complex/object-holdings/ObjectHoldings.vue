@@ -33,7 +33,7 @@
 <script>
 import ObjectHolding from "./object-holding/ObjectHolding.vue";
 import "./styles.scss";
-import BuildingCreateForm from "@/components/complex/object-holdings/building-create-form/BuildingCreateForm.vue";
+import BuildingCreateForm from "@/components/complex/object-holdings/forms/building-create-form/BuildingCreateForm.vue";
 
 export default {
   name: "ObjectHoldings",
