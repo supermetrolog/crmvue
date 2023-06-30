@@ -138,7 +138,7 @@
 									v-model="form.facing_type"
 									title="Внешняя отделка"
 									label="Внешняя отделка"
-									class="col-4 pl-1"
+									class="col-4 px-1"
 									:options="facingTypeOptions"
 							/>
 							<MultiSelect
