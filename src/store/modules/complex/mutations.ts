@@ -21,16 +21,9 @@ export const mutations: MutationTree<IComplexState> & IComplexMutations = {
 		});
 		complex.load({
 			...payload,
-			consultant_name: "Иванов Иван",
 			managment_company_value: null,
 			objects,
 			...payload.location,
-			districtRecord: {
-				...payload.location.districtRecord,
-				districtTypeRecord: {
-					"title": "городской округ"
-				}
-			}
 		});
 		state.complex = complex;
 	},

@@ -14,7 +14,7 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
 	}
 
 	get consultantName(): string | null {
-		return this._consultant_name;
+		return this._author ? this._author.userProfile.full_name : null;
 	}
 
 	get lastUpdatedAt(): string | null {
@@ -87,8 +87,7 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
 	}
 
 	get waterType(): string[] | null {
-		// return this._water_type?.map(el => waterTypes[el]) || null;
-		return ["Скважина", "Центральное"]
+		return this._water_type?.map(el => waterTypes[el]) || null;
 	}
 
 	get waterValue(): number | null {
@@ -235,7 +234,7 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
 	get district(): IAddressItem | null {
 		return this._districtRecord ? {
 			title: this._districtRecord.title,
-			type: this._districtRecord.districtTypeRecord.title
+			type: this._districtTypeRecord?.title
 		} : null;
 	}
 
@@ -276,7 +275,7 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
 	}
 
 	private _id: bigint | null = null;
-	private _consultant_name: string | null = null;
+	private _author: IAuthorRes | null = null;
 	private _last_update: number | null = null;
 	private _publ_time: number | null = null;
 	private _title: string | null = null;
@@ -330,7 +329,14 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
 	private _highwayRecord: IComplexAddress | null = null;
 	private _directionRecord: IComplexAddress | null = null;
 	private _districtRecord: IComplexAddress | null = null;
+	private _districtTypeRecord: IComplexAddress | null = null;
 	private _districtMoscowRecord: IComplexAddress | null = null;
 	private _townRecord: IComplexAddress | null = null;
 	private _metroRecord: IComplexAddress | null = null;
+}
+
+interface IAuthorRes {
+	userProfile: {
+		full_name: string;
+	}
 }

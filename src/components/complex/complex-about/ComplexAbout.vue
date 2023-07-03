@@ -31,7 +31,7 @@
 																:value="$formatter.number(complex.areaTechFull)"/>
 							</PropertyListItem>
 							<PropertyListItem name="Управляющая компания">
-								<p v-if="complex.managmentCompany !== null" class="ComplexAbout-property">
+								<p v-if="complex.managmentCompany !== null && complex.managmentCompanyValue !== null" class="ComplexAbout-property">
 									{{ managmentCompany }}
 								</p>
 							</PropertyListItem>
@@ -66,8 +66,8 @@
 							</PropertyListItem>
 							<PropertyListItem name="Водоснабжение">
 								<template v-if="complex.water !== null">
-									<p class="ComplexAbout-property" v-if="complex.water" :title="'есть, ' + joinedWaterType">
-										есть,
+									<p class="ComplexAbout-property" v-if="complex.water" :title="'есть ' + joinedWaterType">
+										есть{{complex.waterType?.length > 0 ? ',' : null}}
 										<with-unit-type
 												v-if="complex.waterValue"
 												:unit-type="unitTypes.CUBE_METERS_PER_HOUR"
