@@ -152,169 +152,307 @@
 						</FormGroup>
 						<p class="plot-create-form__label">Коммуникации</p>
 						<FormGroup class="mb-1">
-							<div class="col-6 row no-gutters">
-								<Radio
-										v-model="form.power"
-										label="Электроснаб."
-										class="col-5 pr-1"
-										:options="[[0, 'нет'], [1, 'да']]"
-										required
-								/>
-								<Input
-										v-if="form.power"
-										v-model="form.power_value"
-										:v="v$.form.power_value"
-										class="col-5 px-1 pt-4"
-										type="number"
-										required
-								/>
-								<p v-if="form.power" class="col-2 plot-create-form__text pr-2">кВт</p>
-							</div>
-							<div class="col-6 row no-gutters">
-								<Radio
-										v-model="form.heating_central"
-										label="Центр. отоплен."
-										class="col-10 pl-3"
-										:options="[[0, 'нет'], [1, 'да']]"
-										required
-								/>
-							</div>
+							<Radio
+									v-model="form.power"
+									label="Электроснаб."
+									class="col-3 pr-1"
+									:options="[[0, 'нет'], [1, 'да']]"
+									required
+							/>
+							<Input
+									v-if="form.power"
+									label="Значение"
+									v-model="form.power_value"
+									:v="v$.form.power_value"
+									class="col-4 px-1"
+									type="number"
+									required
+							/>
+							<p v-if="form.power" class="col-1 plot-create-form__text pr-2">кВт</p>
+							<Radio
+									v-model="form.heating_central"
+									label="Центр. отоплен."
+									class="col-4 pl-3"
+									:options="[[0, 'нет'], [1, 'да']]"
+									required
+							/>
 						</FormGroup>
 						<FormGroup class="mb-1">
-							<div class="col-6 row no-gutters">
-								<Radio
-										v-model="form.water"
-										label="Водоснабжен."
-										class="col-5 pr-1"
-										:options="[[0, 'нет'], [1, 'да']]"
-										required
-								/>
-								<Input
-										v-if="form.water"
-										v-model="form.water_value"
-										:v="v$.form.water_value"
-										class="col-5 px-1 pt-4"
-										type="number"
-										required
-								/>
-								<p v-if="form.water" class="col-2 plot-create-form__text pr-2">м<sup>3</sup>/сут</p>
-							</div>
-							<div class="col-6 row no-gutters" v-if="form.water">
-								<MultiSelect
-										v-model="form.water_type"
-										:v="v$.form.water_type"
-										title="Тип"
-										label="Тип"
-										class="col-10 pl-3"
-										required
-										:options="waterTypeOptions"
-								/>
-							</div>
+							<Radio
+									v-model="form.water"
+									label="Водоснабжен."
+									class="col-3 pr-1"
+									:options="[[0, 'нет'], [1, 'да']]"
+									required
+							/>
+							<Input
+									v-if="form.water"
+									v-model="form.water_value"
+									label="Значение"
+									:v="v$.form.water_value"
+									class="col-4 px-1"
+									type="number"
+									required
+							/>
+							<p v-if="form.water" class="col-1 plot-create-form__text pr-2">м<sup>3</sup>/сут</p>
+							<MultiSelect
+									v-model="form.water_type"
+									v-if="form.water"
+									:v="v$.form.water_type"
+									title="Тип"
+									label="Тип"
+									class="col-4 pl-3"
+									required
+									:options="waterTypeOptions"
+							/>
 						</FormGroup>
 						<FormGroup class="mb-1">
-							<div class="col-6 row no-gutters">
-								<Radio
-										v-model="form.sewage_central"
-										label="Канализ. центр."
-										class="col-5 pr-1"
-										:options="[[0, 'нет'], [1, 'да']]"
-										required
-								/>
-								<Input
-										v-if="form.sewage_central"
-										v-model="form.sewage_central_value"
-										:v="v$.form.sewage_central_value"
-										class="col-5 px-1 pt-4"
-										type="number"
-										required
-								/>
-								<p v-if="form.sewage_central" class="col-2 plot-create-form__text pr-2">м<sup>3</sup>/сут</p>
-							</div>
-							<div class="col-6 row no-gutters">
-								<Radio
-										v-model="form.sewage_rain"
-										label="Канализ. ливн."
-										class="col-10 pl-3"
-										:options="[[0, 'нет'], [1, 'да']]"
-								/>
-							</div>
+							<Radio
+									v-model="form.sewage_central"
+									label="Канализ. центр."
+									class="col-3 pr-1"
+									:options="[[0, 'нет'], [1, 'да']]"
+									required
+							/>
+							<Input
+									v-if="form.sewage_central"
+									v-model="form.sewage_central_value"
+									label="Значение"
+									:v="v$.form.sewage_central_value"
+									class="col-4 px-1"
+									type="number"
+									required
+							/>
+							<p v-if="form.sewage_central" class="col-1 plot-create-form__text pr-2">м<sup>3</sup>/сут</p>
+							<Radio
+									v-model="form.sewage_rain"
+									label="Канализ. ливн."
+									class="col-4 pl-3"
+									:options="[[0, 'нет'], [1, 'да']]"
+							/>
 						</FormGroup>
 						<FormGroup class="mb-1">
-							<div class="col-6 row no-gutters">
-								<Radio
-										v-model="form.gas"
-										label="Газ"
-										class="col-5 pr-1"
-										:options="[[0, 'нет'], [1, 'да']]"
-								/>
-								<Input
-										v-if="form.gas"
-										v-model="form.gas_value"
-										:v="v$.form.gas_value"
-										class="col-5 px-1 pt-4"
-										type="number"
-										required
-								/>
-								<p v-if="form.gas" class="col-2 plot-create-form__text pr-2">м<sup>3</sup>/час</p>
-							</div>
-							<div class="col-6 row no-gutters" v-if="form.gas">
-								<MultiSelect
-										v-model="form.gas_type"
-										:v="v$.form.gas_type"
-										title="Тип"
-										label="Тип"
-										class="col-10 pl-3"
-										required
-										:options="gasTypeOptions"
-								/>
-							</div>
+							<Radio
+									v-model="form.gas"
+									label="Газ"
+									class="col-3 pr-1"
+									:options="[[0, 'нет'], [1, 'да']]"
+							/>
+							<Input
+									v-if="form.gas"
+									v-model="form.gas_value"
+									:v="v$.form.gas_value"
+									label="Значение"
+									class="col-4 px-1"
+									type="number"
+									required
+							/>
+							<p v-if="form.gas" class="col-1 plot-create-form__text pr-2">м<sup>3</sup>/час</p>
+							<MultiSelect
+									v-if="form.gas"
+									v-model="form.gas_type"
+									:v="v$.form.gas_type"
+									title="Тип"
+									label="Тип"
+									class="col-4 pl-3"
+									required
+									:options="gasTypeOptions"
+							/>
 						</FormGroup>
 						<FormGroup class="mb-1">
-							<div class="col-6 row no-gutters">
-								<Radio
-										v-model="form.steam"
-										label="Пар"
-										class="col-5 pr-1"
-										:options="[[0, 'нет'], [1, 'да']]"
-								/>
-								<Input
-										v-if="form.steam"
-										v-model="form.steam_value"
-										:v="v$.form.steam_value"
-										class="col-5 px-1 pt-4"
-										type="number"
-										required
-								/>
-								<p v-if="form.steam" class="col-2 plot-create-form__text pr-2">бар</p>
-							</div>
-							<div class="col-6 row no-gutters">
-								<Radio
-										v-model="form.phone_line"
-										label="Телефония"
-										class="col-10 pl-3"
-										:options="[[0, 'нет'], [1, 'да']]"
-								/>
-							</div>
+							<Radio
+									v-model="form.steam"
+									label="Пар"
+									class="col-3 pr-1"
+									:options="[[0, 'нет'], [1, 'да']]"
+							/>
+							<Input
+									v-if="form.steam"
+									v-model="form.steam_value"
+									:v="v$.form.steam_value"
+									label="Значение"
+									class="col-4 px-1"
+									type="number"
+									required
+							/>
+							<p v-if="form.steam" class="col-1 plot-create-form__text pr-2">бар</p>
+							<Radio
+									v-model="form.phone_line"
+									label="Телефония"
+									class="col-4 pl-3"
+									:options="[[0, 'нет'], [1, 'да']]"
+							/>
 						</FormGroup>
 						<FormGroup class="mb-1">
-							<div class="col-10 row no-gutters">
-								<Radio
-										v-model="form.internet"
-										label="Интернет"
-										class="col-3 pr-1"
-										:options="[[0, 'нет'], [1, 'да']]"
-								/>
-								<MultiSelect
-										v-if="form.internet"
-										v-model="form.internet_type"
-										:v="v$.form.internet_type"
-										title="Тип"
-										label="Тип"
-										class="col-6 px-1"
-										required
-										:options="internetTypeOptions"
-								/>
-							</div>
+							<Radio
+									v-model="form.internet"
+									label="Интернет"
+									class="col-3 pr-1"
+									:options="[[0, 'нет'], [1, 'да']]"
+							/>
+							<MultiSelect
+									v-if="form.internet"
+									v-model="form.internet_type"
+									:v="v$.form.internet_type"
+									title="Тип"
+									label="Тип"
+									class="col-4 px-1"
+									required
+									:options="internetTypeOptions"
+							/>
+						</FormGroup>
+						<p class="plot-create-form__label">Безопасность</p>
+						<FormGroup class="mb-1">
+							<Radio
+									v-model="form.guard"
+									label="Охрана объекта"
+									class="col-3 pr-1"
+									:options="[[0, 'нет'], [1, 'да']]"
+							/>
+							<MultiSelect
+									v-if="form.guard"
+									v-model="form.guard_type"
+									title="Тип"
+									label="Тип"
+									class="col-4 pl-1 pr-3"
+									required
+									:options="guardTypeOptions"
+							/>
+							<Radio
+									v-model="form.video_control"
+									label="Видеонаблюдение"
+									class="col-3"
+									:options="[[0, 'нет'], [1, 'да']]"
+							/>
+						</FormGroup>
+						<FormGroup class="mb-1">
+							<Radio
+									v-model="form.access_control"
+									label="Контроль доступа"
+									class="col-3 pr-1"
+									:options="[[0, 'нет'], [1, 'да']]"
+							/>
+							<Radio
+									v-model="form.security_alert"
+									label="Охран. сигнализ."
+									class="col-3 pr-1"
+									:options="[[0, 'нет'], [1, 'да']]"
+							/>
+							<Radio
+									v-model="form.barrier"
+									label="Шлагбаум"
+									class="col-3 pr-1"
+									:options="[[0, 'нет'], [1, 'да']]"
+							/>
+							<Radio
+									v-model="form.fence_around_perimeter"
+									label="Забор по перим."
+									class="col-3 pr-1"
+									:options="[[0, 'нет'], [1, 'да']]"
+							/>
+						</FormGroup>
+						<p class="plot-create-form__label">Ж/Д на территории</p>
+						<FormGroup class="mb-1">
+							<Radio
+									v-model="form.railway"
+									label="Ж/Д ветка"
+									class="col-3 pr-1"
+									:options="[[0, 'нет'], [1, 'да']]"
+									required
+							/>
+							<Input
+									v-if="form.railway"
+									label="Значение"
+									v-model="form.railway_value"
+									:v="v$.form.railway_value"
+									class="col-4 px-1"
+									type="number"
+									required
+							/>
+							<p v-if="form.railway" class="col-1 plot-create-form__text pr-2">м</p>
+						</FormGroup>
+						<p class="plot-create-form__label">Инфраструктура</p>
+						<FormGroup class="mb-1">
+							<MultiSelect
+									v-model="form.entry_territory_type"
+									title="Въезд на территорию"
+									label="Въезд на террит."
+									class="col-4 pr-1"
+									:options="entryTerritoryTypeOptions"
+							/>
+							<MultiSelect
+									v-model="form.entrance_type"
+									title="Плата за въезд"
+									label="Плата за въезд"
+									class="col-4 pl-1"
+									:options="feeTypeOptions"
+							/>
+						</FormGroup>
+						<FormGroup class="mb-1">
+							<Radio
+									v-model="form.parking_car"
+									label="P легковая"
+									class="col-3 pr-1"
+									:options="[[0, 'нет'], [1, 'да']]"
+							/>
+							<MultiSelect
+									v-if="form.parking_car"
+									v-model="form.parking_car_value"
+									:v="v$.form.parking_car_value"
+									title="Тип"
+									label="Тип"
+									class="col-4 px-1"
+									required
+									:options="feeTypeOptions"
+							/>
+							<Radio
+									v-model="form.canteen"
+									label="Столовая/Кафе"
+									class="col-3 pl-3"
+									:options="[[0, 'нет'], [1, 'да']]"
+							/>
+						</FormGroup>
+						<FormGroup class="mb-1">
+							<Radio
+									v-model="form.parking_lorry"
+									label="P 3-10 тонн"
+									class="col-3 pr-1"
+									:options="[[0, 'нет'], [1, 'да']]"
+							/>
+							<MultiSelect
+									v-if="form.parking_lorry"
+									v-model="form.parking_lorry_value"
+									:v="v$.form.parking_lorry_value"
+									title="Тип"
+									label="Тип"
+									class="col-4 px-1"
+									required
+									:options="feeTypeOptions"
+							/>
+							<Radio
+									v-model="form.hostel"
+									label="Общежитие"
+									class="col-3 pl-3"
+									:options="[[0, 'нет'], [1, 'да']]"
+							/>
+						</FormGroup>
+						<FormGroup class="mb-1">
+							<Radio
+									v-model="form.parking_truck"
+									label="P грузовая"
+									class="col-3 pr-1"
+									:options="[[0, 'нет'], [1, 'да']]"
+							/>
+							<MultiSelect
+									v-if="form.parking_truck"
+									v-model="form.parking_truck_value"
+									:v="v$.form.parking_truck_value"
+									title="Тип"
+									label="Тип"
+									class="col-4 px-1"
+									required
+									:options="feeTypeOptions"
+							/>
 						</FormGroup>
 					</Tab>
 					<Tab name="Описание">
@@ -379,7 +517,7 @@
 						</FormGroup>
 					</Tab>
 				</Tabs>
-				<FormGroup class="mt-1">
+				<FormGroup class="mt-1 mb-4">
 					<Submit class="col-4 mx-auto">
 						Сохранить
 					</Submit>
@@ -528,6 +666,36 @@ export default defineComponent({
 							required
 					),
 				},
+				guard_type: {
+					required: helpers.withMessage(
+							"выберите один из вариантов",
+							required
+					),
+				},
+				parking_car_value: {
+					required: helpers.withMessage(
+							"выберите один из вариантов",
+							required
+					),
+				},
+				parking_lorry_value: {
+					required: helpers.withMessage(
+							"выберите один из вариантов",
+							required
+					),
+				},
+				parking_truck_value: {
+					required: helpers.withMessage(
+							"выберите один из вариантов",
+							required
+					),
+				},
+				railway_value: {
+					minValue: helpers.withMessage(
+							"значение должно быть больше 0",
+							minValue(1)
+					)
+				},
 			}
 		}
 	},
@@ -550,6 +718,15 @@ export default defineComponent({
 		},
 		internetTypeOptions() {
 			return Object.values(this.internetTypes);
+		},
+		guardTypeOptions() {
+			return Object.values(this.guardTypes)
+		},
+		feeTypeOptions() {
+			return Object.values(this.feeTypes)
+		},
+		entryTerritoryTypeOptions() {
+			return Object.values(this.entryTerritoryTypes)
 		}
 	}
 })

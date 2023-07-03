@@ -87,7 +87,7 @@ export const entryTerritoryTypes: Record<number, string> = {
 	2: "По пропускам",
 }
 
-export const entryFeeTypes: Record<number, string> = {
+export const feeTypes: Record<number, string> = {
 	1: "Платный",
 	2: "Бесплатный"
 }

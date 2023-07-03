@@ -1,7 +1,7 @@
 import BaseEntity from "@/entities/base.entity";
 import IObject from "@/interfaces/object.interface";
 import IComplex, {IAddressItem} from "@/interfaces/complex.interface";
-import {entryFeeTypes, entryTerritoryTypes, gasTypes, guardTypes, internetTypes, waterTypes} from "@/const/constTypes";
+import {feeTypes, entryTerritoryTypes, gasTypes, guardTypes, internetTypes, waterTypes} from "@/const/constTypes";
 
 
 interface IComplexAddress extends Record<string, any> {
@@ -209,7 +209,7 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
 	}
 
 	get entryFee(): string | null {
-		return this._entrance_type ? entryFeeTypes[this._entrance_type] : null;
+		return this._entrance_type ? feeTypes[this._entrance_type] : null;
 	}
 
 

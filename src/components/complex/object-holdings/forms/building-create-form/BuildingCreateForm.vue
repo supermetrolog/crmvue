@@ -237,7 +237,7 @@
 						</FormGroup>
 					</Tab>
 				</Tabs>
-				<FormGroup class="mt-1">
+				<FormGroup class="mt-1 mb-4">
 					<Submit class="col-4 mx-auto">
 						Сохранить
 					</Submit>

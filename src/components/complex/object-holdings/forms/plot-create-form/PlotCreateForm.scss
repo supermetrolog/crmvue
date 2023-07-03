@@ -9,8 +9,10 @@
 
   &__label {
     margin-top: 20px;
+    margin-bottom: 10px;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 700;
+    color: darken($color: $color_success, $amount: 12);
     letter-spacing: 0.4px;
   }
   &__form-group {
