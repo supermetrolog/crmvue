@@ -3,7 +3,7 @@
 		<Tabs :options="{ useUrlFragment: false }">
 			<Tab name="О комплексе" v-if="complex">
 				<div class="ComplexAbout-content">
-					<template v-if="dataAvailable">
+					<template v-if="complex">
 						<PropertyList title="Площади">
 							<PropertyListItem name="S - участка общая">
 								<with-unit-type class="ComplexAbout-property" v-if="complex.areaFieldFull !== null"
@@ -282,15 +282,6 @@ export default defineComponent({
 			type: Object as PropType<IComplex>,
 			required: true
 		},
-		safety: {
-			type: Array,
-		},
-		railway: {
-			type: Array,
-		},
-		infrastructure: {
-			type: Array,
-		},
 	},
 	data() {
 		return {
@@ -299,13 +290,6 @@ export default defineComponent({
 		};
 	},
 	computed: {
-		dataAvailable() {
-			return (
-					this.safety &&
-					this.railway &&
-					this.infrastructure
-			);
-		},
 		managmentCompany() {
 			return this.complex?.managmentCompany ? this.complex.managmentCompanyValue : "нет"
 		},

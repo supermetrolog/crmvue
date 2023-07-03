@@ -4,9 +4,6 @@
 		<ComplexMap :complex="complex"/>
 		<ComplexAbout
 			:complex="complex"
-			:infrastructure="data.parameters.infrastructure"
-			:railway="data.parameters.railway"
-			:safety="data.parameters.safety"
 		/>
 		<ObjectHoldings :objects="complex.objects"/>
 	</div>
@@ -17,7 +14,6 @@ import ObjectHoldings from "@/components/complex/object-holdings/ObjectHoldings.
 import ComplexAbout from "@/components/complex/complex-about/ComplexAbout.vue";
 import ComplexMap from "@/components/complex/complex-map/ComplexMap.vue";
 import ComplexHeader from "@/components/complex/complex-header/ComplexHeader.vue";
-import data from "./complex-view.data";
 import "./styles.scss";
 import {ComplexActionTypes} from "@/store/modules/complex/actions";
 
@@ -26,9 +22,6 @@ export default {
 	components: {ComplexHeader, ComplexMap, ComplexAbout, ObjectHoldings},
 	data() {
 		return {
-			aboutComplexProperties: {},
-			holdings: data.holdings,
-			data
 		};
 	},
 	mounted() {
