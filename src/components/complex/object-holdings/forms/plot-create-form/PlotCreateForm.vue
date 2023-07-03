@@ -150,6 +150,7 @@
 									class="col-12 px-0"
 							/>
 						</FormGroup>
+						<p class="plot-create-form__label">Коммуникации</p>
 						<FormGroup class="mb-1">
 							<div class="col-6 row no-gutters">
 								<Radio
@@ -173,7 +174,7 @@
 								<Radio
 										v-model="form.heating_central"
 										label="Центр. отоплен."
-										class="col-5 pr-1"
+										class="col-10 pl-3"
 										:options="[[0, 'нет'], [1, 'да']]"
 										required
 								/>
@@ -204,7 +205,7 @@
 										:v="v$.form.water_type"
 										title="Тип"
 										label="Тип"
-										class="col-8 pl-1"
+										class="col-10 pl-3"
 										required
 										:options="waterTypeOptions"
 								/>
@@ -233,8 +234,85 @@
 								<Radio
 										v-model="form.sewage_rain"
 										label="Канализ. ливн."
+										class="col-10 pl-3"
+										:options="[[0, 'нет'], [1, 'да']]"
+								/>
+							</div>
+						</FormGroup>
+						<FormGroup class="mb-1">
+							<div class="col-6 row no-gutters">
+								<Radio
+										v-model="form.gas"
+										label="Газ"
 										class="col-5 pr-1"
 										:options="[[0, 'нет'], [1, 'да']]"
+								/>
+								<Input
+										v-if="form.gas"
+										v-model="form.gas_value"
+										:v="v$.form.gas_value"
+										class="col-5 px-1 pt-4"
+										type="number"
+										required
+								/>
+								<p v-if="form.gas" class="col-2 plot-create-form__text pr-2">м<sup>3</sup>/час</p>
+							</div>
+							<div class="col-6 row no-gutters" v-if="form.gas">
+								<MultiSelect
+										v-model="form.gas_type"
+										:v="v$.form.gas_type"
+										title="Тип"
+										label="Тип"
+										class="col-10 pl-3"
+										required
+										:options="gasTypeOptions"
+								/>
+							</div>
+						</FormGroup>
+						<FormGroup class="mb-1">
+							<div class="col-6 row no-gutters">
+								<Radio
+										v-model="form.steam"
+										label="Пар"
+										class="col-5 pr-1"
+										:options="[[0, 'нет'], [1, 'да']]"
+								/>
+								<Input
+										v-if="form.steam"
+										v-model="form.steam_value"
+										:v="v$.form.steam_value"
+										class="col-5 px-1 pt-4"
+										type="number"
+										required
+								/>
+								<p v-if="form.steam" class="col-2 plot-create-form__text pr-2">бар</p>
+							</div>
+							<div class="col-6 row no-gutters">
+								<Radio
+										v-model="form.phone_line"
+										label="Телефония"
+										class="col-10 pl-3"
+										:options="[[0, 'нет'], [1, 'да']]"
+								/>
+							</div>
+						</FormGroup>
+						<FormGroup class="mb-1">
+							<div class="col-10 row no-gutters">
+								<Radio
+										v-model="form.internet"
+										label="Интернет"
+										class="col-3 pr-1"
+										:options="[[0, 'нет'], [1, 'да']]"
+								/>
+								<MultiSelect
+										v-if="form.internet"
+										v-model="form.internet_type"
+										:v="v$.form.internet_type"
+										title="Тип"
+										label="Тип"
+										class="col-6 px-1"
+										required
+										:options="internetTypeOptions"
 								/>
 							</div>
 						</FormGroup>
@@ -313,7 +391,7 @@
 
 <script>
 import {defineComponent} from "vue";
-import {helpers, required} from "@vuelidate/validators";
+import {helpers, required, minValue} from "@vuelidate/validators";
 import {ObjectForms} from "@/components/complex/object-holdings/forms/mixin";
 
 
@@ -340,6 +418,10 @@ export default defineComponent({
 							"заполните поле",
 							required
 					),
+					minValue: helpers.withMessage(
+							"значение должно быть больше 0",
+							minValue(1)
+					)
 				},
 				own_type_land: {
 					required: helpers.withMessage(
@@ -348,6 +430,99 @@ export default defineComponent({
 					),
 				},
 				landscape_type: {
+					required: helpers.withMessage(
+							"выберите один из вариантов",
+							required
+					),
+				},
+				power: {
+					required: helpers.withMessage(
+							"выберите один из вариантов",
+							required
+					),
+				},
+				power_value: {
+					required: helpers.withMessage(
+							"заполните поле",
+							required
+					),
+					minValue: helpers.withMessage(
+							"значение должно быть больше 0",
+							minValue(1)
+					)
+				},
+				heating_central: {
+					required: helpers.withMessage(
+							"выберите один из вариантов",
+							required
+					),
+				},
+				water: {
+					required: helpers.withMessage(
+							"выберите один из вариантов",
+							required
+					),
+				},
+				water_value: {
+					required: helpers.withMessage(
+							"заполните поле",
+							required
+					),
+					minValue: helpers.withMessage(
+							"значение должно быть больше 0",
+							minValue(1)
+					)
+				},
+				water_type: {
+					required: helpers.withMessage(
+							"выберите один из вариантов",
+							required
+					),
+				},
+				sewage_central: {
+					required: helpers.withMessage(
+							"выберите один из вариантов",
+							required
+					),
+				},
+				sewage_central_value: {
+					required: helpers.withMessage(
+							"заполните поле",
+							required
+					),
+					minValue: helpers.withMessage(
+							"значение должно быть больше 0",
+							minValue(1)
+					)
+				},
+				gas: {},
+				gas_value: {
+					required: helpers.withMessage(
+							"заполните поле",
+							required
+					),
+					minValue: helpers.withMessage(
+							"значение должно быть больше 0",
+							minValue(1)
+					)
+				},
+				gas_type: {
+					required: helpers.withMessage(
+							"выберите один из вариантов",
+							required
+					),
+				},
+				steam_value: {
+					required: helpers.withMessage(
+							"заполните поле",
+							required
+					),
+					minValue: helpers.withMessage(
+							"значение должно быть больше 0",
+							minValue(1)
+					)
+				},
+				internet_type: {
 					required: helpers.withMessage(
 							"выберите один из вариантов",
 							required
@@ -369,6 +544,12 @@ export default defineComponent({
 		},
 		waterTypeOptions() {
 			return Object.values(this.waterTypes);
+		},
+		gasTypeOptions() {
+			return Object.values(this.gasTypes);
+		},
+		internetTypeOptions() {
+			return Object.values(this.internetTypes);
 		}
 	}
 })

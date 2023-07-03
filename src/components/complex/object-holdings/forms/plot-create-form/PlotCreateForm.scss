@@ -2,6 +2,16 @@
   &__text {
     padding-top: 30px;
     white-space: nowrap;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+  }
+
+  &__label {
+    margin-top: 20px;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
   }
   &__form-group {
     & .multiselect-single-label {
