@@ -31,7 +31,8 @@
 																:value="$formatter.number(complex.areaTechFull)"/>
 							</PropertyListItem>
 							<PropertyListItem name="Управляющая компания">
-								<p v-if="complex.managmentCompany !== null && complex.managmentCompanyValue !== null" class="ComplexAbout-property">
+								<p v-if="complex.managmentCompany !== null && complex.managmentCompanyValue !== null"
+									 class="ComplexAbout-property">
 									{{ managmentCompany }}
 								</p>
 							</PropertyListItem>
@@ -67,7 +68,7 @@
 							<PropertyListItem name="Водоснабжение">
 								<template v-if="complex.water !== null">
 									<p class="ComplexAbout-property" v-if="complex.water" :title="'есть ' + joinedWaterType">
-										есть{{complex.waterType?.length > 0 ? ',' : null}}
+										есть{{ complex.waterType?.length > 0 ? ',' : null }}
 										<with-unit-type
 												v-if="complex.waterValue"
 												:unit-type="unitTypes.CUBE_METERS_PER_HOUR"
@@ -217,19 +218,34 @@
 									</p>
 								</PropertyListItem>
 								<PropertyListItem name="«P» легковая">
-									<p v-if="complex.parkingCar !== null" class="ComplexAbout-property">
-										{{ isExists(complex.parkingCar) }}
-									</p>
+									<template v-if="complex.parkingCar !== null">
+										<p v-if="complex.parkingCar" class="ComplexAbout-property" :title="'есть, ' + complex.parkingCarType">
+											есть, {{ complex.parkingCarType }}
+										</p>
+										<p v-else class="ComplexAbout-property">
+											нет
+										</p>
+									</template>
 								</PropertyListItem>
 								<PropertyListItem name="«P» 3-10 тонн">
-									<p v-if="complex.parkingLorry !== null" class="ComplexAbout-property">
-										{{ isExists(complex.parkingLorry) }}
-									</p>
+									<template v-if="complex.parkingLorry !== null">
+										<p v-if="complex.parkingLorry" class="ComplexAbout-property" :title="'есть, ' + complex.parkingLorryType">
+											есть, {{ complex.parkingLorryType }}
+										</p>
+										<p v-else class="ComplexAbout-property">
+											нет
+										</p>
+									</template>
 								</PropertyListItem>
 								<PropertyListItem name="«P» от 10 тонн">
-									<p v-if="complex.parkingTruck !== null" class="ComplexAbout-property">
-										{{ isExists(complex.parkingTruck) }}
-									</p>
+									<template v-if="complex.parkingTruck !== null">
+										<p v-if="complex.parkingTruck" class="ComplexAbout-property" :title="'есть, ' + complex.parkingTruckType">
+											есть, {{ complex.parkingTruckType }}
+										</p>
+										<p v-else class="ComplexAbout-property">
+											нет
+										</p>
+									</template>
 								</PropertyListItem>
 								<PropertyListItem name="Столовая/кафе">
 									<p v-if="complex.canteen !== null" class="ComplexAbout-property">

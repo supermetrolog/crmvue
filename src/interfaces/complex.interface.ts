@@ -54,8 +54,11 @@ export default interface IComplex {
   entryTerritory: boolean | null;
   entryTerritoryType: string | null;
   parkingCar: boolean | null;
+  parkingCarType: string | null;
   parkingLorry: boolean | null;
+  parkingLorryType: string | null;
   parkingTruck: boolean | null;
+  parkingTruckType: string | null;
   canteen: boolean | null;
   hostel: boolean | null;
   entryFee: string | null;

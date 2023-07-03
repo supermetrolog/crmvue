@@ -191,9 +191,20 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
 	get parkingCar(): boolean | null {
 		return this.processBooleanField(this._parking_car);
 	}
+	get parkingCarType(): string | null {
+		return this._parking_car_value ? feeTypes[this._parking_car_value] : null;
+	}
 
 	get parkingLorry(): boolean | null {
 		return this.processBooleanField(this._parking_lorry);
+	}
+
+	get parkingLorryType(): string | null {
+		return this._parking_lorry_value ? feeTypes[this._parking_lorry_value] : null;
+	}
+
+	get parkingTruckType(): string | null {
+		return this._parking_truck_value ? feeTypes[this._parking_truck_value] : null;
 	}
 
 	get parkingTruck(): boolean | null {
@@ -321,6 +332,9 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
 	private _parking_car: number | null = null;
 	private _parking_lorry: number | null = null;
 	private _parking_truck: number | null = null;
+	private _parking_car_value: number | null = null;
+	private _parking_lorry_value: number | null = null;
+	private _parking_truck_value: number | null = null;
 	private _canteen: number | null = null;
 	private _hostel: number | null = null;
 	private _entrance_type: number | null = null;
