@@ -21,7 +21,7 @@
           :id="headInputId"
         />
         <label class="DealFloorHead-checkbox-label" :for="headInputId" />
-        <i class="fas fa-pen"></i>
+				<button class="DealFloorHead-button"><i class="fas fa-plus-circle"></i></button>
       </Form>
     </div>
   </div>

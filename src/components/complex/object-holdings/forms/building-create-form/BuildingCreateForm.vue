@@ -250,9 +250,11 @@
 <script>
 import {defineComponent} from "vue";
 import {helpers, required, minValue, maxValue} from "@vuelidate/validators";
-import {objectPurposes} from "@/const/constTypes";
+import {facingTypes, objectClassTypes, objectPurposes, ownTypes} from "@/const/constTypes";
 import {ObjectTypes} from "@/types/objectTypes.enum";
 import {ObjectForms} from "@/components/complex/object-holdings/forms/mixin";
+import {mapActions} from "vuex";
+import {yandexmap} from "@/utils";
 
 
 export default defineComponent({
@@ -260,11 +262,49 @@ export default defineComponent({
 	mixins: [ObjectForms],
 	data() {
 		return {
+			selectedCompany: null,
+			form: {
+				address: null,
+				company_id: null,
+				object_type: [],
+				purposes: [],
+				area_building: null,
+				area_floor_full: null,
+				area_mezzanine_full: null,
+				area_office_full: null,
+				area_tech_full: null,
+				object_class: null,
+				facing_type: null,
+				own_type: null,
+				year_build: null,
+				year_repair: null,
+				cadastral_number: null,
+				test_only: null,
+				land_use_restrictions: null,
+				description: null,
+				layouts: [],
+				layoutsList: [],
+				panoramas: [],
+				panoramasList: [],
+				presentations: [],
+				presentationsList: [],
+				ownerShipDocuments: [],
+				ownerShipDocumentsList: [],
+				photos: [],
+				photosList: [],
+
+			},
 		}
 	},
 	validations() {
 		return {
 			form: {
+				address: {
+					required: helpers.withMessage("заполните поле", required),
+				},
+				company_id: {
+					required: helpers.withMessage("заполните поле", required),
+				},
 				area_building: {
 					required: helpers.withMessage("заполните поле", required),
 				},
@@ -301,6 +341,29 @@ export default defineComponent({
 		}
 	},
 	methods: {
+			...mapActions([
+				"SEARCH_COMPANIES",
+			]),
+			onChangeAddress() {
+				console.log("CHANGE ADDRESS")
+			},
+			async onChangeCompany() {
+				console.log("CHANGE COMPANY")
+			},
+			async searchCompany() {
+				return ["ОАО Тореадор", "ЗАО ИнкЛомМет"]
+			},
+			async searchAddress(query) {
+				return await yandexmap.getAddress(query);
+			},
+			selectObjectType(isSelected, type) {
+				this.form.object_type = this.form.object_type.filter(
+						(item) => item !== type
+				);
+				if (isSelected) {
+					this.form.object_type.push(type);
+				}
+			},
 	},
 	computed: {
 		objectPurposesWarehouse() {
@@ -322,13 +385,13 @@ export default defineComponent({
 			return result
 		},
 		objectClassOptions() {
-			return Object.values(this.objectClassTypes)
+			return Object.values(objectClassTypes)
 		},
 		facingTypeOptions() {
-			return Object.values(this.facingTypes)
+			return Object.values(facingTypes)
 		},
 		ownTypeOptions() {
-			return Object.values(this.ownTypes);
+			return Object.values(ownTypes);
 		}
 	}
 })

@@ -88,8 +88,8 @@ export const entryTerritoryTypes: Record<number, string> = {
 }
 
 export const feeTypes: Record<number, string> = {
-	1: "Платный",
-	2: "Бесплатный"
+	1: "Платно",
+	2: "Бесплатно"
 }
 
 export const waterTypes: Record<number, string> = {
