@@ -168,6 +168,14 @@ export const gateTypes: Record<number, string> = {
 	4: "ж/д рампа",
 }
 
+export const firefightingTypes: Record<number, string> = {
+	1: "Гидрантная система",
+	2: "Спринклерная система",
+	3: "Порошковая система",
+	4: "Газовая система",
+	5: "Огнетушители",
+}
+
 export const heatingAutonomousTypes: Record<number, string> = {
 	1: "дизельное",
 	2: "газовое",

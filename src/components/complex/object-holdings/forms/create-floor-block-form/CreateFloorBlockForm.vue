@@ -329,6 +329,80 @@
 									:options="[[0, 'нет'], [1, 'да']]"
 							/>
 						</FormGroup>
+						<p class="create-floor-block-form__label">Безопасность</p>
+						<FormGroup class="mb-1">
+							<MultiSelect
+									v-model="form.firefighting_type"
+									:v="v$.form.firefighting_type"
+									title="Пожаротушение"
+									label="Пожаротушение"
+									class="col-4 pr-1"
+									required
+									:options="firefightingTypeOptions"
+							/>
+							<Radio
+									v-model="form.smoke_exhaust"
+									label="Дымоудаление"
+									class="col-3 px-1"
+									:options="[[0, 'нет'], [1, 'да']]"
+							/>
+						</FormGroup>
+						<FormGroup class="mb-1">
+							<Radio
+									v-model="form.video_control"
+									label="Видеонаблюдение"
+									class="col-3 pr-1"
+									:options="[[0, 'нет'], [1, 'да']]"
+							/>
+							<Radio
+									v-model="form.access_control"
+									label="Контроль доступа"
+									class="col-3 px-1"
+									:options="[[0, 'нет'], [1, 'да']]"
+							/>
+							<Radio
+									v-model="form.security_alert"
+									label="Охранная сигнализация"
+									class="col-3 px-1"
+									:options="[[0, 'нет'], [1, 'да']]"
+							/>
+							<Radio
+									v-model="form.fire_alert"
+									label="Пожарная сигнализация"
+									class="col-3 px-1"
+									:options="[[0, 'нет'], [1, 'да']]"
+							/>
+						</FormGroup>
+						<p class="create-floor-block-form__label">Подъемные устройства</p>
+						<FormGroup class="mb-1">
+							<Radio
+									v-model="form.has_elevators"
+									label="Лифт/подъемники"
+									class="col-3 pr-1"
+									:options="[[0, 'нет'], [1, 'да']]"
+							/>
+						</FormGroup>
+						<FormGroup class="mb-1">
+							<Radio
+									v-model="form.has_cranes"
+									label="Крановые устройства"
+									class="col-3 pr-1"
+									:options="[[0, 'нет'], [1, 'да']]"
+							/>
+						</FormGroup>
+						<FormGroup class="mb-1">
+							<Radio
+									label="Подкрановые пути"
+									v-model="form.cranes_runways"
+									class="col-3 pr-1"
+									:options="[[0, 'нет'], [1, 'да']]"
+							/>
+						</FormGroup>
+						<Textarea
+								v-model="form.description"
+								label="Описание"
+								class="col-12 px-0"
+						/>
 					</Tab>
 					<Tab name="Фотографии">
 						<FormGroup class="mb-1">
@@ -369,7 +443,7 @@
 import {defineComponent} from "vue";
 import {ComplexForms} from "@/components/complex/object-holdings/forms/mixin";
 import {
-	entranceBlockTypes,
+	entranceBlockTypes, firefightingTypes,
 	floorTypes, gateTypes,
 	gridColumnTypes, lightingTypes,
 	objectPurposes, rackTypes, ventilationTypes,
@@ -393,7 +467,8 @@ export default defineComponent({
 				gates: [],
 				rack_types: [],
 				lighting: [],
-				ventilation: []
+				ventilation: [],
+				firefighting_type: []
 			},
 		}
 	},
@@ -433,6 +508,9 @@ export default defineComponent({
 		},
 		ventilationTypeOptions() {
 			return Object.values(ventilationTypes);
+		},
+		firefightingTypeOptions() {
+			return Object.values(firefightingTypes);
 		}
 	}
 })
