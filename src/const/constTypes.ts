@@ -143,6 +143,24 @@ export const entranceBlockTypes: Record<number, string> = {
 	2: "собственные ворота"
 }
 
+export const rackTypes: Record<number, string> = {
+	1: "Обычнопроходные",
+	2: "Узкопроходные",
+	3: "Мезанинные",
+}
+
+export const lightingTypes: Record<number, string> = {
+	1: "Лампы накаливания",
+	2: "Световые колодцы",
+	3: "Светодиодное",
+}
+
+export const ventilationTypes: Record<number, string> = {
+	1: "Естественная",
+	2: "Принудительная",
+	3: "Приточно-вытяжная",
+	4: "Сплит-системы",
+}
 export const gateTypes: Record<number, string> = {
 	1: "док. типа",
 	2: "нулевой уровень",
