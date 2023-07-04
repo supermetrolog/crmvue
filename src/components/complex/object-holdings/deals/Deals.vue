@@ -1,25 +1,25 @@
 <template>
-  <div class="ObjectHoldingDeals">
-    <div class="ObjectHoldingDeals-actions">
-      <p class="ObjectHoldingDeals-actions-label">Создать сделку:</p>
-      <ul class="ObjectHoldingDeals-actions-list">
-        <li class="ObjectHoldingDeals-actions-item">
-          <button class="ObjectHoldingDeals-actions-button">аренда</button>
+  <div class="ObjectDeals">
+    <div class="ObjectDeals-actions">
+      <p class="ObjectDeals-actions-label">Создать сделку:</p>
+      <ul class="ObjectDeals-actions-list">
+        <li class="ObjectDeals-actions-item">
+          <button class="ObjectDeals-actions-button">аренда</button>
         </li>
-        <li class="ObjectHoldingDeals-actions-item">
-          <button class="ObjectHoldingDeals-actions-button">субаренда</button>
+        <li class="ObjectDeals-actions-item">
+          <button class="ObjectDeals-actions-button">субаренда</button>
         </li>
-        <li class="ObjectHoldingDeals-actions-item">
-          <button class="ObjectHoldingDeals-actions-button">продажа</button>
+        <li class="ObjectDeals-actions-item">
+          <button class="ObjectDeals-actions-button">продажа</button>
         </li>
-        <li class="ObjectHoldingDeals-actions-item">
-          <button class="ObjectHoldingDeals-actions-button">
+        <li class="ObjectDeals-actions-item">
+          <button class="ObjectDeals-actions-button">
             ответ-хранение
           </button>
         </li>
       </ul>
     </div>
-    <div class="ObjectHoldingDeals-list">
+    <div class="ObjectDeals-list">
       <DealPreviewCard
         @choose="choseDeal"
         v-for="deal in deals"
@@ -28,7 +28,7 @@
         :isCurrent="currentDealId === deal.id"
       />
     </div>
-    <DealItem :deal="currentDeal" />
+    <DealItem :object="object" :deal="currentDeal" />
   </div>
 </template>
 
@@ -39,7 +39,7 @@ import dealData from "./deal.data";
 import "./styles.scss";
 
 export default {
-  name: "ObjectHoldingDeals",
+  name: "ObjectDeals",
   components: {
     DealPreviewCard,
     DealItem,
@@ -49,6 +49,10 @@ export default {
       type: Array,
       default: dealData,
     },
+		object: {
+			type: Object,
+			required: true
+		}
   },
   data() {
     return {

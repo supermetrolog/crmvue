@@ -9,7 +9,7 @@ import Submit from "@/components/common/form/Submit.vue";
 import Form from "@/components/common/form/Form.vue";
 import FormGroup from "@/components/common/form/FormGroup.vue";
 import useValidate from "@vuelidate/core";
-export const ObjectForms = {
+export const ComplexForms = {
 	components: {Checkbox, Textarea, Radio, Input, FileInput, CheckboxIcons, MultiSelect, Submit, Form, FormGroup},
 	data() {
 		return {

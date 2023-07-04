@@ -6,7 +6,7 @@
 				classes="autosize"
 		>
 			<Loader class="center" v-if="loader"/>
-			<Form @submit="onSubmit" class="center">
+			<Form @submit="onSubmit" class="center autosize">
 				<Tabs :options="{ useUrlFragment: false, defaultTabHash: 'main' }" nav-class="building-create-form__tab-list"
 							nav-item-link-class="building-create-form__tab-link">
 					<Tab name="Основное" id="main">
@@ -252,14 +252,14 @@ import {defineComponent} from "vue";
 import {helpers, required, minValue, maxValue} from "@vuelidate/validators";
 import {facingTypes, objectClassTypes, objectPurposes, ownTypes} from "@/const/constTypes";
 import {ObjectTypes} from "@/types/objectTypes.enum";
-import {ObjectForms} from "@/components/complex/object-holdings/forms/mixin";
+import {ComplexForms} from "@/components/complex/object-holdings/forms/mixin";
 import {mapActions} from "vuex";
 import {yandexmap} from "@/utils";
 
 
 export default defineComponent({
 	name: "BuildingCreateForm",
-	mixins: [ObjectForms],
+	mixins: [ComplexForms],
 	data() {
 		return {
 			selectedCompany: null,

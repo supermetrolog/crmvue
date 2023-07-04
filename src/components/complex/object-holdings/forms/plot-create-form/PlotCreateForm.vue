@@ -6,7 +6,7 @@
 				classes="autosize"
 		>
 			<Loader class="center" v-if="loader"/>
-			<Form @submit="onSubmit" class="center">
+			<Form @submit="onSubmit" class="center autosize">
 				<Tabs :options="{ useUrlFragment: false, defaultTabHash: 'main' }" nav-class="plot-create-form__tab-list"
 							nav-item-link-class="plot-create-form__tab-link">
 					<Tab name="Основное" id="main">
@@ -530,7 +530,7 @@
 <script>
 import {defineComponent} from "vue";
 import {helpers, required, minValue} from "@vuelidate/validators";
-import {ObjectForms} from "@/components/complex/object-holdings/forms/mixin";
+import {ComplexForms} from "@/components/complex/object-holdings/forms/mixin";
 import {mapActions} from "vuex";
 import {yandexmap} from "@/utils";
 import {
@@ -548,7 +548,7 @@ import {
 
 export default defineComponent({
 	name: "PlotCreateForm",
-	mixins: [ObjectForms],
+	mixins: [ComplexForms],
 	data() {
 		return {
 			form: {

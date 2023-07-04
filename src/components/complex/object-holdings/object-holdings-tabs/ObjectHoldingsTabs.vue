@@ -115,7 +115,7 @@
 			</Tab>
 			<Tab name="Сделки">
 				<div class="ObjectHoldingsTabs-content">
-					<ObjectHoldingDeals/>
+					<ObjectDeals :object="object"  />
 				</div>
 			</Tab>
 			<Tab name="Карта сделок"></Tab>
@@ -132,7 +132,7 @@
 <script lang="ts">
 import PropertyListItem from "@/components/common/property-list/property-list-item/PropertyListItem.vue";
 import PropertyList from "@/components/common/property-list/PropertyList.vue";
-import ObjectHoldingDeals from "../deals/Deals.vue";
+import ObjectDeals from "../deals/Deals.vue";
 import ActionButtons from "@/components/common/action-buttons/ActionButtons.vue";
 import "./styles.scss";
 import {defineComponent, PropType} from "vue";
@@ -147,7 +147,7 @@ export default defineComponent({
 		WithUnitType,
 		PropertyList,
 		PropertyListItem,
-		ObjectHoldingDeals,
+		ObjectDeals,
 		ActionButtons,
 	},
 	props: {

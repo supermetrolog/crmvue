@@ -122,6 +122,27 @@ export const floorTypes: Record<number, string> = {
 	5: "Стяжка",
 }
 
+export const gridColumnTypes: Record<number, string> = {
+	1: "6x6",
+	2: "6x9",
+	3: "6x12",
+	4: "6x18",
+	5: "6x24",
+	6: "9x9",
+	7: "9x12",
+	8: "9x18",
+	9: "9x24",
+	10: "12x12",
+	11: "12x18",
+	12: "12x24",
+	13: "без колонн",
+}
+
+export const entranceBlockTypes: Record<number, string> = {
+	1: "общие ворота/коридор",
+	2: "собственные ворота"
+}
+
 export const gateTypes: Record<number, string> = {
 	1: "док. типа",
 	2: "нулевой уровень",
