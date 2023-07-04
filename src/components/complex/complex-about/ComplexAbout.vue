@@ -55,8 +55,8 @@
 							</PropertyListItem>
 							<PropertyListItem name="Отопление автономное">
 								<template v-if="complex.heatingAutonomous !== null">
-									<p v-if="complex.heatingAutonomous" class="ComplexAbout-property">
-										есть, <span class="ComplexAbout-property-grey">{{
+									<p v-if="complex.heatingAutonomous" class="ComplexAbout-property" :title="complex.heatingAutonomousType ? 'есть, ' + complex.heatingAutonomousType : 'есть'">
+										есть{{ complex.heatingAutonomousType ? ',' : null }} <span class="ComplexAbout-property-grey">{{
 											complex.heatingAutonomousType
 										}}</span>
 									</p>
@@ -67,7 +67,7 @@
 							</PropertyListItem>
 							<PropertyListItem name="Водоснабжение">
 								<template v-if="complex.water !== null">
-									<p class="ComplexAbout-property" v-if="complex.water" :title="'есть ' + joinedWaterType">
+									<p class="ComplexAbout-property" v-if="complex.water" :title="complex.waterType?.length > 0 ? 'есть, ' + joinedWaterType : 'есть'">
 										есть{{ complex.waterType?.length > 0 ? ',' : null }}
 										<with-unit-type
 												v-if="complex.waterValue"
@@ -95,8 +95,8 @@
 							</PropertyListItem>
 							<PropertyListItem name="Газ">
 								<template v-if="complex.gas !== null">
-									<p class="ComplexAbout-property" v-if="complex.gas" :title="'есть, ' + complex.gasType">
-										есть,
+									<p class="ComplexAbout-property" v-if="complex.gas" :title="complex.gasType ? 'есть, ' + complex.gasType : 'есть'">
+										есть{{complex.gasType ? ',' : null}}
 										<with-unit-type
 												v-if="complex.gasValue"
 												:unit-type="unitTypes.CUBE_METERS_PER_HOUR"
@@ -132,8 +132,8 @@
 							</PropertyListItem>
 							<PropertyListItem name="Интернет">
 								<template v-if="complex.internet !== null">
-									<p v-if="complex.internet" class="ComplexAbout-property" :title="'есть, ' + joinedInternetType">
-										есть, <span
+									<p v-if="complex.internet" class="ComplexAbout-property" :title="complex.internetType?.length > 0 ? 'есть, ' + joinedInternetType : 'есть'">
+										есть{{complex.internetType?.length > 0 ? ',' : null}} <span
 											class="ComplexAbout-property-grey">{{
 											joinedInternetType
 										}}</span>
@@ -147,8 +147,8 @@
 						<PropertyList title="Безопасность">
 							<PropertyListItem name="Охрана объекта">
 								<template v-if="complex.guard !== null">
-									<p v-if="complex.guard" class="ComplexAbout-property" :title="'есть, ' + joinedGuardType">
-										есть, <span
+									<p v-if="complex.guard" class="ComplexAbout-property" :title="complex.guardType?.length > 0 ? 'есть, ' + joinedGuardType : 'есть'">
+										есть{{complex.guardType?.length > 0 ? ',' : null}} <span
 											class="ComplexAbout-property-grey">{{
 											joinedGuardType
 										}}</span>

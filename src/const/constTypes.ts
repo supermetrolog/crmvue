@@ -128,3 +128,9 @@ export const gateTypes: Record<number, string> = {
 	3: "авторампа",
 	4: "ж/д рампа",
 }
+
+export const heatingAutonomousTypes: Record<number, string> = {
+	1: "дизельное",
+	2: "газовое",
+	3: "дровяное",
+}

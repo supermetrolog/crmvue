@@ -1,7 +1,15 @@
 import BaseEntity from "@/entities/base.entity";
 import IObject from "@/interfaces/object.interface";
 import IComplex, {IAddressItem} from "@/interfaces/complex.interface";
-import {feeTypes, entryTerritoryTypes, gasTypes, guardTypes, internetTypes, waterTypes} from "@/const/constTypes";
+import {
+	feeTypes,
+	entryTerritoryTypes,
+	gasTypes,
+	guardTypes,
+	internetTypes,
+	waterTypes,
+	heatingAutonomousTypes
+} from "@/const/constTypes";
 
 
 interface IComplexAddress extends Record<string, any> {
@@ -78,8 +86,7 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
 	}
 
 	get heatingAutonomousType(): string | null {
-		// return this._heating_autonomous_type;
-		return "Газовое";
+		return this._heating_autonomous_type ? heatingAutonomousTypes[this._heating_autonomous_type] : null;
 	}
 
 	get water(): boolean | null {
