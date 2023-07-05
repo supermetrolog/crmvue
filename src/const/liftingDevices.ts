@@ -5,7 +5,13 @@ export const craneTypes: Record<number, string> = {
 	4: "Тельфер/Лебедка(неподвиж)",
 }
 
-export const craneLocationTypes: Record<number, string> = {
+export const elevatorTypes: Record<number, string> = {
+	1: "Подъемник",
+	2: "Грузовой лифт",
+	3: "Гидроплатформа",
+}
+
+export const liftingDeviceLocationTypes: Record<number, string> = {
 	1: "Внутри",
 	2: "Снаружи",
 }
@@ -29,12 +35,12 @@ export const craneHoistingTypes: Record<number, string> = {
 	2: "На тележке(опирается сверху)",
 }
 
-export const craneControlsTypes: Record<number, string> = {
+export const liftingDeviceControlsTypes: Record<number, string> = {
 	1: "С пола",
 	2: "Из кабины",
 }
 
-export const craneConditionTypes: Record<number, string> = {
+export const liftingDeviceConditionTypes: Record<number, string> = {
 	1: "Рабочий",
 	2: "Требует ремонта",
 	3: "Требуется техобслуживание",

@@ -146,12 +146,11 @@ import {defineComponent} from "vue";
 import {ComplexForms} from "@/components/complex/object-holdings/forms/mixin";
 import {
 	craneBeamsAmountTypes,
-	craneBeamTypes, craneConditionTypes,
-	craneControlsTypes,
+	craneBeamTypes, liftingDeviceConditionTypes,
+	liftingDeviceControlsTypes,
 	craneHoistingTypes,
-	craneLocationTypes,
-	craneTypes
-} from "@/const/crane";
+	craneTypes, liftingDeviceLocationTypes
+} from "@/const/liftingDevices";
 
 export default defineComponent({
 	name: "AddCraneForm",
@@ -183,17 +182,11 @@ export default defineComponent({
 	},
 	methods: {},
 	computed: {
-		craneControlsTypes() {
-			return craneControlsTypes
-		},
-		craneBeamsAmountTypes() {
-			return craneBeamsAmountTypes
-		},
 		craneTypeOptions() {
 			return Object.values(craneTypes);
 		},
 		craneLocationOptions() {
-			return Object.values(craneLocationTypes);
+			return Object.values(liftingDeviceLocationTypes);
 		},
 		craneBeamOptions() {
 			return Object.values(craneBeamTypes);
@@ -205,10 +198,10 @@ export default defineComponent({
 			return Object.values(craneHoistingTypes);
 		},
 		craneControlsOptions() {
-			return Object.values(craneControlsTypes);
+			return Object.values(liftingDeviceControlsTypes);
 		},
 		craneConditionOptions() {
-			return Object.values(craneConditionTypes);
+			return Object.values(liftingDeviceConditionTypes);
 		}
 	}
 })

@@ -16,7 +16,7 @@
 									title="Тип устройства"
 									label="Тип устройства"
 									class="col-4 pr-1"
-									:options="craneTypeOptions"
+									:options="elevatorTypeOptions"
 							/>
 							<MultiSelect
 									v-model="form.elevator_location"
@@ -24,7 +24,7 @@
 									title="Расположение"
 									label="Расположение"
 									class="col-4 px-1"
-									:options="craneLocationOptions"
+									:options="elevatorLocationOptions"
 									required
 							/>
 							<Input
@@ -84,14 +84,14 @@
 									:closeOnSelect=false
 									class="col-4 px-1"
 									mode="multiple"
-									:options="craneControlsOptions"
+									:options="elevatorControlsOptions"
 							/>
 							<MultiSelect
 									v-model="form.elevator_condition"
 									title="Состояние"
 									label="Состояние"
 									class="col-4 px-1"
-									:options="craneConditionOptions"
+									:options="elevatorConditionOptions"
 							/>
 						</FormGroup>
 						<FormGroup class="mb-1">
@@ -129,13 +129,11 @@
 import {defineComponent} from "vue";
 import {ComplexForms} from "@/components/complex/object-holdings/forms/mixin";
 import {
-	craneBeamsAmountTypes,
-	craneBeamTypes, craneConditionTypes,
-	craneControlsTypes,
-	craneHoistingTypes,
-	craneLocationTypes,
-	craneTypes
-} from "@/const/crane";
+	liftingDeviceConditionTypes,
+	liftingDeviceControlsTypes,
+	liftingDeviceLocationTypes,
+	elevatorTypes
+} from "@/const/liftingDevices";
 
 export default defineComponent({
 	name: "AddElevatorForm",
@@ -166,32 +164,17 @@ export default defineComponent({
 	},
 	methods: {},
 	computed: {
-		craneControlsTypes() {
-			return craneControlsTypes
+		elevatorTypeOptions() {
+			return Object.values(elevatorTypes);
 		},
-		craneBeamsAmountTypes() {
-			return craneBeamsAmountTypes
+		elevatorLocationOptions() {
+			return Object.values(liftingDeviceLocationTypes);
 		},
-		craneTypeOptions() {
-			return Object.values(craneTypes);
+		elevatorControlsOptions() {
+			return Object.values(liftingDeviceControlsTypes);
 		},
-		craneLocationOptions() {
-			return Object.values(craneLocationTypes);
-		},
-		craneBeamOptions() {
-			return Object.values(craneBeamTypes);
-		},
-		craneBeamsAmountOptions() {
-			return Object.values(craneBeamsAmountTypes);
-		},
-		craneHoistingOptions() {
-			return Object.values(craneHoistingTypes);
-		},
-		craneControlsOptions() {
-			return Object.values(craneControlsTypes);
-		},
-		craneConditionOptions() {
-			return Object.values(craneConditionTypes);
+		elevatorConditionOptions() {
+			return Object.values(liftingDeviceConditionTypes);
 		}
 	}
 })
