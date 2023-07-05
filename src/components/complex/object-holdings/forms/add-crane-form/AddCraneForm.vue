@@ -38,11 +38,11 @@
 							/>
 							<p class="add-crane-form__text">т</p>
 							<MultiSelect
-									v-model="form.crane_beams_amount"
-									title="Кол-во балок/мостов"
-									label="Кол-во балок/мостов"
+									v-model="form.crane_beam"
+									title="Тип балки"
+									label="Тип балки"
 									class="col-4 pr-1"
-									:options="craneBeamsAmountOptions"
+									:options="craneBeamOptions"
 							/>
 							<MultiSelect
 									v-model="form.crane_beams_amount"

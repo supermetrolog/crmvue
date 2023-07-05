@@ -396,11 +396,13 @@
 									:options="[[0, 'нет'], [1, 'да']]"
 							/>
 						</FormGroup>
-						<Textarea
-								v-model="form.description"
-								label="Описание"
-								class="col-12 px-0"
-						/>
+						<FormGroup class="mb-1">
+							<Textarea
+									v-model="form.description"
+									label="Описание"
+									class="col-12 px-0"
+							/>
+						</FormGroup>
 					</Tab>
 					<Tab name="Фотографии">
 						<FormGroup class="mb-1">
@@ -613,20 +615,12 @@ export default defineComponent({
 					),
 				},
 				temperature_min: {
-					required: helpers.withMessage(
-							"заполните поле",
-							required
-					),
 					minValue: helpers.withMessage(
 							"значение должно быть больше 0",
 							minValue(1)
 					)
 				},
 				temperature_max: {
-					required: helpers.withMessage(
-							"заполните поле",
-							required
-					),
 					minValue: helpers.withMessage(
 							"значение должно быть больше 0",
 							minValue(1)
