@@ -70,10 +70,9 @@
 						</FormGroup>
 						<FormGroup class="mb-1">
 							<CheckboxIcons
-									v-model="form.purposes"
+									v-model="form.purposes_block"
 									label="Назначение блока"
 									:noAllSelect="true"
-									:extraOptions="form.purposes_block"
 									class="col-12 mx-auto"
 									:options="blockPossiblePurposes"
 							/>
@@ -142,8 +141,7 @@
 									:options="gridColumnTypeOptions"
 							/>
 							<MultiSelect
-									v-model="form.column_grids"
-									:v="v$.form.column_grids"
+									v-model="form.entrance_block"
 									title="Вход в блок"
 									label="Вход в блок"
 									class="col-4 pl-1"
@@ -152,17 +150,17 @@
 						</FormGroup>
 						<FormGroup class="mb-1">
 							<MultiSelect
-									v-model="form.gates"
+									v-model="form.gatesType"
 									:v="v$.form.gatesType"
-									title="Тип, кол-во ворот"
-									label="Тип, кол-во ворот"
+									title="Тип ворот"
+									label="Тип ворот"
 									class="col-4 pr-1"
 									:options="gateTypeOptions"
 									required
 							/>
 							<Input
 									v-if="form"
-									v-model="form.gates"
+									v-model="form.gatesCount"
 									:v="v$.form.gatesCount"
 									label="Количество"
 									class="col-2 px-1"
@@ -448,6 +446,7 @@ import {
 	gridColumnTypes, lightingTypes,
 	objectPurposes, rackTypes, ventilationTypes,
 } from "@/const/constTypes";
+import {helpers, required, minValue} from "@vuelidate/validators";
 
 export default defineComponent({
 	name: "CreateFloorBlockForm",
@@ -462,19 +461,248 @@ export default defineComponent({
 		return {
 			selectedCompany: null,
 			form: {
+				area_floor_min: null,
+				area_floor_max: null,
+				area_office_min: null,
+				area_office_max: null,
+				area_tech_min: null,
+				area_tech_max: null,
+				purposes_block: [],
+				ceiling_height_min: null,
+				ceiling_height_max: null,
+				load_floor_min: null,
+				load_floor_max: null,
 				floor_types: [],
 				column_grids: [],
-				gates: [],
+				entrance_block: [],
+				gatesType: [],
+				gatesCount: [],
+				temperature_min: null,
+				temperature_max: null,
+				racks: null,
 				rack_types: [],
+				rack_levels: null,
+				charging_room: null,
+				pallet_place_min: null,
+				pallet_place_max: null,
+				power: null,
 				lighting: [],
 				ventilation: [],
-				firefighting_type: []
+				heated: null,
+				water: null,
+				sewage: null,
+				climate_control: null,
+				gas: null,
+				steam: null,
+				phone_line: null,
+				internet: null,
+				firefighting_type: [],
+				smoke_exhaust: null,
+				video_control: null,
+				access_control: null,
+				security_alert: null,
+				fire_alert: null,
+				has_elevators: null,
+				has_cranes: null,
+				cranes_runways: null,
+				description: null,
+				photosList: [],
+				photos: [],
+				filesList: [],
+				files: []
 			},
 		}
 	},
 	validations() {
 		return {
-			form: {}
+			form: {
+				area_floor_min: {
+					required: helpers.withMessage(
+							"заполните поле",
+							required
+					),
+					minValue: helpers.withMessage(
+							"значение должно быть больше 0",
+							minValue(1)
+					)
+				},
+				area_floor_max: {
+					required: helpers.withMessage(
+							"заполните поле",
+							required
+					),
+					minValue: helpers.withMessage(
+							"значение должно быть больше 0",
+							minValue(1)
+					)
+				},
+				area_office_min: {
+					minValue: helpers.withMessage(
+							"значение должно быть больше 0",
+							minValue(1)
+					)
+				},
+				area_office_max: {
+					minValue: helpers.withMessage(
+							"значение должно быть больше 0",
+							minValue(1)
+					)
+				},
+				area_tech_min: {
+					minValue: helpers.withMessage(
+							"значение должно быть больше 0",
+							minValue(1)
+					)
+				},
+				area_tech_max: {
+					minValue: helpers.withMessage(
+							"значение должно быть больше 0",
+							minValue(1)
+					)
+				},
+				ceiling_height_min: {
+					required: helpers.withMessage(
+							"заполните поле",
+							required
+					),
+					minValue: helpers.withMessage(
+							"значение должно быть больше 0",
+							minValue(1)
+					)
+				},
+				ceiling_height_max: {
+					required: helpers.withMessage(
+							"заполните поле",
+							required
+					),
+					minValue: helpers.withMessage(
+							"значение должно быть больше 0",
+							minValue(1)
+					)
+				},
+				load_floor_min: {
+					required: helpers.withMessage(
+							"заполните поле",
+							required
+					),
+					minValue: helpers.withMessage(
+							"значение должно быть больше 0",
+							minValue(1)
+					)
+				},
+				load_floor_max: {
+					required: helpers.withMessage(
+							"заполните поле",
+							required
+					),
+					minValue: helpers.withMessage(
+							"значение должно быть больше 0",
+							minValue(1)
+					)
+				},
+				floor_types: {
+					required: helpers.withMessage(
+							"выберите один или несколько вариантов",
+							required
+					),
+				},
+				column_grids: {
+					required: helpers.withMessage(
+							"выберите один или несколько вариантов",
+							required
+					),
+				},
+				temperature_min: {
+					required: helpers.withMessage(
+							"заполните поле",
+							required
+					),
+					minValue: helpers.withMessage(
+							"значение должно быть больше 0",
+							minValue(1)
+					)
+				},
+				temperature_max: {
+					required: helpers.withMessage(
+							"заполните поле",
+							required
+					),
+					minValue: helpers.withMessage(
+							"значение должно быть больше 0",
+							minValue(1)
+					)
+				},
+				racks: {
+					required: helpers.withMessage(
+							"выберите один из вариантов",
+							required
+					),
+				},
+				rack_levels: {
+					minValue: helpers.withMessage(
+							"значение должно быть больше 0",
+							minValue(1)
+					)
+				},
+				pallet_place_min: {
+					minValue: helpers.withMessage(
+							"значение должно быть больше 0",
+							minValue(1)
+					)
+				},
+				pallet_place_max: {
+					minValue: helpers.withMessage(
+							"значение должно быть больше 0",
+							minValue(1)
+					)
+				},
+				power: {
+					minValue: helpers.withMessage(
+							"значение должно быть больше 0",
+							minValue(1)
+					)
+				},
+				gatesType: {
+					required: helpers.withMessage(
+							"выберите один или несколько вариантов",
+							required
+					),
+				},
+				gatesCount: {
+					required: helpers.withMessage(
+							"заполните поле",
+							required
+					),
+					minValue: helpers.withMessage(
+							"значение должно быть больше 0",
+							minValue(1)
+					)
+				},
+				heated: {
+					required: helpers.withMessage(
+							"выберите один из вариантов",
+							required
+					),
+				},
+				water: {
+					required: helpers.withMessage(
+							"выберите один из вариантов",
+							required
+					),
+				},
+				sewage: {
+					required: helpers.withMessage(
+							"выберите один из вариантов",
+							required
+					),
+				},
+				firefighting_type: {
+					required: helpers.withMessage(
+							"выберите один из вариантов",
+							required
+					),
+				},
+			}
 		}
 	},
 	methods: {},
