@@ -3,7 +3,7 @@
     <div class="ObjectHolding-body">
       <div class="ObjectHolding-carousel">
         <div class="ObjectHolding-label">ID {{ object.id }}</div>
-        <Carousel :list="objectPhoto" />
+        <Carousel :list="objectPhoto"/>
       </div>
       <div class="ObjectHolding-info">
         <div class="ObjectHolding-info-left">
@@ -12,7 +12,7 @@
           />
         </div>
         <div class="ObjectHolding-info-right">
-          <ObjectHoldingsOwnerList v-if="false" :owners="object.owners" />
+          <ObjectHoldingsOwnerList v-if="false" :owners="object.owners"/>
         </div>
       </div>
     </div>
@@ -39,16 +39,16 @@ export default defineComponent({
   },
   props: {
     object: {
-			type: Object as PropType<Record<string, any> & IObject>,
-			required: true
-		}
+      type: Object as PropType<Record<string, any> & IObject>,
+      required: true
+    }
   },
-	computed: {
-		objectPhoto() {
-			return this.object.photo ? this.object.photo.map(el => ({
-				src: this.$apiUrlHelper.objectsUrl() + el.src,
-			})) : []
-		}
-	}
+  computed: {
+    objectPhoto() {
+      return this.object.photo ? this.object.photo.map(el => ({
+        src: this.$apiUrlHelper.objectsUrl() + el.src,
+      })) : []
+    }
+  }
 });
 </script>
