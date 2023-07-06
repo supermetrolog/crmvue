@@ -12,7 +12,7 @@
           />
         </div>
         <div class="ObjectHolding-info-right">
-          <ObjectHoldingsOwnerList v-if="false" :owners="object.owners"/>
+          <ObjectHoldingsOwnerList v-if="false" :company="object.company"/>
         </div>
       </div>
     </div>

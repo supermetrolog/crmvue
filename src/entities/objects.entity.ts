@@ -10,6 +10,8 @@ import {
 } from "@/const/constTypes";
 import {ICrane} from "@/interfaces/crane.interace";
 import {CraneEntity} from "@/entities/crane.entity";
+import {ICompany} from "@/interfaces/company.interface";
+import {CompanyEntity} from "@/entities/company.entity";
 
 
 export default class ObjectEntity extends BaseEntity implements IObject {
@@ -161,11 +163,21 @@ export default class ObjectEntity extends BaseEntity implements IObject {
         })) : null;
     }
 
+
+    get company(): ICompany | null {
+        if (this._company) {
+            const company = new CompanyEntity();
+            company.load(this._company);
+            return company;
+        }
+        return null;
+    }
+
     public id: bigint | null = null;
     public address: string | null = null;
     public purposes: number[] | null = null;
-    public owners: number[] | null = null;
 
+    private _company: Record<string, any> | null = null;
     private _floors: number | null = null;
     private _photo: string[] | null = null;
     private _object_type: number[] | null = null;
