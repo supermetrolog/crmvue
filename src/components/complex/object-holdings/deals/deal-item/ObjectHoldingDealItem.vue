@@ -1,6 +1,6 @@
 <template>
   <div class="DealItem">
-    <DealFloors :object="object" :floors="deal.floors" />
+    <DealFloors :object="object" :floors="deal.floors"/>
     <deal-info
       v-if="deal.additionalDetails"
       :company="deal.builder"
@@ -28,10 +28,10 @@ export default {
       type: Object,
       required: true,
     },
-		object: {
-			type: Object,
-			required: true,
-		}
+    object: {
+      type: Object,
+      required: true,
+    }
   },
 };
 </script>
