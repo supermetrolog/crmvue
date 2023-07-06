@@ -8,6 +8,8 @@ import {
     ownTypes,
     ownTypesLand
 } from "@/const/constTypes";
+import {ICrane} from "@/interfaces/crane.interace";
+import {CraneEntity} from "@/entities/crane.entity";
 
 
 export default class ObjectEntity extends BaseEntity implements IObject {
@@ -151,6 +153,14 @@ export default class ObjectEntity extends BaseEntity implements IObject {
         return this.processBooleanField(this._heating);
     }
 
+    get cranes(): ICrane[] | null {
+        return this._cranes ? this._cranes.map((el => {
+            const crane = new CraneEntity();
+            crane.load(el);
+            return crane
+        })) : null;
+    }
+
     public id: bigint | null = null;
     public address: string | null = null;
     public purposes: number[] | null = null;
@@ -189,5 +199,6 @@ export default class ObjectEntity extends BaseEntity implements IObject {
     private _steam: number | null = null;
     private _internet: number | null = null;
     private _internet_type: number | null = null;
+    private _cranes: Record<string, any>[] | null = null;
 
 }

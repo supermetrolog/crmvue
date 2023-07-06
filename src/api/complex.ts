@@ -36,7 +36,18 @@ export default {
           objects.purposesRecords,
           guardTypes,
           internetTypes,
-          waterTypes`
+          waterTypes,
+          objects.commercialOffers.dealTypeRecord,
+          objects.floorsRecords.number,
+          objects.floorsRecords.parts,
+          objects.floorsRecords.floorTypes,
+          objects.cranes.controls,
+          objects.cranes.state,
+          objects.cranes.beam,
+          objects.cranes.beamAmount,
+          objects.cranes.hoisting,
+          objects.cranes.location,
+          objects.cranes.type`
         });
     },
 };

@@ -10,6 +10,9 @@ import {
     waterTypes,
     heatingAutonomousTypes
 } from "@/const/constTypes";
+import {ICrane} from "@/interfaces/crane.interace";
+import {CraneEntity} from "@/entities/crane.entity";
+import ObjectEntity from "@/entities/objects.entity";
 
 
 interface IComplexAddress extends Record<string, any> {
@@ -293,6 +296,14 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
         }
     }
 
+    get objects(): IObject[] | null {
+        return this._objects ? this._objects.map((el => {
+            const object = new ObjectEntity();
+            object.load(el);
+            return object
+        })) : null;
+    }
+
     private _id: bigint | null = null;
     private _author: IAuthorRes | null = null;
     private _last_update: number | null = null;
@@ -346,7 +357,6 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
     private _canteen: number | null = null;
     private _hostel: number | null = null;
     private _entrance_type: number | null = null;
-    public objects: IObject[] | null = null;
     private _regionRecord: IComplexAddress | null = null;
     private _highwayRecord: IComplexAddress | null = null;
     private _directionRecord: IComplexAddress | null = null;
@@ -355,6 +365,7 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
     private _districtMoscowRecord: IComplexAddress | null = null;
     private _townRecord: IComplexAddress | null = null;
     private _metroRecord: IComplexAddress | null = null;
+    private _objects: Record<string, any>[] | null = null;
 }
 
 interface IAuthorRes {

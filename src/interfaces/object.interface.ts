@@ -1,3 +1,5 @@
+import {ICrane} from "@/interfaces/crane.interace";
+
 export default interface IObject {
     id: bigint | null;
     type: number | null;
@@ -38,5 +40,6 @@ export default interface IObject {
     steam: boolean | null;
     internet: boolean | null;
     internetType: string | null;
+    cranes: ICrane[] | null;
 
 }

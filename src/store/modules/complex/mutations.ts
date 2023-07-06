@@ -14,15 +14,9 @@ export interface IComplexMutations<S = IComplexState> {
 export const mutations: MutationTree<IComplexState> & IComplexMutations = {
 	[ComplexMutationTypes.SET_COPMLEX](state, payload: any) {
 		const complex = new ComplexEntity();
-		const objects = payload.objects.map((el: Record<string, any>) => {
-			const object = new ObjectEntity();
-			object.load(el);
-			return object
-		});
 		complex.load({
 			...payload,
 			managment_company_value: null,
-			objects,
 			...payload.location,
 		});
 		state.complex = complex;

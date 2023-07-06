@@ -59,9 +59,27 @@
           </transition>
         </teleport>
         <p class="ObjectHoldingsParameters-equipment-label">Краны</p>
-        <button @click="toggleAddCraneFormIsVisible" class="ObjectHoldingsParameters-equipment-button">
-          <i class="fas fa-plus-circle"></i> Добавить кран
-        </button>
+        <ul class="ObjectHoldingsParameters-equipment-list">
+          <li class="ObjectHoldingsParameters-equipment-item" v-for="crane in object.cranes" :key="crane.id">
+            <span class="ObjectHoldingsParameters-equipment-text" v-if="crane.crane_type">{{ crane.crane_type }}</span>
+            <span class="ObjectHoldingsParameters-equipment-text"
+                  v-if="crane.crane_capacity"> / {{ crane.crane_capacity }} тонн</span>
+            <span class="ObjectHoldingsParameters-equipment-text" v-if="crane.crane_location"> / {{
+                crane.crane_location
+              }}</span>
+            <span class="ObjectHoldingsParameters-equipment-text" v-if="crane.crane_hook_height"> / до крюка {{
+                crane.crane_hook_height
+              }} м</span>
+            <span class="ObjectHoldingsParameters-equipment-text" v-if="crane.crane_condition"> / {{
+                crane.crane_condition
+              }}</span>
+          </li>
+          <li class="ObjectHoldingsParameters-equipment-item-button">
+            <button @click="toggleAddCraneFormIsVisible" class="ObjectHoldingsParameters-equipment-button">
+              <i class="fas fa-plus-circle"></i> Добавить кран
+            </button>
+          </li>
+        </ul>
         <p class="ObjectHoldingsParameters-equipment-label">Подъемники</p>
         <button @click="toggleAddElevatorFormIsVisible" class="ObjectHoldingsParameters-equipment-button">
           <i class="fas fa-plus-circle"></i> Добавить подъемник
