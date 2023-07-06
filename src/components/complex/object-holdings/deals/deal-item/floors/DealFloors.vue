@@ -1,6 +1,15 @@
 <template>
   <div class="DealFloors">
     <div class="DealFloors-body">
+      <teleport to="body">
+        <transition
+          mode="out-in"
+          enter-active-class="animate__animated animate__zoomIn for__modal absolute"
+          leave-active-class="animate__animated animate__zoomOut for__modal absolute"
+        >
+          <create-floor-block-form :object="object" @close="toggleCreateBlockForm" v-if="createBlockFormIsVisible"/>
+        </transition>
+      </teleport>
       <ul class="DealFloors-head-list">
         <li
           class="DealFloors-head-list-item"
@@ -11,6 +20,7 @@
             :area="floor.area"
             :checked="floor.checked"
             :name="floor.name"
+            @openForm="toggleCreateBlockForm"
           />
           <div class="DealFloors-separator">
             <i class="fas fa-arrow-right"></i>
@@ -67,19 +77,32 @@
 </template>
 
 <script>
-import { DealStatusType } from "@/const/Const.js";
+import {DealStatusType} from "@/const/Const.js";
 import DealFloorSection from "./section/DealFloorSection.vue";
 import DealFloorHead from "./head/DealFloorHead.vue";
+import CreateFloorBlockForm
+  from "@/components/complex/object-holdings/forms/create-floor-block-form/CreateFloorBlockForm.vue"
 
 export default {
   name: "DealFloors",
-  components: { DealFloorSection, DealFloorHead },
+  components: {
+    DealFloorSection, DealFloorHead,
+    CreateFloorBlockForm
+  },
   props: {
-    floors: { type: Array, default: () => [] },
+    floors: {
+      type: Array,
+      default: () => []
+    },
+    object: {
+      object: Object,
+      required: true,
+    }
   },
   data() {
     return {
       DealStatusType,
+      createBlockFormIsVisible: false,
     };
   },
   computed: {
@@ -99,6 +122,9 @@ export default {
     },
   },
   methods: {
+    toggleCreateBlockForm() {
+      this.createBlockFormIsVisible = !this.createBlockFormIsVisible;
+    },
     getSectionWidth(mainArea, sectionArea) {
       return `${(sectionArea / mainArea) * 100}%`;
     },

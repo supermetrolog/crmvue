@@ -48,26 +48,6 @@
     "sass-loader": "^10.4.1",
     "typescript": "4.4"
   },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/vue3-essential",
-      "eslint:recommended",
-      "@vue/typescript"
-    ],
-    "parserOptions": {
-      "parser": "@typescript-eslint/parser"
-    },
-    "rules": {
-      "no-console": "off",
-      "vue/multi-word-component-names": 0,
-      "vue/no-reserved-component-names": 0,
-      "no-mixed-spaces-and-tabs": 0
-    }
-  },
   "browserslist": [
     "> 1%",
     "last 2 versions",

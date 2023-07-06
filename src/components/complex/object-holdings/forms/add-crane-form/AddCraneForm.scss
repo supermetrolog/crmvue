@@ -1,4 +1,7 @@
-.plot-create-form {
+.add-crane-form {
+  & .modal .modal-container {
+    min-width: 500px;
+  }
   &__text {
     padding-top: 30px;
     white-space: nowrap;
@@ -8,7 +11,7 @@
   }
 
   &__label {
-    margin-top: 20px;
+    //margin-top: 20px;
     margin-bottom: 10px;
     font-size: 16px;
     font-weight: 700;
@@ -24,7 +27,7 @@
     }
   }
   &__tab-list {
-    padding-left: 20px;
+    padding-left: 10px;
     position: static;
     background-color: inherit;
     display: flex;

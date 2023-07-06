@@ -11,24 +11,24 @@
         </button>
       </div>
     </div>
-		<teleport to="body">
-			<transition
-					mode="out-in"
-					enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-					leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-			>
-		<BuildingCreateForm v-if="createBuildingFormVisible" @close="clickCloseCreateBuildingForm" />
-			</transition>
-		</teleport>
-		<teleport to="body">
-			<transition
-					mode="out-in"
-					enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-					leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-			>
-				<PlotCreateForm v-if="createPlotFormVisible" @close="clickCloseCreatePlotForm" />
-			</transition>
-		</teleport>
+    <teleport to="body">
+      <transition
+        mode="out-in"
+        enter-active-class="animate__animated animate__zoomIn for__modal absolute"
+        leave-active-class="animate__animated animate__zoomOut for__modal absolute"
+      >
+        <BuildingCreateForm v-if="createBuildingFormVisible" @close="clickCloseCreateBuildingForm"/>
+      </transition>
+    </teleport>
+    <teleport to="body">
+      <transition
+        mode="out-in"
+        enter-active-class="animate__animated animate__zoomIn for__modal absolute"
+        leave-active-class="animate__animated animate__zoomOut for__modal absolute"
+      >
+        <PlotCreateForm v-if="createPlotFormVisible" @close="clickCloseCreatePlotForm"/>
+      </transition>
+    </teleport>
     <div class="ObjectHoldings-body">
       <ObjectHolding
         v-for="object in objects"
@@ -47,18 +47,21 @@ import PlotCreateForm from "@/components/complex/object-holdings/forms/plot-crea
 
 export default {
   name: "ObjectHoldings",
-  components: {BuildingCreateForm, ObjectHolding, PlotCreateForm },
+  components: {
+    BuildingCreateForm, ObjectHolding,
+    PlotCreateForm
+  },
   props: {
-		objects: {
+    objects: {
       type: Array,
       default: () => [],
     },
   },
   data() {
     return {
-			createBuildingFormVisible: false,
-			createPlotFormVisible: false
-		};
+      createBuildingFormVisible: false,
+      createPlotFormVisible: false
+    };
   },
   computed: {
     buildingsCount() {
@@ -69,20 +72,20 @@ export default {
       return this.objects.filter((holding) => holding.type === 2).length;
     },
   },
-	methods: {
-		clickOpenCreateBuildingForm() {
-			this.createBuildingFormVisible = true;
-		},
-		clickCloseCreateBuildingForm() {
-			this.createBuildingFormVisible = false;
-		},
-		clickOpenCreatePlotForm() {
-			this.createPlotFormVisible = true;
-		},
-		clickCloseCreatePlotForm() {
-			this.createPlotFormVisible = false;
-		},
-	}
+  methods: {
+    clickOpenCreateBuildingForm() {
+      this.createBuildingFormVisible = true;
+    },
+    clickCloseCreateBuildingForm() {
+      this.createBuildingFormVisible = false;
+    },
+    clickOpenCreatePlotForm() {
+      this.createPlotFormVisible = true;
+    },
+    clickCloseCreatePlotForm() {
+      this.createPlotFormVisible = false;
+    },
+  }
 };
 </script>
 

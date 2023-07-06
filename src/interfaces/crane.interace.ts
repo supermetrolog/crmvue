@@ -1,0 +1,18 @@
+export interface ICrane  {
+    id: bigint | null,
+    photo: string[] | null,
+    crane_capacity: number | null,
+    crane_type: string | null,
+    crane_location: string | null,
+    crane_beam: string | null,
+    crane_beams_amount: string | null,
+    crane_span: number | null,
+    crane_hoisting: string | null,
+    crane_controls: string[] | null,
+    crane_hooks: number | null,
+    crane_hook_height: number | null,
+    crane_condition: string | null,
+    crane_supervision: boolean | null,
+    crane_documents: boolean | null,
+    description: string | null,
+}

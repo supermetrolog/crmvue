@@ -20,8 +20,8 @@
           :checked="isChecked"
           :id="headInputId"
         />
-        <label class="DealFloorHead-checkbox-label" :for="headInputId" />
-        <i class="fas fa-pen"></i>
+        <label class="DealFloorHead-checkbox-label" :for="headInputId"/>
+        <button class="DealFloorHead-button" @click="$emit('openForm')"><i class="fas fa-plus-circle"></i></button>
       </Form>
     </div>
   </div>
@@ -29,8 +29,9 @@
 
 <script>
 import WithUnitType from "@/components/common/with-unit-type/WithUnitType.vue";
-import { unitTypes } from "@/const/unitTypes";
+import {unitTypes} from "@/const/unitTypes";
 import Form from "@/components/common/form/Form.vue";
+
 export default {
   name: "DealFloorHead",
   components: {

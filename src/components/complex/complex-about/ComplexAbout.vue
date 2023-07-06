@@ -3,7 +3,7 @@
 		<Tabs :options="{ useUrlFragment: false }">
 			<Tab name="О комплексе" v-if="complex">
 				<div class="ComplexAbout-content">
-					<template v-if="dataAvailable">
+					<template v-if="complex">
 						<PropertyList title="Площади">
 							<PropertyListItem name="S - участка общая">
 								<with-unit-type class="ComplexAbout-property" v-if="complex.areaFieldFull !== null"
@@ -31,7 +31,8 @@
 																:value="$formatter.number(complex.areaTechFull)"/>
 							</PropertyListItem>
 							<PropertyListItem name="Управляющая компания">
-								<p v-if="complex.managmentCompany !== null" class="ComplexAbout-property">
+								<p v-if="complex.managmentCompany !== null && complex.managmentCompanyValue !== null"
+									 class="ComplexAbout-property">
 									{{ managmentCompany }}
 								</p>
 							</PropertyListItem>
@@ -54,8 +55,8 @@
 							</PropertyListItem>
 							<PropertyListItem name="Отопление автономное">
 								<template v-if="complex.heatingAutonomous !== null">
-									<p v-if="complex.heatingAutonomous" class="ComplexAbout-property">
-										есть, <span class="ComplexAbout-property-grey">{{
+									<p v-if="complex.heatingAutonomous" class="ComplexAbout-property" :title="complex.heatingAutonomousType ? 'есть, ' + complex.heatingAutonomousType : 'есть'">
+										есть{{ complex.heatingAutonomousType ? ',' : null }} <span class="ComplexAbout-property-grey">{{
 											complex.heatingAutonomousType
 										}}</span>
 									</p>
@@ -66,8 +67,8 @@
 							</PropertyListItem>
 							<PropertyListItem name="Водоснабжение">
 								<template v-if="complex.water !== null">
-									<p class="ComplexAbout-property" v-if="complex.water" :title="'есть, ' + joinedWaterType">
-										есть,
+									<p class="ComplexAbout-property" v-if="complex.water" :title="complex.waterType?.length > 0 ? 'есть, ' + joinedWaterType : 'есть'">
+										есть{{ complex.waterType?.length > 0 ? ',' : null }}
 										<with-unit-type
 												v-if="complex.waterValue"
 												:unit-type="unitTypes.CUBE_METERS_PER_HOUR"
@@ -94,8 +95,8 @@
 							</PropertyListItem>
 							<PropertyListItem name="Газ">
 								<template v-if="complex.gas !== null">
-									<p class="ComplexAbout-property" v-if="complex.gas" :title="'есть, ' + complex.gasType">
-										есть,
+									<p class="ComplexAbout-property" v-if="complex.gas" :title="complex.gasType ? 'есть, ' + complex.gasType : 'есть'">
+										есть{{complex.gasType ? ',' : null}}
 										<with-unit-type
 												v-if="complex.gasValue"
 												:unit-type="unitTypes.CUBE_METERS_PER_HOUR"
@@ -131,8 +132,8 @@
 							</PropertyListItem>
 							<PropertyListItem name="Интернет">
 								<template v-if="complex.internet !== null">
-									<p v-if="complex.internet" class="ComplexAbout-property" :title="'есть, ' + joinedInternetType">
-										есть, <span
+									<p v-if="complex.internet" class="ComplexAbout-property" :title="complex.internetType?.length > 0 ? 'есть, ' + joinedInternetType : 'есть'">
+										есть{{complex.internetType?.length > 0 ? ',' : null}} <span
 											class="ComplexAbout-property-grey">{{
 											joinedInternetType
 										}}</span>
@@ -146,8 +147,8 @@
 						<PropertyList title="Безопасность">
 							<PropertyListItem name="Охрана объекта">
 								<template v-if="complex.guard !== null">
-									<p v-if="complex.guard" class="ComplexAbout-property" :title="'есть, ' + joinedGuardType">
-										есть, <span
+									<p v-if="complex.guard" class="ComplexAbout-property" :title="complex.guardType?.length > 0 ? 'есть, ' + joinedGuardType : 'есть'">
+										есть{{complex.guardType?.length > 0 ? ',' : null}} <span
 											class="ComplexAbout-property-grey">{{
 											joinedGuardType
 										}}</span>
@@ -217,19 +218,34 @@
 									</p>
 								</PropertyListItem>
 								<PropertyListItem name="«P» легковая">
-									<p v-if="complex.parkingCar !== null" class="ComplexAbout-property">
-										{{ isExists(complex.parkingCar) }}
-									</p>
+									<template v-if="complex.parkingCar !== null">
+										<p v-if="complex.parkingCar" class="ComplexAbout-property" :title="'есть, ' + complex.parkingCarType">
+											есть, {{ complex.parkingCarType }}
+										</p>
+										<p v-else class="ComplexAbout-property">
+											нет
+										</p>
+									</template>
 								</PropertyListItem>
 								<PropertyListItem name="«P» 3-10 тонн">
-									<p v-if="complex.parkingLorry !== null" class="ComplexAbout-property">
-										{{ isExists(complex.parkingLorry) }}
-									</p>
+									<template v-if="complex.parkingLorry !== null">
+										<p v-if="complex.parkingLorry" class="ComplexAbout-property" :title="'есть, ' + complex.parkingLorryType">
+											есть, {{ complex.parkingLorryType }}
+										</p>
+										<p v-else class="ComplexAbout-property">
+											нет
+										</p>
+									</template>
 								</PropertyListItem>
 								<PropertyListItem name="«P» от 10 тонн">
-									<p v-if="complex.parkingTruck !== null" class="ComplexAbout-property">
-										{{ isExists(complex.parkingTruck) }}
-									</p>
+									<template v-if="complex.parkingTruck !== null">
+										<p v-if="complex.parkingTruck" class="ComplexAbout-property" :title="'есть, ' + complex.parkingTruckType">
+											есть, {{ complex.parkingTruckType }}
+										</p>
+										<p v-else class="ComplexAbout-property">
+											нет
+										</p>
+									</template>
 								</PropertyListItem>
 								<PropertyListItem name="Столовая/кафе">
 									<p v-if="complex.canteen !== null" class="ComplexAbout-property">
@@ -282,15 +298,6 @@ export default defineComponent({
 			type: Object as PropType<IComplex>,
 			required: true
 		},
-		safety: {
-			type: Array,
-		},
-		railway: {
-			type: Array,
-		},
-		infrastructure: {
-			type: Array,
-		},
 	},
 	data() {
 		return {
@@ -299,13 +306,6 @@ export default defineComponent({
 		};
 	},
 	computed: {
-		dataAvailable() {
-			return (
-					this.safety &&
-					this.railway &&
-					this.infrastructure
-			);
-		},
 		managmentCompany() {
 			return this.complex?.managmentCompany ? this.complex.managmentCompanyValue : "нет"
 		},
