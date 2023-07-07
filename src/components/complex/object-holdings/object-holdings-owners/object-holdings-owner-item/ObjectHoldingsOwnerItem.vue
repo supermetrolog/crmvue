@@ -1,55 +1,55 @@
 <template>
   <div class="ObjectHoldingsOwnerItem">
-    <span class="ObjectHoldingsOwnerItem-header">Собственник {{ index }}</span>
-    <span class="ObjectHoldingsOwnerItem-name">{{ owner.name }}</span>
+    <span class="ObjectHoldingsOwnerItem-name">{{ owner.full_name }}</span>
     <div class="ObjectHoldingsOwnerItem-rating">
-      <rating :rating="owner.rating" />
+      <rating :rating="owner.rating || 0"/>
     </div>
     <div class="ObjectHoldingsOwnerItem-links">
-      <span
-        >{{
+      <span v-if="owner.contacts_count"
+      >{{
           plural(
-            owner.contacts.length,
-            "%d контакт",
-            "%d контакта",
-            "%d контактов"
+              owner.contacts_count,
+              "%d контакт",
+              "%d контакта",
+              "%d контактов"
           )
         }},
       </span>
-      <span
-        >{{
+      <span v-if="owner.request_count"
+      >{{
           plural(
-            owner.requests.length,
-            "%d запрос",
-            "%d запроса",
-            "%d запросов"
+              owner.request_count,
+              "%d запрос",
+              "%d запроса",
+              "%d запросов"
           )
         }},
       </span>
-      <span>{{
-        plural(owner.objects.length, "%d объект", "%d объекта", "%d объектов")
-      }}</span>
+      <span v-if="owner.object_count">
+        {{
+          plural(owner.object_count, "%d объект", "%d объекта", "%d объектов")
+        }}</span>
     </div>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import plural from "plural-ru";
 import "./styles.scss";
 import Rating from "@/components/common/rating/Rating.vue";
-export default {
+import {defineComponent, PropType} from "vue";
+import {ICompany} from "@/interfaces/company.interface";
+
+export default defineComponent({
   name: "ObjectHoldingsOwnerItem",
   components: {
     Rating,
   },
   props: {
     owner: {
-      type: Object,
-      default: () => {},
-    },
-    index: {
-      type: Number,
-      default: null,
+      type: Object as PropType<ICompany>,
+      default: () => {
+      },
     },
   },
   data() {
@@ -59,7 +59,7 @@ export default {
   },
   computed: {},
   methods: {},
-};
+});
 </script>
 
 <style lang="scss" scoped></style>

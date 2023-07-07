@@ -5,4 +5,5 @@ export interface ICompany {
     offer_count: number | null;
     object_count: number | null;
     contacts_count: number | null;
+    rating: number | null;
 }

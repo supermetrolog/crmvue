@@ -8,4 +8,5 @@ export class CompanyEntity extends BaseEntity implements ICompany{
     public offer_count: number | null = null;
     public object_count: number | null = null;
     public contacts_count: number | null = null;
+    public rating: number | null = null;
 }

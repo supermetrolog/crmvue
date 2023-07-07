@@ -1,24 +1,23 @@
 <template>
   <div class="ObjectHoldingsOwnerList">
-    <ObjectHoldingsOwnerItem
-      v-for="(owner, idx) in owners"
-      :key="idx"
-      :owner="owner"
-      :index="idx + 1"
+    <ObjectHoldingsOwnerItem v-if="company"
+                             :owner="company"
     />
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import ObjectHoldingsOwnerItem from "./object-holdings-owner-item/ObjectHoldingsOwnerItem.vue";
 import "./styles.scss";
-export default {
+import {defineComponent, PropType} from "vue";
+import {ICompany} from "@/interfaces/company.interface";
+
+export default defineComponent({
   name: "ObjectHoldingsOwnerList",
-  components: { ObjectHoldingsOwnerItem },
+  components: {ObjectHoldingsOwnerItem},
   props: {
-    owners: {
-      type: Array,
-      default: () => [],
+    company: {
+      type: Object as PropType<ICompany>,
     },
   },
   data() {
@@ -26,5 +25,5 @@ export default {
   },
   computed: {},
   methods: {},
-};
+});
 </script>
