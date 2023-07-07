@@ -1,7 +1,25 @@
 <template>
   <ul class="action-buttons">
     <li v-if="edit" class="action-buttons__item">
-      <button class="action-buttons__button">
+      <teleport to="body">
+        <transition
+          v-if="object?.objectType?.includes(3)"
+          mode="out-in"
+          enter-active-class="animate__animated animate__zoomIn for__modal absolute"
+          leave-active-class="animate__animated animate__zoomOut for__modal absolute"
+        >
+          <PlotCreateForm :formData="object" v-if="formIsVisible" @close="toggleFormIsVisible"/>
+        </transition>
+        <transition
+          v-else
+          mode="out-in"
+          enter-active-class="animate__animated animate__zoomIn for__modal absolute"
+          leave-active-class="animate__animated animate__zoomOut for__modal absolute"
+        >
+          <BuildingCreateForm :formData="object" v-if="formIsVisible" @close="toggleFormIsVisible"/>
+        </transition>
+      </teleport>
+      <button class="action-buttons__button" @click="toggleFormIsVisible">
         <i class="fas fa-pen"></i>
       </button>
     </li>
@@ -46,12 +64,15 @@
 </template>
 
 <script lang="ts">
-import { PropType, defineComponent } from "vue";
-import { IActionButton } from "./action-buttons.interface";
+import {PropType, defineComponent} from "vue";
+import {IActionButton} from "./action-buttons.interface";
+import BuildingCreateForm from "@/components/complex/object-holdings/forms/building-create-form/BuildingCreateForm.vue";
+import PlotCreateForm from "@/components/complex/object-holdings/forms/plot-create-form/PlotCreateForm.vue";
+import IObject from "@/interfaces/object.interface";
 
 export default defineComponent({
   name: "ActionButtons",
-  components: {},
+  components: {PlotCreateForm, BuildingCreateForm},
   props: {
     edit: {
       type: Object as PropType<IActionButton>,
@@ -71,12 +92,22 @@ export default defineComponent({
     dislike: {
       type: Object as PropType<IActionButton>,
     },
+    object: {
+      type: Object as PropType<IObject>,
+      required: true,
+    }
   },
   data() {
-    return {};
+    return {
+      formIsVisible: false,
+    };
   },
-  methods: {},
+  methods: {
+    toggleFormIsVisible() {
+      this.formIsVisible = !this.formIsVisible;
+    }
+  }
 });
 </script>
 
-<style lang="scss" src="./ActionButtons.scss" />
+<style lang="scss" src="./ActionButtons.scss"/>

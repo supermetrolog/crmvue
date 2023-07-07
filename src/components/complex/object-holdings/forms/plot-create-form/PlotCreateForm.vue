@@ -1,7 +1,7 @@
 <template>
   <div class="plot-create-form">
     <Modal
-      :title="false ? 'Редактирование участка' : 'Создание участка'"
+      :title="formData ? 'Редактирование участка' : 'Создание участка'"
       @close="$emit('close')"
       classes="autosize"
     >
@@ -549,6 +549,11 @@ import {
 export default defineComponent({
   name: "PlotCreateForm",
   mixins: [ComplexForms],
+  props: {
+    formData: {
+      type: Object,
+    }
+  },
   data() {
     return {
       form: {

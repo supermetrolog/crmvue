@@ -1,7 +1,7 @@
 <template>
   <div class="building-create-form">
     <Modal
-      :title="false ? 'Редактирование строения' : 'Создание строения'"
+      :title="formData ? 'Редактирование строения' : 'Создание строения'"
       @close="$emit('close')"
       classes="autosize"
     >
@@ -260,6 +260,11 @@ import {yandexmap} from "@/utils";
 export default defineComponent({
   name: "BuildingCreateForm",
   mixins: [ComplexForms],
+  props: {
+    formData: {
+      type: Object,
+    }
+  },
   data() {
     return {
       selectedCompany: null,

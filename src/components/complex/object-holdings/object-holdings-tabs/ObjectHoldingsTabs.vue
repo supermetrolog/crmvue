@@ -1,6 +1,6 @@
 <template>
-  <div class="ObjectHoldingsTabs">
-    <action-buttons v-bind="actionButtons" class="ObjectHoldingsTabs-buttons"/>
+  <div class="ObjectHoldingsTabs" v-if="object">
+    <action-buttons v-bind="actionButtons" :object="object" class="ObjectHoldingsTabs-buttons"/>
     <Tabs :options="{ useUrlFragment: false }">
       <Tab name="Характеристики">
         <div class="ObjectHoldingsTabs-content-properties" v-if="!isPlot">
