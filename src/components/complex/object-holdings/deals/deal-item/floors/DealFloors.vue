@@ -45,6 +45,7 @@
               :key="idx"
               :section="section"
               :floorName="floor.name"
+              @openForm="toggleCreateBlockForm"
             />
             <DealFloorSection
               v-if="

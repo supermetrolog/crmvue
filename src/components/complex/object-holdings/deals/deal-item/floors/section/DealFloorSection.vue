@@ -33,7 +33,9 @@
         class="DealFloorSection-checkbox-label"
         :for="genSectionInputId(section.company.name)"
       />
-      <i class="fas fa-pen"></i>
+      <button @click="$emit('openForm')" class="DealFloorSection-button">
+        <i class="fas fa-pen"></i>
+      </button>
     </Form>
   </div>
 </template>
