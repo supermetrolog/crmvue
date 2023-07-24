@@ -126,6 +126,7 @@ export default {
         ad_cian: null,
         ad_yandex: null,
         ad_free: null,
+        ad_avito: null,
         favorites: null,
         outside_mkad: null,
         region_neardy: null,

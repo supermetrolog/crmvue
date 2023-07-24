@@ -318,6 +318,13 @@
             class="col pr-1 text-center"
             :options="yesNoOptions"
           />
+		<Radio
+		v-model="form.ad_avito"
+		:unselectMode="true"
+		label="Авито"
+		class="col pr-1 text-center"
+		:options="yesNoOptions"
+		/>
         </FormGroup>
       </Form>
     </Modal>

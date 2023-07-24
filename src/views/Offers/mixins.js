@@ -112,6 +112,10 @@ export default {
                     if (!value) return null;
                     return YesNo.get('param').find(param => param[0] == value)[1];
                 },
+                ad_avito: (value) => {
+                    if (!value) return null;
+                    return YesNo.get('param').find(param => param[0] == value)[1];
+                },
             },
         }
     },
@@ -175,6 +179,7 @@ export default {
         ad_cian: 'Циан:',
         ad_yandex: 'Яндекс:',
         ad_free: 'Бесплатно:',
+        ad_avito: 'Авито:',
         favorites: 'Избранные',
     },
     methods: {
