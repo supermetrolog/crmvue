@@ -2,6 +2,15 @@
   <div class="ObjectHoldingsOwnerItem">
     <span class="ObjectHoldingsOwnerItem-header">Собственник {{ index }}</span>
     <span class="ObjectHoldingsOwnerItem-name">{{ owner.name }}</span>
+     
+    <!-- 
+    <span class=""> {{ objects.company.mainContact.phones }}</span>
+    <span class="">{{ objects.company.mainContact.emails }}</span>
+    <span class=""> {{ objects.commercialOffers.companyRecord.mainContact.phones}}</span>
+    <span class="">{{objects.commercialOffers.companyRecord.mainContact.emails}}</span>
+   -->
+  
+    
     <div class="ObjectHoldingsOwnerItem-rating">
       <rating :rating="owner.rating" />
     </div>
