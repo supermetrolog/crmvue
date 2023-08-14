@@ -1,8 +1,12 @@
+
+<!-- КОМПОНЕНТ С КОНТАКТАМИ ВЛАДЕЛЬЦА ОБЪЕКТА -->
+
 <template>
   <div class="ObjectHoldingsOwnerItem">
     <span class="ObjectHoldingsOwnerItem-header">Собственник {{ index }}</span>
     <span class="ObjectHoldingsOwnerItem-name">{{ owner.name }}</span>
-     
+    <span class="ObjectHoldingsOwnerItem-mainContactPhones">{{ owner.mainContactPhones }}</span>
+    <span class="ObjectHoldingsOwnerItem-mainContactPhones">{{ owner.mainContactEmails }}</span>
     <!-- 
     <span class=""> {{ objects.company.mainContact.phones }}</span>
     <span class="">{{ objects.company.mainContact.emails }}</span>

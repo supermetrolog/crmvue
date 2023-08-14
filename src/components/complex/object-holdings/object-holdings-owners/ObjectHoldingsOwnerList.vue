@@ -22,9 +22,18 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      // owners:[],
+    };
   },
-  computed: {},
+  computed: {
+    getOwners(){
+      // return this.$store.state.complex.owners;
+      return this.$store.state.getters.complex.owners;
+  }
+    
+  },
   methods: {},
 };
+
 </script>

@@ -13,6 +13,8 @@ import {
 import {ICrane} from "@/interfaces/crane.interace";
 import {CraneEntity} from "@/entities/crane.entity";
 import ObjectEntity from "@/entities/objects.entity";
+import IOwnersContacts  from "@/interfaces/complex.interface";
+
 
 
 interface IComplexAddress extends Record<string, any> {
@@ -279,6 +281,16 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
         } : null;
     }
 
+    // // // ВЛАДЕЛЬЦЫ
+    get owners(): IOwnersContacts | null {
+        return this._owners ? {
+            id: this._owners.id,
+            name: this._owners.name,
+            phones: this._owners.phones,
+            emails: this._owners.emails,
+        } : null;
+    }
+
     getMetroLogoName(): string | null {
         if (
             this.locality?.title === "москва" ||
@@ -366,6 +378,7 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
     private _townRecord: IComplexAddress | null = null;
     private _metroRecord: IComplexAddress | null = null;
     private _objects: Record<string, any>[] | null = null;
+    private _owners: IOwnersContacts | null = null;
 }
 
 interface IAuthorRes {
