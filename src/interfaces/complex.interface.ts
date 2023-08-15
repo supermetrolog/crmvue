@@ -63,21 +63,9 @@ export default interface IComplex {
     hostel: boolean | null;
     entryFee: string | null;
     objects: IObject[] | null;
-    // ВЛАДЕЛЬЦЫ
-  //   owners: IOwnersContacts| null;
-    // phones:OwnersContacts| null;
 }
 
 export interface IAddressItem {
     title: string;
     type?: string
 }
-
-// export interface IOwnersContacts {
-//         id: bigint | null;
-//         name: string | null;
-//         phones: string[]| null;
-//         emails:string[]| null;
-       
-    
-// }

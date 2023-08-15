@@ -1,5 +1,5 @@
 import {ICrane} from "@/interfaces/crane.interace";
-import {ICompany} from "@/interfaces/company.interface";
+import {CompanyEntity} from "@/entities/company.entity";
 
 export default interface IObject {
     id: bigint | null;
@@ -9,7 +9,7 @@ export default interface IObject {
     areaField: number | null;
     floorArea: number | null;
     address: string | null;
-    company: ICompany | null;
+    company: CompanyEntity | null;
     photo: { src: string }[] | null;
     objectType: number[] | null;
     objectClass: string | null;

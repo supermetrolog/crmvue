@@ -1,7 +1,6 @@
 import BaseEntity from "@/entities/base.entity";
 import IObject from "@/interfaces/object.interface";
 import IComplex, {IAddressItem} from "@/interfaces/complex.interface";
-import {IOwnersContacts} from "@/interfaces/owners.interface";
 import {
     feeTypes,
     entryTerritoryTypes,
@@ -11,8 +10,6 @@ import {
     waterTypes,
     heatingAutonomousTypes
 } from "@/const/constTypes";
-import {ICrane} from "@/interfaces/crane.interace";
-import {CraneEntity} from "@/entities/crane.entity";
 import ObjectEntity from "@/entities/objects.entity";
 
 
@@ -280,16 +277,6 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
         } : null;
     }
 
-    // // // ВЛАДЕЛЬЦЫ
-    get owners(): IOwnersContacts| null {
-        return this._owners ? {
-            id: this._owners.id,
-            name: this._owners.name,
-            phones: this._owners.phones,
-            emails: this._owners.emails,
-        } : null;
-    }
-
     getMetroLogoName(): string | null {
         if (
             this.locality?.title === "москва" ||
@@ -377,7 +364,6 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
     private _townRecord: IComplexAddress | null = null;
     private _metroRecord: IComplexAddress | null = null;
     private _objects: Record<string, any>[] | null = null;
-    private _owners: IOwnersContacts | null = null;
 }
 
 interface IAuthorRes {
