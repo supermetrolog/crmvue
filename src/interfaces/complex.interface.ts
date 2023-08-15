@@ -64,7 +64,7 @@ export default interface IComplex {
     entryFee: string | null;
     objects: IObject[] | null;
     // ВЛАДЕЛЬЦЫ
-     owners: IOwnersContacts| null;
+  //   owners: IOwnersContacts| null;
     // phones:OwnersContacts| null;
 }
 
