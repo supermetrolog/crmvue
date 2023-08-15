@@ -42,5 +42,4 @@ export default interface IObject {
     internet: boolean | null;
     internetType: string | null;
     cranes: ICrane[] | null;
-
 }

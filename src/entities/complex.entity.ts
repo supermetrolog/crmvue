@@ -1,6 +1,7 @@
 import BaseEntity from "@/entities/base.entity";
 import IObject from "@/interfaces/object.interface";
 import IComplex, {IAddressItem} from "@/interfaces/complex.interface";
+import {IOwnersContacts} from "@/interfaces/owners.interface";
 import {
     feeTypes,
     entryTerritoryTypes,
@@ -13,8 +14,6 @@ import {
 import {ICrane} from "@/interfaces/crane.interace";
 import {CraneEntity} from "@/entities/crane.entity";
 import ObjectEntity from "@/entities/objects.entity";
-import IOwnersContacts  from "@/interfaces/complex.interface";
-
 
 
 interface IComplexAddress extends Record<string, any> {
@@ -282,7 +281,7 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
     }
 
     // // // ВЛАДЕЛЬЦЫ
-    get owners(): IOwnersContacts | null {
+    get owners(): IOwnersContacts| null {
         return this._owners ? {
             id: this._owners.id,
             name: this._owners.name,

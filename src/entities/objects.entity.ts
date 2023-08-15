@@ -12,6 +12,7 @@ import {ICrane} from "@/interfaces/crane.interace";
 import {CraneEntity} from "@/entities/crane.entity";
 import {ICompany} from "@/interfaces/company.interface";
 import {CompanyEntity} from "@/entities/company.entity";
+//import { OwnersEntity } from "@/entities/owners.entity";
 
 
 export default class ObjectEntity extends BaseEntity implements IObject {
@@ -212,5 +213,5 @@ export default class ObjectEntity extends BaseEntity implements IObject {
     private _internet: number | null = null;
     private _internet_type: number | null = null;
     private _cranes: Record<string, any>[] | null = null;
-
+    //private _owners: IOwnersContacts| null = null;
 }

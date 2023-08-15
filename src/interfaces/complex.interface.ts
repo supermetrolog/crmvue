@@ -65,6 +65,7 @@ export default interface IComplex {
     objects: IObject[] | null;
     // ВЛАДЕЛЬЦЫ
      owners: IOwnersContacts| null;
+    // phones:OwnersContacts| null;
 }
 
 export interface IAddressItem {
@@ -72,14 +73,11 @@ export interface IAddressItem {
     type?: string
 }
 
-export interface IOwnersContacts {
-        id: bigint | null;
-        name: string | null;
-        phones: number| null;
-        emails:string| null;
-        // request_count: number | null;
-        // offer_count: number | null;
-        // object_count: number | null;
-        // contacts_count: number | null;
+// export interface IOwnersContacts {
+//         id: bigint | null;
+//         name: string | null;
+//         phones: string[]| null;
+//         emails:string[]| null;
+       
     
-}
+// }
