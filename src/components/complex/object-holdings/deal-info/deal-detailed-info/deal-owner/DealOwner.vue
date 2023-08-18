@@ -1,7 +1,12 @@
 <template>
   <div class="deal-owner">
-    <p :title="owner.name" class="deal-owner__text">{{ owner.name }}</p>
-    <rating :rating="owner.rating" class="deal-owner__rating" />
+    <p :title="owner.full_name" class="deal-owner__text">{{ owner.full_name }}</p>
+    <span>{{ owner.mainContact.phones.map((el) => el.phone).join(',') }}</span>
+    <span>{{ owner.mainContact.emails.map((el) => el.phone).join(',') }}</span>
+
+    
+         
+    <!-- <rating :rating="owner.rating" class="deal-owner__rating" />
     <ul class="deal-owner__links">
       <li class="deal-owner__text deal-owner__text_link">
         {{
@@ -14,14 +19,14 @@
       <li class="deal-owner__text deal-owner__text_link">
         {{ plural(owner.objects, "%d объект", "%d объекта", "%d объектов") }}
       </li>
-    </ul>
+    </ul> -->
     <p class="deal-owner__text deal-owner__text_weigth_bold">
       {{ owner.representative.name }}
     </p>
     <p class="deal-owner__text deal-owner__text_color_grey">
       {{ owner.representative.post }}
     </p>
-    <ul class="deal_owner__phone-numbers">
+    <!-- <ul class="deal_owner__phone-numbers">
       <li
         v-for="number in owner.phoneNumbers"
         :key="number"
@@ -29,20 +34,20 @@
       >
         {{ $formatter.formatPhoneNumber(number) }}
       </li>
-    </ul>
+    </ul> -->
   </div>
 </template>
 
 <script lang="ts">
 import { PropType, defineComponent } from "vue";
 import plural from "plural-ru";
-import Rating from "@/components/common/rating/Rating.vue";
+//import Rating from "@/components/common/rating/Rating.vue";
 import { IOwner } from "../../../deals/deal.interface";
 
 export default defineComponent({
   name: "DealOwner",
   components: {
-    Rating,
+  //  Rating,
   },
   props: {
     owner: {

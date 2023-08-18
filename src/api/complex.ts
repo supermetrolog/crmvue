@@ -5,7 +5,7 @@ import SuccessHandler from "./success";
 export default {
     async fetch(id: string, params?: Record<string, string>) {
         const query = new URLSearchParams(params).toString();
-        const url = query ? `complex/${id}?${query}` : `comples/${id}`;
+        const url = query ? `complex/${id}?${query}` : `complex/${id}`;
         try {
             const response = await axios.get(url);
             return {
@@ -38,6 +38,8 @@ export default {
           internetTypes,
           waterTypes,
           objects.commercialOffers.dealTypeRecord,
+          objects.commercialOffers.companyRecord.mainContact.phones,
+          objects.commercialOffers.companyRecord.mainContact.emails,
           objects.floorsRecords.number,
           objects.floorsRecords.parts,
           objects.floorsRecords.floorTypes,

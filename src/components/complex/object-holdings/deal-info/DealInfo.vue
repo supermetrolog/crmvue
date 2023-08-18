@@ -25,13 +25,16 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent, PropType } from "vue";
 import DealDetailedInfo from "./deal-detailed-info/DealDetailedInfo.vue";
 import AdditionalDetails from "./deal-detailed-info/additional-detailes/AdditionalDetails.vue";
 import DealOwner from "./deal-detailed-info/deal-owner/DealOwner.vue";
 import DealInfoHeader from "./deal-info-header/DealInfoHeader.vue";
+import { IOwner } from "../../../deals/deal.interface";
 
-export default {
+
+export default defineComponent({
   name: "DealInfo",
   components: {
     DealInfoHeader,
@@ -53,13 +56,14 @@ export default {
       type: Object,
     },
     owner: {
-      type: Object,
+      type: Object as PropType<IOwner>,
+      required: true,
     },
   },
   data() {
     return {};
   },
-};
+});
 </script>
 
 <style lang="scss" src="./DealInfo.scss"></style>
