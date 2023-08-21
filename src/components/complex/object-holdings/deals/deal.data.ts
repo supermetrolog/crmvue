@@ -175,8 +175,20 @@ const dealData: IDeal[] = [
         name: "Смолянинов Илья",
         post: "Начальник производства",
       },
-      phones:["89161257487", "84997535421", "89267663467"],
-      emails:["jdkjgdlb@yandex.ru", "jfkrdkgvnrkfdgv@yandex.ru"]
+      phones:[{
+        id: 1,
+        phone: '+7 (123) 123 12 12',
+        native_phone: '71231231212',
+        exten: 12,
+        contact_id: 12,
+        isMain: true
+      }],
+      emails:[{
+        id: 1,
+        email: 'test@test.test',
+        contact_id: 12,
+        isMain: true
+      }]
     },
     additionalDetails: {
       taxForm: 1,

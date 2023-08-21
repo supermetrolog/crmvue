@@ -2,7 +2,7 @@
 export interface IPhone extends Item{
     phone: string,
     native_phone: string,
-    exten: bigint
+    exten: number
   }
   
   export interface IEmail extends Item{
@@ -10,8 +10,8 @@ export interface IPhone extends Item{
   }
   
   interface Item {
-    id: bigint,
-    contact_id: bigint,
+    id: number,
+    contact_id: number,
     isMain: boolean
   }
   

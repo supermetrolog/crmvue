@@ -1,8 +1,8 @@
 <template>
   <div class="deal-owner">
-    <p :title="owner.name" class="deal-owner__text">{{ owner.name }}</p>
-    <span>{{ owner.mainContact.phones.map((el) => el.phone).join(',') }}</span>
-    <span>{{ owner.mainContact.emails.map((el) => el.email).join(',') }}</span>
+<!--    <p :title="owner.name" class="deal-owner__text">{{ owner.name }}</p>-->
+<!--    <span>{{ owner.mainContact.phones.map((el) => el.phone).join(',') }}</span>-->
+<!--    <span>{{ owner.mainContact.emails.map((el) => el.email).join(',') }}</span>-->
 
     
          
