@@ -31,7 +31,7 @@ import DealDetailedInfo from "./deal-detailed-info/DealDetailedInfo.vue";
 import AdditionalDetails from "./deal-detailed-info/additional-detailes/AdditionalDetails.vue";
 import DealOwner from "./deal-detailed-info/deal-owner/DealOwner.vue";
 import DealInfoHeader from "./deal-info-header/DealInfoHeader.vue";
-import { IOwner } from "../../../deals/deal.interface";
+import { IOwner } from "../../../../interfaces/deal.interface";
 
 
 export default defineComponent({
@@ -67,3 +67,4 @@ export default defineComponent({
 </script>
 
 <style lang="scss" src="./DealInfo.scss"></style>
+@/interfaces/deal.interface

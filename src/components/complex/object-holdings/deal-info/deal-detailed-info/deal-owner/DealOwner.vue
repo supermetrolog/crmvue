@@ -1,8 +1,8 @@
 <template>
   <div class="deal-owner">
-    <p :title="owner.full_name" class="deal-owner__text">{{ owner.full_name }}</p>
+    <p :title="owner.name" class="deal-owner__text">{{ owner.name }}</p>
     <span>{{ owner.mainContact.phones.map((el) => el.phone).join(',') }}</span>
-    <span>{{ owner.mainContact.emails.map((el) => el.phone).join(',') }}</span>
+    <span>{{ owner.mainContact.emails.map((el) => el.email).join(',') }}</span>
 
     
          
@@ -35,6 +35,7 @@
         {{ $formatter.formatPhoneNumber(number) }}
       </li>
     </ul> -->
+    
   </div>
 </template>
 
@@ -42,7 +43,7 @@
 import { PropType, defineComponent } from "vue";
 import plural from "plural-ru";
 //import Rating from "@/components/common/rating/Rating.vue";
-import { IOwner } from "../../../deals/deal.interface";
+import { IOwner } from "../../../../../../interfaces/deal.interface";
 
 export default defineComponent({
   name: "DealOwner",

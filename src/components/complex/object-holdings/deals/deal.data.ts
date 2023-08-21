@@ -1,6 +1,7 @@
 import { unitTypes } from "@/const/unitTypes";
-import { IDeal } from "./deal.interface";
+import { IDeal } from "../../../../interfaces/deal.interface";
 import { tradeOfferCharacteristics } from "@/const/tradeOfferCharacteristics";
+
 
 const dealData: IDeal[] = [
   {
@@ -164,6 +165,7 @@ const dealData: IDeal[] = [
       visitType: "Личное посещение",
     },
     owner: {
+      company_id:1234567,
       name: "ОАО Альстом - Атомконстракшн Энергомаш",
       rating: 2,
       contacts: 3,
@@ -173,7 +175,8 @@ const dealData: IDeal[] = [
         name: "Смолянинов Илья",
         post: "Начальник производства",
       },
-      phoneNumbers: ["89161257487", "84997535421", "89267663467"],
+      phones:["89161257487", "84997535421", "89267663467"],
+      emails:["jdkjgdlb@yandex.ru", "jfkrdkgvnrkfdgv@yandex.ru"]
     },
     additionalDetails: {
       taxForm: 1,
