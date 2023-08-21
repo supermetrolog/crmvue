@@ -12,7 +12,7 @@
           />
         </div>
         <div class="ObjectHolding-info-right">
-          <ObjectHoldingsOwnerList v-if="false" :company="object.company"/>
+          <ObjectHoldingsOwnerList v-if="object.company" :company="object.company"/>
         </div>
       </div>
     </div>
@@ -49,6 +49,6 @@ export default defineComponent({
         src: this.$apiUrlHelper.objectsUrl() + el.src,
       })) : []
     }
-  }
+  },
 });
 </script>

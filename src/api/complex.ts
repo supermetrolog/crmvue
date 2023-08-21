@@ -5,7 +5,7 @@ import SuccessHandler from "./success";
 export default {
     async fetch(id: string, params?: Record<string, string>) {
         const query = new URLSearchParams(params).toString();
-        const url = query ? `complex/${id}?${query}` : `comples/${id}`;
+        const url = query ? `complex/${id}?${query}` : `complex/${id}`;
         try {
             const response = await axios.get(url);
             return {
@@ -16,12 +16,19 @@ export default {
             ErrorHandle.setError(e);
         }
     },
+   
     async getComplexWithObjects(complexId: string) {
         return await this.fetch(complexId, {
             expand: `objects.company.consultant.userProfile,
           objects.objectClassRecord,
           objects.firefightingType,
           objects.location.regionRecord,
+        
+          objects.company.mainContact.phones,
+          objects.company.mainContact.emails,
+          objects.commercialOffers.companyRecord.mainContact.phones,
+          objects.commercialOffers.companyRecord.mainContact.emails,
+
           location.regionRecord,
           location.highwayRecord,
           location.directionRecord,

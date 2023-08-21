@@ -10,9 +10,7 @@ import {
 } from "@/const/constTypes";
 import {ICrane} from "@/interfaces/crane.interace";
 import {CraneEntity} from "@/entities/crane.entity";
-import {ICompany} from "@/interfaces/company.interface";
 import {CompanyEntity} from "@/entities/company.entity";
-
 
 export default class ObjectEntity extends BaseEntity implements IObject {
 
@@ -164,9 +162,10 @@ export default class ObjectEntity extends BaseEntity implements IObject {
     }
 
 
-    get company(): ICompany | null {
+    get company(): CompanyEntity | null {
         if (this._company) {
             const company = new CompanyEntity();
+            console.error(this._company, company);
             company.load(this._company);
             return company;
         }
@@ -212,5 +211,5 @@ export default class ObjectEntity extends BaseEntity implements IObject {
     private _internet: number | null = null;
     private _internet_type: number | null = null;
     private _cranes: Record<string, any>[] | null = null;
-
+    //private _owners: IOwnersContacts| null = null;
 }

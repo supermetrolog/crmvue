@@ -1,30 +1,25 @@
 <template>
   <div class="ObjectHoldingsOwnerList">
     <ObjectHoldingsOwnerItem
-      v-for="(owner, idx) in owners"
-      :key="idx"
-      :owner="owner"
-      :index="idx + 1"
+      :company="company"
     />
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import ObjectHoldingsOwnerItem from "./object-holdings-owner-item/ObjectHoldingsOwnerItem.vue";
 import "./styles.scss";
-export default {
+import {PropType, defineComponent} from "vue";
+import {CompanyEntity} from "@/entities/company.entity";
+
+export default defineComponent ({
   name: "ObjectHoldingsOwnerList",
   components: { ObjectHoldingsOwnerItem },
   props: {
-    owners: {
-      type: Array,
-      default: () => [],
+    company: {
+      type: Object as PropType<CompanyEntity>,
     },
   },
-  data() {
-    return {};
-  },
-  computed: {},
-  methods: {},
-};
+});
+
 </script>
