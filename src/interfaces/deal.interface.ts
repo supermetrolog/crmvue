@@ -12,7 +12,7 @@ import {
 import {
   IPhone,
   IEmail
-} from "./common.interface";
+} from "./contacts.interface";
 
 export interface IDeal {
   id: number;
@@ -40,10 +40,6 @@ export interface IOwner {
   // phoneNumbers: string[];
   phones: IPhone[],
   emails: IEmail[],
-  mainContact?: {
-      phones: IPhone[],
-      emails: IEmail[],
-    }
 }
 
 
