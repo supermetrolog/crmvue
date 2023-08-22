@@ -52,10 +52,10 @@
 import plural from "plural-ru";
 import "./styles.scss";
 // import Rating from "@/components/common/rating/Rating.vue";
-import {PropType} from "vue";
-import {CompanyEntity} from "@/entities/company.entity";
+import { defineComponent, PropType} from "vue";
+import {CompanyEntity} from "./../../../../../entities/company.entity";
 
-export default {
+export default defineComponent({
   name: "ObjectHoldingsOwnerItem",
   components: {
     // Rating,
@@ -70,7 +70,7 @@ export default {
       plural: plural,
     };
   },
-};
+});
 </script>
 
 <style lang="scss" scoped></style>

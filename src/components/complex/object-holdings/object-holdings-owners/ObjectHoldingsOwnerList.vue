@@ -10,7 +10,7 @@
 import ObjectHoldingsOwnerItem from "./object-holdings-owner-item/ObjectHoldingsOwnerItem.vue";
 import "./styles.scss";
 import {PropType, defineComponent} from "vue";
-import {CompanyEntity} from "@/entities/company.entity";
+import {CompanyEntity} from "./../../../../entities/company.entity"
 
 export default defineComponent ({
   name: "ObjectHoldingsOwnerList",
