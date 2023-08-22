@@ -26,9 +26,7 @@ export default {
         
           objects.company.mainContact.phones,
           objects.company.mainContact.emails,
-          objects.commercialOffers.companyRecord.mainContact.phones,
-          objects.commercialOffers.companyRecord.mainContact.emails,
-
+          
           location.regionRecord,
           location.highwayRecord,
           location.directionRecord,
