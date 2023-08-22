@@ -10,8 +10,6 @@ import {
     waterTypes,
     heatingAutonomousTypes
 } from "@/const/constTypes";
-import {ICrane} from "@/interfaces/crane.interace";
-import {CraneEntity} from "@/entities/crane.entity";
 import ObjectEntity from "@/entities/objects.entity";
 
 

@@ -16,12 +16,19 @@ export default {
             ErrorHandle.setError(e);
         }
     },
+   
     async getComplexWithObjects(complexId: string) {
         return await this.fetch(complexId, {
             expand: `objects.company.consultant.userProfile,
           objects.objectClassRecord,
           objects.firefightingType,
           objects.location.regionRecord,
+        
+          objects.company.mainContact.phones,
+          objects.company.mainContact.emails,
+          objects.commercialOffers.companyRecord.mainContact.phones,
+          objects.commercialOffers.companyRecord.mainContact.emails,
+
           location.regionRecord,
           location.highwayRecord,
           location.directionRecord,
