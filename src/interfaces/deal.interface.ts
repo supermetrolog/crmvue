@@ -1,9 +1,18 @@
-import { IProperty, IRange } from "@/types/property.interface";
+import {
+  IProperty,
+  IRange
+} from "@/types/property.interface";
 import {
   ITradeOfferParameters,
   ITradeOfferPropeties,
-} from "../../trade-offer-tabs/tradeOfferTabs.interface";
-import { unitTypes } from "@/const/unitTypes";
+} from "../components/complex/trade-offer-tabs/tradeOfferTabs.interface";
+import {
+  unitTypes
+} from "@/const/unitTypes";
+import {
+  IPhone,
+  IEmail
+} from "./contacts.interface";
 
 export interface IDeal {
   id: number;
@@ -13,22 +22,26 @@ export interface IDeal {
   price: IDealPrice;
   status: 1;
   floors: IFloor[];
-  owner?: IOwner;
-  builder?: IBuilder;
-  consultant?: IConsultant;
-  additionalDetails?: IAdditionalDetails;
-  buildingInfo?: IBuildingInfo;
+  owner ? : IOwner;
+  builder ? : IBuilder;
+  consultant ? : IConsultant;
+  additionalDetails ? : IAdditionalDetails;
+  buildingInfo ? : IBuildingInfo;
 }
 
 export interface IOwner {
-  name: string;
+  company_id: number,
+  name: string,
   rating: number;
   contacts: number;
   requests: number;
   objects: number;
   representative: IRepresentative;
-  phoneNumbers: string[];
+  // phoneNumbers: string[];
+  phones: IPhone[],
+  emails: IEmail[],
 }
+
 
 interface IRepresentative {
   name: string;
