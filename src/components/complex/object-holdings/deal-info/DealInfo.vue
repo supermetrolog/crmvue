@@ -67,4 +67,3 @@ export default defineComponent({
 </script>
 
 <style lang="scss" src="./DealInfo.scss"></style>
-@/interfaces/deal.interface

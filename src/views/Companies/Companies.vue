@@ -8,6 +8,7 @@
 export default {
   name: "Companies",
   components: {
+    // Company
     // Table,
     // Timeline,
   },

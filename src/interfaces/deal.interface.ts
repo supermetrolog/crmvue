@@ -12,7 +12,7 @@ import {
 import {
   IPhone,
   IEmail
-} from "./contacts.interface";
+} from "./contact.interface";
 
 export interface IDeal {
   id: number;

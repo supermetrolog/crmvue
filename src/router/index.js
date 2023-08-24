@@ -67,6 +67,7 @@ const routes = [
       {
         path: "/companies/:id",
         name: "company",
+        props: true ,
         meta: {
           layout: "main",
           auth: { isAuth: true, role: ["moderator", "administrator"] },

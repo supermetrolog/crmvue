@@ -40,6 +40,7 @@ textarea::-webkit-scrollbar-thumb {
   }
 }
 
+
 // input,
 // select,
 // textarea {
@@ -1020,12 +1021,10 @@ $warning_step_thin_border: 1px solid $color_warning;
 @mixin success_check {
   color: $color_success;
   background: rgb(255, 255, 255);
-  background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 1) 50%,
-    rgba(253, 29, 29, 0) 49%,
-    rgba(252, 176, 69, 0) 52%
-  );
+  background: radial-gradient(circle,
+      rgba(255, 255, 255, 1) 50%,
+      rgba(253, 29, 29, 0) 49%,
+      rgba(252, 176, 69, 0) 52%);
 }
 
 .success_check {
@@ -1462,6 +1461,7 @@ p {
 
     // Primary Timeline
     &.primary {
+
       .badge-1,
       .timeline-icon {
         background: $color_primary !important;
@@ -1471,6 +1471,7 @@ p {
 
     // Info Timeline
     &.info {
+
       .badge-1,
       .timeline-icon {
         background: $info !important;
@@ -1479,6 +1480,7 @@ p {
 
     // Success Timeline
     &.success {
+
       .badge-1,
       .timeline-icon {
         background: darken($color_success, 5) !important;
@@ -1488,6 +1490,7 @@ p {
 
     // Warning Timeline
     &.dark-warning {
+
       .badge-1,
       .timeline-icon {
         background: #a02121 !important;
@@ -1497,6 +1500,7 @@ p {
 
     // Dnager Timeline
     &.danger {
+
       .badge-1,
       .timeline-icon {
         background: darken($color_danger, 18) !important;
@@ -1505,6 +1509,7 @@ p {
     }
 
     &.light-blue {
+
       .badge-1,
       .timeline-icon {
         background: darken($color_info, 10) !important;
@@ -1513,6 +1518,7 @@ p {
     }
 
     &.blue-green {
+
       .badge-1,
       .timeline-icon {
         background: $color_success_alt !important;
@@ -1521,6 +1527,7 @@ p {
     }
 
     &.pale-red {
+
       .badge-1,
       .timeline-icon {
         background: #812375 !important;
@@ -1529,6 +1536,7 @@ p {
     }
 
     &.secondary {
+
       .badge-1,
       .timeline-icon {
         background: $color_secondary !important;
@@ -1536,6 +1544,7 @@ p {
     }
 
     &.black {
+
       .badge-1,
       .timeline-icon {
         background: black !important;
@@ -1630,6 +1639,7 @@ p {
   }
 
   &.autosize {
+
     .modal-body,
     .modal-container {
       min-height: unset !important;
@@ -1769,7 +1779,7 @@ p {
       color: $color_sidebar_bg;
       position: relative;
 
-      & > p:first-child {
+      &>p:first-child {
         display: inline;
         font-size: 15px;
         font-weight: 600;
@@ -1779,7 +1789,7 @@ p {
       }
 
       &.required {
-        & > p:first-child {
+        &>p:first-child {
           &::before {
             content: "*";
             position: absolute;
@@ -1912,6 +1922,7 @@ p {
       }
 
       &.large {
+
         input[type="radio"],
         input[type="checkbox"] {
           display: inline;
@@ -2079,6 +2090,7 @@ p {
 // ********** COMPANY-FORM ***********
 .fuck {
   .modal {
+
     .modal-body,
     .modal-container {
       min-height: unset !important;
@@ -2086,7 +2098,7 @@ p {
   }
 
   .label-padding {
-    & > p {
+    &>p {
       font-size: 15px;
     }
   }
@@ -2115,6 +2127,7 @@ p {
 
 // ********** TABS ***********
 .tabs-component {
+
   // padding: 20px;
   &-tab {
     display: inline-block;
@@ -2202,7 +2215,7 @@ p {
 }
 
 .equal,
-.equal > div[class*="col-"] {
+.equal>div[class*="col-"] {
   display: -webkit-box;
   display: -moz-box;
   display: -ms-flexbox;
@@ -2410,6 +2423,7 @@ p {
           }
 
           &.sortable {
+
             // background-color: red;
             .th__content {
               color: $color_info;
@@ -2735,7 +2749,7 @@ tr.TableRequestRow {
     padding: 0 0 10px 0 !important;
     height: inherit;
 
-    & > div {
+    &>div {
       border-top: $grey_thin_border;
       border-bottom: $grey_thin_border;
       height: 100%;
@@ -2750,7 +2764,7 @@ tr.TableObjectRow {
     padding: 0 0 10px 0 !important;
     height: inherit;
 
-    & > div {
+    &>div {
       border-top: $grey_thin_border;
       border-bottom: $grey_thin_border;
       height: 100%;
@@ -2830,23 +2844,19 @@ tr.DropdownSwitcherRow {
       }
 
       .item-1 {
-        animation: item-1_move-small 1.8s cubic-bezier(0.6, 0.01, 0.4, 1)
-          infinite !important;
+        animation: item-1_move-small 1.8s cubic-bezier(0.6, 0.01, 0.4, 1) infinite !important;
       }
 
       .item-2 {
-        animation: item-2_move-small 1.8s cubic-bezier(0.6, 0.01, 0.4, 1)
-          infinite !important;
+        animation: item-2_move-small 1.8s cubic-bezier(0.6, 0.01, 0.4, 1) infinite !important;
       }
 
       .item-3 {
-        animation: item-3_move-small 1.8s cubic-bezier(0.6, 0.01, 0.4, 1)
-          infinite !important;
+        animation: item-3_move-small 1.8s cubic-bezier(0.6, 0.01, 0.4, 1) infinite !important;
       }
 
       .item-4 {
-        animation: item-4_move-small 1.8s cubic-bezier(0.6, 0.01, 0.4, 1)
-          infinite !important;
+        animation: item-4_move-small 1.8s cubic-bezier(0.6, 0.01, 0.4, 1) infinite !important;
       }
     }
   }
@@ -2903,6 +2913,7 @@ tr.DropdownSwitcherRow {
     }
 
     @keyframes item-1_move {
+
       0%,
       100% {
         transform: translate(0, 0);
@@ -2922,6 +2933,7 @@ tr.DropdownSwitcherRow {
     }
 
     @keyframes item-2_move {
+
       0%,
       100% {
         transform: translate(0, 0);
@@ -2941,6 +2953,7 @@ tr.DropdownSwitcherRow {
     }
 
     @keyframes item-3_move {
+
       0%,
       100% {
         transform: translate(0, 0);
@@ -2960,6 +2973,7 @@ tr.DropdownSwitcherRow {
     }
 
     @keyframes item-4_move {
+
       0%,
       100% {
         transform: translate(0, 0);
@@ -2979,6 +2993,7 @@ tr.DropdownSwitcherRow {
     }
 
     @keyframes item-1_move-small {
+
       0%,
       100% {
         transform: translate(0, 0);
@@ -2998,6 +3013,7 @@ tr.DropdownSwitcherRow {
     }
 
     @keyframes item-2_move-small {
+
       0%,
       100% {
         transform: translate(0, 0);
@@ -3017,6 +3033,7 @@ tr.DropdownSwitcherRow {
     }
 
     @keyframes item-3_move-small {
+
       0%,
       100% {
         transform: translate(0, 0);
@@ -3036,6 +3053,7 @@ tr.DropdownSwitcherRow {
     }
 
     @keyframes item-4_move-small {
+
       0%,
       100% {
         transform: translate(0, 0);
@@ -3105,6 +3123,7 @@ tr.DropdownSwitcherRow {
   }
 
   &:hover {
+
     i.edit,
     i.delete {
       opacity: 1;
@@ -3461,6 +3480,7 @@ tr.DropdownSwitcherRow {
       }
 
       .body {
+
         .phone-list,
         .email-list {
           a {
@@ -3908,8 +3928,7 @@ tr.DropdownSwitcherRow {
     }
   }
 
-  &-contacts {
-  }
+  &-contacts {}
 }
 
 .CompanyBoxContactList {
@@ -4213,14 +4232,11 @@ tr.DropdownSwitcherRow {
       font-size: 16px;
     }
 
-    &-address {
-    }
+    &-address {}
 
-    &-direction {
-    }
+    &-direction {}
 
-    &-mkad {
-    }
+    &-mkad {}
   }
 
   &-dropdown {
@@ -4401,7 +4417,7 @@ tr.DropdownSwitcherRow {
     "location action"
     "footer footer";
 
-  & > div {
+  &>div {
     padding: 10px;
   }
 
@@ -4889,6 +4905,7 @@ tr.DropdownSwitcherRow {
     }
 
     .header {
+
       // outline: 2px solid $color_info;
       .image {
         position: relative;
@@ -5725,6 +5742,7 @@ tr.DropdownSwitcherRow {
   }
 
   &.autosize {
+
     .modal-body,
     .modal-container {
       min-height: unset !important;
@@ -6337,6 +6355,7 @@ tr.DropdownSwitcherRow {
 
         .price,
         .area {
+
           p,
           i {
             display: inline;
@@ -6844,6 +6863,7 @@ tr.DropdownSwitcherRow {
   .MiniOffersItem-actions-item_avito {
     display: flex;
     align-items: center;
+
     .MiniOffersItem-actions-toggler {
       cursor: pointer;
       width: 50px;
@@ -6855,7 +6875,7 @@ tr.DropdownSwitcherRow {
       box-sizing: border-box;
       transition: color 0.1s ease-in-out;
 
-      & > div {
+      &>div {
         background-color: $color_danger;
         left: 1px;
         top: 1px;
@@ -6865,7 +6885,7 @@ tr.DropdownSwitcherRow {
       &:disabled {
         border-color: $color_grey;
 
-        & > div {
+        &>div {
           background-color: $color_grey;
         }
       }
@@ -6873,7 +6893,7 @@ tr.DropdownSwitcherRow {
       &__active {
         border-color: $color_success;
 
-        & > div {
+        &>div {
           background-color: $color_success;
           left: 29px;
         }
@@ -6908,6 +6928,7 @@ tr.DropdownSwitcherRow {
     }
   }
 }
+
 // ************** MINI TIMELINE *************
 .MiniTimeline {
   $step_height: 34px;
@@ -7984,8 +8005,7 @@ $color_deep_blue: #263539;
           color: $color_success;
         }
 
-        &.phone {
-        }
+        &.phone {}
       }
 
       &.active {

@@ -1,4 +1,5 @@
 <template>
+  <div>
   <Tr
     class="company-table-view CompanyTableItem"
     :class="{ CompanyTableOdd: odd, CompanyTableEven: !odd }"
@@ -102,6 +103,7 @@
     @clickTimeline="clickTimeline"
     v-if="isThereDropdown"
   />
+</div>
 </template>
 
 <script>
