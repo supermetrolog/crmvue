@@ -20,6 +20,7 @@
       </ul>
     </div>
     <div class="ObjectDeals-list">
+      <!-- Табы превью сделок -->
       <DealPreviewCard
         @choose="choseDeal"
         v-for="deal in deals"
@@ -28,17 +29,21 @@
         :isCurrent="currentDealId === deal.id"
       />
     </div>
+    <!-- Подробное описание и характеристики объекта -->
     <DealItem :object="object" :deal="currentDeal" />
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent, PropType } from "vue";
 import DealItem from "./deal-item/ObjectHoldingDealItem.vue";
 import DealPreviewCard from "../../ui/deal-preview/DealPreview.vue";
 //import dealData from "./deal.data";
 import "./styles.scss";
+import { IDeal } from "./../../../../interfaces/deal.interface";
+import IObject from "./../../../../interfaces/object.interface";
 
-export default {
+export default defineComponent({
   name: "ObjectDeals",
   components: {
     DealPreviewCard,
@@ -46,11 +51,12 @@ export default {
   },
   props: {
     deals: {
-      type: Array,
+      type: Array as PropType<IDeal[]>,
       //default: dealData,
+      required:true
     },
 		object: {
-			type: Object,
+			type: Object as PropType<IObject>,
 			required: true
 		}
   },
@@ -65,11 +71,11 @@ export default {
     },
   },
   methods: {
-    choseDeal(id) {
+    choseDeal(id:number) {
       this.currentDealId = id;
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped></style>

@@ -22,7 +22,7 @@ export interface IDeal {
   price: IDealPrice;
   status: 1;
   floors: IFloor[];
-  owner ? : IOwner;
+  owner?: IOwner;
   builder ? : IBuilder;
   consultant ? : IConsultant;
   additionalDetails ? : IAdditionalDetails;
@@ -50,6 +50,7 @@ interface IRepresentative {
 
 interface IDealPrice extends IRange {
   unitType: unitTypes;
+  type:string;
 }
 
 export interface IAdditionalDetails {

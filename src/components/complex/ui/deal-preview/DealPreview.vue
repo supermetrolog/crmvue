@@ -34,11 +34,12 @@
 </template>
 
 <script lang="ts">
-import { unitTypes } from "@/const/unitTypes";
+import { unitTypes } from "./../../../../const/unitTypes";
 import "./styles.scss";
 import { DealTypeList, DealStatusType } from "@/const/Const.js";
-import { defineComponent } from "vue";
+import { defineComponent, PropType } from "vue";
 import WithUnitType from "@/components/common/with-unit-type/WithUnitType.vue";
+import { IDeal } from "@/interfaces/deal.interface";
 
 export default defineComponent({
   name: "DealPreviewCard",
@@ -47,7 +48,7 @@ export default defineComponent({
   },
   props: {
     deal: {
-      type: Object,
+      type: Object as PropType<IDeal>,
       required: true,
     },
     isCurrent: {
