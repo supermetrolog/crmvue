@@ -1,11 +1,18 @@
 import api from "@/api/api"
 
 const Deal = {
-    state: {},
-    mutations: {},
+    state: {
+        deals:[]
+    },
+    mutations: {
+        SET_DEALS(state, deals){
+            state.deals = deals
+        }
+    },
     actions: {
-        async FETCH_DEALS() {
-            return await api.deal.getDeals();
+        async FETCH_DEALS({commit}) {
+        const data = await api.deal.getDeals();
+        commit('SET_DEALS', data.data)
         },
         async FETCH_DEAL(_, id) {
             return await api.deal.getDeal(id);
@@ -21,7 +28,11 @@ const Deal = {
         },
 
     },
-    getters: {}
+    getters: {
+        getDeals(state){
+            return state.deals
+        }
+    }
 }
 
 export default Deal;

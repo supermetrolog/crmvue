@@ -36,10 +36,10 @@
 <script lang="ts">
 import { unitTypes } from "./../../../../const/unitTypes";
 import "./styles.scss";
-import { DealTypeList, DealStatusType } from "@/const/Const.js";
+import { DealTypeList, DealStatusType } from "./../../../../const/Const.js";
 import { defineComponent, PropType } from "vue";
-import WithUnitType from "@/components/common/with-unit-type/WithUnitType.vue";
-import { IDeal } from "@/interfaces/deal.interface";
+import WithUnitType from "./../../../../components/common/with-unit-type/WithUnitType.vue";
+import { IDeal } from "./../../../../interfaces/deal.interface";
 
 export default defineComponent({
   name: "DealPreviewCard",
@@ -69,15 +69,21 @@ export default defineComponent({
     },
 
     dealStatus() {
-      switch (this.deal.status) {
+      type dealStatus = 1|2|3
+
+      switch (this.deal.status as dealStatus) {
         case 1:
           return "Сдается";
+        
         case 2:
           return "Сдано";
+        
         case 3:
           return "Продано";
+        
         default:
           return "Неизвестно";
+          
       }
     },
     dealArea() {

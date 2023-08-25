@@ -22,11 +22,11 @@ export interface IDeal {
   price: IDealPrice;
   status: 1;
   floors: IFloor[];
-  owner?: IOwner;
+  owner: IOwner;
   builder ? : IBuilder;
   consultant ? : IConsultant;
-  additionalDetails ? : IAdditionalDetails;
-  buildingInfo ? : IBuildingInfo;
+  additionalDetails: IAdditionalDetails;
+  buildingInfo: IBuildingInfo;
 }
 
 export interface IOwner {
@@ -37,7 +37,6 @@ export interface IOwner {
   requests: number;
   objects: number;
   representative: IRepresentative;
-  // phoneNumbers: string[];
   phones: IPhone[],
   emails: IEmail[],
 }
@@ -48,7 +47,7 @@ interface IRepresentative {
   post: string;
 }
 
-interface IDealPrice extends IRange {
+export interface IDealPrice extends IRange {
   unitType: unitTypes;
   type:string;
 }
@@ -79,12 +78,12 @@ interface IBuilder {
   projectAvailability: boolean;
 }
 
-interface IConsultant {
+export interface IConsultant {
   name: string;
   visitType: string;
 }
 
-interface ICompany {
+export interface ICompany {
   name: string;
 }
 

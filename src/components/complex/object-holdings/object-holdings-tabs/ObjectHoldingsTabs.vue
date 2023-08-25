@@ -1,4 +1,5 @@
 <template>
+  <!-- таблицы с подобными характеристиками объекта -->
   <div class="ObjectHoldingsTabs">
     <action-buttons v-bind="actionButtons" class="ObjectHoldingsTabs-buttons"/>
     <Tabs :options="{ useUrlFragment: false }">

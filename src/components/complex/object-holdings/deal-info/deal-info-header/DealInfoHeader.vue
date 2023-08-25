@@ -1,3 +1,5 @@
+
+<!--СЕРЫЙ ДЛИННЫЙ БЛОК-ШАПКА НА СТРАНИЦЕ СДЕЛОК-->
 <template>
   <div class="deal-info-header">
     <p class="deal-info-header__text deal-info-header__text_color_red">

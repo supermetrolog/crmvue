@@ -27,7 +27,7 @@ import ObjectHoldingsParameters from "../object-holdings-parameters/ObjectHoldin
 import Carousel from "../../../common/carousel/Carousel.vue";
 import {defineComponent, PropType} from "vue";
 import "./styles.scss";
-import IObject from "@/interfaces/object.interface";
+import IObject from "./../../../../interfaces/object.interface";
 
 export default defineComponent({
   name: "ObjectHolding",

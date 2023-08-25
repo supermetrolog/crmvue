@@ -1,4 +1,5 @@
 <template>
+  <!-- БЛОКИ НА ЭТАЖАХ  -->
   <div class="DealFloorSection" :class="getAppropriateSectionClass(section)">
     <p
       v-if="this.section.company"
