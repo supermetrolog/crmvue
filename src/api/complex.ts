@@ -3,7 +3,7 @@ import ErrorHandle from "./errors";
 import SuccessHandler from "./success";
 
 export default {
-    async fetch(id: string, params?: Record<string, string>) {
+    async fetchComplex(id: string, params?: Record<string, string>) {
         const query = new URLSearchParams(params).toString();
         const url = query ? `complex/${id}?${query}` : `complex/${id}`;
         try {
@@ -18,7 +18,7 @@ export default {
     },
    
     async getComplexWithObjects(complexId: string) {
-        return await this.fetch(complexId, {
+        return await this.fetchComplex(complexId, {
             expand: `objects.company.consultant.userProfile,
           objects.objectClassRecord,
           objects.firefightingType,

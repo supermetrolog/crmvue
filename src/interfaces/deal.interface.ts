@@ -12,34 +12,33 @@ import {
 import {
   IPhone,
   IEmail
-} from "./contacts.interface";
+} from "./contact.interface";
 
 export interface IDeal {
-  id: number;
-  type: number;
+  id: number | null;
+  type: number | null;
   company: ICompany | null;
-  area: IRange;
-  price: IDealPrice;
-  status: 1;
-  floors: IFloor[];
-  owner ? : IOwner;
-  builder ? : IBuilder;
-  consultant ? : IConsultant;
-  additionalDetails ? : IAdditionalDetails;
-  buildingInfo ? : IBuildingInfo;
+  area: IRange | null;
+  price: IDealPrice | null;
+  status: number | null;
+  floors: IFloor[] | null;
+  owner: IOwner | null;
+  builder ? : IBuilder | null;
+  consultant ? : IConsultant | null;
+  additionalDetails: IAdditionalDetails | null;
+  buildingInfo: IBuildingInfo | null;
 }
 
 export interface IOwner {
-  company_id: number,
-  name: string,
-  rating: number;
-  contacts: number;
-  requests: number;
-  objects: number;
-  representative: IRepresentative;
-  // phoneNumbers: string[];
-  phones: IPhone[],
-  emails: IEmail[],
+  company_id: number | null;
+  name: string | null;
+  rating: number | null;
+  contacts: number | null;
+  requests: number | null;
+  objects: number | null ;
+  representative: IRepresentative | null;
+  phones: IPhone[] | null;
+  emails: IEmail[] | null;
 }
 
 
@@ -48,8 +47,9 @@ interface IRepresentative {
   post: string;
 }
 
-interface IDealPrice extends IRange {
+export interface IDealPrice extends IRange {
   unitType: unitTypes;
+  type:string;
 }
 
 export interface IAdditionalDetails {
@@ -72,18 +72,18 @@ interface IBusiness {
   info: IProperty[];
 }
 
-interface IBuilder {
+export interface IBuilder {
   name: string;
   duration: string;
   projectAvailability: boolean;
 }
 
-interface IConsultant {
+export interface IConsultant {
   name: string;
   visitType: string;
 }
 
-interface ICompany {
+export interface ICompany {
   name: string;
 }
 

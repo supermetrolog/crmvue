@@ -31,7 +31,7 @@ import DealDetailedInfo from "./deal-detailed-info/DealDetailedInfo.vue";
 import AdditionalDetails from "./deal-detailed-info/additional-detailes/AdditionalDetails.vue";
 import DealOwner from "./deal-detailed-info/deal-owner/DealOwner.vue";
 import DealInfoHeader from "./deal-info-header/DealInfoHeader.vue";
-import { IOwner } from "../../../../interfaces/deal.interface";
+import { IOwner, IAdditionalDetails, IConsultant, ICompany, IBuildingInfo }  from "../../../../interfaces/deal.interface";
 
 
 export default defineComponent({
@@ -44,16 +44,16 @@ export default defineComponent({
   },
   props: {
     company: {
-      type: Object,
+      type: Object as PropType<ICompany>,
     },
     consultant: {
-      type: Object,
+      type: Object as PropType <IConsultant>,
     },
     additionalDetails: {
-      type: Object,
+      type: Object as PropType<IAdditionalDetails>,
     },
     buildingInfo: {
-      type: Object,
+      type: Object as PropType<IBuildingInfo>,
     },
     owner: {
       type: Object as PropType<IOwner>,
@@ -67,4 +67,3 @@ export default defineComponent({
 </script>
 
 <style lang="scss" src="./DealInfo.scss"></style>
-@/interfaces/deal.interface

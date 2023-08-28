@@ -1,5 +1,7 @@
+<!-- Компонент "Сделки"-->
 <template>
   <div class="ObjectDeals">
+    <!-- первая узкая белая панель вверху -->
     <div class="ObjectDeals-actions">
       <p class="ObjectDeals-actions-label">Создать сделку:</p>
       <ul class="ObjectDeals-actions-list">
@@ -19,7 +21,9 @@
         </li>
       </ul>
     </div>
+    <!-- Список блочков-сделок в начале в виде табов -->
     <div class="ObjectDeals-list">
+      <!-- Блок сделки, которую можно выбрать -->
       <DealPreviewCard
         @choose="choseDeal"
         v-for="deal in deals"
@@ -28,17 +32,25 @@
         :isCurrent="currentDealId === deal.id"
       />
     </div>
+    <!-- ДЕТАЛИ И ОПИСАНИЕ ОБЪЕКТА ВМЕСТЕ С ЭТАЖАМИ
+    objects.commercialOffers.deal,
+     -->
     <DealItem :object="object" :deal="currentDeal" />
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent, PropType } from "vue";
 import DealItem from "./deal-item/ObjectHoldingDealItem.vue";
 import DealPreviewCard from "../../ui/deal-preview/DealPreview.vue";
-import dealData from "./deal.data";
+//import dealData from "./deal.data";
 import "./styles.scss";
-
-export default {
+import { IDeal } from "./../../../../interfaces/deal.interface";
+import IObject from "./../../../../interfaces/object.interface";
+import { mapGetters, mapActions } from 'vuex';
+//import {ComplexEntity} from "./../../../../entities/complex.entity";
+//import { IComplexState } from "./../../../../store/modules/complex/state";
+export default defineComponent({
   name: "ObjectDeals",
   components: {
     DealPreviewCard,
@@ -46,11 +58,12 @@ export default {
   },
   props: {
     deals: {
-      type: Array,
-      default: dealData,
+      type: Array as PropType<IDeal[]>,
+      //default: dealData,
+      required:true
     },
 		object: {
-			type: Object,
+			type: Object as PropType<IObject>,
 			required: true
 		}
   },
@@ -63,13 +76,30 @@ export default {
     currentDeal() {
       return this.deals.find((deal) => deal.id === this.currentDealId);
     },
+
+    ...mapGetters('Complex', ['IComplexGetters']),
+    //'Complex', [ 'getters']
+    // allDeals(){
+    //  return this.deals;
+    // }
+
   },
   methods: {
-    choseDeal(id) {
+    choseDeal(id:number) {
       this.currentDealId = id;
     },
+    
+    ...mapActions('Complex',['FETCH_COMPLEX'])
+    
   },
-};
+
+   mounted(){
+    this.FETCH_COMPLEX();
+    
+   },
+  
+
+});
 </script>
 
 <style lang="scss" scoped></style>

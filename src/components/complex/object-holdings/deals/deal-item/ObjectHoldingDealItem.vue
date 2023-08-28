@@ -12,12 +12,15 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent, PropType } from "vue";
+import IObject from "./../../../../../interfaces/object.interface";
+import { IDeal }  from "./../../../../../interfaces/deal.interface";
 import DealFloors from "./floors/DealFloors.vue";
 import DealInfo from "../../deal-info/DealInfo.vue";
 // import "./styles.scss";
 
-export default {
+export default defineComponent({
   name: "DealItem",
   components: {
     DealFloors,
@@ -25,13 +28,13 @@ export default {
   },
   props: {
     deal: {
-      type: Object,
+      type: Object as PropType<IDeal>,
       required: true,
     },
     object: {
-      type: Object,
+      type: Object as PropType<IObject>,
       required: true,
     }
   },
-};
+});
 </script>

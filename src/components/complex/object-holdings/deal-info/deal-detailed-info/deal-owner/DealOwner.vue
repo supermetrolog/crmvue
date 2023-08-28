@@ -1,8 +1,10 @@
 <template>
   <div class="deal-owner">
+    <router-link :to="'/companies/' + owner.company_id" target="_blank">
       <p :title="owner.name" class="owner_name deal-owner__text">
         {{ owner.name }}
       </p>
+    </router-link>
       <!-- РЕЙТИНГ ПОКА НЕ РЕАЛИЗОВАН -->
       <!-- <rating :rating="owner.rating" class="deal-owner__rating" /> -->
 
@@ -38,7 +40,7 @@
         <li v-for="email in owner.emails" :key="email.id" class="deal-owner__text">
           {{ email.email }}
         </li>
-      </ul>      
+      </ul>    
     </div>
 
 

@@ -1,3 +1,4 @@
+<!-- БЛОК С ЭТАЖАМИ -->
 <template>
   <div class="DealFloors">
     <div class="DealFloors-body">
@@ -7,7 +8,8 @@
           enter-active-class="animate__animated animate__zoomIn for__modal absolute"
           leave-active-class="animate__animated animate__zoomOut for__modal absolute"
         >
-          <create-floor-block-form :object="object" @close="toggleCreateBlockForm" v-if="createBlockFormIsVisible"/>
+        <!-- ФОРМА "КУСКИ НА ЭТАЖАХ. СОЗДАНИЕ. -->
+          <CreateFloorBlockForm :object="object" @close="toggleCreateBlockForm" v-if="createBlockFormIsVisible"/>
         </transition>
       </teleport>
       <ul class="DealFloors-head-list">
@@ -16,6 +18,7 @@
           v-for="floor in floorWithSortedSections"
           :key="floor.name"
         >
+        <!-- КРАЙНИЙ ЛЕВЫЙ ТЕМНО СЕРЫЙ БЛОК С ЭТАЖЕМ -->
           <DealFloorHead
             :area="floor.area"
             :checked="floor.checked"
@@ -34,6 +37,7 @@
             v-for="floor in floorWithSortedSections"
             :key="floor.name"
           >
+          <!-- КОМПОНЕНТ ОТДЕЛЬНЫХ СЕКЦИЙ НА ЭТАЖАХ -->
             <DealFloorSection
               v-for="(section, idx) in getSectionsWithKnownArea(floor.sections)"
               :style="{
@@ -77,16 +81,19 @@
 </template>
 
 <script>
-import {DealStatusType} from "@/const/Const.js";
+//import { defineComponent, PropType } from "vue";
+import {DealStatusType} from "./../../../../../../const/Const";
 import DealFloorSection from "./section/DealFloorSection.vue";
 import DealFloorHead from "./head/DealFloorHead.vue";
 import CreateFloorBlockForm
-  from "@/components/complex/object-holdings/forms/create-floor-block-form/CreateFloorBlockForm.vue"
+  from "./../../../../../../components/complex/object-holdings/forms/create-floor-block-form/CreateFloorBlockForm.vue"
+//import IObject from "./../../../../../../interfaces/object.interface";
 
-export default {
+export default{
   name: "DealFloors",
   components: {
-    DealFloorSection, DealFloorHead,
+    DealFloorSection, 
+    DealFloorHead,
     CreateFloorBlockForm
   },
   props: {
