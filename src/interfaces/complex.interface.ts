@@ -1,4 +1,5 @@
 import IObject from "@/interfaces/object.interface";
+//import {IDeal} from "@/interfaces/deal.interface";
 
 export default interface IComplex {
     id: bigint | null;
@@ -63,6 +64,7 @@ export default interface IComplex {
     hostel: boolean | null;
     entryFee: string | null;
     objects: IObject[] | null;
+  //  deals:IDeal[]|null;
 }
 
 export interface IAddressItem {

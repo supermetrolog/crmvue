@@ -26,13 +26,15 @@
       <!-- Блок сделки, которую можно выбрать -->
       <DealPreviewCard
         @choose="choseDeal"
-        v-for="deal in getDeals"
+        v-for="deal in deals"
         :key="deal.id"
         :deal="deal"
         :isCurrent="currentDealId === deal.id"
       />
     </div>
-    <!-- ДЕТАЛИ И ОПИСАНИЕ ОБЪЕКТА ВМЕСТЕ С ЭТАЖАМИ -->
+    <!-- ДЕТАЛИ И ОПИСАНИЕ ОБЪЕКТА ВМЕСТЕ С ЭТАЖАМИ
+    objects.commercialOffers.deal,
+     -->
     <DealItem :object="object" :deal="currentDeal" />
   </div>
 </template>
@@ -46,7 +48,8 @@ import "./styles.scss";
 import { IDeal } from "./../../../../interfaces/deal.interface";
 import IObject from "./../../../../interfaces/object.interface";
 import { mapGetters, mapActions } from 'vuex';
-
+//import {ComplexEntity} from "./../../../../entities/complex.entity";
+//import { IComplexState } from "./../../../../store/modules/complex/state";
 export default defineComponent({
   name: "ObjectDeals",
   components: {
@@ -74,19 +77,25 @@ export default defineComponent({
       return this.deals.find((deal) => deal.id === this.currentDealId);
     },
 
-   ...mapGetters('Deals',['getDeals'])
+    ...mapGetters('Complex', ['IComplexGetters']),
+    //'Complex', [ 'getters']
+    // allDeals(){
+    //  return this.deals;
+    // }
+
   },
   methods: {
     choseDeal(id:number) {
       this.currentDealId = id;
     },
     
-    ...mapActions ('Deals',['FETCH_DEALS']),
+    ...mapActions('Complex',['FETCH_COMPLEX'])
     
   },
 
    mounted(){
-     this.FETCH_DEALS();
+    this.FETCH_COMPLEX();
+    
    },
   
 

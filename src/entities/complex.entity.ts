@@ -11,6 +11,7 @@ import {
     heatingAutonomousTypes
 } from "@/const/constTypes";
 import ObjectEntity from "@/entities/objects.entity";
+//import {IDeal} from "@/interfaces/deal.interface";
 
 
 interface IComplexAddress extends Record<string, any> {
@@ -302,6 +303,22 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
         })) : null;
     }
 
+    // get deals(): IDeal[] | null {
+    //     return this._deals ? this._deals.map((el => {
+    //                 const deal = new DealEntity();
+    //                 deal.load(el);
+    //                 return deal
+    //             })) : null;
+    // }
+    // get deals(): IDeal[] | null {
+    //     return this._deals ? this._deals.map((el => {
+    //         const deal = new IDeal();
+    //         deal.load(el);
+    //         return deal
+    //     })) : null;
+
+    // }
+
     private _id: bigint | null = null;
     private _author: IAuthorRes | null = null;
     private _last_update: number | null = null;
@@ -364,6 +381,7 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
     private _townRecord: IComplexAddress | null = null;
     private _metroRecord: IComplexAddress | null = null;
     private _objects: Record<string, any>[] | null = null;
+    private _deals: Record<string, any>[] | null = null;
 }
 
 interface IAuthorRes {
