@@ -1,8 +1,12 @@
 <template>
   <div class="DealItem">
-    <DealFloors :object="object" :floors="deal.floors"/>
-    <deal-info
+    <DealFloors :object="object"/>.
+    <!-- @ts-ignore  -->
+     :floors="deal.floors"
+      <!-- @ts-ignore  -->
+    <deal-info/>
       v-if="deal.additionalDetails"
+      <!-- @ts-ignore  -->
       :company="deal.builder"
       :consultant="deal.consultant"
       :additionalDetails="deal.additionalDetails"

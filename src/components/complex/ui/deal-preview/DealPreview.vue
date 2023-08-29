@@ -41,6 +41,7 @@ import { defineComponent, PropType } from "vue";
 import WithUnitType from "./../../../../components/common/with-unit-type/WithUnitType.vue";
 import { IDeal } from "./../../../../interfaces/deal.interface";
 
+
 export default defineComponent({
   name: "DealPreviewCard",
   components: {
@@ -50,6 +51,7 @@ export default defineComponent({
     deal: {
       type: Object as PropType<IDeal>,
       required: true,
+      default: () => { }
     },
     isCurrent: {
       type: Boolean,
@@ -87,18 +89,21 @@ export default defineComponent({
       }
     },
     dealArea() {
+      // @ts-ignore
       const { valueMin, valueMax } = this.deal.area;
       if (valueMin && valueMax)
         return this.$formatter.numberOrRangeNew(valueMin, valueMax);
       return "--";
     },
     dealPrice() {
+      // @ts-ignore
       const { valueMin, valueMax } = this.deal.price;
       if (valueMin && valueMax)
         return this.$formatter.numberOrRangeNew(valueMin, valueMax);
       return "нет данных";
     },
     typePresence() {
+      // @ts-ignore
       return this.deal.price.type && this.deal.price.valueMin;
     },
   },

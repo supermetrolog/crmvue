@@ -115,6 +115,7 @@
         </div>
       </Tab>
       <Tab name="Сделки">
+        <!-- РАЗДЕЛ СДЕЛКИ -->
         <div class="ObjectHoldingsTabs-content">
           <ObjectDeals :object="object"/>
         </div>

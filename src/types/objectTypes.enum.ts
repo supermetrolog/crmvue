@@ -1,5 +1,5 @@
 export enum ObjectTypes {
 	WAREHOUSE = 1,
-	PRODUCTION,
-	PLOT
+	PRODUCTION = 2,
+	PLOT = 3
 }

@@ -3,15 +3,19 @@
     <deal-info-header :company="company" :consultant="consultant" />
     <div class="deal-info__body">
       <div class="deal-info__content">
-        <deal-detailed-info
+        <!-- @ts-ignore  -->
+        <deal-detailed-info/>
           class="deal-info__detailed-info"
+          <!-- @ts-ignore  -->
           :area="buildingInfo.area"
           :price="buildingInfo.price"
           :parameters="buildingInfo.parameters"
         />
       </div>
       <div class="deal-info__aside">
-        <additional-details
+        <!-- @ts-ignore  -->
+        <additional-details/>
+        <!-- @ts-ignore  -->
           :label="additionalDetails.taxForm"
           :exploitation="additionalDetails.exploitation"
           :communal="additionalDetails.communal"

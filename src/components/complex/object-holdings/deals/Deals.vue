@@ -47,7 +47,7 @@ import DealPreviewCard from "../../ui/deal-preview/DealPreview.vue";
 import "./styles.scss";
 import { IDeal } from "./../../../../interfaces/deal.interface";
 import IObject from "./../../../../interfaces/object.interface";
-import { mapGetters, mapActions } from 'vuex';
+//import { mapGetters, mapActions } from 'vuex';
 //import {ComplexEntity} from "./../../../../entities/complex.entity";
 //import { IComplexState } from "./../../../../store/modules/complex/state";
 export default defineComponent({
@@ -77,7 +77,7 @@ export default defineComponent({
       return this.deals.find((deal) => deal.id === this.currentDealId);
     },
 
-    ...mapGetters('Complex', ['IComplexGetters']),
+    // ...mapGetters('Complex', ['IComplexGetters']),
     //'Complex', [ 'getters']
     // allDeals(){
     //  return this.deals;
@@ -89,12 +89,12 @@ export default defineComponent({
       this.currentDealId = id;
     },
     
-    ...mapActions('Complex',['FETCH_COMPLEX'])
+    // ...mapActions('Complex',['FETCH_COMPLEX'])
     
   },
 
    mounted(){
-    this.FETCH_COMPLEX();
+    // this.FETCH_COMPLEX();
     
    },
   
