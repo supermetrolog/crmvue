@@ -36,6 +36,7 @@
     objects.commercialOffers.deal,
      -->
     <DealItem :object="object" :deal="currentDeal" />
+    
   </div>
 </template>
 
@@ -50,6 +51,8 @@ import IObject from "./../../../../interfaces/object.interface";
 //import { mapGetters, mapActions } from 'vuex';
 //import {ComplexEntity} from "./../../../../entities/complex.entity";
 //import { IComplexState } from "./../../../../store/modules/complex/state";
+import { DealEntity } from "./../../../../entities/deals.entity";
+
 export default defineComponent({
   name: "ObjectDeals",
   components: {

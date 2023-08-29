@@ -23,10 +23,8 @@ export default {
           objects.objectClassRecord,
           objects.firefightingType,
           objects.location.regionRecord,
-        
           objects.company.mainContact.phones,
           objects.company.mainContact.emails,
-          
           location.regionRecord,
           location.highwayRecord,
           location.directionRecord,

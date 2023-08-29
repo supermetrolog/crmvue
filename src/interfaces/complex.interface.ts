@@ -64,7 +64,7 @@ export default interface IComplex {
     hostel: boolean | null;
     entryFee: string | null;
     objects: IObject[] | null;
-  //  deals:IDeal[]|null;
+    //deals:IDeal[]|null;
 }
 
 export interface IAddressItem {

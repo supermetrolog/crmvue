@@ -38,7 +38,7 @@ const Calendar = {
         async ADD_EVENT(context, newEvent) {
             context.commit('addEvent', newEvent);
         },
-        async UPDATE_EVENT(context, event) {
+        async UPDATE_CALENDAR_EVENT(context, event) {
             context.commit('updateEvent', event);
         },
         async DELETE_EVENT(context, eventId) {
