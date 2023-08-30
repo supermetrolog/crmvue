@@ -164,6 +164,7 @@ export default defineComponent({
 				this.map.styles.height = "70px";
 				this.randKey = Math.round(Math.random() * 1000);
 				for (const [key, value] of Object.entries(this.map.detailedControls)) {
+					//@ts-ignore
 					this.map.detailedControls[key] = {...value, visible: false};
 				}
 				this.map.behaviors = [];
@@ -172,6 +173,7 @@ export default defineComponent({
 				this.map.styles.height = "500px";
 				this.randKey = Math.round(Math.random() * 1000);
 				for (const [key, value] of Object.entries(this.map.detailedControls)) {
+					//@ts-ignore
 					this.map.detailedControls[key] = {...value, visible: true};
 				}
 				this.map.behaviors = ["drag", "multiTouch", "scrollZoom"];
