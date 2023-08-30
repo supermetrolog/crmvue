@@ -89,7 +89,7 @@ import DealFloorHead from "./head/DealFloorHead.vue";
 import CreateFloorBlockForm
   from "./../../../../../../components/complex/object-holdings/forms/create-floor-block-form/CreateFloorBlockForm.vue"
 import { defineComponent, PropType } from "vue";
-import { IFloor } from "./../../../../../../interfaces/deal.interface";
+import { IFloor } from "./../../../../../../interfaces/floor.interface";
 //import IObject from "./../../../../../../interfaces/object.interface";
 
 export default defineComponent({
@@ -102,7 +102,8 @@ export default defineComponent({
   props: {
     floors: {
       type: Array as PropType<IFloor[]>,
-      default: () => []
+      default: () => [],
+      required: true,
     },
     object: {
       object: Object,

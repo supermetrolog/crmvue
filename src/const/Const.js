@@ -349,7 +349,7 @@ export const YesNoFUCK = new Map([
     ],
   ],
 ]);
-export const FloorTypes = new Map([
+export const FloorTypesFUCK = new Map([
   [
     "param",
     [
