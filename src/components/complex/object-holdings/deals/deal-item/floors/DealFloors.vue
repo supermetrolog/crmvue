@@ -1,4 +1,4 @@
-<!-- БЛОК С ЭТАЖАМИ -->
+<!-- БЛОК С ЭТАЖАМИ И КУСКАМИ-->
 <template>
   <div class="DealFloors">
     <div class="DealFloors-body">
@@ -12,6 +12,7 @@
           <CreateFloorBlockForm :object="object" @close="toggleCreateBlockForm" v-if="createBlockFormIsVisible"/>
         </transition>
       </teleport>
+      <!-- ЛЕВЫЙ СТОЛБИК С СЕРЫМИ БЛОКАМИ ЭТАЖЕЙ -->
       <ul class="DealFloors-head-list">
         <li
           class="DealFloors-head-list-item"
@@ -80,16 +81,18 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 //import { defineComponent, PropType } from "vue";
 import {DealStatusType} from "./../../../../../../const/Const";
 import DealFloorSection from "./section/DealFloorSection.vue";
 import DealFloorHead from "./head/DealFloorHead.vue";
 import CreateFloorBlockForm
   from "./../../../../../../components/complex/object-holdings/forms/create-floor-block-form/CreateFloorBlockForm.vue"
+import { defineComponent, PropType } from "vue";
+import { IFloor } from "./../../../../../../interfaces/deal.interface";
 //import IObject from "./../../../../../../interfaces/object.interface";
 
-export default{
+export default defineComponent({
   name: "DealFloors",
   components: {
     DealFloorSection, 
@@ -98,7 +101,7 @@ export default{
   },
   props: {
     floors: {
-      type: Array,
+      type: Array as PropType<IFloor[]>,
       default: () => []
     },
     object: {
@@ -165,6 +168,6 @@ export default{
       }
     },
   },
-};
+});
 </script>
 <style lang="scss" src="./styles.scss"></style>

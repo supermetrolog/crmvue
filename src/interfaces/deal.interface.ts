@@ -12,10 +12,13 @@ import {
 import {
   IPhone,
   IEmail
-} from "./contact.interface";
+} from "@/interfaces/contact.interface";
+
+import { IFloor } from "@/interfaces/floor.interface"
+
 
 export interface IDeal {
-  id: number |string| symbol|undefined;
+  id: number | null;
   type: number | null;
   company: ICompany | null;
   area: IRange | null;
@@ -87,16 +90,3 @@ export interface ICompany {
   full_name: string | null;
 }
 
-export interface IFloor {
-  name: string;
-  area: IRange;
-  checked: boolean;
-  sections: ISection[];
-}
-
-export interface ISection {
-  company: ICompany | null;
-  area: IRange | null;
-  status: number;
-  checked: boolean | null;
-}

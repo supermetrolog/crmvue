@@ -1,3 +1,5 @@
+
+ <!-- ДЕТАЛИ И ОПИСАНИЕ ОБЪЕКТА ВМЕСТЕ С ЭТАЖАМИ В РАЗДЕЛЕ СДЕЛКИ -->
 <template>
   <div class="DealItem">
     <DealFloors :object="object"  

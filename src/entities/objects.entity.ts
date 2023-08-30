@@ -13,6 +13,10 @@ import {CraneEntity} from "@/entities/crane.entity";
 import {CompanyEntity} from "@/entities/company.entity";
 import DealEntity from "@/entities/deals.entity";
 import { IDeal } from "@/interfaces/deal.interface";
+import { IFloor } from "@/interfaces/floor.interface";
+import FloorEntity from "@/entities/floors.entity";
+import { ISection } from "@/interfaces/section.interface"
+import SectionEntity from "@/entities/sections.entity";
 
 export default class ObjectEntity extends BaseEntity implements IObject {
 
@@ -183,6 +187,23 @@ export default class ObjectEntity extends BaseEntity implements IObject {
     })) : null;
     }
 
+    get floors(): IFloor[] | null {
+        return this._floorsRecords ? this._floorsRecords.map((el => {
+            const floor = new FloorEntity();
+            floor.load(el);
+            return floor
+        })) : null;
+        }
+
+    get sections(): ISection[] | null {
+         return this._parts ? this._parts.map((el => {
+             const section = new SectionEntity();
+              section.load(el);
+             return section
+          })) : null;
+          }
+
+
 
 
 
@@ -227,6 +248,7 @@ export default class ObjectEntity extends BaseEntity implements IObject {
     private _internet: number | null = null;
     private _internet_type: number | null = null;
     private _cranes: Record<string, any>[] | null = null;
-    //private _owners: IOwnersContacts| null = null;
     private _commercialOffers: Record<string, any>[] | null = null;
+    private _floorsRecords: Record<string, any>[] | null = null;
+    private _parts: Record<string, any>[] | null = null;
 }
