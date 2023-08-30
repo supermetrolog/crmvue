@@ -381,7 +381,7 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
     private _townRecord: IComplexAddress | null = null;
     private _metroRecord: IComplexAddress | null = null;
     private _objects: Record<string, any>[] | null = null;
-    private _deals: Record<string, any>[] | null = null;
+   // private _deals: Record<string, any>[] | null = null;
 }
 
 interface IAuthorRes {

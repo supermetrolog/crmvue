@@ -15,7 +15,7 @@ import {
 } from "./contact.interface";
 
 export interface IDeal {
-  id: number | null;
+  id: number |string| symbol|undefined;
   type: number | null;
   company: ICompany | null;
   area: IRange | null;
@@ -67,7 +67,7 @@ export interface IBuildingInfo {
   parameters: ITradeOfferParameters;
 }
 
-interface IBusiness {
+export interface IBusiness {
   type: string;
   info: IProperty[];
 }
@@ -84,7 +84,7 @@ export interface IConsultant {
 }
 
 export interface ICompany {
-  name: string;
+  full_name: string | null;
 }
 
 export interface IFloor {

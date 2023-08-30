@@ -11,6 +11,8 @@ import {
 import {ICrane} from "@/interfaces/crane.interace";
 import {CraneEntity} from "@/entities/crane.entity";
 import {CompanyEntity} from "@/entities/company.entity";
+import DealEntity from "@/entities/deals.entity";
+import { IDeal } from "@/interfaces/deal.interface";
 
 export default class ObjectEntity extends BaseEntity implements IObject {
 
@@ -172,6 +174,20 @@ export default class ObjectEntity extends BaseEntity implements IObject {
         return null;
     }
 
+
+    get deals(): IDeal[] | null {
+    return this._commercialOffers ? this._commercialOffers.map((el => {
+        const deal = new DealEntity();
+        deal.load(el);
+        return deal
+    })) : null;
+    }
+
+
+
+
+
+
     public id: bigint | null = null;
     public address: string | null = null;
     public purposes: number[] | null = null;
@@ -212,4 +228,5 @@ export default class ObjectEntity extends BaseEntity implements IObject {
     private _internet_type: number | null = null;
     private _cranes: Record<string, any>[] | null = null;
     //private _owners: IOwnersContacts| null = null;
+    private _commercialOffers: Record<string, any>[] | null = null;
 }

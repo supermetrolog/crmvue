@@ -48,7 +48,8 @@ import PlotCreateForm from "@/components/complex/object-holdings/forms/plot-crea
 export default {
   name: "ObjectHoldings",
   components: {
-    BuildingCreateForm, ObjectHolding,
+    BuildingCreateForm,
+    ObjectHolding,
     PlotCreateForm
   },
   props: {

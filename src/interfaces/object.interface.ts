@@ -1,5 +1,6 @@
 import {ICrane} from "@/interfaces/crane.interace";
 import {CompanyEntity} from "@/entities/company.entity";
+import { IDeal } from "./deal.interface";
 
 export default interface IObject {
     id: bigint | null;
@@ -42,4 +43,5 @@ export default interface IObject {
     internet: boolean | null;
     internetType: string | null;
     cranes: ICrane[] | null;
+    deals: IDeal[] | null;
 }

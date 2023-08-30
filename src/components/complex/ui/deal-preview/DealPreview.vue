@@ -1,14 +1,17 @@
+
+ <!-- Блок сделки, которую можно выбрать -->
 <template>
   <div
     class="DealPreviewCard"
     :class="{ active: isCurrent }"
     @click="onChooseDeal"
+
   >
     <button v-if="isCurrent" class="DealPreviewCard-edit">
       <i class="fas fa-pen"></i>
     </button>
     <span class="DealPreviewCard-type">{{ dealType }}</span>
-    <p class="DealPreviewCard-company">{{ deal.company?.name || "--" }}</p>
+    <p class="DealPreviewCard-company">{{ deal.company?.full_name || "--" }}</p>
     <p class="DealPreviewCard-area">
       {{ dealArea }}
       <span v-if="deal.area" class="DealPreviewCard-price-unit"
@@ -16,7 +19,8 @@
       >
     </p>
     <p class="DealPreviewCard-price">
-      <with-unit-type :value="dealPrice" :unit-type="deal.price.unitType" />
+      <with-unit-type :value="dealPrice" 
+      :unit-type="deal.price.unitType" />
     </p>
     <p
       class="DealPreviewCard-status"
@@ -51,7 +55,7 @@ export default defineComponent({
     deal: {
       type: Object as PropType<IDeal>,
       required: true,
-      default: () => { }
+      // default: () => { }
     },
     isCurrent: {
       type: Boolean,

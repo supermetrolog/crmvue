@@ -1,7 +1,8 @@
 import BaseEntity from "@/entities/base.entity";
 import IContact from "@/interfaces/contact.interface";
+import { ICompany } from "@/interfaces/deal.interface";
 
-export class CompanyEntity extends BaseEntity {
+export class CompanyEntity extends BaseEntity implements ICompany {
     public id: bigint | null = null;
     public full_name: string | null = null;
     public request_count: number | null = null;

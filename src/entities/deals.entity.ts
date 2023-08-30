@@ -1,14 +1,24 @@
 import BaseEntity from "@/entities/base.entity";
-import { IDeal } from "@/interfaces/deal.interface";
-//import { unitTypes } from "@/const/unitTypes";
-//import { tradeOfferCharacteristics } from "@/const/tradeOfferCharacteristics";
-import { IRange } from "@/types/property.interface";
-//import { ITradeOfferParameters, ITradeOfferPropeties } from "../components/complex/trade-offer-tabs/tradeOfferTabs.interface";
-//import { IPhone, IEmail } from "@/interfaces/contact.interface";
-import { ICompany, IDealPrice, IFloor, IOwner, IBuilder, IConsultant, IAdditionalDetails, IBuildingInfo } from "@/interfaces/deal.interface";
-
+import {
+    IRange
+} from "@/types/property.interface";
+import {
+    IDeal,
+    ICompany,
+    IDealPrice,
+    IFloor,
+    IOwner,
+    IBuilder,
+    IConsultant,
+    IAdditionalDetails,
+    IBuildingInfo
+} from "@/interfaces/deal.interface";
+import {
+    CompanyEntity
+} from "@/entities/company.entity";
 
 export default class DealEntity extends BaseEntity implements IDeal {
+
     get id(): number | null {
         return this._id;
     }
@@ -16,14 +26,34 @@ export default class DealEntity extends BaseEntity implements IDeal {
     get type(): number | null {
         return this._type;
     }
-
+    // CompanyEntity
     get company(): ICompany | null {
-        return this._company;
+        if (this._company) {
+            const company = new CompanyEntity();
+            console.error(this._company, company);
+            company.load(this._company);
+            return company;
+        }
+        return null;
     }
 
-    get area(): IRange | null {
+
+
+ get area(): IRange | null {
         return this._area;
-    }
+     }
+    //     if (this._area) {
+    //         const company = new IRange();
+    //         console.error(this._company, company);
+    //         company.load(this._company);
+    //         return company;
+    //     }
+    //     return null;
+    // }
+
+
+    //   
+    
 
     get price(): IDealPrice | null {
         return this._price
@@ -32,42 +62,56 @@ export default class DealEntity extends BaseEntity implements IDeal {
     get status(): number | null {
         return this._status
     }
-    
-    get floors(): IFloor[] | null{
+
+    get floors(): IFloor[] | null {
+        // return this._floors ? this._floors.map((el => {
+        //     const floor = new CraneEntity();
+        //     floor.load(el);
+        //     return floor
+        // })) : null;
+
         return this._floors
     }
-    
+
+    // get cranes(): ICrane[] | null {
+    //     return this._cranes ? this._cranes.map((el => {
+    //         const crane = new CraneEntity();
+    //         crane.load(el);
+    //         return crane
+    //     })) : null;
+    // }
+
     get owner(): IOwner | null {
-         return this._owner
+        return this._owner
     }
-    
-    get  builder(): IBuilder | null {
-       return this._builder
+
+    get builder(): IBuilder | null {
+        return this._builder
     }
-   
+
     get consultant(): IConsultant | null {
         return this._consultant
     }
-   
+
     get additionalDetails(): IAdditionalDetails | null {
         return this._additionalDetails
     }
-    
-    get buildingInfo(): IBuildingInfo | null{
+
+    get buildingInfo(): IBuildingInfo | null {
         return this._buildingInfo
     }
 
-// НЕ ЗНАЮ, ЧТО ИЗ ЭТОГО ДОЛЖНО БЫТЬ PUBLIC, А ЧТО - PRIVATE, ПОКА НАПИСАЛА ТАК
+    // НЕ ЗНАЮ, ЧТО ИЗ ЭТОГО ДОЛЖНО БЫТЬ PUBLIC, А ЧТО - PRIVATE, ПОКА НАПИСАЛА ТАК
     public _id: number | null = null;
     public _type: number | null = null;
-    public _company: ICompany  | null = null;
-    public _area: IRange | null = null;
-    public _price: IDealPrice | null = null;
-    public _status: number | null = null;
-    public _floors: IFloor[]  | null = null;
-    public _owner: IOwner | null = null;
-    public _builder: IBuilder  | null = null;
-    public _consultant: IConsultant | null = null;
-    public _additionalDetails: IAdditionalDetails| null = null;
-    public _buildingInfo: IBuildingInfo | null = null;
+    private _company: ICompany | null = null;
+    private _area: IRange | null = null;
+    private _price: IDealPrice | null = null;
+    private _status: number | null = null;
+    private _floors: IFloor[] | null = null;
+    private _owner: IOwner | null = null;
+    private _builder: IBuilder | null = null;
+    private _consultant: IConsultant | null = null;
+    private _additionalDetails: IAdditionalDetails | null = null;
+    private _buildingInfo: IBuildingInfo | null = null;
 }

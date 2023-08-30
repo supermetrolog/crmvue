@@ -23,10 +23,11 @@
     </div>
     <!-- Список блочков-сделок в начале в виде табов -->
     <div class="ObjectDeals-list">
+
       <!-- Блок сделки, которую можно выбрать -->
-      <DealPreviewCard
+       <DealPreviewCard
         @choose="choseDeal"
-        v-for="deal in deals"
+        v-for="deal in object.deals"
         :key="deal.id"
         :deal="deal"
         :isCurrent="currentDealId === deal.id"
@@ -51,7 +52,7 @@ import IObject from "./../../../../interfaces/object.interface";
 //import { mapGetters, mapActions } from 'vuex';
 //import {ComplexEntity} from "./../../../../entities/complex.entity";
 //import { IComplexState } from "./../../../../store/modules/complex/state";
-import { DealEntity } from "./../../../../entities/deals.entity";
+//import { DealEntity } from "./../../../../entities/deals.entity";
 
 export default defineComponent({
   name: "ObjectDeals",
@@ -80,27 +81,15 @@ export default defineComponent({
       return this.deals.find((deal) => deal.id === this.currentDealId);
     },
 
-    // ...mapGetters('Complex', ['IComplexGetters']),
-    //'Complex', [ 'getters']
-    // allDeals(){
-    //  return this.deals;
-    // }
-
   },
   methods: {
     choseDeal(id:number) {
       this.currentDealId = id;
     },
     
-    // ...mapActions('Complex',['FETCH_COMPLEX'])
+    
     
   },
-
-   mounted(){
-    // this.FETCH_COMPLEX();
-    
-   },
-  
 
 });
 </script>
