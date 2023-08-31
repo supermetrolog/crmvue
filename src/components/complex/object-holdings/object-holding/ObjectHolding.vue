@@ -16,7 +16,7 @@
         </div>
       </div>
     </div>
-    <ObjectHoldingsTabs :object="object"/>
+    <ObjectHoldingsTabs :object="object" :deals="object.deals"/>
   </div>
 </template>
 
@@ -28,6 +28,7 @@ import Carousel from "../../../common/carousel/Carousel.vue";
 import {defineComponent, PropType} from "vue";
 import "./styles.scss";
 import IObject from "./../../../../interfaces/object.interface";
+import {IDeal} from "./../../../../interfaces/deal.interface";
 
 export default defineComponent({
   name: "ObjectHolding",
@@ -41,7 +42,11 @@ export default defineComponent({
     object: {
       type: Object as PropType<Record<string, any> & IObject>,
       required: true
-    }
+    },
+    deals: {
+      type: Array as PropType<IDeal[]>,
+      required:true
+    },
   },
   computed: {
     objectPhoto() {

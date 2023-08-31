@@ -117,7 +117,7 @@
       <Tab name="Сделки">
         <!-- РАЗДЕЛ СДЕЛКИ -->
         <div class="ObjectHoldingsTabs-content">
-          <ObjectDeals :object="object"/>
+          <ObjectDeals :object="object" :deals="object.deals"/>
         </div>
       </Tab>
       <Tab name="Карта сделок"></Tab>
@@ -132,16 +132,17 @@
 </template>
 
 <script lang="ts">
-import PropertyListItem from "@/components/common/property-list/property-list-item/PropertyListItem.vue";
-import PropertyList from "@/components/common/property-list/PropertyList.vue";
+import PropertyListItem from "./../../../../components/common/property-list/property-list-item/PropertyListItem.vue";
+import PropertyList from "./../../../../components/common/property-list/PropertyList.vue";
 import ObjectDeals from "../deals/Deals.vue";
-import ActionButtons from "@/components/common/action-buttons/ActionButtons.vue";
+import ActionButtons from "./../../../../components/common/action-buttons/ActionButtons.vue";
 import "./styles.scss";
 import {defineComponent, PropType} from "vue";
-import IObject from "@/interfaces/object.interface";
-import WithUnitType from "@/components/common/with-unit-type/WithUnitType.vue";
-import {unitTypes} from "@/const/unitTypes";
-import {ObjectTypes} from "@/types/objectTypes.enum";
+import IObject from "./../../../../interfaces/object.interface";
+import WithUnitType from "./../../../../components/common/with-unit-type/WithUnitType.vue";
+import {unitTypes} from "./../../../../const/unitTypes";
+import {ObjectTypes} from "./../../../../types/objectTypes.enum";
+import {IDeal} from "./../../../../interfaces/deal.interface"
 
 export default defineComponent({
   name: "ObjectHoldingsTabs",
@@ -157,7 +158,12 @@ export default defineComponent({
       type: Object as PropType<IObject>,
       required: true,
     },
+    deals: {
+      type: Array as PropType<IDeal[]>,
+      required:true
+    },
   },
+
   data() {
     return {
       unitTypes

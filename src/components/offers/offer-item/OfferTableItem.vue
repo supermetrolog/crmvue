@@ -1,4 +1,5 @@
 <template>
+  <div>
   <Tr
     class="OfferTableRow"
     :class="{
@@ -33,7 +34,8 @@
     </Td>
     <Td class="photo">
       <a :href="getOfferUrl(offer)" target="_blank">
-        <div class="image-container">
+        <!-- <router-link :to="'/complex/' + complex_id" target="_blank"> -->
+          <div class="image-container">
           <img :src="offer.thumb" alt="image" />
           <span class="deal_type" :class="{ passive: offer.status != 1 }">
             {{ offer.deal_type_name }}
@@ -50,6 +52,8 @@
           </span>
           <span class="test_only" v-if="offer.test_only"> Тестовый лот </span>
         </div>
+    <!-- </router-link> -->
+       
       </a>
     </Td>
     <Td class="region">
@@ -158,6 +162,7 @@
       v-if="dropdownIsOpen && !miniOffersLoader"
       @toggleAvito="handleAvitoToggle"
   /></DropDown>
+</div>
 </template>
 
 <script>
@@ -194,6 +199,9 @@ export default {
     },
     odd: {
       type: Boolean,
+    },
+    complex:{
+      type: Object,
     },
   },
   computed: {

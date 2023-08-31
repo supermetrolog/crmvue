@@ -4,7 +4,10 @@
     :class="{ passive: offer.status != 1 }"
     :title="offer.description || 'нет описания'"
   >
-    <a class="CompanyBoxObjectsOffer-wrapper" :href="offerUrl" target="_blank">
+  
+    <a class="CompanyBoxObjectsOffer-wrapper" 
+    :href="offerUrl" 
+    target="_blank">
       <div class="CompanyBoxObjectsOffer-block">
         <span class="CompanyBoxObjectsOffer-visual_id">{{
           offer.visual_id

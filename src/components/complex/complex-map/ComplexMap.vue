@@ -20,8 +20,9 @@
 				{{ ucFirst(complex.highway.title) }} шоссе
 			</div>
 			<div
+		
 					class="ComplexMap-description-item"
-					:title="complex.metro"
+					:title="complex.metro.title"
 					v-if="complex.metro"
 			>
 				<div v-if="complex.getMetroLogoName()">
@@ -61,7 +62,7 @@
 </template>
 
 <script lang="ts">
-import ComplexInterface from "@/interfaces/complex.interface";
+import ComplexInterface from "./../../../interfaces/complex.interface";
 import Ymap from "../../common/ymap/Ymap.vue";
 import "./styles.scss";
 import {PropType, defineComponent} from "vue";
@@ -86,6 +87,7 @@ export default defineComponent({
 	},
 	data() {
 		return {
+			//@ts-ignore
 			ucFirst: this.$formatter.text().ucFirst,
 			map: {
 				settings: {

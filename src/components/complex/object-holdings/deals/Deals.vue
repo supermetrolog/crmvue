@@ -76,7 +76,9 @@ export default defineComponent({
     currentDeal() {
       return this.deals.find((deal) => deal.id === this.currentDealId);
     },
-
+    // deals() {
+    //   return this.$store.getters.complex.deals;
+    // }
   },
   methods: {
     choseDeal(id:number) {

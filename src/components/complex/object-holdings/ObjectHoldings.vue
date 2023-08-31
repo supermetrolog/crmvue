@@ -34,6 +34,7 @@
         v-for="object in objects"
         :key="object.id"
         :object="object"
+        :deals="object.deals"
       />
     </div>
   </div>
@@ -56,6 +57,11 @@ export default {
     objects: {
       type: Array,
       default: () => [],
+    },
+    deals: {
+      type: Array ,
+      default: () => [],
+      required:true
     },
   },
   data() {

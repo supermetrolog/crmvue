@@ -5,7 +5,7 @@
     <ComplexAbout
       :complex="complex"
     />
-    <ObjectHoldings :objects="complex.objects"/>
+    <ObjectHoldings :objects="complex.objects" :deals="object.deals"/>
   </div>
 </template>
 
@@ -24,13 +24,16 @@ export default {
     return {};
   },
   mounted() {
-    this.$store.dispatch(ComplexActionTypes.FETCH_COMPLEX, {
+   this.$store.dispatch(ComplexActionTypes.FETCH_COMPLEX, {
       complexId: 2273,
     });
   },
   computed: {
     complex() {
       return this.$store.getters.complex;
+    },
+    object(){
+      return this.$store.getters.complex.object;
     }
   },
   methods: {},
