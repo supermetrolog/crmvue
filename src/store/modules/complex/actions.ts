@@ -24,7 +24,10 @@ export const actions: ActionTree<IComplexState, IComplexState> &
     );
     if (response) {
       context.commit(ComplexMutationTypes.SET_COPMLEX, response.data);
+      
     }
+    
     return response;
+    // return Promise.resolve(response)
   },
 };

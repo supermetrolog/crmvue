@@ -12,3 +12,9 @@ export const getters: GetterTree<IComplexState, IComplexState> &
     return state.complex;
   },
 };
+//@ts-ignore
+// export const getters = {
+//   complex(state:IComplexState) {
+//       return state.complex;
+//   },
+//};

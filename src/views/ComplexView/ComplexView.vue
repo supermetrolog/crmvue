@@ -6,6 +6,7 @@
       :complex="complex"
     />
     <ObjectHoldings :objects="complex.objects"/>
+  
   </div>
 </template>
 
@@ -17,6 +18,7 @@ import ComplexMap from "@/components/complex/complex-map/ComplexMap.vue";
 import ComplexHeader from "@/components/complex/complex-header/ComplexHeader.vue";
 import "./styles.scss";
 import {ComplexActionTypes} from "@/store/modules/complex/actions";
+import { toRaw } from 'vue';
 
 export default {
   name: "ComplexView",
@@ -24,22 +26,19 @@ export default {
   data() {
     return {};
   },
-  mounted() {
-   this.$store.dispatch(ComplexActionTypes.FETCH_COMPLEX, {
-      complexId: 1234,
-    });
-  },
+  
   computed: {
     complex() {
       return this.$store.getters.complex;
     },
-    // deals(){
-    //   return this.$store.getters.complex.objects.object.deals;
-    // }
   },
-  methods: {
-    
-  },
-  
+  methods: {},
+
+  async mounted() {
+     await this.$store.dispatch(ComplexActionTypes.FETCH_COMPLEX, {
+      complexId: 2273,
+    });
+    console.log(toRaw(this.complex));
+    } 
 };
 </script>
