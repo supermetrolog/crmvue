@@ -117,7 +117,7 @@
       <Tab name="Сделки">
         <!-- РАЗДЕЛ СДЕЛКИ -->
         <div class="ObjectHoldingsTabs-content">
-          <ObjectDeals :object="object" :deals="object.deals"/>
+          <ObjectDeals :object="object" :deals="deals"/>
         </div>
       </Tab>
       <Tab name="Карта сделок"></Tab>
@@ -143,6 +143,7 @@ import WithUnitType from "./../../../../components/common/with-unit-type/WithUni
 import {unitTypes} from "./../../../../const/unitTypes";
 import {ObjectTypes} from "./../../../../types/objectTypes.enum";
 import {IDeal} from "./../../../../interfaces/deal.interface"
+import { toRaw } from 'vue';
 
 export default defineComponent({
   name: "ObjectHoldingsTabs",
@@ -180,11 +181,19 @@ export default defineComponent({
       };
     },
     isPlot() {
-      return this.object.objectType?.includes(ObjectTypes.PLOT)
+      // console.log(this.object.deals);
+     console.log(toRaw(this.object));
+     console.log(toRaw(this.object.deals));
+    //  console.log(this.object);
+return this.object.objectType?.includes(ObjectTypes.PLOT)
+  
     }
   },
   methods: {},
+
+   
 });
+
 </script>
 
 <style lang="scss" scoped></style>

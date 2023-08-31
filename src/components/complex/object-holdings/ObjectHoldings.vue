@@ -58,11 +58,11 @@ export default {
       type: Array,
       default: () => [],
     },
-    deals: {
-      type: Array ,
-      default: () => [],
-      required:true
-    },
+    // deals: {
+    //   type: Array ,
+    //   default: () => [],
+    //   required:true
+    // },
   },
   data() {
     return {

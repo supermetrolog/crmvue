@@ -5,11 +5,12 @@
     <ComplexAbout
       :complex="complex"
     />
-    <ObjectHoldings :objects="complex.objects" :deals="object.deals"/>
+    <ObjectHoldings :objects="complex.objects"/>
   </div>
 </template>
 
 <script>
+
 import ObjectHoldings from "@/components/complex/object-holdings/ObjectHoldings.vue";
 import ComplexAbout from "@/components/complex/complex-about/ComplexAbout.vue";
 import ComplexMap from "@/components/complex/complex-map/ComplexMap.vue";
@@ -25,17 +26,20 @@ export default {
   },
   mounted() {
    this.$store.dispatch(ComplexActionTypes.FETCH_COMPLEX, {
-      complexId: 2273,
+      complexId: 1234,
     });
   },
   computed: {
     complex() {
       return this.$store.getters.complex;
     },
-    object(){
-      return this.$store.getters.complex.object;
-    }
+    // deals(){
+    //   return this.$store.getters.complex.objects.object.deals;
+    // }
   },
-  methods: {},
+  methods: {
+    
+  },
+  
 };
 </script>
