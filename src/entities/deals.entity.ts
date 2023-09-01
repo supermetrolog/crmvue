@@ -1,19 +1,22 @@
 import BaseEntity from "@/entities/base.entity";
 import { IRange } from "@/types/property.interface";
-import {
-    IDeal,
-    ICompany,
-    IDealPrice,
-    IOwner,
-    IBuilder,
-    IConsultant,
-    IAdditionalDetails,
-    IBuildingInfo
-} from "@/interfaces/deal.interface";
+import { IDeal } from "@/interfaces/deal.interface";
+import { ICompany } from "@/interfaces/company.interface"
 import { CompanyEntity } from "@/entities/company.entity";
 import FloorsEntity from "@/entities/floors.entity"
 import {IFloor} from "@/interfaces/floor.interface"
-
+import { IOwner } from "@/interfaces/owner.interface";
+import OwnerEntity from "@/entities/owner.entity";
+import { IDealPrice } from "@/interfaces/deal_price.interface"
+import DealPriceEntity from "@/entities/deal_price.entity";
+import { IBuilder } from "@/interfaces/builder.interface";
+import BuilderEntity from "@/entities/builder.entity";
+import { IConsultant } from "@/interfaces/consultant.interface";
+import ConsultantEntity from "@/entities/consultant.entity"
+import { IAdditionalDetails } from "@/interfaces/additional_details.interface"
+import AdditionalDetailsEntity from "@/entities/additional_details.entity";
+import { IBuildingInfo } from "@/interfaces/building_info.interface"
+import BuildingInfoEntity from "@/entities/building_info.entity";
 
 
 export default class DealEntity extends BaseEntity implements IDeal {
@@ -37,17 +40,24 @@ export default class DealEntity extends BaseEntity implements IDeal {
     }
 
 
- get area(): IRange | null {
+    get area(): IRange | null {
         return this._area;
      }
    
 
     get price(): IDealPrice | null {
-        return this._price
-    }
+        if (this._price) {
+            const price = new DealPriceEntity();
+            console.error(this._price,  price);
+            price.load(this._price);
+            return price;
+            }
+            return null;
+        }
+    
 
     get status(): number | null {
-        return this._status
+        return this._status;
     }
 
 
@@ -61,28 +71,71 @@ export default class DealEntity extends BaseEntity implements IDeal {
 
 
     get owner(): IOwner | null {
-        return this._owner
+        if (this._owner) {
+            const owner = new OwnerEntity();
+            console.error(this._owner, owner);
+            owner.load(this._owner);
+            return owner;
+        }
+        return null;
     }
+    
 
     get builder(): IBuilder | null {
-        return this._builder
+        if (this._builder) {
+            const builder = new BuilderEntity();
+            console.error(this._builder, builder);
+            builder.load(this._builder);
+            return builder;
+        }
+        return null;
     }
+
+    
 
     get consultant(): IConsultant | null {
-        return this._consultant
+        if (this._consultant) {
+            const consultant = new ConsultantEntity();
+            console.error(this._consultant, consultant);
+            consultant.load(this._consultant);
+            return consultant;
+        }
+        return null;
     }
+
+
 
     get additionalDetails(): IAdditionalDetails | null {
-        return this._additionalDetails
-    }
+            if (this._additionalDetails) {
+                const additionalDetails = new AdditionalDetailsEntity();
+                console.error(this._additionalDetails, additionalDetails);
+                additionalDetails.load(this._additionalDetails);
+                return additionalDetails;
+            }
+            return null;
+        }
+    
+
+    // get buildingInfo(): IBuildingInfo | null {
+    //     return this._buildingInfo;
+    // }
 
     get buildingInfo(): IBuildingInfo | null {
-        return this._buildingInfo
+        if (this._buildingInfo) {
+            const buildingInfo = new BuildingInfoEntity();
+            console.error(this._buildingInfo, buildingInfo);
+            buildingInfo.load(this._buildingInfo);
+            return buildingInfo;
+        }
+        return null;
     }
+
+
+
 
     // НЕ ЗНАЮ, ЧТО ИЗ ЭТОГО ДОЛЖНО БЫТЬ PUBLIC, А ЧТО - PRIVATE, ПОКА НАПИСАЛА ТАК
     public _id: number | null = null;
-    public _type: number | null = null;
+    private _type: number | null = null;
     private _company: ICompany | null = null;
     private _area: IRange | null = null;
     private _price: IDealPrice | null = null;

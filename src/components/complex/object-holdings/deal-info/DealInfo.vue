@@ -4,9 +4,8 @@
     <div class="deal-info__body">
       <div class="deal-info__content">
         <!-- @ts-ignore  -->
-        <deal-detailed-info/>
+        <deal-detailed-info
           class="deal-info__detailed-info"
-          <!-- @ts-ignore  -->
           :area="buildingInfo.area"
           :price="buildingInfo.price"
           :parameters="buildingInfo.parameters"
@@ -14,8 +13,7 @@
       </div>
       <div class="deal-info__aside">
         <!-- @ts-ignore  -->
-        <additional-details/>
-        <!-- @ts-ignore  -->
+        <additional-details
           :label="additionalDetails.taxForm"
           :exploitation="additionalDetails.exploitation"
           :communal="additionalDetails.communal"
@@ -35,8 +33,11 @@ import DealDetailedInfo from "./deal-detailed-info/DealDetailedInfo.vue";
 import AdditionalDetails from "./deal-detailed-info/additional-detailes/AdditionalDetails.vue";
 import DealOwner from "./deal-detailed-info/deal-owner/DealOwner.vue";
 import DealInfoHeader from "./deal-info-header/DealInfoHeader.vue";
-import { IOwner, IAdditionalDetails, IConsultant, ICompany, IBuildingInfo }  from "../../../../interfaces/deal.interface";
-
+import { IOwner }  from "../../../../interfaces/owner.interface";
+import { IAdditionalDetails }  from "../../../../interfaces/additional_details.interface";
+import { IConsultant }  from "../../../../interfaces/consultant.interface";
+import { ICompany }  from "../../../../interfaces/company.interface";
+import { IBuildingInfo }  from "../../../../interfaces/building_info.interface";
 
 export default defineComponent({
   name: "DealInfo",

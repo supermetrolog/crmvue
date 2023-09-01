@@ -65,7 +65,7 @@
   import { PropType, defineComponent } from "vue";
   import plural from "plural-ru";
   //import Rating from "@/components/common/rating/Rating.vue";
-  import { IOwner } from "../../../../../../interfaces/deal.interface";
+  import { IOwner } from "../../../../../../interfaces/owner.interface";
 
   export default defineComponent({
     name: "DealOwner",

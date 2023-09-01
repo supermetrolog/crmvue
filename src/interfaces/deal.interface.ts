@@ -1,20 +1,12 @@
-import {
-  IProperty,
-  IRange
-} from "@/types/property.interface";
-import {
-  ITradeOfferParameters,
-  ITradeOfferPropeties,
-} from "../components/complex/trade-offer-tabs/tradeOfferTabs.interface";
-import {
-  unitTypes
-} from "@/const/unitTypes";
-import {
-  IPhone,
-  IEmail
-} from "@/interfaces/contact.interface";
-
+import { IRange } from "@/types/property.interface";
 import { IFloor } from "@/interfaces/floor.interface"
+import { IOwner } from "@/interfaces/owner.interface";
+import { IDealPrice } from "@/interfaces/deal_price.interface";
+import { IBuilder } from "@/interfaces/builder.interface";
+import { IConsultant } from "@/interfaces/consultant.interface";
+import { ICompany } from "@/interfaces/company.interface";
+import { IAdditionalDetails } from "@/interfaces/additional_details.interface"
+import { IBuildingInfo } from "@/interfaces/building_info.interface"
 
 
 export interface IDeal {
@@ -32,61 +24,6 @@ export interface IDeal {
   buildingInfo: IBuildingInfo | null;
 }
 
-export interface IOwner {
-  company_id: number | null;
-  name: string | null;
-  rating: number | null;
-  contacts: number | null;
-  requests: number | null;
-  objects: number | null ;
-  representative: IRepresentative | null;
-  phones: IPhone[] | null;
-  emails: IEmail[] | null;
-}
 
 
-interface IRepresentative {
-  name: string;
-  post: string;
-}
-
-export interface IDealPrice extends IRange {
-  unitType: unitTypes;
-  type:string;
-}
-
-export interface IAdditionalDetails {
-  taxForm: number;
-  exploitation: boolean;
-  communal: boolean;
-  extraCosts: IProperty[];
-  specialTerms: IProperty[];
-  business: IBusiness;
-}
-
-export interface IBuildingInfo {
-  area: ITradeOfferPropeties;
-  price: ITradeOfferPropeties;
-  parameters: ITradeOfferParameters;
-}
-
-export interface IBusiness {
-  type: string;
-  info: IProperty[];
-}
-
-export interface IBuilder {
-  name: string;
-  duration: string;
-  projectAvailability: boolean;
-}
-
-export interface IConsultant {
-  name: string;
-  visitType: string;
-}
-
-export interface ICompany {
-  full_name: string | null;
-}
 

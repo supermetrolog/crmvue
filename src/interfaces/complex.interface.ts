@@ -2,7 +2,7 @@ import IObject from "@/interfaces/object.interface";
 //import {IDeal} from "@/interfaces/deal.interface";
 
 export default interface IComplex {
-    id: bigint | null;
+    id: number | null;
     name: string | null;
     consultantName: string | null;
     lastUpdatedAt: string | null;

@@ -19,7 +19,8 @@ interface IComplexAddress extends Record<string, any> {
 
 
 export default class ComplexEntity extends BaseEntity implements IComplex {
-    get id(): bigint | null {
+    
+    get id(): number | null {
         return this._id;
     }
 
@@ -319,7 +320,7 @@ export default class ComplexEntity extends BaseEntity implements IComplex {
 
     // }
 
-    private _id: bigint | null = null;
+    private _id: number | null = null;
     private _author: IAuthorRes | null = null;
     private _last_update: number | null = null;
     private _publ_time: number | null = null;

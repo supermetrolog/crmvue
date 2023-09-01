@@ -1,6 +1,6 @@
 import BaseEntity from "@/entities/base.entity";
 import { ISection } from "@/interfaces/section.interface"
-import { ICompany } from "@/interfaces/deal.interface"
+import { ICompany } from "@/interfaces/company.interface"
 import {IRange} from "@/types/property.interface"
 import { CompanyEntity } from "@/entities/company.entity";
 
