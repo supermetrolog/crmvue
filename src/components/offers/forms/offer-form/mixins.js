@@ -110,6 +110,7 @@ export default {
         gas: null,
         steam: null,
         sewage_central: null,
+        is_fake: null,
         racks: null,
         railway: null,
         has_cranes: null,

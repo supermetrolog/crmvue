@@ -49,6 +49,7 @@
             <i class="fas fa-eye-slash"></i>
           </span>
           <span class="test_only" v-if="offer.test_only"> Тестовый лот </span>
+          <span class="test_only" v-if="offer.is_fake"> Фейковый лот </span>
         </div>
       </a>
     </Td>

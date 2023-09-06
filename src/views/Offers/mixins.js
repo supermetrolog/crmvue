@@ -171,6 +171,7 @@ export default {
         gas: "Газ",
         steam: "Пар",
         sewage_central: "КНС",
+        is_fake: "Показать фейковые",
         racks: "Стеллажи",
         railway: "Ж/Д ветка",
         has_cranes: "Краны",

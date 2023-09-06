@@ -326,6 +326,13 @@
 		:options="yesNoOptions"
 		/>
         </FormGroup>
+		<FormGroup>
+         <Checkbox
+           v-model="form.is_fake"
+           class="col-md col-3 large text-center"
+           label="Показать фейковые"
+         />
+		</FormGroup>
       </Form>
     </Modal>
   </div>
