@@ -139,6 +139,7 @@
       <p v-if="offer.ad_cian">Циан</p>
       <p v-if="offer.ad_yandex">Яндекс</p>
       <p v-if="offer.ad_free">Бесплатные</p>
+      <p v-if="offer.ad_avito">Авито</p>
     </Td>
     <Td class="date" sort="last_update">
       {{ offer.last_update_format }}
