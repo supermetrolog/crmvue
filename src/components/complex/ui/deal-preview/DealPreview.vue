@@ -16,7 +16,7 @@
       >
     </p>
     <p class="DealPreviewCard-price">
-      <with-unit-type :value="dealPrice" :unit-type="deal.price.unitType" />
+      <with-unit-type :value="dealPrice" :unit-type="deal.price?.unitType" />
     </p>
     <p
       class="DealPreviewCard-status"
@@ -87,19 +87,19 @@ export default defineComponent({
       }
     },
     dealArea() {
-      const { valueMin, valueMax } = this.deal.area;
-      if (valueMin && valueMax)
-        return this.$formatter.numberOrRangeNew(valueMin, valueMax);
+      const area = this.deal.area;
+      if (area && area.valueMin !== undefined && area.valueMax !== undefined)
+        return this.$formatter.numberOrRangeNew(area.valueMin, area.valueMax);
       return "--";
     },
     dealPrice() {
-      const { valueMin, valueMax } = this.deal.price;
-      if (valueMin && valueMax)
-        return this.$formatter.numberOrRangeNew(valueMin, valueMax);
+      const price = this.deal.price;
+      if (price && price.valueMin !== undefined && price.valueMax !== undefined)
+        return this.$formatter.numberOrRangeNew(price.valueMin, price.valueMax);
       return "нет данных";
     },
     typePresence() {
-      return this.deal.price.type && this.deal.price.valueMin;
+      return this.deal.price?.type && this.deal.price?.valueMin;
     },
   },
   methods: {
