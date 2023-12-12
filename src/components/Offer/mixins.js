@@ -4,7 +4,7 @@ import {
     DistrictList,
     RegionList,
     TaxFormList,
-} from "@/const/Const.js";
+} from "@/const/const.js";
 export const MixinOfferItem = {
     data() {
         return {

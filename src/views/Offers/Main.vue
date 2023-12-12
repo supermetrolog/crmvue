@@ -1,149 +1,159 @@
 <template>
-  <div class="all">
-    <div class="row no-gutters search-main-container">
-      <div class="container py-3">
-        <div class="col-12 pt-3">
-          <div class="row no-gutters search-main-container">
-            <OfferSearchModalForm
-                v-if="mounted && searchFormModalVisible"
-                ref="search"
-                @close="toggleSearchFormModalVisible"
-            />
-            <div class="container-fluid p-0" ref="searchContainer">
-              <OfferSearchExternalForm
-                  class="ext-search-form"
-                  v-if="mounted"
-                  :offersCount="OFFERS_PAGINATION?.totalCount ?? 0"
-                  :objectsCount="OFFERS_PAGINATION?.totalCount ?? 0"
-                  @openFilters="toggleSearchFormModalVisible"
-              />
-              <List class="list mb-2" :data="selectedFilterList" @remove="removeFilter" />
+    <section>
+        <div class="container-fluid">
+            <div class="row">
+                <FormModalOfferSearch
+                    v-if="searchFormModalVisible"
+                    ref="search"
+                    @close="toggleSearchFormModalVisible"
+                />
+                <FormOfferSearchExternal
+                    class="col-12"
+                    :offersCount="OFFERS_PAGINATION ? OFFERS_PAGINATION.totalCount : 0"
+                    :objectsCount="OFFERS_PAGINATION ? OFFERS_PAGINATION.totalCount : 0"
+                    @openFilters="toggleSearchFormModalVisible"
+                />
+                <div class="col-12 my-2">
+                    <div class="company-table__filters">
+                        <Chip
+                            v-for="(item, index) in selectedFilterList"
+                            :key="index"
+                            :value="item.value"
+                            :html="item.label"
+                            @click="removeFilter"
+                        />
+                    </div>
+                </div>
             </div>
-          </div>
+            <div class="row justify-content-between">
+                <PaginationClassic
+                    class="col-6"
+                    :pagination="OFFERS_PAGINATION"
+                    @next="next"
+                    v-if="OFFERS_PAGINATION"
+                    ref="firstPagination"
+                />
+                <div class="company-table__actions col-4">
+                    <RefreshButton
+                        @click="getOffers(true)"
+                        :disabled="loader"
+                    />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 offers-page__table">
+                    <Loader v-if="loader && !OFFERS.length" class="center"/>
+                    <OfferTable
+                        :offers="OFFERS"
+                        v-if="OFFERS.length && !this.isMobile"
+                        :loader="loader"
+                        @deleteFavoriteOffer="deleteFavoriteOffer"
+                    />
+                    <OfferTableMobile
+                        :offers="OFFERS"
+                        v-if="OFFERS.length && this.isMobile"
+                        :loader="loader"
+                        @deleteFavoriteOffer="deleteFavoriteOffer"
+                    />
+                    <h1 class="text-center text-dark py-5" v-if="!OFFERS.length && !loader">
+                        НИЧЕГО НЕ НАЙДЕНО
+                    </h1>
+                </div>
+                <div class="col-12">
+                    <PaginationClassic
+                        :pagination="OFFERS_PAGINATION"
+                        @next="nextAndScrollToStart"
+                        v-if="OFFERS_PAGINATION"
+                    />
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-    <div class="row no-gutters companies-actions">
-      <div class="col-md-6 col-12 pt-1">
-        <PaginationClassic
-          :pagination="OFFERS_PAGINATION"
-          @next="next"
-          v-if="OFFERS_PAGINATION"
-          class="d-inline"
-          ref="firstPagination"
-        />
-        <RefreshButton
-          class="ml-3"
-          @click="getOffers(true)"
-          :disabled="loader"
-        />
-      </div>
-    </div>
-    <div class="row no-gutters mt-2">
-      <div class="col-12 companies-list-container">
-        <Loader v-if="loader && !OFFERS.length" class="center" />
-        <OfferTableView
-          :offers="OFFERS"
-          v-if="OFFERS.length && !this.isMobile"
-          :loader="loader"
-          @deleteFavoriteOffer="deleteFavoriteOffer"
-        />
-        <OffersMobileView
-          :offers="OFFERS"
-          v-if="OFFERS.length && this.isMobile"
-          :loader="loader"
-          @deleteFavoriteOffer="deleteFavoriteOffer"
-        />
-        <h1 class="text-center text-dark py-5" v-if="!OFFERS.length && !loader">
-          НИЧЕГО НЕ НАЙДЕНО
-        </h1>
-      </div>
-      <PaginationClassic
-        class="mt-3 my-3"
-        :pagination="OFFERS_PAGINATION"
-        @next="nextAndScrollToStart"
-        v-if="OFFERS_PAGINATION"
-      />
-    </div>
-  </div>
+    </section>
 </template>
 
 <script>
-import OffersMobileView from "../../components/offers/mobile/OffersMobileView.vue";
-import OfferTableView from "@/components/offers/main/OfferTableView.vue";
 import {mapActions, mapGetters} from "vuex";
-import { TableContentMixin } from "@/components/common/mixins.js";
+import {TableContentMixin} from "@/components/common/mixins.js";
 import RefreshButton from "@/components/common/RefreshButton.vue";
-import FilterMixin from "./mixins";
-import OfferSearchModalForm from "@/components/offers/forms/offer-form/OfferSearchModalForm.vue";
-import List from "@/components/common/list-horizontal/List.vue";
-import OfferSearchExternalForm from "@/components/offers/forms/offer-form/OfferSearchExternalForm.vue";
+import FilterMixin from "./mixins.js";
+import FormModalOfferSearch from "@/components/forms/templates/Offer/FormModalOfferSearch.vue";
+import FormOfferSearchExternal from "@/components/forms/templates/Offer/FormOfferSearchExternal.vue";
+import PaginationClassic from "@/components/Pagination/PaginationClassic.vue";
+import Loader from "@/components/common/Loader.vue";
+import OfferTableMobile from "@/components/Offer/OfferTableMobile.vue";
+import OfferTable from "@/components/Offer/OfferTable.vue";
+import Chip from "@/components/common/Chip.vue";
 
 export default {
-  mixins: [TableContentMixin, FilterMixin],
-  name: "OffersMain",
-  inject: ["isMobile"],
-  components: {
-    OfferSearchExternalForm, List, OfferSearchModalForm,
-    OfferTableView,
-    RefreshButton,
-    OffersMobileView,
-  },
-  computed: {
-    ...mapGetters(["OFFERS_PAGINATION", "OFFERS"])
-  },
-  methods: {
-    ...mapActions(["SEARCH_OFFERS", "SEARCH_FAVORITES_OFFERS"]),
-    async getContent(withLoader = true) {
-      await this.getOffers(withLoader);
+    mixins: [TableContentMixin, FilterMixin],
+    name: "OffersMain",
+    inject: ["isMobile"],
+    components: {
+        Chip,
+        OfferTable,
+        OfferTableMobile,
+        Loader,
+        PaginationClassic,
+        FormOfferSearchExternal,
+        FormModalOfferSearch,
+        RefreshButton,
     },
-    async getOffers(withLoader = true) {
-      this.loader = withLoader;
+    computed: {
+        ...mapGetters(["OFFERS_PAGINATION", "OFFERS"])
+    },
+    methods: {
+        ...mapActions(["SEARCH_OFFERS", "SEARCH_FAVORITES_OFFERS"]),
+        async getContent(withLoader = true) {
+            await this.getOffers(withLoader);
+        },
+        async getOffers(withLoader = true) {
+            this.loader = withLoader;
 
-      const query = {
-        ...this.$route.query,
-        type_id: [2, 3],
-        // type_id: [2],
-        expand:
-          "contact.emails,contact.phones,object,company.mainContact.phones,company.mainContact.emails,offer,consultant.userProfile",
-      };
-      if (!this.FAVORITES_OFFERS.length) {
-        await this.SEARCH_FAVORITES_OFFERS();
-      }
-      if (this.$route.query.favorites) {
+            const query = {
+                ...this.$route.query,
+                type_id: [2, 3],
+                // type_id: [2],
+                expand:
+                    "contact.emails,contact.phones,object,company.mainContact.phones,company.mainContact.emails,offer,consultant.userProfile",
+            };
+            if (!this.FAVORITES_OFFERS.length) {
+                await this.SEARCH_FAVORITES_OFFERS();
+            }
+            if (this.$route.query.favorites) {
 
-        query.original_id = this.FAVORITES_OFFERS.map(
-          (item) => item.original_id
-        );
-        query.type_id = [1, 2];
-        query.object_id = this.FAVORITES_OFFERS.map((item) => item.object_id);
-        query.complex_id = this.FAVORITES_OFFERS.map((item) => item.complex_id);
-      }
-      await this.SEARCH_OFFERS({ query });
-      this.loader = false;
-    },
+                query.original_id = this.FAVORITES_OFFERS.map(
+                    (item) => item.original_id
+                );
+                query.type_id = [1, 2];
+                query.object_id = this.FAVORITES_OFFERS.map((item) => item.object_id);
+                query.complex_id = this.FAVORITES_OFFERS.map((item) => item.complex_id);
+            }
+            await this.SEARCH_OFFERS({query});
+            this.loader = false;
+        },
 
-    nextAndScrollToStart(page) {
-      this.next(page);
-      this.scrollToStart();
+        nextAndScrollToStart(page) {
+            this.next(page);
+            this.scrollToStart();
+        },
+        scrollToStart() {
+            let options = {
+                behavior: "smooth",
+                block: "end",
+                alignToTop: false,
+            };
+            this.$refs.firstPagination.$el.scrollIntoView(options);
+        },
+        // Переопределено из миксина (судя по всему)
+        initialRouteSettings() {
+        },
+        async deleteFavoriteOffer() {
+            if (this.$route.query.favorites) {
+                await this.SEARCH_FAVORITES_OFFERS();
+                this.getContent(false);
+            }
+        },
     },
-    scrollToStart() {
-      let options = {
-        behavior: "smooth",
-        block: "end",
-        alignToTop: false,
-      };
-      this.$refs.firstPagination.$el.scrollIntoView(options);
-    },
-    // Переопределено из миксина (судя по всему)
-    initialRouteSettings() {},
-    async deleteFavoriteOffer() {
-      if (this.$route.query.favorites) {
-        await this.SEARCH_FAVORITES_OFFERS();
-        this.getContent(false);
-      }
-    },
-  },
 };
 </script>
 
