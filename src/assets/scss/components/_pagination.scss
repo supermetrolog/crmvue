@@ -1,0 +1,57 @@
+@use '../utils/variables';
+
+.pagination {
+
+}
+
+
+.pagination-classic {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+
+    &__pages {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    &__button {
+        cursor: pointer;
+        border-radius: 0;
+        height: 35px;
+        width: 35px;
+        background-color: lighten(variables.$color_grey, 50);
+        color: variables.$color_primary;
+        font-size: 14px;
+        font-weight: bold;
+        border: unset;
+        outline: 1px solid variables.$color_dark;
+        transition: background-color .2s ease;
+
+        &:not(:disabled):not(.active):hover {
+            background-color: #86c5e0;
+        }
+
+        &:disabled {
+            cursor: default;
+            background-color: #b1b1b7;
+            border: none;
+            outline: none;
+        }
+
+        &.active {
+            background-color: #11698e;
+            cursor: default;
+            outline: 1px solid #11698e;
+            border: 1px solid #11698e;
+            color: #f7f7f7;
+        }
+    }
+
+    &__description {
+        font-size: 14px;
+        margin-top: 5px;
+    }
+}
