@@ -1,17 +1,16 @@
 <template>
-  <div class="loader-container">
-    <div class="loader-box">
-      <div class="item item-1"></div>
-      <div class="item item-2"></div>
-      <div class="item item-3"></div>
-      <div class="item item-4"></div>
+    <div class="loader">
+        <div class="loader__container">
+            <div class="loader__item"></div>
+            <div class="loader__item"></div>
+            <div class="loader__item"></div>
+            <div class="loader__item"></div>
+        </div>
     </div>
-  </div>
 </template>
 
 <script>
-export default {};
+export default {
+    name: 'Loader'
+};
 </script>
-
-<style>
-</style>
