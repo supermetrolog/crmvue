@@ -1,10 +1,10 @@
-import Form from "@/components/common/form/Form.vue";
-import FormGroup from "@/components/common/form/FormGroup.vue";
-import Input from "@/components/common/form/Input.vue";
-import Checkbox from "@/components/common/form/Checkbox.vue";
-import Radio from "@/components/common/form/Radio.vue";
-import MultiSelect from "@/components/common/form/MultiSelect.vue";
-import CheckboxIcons from "@/components/common/form/CheckboxIcons.vue";
+import Form from "@/components/forms/Form.vue";
+import FormGroup from "@/components/forms/FormGroup.vue";
+import Input from "@/components/forms/Input.vue";
+import Checkbox from "@/components/forms/Checkbox.vue";
+import Radio from "@/components/forms/Radio.vue";
+import MultiSelect from "@/components/forms/MultiSelect.vue";
+import CheckboxIcons from "@/components/forms/CheckboxIcons.vue";
 import { SearchFormMixin } from "@/components/common/mixins.js";
 import { mapActions, mapGetters } from "vuex";
 import {
@@ -20,8 +20,8 @@ import {
     DistrictList,
     ActivePassiveFUCK,
     OutsideMkad,
-} from "@/const/Const.js";
-export default {
+} from "@/const/const.js";
+export const FormMixin = {
     mixins: [SearchFormMixin],
     name: "OfferSearchForm",
     components: {
