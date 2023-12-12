@@ -42,7 +42,7 @@ const User = {
                 context.commit('updateUsers', data);
             }
         },
-        async REFRESH_USER({ getters, commit }) {
+        async REFRESH_USER({getters, commit}) {
             const access_token = localStorage.getItem('access_token');
             if (!getters.THIS_USER || !access_token) {
                 return;
@@ -68,7 +68,7 @@ const User = {
             localStorage.removeItem('user');
             context.commit('setUser', null);
         },
-        async LOGIN(context, formdata) {
+        async login(context, formdata) {
             const response = await api.user.auth.login(formdata);
             if (response !== false) {
                 context.dispatch('SET_USER');

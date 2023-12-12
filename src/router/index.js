@@ -1,241 +1,237 @@
-import { createRouter, createWebHistory } from "vue-router";
+import {createRouter, createWebHistory} from "vue-router";
+
 const routes = [
-  {
-    path: "/statistic",
-    name: "statistic",
-    meta: {
-      layout: "main",
-      auth: { isAuth: true, role: ["moderator", "administrator"] },
-    },
-    component: () => import("../views/Statistic.vue"),
-    children: [
-      {
-        path: ":mod",
+    {
+        path: "/statistic",
         name: "statistic",
         meta: {
-          layout: "main",
-          auth: { isAuth: true, role: ["moderator", "administrator"] },
+            layout: "default",
+            auth: {isAuth: true, role: ["moderator", "administrator"]},
         },
-        component: () => import("../views/Setting.vue"),
-      },
-    ],
-  },
-  {
-    path: "/setting",
-    name: "setting",
-    meta: {
-      layout: "main",
-      auth: { isAuth: true, role: ["moderator", "administrator"] },
+        component: () => import("../views/Statistic.vue"),
+        children: [
+            {
+                path: ":mod",
+                name: "statistic",
+                meta: {
+                    layout: "default",
+                    auth: {isAuth: true, role: ["moderator", "administrator"]},
+                },
+                component: () => import("../views/Setting.vue"),
+            },
+        ],
     },
-    component: () => import("../views/Setting.vue"),
-    children: [
-      {
-        path: ":mod",
+    {
+        path: "/setting",
         name: "setting",
         meta: {
-          layout: "main",
-          auth: { isAuth: true, role: ["moderator", "administrator"] },
+            layout: "default",
+            auth: {isAuth: true, role: ["moderator", "administrator"]},
         },
         component: () => import("../views/Setting.vue"),
-      },
-    ],
-  },
-  {
-    path: "/calendar",
-    name: "calendar",
-    meta: {
-      layout: "main",
-      auth: { isAuth: true, role: ["moderator", "administrator"] },
+        children: [
+            {
+                path: ":mod",
+                name: "setting",
+                meta: {
+                    layout: "default",
+                    auth: {isAuth: true, role: ["moderator", "administrator"]},
+                },
+                component: () => import("../views/Setting.vue"),
+            },
+        ],
     },
-    component: () => import("../views/Calendar.vue"),
-  },
-  {
-    path: "/login",
-    name: "login",
-    meta: { layout: "login", auth: { isAuth: false } },
-    component: () => import("../views/Login.vue"),
-  },
-  {
-    path: "/companies",
-    name: "companies",
-    meta: {
-      layout: "main",
-      auth: { isAuth: true, role: ["moderator", "administrator"] },
+    {
+        path: "/calendar",
+        name: "calendar",
+        meta: {
+            layout: "default",
+            auth: {isAuth: true, role: ["moderator", "administrator"]},
+        },
+        component: () => import("../views/Calendar.vue"),
     },
-    component: () => import("../views/Companies/Companies.vue"),
-    children: [
-      {
-        path: "/companies/:id",
-        name: "company",
-        meta: {
-          layout: "main",
-          auth: { isAuth: true, role: ["moderator", "administrator"] },
-        },
-        component: () => import("../views/Companies/Company.vue"),
-      },
-      {
-        path: "",
-        name: "CompaniesMain",
-        meta: {
-          layout: "main",
-          auth: { isAuth: true, role: ["moderator", "administrator"] },
-        },
-        component: () => import("../views/Companies/Main.vue"),
-      },
-      {
-        path: "requests",
-        name: "CompaniesRequests",
-        meta: {
-          layout: "main",
-          auth: { isAuth: true, role: ["moderator", "administrator"] },
-        },
-        component: () => import("../views/Companies/Requests.vue"),
-      },
-      {
-        path: "deals",
-        name: "CompaniesDeals",
-        meta: {
-          layout: "main",
-          auth: { isAuth: true, role: ["moderator", "administrator"] },
-        },
-        component: () => import("../views/Companies/Deals.vue"),
-      },
-      {
-        path: "groups",
-        name: "CompaniesGroups",
-        meta: {
-          layout: "main",
-          auth: { isAuth: true, role: ["moderator", "administrator"] },
-        },
-        component: () => import("../views/Companies/Groups.vue"),
-      },
-    ],
-  },
-  {
-    path: "/users",
-    name: "users",
-    meta: {
-      layout: "main",
-      auth: { isAuth: true, role: ["moderator", "administrator"] },
+    {
+        path: "/login",
+        name: "login",
+        meta: {layout: "login", auth: {isAuth: false}},
+        component: () => import("../views/Login.vue"),
     },
-    component: () => import("../views/Users/Users.vue"),
-    children: [
-      {
-        path: "/users/:id",
-        name: "user",
+    {
+        path: "/companies",
+        name: "companies",
         meta: {
-          layout: "main",
-          auth: { isAuth: true, role: ["moderator", "administrator"] },
+            layout: "default",
+            auth: {isAuth: true, role: ["moderator", "administrator"]},
         },
-        component: () => import("../views/Users/User.vue"),
-      },
-      {
-        path: "",
-        name: "UsersMain",
-        meta: {
-          layout: "main",
-          auth: { isAuth: true, role: ["moderator", "administrator"] },
-        },
-        component: () => import("../views/Users/Main.vue"),
-      },
-    ],
-  },
-  {
-    path: "/account",
-    name: "account",
-    meta: {
-      layout: "main",
-      auth: { isAuth: true, role: ["moderator", "administrator"] },
+        component: () => import("../views/Companies/Companies.vue"),
+        children: [
+            {
+                path: "/companies/:id",
+                name: "company",
+                meta: {
+                    layout: "default",
+                    auth: {isAuth: true, role: ["moderator", "administrator"]},
+                },
+                component: () => import("../views/Companies/Company.vue"),
+            },
+            {
+                path: "",
+                name: "CompaniesMain",
+                meta: {
+                    layout: "default",
+                    auth: {isAuth: true, role: ["moderator", "administrator"]},
+                },
+                component: () => import("../views/Companies/Main.vue"),
+            },
+            {
+                path: "requests",
+                name: "CompaniesRequests",
+                meta: {
+                    layout: "default",
+                    auth: {isAuth: true, role: ["moderator", "administrator"]},
+                },
+                component: () => import("../views/Companies/Requests.vue"),
+            },
+            {
+                path: "deals",
+                name: "CompaniesDeals",
+                meta: {
+                    layout: "default",
+                    auth: {isAuth: true, role: ["moderator", "administrator"]},
+                },
+                component: () => import("../views/Companies/Deals.vue"),
+            },
+            {
+                path: "groups",
+                name: "CompaniesGroups",
+                meta: {
+                    layout: "default",
+                    auth: {isAuth: true, role: ["moderator", "administrator"]},
+                },
+                component: () => import("../views/Companies/Groups.vue"),
+            },
+        ],
     },
-    component: () => import("../views/Account/Account.vue"),
-    children: [
-      {
-        path: "",
-        name: "AccountMain",
+    {
+        path: "/users",
+        name: "users",
         meta: {
-          layout: "main",
-          auth: { isAuth: true, role: ["moderator", "administrator"] },
+            layout: "default",
+            auth: {isAuth: true, role: ["moderator", "administrator"]},
         },
-        component: () => import("../views/Account/Main.vue"),
-      },
-    ],
-  },
-  {
-    path: "/offers",
-    name: "offers",
-    meta: {
-      layout: "main",
-      auth: { isAuth: true, role: ["moderator", "administrator"] },
+        component: () => import("../views/Users/Users.vue"),
+        children: [
+            {
+                path: "/users/:id",
+                name: "user",
+                meta: {
+                    layout: "default",
+                    auth: {isAuth: true, role: ["moderator", "administrator"]},
+                },
+                component: () => import("../views/Users/User.vue"),
+            },
+            {
+                path: "",
+                name: "UsersMain",
+                meta: {
+                    layout: "default",
+                    auth: {isAuth: true, role: ["moderator", "administrator"]},
+                },
+                component: () => import("../views/Users/Main.vue"),
+            },
+        ],
     },
-    component: () => import("../views/Offers/Offers.vue"),
-    children: [
-      {
-        path: "",
-        name: "OffersMap",
+    {
+        path: "/account",
+        name: "account",
         meta: {
-          layout: "main",
-          auth: { isAuth: true, role: ["moderator", "administrator"] },
+            layout: "default",
+            auth: {isAuth: true, role: ["moderator", "administrator"]},
         },
-        component: () => import("../views/Offers/Map.vue"),
-      },
-      {
-        path: "list",
-        name: "OffersMain",
-        meta: {
-          layout: "main",
-          auth: { isAuth: true, role: ["moderator", "administrator"] },
-        },
-        component: () => import("../views/Offers/Main.vue"),
-      },
-      {
-        path: "maptest",
-        name: "OffersMapTest",
-        meta: {
-          layout: "main",
-          auth: { isAuth: true, role: ["moderator", "administrator"] },
-        },
-        component: () => import("../views/Offers/MapTest.vue"),
-      },
-    ],
-  },
-  {
-    path: "/complex/:complex_id",
-    name: "ComplexView",
-    meta: {
-      layout: "main",
-      auth: { isAuth: true, role: ["moderator", "administrator"] },
+        component: () => import("../views/Account/View.vue"),
+        children: [
+            // later
+        ],
     },
-    component: () => import("@/views/ComplexView/ComplexView.vue"),
-  },
-  {
-    path: "/:catchAll(.*)",
-    name: "notfound",
-    meta: {
-      layout: "empty",
-      auth: { isAuth: true, role: ["moderator", "administrator"] },
+    {
+        path: "/offers",
+        name: "offers",
+        meta: {
+            layout: "default",
+            auth: {isAuth: true, role: ["moderator", "administrator"]},
+        },
+        component: () => import("../views/Offers/Offers.vue"),
+        children: [
+            {
+                path: "",
+                name: "OffersMap",
+                meta: {
+                    layout: "default",
+                    auth: {isAuth: true, role: ["moderator", "administrator"]},
+                },
+                component: () => import("../views/Offers/Map.vue"),
+            },
+            {
+                path: "list",
+                name: "OffersMain",
+                meta: {
+                    layout: "default",
+                    auth: {isAuth: true, role: ["moderator", "administrator"]},
+                },
+                component: () => import("../views/Offers/Main.vue"),
+            },
+            {
+                path: "maptest",
+                name: "OffersMapTest",
+                meta: {
+                    layout: "default",
+                    auth: {isAuth: true, role: ["moderator", "administrator"]},
+                },
+                component: () => import("../views/Offers/MapTest.vue"),
+            },
+        ],
     },
-    component: () => import("../views/NotFound.vue"),
-  },
-  {
-    path: "/",
-    name: "root",
-    redirect: { name: "CompaniesMain" },
-  },
+    {
+        path: "/complex/:complex_id",
+        name: "ComplexView",
+        meta: {
+            layout: "default",
+            auth: {isAuth: true, role: ["moderator", "administrator"]},
+        },
+        component: () => import("@/views/ComplexView.vue"),
+    },
+    {
+        path: "/:catchAll(.*)",
+        name: "notfound",
+        meta: {
+            layout: "empty",
+            auth: {isAuth: true, role: ["moderator", "administrator"]},
+        },
+        component: () => import("../views/NotFound.vue"),
+    },
+    {
+        path: "/",
+        name: "root",
+        redirect: {name: "CompaniesMain"},
+    },
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
-  routes,
+    history: createWebHistory(),
+    routes,
 });
-router.beforeEach((to, from, next) => {
-  const access_token = localStorage.getItem("access_token");
-  if (to.meta.auth.isAuth && !access_token) {
-    return next({ name: "login", replace: true });
-  }
 
-  if (!to.meta.auth.isAuth && access_token) {
-    return next({ name: from.name });
-  }
-  return next();
+router.beforeEach((to, from, next) => {
+    const access_token = localStorage.getItem("access_token");
+
+    if (to.meta.auth.isAuth && !access_token) {
+        return next({name: "login", replace: true});
+    }
+
+    if (!to.meta.auth.isAuth && access_token) {
+        return next({name: from.name});
+    }
+
+    return next();
 });
 export default router;
