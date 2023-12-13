@@ -2,7 +2,7 @@ export const unitTypes = {
     NONE: 'null',
     SQUARE_METERS: 'SquareMeters',
     RUB_PER_MONTH: 'RubPerMonth',
-    KILOWATT:'Kilowatts',
+    KILOWATT: 'Kilowatts',
     CUBE_METERS_PER_HOUR: 'CubicMetersPerHour',
     FLOORS: 'Floors',
     SQUARE_METERS_PER_YEAR: 'SquareMetersPerYear',
@@ -14,6 +14,9 @@ export const unitTypes = {
     RUB_PER_SQUARE_METERS_PER_YEAR: 'RubPerSquareMetersPerYear',
     RUB_PER_SQUARE_METERS_PER_MONTH: 'RubPerSquareMetersPerMonth',
     RUB_PER_YEAR: 'RubPerYear',
-    PALLET_PLACE: 'PalletPlace'
+    PALLET_PLACE: 'PalletPlace',
+    PIECES: 'Pieces',
+    METERS: 'Meters',
+    TON:  'Tons'
 }
 

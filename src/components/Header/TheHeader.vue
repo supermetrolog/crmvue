@@ -17,7 +17,6 @@
 </template>
 
 <script>
-import { InternalMenu } from "@/const/menu.js";
 import HeaderMenu from "@/components/Header/HeaderMenu.vue";
 import HeaderActions from "@/components/Header/HeaderActions.vue";
 import HeaderFunctions from "@/components/Header/HeaderFunctions.vue";
