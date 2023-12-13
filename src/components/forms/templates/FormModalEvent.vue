@@ -17,7 +17,6 @@
 </template>
 
 <script>
-import EventForm from "./FormEvent.vue";
 import Modal from "@/components/common/Modal.vue";
 import FormEvent from "@/components/forms/templates/FormEvent.vue";
 
@@ -26,8 +25,7 @@ export default {
     name: "FormModalEvent",
     components: {
         FormEvent,
-        Modal,
-        EventForm,
+        Modal
     },
     props: {
         formdata: {

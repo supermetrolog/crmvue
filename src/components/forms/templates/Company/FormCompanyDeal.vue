@@ -173,7 +173,6 @@ import FormGroup from "@/components/forms/FormGroup.vue";
 import Input from "@/components/forms/Input.vue";
 import Textarea from "@/components/forms/Textarea.vue";
 import MultiSelect from "@/components/forms/MultiSelect.vue";
-import Checkbox from "@/components/forms/Checkbox.vue";
 import Submit from "@/components/forms/Submit.vue";
 import api from "@/api/api.js";
 import {CompanyFormOrganization} from "@/const/const.js";
@@ -193,8 +192,7 @@ export default {
         Input,
         Textarea,
         MultiSelect,
-        Submit,
-        Checkbox,
+        Submit
     },
     data() {
         return {
