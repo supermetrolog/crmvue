@@ -22,6 +22,9 @@ import UnitTypeRubPerSquareMetersPerYear from "@/components/unit-types/UnitTypeR
 import UnitTypeRubPerYear from "@/components/unit-types/UnitTypeRubPerYear.vue";
 import UnitTypeSquareMeters from "@/components/unit-types/UnitTypeSquareMeters.vue";
 import UnitTypeSquareMetersPerYear from "@/components/unit-types/UnitTypeSquareMetersPerYear.vue";
+import UnitTypeMeters from "@/components/unit-types/UnitTypeMeters.vue";
+import UnitTypePieces from "@/components/unit-types/UnitTypePieces.vue";
+import UnitTypeTons from "@/components/unit-types/UnitTypeTons.vue";
 
 export default {
     name: "WithUnitType",
@@ -40,7 +43,10 @@ export default {
         UnitTypeRubles,
         UnitTypeRubPerSquareMetersPerMonth,
         UnitTypeRubPerYear,
-        UnitTypeSquareMeters
+        UnitTypeSquareMeters,
+        UnitTypePieces,
+        UnitTypeMeters,
+        UnitTypeTons
     },
     props: {
         unitType: {
@@ -50,7 +56,7 @@ export default {
     },
     computed: {
         unitComponentName() {
-            return 'UnitType' + unitTypes[this.unitType]
+            return 'UnitType' + this.unitType
         }
     }
 };

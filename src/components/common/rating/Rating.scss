@@ -1,8 +1,0 @@
-.rating {
-  letter-spacing: 3px;
-  font-size: 12px;
-  color: $color_grey;
-  & i.red {
-    color: darken($color: $color_danger, $amount: 25);
-  }
-}
