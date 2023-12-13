@@ -80,22 +80,6 @@
         }
     }
 
-    &:not(.fullscreen) {
-        .modal {
-            &__container {
-                max-height: 95vh !important;
-                min-height: 95vh !important;
-                min-width: 300px;
-            }
-
-            &__body {
-                max-height: 90vh !important;
-                min-height: 90vh !important;
-                padding: 15px 20px !important;
-            }
-        }
-    }
-
     &.autosize {
 
         .modal-body,

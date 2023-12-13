@@ -6,6 +6,7 @@
 
 @use 'layouts';
 @use 'components';
+@use 'pages';
 
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,400;1,500;1,700&display=swap");
 
@@ -6792,4 +6793,269 @@ button.filters {
     justify-content: center;
     align-items: center;
     gap: 1rem;
+}
+
+.plot-create-form {
+    &__text {
+        padding-top: 30px;
+        white-space: nowrap;
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+    }
+
+    &__label {
+        margin-top: 20px;
+        margin-bottom: 10px;
+        font-size: 16px;
+        font-weight: 700;
+        color: darken($color: variables.$color_success, $amount: 12);
+        letter-spacing: 0.4px;
+    }
+
+    &__form-group {
+        & .multiselect-single-label {
+        }
+
+        &_long .form-item {
+            max-width: 100%;
+            flex: 0 0 100%;
+        }
+    }
+
+    &__tab-list {
+        padding-left: 20px;
+        position: static;
+        background-color: inherit;
+        display: flex;
+        column-gap: 20px;
+    }
+
+    &__tab-link {
+        display: inline-block;
+        position: relative;
+        text-decoration: none;
+        padding: 0;
+        font-weight: bolder;
+        font-size: 15px;
+        line-height: 18px;
+        font-weight: 500;
+        color: black;
+        padding-bottom: 7px;
+
+        &::before {
+            background-color: darken($color: variables.$color_success, $amount: 12);
+            display: block;
+            position: absolute;
+            content: "";
+            height: 3px;
+            width: 0;
+            transition: width 0.5s ease-in-out, left 0.5s ease-in-out;
+            left: 0;
+            bottom: 0;
+        }
+
+        &.is-active {
+            color: darken($color: variables.$color_success, $amount: 12);
+            font-weight: 700;
+            transition: background-color 0.3s ease-in-out;
+
+            &::before {
+                width: 100%;
+            }
+        }
+    }
+}
+
+.building-create-form {
+    &__form-group {
+        & .multiselect-single-label {
+        }
+
+        &_long .form-item {
+            max-width: 100%;
+            flex: 0 0 100%;
+        }
+    }
+
+    &__tab-list {
+        padding-left: 20px;
+        position: static;
+        background-color: inherit;
+        display: flex;
+        column-gap: 20px;
+    }
+
+    &__tab-link {
+        display: inline-block;
+        position: relative;
+        text-decoration: none;
+        padding: 0;
+        font-weight: bolder;
+        font-size: 15px;
+        line-height: 18px;
+        font-weight: 500;
+        color: black;
+        padding-bottom: 7px;
+
+        &::before {
+            background-color: darken($color: variables.$color_success, $amount: 12);
+            display: block;
+            position: absolute;
+            content: "";
+            height: 3px;
+            width: 0;
+            transition: width 0.5s ease-in-out, left 0.5s ease-in-out;
+            left: 0;
+            bottom: 0;
+        }
+
+        &.is-active {
+            color: darken($color: variables.$color_success, $amount: 12);
+            font-weight: 700;
+            transition: background-color 0.3s ease-in-out;
+
+            &::before {
+                width: 100%;
+            }
+        }
+    }
+}
+
+.add-crane-form {
+    & .modal .modal-container {
+        min-width: 500px;
+    }
+    &__text {
+        padding-top: 30px;
+        white-space: nowrap;
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+    }
+
+    &__label {
+        //margin-top: 20px;
+        margin-bottom: 10px;
+        font-size: 16px;
+        font-weight: 700;
+        color: darken($color: variables.$color_success, $amount: 12);
+        letter-spacing: 0.4px;
+    }
+    &__form-group {
+        & .multiselect-single-label {
+        }
+        &_long .form-item {
+            max-width: 100%;
+            flex: 0 0 100%;
+        }
+    }
+    &__tab-list {
+        padding-left: 10px;
+        position: static;
+        background-color: inherit;
+        display: flex;
+        column-gap: 20px;
+    }
+
+    &__tab-link {
+        display: inline-block;
+        position: relative;
+        text-decoration: none;
+        padding: 0;
+        font-weight: bolder;
+        font-size: 15px;
+        line-height: 18px;
+        font-weight: 500;
+        color: black;
+        padding-bottom: 7px;
+        &::before {
+            background-color: darken($color: variables.$color_success, $amount: 12);
+            display: block;
+            position: absolute;
+            content: "";
+            height: 3px;
+            width: 0;
+            transition: width 0.5s ease-in-out, left 0.5s ease-in-out;
+            left: 0;
+            bottom: 0;
+        }
+        &.is-active {
+            color: darken($color: variables.$color_success, $amount: 12);
+            font-weight: 700;
+            transition: background-color 0.3s ease-in-out;
+            &::before {
+                width: 100%;
+            }
+        }
+    }
+}
+
+.add-elevator-form {
+    & .modal .modal-container {
+        min-width: 500px;
+    }
+    &__text {
+        padding-top: 30px;
+        white-space: nowrap;
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+    }
+
+    &__label {
+        //margin-top: 20px;
+        margin-bottom: 10px;
+        font-size: 16px;
+        font-weight: 700;
+        color: darken($color: variables.$color_success, $amount: 12);
+        letter-spacing: 0.4px;
+    }
+    &__form-group {
+        & .multiselect-single-label {
+        }
+        &_long .form-item {
+            max-width: 100%;
+            flex: 0 0 100%;
+        }
+    }
+    &__tab-list {
+        padding-left: 10px;
+        position: static;
+        background-color: inherit;
+        display: flex;
+        column-gap: 20px;
+    }
+
+    &__tab-link {
+        display: inline-block;
+        position: relative;
+        text-decoration: none;
+        padding: 0;
+        font-weight: bolder;
+        font-size: 15px;
+        line-height: 18px;
+        font-weight: 500;
+        color: black;
+        padding-bottom: 7px;
+        &::before {
+            background-color: darken($color: variables.$color_success, $amount: 12);
+            display: block;
+            position: absolute;
+            content: "";
+            height: 3px;
+            width: 0;
+            transition: width 0.5s ease-in-out, left 0.5s ease-in-out;
+            left: 0;
+            bottom: 0;
+        }
+        &.is-active {
+            color: darken($color: variables.$color_success, $amount: 12);
+            font-weight: 700;
+            transition: background-color 0.3s ease-in-out;
+            &::before {
+                width: 100%;
+            }
+        }
+    }
 }

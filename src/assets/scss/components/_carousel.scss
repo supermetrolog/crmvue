@@ -7,24 +7,29 @@
 
 .Carousel {
     margin: auto;
+
     &-scroll {
         display: flex;
         gap: 10px;
         overflow-x: auto;
         scroll-behavior: smooth;
         height: 180px;
+
         &-item {
             cursor: pointer;
             height: 100%;
         }
     }
+
     &-modal {
         // width: 70vw;
         display: flex;
     }
+
     &-controls {
         width: 500px;
     }
+
     .currImg {
         cursor: pointer;
         height: 65vh;
