@@ -1,5 +1,7 @@
 const textFormatter = {
-    ucFirst(string) {
+    ucFirst(string, full = false) {
+        if (full)
+            return string.replace(/(\s|^)[а-яё]/g, letter => letter.toUpperCase());
         return string.charAt(0).toUpperCase() + string.slice(1);
     },
 };
@@ -57,6 +59,15 @@ export const formatterObject = {
 
         return null;
     },
+    date(value) {
+        const options = {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        }
+
+        return new Date(value * 1000).toLocaleDateString('ru', options);
+    }
 };
 
 export const apiUrlHelperObject = {
