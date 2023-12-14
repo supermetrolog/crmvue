@@ -57,9 +57,9 @@
 </template>
 
 <script>
-import FormCompany from "@/components/forms/templates/Company/FormCompany.vue";
-import FormCompanyRequest from "@/components/forms/templates/Company/FormCompanyRequest.vue";
-import FormCompanyContact from "@/components/forms/templates/Company/FormCompanyContact.vue";
+import FormCompany from "@/components/Forms/Company/FormCompany.vue";
+import FormCompanyRequest from "@/components/Forms/Company/FormCompanyRequest.vue";
+import FormCompanyContact from "@/components/Forms/Company/FormCompanyContact.vue";
 
 export default {
     name: "CallerManagerNotExistContact",

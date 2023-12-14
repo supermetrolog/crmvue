@@ -40,7 +40,7 @@
 import {mapActions, mapGetters} from "vuex";
 import Loader from "@/components/common/Loader.vue";
 import UserTable from "@/components/User/UserTable.vue";
-import FormUser from "@/components/forms/templates/FormUser.vue";
+import FormUser from "@/components/Forms/FormUser.vue";
 
 export default {
     name: "UsersMain",

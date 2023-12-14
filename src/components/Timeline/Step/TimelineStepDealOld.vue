@@ -60,12 +60,12 @@
 import {mapActions, mapGetters} from "vuex";
 import useValidate from "@vuelidate/core";
 import {helpers, required} from "@vuelidate/validators";
-import Form from "@/components/forms/Form.vue";
-import FormGroup from "@/components/forms/FormGroup.vue";
-import Input from "@/components/forms/Input.vue";
-import Textarea from "@/components/forms/Textarea.vue";
-import MultiSelect from "@/components/forms/MultiSelect.vue";
-import Submit from "@/components/forms/Submit.vue";
+import Form from "@/components/common/Forms/Form.vue";
+import FormGroup from "@/components/common/Forms/FormGroup.vue";
+import Input from "@/components/common/Forms/Input.vue";
+import Textarea from "@/components/common/Forms/Textarea.vue";
+import MultiSelect from "@/components/common/Forms/MultiSelect.vue";
+import Submit from "@/components/common/Forms/Submit.vue";
 import {MixinSteps} from "@/components/Timeline/mixins.js";
 import Loader from "@/components/common/Loader.vue";
 

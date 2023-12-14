@@ -301,8 +301,8 @@
 <script>
 import {unitTypes} from "@/const/unitTypes";
 import WithUnitType from "@/components/common/WithUnitType.vue";
-import PropertyListItem from "@/components/Property/PropertyListItem.vue";
-import PropertyList from "@/components/Property/PropertyList.vue";
+import PropertyListItem from "@/components/common/Property/PropertyListItem.vue";
+import PropertyList from "@/components/common/Property/PropertyList.vue";
 import {
     entryTerritoryTypes,
     feeTypes,

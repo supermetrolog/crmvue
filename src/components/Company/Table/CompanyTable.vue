@@ -32,9 +32,9 @@
 <script>
 import CompanyTableItem from "@/components/Company/Table/CompanyTableItem.vue";
 import {MixinCompanyView} from "@/components/Company/mixins.js";
-import Table from "@/components/Table/Table.vue";
-import Th from "@/components/Table/Th.vue";
-import Tr from "@/components/Table/Tr.vue";
+import Table from "@/components/common/Table/Table.vue";
+import Th from "@/components/common/Table/Th.vue";
+import Tr from "@/components/common/Table/Tr.vue";
 import Loader from "@/components/common/Loader.vue";
 
 export default {

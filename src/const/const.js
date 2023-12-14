@@ -547,10 +547,6 @@ export const ActivityProfileList = new Map([
     ],
 ]);
 
-//<i class="fas binoculars"></i>
-//<i class="fas clipboard-list"></i>
-//<i class="fas atom"></i>
-//<i class="fas layer-group"></i>
 export const NotificationTypeList = new Map([
     [
         "param",
@@ -576,22 +572,6 @@ export const NotificationTypeList = new Map([
         ],
     ],
 ]);
-
-// export const UnitTypesList = new Map([
-//   [1, "м<sup>2</sup>"],
-//   [2, "₽/мес"],
-//   [3, "м"],
-//   [4, "кВт"],
-//   [5, "м<sup>3</sup>/ч"],
-//   [6, "бар"],
-//   [7, "этаж(а)"],
-//   [8, "м<sup>2</sup>/год"],
-//   [9, "₽"],
-//   [10, "мес"],
-//   [11, "%"],
-//   [12, "год"],
-//   [13, "в год"],
-// ]);
 
 export const DealStatusType = {
     FOR_RENT: 1,

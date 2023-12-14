@@ -40,8 +40,8 @@
 </template>
 
 <script>
-import FormComplexPlotCreate from "@/components/forms/templates/Complex/FormComplexPlotCreate.vue";
-import FormComplexBuildingCreate from "@/components/forms/templates/Complex/FormComplexBuildingCreate.vue";
+import FormComplexPlotCreate from "@/components/Forms/Complex/FormComplexPlotCreate.vue";
+import FormComplexBuildingCreate from "@/components/Forms/Complex/FormComplexBuildingCreate.vue";
 import ComplexHolding from "@/components/Complex/Holding/ComplexHolding.vue";
 
 export default {

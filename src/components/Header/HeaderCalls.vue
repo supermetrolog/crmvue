@@ -52,7 +52,7 @@
 //Передать (модератор) Передать админу только с комментарием - передавать с комментарием всем - Там же переать админу
 //Для брокеров только кнопка ОТКАЗ и причина отказа - комментарий (галочки - далбаеб, пидорас, не берет трубку)
 //Статистика отказов и причина
-import Pagination from "@/components/Pagination/Pagination.vue";
+import Pagination from "@/components/common/Pagination/Pagination.vue";
 import {mapActions, mapGetters} from "vuex";
 import Loader from "@/components/common/Loader.vue";
 import HeaderCallsItem from "@/components/Header/HeaderCallsItem.vue";

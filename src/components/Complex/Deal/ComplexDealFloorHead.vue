@@ -31,7 +31,7 @@
 
 <script>
 import {unitTypes} from "@/const/unitTypes";
-import Form from "@/components/forms/Form.vue";
+import Form from "@/components/common/Forms/Form.vue";
 import WithUnitType from "@/components/common/WithUnitType.vue";
 
 export default {

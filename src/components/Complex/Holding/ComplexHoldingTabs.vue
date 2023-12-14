@@ -149,8 +149,8 @@
 
 <script>
 import {unitTypes} from "@/const/unitTypes";
-import PropertyListItem from "@/components/Property/PropertyListItem.vue";
-import PropertyList from "@/components/Property/PropertyList.vue";
+import PropertyListItem from "@/components/common/Property/PropertyListItem.vue";
+import PropertyList from "@/components/common/Property/PropertyList.vue";
 import WithUnitType from "@/components/common/WithUnitType.vue";
 import ActionButton from "@/components/common/ActionButton.vue";
 import {facingTypes, landCategoryTypes, landscapeTypes, ownTypes, ownTypesLand} from "../../../const/types";

@@ -155,7 +155,7 @@
 </template>
 
 <script>
-import Td from "@/components/Table/Td";
+import Td from "@/components/common/Table/Td";
 import {MixinRequestTable} from "../mixins";
 import Loader from "@/components/common/Loader.vue";
 

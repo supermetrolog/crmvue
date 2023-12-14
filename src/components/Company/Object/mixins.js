@@ -1,7 +1,7 @@
 import api from "@/api/api";
 import CompanyObjectsList from "@/components/Company/CompanyObjectsList.vue";
-import FormOfferSearch from "@/components/forms/templates/Offer/FormOfferSearch.vue";
-import Pagination from "@/components/Pagination/Pagination.vue";
+import FormOfferSearch from "@/components/Forms/Offer/FormOfferSearch.vue";
+import Pagination from "@/components/common/Pagination/Pagination.vue";
 import {mapActions, mapGetters} from "vuex";
 import {notify} from "@kyvg/vue3-notification";
 import crypto from "crypto";

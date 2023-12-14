@@ -187,8 +187,8 @@ import RefreshButton from "@/components/common/RefreshButton.vue";
 import {mapGetters} from "vuex";
 import Modal from "@/components/common/Modal.vue";
 import CompanyObjectsList from "@/components/Company/Object/CompanyObjectList.vue";
-import FormLetter from "@/components/forms/templates/FormLetter.vue";
-import Pagination from "@/components/Pagination/Pagination.vue";
+import FormLetter from "@/components/Forms/FormLetter.vue";
+import Pagination from "@/components/common/Pagination/Pagination.vue";
 
 export default {
     name: "TimelineStepOffersActions",

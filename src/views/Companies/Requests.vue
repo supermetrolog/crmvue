@@ -50,8 +50,8 @@
 <script>
 import {mapActions, mapGetters} from "vuex";
 import {TableContentMixin} from "@/components/common/mixins.js";
-import FormCompanyRequestSearch from "@/components/forms/templates/Company/FormCompanyRequestSearch.vue";
-import PaginationClassic from "@/components/Pagination/PaginationClassic.vue";
+import FormCompanyRequestSearch from "@/components/Forms/Company/FormCompanyRequestSearch.vue";
+import PaginationClassic from "@/components/common/Pagination/PaginationClassic.vue";
 import Loader from "@/components/common/Loader.vue";
 
 export default {

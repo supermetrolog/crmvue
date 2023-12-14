@@ -1894,14 +1894,14 @@ $warning_step_thin_border: 1px solid variables.$color_warning;
                 }
             }
 
-            @include media("max", "md") {
+            @include mixins.media("max", "md") {
                 display: block;
                 text-align: center;
                 // width: 300px;
             }
         }
 
-        @include media("max", "md") {
+        @include mixins.media("max", "md") {
             display: block;
         }
 

@@ -57,8 +57,8 @@
 
 <script>
 import {unitTypes} from "@/const/unitTypes";
-import PropertyList from "@/components/Property/PropertyList.vue";
-import PropertyListItem from "@/components/Property/PropertyListItem.vue";
+import PropertyList from "@/components/common/Property/PropertyList.vue";
+import PropertyListItem from "@/components/common/Property/PropertyListItem.vue";
 import ActionButton from "@/components/common/ActionButton.vue";
 import ComplexTabs from "@/components/Complex/ComplexTabs.vue";
 

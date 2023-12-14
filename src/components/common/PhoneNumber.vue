@@ -100,7 +100,7 @@
 import api from "@/api/api";
 import Loader from "@/components/common/Loader.vue";
 import Modal from "@/components/common/Modal.vue";
-import FormCompanyContact from "@/components/forms/templates/Company/FormCompanyContact.vue";
+import FormCompanyContact from "@/components/Forms/Company/FormCompanyContact.vue";
 import CompanyContactList from "@/components/Company/Contact/CompanyContactList.vue";
 import Company from "@/components/Company/Company.vue";
 

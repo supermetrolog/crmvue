@@ -49,8 +49,8 @@ import {TableContentMixin} from "@/components/common/mixins.js";
 import api from "@/api/api";
 import {waitHash} from "@/utils";
 import FilterMixin from "./mixins.js";
-import FormModalOfferSearch from "@/components/forms/templates/Offer/FormModalOfferSearch.vue";
-import FormOfferSearchExternal from "@/components/forms/templates/Offer/FormOfferSearchExternal.vue";
+import FormModalOfferSearch from "@/components/Forms/Offer/FormModalOfferSearch.vue";
+import FormOfferSearchExternal from "@/components/Forms/Offer/FormOfferSearchExternal.vue";
 import OfferYmap from "@/components/Offer/OfferYmap.vue";
 import Chip from "@/components/common/Chip.vue";
 

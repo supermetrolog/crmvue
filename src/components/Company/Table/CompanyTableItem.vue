@@ -109,8 +109,8 @@
 <script>
 import CompanyTableDropdown from "@/components/Company/Table/CompanyTableDropdown.vue";
 import {MixinCompanyView} from "@/components/Company/mixins.js";
-import Tr from "@/components/Table/Tr.vue";
-import Td from "@/components/Table/Td.vue";
+import Tr from "@/components/common/Table/Tr.vue";
+import Td from "@/components/common/Table/Td.vue";
 import {mapGetters} from "vuex";
 import moment from "moment";
 import {ActivityProfileList} from "@/const/const.js";

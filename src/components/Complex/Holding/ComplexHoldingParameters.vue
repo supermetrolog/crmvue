@@ -110,8 +110,8 @@ import {unitTypes} from "@/const/unitTypes";
 import {objectPurposes} from "@/const/types";
 import WithUnitType from "@/components/common/WithUnitType.vue";
 import ComplexParameters from "@/components/Complex/ComplexParameters.vue";
-import FormComplexCrane from "@/components/forms/templates/Complex/FormComplexCrane.vue";
-import FormComplexElevator from "@/components/forms/templates/Complex/FormComplexElevator.vue";
+import FormComplexCrane from "@/components/Forms/Complex/FormComplexCrane.vue";
+import FormComplexElevator from "@/components/Forms/Complex/FormComplexElevator.vue";
 
 export default {
     name: "ComplexHoldingParameters",

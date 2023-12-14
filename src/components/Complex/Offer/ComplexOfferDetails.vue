@@ -111,8 +111,8 @@
 
 <script>
 import {tradeOfferCharacteristics} from "@/const/tradeOfferCharacteristics";
-import Form from "@/components/forms/Form.vue";
-import Checkbox from "@/components/forms/Checkbox.vue";
+import Form from "@/components/common/Forms/Form.vue";
+import Checkbox from "@/components/common/Forms/Checkbox.vue";
 import {OfferParametersMixin} from "@/components/Complex/Offer/mixins";
 import {unitTypes} from "@/const/unitTypes";
 import WithUnitType from "@/components/common/WithUnitType.vue";

@@ -46,7 +46,7 @@
 
 <script>
 import {CallerTypeList, PositionList, RatingList} from "@/const/const";
-import Radio from "@/components/forms/Radio.vue";
+import Radio from "@/components/common/Forms/Radio.vue";
 
 export default {
     name: "CallerManagerExistContact",

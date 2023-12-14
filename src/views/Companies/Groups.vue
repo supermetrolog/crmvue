@@ -33,7 +33,7 @@
 import {mapActions, mapGetters} from "vuex";
 import Loader from "@/components/common/Loader.vue";
 import CompanyGroupsTable from "@/components/Company/CompanyGroupsTable.vue";
-import FormCompanyGroup from "@/components/forms/templates/Company/FormCompanyGroup.vue";
+import FormCompanyGroup from "@/components/Forms/Company/FormCompanyGroup.vue";
 
 export default {
     name: "CompanyGroups",

@@ -82,7 +82,7 @@
 
 <script>
 import {DealStatusType} from "@/const/const";
-import FormComplexFloorBlock from "@/components/forms/templates/Complex/FormComplexFloorBlock.vue";
+import FormComplexFloorBlock from "@/components/Forms/Complex/FormComplexFloorBlock.vue";
 import ComplexDealFloorHead from "@/components/Complex/Deal/ComplexDealFloorHead.vue";
 import ComplexDealFloorSection from "@/components/Complex/Deal/ComplexDealFloorSection.vue";
 

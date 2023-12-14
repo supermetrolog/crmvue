@@ -56,8 +56,8 @@ import NoData from "@/components/common/NoData.vue";
 import CompanyBoxRequestsList from "@/components/Company/Box/CompanyBoxRequestsList.vue";
 import DealList from "@/components/Deal/DealList.vue";
 import CompanyBoxLayout from "@/components/Company/Box/CompanyBoxLayout.vue";
-import FormModalCompanyRequestClone from "@/components/forms/templates/Company/FormModalCompanyRequestClone.vue";
-import FormModalCompanyRequestDisable from "@/components/forms/templates/Company/FormModalCompanyRequestDisable.vue";
+import FormModalCompanyRequestClone from "@/components/Forms/Company/FormModalCompanyRequestClone.vue";
+import FormModalCompanyRequestDisable from "@/components/Forms/Company/FormModalCompanyRequestDisable.vue";
 
 export default {
     name: "CompanyBoxRequests",

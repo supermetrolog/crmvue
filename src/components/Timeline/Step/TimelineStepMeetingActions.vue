@@ -103,9 +103,9 @@
 <script>
 import {mapActions, mapGetters} from "vuex";
 import {MixinStepActions} from "@/components/Timeline/mixins.js";
-import FormCompanyContact from "@/components/forms/templates/Company/FormCompanyContact.vue";
-import FormCompanyRequest from "@/components/forms/templates/Company/FormCompanyRequest.vue";
-import FormCompany from "@/components/forms/templates/Company/FormCompany.vue";
+import FormCompanyContact from "@/components/Forms/Company/FormCompanyContact.vue";
+import FormCompanyRequest from "@/components/Forms/Company/FormCompanyRequest.vue";
+import FormCompany from "@/components/Forms/Company/FormCompany.vue";
 import Loader from "@/components/common/Loader.vue";
 import TimelineStepMeeting from "@/components/Timeline/Step/TimelineStepMeeting.vue";
 import CompanyContactItem from "@/components/Company/Contact/CompanyContactItem.vue";

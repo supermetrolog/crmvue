@@ -75,7 +75,7 @@
 
 <script>
 import moment from "moment";
-import Dropdown from "@/components/Dropdown/Dropdown.vue";
+import Dropdown from "@/components/common/Dropdown/Dropdown.vue";
 
 export default {
     name: "CompanyBoxObjectsRenter",

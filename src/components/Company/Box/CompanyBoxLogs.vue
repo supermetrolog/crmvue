@@ -34,10 +34,10 @@
 
 <script>
 import {mapActions, mapGetters} from "vuex";
-import Textarea from "@/components/forms/Textarea.vue";
-import Form from "@/components/forms/Form.vue";
-import FormGroup from "@/components/forms/FormGroup.vue";
-import Submit from "@/components/forms/Submit.vue";
+import Textarea from "@/components/common/Forms/Textarea.vue";
+import Form from "@/components/common/Forms/Form.vue";
+import FormGroup from "@/components/common/Forms/FormGroup.vue";
+import Submit from "@/components/common/Forms/Submit.vue";
 import useValidate from "@vuelidate/core";
 import {helpers, required} from "@vuelidate/validators";
 import Loader from "@/components/common/Loader.vue";

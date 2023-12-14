@@ -33,9 +33,9 @@
 </template>
 
 <script>
-import Table from "@/components/Table/Table.vue";
-import Tr from "@/components/Table/Tr.vue";
-import Th from "@/components/Table/Th.vue";
+import Table from "@/components/common/Table/Table.vue";
+import Tr from "@/components/common/Table/Tr.vue";
+import Th from "@/components/common/Table/Th.vue";
 import OfferMiniListItem from "@/components/Offer/OfferMiniListItem.vue";
 import BurgerMenuButton from "@/components/common/BurgerMenuButton.vue";
 

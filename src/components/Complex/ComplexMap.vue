@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import YandexMapView from "@/components/YandexMap/YandexMapView.vue";
+import YandexMapView from "@/components/common/YandexMap/YandexMapView.vue";
 
 export default {
     name: "ComplexMap",

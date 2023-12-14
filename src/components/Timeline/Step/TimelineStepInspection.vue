@@ -180,8 +180,8 @@
 </template>
 
 <script>
-import FormGroup from "@/components/forms/FormGroup.vue";
-import MultiSelect from "@/components/forms/MultiSelect.vue";
+import FormGroup from "@/components/common/Forms/FormGroup.vue";
+import MultiSelect from "@/components/common/Forms/MultiSelect.vue";
 import {yandexmap} from "@/utils";
 import CustomButton from "@/components/common/CustomButton.vue";
 import {VueDraggableNext} from "vue-draggable-next";

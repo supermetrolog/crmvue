@@ -25,8 +25,8 @@
 </template>
 
 <script>
-import YandexMapView from "@/components/YandexMap/YandexMapView.vue";
-import YandexMapMarker from "@/components/YandexMap/YandexMapMarker.vue";
+import YandexMapView from "@/components/common/YandexMap/YandexMapView.vue";
+import YandexMapMarker from "@/components/common/YandexMap/YandexMapMarker.vue";
 import OfferObject from "@/components/Offer/OfferObject.vue";
 
 export default {

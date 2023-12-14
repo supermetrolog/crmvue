@@ -14,7 +14,6 @@ export const ownTypes = {
     4: "Бессрочная аренда",
 }
 
-//Дублирует существующую константу, но с типизацией и ввиде объекта
 export const objectClassTypes = {
     1: "A",
     2: "B",
@@ -22,7 +21,6 @@ export const objectClassTypes = {
     4: "D"
 }
 
-//Дублирует существующую константу, но с типизацией и ввиде объекта
 export const objectPurposes = {
         1: {name: "сухой склад", icon: "fas fa-warehouse"},
         2: {name: "сборочное производство", icon: "fas fa-industry"},

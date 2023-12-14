@@ -43,7 +43,7 @@
 <script>
 import moment from "moment";
 import api from "@/api/api.js";
-import LetterViewModal from "@/components/Letter/LetterViewModal.vue";
+import LetterViewModal from "@/components/common/Letter/LetterViewModal.vue";
 
 
 export default {

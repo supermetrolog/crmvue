@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import Dropdown from "@/components/Dropdown/Dropdown.vue";
+import Dropdown from "@/components/common/Dropdown/Dropdown.vue";
 import CompanyTableDropdownRow from "@/components/Company/Table/CompanyTableDropdownRow.vue";
 import CompanyTableRequestRow from "@/components/Company/Table/CompanyTableRequestRow.vue";
 import CompanyTableObjectRow from "@/components/Company/Table/CompanyTableObjectRow.vue";

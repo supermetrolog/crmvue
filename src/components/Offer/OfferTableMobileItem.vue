@@ -162,7 +162,7 @@
 </template>
 
 <script>
-import Tr from "@/components/Table/Tr.vue";
+import Tr from "@/components/common/Table/Tr.vue";
 import {MixinOfferItem} from "@/components/Offer/mixins.js";
 import DropDown from "@/components/common/DropDown.vue";
 

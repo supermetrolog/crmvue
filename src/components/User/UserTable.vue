@@ -123,10 +123,10 @@
 </template>
 
 <script>
-import Table from "@/components/Table/Table.vue";
-import Tr from "@/components/Table/Tr.vue";
-import Th from "@/components/Table/Th.vue";
-import Td from "@/components/Table/Td.vue";
+import Table from "@/components/common/Table/Table.vue";
+import Tr from "@/components/common/Table/Tr.vue";
+import Th from "@/components/common/Table/Th.vue";
+import Td from "@/components/common/Table/Td.vue";
 import {mapActions} from "vuex";
 import Modal from "@/components/common/Modal.vue";
 import Loader from "@/components/common/Loader.vue";

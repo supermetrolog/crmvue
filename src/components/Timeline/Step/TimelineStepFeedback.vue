@@ -66,7 +66,7 @@
 <script>
 import {FeedbackList, ObjectTypeList} from "@/const/const.js";
 import {MixinSteps} from "@/components/Timeline/mixins.js";
-import Checkbox from "@/components/forms/Checkbox.vue";
+import Checkbox from "@/components/common/Forms/Checkbox.vue";
 import {FeedbackWaysConfirmedComment} from "@/components/Timeline/comments.js";
 import TimelineStepStage from "@/components/Timeline/Step/TimelineStepStage.vue";
 

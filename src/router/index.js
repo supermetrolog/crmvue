@@ -179,16 +179,7 @@ const routes = [
                     auth: {isAuth: true, role: ["moderator", "administrator"]},
                 },
                 component: () => import("../views/Offers/Main.vue"),
-            },
-            {
-                path: "maptest",
-                name: "OffersMapTest",
-                meta: {
-                    layout: "default",
-                    auth: {isAuth: true, role: ["moderator", "administrator"]},
-                },
-                component: () => import("../views/Offers/MapTest.vue"),
-            },
+            }
         ],
     },
     {

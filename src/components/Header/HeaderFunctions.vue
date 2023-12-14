@@ -49,7 +49,7 @@
     </ul>
 </template>
 <script>
-import FormCompanyDeal from "@/components/forms/templates/Company/FormCompanyDeal.vue";
+import FormCompanyDeal from "@/components/Forms/Company/FormCompanyDeal.vue";
 import HeaderCalls from "@/components/Header/HeaderCalls.vue";
 import HeaderNotifications from "@/components/Header/HeaderNotifications.vue";
 import {mapActions, mapGetters} from "vuex";

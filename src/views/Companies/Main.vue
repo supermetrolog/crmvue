@@ -89,12 +89,12 @@
 <script>
 import {mapActions, mapGetters} from "vuex";
 import {TableContentMixin} from "@/components/common/mixins.js";
-import FormCompanyGroup from "@/components/forms/templates/Company/FormCompanyGroup.vue";
-import FormCompany from "@/components/forms/templates/Company/FormCompany.vue";
-import FormCompanySearch from "@/components/forms/templates/Company/FormCompanySearch.vue";
+import FormCompanyGroup from "@/components/Forms/Company/FormCompanyGroup.vue";
+import FormCompany from "@/components/Forms/Company/FormCompany.vue";
+import FormCompanySearch from "@/components/Forms/Company/FormCompanySearch.vue";
 import Loader from "@/components/common/Loader.vue";
 import CompanyTable from "@/components/Company/Table/CompanyTable.vue";
-import PaginationClassic from "@/components/Pagination/PaginationClassic.vue";
+import PaginationClassic from "@/components/common/Pagination/PaginationClassic.vue";
 import CompanyTableMobile from "@/components/Company/Table/CompanyTableMobile.vue";
 import RefreshButton from "@/components/common/RefreshButton.vue";
 

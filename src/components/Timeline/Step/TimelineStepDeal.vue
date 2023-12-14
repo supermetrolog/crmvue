@@ -63,7 +63,7 @@
 <script>
 import {mapActions, mapGetters} from "vuex";
 import Loader from "@/components/common/Loader.vue";
-import FormCompanyDeal from "@/components/forms/templates/Company/FormCompanyDeal.vue";
+import FormCompanyDeal from "@/components/Forms/Company/FormCompanyDeal.vue";
 import {MixinSteps} from "@/components/Timeline/mixins.js";
 import DealListItem from "@/components/Deal/DealListItem.vue";
 

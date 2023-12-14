@@ -118,8 +118,8 @@
 <script>
 import {mapActions, mapGetters} from "vuex";
 import TimelineStatus from "./TimelineStatus.vue";
-import FormModalCompanyRequestDisable from "@/components/forms/templates/Company/FormModalCompanyRequestDisable.vue";
-import FormCompanyDeal from "@/components/forms/templates/Company/FormCompanyDeal.vue";
+import FormModalCompanyRequestDisable from "@/components/Forms/Company/FormModalCompanyRequestDisable.vue";
+import FormCompanyDeal from "@/components/Forms/Company/FormCompanyDeal.vue";
 
 export default {
     name: "TimelineHeader",

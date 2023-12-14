@@ -48,8 +48,8 @@
 
 <script>
 import {OfferParametersMixin} from "@/components/Complex/Offer/mixins";
-import PropertyListItem from "@/components/Property/PropertyListItem.vue";
-import PropertyList from "@/components/Property/PropertyList.vue";
+import PropertyListItem from "@/components/common/Property/PropertyListItem.vue";
+import PropertyList from "@/components/common/Property/PropertyList.vue";
 
 export default {
     name: "ComplexOfferSummary",

@@ -8,11 +8,11 @@ import {
     RatingList
 } from "@/const/const";
 import Progress from "@/components/common/Progress.vue";
-import Table from "@/components/Table/Table.vue";
-import Tr from "@/components/Table/Tr.vue";
-import Th from "@/components/Table/Th.vue";
+import Table from "@/components/common/Table/Table.vue";
+import Tr from "@/components/common/Table/Tr.vue";
+import Th from "@/components/common/Table/Th.vue";
 import {DealTypeList, DirectionList, DistrictList, PassiveWhyRequest, RegionList,} from "@/const/const.js";
-import FileInput from "@/components/forms/FileInput.vue";
+import FileInput from "@/components/common/Forms/FileInput.vue";
 
 export const MixinCompanyView = {
     components: {

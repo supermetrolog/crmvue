@@ -122,14 +122,14 @@ import CompanyBoxRequests from "@/components/Company/Box/CompanyBoxRequests.vue"
 import {mapActions, mapGetters} from "vuex";
 import {PassiveWhy} from "@/const/const.js";
 import Loader from "@/components/common/Loader.vue";
-import FormCompany from "@/components/forms/templates/Company/FormCompany.vue";
-import FormCompanyContact from "@/components/forms/templates/Company/FormCompanyContact.vue";
-import FormCompanyDeal from "@/components/forms/templates/Company/FormCompanyDeal.vue";
+import FormCompany from "@/components/Forms/Company/FormCompany.vue";
+import FormCompanyContact from "@/components/Forms/Company/FormCompanyContact.vue";
+import FormCompanyDeal from "@/components/Forms/Company/FormCompanyDeal.vue";
 import CompanyBoxObjects from "@/components/Company/Box/CompanyBoxObjects.vue";
 import CompanyContactModal from "@/components/Company/Contact/CompanyContactModal.vue";
 import CompanyBoxLogs from "@/components/Company/Box/CompanyBoxLogs.vue";
 import CompanyBox from "@/components/Company/Box/CompanyBox.vue";
-import FormCompanyRequest from "@/components/forms/templates/Company/FormCompanyRequest.vue";
+import FormCompanyRequest from "@/components/Forms/Company/FormCompanyRequest.vue";
 import Timeline from "@/components/Timeline/Timeline.vue";
 import CompanyBoxServices from "@/components/Company/Box/CompanyBoxServices.vue";
 

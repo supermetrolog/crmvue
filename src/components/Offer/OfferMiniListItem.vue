@@ -63,8 +63,8 @@
 </template>
 
 <script>
-import Tr from "@/components/Table/Tr.vue";
-import Td from "@/components/Table/Td.vue";
+import Tr from "@/components/common/Table/Tr.vue";
+import Td from "@/components/common/Table/Td.vue";
 import {mapActions} from "vuex";
 
 export default {

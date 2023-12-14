@@ -53,12 +53,12 @@
 <script>
 import {mapGetters} from "vuex";
 import {Timeline} from "@/const/const";
-import Form from "@/components/forms/Form.vue";
-import Textarea from "@/components/forms/Textarea.vue";
-import Submit from "@/components/forms/Submit.vue";
-import FormGroup from "@/components/forms/FormGroup.vue";
-import Accordion from "@/components/Accordion/Accordion.vue";
-import AccordionItem from "@/components/Accordion/AccordionItem.vue";
+import Form from "@/components/common/Forms/Form.vue";
+import Textarea from "@/components/common/Forms/Textarea.vue";
+import Submit from "@/components/common/Forms/Submit.vue";
+import FormGroup from "@/components/common/Forms/FormGroup.vue";
+import Accordion from "@/components/common/Accordion/Accordion.vue";
+import AccordionItem from "@/components/common/Accordion/AccordionItem.vue";
 import useValidate from "@vuelidate/core";
 import {helpers, required} from "@vuelidate/validators";
 import api from "@/api/api";

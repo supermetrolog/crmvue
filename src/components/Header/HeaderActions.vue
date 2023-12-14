@@ -20,7 +20,7 @@
 
 <script>
 
-import FormCompanyDeal from "@/components/forms/templates/Company/FormCompanyDeal.vue";
+import FormCompanyDeal from "@/components/Forms/Company/FormCompanyDeal.vue";
 
 export default {
     name: "HeaderActions",

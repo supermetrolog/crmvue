@@ -55,7 +55,7 @@ import {
     MeetingDoneComment,
     PhonedComment,
 } from "@/components/Timeline/comments.js"
-import FormModalEvent from "@/components/forms/templates/FormModalEvent.vue";
+import FormModalEvent from "@/components/Forms/FormModalEvent.vue";
 
 export default {
     name: "TimelineStepMeeting",

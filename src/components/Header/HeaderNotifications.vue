@@ -51,7 +51,7 @@
 import {mapActions, mapGetters} from "vuex";
 import Loader from "@/components/common/Loader.vue";
 import HeaderNotificationsItem from "@/components/Header/HeaderNotificationsItem.vue";
-import Pagination from "@/components/Pagination/Pagination.vue";
+import Pagination from "@/components/common/Pagination/Pagination.vue";
 
 export default {
     name: "Notifications",

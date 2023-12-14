@@ -80,7 +80,7 @@
 
 <script>
 import {DistrictList, OldDbDirectionList} from "@/const/const.js";
-import Dropdown from "@/components/Dropdown/Dropdown.vue";
+import Dropdown from "@/components/common/Dropdown/Dropdown.vue";
 import CompanyBoxObjectsOffer from "@/components/Company/Box/CompanyBoxObjectsOffer.vue";
 import CompanyBoxObjectsRenter from "@/components/Company/Box/CompanyBoxObjectsRenter.vue";
 

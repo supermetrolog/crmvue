@@ -233,8 +233,8 @@ import {
 } from "@/const/const.js";
 import moment from "moment";
 import {mapGetters} from "vuex";
-import Dropdown from "@/components/Dropdown/Dropdown.vue";
-import DropdownContainer from "@/components/Dropdown/DropdownContainer.vue";
+import Dropdown from "@/components/common/Dropdown/Dropdown.vue";
+import DropdownContainer from "@/components/common/Dropdown/DropdownContainer.vue";
 import DealListItem from "@/components/Deal/DealListItem.vue";
 
 export default {
