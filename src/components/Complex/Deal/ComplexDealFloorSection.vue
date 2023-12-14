@@ -39,7 +39,7 @@
     </div>
 </template>
 <script>
-import {DealStatusType, DealStatusList} from "@/const/const.js";
+import {DealStatusList, DealStatusType} from "@/const/const.js";
 import {unitTypes} from "@/const/unitTypes";
 import Form from "@/components/forms/Form.vue";
 import WithUnitType from "@/components/common/WithUnitType.vue";

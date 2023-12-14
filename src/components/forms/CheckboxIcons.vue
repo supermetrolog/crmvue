@@ -32,7 +32,7 @@
                         :value="option[0]"
                         @change.stop="onChange"
                     />
-                    <i :class="option[1].icon" />
+                    <i :class="option[1].icon"/>
                 </label>
             </div>
             <div v-else>

@@ -18,16 +18,16 @@
             </div>
             <div class="col-12">
                 <Loader v-if="loader && !REQUESTS.length" class="center"/>
-<!--                <RequestTable-->
-<!--                    :loader="loader"-->
-<!--                    :requests="REQUESTS"-->
-<!--                    v-if="!this.isMobile"-->
-<!--                />-->
-<!--                <RequestTableMobile-->
-<!--                    :loader="loader"-->
-<!--                    :requests="REQUESTS"-->
-<!--                    v-if="this.isMobile"-->
-<!--                />-->
+                <!--                <RequestTable-->
+                <!--                    :loader="loader"-->
+                <!--                    :requests="REQUESTS"-->
+                <!--                    v-if="!this.isMobile"-->
+                <!--                />-->
+                <!--                <RequestTableMobile-->
+                <!--                    :loader="loader"-->
+                <!--                    :requests="REQUESTS"-->
+                <!--                    v-if="this.isMobile"-->
+                <!--                />-->
                 <h1
                     class="text-center text-dark py-5"
                     v-if="!REQUESTS.length && !loader"
@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import {mapGetters, mapActions} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 import {TableContentMixin} from "@/components/common/mixins.js";
 import FormCompanyRequestSearch from "@/components/forms/templates/Company/FormCompanyRequestSearch.vue";
 import PaginationClassic from "@/components/Pagination/PaginationClassic.vue";

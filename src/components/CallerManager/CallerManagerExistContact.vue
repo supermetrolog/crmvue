@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import {RatingList, CallerTypeList, PositionList} from "@/const/const";
+import {CallerTypeList, PositionList, RatingList} from "@/const/const";
 import Radio from "@/components/forms/Radio.vue";
 
 export default {

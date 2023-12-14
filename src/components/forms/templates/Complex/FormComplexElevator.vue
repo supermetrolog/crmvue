@@ -129,10 +129,10 @@
 <script>
 import {ComplexFormMixin} from "@/components/forms/templates/Complex/mixin";
 import {
+    elevatorTypes,
     liftingDeviceConditionTypes,
     liftingDeviceControlsTypes,
-    liftingDeviceLocationTypes,
-    elevatorTypes
+    liftingDeviceLocationTypes
 } from "@/const/liftingDevices";
 import {helpers, minValue, required} from "@vuelidate/validators";
 import Loader from "@/components/common/Loader.vue";

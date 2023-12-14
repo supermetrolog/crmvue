@@ -1,5 +1,5 @@
 import api from "@/api/api";
-import { notify } from "@kyvg/vue3-notification";
+import {notify} from "@kyvg/vue3-notification";
 
 function viewNotify(data) {
     let notifyOptions = {
@@ -21,6 +21,7 @@ function viewNotify(data) {
         notify(notifyOptions);
     }
 }
+
 const Notifications = {
     state: {
         notifications: [],
@@ -28,7 +29,7 @@ const Notifications = {
         notificationsPagination: null,
     },
     mutations: {
-        updateNotifications(state, { data, concat = false }) {
+        updateNotifications(state, {data, concat = false}) {
             state.notificationsPagination = data.pagination;
             if (concat) {
                 state.notifications = state.notifications.concat(data.data);
@@ -50,9 +51,9 @@ const Notifications = {
             const count = await api.notifications.fetchCount(user.id);
             context.commit('updateNotificationsCount', count);
         },
-        async SEARCH_NOTIFICATIONS(context, { query, concat = false }) {
+        async SEARCH_NOTIFICATIONS(context, {query, concat = false}) {
             const data = await api.notifications.search(query);
-            context.commit('updateNotifications', { data, concat });
+            context.commit('updateNotifications', {data, concat});
         },
         RESET_NOTIFICATIONS(context) {
             context.commit('reset');
@@ -70,10 +71,10 @@ const Notifications = {
                 }
             }));
         },
-        async VIEWED_NOT_COUNT_NOTIFICATIONS({ getters }) {
+        async VIEWED_NOT_COUNT_NOTIFICATIONS({getters}) {
             return await api.notifications.viewedNotCount(getters.THIS_USER.id);
         },
-        async VIEWED_ALL_NOTIFICATIONS({ getters }) {
+        async VIEWED_ALL_NOTIFICATIONS({getters}) {
             return await api.notifications.viewedAll(getters.THIS_USER.id);
         },
         ACTION_WEBSOCKET_new_notifications(context, data) {

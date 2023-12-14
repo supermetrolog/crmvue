@@ -30,7 +30,7 @@ import MultiSelect from "@/components/forms/MultiSelect.vue";
 import Submit from "@/components/forms/Submit.vue";
 import useValidate from "@vuelidate/core";
 import {PassiveWhyRequest} from "@/const/const.js";
-import {required, helpers} from "@vuelidate/validators";
+import {helpers, required} from "@vuelidate/validators";
 import api from "@/api/api.js";
 import Loader from "@/components/common/Loader.vue";
 

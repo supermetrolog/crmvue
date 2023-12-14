@@ -14,21 +14,22 @@ import location from "./location.js";
 import letter from "./letter.js";
 import companyLogs from "./companyLogs.js";
 import complex from "./complex";
+
 export default {
-  user,
-  notifications,
-  timeline,
-  functions,
-  request,
-  contacts,
-  companies,
-  calls,
-  deal,
-  calendar,
-  companyObjects,
-  offers,
-  location,
-  letter,
-  companyLogs,
-  complex,
+    user,
+    notifications,
+    timeline,
+    functions,
+    request,
+    contacts,
+    companies,
+    calls,
+    deal,
+    calendar,
+    companyObjects,
+    offers,
+    location,
+    letter,
+    companyLogs,
+    complex,
 };

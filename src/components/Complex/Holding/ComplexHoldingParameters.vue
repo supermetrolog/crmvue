@@ -69,7 +69,7 @@
                             {{ crane.location.title }}
                         </span>
                         <span class="ObjectHoldingsParameters-equipment-text" v-if="crane.crane_hook_height"> / до крюка
-                            {{crane.crane_hook_height }} м
+                            {{ crane.crane_hook_height }} м
                         </span>
                         <span class="ObjectHoldingsParameters-equipment-text" v-if="crane.crane_condition"> /
                             {{ crane.crane_condition }}

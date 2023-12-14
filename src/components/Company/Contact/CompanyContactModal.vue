@@ -146,14 +146,9 @@
 </template>
 
 <script>
-import {mapGetters, mapActions} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 import useValidate from "@vuelidate/core";
-import {
-    FeedbackList,
-    PositionList,
-    ActivePassive,
-    PassiveWhyContact,
-} from "@/const/const.js";
+import {ActivePassive, FeedbackList, PassiveWhyContact, PositionList,} from "@/const/const.js";
 import api from "@/api/api";
 import moment from "moment";
 import Modal from "@/components/common/Modal.vue";

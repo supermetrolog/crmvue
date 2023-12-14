@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import {yandexMap, loadYmap} from "vue-yandex-maps";
+import {loadYmap, yandexMap} from "vue-yandex-maps";
 import YandexMapSelectionBehavior from "@/components/YandexMap/YandexMapSelectionBehavior.vue";
 
 export default {

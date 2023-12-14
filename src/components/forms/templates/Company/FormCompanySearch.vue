@@ -113,12 +113,7 @@ import Input from "@/components/forms/Input.vue";
 import MultiSelect from "@/components/forms/MultiSelect.vue";
 import Checkbox from "@/components/forms/Checkbox.vue";
 import Radio from "@/components/forms/Radio.vue";
-import {
-    CompanyCategories,
-    ActivityGroupList,
-    ActivityProfileList,
-    ActivePassive,
-} from "@/const/const.js";
+import {ActivePassive, ActivityGroupList, ActivityProfileList, CompanyCategories,} from "@/const/const.js";
 import {SearchFormMixin} from "@/components/common/mixins.js";
 
 export default {

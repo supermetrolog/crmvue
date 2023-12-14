@@ -1,5 +1,6 @@
 import axios from "axios"
 import api from "@/api/api.js";
+
 const Calendar = {
     state: {
         events: []

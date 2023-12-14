@@ -32,7 +32,7 @@ import FormGroup from "@/components/forms/FormGroup.vue";
 import MultiSelect from "@/components/forms/MultiSelect.vue";
 import Submit from "@/components/forms/Submit.vue";
 import useValidate from "@vuelidate/core";
-import {required, helpers} from "@vuelidate/validators";
+import {helpers, required} from "@vuelidate/validators";
 import {mapActions, mapGetters} from "vuex";
 import Loader from "@/components/common/Loader.vue";
 import CompanyBoxRequestsListItem from "@/components/Company/Box/CompanyBoxRequestsListItem.vue";

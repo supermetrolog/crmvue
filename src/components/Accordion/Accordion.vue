@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import {reactive, provide, onMounted, watch} from "vue";
+import {onMounted, provide, reactive, watch} from "vue";
 
 export default {
     name: "Accordion",

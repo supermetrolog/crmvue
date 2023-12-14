@@ -60,7 +60,7 @@ import FormGroup from "@/components/forms/FormGroup.vue";
 import Accordion from "@/components/Accordion/Accordion.vue";
 import AccordionItem from "@/components/Accordion/AccordionItem.vue";
 import useValidate from "@vuelidate/core";
-import {required, helpers} from "@vuelidate/validators";
+import {helpers, required} from "@vuelidate/validators";
 import api from "@/api/api";
 import Loader from "@/components/common/Loader.vue";
 import TimelineComments from "@/components/Timeline/TimelineComments.vue";

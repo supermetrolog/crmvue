@@ -1,6 +1,7 @@
 import axios from "axios";
 import ErrorHandle from "./errors";
 import SuccessHandler from "./success";
+
 export default {
     async fetchRegionList() {
         let url = "oldDb/locations/region-list";

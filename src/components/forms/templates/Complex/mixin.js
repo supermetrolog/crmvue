@@ -9,31 +9,32 @@ import Submit from "@/components/forms/Submit.vue";
 import Form from "@/components/forms/Form.vue";
 import FormGroup from "@/components/forms/FormGroup.vue";
 import useValidate from "@vuelidate/core";
+
 export const ComplexFormMixin = {
-	components: {Checkbox, Textarea, Radio, Input, FileInput, CheckboxIcons, MultiSelect, Submit, Form, FormGroup},
-	data() {
-		return {
-			loader: false,
-			v$: useValidate(),
-		}
-	},
-	methods: {
-		onSubmit() {
-			console.log("SUBMIT");
-		},
-		deleteEmptyFields(object) {
-			for (const key in object) {
-				if (Object.hasOwnProperty.call(object, key)) {
-					const value = object[key];
-					if (
-						value === null ||
-						value === "" ||
-						(Array.isArray(value) && !value.length)
-					) {
-						delete object[key];
-					}
-				}
-			}
-		},
-	},
+    components: {Checkbox, Textarea, Radio, Input, FileInput, CheckboxIcons, MultiSelect, Submit, Form, FormGroup},
+    data() {
+        return {
+            loader: false,
+            v$: useValidate(),
+        }
+    },
+    methods: {
+        onSubmit() {
+            console.log("SUBMIT");
+        },
+        deleteEmptyFields(object) {
+            for (const key in object) {
+                if (Object.hasOwnProperty.call(object, key)) {
+                    const value = object[key];
+                    if (
+                        value === null ||
+                        value === "" ||
+                        (Array.isArray(value) && !value.length)
+                    ) {
+                        delete object[key];
+                    }
+                }
+            }
+        },
+    },
 }

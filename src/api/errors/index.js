@@ -1,6 +1,7 @@
-import { notify } from "@kyvg/vue3-notification";
+import {notify} from "@kyvg/vue3-notification";
 import router from "@/router";
 import store from "@/store";
+
 let notifyOptions = {
     group: "app",
     type: "error",

@@ -6,9 +6,11 @@
     flex-wrap: nowrap;
     justify-content: right;
     gap: 3px;
+
     &__item {
         font-size: 17px;
     }
+
     &__button {
         width: 30px;
         height: 30px;
@@ -20,24 +22,29 @@
         border-radius: 50%;
         color: darken($color: variables.$color_grey, $amount: 15);
         cursor: pointer;
+
         &:hover {
             opacity: 0.7;
         }
+
         &_advert {
             &.active {
                 color: variables.$color_success;
             }
         }
+
         &_favorite {
             &.active {
                 color: variables.$color_warning;
             }
         }
+
         &_notifications {
             &.active {
                 color: variables.$color_default_link;
             }
         }
+
         &_dislike {
             &.active {
                 color: variables.$color_danger;

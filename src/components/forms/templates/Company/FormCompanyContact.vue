@@ -6,7 +6,7 @@
             class="normal"
         >
             <Form @submit="onSubmit" class="p-2">
-                <Loader class="center" v-if="loader" />
+                <Loader class="center" v-if="loader"/>
                 <FormGroup class="mb-1">
                     <Input
                         v-model="forms.middle_name"
@@ -20,7 +20,7 @@
                         required
                         class="col-4 pr-1"
                     />
-                    <Input v-model="forms.last_name" label="Отчество" class="col-4" />
+                    <Input v-model="forms.last_name" label="Отчество" class="col-4"/>
                 </FormGroup>
                 <FormGroup class="mb-1">
                     <PropogationDoubleInput
@@ -206,15 +206,10 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import {mapActions, mapGetters} from "vuex";
 import useValidate from "@vuelidate/core";
-import { required, helpers, email } from "@vuelidate/validators";
-import {
-    FeedbackList,
-    PositionList,
-    ActivePassive,
-    PassiveWhyContact,
-} from "@/const/const.js";
+import {email, helpers, required} from "@vuelidate/validators";
+import {ActivePassive, FeedbackList, PassiveWhyContact, PositionList,} from "@/const/const.js";
 import Input from "@/components/forms/Input.vue";
 import Submit from "@/components/forms/Submit.vue";
 import PropogationInput from "@/components/forms/PropogationInput.vue";
@@ -223,7 +218,7 @@ import Checkbox from "@/components/forms/Checkbox.vue";
 import Textarea from "@/components/forms/Textarea.vue";
 import Radio from "@/components/forms/Radio.vue";
 import MultiSelect from "@/components/forms/MultiSelect.vue";
-import { validatePropogationInput } from "@/utils/index.js";
+import {validatePropogationInput} from "@/utils/index.js";
 import api from "@/api/api.js";
 import Loader from "@/components/common/Loader.vue";
 import Modal from "@/components/common/Modal.vue";
@@ -515,7 +510,7 @@ export default {
             };
             result = await api.companies.searchCompanies(query);
             result.data.forEach((item) => {
-                array.push({ value: item.id, label: item.full_name });
+                array.push({value: item.id, label: item.full_name});
             });
             return array;
         },
@@ -550,7 +545,7 @@ export default {
         this.forms.company_id = this.company_id;
         this.forms.phones = this.phones;
         if (this.formsdata) {
-            this.forms = { ...this.forms, ...this.formsdata };
+            this.forms = {...this.forms, ...this.formsdata};
         }
         this.loader = false;
     },

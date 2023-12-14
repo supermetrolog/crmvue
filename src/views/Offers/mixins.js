@@ -1,17 +1,19 @@
 import {
     ActivePassiveFUCK,
-    DealTypeList, DirectionList,
+    DealTypeList,
+    DirectionList,
     DistrictList,
     FloorTypesFUCK,
     GateTypeList,
     ObjectClassList,
-    ObjectTypeList, YesNo,
+    ObjectTypeList,
+    YesNo,
     YesNoFUCK
-} from "@/const/Const";
+} from "@/const/const.js";
 import {mapActions, mapGetters} from "vuex";
 
 export default {
-    data(){
+    data() {
         return {
             searchFormModalVisible: false,
             filtersValueGetter: {
@@ -67,7 +69,7 @@ export default {
                 region: (value) => {
                     if (!value || !this.REGION_LIST) return null;
                     const result = this.REGION_LIST.find(reg => reg.value == value).label
-                    if(this.$route.query.polygon) {
+                    if (this.$route.query.polygon) {
                         return '<p class="text-danger">' + result + '</p>';
                     }
                     return result;
@@ -77,7 +79,7 @@ export default {
                     if (!value) return null;
                     if (!Array.isArray(value)) value = [value]
                     const result = value.map(elem => DistrictList.get('param')[elem][1]).join(', ')
-                    if(this.$route.query.polygon) {
+                    if (this.$route.query.polygon) {
                         return '<p class="text-danger">' + result + '</p>';
                     }
                     return result;
@@ -86,7 +88,7 @@ export default {
                     if (!value) return null;
                     if (!Array.isArray(value)) value = [value]
                     const result = value.map(elem => DirectionList.get('param')[elem][2]).join(', ')
-                    if(this.$route.query.polygon) {
+                    if (this.$route.query.polygon) {
                         return '<p class="text-danger">' + result + '</p>';
                     }
                     return result;
@@ -129,7 +131,7 @@ export default {
             for (const key in this.$route.query) {
                 if (Object.hasOwnProperty.call(this.$route.query, key)) {
                     const value = this.$route.query[key];
-                    if (key === 'region'){
+                    if (key === 'region') {
                         list.push(this.getFilterListOption('region', this.$route.query['fakeRegion']));
                         continue;
                     }
@@ -183,10 +185,10 @@ export default {
         ]),
         removeFilter(filter) {
             const query = {...this.$route.query};
-            if (filter == 'fakeRegion'){
+            if (filter == 'fakeRegion') {
                 delete query['region'];
             }
-            if (filter == 'region'){
+            if (filter == 'region') {
                 delete query['fakeRegion'];
             }
             delete query[filter];
@@ -199,9 +201,9 @@ export default {
             const label = this.$options.filtersAliases[key] ?? null;
             const valueFn = this.filtersValueGetter[key] ? this.filtersValueGetter[key](value) : null;
 
-            if(!label && !valueFn){
+            if (!label && !valueFn) {
                 option.label = 'undefined';
-            }else{
+            } else {
                 option.label = [label, valueFn].filter(el => el !== null).join(' ');
             }
             return option;

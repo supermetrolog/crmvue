@@ -7,7 +7,7 @@ import VueAxios from "vue-axios";
 import PhoneNumber from "@/components/common/PhoneNumber.vue";
 import Notifications from "@kyvg/vue3-notification";
 import {ApiUrlHelper, apiUrlHelperObject, Formatter} from "@/plugins/index.js";
-import { Tabs, Tab } from "vue3-tabs-component";
+import {Tab, Tabs} from "vue3-tabs-component";
 
 import "@vueform/multiselect/themes/default.css";
 import './assets/fontawesome/css/fontawesome.min.css';

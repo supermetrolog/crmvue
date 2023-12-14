@@ -1,5 +1,5 @@
 <template>
-<!--    <notifications position="bottom right" group="app"/>-->
+    <!--    <notifications position="bottom right" group="app"/>-->
     <component :is="layoutName"/>
 </template>
 
@@ -7,9 +7,10 @@
 import Default from '@/layouts/default.vue';
 import Login from '@/layouts/login.vue';
 import Empty from '@/layouts/empty.vue';
+
 export default {
     components: {
-      Default, Login, Empty
+        Default, Login, Empty
     },
     provide() {
         return {

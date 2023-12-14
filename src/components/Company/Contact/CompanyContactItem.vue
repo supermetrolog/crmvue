@@ -139,11 +139,7 @@
 </template>
 
 <script>
-import {
-    FeedbackList,
-    PositionList,
-    PassiveWhyContact,
-} from "@/const/const.js";
+import {FeedbackList, PassiveWhyContact, PositionList,} from "@/const/const.js";
 import Loader from "@/components/common/Loader.vue";
 
 

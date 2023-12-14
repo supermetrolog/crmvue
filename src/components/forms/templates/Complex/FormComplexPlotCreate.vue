@@ -530,7 +530,7 @@
 </template>
 
 <script>
-import {helpers, required, minValue} from "@vuelidate/validators";
+import {helpers, minValue, required} from "@vuelidate/validators";
 import {ComplexFormMixin} from "@/components/forms/templates/Complex/mixin";
 import {mapActions} from "vuex";
 import {yandexmap} from "@/utils";

@@ -336,16 +336,16 @@ import CheckboxIcons from "@/components/forms/CheckboxIcons.vue";
 import Checkbox from "@/components/forms/Checkbox.vue";
 import {
     ActivePassive,
-    ObjectTypeList,
-    YesNo,
-    ObjectClassList,
-    GateTypeList,
     DealTypeList,
-    RegionList,
     DirectionList,
     DistrictList,
+    GateTypeList,
+    ObjectClassList,
+    ObjectTypeList,
     ObjectTypesGeneralList,
     OutsideMkad,
+    RegionList,
+    YesNo,
 } from "@/const/const.js";
 import {SearchFormMixin} from "@/components/common/mixins.js";
 import {mapActions, mapGetters} from "vuex";

@@ -8,17 +8,17 @@ export const TableContentMixin = {
     },
     methods: {
         async next(number) {
-            let query = {...this.$route.query };
+            let query = {...this.$route.query};
             query.page = number;
-            await this.$router.replace({ query });
+            await this.$router.replace({query});
         },
         async initialRouteSettings() {
-            let query = {...this.$route.query };
+            let query = {...this.$route.query};
             const queryLength = Object.keys(this.$route.query).length;
             if (!queryLength) {
                 query.consultant_id = this.THIS_USER.id;
             }
-            await this.$router.replace({ query });
+            await this.$router.replace({query});
         },
     },
     async mounted() {
@@ -44,13 +44,14 @@ export const TableContentMixin = {
 
 };
 
-import { mapActions, mapGetters } from "vuex";
+import {mapActions, mapGetters} from "vuex";
+
 export const SearchFormMixin = {
     data() {
         return {
             setTimeout: null,
             extraVisible: false,
-            form: {...this.$options.defaultFormProperties },
+            form: {...this.$options.defaultFormProperties},
         };
     },
     props: {
@@ -88,20 +89,20 @@ export const SearchFormMixin = {
         onSubmit() {
             let query = {};
             if (!this.noUrl) {
-                query = {...this.$route.query, ...this.form };
+                query = {...this.$route.query, ...this.form};
             } else {
-                query = {...this.form };
+                query = {...this.form};
             }
             this.deleteEmptyFields(query);
 
             query.page = 1;
             if (!this.noUrl) {
-                this.$router.replace({ query });
+                this.$router.replace({query});
             }
             this.$emit('search', query);
         },
         resetForm() {
-            this.form = {...this.$options.defaultFormProperties };
+            this.form = {...this.$options.defaultFormProperties};
             this.$emit('reset');
         },
         deleteEmptyFields(object) {
@@ -121,7 +122,7 @@ export const SearchFormMixin = {
 
         setQueryFieldsNoUrl() {
             if (this.queryParams) {
-                this.form = {...this.form, ...this.queryParams };
+                this.form = {...this.form, ...this.queryParams};
             }
         }
     },
@@ -133,7 +134,7 @@ export const SearchFormMixin = {
                 "queryParams",
                 () => {
                     this.setQueryFieldsNoUrl();
-                }, { deep: true }
+                }, {deep: true}
             );
             this.setQueryFieldsNoUrl();
         }
@@ -142,7 +143,7 @@ export const SearchFormMixin = {
             () => {
                 clearTimeout(this.setTimeout);
                 this.setTimeout = setTimeout(() => this.onSubmit(), 500);
-            }, { deep: true }
+            }, {deep: true}
         );
 
     },

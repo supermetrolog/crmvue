@@ -9,7 +9,7 @@
                     <a href="#" @click.prevent="viewedAll"> прочитать все </a>
                 </div>
             </div>
-            <Loader class="center" v-if="loader" />
+            <Loader class="center" v-if="loader"/>
             <div class="row no-gutters" v-if="!loader">
                 <div class="col-12">
                     <div class="comments-item">
@@ -34,7 +34,7 @@
                             :notification="notification"
                         />
                         <div class="col-12 text-center">
-                            <Pagination :pagination="NOTIFICATIONS_PAGINATION" @next="next" />
+                            <Pagination :pagination="NOTIFICATIONS_PAGINATION" @next="next"/>
                         </div>
                     </div>
                 </div>
@@ -48,16 +48,17 @@
 //Для брокеров только кнопка ОТКАЗ и причина отказа - комментарий (галочки - далбаеб, пидорас, не берет трубку)
 //Статистика отказов и причина
 // import Pagination from "@/components/common/Pagination.vue";
-import { mapActions, mapGetters } from "vuex";
+import {mapActions, mapGetters} from "vuex";
 import Loader from "@/components/common/Loader.vue";
 import HeaderNotificationsItem from "@/components/Header/HeaderNotificationsItem.vue";
 import Pagination from "@/components/Pagination/Pagination.vue";
+
 export default {
     name: "Notifications",
     components: {
         Pagination,
         HeaderNotificationsItem,
-      Loader
+        Loader
 
     },
     data() {
@@ -96,7 +97,7 @@ export default {
         },
         async next(page) {
             this.query.page = page;
-            await this.SEARCH_NOTIFICATIONS({ query: this.query, concat: true });
+            await this.SEARCH_NOTIFICATIONS({query: this.query, concat: true});
             this.FETCH_NOTIF_COUNT_POOL(this.THIS_USER.id);
         },
         async viewedAll() {
@@ -110,7 +111,7 @@ export default {
     async mounted() {
         this.init();
         this.loader = true;
-        await this.SEARCH_NOTIFICATIONS({ query: this.query, concat: true });
+        await this.SEARCH_NOTIFICATIONS({query: this.query, concat: true});
         this.FETCH_NOTIF_COUNT_POOL(this.THIS_USER.id);
 
         this.loader = false;

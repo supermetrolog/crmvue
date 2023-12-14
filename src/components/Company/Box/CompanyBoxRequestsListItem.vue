@@ -223,12 +223,12 @@
 
 <script>
 import {
-    DistrictList,
-    DirectionList,
     DealTypeList,
-    ObjectTypeList,
-    ObjectClassList,
+    DirectionList,
+    DistrictList,
     GateTypeList,
+    ObjectClassList,
+    ObjectTypeList,
     unknownMovingDate,
 } from "@/const/const.js";
 import moment from "moment";

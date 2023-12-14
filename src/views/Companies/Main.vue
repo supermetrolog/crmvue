@@ -87,7 +87,7 @@
 </template>
 
 <script>
-import {mapGetters, mapActions} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 import {TableContentMixin} from "@/components/common/mixins.js";
 import FormCompanyGroup from "@/components/forms/templates/Company/FormCompanyGroup.vue";
 import FormCompany from "@/components/forms/templates/Company/FormCompany.vue";

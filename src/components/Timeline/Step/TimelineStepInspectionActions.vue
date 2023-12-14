@@ -106,10 +106,7 @@
 <script>
 import {mapGetters} from "vuex";
 import {MixinWithSendLetter} from "@/components/Company/Object/mixins.js";
-import {
-    InspectionDoneComment,
-    InspectionOffersNotFound,
-} from "@/components/Timeline/comments.js";
+import {InspectionDoneComment, InspectionOffersNotFound,} from "@/components/Timeline/comments.js";
 import {LetterSenderMixin, MixinStepActions} from "@/components/Timeline/mixins.js";
 import Modal from "@/components/common/Modal.vue";
 import FormLetter from "@/components/forms/templates/FormLetter.vue";

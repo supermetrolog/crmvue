@@ -19,6 +19,7 @@
 <script>
 import moment from "moment";
 import CompanyTableObjectItem from "@/components/Company/Table/CompanyTableObjectItem.vue";
+
 export default {
     name: "CompanyTableObjectRow",
     components: {CompanyTableObjectItem},

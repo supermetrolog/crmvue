@@ -1,5 +1,6 @@
 // import axios from "axios"
 import api from "@/api/api"
+
 const Objects = {
     state: {
         currentStepObjects: [],
@@ -39,7 +40,7 @@ const Objects = {
         }
     },
     actions: {
-        async FETCH_CURRENT_STEP_OBJECTS({ commit }, currentObjects) {
+        async FETCH_CURRENT_STEP_OBJECTS({commit}, currentObjects) {
             const objects = await api.objects.getCurrentStepObjectsOneByOne(currentObjects);
 
             let array = [];
@@ -56,7 +57,7 @@ const Objects = {
             return array;
 
         },
-        async SEARCH_OBJECTS(context, { query, saveState = true }) {
+        async SEARCH_OBJECTS(context, {query, saveState = true}) {
             const search = query.searchText;
             const queryParams = {
                 search,

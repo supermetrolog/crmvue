@@ -46,7 +46,7 @@ $checkbox_active: #fba745;
 // cause import mixins didn't work
 
 @mixin black-header {
-  background-color: #333333;
-  color: $color_light;
-  padding: 1em;
+    background-color: #333333;
+    color: $color_light;
+    padding: 1em;
 }

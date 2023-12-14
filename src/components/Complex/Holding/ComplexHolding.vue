@@ -25,6 +25,7 @@ import Carousel from "@/components/common/Carousel.vue";
 import ComplexHoldingParameters from "@/components/Complex/Holding/ComplexHoldingParameters.vue";
 import ComplexHoldingOwnerList from "@/components/Complex/Holding/ComplexHoldingOwnerList.vue";
 import ComplexHoldingTabs from "@/components/Complex/Holding/ComplexHoldingTabs.vue";
+
 export default {
     name: "ComplexHolding",
     components: {

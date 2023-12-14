@@ -360,22 +360,22 @@
 </template>
 
 <script>
-import {mapGetters, mapActions} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 import useValidate from "@vuelidate/core";
-import {required, helpers} from "@vuelidate/validators";
+import {helpers, required} from "@vuelidate/validators";
 import {
-    ObjectClassList,
-    GateTypeList,
-    ObjectTypeList,
-    RegionList,
+    DealTypeList,
     DirectionList,
     DistrictList,
-    DealTypeList,
-    YesNo,
-    OutsideMkad,
-    unknownMovingDate,
-    PassiveWhyRequest,
+    GateTypeList,
+    ObjectClassList,
+    ObjectTypeList,
     ObjectTypesGeneralList,
+    OutsideMkad,
+    PassiveWhyRequest,
+    RegionList,
+    unknownMovingDate,
+    YesNo,
 } from "@/const/const.js";
 import Form from "@/components/forms/Form.vue";
 import FormGroup from "@/components/forms/FormGroup.vue";

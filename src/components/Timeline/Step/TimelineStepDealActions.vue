@@ -69,10 +69,7 @@
 import {mapActions, mapGetters} from "vuex";
 import {MixinStepActions} from "@/components/Timeline/mixins.js";
 import {MixinObject} from "@/components/Company/Object/mixins.js";
-import {
-    DealDoneComment,
-    DealOffersNotFound
-} from "@/components/Timeline/comments.js";
+import {DealDoneComment, DealOffersNotFound} from "@/components/Timeline/comments.js";
 import CompanyObjectsList from "@/components/Company/Object/CompanyObjectList.vue";
 import TimelineStepDeal from "@/components/Timeline/Step/TimelineStepDeal.vue";
 

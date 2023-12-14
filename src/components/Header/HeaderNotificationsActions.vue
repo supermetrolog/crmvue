@@ -75,9 +75,10 @@
 
 <script>
 import Multiselect from "@vueform/multiselect";
-import { mapActions, mapGetters } from "vuex";
+import {mapActions, mapGetters} from "vuex";
 import useValidate from "@vuelidate/core";
-import { required, helpers } from "@vuelidate/validators";
+import {helpers, required} from "@vuelidate/validators";
+
 export default {
     name: "HeaderNotificationsActions",
     components: {

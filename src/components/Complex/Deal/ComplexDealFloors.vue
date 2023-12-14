@@ -9,7 +9,7 @@
                 >
                     <!-- ФОРМА "КУСКИ НА ЭТАЖАХ. СОЗДАНИЕ. -->
                     <FormComplexFloorBlock :object="object" @close="toggleCreateBlockForm"
-                                          v-if="createBlockFormIsVisible"/>
+                                           v-if="createBlockFormIsVisible"/>
                 </transition>
             </teleport>
             <ul class="DealFloors-head-list">

@@ -17,6 +17,6 @@ export const unitTypes = {
     PALLET_PLACE: 'PalletPlace',
     PIECES: 'Pieces',
     METERS: 'Meters',
-    TON:  'Tons'
+    TON: 'Tons'
 }
 

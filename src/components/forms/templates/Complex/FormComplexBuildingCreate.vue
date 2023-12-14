@@ -249,7 +249,7 @@
 </template>
 
 <script>
-import {helpers, required, minValue, maxValue} from "@vuelidate/validators";
+import {helpers, maxValue, minValue, required} from "@vuelidate/validators";
 import {mapActions} from "vuex";
 import {yandexmap} from "@/utils";
 import Loader from "@/components/common/Loader.vue";

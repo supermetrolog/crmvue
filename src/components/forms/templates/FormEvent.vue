@@ -32,7 +32,7 @@
 
 <script>
 import useValidate from "@vuelidate/core";
-import {required, helpers} from "@vuelidate/validators";
+import {helpers, required} from "@vuelidate/validators";
 import {mapActions} from "vuex";
 import Loader from "@/components/common/Loader.vue";
 import {FormMixin} from "@/components/forms/templates/mixins.js";

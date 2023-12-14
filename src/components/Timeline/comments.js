@@ -20,6 +20,7 @@ class Comment {
     _setSystemTitle() {
         this.title = 'система';
     }
+
     _setUserTitle(username) {
         this.title = 'система/' + username;
     }
@@ -89,6 +90,7 @@ export class AlreadySendOffersComment extends Comment {
         const sendOffersLengthStr = this._getSendOffersLength();
         this.comment = `Отправлено ${sendOffersLengthStr} не через текущий безнес процесс ${contactsStr} по ${wayOfSendingStr}`;
     }
+
     _getSendOffersLength() {
         if (this._sendOffersLength == 1)
             return this._sendOffersLength + " предложение";
@@ -155,11 +157,14 @@ class DoneComment extends Comment {
         this._selectedObjects = selectedObjects;
         this._setComment();
     }
-    _setComment() { }
+
+    _setComment() {
+    }
 
     _getObjectsStr() {
         return this._selectedObjects.map(elem => this._getObjectLink(elem)).join(", ");
     }
+
     _getObjectLink(offer) {
         let region = formatterObject.text().ucFirst(offer.region_name);
         let town = formatterObject.text().ucFirst(offer.town_name);
@@ -167,6 +172,7 @@ class DoneComment extends Comment {
 
         return `<a target="_blank" class="text-primary d-inline" href="${this._getOfferUrl(offer)}">${id} - ${region}, ${town}</a>`
     }
+
     _getOfferUrl(offer) {
         return apiUrlHelperObject.generator().offerUrl(offer);
     }

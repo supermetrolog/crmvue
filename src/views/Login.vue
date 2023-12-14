@@ -67,7 +67,7 @@
 
 <script>
 import useValidate from "@vuelidate/core";
-import {required, helpers, minLength} from "@vuelidate/validators";
+import {helpers, minLength, required} from "@vuelidate/validators";
 import Loader from "@/components/common/Loader.vue";
 import {mapActions} from "vuex";
 

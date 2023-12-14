@@ -22,7 +22,7 @@
         <ComplexAbout
             :complex="complex"
         />
-        <ComplexHoldings :objects="complex.objects" />
+        <ComplexHoldings :objects="complex.objects"/>
     </div>
 </template>
 

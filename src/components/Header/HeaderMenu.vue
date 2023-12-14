@@ -6,6 +6,7 @@
 <script>
 import HeaderMenuItem from "@/components/Header/HeaderMenuItem.vue";
 import {InternalMenu} from "@/const/menu.js";
+
 export default {
     name: "HeaderMenu",
     components: {

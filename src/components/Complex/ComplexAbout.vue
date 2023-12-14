@@ -304,7 +304,8 @@ import WithUnitType from "@/components/common/WithUnitType.vue";
 import PropertyListItem from "@/components/Property/PropertyListItem.vue";
 import PropertyList from "@/components/Property/PropertyList.vue";
 import {
-    entryTerritoryTypes, feeTypes,
+    entryTerritoryTypes,
+    feeTypes,
     gasTypes,
     guardTypes,
     heatingAutonomousTypes,

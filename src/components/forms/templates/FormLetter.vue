@@ -93,7 +93,7 @@ import {mapGetters} from "vuex";
 import {WayOfSending} from "@/const/const.js";
 import Utils, {contains} from "@/utils";
 import useValidate from "@vuelidate/core";
-import {required, helpers} from "@vuelidate/validators";
+import {helpers, required} from "@vuelidate/validators";
 import Checkbox from "@/components/forms/Checkbox.vue";
 import Loader from "@/components/common/Loader.vue";
 

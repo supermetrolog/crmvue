@@ -443,12 +443,17 @@
 <script>
 import {ComplexFormMixin} from "@/components/forms/templates/Complex/mixin";
 import {
-    entranceBlockTypes, firefightingTypes,
-    floorTypes, gateTypes,
-    gridColumnTypes, lightingTypes,
-    objectPurposes, rackTypes, ventilationTypes,
+    entranceBlockTypes,
+    firefightingTypes,
+    floorTypes,
+    gateTypes,
+    gridColumnTypes,
+    lightingTypes,
+    objectPurposes,
+    rackTypes,
+    ventilationTypes,
 } from "@/const/constTypes";
-import {helpers, required, minValue} from "@vuelidate/validators";
+import {helpers, minValue, required} from "@vuelidate/validators";
 import Loader from "@/components/common/Loader.vue";
 import Modal from "@/components/common/Modal.vue";
 

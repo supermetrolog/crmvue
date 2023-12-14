@@ -3,7 +3,7 @@ import ErrorHandle from "./errors";
 import SuccessHandler from "./success";
 
 function getFormDataWithFiles(formdata1) {
-    let formdata = {...formdata1 };
+    let formdata = {...formdata1};
     let FD = new FormData();
     if (!formdata.userProfile.fileList) {
         FD.append('data', JSON.stringify(formdata));
@@ -15,6 +15,7 @@ function getFormDataWithFiles(formdata1) {
     FD.append('data', JSON.stringify(formdata));
     return FD;
 }
+
 export default {
     auth: {
         async login(formdata) {

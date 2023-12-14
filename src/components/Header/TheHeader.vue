@@ -3,13 +3,13 @@
         <div class="header__wrapper">
             <div class="row no-gutters">
                 <div class="col-lg-6 align-self-center">
-                    <HeaderMenu />
+                    <HeaderMenu/>
                 </div>
                 <div class="col-lg-4 align-self-center">
-                    <HeaderActions />
+                    <HeaderActions/>
                 </div>
                 <div class="col-lg-2 align-self-center text-right">
-                    <HeaderFunctions />
+                    <HeaderFunctions/>
                 </div>
             </div>
         </div>

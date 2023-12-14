@@ -1,4 +1,5 @@
 import api from "@/api/api"
+
 const deleteEmptyFields = (object) => {
     for (const key in object) {
         if (Object.hasOwnProperty.call(object, key)) {
@@ -28,7 +29,7 @@ const CompanyObjects = {
     },
     actions: {
         async FETCH_COMPANY_OBJECTS(context, company_id) {
-            const response = await api.companyObjects.search({ company_id });
+            const response = await api.companyObjects.search({company_id});
             if (response) {
                 context.commit('updateCompanyObjects', response.data);
             }

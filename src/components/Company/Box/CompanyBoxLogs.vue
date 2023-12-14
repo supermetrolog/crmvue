@@ -33,13 +33,13 @@
 </template>
 
 <script>
-import {mapGetters, mapActions} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 import Textarea from "@/components/forms/Textarea.vue";
 import Form from "@/components/forms/Form.vue";
 import FormGroup from "@/components/forms/FormGroup.vue";
 import Submit from "@/components/forms/Submit.vue";
 import useValidate from "@vuelidate/core";
-import {required, helpers} from "@vuelidate/validators";
+import {helpers, required} from "@vuelidate/validators";
 import Loader from "@/components/common/Loader.vue";
 import CompanyLogsList from "@/components/Company/Box/CompanyBoxLogsList.vue";
 import CompanyBoxLayout from "@/components/Company/Box/CompanyBoxLayout.vue";

@@ -5,6 +5,7 @@
     $gap: 1em;
     $sticky-top: 170px;
     $header-height: 50px;
+
     &-header {
         @include mixins.black-header;
 
@@ -18,10 +19,12 @@
         height: $header-height;
 
         color: variables.$color_light;
+
         span {
             &:first-child {
                 font-weight: normal;
             }
+
             &::after {
                 content: " ";
             }
@@ -49,6 +52,7 @@
         justify-content: center;
         font-weight: bold;
         color: white;
+
         &::after {
             content: "";
             position: absolute;
@@ -69,11 +73,13 @@
     &-info {
         display: flex;
         max-height: 470px;
+
         &-left {
             display: flex;
             flex-direction: column;
             width: 70%;
         }
+
         &-right {
             width: 30%;
             padding: 20px;

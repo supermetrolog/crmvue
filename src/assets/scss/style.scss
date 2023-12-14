@@ -7,10 +7,10 @@
 @use 'layouts';
 @use 'components';
 @use 'pages';
+@use 'utils/mixins';
 
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,400;1,500;1,700&display=swap");
 
-@import "mixins.scss";
 
 .btn-primary {
     background-color: variables.$color_primary !important;
@@ -29,7 +29,6 @@ html {
 textarea::-webkit-scrollbar {
     width: 5px;
     background-color: lighten(variables.$color_grey, 30);
-    // height: 100%;
 }
 
 textarea::-webkit-scrollbar-thumb {
@@ -56,24 +55,6 @@ textarea::-webkit-scrollbar-thumb {
     }
 }
 
-
-// input,
-// select,
-// textarea {
-//     resize: none;
-//     // min-width: 300px;
-//     &:not(.checkbox):not(.btn) {
-//         font-size: 15px;
-//         padding: 5px 10px;
-//         color: variables.$color_secondary;
-//         border: 1px solid variables.$color_grey;
-//         &:focus {
-//             border-radius: unset;
-//             outline: 1px solid variables.$color_primary;
-//         }
-//         width: 100%;
-//     }
-// }
 // ********* LOGIN LAYOUT ***********
 
 .img-center {
@@ -315,7 +296,7 @@ textarea::-webkit-scrollbar-thumb {
     width: 460px;
     // max-height: 600px;
     background-color: variables.$color_light;
-    box-shadow: 0px 20px 30px rgba(0, 0, 0, 0.7);
+    box-shadow: 0 20px 30px rgba(0, 0, 0, 0.7);
     border: 1px solid lighten(variables.$color_grey, 30);
     border-top: none;
     position: absolute;
@@ -878,15 +859,12 @@ textarea::-webkit-scrollbar-thumb {
 
 //TIMELINE
 // @import url('https://fonts.googleapis.com/css?family=Niramit:300,300i,700');
-// reset some browser default scss
-// colors
 $primary: #1d8cf8;
 $secondary: #4f537b;
 $info: #11cdef;
 $success: #00bf9a;
 $warning: #ff8d72;
 $danger: #fd5d93;
-// timeline variables
 $body-bg: #1e1e2f;
 $timeline-before-bg: #222a42;
 $timeline-body-bg: #27293d;
@@ -948,7 +926,7 @@ $warning_step_thin_border: 1px solid variables.$color_warning;
 
 // page container
 .container-timeline {
-    padding: 0px 20px;
+    padding: 0 20px;
     display: inline-block;
     min-width: 100%;
 
@@ -1178,8 +1156,7 @@ $warning_step_thin_border: 1px solid variables.$color_warning;
     .timeline-container {
         cursor: pointer;
         position: relative;
-        margin: 0 auto;
-        margin-bottom: 30px;
+        margin: 0 auto 30px;
 
         .timeline-icon {
             position: absolute;
@@ -1217,7 +1194,6 @@ $warning_step_thin_border: 1px solid variables.$color_warning;
             box-shadow: $timeline-body-shadow;
             color: variables.$color_dark;
 
-            //*****************************************
             .status-check {
                 position: absolute;
                 right: 20px;
@@ -1244,7 +1220,6 @@ $warning_step_thin_border: 1px solid variables.$color_warning;
                 }
             }
 
-            //*********************
             &.selected {
                 transform: scale(1.1);
 
@@ -1263,7 +1238,7 @@ $warning_step_thin_border: 1px solid variables.$color_warning;
 
                 border-radius: 0;
                 outline: 3px solid variables.$color_info;
-                box-shadow: 0px 0px 20px 3px variables.$color_success_alt;
+                box-shadow: 0 0 20px 3px variables.$color_success_alt;
                 background-color: darken($timeline-body-bg, 10);
 
                 &::before {
@@ -1350,9 +1325,7 @@ $warning_step_thin_border: 1px solid variables.$color_warning;
             }
         }
 
-        // Primary Timeline
         &.primary {
-
             .badge-1,
             .timeline-icon {
                 background: variables.$color_primary !important;
@@ -1360,18 +1333,14 @@ $warning_step_thin_border: 1px solid variables.$color_warning;
             }
         }
 
-        // Info Timeline
         &.info {
-
             .badge-1,
             .timeline-icon {
                 background: $info !important;
             }
         }
 
-        // Success Timeline
         &.success {
-
             .badge-1,
             .timeline-icon {
                 background: darken(variables.$color_success, 5) !important;
@@ -1379,9 +1348,7 @@ $warning_step_thin_border: 1px solid variables.$color_warning;
             }
         }
 
-        // Warning Timeline
         &.dark-warning {
-
             .badge-1,
             .timeline-icon {
                 background: #a02121 !important;
@@ -1389,9 +1356,7 @@ $warning_step_thin_border: 1px solid variables.$color_warning;
             }
         }
 
-        // Dnager Timeline
         &.danger {
-
             .badge-1,
             .timeline-icon {
                 background: darken(variables.$color_danger, 18) !important;
@@ -1400,7 +1365,6 @@ $warning_step_thin_border: 1px solid variables.$color_warning;
         }
 
         &.light-blue {
-
             .badge-1,
             .timeline-icon {
                 background: darken(variables.$color_info, 10) !important;
@@ -1409,7 +1373,6 @@ $warning_step_thin_border: 1px solid variables.$color_warning;
         }
 
         &.blue-green {
-
             .badge-1,
             .timeline-icon {
                 background: variables.$color_success_alt !important;
@@ -1418,7 +1381,6 @@ $warning_step_thin_border: 1px solid variables.$color_warning;
         }
 
         &.pale-red {
-
             .badge-1,
             .timeline-icon {
                 background: #812375 !important;
@@ -1427,7 +1389,6 @@ $warning_step_thin_border: 1px solid variables.$color_warning;
         }
 
         &.secondary {
-
             .badge-1,
             .timeline-icon {
                 background: variables.$color_secondary !important;
@@ -1435,7 +1396,6 @@ $warning_step_thin_border: 1px solid variables.$color_warning;
         }
 
         &.black {
-
             .badge-1,
             .timeline-icon {
                 background: black !important;
@@ -1694,7 +1654,6 @@ $warning_step_thin_border: 1px solid variables.$color_warning;
             }
 
             &.large {
-
                 input[type="radio"],
                 input[type="checkbox"] {
                     display: inline;
@@ -1862,7 +1821,6 @@ $warning_step_thin_border: 1px solid variables.$color_warning;
 // ********** COMPANY-FORM ***********
 .fuck {
     .modal {
-
         .modal-body,
         .modal-container {
             min-height: unset !important;
@@ -1881,9 +1839,6 @@ $warning_step_thin_border: 1px solid variables.$color_warning;
     outline: unset !important;
 
     &:focus {
-        // border: 2px solid rgb(175, 175, 175)!important;
-        // border-bottom: 2px solid variables.$color_danger!important;
-        // border: !important;
         border: 1px solid transparent !important;
         border-bottom: 2px solid transparent !important;
         outline: 1px solid variables.$color_danger !important;
@@ -2010,7 +1965,7 @@ $warning_step_thin_border: 1px solid variables.$color_warning;
 
 // ********* CARD *************
 .card {
-    box-shadow: 0px 10px 50px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.25);
     border-radius: 10px;
     overflow: hidden;
 
@@ -2136,8 +2091,8 @@ $warning_step_thin_border: 1px solid variables.$color_warning;
             }
 
             // .broker {
-            //     // font-weight: normal;
-            //     // color: variables.$color_success_alt;
+            //  ont-weight: normal;
+            //  color: variables.$color_success_alt;
             // }
         }
     }
@@ -2175,7 +2130,6 @@ $warning_step_thin_border: 1px solid variables.$color_warning;
                     background-color: rgba(variables.$color_dark, 0.2);
                     border-color: rgba(variables.$color_dark, 0.2);
                     border-left: 2px solid lighten(variables.$color_grey, 30);
-                    // border-color: red;
                 }
 
                 td {
@@ -2465,7 +2419,7 @@ tr.DropdownSwitcherRow {
 }
 
 .DropdownContainer {
-    max-height: 0px;
+    max-height: 0;
     padding: 0;
     overflow: hidden;
     transition: all 0.3s cubic-bezier(0, 1, 0, 1) -0.1s;
@@ -2608,9 +2562,7 @@ tr.DropdownSwitcherRow {
 
     &::-webkit-scrollbar-track {
         border-radius: 4px;
-
-        background:variables.$color_light_grey
-    ;
+        background: variables.$color_light_grey;
     }
 
     &::-webkit-scrollbar {
@@ -2798,7 +2750,7 @@ tr.DropdownSwitcherRow {
 
         .inner {
             background-color: variables.$color_light;
-            box-shadow: 0px 7px 20px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.25);
             position: relative;
             padding: 30px !important;
             min-height: 400px;
@@ -3219,7 +3171,6 @@ tr.DropdownSwitcherRow {
             .category {
                 span {
                     color: variables.$color_light;
-                    // background-color: variables.$color_primary;
                     background-color: variables.$color_dark;
                     padding: 5px 6px 6px 6px;
                     font-size: 12px;
@@ -3317,7 +3268,7 @@ tr.DropdownSwitcherRow {
 
     .inner {
         background-color: variables.$color_light;
-        box-shadow: 0px 7px 20px rgba(0, 0, 0, 0.25);
+        box-shadow: 0 7px 20px rgba(0, 0, 0, 0.25);
         position: relative;
         padding: 0 !important;
         height: 100%;
@@ -3446,7 +3397,7 @@ tr.DropdownSwitcherRow {
 
         .tabs-component-tab-a.is-active {
             color: black;
-            text-shadow: 0.8px 0px 0px black;
+            text-shadow: 0.8px 0 0 black;
 
             &:hover {
                 background-color: unset;
@@ -3627,7 +3578,7 @@ tr.DropdownSwitcherRow {
     max-width: 50vw;
     min-width: 50vw;
     display: grid;
-    gap: 0px 0px;
+    gap: 0 0;
     grid-template-columns: 50% 50%;
     grid-template-areas:
     "left right"
@@ -3807,7 +3758,7 @@ tr.DropdownSwitcherRow {
         }
 
         &-offers {
-            max-height: 0px;
+            max-height: 0;
             padding: 0;
             overflow: hidden;
             transition: all 0.3s cubic-bezier(0, 1, 0, 1) -0.1s;
@@ -3967,7 +3918,7 @@ tr.DropdownSwitcherRow {
     display: grid;
     grid-template-columns: 60% 40%;
     // grid-template-rows: 30px 1fr auto;
-    gap: 0px 0px;
+    gap: 0 0;
     grid-template-areas:
     "name type"
     "location action"
@@ -4192,7 +4143,6 @@ tr.DropdownSwitcherRow {
         padding-left: 0 !important;
 
         input {
-            // background-color: lighten(#10b981, 10);
             background-color: lighten(variables.$color_grey, 40);
             border-radius: 5px;
             // color: black;
@@ -4391,8 +4341,6 @@ tr.DropdownSwitcherRow {
         &.success {
             .body {
                 border: 2px solid variables.$color_dark;
-                // background-color: variables.$color_success;
-                // background-color: darken(variables.$color_success, 8);
                 background: linear-gradient(to bottom, #009150 0%, #008241 100%);
 
                 i.extra,
@@ -4503,7 +4451,6 @@ tr.DropdownSwitcherRow {
                     font-size: 18px;
                     font-weight: 500;
                     padding: 2px 5px;
-                    // color: darken(variables.$color_secondary, 15);
                     color: variables.$color_secondary;
                     border: 1px solid variables.$color_grey;
                     border-radius: unset;
@@ -4682,7 +4629,7 @@ tr.DropdownSwitcherRow {
         }
 
         img {
-            box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.9);
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.9);
             display: block;
             margin: 0 auto;
             min-height: 270px;
@@ -4794,7 +4741,7 @@ tr.DropdownSwitcherRow {
 
     .scroller {
         &::-webkit-scrollbar {
-            width: 0px;
+            width: 0;
         }
     }
 }
@@ -4945,7 +4892,7 @@ tr.DropdownSwitcherRow {
 
     .inner {
         background-color: variables.$color_light;
-        box-shadow: 0px 7px 20px rgba(0, 0, 0, 0.25);
+        box-shadow: 0 7px 20px rgba(0, 0, 0, 0.25);
         position: relative;
         padding: 30px;
 
@@ -5162,7 +5109,7 @@ tr.DropdownSwitcherRow {
         }
 
         &__body {
-            max-height: 0px;
+            max-height: 0;
             overflow: hidden;
             transition: all 0.25s cubic-bezier(0, 1, 0, 1) -0.1s;
         }
@@ -5752,7 +5699,7 @@ tr.DropdownSwitcherRow {
                         right: 5px;
                         width: auto;
                         height: auto;
-                        border-radius: 0px;
+                        border-radius: 0;
                         padding: 3px 7px;
                         font-size: 11px;
                         text-transform: uppercase;
@@ -5779,7 +5726,7 @@ tr.DropdownSwitcherRow {
                     color: variables.$color_light;
                     width: auto;
                     height: auto;
-                    border-radius: 0px;
+                    border-radius: 0;
                     padding: 3px 7px;
                     font-size: 11px;
                     text-transform: uppercase;
@@ -5942,7 +5889,7 @@ tr.DropdownSwitcherRow {
             .badge {
                 width: auto;
                 height: auto;
-                border-radius: 0px;
+                border-radius: 0;
                 position: absolute;
                 right: 10px;
                 padding: 3px 7px;
@@ -5963,7 +5910,7 @@ tr.DropdownSwitcherRow {
                     .badge {
                         width: auto;
                         height: auto;
-                        border-radius: 0px;
+                        border-radius: 0;
                         position: absolute;
                         right: 10px;
                         padding: 3px 7px;
@@ -6101,7 +6048,7 @@ tr.DropdownSwitcherRow {
                 &.object_class {
                     top: 15px;
                     right: 10px;
-                    padding: 0px 5px;
+                    padding: 0 5px;
                     color: variables.$color_light;
                     background-color: rgba(variables.$color:variables.$color_danger, $alpha: 0.85);
                 }
@@ -6711,7 +6658,7 @@ $color_deep_blue: #263539;
     &__list {
         position: fixed;
         top: 50px;
-        right: 0px;
+        right: 0;
         width: 35px;
 
         &__item {
@@ -6836,7 +6783,6 @@ button.filters {
         position: relative;
         text-decoration: none;
         padding: 0;
-        font-weight: bolder;
         font-size: 15px;
         line-height: 18px;
         font-weight: 500;
@@ -6891,7 +6837,6 @@ button.filters {
         position: relative;
         text-decoration: none;
         padding: 0;
-        font-weight: bolder;
         font-size: 15px;
         line-height: 18px;
         font-weight: 500;
@@ -6926,6 +6871,7 @@ button.filters {
     & .modal .modal-container {
         min-width: 500px;
     }
+
     &__text {
         padding-top: 30px;
         white-space: nowrap;
@@ -6942,14 +6888,17 @@ button.filters {
         color: darken($color: variables.$color_success, $amount: 12);
         letter-spacing: 0.4px;
     }
+
     &__form-group {
         & .multiselect-single-label {
         }
+
         &_long .form-item {
             max-width: 100%;
             flex: 0 0 100%;
         }
     }
+
     &__tab-list {
         padding-left: 10px;
         position: static;
@@ -6963,12 +6912,12 @@ button.filters {
         position: relative;
         text-decoration: none;
         padding: 0;
-        font-weight: bolder;
         font-size: 15px;
         line-height: 18px;
         font-weight: 500;
         color: black;
         padding-bottom: 7px;
+
         &::before {
             background-color: darken($color: variables.$color_success, $amount: 12);
             display: block;
@@ -6980,10 +6929,12 @@ button.filters {
             left: 0;
             bottom: 0;
         }
+
         &.is-active {
             color: darken($color: variables.$color_success, $amount: 12);
             font-weight: 700;
             transition: background-color 0.3s ease-in-out;
+
             &::before {
                 width: 100%;
             }
@@ -6995,6 +6946,7 @@ button.filters {
     & .modal .modal-container {
         min-width: 500px;
     }
+
     &__text {
         padding-top: 30px;
         white-space: nowrap;
@@ -7011,14 +6963,17 @@ button.filters {
         color: darken($color: variables.$color_success, $amount: 12);
         letter-spacing: 0.4px;
     }
+
     &__form-group {
         & .multiselect-single-label {
         }
+
         &_long .form-item {
             max-width: 100%;
             flex: 0 0 100%;
         }
     }
+
     &__tab-list {
         padding-left: 10px;
         position: static;
@@ -7032,12 +6987,12 @@ button.filters {
         position: relative;
         text-decoration: none;
         padding: 0;
-        font-weight: bolder;
         font-size: 15px;
         line-height: 18px;
         font-weight: 500;
         color: black;
         padding-bottom: 7px;
+
         &::before {
             background-color: darken($color: variables.$color_success, $amount: 12);
             display: block;
@@ -7049,10 +7004,12 @@ button.filters {
             left: 0;
             bottom: 0;
         }
+
         &.is-active {
             color: darken($color: variables.$color_success, $amount: 12);
             font-weight: 700;
             transition: background-color 0.3s ease-in-out;
+
             &::before {
                 width: 100%;
             }

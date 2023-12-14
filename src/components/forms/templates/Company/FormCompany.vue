@@ -392,28 +392,18 @@ import Radio from "@/components/forms/Radio.vue";
 import RadioStars from "@/components/forms/RadioStars.vue";
 import MultiSelect from "@/components/forms/MultiSelect.vue";
 import useValidate from "@vuelidate/core";
+import {email, helpers, maxLength, minLength, required,} from "@vuelidate/validators";
+import {mapActions, mapGetters} from "vuex";
 import {
-    required,
-    helpers,
-    minLength,
-    maxLength,
-    email,
-} from "@vuelidate/validators";
-import {mapGetters, mapActions} from "vuex";
-import {
-    CompanyCategories,
     ActivePassive,
-    CompanyFormOrganization,
     ActivityGroupList,
     ActivityProfileList,
+    CompanyCategories,
+    CompanyFormOrganization,
     PassiveWhy,
     RatingList,
 } from "@/const/const.js";
-import Utils, {
-    yandexmap,
-    validatePropogationInput,
-    validateUrl,
-} from "@/utils/index.js";
+import Utils, {validatePropogationInput, validateUrl, yandexmap,} from "@/utils/index.js";
 import api from "@/api/api.js";
 import Modal from "@/components/common/Modal.vue";
 import Loader from "@/components/common/Loader.vue";

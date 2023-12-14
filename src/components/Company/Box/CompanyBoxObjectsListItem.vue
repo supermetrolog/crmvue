@@ -79,7 +79,7 @@
 </template>
 
 <script>
-import {OldDbDirectionList, DistrictList} from "@/const/const.js";
+import {DistrictList, OldDbDirectionList} from "@/const/const.js";
 import Dropdown from "@/components/Dropdown/Dropdown.vue";
 import CompanyBoxObjectsOffer from "@/components/Company/Box/CompanyBoxObjectsOffer.vue";
 import CompanyBoxObjectsRenter from "@/components/Company/Box/CompanyBoxObjectsRenter.vue";

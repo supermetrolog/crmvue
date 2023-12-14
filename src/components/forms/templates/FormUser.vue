@@ -123,9 +123,9 @@
 </template>
 
 <script>
-import {mapGetters, mapActions} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 import useValidate from "@vuelidate/core";
-import {required, helpers, email} from "@vuelidate/validators";
+import {email, helpers, required} from "@vuelidate/validators";
 import Form from "@/components/forms/Form.vue";
 import FormGroup from "@/components/forms/FormGroup.vue";
 import Input from "@/components/forms/Input.vue";

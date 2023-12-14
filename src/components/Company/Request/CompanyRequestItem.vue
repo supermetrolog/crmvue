@@ -239,14 +239,14 @@
 
 <script>
 import {
-    ObjectClassList,
-    GateTypeList,
-    ObjectTypeList,
-    RegionList,
+    DealTypeList,
     DirectionList,
     DistrictList,
-    DealTypeList,
+    GateTypeList,
+    ObjectClassList,
+    ObjectTypeList,
     PassiveWhyRequest,
+    RegionList,
     unknownMovingDate,
 } from "@/const/const.js";
 import Progress from "@/components/common/Progress.vue";

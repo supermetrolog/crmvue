@@ -150,7 +150,9 @@ import {
     craneBeamsAmountTypes,
     craneBeamTypes,
     craneHoistingTypes,
-    craneTypes, liftingDeviceConditionTypes, liftingDeviceControlsTypes,
+    craneTypes,
+    liftingDeviceConditionTypes,
+    liftingDeviceControlsTypes,
     liftingDeviceLocationTypes
 } from "@/const/liftingDevices";
 

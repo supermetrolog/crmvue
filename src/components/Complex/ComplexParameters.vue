@@ -16,7 +16,7 @@
             <i class="fas fa-bolt"/>
             <with-unit-type
                 :unit-type="unitTypes.KILOWATT">
-                {{  $formatter.number(object.power) }}
+                {{ $formatter.number(object.power) }}
             </with-unit-type>
         </li>
         <li v-if="object.heating" class="object-parameters__item">

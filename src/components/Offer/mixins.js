@@ -1,10 +1,6 @@
-import { mapGetters, mapActions } from "vuex";
-import {
-    DirectionList,
-    DistrictList,
-    RegionList,
-    TaxFormList,
-} from "@/const/const.js";
+import {mapActions, mapGetters} from "vuex";
+import {DirectionList, DistrictList, RegionList, TaxFormList,} from "@/const/const.js";
+
 export const MixinOfferItem = {
     data() {
         return {

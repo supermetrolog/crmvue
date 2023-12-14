@@ -1,5 +1,18 @@
-import {CompanyCategories, RatingList, PositionList} from "@/const/const";
+import {
+    ActivityGroupList,
+    ActivityProfileList,
+    CompanyCategories,
+    CompanyFormOrganization,
+    PassiveWhy,
+    PositionList,
+    RatingList
+} from "@/const/const";
 import Progress from "@/components/common/Progress.vue";
+import Table from "@/components/Table/Table.vue";
+import Tr from "@/components/Table/Tr.vue";
+import Th from "@/components/Table/Th.vue";
+import {DealTypeList, DirectionList, DistrictList, PassiveWhyRequest, RegionList,} from "@/const/const.js";
+import FileInput from "@/components/forms/FileInput.vue";
 
 export const MixinCompanyView = {
     components: {
@@ -26,16 +39,6 @@ export const MixinCompanyView = {
         },
     },
 };
-import Table from "@/components/Table/Table.vue";
-import Tr from "@/components/Table/Tr.vue";
-import Th from "@/components/Table/Th.vue";
-import {
-    DealTypeList,
-    RegionList,
-    DirectionList,
-    DistrictList,
-    PassiveWhyRequest,
-} from "@/const/const.js";
 
 export const MixinRequestTable = {
     components: {
@@ -63,13 +66,6 @@ export const MixinRequestTable = {
         },
     },
 };
-import FileInput from "@/components/forms/FileInput.vue";
-import {
-    CompanyFormOrganization,
-    ActivityGroupList,
-    ActivityProfileList,
-    PassiveWhy,
-} from "@/const/const";
 
 export const MixinCompanyDetailInfo = {
     components: {

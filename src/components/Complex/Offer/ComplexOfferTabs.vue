@@ -42,6 +42,7 @@
 <script>
 import data from "./data";
 import ComplexOfferItem from "@/components/Complex/Offer/ComplexOfferItem.vue";
+
 export default {
     name: "ComplexOfferTabs",
     props: {},

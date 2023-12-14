@@ -89,7 +89,7 @@
     &-control {
         position: absolute;
         right: 10px;
-        top: 0px;
+        top: 0;
         height: 70px;
         z-index: 3;
         display: flex;
@@ -187,6 +187,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+
     &-wrapper {
         padding: 20px;
         background-color: $color_left;
@@ -196,23 +197,27 @@
         flex-direction: column;
         gap: 20px;
     }
+
     &-main {
         &-area {
             font-size: 22px;
             line-height: 30px;
             font-weight: bold;
             display: inline;
+
             & p {
                 font-size: 22px;
                 font-weight: bold;
                 display: inline;
             }
         }
+
         &-address {
             font-weight: bold;
             font-size: 1em;
         }
     }
+
     &-types {
         .object-type-box {
             $middle_grey: darken(
@@ -235,8 +240,9 @@
 
     &-provision {
         & .object-parameters {
-            padding: 0px;
+            padding: 0;
             column-gap: 35px;
+
             &__item {
                 font-size: 14px;
 
@@ -256,11 +262,13 @@
         &-label {
             margin-bottom: 5px;
         }
+
         &-list {
             display: flex;
             flex-wrap: wrap;
             column-gap: 10px;
         }
+
         &-item {
             background-color: inherit;
             border: 1px solid variables.$color_grey;
@@ -268,12 +276,15 @@
             padding: 2px 7px;
             margin-bottom: 5px;
         }
+
         &-item-button {
             margin-bottom: 5px;
         }
+
         &-text {
             font-size: 14px;
         }
+
         &-button {
             font-size: 14px;
             background-color: white;
@@ -281,6 +292,7 @@
             border-radius: 5px;
             padding: 4px 7px;
             cursor: pointer;
+
             &:hover {
                 opacity: 0.7;
             }
@@ -295,16 +307,19 @@
         gap: 5px;
         border: 1px solid variables.$color_light_grey;
     }
+
     &-floor {
         color: variables.$color_success;
         border: 2px solid variables.$color_success;
         padding: 5px 15px;
         background-color: variables.$color_light;
         position: relative;
+
         &.danger {
             border-color: variables.$color_danger;
             color: variables.$color_danger;
         }
+
         & > i {
             position: absolute;
             top: 0;
@@ -321,7 +336,8 @@
     column-gap: 45px;
     row-gap: 20px;
     flex-wrap: wrap;
-    padding: 13px 0px;
+    padding: 13px 0;
+
     &__item {
         align-items: center;
         display: flex;
@@ -352,6 +368,7 @@
     & .modal .modal-container {
         min-width: 500px;
     }
+
     &__text {
         padding-top: 30px;
         white-space: nowrap;
@@ -368,14 +385,15 @@
         color: darken($color: variables.$color_success, $amount: 12);
         letter-spacing: 0.4px;
     }
+
     &__form-group {
-        & .multiselect-single-label {
-        }
+
         &_long .form-item {
             max-width: 100%;
             flex: 0 0 100%;
         }
     }
+
     &__tab-list {
         padding-left: 10px;
         position: static;
@@ -388,13 +406,12 @@
         display: inline-block;
         position: relative;
         text-decoration: none;
-        padding: 0;
-        font-weight: bolder;
+        padding: 0 0 7px;
         font-size: 15px;
         line-height: 18px;
         font-weight: 500;
         color: black;
-        padding-bottom: 7px;
+
         &::before {
             background-color: darken($color: variables.$color_success, $amount: 12);
             display: block;
@@ -406,10 +423,12 @@
             left: 0;
             bottom: 0;
         }
+
         &.is-active {
             color: darken($color: variables.$color_success, $amount: 12);
             font-weight: 700;
             transition: background-color 0.3s ease-in-out;
+
             &::before {
                 width: 100%;
             }
@@ -431,14 +450,15 @@
     display: flex;
     flex-direction: column;
     font-size: 14px;
+
     &-header {
         font-weight: bold;
     }
+
     &-name {
         font-size: 14px;
     }
-    &-rating {
-    }
+
     &-links {
         & > * {
             text-decoration: underline;
@@ -456,24 +476,30 @@
     margin: 0 -5px;
 
     background: #f7faff;
+
     &-content {
         width: 80%;
     }
+
     &-name {
         font-size: 26px;
     }
+
     &-description {
         font-size: 12px;
         color: variables.$color_grey;
+
         strong {
             color: black;
         }
     }
+
     &-actions {
         width: 20%;
         display: flex;
         justify-content: flex-end;
         align-items: center;
+
         button {
             cursor: pointer;
             font-size: 15px;
@@ -486,6 +512,7 @@
 
 .ObjectHoldings {
     $gap: 2em;
+
     &-header {
         @include mixins.black-header;
 
@@ -510,6 +537,7 @@
             display: flex;
             gap: 15px;
         }
+
         &-button {
             padding: 0;
             align-items: center;
@@ -522,6 +550,7 @@
             cursor: pointer;
         }
     }
+
     &-body {
         display: flex;
         flex-direction: column;
@@ -533,15 +562,18 @@
     $border: 1px solid #cacaca;
     margin-bottom: 20px;
     position: relative;
+
     &-buttons {
         position: absolute;
         right: 16px;
         top: 2px;
         z-index: 5;
+
         & .action-buttons__item button {
             background-color: white;
         }
     }
+
     &-content {
         &-properties {
             display: grid;
@@ -554,6 +586,7 @@
             white-space: nowrap;
             overflow-x: hidden;
             text-overflow: ellipsis;
+
             & span {
                 color: variables.$color_grey;
                 white-space: nowrap;
@@ -581,13 +614,16 @@
     .tabs-component-tab-a {
         padding: 6px 8px;
     }
+
     .tabs-component-tab-a::before {
         background-color: darken($color: variables.$color_success, $amount: 8);
         height: 2px;
     }
+
     .tabs-component-tab-a.is-active {
         color: darken($color: variables.$color_success, $amount: 8);
     }
+
     @media screen and (max-width: variables.$laptop_size) {
         .ObjectHoldingsTabs {
             &-content {
@@ -626,11 +662,11 @@
         position: relative;
         text-decoration: none;
         padding: 0;
-        font-weight: bolder;
         font-size: 14px;
         line-height: 18px;
         font-weight: 500;
         color: black;
+
         &::before {
             background-color: darken($color: variables.$color_success, $amount: 12);
             display: block;
@@ -642,15 +678,18 @@
             left: 0;
             bottom: 0;
         }
+
         &.is-active {
             color: darken($color: variables.$color_success, $amount: 12);
             font-weight: 700;
             transition: background-color 0.3s ease-in-out;
+
             &::before {
                 width: 100%;
             }
         }
     }
+
     &__tab-body {
         &_opacity {
             opacity: 0.5;
@@ -663,36 +702,45 @@
     border: 2px solid #ebebeb;
     padding: 10px;
     margin-bottom: 25px;
+
     &__line {
         display: flex;
         position: relative;
     }
+
     &__buttons {
         position: absolute;
         right: 0;
         top: 0;
     }
+
     &__tabs {
         width: 100%;
     }
+
     &__status {
         text-align: start;
     }
+
     &__tables {
         display: flex;
     }
+
     &__table:first-of-type {
         border-right: none;
     }
+
     &__info {
         width: 100%;
         text-align: end;
         margin-left: 20px;
     }
+
     &__text {
         font-size: 13px;
         line-height: 22px;
         font-weight: 300;
+
         &_color_grey {
             color: variables.$color_grey;
         }
@@ -703,24 +751,29 @@
     padding: 12px;
     border: 1px solid variables.$color_danger;
     min-width: 310px;
+
     &__subtitle {
         font-size: 12px;
         font-weight: 500;
         line-height: 15px;
     }
+
     &__title {
         font-size: 18px;
         font-weight: 700;
         line-height: 25px;
     }
+
     &__list {
         margin-top: 5px;
     }
+
     &__item {
         display: grid;
         grid-template-columns: 100px 1fr;
         column-gap: 10px;
     }
+
     &__text {
         // text-align: left;
         padding-top: 3px;
@@ -730,6 +783,7 @@
         overflow: hidden;
         font-size: 13px;
         font-weight: 300;
+
         & span:last-of-type {
             color: variables.$color_grey;
         }
@@ -739,6 +793,7 @@
             color: variables.$color_grey;
         }
     }
+
     sup {
         vertical-align: top;
         position: relative;
@@ -748,13 +803,16 @@
 
 .trade-offer-status {
     flex-grow: 2;
+
     &__text {
         font-size: 13px;
         line-height: 22px;
         font-weight: 700;
+
         &_label {
             color: variables.$color_success;
         }
+
         &_color_red {
             color: variables.$color_danger;
             font-weight: 500;
@@ -778,6 +836,7 @@
         font-weight: bolder;
         font-size: 14px;
         color: variables.$color_grey;
+
         &::before {
             display: block;
             position: absolute;
@@ -793,9 +852,11 @@
             border-top: 5px solid inherit;
             transform: translateX(-50%);
         }
+
         &.is-active {
             color: variables.$color_danger;
             transition: background-color 0.3s ease-in-out;
+
             &::before {
                 border-top: 5px solid variables.$color_danger;
                 top: 25px;
@@ -803,8 +864,6 @@
         }
     }
 
-    &__tab-body {
-    }
 }
 
 .trade-offer-summary {
@@ -812,22 +871,20 @@
         display: flex;
         gap: 35px;
     }
+
     &__column {
         display: flex;
         flex-direction: column;
         gap: 25px;
+
         &:first-of-type {
             max-width: 400px;
             min-width: 340px;
         }
     }
-    &__table {
-    }
-    &__item {
-    }
 
     &__title {
-        padding: 2px 0px;
+        padding: 2px 0;
         font-size: 14px;
         font-weight: 600;
         line-height: 1.5;
@@ -838,6 +895,7 @@
         font-weight: 400;
         line-height: 1.5;
     }
+
     &__image {
         width: 100%;
         max-width: 650px;
@@ -853,6 +911,7 @@
     border-top: 1px dashed variables.$color_grey;
     display: grid;
     grid-template-columns: 200px 1fr;
+
     .form-container {
         width: auto;
     }
@@ -876,6 +935,7 @@
         right: 9px;
         top: 8px;
         cursor: pointer;
+
         &:hover {
             opacity: 0.7;
         }
@@ -897,6 +957,7 @@
             order: -1;
             display: flex;
             align-items: center;
+
             & input {
                 min-height: auto;
                 max-height: auto;
@@ -905,12 +966,15 @@
             }
         }
     }
+
     &__column {
         width: 140px;
+
         &_head {
             width: 200px;
         }
     }
+
     &__content {
         display: flex;
         overflow: auto;
@@ -921,6 +985,7 @@
         // position: relative;
         // z-index: 2;
     }
+
     &__text .with-unit-type {
         white-space: nowrap;
         display: inline-block;
@@ -930,6 +995,7 @@
         position: relative;
         flex-wrap: nowrap;
     }
+
     &__text {
         white-space: nowrap;
         font-size: 14px;
@@ -951,6 +1017,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
         & .with-unit-type {
             max-width: 15ch;
             white-space: nowrap;
@@ -962,13 +1029,16 @@
             font-size: 13px;
             color: variables.$color_grey;
         }
+
         &_color_grey {
             color: variables.$color_grey;
         }
+
         &_weight_bold {
             font-weight: bold;
             color: black;
         }
+
         &_color_red {
             position: absolute;
             right: 0;
@@ -989,6 +1059,7 @@
             padding-top: 32px;
         }
     }
+
     &__head {
         text-align: start;
         padding: 10px;
@@ -997,25 +1068,32 @@
         font-weight: bold;
         border-right: 1px dashed variables.$color_grey;
         color: white;
+
         &_color_grey {
             background-color: #e1e1e1;
             color: black;
         }
+
         &_color_green {
             background-color: #3ca96f;
         }
+
         &_color_blue {
             background-color: #3574a5;
         }
+
         &_color_cyan {
             background-color: #72b6ea;
         }
+
         &_color_orange {
             background-color: #ccab90;
         }
+
         &_color_red {
             background-color: #9f3f56;
         }
+
         &_color_purple {
             background-color: #9f3f87;
         }

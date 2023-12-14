@@ -1,6 +1,6 @@
 import TimelineStepStage from "@/components/Timeline/Step/TimelineStepStage.vue";
 import ButtonList from "@/components/common/ButtonList.vue";
-import { mapGetters } from "vuex";
+import {mapGetters} from "vuex";
 
 export const MixinStepActions = {
     components: {

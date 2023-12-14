@@ -180,15 +180,15 @@
 
 <script>
 import {
-    ObjectClassList,
-    GateTypeList,
-    ObjectTypeList,
-    ObjectTypesGeneralList,
-    RegionList,
+    DealTypeList,
     DirectionList,
     DistrictList,
-    DealTypeList,
+    GateTypeList,
+    ObjectClassList,
+    ObjectTypeList,
+    ObjectTypesGeneralList,
     PassiveWhyRequest,
+    RegionList,
     unknownMovingDate,
 } from "@/const/const.js";
 import {mapGetters} from "vuex";

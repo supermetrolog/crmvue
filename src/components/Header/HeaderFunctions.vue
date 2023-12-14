@@ -24,7 +24,7 @@
                         enter-active-class="animate__animated animate__fadeInDown for__notifications"
                         leave-active-class="animate__animated animate__fadeOutUp for__notifications"
             >
-                <HeaderCalls v-if="callsVisible" />
+                <HeaderCalls v-if="callsVisible"/>
             </transition>
         </li>
 

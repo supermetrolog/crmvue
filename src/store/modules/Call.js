@@ -1,5 +1,5 @@
 import api from "@/api/api";
-import { notify } from "@kyvg/vue3-notification";
+import {notify} from "@kyvg/vue3-notification";
 
 function viewNotify(data) {
     let notifyOptions = {
@@ -21,6 +21,7 @@ function viewNotify(data) {
         notify(notifyOptions);
     }
 }
+
 const Call = {
     state: {
         calls: [],
@@ -28,32 +29,32 @@ const Call = {
         callsPagination: null,
         currentCalls: [],
         sessionCalls: [{
-                id: 407,
+            id: 407,
+            caller_id: "102",
+            from: "101",
+            to: "102",
+            type: 1,
+            created_at: "2022-08-17 13:06:15",
+            uniqueid: "1660730774.17",
+            status: 2,
+            call_ended_status: null,
+            updated_at: null,
+            hangup_timestamp: null,
+            caller: {
+                id: 2,
+                user_id: 3,
+                first_name: "ADMIN",
+                middle_name: "ADMIN",
+                last_name: "ADMIN",
                 caller_id: "102",
-                from: "101",
-                to: "102",
-                type: 1,
-                created_at: "2022-08-17 13:06:15",
-                uniqueid: "1660730774.17",
-                status: 2,
-                call_ended_status: null,
-                updated_at: null,
-                hangup_timestamp: null,
-                caller: {
-                    id: 2,
-                    user_id: 3,
-                    first_name: "ADMIN",
-                    middle_name: "ADMIN",
-                    last_name: "ADMIN",
-                    caller_id: "102",
-                    avatar: null,
-                    full_name: "ADMIN ADMIN ADMIN",
-                    short_name: "ADMIN A. A.",
-                    medium_name: "ADMIN ADMIN",
-                },
-                phoneFrom: null,
-                phoneTo: null,
+                avatar: null,
+                full_name: "ADMIN ADMIN ADMIN",
+                short_name: "ADMIN A. A.",
+                medium_name: "ADMIN ADMIN",
             },
+            phoneFrom: null,
+            phoneTo: null,
+        },
             {
                 id: 380,
                 caller_id: "102",
@@ -263,7 +264,7 @@ const Call = {
         ],
     },
     mutations: {
-        updateCalls(state, { data, concat = false }) {
+        updateCalls(state, {data, concat = false}) {
             state.callsPagination = data.pagination;
             if (concat) {
                 state.calls = state.calls.concat(data.data);
@@ -294,9 +295,9 @@ const Call = {
             const count = await api.calls.fetchCount(user.userProfile.caller_id);
             context.commit('updateCallsCount', count);
         },
-        async SEARCH_CALLS(context, { query, concat = false }) {
+        async SEARCH_CALLS(context, {query, concat = false}) {
             const data = await api.calls.search(query);
-            context.commit('updateCalls', { data, concat });
+            context.commit('updateCalls', {data, concat});
         },
         RESET_CALLS(context) {
             context.commit('reset');
@@ -314,10 +315,10 @@ const Call = {
                 }
             }));
         },
-        async VIEWED_NOT_COUNT_CALLS({ getters }) {
+        async VIEWED_NOT_COUNT_CALLS({getters}) {
             return await api.calls.viewedNotCount(getters.THIS_USER.userProfile.caller_id);
         },
-        async VIEWED_ALL_CALLS({ getters }) {
+        async VIEWED_ALL_CALLS({getters}) {
             return await api.calls.viewedAll(getters.THIS_USER.userProfile.caller_id);
         },
         async UPDATE_SESSION_CALLS(context) {
@@ -333,7 +334,7 @@ const Call = {
         ACTION_WEBSOCKET_check_calls_count(context) {
             context.dispatch('FETCH_CALLS_COUNT');
         },
-        ACTION_WEBSOCKET_update_current_calls({ commit, dispatch }, data) {
+        ACTION_WEBSOCKET_update_current_calls({commit, dispatch}, data) {
             commit('updateCurrentCalls', data.message);
             commit('pushSessionCalls', data.message);
             dispatch("UPDATE_SESSION_CALLS");

@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import {ref, inject, onBeforeMount, watch, onBeforeUnmount} from "vue";
+import {inject, onBeforeMount, onBeforeUnmount, ref, watch} from "vue";
 
 export default {
     name: "AccordionItem",

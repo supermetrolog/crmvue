@@ -1,4 +1,5 @@
-import { notify } from "@kyvg/vue3-notification";
+import {notify} from "@kyvg/vue3-notification";
+
 let notifyOptions = {
     group: "app",
     type: "success",

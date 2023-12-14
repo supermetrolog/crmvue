@@ -1,5 +1,5 @@
 import api from "@/api/api"
-import { waitHash } from "../../utils";
+import {waitHash} from "../../utils";
 
 const CompanyRequest = {
     state: {
@@ -12,7 +12,7 @@ const CompanyRequest = {
         updateCompanyRequests(state, data) {
             state.companyRequests = data;
         },
-        updateRequests(state, { data, concat }) {
+        updateRequests(state, {data, concat}) {
             state.pagination = data.pagination;
             if (concat) {
                 state.requests = state.requests.concat(data.data);
@@ -29,13 +29,13 @@ const CompanyRequest = {
         },
     },
     actions: {
-        async SEARCH_REQUESTS(context, { query, concat = false }) {
+        async SEARCH_REQUESTS(context, {query, concat = false}) {
             let hash = waitHash(query);
             context.commit('setRequestWaitHash', hash);
             const data = await api.request.searchRequests(query);
             if (data) {
                 if (hash == context.getters.REQUEST_WAIT_HASH) {
-                    context.commit('updateRequests', { data, concat });
+                    context.commit('updateRequests', {data, concat});
 
                 } else {
                     return false;

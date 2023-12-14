@@ -5,22 +5,23 @@ import Checkbox from "@/components/forms/Checkbox.vue";
 import Radio from "@/components/forms/Radio.vue";
 import MultiSelect from "@/components/forms/MultiSelect.vue";
 import CheckboxIcons from "@/components/forms/CheckboxIcons.vue";
-import { SearchFormMixin } from "@/components/common/mixins.js";
-import { mapActions, mapGetters } from "vuex";
+import {SearchFormMixin} from "@/components/common/mixins.js";
+import {mapActions, mapGetters} from "vuex";
 import {
+    ActivePassiveFUCK,
     DealTypeList,
-    ObjectClassList,
-    GateTypeList,
-    YesNoFUCK,
-    YesNo,
-    FloorTypesFUCK,
-    ObjectTypeList,
-    RegionList,
     DirectionList,
     DistrictList,
-    ActivePassiveFUCK,
+    FloorTypesFUCK,
+    GateTypeList,
+    ObjectClassList,
+    ObjectTypeList,
     OutsideMkad,
+    RegionList,
+    YesNo,
+    YesNoFUCK,
 } from "@/const/const.js";
+
 export const FormMixin = {
     mixins: [SearchFormMixin],
     name: "OfferSearchForm",
@@ -133,11 +134,11 @@ export const FormMixin = {
     },
     methods: {
         ...mapActions(["FETCH_CONSULTANT_LIST", "FETCH_REGION_LIST"]),
-        setDefaultFields(){
+        setDefaultFields() {
             this.form = {...this.$options.defaultFormProperties};
         },
         async setQueryFields() {
-            this.form = { ...this.form, ...this.$route.query };
+            this.form = {...this.form, ...this.$route.query};
             if (this.form.purposes && !Array.isArray(this.form.purposes)) {
                 this.form.purposes = [this.form.purposes];
             }
@@ -179,9 +180,9 @@ export const FormMixin = {
                 array.push(+item);
             });
             this.form.object_type = array;
-            let query = { ...this.form };
+            let query = {...this.form};
             this.deleteEmptyFields(query);
-            await this.$router.replace({ query });
+            await this.$router.replace({query});
         },
         changeRegion() {
             if (

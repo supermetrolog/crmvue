@@ -101,7 +101,7 @@
 </template>
 
 <script>
-import {mapGetters, mapActions} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 import {MixinStepActions} from "@/components/Timeline/mixins.js";
 import FormCompanyContact from "@/components/forms/templates/Company/FormCompanyContact.vue";
 import FormCompanyRequest from "@/components/forms/templates/Company/FormCompanyRequest.vue";

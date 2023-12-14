@@ -74,7 +74,7 @@ export default {
         isActive() {
             return this.field instanceof Array ?
                 this.field.includes(this.value)
-                || this.field.includes(this.value.toString()):
+                || this.field.includes(this.value.toString()) :
                 Boolean(this.field)
         }
     }

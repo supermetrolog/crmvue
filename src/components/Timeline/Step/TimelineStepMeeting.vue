@@ -50,10 +50,10 @@
 import {MixinSteps} from "@/components/Timeline/mixins.js";
 import {mapGetters} from "vuex";
 import {
-    PhonedComment,
     CallbackComment,
     CallingErrorComment,
     MeetingDoneComment,
+    PhonedComment,
 } from "@/components/Timeline/comments.js"
 import FormModalEvent from "@/components/forms/templates/FormModalEvent.vue";
 

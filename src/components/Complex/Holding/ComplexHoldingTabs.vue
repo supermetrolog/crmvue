@@ -13,7 +13,8 @@
                             </with-unit-type>
                         </PropertyListItem>
                         <PropertyListItem name="S - пола">
-                            <with-unit-type class="ObjectHoldingsTabs-content-property" v-if="object.area_floor_full !== null"
+                            <with-unit-type class="ObjectHoldingsTabs-content-property"
+                                            v-if="object.area_floor_full !== null"
                                             :unit-type="unitTypes.SQUARE_METERS">
                                 {{ $formatter.number(object.area_floor_full) }}
                             </with-unit-type>
@@ -35,7 +36,8 @@
                             </with-unit-type>
                         </PropertyListItem>
                         <PropertyListItem name="S - техническая">
-                            <with-unit-type class="ObjectHoldingsTabs-content-property" v-if="object.area_tech_full !== null"
+                            <with-unit-type class="ObjectHoldingsTabs-content-property"
+                                            v-if="object.area_tech_full !== null"
                                             :unit-type="unitTypes.SQUARE_METERS">
                                 {{ $formatter.number(object.area_tech_full) }}
                             </with-unit-type>
@@ -86,7 +88,8 @@
                                 {{ ownTypes[object.own_type] }}</p>
                         </PropertyListItem>
                         <PropertyListItem name="Ограничения">
-                            <p class="ObjectHoldingsTabs-content-property" v-if="object.land_use_restrictions !== null">{{
+                            <p class="ObjectHoldingsTabs-content-property" v-if="object.land_use_restrictions !== null">
+                                {{
                                     object.land_use_restrictions
                                 }}</p>
                         </PropertyListItem>
@@ -95,7 +98,8 @@
                 <div class="ObjectHoldingsTabs-content-properties" v-else>
                     <PropertyList>
                         <PropertyListItem name="Площадь участка">
-                            <with-unit-type class="ObjectHoldingsTabs-content-property" v-if="object.area_field_full !== null"
+                            <with-unit-type class="ObjectHoldingsTabs-content-property"
+                                            v-if="object.area_field_full !== null"
                                             :unit-type="unitTypes.SQUARE_METERS"
                                             :value="$formatter.number(object.area_field_full)"/>
                         </PropertyListItem>
@@ -114,10 +118,13 @@
                         </PropertyListItem>
                         <PropertyListItem name="Рельеф участка">
                             <p class="ObjectHoldingsTabs-content-property"
-                               v-if="object.object.landscape_type !== null">{{ landscapeTypes[object.landscape_type] }}</p>
+                               v-if="object.object.landscape_type !== null">{{
+                                    landscapeTypes[object.landscape_type]
+                                }}</p>
                         </PropertyListItem>
                         <PropertyListItem name="Ограничения">
-                            <p class="ObjectHoldingsTabs-content-property" v-if="object.land_use_restrictions !== null">{{
+                            <p class="ObjectHoldingsTabs-content-property" v-if="object.land_use_restrictions !== null">
+                                {{
                                     object.land_use_restrictions
                                 }}</p>
                         </PropertyListItem>
@@ -125,9 +132,9 @@
                 </div>
             </Tab>
             <Tab name="Сделки">
-<!--                <div class="ObjectHoldingsTabs-content">-->
-<!--                    <ObjectDeals :object="object"/>-->
-<!--                </div>-->
+                <!--                <div class="ObjectHoldingsTabs-content">-->
+                <!--                    <ObjectDeals :object="object"/>-->
+                <!--                </div>-->
             </Tab>
             <Tab name="Карта сделок"></Tab>
             <Tab name="Планировки"></Tab>

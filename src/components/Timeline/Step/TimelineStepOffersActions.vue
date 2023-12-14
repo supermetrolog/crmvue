@@ -180,7 +180,7 @@
 </template>
 
 <script>
-import {MixinStepActions, LetterSenderMixin} from "@/components/Timeline/mixins.js";
+import {LetterSenderMixin, MixinStepActions} from "@/components/Timeline/mixins.js";
 import {MixinAllObject} from "@/components/Company/Object/mixins.js";
 import CustomButton from "@/components/common/CustomButton.vue";
 import RefreshButton from "@/components/common/RefreshButton.vue";

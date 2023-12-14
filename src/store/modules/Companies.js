@@ -1,5 +1,5 @@
 import api from "@/api/api"
-import { waitHash } from "../../utils";
+import {waitHash} from "../../utils";
 
 const Companies = {
     state: {
@@ -13,7 +13,7 @@ const Companies = {
         company_wait_hash: null,
     },
     mutations: {
-        updateCompanies(state, { data, concat }) {
+        updateCompanies(state, {data, concat}) {
             state.pagination = data.pagination;
             if (concat) {
                 state.companies = state.companies.concat(data.data);
@@ -55,13 +55,13 @@ const Companies = {
                 context.commit('updateCompanies', companies);
             }
         },
-        async SEARCH_COMPANIES(context, { query, concat = false }) {
+        async SEARCH_COMPANIES(context, {query, concat = false}) {
             let hash = waitHash(query);
             context.commit('setCompanyWaitHash', hash);
             const data = await api.companies.searchCompanies(query);
             if (data) {
                 if (hash == context.getters.COMPANY_WAIT_HASH) {
-                    context.commit('updateCompanies', { data, concat });
+                    context.commit('updateCompanies', {data, concat});
 
                 } else {
                     return false;

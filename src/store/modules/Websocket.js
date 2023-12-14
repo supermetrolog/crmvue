@@ -1,5 +1,6 @@
-import { notify } from "@kyvg/vue3-notification";
-import { apiUrlHelperObject } from "@/plugins";
+import {notify} from "@kyvg/vue3-notification";
+import {apiUrlHelperObject} from "@/plugins";
+
 let notifyOptions = {
     group: "app",
     type: "success",
@@ -48,16 +49,16 @@ const Websocket = {
                 return;
             }
             let socket = new WebSocket(apiUrlHelperObject.wsUrl());
-            socket.onopen = function() {
+            socket.onopen = function () {
                 return context.dispatch('EVENT_WEBSOCKET_ON_OPEN');
             };
-            socket.onmessage = function(event) {
+            socket.onmessage = function (event) {
                 return context.dispatch('EVENT_WEBSOCKET_ON_MESSAGE', event);
             };
-            socket.onerror = function(error) {
+            socket.onerror = function (error) {
                 return context.dispatch('EVENT_WEBSOCKET_ON_ERROR', error);
             };
-            socket.onclose = function(event) {
+            socket.onclose = function (event) {
                 return context.dispatch('EVENT_WEBSOCKET_ON_CLOSE', event);
             };
             context.commit('updateSocket', socket);
@@ -103,7 +104,7 @@ const Websocket = {
                 context.dispatch('WEBSOCKET_RUN');
             }, 30000);
         },
-        EVENT_WEBSOCKET_ON_CLOSE({ getters, dispatch }, event) {
+        EVENT_WEBSOCKET_ON_CLOSE({getters, dispatch}, event) {
             if (event.wasClean) {
                 return;
             } else {
@@ -122,7 +123,7 @@ const Websocket = {
             if (!context.getters.SETED_USER_ID_FLAG) {
                 socket.send(JSON.stringify({
                     action: "setUser",
-                    data: { window_id: window.name, user_id: context.getters.THIS_USER.id },
+                    data: {window_id: window.name, user_id: context.getters.THIS_USER.id},
                 }));
             }
 

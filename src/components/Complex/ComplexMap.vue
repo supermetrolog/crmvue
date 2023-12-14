@@ -16,16 +16,16 @@
             <div class="ComplexMap-description-item" v-if="location.highwayRecord">
                 {{ ucFirst(location.highwayRecord.title) }} шоссе
             </div>
-                <div
-                        class="ComplexMap-description-item"
-                        v-if="location.metroRecord"
-                        :title="location.metroRecord.title"
-                >
-                    <div>
-                        <img :src="require(`@/assets/image/metro.png`)" alt="метро"/>
-                    </div>
-                    <span>{{ ucFirst(location.metroRecord.title, true) }}</span>
+            <div
+                class="ComplexMap-description-item"
+                v-if="location.metroRecord"
+                :title="location.metroRecord.title"
+            >
+                <div>
+                    <img :src="require(`@/assets/image/metro.png`)" alt="метро"/>
                 </div>
+                <span>{{ ucFirst(location.metroRecord.title, true) }}</span>
+            </div>
             <div class="ComplexMap-description-item" v-if="location.fromMkad">
                 {{ location.fromMkad }} км от МКАД
             </div>
