@@ -1,6 +1,6 @@
 <template>
     <div class="sidebar">
-        <div class="sidebar__avatar">
+        <div class="sidebar__avatar avatar">
             <router-link to="account">
                 <div class="avatar__container" v-if="THIS_USER">
                     <div class="avatar__preview">
@@ -8,8 +8,8 @@
                     </div>
                 </div>
             </router-link>
-            <hr/>
         </div>
+        <hr/>
         <SideBarMenu/>
     </div>
 </template>

@@ -12,80 +12,44 @@
         комм: {{ COMPANY.passive_why_comment }}</span
             >
         </p>
-        <transition
-            mode="out-in"
-            enter-active-class="animate__animated animate__zoomIn for__modal__fullscreen"
-            leave-active-class="animate__animated animate__zoomOut for__modal__fullscreen"
-        >
-            <Timeline
-                v-if="timelineVisible && COMPANY && COMPANY_REQUESTS[0]"
-                @close="closeTimeline"
-            />
-        </transition>
-        <transition
-            mode="out-in"
-            enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-            leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-        >
-            <FormCompanyDeal
-                @close="clickCloseDealForm"
-                :formdata="deal"
-                @updated="updatedDeal"
-                v-if="dealFormVisible"
-            />
-        </transition>
-        <transition
-            mode="out-in"
-            enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-            leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-        >
-            <FormCompanyRequest
-                @closeCompanyForm="clickCloseCompanyRequestForm"
-                :company_id="COMPANY.id"
-                :formdata="request"
-                @created="createdRequest"
-                @updated="updatedRequest"
-                v-if="companyRequestFormVisible"
-            />
-        </transition>
-        <transition
-            mode="out-in"
-            enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-            leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-        >
-            <FormCompanyContact
-                @closeCompanyForm="clickCloseCompanyContactForm"
-                :company_id="COMPANY.id"
-                :formdata="contact"
-                @created="createdContact"
-                @updated="updatedContact"
-                v-if="companyContactFormVisible"
-            />
-        </transition>
-        <transition
-            mode="out-in"
-            enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-            leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-        >
-            <FormCompany
-                v-if="companyFormVisible"
-                :formdata="COMPANY"
-                @closeCompanyForm="clickCloseCompanyForm"
-                @updated="updatedCompany"
-            />
-        </transition>
-        <transition
-            mode="out-in"
-            enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-            leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-        >
-            <CompanyContactModal
-                v-if="contactModalVisible"
-                :contact="contact"
-                @closeContactModal="clickCloseContactModal"
-                @clickEditContact="openContactFormForUpdate"
-            />
-        </transition>
+        <Timeline
+            v-if="timelineVisible && COMPANY && COMPANY_REQUESTS[0]"
+            @close="closeTimeline"
+        />
+        <FormCompanyDeal
+            @close="clickCloseDealForm"
+            :formdata="deal"
+            @updated="updatedDeal"
+            v-if="dealFormVisible"
+        />
+        <FormCompanyRequest
+            @closeCompanyForm="clickCloseCompanyRequestForm"
+            :company_id="COMPANY.id"
+            :formdata="request"
+            @created="createdRequest"
+            @updated="updatedRequest"
+            v-if="companyRequestFormVisible"
+        />
+        <FormCompanyContact
+            @closeCompanyForm="clickCloseCompanyContactForm"
+            :company_id="COMPANY.id"
+            :formdata="contact"
+            @created="createdContact"
+            @updated="updatedContact"
+            v-if="companyContactFormVisible"
+        />
+        <FormCompany
+            v-if="companyFormVisible"
+            :formdata="COMPANY"
+            @closeCompanyForm="clickCloseCompanyForm"
+            @updated="updatedCompany"
+        />
+        <CompanyContactModal
+            v-if="contactModalVisible"
+            :contact="contact"
+            @closeContactModal="clickCloseContactModal"
+            @clickEditContact="openContactFormForUpdate"
+        />
         <div class="company-wrapper">
             <Loader v-if="loaderCompanyDetailInfo"></Loader>
             <CompanyBox

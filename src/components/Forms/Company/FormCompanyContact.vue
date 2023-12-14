@@ -275,7 +275,7 @@ export default {
         };
     },
     props: {
-        formsdata: {
+        formdata: {
             type: Object,
             default: null,
         },
@@ -397,7 +397,7 @@ export default {
             this.v$.$validate();
             if (!this.v$.forms.$error) {
                 this.loader = true;
-                if (this.formsdata) {
+                if (this.formdata) {
                     this.updateContact();
                 } else {
                     this.createContact();
@@ -493,10 +493,10 @@ export default {
         async searchCompany(query) {
             let result = null;
             let array = [];
-            if (this.formsdata || this.company_id) {
+            if (this.formdata || this.company_id) {
                 if (!this.selectedCompany) {
                     this.selectedCompany = await api.companies.getCompany(
-                        this.formsdata ? this.formsdata.company_id : this.company_id
+                        this.formdata ? this.formdata.company_id : this.company_id
                     );
                 }
 
@@ -516,7 +516,7 @@ export default {
         },
 
         clickCloseModal() {
-            this.$emit("closeCompanyforms");
+            this.$emit("closeCompanyForm");
         },
         changeIsMainEmail(changedEmail) {
             this.forms.emails = this.forms.emails.map((elem) => {
@@ -544,8 +544,8 @@ export default {
         await this.FETCH_CONSULTANT_LIST();
         this.forms.company_id = this.company_id;
         this.forms.phones = this.phones;
-        if (this.formsdata) {
-            this.forms = {...this.forms, ...this.formsdata};
+        if (this.formdata) {
+            this.forms = {...this.forms, ...this.formdata};
         }
         this.loader = false;
     },
@@ -556,7 +556,7 @@ export default {
             deep: true,
         },
     },
-    emits: ["closeCompanyforms", "updated", "created"],
+    emits: ["closeCompanyForm", "updated", "created"],
 };
 </script>
 

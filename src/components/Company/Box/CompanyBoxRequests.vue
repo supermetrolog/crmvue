@@ -20,7 +20,7 @@
         @close="closeDisableForm"
         @disabled="onRequestIsDisabled"
     />
-    <CompanyBoxLayout class="CompanyBoxRequests" :class="'grid-d'">
+    <CompanyBoxLayout class="CompanyBoxRequests grid-d">
         <template #header>
             <div class="CompanyBoxRequests-header">
         <span
