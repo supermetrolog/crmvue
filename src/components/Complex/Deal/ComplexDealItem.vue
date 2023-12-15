@@ -5,8 +5,8 @@
             v-if="deal.additionalDetails"
             :company="deal.builder"
             :consultant="deal.consultant"
-            :additionalDetails="deal.additionalDetails"
-            :buildingInfo="deal.buildingInfo"
+            :additional-details="deal.additionalDetails"
+            :building-info="deal.buildingInfo"
             :owner="deal.owner"
         />
     </div>

@@ -1,7 +1,7 @@
 <template>
     <div class="trade-offer-table">
         <p class="trade-offer-table__subtitle">{{ subtitle }}</p>
-        <with-unit-type class="trade-offer-table__title" :unitType="titleUnitType">
+        <with-unit-type class="trade-offer-table__title" :unit-type="titleUnitType">
             {{ title }}
         </with-unit-type>
         <ul class="trade-offer-table__list">
@@ -9,7 +9,7 @@
                 <p class="trade-offer-table__text trade-offer-table__text_label">
                     {{ property.label }}
                 </p>
-                <with-unit-type class="trade-offer-table__text" :unitType="propertyUnitType">
+                <with-unit-type class="trade-offer-table__text" :unit-type="propertyUnitType">
                     {{ $formatter.numberOrRangeNew(property.valueMin, property.valueMax) }}
                 </with-unit-type>
             </li>

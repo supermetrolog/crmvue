@@ -15,7 +15,7 @@
                     {{ relationships }}
                 </p>
                 <div class="company">
-                    <router-link :to="'/companies/' + contact.company_id">{{ contact.company.full_name }} </router-link>
+                    <router-link :to="'/companies/' + contact.company_id">{{ contact.company.full_name }}</router-link>
                     <div class="rating">
                         <i
                             v-for="rating in ratingOptions"

@@ -1,37 +1,31 @@
 <template>
     <div class="step-action">
         <teleport to="body">
-            <transition
-                mode="out-in"
-                enter-active-class="animate__animated animate__zoomIn for__modal"
-                leave-active-class="animate__animated animate__zoomOut for__modal"
+            <Modal
+                v-if="sendObjectsModalVisible || sendRouteModalVisible"
+                @close="closeSendModal"
+                title="Отправка"
+                class="autosize"
             >
-                <Modal
-                    v-if="sendObjectsModalVisible || sendRouteModalVisible"
-                    @close="closeSendModal"
-                    title="Отправка"
-                    class="autosize"
+                <FormLetter
+                    @send="sendLetter"
+                    :formdata="sendRouteModalVisible ? sendRouteFormData : sendObjectsFormdata"
+                    :loader="loader"
                 >
-                    <FormLetter
-                        @send="sendLetter"
-                        :formdata="sendRouteModalVisible ? sendRouteFormData : sendObjectsFormdata"
-                        :loader="loader"
-                    >
-                        <div v-if="sendObjectsModalVisible" class="objects">
-                            <CompanyObjectsList
-                                @select="select"
-                                @unSelect="unSelect"
-                                @addComment="addComment"
-                                :objects="selectedObjects"
-                                :selectedObjects="selectedObjects"
-                                :disabled="true"
-                                col="col-3"
-                                label="Выбранные предложения"
-                            />
-                        </div>
-                    </FormLetter>
-                </Modal>
-            </transition>
+                    <div v-if="sendObjectsModalVisible" class="objects">
+                        <CompanyObjectsList
+                            @select="select"
+                            @unSelect="unSelect"
+                            @addComment="addComment"
+                            :objects="selectedObjects"
+                            :selected-objects="selectedObjects"
+                            :disabled="true"
+                            col="col-3"
+                            label="Выбранные предложения"
+                        />
+                    </div>
+                </FormLetter>
+            </Modal>
         </teleport>
         <div class="row no-gutters inner scroller">
             <div class="col-12">
@@ -61,8 +55,8 @@
                                 :objects="submittedObjects"
                                 :disabled="true"
                                 :loader="loader"
-                                :viewMode="viewMode"
-                                :currentStepId="step.id"
+                                :view-mode="viewMode"
+                                :current-step-id="step.id"
                                 :label="
                                     'Выбранные предложения' +
                                     (submittedObjects.length ? ` (${submittedObjects.length})` : '')
@@ -78,13 +72,13 @@
                                 @unSelect="unSelect"
                                 @addComment="addComment"
                                 :objects="notSubmittedObjects"
-                                :currentObjects="step.timelineStepObjects"
-                                :selectedObjects="selectedObjects"
+                                :current-objects="step.timelineStepObjects"
+                                :selected-objects="selectedObjects"
                                 :disabled="disabled"
-                                :withSeparator="true"
+                                :with-separator="true"
                                 :loader="loader"
-                                :viewMode="viewMode"
-                                :currentStepId="step.id"
+                                :view-mode="viewMode"
+                                :current-step-id="step.id"
                                 :label="
                                     submittedObjects?.length
                                         ? `Оставшиеся предложения (${notSubmittedObjects.length})`

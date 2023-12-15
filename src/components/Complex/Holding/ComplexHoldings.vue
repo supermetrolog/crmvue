@@ -12,22 +12,10 @@
             </div>
         </div>
         <teleport to="body">
-            <transition
-                mode="out-in"
-                enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-                leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-            >
-                <FormComplexBuildingCreate v-if="createBuildingFormVisible" @close="clickCloseCreateBuildingForm" />
-            </transition>
+            <FormComplexBuildingCreate v-if="createBuildingFormVisible" @close="clickCloseCreateBuildingForm" />
         </teleport>
         <teleport to="body">
-            <transition
-                mode="out-in"
-                enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-                leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-            >
-                <FormComplexPlotCreate v-if="createPlotFormVisible" @close="clickCloseCreatePlotForm" />
-            </transition>
+            <FormComplexPlotCreate v-if="createPlotFormVisible" @close="clickCloseCreatePlotForm" />
         </teleport>
         <div class="ObjectHoldings-body">
             <ComplexHolding v-for="object in objects" :key="object.id" :object="object" />

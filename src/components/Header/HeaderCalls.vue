@@ -16,14 +16,14 @@
                         <div v-if="CURRENT_CALLS.length" class="old header">
                             <p class="title text-left">текущие звонки</p>
                         </div>
-                        <HeaderCallsItem v-for="call of CURRENT_CALLS" :key="call.id" :call="call" isNew />
+                        <HeaderCallsItem v-for="call of CURRENT_CALLS" :key="call.id" :call="call" is-new />
                         <div class="new header">
                             <p class="text-left title">новые звонки</p>
                         </div>
                         <div v-if="!newCall.length" class="new header mt-4 mb-5">
                             <p class="text-center title no-data">нет новых</p>
                         </div>
-                        <HeaderCallsItem v-for="call of newCall" :key="call.id" :call="call" isNew />
+                        <HeaderCallsItem v-for="call of newCall" :key="call.id" :call="call" is-new />
                         <div v-if="oldCall.length" class="old header">
                             <p class="title text-left">просмотренные</p>
                         </div>

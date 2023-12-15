@@ -11,9 +11,9 @@
                     v-if="mounted"
                     @openFilters="searchFormModalVisible = true"
                     class="col-12"
-                    :offersCount="offersCount"
-                    :objectsCount="objectsCount"
-                    :isMap="true"
+                    :offers-count="offersCount"
+                    :objects-count="objectsCount"
+                    :is-map="true"
                 />
                 <div class="col-12 my-2">
                     <div class="company-table__filters">
@@ -34,7 +34,7 @@
                         @selectionDone="filterByPolygon"
                         @removedDone="removedPolygonFromFilters"
                         :list="allOffersForYmap"
-                        :polygonCoordinates="polygonCoordinates"
+                        :polygon-coordinates="polygonCoordinates"
                         :styles="ymapStyles"
                     />
                 </div>

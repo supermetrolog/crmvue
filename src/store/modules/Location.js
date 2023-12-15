@@ -28,4 +28,4 @@ const Location = {
     }
 };
 
-export default Location
+export default Location;

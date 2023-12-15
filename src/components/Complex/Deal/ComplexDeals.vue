@@ -24,7 +24,7 @@
                 :key="deal.id"
                 @choose="choseDeal"
                 :deal="deal"
-                :isCurrent="currentDealId === deal.id"
+                :is-current="currentDealId === deal.id"
             />
         </div>
         <ComplexDealItem :object="object" :deal="currentDeal" />

@@ -15,8 +15,8 @@
                     :label="additionalDetails.taxForm"
                     :exploitation="additionalDetails.exploitation"
                     :communal="additionalDetails.communal"
-                    :extraCosts="additionalDetails.extraCosts"
-                    :specialTerms="additionalDetails.specialTerms"
+                    :extra-costs="additionalDetails.extraCosts"
+                    :special-terms="additionalDetails.specialTerms"
                     :business="additionalDetails.business"
                 />
                 <deal-owner :owner="owner" />
@@ -27,7 +27,7 @@
 
 <script>
 import ComplexDealInfoHeader from '@/components/Complex/Deal/ComplexDealInfoHeader.vue';
-import ComplexDealInfoDetailed from '@/components/Complex/Deal/ComplexDealDetailedInfo.vue';
+import ComplexDealInfoDetailed from '@/components/Complex/Deal/DealDetailedInfo.vue';
 
 export default {
     name: 'ComplexDealInfo',

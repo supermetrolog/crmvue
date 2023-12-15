@@ -2,7 +2,7 @@
     <tr class="DropdownSwitcherRow">
         <td></td>
         <td :colspan="colspan">
-            <div class="CompanyTableItem-block-actions">
+            <div class="company-table-item__actions">
                 <slot />
             </div>
         </td>

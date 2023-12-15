@@ -7,7 +7,7 @@
             </div>
             <div class="col-1"></div>
             <div class="col-1 list">
-                <CallerManagerList @clickItem="clickItem" @updateItem="updateItem" :activeItem="activeItem" />
+                <CallerManagerList @clickItem="clickItem" @updateItem="updateItem" :active-item="activeItem" />
             </div>
         </div>
     </div>

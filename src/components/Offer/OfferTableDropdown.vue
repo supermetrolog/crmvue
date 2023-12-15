@@ -33,7 +33,7 @@
                         activeRentOffers.length
                     }</span>`"
                 >
-                    <OfferMiniList @toggleAvito="handleToggleAvito" :miniOffers="activeRentOffers" />
+                    <OfferMiniList @toggleAvito="handleToggleAvito" :mini-offers="activeRentOffers" />
                 </Tab>
                 <Tab
                     v-if="archiveRentOffers.length"
@@ -41,7 +41,7 @@
                     name="ТП АРЕНДА АРХИВ"
                     :suffix="`<span class='suffix suffix-none'>1</span>`"
                 >
-                    <OfferMiniList @toggleAvito="handleToggleAvito" :miniOffers="archiveRentOffers" />
+                    <OfferMiniList @toggleAvito="handleToggleAvito" :mini-offers="archiveRentOffers" />
                 </Tab>
                 <Tab
                     v-if="salesOffers.array.length"
@@ -51,7 +51,7 @@
                         salesOffers.countOfActive
                     }</span>`"
                 >
-                    <OfferMiniList @toggleAvito="handleToggleAvito" :miniOffers="salesOffers.array" />
+                    <OfferMiniList @toggleAvito="handleToggleAvito" :mini-offers="salesOffers.array" />
                 </Tab>
                 <Tab
                     v-if="storageOffers.array.length"
@@ -61,7 +61,7 @@
                         storageOffers.countOfActive
                     }</span>`"
                 >
-                    <OfferMiniList @toggleAvito="handleToggleAvito" :miniOffers="storageOffers.array" />
+                    <OfferMiniList @toggleAvito="handleToggleAvito" :mini-offers="storageOffers.array" />
                 </Tab>
             </Tabs>
         </td>

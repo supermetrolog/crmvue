@@ -1,9 +1,9 @@
 <template>
     <div class="DealFloorSection" :class="getAppropriateSectionClass(section)">
-        <p v-if="this.section.company" class="DealFloorSection-text DealFloorSection-text_label">
+        <p v-if="section.company" class="DealFloorSection-text DealFloorSection-text_label">
             {{ section.company.name }}
         </p>
-        <with-unit-type class="DealFloorSection-text DealFloorSection-text_area" :unitType="unitTypes.SQUARE_METERS">
+        <with-unit-type class="DealFloorSection-text DealFloorSection-text_area" :unit-type="unitTypes.SQUARE_METERS">
             {{ formattedArea }}
         </with-unit-type>
         <p class="DealFloorSection-status" :class="sectionAdditionalClass">

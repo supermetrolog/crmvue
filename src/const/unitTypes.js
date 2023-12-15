@@ -19,4 +19,3 @@ export const unitTypes = {
     METERS: 'Meters',
     TON: 'Tons'
 };
-

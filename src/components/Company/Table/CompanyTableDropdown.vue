@@ -4,15 +4,15 @@
             v-if="activeRequests.length"
             v-model="requestsIsOpen"
             :title="'Запросы'"
-            :mainNumber="activeRequests.length"
-            :sideNumber="archiveRequests.length"
+            :main-number="activeRequests.length"
+            :side-number="archiveRequests.length"
             class="text-success"
         />
         <Dropdown
             v-if="objects.length"
             v-model="objectsIsOpen"
             :title="'Объекты'"
-            :mainNumber="objects.length"
+            :main-number="objects.length"
             class="text-warning"
         />
     </CompanyTableDropdownRow>
@@ -23,7 +23,7 @@
             @clickTimeline="clickTimeline(activeRequest)"
             :class="{ CompanyTableOdd: odd, CompanyTableEven: !odd }"
             :timelines="activeRequest.timelines"
-            :requestName="activeRequest.format_name"
+            :request-name="activeRequest.format_name"
             :date="activeRequest.updated_at || activeRequest.created_at"
         />
     </template>
@@ -32,7 +32,7 @@
             <Dropdown
                 v-model="archiveRequestsIsOpen"
                 :title="'Архивные'"
-                :mainNumber="archiveRequests.length"
+                :main-number="archiveRequests.length"
                 class="text-grey"
             />
         </CompanyTableDropdownRow>
@@ -45,7 +45,7 @@
                 class="content-archive"
                 :class="{ CompanyTableOdd: odd, CompanyTableEven: !odd }"
                 :timelines="archiveRequest.timelines"
-                :requestName="archiveRequest.format_name"
+                :request-name="archiveRequest.format_name"
                 :date="archiveRequest.updated_at || archiveRequest.created_at"
             />
         </template>
@@ -56,7 +56,7 @@
             :class="{ CompanyTableOdd: odd, CompanyTableEven: !odd }"
             :colspan="5"
         >
-            <Dropdown v-model="objectsIsOpen" :title="'Объекты'" class="text-warning" :mainNumber="objects.length" />
+            <Dropdown v-model="objectsIsOpen" :title="'Объекты'" class="text-warning" :main-number="objects.length" />
         </CompanyTableDropdownRow>
         <CompanyTableObjectRow
             v-for="object in objects"

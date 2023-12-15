@@ -4,8 +4,8 @@
             <TimelineHeader
                 @close="$emit('close')"
                 :disabled="disabled"
-                :currentRequest="currentRequest"
-                :timelineExist="timelineNotFoundFlag"
+                :current-request="currentRequest"
+                :timeline-exist="timelineNotFoundFlag"
             />
         </template>
         <div class="container-timeline">
@@ -19,8 +19,8 @@
                         <div v-if="!loader && !timelineNotFoundFlag" class="timeline col-12">
                             <TimelineMini
                                 @clickItem="clickStep"
-                                :currentSteps="this.TIMELINE.timelineSteps"
-                                :selectedStep="selectedStep"
+                                :current-steps="TIMELINE.timelineSteps"
+                                :selected-step="selectedStep"
                             />
                         </div>
                     </div>
@@ -36,7 +36,7 @@
                             @updatedObjects="updatedObjects"
                             @updateStep="clickUpdateStep"
                             :step="selectedStep"
-                            :loaderForStep="loaderForStep"
+                            :loader-for-step="loaderForStep"
                             :disabled="disabled"
                         >
                         </component>

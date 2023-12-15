@@ -81,7 +81,7 @@ class="text-dark"
                                         <p>
                                             {{
                                                 request.regions
-                                                    .map(elem => this.$formatter.text().ucFirst(elem.info.title))
+                                                    .map(elem => $formatter.text().ucFirst(elem.info.title))
                                                     .join(', ')
                                             }}
                                         </p>
@@ -91,7 +91,7 @@ class="text-dark"
                                         <p class="d-inline">
                                             {{
                                                 request.directions
-                                                    .map(elem => this.directionList[elem.direction][2])
+                                                    .map(elem => directionList[elem.direction][2])
                                                     .join(', ')
                                             }}
                                         </p>
@@ -100,9 +100,7 @@ class="text-dark"
                                         <p class="d-inline"><b>Москва: </b></p>
                                         <p class="d-inline">
                                             {{
-                                                request.districts
-                                                    .map(elem => this.districtList[elem.district][1])
-                                                    .join(', ')
+                                                request.districts.map(elem => districtList[elem.district][1]).join(', ')
                                             }}
                                         </p>
                                     </div>

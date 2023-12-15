@@ -30,7 +30,7 @@
                                     :key="phone.id"
                                     :phone="phone"
                                     :contact="generalContact"
-                                    classList="text-left"
+                                    class-list="text-left"
                                 />
                             </strong>
                             <p v-else>&#8212;</p>

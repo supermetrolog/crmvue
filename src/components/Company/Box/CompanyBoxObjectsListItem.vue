@@ -32,15 +32,15 @@
                     v-if="object.offerMix.length"
                     v-model="offersIsOpen"
                     :title="'Предложения'"
-                    :mainNumber="activeOffers.length"
-                    :sideNumber="archiveOffers.length"
+                    :main-number="activeOffers.length"
+                    :side-number="archiveOffers.length"
                 />
                 <Dropdown
                     v-if="object.deals.length"
                     v-model="rentersIsOpen"
                     :title="'Арендаторы'"
-                    :mainNumber="ourDeals.length"
-                    :sideNumber="enemyDeals.length"
+                    :main-number="ourDeals.length"
+                    :side-number="enemyDeals.length"
                 />
             </div>
             <div class="CompanyBoxObjectsListItem-dropdown-offers" :class="{ open: offersIsOpen }">

@@ -1,15 +1,11 @@
 <template>
     <div class="company-request-list company-contact-list">
-        <transition
-            mode="out-in"
-            enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-            leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-        >
+        <AnimationTransition>
             <Modal v-if="deletedContactItem" @close="clickCloseModal" title="Удаление контакта" class="autosize">
                 <div class="row no-gutters">
                     <div class="col-12 text-center">
                         <h4 class="text-dark">Вы уверены что хотите удалить контакт?</h4>
-                        <CompanyContactItem :contact="deletedContactItem" :reedOnly="true" />
+                        <CompanyContactItem :contact="deletedContactItem" :reed-only="true" />
                     </div>
                     <div class="col-12 mt-4 text-center">
                         <Loader v-if="deleteLoader" class="center small" />
@@ -26,7 +22,7 @@
                     </div>
                 </div>
             </Modal>
-        </transition>
+        </AnimationTransition>
         <CompanyContactItem
             v-for="contact of contacts"
             :key="contact.id"
@@ -34,7 +30,7 @@
             @createComment="createComment"
             @deleteContact="clickDeleteContact"
             :contact="contact"
-            :createCommentLoader="createCommentLoader"
+            :create-comment-loader="createCommentLoader"
         />
     </div>
 </template>
@@ -44,10 +40,12 @@ import { mapActions } from 'vuex';
 import Modal from '@/components/common/Modal.vue';
 import Loader from '@/components/common/Loader.vue';
 import CompanyContactItem from '@/components/Company/Contact/CompanyContactItem.vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
 
 export default {
     name: 'CompanyContactList',
     components: {
+        AnimationTransition,
         CompanyContactItem,
         Loader,
         Modal

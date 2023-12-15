@@ -72,7 +72,7 @@
                                     :key="phone.id"
                                     :phone="phone"
                                     :contact="generalContact"
-                                    classList="text-right"
+                                    class-list="text-right"
                                 />
                             </template>
                             <p v-else>&#8212;</p>
@@ -264,7 +264,7 @@
                             <strong>Документы: </strong>
                         </div>
                         <div class="col-8 text-right align-self-center">
-                            <FileInput v-if="company.files.length" :data="company.files" :reedOnly="true" />
+                            <FileInput v-if="company.files.length" :data="company.files" :reed-only="true" />
                             <p v-else>&#8212;</p>
                         </div>
                     </div>

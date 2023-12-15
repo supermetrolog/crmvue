@@ -1,9 +1,7 @@
 <template>
     <strong>
         Контакты
-        <small @click="this.$emit('clickCreateContact')" class="edit_btn CompanyBoxContactList-create">
-            [создать]
-        </small>
+        <small @click="$emit('clickCreateContact')" class="edit_btn CompanyBoxContactList-create"> [создать] </small>
     </strong>
     <div class="CompanyBoxContactList">
         <CompanyBoxContactListItem v-for="contact in contacts" :key="contact.id" :contact="contact" />

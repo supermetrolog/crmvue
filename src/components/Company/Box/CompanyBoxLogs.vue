@@ -4,8 +4,8 @@
             <span>Лог работы с {{ headerTitle }}</span>
         </template>
         <template #content>
-            <CompanyLogsList @infinite="load" :logs="this.COMPANY_LOGS" :logsCount="this.COMPANY_LOGS_COUNT" />
-            <Form @submit="onSubmit(this.company.id)" class="CompanyBoxLogs-form">
+            <CompanyLogsList @infinite="load" :logs="COMPANY_LOGS" :logs-count="COMPANY_LOGS_COUNT" />
+            <Form @submit="onSubmit(company.id)" class="CompanyBoxLogs-form">
                 <FormGroup>
                     <Textarea
                         v-model="form.comment"
@@ -13,7 +13,7 @@
                         :v="v$.form.comment"
                         placeholder="Добавьте комментарий"
                     />
-                    <Submit class="CompanyBoxLogs-form-btn mt-1" buttonClasses="btn-primary"> добавить </Submit>
+                    <Submit class="CompanyBoxLogs-form-btn mt-1" button-classes="btn-primary"> добавить</Submit>
                     <div v-if="loader" class="col-12 mt-4">
                         <Loader class="center small py-2 no-absolute" />
                     </div>

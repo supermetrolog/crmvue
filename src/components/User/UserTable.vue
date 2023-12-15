@@ -1,37 +1,26 @@
 <template>
     <div class="users-table">
-        <transition
-            mode="out-in"
-            enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-            leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-        >
-            <Modal v-if="userForDelete" @close="clickCloseModal" title="Удаление контакта" class="autosize">
-                <div class="row no-gutters">
-                    <div class="col-12 text-center">
-                        <h4 class="text-dark">
-                            Вы уверены что хотите удалить пользователя
-                            <span
-class="text-grey"
-                                >"{{ userForDelete.userProfile.first_name }}
-                                {{ userForDelete.userProfile.middle_name }}"</span
-                            >
-                            ?
-                        </h4>
-                        <h5 class="m-0 text-success_alt">Username: {{ userForDelete.username }}</h5>
-                    </div>
-                    <div class="col-12 mt-4 text-center">
-                        <Loader v-if="deleteLoader" class="center small" />
-                        <button @click="deleteUser(userForDelete)" class="btn btn-danger" :disabled="deleteLoader">
-                            Удалить
-                        </button>
-                        <button @click="clickCloseModal" class="btn btn-primary ml-1" :disabled="deleteLoader">
-                            Нет
-                        </button>
-                    </div>
+        <Modal v-if="userForDelete" @close="clickCloseModal" title="Удаление контакта" class="autosize">
+            <div class="row no-gutters">
+                <div class="col-12 text-center">
+                    <h4 class="text-dark">
+                        Вы уверены что хотите удалить пользователя
+                        <span class="text-grey">
+                            "{{ userForDelete.userProfile.first_name }} {{ userForDelete.userProfile.middle_name }}"
+                        </span>
+                        ?
+                    </h4>
+                    <h5 class="m-0 text-success_alt">Username: {{ userForDelete.username }}</h5>
                 </div>
-            </Modal>
-        </transition>
-
+                <div class="col-12 mt-4 text-center">
+                    <Loader v-if="deleteLoader" class="center small" />
+                    <button @click="deleteUser(userForDelete)" class="btn btn-danger" :disabled="deleteLoader">
+                        Удалить
+                    </button>
+                    <button @click="clickCloseModal" class="btn btn-primary ml-1" :disabled="deleteLoader">Нет</button>
+                </div>
+            </div>
+        </Modal>
         <Table>
             <template #thead>
                 <Tr>

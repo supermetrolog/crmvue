@@ -8,7 +8,7 @@
             :formdata="contactForUpdate"
             :phones="[
                 {
-                    phone: this.phone.phone,
+                    phone: phone.phone,
                     exten: null
                 }
             ]"
@@ -96,6 +96,7 @@ export default {
         FormCompanyContact,
         Company
     },
+    emits: ['createdContact'],
     props: {
         phone: {
             type: Object,

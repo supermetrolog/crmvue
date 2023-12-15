@@ -2,7 +2,7 @@
     <li class="PropertyListItem">
         <p class="PropertyListItem-name">{{ name }}:</p>
         <div class="PropertyListItem-value">
-            <slot> не заполнено </slot>
+            <slot> не заполнено</slot>
         </div>
     </li>
 </template>

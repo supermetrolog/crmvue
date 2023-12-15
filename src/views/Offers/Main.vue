@@ -10,8 +10,8 @@
                 <FormOfferSearchExternal
                     @openFilters="toggleSearchFormModalVisible"
                     class="col-12"
-                    :offersCount="OFFERS_PAGINATION ? OFFERS_PAGINATION.totalCount : 0"
-                    :objectsCount="OFFERS_PAGINATION ? OFFERS_PAGINATION.totalCount : 0"
+                    :offers-count="OFFERS_PAGINATION ? OFFERS_PAGINATION.totalCount : 0"
+                    :objects-count="OFFERS_PAGINATION ? OFFERS_PAGINATION.totalCount : 0"
                 />
                 <div class="col-12 my-2">
                     <div class="company-table__filters">
@@ -41,13 +41,13 @@
                 <div class="col-12 offers-page__table">
                     <Loader v-if="loader && !OFFERS.length" class="center" />
                     <OfferTable
-                        v-if="OFFERS.length && !this.isMobile"
+                        v-if="OFFERS.length && !isMobile"
                         @deleteFavoriteOffer="deleteFavoriteOffer"
                         :offers="OFFERS"
                         :loader="loader"
                     />
                     <OfferTableMobile
-                        v-if="OFFERS.length && this.isMobile"
+                        v-if="OFFERS.length && isMobile"
                         @deleteFavoriteOffer="deleteFavoriteOffer"
                         :offers="OFFERS"
                         :loader="loader"

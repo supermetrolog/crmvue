@@ -1,5 +1,5 @@
 // import axios from "axios"
-import api from "@/api/api"
+import api from '@/api/api';
 
 const Timeline = {
     state: {
@@ -13,12 +13,12 @@ const Timeline = {
             state.timelineList = data.timelineList;
         },
         updateStep(state, data) {
-            state.timeline.timelineSteps = state.timeline.timelineSteps.map((step) => {
+            state.timeline.timelineSteps = state.timeline.timelineSteps.map(step => {
                 if (step.id === data.id) {
                     step = data;
                 }
                 return step;
-            })
+            });
         },
         updateTimelineComments(state, data) {
             state.timelineComments = data;
@@ -27,7 +27,7 @@ const Timeline = {
     actions: {
         async FETCH_TIMELINE(context, data) {
             const timeline = await api.timeline.getTimeline(data.consultant_id, data.request_id);
-            context.commit('updateTimeline', timeline)
+            context.commit('updateTimeline', timeline);
         },
         async UPDATE_STEP(context, newStep) {
             // context.commit('updateStep', newStep)
@@ -46,19 +46,19 @@ const Timeline = {
     },
     getters: {
         TIMELINE(state) {
-            return state.timeline
+            return state.timeline;
         },
         TIMELINE_LIST(state) {
-            return state.timelineList
+            return state.timelineList;
         },
         TIMELINE_REQUEST_ID(state) {
-            return state.timeline.request_id
+            return state.timeline.request_id;
         },
         TIMELINE_COMMENTS(state) {
             return state.timelineComments;
         }
     }
-}
+};
 
 export default Timeline;
 /*

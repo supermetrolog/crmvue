@@ -1,29 +1,25 @@
 <template>
     <teleport to="body">
-        <transition
-            mode="out-in"
-            enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-            leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-        >
-            <FormCompanyDeal v-if="dealFormVisible" @close="clickCloseDealForm" />
-        </transition>
+        <FormCompanyDeal v-if="dealFormVisible" @close="clickCloseDealForm" />
     </teleport>
     <div class="row">
         <div class="col-md-4 col-8 ml-auto">
-            <button @click="clickOpenDealForm" class="btn btn-primary btn-large">
+            <Button @click="clickOpenDealForm" small icon>
                 создать сделку
                 <i class="ml-2 fa-solid fa-bolt"></i>
-            </button>
+            </Button>
         </div>
     </div>
 </template>
 
 <script>
 import FormCompanyDeal from '@/components/Forms/Company/FormCompanyDeal.vue';
+import Button from '@/components/common/Button.vue';
 
 export default {
     name: 'HeaderActions',
     components: {
+        Button,
         FormCompanyDeal
     },
     data() {

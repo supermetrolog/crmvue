@@ -234,6 +234,7 @@ export class DealDoneComment extends CommentWithAutoSetComment {
 
 export class DealOffersNotFound extends CommentWithAutoSetComment {
     _setComment() {
-        this.comment = "Сделка провалилась, не отчаивайтесь, разберите ситуацию, начните все заново и у вас все получится";
+        this.comment =
+            'Сделка провалилась, не отчаивайтесь, разберите ситуацию, начните все заново и у вас все получится';
     }
 }

@@ -10,8 +10,8 @@
                 'MiniTimeline-step-done': completedStep(timelineStep[0]),
                 'MiniTimeline-step-in_process': inProcessStep(timelineStep[0]),
                 'MiniTimeline-step-attention': attentionStep(timelineStep[0]),
-                'MiniTimeline-step-selected': this.selectedStep.number === timelineStep[0],
-                'MiniTimeline-step-prev': this.selectedStep.number === timelineStep[0] + 1
+                'MiniTimeline-step-selected': selectedStep.number === timelineStep[0],
+                'MiniTimeline-step-prev': selectedStep.number === timelineStep[0] + 1
             }"
         >
             <div class="MiniTimeline-arrow MiniTimeline-arrow-top"></div>
@@ -25,7 +25,7 @@ class="step-name"
                 </span>
             </div>
             <div class="MiniTimeline-arrow MiniTimeline-arrow-bottom"></div>
-            <div v-if="this.selectedStep.number === timelineStep[0]" class="MiniTimeline-step-parallelogram"></div>
+            <div v-if="selectedStep.number === timelineStep[0]" class="MiniTimeline-step-parallelogram"></div>
         </div>
     </div>
 </template>

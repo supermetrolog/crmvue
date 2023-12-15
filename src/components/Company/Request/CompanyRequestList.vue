@@ -1,59 +1,35 @@
 <template>
     <div class="company-request-list fuck">
-        <transition
-            mode="out-in"
-            enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-            leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-        >
-            <Modal v-if="deletedRequestItem" @close="clickCloseModal" title="Удаление запроса " class="action-modal">
-                <div class="row no-gutters">
-                    <div class="col-12 text-center">
-                        <h4 class="text-dark">Вы уверены что хотите удалить запрос?</h4>
-                        <CompanyRequestItem :request="deletedRequestItem" :reedOnly="true" />
-                    </div>
-                    <div class="col-12 mt-4 text-center">
-                        <Loader v-if="deleteLoader" class="center small" />
-                        <button
-                            @click="deleteRequest(deletedRequestItem)"
-                            class="btn btn-danger"
-                            :disabled="deleteLoader"
-                        >
-                            Удалить
-                        </button>
-                        <button @click="clickCloseModal" class="btn btn-primary ml-1" :disabled="deleteLoader">
-                            Нет
-                        </button>
-                    </div>
+        <Modal v-if="deletedRequestItem" @close="clickCloseModal" title="Удаление запроса " class="action-modal">
+            <div class="row no-gutters">
+                <div class="col-12 text-center">
+                    <h4 class="text-dark">Вы уверены что хотите удалить запрос?</h4>
+                    <CompanyRequestItem :request="deletedRequestItem" :reed-only="true" />
                 </div>
-            </Modal>
-        </transition>
-        <transition
-            mode="out-in"
-            enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-            leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-        >
-            <Modal v-if="clonedRequestItem" @close="clickCloseModal" title="Клонирование запроса " class="action-modal">
-                <div class="row no-gutters">
-                    <div class="col-12 text-center">
-                        <h4 class="text-dark">Вы уверены, что хотите клонировать этот запрос?</h4>
-                        <CompanyRequestItem :request="clonedRequestItem" :reedOnly="true" :withDeal="false" />
-                    </div>
-                    <div class="col-12 mt-4 text-center">
-                        <Loader v-if="cloneLoader" class="center small" />
-                        <button
-                            @click="cloneRequest(clonedRequestItem)"
-                            class="btn btn-success"
-                            :disabled="cloneLoader"
-                        >
-                            Клонировать
-                        </button>
-                        <button @click="clickCloseModal" class="btn btn-primary ml-1" :disabled="cloneLoader">
-                            Нет
-                        </button>
-                    </div>
+                <div class="col-12 mt-4 text-center">
+                    <Loader v-if="deleteLoader" class="center small" />
+                    <button @click="deleteRequest(deletedRequestItem)" class="btn btn-danger" :disabled="deleteLoader">
+                        Удалить
+                    </button>
+                    <button @click="clickCloseModal" class="btn btn-primary ml-1" :disabled="deleteLoader">Нет</button>
                 </div>
-            </Modal>
-        </transition>
+            </div>
+        </Modal>
+        <Modal v-if="clonedRequestItem" @close="clickCloseModal" title="Клонирование запроса " class="action-modal">
+            <div class="row no-gutters">
+                <div class="col-12 text-center">
+                    <h4 class="text-dark">Вы уверены, что хотите клонировать этот запрос?</h4>
+                    <CompanyRequestItem :request="clonedRequestItem" :reed-only="true" :with-deal="false" />
+                </div>
+                <div class="col-12 mt-4 text-center">
+                    <Loader v-if="cloneLoader" class="center small" />
+                    <button @click="cloneRequest(clonedRequestItem)" class="btn btn-success" :disabled="cloneLoader">
+                        Клонировать
+                    </button>
+                    <button @click="clickCloseModal" class="btn btn-primary ml-1" :disabled="cloneLoader">Нет</button>
+                </div>
+            </div>
+        </Modal>
         <div v-if="requests.length" class="row mb-2">
             <div class="col-12 p-0">
                 <div class="row no-gutters">

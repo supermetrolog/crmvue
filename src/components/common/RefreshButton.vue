@@ -10,6 +10,7 @@ import Button from '@/components/common/Button.vue';
 
 export default {
     name: 'RefreshButton',
-    components: { Button }
+    components: { Button },
+    emits: ['click']
 };
 </script>

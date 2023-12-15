@@ -33,7 +33,7 @@ export default {
             if (!this.pagination) {
                 return false;
             }
-            return this.pagination.pageCount > this.pagination.currentPage ? true : false;
+            return this.pagination.pageCount > this.pagination.currentPage;
         }
     },
     watch: {

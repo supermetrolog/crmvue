@@ -1,52 +1,48 @@
 <template>
-    <div class="fuck">
-        <Modal
-            @close="clickCloseModal"
-            :title="formdata ? 'Изменение группы компаний' : 'Создание группы компаний'"
-            class="normal"
-        >
-            <Form @submit="onSubmit" class="p-2">
-                <Loader v-if="loader" class="center" />
-                <FormGroup class="mb-1">
-                    <Input
-                        v-model="form.nameRu"
-                        :v="v$.form.nameRu"
-                        label="Название Ru"
-                        required
-                        class="col-5 pr-1"
-                        :maska="{
-                            mask: 'Z*',
-                            tokens: { Z: { pattern: /[а-яА-Я0-9 ]/ } }
-                        }"
-                    />
-                    <Input
-                        v-model="form.nameEng"
-                        label="Название Eng"
-                        class="col-5 pr-1"
-                        :maska="{
-                            mask: 'Z*',
-                            tokens: { Z: { pattern: /[a-zA-Z0-9 ]/ } }
-                        }"
-                    />
-                    <MultiSelect
-                        v-model="form.formOfOrganization"
-                        label="ФО"
-                        title="Форма организации"
-                        class="col-2 pl-1"
-                        :options="formOfOrganizationOptions"
-                    />
-                </FormGroup>
-                <FormGroup class="mb-1">
-                    <Textarea v-model="form.description" label="Описание" class="col-12" />
-                </FormGroup>
-                <FormGroup class="mt-4">
-                    <Submit class="col-4 mx-auto">
-                        {{ formdata ? 'Сохранить' : 'Создать' }}
-                    </Submit>
-                </FormGroup>
-            </Form>
-        </Modal>
-    </div>
+    <Modal
+        @close="clickCloseModal"
+        :title="formdata ? 'Изменение группы компаний' : 'Создание группы компаний'"
+        class="form-company-group"
+    >
+        <Form @submit="onSubmit">
+            <Loader v-if="loader" class="center" />
+            <FormGroup>
+                <Input
+                    v-model="form.nameRu"
+                    :v="v$.form.nameRu"
+                    label="Название Ru"
+                    required
+                    class="col-12 mb-2"
+                    :maska="{
+                        mask: 'Z*',
+                        tokens: { Z: { pattern: /[а-яА-Я0-9 ]/ } }
+                    }"
+                />
+                <Input
+                    v-model="form.nameEng"
+                    label="Название Eng"
+                    class="col-8"
+                    :maska="{
+                        mask: 'Z*',
+                        tokens: { Z: { pattern: /[a-zA-Z0-9 ]/ } }
+                    }"
+                />
+                <MultiSelect
+                    v-model="form.formOfOrganization"
+                    label="ФО"
+                    title="Форма организации"
+                    class="col-4"
+                    :options="formOfOrganizationOptions"
+                />
+            </FormGroup>
+            <FormGroup>
+                <Textarea v-model="form.description" label="Описание" class="col-12" />
+            </FormGroup>
+            <Button success center class="mt-3 mx-auto">
+                {{ formdata ? 'Сохранить' : 'Создать' }}
+            </Button>
+        </Form>
+    </Modal>
 </template>
 
 <script>
@@ -57,11 +53,11 @@ import Form from '@/components/common/Forms/Form.vue';
 import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import Input from '@/components/common/Forms/Input.vue';
 import Textarea from '@/components/common/Forms/Textarea.vue';
-import Submit from '@/components/common/Forms/Submit.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import { CompanyFormOrganization } from '@/const/const.js';
 import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
+import Button from '@/components/common/Button.vue';
 
 export default {
     name: 'FormCompanyGroup',
@@ -72,8 +68,8 @@ export default {
         Form,
         Input,
         Textarea,
-        Submit,
-        MultiSelect
+        MultiSelect,
+        Button
     },
     props: {
         formdata: {

@@ -4,9 +4,9 @@
             v-if="requestName"
             class="MiniTimeline-step col"
             :class="{
-                'MiniTimeline-step-done': this.currentSteps[0].status === 1,
-                'MiniTimeline-step-in_process': this.currentSteps[0].status === 0,
-                'MiniTimeline-step-attention': this.currentSteps[0].status === 2
+                'MiniTimeline-step-done': currentSteps[0].status === 1,
+                'MiniTimeline-step-in_process': currentSteps[0].status === 0,
+                'MiniTimeline-step-attention': currentSteps[0].status === 2
             }"
         >
             <div class="MiniTimeline-arrow MiniTimeline-arrow-top"></div>

@@ -1,5 +1,5 @@
 <template>
-    <div class="company-groups">
+    <section class="company-groups">
         <FormCompanyGroup
             v-if="companyGroupsFormVisible"
             @closeCompanyGroupsForm="clickCloseCompanyGroupsForm"
@@ -7,23 +7,21 @@
             @updated="getCompanyGroups"
             :formdata="companyGroupsForUpdate"
         />
-        <div class="row no-gutters box mt-2">
+        <div class="row">
             <div class="col-12">
-                <button @click="clickOpenCompanyGroupsForm" class="btn btn-primary scale">
-                    Создать группу компаний
-                </button>
-            </div>
-            <div class="col-12 inner inner-default-size mt-2">
-                <Loader v-if="loader" class="center" />
-                <CompanyGroupsTable
-                    v-if="COMPANY_GROUPS.length"
-                    @clickEdit="clickOpenCompanyGroupsFormForUpdate"
-                    @deleted="getCompanyGroups"
-                    :companyGroups="COMPANY_GROUPS"
-                />
+                <Button @click="clickOpenCompanyGroupsForm">Создать группу компаний</Button>
+                <div class="box mt-2">
+                    <Loader v-if="loader" class="center" />
+                    <CompanyGroupsTable
+                        v-if="COMPANY_GROUPS.length"
+                        @clickEdit="clickOpenCompanyGroupsFormForUpdate"
+                        @deleted="getCompanyGroups"
+                        :company-groups="COMPANY_GROUPS"
+                    />
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 </template>
 
 <script>
@@ -31,10 +29,12 @@ import { mapActions, mapGetters } from 'vuex';
 import Loader from '@/components/common/Loader.vue';
 import CompanyGroupsTable from '@/components/Company/CompanyGroupsTable.vue';
 import FormCompanyGroup from '@/components/Forms/Company/FormCompanyGroup.vue';
+import Button from '@/components/common/Button.vue';
 
 export default {
     name: 'CompanyGroups',
     components: {
+        Button,
         FormCompanyGroup,
         CompanyGroupsTable,
         Loader

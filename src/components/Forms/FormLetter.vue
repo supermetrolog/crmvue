@@ -12,16 +12,16 @@
                         <MultiSelect
                             ref="contactSelect"
                             v-model="form.contactForSendMessage"
-                            :withoutLabel="true"
+                            :without-label="true"
                             required
                             :v="v$.form.contactForSendMessage"
                             :options="contactsOptions"
-                            :clearOnSelect="true"
-                            :closeOnSelect="false"
-                            :hideSelected="false"
+                            :clear-on-select="true"
+                            :close-on-select="false"
+                            :hide-selected="false"
                             :groups="true"
                             class="col-4"
-                            :multipleLabel="
+                            :multiple-label="
                                 n => {
                                     return `${n.length} ${n.length == 1 ? 'контакт выбран' : 'контакта выбрано'}`;
                                 }
@@ -38,7 +38,7 @@
                             @change="clickSendMe"
                             label="Отправить себе"
                             class="col-1 large ml-5"
-                            :falseValue="0"
+                            :false-value="0"
                             mode="inline"
                         />
                         <CheckboxIcons
@@ -55,7 +55,7 @@
                         <Input v-model="form.subject" class="col-12" placeholder="Тема письма" />
                     </FormGroup>
                     <FormGroup v-if="!alreadySended" class="mb-2 pb-5">
-                        <VueEditor v-model="form.message" class="col-12" :editorToolbar="customToolbar" />
+                        <VueEditor v-model="form.message" class="col-12" :editor-toolbar="customToolbar" />
                     </FormGroup>
                 </Form>
             </div>

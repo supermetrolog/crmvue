@@ -1,7 +1,7 @@
 <template>
     <div class="statisctic">
         <h1>NIGGA</h1>
-        <button @click="run" class="btn-primary btn">Test</button>
+        <button @click="run" class="btn-primary btn" title="Click">Test</button>
     </div>
 </template>
 

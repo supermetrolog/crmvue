@@ -18,8 +18,8 @@
                                 :objects="submittedObjects"
                                 :disabled="true"
                                 :loader="loader"
-                                :viewMode="viewMode"
-                                :currentStepId="step.id"
+                                :view-mode="viewMode"
+                                :current-step-id="step.id"
                                 :label="
                                     'Выбранные предложения' +
                                     (submittedObjects.length ? ` (${submittedObjects.length})` : '')
@@ -35,13 +35,13 @@
                                 @unSelect="unSelect"
                                 @addComment="addComment"
                                 :objects="notSubmittedObjects"
-                                :currentObjects="step.timelineStepObjects"
-                                :selectedObjects="selectedObjects"
+                                :current-objects="step.timelineStepObjects"
+                                :selected-objects="selectedObjects"
                                 :disabled="disabled"
-                                :withSeparator="true"
+                                :with-separator="true"
                                 :loader="loader"
-                                :viewMode="viewMode"
-                                :currentStepId="step.id"
+                                :view-mode="viewMode"
+                                :current-step-id="step.id"
                                 :label="
                                     submittedObjects?.length
                                         ? `Оставшиеся предложения (${notSubmittedObjects.length})`

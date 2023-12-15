@@ -1,10 +1,6 @@
 <template>
     <div class="users-all">
-        <transition
-            mode="out-in"
-            enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-            leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-        >
+        <AnimationTransition>
             <FormUser
                 v-if="userFormVisible"
                 @closeUserForm="clickCloseUserForm"
@@ -12,7 +8,7 @@
                 @updated="getUsers"
                 :formdata="userForUpdate"
             />
-        </transition>
+        </AnimationTransition>
         <div class="row">
             <div class="col-7 mx-auto">
                 <div class="row">
@@ -39,10 +35,12 @@ import { mapActions, mapGetters } from 'vuex';
 import Loader from '@/components/common/Loader.vue';
 import UserTable from '@/components/User/UserTable.vue';
 import FormUser from '@/components/Forms/FormUser.vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
 
 export default {
     name: 'UsersMain',
     components: {
+        AnimationTransition,
         FormUser,
         UserTable,
         Loader

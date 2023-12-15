@@ -71,7 +71,7 @@
                             <CheckboxIcons
                                 v-model="form.purposes_block"
                                 label="Назначение блока"
-                                :noAllSelect="true"
+                                :no-all-select="true"
                                 class="col-12 mx-auto"
                                 :options="blockPossiblePurposes"
                             />
@@ -124,7 +124,7 @@
                                 title="Типы пола"
                                 label="Типы пола"
                                 mode="multiple"
-                                :closeOnSelect="false"
+                                :close-on-select="false"
                                 class="col-4 pr-1"
                                 :options="floorTypeOptions"
                             />
@@ -134,7 +134,7 @@
                                 required
                                 title="Сетки колонн"
                                 label="Сетки колонн"
-                                :closeOnSelect="false"
+                                :close-on-select="false"
                                 class="col-4 px-1"
                                 mode="multiple"
                                 :options="gridColumnTypeOptions"
@@ -205,7 +205,7 @@
                                 :v="v$.form.rack_types"
                                 title="Типы стеллажей"
                                 label="Типы стеллажей"
-                                :closeOnSelect="false"
+                                :close-on-select="false"
                                 class="col-4 px-1"
                                 mode="multiple"
                                 :options="rackTypeOptions"
@@ -263,7 +263,7 @@
                                 :v="v$.form.lighting"
                                 title="Освещение"
                                 label="Освещение"
-                                :closeOnSelect="false"
+                                :close-on-select="false"
                                 class="col-4 px-1"
                                 mode="multiple"
                                 :options="lightingTypeOptions"
@@ -479,7 +479,7 @@
                     </Tab>
                 </Tabs>
                 <FormGroup class="mt-1 mb-4">
-                    <Submit class="col-4 mx-auto"> Сохранить </Submit>
+                    <Submit class="col-4 mx-auto"> Сохранить</Submit>
                 </FormGroup>
             </Form>
         </Modal>

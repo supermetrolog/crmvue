@@ -10,7 +10,7 @@
         :styles="styles"
         :controls="$options.ymapOptions.controls"
         :behaviors="['drag', 'scrollZoom', 'multiTouch', 'selection']"
-        :polygonCoordinates="polygonCoordinates"
+        :polygon-coordinates="polygonCoordinates"
     >
         <YandexMapMarker
             v-for="offer in list"
@@ -18,9 +18,9 @@
             ref="markers"
             :marker-id="offer.id"
             :coords="[offer.latitude, offer.longitude]"
-            :hintContent="offer.address"
+            :hint-content="offer.address"
         />
-        <OfferObject :offerIds="offerIds" />
+        <OfferObject :offer-ids="offerIds" />
     </YandexMapView>
 </template>
 

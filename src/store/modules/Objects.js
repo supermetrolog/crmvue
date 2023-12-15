@@ -1,12 +1,12 @@
 // import axios from "axios"
-import api from "@/api/api"
+import api from '@/api/api';
 
 const Objects = {
     state: {
         currentStepObjects: [],
         allObjects: [],
         objectPagination: null,
-        objectsCurrentPage: 1,
+        objectsCurrentPage: 1
     },
     mutations: {
         updateCurrentStepObjects(state, objects) {
@@ -15,7 +15,6 @@ const Objects = {
         updateAllObjects(state, data) {
             if (Array.isArray(state.allObjects) && Array.isArray(data.offers) && state.objectsCurrentPage > 1) {
                 state.allObjects = state.allObjects.concat(data.offers);
-
             } else {
                 state.allObjects = data.offers;
             }
@@ -44,18 +43,17 @@ const Objects = {
             const objects = await api.objects.getCurrentStepObjectsOneByOne(currentObjects);
 
             let array = [];
-            currentObjects.map((item) => {
-                objects.map((object) => {
+            currentObjects.map(item => {
+                objects.map(object => {
                     if (item.object_id == object.original_id) {
                         object.duplicate_count = item.duplicate_count;
                         object.comment = item.comment;
                         array.push(object);
                     }
-                })
+                });
             });
             commit('updateCurrentStepObjects', array);
             return array;
-
         },
         async SEARCH_OBJECTS(context, {query, saveState = true}) {
             const search = query.searchText;
@@ -63,37 +61,39 @@ const Objects = {
                 search,
                 pages: 1,
                 page_num: context.getters.OBJECTS_CURRENT_PAGE,
-                page_items: 32,
+                page_items: 32
             };
             const result = await api.objects.searchObjects(queryParams);
             if (saveState) {
                 context.commit('updatePagination', result.pagination);
-
             }
             return result.offers;
         },
         async FETCH_OBJECTS_FOR_PREVENT_STEP_OBJECTS(context, currentStepNumber) {
-            const preventStepObjects = context.getters.TIMELINE.timelineSteps[currentStepNumber - 1].timelineStepObjects;
+            const preventStepObjects =
+                context.getters.TIMELINE.timelineSteps[currentStepNumber - 1].timelineStepObjects;
             const currentStepObjects = context.getters.TIMELINE.timelineSteps[currentStepNumber].timelineStepObjects;
 
             let array = [];
-            preventStepObjects.map((item) => {
-                array.push(item.offer_id)
+            preventStepObjects.map(item => {
+                array.push(item.offer_id);
             });
             // const objects = await api.objects.getCurrentStepObjects(array);
             const objects = await api.objects.getCurrentStepObjectsOneByOne(preventStepObjects);
             array = [];
             let currentStepObject = null;
-            preventStepObjects.map((item) => {
-                objects.map((object) => {
+            preventStepObjects.map(item => {
+                objects.map(object => {
                     if (item.object_id == object.original_id) {
-                        currentStepObject = currentStepObjects.find(currentObject => currentObject.offer_id == item.offer_id);
+                        currentStepObject = currentStepObjects.find(
+                            currentObject => currentObject.offer_id == item.offer_id
+                        );
                         if (currentStepObject) {
                             object.comment = currentStepObject.comment;
                         }
                         array.push(object);
                     }
-                })
+                });
             });
             context.commit('updateAllObjectForPreventStep', array);
             return array;
@@ -136,8 +136,8 @@ const Objects = {
         },
         OBJECTS_PAGINATION(state) {
             return state.objectPagination;
-        },
+        }
     }
-}
+};
 
 export default Objects;

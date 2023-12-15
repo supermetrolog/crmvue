@@ -1,38 +1,26 @@
 <template>
     <div class="caller-manager__contact">
-        <transition
-            mode="out-in"
-            enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-            leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-        >
+        <AnimationTransition>
             <FormCompany
                 v-if="companyFormVisible"
                 @closeCompanyForm="companyFormVisible = false"
                 @created="createdCompany"
             />
-        </transition>
-        <transition
-            mode="out-in"
-            enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-            leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-        >
+        </AnimationTransition>
+        <AnimationTransition>
             <FormCompanyRequest
                 v-if="requestFormVisible"
                 @closeCompanyForm="requestFormVisible = false"
                 :company_id="createdCompanyId"
             />
-        </transition>
-        <transition
-            mode="out-in"
-            enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-            leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-        >
+        </AnimationTransition>
+        <AnimationTransition>
             <FormCompanyContact
                 v-if="contactFormVisible"
                 @closeCompanyForm="contactFormVisible = false"
                 :company_id="createdCompanyId"
             />
-        </transition>
+        </AnimationTransition>
         <div class="row no-gutters caller-manager__contact__container">
             <div class="col-12 text-center">
                 <b>НЕИЗВЕСТНЫЙ КОНТАКТ</b>
@@ -54,10 +42,12 @@
 import FormCompany from '@/components/Forms/Company/FormCompany.vue';
 import FormCompanyRequest from '@/components/Forms/Company/FormCompanyRequest.vue';
 import FormCompanyContact from '@/components/Forms/Company/FormCompanyContact.vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
 
 export default {
     name: 'CallerManagerNotExistContact',
     components: {
+        AnimationTransition,
         FormCompanyContact,
         FormCompanyRequest,
         FormCompany

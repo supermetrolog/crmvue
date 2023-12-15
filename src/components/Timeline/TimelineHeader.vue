@@ -1,34 +1,22 @@
 <template>
     <div class="timeline-header">
         <teleport to="body">
-            <transition
-                mode="out-in"
-                enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-                leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-            >
-                <FormModalCompanyRequestDisable
-                    v-if="disableFormVisible"
-                    @disabled="disabledTimeline"
-                    @close="clickCloseDisableForm"
-                    title="Завершение таймлана"
-                    :request_id="currentRequest.id"
-                />
-            </transition>
+            <FormModalCompanyRequestDisable
+                v-if="disableFormVisible"
+                @disabled="disabledTimeline"
+                @close="clickCloseDisableForm"
+                title="Завершение таймлана"
+                :request_id="currentRequest.id"
+            />
         </teleport>
         <teleport to="body">
-            <transition
-                mode="out-in"
-                enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-                leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-            >
-                <FormCompanyDeal
-                    v-if="dealFormVisible"
-                    @close="clickCloseDealForm"
-                    @created="createdDeal"
-                    :company_id="currentRequest.company_id"
-                    :request_id="currentRequest.id"
-                />
-            </transition>
+            <FormCompanyDeal
+                v-if="dealFormVisible"
+                @close="clickCloseDealForm"
+                @created="createdDeal"
+                :company_id="currentRequest.company_id"
+                :request_id="currentRequest.id"
+            />
         </teleport>
         <div>
             <TimelineStatus v-if="currentRequest && TIMELINE" :request="currentRequest" :timeline="TIMELINE" />
@@ -116,10 +104,12 @@ import { mapActions, mapGetters } from 'vuex';
 import TimelineStatus from './TimelineStatus.vue';
 import FormModalCompanyRequestDisable from '@/components/Forms/Company/FormModalCompanyRequestDisable.vue';
 import FormCompanyDeal from '@/components/Forms/Company/FormCompanyDeal.vue';
+import CustomButton from '@/components/common/CustomButton.vue';
 
 export default {
     name: 'TimelineHeader',
     components: {
+        CustomButton,
         FormCompanyDeal,
         FormModalCompanyRequestDisable,
         TimelineStatus

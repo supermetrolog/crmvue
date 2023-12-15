@@ -4,27 +4,27 @@
             class="bar1"
             :class="{ change_bar1: isActive }"
             :style="{
-                width: this.burgerSize.width,
-                height: this.burgerSize.height,
-                margin: this.burgerSize.margin
+                width: burgerSize.width,
+                height: burgerSize.height,
+                margin: burgerSize.margin
             }"
         ></div>
         <div
             class="bar2"
             :class="{ change_bar2: isActive }"
             :style="{
-                width: this.burgerSize.width,
-                height: this.burgerSize.height,
-                margin: this.burgerSize.margin
+                width: burgerSize.width,
+                height: burgerSize.height,
+                margin: burgerSize.margin
             }"
         ></div>
         <div
             class="bar3"
             :class="{ change_bar3: isActive }"
             :style="{
-                width: this.burgerSize.width,
-                height: this.burgerSize.height,
-                margin: this.burgerSize.margin
+                width: burgerSize.width,
+                height: burgerSize.height,
+                margin: burgerSize.margin
             }"
         ></div>
     </div>

@@ -103,10 +103,10 @@
                             </router-link>
                             <br />
                             <strong class="label">Контакты</strong>
-                            <div v-if="this.contact" class="contact">
-                                {{ this.contact.full_name }}
+                            <div v-if="contact" class="contact">
+                                {{ contact.full_name }}
                                 <a
-                                    v-for="email of this.contact.emails"
+                                    v-for="email of contact.emails"
                                     :key="email.email"
                                     :href="'mailto:' + email.email"
                                     class="d-block"
@@ -114,10 +114,10 @@
                                     {{ email.email }}
                                 </a>
                                 <PhoneNumber
-                                    v-for="phone of this.contact.phones"
+                                    v-for="phone of contact.phones"
                                     :key="phone.id"
                                     :phone="phone"
-                                    :contact="this.contact"
+                                    :contact="contact"
                                 />
                             </div>
                         </template>

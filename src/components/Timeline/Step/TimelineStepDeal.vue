@@ -1,50 +1,44 @@
 <template>
     <div class="col-12 mb-2 px-0">
         <teleport to="body">
-            <transition
-                mode="out-in"
-                enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-                leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-            >
-                <FormCompanyDeal
-                    v-if="data && dealFormVisible"
-                    @close="clickCloseDealForm"
-                    @created="updateItem"
-                    @updated="updateItem"
-                    :formdata="currentRequest.deal"
-                    :company_id="currentRequest.company_id"
-                    :request_id="currentRequest.id"
-                    :dealType="currentRequest.dealType"
-                    :object_id="data.timelineStepObjects[0].offer.object_id"
-                    :complex_id="data.timelineStepObjects[0].offer.complex_id"
-                    :type_id="data.timelineStepObjects[0].offer.type_id"
-                    :original_id="data.timelineStepObjects[0].offer.original_id"
-                    :visual_id="data.timelineStepObjects[0].offer.visual_id"
-                    :isOurDeal="true"
-                />
-            </transition>
+            <FormCompanyDeal
+                v-if="data && dealFormVisible"
+                @close="clickCloseDealForm"
+                @created="updateItem"
+                @updated="updateItem"
+                :formdata="currentRequest.deal"
+                :company_id="currentRequest.company_id"
+                :request_id="currentRequest.id"
+                :deal-type="currentRequest.dealType"
+                :object_id="data.timelineStepObjects[0].offer.object_id"
+                :complex_id="data.timelineStepObjects[0].offer.complex_id"
+                :type_id="data.timelineStepObjects[0].offer.type_id"
+                :original_id="data.timelineStepObjects[0].offer.original_id"
+                :visual_id="data.timelineStepObjects[0].offer.visual_id"
+                :is-our-deal="true"
+            />
         </teleport>
         <TimelineStepStage
             class="mb-2"
             title="Шаг 1. Выбрать объект, по которому произошла сделка"
-            :isDone="!!data.timelineStepObjects.length"
-            :closeSlotWhenDone="!!currentRequest.deal"
-            :isCurrent="!data.timelineStepObjects.length"
+            :is-done="!!data.timelineStepObjects.length"
+            :close-slot-when-done="!!currentRequest.deal"
+            :is-current="!data.timelineStepObjects.length"
         >
             <ButtonList @done="$emit('done')" @negative="$emit('negative')" :buttons="buttons" />
         </TimelineStepStage>
         <TimelineStepStage
             class="mb-2"
             title="Шаг 2. заполнить данные по сделке"
-            :isDone="!!currentRequest.deal"
-            :isCurrent="!!data.timelineStepObjects.length"
+            :is-done="!!currentRequest.deal"
+            :is-current="!!data.timelineStepObjects.length"
         >
             <Loader v-if="loader" class="center" />
             <button @click="clickOpenDealForm" class="btn btn-primary" :disabled="disabled">Создать сделку</button>
         </TimelineStepStage>
         <div v-if="currentRequest.deal" class="row mt-3">
             <div class="col-5 mx-auto">
-                <DealListItem :deal="currentRequest.deal" reedOnly />
+                <DealListItem :deal="currentRequest.deal" reed-only />
             </div>
         </div>
     </div>

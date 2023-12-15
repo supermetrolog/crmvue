@@ -1,0 +1,141 @@
+@use '../utils/variables';
+
+.company-item-request {
+    $request_thin_border: 0.3px solid black;
+
+    border: $request_thin_border;
+    width: 100%;
+    position: relative;
+    background-color: lighten(variables.$color_light, 3);
+    display: grid;
+    grid-template-columns: 60% 40%;
+    grid-template-areas:
+    "name type"
+    "location timeline"
+    "footer footer";
+
+    & > div {
+        padding: 10px;
+    }
+
+    &.done {
+        .company-item-request__header {
+            background-color: variables.$color_success_dark;
+        }
+    }
+
+    &.active {
+        .company-item-request__header {
+            background-color: variables.$color_warning_dark;
+        }
+    }
+
+    &__header {
+        font-weight: 500;
+
+        &:nth-child(1) {
+            grid-area: name;
+            border-bottom: $request_thin_border;
+            border-right: $request_thin_border;
+        }
+
+        &:nth-child(2) {
+            grid-area: type;
+            border-bottom: $request_thin_border;
+
+            &:hover .company-item-request__actions {
+                display: flex;
+            }
+        }
+    }
+
+    &__location {
+        grid-area: location;
+        border-bottom: $request_thin_border;
+        border-right: $request_thin_border;
+    }
+
+    &__timeline {
+        grid-area: timeline;
+        border-bottom: $request_thin_border;
+
+        p {
+            span {
+                white-space: nowrap;
+            }
+        }
+
+        button {
+            width: 100%;
+        }
+    }
+
+    &__footer {
+        grid-area: footer;
+    }
+
+    &__actions {
+        display: none;
+        gap: 3px;
+        position: absolute;
+        top: -7px;
+        right: 2px;
+
+        &:hover {
+            display: flex;
+        }
+
+        .fas {
+            border-radius: 100%;
+            border: black 0.5px solid;
+            font-size: 8px;
+            padding: 4px;
+            width: 15px;
+            height: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            opacity: 0.4;
+
+            &:hover {
+                opacity: 1;
+            }
+
+            &.fa-pen {
+                background-color: variables.$color_info;
+            }
+
+            &.fa-clone {
+                background-color: variables.$color_success_dark;
+            }
+
+            &.fa-times {
+                background-color: variables.$color_danger;
+            }
+
+            &.fa-undo {
+                background-color: variables.$color_warning;
+            }
+        }
+    }
+
+    &__parameters {
+        p {
+            font-weight: bold;
+        }
+    }
+
+    .deal-item {
+        border: none;
+        padding: 0;
+    }
+}
+
+.company-item-requests {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}

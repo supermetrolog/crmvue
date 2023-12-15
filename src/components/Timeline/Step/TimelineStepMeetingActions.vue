@@ -1,43 +1,25 @@
 <template>
     <div class="step-action">
         <teleport to="body">
-            <transition
-                mode="out-in"
-                enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-                leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-            >
-                <FormCompanyRequest
-                    v-if="companyRequestFormVisible"
-                    @closeCompanyForm="clickCloseCompanyRequestForm"
-                    @updated="updatedRequest"
-                    :formdata="currentRequest"
-                />
-            </transition>
-            <transition
-                mode="out-in"
-                enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-                leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-            >
-                <FormCompanyContact
-                    v-if="companyContactFormVisible"
-                    @closeCompanyForm="clickCloseCompanyContactForm"
-                    @updated="getCompanyContacts"
-                    :company_id="COMPANY.id"
-                    :formdata="editContact"
-                />
-            </transition>
-            <transition
-                mode="out-in"
-                enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-                leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-            >
-                <FormCompany
-                    v-if="companyFormVisible"
-                    @closeCompanyForm="clickCloseCompanyForm"
-                    @updated="updatedCompany"
-                    :formdata="COMPANY"
-                />
-            </transition>
+            <FormCompanyRequest
+                v-if="companyRequestFormVisible"
+                @closeCompanyForm="clickCloseCompanyRequestForm"
+                @updated="updatedRequest"
+                :formdata="currentRequest"
+            />
+            <FormCompanyContact
+                v-if="companyContactFormVisible"
+                @closeCompanyForm="clickCloseCompanyContactForm"
+                @updated="getCompanyContacts"
+                :company_id="COMPANY.id"
+                :formdata="editContact"
+            />
+            <FormCompany
+                v-if="companyFormVisible"
+                @closeCompanyForm="clickCloseCompanyForm"
+                @updated="updatedCompany"
+                :formdata="COMPANY"
+            />
         </teleport>
         <div class="row no-gutters">
             <div class="col-12">
@@ -67,7 +49,7 @@
                         </div>
                         <div class="col-3 company-request-list company-contact-list">
                             <CompanyContactItem
-                                v-for="contact of this.COMPANY_CONTACTS"
+                                v-for="contact of COMPANY_CONTACTS"
                                 :key="contact.id"
                                 @openContactFormForUpdate="openContactFormForUpdate"
                                 @createComment="createComment"
@@ -87,7 +69,7 @@
                         <CompanyRequestItemAlt
                             @openCompanyRequestFormForUpdate="companyRequestFormVisible = true"
                             :request="currentRequest"
-                            :editOnly="true"
+                            :edit-only="true"
                         />
                     </div>
                 </div>

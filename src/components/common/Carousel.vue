@@ -9,71 +9,65 @@
                 :src="item.src"
             />
         </div>
-        <transition
-            mode="out-in"
-            enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-            leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-        >
-            <Modal v-if="lightboxActive" @close="clickCloseModal" :title="'Имя объекта'" class="autosize">
-                <img class="currImg" :src="imgList[currImgIdx].src" />
-                <div>
-                    <transition-group class="CROP" :name="transition_name" tag="div">
-                        <div v-for="(chunk, i) in arrChunk" v-show="currSlide == i" :key="i" class="Carousel_chunk">
-                            <div
-                                v-for="(item, j) in chunk"
-                                :key="j"
-                                @click="currImgIdx = j + i * chunkSize"
-                                class="chunk_item"
-                                :class="{ CURR: item.src == imgList[currImgIdx].src }"
-                            >
-                                <img :src="item.src" />
-                            </div>
-                        </div>
-                    </transition-group>
-                    <div class="Carousel-controls">
-                        <svg
-                            @click="prev"
-                            width="48"
-                            height="48"
-                            viewBox="0 0 24 24"
-                            fill="gold"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        >
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <polyline points="12 8 8 12 12 16"></polyline>
-                            <line x1="16" y1="12" x2="8" y2="12"></line>
-                        </svg>
+        <Modal v-if="lightboxActive" @close="clickCloseModal" :title="'Имя объекта'" class="autosize">
+            <img class="currImg" :src="imgList[currImgIdx].src" />
+            <div>
+                <transition-group class="CROP" :name="transition_name" tag="div">
+                    <div v-for="(chunk, i) in arrChunk" v-show="currSlide == i" :key="i" class="Carousel_chunk">
                         <div
-                            v-for="(dot, i) in arrChunk"
-                            :key="i"
-                            @click="goToChunk(i)"
-                            class="Carousel-controls_dot"
-                            :class="{ CURR: currSlide == i }"
+                            v-for="(item, j) in chunk"
+                            :key="j"
+                            @click="currImgIdx = j + i * chunkSize"
+                            class="chunk_item"
+                            :class="{ CURR: item.src == imgList[currImgIdx].src }"
                         >
-                            {{ i + 1 }}
+                            <img :src="item.src" />
                         </div>
-                        <svg
-                            @click="next"
-                            width="48"
-                            height="48"
-                            viewBox="0 0 24 24"
-                            fill="gold"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        >
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <polyline points="12 16 16 12 12 8"></polyline>
-                            <line x1="8" y1="12" x2="16" y2="12"></line>
-                        </svg>
                     </div>
+                </transition-group>
+                <div class="Carousel-controls">
+                    <svg
+                        @click="prev"
+                        width="48"
+                        height="48"
+                        viewBox="0 0 24 24"
+                        fill="gold"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 8 8 12 12 16"></polyline>
+                        <line x1="16" y1="12" x2="8" y2="12"></line>
+                    </svg>
+                    <div
+                        v-for="(dot, i) in arrChunk"
+                        :key="i"
+                        @click="goToChunk(i)"
+                        class="Carousel-controls_dot"
+                        :class="{ CURR: currSlide == i }"
+                    >
+                        {{ i + 1 }}
+                    </div>
+                    <svg
+                        @click="next"
+                        width="48"
+                        height="48"
+                        viewBox="0 0 24 24"
+                        fill="gold"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 16 16 12 12 8"></polyline>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
                 </div>
-            </Modal>
-        </transition>
+            </div>
+        </Modal>
     </div>
 </template>
 

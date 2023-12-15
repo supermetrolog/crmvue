@@ -578,13 +578,13 @@ export const DealStatusType = {
     RENTED_OUT: 2,
     SOLD_OUT: 3,
     UNKNOWN: 4,
-    FREE: 5,
+    FREE: 5
 };
 
 export const DealStatusList = {
-    [DealStatusType.FOR_RENT]: "Сдается",
-    [DealStatusType.RENTED_OUT]: "Сдано",
-    [DealStatusType.SOLD_OUT]: "Продано",
-    [DealStatusType.UNKNOWN]: "Неизвестно",
-    [DealStatusType.FREE]: "Свободно, размечено",
+    [DealStatusType.FOR_RENT]: 'Сдается',
+    [DealStatusType.RENTED_OUT]: 'Сдано',
+    [DealStatusType.SOLD_OUT]: 'Продано',
+    [DealStatusType.UNKNOWN]: 'Неизвестно',
+    [DealStatusType.FREE]: 'Свободно, размечено'
 };

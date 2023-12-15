@@ -23,7 +23,7 @@
                             v-for="notification of newNotification"
                             :key="notification.id"
                             :notification="notification"
-                            isNew
+                            is-new
                         />
                         <div v-if="oldNotification.length" class="old header">
                             <p class="title text-left">просмотренные</p>

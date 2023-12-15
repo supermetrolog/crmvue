@@ -8,9 +8,7 @@
         }"
     >
         <span v-if="!contact.status" class="CompanyBoxContactListItem-passive">Пассив</span>
-        <div v-if="!contact.type" @click.stop="editContact(this.contact)" class="CompanyBoxContactListItem-edit">
-            [ред.]
-        </div>
+        <div v-if="!contact.type" @click.stop="editContact(contact)" class="CompanyBoxContactListItem-edit">[ред.]</div>
         <div v-if="!!contact.warning && contact.status" class="CompanyBoxContactListItem-status text-danger">
             <span>ВНИМАНИЕ!!!</span>
         </div>

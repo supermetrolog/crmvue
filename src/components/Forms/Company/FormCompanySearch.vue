@@ -1,88 +1,75 @@
 <template>
-    <div class="company-search-form">
-        <Form @submit="onSubmit" class="autosize">
-            <FormGroup class="mb-2 px-md-5">
+    <Form @submit="onSubmit" class="row">
+        <div class="col-8">
+            <Input
+                v-model="form.all"
+                @keydown.enter="onSubmit"
+                label="Поиск"
+                placeholder="Название компании, ID компании, ФИО брокера, ФИО контакта, телефон"
+            />
+        </div>
+        <div class="col-4 align-self-end">
+            <div class="form-search__actions">
+                <Button @click="extraVisible = !extraVisible" icon :badge="filterCount || false">
+                    <span>Фильтры</span>
+                    <i v-if="extraVisible" class="fas fa-angle-up"></i>
+                    <i v-else class="fas fa-angle-down"></i>
+                </Button>
+                <AnimationTransition>
+                    <Button v-if="filterCount" @click="resetForm" danger>Сбросить фильтры</Button>
+                </AnimationTransition>
+            </div>
+        </div>
+        <div v-show="extraVisible" class="form-search__extra col-12">
+            <FormGroup>
+                <MultiSelect
+                    v-model="form.consultant_id"
+                    label="Консультант"
+                    class="col-md-4 col-12"
+                    :options="
+                        async () => {
+                            return await FETCH_CONSULTANT_LIST();
+                        }
+                    "
+                />
+                <Input v-model="form.nameRu" label="Название RU" placeholder="Название (Ru)" class="col-md-4 col-6" />
                 <Input
-                    v-model="form.all"
-                    @keydown.enter="onSubmit"
-                    label="Поиск"
-                    placeholder="название компании, ID компании, ФИО брокера, ФИО контакта, телефон"
-                    class="col-12 main-input pr-1"
+                    v-model="form.nameEng"
+                    label="Название ENG"
+                    placeholder="Название (Eng)"
+                    class="col-md-4 col-6"
                 />
             </FormGroup>
-            <FormGroup class="px-md-5">
-                <a @click.prevent="extraVisible = !extraVisible" href="#" class="text-primary">
-                    фильтры
-                    <span v-if="filterCount" class="badge badge-danger">
-                        {{ filterCount }}
-                    </span>
-                    <i v-if="!extraVisible" class="fas fa-angle-down"></i>
-                    <i v-else class="fas fa-angle-up"></i>
-                </a>
-                <a v-if="filterCount" @click.prevent="resetForm" href="#" class="text-primary ml-5"> сбросить </a>
+            <FormGroup class="row">
+                <MultiSelect
+                    v-model="form.activityGroup"
+                    title="Группа деятельности"
+                    label="Группа дея-ти"
+                    class="col-md-4"
+                    :options="activityGroupOptions"
+                />
+                <MultiSelect
+                    v-model="form.activityProfile"
+                    title="Профиль деятельности"
+                    label="Профиль дея-ти"
+                    class="col-md-4"
+                    :options="activityProfileOptions"
+                />
+                <Input v-model="form.dateStart" label="Дата от" class="col-md-2 col-6" type="date" />
+                <Input v-model="form.dateEnd" label="Дата до" class="col-md-2 col-6" type="date" />
             </FormGroup>
-
-            <div v-show="extraVisible">
-                <FormGroup class="mb-1 px-md-5">
-                    <MultiSelect
-                        v-model="form.consultant_id"
-                        label="Консультант"
-                        class="col-md-4 col-12 pr-1"
-                        :options="
-                            async () => {
-                                return await FETCH_CONSULTANT_LIST();
-                            }
-                        "
-                    />
-                    <Input
-                        v-model="form.nameRu"
-                        label="Название RU"
-                        placeholder="название ru"
-                        class="col-md-4 col-6 pr-1"
-                    />
-                    <Input
-                        v-model="form.nameEng"
-                        label="Название ENG"
-                        placeholder="название eng"
-                        class="col-md-4 col-6"
-                    />
-                </FormGroup>
-                <FormGroup class="mb-1 px-md-5">
-                    <MultiSelect
-                        v-model="form.activityGroup"
-                        title="Группа деятельности"
-                        label="Группа дея-ти"
-                        class="col-md-4 pr-1"
-                        :options="activityGroupOptions"
-                    />
-                    <MultiSelect
-                        v-model="form.activityProfile"
-                        title="Профиль деятельности"
-                        label="Профиль дея-ти"
-                        class="col-md-4 pr-1"
-                        :options="activityProfileOptions"
-                    />
-                    <Input v-model="form.dateStart" label="Дата от" class="col-md-2 col-6 pr-1" type="date" />
-                    <Input v-model="form.dateEnd" label="Дата до" class="col-md-2 col-6" type="date" />
-                </FormGroup>
-                <FormGroup class="px-md-5">
-                    <Checkbox
-                        v-model="form.categories"
-                        :options="categoryOptions"
-                        label="Категория"
-                        class="col-md-8 pr-1"
-                    />
-                    <Radio
-                        v-model="form.status"
-                        :options="activePassiveOptions"
-                        :unselectMode="true"
-                        label="Статус"
-                        class="col-md-2 pr-1"
-                    />
-                </FormGroup>
-            </div>
-        </Form>
-    </div>
+            <FormGroup class="row">
+                <Checkbox v-model="form.categories" :options="categoryOptions" label="Категория" class="col-md-8" />
+                <Radio
+                    v-model="form.status"
+                    :options="activePassiveOptions"
+                    :unselect-mode="true"
+                    label="Статус"
+                    class="col-md-2"
+                />
+            </FormGroup>
+        </div>
+    </Form>
 </template>
 
 <script>
@@ -94,10 +81,14 @@ import Checkbox from '@/components/common/Forms/Checkbox.vue';
 import Radio from '@/components/common/Forms/Radio.vue';
 import { ActivePassive, ActivityGroupList, ActivityProfileList, CompanyCategories } from '@/const/const.js';
 import { SearchFormMixin } from '@/components/common/mixins.js';
+import Button from '@/components/common/Button.vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
 
 export default {
     name: 'FormCompanySearch',
     components: {
+        AnimationTransition,
+        Button,
         Form,
         FormGroup,
         Input,

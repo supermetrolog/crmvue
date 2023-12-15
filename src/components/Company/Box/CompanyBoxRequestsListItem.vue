@@ -1,58 +1,49 @@
 <template>
-    <div
-        class="CompanyBoxRequestsListItem"
-        :class="{
-            done: request.status == 2,
-            active: request.status == 1
-        }"
-    >
-        <div class="CompanyBoxRequestsListItem-name header">
+    <div class="company-item-request" :class="{ done: request.status === 2, active: request.status === 1 }">
+        <div class="company-item-request__header">
             <p>
                 {{ dealType }} {{ request.minArea + ' - ' + request.maxArea }} м<sup><small>2</small></sup>
             </p>
         </div>
-        <div class="CompanyBoxRequestsListItem-type header">
-            <div v-if="!reedOnly" class="actions">
-                <i v-if="request.status != 2" @click="clickUpdateRequest" class="fas fa-pen" title="редактировать"></i>
+        <div class="company-item-request__header">
+            <div v-if="!reedOnly" class="company-item-request__actions">
+                <i v-if="request.status !== 2" @click="clickUpdateRequest" class="fas fa-pen" title="редактировать"></i>
                 <i @click="clickCloneRequest" class="fas fa-clone" title="клонировать"></i>
                 <i
-                    v-if="request.status != 2"
+                    v-if="request.status !== 2"
                     @click="clickDisableRequest"
                     class="fas"
-                    :class="{
-                        'fa-undo': request.status == 0,
-                        'fa-times': request.status != 0
-                    }"
-                    :title="request.status == 0 ? 'восстановить' : 'удалить'"
+                    :class="{ 'fa-undo': request.status === 0, 'fa-times': request.status !== 0 }"
+                    :title="request.status === 0 ? 'восстановить' : 'удалить'"
                 ></i>
             </div>
             <p>{{ status }}</p>
         </div>
-        <div class="CompanyBoxRequestsListItem-location">
-            <div class="CompanyBoxRequestsListItem-location-region">
+        <div class="company-item-request__location">
+            <div class="company-item-request__subject">
                 <strong>
-                    {{ request.regions.map(elem => this.$formatter.text().ucFirst(elem.info.title)).join(', ') }}
+                    {{ request.regions.map(elem => $formatter.text().ucFirst(elem.info.title)).join(', ') }}
                 </strong>
             </div>
-            <div v-if="request.directions.length" class="CompanyBoxRequestsListItem-location-region-parameters">
+            <div v-if="request.directions.length" class="company-item-request__region">
                 <p><b>Московская область:</b></p>
                 <span>
-                    {{ request.directions.map(elem => this.directionList[elem.direction][2]).join(', ') }}
+                    {{ request.directions.map(elem => directionList[elem.direction][2]).join(', ') }}
                 </span>
             </div>
-            <div v-if="request.districts.length" class="CompanyBoxRequestsListItem-location-region-parameters">
+            <div v-if="request.districts.length" class="company-item-request_region">
                 <p><b>Москва:</b></p>
                 <span>
-                    {{ request.districts.map(elem => this.districtList[elem.district][1]).join(', ') }}
+                    {{ request.districts.map(elem => districtList[elem.district][1]).join(', ') }}
                 </span>
             </div>
             <div>
                 <p v-if="!request.distanceFromMKADnotApplicable">до {{ request.distanceFromMKAD }} км до МКАД</p>
             </div>
-            <Dropdown v-model="moreIsOpen" class="more-button" :title="'Подробнее'" />
+            <Dropdown v-model="moreIsOpen" class="more-button" title="Подробнее" />
             <DropdownContainer v-model="moreIsOpen">
                 <hr />
-                <div class="row parameters">
+                <div class="row company-item-request__parameters">
                     <div class="col-6">
                         <p>отапливаемый</p>
                         <span class="parameters-inner">
@@ -78,9 +69,7 @@
                         <div class="parameters-inner">
                             <span>
                                 {{
-                                    request.objectClasses
-                                        .map(elem => this.objectClassList[elem.object_class][1])
-                                        .join(', ')
+                                    request.objectClasses.map(elem => objectClassList[elem.object_class][1]).join(', ')
                                 }}
                             </span>
                             <span v-if="!request.objectClasses.length">нет данных</span>
@@ -131,7 +120,7 @@
                         <div class="parameters-inner">
                             <span v-if="!request.gateTypes.length">нет данных</span>
                             <span v-else>
-                                {{ request.gateTypes.map(elem => this.gateTypeList[elem.gate_type][1]).join(', ') }}
+                                {{ request.gateTypes.map(elem => gateTypeList[elem.gate_type][1]).join(', ') }}
                             </span>
                         </div>
                     </div>
@@ -144,22 +133,20 @@
                 </div>
             </DropdownContainer>
         </div>
-        <div class="CompanyBoxRequestsListItem-action">
+        <div class="company-item-request__timeline">
             <p v-if="request.consultant.userProfile.short_name">
                 конс: <span>{{ request.consultant.userProfile.short_name }}</span>
             </p>
-            <p v-if="this.request.created_at">
-                {{ dateFormatter(this.request.created_at) }}
+            <p v-if="request.created_at">
+                {{ dateFormatter(request.created_at) }}
             </p>
             <Progress class="mt-4" :percent="request.timeline_progress" title="Обработано" />
-            <button v-if="!reedOnly" @click="clickTimeline" class="btn px-2 btn-primary scale timeline-btn">
-                таймлайн
-            </button>
+            <Button v-if="!reedOnly" @click="clickTimeline" small>таймлайн</Button>
         </div>
-        <div v-if="request.deal" class="CompanyBoxRequestsListItem-footer">
+        <div v-if="request.deal" class="company-item-request__footer">
             <Dropdown v-if="request.deal" v-model="dealIsOpen" :title="dealTitle" />
             <DropdownContainer v-model="dealIsOpen">
-                <DealListItem :deal="request.deal" :reedOnly="true" />
+                <DealListItem :deal="request.deal" :reed-only="true" />
             </DropdownContainer>
         </div>
     </div>
@@ -180,13 +167,40 @@ import { mapGetters } from 'vuex';
 import Dropdown from '@/components/common/Dropdown/Dropdown.vue';
 import DropdownContainer from '@/components/common/Dropdown/DropdownContainer.vue';
 import DealListItem from '@/components/Deal/DealListItem.vue';
+import Progress from '@/components/common/Progress.vue';
+import Button from '@/components/common/Button.vue';
 
 export default {
     name: 'CompanyBoxRequestsListItem',
-    components: { DealListItem, DropdownContainer, Dropdown },
+    components: { Button, DealListItem, DropdownContainer, Dropdown, Progress },
     props: {
         request: {
-            type: Object,
+            status: Number,
+            minArea: Number,
+            maxArea: Number,
+            regions: Array,
+            directions: Array,
+            distanceFromMKADnotApplicable: [Number, Boolean],
+            distanceFromMKAD: Number,
+            heated: Number,
+            haveCranes: Number,
+            antiDustOnly: Number,
+            format_ceilingHeight: String,
+            objectClasses: Array,
+            objectTypes: Array,
+            firstFloorOnly: Number,
+            trainLine: Number,
+            trainLineLength: Number,
+            movingDate_format: String,
+            unknownMovingDate: [Number],
+            pricePerFloor: Number,
+            electricity: [Number, String],
+            gateTypes: Array,
+            description: String,
+            created_at: Number,
+            consultant: Object,
+            timeline_progress: Number,
+            deal: Object,
             default: () => {}
         },
         reedOnly: {

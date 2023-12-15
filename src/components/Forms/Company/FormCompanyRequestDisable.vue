@@ -11,7 +11,7 @@
                 :options="passiveWhyOptions"
             />
             <Textarea v-model="form.passive_why_comment" label="Комментарий" class="col-12" />
-            <Submit class="col-12 mt-2" buttonClasses="btn-danger"> Завершить </Submit>
+            <Submit class="col-12 mt-2" button-classes="btn-danger"> Завершить</Submit>
         </FormGroup>
     </Form>
 </template>

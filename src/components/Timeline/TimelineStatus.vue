@@ -19,7 +19,7 @@ class="ml-1 text-dark m-0 d-inline"
 import { PassiveWhyRequest } from '@/const/const';
 
 export default {
-    name: 'timelineStatus',
+    name: 'TimelineStatus',
     props: {
         request: {
             type: Object,

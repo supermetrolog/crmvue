@@ -18,7 +18,7 @@
                             ></i>
                             <i
                                 v-if="!contact.type && !reedOnly"
-                                @click="this.$emit('clickEditContact', this.contact)"
+                                @click="$emit('clickEditContact', contact)"
                                 class="fas fa-pen text-primary edit"
                             ></i>
                         </span>

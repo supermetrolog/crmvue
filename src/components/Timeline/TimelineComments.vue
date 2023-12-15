@@ -9,7 +9,7 @@
                     v-for="(comment, index) in data"
                     :key="comment.id"
                     :data="comment"
-                    :preventComment="getPreventComment(index)"
+                    :prevent-comment="getPreventComment(index)"
                 />
             </ul>
         </div>

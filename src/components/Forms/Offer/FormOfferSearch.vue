@@ -12,7 +12,7 @@
             </FormGroup>
             <FormGroup>
                 <div class="col-6">
-                    <Button @click.prevent="extraVisible = !extraVisible"> фильтры </Button>
+                    <Button @click.prevent="extraVisible = !extraVisible"> фильтры</Button>
                     <a @click="extraVisible = !extraVisible" href="#" class="text-primary mr-2">
                         фильтры
                         <span v-if="filterCount" class="badge badge-danger">
@@ -153,8 +153,8 @@
                         mode="multiple"
                         :options="
                             async () => {
-                                await this.FETCH_REGION_LIST();
-                                return this.REGION_LIST;
+                                await FETCH_REGION_LIST();
+                                return REGION_LIST;
                             }
                         "
                     >
@@ -202,13 +202,13 @@
                     <Radio
                         v-model="form.status"
                         :options="activePassiveOptions"
-                        :unselectMode="true"
+                        :unselect-mode="true"
                         label="Статус"
                         class="col pr-1 text-center"
                     />
                     <Radio
                         v-model="form.heated"
-                        :unselectMode="true"
+                        :unselect-mode="true"
                         label="Отапливаемый"
                         class="col text-center pr-1"
                         :options="yesNoFUCKOptions"
@@ -220,30 +220,30 @@
                         v-model="form.purposes"
                         @extraSelect="selectObjectType"
                         label="Тип объекта"
-                        extraLabel="склад"
-                        :noAllSelect="true"
-                        :extraValue="1"
-                        :extraOptions="form.object_type"
+                        extra-label="склад"
+                        :no-all-select="true"
+                        :extra-value="1"
+                        :extra-options="form.object_type"
                         class="col-md-4 col-12 pr-2 mx-auto"
                         :options="objectTypeListWareHouse"
                     />
                     <CheckboxIcons
                         v-model="form.purposes"
                         @extraSelect="selectObjectType"
-                        extraLabel="производство"
-                        :noAllSelect="true"
-                        :extraValue="2"
-                        :extraOptions="form.object_type"
+                        extra-label="производство"
+                        :no-all-select="true"
+                        :extra-value="2"
+                        :extra-options="form.object_type"
                         class="col-md-4 col-12 mt-4 pr-2 mx-auto"
                         :options="objectTypeListProduction"
                     />
                     <CheckboxIcons
                         v-model="form.purposes"
                         @extraSelect="selectObjectType"
-                        extraLabel="участок"
-                        :noAllSelect="true"
-                        :extraValue="3"
-                        :extraOptions="form.object_type"
+                        extra-label="участок"
+                        :no-all-select="true"
+                        :extra-value="3"
+                        :extra-options="form.object_type"
                         class="col-md-4 col-12 mt-4 mx-auto"
                         :options="objectTypeListPlot"
                     />
@@ -257,28 +257,28 @@
                 <FormGroup class="mb-2">
                     <Radio
                         v-model="form.ad_realtor"
-                        :unselectMode="true"
+                        :unselect-mode="true"
                         label="Realtor.ru"
                         class="col pr-1 text-center"
                         :options="yesNoOptions"
                     />
                     <Radio
                         v-model="form.ad_cian"
-                        :unselectMode="true"
+                        :unselect-mode="true"
                         label="Циан"
                         class="col pr-1 text-center"
                         :options="yesNoOptions"
                     />
                     <Radio
                         v-model="form.ad_yandex"
-                        :unselectMode="true"
+                        :unselect-mode="true"
                         label="Яндекс"
                         class="col pr-1 text-center"
                         :options="yesNoOptions"
                     />
                     <Radio
                         v-model="form.ad_free"
-                        :unselectMode="true"
+                        :unselect-mode="true"
                         label="Бесплатные"
                         class="col pr-1 text-center"
                         :options="yesNoOptions"

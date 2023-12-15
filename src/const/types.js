@@ -170,7 +170,7 @@ export const firefightingTypes = {
 };
 
 export const heatingAutonomousTypes = {
-    1: "дизельное",
-    2: "газовое",
-    3: "дровяное",
-}
+    1: 'дизельное',
+    2: 'газовое',
+    3: 'дровяное'
+};

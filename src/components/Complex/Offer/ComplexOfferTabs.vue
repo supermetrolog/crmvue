@@ -13,7 +13,7 @@
                         :key="tradeOffer.id"
                         :area="tradeOffer.area"
                         :price="tradeOffer.price"
-                        :lastUpdate="tradeOffer.lastUpdate"
+                        :last-update="tradeOffer.lastUpdate"
                         :status="tradeOffer.status"
                         :parameters="tradeOffer.parameters"
                     />
@@ -27,7 +27,7 @@
                         :key="tradeOffer.id"
                         :area="tradeOffer.area"
                         :price="tradeOffer.price"
-                        :lastUpdate="tradeOffer.lastUpdate"
+                        :last-update="tradeOffer.lastUpdate"
                         :status="tradeOffer.status"
                         :parameters="tradeOffer.parameters"
                     />

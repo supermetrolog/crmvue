@@ -10,14 +10,14 @@
                     <MultiSelect
                         v-model="form.company_id"
                         @change="onChangeCompany"
-                        extraClasses="long-text"
+                        extra-classes="long-text"
                         label="Компания"
                         required
                         class="col-6 pr-1"
                         :v="v$.form.company_id"
                         :filterResults="false"
-                        :minChars="1"
-                        :resolveOnLoad="true"
+                        :min-chars="1"
+                        :resolve-on-load="true"
                         :delay="0"
                         :searchable="true"
                         :options="
@@ -28,7 +28,7 @@
                     />
                     <MultiSelect
                         v-model="form.contact_id"
-                        extraClasses="long-text"
+                        extra-classes="long-text"
                         label="Контакт"
                         required
                         class="col-6"
@@ -43,15 +43,15 @@
                         :v="v$.form.regions"
                         label="Регионы"
                         class="col-4 pr-1"
-                        :closeOnSelect="false"
-                        :hideSelected="false"
+                        :close-on-select="false"
+                        :hide-selected="false"
                         mode="multiple"
                         name="region"
                         required
                         :options="
                             async () => {
-                                await this.FETCH_REGION_LIST();
-                                return this.REGION_LIST.filter(elem => Number.isInteger(elem.value));
+                                await FETCH_REGION_LIST();
+                                return REGION_LIST.filter(elem => Number.isInteger(elem.value));
                             }
                         "
                     >
@@ -87,7 +87,7 @@
                         <Radio
                             v-if="form.regions.find(item => item.region == 6)"
                             v-model="form.outside_mkad"
-                            :unselectMode="true"
+                            :unselect-mode="true"
                             class="col large p-0 mt-2 text-center"
                             :options="outsideMkadOptions"
                         />
@@ -188,7 +188,7 @@
                     <Radio
                         v-model="form.heated"
                         label="Отапливаемый"
-                        :unselectMode="true"
+                        :unselect-mode="true"
                         class="col-3 text-center"
                         :options="yesNoOptions"
                     />

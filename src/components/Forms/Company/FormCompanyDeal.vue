@@ -1,142 +1,134 @@
 <template>
-    <div class="company-deal-form">
-        <Modal
-            @close="$emit('close')"
-            :title="formdata ? 'Редактирование сделки' : 'Создание сделки'"
-            classes="autosize"
-        >
-            <Loader v-if="loader" class="center" />
-            <Form @submit="onSubmit" class="center">
-                <FormGroup class="mb-3">
-                    <CheckboxChip
-                        v-model="form.is_our"
-                        @change="form.is_our ? (form.is_competitor = 0) : (form.is_competitor = 1)"
-                        :disabled="isOurDeal"
-                        :falseValue="0"
-                        :value="1"
-                        text="Наша сделка"
-                        class="mx-auto w-100 font-weight-bold"
+    <Modal
+        @close="$emit('close')"
+        :title="formdata ? 'Редактирование сделки' : 'Создание сделки'"
+        class="form-company-deal"
+    >
+        <Loader v-if="loader" class="center" />
+        <Form @submit="onSubmit">
+            <FormGroup class="mb-4">
+                <CheckboxChip
+                    v-model="form.is_our"
+                    @change="form.is_our ? (form.is_competitor = 0) : (form.is_competitor = 1)"
+                    :disabled="isOurDeal"
+                    :false-value="0"
+                    :value="1"
+                    text="Наша сделка"
+                    class="col-12"
+                />
+            </FormGroup>
+            <FormGroup>
+                <MultiSelect
+                    v-model="form.competitor_company_id"
+                    :disabled="!!form.is_our"
+                    :v="v$.form.competitor_company_id"
+                    extra-classes="long-text"
+                    label="Компания конкурент"
+                    :required="!form.is_our"
+                    class="col-6"
+                    :filterResults="false"
+                    :min-chars="1"
+                    :resolve-on-load="true"
+                    :delay="500"
+                    :searchable="true"
+                    :options="
+                        async query => {
+                            return await searchCompetitorCompany(query);
+                        }
+                    "
+                />
+                <MultiSelect
+                    v-model="form.offerHandler"
+                    @change="form = { ...form, ...form.offerHandler }"
+                    :v="v$.form.object_id"
+                    :disabled="!!object_id"
+                    extra-classes="long-text"
+                    label="Предложение"
+                    required
+                    class="col-6"
+                    :filterResults="false"
+                    :min-chars="1"
+                    :resolve-on-load="true"
+                    :delay="500"
+                    :searchable="true"
+                    :options="
+                        async query => {
+                            return await searchOffer(query);
+                        }
+                    "
+                />
+            </FormGroup>
+            <FormGroup>
+                <Input v-model="form.name" label="Название" class="col-6 pr-1" />
+                <Input v-model="form.area" label="Площадь сделки" class="col-6" maska="##########" />
+                <MultiSelect
+                    v-model="form.company_id"
+                    @change="onChangeCompany"
+                    :disabled="!!company_id"
+                    extra-classes="long-text"
+                    label="Компания"
+                    required
+                    class="col-6"
+                    :v="v$.form.company_id"
+                    :filterResults="false"
+                    :min-chars="1"
+                    :resolve-on-load="true"
+                    :delay="500"
+                    :searchable="true"
+                    :options="
+                        async query => {
+                            return await searchCompany(query);
+                        }
+                    "
+                />
+                <MultiSelect
+                    :key="requestOptions.length"
+                    v-model="form.request_id"
+                    :disabled="!form.company_id || !!request_id"
+                    extra-classes="long-text"
+                    :v="v$.form.request_id"
+                    :required="!!request_id"
+                    label="Запрос"
+                    class="col-6"
+                    :options="requestOptions"
+                />
+            </FormGroup>
+            <FormGroup>
+                <Input v-model="form.clientLegalEntity" label="Юр. лицо клиента в сделке" class="col-6" />
+                <MultiSelect
+                    v-model="form.formOfOrganization"
+                    label="ФО"
+                    title="Форма организации"
+                    class="col-3"
+                    :options="formOfOrganizationOptions"
+                />
+                <Input v-model="form.floorPrice" label="Цена пола" class="col-3" maska="##########" />
+            </FormGroup>
+            <FormGroup>
+                <MultiSelect
+                    v-model="form.consultant_id"
+                    :v="v$.form.consultant_id"
+                    required
+                    label="Консультант"
+                    class="col-6"
+                    :options="CONSULTANT_LIST"
+                />
+                <Input v-model="form.dealDate" label="Дата сделки" type="date" class="col-6">
+                    <Input
+                        v-if="contractTermVisible"
+                        v-model="form.contractTerm"
+                        label="Срок контракта в месяцах"
+                        class="col-12 p-0 mt-1"
+                        maska="####"
                     />
-                </FormGroup>
-                <FormGroup class="mb-1">
-                    <MultiSelect
-                        v-model="form.competitor_company_id"
-                        :disabled="!!form.is_our"
-                        :v="v$.form.competitor_company_id"
-                        extraClasses="long-text"
-                        label="Компания конкурент"
-                        :required="!form.is_our"
-                        class="col-6 pr-1"
-                        :filterResults="false"
-                        :minChars="1"
-                        :resolveOnLoad="true"
-                        :delay="500"
-                        :searchable="true"
-                        :options="
-                            async query => {
-                                return await searchCompetitorCompany(query);
-                            }
-                        "
-                    />
-                    <MultiSelect
-                        v-model="form.offerHandler"
-                        @change="form = { ...form, ...form.offerHandler }"
-                        :v="v$.form.object_id"
-                        :disabled="!!object_id"
-                        extraClasses="long-text"
-                        label="Предложение"
-                        required
-                        class="col-6"
-                        :filterResults="false"
-                        :minChars="1"
-                        :resolveOnLoad="true"
-                        :delay="500"
-                        :searchable="true"
-                        :options="
-                            async query => {
-                                return await searchOffer(query);
-                            }
-                        "
-                    />
-                </FormGroup>
-                <FormGroup class="mb-1">
-                    <Input v-model="form.name" label="Название" class="col-6 pr-1" />
-                    <Input v-model="form.area" label="Площадь сделки" class="col-6" maska="##########" />
-                    <MultiSelect
-                        v-model="form.company_id"
-                        @change="onChangeCompany"
-                        :disabled="!!company_id"
-                        extraClasses="long-text"
-                        label="Компания"
-                        required
-                        class="col-6 pr-1"
-                        :v="v$.form.company_id"
-                        :filterResults="false"
-                        :minChars="1"
-                        :resolveOnLoad="true"
-                        :delay="500"
-                        :searchable="true"
-                        :options="
-                            async query => {
-                                return await searchCompany(query);
-                            }
-                        "
-                    />
-                    <MultiSelect
-                        :key="requestOptions.length"
-                        v-model="form.request_id"
-                        :disabled="!form.company_id || !!request_id"
-                        extraClasses="long-text"
-                        :v="v$.form.request_id"
-                        :required="!!request_id"
-                        label="Запрос"
-                        class="col-6"
-                        :options="requestOptions"
-                    />
-                </FormGroup>
-                <FormGroup class="mb-1">
-                    <Input v-model="form.clientLegalEntity" label="Юр. лицо клиента в сделке" class="col-6 pr-1" />
-                    <MultiSelect
-                        v-model="form.formOfOrganization"
-                        label="ФО"
-                        title="Форма организации"
-                        class="col-2 pr-1"
-                        :options="formOfOrganizationOptions"
-                    />
-                    <Input v-model="form.floorPrice" label="Цена пола" class="col-4" maska="##########" />
-                </FormGroup>
-                <FormGroup class="mb-1">
-                    <MultiSelect
-                        v-model="form.consultant_id"
-                        :v="v$.form.consultant_id"
-                        required
-                        label="Консультант"
-                        class="col-6 pr-1"
-                        :options="CONSULTANT_LIST"
-                    />
-                    <Input v-model="form.dealDate" label="Дата сделки" type="date" class="col-6 pr-1">
-                        <Input
-                            v-if="contractTermVisible"
-                            v-model="form.contractTerm"
-                            label="Срок контракта в месяцах"
-                            class="col-12 p-0 mt-1"
-                            maska="####"
-                        />
-                    </Input>
-                </FormGroup>
-                <FormGroup class="mb-1"></FormGroup>
-                <FormGroup class="mb-1">
-                    <Textarea v-model="form.description" label="Описание" class="col-12" />
-                </FormGroup>
-
-                <FormGroup class="mt-4">
-                    <Submit class="col-4 mx-auto">
-                        {{ formdata ? 'Сохранить' : 'Создать' }}
-                    </Submit>
-                </FormGroup>
-            </Form>
-        </Modal>
-    </div>
+                </Input>
+            </FormGroup>
+            <FormGroup>
+                <Textarea v-model="form.description" label="Описание" class="col-12" />
+            </FormGroup>
+            <Button success class="col-4 mx-auto">{{ formdata ? 'Сохранить' : 'Создать' }}</Button>
+        </Form>
+    </Modal>
 </template>
 
 <script>
@@ -148,17 +140,18 @@ import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import Input from '@/components/common/Forms/Input.vue';
 import Textarea from '@/components/common/Forms/Textarea.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
-import Submit from '@/components/common/Forms/Submit.vue';
 import api from '@//api/api.js';
 import { CompanyFormOrganization } from '@/const/const.js';
 import moment from 'moment';
 import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
+import Button from '@/components/common/Button.vue';
 
 export default {
     name: 'FormCompanyDeal',
     components: {
+        Button,
         CheckboxChip,
         Modal,
         Loader,
@@ -166,8 +159,7 @@ export default {
         FormGroup,
         Input,
         Textarea,
-        MultiSelect,
-        Submit
+        MultiSelect
     },
 
     props: {

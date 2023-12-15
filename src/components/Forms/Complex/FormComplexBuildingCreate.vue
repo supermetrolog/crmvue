@@ -17,13 +17,13 @@
                             <MultiSelect
                                 v-model="form.address"
                                 @change="onChangeAddress"
-                                extraClasses="long-text"
+                                extra-classes="long-text"
                                 label="Адрес строения"
                                 required
                                 class="col-6 pr-1"
                                 :filterResults="false"
-                                :minChars="1"
-                                :resolveOnLoad="true"
+                                :min-chars="1"
+                                :resolve-on-load="true"
                                 :delay="500"
                                 :searchable="true"
                                 :v="v$.form.address"
@@ -38,14 +38,14 @@
                             <MultiSelect
                                 v-model="form.company_id"
                                 @change="onChangeCompany"
-                                extraClasses="long-text"
+                                extra-classes="long-text"
                                 label="Компания"
                                 required
                                 class="col-6 pr-1"
                                 :v="v$.form.company_id"
                                 :filterResults="false"
-                                :minChars="1"
-                                :resolveOnLoad="true"
+                                :min-chars="1"
+                                :resolve-on-load="true"
                                 :delay="500"
                                 :searchable="true"
                                 :options="
@@ -60,20 +60,20 @@
                                 v-model="form.purposes"
                                 @extraSelect="selectObjectType"
                                 label="Тип объекта"
-                                extraLabel="склад"
-                                :noAllSelect="true"
-                                :extraValue="1"
-                                :extraOptions="form.object_type"
+                                extra-label="склад"
+                                :no-all-select="true"
+                                :extra-value="1"
+                                :extra-options="form.object_type"
                                 class="col-12 pr-2 mx-auto"
                                 :options="objectPurposesWarehouse"
                             />
                             <CheckboxIcons
                                 v-model="form.purposes"
                                 @extraSelect="selectObjectType"
-                                extraLabel="производство"
-                                :noAllSelect="true"
-                                :extraValue="2"
-                                :extraOptions="form.object_type"
+                                extra-label="производство"
+                                :no-all-select="true"
+                                :extra-value="2"
+                                :extra-options="form.object_type"
                                 class="col-12 mt-4 pr-2 mx-auto"
                                 :options="objectPurposesProduction"
                             />
@@ -238,7 +238,7 @@
                     </Tab>
                 </Tabs>
                 <FormGroup class="mt-1 mb-4">
-                    <Submit class="col-4 mx-auto"> Сохранить </Submit>
+                    <Submit class="col-4 mx-auto"> Сохранить</Submit>
                 </FormGroup>
             </Form>
         </Modal>

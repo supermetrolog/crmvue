@@ -6,11 +6,11 @@
                     <!-- <ObjectsSearch @search="search" class="mb-2" /> -->
                     <CompanyObjectsList
                         :objects="allObjects"
-                        :currentObjects="[]"
-                        :selectedObjects="[]"
+                        :current-objects="[]"
+                        :selected-objects="[]"
                         :disabled="true"
                         :loader="allObjectsLoader"
-                        :viewMode="viewMode"
+                        :view-mode="viewMode"
                         col="col-2"
                     />
                     <Pagination @loadMore="loadMore" :pagination="pagination" class="text-center" />

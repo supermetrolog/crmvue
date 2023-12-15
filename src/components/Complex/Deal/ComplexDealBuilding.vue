@@ -11,9 +11,9 @@
                     :key="prop.label + idx"
                     :name="prop.label"
                     :value="prop.value"
-                    :valueMin="prop.valueMin"
-                    :valueMax="prop.valueMax"
-                    :unitType="unitTypes.SQUARE_METERS"
+                    :value-min="prop.valueMin"
+                    :value-max="prop.valueMax"
+                    :unit-type="unitTypes.SQUARE_METERS"
                 />
             </PropertyList>
             <PropertyList class="building-info__table">
@@ -25,10 +25,10 @@
                     v-for="(prop, idx) in price.properties"
                     :key="prop.label + idx"
                     :value="prop.value"
-                    :valueMin="prop.valueMin"
-                    :valueMax="prop.valueMax"
+                    :value-min="prop.valueMin"
+                    :value-max="prop.valueMax"
                     :name="prop.label"
-                    :unitType="unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR"
+                    :unit-type="unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR"
                 />
             </PropertyList>
         </div>

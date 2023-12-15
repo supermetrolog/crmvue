@@ -17,7 +17,7 @@
                     :text="`${call.to} (${call.phoneTo.contact.first_and_last_name})`"
                     :contact="call.phoneTo.contact"
                     class="d-inline"
-                    classList="text-center d-inline"
+                    class-list="text-center d-inline"
                 />
                 <!-- <span v-else>{{ call.to }}(нет в базе)</span> -->
                 <PhoneNumber
@@ -26,7 +26,7 @@
                     :phone="{ phone: call.to }"
                     :text="`${call.to} (нет в базе)`"
                     class="d-inline"
-                    classList="text-center d-inline"
+                    class-list="text-center d-inline"
                 />
             </p>
             <p v-else-if="call.type == 1" class="text">
@@ -38,7 +38,7 @@
                     :text="`${call.from} (${call.phoneFrom.contact.first_and_last_name})`"
                     :contact="call.phoneFrom.contact"
                     class="d-inline"
-                    classList="text-center d-inline"
+                    class-list="text-center d-inline"
                 />
                 <PhoneNumber
                     v-else
@@ -46,7 +46,7 @@
                     :phone="{ phone: call.from }"
                     :text="`${call.from} (нет в базе)`"
                     class="d-inline"
-                    classList="text-center d-inline"
+                    class-list="text-center d-inline"
                 />
                 <!-- <span v-else>{{ call.from }}(нет в базе)</span> -->
             </p>

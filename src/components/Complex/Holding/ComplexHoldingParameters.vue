@@ -5,14 +5,14 @@
                 <p class="ObjectHoldingsParameters-main-area">
                     <with-unit-type
                         v-if="object.area_building !== null || object.area_field_full !== null"
-                        :unitType="unitTypes.SQUARE_METERS"
+                        :unit-type="unitTypes.SQUARE_METERS"
                     >
                         {{ formattedArea }}
                     </with-unit-type>
                     <span v-else>не заполнено</span>
                     <template v-if="!object.object_type.includes(3)">
                         (по этажам:
-                        <with-unit-type v-if="object.area_floor_full !== null" :unitType="unitTypes.SQUARE_METERS">
+                        <with-unit-type v-if="object.area_floor_full !== null" :unit-type="unitTypes.SQUARE_METERS">
                             {{ formattedFloorArea }}
                         </with-unit-type>
                         <span v-else>не заполнено</span>
@@ -38,22 +38,10 @@
             </div>
             <div class="ObjectHoldingsParameters-equipment">
                 <teleport to="body">
-                    <transition
-                        mode="out-in"
-                        enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-                        leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-                    >
-                        <FormComplexCrane v-if="addCraneFormIsVisible" @close="toggleAddCraneFormIsVisible" />
-                    </transition>
+                    <FormComplexCrane v-if="addCraneFormIsVisible" @close="toggleAddCraneFormIsVisible" />
                 </teleport>
                 <teleport to="body">
-                    <transition
-                        mode="out-in"
-                        enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-                        leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-                    >
-                        <FormComplexElevator v-if="addElevatorFormIsVisible" @close="toggleAddElevatorFormIsVisible" />
-                    </transition>
+                    <FormComplexElevator v-if="addElevatorFormIsVisible" @close="toggleAddElevatorFormIsVisible" />
                 </teleport>
                 <p class="ObjectHoldingsParameters-equipment-label">Краны</p>
                 <ul class="ObjectHoldingsParameters-equipment-list">

@@ -5,13 +5,9 @@
         <!-- <CallerManager /> -->
         <main>
             <router-view v-slot="{ Component }">
-                <transition
-                    mode="out-in"
-                    enter-active-class="animate__animated animate__fadeIn for__page"
-                    leave-active-class="animate__animated animate__fadeOut for__page"
-                >
+                <AnimationTransition fast>
                     <component :is="Component" :key="$route.path"></component>
-                </transition>
+                </AnimationTransition>
             </router-view>
         </main>
     </div>
@@ -20,10 +16,12 @@
 <script>
 import TheSideBar from '@/components/SideBar/TheSideBar.vue';
 import TheHeader from '@/components/Header/TheHeader.vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
 
 export default {
     name: 'Default',
     components: {
+        AnimationTransition,
         TheHeader,
         TheSideBar
     }

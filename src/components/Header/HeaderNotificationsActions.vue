@@ -13,8 +13,8 @@
                                 <Multiselect
                                     v-model="form.newConsultant"
                                     @change="changeSelect"
-                                    :options="this.CONSULTANT_LIST"
-                                    :canDeselect="false"
+                                    :options="CONSULTANT_LIST"
+                                    :can-deselect="false"
                                     title="Тип сделки"
                                     :class="{
                                         invalid: v$.form.newConsultant.$error,

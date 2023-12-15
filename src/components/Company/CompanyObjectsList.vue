@@ -26,14 +26,14 @@
                     :key="object.id"
                     @select="$emit('select', $event)"
                     @unSelect="$emit('unSelect', $event)"
-                    @addComment="(...argv) => this.$emit('addComment', ...argv)"
+                    @addComment="(...argv) => $emit('addComment', ...argv)"
                     @deleteFavoriteOffer="$emit('deleteFavoriteOffer')"
                     :disabled="disabled"
                     :offer="object"
-                    :isSelected="!!selectedObjects.find(item => item.id == object.id)"
+                    :is-selected="!!selectedObjects.find(item => item.id == object.id)"
                     :col="col"
-                    :currentStepId="currentStepId"
-                    :classList="
+                    :current-step-id="currentStepId"
+                    :class-list="
                         currentObjects.find(
                             item =>
                                 (item.offer_id == object.original_id || item.offer_id == object.offer_id) &&

@@ -4,8 +4,8 @@
             <div class="CompanyBoxMain-header">
                 <div class="CompanyBoxMain-header-name">
                     <span
-                        >{{ this.company.full_name }}
-                        <small @click="this.$emit('editCompany')" class="edit_btn">[редактировать]</small></span
+                        >{{ company.full_name }}
+                        <small @click="$emit('editCompany')" class="edit_btn">[редактировать]</small></span
                     >
                 </div>
                 <div class="CompanyBoxMain-header-about">
@@ -180,7 +180,7 @@ v-if="!!websitesHandler"
             </div>
             <hr />
             <div class="CompanyBoxMain-contacts">
-                <CompanyBoxContactList @clickCreateContact="this.$emit('createContact')" :contacts="contacts" />
+                <CompanyBoxContactList @clickCreateContact="$emit('createContact')" :contacts="contacts" />
             </div>
         </template>
     </CompanyBoxLayout>

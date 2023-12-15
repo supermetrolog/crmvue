@@ -1,5 +1,5 @@
 <template>
-    <div class="CompanyBoxRequestsList">
+    <div class="company-item-requests">
         <CompanyBoxRequestsListItem
             v-for="request of requests"
             :key="request.id"

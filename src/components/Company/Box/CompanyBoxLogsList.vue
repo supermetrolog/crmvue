@@ -11,8 +11,8 @@
             v-for="(comment, idx) in formattedLogs"
             :key="comment.id"
             class="result"
-            :logItem="comment"
-            :preventLogItem="getPreventLogItem(idx)"
+            :log-item="comment"
+            :prevent-log-item="getPreventLogItem(idx)"
         />
         <div class="CompanyLogsList-scroll"></div>
     </div>

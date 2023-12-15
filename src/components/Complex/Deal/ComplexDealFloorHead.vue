@@ -4,7 +4,7 @@
             <p class="DealFloorHead-text DealFloorHead-text_label">
                 {{ name }}
             </p>
-            <with-unit-type :unitType="unitTypes.SQUARE_METERS" class="DealFloorHead-text DealFloorHead-text_area">
+            <with-unit-type :unit-type="unitTypes.SQUARE_METERS" class="DealFloorHead-text DealFloorHead-text_area">
                 {{ formattedArea }}
             </with-unit-type>
         </div>

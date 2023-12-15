@@ -2,18 +2,11 @@
     <div class="DealFloors">
         <div class="DealFloors-body">
             <teleport to="body">
-                <transition
-                    mode="out-in"
-                    enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-                    leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-                >
-                    <!-- ФОРМА "КУСКИ НА ЭТАЖАХ. СОЗДАНИЕ. -->
-                    <FormComplexFloorBlock
-                        v-if="createBlockFormIsVisible"
-                        @close="toggleCreateBlockForm"
-                        :object="object"
-                    />
-                </transition>
+                <FormComplexFloorBlock
+                    v-if="createBlockFormIsVisible"
+                    @close="toggleCreateBlockForm"
+                    :object="object"
+                />
             </teleport>
             <ul class="DealFloors-head-list">
                 <li v-for="floor in floorWithSortedSections" :key="floor.name" class="DealFloors-head-list-item">
@@ -40,7 +33,7 @@
                                 width: getSectionWidth(floor.area.valueMax, section.area.valueMax)
                             }"
                             :section="section"
-                            :floorName="floor.name"
+                            :floor-name="floor.name"
                         />
                         <ComplexDealFloorSection
                             v-if="getUnknownSectionArea(floor.sections, floor.area.valueMax) > 0"
@@ -55,8 +48,8 @@
                                 status: null,
                                 checked: null
                             }"
-                            :floorName="floor.name"
-                            :unknownAreaCompanies="getSectionsNameWithUnKnownArea(floor.sections)"
+                            :floor-name="floor.name"
+                            :unknown-area-companies="getSectionsNameWithUnKnownArea(floor.sections)"
                         />
                     </div>
                 </div>

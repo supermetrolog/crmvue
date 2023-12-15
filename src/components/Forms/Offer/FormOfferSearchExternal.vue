@@ -11,16 +11,13 @@
         </div>
         <div class="col-2 align-self-end">
             <div class="offer-search__actions">
-                <Button @click="$emit('openFilters')" icon>
-                    <span v-if="filterCount" class="button__badge badge badge-danger">
-                        {{ filterCount }}
-                    </span>
+                <Button @click="$emit('openFilters')" icon :badge="filterCount || false">
                     <i class="icon fa-solid fa-sliders"></i>
                 </Button>
                 <div>
-                    <a
-                        :href="$router.resolve({ name: isMap ? 'OffersMain' : 'OffersMap', query: $route.query }).href"
-                        class="button button--icon"
+                    <ButtonLink
+                        icon
+                        :to="$router.resolve({ name: isMap ? 'OffersMain' : 'OffersMap', query: $route.query }).href"
                     >
                         <i v-if="isMap" class="icon fa-solid fa-list-ul"></i>
                         <i v-else class="icon fa-solid fa-map-location-dot"></i>
@@ -29,7 +26,7 @@
                             <span v-if="isMap">{{ offersCount }} ({{ objectsCount }})</span>
                             <span v-else>({{ offersCount ?? objectsCount }})</span>
                         </span>
-                    </a>
+                    </ButtonLink>
                 </div>
             </div>
         </div>
@@ -56,10 +53,11 @@
 import { FormMixin } from '@/components/Forms/mixins.js';
 import { waitHash } from '@/utils';
 import Button from '@/components/common/Button.vue';
+import ButtonLink from '@/components/common/ButtonLink.vue';
 
 export default {
     name: 'FormOfferSearchExternal',
-    components: { Button },
+    components: { ButtonLink, Button },
     mixins: [FormMixin],
     props: {
         offersCount: {

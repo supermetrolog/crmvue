@@ -86,7 +86,7 @@
                                 v-model="form.elevator_controls"
                                 title="Тип управления"
                                 label="Тип управления"
-                                :closeOnSelect="false"
+                                :close-on-select="false"
                                 class="col-4 px-1"
                                 mode="multiple"
                                 :options="elevatorControlsOptions"
@@ -117,7 +117,7 @@
                     </Tab>
                 </Tabs>
                 <FormGroup class="mt-1 mb-4">
-                    <Submit class="col-4 mx-auto"> Сохранить </Submit>
+                    <Submit class="col-4 mx-auto"> Сохранить</Submit>
                 </FormGroup>
             </Form>
         </Modal>

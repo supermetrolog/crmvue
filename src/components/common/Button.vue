@@ -1,16 +1,8 @@
 <template>
-    <button
-        @click="$emit('click')"
-        class="button"
-        :class="{
-            'button--icon': icon,
-            'button--warning': warning,
-            'button--small': small,
-            'button--success': success,
-            'button--info': info
-        }"
-        :title="title"
-    >
+    <button @click="$emit('click')" class="button" :class="classButton" :title="title">
+        <span v-if="hasBadge" class="button__badge badge badge-danger">
+            {{ badge }}
+        </span>
         <slot />
     </button>
 </template>
@@ -42,6 +34,34 @@ export default {
         info: {
             type: Boolean,
             default: false
+        },
+        danger: {
+            type: Boolean,
+            default: false
+        },
+        badge: {
+            type: [String, Number, Boolean],
+            default: false
+        },
+        active: {
+            type: Boolean,
+            default: true
+        }
+    },
+    computed: {
+        hasBadge() {
+            return this.badge !== false;
+        },
+        classButton() {
+            return {
+                'button--icon': this.icon,
+                'button--warning': this.warning,
+                'button--small': this.small,
+                'button--success': this.success,
+                'button--info': this.info,
+                'button--danger': this.danger,
+                'button--disabled': !this.active
+            };
         }
     }
 };

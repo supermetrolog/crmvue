@@ -1,12 +1,6 @@
 <template>
     <teleport to="body">
-        <transition
-            mode="out-in"
-            enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-            leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-        >
-            <FormCompanyDeal v-if="isFormDealVisible" @close="isFormDealVisible = false" />
-        </transition>
+        <FormCompanyDeal v-if="isFormDealVisible" @close="isFormDealVisible = false" />
     </teleport>
     <ul class="nav-list horizontal">
         <li ref="calls" class="nav-item notification" :class="{ active: callsVisible }">
@@ -22,13 +16,9 @@
                     </span>
                 </div>
             </a>
-            <transition
-                mode="out-in"
-                enter-active-class="animate__animated animate__fadeInDown for__notifications"
-                leave-active-class="animate__animated animate__fadeOutUp for__notifications"
-            >
+            <AnimationTransition>
                 <HeaderCalls v-if="callsVisible" />
-            </transition>
+            </AnimationTransition>
         </li>
 
         <li ref="notification" class="nav-item notification" :class="{ active: notificationsVisible }">
@@ -40,13 +30,9 @@
                     </span>
                 </div>
             </a>
-            <transition
-                mode="out-in"
-                enter-active-class="animate__animated animate__fadeInDown for__notifications"
-                leave-active-class="animate__animated animate__fadeOutUp for__notifications"
-            >
+            <AnimationTransition>
                 <HeaderNotifications v-if="notificationsVisible" />
-            </transition>
+            </AnimationTransition>
         </li>
     </ul>
 </template>
@@ -55,10 +41,12 @@ import FormCompanyDeal from '@/components/Forms/Company/FormCompanyDeal.vue';
 import HeaderCalls from '@/components/Header/HeaderCalls.vue';
 import HeaderNotifications from '@/components/Header/HeaderNotifications.vue';
 import { mapActions, mapGetters } from 'vuex';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
 
 export default {
     name: 'HeaderFunctions',
     components: {
+        AnimationTransition,
         FormCompanyDeal,
         HeaderCalls,
         HeaderNotifications

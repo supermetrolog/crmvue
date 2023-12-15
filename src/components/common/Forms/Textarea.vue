@@ -1,9 +1,7 @@
 <template>
-    <div class="form-item textarea">
-        <label class="form-item-label" :class="{ required: required }">
-            <p v-if="label">
-                {{ label }}
-            </p>
+    <div class="form__control">
+        <label class="form__label" :class="{ required: required }">
+            <span v-if="label">{{ label }}</span>
             <textarea
                 @input="onInput"
                 class="form__textarea"

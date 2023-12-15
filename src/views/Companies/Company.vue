@@ -1,6 +1,6 @@
 <template>
     <div class="company">
-        <p v-if="!loaderCompanyDetailInfo && this.COMPANY.status === 0" class="company-passive">
+        <p v-if="!loaderCompanyDetailInfo && COMPANY.status === 0" class="company-passive">
             <span>Пассив</span>
             <span v-if="COMPANY.passive_why !== null"> ({{ passiveWhyList[COMPANY.passive_why].label }})</span>
             <span v-if="COMPANY.passive_why_comment !== null"> комм: {{ COMPANY.passive_why_comment }}</span>
@@ -42,9 +42,9 @@
                 @editCompany="clickOpenCompanyForm"
                 @createContact="openContactFormForCreate"
                 :company="COMPANY"
-                :contacts="this.COMPANY_CONTACTS"
+                :contacts="COMPANY_CONTACTS"
             />
-            <CompanyBoxLogs v-if="!loaderCompanyDetailInfo" :company="this.COMPANY" />
+            <CompanyBoxLogs v-if="!loaderCompanyDetailInfo" :company="COMPANY" />
             <CompanyBoxObjects v-if="!loaderCompanyObjects" :objects="COMPANY_OBJECTS" />
             <CompanyBoxRequests
                 v-if="!loaderCompanyRequests"
@@ -125,6 +125,11 @@ export default {
         ...mapGetters(['COMPANY', 'COMPANY_REQUESTS', 'COMPANY_CONTACTS', 'COMPANY_OBJECTS', 'TIMELINE_LIST']),
         companyRequests() {
             return this.COMPANY_REQUESTS;
+        }
+    },
+    watch: {
+        $route() {
+            this.timeline();
         }
     },
     methods: {
@@ -259,11 +264,6 @@ export default {
         this.getCompanyObjects();
         this.getCompanyRequests();
         this.timeline();
-    },
-    watch: {
-        $route() {
-            this.timeline();
-        }
     }
 };
 </script>

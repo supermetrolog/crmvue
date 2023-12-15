@@ -46,13 +46,13 @@ export default {
             };
         }
     },
-    async mounted() {
-        this.complex = await this.fetchComplex(this.$route.params.complex_id);
-    },
     methods: {
         ...mapActions({
             fetchComplex: 'FETCH_COMPLEX'
         })
+    },
+    async mounted() {
+        this.complex = await this.fetchComplex(this.$route.params.complex_id);
     }
 };
 </script>

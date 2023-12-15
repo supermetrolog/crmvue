@@ -6,18 +6,18 @@
                 'Шаг 1. отметить объекты, которые заинтересовали клиента' +
                 (data.timelineStepObjects.length ? ` (${data.timelineStepObjects.length})` : '')
             "
-            :isDone="!!data.timelineStepObjects.length"
-            :closeSlotWhenDone="false"
-            :isCurrent="!data.timelineStepObjects.length"
+            :is-done="!!data.timelineStepObjects.length"
+            :close-slot-when-done="false"
+            :is-current="!data.timelineStepObjects.length"
         >
             <ButtonList v-if="!disabled" @done="$emit('done')" @negative="$emit('negative')" :buttons="buttons" />
         </TimelineStepStage>
         <TimelineStepStage
             class="mb-2"
             title="Шаг 2. Отметить каким способом была получена обратная связь"
-            :isDone="!!data.timelineStepFeedbackways.length"
-            :closeSlotWhenDone="false"
-            :isCurrent="!!data.timelineStepObjects.length"
+            :is-done="!!data.timelineStepFeedbackways.length"
+            :close-slot-when-done="false"
+            :is-current="!!data.timelineStepObjects.length"
         >
             <div v-if="!disabled" class="col-7 pp">
                 <div class="row">

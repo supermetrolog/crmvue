@@ -6,6 +6,12 @@ main {
     padding: 75px 25px 50px 100px;
 }
 
+.animate {
+    &--fast {
+        animation-duration: 0.1s !important;
+    }
+}
+
 .offer-search {
 
     &__functions {
@@ -19,19 +25,6 @@ main {
         display: flex;
         align-items: flex-end;
         gap: 10px;
-    }
-}
-
-.company-table {
-    &__filters {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 5px 10px;
-    }
-
-    &__actions {
-        display: flex;
-        justify-content: end;
     }
 }
 

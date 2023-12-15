@@ -3,17 +3,16 @@
         <label class="checkbox-chip__label" :class="{ required: required, active: isActive }">
             <input
                 v-model="field"
-                @change.stop="onChange"
+                @change="onChange"
                 type="checkbox"
                 :class="inputClasses"
                 :value="value"
+                :true-value="1"
+                :false-value="0"
                 :disabled="disabled"
             />
             {{ text }}
         </label>
-        <div v-if="v && v.$error" class="form__error pt-0">
-            <p>{{ v.$errors[0].$message }}</p>
-        </div>
         <slot />
     </div>
 </template>
@@ -29,14 +28,13 @@ export default {
             type: [Array, Number, String, Boolean],
             default: () => []
         },
-        text: String,
+        text: {
+            type: [String, Number, null],
+            default: null
+        },
         required: {
             type: Boolean,
             default: false
-        },
-        v: {
-            type: Object,
-            default: null
         },
         label: {
             type: String,
@@ -71,8 +69,6 @@ export default {
     },
     methods: {
         onChange() {
-            this.validate();
-            if (!(this.field instanceof Array)) this.field = Number(this.field);
             this.$emit('update:modelValue', this.field);
             this.$emit('change', this.field);
         }

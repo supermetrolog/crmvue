@@ -14,9 +14,9 @@
                     @stageClicked="stageClicked"
                     class="mb-2"
                     title="Шаг 1. Изучите деятельность компании клиента, свяжитесь с контактным лицом и обсудите задачу"
-                    :isDone="data.additional == 1"
-                    :isCurrent="data.additional != 1"
-                    :isClicked="clickedStage === 1"
+                    :is-done="data.additional == 1"
+                    :is-current="data.additional != 1"
+                    :is-clicked="clickedStage === 1"
                 >
                     <ButtonList
                         v-if="!disabled"
@@ -30,9 +30,9 @@
                     :id="2"
                     @stageClicked="stageClicked"
                     title="Шаг 2. Проверьте правильность заполнения запроса, отредактируйте при необходимости и затем утвердите"
-                    :isDone="data.done == 1"
-                    :isCurrent="data.additional == 1"
-                    :isClicked="clickedStage === 2"
+                    :is-done="data.done == 1"
+                    :is-current="data.additional == 1"
+                    :is-clicked="clickedStage === 2"
                 >
                     <ButtonList
                         v-if="!disabled"

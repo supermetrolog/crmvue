@@ -1,34 +1,28 @@
 <template>
     <div class="step-action">
         <teleport to="body">
-            <transition
-                mode="out-in"
-                enter-active-class="animate__animated animate__zoomIn for__modal"
-                leave-active-class="animate__animated animate__zoomOut for__modal"
-            >
-                <Modal v-if="sendObjectsModalVisible" @close="closeSendObjectsModal" title="Отправка" class="autosize">
-                    <FormLetter
-                        @send="sendOffers"
-                        @alreadySent="alreadySentOffers"
-                        :alreadySended="alreadySended"
-                        :formdata="sendObjectsFormdata"
-                        :loader="loader"
-                    >
-                        <div class="objects">
-                            <CompanyObjectsList
-                                @select="select"
-                                @unSelect="unSelect"
-                                @addComment="addComment"
-                                :objects="selectedObjects"
-                                :selectedObjects="selectedObjects"
-                                :disabled="true"
-                                col="col-3"
-                                label="Выбранные предложения"
-                            />
-                        </div>
-                    </FormLetter>
-                </Modal>
-            </transition>
+            <Modal v-if="sendObjectsModalVisible" @close="closeSendObjectsModal" title="Отправка" class="autosize">
+                <FormLetter
+                    @send="sendOffers"
+                    @alreadySent="alreadySentOffers"
+                    :already-sended="alreadySended"
+                    :formdata="sendObjectsFormdata"
+                    :loader="loader"
+                >
+                    <div class="objects">
+                        <CompanyObjectsList
+                            @select="select"
+                            @unSelect="unSelect"
+                            @addComment="addComment"
+                            :objects="selectedObjects"
+                            :selected-objects="selectedObjects"
+                            :disabled="true"
+                            col="col-3"
+                            label="Выбранные предложения"
+                        />
+                    </div>
+                </FormLetter>
+            </Modal>
         </teleport>
         <div class="row no-gutters inner scroller">
             <div class="col-12">
@@ -41,9 +35,9 @@
                             <TimelineStepStage
                                 class="mb-2 sticky"
                                 title="Шаг 1. Внимательно изучите автоподборки CRM или подберите варианты вручную и отправьте клиенту"
-                                :isDone="!!step.timelineStepObjects.length"
-                                :closeSlotWhenDone="false"
-                                :isCurrent="!step.timelineStepObjects.length"
+                                :is-done="!!step.timelineStepObjects.length"
+                                :close-slot-when-done="false"
+                                :is-current="!step.timelineStepObjects.length"
                             >
                                 <ButtonList
                                     v-if="!disabled"
@@ -59,11 +53,11 @@
                                 @unSelect="unSelect"
                                 @addComment="addComment"
                                 :objects="preventStepObjects"
-                                :selectedObjects="selectedObjects"
+                                :selected-objects="selectedObjects"
                                 :disabled="disabled"
                                 :loader="loader"
-                                :viewMode="viewMode"
-                                :currentStepId="step.id"
+                                :view-mode="viewMode"
+                                :current-step-id="step.id"
                                 :label="
                                     'Отправленные предложения' +
                                     (preventStepObjects.length ? ` (${preventStepObjects.length})` : '')
@@ -121,7 +115,7 @@
                                 @search="search"
                                 @reset="recommendedFilter = null"
                                 @resetSelected="reset"
-                                :additionalButtons="
+                                :additional-buttons="
                                     selectedObjects.length
                                         ? [
                                               {
@@ -132,8 +126,8 @@
                                           ]
                                         : []
                                 "
-                                noUrl
-                                :queryParams="queryParams"
+                                no-url
+                                :query-params="queryParams"
                                 class="mb-2 px-4"
                                 :class="{ 'action-open': controllPanelHeight > 50 }"
                             />
@@ -143,13 +137,13 @@
                                 @addComment="addComment"
                                 @deleteFavoriteOffer="deleteFavoriteOffer"
                                 :objects="allObjects"
-                                :currentObjects="step.timelineStepObjects"
-                                :selectedObjects="selectedObjects"
+                                :current-objects="step.timelineStepObjects"
+                                :selected-objects="selectedObjects"
                                 :disabled="disabled"
                                 :loader="allObjectsLoader"
-                                :viewMode="viewMode"
+                                :view-mode="viewMode"
                                 :pagination="pagination"
-                                :currentStepId="step.id"
+                                :current-step-id="step.id"
                             />
                             <Pagination @loadMore="loadMore" :pagination="pagination" class="text-center" />
                         </div>

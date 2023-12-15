@@ -1,17 +1,11 @@
 <template>
     <teleport to="body">
-        <transition
-            mode="out-in"
-            enter-active-class="animate__animated animate__zoomIn for__modal absolute"
-            leave-active-class="animate__animated animate__zoomOut for__modal absolute"
-        >
-            <FormModalCompanyRequestClone
-                v-if="clonedRequestItem"
-                @close="clickCloseModal"
-                @cloned="clonedRequest"
-                :request="clonedRequestItem"
-            />
-        </transition>
+        <FormModalCompanyRequestClone
+            v-if="clonedRequestItem"
+            @close="clickCloseModal"
+            @cloned="clonedRequest"
+            :request="clonedRequestItem"
+        />
     </teleport>
     <FormModalCompanyRequestDisable
         v-if="disabledRequestItem"

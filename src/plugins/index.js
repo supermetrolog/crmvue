@@ -203,5 +203,5 @@ export const Formatter = {
 export const ApiUrlHelper = {
     install(app) {
         app.config.globalProperties.$apiUrlHelper = apiUrlHelperObject;
-    },
+    }
 };

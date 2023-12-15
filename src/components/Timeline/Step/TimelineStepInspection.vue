@@ -8,9 +8,9 @@
                 'Шаг 1. Отметить объекты, которые заинтересовали клиента' +
                 (data.timelineStepObjects.length ? ` (${data.timelineStepObjects.length})` : '')
             "
-            :isDone="!!data.timelineStepObjects.length"
-            :isCurrent="!data.timelineStepObjects.length"
-            :isClicked="clickedStage === 1"
+            :is-done="!!data.timelineStepObjects.length"
+            :is-current="!data.timelineStepObjects.length"
+            :is-clicked="clickedStage === 1"
         >
             <ButtonList
                 v-if="!disabled"
@@ -25,9 +25,9 @@
             @stageClicked="stageClicked"
             class="mb-2"
             title="Шаг 2. Отправить всю необходимую информацию по объектам клиенту"
-            :isDone="!!data.additional"
-            :isCurrent="!!data.timelineStepObjects.length"
-            :isClicked="clickedStage === 2"
+            :is-done="!!data.additional"
+            :is-current="!!data.timelineStepObjects.length"
+            :is-clicked="clickedStage === 2"
         >
             <div v-if="!disabled" class="row no-gutters">
                 <div class="col-6 pr-1">
@@ -103,11 +103,11 @@ class="text-danger"
                                 <FormGroup v-if="userLocationForm" class="mb-1">
                                     <MultiSelect
                                         v-model="newUserLocation"
-                                        extraClasses="long-text"
+                                        extra-classes="long-text"
                                         label="Ваше местоположение"
                                         :filterResults="false"
-                                        :minChars="1"
-                                        :resolveOnLoad="false"
+                                        :min-chars="1"
+                                        :resolve-on-load="false"
                                         :delay="0"
                                         :searchable="true"
                                         :options="
@@ -147,7 +147,7 @@ class="text-danger"
             </div>
             <div class="col-7 align-self-center">
                 <a :href="routeLink" target="_blank">Открыть маршрут на Яндекс.Картах </a>
-                <Ymap v-if="currentStepObjects.length" :manualRoute="manualRoute" :userLocation="userLocation" />
+                <Ymap v-if="currentStepObjects.length" :manual-route="manualRoute" :user-location="userLocation" />
             </div>
         </div>
         <div v-if="!userLocation && data.timelineStepObjects.length && clickedStage !== 1" class="px-3">

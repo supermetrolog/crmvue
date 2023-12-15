@@ -4,7 +4,7 @@
             <div class="col-12">
                 <div class="row no-gutters">
                     <div class="col-12">
-                        <Accordion @changed="tabSwitched" :defaultTabHash="this.step.id">
+                        <Accordion @changed="tabSwitched" :default-tab-hash="step.id">
                             <AccordionItem
                                 v-for="timelineStep in TIMELINE.timelineSteps"
                                 :id="timelineStep.id"
@@ -13,7 +13,7 @@
                                     timelineStepOptions[timelineStep.number][1].name +
                                     ` (${timelineStep.timelineActionComments.length})`
                                 "
-                                :titleClasses="titleClasses(timelineStep)"
+                                :title-classes="titleClasses(timelineStep)"
                             >
                                 <TimelineComments :data="timelineStep.timelineActionComments" />
                                 <Form :ref="'#' + timelineStep.id" @submit="onSubmit(timelineStep)" class="mb-3 p-2">
@@ -27,7 +27,7 @@
                                         <Submit
                                             v-if="!loader"
                                             class="mt-1"
-                                            buttonClasses="btn-primary"
+                                            button-classes="btn-primary"
                                             :disabled="disabled"
                                         >
                                             добавить

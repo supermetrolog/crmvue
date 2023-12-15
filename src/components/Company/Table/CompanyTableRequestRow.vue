@@ -7,8 +7,8 @@
                 :key="timeline.id"
                 @click="clickTimeline"
                 class="CompanyTableItem-block-timeline"
-                :currentSteps="timeline.timelineSteps"
-                :requestName="requestName"
+                :current-steps="timeline.timelineSteps"
+                :request-name="requestName"
             />
         </td>
         <td class="text-warning CompanyTableItem-notif">

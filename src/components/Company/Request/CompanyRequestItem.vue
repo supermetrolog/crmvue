@@ -51,23 +51,19 @@
                     <div class="location">
                         <div class="region">
                             <strong>
-                                {{
-                                    request.regions
-                                        .map(elem => this.$formatter.text().ucFirst(elem.info.title))
-                                        .join(', ')
-                                }}
+                                {{ request.regions.map(elem => $formatter.text().ucFirst(elem.info.title)).join(', ') }}
                             </strong>
                         </div>
                         <div v-if="request.directions.length" class="region-parameters">
                             <p class="d-block"><b>Московская область:</b></p>
                             <p>
-                                {{ request.directions.map(elem => this.directionList[elem.direction][2]).join(', ') }}
+                                {{ request.directions.map(elem => directionList[elem.direction][2]).join(', ') }}
                             </p>
                         </div>
                         <div v-if="request.districts.length" class="region-parameters">
                             <p class="d-block"><b>Москва:</b></p>
                             <p>
-                                {{ request.districts.map(elem => this.districtList[elem.district][1]).join(', ') }}
+                                {{ request.districts.map(elem => districtList[elem.district][1]).join(', ') }}
                             </p>
                         </div>
                         <div>
@@ -117,7 +113,7 @@
                                 <p>
                                     {{
                                         request.objectClasses
-                                            .map(elem => this.objectClassList[elem.object_class][1])
+                                            .map(elem => objectClassList[elem.object_class][1])
                                             .join(', ')
                                     }}
                                 </p>
@@ -168,7 +164,7 @@
                             <div class="parameters-inner">
                                 <p v-if="!request.gateTypes.length">нет данных</p>
                                 <p v-else>
-                                    {{ request.gateTypes.map(elem => this.gateTypeList[elem.gate_type][1]).join(', ') }}
+                                    {{ request.gateTypes.map(elem => gateTypeList[elem.gate_type][1]).join(', ') }}
                                 </p>
                             </div>
                         </div>
@@ -193,7 +189,7 @@
             </div>
         </div>
         <div v-if="request.deal && withDeal" class="col-12 deal-info py-2">
-            <DealListItem :deal="request.deal" :reedOnly="true" />
+            <DealListItem :deal="request.deal" :reed-only="true" />
         </div>
     </div>
 </template>

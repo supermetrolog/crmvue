@@ -5,18 +5,18 @@
                 <ComplexOfferTable
                     subtitle="S - складская"
                     :title="areaTableTitle"
-                    :titleUnitType="unitTypes.SQUARE_METERS"
-                    :propertyList="area.properties"
-                    :propertyUnitType="unitTypes.SQUARE_METERS"
+                    :title-unit-type="unitTypes.SQUARE_METERS"
+                    :property-list="area.properties"
+                    :property-unit-type="unitTypes.SQUARE_METERS"
                     type="area"
                     class="trade-offer-item__table"
                 />
                 <ComplexOfferTable
                     subtitle="E - пола средняя"
                     :title="priceTableTitle"
-                    :titleUnitType="unitTypes.RUB"
-                    :propertyList="price.properties"
-                    :propertyUnitType="unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR"
+                    :title-unit-type="unitTypes.RUB"
+                    :property-list="price.properties"
+                    :property-unit-type="unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR"
                     type="price"
                     class="trade-offer-item__table"
                 />

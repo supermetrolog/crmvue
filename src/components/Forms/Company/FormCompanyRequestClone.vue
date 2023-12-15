@@ -14,9 +14,9 @@
                             :options="CONSULTANT_LIST"
                         />
                         <div class="col-12 text-center mt-4">
-                            <CompanyBoxRequestsListItem :request="request" :reedOnly="true" />
+                            <CompanyBoxRequestsListItem :request="request" :reed-only="true" />
                         </div>
-                        <Submit class="col-4 mt-2 mx-auto" buttonClasses="btn-success"> Клонировать </Submit>
+                        <Submit class="col-4 mt-2 mx-auto" button-classes="btn-success"> Клонировать</Submit>
                     </FormGroup>
                 </Form>
             </div>

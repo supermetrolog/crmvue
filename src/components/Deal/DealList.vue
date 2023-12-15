@@ -4,7 +4,7 @@
             <div class="row no-gutters">
                 <div class="col-12 text-center">
                     <h4 class="text-dark">Вы уверены что хотите удалить сделку?</h4>
-                    <DealListItem :deal="deletedDealItem" :reedOnly="true" />
+                    <DealListItem :deal="deletedDealItem" :reed-only="true" />
                 </div>
                 <div class="col-12 mt-4 text-center">
                     <Loader v-if="deleteLoader" class="center small" />

@@ -38,7 +38,7 @@
             :key="randKey"
             :settings="map.settings"
             :styles="map.styles"
-            :detailedControls="map.detailedControls"
+            :detailed-controls="map.detailedControls"
             :behaviors="map.behaviors"
             :coords="complexCoords"
         />

@@ -13,11 +13,11 @@
                         :key="subparameter.name + idx"
                         class="trade-offer-summary__item"
                         :value="formattedParameter(subparameter)"
-                        :valueDetails="
+                        :value-details="
                             subparameter.floorType || subparameter.gateType || subparameter.liftingDevicesWeight
                         "
                         :name="subparameter.name"
-                        :unitType="subparameter.unitType"
+                        :unit-type="subparameter.unitType"
                     />
                 </PropertyList>
             </div>

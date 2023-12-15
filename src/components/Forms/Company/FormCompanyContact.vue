@@ -139,14 +139,14 @@
                 <FormGroup class="mb-1">
                     <MultiSelect
                         v-model="forms.company_id"
-                        extraClasses="long-text"
+                        extra-classes="long-text"
                         label="Компания"
                         required
                         class="col-6 pr-1"
                         :v="v$.forms.company_id"
                         :filterResults="false"
-                        :minChars="1"
-                        :resolveOnLoad="true"
+                        :min-chars="1"
+                        :resolve-on-load="true"
                         :delay="0"
                         :searchable="true"
                         :options="
