@@ -1,61 +1,61 @@
-import axios from "axios";
-import ErrorHandle from "./errors";
-import SuccessHandler from "./success";
+import axios from 'axios';
+import ErrorHandle from './errors';
+import SuccessHandler from './success';
 
 export default {
     async getDeals() {
-        const url = "deals";
+        const url = 'deals';
         let data = false;
         await axios
             .get(url)
-            .then((Response) => {
+            .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
     },
     async getDeal(id) {
-        const url = "deals/" + id;
+        const url = 'deals/' + id;
         let data = false;
         await axios
             .get(url)
-            .then((Response) => {
+            .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
     },
     async createDeal(formdata) {
-        const url = "deals";
+        const url = 'deals';
         let data = false;
         await axios
             .post(url, formdata)
-            .then((Response) => {
+            .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
     },
     async updateDeal(formdata, id) {
-        const url = "deals/" + id;
+        const url = 'deals/' + id;
         let data = false;
         await axios
             .patch(url, formdata)
-            .then((Response) => {
+            .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
     },
     async deleteDeal(formdata, id) {
-        const url = "deals/" + id;
+        const url = 'deals/' + id;
         let data = false;
         await axios
             .delete(url, formdata)
-            .then((Response) => {
+            .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
-    },
-}
+    }
+};

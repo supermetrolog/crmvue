@@ -3,11 +3,13 @@
         <span>
             <b>{{ currentPage }}</b> страница из <b>{{ pagination.pageCount }}; </b>
         </span>
-        <span>отображение строк <b>{{ countVisibleRows }}</b> (всего <b>{{ pagination.totalCount }}</b>)</span>
+        <span
+            >отображение строк <b>{{ countVisibleRows }}</b> (всего <b>{{ pagination.totalCount }}</b
+            >)</span
+        >
     </div>
 </template>
 <script>
-
 export default {
     name: 'PaginationDescription',
     props: {
@@ -15,5 +17,5 @@ export default {
         currentPage: Number,
         countVisibleRows: String
     }
-}
+};
 </script>

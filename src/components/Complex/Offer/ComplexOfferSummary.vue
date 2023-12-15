@@ -9,15 +9,13 @@
                     class="trade-offer-summary__table"
                 >
                     <PropertyListItem
-                        class="trade-offer-summary__item"
                         v-for="(subparameter, idx) of parameters[parameter]"
+                        :key="subparameter.name + idx"
+                        class="trade-offer-summary__item"
                         :value="formattedParameter(subparameter)"
                         :valueDetails="
-                          subparameter.floorType ||
-                          subparameter.gateType ||
-                          subparameter.liftingDevicesWeight
+                            subparameter.floorType || subparameter.gateType || subparameter.liftingDevicesWeight
                         "
-                        :key="subparameter.name + idx"
                         :name="subparameter.name"
                         :unitType="subparameter.unitType"
                     />
@@ -28,16 +26,13 @@
                     <p class="trade-offer-summary__title">Описание</p>
                     <p class="trade-offer-summary__text">{{ offerDesciption }}</p>
                 </div>
-                <div
-                    v-if="plan_scheme && plan_scheme.length > 0"
-                    class="trade-offer-summary__scheme"
-                >
+                <div v-if="plan_scheme && plan_scheme.length > 0" class="trade-offer-summary__scheme">
                     <p class="trade-offer-summary__title">На планировках</p>
                     <img
                         v-for="(imgSrc, idx) in plan_scheme"
+                        :key="idx"
                         :src="imgSrc"
                         alt="схема"
-                        :key="idx"
                         class="trade-offer-summary__image"
                     />
                 </div>
@@ -47,37 +42,37 @@
 </template>
 
 <script>
-import {OfferParametersMixin} from "@/components/Complex/Offer/mixins";
-import PropertyListItem from "@/components/common/Property/PropertyListItem.vue";
-import PropertyList from "@/components/common/Property/PropertyList.vue";
+import { OfferParametersMixin } from '@/components/Complex/Offer/mixins';
+import PropertyListItem from '@/components/common/Property/PropertyListItem.vue';
+import PropertyList from '@/components/common/Property/PropertyList.vue';
 
 export default {
-    name: "ComplexOfferSummary",
-    mixins: [OfferParametersMixin],
+    name: 'ComplexOfferSummary',
     components: {
         PropertyList,
         PropertyListItem
     },
+    mixins: [OfferParametersMixin],
     props: {
         parameters: {
             type: Object,
-            required: true,
+            required: true
         },
         description: {
             type: String,
-            required: true,
+            required: true
         },
         plan_scheme: {
-            type: Array,
-        },
+            type: Array
+        }
     },
     data() {
         return {};
     },
     computed: {
         offerDesciption() {
-            return this.description || "нет описания";
-        },
-    },
+            return this.description || 'нет описания';
+        }
+    }
 };
 </script>

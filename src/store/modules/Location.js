@@ -1,4 +1,4 @@
-import api from "@/api/api";
+import api from '@/api/api';
 
 const Location = {
     state: {
@@ -26,6 +26,6 @@ const Location = {
             return state.regionList;
         }
     }
-}
+};
 
 export default Location

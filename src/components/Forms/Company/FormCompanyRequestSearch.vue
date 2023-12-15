@@ -1,36 +1,25 @@
 <template>
     <div class="company-request-search-form">
-        <Form class="autosize" @submit="onSubmit">
+        <Form @submit="onSubmit" class="autosize">
             <FormGroup class="mb-2">
                 <Input
                     v-model="form.all"
+                    @keydown.enter="onSubmit"
                     label="Поиск"
                     placeholder=" ID запроса, название компании"
                     class="col-12 main-input"
-                    @keydown.enter="onSubmit"
                 />
             </FormGroup>
             <FormGroup>
-                <a
-                    href="#"
-                    @click.prevent="extraVisible = !extraVisible"
-                    class="text-primary"
-                >
+                <a @click.prevent="extraVisible = !extraVisible" href="#" class="text-primary">
                     фильтры
-                    <span class="badge badge-danger" v-if="filterCount">
-            {{ filterCount }}
-          </span>
-                    <i class="fas fa-angle-down" v-if="!extraVisible"></i>
-                    <i class="fas fa-angle-up" v-else></i>
+                    <span v-if="filterCount" class="badge badge-danger">
+                        {{ filterCount }}
+                    </span>
+                    <i v-if="!extraVisible" class="fas fa-angle-down"></i>
+                    <i v-else class="fas fa-angle-up"></i>
                 </a>
-                <a
-                    href="#"
-                    @click.prevent="resetForm"
-                    class="text-primary ml-5"
-                    v-if="filterCount"
-                >
-                    сбросить
-                </a>
+                <a v-if="filterCount" @click.prevent="resetForm" href="#" class="text-primary ml-5"> сбросить </a>
             </FormGroup>
             <div v-show="extraVisible">
                 <FormGroup class="mb-2">
@@ -39,10 +28,10 @@
                         label="Консультант"
                         class="col-md-4 col-6 pr-1"
                         :options="
-              async () => {
-                return await FETCH_CONSULTANT_LIST();
-              }
-            "
+                            async () => {
+                                return await FETCH_CONSULTANT_LIST();
+                            }
+                        "
                     />
 
                     <MultiSelect
@@ -109,50 +98,39 @@
                             class="col-12 p-0 pt-1"
                         />
                     </Input>
-                    <Input
-                        v-model="form.dateStart"
-                        label="Дата От и До"
-                        class="col-md-3 col-12"
-                        type="date"
-                    >
-                        <Input v-model="form.dateEnd" class="col-12 p-0 pt-1" type="date"/>
+                    <Input v-model="form.dateStart" label="Дата От и До" class="col-md-3 col-12" type="date">
+                        <Input v-model="form.dateEnd" class="col-12 p-0 pt-1" type="date" />
                     </Input>
                 </FormGroup>
                 <FormGroup class="mb-2">
                     <MultiSelect
                         v-model="form.regions"
+                        @change="changeRegion"
                         label="Регионы"
                         class="col-md-4 col-12 pr-1"
                         mode="multiple"
                         :closeOnSelect="false"
                         :options="
-              async () => {
-                await this.FETCH_REGION_LIST();
-                return this.REGION_LIST.filter((elem) =>
-                  Number.isInteger(elem.value)
-                );
-              }
-            "
-                        @change="changeRegion"
+                            async () => {
+                                await this.FETCH_REGION_LIST();
+                                return this.REGION_LIST.filter(elem => Number.isInteger(elem.value));
+                            }
+                        "
                     >
                         <template v-if="REGION_LIST">
-                            <small
-                                v-for="(region, index) in form.regions"
-                                :key="region"
-                                class="d-block px-3"
-                            >
+                            <small v-for="(region, index) in form.regions" :key="region" class="d-block px-3">
                                 {{ index + 1 }}.
-                                {{ REGION_LIST.find((item) => item.value == region).label }}
+                                {{ REGION_LIST.find(item => item.value == region).label }}
                             </small>
                         </template>
                         <Checkbox
-                            v-if="form.regions.find((item) => item == 1)"
-                            label="Регионы рядом с МО"
+                            v-if="form.regions.find(item => item == 1)"
                             v-model="form.region_neardy"
+                            label="Регионы рядом с МО"
                             class="col-12 large p-0 mt-2"
                         />
                         <Radio
-                            v-if="form.regions.find((item) => item == 6)"
+                            v-if="form.regions.find(item => item == 6)"
                             v-model="form.outside_mkad"
                             :unselectMode="true"
                             class="col-12 large p-0"
@@ -161,7 +139,7 @@
                     </MultiSelect>
 
                     <Checkbox
-                        v-if="form.regions.find((item) => item == 1)"
+                        v-if="form.regions.find(item => item == 1)"
                         v-model="form.directions"
                         class="col-md-2 col-12 pr-1"
                         label="Направления МО"
@@ -169,7 +147,7 @@
                     />
 
                     <Checkbox
-                        v-if="form.regions.find((item) => item == 6)"
+                        v-if="form.regions.find(item => item == 6)"
                         v-model="form.districts"
                         class="col-4 pr-1"
                         label="Округа Москвы"
@@ -220,58 +198,18 @@
                     /> -->
                 </FormGroup>
                 <FormGroup class="mb-2">
-                    <Checkbox
-                        v-model="form.haveCranes"
-                        class="col large text-center"
-                        label="Краны"
-                    />
-                    <Checkbox
-                        v-model="form.water"
-                        class="col large text-center"
-                        label="Вода"
-                    />
-                    <Checkbox
-                        v-model="form.gaz"
-                        class="col large text-center"
-                        label="Газ"
-                    />
-                    <Checkbox
-                        v-model="form.steam"
-                        class="col large text-center"
-                        label="Пар"
-                    />
-                    <Checkbox
-                        v-model="form.sewerage"
-                        class="col large text-center"
-                        label="КНС"
-                    />
-                    <Checkbox
-                        v-model="form.shelving"
-                        class="col large text-center"
-                        label="Стеллажи"
-                    />
-                    <Checkbox
-                        v-model="form.trainLine"
-                        class="col large text-center"
-                        label="Ж/Д ветка"
-                    />
+                    <Checkbox v-model="form.haveCranes" class="col large text-center" label="Краны" />
+                    <Checkbox v-model="form.water" class="col large text-center" label="Вода" />
+                    <Checkbox v-model="form.gaz" class="col large text-center" label="Газ" />
+                    <Checkbox v-model="form.steam" class="col large text-center" label="Пар" />
+                    <Checkbox v-model="form.sewerage" class="col large text-center" label="КНС" />
+                    <Checkbox v-model="form.shelving" class="col large text-center" label="Стеллажи" />
+                    <Checkbox v-model="form.trainLine" class="col large text-center" label="Ж/Д ветка" />
                 </FormGroup>
                 <FormGroup class="mb-2">
-                    <Checkbox
-                        v-model="form.antiDustOnly"
-                        class="col large text-center"
-                        label="Только антипыль"
-                    />
-                    <Checkbox
-                        v-model="form.firstFloorOnly"
-                        class="col large text-center"
-                        label="Только 1 этаж"
-                    />
-                    <Checkbox
-                        v-model="form.expressRequest"
-                        class="col large text-center"
-                        label="Срочный запрос"
-                    />
+                    <Checkbox v-model="form.antiDustOnly" class="col large text-center" label="Только антипыль" />
+                    <Checkbox v-model="form.firstFloorOnly" class="col large text-center" label="Только 1 этаж" />
+                    <Checkbox v-model="form.expressRequest" class="col large text-center" label="Срочный запрос" />
                 </FormGroup>
 
                 <FormGroup class="mb-2">
@@ -284,21 +222,9 @@
                 </FormGroup>
 
                 <FormGroup>
-                    <CheckboxIcons
-                        v-model="form.objectTypes"
-                        class="col pr-1"
-                        :options="objectTypeListWareHouse"
-                    />
-                    <CheckboxIcons
-                        v-model="form.objectTypes"
-                        class="col pr-1"
-                        :options="objectTypeListProduction"
-                    />
-                    <CheckboxIcons
-                        v-model="form.objectTypes"
-                        class="col"
-                        :options="objectTypeListPlot"
-                    />
+                    <CheckboxIcons v-model="form.objectTypes" class="col pr-1" :options="objectTypeListWareHouse" />
+                    <CheckboxIcons v-model="form.objectTypes" class="col pr-1" :options="objectTypeListProduction" />
+                    <CheckboxIcons v-model="form.objectTypes" class="col" :options="objectTypeListPlot" />
                 </FormGroup>
                 <!-- <FormGroup class="mb-2">
                   <CheckboxIcons
@@ -327,13 +253,13 @@
 </template>
 
 <script>
-import Form from "@/components/common/Forms/Form.vue";
-import FormGroup from "@/components/common/Forms/FormGroup.vue";
-import Input from "@/components/common/Forms/Input.vue";
-import Radio from "@/components/common/Forms/Radio.vue";
-import MultiSelect from "@/components/common/Forms/MultiSelect.vue";
-import CheckboxIcons from "@/components/common/Forms/CheckboxIcons.vue";
-import Checkbox from "@/components/common/Forms/Checkbox.vue";
+import Form from '@/components/common/Forms/Form.vue';
+import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import Input from '@/components/common/Forms/Input.vue';
+import Radio from '@/components/common/Forms/Radio.vue';
+import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
+import CheckboxIcons from '@/components/common/Forms/CheckboxIcons.vue';
+import Checkbox from '@/components/common/Forms/Checkbox.vue';
 import {
     ActivePassive,
     DealTypeList,
@@ -345,14 +271,13 @@ import {
     ObjectTypesGeneralList,
     OutsideMkad,
     RegionList,
-    YesNo,
-} from "@/const/const.js";
-import {SearchFormMixin} from "@/components/common/mixins.js";
-import {mapActions, mapGetters} from "vuex";
+    YesNo
+} from '@/const/const.js';
+import { SearchFormMixin } from '@/components/common/mixins.js';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
-    mixins: [SearchFormMixin],
-    name: "FormCompanyRequestSearch",
+    name: 'FormCompanyRequestSearch',
     components: {
         Form,
         FormGroup,
@@ -360,27 +285,28 @@ export default {
         Radio,
         MultiSelect,
         CheckboxIcons,
-        Checkbox,
+        Checkbox
     },
+    mixins: [SearchFormMixin],
     data() {
         return {
-            activePassiveOptions: ActivePassive.get("param"),
-            objectTypeListWareHouse: ObjectTypeList.get("warehouse"),
-            objectTypeListProduction: ObjectTypeList.get("production"),
-            objectTypeListPlot: ObjectTypeList.get("plot"),
-            yesNoOptions: YesNo.get("param"),
-            outsideMkadOptions: OutsideMkad.get("param"),
-            objectClassList: ObjectClassList.get("param"),
-            gateTypeList: GateTypeList.get("param"),
-            dealTypeList: DealTypeList.get("param"),
-            regionList: RegionList.get("param"),
-            directionList: DirectionList.get("param"),
-            districtList: DistrictList.get("param"),
-            objectTypesGeneralList: ObjectTypesGeneralList.get("param"),
+            activePassiveOptions: ActivePassive.get('param'),
+            objectTypeListWareHouse: ObjectTypeList.get('warehouse'),
+            objectTypeListProduction: ObjectTypeList.get('production'),
+            objectTypeListPlot: ObjectTypeList.get('plot'),
+            yesNoOptions: YesNo.get('param'),
+            outsideMkadOptions: OutsideMkad.get('param'),
+            objectClassList: ObjectClassList.get('param'),
+            gateTypeList: GateTypeList.get('param'),
+            dealTypeList: DealTypeList.get('param'),
+            regionList: RegionList.get('param'),
+            directionList: DirectionList.get('param'),
+            districtList: DistrictList.get('param'),
+            objectTypesGeneralList: ObjectTypesGeneralList.get('param')
         };
     },
     computed: {
-        ...mapGetters(["REGION_LIST"]),
+        ...mapGetters(['REGION_LIST'])
     },
     defaultFormProperties: {
         all: null,
@@ -416,36 +342,33 @@ export default {
         districts: [],
         directions: [],
         outside_mkad: null,
-        region_neardy: null,
+        region_neardy: null
     },
     methods: {
-        ...mapActions(["FETCH_REGION_LIST"]),
+        ...mapActions(['FETCH_REGION_LIST']),
         changeRegion() {
             if (this.form.regions == null) {
                 this.form.directions = [];
                 this.form.districts = [];
             }
-            if (!this.form.regions.find((item) => item == 1)) {
+            if (!this.form.regions.find(item => item == 1)) {
                 this.form.directions = [];
                 this.form.region_neardy = null;
             }
-            if (!this.form.regions.find((item) => item == 6)) {
+            if (!this.form.regions.find(item => item == 6)) {
                 this.form.districts = [];
                 this.form.outside_mkad = null;
             }
         },
         async setQueryFields() {
-            this.form = {...this.form, ...this.$route.query};
+            this.form = { ...this.form, ...this.$route.query };
             if (this.form.objectClasses && !Array.isArray(this.form.objectClasses)) {
                 this.form.objectClasses = [this.form.objectClasses];
             }
             if (this.form.gateTypes && !Array.isArray(this.form.gateTypes)) {
                 this.form.gateTypes = [this.form.gateTypes];
             }
-            if (
-                this.form.gateTypesGeneral &&
-                !Array.isArray(this.form.gateTypesGeneral)
-            ) {
+            if (this.form.gateTypesGeneral && !Array.isArray(this.form.gateTypesGeneral)) {
                 this.form.gateTypesGeneral = [this.form.gateTypesGeneral];
             }
             if (this.form.objectTypes && !Array.isArray(this.form.objectTypes)) {
@@ -461,17 +384,16 @@ export default {
                 this.form.directions = [this.form.directions];
             }
             let array = [];
-            this.form.objectTypes.forEach((item) => {
+            this.form.objectTypes.forEach(item => {
                 array.push(+item);
             });
             this.form.objectTypes = array;
-            let query = {...this.form};
+            let query = { ...this.form };
             this.deleteEmptyFields(query);
-            await this.$router.replace({query});
-        },
-    },
+            await this.$router.replace({ query });
+        }
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

@@ -3,7 +3,7 @@
         <td></td>
         <td :colspan="colspan">
             <div class="CompanyTableItem-block-actions">
-                <slot/>
+                <slot />
             </div>
         </td>
         <td class="CompanyTableItem-notif"></td>
@@ -13,12 +13,12 @@
 
 <script>
 export default {
-    name: "CompanyTableDropdownRow",
+    name: 'CompanyTableDropdownRow',
     props: {
         colspan: {
             type: Number,
-            default: 1,
-        },
-    },
+            default: 1
+        }
+    }
 };
 </script>

@@ -1,19 +1,22 @@
 <template>
     <div class="plot-create-form">
         <Modal
-            :title="false ? 'Редактирование участка' : 'Создание участка'"
             @close="$emit('close')"
+            :title="false ? 'Редактирование участка' : 'Создание участка'"
             classes="autosize"
         >
-            <Loader class="center" v-if="loader"/>
+            <Loader v-if="loader" class="center" />
             <Form @submit="onSubmit" class="center autosize">
-                <Tabs :options="{ useUrlFragment: false, defaultTabHash: 'main' }"
-                      nav-class="plot-create-form__tab-list"
-                      nav-item-link-class="plot-create-form__tab-link">
-                    <Tab name="Основное" id="main">
+                <Tabs
+                    :options="{ useUrlFragment: false, defaultTabHash: 'main' }"
+                    nav-class="plot-create-form__tab-list"
+                    nav-item-link-class="plot-create-form__tab-link"
+                >
+                    <Tab id="main" name="Основное">
                         <FormGroup class="mb-1 plot-create-form__form-group plot-create-form__form-group_long">
                             <MultiSelect
                                 v-model="form.address"
+                                @change="onChangeAddress"
                                 extraClasses="long-text"
                                 label="Адрес строения"
                                 required
@@ -24,15 +27,17 @@
                                 :delay="500"
                                 :searchable="true"
                                 :v="v$.form.address"
-                                :options="async (query) => {
-                return await searchAddress(query);
-              }"
-                                @change="onChangeAddress"
+                                :options="
+                                    async query => {
+                                        return await searchAddress(query);
+                                    }
+                                "
                             />
                         </FormGroup>
                         <FormGroup class="mb-1 plot-create-form__form-group plot-create-form__form-group_long">
                             <MultiSelect
                                 v-model="form.company_id"
+                                @change="onChangeCompany"
                                 extraClasses="long-text"
                                 label="Компания"
                                 required
@@ -44,32 +49,27 @@
                                 :delay="500"
                                 :searchable="true"
                                 :options="
-              async (query) => {
-                return await searchCompany(query);
-              }
-            "
-                                @change="onChangeCompany"
+                                    async query => {
+                                        return await searchCompany(query);
+                                    }
+                                "
                             />
                         </FormGroup>
                         <FormGroup class="mb-1">
                             <CheckboxIcons
                                 v-model="form.purposes"
+                                @extraSelect="selectObjectType"
                                 label="Тип объекта"
                                 extraLabel="склад"
                                 :noAllSelect="true"
                                 :extraValue="3"
                                 :extraOptions="form.object_type"
-                                @extraSelect="selectObjectType"
                                 class="col-12 pr-2 mx-auto"
                                 :options="[]"
                             />
                         </FormGroup>
                         <FormGroup class="mb-1">
-                            <Checkbox
-                                v-model="form.test_only"
-                                label="Тестовый лот"
-                                class="col large text-center"
-                            />
+                            <Checkbox v-model="form.test_only" label="Тестовый лот" class="col large text-center" />
                         </FormGroup>
                     </Tab>
                     <Tab name="Характериcтики">
@@ -82,18 +82,8 @@
                                 type="number"
                                 required
                             />
-                            <Input
-                                v-model="form.land_length"
-                                label="Длина участка"
-                                class="col-4 px-1"
-                                type="number"
-                            />
-                            <Input
-                                v-model="form.land_width"
-                                label="Ширина участка"
-                                class="col-4 pl-1"
-                                type="number"
-                            />
+                            <Input v-model="form.land_length" label="Длина участка" class="col-4 px-1" type="number" />
+                            <Input v-model="form.land_width" label="Ширина участка" class="col-4 pl-1" type="number" />
                         </FormGroup>
                         <FormGroup class="mb-1">
                             <MultiSelect
@@ -134,22 +124,24 @@
                                 v-model="form.land_use_restrictions"
                                 label="Ограничения"
                                 class="col-4 px-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                             <Radio
                                 v-model="form.first_line"
                                 label="Первая линия"
                                 class="col-4 pl-1"
                                 required
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                         </FormGroup>
                         <FormGroup class="mb-1">
-              <Textarea
-                  v-model="form.field_allow_usage"
-                  label="В.Р.И"
-                  class="col-12 px-0"
-              />
+                            <Textarea v-model="form.field_allow_usage" label="В.Р.И" class="col-12 px-0" />
                         </FormGroup>
                         <p class="plot-create-form__label">Коммуникации</p>
                         <FormGroup class="mb-1">
@@ -157,13 +149,16 @@
                                 v-model="form.power"
                                 label="Электроснаб."
                                 class="col-3 pr-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                                 required
                             />
                             <Input
                                 v-if="form.power"
-                                label="Значение"
                                 v-model="form.power_value"
+                                label="Значение"
                                 :v="v$.form.power_value"
                                 class="col-4 px-1"
                                 type="number"
@@ -174,7 +169,10 @@
                                 v-model="form.heating_central"
                                 label="Центр. отоплен."
                                 class="col-4 pl-3"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                                 required
                             />
                         </FormGroup>
@@ -183,7 +181,10 @@
                                 v-model="form.water"
                                 label="Водоснабжен."
                                 class="col-3 pr-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                                 required
                             />
                             <Input
@@ -197,8 +198,8 @@
                             />
                             <p v-if="form.water" class="col-1 plot-create-form__text pr-2">м<sup>3</sup>/сут</p>
                             <MultiSelect
-                                v-model="form.water_type"
                                 v-if="form.water"
+                                v-model="form.water_type"
                                 :v="v$.form.water_type"
                                 title="Тип"
                                 label="Тип"
@@ -212,7 +213,10 @@
                                 v-model="form.sewage_central"
                                 label="Канализ. центр."
                                 class="col-3 pr-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                                 required
                             />
                             <Input
@@ -224,13 +228,17 @@
                                 type="number"
                                 required
                             />
-                            <p v-if="form.sewage_central" class="col-1 plot-create-form__text pr-2">м<sup>3</sup>/сут
+                            <p v-if="form.sewage_central" class="col-1 plot-create-form__text pr-2">
+                                м<sup>3</sup>/сут
                             </p>
                             <Radio
                                 v-model="form.sewage_rain"
                                 label="Канализ. ливн."
                                 class="col-4 pl-3"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                         </FormGroup>
                         <FormGroup class="mb-1">
@@ -238,7 +246,10 @@
                                 v-model="form.gas"
                                 label="Газ"
                                 class="col-3 pr-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                             <Input
                                 v-if="form.gas"
@@ -266,7 +277,10 @@
                                 v-model="form.steam"
                                 label="Пар"
                                 class="col-3 pr-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                             <Input
                                 v-if="form.steam"
@@ -282,7 +296,10 @@
                                 v-model="form.phone_line"
                                 label="Телефония"
                                 class="col-4 pl-3"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                         </FormGroup>
                         <FormGroup class="mb-1">
@@ -290,7 +307,10 @@
                                 v-model="form.internet"
                                 label="Интернет"
                                 class="col-3 pr-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                             <MultiSelect
                                 v-if="form.internet"
@@ -309,7 +329,10 @@
                                 v-model="form.guard"
                                 label="Охрана объекта"
                                 class="col-3 pr-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                             <MultiSelect
                                 v-if="form.guard"
@@ -324,7 +347,10 @@
                                 v-model="form.video_control"
                                 label="Видеонаблюдение"
                                 class="col-3"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                         </FormGroup>
                         <FormGroup class="mb-1">
@@ -332,25 +358,37 @@
                                 v-model="form.access_control"
                                 label="Контроль доступа"
                                 class="col-3 pr-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                             <Radio
                                 v-model="form.security_alert"
                                 label="Охран. сигнализ."
                                 class="col-3 pr-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                             <Radio
                                 v-model="form.barrier"
                                 label="Шлагбаум"
                                 class="col-3 pr-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                             <Radio
                                 v-model="form.fence_around_perimeter"
                                 label="Забор по перим."
                                 class="col-3 pr-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                         </FormGroup>
                         <p class="plot-create-form__label">Ж/Д на территории</p>
@@ -359,13 +397,16 @@
                                 v-model="form.railway"
                                 label="Ж/Д ветка"
                                 class="col-3 pr-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                                 required
                             />
                             <Input
                                 v-if="form.railway"
-                                label="Значение"
                                 v-model="form.railway_value"
+                                label="Значение"
                                 :v="v$.form.railway_value"
                                 class="col-4 px-1"
                                 type="number"
@@ -395,7 +436,10 @@
                                 v-model="form.parking_car"
                                 label="P легковая"
                                 class="col-3 pr-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                             <MultiSelect
                                 v-if="form.parking_car"
@@ -411,7 +455,10 @@
                                 v-model="form.canteen"
                                 label="Столовая/Кафе"
                                 class="col-3 pl-3"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                         </FormGroup>
                         <FormGroup class="mb-1">
@@ -419,7 +466,10 @@
                                 v-model="form.parking_lorry"
                                 label="P 3-10 тонн"
                                 class="col-3 pr-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                             <MultiSelect
                                 v-if="form.parking_lorry"
@@ -435,7 +485,10 @@
                                 v-model="form.hostel"
                                 label="Общежитие"
                                 class="col-3 pl-3"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                         </FormGroup>
                         <FormGroup class="mb-1">
@@ -443,7 +496,10 @@
                                 v-model="form.parking_truck"
                                 label="P грузовая"
                                 class="col-3 pr-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                             <MultiSelect
                                 v-if="form.parking_truck"
@@ -458,11 +514,7 @@
                         </FormGroup>
                     </Tab>
                     <Tab name="Описание">
-						<Textarea
-                            v-model="form.description"
-                            label="Описание"
-                            class="col-12 px-0"
-                        />
+                        <Textarea v-model="form.description" label="Описание" class="col-12 px-0" />
                     </Tab>
                     <Tab name="Фотографии">
                         <FormGroup class="mb-1">
@@ -520,9 +572,7 @@
                     </Tab>
                 </Tabs>
                 <FormGroup class="mt-1 mb-4">
-                    <Submit class="col-4 mx-auto">
-                        Сохранить
-                    </Submit>
+                    <Submit class="col-4 mx-auto"> Сохранить </Submit>
                 </FormGroup>
             </Form>
         </Modal>
@@ -530,12 +580,12 @@
 </template>
 
 <script>
-import {helpers, minValue, required} from "@vuelidate/validators";
-import {ComplexFormMixin} from "@/components/Forms/Complex/mixin";
-import {mapActions} from "vuex";
-import {yandexmap} from "@/utils";
-import Loader from "@/components/common/Loader.vue";
-import Modal from "@/components/common/Modal.vue";
+import { helpers, minValue, required } from '@vuelidate/validators';
+import { ComplexFormMixin } from '@/components/Forms/Complex/mixin';
+import { mapActions } from 'vuex';
+import { yandexmap } from '@/utils';
+import Loader from '@/components/common/Loader.vue';
+import Modal from '@/components/common/Modal.vue';
 import {
     entryTerritoryTypes,
     feeTypes,
@@ -546,12 +596,11 @@ import {
     landscapeTypes,
     ownTypesLand,
     waterTypes
-} from "@/const/types";
-
+} from '@/const/types';
 
 export default {
-    name: "FormComplexPlotCreate",
-    components: {Modal, Loader},
+    name: 'FormComplexPlotCreate',
+    components: { Modal, Loader },
     mixins: [ComplexFormMixin],
     data() {
         return {
@@ -616,201 +665,115 @@ export default {
                 ownerShipDocuments: [],
                 ownerShipDocumentsList: [],
                 photos: [],
-                photosList: [],
-
-            },
-        }
+                photosList: []
+            }
+        };
     },
     validations() {
         return {
             form: {
                 address: {
-                    required: helpers.withMessage("заполните поле", required),
+                    required: helpers.withMessage('заполните поле', required)
                 },
                 company_id: {
-                    required: helpers.withMessage("заполните поле", required),
+                    required: helpers.withMessage('заполните поле', required)
                 },
                 cadastral_number_land: {
-                    required: helpers.withMessage("заполните поле", required),
+                    required: helpers.withMessage('заполните поле', required)
                 },
                 first_line: {
-                    required: helpers.withMessage(
-                        "выберите один из вариантов",
-                        required
-                    ),
+                    required: helpers.withMessage('выберите один из вариантов', required)
                 },
                 area_field_full: {
-                    required: helpers.withMessage(
-                        "заполните поле",
-                        required
-                    ),
-                    minValue: helpers.withMessage(
-                        "значение должно быть больше 0",
-                        minValue(1)
-                    )
+                    required: helpers.withMessage('заполните поле', required),
+                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
                 },
                 own_type_land: {
-                    required: helpers.withMessage(
-                        "выберите один из вариантов",
-                        required
-                    ),
+                    required: helpers.withMessage('выберите один из вариантов', required)
                 },
                 landscape_type: {
-                    required: helpers.withMessage(
-                        "выберите один из вариантов",
-                        required
-                    ),
+                    required: helpers.withMessage('выберите один из вариантов', required)
                 },
                 power: {
-                    required: helpers.withMessage(
-                        "выберите один из вариантов",
-                        required
-                    ),
+                    required: helpers.withMessage('выберите один из вариантов', required)
                 },
                 power_value: {
-                    required: helpers.withMessage(
-                        "заполните поле",
-                        required
-                    ),
-                    minValue: helpers.withMessage(
-                        "значение должно быть больше 0",
-                        minValue(1)
-                    )
+                    required: helpers.withMessage('заполните поле', required),
+                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
                 },
                 heating_central: {
-                    required: helpers.withMessage(
-                        "выберите один из вариантов",
-                        required
-                    ),
+                    required: helpers.withMessage('выберите один из вариантов', required)
                 },
                 water: {
-                    required: helpers.withMessage(
-                        "выберите один из вариантов",
-                        required
-                    ),
+                    required: helpers.withMessage('выберите один из вариантов', required)
                 },
                 water_value: {
-                    required: helpers.withMessage(
-                        "заполните поле",
-                        required
-                    ),
-                    minValue: helpers.withMessage(
-                        "значение должно быть больше 0",
-                        minValue(1)
-                    )
+                    required: helpers.withMessage('заполните поле', required),
+                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
                 },
                 water_type: {
-                    required: helpers.withMessage(
-                        "выберите один из вариантов",
-                        required
-                    ),
+                    required: helpers.withMessage('выберите один из вариантов', required)
                 },
                 sewage_central: {
-                    required: helpers.withMessage(
-                        "выберите один из вариантов",
-                        required
-                    ),
+                    required: helpers.withMessage('выберите один из вариантов', required)
                 },
                 sewage_central_value: {
-                    required: helpers.withMessage(
-                        "заполните поле",
-                        required
-                    ),
-                    minValue: helpers.withMessage(
-                        "значение должно быть больше 0",
-                        minValue(1)
-                    )
+                    required: helpers.withMessage('заполните поле', required),
+                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
                 },
                 gas: {},
                 gas_value: {
-                    required: helpers.withMessage(
-                        "заполните поле",
-                        required
-                    ),
-                    minValue: helpers.withMessage(
-                        "значение должно быть больше 0",
-                        minValue(1)
-                    )
+                    required: helpers.withMessage('заполните поле', required),
+                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
                 },
                 gas_type: {
-                    required: helpers.withMessage(
-                        "выберите один из вариантов",
-                        required
-                    ),
+                    required: helpers.withMessage('выберите один из вариантов', required)
                 },
                 steam_value: {
-                    required: helpers.withMessage(
-                        "заполните поле",
-                        required
-                    ),
-                    minValue: helpers.withMessage(
-                        "значение должно быть больше 0",
-                        minValue(1)
-                    )
+                    required: helpers.withMessage('заполните поле', required),
+                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
                 },
                 internet_type: {
-                    required: helpers.withMessage(
-                        "выберите один из вариантов",
-                        required
-                    ),
+                    required: helpers.withMessage('выберите один из вариантов', required)
                 },
                 guard_type: {
-                    required: helpers.withMessage(
-                        "выберите один из вариантов",
-                        required
-                    ),
+                    required: helpers.withMessage('выберите один из вариантов', required)
                 },
                 parking_car_value: {
-                    required: helpers.withMessage(
-                        "выберите один из вариантов",
-                        required
-                    ),
+                    required: helpers.withMessage('выберите один из вариантов', required)
                 },
                 parking_lorry_value: {
-                    required: helpers.withMessage(
-                        "выберите один из вариантов",
-                        required
-                    ),
+                    required: helpers.withMessage('выберите один из вариантов', required)
                 },
                 parking_truck_value: {
-                    required: helpers.withMessage(
-                        "выберите один из вариантов",
-                        required
-                    ),
+                    required: helpers.withMessage('выберите один из вариантов', required)
                 },
                 railway_value: {
-                    minValue: helpers.withMessage(
-                        "значение должно быть больше 0",
-                        minValue(1)
-                    )
-                },
+                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
+                }
             }
-        }
+        };
     },
     methods: {
-        ...mapActions([
-            "SEARCH_COMPANIES",
-        ]),
+        ...mapActions(['SEARCH_COMPANIES']),
         onChangeAddress() {
-            console.log("CHANGE ADDRESS")
+            console.log('CHANGE ADDRESS');
         },
         async onChangeCompany() {
-            console.log("CHANGE COMPANY")
+            console.log('CHANGE COMPANY');
         },
         async searchCompany() {
-            return ["ОАО Тореадор", "ЗАО ИнкЛомМет"]
+            return ['ОАО Тореадор', 'ЗАО ИнкЛомМет'];
         },
         async searchAddress(query) {
             return await yandexmap.getAddress(query);
         },
         selectObjectType(isSelected, type) {
-            this.form.object_type = this.form.object_type.filter(
-                (item) => item !== type
-            );
+            this.form.object_type = this.form.object_type.filter(item => item !== type);
             if (isSelected) {
                 this.form.object_type.push(type);
             }
-        },
+        }
     },
     computed: {
         ownTypeLandOptions() {
@@ -832,14 +795,14 @@ export default {
             return Object.values(internetTypes);
         },
         guardTypeOptions() {
-            return Object.values(guardTypes)
+            return Object.values(guardTypes);
         },
         feeTypeOptions() {
-            return Object.values(feeTypes)
+            return Object.values(feeTypes);
         },
         entryTerritoryTypeOptions() {
-            return Object.values(entryTerritoryTypes)
+            return Object.values(entryTerritoryTypes);
         }
     }
-}
+};
 </script>

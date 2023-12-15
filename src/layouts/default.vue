@@ -1,7 +1,7 @@
 <template>
     <div class="v-main-layout">
-        <TheSideBar/>
-        <TheHeader/>
+        <TheSideBar />
+        <TheHeader />
         <!-- <CallerManager /> -->
         <main>
             <router-view v-slot="{ Component }">
@@ -18,11 +18,11 @@
 </template>
 
 <script>
-import TheSideBar from "@/components/SideBar/TheSideBar.vue";
-import TheHeader from "@/components/Header/TheHeader.vue";
+import TheSideBar from '@/components/SideBar/TheSideBar.vue';
+import TheHeader from '@/components/Header/TheHeader.vue';
 
 export default {
-    name: "Default",
+    name: 'Default',
     components: {
         TheHeader,
         TheSideBar

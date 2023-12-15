@@ -16,10 +16,7 @@
             </Tab>
             <Tab name="Подробно">
                 <div class="offers-tabs__tab-body">
-                    <ComplexOfferDetails
-                        :blocks="parameters.blocks"
-                        class="offers-tabs__offer-details"
-                    />
+                    <ComplexOfferDetails :blocks="parameters.blocks" class="offers-tabs__offer-details" />
                 </div>
             </Tab>
             <Tab name="Описание">
@@ -42,22 +39,21 @@
 </template>
 
 <script>
-
-import ComplexOfferSummary from "@/components/Complex/Offer/ComplexOfferSummary.vue";
-import ComplexOfferDetails from "@/components/Complex/Offer/ComplexOfferDetails.vue";
+import ComplexOfferSummary from '@/components/Complex/Offer/ComplexOfferSummary.vue';
+import ComplexOfferDetails from '@/components/Complex/Offer/ComplexOfferDetails.vue';
 
 export default {
-    name: "ComplexTabs",
-    components: {ComplexOfferDetails, ComplexOfferSummary},
+    name: 'ComplexTabs',
+    components: { ComplexOfferDetails, ComplexOfferSummary },
     props: {
         parameters: {
             type: Object,
             required: true
-        },
+        }
     },
     data() {
         return {};
     },
-    methods: {},
+    methods: {}
 };
 </script>

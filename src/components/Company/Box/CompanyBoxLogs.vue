@@ -4,27 +4,18 @@
             <span>Лог работы с {{ headerTitle }}</span>
         </template>
         <template #content>
-            <CompanyLogsList
-                :logs="this.COMPANY_LOGS"
-                :logsCount="this.COMPANY_LOGS_COUNT"
-                @infinite="load"
-            />
-            <Form class="CompanyBoxLogs-form" @submit="onSubmit(this.company.id)">
+            <CompanyLogsList @infinite="load" :logs="this.COMPANY_LOGS" :logsCount="this.COMPANY_LOGS_COUNT" />
+            <Form @submit="onSubmit(this.company.id)" class="CompanyBoxLogs-form">
                 <FormGroup>
-          <Textarea
-              class="CompanyBoxLogs-form-text col-12"
-              v-model="form.comment"
-              :v="v$.form.comment"
-              placeholder="Добавьте комментарий"
-          />
-                    <Submit
-                        class="CompanyBoxLogs-form-btn mt-1"
-                        buttonClasses="btn-primary"
-                    >
-                        добавить
-                    </Submit>
-                    <div class="col-12 mt-4" v-if="loader">
-                        <Loader class="center small py-2 no-absolute"/>
+                    <Textarea
+                        v-model="form.comment"
+                        class="CompanyBoxLogs-form-text col-12"
+                        :v="v$.form.comment"
+                        placeholder="Добавьте комментарий"
+                    />
+                    <Submit class="CompanyBoxLogs-form-btn mt-1" buttonClasses="btn-primary"> добавить </Submit>
+                    <div v-if="loader" class="col-12 mt-4">
+                        <Loader class="center small py-2 no-absolute" />
                     </div>
                 </FormGroup>
             </Form>
@@ -33,19 +24,19 @@
 </template>
 
 <script>
-import {mapActions, mapGetters} from "vuex";
-import Textarea from "@/components/common/Forms/Textarea.vue";
-import Form from "@/components/common/Forms/Form.vue";
-import FormGroup from "@/components/common/Forms/FormGroup.vue";
-import Submit from "@/components/common/Forms/Submit.vue";
-import useValidate from "@vuelidate/core";
-import {helpers, required} from "@vuelidate/validators";
-import Loader from "@/components/common/Loader.vue";
-import CompanyLogsList from "@/components/Company/Box/CompanyBoxLogsList.vue";
-import CompanyBoxLayout from "@/components/Company/Box/CompanyBoxLayout.vue";
+import { mapActions, mapGetters } from 'vuex';
+import Textarea from '@/components/common/Forms/Textarea.vue';
+import Form from '@/components/common/Forms/Form.vue';
+import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import Submit from '@/components/common/Forms/Submit.vue';
+import useValidate from '@vuelidate/core';
+import { helpers, required } from '@vuelidate/validators';
+import Loader from '@/components/common/Loader.vue';
+import CompanyLogsList from '@/components/Company/Box/CompanyBoxLogsList.vue';
+import CompanyBoxLayout from '@/components/Company/Box/CompanyBoxLayout.vue';
 
 export default {
-    name: "CompanyBoxLogs",
+    name: 'CompanyBoxLogs',
     components: {
         CompanyBoxLayout,
         CompanyLogsList,
@@ -58,22 +49,21 @@ export default {
     props: {
         logs: {
             type: Array,
-            default: () => [],
+            default: () => []
         },
         company: {
             type: Object,
-            default: () => {
-            },
-        },
+            default: () => {}
+        }
     },
     data() {
         return {
             v$: useValidate(),
             loader: false,
             form: {
-                comment: null,
+                comment: null
             },
-            loaderMoreLogs: false,
+            loaderMoreLogs: false
         };
     },
 
@@ -81,19 +71,19 @@ export default {
         return {
             form: {
                 comment: {
-                    required: helpers.withMessage("введите комментарий", required),
-                },
-            },
+                    required: helpers.withMessage('введите комментарий', required)
+                }
+            }
         };
     },
     computed: {
-        ...mapGetters(["THIS_USER", "COMPANY_LOGS", "COMPANY_LOGS_COUNT"]),
+        ...mapGetters(['THIS_USER', 'COMPANY_LOGS', 'COMPANY_LOGS_COUNT']),
         headerTitle() {
             return this.company.nameRu || this.company.nameEng;
-        },
+        }
     },
     methods: {
-        ...mapActions(["POST_COMPANY_LOG", "FETCH_COMPANY_LOGS"]),
+        ...mapActions(['POST_COMPANY_LOG', 'FETCH_COMPANY_LOGS']),
         async onSubmit(companyId) {
             this.v$.$validate();
             if (this.v$.form.$error) {
@@ -104,7 +94,7 @@ export default {
                 company_id: companyId,
                 user_id: this.THIS_USER.userProfile.user_id,
                 message: this.form.comment,
-                type: 1,
+                type: 1
             };
             let response = await this.POST_COMPANY_LOG(logComment);
             if (response) {
@@ -116,16 +106,16 @@ export default {
         async load($state, id = this.company.id) {
             try {
                 const response = await this.FETCH_COMPANY_LOGS(id);
-                if (response === "complete") {
+                if (response === 'complete') {
                     $state.complete();
                 }
-                if (response === "loaded") {
+                if (response === 'loaded') {
                     $state.loaded();
                 }
             } catch (error) {
                 $state.error();
             }
-        },
-    },
+        }
+    }
 };
 </script>

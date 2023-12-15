@@ -1,12 +1,12 @@
 <template>
     <transition name="dropdown">
-        <slot/>
+        <slot />
     </transition>
 </template>
 
 <script>
 export default {
-    name: "DropDown",
+    name: 'DropDown'
 };
 </script>
 

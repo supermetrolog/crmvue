@@ -1,18 +1,15 @@
 <template>
     <div class="fuck">
-        <Modal
-            :title="!formdata ? 'Создание запроса' : 'Изменение запроса'"
-            @close="clickCloseModal"
-            class="normal"
-        >
+        <Modal @close="clickCloseModal" :title="!formdata ? 'Создание запроса' : 'Изменение запроса'" class="normal">
             <Form @submit="onSubmit" class="p-2">
-                <Loader class="center" v-if="loader"/>
+                <Loader v-if="loader" class="center" />
                 <FormGroup class="mb-2">
-                    <Input v-model="form.name" label="Название" class="col-12"/>
+                    <Input v-model="form.name" label="Название" class="col-12" />
                 </FormGroup>
                 <FormGroup class="mb-2">
                     <MultiSelect
                         v-model="form.company_id"
+                        @change="onChangeCompany"
                         extraClasses="long-text"
                         label="Компания"
                         required
@@ -24,11 +21,10 @@
                         :delay="0"
                         :searchable="true"
                         :options="
-              async (query) => {
-                return await searchCompany(query);
-              }
-            "
-                        @change="onChangeCompany"
+                            async query => {
+                                return await searchCompany(query);
+                            }
+                        "
                     />
                     <MultiSelect
                         v-model="form.contact_id"
@@ -53,28 +49,20 @@
                         name="region"
                         required
                         :options="
-              async () => {
-                await this.FETCH_REGION_LIST();
-                return this.REGION_LIST.filter((elem) =>
-                  Number.isInteger(elem.value)
-                );
-              }
-            "
+                            async () => {
+                                await this.FETCH_REGION_LIST();
+                                return this.REGION_LIST.filter(elem => Number.isInteger(elem.value));
+                            }
+                        "
                     >
                         <template v-if="REGION_LIST">
-                            <small
-                                v-for="(region, index) in form.regions"
-                                :key="region.region"
-                                class="d-block px-3"
-                            >
+                            <small v-for="(region, index) in form.regions" :key="region.region" class="d-block px-3">
                                 {{ index + 1 }}.
-                                {{
-                                    REGION_LIST.find((item) => item.value == region.region).label
-                                }}
+                                {{ REGION_LIST.find(item => item.value == region.region).label }}
                             </small>
                         </template>
                         <Checkbox
-                            v-if="form.regions.find((item) => item.region == 1)"
+                            v-if="form.regions.find(item => item.region == 1)"
                             v-model="form.directions"
                             class="col-12 p-0 mt-2 text-center"
                             label="Направления МО"
@@ -91,13 +79,13 @@
                         :options="dealTypeList"
                     >
                         <Checkbox
-                            v-if="form.regions.find((item) => item.region == 1)"
-                            label="Регионы рядом c МО"
+                            v-if="form.regions.find(item => item.region == 1)"
                             v-model="form.region_neardy"
+                            label="Регионы рядом c МО"
                             class="col-12 large p-0 mt-2 text-center"
                         />
                         <Radio
-                            v-if="form.regions.find((item) => item.region == 6)"
+                            v-if="form.regions.find(item => item.region == 6)"
                             v-model="form.outside_mkad"
                             :unselectMode="true"
                             class="col large p-0 mt-2 text-center"
@@ -113,7 +101,7 @@
                         :options="CONSULTANT_LIST"
                     >
                         <Checkbox
-                            v-if="form.regions.find((item) => item.region == 6)"
+                            v-if="form.regions.find(item => item.region == 6)"
                             v-model="form.districts"
                             class="col-12 p-0 mt-2 text-center"
                             label="Округа Москвы"
@@ -124,8 +112,8 @@
                 </FormGroup>
                 <FormGroup class="mb-2">
                     <Input
-                        :disabled="!!form.distanceFromMKADnotApplicable"
                         v-model="form.distanceFromMKAD"
+                        :disabled="!!form.distanceFromMKADnotApplicable"
                         :v="v$.form.distanceFromMKAD"
                         maska="###"
                         label="Удаленность от МКАД"
@@ -185,10 +173,7 @@
                         class="col-5 ml-auto"
                         :options="passiveWhyOptions"
                     >
-            <Textarea
-                v-model="form.passive_why_comment"
-                class="col-12 p-0 pt-1"
-            />
+                        <Textarea v-model="form.passive_why_comment" class="col-12 p-0 pt-1" />
                     </MultiSelect>
                 </FormGroup>
                 <FormGroup class="mb-2">
@@ -213,49 +198,16 @@
                         label="Электричесвто (квт)"
                         class="col-3 pr-1"
                     />
-                    <Input
-                        v-model="form.pricePerFloor"
-                        maska="##########"
-                        label="Цена (м^2/год)"
-                        class="col-3"
-                    />
+                    <Input v-model="form.pricePerFloor" maska="##########" label="Цена (м^2/год)" class="col-3" />
                 </FormGroup>
                 <FormGroup class="mb-2">
-                    <Checkbox
-                        v-model="form.haveCranes"
-                        class="col large text-center"
-                        label="Краны"
-                    />
-                    <Checkbox
-                        v-model="form.water"
-                        class="col large text-center"
-                        label="Вода"
-                    />
-                    <Checkbox
-                        v-model="form.gaz"
-                        class="col large text-center"
-                        label="Газ"
-                    />
-                    <Checkbox
-                        v-model="form.steam"
-                        class="col large text-center"
-                        label="Пар"
-                    />
-                    <Checkbox
-                        v-model="form.sewerage"
-                        class="col large text-center"
-                        label="КНС"
-                    />
-                    <Checkbox
-                        v-model="form.shelving"
-                        class="col large text-center"
-                        label="Стеллажи"
-                    />
-                    <Checkbox
-                        v-model="form.trainLine"
-                        class="col large text-center"
-                        label="Ж/Д ветка"
-                    >
+                    <Checkbox v-model="form.haveCranes" class="col large text-center" label="Краны" />
+                    <Checkbox v-model="form.water" class="col large text-center" label="Вода" />
+                    <Checkbox v-model="form.gaz" class="col large text-center" label="Газ" />
+                    <Checkbox v-model="form.steam" class="col large text-center" label="Пар" />
+                    <Checkbox v-model="form.sewerage" class="col large text-center" label="КНС" />
+                    <Checkbox v-model="form.shelving" class="col large text-center" label="Стеллажи" />
+                    <Checkbox v-model="form.trainLine" class="col large text-center" label="Ж/Д ветка">
                         <Input
                             v-if="form.trainLine"
                             v-model="form.trainLineLength"
@@ -277,44 +229,32 @@
                 <FormGroup class="mb-2">
                     <Input
                         v-model="form.movingDate"
+                        @change="form.unknownMovingDate = null"
                         :v="v$.form.movingDate"
                         label="Дата переезда"
                         type="date"
                         required
                         class="col-4 pr-1"
-                        @change="form.unknownMovingDate = null"
                     >
                         <Radio
                             v-model="form.unknownMovingDate"
+                            @change.stop="form.movingDate = null"
                             class="col-12 p-0 mt-2 small"
                             :options="unknownMovingDateOptions"
-                            @change.stop="form.movingDate = null"
                         />
                     </Input>
-                    <Checkbox
-                        v-model="form.antiDustOnly"
-                        class="col large text-center"
-                        label="Только антипыль"
-                    />
-                    <Checkbox
-                        v-model="form.firstFloorOnly"
-                        class="col pr-1 large text-center"
-                        label="Только 1 этаж"
-                    />
-                    <Checkbox
-                        v-model="form.expressRequest"
-                        class="col large text-center"
-                        label="Срочный запрос"
-                    />
+                    <Checkbox v-model="form.antiDustOnly" class="col large text-center" label="Только антипыль" />
+                    <Checkbox v-model="form.firstFloorOnly" class="col pr-1 large text-center" label="Только 1 этаж" />
+                    <Checkbox v-model="form.expressRequest" class="col large text-center" label="Срочный запрос" />
                 </FormGroup>
                 <FormGroup class="mb-2">
                     <Checkbox
                         v-model="form.objectTypesGeneral"
+                        @change="changeObjectTypesGeneral"
                         :v="v$.form.objectTypesGeneral"
                         class="col-12 large bg"
                         label="Тип объекта"
                         name="type"
-                        @change="changeObjectTypesGeneral"
                         required
                         :options="objectTypesGeneralList"
                     />
@@ -323,35 +263,31 @@
                 <FormGroup>
                     <CheckboxIcons
                         v-model="form.objectTypes"
+                        @change="changeObjectTypes(0)"
                         class="col pr-1"
                         name="object_type"
                         :options="objectTypeListWareHouse"
-                        @change="changeObjectTypes(0)"
                     />
                     <CheckboxIcons
                         v-model="form.objectTypes"
+                        @change="changeObjectTypes(1)"
                         class="col pr-1"
                         name="object_type"
                         :options="objectTypeListProduction"
-                        @change="changeObjectTypes(1)"
                     />
                     <CheckboxIcons
                         v-model="form.objectTypes"
+                        @change="changeObjectTypes(2)"
                         class="col"
                         name="object_type"
                         :options="objectTypeListPlot"
-                        @change="changeObjectTypes(2)"
                     />
                 </FormGroup>
-                <Textarea
-                    v-model="form.description"
-                    class="col-12 px-0"
-                    label="Описание"
-                />
+                <Textarea v-model="form.description" class="col-12 px-0" label="Описание" />
                 <FormGroup></FormGroup>
                 <FormGroup class="mt-4">
                     <Submit class="col-4 mx-auto">
-                        {{ formdata ? "Сохранить" : "Создать" }}
+                        {{ formdata ? 'Сохранить' : 'Создать' }}
                     </Submit>
                 </FormGroup>
             </Form>
@@ -360,9 +296,9 @@
 </template>
 
 <script>
-import {mapActions, mapGetters} from "vuex";
-import useValidate from "@vuelidate/core";
-import {helpers, required} from "@vuelidate/validators";
+import { mapActions, mapGetters } from 'vuex';
+import useValidate from '@vuelidate/core';
+import { helpers, required } from '@vuelidate/validators';
 import {
     DealTypeList,
     DirectionList,
@@ -375,24 +311,24 @@ import {
     PassiveWhyRequest,
     RegionList,
     unknownMovingDate,
-    YesNo,
-} from "@/const/const.js";
-import Form from "@/components/common/Forms/Form.vue";
-import FormGroup from "@/components/common/Forms/FormGroup.vue";
-import Input from "@/components/common/Forms/Input.vue";
-import Checkbox from "@/components/common/Forms/Checkbox.vue";
-import MultiSelect from "@/components/common/Forms/MultiSelect.vue";
-import Radio from "@/components/common/Forms/Radio.vue";
-import Textarea from "@/components/common/Forms/Textarea.vue";
-import CheckboxIcons from "@/components/common/Forms/CheckboxIcons.vue";
-import Submit from "@/components/common/Forms/Submit.vue";
-import moment from "moment";
-import api from "@//api/api.js";
-import Modal from "@/components/common/Modal.vue";
-import Loader from "@/components/common/Loader.vue";
+    YesNo
+} from '@/const/const.js';
+import Form from '@/components/common/Forms/Form.vue';
+import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import Input from '@/components/common/Forms/Input.vue';
+import Checkbox from '@/components/common/Forms/Checkbox.vue';
+import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
+import Radio from '@/components/common/Forms/Radio.vue';
+import Textarea from '@/components/common/Forms/Textarea.vue';
+import CheckboxIcons from '@/components/common/Forms/CheckboxIcons.vue';
+import Submit from '@/components/common/Forms/Submit.vue';
+import moment from 'moment';
+import api from '@//api/api.js';
+import Modal from '@/components/common/Modal.vue';
+import Loader from '@/components/common/Loader.vue';
 
 export default {
-    name: "FormCompanyRequest",
+    name: 'FormCompanyRequest',
     components: {
         Loader,
         Modal,
@@ -404,30 +340,40 @@ export default {
         Radio,
         Textarea,
         CheckboxIcons,
-        Submit,
+        Submit
+    },
+    props: {
+        formdata: {
+            type: Object,
+            default: null
+        },
+        company_id: {
+            type: Number,
+            default: null
+        }
     },
     data() {
         return {
             v$: useValidate(),
-            objectClassList: ObjectClassList.get("param"),
-            gateTypeList: GateTypeList.get("param"),
-            objectTypesGeneralList: ObjectTypesGeneralList.get("param"),
-            objectTypeListWareHouse: ObjectTypeList.get("warehouse"),
-            objectTypeListProduction: ObjectTypeList.get("production"),
-            objectTypeListPlot: ObjectTypeList.get("plot"),
-            regionList: RegionList.get("param"),
-            directionList: DirectionList.get("param"),
-            districtList: DistrictList.get("param"),
-            dealTypeList: DealTypeList.get("param"),
+            objectClassList: ObjectClassList.get('param'),
+            gateTypeList: GateTypeList.get('param'),
+            objectTypesGeneralList: ObjectTypesGeneralList.get('param'),
+            objectTypeListWareHouse: ObjectTypeList.get('warehouse'),
+            objectTypeListProduction: ObjectTypeList.get('production'),
+            objectTypeListPlot: ObjectTypeList.get('plot'),
+            regionList: RegionList.get('param'),
+            directionList: DirectionList.get('param'),
+            districtList: DistrictList.get('param'),
+            dealTypeList: DealTypeList.get('param'),
             productionTypeListVisible: true,
             warehouseTypeListVisible: true,
             plotTypeListVisible: true,
             isOpenDealTypeSelect: false,
             isOpenConsultantSelect: false,
-            yesNoOptions: YesNo.get("param"),
-            outsideMkadOptions: OutsideMkad.get("param"),
-            unknownMovingDateOptions: unknownMovingDate.get("param"),
-            passiveWhyOptions: PassiveWhyRequest.get("param"),
+            yesNoOptions: YesNo.get('param'),
+            outsideMkadOptions: OutsideMkad.get('param'),
+            unknownMovingDateOptions: unknownMovingDate.get('param'),
+            passiveWhyOptions: PassiveWhyRequest.get('param'),
             loader: false,
             contactOptions: [],
             form: {
@@ -448,7 +394,7 @@ export default {
                 heated: null,
                 gateTypes: [],
                 antiDustOnly: null,
-                electricity: "",
+                electricity: '',
                 haveCranes: null,
                 trainLine: null,
                 trainLineLength: null,
@@ -471,85 +417,61 @@ export default {
                 shelving: null,
                 outside_mkad: null,
                 region_neardy: null,
-                contact_id: null,
-            },
+                contact_id: null
+            }
         };
     },
-    props: {
-        formdata: {
-            type: Object,
-            default: null,
-        },
-        company_id: {
-            type: Number,
-            default: null,
-        },
-    },
     computed: {
-        ...mapGetters(["CONSULTANT_LIST", "REGION_LIST"]),
+        ...mapGetters(['CONSULTANT_LIST', 'REGION_LIST'])
     },
     validations() {
         return {
             form: {
                 regions: {
-                    required: helpers.withMessage("выберите регион", required),
+                    required: helpers.withMessage('выберите регион', required)
                 },
                 dealType: {
-                    required: helpers.withMessage("выберите тип сделки", required),
+                    required: helpers.withMessage('выберите тип сделки', required)
                 },
                 objectTypesGeneral: {
-                    required: helpers.withMessage("выберите тип объекта", required),
+                    required: helpers.withMessage('выберите тип объекта', required)
                 },
                 distanceFromMKAD: {
-                    customRequired: helpers.withMessage(
-                        "Заполните поле",
-                        this.customRequired
-                    ),
+                    customRequired: helpers.withMessage('Заполните поле', this.customRequired)
                 },
                 company_id: {
-                    required: helpers.withMessage("Выберите компанию", required),
+                    required: helpers.withMessage('Выберите компанию', required)
                 },
                 contact_id: {
-                    required: helpers.withMessage("Выберите контакт", required),
+                    required: helpers.withMessage('Выберите контакт', required)
                 },
                 minArea: {
-                    required: helpers.withMessage("Заполните поле", required),
+                    required: helpers.withMessage('Заполните поле', required)
                 },
                 maxArea: {
-                    required: helpers.withMessage("Заполните поле", required),
+                    required: helpers.withMessage('Заполните поле', required)
                 },
                 minCeilingHeight: {
-                    required: helpers.withMessage("Заполните поле", required),
+                    required: helpers.withMessage('Заполните поле', required)
                 },
                 consultant_id: {
-                    required: helpers.withMessage("Выберите вариант", required),
+                    required: helpers.withMessage('Выберите вариант', required)
                 },
                 movingDate: {
                     customRequiredForMovingDate: helpers.withMessage(
-                        "Заполните поле",
+                        'Заполните поле',
                         this.customRequiredForMovingDate
                     ),
-                    maxValue: helpers.withMessage(
-                        "Неверная дата",
-                        this.dateRangeValidator
-                    ),
+                    maxValue: helpers.withMessage('Неверная дата', this.dateRangeValidator)
                 },
                 passive_why: {
-                    customRequiredPassiveWhy: helpers.withMessage(
-                        "Выберите причину",
-                        this.customRequiredPassiveWhy
-                    ),
-                },
-            },
+                    customRequiredPassiveWhy: helpers.withMessage('Выберите причину', this.customRequiredPassiveWhy)
+                }
+            }
         };
     },
     methods: {
-        ...mapActions([
-            "FETCH_CONSULTANT_LIST",
-            "CREATE_REQUEST",
-            "UPDATE_REQUEST",
-            "FETCH_REGION_LIST",
-        ]),
+        ...mapActions(['FETCH_CONSULTANT_LIST', 'CREATE_REQUEST', 'UPDATE_REQUEST', 'FETCH_REGION_LIST']),
         async onSubmit() {
             this.v$.$validate();
             if (!this.v$.form.$error) {
@@ -568,25 +490,25 @@ export default {
             }
         },
         regionNormalize() {
-            if (!this.form.regions.find((item) => item.region == 6)) {
+            if (!this.form.regions.find(item => item.region == 6)) {
                 this.form.districts = [];
                 this.form.outside_mkad = null;
             }
-            if (!this.form.regions.find((item) => item.region == 1)) {
+            if (!this.form.regions.find(item => item.region == 1)) {
                 this.form.directions = [];
                 this.form.region_neardy = null;
             }
         },
         async updateRequest() {
             if (await this.UPDATE_REQUEST(this.form)) {
-                this.$emit("updated");
+                this.$emit('updated');
                 this.clickCloseModal();
             }
             this.loader = false;
         },
         async createRequest() {
             if (await this.CREATE_REQUEST(this.form)) {
-                this.$emit("created");
+                this.$emit('created');
 
                 this.clickCloseModal();
             }
@@ -595,9 +517,9 @@ export default {
         dateRangeValidator(value) {
             if (value === null) return true;
 
-            let min = Date.parse(moment(new Date()).format("YYYY-MM-DD"));
+            let min = Date.parse(moment(new Date()).format('YYYY-MM-DD'));
 
-            const max = Date.parse(new Date("2030-12-29"));
+            const max = Date.parse(new Date('2030-12-29'));
             const current = Date.parse(new Date(value));
             if (this.formdata) {
                 min = Date.parse(new Date(this.formdata.movingDate));
@@ -638,12 +560,12 @@ export default {
         },
         diff(list) {
             let options = [];
-            list.forEach((item) => {
+            list.forEach(item => {
                 options.push(item[0]);
             });
             let data = [];
 
-            this.form.objectTypes.forEach((item) => {
+            this.form.objectTypes.forEach(item => {
                 if (!options.includes(item.object_type)) {
                     data.push(item);
                 }
@@ -653,18 +575,18 @@ export default {
         async searchCompany(query) {
             if (query == null) {
                 query = {
-                    id: this.formdata ? this.formdata.company_id : this.company_id,
+                    id: this.formdata ? this.formdata.company_id : this.company_id
                 };
                 this.searchContact(query.id);
             } else {
-                query = {all: query};
+                query = { all: query };
             }
             const companies = await api.companies.searchCompanies(query);
-            return this.multiselectAdapter(companies.data, "id", "full_name");
+            return this.multiselectAdapter(companies.data, 'id', 'full_name');
         },
         multiselectAdapter(array, valueProp, labelProp) {
-            return array.map((item) => {
-                return {value: item[valueProp], label: item[labelProp]};
+            return array.map(item => {
+                return { value: item[valueProp], label: item[labelProp] };
             });
         },
         onChangeCompany() {
@@ -674,23 +596,19 @@ export default {
         async searchContact(query) {
             if (query == null) {
                 query = {
-                    id: this.formdata ? this.formdata.company_id : this.company_id,
+                    id: this.formdata ? this.formdata.company_id : this.company_id
                 };
             } else {
-                query = {company_id: query};
+                query = { company_id: query };
             }
             const contacts = await api.contacts.searchContacts(query);
-            this.contactOptions = this.multiselectAdapter(
-                contacts.data,
-                "id",
-                "first_and_last_name"
-            );
+            this.contactOptions = this.multiselectAdapter(contacts.data, 'id', 'first_and_last_name');
         },
         changeObjectTypesGeneral(data) {
             let warehouse,
                 production,
                 plot = null;
-            data.forEach((item) => {
+            data.forEach(item => {
                 if (item == 0) {
                     warehouse = 1;
                 } else if (item == 1) {
@@ -699,42 +617,36 @@ export default {
                     plot = 1;
                 }
             });
-            if (warehouse == null)
-                this.form.objectTypes = this.diff(this.objectTypeListWareHouse);
+            if (warehouse == null) this.form.objectTypes = this.diff(this.objectTypeListWareHouse);
 
-            if (production == null)
-                this.form.objectTypes = this.diff(this.objectTypeListProduction);
+            if (production == null) this.form.objectTypes = this.diff(this.objectTypeListProduction);
 
-            if (plot == null)
-                this.form.objectTypes = this.diff(this.objectTypeListPlot);
+            if (plot == null) this.form.objectTypes = this.diff(this.objectTypeListPlot);
         },
 
         changeObjectTypes(objectTypeGeneral) {
-            this.form.objectTypesGeneral = this.form.objectTypesGeneral.filter(
-                (item) => item.type != objectTypeGeneral
-            );
-            this.form.objectTypesGeneral.push({type: objectTypeGeneral});
+            this.form.objectTypesGeneral = this.form.objectTypesGeneral.filter(item => item.type != objectTypeGeneral);
+            this.form.objectTypesGeneral.push({ type: objectTypeGeneral });
         },
         clickCloseModal() {
-            this.$emit("closeCompanyForm");
-        },
+            this.$emit('closeCompanyForm');
+        }
     },
     async created() {
         this.loader = true;
         await this.FETCH_CONSULTANT_LIST();
         this.form.company_id = this.company_id;
         if (this.formdata) {
-            this.form = {...this.form, ...this.formdata};
+            this.form = { ...this.form, ...this.formdata };
         }
         this.loader = false;
     },
     watch: {
         form: {
             deep: true,
-            handler() {
-            },
-        },
+            handler() {}
+        }
     },
-    emits: ["closeCompanyForm", "created", "updated"],
+    emits: ['closeCompanyForm', 'created', 'updated']
 };
 </script>

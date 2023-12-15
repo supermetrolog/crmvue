@@ -1,27 +1,22 @@
 <template>
     <div class="list">
-        <Item
-            v-for="item in data"
-            :key="item"
-            :item="item"
-            @remove="(value) => $emit('remove', value)"
-        />
+        <Item v-for="item in data" :key="item" @remove="value => $emit('remove', value)" :item="item" />
     </div>
 </template>
 
 <script>
-import Item from "./ListItem.vue";
+import Item from './ListItem.vue';
 
 export default {
-    name: "List",
+    name: 'List',
     components: {
-        Item,
+        Item
     },
     props: {
         data: {
             type: Array,
-            required: true,
-        },
-    },
+            required: true
+        }
+    }
 };
 </script>

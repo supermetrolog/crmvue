@@ -6,16 +6,15 @@
 
 <script>
 export default {
-    name: "DropdownContainer",
+    name: 'DropdownContainer',
+    emits: ['update:modelValue'],
     props: {
-        modelValue: Boolean,
+        modelValue: Boolean
     },
-    emits: ["update:modelValue"],
     methods: {
         switchVisibility() {
-            this.$emit("update:modelValue", !this.modelValue);
-        },
-    },
+            this.$emit('update:modelValue', !this.modelValue);
+        }
+    }
 };
 </script>
-

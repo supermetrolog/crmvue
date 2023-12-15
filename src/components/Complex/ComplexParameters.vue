@@ -1,30 +1,29 @@
 <template>
     <ul class="object-parameters">
         <li v-if="object.ceiling_height" class="object-parameters__item">
-            <i class="fas fa-arrow-up"/>
+            <i class="fas fa-arrow-up" />
             {{ $formatter.number(object.ceiling_height) }} <span>м</span>
         </li>
         <li v-if="object.floor_type" class="object-parameters__item">
-            <i class="fas fa-arrow-down"/>
+            <i class="fas fa-arrow-down" />
             {{ object.floor_type }}
         </li>
         <li v-if="object.gas" class="object-parameters__item">
-            <i class="fas fa-fire"/>
+            <i class="fas fa-fire" />
             Газ в цеху
         </li>
         <li v-if="object.power" class="object-parameters__item">
-            <i class="fas fa-bolt"/>
-            <with-unit-type
-                :unit-type="unitTypes.KILOWATT">
+            <i class="fas fa-bolt" />
+            <with-unit-type :unit-type="unitTypes.KILOWATT">
                 {{ $formatter.number(object.power) }}
             </with-unit-type>
         </li>
         <li v-if="object.heating" class="object-parameters__item">
-            <i class="fa fa-thermometer-full"/>
+            <i class="fa fa-thermometer-full" />
             Отопление
         </li>
         <li v-if="object.sewage" class="object-parameters__item">
-            <i class="fas fa-shower"/>
+            <i class="fas fa-shower" />
             Канализация
         </li>
         <li v-if="object.water" class="object-parameters__item">
@@ -39,11 +38,11 @@
 </template>
 
 <script>
-import {unitTypes} from "@/const/unitTypes";
-import WithUnitType from "@/components/common/WithUnitType.vue";
+import { unitTypes } from '@/const/unitTypes';
+import WithUnitType from '@/components/common/WithUnitType.vue';
 
 export default {
-    name: "ComplexParameters",
+    name: 'ComplexParameters',
     components: {
         WithUnitType
     },
@@ -51,15 +50,14 @@ export default {
         object: {
             type: Object,
             required: true,
-            default: () => {
-            }
+            default: () => {}
         }
     },
     data() {
         return {
-            unitTypes,
+            unitTypes
         };
     },
-    computed: {},
+    computed: {}
 };
 </script>

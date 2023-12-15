@@ -17,9 +17,9 @@
             leave-active-class="animate__animated animate__zoomOut for__modal absolute"
         >
             <FormCompanyRequest
+                v-if="requestFormVisible"
                 @closeCompanyForm="requestFormVisible = false"
                 :company_id="createdCompanyId"
-                v-if="requestFormVisible"
             />
         </transition>
         <transition
@@ -28,9 +28,9 @@
             leave-active-class="animate__animated animate__zoomOut for__modal absolute"
         >
             <FormCompanyContact
+                v-if="contactFormVisible"
                 @closeCompanyForm="contactFormVisible = false"
                 :company_id="createdCompanyId"
-                v-if="contactFormVisible"
             />
         </transition>
         <div class="row no-gutters caller-manager__contact__container">
@@ -38,31 +38,25 @@
                 <b>НЕИЗВЕСТНЫЙ КОНТАКТ</b>
             </div>
             <div class="col-12 text-center mt-3">
-                <button class="btn btn-primary" @click="companyFormVisible = true">
-                    Создать компанию
-                </button>
+                <button @click="companyFormVisible = true" class="btn btn-primary">Создать компанию</button>
             </div>
             <div class="col-12 text-center mt-3">
-                <button class="btn btn-primary" @click="contactFormVisible = true">
-                    Создать контакт
-                </button>
+                <button @click="contactFormVisible = true" class="btn btn-primary">Создать контакт</button>
             </div>
             <div class="col-12 text-center mt-3">
-                <button class="btn btn-primary" @click="requestFormVisible = true">
-                    Создать запрос
-                </button>
+                <button @click="requestFormVisible = true" class="btn btn-primary">Создать запрос</button>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import FormCompany from "@/components/Forms/Company/FormCompany.vue";
-import FormCompanyRequest from "@/components/Forms/Company/FormCompanyRequest.vue";
-import FormCompanyContact from "@/components/Forms/Company/FormCompanyContact.vue";
+import FormCompany from '@/components/Forms/Company/FormCompany.vue';
+import FormCompanyRequest from '@/components/Forms/Company/FormCompanyRequest.vue';
+import FormCompanyContact from '@/components/Forms/Company/FormCompanyContact.vue';
 
 export default {
-    name: "CallerManagerNotExistContact",
+    name: 'CallerManagerNotExistContact',
     components: {
         FormCompanyContact,
         FormCompanyRequest,
@@ -73,7 +67,7 @@ export default {
             companyFormVisible: false,
             requestFormVisible: false,
             contactFormVisible: false,
-            createdCompanyId: null,
+            createdCompanyId: null
         };
     },
 
@@ -83,10 +77,9 @@ export default {
         },
         createdCompany(company_id) {
             this.createdCompanyId = company_id;
-        },
-    },
+        }
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

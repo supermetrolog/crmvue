@@ -1,4 +1,4 @@
-import api from "@/api/api"
+import api from '@/api/api';
 
 const Deal = {
     state: {
@@ -6,13 +6,13 @@ const Deal = {
     },
     mutations: {
         SET_DEALS(state, deals) {
-            state.deals = deals
+            state.deals = deals;
         }
     },
     actions: {
-        async FETCH_DEALS({commit}) {
+        async FETCH_DEALS({ commit }) {
             const data = await api.deal.getDeals();
-            commit('SET_DEALS', data.data)
+            commit('SET_DEALS', data.data);
         },
         async FETCH_DEAL(_, id) {
             return await api.deal.getDeal(id);
@@ -25,14 +25,13 @@ const Deal = {
         },
         async DELETE_DEAL(_, formdata) {
             return await api.deal.deleteDeal(formdata, formdata.id);
-        },
-
+        }
     },
     getters: {
         getDeals(state) {
-            return state.deals
+            return state.deals;
         }
     }
-}
+};
 
 export default Deal;

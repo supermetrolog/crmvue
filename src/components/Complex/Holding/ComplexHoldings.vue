@@ -3,10 +3,10 @@
         <div class="ObjectHoldings-header">
             <p>СТРОЕНИЯ ({{ buildingsCount }}), УЧАСТКИ ({{ landsCount }})</p>
             <div class="ObjectHoldings-header-icons">
-                <button class="ObjectHoldings-header-button" @click="clickOpenCreateBuildingForm">
+                <button @click="clickOpenCreateBuildingForm" class="ObjectHoldings-header-button">
                     <i class="fas fa-warehouse"></i>
                 </button>
-                <button class="ObjectHoldings-header-button" @click="clickOpenCreatePlotForm">
+                <button @click="clickOpenCreatePlotForm" class="ObjectHoldings-header-button">
                     <i class="fas fa-tree"></i>
                 </button>
             </div>
@@ -17,7 +17,7 @@
                 enter-active-class="animate__animated animate__zoomIn for__modal absolute"
                 leave-active-class="animate__animated animate__zoomOut for__modal absolute"
             >
-                <FormComplexBuildingCreate v-if="createBuildingFormVisible" @close="clickCloseCreateBuildingForm"/>
+                <FormComplexBuildingCreate v-if="createBuildingFormVisible" @close="clickCloseCreateBuildingForm" />
             </transition>
         </teleport>
         <teleport to="body">
@@ -26,32 +26,28 @@
                 enter-active-class="animate__animated animate__zoomIn for__modal absolute"
                 leave-active-class="animate__animated animate__zoomOut for__modal absolute"
             >
-                <FormComplexPlotCreate v-if="createPlotFormVisible" @close="clickCloseCreatePlotForm"/>
+                <FormComplexPlotCreate v-if="createPlotFormVisible" @close="clickCloseCreatePlotForm" />
             </transition>
         </teleport>
         <div class="ObjectHoldings-body">
-            <ComplexHolding
-                v-for="object in objects"
-                :key="object.id"
-                :object="object"
-            />
+            <ComplexHolding v-for="object in objects" :key="object.id" :object="object" />
         </div>
     </div>
 </template>
 
 <script>
-import FormComplexPlotCreate from "@/components/Forms/Complex/FormComplexPlotCreate.vue";
-import FormComplexBuildingCreate from "@/components/Forms/Complex/FormComplexBuildingCreate.vue";
-import ComplexHolding from "@/components/Complex/Holding/ComplexHolding.vue";
+import FormComplexPlotCreate from '@/components/Forms/Complex/FormComplexPlotCreate.vue';
+import FormComplexBuildingCreate from '@/components/Forms/Complex/FormComplexBuildingCreate.vue';
+import ComplexHolding from '@/components/Complex/Holding/ComplexHolding.vue';
 
 export default {
-    name: "ComplexHoldings",
-    components: {ComplexHolding, FormComplexBuildingCreate, FormComplexPlotCreate},
+    name: 'ComplexHoldings',
+    components: { ComplexHolding, FormComplexBuildingCreate, FormComplexPlotCreate },
     props: {
         objects: {
             type: Array,
-            default: () => [],
-        },
+            default: () => []
+        }
     },
     data() {
         return {
@@ -61,12 +57,12 @@ export default {
     },
     computed: {
         buildingsCount() {
-            let buildings = this.objects.filter((holding) => holding.type === 1);
+            let buildings = this.objects.filter(holding => holding.type === 1);
             return buildings.length;
         },
         landsCount() {
-            return this.objects.filter((holding) => holding.type === 2).length;
-        },
+            return this.objects.filter(holding => holding.type === 2).length;
+        }
     },
     methods: {
         clickOpenCreateBuildingForm() {
@@ -80,7 +76,7 @@ export default {
         },
         clickCloseCreatePlotForm() {
             this.createPlotFormVisible = false;
-        },
+        }
     }
 };
 </script>

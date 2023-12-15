@@ -5,11 +5,11 @@
             enter-active-class="animate__animated animate__zoomIn for__modal absolute"
             leave-active-class="animate__animated animate__zoomOut for__modal absolute"
         >
-            <Modal class="autosize" @close="$emit('close')" title="Создание события">
+            <Modal @close="$emit('close')" class="autosize" title="Создание события">
                 <FormEvent
-                    :formdata="formdata"
                     @created="(...argv) => this.$emit('created', ...argv)"
                     @updated="(...argv) => this.$emit('updated', ...argv)"
+                    :formdata="formdata"
                 />
             </Modal>
         </transition>
@@ -17,23 +17,22 @@
 </template>
 
 <script>
-import Modal from "@/components/common/Modal.vue";
-import FormEvent from "@/components/Forms/FormEvent.vue";
+import Modal from '@/components/common/Modal.vue';
+import FormEvent from '@/components/Forms/FormEvent.vue';
 
 export default {
-    emits: ["close", "updated", "created"],
-    name: "FormModalEvent",
+    name: 'FormModalEvent',
     components: {
         FormEvent,
         Modal
     },
+    emits: ['close', 'updated', 'created'],
     props: {
         formdata: {
-            type: Object,
-        },
-    },
+            type: Object
+        }
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

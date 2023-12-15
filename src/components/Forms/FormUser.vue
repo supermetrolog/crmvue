@@ -1,16 +1,16 @@
 <template>
     <div class="fuck">
         <Modal
-            :title="formdata ? 'Изменение пользователя' : 'Создание пользователя'"
             @close="clickCloseModal"
+            :title="formdata ? 'Изменение пользователя' : 'Создание пользователя'"
             class="normal"
         >
             <Form @submit="onSubmit" class="p-2">
-                <Loader class="center" v-if="loader"/>
+                <Loader v-if="loader" class="center" />
                 <FormGroup class="mb-1">
                     <Input
-                        :disabled="!!formdata"
                         v-model="form.username"
+                        :disabled="!!formdata"
                         :v="v$.form.username"
                         label="Юзернейм"
                         required
@@ -24,8 +24,8 @@
                         class="col-4 pr-1"
                     />
                     <Input
-                        :disabled="!!formdata"
                         v-model="form.userProfile.caller_id"
+                        :disabled="!!formdata"
                         label="Добавочный номер"
                         maska="##########"
                         class="col-4 pr-1"
@@ -46,11 +46,7 @@
                         required
                         class="col-4 pr-1"
                     />
-                    <Input
-                        v-model="form.userProfile.last_name"
-                        label="Отчество"
-                        class="col-4"
-                    />
+                    <Input v-model="form.userProfile.last_name" label="Отчество" class="col-4" />
                 </FormGroup>
                 <FormGroup class="mb-1">
                     <Input
@@ -79,11 +75,7 @@
                         :v="v$.form.userProfile.phones"
                         label="Телефон"
                         name="phone"
-                        :maska="[
-              '+# (###) ###-##-##',
-              '+## (###) ###-##-##',
-              '+### (###) ###-##-##',
-            ]"
+                        :maska="['+# (###) ###-##-##', '+## (###) ###-##-##', '+### (###) ###-##-##']"
                         class="col-4 pr-1"
                     />
                     <PropogationInput
@@ -114,7 +106,7 @@
                 </FormGroup>
                 <FormGroup class="mt-4">
                     <Submit class="col-4 mx-auto">
-                        {{ formdata ? "Сохранить" : "Создать" }}
+                        {{ formdata ? 'Сохранить' : 'Создать' }}
                     </Submit>
                 </FormGroup>
             </Form>
@@ -123,23 +115,23 @@
 </template>
 
 <script>
-import {mapActions, mapGetters} from "vuex";
-import useValidate from "@vuelidate/core";
-import {email, helpers, required} from "@vuelidate/validators";
-import Form from "@/components/common/Forms/Form.vue";
-import FormGroup from "@/components/common/Forms/FormGroup.vue";
-import Input from "@/components/common/Forms/Input.vue";
-import PropogationInput from "@/components/common/Forms/PropogationInput.vue";
-import Submit from "@/components/common/Forms/Submit.vue";
-import Radio from "@/components/common/Forms/Radio.vue";
-import FileInput from "@/components/common/Forms/FileInput.vue";
-import Utils, {validatePropogationInput} from "@/utils";
-import {RoleList} from "@/const/const.js";
-import Modal from "@/components/common/Modal.vue";
-import Loader from "@/components/common/Loader.vue";
+import { mapActions, mapGetters } from 'vuex';
+import useValidate from '@vuelidate/core';
+import { email, helpers, required } from '@vuelidate/validators';
+import Form from '@/components/common/Forms/Form.vue';
+import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import Input from '@/components/common/Forms/Input.vue';
+import PropogationInput from '@/components/common/Forms/PropogationInput.vue';
+import Submit from '@/components/common/Forms/Submit.vue';
+import Radio from '@/components/common/Forms/Radio.vue';
+import FileInput from '@/components/common/Forms/FileInput.vue';
+import Utils, { validatePropogationInput } from '@/utils';
+import { RoleList } from '@/const/const.js';
+import Modal from '@/components/common/Modal.vue';
+import Loader from '@/components/common/Loader.vue';
 
 export default {
-    name: "FormUser",
+    name: 'FormUser',
     components: {
         Loader,
         Modal,
@@ -151,11 +143,17 @@ export default {
         PropogationInput,
         Radio
     },
+    props: {
+        formdata: {
+            type: Object,
+            default: null
+        }
+    },
     data() {
         return {
             v$: useValidate(),
             loader: false,
-            roleOptions: RoleList.get("param"),
+            roleOptions: RoleList.get('param'),
             form: {
                 username: null,
                 password: null,
@@ -171,66 +169,48 @@ export default {
                     emails: [],
                     caller_id: null,
                     avatar: null,
-                    fileList: [],
-                },
-            },
+                    fileList: []
+                }
+            }
         };
     },
-    props: {
-        formdata: {
-            type: Object,
-            default: null,
-        },
-    },
     computed: {
-        ...mapGetters(["CONSULTANT_LIST"]),
+        ...mapGetters(['CONSULTANT_LIST'])
     },
     validations() {
         return {
             form: {
                 userProfile: {
                     first_name: {
-                        required: helpers.withMessage("введите имя", required),
+                        required: helpers.withMessage('введите имя', required)
                     },
                     middle_name: {
-                        required: helpers.withMessage("введите фамилию", required),
+                        required: helpers.withMessage('введите фамилию', required)
                     },
                     emails: {
-                        propogation: helpers.withMessage(
-                            "Пустое поле не допустимо",
-                            this.validateEmailsPropogation
-                        ),
-                        email: helpers.withMessage(
-                            "заполните email правильно",
-                            this.customEmailValidation
-                        ),
+                        propogation: helpers.withMessage('Пустое поле не допустимо', this.validateEmailsPropogation),
+                        email: helpers.withMessage('заполните email правильно', this.customEmailValidation)
                     },
                     phones: {
                         phones: {
-                            propogation: helpers.withMessage(
-                                "Пустое поле не допустимо",
-                                this.validatePhonesPropogation
-                            ),
-                        },
-                    },
+                            propogation: helpers.withMessage('Пустое поле не допустимо', this.validatePhonesPropogation)
+                        }
+                    }
                 },
                 username: {
-                    required: helpers.withMessage("введите юзернейм", required),
+                    required: helpers.withMessage('введите юзернейм', required)
                 },
                 password: {
-                    customRequired: helpers.withMessage(
-                        "введите пароль",
-                        this.customRequired
-                    ),
+                    customRequired: helpers.withMessage('введите пароль', this.customRequired)
                 },
                 email: {
-                    email: helpers.withMessage("заполните email правильно", email),
-                },
-            },
+                    email: helpers.withMessage('заполните email правильно', email)
+                }
+            }
         };
     },
     methods: {
-        ...mapActions(["CREATE_USER", "UPDATE_USER", "REFRESH_USER"]),
+        ...mapActions(['CREATE_USER', 'UPDATE_USER', 'REFRESH_USER']),
 
         async onSubmit() {
             this.v$.$validate();
@@ -246,7 +226,7 @@ export default {
 
         async updateUser() {
             if (await this.UPDATE_USER(this.form)) {
-                this.$emit("updated");
+                this.$emit('updated');
                 this.clickCloseModal();
                 this.REFRESH_USER();
             }
@@ -254,24 +234,24 @@ export default {
         },
         async createUser() {
             if (await this.CREATE_USER(this.form)) {
-                this.$emit("created");
+                this.$emit('created');
 
                 this.clickCloseModal();
             }
             this.loader = false;
         },
         clickCloseModal() {
-            this.$emit("closeUserForm");
+            this.$emit('closeUserForm');
         },
         validateEmailsPropogation() {
-            return validatePropogationInput(this.form.userProfile.emails, "email");
+            return validatePropogationInput(this.form.userProfile.emails, 'email');
         },
         validatePhonesPropogation() {
-            return validatePropogationInput(this.form.userProfile.phones, "phone");
+            return validatePropogationInput(this.form.userProfile.phones, 'phone');
         },
         customEmailValidation() {
             let flag = true;
-            this.form.userProfile.emails.forEach((item) => {
+            this.form.userProfile.emails.forEach(item => {
                 if (!email.$validator(item.email)) {
                     flag = false;
                 }
@@ -286,20 +266,19 @@ export default {
                 return false;
             }
             return true;
-        },
+        }
     },
     async mounted() {
         this.loader = true;
         if (this.formdata) {
             const cloneFormdata = JSON.stringify(this.formdata);
-            this.form = {...this.form, ...JSON.parse(cloneFormdata)};
+            this.form = { ...this.form, ...JSON.parse(cloneFormdata) };
             this.form = Utils.normalizeDataForUserForm(this.form);
         }
         this.loader = false;
     },
-    emits: ["closeUserForm", "updated", "created"],
+    emits: ['closeUserForm', 'updated', 'created']
 };
 </script>
 
-<style>
-</style>
+<style></style>

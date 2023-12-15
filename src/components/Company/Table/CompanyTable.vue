@@ -4,10 +4,7 @@
             <template #thead>
                 <Tr>
                     <Th class="company-table-view-sharp">#</Th>
-                    <Th class="text-left company-table-view-name" sort="nameRu"
-                    >название компании
-                    </Th
-                    >
+                    <Th class="text-left company-table-view-name" sort="nameRu">название компании </Th>
                     <Th class="company-table-view-category">категория</Th>
                     <Th class="company-table-view-contact">контакт</Th>
                     <Th class="company-table-view-qa">опросник</Th>
@@ -17,7 +14,7 @@
                 </Tr>
             </template>
             <template #tbody>
-                <Loader v-if="loader" class="center"/>
+                <Loader v-if="loader" class="center" />
                 <CompanyTableItem
                     v-for="(company, idx) in companies"
                     :key="company.id"
@@ -30,22 +27,22 @@
 </template>
 
 <script>
-import CompanyTableItem from "@/components/Company/Table/CompanyTableItem.vue";
-import {MixinCompanyView} from "@/components/Company/mixins.js";
-import Table from "@/components/common/Table/Table.vue";
-import Th from "@/components/common/Table/Th.vue";
-import Tr from "@/components/common/Table/Tr.vue";
-import Loader from "@/components/common/Loader.vue";
+import CompanyTableItem from '@/components/Company/Table/CompanyTableItem.vue';
+import { MixinCompanyView } from '@/components/Company/mixins.js';
+import Table from '@/components/common/Table/Table.vue';
+import Th from '@/components/common/Table/Th.vue';
+import Tr from '@/components/common/Table/Tr.vue';
+import Loader from '@/components/common/Loader.vue';
 
 export default {
-    mixins: [MixinCompanyView],
-    name: "CompanyTable",
+    name: 'CompanyTable',
     components: {
         Loader,
         Table,
         Tr,
         Th,
-        CompanyTableItem,
+        CompanyTableItem
     },
+    mixins: [MixinCompanyView]
 };
 </script>

@@ -1,18 +1,10 @@
 <template>
     <div class="fuck">
-        <Modal
-            :title="formsdata ? 'Изменение контакта' : 'Создание контакта'"
-            @close="clickCloseModal"
-            class="normal"
-        >
+        <Modal @close="clickCloseModal" :title="formsdata ? 'Изменение контакта' : 'Создание контакта'" class="normal">
             <Form @submit="onSubmit" class="p-2">
-                <Loader class="center" v-if="loader"/>
+                <Loader v-if="loader" class="center" />
                 <FormGroup class="mb-1">
-                    <Input
-                        v-model="forms.middle_name"
-                        label="Фамилия"
-                        class="col-4 pr-1"
-                    />
+                    <Input v-model="forms.middle_name" label="Фамилия" class="col-4 pr-1" />
                     <Input
                         v-model="forms.first_name"
                         label="Имя"
@@ -20,7 +12,7 @@
                         required
                         class="col-4 pr-1"
                     />
-                    <Input v-model="forms.last_name" label="Отчество" class="col-4"/>
+                    <Input v-model="forms.last_name" label="Отчество" class="col-4" />
                 </FormGroup>
                 <FormGroup class="mb-1">
                     <PropogationDoubleInput
@@ -37,10 +29,10 @@
                         <FormGroup class="label-padding">
                             <p>Осн.</p>
                             <Checkbox
-                                @change="changeIsMainPhone(phone)"
                                 v-for="phone in forms.phones"
                                 :key="phone.phone"
                                 v-model="phone.isMain"
+                                @change="changeIsMainPhone(phone)"
                                 class="col-12 large"
                             />
                         </FormGroup>
@@ -56,10 +48,10 @@
                         <FormGroup class="label-padding">
                             <p>Осн.</p>
                             <Checkbox
-                                @change="changeIsMainEmail(email)"
                                 v-for="email in forms.emails"
                                 :key="email.email"
                                 v-model="email.isMain"
+                                @change="changeIsMainEmail(email)"
                                 class="col-12 large"
                             />
                         </FormGroup>
@@ -85,8 +77,8 @@
                     />
                     <MultiSelect
                         v-model="forms.position"
-                        :v="v$.forms.position"
                         @change="changePosition"
+                        :v="v$.forms.position"
                         required
                         label="Должность"
                         class="col-6 pr-1"
@@ -128,20 +120,20 @@
 
                     <Checkbox
                         v-model="forms.warning"
-                        label="Внимание!"
                         @change="changeWarning"
+                        label="Внимание!"
                         class="large text-center"
                         :class="{ 'col-3': forms.warning, 'col-2': !forms.warning }"
                     >
-            <Textarea
-                v-if="forms.warning"
-                v-model="forms.warning_why_comment"
-                :v="v$.forms.warning_why_comment"
-                required
-                label="Причина"
-                class="col-12 p-0 pt-1"
-                placeholder="Опишите причину"
-            />
+                        <Textarea
+                            v-if="forms.warning"
+                            v-model="forms.warning_why_comment"
+                            :v="v$.forms.warning_why_comment"
+                            required
+                            label="Причина"
+                            class="col-12 p-0 pt-1"
+                            placeholder="Опишите причину"
+                        />
                     </Checkbox>
                 </FormGroup>
                 <FormGroup class="mb-1">
@@ -158,10 +150,10 @@
                         :delay="0"
                         :searchable="true"
                         :options="
-              async (query) => {
-                return await searchCompany(query);
-              }
-            "
+                            async query => {
+                                return await searchCompany(query);
+                            }
+                        "
                     />
                     <Radio
                         v-model="forms.status"
@@ -179,11 +171,11 @@
                             class="col-12 p-0"
                             :options="passiveWhyOptions"
                         >
-              <Textarea
-                  v-model="forms.passive_why_comment"
-                  class="col-12 p-0 pt-1"
-                  placeholder="Опишите причину"
-              />
+                            <Textarea
+                                v-model="forms.passive_why_comment"
+                                class="col-12 p-0 pt-1"
+                                placeholder="Опишите причину"
+                            />
                         </MultiSelect>
                     </Radio>
                 </FormGroup>
@@ -197,7 +189,7 @@
                 </FormGroup>
                 <FormGroup class="mt-4">
                     <Submit class="col-4 mx-auto">
-                        {{ formsdata ? "Сохранить" : "Создать" }}
+                        {{ formsdata ? 'Сохранить' : 'Создать' }}
                     </Submit>
                 </FormGroup>
             </Form>
@@ -206,27 +198,27 @@
 </template>
 
 <script>
-import {mapActions, mapGetters} from "vuex";
-import useValidate from "@vuelidate/core";
-import {email, helpers, required} from "@vuelidate/validators";
-import {ActivePassive, FeedbackList, PassiveWhyContact, PositionList,} from "@/const/const.js";
-import Input from "@/components/common/Forms/Input.vue";
-import Submit from "@/components/common/Forms/Submit.vue";
-import PropogationInput from "@/components/common/Forms/PropogationInput.vue";
-import PropogationDoubleInput from "@/components/common/Forms/PropogationDoubleInput.vue";
-import Checkbox from "@/components/common/Forms/Checkbox.vue";
-import Textarea from "@/components/common/Forms/Textarea.vue";
-import Radio from "@/components/common/Forms/Radio.vue";
-import MultiSelect from "@/components/common/Forms/MultiSelect.vue";
-import {validatePropogationInput} from "@/utils";
-import api from "@//api/api.js";
-import Loader from "@/components/common/Loader.vue";
-import Modal from "@/components/common/Modal.vue";
-import FormGroup from "@/components/common/Forms/FormGroup.vue";
-import Form from "@/components/common/Forms/Form.vue";
+import { mapActions, mapGetters } from 'vuex';
+import useValidate from '@vuelidate/core';
+import { email, helpers, required } from '@vuelidate/validators';
+import { ActivePassive, FeedbackList, PassiveWhyContact, PositionList } from '@/const/const.js';
+import Input from '@/components/common/Forms/Input.vue';
+import Submit from '@/components/common/Forms/Submit.vue';
+import PropogationInput from '@/components/common/Forms/PropogationInput.vue';
+import PropogationDoubleInput from '@/components/common/Forms/PropogationDoubleInput.vue';
+import Checkbox from '@/components/common/Forms/Checkbox.vue';
+import Textarea from '@/components/common/Forms/Textarea.vue';
+import Radio from '@/components/common/Forms/Radio.vue';
+import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
+import { validatePropogationInput } from '@/utils';
+import api from '@//api/api.js';
+import Loader from '@/components/common/Loader.vue';
+import Modal from '@/components/common/Modal.vue';
+import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import Form from '@/components/common/Forms/Form.vue';
 
 export default {
-    name: "FormCompanyContact",
+    name: 'FormCompanyContact',
     components: {
         Form,
         FormGroup,
@@ -239,15 +231,29 @@ export default {
         Checkbox,
         Radio,
         MultiSelect,
-        Textarea,
+        Textarea
+    },
+    props: {
+        formdata: {
+            type: Object,
+            default: null
+        },
+        company_id: {
+            type: Number,
+            default: null
+        },
+        phones: {
+            type: Array,
+            default: () => []
+        }
     },
     data() {
         return {
             v$: useValidate(),
-            wayOfInformsings: FeedbackList.get("contact"),
-            positionList: PositionList.get("param"),
-            statusOptions: ActivePassive.get("param"),
-            passiveWhyOptions: PassiveWhyContact.get("param"),
+            wayOfInformsings: FeedbackList.get('contact'),
+            positionList: PositionList.get('param'),
+            statusOptions: ActivePassive.get('param'),
+            passiveWhyOptions: PassiveWhyContact.get('param'),
             loader: false,
             selectedCompany: null,
             forms: {
@@ -270,129 +276,86 @@ export default {
                 passive_why_comment: null,
                 warning_why_comment: null,
                 position_unknown: 0,
-                isMain: null,
-            },
+                isMain: null
+            }
         };
     },
-    props: {
-        formdata: {
-            type: Object,
-            default: null,
-        },
-        company_id: {
-            type: Number,
-            default: null,
-        },
-        phones: {
-            type: Array,
-            default: () => [],
-        },
-    },
     computed: {
-        ...mapGetters(["CONSULTANT_LIST"]),
+        ...mapGetters(['CONSULTANT_LIST'])
     },
     validations() {
         return {
             forms: {
                 position: {
-                    customRequredPosition: helpers.withMessage(
-                        "выберите должность",
-                        this.customRequiredPosition
-                    ),
+                    customRequredPosition: helpers.withMessage('выберите должность', this.customRequiredPosition)
                 },
                 consultant_id: {
-                    required: helpers.withMessage("выберите консультанта", required),
+                    required: helpers.withMessage('выберите консультанта', required)
                 },
                 first_name: {
-                    required: helpers.withMessage("введите имя", required),
+                    required: helpers.withMessage('введите имя', required)
                 },
                 company_id: {
-                    required: helpers.withMessage("Выберите компанию", required),
+                    required: helpers.withMessage('Выберите компанию', required)
                 },
                 emails: {
                     customRequiredEmails: helpers.withMessage(
-                        "дабавьте либо телефон либо email",
+                        'дабавьте либо телефон либо email',
                         this.customRequiredEmails
                     ),
-                    propogation: helpers.withMessage(
-                        "Пустое поле не допустимо",
-                        this.validateEmailsPropogation
-                    ),
-                    email: helpers.withMessage(
-                        "заполните email правильно",
-                        this.customEmailValidation
-                    ),
-                    requiredIsMain: helpers.withMessage("Выберите главный email", () => {
-                        if (
-                            this.forms.emails.length &&
-                            !this.forms.emails.find((elem) => elem.isMain === 1)
-                        ) {
+                    propogation: helpers.withMessage('Пустое поле не допустимо', this.validateEmailsPropogation),
+                    email: helpers.withMessage('заполните email правильно', this.customEmailValidation),
+                    requiredIsMain: helpers.withMessage('Выберите главный email', () => {
+                        if (this.forms.emails.length && !this.forms.emails.find(elem => elem.isMain === 1)) {
                             return false;
                         }
                         return true;
-                    }),
+                    })
                 },
                 phones: {
-                    minItemLength: helpers.withMessage(
-                        "телефон должен состоять из 11 цифр",
-                        () => {
-                            let flag = true;
-                            this.forms.phones.forEach((elem) => {
-                                if (!flag) {
-                                    return;
-                                }
-                                if (!elem.phone) {
-                                    flag = false;
-                                }
-                                if (elem.phone.length !== 18) {
-                                    flag = false;
-                                }
-                            });
-                            return flag;
-                        }
-                    ),
+                    minItemLength: helpers.withMessage('телефон должен состоять из 11 цифр', () => {
+                        let flag = true;
+                        this.forms.phones.forEach(elem => {
+                            if (!flag) {
+                                return;
+                            }
+                            if (!elem.phone) {
+                                flag = false;
+                            }
+                            if (elem.phone.length !== 18) {
+                                flag = false;
+                            }
+                        });
+                        return flag;
+                    }),
                     customRequiredPhones: helpers.withMessage(
-                        "дабавьте либо телефон либо email",
+                        'дабавьте либо телефон либо email',
                         this.customRequiredPhones
                     ),
                     phones: {
-                        propogation: helpers.withMessage(
-                            "Пустое поле не допустимо",
-                            this.validatePhonesPropogation
-                        ),
+                        propogation: helpers.withMessage('Пустое поле не допустимо', this.validatePhonesPropogation)
                     },
-                    requiredIsMain: helpers.withMessage("Выберите главный номер", () => {
-                        if (
-                            this.forms.phones.length &&
-                            !this.forms.phones.find((elem) => elem.isMain === 1)
-                        ) {
+                    requiredIsMain: helpers.withMessage('Выберите главный номер', () => {
+                        if (this.forms.phones.length && !this.forms.phones.find(elem => elem.isMain === 1)) {
                             return false;
                         }
                         return true;
-                    }),
+                    })
                 },
                 passive_why: {
-                    customRequiredPassiveWhy: helpers.withMessage(
-                        "Выберите причину",
-                        this.customRequiredPassiveWhy
-                    ),
+                    customRequiredPassiveWhy: helpers.withMessage('Выберите причину', this.customRequiredPassiveWhy)
                 },
                 warning_why_comment: {
                     customRequiredWarningWhyComment: helpers.withMessage(
-                        "Опишите причину",
+                        'Опишите причину',
                         this.customRequiredWarningWhyComment
-                    ),
-                },
-            },
+                    )
+                }
+            }
         };
     },
     methods: {
-        ...mapActions([
-            "FETCH_CONSULTANT_LIST",
-            "CREATE_CONTACT",
-            "UPDATE_CONTACT",
-            "SEARCH_COMPANIES",
-        ]),
+        ...mapActions(['FETCH_CONSULTANT_LIST', 'CREATE_CONTACT', 'UPDATE_CONTACT', 'SEARCH_COMPANIES']),
         async onSubmit() {
             this.v$.$validate();
             if (!this.v$.forms.$error) {
@@ -407,21 +370,21 @@ export default {
 
         async updateContact() {
             if (await this.UPDATE_CONTACT(this.forms)) {
-                this.$emit("updated");
+                this.$emit('updated');
                 this.clickCloseModal();
             }
             this.loader = false;
         },
         async createContact() {
             if (await this.CREATE_CONTACT(this.forms)) {
-                this.$emit("created");
+                this.$emit('created');
 
                 this.clickCloseModal();
             }
             this.loader = false;
         },
         changeWarning() {
-            this.forms.warning ? (this.forms.good = 0) : "";
+            this.forms.warning ? (this.forms.good = 0) : '';
         },
         changePosition() {
             if (this.forms.position !== null) {
@@ -440,14 +403,14 @@ export default {
             return required.$validator(value);
         },
         validateEmailsPropogation() {
-            return validatePropogationInput(this.forms.emails, "email");
+            return validatePropogationInput(this.forms.emails, 'email');
         },
         validatePhonesPropogation() {
-            return validatePropogationInput(this.forms.phones, "phone");
+            return validatePropogationInput(this.forms.phones, 'phone');
         },
         customEmailValidation() {
             let flag = true;
-            this.forms.emails.forEach((item) => {
+            this.forms.emails.forEach(item => {
                 if (!email.$validator(item.email)) {
                     flag = false;
                 }
@@ -502,24 +465,24 @@ export default {
 
                 array.push({
                     value: this.selectedCompany.id,
-                    label: this.selectedCompany.full_name,
+                    label: this.selectedCompany.full_name
                 });
             }
             query = {
-                all: query,
+                all: query
             };
             result = await api.companies.searchCompanies(query);
-            result.data.forEach((item) => {
-                array.push({value: item.id, label: item.full_name});
+            result.data.forEach(item => {
+                array.push({ value: item.id, label: item.full_name });
             });
             return array;
         },
 
         clickCloseModal() {
-            this.$emit("closeCompanyForm");
+            this.$emit('closeCompanyForm');
         },
         changeIsMainEmail(changedEmail) {
-            this.forms.emails = this.forms.emails.map((elem) => {
+            this.forms.emails = this.forms.emails.map(elem => {
                 if (elem.email == changedEmail.email) {
                     elem.isMain = changedEmail.isMain ? 1 : null;
                     return elem;
@@ -529,7 +492,7 @@ export default {
             });
         },
         changeIsMainPhone(changedPhone) {
-            this.forms.phones = this.forms.phones.map((elem) => {
+            this.forms.phones = this.forms.phones.map(elem => {
                 if (elem.phone == changedPhone.phone) {
                     elem.isMain = changedPhone.isMain ? 1 : null;
                     return elem;
@@ -537,7 +500,7 @@ export default {
                 elem.isMain = null;
                 return elem;
             });
-        },
+        }
     },
     async mounted() {
         this.loader = true;
@@ -545,20 +508,18 @@ export default {
         this.forms.company_id = this.company_id;
         this.forms.phones = this.phones;
         if (this.formdata) {
-            this.forms = {...this.forms, ...this.formdata};
+            this.forms = { ...this.forms, ...this.formdata };
         }
         this.loader = false;
     },
     watch: {
         forms: {
-            handler() {
-            },
-            deep: true,
-        },
+            handler() {},
+            deep: true
+        }
     },
-    emits: ["closeCompanyForm", "updated", "created"],
+    emits: ['closeCompanyForm', 'updated', 'created']
 };
 </script>
 
-<style>
-</style>
+<style></style>

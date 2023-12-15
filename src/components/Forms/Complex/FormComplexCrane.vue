@@ -1,15 +1,14 @@
 <template>
     <div class="add-crane-form">
-        <Modal
-            title="Создание крана"
-            @close="$emit('close')"
-            classes="autosize"
-        >
-            <Loader class="center" v-if="loader"/>
+        <Modal @close="$emit('close')" title="Создание крана" classes="autosize">
+            <Loader v-if="loader" class="center" />
             <Form @submit="onSubmit" class="center autosize">
-                <Tabs :options="{ useUrlFragment: false, defaultTabHash: 'main' }" nav-class="add-crane-form__tab-list"
-                      nav-item-link-class="add-crane-form__tab-link">
-                    <Tab name="Характеpистики" id="craneCharacteristics">
+                <Tabs
+                    :options="{ useUrlFragment: false, defaultTabHash: 'main' }"
+                    nav-class="add-crane-form__tab-list"
+                    nav-item-link-class="add-crane-form__tab-link"
+                >
+                    <Tab id="craneCharacteristics" name="Характеpистики">
                         <FormGroup class="mb-1">
                             <MultiSelect
                                 v-model="form.crane_type"
@@ -74,7 +73,7 @@
                                 v-model="form.crane_controls"
                                 title="Тип управления"
                                 label="Тип управления"
-                                :closeOnSelect=false
+                                :closeOnSelect="false"
                                 class="col-4 px-1"
                                 mode="multiple"
                                 :options="craneControlsOptions"
@@ -94,13 +93,19 @@
                                 v-model="form.crane_supervision"
                                 label="Под надзором"
                                 class="col-2 pr-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                             <Radio
                                 v-model="form.crane_documents"
                                 label="Есть документы"
                                 class="col-2 px-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                             <MultiSelect
                                 v-model="form.crane_condition"
@@ -111,14 +116,10 @@
                             />
                         </FormGroup>
                         <FormGroup class="mb-1">
-							<Textarea
-                                v-model="form.description"
-                                label="Описание"
-                                class="col-12 px-0"
-                            />
+                            <Textarea v-model="form.description" label="Описание" class="col-12 px-0" />
                         </FormGroup>
                     </Tab>
-                    <Tab name="Фотографии" id="cranePhoto">
+                    <Tab id="cranePhoto" name="Фотографии">
                         <FormGroup class="mb-1">
                             <FileInput
                                 v-model:native="form.photosList"
@@ -132,9 +133,7 @@
                     </Tab>
                 </Tabs>
                 <FormGroup class="mt-1 mb-4">
-                    <Submit class="col-4 mx-auto">
-                        Сохранить
-                    </Submit>
+                    <Submit class="col-4 mx-auto"> Сохранить </Submit>
                 </FormGroup>
             </Form>
         </Modal>
@@ -142,10 +141,10 @@
 </template>
 
 <script>
-import {helpers, minValue, required} from "@vuelidate/validators";
-import {ComplexFormMixin} from "@/components/Forms/Complex/mixin";
-import Loader from "@/components/common/Loader.vue";
-import Modal from "@/components/common/Modal.vue";
+import { helpers, minValue, required } from '@vuelidate/validators';
+import { ComplexFormMixin } from '@/components/Forms/Complex/mixin';
+import Loader from '@/components/common/Loader.vue';
+import Modal from '@/components/common/Modal.vue';
 import {
     craneBeamsAmountTypes,
     craneBeamTypes,
@@ -154,11 +153,11 @@ import {
     liftingDeviceConditionTypes,
     liftingDeviceControlsTypes,
     liftingDeviceLocationTypes
-} from "@/const/liftingDevices";
+} from '@/const/liftingDevices';
 
 export default {
-    name: "FormComplexCrane",
-    components: {Modal, Loader},
+    name: 'FormComplexCrane',
+    components: { Modal, Loader },
     mixins: [ComplexFormMixin],
     data() {
         return {
@@ -176,49 +175,30 @@ export default {
                 crane_documents: null,
                 crane_condition: null,
                 photosList: [],
-                photos: [],
-            },
-        }
+                photos: []
+            }
+        };
     },
     validations() {
         return {
             form: {
                 crane_location: {
-                    required: helpers.withMessage(
-                        "выберите один из вариантов",
-                        required
-                    ),
+                    required: helpers.withMessage('выберите один из вариантов', required)
                 },
                 crane_capacity: {
-                    required: helpers.withMessage(
-                        "заполните поле",
-                        required
-                    ),
-                    minValue: helpers.withMessage(
-                        "значение должно быть больше 0",
-                        minValue(1)
-                    )
+                    required: helpers.withMessage('заполните поле', required),
+                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
                 },
                 crane_span: {
-                    required: helpers.withMessage(
-                        "заполните поле",
-                        required
-                    ),
-                    minValue: helpers.withMessage(
-                        "значение должно быть больше 0",
-                        minValue(1)
-                    )
+                    required: helpers.withMessage('заполните поле', required),
+                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
                 },
                 crane_hook_height: {
-                    minValue: helpers.withMessage(
-                        "значение должно быть больше 0",
-                        minValue(1)
-                    )
-                },
+                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
+                }
             }
-        }
+        };
     },
-    methods: {},
     computed: {
         craneTypeOptions() {
             return Object.values(craneTypes);
@@ -241,6 +221,7 @@ export default {
         craneConditionOptions() {
             return Object.values(liftingDeviceConditionTypes);
         }
-    }
-}
+    },
+    methods: {}
+};
 </script>

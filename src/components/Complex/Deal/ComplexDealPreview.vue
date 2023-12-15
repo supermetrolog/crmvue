@@ -1,19 +1,13 @@
 <template>
-    <div
-        class="DealPreviewCard"
-        :class="{ active: isCurrent }"
-        @click="onChooseDeal"
-    >
+    <div @click="onChooseDeal" class="DealPreviewCard" :class="{ active: isCurrent }">
         <button v-if="isCurrent" class="DealPreviewCard-edit">
             <i class="fas fa-pen"></i>
         </button>
         <span class="DealPreviewCard-type">{{ dealType }}</span>
-        <p class="DealPreviewCard-company">{{ deal.company.name || "--" }}</p>
+        <p class="DealPreviewCard-company">{{ deal.company.name || '--' }}</p>
         <p class="DealPreviewCard-area">
             {{ dealArea }}
-            <span v-if="deal.area" class="DealPreviewCard-price-unit"
-            >м<sup>2</sup></span
-            >
+            <span v-if="deal.area" class="DealPreviewCard-price-unit">м<sup>2</sup></span>
         </p>
         <p class="DealPreviewCard-price">
             <with-unit-type :unit-type="deal.price.unitType">{{ dealPrice }}</with-unit-type>
@@ -21,11 +15,9 @@
         <p
             class="DealPreviewCard-status"
             :class="{
-        success: deal.status === DealStatusType.FOR_RENT,
-        danger:
-          deal.status === DealStatusType.RENTED_OUT ||
-          deal.status === DealStatusType.SOLD_OUT,
-      }"
+                success: deal.status === DealStatusType.FOR_RENT,
+                danger: deal.status === DealStatusType.RENTED_OUT || deal.status === DealStatusType.SOLD_OUT
+            }"
         >
             {{ dealStatus }}
         </p>
@@ -34,30 +26,31 @@
 </template>
 
 <script>
-import {DealStatusType, DealTypeList} from "@/const/const";
-import {unitTypes} from "@/const/unitTypes";
-import WithUnitType from "@/components/common/WithUnitType.vue";
+import { DealStatusType, DealTypeList } from '@/const/const';
+import { unitTypes } from '@/const/unitTypes';
+import WithUnitType from '@/components/common/WithUnitType.vue';
 
 export default {
-    name: "ComplexDealPreview",
+    name: 'ComplexDealPreview',
     components: {
         WithUnitType
     },
+    emits: ['choose', 'edit'],
     props: {
         deal: {
             type: Object,
-            required: true,
+            required: true
         },
         isCurrent: {
             type: Boolean,
-            default: false,
-        },
+            default: false
+        }
     },
     data() {
         return {
-            dealTypeList: DealTypeList.get("param"),
+            dealTypeList: DealTypeList.get('param'),
             DealStatusType,
-            unitTypes,
+            unitTypes
         };
     },
     computed: {
@@ -68,39 +61,36 @@ export default {
         dealStatus() {
             switch (this.deal.status) {
                 case 1:
-                    return "Сдается";
+                    return 'Сдается';
                 case 2:
-                    return "Сдано";
+                    return 'Сдано';
                 case 3:
-                    return "Продано";
+                    return 'Продано';
                 default:
-                    return "Неизвестно";
+                    return 'Неизвестно';
             }
         },
         dealArea() {
-            const {valueMin, valueMax} = this.deal.area;
-            if (valueMin && valueMax)
-                return this.$formatter.numberOrRangeNew(valueMin, valueMax);
-            return "--";
+            const { valueMin, valueMax } = this.deal.area;
+            if (valueMin && valueMax) return this.$formatter.numberOrRangeNew(valueMin, valueMax);
+            return '--';
         },
         dealPrice() {
-            const {valueMin, valueMax} = this.deal.price;
-            if (valueMin && valueMax)
-                return this.$formatter.numberOrRangeNew(valueMin, valueMax);
-            return "нет данных";
+            const { valueMin, valueMax } = this.deal.price;
+            if (valueMin && valueMax) return this.$formatter.numberOrRangeNew(valueMin, valueMax);
+            return 'нет данных';
         },
         typePresence() {
             return this.deal.price.type && this.deal.price.valueMin;
-        },
+        }
     },
     methods: {
         onChooseDeal() {
-            this.$emit("choose", this.deal.id);
+            this.$emit('choose', this.deal.id);
         },
         onClickEdit() {
-            this.$emit("edit");
-        },
-    },
-    emits: ["choose", "edit"],
+            this.$emit('edit');
+        }
+    }
 };
 </script>

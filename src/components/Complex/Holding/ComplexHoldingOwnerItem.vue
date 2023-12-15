@@ -5,12 +5,11 @@
             <span class="ObjectHoldingsOwnerItem-name">{{ company.mainContact.full_name }}</span>
         </router-link>
         <span class="ObjectHoldingsOwnerItem-mainContactPhones">
-            {{ company.mainContact.phones.map((el) => el.phone).join(",") }}
+            {{ company.mainContact.phones.map(el => el.phone).join(',') }}
         </span>
         <span class="ObjectHoldingsOwnerItem-mainContactPhones">
-            {{ company.mainContact.emails.map((el) => el.email).join(",") }}
+            {{ company.mainContact.emails.map(el => el.email).join(',') }}
         </span>
-
 
         <!--   
             <span class=""> {{ objects.company.mainContact.phones }}</span>
@@ -22,7 +21,6 @@
             <span class="">{{objects.commercialOffers.companyRecord.mainContact.emails}}</span>
     
            -->
-
 
         <!--     Это еще не реализовано!     -->
         <!--    <div class="ObjectHoldingsOwnerItem-rating" v-if="false">-->
@@ -72,28 +70,27 @@
         <!--      }}</span>-->
 
         <!--    </div>-->
-
     </div>
 </template>
 
 <script>
-import plural from "plural-ru";
+import plural from 'plural-ru';
 // import Rating from "@/components/common/rating/Rating.vue";
 
 export default {
-    name: "ComplexHoldingOwnerItem",
+    name: 'ComplexHoldingOwnerItem',
     components: {
         // Rating,
     },
     props: {
         company: {
-            type: Object,
-        },
+            type: Object
+        }
     },
     data() {
         return {
-            plural: plural,
+            plural: plural
         };
-    },
+    }
 };
 </script>

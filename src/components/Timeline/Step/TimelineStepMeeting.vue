@@ -1,44 +1,44 @@
 <template>
-    <div class="col-12" v-if="data">
+    <div v-if="data" class="col-12">
         <FormModalEvent
+            v-if="notificationFormVisible"
             @close="closeNotificationForm"
             @created="createdOrUpdatedEvent"
             @updated="createdOrUpdatedEvent"
             :formdata="{ consultant_id: THIS_USER.id }"
-            v-if="notificationFormVisible"
         />
         <div class="row no-gutters">
             <div class="col-12">
                 <TimelineStepStage
+                    :id="1"
+                    @stageClicked="stageClicked"
                     class="mb-2"
                     title="Шаг 1. Изучите деятельность компании клиента, свяжитесь с контактным лицом и обсудите задачу"
                     :isDone="data.additional == 1"
                     :isCurrent="data.additional != 1"
-                    :id="1"
                     :isClicked="clickedStage === 1"
-                    @stageClicked="stageClicked"
                 >
                     <ButtonList
                         v-if="!disabled"
-                        :buttons="buttonsOne"
                         @phoned="selectPhoned"
                         @callback="openNotificationForm"
                         @negative="selectNegative"
+                        :buttons="buttonsOne"
                     />
                 </TimelineStepStage>
                 <TimelineStepStage
+                    :id="2"
+                    @stageClicked="stageClicked"
                     title="Шаг 2. Проверьте правильность заполнения запроса, отредактируйте при необходимости и затем утвердите"
                     :isDone="data.done == 1"
                     :isCurrent="data.additional == 1"
-                    :id="2"
                     :isClicked="clickedStage === 2"
-                    @stageClicked="stageClicked"
                 >
                     <ButtonList
                         v-if="!disabled"
-                        :buttons="buttonsTwo"
                         @done="selectDone"
                         @updateRequest="openRequestForm"
+                        :buttons="buttonsTwo"
                     />
                 </TimelineStepStage>
             </div>
@@ -47,86 +47,86 @@
 </template>
 
 <script>
-import {MixinSteps} from "@/components/Timeline/mixins.js";
-import {mapGetters} from "vuex";
+import { MixinSteps } from '@/components/Timeline/mixins.js';
+import { mapGetters } from 'vuex';
 import {
     CallbackComment,
     CallingErrorComment,
     MeetingDoneComment,
-    PhonedComment,
-} from "@/components/Timeline/comments.js"
-import FormModalEvent from "@/components/Forms/FormModalEvent.vue";
+    PhonedComment
+} from '@/components/Timeline/comments.js';
+import FormModalEvent from '@/components/Forms/FormModalEvent.vue';
 
 export default {
-    name: "TimelineStepMeeting",
-    mixins: [MixinSteps],
+    name: 'TimelineStepMeeting',
     components: {
         FormModalEvent
     },
+    mixins: [MixinSteps],
     data() {
         return {
             notificationFormVisible: false,
-            clickedStage: null,
+            clickedStage: null
         };
     },
     computed: {
-        ...mapGetters(["THIS_USER"]),
+        ...mapGetters(['THIS_USER']),
         buttonsOne() {
             return [
                 {
-                    btnClass: "success",
+                    btnClass: 'success',
                     btnVisible: false,
                     defaultBtn: true,
                     disabled: this.disabled,
                     btnActive: this.data.additional == 1,
-                    title: "",
-                    text: "Поговорил",
-                    emited_event: "phoned",
+                    title: '',
+                    text: 'Поговорил',
+                    emited_event: 'phoned',
                     withWayOfSending: false,
-                    classes: "col-2 pr-1",
+                    classes: 'col-2 pr-1'
                 },
                 {
-                    btnClass: "primary",
+                    btnClass: 'primary',
                     btnVisible: false,
                     defaultBtn: true,
                     disabled: this.disabled,
                     btnActive: this.data.additional == 2,
-                    title: "",
-                    text: "Перезвонить",
-                    emited_event: "callback",
+                    title: '',
+                    text: 'Перезвонить',
+                    emited_event: 'callback',
                     withWayOfSending: false,
-                    classes: "col-2 px-1",
+                    classes: 'col-2 px-1'
                 },
                 {
-                    btnClass: "danger",
+                    btnClass: 'danger',
                     btnVisible: false,
                     defaultBtn: true,
                     btnActive: this.data.negative,
                     disabled: this.disabled,
-                    title: "",
-                    text: "Не дозвонился",
-                    emited_event: "negative",
+                    title: '',
+                    text: 'Не дозвонился',
+                    emited_event: 'negative',
                     withWayOfSending: false,
-                    classes: "col-2 pl-1",
-                },
+                    classes: 'col-2 pl-1'
+                }
             ];
         },
         buttonsTwo() {
             return [
                 {
-                    btnClass: "success",
+                    btnClass: 'success',
                     btnVisible: false,
                     defaultBtn: true,
                     disabled: this.disabled,
                     btnActive: this.data.done,
-                    title: "",
-                    text: "Отлично, идём дальше",
-                    emited_event: "done",
+                    title: '',
+                    text: 'Отлично, идём дальше',
+                    emited_event: 'done',
                     withWayOfSending: false,
-                    classes: "col-2 pr-1",
-                },
+                    classes: 'col-2 pr-1'
+                }
             ];
-        },
+        }
     },
     methods: {
         closeNotificationForm() {
@@ -136,7 +136,7 @@ export default {
             this.notificationFormVisible = true;
         },
         openRequestForm() {
-            this.$emit("openRequestForm");
+            this.$emit('openRequestForm');
         },
         createdOrUpdatedEvent(newCalendarEvent) {
             this.closeNotificationForm();
@@ -152,7 +152,7 @@ export default {
                 this.data.status = 1;
                 this.data.newActionComments = [new MeetingDoneComment(this.data)];
             }
-            this.$emit("updateItem", this.data, this.data.done);
+            this.$emit('updateItem', this.data, this.data.done);
         },
         selectNegative() {
             if (this.data.negative) {
@@ -165,7 +165,7 @@ export default {
                 this.data.newActionComments = [new CallingErrorComment(this.data)];
             }
 
-            this.$emit("updateItem", this.data);
+            this.$emit('updateItem', this.data);
         },
 
         selectPhoned() {
@@ -178,7 +178,7 @@ export default {
             }
             this.data.negative = 0;
             this.data.date = null;
-            this.$emit("updateItem", this.data);
+            this.$emit('updateItem', this.data);
         },
         selectCallback(newCalendarEvent) {
             this.data.additional = 2;
@@ -186,26 +186,25 @@ export default {
             this.data.newActionComments = [
                 new CallbackComment(
                     this.data,
-                    this.$formatter.date().locale(this.data.date, "ru-RU", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                        hour: "numeric",
-                        minute: "numeric",
+                    this.$formatter.date().locale(this.data.date, 'ru-RU', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: 'numeric',
+                        minute: 'numeric'
                     })
-                ),
+                )
             ];
             this.data.negative = 0;
-            this.$emit("updateItem", this.data);
+            this.$emit('updateItem', this.data);
         },
         stageClicked(id) {
             this.clickedStage = id;
-            this.$emit("stageChanged", id);
-        },
+            this.$emit('stageChanged', id);
+        }
     },
-    emits: ["updateItem", "openRequestForm", "stageChanged"],
+    emits: ['updateItem', 'openRequestForm', 'stageChanged']
 };
 </script>
 
-<style>
-</style>
+<style></style>

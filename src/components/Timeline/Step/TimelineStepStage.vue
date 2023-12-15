@@ -1,26 +1,24 @@
 <template>
     <div
+        @click="stageClicked"
         class="step-stage"
         :class="{
-      isDone: isDone,
-      isCurrent: isCurrent && !isDone,
-      readyToClick: !stageIsActive,
-      isClicked: isClicked,
-    }"
-        @click="stageClicked"
+            isDone: isDone,
+            isCurrent: isCurrent && !isDone,
+            readyToClick: !stageIsActive,
+            isClicked: isClicked
+        }"
     >
         <div class="wrapper">
             <div class="row no-gutters">
                 <div class="col-11">
-                    <p class="step-stage__title">
-                        <i class="fas fa-caret-right"></i>{{ title }}
-                    </p>
+                    <p class="step-stage__title"><i class="fas fa-caret-right"></i>{{ title }}</p>
                 </div>
                 <div class="col-1 text-right align-self-center">
-                    <i class="fas fa-check-circle success_check" v-if="isDone"></i>
+                    <i v-if="isDone" class="fas fa-check-circle success_check"></i>
                 </div>
             </div>
-            <div class="slot" v-if="stageIsActive" @click.stop>
+            <div v-if="stageIsActive" @click.stop class="slot">
                 <slot></slot>
             </div>
         </div>
@@ -29,32 +27,33 @@
 
 <script>
 export default {
-    name: "TimelineStepStage",
+    name: 'TimelineStepStage',
+    emits: ['stageClicked'],
     props: {
         title: {
             type: String,
-            required: true,
+            required: true
         },
         isDone: {
             type: Boolean,
-            default: false,
+            default: false
         },
         isCurrent: {
             type: Boolean,
-            default: false,
+            default: false
         },
         closeSlotWhenDone: {
             type: Boolean,
-            default: true,
+            default: true
         },
         isClicked: {
             type: Boolean,
-            default: false,
+            default: false
         },
         id: {
             type: Number,
-            default: null,
-        },
+            default: null
+        }
     },
     computed: {
         stageIsActive() {
@@ -64,18 +63,16 @@ export default {
                 (this.isClicked && this.isDone) ||
                 (this.isClicked && this.isCurrent)
             );
-        },
+        }
     },
     methods: {
         stageClicked() {
             if (this.id) {
-                this.$emit("stageClicked", this.id);
+                this.$emit('stageClicked', this.id);
             }
-        },
-    },
-    emits: ["stageClicked"],
+        }
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

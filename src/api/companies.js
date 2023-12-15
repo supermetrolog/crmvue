@@ -1,16 +1,16 @@
-import axios from "axios";
-import ErrorHandle from "./errors";
-import SuccessHandler from "./success";
+import axios from 'axios';
+import ErrorHandle from './errors';
+import SuccessHandler from './success';
 
 function getFormDataWithFiles(formdata1, forUpdate = false) {
-    let formdata = {...formdata1};
+    let formdata = { ...formdata1 };
     let FD = new FormData();
     for (let i = 0; i < formdata.fileList.length; i++) {
-        FD.append("files[]", formdata.fileList[i]);
+        FD.append('files[]', formdata.fileList[i]);
     }
     delete formdata.fileList;
     let files = [];
-    formdata.files.map((item) => {
+    formdata.files.map(item => {
         let file = {};
         file.name = item.name;
         file.size = item.size;
@@ -19,60 +19,60 @@ function getFormDataWithFiles(formdata1, forUpdate = false) {
             file.company_id = item.company_id;
             file.filename = item.filename;
         } else {
-            file.src = "";
+            file.src = '';
         }
         files.push(file);
     });
     formdata.files = files;
 
-    FD.append("data", JSON.stringify(formdata));
+    FD.append('data', JSON.stringify(formdata));
     return FD;
 }
 
 export default {
     async getCompanies() {
         const url =
-            "companies?sort=-categories&expand=requests,contacts.emails,contacts.phones,contacts.contactComments,broker,companyGroup,consultant,consultant.userProfile,productRanges,categories,files";
+            'companies?sort=-categories&expand=requests,contacts.emails,contacts.phones,contacts.contactComments,broker,companyGroup,consultant,consultant.userProfile,productRanges,categories,files';
         let data = false;
         await axios
             .get(url)
-            .then((Response) => {
+            .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
     },
     async getCompany(id) {
         const url =
-            "companies/" +
+            'companies/' +
             id +
-            "?expand=contacts.emails,contacts.phones,contacts.websites,contacts.contactComments,broker,companyGroup,consultant,consultant.userProfile,categories,productRanges,files,dealsRequestEmpty.consultant.userProfile,dealsRequestEmpty.offer.generalOffersMix,dealsRequestEmpty.competitor";
+            '?expand=contacts.emails,contacts.phones,contacts.websites,contacts.contactComments,broker,companyGroup,consultant,consultant.userProfile,categories,productRanges,files,dealsRequestEmpty.consultant.userProfile,dealsRequestEmpty.offer.generalOffersMix,dealsRequestEmpty.competitor';
         let data = false;
         await axios
             .get(url)
-            .then((Response) => {
+            .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
     },
     async createCompany(formdata) {
-        const url = "companies";
+        const url = 'companies';
         let data = false;
         formdata = getFormDataWithFiles(formdata);
 
         let config = {
             headers: {
-                "Accept": "application/json",
-                "Content-Type": "multipart/form-data",
-            },
+                Accept: 'application/json',
+                'Content-Type': 'multipart/form-data'
+            }
         };
         await axios
             .post(url, formdata, config)
-            .then((Response) => {
+            .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
     },
     async updateCompany(formdata) {
@@ -85,49 +85,49 @@ export default {
         // formdata = FD;
         let config = {
             headers: {
-                "Accept": "application/json",
-                "Content-Type": "multipart/form-data",
-            },
+                Accept: 'application/json',
+                'Content-Type': 'multipart/form-data'
+            }
         };
         await axios
             .patch(url, formdata, config)
-            .then((Response) => {
+            .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
     },
 
     async getCompanyProductRangeList() {
-        const url = "companies/product-range-list";
+        const url = 'companies/product-range-list';
         let data = false;
         await axios
             .get(url)
-            .then((Response) => {
+            .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
     },
     async getCompanyInTheBankList() {
-        const url = "companies/in-the-bank-list";
+        const url = 'companies/in-the-bank-list';
         let data = false;
         await axios
             .get(url)
-            .then((Response) => {
+            .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
     },
     async searchCompanies(query) {
         query = new URLSearchParams(query).toString();
         let url =
-            "companies?" +
+            'companies?' +
             query +
-            "&expand=objects.offerMix.generalOfferMix,objects.objectFloors,requests.timelines.timelineSteps,contacts.emails,contacts.phones,contacts.contactComments,broker,companyGroup,consultant,consultant.userProfile,productRanges,categories,files,mainContact.phones,mainContact.emails";
+            '&expand=objects.offerMix.generalOfferMix,objects.objectFloors,requests.timelines.timelineSteps,contacts.emails,contacts.phones,contacts.contactComments,broker,companyGroup,consultant,consultant.userProfile,productRanges,categories,files,mainContact.phones,mainContact.emails';
         let data = false;
-        await axios.get(url).then((Response) => {
+        await axios.get(url).then(Response => {
             data = {};
             data.data = SuccessHandler.getData(Response);
             data.pagination = SuccessHandler.getPaginationData(Response);
@@ -135,25 +135,25 @@ export default {
         return data;
     },
     async getCompanyGroupList() {
-        const url = "companygroups";
+        const url = 'companygroups';
         let data = false;
         await axios
             .get(url)
-            .then((Response) => {
+            .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
     },
     async createCompanyGroups(formdata) {
-        const url = "companygroups";
+        const url = 'companygroups';
         let data = false;
         await axios
             .post(url, formdata)
-            .then((Response) => {
+            .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
     },
     async updateCompanyGroups(formdata) {
@@ -161,10 +161,10 @@ export default {
         let data = false;
         await axios
             .patch(url, formdata)
-            .then((Response) => {
+            .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
-    },
+    }
 };

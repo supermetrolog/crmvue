@@ -1,6 +1,6 @@
 <template>
     <div class="DealItem">
-        <ComplexDealFloors :object="object" :floors="deal.floors"/>
+        <ComplexDealFloors :object="object" :floors="deal.floors" />
         <ComplexDealInfo
             v-if="deal.additionalDetails"
             :company="deal.builder"
@@ -13,23 +13,21 @@
 </template>
 
 <script>
-
-
-import ComplexDealFloors from "@/components/Complex/Deal/ComplexDealFloors.vue";
-import ComplexDealInfo from "@/components/Complex/Deal/ComplexDealInfo.vue";
+import ComplexDealFloors from '@/components/Complex/Deal/ComplexDealFloors.vue';
+import ComplexDealInfo from '@/components/Complex/Deal/ComplexDealInfo.vue';
 
 export default {
-    name: "ComplexDealItem",
-    components: {ComplexDealInfo, ComplexDealFloors},
+    name: 'ComplexDealItem',
+    components: { ComplexDealInfo, ComplexDealFloors },
     props: {
         deal: {
             type: Object,
-            required: true,
+            required: true
         },
         object: {
             type: Object,
-            required: true,
+            required: true
         }
-    },
+    }
 };
 </script>

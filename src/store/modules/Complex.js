@@ -1,4 +1,4 @@
-import api from "@/api/api";
+import api from '@/api/api';
 
 const Offers = {
     state: {},
@@ -8,7 +8,7 @@ const Offers = {
             return (await api.complex.getComplexWithObjects(id)).data;
         }
     },
-    getters: {},
+    getters: {}
 };
 
 export default Offers;

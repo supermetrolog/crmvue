@@ -1,15 +1,12 @@
 <template>
-    <button class="DropdownSwitcher" @click="switchDropdown">
-        <i class="fa fa-chevron-down" v-if="!modelValue"></i>
-        <i class="fa fa-chevron-up" v-if="modelValue"></i>
+    <button @click="switchDropdown" class="DropdownSwitcher">
+        <i v-if="!modelValue" class="fa fa-chevron-down"></i>
+        <i v-if="modelValue" class="fa fa-chevron-up"></i>
         <template v-if="title">
             <span>{{ title }}</span>
-            <span v-if="mainNumber || sideNumber"
-            >({{
-                    mainNumber
-                }}<span class="side_number" v-if="sideNumber">{{
-                        `/${sideNumber}`
-                    }}</span
+            <span
+v-if="mainNumber || sideNumber"
+                >({{ mainNumber }}<span v-if="sideNumber" class="side_number">{{ `/${sideNumber}` }}</span
                 >)</span
             >
         </template>
@@ -18,27 +15,27 @@
 
 <script>
 export default {
-    name: "Dropdown",
+    name: 'Dropdown',
+    emits: ['update:modelValue'],
     props: {
         title: {
             type: String,
-            default: null,
+            default: null
         },
         mainNumber: {
             type: Number,
-            default: null,
+            default: null
         },
         sideNumber: {
             type: Number,
-            default: null,
+            default: null
         },
-        modelValue: Boolean,
+        modelValue: Boolean
     },
-    emits: ["update:modelValue"],
     methods: {
         switchDropdown() {
-            this.$emit("update:modelValue", !this.modelValue);
-        },
-    },
+            this.$emit('update:modelValue', !this.modelValue);
+        }
+    }
 };
 </script>

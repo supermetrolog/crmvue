@@ -2,10 +2,10 @@
     <div class="CompanyBoxLayout" :class="this.class">
         <div class="inner">
             <div class="CompanyBoxLayout-header">
-                <slot name="header"/>
+                <slot name="header" />
             </div>
             <div class="CompanyBoxLayout-content">
-                <slot name="content"/>
+                <slot name="content" />
             </div>
         </div>
     </div>
@@ -13,11 +13,11 @@
 
 <script>
 export default {
-    name: "CompanyBoxLayout",
+    name: 'CompanyBoxLayout',
     props: {
         class: {
-            type: String,
-        },
-    },
+            type: String
+        }
+    }
 };
 </script>

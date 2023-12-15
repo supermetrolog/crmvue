@@ -8,16 +8,8 @@
                 :class="{ inactive: company.active == 0 }"
             >
                 <div class="row no-gutters card">
-                    <router-link
-                        custom
-                        v-slot="{ navigate }"
-                        :to="'/companies/' + company.id"
-                        target="_blank"
-                    >
-                        <div
-                            class="col-lg-4 col-12 d-flex card-left pr-4 pl-4 pt-3 pb-3"
-                            @click="navigate"
-                        >
+                    <router-link v-slot="{ navigate }" custom :to="'/companies/' + company.id" target="_blank">
+                        <div @click="navigate" class="col-lg-4 col-12 d-flex card-left pr-4 pl-4 pt-3 pb-3">
                             <div class="row">
                                 <div class="col-12 id">
                                     <p>ID:</p>
@@ -46,61 +38,52 @@
                                         </p>
                                     </div>
                                     <div class="col-lg-5 col-7 text-right pt-1">
-                                        <Progress :percent="company.progress_percent"/>
+                                        <Progress :percent="company.progress_percent" />
                                     </div>
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="row no-gutters contact-list mt-1 mb-1">
-                                    <p
-                                        class="text-center not-contacts"
-                                        v-if="!company.contacts[0]"
-                                    >
-                                        нет контактов
-                                    </p>
+                                    <p v-if="!company.contacts[0]" class="text-center not-contacts">нет контактов</p>
                                     <div
+                                        v-for="contact of company.contacts"
+                                        :key="contact.phone"
                                         class="col-12 contact-list-item"
                                         :class="{ inactive: contact.status == 0 }"
                                         :title="
-                      contact.first_name +
-                      ' ' +
-                      contact.middle_name +
-                      ' ' +
-                      contact.last_name +
-                      '\n' +
-                      contact.comment
-                    "
-                                        v-for="contact of company.contacts"
-                                        :key="contact.phone"
+                                            contact.first_name +
+                                            ' ' +
+                                            contact.middle_name +
+                                            ' ' +
+                                            contact.last_name +
+                                            '\n' +
+                                            contact.comment
+                                        "
                                     >
                                         <div class="row no-gutters">
                                             <div class="col-12">
                                                 <div class="row">
                                                     <div class="col-12 text-center name">
                                                         <p>
-                                                            {{
-                                                                contact.first_name + " " + contact.middle_name
-                                                            }}
+                                                            {{ contact.first_name + ' ' + contact.middle_name }}
                                                         </p>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-6 contact-data text-center text-lg-left">
                                                 <a
-                                                    :href="'mailto:' + email.email"
                                                     v-for="email of contact.emails"
                                                     :key="email.email"
+                                                    :href="'mailto:' + email.email"
                                                 >
                                                     {{ email.email }}
                                                 </a>
                                             </div>
-                                            <div
-                                                class="col-6 contact-data text-center text-lg-right pr-1"
-                                            >
+                                            <div class="col-6 contact-data text-center text-lg-right pr-1">
                                                 <a
-                                                    :href="'tel:' + phone.phone"
                                                     v-for="phone of contact.phones"
                                                     :key="phone.phone"
+                                                    :href="'tel:' + phone.phone"
                                                 >
                                                     {{ phone.phone }}
                                                 </a>
@@ -114,12 +97,8 @@
                                     <div class="col-12 text-lg-left text-right">
                                         <p class="mr-2">ЗАПРОСЫ: {{ company.request_count }}</p>
                                         <p class="mr-2">ПРЕДЛОЖЕНИЯ: {{ company.offer_count }}</p>
-                                        <p class="mr-lg-0 mr-2">
-                                            СДЕЛКИ: {{ company.object_count }}
-                                        </p>
-                                        <p class="mr-lg-0 mr-2 broker">
-                                            брокер: Котлинов Павел Джавович
-                                        </p>
+                                        <p class="mr-lg-0 mr-2">СДЕЛКИ: {{ company.object_count }}</p>
+                                        <p class="mr-lg-0 mr-2 broker">брокер: Котлинов Павел Джавович</p>
                                     </div>
                                 </div>
                             </div>
@@ -132,39 +111,39 @@
 </template>
 
 <script>
-import {CompanyCategories} from "@/const/const.js";
-import Progress from "@/components/common/Progress";
+import { CompanyCategories } from '@/const/const.js';
+import Progress from '@/components/common/Progress';
 
 export default {
-    name: "CompanyGridView",
+    name: 'CompanyGridView',
     components: {
-        Progress,
+        Progress
     },
     props: {
         companies: {
-            type: Array,
-        },
+            type: Array
+        }
     },
     methods: {
         percentClass(percent) {
             if (percent < 30) {
-                return "bg-danger";
+                return 'bg-danger';
             } else if (percent < 60) {
-                return "bg-warning";
+                return 'bg-warning';
             } else if (percent < 90) {
-                return "bg-primary";
+                return 'bg-primary';
             } else if (percent <= 100) {
-                return "bg-success";
+                return 'bg-success';
             }
         },
         category(categoryValue) {
-            return CompanyCategories.get("param")[categoryValue][1];
+            return CompanyCategories.get('param')[categoryValue][1];
         },
-        companyName({nameRu, nameEng}) {
+        companyName({ nameRu, nameEng }) {
             if (nameRu && nameRu) return `${nameRu} - ${nameEng}`;
             return nameRu ? nameRu : nameEng;
-        },
-    },
+        }
+    }
 };
 </script>
 

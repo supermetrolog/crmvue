@@ -1,24 +1,24 @@
 <template>
     <div class="pagination-classic">
         <div class="pagination-classic__pages">
-            <PaginationPage navigate @click="next(1)" :disabled="isFirstPage">
+            <PaginationPage @click="next(1)" navigate :disabled="isFirstPage">
                 <i class="fa-solid fa-angles-left"></i>
             </PaginationPage>
-            <PaginationPage navigate @click="next(currentPage - 1)" :disabled="isFirstPage">
+            <PaginationPage @click="next(currentPage - 1)" navigate :disabled="isFirstPage">
                 <i class="fa-solid fa-angle-left"></i>
             </PaginationPage>
             <PaginationPage
                 v-for="number of pageList"
                 :key="number"
-                :active="number === currentPage"
                 @click="next(number)"
+                :active="number === currentPage"
             >
                 {{ number }}
             </PaginationPage>
-            <PaginationPage navigate @click="next(currentPage + 1)" :disabled="isLastPage">
+            <PaginationPage @click="next(currentPage + 1)" navigate :disabled="isLastPage">
                 <i class="fa-solid fa-angle-right"></i>
             </PaginationPage>
-            <PaginationPage navigate @click="next(pagination.pageCount)" :disabled="isLastPage">
+            <PaginationPage @click="next(pagination.pageCount)" navigate :disabled="isLastPage">
                 <i class="fa-solid fa-angles-right"></i>
             </PaginationPage>
         </div>
@@ -32,18 +32,13 @@
 </template>
 
 <script>
-import PaginationPage from "@/components/common/Pagination/PaginationPage.vue";
-import PaginationDescription from "@/components/common/Pagination/PaginationDescription.vue";
+import PaginationPage from '@/components/common/Pagination/PaginationPage.vue';
+import PaginationDescription from '@/components/common/Pagination/PaginationDescription.vue';
 
 export default {
-    name: "PaginationClassic",
-    components: {PaginationDescription, PaginationPage},
-    data() {
-        return {
-            currentPage: 1,
-            disabled: false,
-        };
-    },
+    name: 'PaginationClassic',
+    components: { PaginationDescription, PaginationPage },
+    emits: ['next'],
     props: {
         pagination: {
             totalCount: Number,
@@ -53,12 +48,18 @@ export default {
         },
         offset: {
             type: Number,
-            default: 2,
+            default: 2
         },
         withDescription: {
             type: Boolean,
-            default: true,
-        },
+            default: true
+        }
+    },
+    data() {
+        return {
+            currentPage: 1,
+            disabled: false
+        };
     },
     computed: {
         isLastPage() {
@@ -73,7 +74,7 @@ export default {
             if (to > this.pagination.totalCount) {
                 to = this.pagination.totalCount;
             }
-            return from + " - " + to;
+            return from + ' - ' + to;
         },
         pageList() {
             let array = [];
@@ -89,9 +90,7 @@ export default {
                 leftBorder = +this.currentPage - offset;
                 rightBorder = +this.currentPage + offset;
                 if (leftBorder < min) {
-                    rightBorder =
-                        rightBorder +
-                        Math.abs(leftBorder < 0 ? Math.abs(leftBorder) + min : min);
+                    rightBorder = rightBorder + Math.abs(leftBorder < 0 ? Math.abs(leftBorder) + min : min);
                 }
                 if (rightBorder > max) {
                     leftBorder = leftBorder + (max - rightBorder);
@@ -101,31 +100,29 @@ export default {
                 }
             }
             return array;
-        },
-    },
-    methods: {
-        next(number) {
-            if (this.disabled) return;
-            this.currentPage = number;
-            this.disabled = true;
-            this.$emit("next", number);
-            setTimeout(() => (this.disabled = false), 300);
-        },
-    },
-    mounted() {
-        this.currentPage = +this.pagination.currentPage;
+        }
     },
     watch: {
         pagination: {
             deep: true,
             handler() {
                 this.currentPage = +this.pagination.currentPage;
-            },
-        },
+            }
+        }
     },
-    emits: ["next"],
+    methods: {
+        next(number) {
+            if (this.disabled) return;
+            this.currentPage = number;
+            this.disabled = true;
+            this.$emit('next', number);
+            setTimeout(() => (this.disabled = false), 300);
+        }
+    },
+    mounted() {
+        this.currentPage = +this.pagination.currentPage;
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

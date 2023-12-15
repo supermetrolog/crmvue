@@ -1,16 +1,14 @@
 <template>
     <div class="create-floor-block-form">
-        <Modal
-            :title="false ? 'Редактирование блока' : 'Создание блока'"
-            @close="$emit('close')"
-            classes="autosize"
-        >
-            <Loader class="center" v-if="loader"/>
+        <Modal @close="$emit('close')" :title="false ? 'Редактирование блока' : 'Создание блока'" classes="autosize">
+            <Loader v-if="loader" class="center" />
             <Form @submit="onSubmit" class="center autosize">
-                <Tabs :options="{ useUrlFragment: false, defaultTabHash: 'main' }"
-                      nav-class="create-floor-block-form__tab-list"
-                      nav-item-link-class="create-floor-block-form__tab-link">
-                    <Tab name="Характеpистики" id="main">
+                <Tabs
+                    :options="{ useUrlFragment: false, defaultTabHash: 'main' }"
+                    nav-class="create-floor-block-form__tab-list"
+                    nav-item-link-class="create-floor-block-form__tab-link"
+                >
+                    <Tab id="main" name="Характеpистики">
                         <p class="create-floor-block-form__label">Основное</p>
                         <FormGroup class="mb-1">
                             <Input
@@ -126,7 +124,7 @@
                                 title="Типы пола"
                                 label="Типы пола"
                                 mode="multiple"
-                                :closeOnSelect=false
+                                :closeOnSelect="false"
                                 class="col-4 pr-1"
                                 :options="floorTypeOptions"
                             />
@@ -136,7 +134,7 @@
                                 required
                                 title="Сетки колонн"
                                 label="Сетки колонн"
-                                :closeOnSelect=false
+                                :closeOnSelect="false"
                                 class="col-4 px-1"
                                 mode="multiple"
                                 :options="gridColumnTypeOptions"
@@ -197,14 +195,17 @@
                                 label="Стеллажи"
                                 class="col-2 pr-1"
                                 required
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                             <MultiSelect
                                 v-model="form.rack_types"
                                 :v="v$.form.rack_types"
                                 title="Типы стеллажей"
                                 label="Типы стеллажей"
-                                :closeOnSelect=false
+                                :closeOnSelect="false"
                                 class="col-4 px-1"
                                 mode="multiple"
                                 :options="rackTypeOptions"
@@ -223,7 +224,10 @@
                                 v-model="form.charging_room"
                                 label="Зарядная комната"
                                 class="col-2 pr-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                             <Input
                                 v-if="form"
@@ -259,7 +263,7 @@
                                 :v="v$.form.lighting"
                                 title="Освещение"
                                 label="Освещение"
-                                :closeOnSelect=false
+                                :closeOnSelect="false"
                                 class="col-4 px-1"
                                 mode="multiple"
                                 :options="lightingTypeOptions"
@@ -279,27 +283,39 @@
                                 label="Отапливаемый"
                                 class="col-3 pr-1"
                                 required
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                             <Radio
                                 v-model="form.water"
                                 label="Водоснабжение"
                                 class="col-3 px-1"
                                 required
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                             <Radio
                                 v-model="form.sewage"
                                 label="Канализация"
                                 class="col-3 px-1"
                                 required
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                             <Radio
                                 v-model="form.climate_control"
                                 label="Климат контроль"
                                 class="col-3 px-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                         </FormGroup>
                         <FormGroup class="mb-1">
@@ -307,25 +323,37 @@
                                 v-model="form.gas"
                                 label="Газ для пр-ва"
                                 class="col-3 pr-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                             <Radio
                                 v-model="form.steam"
                                 label="Пар для пр-ва"
                                 class="col-3 px-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                             <Radio
                                 v-model="form.phone_line"
                                 label="Телефония"
                                 class="col-3 px-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                             <Radio
                                 v-model="form.internet"
                                 label="Интернет"
                                 class="col-3 px-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                         </FormGroup>
                         <p class="create-floor-block-form__label">Безопасность</p>
@@ -343,7 +371,10 @@
                                 v-model="form.smoke_exhaust"
                                 label="Дымоудаление"
                                 class="col-3 px-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                         </FormGroup>
                         <FormGroup class="mb-1">
@@ -351,25 +382,37 @@
                                 v-model="form.video_control"
                                 label="Видеонаблюдение"
                                 class="col-3 pr-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                             <Radio
                                 v-model="form.access_control"
                                 label="Контроль доступа"
                                 class="col-3 px-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                             <Radio
                                 v-model="form.security_alert"
                                 label="Охранная сигнализация"
                                 class="col-3 px-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                             <Radio
                                 v-model="form.fire_alert"
                                 label="Пожарная сигнализация"
                                 class="col-3 px-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                         </FormGroup>
                         <p class="create-floor-block-form__label">Подъемные устройства</p>
@@ -378,7 +421,10 @@
                                 v-model="form.has_elevators"
                                 label="Лифт/подъемники"
                                 class="col-3 pr-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                         </FormGroup>
                         <FormGroup class="mb-1">
@@ -386,23 +432,25 @@
                                 v-model="form.has_cranes"
                                 label="Крановые устройства"
                                 class="col-3 pr-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                         </FormGroup>
                         <FormGroup class="mb-1">
                             <Radio
-                                label="Подкрановые пути"
                                 v-model="form.cranes_runways"
+                                label="Подкрановые пути"
                                 class="col-3 pr-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                         </FormGroup>
                         <FormGroup class="mb-1">
-							<Textarea
-                                v-model="form.description"
-                                label="Описание"
-                                class="col-12 px-0"
-                            />
+                            <Textarea v-model="form.description" label="Описание" class="col-12 px-0" />
                         </FormGroup>
                     </Tab>
                     <Tab name="Фотографии">
@@ -431,9 +479,7 @@
                     </Tab>
                 </Tabs>
                 <FormGroup class="mt-1 mb-4">
-                    <Submit class="col-4 mx-auto">
-                        Сохранить
-                    </Submit>
+                    <Submit class="col-4 mx-auto"> Сохранить </Submit>
                 </FormGroup>
             </Form>
         </Modal>
@@ -441,7 +487,7 @@
 </template>
 
 <script>
-import {ComplexFormMixin} from "@/components/Forms/Complex/mixin";
+import { ComplexFormMixin } from '@/components/Forms/Complex/mixin';
 import {
     entranceBlockTypes,
     firefightingTypes,
@@ -451,20 +497,20 @@ import {
     lightingTypes,
     objectPurposes,
     rackTypes,
-    ventilationTypes,
-} from "@/const/constTypes";
-import {helpers, minValue, required} from "@vuelidate/validators";
-import Loader from "@/components/common/Loader.vue";
-import Modal from "@/components/common/Modal.vue";
+    ventilationTypes
+} from '@/const/constTypes';
+import { helpers, minValue, required } from '@vuelidate/validators';
+import Loader from '@/components/common/Loader.vue';
+import Modal from '@/components/common/Modal.vue';
 
 export default {
-    name: "FormComplexFloorBlock",
-    components: {Modal, Loader},
+    name: 'FormComplexFloorBlock',
+    components: { Modal, Loader },
     mixins: [ComplexFormMixin],
     props: {
         object: {
             type: Object,
-            required: true,
+            required: true
         }
     },
     data() {
@@ -520,194 +566,97 @@ export default {
                 photos: [],
                 filesList: [],
                 files: []
-            },
-        }
+            }
+        };
     },
     validations() {
         return {
             form: {
                 area_floor_min: {
-                    required: helpers.withMessage(
-                        "заполните поле",
-                        required
-                    ),
-                    minValue: helpers.withMessage(
-                        "значение должно быть больше 0",
-                        minValue(1)
-                    )
+                    required: helpers.withMessage('заполните поле', required),
+                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
                 },
                 area_floor_max: {
-                    required: helpers.withMessage(
-                        "заполните поле",
-                        required
-                    ),
-                    minValue: helpers.withMessage(
-                        "значение должно быть больше 0",
-                        minValue(1)
-                    )
+                    required: helpers.withMessage('заполните поле', required),
+                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
                 },
                 area_office_min: {
-                    minValue: helpers.withMessage(
-                        "значение должно быть больше 0",
-                        minValue(1)
-                    )
+                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
                 },
                 area_office_max: {
-                    minValue: helpers.withMessage(
-                        "значение должно быть больше 0",
-                        minValue(1)
-                    )
+                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
                 },
                 area_tech_min: {
-                    minValue: helpers.withMessage(
-                        "значение должно быть больше 0",
-                        minValue(1)
-                    )
+                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
                 },
                 area_tech_max: {
-                    minValue: helpers.withMessage(
-                        "значение должно быть больше 0",
-                        minValue(1)
-                    )
+                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
                 },
                 ceiling_height_min: {
-                    required: helpers.withMessage(
-                        "заполните поле",
-                        required
-                    ),
-                    minValue: helpers.withMessage(
-                        "значение должно быть больше 0",
-                        minValue(1)
-                    )
+                    required: helpers.withMessage('заполните поле', required),
+                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
                 },
                 ceiling_height_max: {
-                    required: helpers.withMessage(
-                        "заполните поле",
-                        required
-                    ),
-                    minValue: helpers.withMessage(
-                        "значение должно быть больше 0",
-                        minValue(1)
-                    )
+                    required: helpers.withMessage('заполните поле', required),
+                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
                 },
                 load_floor_min: {
-                    required: helpers.withMessage(
-                        "заполните поле",
-                        required
-                    ),
-                    minValue: helpers.withMessage(
-                        "значение должно быть больше 0",
-                        minValue(1)
-                    )
+                    required: helpers.withMessage('заполните поле', required),
+                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
                 },
                 load_floor_max: {
-                    required: helpers.withMessage(
-                        "заполните поле",
-                        required
-                    ),
-                    minValue: helpers.withMessage(
-                        "значение должно быть больше 0",
-                        minValue(1)
-                    )
+                    required: helpers.withMessage('заполните поле', required),
+                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
                 },
                 floor_types: {
-                    required: helpers.withMessage(
-                        "выберите один или несколько вариантов",
-                        required
-                    ),
+                    required: helpers.withMessage('выберите один или несколько вариантов', required)
                 },
                 column_grids: {
-                    required: helpers.withMessage(
-                        "выберите один или несколько вариантов",
-                        required
-                    ),
+                    required: helpers.withMessage('выберите один или несколько вариантов', required)
                 },
                 temperature_min: {
-                    minValue: helpers.withMessage(
-                        "значение должно быть больше 0",
-                        minValue(1)
-                    )
+                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
                 },
                 temperature_max: {
-                    minValue: helpers.withMessage(
-                        "значение должно быть больше 0",
-                        minValue(1)
-                    )
+                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
                 },
                 racks: {
-                    required: helpers.withMessage(
-                        "выберите один из вариантов",
-                        required
-                    ),
+                    required: helpers.withMessage('выберите один из вариантов', required)
                 },
                 rack_levels: {
-                    minValue: helpers.withMessage(
-                        "значение должно быть больше 0",
-                        minValue(1)
-                    )
+                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
                 },
                 pallet_place_min: {
-                    minValue: helpers.withMessage(
-                        "значение должно быть больше 0",
-                        minValue(1)
-                    )
+                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
                 },
                 pallet_place_max: {
-                    minValue: helpers.withMessage(
-                        "значение должно быть больше 0",
-                        minValue(1)
-                    )
+                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
                 },
                 power: {
-                    minValue: helpers.withMessage(
-                        "значение должно быть больше 0",
-                        minValue(1)
-                    )
+                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
                 },
                 gatesType: {
-                    required: helpers.withMessage(
-                        "выберите один или несколько вариантов",
-                        required
-                    ),
+                    required: helpers.withMessage('выберите один или несколько вариантов', required)
                 },
                 gatesCount: {
-                    required: helpers.withMessage(
-                        "заполните поле",
-                        required
-                    ),
-                    minValue: helpers.withMessage(
-                        "значение должно быть больше 0",
-                        minValue(1)
-                    )
+                    required: helpers.withMessage('заполните поле', required),
+                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
                 },
                 heated: {
-                    required: helpers.withMessage(
-                        "выберите один из вариантов",
-                        required
-                    ),
+                    required: helpers.withMessage('выберите один из вариантов', required)
                 },
                 water: {
-                    required: helpers.withMessage(
-                        "выберите один из вариантов",
-                        required
-                    ),
+                    required: helpers.withMessage('выберите один из вариантов', required)
                 },
                 sewage: {
-                    required: helpers.withMessage(
-                        "выберите один из вариантов",
-                        required
-                    ),
+                    required: helpers.withMessage('выберите один из вариантов', required)
                 },
                 firefighting_type: {
-                    required: helpers.withMessage(
-                        "выберите один из вариантов",
-                        required
-                    ),
-                },
+                    required: helpers.withMessage('выберите один из вариантов', required)
+                }
             }
-        }
+        };
     },
-    methods: {},
     computed: {
         blockPossiblePurposes() {
             const result = [];
@@ -716,13 +665,13 @@ export default {
                     result.push([purpose, objectPurposes[purpose]]);
                 }
             }
-            return result
+            return result;
         },
         floorTypeOptions() {
-            return Object.values(floorTypes)
+            return Object.values(floorTypes);
         },
         gridColumnTypeOptions() {
-            return Object.values(gridColumnTypes)
+            return Object.values(gridColumnTypes);
         },
         entranceBlockTypeOptions() {
             return Object.values(entranceBlockTypes);
@@ -742,6 +691,7 @@ export default {
         firefightingTypeOptions() {
             return Object.values(firefightingTypes);
         }
-    }
-}
+    },
+    methods: {}
+};
 </script>

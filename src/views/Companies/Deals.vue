@@ -13,11 +13,7 @@
                         :viewMode="viewMode"
                         col="col-2"
                     />
-                    <Pagination
-                        :pagination="pagination"
-                        @loadMore="loadMore"
-                        class="text-center"
-                    />
+                    <Pagination @loadMore="loadMore" :pagination="pagination" class="text-center" />
                 </div>
             </div>
         </div>
@@ -25,17 +21,15 @@
 </template>
 
 <script>
-import {MixinAllObject} from "@/components/Company/Object/mixins";
+import { MixinAllObject } from '@/components/Company/Object/mixins';
 
 export default {
+    name: 'CompaniesDeals',
     mixins: [MixinAllObject],
-    name: "CompaniesDeals",
     methods: {
-        async getPreventStepObjects() {
-        },
-    },
+        async getPreventStepObjects() {}
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

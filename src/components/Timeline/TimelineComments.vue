@@ -17,19 +17,17 @@
 </template>
 
 <script>
-
-
-import TimelineCommentsItem from "@/components/Timeline/TimelineCommentsItem.vue";
+import TimelineCommentsItem from '@/components/Timeline/TimelineCommentsItem.vue';
 
 export default {
-    name: "TimelineComments",
+    name: 'TimelineComments',
     components: {
         TimelineCommentsItem
     },
     props: {
         data: {
-            type: Array,
-        },
+            type: Array
+        }
     },
 
     methods: {
@@ -40,10 +38,9 @@ export default {
             if (Array.isArray(this.data) && this.data[index - 1]) {
                 return this.data[index - 1];
             }
-        },
-    },
+        }
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

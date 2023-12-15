@@ -1,19 +1,13 @@
 <template>
-    <div
-        class="company-objects-list__item CompanyTableObjectItem px-0"
-        :class="col"
-    >
+    <div class="company-objects-list__item CompanyTableObjectItem px-0" :class="col">
         <div class="row no-gutters CompanyTableObjectItem-wrapper">
             <div class="col-2" :title="object.description_auto || 'нет описания'">
                 <div class="image-container">
-                    <a
-                        :href="$apiUrlHelper.generator().objectUrl(object.complex_id)"
-                        target="_blank"
-                    >
-                        <img :src="object.thumb" alt="image"/>
+                    <a :href="$apiUrlHelper.generator().objectUrl(object.complex_id)" target="_blank">
+                        <img :src="object.thumb" alt="image" />
                         <span class="object_id">
-              {{ object.id }}
-            </span>
+                            {{ object.id }}
+                        </span>
                     </a>
                 </div>
             </div>
@@ -27,25 +21,15 @@
                         <p>{{ object.address }}</p>
                     </div>
                 </div>
-                <div class="col-4 scroller" v-if="activeOfferMix.length">
+                <div v-if="activeOfferMix.length" class="col-4 scroller">
                     <CompanyTableObjectOffer
-                        class="text-center"
                         v-for="offer in activeOfferMix"
                         :key="offer.id"
+                        class="text-center"
                         :offer="offer"
                     />
                 </div>
-                <div
-                    class="
-            col-4
-            text-grey text-center
-            none
-            d-flex
-            justify-content-center
-            align-items-center
-          "
-                    v-else
-                >
+                <div v-else class="col-4 text-grey text-center none d-flex justify-content-center align-items-center">
                     нет активных
                 </div>
             </div>
@@ -54,21 +38,21 @@
 </template>
 
 <script>
-import CompanyTableObjectOffer from "./CompanyTableObjectOffer.vue";
+import CompanyTableObjectOffer from './CompanyTableObjectOffer.vue';
 
 export default {
-    name: "CompanyTableObjectItem",
+    name: 'CompanyTableObjectItem',
     components: {
-        CompanyTableObjectOffer,
+        CompanyTableObjectOffer
     },
     props: {
         object: {
-            type: Object,
+            type: Object
         },
         col: {
             type: String,
-            default: "col-6",
-        },
+            default: 'col-6'
+        }
     },
     computed: {
         objectClass() {
@@ -77,26 +61,24 @@ export default {
                 case 0:
                     break;
                 case 1:
-                    result = "A";
+                    result = 'A';
                     break;
                 case 2:
-                    result = "B";
+                    result = 'B';
                     break;
                 case 3:
-                    result = "C";
+                    result = 'C';
                     break;
                 case 4:
-                    result = "D";
+                    result = 'D';
                     break;
             }
             return result;
         },
 
         activeOfferMix() {
-            return this.object.offerMix.filter(
-                (offer) => offer.status == 1 && offer.type_id == 2
-            );
-        },
-    },
+            return this.object.offerMix.filter(offer => offer.status == 1 && offer.type_id == 2);
+        }
+    }
 };
 </script>

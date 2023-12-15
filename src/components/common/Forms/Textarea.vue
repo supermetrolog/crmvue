@@ -5,51 +5,51 @@
                 {{ label }}
             </p>
             <textarea
+                @input="onInput"
                 class="form__textarea"
                 :class="inputClasses"
                 :type="type"
                 :placeholder="placeholder"
-                @input="onInput"
                 :value="modelValue"
             />
         </label>
-        <div class="error-container" v-if="v && v.$error">
+        <div v-if="v && v.$error" class="error-container">
             <p>{{ v.$errors[0].$message }}</p>
         </div>
     </div>
 </template>
 
 <script>
-import Mixin from "./mixins.js";
+import Mixin from './mixins.js';
 
 export default {
+    name: 'Textarea',
     mixins: [Mixin],
-    name: "Textarea",
     props: {
         modelValue: {
             type: String,
-            default: "",
+            default: ''
         },
         required: {
             type: Boolean,
-            default: false,
+            default: false
         },
         v: {
             type: Object,
-            default: null,
+            default: null
         },
         type: {
             type: String,
-            default: "text",
+            default: 'text'
         },
         label: {
             type: String,
-            default: null,
+            default: null
         },
         placeholder: {
             type: String,
-            default: "",
-        },
+            default: ''
+        }
         // maska: {
         //   default: null,
         // },
@@ -57,11 +57,10 @@ export default {
     methods: {
         onInput($event) {
             this.validate();
-            this.$emit("update:modelValue", $event.target.value.trim());
-        },
-    },
+            this.$emit('update:modelValue', $event.target.value.trim());
+        }
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

@@ -1,24 +1,24 @@
 <template>
     <teleport to="body">
-        <Modal class="autosize" @close="$emit('close')" title="Письмо">
+        <Modal @close="$emit('close')" class="autosize" title="Письмо">
             <div class="letter-view-modal-wrapper">
-                <LetterView :letter="letter"/>
+                <LetterView :letter="letter" />
             </div>
         </Modal>
     </teleport>
 </template>
 
 <script>
-import LetterView from "./LetterView.vue";
-import Modal from "@/components/common/Modal.vue";
+import LetterView from './LetterView.vue';
+import Modal from '@/components/common/Modal.vue';
 
 export default {
-    emits: ["close"],
-    name: "LetterViewModal",
+    name: 'LetterViewModal',
     components: {
         Modal,
-        LetterView,
+        LetterView
     },
+    emits: ['close'],
     props: {
         letter: {
             type: Object,
@@ -28,5 +28,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

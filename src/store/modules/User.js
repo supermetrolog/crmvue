@@ -1,10 +1,10 @@
-import api from "@/api/api";
+import api from '@/api/api';
 
 const User = {
     state: {
         consultantList: [],
         thisUser: null,
-        users: [],
+        users: []
     },
     mutations: {
         updateConsultantList(state, data) {
@@ -14,7 +14,7 @@ const User = {
                     value: item.id,
                     label: item.userProfile.short_name,
                     status: item.status
-                })
+                });
             });
             state.consultantList = newConsultantList;
         },
@@ -42,7 +42,7 @@ const User = {
                 context.commit('updateUsers', data);
             }
         },
-        async REFRESH_USER({getters, commit}) {
+        async REFRESH_USER({ getters, commit }) {
             const access_token = localStorage.getItem('access_token');
             if (!getters.THIS_USER || !access_token) {
                 return;
@@ -90,7 +90,7 @@ const User = {
         },
         async DELETE_USER(_, id) {
             return await api.user.deleteUser(id);
-        },
+        }
     },
     getters: {
         CONSULTANT_LIST(state) {
@@ -101,8 +101,8 @@ const User = {
         },
         USERS(state) {
             return state.users;
-        },
-    },
-}
+        }
+    }
+};
 
 export default User;

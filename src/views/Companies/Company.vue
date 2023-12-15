@@ -1,104 +1,86 @@
 <template>
     <div class="company">
-        <p
-            v-if="!loaderCompanyDetailInfo && this.COMPANY.status === 0"
-            class="company-passive"
-        >
+        <p v-if="!loaderCompanyDetailInfo && this.COMPANY.status === 0" class="company-passive">
             <span>Пассив</span>
-            <span v-if="COMPANY.passive_why !== null">
-        ({{ passiveWhyList[COMPANY.passive_why].label }})</span
-            >
-            <span v-if="COMPANY.passive_why_comment !== null">
-        комм: {{ COMPANY.passive_why_comment }}</span
-            >
+            <span v-if="COMPANY.passive_why !== null"> ({{ passiveWhyList[COMPANY.passive_why].label }})</span>
+            <span v-if="COMPANY.passive_why_comment !== null"> комм: {{ COMPANY.passive_why_comment }}</span>
         </p>
-        <Timeline
-            v-if="timelineVisible && COMPANY && COMPANY_REQUESTS[0]"
-            @close="closeTimeline"
-        />
-        <FormCompanyDeal
-            @close="clickCloseDealForm"
-            :formdata="deal"
-            @updated="updatedDeal"
-            v-if="dealFormVisible"
-        />
+        <Timeline v-if="timelineVisible && COMPANY && COMPANY_REQUESTS[0]" @close="closeTimeline" />
+        <FormCompanyDeal v-if="dealFormVisible" @close="clickCloseDealForm" @updated="updatedDeal" :formdata="deal" />
         <FormCompanyRequest
+            v-if="companyRequestFormVisible"
             @closeCompanyForm="clickCloseCompanyRequestForm"
-            :company_id="COMPANY.id"
-            :formdata="request"
             @created="createdRequest"
             @updated="updatedRequest"
-            v-if="companyRequestFormVisible"
+            :company_id="COMPANY.id"
+            :formdata="request"
         />
         <FormCompanyContact
+            v-if="companyContactFormVisible"
             @closeCompanyForm="clickCloseCompanyContactForm"
-            :company_id="COMPANY.id"
-            :formdata="contact"
             @created="createdContact"
             @updated="updatedContact"
-            v-if="companyContactFormVisible"
+            :company_id="COMPANY.id"
+            :formdata="contact"
         />
         <FormCompany
             v-if="companyFormVisible"
-            :formdata="COMPANY"
             @closeCompanyForm="clickCloseCompanyForm"
             @updated="updatedCompany"
+            :formdata="COMPANY"
         />
         <CompanyContactModal
             v-if="contactModalVisible"
-            :contact="contact"
             @closeContactModal="clickCloseContactModal"
             @clickEditContact="openContactFormForUpdate"
+            :contact="contact"
         />
         <div class="company-wrapper">
             <Loader v-if="loaderCompanyDetailInfo"></Loader>
             <CompanyBox
                 v-if="!loaderCompanyDetailInfo"
-                :company="COMPANY"
-                :contacts="this.COMPANY_CONTACTS"
                 @editCompany="clickOpenCompanyForm"
                 @createContact="openContactFormForCreate"
+                :company="COMPANY"
+                :contacts="this.COMPANY_CONTACTS"
             />
-            <CompanyBoxLogs v-if="!loaderCompanyDetailInfo" :company="this.COMPANY"/>
-            <CompanyBoxObjects
-                v-if="!loaderCompanyObjects"
-                :objects="COMPANY_OBJECTS"
-            />
+            <CompanyBoxLogs v-if="!loaderCompanyDetailInfo" :company="this.COMPANY" />
+            <CompanyBoxObjects v-if="!loaderCompanyObjects" :objects="COMPANY_OBJECTS" />
             <CompanyBoxRequests
                 v-if="!loaderCompanyRequests"
-                :requests="companyRequests"
-                :deals="COMPANY.dealsRequestEmpty"
-                :loading="loaderCompanyRequests"
                 @openDealFormForUpdate="openDealFormForUpdate"
                 @dealDeleted="getCompany(false)"
                 @clickCreateRequest="clickOpenCompanyRequestForm"
                 @openCompanyRequestFormForUpdate="openCompanyRequestFormForUpdate"
                 @requestCloned="getCompanyRequests"
                 @requestDisabled="getCompanyRequests"
+                :requests="companyRequests"
+                :deals="COMPANY.dealsRequestEmpty"
+                :loading="loaderCompanyRequests"
             />
-            <CompanyBoxServices v-if="!loaderCompanyDetailInfo"/>
+            <CompanyBoxServices v-if="!loaderCompanyDetailInfo" />
         </div>
     </div>
 </template>
 
 <script>
-import CompanyBoxRequests from "@/components/Company/Box/CompanyBoxRequests.vue";
-import {mapActions, mapGetters} from "vuex";
-import {PassiveWhy} from "@/const/const.js";
-import Loader from "@/components/common/Loader.vue";
-import FormCompany from "@/components/Forms/Company/FormCompany.vue";
-import FormCompanyContact from "@/components/Forms/Company/FormCompanyContact.vue";
-import FormCompanyDeal from "@/components/Forms/Company/FormCompanyDeal.vue";
-import CompanyBoxObjects from "@/components/Company/Box/CompanyBoxObjects.vue";
-import CompanyContactModal from "@/components/Company/Contact/CompanyContactModal.vue";
-import CompanyBoxLogs from "@/components/Company/Box/CompanyBoxLogs.vue";
-import CompanyBox from "@/components/Company/Box/CompanyBox.vue";
-import FormCompanyRequest from "@/components/Forms/Company/FormCompanyRequest.vue";
-import Timeline from "@/components/Timeline/Timeline.vue";
-import CompanyBoxServices from "@/components/Company/Box/CompanyBoxServices.vue";
+import CompanyBoxRequests from '@/components/Company/Box/CompanyBoxRequests.vue';
+import { mapActions, mapGetters } from 'vuex';
+import { PassiveWhy } from '@/const/const.js';
+import Loader from '@/components/common/Loader.vue';
+import FormCompany from '@/components/Forms/Company/FormCompany.vue';
+import FormCompanyContact from '@/components/Forms/Company/FormCompanyContact.vue';
+import FormCompanyDeal from '@/components/Forms/Company/FormCompanyDeal.vue';
+import CompanyBoxObjects from '@/components/Company/Box/CompanyBoxObjects.vue';
+import CompanyContactModal from '@/components/Company/Contact/CompanyContactModal.vue';
+import CompanyBoxLogs from '@/components/Company/Box/CompanyBoxLogs.vue';
+import CompanyBox from '@/components/Company/Box/CompanyBox.vue';
+import FormCompanyRequest from '@/components/Forms/Company/FormCompanyRequest.vue';
+import Timeline from '@/components/Timeline/Timeline.vue';
+import CompanyBoxServices from '@/components/Company/Box/CompanyBoxServices.vue';
 
 export default {
-    name: "Company",
+    name: 'Company',
     components: {
         CompanyBoxServices,
         Timeline,
@@ -112,6 +94,13 @@ export default {
         FormCompanyContact,
         FormCompany,
         Loader
+    },
+    provide() {
+        return {
+            openContact: contact => this.openContact(contact),
+            editContact: contact => this.openContactFormForUpdate(contact),
+            createContactComment: data => this.createContactComment(data)
+        };
     },
     data() {
         return {
@@ -129,43 +118,30 @@ export default {
             contact: null,
             company: null,
             deal: null,
-            passiveWhyList: PassiveWhy.get("param"),
-        };
-    },
-    provide() {
-        return {
-            openContact: (contact) => this.openContact(contact),
-            editContact: (contact) => this.openContactFormForUpdate(contact),
-            createContactComment: (data) => this.createContactComment(data),
+            passiveWhyList: PassiveWhy.get('param')
         };
     },
     computed: {
-        ...mapGetters([
-            "COMPANY",
-            "COMPANY_REQUESTS",
-            "COMPANY_CONTACTS",
-            "COMPANY_OBJECTS",
-            "TIMELINE_LIST",
-        ]),
+        ...mapGetters(['COMPANY', 'COMPANY_REQUESTS', 'COMPANY_CONTACTS', 'COMPANY_OBJECTS', 'TIMELINE_LIST']),
         companyRequests() {
             return this.COMPANY_REQUESTS;
-        },
+        }
     },
     methods: {
         ...mapActions([
-            "FETCH_COMPANY",
-            "FETCH_COMPANY_REQUESTS",
-            "FETCH_COMPANY_CONTACTS",
-            "FETCH_COMPANY_OBJECTS",
-            "ADD_TO_TRANSITION_LIST",
-            "CREATE_CONTACT_COMMENT",
+            'FETCH_COMPANY',
+            'FETCH_COMPANY_REQUESTS',
+            'FETCH_COMPANY_CONTACTS',
+            'FETCH_COMPANY_OBJECTS',
+            'ADD_TO_TRANSITION_LIST',
+            'CREATE_CONTACT_COMMENT'
         ]),
         async getCompany(withLoader = true) {
             this.loaderCompanyDetailInfo = withLoader;
             await this.FETCH_COMPANY(this.$route.params.id);
             this.loaderCompanyDetailInfo = false;
             if (!this.COMPANY) {
-                this.$router.replace("/not-found");
+                this.$router.replace('/not-found');
                 return;
             }
             this.ADD_TO_TRANSITION_LIST(this.COMPANY);
@@ -271,11 +247,11 @@ export default {
         },
         closeTimeline() {
             this.timelineVisible = false;
-            this.$router.push({name: "company"});
+            this.$router.push({ name: 'company' });
         },
         async createContactComment(data) {
             await this.CREATE_CONTACT_COMMENT(data);
-        },
+        }
     },
     async created() {
         this.getCompany();
@@ -287,10 +263,9 @@ export default {
     watch: {
         $route() {
             this.timeline();
-        },
-    },
+        }
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

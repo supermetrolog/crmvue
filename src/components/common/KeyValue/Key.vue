@@ -1,14 +1,13 @@
 <template>
     <dt class="key text-right">
-        <slot/>
+        <slot />
     </dt>
 </template>
 
 <script>
 export default {
-    name: "Key",
+    name: 'Key'
 };
 </script>
 
-<style>
-</style>
+<style></style>

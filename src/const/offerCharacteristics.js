@@ -1,186 +1,186 @@
-import {unitTypes} from "./unitTypes";
+import { unitTypes } from './unitTypes';
 
 export const tradeOfferCharacteristics = {
     warehouseArea: {
         floor: {
-            name: "S - пола",
+            name: 'S - пола',
             required: true,
-            unitType: unitTypes.SQUARE_METERS,
+            unitType: unitTypes.SQUARE_METERS
         },
         office: {
-            name: "S - офисов",
+            name: 'S - офисов',
             required: false,
-            unitType: unitTypes.SQUARE_METERS,
+            unitType: unitTypes.SQUARE_METERS
         },
         technical: {
-            name: "S - техническая",
+            name: 'S - техническая',
             required: false,
-            unitType: unitTypes.SQUARE_METERS,
+            unitType: unitTypes.SQUARE_METERS
         },
         palletPlaces: {
-            name: "E - паллет-мест",
+            name: 'E - паллет-мест',
             required: false,
-            unitType: unitTypes.PALLET_PLACE,
-        },
+            unitType: unitTypes.PALLET_PLACE
+        }
     },
     characteristics: {
         height: {
-            name: "Высота хранения",
+            name: 'Высота хранения',
             required: true,
-            unitType: unitTypes.METERS,
+            unitType: unitTypes.METERS
         },
         floorType: {
-            name: "Тип пола",
-            required: true,
+            name: 'Тип пола',
+            required: true
         },
         floorLoad: {
-            name: "Нагр. на пол",
+            name: 'Нагр. на пол',
             required: true,
-            unitType: unitTypes.TON_PER_SQUARE_METER,
+            unitType: unitTypes.TON_PER_SQUARE_METER
         },
         columnGrid: {
-            name: "Сетка колонн",
+            name: 'Сетка колонн',
             required: false,
-            unitType: unitTypes.METERS,
+            unitType: unitTypes.METERS
         },
         gatesNumber: {
-            name: "Тип, кол-во ворот",
+            name: 'Тип, кол-во ворот',
             required: true,
-            unitType: unitTypes.PIECES,
+            unitType: unitTypes.PIECES
         },
         temperature: {
-            name: "Тем-ра хранения",
+            name: 'Тем-ра хранения',
             required: true,
-            unitType: unitTypes.CELCIUS,
+            unitType: unitTypes.CELCIUS
         },
         entry: {
-            name: "Вход в блок",
-            required: false,
-        },
+            name: 'Вход в блок',
+            required: false
+        }
     },
     facilities: {
         shelving: {
-            name: "Стеллажи",
-            required: false,
+            name: 'Стеллажи',
+            required: false
         },
         shelvingType: {
-            name: "Тип стеллажей",
-            required: false,
+            name: 'Тип стеллажей',
+            required: false
         },
         storageType: {
-            name: "Тип хранения",
-            required: false,
+            name: 'Тип хранения',
+            required: false
         },
         chargingRoom: {
-            name: "Зарядная комната",
-            required: false,
+            name: 'Зарядная комната',
+            required: false
         },
         warehouseEquipment: {
-            name: "Складская техника",
-            required: false,
-        },
+            name: 'Складская техника',
+            required: false
+        }
     },
     communications: {
         electricity: {
-            name: "Эл-во доступное",
+            name: 'Эл-во доступное',
             required: false,
-            unitType: unitTypes.KILOWATT,
+            unitType: unitTypes.KILOWATT
         },
         lighting: {
-            name: "Освещение",
-            required: false,
+            name: 'Освещение',
+            required: false
         },
         heating: {
-            name: "Отопление",
-            required: false,
+            name: 'Отопление',
+            required: false
         },
         heatingType: {
-            name: "Вид отопления",
-            required: false,
+            name: 'Вид отопления',
+            required: false
         },
         waterSupply: {
-            name: "Водоснабжение",
-            required: false,
+            name: 'Водоснабжение',
+            required: false
         },
         sewage: {
-            name: "Канализация",
-            required: false,
+            name: 'Канализация',
+            required: false
         },
         ventilation: {
-            name: "Вентиляция",
-            required: false,
+            name: 'Вентиляция',
+            required: false
         },
         climatControl: {
-            name: "Климат-контроль",
-            required: false,
+            name: 'Климат-контроль',
+            required: false
         },
         gasForProduction: {
-            name: "Газ для производства",
-            required: false,
+            name: 'Газ для производства',
+            required: false
         },
         steamForProduction: {
-            name: "Пар для производства",
-            required: false,
+            name: 'Пар для производства',
+            required: false
         },
         internet: {
-            name: "Интернет",
-            required: false,
+            name: 'Интернет',
+            required: false
         },
         telephony: {
-            name: "Телефония",
-            required: false,
-        },
+            name: 'Телефония',
+            required: false
+        }
     },
     securitySystems: {
         firefighting: {
-            name: "Пожаротушение",
-            required: false,
+            name: 'Пожаротушение',
+            required: false
         },
         smokeКemoval: {
-            name: "Дымоудаление",
-            required: false,
+            name: 'Дымоудаление',
+            required: false
         },
         internalVideoSurveillance: {
-            name: "Видеонаблюдение внутр.",
-            required: false,
+            name: 'Видеонаблюдение внутр.',
+            required: false
         },
         internalAccessControll: {
-            name: "Контроль доступа внутр.",
-            required: false,
+            name: 'Контроль доступа внутр.',
+            required: false
         },
         securityAlarm: {
-            name: "Охранная сигнализация",
-            required: false,
+            name: 'Охранная сигнализация',
+            required: false
         },
         fireAlarm: {
-            name: "Пожарная сигнализация",
-            required: false,
-        },
+            name: 'Пожарная сигнализация',
+            required: false
+        }
     },
     liftingDevices: {
         lifts: {
-            name: "Лифты/Подъемники",
+            name: 'Лифты/Подъемники',
             required: false,
-            unitType: unitTypes.PIECES,
+            unitType: unitTypes.PIECES
         },
         bridgeCranes: {
-            name: "Мостовые краны",
+            name: 'Мостовые краны',
             required: false,
-            unitType: unitTypes.PIECES,
+            unitType: unitTypes.PIECES
         },
         beamCranes: {
-            name: "Кран-балки",
+            name: 'Кран-балки',
             required: false,
-            unitType: unitTypes.PIECES,
+            unitType: unitTypes.PIECES
         },
         telphers: {
-            name: "Тельферы",
+            name: 'Тельферы',
             required: false,
-            unitType: unitTypes.PIECES,
+            unitType: unitTypes.PIECES
         },
         craneRunways: {
-            name: "Подкрановые пути",
-            required: false,
-        },
-    },
+            name: 'Подкрановые пути',
+            required: false
+        }
+    }
 };

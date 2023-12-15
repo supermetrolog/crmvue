@@ -1,11 +1,11 @@
-import api from "@/api/api";
+import api from '@/api/api';
 
 const CompanyLogs = {
     state: {
         companyLogs: [],
         pagination: -1,
         page: 0,
-        totalCount: null,
+        totalCount: null
     },
     mutations: {
         updateCompanyLogs(state, response) {
@@ -17,22 +17,16 @@ const CompanyLogs = {
         addLogComment(state, log) {
             state.companyLogs.push(log);
             state.totalCount++;
-        },
+        }
     },
     actions: {
         async FETCH_COMPANY_LOGS(context, id) {
-            if (
-                context.state.page === context.state.pagination ||
-                context.state.totalCount === 0
-            ) {
-                return "complete";
+            if (context.state.page === context.state.pagination || context.state.totalCount === 0) {
+                return 'complete';
             } else {
-                const response = await api.companyLogs.getCompanyLogs(
-                    id,
-                    context.state.page + 1
-                );
-                context.commit("updateCompanyLogs", response);
-                return "loaded";
+                const response = await api.companyLogs.getCompanyLogs(id, context.state.page + 1);
+                context.commit('updateCompanyLogs', response);
+                return 'loaded';
             }
         },
         async POST_COMPANY_LOG(context, formdata) {
@@ -40,9 +34,9 @@ const CompanyLogs = {
             if (log == false) {
                 return;
             }
-            context.commit("addLogComment", log);
+            context.commit('addLogComment', log);
             return log;
-        },
+        }
     },
 
     getters: {
@@ -51,8 +45,8 @@ const CompanyLogs = {
         },
         COMPANY_LOGS_COUNT(state) {
             return state.totalCount;
-        },
-    },
+        }
+    }
 };
 
 export default CompanyLogs;

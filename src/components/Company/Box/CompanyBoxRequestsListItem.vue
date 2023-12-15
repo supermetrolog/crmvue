@@ -2,39 +2,28 @@
     <div
         class="CompanyBoxRequestsListItem"
         :class="{
-      done: request.status == 2,
-      active: request.status == 1,
-    }"
+            done: request.status == 2,
+            active: request.status == 1
+        }"
     >
         <div class="CompanyBoxRequestsListItem-name header">
             <p>
-                {{ dealType }} {{ request.minArea + " - " + request.maxArea }} м<sup
-            ><small>2</small></sup
-            >
+                {{ dealType }} {{ request.minArea + ' - ' + request.maxArea }} м<sup><small>2</small></sup>
             </p>
         </div>
         <div class="CompanyBoxRequestsListItem-type header">
-            <div class="actions" v-if="!reedOnly">
+            <div v-if="!reedOnly" class="actions">
+                <i v-if="request.status != 2" @click="clickUpdateRequest" class="fas fa-pen" title="редактировать"></i>
+                <i @click="clickCloneRequest" class="fas fa-clone" title="клонировать"></i>
                 <i
                     v-if="request.status != 2"
-                    class="fas fa-pen"
-                    title="редактировать"
-                    @click="clickUpdateRequest"
-                ></i>
-                <i
-                    class="fas fa-clone"
-                    title="клонировать"
-                    @click="clickCloneRequest"
-                ></i>
-                <i
-                    v-if="request.status != 2"
+                    @click="clickDisableRequest"
                     class="fas"
                     :class="{
-            'fa-undo': request.status == 0,
-            'fa-times': request.status != 0,
-          }"
+                        'fa-undo': request.status == 0,
+                        'fa-times': request.status != 0
+                    }"
                     :title="request.status == 0 ? 'восстановить' : 'удалить'"
-                    @click="clickDisableRequest"
                 ></i>
             </div>
             <p>{{ status }}</p>
@@ -42,148 +31,115 @@
         <div class="CompanyBoxRequestsListItem-location">
             <div class="CompanyBoxRequestsListItem-location-region">
                 <strong>
-                    {{
-                        request.regions
-                            .map((elem) => this.$formatter.text().ucFirst(elem.info.title))
-                            .join(", ")
-                    }}
+                    {{ request.regions.map(elem => this.$formatter.text().ucFirst(elem.info.title)).join(', ') }}
                 </strong>
             </div>
-            <div
-                class="CompanyBoxRequestsListItem-location-region-parameters"
-                v-if="request.directions.length"
-            >
+            <div v-if="request.directions.length" class="CompanyBoxRequestsListItem-location-region-parameters">
                 <p><b>Московская область:</b></p>
                 <span>
-          {{
-                        request.directions
-                            .map((elem) => this.directionList[elem.direction][2])
-                            .join(", ")
-                    }}
-        </span>
+                    {{ request.directions.map(elem => this.directionList[elem.direction][2]).join(', ') }}
+                </span>
             </div>
-            <div
-                class="CompanyBoxRequestsListItem-location-region-parameters"
-                v-if="request.districts.length"
-            >
+            <div v-if="request.districts.length" class="CompanyBoxRequestsListItem-location-region-parameters">
                 <p><b>Москва:</b></p>
                 <span>
-          {{
-                        request.districts
-                            .map((elem) => this.districtList[elem.district][1])
-                            .join(", ")
-                    }}
-        </span>
+                    {{ request.districts.map(elem => this.districtList[elem.district][1]).join(', ') }}
+                </span>
             </div>
             <div>
-                <p v-if="!request.distanceFromMKADnotApplicable">
-                    до {{ request.distanceFromMKAD }} км до МКАД
-                </p>
+                <p v-if="!request.distanceFromMKADnotApplicable">до {{ request.distanceFromMKAD }} км до МКАД</p>
             </div>
-            <Dropdown
-                class="more-button"
-                v-model="moreIsOpen"
-                :title="'Подробнее'"
-            />
+            <Dropdown v-model="moreIsOpen" class="more-button" :title="'Подробнее'" />
             <DropdownContainer v-model="moreIsOpen">
-                <hr/>
+                <hr />
                 <div class="row parameters">
                     <div class="col-6">
                         <p>отапливаемый</p>
                         <span class="parameters-inner">
-              {{ request.heated ? "да" : "нет" }}
-            </span>
+                            {{ request.heated ? 'да' : 'нет' }}
+                        </span>
                         <p>краны</p>
                         <span class="parameters-inner">
-              {{ request.haveCranes ? "есть" : "нет" }}
-            </span>
+                            {{ request.haveCranes ? 'есть' : 'нет' }}
+                        </span>
                         <p>только антипыль</p>
                         <span class="parameters-inner">
-              {{ request.antiDustOnly ? "да" : "нет" }}
-            </span>
+                            {{ request.antiDustOnly ? 'да' : 'нет' }}
+                        </span>
                         <p>высота потолков <small class="text-grey">(м)</small></p>
                         <span class="parameters-inner">
-              {{ request.format_ceilingHeight }}
-            </span>
+                            {{ request.format_ceilingHeight }}
+                        </span>
                         <p>площадь пола <small class="text-grey">(м<sup>2</sup>)</small></p>
                         <span class="parameters-inner">
-              {{ request.minArea + " - " + request.maxArea }}
-            </span>
+                            {{ request.minArea + ' - ' + request.maxArea }}
+                        </span>
                         <p>классы</p>
                         <div class="parameters-inner">
-              <span>
-                {{
-                      request.objectClasses
-                          .map((elem) => this.objectClassList[elem.object_class][1])
-                          .join(", ")
-                  }}
-              </span>
+                            <span>
+                                {{
+                                    request.objectClasses
+                                        .map(elem => this.objectClassList[elem.object_class][1])
+                                        .join(', ')
+                                }}
+                            </span>
                             <span v-if="!request.objectClasses.length">нет данных</span>
                         </div>
                         <p>тип объекта</p>
-                        <div class="parameters-inner" v-if="request.objectTypes">
-              <span
-                  v-for="objectType of request.objectTypes"
-                  :key="objectType.id"
-                  :title="getObjectTypeName(objectType.object_type)"
-              >
-                <i :class="getObjectTypeIcon(objectType.object_type)"></i>
-              </span>
+                        <div v-if="request.objectTypes" class="parameters-inner">
+                            <span
+                                v-for="objectType of request.objectTypes"
+                                :key="objectType.id"
+                                :title="getObjectTypeName(objectType.object_type)"
+                            >
+                                <i :class="getObjectTypeIcon(objectType.object_type)"></i>
+                            </span>
                             <span v-if="!request.objectTypes.length">нет данных</span>
                         </div>
                     </div>
                     <div class="col-6">
                         <p>только 1-й этаж</p>
                         <span class="parameters-inner">
-              {{ request.firstFloorOnly ? "да" : "нет" }}
-            </span>
+                            {{ request.firstFloorOnly ? 'да' : 'нет' }}
+                        </span>
                         <p>ж/д ветка</p>
                         <span class="parameters-inner">
-              {{ request.trainLine ? "есть" : "нет" }}
-            </span>
-                        <span v-if="request.trainLine">
-              длина ж/д ветки <small class="text-grey">(м)</small>
-            </span>
-                        <span class="parameters-inner" v-if="request.trainLine">
-              {{ request.trainLineLength ?? "нет данных" }}
-            </span>
+                            {{ request.trainLine ? 'есть' : 'нет' }}
+                        </span>
+                        <span v-if="request.trainLine"> длина ж/д ветки <small class="text-grey">(м)</small> </span>
+                        <span v-if="request.trainLine" class="parameters-inner">
+                            {{ request.trainLineLength ?? 'нет данных' }}
+                        </span>
                         <p>дата переезда</p>
-                        <span class="parameters-inner" v-if="request.movingDate">
-              {{ request.movingDate_format }}
-            </span>
-                        <span
-                            class="parameters-inner"
-                            v-if="request.unknownMovingDate !== null"
-                        >
-              {{ unknownMovingDateOptions[request.unknownMovingDate][1] }}
-            </span>
+                        <span v-if="request.movingDate" class="parameters-inner">
+                            {{ request.movingDate_format }}
+                        </span>
+                        <span v-if="request.unknownMovingDate !== null" class="parameters-inner">
+                            {{ unknownMovingDateOptions[request.unknownMovingDate][1] }}
+                        </span>
                         <p>цена пола <small class="text-grey">(р)</small></p>
                         <span class="parameters-inner">
-              {{ request.pricePerFloor ?? "нет данных" }}
-            </span>
+                            {{ request.pricePerFloor ?? 'нет данных' }}
+                        </span>
                         <p>электричество</p>
                         <span class="parameters-inner">
-              {{ request.electricity ?? "нет данных" }}
-              <small class="text-grey" v-if="request.electricity">(кВт)</small>
-            </span>
+                            {{ request.electricity ?? 'нет данных' }}
+                            <small v-if="request.electricity" class="text-grey">(кВт)</small>
+                        </span>
 
                         <p class="font-weight-bold">ворота</p>
                         <div class="parameters-inner">
                             <span v-if="!request.gateTypes.length">нет данных</span>
                             <span v-else>
-                {{
-                                    request.gateTypes
-                                        .map((elem) => this.gateTypeList[elem.gate_type][1])
-                                        .join(", ")
-                                }}
-              </span>
+                                {{ request.gateTypes.map(elem => this.gateTypeList[elem.gate_type][1]).join(', ') }}
+                            </span>
                         </div>
                     </div>
                     <div class="col-12 mt-2">
                         <p>Описание</p>
                         <span class="parameters-inner">
-              {{ request.description ?? "нет данных" }}
-            </span>
+                            {{ request.description ?? 'нет данных' }}
+                        </span>
                     </div>
                 </div>
             </DropdownContainer>
@@ -195,27 +151,15 @@
             <p v-if="this.request.created_at">
                 {{ dateFormatter(this.request.created_at) }}
             </p>
-            <Progress
-                class="mt-4"
-                :percent="request.timeline_progress"
-                title="Обработано"
-            />
-            <button
-                class="btn px-2 btn-primary scale timeline-btn"
-                @click="clickTimeline"
-                v-if="!reedOnly"
-            >
+            <Progress class="mt-4" :percent="request.timeline_progress" title="Обработано" />
+            <button v-if="!reedOnly" @click="clickTimeline" class="btn px-2 btn-primary scale timeline-btn">
                 таймлайн
             </button>
         </div>
-        <div class="CompanyBoxRequestsListItem-footer" v-if="request.deal">
-            <Dropdown
-                v-model="dealIsOpen"
-                :title="dealTitle"
-                v-if="request.deal"
-            />
+        <div v-if="request.deal" class="CompanyBoxRequestsListItem-footer">
+            <Dropdown v-if="request.deal" v-model="dealIsOpen" :title="dealTitle" />
             <DropdownContainer v-model="dealIsOpen">
-                <DealListItem :deal="request.deal" :reedOnly="true"/>
+                <DealListItem :deal="request.deal" :reedOnly="true" />
             </DropdownContainer>
         </div>
     </div>
@@ -229,69 +173,65 @@ import {
     GateTypeList,
     ObjectClassList,
     ObjectTypeList,
-    unknownMovingDate,
-} from "@/const/const.js";
-import moment from "moment";
-import {mapGetters} from "vuex";
-import Dropdown from "@/components/common/Dropdown/Dropdown.vue";
-import DropdownContainer from "@/components/common/Dropdown/DropdownContainer.vue";
-import DealListItem from "@/components/Deal/DealListItem.vue";
+    unknownMovingDate
+} from '@/const/const.js';
+import moment from 'moment';
+import { mapGetters } from 'vuex';
+import Dropdown from '@/components/common/Dropdown/Dropdown.vue';
+import DropdownContainer from '@/components/common/Dropdown/DropdownContainer.vue';
+import DealListItem from '@/components/Deal/DealListItem.vue';
 
 export default {
-    name: "CompanyBoxRequestsListItem",
-    components: {DealListItem, DropdownContainer, Dropdown},
+    name: 'CompanyBoxRequestsListItem',
+    components: { DealListItem, DropdownContainer, Dropdown },
     props: {
         request: {
             type: Object,
-            default: () => {
-            },
+            default: () => {}
         },
         reedOnly: {
             type: Boolean,
-            default: false,
-        },
+            default: false
+        }
     },
     data() {
         return {
-            dealTypeList: DealTypeList.get("param"),
-            directionList: DirectionList.get("param"),
-            districtList: DistrictList.get("param"),
-            objectTypeListWareHouse: ObjectTypeList.get("warehouse"),
-            objectTypeListProduction: ObjectTypeList.get("production"),
-            objectTypeListPlot: ObjectTypeList.get("plot"),
-            objectClassList: ObjectClassList.get("param"),
-            gateTypeList: GateTypeList.get("param"),
-            unknownMovingDateOptions: unknownMovingDate.get("param"),
+            dealTypeList: DealTypeList.get('param'),
+            directionList: DirectionList.get('param'),
+            districtList: DistrictList.get('param'),
+            objectTypeListWareHouse: ObjectTypeList.get('warehouse'),
+            objectTypeListProduction: ObjectTypeList.get('production'),
+            objectTypeListPlot: ObjectTypeList.get('plot'),
+            objectClassList: ObjectClassList.get('param'),
+            gateTypeList: GateTypeList.get('param'),
+            unknownMovingDateOptions: unknownMovingDate.get('param'),
             dealIsOpen: false,
-            moreIsOpen: false,
+            moreIsOpen: false
         };
     },
     computed: {
-        ...mapGetters(["THIS_USER"]),
+        ...mapGetters(['THIS_USER']),
         dealType() {
             let dealType = this.dealTypeList[this.request.dealType].label;
             return dealType[0].toUpperCase() + dealType.slice(1);
         },
         status() {
             if (this.request.status == 2) {
-                return "Завершен";
+                return 'Завершен';
             }
             if (this.request.status == 1) {
-                return "В работе";
+                return 'В работе';
             }
             if (this.request.status == 0) {
-                return "Пассив";
+                return 'Пассив';
             } else {
-                return "";
+                return '';
             }
         },
         dealTitle() {
-            let company_name =
-                this.request.deal.company.nameRu || this.request.deal.company.nameEng;
-            return `Сделка: компания ${company_name}, ${this.dateFormatter(
-                this.request.deal.dealDate
-            )}`;
-        },
+            let company_name = this.request.deal.company.nameRu || this.request.deal.company.nameEng;
+            return `Сделка: компания ${company_name}, ${this.dateFormatter(this.request.deal.dealDate)}`;
+        }
     },
     methods: {
         clickTimeline() {
@@ -299,51 +239,41 @@ export default {
                 query: {
                     request_id: this.request.id,
                     consultant_id: this.THIS_USER.id,
-                    step: 0,
-                },
+                    step: 0
+                }
             });
         },
         getObjectTypeIcon(objectType) {
             if (objectType < 12) {
-                return this.objectTypeListWareHouse.find(
-                    (item) => item[0] == objectType
-                )[1].icon;
+                return this.objectTypeListWareHouse.find(item => item[0] == objectType)[1].icon;
             }
             if (objectType < 25) {
-                return this.objectTypeListProduction.find(
-                    (item) => item[0] == objectType
-                )[1].icon;
+                return this.objectTypeListProduction.find(item => item[0] == objectType)[1].icon;
             }
-            return this.objectTypeListPlot.find((item) => item[0] == objectType)[1]
-                .icon;
+            return this.objectTypeListPlot.find(item => item[0] == objectType)[1].icon;
         },
         getObjectTypeName(objectType) {
             if (objectType < 12) {
-                return this.objectTypeListWareHouse.find(
-                    (item) => item[0] == objectType
-                )[1].name;
+                return this.objectTypeListWareHouse.find(item => item[0] == objectType)[1].name;
             }
             if (objectType < 25) {
-                return this.objectTypeListProduction.find(
-                    (item) => item[0] == objectType
-                )[1].name;
+                return this.objectTypeListProduction.find(item => item[0] == objectType)[1].name;
             }
-            return this.objectTypeListPlot.find((item) => item[0] == objectType)[1]
-                .name;
+            return this.objectTypeListPlot.find(item => item[0] == objectType)[1].name;
         },
         dateFormatter(date) {
-            return moment(date).format("DD.MM.YYYY");
+            return moment(date).format('DD.MM.YYYY');
         },
         clickUpdateRequest() {
-            this.$emit("clickUpdateRequest", this.request);
+            this.$emit('clickUpdateRequest', this.request);
         },
         clickCloneRequest() {
-            this.$emit("clickCloneRequest", this.request);
+            this.$emit('clickCloneRequest', this.request);
         },
         clickDisableRequest() {
-            this.$emit("clickDisableRequest", this.request);
-        },
+            this.$emit('clickDisableRequest', this.request);
+        }
     },
-    emits: ["clickUpdateRequest", "clickDisableRequest", "clickCloneRequest"],
+    emits: ['clickUpdateRequest', 'clickDisableRequest', 'clickCloneRequest']
 };
 </script>

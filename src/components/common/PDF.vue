@@ -11,11 +11,11 @@
                 <div class="col-6">
                     <yandex-map
                         v-if="mounted"
+                        ref="map"
                         :settings="settings"
                         :coords="options.coords"
                         :zoom="options.zoom"
                         :controls="options.controls"
-                        ref="map"
                         style="width: 100%; height: 400px"
                     >
                         <!-- <ymap-marker
@@ -40,58 +40,58 @@
 </template>
 
 <script>
-import {loadYmap, yandexMap} from "vue-yandex-maps";
+import { loadYmap, yandexMap } from 'vue-yandex-maps';
 
 export default {
-    name: "PDF",
+    name: 'PDF',
     components: {
-        yandexMap,
+        yandexMap
     },
     data() {
         return {
             array: [
-                {name: "fuck"},
-                {name: "fuck"},
-                {name: "fuck"},
-                {name: "fuck"},
-                {name: "fuck"},
-                {name: "fuck"},
-                {name: "fuck"},
-                {name: "fuck"},
-                {name: "fuck"},
-                {name: "fuck"},
-                {name: "fuck"},
-                {name: "fuck"},
-                {name: "fuck"},
-                {name: "fuck"},
-                {name: "fuck"},
-                {name: "fuck"},
-                {name: "fuck"},
-                {name: "fuck"},
-                {name: "fuck"},
-                {name: "fuck"},
+                { name: 'fuck' },
+                { name: 'fuck' },
+                { name: 'fuck' },
+                { name: 'fuck' },
+                { name: 'fuck' },
+                { name: 'fuck' },
+                { name: 'fuck' },
+                { name: 'fuck' },
+                { name: 'fuck' },
+                { name: 'fuck' },
+                { name: 'fuck' },
+                { name: 'fuck' },
+                { name: 'fuck' },
+                { name: 'fuck' },
+                { name: 'fuck' },
+                { name: 'fuck' },
+                { name: 'fuck' },
+                { name: 'fuck' },
+                { name: 'fuck' },
+                { name: 'fuck' }
             ],
             mounted: false,
             settings: {
-                apiKey: "59572809-066b-46d5-9e5d-269a65751b84",
-                lang: "ru_RU",
-                coordorder: "latlong",
+                apiKey: '59572809-066b-46d5-9e5d-269a65751b84',
+                lang: 'ru_RU',
+                coordorder: 'latlong',
                 enterprise: false,
-                version: "2.1",
+                version: '2.1'
             },
             options: {
                 coords: [55.75554289958026, 37.619346417968764],
                 zoom: 7,
-                controls: ["trafficControl", "zoomControl"],
-            },
+                controls: ['trafficControl', 'zoomControl']
+            }
         };
     },
     async mounted() {
-        await loadYmap({...this.settings, debug: true});
+        await loadYmap({ ...this.settings, debug: true });
         setTimeout(() => {
             this.mounted = true;
         }, 1000);
-    },
+    }
 };
 </script>
 

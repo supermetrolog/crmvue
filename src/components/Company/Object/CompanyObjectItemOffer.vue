@@ -10,23 +10,23 @@
                     <span class="object-offer__visual_id">{{ offer.visual_id }}</span>
                     <span>{{ offer.deal_type_name }}</span>
                     <span>
-            <b>
-              {{ offer.calc_area_general }}
-              м<sup>2</sup>
-            </b>
-          </span>
+                        <b>
+                            {{ offer.calc_area_general }}
+                            м<sup>2</sup>
+                        </b>
+                    </span>
                     <span v-if="offer.deal_type == 1 || offer.deal_type == 4">
-            <b>
-              {{ offer.calc_price_warehouse }}
-              руб за м<sup>2</sup>/г
-            </b>
-          </span>
+                        <b>
+                            {{ offer.calc_price_warehouse }}
+                            руб за м<sup>2</sup>/г
+                        </b>
+                    </span>
                     <span v-if="offer.deal_type == 2">
-            <b> {{ offer.calc_price_sale }} руб за м<sup>2</sup> </b>
-          </span>
+                        <b> {{ offer.calc_price_sale }} руб за м<sup>2</sup> </b>
+                    </span>
                     <span v-if="offer.deal_type == 3">
-            <b>{{ offer.calc_price_safe_pallet }} руб за 1 п. м. </b>
-          </span>
+                        <b>{{ offer.calc_price_safe_pallet }} руб за 1 п. м. </b>
+                    </span>
                 </a>
             </div>
         </div>
@@ -35,14 +35,13 @@
 
 <script>
 export default {
-    name: "CompanyObjectItemOffer",
+    name: 'CompanyObjectItemOffer',
     props: {
         offer: {
-            type: Object,
-        },
-    },
+            type: Object
+        }
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

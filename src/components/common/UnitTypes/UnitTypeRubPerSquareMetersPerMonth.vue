@@ -1,11 +1,9 @@
 <template>
     <span class="unit-type"> ₽ </span>
-    <span class="unit-type unit-type--size_small">
-      м<sup>2</sup>/мес
-    </span>
+    <span class="unit-type unit-type--size_small"> м<sup>2</sup>/мес </span>
 </template>
 <script>
 export default {
-    name: "UnitTypeRubPerSquareMetersPerMonth",
+    name: 'UnitTypeRubPerSquareMetersPerMonth'
 };
 </script>

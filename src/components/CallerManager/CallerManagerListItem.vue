@@ -1,5 +1,5 @@
 <template>
-    <div class="caller-manager__list__item" @click="$emit('clickItem', call)">
+    <div @click="$emit('clickItem', call)" class="caller-manager__list__item">
         <div>
             <p class="phone">{{ phone }}</p>
         </div>
@@ -11,11 +11,11 @@
 
 <script>
 export default {
-    name: "CallerManagerListItem",
+    name: 'CallerManagerListItem',
     props: {
         call: {
-            type: Object,
-        },
+            type: Object
+        }
     },
     computed: {
         remoteCaller() {
@@ -37,11 +37,10 @@ export default {
             if (this.remoteCaller) {
                 return this.remoteCaller.contact.first_and_last_name;
             }
-            return "нет в базе";
-        },
-    },
+            return 'нет в базе';
+        }
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

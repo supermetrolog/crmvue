@@ -1,32 +1,21 @@
 <template>
-    <div class="joke" @click="clickArea">
-        <h3
-            v-if="text.length"
-            :class="{ 'text-danger': clickCount > 2 && clickCount != 5 }"
-        >
+    <div @click="clickArea" class="joke">
+        <h3 v-if="text.length" :class="{ 'text-danger': clickCount > 2 && clickCount != 5 }">
             {{ text }}
         </h3>
-        <img :src="src" v-if="clickCount == lastCount"/>
+        <img v-if="clickCount == lastCount" :src="src" />
     </div>
 </template>
 
 <script>
 export default {
-    name: "Joke",
+    name: 'Joke',
     data() {
         return {
             clickCount: 0,
             lastCount: 6,
             alreadyClicked: false,
-            array: [
-                "",
-                "Сюда нельзя нажимать!",
-                "Не нажимай!",
-                "Хватит!",
-                "Не делай этого!",
-                "Ты уверен?",
-                "",
-            ],
+            array: ['', 'Сюда нельзя нажимать!', 'Не нажимай!', 'Хватит!', 'Не делай этого!', 'Ты уверен?', '']
         };
     },
     computed: {
@@ -34,8 +23,8 @@ export default {
             return this.array[this.clickCount];
         },
         src() {
-            return this.$apiUrlHelper.getImageUrl("joke.gif");
-        },
+            return this.$apiUrlHelper.getImageUrl('joke.gif');
+        }
     },
     methods: {
         clickArea() {
@@ -47,10 +36,9 @@ export default {
                     this.clickCount++;
                 }
             }
-        },
-    },
+        }
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

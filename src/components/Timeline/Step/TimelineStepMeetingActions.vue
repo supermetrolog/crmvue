@@ -7,10 +7,10 @@
                 leave-active-class="animate__animated animate__zoomOut for__modal absolute"
             >
                 <FormCompanyRequest
-                    @closeCompanyForm="clickCloseCompanyRequestForm"
-                    :formdata="currentRequest"
-                    @updated="updatedRequest"
                     v-if="companyRequestFormVisible"
+                    @closeCompanyForm="clickCloseCompanyRequestForm"
+                    @updated="updatedRequest"
+                    :formdata="currentRequest"
                 />
             </transition>
             <transition
@@ -19,11 +19,11 @@
                 leave-active-class="animate__animated animate__zoomOut for__modal absolute"
             >
                 <FormCompanyContact
+                    v-if="companyContactFormVisible"
                     @closeCompanyForm="clickCloseCompanyContactForm"
+                    @updated="getCompanyContacts"
                     :company_id="COMPANY.id"
                     :formdata="editContact"
-                    @updated="getCompanyContacts"
-                    v-if="companyContactFormVisible"
                 />
             </transition>
             <transition
@@ -33,9 +33,9 @@
             >
                 <FormCompany
                     v-if="companyFormVisible"
-                    :formdata="COMPANY"
                     @closeCompanyForm="clickCloseCompanyForm"
                     @updated="updatedCompany"
+                    :formdata="COMPANY"
                 />
             </transition>
         </teleport>
@@ -45,53 +45,49 @@
                     <div class="col-12 mx-auto">
                         <div class="timeline-actions row">
                             <TimelineStepMeeting
-                                :step="step"
-                                :disabled="disabled"
                                 @updateItem="clickUpdateStep"
                                 @stageChanged="changeStage"
+                                :step="step"
+                                :disabled="disabled"
                             />
                         </div>
                     </div>
 
                     <div
-                        class="col-12 mx-auto row mt-4 pl-0"
                         v-if="(COMPANY && step.additional != 1) || currentStage === 1"
+                        class="col-12 mx-auto row mt-4 pl-0"
                     >
-                        <Loader v-if="loaderCompany" class="center small"/>
+                        <Loader v-if="loaderCompany" class="center small" />
 
                         <div class="col-9 pl-0">
                             <CompanyDetailInfoAlternative
-                                :company="COMPANY"
                                 @openCompanyFormForUpdate="companyFormVisible = true"
+                                :company="COMPANY"
                             />
                         </div>
                         <div class="col-3 company-request-list company-contact-list">
                             <CompanyContactItem
                                 v-for="contact of this.COMPANY_CONTACTS"
                                 :key="contact.id"
-                                :contact="contact"
                                 @openContactFormForUpdate="openContactFormForUpdate"
                                 @createComment="createComment"
                                 @deleteContact="clickDeleteContact"
+                                :contact="contact"
                             />
                         </div>
                     </div>
                     <div
-                        class="col-12 mx-auto mt-4 p-3"
                         v-if="currentRequest && step.additional == 1 && currentStage !== 1"
+                        class="col-12 mx-auto mt-4 p-3"
                     >
-                        <Loader v-if="loaderCompanyRequests" class="center small"/>
+                        <Loader v-if="loaderCompanyRequests" class="center small" />
                         <div class="mb-2">
-                            <strong>{{
-                                    currentRequest.name || "Запрос" + " #" + currentRequest.id
-                                }}</strong>
+                            <strong>{{ currentRequest.name || 'Запрос' + ' #' + currentRequest.id }}</strong>
                         </div>
                         <CompanyRequestItemAlt
+                            @openCompanyRequestFormForUpdate="companyRequestFormVisible = true"
                             :request="currentRequest"
                             :editOnly="true"
-                            @openCompanyRequestFormForUpdate="
-                companyRequestFormVisible = true
-              "
                         />
                     </div>
                 </div>
@@ -101,20 +97,19 @@
 </template>
 
 <script>
-import {mapActions, mapGetters} from "vuex";
-import {MixinStepActions} from "@/components/Timeline/mixins.js";
-import FormCompanyContact from "@/components/Forms/Company/FormCompanyContact.vue";
-import FormCompanyRequest from "@/components/Forms/Company/FormCompanyRequest.vue";
-import FormCompany from "@/components/Forms/Company/FormCompany.vue";
-import Loader from "@/components/common/Loader.vue";
-import TimelineStepMeeting from "@/components/Timeline/Step/TimelineStepMeeting.vue";
-import CompanyContactItem from "@/components/Company/Contact/CompanyContactItem.vue";
-import CompanyDetailInfoAlternative from "@/components/Company/CompanyDetailInfoAlternative.vue";
-import CompanyRequestItemAlt from "@/components/Company/Request/CompanyRequestItemAlt.vue";
+import { mapActions, mapGetters } from 'vuex';
+import { MixinStepActions } from '@/components/Timeline/mixins.js';
+import FormCompanyContact from '@/components/Forms/Company/FormCompanyContact.vue';
+import FormCompanyRequest from '@/components/Forms/Company/FormCompanyRequest.vue';
+import FormCompany from '@/components/Forms/Company/FormCompany.vue';
+import Loader from '@/components/common/Loader.vue';
+import TimelineStepMeeting from '@/components/Timeline/Step/TimelineStepMeeting.vue';
+import CompanyContactItem from '@/components/Company/Contact/CompanyContactItem.vue';
+import CompanyDetailInfoAlternative from '@/components/Company/CompanyDetailInfoAlternative.vue';
+import CompanyRequestItemAlt from '@/components/Company/Request/CompanyRequestItemAlt.vue';
 
 export default {
-    name: "MeetingActions",
-    mixins: [MixinStepActions],
+    name: 'MeetingActions',
     components: {
         CompanyRequestItemAlt,
         CompanyDetailInfoAlternative,
@@ -125,6 +120,7 @@ export default {
         FormCompanyRequest,
         FormCompanyContact
     },
+    mixins: [MixinStepActions],
     data() {
         return {
             companyRequestFormVisible: false,
@@ -133,28 +129,26 @@ export default {
             loaderCompany: false,
             companyContactFormVisible: false,
             editContact: null,
-            currentStage: null,
+            currentStage: null
         };
     },
     computed: {
-        ...mapGetters(["COMPANY_REQUESTS", "COMPANY", "COMPANY_CONTACTS"]),
+        ...mapGetters(['COMPANY_REQUESTS', 'COMPANY', 'COMPANY_CONTACTS']),
         currentRequest() {
             if (Array.isArray(this.COMPANY_REQUESTS)) {
-                return this.COMPANY_REQUESTS.find(
-                    (item) => item.id == this.$route.query.request_id
-                );
+                return this.COMPANY_REQUESTS.find(item => item.id == this.$route.query.request_id);
             }
             return false;
-        },
+        }
     },
     methods: {
         ...mapActions([
-            "FETCH_COMPANY_REQUESTS",
-            "FETCH_COMPANY",
-            "FETCH_COMPANY_CONTACTS",
-            "DELETE_CONTACT",
-            "CREATE_CONTACT_COMMENT",
-            "ADD_TO_TRANSITION_LIST",
+            'FETCH_COMPANY_REQUESTS',
+            'FETCH_COMPANY',
+            'FETCH_COMPANY_CONTACTS',
+            'DELETE_CONTACT',
+            'CREATE_CONTACT_COMMENT',
+            'ADD_TO_TRANSITION_LIST'
         ]),
         updatedRequest() {
             this.getCompanyRequests();
@@ -206,26 +200,25 @@ export default {
         async createComment(data) {
             this.createCommentLoader = true;
             await this.CREATE_CONTACT_COMMENT(data);
-            this.$emit("createComment");
+            this.$emit('createComment');
             this.createCommentLoader = false;
         },
         async deleteContact(contact) {
             this.deleteLoader = true;
             await this.DELETE_CONTACT(contact);
-            this.$emit("deleteContact");
+            this.$emit('deleteContact');
             this.deleteLoader = false;
             this.deletedContactItem = null;
         },
         changeStage(stage) {
             this.currentStage = stage;
-        },
+        }
     },
     async created() {
         this.getCompanyContacts();
     },
-    emits: ["updateStep"],
+    emits: ['updateStep']
 };
 </script>
 
-<style>
-</style>
+<style></style>

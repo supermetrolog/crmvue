@@ -1,7 +1,7 @@
 <template>
     <section>
         <div class="container-fluid">
-            <div class="row" ref="searchContainer">
+            <div ref="searchContainer" class="row">
                 <FormModalOfferSearch
                     v-if="mounted && searchFormModalVisible"
                     ref="search"
@@ -9,33 +9,33 @@
                 />
                 <FormOfferSearchExternal
                     v-if="mounted"
+                    @openFilters="searchFormModalVisible = true"
                     class="col-12"
                     :offersCount="offersCount"
                     :objectsCount="objectsCount"
                     :isMap="true"
-                    @openFilters="searchFormModalVisible = true"
                 />
                 <div class="col-12 my-2">
                     <div class="company-table__filters">
                         <Chip
                             v-for="(item, index) in selectedFilterList"
                             :key="index"
+                            @click="removeFilter"
                             :value="item.value"
                             :html="item.label"
-                            @click="removeFilter"
                         />
                     </div>
                 </div>
             </div>
             <div class="row">
-                <div class="map-loader" v-if="allOffersLoader"></div>
+                <div v-if="allOffersLoader" class="map-loader"></div>
                 <div class="col-12">
                     <OfferYmap
+                        @selectionDone="filterByPolygon"
+                        @removedDone="removedPolygonFromFilters"
                         :list="allOffersForYmap"
                         :polygonCoordinates="polygonCoordinates"
                         :styles="ymapStyles"
-                        @selectionDone="filterByPolygon"
-                        @removedDone="removedPolygonFromFilters"
                     />
                 </div>
             </div>
@@ -44,25 +44,26 @@
 </template>
 
 <script>
-import {mapActions} from "vuex";
-import {TableContentMixin} from "@/components/common/mixins.js";
-import api from "@/api/api";
-import {waitHash} from "@/utils";
-import FilterMixin from "./mixins.js";
-import FormModalOfferSearch from "@/components/Forms/Offer/FormModalOfferSearch.vue";
-import FormOfferSearchExternal from "@/components/Forms/Offer/FormOfferSearchExternal.vue";
-import OfferYmap from "@/components/Offer/OfferYmap.vue";
-import Chip from "@/components/common/Chip.vue";
+import { mapActions } from 'vuex';
+import { TableContentMixin } from '@/components/common/mixins.js';
+import api from '@/api/api';
+import { waitHash } from '@/utils';
+import FilterMixin from './mixins.js';
+import FormModalOfferSearch from '@/components/Forms/Offer/FormModalOfferSearch.vue';
+import FormOfferSearchExternal from '@/components/Forms/Offer/FormOfferSearchExternal.vue';
+import OfferYmap from '@/components/Offer/OfferYmap.vue';
+import Chip from '@/components/common/Chip.vue';
 
 export default {
-    name: "OffersMap",
-    mixins: [TableContentMixin, FilterMixin],
+    name: 'OffersMap',
     components: {
         Chip,
         OfferYmap,
         FormOfferSearchExternal,
-        FormModalOfferSearch,
+        FormModalOfferSearch
     },
+    mixins: [TableContentMixin, FilterMixin],
+    inject: ['isMobile'],
     data() {
         return {
             searchFormModalVisible: false,
@@ -75,32 +76,25 @@ export default {
             ymapStyles: {
                 width: '100%',
                 height: '100vh'
-            },
+            }
         };
     },
-    inject: ["isMobile"],
     computed: {
         polygonCoordinates() {
-            if (
-                this.$route.query.polygon &&
-                Array.isArray(this.$route.query.polygon)
-            ) {
-                return this.$route.query.polygon.map((coords) => {
-                    return coords.split(",");
+            if (this.$route.query.polygon && Array.isArray(this.$route.query.polygon)) {
+                return this.$route.query.polygon.map(coords => {
+                    return coords.split(',');
                 });
             }
             return [];
-        },
+        }
     },
     methods: {
-        ...mapActions([
-            "SEARCH_OFFERS",
-            "SEARCH_FAVORITES_OFFERS",
-        ]),
+        ...mapActions(['SEARCH_OFFERS', 'SEARCH_FAVORITES_OFFERS']),
         async filterByPolygon(coordinates) {
-            const query = {...this.$route.query};
+            const query = { ...this.$route.query };
             query.polygon = coordinates;
-            await this.$router.replace({query});
+            await this.$router.replace({ query });
             const search = this.$refs.search;
 
             if (search) {
@@ -108,10 +102,10 @@ export default {
             }
         },
         removedPolygonFromFilters() {
-            const query = {...this.$route.query};
+            const query = { ...this.$route.query };
             if (query.polygon) {
                 delete query.polygon;
-                this.$router.replace({query});
+                this.$router.replace({ query });
             }
             const search = this.$refs.search;
 
@@ -123,7 +117,7 @@ export default {
             this.getAllOffersForYmap(withLoader);
         },
         async getAllOffersForYmap(withLoader = true) {
-            const routeQuery = {...this.$route.query};
+            const routeQuery = { ...this.$route.query };
             delete routeQuery.page;
             delete routeQuery.sort;
             if (routeQuery.favorites) {
@@ -132,15 +126,12 @@ export default {
             const query = {
                 ...routeQuery,
                 type_id: [2, 3],
-                fields:
-                    "latitude,longitude,address,complex_id,status,thumb,test_only,id",
+                fields: 'latitude,longitude,address,complex_id,status,thumb,test_only,id',
                 objectsOnly: 1,
-                original_id: routeQuery.favorites
-                    ? this.FAVORITES_OFFERS.map((item) => item.original_id)
-                    : null,
+                original_id: routeQuery.favorites ? this.FAVORITES_OFFERS.map(item => item.original_id) : null,
                 page: 1,
                 noWith: 1,
-                "per-page": 0,
+                'per-page': 0
             };
             if (query.original_id == null) {
                 delete query.original_id;
@@ -153,11 +144,9 @@ export default {
                 if (!this.FAVORITES_OFFERS.length) {
                     await this.SEARCH_FAVORITES_OFFERS();
                 }
-                query.original_id = this.FAVORITES_OFFERS.map(
-                    (item) => item.original_id
-                );
-                query.object_id = this.FAVORITES_OFFERS.map((item) => item.object_id);
-                query.complex_id = this.FAVORITES_OFFERS.map((item) => item.complex_id);
+                query.original_id = this.FAVORITES_OFFERS.map(item => item.original_id);
+                query.object_id = this.FAVORITES_OFFERS.map(item => item.object_id);
+                query.complex_id = this.FAVORITES_OFFERS.map(item => item.complex_id);
             }
             this.allOffersLoader = withLoader;
 
@@ -178,8 +167,7 @@ export default {
             return data;
         },
         // Переопределено из миксина (судя по всему)
-        initialRouteSettings() {
-        },
+        initialRouteSettings() {},
         async deleteFavoriteOffer() {
             if (this.$route.query.favorites) {
                 await this.SEARCH_FAVORITES_OFFERS();
@@ -187,7 +175,8 @@ export default {
             }
         },
         setYmapSize() {
-            this.ymapStyles.height = (window.innerHeight - this.$refs.searchContainer.getClientRects()[0].height - 105) + "px";
+            this.ymapStyles.height =
+                window.innerHeight - this.$refs.searchContainer.getClientRects()[0].height - 105 + 'px';
         }
     },
     updated() {

@@ -1,15 +1,15 @@
 <template>
-    <Modal class="autosize" title="Клонирование запроса" @close="$emit('close')">
-        <FormCompanyRequestClone :request="request" @cloned="$emit('cloned')"/>
+    <Modal @close="$emit('close')" class="autosize" title="Клонирование запроса">
+        <FormCompanyRequestClone @cloned="$emit('cloned')" :request="request" />
     </Modal>
 </template>
 
 <script>
-import Modal from "@/components/common/Modal.vue";
-import FormCompanyRequestClone from "@/components/Forms/Company/FormCompanyRequestClone.vue";
+import Modal from '@/components/common/Modal.vue';
+import FormCompanyRequestClone from '@/components/Forms/Company/FormCompanyRequestClone.vue';
 
 export default {
-    name: "FormModalCompanyRequestClone",
+    name: 'FormModalCompanyRequestClone',
     components: {
         FormCompanyRequestClone,
         Modal
@@ -23,5 +23,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

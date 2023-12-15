@@ -1,16 +1,23 @@
 <template>
     <button
-        class="button"
-        :class="{'button--icon': icon, 'button--warning': warning, 'button--small': small, 'button--success': success, 'button--info': info}"
-        :title="title"
         @click="$emit('click')"
+        class="button"
+        :class="{
+            'button--icon': icon,
+            'button--warning': warning,
+            'button--small': small,
+            'button--success': success,
+            'button--info': info
+        }"
+        :title="title"
     >
-        <slot/>
+        <slot />
     </button>
 </template>
 <script>
 export default {
     name: 'Button',
+    emits: ['click'],
     props: {
         icon: {
             type: Boolean,
@@ -36,7 +43,6 @@ export default {
             type: Boolean,
             default: false
         }
-    },
-    emits: ['click']
-}
+    }
+};
 </script>

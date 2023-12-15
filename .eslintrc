@@ -11,6 +11,69 @@
     "no-console": "off",
     "vue/multi-word-component-names": 0,
     "vue/no-reserved-component-names": 0,
-    "no-mixed-spaces-and-tabs": 0
+    "no-mixed-spaces-and-tabs": 0,
+    "vue/attributes-order": ["warn", {
+      "order": [
+        "DEFINITION",
+        "LIST_RENDERING",
+        "CONDITIONALS",
+        "RENDER_MODIFIERS",
+        "GLOBAL",
+        ["UNIQUE", "SLOT"],
+        "TWO_WAY_BINDING",
+        "OTHER_DIRECTIVES",
+        "EVENTS",
+        "OTHER_ATTR",
+        "CONTENT"
+      ],
+      "alphabetical": false
+    }],
+    "vue/order-in-components": ["warn", {
+      "order": [
+        "el",
+        "name",
+        "key",
+        "parent",
+        "functional",
+        ["delimiters", "comments"],
+        ["components", "directives", "filters"],
+        "extends",
+        "mixins",
+        "emits",
+        ["provide", "inject"],
+        "ROUTER_GUARDS",
+        "layout",
+        "middleware",
+        "validate",
+        "scrollToTop",
+        "transition",
+        "loading",
+        "inheritAttrs",
+        "model",
+        ["props", "propsData"],
+        "setup",
+        "asyncData",
+        "data",
+        "fetch",
+        "head",
+        "computed",
+        "watch",
+        "watchQuery",
+        "methods",
+        ["template", "render"],
+        "LIFECYCLE_HOOKS",
+        "renderError"
+      ]
+    }],
+    "vue/no-lone-template": 2,
+    "vue/singleline-html-element-content-newline": 0,
+    "vue/max-attributes-per-line": ["warn", {
+      "singleline": {
+        "max": 4
+      },
+      "multiline": {
+        "max": 1
+      }
+    }]
   }
 }

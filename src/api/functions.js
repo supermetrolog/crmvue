@@ -1,17 +1,17 @@
-import axios from "axios";
-import ErrorHandle from "./errors";
-import SuccessHandler from "./success";
+import axios from 'axios';
+import ErrorHandle from './errors';
+import SuccessHandler from './success';
 
 export default {
     async getConsultantList() {
-        const url = "users?fields=id,username,status,userProfile&expand=userProfile";
+        const url = 'users?fields=id,username,status,userProfile&expand=userProfile';
         let data = false;
         await axios
             .get(url)
-            .then((Response) => {
+            .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
     },
     //  async searchCompany(query) {
@@ -27,14 +27,14 @@ export default {
     //     return data;
     // },
     async getCompanyGroupList() {
-        const url = "companygroups";
+        const url = 'companygroups';
         let data = false;
         await axios
             .get(url)
-            .then((Response) => {
+            .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
-    },
-}
+    }
+};

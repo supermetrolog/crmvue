@@ -1,14 +1,13 @@
 <template>
     <dd class="value">
-        <slot/>
+        <slot />
     </dd>
 </template>
 
 <script>
 export default {
-    name: "Value",
+    name: 'Value'
 };
 </script>
 
-<style>
-</style>
+<style></style>

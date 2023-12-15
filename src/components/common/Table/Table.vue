@@ -1,17 +1,17 @@
 <template>
-    <table class="table" :class="{'table--fluid': fluid}">
+    <table class="table" :class="{ 'table--fluid': fluid }">
         <thead>
-        <slot name="thead"/>
+            <slot name="thead" />
         </thead>
         <tbody>
-        <slot name="tbody"/>
+            <slot name="tbody" />
         </tbody>
     </table>
 </template>
 
 <script>
 export default {
-    name: "Table",
+    name: 'Table',
     props: {
         fluid: {
             type: Boolean,
@@ -21,5 +21,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

@@ -1,21 +1,21 @@
 <template>
     <div class="fuck">
-        <Modal title="Создание компании" @close="clickCloseModal">
+        <Modal @close="clickCloseModal" title="Создание компании">
             <Form @submit="onSubmit">
                 <Tabs :options="{ useUrlFragment: false }">
-                    <Loader class="center" v-if="loader"/>
+                    <Loader v-if="loader" class="center" />
 
                     <Tab name="Основное">
                         <FormGroup class="mb-1">
-                            <Checkbox v-model="form.noName" label="Нет" class="col-1 large"/>
+                            <Checkbox v-model="form.noName" label="Нет" class="col-1 large" />
                             <Input
                                 v-if="!form.noName"
                                 v-model="form.nameRu"
                                 :v="v$.form.nameRu"
                                 :maska="{
-                  mask: 'Z*',
-                  tokens: { Z: { pattern: /[а-яА-Я0-9 (--)]/ } },
-                }"
+                                    mask: 'Z*',
+                                    tokens: { Z: { pattern: /[а-яА-Я0-9 (--)]/ } }
+                                }"
                                 :required="!form.nameEng"
                                 label="Название Ru"
                                 class="col-6 px-1"
@@ -25,9 +25,9 @@
                                 v-model="form.nameEng"
                                 :v="v$.form.nameEng"
                                 :maska="{
-                  mask: 'Z*',
-                  tokens: { Z: { pattern: /[a-zA-Z0-9 (--)]/ } },
-                }"
+                                    mask: 'Z*',
+                                    tokens: { Z: { pattern: /[a-zA-Z0-9 (--)]/ } }
+                                }"
                                 :required="!form.nameRu"
                                 label="Название Eng"
                                 class="col-5 pl-1"
@@ -37,9 +37,9 @@
                             <Input
                                 v-model="form.nameBrand"
                                 :maska="{
-                  mask: 'Z*',
-                  tokens: { Z: { pattern: /[а-яА-Яa-zA-Z0-9 (--)]/ } },
-                }"
+                                    mask: 'Z*',
+                                    tokens: { Z: { pattern: /[а-яА-Яa-zA-Z0-9 (--)]/ } }
+                                }"
                                 label="Название Brand"
                                 class="col-5 pr-1"
                             />
@@ -72,10 +72,10 @@
                                 :delay="0"
                                 :searchable="true"
                                 :options="
-                  async (query) => {
-                    return await getAddress(query);
-                  }
-                "
+                                    async query => {
+                                        return await getAddress(query);
+                                    }
+                                "
                             />
                         </FormGroup>
                         <FormGroup class="mb-1">
@@ -100,11 +100,7 @@
                             <PropogationDoubleInput
                                 v-model="form.contacts.phones"
                                 :v="v$.form.contacts.phones"
-                                :maska="[
-                  '+7 (###) ###-##-###',
-                  '+### (###) ###-##-##',
-                  '+#### (###) ###-##-##',
-                ]"
+                                :maska="['+7 (###) ###-##-###', '+### (###) ###-##-##', '+#### (###) ###-##-##']"
                                 placeholder="+7 "
                                 name="phone"
                                 name2="exten"
@@ -134,11 +130,7 @@
                         </FormGroup>
                         <FormGroup class="mb-1"></FormGroup>
                         <FormGroup class="mb-1">
-                            <Checkbox
-                                v-model="form.processed"
-                                label="Обработано"
-                                class="col large text-center"
-                            />
+                            <Checkbox v-model="form.processed" label="Обработано" class="col large text-center" />
                             <Radio
                                 v-model="form.status"
                                 :v="v$.form.status"
@@ -156,10 +148,7 @@
                                 class="col-4 pl-1"
                                 :options="passiveWhyOptions"
                             >
-                <Textarea
-                    v-model="form.passive_why_comment"
-                    class="col-12 p-0 pt-1"
-                />
+                                <Textarea v-model="form.passive_why_comment" class="col-12 p-0 pt-1" />
                             </MultiSelect>
                             <RadioStars
                                 v-model="form.rating"
@@ -185,11 +174,7 @@
                             </RadioStars>
                         </FormGroup>
                         <FormGroup class="mb-1">
-              <Textarea
-                  v-model="form.description"
-                  label="Описание"
-                  class="col-12 px-0"
-              />
+                            <Textarea v-model="form.description" label="Описание" class="col-12 px-0" />
                         </FormGroup>
                     </Tab>
                     <Tab name="Деятельность">
@@ -225,10 +210,10 @@
                                 label="Номенклатура товара"
                                 class="col-10 tags mx-auto text-center"
                                 :options="
-                  async () => {
-                    return await getProductRangeList();
-                  }
-                "
+                                    async () => {
+                                        return await getProductRangeList();
+                                    }
+                                "
                                 name="product"
                             />
                         </FormGroup>
@@ -246,10 +231,10 @@
                                 :delay="0"
                                 :searchable="true"
                                 :options="
-                  async (query) => {
-                    return await getAddress(query);
-                  }
-                "
+                                    async query => {
+                                        return await getAddress(query);
+                                    }
+                                "
                             />
                         </FormGroup>
                         <FormGroup class="mb-1">
@@ -325,21 +310,9 @@
                         </FormGroup>
 
                         <FormGroup class="mb-1">
-                            <Input
-                                v-model="form.signatoryName"
-                                label="Имя подписанта"
-                                class="col-4 pr-1"
-                            />
-                            <Input
-                                v-model="form.signatoryMiddleName"
-                                label="Фамилия подписанта"
-                                class="col-4 px-1"
-                            />
-                            <Input
-                                v-model="form.signatoryLastName"
-                                label="Отчество подписанта"
-                                class="col-4 pl-1"
-                            />
+                            <Input v-model="form.signatoryName" label="Имя подписанта" class="col-4 pr-1" />
+                            <Input v-model="form.signatoryMiddleName" label="Фамилия подписанта" class="col-4 px-1" />
+                            <Input v-model="form.signatoryLastName" label="Отчество подписанта" class="col-4 pl-1" />
                         </FormGroup>
                         <FormGroup class="mb-1">
                             <Input
@@ -348,11 +321,7 @@
                                 maska="#####################"
                                 class="col-6 pr-1"
                             />
-                            <Input
-                                v-model="form.basis"
-                                label="Действует на основе"
-                                class="col-6 pl-1"
-                            />
+                            <Input v-model="form.basis" label="Действует на основе" class="col-6 pl-1" />
                         </FormGroup>
                     </Tab>
                     <Tab name="Документы">
@@ -369,7 +338,7 @@
                     </Tab>
                     <FormGroup class="mt-4">
                         <Submit class="col-4 mx-auto">
-                            {{ formdata ? "Сохранить" : "Создать" }}
+                            {{ formdata ? 'Сохранить' : 'Создать' }}
                         </Submit>
                     </FormGroup>
                 </Tabs>
@@ -379,21 +348,21 @@
 </template>
 
 <script>
-import Form from "@/components/common/Forms/Form.vue";
-import FormGroup from "@/components/common/Forms/FormGroup.vue";
-import Input from "@/components/common/Forms/Input.vue";
-import Submit from "@/components/common/Forms/Submit.vue";
-import Textarea from "@/components/common/Forms/Textarea.vue";
-import FileInput from "@/components/common/Forms/FileInput.vue";
-import PropogationInput from "@/components/common/Forms/PropogationInput.vue";
-import PropogationDoubleInput from "@/components/common/Forms/PropogationDoubleInput.vue";
-import Checkbox from "@/components/common/Forms/Checkbox.vue";
-import Radio from "@/components/common/Forms/Radio.vue";
-import RadioStars from "@/components/common/Forms/RadioStars.vue";
-import MultiSelect from "@/components/common/Forms/MultiSelect.vue";
-import useValidate from "@vuelidate/core";
-import {email, helpers, maxLength, minLength, required,} from "@vuelidate/validators";
-import {mapActions, mapGetters} from "vuex";
+import Form from '@/components/common/Forms/Form.vue';
+import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import Input from '@/components/common/Forms/Input.vue';
+import Submit from '@/components/common/Forms/Submit.vue';
+import Textarea from '@/components/common/Forms/Textarea.vue';
+import FileInput from '@/components/common/Forms/FileInput.vue';
+import PropogationInput from '@/components/common/Forms/PropogationInput.vue';
+import PropogationDoubleInput from '@/components/common/Forms/PropogationDoubleInput.vue';
+import Checkbox from '@/components/common/Forms/Checkbox.vue';
+import Radio from '@/components/common/Forms/Radio.vue';
+import RadioStars from '@/components/common/Forms/RadioStars.vue';
+import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
+import useValidate from '@vuelidate/core';
+import { email, helpers, maxLength, minLength, required } from '@vuelidate/validators';
+import { mapActions, mapGetters } from 'vuex';
 import {
     ActivePassive,
     ActivityGroupList,
@@ -401,15 +370,15 @@ import {
     CompanyCategories,
     CompanyFormOrganization,
     PassiveWhy,
-    RatingList,
-} from "@/const/const.js";
-import Utils, {validatePropogationInput, validateUrl, yandexmap,} from "@/utils";
-import api from "@//api/api.js";
-import Modal from "@/components/common/Modal.vue";
-import Loader from "@/components/common/Loader.vue";
+    RatingList
+} from '@/const/const.js';
+import Utils, { validatePropogationInput, validateUrl, yandexmap } from '@/utils';
+import api from '@//api/api.js';
+import Modal from '@/components/common/Modal.vue';
+import Loader from '@/components/common/Loader.vue';
 
 export default {
-    name: "FormCompany",
+    name: 'FormCompany',
     components: {
         Loader,
         Modal,
@@ -424,19 +393,25 @@ export default {
         Radio,
         RadioStars,
         MultiSelect,
-        FileInput,
+        FileInput
+    },
+    props: {
+        formdata: {
+            type: Object,
+            default: null
+        }
     },
     data() {
         return {
             v$: useValidate(),
             loader: false,
-            categoryOptions: CompanyCategories.get("param"),
-            formOfOrganizationOptions: CompanyFormOrganization.get("param"),
-            statusOptions: ActivePassive.get("param"),
-            activityGroupOptions: ActivityGroupList.get("param"),
-            activityProfileOptions: ActivityProfileList.get("param"),
-            passiveWhyOptions: PassiveWhy.get("param"),
-            ratingOptions: RatingList.get("param"),
+            categoryOptions: CompanyCategories.get('param'),
+            formOfOrganizationOptions: CompanyFormOrganization.get('param'),
+            statusOptions: ActivePassive.get('param'),
+            activityGroupOptions: ActivityGroupList.get('param'),
+            activityProfileOptions: ActivityProfileList.get('param'),
+            passiveWhyOptions: PassiveWhy.get('param'),
+            ratingOptions: RatingList.get('param'),
             form: {
                 activityGroup: null,
                 activityProfile: null,
@@ -446,7 +421,7 @@ export default {
                 checkingAccount: null,
                 companyGroup_id: null,
                 consultant_id: null,
-                contacts: {phones: [], emails: [], websites: []},
+                contacts: { phones: [], emails: [], websites: [] },
                 correspondentAccount: null,
                 description: null,
                 documentNumber: null,
@@ -473,171 +448,102 @@ export default {
                 passive_why: null,
                 passive_why_comment: null,
                 files: [],
-                fileList: [],
-            },
+                fileList: []
+            }
         };
-    },
-    props: {
-        formdata: {
-            type: Object,
-            default: null,
-        },
     },
     computed: {
         ...mapGetters([
-            "COMPANY",
-            "CONSULTANT_LIST",
-            "COMPANY_GROUP_LIST",
-            "COMPANY_PRODUCT_RANGE_LIST",
-            "COMPANY_IN_THE_BANK_LIST",
-        ]),
+            'COMPANY',
+            'CONSULTANT_LIST',
+            'COMPANY_GROUP_LIST',
+            'COMPANY_PRODUCT_RANGE_LIST',
+            'COMPANY_IN_THE_BANK_LIST'
+        ])
     },
     validations() {
         return {
             form: {
                 contacts: {
                     emails: {
-                        propogation: helpers.withMessage(
-                            "Пустое поле не допустимо",
-                            this.validateEmailsPropogation
-                        ),
-                        email: helpers.withMessage(
-                            "заполните email правильно",
-                            this.customEmailValidation
-                        ),
+                        propogation: helpers.withMessage('Пустое поле не допустимо', this.validateEmailsPropogation),
+                        email: helpers.withMessage('заполните email правильно', this.customEmailValidation)
                     },
                     websites: {
-                        propogation: helpers.withMessage(
-                            "Пустое поле не допустимо",
-                            this.validateWebsitesPropogation
-                        ),
-                        website: helpers.withMessage(
-                            "заполните вебсайт правильно",
-                            this.customUrlValidation
-                        ),
+                        propogation: helpers.withMessage('Пустое поле не допустимо', this.validateWebsitesPropogation),
+                        website: helpers.withMessage('заполните вебсайт правильно', this.customUrlValidation)
                     },
                     phones: {
-                        propogation: helpers.withMessage(
-                            "Пустое поле не допустимо",
-                            this.validatePhonesPropogation
-                        ),
-                    },
+                        propogation: helpers.withMessage('Пустое поле не допустимо', this.validatePhonesPropogation)
+                    }
                 },
                 nameEng: {
-                    customRequiredName: helpers.withMessage(
-                        "заполните поле",
-                        this.customRequiredNameEng
-                    ),
-                    minLength: helpers.withMessage(
-                        "название не может быть меньше 3 символов",
-                        minLength(3)
-                    ),
-                    maxLength: helpers.withMessage(
-                        "название не может быть больше 60 символов",
-                        maxLength(60)
-                    ),
+                    customRequiredName: helpers.withMessage('заполните поле', this.customRequiredNameEng),
+                    minLength: helpers.withMessage('название не может быть меньше 3 символов', minLength(3)),
+                    maxLength: helpers.withMessage('название не может быть больше 60 символов', maxLength(60))
                 },
                 nameRu: {
-                    customRequiredName: helpers.withMessage(
-                        "заполните поле",
-                        this.customRequiredNameRu
-                    ),
-                    minLength: helpers.withMessage(
-                        "название не может быть меньше 3 символов",
-                        minLength(3)
-                    ),
-                    maxLength: helpers.withMessage(
-                        "название не может быть больше 60 символов",
-                        maxLength(60)
-                    ),
+                    customRequiredName: helpers.withMessage('заполните поле', this.customRequiredNameRu),
+                    minLength: helpers.withMessage('название не может быть меньше 3 символов', minLength(3)),
+                    maxLength: helpers.withMessage('название не может быть больше 60 символов', maxLength(60))
                 },
                 categories: {
-                    required: helpers.withMessage("выберите категорию", required),
+                    required: helpers.withMessage('выберите категорию', required)
                 },
 
                 status: {
-                    required: helpers.withMessage("Выберите статус", required),
+                    required: helpers.withMessage('Выберите статус', required)
                 },
                 consultant_id: {
-                    required: helpers.withMessage("Выберите консультанта", required),
+                    required: helpers.withMessage('Выберите консультанта', required)
                 },
                 ogrn: {
-                    minLength: helpers.withMessage(
-                        "огрн не может быть меньше 13 символов",
-                        minLength(13)
-                    ),
+                    minLength: helpers.withMessage('огрн не может быть меньше 13 символов', minLength(13))
                 },
                 inn: {
-                    minLength: helpers.withMessage(
-                        "инн не может быть меньше 10 символов",
-                        minLength(10)
-                    ),
+                    minLength: helpers.withMessage('инн не может быть меньше 10 символов', minLength(10))
                 },
                 kpp: {
-                    minLength: helpers.withMessage(
-                        "кпп не может быть меньше 9 символов",
-                        minLength(9)
-                    ),
+                    minLength: helpers.withMessage('кпп не может быть меньше 9 символов', minLength(9))
                 },
                 checkingAccount: {
-                    minLength: helpers.withMessage(
-                        "расчетный счет не может быть меньше 20 символов",
-                        minLength(20)
-                    ),
+                    minLength: helpers.withMessage('расчетный счет не может быть меньше 20 символов', minLength(20))
                 },
                 correspondentAccount: {
                     minLength: helpers.withMessage(
-                        "корреспондентский счет не может быть меньше 20 символов",
+                        'корреспондентский счет не может быть меньше 20 символов',
                         minLength(20)
-                    ),
+                    )
                 },
                 bik: {
-                    minLength: helpers.withMessage(
-                        "бик не может быть меньше 9 символов",
-                        minLength(9)
-                    ),
+                    minLength: helpers.withMessage('бик не может быть меньше 9 символов', minLength(9))
                 },
                 okved: {
-                    minLength: helpers.withMessage(
-                        "оквэд не может быть меньше 4 символов",
-                        minLength(4)
-                    ),
+                    minLength: helpers.withMessage('оквэд не может быть меньше 4 символов', minLength(4))
                 },
                 okpo: {
-                    minLength: helpers.withMessage(
-                        "окпо не может быть меньше 8 символов",
-                        minLength(8)
-                    ),
+                    minLength: helpers.withMessage('окпо не может быть меньше 8 символов', minLength(8))
                 },
                 activityGroup: {
-                    required: helpers.withMessage(
-                        "Выберите группу деятельности",
-                        required
-                    ),
+                    required: helpers.withMessage('Выберите группу деятельности', required)
                 },
                 activityProfile: {
-                    required: helpers.withMessage(
-                        "Выберите профиль деятельности",
-                        required
-                    ),
+                    required: helpers.withMessage('Выберите профиль деятельности', required)
                 },
                 passive_why: {
-                    customRequiredPassiveWhy: helpers.withMessage(
-                        "Выберите причину",
-                        this.customRequiredPassiveWhy
-                    ),
-                },
-            },
+                    customRequiredPassiveWhy: helpers.withMessage('Выберите причину', this.customRequiredPassiveWhy)
+                }
+            }
         };
     },
     methods: {
         ...mapActions([
-            "FETCH_CONSULTANT_LIST",
-            "FETCH_COMPANY_GROUP_LIST",
-            "FETCH_COMPANY_PRODUCT_RANGE_LIST",
-            "FETCH_COMPANY_IN_THE_BANK_LIST",
-            "CREATE_COMPANY",
-            "UPDATE_COMPANY",
+            'FETCH_CONSULTANT_LIST',
+            'FETCH_COMPANY_GROUP_LIST',
+            'FETCH_COMPANY_PRODUCT_RANGE_LIST',
+            'FETCH_COMPANY_IN_THE_BANK_LIST',
+            'CREATE_COMPANY',
+            'UPDATE_COMPANY'
         ]),
         onSubmit() {
             this.v$.$validate();
@@ -652,39 +558,38 @@ export default {
         },
         async updateCompany() {
             if (await this.UPDATE_COMPANY(this.form)) {
-                this.$emit("updated");
+                this.$emit('updated');
                 this.clickCloseModal();
             }
             this.loader = false;
         },
         async createCompany() {
-            let company_id = await this.CREATE_COMPANY(this.form)
+            let company_id = await this.CREATE_COMPANY(this.form);
             if (company_id) {
-                this.$emit("created", company_id);
+                this.$emit('created', company_id);
                 this.clickCloseModal();
             }
             this.loader = false;
         },
         clickCloseModal() {
-            this.$emit("closeCompanyForm");
+            this.$emit('closeCompanyForm');
         },
         async getAddress(query) {
-            if (this.formdata)
-                return await yandexmap.getAddress(query, this.formdata.officeAdress);
+            if (this.formdata) return await yandexmap.getAddress(query, this.formdata.officeAdress);
             return await yandexmap.getAddress(query);
         },
         validateEmailsPropogation() {
-            return validatePropogationInput(this.form.contacts.emails, "email");
+            return validatePropogationInput(this.form.contacts.emails, 'email');
         },
         validateWebsitesPropogation() {
-            return validatePropogationInput(this.form.contacts.websites, "website");
+            return validatePropogationInput(this.form.contacts.websites, 'website');
         },
         validatePhonesPropogation() {
-            return validatePropogationInput(this.form.contacts.phones, "phone");
+            return validatePropogationInput(this.form.contacts.phones, 'phone');
         },
         customEmailValidation() {
             let flag = true;
-            this.form.contacts.emails.forEach((item) => {
+            this.form.contacts.emails.forEach(item => {
                 if (!email.$validator(item.email)) {
                     flag = false;
                 }
@@ -693,7 +598,7 @@ export default {
         },
         customUrlValidation() {
             let flag = true;
-            this.form.contacts.websites.forEach((item) => {
+            this.form.contacts.websites.forEach(item => {
                 if (!validateUrl(item.website)) {
                     flag = false;
                 }
@@ -702,10 +607,7 @@ export default {
         },
         customRequiredNameRu(value) {
             if (!this.form.noName) {
-                if (
-                    (value != null && value != "") ||
-                    (this.form.nameEng != null && this.form.nameEng != "")
-                ) {
+                if ((value != null && value != '') || (this.form.nameEng != null && this.form.nameEng != '')) {
                     return true;
                 }
                 return false;
@@ -715,10 +617,7 @@ export default {
         },
         customRequiredNameEng(value) {
             if (!this.form.noName) {
-                if (
-                    (value != null && value != "") ||
-                    (this.form.nameRu != null && this.form.nameRu != "")
-                ) {
+                if ((value != null && value != '') || (this.form.nameRu != null && this.form.nameRu != '')) {
                     return true;
                 }
                 return false;
@@ -737,7 +636,7 @@ export default {
         },
         async getProductRangeList() {
             return await api.companies.getCompanyProductRangeList();
-        },
+        }
     },
     async mounted() {
         this.loader = true;
@@ -745,11 +644,11 @@ export default {
             this.FETCH_CONSULTANT_LIST(),
             this.FETCH_COMPANY_GROUP_LIST(),
             this.FETCH_COMPANY_PRODUCT_RANGE_LIST(),
-            this.FETCH_COMPANY_IN_THE_BANK_LIST(),
+            this.FETCH_COMPANY_IN_THE_BANK_LIST()
         ]);
         if (this.formdata) {
             const cloneFormdata = JSON.stringify(this.formdata);
-            this.form = {...this.form, ...JSON.parse(cloneFormdata)};
+            this.form = { ...this.form, ...JSON.parse(cloneFormdata) };
 
             this.form = Utils.normalizeDataForCompanyForm(this.form);
         }
@@ -757,13 +656,11 @@ export default {
     },
     watch: {
         form: {
-            handler() {
-            },
-            deep: true,
-        },
-    },
+            handler() {},
+            deep: true
+        }
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

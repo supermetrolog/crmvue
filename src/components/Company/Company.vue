@@ -1,14 +1,14 @@
 <template>
-    <div class="row no-gutters company-detail-info" v-if="company">
+    <div v-if="company" class="row no-gutters company-detail-info">
         <div class="col-12">
             <div class="row">
-                <div class="col-12 text-center mb-3" v-if="!company.status">
+                <div v-if="!company.status" class="col-12 text-center mb-3">
                     <h3 class="text-warning">Пассив!</h3>
                     <p class="text-dark">
                         <b>{{ passiveWhyOptions[company.passive_why].label }}</b>
                     </p>
                     <p class="text-dark">{{ company.passive_why_comment }}</p>
-                    <hr/>
+                    <hr />
                 </div>
                 <div class="col-12 text-center mb-2">
                     <i :class="rating(1)"></i>
@@ -17,24 +17,24 @@
                 </div>
                 <div class="col-12 text-center mb-3">
                     <p class="d-inline-block pl-2 status">
-            <span
-                :class="{
-                'bg-dark': !company.active,
-                'bg-success': company.active,
-              }"
-            >{{ status }}</span
-            >
+                        <span
+                            :class="{
+                                'bg-dark': !company.active,
+                                'bg-success': company.active
+                            }"
+                            >{{ status }}</span
+                        >
                     </p>
                     <p
-                        class="d-inline-block pl-2 pb-2 category"
                         v-for="categoryItem of company.categories"
                         :key="categoryItem.id"
+                        class="d-inline-block pl-2 pb-2 category"
                     >
                         <span>{{ category(categoryItem.category) }}</span>
                     </p>
                 </div>
                 <div class="col-12 text-center">
-                    <Progress :percent="company.progress_percent"/>
+                    <Progress :percent="company.progress_percent" />
                 </div>
             </div>
         </div>
@@ -55,7 +55,7 @@
                         </div>
                         <div class="col-9 text-right align-self-center">
                             <p>
-                                {{ company.officeAdress || "&#8212;" }}
+                                {{ company.officeAdress || '&#8212;' }}
                             </p>
                         </div>
                     </div>
@@ -142,9 +142,7 @@
                         </div>
                         <div class="col-7 text-right align-self-center">
                             <p v-if="company.formOfOrganization !== null">
-                                {{
-                                    formOfOrganizationOptions[company.formOfOrganization].label
-                                }}
+                                {{ formOfOrganizationOptions[company.formOfOrganization].label }}
                             </p>
                             <p v-else>&#8212;</p>
                         </div>
@@ -176,33 +174,24 @@
                         </div>
                     </div>
                 </div>
-                <div
-                    class="col-12 company-detail-info-item"
-                    :class="{ 'product-range': company.productRanges.length }"
-                >
+                <div class="col-12 company-detail-info-item" :class="{ 'product-range': company.productRanges.length }">
                     <div class="row no-gutters">
                         <div class="col-5">
                             <strong>Наменклатура товара: </strong>
                         </div>
                         <div class="col-7 text-right align-self-center">
                             <p
-                                class="d-inline-block"
-                                style="
-                  line-break: anywhere;
-                  white-space: break-spaces !important;
-                "
                                 v-for="product of company.productRanges"
                                 :key="product.id"
+                                class="d-inline-block"
+                                style="line-break: anywhere; white-space: break-spaces !important"
                             >
                                 {{ product.product }}
                             </p>
                             <p
-                                class="d-inline-block"
                                 v-if="!company.productRanges.length"
-                                style="
-                  line-break: anywhere;
-                  white-space: break-spaces !important;
-                "
+                                class="d-inline-block"
+                                style="line-break: anywhere; white-space: break-spaces !important"
                             >
                                 &#8212;
                             </p>
@@ -228,7 +217,7 @@
                         </div>
                         <div class="col-8 text-right align-self-center">
                             <p>
-                                {{ company.description || "&#8212;" }}
+                                {{ company.description || '&#8212;' }}
                             </p>
                         </div>
                     </div>
@@ -252,7 +241,7 @@
                         </div>
                         <div class="col-8 text-right align-self-center">
                             <p>
-                                {{ company.updated_at_format || "&#8212;" }}
+                                {{ company.updated_at_format || '&#8212;' }}
                             </p>
                         </div>
                     </div>
@@ -264,7 +253,7 @@
                         </div>
                         <div class="col-8 text-right align-self-center">
                             <p>
-                                {{ company.processed ? "Да" : "Нет" }}
+                                {{ company.processed ? 'Да' : 'Нет' }}
                             </p>
                         </div>
                     </div>
@@ -275,11 +264,7 @@
                             <strong>Документы: </strong>
                         </div>
                         <div class="col-8 text-right align-self-center">
-                            <FileInput
-                                :data="company.files"
-                                :reedOnly="true"
-                                v-if="company.files.length"
-                            />
+                            <FileInput v-if="company.files.length" :data="company.files" :reedOnly="true" />
                             <p v-else>&#8212;</p>
                         </div>
                     </div>
@@ -287,16 +272,13 @@
             </div>
         </div>
         <div class="col-12 text-center mt-3">
-            <h4
-                class="requisistes-show-btn"
-                @click.prevent="toggleRequisistesVisible"
-            >
+            <h4 @click.prevent="toggleRequisistesVisible" class="requisistes-show-btn">
                 дополнительно
-                <i class="fas fa-sort-down visible" v-if="!requisistesVisible"></i>
-                <i class="fas fa-sort-up unvisible" v-else></i>
+                <i v-if="!requisistesVisible" class="fas fa-sort-down visible"></i>
+                <i v-else class="fas fa-sort-up unvisible"></i>
             </h4>
         </div>
-        <div class="col-12 requisistes pt-3" v-show="requisistesVisible">
+        <div v-show="requisistesVisible" class="col-12 requisistes pt-3">
             <div class="row">
                 <div class="col-12">
                     <div class="row no-gutters">
@@ -319,7 +301,7 @@
                                     <strong>ОГРН: </strong>
                                 </div>
                                 <div class="col-9 text-right align-self-center">
-                                    <p class="text-primary" v-if="company.ogrn">
+                                    <p v-if="company.ogrn" class="text-primary">
                                         {{ company.ogrn }}
                                     </p>
                                     <p v-else>&#8212;</p>
@@ -508,10 +490,10 @@
 </template>
 
 <script>
-import {MixinCompanyDetailInfo} from "@/components/Company/mixins.js";
+import { MixinCompanyDetailInfo } from '@/components/Company/mixins.js';
 
 export default {
-    mixins: [MixinCompanyDetailInfo],
-    name: "Company",
+    name: 'Company',
+    mixins: [MixinCompanyDetailInfo]
 };
 </script>

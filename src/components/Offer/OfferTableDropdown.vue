@@ -29,51 +29,39 @@
                 <Tab
                     id="second-tab"
                     name="ТП АРЕНДА АКТИВ"
-                    :suffix="`<span class='${
-            activeRentOffers.length ? 'suffix' : 'suffix suffix-none'
-          }'>${activeRentOffers.length}</span>`"
+                    :suffix="`<span class='${activeRentOffers.length ? 'suffix' : 'suffix suffix-none'}'>${
+                        activeRentOffers.length
+                    }</span>`"
                 >
-                    <OfferMiniList
-                        :miniOffers="activeRentOffers"
-                        @toggleAvito="handleToggleAvito"
-                    />
+                    <OfferMiniList @toggleAvito="handleToggleAvito" :miniOffers="activeRentOffers" />
                 </Tab>
                 <Tab
+                    v-if="archiveRentOffers.length"
                     id="third-tab"
                     name="ТП АРЕНДА АРХИВ"
                     :suffix="`<span class='suffix suffix-none'>1</span>`"
-                    v-if="archiveRentOffers.length"
                 >
-                    <OfferMiniList
-                        :miniOffers="archiveRentOffers"
-                        @toggleAvito="handleToggleAvito"
-                    />
+                    <OfferMiniList @toggleAvito="handleToggleAvito" :miniOffers="archiveRentOffers" />
                 </Tab>
                 <Tab
+                    v-if="salesOffers.array.length"
                     id="fourth-tab"
                     name="<span class='sales-link'>Объект продается!</span>"
-                    :suffix="`<span class='${
-            salesOffers.countOfActive ? 'suffix' : 'suffix suffix-none'
-          }'>${salesOffers.countOfActive}</span>`"
-                    v-if="salesOffers.array.length"
+                    :suffix="`<span class='${salesOffers.countOfActive ? 'suffix' : 'suffix suffix-none'}'>${
+                        salesOffers.countOfActive
+                    }</span>`"
                 >
-                    <OfferMiniList
-                        :miniOffers="salesOffers.array"
-                        @toggleAvito="handleToggleAvito"
-                    />
+                    <OfferMiniList @toggleAvito="handleToggleAvito" :miniOffers="salesOffers.array" />
                 </Tab>
                 <Tab
+                    v-if="storageOffers.array.length"
                     id="fifth-tab"
                     name="<span class='storage-link'>Есть услуги О/Х!</span>"
-                    :suffix="`<span class='${
-            storageOffers.countOfActive ? 'suffix' : 'suffix suffix-none'
-          }'>${storageOffers.countOfActive}</span>`"
-                    v-if="storageOffers.array.length"
+                    :suffix="`<span class='${storageOffers.countOfActive ? 'suffix' : 'suffix suffix-none'}'>${
+                        storageOffers.countOfActive
+                    }</span>`"
                 >
-                    <OfferMiniList
-                        :miniOffers="storageOffers.array"
-                        @toggleAvito="handleToggleAvito"
-                    />
+                    <OfferMiniList @toggleAvito="handleToggleAvito" :miniOffers="storageOffers.array" />
                 </Tab>
             </Tabs>
         </td>
@@ -81,62 +69,58 @@
 </template>
 
 <script>
-
-
-import OfferMiniList from "@/components/Offer/OfferMiniList.vue";
+import OfferMiniList from '@/components/Offer/OfferMiniList.vue';
 
 export default {
-    name: "OfferTableDropdown",
+    name: 'OfferTableDropdown',
     components: {
         OfferMiniList
-    },
-    data() {
-        return {};
     },
     props: {
         offer: {
             type: Object,
-            required: true,
+            required: true
         },
         miniOffers: {
             type: Array,
-            default: () => [],
-        },
+            default: () => []
+        }
+    },
+    data() {
+        return {};
     },
     computed: {
         rentOffers() {
-            return this.miniOffers.filter(
-                (offer) => offer.deal_type === 1 || offer.deal_type === 4
-            );
+            return this.miniOffers.filter(offer => offer.deal_type === 1 || offer.deal_type === 4);
         },
         activeRentOffers() {
-            return this.rentOffers.filter((offer) => offer.status === 1);
+            return this.rentOffers.filter(offer => offer.status === 1);
         },
         archiveRentOffers() {
-            return this.rentOffers.filter((offer) => offer.status === 2);
+            return this.rentOffers.filter(offer => offer.status === 2);
         },
         salesOffers() {
-            let sales = this.miniOffers.filter((offer) => offer.deal_type === 2);
-            let activeSales = sales.filter((offer) => offer.status === 1);
-            let archiveSales = sales.filter((offer) => offer.status === 2);
+            let sales = this.miniOffers.filter(offer => offer.deal_type === 2);
+            let activeSales = sales.filter(offer => offer.status === 1);
+            let archiveSales = sales.filter(offer => offer.status === 2);
             sales = [...activeSales, ...archiveSales];
-            return {array: sales, countOfActive: activeSales.length};
+            return { array: sales, countOfActive: activeSales.length };
         },
         storageOffers() {
-            let storage = this.miniOffers.filter((offer) => offer.deal_type === 3);
-            let activeStorage = storage.filter((offer) => offer.status === 1);
-            let archiveStorage = storage.filter((offer) => offer.status === 2);
+            let storage = this.miniOffers.filter(offer => offer.deal_type === 3);
+            let activeStorage = storage.filter(offer => offer.status === 1);
+            let archiveStorage = storage.filter(offer => offer.status === 2);
             storage = [...activeStorage, ...archiveStorage];
-            return {array: storage, countOfActive: activeStorage.length};
+            return { array: storage, countOfActive: activeStorage.length };
         },
         areaBuilding() {
-            return this.offer.area_building.toLocaleString("ru-RU");
-        },
+            return this.offer.area_building.toLocaleString('ru-RU');
+        }
     },
     methods: {
         handleToggleAvito() {
-            this.$emit("toggleAvito");
-        },
-    },
+            this.$emit('toggleAvito');
+        }
+    }
 };
 </script>

@@ -1,8 +1,8 @@
 <template>
-    <div v-if="complex" class="ComplexView" @scroll="onScroll">
+    <div v-if="complex" @scroll="onScroll" class="ComplexView">
         <div class="ComplexHeader">
             <div class="ComplexHeader-content">
-                <h1 class="ComplexHeader-name">{{ complex.title || "Нет названия" }}</h1>
+                <h1 class="ComplexHeader-name">{{ complex.title || 'Нет названия' }}</h1>
                 <span class="ComplexHeader-description">
                     <strong>ID комплекса {{ complex.id }}, </strong>
                     поступление {{ $formatter.date(complex.publ_time) }},
@@ -12,29 +12,27 @@
                     <span v-else>без автора</span>, последнее обновление {{ $formatter.date(complex.last_update) }}
                 </span>
             </div>
-            <div class="ComplexHeader-actions" v-if="editAccess">
+            <div v-if="editAccess" class="ComplexHeader-actions">
                 <button>
                     <i class="fas fa-pen text-primary edit"></i>
                 </button>
             </div>
         </div>
-        <ComplexMap :location="complexLocation"/>
-        <ComplexAbout
-            :complex="complex"
-        />
-        <ComplexHoldings :objects="complex.objects"/>
+        <ComplexMap :location="complexLocation" />
+        <ComplexAbout :complex="complex" />
+        <ComplexHoldings :objects="complex.objects" />
     </div>
 </template>
 
 <script>
-import {mapActions} from "vuex";
-import ComplexAbout from "@/components/Complex/ComplexAbout.vue";
-import ComplexMap from "@/components/Complex/ComplexMap.vue";
-import ComplexHoldings from "@/components/Complex/Holding/ComplexHoldings.vue";
+import { mapActions } from 'vuex';
+import ComplexAbout from '@/components/Complex/ComplexAbout.vue';
+import ComplexMap from '@/components/Complex/ComplexMap.vue';
+import ComplexHoldings from '@/components/Complex/Holding/ComplexHoldings.vue';
 
 export default {
-    name: "ComplexView",
-    components: {ComplexHoldings, ComplexMap, ComplexAbout},
+    name: 'ComplexView',
+    components: { ComplexHoldings, ComplexMap, ComplexAbout },
     data() {
         return {
             complex: null
@@ -45,7 +43,7 @@ export default {
             return {
                 ...this.complex.location,
                 fromMkad: this.complex.from_mkad
-            }
+            };
         }
     },
     async mounted() {
@@ -55,6 +53,6 @@ export default {
         ...mapActions({
             fetchComplex: 'FETCH_COMPLEX'
         })
-    },
+    }
 };
 </script>

@@ -1,104 +1,105 @@
 <template>
     <div class="form__control">
         <label for="">
-            <span class="form__label" v-if="label">{{ label }}</span>
+            <span v-if="label" class="form__label">{{ label }}</span>
             <input
+                ref="input"
+                @input="onInput($event.target.value.trim())"
+                @focus="onFocus"
+                @blur="onBlur"
+                @keypress.enter.prevent
                 class="form__input"
                 :class="inputClasses"
                 :type="type"
                 :placeholder="placeholder"
                 :disabled="disabled"
-                @input="onInput($event.target.value.trim())"
-                @focus="onFocus"
-                @blur="onBlur"
-                @keypress.enter.prevent
                 :value="modelValue"
-                ref="input"
                 :min="min"
                 :max="max"
             />
         </label>
-        <div class="searchable" v-if="searchable">
-            <div class="searchable-container" v-show="searchableVisible">
+        <div v-if="searchable" class="searchable">
+            <div v-show="searchableVisible" class="searchable-container">
                 <ul>
-                    <li
-                        v-for="(item, index) in localeOptions"
-                        :key="index + 'fuck'"
-                        @click="selectItem(item)"
-                    >
+                    <li v-for="(item, index) in localeOptions" :key="index + 'fuck'" @click="selectItem(item)">
                         {{ item }}
                     </li>
                 </ul>
             </div>
         </div>
-        <div class="error-container" v-if="v && v.$error">
+        <div v-if="v && v.$error" class="error-container">
             <p>{{ v.$errors[0].$message }}</p>
         </div>
-        <slot/>
+        <slot />
     </div>
 </template>
 
 <script>
-import Mixin from "./mixins.js";
+import Mixin from './mixins.js';
 
 export default {
+    name: 'Input',
     mixins: [Mixin],
-    name: "Input",
-    data() {
-        return {
-            searchableVisible: false,
-            localeOptions: this.options,
-        };
-    },
     props: {
         modelValue: {
             type: [String, Number],
-            default: "",
+            default: ''
         },
         required: {
             type: Boolean,
-            default: false,
+            default: false
         },
         disabled: {
             type: Boolean,
-            default: false,
+            default: false
         },
         v: {
             type: Object,
-            default: null,
+            default: null
         },
         type: {
             type: String,
-            default: "text",
+            default: 'text'
         },
         label: {
             type: String,
-            default: null,
+            default: null
         },
         placeholder: {
             type: String,
-            default: "",
+            default: ''
         },
         searchable: {
             type: Boolean,
-            default: false,
+            default: false
         },
         options: {
             type: [Array, Object],
-            default: () => [],
+            default: () => []
         },
         min: {
-            type: [String, Number],
+            type: [String, Number]
         },
         max: {
-            type: [String, Number],
-        },
+            type: [String, Number]
+        }
+    },
+    data() {
+        return {
+            searchableVisible: false,
+            localeOptions: this.options
+        };
+    },
+    watch: {
+        options() {
+            this.localeOptions = this.options;
+        }
     },
     methods: {
         onInput(value) {
             if (value !== this.modelValue) {
                 this.validate();
-                this.$emit("update:modelValue", value);
+                this.$emit('update:modelValue', value);
                 this.search(value);
             }
         },
@@ -107,7 +108,7 @@ export default {
 
             this.searchableVisible = true;
             this.localeOptions = [];
-            this.options.map((item) => {
+            this.options.map(item => {
                 if (item.toLowerCase().indexOf(value.toLowerCase()) !== -1) {
                     this.localeOptions.push(item);
                 }
@@ -122,25 +123,19 @@ export default {
         selectItem(item) {
             this.onInput(item);
             this.searchableVisible = false;
-        },
+        }
     },
     mounted() {
         if (this.searchable) {
-            document.addEventListener("click", this.close);
+            document.addEventListener('click', this.close);
         }
     },
     beforeUnmount() {
         if (this.searchable) {
-            document.removeEventListener("click", this.close);
+            document.removeEventListener('click', this.close);
         }
-    },
-    watch: {
-        options() {
-            this.localeOptions = this.options;
-        },
-    },
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

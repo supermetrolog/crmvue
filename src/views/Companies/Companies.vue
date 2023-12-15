@@ -1,18 +1,17 @@
 <template>
     <div class="companies">
-        <router-view/>
+        <router-view />
     </div>
 </template>
 
 <script>
 export default {
-    name: "Companies",
+    name: 'Companies',
     components: {
         // Company
         // Table,
         // Timeline,
     },
-    mounted() {
-    },
+    mounted() {}
 };
 </script>

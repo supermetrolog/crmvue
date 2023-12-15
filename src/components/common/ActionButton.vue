@@ -6,10 +6,7 @@
             </button>
         </li>
         <li v-if="advert" class="action-buttons__item">
-            <button
-                class="action-buttons__button action-buttons__button_advert"
-                :class="{ active: advert.value }"
-            >
+            <button class="action-buttons__button action-buttons__button_advert" :class="{ active: advert.value }">
                 <i class="fas fa-rocket"></i>
             </button>
         </li>
@@ -19,10 +16,7 @@
             </button>
         </li>
         <li v-if="favorite" class="action-buttons__item">
-            <button
-                class="action-buttons__button action-buttons__button_favorite"
-                :class="{ active: favorite.value }"
-            >
+            <button class="action-buttons__button action-buttons__button_favorite" :class="{ active: favorite.value }">
                 <i class="fas fa-star"></i>
             </button>
         </li>
@@ -35,10 +29,7 @@
             </button>
         </li>
         <li v-if="dislike" class="action-buttons__item">
-            <button
-                class="action-buttons__button action-buttons__button_dislike"
-                :class="{ active: dislike.value }"
-            >
+            <button class="action-buttons__button action-buttons__button_dislike" :class="{ active: dislike.value }">
                 <i class="fas fa-thumbs-down"></i>
             </button>
         </li>
@@ -47,7 +38,7 @@
 
 <script>
 export default {
-    name: "ActionButton",
+    name: 'ActionButton',
     components: {},
     props: {
         edit: {
@@ -67,11 +58,11 @@ export default {
         },
         dislike: {
             type: Object
-        },
+        }
     },
     data() {
         return {};
     },
-    methods: {},
+    methods: {}
 };
 </script>

@@ -3,9 +3,9 @@
         <p class="title">Переходы</p>
         <div class="transition__list">
             <p
-                class="transition__item"
                 v-for="company in TRANSITION_LIST"
                 :key="company.id"
+                class="transition__item"
                 :title="company.officeAdress || 'нет адреса'"
             >
                 <router-link :to="'/companies/' + company.id">
@@ -18,15 +18,14 @@
 </template>
 
 <script>
-import {mapGetters} from "vuex";
+import { mapGetters } from 'vuex';
 
 export default {
-    name: "CallerManagerTransitionList",
+    name: 'CallerManagerTransitionList',
     computed: {
-        ...mapGetters(["TRANSITION_LIST"]),
-    },
+        ...mapGetters(['TRANSITION_LIST'])
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

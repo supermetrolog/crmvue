@@ -4,74 +4,79 @@
             <p v-if="label">
                 {{ label }}
             </p>
-            <div class="item-container" v-for="(item, index) in field" :key="index">
-                <i class="fas fa-minus delete" @click="deleteInput(index)"></i>
+            <div v-for="(item, index) in field" :key="index" class="item-container">
+                <i @click="deleteInput(index)" class="fas fa-minus delete"></i>
 
-                <i class="fas fa-plus add" @click="addInput(item, index)"></i>
+                <i @click="addInput(item, index)" class="fas fa-plus add"></i>
 
                 <input
-                    type="text"
+                    :ref="'input' + index"
+                    v-model="field[index][name]"
                     @input.stop.prevent="onInput"
                     @keypress.enter.prevent
+                    type="text"
                     :class="inputClasses"
                     class="mb-1"
-                    v-model="field[index][name]"
                     :placeholder="placeholder"
-                    :ref="'input' + index"
                 />
             </div>
         </label>
-        <div class="error-container" v-if="v && v.$error">
+        <div v-if="v && v.$error" class="error-container">
             <p>{{ v.$errors[0].$message }}</p>
         </div>
     </div>
 </template>
 
 <script>
-import Mixin from "./mixins.js";
+import Mixin from './mixins.js';
 
 export default {
+    name: 'PropogationInput',
     mixins: [Mixin],
-    name: "PropogationInput",
-    data() {
-        return {
-            field: null,
-        };
-    },
     props: {
         modelValue: {
             type: Array,
-            default: () => this.defaultField(),
+            default: () => this.defaultField()
         },
         required: {
             type: Boolean,
-            default: false,
+            default: false
         },
         v: {
             type: Object,
-            default: null,
+            default: null
         },
         label: {
             type: String,
-            default: null,
+            default: null
         },
         // maska: {
         //   default: null,
         // },
         placeholder: {
-            type: String,
+            type: String
         },
         name: {
             type: String,
             required: true,
-            default: "fuck",
-        },
+            default: 'fuck'
+        }
+    },
+    data() {
+        return {
+            field: null
+        };
+    },
+    watch: {
+        modelValue() {
+            this.setData();
+        }
     },
     methods: {
         onInput() {
             this.validate();
             const array = [];
-            this.field.map((item) => {
+            this.field.map(item => {
                 if (item[this.name].length) {
                     array.push(item);
                 }
@@ -79,22 +84,18 @@ export default {
             if (this.field.length == 1) {
                 this.field = array;
             }
-            this.$emit("update:modelValue", this.field);
+            this.$emit('update:modelValue', this.field);
         },
         deleteInput(index) {
             this.field = this.field.filter((_, idx) => idx != index);
-            this.$emit("update:modelValue", this.field);
+            this.$emit('update:modelValue', this.field);
         },
         addInput(item, index) {
-            if (
-                item &&
-                item[this.name].length &&
-                typeof this.field[index + 1] == "undefined"
-            ) {
-                this.field.push({[this.name]: ""});
+            if (item && item[this.name].length && typeof this.field[index + 1] == 'undefined') {
+                this.field.push({ [this.name]: '' });
                 this.$nextTick(() => {
                     setTimeout(() => {
-                        this.$refs["input" + (index + 1)][0].focus();
+                        this.$refs['input' + (index + 1)][0].focus();
                     }, 0);
                 });
             }
@@ -107,19 +108,13 @@ export default {
             }
         },
         defaultField() {
-            return [{[this.name]: ""}];
-        },
+            return [{ [this.name]: '' }];
+        }
     },
     mounted() {
         this.setData();
-    },
-    watch: {
-        modelValue() {
-            this.setData();
-        },
-    },
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

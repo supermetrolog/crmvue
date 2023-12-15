@@ -1,12 +1,12 @@
 <template>
     <div class="UserProfile">
         <div class="UserProfile-logout">
-            <button class="btn btn-danger" @click="clickLogout">Выйти</button>
+            <button @click="clickLogout" class="btn btn-danger">Выйти</button>
         </div>
         <p class="UserProfile-name">
             {{ user.userProfile.full_name }}
         </p>
-        <hr/>
+        <hr />
         <div class="UserProfile-table">
             <div class="UserProfile-row">
                 <span class="label">Юзернейм</span>
@@ -60,7 +60,7 @@ export default {
         }
     },
     data() {
-        return {}
+        return {};
     },
     computed: {
         userPhones() {
@@ -75,5 +75,5 @@ export default {
             this.$emit('logOut');
         }
     }
-}
+};
 </script>

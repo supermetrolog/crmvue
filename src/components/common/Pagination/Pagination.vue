@@ -1,64 +1,57 @@
 <template>
-    <div class="pagination py-4" v-show="paginationVisible">
-        <button
-            class="btn btn-primary"
-            @click.prevent="clickLoadMore"
-            v-show="!loader"
-        >
+    <div v-show="paginationVisible" class="pagination py-4">
+        <button v-show="!loader" @click.prevent="clickLoadMore" class="btn btn-primary">
             показать еще
             <i class="fas fa-list-ul d-inline ml-1"></i>
         </button>
-        <Loader class="center small py-4 no-absolute" v-if="loader"/>
+        <Loader v-if="loader" class="center small py-4 no-absolute" />
     </div>
 </template>
 
 <script>
-import Loader from "../Loader.vue";
+import Loader from '../Loader.vue';
 
 export default {
-    name: "Pagination",
+    name: 'Pagination',
     components: {
-        Loader,
+        Loader
+    },
+    emits: ['loadMore', 'next'],
+    props: {
+        pagination: {
+            type: Object
+        }
     },
     data() {
         return {
             loader: false,
-            pageNumber: 1,
+            pageNumber: 1
         };
-    },
-    props: {
-        pagination: {
-            type: Object,
-        },
     },
     computed: {
         paginationVisible() {
             if (!this.pagination) {
                 return false;
             }
-            return this.pagination.pageCount > this.pagination.currentPage
-                ? true
-                : false;
-        },
+            return this.pagination.pageCount > this.pagination.currentPage ? true : false;
+        }
+    },
+    watch: {
+        pagination() {
+            this.loader = false;
+        }
     },
     methods: {
         clickLoadMore() {
             if (this.pagination.pageCount > this.pagination.currentPage) {
                 this.loader = true;
-                this.$emit("loadMore");
+                this.$emit('loadMore');
                 this.pageNumber++;
-                this.$emit("next", this.pageNumber);
+                this.$emit('next', this.pageNumber);
             }
-        },
-    },
-    watch: {
-        pagination() {
-            this.loader = false;
-        },
-    },
-    emits: ["loadMore", "next"],
+        }
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

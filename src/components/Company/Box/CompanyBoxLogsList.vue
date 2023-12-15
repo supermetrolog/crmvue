@@ -3,7 +3,7 @@
         <InfiniteLoading class="loader" top v-bind="$attrs" :target="`.${target}`">
             <template #complete><span></span></template>
         </InfiniteLoading>
-        <div class="CompanyLogsList-empty" v-if="logsCount == 0">
+        <div v-if="logsCount == 0" class="CompanyLogsList-empty">
             <span>Будьте первым!</span>
             <span>Не оставлено ни единого комментария.</span>
         </div>
@@ -19,27 +19,26 @@
 </template>
 
 <script>
-
-import InfiniteLoading from "v3-infinite-loading";
-import {logHandler} from "@/utils/logs.js";
-import "v3-infinite-loading/lib/style.css";
-import CompanyLogsItem from "@/components/Company/Box/CompanyBoxLogsListItem.vue";
+import InfiniteLoading from 'v3-infinite-loading';
+import { logHandler } from '@/utils/logs.js';
+import 'v3-infinite-loading/lib/style.css';
+import CompanyLogsItem from '@/components/Company/Box/CompanyBoxLogsListItem.vue';
 
 export default {
-    name: "CompanyLogsList",
-    components: {CompanyLogsItem, InfiniteLoading},
+    name: 'CompanyLogsList',
+    components: { CompanyLogsItem, InfiniteLoading },
     props: {
         logs: {
             type: Array,
-            required: true,
+            required: true
         },
         logsCount: {
-            type: Number,
+            type: Number
         },
         target: {
             type: String,
-            default: "infinite-loading",
-        },
+            default: 'infinite-loading'
+        }
     },
     computed: {
         formattedLogs() {
@@ -48,7 +47,17 @@ export default {
         lastMessage() {
             let [result] = this.formattedLogs.slice(-1);
             return result;
-        },
+        }
+    },
+    watch: {
+        lastMessage: {
+            handler: function (newItem, oldItem) {
+                if (newItem?.id !== oldItem?.id) {
+                    this.lastMessageScroll();
+                }
+            },
+            deep: true
+        }
     },
     methods: {
         getPreventLogItem(index) {
@@ -60,24 +69,14 @@ export default {
             }
         },
         lastMessageScroll(b) {
-            let e = document.querySelector(".CompanyLogsList-scroll");
+            let e = document.querySelector('.CompanyLogsList-scroll');
             if (!e) return;
 
             e.scrollIntoView({
-                behavior: b || "auto",
-                block: "end",
+                behavior: b || 'auto',
+                block: 'end'
             });
-        },
-    },
-    watch: {
-        lastMessage: {
-            handler: function (newItem, oldItem) {
-                if (newItem?.id !== oldItem?.id) {
-                    this.lastMessageScroll();
-                }
-            },
-            deep: true,
-        },
-    },
+        }
+    }
 };
 </script>

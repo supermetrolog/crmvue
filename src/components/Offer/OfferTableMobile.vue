@@ -8,26 +8,22 @@
                 </Tr>
             </template>
             <template #tbody>
-                <Loader v-if="loader" class="center small"/>
-                <OfferMobileItem
-                    v-for="offer in offers"
-                    :key="offer.id"
-                    :offer="offer"
-                />
+                <Loader v-if="loader" class="center small" />
+                <OfferMobileItem v-for="offer in offers" :key="offer.id" :offer="offer" />
             </template>
         </Table>
     </div>
 </template>
 
 <script>
-import Table from "@/components/common/Table/Table.vue";
-import Tr from "@/components/common/Table/Tr.vue";
-import Th from "@/components/common/Table/Th.vue";
-import Loader from "@/components/common/Loader.vue";
-import OfferMobileItem from "@/components/Offer/OfferTableMobileItem.vue";
+import Table from '@/components/common/Table/Table.vue';
+import Tr from '@/components/common/Table/Tr.vue';
+import Th from '@/components/common/Table/Th.vue';
+import Loader from '@/components/common/Loader.vue';
+import OfferMobileItem from '@/components/Offer/OfferTableMobileItem.vue';
 
 export default {
-    name: "OfferTableMobile",
+    name: 'OfferTableMobile',
     components: {
         OfferMobileItem,
         Loader,
@@ -35,24 +31,23 @@ export default {
         Tr,
         Th
     },
-    data() {
-        return {};
-    },
     props: {
         offers: {
-            type: Array,
+            type: Array
         },
         loader: {
             type: Boolean,
-            default: false,
+            default: false
         },
         sortable: {
             type: Boolean,
-            default: true,
-        },
+            default: true
+        }
     },
+    data() {
+        return {};
+    }
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

@@ -1,25 +1,25 @@
 <template>
-    <Form class="row" @submit="onSubmit">
+    <Form @submit="onSubmit" class="row">
         <div class="col-6">
             <Input
                 v-model="form.all"
+                @keydown.enter="onSubmit"
                 label="Поиск"
                 placeholder="ID, адрес, собственник, телефон, ФИО"
                 class="main-input"
-                @keydown.enter="onSubmit"
             />
         </div>
         <div class="col-2 align-self-end">
             <div class="offer-search__actions">
-                <Button icon @click="$emit('openFilters')">
-                    <span class="button__badge badge badge-danger" v-if="filterCount">
+                <Button @click="$emit('openFilters')" icon>
+                    <span v-if="filterCount" class="button__badge badge badge-danger">
                         {{ filterCount }}
                     </span>
                     <i class="icon fa-solid fa-sliders"></i>
                 </Button>
                 <div>
                     <a
-                        :href="$router.resolve({name: isMap ? 'OffersMain' : 'OffersMap', query: $route.query}).href"
+                        :href="$router.resolve({ name: isMap ? 'OffersMain' : 'OffersMap', query: $route.query }).href"
                         class="button button--icon"
                     >
                         <i v-if="isMap" class="icon fa-solid fa-list-ul"></i>
@@ -35,7 +35,7 @@
         </div>
         <div class="col-12">
             <div class="offer-search__functions">
-                <Button icon warning small @click.prevent="clickFavorites">
+                <Button @click.prevent="clickFavorites" icon warning small>
                     <i class="fa-solid fa-star"></i>
                     <span>Избранные</span>
                 </Button>
@@ -43,7 +43,7 @@
                     <i class="fa-solid fa-heart"></i>
                     <span>Сохранить поиск</span>
                 </Button>
-                <Button icon small @click="resetForm">
+                <Button @click="resetForm" icon small>
                     <i class="fa-solid fa-circle-xmark"></i>
                     <span>Сбросить фильтры</span>
                 </Button>
@@ -53,13 +53,13 @@
 </template>
 
 <script>
-import {FormMixin} from "@/components/Forms/mixins.js";
-import {waitHash} from "@/utils";
-import Button from "@/components/common/Button.vue";
+import { FormMixin } from '@/components/Forms/mixins.js';
+import { waitHash } from '@/utils';
+import Button from '@/components/common/Button.vue';
 
 export default {
-    components: {Button},
-    name: "FormOfferSearchExternal",
+    name: 'FormOfferSearchExternal',
+    components: { Button },
     mixins: [FormMixin],
     props: {
         offersCount: {
@@ -71,22 +71,22 @@ export default {
             default: false
         }
     },
+    watch: {
+        '$route.query': function (newQuery, oldQuery) {
+            delete newQuery.page;
+            delete oldQuery.page;
+            if (waitHash(newQuery) !== waitHash(oldQuery)) {
+                this.setDefaultFields();
+                this.setQueryFields();
+            }
+        }
+    },
     methods: {
         clickFavorites() {
             if (this.form.favorites) {
                 this.form.favorites = null;
             } else {
                 this.form.favorites = 1;
-            }
-        },
-    },
-    watch: {
-        "$route.query": function (newQuery, oldQuery) {
-            delete newQuery.page;
-            delete oldQuery.page;
-            if (waitHash(newQuery) !== waitHash(oldQuery)) {
-                this.setDefaultFields();
-                this.setQueryFields();
             }
         }
     }

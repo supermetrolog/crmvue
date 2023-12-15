@@ -1,6 +1,6 @@
 <template>
     <div class="deal-info">
-        <ComplexDealInfoHeader :company="company" :consultant="consultant"/>
+        <ComplexDealInfoHeader :company="company" :consultant="consultant" />
         <div class="deal-info__body">
             <div class="deal-info__content">
                 <ComplexDealInfoDetailed
@@ -19,39 +19,39 @@
                     :specialTerms="additionalDetails.specialTerms"
                     :business="additionalDetails.business"
                 />
-                <deal-owner :owner="owner"/>
+                <deal-owner :owner="owner" />
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import ComplexDealInfoHeader from "@/components/Complex/Deal/ComplexDealInfoHeader.vue";
-import ComplexDealInfoDetailed from "@/components/Complex/Deal/DealDetailedInfo.vue";
+import ComplexDealInfoHeader from '@/components/Complex/Deal/ComplexDealInfoHeader.vue';
+import ComplexDealInfoDetailed from '@/components/Complex/Deal/ComplexDealDetailedInfo.vue';
 
 export default {
-    name: "ComplexDealInfo",
-    components: {ComplexDealInfoDetailed, ComplexDealInfoHeader},
+    name: 'ComplexDealInfo',
+    components: { ComplexDealInfoDetailed, ComplexDealInfoHeader },
     props: {
         company: {
-            type: Object,
+            type: Object
         },
         consultant: {
-            type: Object,
+            type: Object
         },
         additionalDetails: {
-            type: Object,
+            type: Object
         },
         buildingInfo: {
-            type: Object,
+            type: Object
         },
         owner: {
             type: Object,
-            required: true,
-        },
+            required: true
+        }
     },
     data() {
         return {};
-    },
+    }
 };
 </script>

@@ -1,36 +1,29 @@
 <template>
     <strong>
         Контакты
-        <small
-            class="edit_btn CompanyBoxContactList-create"
-            @click="this.$emit('clickCreateContact')"
-        >
+        <small @click="this.$emit('clickCreateContact')" class="edit_btn CompanyBoxContactList-create">
             [создать]
         </small>
     </strong>
     <div class="CompanyBoxContactList">
-        <CompanyBoxContactListItem
-            v-for="contact in contacts"
-            :key="contact.id"
-            :contact="contact"
-        />
+        <CompanyBoxContactListItem v-for="contact in contacts" :key="contact.id" :contact="contact" />
     </div>
 </template>
 
 <script>
-import CompanyBoxContactListItem from "./CompanyBoxContactListItem.vue";
+import CompanyBoxContactListItem from './CompanyBoxContactListItem.vue';
 
 export default {
-    name: "CompanyBoxContactList",
+    name: 'CompanyBoxContactList',
+    components: {
+        CompanyBoxContactListItem
+    },
+    emits: ['clickCreateContact'],
     props: {
         contacts: {
             type: Array,
-            required: true,
-        },
-    },
-    components: {
-        CompanyBoxContactListItem,
-    },
-    emits: ["clickCreateContact"],
+            required: true
+        }
+    }
 };
 </script>

@@ -2,143 +2,133 @@
     <div class="objects-list row no-gutters">
         <div class="wrapper col-12 px-3">
             <div class="row no-gutters">
-                <div class="col-12 py-3" v-if="label">
+                <div v-if="label" class="col-12 py-3">
                     <h4 class="label">{{ label }}</h4>
                 </div>
-                <div class="col-4 mx-auto" v-if="!objects.length && !loader">
+                <div v-if="!objects.length && !loader" class="col-4 mx-auto">
                     <h3 class="text-warning text-center">НЕТ ДАННЫХ</h3>
                 </div>
-                <div
-                    class="col-12 px-2 pagination-params"
-                    v-if="pagination && pagination.pageCount"
-                >
+                <div v-if="pagination && pagination.pageCount" class="col-12 px-2 pagination-params">
                     <p>
                         <b>{{ pagination.currentPage }}</b> страница из
                         <b>{{ pagination.pageCount }};</b>
                     </p>
                     <p>
                         отображение строк
-                        <b>{{ countVisibleRows }}</b> (всего
-                        <b>{{ pagination.totalCount }}</b
+                        <b>{{ countVisibleRows }}</b> (всего <b>{{ pagination.totalCount }}</b
                         >)
                     </p>
                 </div>
-                <Loader class="center" v-if="loader"/>
+                <Loader v-if="loader" class="center" />
                 <component
                     :is="currentComponent"
                     v-for="object in objects"
-                    :disabled="disabled"
-                    :offer="object"
-                    :isSelected="!!selectedObjects.find((item) => item.id == object.id)"
                     :key="object.id"
-                    :col="col"
-                    :currentStepId="currentStepId"
-                    :classList="
-            currentObjects.find(
-              (item) =>
-                (item.offer_id == object.original_id ||
-                  item.offer_id == object.offer_id) &&
-                item.type_id == object.type_id
-            )
-              ? 'success'
-              : ''
-          "
                     @select="$emit('select', $event)"
                     @unSelect="$emit('unSelect', $event)"
                     @addComment="(...argv) => this.$emit('addComment', ...argv)"
                     @deleteFavoriteOffer="$emit('deleteFavoriteOffer')"
+                    :disabled="disabled"
+                    :offer="object"
+                    :isSelected="!!selectedObjects.find(item => item.id == object.id)"
+                    :col="col"
+                    :currentStepId="currentStepId"
+                    :classList="
+                        currentObjects.find(
+                            item =>
+                                (item.offer_id == object.original_id || item.offer_id == object.offer_id) &&
+                                item.type_id == object.type_id
+                        )
+                            ? 'success'
+                            : ''
+                    "
                 />
-                <div
-                    class="col-12 px-2 pagination-params"
-                    v-if="pagination && pagination.pageCount"
-                >
+                <div v-if="pagination && pagination.pageCount" class="col-12 px-2 pagination-params">
                     <p>
                         <b>{{ pagination.currentPage }}</b> страница из
                         <b>{{ pagination.pageCount }};</b>
                     </p>
                     <p>
                         отображение строк
-                        <b>{{ countVisibleRows }}</b> (всего
-                        <b>{{ pagination.totalCount }}</b
+                        <b>{{ countVisibleRows }}</b> (всего <b>{{ pagination.totalCount }}</b
                         >)
                     </p>
                 </div>
             </div>
         </div>
-        <hr v-if="withSeparator && !loader"/>
+        <hr v-if="withSeparator && !loader" />
     </div>
 </template>
 
 <script>
-import CompanyObjectItemOfferOnly from "@/components/Company/Object/CompanyObjectItemOfferOnly.vue";
-import Loader from "@/components/common/Loader.vue";
+import CompanyObjectItemOfferOnly from '@/components/Company/Object/CompanyObjectItemOfferOnly.vue';
+import Loader from '@/components/common/Loader.vue';
 
 export default {
-    name: "ObjectsList",
-    emits: ["select", "unSelect", "addComment", "deleteFavoriteOffer"],
+    name: 'ObjectsList',
     components: {
         Loader,
         CompanyObjectItemOfferOnly
     },
-    data() {
-        return {};
-    },
+    emits: ['select', 'unSelect', 'addComment', 'deleteFavoriteOffer'],
     props: {
         objects: {
             type: [Array, Boolean],
-            default: () => [],
+            default: () => []
         },
         selectedObjects: {
             type: Array,
-            default: () => [],
+            default: () => []
         },
         currentObjects: {
             type: Array,
-            default: () => [],
+            default: () => []
         },
         disabled: {
             type: Boolean,
-            default: false,
+            default: false
         },
         selectOnlyOne: {
             type: Boolean,
-            default: false,
+            default: false
         },
         label: {
             type: String,
-            default: null,
+            default: null
         },
         withSeparator: {
             type: Boolean,
-            default: false,
+            default: false
         },
         loader: {
             type: Boolean,
-            default: false,
+            default: false
         },
         col: {
             type: String,
-            default: "col-6 col-xl-3",
+            default: 'col-6 col-xl-3'
         },
         viewMode: {
             type: Boolean,
-            default: false,
+            default: false
         },
         pagination: {
             type: Object,
-            default: () => {
-            },
+            default: () => {}
         },
         currentStepId: {
-            type: Number,
-        },
+            type: Number
+        }
+    },
+    data() {
+        return {};
     },
     computed: {
         currentComponent() {
             if (this.viewMode) {
-                return "CompanyObjectItemOfferOnly";
+                return 'CompanyObjectItemOfferOnly';
             }
-            return "CompanyObjectItemOfferOnly";
+            return 'CompanyObjectItemOfferOnly';
         },
         countVisibleRows() {
             let to = this.pagination.perPage * this.pagination.currentPage;
@@ -146,15 +136,14 @@ export default {
                 to = this.pagination.totalCount;
             }
             return to;
-        },
+        }
     },
     methods: {
         addComment(object, comment) {
-            this.$emit("addComment", object, comment);
-        },
-    },
+            this.$emit('addComment', object, comment);
+        }
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

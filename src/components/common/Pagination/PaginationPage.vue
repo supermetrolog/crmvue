@@ -1,17 +1,16 @@
 <template>
     <button
-        class="pagination-classic__button"
-        :class="{'pagination-classic__button--navigate': navigate, active: active}"
         @click.prevent="$emit('click')"
+        class="pagination-classic__button"
+        :class="{ 'pagination-classic__button--navigate': navigate, active: active }"
         :disabled="disabled"
     >
-        <slot/>
+        <slot />
     </button>
 </template>
 <script>
-
 export default {
-    name: "PaginationPage",
+    name: 'PaginationPage',
     emits: ['click'],
     props: {
         navigate: {
@@ -27,5 +26,5 @@ export default {
             default: false
         }
     }
-}
+};
 </script>

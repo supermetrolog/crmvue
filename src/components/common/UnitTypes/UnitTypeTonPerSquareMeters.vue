@@ -1,12 +1,10 @@
 <template>
-    <span class="unit-type unit-type--size_small">
-        т./м<sup>2</sup>
-  </span>
+    <span class="unit-type unit-type--size_small"> т./м<sup>2</sup> </span>
 </template>
 
 <script>
 export default {
-    name: "UnitTypeTonPerSquareMeters",
+    name: 'UnitTypeTonPerSquareMeters'
 };
 </script>
 

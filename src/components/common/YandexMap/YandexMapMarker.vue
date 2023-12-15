@@ -4,50 +4,44 @@
 
 <script>
 export default {
-    name: "YandexMapMarker",
-    data() {
-        return {
-            geoObject: null,
-        };
-    },
-    inject: ["add", "remove"],
+    name: 'YandexMapMarker',
+    inject: ['add', 'remove'],
     props: {
         coords: {
             type: Array,
-            required: true,
+            required: true
         },
         markerId: {
             type: [Number, String],
-            required: true,
+            required: true
         },
         balloonContentBody: String,
         balloonContentHeader: String,
         balloonContentFooter: String,
-        hintContent: String,
+        hintContent: String
+    },
+    data() {
+        return {
+            geoObject: null
+        };
     },
     geoObjects: {},
-    mounted() {
-        this.createGeoObject();
-    },
-    beforeUnmount() {
-        this.removeGeoObject();
-    },
 
     methods: {
         createGeoObject() {
             const marker = {
-                type: "Feature",
+                type: 'Feature',
                 id: this.markerId,
-                geometry: {type: "Point", coordinates: this.coords},
+                geometry: { type: 'Point', coordinates: this.coords },
                 properties: {
                     balloonContentHeader: this.balloonContentHeader,
                     balloonContentBody: this.balloonContentBody,
                     balloonContentFooter: this.balloonContentFooter,
-                    hintContent: this.hintContent,
+                    hintContent: this.hintContent
                 },
                 options: {
-                    preset: "islands#circleIcon",
-                },
+                    preset: 'islands#circleIcon'
+                }
             };
 
             this.$options.geoObjects[this.markerId] = marker;
@@ -60,10 +54,15 @@ export default {
                 this.remove(thisGeoObject);
                 delete this.$options.geoObjects[this.markerId];
             }
-        },
+        }
     },
+    mounted() {
+        this.createGeoObject();
+    },
+    beforeUnmount() {
+        this.removeGeoObject();
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

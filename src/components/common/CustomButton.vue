@@ -1,43 +1,29 @@
 <template>
     <div class="button">
         <button
+            v-if="!optionsLocale.extraVisible || optionsLocale.btnVisible"
+            @click="clickBtn"
             class="action"
             :class="[
-        {
-          active: optionsLocale.btnActive,
-        },
-        optionsLocale.btnClass,
-        { disabled: optionsLocale.disabled },
-      ]"
-            @click="clickBtn"
-            v-if="!optionsLocale.extraVisible || optionsLocale.btnVisible"
+                {
+                    active: optionsLocale.btnActive
+                },
+                optionsLocale.btnClass,
+                { disabled: optionsLocale.disabled }
+            ]"
             :title="optionsLocale.disabled ? 'нет доступа' : optionsLocale.title"
         >
             <slot name="btnContent"></slot>
         </button>
 
-        <div
-            class="actions d-inline-block text-center"
-            v-if="optionsLocale.extraVisible"
-        >
-            <slot
-                name="extraContent"
-                :data="{ openned: optionsLocale.extraVisible }"
-            ></slot>
-            <div
-                v-show="optionsLocale.extraVisible"
-                :class="{ 'mt-1': optionsLocale.btnVisible }"
-            >
-        <textarea
-            class="mb-1"
-            v-model.trim="comment"
-            @keypress.enter="confirm"
-            ref="fuck"
-        />
-                <button class="btn-action text-success" @click="confirm">
+        <div v-if="optionsLocale.extraVisible" class="actions d-inline-block text-center">
+            <slot name="extraContent" :data="{ openned: optionsLocale.extraVisible }"></slot>
+            <div v-show="optionsLocale.extraVisible" :class="{ 'mt-1': optionsLocale.btnVisible }">
+                <textarea ref="fuck" v-model.trim="comment" @keypress.enter="confirm" class="mb-1" />
+                <button @click="confirm" class="btn-action text-success">
                     <i class="fas fa-check"></i>
                 </button>
-                <button class="btn-action text-danger" @click="cancel">
+                <button @click="cancel" class="btn-action text-danger">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
@@ -47,7 +33,12 @@
 
 <script>
 export default {
-    name: "CustomButton",
+    name: 'CustomButton',
+    props: {
+        options: {
+            type: Object
+        }
+    },
     data() {
         return {
             comment: null,
@@ -55,17 +46,17 @@ export default {
                 extraVisible: false,
                 btnActive: false,
                 btnVisible: true,
-                btnClass: "",
+                btnClass: '',
                 defaultBtn: false,
                 disabled: false,
-                ...this.options,
-            },
+                ...this.options
+            }
         };
     },
-    props: {
-        options: {
-            type: Object,
-        },
+    watch: {
+        options() {
+            this.optionsLocale = { ...this.optionsLocale, ...this.options };
+        }
     },
     methods: {
         clickBtn() {
@@ -73,18 +64,18 @@ export default {
                 return;
             }
             if (this.optionsLocale.btnActive || this.optionsLocale.defaultBtn) {
-                return this.$emit("confirm");
+                return this.$emit('confirm');
             }
 
             this.optionsLocale.extraVisible = true;
-            this.$emit("extraVisibleOpen");
+            this.$emit('extraVisibleOpen');
             setTimeout(() => {
                 this.$refs.fuck.focus();
             });
         },
         cancel() {
             this.optionsLocale.extraVisible = false;
-            this.$emit("extraVisibleClose");
+            this.$emit('extraVisibleClose');
             this.comment = null;
         },
         confirm() {
@@ -92,18 +83,12 @@ export default {
                 return;
             }
             this.optionsLocale.extraVisible = false;
-            this.$emit("extraVisibleOpen");
-            this.$emit("confirm", this.comment);
+            this.$emit('extraVisibleOpen');
+            this.$emit('confirm', this.comment);
             this.comment = null;
-        },
-    },
-    watch: {
-        options() {
-            this.optionsLocale = {...this.optionsLocale, ...this.options};
-        },
-    },
+        }
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

@@ -1,10 +1,7 @@
 <template>
     <div class="row item no-gutters">
         <div class="col-2 avatar text-center">
-            <i
-                v-if="isSystemNotification"
-                :class="notificationTypeList[notification.type]"
-            ></i>
+            <i v-if="isSystemNotification" :class="notificationTypeList[notification.type]"></i>
             <div v-else class="image-circle">
                 <img
                     src="@/assets/image/5.jpg"
@@ -20,46 +17,43 @@
                 <small class="time">{{ notification.created_at }}</small>
             </p>
             <p class="text" v-html="notification.body"></p>
-            <HeaderNotificationsActions :type="notification.type" :status="notification.status"/>
+            <HeaderNotificationsActions :type="notification.type" :status="notification.status" />
         </div>
-        <span class="badge" v-if="isNew"> new </span>
+        <span v-if="isNew" class="badge"> new </span>
     </div>
 </template>
 
 <script>
-import {NotificationTypeList} from "@/const/const.js";
-import HeaderNotificationsActions from "@/components/Header/HeaderNotificationsActions.vue";
+import { NotificationTypeList } from '@/const/const.js';
+import HeaderNotificationsActions from '@/components/Header/HeaderNotificationsActions.vue';
 
 export default {
-    name: "HeaderNotificationsItem",
+    name: 'HeaderNotificationsItem',
     components: {
         HeaderNotificationsActions
-    },
-    data() {
-        return {
-            notificationTypeList: NotificationTypeList.get("param"),
-        };
-    },
-    computed: {
-        isSystemNotification() {
-            return this.notification.type < this.notificationTypeList.length
-                ? true
-                : false;
-        },
     },
     props: {
         notification: {
             type: Object,
-            default: null,
+            default: null
         },
         isNew: {
             type: Boolean,
-            default: false,
-        },
+            default: false
+        }
     },
-    methods: {},
+    data() {
+        return {
+            notificationTypeList: NotificationTypeList.get('param')
+        };
+    },
+    computed: {
+        isSystemNotification() {
+            return this.notification.type < this.notificationTypeList.length ? true : false;
+        }
+    },
+    methods: {}
 };
 </script>
 
-<style>
-</style>
+<style></style>

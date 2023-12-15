@@ -12,9 +12,9 @@
                 <Key> Кому:</Key>
                 <Value>
                     <p
-                        class="letter-contact-value letter-target"
                         v-for="lEmail in letter.letterEmails"
                         :key="lEmail.id"
+                        class="letter-contact-value letter-target"
                     >
                         <template v-if="lEmail.contact">
                             {{ lEmail.contact.first_and_last_name }}
@@ -22,9 +22,9 @@
                         <span class="letter-c-value">{{ lEmail.email }}</span>
                     </p>
                     <p
-                        class="letter-contact-value letter-target"
                         v-for="lPhone in letter.letterPhones"
                         :key="lPhone.id"
+                        class="letter-contact-value letter-target"
                     >
                         <template v-if="lPhone.contact">
                             {{ lPhone.contact.first_and_last_name }}
@@ -43,24 +43,14 @@
                 </Value>
                 <Key> Метод:</Key>
                 <Value>
-          <span
-              class="letter-shipping-method success"
-              v-if="letter.shipping_method"
-          >
-            CRM
-          </span>
-                    <span class="letter-shipping-method dark" v-else
-                    >Другими методами</span
-                    >
+                    <span v-if="letter.shipping_method" class="letter-shipping-method success"> CRM </span>
+                    <span v-else class="letter-shipping-method dark">Другими методами</span>
                 </Value>
                 <Key> Компания:</Key>
                 <Value>
-                    <a
-                        class="letter-company"
-                        :href="'companies/' + letter.company_id"
-                        target="_blank"
-                    >{{ letter.company.full_name }}</a
-                    >
+                    <a class="letter-company" :href="'companies/' + letter.company_id" target="_blank">{{
+                        letter.company.full_name
+                    }}</a>
                 </Value>
                 <template v-if="letter.shipping_method">
                     <Key> Тема:</Key>
@@ -76,26 +66,26 @@
         </div>
         <div class="letter-view-offers mt-3">
             <div class="objects">
-                <CompanyObjectsList :objects="getOffers()" :disabled="true" col="col-3"/>
+                <CompanyObjectsList :objects="getOffers()" :disabled="true" col="col-3" />
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import Key from "@/components/common/KeyValue/Key.vue";
-import Value from "@/components/common/KeyValue/Value.vue";
-import KeyValue from "@/components/common/KeyValue/KeyValue.vue";
-import {WayOfSending} from "@/const/const";
-import CompanyObjectsList from "@/components/Company/Object/CompanyObjectList.vue";
+import Key from '@/components/common/KeyValue/Key.vue';
+import Value from '@/components/common/KeyValue/Value.vue';
+import KeyValue from '@/components/common/KeyValue/KeyValue.vue';
+import { WayOfSending } from '@/const/const';
+import CompanyObjectsList from '@/components/Company/Object/CompanyObjectList.vue';
 
 export default {
-    name: "LetterView",
+    name: 'LetterView',
     components: {
         CompanyObjectsList,
         Key,
         Value,
-        KeyValue,
+        KeyValue
     },
     props: {
         letter: {
@@ -105,21 +95,20 @@ export default {
     },
     methods: {
         getWayByIndex(index) {
-            let options = WayOfSending.get("param");
+            let options = WayOfSending.get('param');
             return options[index][1];
         },
         getOffers() {
-            return this.letter.letterOffers.map((item) => {
+            return this.letter.letterOffers.map(item => {
                 if (item.offer && item.offer.id) {
                     return item.offer;
                 } else {
-                    return {...item, noOffer: true};
+                    return { ...item, noOffer: true };
                 }
             });
-        },
-    },
+        }
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

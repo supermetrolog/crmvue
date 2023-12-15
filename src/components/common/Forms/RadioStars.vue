@@ -6,69 +6,59 @@
             </p>
             <div v-if="options.length">
                 <label v-for="option in options" :key="option[0]">
-                    <i
-                        class="far fa-star"
-                        :class="{ 'text-warning fas fa-star': field >= option[0] }"
-                    ></i>
+                    <i class="far fa-star" :class="{ 'text-warning fas fa-star': field >= option[0] }"></i>
                     <input
-                        type="radio"
-                        v-model="field"
-                        class="d-none"
-                        :class="inputClasses"
-                        :value="option[0]"
-                    />
+v-model="field"
+type="radio"
+class="d-none"
+:class="inputClasses"
+:value="option[0]" />
                     {{ option[1].name }}
                 </label>
             </div>
             <div v-else>
-                <input type="radio" v-model="field" :class="inputClasses" :value="1"/>
+                <input v-model="field" type="radio" :class="inputClasses" :value="1" />
             </div>
         </label>
-        <div class="error-container" v-if="v && v.$error">
+        <div v-if="v && v.$error" class="error-container">
             <p>{{ v.$errors[0].$message }}</p>
         </div>
-        <slot/>
+        <slot />
     </div>
 </template>
 
 <script>
-import Mixin from "./mixins.js";
+import Mixin from './mixins.js';
 
 export default {
+    name: 'RadioStars',
     mixins: [Mixin],
-    name: "RadioStars",
-    data() {
-        return {
-            field: this.modelValue,
-        };
-    },
     props: {
         modelValue: {
             type: [Array, Number],
-            default: () => [],
+            default: () => []
         },
         required: {
             type: Boolean,
-            default: false,
+            default: false
         },
         v: {
             type: Object,
-            default: null,
+            default: null
         },
         label: {
             type: String,
-            default: null,
+            default: null
         },
         options: {
             type: Array,
-            default: () => [],
-        },
+            default: () => []
+        }
     },
-    methods: {
-        onChange() {
-            this.validate();
-            this.$emit("update:modelValue", this.field);
-        },
+    data() {
+        return {
+            field: this.modelValue
+        };
     },
     watch: {
         field() {
@@ -76,10 +66,15 @@ export default {
         },
         modelValue() {
             this.field = this.modelValue;
-        },
+        }
     },
+    methods: {
+        onChange() {
+            this.validate();
+            this.$emit('update:modelValue', this.field);
+        }
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

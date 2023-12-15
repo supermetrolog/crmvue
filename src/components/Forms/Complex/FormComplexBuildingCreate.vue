@@ -1,19 +1,22 @@
 <template>
     <div class="building-create-form">
         <Modal
-            :title="false ? 'Редактирование строения' : 'Создание строения'"
             @close="$emit('close')"
+            :title="false ? 'Редактирование строения' : 'Создание строения'"
             classes="autosize"
         >
-            <Loader class="center" v-if="loader"/>
+            <Loader v-if="loader" class="center" />
             <Form @submit="onSubmit" class="center autosize">
-                <Tabs :options="{ useUrlFragment: false, defaultTabHash: 'main' }"
-                      nav-class="building-create-form__tab-list"
-                      nav-item-link-class="building-create-form__tab-link">
-                    <Tab name="Основное" id="main">
+                <Tabs
+                    :options="{ useUrlFragment: false, defaultTabHash: 'main' }"
+                    nav-class="building-create-form__tab-list"
+                    nav-item-link-class="building-create-form__tab-link"
+                >
+                    <Tab id="main" name="Основное">
                         <FormGroup class="mb-1 building-create-form__form-group building-create-form__form-group_long">
                             <MultiSelect
                                 v-model="form.address"
+                                @change="onChangeAddress"
                                 extraClasses="long-text"
                                 label="Адрес строения"
                                 required
@@ -24,15 +27,17 @@
                                 :delay="500"
                                 :searchable="true"
                                 :v="v$.form.address"
-                                :options="async (query) => {
-                return await searchAddress(query);
-              }"
-                                @change="onChangeAddress"
+                                :options="
+                                    async query => {
+                                        return await searchAddress(query);
+                                    }
+                                "
                             />
                         </FormGroup>
                         <FormGroup class="mb-1 building-create-form__form-group building-create-form__form-group_long">
                             <MultiSelect
                                 v-model="form.company_id"
+                                @change="onChangeCompany"
                                 extraClasses="long-text"
                                 label="Компания"
                                 required
@@ -44,42 +49,37 @@
                                 :delay="500"
                                 :searchable="true"
                                 :options="
-              async (query) => {
-                return await searchCompany(query);
-              }
-            "
-                                @change="onChangeCompany"
+                                    async query => {
+                                        return await searchCompany(query);
+                                    }
+                                "
                             />
                         </FormGroup>
                         <FormGroup class="mb-1">
                             <CheckboxIcons
                                 v-model="form.purposes"
+                                @extraSelect="selectObjectType"
                                 label="Тип объекта"
                                 extraLabel="склад"
                                 :noAllSelect="true"
                                 :extraValue="1"
                                 :extraOptions="form.object_type"
-                                @extraSelect="selectObjectType"
                                 class="col-12 pr-2 mx-auto"
                                 :options="objectPurposesWarehouse"
                             />
                             <CheckboxIcons
                                 v-model="form.purposes"
+                                @extraSelect="selectObjectType"
                                 extraLabel="производство"
                                 :noAllSelect="true"
                                 :extraValue="2"
                                 :extraOptions="form.object_type"
-                                @extraSelect="selectObjectType"
                                 class="col-12 mt-4 pr-2 mx-auto"
                                 :options="objectPurposesProduction"
                             />
                         </FormGroup>
                         <FormGroup class="mb-1">
-                            <Checkbox
-                                v-model="form.test_only"
-                                label="Тестовый лот"
-                                class="col large text-center"
-                            />
+                            <Checkbox v-model="form.test_only" label="Тестовый лот" class="col large text-center" />
                         </FormGroup>
                     </Tab>
                     <Tab name="Характериcтики">
@@ -122,7 +122,10 @@
                                 v-model="form.land_use_restrictions"
                                 label="Ограничения"
                                 class="col-4 pl-1"
-                                :options="[[0, 'нет'], [1, 'да']]"
+                                :options="[
+                                    [0, 'нет'],
+                                    [1, 'да']
+                                ]"
                             />
                         </FormGroup>
                         <FormGroup class="mb-1">
@@ -176,11 +179,7 @@
                             />
                         </FormGroup>
                         <FormGroup class="mb-1">
-              <Textarea
-                  v-model="form.description"
-                  label="Описание"
-                  class="col-12 px-0"
-              />
+                            <Textarea v-model="form.description" label="Описание" class="col-12 px-0" />
                         </FormGroup>
                     </Tab>
                     <Tab name="Фотографии">
@@ -239,9 +238,7 @@
                     </Tab>
                 </Tabs>
                 <FormGroup class="mt-1 mb-4">
-                    <Submit class="col-4 mx-auto">
-                        Сохранить
-                    </Submit>
+                    <Submit class="col-4 mx-auto"> Сохранить </Submit>
                 </FormGroup>
             </Form>
         </Modal>
@@ -249,18 +246,17 @@
 </template>
 
 <script>
-import {helpers, maxValue, minValue, required} from "@vuelidate/validators";
-import {mapActions} from "vuex";
-import {yandexmap} from "@/utils";
-import Loader from "@/components/common/Loader.vue";
-import {ComplexFormMixin} from "@/components/Forms/Complex/mixin";
-import Modal from "@/components/common/Modal.vue";
-import {facingTypes, objectClassTypes, objectPurposes, ownTypes} from "@/const/types";
-
+import { helpers, maxValue, minValue, required } from '@vuelidate/validators';
+import { mapActions } from 'vuex';
+import { yandexmap } from '@/utils';
+import Loader from '@/components/common/Loader.vue';
+import { ComplexFormMixin } from '@/components/Forms/Complex/mixin';
+import Modal from '@/components/common/Modal.vue';
+import { facingTypes, objectClassTypes, objectPurposes, ownTypes } from '@/const/types';
 
 export default {
-    name: "FormComplexBuildingCreate",
-    components: {Modal, Loader},
+    name: 'FormComplexBuildingCreate',
+    components: { Modal, Loader },
     mixins: [ComplexFormMixin],
     data() {
         return {
@@ -293,79 +289,65 @@ export default {
                 ownerShipDocuments: [],
                 ownerShipDocumentsList: [],
                 photos: [],
-                photosList: [],
-
-            },
-        }
+                photosList: []
+            }
+        };
     },
     validations() {
         return {
             form: {
                 address: {
-                    required: helpers.withMessage("заполните поле", required),
+                    required: helpers.withMessage('заполните поле', required)
                 },
                 company_id: {
-                    required: helpers.withMessage("заполните поле", required),
+                    required: helpers.withMessage('заполните поле', required)
                 },
                 area_building: {
-                    required: helpers.withMessage("заполните поле", required),
+                    required: helpers.withMessage('заполните поле', required)
                 },
                 object_class: {
-                    required: helpers.withMessage(
-                        "выберите класс объекта",
-                        required
-                    ),
+                    required: helpers.withMessage('выберите класс объекта', required)
                 },
                 year_build: {
-                    minValue: helpers.withMessage(
-                        "минимальное значение - 1800",
-                        minValue(1800)
-                    ),
+                    minValue: helpers.withMessage('минимальное значение - 1800', minValue(1800)),
                     maxValue: helpers.withMessage(
                         `максимальное значение - ${new Date().getFullYear()}`,
                         maxValue(new Date().getFullYear())
-                    ),
+                    )
                 },
                 year_repair: {
-                    minValue: helpers.withMessage(
-                        "минимальное значение - 1800",
-                        minValue(1800)
-                    ),
+                    minValue: helpers.withMessage('минимальное значение - 1800', minValue(1800)),
                     maxValue: helpers.withMessage(
                         `максимальное значение - ${new Date().getFullYear()}`,
                         maxValue(new Date().getFullYear())
-                    ),
+                    )
                 },
                 cadastral_number: {
-                    required: helpers.withMessage("заполните поле", required),
+                    required: helpers.withMessage('заполните поле', required)
                 }
             }
-        }
+        };
     },
     methods: {
-        ...mapActions([
-            "SEARCH_COMPANIES",
-        ]),
+        ...mapActions(['SEARCH_COMPANIES']),
         onChangeAddress() {
-            console.log("CHANGE ADDRESS")
+            console.log('CHANGE ADDRESS');
         },
         async onChangeCompany() {
-            console.log("CHANGE COMPANY")
+            console.log('CHANGE COMPANY');
         },
         async searchCompany() {
-            return ["ОАО Тореадор", "ЗАО ИнкЛомМет"]
+            return ['ОАО Тореадор', 'ЗАО ИнкЛомМет'];
         },
         async searchAddress(query) {
             return await yandexmap.getAddress(query);
         },
         selectObjectType(isSelected, type) {
-            this.form.object_type = this.form.object_type.filter(
-                (item) => item !== type
-            );
+            this.form.object_type = this.form.object_type.filter(item => item !== type);
             if (isSelected) {
                 this.form.object_type.push(type);
             }
-        },
+        }
     },
     computed: {
         objectPurposesWarehouse() {
@@ -376,7 +358,7 @@ export default {
                 //     result.push([purpose, objectPurposes[purpose]]);
                 // }
             }
-            return result
+            return result;
         },
         objectPurposesProduction() {
             const result = [];
@@ -386,17 +368,17 @@ export default {
                 //     result.push([purpose, objectPurposes[purpose]]);
                 // }
             }
-            return result
+            return result;
         },
         objectClassOptions() {
-            return Object.values(objectClassTypes)
+            return Object.values(objectClassTypes);
         },
         facingTypeOptions() {
-            return Object.values(facingTypes)
+            return Object.values(facingTypes);
         },
         ownTypeOptions() {
             return Object.values(ownTypes);
         }
     }
-}
+};
 </script>

@@ -6,11 +6,11 @@ export const logHandler = {
             type,
             created_at,
             updated_at,
-            id,
+            id
         };
     },
     logListFormat(array) {
-        return array.map((item) =>
+        return array.map(item =>
             this.logItemFormat(
                 item.user.userProfile.short_name,
                 item.message,
@@ -20,5 +20,5 @@ export const logHandler = {
                 item.id
             )
         );
-    },
+    }
 };

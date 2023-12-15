@@ -2,12 +2,10 @@
     <Table v-if="miniOffers.length">
         <template #thead>
             <Tr>
-                <Th
-                >
+                <Th>
                     <div class="burger-wrapper">
-                        <BurgerMenuButton :size="'small'"/>
-                    </div
-                    >
+                        <BurgerMenuButton :size="'small'" />
+                    </div>
                 </Th>
                 <Th>ID блока</Th>
                 <Th>Этаж</Th>
@@ -24,8 +22,8 @@
             <OfferMiniListItem
                 v-for="offer in miniOffers"
                 :key="offer.id"
-                :offer="offer"
                 @toggleAvito="handleToggleAvito"
+                :offer="offer"
             />
         </template>
     </Table>
@@ -33,35 +31,35 @@
 </template>
 
 <script>
-import Table from "@/components/common/Table/Table.vue";
-import Tr from "@/components/common/Table/Tr.vue";
-import Th from "@/components/common/Table/Th.vue";
-import OfferMiniListItem from "@/components/Offer/OfferMiniListItem.vue";
-import BurgerMenuButton from "@/components/common/BurgerMenuButton.vue";
+import Table from '@/components/common/Table/Table.vue';
+import Tr from '@/components/common/Table/Tr.vue';
+import Th from '@/components/common/Table/Th.vue';
+import OfferMiniListItem from '@/components/Offer/OfferMiniListItem.vue';
+import BurgerMenuButton from '@/components/common/BurgerMenuButton.vue';
 
 export default {
-    name: "OfferMiniList",
+    name: 'OfferMiniList',
     components: {
         BurgerMenuButton,
         OfferMiniListItem,
         Table,
         Tr,
-        Th,
-    },
-    data() {
-        return {};
+        Th
     },
     props: {
         miniOffers: {
             type: Array,
-            default: () => [],
-        },
+            default: () => []
+        }
+    },
+    data() {
+        return {};
     },
     methods: {
         handleToggleAvito() {
-            this.$emit("toggleAvito");
-        },
-    },
+            this.$emit('toggleAvito');
+        }
+    }
 };
 </script>
 

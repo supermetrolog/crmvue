@@ -23,10 +23,10 @@
                 </p>
                 <PropertyListItem
                     v-for="(prop, idx) in price.properties"
+                    :key="prop.label + idx"
                     :value="prop.value"
                     :valueMin="prop.valueMin"
                     :valueMax="prop.valueMax"
-                    :key="prop.label + idx"
                     :name="prop.label"
                     :unitType="unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR"
                 />
@@ -49,60 +49,60 @@
             <!--      />-->
         </div>
         <div class="building-info__line">
-            <ComplexTabs :parameters="parameters" class="building-info__tabs"/>
-            <ActionButton v-bind="actionButtons" class="building-info__buttons"/>
+            <ComplexTabs :parameters="parameters" class="building-info__tabs" />
+            <ActionButton v-bind="actionButtons" class="building-info__buttons" />
         </div>
     </div>
 </template>
 
 <script>
-import {unitTypes} from "@/const/unitTypes";
-import PropertyList from "@/components/common/Property/PropertyList.vue";
-import PropertyListItem from "@/components/common/Property/PropertyListItem.vue";
-import ActionButton from "@/components/common/ActionButton.vue";
-import ComplexTabs from "@/components/Complex/ComplexTabs.vue";
+import { unitTypes } from '@/const/unitTypes';
+import PropertyList from '@/components/common/Property/PropertyList.vue';
+import PropertyListItem from '@/components/common/Property/PropertyListItem.vue';
+import ActionButton from '@/components/common/ActionButton.vue';
+import ComplexTabs from '@/components/Complex/ComplexTabs.vue';
 
 export default {
-    name: "ComplexDealBuilding",
-    components: {ComplexTabs, ActionButton, PropertyListItem, PropertyList},
+    name: 'ComplexDealBuilding',
+    components: { ComplexTabs, ActionButton, PropertyListItem, PropertyList },
     props: {
         area: {
             type: Object,
-            required: true,
+            required: true
         },
         price: {
             type: Object,
-            required: true,
+            required: true
         },
         parameters: {
             type: Object,
-            required: true,
-        },
+            required: true
+        }
     },
     data() {
         return {
-            unitTypes,
+            unitTypes
         };
     },
-    methods: {},
     computed: {
         actionButtons() {
             return {
-                advert: {value: true},
-                dislike: {value: true},
-                favorite: {value: true},
-                notifications: {value: true},
-                pdf: {value: true},
+                advert: { value: true },
+                dislike: { value: true },
+                favorite: { value: true },
+                notifications: { value: true },
+                pdf: { value: true }
             };
         },
         formattedAreaSum() {
-            const {valueMin, valueMax} = this.area.sum;
+            const { valueMin, valueMax } = this.area.sum;
             return this.$formatter.numberOrRangeNew(valueMin, valueMax);
         },
         formattedPriceSum() {
-            const {valueMin, valueMax} = this.price.sum;
+            const { valueMin, valueMax } = this.price.sum;
             return this.$formatter.numberOrRangeNew(valueMin, valueMax);
-        },
+        }
     },
+    methods: {}
 };
 </script>

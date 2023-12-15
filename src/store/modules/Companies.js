@@ -1,5 +1,5 @@
-import api from "@/api/api"
-import {waitHash} from "../../utils";
+import api from '@/api/api';
+import { waitHash } from '../../utils';
 
 const Companies = {
     state: {
@@ -10,10 +10,10 @@ const Companies = {
         companyGroupList: [],
         companyProductRangeList: [],
         companyInTheBankList: [],
-        company_wait_hash: null,
+        company_wait_hash: null
     },
     mutations: {
-        updateCompanies(state, {data, concat}) {
+        updateCompanies(state, { data, concat }) {
             state.pagination = data.pagination;
             if (concat) {
                 state.companies = state.companies.concat(data.data);
@@ -29,8 +29,8 @@ const Companies = {
             data.map(item => {
                 newCompanyGroupList.push({
                     value: item.id,
-                    label: item.full_name,
-                })
+                    label: item.full_name
+                });
             });
             state.companyGroupList = newCompanyGroupList;
             state.companyGroups = data;
@@ -46,7 +46,7 @@ const Companies = {
         },
         setCompanyWaitHash(state, hash) {
             state.company_wait_hash = hash;
-        },
+        }
     },
     actions: {
         async FETCH_COMPANIES(context) {
@@ -55,14 +55,13 @@ const Companies = {
                 context.commit('updateCompanies', companies);
             }
         },
-        async SEARCH_COMPANIES(context, {query, concat = false}) {
+        async SEARCH_COMPANIES(context, { query, concat = false }) {
             let hash = waitHash(query);
             context.commit('setCompanyWaitHash', hash);
             const data = await api.companies.searchCompanies(query);
             if (data) {
                 if (hash == context.getters.COMPANY_WAIT_HASH) {
-                    context.commit('updateCompanies', {data, concat});
-
+                    context.commit('updateCompanies', { data, concat });
                 } else {
                     return false;
                 }
@@ -123,7 +122,7 @@ const Companies = {
             if (data) {
                 context.commit('updateCompanyInTheBankList', data);
             }
-        },
+        }
     },
     getters: {
         COMPANIES(state) {
@@ -151,6 +150,6 @@ const Companies = {
             return state.company_wait_hash;
         }
     }
-}
+};
 
 export default Companies;

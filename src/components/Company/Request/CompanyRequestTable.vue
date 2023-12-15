@@ -15,7 +15,7 @@
                 </Tr>
             </template>
             <template #tbody>
-                <Loader v-if="loader" class="center"/>
+                <Loader v-if="loader" class="center" />
                 <Tr v-for="request in requests" :key="request.id">
                     <Td class="text-center pr-0">
                         {{ request.id }}
@@ -29,8 +29,8 @@
                             </div>
                             <div class="col-6 text-right">
                                 <p
-                                    class="text-danger d-block"
                                     v-if="request.expressRequest"
+                                    class="text-danger d-block"
                                     :class="{ 'text-grey': request.status !== 1 }"
                                 >
                                     <b>срочный запрос</b>
@@ -38,10 +38,7 @@
                             </div>
 
                             <div class="col-12">
-                                <Progress
-                                    :percent="request.timeline_progress"
-                                    title="Обработано"
-                                />
+                                <Progress :percent="request.timeline_progress" title="Обработано" />
                             </div>
                         </div>
                     </Td>
@@ -57,7 +54,7 @@
                         <p v-if="request.pricePerFloor !== null">
                             {{ $formatter.currency(request.pricePerFloor) }}
                             <small class="text-grey"> м<sup>2</sup>/год </small>
-                            <br/>
+                            <br />
                             {{ $formatter.currency(request.pricePerFloorMonth) }}
                             <small class="text-grey"> м<sup>2</sup>/месяц </small>
                         </p>
@@ -71,31 +68,23 @@
                                 <p>
                                     {{
                                         request.regions
-                                            .map((elem) =>
-                                                this.$formatter.text().ucFirst(elem.info.title)
-                                            )
-                                            .join(", ")
+                                            .map(elem => this.$formatter.text().ucFirst(elem.info.title))
+                                            .join(', ')
                                     }}
                                 </p>
                             </div>
-                            <div class="region-parameters" v-if="request.directions.length">
+                            <div v-if="request.directions.length" class="region-parameters">
                                 <p class="d-inline"><b>Московская область: </b></p>
                                 <p class="d-inline">
                                     {{
-                                        request.directions
-                                            .map((elem) => this.directionList[elem.direction][2])
-                                            .join(", ")
+                                        request.directions.map(elem => this.directionList[elem.direction][2]).join(', ')
                                     }}
                                 </p>
                             </div>
-                            <div class="region-parameters" v-if="request.districts.length">
+                            <div v-if="request.districts.length" class="region-parameters">
                                 <p class="d-inline"><b>Москва: </b></p>
                                 <p class="d-inline">
-                                    {{
-                                        request.districts
-                                            .map((elem) => this.districtList[elem.district][1])
-                                            .join(", ")
-                                    }}
+                                    {{ request.districts.map(elem => this.districtList[elem.district][1]).join(', ') }}
                                 </p>
                             </div>
                             <div>
@@ -106,17 +95,9 @@
                         </div>
                     </Td>
                     <Td class="text-center">
-                        <router-link
-                            :to="'/companies/' + request.company.id"
-                            target="_blank"
-                            class="text-primary"
-                        >
+                        <router-link :to="'/companies/' + request.company.id" target="_blank" class="text-primary">
                             <p :class="{ 'text-warning': !request.company.status }">
-                                {{
-                                    request.company.full_name == "-"
-                                        ? "&#8212;"
-                                        : request.company.full_name
-                                }}
+                                {{ request.company.full_name == '-' ? '&#8212;' : request.company.full_name }}
                             </p>
                         </router-link>
                     </Td>
@@ -127,23 +108,20 @@
                     </Td>
                     <Td class="text-center date" sort="updated_at">
                         <p>
-                            {{ request.updated_at_format ?? "&#8212;" }}
+                            {{ request.updated_at_format ?? '&#8212;' }}
                         </p>
                     </Td>
                     <Td class="text-center status" sort="status">
-                        <h4 class="text-success" v-if="request.status == 1">Актив</h4>
-                        <span
-                            class="badge badge-blue-green"
-                            v-else-if="request.status == 2"
-                        >
-              Завершен
-            </span>
-                        <span class="badge badge-warning" v-else> Пассив </span>
-                        <div class="passive-why" v-if="!request.status">
+                        <h4 v-if="request.status == 1" class="text-success">Актив</h4>
+                        <span v-else-if="request.status == 2" class="badge badge-blue-green"> Завершен </span>
+                        <span v-else class="badge badge-warning"> Пассив </span>
+                        <div v-if="!request.status" class="passive-why">
                             <p class="text-warning d-inline-block">
                                 <b>{{ passiveWhyOptions[request.passive_why].label }}</b>
-                                <span class="text-dark" v-if="request.passive_why_comment"
-                                >: {{ request.passive_why_comment }}</span
+                                <span
+v-if="request.passive_why_comment"
+class="text-dark"
+                                    >: {{ request.passive_why_comment }}</span
                                 >
                             </p>
                         </div>
@@ -155,19 +133,18 @@
 </template>
 
 <script>
-import Td from "@/components/common/Table/Td";
-import {MixinRequestTable} from "../mixins";
-import Loader from "@/components/common/Loader.vue";
+import Td from '@/components/common/Table/Td';
+import { MixinRequestTable } from '../mixins';
+import Loader from '@/components/common/Loader.vue';
 
 export default {
-    mixins: [MixinRequestTable],
-    name: "CompanyRequestTable",
+    name: 'CompanyRequestTable',
     components: {
         Loader,
         Td
     },
+    mixins: [MixinRequestTable]
 };
 </script>
 
-<style>
-</style>
+<style></style>

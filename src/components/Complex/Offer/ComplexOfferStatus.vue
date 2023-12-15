@@ -22,39 +22,34 @@
 </template>
 
 <script>
-
 export default {
-    name: "ComplexOfferStatus",
+    name: 'ComplexOfferStatus',
     components: {},
     props: {
         status: {
             type: Object
-        },
+        }
     },
     data() {
         return {};
     },
-    methods: {},
     computed: {
         offerStatus() {
-            return this.status ? "Сделка завершена" : "Активная сделка";
+            return this.status ? 'Сделка завершена' : 'Активная сделка';
         },
         offerCompany() {
-            return this.status
-                ? `${this.status.company.organization_type} ${this.status.company.name}`
-                : "--";
+            return this.status ? `${this.status.company.organization_type} ${this.status.company.name}` : '--';
         },
         offerDate() {
-            return this.status
-                ? this.$formatter.date().locale(this.status.date)
-                : "--";
+            return this.status ? this.$formatter.date().locale(this.status.date) : '--';
         },
         offerRealtor() {
-            return this.status ? this.status.realtor : "--";
+            return this.status ? this.status.realtor : '--';
         },
         offerConsultant() {
-            return this.status ? this.status.consultant : "--";
-        },
+            return this.status ? this.status.consultant : '--';
+        }
     },
+    methods: {}
 };
 </script>

@@ -1,36 +1,25 @@
 <template>
     <div class="company-search-form">
-        <Form class="autosize" @submit="onSubmit">
+        <Form @submit="onSubmit" class="autosize">
             <FormGroup class="mb-2 px-md-5">
                 <Input
                     v-model="form.all"
+                    @keydown.enter="onSubmit"
                     label="Поиск"
                     placeholder="название компании, ID компании, ФИО брокера, ФИО контакта, телефон"
                     class="col-12 main-input pr-1"
-                    @keydown.enter="onSubmit"
                 />
             </FormGroup>
             <FormGroup class="px-md-5">
-                <a
-                    href="#"
-                    @click.prevent="extraVisible = !extraVisible"
-                    class="text-primary"
-                >
+                <a @click.prevent="extraVisible = !extraVisible" href="#" class="text-primary">
                     фильтры
-                    <span class="badge badge-danger" v-if="filterCount">
-            {{ filterCount }}
-          </span>
-                    <i class="fas fa-angle-down" v-if="!extraVisible"></i>
-                    <i class="fas fa-angle-up" v-else></i>
+                    <span v-if="filterCount" class="badge badge-danger">
+                        {{ filterCount }}
+                    </span>
+                    <i v-if="!extraVisible" class="fas fa-angle-down"></i>
+                    <i v-else class="fas fa-angle-up"></i>
                 </a>
-                <a
-                    href="#"
-                    @click.prevent="resetForm"
-                    class="text-primary ml-5"
-                    v-if="filterCount"
-                >
-                    сбросить
-                </a>
+                <a v-if="filterCount" @click.prevent="resetForm" href="#" class="text-primary ml-5"> сбросить </a>
             </FormGroup>
 
             <div v-show="extraVisible">
@@ -40,10 +29,10 @@
                         label="Консультант"
                         class="col-md-4 col-12 pr-1"
                         :options="
-              async () => {
-                return await FETCH_CONSULTANT_LIST();
-              }
-            "
+                            async () => {
+                                return await FETCH_CONSULTANT_LIST();
+                            }
+                        "
                     />
                     <Input
                         v-model="form.nameRu"
@@ -73,18 +62,8 @@
                         class="col-md-4 pr-1"
                         :options="activityProfileOptions"
                     />
-                    <Input
-                        v-model="form.dateStart"
-                        label="Дата от"
-                        class="col-md-2 col-6 pr-1"
-                        type="date"
-                    />
-                    <Input
-                        v-model="form.dateEnd"
-                        label="Дата до"
-                        class="col-md-2 col-6"
-                        type="date"
-                    />
+                    <Input v-model="form.dateStart" label="Дата от" class="col-md-2 col-6 pr-1" type="date" />
+                    <Input v-model="form.dateEnd" label="Дата до" class="col-md-2 col-6" type="date" />
                 </FormGroup>
                 <FormGroup class="px-md-5">
                     <Checkbox
@@ -107,32 +86,32 @@
 </template>
 
 <script>
-import Form from "@/components/common/Forms/Form.vue";
-import FormGroup from "@/components/common/Forms/FormGroup.vue";
-import Input from "@/components/common/Forms/Input.vue";
-import MultiSelect from "@/components/common/Forms/MultiSelect.vue";
-import Checkbox from "@/components/common/Forms/Checkbox.vue";
-import Radio from "@/components/common/Forms/Radio.vue";
-import {ActivePassive, ActivityGroupList, ActivityProfileList, CompanyCategories,} from "@/const/const.js";
-import {SearchFormMixin} from "@/components/common/mixins.js";
+import Form from '@/components/common/Forms/Form.vue';
+import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import Input from '@/components/common/Forms/Input.vue';
+import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
+import Checkbox from '@/components/common/Forms/Checkbox.vue';
+import Radio from '@/components/common/Forms/Radio.vue';
+import { ActivePassive, ActivityGroupList, ActivityProfileList, CompanyCategories } from '@/const/const.js';
+import { SearchFormMixin } from '@/components/common/mixins.js';
 
 export default {
-    mixins: [SearchFormMixin],
-    name: "FormCompanySearch",
+    name: 'FormCompanySearch',
     components: {
         Form,
         FormGroup,
         Input,
         MultiSelect,
         Checkbox,
-        Radio,
+        Radio
     },
+    mixins: [SearchFormMixin],
     data() {
         return {
-            categoryOptions: CompanyCategories.get("param"),
-            activityGroupOptions: ActivityGroupList.get("param"),
-            activityProfileOptions: ActivityProfileList.get("param"),
-            activePassiveOptions: ActivePassive.get("param"),
+            categoryOptions: CompanyCategories.get('param'),
+            activityGroupOptions: ActivityGroupList.get('param'),
+            activityProfileOptions: ActivityProfileList.get('param'),
+            activePassiveOptions: ActivePassive.get('param')
         };
     },
     defaultFormProperties: {
@@ -145,21 +124,20 @@ export default {
         activityProfile: null,
         dateStart: null,
         dateEnd: null,
-        status: null,
+        status: null
     },
     methods: {
         async setQueryFields() {
-            this.form = {...this.form, ...this.$route.query};
+            this.form = { ...this.form, ...this.$route.query };
             if (this.form.categories && !Array.isArray(this.form.categories)) {
                 this.form.categories = [this.form.categories];
             }
-            let query = {...this.form};
+            let query = { ...this.form };
             this.deleteEmptyFields(query);
-            await this.$router.replace({query});
-        },
-    },
+            await this.$router.replace({ query });
+        }
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

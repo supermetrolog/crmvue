@@ -1,24 +1,15 @@
 <template>
     <div class="trade-offer-table">
         <p class="trade-offer-table__subtitle">{{ subtitle }}</p>
-        <with-unit-type
-            class="trade-offer-table__title"
-            :unitType="titleUnitType">
+        <with-unit-type class="trade-offer-table__title" :unitType="titleUnitType">
             {{ title }}
         </with-unit-type>
         <ul class="trade-offer-table__list">
-            <li
-                class="trade-offer-table__item"
-                v-for="(property, idx) in propertyList"
-                :key="property.label + idx"
-            >
+            <li v-for="(property, idx) in propertyList" :key="property.label + idx" class="trade-offer-table__item">
                 <p class="trade-offer-table__text trade-offer-table__text_label">
                     {{ property.label }}
                 </p>
-                <with-unit-type
-                    class="trade-offer-table__text"
-                    :unitType="propertyUnitType"
-                >
+                <with-unit-type class="trade-offer-table__text" :unitType="propertyUnitType">
                     {{ $formatter.numberOrRangeNew(property.valueMin, property.valueMax) }}
                 </with-unit-type>
             </li>
@@ -27,11 +18,11 @@
 </template>
 
 <script>
-import WithUnitType from "@/components/common/WithUnitType.vue";
+import WithUnitType from '@/components/common/WithUnitType.vue';
 
 export default {
-    name: "ComplexOfferTable",
-    components: {WithUnitType},
+    name: 'ComplexOfferTable',
+    components: { WithUnitType },
     props: {
         title: {
             type: String,
@@ -50,12 +41,12 @@ export default {
         propertyList: {
             type: Array,
             required: true
-        },
+        }
     },
     data() {
         return {};
     },
-    methods: {},
     computed: {},
+    methods: {}
 };
 </script>

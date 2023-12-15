@@ -2,34 +2,24 @@
     <div class="caller-manager">
         <div class="row no-gutters caller-manager__container">
             <div class="col-10 all-info">
-                <CallerManagerIncomingItem
-                    v-if="activeItem && activeItem.type == 1"
-                    :call="activeItem"
-                />
-                <CallerManagerOutcomingItem
-                    v-if="activeItem && activeItem.type == 0"
-                    :call="activeItem"
-                />
+                <CallerManagerIncomingItem v-if="activeItem && activeItem.type == 1" :call="activeItem" />
+                <CallerManagerOutcomingItem v-if="activeItem && activeItem.type == 0" :call="activeItem" />
             </div>
             <div class="col-1"></div>
             <div class="col-1 list">
-                <CallerManagerList
-                    @clickItem="clickItem"
-                    @updateItem="updateItem"
-                    :activeItem="activeItem"
-                />
+                <CallerManagerList @clickItem="clickItem" @updateItem="updateItem" :activeItem="activeItem" />
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import CallerManagerIncomingItem from "@/components/CallerManager/CallerManagerIncomingItem.vue";
-import CallerManagerOutcomingItem from "@/components/CallerManager/CallerManagerOutcomingItem.vue";
-import CallerManagerList from "@/components/CallerManager/CallerManagerList.vue";
+import CallerManagerIncomingItem from '@/components/CallerManager/CallerManagerIncomingItem.vue';
+import CallerManagerOutcomingItem from '@/components/CallerManager/CallerManagerOutcomingItem.vue';
+import CallerManagerList from '@/components/CallerManager/CallerManagerList.vue';
 
 export default {
-    name: "CallerManager",
+    name: 'CallerManager',
     components: {
         CallerManagerList,
         CallerManagerOutcomingItem,
@@ -37,7 +27,7 @@ export default {
     },
     data() {
         return {
-            activeItem: null,
+            activeItem: null
         };
     },
 
@@ -51,10 +41,9 @@ export default {
         },
         updateItem(call) {
             this.activeItem = call;
-        },
-    },
+        }
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

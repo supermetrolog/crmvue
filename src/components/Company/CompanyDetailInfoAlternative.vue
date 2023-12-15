@@ -1,11 +1,8 @@
 <template>
-    <div class="row no-gutters company-detail-info alt px-3 py-2" v-if="company">
+    <div v-if="company" class="row no-gutters company-detail-info alt px-3 py-2">
         <div class="col-12 name d-flex justify-content-between">
             <h4 class="m-0">{{ company.id }} {{ company.full_name }}</h4>
-            <i
-                class="fas fa-pen text-primary edit"
-                @click.prevent="clickUpdateCompany"
-            ></i>
+            <i @click.prevent="clickUpdateCompany" class="fas fa-pen text-primary edit"></i>
         </div>
         <div class="col-12">
             <div class="row no-gutters">
@@ -16,7 +13,7 @@
                         </div>
                         <div class="col-7 align-self-center">
                             <strong>
-                                {{ company.officeAdress || "&#8212;" }}
+                                {{ company.officeAdress || '&#8212;' }}
                             </strong>
                         </div>
                     </div>
@@ -103,9 +100,7 @@
                         </div>
                         <div class="col-7 text-left align-self-center">
                             <strong v-if="company.formOfOrganization !== null">
-                                {{
-                                    formOfOrganizationOptions[company.formOfOrganization].label
-                                }}
+                                {{ formOfOrganizationOptions[company.formOfOrganization].label }}
                             </strong>
                             <p v-else>&#8212;</p>
                         </div>
@@ -147,23 +142,17 @@
                         </div>
                         <div class="col-7 text-left align-self-center">
                             <strong
-                                class="d-inline-block"
-                                style="
-                  line-break: anywhere;
-                  white-space: break-spaces !important;
-                "
                                 v-for="product of company.productRanges"
                                 :key="product.id"
+                                class="d-inline-block"
+                                style="line-break: anywhere; white-space: break-spaces !important"
                             >
                                 {{ product.product }}
                             </strong>
                             <strong
-                                class="d-inline-block"
                                 v-if="!company.productRanges.length"
-                                style="
-                  line-break: anywhere;
-                  white-space: break-spaces !important;
-                "
+                                class="d-inline-block"
+                                style="line-break: anywhere; white-space: break-spaces !important"
                             >
                                 &#8212;
                             </strong>
@@ -201,7 +190,7 @@
                         </div>
                         <div class="col-7 text-left align-self-center">
                             <strong>
-                                {{ company.updated_at_format || "&#8212;" }}
+                                {{ company.updated_at_format || '&#8212;' }}
                             </strong>
                         </div>
                     </div>
@@ -213,7 +202,7 @@
                         </div>
                         <div class="col-7 text-left align-self-center">
                             <strong>
-                                {{ company.processed ? "Да" : "Нет" }}
+                                {{ company.processed ? 'Да' : 'Нет' }}
                             </strong>
                         </div>
                     </div>
@@ -221,23 +210,20 @@
                 <div class="col-12 company-detail-info-item mt-4">
                     <div class="row no-gutters">
                         <p>
-                            {{ company.description || "&#8212;" }}
+                            {{ company.description || '&#8212;' }}
                         </p>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-12 text-center mt-3">
-            <h4
-                class="requisistes-show-btn"
-                @click.prevent="toggleRequisistesVisible"
-            >
+            <h4 @click.prevent="toggleRequisistesVisible" class="requisistes-show-btn">
                 дополнительно
-                <i class="fas fa-sort-down visible" v-if="!requisistesVisible"></i>
-                <i class="fas fa-sort-up unvisible" v-else></i>
+                <i v-if="!requisistesVisible" class="fas fa-sort-down visible"></i>
+                <i v-else class="fas fa-sort-up unvisible"></i>
             </h4>
         </div>
-        <div class="col-12 requisistes pt-3" v-show="requisistesVisible">
+        <div v-show="requisistesVisible" class="col-12 requisistes pt-3">
             <div class="row">
                 <div class="col-12">
                     <div class="row no-gutters">
@@ -260,7 +246,7 @@
                                     <strong>ОГРН: </strong>
                                 </div>
                                 <div class="col-7 text-left align-self-center">
-                                    <p class="text-primary" v-if="company.ogrn">
+                                    <p v-if="company.ogrn" class="text-primary">
                                         {{ company.ogrn }}
                                     </p>
                                     <p v-else>&#8212;</p>
@@ -448,16 +434,16 @@
 </template>
 
 <script>
-import {MixinCompanyDetailInfo} from "./mixins";
+import { MixinCompanyDetailInfo } from './mixins';
 
 export default {
-    mixins: [MixinCompanyDetailInfo],
-    name: "CompanyDetailInfoAlternative",
+    name: 'CompanyDetailInfoAlternative',
     components: {},
+    mixins: [MixinCompanyDetailInfo],
     methods: {
         clickUpdateCompany() {
-            this.$emit("openCompanyFormForUpdate");
-        },
-    },
+            this.$emit('openCompanyFormForUpdate');
+        }
+    }
 };
 </script>

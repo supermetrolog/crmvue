@@ -1,8 +1,8 @@
-import api from "@/api/api"
+import api from '@/api/api';
 
 const CompanyContact = {
     state: {
-        companyContacts: [],
+        companyContacts: []
     },
     mutations: {
         updateCompanyContacts(state, data) {
@@ -18,7 +18,7 @@ const CompanyContact = {
                     return item;
                 }
                 return item;
-            })
+            });
         }
     },
     actions: {
@@ -46,7 +46,7 @@ const CompanyContact = {
             if (newComment) {
                 context.commit('createComment', newComment);
             }
-        },
+        }
     },
 
     getters: {
@@ -54,6 +54,6 @@ const CompanyContact = {
             return state.companyContacts;
         }
     }
-}
+};
 
 export default CompanyContact;

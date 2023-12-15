@@ -7,60 +7,52 @@
         >
             <FormModalCompanyRequestClone
                 v-if="clonedRequestItem"
-                :request="clonedRequestItem"
                 @close="clickCloseModal"
                 @cloned="clonedRequest"
+                :request="clonedRequestItem"
             />
-        </transition
-        >
+        </transition>
     </teleport>
     <FormModalCompanyRequestDisable
         v-if="disabledRequestItem"
-        :request_id="disabledRequestItem.id"
         @close="closeDisableForm"
         @disabled="onRequestIsDisabled"
+        :request_id="disabledRequestItem.id"
     />
     <CompanyBoxLayout class="CompanyBoxRequests grid-d">
         <template #header>
             <div class="CompanyBoxRequests-header">
-        <span
-        >ЗАПРОСЫ ({{ requests.length }}), СДЕЛКИ ({{
-                dealsCount + deals.length
-            }})</span
-        ><small class="edit_btn" @click="clickCreateRequest"> [создать]</small>
+                <span>ЗАПРОСЫ ({{ requests.length }}), СДЕЛКИ ({{ dealsCount + deals.length }})</span
+                ><small @click="clickCreateRequest" class="edit_btn"> [создать]</small>
             </div>
         </template>
         <template #content>
             <CompanyBoxRequestsList
-                :requests="requests"
                 @clickUpdateRequest="openCompanyRequestFormForUpdate"
                 @clickCloneRequest="clickCloneRequest"
                 @clickDisableRequest="clickDisableRequest"
+                :requests="requests"
             />
             <template v-if="deals.length">
-                <DealList
-                    :deals="deals"
-                    @openDealFormForUpdate="openDealFormForUpdate"
-                    @deleted="dealDeleted"
-                />
+                <DealList @openDealFormForUpdate="openDealFormForUpdate" @deleted="dealDeleted" :deals="deals" />
             </template>
-            <NoData v-if="!requests.length"/>
+            <NoData v-if="!requests.length" />
         </template>
     </CompanyBoxLayout>
 </template>
 
 <script>
-import {mapActions} from "vuex";
-import api from "@/api/api";
-import NoData from "@/components/common/NoData.vue";
-import CompanyBoxRequestsList from "@/components/Company/Box/CompanyBoxRequestsList.vue";
-import DealList from "@/components/Deal/DealList.vue";
-import CompanyBoxLayout from "@/components/Company/Box/CompanyBoxLayout.vue";
-import FormModalCompanyRequestClone from "@/components/Forms/Company/FormModalCompanyRequestClone.vue";
-import FormModalCompanyRequestDisable from "@/components/Forms/Company/FormModalCompanyRequestDisable.vue";
+import { mapActions } from 'vuex';
+import api from '@/api/api';
+import NoData from '@/components/common/NoData.vue';
+import CompanyBoxRequestsList from '@/components/Company/Box/CompanyBoxRequestsList.vue';
+import DealList from '@/components/Deal/DealList.vue';
+import CompanyBoxLayout from '@/components/Company/Box/CompanyBoxLayout.vue';
+import FormModalCompanyRequestClone from '@/components/Forms/Company/FormModalCompanyRequestClone.vue';
+import FormModalCompanyRequestDisable from '@/components/Forms/Company/FormModalCompanyRequestDisable.vue';
 
 export default {
-    name: "CompanyBoxRequests",
+    name: 'CompanyBoxRequests',
     components: {
         FormModalCompanyRequestDisable,
         FormModalCompanyRequestClone,
@@ -72,48 +64,46 @@ export default {
     props: {
         requests: {
             type: Array,
-            default: () => [],
+            default: () => []
         },
         deals: {
             type: Array,
-            default: () => [],
+            default: () => []
         },
         loading: {
             type: Boolean,
-            default: false,
-        },
+            default: false
+        }
     },
     data() {
         return {
             disabledRequestItem: null,
             clonedRequestItem: null,
-            loader: false,
+            loader: false
         };
     },
     computed: {
         dealsCount() {
-            const requestsWithDeal = this.requests.filter(
-                (item) => item.deal != null
-            );
+            const requestsWithDeal = this.requests.filter(item => item.deal != null);
             if (Array.isArray(requestsWithDeal)) {
                 return requestsWithDeal.length;
             }
             return 0;
-        },
+        }
     },
     methods: {
-        ...mapActions(["CREATE_REQUEST"]),
+        ...mapActions(['CREATE_REQUEST']),
         openDealFormForUpdate(deal) {
-            this.$emit("openDealFormForUpdate", deal);
+            this.$emit('openDealFormForUpdate', deal);
         },
         dealDeleted() {
-            this.$emit("dealDeleted");
+            this.$emit('dealDeleted');
         },
         clickCreateRequest() {
-            this.$emit("clickCreateRequest");
+            this.$emit('clickCreateRequest');
         },
         openCompanyRequestFormForUpdate(request) {
-            this.$emit("openCompanyRequestFormForUpdate", request);
+            this.$emit('openCompanyRequestFormForUpdate', request);
         },
         clickCloseModal() {
             this.disabledRequestItem = null;
@@ -136,22 +126,21 @@ export default {
         },
         async clonedRequest() {
             this.clickCloseModal();
-            this.$emit("requestCloned");
+            this.$emit('requestCloned');
         },
         onRequestIsDisabled() {
             this.disabledRequestItem = null;
-            this.$emit("requestDisabled");
-        },
+            this.$emit('requestDisabled');
+        }
     },
-    mounted() {
-    },
+    mounted() {},
     emits: [
-        "clickCreateRequest",
-        "openCompanyRequestFormForUpdate",
-        "requestCloned",
-        "requestDisabled",
-        "openDealFormForUpdate",
-        "dealDeleted",
-    ],
+        'clickCreateRequest',
+        'openCompanyRequestFormForUpdate',
+        'requestCloned',
+        'requestDisabled',
+        'openDealFormForUpdate',
+        'dealDeleted'
+    ]
 };
 </script>

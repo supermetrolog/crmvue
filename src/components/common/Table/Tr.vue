@@ -1,14 +1,13 @@
 <template>
     <tr>
-        <slot/>
+        <slot />
     </tr>
 </template>
 
 <script>
 export default {
-    name: "Tr",
+    name: 'Tr'
 };
 </script>
 
-<style>
-</style>
+<style></style>

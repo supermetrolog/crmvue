@@ -1,48 +1,44 @@
 <template>
     <div class="form-item propogation-input">
-        <label
-            class="form-item-label"
-            :class="{ required: required }"
-            v-if="field.length && field.length != 1"
-        >
+        <label v-if="field.length && field.length != 1" class="form-item-label" :class="{ required: required }">
             <p v-if="label">
                 {{ label }}
             </p>
             <div v-for="(item, index) in field" :key="index" class="item-container">
-                <i class="fas fa-minus delete" @click="deleteInput(index)"></i>
+                <i @click="deleteInput(index)" class="fas fa-minus delete"></i>
                 <i
-                    class="fas fa-plus add"
-                    @click="addInput(item, index)"
                     v-if="typeof field[index + 1] == 'undefined'"
+                    @click="addInput(item, index)"
+                    class="fas fa-plus add"
                 ></i>
                 <input
-                    type="text"
+                    :ref="'input' + index"
+                    v-model.lazy="field[index]"
                     @change="onChange"
+                    type="text"
                     :class="inputClasses"
                     class="mb-1"
-                    v-model.lazy="field[index]"
                     :placeholder="placeholder"
-                    :ref="'input' + index"
                 />
             </div>
         </label>
-        <label class="form-item-label" :class="{ required: required }" v-else>
+        <label v-else class="form-item-label" :class="{ required: required }">
             {{ label }}
             <div class="item-container">
-                <i class="fas fa-plus add" @click="addInput(field[0], 0)"></i>
+                <i @click="addInput(field[0], 0)" class="fas fa-plus add"></i>
 
                 <input
-                    type="text"
+                    :ref="'input' + 0"
+                    v-model.lazy="field[0]"
                     @change="onChange"
+                    type="text"
                     :class="inputClasses"
                     class="mb-1"
-                    v-model.lazy="field[0]"
                     :placeholder="placeholder"
-                    :ref="'input' + 0"
                 />
             </div>
         </label>
-        <div class="error-container" v-if="v && v.$error">
+        <div v-if="v && v.$error" class="error-container">
             <p>{{ v.$errors[0].$message }}</p>
         </div>
     </div>
@@ -50,59 +46,64 @@
 
 <script>
 export default {
-    name: "PropogationInput",
-    data() {
-        return {
-            field: this.modelValue,
-        };
-    },
+    name: 'PropogationInput',
     props: {
         modelValue: {
             type: Array,
-            default: () => [],
+            default: () => []
         },
         required: {
             type: Boolean,
-            default: false,
+            default: false
         },
         v: {
             type: Object,
-            default: null,
+            default: null
         },
         label: {
             type: String,
-            default: null,
+            default: null
         },
         // maska: {
         //   default: null,
         // },
         placeholder: {
-            type: String,
-        },
+            type: String
+        }
+    },
+    data() {
+        return {
+            field: this.modelValue
+        };
     },
     computed: {
         inputClasses() {
             if (this.v) {
                 return {
                     invalid: this.v.$error,
-                    valid: this.v.$dirty && !this.v.$error,
+                    valid: this.v.$dirty && !this.v.$error
                 };
             }
 
-            return "";
-        },
+            return '';
+        }
+    },
+    watch: {
+        modelValue() {
+            this.field = this.modelValue;
+        }
     },
     methods: {
         onChange() {
             this.validate();
             const array = [];
-            this.field.map((item) => {
+            this.field.map(item => {
                 if (item.length) {
                     array.push(item);
                 }
             });
             this.field = array;
-            this.$emit("update:modelValue", this.field);
+            this.$emit('update:modelValue', this.field);
         },
         validate() {
             if (this.v) {
@@ -111,26 +112,20 @@ export default {
         },
         deleteInput(index) {
             this.field = this.field.filter((_, idx) => idx != index);
-            this.$emit("update:modelValue", this.field);
+            this.$emit('update:modelValue', this.field);
         },
         addInput(item, index) {
-            if (item && item.length && typeof this.field[index + 1] == "undefined") {
-                this.field.push("");
+            if (item && item.length && typeof this.field[index + 1] == 'undefined') {
+                this.field.push('');
                 this.$nextTick(() => {
                     setTimeout(() => {
-                        this.$refs["input" + (index + 1)].focus();
+                        this.$refs['input' + (index + 1)].focus();
                     }, 0);
                 });
             }
-        },
-    },
-    watch: {
-        modelValue() {
-            this.field = this.modelValue;
-        },
-    },
+        }
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

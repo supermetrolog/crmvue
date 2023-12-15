@@ -3,34 +3,26 @@
         <TimelineStepStage
             class="mb-2"
             :title="
-        'Шаг 1. Отметить объекты, которые осмотрели' +
-        (data.timelineStepObjects.length
-          ? ` (${data.timelineStepObjects.length})`
-          : '')
-      "
+                'Шаг 1. Отметить объекты, которые осмотрели' +
+                (data.timelineStepObjects.length ? ` (${data.timelineStepObjects.length})` : '')
+            "
             :isDone="!!data.timelineStepObjects.length"
             :closeSlotWhenDone="false"
             :isCurrent="!data.timelineStepObjects.length"
         >
-            <ButtonList
-                v-if="!disabled"
-                :buttons="buttons"
-                @done="$emit('done')"
-                @negative="$emit('negative')"
-            />
+            <ButtonList v-if="!disabled" @done="$emit('done')" @negative="$emit('negative')" :buttons="buttons" />
         </TimelineStepStage>
     </div>
 </template>
 
 <script>
-import {MixinSteps} from "@/components/Timeline/mixins.js";
+import { MixinSteps } from '@/components/Timeline/mixins.js';
 
 export default {
-    name: "TimelineStepTalk",
-    emits: ["done", "negative"],
+    name: 'TimelineStepTalk',
     mixins: [MixinSteps],
+    emits: ['done', 'negative']
 };
 </script>
 
-<style>
-</style>
+<style></style>

@@ -8,14 +8,13 @@
 
 <script>
 export default {
-    name: "Setting",
+    name: 'Setting',
+    components: {},
     data() {
         return {};
     },
-    components: {},
     computed: {},
     methods: {},
-    mounted() {
-    },
+    mounted() {}
 };
 </script>

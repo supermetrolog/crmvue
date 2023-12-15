@@ -2,82 +2,70 @@
     <div class="ymap">
         <yandex-map
             v-if="mounted"
+            ref="map"
             :settings="settings"
             :options="options"
             :coords="coords"
             :zoom="zoom"
             :controls="controls"
             :detailed-controls="detailedControls"
-            :behaviors="behaviors.filter((elem) => elem != 'selection')"
+            :behaviors="behaviors.filter(elem => elem != 'selection')"
             :style="styles"
-            ref="map"
         >
             <YandexMapSelectionBehavior
                 v-if="behaviors.includes('selection')"
+                @selectionDone="selectionDone"
+                @removedDone="$emit('removedDone')"
                 :map="$refs.map.$options.static.myMap"
                 :options="polygonOptions"
                 :coordinates="polygonCoordinates"
-                @selectionDone="selectionDone"
-                @removedDone="$emit('removedDone')"
             />
-            <slot/>
+            <slot />
         </yandex-map>
     </div>
 </template>
 
 <script>
-import {loadYmap, yandexMap} from "vue-yandex-maps";
-import YandexMapSelectionBehavior from "@/components/common/YandexMap/YandexMapSelectionBehavior.vue";
+import { loadYmap, yandexMap } from 'vue-yandex-maps';
+import YandexMapSelectionBehavior from '@/components/common/YandexMap/YandexMapSelectionBehavior.vue';
 
 export default {
-    name: "YandexMapView",
+    name: 'YandexMapView',
     components: {
         YandexMapSelectionBehavior,
         yandexMap
     },
-    data() {
-        return {
-            updateTimeout: null,
-            mounted: false,
-            addMarkers: [],
-            removeMarkers: [],
-            markers: [],
-        };
-    },
     provide() {
         return {
             add: this.addMarker,
-            remove: this.removeMarker,
+            remove: this.removeMarker
         };
-    },
-    static: {
-        objectManager: null,
     },
     props: {
         settings: {
             type: Object,
-            required: true,
+            required: true
         },
         coords: {
             type: Array,
-            default: () => [55.75554289958026, 37.619346417968764], // moscow center
+            default: () => [55.75554289958026, 37.619346417968764] // moscow center
         },
         zoom: {
             type: Number,
-            default: 8,
+            default: 8
         },
         options: {
             type: Object,
             default: () => {
                 return {
                     suppressObsoleteBrowserNotifier: true,
-                    suppressMapOpenBlock: true,
+                    suppressMapOpenBlock: true
                 };
-            },
+            }
         },
         controls: {
             type: Array,
-            default: () => ["default"],
+            default: () => ['default']
         },
         detailedControls: {
             type: Object,
@@ -85,22 +73,22 @@ export default {
                 return {
                     zoomControl: {
                         position: {
-                            right: "10px",
-                            top: "100px",
-                        },
+                            right: '10px',
+                            top: '100px'
+                        }
                     },
                     geolocationControl: {
-                        float: "right"
+                        float: 'right'
                     },
                     searchControl: {
-                        float: "right"
+                        float: 'right'
                     }
                 };
-            },
+            }
         },
         behaviors: {
             type: Array,
-            default: () => ["drag", "multiTouch"],
+            default: () => ['drag', 'multiTouch']
         },
         clusterOptions: {
             type: Object,
@@ -113,7 +101,7 @@ export default {
                     margin: 5,
                     iconLayout: {},
                     minClusterSize: 4,
-                    preset: "islands#invertedVioletClusterIcons",
+                    preset: 'islands#invertedVioletClusterIcons',
                     groupByCoordinates: false,
                     useMapMargin: true,
                     zoomMargin: null,
@@ -121,50 +109,58 @@ export default {
                     sableClickZoom: false,
                     clusterOpenBalloonOnClick: false,
                     // clusterIconContentLayout: null
-                    clusterBalloonLayout: null,
+                    clusterBalloonLayout: null
                 };
-            },
+            }
         },
         useObjectManager: {
             type: Boolean,
-            default: false,
+            default: false
         },
         objectManagerClusterize: {
             type: Boolean,
-            default: false,
+            default: false
         },
         polygonOptions: {
             type: Object,
             default: () => {
                 return {
-                    strokeColor: "#1679e7",
-                    fillColor: "#a2c9d8",
-                    interactivityModel: "default#transparent",
+                    strokeColor: '#1679e7',
+                    fillColor: '#a2c9d8',
+                    interactivityModel: 'default#transparent',
                     strokeWidth: 4,
                     opacity: 0.7,
                     accuracy: 3,
                     polygonZoom: 10,
-                    polygonZoomDuration: 100,
+                    polygonZoomDuration: 100
                 };
-            },
+            }
         },
         polygonCoordinates: {
             type: Array,
-            default: () => [],
+            default: () => []
         },
         styles: {
             type: Object,
             default: () => {
                 return {
-                    width: "100%",
-                    height: "100%",
+                    width: '100%',
+                    height: '100%'
                 };
-            },
-        },
+            }
+        }
     },
-    async mounted() {
-        await loadYmap({...this.settings});
-        this.mounted = true;
+    data() {
+        return {
+            updateTimeout: null,
+            mounted: false,
+            addMarkers: [],
+            removeMarkers: [],
+            markers: []
+        };
+    },
+    static: {
+        objectManager: null
     },
     methods: {
         destroyMap() {
@@ -172,7 +168,7 @@ export default {
             this.$options.static.objectManager = null;
         },
         selectionDone(coordinates) {
-            this.$emit("selectionDone", coordinates);
+            this.$emit('selectionDone', coordinates);
         },
         getMap() {
             return this.$refs.map.$options.static.myMap;
@@ -182,7 +178,7 @@ export default {
             if (!objectManager) {
                 objectManager = new window.ymaps.ObjectManager({
                     clusterize: true,
-                    ...this.clusterOptions,
+                    ...this.clusterOptions
                 });
                 objectManager.objects.events.add(['click'], this.objectEventHandler);
                 objectManager.clusters.events.add(['click'], this.clusterEventHandler);
@@ -215,7 +211,7 @@ export default {
             this.$options.static.objectManager = objectManager;
         },
         triggerUpdated() {
-            this.$emit("updated");
+            this.$emit('updated');
         },
         addMarker(marker) {
             if (this.updateTimeout) {
@@ -241,9 +237,7 @@ export default {
         update() {
             this.removeObjectManager();
 
-            this.markers = this.markers.filter(
-                (marker) => !this.removeMarkers.includes(marker.id)
-            );
+            this.markers = this.markers.filter(marker => !this.removeMarkers.includes(marker.id));
 
             this.markers.push(...this.addMarkers);
 
@@ -252,12 +246,16 @@ export default {
             this.removeMarkers = [];
             this.addMarkers = [];
             this.triggerUpdated();
-        },
+        }
+    },
+    async mounted() {
+        await loadYmap({ ...this.settings });
+        this.mounted = true;
     },
 
     beforeUnmount() {
         this.destroyMap();
-    },
+    }
 };
 </script>
 

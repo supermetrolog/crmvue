@@ -1,16 +1,16 @@
-import api from "@/api/api";
-import CompanyObjectsList from "@/components/Company/CompanyObjectsList.vue";
-import FormOfferSearch from "@/components/Forms/Offer/FormOfferSearch.vue";
-import Pagination from "@/components/common/Pagination/Pagination.vue";
-import {mapActions, mapGetters} from "vuex";
-import {notify} from "@kyvg/vue3-notification";
-import crypto from "crypto";
+import api from '@/api/api';
+import CompanyObjectsList from '@/components/Company/CompanyObjectsList.vue';
+import FormOfferSearch from '@/components/Forms/Offer/FormOfferSearch.vue';
+import Pagination from '@/components/common/Pagination/Pagination.vue';
+import { mapActions, mapGetters } from 'vuex';
+import { notify } from '@kyvg/vue3-notification';
+import crypto from 'crypto';
 import CommentWithAutoSetComment, {
     AlreadySendOffersComment,
     DONE_COMMENT_TYPE,
     OffersNotFoundComment,
-    SendOffersComment,
-} from "@/components/Timeline/comments.js"
+    SendOffersComment
+} from '@/components/Timeline/comments.js';
 
 export const MixinObject = {
     components: {
@@ -22,93 +22,70 @@ export const MixinObject = {
             preventStepObjects: [],
             loader: false,
             allObjectsLoader: false,
-            viewMode: true,
+            viewMode: true
         };
     },
     computed: {
-        ...mapGetters([
-            "TIMELINE",
-            "THIS_USER",
-            "COMPANY_CONTACTS",
-            "COMPANY_REQUESTS",
-        ]),
+        ...mapGetters(['TIMELINE', 'THIS_USER', 'COMPANY_CONTACTS', 'COMPANY_REQUESTS']),
         preventStepTimelineObjects() {
             if (!this.TIMELINE) return null;
-            const preventStep = this.TIMELINE.timelineSteps.find(
-                (item) => item.number == this.step.number - 1
-            );
+            const preventStep = this.TIMELINE.timelineSteps.find(item => item.number == this.step.number - 1);
             return preventStep.timelineStepObjects;
         },
         submittedObjects() {
-            return this.step.timelineStepObjects.map((item) => {
+            return this.step.timelineStepObjects.map(item => {
                 if (item.offer && item.offer.id) {
                     return item.offer;
                 } else {
-                    return {...item, noOffer: true};
+                    return { ...item, noOffer: true };
                 }
             });
         },
         notSubmittedObjects() {
             return this.preventStepObjects.filter(
-                (object) =>
-                    !this.submittedObjects.find(
-                        (item) => item.original_id == object.original_id
-                    )
+                object => !this.submittedObjects.find(item => item.original_id == object.original_id)
             );
         },
         buttons() {
             return [
                 {
-                    btnClass: "primary",
+                    btnClass: 'primary',
                     btnVisible: false,
                     defaultBtn: true,
                     disabled: !this.selectedObjects.length || this.disabled,
-                    title: "Сохранить",
-                    text: "Готово",
-                    emited_event: "done",
+                    title: 'Сохранить',
+                    text: 'Готово',
+                    emited_event: 'done',
                     withWayOfSending: false,
-                    classes: "col-2",
+                    classes: 'col-2'
                 },
                 {
-                    btnClass: "danger",
+                    btnClass: 'danger',
                     btnVisible: false,
                     defaultBtn: true,
                     btnActive: this.step.negative,
                     disabled: this.disabled,
-                    title:
-                        "В случае нахождения более подходящих предложений вам придет уведомление!",
-                    text: "Нет подходящих",
-                    emited_event: "negative",
+                    title: 'В случае нахождения более подходящих предложений вам придет уведомление!',
+                    text: 'Нет подходящих',
+                    emited_event: 'negative',
                     withWayOfSending: false,
-                    classes: "col-2 ml-1",
-                },
+                    classes: 'col-2 ml-1'
+                }
             ];
         },
         currentRequest() {
             if (Array.isArray(this.COMPANY_REQUESTS)) {
-                return this.COMPANY_REQUESTS.find(
-                    (item) => item.id == this.$route.query.request_id
-                );
+                return this.COMPANY_REQUESTS.find(item => item.id == this.$route.query.request_id);
             }
             return false;
-        },
+        }
     },
     methods: {
-        ...mapActions(["UPDATE_STEP"]),
-        async alreadySent({
-                              wayOfSending,
-                              contactForSendMessage,
-                              contacts,
-                              company_id,
-                          }) {
+        ...mapActions(['UPDATE_STEP']),
+        async alreadySent({ wayOfSending, contactForSendMessage, contacts, company_id }) {
             const sendClientFlag = false;
 
-            const letterID = await this.realSendObjects(
-                wayOfSending,
-                sendClientFlag,
-                contacts,
-                company_id
-            );
+            const letterID = await this.realSendObjects(wayOfSending, sendClientFlag, contacts, company_id);
             if (!letterID) return;
 
             this.step.newActionComments = [
@@ -118,18 +95,11 @@ export const MixinObject = {
                     contactForSendMessage,
                     wayOfSending,
                     letterID
-                ),
+                )
             ];
             this.sendObjectsHandler();
         },
-        async send({
-                       message,
-                       wayOfSending,
-                       contactForSendMessage,
-                       contacts,
-                       subject,
-                       company_id,
-                   }) {
+        async send({ message, wayOfSending, contactForSendMessage, contacts, subject, company_id }) {
             const sendClientFlag = true;
 
             const letterID = await this.realSendObjects(
@@ -149,35 +119,28 @@ export const MixinObject = {
                     contactForSendMessage,
                     wayOfSending,
                     letterID
-                ),
+                )
             ];
             this.sendObjectsHandler();
         },
-        async realSendObjects(
-            wayOfSending,
-            sendClientFlag,
-            contacts,
-            company_id,
-            comment = null,
-            subject = null
-        ) {
+        async realSendObjects(wayOfSending, sendClientFlag, contacts, company_id, comment = null, subject = null) {
             let notifyOptions = {
-                group: "app",
-                type: "error",
+                group: 'app',
+                type: 'error',
                 duration: 5000,
-                title: "Ошибка",
-                text: "Не удалось отправить объекты!",
+                title: 'Ошибка',
+                text: 'Не удалось отправить объекты!'
             };
             this.loader = true;
             this.allObjectsLoader = true;
 
             const objectsParams = [];
-            this.selectedObjects.forEach((item) => {
+            this.selectedObjects.forEach(item => {
                 objectsParams.push({
                     object_id: item.object_id,
                     original_id: item.original_id,
                     type_id: item.type_id,
-                    consultant: this.THIS_USER.userProfile.full_name,
+                    consultant: this.THIS_USER.userProfile.full_name
                 });
             });
 
@@ -189,7 +152,7 @@ export const MixinObject = {
                 ways: wayOfSending,
                 sendClientFlag,
                 subject,
-                company_id,
+                company_id
             });
 
             this.loader = false;
@@ -240,7 +203,7 @@ export const MixinObject = {
         },
 
         normalizeObjectsData(data) {
-            this.selectedObjects.map((item) => {
+            this.selectedObjects.map(item => {
                 data.timelineStepObjects.push({
                     timeline_step_id: data.id,
                     object_id: item.object_id,
@@ -263,7 +226,7 @@ export const MixinObject = {
                             return item.calc_price_safe_pallet;
                         }
                     })(),
-                    image: item.thumb,
+                    image: item.thumb
                 });
             });
         },
@@ -272,14 +235,13 @@ export const MixinObject = {
         },
         sendObjectsHandler() {
             let data = {
-                ...this.step,
+                ...this.step
             };
             this.beforeSend(data);
             this.normalizeObjectsData(data);
             this.sendObjects(data);
         },
-        afterSend() {
-        },
+        afterSend() {},
         async sendObjects(data) {
             this.loader = true;
             if (await this.UPDATE_STEP(data)) {
@@ -296,12 +258,10 @@ export const MixinObject = {
             this.selectedObjects = [object];
         },
         unSelect(object) {
-            this.selectedObjects = this.selectedObjects.filter(
-                (item) => item.id != object.id
-            );
+            this.selectedObjects = this.selectedObjects.filter(item => item.id != object.id);
         },
         addComment(object, comment) {
-            this.selectedObjects.map((item) => {
+            this.selectedObjects.map(item => {
                 if (item.id == object.id) {
                     item.comment = comment;
                     return item;
@@ -311,26 +271,26 @@ export const MixinObject = {
         async getPreventStepObjects() {
             this.loader = true;
             const objects = [];
-            this.preventStepTimelineObjects.forEach((item) => {
+            this.preventStepTimelineObjects.forEach(item => {
                 if (item.offer && item.offer.id) {
                     objects.push(item.offer);
                 } else {
-                    objects.push({...item, noOffer: true});
+                    objects.push({ ...item, noOffer: true });
                 }
             });
             this.preventStepObjects = objects;
             this.loader = false;
-        },
+        }
     },
     mounted() {
         this.getPreventStepObjects();
-    },
+    }
 };
 export const MixinWithSendLetter = {
     mixins: [MixinObject],
     data() {
         return {
-            sendObjectsModalVisible: false,
+            sendObjectsModalVisible: false
         };
     },
     methods: {
@@ -349,14 +309,14 @@ export const MixinWithSendLetter = {
         },
         alreadySentOffers(params) {
             this.alreadySent(params);
-        },
-    },
+        }
+    }
 };
 export const MixinAllObject = {
     mixins: [MixinWithSendLetter],
     components: {
         FormOfferSearch,
-        Pagination,
+        Pagination
     },
     data() {
         return {
@@ -369,84 +329,73 @@ export const MixinAllObject = {
             controllPanelHeight: 0,
             barVisible: false,
             waitHash: null,
-            contactForSendMessage: [],
+            contactForSendMessage: []
         };
     },
     computed: {
-        ...mapGetters(["COMPANY_REQUESTS", "FAVORITES_OFFERS"]),
+        ...mapGetters(['COMPANY_REQUESTS', 'FAVORITES_OFFERS']),
         buttons() {
             return [
                 {
-                    btnClass: "success",
+                    btnClass: 'success',
                     btnVisible: false,
                     defaultBtn: true,
                     disabled: !this.selectedObjects.length || this.disabled,
-                    title: "Отправить презентации с объектами клиенту",
-                    text:
-                        "Отправить" +
-                        (this.selectedObjects.length
-                            ? ` (${this.selectedObjects.length})`
-                            : ""),
-                    emited_event: "send",
+                    title: 'Отправить презентации с объектами клиенту',
+                    text: 'Отправить' + (this.selectedObjects.length ? ` (${this.selectedObjects.length})` : ''),
+                    emited_event: 'send',
                     withWayOfSending: false,
-                    classes: "",
+                    classes: ''
                 },
                 {
-                    btnClass: "primary",
+                    btnClass: 'primary',
                     btnVisible: false,
                     defaultBtn: true,
                     disabled: !this.selectedObjects.length || this.disabled,
-                    title: "Уже отправил предложения другим способом",
+                    title: 'Уже отправил предложения другим способом',
                     text:
-                        "Отметить как отправленные" +
-                        (this.selectedObjects.length
-                            ? ` (${this.selectedObjects.length})`
-                            : ""),
-                    emited_event: "alreadySent",
+                        'Отметить как отправленные' +
+                        (this.selectedObjects.length ? ` (${this.selectedObjects.length})` : ''),
+                    emited_event: 'alreadySent',
                     withWayOfSending: true,
-                    classes: "ml-1",
+                    classes: 'ml-1'
                 },
                 {
-                    btnClass: "danger",
+                    btnClass: 'danger',
                     btnVisible: false,
                     defaultBtn: true,
                     btnActive: this.step.negative,
                     disabled: this.disabled,
-                    title: "Отправить презентации с объектами клиенту",
-                    text: "Нет подходящих",
-                    emited_event: "negative",
+                    title: 'Отправить презентации с объектами клиенту',
+                    text: 'Нет подходящих',
+                    emited_event: 'negative',
                     withWayOfSending: false,
-                    classes: "ml-1",
-                },
+                    classes: 'ml-1'
+                }
             ];
-        },
+        }
     },
     methods: {
-        ...mapActions(["SEARCH_FAVORITES_OFFERS"]),
+        ...mapActions(['SEARCH_FAVORITES_OFFERS']),
         async getAllObjects(query = {}, withLoader = true) {
             this.allObjectsLoader = withLoader;
-            let hash = crypto
-                .createHash("sha256")
-                .update(JSON.stringify(query))
-                .digest("base64");
+            let hash = crypto.createHash('sha256').update(JSON.stringify(query)).digest('base64');
             this.waitHash = hash;
             query = {
                 type_id: [1, 2, 3],
                 page: this.currentPage,
-                "per-page": 20,
-                expand: "object,offer,generalOffersMix.offer,comments",
+                'per-page': 20,
+                expand: 'object,offer,generalOffersMix.offer,comments',
                 timeline_id: this.TIMELINE.id,
-                ...query,
+                ...query
             };
             if (!this.FAVORITES_OFFERS.length) {
                 await this.SEARCH_FAVORITES_OFFERS();
             }
             if (query.favorites) {
-                query.original_id = this.FAVORITES_OFFERS.map(
-                    (item) => item.original_id
-                );
-                query.object_id = this.FAVORITES_OFFERS.map((item) => item.object_id);
-                query.complex_id = this.FAVORITES_OFFERS.map((item) => item.complex_id);
+                query.original_id = this.FAVORITES_OFFERS.map(item => item.original_id);
+                query.object_id = this.FAVORITES_OFFERS.map(item => item.object_id);
+                query.complex_id = this.FAVORITES_OFFERS.map(item => item.complex_id);
             }
             const data = await api.companyObjects.searchOffers(query);
 
@@ -458,22 +407,18 @@ export const MixinAllObject = {
         async getPreventStepObjects() {
             this.loader = true;
             const objects = [];
-            this.step.timelineStepObjects.forEach((item) => {
+            this.step.timelineStepObjects.forEach(item => {
                 if (item.offer && item.offer.id) {
                     objects.push(item.offer);
                 } else {
-                    objects.push({...item, noOffer: true});
+                    objects.push({ ...item, noOffer: true });
                 }
             });
             this.preventStepObjects = objects;
             this.loader = false;
         },
         setAllObjects(data) {
-            if (
-                Array.isArray(this.allObjects) &&
-                Array.isArray(data.data) &&
-                this.currentPage > 1
-            ) {
+            if (Array.isArray(this.allObjects) && Array.isArray(data.data) && this.currentPage > 1) {
                 this.allObjects = this.allObjects.concat(data.data);
             } else {
                 this.allObjects = data.data;
@@ -517,9 +462,9 @@ export const MixinAllObject = {
         },
         select(object) {
             this.selectedObjects.push(object);
-        },
+        }
     },
     mounted() {
         this.getData();
-    },
+    }
 };

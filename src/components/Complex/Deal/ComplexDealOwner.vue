@@ -43,7 +43,6 @@
         </ul>
     </div>
 
-
     <!--    <p :title="owner.name" class="deal-owner__text">{{ owner.name }}</p>-->
     <!--    <span>{{ owner.mainContact.phones.map((el) => el.phone).join(',') }}</span>-->
     <!--    <span>{{ owner.mainContact.emails.map((el) => el.email).join(',') }}</span>-->
@@ -57,36 +56,27 @@
         {{ $formatter.formatPhoneNumber(number) }}
       </li>
     </ul> -->
-
-
 </template>
 
-<script lang="ts">
-import {defineComponent, PropType} from "vue";
-import plural from "plural-ru";
-//import Rating from "@/components/common/rating/Rating.vue";
-import {IOwner} from "../../../../../oldsrc/interfaces/deal.interface";
+<script>
+import plural from 'plural-ru';
 
-export default defineComponent({
-    name: "DealOwner",
+export default {
+    name: 'ComplexDealOwner',
     components: {
         //  Rating,
     },
     props: {
         owner: {
-            type: Object as PropType<IOwner>,
-            required: true,
-        },
+            type: Object,
+            required: true
+        }
     },
     data() {
         return {
-            plural: plural,
+            plural: plural
         };
     },
-    computed: {},
-});
+    computed: {}
+};
 </script>
-
-<style
-    src="../../../../../oldsrc/components/complex/object-holdings/deal-info/deal-detailed-info/deal-owner/DealOwner.scss"
-    lang="scss"/>

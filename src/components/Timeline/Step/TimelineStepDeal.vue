@@ -8,6 +8,9 @@
             >
                 <FormCompanyDeal
                     v-if="data && dealFormVisible"
+                    @close="clickCloseDealForm"
+                    @created="updateItem"
+                    @updated="updateItem"
                     :formdata="currentRequest.deal"
                     :company_id="currentRequest.company_id"
                     :request_id="currentRequest.id"
@@ -18,9 +21,6 @@
                     :original_id="data.timelineStepObjects[0].offer.original_id"
                     :visual_id="data.timelineStepObjects[0].offer.visual_id"
                     :isOurDeal="true"
-                    @close="clickCloseDealForm"
-                    @created="updateItem"
-                    @updated="updateItem"
                 />
             </transition>
         </teleport>
@@ -31,11 +31,7 @@
             :closeSlotWhenDone="!!currentRequest.deal"
             :isCurrent="!data.timelineStepObjects.length"
         >
-            <ButtonList
-                :buttons="buttons"
-                @done="$emit('done')"
-                @negative="$emit('negative')"
-            />
+            <ButtonList @done="$emit('done')" @negative="$emit('negative')" :buttons="buttons" />
         </TimelineStepStage>
         <TimelineStepStage
             class="mb-2"
@@ -43,61 +39,54 @@
             :isDone="!!currentRequest.deal"
             :isCurrent="!!data.timelineStepObjects.length"
         >
-            <Loader class="center" v-if="loader"/>
-            <button
-                class="btn btn-primary"
-                @click="clickOpenDealForm"
-                :disabled="disabled"
-            >
-                Создать сделку
-            </button>
+            <Loader v-if="loader" class="center" />
+            <button @click="clickOpenDealForm" class="btn btn-primary" :disabled="disabled">Создать сделку</button>
         </TimelineStepStage>
-        <div class="row mt-3" v-if="currentRequest.deal">
+        <div v-if="currentRequest.deal" class="row mt-3">
             <div class="col-5 mx-auto">
-                <DealListItem :deal="currentRequest.deal" reedOnly/>
+                <DealListItem :deal="currentRequest.deal" reedOnly />
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import {mapActions, mapGetters} from "vuex";
-import Loader from "@/components/common/Loader.vue";
-import FormCompanyDeal from "@/components/Forms/Company/FormCompanyDeal.vue";
-import {MixinSteps} from "@/components/Timeline/mixins.js";
-import DealListItem from "@/components/Deal/DealListItem.vue";
-
+import { mapActions, mapGetters } from 'vuex';
+import Loader from '@/components/common/Loader.vue';
+import FormCompanyDeal from '@/components/Forms/Company/FormCompanyDeal.vue';
+import { MixinSteps } from '@/components/Timeline/mixins.js';
+import DealListItem from '@/components/Deal/DealListItem.vue';
 
 export default {
-    name: "TimelineStepDeal",
-    mixins: [MixinSteps],
+    name: 'TimelineStepDeal',
     components: {
         DealListItem,
         FormCompanyDeal,
         Loader
     },
+    mixins: [MixinSteps],
+    props: {
+        request_id: {
+            type: Number
+        },
+        loaderForStep: {
+            type: [Number, Boolean]
+        }
+    },
     data() {
         return {
             loader: this.loaderForStep,
-            dealFormVisible: false,
+            dealFormVisible: false
         };
     },
-    props: {
-        request_id: {
-            type: Number,
-        },
-        loaderForStep: {
-            type: [Number, Boolean],
-        },
-    },
     computed: {
-        ...mapGetters(["CONSULTANT_LIST", "COMPANY_REQUESTS"]),
+        ...mapGetters(['CONSULTANT_LIST', 'COMPANY_REQUESTS']),
         currentRequest() {
-            return this.COMPANY_REQUESTS.find((item) => item.id == this.request_id);
-        },
+            return this.COMPANY_REQUESTS.find(item => item.id == this.request_id);
+        }
     },
     methods: {
-        ...mapActions(["FETCH_COMPANY_REQUESTS"]),
+        ...mapActions(['FETCH_COMPANY_REQUESTS']),
         clickOpenDealForm() {
             this.dealFormVisible = true;
         },
@@ -107,20 +96,18 @@ export default {
         updateItem(form) {
             this.data.deal = form;
             this.data.status = 1;
-            this.$emit("updateItem", this.data, false, () => {
+            this.$emit('updateItem', this.data, false, () => {
                 this.FETCH_COMPANY_REQUESTS(this.$route.params.id);
             });
-        },
+        }
     },
-    async mounted() {
-    },
+    async mounted() {},
     watch: {
         loaderForStep() {
             this.loader = this.loaderForStep;
-        },
-    },
+        }
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

@@ -4,87 +4,72 @@
         <Td>{{ offer.visual_id }}</Td>
         <Td>{{ offer.calc_floors }}</Td>
         <Td>
-            <div v-html="offersArea"/>
+            <div v-html="offersArea" />
         </Td>
         <Td>{{ heightHandler }}</Td>
         <Td>{{ offer.floor_type }}</Td>
         <Td>{{ gateHandler }}</Td>
         <Td>{{ tempHandler }}</Td>
         <Td>
-            <div v-html="generalPrice"/>
+            <div v-html="generalPrice" />
         </Td>
-        <Td
-        >
-            <div class="MiniOffersItem-actions" v-if="offer.status !== 2">
+        <Td>
+            <div v-if="offer.status !== 2" class="MiniOffersItem-actions">
                 <div class="MiniOffersItem-actions-item">
                     <i
                         class="fas fa-star"
                         :class="{
-              selected: true,
-            }"
+                            selected: true
+                        }"
                     ></i>
                 </div>
                 <div class="MiniOffersItem-actions-item">
-                    <i
-                        style="color: blue"
-                        class="fas fa-rocket"
-                        title="Циан"
-                        v-if="offer.ad_cian"
-                    ></i>
+                    <i v-if="offer.ad_cian" style="color: blue" class="fas fa-rocket" title="Циан"></i>
                 </div>
                 <div class="MiniOffersItem-actions-item">
-                    <i
-                        style="color: green"
-                        class="fas fa-rocket"
-                        title="Яндекс"
-                        v-if="offer.ad_yandex"
-                    ></i>
+                    <i v-if="offer.ad_yandex" style="color: green" class="fas fa-rocket" title="Яндекс"></i>
                 </div>
-                <div
-                    class="MiniOffersItem-actions-item MiniOffersItem-actions-item_avito"
-                >
+                <div class="MiniOffersItem-actions-item MiniOffersItem-actions-item_avito">
                     <button
+                        @click="handleClickAvito"
                         class="MiniOffersItem-actions-toggler"
                         :class="{
-              'MiniOffersItem-actions-toggler__active': offer.ad_avito === 1,
-              'MiniOffersItem-actions-toggler__loading': avitoLoading,
-            }"
+                            'MiniOffersItem-actions-toggler__active': offer.ad_avito === 1,
+                            'MiniOffersItem-actions-toggler__loading': avitoLoading
+                        }"
                         :disabled="avitoLoading"
-                        @click="handleClickAvito"
                         title="Авито"
                     >
                         <div class="MiniOffersItem-actions-toggler-circle"></div>
                     </button>
                 </div>
-            </div
-            >
+            </div>
         </Td>
     </Tr>
 </template>
 
 <script>
-import Tr from "@/components/common/Table/Tr.vue";
-import Td from "@/components/common/Table/Td.vue";
-import {mapActions} from "vuex";
+import Tr from '@/components/common/Table/Tr.vue';
+import Td from '@/components/common/Table/Td.vue';
+import { mapActions } from 'vuex';
 
 export default {
-    name: "OfferMiniListItem",
+    name: 'OfferMiniListItem',
     components: {
         Td,
-        Tr,
-    },
-    // emits: ["toggle-avito"],
-    data() {
-        return {
-            avitoLoading: false,
-        };
+        Tr
     },
     props: {
         offer: {
             type: Object,
-            default: () => {
-            },
-        },
+            default: () => {}
+        }
+    },
+    // emits: ["toggle-avito"],
+    data() {
+        return {
+            avitoLoading: false
+        };
     },
     computed: {
         offersArea() {
@@ -94,10 +79,10 @@ export default {
             return `${this.offer.gate_num} шт/${this.offer.gate_type}`;
         },
         tempHandler() {
-            let condition = "Холодный";
-            let tempDelta = "";
+            let condition = 'Холодный';
+            let tempDelta = '';
             if (this.offer.heated) {
-                condition = "Теплый";
+                condition = 'Теплый';
             }
             if (this.offer.temperature_min && this.offer.temperature_max) {
                 tempDelta = `${this.offer.temperature_min} - ${this.offer.temperature_max} град`;
@@ -117,22 +102,21 @@ export default {
             } else {
                 return `<span>${this.offer.calc_price_general} <small>руб за м<sup>2</sup>/год</small></span>`;
             }
-        },
+        }
     },
     methods: {
-        ...mapActions(["TOGGLE_AVITO_AD"]),
+        ...mapActions(['TOGGLE_AVITO_AD']),
         async handleClickAvito() {
             if (!this.avitoLoading) {
                 this.avitoLoading = true;
                 const status = await this.TOGGLE_AVITO_AD(this.offer.original_id);
                 if (status) {
-                    this.$emit("toggleAvito");
+                    this.$emit('toggleAvito');
                 }
                 this.avitoLoading = false;
             }
-        },
+        }
     },
-    mounted() {
-    },
+    mounted() {}
 };
 </script>

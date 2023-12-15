@@ -1,6 +1,6 @@
-import axios from "axios";
-import ErrorHandle from "./errors";
-import SuccessHandler from "./success";
+import axios from 'axios';
+import ErrorHandle from './errors';
+import SuccessHandler from './success';
 
 export default {
     async getCompanyLogs(id, page) {
@@ -8,12 +8,12 @@ export default {
         let data = false;
         await axios
             .get(url)
-            .then((Response) => {
+            .then(Response => {
                 data = {};
                 data.data = SuccessHandler.getData(Response);
                 data.pagination = SuccessHandler.getPaginationData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
     },
     async addLogComment(formdata) {
@@ -21,10 +21,10 @@ export default {
         let data = false;
         await axios
             .post(url, formdata)
-            .then((Response) => {
+            .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
-    },
+    }
 };

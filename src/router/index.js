@@ -1,226 +1,226 @@
-import {createRouter, createWebHistory} from "vue-router";
+import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [
     {
-        path: "/statistic",
-        name: "statistic",
+        path: '/statistic',
+        name: 'statistic',
         meta: {
-            layout: "default",
-            auth: {isAuth: true, role: ["moderator", "administrator"]},
+            layout: 'default',
+            auth: { isAuth: true, role: ['moderator', 'administrator'] }
         },
-        component: () => import("../views/Statistic.vue"),
+        component: () => import('../views/Statistic.vue'),
         children: [
             {
-                path: ":mod",
-                name: "statistic",
+                path: ':mod',
+                name: 'statistic',
                 meta: {
-                    layout: "default",
-                    auth: {isAuth: true, role: ["moderator", "administrator"]},
+                    layout: 'default',
+                    auth: { isAuth: true, role: ['moderator', 'administrator'] }
                 },
-                component: () => import("../views/Setting.vue"),
-            },
-        ],
+                component: () => import('../views/Setting.vue')
+            }
+        ]
     },
     {
-        path: "/setting",
-        name: "setting",
+        path: '/setting',
+        name: 'setting',
         meta: {
-            layout: "default",
-            auth: {isAuth: true, role: ["moderator", "administrator"]},
+            layout: 'default',
+            auth: { isAuth: true, role: ['moderator', 'administrator'] }
         },
-        component: () => import("../views/Setting.vue"),
+        component: () => import('../views/Setting.vue'),
         children: [
             {
-                path: ":mod",
-                name: "setting",
+                path: ':mod',
+                name: 'setting',
                 meta: {
-                    layout: "default",
-                    auth: {isAuth: true, role: ["moderator", "administrator"]},
+                    layout: 'default',
+                    auth: { isAuth: true, role: ['moderator', 'administrator'] }
                 },
-                component: () => import("../views/Setting.vue"),
-            },
-        ],
+                component: () => import('../views/Setting.vue')
+            }
+        ]
     },
     {
-        path: "/calendar",
-        name: "calendar",
+        path: '/calendar',
+        name: 'calendar',
         meta: {
-            layout: "default",
-            auth: {isAuth: true, role: ["moderator", "administrator"]},
+            layout: 'default',
+            auth: { isAuth: true, role: ['moderator', 'administrator'] }
         },
-        component: () => import("../views/Calendar.vue"),
+        component: () => import('../views/Calendar.vue')
     },
     {
-        path: "/login",
-        name: "login",
-        meta: {layout: "login", auth: {isAuth: false}},
-        component: () => import("../views/Login.vue"),
+        path: '/login',
+        name: 'login',
+        meta: { layout: 'login', auth: { isAuth: false } },
+        component: () => import('../views/Login.vue')
     },
     {
-        path: "/companies",
-        name: "companies",
+        path: '/companies',
+        name: 'companies',
         meta: {
-            layout: "default",
-            auth: {isAuth: true, role: ["moderator", "administrator"]},
+            layout: 'default',
+            auth: { isAuth: true, role: ['moderator', 'administrator'] }
         },
-        component: () => import("../views/Companies/Companies.vue"),
+        component: () => import('../views/Companies/Companies.vue'),
         children: [
             {
-                path: "/companies/:id",
-                name: "company",
+                path: '/companies/:id',
+                name: 'company',
                 meta: {
-                    layout: "default",
-                    auth: {isAuth: true, role: ["moderator", "administrator"]},
+                    layout: 'default',
+                    auth: { isAuth: true, role: ['moderator', 'administrator'] }
                 },
-                component: () => import("../views/Companies/Company.vue"),
+                component: () => import('../views/Companies/Company.vue')
             },
             {
-                path: "",
-                name: "CompaniesMain",
+                path: '',
+                name: 'CompaniesMain',
                 meta: {
-                    layout: "default",
-                    auth: {isAuth: true, role: ["moderator", "administrator"]},
+                    layout: 'default',
+                    auth: { isAuth: true, role: ['moderator', 'administrator'] }
                 },
-                component: () => import("../views/Companies/Main.vue"),
+                component: () => import('../views/Companies/Main.vue')
             },
             {
-                path: "requests",
-                name: "CompaniesRequests",
+                path: 'requests',
+                name: 'CompaniesRequests',
                 meta: {
-                    layout: "default",
-                    auth: {isAuth: true, role: ["moderator", "administrator"]},
+                    layout: 'default',
+                    auth: { isAuth: true, role: ['moderator', 'administrator'] }
                 },
-                component: () => import("../views/Companies/Requests.vue"),
+                component: () => import('../views/Companies/Requests.vue')
             },
             {
-                path: "deals",
-                name: "CompaniesDeals",
+                path: 'deals',
+                name: 'CompaniesDeals',
                 meta: {
-                    layout: "default",
-                    auth: {isAuth: true, role: ["moderator", "administrator"]},
+                    layout: 'default',
+                    auth: { isAuth: true, role: ['moderator', 'administrator'] }
                 },
-                component: () => import("../views/Companies/Deals.vue"),
+                component: () => import('../views/Companies/Deals.vue')
             },
             {
-                path: "groups",
-                name: "CompaniesGroups",
+                path: 'groups',
+                name: 'CompaniesGroups',
                 meta: {
-                    layout: "default",
-                    auth: {isAuth: true, role: ["moderator", "administrator"]},
+                    layout: 'default',
+                    auth: { isAuth: true, role: ['moderator', 'administrator'] }
                 },
-                component: () => import("../views/Companies/Groups.vue"),
-            },
-        ],
+                component: () => import('../views/Companies/Groups.vue')
+            }
+        ]
     },
     {
-        path: "/users",
-        name: "users",
+        path: '/users',
+        name: 'users',
         meta: {
-            layout: "default",
-            auth: {isAuth: true, role: ["moderator", "administrator"]},
+            layout: 'default',
+            auth: { isAuth: true, role: ['moderator', 'administrator'] }
         },
-        component: () => import("../views/Users/Users.vue"),
+        component: () => import('../views/Users/Users.vue'),
         children: [
             {
-                path: "/users/:id",
-                name: "user",
+                path: '/users/:id',
+                name: 'user',
                 meta: {
-                    layout: "default",
-                    auth: {isAuth: true, role: ["moderator", "administrator"]},
+                    layout: 'default',
+                    auth: { isAuth: true, role: ['moderator', 'administrator'] }
                 },
-                component: () => import("../views/Users/User.vue"),
+                component: () => import('../views/Users/User.vue')
             },
             {
-                path: "",
-                name: "UsersMain",
+                path: '',
+                name: 'UsersMain',
                 meta: {
-                    layout: "default",
-                    auth: {isAuth: true, role: ["moderator", "administrator"]},
+                    layout: 'default',
+                    auth: { isAuth: true, role: ['moderator', 'administrator'] }
                 },
-                component: () => import("../views/Users/Main.vue"),
-            },
-        ],
+                component: () => import('../views/Users/Main.vue')
+            }
+        ]
     },
     {
-        path: "/account",
-        name: "account",
+        path: '/account',
+        name: 'account',
         meta: {
-            layout: "default",
-            auth: {isAuth: true, role: ["moderator", "administrator"]},
+            layout: 'default',
+            auth: { isAuth: true, role: ['moderator', 'administrator'] }
         },
-        component: () => import("../views/Account/View.vue"),
+        component: () => import('../views/Account/View.vue'),
         children: [
             // later
-        ],
+        ]
     },
     {
-        path: "/offers",
-        name: "offers",
+        path: '/offers',
+        name: 'offers',
         meta: {
-            layout: "default",
-            auth: {isAuth: true, role: ["moderator", "administrator"]},
+            layout: 'default',
+            auth: { isAuth: true, role: ['moderator', 'administrator'] }
         },
-        component: () => import("../views/Offers/Offers.vue"),
+        component: () => import('../views/Offers/Offers.vue'),
         children: [
             {
-                path: "",
-                name: "OffersMap",
+                path: '',
+                name: 'OffersMap',
                 meta: {
-                    layout: "default",
-                    auth: {isAuth: true, role: ["moderator", "administrator"]},
+                    layout: 'default',
+                    auth: { isAuth: true, role: ['moderator', 'administrator'] }
                 },
-                component: () => import("../views/Offers/Map.vue"),
+                component: () => import('../views/Offers/Map.vue')
             },
             {
-                path: "list",
-                name: "OffersMain",
+                path: 'list',
+                name: 'OffersMain',
                 meta: {
-                    layout: "default",
-                    auth: {isAuth: true, role: ["moderator", "administrator"]},
+                    layout: 'default',
+                    auth: { isAuth: true, role: ['moderator', 'administrator'] }
                 },
-                component: () => import("../views/Offers/Main.vue"),
+                component: () => import('../views/Offers/Main.vue')
             }
-        ],
+        ]
     },
     {
-        path: "/complex/:complex_id",
-        name: "ComplexView",
+        path: '/complex/:complex_id',
+        name: 'ComplexView',
         meta: {
-            layout: "default",
-            auth: {isAuth: true, role: ["moderator", "administrator"]},
+            layout: 'default',
+            auth: { isAuth: true, role: ['moderator', 'administrator'] }
         },
-        component: () => import("@/views/ComplexView.vue"),
+        component: () => import('@/views/ComplexView.vue')
     },
     {
-        path: "/:catchAll(.*)",
-        name: "notfound",
+        path: '/:catchAll(.*)',
+        name: 'notfound',
         meta: {
-            layout: "empty",
-            auth: {isAuth: true, role: ["moderator", "administrator"]},
+            layout: 'empty',
+            auth: { isAuth: true, role: ['moderator', 'administrator'] }
         },
-        component: () => import("../views/NotFound.vue"),
+        component: () => import('../views/NotFound.vue')
     },
     {
-        path: "/",
-        name: "root",
-        redirect: {name: "CompaniesMain"},
-    },
+        path: '/',
+        name: 'root',
+        redirect: { name: 'CompaniesMain' }
+    }
 ];
 
 const router = createRouter({
     history: createWebHistory(),
-    routes,
+    routes
 });
 
 router.beforeEach((to, from, next) => {
-    const access_token = localStorage.getItem("access_token");
+    const access_token = localStorage.getItem('access_token');
 
     if (to.meta.auth.isAuth && !access_token) {
-        return next({name: "login", replace: true});
+        return next({ name: 'login', replace: true });
     }
 
     if (!to.meta.auth.isAuth && access_token) {
-        return next({name: from.name});
+        return next({ name: from.name });
     }
 
     return next();

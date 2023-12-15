@@ -1,10 +1,8 @@
 <template>
-    <span class="unit-type unit-type--size_small">
-        м
-    </span>
+    <span class="unit-type unit-type--size_small"> м </span>
 </template>
 <script>
 export default {
-    name: "UnitTypeMeters",
+    name: 'UnitTypeMeters'
 };
 </script>

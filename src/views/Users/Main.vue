@@ -6,28 +6,26 @@
             leave-active-class="animate__animated animate__zoomOut for__modal absolute"
         >
             <FormUser
-                @closeUserForm="clickCloseUserForm"
                 v-if="userFormVisible"
-                :formdata="userForUpdate"
+                @closeUserForm="clickCloseUserForm"
                 @created="getUsers"
                 @updated="getUsers"
+                :formdata="userForUpdate"
             />
         </transition>
         <div class="row">
             <div class="col-7 mx-auto">
                 <div class="row">
                     <div class="col-12 mt-2 mb-4">
-                        <button class="btn btn-primary scale" @click="clickOpenUserForm">
-                            Создать пользователя
-                        </button>
+                        <button @click="clickOpenUserForm" class="btn btn-primary scale">Создать пользователя</button>
                     </div>
                     <div class="col-12">
-                        <Loader v-if="loader" class="center"/>
+                        <Loader v-if="loader" class="center" />
                         <UserTable
+                            v-if="USERS.length"
                             @clickEdit="clickOpenUserFormForUpdate"
                             @deletedUser="getUsers"
                             :users="USERS"
-                            v-if="USERS.length"
                         />
                     </div>
                 </div>
@@ -37,30 +35,30 @@
 </template>
 
 <script>
-import {mapActions, mapGetters} from "vuex";
-import Loader from "@/components/common/Loader.vue";
-import UserTable from "@/components/User/UserTable.vue";
-import FormUser from "@/components/Forms/FormUser.vue";
+import { mapActions, mapGetters } from 'vuex';
+import Loader from '@/components/common/Loader.vue';
+import UserTable from '@/components/User/UserTable.vue';
+import FormUser from '@/components/Forms/FormUser.vue';
 
 export default {
-    name: "UsersMain",
-    data() {
-        return {
-            userFormVisible: false,
-            userForUpdate: null,
-            loader: false,
-        };
-    },
+    name: 'UsersMain',
     components: {
         FormUser,
         UserTable,
         Loader
     },
+    data() {
+        return {
+            userFormVisible: false,
+            userForUpdate: null,
+            loader: false
+        };
+    },
     computed: {
-        ...mapGetters(["USERS"]),
+        ...mapGetters(['USERS'])
     },
     methods: {
-        ...mapActions(["FETCH_USERS", "DELETE_USER"]),
+        ...mapActions(['FETCH_USERS', 'DELETE_USER']),
         clickOpenUserForm() {
             this.userFormVisible = true;
         },
@@ -76,10 +74,10 @@ export default {
             this.loader = true;
             await this.FETCH_USERS();
             this.loader = false;
-        },
+        }
     },
     mounted() {
         this.getUsers();
-    },
+    }
 };
 </script>

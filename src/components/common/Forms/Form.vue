@@ -1,15 +1,14 @@
 <template>
     <form @submit.prevent="$emit('submit')">
-        <slot/>
+        <slot />
     </form>
 </template>
 
 <script>
 export default {
-    name: "Form",
-    emits: ["submit"],
+    name: 'Form',
+    emits: ['submit']
 };
 </script>
 
-<style>
-</style>
+<style></style>

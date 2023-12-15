@@ -1,36 +1,36 @@
 <template>
     <div>
-        <canvas
-            ref="canvas"
-            class="canvas"
-            style="position: absolute; left: 0; top: 0;"
-        ></canvas>
+        <canvas ref="canvas" class="canvas" style="position: absolute; left: 0; top: 0"></canvas>
     </div>
 </template>
 
 <script>
 export default {
-    name: "YandexMapSelectionBehavior",
+    name: 'YandexMapSelectionBehavior',
     polygon: null,
     btn: null,
     props: {
         // Ymap object
         map: {
             type: Object,
-            required: true,
+            required: true
         },
         options: {
             type: Object,
-            required: true,
+            required: true
         },
         coordinates: {
             type: Array,
-            default: () => [],
-        },
+            default: () => []
+        }
     },
-    mounted() {
-        this.addSelectionControllButton();
-        this.addPolygonIfExistsCoordinates();
+    watch: {
+        coordinates: {
+            handler() {
+                this.addPolygonIfExistsCoordinates();
+            },
+            deep: true
+        }
     },
     methods: {
         addPolygonIfExistsCoordinates() {
@@ -41,7 +41,7 @@ export default {
         },
         addSelectionControllButton() {
             this.map.controls.add(this.getBtn(), {
-                float: "right",
+                float: 'right'
             });
         },
         getBtn() {
@@ -65,32 +65,32 @@ export default {
             ></path>
           </g>
         </svg>`,
-                    title: "Selection",
+                    title: 'Selection'
                 },
                 options: {
-                    maxWidth: [28],
-                },
+                    maxWidth: [28]
+                }
             });
 
-            this.$options.btn.events.add("click", this.onClickDrawButton);
+            this.$options.btn.events.add('click', this.onClickDrawButton);
 
             return this.$options.btn;
         },
         drawLineOverMap(map) {
             const canvas = document.getElementsByClassName('canvas')[0];
-            const ctx2d = canvas.getContext("2d");
+            const ctx2d = canvas.getContext('2d');
             const canvasOptions = {
                 strokeStyle: this.options.strokeColor,
                 lineWidth: this.options.strokeWidth,
-                opacity: this.options.opacity,
+                opacity: this.options.opacity
             };
             let coordinates = [];
             let drawing = false;
 
             // Задаем размеры канвасу как у карты.
             const rect = map.container.getParentElement().getBoundingClientRect();
-            canvas.style.width = rect.width + "px";
-            canvas.style.height = rect.height + "px";
+            canvas.style.width = rect.width + 'px';
+            canvas.style.height = rect.height + 'px';
             canvas.width = rect.width;
             canvas.height = rect.height;
             // Применяем стили.
@@ -101,15 +101,15 @@ export default {
             ctx2d.clearRect(0, 0, canvas.width, canvas.height);
 
             // Показываем канвас. Он будет сверху карты из-за position: absolute.
-            canvas.style.display = "block";
+            canvas.style.display = 'block';
 
-            canvas.onmousedown = (e) => {
+            canvas.onmousedown = e => {
                 // При нажатии мыши запоминаем, что мы начали рисовать и координаты.
                 drawing = true;
                 coordinates.push([e.offsetX, e.offsetY]);
             };
 
-            canvas.onmousemove = (e) => {
+            canvas.onmousemove = e => {
                 // При движении мыши запоминаем координаты и рисуем линию.
                 if (drawing) {
                     const last = coordinates[coordinates.length - 1];
@@ -122,11 +122,11 @@ export default {
                 }
             };
 
-            return new Promise((resolve) => {
+            return new Promise(resolve => {
                 // При отпускании мыши запоминаем координаты и скрываем канвас.
-                canvas.onmouseup = (e) => {
+                canvas.onmouseup = e => {
                     coordinates.push([e.offsetX, e.offsetY]);
-                    canvas.style.display = "none";
+                    canvas.style.display = 'none';
                     drawing = false;
 
                     coordinates = coordinates.map(function (x) {
@@ -138,7 +138,7 @@ export default {
             });
         },
         runDraw() {
-            this.drawLineOverMap(this.map).then((coordinates) => {
+            this.drawLineOverMap(this.map).then(coordinates => {
                 coordinates = this.normalizeCoords(coordinates, this.map.getBounds());
                 coordinates = this.simplifyCoords(coordinates);
                 this.removePolygon();
@@ -154,33 +154,27 @@ export default {
                     // Y переворачивается, т.к. на canvas'е он направлен вниз.
                     bounds[0][0] + (1 - x[1]) * (bounds[1][0] - bounds[0][0]),
                     // longitude.
-                    bounds[0][1] + x[0] * (bounds[1][1] - bounds[0][1]),
+                    bounds[0][1] + x[0] * (bounds[1][1] - bounds[0][1])
                 ];
             });
         },
         // Упрощение линии, чтобы уменьшить кол-во координат
         simplifyCoords(coordinates) {
-            return coordinates.filter(
-                (_, index) => index % this.options.accuracy === 0
-            );
+            return coordinates.filter((_, index) => index % this.options.accuracy === 0);
         },
         triggerCreatedPolygonEvenet(coordinates) {
-            this.$emit("selectionDone", coordinates);
+            this.$emit('selectionDone', coordinates);
         },
         triggerRemovedPolygonEvenet() {
-            this.$emit("removedDone");
+            this.$emit('removedDone');
         },
         toggleBtn(active) {
-            this.getBtn().state.set("selected", active);
+            this.getBtn().state.set('selected', active);
         },
         zoomToPolygon(coordinates) {
-            this.map.setCenter(
-                this.getCenterOfPolygon(coordinates),
-                this.options.polygonZoom,
-                {
-                    duration: this.options.polygonZoomDuration,
-                }
-            );
+            this.map.setCenter(this.getCenterOfPolygon(coordinates), this.options.polygonZoom, {
+                duration: this.options.polygonZoomDuration
+            });
         },
         getCenterOfPolygon(polygon) {
             const PI = 22 / 7;
@@ -205,11 +199,7 @@ export default {
             return [Lat, Lon];
         },
         createPolygon(coordinates) {
-            this.$options.polygon = new window.ymaps.Polygon(
-                [coordinates],
-                {},
-                this.options
-            );
+            this.$options.polygon = new window.ymaps.Polygon([coordinates], {}, this.options);
             this.map.geoObjects.add(this.$options.polygon);
             this.toggleBtn(true);
             this.zoomToPolygon(coordinates);
@@ -230,16 +220,12 @@ export default {
             }
             this.removePolygon();
             this.triggerRemovedPolygonEvenet();
-        },
+        }
     },
-    watch: {
-        coordinates: {
-            handler() {
-                this.addPolygonIfExistsCoordinates();
-            },
-            deep: true,
-        },
-    },
+    mounted() {
+        this.addSelectionControllButton();
+        this.addPolygonIfExistsCoordinates();
+    }
 };
 </script>
 
@@ -249,7 +235,7 @@ export default {
     position: relative;
 }
 
-[class$="float-button-text"] {
+[class$='float-button-text'] {
     padding: 0 !important;
 }
 

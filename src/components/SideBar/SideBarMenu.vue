@@ -1,29 +1,29 @@
 <template>
     <nav class="sidebar__nav">
         <ul class="sidebar__menu">
-            <SideBarMenuItem v-for="menuItem in menu" :key="menuItem.id" :item="menuItem"/>
+            <SideBarMenuItem v-for="menuItem in menu" :key="menuItem.id" :item="menuItem" />
         </ul>
     </nav>
 </template>
 
 <script>
-import {Menu} from "@/const/menu.js";
-import {mapGetters} from "vuex";
-import SideBarMenuItem from "@/components/SideBar/SideBarMenuItem.vue";
+import { Menu } from '@/const/menu.js';
+import { mapGetters } from 'vuex';
+import SideBarMenuItem from '@/components/SideBar/SideBarMenuItem.vue';
 
 export default {
-    name: "SideBarMenu",
+    name: 'SideBarMenu',
     components: {
         SideBarMenuItem
     },
     computed: {
-        ...mapGetters(["THIS_USER"]),
+        ...mapGetters(['THIS_USER']),
         menu() {
-            if (this.THIS_USER && this.THIS_USER.username === "admin") {
-                return Menu.get("admin");
+            if (this.THIS_USER && this.THIS_USER.username === 'admin') {
+                return Menu.get('admin');
             }
-            return Menu.get("agent");
-        },
-    },
+            return Menu.get('agent');
+        }
+    }
 };
 </script>

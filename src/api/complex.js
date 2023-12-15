@@ -1,6 +1,6 @@
-import axios from "axios";
-import ErrorHandle from "./errors";
-import SuccessHandler from "./success";
+import axios from 'axios';
+import ErrorHandle from './errors';
+import SuccessHandler from './success';
 
 export default {
     async fetchComplex(id, params) {
@@ -12,9 +12,8 @@ export default {
 
             return {
                 data: SuccessHandler.getData(response),
-                pagination: SuccessHandler.getPaginationData(response),
+                pagination: SuccessHandler.getPaginationData(response)
             };
-
         } catch (e) {
             ErrorHandle.setError(e);
         }
@@ -59,5 +58,5 @@ export default {
               objects.cranes.location,
               objects.cranes.type`
         });
-    },
+    }
 };

@@ -1,59 +1,59 @@
-import TimelineStepStage from "@/components/Timeline/Step/TimelineStepStage.vue";
-import ButtonList from "@/components/common/ButtonList.vue";
-import {mapGetters} from "vuex";
+import TimelineStepStage from '@/components/Timeline/Step/TimelineStepStage.vue';
+import ButtonList from '@/components/common/ButtonList.vue';
+import { mapGetters } from 'vuex';
 
 export const MixinStepActions = {
     components: {
         TimelineStepStage,
-        ButtonList,
+        ButtonList
     },
     props: {
         step: {
-            type: [Object, Boolean],
+            type: [Object, Boolean]
         },
         disabled: {
-            type: Boolean,
-        },
+            type: Boolean
+        }
     },
     methods: {
         clickUpdateStep(data, flag, fn = null) {
-            this.$emit("updateStep", data, flag, fn);
+            this.$emit('updateStep', data, flag, fn);
         },
         updatedObjects(data, fn) {
-            this.$emit("updatedObjects", data, false, fn);
-        },
+            this.$emit('updatedObjects', data, false, fn);
+        }
     },
-    emits: ["updateStep", "updatedObjects"],
+    emits: ['updateStep', 'updatedObjects']
 };
 
 export const MixinSteps = {
     data() {
         return {
-            data: this.step,
+            data: this.step
         };
     },
     components: {
         TimelineStepStage,
-        ButtonList,
+        ButtonList
     },
     props: {
         step: {
-            type: [Object, Boolean],
+            type: [Object, Boolean]
         },
         disabled: {
-            type: Boolean,
+            type: Boolean
         },
 
         buttons: {
-            type: Array,
-        },
+            type: Array
+        }
     },
     watch: {
         step() {
             this.data = this.step;
-        },
+        }
     },
-    emits: ["updateItem"],
+    emits: ['updateItem']
 };
 
 export const LetterSenderMixin = {
@@ -68,7 +68,11 @@ export const LetterSenderMixin = {
 
             let str = `<p>`;
             if (this.THIS_USER.userProfile.phones.length) {
-                str += 'Моб: ' + `<a href="tel:${this.THIS_USER.userProfile.phones[0].phone.replace(/\D/g, '')}">${this.THIS_USER.userProfile.phones[0].phone}</a> `;
+                str +=
+                    'Моб: ' +
+                    `<a href="tel:${this.THIS_USER.userProfile.phones[0].phone.replace(/\D/g, '')}">${
+                        this.THIS_USER.userProfile.phones[0].phone
+                    }</a> `;
             }
             str += 'тел.офис: <a href="tel:74951500323">+7 (495) 150-03-23</a>';
             if (this.THIS_USER.userProfile.caller_id) {
@@ -88,16 +92,16 @@ export const LetterSenderMixin = {
         sendObjectsFormdata() {
             const formdata = {
                 company_id: this.currentRequest.company_id,
-                subject: "Список предложений от Pennylane Realty",
+                subject: 'Список предложений от Pennylane Realty',
                 wayOfSending: [0],
-                message: this.letterMessage,
+                message: this.letterMessage
             };
             if (this.defaultContactForSend !== null) {
                 formdata.defaultContactForSend = {
                     contact_id: this.defaultContactForSend.contact_id,
                     id: this.defaultContactForSend.id,
                     value: this.defaultContactForSend.email,
-                    type: 1,
+                    type: 1
                 };
             }
             return formdata;
@@ -111,6 +115,6 @@ export const LetterSenderMixin = {
             )
                 return null;
             return this.currentRequest.contact.emails[0];
-        },
+        }
     }
 };

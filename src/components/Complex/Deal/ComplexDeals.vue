@@ -14,32 +14,30 @@
                     <button class="ObjectDeals-actions-button">продажа</button>
                 </li>
                 <li class="ObjectDeals-actions-item">
-                    <button class="ObjectDeals-actions-button">
-                        ответ-хранение
-                    </button>
+                    <button class="ObjectDeals-actions-button">ответ-хранение</button>
                 </li>
             </ul>
         </div>
         <div class="ObjectDeals-list">
             <ComplexDealPreview
-                @choose="choseDeal"
                 v-for="deal in deals"
                 :key="deal.id"
+                @choose="choseDeal"
                 :deal="deal"
                 :isCurrent="currentDealId === deal.id"
             />
         </div>
-        <ComplexDealItem :object="object" :deal="currentDeal"/>
+        <ComplexDealItem :object="object" :deal="currentDeal" />
     </div>
 </template>
 
 <script>
-import {mapActions} from 'vuex';
-import ComplexDealPreview from "@/components/Complex/Deal/ComplexDealPreview.vue";
-import ComplexDealItem from "@/components/Complex/Deal/ComplexDealItem.vue";
+import { mapActions } from 'vuex';
+import ComplexDealPreview from '@/components/Complex/Deal/ComplexDealPreview.vue';
+import ComplexDealItem from '@/components/Complex/Deal/ComplexDealItem.vue';
 
 export default {
-    name: "ComplexDeals",
+    name: 'ComplexDeals',
     components: {
         ComplexDealItem,
         ComplexDealPreview
@@ -56,12 +54,12 @@ export default {
     },
     data() {
         return {
-            currentDealId: this.deals[0].id,
+            currentDealId: this.deals[0].id
         };
     },
     computed: {
         currentDeal() {
-            return this.deals.find((deal) => deal.id === this.currentDealId);
+            return this.deals.find(deal => deal.id === this.currentDealId);
         }
     },
     methods: {
@@ -73,9 +71,6 @@ export default {
 
     mounted() {
         this.FETCH_COMPLEX();
-
-    },
-
-
-}
+    }
+};
 </script>

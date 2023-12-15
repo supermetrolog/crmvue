@@ -1,16 +1,15 @@
 <template>
     <div class="statisctic">
         <h1>NIGGA</h1>
-        <button class="btn-primary btn" @click="run">Test</button>
+        <button @click="run" class="btn-primary btn">Test</button>
     </div>
 </template>
 
 <script>
 export default {
-    name: "Statistic",
+    name: 'Statistic',
     methods: {
-        run() {
-        }
-    },
+        run() {}
+    }
 };
 </script>

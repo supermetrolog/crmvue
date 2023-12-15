@@ -1,97 +1,95 @@
 <template>
     <YandexMapView
-        :settings="$options.ymapOptions.settings"
-        :styles="styles"
-        :controls="$options.ymapOptions.controls"
-        :behaviors="['drag', 'scrollZoom', 'multiTouch', 'selection']"
-        :polygonCoordinates="polygonCoordinates"
+        ref="map"
         @selectionDone="$emit('selectionDone')"
         @removedDone="$emit('removedDone')"
         @updated="$emit('updated')"
         @objectClick="objectClickHandler"
         @clusterClick="clusterClickHandler"
-        ref="map"
+        :settings="$options.ymapOptions.settings"
+        :styles="styles"
+        :controls="$options.ymapOptions.controls"
+        :behaviors="['drag', 'scrollZoom', 'multiTouch', 'selection']"
+        :polygonCoordinates="polygonCoordinates"
     >
         <YandexMapMarker
             v-for="offer in list"
             :key="offer.id"
+            ref="markers"
             :marker-id="offer.id"
             :coords="[offer.latitude, offer.longitude]"
             :hintContent="offer.address"
-            ref="markers"
         />
-        <OfferObject :offerIds="offerIds"/>
+        <OfferObject :offerIds="offerIds" />
     </YandexMapView>
 </template>
 
 <script>
-import YandexMapView from "@/components/common/YandexMap/YandexMapView.vue";
-import YandexMapMarker from "@/components/common/YandexMap/YandexMapMarker.vue";
-import OfferObject from "@/components/Offer/OfferObject.vue";
+import YandexMapView from '@/components/common/YandexMap/YandexMapView.vue';
+import YandexMapMarker from '@/components/common/YandexMap/YandexMapMarker.vue';
+import OfferObject from '@/components/Offer/OfferObject.vue';
 
 export default {
-    name: "OfferYmap",
+    name: 'OfferYmap',
     components: {
         OfferObject,
         YandexMapMarker,
         YandexMapView
     },
-    data() {
-        return {
-            offerIds: [],
-        }
-    },
     props: {
         list: {
             type: Array,
-            required: true,
+            required: true
         },
         polygonCoordinates: {
             type: Array,
-            default: () => [],
+            default: () => []
         },
         styles: {
             type: Object,
             default: () => {
                 return {
-                    height: "75vh",
-                    width: "100%",
-                }
-            },
+                    height: '75vh',
+                    width: '100%'
+                };
+            }
         }
+    },
+    data() {
+        return {
+            offerIds: []
+        };
     },
     ymapOptions: {
         settings: {
-            apiKey: "59572809-066b-46d5-9e5d-269a65751b84",
-            lang: "ru_RU",
-            coordorder: "latlong",
+            apiKey: '59572809-066b-46d5-9e5d-269a65751b84',
+            lang: 'ru_RU',
+            coordorder: 'latlong',
             enterprise: false,
-            version: "2.1",
+            version: '2.1'
         },
         styles: {
-            height: "75vh",
-            width: "100%",
+            height: '75vh',
+            width: '100%'
         },
         controls: [
-            "geolocationControl",
-            "searchControl",
-            "trafficControl",
-            "typeSelector",
-            "zoomControl",
-            "rulerControl",
-        ],
+            'geolocationControl',
+            'searchControl',
+            'trafficControl',
+            'typeSelector',
+            'zoomControl',
+            'rulerControl'
+        ]
     },
     methods: {
         getMarkerColor(offer) {
             if (offer.test_only == 1) {
-                return "grey";
+                return 'grey';
             }
-            return "#00a1fe";
+            return '#00a1fe';
         },
         getFooter(offer) {
-            let template = `<a href="${this.getOfferUrl(
-                offer
-            )}" target="_blank" class="photo">
+            let template = `<a href="${this.getOfferUrl(offer)}" target="_blank" class="photo">
               <div class="image-container">
                 <img src="${offer.thumb}" alt="image" />
               </div>
@@ -100,9 +98,9 @@ export default {
         },
         getClass(offer) {
             if (offer.status != 1) {
-                return "passive";
+                return 'passive';
             }
-            return "";
+            return '';
         },
 
         objectClickHandler(objectID) {
@@ -113,10 +111,9 @@ export default {
         },
         getOfferUrl(offer) {
             return this.$apiUrlHelper.generator().objectUrl(offer.complex_id);
-        },
-    },
+        }
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

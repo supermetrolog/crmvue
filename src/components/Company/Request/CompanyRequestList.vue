@@ -5,34 +5,22 @@
             enter-active-class="animate__animated animate__zoomIn for__modal absolute"
             leave-active-class="animate__animated animate__zoomOut for__modal absolute"
         >
-            <Modal
-                title="Удаление запроса "
-                @close="clickCloseModal"
-                v-if="deletedRequestItem"
-                class="action-modal"
-            >
+            <Modal v-if="deletedRequestItem" @close="clickCloseModal" title="Удаление запроса " class="action-modal">
                 <div class="row no-gutters">
                     <div class="col-12 text-center">
                         <h4 class="text-dark">Вы уверены что хотите удалить запрос?</h4>
-                        <CompanyRequestItem
-                            :request="deletedRequestItem"
-                            :reedOnly="true"
-                        />
+                        <CompanyRequestItem :request="deletedRequestItem" :reedOnly="true" />
                     </div>
                     <div class="col-12 mt-4 text-center">
-                        <Loader class="center small" v-if="deleteLoader"/>
+                        <Loader v-if="deleteLoader" class="center small" />
                         <button
+                            @click="deleteRequest(deletedRequestItem)"
                             class="btn btn-danger"
                             :disabled="deleteLoader"
-                            @click="deleteRequest(deletedRequestItem)"
                         >
                             Удалить
                         </button>
-                        <button
-                            class="btn btn-primary ml-1"
-                            @click="clickCloseModal"
-                            :disabled="deleteLoader"
-                        >
+                        <button @click="clickCloseModal" class="btn btn-primary ml-1" :disabled="deleteLoader">
                             Нет
                         </button>
                     </div>
@@ -44,44 +32,29 @@
             enter-active-class="animate__animated animate__zoomIn for__modal absolute"
             leave-active-class="animate__animated animate__zoomOut for__modal absolute"
         >
-            <Modal
-                title="Клонирование запроса "
-                @close="clickCloseModal"
-                v-if="clonedRequestItem"
-                class="action-modal"
-            >
+            <Modal v-if="clonedRequestItem" @close="clickCloseModal" title="Клонирование запроса " class="action-modal">
                 <div class="row no-gutters">
                     <div class="col-12 text-center">
-                        <h4 class="text-dark">
-                            Вы уверены, что хотите клонировать этот запрос?
-                        </h4>
-                        <CompanyRequestItem
-                            :request="clonedRequestItem"
-                            :reedOnly="true"
-                            :withDeal="false"
-                        />
+                        <h4 class="text-dark">Вы уверены, что хотите клонировать этот запрос?</h4>
+                        <CompanyRequestItem :request="clonedRequestItem" :reedOnly="true" :withDeal="false" />
                     </div>
                     <div class="col-12 mt-4 text-center">
-                        <Loader class="center small" v-if="cloneLoader"/>
+                        <Loader v-if="cloneLoader" class="center small" />
                         <button
+                            @click="cloneRequest(clonedRequestItem)"
                             class="btn btn-success"
                             :disabled="cloneLoader"
-                            @click="cloneRequest(clonedRequestItem)"
                         >
                             Клонировать
                         </button>
-                        <button
-                            class="btn btn-primary ml-1"
-                            @click="clickCloseModal"
-                            :disabled="cloneLoader"
-                        >
+                        <button @click="clickCloseModal" class="btn btn-primary ml-1" :disabled="cloneLoader">
                             Нет
                         </button>
                     </div>
                 </div>
             </Modal>
         </transition>
-        <div class="row mb-2" v-if="requests.length">
+        <div v-if="requests.length" class="row mb-2">
             <div class="col-12 p-0">
                 <div class="row no-gutters">
                     <div class="col-6 pr-2">
@@ -106,55 +79,53 @@
         <CompanyRequestItem
             v-for="request of requests"
             :key="request.id"
-            :request="request"
             @openCompanyRequestFormForUpdate="openCompanyRequestFormForUpdate"
             @deleteRequest="clickDeleteRequest"
             @cloneRequest="clickCloneRequest"
+            :request="request"
         />
     </div>
 </template>
 
 <script>
-import {mapActions} from "vuex";
-import Modal from "@/components/common/Modal.vue";
-import Loader from "@/components/common/Loader.vue";
-import CompanyRequestItem from "@/components/Company/Request/CompanyRequestItem.vue";
+import { mapActions } from 'vuex';
+import Modal from '@/components/common/Modal.vue';
+import Loader from '@/components/common/Loader.vue';
+import CompanyRequestItem from '@/components/Company/Request/CompanyRequestItem.vue';
 
 export default {
-    name: "CompanyRequestList",
+    name: 'CompanyRequestList',
     components: {
         Loader,
         Modal,
         CompanyRequestItem
+    },
+    props: {
+        requests: {
+            type: Array
+        }
     },
     data() {
         return {
             deletedRequestItem: null,
             deleteLoader: false,
             clonedRequestItem: null,
-            cloneLoader: false,
+            cloneLoader: false
         };
-    },
-    props: {
-        requests: {
-            type: Array,
-        },
     },
     computed: {
         dealsCount() {
-            const requestsWithDeal = this.requests.filter(
-                (item) => item.deal != null
-            );
+            const requestsWithDeal = this.requests.filter(item => item.deal != null);
             if (Array.isArray(requestsWithDeal)) {
                 return requestsWithDeal.length;
             }
             return 0;
-        },
+        }
     },
     methods: {
-        ...mapActions(["DELETE_REQUEST", "CREATE_REQUEST"]),
+        ...mapActions(['DELETE_REQUEST', 'CREATE_REQUEST']),
         openCompanyRequestFormForUpdate(request) {
-            this.$emit("openCompanyRequestFormForUpdate", request);
+            this.$emit('openCompanyRequestFormForUpdate', request);
         },
         clickCloseModal() {
             this.deletedRequestItem = null;
@@ -171,18 +142,17 @@ export default {
             await this.CREATE_REQUEST(request);
             this.cloneLoader = false;
             this.clonedRequestItem = null;
-            this.$emit("cloned");
+            this.$emit('cloned');
         },
         async deleteRequest(request) {
             this.deleteLoader = true;
             await this.DELETE_REQUEST(request);
             this.deleteLoader = false;
             this.deletedRequestItem = null;
-        },
+        }
     },
-    emits: ["openCompanyRequestFormForUpdate", "cloned"],
+    emits: ['openCompanyRequestFormForUpdate', 'cloned']
 };
 </script>
 
-<style>
-</style>
+<style></style>

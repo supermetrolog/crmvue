@@ -1,7 +1,7 @@
 <template>
     <div class="form-item file-input">
         <div class="file-input_container">
-            <div class="row" v-if="!reedOnly">
+            <div v-if="!reedOnly" class="row">
                 <div class="col-12">
                     <label class="form-item-label" :class="{ required: required }">
                         <p v-if="label">
@@ -12,36 +12,21 @@
                                 <slot></slot>
                             </button>
                             <input
-                                type="file"
                                 ref="fileInput"
+                                @change.stop="onChange"
+                                type="file"
                                 :multiple="multiple"
                                 :accept="accept"
-                                @change.stop="onChange"
                             />
                         </div>
                     </label>
                 </div>
             </div>
             <template v-if="multiple">
-                <div
-                    class="row no-gutters file-input_files existing"
-                    v-if="files.length"
-                >
-                    <div
-                        class="col-3 file ml-auto"
-                        v-for="(file, index) in files"
-                        :key="index"
-                    >
+                <div v-if="files.length" class="row no-gutters file-input_files existing">
+                    <div v-for="(file, index) in files" :key="index" class="col-3 file ml-auto">
                         <div class="row no-gutters">
-                            <div
-                                class="
-                  col-12
-                  file_image
-                  d-flex
-                  align-self-center
-                  justify-content-center
-                "
-                            >
+                            <div class="col-12 file_image d-flex align-self-center justify-content-center">
                                 <a
                                     :href="file.src"
                                     target="_blank"
@@ -49,20 +34,20 @@
                                     class="d-flex align-self-center justify-content-center"
                                 >
                                     <img
+                                        v-if="allowedTypeList.includes(file.src2)"
                                         :src="require(`@/assets/image/${file.src2}.png`)"
                                         alt="file"
                                         :class="file.src2"
                                         :title="file.name"
-                                        v-if="allowedTypeList.includes(file.src2)"
                                     />
-                                    <img :src="file.src2" alt="file" class="image" v-else/>
+                                    <img v-else :src="file.src2" alt="file" class="image" />
                                 </a>
 
                                 <div class="size-container text-right">
                                     <p>{{ formatSize(file.size) }}</p>
                                 </div>
-                                <div class="delete-container" v-if="!reedOnly">
-                                    <i class="fas fa-times" @click="deleteFile(index)"></i>
+                                <div v-if="!reedOnly" class="delete-container">
+                                    <i @click="deleteFile(index)" class="fas fa-times"></i>
                                 </div>
                             </div>
                             <div class="col-12 file_description text-center">
@@ -76,29 +61,16 @@
                 <div class="row no-gutters file-input_files existing">
                     <div class="col-12 file ml-auto">
                         <div class="row no-gutters">
-                            <div
-                                class="
-                  col-12
-                  file_image
-                  single
-                  d-flex
-                  align-self-center
-                  justify-content-center
-                "
-                            >
+                            <div class="col-12 file_image single d-flex align-self-center justify-content-center">
                                 <a
                                     :href="files"
                                     target="_blank"
                                     class="d-flex align-self-center justify-content-center"
                                 >
-                                    <img
-                                        :src="$apiUrlHelper.getUploadedFileUrl(files)"
-                                        alt="file"
-                                        class="image"
-                                    />
+                                    <img :src="$apiUrlHelper.getUploadedFileUrl(files)" alt="file" class="image" />
                                 </a>
-                                <div class="delete-container" v-if="!reedOnly">
-                                    <i class="fas fa-times" @click="deleteFile(index)"></i>
+                                <div v-if="!reedOnly" class="delete-container">
+                                    <i @click="deleteFile(index)" class="fas fa-times"></i>
                                 </div>
                             </div>
                         </div>
@@ -110,35 +82,26 @@
                 <img :src="files" alt="img" />
               </div>
             </template> -->
-            <div
-                class="row no-gutters file-input_files target"
-                v-if="localFiles.length"
-            >
+            <div v-if="localFiles.length" class="row no-gutters file-input_files target">
                 <div
-                    class="col-3 file"
-                    :class="{ 'col-12': !multiple }"
                     v-for="(file, index) in localFiles"
                     :key="index"
+                    class="col-3 file"
+                    :class="{ 'col-12': !multiple }"
                 >
                     <div class="row no-gutters">
                         <div
-                            class="
-                col-12
-                file_image
-                d-flex
-                align-self-center
-                justify-content-center
-              "
+                            class="col-12 file_image d-flex align-self-center justify-content-center"
                             :class="{ single: !multiple }"
                         >
                             <img
+                                v-if="allowedTypeList.includes(file.src)"
                                 :src="require(`@/assets/image/${file.src}.png`)"
                                 alt="file"
                                 :class="file.src"
                                 :title="file.name"
-                                v-if="allowedTypeList.includes(file.src)"
                             />
-                            <img :src="file.src" alt="file" class="image" v-else/>
+                            <img v-else :src="file.src" alt="file" class="image" />
                             <div class="size-container text-right">
                                 <p>{{ formatSize(file.size) }}</p>
                             </div>
@@ -155,52 +118,64 @@
 
 <script>
 function getFileType(file) {
-    if (file.name.match(".pdf")) return "pdf";
-    else if (file.name.match(".xls")) return "excel";
-    else if (file.name.match(".doc")) return "word";
-    else if (file.name.match(".ppt")) return "ppoint";
-    else return "unknown";
+    if (file.name.match('.pdf')) return 'pdf';
+    else if (file.name.match('.xls')) return 'excel';
+    else if (file.name.match('.doc')) return 'word';
+    else if (file.name.match('.ppt')) return 'ppoint';
+    else return 'unknown';
 }
 
 export default {
-    name: "FileInput",
+    name: 'FileInput',
+    props: {
+        data: {
+            type: [Array, String],
+            default: () => []
+        },
+        native: {
+            type: [Array, FileList],
+            default: () => []
+        },
+        label: {
+            type: String,
+            default: ''
+        },
+        multiple: {
+            type: Boolean,
+            default: true
+        },
+        accept: {
+            type: String,
+            default: '.*'
+        },
+        reedOnly: {
+            type: Boolean,
+            default: false
+        },
+        required: {
+            type: Boolean,
+            default: false
+        }
+    },
     data() {
         return {
             localFiles: [], //Выбранные файлы в инпуте (нужен для отображения)
             targetFiles: [], //Выбранные файлы в интпуте
             files: this.data, //Уже существующие файлы
-            allowedTypeList: ["pdf", "excel", "word", "ppoint", "unknown"],
+            allowedTypeList: ['pdf', 'excel', 'word', 'ppoint', 'unknown']
         };
     },
-    props: {
-        data: {
-            type: [Array, String],
-            default: () => [],
-        },
-        native: {
-            type: [Array, FileList],
-            default: () => [],
-        },
-        label: {
-            type: String,
-            default: "",
-        },
-        multiple: {
-            type: Boolean,
-            default: true,
-        },
-        accept: {
-            type: String,
-            default: ".*",
-        },
-        reedOnly: {
-            type: Boolean,
-            default: false,
-        },
-        required: {
-            type: Boolean,
-            default: false,
-        },
+    watch: {
+        // localFiles: {
+        //   handler() {
+        //     this.$emit("change", this.files, this.targetFiles);
+        //   },
+        //   deep: true,
+        // },
+        data() {
+            this.files = this.data;
+            this.setSrcForExistionFiles();
+        }
     },
     methods: {
         clickOpenFile() {
@@ -209,12 +184,12 @@ export default {
         formatSize(length) {
             length = +length;
             let i = 0,
-                type = ["б", "Кб", "Мб", "Гб", "Тб", "Пб"];
+                type = ['б', 'Кб', 'Мб', 'Гб', 'Тб', 'Пб'];
             while ((length / 1000) | 0 && i < type.length - 1) {
                 length /= 1024;
                 i++;
             }
-            return length.toFixed(2) + " " + type[i];
+            return length.toFixed(2) + ' ' + type[i];
         },
         deleteFile(index) {
             if (!this.multiple) {
@@ -222,7 +197,7 @@ export default {
             } else {
                 this.files = this.files.filter((_, idx) => idx != index);
             }
-            this.$emit("update:data", this.files);
+            this.$emit('update:data', this.files);
         },
         onChange($event) {
             this.localFiles = [];
@@ -235,15 +210,15 @@ export default {
             if (!this.multiple) {
                 this.files = null;
             }
-            this.$emit("update:native", $event.target.files);
-            this.$emit("update:data", this.files);
+            this.$emit('update:native', $event.target.files);
+            this.$emit('update:data', this.files);
             this.setSrc(files);
         },
         setSrc(files) {
-            files.map((file) => {
-                if (file.type.match("image")) {
+            files.map(file => {
+                if (file.type.match('image')) {
                     const reader = new FileReader();
-                    reader.onload = (ev) => {
+                    reader.onload = ev => {
                         file.src = ev.target.result;
 
                         this.localFiles.push(file);
@@ -251,13 +226,13 @@ export default {
                     reader.readAsDataURL(file);
 
                     return file;
-                } else if (file.type.match("application")) {
+                } else if (file.type.match('application')) {
                     file.src = getFileType(file);
                     this.localFiles.push(file);
 
                     return file;
                 } else {
-                    file.src = "unknown";
+                    file.src = 'unknown';
                     this.localFiles.push(file);
 
                     return file;
@@ -272,35 +247,23 @@ export default {
             if (!this.files.length) {
                 return false;
             }
-            this.files.map((file) => {
-                if (file.type.match("image")) {
+            this.files.map(file => {
+                if (file.type.match('image')) {
                     file.src2 = file.src;
                     return file;
-                } else if (file.type.match("application")) {
+                } else if (file.type.match('application')) {
                     file.src2 = getFileType(file);
                     return file;
                 } else {
-                    file.src2 = "unknown";
+                    file.src2 = 'unknown';
                     return file;
                 }
             });
-        },
+        }
     },
     mounted() {
         this.setSrcForExistionFiles();
-    },
-    watch: {
-        // localFiles: {
-        //   handler() {
-        //     this.$emit("change", this.files, this.targetFiles);
-        //   },
-        //   deep: true,
-        // },
-        data() {
-            this.files = this.data;
-            this.setSrcForExistionFiles();
-        },
-    },
+    }
 };
 </script>
 

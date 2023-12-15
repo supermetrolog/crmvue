@@ -18,5 +18,5 @@ export const unitTypes = {
     PIECES: 'Pieces',
     METERS: 'Meters',
     TON: 'Tons'
-}
+};
 

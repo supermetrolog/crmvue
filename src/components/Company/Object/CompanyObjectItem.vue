@@ -3,11 +3,8 @@
         <div class="row no-gutters">
             <div class="col-4" :title="object.description_auto || 'нет описания'">
                 <div class="image-container">
-                    <a
-                        :href="$apiUrlHelper.generator().objectUrl(object.complex_id)"
-                        target="_blank"
-                    >
-                        <img :src="object.thumb" alt="image"/>
+                    <a :href="$apiUrlHelper.generator().objectUrl(object.complex_id)" target="_blank">
+                        <img :src="object.thumb" alt="image" />
                     </a>
                 </div>
             </div>
@@ -22,57 +19,49 @@
                 <div class="params">
                     <div class="params__item">
                         <p class="title">Этажи:</p>
-                        <p class="value">{{ object.floors || "—" }}</p>
+                        <p class="value">{{ object.floors || '—' }}</p>
                     </div>
                     <div class="params__item">
                         <p class="title">Потолки:</p>
-                        <p class="value">{{ object.calc_ceiling_height || "—" }}</p>
+                        <p class="value">{{ object.calc_ceiling_height || '—' }}</p>
                     </div>
                 </div>
                 <div class="params">
                     <div class="params__item">
                         <p class="title">Электричество:</p>
-                        <p class="value">
-                            {{ $formatter.number(object.power) }} <small>кВт</small>
-                        </p>
+                        <p class="value">{{ $formatter.number(object.power) }} <small>кВт</small></p>
                     </div>
                     <div class="params__item">
                         <p class="title">Тип ворот:</p>
-                        <p class="value">{{ object.calc_gate_type || "—" }}</p>
+                        <p class="value">{{ object.calc_gate_type || '—' }}</p>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row no-gutters" v-if="object.offerMix">
-            <CompanyObjectItemOffer
-                v-for="offer in object.offerMix"
-                :key="offer.id"
-                :offer="offer"
-                class="main"
-            />
+        <div v-if="object.offerMix" class="row no-gutters">
+            <CompanyObjectItemOffer v-for="offer in object.offerMix" :key="offer.id" :offer="offer" class="main" />
         </div>
     </div>
 </template>
 
 <script>
-import CompanyObjectItemOffer from "./CompanyObjectItemOffer.vue";
+import CompanyObjectItemOffer from './CompanyObjectItemOffer.vue';
 
 export default {
-    name: "CompanyObjectItem",
+    name: 'CompanyObjectItem',
     components: {
-        CompanyObjectItemOffer,
+        CompanyObjectItemOffer
     },
     props: {
         object: {
-            type: Object,
+            type: Object
         },
         col: {
             type: String,
-            default: "col-12",
-        },
-    },
+            default: 'col-12'
+        }
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

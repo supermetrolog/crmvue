@@ -1,45 +1,31 @@
 <template>
-    <Modal class="fullscreen" :title="timelineTitle" @close="$emit('close')">
+    <Modal @close="$emit('close')" class="fullscreen" :title="timelineTitle">
         <template #header>
             <TimelineHeader
+                @close="$emit('close')"
                 :disabled="disabled"
                 :currentRequest="currentRequest"
-                @close="$emit('close')"
                 :timelineExist="timelineNotFoundFlag"
             />
         </template>
         <div class="container-timeline">
-            <Loader
-                class="center"
-                v-if="
-          (!selectedStep && $route.query.step && !timelineNotFoundFlag) ||
-          loader
-        "
-            />
+            <Loader v-if="(!selectedStep && $route.query.step && !timelineNotFoundFlag) || loader" class="center" />
             <div class="row no-gutters">
                 <div class="col-12">
-                    <div class="row no-gutters inner" ref="timeline">
-                        <div class="col-12" v-if="timelineNotFoundFlag">
-                            <h4 class="text-danger text-center">
-                                Такого таймлайна не существует
-                            </h4>
+                    <div ref="timeline" class="row no-gutters inner">
+                        <div v-if="timelineNotFoundFlag" class="col-12">
+                            <h4 class="text-danger text-center">Такого таймлайна не существует</h4>
                         </div>
-                        <div
-                            class="timeline col-12"
-                            v-if="!loader && !timelineNotFoundFlag"
-                        >
+                        <div v-if="!loader && !timelineNotFoundFlag" class="timeline col-12">
                             <TimelineMini
+                                @clickItem="clickStep"
                                 :currentSteps="this.TIMELINE.timelineSteps"
                                 :selectedStep="selectedStep"
-                                @clickItem="clickStep"
                             />
                         </div>
                     </div>
                 </div>
-                <div
-                    class="col-9 box step-actions px-0"
-                    v-if="selectedStep && !loader && !timelineNotFoundFlag"
-                >
+                <div v-if="selectedStep && !loader && !timelineNotFoundFlag" class="col-9 box step-actions px-0">
                     <transition
                         mode="out-in"
                         enter-active-class="animate__animated animate__fadeInRightBig for__modal__fullscreen"
@@ -47,24 +33,17 @@
                     >
                         <component
                             :is="stepActionsName"
+                            @updatedObjects="updatedObjects"
+                            @updateStep="clickUpdateStep"
                             :step="selectedStep"
                             :loaderForStep="loaderForStep"
                             :disabled="disabled"
-                            @updatedObjects="updatedObjects"
-                            @updateStep="clickUpdateStep"
                         >
                         </component>
                     </transition>
                 </div>
-                <div
-                    class="col-3 box timeline-extra-block"
-                    v-if="selectedStep && !loader && !timelineNotFoundFlag"
-                >
-                    <TimelineExtraBlock
-                        :step="selectedStep"
-                        :disabled="disabled"
-                        @commentAdded="getTimeline"
-                    />
+                <div v-if="selectedStep && !loader && !timelineNotFoundFlag" class="col-3 box timeline-extra-block">
+                    <TimelineExtraBlock @commentAdded="getTimeline" :step="selectedStep" :disabled="disabled" />
                 </div>
             </div>
         </div>
@@ -72,26 +51,26 @@
 </template>
 
 <script>
-import {mapActions, mapGetters} from "vuex";
+import { mapActions, mapGetters } from 'vuex';
 
-import TimelineStepMeetingActions from "@/components/Timeline/Step/TimelineStepMeetingActions.vue";
-import TimelineStepOffersActions from "@/components/Timeline/Step/TimelineStepOffersActions.vue";
-import TimelineStepFeedbackActions from "@/components/Timeline/Step/TimelineStepFeedbackActions.vue";
-import TimelineStepInspectionActions from "@/components/Timeline/Step/TimelineStepInspectionActions.vue";
-import TimelineStepVisitActions from "@/components/Timeline/Step/TimelineStepVisitActions.vue";
-import TimelineStepInterestActions from "@/components/Timeline/Step/TimelineStepInterestActions.vue";
-import TimelineStepTalkActions from "@/components/Timeline/Step/TimelineStepTalkActions.vue";
-import TimelineStepDealActions from "@/components/Timeline/Step/TimelineStepDealActions.vue";
-import {Timeline} from "@/const/const";
-import Utils from "@/utils";
-import TimelineHeader from "./TimelineHeader.vue";
-import Modal from "@/components/common/Modal.vue";
-import Loader from "@/components/common/Loader.vue";
-import TimelineMini from "@/components/Timeline/TimelineMini.vue";
-import TimelineExtraBlock from "@/components/Timeline/TimelineExtraBlock.vue";
+import TimelineStepMeetingActions from '@/components/Timeline/Step/TimelineStepMeetingActions.vue';
+import TimelineStepOffersActions from '@/components/Timeline/Step/TimelineStepOffersActions.vue';
+import TimelineStepFeedbackActions from '@/components/Timeline/Step/TimelineStepFeedbackActions.vue';
+import TimelineStepInspectionActions from '@/components/Timeline/Step/TimelineStepInspectionActions.vue';
+import TimelineStepVisitActions from '@/components/Timeline/Step/TimelineStepVisitActions.vue';
+import TimelineStepInterestActions from '@/components/Timeline/Step/TimelineStepInterestActions.vue';
+import TimelineStepTalkActions from '@/components/Timeline/Step/TimelineStepTalkActions.vue';
+import TimelineStepDealActions from '@/components/Timeline/Step/TimelineStepDealActions.vue';
+import { Timeline } from '@/const/const';
+import Utils from '@/utils';
+import TimelineHeader from './TimelineHeader.vue';
+import Modal from '@/components/common/Modal.vue';
+import Loader from '@/components/common/Loader.vue';
+import TimelineMini from '@/components/Timeline/TimelineMini.vue';
+import TimelineExtraBlock from '@/components/Timeline/TimelineExtraBlock.vue';
 
 export default {
-    name: "Timeline",
+    name: 'Timeline',
     components: {
         TimelineExtraBlock,
         TimelineMini,
@@ -109,23 +88,16 @@ export default {
     },
     data() {
         return {
-            stepParam: Timeline.get("param"),
+            stepParam: Timeline.get('param'),
             loader: true,
             loaderForStep: false,
             objects: [],
             timelineNotFoundFlag: false,
-            completeStep: false,
+            completeStep: false
         };
     },
     computed: {
-        ...mapGetters([
-            "TIMELINE",
-            "COMPANY",
-            "COMPANY_CONTACTS",
-            "THIS_USER",
-            "TIMELINE_LIST",
-            "COMPANY_REQUESTS",
-        ]),
+        ...mapGetters(['TIMELINE', 'COMPANY', 'COMPANY_CONTACTS', 'THIS_USER', 'TIMELINE_LIST', 'COMPANY_REQUESTS']),
         selectedStep() {
             if (this.TIMELINE) {
                 return this.TIMELINE.timelineSteps[this.$route.query.step];
@@ -133,13 +105,11 @@ export default {
             return false;
         },
         stepActionsName() {
-            return this.stepParam[this.$route.query.step][1].stepName + "Actions";
+            return this.stepParam[this.$route.query.step][1].stepName + 'Actions';
         },
         currentRequest() {
             if (Array.isArray(this.COMPANY_REQUESTS)) {
-                return this.COMPANY_REQUESTS.find(
-                    (item) => item.id == this.$route.query.request_id
-                );
+                return this.COMPANY_REQUESTS.find(item => item.id == this.$route.query.request_id);
             }
             return false;
         },
@@ -157,18 +127,18 @@ export default {
             return Utils.normalizeContactsForMultiselect(this.COMPANY_CONTACTS);
         },
         timelineTitle() {
-            let title = "Бизнес процесс: " + this.COMPANY.full_name;
+            let title = 'Бизнес процесс: ' + this.COMPANY.full_name;
             const currentTimeline = this.TIMELINE_LIST.find(
-                (timeline) => timeline.consultant.id == this.$route.query.consultant_id
+                timeline => timeline.consultant.id == this.$route.query.consultant_id
             );
             if (currentTimeline) {
-                title += " - " + currentTimeline.consultant.userProfile.short_name;
+                title += ' - ' + currentTimeline.consultant.userProfile.short_name;
             }
             return title;
-        },
+        }
     },
     methods: {
-        ...mapActions(["FETCH_TIMELINE", "UPDATE_STEP", "FETCH_COMPANY_REQUESTS"]),
+        ...mapActions(['FETCH_TIMELINE', 'UPDATE_STEP', 'FETCH_COMPANY_REQUESTS']),
         async updatedObjects(data, goToNext = false, fn = null) {
             this.loaderForStep = data.id;
             await this.getTimeline();
@@ -195,21 +165,21 @@ export default {
         },
         async nextStep() {
             let query = {
-                ...this.$route.query,
+                ...this.$route.query
             };
             query.step++;
             this.completeStep = true;
-            await this.$router.push({query: query});
+            await this.$router.push({ query: query });
         },
 
         async clickStep(step) {
             let query = {
-                ...this.$route.query,
+                ...this.$route.query
             };
             if (step.number != this.$route.query.step) {
                 query.step = step.number;
             }
-            await this.$router.push({query: query});
+            await this.$router.push({ query: query });
         },
         async getTimeline() {
             await this.FETCH_TIMELINE(this.$route.query);
@@ -223,7 +193,7 @@ export default {
 
         getPriorityStep() {
             let highPriorityTimelineStep = 0;
-            this.TIMELINE.timelineSteps.forEach((step) => {
+            this.TIMELINE.timelineSteps.forEach(step => {
                 if (step.status == 0 && !highPriorityTimelineStep) {
                     highPriorityTimelineStep = step.number;
                 }
@@ -233,11 +203,11 @@ export default {
         async moveToPriorityStep() {
             let highPriorityTimelineStep = this.getPriorityStep();
             let query = {
-                ...this.$route.query,
+                ...this.$route.query
             };
             query.step = highPriorityTimelineStep;
-            await this.$router.push({query: query});
-        },
+            await this.$router.push({ query: query });
+        }
     },
     async created() {
         this.loader = true;
@@ -254,10 +224,9 @@ export default {
                 await this.getTimeline();
                 this.loader = false;
             }
-        },
-    },
+        }
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

@@ -17,10 +17,7 @@
                                 {{ item.description }}
                             </Td>
                             <Td class="text-right">
-                                <button
-                                    class="btn btn-action text-primary"
-                                    @click="$emit('clickEdit', item)"
-                                >
+                                <button @click="$emit('clickEdit', item)" class="btn btn-action text-primary">
                                     <i class="fas fa-edit"></i>
                                 </button>
                             </Td>
@@ -33,26 +30,25 @@
 </template>
 
 <script>
-import Table from "@/components/common/Table/Table.vue";
-import Tr from "@/components/common/Table/Tr.vue";
-import Th from "@/components/common/Table/Th.vue";
-import Td from "@/components/common/Table/Td.vue";
+import Table from '@/components/common/Table/Table.vue';
+import Tr from '@/components/common/Table/Tr.vue';
+import Th from '@/components/common/Table/Th.vue';
+import Td from '@/components/common/Table/Td.vue';
 
 export default {
-    name: "CompanyGroupsTable",
+    name: 'CompanyGroupsTable',
     components: {
         Table,
         Tr,
         Th,
-        Td,
+        Td
     },
     props: {
         companyGroups: {
-            type: Array,
-        },
-    },
+            type: Array
+        }
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

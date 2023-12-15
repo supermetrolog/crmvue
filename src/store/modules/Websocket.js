@@ -1,16 +1,16 @@
-import {notify} from "@kyvg/vue3-notification";
-import {apiUrlHelperObject} from "@/plugins";
+import { notify } from '@kyvg/vue3-notification';
+import { apiUrlHelperObject } from '@/plugins';
 
 let notifyOptions = {
-    group: "app",
-    type: "success",
-    duration: 5000,
+    group: 'app',
+    type: 'success',
+    duration: 5000
 };
 const Websocket = {
     state: {
         socket: null,
         setedUserIdFlag: false,
-        pingLoop: null,
+        pingLoop: null
     },
     mutations: {
         updateSocket(state, data) {
@@ -65,20 +65,21 @@ const Websocket = {
         },
         WEBSOCKET_RUN_PING_LOOP(context) {
             let pingLoop = setInterval(() => {
-                context.dispatch("WEBSOCKET_PING");
+                context.dispatch('WEBSOCKET_PING');
             }, 50000);
             context.commit('setPingLoop', pingLoop);
         },
         EVENT_WEBSOCKET_ON_OPEN(context) {
             context.dispatch('WEBSOCKET_SET_USER');
             context.dispatch('WEBSOCKET_RUN_PING_LOOP');
-
         },
         WEBSOCKET_PING(context) {
             const socket = context.getters.SOCKET;
-            socket.send(JSON.stringify({
-                action: "ping",
-            }));
+            socket.send(
+                JSON.stringify({
+                    action: 'ping'
+                })
+            );
         },
         EVENT_WEBSOCKET_ON_MESSAGE(context, event) {
             let data = JSON.parse(event.data);
@@ -93,7 +94,6 @@ const Websocket = {
             }
         },
         EVENT_WEBSOCKET_ON_ERROR(context) {
-
             notifyOptions.text = 'Не удалось подключиться к Websocket серверу. Обратитесь к администратору.';
             notifyOptions.title = 'Websocket server';
             notifyOptions.type = 'error';
@@ -104,7 +104,7 @@ const Websocket = {
                 context.dispatch('WEBSOCKET_RUN');
             }, 30000);
         },
-        EVENT_WEBSOCKET_ON_CLOSE({getters, dispatch}, event) {
+        EVENT_WEBSOCKET_ON_CLOSE({ getters, dispatch }, event) {
             if (event.wasClean) {
                 return;
             } else {
@@ -121,16 +121,17 @@ const Websocket = {
         WEBSOCKET_SET_USER(context) {
             const socket = context.getters.SOCKET;
             if (!context.getters.SETED_USER_ID_FLAG) {
-                socket.send(JSON.stringify({
-                    action: "setUser",
-                    data: {window_id: window.name, user_id: context.getters.THIS_USER.id},
-                }));
+                socket.send(
+                    JSON.stringify({
+                        action: 'setUser',
+                        data: { window_id: window.name, user_id: context.getters.THIS_USER.id }
+                    })
+                );
             }
-
         },
         ACTION_WEBSOCKET_user_setted(context) {
             context.commit('toggleSetedUserIdFlag', true);
-        },
+        }
     },
     getters: {
         SOCKET(state) {
@@ -138,8 +139,8 @@ const Websocket = {
         },
         SETED_USER_ID_FLAG(state) {
             return state.setedUserIdFlag;
-        },
+        }
     }
-}
+};
 
 export default Websocket;

@@ -1,55 +1,41 @@
 <template>
     <div class="company-request-search-form">
-        <Form class="autosize" @submit="onSubmit">
+        <Form @submit="onSubmit" class="autosize">
             <FormGroup class="mb-2">
                 <Input
                     v-model="form.all"
+                    @keydown.enter="onSubmit"
                     label="Поиск"
                     placeholder="ID, адрес, собственник, телефон, ФИО"
                     class="col-12 main-input"
-                    @keydown.enter="onSubmit"
                 />
             </FormGroup>
             <FormGroup>
                 <div class="col-6">
-                    <Button @click.prevent="extraVisible = !extraVisible">
+                    <Button @click.prevent="extraVisible = !extraVisible"> фильтры </Button>
+                    <a @click="extraVisible = !extraVisible" href="#" class="text-primary mr-2">
                         фильтры
-                    </Button>
-                    <a
-                        href="#"
-                        @click="extraVisible = !extraVisible"
-                        class="text-primary mr-2"
-                    >
-                        фильтры
-                        <span class="badge badge-danger" v-if="filterCount">
-              {{ filterCount }}
-            </span>
-                        <i class="fas fa-angle-down" v-if="!extraVisible"></i>
-                        <i class="fas fa-angle-up" v-else></i>
+                        <span v-if="filterCount" class="badge badge-danger">
+                            {{ filterCount }}
+                        </span>
+                        <i v-if="!extraVisible" class="fas fa-angle-down"></i>
+                        <i v-else class="fas fa-angle-up"></i>
                     </a>
                     <a
+                        @click.prevent="clickFavorites"
                         href="#"
                         class="text-primary ml-4 favorites px-0"
-                        @click.prevent="clickFavorites"
                         :class="{ selected: form.favorites }"
                     >
                         избранные
-                        <span class="badge badge-info" v-if="favoritesCount">
-              {{ favoritesCount }}
-            </span>
+                        <span v-if="favoritesCount" class="badge badge-info">
+                            {{ favoritesCount }}
+                        </span>
                     </a>
-                    <a
-                        href="#"
-                        @click.prevent="resetForm"
-                        class="text-warning ml-md-5 ml-4"
-                        v-if="filterCount"
-                    >
+                    <a v-if="filterCount" @click.prevent="resetForm" href="#" class="text-warning ml-md-5 ml-4">
                         сбросить фильтры
                     </a>
-                    <a
-                        :href="$router.resolve({name: 'OffersMap', query: $route.query}).href"
-                        class="text-dark ml-5"
-                    >
+                    <a :href="$router.resolve({ name: 'OffersMap', query: $route.query }).href" class="text-dark ml-5">
                         <span v-if="objectsCount">{{ objectsCount }}</span> на карте
                     </a>
                 </div>
@@ -57,8 +43,8 @@
                     <a
                         v-for="btn in additionalButtons"
                         :key="btn.label"
-                        href="#"
                         @click.prevent="$emit(btn.event)"
+                        href="#"
                         :class="btn.classes"
                     >
                         {{ btn.label }}
@@ -72,10 +58,10 @@
                         label="Консультант"
                         class="col-12 col-md-4 pr-md-1"
                         :options="
-              async () => {
-                return await FETCH_CONSULTANT_LIST();
-              }
-            "
+                            async () => {
+                                return await FETCH_CONSULTANT_LIST();
+                            }
+                        "
                     />
 
                     <MultiSelect
@@ -161,26 +147,26 @@
                     </Input>
                     <MultiSelect
                         v-model="form.fakeRegion"
+                        @change="changeRegion"
                         label="Регионы"
                         class="col-md-3 col-6"
                         mode="multiple"
                         :options="
-              async () => {
-                await this.FETCH_REGION_LIST();
-                return this.REGION_LIST;
-              }
-            "
-                        @change="changeRegion"
+                            async () => {
+                                await this.FETCH_REGION_LIST();
+                                return this.REGION_LIST;
+                            }
+                        "
                     >
                         <Checkbox
-                            v-if="form.region.find((item) => item == 6)"
+                            v-if="form.region.find(item => item == 6)"
                             v-model="form.district_moscow"
                             class="col-12 p-0"
                             label="Округа Москвы"
                             :options="districtList"
                         />
                         <Checkbox
-                            v-if="form.region.find((item) => item == 1)"
+                            v-if="form.region.find(item => item == 1)"
                             v-model="form.direction"
                             class="col-12 p-0"
                             label="Направления МО"
@@ -195,12 +181,7 @@
                         label="Классы"
                         :options="objectClassList"
                     />
-                    <Checkbox
-                        v-model="form.gates"
-                        class="col-4 pr-1"
-                        label="Тип ворот"
-                        :options="gateTypeList"
-                    />
+                    <Checkbox v-model="form.gates" class="col-4 pr-1" label="Тип ворот" :options="gateTypeList" />
                     <Checkbox
                         v-model="form.floor_types"
                         class="col-4 pr-1"
@@ -209,41 +190,13 @@
                     />
                 </FormGroup>
                 <FormGroup class="mb-2">
-                    <Checkbox
-                        v-model="form.water"
-                        class="col-md col-3 large text-center"
-                        label="Вода"
-                    />
-                    <Checkbox
-                        v-model="form.gas"
-                        class="col-md col-3 large text-center"
-                        label="Газ"
-                    />
-                    <Checkbox
-                        v-model="form.steam"
-                        class="col-md col-3 large text-center"
-                        label="Пар"
-                    />
-                    <Checkbox
-                        v-model="form.sewage_central"
-                        class="col-md col-3 large text-center"
-                        label="КНС"
-                    />
-                    <Checkbox
-                        v-model="form.racks"
-                        class="col-md col-4 large text-center"
-                        label="Стеллажи"
-                    />
-                    <Checkbox
-                        v-model="form.railway"
-                        class="col-md col-4 large text-center"
-                        label="Ж/Д ветка"
-                    />
-                    <Checkbox
-                        v-model="form.has_cranes"
-                        class="col-md col-4 large text-center"
-                        label="Краны"
-                    />
+                    <Checkbox v-model="form.water" class="col-md col-3 large text-center" label="Вода" />
+                    <Checkbox v-model="form.gas" class="col-md col-3 large text-center" label="Газ" />
+                    <Checkbox v-model="form.steam" class="col-md col-3 large text-center" label="Пар" />
+                    <Checkbox v-model="form.sewage_central" class="col-md col-3 large text-center" label="КНС" />
+                    <Checkbox v-model="form.racks" class="col-md col-4 large text-center" label="Стеллажи" />
+                    <Checkbox v-model="form.railway" class="col-md col-4 large text-center" label="Ж/Д ветка" />
+                    <Checkbox v-model="form.has_cranes" class="col-md col-4 large text-center" label="Краны" />
                 </FormGroup>
                 <FormGroup class="mb-2">
                     <Radio
@@ -260,41 +213,37 @@
                         class="col text-center pr-1"
                         :options="yesNoFUCKOptions"
                     />
-                    <Checkbox
-                        v-model="form.firstFloorOnly"
-                        class="col pr-1 large text-center"
-                        label="Только 1 этаж"
-                    />
+                    <Checkbox v-model="form.firstFloorOnly" class="col pr-1 large text-center" label="Только 1 этаж" />
                 </FormGroup>
                 <FormGroup class="mb-3">
                     <CheckboxIcons
                         v-model="form.purposes"
+                        @extraSelect="selectObjectType"
                         label="Тип объекта"
                         extraLabel="склад"
                         :noAllSelect="true"
                         :extraValue="1"
                         :extraOptions="form.object_type"
-                        @extraSelect="selectObjectType"
                         class="col-md-4 col-12 pr-2 mx-auto"
                         :options="objectTypeListWareHouse"
                     />
                     <CheckboxIcons
                         v-model="form.purposes"
+                        @extraSelect="selectObjectType"
                         extraLabel="производство"
                         :noAllSelect="true"
                         :extraValue="2"
                         :extraOptions="form.object_type"
-                        @extraSelect="selectObjectType"
                         class="col-md-4 col-12 mt-4 pr-2 mx-auto"
                         :options="objectTypeListProduction"
                     />
                     <CheckboxIcons
                         v-model="form.purposes"
+                        @extraSelect="selectObjectType"
                         extraLabel="участок"
                         :noAllSelect="true"
                         :extraValue="3"
                         :extraOptions="form.object_type"
-                        @extraSelect="selectObjectType"
                         class="col-md-4 col-12 mt-4 mx-auto"
                         :options="objectTypeListPlot"
                     />
@@ -341,20 +290,19 @@
 </template>
 
 <script>
-import {FormMixin} from '@/components/Forms/mixins.js';
-import Button from "@/components/common/Button.vue";
+import { FormMixin } from '@/components/Forms/mixins.js';
+import Button from '@/components/common/Button.vue';
 
 export default {
-    name: "FormOfferSearch",
-    components: {Button},
+    name: 'FormOfferSearch',
+    components: { Button },
     mixins: [FormMixin],
     methods: {
         changeLocationToMap() {
-            this.$router.push({name: 'OffersMap', query: this.$route.query});
+            this.$router.push({ name: 'OffersMap', query: this.$route.query });
         }
     }
 };
 </script>
 
-<style>
-</style>
+<style></style>

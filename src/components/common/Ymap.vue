@@ -1,12 +1,17 @@
 <template>
-    <div class="ymap" :key="render">
-        <p class="text-info">
-            РАССТОЯНИЕ: {{ route.length }}, ВРЕМЯ: {{ route.time }}
-        </p>
-        <yandex-map v-if="mounted" :settings="settings" :options="options.mapOptions" :coords="options.coords"
-                    :zoom="options.zoom" :controls="options.controls" :detailed-controls="options.detailedControls"
-                    ref="map"
-                    style="width: 100%; height: 400px">
+    <div :key="render" class="ymap">
+        <p class="text-info">РАССТОЯНИЕ: {{ route.length }}, ВРЕМЯ: {{ route.time }}</p>
+        <yandex-map
+            v-if="mounted"
+            ref="map"
+            :settings="settings"
+            :options="options.mapOptions"
+            :coords="options.coords"
+            :zoom="options.zoom"
+            :controls="options.controls"
+            :detailed-controls="options.detailedControls"
+            style="width: 100%; height: 400px"
+        >
             <!-- <ymap-marker
               v-for="object in CURRENT_STEP_OBJECTS"
               :key="object.original_id"
@@ -26,11 +31,21 @@
 </template>
 
 <script>
-import {loadYmap, yandexMap} from "vue-yandex-maps";
+import { loadYmap, yandexMap } from 'vue-yandex-maps';
 
 export default {
-    name: "Ymap",
-    components: {yandexMap},
+    name: 'Ymap',
+    components: { yandexMap },
+    props: {
+        manualRoute: {
+            type: Array,
+            default: () => []
+        },
+        userLocation: {
+            type: Array,
+            default: () => []
+        }
+    },
     data() {
         return {
             render: 0,
@@ -40,14 +55,14 @@ export default {
                 userLocation: this.userLocation,
                 length: null,
                 time: null,
-                warning: null,
+                warning: null
             },
             settings: {
-                apiKey: "59572809-066b-46d5-9e5d-269a65751b84",
-                lang: "ru_RU",
-                coordorder: "latlong",
+                apiKey: '59572809-066b-46d5-9e5d-269a65751b84',
+                lang: 'ru_RU',
+                coordorder: 'latlong',
                 enterprise: false,
-                version: "2.1",
+                version: '2.1'
             },
             options: {
                 mapOptions: {
@@ -56,48 +71,46 @@ export default {
                 },
                 coords: [55.75554289958026, 37.619346417968764],
                 zoom: 7,
-                controls: ["trafficControl", "zoomControl"],
+                controls: ['trafficControl', 'zoomControl'],
                 detailedControls: {
                     zoomControl: {
                         position: {
                             right: '10px',
                             top: '100px'
-                        },
+                        }
                     }
-                },
-            },
-
+                }
+            }
         };
-    },
-    props: {
-        manualRoute: {
-            type: Array,
-            default: () => [],
-        },
-        userLocation: {
-            type: Array,
-            default: () => [],
-        },
     },
     computed: {
         dataForRoute() {
             const data = {
-                coords: [],
+                coords: []
             };
             data.coords.push(this.route.userLocation);
 
-            this.manualRoute.map((object) => {
+            this.manualRoute.map(object => {
                 data.coords.push([object.offer.latitude, object.offer.longitude]);
             });
             //   coords.push(this.route.userLocation);
 
             return data;
-        },
+        }
     },
-    async mounted() {
-        await loadYmap({...this.settings, debug: true});
-        this.mounted = true;
-        this.runBuildRoute();
+    watch: {
+        manualRoute: {
+            handler() {
+                if (this.mounted) {
+                    this.runBuildRoute();
+                }
+            },
+            deep: true
+        },
+        userLocation(newValue) {
+            this.route.userLocation = newValue;
+            this.runBuildRoute();
+        }
     },
     methods: {
         runBuildRoute() {
@@ -110,7 +123,7 @@ export default {
         },
         clearMyMap(map) {
             if (map.geoObjects) {
-                map.geoObjects.each((object) => {
+                map.geoObjects.each(object => {
                     map.geoObjects.remove(object);
                 });
             }
@@ -122,18 +135,18 @@ export default {
                 {
                     referencePoints: this.dataForRoute.coords,
                     params: {
-                        avoidTrafficJams: true,
+                        avoidTrafficJams: true
                         // viaIndexes: [2],
                         // routingMode: "masstransit",
-                    },
+                    }
                 },
                 {
                     boundsAutoApply: true,
-                    wayPointStartIconColor: "#FFFFFF",
-                    wayPointStartIconFillColor: "teal",
+                    wayPointStartIconColor: '#FFFFFF',
+                    wayPointStartIconFillColor: 'teal',
 
-                    wayPointFinishIconColor: "#FFFFFF",
-                    wayPointFinishIconFillColor: "#f93154",
+                    wayPointFinishIconColor: '#FFFFFF',
+                    wayPointFinishIconFillColor: '#f93154'
                 }
             );
             this.setRouteData(multiRoute);
@@ -141,19 +154,18 @@ export default {
             myMap.geoObjects.add(multiRoute);
         },
         setRouteData(multiRoute) {
-            multiRoute.model.events.add("requestsuccess", () => {
+            multiRoute.model.events.add('requestsuccess', () => {
                 var activeRoute = multiRoute.getActiveRoute();
                 this.route.done = false;
-                this.route.length = activeRoute.properties.get("distance").text;
-                this.route.time = activeRoute.properties.get("duration").text;
-                if (activeRoute.properties.get("blocked")) {
-                    this.route.warning =
-                        "На маршруте имеются участки с перекрытыми дорогами.";
+                this.route.length = activeRoute.properties.get('distance').text;
+                this.route.time = activeRoute.properties.get('duration').text;
+                if (activeRoute.properties.get('blocked')) {
+                    this.route.warning = 'На маршруте имеются участки с перекрытыми дорогами.';
                 }
             });
         },
         customizePoints(multiRoute) {
-            multiRoute.model.events.once("requestsuccess", () => {
+            multiRoute.model.events.once('requestsuccess', () => {
                 let index = 0;
                 let wayPoint = null;
                 while ((wayPoint = multiRoute.getWayPoints().get(index))) {
@@ -162,15 +174,17 @@ export default {
                         continue;
                     }
                     wayPoint.options.set({
-                        preset: "cluster#balloonTwoColumns",
+                        preset: 'cluster#balloonTwoColumns',
                         iconContentLayout: window.ymaps.templateLayoutFactory.createClass(
-                            `<div style="width: 100%; height: 100%" title="${this.manualRoute[index - 1].offer.object_type_name +
-                            "\n" +
-                            this.manualRoute[index - 1].offer.address
+                            `<div style="width: 100%; height: 100%" title="${
+                                this.manualRoute[index - 1].offer.object_type_name +
+                                '\n' +
+                                this.manualRoute[index - 1].offer.address
                             }">
-              <span style="color: red; text-transform: uppercase;">${this.manualRoute[index - 1].offer.visual_id
-                            }</span></div>`
-                        ),
+              <span style="color: red; text-transform: uppercase;">${
+                  this.manualRoute[index - 1].offer.visual_id
+              }</span></div>`
+                        )
                         //         balloonContentLayout: window.ymaps.templateLayoutFactory
                         //           .createClass(`<div v-html="properties.balloonContentHeader"></div>
                         // <div v-html="properties.balloonContentBody"></div>
@@ -182,22 +196,13 @@ export default {
         },
         reRender() {
             this.render++;
-        },
+        }
     },
-    watch: {
-        manualRoute: {
-            handler() {
-                if (this.mounted) {
-                    this.runBuildRoute();
-                }
-            },
-            deep: true,
-        },
-        userLocation(newValue) {
-            this.route.userLocation = newValue;
-            this.runBuildRoute();
-        },
-    },
+    async mounted() {
+        await loadYmap({ ...this.settings, debug: true });
+        this.mounted = true;
+        this.runBuildRoute();
+    }
 };
 </script>
 

@@ -1,16 +1,15 @@
 <template>
     <div class="key-value">
         <dl class="wrapper">
-            <slot/>
+            <slot />
         </dl>
     </div>
 </template>
 
 <script>
 export default {
-    name: "KeyValue",
+    name: 'KeyValue'
 };
 </script>
 
-<style>
-</style>
+<style></style>

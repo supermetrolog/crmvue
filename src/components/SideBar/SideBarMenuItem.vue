@@ -1,11 +1,6 @@
 <template>
     <li class="sidebar__item">
-        <router-link
-            class="sidebar__link"
-            active-class="active"
-            :to="item.url"
-            :exact="item.exact"
-        >
+        <router-link class="sidebar__link" active-class="active" :to="item.url" :exact="item.exact">
             <i class="sidebar__icon" :class="item.icon"></i>
             {{ item.name }}
         </router-link>
@@ -14,7 +9,7 @@
 
 <script>
 export default {
-    name: "SideBarMenuItem",
+    name: 'SideBarMenuItem',
     props: {
         item: {
             id: Number,
@@ -32,7 +27,7 @@ export default {
                 required: true
             },
             required: true
-        },
+        }
     }
 };
 </script>

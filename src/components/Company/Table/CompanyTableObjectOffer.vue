@@ -3,7 +3,7 @@
         <div class="object-offer-inf">
             <div>
                 <b
-                >{{ dealTypeName }}
+                    >{{ dealTypeName }}
                     {{ offer.calc_area_general }}
                     м<sup>2</sup>
                 </b>
@@ -14,26 +14,26 @@
 
 <script>
 export default {
-    name: "CompanyTableObjectOffer",
+    name: 'CompanyTableObjectOffer',
     props: {
         offer: {
-            type: Object,
-        },
+            type: Object
+        }
     },
     computed: {
         dealTypeName() {
             let result;
             if (this.offer.deal_type == 1 || this.offer.deal_type == 4) {
-                result = "Аренда";
+                result = 'Аренда';
             }
             if (this.offer.deal_type == 2) {
-                result = "Продажа";
+                result = 'Продажа';
             }
             if (this.offer.deal_type == 3) {
-                result = "О/Х";
+                result = 'О/Х';
             }
             return result;
-        },
-    },
+        }
+    }
 };
 </script>

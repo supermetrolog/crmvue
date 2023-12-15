@@ -16,7 +16,7 @@
             </Tr>
         </template>
         <template #tbody>
-            <Loader v-if="loader" class="center"/>
+            <Loader v-if="loader" class="center" />
             <OfferTableItem
                 v-for="(offer, idx) in offers"
                 :key="offer.id"
@@ -29,14 +29,14 @@
 </template>
 
 <script>
-import Table from "@/components/common/Table/Table.vue";
-import Tr from "@/components/common/Table/Tr.vue";
-import Th from "@/components/common/Table/Th.vue";
-import OfferTableItem from "@/components/Offer/OfferTableItem.vue";
-import Loader from "@/components/common/Loader.vue";
+import Table from '@/components/common/Table/Table.vue';
+import Tr from '@/components/common/Table/Tr.vue';
+import Th from '@/components/common/Table/Th.vue';
+import OfferTableItem from '@/components/Offer/OfferTableItem.vue';
+import Loader from '@/components/common/Loader.vue';
 
 export default {
-    name: "OfferTable",
+    name: 'OfferTable',
     components: {
         Loader,
         OfferTableItem,
@@ -44,21 +44,21 @@ export default {
         Tr,
         Th
     },
-    data() {
-        return {};
-    },
     props: {
         offers: {
-            type: Array,
+            type: Array
         },
         loader: {
             type: Boolean,
-            default: false,
+            default: false
         },
         sortable: {
             type: Boolean,
-            default: true,
-        },
+            default: true
+        }
     },
+    data() {
+        return {};
+    }
 };
 </script>

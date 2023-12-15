@@ -2,14 +2,14 @@
     <div class="PropertyList">
         <template v-if="isMultipleList">
             <template v-for="(t, idx) in title" :key="t">
-                <p class="PropertyList-header" v-if="t">{{ t }}</p>
+                <p v-if="t" class="PropertyList-header">{{ t }}</p>
                 <ul class="PropertyList-list">
                     <slot :name="idx"></slot>
                 </ul>
             </template>
         </template>
         <template v-else>
-            <p class="PropertyList-header" v-if="title">{{ title }}</p>
+            <p v-if="title" class="PropertyList-header">{{ title }}</p>
             <ul class="PropertyList-list">
                 <slot></slot>
             </ul>
@@ -23,8 +23,8 @@ export default {
     components: {},
     props: {
         title: {
-            type: [String, Array],
-        },
+            type: [String, Array]
+        }
     },
     computed: {
         isMultipleList() {
@@ -32,5 +32,5 @@ export default {
         }
     },
     methods: {}
-}
+};
 </script>

@@ -1,6 +1,6 @@
 <template>
     <div class="modal active" role="dialog">
-        <div class="modal__blackout" @click="clickCancelButton"></div>
+        <div @click="clickCancelButton" class="modal__blackout"></div>
         <div class="modal__container">
             <div class="modal__header">
                 <p v-if="title">
@@ -8,7 +8,7 @@
                 </p>
                 <slot name="header"></slot>
                 <div class="modal__close">
-                    <i class="icon fa-solid fa-xmark" @click.prevent="clickCancelButton"></i>
+                    <i @click.prevent="clickCancelButton" class="icon fa-solid fa-xmark"></i>
                 </div>
             </div>
             <div class="modal__body">
@@ -20,33 +20,33 @@
 
 <script>
 export default {
-    name: "Modal",
+    name: 'Modal',
     emits: ['close'],
-    data() {
-        return {
-            alreadyHidden: false,
-        };
-    },
     props: {
         title: {
             type: String
         }
     },
+    data() {
+        return {
+            alreadyHidden: false
+        };
+    },
     methods: {
         clickCancelButton() {
-            this.$emit("close");
+            this.$emit('close');
         },
         escapeHandler(event) {
             if (event.code === 'Escape') this.$emit('close');
         }
     },
     mounted() {
-        if (document.body.style.overflow === "hidden") {
+        if (document.body.style.overflow === 'hidden') {
             this.alreadyHidden = true;
             return;
         }
 
-        document.body.style.overflow = "hidden";
+        document.body.style.overflow = 'hidden';
         document.addEventListener('keydown', this.escapeHandler);
     },
     unmounted() {
@@ -58,5 +58,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

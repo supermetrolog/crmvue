@@ -24,15 +24,12 @@
             <div class="trade-offer-item__info">
                 <p class="trade-offer-item__text">
                     ID {{ id }},
-                    <span
-                        class="trade-offer-item__text_color_grey"
-                        title="последнее обновление"
-                    >
-            <i class="fas fa-undo-alt"/>
-            {{ formattedLastUpdate }}
-          </span>
+                    <span class="trade-offer-item__text_color_grey" title="последнее обновление">
+                        <i class="fas fa-undo-alt" />
+                        {{ formattedLastUpdate }}
+                    </span>
                 </p>
-                <ComplexOfferStatus class="trade-offer-item__status" :status="status"/>
+                <ComplexOfferStatus class="trade-offer-item__status" :status="status" />
             </div>
         </div>
         <div class="trade-offer-item__line">
@@ -51,88 +48,78 @@
             <!--      />-->
         </div>
         <div class="trade-offer-item__line">
-            <ComplexTabs :parameters="parameters" class="trade-offer-item__tabs"/>
-            <ActionButton
-                v-bind="actionButtons"
-                class="trade-offer-item__buttons"
-            />
+            <ComplexTabs :parameters="parameters" class="trade-offer-item__tabs" />
+            <ActionButton v-bind="actionButtons" class="trade-offer-item__buttons" />
         </div>
     </div>
 </template>
 
 <script>
-import {unitTypes} from "@/const/unitTypes";
-import ActionButton from "@/components/common/ActionButton.vue";
-import ComplexOfferTable from "@/components/Complex/Offer/ComplexOfferTable.vue";
-import ComplexTabs from "@/components/Complex/ComplexTabs.vue";
-import ComplexOfferStatus from "@/components/Complex/Offer/ComplexOfferStatus.vue";
+import { unitTypes } from '@/const/unitTypes';
+import ActionButton from '@/components/common/ActionButton.vue';
+import ComplexOfferTable from '@/components/Complex/Offer/ComplexOfferTable.vue';
+import ComplexTabs from '@/components/Complex/ComplexTabs.vue';
+import ComplexOfferStatus from '@/components/Complex/Offer/ComplexOfferStatus.vue';
 
 export default {
-    name: "ComplexOfferItem",
+    name: 'ComplexOfferItem',
     components: {
         ComplexOfferStatus,
         ComplexTabs,
         ComplexOfferTable,
         ActionButton
-
     },
     props: {
         area: {
             type: Object,
-            required: true,
+            required: true
         },
         price: {
             type: Object,
-            required: true,
+            required: true
         },
         id: {
             type: String,
-            required: true,
+            required: true
         },
         lastUpdate: {
             type: Date,
-            required: true,
+            required: true
         },
         status: {
-            type: Object,
+            type: Object
         },
         parameters: {
             type: Object,
-            required: true,
-        },
+            required: true
+        }
     },
     data() {
         return {
-            unitTypes,
+            unitTypes
         };
     },
     computed: {
         actionButtons() {
             return {
-                edit: {value: true},
-                advert: {value: true},
-                dislike: {value: true},
-                favorite: {value: true},
-                notifications: {value: true},
-                pdf: {value: true},
+                edit: { value: true },
+                advert: { value: true },
+                dislike: { value: true },
+                favorite: { value: true },
+                notifications: { value: true },
+                pdf: { value: true }
             };
         },
         areaTableTitle() {
-            return this.$formatter.numberOrRangeNew(
-                this.area.sum.valueMin,
-                this.area.sum.valueMax
-            );
+            return this.$formatter.numberOrRangeNew(this.area.sum.valueMin, this.area.sum.valueMax);
         },
         priceTableTitle() {
-            return this.$formatter.numberOrRangeNew(
-                this.price.sum.valueMin,
-                this.price.sum.valueMax
-            );
+            return this.$formatter.numberOrRangeNew(this.price.sum.valueMin, this.price.sum.valueMax);
         },
         formattedLastUpdate() {
             return this.$formatter.date().locale(this.lastUpdate);
-        },
+        }
     },
-    methods: {},
+    methods: {}
 };
 </script>

@@ -6,29 +6,34 @@
                     <div class="col-12">
                         <div class="objects">
                             <TimelineStepFeedback
-                                :step="step"
-                                :disabled="disabled"
-                                :buttons="buttons"
                                 @updateItem="clickUpdateStep"
                                 @done="done"
                                 @negative="negative"
+                                :step="step"
+                                :disabled="disabled"
+                                :buttons="buttons"
                             />
                             <CompanyObjectsList
+                                v-if="submittedObjects?.length"
                                 :objects="submittedObjects"
                                 :disabled="true"
                                 :loader="loader"
                                 :viewMode="viewMode"
                                 :currentStepId="step.id"
                                 :label="
-                  'Выбранные предложения' +
-                  (submittedObjects.length
-                    ? ` (${submittedObjects.length})`
-                    : '')
-                "
+                                    'Выбранные предложения' +
+                                    (submittedObjects.length ? ` (${submittedObjects.length})` : '')
+                                "
                                 class="success"
-                                v-if="submittedObjects?.length"
                             />
                             <CompanyObjectsList
+                                v-if="
+                                    notSubmittedObjects.length ||
+                                    (!submittedObjects.length && !notSubmittedObjects.length)
+                                "
+                                @select="select"
+                                @unSelect="unSelect"
+                                @addComment="addComment"
                                 :objects="notSubmittedObjects"
                                 :currentObjects="step.timelineStepObjects"
                                 :selectedObjects="selectedObjects"
@@ -38,17 +43,10 @@
                                 :viewMode="viewMode"
                                 :currentStepId="step.id"
                                 :label="
-                  submittedObjects?.length
-                    ? `Оставшиеся предложения (${notSubmittedObjects.length})`
-                    : ''
-                "
-                                @select="select"
-                                @unSelect="unSelect"
-                                @addComment="addComment"
-                                v-if="
-                  notSubmittedObjects.length ||
-                  (!submittedObjects.length && !notSubmittedObjects.length)
-                "
+                                    submittedObjects?.length
+                                        ? `Оставшиеся предложения (${notSubmittedObjects.length})`
+                                        : ''
+                                "
                             />
                         </div>
                     </div>
@@ -59,32 +57,31 @@
 </template>
 
 <script>
-import {MixinStepActions} from "@/components/Timeline/mixins.js";
-import {MixinObject} from "@/components/Company/Object/mixins.js";
-import {FeedbackDoneComment, FeedbackOffersNotFoundComment,} from "@/components/Timeline/comments.js";
-import CompanyObjectsList from "@/components/Company/Object/CompanyObjectList.vue";
-import TimelineStepFeedback from "@/components/Timeline/Step/TimelineStepFeedback.vue";
+import { MixinStepActions } from '@/components/Timeline/mixins.js';
+import { MixinObject } from '@/components/Company/Object/mixins.js';
+import { FeedbackDoneComment, FeedbackOffersNotFoundComment } from '@/components/Timeline/comments.js';
+import CompanyObjectsList from '@/components/Company/Object/CompanyObjectList.vue';
+import TimelineStepFeedback from '@/components/Timeline/Step/TimelineStepFeedback.vue';
 
 export default {
-    name: "FeedbackActions",
-    mixins: [MixinStepActions, MixinObject],
+    name: 'FeedbackActions',
     components: {
         TimelineStepFeedback,
         CompanyObjectsList
     },
+    mixins: [MixinStepActions, MixinObject],
     methods: {
         updatedObjects(data, fn) {
-            this.$emit("updatedObjects", data, false, fn);
+            this.$emit('updatedObjects', data, false, fn);
         },
         getNegativeComment(step) {
             return [new FeedbackOffersNotFoundComment(step)];
         },
         getDoneComment(step) {
             return [new FeedbackDoneComment(step)];
-        },
-    },
+        }
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

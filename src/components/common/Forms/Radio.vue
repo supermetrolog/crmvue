@@ -9,70 +9,78 @@
                     v-for="option in options"
                     :key="option[0]"
                     :class="{
-            checked: mode == 'text' && field == option[0],
-          }"
+                        checked: mode == 'text' && field == option[0]
+                    }"
                 >
                     <input
-                        type="radio"
                         v-model="field"
+                        @click="onChange($event)"
+                        type="radio"
                         :class="inputClasses"
                         :value="option[0]"
-                        @click="onChange($event)"
                     />
                     {{ option[1] }}
                 </label>
             </div>
             <div v-else>
-                <input type="radio" v-model="field" :class="inputClasses" :value="1"/>
+                <input v-model="field" type="radio" :class="inputClasses" :value="1" />
             </div>
         </label>
-        <div class="error-container" v-if="v && v.$error">
+        <div v-if="v && v.$error" class="error-container">
             <p>{{ v.$errors[0].$message }}</p>
         </div>
-        <slot/>
+        <slot />
     </div>
 </template>
 
 <script>
-import Mixin from "./mixins.js";
+import Mixin from './mixins.js';
 
 export default {
+    name: 'Radio',
     mixins: [Mixin],
-    name: "Radio",
-    data() {
-        return {
-            field: this.modelValue,
-        };
-    },
     props: {
         modelValue: {
             type: [Array, Number, String],
-            default: () => [],
+            default: () => []
         },
         required: {
             type: Boolean,
-            default: false,
+            default: false
         },
         mode: {
             type: String,
-            default: "",
+            default: ''
         },
         v: {
             type: Object,
-            default: null,
+            default: null
         },
         label: {
             type: String,
-            default: null,
+            default: null
         },
         options: {
             type: Array,
-            default: () => [],
+            default: () => []
         },
         unselectMode: {
             type: Boolean,
-            default: false,
-        },
+            default: false
+        }
+    },
+    data() {
+        return {
+            field: this.modelValue
+        };
+    },
+    watch: {
+        // field() {
+        //   this.onChange();
+        // },
+        modelValue() {
+            this.field = this.modelValue;
+        }
     },
     methods: {
         onChange(event) {
@@ -83,19 +91,10 @@ export default {
             } else {
                 this.field = +value;
             }
-            this.$emit("update:modelValue", this.field);
-        },
-    },
-    watch: {
-        // field() {
-        //   this.onChange();
-        // },
-        modelValue() {
-            this.field = this.modelValue;
-        },
-    },
+            this.$emit('update:modelValue', this.field);
+        }
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

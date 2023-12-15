@@ -1,18 +1,17 @@
 <template>
     <div class="form__group row">
-        <p class="form__subtitle col-12 m-0 p-0" v-if="subtitle">{{ subtitle }}</p>
-        <slot/>
+        <p v-if="subtitle" class="form__subtitle col-12 m-0 p-0">{{ subtitle }}</p>
+        <slot />
     </div>
 </template>
 
 <script>
 export default {
-    name: "FormGroup",
+    name: 'FormGroup',
     props: {
         subtitle: String
     }
 };
 </script>
 
-<style>
-</style>
+<style></style>

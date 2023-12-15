@@ -1,41 +1,37 @@
 <template>
     <div class="row no-gutters">
-        <slot/>
+        <slot />
     </div>
 </template>
 
 <script>
-import {onMounted, provide, reactive, watch} from "vue";
+import { onMounted, provide, reactive, watch } from 'vue';
 
 export default {
-    name: "Accordion",
+    name: 'Accordion',
     props: {
         defaultTabHash: {
             type: Number,
-            required: false,
-        },
+            required: false
+        }
     },
     setup(props, context) {
         const state = reactive({
-            activeTabHash: "",
-            tabs: [],
+            activeTabHash: '',
+            tabs: []
         });
 
-        provide("tabsProvider", state);
-        provide("addTab", (tab) => {
+        provide('tabsProvider', state);
+        provide('addTab', tab => {
             state.tabs.push(tab);
         });
-        provide("updateTab", (computedId, data) => {
-            let tabIndex = state.tabs.findIndex(
-                (tab) => tab.computedId === computedId
-            );
+        provide('updateTab', (computedId, data) => {
+            let tabIndex = state.tabs.findIndex(tab => tab.computedId === computedId);
             data.isActive = state.tabs[tabIndex].isActive;
             state.tabs[tabIndex] = data;
         });
-        provide("deleteTab", (computedId) => {
-            let tabIndex = state.tabs.findIndex(
-                (tab) => tab.computedId === computedId
-            );
+        provide('deleteTab', computedId => {
+            let tabIndex = state.tabs.findIndex(tab => tab.computedId === computedId);
             state.tabs.splice(tabIndex, 1);
         });
         const selectTab = (selectedTabHash, event) => {
@@ -51,25 +47,23 @@ export default {
                 event.preventDefault();
                 return;
             }
-            state.tabs.forEach((tab) => {
+            state.tabs.forEach(tab => {
                 tab.isActive = tab.hash === selectedTab.hash;
             });
-            context.emit("changed", {tab: selectedTab});
+            context.emit('changed', { tab: selectedTab });
             state.activeTabHash = selectedTab.hash;
         };
 
-        const findTab = (hash) => {
-            return state.tabs.find((tab) => tab.hash === hash);
+        const findTab = hash => {
+            return state.tabs.find(tab => tab.hash === hash);
         };
-        provide("selectTab", (selectedTabHash, event) =>
-            selectTab(selectedTabHash, event)
-        );
+        provide('selectTab', (selectedTabHash, event) => selectTab(selectedTabHash, event));
         onMounted(() => {
             if (!state.tabs.length) {
                 return;
             }
-            if (props.defaultTabHash && findTab("#" + props.defaultTabHash)) {
-                selectTab("#" + props.defaultTabHash);
+            if (props.defaultTabHash && findTab('#' + props.defaultTabHash)) {
+                selectTab('#' + props.defaultTabHash);
                 return;
             }
             selectTab(state.tabs[0].hash);
@@ -77,12 +71,11 @@ export default {
         watch(
             () => Object.assign({}, props),
             () => {
-                selectTab("#" + props.defaultTabHash);
+                selectTab('#' + props.defaultTabHash);
             }
         );
-    },
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

@@ -6,7 +6,7 @@
             class="far fa-star"
             :class="{
                 'fas fa-star': value <= rating,
-                red: value <= rating,
+                red: value <= rating
             }"
         >
         </i>
@@ -15,12 +15,12 @@
 
 <script>
 export default {
-    name: "Rating",
+    name: 'Rating',
     props: {
         rating: {
             type: Number,
-            required: true,
-        },
-    },
+            required: true
+        }
+    }
 };
 </script>

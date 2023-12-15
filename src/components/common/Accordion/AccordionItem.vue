@@ -1,66 +1,55 @@
 <template>
     <div class="accordion__item col-12" :class="{ open: isActive, disabled }">
-        <div class="accordion__item__title" v-if="titleVisible">
-      <span
-          class="badge autosize"
-          :class="titleClasses"
-          @click="openAccordionItem(hash, $event)"
-      >
-        {{ title }}
-        <i class="fas fa-angle-up" v-if="isActive && !disabled"></i>
-        <i class="fas fa-angle-down" v-if="!isActive && !disabled"></i>
-      </span>
+        <div v-if="titleVisible" class="accordion__item__title">
+            <span @click="openAccordionItem(hash, $event)" class="badge autosize" :class="titleClasses">
+                {{ title }}
+                <i v-if="isActive && !disabled" class="fas fa-angle-up"></i>
+                <i v-if="!isActive && !disabled" class="fas fa-angle-down"></i>
+            </span>
         </div>
         <div class="accordion__item__body">
-            <slot/>
+            <slot />
         </div>
     </div>
 </template>
 
 <script>
-import {inject, onBeforeMount, onBeforeUnmount, ref, watch} from "vue";
+import { inject, onBeforeMount, onBeforeUnmount, ref, watch } from 'vue';
 
 export default {
-    name: "AccordionItem",
-    data() {
-        return {
-            open: this.openByDefault,
-        };
-    },
+    name: 'AccordionItem',
     props: {
         title: {
             type: String,
-            default: "___",
+            default: '___'
         },
         id: {
-            type: Number,
+            type: Number
         },
         titleClasses: {
             type: String,
-            default: "badge-danger",
+            default: 'badge-danger'
         },
         titleVisible: {
             type: Boolean,
-            default: true,
+            default: true
         },
         disabled: {
             type: Boolean,
-            default: false,
-        },
+            default: false
+        }
     },
     setup(props) {
         const isActive = ref(false);
 
-        const tabsProvider = inject("tabsProvider");
-        const addTab = inject("addTab");
-        const updateTab = inject("updateTab");
-        const deleteTab = inject("deleteTab");
-        const selectTab = inject("selectTab");
+        const tabsProvider = inject('tabsProvider');
+        const addTab = inject('addTab');
+        const updateTab = inject('updateTab');
+        const deleteTab = inject('deleteTab');
+        const selectTab = inject('selectTab');
 
-        const computedId = props.id
-            ? props.id
-            : props.title.toLowerCase().replace(/ /g, "-");
-        const hash = "#" + (!props.disabled ? computedId : "");
+        const computedId = props.id ? props.id : props.title.toLowerCase().replace(/ /g, '-');
+        const hash = '#' + (!props.disabled ? computedId : '');
         watch(
             () => tabsProvider.activeTabHash,
             () => {
@@ -76,7 +65,7 @@ export default {
                     disabled: props.disabled,
                     hash: hash,
                     index: tabsProvider.tabs.length,
-                    computedId: computedId,
+                    computedId: computedId
                 });
             }
         );
@@ -86,7 +75,7 @@ export default {
                 disabled: props.disabled,
                 hash: hash,
                 index: tabsProvider.tabs.length,
-                computedId: computedId,
+                computedId: computedId
             });
         });
         onBeforeUnmount(() => {
@@ -96,7 +85,12 @@ export default {
             computedId,
             hash,
             isActive,
-            selectTab,
+            selectTab
+        };
+    },
+    data() {
+        return {
+            open: this.openByDefault
         };
     },
     methods: {
@@ -105,11 +99,9 @@ export default {
                 return;
             }
             this.selectTab(hash, event);
-        },
-    },
+        }
+    }
 };
 </script>
 
-<style>
-</style>
-
+<style></style>

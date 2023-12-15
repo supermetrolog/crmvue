@@ -3,41 +3,38 @@
         <div
             class="CompanyLogsItem-date"
             :class="{
-        main: date.type,
-        noMain: !date.type,
-      }"
+                main: date.type,
+                noMain: !date.type
+            }"
         >
             <p v-if="date.type">{{ date.value }}</p>
         </div>
-        <div class="CompanyLogsItem-user" v-if="!isSameUser">
+        <div v-if="!isSameUser" class="CompanyLogsItem-user">
             <i class="text-dark">
-                {{ logItem.user || "&#8212;" }}
+                {{ logItem.user || '&#8212;' }}
             </i>
         </div>
         <div class="CompanyLogsItem-message">
             <span class="CompanyLogsItem-message-time">{{ time }}</span>
-            <span
-                v-html="logItem.message"
-                class="CompanyLogsItem-message-text"
-            ></span>
+            <span class="CompanyLogsItem-message-text" v-html="logItem.message"></span>
             <!-- <a class="d-inline text-primary ml-2" :href="'/letters/'">посмотреть</a> -->
         </div>
     </div>
 </template>
 
 <script>
-import moment from "moment";
+import moment from 'moment';
 
 export default {
-    name: "CompanyLogsItem",
+    name: 'CompanyLogsItem',
     props: {
         logItem: {
             type: Object,
-            required: true,
+            required: true
         },
         preventLogItem: {
-            type: Object,
-        },
+            type: Object
+        }
     },
     data() {
         return {};
@@ -46,16 +43,14 @@ export default {
         date() {
             const result = {
                 value: null,
-                type: 1,
+                type: 1
             };
-            const dateFormat = "DD.MM.YYYY";
-            const timeFormat = "HH:mm";
+            const dateFormat = 'DD.MM.YYYY';
+            const timeFormat = 'HH:mm';
             let date = moment(this.logItem.created_at).format(dateFormat);
 
             if (this.preventLogItem) {
-                let preventDate = moment(this.preventLogItem.created_at).format(
-                    dateFormat
-                );
+                let preventDate = moment(this.preventLogItem.created_at).format(dateFormat);
                 if (date == preventDate) {
                     result.value = moment(this.logItem.created_at).format(timeFormat);
                     result.type = 0;
@@ -65,12 +60,12 @@ export default {
 
             let currentDate = moment(new Date()).format(dateFormat);
             if (date == currentDate) {
-                result.value = "сегодня";
+                result.value = 'сегодня';
                 return result;
             }
-            let preventDayDate = moment().subtract(1, "days").format(dateFormat);
+            let preventDayDate = moment().subtract(1, 'days').format(dateFormat);
             if (date == preventDayDate) {
-                result.value = "вчера";
+                result.value = 'вчера';
                 return result;
             }
             result.value = date;
@@ -84,9 +79,9 @@ export default {
             }
         },
         time() {
-            const timeFormat = "HH:mm";
+            const timeFormat = 'HH:mm';
             return moment(this.logItem.created_at).format(timeFormat);
-        },
-    },
+        }
+    }
 };
 </script>

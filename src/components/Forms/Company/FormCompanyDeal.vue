@@ -1,20 +1,18 @@
 <template>
     <div class="company-deal-form">
         <Modal
-            :title="formdata ? 'Редактирование сделки' : 'Создание сделки'"
             @close="$emit('close')"
+            :title="formdata ? 'Редактирование сделки' : 'Создание сделки'"
             classes="autosize"
         >
-            <Loader class="center" v-if="loader"/>
+            <Loader v-if="loader" class="center" />
             <Form @submit="onSubmit" class="center">
                 <FormGroup class="mb-3">
                     <CheckboxChip
-                        :disabled="isOurDeal"
                         v-model="form.is_our"
+                        @change="form.is_our ? (form.is_competitor = 0) : (form.is_competitor = 1)"
+                        :disabled="isOurDeal"
                         :falseValue="0"
-                        @change="
-                          form.is_our ? (form.is_competitor = 0) : (form.is_competitor = 1)
-                        "
                         :value="1"
                         text="Наша сделка"
                         class="mx-auto w-100 font-weight-bold"
@@ -22,9 +20,9 @@
                 </FormGroup>
                 <FormGroup class="mb-1">
                     <MultiSelect
+                        v-model="form.competitor_company_id"
                         :disabled="!!form.is_our"
                         :v="v$.form.competitor_company_id"
-                        v-model="form.competitor_company_id"
                         extraClasses="long-text"
                         label="Компания конкурент"
                         :required="!form.is_our"
@@ -35,13 +33,14 @@
                         :delay="500"
                         :searchable="true"
                         :options="
-              async (query) => {
-                return await searchCompetitorCompany(query);
-              }
-            "
+                            async query => {
+                                return await searchCompetitorCompany(query);
+                            }
+                        "
                     />
                     <MultiSelect
                         v-model="form.offerHandler"
+                        @change="form = { ...form, ...form.offerHandler }"
                         :v="v$.form.object_id"
                         :disabled="!!object_id"
                         extraClasses="long-text"
@@ -54,23 +53,18 @@
                         :delay="500"
                         :searchable="true"
                         :options="
-              async (query) => {
-                return await searchOffer(query);
-              }
-            "
-                        @change="form = { ...form, ...form.offerHandler }"
+                            async query => {
+                                return await searchOffer(query);
+                            }
+                        "
                     />
                 </FormGroup>
                 <FormGroup class="mb-1">
-                    <Input v-model="form.name" label="Название" class="col-6 pr-1"/>
-                    <Input
-                        v-model="form.area"
-                        label="Площадь сделки"
-                        class="col-6"
-                        maska="##########"
-                    />
+                    <Input v-model="form.name" label="Название" class="col-6 pr-1" />
+                    <Input v-model="form.area" label="Площадь сделки" class="col-6" maska="##########" />
                     <MultiSelect
                         v-model="form.company_id"
+                        @change="onChangeCompany"
                         :disabled="!!company_id"
                         extraClasses="long-text"
                         label="Компания"
@@ -83,30 +77,25 @@
                         :delay="500"
                         :searchable="true"
                         :options="
-              async (query) => {
-                return await searchCompany(query);
-              }
-            "
-                        @change="onChangeCompany"
+                            async query => {
+                                return await searchCompany(query);
+                            }
+                        "
                     />
                     <MultiSelect
-                        :disabled="!form.company_id || !!request_id"
+                        :key="requestOptions.length"
                         v-model="form.request_id"
+                        :disabled="!form.company_id || !!request_id"
                         extraClasses="long-text"
                         :v="v$.form.request_id"
                         :required="!!request_id"
                         label="Запрос"
                         class="col-6"
-                        :key="requestOptions.length"
                         :options="requestOptions"
                     />
                 </FormGroup>
                 <FormGroup class="mb-1">
-                    <Input
-                        v-model="form.clientLegalEntity"
-                        label="Юр. лицо клиента в сделке"
-                        class="col-6 pr-1"
-                    />
+                    <Input v-model="form.clientLegalEntity" label="Юр. лицо клиента в сделке" class="col-6 pr-1" />
                     <MultiSelect
                         v-model="form.formOfOrganization"
                         label="ФО"
@@ -114,12 +103,7 @@
                         class="col-2 pr-1"
                         :options="formOfOrganizationOptions"
                     />
-                    <Input
-                        v-model="form.floorPrice"
-                        label="Цена пола"
-                        class="col-4"
-                        maska="##########"
-                    />
+                    <Input v-model="form.floorPrice" label="Цена пола" class="col-4" maska="##########" />
                 </FormGroup>
                 <FormGroup class="mb-1">
                     <MultiSelect
@@ -130,15 +114,10 @@
                         class="col-6 pr-1"
                         :options="CONSULTANT_LIST"
                     />
-                    <Input
-                        v-model="form.dealDate"
-                        label="Дата сделки"
-                        type="date"
-                        class="col-6 pr-1"
-                    >
+                    <Input v-model="form.dealDate" label="Дата сделки" type="date" class="col-6 pr-1">
                         <Input
-                            v-model="form.contractTerm"
                             v-if="contractTermVisible"
+                            v-model="form.contractTerm"
                             label="Срок контракта в месяцах"
                             class="col-12 p-0 mt-1"
                             maska="####"
@@ -147,16 +126,12 @@
                 </FormGroup>
                 <FormGroup class="mb-1"></FormGroup>
                 <FormGroup class="mb-1">
-          <Textarea
-              v-model="form.description"
-              label="Описание"
-              class="col-12"
-          />
+                    <Textarea v-model="form.description" label="Описание" class="col-12" />
                 </FormGroup>
 
                 <FormGroup class="mt-4">
                     <Submit class="col-4 mx-auto">
-                        {{ formdata ? "Сохранить" : "Создать" }}
+                        {{ formdata ? 'Сохранить' : 'Создать' }}
                     </Submit>
                 </FormGroup>
             </Form>
@@ -165,24 +140,24 @@
 </template>
 
 <script>
-import {mapActions, mapGetters} from "vuex";
-import useValidate from "@vuelidate/core";
-import {helpers, required} from "@vuelidate/validators";
-import Form from "@/components/common/Forms/Form.vue";
-import FormGroup from "@/components/common/Forms/FormGroup.vue";
-import Input from "@/components/common/Forms/Input.vue";
-import Textarea from "@/components/common/Forms/Textarea.vue";
-import MultiSelect from "@/components/common/Forms/MultiSelect.vue";
-import Submit from "@/components/common/Forms/Submit.vue";
-import api from "@//api/api.js";
-import {CompanyFormOrganization} from "@/const/const.js";
-import moment from "moment";
-import Loader from "@/components/common/Loader.vue";
-import Modal from "@/components/common/Modal.vue";
-import CheckboxChip from "@/components/common/Forms/CheckboxChip.vue";
+import { mapActions, mapGetters } from 'vuex';
+import useValidate from '@vuelidate/core';
+import { helpers, required } from '@vuelidate/validators';
+import Form from '@/components/common/Forms/Form.vue';
+import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import Input from '@/components/common/Forms/Input.vue';
+import Textarea from '@/components/common/Forms/Textarea.vue';
+import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
+import Submit from '@/components/common/Forms/Submit.vue';
+import api from '@//api/api.js';
+import { CompanyFormOrganization } from '@/const/const.js';
+import moment from 'moment';
+import Loader from '@/components/common/Loader.vue';
+import Modal from '@/components/common/Modal.vue';
+import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 
 export default {
-    name: "FormCompanyDeal",
+    name: 'FormCompanyDeal',
     components: {
         CheckboxChip,
         Modal,
@@ -194,6 +169,41 @@ export default {
         MultiSelect,
         Submit
     },
+
+    props: {
+        formdata: {
+            type: Object
+        },
+        request_id: {
+            type: Number
+        },
+        company_id: {
+            type: Number
+        },
+        object_id: {
+            type: Number
+        },
+        complex_id: {
+            type: Number
+        },
+        type_id: {
+            type: Number
+        },
+        original_id: {
+            type: Number
+        },
+        visual_id: {
+            type: String
+        },
+        isOurDeal: {
+            type: Boolean,
+            default: false
+        },
+        dealType: {
+            type: Number,
+            default: null
+        }
+    },
     data() {
         return {
             loader: false,
@@ -201,7 +211,7 @@ export default {
             selectedCompany: null,
             selectedCompetitorCompany: null,
             selectedOffer: null,
-            formOfOrganizationOptions: CompanyFormOrganization.get("param"),
+            formOfOrganizationOptions: CompanyFormOrganization.get('param'),
             requestOptions: [],
             form: {
                 request_id: null,
@@ -212,7 +222,7 @@ export default {
                 floorPrice: null,
                 clientLegalEntity: null,
                 description: null,
-                dealDate: moment(new Date()).format("YYYY-MM-DD"),
+                dealDate: moment(new Date()).format('YYYY-MM-DD'),
                 contractTerm: null,
                 is_our: 1,
                 is_competitor: 0,
@@ -223,64 +233,29 @@ export default {
                 formOfOrganization: null,
                 offerHandler: null,
                 original_id: null,
-                visual_id: null,
-            },
+                visual_id: null
+            }
         };
-    },
-
-    props: {
-        formdata: {
-            type: Object,
-        },
-        request_id: {
-            type: Number,
-        },
-        company_id: {
-            type: Number,
-        },
-        object_id: {
-            type: Number,
-        },
-        complex_id: {
-            type: Number,
-        },
-        type_id: {
-            type: Number,
-        },
-        original_id: {
-            type: Number,
-        },
-        visual_id: {
-            type: String,
-        },
-        isOurDeal: {
-            type: Boolean,
-            default: false,
-        },
-        dealType: {
-            type: Number,
-            default: null,
-        },
     },
     validations() {
         return {
             form: {
                 consultant_id: {
-                    required: helpers.withMessage("выберите консультанта", required),
+                    required: helpers.withMessage('выберите консультанта', required)
                 },
                 company_id: {
-                    required: helpers.withMessage("заполните поле", required),
+                    required: helpers.withMessage('заполните поле', required)
                 },
                 competitor_company_id: {
-                    customRequired: helpers.withMessage("заполните поле", () => {
+                    customRequired: helpers.withMessage('заполните поле', () => {
                         if (!this.form.is_our && !this.form.competitor_company_id) {
                             return false;
                         }
                         return true;
-                    }),
+                    })
                 },
                 object_id: {
-                    required: helpers.withMessage("выберите предложение", () => {
+                    required: helpers.withMessage('выберите предложение', () => {
                         if (
                             this.form.object_id &&
                             this.form.original_id &&
@@ -291,62 +266,59 @@ export default {
                             return true;
                         }
                         return false;
-                    }),
+                    })
                 },
                 type_id: {
-                    required: helpers.withMessage("выберите предложение", required),
+                    required: helpers.withMessage('выберите предложение', required)
                 },
                 original_id: {
-                    required: helpers.withMessage("выберите предложение", required),
+                    required: helpers.withMessage('выберите предложение', required)
                 },
                 visual_id: {
-                    required: helpers.withMessage("выберите предложение", required),
+                    required: helpers.withMessage('выберите предложение', required)
                 },
                 complex_id: {
-                    required: helpers.withMessage("выберите предложение", required),
+                    required: helpers.withMessage('выберите предложение', required)
                 },
                 request_id: {
-                    customRequired: helpers.withMessage("выберите предложение", () => {
+                    customRequired: helpers.withMessage('выберите предложение', () => {
                         if (this.request_id && !this.form.request_id) {
                             return false;
                         }
                         return true;
-                    }),
-                },
-            },
+                    })
+                }
+            }
         };
     },
     computed: {
-        ...mapGetters(["CONSULTANT_LIST", "THIS_USER"]),
+        ...mapGetters(['CONSULTANT_LIST', 'THIS_USER']),
         contractTermVisible() {
             if (!this.requestOptions.length || !this.form.request_id) return false;
-            const currentRequestOption = this.requestOptions.find(
-                (item) => item.value == this.form.request_id
-            );
+            const currentRequestOption = this.requestOptions.find(item => item.value == this.form.request_id);
             if (
-                (currentRequestOption &&
-                    currentRequestOption.label.indexOf("аренда") !== -1) ||
-                currentRequestOption.label.indexOf("ответ-хранение") !== -1
+                (currentRequestOption && currentRequestOption.label.indexOf('аренда') !== -1) ||
+                currentRequestOption.label.indexOf('ответ-хранение') !== -1
             ) {
                 return true;
             }
             return false;
-        },
+        }
     },
     methods: {
         ...mapActions([
-            "FETCH_CONSULTANT_LIST",
-            "CREATE_DEAL",
-            "UPDATE_DEAL",
-            "SEARCH_COMPANIES",
-            "SEARCH_REQUESTS",
-            "CREATE_DEAL",
-            "UPDATE_DEAL",
-            "SEARCH_OBJECTS",
+            'FETCH_CONSULTANT_LIST',
+            'CREATE_DEAL',
+            'UPDATE_DEAL',
+            'SEARCH_COMPANIES',
+            'SEARCH_REQUESTS',
+            'CREATE_DEAL',
+            'UPDATE_DEAL',
+            'SEARCH_OBJECTS'
         ]),
         onSubmit() {
             this.v$.$validate();
-            !this.form.clientLegalEntity ? (this.form.formOfOrganization = null) : "";
+            !this.form.clientLegalEntity ? (this.form.formOfOrganization = null) : '';
             if (!this.v$.form.$error) {
                 this.loader = true;
                 if (this.formdata) {
@@ -358,20 +330,20 @@ export default {
         },
         async update() {
             if (await this.UPDATE_DEAL(this.form)) {
-                this.$emit("updated", this.form);
+                this.$emit('updated', this.form);
                 this.clickCloseModal();
             }
             this.loader = false;
         },
         async create() {
             if (await this.CREATE_DEAL(this.form)) {
-                this.$emit("created", this.form);
+                this.$emit('created', this.form);
                 this.clickCloseModal();
             }
             this.loader = false;
         },
         clickCloseModal() {
-            this.$emit("close");
+            this.$emit('close');
         },
         async onChangeCompany() {
             if (this.request_id) return;
@@ -381,12 +353,12 @@ export default {
             let requestList = null;
             requestList = await api.request.searchRequests({
                 company_id: this.form.company_id,
-                status: [1, 0],
+                status: [1, 0]
             });
-            requestList.data.forEach((item) => {
+            requestList.data.forEach(item => {
                 this.requestOptions.push({
                     value: item.id,
-                    label: item.format_name + "^2",
+                    label: item.format_name + '^2'
                 });
             });
         },
@@ -401,31 +373,29 @@ export default {
                         this.formdata ? this.formdata.company_id : this.company_id
                     );
                     requestList = await api.request.searchRequests({
-                        company_id: this.formdata
-                            ? this.formdata.company_id
-                            : this.company_id,
+                        company_id: this.formdata ? this.formdata.company_id : this.company_id
                     });
                 }
                 if (requestList && Array.isArray(requestList.data)) {
-                    requestList.data.forEach((item) => {
+                    requestList.data.forEach(item => {
                         this.requestOptions.push({
                             value: item.id,
-                            label: item.format_name + "^2",
+                            label: item.format_name + '^2'
                         });
                     });
                 }
 
                 array.push({
                     value: this.selectedCompany.id,
-                    label: this.selectedCompany.full_name,
+                    label: this.selectedCompany.full_name
                 });
             }
             query = {
-                all: query,
+                all: query
             };
             result = await api.companies.searchCompanies(query);
-            result.data.forEach((item) => {
-                array.push({value: item.id, label: item.full_name});
+            result.data.forEach(item => {
+                array.push({ value: item.id, label: item.full_name });
             });
             return array;
         },
@@ -441,15 +411,15 @@ export default {
 
                 array.push({
                     value: this.selectedCompetitorCompany.id,
-                    label: this.selectedCompetitorCompany.full_name,
+                    label: this.selectedCompetitorCompany.full_name
                 });
             }
             query = {
-                all: query,
+                all: query
             };
             result = await api.companies.searchCompanies(query);
-            result.data.forEach((item) => {
-                array.push({value: item.id, label: item.full_name});
+            result.data.forEach(item => {
+                array.push({ value: item.id, label: item.full_name });
             });
             return array;
         },
@@ -459,14 +429,10 @@ export default {
             if (this.formdata || this.object_id) {
                 if (!this.selectedOffer) {
                     const params = {
-                        original_id: this.formdata
-                            ? this.formdata.offer.original_id
-                            : this.original_id,
-                        object_id: this.formdata
-                            ? this.formdata.offer.object_id
-                            : this.object_id,
+                        original_id: this.formdata ? this.formdata.offer.original_id : this.original_id,
+                        object_id: this.formdata ? this.formdata.offer.object_id : this.object_id,
                         type_id: this.formdata ? this.formdata.offer.type_id : this.type_id,
-                        "per-page": 1,
+                        'per-page': 1
                     };
                     let data = await api.companyObjects.searchOffers(params);
                     data = data.data;
@@ -481,31 +447,31 @@ export default {
                         object_id: this.selectedOffer.object_id,
                         type_id: this.selectedOffer.type_id,
                         visual_id: this.selectedOffer.visual_id,
-                        complex_id: this.selectedOffer.complex_id,
+                        complex_id: this.selectedOffer.complex_id
                     },
-                    label: this.selectedOffer.visual_id,
+                    label: this.selectedOffer.visual_id
                 });
             }
             query = {
                 all: query,
                 type_id: [1, 2, 3],
-                "per-page": 10,
+                'per-page': 10
             };
             result = await api.companyObjects.searchOffers(query);
-            result.data.forEach((item) => {
+            result.data.forEach(item => {
                 array.push({
                     value: {
                         original_id: item.original_id,
                         object_id: item.object_id,
                         type_id: item.type_id,
                         visual_id: item.visual_id,
-                        complex_id: item.complex_id,
+                        complex_id: item.complex_id
                     },
-                    label: item.visual_id,
+                    label: item.visual_id
                 });
             });
             return array;
-        },
+        }
     },
     async mounted() {
         this.loader = true;
@@ -519,7 +485,7 @@ export default {
         this.form.type_id = this.type_id;
         this.form.visual_id = this.visual_id;
         if (this.formdata) {
-            this.form = {...this.form, ...this.formdata};
+            this.form = { ...this.form, ...this.formdata };
         }
 
         this.form.offerHandler = {
@@ -527,19 +493,17 @@ export default {
             original_id: this.form.original_id,
             complex_id: this.form.complex_id,
             type_id: this.form.type_id,
-            visual_id: this.form.visual_id,
+            visual_id: this.form.visual_id
         };
         this.loader = false;
     },
     watch: {
         form: {
-            handler() {
-            },
-            deep: true,
-        },
-    },
+            handler() {},
+            deep: true
+        }
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

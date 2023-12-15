@@ -1,20 +1,19 @@
 <template>
     <div class="item">
-        <p v-html="item.label">
-        </p>
-        <i class="fas fa-times" @click="$emit('remove', item.value)"></i>
+        <p v-html="item.label"></p>
+        <i @click="$emit('remove', item.value)" class="fas fa-times"></i>
     </div>
 </template>
 
 <script>
 export default {
-    name: "ListItem",
+    name: 'ListItem',
     props: {
         item: {
             type: Object,
-            required: true,
-        },
-    },
+            required: true
+        }
+    }
 };
 </script>
 

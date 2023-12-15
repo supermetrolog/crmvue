@@ -6,12 +6,7 @@
                 enter-active-class="animate__animated animate__zoomIn for__modal"
                 leave-active-class="animate__animated animate__zoomOut for__modal"
             >
-                <Modal
-                    title="Отправка"
-                    v-if="sendObjectsModalVisible"
-                    class="autosize"
-                    @close="closeSendObjectsModal"
-                >
+                <Modal v-if="sendObjectsModalVisible" @close="closeSendObjectsModal" title="Отправка" class="autosize">
                     <FormLetter
                         @send="sendOffers"
                         @alreadySent="alreadySentOffers"
@@ -21,14 +16,14 @@
                     >
                         <div class="objects">
                             <CompanyObjectsList
+                                @select="select"
+                                @unSelect="unSelect"
+                                @addComment="addComment"
                                 :objects="selectedObjects"
                                 :selectedObjects="selectedObjects"
                                 :disabled="true"
                                 col="col-3"
                                 label="Выбранные предложения"
-                                @select="select"
-                                @unSelect="unSelect"
-                                @addComment="addComment"
                             />
                         </div>
                     </FormLetter>
@@ -52,14 +47,17 @@
                             >
                                 <ButtonList
                                     v-if="!disabled"
-                                    :buttons="buttons"
                                     @send="openSendObjectsModal(false)"
                                     @alreadySent="openSendObjectsModal(true)"
                                     @negative="negative"
+                                    :buttons="buttons"
                                 />
                             </TimelineStepStage>
                             <CompanyObjectsList
                                 v-if="preventStepObjects && preventStepObjects.length"
+                                @select="select"
+                                @unSelect="unSelect"
+                                @addComment="addComment"
                                 :objects="preventStepObjects"
                                 :selectedObjects="selectedObjects"
                                 :disabled="disabled"
@@ -67,66 +65,53 @@
                                 :viewMode="viewMode"
                                 :currentStepId="step.id"
                                 :label="
-                  'Отправленные предложения' +
-                  (preventStepObjects.length
-                    ? ` (${preventStepObjects.length})`
-                    : '')
-                "
-                                @select="select"
-                                @unSelect="unSelect"
-                                @addComment="addComment"
+                                    'Отправленные предложения' +
+                                    (preventStepObjects.length ? ` (${preventStepObjects.length})` : '')
+                                "
                                 class="success"
                             />
-                            <div
-                                class="
-                  timeline-actions timeline-list-item
-                  row
-                  justify-content-end
-                  mx-4
-                  mt-4
-                "
-                            >
+                            <div class="timeline-actions timeline-list-item row justify-content-end mx-4 mt-4">
                                 <RefreshButton
                                     @click="search(searchParams)"
                                     :disabled="allObjectsLoader"
                                     class="mr-2"
                                 />
                                 <CustomButton
-                                    :options="{
-                    btnActive: recommendedFilter == 1,
-                    btnClass: 'primary',
-                    defaultBtn: true,
-                    disabled: false,
-                    title: firstRecommendedDescription,
-                  }"
-                                    class="d-inline ml-2"
                                     @confirm="changeRecommendedFilter(1, firstRecommendedQuery)"
+                                    :options="{
+                                        btnActive: recommendedFilter == 1,
+                                        btnClass: 'primary',
+                                        defaultBtn: true,
+                                        disabled: false,
+                                        title: firstRecommendedDescription
+                                    }"
+                                    class="d-inline ml-2"
                                 >
                                     <template #btnContent>ЛУЧШЕЕ</template>
                                 </CustomButton>
                                 <CustomButton
-                                    :options="{
-                    btnActive: recommendedFilter == 2,
-                    btnClass: 'primary',
-                    defaultBtn: true,
-                    disabled: false,
-                    title: twoRecommendedDescription,
-                  }"
-                                    class="d-inline ml-2"
                                     @confirm="changeRecommendedFilter(2, twoRecommendedQuery)"
+                                    :options="{
+                                        btnActive: recommendedFilter == 2,
+                                        btnClass: 'primary',
+                                        defaultBtn: true,
+                                        disabled: false,
+                                        title: twoRecommendedDescription
+                                    }"
+                                    class="d-inline ml-2"
                                 >
                                     <template #btnContent>СРЕДНЕЕ</template>
                                 </CustomButton>
                                 <CustomButton
-                                    :options="{
-                    btnActive: recommendedFilter == 3,
-                    btnClass: 'warning',
-                    defaultBtn: true,
-                    disabled: false,
-                    title: threeRecommendedDescription,
-                  }"
-                                    class="d-inline ml-2"
                                     @confirm="changeRecommendedFilter(3, threeRecommendedQuery)"
+                                    :options="{
+                                        btnActive: recommendedFilter == 3,
+                                        btnClass: 'warning',
+                                        defaultBtn: true,
+                                        disabled: false,
+                                        title: threeRecommendedDescription
+                                    }"
+                                    class="d-inline ml-2"
                                 >
                                     <template #btnContent>ПАССИВ</template>
                                 </CustomButton>
@@ -137,22 +122,26 @@
                                 @reset="recommendedFilter = null"
                                 @resetSelected="reset"
                                 :additionalButtons="
-                  selectedObjects.length
-                    ? [
-                        {
-                          label: 'сбросить выбранное',
-                          classes: 'text-warning',
-                          event: 'resetSelected',
-                        },
-                      ]
-                    : []
-                "
+                                    selectedObjects.length
+                                        ? [
+                                              {
+                                                  label: 'сбросить выбранное',
+                                                  classes: 'text-warning',
+                                                  event: 'resetSelected'
+                                              }
+                                          ]
+                                        : []
+                                "
                                 noUrl
                                 :queryParams="queryParams"
                                 class="mb-2 px-4"
                                 :class="{ 'action-open': controllPanelHeight > 50 }"
                             />
                             <CompanyObjectsList
+                                @select="select"
+                                @unSelect="unSelect"
+                                @addComment="addComment"
+                                @deleteFavoriteOffer="deleteFavoriteOffer"
                                 :objects="allObjects"
                                 :currentObjects="step.timelineStepObjects"
                                 :selectedObjects="selectedObjects"
@@ -161,16 +150,8 @@
                                 :viewMode="viewMode"
                                 :pagination="pagination"
                                 :currentStepId="step.id"
-                                @select="select"
-                                @unSelect="unSelect"
-                                @addComment="addComment"
-                                @deleteFavoriteOffer="deleteFavoriteOffer"
                             />
-                            <Pagination
-                                :pagination="pagination"
-                                @loadMore="loadMore"
-                                class="text-center"
-                            />
+                            <Pagination @loadMore="loadMore" :pagination="pagination" class="text-center" />
                         </div>
                     </div>
                 </div>
@@ -180,19 +161,18 @@
 </template>
 
 <script>
-import {LetterSenderMixin, MixinStepActions} from "@/components/Timeline/mixins.js";
-import {MixinAllObject} from "@/components/Company/Object/mixins.js";
-import CustomButton from "@/components/common/CustomButton.vue";
-import RefreshButton from "@/components/common/RefreshButton.vue";
-import {mapGetters} from "vuex";
-import Modal from "@/components/common/Modal.vue";
-import CompanyObjectsList from "@/components/Company/Object/CompanyObjectList.vue";
-import FormLetter from "@/components/Forms/FormLetter.vue";
-import Pagination from "@/components/common/Pagination/Pagination.vue";
+import { LetterSenderMixin, MixinStepActions } from '@/components/Timeline/mixins.js';
+import { MixinAllObject } from '@/components/Company/Object/mixins.js';
+import CustomButton from '@/components/common/CustomButton.vue';
+import RefreshButton from '@/components/common/RefreshButton.vue';
+import { mapGetters } from 'vuex';
+import Modal from '@/components/common/Modal.vue';
+import CompanyObjectsList from '@/components/Company/Object/CompanyObjectList.vue';
+import FormLetter from '@/components/Forms/FormLetter.vue';
+import Pagination from '@/components/common/Pagination/Pagination.vue';
 
 export default {
-    name: "TimelineStepOffersActions",
-    mixins: [MixinStepActions, MixinAllObject, LetterSenderMixin],
+    name: 'TimelineStepOffersActions',
     components: {
         Pagination,
         FormLetter,
@@ -201,11 +181,12 @@ export default {
         CustomButton,
         RefreshButton
     },
+    mixins: [MixinStepActions, MixinAllObject, LetterSenderMixin],
     data() {
         return {
             recommendedFilter: null,
             queryParams: null,
-            alreadySended: false,
+            alreadySended: false
         };
     },
     // Нужно чтобы сбрасывать лишние фильтры
@@ -245,7 +226,7 @@ export default {
         pricePerFloor: null,
         type_id: null,
         firstFloorOnly: null,
-        withoutOffersFromQuery: null,
+        withoutOffersFromQuery: null
     },
     firstRecommendedDescriptionRent: `Учитывается:
       - вид сделки
@@ -301,7 +282,7 @@ export default {
       - расстояние от МКАД +50%
       `,
     computed: {
-        ...mapGetters(["THIS_USER"]),
+        ...mapGetters(['THIS_USER']),
         firstRecommendedDescription() {
             return this.currentRequest.dealType != 1
                 ? this.$options.firstRecommendedDescriptionRent
@@ -321,10 +302,7 @@ export default {
             const request = this.currentRequest;
             const query = {
                 rangeMinElectricity: request.electricity,
-                rangeMaxDistanceFromMKAD: this.getPercent(
-                    request.distanceFromMKAD,
-                    130
-                ),
+                rangeMaxDistanceFromMKAD: this.getPercent(request.distanceFromMKAD, 130),
                 deal_type: request.dealType,
                 rangeMaxArea: request.maxArea,
                 rangeMinArea: request.minArea,
@@ -333,17 +311,17 @@ export default {
                 heated: request.heated == 0 ? 2 : request.heated,
                 has_cranes: request.haveCranes,
                 floor_types: request.antiDustOnly ? [2] : [],
-                region: request.regions.map((item) => item.region),
+                region: request.regions.map(item => item.region),
                 status: 1,
                 type_id: [1, 2],
-                gates: request.gateTypes.map((item) => item.gate_type),
-                direction: request.directions.map((item) => item.direction),
-                district_moscow: request.districts.map((item) => item.district),
+                gates: request.gateTypes.map(item => item.gate_type),
+                direction: request.directions.map(item => item.direction),
+                district_moscow: request.districts.map(item => item.district),
                 region_neardy: request.region_neardy,
                 outside_mkad: request.outside_mkad,
                 firstFloorOnly: request.firstFloorOnly ? 1 : null,
                 sort_original_id: this.$route.query.new_original_id ?? null,
-                sort: this.$route.query.new_original_id ? "-original_ids" : null,
+                sort: this.$route.query.new_original_id ? '-original_ids' : null
             };
             if (request.dealType == 1) {
                 query.rangeMaxArea = this.getPercent(request.maxArea, 130);
@@ -354,17 +332,12 @@ export default {
         twoRecommendedQuery() {
             const request = this.currentRequest;
             const query = {
-                rangeMaxDistanceFromMKAD: this.getPercent(
-                    request.distanceFromMKAD,
-                    130
-                ),
+                rangeMaxDistanceFromMKAD: this.getPercent(request.distanceFromMKAD, 130),
                 deal_type: request.dealType,
                 rangeMaxArea: this.getPercent(request.maxArea, 120),
                 rangeMinArea: this.getPercent(request.minArea, 80),
                 rangeMinCeilingHeight:
-                    request.minCeilingHeight > 3
-                        ? request.minCeilingHeight - 2
-                        : request.minCeilingHeight,
+                    request.minCeilingHeight > 3 ? request.minCeilingHeight - 2 : request.minCeilingHeight,
                 has_cranes: request.haveCranes,
                 floor_types: request.antiDustOnly ? [2] : [],
                 status: 1,
@@ -374,21 +347,15 @@ export default {
                     this.deleteEmptyFields({
                         ...this.firstRecommendedQuery,
                         page: 1,
-                        "per-page": 0,
-                        expand: "object,offer,generalOffersMix.offer,comments",
-                        timeline_id: this.TIMELINE.id,
+                        'per-page': 0,
+                        expand: 'object,offer,generalOffersMix.offer,comments',
+                        timeline_id: this.TIMELINE.id
                     })
-                ),
+                )
             };
             if (request.dealType == 1) {
-                query.rangeMaxPricePerFloor = this.getPercent(
-                    request.pricePerFloor,
-                    150
-                );
-                query.rangeMaxDistanceFromMKAD = this.getPercent(
-                    request.distanceFromMKAD,
-                    150
-                );
+                query.rangeMaxPricePerFloor = this.getPercent(request.pricePerFloor, 150);
+                query.rangeMaxDistanceFromMKAD = this.getPercent(request.distanceFromMKAD, 150);
                 delete query.rangeMinCeilingHeight;
                 delete query.rangeMaxArea;
                 delete query.rangeMinArea;
@@ -400,25 +367,22 @@ export default {
         threeRecommendedQuery() {
             const request = this.currentRequest;
             const query = {
-                rangeMaxDistanceFromMKAD: this.getPercent(
-                    request.distanceFromMKAD,
-                    130
-                ),
+                rangeMaxDistanceFromMKAD: this.getPercent(request.distanceFromMKAD, 130),
                 rangeMaxArea: request.maxArea,
                 rangeMinArea: request.minArea,
                 type_id: [3],
-                region: request.regions.map((item) => item.region),
-                direction: request.directions.map((item) => item.direction),
-                district_moscow: request.districts.map((item) => item.district),
+                region: request.regions.map(item => item.region),
+                direction: request.directions.map(item => item.direction),
+                district_moscow: request.districts.map(item => item.district),
                 region_neardy: request.region_neardy,
-                outside_mkad: request.outside_mkad,
+                outside_mkad: request.outside_mkad
             };
             if (request.dealType == 1) {
                 query.rangeMaxArea = this.getPercent(request.maxArea, 130);
                 query.rangeMinArea = this.getPercent(request.minArea, 70);
             }
             return query;
-        },
+        }
     },
     methods: {
         openSendObjectsModal(alreadySended = false) {
@@ -431,7 +395,7 @@ export default {
         },
         updatedObjects(data, fn) {
             this.barVisible = false;
-            this.$emit("updatedObjects", data, true, fn);
+            this.$emit('updatedObjects', data, true, fn);
         },
         getPercent(value, percent) {
             if (!Number.isInteger(value) || !value) {
@@ -444,11 +408,7 @@ export default {
             for (const key in object) {
                 if (Object.hasOwnProperty.call(object, key)) {
                     const value = object[key];
-                    if (
-                        value === null ||
-                        value === "" ||
-                        (Array.isArray(value) && !value.length)
-                    ) {
+                    if (value === null || value === '' || (Array.isArray(value) && !value.length)) {
                         delete object[key];
                     }
                 }
@@ -466,7 +426,7 @@ export default {
 
             this.queryParams = {
                 ...this.$options.defaultQueryParams,
-                ...query,
+                ...query
             };
         },
         // Переопределено из миксина чтобы в первую очередь загрузить подборку
@@ -478,10 +438,9 @@ export default {
                 await this.SEARCH_FAVORITES_OFFERS();
                 this.search(this.searchParams, false);
             }
-        },
-    },
+        }
+    }
 };
 </script>
 
-<style>
-</style>
+<style></style>

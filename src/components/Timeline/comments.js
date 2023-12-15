@@ -1,5 +1,5 @@
-import {WayOfSending} from "@/const/const.js";
-import {apiUrlHelperObject, formatterObject} from "@/plugins/index.js";
+import { WayOfSending } from '@/const/const.js';
+import { apiUrlHelperObject, formatterObject } from '@/plugins/index.js';
 
 export const DEFAULT_COMMENT_TYPE = 1;
 export const NOTIFICATION_COMMENT_TYPE = 2;
@@ -12,7 +12,7 @@ class Comment {
         this.timeline_id = step.timeline_id;
         this.timeline_step_id = step.id;
         this.timeline_step_number = step.number;
-        this.title = "система";
+        this.title = 'система';
         this.comment = null;
         this.type = type;
     }
@@ -26,7 +26,7 @@ class Comment {
     }
 
     _setComment() {
-        this.comment = "default comment";
+        this.comment = 'default comment';
     }
 }
 
@@ -39,7 +39,7 @@ export default class CommentWithAutoSetComment extends Comment {
 
 export class PhonedComment extends CommentWithAutoSetComment {
     _setComment() {
-        this.comment = "Состоялся первичный диалог с клиентом";
+        this.comment = 'Состоялся первичный диалог с клиентом';
     }
 }
 
@@ -51,25 +51,25 @@ export class CallbackComment extends Comment {
     }
 
     _setComment() {
-        this.comment = "Устанвовлено напоминание о звонке: " + this.callBackDate;
+        this.comment = 'Устанвовлено напоминание о звонке: ' + this.callBackDate;
     }
 }
 
 export class CallingErrorComment extends CommentWithAutoSetComment {
     _setComment() {
-        this.comment = "Не удалось дозвониться, попытайтесь позднее";
+        this.comment = 'Не удалось дозвониться, попытайтесь позднее';
     }
 }
 
 export class MeetingDoneComment extends CommentWithAutoSetComment {
     _setComment() {
-        this.comment = "Запрос утвержден, переходим к отправке предложений";
+        this.comment = 'Запрос утвержден, переходим к отправке предложений';
     }
 }
 
 export class OffersNotFoundComment extends CommentWithAutoSetComment {
     _setComment() {
-        this.comment = "Не удалось найти подходищие объекты, посмотрите у конкурентов или на ЦИАН";
+        this.comment = 'Не удалось найти подходищие объекты, посмотрите у конкурентов или на ЦИАН';
     }
 }
 
@@ -92,15 +92,13 @@ export class AlreadySendOffersComment extends Comment {
     }
 
     _getSendOffersLength() {
-        if (this._sendOffersLength == 1)
-            return this._sendOffersLength + " предложение";
-        else if (this._sendOffersLength < 5)
-            return this._sendOffersLength + " предложения";
-        return this._sendOffersLength + " предложений";
+        if (this._sendOffersLength == 1) return this._sendOffersLength + ' предложение';
+        else if (this._sendOffersLength < 5) return this._sendOffersLength + ' предложения';
+        return this._sendOffersLength + ' предложений';
     }
 
     _getContacts() {
-        const str = this._contacts.map((elem) => `<span class="d-inline"><b>${elem.value}</b></span>`).join(", ");
+        const str = this._contacts.map(elem => `<span class="d-inline"><b>${elem.value}</b></span>`).join(', ');
         if (this._contacts.length > 1) {
             return `контактам: ${str}`;
         }
@@ -108,8 +106,13 @@ export class AlreadySendOffersComment extends Comment {
     }
 
     _getWayOfSending() {
-        const wayOfSendingOptions = WayOfSending.get("param");
-        return this._wayOfSending.map(way => `<i class="d-inline ${wayOfSendingOptions[way][1].icon}" title="${wayOfSendingOptions[way][1].name}"></i>`).join(" ");
+        const wayOfSendingOptions = WayOfSending.get('param');
+        return this._wayOfSending
+            .map(
+                way =>
+                    `<i class="d-inline ${wayOfSendingOptions[way][1].icon}" title="${wayOfSendingOptions[way][1].name}"></i>`
+            )
+            .join(' ');
     }
 }
 
@@ -117,52 +120,50 @@ export class SendOffersComment extends AlreadySendOffersComment {
     _setComment() {
         this.type = SEND_OFFERS_COMMENT_TYPE;
         const contactsStr = this._getContacts();
-        const wayOfSendingStr = this._getWayOfSending()
+        const wayOfSendingStr = this._getWayOfSending();
         const sendOffersLengthStr = this._getSendOffersLength();
         this.comment = `Отправлено ${sendOffersLengthStr} ${contactsStr} по ${wayOfSendingStr}`;
     }
-
 }
-
 
 export class FeedbackOffersNotFoundComment extends CommentWithAutoSetComment {
     _setComment() {
-        this.comment = "Предложения клиента не заинтересовали, попробуйте поискать еще варианты";
+        this.comment = 'Предложения клиента не заинтересовали, попробуйте поискать еще варианты';
     }
 }
 
 export class FeedbackDoneComment extends CommentWithAutoSetComment {
     _setComment() {
         this.type = DONE_COMMENT_TYPE;
-        this.comment = "Получена обратная связь от клиента по объектам";
+        this.comment = 'Получена обратная связь от клиента по объектам';
     }
 }
 
 export class FeedbackWaysConfirmedComment extends CommentWithAutoSetComment {
     _setComment() {
         this.type = DONE_COMMENT_TYPE;
-        this.comment = "Отметил способ получения обратной связи";
+        this.comment = 'Отметил способ получения обратной связи';
     }
 }
 
 export class InspectionOffersNotFound extends CommentWithAutoSetComment {
     _setComment() {
-        this.comment = "Клиент передумал осматривать, заинтересовавшие его помещения, разберите ситуацию, попробуйте понять причину или подберите новые предложения";
+        this.comment =
+            'Клиент передумал осматривать, заинтересовавшие его помещения, разберите ситуацию, попробуйте понять причину или подберите новые предложения';
     }
 }
 
 class DoneComment extends Comment {
     constructor(step, selectedObjects) {
-        super(step, DONE_COMMENT_TYPE)
+        super(step, DONE_COMMENT_TYPE);
         this._selectedObjects = selectedObjects;
         this._setComment();
     }
 
-    _setComment() {
-    }
+    _setComment() {}
 
     _getObjectsStr() {
-        return this._selectedObjects.map(elem => this._getObjectLink(elem)).join(", ");
+        return this._selectedObjects.map(elem => this._getObjectLink(elem)).join(', ');
     }
 
     _getObjectLink(offer) {
@@ -170,7 +171,9 @@ class DoneComment extends Comment {
         let town = formatterObject.text().ucFirst(offer.town_name);
         let id = offer.visual_id;
 
-        return `<a target="_blank" class="text-primary d-inline" href="${this._getOfferUrl(offer)}">${id} - ${region}, ${town}</a>`
+        return `<a target="_blank" class="text-primary d-inline" href="${this._getOfferUrl(
+            offer
+        )}">${id} - ${region}, ${town}</a>`;
     }
 
     _getOfferUrl(offer) {
@@ -192,7 +195,8 @@ export class VisitDoneComment extends DoneComment {
 
 export class VisitOffersNotFound extends CommentWithAutoSetComment {
     _setComment() {
-        this.comment = "Клиент передумал осматривать, заинтересовавшие его помещения, разберите ситуацию, попробуйте понять причину или подберите новые предложения";
+        this.comment =
+            'Клиент передумал осматривать, заинтересовавшие его помещения, разберите ситуацию, попробуйте понять причину или подберите новые предложения';
     }
 }
 
@@ -204,7 +208,8 @@ export class InterestDoneComment extends DoneComment {
 
 export class InterestOffersNotFound extends CommentWithAutoSetComment {
     _setComment() {
-        this.comment = "Клиенту не подошли помещения, которые осмотрели, не беда, разберите ситуацию, попробуйте понять причину и подберите новые предложения";
+        this.comment =
+            'Клиенту не подошли помещения, которые осмотрели, не беда, разберите ситуацию, попробуйте понять причину и подберите новые предложения';
     }
 }
 
@@ -216,13 +221,14 @@ export class TalkDoneComment extends DoneComment {
 
 export class TalkOffersNotFound extends CommentWithAutoSetComment {
     _setComment() {
-        this.comment = "Переговоры не состоялись, разберите ситуацию, попробуйте понять причину и подберите новые предложения";
+        this.comment =
+            'Переговоры не состоялись, разберите ситуацию, попробуйте понять причину и подберите новые предложения';
     }
 }
 
 export class DealDoneComment extends CommentWithAutoSetComment {
     _setComment() {
-        this.comment = "Ура! Супер, вы завершили успешно текущий бизнес процесс";
+        this.comment = 'Ура! Супер, вы завершили успешно текущий бизнес процесс';
     }
 }
 
