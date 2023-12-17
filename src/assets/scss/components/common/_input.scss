@@ -1,6 +1,19 @@
 .form {
     position: relative;
 
+    &__row {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+    }
+
+    &__column {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+    }
+
     &__input {
         background: #fff;
         border: 1px solid #d1d5db;
@@ -66,7 +79,7 @@
     }
 
     &__label {
-        padding: 5px 10px;
+        padding: 5px 15px;
         border: 1px solid #d1d5db;
         border-radius: 15px;
         display: flex;
@@ -93,5 +106,30 @@
 .form-company-deal {
     .form__textarea {
         height: 100px;
+    }
+}
+
+.radio-chip {
+    cursor: pointer;
+    padding: 5px 15px;
+    border: 1px solid #d1d5db;
+    border-radius: 15px;
+    transition: all .5s ease;
+    min-height: 35px;
+    min-width: 35px;
+
+    &__input {
+        display: none;
+    }
+
+    &:hover {
+        background-color: rgba(16, 185, 129, .6);
+        color: #fff;
+    }
+
+    &.active {
+        background-color: #10b981;
+        border-color: #10b981;
+        color: #fff;
     }
 }

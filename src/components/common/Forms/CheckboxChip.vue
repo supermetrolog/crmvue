@@ -4,25 +4,21 @@
             <input
                 v-model="field"
                 @change="onChange"
-                type="checkbox"
-                :class="inputClasses"
                 :value="value"
                 :true-value="1"
                 :false-value="0"
+                type="checkbox"
                 :disabled="disabled"
             />
-            {{ text }}
+            {{ text ?? value }}
         </label>
         <slot />
     </div>
 </template>
 
 <script>
-import Mixin from './mixins.js';
-
 export default {
     name: 'CheckboxChip',
-    mixins: [Mixin],
     props: {
         modelValue: {
             type: [Array, Number, String, Boolean],
@@ -36,10 +32,6 @@ export default {
             type: Boolean,
             default: false
         },
-        label: {
-            type: String,
-            default: null
-        },
         name: {
             type: String,
             default: null
@@ -48,7 +40,10 @@ export default {
             type: Boolean,
             default: false
         },
-        value: [String, Number]
+        value: {
+            type: [String, Number, Boolean],
+            default: false
+        }
     },
     data() {
         return {
