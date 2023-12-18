@@ -1,0 +1,49 @@
+@use '../utils/variables';
+
+main {
+    min-height: 100vh;
+    background-color: variables.$color_overflow;
+    padding: 75px 25px 50px 100px;
+}
+
+.animate {
+    &--fast {
+        animation-duration: 0.1s !important;
+    }
+}
+
+.offer-search {
+
+    &__functions {
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    &__actions {
+        display: flex;
+        align-items: flex-end;
+        gap: 10px;
+    }
+}
+
+.offers-page {
+    &__table {
+        margin: 10px 0;
+    }
+}
+
+.chip {
+    padding: 5px 10px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    color: #2d2f34;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    &__icon {
+        cursor: pointer;
+    }
+}

@@ -1,33 +1,34 @@
-import { notify } from "@kyvg/vue3-notification";
-import router from "@/router";
-import store from "@/store";
+import { notify } from '@kyvg/vue3-notification';
+import router from '@/router';
+import store from '@/store';
+
 let notifyOptions = {
-    group: "app",
-    type: "error",
-    duration: 15000,
+    group: 'app',
+    type: 'error',
+    duration: 15000
 };
 const ValidationErrorHttpStatusCode = 422;
 const AuthErrorHttpStatusCode = 401;
-const getTitle = (data) => {
+const getTitle = data => {
     return data.name;
     // return data.name + " - [ статус код: " + data.status + " ]";
-}
-const validationErrorSet = (data) => {
+};
+const validationErrorSet = data => {
     data.message = JSON.parse(data.message);
 
     notifyOptions.title = getTitle(data);
-    data.message.map((item) => {
+    data.message.map(item => {
         notifyOptions.text = item;
         notify(notifyOptions);
-    })
-}
-const otherErrorSet = (data) => {
+    });
+};
+const otherErrorSet = data => {
     notifyOptions.title = getTitle(data);
 
     notifyOptions.text = data.message;
     notify(notifyOptions);
     return;
-}
+};
 export default {
     setError(e) {
         // e -> message, config, code, request, response
@@ -36,16 +37,13 @@ export default {
 
             if (data.status != ValidationErrorHttpStatusCode) {
                 otherErrorSet(data);
-
             } else {
                 validationErrorSet(data);
-
             }
             if (data.status == AuthErrorHttpStatusCode) {
                 store.dispatch('DESTROY');
                 router.push('/login');
             }
         }
-
     }
-}
+};

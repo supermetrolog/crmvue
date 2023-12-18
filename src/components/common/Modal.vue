@@ -1,66 +1,61 @@
 <template>
-  <div class="modal active" role="dialog" :class="classes">
-    <div class="modal-container">
-      <div class="modal-header">
-        <div v-if="title">
-          {{ title }}
+    <div class="modal active" role="dialog">
+        <div @click="clickCancelButton" class="modal__blackout"></div>
+        <div class="modal__container">
+            <div class="modal__header">
+                <p v-if="title">
+                    {{ title }}
+                </p>
+                <slot name="header"></slot>
+                <div class="modal__close">
+                    <i @click.prevent="clickCancelButton" class="icon fa-solid fa-xmark"></i>
+                </div>
+            </div>
+            <div class="modal__body">
+                <slot></slot>
+            </div>
         </div>
-        <div>
-          <slot name="header"></slot>
-        </div>
-        <div class="times-container">
-          <i class="fas fa-times" @click="clickCancel"></i>
-        </div>
-      </div>
-      <div class="modal-body">
-        <slot></slot>
-      </div>
     </div>
-  </div>
 </template>
 
 <script>
 export default {
-  name: "Modal",
-  data() {
-    return {
-      alreadyHidden: false,
-    };
-  },
-  props: {
-    title: {
-      type: String,
-      default: "Заголовок",
+    name: 'Modal',
+    emits: ['close'],
+    props: {
+        title: {
+            type: String
+        }
     },
-    classes: {
-      type: String,
+    data() {
+        return {
+            alreadyHidden: false
+        };
     },
-  },
-  methods: {
-    clickCancel() {
-      this.$emit("close");
+    methods: {
+        clickCancelButton() {
+            this.$emit('close');
+        },
+        escapeHandler(event) {
+            if (event.code === 'Escape') this.$emit('close');
+        }
     },
-  },
-  mounted() {
-    if (document.getElementsByTagName("body")[0].style.overflow == "hidden") {
-      this.alreadyHidden = true;
-      return;
+    mounted() {
+        if (document.body.style.overflow === 'hidden') {
+            this.alreadyHidden = true;
+            return;
+        }
+
+        document.body.style.overflow = 'hidden';
+        document.addEventListener('keydown', this.escapeHandler);
+    },
+    unmounted() {
+        if (this.alreadyHidden) return;
+
+        document.removeEventListener('keydown', this.escapeHandler);
+        document.body.style.overflow = null;
     }
-    document.getElementsByTagName("body")[0].style.overflow = "hidden";
-    document.getElementsByTagName("body")[0].style.paddingRight = "5px";
-    document.getElementsByClassName("navbar")[0].style.paddingRight = "5px";
-  },
-  unmounted() {
-    if (this.alreadyHidden) {
-      return;
-    }
-    document.getElementsByTagName("body")[0].style.overflow = null;
-    document.getElementsByTagName("body")[0].style.paddingRight = null;
-    document.getElementsByClassName("navbar")[0].style.paddingRight = null;
-  },
-  emits: ["close"],
 };
 </script>
 
-<style>
-</style>
+<style></style>

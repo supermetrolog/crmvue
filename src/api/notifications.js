@@ -1,6 +1,7 @@
-import axios from "axios";
-import ErrorHandle from "./errors";
-import SuccessHandler from "./success";
+import axios from 'axios';
+import ErrorHandle from './errors';
+import SuccessHandler from './success';
+
 export default {
     async search(query) {
         query = new URLSearchParams(query).toString();
@@ -8,12 +9,12 @@ export default {
         let data = false;
         await axios
             .get(url)
-            .then((Response) => {
+            .then(Response => {
                 data = {};
                 data.data = SuccessHandler.getData(Response);
                 data.pagination = SuccessHandler.getPaginationData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
     },
     async fetchCount(consultant_id) {
@@ -21,10 +22,10 @@ export default {
         let data = false;
         await axios
             .get(url)
-            .then((Response) => {
+            .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
     },
     async viewedNotCount(consultant_id) {
@@ -32,11 +33,10 @@ export default {
         let data = false;
         await axios
             .get(url)
-            .then((Response) => {
+            .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch((e) =>
-                ErrorHandle.setError(e))
+            .catch(e => ErrorHandle.setError(e));
 
         return data;
     },
@@ -45,12 +45,11 @@ export default {
         let data = false;
         await axios
             .get(url)
-            .then((Response) => {
+            .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch((e) =>
-                ErrorHandle.setError(e))
+            .catch(e => ErrorHandle.setError(e));
 
         return data;
-    },
-}
+    }
+};

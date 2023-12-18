@@ -1,6 +1,7 @@
-import axios from "axios";
-import ErrorHandle from "./errors";
-import SuccessHandler from "./success";
+import axios from 'axios';
+import ErrorHandle from './errors';
+import SuccessHandler from './success';
+
 export default {
     async getContacts(company_id) {
         const url = `contacts/company-contacts/${company_id}?expand=invalidPhones,contactComments,contactComments.author,contactComments.author.userProfile,emails,phones,websites,consultant,consultant.userProfile,wayOfInformings&sort=-created_at`;
@@ -8,12 +9,11 @@ export default {
 
         await axios
             .get(url)
-            .then((Response) => {
+            .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
-
     },
     async searchContacts(query) {
         query = new URLSearchParams(query).toString();
@@ -23,23 +23,23 @@ export default {
 
         await axios
             .get(url)
-            .then((Response) => {
+            .then(Response => {
                 data = {};
                 data.data = SuccessHandler.getData(Response);
                 data.pagination = SuccessHandler.getPaginationData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
     },
     async createContact(formdata) {
-        const url = "contacts";
+        const url = 'contacts';
         let data = false;
         await axios
             .post(url, formdata)
-            .then((Response) => {
+            .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
     },
     async updateContact(formdata) {
@@ -47,10 +47,10 @@ export default {
         let data = false;
         await axios
             .patch(url, formdata)
-            .then((Response) => {
+            .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
     },
     async deleteContact(contact_id) {
@@ -58,21 +58,21 @@ export default {
         let data = false;
         await axios
             .delete(url)
-            .then((Response) => {
+            .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
     },
     async createComment(formdata) {
-        const url = "contacts/create-comment?expand=author,author.userProfile";
+        const url = 'contacts/create-comment?expand=author,author.userProfile';
         let data = false;
         await axios
             .post(url, formdata)
-            .then((Response) => {
+            .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
-    },
-}
+    }
+};

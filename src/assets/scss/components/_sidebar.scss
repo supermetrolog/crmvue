@@ -1,0 +1,130 @@
+@use '../utils/variables';
+
+.sidebar {
+    height: 100%;
+    width: 70px;
+    position: fixed;
+    z-index: 8;
+    background-color: variables.$color_sidebar_bg;
+    box-shadow: 4px 0px 10px rgba(0, 0, 0, 0.25);
+
+    &__avatar {
+        padding: 10px 5px 5px;
+    }
+
+    &__nav {
+        text-align: center;
+        align-content: center;
+        margin-top: 20px;
+    }
+
+    hr {
+        margin: 0 auto;
+        width: 80%;
+        color: variables.$color_light;
+        opacity: 0.5;
+    }
+
+    &__link {
+        padding: 7px 0 7px 0;
+        color: #f7f7f7;
+        font-weight: 700;
+        font-size: 11px;
+        letter-spacing: .3px;
+        width: 100%;
+        height: 100%;
+        transition: color .15s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+
+        &:hover {
+            color: #46cdcf;
+        }
+
+        &.active {
+            background-color: #f7f7f7;
+            color: #11698e;
+            font-weight: 700;
+        }
+    }
+
+    &__icon {
+        font-size: 22px;
+        margin-top: 5px;
+        display: block;
+    }
+}
+
+.avatar {
+    &__preview {
+        border-radius: 50%;
+        height: 60px;
+        width: 60px;
+        background-color: variables.$color_light_grey;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+    }
+
+    &__image {
+        max-width: 100%;
+    }
+}
+
+.sidebar-mobile {
+    height: 100%;
+    width: 100vw;
+    z-index: 99;
+    padding-top: 80px;
+
+    &__wrapper {
+        display: flex;
+        flex-direction: column;
+
+        &__menu {
+            .nav-link_mobile {
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                gap: 20px;
+                font-size: 20px;
+
+                .link-name_mobile {
+                    width: 50vw;
+                }
+
+                .link-icon_mobile {
+                    width: 20vw;
+                    font-size: 30px;
+
+                    .fas {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                    }
+                }
+            }
+        }
+    }
+
+    &__user {
+        width: 100%;
+    }
+
+    .HeaderNavMobile {
+        margin-top: 20px;
+        padding: 0;
+
+        .nav-list.vertical .nav-item .nav-link__content {
+            padding-left: 20px;
+        }
+
+        .nav-item {
+            .nav-link {
+                font-size: 20px;
+            }
+        }
+    }
+}

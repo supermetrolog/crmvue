@@ -1,13 +1,10 @@
-import api from "@/api/api"
-const deleteEmptyFields = (object) => {
+import api from '@/api/api';
+
+const deleteEmptyFields = object => {
     for (const key in object) {
         if (Object.hasOwnProperty.call(object, key)) {
             const value = object[key];
-            if (
-                value === null ||
-                value === "" ||
-                (Array.isArray(value) && !value.length)
-            ) {
+            if (value === null || value === '' || (Array.isArray(value) && !value.length)) {
                 delete object[key];
             }
         }
@@ -24,7 +21,7 @@ const CompanyObjects = {
         },
         updateRequestRecomendedObjects(state, data) {
             state.requestRecomendedObjects = data;
-        },
+        }
     },
     actions: {
         async FETCH_COMPANY_OBJECTS(context, company_id) {
@@ -58,7 +55,7 @@ const CompanyObjects = {
                 context.commit('updateRequestRecomendedObjects', response.data);
             }
             return response;
-        },
+        }
     },
 
     getters: {
@@ -69,6 +66,6 @@ const CompanyObjects = {
             return state.requestRecomendedObjects;
         }
     }
-}
+};
 
 export default CompanyObjects;

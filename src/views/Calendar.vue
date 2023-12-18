@@ -1,11 +1,11 @@
 <template>
-  <div class="calendar">
-    <h1>Calendar</h1>
-  </div>
+    <div class="calendar">
+        <h1>Calendar</h1>
+    </div>
 </template>
 
 <script>
 export default {
-  name: "Calendar",
+    name: 'Calendar'
 };
 </script>

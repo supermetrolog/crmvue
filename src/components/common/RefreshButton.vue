@@ -1,21 +1,16 @@
 <template>
-  <button class="btn btn-success_alt btn-refresh" title="Обновить">
-    <i class="fas fa-sync-alt"></i>
-  </button>
+    <Button @click="$emit('click')" icon title="Обновить">
+        <span>Обновить</span>
+        <i class="fa-solid fa-rotate"></i>
+    </Button>
 </template>
 
 <script>
+import Button from '@/components/common/Button.vue';
+
 export default {
-  name: "RefreshButton",
+    name: 'RefreshButton',
+    components: { Button },
+    emits: ['click']
 };
 </script>
-
-<style lang="scss" scoped>
-.btn-refresh {
-  padding: 6px 8px;
-  i {
-    font-size: 20px;
-    color: yellow;
-  }
-}
-</style>

@@ -1,31 +1,30 @@
-import api from "@/api/api";
-import { notify } from "@kyvg/vue3-notification";
+import api from '@/api/api';
+import { notify } from '@kyvg/vue3-notification';
 
 function viewNotify(data) {
     let notifyOptions = {
-        group: "app",
-        type: "success",
-        duration: 5000,
+        group: 'app',
+        type: 'success',
+        duration: 5000
     };
     const newNotificationCount = data;
     if (newNotificationCount) {
-
         if (newNotificationCount == 1) {
             notifyOptions.text = `У вас ${newNotificationCount} новое оповещение`;
         } else {
             notifyOptions.text = `У вас ${newNotificationCount} новых оповещений`;
-
         }
         notifyOptions.title = `Оповещение`;
 
         notify(notifyOptions);
     }
 }
+
 const Notifications = {
     state: {
         notifications: [],
         notificationsCount: 0,
-        notificationsPagination: null,
+        notificationsPagination: null
     },
     mutations: {
         updateNotifications(state, { data, concat = false }) {
@@ -42,7 +41,7 @@ const Notifications = {
         reset(state) {
             state.notifications = [];
             state.notificationsPagination = null;
-        },
+        }
     },
     actions: {
         async FETCH_NOTIFICATIONS_COUNT(context) {
@@ -62,13 +61,15 @@ const Notifications = {
             if (!context.getters.SETED_USER_ID_FLAG) {
                 return;
             }
-            await socket.send(JSON.stringify({
-                action: 'sendPool',
-                data: {
-                    action: 'check_notifications_count',
-                    message: null
-                }
-            }));
+            await socket.send(
+                JSON.stringify({
+                    action: 'sendPool',
+                    data: {
+                        action: 'check_notifications_count',
+                        message: null
+                    }
+                })
+            );
         },
         async VIEWED_NOT_COUNT_NOTIFICATIONS({ getters }) {
             return await api.notifications.viewedNotCount(getters.THIS_USER.id);
@@ -82,7 +83,7 @@ const Notifications = {
         },
         ACTION_WEBSOCKET_check_notifications_count(context) {
             context.dispatch('FETCH_NOTIFICATIONS_COUNT');
-        },
+        }
     },
     getters: {
         NOTIFICATIONS(state) {
@@ -93,8 +94,8 @@ const Notifications = {
         },
         NOTIFICATIONS_PAGINATION(state) {
             return state.notificationsPagination;
-        },
+        }
     }
-}
+};
 
-export default Notifications
+export default Notifications;

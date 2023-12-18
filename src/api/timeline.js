@@ -1,6 +1,6 @@
-import axios from "axios";
-import ErrorHandle from "./errors";
-import SuccessHandler from "./success";
+import axios from 'axios';
+import ErrorHandle from './errors';
+import SuccessHandler from './success';
 
 export default {
     async getTimeline(consultant_id, request_id) {
@@ -8,10 +8,10 @@ export default {
         let data = false;
         await axios
             .get(url)
-            .then((Response) => {
+            .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
     },
     async getTimelineComments(timeline_id) {
@@ -19,10 +19,10 @@ export default {
         let data = false;
         await axios
             .get(url)
-            .then((Response) => {
+            .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
     },
     async updateTimelineStep(newData) {
@@ -30,10 +30,10 @@ export default {
         let data = false;
         await axios
             .patch(url, newData)
-            .then((Response) => {
+            .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
     },
     async sendObjects(messageData) {
@@ -41,10 +41,10 @@ export default {
         let data = false;
         await axios
             .post(url, messageData)
-            .then((Response) => {
+            .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
     },
     async addActionComments(comments) {
@@ -52,10 +52,10 @@ export default {
         let data = false;
         await axios
             .post(url, comments)
-            .then((Response) => {
+            .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch((e) => ErrorHandle.setError(e));
+            .catch(e => ErrorHandle.setError(e));
         return data;
-    },
-}
+    }
+};
