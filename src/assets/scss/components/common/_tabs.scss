@@ -1,0 +1,71 @@
+@use '../../utils/variables';
+@use '../../utils/mixins';
+
+.tabs-component {
+    &-tabs {
+        display: flex;
+        column-gap: 20px;
+    }
+
+    &-tab {
+        &-a {
+            display: inline-block;
+            position: relative;
+            text-decoration: none;
+            padding: 10px 15px 5px;
+            text-transform: capitalize;
+            color: variables.$color_grey;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.3s ease-in-out;
+
+            &:hover {
+                background-color: rgba(0, 183, 74, .3);
+
+                &::before {
+                    width: 100%;
+                }
+            }
+
+            &::before {
+                background-color: darken($color: variables.$color_success, $amount: 12);
+                display: block;
+                position: absolute;
+                content: "";
+                height: 3px;
+                width: 0;
+                transition: width 0.5s ease-in-out, left 0.5s ease-in-out;
+                left: 0;
+                bottom: 0;
+            }
+
+            &.is-active {
+                color: darken($color: variables.$color_success, $amount: 12);
+                font-weight: 700;
+
+                &::before {
+                    width: 100%;
+                }
+            }
+
+            @include mixins.media("max", "md") {
+                display: block;
+                text-align: center;
+            }
+        }
+
+        &.invalid {
+            border: unset !important;
+            a {
+                &.is-active::before {
+                    background-color: variables.$color_danger !important;
+                }
+                color: variables.$color_danger;
+            }
+        }
+    }
+
+    &-panels {
+        padding: 20px 20px;
+    }
+}

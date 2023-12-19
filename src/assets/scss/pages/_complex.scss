@@ -145,7 +145,7 @@
     }
 
     .tabs-component-panels {
-        padding: 10px;
+        padding: 10px 0;
     }
 
     .tabs-component-tab-a::before {
@@ -258,47 +258,6 @@
         }
     }
 
-    &-equipment {
-        &-label {
-            margin-bottom: 5px;
-        }
-
-        &-list {
-            display: flex;
-            flex-wrap: wrap;
-            column-gap: 10px;
-        }
-
-        &-item {
-            background-color: inherit;
-            border: 1px solid variables.$color_grey;
-            border-radius: 5px;
-            padding: 2px 7px;
-            margin-bottom: 5px;
-        }
-
-        &-item-button {
-            margin-bottom: 5px;
-        }
-
-        &-text {
-            font-size: 14px;
-        }
-
-        &-button {
-            font-size: 14px;
-            background-color: white;
-            border: 1px solid variables.$color_grey;
-            border-radius: 5px;
-            padding: 4px 7px;
-            cursor: pointer;
-
-            &:hover {
-                opacity: 0.7;
-            }
-        }
-    }
-
     &-floors {
         padding: 10px 20px;
         background-color: $color_left-aside;
@@ -395,7 +354,6 @@
     }
 
     &__tab-list {
-        padding-left: 10px;
         position: static;
         background-color: inherit;
         display: flex;
@@ -605,6 +563,7 @@
         border-bottom: $border;
         border-left: $border;
         border-right: $border;
+        gap: 0;
     }
 
     .tabs-component-panels {

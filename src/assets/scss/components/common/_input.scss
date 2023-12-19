@@ -1,6 +1,10 @@
 .form {
     position: relative;
 
+    label {
+        position: relative;
+    }
+
     &__row {
         display: flex;
         gap: 5px;
@@ -27,6 +31,17 @@
         &:focus, &:active {
             border-color: #186a8d;
         }
+
+        &--unit {
+            padding-right: 40px;
+        }
+    }
+
+    &__unit {
+        position: absolute;
+        top: calc(100% - 40px + 8px);
+        right: 15px;
+        color: #91939b;
     }
 
     &__textarea {

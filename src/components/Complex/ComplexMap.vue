@@ -5,24 +5,32 @@
                 {{ ucFirst(location.regionRecord.title) }}
             </div>
             <div v-if="location.districtTypeRecord" class="ComplexMap-description-item">
-                {{ ucFirst(location.districtTypeRecord.title) }} {{ ucFirst(location.districtRecord.title) }}
+                {{ ucFirst(location.districtTypeRecord.title) }}
+                {{ ucFirst(location.districtRecord.title) }}
             </div>
             <div v-if="location.directionRecord" class="ComplexMap-description-item">
                 {{ ucFirst(location.directionRecord.title) }}
             </div>
             <div v-if="location.townRecord" class="ComplexMap-description-item">
-                {{ ucFirst(location.townRecord.townTypeRecord.title) }} {{ ucFirst(location.townRecord.title) }}
+                {{ ucFirst(location.townRecord.townTypeRecord.title) }}
+                {{ ucFirst(location.townRecord.title) }}
             </div>
             <div v-if="location.highwayRecord" class="ComplexMap-description-item">
                 {{ ucFirst(location.highwayRecord.title) }} шоссе
             </div>
-            <div v-if="location.metroRecord" class="ComplexMap-description-item" :title="location.metroRecord.title">
+            <div
+                v-if="location.metroRecord"
+                class="ComplexMap-description-item"
+                :title="location.metroRecord.title"
+            >
                 <div>
                     <img :src="require(`@/assets/image/metro.png`)" alt="метро" />
                 </div>
                 <span>{{ ucFirst(location.metroRecord.title, true) }}</span>
             </div>
-            <div v-if="location.fromMkad" class="ComplexMap-description-item">{{ location.fromMkad }} км от МКАД</div>
+            <div v-if="location.fromMkad" class="ComplexMap-description-item">
+                {{ location.fromMkad }} км от МКАД
+            </div>
             <div class="ComplexMap-description-actions">
                 <button class="ComplexMap-description-actions-item" title="Add new">
                     <i class="fas fa-plus-circle" />
@@ -40,17 +48,26 @@
             :styles="map.styles"
             :detailed-controls="map.detailedControls"
             :behaviors="map.behaviors"
-            :coords="complexCoords"
-        />
+            :controls="map.controls"
+            :coords="[location.latitude, location.longitude]"
+            :zoom="12"
+        >
+            <YandexMapMarker
+                ref="marker"
+                :marker-id="location.id"
+                :coords="[location.latitude, location.longitude]"
+            />
+        </YandexMapView>
     </div>
 </template>
 
 <script>
 import YandexMapView from '@/components/common/YandexMap/YandexMapView.vue';
+import YandexMapMarker from '@/components/common/YandexMap/YandexMapMarker.vue';
 
 export default {
     name: 'ComplexMap',
-    components: { YandexMapView },
+    components: { YandexMapMarker, YandexMapView },
     props: {
         location: {
             type: Object,
@@ -62,8 +79,21 @@ export default {
             ucFirst: this.$formatter.text().ucFirst,
             map: {
                 settings: {
+                    apiKey: '59572809-066b-46d5-9e5d-269a65751b84',
+                    lang: 'ru_RU',
+                    coordorder: 'latlong',
+                    enterprise: false,
+                    version: '2.1',
                     height: '70px'
                 },
+                controls: [
+                    'geolocationControl',
+                    'searchControl',
+                    'trafficControl',
+                    'typeSelector',
+                    'zoomControl',
+                    'rulerControl'
+                ],
                 styles: {
                     height: '75px',
                     width: '100%'
@@ -125,7 +155,9 @@ export default {
     computed: {
         complexCoords() {
             const { latitude, longitude } = this.location;
-            return latitude && longitude ? [latitude, longitude] : [55.75554289958026, 37.619346417968764];
+            return latitude && longitude
+                ? [latitude, longitude]
+                : [55.75554289958026, 37.619346417968764];
         }
     },
     methods: {

@@ -1,6 +1,6 @@
 <template>
     <div class="form__control">
-        <label for="">
+        <label>
             <span v-if="label" class="form__label">{{ label }}</span>
             <input
                 ref="input"
@@ -9,7 +9,7 @@
                 @blur="onBlur"
                 @keypress.enter.prevent
                 class="form__input"
-                :class="inputClasses"
+                :class="[inputClasses, { 'form__input--unit': unit }]"
                 :type="type"
                 :placeholder="placeholder"
                 :disabled="disabled"
@@ -17,11 +17,16 @@
                 :min="min"
                 :max="max"
             />
+            <span v-if="unit" class="form__unit">{{ unit }}</span>
         </label>
         <div v-if="searchable" class="searchable">
             <div v-show="searchableVisible" class="searchable-container">
                 <ul>
-                    <li v-for="(item, index) in localeOptions" :key="index + 'fuck'" @click="selectItem(item)">
+                    <li
+                        v-for="(item, index) in localeOptions"
+                        :key="index + 'fuck'"
+                        @click="selectItem(item)"
+                    >
                         {{ item }}
                     </li>
                 </ul>
@@ -82,6 +87,10 @@ export default {
         },
         max: {
             type: [String, Number]
+        },
+        unit: {
+            type: String,
+            default: null
         }
     },
     data() {

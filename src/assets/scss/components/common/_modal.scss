@@ -57,7 +57,7 @@
         padding: 15px 20px;
         font-weight: normal;
         max-height: 90vh;
-        overflow-y: auto;
+        overflow: hidden auto;
     }
 
     &__close {
