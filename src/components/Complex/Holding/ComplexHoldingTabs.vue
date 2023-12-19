@@ -62,7 +62,10 @@
                             </with-unit-type>
                         </PropertyListItem>
                         <PropertyListItem name="Класс объекта">
-                            <p v-if="object.object_class !== null" class="ObjectHoldingsTabs-content-property">
+                            <p
+                                v-if="object.object_class !== null"
+                                class="ObjectHoldingsTabs-content-property"
+                            >
                                 {{ object.object_class_text }}
                             </p>
                         </PropertyListItem>
@@ -107,12 +110,18 @@
                             </p>
                         </PropertyListItem>
                         <PropertyListItem name="Правовой статус строения">
-                            <p v-if="object.own_type !== null" class="ObjectHoldingsTabs-content-property">
+                            <p
+                                v-if="object.own_type !== null"
+                                class="ObjectHoldingsTabs-content-property"
+                            >
                                 {{ ownTypes[object.own_type] }}
                             </p>
                         </PropertyListItem>
                         <PropertyListItem name="Ограничения">
-                            <p v-if="object.land_use_restrictions !== null" class="ObjectHoldingsTabs-content-property">
+                            <p
+                                v-if="object.land_use_restrictions !== null"
+                                class="ObjectHoldingsTabs-content-property"
+                            >
                                 {{ object.land_use_restrictions }}
                             </p>
                         </PropertyListItem>
@@ -129,27 +138,42 @@
                             />
                         </PropertyListItem>
                         <PropertyListItem name="Кадастровый № участка">
-                            <p v-if="object.cadastral_number_land !== null" class="ObjectHoldingsTabs-content-property">
+                            <p
+                                v-if="object.cadastral_number_land !== null"
+                                class="ObjectHoldingsTabs-content-property"
+                            >
                                 {{ object.cadastral_number_land }}
                             </p>
                         </PropertyListItem>
                         <PropertyListItem name="Правовой статус зем. уч.">
-                            <p v-if="object.own_type_land !== null" class="ObjectHoldingsTabs-content-property">
+                            <p
+                                v-if="object.own_type_land !== null"
+                                class="ObjectHoldingsTabs-content-property"
+                            >
                                 {{ ownTypesLand[object.own_type_land] }}
                             </p>
                         </PropertyListItem>
                         <PropertyListItem name="Категория земли">
-                            <p v-if="object.land_category !== null" class="ObjectHoldingsTabs-content-property">
+                            <p
+                                v-if="object.land_category !== null"
+                                class="ObjectHoldingsTabs-content-property"
+                            >
                                 {{ landCategoryTypes[object.land_category] }}
                             </p>
                         </PropertyListItem>
                         <PropertyListItem name="Рельеф участка">
-                            <p v-if="object.object.landscape_type !== null" class="ObjectHoldingsTabs-content-property">
+                            <p
+                                v-if="object.object.landscape_type !== null"
+                                class="ObjectHoldingsTabs-content-property"
+                            >
                                 {{ landscapeTypes[object.landscape_type] }}
                             </p>
                         </PropertyListItem>
                         <PropertyListItem name="Ограничения">
-                            <p v-if="object.land_use_restrictions !== null" class="ObjectHoldingsTabs-content-property">
+                            <p
+                                v-if="object.land_use_restrictions !== null"
+                                class="ObjectHoldingsTabs-content-property"
+                            >
                                 {{ object.land_use_restrictions }}
                             </p>
                         </PropertyListItem>
@@ -157,9 +181,9 @@
                 </div>
             </Tab>
             <Tab name="Сделки">
-                <!--                <div class="ObjectHoldingsTabs-content">-->
-                <!--                    <ObjectDeals :object="object"/>-->
-                <!--                </div>-->
+                <div class="ObjectHoldingsTabs-content">
+                    <ComplexDeals :object="object" :deals="object.commercialOffers" />
+                </div>
             </Tab>
             <Tab name="Карта сделок"></Tab>
             <Tab name="Планировки"></Tab>
@@ -178,11 +202,19 @@ import PropertyListItem from '@/components/common/Property/PropertyListItem.vue'
 import PropertyList from '@/components/common/Property/PropertyList.vue';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import ActionButton from '@/components/common/ActionButton.vue';
-import { facingTypes, landCategoryTypes, landscapeTypes, ownTypes, ownTypesLand } from '../../../const/types';
+import {
+    facingTypes,
+    landCategoryTypes,
+    landscapeTypes,
+    ownTypes,
+    ownTypesLand
+} from '@/const/types';
+import ComplexDeals from '@/components/Complex/Deal/ComplexDeals.vue';
 
 export default {
     name: 'ComplexHoldingTabs',
     components: {
+        ComplexDeals,
         ActionButton,
         WithUnitType,
         PropertyList,

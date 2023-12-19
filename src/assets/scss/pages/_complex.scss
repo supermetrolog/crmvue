@@ -400,28 +400,86 @@
     gap: 20px;
     overflow-y: auto;
     height: 100%;
-    //   max-height: 300px;
 }
 
-
-.ObjectHoldingsOwnerItem {
+.object-holding-contact {
     display: flex;
-    flex-direction: column;
-    font-size: 14px;
+    gap: 10px;
 
-    &-header {
-        font-weight: bold;
+    &__avatar {
+        background-color: #d0d9e0;
+        border-radius: 50%;
+        height: 40px;
+        width: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
     }
 
-    &-name {
+    &__description {
         font-size: 14px;
     }
 
-    &-links {
-        & > * {
-            text-decoration: underline;
-            color: variables.$color_default_link;
+    &__name {
+        font-weight: 500;
+    }
+
+    &__message {
+        font-size: 12px;
+        color: variables.$color_grey
+    }
+
+    &__message::before {
+        content: ', '
+    }
+
+    &__list {
+        display: flex;
+    }
+
+    &__item {
+        font-size: 12px;
+
+        &:not(&:last-child)::after {
+            content: ',';
+            margin-right: 3px;
         }
+    }
+}
+
+
+.object-holding-company {
+    &__title {
+        font-size: 13px;
+        font-weight: 500;
+        margin-bottom: 5px;
+    }
+
+    &__header {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__name {
+        color: #000;
+        width: max-content;
+    }
+
+    &__subtitle {
+        font-size: 14px;
+        font-weight: 500;
+        margin: 10px 0 5px;
+    }
+
+    &__list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    &__message {
+        font-size: 13px;
     }
 }
 
@@ -476,6 +534,7 @@
 
         display: flex;
         justify-content: space-between;
+        align-items: center;
 
         font-size: 14px;
         line-height: 53px;
