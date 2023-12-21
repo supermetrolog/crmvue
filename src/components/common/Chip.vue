@@ -7,6 +7,7 @@
 <script>
 export default {
     name: 'Chip',
+    emits: ['click'],
     props: {
         value: {
             type: [String, Number, Boolean],

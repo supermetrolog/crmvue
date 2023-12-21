@@ -19,6 +19,7 @@
 <script>
 export default {
     name: 'CheckboxChip',
+    emits: ['change', 'update:modelValue'],
     props: {
         modelValue: {
             type: [Array, Number, String, Boolean],

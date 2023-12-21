@@ -17,7 +17,12 @@
                 <div>
                     <ButtonLink
                         icon
-                        :to="$router.resolve({ name: isMap ? 'OffersMain' : 'OffersMap', query: $route.query }).href"
+                        :to="
+                            $router.resolve({
+                                name: isMap ? 'OffersMain' : 'OffersMap',
+                                query: $route.query
+                            }).href
+                        "
                     >
                         <i v-if="isMap" class="icon fa-solid fa-list-ul"></i>
                         <i v-else class="icon fa-solid fa-map-location-dot"></i>
@@ -32,7 +37,7 @@
         </div>
         <div class="col-12">
             <div class="offer-search__functions">
-                <Button @click.prevent="clickFavorites" icon warning small>
+                <Button @click="clickFavorites" icon warning small>
                     <i class="fa-solid fa-star"></i>
                     <span>Избранные</span>
                 </Button>

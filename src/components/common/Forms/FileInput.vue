@@ -3,11 +3,11 @@
         <div class="file-input_container">
             <div v-if="!reedOnly" class="row">
                 <div class="col-12">
-                    <label class="form-item-label" :class="{ required: required }">
-                        <p v-if="label">
+                    <label class="form__label" :class="{ required: required }">
+                        <span v-if="label">
                             {{ label }}
-                        </p>
-                        <div class="file-input_btn">
+                        </span>
+                        <div class="file-input_btn mt-1">
                             <button @click.prevent="clickOpenFile" class="primary btn-large">
                                 <slot></slot>
                             </button>
@@ -26,7 +26,9 @@
                 <div v-if="files.length" class="row no-gutters file-input_files existing">
                     <div v-for="(file, index) in files" :key="index" class="col-3 file ml-auto">
                         <div class="row no-gutters">
-                            <div class="col-12 file_image d-flex align-self-center justify-content-center">
+                            <div
+                                class="col-12 file_image d-flex align-self-center justify-content-center"
+                            >
                                 <a
                                     :href="file.src"
                                     target="_blank"
@@ -61,13 +63,19 @@
                 <div class="row no-gutters file-input_files existing">
                     <div class="col-12 file ml-auto">
                         <div class="row no-gutters">
-                            <div class="col-12 file_image single d-flex align-self-center justify-content-center">
+                            <div
+                                class="col-12 file_image single d-flex align-self-center justify-content-center"
+                            >
                                 <a
                                     :href="files"
                                     target="_blank"
                                     class="d-flex align-self-center justify-content-center"
                                 >
-                                    <img :src="$apiUrlHelper.getUploadedFileUrl(files)" alt="file" class="image" />
+                                    <img
+                                        :src="$apiUrlHelper.getUploadedFileUrl(files)"
+                                        alt="file"
+                                        class="image"
+                                    />
                                 </a>
                                 <div v-if="!reedOnly" class="delete-container">
                                     <i @click="deleteFile(index)" class="fas fa-times"></i>

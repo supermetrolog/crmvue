@@ -1,8 +1,23 @@
-.crane-form {
+.equipment-form {
     min-width: 550px;
     max-width: 900px;
 
     .form__textarea {
+        height: 120px;
+    }
+}
+
+.modal-form-company {
+    .modal__body {
+        max-width: 1000px;
+        min-width: 700px;
+    }
+
+    .form__textarea:nth-child(1) {
+        height: 70px;
+    }
+
+    .form__textarea:nth-child(2) {
         height: 120px;
     }
 }

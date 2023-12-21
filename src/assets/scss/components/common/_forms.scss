@@ -1,0 +1,306 @@
+@use '../../utils/variables';
+
+.form {
+    position: relative;
+
+    label {
+        position: relative;
+    }
+
+    &__row {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        flex-wrap: wrap;
+    }
+
+    &__delimiter {
+        font-weight: 500;
+    }
+
+    &__control {
+        &--disabled {
+            opacity: .6;
+        }
+    }
+
+    &__column {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+    }
+
+    &__block {
+        margin-bottom: 10px;
+        font-weight: 700;
+        color: darken($color: variables.$color_success, $amount: 12);
+        letter-spacing: 0.4px;
+
+        &:nth-child(n + 2) {
+            margin-top: 20px;
+        }
+    }
+
+    &__input {
+        background: #fff;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        padding: 0 15px;
+        min-height: 40px;
+        outline: none;
+        width: 100%;
+        margin-top: 3px;
+
+        &:not(:disabled):focus, &:not(:disabled):active {
+            border-color: #186a8d;
+        }
+
+        &--unit {
+            padding-right: 40px;
+        }
+
+        &--additional {
+            width: 30%;
+        }
+    }
+
+    &__unit {
+        position: absolute;
+        top: calc(100% - 40px + 8px);
+        right: 15px;
+        color: #91939b;
+    }
+
+    &__textarea {
+        margin-top: 3px;
+        background: #fff;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        padding: 5px 15px;
+        outline: none;
+        width: 100%;
+        resize: none;
+
+        &:focus, &:active {
+            border-color: #186a8d;
+        }
+    }
+
+    &__multiselect {
+        margin-top: 3px;
+    }
+
+    &__label {
+        font-weight: 500;
+
+        &--row {
+            display: flex;
+            gap: 5px;
+        }
+    }
+
+    &__subtitle {
+        font-weight: 500;
+    }
+
+    &__group {
+        height: min-content;
+        margin-bottom: 10px;
+
+        &--list {
+            gap: 5px;
+        }
+    }
+
+    &__close {
+        cursor: pointer;
+        font-size: 20px;
+        position: absolute;
+        right: -10px;
+        bottom: 30px;
+    }
+
+    &__stars {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    &__star {
+        cursor: pointer;
+        font-size: 30px;
+    }
+}
+
+.checkbox {
+    &__label {
+        font-size: 18px !important;
+    }
+}
+
+.checkbox-chip {
+    height: max-content;
+    background-color: #fff;
+
+    input {
+        display: none;
+    }
+
+    &__label {
+        padding: 5px 15px;
+        border: 1px solid #d1d5db;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all .5s ease;
+        min-height: 35px;
+        min-width: 35px;
+
+        &:hover {
+            background-color: rgba(16, 185, 129, .6);
+            color: #fff;
+        }
+
+        &.active {
+            background-color: #10b981;
+            border-color: #10b981;
+            color: #fff;
+        }
+    }
+}
+
+.form-company-deal {
+    .form__textarea {
+        height: 100px;
+    }
+}
+
+.radio-chip {
+    cursor: pointer;
+    padding: 5px 15px;
+    border: 1px solid #d1d5db;
+    border-radius: 15px;
+    transition: all .5s ease;
+    min-height: 35px;
+    min-width: 35px;
+    background-color: #fff;
+
+    &__input {
+        display: none;
+    }
+
+    &:hover {
+        background-color: rgba(16, 185, 129, .6);
+        color: #fff;
+    }
+
+    &.active {
+        background-color: #10b981;
+        border-color: #10b981;
+        color: #fff;
+    }
+}
+
+.multiselect {
+    max-height: unset !important;
+    box-shadow: none !important;
+
+    &.is-disabled {
+        background: #fff;
+    }
+
+    &-caret {
+        padding: 9px 15px;
+        margin-right: 0 !important;
+    }
+
+    &-dropdown {
+        max-height: 300px !important;
+    }
+
+    &-options {
+        max-height: 300px !important;
+    }
+
+    &-option {
+        &.is-selected {
+            background-color: #0075ff !important;
+        }
+
+        margin: 2.5px 0 2.5px 0;
+    }
+
+    &-search {
+        border: none !important;
+        min-height: 25px !important;
+        max-height: unset !important;
+
+        &:focus {
+            border: 1px solid variables.$color_grey !important;
+        }
+    }
+
+    &-tag {
+        overflow: hidden;
+        max-width: 100%;
+        line-break: anywhere;
+        white-space: break-spaces !important;
+
+        &-remove {
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+    }
+
+    &-tags {
+        max-width: 80% !important;
+        padding-left: 0 !important;
+        margin: .25rem auto .25rem .25rem;
+
+        input {
+            background-color: lighten(variables.$color_grey, 40);
+            border-radius: 5px;
+            // color: black;
+
+            margin: 0;
+            padding: 0;
+            border: none;
+            height: 25px;
+            max-height: unset !important;
+            max-width: 100% !important;
+            word-wrap: break-word;
+            min-height: 25px !important;
+
+            &:focus {
+                outline: none !important;
+            }
+        }
+    }
+
+    &-single-label {
+        width: calc(100% - 60px);
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+ }
+
+.invalid:not(:disabled):not(.is-disabled) {
+    border-bottom: 2px solid variables.$color_danger !important;
+    outline: unset !important;
+
+    &:focus {
+        border: 1px solid transparent !important;
+        border-bottom: 2px solid transparent !important;
+        outline: 1px solid variables.$color_danger !important;
+    }
+}
+
+.valid:not(:disabled):not(.is-disabled) {
+    border: 1px solid rgba(175, 175, 175, 0.733) !important;
+    border-bottom: 2px solid variables.$color_success !important;
+    outline: unset !important;
+}

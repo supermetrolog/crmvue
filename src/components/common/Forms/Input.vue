@@ -1,5 +1,5 @@
 <template>
-    <div class="form__control">
+    <div class="form__control" :class="{ 'form__control--disabled': disabled }">
         <label>
             <span v-if="label" class="form__label">{{ label }}</span>
             <input
@@ -10,6 +10,7 @@
                 @keypress.enter.prevent
                 class="form__input"
                 :class="[inputClasses, { 'form__input--unit': unit }]"
+                :style="paddingRightStyle"
                 :type="type"
                 :placeholder="placeholder"
                 :disabled="disabled"
@@ -17,7 +18,7 @@
                 :min="min"
                 :max="max"
             />
-            <span v-if="unit" class="form__unit">{{ unit }}</span>
+            <span v-if="unit" ref="unit" class="form__unit" v-html="unit"></span>
         </label>
         <div v-if="searchable" class="searchable">
             <div v-show="searchableVisible" class="searchable-container">
@@ -32,7 +33,7 @@
                 </ul>
             </div>
         </div>
-        <div v-if="v && v.$error" class="error-container">
+        <div v-if="v && v.$error && !disabled" class="error-container">
             <p>{{ v.$errors[0].$message }}</p>
         </div>
         <slot />
@@ -96,7 +97,8 @@ export default {
     data() {
         return {
             searchableVisible: false,
-            localeOptions: this.options
+            localeOptions: this.options,
+            paddingRightStyle: null
         };
     },
     watch: {
@@ -137,6 +139,11 @@ export default {
     mounted() {
         if (this.searchable) {
             document.addEventListener('click', this.close);
+        }
+
+        if (this.unit) {
+            let unitWidth = this.unit.replaceAll('/', '').replaceAll('<sup>', '').length * 10;
+            this.paddingRightStyle = `padding-right: ${unitWidth + 20}px`;
         }
     },
     beforeUnmount() {

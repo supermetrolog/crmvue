@@ -1,46 +1,58 @@
 <template>
-    <div class="form-item propogation-input phones">
-        <label class="form-item-label" :class="{ required: required }">
-            <p v-if="label">
-                {{ label }}
-            </p>
-            <div v-for="(item, index) in field" :key="index" class="item-container">
-                <i @click="deleteInput(index)" class="fas fa-minus delete"></i>
-
-                <i @click="addInput(item, index)" class="fas fa-plus add"></i>
-
-                <input
-                    :ref="'input' + index"
-                    v-model="field[index][name]"
-                    @input.stop.prevent="onInput"
-                    @keypress.enter.prevent
-                    type="text"
-                    :class="inputClasses"
-                    class="main-input mb-1"
-                    :placeholder="placeholder"
-                />
-                <input
-                    v-model="field[index][name2]"
-                    @input.stop.prevent="onInput"
-                    @keypress.enter.prevent
-                    type="text"
-                    :class="inputClasses"
-                    class="additional-input mb-1"
-                    :title="title2"
-                />
-            </div>
+    <div class="form__control propogation-input">
+        <span class="form__label">{{ label }}</span>
+        <label
+            v-for="(item, index) in field"
+            :key="index"
+            @mouseenter="isDeleteShow = true"
+            @mouseleave="isDeleteShow = false"
+            class="form__label form__label--row"
+            :class="{ required: required }"
+        >
+            <AnimationTransition>
+                <i
+                    v-show="isDeleteShow"
+                    @click="deleteInput(index)"
+                    class="form__close fas fa-xmark-circle"
+                ></i>
+            </AnimationTransition>
+            <input
+                v-model="field[index][firstName]"
+                @input.stop.prevent="onInput"
+                @keypress.enter.prevent
+                type="text"
+                class="form__input"
+                :class="inputClasses"
+                :placeholder="placeholder"
+            />
+            <input
+                v-model="field[index][secondName]"
+                @input.stop.prevent="onInput"
+                @keypress.enter.prevent
+                type="text"
+                :class="inputClasses"
+                class="form__input form__input--additional"
+                :title="title2"
+            />
         </label>
         <div v-if="v && v.$error" class="error-container">
             <p>{{ v.$errors[0].$message }}</p>
         </div>
+        <Button @click="addInput" prevent icon small success class="mt-1">
+            <i class="fas fa-plus"></i>
+            {{ addText }}
+        </Button>
     </div>
 </template>
 
 <script>
 import Mixin from './mixins.js';
+import Button from '@/components/common/Button.vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
 
 export default {
     name: 'PropogationDoubleInput',
+    components: { AnimationTransition, Button },
     mixins: [Mixin],
     props: {
         modelValue: {
@@ -65,12 +77,12 @@ export default {
         placeholder: {
             type: String
         },
-        name: {
+        firstName: {
             type: String,
             required: true,
             default: 'phone'
         },
-        name2: {
+        secondName: {
             type: String,
             required: true,
             default: 'exten'
@@ -78,11 +90,16 @@ export default {
         title2: {
             type: String,
             default: 'Добавочный номер'
+        },
+        addText: {
+            type: String,
+            default: 'Добавить поле'
         }
     },
     data() {
         return {
-            field: null
+            field: null,
+            isDeleteShow: false
         };
     },
     watch: {
@@ -97,31 +114,39 @@ export default {
             let data = {};
 
             this.field.map(item => {
-                if (item[this.name].length) {
-                    data = { ...item, [this.name]: item[this.name], [this.name2]: null };
-                    if (item[this.name2] !== null && item[this.name2].length) {
-                        data[this.name2] = item[this.name2];
+                if (item[this.firstName].length) {
+                    data = {
+                        ...item,
+                        [this.firstName]: item[this.firstName],
+                        [this.secondName]: null
+                    };
+                    if (item[this.secondName] !== null && item[this.secondName].length) {
+                        data[this.secondName] = item[this.secondName];
                     }
                     array.push(data);
                 }
             });
-            if (this.field.length == 1) {
+
+            if (this.field.length === 1) {
                 this.field = array;
             }
 
             this.$emit('update:modelValue', array);
         },
         deleteInput(index) {
+            if (this.field.length === 1) return;
             this.field = this.field.filter((_, idx) => idx != index);
             this.$emit('update:modelValue', this.field);
         },
-        addInput(item, index) {
-            if (item && item[this.name].length && typeof this.field[index + 1] == 'undefined') {
-                this.field.push({ [this.name]: '', [this.name2]: null });
+        addInput() {
+            const countEmptyInputs = this.field.filter(
+                element => element[this.firstName].length === 0
+            ).length;
+
+            if (!countEmptyInputs) {
+                this.field.push({ [this.firstName]: '', [this.secondName]: null });
                 this.$nextTick(() => {
-                    setTimeout(() => {
-                        this.$refs['input' + (index + 1)][0].focus();
-                    }, 500);
+                    this.$refs['input-' + (this.field.length - 1)][0].focus();
                 });
             }
         },
@@ -133,7 +158,7 @@ export default {
             }
         },
         defaultField() {
-            return [{ [this.name]: '', [this.name2]: null }];
+            return [{ [this.firstName]: '', [this.secondName]: null }];
         }
     },
     mounted() {
