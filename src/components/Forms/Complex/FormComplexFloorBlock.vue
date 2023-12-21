@@ -1,6 +1,10 @@
 <template>
     <div class="create-floor-block-form">
-        <Modal @close="$emit('close')" :title="false ? 'Редактирование блока' : 'Создание блока'" classes="autosize">
+        <Modal
+            @close="$emit('close')"
+            :title="false ? 'Редактирование блока' : 'Создание блока'"
+            classes="autosize"
+        >
             <Loader v-if="loader" class="center" />
             <Form @submit="onSubmit" class="center autosize">
                 <Tabs
@@ -450,7 +454,11 @@
                             />
                         </FormGroup>
                         <FormGroup class="mb-1">
-                            <Textarea v-model="form.description" label="Описание" class="col-12 px-0" />
+                            <Textarea
+                                v-model="form.description"
+                                label="Описание"
+                                class="col-12 px-0"
+                            />
                         </FormGroup>
                     </Tab>
                     <Tab name="Фотографии">
@@ -498,7 +506,7 @@ import {
     objectPurposes,
     rackTypes,
     ventilationTypes
-} from '@/const/constTypes';
+} from '@/const/types';
 import { helpers, minValue, required } from '@vuelidate/validators';
 import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';

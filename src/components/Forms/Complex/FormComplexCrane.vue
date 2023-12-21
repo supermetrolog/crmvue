@@ -1,7 +1,7 @@
 <template>
     <Modal @close="$emit('close')" :title="crane ? 'Редактирование крана' : 'Создание крана'">
         <Loader v-if="loader" class="center" />
-        <Form @submit="onSubmit" class="crane-form">
+        <Form @submit="onSubmit" class="equipment-form">
             <Tabs :options="{ useUrlFragment: false, defaultTabHash: 'main' }">
                 <Tab id="craneCharacteristics" name="Характеpистики">
                     <div class="row">

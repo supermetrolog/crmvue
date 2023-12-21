@@ -1,582 +1,632 @@
 <template>
-    <div class="plot-create-form">
-        <Modal
-            @close="$emit('close')"
-            :title="false ? 'Редактирование участка' : 'Создание участка'"
-            classes="autosize"
-        >
-            <Loader v-if="loader" class="center" />
-            <Form @submit="onSubmit" class="center autosize">
-                <Tabs
-                    :options="{ useUrlFragment: false, defaultTabHash: 'main' }"
-                    nav-class="plot-create-form__tab-list"
-                    nav-item-link-class="plot-create-form__tab-link"
-                >
-                    <Tab id="main" name="Основное">
-                        <FormGroup class="mb-1 plot-create-form__form-group plot-create-form__form-group_long">
-                            <MultiSelect
-                                v-model="form.address"
-                                @change="onChangeAddress"
-                                extra-classes="long-text"
-                                label="Адрес строения"
-                                required
-                                class="col-6 pr-1"
-                                :filterResults="false"
-                                :min-chars="1"
-                                :resolve-on-load="true"
-                                :delay="500"
-                                :searchable="true"
-                                :v="v$.form.address"
-                                :options="
-                                    async query => {
-                                        return await searchAddress(query);
-                                    }
-                                "
-                            />
-                        </FormGroup>
-                        <FormGroup class="mb-1 plot-create-form__form-group plot-create-form__form-group_long">
-                            <MultiSelect
-                                v-model="form.company_id"
-                                @change="onChangeCompany"
-                                extra-classes="long-text"
-                                label="Компания"
-                                required
-                                class="col-6 pr-1"
-                                :v="v$.form.company_id"
-                                :filterResults="false"
-                                :min-chars="1"
-                                :resolve-on-load="true"
-                                :delay="500"
-                                :searchable="true"
-                                :options="
-                                    async query => {
-                                        return await searchCompany(query);
-                                    }
-                                "
-                            />
-                        </FormGroup>
-                        <FormGroup class="mb-1">
-                            <CheckboxIcons
-                                v-model="form.purposes"
-                                @extraSelect="selectObjectType"
-                                label="Тип объекта"
-                                extra-label="склад"
-                                :no-all-select="true"
-                                :extra-value="3"
-                                :extra-options="form.object_type"
-                                class="col-12 pr-2 mx-auto"
-                                :options="[]"
-                            />
-                        </FormGroup>
-                        <FormGroup class="mb-1">
-                            <Checkbox v-model="form.test_only" label="Тестовый лот" class="col large text-center" />
-                        </FormGroup>
-                    </Tab>
-                    <Tab name="Характериcтики">
-                        <FormGroup class="mb-1">
-                            <Input
-                                v-model="form.area_field_full"
-                                :v="v$.form.area_field_full"
-                                label="S - участка общая"
-                                class="col-4 pr-1"
-                                type="number"
-                                required
-                            />
-                            <Input v-model="form.land_length" label="Длина участка" class="col-4 px-1" type="number" />
-                            <Input v-model="form.land_width" label="Ширина участка" class="col-4 pl-1" type="number" />
-                        </FormGroup>
-                        <FormGroup class="mb-1">
-                            <MultiSelect
-                                v-model="form.own_type_land"
-                                :v="v$.form.own_type_land"
-                                required
-                                title="Право на участок"
-                                label="Право на участок"
-                                class="col-4 pr-1"
-                                :options="ownTypeLandOptions"
-                            />
-                            <MultiSelect
-                                v-model="form.land_category"
-                                title="Категория земли"
-                                label="Категория земли"
-                                class="col-4 px-1"
-                                :options="landCategoryOptions"
-                            />
-                            <MultiSelect
-                                v-model="form.landscape_type"
-                                :v="v$.form.landscape_type"
-                                title="Рельеф участка"
-                                label="Рельеф участка"
-                                class="col-4 pl-1"
-                                required
-                                :options="landscapeTypeOptions"
-                            />
-                        </FormGroup>
-                        <FormGroup class="mb-1">
-                            <Input
-                                v-model="form.cadastral_number_land"
-                                :v="v$.form.cadastral_number_land"
-                                label="Кадастровый № строения"
-                                class="col-4 pr-1"
-                                required
-                            />
-                            <Radio
-                                v-model="form.land_use_restrictions"
-                                label="Ограничения"
-                                class="col-4 px-1"
-                                :options="[
-                                    [0, 'нет'],
-                                    [1, 'да']
-                                ]"
-                            />
-                            <Radio
-                                v-model="form.first_line"
-                                label="Первая линия"
-                                class="col-4 pl-1"
-                                required
-                                :options="[
-                                    [0, 'нет'],
-                                    [1, 'да']
-                                ]"
-                            />
-                        </FormGroup>
-                        <FormGroup class="mb-1">
-                            <Textarea v-model="form.field_allow_usage" label="В.Р.И" class="col-12 px-0" />
-                        </FormGroup>
-                        <p class="plot-create-form__label">Коммуникации</p>
-                        <FormGroup class="mb-1">
-                            <Radio
-                                v-model="form.power"
-                                label="Электроснаб."
-                                class="col-3 pr-1"
-                                :options="[
-                                    [0, 'нет'],
-                                    [1, 'да']
-                                ]"
-                                required
-                            />
-                            <Input
-                                v-if="form.power"
-                                v-model="form.power_value"
-                                label="Значение"
-                                :v="v$.form.power_value"
-                                class="col-4 px-1"
-                                type="number"
-                                required
-                            />
-                            <p v-if="form.power" class="col-1 plot-create-form__text pr-2">кВт</p>
-                            <Radio
-                                v-model="form.heating_central"
-                                label="Центр. отоплен."
-                                class="col-4 pl-3"
-                                :options="[
-                                    [0, 'нет'],
-                                    [1, 'да']
-                                ]"
-                                required
-                            />
-                        </FormGroup>
-                        <FormGroup class="mb-1">
-                            <Radio
-                                v-model="form.water"
-                                label="Водоснабжен."
-                                class="col-3 pr-1"
-                                :options="[
-                                    [0, 'нет'],
-                                    [1, 'да']
-                                ]"
-                                required
-                            />
-                            <Input
-                                v-if="form.water"
-                                v-model="form.water_value"
-                                label="Значение"
-                                :v="v$.form.water_value"
-                                class="col-4 px-1"
-                                type="number"
-                                required
-                            />
-                            <p v-if="form.water" class="col-1 plot-create-form__text pr-2">м<sup>3</sup>/сут</p>
-                            <MultiSelect
-                                v-if="form.water"
-                                v-model="form.water_type"
-                                :v="v$.form.water_type"
-                                title="Тип"
-                                label="Тип"
-                                class="col-4 pl-3"
-                                required
-                                :options="waterTypeOptions"
-                            />
-                        </FormGroup>
-                        <FormGroup class="mb-1">
-                            <Radio
-                                v-model="form.sewage_central"
-                                label="Канализ. центр."
-                                class="col-3 pr-1"
-                                :options="[
-                                    [0, 'нет'],
-                                    [1, 'да']
-                                ]"
-                                required
-                            />
-                            <Input
-                                v-if="form.sewage_central"
-                                v-model="form.sewage_central_value"
-                                label="Значение"
-                                :v="v$.form.sewage_central_value"
-                                class="col-4 px-1"
-                                type="number"
-                                required
-                            />
-                            <p v-if="form.sewage_central" class="col-1 plot-create-form__text pr-2">
-                                м<sup>3</sup>/сут
-                            </p>
-                            <Radio
-                                v-model="form.sewage_rain"
-                                label="Канализ. ливн."
-                                class="col-4 pl-3"
-                                :options="[
-                                    [0, 'нет'],
-                                    [1, 'да']
-                                ]"
-                            />
-                        </FormGroup>
-                        <FormGroup class="mb-1">
-                            <Radio
-                                v-model="form.gas"
-                                label="Газ"
-                                class="col-3 pr-1"
-                                :options="[
-                                    [0, 'нет'],
-                                    [1, 'да']
-                                ]"
-                            />
-                            <Input
-                                v-if="form.gas"
-                                v-model="form.gas_value"
-                                :v="v$.form.gas_value"
-                                label="Значение"
-                                class="col-4 px-1"
-                                type="number"
-                                required
-                            />
-                            <p v-if="form.gas" class="col-1 plot-create-form__text pr-2">м<sup>3</sup>/час</p>
-                            <MultiSelect
-                                v-if="form.gas"
-                                v-model="form.gas_type"
-                                :v="v$.form.gas_type"
-                                title="Тип"
-                                label="Тип"
-                                class="col-4 pl-3"
-                                required
-                                :options="gasTypeOptions"
-                            />
-                        </FormGroup>
-                        <FormGroup class="mb-1">
-                            <Radio
-                                v-model="form.steam"
-                                label="Пар"
-                                class="col-3 pr-1"
-                                :options="[
-                                    [0, 'нет'],
-                                    [1, 'да']
-                                ]"
-                            />
-                            <Input
-                                v-if="form.steam"
-                                v-model="form.steam_value"
-                                :v="v$.form.steam_value"
-                                label="Значение"
-                                class="col-4 px-1"
-                                type="number"
-                                required
-                            />
-                            <p v-if="form.steam" class="col-1 plot-create-form__text pr-2">бар</p>
-                            <Radio
-                                v-model="form.phone_line"
-                                label="Телефония"
-                                class="col-4 pl-3"
-                                :options="[
-                                    [0, 'нет'],
-                                    [1, 'да']
-                                ]"
-                            />
-                        </FormGroup>
-                        <FormGroup class="mb-1">
-                            <Radio
-                                v-model="form.internet"
-                                label="Интернет"
-                                class="col-3 pr-1"
-                                :options="[
-                                    [0, 'нет'],
-                                    [1, 'да']
-                                ]"
-                            />
-                            <MultiSelect
-                                v-if="form.internet"
-                                v-model="form.internet_type"
-                                :v="v$.form.internet_type"
-                                title="Тип"
-                                label="Тип"
-                                class="col-4 px-1"
-                                required
-                                :options="internetTypeOptions"
-                            />
-                        </FormGroup>
-                        <p class="plot-create-form__label">Безопасность</p>
-                        <FormGroup class="mb-1">
-                            <Radio
-                                v-model="form.guard"
-                                label="Охрана объекта"
-                                class="col-3 pr-1"
-                                :options="[
-                                    [0, 'нет'],
-                                    [1, 'да']
-                                ]"
-                            />
-                            <MultiSelect
-                                v-if="form.guard"
-                                v-model="form.guard_type"
-                                title="Тип"
-                                label="Тип"
-                                class="col-4 pl-1 pr-3"
-                                required
-                                :options="guardTypeOptions"
-                            />
-                            <Radio
-                                v-model="form.video_control"
-                                label="Видеонаблюдение"
-                                class="col-3"
-                                :options="[
-                                    [0, 'нет'],
-                                    [1, 'да']
-                                ]"
-                            />
-                        </FormGroup>
-                        <FormGroup class="mb-1">
-                            <Radio
-                                v-model="form.access_control"
-                                label="Контроль доступа"
-                                class="col-3 pr-1"
-                                :options="[
-                                    [0, 'нет'],
-                                    [1, 'да']
-                                ]"
-                            />
-                            <Radio
-                                v-model="form.security_alert"
-                                label="Охран. сигнализ."
-                                class="col-3 pr-1"
-                                :options="[
-                                    [0, 'нет'],
-                                    [1, 'да']
-                                ]"
-                            />
-                            <Radio
-                                v-model="form.barrier"
-                                label="Шлагбаум"
-                                class="col-3 pr-1"
-                                :options="[
-                                    [0, 'нет'],
-                                    [1, 'да']
-                                ]"
-                            />
-                            <Radio
-                                v-model="form.fence_around_perimeter"
-                                label="Забор по перим."
-                                class="col-3 pr-1"
-                                :options="[
-                                    [0, 'нет'],
-                                    [1, 'да']
-                                ]"
-                            />
-                        </FormGroup>
-                        <p class="plot-create-form__label">Ж/Д на территории</p>
-                        <FormGroup class="mb-1">
-                            <Radio
-                                v-model="form.railway"
-                                label="Ж/Д ветка"
-                                class="col-3 pr-1"
-                                :options="[
-                                    [0, 'нет'],
-                                    [1, 'да']
-                                ]"
-                                required
-                            />
-                            <Input
-                                v-if="form.railway"
-                                v-model="form.railway_value"
-                                label="Значение"
-                                :v="v$.form.railway_value"
-                                class="col-4 px-1"
-                                type="number"
-                                required
-                            />
-                            <p v-if="form.railway" class="col-1 plot-create-form__text pr-2">м</p>
-                        </FormGroup>
-                        <p class="plot-create-form__label">Инфраструктура</p>
-                        <FormGroup class="mb-1">
-                            <MultiSelect
-                                v-model="form.entry_territory_type"
-                                title="Въезд на территорию"
-                                label="Въезд на террит."
-                                class="col-4 pr-1"
-                                :options="entryTerritoryTypeOptions"
-                            />
-                            <MultiSelect
-                                v-model="form.entrance_type"
-                                title="Плата за въезд"
-                                label="Плата за въезд"
-                                class="col-4 pl-1"
-                                :options="feeTypeOptions"
-                            />
-                        </FormGroup>
-                        <FormGroup class="mb-1">
-                            <Radio
-                                v-model="form.parking_car"
-                                label="P легковая"
-                                class="col-3 pr-1"
-                                :options="[
-                                    [0, 'нет'],
-                                    [1, 'да']
-                                ]"
-                            />
-                            <MultiSelect
-                                v-if="form.parking_car"
-                                v-model="form.parking_car_value"
-                                :v="v$.form.parking_car_value"
-                                title="Тип"
-                                label="Тип"
-                                class="col-4 px-1"
-                                required
-                                :options="feeTypeOptions"
-                            />
-                            <Radio
-                                v-model="form.canteen"
-                                label="Столовая/Кафе"
-                                class="col-3 pl-3"
-                                :options="[
-                                    [0, 'нет'],
-                                    [1, 'да']
-                                ]"
-                            />
-                        </FormGroup>
-                        <FormGroup class="mb-1">
-                            <Radio
-                                v-model="form.parking_lorry"
-                                label="P 3-10 тонн"
-                                class="col-3 pr-1"
-                                :options="[
-                                    [0, 'нет'],
-                                    [1, 'да']
-                                ]"
-                            />
-                            <MultiSelect
-                                v-if="form.parking_lorry"
-                                v-model="form.parking_lorry_value"
-                                :v="v$.form.parking_lorry_value"
-                                title="Тип"
-                                label="Тип"
-                                class="col-4 px-1"
-                                required
-                                :options="feeTypeOptions"
-                            />
-                            <Radio
-                                v-model="form.hostel"
-                                label="Общежитие"
-                                class="col-3 pl-3"
-                                :options="[
-                                    [0, 'нет'],
-                                    [1, 'да']
-                                ]"
-                            />
-                        </FormGroup>
-                        <FormGroup class="mb-1">
-                            <Radio
-                                v-model="form.parking_truck"
-                                label="P грузовая"
-                                class="col-3 pr-1"
-                                :options="[
-                                    [0, 'нет'],
-                                    [1, 'да']
-                                ]"
-                            />
-                            <MultiSelect
-                                v-if="form.parking_truck"
-                                v-model="form.parking_truck_value"
-                                :v="v$.form.parking_truck_value"
-                                title="Тип"
-                                label="Тип"
-                                class="col-4 px-1"
-                                required
-                                :options="feeTypeOptions"
-                            />
-                        </FormGroup>
-                    </Tab>
-                    <Tab name="Описание">
-                        <Textarea v-model="form.description" label="Описание" class="col-12 px-0" />
-                    </Tab>
-                    <Tab name="Фотографии">
-                        <FormGroup class="mb-1">
-                            <FileInput
-                                v-model:native="form.photosList"
-                                v-model:data="form.photos"
-                                label="Фотографии"
-                                class="col-12"
-                            >
-                                Выбрать файлы
-                            </FileInput>
-                        </FormGroup>
-                    </Tab>
-                    <Tab name="Документы">
-                        <FormGroup class="mb-1">
-                            <FileInput
-                                v-model:native="form.layoutsList"
-                                v-model:data="form.layouts"
-                                label="Планировки"
-                                class="col-12"
-                            >
-                                Выбрать файлы
-                            </FileInput>
-                        </FormGroup>
-                        <FormGroup class="mb-1">
-                            <FileInput
-                                v-model:native="form.panoramasList"
-                                v-model:data="form.panoramas"
-                                label="Панорамы"
-                                class="col-12"
-                            >
-                                Выбрать файлы
-                            </FileInput>
-                        </FormGroup>
-                        <FormGroup class="mb-1">
-                            <FileInput
-                                v-model:native="form.presentationsList"
-                                v-model:data="form.presentations"
-                                label="Презентации"
-                                class="col-12"
-                            >
-                                Выбрать файлы
-                            </FileInput>
-                        </FormGroup>
-                        <FormGroup class="mb-1">
-                            <FileInput
-                                v-model:native="form.ownerShipDocumentsList"
-                                v-model:data="form.ownerShipDocuments"
-                                label="Документы на собственность"
-                                class="col-12"
-                            >
-                                Выбрать файлы
-                            </FileInput>
-                        </FormGroup>
-                    </Tab>
-                </Tabs>
-                <FormGroup class="mt-1 mb-4">
-                    <Submit class="col-4 mx-auto"> Сохранить</Submit>
-                </FormGroup>
-            </Form>
-        </Modal>
-    </div>
+    <Modal @close="$emit('close')" :title="false ? 'Редактирование участка' : 'Создание участка'">
+        <template #header>
+            <CheckboxChip v-model="form.test_only" :value="form.test_only" text="Тестовый лот" />
+        </template>
+        <Loader v-if="loader" class="center" />
+        <Form @submit="onSubmit">
+            <Tabs :options="{ useUrlFragment: false, defaultTabHash: 'main' }">
+                <Tab id="main" name="Основное">
+                    <div class="row">
+                        <MultiSelect
+                            v-model="form.address"
+                            @change="onChangeAddress"
+                            extra-classes="long-text"
+                            label="Адрес строения"
+                            required
+                            class="col-6"
+                            :filterResults="false"
+                            :min-chars="1"
+                            :resolve-on-load="true"
+                            :delay="500"
+                            :searchable="true"
+                            :v="v$.form.address"
+                            :options="
+                                async query => {
+                                    return await searchAddress(query);
+                                }
+                            "
+                        />
+                        <MultiSelect
+                            v-model="form.company_id"
+                            @change="onChangeCompany"
+                            extra-classes="long-text"
+                            label="Компания"
+                            required
+                            class="col-6"
+                            :v="v$.form.company_id"
+                            :filterResults="false"
+                            :min-chars="1"
+                            :resolve-on-load="true"
+                            :delay="500"
+                            :searchable="true"
+                            :options="
+                                async query => {
+                                    return await searchCompany(query);
+                                }
+                            "
+                        />
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <span class="form__subtitle">Тип объекта</span>
+                            <div class="row mt-2">
+                                <CheckboxIcons
+                                    v-model="form.purposes"
+                                    @extraSelect="selectObjectType"
+                                    extra-label="склад"
+                                    :no-all-select="true"
+                                    :extra-value="1"
+                                    :extra-options="form.object_type"
+                                    class="col-md-4 col-12"
+                                    :options="objectTypeListWareHouse"
+                                />
+                                <CheckboxIcons
+                                    v-model="form.purposes"
+                                    @extraSelect="selectObjectType"
+                                    extra-label="производство"
+                                    :no-all-select="true"
+                                    :extra-value="2"
+                                    :extra-options="form.object_type"
+                                    class="col-md-4 col-12"
+                                    :options="objectTypeListProduction"
+                                />
+                                <CheckboxIcons
+                                    v-model="form.purposes"
+                                    @extraSelect="selectObjectType"
+                                    extra-label="участок"
+                                    :no-all-select="true"
+                                    :extra-value="3"
+                                    :extra-options="form.object_type"
+                                    class="col-md-4 col-12"
+                                    :options="objectTypeListPlot"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <Textarea v-model="form.description" label="Описание" class="col-12" />
+                    </div>
+                </Tab>
+                <Tab name="Характериcтики">
+                    <div class="row">
+                        <Input
+                            v-model="form.area_field_full"
+                            :v="v$.form.area_field_full"
+                            label="S - участка общая"
+                            class="col-4"
+                            type="number"
+                            unit="м<sup>2</sup>"
+                            required
+                        />
+                        <Input
+                            v-model="form.land_length"
+                            label="Длина участка"
+                            class="col-4"
+                            unit="м"
+                            type="number"
+                        />
+                        <Input
+                            v-model="form.land_width"
+                            label="Ширина участка"
+                            class="col-4"
+                            unit="м"
+                            type="number"
+                        />
+                    </div>
+                    <div class="row mt-2">
+                        <MultiSelect
+                            v-model="form.own_type_land"
+                            :v="v$.form.own_type_land"
+                            required
+                            title="Право на участок"
+                            label="Право на участок"
+                            class="col-4"
+                            :options="ownTypeLandOptions"
+                        />
+                        <MultiSelect
+                            v-model="form.land_category"
+                            title="Категория земли"
+                            label="Категория земли"
+                            class="col-4"
+                            :options="landCategoryOptions"
+                        />
+                        <MultiSelect
+                            v-model="form.landscape_type"
+                            :v="v$.form.landscape_type"
+                            title="Рельеф участка"
+                            label="Рельеф участка"
+                            class="col-4"
+                            required
+                            :options="landscapeTypeOptions"
+                        />
+                    </div>
+                    <div class="row mt-2">
+                        <Input
+                            v-model="form.cadastral_number_land"
+                            :v="v$.form.cadastral_number_land"
+                            label="Кадастровый № строения"
+                            class="col-4"
+                            required
+                        />
+                        <div class="col-3">
+                            <span class="form__subtitle">Ограничения</span>
+                            <div class="form__row mt-1">
+                                <RadioChip
+                                    v-model="form.land_use_restrictions"
+                                    label="Нет"
+                                    :value="0"
+                                />
+                                <RadioChip
+                                    v-model="form.land_use_restrictions"
+                                    label="Да"
+                                    :value="1"
+                                />
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <span class="form__subtitle">Первая линия</span>
+                            <div class="form__row mt-1">
+                                <RadioChip v-model="form.first_line" label="Нет" :value="0" />
+                                <RadioChip v-model="form.first_line" label="Да" :value="1" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <Textarea v-model="form.field_allow_usage" label="В.Р.И" class="col-12" />
+                    </div>
+                </Tab>
+                <Tab name="Коммуникации">
+                    <div class="row">
+                        <div class="col-4">
+                            <span class="form__subtitle">Центральное отопление</span>
+                            <div class="form__row mt-1">
+                                <RadioChip v-model="form.heating_central" label="Нет" :value="0" />
+                                <RadioChip v-model="form.heating_central" label="Да" :value="1" />
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <span class="form__subtitle">Электроснабжение</span>
+                            <div class="form__row mt-1">
+                                <RadioChip v-model="form.power" label="Нет" :value="0" />
+                                <RadioChip v-model="form.power" label="Да" :value="1" />
+                            </div>
+                        </div>
+                        <Input
+                            v-model="form.power_value"
+                            :disabled="!form.power"
+                            label="Значение"
+                            :v="v$.form.power_value"
+                            class="offset-1 col-4"
+                            type="number"
+                            unit="кВт"
+                            required
+                        />
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-4">
+                            <span class="form__subtitle">Водоснабжение</span>
+                            <div class="form__row mt-1">
+                                <RadioChip v-model="form.water" label="Нет" :value="0" />
+                                <RadioChip v-model="form.water" label="Да" :value="1" />
+                            </div>
+                        </div>
+                        <Input
+                            v-model="form.water_value"
+                            label="Значение"
+                            :v="v$.form.water_value"
+                            :disabled="!form.water"
+                            class="col-4"
+                            type="number"
+                            unit="м<sup>3</sup>/сут"
+                            required
+                        />
+                        <MultiSelect
+                            v-model="form.water_type"
+                            :v="v$.form.water_type"
+                            :disabled="!form.water"
+                            title="Тип"
+                            label="Тип"
+                            class="col-4"
+                            required
+                            :options="waterTypeOptions"
+                        />
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-4">
+                            <span class="form__subtitle">Канализация ливн.</span>
+                            <div class="form__row mt-1">
+                                <RadioChip v-model="form.sewage_rain" label="Нет" :value="0" />
+                                <RadioChip v-model="form.sewage_rain" label="Да" :value="1" />
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <span class="form__subtitle">Канализация центр.</span>
+                            <div class="form__row mt-1">
+                                <RadioChip v-model="form.sewage_central" label="Нет" :value="0" />
+                                <RadioChip v-model="form.sewage_central" label="Да" :value="1" />
+                            </div>
+                        </div>
+                        <Input
+                            v-model="form.sewage_central_value"
+                            :disabled="!form.sewage_central"
+                            label="Значение"
+                            :v="v$.form.sewage_central_value"
+                            class="col-4"
+                            type="number"
+                            unit="м<sup>3</sup>/сут"
+                            required
+                        />
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-4">
+                            <span class="form__subtitle">Газ</span>
+                            <div class="form__row mt-1">
+                                <RadioChip v-model="form.gas" label="Нет" :value="0" />
+                                <RadioChip v-model="form.gas" label="Да" :value="1" />
+                            </div>
+                        </div>
+                        <Input
+                            v-model="form.gas_value"
+                            label="Значение"
+                            :v="v$.form.water_value"
+                            :disabled="!form.gas"
+                            class="col-4"
+                            type="number"
+                            unit="м<sup>3</sup>/час"
+                            required
+                        />
+                        <MultiSelect
+                            v-model="form.gas_type"
+                            :disabled="!form.gas"
+                            :v="v$.form.gas_type"
+                            title="Тип"
+                            label="Тип"
+                            class="col-4"
+                            required
+                            :options="gasTypeOptions"
+                        />
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-4">
+                            <span class="form__subtitle">Телефония</span>
+                            <div class="form__row mt-1">
+                                <RadioChip v-model="form.phone_line" label="Нет" :value="0" />
+                                <RadioChip v-model="form.phone_line" label="Да" :value="1" />
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <span class="form__subtitle">Пар</span>
+                            <div class="form__row mt-1">
+                                <RadioChip v-model="form.steam" label="Нет" :value="0" />
+                                <RadioChip v-model="form.steam" label="Да" :value="1" />
+                            </div>
+                        </div>
+                        <Input
+                            v-model="form.steam_value"
+                            :disabled="!form.steam"
+                            label="Значение"
+                            :v="v$.form.steam_value"
+                            class="col-4"
+                            type="number"
+                            unit="бар"
+                            required
+                        />
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-4">
+                            <span class="form__subtitle">Интернет</span>
+                            <div class="form__row mt-1">
+                                <RadioChip v-model="form.internet" label="Нет" :value="0" />
+                                <RadioChip v-model="form.internet" label="Да" :value="1" />
+                            </div>
+                        </div>
+                        <MultiSelect
+                            v-model="form.internet_type"
+                            :disabled="!form.internet"
+                            :v="v$.form.internet_type"
+                            title="Тип"
+                            label="Тип"
+                            class="col-4"
+                            required
+                            :options="internetTypeOptions"
+                        />
+                    </div>
+                </Tab>
+                <Tab name="Безопасность/Инфраструктура">
+                    <p class="form__block">Железнодорожное сообщение</p>
+                    <div class="row">
+                        <div class="col-3">
+                            <span class="form__subtitle">Видеонаблюдение</span>
+                            <div class="form__row mt-1">
+                                <RadioChip
+                                    v-model="form.video_control"
+                                    label="Нет"
+                                    :value="0"
+                                    unselect
+                                />
+                                <RadioChip
+                                    v-model="form.video_control"
+                                    label="Да"
+                                    :value="1"
+                                    unselect
+                                />
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <span class="form__subtitle">Охрана объекта</span>
+                            <div class="form__row mt-1">
+                                <RadioChip v-model="form.guard" label="Нет" :value="0" unselect />
+                                <RadioChip v-model="form.guard" label="Да" :value="1" unselect />
+                            </div>
+                        </div>
+                        <MultiSelect
+                            v-model="form.guard_type"
+                            :disabled="!form.guard"
+                            title="Тип"
+                            label="Тип"
+                            class="col-4"
+                            required
+                            :options="guardTypeOptions"
+                        />
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-3">
+                            <span class="form__subtitle">Контроль доступа</span>
+                            <div class="form__row mt-1">
+                                <RadioChip
+                                    v-model="form.access_control"
+                                    label="Нет"
+                                    :value="0"
+                                    unselect
+                                />
+                                <RadioChip
+                                    v-model="form.access_control"
+                                    label="Да"
+                                    :value="1"
+                                    unselect
+                                />
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <span class="form__subtitle">Охран. сигнализ.</span>
+                            <div class="form__row mt-1">
+                                <RadioChip
+                                    v-model="form.security_alert"
+                                    label="Нет"
+                                    :value="0"
+                                    unselect
+                                />
+                                <RadioChip
+                                    v-model="form.security_alert"
+                                    label="Да"
+                                    :value="1"
+                                    unselect
+                                />
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <span class="form__subtitle">Шлагбаум</span>
+                            <div class="form__row mt-1">
+                                <RadioChip v-model="form.barrier" label="Нет" :value="0" unselect />
+                                <RadioChip v-model="form.barrier" label="Да" :value="1" unselect />
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <span class="form__subtitle">Забор по перим.</span>
+                            <div class="form__row mt-1">
+                                <RadioChip
+                                    v-model="form.fence_around_perimeter"
+                                    label="Нет"
+                                    :value="0"
+                                    unselect
+                                />
+                                <RadioChip
+                                    v-model="form.fence_around_perimeter"
+                                    label="Да"
+                                    :value="1"
+                                    unselect
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <p class="form__block">Железнодорожное сообщение</p>
+                    <div class="row mt-2">
+                        <div class="col-3">
+                            <span class="form__subtitle">Ж/Д ветка</span>
+                            <div class="form__row mt-1">
+                                <RadioChip v-model="form.railway" label="Нет" :value="0" unselect />
+                                <RadioChip v-model="form.railway" label="Да" :value="1" unselect />
+                            </div>
+                        </div>
+                        <Input
+                            v-model="form.railway_value"
+                            :disabled="!form.railway"
+                            label="Значение"
+                            :v="v$.form.railway_value"
+                            class="col-4"
+                            type="number"
+                            unit="м"
+                            required
+                        />
+                    </div>
+                    <p class="form__block">Инфраструктура</p>
+                    <div class="row mt-2">
+                        <div class="col-3">
+                            <span class="form__subtitle">P легковая</span>
+                            <div class="form__row mt-1">
+                                <RadioChip
+                                    v-model="form.parking_car"
+                                    label="Нет"
+                                    :value="0"
+                                    unselect
+                                />
+                                <RadioChip
+                                    v-model="form.parking_car"
+                                    label="Да"
+                                    :value="1"
+                                    unselect
+                                />
+                            </div>
+                        </div>
+                        <MultiSelect
+                            v-model="form.parking_car_value"
+                            :disabled="!form.parking_car"
+                            :v="v$.form.parking_car_value"
+                            title="Тип"
+                            label="Тип"
+                            class="col-3"
+                            required
+                            :options="feeTypeOptions"
+                        />
+                        <MultiSelect
+                            v-model="form.entry_territory_type"
+                            title="Въезд на территорию"
+                            label="Въезд на террит."
+                            class="col-4"
+                            :options="entryTerritoryTypeOptions"
+                        />
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-3">
+                            <span class="form__subtitle">P 3-10 тонн</span>
+                            <div class="form__row mt-1">
+                                <RadioChip
+                                    v-model="form.parking_lorry"
+                                    label="Нет"
+                                    :value="0"
+                                    unselect
+                                />
+                                <RadioChip
+                                    v-model="form.parking_lorry"
+                                    label="Да"
+                                    :value="1"
+                                    unselect
+                                />
+                            </div>
+                        </div>
+                        <MultiSelect
+                            v-model="form.parking_lorry_value"
+                            :disabled="!form.parking_lorry"
+                            :v="v$.form.parking_lorry_value"
+                            title="Тип"
+                            label="Тип"
+                            class="col-3"
+                            required
+                            :options="feeTypeOptions"
+                        />
+                        <MultiSelect
+                            v-model="form.entrance_type"
+                            title="Плата за въезд"
+                            label="Плата за въезд"
+                            class="col-4"
+                            :options="feeTypeOptions"
+                        />
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-3">
+                            <span class="form__subtitle">P грузовая</span>
+                            <div class="form__row mt-1">
+                                <RadioChip
+                                    v-model="form.parking_truck"
+                                    label="Нет"
+                                    :value="0"
+                                    unselect
+                                />
+                                <RadioChip
+                                    v-model="form.parking_truck"
+                                    label="Да"
+                                    :value="1"
+                                    unselect
+                                />
+                            </div>
+                        </div>
+                        <MultiSelect
+                            v-model="form.parking_truck_value"
+                            :disabled="!form.parking_truck"
+                            :v="v$.form.parking_truck_value"
+                            title="Тип"
+                            label="Тип"
+                            class="col-3"
+                            required
+                            :options="feeTypeOptions"
+                        />
+                        <div class="col-3">
+                            <span class="form__subtitle">Столовая/Кафе</span>
+                            <div class="form__row mt-1">
+                                <RadioChip v-model="form.canteen" label="Нет" :value="0" unselect />
+                                <RadioChip v-model="form.canteen" label="Да" :value="1" unselect />
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <span class="form__subtitle">Общежитие</span>
+                            <div class="form__row mt-1">
+                                <RadioChip v-model="form.hostel" label="Нет" :value="0" unselect />
+                                <RadioChip v-model="form.hostel" label="Да" :value="1" unselect />
+                            </div>
+                        </div>
+                    </div>
+                </Tab>
+                <Tab name="Фотографии">
+                    <div class="row">
+                        <FileInput
+                            v-model:native="form.photosList"
+                            v-model:data="form.photos"
+                            label="Фотографии"
+                            class="col-12"
+                        >
+                            Выбрать файлы
+                        </FileInput>
+                    </div>
+                </Tab>
+                <Tab name="Документы">
+                    <div class="row">
+                        <FileInput
+                            v-model:native="form.layoutsList"
+                            v-model:data="form.layouts"
+                            label="Планировки"
+                            class="col-12"
+                        >
+                            Выбрать файлы
+                        </FileInput>
+                    </div>
+                    <div class="row mt-2">
+                        <FileInput
+                            v-model:native="form.panoramasList"
+                            v-model:data="form.panoramas"
+                            label="Панорамы"
+                            class="col-12"
+                        >
+                            Выбрать файлы
+                        </FileInput>
+                    </div>
+                    <div class="row mt-2">
+                        <FileInput
+                            v-model:native="form.presentationsList"
+                            v-model:data="form.presentations"
+                            label="Презентации"
+                            class="col-12"
+                        >
+                            Выбрать файлы
+                        </FileInput>
+                    </div>
+                    <div class="row mt-2">
+                        <FileInput
+                            v-model:native="form.ownerShipDocumentsList"
+                            v-model:data="form.ownerShipDocuments"
+                            label="Документы на собственность"
+                            class="col-12"
+                        >
+                            Выбрать файлы
+                        </FileInput>
+                    </div>
+                </Tab>
+            </Tabs>
+            <div class="row">
+                <Button class="col-3 mx-auto" success>Сохранить</Button>
+            </div>
+        </Form>
+    </Modal>
 </template>
 
 <script>
@@ -597,10 +647,14 @@ import {
     ownTypesLand,
     waterTypes
 } from '@/const/types';
+import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
+import Button from '@/components/common/Button.vue';
+import { ObjectTypeList } from '@/const/const';
+import RadioChip from '@/components/common/Forms/RadioChip.vue';
 
 export default {
     name: 'FormComplexPlotCreate',
-    components: { Modal, Loader },
+    components: { RadioChip, Button, CheckboxChip, Modal, Loader },
     mixins: [ComplexFormMixin],
     data() {
         return {
@@ -666,7 +720,10 @@ export default {
                 ownerShipDocumentsList: [],
                 photos: [],
                 photosList: []
-            }
+            },
+            objectTypeListWareHouse: ObjectTypeList.get('warehouse'),
+            objectTypeListProduction: ObjectTypeList.get('production'),
+            objectTypeListPlot: ObjectTypeList.get('plot')
         };
     },
     validations() {

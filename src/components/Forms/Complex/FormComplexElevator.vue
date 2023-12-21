@@ -1,127 +1,140 @@
 <template>
-    <div class="add-elevator-form">
-        <Modal @close="$emit('close')" title="Создание подъемника" classes="autosize">
-            <Loader v-if="loader" class="center" />
-            <Form @submit="onSubmit" class="center autosize">
-                <Tabs
-                    :options="{ useUrlFragment: false, defaultTabHash: 'main' }"
-                    nav-class="add-elevator-form__tab-list"
-                    nav-item-link-class="add-elevator-form__tab-link"
-                >
-                    <Tab id="elevatorCharacteristics" name="Характеpистики">
-                        <FormGroup class="mb-1">
-                            <MultiSelect
-                                v-model="form.elevator_type"
-                                title="Тип устройства"
-                                label="Тип устройства"
-                                class="col-4 pr-1"
-                                :options="elevatorTypeOptions"
-                            />
-                            <MultiSelect
-                                v-model="form.elevator_location"
-                                :v="v$.form.elevator_location"
-                                title="Расположение"
-                                label="Расположение"
-                                class="col-4 px-1"
-                                :options="elevatorLocationOptions"
-                                required
-                            />
-                            <Input
-                                v-if="form"
-                                v-model="form.elevator_capacity"
-                                :v="v$.form.elevator_capacity"
-                                label="Грузоподъемность"
-                                class="col-3 px-1"
-                                type="number"
-                                required
-                            />
-                            <p class="add-elevator-form__text">т</p>
-                            <Input
-                                v-if="form"
-                                v-model="form.elevator_length"
-                                :v="v$.form.elevator_length"
-                                label="Габариты"
-                                class="col-2 pr-1"
-                                type="number"
-                            />
-                            <p class="add-elevator-form__text">x</p>
-                            <Input
-                                v-if="form"
-                                v-model="form.elevator_width"
-                                :v="v$.form.elevator_width"
-                                class="col-2 px-1 mt-4"
-                                type="number"
-                            />
-                            <Input
-                                v-if="form"
-                                v-model="form.elevator_volume"
-                                :v="v$.form.elevator_volume"
-                                class="col-3 px-1"
-                                label="Вместимость"
-                                type="number"
-                                required
-                            />
-                            <p class="add-crane-form__text">п.м.</p>
-                        </FormGroup>
-                        <FormGroup class="mb-1">
-                            <Radio
-                                v-model="form.elevator_supervision"
-                                label="Под надзором"
-                                class="col-2 pr-1"
-                                :options="[
-                                    [0, 'нет'],
-                                    [1, 'да']
-                                ]"
-                            />
-                            <Radio
-                                v-model="form.elevator_documents"
-                                label="Есть документы"
-                                class="col-2 px-1"
-                                :options="[
-                                    [0, 'нет'],
-                                    [1, 'да']
-                                ]"
-                            />
-                            <MultiSelect
-                                v-model="form.elevator_controls"
-                                title="Тип управления"
-                                label="Тип управления"
-                                :close-on-select="false"
-                                class="col-4 px-1"
-                                mode="multiple"
-                                :options="elevatorControlsOptions"
-                            />
-                            <MultiSelect
-                                v-model="form.elevator_condition"
-                                title="Состояние"
-                                label="Состояние"
-                                class="col-4 px-1"
-                                :options="elevatorConditionOptions"
-                            />
-                        </FormGroup>
-                        <FormGroup class="mb-1">
-                            <Textarea v-model="form.description" label="Описание" class="col-12 px-0" />
-                        </FormGroup>
-                    </Tab>
-                    <Tab id="elevatorPhoto" name="Фотографии">
-                        <FormGroup class="mb-1">
-                            <FileInput
-                                v-model:native="form.photosList"
-                                v-model:data="form.photos"
-                                label="Фотографии"
-                                class="col-12"
-                            >
-                                Выбрать файлы
-                            </FileInput>
-                        </FormGroup>
-                    </Tab>
-                </Tabs>
-                <FormGroup class="mt-1 mb-4">
-                    <Submit class="col-4 mx-auto"> Сохранить</Submit>
-                </FormGroup>
-            </Form>
-        </Modal>
-    </div>
+    <Modal @close="$emit('close')" :title="elevator ? 'Редактирование крана' : 'Создание крана'">
+        <Loader v-if="loader" class="center" />
+        <Form @submit="onSubmit" class="equipment-form">
+            <Tabs :options="{ useUrlFragment: false, defaultTabHash: 'main' }">
+                <Tab id="elevatorCharacteristics" name="Характеpистики">
+                    <div class="row">
+                        <MultiSelect
+                            v-model="form.elevator_type"
+                            title="Тип устройства"
+                            label="Тип устройства"
+                            class="col-4"
+                            :options="elevatorTypeOptions"
+                        />
+                        <MultiSelect
+                            v-model="form.elevator_location"
+                            :v="v$.form.elevator_location"
+                            title="Расположение"
+                            label="Расположение"
+                            class="col-4"
+                            :options="elevatorLocationOptions"
+                            required
+                        />
+                        <Input
+                            v-model="form.elevator_capacity"
+                            :v="v$.form.elevator_capacity"
+                            label="Грузоподъемность"
+                            class="col-4"
+                            type="number"
+                            unit="т"
+                            required
+                        />
+                        <div class="col-8 mt-2">
+                            <span class="form__subtitle">Габариты</span>
+                            <div class="form__row">
+                                <Input
+                                    v-model="form.elevator_length"
+                                    :v="v$.form.elevator_length"
+                                    type="number"
+                                />
+                                <span class="form__delimiter">x</span>
+                                <Input
+                                    v-model="form.elevator_width"
+                                    :v="v$.form.elevator_width"
+                                    type="number"
+                                />
+                            </div>
+                        </div>
+                        <div class="col-2 mt-2">
+                            <span class="form__subtitle">Под надзором</span>
+                            <div class="form__row mt-1">
+                                <RadioChip
+                                    v-model="form.elevator_supervision"
+                                    label="Нет"
+                                    :value="0"
+                                />
+                                <RadioChip
+                                    v-model="form.elevator_supervision"
+                                    label="Да"
+                                    :value="1"
+                                />
+                            </div>
+                        </div>
+                        <div class="col-2 mt-2">
+                            <span class="form__subtitle">Есть документы</span>
+                            <div class="form__row mt-1">
+                                <RadioChip
+                                    v-model="form.elevator_documents"
+                                    label="Нет"
+                                    :value="0"
+                                />
+                                <RadioChip
+                                    v-model="form.elevator_documents"
+                                    label="Да"
+                                    :value="1"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <Input
+                            v-model="form.elevator_volume"
+                            :v="v$.form.elevator_volume"
+                            class="col-4"
+                            label="Вместимость"
+                            type="number"
+                            unit="п.м."
+                            required
+                        />
+                        <MultiSelect
+                            v-model="form.elevator_condition"
+                            title="Состояние"
+                            label="Состояние"
+                            class="col-4"
+                            :options="elevatorConditionOptions"
+                        />
+                        <MultiSelect
+                            v-model="form.elevator_controls"
+                            title="Тип управления"
+                            label="Тип управления"
+                            :close-on-select="false"
+                            class="col-4"
+                            mode="multiple"
+                            :options="elevatorControlsOptions"
+                        />
+                        <div v-if="form.elevator_controls" class="offset-8 col-4 align-self-end">
+                            <div class="form__row mt-1">
+                                <Chip
+                                    v-for="(control, index) in form.elevator_controls"
+                                    :key="index"
+                                    @click="removeControl(index)"
+                                    :value="control"
+                                    :html="control"
+                                />
+                            </div>
+                        </div>
+                        <Textarea v-model="form.description" label="Описание" class="col-12 mt-2" />
+                    </div>
+                </Tab>
+                <Tab id="elevatorPhoto" name="Фотографии">
+                    <FormGroup class="mb-1">
+                        <FileInput
+                            v-model:native="form.photosList"
+                            v-model:data="form.photos"
+                            label="Фотографии"
+                            class="col-12"
+                        >
+                            Выбрать файлы
+                        </FileInput>
+                    </FormGroup>
+                </Tab>
+            </Tabs>
+            <div class="row">
+                <Button class="col-3 mx-auto" success>Сохранить</Button>
+            </div>
+        </Form>
+    </Modal>
 </template>
 
 <script>
@@ -135,11 +148,18 @@ import {
 import { helpers, minValue, required } from '@vuelidate/validators';
 import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
+import RadioChip from '@/components/common/Forms/RadioChip.vue';
+import Chip from '@/components/common/Chip.vue';
+import Button from '@/components/common/Button.vue';
 
 export default {
     name: 'FormComplexElevator',
-    components: { Modal, Loader },
+    components: { Button, Chip, RadioChip, Modal, Loader },
     mixins: [ComplexFormMixin],
+    emits: ['close'],
+    props: {
+        elevator: Object
+    },
     data() {
         return {
             form: {
@@ -195,6 +215,10 @@ export default {
             return Object.values(liftingDeviceConditionTypes);
         }
     },
-    methods: {}
+    methods: {
+        removeControl(index) {
+            this.form.elevator_controls.splice(index, 1);
+        }
+    }
 };
 </script>
