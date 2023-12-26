@@ -1,5 +1,4 @@
 import { notify } from '@kyvg/vue3-notification';
-import { apiUrlHelperObject } from '@/plugins';
 
 let notifyOptions = {
     group: 'app',
@@ -48,7 +47,7 @@ const Websocket = {
             if (context.getters.SOCKET || !context.getters.THIS_USER) {
                 return;
             }
-            let socket = new WebSocket(apiUrlHelperObject.wsUrl());
+            let socket = new WebSocket(process.env.VUE_APP_WS_URL);
             socket.onopen = function () {
                 return context.dispatch('EVENT_WEBSOCKET_ON_OPEN');
             };
