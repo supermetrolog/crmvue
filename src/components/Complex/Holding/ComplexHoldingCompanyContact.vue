@@ -49,10 +49,7 @@ export default {
             if (this.contact.middle_name && this.contact.first_name)
                 return `${this.contact.first_name[0]}${this.contact.middle_name[0]}`;
 
-            return this.contact.full_name
-                .split(' ')
-                .slice(0, 2)
-                .reduce((acc, element) => (acc += element[0] !== '(' ? element[0] : ''), '');
+            return this.$formatter.initials(this.contact.full_name);
         },
         position() {
             return PositionList.get('param')[this.contact.position].label;

@@ -46,14 +46,14 @@ export default {
             return;
         }
 
-        document.body.style.overflow = 'hidden';
+        document.body.classList.add('is-modal');
         document.addEventListener('keydown', this.escapeHandler);
     },
     unmounted() {
         if (this.alreadyHidden) return;
 
         document.removeEventListener('keydown', this.escapeHandler);
-        document.body.style.overflow = null;
+        document.body.classList.remove('is-modal');
     }
 };
 </script>

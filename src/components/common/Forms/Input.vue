@@ -141,6 +141,7 @@ export default {
             document.addEventListener('click', this.close);
         }
 
+        // Расчет ширины блока с единицой измерения
         if (this.unit) {
             let unitWidth = this.unit.replaceAll('/', '').replaceAll('<sup>', '').length * 10;
             this.paddingRightStyle = `padding-right: ${unitWidth + 20}px`;

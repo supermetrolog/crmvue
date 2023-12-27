@@ -304,3 +304,7 @@ export const dataMapper = (object, rules) => {
 
     return newObject;
 };
+
+export const reducer = {
+    sum: (element, field) => element.reduce((acc, el) => acc + el[field], 0)
+};

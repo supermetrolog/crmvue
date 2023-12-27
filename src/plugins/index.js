@@ -61,6 +61,12 @@ export const formatterObject = {
         };
 
         return new Date(value * 1000).toLocaleDateString('ru', options);
+    },
+    initials(full_name) {
+        return full_name
+            .split(' ')
+            .slice(0, 2)
+            .reduce((acc, element) => (acc += element[0] !== '(' ? element[0] : ''), '');
     }
 };
 

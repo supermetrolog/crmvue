@@ -334,7 +334,7 @@
                     </div>
                 </Tab>
                 <Tab name="Безопасность/Инфраструктура">
-                    <p class="form__block">Железнодорожное сообщение</p>
+                    <p class="form__block">Безопасность</p>
                     <div class="row">
                         <div class="col-3">
                             <span class="form__subtitle">Видеонаблюдение</span>
