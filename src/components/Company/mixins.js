@@ -11,18 +11,18 @@ import Progress from '@/components/common/Progress.vue';
 import Table from '@/components/common/Table/Table.vue';
 import Tr from '@/components/common/Table/Tr.vue';
 import Th from '@/components/common/Table/Th.vue';
-import { DealTypeList, DirectionList, DistrictList, PassiveWhyRequest, RegionList } from '@/const/const.js';
+import {
+    DealTypeList,
+    DirectionList,
+    DistrictList,
+    PassiveWhyRequest,
+    RegionList
+} from '@/const/const.js';
 import FileInput from '@/components/common/Forms/FileInput.vue';
 
 export const MixinCompanyView = {
     components: {
         Progress
-    },
-    data() {
-        return {
-            ratingOptions: RatingList.get('param'),
-            positionOptions: PositionList.get('param')
-        };
     },
     props: {
         companies: {
@@ -33,9 +33,13 @@ export const MixinCompanyView = {
             default: false
         }
     },
+    computed: {
+        ratingOptions: () => RatingList,
+        positionOptions: () => PositionList
+    },
     methods: {
         category(categoryValue) {
-            return CompanyCategories.get('param')[categoryValue][1];
+            return CompanyCategories[categoryValue].name;
         }
     }
 };
@@ -47,15 +51,6 @@ export const MixinRequestTable = {
         Progress,
         Tr
     },
-    data() {
-        return {
-            dealTypeList: DealTypeList.get('param'),
-            regionList: RegionList.get('param'),
-            directionList: DirectionList.get('param'),
-            districtList: DistrictList.get('param'),
-            passiveWhyOptions: PassiveWhyRequest.get('param')
-        };
-    },
     props: {
         requests: {
             type: Array
@@ -64,6 +59,13 @@ export const MixinRequestTable = {
             type: Boolean,
             default: false
         }
+    },
+    computed: {
+        dealTypeList: () => DealTypeList,
+        regionList: () => RegionList,
+        directionList: () => DirectionList,
+        districtList: () => DistrictList,
+        passiveWhyOptions: () => PassiveWhyRequest
     }
 };
 
@@ -74,11 +76,7 @@ export const MixinCompanyDetailInfo = {
     },
     data() {
         return {
-            requisistesVisible: false,
-            formOfOrganizationOptions: CompanyFormOrganization.get('param'),
-            activityGroupOptions: ActivityGroupList.get('param'),
-            activityProfileOptions: ActivityProfileList.get('param'),
-            passiveWhyOptions: PassiveWhy.get('param')
+            requisistesVisible: false
         };
     },
     props: {
@@ -87,6 +85,10 @@ export const MixinCompanyDetailInfo = {
         }
     },
     computed: {
+        formOfOrganizationOptions: () => CompanyFormOrganization,
+        activityGroupOptions: () => ActivityGroupList,
+        activityProfileOptions: () => ActivityProfileList,
+        passiveWhyOptions: () => PassiveWhy,
         status() {
             return this.company.active ? 'Актив' : 'Пассив';
         },
@@ -114,7 +116,7 @@ export const MixinCompanyDetailInfo = {
             return 'text-dark far fa-star';
         },
         category(categoryValue) {
-            return CompanyCategories.get('param')[categoryValue][1];
+            return CompanyCategories[categoryValue].name;
         },
         href(value) {
             if (value.includes('http://') || value.includes('https://')) {

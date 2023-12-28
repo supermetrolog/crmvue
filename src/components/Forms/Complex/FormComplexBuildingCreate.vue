@@ -307,10 +307,7 @@ export default {
                 ownerShipDocumentsList: [],
                 photos: [],
                 photosList: []
-            },
-            objectTypeListWareHouse: ObjectTypeList.get('warehouse'),
-            objectTypeListProduction: ObjectTypeList.get('production'),
-            objectTypeListPlot: ObjectTypeList.get('plot')
+            }
         };
     },
     validations() {
@@ -349,6 +346,9 @@ export default {
         };
     },
     computed: {
+        objectTypeListWareHouse: () => ObjectTypeList.warehouse,
+        objectTypeListProduction: () => ObjectTypeList.production,
+        objectTypeListPlot: () => ObjectTypeList.plot,
         objectClassOptions() {
             return Object.values(objectClassTypes);
         },

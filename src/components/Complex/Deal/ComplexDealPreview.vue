@@ -48,14 +48,16 @@ export default {
     },
     data() {
         return {
-            dealTypeList: DealTypeList.get('param'),
             DealStatusType,
             unitTypes
         };
     },
     computed: {
-        dealType() {
-            return this.deal.type ? this.dealTypeList[this.deal.type].label : null;
+        dealTypeList: () => DealTypeList,
+        dealName() {
+            const dealType = this.deal.deal_type ? this.deal.dealTypeRecord.title : 'Сделка';
+            const dealNumber = this.deal.object_id;
+            return `${dealType} ${dealNumber}-${dealType[0]}`;
         },
 
         dealStatus() {

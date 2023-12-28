@@ -4,22 +4,22 @@
             <p v-if="mode == '' && label">
                 {{ mode == '' ? label : '' }}
             </p>
-            <div v-if="options.length">
+            <div v-if="options">
                 <label
-                    v-for="option in options"
-                    :key="option[0]"
+                    v-for="(option, index) in options"
+                    :key="index"
                     class="clicked-label"
-                    :class="{ checked: field.includes(option[0]) }"
+                    :class="{ checked: field.includes(index) }"
                 >
                     <input
                         v-model="field"
                         @change.stop="onChange"
                         type="checkbox"
                         :class="inputClasses"
-                        :value="option[0]"
+                        :value="index"
                         :disabled="disabled"
                     />
-                    {{ option[1] }}
+                    {{ option }}
                 </label>
             </div>
             <div v-else>
@@ -70,8 +70,8 @@ export default {
             default: ''
         },
         options: {
-            type: Array,
-            default: () => []
+            type: Object,
+            default: null
         },
         name: {
             type: String,

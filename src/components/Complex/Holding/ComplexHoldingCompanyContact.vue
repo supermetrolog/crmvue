@@ -52,7 +52,7 @@ export default {
             return this.$formatter.initials(this.contact.full_name);
         },
         position() {
-            return PositionList.get('param')[this.contact.position].label;
+            return PositionList[this.contact.position].label;
         }
     }
 };

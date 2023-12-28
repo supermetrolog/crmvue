@@ -48,9 +48,9 @@
 </template>
 
 <script>
-import WithUnitType from '@/components/common/with-unit-type/WithUnitType.vue';
-import { TaxFormList } from '@/const/Const';
-import { unitTypes } from '@/const/unitTypes';
+import { TaxFormList } from '@/const/const.js';
+import { unitTypes } from '@/const/unitTypes.js';
+import WithUnitType from '@/components/common/WithUnitType.vue';
 
 export default {
     name: 'ComplexDealDetails',
@@ -78,8 +78,7 @@ export default {
     },
     data() {
         return {
-            ucFirstTextFormatter: this.$formatter.text(),
-            TaxFormList
+            ucFirstTextFormatter: this.$formatter.text()
         };
     },
     computed: {

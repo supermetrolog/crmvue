@@ -4,11 +4,7 @@ import { DirectionList, DistrictList, RegionList, TaxFormList } from '@/const/co
 export const MixinOfferItem = {
     data() {
         return {
-            dropdownIsOpen: false,
-            directionList: DirectionList.get('param'),
-            districtList: DistrictList.get('param'),
-            regionList: RegionList.get('param'),
-            taxFormList: TaxFormList
+            dropdownIsOpen: false
         };
     },
     props: {
@@ -18,13 +14,21 @@ export const MixinOfferItem = {
     },
     computed: {
         ...mapGetters(['FAVORITES_OFFERS', 'THIS_USER']),
+        directionList: () => DirectionList,
+        districtList: () => DistrictList,
+        regionList: () => RegionList,
+        taxFormList: () => TaxFormList,
         contact() {
             let contact = this.offer.contact || this.offer.company.mainContact;
             return contact;
         }
     },
     methods: {
-        ...mapActions(['ADD_FAVORITES_OFFER', 'DELETE_FAVORITES_OFFERS', 'SEARCH_FAVORITES_OFFERS']),
+        ...mapActions([
+            'ADD_FAVORITES_OFFER',
+            'DELETE_FAVORITES_OFFERS',
+            'SEARCH_FAVORITES_OFFERS'
+        ]),
         getOfferUrl(offer) {
             return this.$apiUrlHelper.generator().offerUrl(offer);
         },

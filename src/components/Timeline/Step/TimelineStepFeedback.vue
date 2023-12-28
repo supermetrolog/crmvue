@@ -10,7 +10,12 @@
             :close-slot-when-done="false"
             :is-current="!data.timelineStepObjects.length"
         >
-            <ButtonList v-if="!disabled" @done="$emit('done')" @negative="$emit('negative')" :buttons="buttons" />
+            <ButtonList
+                v-if="!disabled"
+                @done="$emit('done')"
+                @negative="$emit('negative')"
+                :buttons="buttons"
+            />
         </TimelineStepStage>
         <TimelineStepStage
             class="mb-2"
@@ -73,13 +78,14 @@ export default {
     emits: ['done', 'negative'],
     data() {
         return {
-            feedbackWayList: FeedbackList.get('param'),
-            objectTypeListPlot: ObjectTypeList.get('plot'),
             ways: [],
             actionsVisible: false
         };
     },
-
+    computed: {
+        feedbackWayList: () => FeedbackList,
+        objectTypeListPlot: () => ObjectTypeList.plot
+    },
     methods: {
         cancel() {
             this.ways = [];

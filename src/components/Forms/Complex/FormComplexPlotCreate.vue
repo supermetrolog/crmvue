@@ -648,13 +648,14 @@ import {
     waterTypes
 } from '@/const/types';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
+import CheckboxIcons from '@/components/common/Forms/CheckboxIcons.vue';
 import Button from '@/components/common/Button.vue';
 import { ObjectTypeList } from '@/const/const';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 
 export default {
     name: 'FormComplexPlotCreate',
-    components: { RadioChip, Button, CheckboxChip, Modal, Loader },
+    components: { RadioChip, Button, CheckboxChip, Modal, Loader, CheckboxIcons },
     mixins: [ComplexFormMixin],
     data() {
         return {
@@ -720,10 +721,7 @@ export default {
                 ownerShipDocumentsList: [],
                 photos: [],
                 photosList: []
-            },
-            objectTypeListWareHouse: ObjectTypeList.get('warehouse'),
-            objectTypeListProduction: ObjectTypeList.get('production'),
-            objectTypeListPlot: ObjectTypeList.get('plot')
+            }
         };
     },
     validations() {
@@ -811,28 +809,10 @@ export default {
             }
         };
     },
-    methods: {
-        ...mapActions(['SEARCH_COMPANIES']),
-        onChangeAddress() {
-            console.log('CHANGE ADDRESS');
-        },
-        async onChangeCompany() {
-            console.log('CHANGE COMPANY');
-        },
-        async searchCompany() {
-            return ['ОАО Тореадор', 'ЗАО ИнкЛомМет'];
-        },
-        async searchAddress(query) {
-            return await yandexmap.getAddress(query);
-        },
-        selectObjectType(isSelected, type) {
-            this.form.object_type = this.form.object_type.filter(item => item !== type);
-            if (isSelected) {
-                this.form.object_type.push(type);
-            }
-        }
-    },
     computed: {
+        objectTypeListWareHouse: () => ObjectTypeList.warehouse,
+        objectTypeListProduction: () => ObjectTypeList.production,
+        objectTypeListPlot: () => ObjectTypeList.plot,
         ownTypeLandOptions() {
             return Object.values(ownTypesLand);
         },
@@ -859,6 +839,27 @@ export default {
         },
         entryTerritoryTypeOptions() {
             return Object.values(entryTerritoryTypes);
+        }
+    },
+    methods: {
+        ...mapActions(['SEARCH_COMPANIES']),
+        onChangeAddress() {
+            console.log('CHANGE ADDRESS');
+        },
+        async onChangeCompany() {
+            console.log('CHANGE COMPANY');
+        },
+        async searchCompany() {
+            return ['ОАО Тореадор', 'ЗАО ИнкЛомМет'];
+        },
+        async searchAddress(query) {
+            return await yandexmap.getAddress(query);
+        },
+        selectObjectType(isSelected, type) {
+            this.form.object_type = this.form.object_type.filter(item => item !== type);
+            if (isSelected) {
+                this.form.object_type.push(type);
+            }
         }
     }
 };

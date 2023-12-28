@@ -58,8 +58,8 @@
                             :options="COMPANY_GROUP_LIST"
                         />
                         <MultiSelect
-                            v-if="!form.noName"
                             v-model="form.formOfOrganization"
+                            :disabled="form.noName"
                             label="ФО"
                             title="Форма организации"
                             class="col-3"
@@ -131,11 +131,11 @@
                             <span class="form__subtitle">Категория</span>
                             <div class="form__row mt-1">
                                 <CheckboxChip
-                                    v-for="category in categoryOptions"
-                                    :key="category"
+                                    v-for="(category, index) in categoryOptions"
+                                    :key="index"
                                     v-model="form.categories"
-                                    :value="category[0]"
-                                    :text="category[1]"
+                                    :value="index"
+                                    :text="category"
                                 />
                             </div>
                         </div>
@@ -436,13 +436,6 @@ export default {
         return {
             v$: useValidate(),
             loader: false,
-            categoryOptions: CompanyCategories.get('param'),
-            formOfOrganizationOptions: CompanyFormOrganization.get('param'),
-            statusOptions: ActivePassive.get('param'),
-            activityGroupOptions: ActivityGroupList.get('param'),
-            activityProfileOptions: ActivityProfileList.get('param'),
-            passiveWhyOptions: PassiveWhy.get('param'),
-            ratingOptions: RatingList.get('param'),
             form: {
                 activityGroup: null,
                 activityProfile: null,
@@ -490,7 +483,14 @@ export default {
             'COMPANY_GROUP_LIST',
             'COMPANY_PRODUCT_RANGE_LIST',
             'COMPANY_IN_THE_BANK_LIST'
-        ])
+        ]),
+        categoryOptions: () => CompanyCategories,
+        formOfOrganizationOptions: () => CompanyFormOrganization,
+        statusOptions: () => ActivePassive,
+        activityGroupOptions: () => ActivityGroupList,
+        activityProfileOptions: () => ActivityProfileList,
+        passiveWhyOptions: () => PassiveWhy,
+        ratingOptions: () => RatingList
     },
     validations() {
         return {

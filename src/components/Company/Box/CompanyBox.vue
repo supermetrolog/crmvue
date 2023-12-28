@@ -224,7 +224,7 @@ export default {
         },
         categoryHandler() {
             return this.company.categories
-                .map(item => CompanyCategories.get('param')[item.category][1])
+                .map(item => CompanyCategories[item.category].name)
                 .join(' ')
                 .toUpperCase();
         },

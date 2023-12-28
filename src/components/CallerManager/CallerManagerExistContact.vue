@@ -15,18 +15,10 @@
                     {{ relationships }}
                 </p>
                 <div class="company">
-                    <router-link :to="'/companies/' + contact.company_id">{{ contact.company.full_name }}</router-link>
-                    <div class="rating">
-                        <i
-                            v-for="rating in ratingOptions"
-                            :key="rating[0]"
-                            class="text-warning far fa-star"
-                            :class="{
-                                'fas fa-star': contact.company.rating >= rating[0]
-                            }"
-                        >
-                        </i>
-                    </div>
+                    <router-link :to="'/companies/' + contact.company_id">{{
+                        contact.company.full_name
+                    }}</router-link>
+                    <Rating :rating="contact.company.rating" />
                 </div>
                 <div class="consultant">
                     <p>Ведет: Казимов Игорь</p>
@@ -39,10 +31,12 @@
 <script>
 import { CallerTypeList, PositionList, RatingList } from '@/const/const';
 import Radio from '@/components/common/Forms/Radio.vue';
+import Rating from '@/components/common/Rating.vue';
 
 export default {
     name: 'CallerManagerExistContact',
     components: {
+        Rating,
         Radio
     },
     props: {
@@ -52,9 +46,6 @@ export default {
     },
     data() {
         return {
-            ratingOptions: RatingList.get('param'),
-            callerTypeOptions: CallerTypeList.get('param'),
-            positionOptions: PositionList.get('param'),
             callerType: []
         };
     },
@@ -77,7 +68,10 @@ export default {
                 return 'Внимание проблемный!';
             }
             return null;
-        }
+        },
+        ratingOptions: () => RatingList,
+        callerTypeOptions: () => CallerTypeList,
+        positionOptions: () => PositionList
     },
     methods: {
         onChange() {}

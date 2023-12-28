@@ -105,6 +105,7 @@ import ComplexParameters from '@/components/Complex/ComplexParameters.vue';
 import FormComplexCrane from '@/components/Forms/Complex/FormComplexCrane.vue';
 import FormComplexElevator from '@/components/Forms/Complex/FormComplexElevator.vue';
 import ComplexHoldingParametersCrane from '@/components/Complex/Holding/ComplexHoldingParametersCrane.vue';
+import { reducer } from '@/utils';
 
 export default {
     name: 'ComplexHoldingParameters',
@@ -142,10 +143,7 @@ export default {
         },
         formattedFloorArea() {
             return this.$formatter.number(
-                this.object.floorsRecords.reduce(
-                    (areaAllFloors, floor) => areaAllFloors + floor.area_floor_full,
-                    0
-                )
+                reducer.sum(this.object.floorsRecords, 'area_floor_full')
             );
         }
     },

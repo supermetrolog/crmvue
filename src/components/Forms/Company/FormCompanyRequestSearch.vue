@@ -161,11 +161,11 @@
                             <span class="form__subtitle">Тип ворот</span>
                             <div class="form__row mt-1">
                                 <CheckboxChip
-                                    v-for="gateType in gateTypeList"
-                                    :key="gateType[0]"
+                                    v-for="(gateType, index) in gateTypeList"
+                                    :key="index"
                                     v-model="form.gateTypes"
-                                    :value="gateType[0]"
-                                    :text="gateType[1]"
+                                    :value="index"
+                                    :text="gateType"
                                 />
                             </div>
                         </div>
@@ -197,11 +197,11 @@
                             <span class="form__subtitle">Классы</span>
                             <div class="form__row mt-1">
                                 <CheckboxChip
-                                    v-for="classItem in objectClassList"
-                                    :key="classItem[0]"
+                                    v-for="(classItem, index) in objectClassList"
+                                    :key="index"
                                     v-model="form.objectClasses"
-                                    :value="classItem[0]"
-                                    :text="classItem[1]"
+                                    :value="index"
+                                    :text="classItem"
                                 />
                             </div>
                         </div>
@@ -227,11 +227,11 @@
                                 <span class="form__subtitle">Направления МО</span>
                                 <div class="form__row mt-1">
                                     <CheckboxChip
-                                        v-for="directionItem in directionList"
-                                        :key="directionItem[0]"
+                                        v-for="(directionItem, index) in directionList"
+                                        :key="index"
                                         v-model="form.directions"
-                                        :value="directionItem[0]"
-                                        :text="directionItem[1]"
+                                        :value="index"
+                                        :text="directionItem.short"
                                     />
                                 </div>
                             </div>
@@ -241,11 +241,11 @@
                                 <span class="form__subtitle">Округа Москвы</span>
                                 <div class="form__row mt-1">
                                     <CheckboxChip
-                                        v-for="districtItem in districtList"
-                                        :key="districtItem[0]"
+                                        v-for="(districtItem, index) in districtList"
+                                        :key="index"
                                         v-model="form.districts"
-                                        :value="districtItem[0]"
-                                        :text="districtItem[1]"
+                                        :value="index"
+                                        :text="districtItem"
                                     />
                                 </div>
                             </div>
@@ -255,11 +255,11 @@
                                 <span class="form__subtitle">МКАД</span>
                                 <div class="form__row mt-1">
                                     <RadioChip
-                                        v-for="mkadOption in outsideMkadOptions"
-                                        :key="mkadOption[0]"
+                                        v-for="(mkadOption, index) in outsideMkadOptions"
+                                        :key="index"
                                         v-model="form.outside_mkad"
-                                        :label="mkadOption[1]"
-                                        :value="mkadOption[0]"
+                                        :label="mkadOption"
+                                        :value="index"
                                         unselect
                                     />
                                 </div>
@@ -380,25 +380,21 @@ export default {
         Checkbox
     },
     mixins: [SearchFormMixin],
-    data() {
-        return {
-            activePassiveOptions: ActivePassive.get('param'),
-            objectTypeListWareHouse: ObjectTypeList.get('warehouse'),
-            objectTypeListProduction: ObjectTypeList.get('production'),
-            objectTypeListPlot: ObjectTypeList.get('plot'),
-            yesNoOptions: YesNo.get('param'),
-            outsideMkadOptions: OutsideMkad.get('param'),
-            objectClassList: ObjectClassList.get('param'),
-            gateTypeList: GateTypeList.get('param'),
-            dealTypeList: DealTypeList.get('param'),
-            regionList: RegionList.get('param'),
-            directionList: DirectionList.get('param'),
-            districtList: DistrictList.get('param'),
-            objectTypesGeneralList: ObjectTypesGeneralList.get('param')
-        };
-    },
     computed: {
         ...mapGetters(['REGION_LIST']),
+        activePassiveOptions: () => ActivePassive,
+        objectTypeListWareHouse: () => ObjectTypeList.warehouse,
+        objectTypeListProduction: () => ObjectTypeList.production,
+        objectTypeListPlot: () => ObjectTypeList.plot,
+        yesNoOptions: () => YesNo,
+        outsideMkadOptions: () => OutsideMkad,
+        objectClassList: () => ObjectClassList,
+        gateTypeList: () => GateTypeList,
+        dealTypeList: () => DealTypeList,
+        regionList: () => RegionList,
+        directionList: () => DirectionList,
+        districtList: () => DistrictList,
+        objectTypesGeneralList: () => ObjectTypesGeneralList,
         checkedRegions() {
             if (this.REGION_LIST) {
                 return this.form.regions.map(element => ({

@@ -15,7 +15,7 @@
             class="carousel__modal"
             title="Просмотр изображений"
         >
-            <agile
+            <VueAgile
                 ref="main"
                 class="carousel__slides"
                 :options="mainOptions"
@@ -29,8 +29,8 @@
                 >
                     <img class="carousel__image" :src="slide.src" alt="img" />
                 </div>
-            </agile>
-            <agile
+            </VueAgile>
+            <VueAgile
                 ref="thumbnails"
                 @after-change="$refs.main.goTo($event.currentSlide)"
                 :options="listOptions"
@@ -52,7 +52,7 @@
                 <template #nextButton>
                     <i class="fas fa-chevron-right"></i>
                 </template>
-            </agile>
+            </VueAgile>
         </Modal>
     </div>
 </template>
@@ -63,7 +63,7 @@ import { VueAgile } from 'vue-agile';
 
 export default {
     name: 'Carousel',
-    components: { Modal, agile: VueAgile },
+    components: { Modal, VueAgile },
     props: {
         slides: {
             type: Array,

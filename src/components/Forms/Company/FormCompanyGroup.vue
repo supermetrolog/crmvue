@@ -80,7 +80,6 @@ export default {
     data() {
         return {
             v$: useValidate(),
-            formOfOrganizationOptions: CompanyFormOrganization.get('param'),
             loader: false,
             form: {
                 nameRu: null,
@@ -89,6 +88,9 @@ export default {
                 formOfOrganization: null
             }
         };
+    },
+    computed: {
+        formOfOrganizationOptions: () => CompanyFormOrganization
     },
     validations() {
         return {

@@ -81,8 +81,7 @@
                     passive: offer.status != 1,
                     general: offer.type_id == 2,
                     selected: isSelected
-                },
-                classList
+                }
             ]"
         >
             <div class="row no-gutters object-info">
@@ -283,12 +282,6 @@ export default {
             type: Boolean,
             default: false
         },
-        classList: {
-            type: String,
-            default() {
-                return '';
-            }
-        },
         col: {
             type: String,
             default() {
@@ -305,13 +298,13 @@ export default {
     },
     data() {
         return {
-            taxFormList: TaxFormList,
             extraInfoVisible: false,
             localComment: null
         };
     },
     computed: {
         ...mapGetters(['THIS_USER', 'FAVORITES_OFFERS']),
+        taxFormList: () => TaxFormList,
         isNewRecommended() {
             const newRecommended = this.$route.query.new_original_id;
             if (!newRecommended) return false;

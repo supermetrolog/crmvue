@@ -16,7 +16,11 @@
                                 :title-classes="titleClasses(timelineStep)"
                             >
                                 <TimelineComments :data="timelineStep.timelineActionComments" />
-                                <Form :ref="'#' + timelineStep.id" @submit="onSubmit(timelineStep)" class="mb-3 p-2">
+                                <Form
+                                    :ref="'#' + timelineStep.id"
+                                    @submit="onSubmit(timelineStep)"
+                                    class="mb-3 p-2"
+                                >
                                     <FormGroup v-if="!disabled">
                                         <Textarea
                                             v-model="form.comment"
@@ -86,7 +90,6 @@ export default {
         return {
             v$: useValidate(),
             loader: false,
-            timelineStepOptions: Timeline.get('param'),
             form: {
                 comment: null
             },
@@ -94,7 +97,8 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(['TIMELINE_COMMENTS', 'TIMELINE', 'THIS_USER'])
+        ...mapGetters(['TIMELINE_COMMENTS', 'TIMELINE', 'THIS_USER']),
+        timelineStepOptions: () => Timeline
     },
     validations() {
         return {

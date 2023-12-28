@@ -2,20 +2,20 @@
     <div class="form__control">
         <label class="form__label form__stars" :class="{ required: required }">
             <span v-if="label">{{ label }}</span>
-            <span v-if="options.length">
-                <label v-for="option in options" :key="option[0]">
+            <span v-if="options">
+                <label v-for="(option, key) in options" :key="key">
                     <i
                         class="far fa-star form__star"
-                        :class="{ 'text-warning fas fa-star': field >= option[0] }"
+                        :class="{ 'text-warning fas fa-star': field >= key }"
                     ></i>
                     <input
                         v-model="field"
                         type="radio"
                         class="d-none"
                         :class="inputClasses"
-                        :value="option[0]"
+                        :value="key"
                     />
-                    {{ option[1].name }}
+                    {{ option.name }}
                 </label>
             </span>
             <template v-else>
@@ -53,8 +53,8 @@ export default {
             default: null
         },
         options: {
-            type: Array,
-            default: () => []
+            type: Object,
+            default: null
         }
     },
     data() {

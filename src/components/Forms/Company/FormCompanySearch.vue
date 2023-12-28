@@ -73,11 +73,11 @@
                     <span class="form__subtitle">Категория</span>
                     <div class="form__row mt-1">
                         <CheckboxChip
-                            v-for="option in categoryOptions"
-                            :key="option[0]"
+                            v-for="(option, index) in categoryOptions"
+                            :key="index"
                             v-model="form.categories"
-                            :value="option[0]"
-                            :text="$formatter.text().ucFirst(option[1])"
+                            :value="index"
+                            :text="$formatter.text().ucFirst(option)"
                         />
                     </div>
                 </div>
@@ -123,13 +123,11 @@ export default {
         MultiSelect
     },
     mixins: [SearchFormMixin],
-    data() {
-        return {
-            categoryOptions: CompanyCategories.get('param'),
-            activityGroupOptions: ActivityGroupList.get('param'),
-            activityProfileOptions: ActivityProfileList.get('param'),
-            activePassiveOptions: ActivePassive.get('param')
-        };
+    computed: {
+        categoryOptions: () => CompanyCategories,
+        activityGroupOptions: () => ActivityGroupList,
+        activityProfileOptions: () => ActivityProfileList,
+        activePassiveOptions: () => ActivePassive
     },
     defaultFormProperties: {
         all: null,

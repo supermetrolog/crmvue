@@ -57,13 +57,21 @@
                         <div v-if="request.directions.length" class="region-parameters">
                             <p class="d-block"><b>Московская область:</b></p>
                             <p>
-                                {{ request.directions.map(elem => directionList[elem.direction][2]).join(', ') }}
+                                {{
+                                    request.directions
+                                        .map(elem => directionList[elem.direction].full)
+                                        .join(', ')
+                                }}
                             </p>
                         </div>
                         <div v-if="request.districts.length" class="region-parameters">
                             <p class="d-block"><b>Москва:</b></p>
                             <p>
-                                {{ request.districts.map(elem => districtList[elem.district][1]).join(', ') }}
+                                {{
+                                    request.districts
+                                        .map(elem => districtList[elem.district])
+                                        .join(', ')
+                                }}
                             </p>
                         </div>
                         <div>
@@ -113,7 +121,7 @@
                                 <p>
                                     {{
                                         request.objectClasses
-                                            .map(elem => objectClassList[elem.object_class][1])
+                                            .map(elem => objectClassList[elem.object_class])
                                             .join(', ')
                                     }}
                                 </p>
@@ -149,7 +157,7 @@
                                 {{ request.movingDate_format }}
                             </p>
                             <p v-if="request.unknownMovingDate !== null" class="parameters-inner">
-                                {{ unknownMovingDateOptions[request.unknownMovingDate][1] }}
+                                {{ unknownMovingDateOptions[request.unknownMovingDate] }}
                             </p>
 
                             <p>цена пола <small class="text-grey">(р)</small></p>
@@ -164,7 +172,11 @@
                             <div class="parameters-inner">
                                 <p v-if="!request.gateTypes.length">нет данных</p>
                                 <p v-else>
-                                    {{ request.gateTypes.map(elem => gateTypeList[elem.gate_type][1]).join(', ') }}
+                                    {{
+                                        request.gateTypes
+                                            .map(elem => gateTypeList[elem.gate_type])
+                                            .join(', ')
+                                    }}
                                 </p>
                             </div>
                         </div>
@@ -216,6 +228,7 @@ export default {
         DealListItem,
         Progress
     },
+    emits: ['openCompanyRequestFormForUpdate', 'deleteRequest', 'cloneRequest'],
     props: {
         request: {
             type: Object
@@ -235,22 +248,22 @@ export default {
     },
     data() {
         return {
-            objectClassList: ObjectClassList.get('param'),
-            gateTypeList: GateTypeList.get('param'),
-            objectTypeListWareHouse: ObjectTypeList.get('warehouse'),
-            objectTypeListProduction: ObjectTypeList.get('production'),
-            objectTypeListPlot: ObjectTypeList.get('plot'),
-            regionList: RegionList.get('param'),
-            directionList: DirectionList.get('param'),
-            districtList: DistrictList.get('param'),
-            dealTypeList: DealTypeList.get('param'),
-            passiveWhyOptions: PassiveWhyRequest.get('param'),
-            unknownMovingDateOptions: unknownMovingDate.get('param'),
             extraInfoVisible: false
         };
     },
     computed: {
         ...mapGetters(['THIS_USER']),
+        objectClassList: () => ObjectClassList,
+        gateTypeList: () => GateTypeList,
+        objectTypeListWareHouse: () => ObjectTypeList.warehouse,
+        objectTypeListProduction: () => ObjectTypeList.production,
+        objectTypeListPlot: () => ObjectTypeList.plot,
+        regionList: () => RegionList,
+        directionList: () => DirectionList,
+        districtList: () => DistrictList,
+        dealTypeList: () => DealTypeList,
+        passiveWhyOptions: () => PassiveWhyRequest,
+        unknownMovingDateOptions: () => unknownMovingDate,
         dealType() {
             return this.dealTypeList[this.request.dealType].label;
         }
@@ -289,21 +302,21 @@ export default {
         },
         getObjectTypeIcon(objectType) {
             if (objectType < 12) {
-                return this.objectTypeListWareHouse.find(item => item[0] == objectType)[1].icon;
+                return this.objectTypeListWareHouse.find(item => item.id == objectType).icon;
             }
             if (objectType < 25) {
-                return this.objectTypeListProduction.find(item => item[0] == objectType)[1].icon;
+                return this.objectTypeListProduction.find(item => item.id == objectType).icon;
             }
-            return this.objectTypeListPlot.find(item => item[0] == objectType)[1].icon;
+            return this.objectTypeListPlot.find(item => item.id == objectType).icon;
         },
         getObjectTypeName(objectType) {
             if (objectType < 12) {
-                return this.objectTypeListWareHouse.find(item => item[0] == objectType)[1].name;
+                return this.objectTypeListWareHouse.find(item => item.id == objectType).name;
             }
             if (objectType < 25) {
-                return this.objectTypeListProduction.find(item => item[0] == objectType)[1].name;
+                return this.objectTypeListProduction.find(item => item.id == objectType).name;
             }
-            return this.objectTypeListPlot.find(item => item[0] == objectType)[1].name;
+            return this.objectTypeListPlot.find(item => item.id == objectType).name;
         },
         clickOnItem(event) {
             if (this.reedOnly || ['I', 'BUTTON', 'A'].includes(event.target.tagName)) {
@@ -322,8 +335,7 @@ export default {
     },
     mounted() {
         this.extraInfoVisible = this.reedOnly;
-    },
-    emits: ['openCompanyRequestFormForUpdate', 'deleteRequest', 'cloneRequest']
+    }
 };
 </script>
 

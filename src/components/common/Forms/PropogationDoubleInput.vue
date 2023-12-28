@@ -79,12 +79,10 @@ export default {
         },
         firstName: {
             type: String,
-            required: true,
             default: 'phone'
         },
         secondName: {
             type: String,
-            required: true,
             default: 'exten'
         },
         title2: {

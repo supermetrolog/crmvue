@@ -42,14 +42,12 @@ export default {
             default: false
         }
     },
-    data() {
-        return {
-            notificationTypeList: NotificationTypeList.get('param')
-        };
-    },
     computed: {
+        notificationTypeList: () => NotificationTypeList,
         isSystemNotification() {
-            return this.notification.type < this.notificationTypeList.length ? true : false;
+            return this.notification.type < Object.values(this.notificationTypeList).length
+                ? true
+                : false;
         }
     },
     methods: {}

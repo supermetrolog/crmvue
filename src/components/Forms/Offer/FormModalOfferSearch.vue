@@ -159,11 +159,11 @@
                         <span class="form__subtitle">Округа Москвы</span>
                         <div class="form__row mt-1">
                             <CheckboxChip
-                                v-for="districtItem in districtList"
-                                :key="districtItem[0]"
+                                v-for="(districtItem, index) in districtList"
+                                :key="index"
                                 v-model="form.district_moscow"
-                                :value="districtItem[0]"
-                                :text="districtItem[1]"
+                                :value="index"
+                                :text="districtItem"
                             />
                         </div>
                     </div>
@@ -173,11 +173,11 @@
                         <span class="form__subtitle">Направления МО</span>
                         <div class="form__row mt-1">
                             <CheckboxChip
-                                v-for="directionItem in directionList"
-                                :key="directionItem[0]"
+                                v-for="(directionItem, index) in directionList"
+                                :key="index"
                                 v-model="form.direction"
-                                :value="directionItem[0]"
-                                :text="directionItem[1]"
+                                :value="index"
+                                :text="directionItem.short"
                             />
                         </div>
                     </div>
@@ -186,11 +186,11 @@
                     <span class="form__subtitle">Классы</span>
                     <div class="form__row mt-1">
                         <CheckboxChip
-                            v-for="objectClass in objectClassList"
-                            :key="objectClass[0]"
+                            v-for="(objectClass, index) in objectClassList"
+                            :key="index"
                             v-model="form.class"
-                            :value="objectClass[0]"
-                            :text="objectClass[1]"
+                            :value="index"
+                            :text="objectClass"
                         />
                     </div>
                 </div>
@@ -198,11 +198,11 @@
                     <span class="form__subtitle">Тип ворот</span>
                     <div class="form__row mt-1">
                         <CheckboxChip
-                            v-for="gateType in gateTypeList"
-                            :key="gateType[0]"
+                            v-for="(gateType, index) in gateTypeList"
+                            :key="index"
                             v-model="form.gates"
-                            :value="gateType[0]"
-                            :text="gateType[1]"
+                            :value="index"
+                            :text="gateType"
                         />
                     </div>
                 </div>
@@ -210,11 +210,11 @@
                     <span class="form__subtitle">Тип пола</span>
                     <div class="form__row mt-1">
                         <CheckboxChip
-                            v-for="floorType in floorTypesFUCKOptions"
-                            :key="floorType[0]"
+                            v-for="(floorType, index) in floorTypesFUCKOptions"
+                            :key="index"
                             v-model="form.floor_types"
-                            :value="floorType[0]"
-                            :text="floorType[1]"
+                            :value="index"
+                            :text="floorType"
                         />
                     </div>
                 </div>

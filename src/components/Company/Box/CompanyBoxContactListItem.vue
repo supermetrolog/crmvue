@@ -58,14 +58,9 @@ export default {
             required: true
         }
     },
-    data() {
-        return {
-            positionList: PositionList.get('param')
-        };
-    },
     computed: {
         position() {
-            return this.positionList[this.contact.position]?.label;
+            return PositionList[this.contact.position].label;
         },
         updateDate() {
             let date = this.contact.updated_at ? this.contact.updated_at : this.contact.created_at;

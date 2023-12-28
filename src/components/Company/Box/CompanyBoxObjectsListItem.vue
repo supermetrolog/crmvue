@@ -73,13 +73,13 @@ export default {
     },
     data() {
         return {
-            directionList: OldDbDirectionList,
-            districtList: DistrictList.get('param'),
             offersIsOpen: false,
             rentersIsOpen: false
         };
     },
     computed: {
+        directionList: () => OldDbDirectionList,
+        districtList: () => DistrictList,
         imageSrc() {
             const photo = this.object.photo;
             if (photo && Array.isArray(photo)) {

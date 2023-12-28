@@ -14,29 +14,43 @@
             <div class="location mb-4">
                 <div class="region">
                     <strong>
-                        {{ request.regions.map(elem => $formatter.text().ucFirst(elem.info.title)).join(', ') }}
+                        {{
+                            request.regions
+                                .map(elem => $formatter.text().ucFirst(elem.info.title))
+                                .join(', ')
+                        }}
                     </strong>
                 </div>
                 <div v-if="request.directions.length" class="region-parameters">
                     <p class="d-block"><b>Московская область:</b></p>
                     <p>
-                        {{ request.directions.map(elem => directionList[elem.direction][2]).join(', ') }}
+                        {{
+                            request.directions
+                                .map(elem => directionList[elem.direction].full)
+                                .join(', ')
+                        }}
                     </p>
                 </div>
                 <div v-if="request.districts.length" class="region-parameters">
                     <p class="d-block"><b>Москва:</b></p>
                     <p>
-                        {{ request.districts.map(elem => districtList[elem.district][1]).join(', ') }}
+                        {{ request.districts.map(elem => districtList[elem.district]).join(', ') }}
                     </p>
                 </div>
                 <div>
-                    <p v-if="!request.distanceFromMKADnotApplicable">До {{ request.distanceFromMKAD }} км от МКАД</p>
+                    <p v-if="!request.distanceFromMKADnotApplicable">
+                        До {{ request.distanceFromMKAD }} км от МКАД
+                    </p>
                 </div>
             </div>
             <div>
                 <span class="mr-3">Класс объекта</span>
                 <strong>
-                    {{ request.objectClasses.map(elem => objectClassList[elem.object_class][1]).join(',') }}
+                    {{
+                        request.objectClasses
+                            .map(elem => objectClassList[elem.object_class])
+                            .join(',')
+                    }}
                 </strong>
                 <strong v-if="!request.objectClasses.length">нет данных</strong>
             </div>
@@ -100,7 +114,7 @@
                 <div>
                     <strong v-if="!request.gateTypes.length">нет данных</strong>
                     <strong v-if="request.gateTypes.length">
-                        {{ request.gateTypes.map(elem => gateTypeList[elem.gate_type][1]).join(', ') }}
+                        {{ request.gateTypes.map(elem => gateTypeList[elem.gate_type]).join(', ') }}
                     </strong>
                 </div>
             </div>
@@ -162,7 +176,7 @@ import { mapGetters } from 'vuex';
 
 export default {
     name: 'CompanyRequestItemAlt',
-    components: {},
+    emits: ['openCompanyRequestFormForUpdate', 'deleteRequest', 'cloneRequest'],
     props: {
         request: {
             type: Object
@@ -180,24 +194,20 @@ export default {
             default: true
         }
     },
-    data() {
-        return {
-            objectClassList: ObjectClassList.get('param'),
-            gateTypeList: GateTypeList.get('param'),
-            objectTypesGeneralList: ObjectTypesGeneralList.get('param'),
-            objectTypeListWareHouse: ObjectTypeList.get('warehouse'),
-            objectTypeListProduction: ObjectTypeList.get('production'),
-            objectTypeListPlot: ObjectTypeList.get('plot'),
-            regionList: RegionList.get('param'),
-            directionList: DirectionList.get('param'),
-            districtList: DistrictList.get('param'),
-            dealTypeList: DealTypeList.get('param'),
-            passiveWhyOptions: PassiveWhyRequest.get('param'),
-            unknownMovingDateOptions: unknownMovingDate.get('param')
-        };
-    },
     computed: {
         ...mapGetters(['THIS_USER']),
+        objectClassList: () => ObjectClassList,
+        gateTypeList: () => GateTypeList,
+        objectTypesGeneralList: () => ObjectTypesGeneralList,
+        objectTypeListWareHouse: () => ObjectTypeList.warehouse,
+        objectTypeListProduction: () => ObjectTypeList.production,
+        objectTypeListPlot: () => ObjectTypeList.plot,
+        regionList: () => RegionList,
+        directionList: () => DirectionList,
+        districtList: () => DistrictList,
+        dealTypeList: () => DealTypeList,
+        passiveWhyOptions: () => PassiveWhyRequest,
+        unknownMovingDateOptions: () => unknownMovingDate,
         dealType() {
             return this.dealTypeList[this.request.dealType].label;
         },
@@ -241,26 +251,26 @@ export default {
         getObjectTypesGeneral(types) {
             return types
                 .map(type => type.type)
-                .map(type => this.objectTypesGeneralList.find(item => item[0] == type)[1])
+                .map(type => this.objectTypesGeneralList[type])
                 .join(', ');
         },
         getObjectTypeIcon(objectType) {
             if (objectType < 12) {
-                return this.objectTypeListWareHouse.find(item => item[0] == objectType)[1].icon;
+                return this.objectTypeListWareHouse.find(item => item.id == objectType).icon;
             }
             if (objectType < 25) {
-                return this.objectTypeListProduction.find(item => item[0] == objectType)[1].icon;
+                return this.objectTypeListProduction.find(item => item.id == objectType).icon;
             }
-            return this.objectTypeListPlot.find(item => item[0] == objectType)[1].icon;
+            return this.objectTypeListPlot.find(item => item.id == objectType).icon;
         },
         getObjectTypeName(objectType) {
             if (objectType < 12) {
-                return this.objectTypeListWareHouse.find(item => item[0] == objectType)[1].name;
+                return this.objectTypeListWareHouse.find(item => item.id == objectType).name;
             }
             if (objectType < 25) {
-                return this.objectTypeListProduction.find(item => item[0] == objectType)[1].name;
+                return this.objectTypeListProduction.find(item => item.id == objectType).name;
             }
-            return this.objectTypeListPlot.find(item => item[0] == objectType)[1].name;
+            return this.objectTypeListPlot.find(item => item.id == objectType).name;
         },
         clickOnItem(event) {
             if (this.reedOnly || ['I', 'BUTTON', 'A'].includes(event.target.tagName)) {
@@ -276,9 +286,7 @@ export default {
 
             this.$router.replace({ query });
         }
-    },
-
-    emits: ['openCompanyRequestFormForUpdate', 'deleteRequest', 'cloneRequest']
+    }
 };
 </script>
 
