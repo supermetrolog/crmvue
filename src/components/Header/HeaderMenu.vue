@@ -14,7 +14,7 @@ export default {
     },
     data() {
         return {
-            nav: InternalMenu.get('personal')
+            nav: InternalMenu.setting
         };
     },
     watch: {
@@ -24,7 +24,7 @@ export default {
     },
     methods: {
         getInternalMenu() {
-            this.nav = InternalMenu.get(this.$route.matched[0].name);
+            this.nav = InternalMenu[this.$route.matched[0].name];
         }
     },
     mounted() {

@@ -342,6 +342,7 @@ export default {
         CheckboxIcons,
         Submit
     },
+    emits: ['closeCompanyForm', 'created', 'updated'],
     props: {
         formdata: {
             type: Object,
@@ -355,25 +356,11 @@ export default {
     data() {
         return {
             v$: useValidate(),
-            objectClassList: ObjectClassList.get('param'),
-            gateTypeList: GateTypeList.get('param'),
-            objectTypesGeneralList: ObjectTypesGeneralList.get('param'),
-            objectTypeListWareHouse: ObjectTypeList.get('warehouse'),
-            objectTypeListProduction: ObjectTypeList.get('production'),
-            objectTypeListPlot: ObjectTypeList.get('plot'),
-            regionList: RegionList.get('param'),
-            directionList: DirectionList.get('param'),
-            districtList: DistrictList.get('param'),
-            dealTypeList: DealTypeList.get('param'),
             productionTypeListVisible: true,
             warehouseTypeListVisible: true,
             plotTypeListVisible: true,
             isOpenDealTypeSelect: false,
             isOpenConsultantSelect: false,
-            yesNoOptions: YesNo.get('param'),
-            outsideMkadOptions: OutsideMkad.get('param'),
-            unknownMovingDateOptions: unknownMovingDate.get('param'),
-            passiveWhyOptions: PassiveWhyRequest.get('param'),
             loader: false,
             contactOptions: [],
             form: {
@@ -422,7 +409,27 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(['CONSULTANT_LIST', 'REGION_LIST'])
+        ...mapGetters(['CONSULTANT_LIST', 'REGION_LIST']),
+        yesNoOptions: () => YesNo,
+        outsideMkadOptions: () => OutsideMkad,
+        unknownMovingDateOptions: () => unknownMovingDate,
+        passiveWhyOptions: () => PassiveWhyRequest,
+        objectClassList: () => ObjectClassList,
+        gateTypeList: () => GateTypeList,
+        objectTypesGeneralList: () => ObjectTypesGeneralList,
+        objectTypeListWareHouse: () => ObjectTypeList.warehouse,
+        objectTypeListProduction: () => ObjectTypeList.production,
+        objectTypeListPlot: () => ObjectTypeList.plot,
+        regionList: () => RegionList,
+        directionList: () => DirectionList,
+        districtList: () => DistrictList,
+        dealTypeList: () => DealTypeList
+    },
+    watch: {
+        form: {
+            deep: true,
+            handler() {}
+        }
     },
     validations() {
         return {
@@ -640,13 +647,6 @@ export default {
             this.form = { ...this.form, ...this.formdata };
         }
         this.loader = false;
-    },
-    watch: {
-        form: {
-            deep: true,
-            handler() {}
-        }
-    },
-    emits: ['closeCompanyForm', 'created', 'updated']
+    }
 };
 </script>

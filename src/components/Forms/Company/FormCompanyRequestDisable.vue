@@ -47,13 +47,15 @@ export default {
     data() {
         return {
             v$: useValidate(),
-            passiveWhyOptions: PassiveWhyRequest.get('param'),
             loader: false,
             form: {
                 passive_why: null,
                 passive_why_comment: null
             }
         };
+    },
+    computed: {
+        passiveWhyOptions: () => PassiveWhyRequest
     },
     validations() {
         return {
@@ -72,7 +74,8 @@ export default {
             }
 
             this.loader = true;
-            if (await api.request.disable(this.request_id, this.form)) this.$emit('disabled', this.form);
+            if (await api.request.disable(this.request_id, this.form))
+                this.$emit('disabled', this.form);
             this.loader = false;
         }
     }

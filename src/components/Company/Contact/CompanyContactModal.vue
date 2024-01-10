@@ -123,7 +123,7 @@ v-if="contact.consultant?.userProfile.short_name"
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import useValidate from '@vuelidate/core';
-import { ActivePassive, FeedbackList, PassiveWhyContact, PositionList } from '@/const/const.js';
+import { ActivePassive, FeedbackIcons, PassiveWhyContact, PositionList } from '@/const/const.js';
 import api from '@/api/api';
 import moment from 'moment';
 import Modal from '@/components/common/Modal.vue';
@@ -133,6 +133,7 @@ export default {
     components: {
         Modal
     },
+    emits: ['closeContactModal', 'clickEditContact'],
     inject: ['createContactComment'],
     props: {
         contact: {
@@ -147,10 +148,6 @@ export default {
     data() {
         return {
             v$: useValidate(),
-            wayOfInformings: FeedbackList.get('contact'),
-            positionList: PositionList.get('param'),
-            statusOptions: ActivePassive.get('param'),
-            passiveWhyOptions: PassiveWhyContact.get('param'),
             loader: false,
             selectedCompany: null,
             comment: ''
@@ -158,17 +155,29 @@ export default {
     },
     computed: {
         ...mapGetters(['CONSULTANT_LIST']),
+        wayOfInformings: () => FeedbackIcons,
+        positionList: () => PositionList,
+        statusOptions: () => ActivePassive,
+        passiveWhyOptions: () => PassiveWhyContact,
         position() {
             return this.positionList[this.contact.position]?.label;
+        }
+    },
+    watch: {
+        'contact.contactComments': {
+            handler() {
+                setTimeout(this.scrollToElement, 0);
+            },
+            deep: true
         }
     },
     methods: {
         ...mapActions(['FETCH_CONSULTANT_LIST', 'SEARCH_COMPANIES']),
         getWayClass(way) {
-            return this.wayOfInformings[way][2];
+            return this.wayOfInformings[way].icon;
         },
         getWayTitle(way) {
-            return this.wayOfInformings[way][1];
+            return this.wayOfInformings[way].name;
         },
         async updateContact() {
             if (await this.UPDATE_CONTACT(this.form)) {
@@ -226,16 +235,7 @@ export default {
     },
     mounted() {
         this.scrollToElement();
-    },
-    watch: {
-        'contact.contactComments': {
-            handler() {
-                setTimeout(this.scrollToElement, 0);
-            },
-            deep: true
-        }
-    },
-    emits: ['closeContactModal', 'clickEditContact']
+    }
 };
 </script>
 

@@ -88,7 +88,6 @@ export default {
     },
     data() {
         return {
-            stepParam: Timeline.get('param'),
             loader: true,
             loaderForStep: false,
             objects: [],
@@ -97,7 +96,15 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(['TIMELINE', 'COMPANY', 'COMPANY_CONTACTS', 'THIS_USER', 'TIMELINE_LIST', 'COMPANY_REQUESTS']),
+        ...mapGetters([
+            'TIMELINE',
+            'COMPANY',
+            'COMPANY_CONTACTS',
+            'THIS_USER',
+            'TIMELINE_LIST',
+            'COMPANY_REQUESTS'
+        ]),
+        stepParam: () => Timeline,
         selectedStep() {
             if (this.TIMELINE) {
                 return this.TIMELINE.timelineSteps[this.$route.query.step];

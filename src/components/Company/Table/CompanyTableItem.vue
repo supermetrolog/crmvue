@@ -110,13 +110,9 @@ export default {
         },
         odd: Boolean
     },
-    data() {
-        return {
-            activityProfileOptions: ActivityProfileList.get('param')
-        };
-    },
     computed: {
         ...mapGetters(['THIS_USER']),
+        activityProfileOptions: () => ActivityProfileList,
         activeRequests() {
             return this.company.requests.filter(request => request.status === 1);
         },

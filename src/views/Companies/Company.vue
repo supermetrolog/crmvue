@@ -117,12 +117,18 @@ export default {
             request: null,
             contact: null,
             company: null,
-            deal: null,
-            passiveWhyList: PassiveWhy.get('param')
+            deal: null
         };
     },
     computed: {
-        ...mapGetters(['COMPANY', 'COMPANY_REQUESTS', 'COMPANY_CONTACTS', 'COMPANY_OBJECTS', 'TIMELINE_LIST']),
+        ...mapGetters([
+            'COMPANY',
+            'COMPANY_REQUESTS',
+            'COMPANY_CONTACTS',
+            'COMPANY_OBJECTS',
+            'TIMELINE_LIST'
+        ]),
+        passiveWhyList: () => PassiveWhy,
         companyRequests() {
             return this.COMPANY_REQUESTS;
         }

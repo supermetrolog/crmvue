@@ -1,363 +1,390 @@
 <template>
-    <div class="fuck">
-        <Modal @close="clickCloseModal" title="Создание компании">
-            <Form @submit="onSubmit">
-                <Tabs :options="{ useUrlFragment: false }">
-                    <Loader v-if="loader" class="center" />
-
-                    <Tab name="Основное">
-                        <FormGroup class="mb-1">
-                            <Checkbox v-model="form.noName" label="Нет" class="col-1 large" />
-                            <Input
-                                v-if="!form.noName"
-                                v-model="form.nameRu"
-                                :v="v$.form.nameRu"
-                                :maska="{
-                                    mask: 'Z*',
-                                    tokens: { Z: { pattern: /[а-яА-Я0-9 (--)]/ } }
-                                }"
-                                :required="!form.nameEng"
-                                label="Название Ru"
-                                class="col-6 px-1"
+    <Modal
+        @close="clickCloseModal"
+        :title="formdata ? 'Редактирование компании' : 'Создание компании'"
+        class="modal-form-company"
+    >
+        <Form @submit="onSubmit">
+            <Tabs :options="{ useUrlFragment: false }">
+                <Loader v-if="loader" class="center" />
+                <Tab name="Основное">
+                    <div class="row mb-2">
+                        <CheckboxChip
+                            v-model="form.noName"
+                            :value="form.noName"
+                            text="Без названия"
+                            class="col-12 mb-2"
+                        />
+                        <Input
+                            v-model="form.nameRu"
+                            :disabled="form.noName"
+                            :v="v$.form.nameRu"
+                            :maska="{
+                                mask: 'Z*',
+                                tokens: { Z: { pattern: /[а-яА-Я0-9 (--)]/ } }
+                            }"
+                            :required="!form.nameEng"
+                            label="Название Ru"
+                            class="col-6"
+                        />
+                        <Input
+                            v-model="form.nameEng"
+                            :disabled="form.noName"
+                            :v="v$.form.nameEng"
+                            :maska="{
+                                mask: 'Z*',
+                                tokens: { Z: { pattern: /[a-zA-Z0-9 (--)]/ } }
+                            }"
+                            :required="!form.nameRu"
+                            label="Название Eng"
+                            class="col-6"
+                        />
+                    </div>
+                    <div class="row mb-2">
+                        <Input
+                            v-model="form.nameBrand"
+                            :maska="{
+                                mask: 'Z*',
+                                tokens: { Z: { pattern: /[а-яА-Яa-zA-Z0-9 (--)]/ } }
+                            }"
+                            label="Название Brand"
+                            class="col-5"
+                        />
+                        <MultiSelect
+                            v-model="form.companyGroup_id"
+                            label="Входит в ГК"
+                            class="col-4"
+                            :searchable="true"
+                            :options="COMPANY_GROUP_LIST"
+                        />
+                        <MultiSelect
+                            v-model="form.formOfOrganization"
+                            :disabled="form.noName"
+                            label="ФО"
+                            title="Форма организации"
+                            class="col-3"
+                            :options="formOfOrganizationOptions"
+                        />
+                    </div>
+                    <div class="row mb-2">
+                        <MultiSelect
+                            v-model="form.officeAdress"
+                            :title="form.officeAdress"
+                            extra-classes="long-text"
+                            label="Адрес офиса"
+                            class="col-12"
+                            :filterResults="false"
+                            :min-chars="1"
+                            :resolve-on-load="formdata ? true : false"
+                            :delay="0"
+                            :searchable="true"
+                            :options="
+                                async query => {
+                                    return await getAddress(query);
+                                }
+                            "
+                        />
+                    </div>
+                    <div class="row">
+                        <MultiSelect
+                            v-model="form.consultant_id"
+                            :v="v$.form.consultant_id"
+                            required
+                            label="Консультант"
+                            class="col-6"
+                            :options="CONSULTANT_LIST"
+                        />
+                        <PropogationInput
+                            v-model="form.contacts.websites"
+                            :v="v$.form.contacts.websites"
+                            label="Вебсайт"
+                            name="website"
+                            class="col-6"
+                        />
+                    </div>
+                    <div class="row mt-2">
+                        <PropogationDoubleInput
+                            v-model="form.contacts.phones"
+                            :v="v$.form.contacts.phones"
+                            :maska="[
+                                '+7 (###) ###-##-###',
+                                '+### (###) ###-##-##',
+                                '+#### (###) ###-##-##'
+                            ]"
+                            placeholder="+7 "
+                            name="phone"
+                            first-name="phone"
+                            second-name="exten"
+                            label="Телефон"
+                            class="col-6"
+                        />
+                        <PropogationInput
+                            v-model="form.contacts.emails"
+                            :v="v$.form.contacts.emails"
+                            name="email"
+                            label="Email"
+                            class="col-6"
+                        />
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <span class="form__subtitle">Категория</span>
+                            <div class="form__row mt-1">
+                                <CheckboxChip
+                                    v-for="(category, index) in categoryOptions"
+                                    :key="index"
+                                    v-model="form.categories"
+                                    :value="index"
+                                    :text="category"
+                                />
+                            </div>
+                        </div>
+                        <div class="col-6 mt-2">
+                            <span class="form__subtitle">Прочее</span>
+                            <CheckboxChip
+                                v-model="form.processed"
+                                :value="form.processed"
+                                text="Обработано"
+                                class="mt-1"
                             />
-                            <Input
-                                v-if="!form.noName"
-                                v-model="form.nameEng"
-                                :v="v$.form.nameEng"
-                                :maska="{
-                                    mask: 'Z*',
-                                    tokens: { Z: { pattern: /[a-zA-Z0-9 (--)]/ } }
-                                }"
-                                :required="!form.nameRu"
-                                label="Название Eng"
-                                class="col-5 pl-1"
-                            />
-                        </FormGroup>
-                        <FormGroup class="mb-1">
-                            <Input
-                                v-model="form.nameBrand"
-                                :maska="{
-                                    mask: 'Z*',
-                                    tokens: { Z: { pattern: /[а-яА-Яa-zA-Z0-9 (--)]/ } }
-                                }"
-                                label="Название Brand"
-                                class="col-5 pr-1"
-                            />
-                            <MultiSelect
-                                v-model="form.companyGroup_id"
-                                label="Входит в ГК"
-                                class="col-5 px-1"
-                                :searchable="true"
-                                :options="COMPANY_GROUP_LIST"
-                            />
-                            <MultiSelect
-                                v-if="!form.noName"
-                                v-model="form.formOfOrganization"
-                                label="ФО"
-                                title="Форма организации"
-                                class="col-2 pl-1"
-                                :options="formOfOrganizationOptions"
-                            />
-                        </FormGroup>
-                        <FormGroup class="mb-1">
-                            <MultiSelect
-                                v-model="form.officeAdress"
-                                :title="form.officeAdress"
-                                extra-classes="long-text"
-                                label="Адрес офиса"
-                                class="col-12 text-center"
-                                :filterResults="false"
-                                :min-chars="1"
-                                :resolve-on-load="formdata ? true : false"
-                                :delay="0"
-                                :searchable="true"
-                                :options="
-                                    async query => {
-                                        return await getAddress(query);
-                                    }
-                                "
-                            />
-                        </FormGroup>
-                        <FormGroup class="mb-1">
-                            <MultiSelect
-                                v-model="form.consultant_id"
-                                :v="v$.form.consultant_id"
-                                required
-                                label="Консультант"
-                                class="col-6 pr-1"
-                                :options="CONSULTANT_LIST"
-                            />
-                            <PropogationInput
-                                v-model="form.contacts.websites"
-                                :v="v$.form.contacts.websites"
-                                label="Вебсайт"
-                                name="website"
-                                class="col-6 pl-1"
-                            />
-                        </FormGroup>
-
-                        <FormGroup class="mb-1">
-                            <PropogationDoubleInput
-                                v-model="form.contacts.phones"
-                                :v="v$.form.contacts.phones"
-                                :maska="['+7 (###) ###-##-###', '+### (###) ###-##-##', '+#### (###) ###-##-##']"
-                                placeholder="+7 "
-                                name="phone"
-                                name2="exten"
-                                label="Телефон"
-                                class="col-6"
-                            />
-
-                            <PropogationInput
-                                v-model="form.contacts.emails"
-                                :v="v$.form.contacts.emails"
-                                name="email"
-                                label="Email"
-                                class="col-6 pl-1"
-                            />
-                        </FormGroup>
-
-                        <FormGroup class="mb-1">
-                            <Checkbox
-                                v-model="form.categories"
-                                :v="v$.form.categories"
-                                :options="categoryOptions"
-                                required
-                                name="category"
-                                label="Категория"
-                                class="col-12 text-center"
-                            />
-                        </FormGroup>
-                        <FormGroup class="mb-1"></FormGroup>
-                        <FormGroup class="mb-1">
-                            <Checkbox v-model="form.processed" label="Обработано" class="col large text-center" />
-                            <Radio
-                                v-model="form.status"
-                                :v="v$.form.status"
-                                required
-                                label="Статус"
-                                class="col pl-1"
-                                :options="statusOptions"
-                            />
-                            <MultiSelect
-                                v-if="!form.status"
-                                v-model="form.passive_why"
-                                :v="v$.form.passive_why"
-                                required
-                                label="Причина пассива"
-                                class="col-4 pl-1"
-                                :options="passiveWhyOptions"
-                            >
-                                <Textarea v-model="form.passive_why_comment" class="col-12 p-0 pt-1" />
-                            </MultiSelect>
-                            <RadioStars
-                                v-model="form.rating"
-                                label="Рейтинг"
-                                class="col pl-1 text-center ml-auto"
-                                :options="ratingOptions"
-                            >
-                                <p class="text-left pl-5 mt-2">
-                                    <i class="fas fa-star"></i>
-                                    - не особо важно
-                                </p>
-                                <p class="text-left pl-5">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    - важно
-                                </p>
-                                <p class="text-left pl-5">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    - очень важно
-                                </p>
-                            </RadioStars>
-                        </FormGroup>
-                        <FormGroup class="mb-1">
-                            <Textarea v-model="form.description" label="Описание" class="col-12 px-0" />
-                        </FormGroup>
-                    </Tab>
-                    <Tab name="Деятельность">
-                        <FormGroup class="mb-1">
-                            <MultiSelect
-                                v-model="form.activityGroup"
-                                :v="v$.form.activityGroup"
-                                required
-                                title="Группа деятельности"
-                                label="Группа дея-ти"
-                                class="col-6 pr-1"
-                                :options="activityGroupOptions"
-                            />
-                            <MultiSelect
-                                v-model="form.activityProfile"
-                                :v="v$.form.activityProfile"
-                                required
-                                title="Профиль деятельности"
-                                label="Профиль дея-ти"
-                                class="col-6 pl-1"
-                                :options="activityProfileOptions"
-                            />
-                        </FormGroup>
-                        <FormGroup class="mb-1">
-                            <MultiSelect
-                                v-model="form.productRanges"
-                                mode="tags"
-                                :close-on-select="false"
-                                :loading="false"
-                                :searchable="true"
-                                :create-tag="true"
-                                :resolve-on-load="true"
-                                label="Номенклатура товара"
-                                class="col-10 tags mx-auto text-center"
-                                :options="
-                                    async () => {
-                                        return await getProductRangeList();
-                                    }
-                                "
-                                name="product"
-                            />
-                        </FormGroup>
-                    </Tab>
-                    <Tab name="Реквизиты">
-                        <FormGroup class="mb-1">
-                            <MultiSelect
-                                v-model="form.legalAddress"
-                                :title="form.legalAddress"
-                                label="Юр. адрес"
-                                class="col-12"
-                                :filterResults="false"
-                                :min-chars="1"
-                                :resolve-on-load="formdata ? true : false"
-                                :delay="0"
-                                :searchable="true"
-                                :options="
-                                    async query => {
-                                        return await getAddress(query);
-                                    }
-                                "
-                            />
-                        </FormGroup>
-                        <FormGroup class="mb-1">
-                            <Input
-                                v-model="form.ogrn"
-                                :v="v$.form.ogrn"
-                                label="ОГРН"
-                                class="col-4 pr-1"
-                                maska="#############"
-                            />
-                            <Input
-                                v-model="form.inn"
-                                :v="v$.form.inn"
-                                label="ИНН"
-                                class="col-4 px-1"
-                                maska="############"
-                            />
-                            <Input
-                                v-model="form.kpp"
-                                :v="v$.form.kpp"
-                                label="КПП"
-                                class="col-4 pl-1"
-                                maska="#########"
-                            />
-                        </FormGroup>
-
-                        <FormGroup class="mb-1">
-                            <Input
-                                v-model="form.checkingAccount"
-                                :v="v$.form.checkingAccount"
-                                label="Расчетный счет"
-                                class="col-4 pr-1"
-                                maska="####################"
-                            />
-                            <Input
-                                v-model="form.correspondentAccount"
-                                :v="v$.form.correspondentAccount"
-                                label="Корреспондентский счет"
-                                class="col-4 px-1"
-                                maska="####################"
-                            />
-                            <Input
-                                v-model="form.inTheBank"
-                                label="В банке"
-                                class="col-4 pl-1"
-                                :searchable="true"
-                                :options="COMPANY_IN_THE_BANK_LIST"
-                            />
-                        </FormGroup>
-
-                        <FormGroup class="mb-1">
-                            <Input
-                                v-model="form.bik"
-                                :v="v$.form.bik"
-                                label="БИК"
-                                class="col-4 pr-1"
-                                maska="#########"
-                            />
-                            <Input
-                                v-model="form.okpo"
-                                :v="v$.form.okpo"
-                                label="ОКПО"
-                                class="col-4 px-1"
-                                maska="##########"
-                            />
-                            <Input
-                                v-model="form.okved"
-                                :v="v$.form.okved"
-                                label="ОКВЭД"
-                                class="col-4 pl-1"
-                                maska="##############################"
-                            />
-                        </FormGroup>
-
-                        <FormGroup class="mb-1">
-                            <Input v-model="form.signatoryName" label="Имя подписанта" class="col-4 pr-1" />
-                            <Input v-model="form.signatoryMiddleName" label="Фамилия подписанта" class="col-4 px-1" />
-                            <Input v-model="form.signatoryLastName" label="Отчество подписанта" class="col-4 pl-1" />
-                        </FormGroup>
-                        <FormGroup class="mb-1">
-                            <Input
-                                v-model="form.documentNumber"
-                                label="№ документа"
-                                maska="#####################"
-                                class="col-6 pr-1"
-                            />
-                            <Input v-model="form.basis" label="Действует на основе" class="col-6 pl-1" />
-                        </FormGroup>
-                    </Tab>
-                    <Tab name="Документы">
-                        <FormGroup class="mb-1">
-                            <FileInput
-                                v-model:native="form.fileList"
-                                v-model:data="form.files"
-                                label="Документы"
-                                class="col-12"
-                            >
-                                Выбрать файлы
-                            </FileInput>
-                        </FormGroup>
-                    </Tab>
-                    <FormGroup class="mt-4">
-                        <Submit class="col-4 mx-auto">
-                            {{ formdata ? 'Сохранить' : 'Создать' }}
-                        </Submit>
-                    </FormGroup>
-                </Tabs>
-            </Form>
-        </Modal>
-    </div>
+                        </div>
+                        <div class="col-6 mt-2">
+                            <span class="form__subtitle">Статус</span>
+                            <div class="form__row mt-1">
+                                <RadioChip v-model="form.status" label="Пассив" :value="0" />
+                                <RadioChip v-model="form.status" label="Актив" :value="1" />
+                            </div>
+                        </div>
+                        <div class="col-6 mt-2">
+                            <div class="row">
+                                <RadioStars
+                                    v-model="form.rating"
+                                    label="Рейтинг"
+                                    class="col-12 mt-2"
+                                    :options="ratingOptions"
+                                />
+                                <div class="col-12 mt-1">
+                                    <span>
+                                        <i class="fas fa-star"></i>
+                                        - не особо важно,
+                                    </span>
+                                    <span>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        - важно,
+                                    </span>
+                                    <span>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        - очень важно
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <AnimationTransition>
+                            <div v-if="!form.status" class="col-4 mt-2">
+                                <MultiSelect
+                                    v-model="form.passive_why"
+                                    :v="v$.form.passive_why"
+                                    required
+                                    label="Причина пассива"
+                                    :options="passiveWhyOptions"
+                                />
+                                <Textarea
+                                    v-model="form.passive_why_comment"
+                                    class="col-12 p-0 pt-1"
+                                />
+                            </div>
+                        </AnimationTransition>
+                    </div>
+                    <div class="row mt-2">
+                        <Textarea v-model="form.description" label="Описание" class="col-12" />
+                    </div>
+                </Tab>
+                <Tab name="Деятельность">
+                    <div class="row">
+                        <MultiSelect
+                            v-model="form.activityGroup"
+                            :v="v$.form.activityGroup"
+                            required
+                            title="Группа деятельности"
+                            label="Группа дея-ти"
+                            class="col-6"
+                            :options="activityGroupOptions"
+                        />
+                        <MultiSelect
+                            v-model="form.activityProfile"
+                            :v="v$.form.activityProfile"
+                            required
+                            title="Профиль деятельности"
+                            label="Профиль дея-ти"
+                            class="col-6"
+                            :options="activityProfileOptions"
+                        />
+                        <MultiSelect
+                            v-model="form.productRanges"
+                            mode="tags"
+                            :close-on-select="false"
+                            :loading="false"
+                            :searchable="true"
+                            :create-tag="true"
+                            :resolve-on-load="true"
+                            label="Номенклатура товара"
+                            class="col-12 mt-2"
+                            :options="
+                                async () => {
+                                    return await getProductRangeList();
+                                }
+                            "
+                            name="product"
+                        />
+                    </div>
+                </Tab>
+                <Tab name="Реквизиты">
+                    <div class="row">
+                        <MultiSelect
+                            v-model="form.legalAddress"
+                            :title="form.legalAddress"
+                            label="Юр. адрес"
+                            class="col-12"
+                            :filterResults="false"
+                            :min-chars="1"
+                            :resolve-on-load="formdata ? true : false"
+                            :delay="0"
+                            :searchable="true"
+                            :options="
+                                async query => {
+                                    return await getAddress(query);
+                                }
+                            "
+                        />
+                    </div>
+                    <div class="row mt-2">
+                        <Input
+                            v-model="form.ogrn"
+                            :v="v$.form.ogrn"
+                            label="ОГРН"
+                            class="col-4"
+                            maska="#############"
+                        />
+                        <Input
+                            v-model="form.inn"
+                            :v="v$.form.inn"
+                            label="ИНН"
+                            class="col-4"
+                            maska="############"
+                        />
+                        <Input
+                            v-model="form.kpp"
+                            :v="v$.form.kpp"
+                            label="КПП"
+                            class="col-4"
+                            maska="#########"
+                        />
+                    </div>
+                    <div class="row mt-2">
+                        <Input
+                            v-model="form.checkingAccount"
+                            :v="v$.form.checkingAccount"
+                            label="Расчетный счет"
+                            class="col-4"
+                            maska="####################"
+                        />
+                        <Input
+                            v-model="form.correspondentAccount"
+                            :v="v$.form.correspondentAccount"
+                            label="Корреспондентский счет"
+                            class="col-4"
+                            maska="####################"
+                        />
+                        <MultiSelect
+                            v-model="form.inTheBank"
+                            label="В банке"
+                            class="col-4"
+                            :searchable="true"
+                            :options="COMPANY_IN_THE_BANK_LIST"
+                        />
+                    </div>
+                    <div class="row mt-2">
+                        <Input
+                            v-model="form.bik"
+                            :v="v$.form.bik"
+                            label="БИК"
+                            class="col-4"
+                            maska="#########"
+                        />
+                        <Input
+                            v-model="form.okpo"
+                            :v="v$.form.okpo"
+                            label="ОКПО"
+                            class="col-4"
+                            maska="##########"
+                        />
+                        <Input
+                            v-model="form.okved"
+                            :v="v$.form.okved"
+                            label="ОКВЭД"
+                            class="col-4"
+                            maska="##############################"
+                        />
+                    </div>
+                    <div class="row mt-2">
+                        <Input v-model="form.signatoryName" label="Имя подписанта" class="col-4" />
+                        <Input
+                            v-model="form.signatoryMiddleName"
+                            label="Фамилия подписанта"
+                            class="col-4"
+                        />
+                        <Input
+                            v-model="form.signatoryLastName"
+                            label="Отчество подписанта"
+                            class="col-4"
+                        />
+                    </div>
+                    <div class="row mt-2">
+                        <Input
+                            v-model="form.documentNumber"
+                            label="№ документа"
+                            maska="#####################"
+                            class="col-6 pr-1"
+                        />
+                        <Input
+                            v-model="form.basis"
+                            label="Действует на основе"
+                            class="col-6 pl-1"
+                        />
+                    </div>
+                </Tab>
+                <Tab name="Документы">
+                    <div class="row">
+                        <FileInput
+                            v-model:native="form.fileList"
+                            v-model:data="form.files"
+                            label="Документы"
+                            class="col-12"
+                        >
+                            Выбрать файлы
+                        </FileInput>
+                    </div>
+                </Tab>
+                <div class="row mt-4 align-self-end">
+                    <Button success class="col-3 mx-auto">
+                        {{ formdata ? 'Сохранить' : 'Создать' }}
+                    </Button>
+                </div>
+            </Tabs>
+        </Form>
+    </Modal>
 </template>
 
 <script>
 import Form from '@/components/common/Forms/Form.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import Input from '@/components/common/Forms/Input.vue';
-import Submit from '@/components/common/Forms/Submit.vue';
 import Textarea from '@/components/common/Forms/Textarea.vue';
 import FileInput from '@/components/common/Forms/FileInput.vue';
 import PropogationInput from '@/components/common/Forms/PropogationInput.vue';
 import PropogationDoubleInput from '@/components/common/Forms/PropogationDoubleInput.vue';
-import Checkbox from '@/components/common/Forms/Checkbox.vue';
-import Radio from '@/components/common/Forms/Radio.vue';
 import RadioStars from '@/components/common/Forms/RadioStars.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import useValidate from '@vuelidate/core';
@@ -376,24 +403,28 @@ import Utils, { validatePropogationInput, validateUrl, yandexmap } from '@/utils
 import api from '@//api/api.js';
 import Modal from '@/components/common/Modal.vue';
 import Loader from '@/components/common/Loader.vue';
+import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
+import RadioChip from '@/components/common/Forms/RadioChip.vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import Button from '@/components/common/Button.vue';
 
 export default {
     name: 'FormCompany',
     components: {
+        AnimationTransition,
+        RadioChip,
+        CheckboxChip,
         Loader,
         Modal,
-        FormGroup,
         Form,
         Input,
-        Submit,
         PropogationInput,
         PropogationDoubleInput,
         Textarea,
-        Checkbox,
-        Radio,
         RadioStars,
         MultiSelect,
-        FileInput
+        FileInput,
+        Button
     },
     props: {
         formdata: {
@@ -405,13 +436,6 @@ export default {
         return {
             v$: useValidate(),
             loader: false,
-            categoryOptions: CompanyCategories.get('param'),
-            formOfOrganizationOptions: CompanyFormOrganization.get('param'),
-            statusOptions: ActivePassive.get('param'),
-            activityGroupOptions: ActivityGroupList.get('param'),
-            activityProfileOptions: ActivityProfileList.get('param'),
-            passiveWhyOptions: PassiveWhy.get('param'),
-            ratingOptions: RatingList.get('param'),
             form: {
                 activityGroup: null,
                 activityProfile: null,
@@ -459,33 +483,73 @@ export default {
             'COMPANY_GROUP_LIST',
             'COMPANY_PRODUCT_RANGE_LIST',
             'COMPANY_IN_THE_BANK_LIST'
-        ])
+        ]),
+        categoryOptions: () => CompanyCategories,
+        formOfOrganizationOptions: () => CompanyFormOrganization,
+        statusOptions: () => ActivePassive,
+        activityGroupOptions: () => ActivityGroupList,
+        activityProfileOptions: () => ActivityProfileList,
+        passiveWhyOptions: () => PassiveWhy,
+        ratingOptions: () => RatingList
     },
     validations() {
         return {
             form: {
                 contacts: {
                     emails: {
-                        propogation: helpers.withMessage('Пустое поле не допустимо', this.validateEmailsPropogation),
-                        email: helpers.withMessage('заполните email правильно', this.customEmailValidation)
+                        propogation: helpers.withMessage(
+                            'Пустое поле не допустимо',
+                            this.validateEmailsPropogation
+                        ),
+                        email: helpers.withMessage(
+                            'заполните email правильно',
+                            this.customEmailValidation
+                        )
                     },
                     websites: {
-                        propogation: helpers.withMessage('Пустое поле не допустимо', this.validateWebsitesPropogation),
-                        website: helpers.withMessage('заполните вебсайт правильно', this.customUrlValidation)
+                        propogation: helpers.withMessage(
+                            'Пустое поле не допустимо',
+                            this.validateWebsitesPropogation
+                        ),
+                        website: helpers.withMessage(
+                            'заполните вебсайт правильно',
+                            this.customUrlValidation
+                        )
                     },
                     phones: {
-                        propogation: helpers.withMessage('Пустое поле не допустимо', this.validatePhonesPropogation)
+                        propogation: helpers.withMessage(
+                            'Пустое поле не допустимо',
+                            this.validatePhonesPropogation
+                        )
                     }
                 },
                 nameEng: {
-                    customRequiredName: helpers.withMessage('заполните поле', this.customRequiredNameEng),
-                    minLength: helpers.withMessage('название не может быть меньше 3 символов', minLength(3)),
-                    maxLength: helpers.withMessage('название не может быть больше 60 символов', maxLength(60))
+                    customRequiredName: helpers.withMessage(
+                        'заполните поле',
+                        this.customRequiredNameEng
+                    ),
+                    minLength: helpers.withMessage(
+                        'название не может быть меньше 3 символов',
+                        minLength(3)
+                    ),
+                    maxLength: helpers.withMessage(
+                        'название не может быть больше 60 символов',
+                        maxLength(60)
+                    )
                 },
                 nameRu: {
-                    customRequiredName: helpers.withMessage('заполните поле', this.customRequiredNameRu),
-                    minLength: helpers.withMessage('название не может быть меньше 3 символов', minLength(3)),
-                    maxLength: helpers.withMessage('название не может быть больше 60 символов', maxLength(60))
+                    customRequiredName: helpers.withMessage(
+                        'заполните поле',
+                        this.customRequiredNameRu
+                    ),
+                    minLength: helpers.withMessage(
+                        'название не может быть меньше 3 символов',
+                        minLength(3)
+                    ),
+                    maxLength: helpers.withMessage(
+                        'название не может быть больше 60 символов',
+                        maxLength(60)
+                    )
                 },
                 categories: {
                     required: helpers.withMessage('выберите категорию', required)
@@ -498,16 +562,28 @@ export default {
                     required: helpers.withMessage('Выберите консультанта', required)
                 },
                 ogrn: {
-                    minLength: helpers.withMessage('огрн не может быть меньше 13 символов', minLength(13))
+                    minLength: helpers.withMessage(
+                        'огрн не может быть меньше 13 символов',
+                        minLength(13)
+                    )
                 },
                 inn: {
-                    minLength: helpers.withMessage('инн не может быть меньше 10 символов', minLength(10))
+                    minLength: helpers.withMessage(
+                        'инн не может быть меньше 10 символов',
+                        minLength(10)
+                    )
                 },
                 kpp: {
-                    minLength: helpers.withMessage('кпп не может быть меньше 9 символов', minLength(9))
+                    minLength: helpers.withMessage(
+                        'кпп не может быть меньше 9 символов',
+                        minLength(9)
+                    )
                 },
                 checkingAccount: {
-                    minLength: helpers.withMessage('расчетный счет не может быть меньше 20 символов', minLength(20))
+                    minLength: helpers.withMessage(
+                        'расчетный счет не может быть меньше 20 символов',
+                        minLength(20)
+                    )
                 },
                 correspondentAccount: {
                     minLength: helpers.withMessage(
@@ -516,13 +592,22 @@ export default {
                     )
                 },
                 bik: {
-                    minLength: helpers.withMessage('бик не может быть меньше 9 символов', minLength(9))
+                    minLength: helpers.withMessage(
+                        'бик не может быть меньше 9 символов',
+                        minLength(9)
+                    )
                 },
                 okved: {
-                    minLength: helpers.withMessage('оквэд не может быть меньше 4 символов', minLength(4))
+                    minLength: helpers.withMessage(
+                        'оквэд не может быть меньше 4 символов',
+                        minLength(4)
+                    )
                 },
                 okpo: {
-                    minLength: helpers.withMessage('окпо не может быть меньше 8 символов', minLength(8))
+                    minLength: helpers.withMessage(
+                        'окпо не может быть меньше 8 символов',
+                        minLength(8)
+                    )
                 },
                 activityGroup: {
                     required: helpers.withMessage('Выберите группу деятельности', required)
@@ -531,7 +616,10 @@ export default {
                     required: helpers.withMessage('Выберите профиль деятельности', required)
                 },
                 passive_why: {
-                    customRequiredPassiveWhy: helpers.withMessage('Выберите причину', this.customRequiredPassiveWhy)
+                    customRequiredPassiveWhy: helpers.withMessage(
+                        'Выберите причину',
+                        this.customRequiredPassiveWhy
+                    )
                 }
             }
         };
@@ -607,7 +695,10 @@ export default {
         },
         customRequiredNameRu(value) {
             if (!this.form.noName) {
-                if ((value != null && value != '') || (this.form.nameEng != null && this.form.nameEng != '')) {
+                if (
+                    (value != null && value != '') ||
+                    (this.form.nameEng != null && this.form.nameEng != '')
+                ) {
                     return true;
                 }
                 return false;
@@ -617,7 +708,10 @@ export default {
         },
         customRequiredNameEng(value) {
             if (!this.form.noName) {
-                if ((value != null && value != '') || (this.form.nameRu != null && this.form.nameRu != '')) {
+                if (
+                    (value != null && value != '') ||
+                    (this.form.nameRu != null && this.form.nameRu != '')
+                ) {
                     return true;
                 }
                 return false;
@@ -653,12 +747,6 @@ export default {
             this.form = Utils.normalizeDataForCompanyForm(this.form);
         }
         this.loader = false;
-    },
-    watch: {
-        form: {
-            handler() {},
-            deep: true
-        }
     }
 };
 </script>

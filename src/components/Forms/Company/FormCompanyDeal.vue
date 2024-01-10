@@ -203,7 +203,6 @@ export default {
             selectedCompany: null,
             selectedCompetitorCompany: null,
             selectedOffer: null,
-            formOfOrganizationOptions: CompanyFormOrganization.get('param'),
             requestOptions: [],
             form: {
                 request_id: null,
@@ -285,6 +284,7 @@ export default {
     },
     computed: {
         ...mapGetters(['CONSULTANT_LIST', 'THIS_USER']),
+        formOfOrganizationOptions: () => CompanyFormOrganization,
         contractTermVisible() {
             if (!this.requestOptions.length || !this.form.request_id) return false;
             const currentRequestOption = this.requestOptions.find(item => item.value == this.form.request_id);

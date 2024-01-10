@@ -12,24 +12,24 @@
             >
                 <p>{{ extraLabel }}</p>
             </div>
-            <div v-if="options.length" class="item-container">
+            <div v-if="options" class="item-container">
                 <label
                     v-for="option in options"
-                    :key="option[0]"
+                    :key="option.id"
                     class="checkbox__label"
                     :class="{
-                        active: field.includes(option[0])
+                        active: field.includes(option.id)
                     }"
-                    :title="option[1].name"
+                    :title="option.name"
                 >
                     <input
                         v-model="field"
                         @change.stop="onChange"
                         type="checkbox"
                         :class="inputClasses"
-                        :value="option[0]"
+                        :value="option.id"
                     />
-                    <i :class="option[1].icon" />
+                    <i :class="option.icon" />
                 </label>
             </div>
             <div v-else>
@@ -84,8 +84,8 @@ export default {
             default: null
         },
         options: {
-            type: Array,
-            default: () => []
+            type: Object,
+            default: null
         },
         name: {
             type: String,
@@ -138,7 +138,7 @@ export default {
             });
             let options = [];
             this.options.forEach(item => {
-                options.push(item[0]);
+                options.push(item.id);
             });
             let result = this.includesArray(options, data);
             return result;
@@ -152,7 +152,7 @@ export default {
         diff() {
             let options = [];
             this.options.forEach(item => {
-                options.push(item[0]);
+                options.push(item.id);
             });
             let data = [];
             this.field.forEach(item => {

@@ -36,20 +36,6 @@ export const FormMixin = {
     },
     data() {
         return {
-            dealTypeList: DealTypeList.get('param'),
-            objectClassList: ObjectClassList.get('param'),
-            gateTypeList: GateTypeList.get('param'),
-            yesNoFUCKOptions: YesNoFUCK.get('param'),
-            yesNoOptions: YesNo.get('param'),
-            outsideMkadOptions: OutsideMkad.get('param'),
-            floorTypesFUCKOptions: FloorTypesFUCK.get('param'),
-            objectTypeListWareHouse: ObjectTypeList.get('warehouse'),
-            objectTypeListProduction: ObjectTypeList.get('production'),
-            objectTypeListPlot: ObjectTypeList.get('plot'),
-            regionList: RegionList.get('param'),
-            directionList: DirectionList.get('param'),
-            districtList: DistrictList.get('param'),
-            activePassiveOptions: ActivePassiveFUCK.get('param'),
             region: null
         };
     },
@@ -64,6 +50,20 @@ export const FormMixin = {
     },
     computed: {
         ...mapGetters(['FAVORITES_OFFERS', 'REGION_LIST']),
+        dealTypeList: () => DealTypeList,
+        objectClassList: () => ObjectClassList,
+        gateTypeList: () => GateTypeList,
+        yesNoFUCKOptions: () => YesNoFUCK,
+        yesNoOptions: () => YesNo,
+        outsideMkadOptions: () => OutsideMkad,
+        floorTypesFUCKOptions: () => FloorTypesFUCK,
+        objectTypeListWareHouse: () => ObjectTypeList.warehouse,
+        objectTypeListProduction: () => ObjectTypeList.production,
+        objectTypeListPlot: () => ObjectTypeList.plot,
+        regionList: () => RegionList,
+        directionList: () => DirectionList,
+        districtList: () => DistrictList,
+        activePassiveOptions: () => ActivePassiveFUCK,
         favoritesCount() {
             return this.FAVORITES_OFFERS.length;
         },

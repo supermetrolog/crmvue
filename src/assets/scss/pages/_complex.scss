@@ -145,7 +145,7 @@
     }
 
     .tabs-component-panels {
-        padding: 10px;
+        padding: 10px 0;
     }
 
     .tabs-component-tab-a::before {
@@ -258,47 +258,6 @@
         }
     }
 
-    &-equipment {
-        &-label {
-            margin-bottom: 5px;
-        }
-
-        &-list {
-            display: flex;
-            flex-wrap: wrap;
-            column-gap: 10px;
-        }
-
-        &-item {
-            background-color: inherit;
-            border: 1px solid variables.$color_grey;
-            border-radius: 5px;
-            padding: 2px 7px;
-            margin-bottom: 5px;
-        }
-
-        &-item-button {
-            margin-bottom: 5px;
-        }
-
-        &-text {
-            font-size: 14px;
-        }
-
-        &-button {
-            font-size: 14px;
-            background-color: white;
-            border: 1px solid variables.$color_grey;
-            border-radius: 5px;
-            padding: 4px 7px;
-            cursor: pointer;
-
-            &:hover {
-                opacity: 0.7;
-            }
-        }
-    }
-
     &-floors {
         padding: 10px 20px;
         background-color: $color_left-aside;
@@ -395,7 +354,6 @@
     }
 
     &__tab-list {
-        padding-left: 10px;
         position: static;
         background-color: inherit;
         display: flex;
@@ -442,28 +400,87 @@
     gap: 20px;
     overflow-y: auto;
     height: 100%;
-    //   max-height: 300px;
 }
 
-
-.ObjectHoldingsOwnerItem {
+.object-holding-contact {
     display: flex;
-    flex-direction: column;
-    font-size: 14px;
+    gap: 10px;
 
-    &-header {
-        font-weight: bold;
+    &__avatar {
+        background-color: #d0d9e0;
+        border-radius: 50%;
+        height: 40px;
+        width: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
     }
 
-    &-name {
+    &__description {
         font-size: 14px;
     }
 
-    &-links {
-        & > * {
-            text-decoration: underline;
-            color: variables.$color_default_link;
+    &__name {
+        font-weight: 500;
+    }
+
+    &__message {
+        font-size: 12px;
+        color: variables.$color_grey
+    }
+
+    &__message::before {
+        content: ', '
+    }
+
+    &__list {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    &__item {
+        font-size: 12px;
+
+        &:not(&:last-child)::after {
+            content: ',';
+            margin-right: 3px;
         }
+    }
+}
+
+
+.object-holding-company {
+    &__title {
+        font-size: 13px;
+        font-weight: 500;
+        margin-bottom: 5px;
+    }
+
+    &__header {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__name {
+        color: #000;
+        width: max-content;
+    }
+
+    &__subtitle {
+        font-size: 14px;
+        font-weight: 500;
+        margin: 10px 0 5px;
+    }
+
+    &__list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    &__message {
+        font-size: 13px;
     }
 }
 
@@ -518,6 +535,7 @@
 
         display: flex;
         justify-content: space-between;
+        align-items: center;
 
         font-size: 14px;
         line-height: 53px;
@@ -605,6 +623,7 @@
         border-bottom: $border;
         border-left: $border;
         border-right: $border;
+        gap: 0;
     }
 
     .tabs-component-panels {

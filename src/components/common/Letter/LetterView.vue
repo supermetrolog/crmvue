@@ -95,8 +95,7 @@ export default {
     },
     methods: {
         getWayByIndex(index) {
-            let options = WayOfSending.get('param');
-            return options[index][1];
+            return WayOfSending[index];
         },
         getOffers() {
             return this.letter.letterOffers.map(item => {

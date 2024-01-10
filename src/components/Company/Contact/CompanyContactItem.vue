@@ -108,7 +108,7 @@
 </template>
 
 <script>
-import { FeedbackList, PassiveWhyContact, PositionList } from '@/const/const.js';
+import { FeedbackIcons, PassiveWhyContact, PositionList } from '@/const/const.js';
 import Loader from '@/components/common/Loader.vue';
 
 export default {
@@ -131,14 +131,14 @@ export default {
     },
     data() {
         return {
-            wayOfInformings: FeedbackList.get('contact'),
-            positionList: PositionList.get('param'),
-            passiveWhyOptions: PassiveWhyContact.get('param'),
             extraInfoVisible: false,
             comment: ''
         };
     },
     computed: {
+        wayOfInformings: () => FeedbackIcons,
+        positionList: () => PositionList,
+        passiveWhyOptions: () => PassiveWhyContact,
         name() {
             if (this.contact.type) {
                 return 'Общий контакт';
@@ -151,10 +151,10 @@ export default {
     },
     methods: {
         getWayClass(way) {
-            return this.wayOfInformings[way][2];
+            return this.wayOfInformings[way].icon;
         },
         getWayTitle(way) {
-            return this.wayOfInformings[way][1];
+            return this.wayOfInformings[way].name;
         },
         openExtraInfo() {
             this.extraInfoVisible = true;

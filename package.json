@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "vue-cli-service serve --mode server",
     "build": "vue-cli-service build",
+    "stage": "vue-cli-service build --mode stage",
     "lint": "vue-cli-service lint",
-    "serveport": "vue-cli-service serve --port 8081"
+    "dev": "vue-cli-service serve --port 8081"
   },
   "dependencies": {
     "@kyvg/vue3-notification": "^2.3.3",
@@ -22,6 +23,7 @@
     "plural-ru": "^2.0.2",
     "v3-infinite-loading": "^1.2.2",
     "vue": "^3.0.0",
+    "vue-agile": "^2.0.0",
     "vue-axios": "^3.2.4",
     "vue-draggable-next": "^2.1.1",
     "vue-moment": "^4.1.0",

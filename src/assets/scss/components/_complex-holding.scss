@@ -1,7 +1,7 @@
 @use '../utils/variables';
 @use '../utils/mixins';
 
-.ObjectHolding {
+.object-holding {
     $gap: 1em;
     $sticky-top: 170px;
     $header-height: 50px;
@@ -31,7 +31,7 @@
         }
     }
 
-    &-body {
+    &__body {
         padding: $gap;
         background-color: variables.$color_grey_alt;
         position: relative;
@@ -41,7 +41,7 @@
         border-right: $border;
     }
 
-    &-label {
+    &__badge {
         position: absolute;
         z-index: 3;
         top: 0;
@@ -65,12 +65,12 @@
         }
     }
 
-    &-carousel {
+    &__carousel {
         margin-bottom: 20px;
         position: relative;
     }
 
-    &-info {
+    &__info {
         display: flex;
         max-height: 470px;
 
@@ -85,6 +85,7 @@
             padding: 20px;
             background-color: variables.$color_olive_light;
             border: 1px solid variables.$color_light_grey;
+            overflow-y: auto;
         }
     }
 }

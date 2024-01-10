@@ -9,7 +9,8 @@
                     <span v-if="complex.author">
                         {{ complex.author.userProfile.full_name }}
                     </span>
-                    <span v-else>без автора</span>, последнее обновление {{ $formatter.date(complex.last_update) }}
+                    <span v-else>без автора</span>, последнее обновление
+                    {{ $formatter.date(complex.last_update) }}
                 </span>
             </div>
             <div v-if="editAccess" class="ComplexHeader-actions">
@@ -42,7 +43,9 @@ export default {
         complexLocation() {
             return {
                 ...this.complex.location,
-                fromMkad: this.complex.from_mkad
+                fromMkad: this.complex.from_mkad,
+                latitude: this.complex.latitude,
+                longitude: this.complex.longitude
             };
         }
     },
@@ -51,7 +54,7 @@ export default {
             fetchComplex: 'FETCH_COMPLEX'
         })
     },
-    async mounted() {
+    async created() {
         this.complex = await this.fetchComplex(this.$route.params.complex_id);
     }
 };

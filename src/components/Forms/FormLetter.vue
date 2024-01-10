@@ -111,7 +111,6 @@ export default {
     data() {
         return {
             v$: useValidate(),
-            wayOfSendingOptions: WayOfSending.get('param'),
             customToolbar: [
                 [{ header: [false, 1, 2, 3, 4, 5, 6] }],
                 ['bold', 'italic', 'underline', 'strike'], // toggled buttons
@@ -159,6 +158,7 @@ export default {
     },
     computed: {
         ...mapGetters(['COMPANY_CONTACTS', 'THIS_USER']),
+        wayOfSendingOptions: () => WayOfSending,
         companyContacts() {
             if (this.alreadySended) return Utils.normalizeContactsForMultiselect(this.COMPANY_CONTACTS);
 

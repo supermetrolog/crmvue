@@ -54,10 +54,8 @@ export default {
             type: String
         }
     },
-    data() {
-        return {
-            timelineSteps: Timeline.get('param')
-        };
+    computed: {
+        timelineSteps: () => Timeline
     },
     methods: {
         currentStep(timelineStep) {

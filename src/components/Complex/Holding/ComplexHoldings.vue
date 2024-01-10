@@ -12,7 +12,10 @@
             </div>
         </div>
         <teleport to="body">
-            <FormComplexBuildingCreate v-if="createBuildingFormVisible" @close="clickCloseCreateBuildingForm" />
+            <FormComplexBuildingCreate
+                v-if="createBuildingFormVisible"
+                @close="clickCloseCreateBuildingForm"
+            />
         </teleport>
         <teleport to="body">
             <FormComplexPlotCreate v-if="createPlotFormVisible" @close="clickCloseCreatePlotForm" />
@@ -45,11 +48,11 @@ export default {
     },
     computed: {
         buildingsCount() {
-            let buildings = this.objects.filter(holding => holding.type === 1);
+            let buildings = this.objects.filter(holding => holding.object_type.includes(1));
             return buildings.length;
         },
         landsCount() {
-            return this.objects.filter(holding => holding.type === 2).length;
+            return this.objects.filter(holding => holding.object_type.includes(2)).length;
         }
     },
     methods: {

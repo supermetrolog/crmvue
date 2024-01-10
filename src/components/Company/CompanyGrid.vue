@@ -137,10 +137,10 @@ export default {
             }
         },
         category(categoryValue) {
-            return CompanyCategories.get('param')[categoryValue][1];
+            return CompanyCategories[categoryValue].name;
         },
         companyName({ nameRu, nameEng }) {
-            if (nameRu && nameRu) return `${nameRu} - ${nameEng}`;
+            if (nameRu && nameEng) return `${nameRu} - ${nameEng}`;
             return nameRu ? nameRu : nameEng;
         }
     }

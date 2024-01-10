@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import { tradeOfferCharacteristics } from '@/const/tradeOfferCharacteristics';
+import { tradeOfferCharacteristics } from '@/const/offerCharacteristics';
 import Form from '@/components/common/Forms/Form.vue';
 import Checkbox from '@/components/common/Forms/Checkbox.vue';
 import { OfferParametersMixin } from '@/components/Complex/Offer/mixins';

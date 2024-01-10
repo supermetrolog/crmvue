@@ -98,7 +98,9 @@ export class AlreadySendOffersComment extends Comment {
     }
 
     _getContacts() {
-        const str = this._contacts.map(elem => `<span class="d-inline"><b>${elem.value}</b></span>`).join(', ');
+        const str = this._contacts
+            .map(elem => `<span class="d-inline"><b>${elem.value}</b></span>`)
+            .join(', ');
         if (this._contacts.length > 1) {
             return `контактам: ${str}`;
         }
@@ -106,11 +108,10 @@ export class AlreadySendOffersComment extends Comment {
     }
 
     _getWayOfSending() {
-        const wayOfSendingOptions = WayOfSending.get('param');
         return this._wayOfSending
             .map(
                 way =>
-                    `<i class="d-inline ${wayOfSendingOptions[way][1].icon}" title="${wayOfSendingOptions[way][1].name}"></i>`
+                    `<i class="d-inline ${WayOfSending[way][1].icon}" title="${WayOfSending[way][1].name}"></i>`
             )
             .join(' ');
     }

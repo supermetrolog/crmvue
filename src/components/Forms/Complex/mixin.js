@@ -11,7 +11,18 @@ import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import useValidate from '@vuelidate/core';
 
 export const ComplexFormMixin = {
-    components: { Checkbox, Textarea, Radio, Input, FileInput, CheckboxIcons, MultiSelect, Submit, Form, FormGroup },
+    components: {
+        Checkbox,
+        Textarea,
+        Radio,
+        Input,
+        FileInput,
+        CheckboxIcons,
+        MultiSelect,
+        Submit,
+        Form,
+        FormGroup
+    },
     data() {
         return {
             loader: false,
@@ -31,6 +42,11 @@ export const ComplexFormMixin = {
                     }
                 }
             }
+        },
+        normalizeForm(params) {
+            params.forEach(param => {
+                if (!Array.isArray(this.form[param])) this.form[param] = [];
+            });
         }
     }
 };

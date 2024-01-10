@@ -175,10 +175,12 @@ import { helpers, maxLength, minLength, required } from '@vuelidate/validators';
 import { mapActions, mapGetters } from 'vuex';
 import { ActivePassive, CompanyCategories, CompanyFormOrganization } from '@/const/const.js';
 import Utils from '@/utils';
+import Modal from '@/components/common/Modal.vue';
 
 export default {
     name: 'TestForm',
     components: {
+        Modal,
         FormGroup,
         Form,
         Input,
@@ -201,9 +203,6 @@ export default {
         return {
             v$: useValidate(),
             loader: false,
-            categoryOptions: CompanyCategories.get('param'),
-            formOfOrganizationOptions: CompanyFormOrganization.get('param'),
-            statusOptions: ActivePassive.get('param'),
             form: {
                 activityGroup: null,
                 activityProfile: null,
@@ -240,7 +239,10 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(['COMPANY', 'CONSULTANT_LIST', 'COMPANY_GROUP_LIST'])
+        ...mapGetters(['COMPANY', 'CONSULTANT_LIST', 'COMPANY_GROUP_LIST']),
+        categoryOptions: () => CompanyCategories,
+        formOfOrganizationOptions: () => CompanyFormOrganization,
+        statusOptions: () => ActivePassive
     },
     validations() {
         return {

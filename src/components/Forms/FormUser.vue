@@ -153,7 +153,6 @@ export default {
         return {
             v$: useValidate(),
             loader: false,
-            roleOptions: RoleList.get('param'),
             form: {
                 username: null,
                 password: null,
@@ -175,7 +174,8 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(['CONSULTANT_LIST'])
+        ...mapGetters(['CONSULTANT_LIST']),
+        roleOptions: () => RoleList
     },
     validations() {
         return {

@@ -76,13 +76,21 @@
                             <div v-if="request.directions.length" class="region-parameters">
                                 <p class="d-inline"><b>Московская область: </b></p>
                                 <p class="d-inline">
-                                    {{ request.directions.map(elem => directionList[elem.direction][2]).join(', ') }}
+                                    {{
+                                        request.directions
+                                            .map(elem => directionList[elem.direction].full)
+                                            .join(', ')
+                                    }}
                                 </p>
                             </div>
                             <div v-if="request.districts.length" class="region-parameters">
                                 <p class="d-inline"><b>Москва: </b></p>
                                 <p class="d-inline">
-                                    {{ request.districts.map(elem => districtList[elem.district][1]).join(', ') }}
+                                    {{
+                                        request.districts
+                                            .map(elem => districtList[elem.district][1])
+                                            .join(', ')
+                                    }}
                                 </p>
                             </div>
                             <div>

@@ -8,6 +8,7 @@ import PhoneNumber from '@/components/common/PhoneNumber.vue';
 import Notifications from '@kyvg/vue3-notification';
 import { ApiUrlHelper, apiUrlHelperObject, Formatter } from '@/plugins/index.js';
 import { Tab, Tabs } from 'vue3-tabs-component';
+import { VueAgile } from 'vue-agile';
 
 import '@vueform/multiselect/themes/default.css';
 import './assets/fontawesome/css/fontawesome.min.css';
@@ -23,6 +24,7 @@ app.config.performance = true;
 app.component('Tabs', Tabs)
     .component('Tab', Tab)
     .component('PhoneNumber', PhoneNumber)
+    .use(VueAgile)
     .use(Formatter)
     .use(ApiUrlHelper)
     .use(Notifications)

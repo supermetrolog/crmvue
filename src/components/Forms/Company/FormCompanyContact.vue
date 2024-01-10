@@ -201,7 +201,7 @@
 import { mapActions, mapGetters } from 'vuex';
 import useValidate from '@vuelidate/core';
 import { email, helpers, required } from '@vuelidate/validators';
-import { ActivePassive, FeedbackList, PassiveWhyContact, PositionList } from '@/const/const.js';
+import { ActivePassive, FeedbackIcons, PassiveWhyContact, PositionList } from '@/const/const.js';
 import Input from '@/components/common/Forms/Input.vue';
 import Submit from '@/components/common/Forms/Submit.vue';
 import PropogationInput from '@/components/common/Forms/PropogationInput.vue';
@@ -233,6 +233,7 @@ export default {
         MultiSelect,
         Textarea
     },
+    emits: ['closeCompanyForm', 'updated', 'created'],
     props: {
         formdata: {
             type: Object,
@@ -250,10 +251,6 @@ export default {
     data() {
         return {
             v$: useValidate(),
-            wayOfInformsings: FeedbackList.get('contact'),
-            positionList: PositionList.get('param'),
-            statusOptions: ActivePassive.get('param'),
-            passiveWhyOptions: PassiveWhyContact.get('param'),
             loader: false,
             selectedCompany: null,
             forms: {
@@ -281,7 +278,11 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(['CONSULTANT_LIST'])
+        ...mapGetters(['CONSULTANT_LIST']),
+        wayOfInformsings: () => FeedbackIcons,
+        positionList: () => PositionList,
+        statusOptions: () => ActivePassive,
+        passiveWhyOptions: () => PassiveWhyContact
     },
     validations() {
         return {
@@ -353,6 +354,12 @@ export default {
                 }
             }
         };
+    },
+    watch: {
+        forms: {
+            handler() {},
+            deep: true
+        }
     },
     methods: {
         ...mapActions(['FETCH_CONSULTANT_LIST', 'CREATE_CONTACT', 'UPDATE_CONTACT', 'SEARCH_COMPANIES']),
@@ -511,14 +518,7 @@ export default {
             this.forms = { ...this.forms, ...this.formdata };
         }
         this.loader = false;
-    },
-    watch: {
-        forms: {
-            handler() {},
-            deep: true
-        }
-    },
-    emits: ['closeCompanyForm', 'updated', 'created']
+    }
 };
 </script>
 

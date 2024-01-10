@@ -45,10 +45,8 @@ export default {
             type: Object
         }
     },
-    data() {
-        return {
-            timelineSteps: Timeline.get('param')
-        };
+    computed: {
+        timelineSteps: () => Timeline
     },
     methods: {
         currentStep(timelineStep) {

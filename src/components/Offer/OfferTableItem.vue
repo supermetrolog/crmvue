@@ -174,14 +174,13 @@ export default {
     data() {
         return {
             miniOffers: [],
-            miniOffersLoader: false,
-            TaxFormList
+            miniOffersLoader: false
         };
     },
     computed: {
         taxForm() {
             if (this.offer && this.offer.offer) {
-                const taxForm = this.TaxFormList.find(item => item.value === this.offer.offer.tax_form);
+                const taxForm = TaxFormList.find(item => item.value === this.offer.offer.tax_form);
                 if (taxForm) {
                     return taxForm.label;
                 }

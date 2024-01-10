@@ -1,5 +1,5 @@
 <template>
-    <div class="form__control">
+    <div class="form__control" :class="{ 'form__control--disabled': disabled }">
         <label for="" class="form__label" :class="{ required: required }">
             <span v-if="label">
                 {{ label }}
@@ -35,7 +35,7 @@
                 </template>
             </Multiselect>
         </label>
-        <div v-if="v && v.$error" class="error-container">
+        <div v-if="v && v.$error && !disabled" class="error-container">
             <p>{{ v.$errors[0].$message }}</p>
         </div>
         <slot />

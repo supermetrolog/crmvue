@@ -1,5 +1,5 @@
 <template>
-    <button @click="$emit('click')" class="button" :class="classButton" :title="title">
+    <button @click="clickHandler" class="button" :class="classButton" :title="title">
         <span v-if="hasBadge" class="button__badge badge badge-danger">
             {{ badge }}
         </span>
@@ -46,6 +46,10 @@ export default {
         active: {
             type: Boolean,
             default: true
+        },
+        prevent: {
+            type: Boolean,
+            default: false
         }
     },
     computed: {
@@ -62,6 +66,12 @@ export default {
                 'button--danger': this.danger,
                 'button--disabled': !this.active
             };
+        }
+    },
+    methods: {
+        clickHandler(event) {
+            if (this.prevent) event.preventDefault();
+            this.$emit('click');
         }
     }
 };

@@ -19,12 +19,11 @@ export default {
             filtersValueGetter: {
                 rangeMinElectricity: value => value + ' кВт',
                 rangeMaxDistanceFromMKAD: value => value + ' км',
-                deal_type: value =>
-                    DealTypeList.get('param')
-                        .find(el => el.value == value)
-                        .label.toUpperCase(),
+                deal_type: value => DealTypeList.find(el => el.value == value).label.toUpperCase(),
                 agent_id: value =>
-                    this.CONSULTANT_LIST.length ? this.CONSULTANT_LIST.find(elem => elem.value == value).label : null,
+                    this.CONSULTANT_LIST.length
+                        ? this.CONSULTANT_LIST.find(elem => elem.value == value).label
+                        : null,
                 rangeMinArea: value => value + ' м<sup>2</sup>',
                 rangeMaxArea: value => value + ' м<sup>2</sup>',
                 rangeMinPricePerFloor: value => value + ' р',
@@ -34,34 +33,34 @@ export default {
                 class: value => {
                     if (!value) return null;
                     if (!Array.isArray(value)) value = [value];
-                    return value.map(elem => ObjectClassList.get('param')[elem][1]).join(', ');
+                    return value.map(elem => ObjectClassList[elem]).join(', ');
                 },
                 gates: value => {
                     if (!value) return null;
                     if (!Array.isArray(value)) value = [value];
-                    return value.map(elem => GateTypeList.get('param')[elem][1]).join(', ');
+                    return value.map(elem => GateTypeList[elem]).join(', ');
                 },
                 heated: value => {
                     if (!value) return null;
-                    return YesNoFUCK.get('param').find(param => param[0] == value)[1];
+                    return YesNoFUCK[value];
                 },
                 floor_types: value => {
                     if (!value) return null;
                     if (!Array.isArray(value)) value = [value];
-                    return value.map(elem => FloorTypesFUCK.get('param').find(param => param[0] == elem)[1]).join(', ');
+                    return value.map(elem => FloorTypesFUCK[elem]).join(', ');
                 },
                 purposes: value => {
                     if (!value) return null;
                     if (!Array.isArray(value)) value = [value];
                     const options = [
-                        ...ObjectTypeList.get('warehouse'),
-                        ...ObjectTypeList.get('production'),
-                        ...ObjectTypeList.get('plot')
+                        ...ObjectTypeList.warehouse,
+                        ...ObjectTypeList.production,
+                        ...ObjectTypeList.plot
                     ];
 
                     return value
                         .map(elem => {
-                            const param = options.find(el => el[0] == elem)[1];
+                            const param = options.find(el => el.id == elem);
                             return `<i title="${param.name}"" class="' ${param.icon} '"></i>`;
                         })
                         .join(', ');
@@ -84,7 +83,7 @@ export default {
                 district_moscow: value => {
                     if (!value) return null;
                     if (!Array.isArray(value)) value = [value];
-                    const result = value.map(elem => DistrictList.get('param')[elem][1]).join(', ');
+                    const result = value.map(elem => DistrictList[elem]).join(', ');
                     if (this.$route.query.polygon) {
                         return '<p class="text-danger">' + result + '</p>';
                     }
@@ -93,7 +92,7 @@ export default {
                 direction: value => {
                     if (!value) return null;
                     if (!Array.isArray(value)) value = [value];
-                    const result = value.map(elem => DirectionList.get('param')[elem][2]).join(', ');
+                    const result = value.map(elem => DirectionList[elem].full).join(', ');
                     if (this.$route.query.polygon) {
                         return '<p class="text-danger">' + result + '</p>';
                     }
@@ -101,24 +100,24 @@ export default {
                 },
                 status: value => {
                     if (!value) return null;
-                    return ActivePassiveFUCK.get('param').find(param => param[0] == value)[1];
+                    return ActivePassiveFUCK[value];
                 },
                 // firstFloorOnly: null,
                 ad_realtor: value => {
                     if (!value) return null;
-                    return YesNo.get('param').find(param => param[0] == value)[1];
+                    return YesNo[value];
                 },
                 ad_cian: value => {
                     if (!value) return null;
-                    return YesNo.get('param').find(param => param[0] == value)[1];
+                    return YesNo[value];
                 },
                 ad_yandex: value => {
                     if (!value) return null;
-                    return YesNo.get('param').find(param => param[0] == value)[1];
+                    return YesNo[value];
                 },
                 ad_free: value => {
                     if (!value) return null;
-                    return YesNo.get('param').find(param => param[0] == value)[1];
+                    return YesNo[value];
                 }
             }
         };
@@ -138,7 +137,9 @@ export default {
                 if (Object.hasOwnProperty.call(this.$route.query, key)) {
                     const value = this.$route.query[key];
                     if (key === 'region') {
-                        list.push(this.getFilterListOption('region', this.$route.query['fakeRegion']));
+                        list.push(
+                            this.getFilterListOption('region', this.$route.query['fakeRegion'])
+                        );
                         continue;
                     }
                     if (
@@ -202,7 +203,9 @@ export default {
             const option = {};
             option.value = key;
             const label = this.$options.filtersAliases[key] ?? null;
-            const valueFn = this.filtersValueGetter[key] ? this.filtersValueGetter[key](value) : null;
+            const valueFn = this.filtersValueGetter[key]
+                ? this.filtersValueGetter[key](value)
+                : null;
 
             if (!label && !valueFn) {
                 option.label = 'undefined';

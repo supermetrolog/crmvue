@@ -28,13 +28,17 @@
             <div v-if="request.directions.length" class="company-item-request__region">
                 <p><b>Московская область:</b></p>
                 <span>
-                    {{ request.directions.map(elem => directionList[elem.direction][2]).join(', ') }}
+                    {{
+                        request.directions
+                            .map(elem => directionList[elem.direction].full)
+                            .join(', ')
+                    }}
                 </span>
             </div>
             <div v-if="request.districts.length" class="company-item-request_region">
                 <p><b>Москва:</b></p>
                 <span>
-                    {{ request.districts.map(elem => districtList[elem.district][1]).join(', ') }}
+                    {{ request.districts.map(elem => districtList[elem.district]).join(', ') }}
                 </span>
             </div>
             <div>
@@ -69,7 +73,9 @@
                         <div class="parameters-inner">
                             <span>
                                 {{
-                                    request.objectClasses.map(elem => objectClassList[elem.object_class][1]).join(', ')
+                                    request.objectClasses
+                                        .map(elem => objectClassList[elem.object_class])
+                                        .join(', ')
                                 }}
                             </span>
                             <span v-if="!request.objectClasses.length">нет данных</span>
@@ -104,7 +110,7 @@
                             {{ request.movingDate_format }}
                         </span>
                         <span v-if="request.unknownMovingDate !== null" class="parameters-inner">
-                            {{ unknownMovingDateOptions[request.unknownMovingDate][1] }}
+                            {{ unknownMovingDateOptions[request.unknownMovingDate] }}
                         </span>
                         <p>цена пола <small class="text-grey">(р)</small></p>
                         <span class="parameters-inner">
@@ -120,7 +126,11 @@
                         <div class="parameters-inner">
                             <span v-if="!request.gateTypes.length">нет данных</span>
                             <span v-else>
-                                {{ request.gateTypes.map(elem => gateTypeList[elem.gate_type][1]).join(', ') }}
+                                {{
+                                    request.gateTypes
+                                        .map(elem => gateTypeList[elem.gate_type])
+                                        .join(', ')
+                                }}
                             </span>
                         </div>
                     </div>
@@ -173,6 +183,7 @@ import Button from '@/components/common/Button.vue';
 export default {
     name: 'CompanyBoxRequestsListItem',
     components: { Button, DealListItem, DropdownContainer, Dropdown, Progress },
+    emits: ['clickUpdateRequest', 'clickDisableRequest', 'clickCloneRequest'],
     props: {
         request: {
             status: Number,
@@ -210,21 +221,21 @@ export default {
     },
     data() {
         return {
-            dealTypeList: DealTypeList.get('param'),
-            directionList: DirectionList.get('param'),
-            districtList: DistrictList.get('param'),
-            objectTypeListWareHouse: ObjectTypeList.get('warehouse'),
-            objectTypeListProduction: ObjectTypeList.get('production'),
-            objectTypeListPlot: ObjectTypeList.get('plot'),
-            objectClassList: ObjectClassList.get('param'),
-            gateTypeList: GateTypeList.get('param'),
-            unknownMovingDateOptions: unknownMovingDate.get('param'),
             dealIsOpen: false,
             moreIsOpen: false
         };
     },
     computed: {
         ...mapGetters(['THIS_USER']),
+        dealTypeList: () => DealTypeList,
+        directionList: () => DirectionList,
+        districtList: () => DistrictList,
+        objectTypeListWareHouse: () => ObjectTypeList.warehouse,
+        objectTypeListProduction: () => ObjectTypeList.production,
+        objectTypeListPlot: () => ObjectTypeList.plot,
+        objectClassList: () => ObjectClassList,
+        gateTypeList: () => GateTypeList,
+        unknownMovingDateOptions: () => unknownMovingDate,
         dealType() {
             let dealType = this.dealTypeList[this.request.dealType].label;
             return dealType[0].toUpperCase() + dealType.slice(1);
@@ -259,21 +270,21 @@ export default {
         },
         getObjectTypeIcon(objectType) {
             if (objectType < 12) {
-                return this.objectTypeListWareHouse.find(item => item[0] == objectType)[1].icon;
+                return this.objectTypeListWareHouse.find(item => item.id == objectType).icon;
             }
             if (objectType < 25) {
-                return this.objectTypeListProduction.find(item => item[0] == objectType)[1].icon;
+                return this.objectTypeListProduction.find(item => item.id == objectType).icon;
             }
-            return this.objectTypeListPlot.find(item => item[0] == objectType)[1].icon;
+            return this.objectTypeListPlot.find(item => item.id == objectType).icon;
         },
         getObjectTypeName(objectType) {
             if (objectType < 12) {
-                return this.objectTypeListWareHouse.find(item => item[0] == objectType)[1].name;
+                return this.objectTypeListWareHouse.find(item => item.id == objectType).name;
             }
             if (objectType < 25) {
-                return this.objectTypeListProduction.find(item => item[0] == objectType)[1].name;
+                return this.objectTypeListProduction.find(item => item.id == objectType).name;
             }
-            return this.objectTypeListPlot.find(item => item[0] == objectType)[1].name;
+            return this.objectTypeListPlot.find(item => item.id == objectType).name;
         },
         dateFormatter(date) {
             return moment(date).format('DD.MM.YYYY');
@@ -287,7 +298,6 @@ export default {
         clickDisableRequest() {
             this.$emit('clickDisableRequest', this.request);
         }
-    },
-    emits: ['clickUpdateRequest', 'clickDisableRequest', 'clickCloneRequest']
+    }
 };
 </script>

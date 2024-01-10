@@ -32,7 +32,12 @@
                         }
                     "
                 />
-                <Input v-model="form.nameRu" label="Название RU" placeholder="Название (Ru)" class="col-md-4 col-6" />
+                <Input
+                    v-model="form.nameRu"
+                    label="Название RU"
+                    placeholder="Название (Ru)"
+                    class="col-md-4 col-6"
+                />
                 <Input
                     v-model="form.nameEng"
                     label="Название ENG"
@@ -55,18 +60,34 @@
                     class="col-md-4"
                     :options="activityProfileOptions"
                 />
-                <Input v-model="form.dateStart" label="Дата от" class="col-md-2 col-6" type="date" />
+                <Input
+                    v-model="form.dateStart"
+                    label="Дата от"
+                    class="col-md-2 col-6"
+                    type="date"
+                />
                 <Input v-model="form.dateEnd" label="Дата до" class="col-md-2 col-6" type="date" />
             </FormGroup>
             <FormGroup class="row">
-                <Checkbox v-model="form.categories" :options="categoryOptions" label="Категория" class="col-md-8" />
-                <Radio
-                    v-model="form.status"
-                    :options="activePassiveOptions"
-                    :unselect-mode="true"
-                    label="Статус"
-                    class="col-md-2"
-                />
+                <div class="col-md-8 col-12">
+                    <span class="form__subtitle">Категория</span>
+                    <div class="form__row mt-1">
+                        <CheckboxChip
+                            v-for="(option, index) in categoryOptions"
+                            :key="index"
+                            v-model="form.categories"
+                            :value="index"
+                            :text="$formatter.text().ucFirst(option)"
+                        />
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <span class="form__subtitle">Статус</span>
+                    <div class="form__row mt-1">
+                        <RadioChip v-model="form.status" label="Актив" :value="1" unselect />
+                        <RadioChip v-model="form.status" label="Пассив" :value="0" unselect />
+                    </div>
+                </div>
             </FormGroup>
         </div>
     </Form>
@@ -77,33 +98,36 @@ import Form from '@/components/common/Forms/Form.vue';
 import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import Input from '@/components/common/Forms/Input.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
-import Checkbox from '@/components/common/Forms/Checkbox.vue';
-import Radio from '@/components/common/Forms/Radio.vue';
-import { ActivePassive, ActivityGroupList, ActivityProfileList, CompanyCategories } from '@/const/const.js';
+import {
+    ActivePassive,
+    ActivityGroupList,
+    ActivityProfileList,
+    CompanyCategories
+} from '@/const/const.js';
 import { SearchFormMixin } from '@/components/common/mixins.js';
 import Button from '@/components/common/Button.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
+import RadioChip from '@/components/common/Forms/RadioChip.vue';
 
 export default {
     name: 'FormCompanySearch',
     components: {
+        RadioChip,
+        CheckboxChip,
         AnimationTransition,
         Button,
         Form,
         FormGroup,
         Input,
-        MultiSelect,
-        Checkbox,
-        Radio
+        MultiSelect
     },
     mixins: [SearchFormMixin],
-    data() {
-        return {
-            categoryOptions: CompanyCategories.get('param'),
-            activityGroupOptions: ActivityGroupList.get('param'),
-            activityProfileOptions: ActivityProfileList.get('param'),
-            activePassiveOptions: ActivePassive.get('param')
-        };
+    computed: {
+        categoryOptions: () => CompanyCategories,
+        activityGroupOptions: () => ActivityGroupList,
+        activityProfileOptions: () => ActivityProfileList,
+        activePassiveOptions: () => ActivePassive
     },
     defaultFormProperties: {
         all: null,

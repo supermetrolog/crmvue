@@ -20,9 +20,9 @@ export default {
         ...mapGetters(['THIS_USER']),
         menu() {
             if (this.THIS_USER && this.THIS_USER.username === 'admin') {
-                return Menu.get('admin');
+                return Menu.admin;
             }
-            return Menu.get('agent');
+            return Menu.agent;
         }
     }
 };
