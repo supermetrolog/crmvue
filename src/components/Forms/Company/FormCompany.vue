@@ -98,8 +98,10 @@
                         <PropogationInput
                             v-model="form.contacts.websites"
                             :v="v$.form.contacts.websites"
+                            :validators="formContactsWebsitesValidators"
+                            placeholder="https://google.com"
                             label="Вебсайт"
-                            name="website"
+                            property-name="website"
                             class="col-6"
                         />
                     </div>
@@ -122,7 +124,9 @@
                         <PropogationInput
                             v-model="form.contacts.emails"
                             :v="v$.form.contacts.emails"
-                            name="email"
+                            :validators="formContactsEmailsValidators"
+                            placeholder="index@mail.ru"
+                            property-name="email"
                             label="Email"
                             class="col-6"
                         />
@@ -389,7 +393,7 @@ import PropogationDoubleInput from '@/components/common/Forms/PropogationDoubleI
 import RadioStars from '@/components/common/Forms/RadioStars.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import useValidate from '@vuelidate/core';
-import { email, helpers, maxLength, minLength, required } from '@vuelidate/validators';
+import { helpers, maxLength, minLength, required } from '@vuelidate/validators';
 import { mapActions, mapGetters } from 'vuex';
 import {
     ActivePassive,
@@ -499,7 +503,13 @@ export default {
         activityGroupOptions: () => ActivityGroupList,
         activityProfileOptions: () => ActivityProfileList,
         passiveWhyOptions: () => PassiveWhy,
-        ratingOptions: () => RatingList
+        ratingOptions: () => RatingList,
+        formContactsWebsitesValidators() {
+            return [{ func: validateUrl, message: 'Укажите корректную ссылку на сайт' }];
+        },
+        formContactsEmailsValidators() {
+            return [{ func: validateEmail, message: 'Укажите корректный Email' }];
+        }
     },
     validations() {
         return {
@@ -545,6 +555,16 @@ export default {
                     maxLength: helpers.withMessage(
                         'название не может быть больше 60 символов',
                         maxLength(60)
+                    ),
+                    onlyRussian: helpers.withMessage(
+                        'название должно быть на русском языке',
+                        onlyRussian
+                    )
+                },
+                nameBrand: {
+                    minLength: helpers.withMessage(
+                        'название не может быть меньше 3 символов',
+                        minLength(3)
                     )
                 },
                 categories: {

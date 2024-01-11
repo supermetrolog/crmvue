@@ -367,6 +367,11 @@
     }
 }
 
+.propogation-input {
+    .form__control:not(:last-of-type) {
+        margin-bottom: 5px;
+    }
+
     .form__input {
         padding: 0 15px;
     }

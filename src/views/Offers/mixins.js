@@ -194,6 +194,10 @@ export default {
             }
             if (filter == 'region') {
                 delete query['fakeRegion'];
+                delete query['direction'];
+                delete query['district_moscow'];
+                delete query['outside_mkad'];
+                delete query['region_neardy'];
             }
             delete query[filter];
 
