@@ -9,6 +9,8 @@ import Notifications from '@kyvg/vue3-notification';
 import { ApiUrlHelper, apiUrlHelperObject, Formatter } from '@/plugins/index.js';
 import { Tab, Tabs } from 'vue3-tabs-component';
 import { VueAgile } from 'vue-agile';
+import { plugin as VueTippy } from 'vue-tippy';
+import 'tippy.js/dist/tippy.css'; // optional for styling
 
 import '@vueform/multiselect/themes/default.css';
 import './assets/fontawesome/css/fontawesome.min.css';
@@ -25,6 +27,14 @@ app.component('Tabs', Tabs)
     .component('Tab', Tab)
     .component('PhoneNumber', PhoneNumber)
     .use(VueAgile)
+    .use(VueTippy, {
+        directive: 'tippy',
+        component: 'tippy',
+        defaultProps: {
+            placement: 'auto-end',
+            allowHTML: true
+        }
+    })
     .use(Formatter)
     .use(ApiUrlHelper)
     .use(Notifications)

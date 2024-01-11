@@ -1,5 +1,19 @@
 @use '../../utils/variables';
 
+.invalid:not(:disabled):not(.is-disabled) {
+    border-bottom: 2px solid variables.$color_danger !important;
+
+    &:focus {
+        border: 1px solid variables.$color_danger !important;
+    }
+}
+
+.valid:not(:disabled):not(.is-disabled) {
+    border: 1px solid rgba(175, 175, 175, 0.733) !important;
+    border-bottom: 2px solid variables.$color_success !important;
+    outline: unset !important;
+}
+
 .form {
     position: relative;
 
@@ -50,7 +64,6 @@
         min-height: 40px;
         outline: none;
         width: 100%;
-        margin-top: 3px;
 
         &:not(:disabled):focus, &:not(:disabled):active {
             border-color: #186a8d;
@@ -67,7 +80,7 @@
 
     &__unit {
         position: absolute;
-        top: calc(100% - 40px + 8px);
+        bottom: 8px;
         right: 15px;
         color: #91939b;
     }
@@ -93,6 +106,9 @@
 
     &__label {
         font-weight: 500;
+        display: inline-block;
+        margin-bottom: 3px;
+        width: 100%;
 
         &--row {
             display: flex;
@@ -130,6 +146,58 @@
     &__star {
         cursor: pointer;
         font-size: 30px;
+    }
+
+    &__chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    &__tooltip {
+        font-size: 20px;
+        color: variables.$color_danger;
+        position: absolute;
+        right: 25px;
+        top: 37px;
+        display: flex;
+        cursor: pointer;
+
+        &--success {
+            color: variables.$color_success;
+            cursor: default;
+        }
+    }
+
+    &__error {
+        margin-top: 4px;
+        font-size: 14px;
+        color: variables.$color_danger;
+    }
+}
+
+.tooltip-validation {
+    &__title {
+        font-weight: 500;
+    }
+
+    &__list {
+        list-style: decimal;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        font-size: 14px;
+        padding-left: 15px;
+    }
+
+    &__message {
+        &:last-child::after {
+            content: '.';
+        }
+
+        &:not(:last-child)::after {
+            content: ';';
+        }
     }
 }
 
@@ -299,8 +367,11 @@
     }
 }
 
-.valid:not(:disabled):not(.is-disabled) {
-    border: 1px solid rgba(175, 175, 175, 0.733) !important;
-    border-bottom: 2px solid variables.$color_success !important;
-    outline: unset !important;
+    .form__input {
+        padding: 0 15px;
+    }
+}
+
+.form__textarea {
+    min-height: 100px;
 }
