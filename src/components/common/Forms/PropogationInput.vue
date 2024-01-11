@@ -37,7 +37,14 @@
             v-if="hasValidationError && !disabled"
             :message="v.$errors[0].$message"
         />
-        <Button @click="addInput" :disabled="hasEmptyInput" prevent icon small success class="mt-1">
+        <Button
+@click="addInput"
+:disabled="hasEmptyInput"
+prevent
+icon
+small
+success
+class="mt-1">
             <i class="fas fa-plus"></i>
             {{ addText }}
         </Button>
@@ -57,7 +64,7 @@ export default {
     props: {
         modelValue: {
             type: Array,
-            default: () => this.defaultField()
+            default: () => this.createDefaultField()
         },
         required: {
             type: Boolean,
@@ -110,9 +117,6 @@ export default {
                     []
                 );
             });
-        },
-        defaultField() {
-            return { [this.propertyName]: '' };
         }
     },
     methods: {
@@ -127,7 +131,7 @@ export default {
         },
         addInput() {
             if (!this.hasEmptyInput) {
-                this.field.push(this.defaultField);
+                this.field.push(this.createDefaultField());
                 this.$nextTick(() => {
                     this.$refs['input-' + (this.field.length - 1)][0].focus();
                 });
@@ -135,10 +139,13 @@ export default {
         },
         isValid(index) {
             return this.errors[index].length && this.field[index][this.propertyName].length;
+        },
+        createDefaultField() {
+            return { [this.propertyName]: '' };
         }
     },
     created() {
-        if (!this.modelValue.length) this.field = [this.defaultField];
+        if (!this.modelValue.length) this.field = [this.createDefaultField()];
         else this.field = this.modelValue;
     }
 };
