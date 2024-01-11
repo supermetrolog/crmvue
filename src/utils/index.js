@@ -45,7 +45,12 @@ export const yandexmap = {
             coords.forEach(coordDuplicate => {
                 routes.push({
                     id: coordDuplicate.original_id,
-                    distance: parseInt(window.ymaps.coordSystem.geo.getDistance(startPoint.coord, coordDuplicate.coord))
+                    distance: parseInt(
+                        window.ymaps.coordSystem.geo.getDistance(
+                            startPoint.coord,
+                            coordDuplicate.coord
+                        )
+                    )
                 });
             });
 
@@ -110,13 +115,6 @@ export const yandexmap = {
         return address;
     }
 };
-export const validateEmail = email => {
-    return String(email)
-        .toLowerCase()
-        .match(
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        );
-};
 export const validatePropogationInput = (fields, name) => {
     let flag = true;
     fields.forEach((item, index) => {
@@ -125,17 +123,6 @@ export const validatePropogationInput = (fields, name) => {
         }
     });
     return flag;
-};
-export const validateUrl = str => {
-    const with_protocol_regex = new RegExp(
-        '^(http[s]?:\\/\\/(www\\.)?|ftp:\\/\\/(www\\.)?|www\\.){1}([0-9A-Za-z-\\.@:%_+~#=]+)+((\\.[a-zA-Z]{2,3})+)(/(.)*)?(\\?(.)*)?'
-    );
-
-    const regex = new RegExp('^([0-9A-Za-z-\\.@:%_+~#=]+)+((\\.[a-zA-Z]{2,3})+)(/(.)*)?(\\?(.)*)?');
-    if (!regex.test(str) && !with_protocol_regex.test(str)) {
-        return false;
-    }
-    return true;
 };
 
 export const waitHash = data => {
