@@ -3,6 +3,10 @@ on:
     branches:
       - dev
 name: 🚀 Deploy website on push
+env:
+  VUE_APP_API_URL: https://api.supermetrolog.ru/
+  VUE_APP_HOST: clients.supermetrolog.ru
+  VUE_APP_WS_URL: wss://api.supermetrolog.pro/websocket/
 jobs:
   web-deploy:
     name: 🎉 Deploy
