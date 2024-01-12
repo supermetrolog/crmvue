@@ -16,7 +16,7 @@
                             class="col-12 mb-2"
                         />
                         <Input
-                            v-model="form.nameRu"
+                            v-model.trim="form.nameRu"
                             :disabled="form.noName"
                             :v="v$.form.nameRu"
                             :maska="{
@@ -28,7 +28,7 @@
                             class="col-6"
                         />
                         <Input
-                            v-model="form.nameEng"
+                            v-model.trim="form.nameEng"
                             :disabled="form.noName"
                             :v="v$.form.nameEng"
                             :maska="{
@@ -42,7 +42,8 @@
                     </div>
                     <div class="row mb-2">
                         <Input
-                            v-model="form.nameBrand"
+                            v-model.trim="form.nameBrand"
+                            :v="v$.form.nameBrand"
                             :maska="{
                                 mask: 'Z*',
                                 tokens: { Z: { pattern: /[а-яА-Яa-zA-Z0-9 (--)]/ } }
@@ -97,8 +98,10 @@
                         <PropogationInput
                             v-model="form.contacts.websites"
                             :v="v$.form.contacts.websites"
+                            :validators="formContactsWebsitesValidators"
+                            placeholder="https://google.com"
                             label="Вебсайт"
-                            name="website"
+                            property-name="website"
                             class="col-6"
                         />
                     </div>
@@ -121,7 +124,9 @@
                         <PropogationInput
                             v-model="form.contacts.emails"
                             :v="v$.form.contacts.emails"
-                            name="email"
+                            :validators="formContactsEmailsValidators"
+                            placeholder="index@mail.ru"
+                            property-name="email"
                             label="Email"
                             class="col-6"
                         />
@@ -388,7 +393,7 @@ import PropogationDoubleInput from '@/components/common/Forms/PropogationDoubleI
 import RadioStars from '@/components/common/Forms/RadioStars.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import useValidate from '@vuelidate/core';
-import { email, helpers, maxLength, minLength, required } from '@vuelidate/validators';
+import { helpers, maxLength, minLength, required } from '@vuelidate/validators';
 import { mapActions, mapGetters } from 'vuex';
 import {
     ActivePassive,
@@ -399,7 +404,7 @@ import {
     PassiveWhy,
     RatingList
 } from '@/const/const.js';
-import Utils, { validatePropogationInput, validateUrl, yandexmap } from '@/utils';
+import Utils, { yandexmap } from '@/utils';
 import api from '@//api/api.js';
 import Modal from '@/components/common/Modal.vue';
 import Loader from '@/components/common/Loader.vue';
@@ -407,6 +412,14 @@ import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import Button from '@/components/common/Button.vue';
+import {
+    every,
+    onlyEnglish,
+    onlyRussian,
+    validateEmail,
+    validatePhone,
+    validateUrl
+} from '@//validators';
 
 export default {
     name: 'FormCompany',
@@ -490,37 +503,26 @@ export default {
         activityGroupOptions: () => ActivityGroupList,
         activityProfileOptions: () => ActivityProfileList,
         passiveWhyOptions: () => PassiveWhy,
-        ratingOptions: () => RatingList
+        ratingOptions: () => RatingList,
+        formContactsWebsitesValidators() {
+            return [{ func: validateUrl, message: 'Укажите корректную ссылку на сайт' }];
+        },
+        formContactsEmailsValidators() {
+            return [{ func: validateEmail, message: 'Укажите корректный Email' }];
+        }
     },
     validations() {
         return {
             form: {
                 contacts: {
                     emails: {
-                        propogation: helpers.withMessage(
-                            'Пустое поле не допустимо',
-                            this.validateEmailsPropogation
-                        ),
-                        email: helpers.withMessage(
-                            'заполните email правильно',
-                            this.customEmailValidation
-                        )
+                        everyHasCorrectEmail: every(validateEmail)
                     },
                     websites: {
-                        propogation: helpers.withMessage(
-                            'Пустое поле не допустимо',
-                            this.validateWebsitesPropogation
-                        ),
-                        website: helpers.withMessage(
-                            'заполните вебсайт правильно',
-                            this.customUrlValidation
-                        )
+                        everyHasCorrectUrl: every(validateUrl)
                     },
                     phones: {
-                        propogation: helpers.withMessage(
-                            'Пустое поле не допустимо',
-                            this.validatePhonesPropogation
-                        )
+                        everyHasCorrectPhone: every(validatePhone)
                     }
                 },
                 nameEng: {
@@ -535,6 +537,10 @@ export default {
                     maxLength: helpers.withMessage(
                         'название не может быть больше 60 символов',
                         maxLength(60)
+                    ),
+                    onlyEnglish: helpers.withMessage(
+                        'название должно быть на английском языке',
+                        onlyEnglish
                     )
                 },
                 nameRu: {
@@ -549,12 +555,21 @@ export default {
                     maxLength: helpers.withMessage(
                         'название не может быть больше 60 символов',
                         maxLength(60)
+                    ),
+                    onlyRussian: helpers.withMessage(
+                        'название должно быть на русском языке',
+                        onlyRussian
+                    )
+                },
+                nameBrand: {
+                    minLength: helpers.withMessage(
+                        'название не может быть меньше 3 символов',
+                        minLength(3)
                     )
                 },
                 categories: {
                     required: helpers.withMessage('выберите категорию', required)
                 },
-
                 status: {
                     required: helpers.withMessage('Выберите статус', required)
                 },
@@ -665,33 +680,6 @@ export default {
         async getAddress(query) {
             if (this.formdata) return await yandexmap.getAddress(query, this.formdata.officeAdress);
             return await yandexmap.getAddress(query);
-        },
-        validateEmailsPropogation() {
-            return validatePropogationInput(this.form.contacts.emails, 'email');
-        },
-        validateWebsitesPropogation() {
-            return validatePropogationInput(this.form.contacts.websites, 'website');
-        },
-        validatePhonesPropogation() {
-            return validatePropogationInput(this.form.contacts.phones, 'phone');
-        },
-        customEmailValidation() {
-            let flag = true;
-            this.form.contacts.emails.forEach(item => {
-                if (!email.$validator(item.email)) {
-                    flag = false;
-                }
-            });
-            return flag;
-        },
-        customUrlValidation() {
-            let flag = true;
-            this.form.contacts.websites.forEach(item => {
-                if (!validateUrl(item.website)) {
-                    flag = false;
-                }
-            });
-            return flag;
         },
         customRequiredNameRu(value) {
             if (!this.form.noName) {

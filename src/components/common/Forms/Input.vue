@@ -33,18 +33,23 @@
                 </ul>
             </div>
         </div>
-        <div v-if="v && v.$error && !disabled" class="error-container">
-            <p>{{ v.$errors[0].$message }}</p>
-        </div>
+        <ValidationInfo v-if="hasValidation && !disabled && !reactive" :validator="v" />
+        <ValidationMessage
+            v-if="hasValidationError && !disabled"
+            :message="v.$errors[0].$message"
+        />
         <slot />
     </div>
 </template>
 
 <script>
 import Mixin from './mixins.js';
+import ValidationInfo from '@/components/common/Forms/ValidationInfo.vue';
+import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
 
 export default {
     name: 'Input',
+    components: { ValidationMessage, ValidationInfo },
     mixins: [Mixin],
     props: {
         modelValue: {
@@ -53,10 +58,6 @@ export default {
         },
         required: {
             type: Boolean,
-            default: false
-        },
-        disabled: {
-            type: [Boolean, Number],
             default: false
         },
         v: {
@@ -92,14 +93,29 @@ export default {
         unit: {
             type: String,
             default: null
+        },
+        reactive: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
         return {
             searchableVisible: false,
-            localeOptions: this.options,
-            paddingRightStyle: null
+            localeOptions: this.options
         };
+    },
+    computed: {
+        paddingRightStyle() {
+            // Расчет ширины блока с единицой измерения
+            if (this.unit) {
+                let unitWidth = this.unit.replaceAll('/', '').replaceAll('<sup>', '').length * 10;
+                let validationWidth = this.v && this.v.$dirty ? 20 : 0;
+                return `padding-right: ${unitWidth + 20 + validationWidth}px`;
+            }
+
+            return null;
+        }
     },
     watch: {
         options() {
@@ -141,11 +157,7 @@ export default {
             document.addEventListener('click', this.close);
         }
 
-        // Расчет ширины блока с единицой измерения
-        if (this.unit) {
-            let unitWidth = this.unit.replaceAll('/', '').replaceAll('<sup>', '').length * 10;
-            this.paddingRightStyle = `padding-right: ${unitWidth + 20}px`;
-        }
+        if (this.reactive) this.validate();
     },
     beforeUnmount() {
         if (this.searchable) {

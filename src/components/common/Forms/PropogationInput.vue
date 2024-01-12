@@ -1,36 +1,50 @@
 <template>
-    <div class="form__control propogation-input">
+    <div class="form__group propogation-input">
         <span class="form__label">{{ label }}</span>
-        <label
-            v-for="(item, index) in field"
-            :key="index"
-            @mouseenter="isDeleteShow = true"
-            @mouseleave="isDeleteShow = false"
-            class="form__label"
-            :class="{ required: required }"
-        >
-            <AnimationTransition>
-                <i
-                    v-show="isDeleteShow"
-                    @click="deleteInput(index)"
-                    class="form__close fas fa-xmark-circle"
-                ></i>
-            </AnimationTransition>
-            <input
-                :ref="'input-' + index"
-                v-model="field[index][name]"
-                @input.stop.prevent="onInput"
-                @keypress.enter.prevent
-                type="text"
-                class="form__input"
-                :class="inputClasses"
-                :placeholder="placeholder"
-            />
-        </label>
-        <div v-if="v && v.$error" class="error-container">
-            <p>{{ v.$errors[0].$message }}</p>
+        <div v-for="(item, index) in field" :key="index" class="form__control">
+            <label
+                @mouseenter="isDeleteShowList[index] = true"
+                @mouseleave="isDeleteShowList[index] = false"
+                class="form__label"
+                :class="{ required: required }"
+            >
+                <AnimationTransition>
+                    <i
+                        v-show="isDeleteShowList[index]"
+                        @click="deleteInput(index)"
+                        class="form__close fas fa-xmark-circle"
+                    ></i>
+                </AnimationTransition>
+                <input
+                    :ref="'input-' + index"
+                    v-model="field[index][this.propertyName]"
+                    v-maska="maska"
+                    @input.stop.prevent="onInput"
+                    @keypress.enter.prevent
+                    type="text"
+                    class="form__input"
+                    :required="required"
+                    :placeholder="placeholder"
+                    :class="{
+                        invalid: isValid(index),
+                        valid: !isValid(index)
+                    }"
+                />
+            </label>
+            <ValidationMessage v-if="errors[index].length" :message="errors[index][0]" />
         </div>
-        <Button @click="addInput" prevent icon small success class="mt-1">
+        <ValidationMessage
+            v-if="hasValidationError && !disabled"
+            :message="v.$errors[0].$message"
+        />
+        <Button
+@click="addInput"
+:disabled="hasEmptyInput"
+prevent
+icon
+small
+success
+class="mt-1">
             <i class="fas fa-plus"></i>
             {{ addText }}
         </Button>
@@ -41,15 +55,16 @@
 import Mixin from './mixins.js';
 import Button from '@/components/common/Button.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
 
 export default {
     name: 'PropogationInput',
-    components: { AnimationTransition, Button },
+    components: { ValidationMessage, AnimationTransition, Button },
     mixins: [Mixin],
     props: {
         modelValue: {
             type: Array,
-            default: () => this.defaultField()
+            default: () => this.createDefaultField()
         },
         required: {
             type: Boolean,
@@ -63,45 +78,50 @@ export default {
             type: String,
             default: null
         },
-        // maska: {
-        //   default: null,
-        // },
+        maska: {
+            default: null
+        },
         placeholder: {
             type: String
         },
-        name: {
+        propertyName: {
             type: String,
-            required: true,
-            default: 'fuck'
+            required: true
         },
         addText: {
             type: String,
             default: 'Добавить поле'
+        },
+        validators: {
+            type: Array,
+            default: () => []
         }
     },
     data() {
         return {
             field: null,
-            isDeleteShow: false
+            isDeleteShowList: [false]
         };
     },
-    watch: {
-        modelValue() {
-            this.setData();
+    computed: {
+        hasEmptyInput() {
+            return this.field.filter(item => !item[this.propertyName].length).length;
+        },
+        errors() {
+            return this.field.map(field => {
+                return this.validators.reduce(
+                    (acc, validator) =>
+                        !validator.func(field[this.propertyName]) && field[this.propertyName].length
+                            ? [...acc, validator.message]
+                            : acc,
+                    []
+                );
+            });
         }
     },
     methods: {
         onInput() {
             this.validate();
-            const array = [];
-            this.field.map(item => {
-                if (item[this.name].length) {
-                    array.push(item);
-                }
-            });
-            if (this.field.length == 1) {
-                this.field = array;
-            }
             this.$emit('update:modelValue', this.field);
         },
         deleteInput(index) {
@@ -110,30 +130,23 @@ export default {
             this.$emit('update:modelValue', this.field);
         },
         addInput() {
-            const countEmptyInputs = this.field.filter(
-                element => element[this.name].length === 0
-            ).length;
-
-            if (!countEmptyInputs) {
-                this.field.push({ [this.name]: '' });
+            if (!this.hasEmptyInput) {
+                this.field.push(this.createDefaultField());
                 this.$nextTick(() => {
                     this.$refs['input-' + (this.field.length - 1)][0].focus();
                 });
             }
         },
-        setData() {
-            if (!this.modelValue.length) {
-                this.field = this.defaultField();
-            } else {
-                this.field = this.modelValue;
-            }
+        isValid(index) {
+            return this.errors[index].length && this.field[index][this.propertyName].length;
         },
-        defaultField() {
-            return [{ [this.name]: '' }];
+        createDefaultField() {
+            return { [this.propertyName]: '' };
         }
     },
-    mounted() {
-        this.setData();
+    created() {
+        if (!this.modelValue.length) this.field = [this.createDefaultField()];
+        else this.field = this.modelValue;
     }
 };
 </script>
