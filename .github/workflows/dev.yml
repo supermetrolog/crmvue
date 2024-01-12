@@ -19,7 +19,7 @@ jobs:
       - name: 🔨 Build Project
         run: |
           npm install
-          npm run build
+          npm run stage
 
       - name: 📂 Sync files with DEV server (clients.supermetrolog.ru)
         uses: SamKirkland/FTP-Deploy-Action@4.3.0
