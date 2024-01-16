@@ -3,12 +3,7 @@
         <div
             v-if="offer.noOffer"
             class="object-offer only"
-            :class="[
-                {
-                    general: offer.type_id == 2
-                },
-                classList
-            ]"
+            :class="[{ general: offer.type_id === 2 }]"
         >
             <div class="row no-gutters object-info">
                 <div class="col-12 align-self-center">
@@ -32,7 +27,7 @@
                         <span v-if="offer.type_id == 2" class="badge badge-secondary isGeneral">Общий</span>
                         <span v-else-if="offer.type_id == 1" class="badge badge-info isGeneral">Блок</span>
                         <span v-else class="badge badge-warning isGeneral">Неизвестно</span>
-                        <a @click.prevent href="#">
+                        <a :href="getOfferUrl(offer)" target="_blank">
                             <img :src="offer.image" alt="image" />
                         </a>
                         <div @click.prevent="clickUnSelectObject" class="icon-unselect">
@@ -107,7 +102,7 @@
                         <span v-if="offer.type_id == 2" class="badge badge-secondary isGeneral">Общий</span>
                         <span v-else-if="offer.type_id == 1" class="badge badge-info isGeneral">Блок</span>
                         <span v-else class="badge badge-warning isGeneral">Неизвестно</span>
-                        <a @click.prevent="clickSelectObject" href="#">
+                        <a @click="clickSelectObject" :href="getOfferUrl(offer)" target="_blank">
                             <img :src="offer.thumb" alt="image" />
                         </a>
                         <div @click.prevent="clickUnSelectObject" class="icon-unselect">
@@ -364,6 +359,9 @@ export default {
         },
         clickView() {
             window.open(this.offerUrl, '_blank');
+        },
+        getOfferUrl(offer) {
+            return this.$apiUrlHelper.generator().offerUrl(offer);
         }
     },
     mounted() {

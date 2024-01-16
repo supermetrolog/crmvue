@@ -1,6 +1,6 @@
 <template>
     <div class="account-main">
-        <UserProfile @logOut="onLogOut" :user="THIS_USER" />
+        <UserProfile v-if="THIS_USER" @logOut="onLogOut" :user="THIS_USER" />
     </div>
 </template>
 

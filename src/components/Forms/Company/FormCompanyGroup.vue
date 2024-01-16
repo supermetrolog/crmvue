@@ -2,7 +2,7 @@
     <Modal
         @close="clickCloseModal"
         :title="formdata ? 'Изменение группы компаний' : 'Создание группы компаний'"
-        class="form-company-group"
+        class="modal-form-company-group"
     >
         <Form @submit="onSubmit">
             <Loader v-if="loader" class="center" />
@@ -58,6 +58,7 @@ import { CompanyFormOrganization } from '@/const/const.js';
 import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
 import Button from '@/components/common/Button.vue';
+import {onlyRussian} from "@//validators";
 
 export default {
     name: 'FormCompanyGroup',
@@ -96,7 +97,8 @@ export default {
         return {
             form: {
                 nameRu: {
-                    required: helpers.withMessage('введите название', required)
+                    required: helpers.withMessage('Введите название', required),
+                    onlyRussian: helpers.withMessage('Название должно быть на русском языке', onlyRussian)
                 }
             }
         };

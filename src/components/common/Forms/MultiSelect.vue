@@ -38,6 +38,15 @@
         <div v-if="v && v.$error && !disabled" class="error-container">
             <p>{{ v.$errors[0].$message }}</p>
         </div>
+        <div v-if="multiple && field.length" class="form__chips">
+            <Chip
+                v-for="(element, index) in field"
+                :key="index"
+                @click="removeElement(index)"
+                :value="index"
+                :html="options[element]"
+            />
+        </div>
         <slot />
     </div>
 </template>
@@ -45,10 +54,12 @@
 <script>
 import Multiselect from '@vueform/multiselect';
 import Mixin from './mixins.js';
+import Chip from '@/components/common/Chip.vue';
 
 export default {
     name: 'Select',
     components: {
+        Chip,
         Multiselect
     },
     mixins: [Mixin],
@@ -130,10 +141,6 @@ export default {
             type: String,
             default: null
         },
-        disabled: {
-            type: Boolean,
-            default: false
-        },
         hideSelected: {
             type: Boolean,
             default: false
@@ -147,6 +154,10 @@ export default {
             default: n => {
                 return `выбрано => ${n.length}`;
             }
+        },
+        multiple: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
@@ -189,6 +200,9 @@ export default {
             this.modelValue.forEach(item => {
                 this.field.push(item[this.name]);
             });
+        },
+        removeElement(index) {
+            this.field.splice(index, 1);
         }
     },
     mounted() {

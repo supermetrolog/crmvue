@@ -46,6 +46,7 @@ export const TableContentMixin = {
 import { mapActions, mapGetters } from 'vuex';
 
 export const SearchFormMixin = {
+    emits: ['search', 'reset'],
     data() {
         return {
             setTimeout: null,

@@ -36,6 +36,21 @@
         &--disabled {
             opacity: .6;
         }
+
+        &:has(.invalid) ~ .checkbox-chip {
+            align-self: flex-start;
+            margin-top: 5px;
+        }
+
+        &:has(.form__tooltip) .form__input {
+            padding-right: 35px;
+        }
+
+        &:has(.invalid), &:has(.valid) {
+            .form__unit {
+                right: 35px;
+            }
+        }
     }
 
     &__column {
@@ -75,6 +90,10 @@
 
         &--additional {
             width: 30%;
+        }
+
+        &--title {
+            padding-left: 40px;
         }
     }
 
@@ -211,6 +230,10 @@
     height: max-content;
     background-color: #fff;
 
+    i {
+        margin-left: 5px;
+    }
+
     input {
         display: none;
     }
@@ -227,6 +250,10 @@
         min-height: 35px;
         min-width: 35px;
 
+        &.invalid {
+            border: 1px solid #f93154!important;
+        }
+
         &:hover {
             background-color: rgba(16, 185, 129, .6);
             color: #fff;
@@ -236,6 +263,37 @@
             background-color: #10b981;
             border-color: #10b981;
             color: #fff;
+        }
+
+        &.disabled {
+            background-color: #f93154;
+            color: #fff;
+            border-color: #f93154;
+        }
+
+        &--danger {
+            &:hover {
+                background-color: rgba(249, 49, 84, .5);
+                color: #fff;
+            }
+
+            &.active {
+                background-color: #f93154;
+                color: #fff;
+                border-color: #f93154;
+            }
+        }
+
+        &--icon {
+            height: 40px;
+            width: 40px;
+            border-radius: 4px;
+            margin-bottom: 3px;
+            font-size: 20px;
+
+            i {
+                margin-left: 0;
+            }
         }
     }
 }

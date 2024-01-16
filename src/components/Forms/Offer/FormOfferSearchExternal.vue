@@ -64,6 +64,7 @@ export default {
     name: 'FormOfferSearchExternal',
     components: { ButtonLink, Button },
     mixins: [FormMixin],
+    emits: ['openFilters'],
     props: {
         offersCount: {
             type: Number,

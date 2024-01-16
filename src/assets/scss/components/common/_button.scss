@@ -16,7 +16,7 @@
     position: relative;
     transition: background-color .2s ease;
 
-    &:hover {
+    &:not(:disabled):hover {
         background-color: #085373;
     }
 
@@ -37,7 +37,7 @@
     &--warning {
         background-color: #f88f01;
 
-        &:hover {
+        &:not(:disabled):hover {
             background-color: #a46104;
         }
     }
@@ -45,7 +45,7 @@
     &--success {
         background-color: #10b981;
 
-        &:hover {
+        &:not(:disabled):hover {
             background-color: #009665;
         }
     }
@@ -58,13 +58,18 @@
     &--danger {
         background-color: #f93154;
 
-        &:hover {
+        &:not(:disabled):hover {
             background-color: #cb1132;
         }
     }
 
     &--small {
         padding: 5px 10px;
+    }
+
+    &:disabled {
+        opacity: .4;
+        cursor: default;
     }
 
     &--disabled {

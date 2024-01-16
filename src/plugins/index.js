@@ -81,7 +81,7 @@ export const apiUrlHelperObject = {
         return process.env.VUE_APP_API_URL;
     },
     objectsUrl() {
-        return process.env.VUE_APP_OBJECT_URL;
+        return process.env.VUE_APP_OBJECTS_PHOTO_URL;
     },
     uploadsUrl() {
         return process.env.VUE_APP_API_URL + process.env.VUE_APP_UPLOADS_PATH;
@@ -114,7 +114,7 @@ export const apiUrlHelperObject = {
 const generator = {
     urlHelper: apiUrlHelperObject,
     offerUrl(offer) {
-        const baseUrl = process.env.VUE_APP_HOST + 'complex/';
+        const baseUrl = process.env.VUE_APP_HOST + '/complex/';
         let url = baseUrl + offer.complex_id;
         if (offer.type_id === 3 || !offer) {
             return url;
@@ -127,7 +127,7 @@ const generator = {
         return url;
     },
     objectUrl(complex_id) {
-        const baseUrl = process.env.VUE_APP_HOST + 'complex/';
+        const baseUrl = process.env.VUE_APP_HOST + '/complex/';
         return baseUrl + complex_id;
     },
     pdfUrl(offer, user_id) {

@@ -3,6 +3,10 @@
 body.is-modal {
     overflow: hidden;
     padding-right: 5px;
+
+    .header {
+        padding-right: 5px;
+    }
 }
 
 main {

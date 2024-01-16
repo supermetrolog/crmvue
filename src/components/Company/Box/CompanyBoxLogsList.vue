@@ -1,6 +1,6 @@
 <template>
     <div class="CompanyLogsList" :class="[target]">
-        <InfiniteLoading class="loader" top v-bind="$attrs" :target="`.${target}`">
+        <InfiniteLoading v-bind="$attrs" top :target="`.${target}`">
             <template #complete><span></span></template>
         </InfiniteLoading>
         <div v-if="logsCount == 0" class="CompanyLogsList-empty">
@@ -33,7 +33,8 @@ export default {
             required: true
         },
         logsCount: {
-            type: Number
+            type: Number,
+            default: 0
         },
         target: {
             type: String,

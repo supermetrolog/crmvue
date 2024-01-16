@@ -1487,8 +1487,7 @@ $warning_step_thin_border: 1px solid variables.$color_warning;
         }
 
         .error-container {
-            padding: 0;
-            padding-top: 2px;
+            padding: 2px 0 0;
             text-align: center;
 
             p {
@@ -1679,8 +1678,7 @@ $warning_step_thin_border: 1px solid variables.$color_warning;
             input[type="checkbox"] {
                 display: inline;
                 width: 18px;
-                margin: 0;
-                margin-right: 4px;
+                margin: 0 4px 0 0;
             }
 
             &.text {
@@ -2526,7 +2524,7 @@ tr.DropdownSwitcherRow {
 
         .item {
             hr {
-                border-radius: none !important;
+                border-radius: 0 !important;
             }
 
             font-size: 14px;
@@ -3030,8 +3028,7 @@ tr.DropdownSwitcherRow {
         }
 
         .tabs-component-tab-a {
-            padding: 0;
-            padding-right: 12px;
+            padding: 0 12px 0 0;
             font-weight: normal;
 
             &::before {
@@ -3685,7 +3682,7 @@ tr.DropdownSwitcherRow {
         left: 0;
         right: 0;
         background-color: rgba(0, 0, 0, 0.3);
-        display: flex;
+        display: none;
         justify-content: center;
         align-items: center;
 
@@ -3695,8 +3692,6 @@ tr.DropdownSwitcherRow {
             font-size: 42px;
             color: variables.$color_success;
         }
-
-        display: none;
     }
 
     a {
@@ -3875,7 +3870,6 @@ tr.DropdownSwitcherRow {
             .comment {
                 textarea {
                     width: 100%;
-                    width: 100%;
                     letter-spacing: 0.35px;
                     resize: none;
                     font-size: 18px;
@@ -4047,8 +4041,7 @@ tr.DropdownSwitcherRow {
             color: variables.$color_danger;
 
             span {
-                padding: 10px;
-                padding-right: 0;
+                padding: 10px 0 10px 10px;
                 background-color: rgba(variables.$color:black, $alpha: 0.5);
             }
 
@@ -4745,11 +4738,6 @@ tr.DropdownSwitcherRow {
     }
 }
 
-// ************ COMPANY REQUEST CLONE FORM **************
-.company-request-clone-form {
-    max-width: 550px;
-}
-
 // ************ COMPANY-REQUEST-SEARCH-FORM *************
 .company-request-search-form {
     .main-input {
@@ -5018,7 +5006,7 @@ tr.DropdownSwitcherRow {
                     right: 0;
                     bottom: 0;
                     background-color: rgba(0, 0, 0, 0.4);
-                    display: flex;
+                    display: none;
                     justify-content: center;
                     align-items: center;
                     z-index: 2;
@@ -5029,8 +5017,6 @@ tr.DropdownSwitcherRow {
                         font-size: 64px;
                         color: variables.$color_success;
                     }
-
-                    display: none;
                 }
 
                 .params {
@@ -5137,8 +5123,7 @@ tr.DropdownSwitcherRow {
                     letter-spacing: 1px;
                 }
 
-                padding: 7px;
-                padding-bottom: 0;
+                padding: 7px 7px 0;
                 position: relative;
 
                 .location {
@@ -6119,12 +6104,11 @@ button.filters {
         display: inline-block;
         position: relative;
         text-decoration: none;
-        padding: 0;
         font-size: 15px;
         line-height: 18px;
         font-weight: 500;
         color: black;
-        padding-bottom: 7px;
+        padding: 0 0 7px;
 
         &::before {
             background-color: darken($color: variables.$color_success, $amount: 12);
@@ -6193,12 +6177,11 @@ button.filters {
         display: inline-block;
         position: relative;
         text-decoration: none;
-        padding: 0;
         font-size: 15px;
         line-height: 18px;
         font-weight: 500;
         color: black;
-        padding-bottom: 7px;
+        padding: 0 0 7px;
 
         &::before {
             background-color: darken($color: variables.$color_success, $amount: 12);
