@@ -60,7 +60,12 @@
             </FormGroup>
             <FormGroup>
                 <Input v-model="form.name" label="Название" class="col-6 pr-1" />
-                <Input v-model="form.area" label="Площадь сделки" class="col-6" maska="##########" />
+                <Input
+                    v-model="form.area"
+                    label="Площадь сделки"
+                    class="col-6"
+                    maska="##########"
+                />
                 <MultiSelect
                     v-model="form.company_id"
                     @change="onChangeCompany"
@@ -94,7 +99,11 @@
                 />
             </FormGroup>
             <FormGroup>
-                <Input v-model="form.clientLegalEntity" label="Юр. лицо клиента в сделке" class="col-6" />
+                <Input
+                    v-model="form.clientLegalEntity"
+                    label="Юр. лицо клиента в сделке"
+                    class="col-6"
+                />
                 <MultiSelect
                     v-model="form.formOfOrganization"
                     label="ФО"
@@ -102,7 +111,12 @@
                     class="col-3"
                     :options="formOfOrganizationOptions"
                 />
-                <Input v-model="form.floorPrice" label="Цена пола" class="col-3" maska="##########" />
+                <Input
+                    v-model="form.floorPrice"
+                    label="Цена пола"
+                    class="col-3"
+                    maska="##########"
+                />
             </FormGroup>
             <FormGroup>
                 <MultiSelect
@@ -287,7 +301,9 @@ export default {
         formOfOrganizationOptions: () => CompanyFormOrganization,
         contractTermVisible() {
             if (!this.requestOptions.length || !this.form.request_id) return false;
-            const currentRequestOption = this.requestOptions.find(item => item.value == this.form.request_id);
+            const currentRequestOption = this.requestOptions.find(
+                item => item.value == this.form.request_id
+            );
             if (
                 (currentRequestOption && currentRequestOption.label.indexOf('аренда') !== -1) ||
                 currentRequestOption.label.indexOf('ответ-хранение') !== -1
@@ -295,6 +311,12 @@ export default {
                 return true;
             }
             return false;
+        }
+    },
+    watch: {
+        form: {
+            handler() {},
+            deep: true
         }
     },
     methods: {
@@ -421,7 +443,9 @@ export default {
             if (this.formdata || this.object_id) {
                 if (!this.selectedOffer) {
                     const params = {
-                        original_id: this.formdata ? this.formdata.offer.original_id : this.original_id,
+                        original_id: this.formdata
+                            ? this.formdata.offer.original_id
+                            : this.original_id,
                         object_id: this.formdata ? this.formdata.offer.object_id : this.object_id,
                         type_id: this.formdata ? this.formdata.offer.type_id : this.type_id,
                         'per-page': 1
@@ -488,12 +512,6 @@ export default {
             visual_id: this.form.visual_id
         };
         this.loader = false;
-    },
-    watch: {
-        form: {
-            handler() {},
-            deep: true
-        }
     }
 };
 </script>

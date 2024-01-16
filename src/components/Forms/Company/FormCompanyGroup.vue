@@ -58,7 +58,7 @@ import { CompanyFormOrganization } from '@/const/const.js';
 import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
 import Button from '@/components/common/Button.vue';
-import {onlyRussian} from "@//validators";
+import { onlyRussian } from '@//validators';
 
 export default {
     name: 'FormCompanyGroup',
@@ -72,6 +72,7 @@ export default {
         MultiSelect,
         Button
     },
+    emits: ['closeCompanyGroupsForm', 'updated', 'created'],
     props: {
         formdata: {
             type: Object,
@@ -98,7 +99,10 @@ export default {
             form: {
                 nameRu: {
                     required: helpers.withMessage('Введите название', required),
-                    onlyRussian: helpers.withMessage('Название должно быть на русском языке', onlyRussian)
+                    onlyRussian: helpers.withMessage(
+                        'Название должно быть на русском языке',
+                        onlyRussian
+                    )
                 }
             }
         };
@@ -144,8 +148,7 @@ export default {
             this.form = { ...this.form, ...JSON.parse(cloneFormdata) };
         }
         this.loader = false;
-    },
-    emits: ['closeCompanyGroupsForm', 'updated', 'created']
+    }
 };
 </script>
 

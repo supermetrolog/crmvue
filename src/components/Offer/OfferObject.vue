@@ -5,7 +5,12 @@
             <i @click="clickCloseHandler" class="fas fa-times"></i>
         </div>
         <div class="row no-gutters">
-            <CompanyObjectItemOfferOnly v-for="offer in offers" :key="offer.id" :offer="offer" class="col-12" />
+            <CompanyObjectItemOfferOnly
+                v-for="offer in offers"
+                :key="offer.id"
+                :offer="offer"
+                class="col-12"
+            />
         </div>
     </div>
 </template>
@@ -27,6 +32,11 @@ export default {
         return {
             offers: []
         };
+    },
+    watch: {
+        offerIds() {
+            this.fetchOffers();
+        }
     },
     methods: {
         ...mapActions(['SEARCH_OFFERS']),
@@ -51,11 +61,6 @@ export default {
 
             const { data: allOffers } = await this.SEARCH_OFFERS({ query });
             this.offers = allOffers;
-        }
-    },
-    watch: {
-        offerIds() {
-            this.fetchOffers();
         }
     }
 };

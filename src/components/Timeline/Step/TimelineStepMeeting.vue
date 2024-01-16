@@ -63,6 +63,7 @@ export default {
         FormModalEvent
     },
     mixins: [MixinSteps],
+    emits: ['updateItem', 'openRequestForm', 'stageChanged'],
     data() {
         return {
             notificationFormVisible: false,
@@ -202,8 +203,7 @@ export default {
             this.clickedStage = id;
             this.$emit('stageChanged', id);
         }
-    },
-    emits: ['updateItem', 'openRequestForm', 'stageChanged']
+    }
 };
 </script>
 

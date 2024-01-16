@@ -16,8 +16,10 @@
     <CompanyBoxLayout class="CompanyBoxRequests grid-d">
         <template #header>
             <div class="CompanyBoxRequests-header">
-                <span>ЗАПРОСЫ ({{ requests.length }}), СДЕЛКИ ({{ dealsCount + deals.length }})</span
-                ><small @click="clickCreateRequest" class="edit_btn"> [создать]</small>
+                <span>
+                    ЗАПРОСЫ ({{ requests.length }}), СДЕЛКИ ({{ dealsCount + deals.length }})
+                </span>
+                <small @click="clickCreateRequest" class="edit_btn"> [создать]</small>
             </div>
         </template>
         <template #content>
@@ -28,7 +30,11 @@
                 :requests="requests"
             />
             <template v-if="deals.length">
-                <DealList @openDealFormForUpdate="openDealFormForUpdate" @deleted="dealDeleted" :deals="deals" />
+                <DealList
+                    @openDealFormForUpdate="openDealFormForUpdate"
+                    @deleted="dealDeleted"
+                    :deals="deals"
+                />
             </template>
             <NoData v-if="!requests.length" />
         </template>
@@ -55,6 +61,14 @@ export default {
         CompanyBoxRequestsList,
         NoData
     },
+    emits: [
+        'clickCreateRequest',
+        'openCompanyRequestFormForUpdate',
+        'requestCloned',
+        'requestDisabled',
+        'openDealFormForUpdate',
+        'dealDeleted'
+    ],
     props: {
         requests: {
             type: Array,
@@ -126,15 +140,6 @@ export default {
             this.disabledRequestItem = null;
             this.$emit('requestDisabled');
         }
-    },
-    mounted() {},
-    emits: [
-        'clickCreateRequest',
-        'openCompanyRequestFormForUpdate',
-        'requestCloned',
-        'requestDisabled',
-        'openDealFormForUpdate',
-        'dealDeleted'
-    ]
+    }
 };
 </script>
