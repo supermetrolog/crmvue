@@ -15,6 +15,7 @@ env:
   VUE_APP_API_URL: https://api.supermetrolog.ru/
   VUE_APP_HOST: clients.supermetrolog.ru
   VUE_APP_WS_URL: wss://api.supermetrolog.pro/websocket/
+  VUE_APP_YANDEX_MAP_KEY: ${{ secrets.vue_app_yandex_map_key }}
 jobs:
   web-deploy:
     name: 🎉 Deploy
