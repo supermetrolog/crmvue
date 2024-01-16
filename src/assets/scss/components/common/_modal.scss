@@ -9,10 +9,14 @@
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 20;
+    z-index: 100;
     opacity: 0;
     visibility: hidden;
     backface-visibility: hidden;
+
+    &:has(.loader) {
+        z-index: 80;
+    }
 
     &__blackout {
         height: 100%;
@@ -35,7 +39,8 @@
         color: variables.$color_dark;
         min-width: 300px;
         max-height: 95vh;
-        max-width: 80vw;
+        max-width: 100%;
+        margin: 20px;
         overflow: hidden;
         z-index: 22;
         box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);

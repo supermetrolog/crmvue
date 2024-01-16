@@ -103,6 +103,7 @@ export default {
         FormCompanyContact
     },
     mixins: [MixinStepActions],
+    emits: ['updateStep'],
     data() {
         return {
             companyRequestFormVisible: false,
@@ -198,8 +199,7 @@ export default {
     },
     async created() {
         this.getCompanyContacts();
-    },
-    emits: ['updateStep']
+    }
 };
 </script>
 

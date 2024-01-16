@@ -6,11 +6,13 @@
     right: 0;
     margin: auto;
     background-color: rgba(247, 247, 247, 0.678);
-    z-index: 9;
+    z-index: 90;
 
     &.center {
-        .loader-box {
-            bottom: 0 !important;
+        .loader__container {
+            top: calc(50% - 100px);
+            left: calc(50% - 100px);
+            margin: 0;
         }
     }
 

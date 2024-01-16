@@ -12,7 +12,9 @@
                 </div>
             </div>
             <div class="modal__body">
-                <slot></slot>
+                <div class="container-fluid">
+                    <slot></slot>
+                </div>
             </div>
         </div>
     </div>

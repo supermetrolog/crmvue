@@ -197,7 +197,7 @@ export default {
     name: 'CompanyBox',
     components: { CompanyBoxLayout, CompanyBoxContactList },
     mixins: [MixinCompanyDetailInfo],
-    emits: ['editCompany', 'clickCreateContact'],
+    emits: ['createContact', 'editCompany'],
     inject: ['isMobile'],
     props: {
         company: {

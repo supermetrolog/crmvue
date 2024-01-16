@@ -13,7 +13,12 @@
                         :v="v$.form.comment"
                         placeholder="Добавьте комментарий"
                     />
-                    <Submit class="CompanyBoxLogs-form-btn mt-1" button-classes="btn-primary"> добавить</Submit>
+                    <Submit
+                        class="CompanyBoxLogs-form-btn mt-1 col-12"
+                        button-classes="btn-primary"
+                    >
+                        добавить
+                    </Submit>
                     <div v-if="loader" class="col-12 mt-4">
                         <Loader class="center small py-2 no-absolute" />
                     </div>

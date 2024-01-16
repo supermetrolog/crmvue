@@ -79,6 +79,11 @@ export default {
             return this.COMPANY_REQUESTS.find(item => item.id == this.request_id);
         }
     },
+    watch: {
+        loaderForStep() {
+            this.loader = this.loaderForStep;
+        }
+    },
     methods: {
         ...mapActions(['FETCH_COMPANY_REQUESTS']),
         clickOpenDealForm() {
@@ -95,12 +100,7 @@ export default {
             });
         }
     },
-    async mounted() {},
-    watch: {
-        loaderForStep() {
-            this.loader = this.loaderForStep;
-        }
-    }
+    async mounted() {}
 };
 </script>
 

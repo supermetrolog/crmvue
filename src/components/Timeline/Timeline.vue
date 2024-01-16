@@ -144,6 +144,15 @@ export default {
             return title;
         }
     },
+    watch: {
+        async $route(after, before) {
+            if (before.query.consultant_id != after.query.consultant_id) {
+                this.loader = true;
+                await this.getTimeline();
+                this.loader = false;
+            }
+        }
+    },
     methods: {
         ...mapActions(['FETCH_TIMELINE', 'UPDATE_STEP', 'FETCH_COMPANY_REQUESTS']),
         async updatedObjects(data, goToNext = false, fn = null) {
@@ -222,15 +231,6 @@ export default {
         this.loader = false;
         if (result) {
             this.moveToPriorityStep();
-        }
-    },
-    watch: {
-        async $route(after, before) {
-            if (before.query.consultant_id != after.query.consultant_id) {
-                this.loader = true;
-                await this.getTimeline();
-                this.loader = false;
-            }
         }
     }
 };

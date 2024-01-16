@@ -18,34 +18,26 @@
                 </li>
             </ul>
         </div>
-        <div class="ObjectDeals-list">
-            <ComplexDealPreview
-                v-for="deal in deals"
-                :key="deal.id"
-                @choose="choseDeal"
-                :deal="deal"
-                :is-current="currentDealId === deal.id"
-            />
-        </div>
-        <ComplexDealItem :object="object" :deal="currentDeal" />
+        <!--        <div v-if="deals.length" class="ObjectDeals-list">-->
+        <!--            <ComplexDealPreview-->
+        <!--                v-for="deal in deals"-->
+        <!--                :key="deal.id"-->
+        <!--                @choose="choseDeal"-->
+        <!--                :deal="deal"-->
+        <!--                :is-current="currentDealId === deal.id"-->
+        <!--            />-->
+        <!--        </div>-->
+        <!--        <ComplexDealItem v-if="currentDeal" :object="object" :deal="currentDeal" />-->
     </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
-import ComplexDealPreview from '@/components/Complex/Deal/ComplexDealPreview.vue';
-import ComplexDealItem from '@/components/Complex/Deal/ComplexDealItem.vue';
-
 export default {
     name: 'ComplexDeals',
-    components: {
-        ComplexDealItem,
-        ComplexDealPreview
-    },
     props: {
         deals: {
             type: Array,
-            required: true
+            default: () => []
         },
         object: {
             type: Object,
@@ -54,7 +46,7 @@ export default {
     },
     data() {
         return {
-            currentDealId: this.deals[0].id
+            currentDealId: this.deals[0] ? this.deals[0] : null
         };
     },
     computed: {
@@ -65,12 +57,7 @@ export default {
     methods: {
         choseDeal(id) {
             this.currentDealId = id;
-        },
-        ...mapActions('Complex', ['FETCH_COMPLEX'])
-    },
-
-    mounted() {
-        this.FETCH_COMPLEX();
+        }
     }
 };
 </script>

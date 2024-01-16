@@ -3,12 +3,7 @@
         <div
             v-if="offer.noOffer"
             class="object-offer only"
-            :class="[
-                {
-                    general: offer.type_id == 2
-                },
-                classList
-            ]"
+            :class="[{ general: offer.type_id === 2 }]"
         >
             <div class="row no-gutters object-info">
                 <div class="col-12 align-self-center">
@@ -29,28 +24,32 @@
                         <span class="visual_id">
                             {{ offer.visual_id }}
                         </span>
-                        <span v-if="offer.type_id == 2" class="badge badge-secondary isGeneral">Общий</span>
-                        <span v-else-if="offer.type_id == 1" class="badge badge-info isGeneral">Блок</span>
+                        <span v-if="offer.type_id == 2" class="badge badge-secondary isGeneral">
+                            Общий
+                        </span>
+                        <span v-else-if="offer.type_id == 1" class="badge badge-info isGeneral">
+                            Блок
+                        </span>
                         <span v-else class="badge badge-warning isGeneral">Неизвестно</span>
-                        <a @click.prevent href="#">
+                        <a :href="getOfferUrl(offer)" target="_blank">
                             <img :src="offer.image" alt="image" />
                         </a>
                         <div @click.prevent="clickUnSelectObject" class="icon-unselect">
-                            <i class="fas fa-check"></i>
+                            <i class="fas fa-check" />
                         </div>
                     </div>
                 </div>
                 <div class="col-12 main text-center">
                     <span v-if="offer.status != 1" class="badge badge-warning mb-1">В архиве</span>
                     <div class="actions">
-                        <i @click="clickView(offer)" class="fas fa-eye"></i>
+                        <i @click="clickView(offer)" class="fas fa-eye" />
                     </div>
                     <div class="price">
-                        <i class="fas fa-ruble-sign"></i>
+                        <i class="fas fa-ruble-sign" />
                         <p class="value">{{ offer.price }} <small></small></p>
                     </div>
                     <div class="area">
-                        <i class="fas fa-square-full"></i>
+                        <i class="fas fa-square-full" />
                         <p>
                             {{ offer.area }}
                             <small>м<sup>2</sup></small>
@@ -78,8 +77,8 @@
             class="object-offer only"
             :class="[
                 {
-                    passive: offer.status != 1,
-                    general: offer.type_id == 2,
+                    passive: offer.status !== 1,
+                    general: offer.type_id === 2,
                     selected: isSelected
                 }
             ]"
@@ -103,19 +102,28 @@
                         <span class="visual_id">
                             {{ offer.visual_id }}
                         </span>
-                        <span v-if="offer.test_only" class="badge badge-danger isGeneral test_only">Тестовый лот</span>
-                        <span v-if="offer.type_id == 2" class="badge badge-secondary isGeneral">Общий</span>
-                        <span v-else-if="offer.type_id == 1" class="badge badge-info isGeneral">Блок</span>
+                        <span v-if="offer.test_only" class="badge badge-danger isGeneral test_only">
+                            Тестовый лот
+                        </span>
+                        <span v-if="offer.type_id == 2" class="badge badge-secondary isGeneral">
+                            Общий
+                        </span>
+                        <span v-else-if="offer.type_id == 1" class="badge badge-info isGeneral">
+                            Блок
+                        </span>
                         <span v-else class="badge badge-warning isGeneral">Неизвестно</span>
-                        <a @click.prevent="clickSelectObject" href="#">
+                        <a @click="clickSelectObject" :href="getOfferUrl(offer)" target="_blank">
                             <img :src="offer.thumb" alt="image" />
                         </a>
                         <div @click.prevent="clickUnSelectObject" class="icon-unselect">
-                            <i class="fas fa-check"></i>
+                            <i class="fas fa-check" />
                         </div>
                     </div>
                 </div>
-                <div class="col-12 main text-center" :class="{ 'animated-background': isNewRecommended }">
+                <div
+                    class="col-12 main text-center"
+                    :class="{ 'animated-background': isNewRecommended }"
+                >
                     <span v-if="offer.status != 1" class="badge badge-warning mb-1">Пассив</span>
                     <div v-if="isSelected" class="comment">
                         <textarea
@@ -130,31 +138,44 @@
                     </div>
                     <div class="actions">
                         <div class="mb-2">
-                            <span v-if="isNewRecommended" class="badge badge-success">новое в подборке</span>
+                            <span v-if="isNewRecommended" class="badge badge-success">
+                                новое в
+                            </span>
                         </div>
                         <i
                             v-if="offer.type_id != 3"
                             @click="clickFavotiteOffer(offer)"
                             class="fas fa-star"
                             :class="{
-                                selected: FAVORITES_OFFERS.find(item => item.original_id == offer.original_id)
+                                selected: FAVORITES_OFFERS.find(
+                                    item => item.original_id == offer.original_id
+                                )
                             }"
-                        ></i>
-                        <i v-if="offer.type_id != 3" @click="clickViewPdf(offer)" class="fas fa-file-pdf"></i>
-                        <i @click="clickView(offer)" class="fas fa-eye"></i>
+                        />
+                        <i
+                            v-if="offer.type_id != 3"
+                            @click="clickViewPdf(offer)"
+                            class="fas fa-file-pdf"
+                        />
+                        <i @click="clickView(offer)" class="fas fa-eye" />
                     </div>
                     <div class="location">
                         <p v-if="offer.district_name">
                             {{ offer.district_name }}
                         </p>
-                        <p v-if="offer.region_name && offer.district_moscow_name" class="region_item">
+                        <p
+                            v-if="offer.region_name && offer.district_moscow_name"
+                            class="region_item"
+                        >
                             {{ offer.region_name }}
                         </p>
                         —
                         <p v-if="offer.district_moscow_name">
                             {{ offer.district_moscow_name }}
                         </p>
-                        <p v-if="offer.direction_name && offer.district_moscow_name">— {{ offer.direction_name }}</p>
+                        <p v-if="offer.direction_name && offer.district_moscow_name">
+                            — {{ offer.direction_name }}
+                        </p>
                         <p v-if="offer.direction_name && !offer.district_moscow_name">
                             {{ offer.direction_name }}
                         </p>
@@ -165,7 +186,7 @@
                         </p>
                     </div>
                     <div class="price">
-                        <i class="fas fa-ruble-sign"></i>
+                        <i class="fas fa-ruble-sign" />
                         <p v-if="offer.deal_type == 1 || offer.deal_type == 4" class="value">
                             <!-- {{ offer.calc_price_general }} -->
                             {{ offer.calc_price_warehouse }}
@@ -182,15 +203,21 @@
                         </small>
                     </div>
                     <div class="area">
-                        <i class="fas fa-square-full"></i>
+                        <i class="fas fa-square-full" />
                         <p>
                             {{ offer.calc_area_general }}
                             <small>м<sup>2</sup></small>
                         </p>
                     </div>
                     <div @click="toggleExtraInfoVisible" class="extraVisible">
-                        <i v-if="!extraInfoVisible" class="far fa-arrow-alt-circle-down text-center mt-1 extra"></i>
-                        <i v-if="extraInfoVisible" class="far fa-arrow-alt-circle-up text-center mt-1 extra"></i>
+                        <i
+                            v-if="!extraInfoVisible"
+                            class="far fa-arrow-alt-circle-down text-center mt-1 extra"
+                        />
+                        <i
+                            v-if="extraInfoVisible"
+                            class="far fa-arrow-alt-circle-up text-center mt-1 extra"
+                        />
                     </div>
                 </div>
                 <div v-if="extraInfoVisible" class="col-12 text-center">
@@ -222,7 +249,9 @@
                         </div>
                         <div class="params__item">
                             <p class="title">Электричество:</p>
-                            <p class="value">{{ $formatter.number(offer.power_value) }} <small>кВт</small></p>
+                            <p class="value">
+                                {{ $formatter.number(offer.power_value) }} <small>кВт</small>
+                            </p>
                         </div>
                         <div class="params__item">
                             <p class="title">Тип ворот:</p>
@@ -274,6 +303,7 @@ import { mapActions, mapGetters } from 'vuex';
 
 export default {
     name: 'CompanyObjectItemOfferOnly',
+    emits: ['select', 'unSelect', 'addComment', 'deleteFavoriteOffer'],
     props: {
         offer: {
             type: Object
@@ -325,10 +355,18 @@ export default {
                 this.offer.generalOffersMix.offer &&
                 this.offer.generalOffersMix.offer.tax_form
             ) {
-                return TaxFormList.find(item => item.value == this.offer.generalOffersMix.offer.tax_form).label;
+                return TaxFormList.find(
+                    item => item.value == this.offer.generalOffersMix.offer.tax_form
+                ).label;
             }
 
             return null;
+        }
+    },
+    watch: {
+        offer: {
+            handler() {},
+            deep: true
         }
     },
     methods: {
@@ -364,20 +402,16 @@ export default {
         },
         clickView() {
             window.open(this.offerUrl, '_blank');
+        },
+        getOfferUrl(offer) {
+            return this.$apiUrlHelper.generator().offerUrl(offer);
         }
     },
     mounted() {
         if (this.offer.comment) {
             this.localComment = this.offer.comment;
         }
-    },
-    watch: {
-        offer: {
-            handler() {},
-            deep: true
-        }
-    },
-    emits: ['select', 'unSelect', 'addComment', 'deleteFavoriteOffer']
+    }
 };
 </script>
 

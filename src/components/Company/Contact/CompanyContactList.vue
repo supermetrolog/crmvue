@@ -1,7 +1,12 @@
 <template>
     <div class="company-request-list company-contact-list">
         <AnimationTransition>
-            <Modal v-if="deletedContactItem" @close="clickCloseModal" title="Удаление контакта" class="autosize">
+            <Modal
+                v-if="deletedContactItem"
+                @close="clickCloseModal"
+                title="Удаление контакта"
+                class="modal-company-contact-remove"
+            >
                 <div class="row no-gutters">
                     <div class="col-12 text-center">
                         <h4 class="text-dark">Вы уверены что хотите удалить контакт?</h4>
@@ -16,7 +21,11 @@
                         >
                             Удалить
                         </button>
-                        <button @click="clickCloseModal" class="btn btn-primary ml-1" :disabled="deleteLoader">
+                        <button
+                            @click="clickCloseModal"
+                            class="btn btn-primary ml-1"
+                            :disabled="deleteLoader"
+                        >
                             Нет
                         </button>
                     </div>
@@ -50,6 +59,7 @@ export default {
         Loader,
         Modal
     },
+    emits: ['openContactFormForUpdate', 'createComment', 'deleteContact'],
     props: {
         contacts: {
             type: Array
@@ -87,8 +97,7 @@ export default {
             this.deletedContactItem = null;
         }
     },
-    mounted() {},
-    emits: ['openContactFormForUpdate', 'createComment', 'deleteContact']
+    mounted() {}
 };
 </script>
 

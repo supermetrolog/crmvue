@@ -1,5 +1,11 @@
 <template>
-    <button @click="clickHandler" class="button" :class="classButton" :title="title">
+    <button
+        @click="clickHandler"
+        class="button"
+        :class="classButton"
+        :title="title"
+        :disabled="disabled"
+    >
         <span v-if="hasBadge" class="button__badge badge badge-danger">
             {{ badge }}
         </span>
@@ -49,6 +55,10 @@ export default {
         },
         prevent: {
             type: Boolean,
+            default: false
+        },
+        disabled: {
+            type: [Boolean, Number],
             default: false
         }
     },

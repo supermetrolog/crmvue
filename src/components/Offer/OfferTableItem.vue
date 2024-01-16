@@ -92,9 +92,9 @@
         </Td>
         <Td class="company_about">
             <template v-if="offer.company !== null">
-                <router-link :to="'/companies/' + offer.company.id" target="_blank">
+                <a :href="getOfferUrl(offer)" target="_blank">
                     {{ offer.company.full_name }}
-                </router-link>
+                </a>
                 <div v-if="contact" class="contact">
                     {{ contact.full_name }}
                     <a

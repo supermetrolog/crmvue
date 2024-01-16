@@ -60,7 +60,7 @@ export default {
     },
     computed: {
         position() {
-            return PositionList[this.contact.position].label;
+            return this.contact.position ? PositionList[this.contact.position].label : '-';
         },
         updateDate() {
             let date = this.contact.updated_at ? this.contact.updated_at : this.contact.created_at;

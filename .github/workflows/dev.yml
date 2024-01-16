@@ -4,6 +4,14 @@ on:
       - dev
 name: 🚀 Deploy website on push
 env:
+  VUE_APP_UPLOADS_PATH: uploads/
+  VUE_APP_IMAGES_PATH: images/
+  VUE_APP_NOT_FOUND_FILENAME: no-image.jpg
+  VUE_APP_NOT_FOUND_AVATAR_NAME: no-avatar.png
+  VUE_APP_OBJECTS_PHOTO_URL: https://pennylane.pro
+  VUE_APP_RESERVE_API_URL: https://reserve-api.supermetrolog.ru/
+  VUE_APP_RESERVE_HOST: https://reserve-clients.supermetrolog.ru
+  VUE_APP_OBJECT_URL: https://pennylane.pro/
   VUE_APP_API_URL: https://api.supermetrolog.ru/
   VUE_APP_HOST: clients.supermetrolog.ru
   VUE_APP_WS_URL: wss://api.supermetrolog.pro/websocket/

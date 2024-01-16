@@ -4,12 +4,11 @@
             v-if="mounted"
             ref="map"
             :settings="settings"
-            :options="options"
             :coords="coords"
             :zoom="zoom"
             :controls="controls"
             :detailed-controls="detailedControls"
-            :behaviors="behaviors.filter(elem => elem != 'selection')"
+            :behaviors="behaviors.filter(elem => elem !== 'selection')"
             :style="styles"
         >
             <YandexMapSelectionBehavior
@@ -171,7 +170,7 @@ export default {
             this.$emit('selectionDone', coordinates);
         },
         getMap() {
-            return this.$refs.map.$options.static.myMap;
+            return this.$refs.map ? this.$refs.map.$options.static.myMap : null;
         },
         getObjectManager() {
             let objectManager = this.$options.static.objectManager;
@@ -235,6 +234,7 @@ export default {
             }
         },
         update() {
+            if (!this.getMap()) return false;
             this.removeObjectManager();
 
             this.markers = this.markers.filter(marker => !this.removeMarkers.includes(marker.id));
@@ -252,7 +252,6 @@ export default {
         await loadYmap({ ...this.settings });
         this.mounted = true;
     },
-
     beforeUnmount() {
         this.destroyMap();
     }

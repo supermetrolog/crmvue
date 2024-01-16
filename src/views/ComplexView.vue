@@ -1,5 +1,5 @@
 <template>
-    <div v-if="complex" @scroll="onScroll" class="ComplexView">
+    <div v-if="complex" class="ComplexView">
         <div class="ComplexHeader">
             <div class="ComplexHeader-content">
                 <h1 class="ComplexHeader-name">{{ complex.title || 'Нет названия' }}</h1>
@@ -36,7 +36,8 @@ export default {
     components: { ComplexHoldings, ComplexMap, ComplexAbout },
     data() {
         return {
-            complex: null
+            complex: null,
+            editAccess: false
         };
     },
     computed: {
