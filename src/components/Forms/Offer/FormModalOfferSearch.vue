@@ -57,6 +57,10 @@
                     placeholder="не более"
                     label="Удаленность от МКАД"
                     class="col-md-3 col-12"
+                    unit="км"
+                    type="number"
+                    :v="v$.form.rangeMaxDistanceFromMKAD"
+                    reactive
                 />
                 <Input
                     v-else
@@ -72,73 +76,39 @@
                     maska="##########"
                     label="Электричесвто (квт)"
                     class="col-md-3 col-12"
+                    unit="кВт"
+                    type="number"
+                    :v="v$.form.rangeMinElectricity"
+                    reactive
                 />
-                <div class="col-md-3 col-6">
-                    <div class="row">
-                        <Input
-                            v-model="form.rangeMinArea"
-                            maska="##########"
-                            label="S пола (м^2)"
-                            placeholder="От:"
-                            class="col-12 mb-1"
-                            type="number"
-                        />
-                        <Input
-                            v-model="form.rangeMaxArea"
-                            maska="##########"
-                            placeholder="До:"
-                            class="col-12"
-                            type="number"
-                        />
-                    </div>
-                </div>
-                <div class="col-md-3 col-6">
-                    <div class="row">
-                        <Input
-                            v-model="form.rangeMinPricePerFloor"
-                            maska="##########"
-                            placeholder="От:"
-                            label="Цена (продажи, аренды, о-х)"
-                            class="col-12 mb-1"
-                            type="number"
-                        />
-                        <Input
-                            v-if="typeof form.approximateMaxPricePerFloor == 'undefined'"
-                            v-model="form.rangeMaxPricePerFloor"
-                            maska="##########"
-                            placeholder="До:"
-                            class="col-12"
-                            type="number"
-                        />
-                        <Input
-                            v-else
-                            v-model="form.approximateMaxPricePerFloor"
-                            maska="##########"
-                            placeholder="До:"
-                            class="col-12"
-                            type="number"
-                        />
-                    </div>
-                </div>
-                <div class="col-md-3 col-6">
-                    <div class="row">
-                        <Input
-                            v-model="form.rangeMinCeilingHeight"
-                            maska="##########"
-                            label="Высота потолков"
-                            placeholder="От:"
-                            class="col-12 mb-1"
-                            type="number"
-                        />
-                        <Input
-                            v-model="form.rangeMaxCeilingHeight"
-                            maska="##########"
-                            placeholder="До:"
-                            class="col-12"
-                            type="number"
-                        />
-                    </div>
-                </div>
+                <DoubleInput
+                    v-model:first="form.rangeMinArea"
+                    v-model:second="form.rangeMaxArea"
+                    label="S пола (м^2)"
+                    class="col-3"
+                    unit="м<sup>2</sup>"
+                    type="number"
+                    :validators="formAreaValidators"
+                    reactive
+                />
+                <DoubleInput
+                    v-model:first="form.rangeMinPricePerFloor"
+                    v-model:second="form.rangeMaxPricePerFloor"
+                    label="Цена (продажи, аренды, о-х)"
+                    class="col-3"
+                    unit="₽"
+                    type="number"
+                    :validators="formPricePerFloorValidators"
+                />
+                <DoubleInput
+                    v-model:first="form.rangeMinCeilingHeight"
+                    v-model:second="form.rangeMaxCeilingHeight"
+                    label="Высота потолков"
+                    class="col-3"
+                    unit="м"
+                    type="number"
+                    :validators="formCeilingHeightValidators"
+                />
                 <MultiSelect
                     v-model="form.fakeRegion"
                     @change="changeRegion"
@@ -223,29 +193,48 @@
                 <div class="col-7">
                     <span class="form__subtitle">Прочее</span>
                     <div class="form__row mt-1">
-                        <CheckboxChip v-model="form.water" :value="form.water" text="Вода" />
-                        <CheckboxChip v-model="form.gas" :value="form.gas" text="Газ" />
-                        <CheckboxChip v-model="form.steam" :value="form.steam" text="Пар" />
+                        <CheckboxChip
+                            v-model="form.water"
+                            :value="form.water"
+                            text="Вода"
+                            multiple
+                        />
+                        <CheckboxChip v-model="form.gas" :value="form.gas" text="Газ" multiple />
+                        <CheckboxChip
+                            v-model="form.steam"
+                            :value="form.steam"
+                            text="Пар"
+                            multiple
+                        />
                         <CheckboxChip
                             v-model="form.sewage_central"
                             :value="form.sewage_central"
                             text="Канализация"
+                            multiple
                         />
-                        <CheckboxChip v-model="form.racks" :value="form.racks" text="Стелажи" />
+                        <CheckboxChip
+                            v-model="form.racks"
+                            :value="form.racks"
+                            text="Стелажи"
+                            multiple
+                        />
                         <CheckboxChip
                             v-model="form.railway"
                             :value="form.railway"
                             text="Ж/Д ветка"
+                            multiple
                         />
                         <CheckboxChip
                             v-model="form.has_cranes"
                             :value="form.has_cranes"
                             text="Краны"
+                            multiple
                         />
                         <CheckboxChip
                             v-model="form.firstFloorOnly"
                             :value="form.firstFloorOnly"
                             text="Только 1 этаж"
+                            multiple
                         />
                     </div>
                 </div>
@@ -365,11 +354,72 @@ import Button from '@/components/common/Button.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
+import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
+import { max, min, onlyPositiveNumber } from '@//validators';
+import useValidate from '@vuelidate/core';
 
 export default {
     name: 'FormModalOfferSearch',
-    components: { RadioChip, CheckboxChip, AnimationTransition, Button, Modal },
+    components: { DoubleInput, RadioChip, CheckboxChip, AnimationTransition, Button, Modal },
     mixins: [FormMixin],
-    emits: ['close']
+    emits: ['close'],
+    data() {
+        return {
+            v$: useValidate()
+        };
+    },
+    computed: {
+        formAreaValidators() {
+            return [
+                {
+                    func: max(this.form.rangeMaxArea),
+                    message: 'Минимальная S превышает максимальную',
+                    property: 'first'
+                },
+                {
+                    func: min(0),
+                    message: 'Некорректная отрицательная S'
+                }
+            ];
+        },
+        formPricePerFloorValidators() {
+            return [
+                {
+                    func: max(this.form.rangeMaxPricePerFloor),
+                    message: 'Минимальная цена превышает максимальную',
+                    property: 'first'
+                },
+                {
+                    func: min(0),
+                    message: 'Некорректная отрицательная цена'
+                }
+            ];
+        },
+        formCeilingHeightValidators() {
+            return [
+                {
+                    func: max(this.form.rangeMaxCeilingHeight),
+                    message: 'Минимальная высота превышает максимальную',
+                    property: 'first'
+                },
+                {
+                    func: min(0),
+                    message: 'Некорректная отрицательная высота'
+                }
+            ];
+        }
+    },
+    validations() {
+        return {
+            form: {
+                rangeMaxDistanceFromMKAD: {
+                    min: onlyPositiveNumber('Некорректная отрицательная удаленность')
+                },
+                rangeMinElectricity: {
+                    min: onlyPositiveNumber()
+                }
+            }
+        };
+    }
 };
 </script>

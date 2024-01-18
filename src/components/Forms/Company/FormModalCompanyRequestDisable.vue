@@ -1,5 +1,5 @@
 <template>
-    <div class="company-request-disable-form-modal">
+    <div class="modal-form-company-request-disable">
         <Modal @close="$emit('close')" class="autosize" :title="title">
             <FormCompanyRequestDisable @disabled="$emit('disabled')" :request_id="request_id" />
         </Modal>
@@ -29,12 +29,3 @@ export default {
     }
 };
 </script>
-
-<style lang="scss">
-.company-request-disable-form-modal {
-    .modal-body {
-        max-width: 350px;
-        min-width: 350px;
-    }
-}
-</style>

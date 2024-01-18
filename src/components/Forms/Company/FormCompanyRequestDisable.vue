@@ -1,5 +1,5 @@
 <template>
-    <Form @submit="onSubmit" class="autosize">
+    <Form @submit="onSubmit">
         <Loader v-if="loader" class="center" />
         <FormGroup>
             <MultiSelect
@@ -10,7 +10,7 @@
                 class="col-12"
                 :options="passiveWhyOptions"
             />
-            <Textarea v-model="form.passive_why_comment" label="Комментарий" class="col-12" />
+            <Textarea v-model="form.passive_why_comment" label="Комментарий" class="col-12 mt-2" />
             <Submit class="col-12 mt-2" button-classes="btn-danger"> Завершить</Submit>
         </FormGroup>
     </Form>
