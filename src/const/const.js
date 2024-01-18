@@ -89,12 +89,12 @@ export const FeedbackList = {
 };
 
 export const FeedbackIcons = {
-    0: { name: 'Звонок', icon: 'fas phone' },
-    1: { name: 'Viber', icon: 'fab viber' },
-    2: { name: 'SMS', icon: 'fas sms' },
-    3: { name: 'Telegram', icon: 'fab telegram' },
-    4: { name: 'WhatsApp', icon: 'fab whatsapp-square' },
-    5: { name: 'Email', icon: 'fas at' }
+    0: { name: 'Звонок', icon: 'fa-solid fa-phone' },
+    1: { name: 'Viber', icon: null },
+    2: { name: 'SMS', icon: 'fa-solid fa-comment' },
+    3: { name: 'Telegram', icon: 'fa-solid fa-paper-plane' },
+    4: { name: 'WhatsApp', icon: null },
+    5: { name: 'Email', icon: 'fa-solid fa-at' }
 };
 export const WayOfSending = {
     0: { name: 'Email', icon: 'fas at' },
@@ -139,12 +139,12 @@ export const CompanyFormOrganization = [
     { value: 5, label: 'ИП' }
 ];
 export const ActivePassive = {
-    0: 'пассив',
-    1: 'актив'
+    0: 'Пассив',
+    1: 'Актив'
 };
 export const ActivePassiveFUCK = {
-    1: 'актив',
-    2: 'пассив'
+    1: 'Актив',
+    2: 'Пассив'
 };
 export const YesNo = {
     0: 'Нет',
