@@ -2,14 +2,14 @@
     <header class="header">
         <div class="header__wrapper">
             <div class="row no-gutters">
-                <div class="col-lg-6 align-self-center">
+                <div class="col-md-6 align-self-center">
                     <HeaderMenu />
                 </div>
-                <div class="col-lg-4 align-self-center">
-                    <HeaderActions />
-                </div>
-                <div class="col-lg-2 align-self-center text-right">
-                    <HeaderFunctions />
+                <div class="col-md-6">
+                    <div class="header__right">
+                        <HeaderActions />
+                        <HeaderFunctions />
+                    </div>
                 </div>
             </div>
         </div>

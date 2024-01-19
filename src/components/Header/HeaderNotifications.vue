@@ -1,7 +1,7 @@
 <template>
     <div class="comments-panel">
         <div class="comments-panel__content" :class="{ loading: loader }">
-            <div class="row header no-gutters">
+            <div class="row heading no-gutters">
                 <div class="col-6 title text-left align-self-center">
                     <p>Уведомления</p>
                 </div>
@@ -13,10 +13,10 @@
             <div v-if="!loader" class="row no-gutters">
                 <div class="col-12">
                     <div class="comments-item">
-                        <div class="new header">
+                        <div class="new heading">
                             <p class="text-left title">новые уведомления</p>
                         </div>
-                        <div v-if="!newNotification.length" class="new header mt-4 mb-5">
+                        <div v-if="!newNotification.length" class="new heading mt-4 mb-5">
                             <p class="text-center title no-data">нет новых</p>
                         </div>
                         <HeaderNotificationsItem
@@ -25,7 +25,7 @@
                             :notification="notification"
                             is-new
                         />
-                        <div v-if="oldNotification.length" class="old header">
+                        <div v-if="oldNotification.length" class="old heading">
                             <p class="title text-left">просмотренные</p>
                         </div>
                         <HeaderNotificationsItem
@@ -69,10 +69,14 @@ export default {
     computed: {
         ...mapGetters(['NOTIFICATIONS_PAGINATION', 'THIS_USER', 'NOTIFICATIONS']),
         oldNotification() {
-            return this.NOTIFICATIONS.filter(item => item.status != 0 && item.status != -1 && item.status != 3);
+            return this.NOTIFICATIONS.filter(
+                item => item.status != 0 && item.status != -1 && item.status != 3
+            );
         },
         newNotification() {
-            return this.NOTIFICATIONS.filter(item => item.status == 0 || item.status == -1 || item.status == 3);
+            return this.NOTIFICATIONS.filter(
+                item => item.status == 0 || item.status == -1 || item.status == 3
+            );
         }
     },
     methods: {

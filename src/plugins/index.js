@@ -53,12 +53,14 @@ export const formatterObject = {
 
         return null;
     },
-    date(value) {
-        const options = {
+    date(value, withTime = false) {
+        let options = {
             day: 'numeric',
             month: 'long',
             year: 'numeric'
         };
+
+        if (withTime) options = { ...options, hour: 'numeric', minute: 'numeric' };
 
         return new Date(value * 1000).toLocaleDateString('ru', options);
     },

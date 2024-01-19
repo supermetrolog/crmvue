@@ -1,7 +1,7 @@
 <template>
     <div class="comments-panel">
         <div class="comments-panel__content" :class="{ loading: loader }">
-            <div class="row header no-gutters">
+            <div class="row heading no-gutters">
                 <div class="col-6 title text-left align-self-center">
                     <p>Звонки</p>
                 </div>
@@ -13,18 +13,28 @@
             <div v-if="!loader" class="row no-gutters">
                 <div class="col-12">
                     <div class="comments-item">
-                        <div v-if="CURRENT_CALLS.length" class="old header">
+                        <div v-if="CURRENT_CALLS.length" class="old heading">
                             <p class="title text-left">текущие звонки</p>
                         </div>
-                        <HeaderCallsItem v-for="call of CURRENT_CALLS" :key="call.id" :call="call" is-new />
-                        <div class="new header">
+                        <HeaderCallsItem
+                            v-for="call of CURRENT_CALLS"
+                            :key="call.id"
+                            :call="call"
+                            is-new
+                        />
+                        <div class="new heading">
                             <p class="text-left title">новые звонки</p>
                         </div>
-                        <div v-if="!newCall.length" class="new header mt-4 mb-5">
+                        <div v-if="!newCall.length" class="new heading mt-4 mb-5">
                             <p class="text-center title no-data">нет новых</p>
                         </div>
-                        <HeaderCallsItem v-for="call of newCall" :key="call.id" :call="call" is-new />
-                        <div v-if="oldCall.length" class="old header">
+                        <HeaderCallsItem
+                            v-for="call of newCall"
+                            :key="call.id"
+                            :call="call"
+                            is-new
+                        />
+                        <div v-if="oldCall.length" class="old heading">
                             <p class="title text-left">просмотренные</p>
                         </div>
                         <HeaderCallsItem v-for="call of oldCall" :key="call.id" :call="call" />
@@ -64,11 +74,14 @@ export default {
         ...mapGetters(['CALLS_PAGINATION', 'THIS_USER', 'CALLS', 'CURRENT_CALLS']),
         oldCall() {
             return this.CALLS.filter(
-                item => item.status != 0 && item.status != -1 && item.status != 3 && item.status != 2
+                item =>
+                    item.status != 0 && item.status != -1 && item.status != 3 && item.status != 2
             );
         },
         newCall() {
-            return this.CALLS.filter(item => item.status == 0 || item.status == -1 || item.status == 3);
+            return this.CALLS.filter(
+                item => item.status == 0 || item.status == -1 || item.status == 3
+            );
         }
     },
     methods: {

@@ -1,7 +1,11 @@
 <template>
-    <div class="form__control" :class="{ 'form__control--disabled': disabled }">
+    <div
+        class="form__control"
+        :class="{ 'form__control--disabled': disabled, 'form__control--reactive': reactive }"
+    >
         <span v-if="label" class="form__label">{{ label }}</span>
         <div class="double-input">
+            {{ inputClasses }}
             <label>
                 <span class="form__caption">от</span>
                 <input
@@ -9,13 +13,14 @@
                     @input="onFirstInput($event.target.value.trim())"
                     @keypress.enter.prevent
                     class="form__input form__input--title"
-                    :class="[inputClasses, { 'form__input--unit': unit, invalid: firstHasErrors }]"
-                    :style="paddingRightStyle"
+                    :class="[firstInputValidationClass, { 'form__input--unit': unit }]"
+                    :style="paddingRightStyle.first"
                     :type="type"
                     :disabled="disabled"
                     :value="first"
                 />
                 <span v-if="unit" ref="unit" class="form__unit" v-html="unit"></span>
+                <ValidationInfo v-if="firstHasValidationInfo" :errors="firstInputErrors" />
             </label>
             <label>
                 <span class="form__caption">до</span>
@@ -24,13 +29,14 @@
                     @input="onSecondInput($event.target.value.trim())"
                     @keypress.enter.prevent
                     class="form__input form__input--title"
-                    :class="[inputClasses, { 'form__input--unit': unit, invalid: secondHasErrors }]"
-                    :style="paddingRightStyle"
+                    :class="[secondInputValidationClass, { 'form__input--unit': unit }]"
+                    :style="paddingRightStyle.second"
                     :type="type"
                     :disabled="disabled"
                     :value="second"
                 />
                 <span v-if="unit" ref="unit" class="form__unit" v-html="unit"></span>
+                <ValidationInfo v-if="secondHasValidationInfo" :errors="secondInputErrors" />
             </label>
         </div>
         <ValidationMessage v-if="errors.length" :message="errors[0].message" />
@@ -40,19 +46,21 @@
 <script>
 import Mixin from './mixins.js';
 import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
+import ValidationInfo from '@/components/common/Forms/ValidationInfo.vue';
+import { empty } from '@//validators';
 
 export default {
     name: 'DoubleInput',
-    components: { ValidationMessage },
+    components: { ValidationInfo, ValidationMessage },
     mixins: [Mixin],
     props: {
         first: {
             type: [String, Number],
-            default: ''
+            default: null
         },
         second: {
             type: [String, Number],
-            default: ''
+            default: null
         },
         required: {
             type: Boolean,
@@ -63,6 +71,14 @@ export default {
             default: false
         },
         v: {
+            type: Object,
+            default: null
+        },
+        vFirst: {
+            type: Object,
+            default: null
+        },
+        vSecond: {
             type: Object,
             default: null
         },
@@ -83,21 +99,19 @@ export default {
             default: () => []
         }
     },
-    data() {
-        return {
-            paddingRightStyle: null
-        };
-    },
     computed: {
         firstHasErrors() {
-            return this.errors.some(element => element.property && element.property === 'first');
+            return (
+                (this.vFirst && this.vFirst.$error) ||
+                this.errors.some(element => element.property && element.property === 'first')
+            );
         },
         secondHasErrors() {
             return this.errors.some(element => element.property && element.property === 'second');
         },
         errors() {
             // Валидация и поиск ошибок для каждого из инпутов
-            return this.validators.reduce((acc, validator) => {
+            const customErrors = this.validators.reduce((acc, validator) => {
                 if (validator.property)
                     return !validator.func(this[validator.property])
                         ? [...acc, { message: validator.message, property: validator.property }]
@@ -112,26 +126,92 @@ export default {
 
                 return [...acc, ...currentErrors];
             }, []);
+
+            let vuelidateErrors = [];
+
+            if (this.vFirst && this.vFirst.$error)
+                vuelidateErrors = [
+                    ...this.vFirst.$errors.map(element => ({
+                        message: element.$message,
+                        property: 'first'
+                    }))
+                ];
+
+            if (this.vSecond && this.vSecond.$error)
+                vuelidateErrors = [
+                    ...vuelidateErrors,
+                    ...this.vSecond.$errors.map(element => ({
+                        message: element.$message,
+                        property: 'second'
+                    }))
+                ];
+
+            return [...customErrors, ...vuelidateErrors];
+        },
+        paddingRightStyle() {
+            // Расчет ширины блока с единицой измерения
+            if (this.unit) {
+                const unitWidth = this.unit.replaceAll('/', '').replaceAll('<sup>', '').length * 10;
+
+                const firstValidationWidth = this.vFirst && this.vFirst.$dirty ? 20 : 0;
+                const secondValidationWidth = this.secondInputErrors.length ? 20 : 0;
+
+                return {
+                    first: `padding-right: ${unitWidth + 20 + firstValidationWidth}px`,
+                    second: `padding-right: ${unitWidth + 20 + secondValidationWidth}px`
+                };
+            }
+
+            return {
+                first: null,
+                second: null
+            };
+        },
+        firstInputErrors() {
+            return this.errors.filter(element => !element.property || element.property === 'first');
+        },
+        secondInputErrors() {
+            return this.errors.filter(
+                element => !element.property || element.property === 'second'
+            );
+        },
+        firstInputValidationClass() {
+            return {
+                invalid: this.firstHasErrors,
+                valid:
+                    !this.firstHasErrors && !empty(this.first) && !this.disabled && !this.reactive
+            };
+        },
+        secondInputValidationClass() {
+            return {
+                invalid: this.secondHasErrors,
+                valid:
+                    !this.secondHasErrors && !empty(this.second) && !this.disabled && !this.reactive
+            };
+        },
+        firstHasValidationInfo() {
+            return (this.firstHasErrors || !empty(this.first)) && !this.disabled && !this.reactive;
+        },
+        secondHasValidationInfo() {
+            return (
+                (this.secondHasErrors || !empty(this.second)) && !this.disabled && !this.reactive
+            );
         }
     },
     methods: {
         onFirstInput(value) {
             if (value !== this.first) {
                 this.validate();
+                if (this.vFirst) this.vFirst.$touch();
                 this.$emit('update:first', value);
             }
         },
         onSecondInput(value) {
             if (value !== this.second) {
                 this.validate();
+                if (this.vSecond) this.vSecond.$touch();
                 this.$emit('update:second', value);
             }
-        }
-    },
-    created() {
-        if (this.unit) {
-            let unitWidth = this.unit.replaceAll('/', '').replaceAll('<sup>', '').length * 10;
-            this.paddingRightStyle = `padding-right: ${unitWidth + 20}px`;
         }
     }
 };

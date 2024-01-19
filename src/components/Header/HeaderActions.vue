@@ -2,13 +2,11 @@
     <teleport to="body">
         <FormCompanyDeal v-if="dealFormVisible" @close="clickCloseDealForm" />
     </teleport>
-    <div class="row">
-        <div class="col-md-4 col-8 ml-auto">
-            <Button @click="clickOpenDealForm" small icon>
-                создать сделку
-                <i class="ml-2 fa-solid fa-bolt"></i>
-            </Button>
-        </div>
+    <div class="header__actions">
+        <Button @click="clickOpenDealForm" small icon>
+            создать сделку
+            <i class="ml-2 fa-solid fa-bolt"></i>
+        </Button>
     </div>
 </template>
 

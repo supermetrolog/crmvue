@@ -11,17 +11,20 @@
                 :value="modelValue"
             />
         </label>
-        <div v-if="v && v.$error" class="error-container">
-            <p>{{ v.$errors[0].$message }}</p>
-        </div>
+        <ValidationMessage
+            v-if="hasValidationError && !disabled"
+            :message="v.$errors[0].$message"
+        />
     </div>
 </template>
 
 <script>
 import Mixin from './mixins.js';
+import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
 
 export default {
     name: 'Textarea',
+    components: { ValidationMessage },
     mixins: [Mixin],
     props: {
         modelValue: {
