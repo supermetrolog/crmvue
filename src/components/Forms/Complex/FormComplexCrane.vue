@@ -139,7 +139,7 @@
                 </Tab>
             </Tabs>
             <div class="row">
-                <Button success class="col-3 mx-auto">Сохранить</Button>
+                <Submit success class="col-3 mx-auto">Сохранить</Submit>
             </div>
         </Form>
     </Modal>
@@ -150,7 +150,6 @@ import { helpers, minValue, required } from '@vuelidate/validators';
 import { ComplexFormMixin } from '@/components/Forms/Complex/mixin';
 import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
-import Button from '@/components/common/Button.vue';
 import {
     craneBeamsAmountTypes,
     craneBeamTypes,
@@ -164,7 +163,7 @@ import RadioChip from '@/components/common/Forms/RadioChip.vue';
 
 export default {
     name: 'FormComplexCrane',
-    components: { RadioChip, Modal, Loader, Button },
+    components: { RadioChip, Modal, Loader },
     mixins: [ComplexFormMixin],
     emits: ['close'],
     props: {

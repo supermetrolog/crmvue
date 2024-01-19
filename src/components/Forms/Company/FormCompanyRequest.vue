@@ -42,6 +42,22 @@
             </FormGroup>
             <FormGroup class="mb-2">
                 <MultiSelect
+                    v-model="form.dealType"
+                    :v="v$.form.dealType"
+                    required
+                    label="Тип сделки"
+                    class="col-4"
+                    :options="dealTypeList"
+                />
+                <MultiSelect
+                    v-model="form.consultant_id"
+                    :v="v$.form.consultant_id"
+                    required
+                    label="Консультант"
+                    class="col-4"
+                    :options="CONSULTANT_LIST"
+                />
+                <MultiSelect
                     v-model="form.regions"
                     :v="v$.form.regions"
                     label="Регионы"
@@ -58,26 +74,7 @@
                         }
                     "
                 />
-                <div v-if="form.regions.length" class="col-12">
-                    <div class="form__row mt-1">
-                        <Chip
-                            v-for="(region, index) in checkedRegions"
-                            :key="index"
-                            @click="removeRegion"
-                            :value="index"
-                            :html="region.label"
-                        />
-                    </div>
-                </div>
-                <MultiSelect
-                    v-model="form.dealType"
-                    :v="v$.form.dealType"
-                    required
-                    label="Тип сделки"
-                    class="col-4"
-                    :options="dealTypeList"
-                />
-                <div class="col-4">
+                <div class="col-8 mt-2">
                     <div class="row">
                         <AnimationTransition>
                             <div
@@ -148,168 +145,219 @@
                         </AnimationTransition>
                     </div>
                 </div>
-                <MultiSelect
-                    v-model="form.consultant_id"
-                    :v="v$.form.consultant_id"
-                    required
-                    label="Консультант"
+                <div v-if="form.regions.length" class="col-4">
+                    <div class="form__row mt-1">
+                        <Chip
+                            v-for="(region, index) in checkedRegions"
+                            :key="index"
+                            @click="removeRegion"
+                            :value="index"
+                            :html="region.label"
+                        />
+                    </div>
+                </div>
+            </FormGroup>
+            <FormGroup class="mb-2">
+                <div class="col-4">
+                    <Input
+                        v-model="form.distanceFromMKAD"
+                        :disabled="!!form.distanceFromMKADnotApplicable"
+                        :v="v$.form.distanceFromMKAD"
+                        maska="###"
+                        label="Удаленность от МКАД"
+                        type="number"
+                        unit="км"
+                        required
+                    />
+                    <CheckboxChip
+                        v-model="form.distanceFromMKADnotApplicable"
+                        @change="changeDistanceFromMKADnotApplicable"
+                        :value="form.distanceFromMKADnotApplicable"
+                        text="Неприменимо - регион или Москва"
+                        class="mt-1"
+                    />
+                </div>
+                <div class="col-4">
+                    <Input
+                        v-model="form.movingDate"
+                        @change="form.unknownMovingDate = null"
+                        :v="v$.form.movingDate"
+                        :disabled="form.unknownMovingDate"
+                        label="Дата переезда"
+                        type="date"
+                        required
+                    />
+                    <div class="form__row mt-1">
+                        <RadioChip
+                            v-for="(option, index) in unknownMovingDateOptions"
+                            :key="index"
+                            v-model="form.unknownMovingDate"
+                            @change.stop="form.movingDate = null"
+                            :label="option"
+                            :value="index"
+                            unselect
+                        />
+                    </div>
+                </div>
+                <Input
+                    v-model="form.pricePerFloor"
+                    maska="##########"
+                    label="Цена"
+                    unit="₽ за м<sup>2</sup>/год"
+                    type="number"
                     class="col-4"
-                    :options="CONSULTANT_LIST"
                 />
             </FormGroup>
             <FormGroup class="mb-2">
-                <Input
-                    v-model="form.distanceFromMKAD"
-                    :disabled="!!form.distanceFromMKADnotApplicable"
-                    :v="v$.form.distanceFromMKAD"
-                    maska="###"
-                    label="Удаленность от МКАД"
-                    class="col-4 pr-1"
-                    required
-                >
-                    <Checkbox
-                        v-model="form.distanceFromMKADnotApplicable"
-                        @change="changeDistanceFromMKADnotApplicable"
-                        class="col-12 large p-0 pt-1"
-                        label="Неприменимо - регион или Москва"
-                        mode="inline"
-                    />
-                </Input>
-
-                <Input
-                    v-model="form.minCeilingHeight"
-                    :v="v$.form.minCeilingHeight"
-                    maska="##########"
+                <DoubleInput
+                    v-model:first="form.minCeilingHeight"
+                    v-model:second="form.maxCeilingHeight"
                     label="Высота потолков"
-                    placeholder="От:"
-                    required
-                    class="col-4 pr-1"
-                >
-                    <Input
-                        v-model="form.maxCeilingHeight"
-                        maska="##########"
-                        placeholder="До:"
-                        required
-                        class="col-12 p-0 pt-1"
-                    />
-                </Input>
+                    class="col-4"
+                    unit="м"
+                    type="number"
+                    :validators="formCeilingHeightValidators"
+                    :v-first="v$.form.minCeilingHeight"
+                />
+                <DoubleInput
+                    v-model:first="form.minArea"
+                    v-model:second="form.maxArea"
+                    label="S пола"
+                    class="col-4"
+                    type="number"
+                    :validators="formAreaValidators"
+                    :v-first="v$.form.minArea"
+                    :v-second="v$.form.maxArea"
+                />
                 <Input
-                    v-model="form.minArea"
-                    :v="v$.form.minArea"
+                    v-model="form.electricity"
                     maska="##########"
-                    label="S пола (м^2)"
-                    placeholder="От:"
-                    required
-                    class="col-4 pr-1"
-                >
+                    label="Электричество"
+                    class="col-4"
+                    unit="кВт"
+                    type="number"
+                />
+            </FormGroup>
+            <FormGroup class="mb-2">
+                <div class="col-4 mt-2">
+                    <span class="form__subtitle">Тип ворот</span>
+                    <div class="form__row mt-1">
+                        <CheckboxChip
+                            v-for="(gateType, index) in gateTypeList"
+                            :key="index"
+                            v-model="form.gateTypes"
+                            :value="index"
+                            :text="gateType"
+                            property="gate_type"
+                        />
+                    </div>
+                </div>
+                <div class="col-2 mt-2">
+                    <span class="form__subtitle">Отапливаемый</span>
+                    <div class="form__row mt-1">
+                        <RadioChip v-model="form.heated" label="Нет" :value="0" unselect />
+                        <RadioChip v-model="form.heated" label="Да" :value="1" unselect />
+                    </div>
+                </div>
+                <div class="col-2 mt-2">
+                    <span class="form__subtitle">Классы</span>
+                    <div class="form__row mt-1">
+                        <CheckboxChip
+                            v-for="(classItem, index) in objectClassList"
+                            :key="index"
+                            v-model="form.objectClasses"
+                            :value="index"
+                            :text="classItem"
+                            property="object_class"
+                        />
+                    </div>
+                </div>
+            </FormGroup>
+            <FormGroup class="mb-2">
+                <div class="col-8">
+                    <span class="form__subtitle">Прочее</span>
+                    <div class="form__row mt-1">
+                        <CheckboxChip
+                            v-model="form.water"
+                            :value="form.water"
+                            text="Вода"
+                            multiple
+                        />
+                        <CheckboxChip v-model="form.gaz" :value="form.gaz" text="Газ" multiple />
+                        <CheckboxChip
+                            v-model="form.steam"
+                            :value="form.steam"
+                            text="Пар"
+                            multiple
+                        />
+                        <CheckboxChip
+                            v-model="form.sewerage"
+                            :value="form.sewerage"
+                            text="Канализация"
+                            multiple
+                        />
+                        <CheckboxChip
+                            v-model="form.shelving"
+                            :value="form.shelving"
+                            text="Стелажи"
+                            multiple
+                        />
+                        <CheckboxChip
+                            v-model="form.trainLine"
+                            :value="form.trainLine"
+                            text="Ж/Д ветка"
+                            multiple
+                        />
+                        <CheckboxChip
+                            v-model="form.haveCranes"
+                            :value="form.haveCranes"
+                            text="Краны"
+                            multiple
+                        />
+                        <CheckboxChip
+                            v-model="form.firstFloorOnly"
+                            :value="form.firstFloorOnly"
+                            text="Только 1 этаж"
+                            multiple
+                        />
+                        <CheckboxChip
+                            v-model="form.antiDustOnly"
+                            :value="form.antiDustOnly"
+                            text="Только антипыль"
+                            multiple
+                        />
+                        <CheckboxChip
+                            v-model="form.expressRequest"
+                            :value="form.expressRequest"
+                            text="Срочный запрос"
+                            multiple
+                        />
+                    </div>
+                </div>
+                <AnimationTransition>
                     <Input
-                        v-model="form.maxArea"
-                        :v="v$.form.maxArea"
+                        v-if="form.trainLine"
+                        v-model="form.trainLineLength"
+                        label="Длина ветки"
                         maska="##########"
-                        placeholder="До:"
-                        required
-                        class="col-12 p-0 pt-1"
+                        unit="м"
+                        type="number"
+                        class="col-2"
                     />
-                </Input>
+                </AnimationTransition>
+            </FormGroup>
+            <FormGroup class="mb-2">
                 <MultiSelect
                     v-if="!form.status"
                     v-model="form.passive_why"
                     :v="v$.form.passive_why"
                     required
                     label="Причина пассива"
-                    class="col-5 ml-auto"
+                    class="col-5"
                     :options="passiveWhyOptions"
                 >
                     <Textarea v-model="form.passive_why_comment" class="col-12 p-0 pt-1" />
                 </MultiSelect>
-            </FormGroup>
-            <FormGroup class="mb-2">
-                <Checkbox
-                    v-model="form.objectClasses"
-                    class="col-3"
-                    label="Классы"
-                    name="object_class"
-                    :options="objectClassList"
-                />
-
-                <Radio
-                    v-model="form.heated"
-                    label="Отапливаемый"
-                    :unselect-mode="true"
-                    class="col-3 text-center"
-                    :options="yesNoOptions"
-                />
-                <Input
-                    v-model="form.electricity"
-                    maska="##########"
-                    label="Электричесвто (квт)"
-                    class="col-3 pr-1"
-                />
-                <Input
-                    v-model="form.pricePerFloor"
-                    maska="##########"
-                    label="Цена (м^2/год)"
-                    class="col-3"
-                />
-            </FormGroup>
-            <FormGroup class="mb-2">
-                <Checkbox v-model="form.haveCranes" class="col large text-center" label="Краны" />
-                <Checkbox v-model="form.water" class="col large text-center" label="Вода" />
-                <Checkbox v-model="form.gaz" class="col large text-center" label="Газ" />
-                <Checkbox v-model="form.steam" class="col large text-center" label="Пар" />
-                <Checkbox v-model="form.sewerage" class="col large text-center" label="КНС" />
-                <Checkbox v-model="form.shelving" class="col large text-center" label="Стеллажи" />
-                <Checkbox v-model="form.trainLine" class="col large text-center" label="Ж/Д ветка">
-                    <Input
-                        v-if="form.trainLine"
-                        v-model="form.trainLineLength"
-                        label="Длина ветки"
-                        maska="##########"
-                        class="col-12 p-0"
-                    />
-                </Checkbox>
-            </FormGroup>
-            <FormGroup class="mb-2">
-                <Checkbox
-                    v-model="form.gateTypes"
-                    class="col-12 text-center"
-                    label="Тип ворот"
-                    name="gate_type"
-                    :options="gateTypeList"
-                />
-            </FormGroup>
-            <FormGroup class="mb-2">
-                <Input
-                    v-model="form.movingDate"
-                    @change="form.unknownMovingDate = null"
-                    :v="v$.form.movingDate"
-                    label="Дата переезда"
-                    type="date"
-                    required
-                    class="col-4 pr-1"
-                >
-                    <Radio
-                        v-model="form.unknownMovingDate"
-                        @change.stop="form.movingDate = null"
-                        class="col-12 p-0 mt-2 small"
-                        :options="unknownMovingDateOptions"
-                    />
-                </Input>
-                <Checkbox
-                    v-model="form.antiDustOnly"
-                    class="col large text-center"
-                    label="Только антипыль"
-                />
-                <Checkbox
-                    v-model="form.firstFloorOnly"
-                    class="col pr-1 large text-center"
-                    label="Только 1 этаж"
-                />
-                <Checkbox
-                    v-model="form.expressRequest"
-                    class="col large text-center"
-                    label="Срочный запрос"
-                />
             </FormGroup>
             <FormGroup class="mb-2">
                 <Checkbox
@@ -381,7 +429,6 @@ import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import Input from '@/components/common/Forms/Input.vue';
 import Checkbox from '@/components/common/Forms/Checkbox.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
-import Radio from '@/components/common/Forms/Radio.vue';
 import Textarea from '@/components/common/Forms/Textarea.vue';
 import CheckboxIcons from '@/components/common/Forms/CheckboxIcons.vue';
 import Submit from '@/components/common/Forms/Submit.vue';
@@ -393,10 +440,13 @@ import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import Chip from '@/components/common/Chip.vue';
+import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
+import { areaRangeValidators, ceilingHeightValidators } from '@//validators/fields';
 
 export default {
     name: 'FormCompanyRequest',
     components: {
+        DoubleInput,
         Chip,
         RadioChip,
         AnimationTransition,
@@ -408,7 +458,6 @@ export default {
         Input,
         Checkbox,
         MultiSelect,
-        Radio,
         Textarea,
         CheckboxIcons,
         Submit
@@ -505,6 +554,12 @@ export default {
                 }));
             }
             return [];
+        },
+        formCeilingHeightValidators() {
+            return ceilingHeightValidators(this.form.maxCeilingHeight);
+        },
+        formAreaValidators() {
+            return areaRangeValidators(this.form.maxArea);
         }
     },
     watch: {

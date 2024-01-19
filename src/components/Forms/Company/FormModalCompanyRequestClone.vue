@@ -18,9 +18,7 @@
                 <div class="col-12 text-center mt-4">
                     <CompanyBoxRequestsListItem :request="request" :reed-only="true" />
                 </div>
-                <Submit class="col-4 mt-2 mx-auto" button-classes="btn-success">
-                    Клонировать
-                </Submit>
+                <Submit class="col-4 mt-2 mx-auto" success>Клонировать</Submit>
             </FormGroup>
         </Form>
     </Modal>

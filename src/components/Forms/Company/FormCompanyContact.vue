@@ -34,17 +34,19 @@
                     class="col-3"
                 />
                 <div class="col-1">
-                    <span class="form__subtitle">Осн.</span>
-                    <CheckboxChip
-                        v-for="phone in forms.phones"
-                        :key="phone.phone"
-                        v-model="phone.isMain"
-                        @change="changeIsMainPhone(phone)"
-                        :v="v$.forms.phones"
-                        title="Основной номер"
-                        class="mb-2"
-                        icon="fa-solid fa-user-check"
-                    />
+                    <template v-if="forms.phones.length">
+                        <span class="form__subtitle">Осн.</span>
+                        <CheckboxChip
+                            v-for="phone in forms.phones"
+                            :key="phone.phone"
+                            v-model="phone.isMain"
+                            @change="changeIsMainPhone(phone)"
+                            :v="v$.forms.phones"
+                            title="Основной номер"
+                            class="mb-2"
+                            icon="fa-solid fa-user-check"
+                        />
+                    </template>
                 </div>
                 <PropogationInput
                     v-model="forms.emails"
@@ -56,17 +58,19 @@
                     class="col-3"
                 />
                 <div class="col-1">
-                    <span class="form__subtitle">Осн.</span>
-                    <CheckboxChip
-                        v-for="email in forms.emails"
-                        :key="email.email"
-                        v-model="email.isMain"
-                        @change="changeIsMainEmail(email)"
-                        :v="v$.forms.emails"
-                        title="Основной Email"
-                        class="mb-2"
-                        icon="fa-solid fa-user-check"
-                    />
+                    <template v-if="forms.emails.length">
+                        <span class="form__subtitle">Осн.</span>
+                        <CheckboxChip
+                            v-for="email in forms.emails"
+                            :key="email.email"
+                            v-model="email.isMain"
+                            @change="changeIsMainEmail(email)"
+                            :v="v$.forms.emails"
+                            title="Основной Email"
+                            class="mb-2"
+                            icon="fa-solid fa-user-check"
+                        />
+                    </template>
                 </div>
                 <PropogationDoubleInput
                     v-model="forms.invalidPhones"
@@ -195,9 +199,9 @@
                 </div>
             </div>
             <div class="row mt-3">
-                <Button class="col-3 mx-auto" small success>
+                <Submit class="col-3 mx-auto" small success>
                     {{ formdata ? 'Сохранить' : 'Создать' }}
-                </Button>
+                </Submit>
             </div>
         </Form>
     </Modal>
@@ -226,14 +230,14 @@ import {
 } from '@//validators';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import Button from '@/components/common/Button.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
+import Submit from '@/components/common/Forms/Submit.vue';
 
 export default {
     name: 'FormCompanyContact',
     components: {
+        Submit,
         RadioChip,
-        Button,
         AnimationTransition,
         CheckboxChip,
         Form,
@@ -273,8 +277,8 @@ export default {
                 status: 1,
                 wayOfInformsings: [],
                 consultant_id: null,
-                phones: [{ phone: '', isMain: 1 }],
-                emails: [{ email: '', isMain: 1 }],
+                phones: [],
+                emails: [],
                 invalidPhones: [],
                 websites: [],
                 passive_why: null,
@@ -322,7 +326,7 @@ export default {
                         this.customRequiredEmailsOrPhones
                     ),
                     everyHasCorrectEmail: helpers.withMessage(
-                        '',
+                        'Заполните все Email',
                         or(emptyWithProperty('email'), everyProperty(validateEmail, 'email'))
                     ),
                     requiredIsMain: helpers.withMessage(
@@ -336,7 +340,7 @@ export default {
                         this.customRequiredEmailsOrPhones
                     ),
                     everyHasCorrectPhone: helpers.withMessage(
-                        '',
+                        'Заполните все телефоны',
                         or(emptyWithProperty('phone'), everyProperty(validatePhone, 'phone'))
                     ),
                     requiredIsMain: helpers.withMessage(
@@ -376,10 +380,11 @@ export default {
             this.v$.$validate();
             if (!this.v$.forms.$error) {
                 this.loader = true;
+                this.normalizeForm();
                 if (this.formdata) {
-                    this.updateContact();
+                    await this.updateContact();
                 } else {
-                    this.createContact();
+                    await this.createContact();
                 }
             }
         },
@@ -417,7 +422,10 @@ export default {
             return required.$validator(value);
         },
         customRequiredEmailsOrPhones() {
-            return this.forms.emails.length || this.form.phones.length;
+            return (
+                !emptyWithProperty('email')(this.forms.emails) ||
+                !emptyWithProperty('phone')(this.forms.phones)
+            );
         },
         customRequiredPassiveWhy() {
             if (this.forms.status) {
@@ -480,6 +488,10 @@ export default {
                 elem.isMain = null;
                 return elem;
             });
+        },
+        normalizeForm() {
+            this.forms.phones = this.forms.phones.filter(element => element.phone.length);
+            this.forms.emails = this.forms.emails.filter(element => element.email.length);
         }
     },
     async mounted() {

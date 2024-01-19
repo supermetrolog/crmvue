@@ -41,93 +41,62 @@
                 <Input
                     v-model="form.maxDistanceFromMKAD"
                     maska="###"
+                    :v="v$.form.maxDistanceFromMKAD"
                     placeholder="не более"
                     label="Удаленность от МКАД"
                     unit="км"
+                    type="number"
                     class="col-md-3 col-6 mb-2"
                 />
                 <Input
                     v-model="form.maxElectricity"
                     placeholder="не более"
+                    :v="v$.form.maxElectricity"
                     maska="##########"
-                    label="Электричесвто"
+                    label="Электричество"
                     unit="кВт"
+                    type="number"
                     class="col-md-3 col-6 mb-2"
                 />
-                <div class="col-md-3 col-6">
-                    <div class="row">
-                        <Input
-                            v-model="form.rangeMinArea"
-                            maska="##########"
-                            label="S пола (м^2)"
-                            placeholder="От:"
-                            class="col-12"
-                            unit="м<sup>2</sup>"
-                            type="number"
-                        />
-                        <Input
-                            v-model="form.rangeMaxArea"
-                            maska="##########"
-                            placeholder="До:"
-                            class="col-12 mt-1"
-                            unit="м<sup>2</sup>"
-                            type="number"
-                        />
-                    </div>
-                </div>
-                <div class="col-md-3 col-6">
-                    <div class="row">
-                        <Input
-                            v-model="form.rangeMinPricePerFloor"
-                            maska="##########"
-                            placeholder="От:"
-                            label="Цена за пол (м^2/год)"
-                            unit="м<sup>2</sup>/год"
-                            class="col-12"
-                            type="number"
-                        />
-                        <Input
-                            v-model="form.rangeMaxPricePerFloor"
-                            maska="##########"
-                            placeholder="До:"
-                            class="col-12 mt-1"
-                            unit="м<sup>2</sup>/год"
-                            type="number"
-                        />
-                    </div>
-                </div>
-                <div class="col-md-3 col-6">
-                    <div class="row">
-                        <Input
-                            v-model="form.rangeMinCeilingHeight"
-                            maska="##########"
-                            label="Высота потолков"
-                            placeholder="От:"
-                            unit="м"
-                            class="col-12"
-                            type="number"
-                        />
-                        <Input
-                            v-model="form.rangeMaxCeilingHeight"
-                            maska="##########"
-                            placeholder="До:"
-                            unit="м"
-                            class="col-12 mt-1"
-                            type="number"
-                        />
-                    </div>
-                </div>
-                <div class="col-md-3 col-6">
-                    <div class="row">
-                        <Input
-                            v-model="form.dateStart"
-                            label="Дата От и До"
-                            class="col-12"
-                            type="date"
-                        />
-                        <Input v-model="form.dateEnd" class="col-12 mt-1" type="date" />
-                    </div>
-                </div>
+                <DoubleInput
+                    v-model:first="form.rangeMinArea"
+                    v-model:second="form.rangeMaxArea"
+                    label="S пола"
+                    class="col-md-3 col-6"
+                    type="number"
+                    unit="м<sup>2</sup>"
+                    reactive
+                    :validators="formAreaValidators"
+                />
+                <DoubleInput
+                    v-model:first="form.rangeMinPricePerFloor"
+                    v-model:second="form.rangeMaxPricePerFloor"
+                    label="Цена за пол"
+                    class="col-md-3 col-6"
+                    type="number"
+                    unit="м<sup>2</sup>/год"
+                    reactive
+                    :validators="formPricePerFloorValidators"
+                />
+                <DoubleInput
+                    v-model:first="form.rangeMinCeilingHeight"
+                    v-model:second="form.rangeMaxCeilingHeight"
+                    label="Высота потолков"
+                    class="col-md-3 col-6"
+                    unit="м"
+                    type="number"
+                    reactive
+                    :validators="formCeilingHeightValidators"
+                />
+                <DoubleInput
+                    v-model:first="form.dateStart"
+                    v-model:second="form.dateEnd"
+                    label="Дата"
+                    class="col-md-3 col-6"
+                    type="date"
+                    reactive
+                    :validators="formDateValidators"
+                />
             </div>
             <div class="row mt-2">
                 <div class="col-8">
@@ -270,39 +239,60 @@
                 <div class="col-12 mt-2">
                     <span class="form__subtitle">Прочее</span>
                     <div class="form__row mt-1">
-                        <CheckboxChip v-model="form.water" :value="form.water" text="Вода" />
-                        <CheckboxChip v-model="form.gas" :value="form.gas" text="Газ" />
-                        <CheckboxChip v-model="form.steam" :value="form.steam" text="Пар" />
                         <CheckboxChip
-                            v-model="form.sewage_central"
-                            :value="form.sewage_central"
+                            v-model="form.water"
+                            :value="form.water"
+                            text="Вода"
+                            multiple
+                        />
+                        <CheckboxChip v-model="form.gaz" :value="form.gaz" text="Газ" multiple />
+                        <CheckboxChip
+                            v-model="form.steam"
+                            :value="form.steam"
+                            text="Пар"
+                            multiple
+                        />
+                        <CheckboxChip
+                            v-model="form.sewerage"
+                            :value="form.sewerage"
                             text="Канализация"
+                            multiple
                         />
-                        <CheckboxChip v-model="form.racks" :value="form.racks" text="Стелажи" />
                         <CheckboxChip
-                            v-model="form.railway"
-                            :value="form.railway"
+                            v-model="form.shelving"
+                            :value="form.shelving"
+                            text="Стелажи"
+                            multiple
+                        />
+                        <CheckboxChip
+                            v-model="form.trainLine"
+                            :value="form.trainLine"
                             text="Ж/Д ветка"
+                            multiple
                         />
                         <CheckboxChip
-                            v-model="form.has_cranes"
-                            :value="form.has_cranes"
+                            v-model="form.haveCranes"
+                            :value="form.haveCranes"
                             text="Краны"
+                            multiple
                         />
                         <CheckboxChip
                             v-model="form.firstFloorOnly"
                             :value="form.firstFloorOnly"
                             text="Только 1 этаж"
+                            multiple
                         />
                         <CheckboxChip
                             v-model="form.antiDustOnly"
                             :value="form.antiDustOnly"
                             text="Только антипыль"
+                            multiple
                         />
                         <CheckboxChip
                             v-model="form.expressRequest"
                             :value="form.expressRequest"
                             text="Срочный запрос"
+                            multiple
                         />
                     </div>
                 </div>
@@ -363,10 +353,20 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import Chip from '@/components/common/Chip.vue';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
+import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
+import {
+    areaRangeValidators,
+    ceilingHeightValidators,
+    dateRangeValidators,
+    pricePerFloorValidators
+} from '@//validators/fields';
+import useVuelidate from '@vuelidate/core';
+import { onlyPositiveNumber } from '@//validators';
 
 export default {
     name: 'FormCompanyRequestSearch',
     components: {
+        DoubleInput,
         RadioChip,
         CheckboxChip,
         Chip,
@@ -380,6 +380,11 @@ export default {
         Checkbox
     },
     mixins: [SearchFormMixin],
+    data() {
+        return {
+            v$: useVuelidate()
+        };
+    },
     computed: {
         ...mapGetters(['REGION_LIST']),
         activePassiveOptions: () => ActivePassive,
@@ -404,7 +409,31 @@ export default {
             }
 
             return [];
+        },
+        formCeilingHeightValidators() {
+            return ceilingHeightValidators(this.form.rangeMaxCeilingHeight);
+        },
+        formDateValidators() {
+            return dateRangeValidators(this.form.dateEnd);
+        },
+        formPricePerFloorValidators() {
+            return pricePerFloorValidators(this.form.rangeMaxPricePerFloor);
+        },
+        formAreaValidators() {
+            return areaRangeValidators(this.form.rangeMaxArea);
         }
+    },
+    validations() {
+        return {
+            form: {
+                maxDistanceFromMKAD: {
+                    min: onlyPositiveNumber('Некорректная отрицательная удаленность')
+                },
+                maxElectricity: {
+                    min: onlyPositiveNumber()
+                }
+            }
+        };
     },
     defaultFormProperties: {
         all: null,

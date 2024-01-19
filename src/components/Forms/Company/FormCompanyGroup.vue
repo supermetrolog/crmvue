@@ -38,9 +38,9 @@
             <FormGroup>
                 <Textarea v-model="form.description" label="Описание" class="col-12" />
             </FormGroup>
-            <Button success center class="mt-3 mx-auto">
+            <Submit success center class="mt-3 mx-auto">
                 {{ formdata ? 'Сохранить' : 'Создать' }}
-            </Button>
+            </Submit>
         </Form>
     </Modal>
 </template>
@@ -57,20 +57,20 @@ import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import { CompanyFormOrganization } from '@/const/const.js';
 import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
-import Button from '@/components/common/Button.vue';
 import { onlyRussian } from '@//validators';
+import Submit from '@/components/common/Forms/Submit.vue';
 
 export default {
     name: 'FormCompanyGroup',
     components: {
+        Submit,
         Modal,
         Loader,
         FormGroup,
         Form,
         Input,
         Textarea,
-        MultiSelect,
-        Button
+        MultiSelect
     },
     emits: ['closeCompanyGroupsForm', 'updated', 'created'],
     props: {

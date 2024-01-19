@@ -113,9 +113,9 @@
                 </div>
             </div>
             <div class="row mt-3">
-                <Button class="col-3 mx-auto" small success>
+                <Submit class="col-3 mx-auto" small success>
                     {{ formdata ? 'Сохранить' : 'Создать' }}
-                </Button>
+                </Submit>
             </div>
         </Form>
     </Modal>
@@ -135,12 +135,12 @@ import Modal from '@/components/common/Modal.vue';
 import Loader from '@/components/common/Loader.vue';
 import { emptyWithProperty, everyProperty, validateEmail, validatePhone } from '@//validators';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
-import Button from '@/components/common/Button.vue';
+import Submit from '@/components/common/Forms/Submit.vue';
 
 export default {
     name: 'FormUser',
     components: {
-        Button,
+        Submit,
         RadioChip,
         Loader,
         Modal,

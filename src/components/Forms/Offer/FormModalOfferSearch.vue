@@ -69,12 +69,14 @@
                     placeholder="не более"
                     label="Удаленность от МКАД +30%"
                     class="col-md-3 col-12"
+                    unit="км"
+                    type="number"
                 />
                 <Input
                     v-model="form.rangeMinElectricity"
                     placeholder="не менее"
                     maska="##########"
-                    label="Электричесвто (квт)"
+                    label="Электричество"
                     class="col-md-3 col-12"
                     unit="кВт"
                     type="number"
@@ -84,7 +86,7 @@
                 <DoubleInput
                     v-model:first="form.rangeMinArea"
                     v-model:second="form.rangeMaxArea"
-                    label="S пола (м^2)"
+                    label="S пола"
                     class="col-3"
                     unit="м<sup>2</sup>"
                     type="number"
@@ -98,6 +100,7 @@
                     class="col-3"
                     unit="₽"
                     type="number"
+                    reactive
                     :validators="formPricePerFloorValidators"
                 />
                 <DoubleInput
@@ -107,6 +110,7 @@
                     class="col-3"
                     unit="м"
                     type="number"
+                    reactive
                     :validators="formCeilingHeightValidators"
                 />
                 <MultiSelect
@@ -355,8 +359,13 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
-import { max, min, onlyPositiveNumber } from '@//validators';
+import { onlyPositiveNumber } from '@//validators';
 import useValidate from '@vuelidate/core';
+import {
+    areaRangeValidators,
+    ceilingHeightValidators,
+    pricePerFloorValidators
+} from '@//validators/fields';
 
 export default {
     name: 'FormModalOfferSearch',
@@ -369,44 +378,14 @@ export default {
         };
     },
     computed: {
-        formAreaValidators() {
-            return [
-                {
-                    func: max(this.form.rangeMaxArea),
-                    message: 'Минимальная S превышает максимальную',
-                    property: 'first'
-                },
-                {
-                    func: min(0),
-                    message: 'Некорректная отрицательная S'
-                }
-            ];
+        formCeilingHeightValidators() {
+            return ceilingHeightValidators(this.form.rangeMaxCeilingHeight);
         },
         formPricePerFloorValidators() {
-            return [
-                {
-                    func: max(this.form.rangeMaxPricePerFloor),
-                    message: 'Минимальная цена превышает максимальную',
-                    property: 'first'
-                },
-                {
-                    func: min(0),
-                    message: 'Некорректная отрицательная цена'
-                }
-            ];
+            return pricePerFloorValidators(this.form.rangeMaxPricePerFloor);
         },
-        formCeilingHeightValidators() {
-            return [
-                {
-                    func: max(this.form.rangeMaxCeilingHeight),
-                    message: 'Минимальная высота превышает максимальную',
-                    property: 'first'
-                },
-                {
-                    func: min(0),
-                    message: 'Некорректная отрицательная высота'
-                }
-            ];
+        formAreaValidators() {
+            return areaRangeValidators(this.form.rangeMaxArea);
         }
     },
     validations() {

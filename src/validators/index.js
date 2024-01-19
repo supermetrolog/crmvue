@@ -40,7 +40,7 @@ export const empty = value => {
 };
 
 export const emptyWithProperty = property => value => {
-    return value.length === 1 && !value[0][property].length;
+    return !value.length || (value.length === 1 && !value[0][property].length);
 };
 
 export const max = value => _value => {

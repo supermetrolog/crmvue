@@ -252,7 +252,7 @@
                 </Tab>
             </Tabs>
             <div class="row">
-                <Button class="col-3 mx-auto" small success>Сохранить</Button>
+                <Submit class="col-3 mx-auto" small success>Сохранить</Submit>
             </div>
         </Form>
     </Modal>
@@ -267,13 +267,12 @@ import { ComplexFormMixin } from '@/components/Forms/Complex/mixin';
 import Modal from '@/components/common/Modal.vue';
 import { facingTypes, objectClassTypes, ownTypes } from '@/const/types';
 import { ObjectTypeList } from '@/const/const';
-import Button from '@/components/common/Button.vue';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 
 export default {
     name: 'FormComplexBuildingCreate',
-    components: { RadioChip, CheckboxChip, Button, Modal, Loader },
+    components: { RadioChip, CheckboxChip, Modal, Loader },
     mixins: [ComplexFormMixin],
     data() {
         return {
