@@ -1,7 +1,12 @@
 <template>
     <div class="step-action">
         <teleport to="body">
-            <Modal v-if="sendObjectsModalVisible" @close="closeSendObjectsModal" title="Отправка" class="autosize">
+            <Modal
+                v-if="sendObjectsModalVisible"
+                @close="closeSendObjectsModal"
+                title="Отправка"
+                class="autosize"
+            >
                 <FormLetter
                     @send="sendOffers"
                     @alreadySent="alreadySentOffers"
@@ -60,11 +65,15 @@
                                 :current-step-id="step.id"
                                 :label="
                                     'Отправленные предложения' +
-                                    (preventStepObjects.length ? ` (${preventStepObjects.length})` : '')
+                                    (preventStepObjects.length
+                                        ? ` (${preventStepObjects.length})`
+                                        : '')
                                 "
                                 class="success"
                             />
-                            <div class="timeline-actions timeline-list-item row justify-content-end mx-4 mt-4">
+                            <div
+                                class="timeline-actions timeline-list-item row justify-content-end mx-4 mt-4"
+                            >
                                 <RefreshButton
                                     @click="search(searchParams)"
                                     :disabled="allObjectsLoader"
@@ -76,12 +85,14 @@
                                         btnActive: recommendedFilter == 1,
                                         btnClass: 'primary',
                                         defaultBtn: true,
-                                        disabled: false,
-                                        title: firstRecommendedDescription
+                                        disabled: false
                                     }"
                                     class="d-inline ml-2"
                                 >
-                                    <template #btnContent>ЛУЧШЕЕ</template>
+                                    <template #btnContent>
+                                        <span>ЛУЧШЕЕ</span>
+                                        <Tooltip :text="firstRecommendedDescription" />
+                                    </template>
                                 </CustomButton>
                                 <CustomButton
                                     @confirm="changeRecommendedFilter(2, twoRecommendedQuery)"
@@ -89,12 +100,14 @@
                                         btnActive: recommendedFilter == 2,
                                         btnClass: 'primary',
                                         defaultBtn: true,
-                                        disabled: false,
-                                        title: twoRecommendedDescription
+                                        disabled: false
                                     }"
                                     class="d-inline ml-2"
                                 >
-                                    <template #btnContent>СРЕДНЕЕ</template>
+                                    <template #btnContent>
+                                        <span>СРЕДНЕЕ</span>
+                                        <Tooltip :text="twoRecommendedDescription" />
+                                    </template>
                                 </CustomButton>
                                 <CustomButton
                                     @confirm="changeRecommendedFilter(3, threeRecommendedQuery)"
@@ -102,15 +115,16 @@
                                         btnActive: recommendedFilter == 3,
                                         btnClass: 'warning',
                                         defaultBtn: true,
-                                        disabled: false,
-                                        title: threeRecommendedDescription
+                                        disabled: false
                                     }"
                                     class="d-inline ml-2"
                                 >
-                                    <template #btnContent>ПАССИВ</template>
+                                    <template #btnContent>
+                                        <span>ПАССИВ</span>
+                                        <Tooltip :text="threeRecommendedDescription" />
+                                    </template>
                                 </CustomButton>
                             </div>
-
                             <FormOfferSearch
                                 @search="search"
                                 @reset="recommendedFilter = null"
@@ -120,7 +134,6 @@
                                         ? [
                                               {
                                                   label: 'сбросить выбранное',
-                                                  classes: 'text-warning',
                                                   event: 'resetSelected'
                                               }
                                           ]
@@ -145,7 +158,11 @@
                                 :pagination="pagination"
                                 :current-step-id="step.id"
                             />
-                            <Pagination @loadMore="loadMore" :pagination="pagination" class="text-center" />
+                            <Pagination
+                                @loadMore="loadMore"
+                                :pagination="pagination"
+                                class="text-center"
+                            />
                         </div>
                     </div>
                 </div>
@@ -161,16 +178,16 @@ import CustomButton from '@/components/common/CustomButton.vue';
 import RefreshButton from '@/components/common/RefreshButton.vue';
 import { mapGetters } from 'vuex';
 import Modal from '@/components/common/Modal.vue';
-import CompanyObjectsList from '@/components/Company/Object/CompanyObjectList.vue';
 import FormLetter from '@/components/Forms/FormLetter.vue';
 import Pagination from '@/components/common/Pagination/Pagination.vue';
+import Tooltip from '@/components/common/Tooltip.vue';
 
 export default {
     name: 'TimelineStepOffersActions',
     components: {
+        Tooltip,
         Pagination,
         FormLetter,
-        CompanyObjectsList,
         Modal,
         CustomButton,
         RefreshButton
@@ -234,8 +251,7 @@ export default {
       - этажность
       - наличие к/б
       - отапливаемость
-      - электричество
-      `,
+      - электричество`,
     twoRecommendedDescriptionRent: `Учитывается:
       - вид сделки
       - площадь -20%, +20%
@@ -243,13 +259,11 @@ export default {
       - качество пола
       - расстояние от МКАД +30%
       - этажность
-      - наличие к/б
-      `,
+      - наличие к/б`,
     threeRecommendedDescriptionRent: `Учитывается:
       - площадь объекта целиком
       - направление и регион
-      - расстояние от МКАД +30%
-      `,
+      - расстояние от МКАД +30%`,
     firstRecommendedDescriptionSale: `Учитывается:
       - вид сделки
       - цена +30%
@@ -262,19 +276,16 @@ export default {
       - этажность
       - наличие к/б
       - отапливаемость
-      - электричество
-      `,
+      - электричество`,
     twoRecommendedDescriptionSale: `Учитывается:
       - вид сделки
       - цена +50%
       - расстояние от МКАД +50%
-      - этажность
-      `,
+      - этажность`,
     threeRecommendedDescriptionSale: `Учитывается:
       - площадь объекта целиком -30%, +30%
       - направление и регион
-      - расстояние от МКАД +50%
-      `,
+      - расстояние от МКАД +50%`,
     computed: {
         ...mapGetters(['THIS_USER']),
         firstRecommendedDescription() {
@@ -331,7 +342,9 @@ export default {
                 rangeMaxArea: this.getPercent(request.maxArea, 120),
                 rangeMinArea: this.getPercent(request.minArea, 80),
                 rangeMinCeilingHeight:
-                    request.minCeilingHeight > 3 ? request.minCeilingHeight - 2 : request.minCeilingHeight,
+                    request.minCeilingHeight > 3
+                        ? request.minCeilingHeight - 2
+                        : request.minCeilingHeight,
                 has_cranes: request.haveCranes,
                 floor_types: request.antiDustOnly ? [2] : [],
                 status: 1,

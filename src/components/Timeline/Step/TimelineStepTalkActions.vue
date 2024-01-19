@@ -59,14 +59,12 @@
 import { MixinObject } from '@/components/Company/Object/mixins.js';
 import { MixinStepActions } from '@/components/Timeline/mixins.js';
 import { TalkDoneComment, TalkOffersNotFound } from '@/components/Timeline/comments.js';
-import CompanyObjectsList from '@/components/Company/Object/CompanyObjectList.vue';
 import TimelineStepTalk from '@/components/Timeline/Step/TimelineStepTalk.vue';
 
 export default {
     name: 'TimelineStepTalkActions',
     components: {
-        TimelineStepTalk,
-        CompanyObjectsList
+        TimelineStepTalk
     },
     mixins: [MixinStepActions, MixinObject],
     methods: {

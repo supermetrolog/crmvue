@@ -59,15 +59,16 @@
 <script>
 import { MixinStepActions } from '@/components/Timeline/mixins.js';
 import { MixinObject } from '@/components/Company/Object/mixins.js';
-import { FeedbackDoneComment, FeedbackOffersNotFoundComment } from '@/components/Timeline/comments.js';
-import CompanyObjectsList from '@/components/Company/Object/CompanyObjectList.vue';
+import {
+    FeedbackDoneComment,
+    FeedbackOffersNotFoundComment
+} from '@/components/Timeline/comments.js';
 import TimelineStepFeedback from '@/components/Timeline/Step/TimelineStepFeedback.vue';
 
 export default {
     name: 'FeedbackActions',
     components: {
-        TimelineStepFeedback,
-        CompanyObjectsList
+        TimelineStepFeedback
     },
     mixins: [MixinStepActions, MixinObject],
     methods: {

@@ -31,7 +31,7 @@
                             Блок
                         </span>
                         <span v-else class="badge badge-warning isGeneral">Неизвестно</span>
-                        <a :href="getOfferUrl(offer)" target="_blank">
+                        <a @click.prevent href="#" target="_blank">
                             <img :src="offer.image" alt="image" />
                         </a>
                         <div @click.prevent="clickUnSelectObject" class="icon-unselect">
@@ -112,7 +112,7 @@
                             Блок
                         </span>
                         <span v-else class="badge badge-warning isGeneral">Неизвестно</span>
-                        <a @click="clickSelectObject" :href="getOfferUrl(offer)" target="_blank">
+                        <a @click.prevent="clickSelectObject" href="#" target="_blank">
                             <img :src="offer.thumb" alt="image" />
                         </a>
                         <div @click.prevent="clickUnSelectObject" class="icon-unselect">

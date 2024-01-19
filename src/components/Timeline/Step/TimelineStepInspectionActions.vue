@@ -100,14 +100,12 @@ import { InspectionDoneComment, InspectionOffersNotFound } from '@/components/Ti
 import { LetterSenderMixin, MixinStepActions } from '@/components/Timeline/mixins.js';
 import Modal from '@/components/common/Modal.vue';
 import FormLetter from '@/components/Forms/FormLetter.vue';
-import CompanyObjectsList from '@/components/Company/Object/CompanyObjectList.vue';
 import TimelineStepInspection from '@/components/Timeline/Step/TimelineStepInspection.vue';
 
 export default {
     name: 'TimelineStepInspectionActions',
     components: {
         TimelineStepInspection,
-        CompanyObjectsList,
         FormLetter,
         Modal
     },
@@ -125,7 +123,9 @@ export default {
             let array = [];
             let objectItem = null;
             this.step.timelineStepObjects.map(item => {
-                objectItem = this.preventStepObjects.find(object => object.original_id == item.object_id);
+                objectItem = this.preventStepObjects.find(
+                    object => object.original_id == item.object_id
+                );
                 if (objectItem) {
                     array.push(objectItem);
                 }

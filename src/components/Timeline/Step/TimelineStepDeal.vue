@@ -34,7 +34,9 @@
             :is-current="!!data.timelineStepObjects.length"
         >
             <Loader v-if="loader" class="center" />
-            <button @click="clickOpenDealForm" class="btn btn-primary" :disabled="disabled">Создать сделку</button>
+            <button @click="clickOpenDealForm" class="btn btn-primary" :disabled="disabled">
+                Создать сделку
+            </button>
         </TimelineStepStage>
         <div v-if="currentRequest.deal" class="row mt-3">
             <div class="col-5 mx-auto">

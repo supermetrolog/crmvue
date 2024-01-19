@@ -1,6 +1,11 @@
 <template>
     <div class="company-objects-list row no-gutters">
-        <CompanyObjectItem v-for="object of objects" :key="object.id" class="mb-2" :object="object" />
+        <CompanyObjectItem
+            v-for="object of objects"
+            :key="object.id"
+            class="mb-2"
+            :object="object"
+        />
     </div>
 </template>
 
@@ -8,7 +13,7 @@
 import CompanyObjectItem from './CompanyObjectItem.vue';
 
 export default {
-    name: 'CompanyObjectsList',
+    name: 'CompanyObjectList',
     components: {
         CompanyObjectItem
     },
