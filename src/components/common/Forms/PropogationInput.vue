@@ -37,14 +37,7 @@
             v-if="hasValidationError && !disabled"
             :message="v.$errors[0].$message"
         />
-        <Button
-@click="addInput"
-:disabled="hasEmptyInput"
-prevent
-icon
-small
-success
-class="mt-1">
+        <Button @click="addInput" :disabled="hasEmptyInput" prevent icon small success class="mt-1">
             <i class="fas fa-plus"></i>
             {{ addText }}
         </Button>
@@ -117,6 +110,12 @@ export default {
                     []
                 );
             });
+        }
+    },
+    watch: {
+        modelValue() {
+            if (!this.modelValue.length) this.field = [this.createDefaultField()];
+            else this.field = this.modelValue;
         }
     },
     methods: {

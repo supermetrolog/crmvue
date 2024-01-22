@@ -3,6 +3,10 @@ export default {
         disabled: {
             type: [Boolean, Number],
             default: false
+        },
+        reactive: {
+            type: [Boolean, Number],
+            default: false
         }
     },
     computed: {

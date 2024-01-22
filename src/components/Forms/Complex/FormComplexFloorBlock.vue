@@ -487,7 +487,7 @@
                     </Tab>
                 </Tabs>
                 <FormGroup class="mt-1 mb-4">
-                    <Submit class="col-4 mx-auto"> Сохранить</Submit>
+                    <Submit class="col-4 mx-auto">Сохранить</Submit>
                 </FormGroup>
             </Form>
         </Modal>

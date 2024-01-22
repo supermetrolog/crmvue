@@ -35,28 +35,24 @@ export const anyHasProperty = (property, _value) => value => {
     return value.some(element => element[property] === _value);
 };
 
+export const empty = value => {
+    return value === null || value === '';
+};
+
 export const emptyWithProperty = property => value => {
-    return value.length === 1 && !value[0][property].length;
+    return !value.length || (value.length === 1 && !value[0][property].length);
 };
 
 export const max = value => _value => {
-    return (
-        value === null ||
-        _value === null ||
-        _value === '' ||
-        value === '' ||
-        Number(_value) <= Number(value)
-    );
+    return empty(value) || empty(_value) || Number(_value) <= Number(value);
 };
 
 export const min = value => _value => {
-    return (
-        value === null ||
-        _value === null ||
-        _value === '' ||
-        value === '' ||
-        Number(_value) >= Number(value)
-    );
+    return empty(value) || empty(_value) || Number(_value) >= Number(value);
+};
+
+export const maxDate = dateLimit => date => {
+    return empty(dateLimit) || empty(date) || new Date(date) <= new Date(dateLimit);
 };
 
 export const onlyPositiveNumber = (message = 'Некорректное отрицательное значение') =>

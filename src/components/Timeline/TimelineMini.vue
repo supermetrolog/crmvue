@@ -2,30 +2,38 @@
     <div class="MiniTimeline MiniTimeline-big_size row no-gutters col-12 px-0">
         <div
             v-for="timelineStep in timelineSteps"
-            :key="timelineStep[0]"
-            @click.stop="selectStep(timelineStep[0])"
+            :key="timelineStep.id"
+            @click.stop="selectStep(timelineStep.id)"
             class="MiniTimeline-step col justify-content-center"
             :class="{
-                'MiniTimeline-step-current': currentStep(timelineStep[0]),
-                'MiniTimeline-step-done': completedStep(timelineStep[0]),
-                'MiniTimeline-step-in_process': inProcessStep(timelineStep[0]),
-                'MiniTimeline-step-attention': attentionStep(timelineStep[0]),
-                'MiniTimeline-step-selected': selectedStep.number === timelineStep[0],
-                'MiniTimeline-step-prev': selectedStep.number === timelineStep[0] + 1
+                'MiniTimeline-step-current': currentStep(timelineStep.id),
+                'MiniTimeline-step-done': completedStep(timelineStep.id),
+                'MiniTimeline-step-in_process': inProcessStep(timelineStep.id),
+                'MiniTimeline-step-attention': attentionStep(timelineStep.id),
+                'MiniTimeline-step-selected': selectedStep.number === timelineStep.id,
+                'MiniTimeline-step-prev': selectedStep.number === timelineStep.id + 1
             }"
         >
             <div class="MiniTimeline-arrow MiniTimeline-arrow-top"></div>
             <div class="MiniTimeline-step-content">
-                <span
-class="step-name"
-                    >{{ timelineStep[1].name }}
-                    <i v-if="completedStep(timelineStep[0])" class="fas fa-check-circle success show"></i>
-                    <i v-if="inProcessStep(timelineStep[0])" class="fas fa-hourglass-half success show"></i>
-                    <i v-if="attentionStep(timelineStep[0])" class="fas fa-exclamation show"></i>
+                <span class="step-name">
+                    {{ timelineStep.name }}
+                    <i
+                        v-if="completedStep(timelineStep.id)"
+                        class="fas fa-check-circle success show"
+                    ></i>
+                    <i
+                        v-if="inProcessStep(timelineStep.id)"
+                        class="fa-solid fa-hourglass-half success show"
+                    ></i>
+                    <i v-if="attentionStep(timelineStep.id)" class="fas fa-exclamation show"></i>
                 </span>
             </div>
             <div class="MiniTimeline-arrow MiniTimeline-arrow-bottom"></div>
-            <div v-if="selectedStep.number === timelineStep[0]" class="MiniTimeline-step-parallelogram"></div>
+            <div
+                v-if="selectedStep.number === timelineStep.id"
+                class="MiniTimeline-step-parallelogram"
+            ></div>
         </div>
     </div>
 </template>
@@ -53,13 +61,19 @@ export default {
             return this.currentSteps.find(step => step.number === timelineStep);
         },
         completedStep(timelineStep) {
-            return this.currentSteps.find(step => step.number === timelineStep && step.status === 1);
+            return this.currentSteps.find(
+                step => step.number === timelineStep && step.status === 1
+            );
         },
         inProcessStep(timelineStep) {
-            return this.currentSteps.find(step => step.number === timelineStep && step.status === 0);
+            return this.currentSteps.find(
+                step => step.number === timelineStep && step.status === 0
+            );
         },
         attentionStep(timelineStep) {
-            return this.currentSteps.find(step => step.number === timelineStep && step.status === 2);
+            return this.currentSteps.find(
+                step => step.number === timelineStep && step.status === 2
+            );
         },
         selectStep(stepNumber) {
             let result = this.currentStep(stepNumber);

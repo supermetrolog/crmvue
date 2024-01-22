@@ -37,15 +37,19 @@
                     label="Название RU"
                     placeholder="Название (Ru)"
                     class="col-md-4 col-6"
+                    :v="v$.form.nameRu"
+                    reactive
                 />
                 <Input
                     v-model="form.nameEng"
                     label="Название ENG"
                     placeholder="Название (Eng)"
                     class="col-md-4 col-6"
+                    :v="v$.form.nameEng"
+                    reactive
                 />
             </FormGroup>
-            <FormGroup class="row">
+            <FormGroup>
                 <MultiSelect
                     v-model="form.activityGroup"
                     title="Группа деятельности"
@@ -60,15 +64,16 @@
                     class="col-md-4"
                     :options="activityProfileOptions"
                 />
-                <Input
-                    v-model="form.dateStart"
-                    label="Дата от"
-                    class="col-md-2 col-6"
+                <DoubleInput
+                    v-model:first="form.dateStart"
+                    v-model:second="form.dateEnd"
+                    label="Дата"
+                    class="col-4"
                     type="date"
+                    :validators="formDateValidators"
                 />
-                <Input v-model="form.dateEnd" label="Дата до" class="col-md-2 col-6" type="date" />
             </FormGroup>
-            <FormGroup class="row">
+            <FormGroup>
                 <div class="col-md-8 col-12">
                     <span class="form__subtitle">Категория</span>
                     <div class="form__row mt-1">
@@ -98,21 +103,21 @@ import Form from '@/components/common/Forms/Form.vue';
 import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import Input from '@/components/common/Forms/Input.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
-import {
-    ActivePassive,
-    ActivityGroupList,
-    ActivityProfileList,
-    CompanyCategories
-} from '@/const/const.js';
-import { SearchFormMixin } from '@/components/common/mixins.js';
+import {ActivePassive, ActivityGroupList, ActivityProfileList, CompanyCategories} from '@/const/const.js';
+import {SearchFormMixin} from '@/components/common/mixins.js';
 import Button from '@/components/common/Button.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
+import {helpers} from '@vuelidate/validators';
+import {maxDate, onlyEnglish, onlyRussian} from '@//validators';
+import useVuelidate from '@vuelidate/core';
+import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
 
 export default {
     name: 'FormCompanySearch',
     components: {
+        DoubleInput,
         RadioChip,
         CheckboxChip,
         AnimationTransition,
@@ -123,11 +128,43 @@ export default {
         MultiSelect
     },
     mixins: [SearchFormMixin],
+    data() {
+        return {
+            v$: useVuelidate()
+        };
+    },
+    validations() {
+        return {
+            form: {
+                nameRu: {
+                    onlyRussian: helpers.withMessage(
+                        'Название должно быть на русском языке',
+                        onlyRussian
+                    )
+                },
+                nameEng: {
+                    onlyEnglish: helpers.withMessage(
+                        'Название должно быть на английском языке',
+                        onlyEnglish
+                    )
+                }
+            }
+        };
+    },
     computed: {
         categoryOptions: () => CompanyCategories,
         activityGroupOptions: () => ActivityGroupList,
         activityProfileOptions: () => ActivityProfileList,
-        activePassiveOptions: () => ActivePassive
+        activePassiveOptions: () => ActivePassive,
+        formDateValidators() {
+            return [
+                {
+                    func: maxDate(this.form.dateEnd),
+                    message: 'Дата ОТ не может быть позже ДО',
+                    property: 'first'
+                }
+            ];
+        },
     },
     defaultFormProperties: {
         all: null,

@@ -47,13 +47,7 @@
             v-if="hasValidationError && !disabled"
             :message="v.$errors[0].$message"
         />
-        <Button
-@click="addInput"
-prevent
-icon
-small
-success
-class="mt-1">
+        <Button @click="addInput" prevent icon small success class="mt-1">
             <i class="fas fa-plus"></i>
             {{ addText }}
         </Button>
@@ -136,6 +130,12 @@ export default {
             });
         }
     },
+    watch: {
+        modelValue() {
+            if (!this.modelValue.length) this.field = [this.createDefaultField()];
+            else this.field = this.modelValue;
+        }
+    },
     methods: {
         onInput() {
             this.validate();
@@ -155,12 +155,11 @@ export default {
             }
         },
         createDefaultField() {
-            return { [this.firstName]: '', [this.secondName]: null }
+            return { [this.firstName]: '', [this.secondName]: null };
         }
     },
     created() {
-        if (!this.modelValue.length)
-            this.field = [this.createDefaultField()];
+        if (!this.modelValue.length) this.field = [this.createDefaultField()];
         else this.field = this.modelValue;
     }
 };

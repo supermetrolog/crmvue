@@ -8,7 +8,10 @@
                 <div v-if="!objects.length && !loader" class="col-4 mx-auto">
                     <h3 class="text-warning text-center">НЕТ ДАННЫХ</h3>
                 </div>
-                <div v-if="pagination && pagination.pageCount" class="col-12 px-2 pagination-params">
+                <div
+                    v-if="pagination && pagination.pageCount"
+                    class="col-12 px-2 pagination-params"
+                >
                     <p>
                         <b>{{ pagination.currentPage }}</b> страница из
                         <b>{{ pagination.pageCount }};</b>
@@ -20,8 +23,7 @@
                     </p>
                 </div>
                 <Loader v-if="loader" class="center" />
-                <component
-                    :is="currentComponent"
+                <CompanyObjectItemOfferOnly
                     v-for="object in objects"
                     :key="object.id"
                     @select="$emit('select', $event)"
@@ -36,14 +38,18 @@
                     :class-list="
                         currentObjects.find(
                             item =>
-                                (item.offer_id == object.original_id || item.offer_id == object.offer_id) &&
+                                (item.offer_id == object.original_id ||
+                                    item.offer_id == object.offer_id) &&
                                 item.type_id == object.type_id
                         )
                             ? 'success'
                             : ''
                     "
                 />
-                <div v-if="pagination && pagination.pageCount" class="col-12 px-2 pagination-params">
+                <div
+                    v-if="pagination && pagination.pageCount"
+                    class="col-12 px-2 pagination-params"
+                >
                     <p>
                         <b>{{ pagination.currentPage }}</b> страница из
                         <b>{{ pagination.pageCount }};</b>
@@ -65,7 +71,7 @@ import CompanyObjectItemOfferOnly from '@/components/Company/Object/CompanyObjec
 import Loader from '@/components/common/Loader.vue';
 
 export default {
-    name: 'ObjectsList',
+    name: 'CompanyObjectsList',
     components: {
         Loader,
         CompanyObjectItemOfferOnly
@@ -124,12 +130,6 @@ export default {
         return {};
     },
     computed: {
-        currentComponent() {
-            if (this.viewMode) {
-                return 'CompanyObjectItemOfferOnly';
-            }
-            return 'CompanyObjectItemOfferOnly';
-        },
         countVisibleRows() {
             let to = this.pagination.perPage * this.pagination.currentPage;
             if (to > this.pagination.totalCount) {

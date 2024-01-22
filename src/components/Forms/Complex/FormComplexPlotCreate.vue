@@ -623,7 +623,7 @@
                 </Tab>
             </Tabs>
             <div class="row">
-                <Button class="col-3 mx-auto" success>Сохранить</Button>
+                <Submit class="col-3 mx-auto" success>Сохранить</Submit>
             </div>
         </Form>
     </Modal>
@@ -648,14 +648,12 @@ import {
     waterTypes
 } from '@/const/types';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
-import CheckboxIcons from '@/components/common/Forms/CheckboxIcons.vue';
-import Button from '@/components/common/Button.vue';
 import { ObjectTypeList } from '@/const/const';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 
 export default {
     name: 'FormComplexPlotCreate',
-    components: { RadioChip, Button, CheckboxChip, Modal, Loader, CheckboxIcons },
+    components: { RadioChip, CheckboxChip, Modal, Loader },
     mixins: [ComplexFormMixin],
     data() {
         return {

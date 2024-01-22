@@ -19,56 +19,46 @@ export const DropdownList = {
     ]
 };
 
-export const Timeline = {
-    0: {
+export const Timeline = [
+    {
+        id: 0,
         stepName: 'Meeting',
         name: 'Знакомство',
         class: 'primary',
-        icon: 'fas phone-alt'
+        icon: 'fas fa-phone-alt'
     },
-    1: {
+    {
+        id: 1,
         stepName: 'Offers',
         name: 'Предложение',
         class: 'success',
-        icon: 'fas city'
+        icon: 'fas fa-city'
     },
-    2: {
+    {
+        id: 2,
         stepName: 'Feedback',
         name: 'Обратная связь',
         class: 'dark-warning',
         icon: 'fas bullhorn'
     },
-    3: {
+    {
+        id: 3,
         stepName: 'Inspection',
         name: 'Организация осмотров',
         class: 'light-blue',
         icon: 'fab watchman-monitoring'
     },
-    4: {
-        stepName: 'Visit',
-        name: 'Показы',
-        class: 'blue-green',
-        icon: 'fas eye'
-    },
-    5: {
+    { id: 4, stepName: 'Visit', name: 'Показы', class: 'blue-green', icon: 'fas eye' },
+    {
+        id: 5,
         stepName: 'Interest',
         name: 'Интерес к объектам',
         class: 'danger',
         icon: 'fas heartbeat'
     },
-    6: {
-        stepName: 'Talk',
-        name: 'Переговоры',
-        class: 'pale-red',
-        icon: 'fas comments-dollar'
-    },
-    7: {
-        stepName: 'Deal',
-        name: 'Сделка',
-        class: 'black',
-        icon: 'far handshake'
-    }
-};
+    { id: 6, stepName: 'Talk', name: 'Переговоры', class: 'pale-red', icon: 'fas comments-dollar' },
+    { id: 7, stepName: 'Deal', name: 'Сделка', class: 'black', icon: 'far handshake' }
+];
 export const CallerTypeList = {
     0: 'клиент',
     1: 'собсвтенник',
@@ -89,19 +79,19 @@ export const FeedbackList = {
 };
 
 export const FeedbackIcons = {
-    0: { name: 'Звонок', icon: 'fas phone' },
-    1: { name: 'Viber', icon: 'fab viber' },
-    2: { name: 'SMS', icon: 'fas sms' },
-    3: { name: 'Telegram', icon: 'fab telegram' },
-    4: { name: 'WhatsApp', icon: 'fab whatsapp-square' },
-    5: { name: 'Email', icon: 'fas at' }
+    0: { name: 'Звонок', icon: 'fa-solid fa-phone' },
+    1: { name: 'Viber', icon: null },
+    2: { name: 'SMS', icon: 'fa-solid fa-comment' },
+    3: { name: 'Telegram', icon: 'fa-solid fa-paper-plane' },
+    4: { name: 'WhatsApp', icon: null },
+    5: { name: 'Email', icon: 'fa-solid fa-at' }
 };
 export const WayOfSending = {
-    0: { name: 'Email', icon: 'fas at' },
-    1: { name: 'SMS', icon: 'fas sms' },
-    2: { name: 'WhatsApp', icon: 'fab whatsapp-square' },
-    3: { name: 'Telegram', icon: 'fab telegram' },
-    4: { name: 'Viber', icon: 'fab viber' }
+    0: { name: 'Email', icon: 'fas fa-at' },
+    1: { name: 'SMS', icon: 'fas fa-sms' },
+    2: { name: 'WhatsApp', icon: 'fab fa-whatsapp-square' },
+    3: { name: 'Telegram', icon: 'fab fa-telegram' },
+    4: { name: 'Viber', icon: 'fab fa-viber' }
 };
 export const CompanyCategories = {
     0: 'Клиент',
@@ -139,12 +129,12 @@ export const CompanyFormOrganization = [
     { value: 5, label: 'ИП' }
 ];
 export const ActivePassive = {
-    0: 'пассив',
-    1: 'актив'
+    0: 'Пассив',
+    1: 'Актив'
 };
 export const ActivePassiveFUCK = {
-    1: 'актив',
-    2: 'пассив'
+    1: 'Актив',
+    2: 'Пассив'
 };
 export const YesNo = {
     0: 'Нет',
@@ -367,24 +357,24 @@ export const ActivityProfileList = [
 ];
 
 export const NotificationTypeList = {
-    0: 'fas atom text-success_alt', // SYSTEM
-    1: 'fas atom text-warning',
-    2: 'fas atom text-danger',
-    3: 'fas home text-success_alt', // COMPANY
-    4: 'fas home text-warning',
-    5: 'fas home text-danger',
-    6: 'fas clipboard-list text-success_alt', // REQUEST
-    7: 'fas clipboard-list text-danger',
-    8: 'fas clipboard-list text-warning',
-    9: 'far calendar-alt text-success_alt', // CALENDAR
-    10: 'far calendar-alt text-danger',
-    11: 'far calendar-alt text-warning',
-    12: 'fas stream text-success_alt', // TIMELINE
-    13: 'fas stream text-danger',
-    14: 'fas stream text-warning',
-    15: 'fas binoculars text-success_alt', // COLLECTION
-    16: 'fas binoculars text-danger',
-    17: 'fas binoculars text-warning'
+    0: 'fa-solid fa-atom text-success_alt', // SYSTEM
+    1: 'fa-solid fa-atom text-warning',
+    2: 'fa-solid fa-atom text-danger',
+    3: 'fa-solid fa-home text-success_alt', // COMPANY
+    4: 'fa-solid fa-home text-warning',
+    5: 'fa-solid fa-home text-danger',
+    6: 'fa-solid fa-clipboard-list text-success_alt', // REQUEST
+    7: 'fa-solid fa-clipboard-list text-danger',
+    8: 'fa-solid fa-clipboard-list text-warning',
+    9: 'fa-regular fa-calendar text-success_alt', // CALENDAR
+    10: 'fa-regular fa-calendar text-danger',
+    11: 'fa-regular fa-calendar text-warning',
+    12: 'fas fa-stream text-success_alt', // TIMELINE
+    13: 'fas fa-stream text-danger',
+    14: 'fas fa-stream text-warning',
+    15: 'fas fa-binoculars text-success_alt', // COLLECTION
+    16: 'fas fa-binoculars text-danger',
+    17: 'fas fa-binoculars text-warning'
 };
 
 export const DealStatusType = {

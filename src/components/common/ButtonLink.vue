@@ -1,22 +1,19 @@
 <template>
-    <router-link :to="to">
-        <Button v-bind="$attrs">
-            <slot />
-        </Button>
+    <router-link :to="to" class="button" :class="{ 'button--icon': icon }">
+        <slot />
     </router-link>
 </template>
 <script>
-import Button from '@/components/common/Button.vue';
-
 export default {
     name: 'ButtonLink',
-    components: {
-        Button
-    },
     props: {
         to: {
             type: String,
             default: '/'
+        },
+        icon: {
+            type: Boolean,
+            default: false
         }
     }
 };

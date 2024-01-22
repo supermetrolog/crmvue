@@ -3,7 +3,8 @@ export const Menu = {
         {
             id: 0,
             name: 'Компании',
-            icon: 'fa-solid fa-industry'
+            icon: 'fa-solid fa-industry',
+            url: '/companies'
         },
         { id: 6, name: 'Предложка', icon: 'fas fa-city', url: '/offers' },
         {

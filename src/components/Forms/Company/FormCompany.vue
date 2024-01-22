@@ -139,8 +139,10 @@
                                     v-for="(category, index) in categoryOptions"
                                     :key="index"
                                     v-model="form.categories"
+                                    :v="v$.form.categories"
                                     :value="index"
                                     :text="category"
+                                    property="category"
                                 />
                             </div>
                         </div>
@@ -374,9 +376,9 @@
                     </div>
                 </Tab>
                 <div class="row mt-4 align-self-end">
-                    <Button success class="col-3 mx-auto">
+                    <Submit success class="col-3 mx-auto">
                         {{ formdata ? 'Сохранить' : 'Создать' }}
-                    </Button>
+                    </Submit>
                 </div>
             </Tabs>
         </Form>
@@ -411,19 +413,20 @@ import Loader from '@/components/common/Loader.vue';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import Button from '@/components/common/Button.vue';
 import {
-    every,
+    everyProperty,
     onlyEnglish,
     onlyRussian,
     validateEmail,
     validatePhone,
     validateUrl
 } from '@//validators';
+import Submit from '@/components/common/Forms/Submit.vue';
 
 export default {
     name: 'FormCompany',
     components: {
+        Submit,
         AnimationTransition,
         RadioChip,
         CheckboxChip,
@@ -436,8 +439,7 @@ export default {
         Textarea,
         RadioStars,
         MultiSelect,
-        FileInput,
-        Button
+        FileInput
     },
     props: {
         formdata: {
@@ -516,13 +518,13 @@ export default {
             form: {
                 contacts: {
                     emails: {
-                        everyHasCorrectEmail: every(validateEmail)
+                        everyHasCorrectEmail: everyProperty(validateEmail, 'email')
                     },
                     websites: {
-                        everyHasCorrectUrl: every(validateUrl)
+                        everyHasCorrectUrl: everyProperty(validateUrl, 'website')
                     },
                     phones: {
-                        everyHasCorrectPhone: every(validatePhone)
+                        everyHasCorrectPhone: everyProperty(validatePhone, 'phone')
                     }
                 },
                 nameEng: {
@@ -568,7 +570,7 @@ export default {
                     )
                 },
                 categories: {
-                    required: helpers.withMessage('выберите категорию', required)
+                    required: helpers.withMessage('Выберите категорию', required)
                 },
                 status: {
                     required: helpers.withMessage('Выберите статус', required)
@@ -720,7 +722,7 @@ export default {
             return await api.companies.getCompanyProductRangeList();
         }
     },
-    async mounted() {
+    async created() {
         this.loader = true;
         await Promise.all([
             this.FETCH_CONSULTANT_LIST(),
@@ -729,8 +731,8 @@ export default {
             this.FETCH_COMPANY_IN_THE_BANK_LIST()
         ]);
         if (this.formdata) {
-            const cloneFormdata = JSON.stringify(this.formdata);
-            this.form = { ...this.form, ...JSON.parse(cloneFormdata) };
+            // eslint-disable-next-line no-undef
+            this.form = { ...this.form, ...structuredClone(this.formdata) };
 
             this.form = Utils.normalizeDataForCompanyForm(this.form);
         }

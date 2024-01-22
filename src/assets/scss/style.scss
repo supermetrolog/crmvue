@@ -319,7 +319,7 @@ textarea::-webkit-scrollbar-thumb {
             min-height: 300px;
         }
 
-        .header {
+        .heading {
             border-bottom: 1px solid variables.$color_light_grey;
 
             &.new {
@@ -1063,6 +1063,10 @@ $warning_step_thin_border: 1px solid variables.$color_warning;
         border-radius: 10px !important;
         border: 1px solid variables.$color_primary;
         color: variables.$color_primary;
+
+        i {
+            margin-left: 5px;
+        }
 
         &:active {
             transform: scale(0.95);
@@ -5731,7 +5735,8 @@ tr.DropdownSwitcherRow {
     }
 
     .letter-contact-value {
-        display: inline-block;
+        display: inline-flex;
+        gap: 5px;
         padding: 3px 10px;
         margin-right: 10px;
         margin-bottom: 5px;
@@ -6204,5 +6209,16 @@ button.filters {
                 width: 100%;
             }
         }
+    }
+}
+
+
+.timeline-header {
+    margin-left: auto;
+}
+
+.tooltip {
+    &__text {
+        white-space: pre;
     }
 }

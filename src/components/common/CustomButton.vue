@@ -1,5 +1,5 @@
 <template>
-    <div class="button">
+    <div>
         <button
             v-if="!optionsLocale.extraVisible || optionsLocale.btnVisible"
             @click="clickBtn"
@@ -19,7 +19,12 @@
         <div v-if="optionsLocale.extraVisible" class="actions d-inline-block text-center">
             <slot name="extraContent" :data="{ openned: optionsLocale.extraVisible }"></slot>
             <div v-show="optionsLocale.extraVisible" :class="{ 'mt-1': optionsLocale.btnVisible }">
-                <textarea ref="fuck" v-model.trim="comment" @keypress.enter="confirm" class="mb-1" />
+                <textarea
+                    ref="fuck"
+                    v-model.trim="comment"
+                    @keypress.enter="confirm"
+                    class="mb-1"
+                />
                 <button @click="confirm" class="btn-action text-success">
                     <i class="fas fa-check"></i>
                 </button>

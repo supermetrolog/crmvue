@@ -1,22 +1,27 @@
 <template>
-    <div class="form-item">
-        <button class="btn btn-large" :class="buttonClasses" :disabled="disabled">
-            <slot />
-        </button>
-    </div>
+    <button class="submit button" :disabled="disabled" :class="buttonClass">
+        <slot />
+    </button>
 </template>
 
 <script>
 export default {
     name: 'Submit',
     props: {
-        buttonClasses: {
-            type: String,
-            default: 'btn-success'
-        },
         disabled: {
             type: Boolean,
             default: false
+        },
+        success: {
+            type: Boolean,
+            default: false
+        }
+    },
+    computed: {
+        buttonClass() {
+            return {
+                'button--success': this.success
+            };
         }
     }
 };

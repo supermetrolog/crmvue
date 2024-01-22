@@ -9,7 +9,10 @@
             />
         </template>
         <div class="container-timeline">
-            <Loader v-if="(!selectedStep && $route.query.step && !timelineNotFoundFlag) || loader" class="center" />
+            <Loader
+                v-if="(!selectedStep && $route.query.step && !timelineNotFoundFlag) || loader"
+                class="center"
+            />
             <div class="row no-gutters">
                 <div class="col-12">
                     <div ref="timeline" class="row no-gutters inner">
@@ -25,7 +28,10 @@
                         </div>
                     </div>
                 </div>
-                <div v-if="selectedStep && !loader && !timelineNotFoundFlag" class="col-9 box step-actions px-0">
+                <div
+                    v-if="selectedStep && !loader && !timelineNotFoundFlag"
+                    class="col-9 box step-actions px-0"
+                >
                     <transition
                         mode="out-in"
                         enter-active-class="animate__animated animate__fadeInRightBig for__modal__fullscreen"
@@ -42,8 +48,15 @@
                         </component>
                     </transition>
                 </div>
-                <div v-if="selectedStep && !loader && !timelineNotFoundFlag" class="col-3 box timeline-extra-block">
-                    <TimelineExtraBlock @commentAdded="getTimeline" :step="selectedStep" :disabled="disabled" />
+                <div
+                    v-if="selectedStep && !loader && !timelineNotFoundFlag"
+                    class="col-3 box timeline-extra-block"
+                >
+                    <TimelineExtraBlock
+                        @commentAdded="getTimeline"
+                        :step="selectedStep"
+                        :disabled="disabled"
+                    />
                 </div>
             </div>
         </div>
@@ -112,7 +125,7 @@ export default {
             return false;
         },
         stepActionsName() {
-            return this.stepParam[this.$route.query.step][1].stepName + 'Actions';
+            return `TimelineStep${this.stepParam[this.$route.query.step].stepName}Actions`;
         },
         currentRequest() {
             if (Array.isArray(this.COMPANY_REQUESTS)) {

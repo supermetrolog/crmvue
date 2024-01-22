@@ -46,9 +46,11 @@
             padding-right: 35px;
         }
 
-        &:has(.invalid), &:has(.valid) {
-            .form__unit {
-                right: 35px;
+        &:not(&--reactive) {
+            &:has(.invalid), &:has(.valid) {
+                .form__unit {
+                    right: 35px;
+                }
             }
         }
     }
@@ -101,6 +103,18 @@
         position: absolute;
         bottom: 8px;
         right: 15px;
+        color: #91939b;
+    }
+
+    &__caption {
+        padding: 0 6px 0 8px;
+        height: calc(100% - 2px);
+        position: absolute;
+        display: flex;
+        align-items: center;
+        bottom: 1px;
+        left: 0;
+        border-right: 1px solid #d1d5db;
         color: #91939b;
     }
 
@@ -250,13 +264,23 @@
         min-height: 35px;
         min-width: 35px;
 
+        &:has(input:disabled) {
+            opacity: .6;
+        }
+
         &.invalid {
             border: 1px solid #f93154!important;
         }
 
-        &:hover {
+        &:hover:not(:has(input:disabled)) {
+            cursor: pointer;
             background-color: rgba(16, 185, 129, .6);
+            border-color: transparent;
             color: #fff;
+
+            &.disabled {
+                background-color: rgba(249, 49, 84, .5);
+            }
         }
 
         &.active {
@@ -412,16 +436,25 @@
         white-space: nowrap;
         text-overflow: ellipsis;
     }
- }
+}
 
-.invalid:not(:disabled):not(.is-disabled) {
-    border-bottom: 2px solid variables.$color_danger !important;
-    outline: unset !important;
+.double-input {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
 
-    &:focus {
-        border: 1px solid transparent !important;
-        border-bottom: 2px solid transparent !important;
-        outline: 1px solid variables.$color_danger !important;
+    label {
+        flex-basis: calc(50% - 3px);
+        min-width: 150px;
+    }
+
+    label:has(.form__input.invalid:not(:focus)) .form__caption {
+        bottom: 2px;
+    }
+
+    .form__tooltip {
+        top: 10px;
+        right: 10px;
     }
 }
 

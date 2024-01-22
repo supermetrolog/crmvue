@@ -1,5 +1,5 @@
 <template>
-    <span class="form__error">{{ $formatter.text().ucFirst(message) }}</span>
+    <p class="form__error">{{ $formatter.text().ucFirst(message) }}</p>
 </template>
 <script>
 export default {

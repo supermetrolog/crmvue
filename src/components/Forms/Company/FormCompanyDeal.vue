@@ -140,7 +140,7 @@
             <FormGroup>
                 <Textarea v-model="form.description" label="Описание" class="col-12" />
             </FormGroup>
-            <Button success class="col-4 mx-auto">{{ formdata ? 'Сохранить' : 'Создать' }}</Button>
+            <Submit success class="col-4 mx-auto">{{ formdata ? 'Сохранить' : 'Создать' }}</Submit>
         </Form>
     </Modal>
 </template>
@@ -160,12 +160,12 @@ import moment from 'moment';
 import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
-import Button from '@/components/common/Button.vue';
+import Submit from '@/components/common/Forms/Submit.vue';
 
 export default {
     name: 'FormCompanyDeal',
     components: {
-        Button,
+        Submit,
         CheckboxChip,
         Modal,
         Loader,

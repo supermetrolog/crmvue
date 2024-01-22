@@ -64,7 +64,9 @@
                     >
                         <Loader v-if="loaderCompanyRequests" class="center small" />
                         <div class="mb-2">
-                            <strong>{{ currentRequest.name || 'Запрос' + ' #' + currentRequest.id }}</strong>
+                            <strong>{{
+                                currentRequest.name || 'Запрос' + ' #' + currentRequest.id
+                            }}</strong>
                         </div>
                         <CompanyRequestItemAlt
                             @openCompanyRequestFormForUpdate="companyRequestFormVisible = true"

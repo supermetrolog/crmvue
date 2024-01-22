@@ -10,7 +10,7 @@
                                 :id="timelineStep.id"
                                 :key="timelineStep.id"
                                 :title="
-                                    timelineStepOptions[timelineStep.number][1].name +
+                                    timelineStepOptions[timelineStep.number].name +
                                     ` (${timelineStep.timelineActionComments.length})`
                                 "
                                 :title-classes="titleClasses(timelineStep)"
@@ -30,11 +30,10 @@
                                         />
                                         <Submit
                                             v-if="!loader"
-                                            class="mt-1"
-                                            button-classes="btn-primary"
+                                            class="col-6 mx-auto mt-1"
                                             :disabled="disabled"
                                         >
-                                            добавить
+                                            Добавить
                                         </Submit>
                                         <div v-if="loader" class="col-12 mt-4">
                                             <Loader class="center small py-2 no-absolute" />

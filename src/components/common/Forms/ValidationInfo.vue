@@ -1,18 +1,32 @@
 <template>
-    <Tippy v-if="validator.$errors.length" class="form__tooltip tooltip-validation">
+    <Tippy
+        v-if="errors.length || (validator && validator.$errors.length)"
+        class="form__tooltip tooltip-validation"
+    >
         <template #default>
             <i class="fa-solid fa-circle-exclamation" />
         </template>
         <template #content>
             <p class="tooltip-validation__title">Полный список ошибок:</p>
             <ol class="tooltip-validation__list">
-                <li
-                    v-for="error in validator.$errors"
-                    :key="error.$property"
-                    class="tooltip-validation__message"
-                >
-                    {{ $formatter.text().ucFirst(error.$message) }}
-                </li>
+                <template v-if="validator">
+                    <li
+                        v-for="error in validator.$errors"
+                        :key="error.$property"
+                        class="tooltip-validation__message"
+                    >
+                        {{ $formatter.text().ucFirst(error.$message) }}
+                    </li>
+                </template>
+                <template v-else>
+                    <li
+                        v-for="(error, index) in errors"
+                        :key="index"
+                        class="tooltip-validation__message"
+                    >
+                        {{ $formatter.text().ucFirst(error.message) }}
+                    </li>
+                </template>
             </ol>
         </template>
     </Tippy>
@@ -31,7 +45,11 @@ export default {
     props: {
         validator: {
             type: Object,
-            required: true
+            default: null
+        },
+        errors: {
+            type: Array,
+            default: () => []
         }
     }
 };

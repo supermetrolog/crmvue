@@ -17,22 +17,27 @@
         </div>
         <div
             v-for="timelineStep in timelineSteps"
-            :key="timelineStep[0]"
+            :key="timelineStep.id"
             class="MiniTimeline-step col"
             :class="{
-                'MiniTimeline-step-done': completedStep(timelineStep[0]),
-                'MiniTimeline-step-in_process': inProcessStep(timelineStep[0]),
-                'MiniTimeline-step-attention': attentionStep(timelineStep[0])
+                'MiniTimeline-step-done': completedStep(timelineStep.id),
+                'MiniTimeline-step-in_process': inProcessStep(timelineStep.id),
+                'MiniTimeline-step-attention': attentionStep(timelineStep.id)
             }"
         >
             <div class="MiniTimeline-arrow MiniTimeline-arrow-top"></div>
             <div class="MiniTimeline-step-content">
-                <span
-class="step-name"
-                    >{{ timelineStep[1].name }}
-                    <i v-if="completedStep(timelineStep[0])" class="fas fa-check-circle success show"></i>
-                    <i v-if="inProcessStep(timelineStep[0])" class="fas fa-hourglass-half success show"></i>
-                    <i v-if="attentionStep(timelineStep[0])" class="fas fa-exclamation show"></i>
+                <span class="step-name"
+                    >{{ timelineStep.name }}
+                    <i
+                        v-if="completedStep(timelineStep.id)"
+                        class="fas fa-check-circle success show"
+                    ></i>
+                    <i
+                        v-if="inProcessStep(timelineStep.id)"
+                        class="fas fa-hourglass-half success show"
+                    ></i>
+                    <i v-if="attentionStep(timelineStep.id)" class="fas fa-exclamation show"></i>
                 </span>
             </div>
             <div class="MiniTimeline-arrow MiniTimeline-arrow-bottom"></div>
@@ -62,13 +67,19 @@ export default {
             return this.currentSteps.find(step => step.number === timelineStep);
         },
         completedStep(timelineStep) {
-            return this.currentSteps.find(step => step.number === timelineStep && step.status === 1);
+            return this.currentSteps.find(
+                step => step.number === timelineStep && step.status === 1
+            );
         },
         inProcessStep(timelineStep) {
-            return this.currentSteps.find(step => step.number === timelineStep && step.status === 0);
+            return this.currentSteps.find(
+                step => step.number === timelineStep && step.status === 0
+            );
         },
         attentionStep(timelineStep) {
-            return this.currentSteps.find(step => step.number === timelineStep && step.status === 2);
+            return this.currentSteps.find(
+                step => step.number === timelineStep && step.status === 2
+            );
         }
     }
 };

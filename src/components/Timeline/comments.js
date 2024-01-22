@@ -111,7 +111,7 @@ export class AlreadySendOffersComment extends Comment {
         return this._wayOfSending
             .map(
                 way =>
-                    `<i class="d-inline ${WayOfSending[way][1].icon}" title="${WayOfSending[way][1].name}"></i>`
+                    `<i class="d-inline ${WayOfSending[way].icon}" title="${WayOfSending[way].name}"></i>`
             )
             .join(' ');
     }

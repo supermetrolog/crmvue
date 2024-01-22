@@ -1,6 +1,6 @@
 <template>
     <button
-        @click="clickHandler"
+        @click.prevent="clickHandler"
         class="button"
         :class="classButton"
         :title="title"
@@ -50,7 +50,7 @@ export default {
             default: false
         },
         active: {
-            type: Boolean,
+            type: [Boolean, Number, String],
             default: true
         },
         prevent: {

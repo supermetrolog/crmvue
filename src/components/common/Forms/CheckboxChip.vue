@@ -8,7 +8,7 @@
                 disabled: isDisabled,
                 'checkbox-chip__label--danger': danger,
                 'checkbox-chip__label--icon': !text && icon,
-                invalid: hasValidationError
+                invalid: hasValidationError && !disabled
             }"
         >
             <input
@@ -19,7 +19,6 @@
                 :true-value="1"
                 :false-value="0"
                 type="checkbox"
-                :disabled="disabled"
             />
             {{ text }}
             <i v-if="icon" :class="icon"></i>

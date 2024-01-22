@@ -131,7 +131,7 @@
                 </Tab>
             </Tabs>
             <div class="row">
-                <Button class="col-3 mx-auto" success>Сохранить</Button>
+                <Submit class="col-3 mx-auto" success>Сохранить</Submit>
             </div>
         </Form>
     </Modal>
@@ -150,11 +150,10 @@ import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import Chip from '@/components/common/Chip.vue';
-import Button from '@/components/common/Button.vue';
 
 export default {
     name: 'FormComplexElevator',
-    components: { Button, Chip, RadioChip, Modal, Loader },
+    components: { Chip, RadioChip, Modal, Loader },
     mixins: [ComplexFormMixin],
     emits: ['close'],
     props: {

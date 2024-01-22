@@ -1,235 +1,251 @@
 <template>
-    <div class="fuck">
-        <Modal @close="clickCloseModal" :title="formsdata ? 'Изменение контакта' : 'Создание контакта'" class="normal">
-            <Form @submit="onSubmit" class="p-2">
-                <Loader v-if="loader" class="center" />
-                <FormGroup class="mb-1">
-                    <Input v-model="forms.middle_name" label="Фамилия" class="col-4 pr-1" />
-                    <Input
-                        v-model="forms.first_name"
-                        label="Имя"
-                        :v="v$.forms.first_name"
-                        required
-                        class="col-4 pr-1"
-                    />
-                    <Input v-model="forms.last_name" label="Отчество" class="col-4" />
-                </FormGroup>
-                <FormGroup class="mb-1">
-                    <PropogationDoubleInput
-                        v-model="forms.phones"
-                        :v="v$.forms.phones"
-                        maska="+7 (###) ###-##-##"
-                        placeholder="+7 "
-                        name="phone"
-                        name2="exten"
-                        label="Телефон"
-                        class="col-6 pr-1"
-                    />
-                    <div class="col-1">
-                        <FormGroup class="label-padding">
-                            <p>Осн.</p>
-                            <Checkbox
-                                v-for="phone in forms.phones"
-                                :key="phone.phone"
-                                v-model="phone.isMain"
-                                @change="changeIsMainPhone(phone)"
-                                class="col-12 large"
-                            />
-                        </FormGroup>
+    <Modal
+        @close="$emit('closeCompanyForm')"
+        :title="formdata ? 'Изменение контакта' : 'Создание контакта'"
+        class="modal-form-company-contact"
+    >
+        <template #header>
+            <CheckboxChip v-model="forms.isMain" :value="forms.isMain" text="Основной контакт" />
+        </template>
+        <Loader v-if="loader" class="center" />
+        <Form v-else @submit="onSubmit">
+            <div class="row">
+                <Input v-model="forms.middle_name" label="Фамилия" class="col-4" />
+                <Input
+                    v-model="forms.first_name"
+                    label="Имя"
+                    :v="v$.forms.first_name"
+                    required
+                    class="col-4"
+                />
+                <Input v-model="forms.last_name" label="Отчество" class="col-4" />
+            </div>
+            <div class="row mt-2">
+                <PropogationDoubleInput
+                    v-model="forms.phones"
+                    :v="v$.forms.phones"
+                    :validators="formContactsPhonesValidators"
+                    maska="+7 (###) ###-##-##"
+                    placeholder="+7"
+                    addText="Добавить телефон"
+                    first-name="phone"
+                    second-name="exten"
+                    label="Телефон"
+                    class="col-3"
+                />
+                <div class="col-1">
+                    <template v-if="forms.phones.length">
+                        <span class="form__subtitle">Осн.</span>
+                        <CheckboxChip
+                            v-for="phone in forms.phones"
+                            :key="phone.phone"
+                            v-model="phone.isMain"
+                            @change="changeIsMainPhone(phone)"
+                            :v="v$.forms.phones"
+                            title="Основной номер"
+                            class="mb-2"
+                            icon="fa-solid fa-user-check"
+                        />
+                    </template>
+                </div>
+                <PropogationInput
+                    v-model="forms.emails"
+                    :v="v$.forms.emails"
+                    :validators="formContactsEmailsValidators"
+                    addText="Добавить Email"
+                    property-name="email"
+                    label="Email"
+                    class="col-3"
+                />
+                <div class="col-1">
+                    <template v-if="forms.emails.length">
+                        <span class="form__subtitle">Осн.</span>
+                        <CheckboxChip
+                            v-for="email in forms.emails"
+                            :key="email.email"
+                            v-model="email.isMain"
+                            @change="changeIsMainEmail(email)"
+                            :v="v$.forms.emails"
+                            title="Основной Email"
+                            class="mb-2"
+                            icon="fa-solid fa-user-check"
+                        />
+                    </template>
+                </div>
+                <PropogationDoubleInput
+                    v-model="forms.invalidPhones"
+                    maska="#################################"
+                    addText="Добавить телефон"
+                    first-name="phone"
+                    second-name="exten"
+                    label="Невалидный телефон"
+                    class="col-4"
+                />
+            </div>
+            <div class="row mt-2">
+                <div class="col-6">
+                    <span class="form__subtitle">Способ информирования</span>
+                    <div class="form__row mt-1">
+                        <CheckboxChip
+                            v-for="(element, index) in wayOfInformsings"
+                            :key="index"
+                            v-model="forms.wayOfInformsings"
+                            :value="index"
+                            :text="element.name"
+                            :icon="element.icon"
+                        />
                     </div>
-                    <PropogationInput
-                        v-model="forms.emails"
-                        :v="v$.forms.emails"
-                        name="email"
-                        label="Email"
-                        class="col-4 pr-1"
-                    />
-                    <div class="col-1">
-                        <FormGroup class="label-padding">
-                            <p>Осн.</p>
-                            <Checkbox
-                                v-for="email in forms.emails"
-                                :key="email.email"
-                                v-model="email.isMain"
-                                @change="changeIsMainEmail(email)"
-                                class="col-12 large"
-                            />
-                        </FormGroup>
-                    </div>
-                </FormGroup>
-                <FormGroup class="mb-1">
-                    <PropogationDoubleInput
-                        v-model="forms.invalidPhones"
-                        maska="#################################"
-                        name="phone"
-                        name2="exten"
-                        label="Невалидный телефон"
-                        class="col-6 pr-1"
-                    />
-                </FormGroup>
-                <FormGroup class="mb-1">
-                    <Checkbox
-                        v-model="forms.wayOfInformsings"
-                        label="Способ информирования"
-                        class="col-6 pr-1"
-                        name="way"
-                        :options="wayOfInformsings"
-                    />
-                    <MultiSelect
-                        v-model="forms.position"
-                        @change="changePosition"
-                        :v="v$.forms.position"
-                        required
-                        label="Должность"
-                        class="col-6 pr-1"
-                        :options="positionList"
-                    >
-                        <Checkbox
+                </div>
+                <div class="col-6">
+                    <span class="form__subtitle">Должность</span>
+                    <div class="form__row row">
+                        <MultiSelect
+                            v-model="forms.position"
+                            @change="changePosition"
+                            :v="v$.forms.position"
+                            required
+                            class="col-7"
+                            :options="positionList"
+                            :disabled="forms.position_unknown"
+                        />
+                        <CheckboxChip
                             v-model="forms.position_unknown"
                             @change="changePositionUnknown"
-                            label="Должность неизвестна"
-                            mode="inline"
-                            title="Должность неизвестна"
-                            class="col-12 p-0 mt-1 large text-center"
+                            danger
+                            text="Должность неизвестна"
                         />
-                    </MultiSelect>
-                </FormGroup>
-                <FormGroup class="mb-1">
-                    <MultiSelect
-                        v-model="forms.consultant_id"
-                        label="Консультант"
-                        class="pr-1"
-                        :class="{ 'col-5': forms.warning, 'col-6': !forms.warning }"
-                        :v="v$.forms.consultant_id"
-                        required
-                        :options="CONSULTANT_LIST"
-                    />
-
-                    <Checkbox
-                        v-model="forms.good"
-                        label="Хор. взаим."
-                        title="Хорошие взаимоотношения"
-                        class="col-2 large text-center"
-                    />
-                    <Checkbox
-                        v-model="forms.faceToFaceMeeting"
-                        label="Оч. встреча"
-                        title="Очная встреча"
-                        class="col-2 large text-center"
-                    />
-
-                    <Checkbox
-                        v-model="forms.warning"
-                        @change="changeWarning"
-                        label="Внимание!"
-                        class="large text-center"
-                        :class="{ 'col-3': forms.warning, 'col-2': !forms.warning }"
-                    >
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <MultiSelect
+                    v-model="forms.consultant_id"
+                    label="Консультант"
+                    class="col-6"
+                    :v="v$.forms.consultant_id"
+                    required
+                    :options="CONSULTANT_LIST"
+                />
+                <MultiSelect
+                    v-model="forms.company_id"
+                    class="col-6"
+                    extra-classes="long-text"
+                    label="Компания"
+                    required
+                    :v="v$.forms.company_id"
+                    :filterResults="false"
+                    :min-chars="1"
+                    :resolve-on-load="true"
+                    :delay="0"
+                    :searchable="true"
+                    :options="
+                        async query => {
+                            return await searchCompany(query);
+                        }
+                    "
+                />
+            </div>
+            <div class="row mt-2">
+                <div class="col-6">
+                    <span class="form__subtitle">Прочее</span>
+                    <div class="form__row mt-1">
+                        <CheckboxChip v-model="forms.good" text="Хорошие взаимоотношения" />
+                        <CheckboxChip v-model="forms.faceToFaceMeeting" text="Очная встреча" />
+                        <CheckboxChip
+                            v-model="forms.warning"
+                            @change="changeWarning"
+                            text="Внимание!"
+                        />
+                    </div>
+                    <AnimationTransition>
                         <Textarea
                             v-if="forms.warning"
                             v-model="forms.warning_why_comment"
+                            class="mt-2"
                             :v="v$.forms.warning_why_comment"
                             required
                             label="Причина"
-                            class="col-12 p-0 pt-1"
                             placeholder="Опишите причину"
                         />
-                    </Checkbox>
-                </FormGroup>
-                <FormGroup class="mb-1">
-                    <MultiSelect
-                        v-model="forms.company_id"
-                        extra-classes="long-text"
-                        label="Компания"
-                        required
-                        class="col-6 pr-1"
-                        :v="v$.forms.company_id"
-                        :filterResults="false"
-                        :min-chars="1"
-                        :resolve-on-load="true"
-                        :delay="0"
-                        :searchable="true"
-                        :options="
-                            async query => {
-                                return await searchCompany(query);
-                            }
-                        "
-                    />
-                    <Radio
-                        v-model="forms.status"
-                        required
-                        label="Статус"
-                        class="col-6 text-center"
-                        :options="statusOptions"
-                    >
+                    </AnimationTransition>
+                </div>
+                <div class="col-6">
+                    <span class="form__subtitle">Статус</span>
+                    <div class="form__row mt-1">
+                        <RadioChip
+                            v-for="(status, value) in statusOptions"
+                            :key="value"
+                            v-model="forms.status"
+                            :label="status"
+                            :value="Number(value)"
+                        />
+                    </div>
+                    <AnimationTransition>
                         <MultiSelect
                             v-if="!forms.status"
                             v-model="forms.passive_why"
                             :v="v$.forms.passive_why"
                             required
                             label="Причина пассива"
-                            class="col-12 p-0"
+                            class="mt-2"
                             :options="passiveWhyOptions"
                         >
                             <Textarea
                                 v-model="forms.passive_why_comment"
-                                class="col-12 p-0 pt-1"
                                 placeholder="Опишите причину"
                             />
                         </MultiSelect>
-                    </Radio>
-                </FormGroup>
-                <FormGroup class="mb-1">
-                    <Checkbox
-                        v-model="forms.isMain"
-                        label="Основной контакт"
-                        title="Очная встреча"
-                        class="col-12 large text-center"
-                    />
-                </FormGroup>
-                <FormGroup class="mt-4">
-                    <Submit class="col-4 mx-auto">
-                        {{ formsdata ? 'Сохранить' : 'Создать' }}
-                    </Submit>
-                </FormGroup>
-            </Form>
-        </Modal>
-    </div>
+                    </AnimationTransition>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <Submit class="col-3 mx-auto" small success>
+                    {{ formdata ? 'Сохранить' : 'Создать' }}
+                </Submit>
+            </div>
+        </Form>
+    </Modal>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import useValidate from '@vuelidate/core';
-import { email, helpers, required } from '@vuelidate/validators';
+import { helpers, or, required } from '@vuelidate/validators';
 import { ActivePassive, FeedbackIcons, PassiveWhyContact, PositionList } from '@/const/const.js';
 import Input from '@/components/common/Forms/Input.vue';
-import Submit from '@/components/common/Forms/Submit.vue';
 import PropogationInput from '@/components/common/Forms/PropogationInput.vue';
 import PropogationDoubleInput from '@/components/common/Forms/PropogationDoubleInput.vue';
-import Checkbox from '@/components/common/Forms/Checkbox.vue';
 import Textarea from '@/components/common/Forms/Textarea.vue';
-import Radio from '@/components/common/Forms/Radio.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
-import { validatePropogationInput } from '@/utils';
 import api from '@//api/api.js';
 import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import Form from '@/components/common/Forms/Form.vue';
+import {
+    anyHasProperty,
+    emptyWithProperty,
+    everyProperty,
+    validateEmail,
+    validatePhone
+} from '@//validators';
+import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import RadioChip from '@/components/common/Forms/RadioChip.vue';
+import Submit from '@/components/common/Forms/Submit.vue';
 
 export default {
     name: 'FormCompanyContact',
     components: {
+        Submit,
+        RadioChip,
+        AnimationTransition,
+        CheckboxChip,
         Form,
-        FormGroup,
         Modal,
         Loader,
         Input,
-        Submit,
         PropogationInput,
         PropogationDoubleInput,
-        Checkbox,
-        Radio,
         MultiSelect,
         Textarea
     },
@@ -242,10 +258,6 @@ export default {
         company_id: {
             type: Number,
             default: null
-        },
-        phones: {
-            type: Array,
-            default: () => []
         }
     },
     data() {
@@ -282,13 +294,22 @@ export default {
         wayOfInformsings: () => FeedbackIcons,
         positionList: () => PositionList,
         statusOptions: () => ActivePassive,
-        passiveWhyOptions: () => PassiveWhyContact
+        passiveWhyOptions: () => PassiveWhyContact,
+        formContactsEmailsValidators() {
+            return [{ func: validateEmail, message: 'Укажите корректный Email' }];
+        },
+        formContactsPhonesValidators() {
+            return [{ func: validatePhone, message: 'Телефон должен состоять из 11 цифр' }];
+        }
     },
     validations() {
         return {
             forms: {
                 position: {
-                    customRequredPosition: helpers.withMessage('выберите должность', this.customRequiredPosition)
+                    customRequredPosition: helpers.withMessage(
+                        'выберите должность',
+                        this.customRequiredPosition
+                    )
                 },
                 consultant_id: {
                     required: helpers.withMessage('выберите консультанта', required)
@@ -301,50 +322,37 @@ export default {
                 },
                 emails: {
                     customRequiredEmails: helpers.withMessage(
-                        'дабавьте либо телефон либо email',
-                        this.customRequiredEmails
+                        'Добавьте телефон или email',
+                        this.customRequiredEmailsOrPhones
                     ),
-                    propogation: helpers.withMessage('Пустое поле не допустимо', this.validateEmailsPropogation),
-                    email: helpers.withMessage('заполните email правильно', this.customEmailValidation),
-                    requiredIsMain: helpers.withMessage('Выберите главный email', () => {
-                        if (this.forms.emails.length && !this.forms.emails.find(elem => elem.isMain === 1)) {
-                            return false;
-                        }
-                        return true;
-                    })
+                    everyHasCorrectEmail: helpers.withMessage(
+                        'Заполните все Email',
+                        or(emptyWithProperty('email'), everyProperty(validateEmail, 'email'))
+                    ),
+                    requiredIsMain: helpers.withMessage(
+                        'Выберите главный Email',
+                        or(emptyWithProperty('email'), anyHasProperty('isMain', 1))
+                    )
                 },
                 phones: {
-                    minItemLength: helpers.withMessage('телефон должен состоять из 11 цифр', () => {
-                        let flag = true;
-                        this.forms.phones.forEach(elem => {
-                            if (!flag) {
-                                return;
-                            }
-                            if (!elem.phone) {
-                                flag = false;
-                            }
-                            if (elem.phone.length !== 18) {
-                                flag = false;
-                            }
-                        });
-                        return flag;
-                    }),
                     customRequiredPhones: helpers.withMessage(
-                        'дабавьте либо телефон либо email',
-                        this.customRequiredPhones
+                        'Добавьте телефон или email',
+                        this.customRequiredEmailsOrPhones
                     ),
-                    phones: {
-                        propogation: helpers.withMessage('Пустое поле не допустимо', this.validatePhonesPropogation)
-                    },
-                    requiredIsMain: helpers.withMessage('Выберите главный номер', () => {
-                        if (this.forms.phones.length && !this.forms.phones.find(elem => elem.isMain === 1)) {
-                            return false;
-                        }
-                        return true;
-                    })
+                    everyHasCorrectPhone: helpers.withMessage(
+                        'Заполните все телефоны',
+                        or(emptyWithProperty('phone'), everyProperty(validatePhone, 'phone'))
+                    ),
+                    requiredIsMain: helpers.withMessage(
+                        'Выберите главный номер',
+                        or(emptyWithProperty('phone'), anyHasProperty('isMain', 1))
+                    )
                 },
                 passive_why: {
-                    customRequiredPassiveWhy: helpers.withMessage('Выберите причину', this.customRequiredPassiveWhy)
+                    customRequiredPassiveWhy: helpers.withMessage(
+                        'Выберите причину',
+                        this.customRequiredPassiveWhy
+                    )
                 },
                 warning_why_comment: {
                     customRequiredWarningWhyComment: helpers.withMessage(
@@ -362,31 +370,35 @@ export default {
         }
     },
     methods: {
-        ...mapActions(['FETCH_CONSULTANT_LIST', 'CREATE_CONTACT', 'UPDATE_CONTACT', 'SEARCH_COMPANIES']),
+        ...mapActions([
+            'FETCH_CONSULTANT_LIST',
+            'CREATE_CONTACT',
+            'UPDATE_CONTACT',
+            'SEARCH_COMPANIES'
+        ]),
         async onSubmit() {
             this.v$.$validate();
             if (!this.v$.forms.$error) {
                 this.loader = true;
+                this.normalizeForm();
                 if (this.formdata) {
-                    this.updateContact();
+                    await this.updateContact();
                 } else {
-                    this.createContact();
+                    await this.createContact();
                 }
             }
         },
-
         async updateContact() {
             if (await this.UPDATE_CONTACT(this.forms)) {
                 this.$emit('updated');
-                this.clickCloseModal();
+                this.$emit('closeCompanyForm');
             }
             this.loader = false;
         },
         async createContact() {
             if (await this.CREATE_CONTACT(this.forms)) {
                 this.$emit('created');
-
-                this.clickCloseModal();
+                this.$emit('closeCompanyForm');
             }
             this.loader = false;
         },
@@ -409,38 +421,11 @@ export default {
             }
             return required.$validator(value);
         },
-        validateEmailsPropogation() {
-            return validatePropogationInput(this.forms.emails, 'email');
-        },
-        validatePhonesPropogation() {
-            return validatePropogationInput(this.forms.phones, 'phone');
-        },
-        customEmailValidation() {
-            let flag = true;
-            this.forms.emails.forEach(item => {
-                if (!email.$validator(item.email)) {
-                    flag = false;
-                }
-            });
-            return flag;
-        },
-        customRequiredEmails() {
-            if (this.forms.emails.length) {
-                return true;
-            }
-            if (!this.forms.phones.length) {
-                return false;
-            }
-            return true;
-        },
-        customRequiredPhones() {
-            if (this.forms.phones.length) {
-                return true;
-            }
-            if (!this.forms.emails.length) {
-                return false;
-            }
-            return true;
+        customRequiredEmailsOrPhones() {
+            return (
+                !emptyWithProperty('email')(this.forms.emails) ||
+                !emptyWithProperty('phone')(this.forms.phones)
+            );
         },
         customRequiredPassiveWhy() {
             if (this.forms.status) {
@@ -484,10 +469,6 @@ export default {
             });
             return array;
         },
-
-        clickCloseModal() {
-            this.$emit('closeCompanyForm');
-        },
         changeIsMainEmail(changedEmail) {
             this.forms.emails = this.forms.emails.map(elem => {
                 if (elem.email == changedEmail.email) {
@@ -507,15 +488,19 @@ export default {
                 elem.isMain = null;
                 return elem;
             });
+        },
+        normalizeForm() {
+            this.forms.phones = this.forms.phones.filter(element => element.phone.length);
+            this.forms.emails = this.forms.emails.filter(element => element.email.length);
         }
     },
     async mounted() {
         this.loader = true;
         await this.FETCH_CONSULTANT_LIST();
         this.forms.company_id = this.company_id;
-        this.forms.phones = this.phones;
         if (this.formdata) {
-            this.forms = { ...this.forms, ...this.formdata };
+            // eslint-disable-next-line no-undef
+            this.forms = { ...this.forms, ...structuredClone(this.formdata) };
         }
         this.loader = false;
     }

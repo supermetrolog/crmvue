@@ -21,4 +21,15 @@
     &__icon {
         font-size: 18px;
     }
+
+    &__right {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    &__actions {
+        display: flex;
+        gap:  20px;
+    }
 }
