@@ -32,7 +32,6 @@
 <script>
 import { DealStatusList, DealStatusType, DealTypeList } from '@/const/const';
 import { unitTypes } from '@/const/unitTypes';
-import { mapActions } from 'vuex';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 
 export default {

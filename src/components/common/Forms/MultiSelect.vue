@@ -35,16 +35,14 @@
                 </template>
             </Multiselect>
         </label>
-        <div v-if="v && v.$error && !disabled" class="error-container">
-            <p>{{ v.$errors[0].$message }}</p>
-        </div>
+        <ValidationMessage v-if="hasValidationError" :message="v.$errors[0].$message" />
         <div v-if="multiple && field.length" class="form__chips">
             <Chip
                 v-for="(element, index) in field"
                 :key="index"
                 @click="removeElement(index)"
                 :value="index"
-                :html="options[element]"
+                :html="element"
             />
         </div>
         <slot />
@@ -55,10 +53,12 @@
 import Multiselect from '@vueform/multiselect';
 import Mixin from './mixins.js';
 import Chip from '@/components/common/Chip.vue';
+import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
 
 export default {
     name: 'Select',
     components: {
+        ValidationMessage,
         Chip,
         Multiselect
     },
@@ -66,10 +66,6 @@ export default {
     props: {
         modelValue: {
             default: ''
-        },
-        required: {
-            type: Boolean,
-            default: false
         },
         v: {
             type: Object,

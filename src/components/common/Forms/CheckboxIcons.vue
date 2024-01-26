@@ -1,35 +1,39 @@
 <template>
-    <div class="form-item checkbox icons">
-        <label class="form-item-label" :class="{ required: required }" for="fuck">
-            <span v-if="label">{{ label }}</span>
+    <div class="checkbox-icons">
+        <div class="checkbox-icons__body" :class="{ required: required }">
+            <span v-if="label" class="checkbox-icons__title">{{ label }}</span>
             <div
                 v-if="extraLabel"
                 @click="clickExtraLabel"
-                class="extra-label"
+                class="checkbox-icons__extra-label"
                 :class="{
-                    active: isAllSelected || extraLabelSelected || extraOptions.find(item => item == extraValue)
+                    active:
+                        isAllSelected ||
+                        extraLabelSelected ||
+                        extraOptions.find(item => item == extraValue)
                 }"
             >
                 <p>{{ extraLabel }}</p>
             </div>
-            <div v-if="options" class="item-container">
+            <div v-if="options" class="checkbox-icons__list">
                 <label
                     v-for="option in options"
                     :key="option.id"
-                    class="checkbox__label"
+                    v-tippy="option.name"
+                    class="checkbox-icons__label"
                     :class="{
                         active: field.includes(option.id)
                     }"
-                    :title="option.name"
                 >
                     <input
                         v-model="field"
                         @change.stop="onChange"
                         type="checkbox"
+                        class="checkbox-icons__input"
                         :class="inputClasses"
                         :value="option.id"
                     />
-                    <i :class="option.icon" />
+                    <i class="checkbox-icons__icon" :class="option.icon" />
                 </label>
             </div>
             <div v-else>
@@ -42,18 +46,21 @@
                     :false-value="0"
                 />
             </div>
-        </label>
-        <div v-if="v && v.$error" class="error-container">
-            <p>{{ v.$errors[0].$message }}</p>
         </div>
+        <ValidationMessage
+            v-if="hasValidationError && !disabled"
+            :message="v.$errors[0].$message"
+        />
     </div>
 </template>
 
 <script>
 import Mixin from './mixins.js';
+import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
 
 export default {
     name: 'CheckboxIcons',
+    components: { ValidationMessage },
     mixins: [Mixin],
     props: {
         modelValue: {

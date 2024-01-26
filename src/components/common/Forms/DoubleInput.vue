@@ -1,19 +1,26 @@
 <template>
     <div
         class="form__control"
-        :class="{ 'form__control--disabled': disabled, 'form__control--reactive': reactive }"
+        :class="{
+            'form__control--disabled': disabled,
+            'form__control--reactive': reactive,
+            required: required
+        }"
     >
         <span v-if="label" class="form__label">{{ label }}</span>
         <div class="double-input">
             {{ inputClasses }}
             <label>
-                <span class="form__caption">от</span>
+                <span v-if="!withoutCaption" class="form__caption">от</span>
                 <input
                     ref="input"
                     @input="onFirstInput($event.target.value.trim())"
                     @keypress.enter.prevent
-                    class="form__input form__input--title"
-                    :class="[firstInputValidationClass, { 'form__input--unit': unit }]"
+                    class="form__input"
+                    :class="[
+                        firstInputValidationClass,
+                        { 'form__input--unit': unit, 'form__input--title': !withoutCaption }
+                    ]"
                     :style="paddingRightStyle.first"
                     :type="type"
                     :disabled="disabled"
@@ -22,14 +29,18 @@
                 <span v-if="unit" ref="unit" class="form__unit" v-html="unit"></span>
                 <ValidationInfo v-if="firstHasValidationInfo" :errors="firstInputErrors" />
             </label>
+            <i v-if="withoutCaption" class="form__separator fa-solid fa-x" />
             <label>
-                <span class="form__caption">до</span>
+                <span v-if="!withoutCaption" class="form__caption">до</span>
                 <input
                     ref="input"
                     @input="onSecondInput($event.target.value.trim())"
                     @keypress.enter.prevent
-                    class="form__input form__input--title"
-                    :class="[secondInputValidationClass, { 'form__input--unit': unit }]"
+                    class="form__input"
+                    :class="[
+                        secondInputValidationClass,
+                        { 'form__input--unit': unit, 'form__input--title': !withoutCaption }
+                    ]"
                     :style="paddingRightStyle.second"
                     :type="type"
                     :disabled="disabled"
@@ -62,14 +73,6 @@ export default {
             type: [String, Number],
             default: null
         },
-        required: {
-            type: Boolean,
-            default: false
-        },
-        disabled: {
-            type: Boolean,
-            default: false
-        },
         v: {
             type: Object,
             default: null
@@ -97,6 +100,10 @@ export default {
         validators: {
             type: Array,
             default: () => []
+        },
+        withoutCaption: {
+            type: Boolean,
+            default: false
         }
     },
     computed: {
@@ -153,8 +160,8 @@ export default {
             if (this.unit) {
                 const unitWidth = this.unit.replaceAll('/', '').replaceAll('<sup>', '').length * 10;
 
-                const firstValidationWidth = this.vFirst && this.vFirst.$dirty ? 20 : 0;
-                const secondValidationWidth = this.secondInputErrors.length ? 20 : 0;
+                const firstValidationWidth = this.firstHasValidationInfo ? 20 : 0;
+                const secondValidationWidth = this.secondHasValidationInfo ? 20 : 0;
 
                 return {
                     first: `padding-right: ${unitWidth + 20 + firstValidationWidth}px`,

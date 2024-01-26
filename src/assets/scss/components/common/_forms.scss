@@ -19,6 +19,19 @@
 
     label {
         position: relative;
+
+        &:has(.form__multiselect).required > span {
+            position: relative;
+
+            &::after {
+                content: '*';
+                position: absolute;
+                right: -10px;
+                top: -5px;
+                font-size: 18px;
+                color: variables.$color_danger;
+            }
+        }
     }
 
     &__row {
@@ -47,10 +60,41 @@
         }
 
         &:not(&--reactive) {
-            &:has(.invalid), &:has(.valid) {
-                .form__unit {
-                    right: 35px;
+            label {
+                &:has(.invalid), &:has(.valid) {
+                    .form__unit {
+                        right: 35px;
+                    }
                 }
+            }
+        }
+
+        &.required .form__label {
+            position: relative;
+            display: inline-block;
+            width: max-content;
+
+            &::after {
+                content: '*';
+                position: absolute;
+                right: -10px;
+                top: -5px;
+                font-size: 18px;
+                color: variables.$color_danger;
+            }
+        }
+
+        label:has(.form__input[required]) .form__label {
+            position: relative;
+            width: max-content;
+
+            &::after {
+                content: '*';
+                position: absolute;
+                right: -10px;
+                top: -5px;
+                font-size: 18px;
+                color: variables.$color_danger;
             }
         }
     }
@@ -98,6 +142,7 @@
             padding-left: 40px;
         }
     }
+
 
     &__unit {
         position: absolute;
@@ -259,7 +304,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        cursor: pointer;
         transition: all .5s ease;
         min-height: 35px;
         min-width: 35px;
@@ -328,6 +372,12 @@
     }
 }
 
+.form-complex-floor {
+    .modal__container {
+        width: 1100px;
+    }
+}
+
 .radio-chip {
     cursor: pointer;
     padding: 5px 15px;
@@ -351,6 +401,10 @@
         background-color: #10b981;
         border-color: #10b981;
         color: #fff;
+    }
+
+    &:has(.invalid) {
+        border-bottom: 2px solid variables.$color_danger !important;
     }
 }
 
@@ -440,12 +494,17 @@
 
 .double-input {
     display: flex;
+    align-items: center;
     gap: 6px;
     flex-wrap: wrap;
 
     label {
         flex-basis: calc(50% - 3px);
         min-width: 150px;
+    }
+
+    &:has(.form__separator) label {
+        flex-basis: calc(50% - 12px);
     }
 
     label:has(.form__input.invalid:not(:focus)) .form__caption {
@@ -470,4 +529,104 @@
 
 .form__textarea {
     min-height: 100px;
+}
+
+.checkbox-icons {
+    &__body {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    &__extra-label {
+        padding: 5px;
+        color: variables.$color_dark;
+        outline: 1px dashed variables.$color_dark;
+        font-weight: 500;
+        text-transform: uppercase;
+        border-radius: 2px;
+        cursor: pointer;
+        transition: background-color .5s ease, color .5s ease, outline-color .5s ease;
+
+        p {
+            font-size: 12px;
+            text-align: center;
+        }
+
+        &:hover {
+            background-color: rgba(16, 185, 129, 0.7);
+        }
+
+        &.active {
+            background-color: rgba(16, 185, 129, 1);
+            color: #fff;
+            outline-color: transparent;
+        }
+    }
+
+    &__list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        max-width: 100%;
+    }
+
+    &__label {
+        display: flex;
+        justify-content: center;
+        height: 45px;
+        width: 45px;
+        align-items: center;
+        border-radius: 2px;
+        cursor: pointer;
+        transition: background-color .5s ease, color .5s ease;
+        background-color: rgba(211, 211, 211, 0.7);
+
+        &:hover {
+            background-color: rgba(16, 185, 129, 0.7);
+        }
+
+        &.active {
+            background-color: rgba(16, 185, 129, 1);
+            color: variables.$color_light;
+        }
+    }
+
+    &__input {
+        display: none;
+    }
+
+    &__icon {
+        font-size: 24px;
+        display: block;
+    }
+
+    &__title {
+        font-weight: 500;
+        display: inline-block;
+        margin-bottom: 3px;
+    }
+}
+
+.radio-group {
+    &__label {
+        font-weight: 500;
+        position: relative;
+        display: inline-block;
+    }
+
+    &__list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    &.required &__label::after {
+        content: '*';
+        position: absolute;
+        right: -10px;
+        top: -5px;
+        color: variables.$color_danger;
+        font-size: 18px;
+    }
 }

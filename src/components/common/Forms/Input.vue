@@ -17,6 +17,7 @@
                 :value="modelValue"
                 :min="min"
                 :max="max"
+                :required="required"
             />
             <span v-if="unit" ref="unit" class="form__unit" v-html="unit"></span>
         </label>
@@ -55,10 +56,6 @@ export default {
         modelValue: {
             type: [String, Number],
             default: ''
-        },
-        required: {
-            type: Boolean,
-            default: false
         },
         v: {
             type: Object,
