@@ -287,7 +287,6 @@
 
 .checkbox-chip {
     height: max-content;
-    background-color: #fff;
 
     i {
         margin-left: 5px;
@@ -307,6 +306,7 @@
         transition: all .5s ease;
         min-height: 35px;
         min-width: 35px;
+        background-color: #fff;
 
         &:has(input:disabled) {
             opacity: .6;
