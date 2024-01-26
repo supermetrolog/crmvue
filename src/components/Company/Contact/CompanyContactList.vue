@@ -5,7 +5,7 @@
                 v-if="deletedContactItem"
                 @close="clickCloseModal"
                 title="Удаление контакта"
-                class="modal-company-contact-remove"
+                class="modal-form-company-contact-remove"
             >
                 <div class="row no-gutters">
                     <div class="col-12 text-center">

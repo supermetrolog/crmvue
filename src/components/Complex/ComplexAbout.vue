@@ -51,7 +51,10 @@
                                 </with-unit-type>
                             </PropertyListItem>
                             <PropertyListItem name="Управляющая компания">
-                                <p v-if="complex.managment_company_id" class="ComplexAbout-property">
+                                <p
+                                    v-if="complex.managment_company_id"
+                                    class="ComplexAbout-property"
+                                >
                                     {{ managmentCompany }}
                                 </p>
                             </PropertyListItem>
@@ -80,11 +83,15 @@
                                         v-if="complex.heating_autonomous"
                                         class="ComplexAbout-property"
                                         :title="
-                                            complex.heating_autonomous_type ? 'есть, ' + heatingAutonomousType : 'есть'
+                                            complex.heating_autonomous_type
+                                                ? 'есть, ' + heatingAutonomousType
+                                                : 'есть'
                                         "
                                     >
                                         есть{{ complex.heating_autonomous_type ? ',' : null }}
-                                        <span class="ComplexAbout-property-grey">{{ heatingAutonomousType }}</span>
+                                        <span class="ComplexAbout-property-grey">{{
+                                            heatingAutonomousType
+                                        }}</span>
                                     </p>
                                     <p v-else class="ComplexAbout-property">нет</p>
                                 </template>
@@ -94,7 +101,11 @@
                                     <p
                                         v-if="complex.water"
                                         class="ComplexAbout-property"
-                                        :title="complex.water_type.length > 0 ? 'есть, ' + joinedWaterType : 'есть'"
+                                        :title="
+                                            complex.water_type.length > 0
+                                                ? 'есть, ' + joinedWaterType
+                                                : 'есть'
+                                        "
                                     >
                                         есть{{ complex.water_type.length > 0 ? ',' : null }}
                                         <with-unit-type
@@ -103,7 +114,9 @@
                                         >
                                             {{ $formatter.number(complex.water_value) }}
                                         </with-unit-type>
-                                        <span class="ComplexAbout-property-grey">{{ joinedWaterType }}</span>
+                                        <span class="ComplexAbout-property-grey">{{
+                                            joinedWaterType
+                                        }}</span>
                                     </p>
                                     <p v-else class="ComplexAbout-property">нет</p>
                                 </template>
@@ -114,7 +127,10 @@
                                 </p>
                             </PropertyListItem>
                             <PropertyListItem name="Ливневая канал.">
-                                <p v-if="complex.sewage_rain !== null" class="ComplexAbout-property">
+                                <p
+                                    v-if="complex.sewage_rain !== null"
+                                    class="ComplexAbout-property"
+                                >
                                     {{ isExists(complex.sewage_rain) }}
                                 </p>
                             </PropertyListItem>
@@ -132,7 +148,9 @@
                                         >
                                             {{ $formatter.number(complex.gas_value) }}
                                         </with-unit-type>
-                                        <span class="ComplexAbout-property-grey">{{ gasType }}</span>
+                                        <span class="ComplexAbout-property-grey">{{
+                                            gasType
+                                        }}</span>
                                     </p>
                                     <p v-else class="ComplexAbout-property">нет</p>
                                 </template>
@@ -162,11 +180,15 @@
                                         v-if="complex.internet"
                                         class="ComplexAbout-property"
                                         :title="
-                                            complex.internet_type.length > 0 ? 'есть, ' + joinedInternetType : 'есть'
+                                            complex.internet_type.length > 0
+                                                ? 'есть, ' + joinedInternetType
+                                                : 'есть'
                                         "
                                     >
                                         есть{{ complex.internet_type.length > 0 ? ',' : null }}
-                                        <span class="ComplexAbout-property-grey">{{ joinedInternetType }}</span>
+                                        <span class="ComplexAbout-property-grey">{{
+                                            joinedInternetType
+                                        }}</span>
                                     </p>
                                     <p v-else class="ComplexAbout-property">нет</p>
                                 </template>
@@ -178,26 +200,41 @@
                                     <p
                                         v-if="complex.guard"
                                         class="ComplexAbout-property"
-                                        :title="complex.guard_type.length > 0 ? 'есть, ' + joinedGuardType : 'есть'"
+                                        :title="
+                                            complex.guard_type.length > 0
+                                                ? 'есть, ' + joinedGuardType
+                                                : 'есть'
+                                        "
                                     >
                                         есть{{ complex.guard_type.length > 0 ? ',' : null }}
-                                        <span class="ComplexAbout-property-grey">{{ joinedGuardType }}</span>
+                                        <span class="ComplexAbout-property-grey">{{
+                                            joinedGuardType
+                                        }}</span>
                                     </p>
                                     <p v-else class="ComplexAbout-property">нет</p>
                                 </template>
                             </PropertyListItem>
                             <PropertyListItem name="Видеонабл. наруж.">
-                                <p v-if="complex.video_control !== null" class="ComplexAbout-property">
+                                <p
+                                    v-if="complex.video_control !== null"
+                                    class="ComplexAbout-property"
+                                >
                                     {{ isExists(complex.video_control) }}
                                 </p>
                             </PropertyListItem>
                             <PropertyListItem name="Контр. дост. наруж.">
-                                <p v-if="complex.access_control !== null" class="ComplexAbout-property">
+                                <p
+                                    v-if="complex.access_control !== null"
+                                    class="ComplexAbout-property"
+                                >
                                     {{ isExists(complex.access_control) }}
                                 </p>
                             </PropertyListItem>
                             <PropertyListItem name="Охран. сигнал. наруж.">
-                                <p v-if="complex.security_alert !== null" class="ComplexAbout-property">
+                                <p
+                                    v-if="complex.security_alert !== null"
+                                    class="ComplexAbout-property"
+                                >
                                     {{ isExists(complex.security_alert) }}
                                 </p>
                             </PropertyListItem>
@@ -207,7 +244,10 @@
                                 </p>
                             </PropertyListItem>
                             <PropertyListItem name="Забор по периметру">
-                                <p v-if="complex.fence_around_perimeter !== null" class="ComplexAbout-property">
+                                <p
+                                    v-if="complex.fence_around_perimeter !== null"
+                                    class="ComplexAbout-property"
+                                >
                                     {{ isExists(complex.fence_around_perimeter) }}
                                 </p>
                             </PropertyListItem>
@@ -220,9 +260,14 @@
                         <PropertyList :title="['Ж/Д на территории', 'Инфраструктура']">
                             <template #0>
                                 <PropertyListItem name="Ж/Д ветка">
-                                    <p v-if="complex.railway !== null" class="ComplexAbout-property">
+                                    <p
+                                        v-if="complex.railway !== null"
+                                        class="ComplexAbout-property"
+                                    >
                                         {{ isExists(complex.railway) }}
-                                        <span v-if="complex.railway_value"> {{ complex.railway_value }} м </span>
+                                        <span v-if="complex.railway_value">
+                                            {{ complex.railway_value }} м
+                                        </span>
                                     </p>
                                 </PropertyListItem>
                             </template>
@@ -230,18 +275,28 @@
                                 <PropertyListItem name="Въезд на территорию">
                                     <template v-if="complex.entry_territory !== null">
                                         <p
-                                            v-if="complex.entry_territory && complex.entry_territory_type"
+                                            v-if="
+                                                complex.entry_territory &&
+                                                complex.entry_territory_type
+                                            "
                                             class="ComplexAbout-property"
                                         >
                                             {{ entryTerritoryType }}
                                         </p>
-                                        <p v-else-if="complex.entry_territory" class="ComplexAbout-property">есть</p>
+                                        <p
+                                            v-else-if="complex.entry_territory"
+                                            class="ComplexAbout-property"
+                                        >
+                                            есть
+                                        </p>
                                         <p v-else class="ComplexAbout-property">нет</p>
                                     </template>
                                 </PropertyListItem>
                                 <PropertyListItem name="Плата за въезд">
                                     <p
-                                        v-if="complex.entrance_type !== null && complex.entrance_type"
+                                        v-if="
+                                            complex.entrance_type !== null && complex.entrance_type
+                                        "
                                         class="ComplexAbout-property"
                                     >
                                         {{ entryFee }}
@@ -284,7 +339,10 @@
                                     </template>
                                 </PropertyListItem>
                                 <PropertyListItem name="Столовая/кафе">
-                                    <p v-if="complex.canteen !== null" class="ComplexAbout-property">
+                                    <p
+                                        v-if="complex.canteen !== null"
+                                        class="ComplexAbout-property"
+                                    >
                                         {{ isExists(complex.canteen) }}
                                     </p>
                                 </PropertyListItem>
@@ -300,13 +358,51 @@
                 </div>
             </Tab>
             <Tab name="План Территории">
-                <div class="ComplexAbout-content">123</div>
+                <div class="ComplexAbout-content">План не загружен</div>
             </Tab>
             <Tab name="Презентации">
-                <div class="ComplexAbout-content">123</div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="complex__list">
+                            <template v-if="complex.building_presentations.length">
+                                <div
+                                    v-for="(presentation, index) in complex.building_presentations"
+                                    :key="index"
+                                    class="complex-document"
+                                >
+                                    <a href="#" class="complex-document__link">
+                                        <i
+                                            class="fa-regular fa-file-powerpoint complex-document__preview"
+                                        />
+                                        <p class="complex-document__name">Название презентации</p>
+                                    </a>
+                                </div>
+                            </template>
+                            <div v-else class="complex-document complex-document--green">
+                                <a href="#" class="complex-document__link">
+                                    <i
+                                        class="fa-regular fa-file-powerpoint complex-document__preview"
+                                    />
+                                    <p class="complex-document__name">Добавить презентацию</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </Tab>
             <Tab name="Документы">
-                <div class="ComplexAbout-content">123</div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="complex__list">
+                            <div class="complex-document complex-document--green">
+                                <a href="#" class="complex-document__link">
+                                    <i class="fa-regular fa-file-word complex-document__preview" />
+                                    <p class="complex-document__name">Добавить документ</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </Tab>
         </Tabs>
     </div>
@@ -361,7 +457,9 @@ export default {
         },
         joinedInternetType() {
             return this.complex.internet_type
-                ? this.complex.internet_type.map(internetType => internetTypes[internetType]).join(', ')
+                ? this.complex.internet_type
+                      .map(internetType => internetTypes[internetType])
+                      .join(', ')
                 : '';
         },
         joinedWaterType() {
@@ -402,6 +500,8 @@ export default {
                 // const listHeight = listElement.clientHeight;
             });
         }
+
+        console.log(this.complex);
     }
 };
 </script>
