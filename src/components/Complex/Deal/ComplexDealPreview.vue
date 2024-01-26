@@ -1,40 +1,43 @@
 <template>
-    <div @click="onChooseDeal" class="DealPreviewCard" :class="{ active: isCurrent }">
-        <button v-if="isCurrent" class="DealPreviewCard-edit">
+    <div @click="onChooseDeal" class="deal-preview" :class="{ active: isCurrent }">
+        <button v-if="isCurrent" v-tippy="'Редактировать'" class="deal-preview__button">
             <i class="fas fa-pen"></i>
         </button>
-        <span class="DealPreviewCard-type">{{ dealType }}</span>
-        <p class="DealPreviewCard-company">{{ deal.company.name || '--' }}</p>
-        <p class="DealPreviewCard-area">
+        <span class="deal-preview__type">{{ dealName }}</span>
+        <p class="deal-preview__company">{{ dealCompany }}</p>
+        <p class="deal-preview__area">
             {{ dealArea }}
-            <span v-if="deal.area" class="DealPreviewCard-price-unit">м<sup>2</sup></span>
+            <span class="deal-preview__unit">м<sup>2</sup></span>
         </p>
         <p class="DealPreviewCard-price">
-            <with-unit-type :unit-type="deal.price.unitType">{{ dealPrice }}</with-unit-type>
+            <with-unit-type :unit-type="unitTypes.RUB_PER_SQUARE_METERS_PER_MONTH">
+                {{ dealPrice }}
+            </with-unit-type>
         </p>
         <p
-            class="DealPreviewCard-status"
+            class="deal-preview__status"
             :class="{
-                success: deal.status === DealStatusType.FOR_RENT,
-                danger: deal.status === DealStatusType.RENTED_OUT || deal.status === DealStatusType.SOLD_OUT
+                'deal-preview__status--success': deal.status_id === DealStatusType.FOR_RENT,
+                'deal-preview__status--danger':
+                    deal.status_id === DealStatusType.RENTED_OUT ||
+                    deal.status_id === DealStatusType.SOLD_OUT
             }"
         >
             {{ dealStatus }}
         </p>
-        <div class="DealPreviewCard-triangle"></div>
+        <div class="deal-preview__triangle"></div>
     </div>
 </template>
 
 <script>
-import { DealStatusType, DealTypeList } from '@/const/const';
+import { DealStatusList, DealStatusType, DealTypeList } from '@/const/const';
 import { unitTypes } from '@/const/unitTypes';
+import { mapActions } from 'vuex';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 
 export default {
     name: 'ComplexDealPreview',
-    components: {
-        WithUnitType
-    },
+    components: { WithUnitType },
     emits: ['choose', 'edit'],
     props: {
         deal: {
@@ -59,28 +62,25 @@ export default {
             const dealNumber = this.deal.object_id;
             return `${dealType} ${dealNumber}-${dealType[0]}`;
         },
-
+        dealCompany() {
+            return this.deal.companyRecord ? this.deal.companyRecord.nameRu : '--';
+        },
         dealStatus() {
-            switch (this.deal.status) {
-                case 1:
-                    return 'Сдается';
-                case 2:
-                    return 'Сдано';
-                case 3:
-                    return 'Продано';
-                default:
-                    return 'Неизвестно';
-            }
+            return DealStatusList[this.deal.status_id];
         },
         dealArea() {
-            const { valueMin, valueMax } = this.deal.area;
-            if (valueMin && valueMax) return this.$formatter.numberOrRangeNew(valueMin, valueMax);
+            if (this.deal.calculated_area_min || this.deal.calculated_area_max)
+                return this.$formatter.numberOrRangeNew(
+                    this.deal.calculated_area_min,
+                    this.deal.calculated_area_max
+                );
+
             return '--';
         },
         dealPrice() {
-            const { valueMin, valueMax } = this.deal.price;
-            if (valueMin && valueMax) return this.$formatter.numberOrRangeNew(valueMin, valueMax);
-            return 'нет данных';
+            // const { valueMin, valueMax } = this.deal.price;
+            // if (valueMin && valueMax) return this.$formatter.numberOrRangeNew(valueMin, valueMax);
+            return 'Нет данных в API';
         },
         typePresence() {
             return this.deal.price.type && this.deal.price.valueMin;

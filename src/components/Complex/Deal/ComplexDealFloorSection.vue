@@ -1,56 +1,58 @@
 <template>
-    <div class="DealFloorSection" :class="getAppropriateSectionClass(section)">
-        <p v-if="section.company" class="DealFloorSection-text DealFloorSection-text_label">
-            {{ section.company.name }}
-        </p>
-        <with-unit-type class="DealFloorSection-text DealFloorSection-text_area" :unit-type="unitTypes.SQUARE_METERS">
+    <div v-if="empty" class="deal-section deal-section--grey">
+        <with-unit-type class="deal-section__area" :unit-type="unitTypes.SQUARE_METERS">
+            {{ emptyArea }}
+        </with-unit-type>
+        <p class="deal-section__status">Нераспред. площадь</p>
+    </div>
+    <div v-else class="deal-section" :class="appropriateSectionClass">
+        <with-unit-type class="deal-section__area" :unit-type="unitTypes.SQUARE_METERS">
             {{ formattedArea }}
         </with-unit-type>
-        <p class="DealFloorSection-status" :class="sectionAdditionalClass">
+        <p class="deal-section__status" :class="sectionAdditionalClass">
             {{ sectionStatus }}
         </p>
-        <p v-if="presenceOfSurrendedTerWithUnknownArea" class="DealFloorSection-text DealFloorSection-text_label">
-            ???: {{ joinedCompanies }}
-        </p>
-        <Form v-if="section.status && section.company" class="edit">
-            <input
-                :id="genSectionInputId(section.company.name)"
-                v-model="isChecked"
-                class="DealFloorSection-checkbox"
-                type="checkbox"
-                name=""
-                :checked="isChecked"
+        <div class="deal-section__functions">
+            <i
+                v-tippy="`Редактировать`"
+                @click="$emit('editSection', section)"
+                class="fas fa-pen deal-section__button"
             />
-            <label class="DealFloorSection-checkbox-label" :for="genSectionInputId(section.company.name)" />
-            <i class="fas fa-pen"></i>
-        </Form>
+            <Form v-if="section.is_active" class="deal-section__form">
+                <input
+                    :id="checkboxName"
+                    v-model="isChecked"
+                    class="deal-section__checkbox"
+                    type="checkbox"
+                    :checked="isChecked"
+                />
+                <label class="deal-section__checkbox-label" :for="checkboxName" />
+            </Form>
+        </div>
     </div>
 </template>
 <script>
 import { DealStatusList, DealStatusType } from '@/const/const.js';
 import { unitTypes } from '@/const/unitTypes';
-import Form from '@/components/common/Forms/Form.vue';
 import WithUnitType from '@/components/common/WithUnitType.vue';
+import Form from '@/components/common/Forms/Form.vue';
 
 export default {
     name: 'ComplexDealFloorSection',
-    components: {
-        WithUnitType,
-        Form
-    },
+    components: { WithUnitType, Form },
+    emits: ['editSection'],
     props: {
         section: {
             type: Object,
-            default: () => {},
-            required: true
+            default: () => {}
         },
-        floorName: {
-            type: String,
-            default: null
+        empty: {
+            type: Boolean,
+            default: false
         },
-        unknownAreaCompanies: {
-            type: Array,
-            default: () => []
+        emptyArea: {
+            type: Number,
+            default: 0
         }
     },
     data() {
@@ -58,48 +60,55 @@ export default {
             DealStatusType,
             DealStatusList,
             unitTypes,
-            isChecked: this.section.checked
+            isChecked: this.section ? this.section.checked : false
         };
     },
     computed: {
         sectionStatus() {
-            return this.section.status ? DealStatusList[this.section.status] : 'Сдано или нераспределено';
-        },
-        presenceOfSurrendedTerWithUnknownArea() {
-            return Array.isArray(this.unknownAreaCompanies) && this.unknownAreaCompanies.length > 0;
+            if (this.section.is_active) return 'Свободно, размечено';
+
+            return this.section.deal_type
+                ? DealStatusList[this.section.deal_type]
+                : 'Сдано или нераспределено';
         },
         formattedArea() {
-            return this.$formatter.numberOrRangeNew(this.section.area.valueMin, this.section.area.valueMax);
+            if (this.section.area_floor_min || this.section.area_floor_max) {
+                return this.$formatter.numberOrRangeNew(
+                    this.section.area_floor_min,
+                    this.section.area_floor_max
+                );
+            }
+
+            if (this.section.area_mezzanine_min || this.section.area_mezzanine_max) {
+                return this.$formatter.numberOrRangeNew(
+                    this.section.area_mezzanine_min,
+                    this.section.area_mezzanine_max
+                );
+            }
+
+            return '--';
         },
         sectionAdditionalClass() {
             return {
-                success: this.section.status === DealStatusType.FOR_RENT,
-                danger:
-                    this.section.status === DealStatusType.RENTED_OUT ||
-                    this.section.status === DealStatusType.SOLD_OUT,
-                white: this.section.status === DealStatusType.FREE,
-                black: !this.section.status
+                'deal-section__status--success': this.section.is_active,
+                'deal-section__status--danger':
+                    this.section.deal_type === DealStatusType.RENTED_OUT ||
+                    this.section.deal_type === DealStatusType.FOR_RENT,
+                'deal-section__status--white': this.section.is_active
             };
         },
-        joinedCompanies() {
-            return this.unknownAreaCompanies.join(', ');
-        }
-    },
-    methods: {
-        genSectionInputId(companyName) {
-            return 'section-check_' + companyName;
+        appropriateSectionClass() {
+            if (this.section.is_active) return 'deal-section--green';
+            if (
+                this.section.deal_type === DealStatusType.RENTED_OUT ||
+                this.section.deal_type === DealStatusType.FOR_RENT
+            )
+                return 'deal-section--purple';
+
+            return 'deal-section--grey';
         },
-        getAppropriateSectionClass(section) {
-            switch (section.status) {
-                case DealStatusType.FREE:
-                    return 'DealFloorSection_green';
-                case DealStatusType.RENTED_OUT:
-                    return 'DealFloorSection_purple';
-                case DealStatusType.SOLD_OUT:
-                    return 'DealFloorSection_purple';
-                default:
-                    return 'DealFloorSection_grey';
-            }
+        checkboxName() {
+            return 'checkbox-' + this.section.id;
         }
     },
     mounted() {}

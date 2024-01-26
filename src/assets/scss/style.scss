@@ -1705,65 +1705,6 @@ $warning_step_thin_border: 1px solid variables.$color_warning;
                     }
                 }
             }
-
-            &.icons {
-                .extra-label {
-                    padding: 5px;
-                    margin-bottom: 2px;
-                    color: variables.$color_dark;
-                    outline: 1px dashed variables.$color_dark;
-                    text-transform: uppercase;
-                    border-radius: 2px;
-                    cursor: pointer;
-
-                    p {
-                        font-size: 12px;
-                        text-align: center;
-                    }
-
-                    &.active {
-                        background-color: variables.$color_success_alt;
-                        color: white;
-                        outline: none;
-                    }
-                }
-
-                .item-container {
-                    display: flex;
-                    flex-wrap: wrap;
-                    justify-content: center;
-                    align-items: center;
-                    max-width: 100%;
-
-                    label {
-                        margin: 2px;
-                        padding: 5px;
-                        display: flex;
-                        flex-wrap: wrap;
-                        width: 30px;
-                        height: 30px;
-                        justify-content: center;
-                        align-items: center;
-
-                        i {
-                            // max-width: 20px;
-                            // min-width: 20px;
-                            font-size: 18px;
-                            display: block;
-                            margin: 0 auto;
-                        }
-
-                        &.active {
-                            background-color: variables.$color_success;
-                            color: variables.$color_light;
-                        }
-                    }
-                }
-
-                input {
-                    display: none;
-                }
-            }
         }
 
         &.propogation-input {

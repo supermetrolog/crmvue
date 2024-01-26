@@ -1,32 +1,31 @@
 <template>
     <div class="DealItem">
-        <ComplexDealFloors :object="object" :floors="deal.floors" />
-        <ComplexDealInfo
-            v-if="deal.additionalDetails"
-            :company="deal.builder"
-            :consultant="deal.consultant"
-            :additional-details="deal.additionalDetails"
-            :building-info="deal.buildingInfo"
-            :owner="deal.owner"
-        />
+        <ComplexDealFloors :floors="floors" :object="object" />
+        <!--        <ComplexDealInfo-->
+        <!--            v-if="deal.additionalDetails"-->
+        <!--            :company="deal.builder"-->
+        <!--            :consultant="deal.consultant"-->
+        <!--            :additional-details="deal.additionalDetails"-->
+        <!--            :building-info="deal.buildingInfo"-->
+        <!--            :owner="deal.owner"-->
+        <!--        />-->
     </div>
 </template>
 
 <script>
 import ComplexDealFloors from '@/components/Complex/Deal/ComplexDealFloors.vue';
-import ComplexDealInfo from '@/components/Complex/Deal/ComplexDealInfo.vue';
 
 export default {
     name: 'ComplexDealItem',
-    components: { ComplexDealInfo, ComplexDealFloors },
+    components: { ComplexDealFloors },
     props: {
-        deal: {
-            type: Object,
-            required: true
+        floors: {
+            type: Array,
+            default: () => []
         },
         object: {
             type: Object,
-            required: true
+            default: null
         }
     }
 };

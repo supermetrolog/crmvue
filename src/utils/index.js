@@ -293,5 +293,14 @@ export const dataMapper = (object, rules) => {
 };
 
 export const reducer = {
-    sum: (element, field) => element.reduce((acc, el) => acc + el[field], 0)
+    sum: (element, fields = null) => {
+        if (fields === null) return element.reduce((acc, el) => acc + el, 0);
+        if (fields instanceof Array)
+            return element.reduce(
+                (acc, el) => acc + fields.reduce((_acc, field) => _acc + el[field] ?? 0, 0),
+                0
+            );
+
+        return element.reduce((acc, el) => acc + el[fields], 0);
+    }
 };
