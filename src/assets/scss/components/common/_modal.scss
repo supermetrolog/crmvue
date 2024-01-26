@@ -1,4 +1,5 @@
 @use '../../utils/variables';
+@use '../../utils/mixins';
 
 .modal {
     display: flex;
@@ -10,9 +11,6 @@
     width: 100%;
     height: 100%;
     z-index: 100;
-    opacity: 0;
-    visibility: hidden;
-    backface-visibility: hidden;
 
     &:has(.loader) {
         z-index: 80;
@@ -33,6 +31,16 @@
         visibility: visible;
     }
 
+    &.fadein {
+        .modal__blackout {
+            animation: fadeIn .1s;
+        }
+
+        .modal__container {
+            animation: fadeIn .8s;
+        }
+    }
+
     &__container {
         position: relative;
         background-color: #fff;
@@ -45,6 +53,15 @@
         z-index: 22;
         box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
         border-radius: 15px;
+        visibility: hidden;
+    }
+
+    .active &__container {
+        visibility: visible;
+    }
+
+    .fullscreen &__container {
+        border-radius: 0;
     }
 
     &__header,
@@ -67,7 +84,8 @@
 
     &__close {
         cursor: pointer;
-        margin-left: auto;
+        position: absolute;
+        right: 15px;
     }
 
     &.fullscreen {
@@ -102,6 +120,7 @@
         display: flex;
         align-items: center;
         gap: 5px;
+        padding-right: 45px;
 
         .times-container {
             position: absolute;
@@ -127,3 +146,24 @@
         }
     }
 }
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    } to {
+        opacity: 1;
+    }
+}
+
+@include mixins.modal-width(modal-form-company, 1000px);
+@include mixins.modal-width(modal-form-company-deal, 700px);
+@include mixins.modal-width(modal-form-company-group, 600px);
+@include mixins.modal-width(modal-form-company-contact, 1300px);
+@include mixins.modal-width(modal-form-company-request-disable, 550px);
+@include mixins.modal-width(modal-form-company-request-clone, 750px);
+@include mixins.modal-width(modal-form-floor-block, 1200px);
+@include mixins.modal-width(modal-form-complex-building, 900px);
+@include mixins.modal-width(modal-form-complex-plot, 900px);
+@include mixins.modal-width(modal-form-complex-crane, 900px);
+@include mixins.modal-width(modal-form-complex-elevator, 950px);
+@include mixins.modal-width(modal-form-offer-search, 1400px);

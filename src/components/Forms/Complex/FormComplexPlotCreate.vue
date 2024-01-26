@@ -1,5 +1,9 @@
 <template>
-    <Modal @close="$emit('close')" :title="false ? 'Редактирование участка' : 'Создание участка'">
+    <Modal
+        @close="$emit('close')"
+        class="modal-form-complex-plot"
+        :title="false ? 'Редактирование участка' : 'Создание участка'"
+    >
         <template #header>
             <CheckboxChip v-model="form.test_only" :value="form.test_only" text="Тестовый лот" />
         </template>
