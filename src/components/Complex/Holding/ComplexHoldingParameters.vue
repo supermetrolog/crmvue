@@ -31,8 +31,8 @@
                     <strong
                         v-for="purpose of object.purposes"
                         :key="purpose"
+                        v-tippy="getObjectTypeName(purpose)"
                         class="object-type-box"
-                        :title="getObjectTypeName(purpose)"
                     >
                         <i :class="getObjectTypeIcon(purpose)"></i>
                     </strong>
@@ -44,15 +44,20 @@
             <div class="ObjectHoldingsParameters-equipment">
                 <teleport to="body">
                     <FormComplexCrane
-                        v-if="addCraneFormIsVisible"
-                        @close="toggleAddCraneFormIsVisible"
+                        v-if="craneFormIsVisible"
+                        @close="toggleCraneFormIsVisible()"
                         :crane="forms.crane"
                     />
-                </teleport>
-                <teleport to="body">
                     <FormComplexElevator
-                        v-if="addElevatorFormIsVisible"
-                        @close="toggleAddElevatorFormIsVisible"
+                        v-if="elevatorFormIsVisible"
+                        @close="toggleElevatorFormIsVisible()"
+                        :elevator="forms.elevator"
+                    />
+                    <FormComplexFloor
+                        v-if="floorFormIsVisible"
+                        @close="toggleFloorFormVisible()"
+                        :floor="forms.floor"
+                        :object="object"
                     />
                 </teleport>
                 <p class="object-holding__label">Краны</p>
@@ -60,11 +65,11 @@
                     <ComplexHoldingParametersCrane
                         v-for="crane in object.cranes"
                         :key="crane.id"
-                        @click.stop="toggleEditCraneFormIsVisible(crane)"
+                        @click.stop="toggleCraneFormIsVisible(crane)"
                         :crane="crane"
                     />
                     <li>
-                        <button @click.stop="toggleAddCraneFormIsVisible" class="object-equipment">
+                        <button @click.stop="toggleCraneFormIsVisible()" class="object-equipment">
                             <i class="fas fa-plus-circle"></i> Добавить кран
                         </button>
                     </li>
@@ -72,28 +77,37 @@
                 <p class="object-holding__label">Подъемники</p>
                 <ul class="object-holding__list">
                     <li>
-                        <button @click="toggleAddElevatorFormIsVisible" class="object-equipment">
+                        <button @click="toggleElevatorFormIsVisible()" class="object-equipment">
                             <i class="fas fa-plus-circle"></i> Добавить подъемник
                         </button>
                     </li>
                 </ul>
             </div>
         </div>
-        <!--		<div class="ObjectHoldingsParameters-floors" v-if="object.floors.length > 0">-->
-        <!--			<div-->
-        <!--					class="ObjectHoldingsParameters-floor"-->
-        <!--					:class="{ danger: object.floors.danger }"-->
-        <!--					v-for="floor in object.floors"-->
-        <!--					:key="floor.number"-->
-        <!--			>-->
-        <!--				<span>{{ floor.number }} этаж</span>-->
-        <!--				<i-->
-        <!--						class="fas fa-exclamation-circle text-danger"-->
-        <!--						v-if="floor.danger"-->
-        <!--						title="Внимание"-->
-        <!--				></i>-->
-        <!--			</div>-->
-        <!--		</div>-->
+        <div v-if="object.floorsRecords.length" class="object-holding-parameters__floors">
+            <p class="object-holding-parameters__subtitle">Этажи</p>
+            <ul class="object-holding-parameters__floors-list">
+                <li
+                    v-for="floor in object.floorsRecords"
+                    :key="floor.number.id"
+                    @click="toggleFloorFormVisible(floor)"
+                    class="object-holding-parameters__floor"
+                >
+                    <span>{{ floor.number.title }}</span>
+                    <!--                <i-->
+                    <!--                    v-if="floor.danger"-->
+                    <!--                    class="fas fa-exclamation-circle text-danger"-->
+                    <!--                    title="Внимание"-->
+                    <!--                ></i>-->
+                </li>
+                <li
+                    @click="toggleFloorFormVisible()"
+                    class="object-holding-parameters__floor object-holding-parameters__floor--empty"
+                >
+                    <span>Добавить этаж</span>
+                </li>
+            </ul>
+        </div>
     </div>
 </template>
 
@@ -105,11 +119,13 @@ import ComplexParameters from '@/components/Complex/ComplexParameters.vue';
 import FormComplexCrane from '@/components/Forms/Complex/FormComplexCrane.vue';
 import FormComplexElevator from '@/components/Forms/Complex/FormComplexElevator.vue';
 import ComplexHoldingParametersCrane from '@/components/Complex/Holding/ComplexHoldingParametersCrane.vue';
+import FormComplexFloor from '@/components/Forms/Complex/FormComplexFloor.vue';
 import { reducer } from '@/utils';
 
 export default {
     name: 'ComplexHoldingParameters',
     components: {
+        FormComplexFloor,
         ComplexHoldingParametersCrane,
         FormComplexElevator,
         FormComplexCrane,
@@ -124,11 +140,13 @@ export default {
     },
     data() {
         return {
-            addCraneFormIsVisible: false,
-            addElevatorFormIsVisible: false,
+            craneFormIsVisible: false,
+            elevatorFormIsVisible: false,
+            floorFormIsVisible: false,
             forms: {
                 crane: null,
-                elevator: null
+                elevator: null,
+                floor: null
             },
             unitTypes
         };
@@ -143,21 +161,27 @@ export default {
         },
         formattedFloorArea() {
             return this.$formatter.number(
-                reducer.sum(this.object.floorsRecords, 'area_floor_full')
+                reducer.sum(this.object.floorsRecords, [
+                    'area_floor_full',
+                    'area_mezzanine_full',
+                    'area_tech_full',
+                    'area_office_full'
+                ])
             );
         }
     },
     methods: {
-        toggleAddCraneFormIsVisible() {
-            this.forms.crane = null;
-            this.addCraneFormIsVisible = !this.addCraneFormIsVisible;
+        toggleFloorFormVisible(floor = null) {
+            this.forms.floor = floor;
+            this.floorFormIsVisible = !this.floorFormIsVisible;
         },
-        toggleEditCraneFormIsVisible(crane) {
+        toggleCraneFormIsVisible(crane = null) {
             this.forms.crane = crane;
-            this.addCraneFormIsVisible = !this.addCraneFormIsVisible;
+            this.craneFormIsVisible = !this.craneFormIsVisible;
         },
-        toggleAddElevatorFormIsVisible() {
-            this.addElevatorFormIsVisible = !this.addElevatorFormIsVisible;
+        toggleElevatorFormIsVisible(elevator = null) {
+            this.forms.elevator = elevator;
+            this.elevatorFormIsVisible = !this.elevatorFormIsVisible;
         },
         getObjectTypeIcon(purpose) {
             return objectPurposes[purpose].icon;

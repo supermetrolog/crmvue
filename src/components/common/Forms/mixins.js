@@ -7,6 +7,10 @@ export default {
         reactive: {
             type: [Boolean, Number],
             default: false
+        },
+        required: {
+            type: Boolean,
+            default: false
         }
     },
     computed: {

@@ -23,3 +23,9 @@ $sizes: (
     color: variables.$color_light;
     padding: 1em;
 }
+
+@mixin modal-width($modal-name, $width) {
+    .#{$modal-name} .modal__container {
+        width: $width;
+    }
+}

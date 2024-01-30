@@ -1,5 +1,9 @@
 <template>
-    <Modal @close="$emit('close')" :title="elevator ? 'Редактирование крана' : 'Создание крана'">
+    <Modal
+        @close="$emit('close')"
+        class="modal-form-complex-elevator"
+        :title="elevator ? 'Редактирование подъемника' : 'Добавление подъемника'"
+    >
         <Loader v-if="loader" class="center" />
         <Form @submit="onSubmit" class="equipment-form">
             <Tabs :options="{ useUrlFragment: false, defaultTabHash: 'main' }">
@@ -30,23 +34,16 @@
                             unit="т"
                             required
                         />
-                        <div class="col-8 mt-2">
-                            <span class="form__subtitle">Габариты</span>
-                            <div class="form__row">
-                                <Input
-                                    v-model="form.elevator_length"
-                                    :v="v$.form.elevator_length"
-                                    type="number"
-                                />
-                                <span class="form__delimiter">x</span>
-                                <Input
-                                    v-model="form.elevator_width"
-                                    :v="v$.form.elevator_width"
-                                    type="number"
-                                />
-                            </div>
-                        </div>
-                        <div class="col-2 mt-2">
+                        <DoubleInput
+                            v-model:first="form.elevator_length"
+                            v-model:second="form.elevator_width"
+                            label="Габариты"
+                            class="col-md-6 col-12"
+                            type="number"
+                            without-caption
+                            :validators="formElevatorValidators"
+                        />
+                        <div class="col-3 mt-2">
                             <span class="form__subtitle">Под надзором</span>
                             <div class="form__row mt-1">
                                 <RadioChip
@@ -61,7 +58,7 @@
                                 />
                             </div>
                         </div>
-                        <div class="col-2 mt-2">
+                        <div class="col-3 mt-2">
                             <span class="form__subtitle">Есть документы</span>
                             <div class="form__row mt-1">
                                 <RadioChip
@@ -150,10 +147,12 @@ import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import Chip from '@/components/common/Chip.vue';
+import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
+import { min } from '@//validators';
 
 export default {
     name: 'FormComplexElevator',
-    components: { Chip, RadioChip, Modal, Loader },
+    components: { DoubleInput, Chip, RadioChip, Modal, Loader },
     mixins: [ComplexFormMixin],
     emits: ['close'],
     props: {
@@ -190,12 +189,6 @@ export default {
                 elevator_volume: {
                     required: helpers.withMessage('заполните поле', required),
                     minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
-                },
-                elevator_length: {
-                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
-                },
-                elevator_width: {
-                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
                 }
             }
         };
@@ -212,6 +205,9 @@ export default {
         },
         elevatorConditionOptions() {
             return Object.values(liftingDeviceConditionTypes);
+        },
+        formElevatorValidators() {
+            return [{ func: min(1), message: 'Значение должно быть больше 0' }];
         }
     },
     methods: {

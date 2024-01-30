@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import ComplexAbout from '@/components/Complex/ComplexAbout.vue';
 import ComplexMap from '@/components/Complex/ComplexMap.vue';
 import ComplexHoldings from '@/components/Complex/Holding/ComplexHoldings.vue';
@@ -36,11 +36,13 @@ export default {
     components: { ComplexHoldings, ComplexMap, ComplexAbout },
     data() {
         return {
-            complex: null,
             editAccess: false
         };
     },
     computed: {
+        ...mapState({
+            complex: state => state.Complex.complex
+        }),
         complexLocation() {
             return {
                 ...this.complex.location,
@@ -52,11 +54,11 @@ export default {
     },
     methods: {
         ...mapActions({
-            fetchComplex: 'FETCH_COMPLEX'
+            fetchComplex: 'Complex/FETCH_COMPLEX'
         })
     },
     async created() {
-        this.complex = await this.fetchComplex(this.$route.params.complex_id);
+        await this.fetchComplex(this.$route.params.complex_id);
     }
 };
 </script>

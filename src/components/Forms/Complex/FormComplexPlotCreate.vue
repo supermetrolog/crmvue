@@ -1,5 +1,9 @@
 <template>
-    <Modal @close="$emit('close')" :title="false ? 'Редактирование участка' : 'Создание участка'">
+    <Modal
+        @close="$emit('close')"
+        class="modal-form-complex-plot"
+        :title="false ? 'Редактирование участка' : 'Создание участка'"
+    >
         <template #header>
             <CheckboxChip v-model="form.test_only" :value="form.test_only" text="Тестовый лот" />
         </template>
@@ -585,16 +589,6 @@
                             v-model:native="form.layoutsList"
                             v-model:data="form.layouts"
                             label="Планировки"
-                            class="col-12"
-                        >
-                            Выбрать файлы
-                        </FileInput>
-                    </div>
-                    <div class="row mt-2">
-                        <FileInput
-                            v-model:native="form.panoramasList"
-                            v-model:data="form.panoramas"
-                            label="Панорамы"
                             class="col-12"
                         >
                             Выбрать файлы

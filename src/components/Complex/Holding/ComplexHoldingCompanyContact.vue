@@ -49,7 +49,8 @@ export default {
             if (this.contact.middle_name && this.contact.first_name)
                 return `${this.contact.first_name[0]}${this.contact.middle_name[0]}`;
 
-            return this.$formatter.initials(this.contact.full_name);
+            if (this.contact.full_name) return this.$formatter.initials(this.contact.full_name);
+            else return '?';
         },
         position() {
             return PositionList[this.contact.position].label;

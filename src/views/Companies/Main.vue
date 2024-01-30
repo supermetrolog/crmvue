@@ -22,8 +22,8 @@
                     :pagination="COMPANIES_PAGINATION"
                 />
                 <div class="company-table__actions col-6">
-                    <Button @click="companyGroupsFormVisible = true">Создать группу компаний</Button>
-                    <Button @click="companyFormVisible = true">Создать компанию</Button>
+                    <Button @click="companyGroupsFormVisible = true" success :disabled="loader">Создать группу компаний</Button>
+                    <Button @click="companyFormVisible = true" success :disabled="loader">Создать компанию</Button>
                     <RefreshButton @click="getCompanies" :disabled="loader" />
                 </div>
             </div>

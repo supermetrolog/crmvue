@@ -18,45 +18,81 @@
                 </li>
             </ul>
         </div>
-        <!--        <div v-if="deals.length" class="ObjectDeals-list">-->
-        <!--            <ComplexDealPreview-->
-        <!--                v-for="deal in deals"-->
-        <!--                :key="deal.id"-->
-        <!--                @choose="choseDeal"-->
-        <!--                :deal="deal"-->
-        <!--                :is-current="currentDealId === deal.id"-->
-        <!--            />-->
-        <!--        </div>-->
-        <!--        <ComplexDealItem v-if="currentDeal" :object="object" :deal="currentDeal" />-->
+        <div v-if="deals.length" class="ObjectDeals-list">
+            <ComplexDealPreview
+                v-for="deal in deals"
+                :key="deal.id"
+                @choose="choseDeal"
+                :deal="deal"
+                :is-current="currentDealId === deal.id"
+            />
+        </div>
+        <AnimationTransition fast>
+            <ComplexDealItem
+                v-if="currentDealId"
+                :key="currentDealId"
+                :floors="sortedCurrentDealFloors"
+                :object="object"
+            />
+        </AnimationTransition>
     </div>
 </template>
 
 <script>
+import ComplexDealPreview from '@/components/Complex/Deal/ComplexDealPreview.vue';
+import ComplexDealItem from '@/components/Complex/Deal/ComplexDealItem.vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
+
 export default {
     name: 'ComplexDeals',
+    components: { AnimationTransition, ComplexDealItem, ComplexDealPreview },
     props: {
         deals: {
             type: Array,
-            default: () => []
+            required: true
+        },
+        floors: {
+            type: Array,
+            required: true
         },
         object: {
             type: Object,
-            required: true
+            default: null
         }
     },
     data() {
         return {
-            currentDealId: this.deals[0] ? this.deals[0] : null
+            currentDealId: this.deals[0] ? this.deals[0].id : null
         };
     },
     computed: {
         currentDeal() {
             return this.deals.find(deal => deal.id === this.currentDealId);
+        },
+        sortedCurrentDealFloors() {
+            // eslint-disable-next-line no-undef
+            const floors = structuredClone(this.floors);
+
+            floors.forEach(floor => {
+                floor.parts = floor.parts.filter(part => part.offer_id === this.currentDeal.id);
+            });
+
+            floors.sort((first, second) => second.number.order_row - first.number.order_row);
+
+            return floors;
         }
     },
     methods: {
         choseDeal(id) {
             this.currentDealId = id;
+        }
+    },
+    mounted() {
+        if (
+            this.$route.query.offer_id &&
+            this.deals.find(deal => deal.id == this.$route.query.offer_id)
+        ) {
+            this.currentDealId = Number(this.$route.query.offer_id);
         }
     }
 };

@@ -182,14 +182,36 @@
             </Tab>
             <Tab name="Сделки">
                 <div class="ObjectHoldingsTabs-content">
-                    <ComplexDeals :object="object" :deals="object.commercialOffers" />
+                    <ComplexDeals
+                        :object="object"
+                        :deals="object.commercialOffers"
+                        :floors="object.floorsRecords"
+                    />
                 </div>
             </Tab>
             <Tab name="Карта сделок"></Tab>
             <Tab name="Планировки"></Tab>
-            <Tab name="Презентации"></Tab>
+            <Tab name="Презентации">
+                <template v-if="object.building_presentations.length">
+                    <div
+                        v-for="(presentation, index) in object.building_presentations"
+                        :key="index"
+                        class="complex-document"
+                    >
+                        <a href="#" class="complex-document__link">
+                            <i class="fa-regular fa-file-powerpoint complex-document__preview" />
+                            <p class="complex-document__name">Название презентации</p>
+                        </a>
+                    </div>
+                </template>
+                <div v-else class="complex-document complex-document--green">
+                    <a href="#" class="complex-document__link">
+                        <i class="fa-regular fa-file-powerpoint complex-document__preview" />
+                        <p class="complex-document__name">Добавить презентацию</p>
+                    </a>
+                </div>
+            </Tab>
             <Tab name="Договоры"></Tab>
-            <Tab name="Панорамы"></Tab>
             <Tab name="Описание"></Tab>
             <Tab name="Задачи"></Tab>
         </Tabs>

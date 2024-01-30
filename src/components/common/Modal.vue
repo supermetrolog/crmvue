@@ -1,5 +1,5 @@
 <template>
-    <div class="modal active" role="dialog">
+    <div ref="modal" class="modal active" role="dialog">
         <div @click="clickCancelButton" class="modal__blackout"></div>
         <div class="modal__container">
             <div class="modal__header">
@@ -8,7 +8,7 @@
                 </p>
                 <slot name="header"></slot>
                 <div class="modal__close">
-                    <i @click.prevent="clickCancelButton" class="icon fa-solid fa-xmark"></i>
+                    <i v-tippy="'Закрыть окно'" @click.prevent="clickCancelButton" class="icon fa-solid fa-xmark"></i>
                 </div>
             </div>
             <div class="modal__body">
@@ -50,6 +50,8 @@ export default {
 
         document.body.classList.add('is-modal');
         document.addEventListener('keydown', this.escapeHandler);
+
+        this.$refs.modal.classList.add('fadein');
     },
     unmounted() {
         if (this.alreadyHidden) return;

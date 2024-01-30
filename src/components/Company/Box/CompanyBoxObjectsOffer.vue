@@ -45,9 +45,9 @@ export default {
                 return url;
             }
             if (this.offer.generalOffersMix) {
-                url += '?offer_id=[' + this.offer.generalOffersMix.original_id + ']';
+                url += '?offer_id=' + this.offer.generalOffersMix.original_id + '';
             } else {
-                url += '?offer_id=[' + this.offer.original_id + ']';
+                url += '?offer_id=' + this.offer.original_id + '';
             }
             return url;
         }

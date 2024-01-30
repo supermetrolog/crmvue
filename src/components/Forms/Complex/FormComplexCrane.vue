@@ -1,5 +1,9 @@
 <template>
-    <Modal @close="$emit('close')" :title="crane ? 'Редактирование крана' : 'Создание крана'">
+    <Modal
+        @close="$emit('close')"
+        class="modal-form-complex-crane"
+        :title="crane ? 'Редактирование крана' : 'Добавление крана'"
+    >
         <Loader v-if="loader" class="center" />
         <Form @submit="onSubmit" class="equipment-form">
             <Tabs :options="{ useUrlFragment: false, defaultTabHash: 'main' }">
@@ -88,7 +92,7 @@
                             class="col-5"
                             :options="craneConditionOptions"
                         />
-                        <div class="col-2">
+                        <div class="col-3">
                             <span class="form__subtitle">Под надзором</span>
                             <div class="form__row mt-1">
                                 <RadioChip
@@ -105,7 +109,7 @@
                                 />
                             </div>
                         </div>
-                        <div class="col-2">
+                        <div class="col-3">
                             <span class="form__subtitle">Есть документы</span>
                             <div class="form__row mt-1">
                                 <RadioChip

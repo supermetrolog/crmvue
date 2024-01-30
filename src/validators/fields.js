@@ -51,3 +51,27 @@ export const areaRangeValidators = maxArea => {
         }
     ];
 };
+
+export const loadFloorValidators = maxLoad => {
+    return [
+        {
+            func: max(maxLoad),
+            message: 'Минимальная нагрузка превышает максимальную',
+            property: 'first'
+        },
+        {
+            func: min(0),
+            message: 'Некорректная отрицательная нагрузка'
+        }
+    ];
+};
+
+export const temperatureValidators = maxTemperature => {
+    return [
+        {
+            func: max(maxTemperature),
+            message: 'Минимальная температура превышает максимальную',
+            property: 'first'
+        }
+    ];
+};

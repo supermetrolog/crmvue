@@ -115,16 +115,6 @@ export const yandexmap = {
         return address;
     }
 };
-export const validatePropogationInput = (fields, name) => {
-    let flag = true;
-    fields.forEach((item, index) => {
-        if (index > 0 && !item[name].length) {
-            flag = false;
-        }
-    });
-    return flag;
-};
-
 export const waitHash = data => {
     return crypto.createHash('sha256').update(JSON.stringify(data)).digest('base64');
 };
@@ -293,5 +283,14 @@ export const dataMapper = (object, rules) => {
 };
 
 export const reducer = {
-    sum: (element, field) => element.reduce((acc, el) => acc + el[field], 0)
+    sum: (element, fields = null) => {
+        if (fields === null) return element.reduce((acc, el) => acc + el, 0);
+        if (fields instanceof Array)
+            return element.reduce(
+                (acc, el) => acc + fields.reduce((_acc, field) => _acc + el[field] ?? 0, 0),
+                0
+            );
+
+        return element.reduce((acc, el) => acc + el[fields], 0);
+    }
 };

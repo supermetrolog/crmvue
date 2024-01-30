@@ -26,13 +26,16 @@ export const formatterObject = {
     numberRange(range, leng = 'ru', options = {}) {
         const numbers = range.split('-').map(num => num.trim());
 
-        return this.number(numbers[0], leng, options) + ' - ' + this.number(numbers[1], leng, options);
+        return (
+            this.number(numbers[0], leng, options) + ' - ' + this.number(numbers[1], leng, options)
+        );
     },
     numberOrRange(value) {
         if (!isNaN(value)) return this.number(value);
         if (value.includes('-')) {
             const splittedValue = value.split('-');
-            if (!isNaN(splittedValue[0].trim()) && !isNaN(splittedValue[1].trim())) return this.numberRange(value);
+            if (!isNaN(splittedValue[0].trim()) && !isNaN(splittedValue[1].trim()))
+                return this.numberRange(value);
         }
 
         return value;
@@ -122,9 +125,9 @@ const generator = {
             return url;
         }
         if (offer.generalOffersMix) {
-            url += '?offer_id=[' + offer.generalOffersMix.original_id + ']';
+            url += '?offer_id=' + offer.generalOffersMix.original_id + '';
         } else {
-            url += '?offer_id=[' + offer.original_id + ']';
+            url += '?offer_id=' + offer.original_id + '';
         }
         return url;
     },

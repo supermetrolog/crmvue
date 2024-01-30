@@ -1,5 +1,9 @@
 <template>
-    <Modal @close="$emit('close')" :title="false ? 'Редактирование строения' : 'Создание строения'">
+    <Modal
+        @close="$emit('close')"
+        class="modal-form-complex-building"
+        :title="false ? 'Редактирование строения' : 'Создание строения'"
+    >
         <template #header>
             <CheckboxChip v-model="form.test_only" :value="form.test_only" text="Тестовый лот" />
         </template>
@@ -214,16 +218,6 @@
                             v-model:native="form.layoutsList"
                             v-model:data="form.layouts"
                             label="Планировки"
-                            class="col-12"
-                        >
-                            Выбрать файлы
-                        </FileInput>
-                    </div>
-                    <div class="row mt-2">
-                        <FileInput
-                            v-model:native="form.panoramasList"
-                            v-model:data="form.panoramas"
-                            label="Панорамы"
                             class="col-12"
                         >
                             Выбрать файлы
