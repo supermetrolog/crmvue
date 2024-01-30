@@ -596,16 +596,6 @@
                     </div>
                     <div class="row mt-2">
                         <FileInput
-                            v-model:native="form.panoramasList"
-                            v-model:data="form.panoramas"
-                            label="Панорамы"
-                            class="col-12"
-                        >
-                            Выбрать файлы
-                        </FileInput>
-                    </div>
-                    <div class="row mt-2">
-                        <FileInput
                             v-model:native="form.presentationsList"
                             v-model:data="form.presentations"
                             label="Презентации"

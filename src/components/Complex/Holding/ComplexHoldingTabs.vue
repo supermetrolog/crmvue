@@ -212,7 +212,6 @@
                 </div>
             </Tab>
             <Tab name="Договоры"></Tab>
-            <Tab name="Панорамы"></Tab>
             <Tab name="Описание"></Tab>
             <Tab name="Задачи"></Tab>
         </Tabs>

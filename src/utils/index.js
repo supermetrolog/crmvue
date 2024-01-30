@@ -115,16 +115,6 @@ export const yandexmap = {
         return address;
     }
 };
-export const validatePropogationInput = (fields, name) => {
-    let flag = true;
-    fields.forEach((item, index) => {
-        if (index > 0 && !item[name].length) {
-            flag = false;
-        }
-    });
-    return flag;
-};
-
 export const waitHash = data => {
     return crypto.createHash('sha256').update(JSON.stringify(data)).digest('base64');
 };

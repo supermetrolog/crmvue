@@ -8,7 +8,7 @@
                 </p>
                 <slot name="header"></slot>
                 <div class="modal__close">
-                    <i @click.prevent="clickCancelButton" class="icon fa-solid fa-xmark"></i>
+                    <i v-tippy="'Закрыть окно'" @click.prevent="clickCancelButton" class="icon fa-solid fa-xmark"></i>
                 </div>
             </div>
             <div class="modal__body">

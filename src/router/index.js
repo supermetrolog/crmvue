@@ -164,21 +164,21 @@ const routes = [
         children: [
             {
                 path: '',
-                name: 'OffersMap',
-                meta: {
-                    layout: 'default',
-                    auth: { isAuth: true, role: ['moderator', 'administrator'] }
-                },
-                component: () => import('../views/Offers/Map.vue')
-            },
-            {
-                path: 'list',
                 name: 'OffersMain',
                 meta: {
                     layout: 'default',
                     auth: { isAuth: true, role: ['moderator', 'administrator'] }
                 },
                 component: () => import('../views/Offers/Main.vue')
+            },
+            {
+                path: 'map',
+                name: 'OffersMap',
+                meta: {
+                    layout: 'default',
+                    auth: { isAuth: true, role: ['moderator', 'administrator'] }
+                },
+                component: () => import('../views/Offers/Map.vue')
             }
         ]
     },

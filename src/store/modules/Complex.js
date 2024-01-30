@@ -8,7 +8,9 @@ const Offers = {
     },
     mutations: {
         setComplex(state, complex) {
-            if (complex.mixer_parts) {
+            state.mixer = []
+
+            if (complex && complex.mixer_parts) {
                 const mixer = JSON.parse(complex.mixer_parts);
 
                 complex.objects.forEach(object => {
@@ -63,6 +65,10 @@ const Offers = {
             context.commit('setComplex', complex);
 
             return complex;
+        },
+        async DELETE_COMPLEX({commit}, id) {
+            console.log('Delete complex #' + id);
+            commit('setComplex', null);
         }
     }
 };

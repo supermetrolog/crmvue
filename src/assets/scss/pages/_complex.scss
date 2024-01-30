@@ -468,6 +468,7 @@
 
     &__item {
         font-size: 12px;
+        display: flex;
 
         &:not(&:last-child)::after {
             content: ',';
@@ -513,12 +514,10 @@
 
 .ComplexHeader {
     display: flex;
-
     z-index: 6;
-
-    padding: 30px 20px 15px;
-    margin: 0 -5px;
-
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 30px 0 15px;
     background: #f7faff;
 
     &-content {
@@ -537,20 +536,13 @@
             color: black;
         }
     }
+}
 
-    &-actions {
-        width: 20%;
+.complex-header {
+    &__actions {
         display: flex;
+        gap: 10px;
         justify-content: flex-end;
-        align-items: center;
-
-        button {
-            cursor: pointer;
-            font-size: 15px;
-            border-radius: 100%;
-            width: 30px;
-            height: 30px;
-        }
     }
 }
 

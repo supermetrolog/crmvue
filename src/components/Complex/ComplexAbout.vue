@@ -474,7 +474,7 @@ export default {
             return entryTerritoryTypes[this.complex.entry_territory_type];
         },
         entryFee() {
-            return feeTypes[this.complex.entrance_type];
+            return feeTypes[this.complex.entry_territory];
         },
         parkingCarType() {
             return feeTypes[this.complex.parking_car_type];
