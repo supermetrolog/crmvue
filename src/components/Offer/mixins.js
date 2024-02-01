@@ -32,7 +32,9 @@ export const MixinOfferItem = {
         getOfferUrl(offer) {
             return this.$apiUrlHelper.generator().offerUrl(offer);
         },
-
+        getOldOfferUrl(offer) {
+            return this.$apiUrlHelper.generator().offerUrlOld(offer);
+        },
         async clickFavoriteOffer(offer) {
             if (!this.FAVORITES_OFFERS.find(item => item.original_id == offer.original_id)) {
                 return this.ADD_FAVORITES_OFFER(offer);
