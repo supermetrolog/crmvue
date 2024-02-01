@@ -15,6 +15,7 @@ env:
   VUE_APP_API_URL: https://api.pennylane.pro/
   VUE_APP_HOST: clients.pennylane.pro
   VUE_APP_WS_URL: wss://api.pennylane.pro/websocket/
+  VUE_APP_YANDEX_MAP_KEY: ${{ secrets.vue_app_yandex_map_key }}
 jobs:
   web-deploy:
     name: 🎉 Deploy
