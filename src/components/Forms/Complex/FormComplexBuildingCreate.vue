@@ -204,7 +204,7 @@
                     <div class="row">
                         <FileInput
                             v-model:native="form.photosList"
-                            v-model:data="form.photos"
+                            v-model:data="form.photo"
                             label="Фотографии"
                             class="col-12"
                         >

@@ -21,7 +21,7 @@
             <FormComplexPlotCreate v-if="createPlotFormVisible" @close="clickCloseCreatePlotForm" />
         </teleport>
         <div class="ObjectHoldings-body">
-            <ComplexHolding v-for="object in objects" :key="object.id" :object="object" />
+            <ComplexHolding v-for="object in sortedObjects" :key="object.id" :object="object" />
         </div>
     </div>
 </template>
@@ -53,6 +53,9 @@ export default {
         },
         landsCount() {
             return this.objects.filter(holding => holding.object_type.includes(2)).length;
+        },
+        sortedObjects() {
+            return [...this.objects].reverse();
         }
     },
     methods: {

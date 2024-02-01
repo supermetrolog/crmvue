@@ -32,6 +32,7 @@
                 v-if="currentDealId"
                 :key="currentDealId"
                 :floors="sortedCurrentDealFloors"
+                :deal="currentDeal"
                 :object="object"
             />
         </AnimationTransition>

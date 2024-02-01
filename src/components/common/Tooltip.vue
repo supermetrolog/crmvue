@@ -1,12 +1,16 @@
 <template>
     <Tippy class="tooltip">
         <template #default>
-            <i :class="icon" />
+            <slot name="trigger">
+                <i :class="icon" />
+            </slot>
         </template>
         <template #content>
-            <div class="tooltip__text">
-                {{ text }}
-            </div>
+            <slot name="content">
+                <div class="tooltip__text">
+                    {{ text }}
+                </div>
+            </slot>
         </template>
     </Tippy>
 </template>

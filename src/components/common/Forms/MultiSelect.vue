@@ -23,7 +23,7 @@
                 :delay="delay"
                 :loading="loading"
                 :multiple-label="multipleLabel"
-                :disabled="disabled"
+                :disabled="Boolean(disabled)"
                 :hide-selected="hideSelected"
                 :groups="groups"
             >

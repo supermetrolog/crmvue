@@ -308,14 +308,14 @@
                 </Tab>
                 <Tab name="Фотографии">
                     <div class="row">
-                        <!--                        <FileInput-->
-                        <!--                            v-model:native="form.photosList"-->
-                        <!--                            v-model:data="form.photos"-->
-                        <!--                            label="Фотографии"-->
-                        <!--                            class="col-12"-->
-                        <!--                        >-->
-                        <!--                            Выбрать файлы-->
-                        <!--                        </FileInput>-->
+                        <FileInput
+                            v-model:native="form.photosList"
+                            v-model:data="form.photos"
+                            label="Фотографии"
+                            class="col-12"
+                        >
+                            Выбрать файлы
+                        </FileInput>
                     </div>
                 </Tab>
             </Tabs>
@@ -543,11 +543,9 @@ export default {
     },
     created() {
         if (this.floor) {
-            console.log(this.floor);
             // eslint-disable-next-line no-undef
             this.form = structuredClone(this.floor);
             this.normalizeForm(this.arrayParams);
-            console.log(this.form);
         }
     }
 };

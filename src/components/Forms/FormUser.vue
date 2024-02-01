@@ -92,7 +92,9 @@
                     v-model:data="form.userProfile.avatar"
                     label="Аватар"
                     class="col-4 text-center"
-                    :multiple="false"
+                    single
+                    only-images
+                    :api-url="apiUrlHelperObject.uploadsUrl()"
                     accept="image/jpeg,image/png,image/jpg"
                 >
                     Выбрать аватар
@@ -136,6 +138,7 @@ import Loader from '@/components/common/Loader.vue';
 import { emptyWithProperty, everyProperty, validateEmail, validatePhone } from '@//validators';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import Submit from '@/components/common/Forms/Submit.vue';
+import { apiUrlHelperObject } from '@/plugins';
 
 export default {
     name: 'FormUser',
@@ -181,6 +184,9 @@ export default {
         };
     },
     computed: {
+        apiUrlHelperObject() {
+            return apiUrlHelperObject;
+        },
         ...mapGetters(['CONSULTANT_LIST']),
         roleOptions: () => RoleList,
         formEmailsValidators() {
