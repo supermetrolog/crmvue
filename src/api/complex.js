@@ -56,7 +56,9 @@ export default {
               objects.cranes.beamAmount,
               objects.cranes.hoisting,
               objects.cranes.location,
-              objects.cranes.type`
+              objects.cranes.type,
+              objects.commercialOffers.blocks.deal,
+              objects.floorsRecords.parts.floorTypes`
         });
     }
 };

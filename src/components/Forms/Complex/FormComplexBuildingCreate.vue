@@ -298,7 +298,7 @@ export default {
                 presentationsList: [],
                 ownerShipDocuments: [],
                 ownerShipDocumentsList: [],
-                photos: [],
+                photo: [],
                 photosList: []
             }
         };
