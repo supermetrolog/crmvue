@@ -131,6 +131,19 @@ const generator = {
         }
         return url;
     },
+    offerUrlOld(offer) {
+        const baseUrl = process.env.VUE_APP_OBJECT_URL + '/complex/';
+        let url = baseUrl + offer.complex_id;
+        if (offer.type_id === 3 || !offer) {
+            return url;
+        }
+        if (offer.generalOffersMix) {
+            url += '?offer_id=[' + offer.generalOffersMix.original_id + ']';
+        } else {
+            url += '?offer_id=[' + offer.original_id + ']';
+        }
+        return url;
+    },
     objectUrl(complex_id) {
         const baseUrl = process.env.VUE_APP_HOST + '/complex/';
         return baseUrl + complex_id;

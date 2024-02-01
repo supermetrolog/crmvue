@@ -340,26 +340,26 @@
                 </Tab>
                 <Tab name="Фотографии">
                     <FormGroup>
-                        <!--                        <FileInput-->
-                        <!--                            v-model:native="form.photosList"-->
-                        <!--                            v-model:data="form.photos"-->
-                        <!--                            label="Фотографии"-->
-                        <!--                            class="col-12"-->
-                        <!--                        >-->
-                        <!--                            Выбрать файлы-->
-                        <!--                        </FileInput>-->
+                        <FileInput
+                            v-model:native="form.photosList"
+                            v-model:data="form.photos"
+                            label="Фотографии"
+                            class="col-12"
+                        >
+                            Выбрать файлы
+                        </FileInput>
                     </FormGroup>
                 </Tab>
                 <Tab name="Файлы">
                     <FormGroup>
-                        <!--                        <FileInput-->
-                        <!--                            v-model:native="form.filesList"-->
-                        <!--                            v-model:data="form.files"-->
-                        <!--                            label="Файлы"-->
-                        <!--                            class="col-12"-->
-                        <!--                        >-->
-                        <!--                            Выбрать файлы-->
-                        <!--                        </FileInput>-->
+                        <FileInput
+                            v-model:native="form.filesList"
+                            v-model:data="form.files"
+                            label="Файлы"
+                            class="col-12"
+                        >
+                            Выбрать файлы
+                        </FileInput>
                     </FormGroup>
                 </Tab>
             </Tabs>
@@ -587,7 +587,6 @@ export default {
             // eslint-disable-next-line no-undef
             this.form = { ...this.form, ...structuredClone(this.section) };
         }
-        console.log(this.form);
     }
 };
 </script>

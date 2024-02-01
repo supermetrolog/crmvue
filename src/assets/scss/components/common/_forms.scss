@@ -692,6 +692,10 @@
         &:hover {
             background-color: rgba(16, 185, 129, 0.3);
         }
+
+        &--dragenter {
+            background-color: rgba(16, 185, 129, 0.3);
+        }
     }
 
     &__icon {
@@ -715,21 +719,28 @@
 
     &__list {
         margin-top: 10px;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
     }
 }
 
 .file {
     &__body {
-        height: 100px;
-        width: 100px;
+        aspect-ratio: 1 / 1;
         background-color: rgba(211, 211, 211, 0.7);
         border-radius: 4px;
         display: flex;
         align-items: center;
         justify-content: center;
+        position: relative;
+        transition: background-color .5s ease;
+
+        &:hover {
+            background-color: rgba(16, 185, 129, 0.3);
+
+            .file__actions {
+                visibility: visible;
+                opacity: 1;
+            }
+        }
     }
 
     &__image {
@@ -738,9 +749,79 @@
         object-fit: cover;
     }
 
+    &__icon {
+        font-size: 50px;
+    }
+
     &__description {
         margin-top: 3px;
         text-align: center;
         font-size: 14px;
+    }
+
+    &__actions {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        visibility: hidden;
+        opacity: 0;
+        transition: visibility .5s ease, opacity .5s ease;
+    }
+
+    &__action {
+        cursor: pointer;
+        border-radius: 50%;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 25px;
+        width: 25px;
+    }
+
+    &__description {
+        text-align: start;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        gap: 5px;
+    }
+
+    &__description-list {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    &__subtitle {
+        font-weight: 500;
+    }
+
+    &__option {
+        display: flex;
+        gap: 5px;
+
+        span:nth-child(2) {
+            word-break: break-word;
+        }
+    }
+
+    &__name {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        padding: 0 5px;
+        text-align: center;
+        color: #000;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &--new .file__body {
+        outline: 3px solid #10b981;
     }
 }

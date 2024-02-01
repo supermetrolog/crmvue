@@ -174,3 +174,44 @@ export const heatingAutonomousTypes = {
     2: 'газовое',
     3: 'дровяное'
 };
+
+export const fileTypes = {
+    1: {
+        name: 'pdf',
+        title: 'PDF',
+        icon: 'fa-solid fa-file-pdf',
+        extensions: ['pdf']
+    },
+    2: {
+        name: 'excel',
+        title: 'Excel-таблица',
+        icon: 'fa-solid fa-file-excel',
+        extensions: ['xls', 'xlt', 'xlm', 'xlsx', 'xlsm', 'xltx', 'xla']
+    },
+    3: {
+        name: 'word',
+        title: 'Документ Word',
+        icon: 'fa-solid fa-file-word',
+        extensions: ['doc', 'docx', 'docm', 'dotx', 'docb']
+    },
+    4: {
+        name: 'ppoint',
+        title: 'Презентация',
+        icon: 'fa-solid fa-file-powerpoint',
+        extensions: ['pptx', 'pptm', 'potx', 'ppt', 'pot', 'pps']
+    },
+    5: { name: 'image', title: 'Изображение', extensions: ['jpg', 'png', 'jpeg', 'webp'] },
+    6: {
+        name: 'text',
+        title: 'Текстовый документ',
+        icon: 'fa-solid fa-file-lines',
+        extensions: ['txt']
+    }
+};
+
+export const countTypes = {
+    0: 'Отсутствуют',
+    1: 'Один',
+    2: 'Два и более',
+    3: 'Больше 10'
+};

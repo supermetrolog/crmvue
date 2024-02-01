@@ -16,11 +16,11 @@
                             </PropertyListItem>
                             <PropertyListItem name="S - строений в комплексе">
                                 <with-unit-type
-                                    v-if="complex.area_building !== null"
+                                    v-if="complex.area_buildings_full !== null"
                                     class="ComplexAbout-property"
                                     :unit-type="unitTypes.SQUARE_METERS"
                                 >
-                                    {{ $formatter.number(complex.area_building) }}
+                                    {{ $formatter.number(complex.area_buildings_full) }}
                                 </with-unit-type>
                             </PropertyListItem>
                             <PropertyListItem name="S - этажей общая">
@@ -73,8 +73,11 @@
                                 </template>
                             </PropertyListItem>
                             <PropertyListItem name="Отопление центральное">
-                                <p v-if="complex.heating !== null" class="ComplexAbout-property">
-                                    {{ isExists(complex.heating) }}
+                                <p
+                                    v-if="complex.heating_central !== null"
+                                    class="ComplexAbout-property"
+                                >
+                                    {{ isExists(complex.heating_central) }}
                                 </p>
                             </PropertyListItem>
                             <PropertyListItem name="Отопление автономное">
@@ -295,7 +298,8 @@
                                 <PropertyListItem name="Плата за въезд">
                                     <p
                                         v-if="
-                                            complex.entrance_type !== null && complex.entrance_type
+                                            complex.entry_territory !== null &&
+                                            complex.entry_territory
                                         "
                                         class="ComplexAbout-property"
                                     >
@@ -500,8 +504,6 @@ export default {
                 // const listHeight = listElement.clientHeight;
             });
         }
-
-        console.log(this.complex);
     }
 };
 </script>

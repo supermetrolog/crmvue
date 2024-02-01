@@ -87,9 +87,10 @@
                     <span class="form__subtitle">Способ информирования</span>
                     <div class="form__row mt-1">
                         <CheckboxChip
-                            v-for="(element, index) in wayOfInformsings"
+                            v-for="(element, index) in wayOfInformings"
                             :key="index"
-                            v-model="forms.wayOfInformsings"
+                            v-model="forms.wayOfInformings"
+                            property="way"
                             :value="index"
                             :text="element.name"
                             :icon="element.icon"
@@ -275,7 +276,7 @@ export default {
                 warning: 0,
                 good: 0,
                 status: 1,
-                wayOfInformsings: [],
+                wayOfInformings: [],
                 consultant_id: null,
                 phones: [],
                 emails: [],
@@ -291,7 +292,7 @@ export default {
     },
     computed: {
         ...mapGetters(['CONSULTANT_LIST']),
-        wayOfInformsings: () => FeedbackIcons,
+        wayOfInformings: () => FeedbackIcons,
         positionList: () => PositionList,
         statusOptions: () => ActivePassive,
         passiveWhyOptions: () => PassiveWhyContact,

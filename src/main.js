@@ -8,6 +8,7 @@ import PhoneNumber from '@/components/common/PhoneNumber.vue';
 import Notifications from '@kyvg/vue3-notification';
 import Maska from 'maska';
 import { ApiUrlHelper, apiUrlHelperObject, Formatter } from '@/plugins/index.js';
+import UniqueID from '@/plugins/uid';
 import { Tab, Tabs } from 'vue3-tabs-component';
 import { VueAgile } from 'vue-agile';
 import { plugin as VueTippy } from 'vue-tippy';
@@ -36,6 +37,7 @@ app.component('Tabs', Tabs)
             allowHTML: true
         }
     })
+    .use(UniqueID)
     .use(Formatter)
     .use(ApiUrlHelper)
     .use(Notifications)

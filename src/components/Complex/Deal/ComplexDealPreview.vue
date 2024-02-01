@@ -77,9 +77,13 @@ export default {
             return '--';
         },
         dealPrice() {
-            // const { valueMin, valueMax } = this.deal.price;
-            // if (valueMin && valueMax) return this.$formatter.numberOrRangeNew(valueMin, valueMax);
-            return 'Нет данных в API';
+            if (this.deal.calculated_price_min || this.deal.calculated_price_max)
+                return this.$formatter.numberOrRangeNew(
+                    this.deal.calculated_price_min,
+                    this.deal.calculated_price_max
+                );
+
+            return '--';
         },
         typePresence() {
             return this.deal.price.type && this.deal.price.valueMin;

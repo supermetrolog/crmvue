@@ -26,6 +26,10 @@ export default {
         object: {
             type: Object,
             default: null
+        },
+        deal: {
+            type: Object,
+            default: null
         }
     }
 };

@@ -19,6 +19,9 @@
                         selected: FAVORITES_OFFERS.find(item => item.original_id == offer.original_id)
                     }"
                 ></i>
+                <a :href="getOfferUrl(offer)" target="_blank">
+                    <i class="fa-solid fa-eye"></i>
+                </a>
                 <i @click="clickViewPdf(offer)" class="fas fa-file-pdf"></i>
                 <div @click="clickOpenMore" class="actions-more">
                     <i v-if="!dropdownIsOpen" class="fa fa-chevron-down"></i>
@@ -27,7 +30,7 @@
             </div>
         </Td>
         <Td class="photo">
-            <a :href="getOfferUrl(offer)" target="_blank">
+            <a :href="getOldOfferUrl(offer)" target="_blank">
                 <div class="image-container">
                     <img :src="offer.thumb" alt="image" />
                     <span class="deal_type" :class="{ passive: offer.status != 1 }">
@@ -92,7 +95,7 @@
         </Td>
         <Td class="company_about">
             <template v-if="offer.company !== null">
-                <a :href="getOfferUrl(offer)" target="_blank">
+                <a :href="getOldOfferUrl(offer)" target="_blank">
                     {{ offer.company.full_name }}
                 </a>
                 <div v-if="contact" class="contact">
