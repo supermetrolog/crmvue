@@ -5,15 +5,15 @@
     flex-grow: 2;
     flex-wrap: nowrap;
     justify-content: right;
-    gap: 3px;
+    gap: 5px;
 
     &__item {
         font-size: 17px;
     }
 
     &__button {
-        width: 30px;
-        height: 30px;
+        width: 35px;
+        height: 35px;
         display: flex;
         align-items: center;
         justify-content: center;
