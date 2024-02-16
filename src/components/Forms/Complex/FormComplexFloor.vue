@@ -61,7 +61,7 @@
                     </div>
                     <div class="row mt-2">
                         <div class="col-6">
-                            <span class="form__subtitle">Тип ворот</span>
+                            <span class="form__subtitle">Тип пола</span>
                             <div class="form__row mt-1">
                                 <CheckboxChip
                                     v-for="(type, index) in floorTypes"

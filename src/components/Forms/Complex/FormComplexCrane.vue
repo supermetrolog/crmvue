@@ -142,8 +142,9 @@
                     </FormGroup>
                 </Tab>
             </Tabs>
-            <div class="row">
-                <Submit success class="col-3 mx-auto">Сохранить</Submit>
+            <div class="row justify-content-center">
+                <Submit success class="col-3">Сохранить</Submit>
+                <Button v-if="crane" class="col-3 ml-2" danger>Удалить</Button>
             </div>
         </Form>
     </Modal>
@@ -164,10 +165,11 @@ import {
     liftingDeviceLocationTypes
 } from '@/const/liftingDevices';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
+import Button from "@/components/common/Button.vue";
 
 export default {
     name: 'FormComplexCrane',
-    components: { RadioChip, Modal, Loader },
+    components: {Button, RadioChip, Modal, Loader },
     mixins: [ComplexFormMixin],
     emits: ['close'],
     props: {
