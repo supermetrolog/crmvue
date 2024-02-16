@@ -1,52 +1,34 @@
 <template>
     <div class="deal-info">
-        <ComplexDealInfoHeader :company="company" :consultant="consultant" />
-        <!--        <div class="deal-info__body">-->
-        <!--            <div class="deal-info__content">-->
-        <!--                <ComplexDealInfoDetailed-->
-        <!--                    class="deal-info__detailed-info"-->
-        <!--                    :area="buildingInfo.area"-->
-        <!--                    :price="buildingInfo.price"-->
-        <!--                    :parameters="buildingInfo.parameters"-->
-        <!--                />-->
-        <!--            </div>-->
-        <!--            <div class="deal-info__aside">-->
-        <!--                <ComplexDealDetails-->
-        <!--                    :label="additionalDetails.taxForm"-->
-        <!--                    :exploitation="additionalDetails.exploitation"-->
-        <!--                    :communal="additionalDetails.communal"-->
-        <!--                    :extra-costs="additionalDetails.extraCosts"-->
-        <!--                    :special-terms="additionalDetails.specialTerms"-->
-        <!--                    :business="additionalDetails.business"-->
-        <!--                />-->
-        <!--                <ComplexDealOwner :owner="owner" />-->
-        <!--            </div>-->
-        <!--        </div>-->
+        <ComplexDealInfoHeader :visited="deal.agent_visited" />
+        <div class="deal-info__body">
+            <div class="deal-info__content">
+                <ComplexDealDetailedInfo :deal="deal" class="deal-info__detailed-info" />
+            </div>
+            <div class="deal-info__aside">
+                <ComplexDealDetails :deal="deal" />
+                <ComplexDealOwner v-if="deal.companyRecord" :owner="deal.companyRecord" />
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
+import ComplexDealDetailedInfo from '@/components/Complex/Deal/ComplexDealDetailedInfo.vue';
 import ComplexDealInfoHeader from '@/components/Complex/Deal/ComplexDealInfoHeader.vue';
+import ComplexDealDetails from '@/components/Complex/Deal/ComplexDealDetails.vue';
+import ComplexDealOwner from '@/components/Complex/Deal/ComplexDealOwner.vue';
 
 export default {
     name: 'ComplexDealInfo',
     components: {
-        ComplexDealInfoHeader
+        ComplexDealOwner,
+        ComplexDealDetails,
+        ComplexDealInfoHeader,
+        ComplexDealDetailedInfo
     },
     props: {
-        company: {
-            type: Object
-        },
-        consultant: {
-            type: Object
-        },
-        additionalDetails: {
-            type: Object
-        },
-        buildingInfo: {
-            type: Object
-        },
-        owner: {
+        deal: {
             type: Object,
             required: true
         }
