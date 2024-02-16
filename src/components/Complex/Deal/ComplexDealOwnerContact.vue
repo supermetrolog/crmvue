@@ -5,7 +5,7 @@
         </div>
         <div class="object-holding-contact__description">
             <p class="object-holding-contact__name">
-                <span>{{ contact.full_name }}</span>
+                <span>{{ fullName }}</span>
                 <span v-if="contact.position" class="object-holding-contact__message">
                     {{ position }}
                 </span>
@@ -37,7 +37,7 @@
 import { PositionList } from '@/const/const';
 
 export default {
-    name: 'ComplexHoldingCompanyContact',
+    name: 'ComplexDealOwnerContact',
     props: {
         contact: {
             type: Object,
@@ -54,6 +54,12 @@ export default {
         },
         position() {
             return PositionList[this.contact.position].label;
+        },
+        fullName() {
+            if (this.contact.full_name) return this.contact.full_name;
+
+            if (this.contact.type === 1) return '[Общий контакт]';
+            return '-';
         }
     }
 };
