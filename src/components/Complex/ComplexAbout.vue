@@ -1,6 +1,6 @@
 <template>
     <div id="ComplexAbout" class="ComplexAbout">
-        <Tabs :options="{ useUrlFragment: false }">
+        <Tabs closed :options="{ useUrlFragment: false }">
             <Tab v-if="complex" name="О комплексе">
                 <div class="ComplexAbout-content">
                     <template v-if="complex">
@@ -374,7 +374,11 @@
                                     :key="index"
                                     class="complex-document"
                                 >
-                                    <a href="#" class="complex-document__link">
+                                    <a
+                                        :href="presentation"
+                                        target="_blank"
+                                        class="complex-document__link"
+                                    >
                                         <i
                                             class="fa-regular fa-file-powerpoint complex-document__preview"
                                         />

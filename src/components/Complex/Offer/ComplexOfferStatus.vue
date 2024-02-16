@@ -1,53 +1,45 @@
 <template>
     <div class="trade-offer-status">
-        <p
-            class="trade-offer-status__text trade-offer-status__text_label"
-            :class="{ 'trade-offer-status__text_color_red': status }"
-        >
-            {{ offerStatus }}
-        </p>
-        <p class="trade-offer-status__text">
-            {{ offerCompany }}
-        </p>
-        <p class="trade-offer-status__text">
-            {{ offerDate }}
-        </p>
-        <p class="trade-offer-status__text">
-            {{ offerRealtor }}
-        </p>
-        <p class="trade-offer-status__text">
-            {{ offerConsultant }}
-        </p>
+        <span>{{ status.company }}</span>
+        <Tooltip>
+            <template #content>
+                <div class="trade-offer-status__list">
+                    <span class="trade-offer-status__text"> Сделка #{{ status.dealId }} </span>
+                    <span class="trade-offer-status__text">
+                        {{ offerDate }}
+                    </span>
+                    <span class="trade-offer-status__text">
+                        {{ status.realtor }}
+                    </span>
+                    <span class="trade-offer-status__text">
+                        {{ status.consultant }}
+                    </span>
+                </div>
+            </template>
+        </Tooltip>
     </div>
 </template>
 
 <script>
+import { tradeOfferTypes } from '@/const/types';
+import Tooltip from '@/components/common/Tooltip.vue';
+
 export default {
     name: 'ComplexOfferStatus',
-    components: {},
+    components: { Tooltip },
     props: {
         status: {
-            type: Object
+            type: Object,
+            required: true
         }
-    },
-    data() {
-        return {};
     },
     computed: {
         offerStatus() {
-            return this.status ? 'Сделка завершена' : 'Активная сделка';
-        },
-        offerCompany() {
-            return this.status ? `${this.status.company.organization_type} ${this.status.company.name}` : '--';
+            return tradeOfferTypes[this.status.type];
         },
         offerDate() {
-            return this.status ? this.$formatter.date().locale(this.status.date) : '--';
-        },
-        offerRealtor() {
-            return this.status ? this.status.realtor : '--';
-        },
-        offerConsultant() {
-            return this.status ? this.status.consultant : '--';
+            // return this.$formatter.date(this.status.finish_date);
+            return '[Дата совершения сделки]';
         }
     },
     methods: {}
