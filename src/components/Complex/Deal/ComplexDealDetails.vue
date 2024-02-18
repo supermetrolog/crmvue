@@ -1,79 +1,84 @@
 <template>
     <div class="additional-details">
-        <h2 class="additonal-deatils__heading">{{ taxForm }}</h2>
-        <ul v-if="extraCosts" class="additional-details__list">
-            <li class="additional-details__item additional-details__item_heading">Дополнительные расходы</li>
-            <li v-for="(item, idx) in extraCosts" :key="item.label + idx" class="additional-details__item">
-                <p class="additional-details__item-label">
-                    {{ addDotsToLabel(item.label, 100) }}
+        <p v-if="deal.sale_company" class="additional-details__chip">Готов продать компанию</p>
+        <h2 v-tippy="'Система налогооблажения'" class="additional-details__title">
+            {{ taxForm }}
+        </h2>
+        <div v-if="priceOpex.status !== 0" class="additional-details__services">
+            <ComplexDealDetailsService
+                v-if="priceOpex.status !== 1"
+                title="Эксплуатация"
+                :service="priceOpex"
+            />
+            <p v-else class="additional-details__service">
+                Эксплуатационные расходы включены в стоимость
+            </p>
+            <ComplexDealDetailsService
+                v-if="priceService.status !== 1"
+                title="Коммунальные услуги"
+                :service="priceService"
+            />
+            <p v-else class="additional-details__service">
+                Коммунальные услуги включены в стоимость
+            </p>
+        </div>
+        <p class="additional-details__category">Особые условия</p>
+        <ul v-if="hasSpecialTerms" class="additional-details__list">
+            <li class="additional-details__item">
+                <p class="additional-details__label">Каникулы</p>
+                <p v-if="deal.holidays" class="additional-details__value">
+                    <span>Да, </span>
+                    <template v-if="deal.holidays_value_min">
+                        <span>
+                            {{
+                                $formatter.numberOrRangeNew(
+                                    deal.holidays_value_min,
+                                    deal.holidays_value_max
+                                )
+                            }}
+                        </span>
+                        <span> мес.</span>
+                    </template>
                 </p>
-                <with-unit-type
-                    class="additional-details__item-value"
-                    :value="formatValue(item)"
-                    :unitType="item.unitType"
-                />
+                <p v-else class="additional-details__value">Нет</p>
+            </li>
+            <li class="additional-details__item">
+                <p class="additional-details__label">Депозит</p>
+                <p v-if="deal.deposit" class="additional-details__value">
+                    <span>Да, </span>
+                    <span v-if="deal.deposit_value">{{ deal.deposit_value }} мес.</span>
+                </p>
+                <p v-else class="additional-details__value">Нет</p>
+            </li>
+            <li class="additional-details__item">
+                <p class="additional-details__label">Залоговый платеж</p>
+                <p class="additional-details__value">
+                    {{ deal.pledge ? 'Да' : 'Нет' }}
+                </p>
             </li>
         </ul>
-        <ul v-if="specialTerms" class="additional-details__list">
-            <li class="additional-details__item additional-details__item_heading">Особые условия</li>
-            <li v-for="(item, idx) in specialTerms" :key="item.label + idx" class="additional-details__item">
-                <p class="additional-details__item-label">
-                    {{ addDotsToLabel(item.label, 100) }}
-                </p>
-                <with-unit-type
-                    class="additional-details__item-value"
-                    :value="formatValue(item)"
-                    :unitType="item.unitType"
-                />
-            </li>
-        </ul>
-        <ul v-if="business" class="additional-details__list additional-deatils__list_business">
-            <li class="additional-details__item additional-details__item_heading additional-details__item_color_red">
-                <i class="fa fa-briefcase" aria-hidden="true"></i>
-                {{ ucFirstCharBusinessType }}
-                бизнес
-            </li>
-            <li v-for="(item, idx) in business.info" :key="item.label + idx" class="additional-details__item">
-                <p class="additional-details__item-label">
-                    {{ addDotsToLabel(item.label, 100) }}
-                </p>
-                <with-unit-type
-                    class="additional-details__item-value"
-                    :value="formatValue(item)"
-                    :unitType="item.unitType"
-                />
-            </li>
-        </ul>
+        <ComplexDealDetailsBusiness
+            v-if="hasBusiness"
+            class="additional-details__business"
+            :properties="businessProperties"
+        />
     </div>
 </template>
 
 <script>
-import { TaxFormList } from '@/const/const.js';
 import { unitTypes } from '@/const/unitTypes.js';
-import WithUnitType from '@/components/common/WithUnitType.vue';
+import ComplexDealDetailsBusiness from '@/components/Complex/Deal/ComplexDealDetailsBusiness.vue';
+import { entityProperties } from '@/const/properties/properties';
+import { entityOptions } from '@/const/options/options';
+import ComplexDealDetailsService from '@/components/Complex/Deal/ComplexDealDetailsService.vue';
 
 export default {
     name: 'ComplexDealDetails',
-    components: { WithUnitType },
+    components: { ComplexDealDetailsService, ComplexDealDetailsBusiness },
     props: {
-        label: {
-            type: [Number, String],
-            default: 'не задано'
-        },
-        exploitation: {
-            type: Boolean
-        },
-        communal: {
-            type: Boolean
-        },
-        extraCosts: {
-            type: Array
-        },
-        specialTerms: {
-            type: Array
-        },
-        business: {
-            type: Object
+        deal: {
+            type: Object,
+            required: true
         }
     },
     data() {
@@ -82,11 +87,59 @@ export default {
         };
     },
     computed: {
-        taxForm() {
-            return TaxFormList.find(item => item.value === this.label).label;
+        unitTypes() {
+            return unitTypes;
         },
-        ucFirstCharBusinessType() {
-            return this.ucFirstTextFormatter.ucFirst(this.business.type);
+        taxForm() {
+            if (this.deal.tax_form) return entityOptions.deal.tax[this.deal.tax_form];
+            return null;
+        },
+        hasBusiness() {
+            return this.deal.rent_business === 1;
+        },
+        businessProperties() {
+            return Object.keys(entityProperties.deal.rentBusiness).map(property => ({
+                ...entityProperties.deal.rentBusiness[property],
+                value: this.deal[property]
+            }));
+        },
+        hasSpecialTerms() {
+            return true;
+        },
+        priceOpex() {
+            const priceObject = {
+                active: this.deal.price_opex === 1,
+                status: this.deal.price_opex,
+                label: entityOptions.deal.servicePrice[this.deal.price_opex] || '-',
+                name: 'Цена OPEX',
+                value: null
+            };
+
+            if (this.deal.price_opex === 3) priceObject.value = this.deal.price_opex_value;
+            else if (this.deal.price_opex === 2)
+                priceObject.items = JSON.parse(this.deal.inc_opex).map(option => ({
+                    ...entityOptions.deal.opex[option]
+                }));
+
+            return priceObject;
+        },
+        priceService() {
+            const priceObject = {
+                active: this.deal.public_services === 1,
+                status: this.deal.public_services,
+                label: entityOptions.deal.servicePrice[this.deal.public_services] || '-',
+                name: 'Ком. платеж',
+                value: null
+            };
+
+            if (this.deal.public_services === 3)
+                priceObject.value = this.deal.price_public_services;
+            else if (this.deal.public_services === 2)
+                priceObject.items = JSON.parse(this.deal.inc_services).map(option => ({
+                    ...entityOptions.deal.publicServices[option]
+                }));
+
+            return priceObject;
         }
     },
     methods: {
@@ -99,10 +152,10 @@ export default {
             return res;
         },
         formatValue(item) {
-            if (item.unitType === unitTypes.YEAR) {
-                return item.value;
-            }
-            return this.$formatter.numberOrRangeNew(item.valueMin, item.valueMax);
+            if (item.valueMin)
+                return this.$formatter.numberOrRangeNew(item.valueMin, item.valueMax);
+
+            return item.value;
         }
     }
 };

@@ -1,115 +1,77 @@
 <template>
     <div class="trade-offer-details-table">
-        <ul class="trade-offer-details-table__column trade-offer-details-table__column_head">
-            <li class="trade-offer-details-table__head trade-offer-details-table__head_color_grey">Этажи</li>
-            <li class="trade-offer-details-table__section trade-offer-details-table__section">
-                <p class="trade-offer-details-table__text trade-offer-details-table__text_color_grey">№ блока:</p>
+        <ul class="trade-offer-details-table__column trade-offer-details-table__column--head">
+            <li class="trade-offer-details-table__head trade-offer-details-table__head--grey">
+                Этажи
             </li>
+            <li class="trade-offer-details-table__head">№ блока:</li>
             <li
-                v-for="parameter in Object.keys(tradeOfferCharacteristics)"
+                v-for="parameter in Object.keys(floorPartCharacteristics)"
                 :key="parameter"
-                class="trade-offer-details-table__section trade-offer-details-table__section"
+                class="trade-offer-details-table__section"
             >
-                <p class="trade-offer-details-table__text trade-offer-details-table__text_weight_bold">
-                    {{ parameterTypes[parameter] }}
-                </p>
-                <p
-                    v-for="subparameter in Object.keys(tradeOfferCharacteristics[parameter])"
-                    :key="subparameter"
-                    class="trade-offer-details-table__text trade-offer-details-table__text_color_grey"
-                >
-                    {{ tradeOfferCharacteristics[parameter][subparameter].name }}
-                    <span
-                        v-if="tradeOfferCharacteristics[parameter][subparameter].required"
-                        class="trade-offer-details-table__text trade-offer-details-table__text_color_red"
-                        >*</span
+                <p class="trade-offer-details-table__subtitle">{{ parameterTypes[parameter] }}</p>
+                <ul class="trade-offer-details-table__properties">
+                    <li
+                        v-for="subparameter in Object.keys(floorPartCharacteristics[parameter])"
+                        :key="subparameter"
+                        class="trade-offer-details-table__property"
                     >
-                </p>
+                        {{ floorPartCharacteristics[parameter][subparameter].name }}
+                    </li>
+                </ul>
             </li>
         </ul>
         <div class="trade-offer-details-table__content">
-            <ul v-for="(block, idx) in blocks" :key="block.number" class="trade-offer-details-table__column">
-                <li
-                    class="trade-offer-details-table__head"
-                    :class="'trade-offer-details-table__head_color_' + tableHeadColors[idx]"
-                >
-                    {{ block.title }}
-                </li>
-                <li class="trade-offer-details-table__section">
-                    <Form class="trade-offer-details-table__form">
-                        <Checkbox class="trade-offer-details-table__checkbox" :label="block.number" />
-                        <button class="trade-offer-details-table__button">
-                            <i class="fas fa-pen" />
-                        </button>
-                    </Form>
-                </li>
-                <li
-                    v-for="parameter in Object.keys(block.properties)"
-                    :key="parameter"
-                    class="trade-offer-details-table__section trade-offer-details-table__section_values"
-                >
-                    <p
-                        v-for="subparameter in block.properties[parameter]"
-                        :key="subparameter.name"
-                        class="trade-offer-details-table__text"
-                    >
-                        <with-unit-type
-                            :unit-type="(subparameter.value !== '--' && subparameter.unitType) || unitTypes.NONE"
-                        >
-                            {{ formattedParameter(subparameter) }}
-                        </with-unit-type>
-                        <span v-if="subparameter.floorType">/{{ subparameter.floorType }}</span>
-                        <span v-if="subparameter.gateType">/{{ subparameter.gateType }}</span>
-                        <span
-                            v-if="displayLiftingDevicesWeight(subparameter.liftingDevicesWeight)"
-                            class="trade-offer-details-table__text trade-offer-details-table__text_weight"
-                        >
-                            &nbsp;-&nbsp;
-                            <with-unit-type
-                                v-for="(weight, idx) in subparameter.liftingDevicesWeight"
-                                :key="idx"
-                                :unit-type="unitTypes.TON"
-                            >
-                                {{ weight }}
-                            </with-unit-type>
-                        </span>
-                    </p>
-                </li>
-            </ul>
+            <div class="trade-offer-details-table__list">
+                <ComplexOfferDetailsPart
+                    v-for="part in parts"
+                    :key="part.id"
+                    :part="part"
+                    :color="tableHeadColors[part.floor.id % 6]"
+                />
+            </div>
         </div>
     </div>
 </template>
 
 <script>
-import { tradeOfferCharacteristics } from '@/const/offerCharacteristics';
-import Form from '@/components/common/Forms/Form.vue';
-import Checkbox from '@/components/common/Forms/Checkbox.vue';
 import { OfferParametersMixin } from '@/components/Complex/Offer/mixins';
-import { unitTypes } from '@/const/unitTypes';
-import WithUnitType from '@/components/common/WithUnitType.vue';
+import ComplexOfferDetailsPart from '@/components/Complex/Offer/ComplexOfferDetailsPart.vue';
+import { floorPartCharacteristics } from '@/const/properties';
 
 const tableHeadColors = ['green', 'blue', 'cyan', 'orange', 'red', 'purple'];
 
 export default {
     name: 'ComplexOfferDetails',
-    components: {
-        WithUnitType,
-        Form,
-        Checkbox
-    },
+    components: { ComplexOfferDetailsPart },
     mixins: [OfferParametersMixin],
     props: {
-        blocks: {
-            type: Object,
-            required: true
+        floors: {
+            type: Array,
+            default: () => []
         }
     },
     data() {
         return {
-            tableHeadColors,
-            tradeOfferCharacteristics,
-            unitTypes
+            tableHeadColors
         };
+    },
+    computed: {
+        floorPartCharacteristics() {
+            return floorPartCharacteristics;
+        },
+        parts() {
+            return this.floors
+                .reduce(
+                    (acc, floor) => [
+                        ...acc,
+                        ...floor.parts.map(part => ({ ...part, floor: floor.number }))
+                    ],
+                    []
+                )
+                .filter(part => part.active);
+        }
     }
 };
 </script>

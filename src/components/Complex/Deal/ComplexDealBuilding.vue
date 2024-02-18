@@ -6,50 +6,37 @@
                     {{ formattedAreaSum }}
                     <span> м<sup>2</sup> </span>
                 </p>
-                <PropertyListItem
-                    v-for="(prop, idx) in area.properties"
-                    :key="prop.label + idx"
-                    :name="prop.label"
-                    :value="prop.value"
-                    :value-min="prop.valueMin"
-                    :value-max="prop.valueMax"
-                    :unit-type="unitTypes.SQUARE_METERS"
-                />
+                <!--                <PropertyListItem-->
+                <!--                    v-for="(prop, idx) in area.properties"-->
+                <!--                    :key="prop.label + idx"-->
+                <!--                    :name="prop.label"-->
+                <!--                    :value="prop.value"-->
+                <!--                    :value-min="prop.valueMin"-->
+                <!--                    :value-max="prop.valueMax"-->
+                <!--                    :unit-type="unitTypes.SQUARE_METERS"-->
+                <!--                />-->
             </PropertyList>
             <PropertyList class="building-info__table">
                 <p class="building-info__heading">
                     {{ formattedPriceSum }}
                     <span> ₽ </span>
                 </p>
-                <PropertyListItem
-                    v-for="(prop, idx) in price.properties"
-                    :key="prop.label + idx"
-                    :value="prop.value"
-                    :value-min="prop.valueMin"
-                    :value-max="prop.valueMax"
-                    :name="prop.label"
-                    :unit-type="unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR"
-                />
+                <!--                <PropertyListItem-->
+                <!--                    v-for="(prop, idx) in price.properties"-->
+                <!--                    :key="prop.label + idx"-->
+                <!--                    :value="prop.value"-->
+                <!--                    :value-min="prop.valueMin"-->
+                <!--                    :value-max="prop.valueMax"-->
+                <!--                    :name="prop.label"-->
+                <!--                    :unit-type="unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR"-->
+                <!--                />-->
             </PropertyList>
         </div>
         <div class="building-info__line">
-            <!--      <parameters-->
-            <!--					-->
-            <!--        :height="parameters.summary.parameters.characteristics.height"-->
-            <!--        :floorType="parameters.summary.parameters.characteristics.floorType"-->
-            <!--        :gatesNumber="parameters.summary.parameters.characteristics.gatesNumber"-->
-            <!--        :electricity="parameters.summary.parameters.communications.electricity"-->
-            <!--        :heating="parameters.summary.parameters.communications.heating"-->
-            <!--        :sewage="parameters.summary.parameters.communications.sewage"-->
-            <!--        :gasForProduction="-->
-            <!--          parameters.summary.parameters.communications.gasForProduction-->
-            <!--        "-->
-            <!--        :liftingDevices="parameters.summary.parameters.liftingDevices.lifts"-->
-            <!--        :shelving="parameters.summary.parameters.facilities.shelving"-->
-            <!--      />-->
+            <ComplexParameters :parameters="parameters" />
         </div>
         <div class="building-info__line">
-            <ComplexTabs :parameters="parameters" class="building-info__tabs" />
+            <!--            <ComplexTabs :parameters="parameters" class="building-info__tabs" />-->
             <ActionButton v-bind="actionButtons" class="building-info__buttons" />
         </div>
     </div>
@@ -58,13 +45,12 @@
 <script>
 import { unitTypes } from '@/const/unitTypes';
 import PropertyList from '@/components/common/Property/PropertyList.vue';
-import PropertyListItem from '@/components/common/Property/PropertyListItem.vue';
 import ActionButton from '@/components/common/ActionButton.vue';
-import ComplexTabs from '@/components/Complex/ComplexTabs.vue';
+import ComplexParameters from '@/components/Complex/ComplexParameters.vue';
 
 export default {
     name: 'ComplexDealBuilding',
-    components: { ComplexTabs, ActionButton, PropertyListItem, PropertyList },
+    components: { ComplexParameters, ActionButton, PropertyList },
     props: {
         area: {
             type: Object,
@@ -95,12 +81,12 @@ export default {
             };
         },
         formattedAreaSum() {
-            const { valueMin, valueMax } = this.area.sum;
-            return this.$formatter.numberOrRangeNew(valueMin, valueMax);
+            const { min, max } = this.area;
+            return this.$formatter.numberOrRangeNew(min, max);
         },
         formattedPriceSum() {
-            const { valueMin, valueMax } = this.price.sum;
-            return this.$formatter.numberOrRangeNew(valueMin, valueMax);
+            const { min, max } = this.price;
+            return this.$formatter.numberOrRangeNew(min, max);
         }
     },
     methods: {}

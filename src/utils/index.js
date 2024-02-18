@@ -1,5 +1,6 @@
 import { loadYmap } from 'vue-yandex-maps';
 import crypto from 'crypto-browserify';
+import { alg } from '@/utils/alg';
 
 export const yandexmap = {
     settings: {
@@ -292,5 +293,31 @@ export const reducer = {
             );
 
         return element.reduce((acc, el) => acc + el[fields], 0);
+    },
+    min: (element, field = null) => {
+        if (!element.length) return null;
+        if (field === null) return Math.min(...element);
+
+        return element.reduce((acc, el) => Math.min(acc, el[field]), element[0][field]);
+    },
+    max: (element, field = null) => {
+        if (!element.length) return null;
+        if (field === null) return Math.max(...element);
+
+        return element.reduce((acc, el) => Math.max(acc, el[field]), element[0][field]);
+    },
+    strictMin: (element, field = null) => {
+        if (!element.length) return null;
+        if (field === null) return alg.strictMin(...element);
+        if (field instanceof Array) {
+            const defaultMinValue = reducer.strictMin(field.map(_field => element[0][_field]));
+
+            return element.reduce(
+                (acc, el) => alg.strictMin(acc, ...field.map(_field => el[_field])),
+                defaultMinValue
+            );
+        }
+
+        return element.reduce((acc, el) => alg.strictMin(acc, el[field]), element[0][field]);
     }
 };

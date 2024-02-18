@@ -291,62 +291,39 @@
             border-radius: 5px;
             border: 1px solid rgba(211, 211, 211, 1);
             margin-right: 1px;
-            background-color: rgba(211, 211, 211, 0.5);
+            background-color: rgba(201, 201, 201, 0.8);
             color: #000;
-        }
-    }
-
-    &-provision {
-        & .object-parameters {
-            padding: 0;
-            column-gap: 35px;
-
-            &__item {
-                font-size: 14px;
-
-                & .with-unit-type {
-                    font-size: 14px;
-                }
-
-                & i {
-                    font-size: 20px;
-                    margin-right: 10px;
-                }
-            }
         }
     }
 }
 
 .object-parameters {
     display: flex;
-    column-gap: 45px;
-    row-gap: 20px;
+    gap: 10px;
     flex-wrap: wrap;
-    padding: 13px 0;
 
     &__item {
         align-items: center;
         display: flex;
-        gap: 8px;
+        gap: 10px;
         font-size: 13px;
-        line-height: 15px;
         font-weight: 700;
-
-        & .with-unit-type {
-            font-size: 13px;
-            line-height: 15px;
-            font-weight: 700;
-        }
-
-        &_list {
-            display: flex;
-            gap: 4px;
-        }
+        border-radius: 4px;
+        background-color: rgba(201, 201, 201, 0.8);
+        padding: 7px 10px;
 
         & i {
-            color: variables.$color_light_grey;
             font-size: 18px;
         }
+
+        .object-parameters__value:not(:last-child)::after {
+            content: ', '
+        }
+    }
+
+    &__text {
+        display: flex;
+        gap: 3px;
     }
 }
 
@@ -633,7 +610,7 @@
         }
     }
 
-    .tabs-component-tabs {
+    > .tabs-component > .tabs-component-tabs {
         position: sticky;
         top: 99px;
         z-index: 4;
@@ -687,12 +664,18 @@
 
 .trade-offer-tabs {
     &__list {
-        padding-left: 15px;
+        padding: 15px;
+        background-color: #e1e8ec;
         position: static;
-        background-color: inherit;
         display: flex;
         column-gap: 20px;
-        margin-bottom: 15px;
+    }
+
+    &__title {
+        background-color: #e1e8ec;
+        padding: 15px 15px 0;
+        font-weight: 500;
+        width: max-content;
     }
 
     &__link {
@@ -727,134 +710,348 @@
             }
         }
     }
-
-    &__tab-body {
-        &_opacity {
-            opacity: 0.5;
-        }
-    }
 }
 
 .trade-offer-item {
-    background-color: #f7f7f7;
-    border: 2px solid #ebebeb;
-    padding: 10px;
-    margin-bottom: 25px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 15px 2px rgba(13, 31, 47, .25);
+    margin-bottom: 70px;
+    position: relative;
 
     &__line {
-        display: flex;
-        position: relative;
+        padding: 10px;
     }
 
-    &__buttons {
-        position: absolute;
-        right: 0;
-        top: 0;
+    &__body {
+        padding: 10px;
+    }
+
+    &__label {
+        display: flex;
+        gap: 5px;
+        padding: 5px;
+        background-color: rgba(0, 122, 49, 0.85);
+        border-radius: 4px;
+        color: #fff;
+        font-weight: 500;
+        font-size: 14px;
+
+        &--archived {
+            background-color: rgba(203, 17, 50, 0.85);
+        }
+    }
+
+    &__footer {
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-end;
+        padding: 10px;
+        border-top: 1px solid rgba(0, 0, 0, .2);
+    }
+
+    &__help {
+        font-size: 14px;
     }
 
     &__tabs {
         width: 100%;
+        margin-top: 25px;
     }
 
     &__status {
-        text-align: start;
+        text-align: end
     }
 
     &__tables {
         display: flex;
+        border-bottom: 1px solid rgba(0, 0, 0, .2)
     }
 
-    &__table:first-of-type {
-        border-right: none;
-    }
-
-    &__info {
+    &__header {
         width: 100%;
-        text-align: end;
-        margin-left: 20px;
+        display: flex;
+        gap: 5px;
+        padding: 10px;
+        justify-content: space-between;
+        border-bottom: 1px solid rgba(0, 0, 0, .2);
+    }
+
+    &__date {
+        font-size: 14px;
+        color: variables.$color_grey;
+        margin-left: auto;
     }
 
     &__text {
         font-size: 13px;
-        line-height: 22px;
-        font-weight: 300;
 
         &_color_grey {
             color: variables.$color_grey;
         }
     }
+
+    &:hover {
+        .trade-offer-item__actions {
+            opacity: 1;
+            height: max-content;
+        }
+    }
+
+    &__actions {
+        height: 0;
+        opacity: 0;
+        position: absolute;
+        right: 0;
+        top: -60px;
+        padding: 5px 0;
+        transition: opacity .5s ease;
+
+        &:hover {
+            opacity: 1;
+            height: max-content;
+        }
+    }
+
+    &__buttons {
+        display: flex;
+        gap: 10px;
+        width: max-content;
+        margin-left: auto;
+        padding: 5px 20px;
+        border-radius: 10px;
+        background-color: #fff;
+        box-shadow: 0 0 5px 1px rgba(13, 31, 47, 0.2);
+    }
+
+    &__button {
+        transition: background-color .6s ease, color .6s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 40px;
+        width: 40px;
+        outline: none;
+        cursor: pointer;
+        border-radius: 50%;
+        font-size: 14px;
+        font-weight: 500;
+        border: none;
+        background-color: rgba(211, 211, 211);
+        text-align: center;
+
+        i {
+            font-size: 16px;
+        }
+
+        &.active {
+            background-color: rgba(38, 142, 80, 0.9);
+            color: #fff;
+        }
+
+        &:hover {
+            background-color: rgba(15, 102, 116, 0.9);
+            color: #fff;
+        }
+    }
+}
+
+.offer-tabs {
+
+    > .accordion-simple__header {
+        font-size: 14px;
+        margin: 0 auto;
+        font-weight: 500;
+        justify-content: center;
+        padding: 10px 15px;
+        border: 1px dashed rgba(201, 201, 201, 1);
+    }
+
+    > .accordion-simple__body {
+        border-bottom: 0;
+
+        > .accordion-simple__wrapper {
+            padding: 0;
+        }
+    }
+
+    &__item {
+        margin: 0!important;
+        border-bottom: 1px solid rgba(201, 201, 201, 1);
+
+        &:first-child {
+            border-top: 1px solid rgba(201, 201, 201, 1);
+        }
+
+        .accordion-simple__header {
+            padding: 10px;
+            background-color: rgba(201, 201, 201, 0.45);
+            border-radius: 0;
+            justify-content: space-between;
+            font-size: 14px;
+            font-weight: 500;
+
+            &:hover {
+                background-color: rgba(201, 201, 201, 0.65);
+            }
+
+            &.active {
+                background-color: rgba(201, 201, 201, 0.8795);
+            }
+
+            > p {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            i {
+                font-size: 20px;
+                width: 20px;
+            }
+        }
+
+        .accordion-simple__body {
+            border: none;
+        }
+
+        .accordion-simple__wrapper {
+            padding: 10px;
+        }
+    }
+
+    &__body {
+        padding: 10px;
+    }
+
+
 }
 
 .trade-offer-table {
     padding: 12px;
-    border: 1px solid variables.$color_danger;
-    min-width: 310px;
+    width: 50%;
+    position: relative;
+
+    &:hover {
+        .trade-offer-table__options {
+            opacity: 1;
+        }
+    }
+
+    &:first-child::before {
+        content: '';
+        display: block;
+        width: 1px;
+        height: 80%;
+        background-color: rgba(0, 0, 0, .2);
+        position: absolute;
+        right: 0;
+    }
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        font-weight: 600;
+        width: 100%;
+
+        &:not(:has(.tooltip)) {
+            margin-bottom: 5px;
+        }
+    }
+
+    &__area {
+        display: flex;
+        justify-content: space-between;
+        gap: 50px;
+    }
+
+    &__heading {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+    }
+
+    &__grid-item {
+        font-size: 14px;
+    }
+
+    &__grid-title {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+        font-size: 14px;
+
+        &--strong {
+            font-weight: 600;
+        }
+    }
 
     &__subtitle {
-        font-size: 12px;
+        font-size: 14px;
         font-weight: 500;
-        line-height: 15px;
     }
 
     &__title {
         font-size: 18px;
         font-weight: 700;
-        line-height: 25px;
     }
 
-    &__list {
-        margin-top: 5px;
-    }
+    &__value {
+        display: flex;
+        align-items: center;
+        gap: 5px;
 
-    &__item {
-        display: grid;
-        grid-template-columns: 100px 1fr;
-        column-gap: 10px;
-    }
-
-    &__text {
-        // text-align: left;
-        padding-top: 3px;
-        white-space: nowrap;
-        max-width: 29ch;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        font-size: 13px;
-        font-weight: 300;
-
-        & span:last-of-type {
-            color: variables.$color_grey;
-        }
-
-        &_label {
-            font-weight: 500;
-            color: variables.$color_grey;
+        i {
+            font-size: 16px;
         }
     }
 
-    sup {
-        vertical-align: top;
-        position: relative;
-        top: -0.5em;
+    &__options {
+        display: flex;
+        gap: 10px;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        opacity: 0;
+        transition: opacity .5s ease;
+    }
+
+    &__option {
+        cursor: pointer;
+        border: none;
+        background-color: #d1d5db;
+        display: block;
+        padding: 5px 10px;
+        font-size: 14px;
+        width: max-content;
+        border-radius: 4px;
+        transition: background-color .5s ease, color .5s ease;
+
+        &:hover {
+            background-color: rgba(38, 142, 80, 0.7);
+        }
+
+        &.active {
+            background-color: #268e50;
+            color: #fff;
+        }
     }
 }
 
 .trade-offer-status {
-    flex-grow: 2;
+    background-color: #0f6674;
+    padding: 5px;
+    color: #fff;
+    border-radius: 4px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    font-size: 14px;
 
-    &__text {
-        font-size: 13px;
-        line-height: 22px;
-        font-weight: 700;
-
-        &_label {
-            color: variables.$color_success;
-        }
-
-        &_color_red {
-            color: variables.$color_danger;
-            font-weight: 500;
-        }
+    &__list {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
     }
 }
 
@@ -907,232 +1104,176 @@
 .trade-offer-summary {
     &__content {
         display: flex;
-        gap: 35px;
+        flex-wrap: wrap;
+        gap: 40px;
     }
 
-    &__column {
+    &__table {
+        width: calc(50% - 20px);
+        box-shadow: 0 0 5px 1px rgba(13, 31, 47, .1);
+        border-radius: 4px;
+        height: max-content;
+    }
+
+    &__values {
         display: flex;
-        flex-direction: column;
-        gap: 25px;
-
-        &:first-of-type {
-            max-width: 400px;
-            min-width: 340px;
-        }
     }
 
-    &__title {
-        padding: 2px 0;
-        font-size: 14px;
-        font-weight: 600;
-        line-height: 1.5;
+    .PropertyList-header {
+        font-weight: 500;
+        border-radius: 4px 4px 0 0;
+        padding: 5px 10px;
+        background-color: #0f6674;
+        color: #fff;
     }
 
-    &__text {
-        font-size: 14px;
-        font-weight: 400;
-        line-height: 1.5;
+    .PropertyListItem-value, .PropertyListItem-name {
+        color: #000;
     }
 
-    &__image {
-        width: 100%;
-        max-width: 650px;
-        height: auto;
-        margin-bottom: 10px;
+    .PropertyListItem {
+        padding: 5px 10px;
+    }
+
+    .PropertyListItem:last-child {
+        border-radius: 0 0 4px 4px;
     }
 }
 
 .trade-offer-details-table {
     border-left: 1px solid variables.$color_light_grey;
     border-right: 1px solid variables.$color_light_grey;
-    border-bottom: 1px dashed variables.$color_grey;
-    border-top: 1px dashed variables.$color_grey;
+    border-bottom: 1px solid rgba(0, 0, 0, .15);
+    border-top: 1px solid rgba(0, 0, 0, .15);
     display: grid;
-    grid-template-columns: 200px 1fr;
-
-    .form-container {
-        width: auto;
-    }
-
-    &__form {
-        & form {
-            display: flex;
-            justify-content: space-between;
-        }
-    }
-
-    &__button {
-        border-radius: 50%;
-        width: 26px;
-        height: 26px;
-        box-sizing: border-box;
-        border: 1px solid variables.$color_light_grey;
-        font-size: 14px;
-        color: variables.$color_grey;
-        position: absolute;
-        right: 9px;
-        top: 8px;
-        cursor: pointer;
-
-        &:hover {
-            opacity: 0.7;
-        }
-    }
-
-    &__checkbox .form-item-label {
-        display: flex !important;
-        align-items: center;
-        padding-bottom: 0;
-
-        & p {
-            font-size: 14px;
-            line-height: 22px;
-            font-weight: normal;
-            color: variables.$color_grey;
-        }
-
-        & div {
-            order: -1;
-            display: flex;
-            align-items: center;
-
-            & input {
-                min-height: auto;
-                max-height: auto;
-                height: 14px;
-                margin-bottom: 2px !important;
-            }
-        }
-    }
+    grid-template-columns: 220px auto;
+    font-size: 14px;
+    position: relative;
 
     &__column {
-        width: 140px;
+        min-width: 200px;
+        max-width: 200px;
 
-        &_head {
-            width: 200px;
+        &:nth-child(2n + 2) {
+            background-color: #f3f3f3;
+        }
+
+        &--head {
+            min-width: 220px;
+
+            .trade-offer-details-table__head {
+                color: #000;
+            }
         }
     }
 
     &__content {
-        display: flex;
-        overflow: auto;
+        width: 100%;
         box-shadow: 12px 0 8px -9px rgba(0, 0, 0, 0.2) inset,
         -12px 0 8px -9px rgba(0, 0, 0, 0.2) inset;
-        border-right: 1px solid variables.$color_light_grey;
-        // pointer-events: none;
-        // position: relative;
-        // z-index: 2;
+        border-right: 1px solid rgba(0, 0, 0, .15);
+        overflow-x: auto;
     }
 
-    &__text .with-unit-type {
-        white-space: nowrap;
-        display: inline-block;
-        font-size: 14px;
-        line-height: 22px;
-        font-weight: normal;
-        position: relative;
-        flex-wrap: nowrap;
-    }
-
-    &__text {
-        white-space: nowrap;
-        font-size: 14px;
-        line-height: 22px;
-        font-weight: normal;
-        position: relative;
-        flex-wrap: nowrap;
+    &__list {
         display: flex;
-
-        &_weight {
-            & .with-unit-type {
-                margin-right: 5px;
-            }
-        }
-
-        & span {
-            max-width: 10ch;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        & .with-unit-type {
-            max-width: 15ch;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        & .with-unit-type span {
-            font-size: 13px;
-            color: variables.$color_grey;
-        }
-
-        &_color_grey {
-            color: variables.$color_grey;
-        }
-
-        &_weight_bold {
-            font-weight: bold;
-            color: black;
-        }
-
-        &_color_red {
-            position: absolute;
-            right: 0;
-            color: variables.$color_danger;
-        }
+        max-width: 1000px;
     }
 
     &__section {
-        border-top: 1px dashed variables.$color_grey;
-        border-right: 1px dashed variables.$color_grey;
-        padding: 10px 9px;
-        display: flex;
-        flex-direction: column;
-        width: 100%;
+        border-top: 1px dashed rgba(0, 0, 0, 0);
+        border-right: 1px solid rgba(0, 0, 0, .15);
         position: relative;
 
-        &_values {
-            padding-top: 32px;
+        &:has(.trade-offer-details-table__properties--values) {
+            &::before {
+                content: '';
+                display: block;
+                height: 41px;
+                width: calc(100% + 2px);
+                position: absolute;
+                top: 0;
+                left: -1px;
+                background-color: #0f6674;
+            }
         }
     }
 
+    &__subtitle {
+        font-weight: 600;
+        padding: 10px;
+        background-color: #0f6674;
+        color: #fff;
+    }
+
+    &__properties {
+        &--values {
+            margin-top: 41px;
+        }
+
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    &__property {
+        padding: 5px 10px;
+        text-overflow: ellipsis;
+        max-width: 100%;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+
+        &:nth-child(2n) {
+            background-color: #e1e1e1;
+        }
+    }
+
+    &__property-list {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
     &__head {
-        text-align: start;
         padding: 10px;
         font-size: 14px;
         line-height: 22px;
         font-weight: bold;
-        border-right: 1px dashed variables.$color_grey;
+        border-right: 1px solid rgba(0, 0, 0, .15);
         color: white;
 
-        &_color_grey {
+        &:first-child {
+            border-bottom: 1px solid rgba(0, 0, 0, .15);
+        }
+
+        &--grey {
             background-color: #e1e1e1;
             color: black;
         }
 
-        &_color_green {
+        &--color--green {
             background-color: #3ca96f;
         }
 
-        &_color_blue {
+        &--color--blue {
             background-color: #3574a5;
         }
 
-        &_color_cyan {
+        &--color--cyan {
             background-color: #72b6ea;
         }
 
-        &_color_orange {
+        &--color--orange {
             background-color: #ccab90;
         }
 
-        &_color_red {
+        &--color--red {
             background-color: #9f3f56;
         }
 
-        &_color_purple {
+        &--color--purple {
             background-color: #9f3f87;
         }
     }
@@ -1190,5 +1331,175 @@
     &__preview {
         font-size: 45px;
         height: max-content;
+    }
+}
+
+.accordion-simple {
+    &:nth-child(n + 1) {
+        margin-top: 5px;
+    }
+
+    &__header {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+        cursor: pointer;
+        padding: 5px 0;
+        border-radius: 4px;
+        transition: background-color .25s ease;
+    }
+
+    &__body {
+        overflow: hidden;
+        max-height: 0;
+        transition: max-height .5s cubic-bezier(0, 1, 0, 1) -0.1s;
+        border-bottom: 1px solid transparent;
+
+        &.active {
+            max-height: 10000px;
+            transition-timing-function: cubic-bezier(0.5, 0, 1, 0);
+            transition-delay: 0s;
+            border-bottom-color: rgba(136, 136, 136, 0.5);
+        }
+    }
+
+    &__wrapper {
+        padding: 5px 0;
+    }
+}
+
+.trade-offer-advertisements {
+    &__title {
+        font-weight: 500;
+        margin-bottom: 5px;
+    }
+
+    &__list {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    &__item {
+        padding: 5px 10px;
+        border-radius: 4px;
+        background-color: rgba(201, 201, 201, 0.8);
+
+        &.active {
+            background-color: #268e50;
+            color: #fff;
+        }
+    }
+
+    &__header {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    span {
+        max-width: max-content;
+    }
+
+    &__grid {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    &__value {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        i {
+            font-size: 18px;
+        }
+    }
+
+    &__on {
+        color: #268e50;
+    }
+
+    &__off {
+        color: #cb1132;
+    }
+}
+
+.trade-offer-parts {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.trade-offer-floor {
+    padding: 26px 10px 10px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    position: relative;
+
+    &__title {
+        padding: 5px 10px;
+        background-color: #268e50;
+        color: #fff;
+        font-size: 14px;
+        position: absolute;
+        top: -16px;
+        left: 10px;
+    }
+
+    &__list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+}
+
+.trade-offer-part {
+    font-size: 14px;
+    width: 200px;
+    height: max-content;
+    padding: 5px 0;
+
+    &__area {
+        font-weight: 600;
+        display: flex;
+        gap: 10px;
+    }
+
+    &.disabled {
+        opacity: .4;
+    }
+
+    &__value {
+        display: flex;
+        gap: 5px;
+    }
+}
+
+.trade-offer-services {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 14px;
+
+    &__category {
+        font-weight: 500;
+        margin-bottom: 5px;
+    }
+
+    &__list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    &__item {
+        padding: 10px;
+        border-radius: 4px;
+        background-color: rgba(201, 201, 201, .8);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-weight: 500;
     }
 }

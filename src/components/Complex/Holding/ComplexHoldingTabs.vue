@@ -1,7 +1,7 @@
 <template>
     <div class="ObjectHoldingsTabs">
         <ActionButton v-bind="actionButtons" class="ObjectHoldingsTabs-buttons" />
-        <Tabs :options="{ useUrlFragment: false }">
+        <Tabs closed :options="{ useUrlFragment: false }">
             <Tab name="Характеристики">
                 <div v-if="!isPlot" class="ObjectHoldingsTabs-content-properties">
                     <PropertyList>
@@ -122,7 +122,7 @@
                                 v-if="object.land_use_restrictions !== null"
                                 class="ObjectHoldingsTabs-content-property"
                             >
-                                {{ object.land_use_restrictions }}
+                                {{ object.land_use_restrictions ? 'Есть' : '-' }}
                             </p>
                         </PropertyListItem>
                     </PropertyList>
@@ -174,13 +174,13 @@
                                 v-if="object.land_use_restrictions !== null"
                                 class="ObjectHoldingsTabs-content-property"
                             >
-                                {{ object.land_use_restrictions }}
+                                {{ object.land_use_restrictions ? 'Есть' : '-' }}
                             </p>
                         </PropertyListItem>
                     </PropertyList>
                 </div>
             </Tab>
-            <Tab name="Сделки">
+            <Tab :id="`${object.id}-deals`" :name="`Сделки (${object.commercialOffers.length})`">
                 <div class="ObjectHoldingsTabs-content">
                     <ComplexDeals
                         :object="object"

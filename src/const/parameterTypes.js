@@ -1,5 +1,5 @@
 export const parameterTypes = {
-    warehouseArea: 'S - складская',
+    warehouseArea: 'Площадь',
     characteristics: 'Характеристики',
     facilities: 'Оборудование',
     communications: 'Коммуникации',

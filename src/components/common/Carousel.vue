@@ -1,7 +1,7 @@
 <template>
     <div class="carousel">
-        <div class="carousel__scroll">
-            <img
+        <div :class="{ carousel__scroll: !grid, carousel__grid: grid }">
+            <VLazyImage
                 v-for="(item, idx) in slides"
                 :key="item.src"
                 @click="openModal(idx)"
@@ -27,7 +27,7 @@
                     class="carousel__slide"
                     :class="`slide--${slideKey}`"
                 >
-                    <img class="carousel__image" :src="slide.src" alt="img" />
+                    <VLazyImage class="carousel__image" :src="slide.src" alt="img" />
                 </div>
             </VueAgile>
             <VueAgile
@@ -44,7 +44,7 @@
                     class="carousel__thumbnail"
                     :class="`slide--${idx}`"
                 >
-                    <img class="carousel__image" :src="slide.src" alt="" />
+                    <VLazyImage class="carousel__image" :src="slide.src" alt="" />
                 </div>
                 <template #prevButton>
                     <i class="fas fa-chevron-left"></i>
@@ -60,14 +60,19 @@
 <script>
 import Modal from '@/components/common/Modal.vue';
 import { VueAgile } from 'vue-agile';
+import VLazyImage from 'v-lazy-image';
 
 export default {
     name: 'Carousel',
-    components: { Modal, VueAgile },
+    components: { Modal, VueAgile, VLazyImage },
     props: {
         slides: {
             type: Array,
             required: true
+        },
+        grid: {
+            type: Boolean,
+            default: false
         }
     },
     data() {

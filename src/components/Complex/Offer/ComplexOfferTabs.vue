@@ -1,5 +1,6 @@
 <template>
     <div class="trade-offer-tabs">
+        <p class="trade-offer-tabs__title">Торговые предложения</p>
         <Tabs
             :options="{ useUrlFragment: false }"
             nav-class="trade-offer-tabs__list"
@@ -9,13 +10,19 @@
                 <div class="trade-offer-tabs__tab-body">
                     <ComplexOfferItem
                         v-for="tradeOffer in activeOffers"
-                        :id="tradeOffer.id"
                         :key="tradeOffer.id"
-                        :area="tradeOffer.area"
-                        :price="tradeOffer.price"
-                        :last-update="tradeOffer.lastUpdate"
-                        :status="tradeOffer.status"
-                        :parameters="tradeOffer.parameters"
+                        :trade-offer="tradeOffer"
+                    />
+                </div>
+                <p v-if="!activeOffers.length">Список активных торговых предложений пуст.</p>
+            </Tab>
+            <Tab v-if="completeOffers.length" :name="completeTradeOffersTitle">
+                <div class="trade-offer-tabs__tab-body">
+                    <ComplexOfferItem
+                        v-for="tradeOffer in completeOffers"
+                        :key="tradeOffer.id"
+                        :trade-offer="tradeOffer"
+                        :offer-type="tradeOffer"
                     />
                 </div>
             </Tab>
@@ -23,22 +30,17 @@
                 <div class="trade-offer-tabs__tab-body trade-offer-tabs__tab-body_opacity">
                     <ComplexOfferItem
                         v-for="tradeOffer in archiveOffers"
-                        :id="tradeOffer.id"
                         :key="tradeOffer.id"
-                        :area="tradeOffer.area"
-                        :price="tradeOffer.price"
-                        :last-update="tradeOffer.lastUpdate"
-                        :status="tradeOffer.status"
-                        :parameters="tradeOffer.parameters"
+                        :trade-offer="tradeOffer"
                     />
                 </div>
+                <p v-if="!archiveOffers.length">Список архивных торговых предложений пуст.</p>
             </Tab>
         </Tabs>
     </div>
 </template>
 
 <script>
-import data from './data';
 import ComplexOfferItem from '@/components/Complex/Offer/ComplexOfferItem.vue';
 
 export default {
@@ -46,24 +48,32 @@ export default {
     components: {
         ComplexOfferItem
     },
-    props: {},
-    data() {
-        return {
-            tradeOffers: data
-        };
+    props: {
+        tradeOffers: {
+            type: Array,
+            default: () => []
+        }
     },
     computed: {
         activeOffers() {
-            return this.tradeOffers.filter(offer => offer.active);
+            return this.tradeOffers.filter(offer => !offer.deleted && !offer.deal_id);
         },
         archiveOffers() {
-            return this.tradeOffers.filter(offer => !offer.active);
+            return this.tradeOffers
+                .filter(offer => offer.deleted && !offer.deal_id)
+                .sort((first, second) => second.publ_time - first.publ_time);
+        },
+        completeOffers() {
+            return this.tradeOffers.filter(offer => offer.deal_id);
         },
         activeTradeOffersTitle() {
-            return `Активных ТП (${this.activeOffers.length} шт.)`;
+            return `Текущие (${this.activeOffers.length} шт.)`;
         },
         archiveTradeOffersTitle() {
-            return `Архив (${this.archiveOffers.length}  шт.)`;
+            return `Архив (${this.archiveOffers.length} шт.)`;
+        },
+        completeTradeOffersTitle() {
+            return `Сделки (${this.completeOffers.length} шт.)`;
         }
     }
 };

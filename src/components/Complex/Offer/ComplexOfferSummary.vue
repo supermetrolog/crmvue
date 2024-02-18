@@ -1,42 +1,38 @@
 <template>
     <div class="trade-offer-summary">
         <div class="trade-offer-summary__content">
-            <div class="trade-offer-summary__column">
-                <PropertyList
-                    v-for="parameter in Object.keys(parameters)"
-                    :key="parameter"
-                    :title="parameterTypes[parameter]"
-                    class="trade-offer-summary__table"
+            <PropertyList
+                v-for="(parameter, id) in parameters"
+                :key="id"
+                :title="parameter.name"
+                class="trade-offer-summary__table"
+            >
+                <PropertyListItem
+                    v-for="(subparameter, idx) of parameter.properties"
+                    :key="subparameter.name + idx"
+                    class="trade-offer-summary__item"
+                    :name="subparameter.name"
                 >
-                    <PropertyListItem
-                        v-for="(subparameter, idx) of parameters[parameter]"
-                        :key="subparameter.name + idx"
-                        class="trade-offer-summary__item"
-                        :value="formattedParameter(subparameter)"
-                        :value-details="
-                            subparameter.floorType || subparameter.gateType || subparameter.liftingDevicesWeight
-                        "
-                        :name="subparameter.name"
-                        :unit-type="subparameter.unitType"
-                    />
-                </PropertyList>
-            </div>
-            <div class="trade-offer-summary__column">
-                <div class="trade-offer-summary__description">
-                    <p class="trade-offer-summary__title">Описание</p>
-                    <p class="trade-offer-summary__text">{{ offerDesciption }}</p>
-                </div>
-                <div v-if="plan_scheme && plan_scheme.length > 0" class="trade-offer-summary__scheme">
-                    <p class="trade-offer-summary__title">На планировках</p>
-                    <img
-                        v-for="(imgSrc, idx) in plan_scheme"
-                        :key="idx"
-                        :src="imgSrc"
-                        alt="схема"
-                        class="trade-offer-summary__image"
-                    />
-                </div>
-            </div>
+                    <template v-if="subparameter.unitType && subparameter.multiple">
+                        <span
+                            v-for="(element, key) in subparameter.value"
+                            :key="key"
+                            class="trade-offer-summary__values"
+                        >
+                            <with-unit-type :unit-type="subparameter.unitType">
+                                {{ element.value }}
+                            </with-unit-type>
+                            , {{ element.type }}
+                        </span>
+                    </template>
+                    <template v-else-if="subparameter.unitType">
+                        <with-unit-type :unit-type="subparameter.unitType">
+                            {{ subparameter.value }}
+                        </with-unit-type>
+                    </template>
+                    <template v-else>{{ subparameter.value }}</template>
+                </PropertyListItem>
+            </PropertyList>
         </div>
     </div>
 </template>
@@ -45,33 +41,118 @@
 import { OfferParametersMixin } from '@/components/Complex/Offer/mixins';
 import PropertyListItem from '@/components/common/Property/PropertyListItem.vue';
 import PropertyList from '@/components/common/Property/PropertyList.vue';
+import WithUnitType from '@/components/common/WithUnitType.vue';
+import { tradeOfferCharacteristics } from '@/const/properties';
+import { alg } from '@/utils/alg';
 
 export default {
     name: 'ComplexOfferSummary',
     components: {
+        WithUnitType,
         PropertyList,
         PropertyListItem
     },
     mixins: [OfferParametersMixin],
     props: {
-        parameters: {
+        offer: {
             type: Object,
             required: true
-        },
-        description: {
-            type: String,
-            required: true
-        },
-        plan_scheme: {
-            type: Array
         }
     },
     data() {
         return {};
     },
     computed: {
-        offerDesciption() {
-            return this.description || 'нет описания';
+        parameters() {
+            const parameters = tradeOfferCharacteristics.map(section => {
+                const properties = Object.keys(section.properties).map(property => {
+                    const currentPropertyObject = section.properties[property];
+
+                    if (currentPropertyObject.range)
+                        return {
+                            name: currentPropertyObject.name,
+                            value: this.$formatter.numberOrRangeNew(
+                                this.offer[`${property}_min`],
+                                this.offer[`${property}_max`]
+                            ),
+                            unitType: currentPropertyObject.unitType
+                        };
+
+                    if (currentPropertyObject.count && currentPropertyObject.types) {
+                        if (!this.offer[property].length)
+                            return { name: currentPropertyObject.name, value: '-' };
+
+                        const pairs = alg.chunk(this.offer[property], 2);
+
+                        const types = pairs.reduce((acc, pair) => {
+                            if (pair[0] in acc) acc[pair[0]] += pair[1];
+                            else acc[pair[0]] = pair[1];
+
+                            return acc;
+                        }, {});
+
+                        return {
+                            name: currentPropertyObject.name,
+                            value: Object.keys(types).map(key => ({
+                                type: currentPropertyObject.types[key],
+                                value: types[key]
+                            })),
+                            multiple: true,
+                            unitType: currentPropertyObject.unitType
+                        };
+                    }
+
+                    if (currentPropertyObject.count)
+                        return {
+                            name: currentPropertyObject.name,
+                            value: this.offer[property] ?? '-',
+                            unitType: currentPropertyObject.unitType
+                        };
+
+                    if (currentPropertyObject.types && currentPropertyObject.multiple) {
+                        if (!this.offer[property] || !this.offer[property].length)
+                            return { name: currentPropertyObject.name, value: '-' };
+
+                        const offerProperty =
+                            this.offer[property] instanceof Array
+                                ? this.offer[property]
+                                : JSON.parse(this.offer[property]);
+
+                        return {
+                            name: currentPropertyObject.name,
+                            value: offerProperty
+                                .map(element => currentPropertyObject.types[element])
+                                .join(', ')
+                        };
+                    }
+
+                    if (currentPropertyObject.types)
+                        return {
+                            name: currentPropertyObject.name,
+                            value: currentPropertyObject.types[this.offer[property]] ?? '-'
+                        };
+
+                    return {
+                        name: currentPropertyObject.name,
+                        value: this.offer[property] ? 'Да/есть' : '-'
+                    };
+                });
+
+                return {
+                    name: section.name,
+                    properties: properties
+                };
+            });
+
+            return parameters;
+        }
+    },
+    methods: {
+        getLeftHalfValue(value) {
+            return value.split('$1')[0];
+        },
+        getRightHalfValue(value) {
+            return value.split('$1')[1];
         }
     }
 };

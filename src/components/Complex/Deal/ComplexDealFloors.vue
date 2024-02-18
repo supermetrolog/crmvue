@@ -103,7 +103,7 @@ export default {
     },
     methods: {
         getFloorArea(floor) {
-            return floor.area_floor_full || floor.area_mezzanine_full || 0;
+            return floor.area_floor_full || floor.area_mezzanine_full || floor.area_field_full || 0;
         },
         toggleCreateBlockForm(floor = null) {
             this.currentEditFloor = floor;

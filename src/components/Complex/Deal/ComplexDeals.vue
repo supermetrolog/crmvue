@@ -63,7 +63,7 @@ export default {
     },
     data() {
         return {
-            currentDealId: this.deals[0] ? this.deals[0].id : null
+            currentDealId: null
         };
     },
     computed: {
@@ -85,7 +85,7 @@ export default {
     },
     methods: {
         choseDeal(id) {
-            this.currentDealId = id;
+            this.currentDealId = this.currentDealId === id ? null : id;
         }
     },
     mounted() {

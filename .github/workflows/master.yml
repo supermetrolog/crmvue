@@ -13,7 +13,7 @@ env:
   VUE_APP_RESERVE_HOST: https://reserve-clients.supermetrolog.ru
   VUE_APP_OBJECT_URL: https://pennylane.pro/
   VUE_APP_API_URL: https://api.pennylane.pro/
-  VUE_APP_HOST: clients.pennylane.pro
+  VUE_APP_HOST: https://clients.pennylane.pro
   VUE_APP_WS_URL: wss://api.pennylane.pro/websocket/
 jobs:
   web-deploy:

@@ -1,38 +1,71 @@
 <template>
     <ul class="object-parameters">
-        <li v-if="object.ceiling_height" class="object-parameters__item">
-            <i class="fas fa-arrow-up" />
-            {{ $formatter.number(object.ceiling_height) }} <span>м</span>
+        <li
+            v-for="(parameter, index) in parameters.range"
+            :key="'range-' + index"
+            v-tippy="parameter.name"
+            class="object-parameters__item"
+        >
+            <i v-if="parameter.icon" :class="parameter.icon" />
+            <span class="object-parameters__text">
+                <template v-if="!parameter.icon">{{ parameter.name }} - </template>
+                <with-unit-type :unit-type="parameter.unitType">
+                    {{ $formatter.numberOrRangeNew(parameter.valueMin, parameter.valueMax) }}
+                </with-unit-type>
+            </span>
         </li>
-        <li v-if="object.floor_type" class="object-parameters__item">
-            <i class="fas fa-arrow-down" />
-            {{ object.floor_type }}
+        <li
+            v-for="(parameter, index) in parameters.count"
+            :key="'count-' + index"
+            v-tippy="parameter.name"
+            class="object-parameters__item"
+        >
+            <i v-if="parameter.icon" :class="parameter.icon" />
+            <span class="object-parameters__text">
+                <template v-if="!parameter.icon">{{ parameter.name }} - </template>
+                <with-unit-type :unit-type="parameter.unitType">
+                    {{ parameter.value }}
+                </with-unit-type>
+            </span>
         </li>
-        <li v-if="object.gas" class="object-parameters__item">
-            <i class="fas fa-fire" />
-            Газ в цеху
-        </li>
-        <li v-if="object.power" class="object-parameters__item">
-            <i class="fas fa-bolt" />
-            <with-unit-type :unit-type="unitTypes.KILOWATT">
-                {{ $formatter.number(object.power) }}
-            </with-unit-type>
-        </li>
-        <li v-if="object.heating" class="object-parameters__item">
-            <i class="fa fa-thermometer-full" />
-            Отопление
-        </li>
-        <li v-if="object.sewage" class="object-parameters__item">
-            <i class="fas fa-shower" />
-            Канализация
-        </li>
-        <li v-if="object.water" class="object-parameters__item">
-            <i class="fas fa-tint"></i>
-            Водоснабжение
-        </li>
-        <li v-if="object.internet" class="object-parameters__item">
-            <i class="fas fa-wifi"></i>
-            Интернет, {{ object.internet_type }}
+        <li
+            v-for="(parameter, index) in parameters.type"
+            :key="'type-' + index"
+            v-tippy="parameter.name"
+            class="object-parameters__item"
+        >
+            <i v-if="parameter.icon" :class="parameter.icon" />
+            <span v-if="parameter.withCount">
+                <template v-if="!parameter.icon">{{ parameter.name }} - </template>
+                {{ parameter.value[1] }} шт.
+                <template v-if="parameter.types">
+                    , {{ parameter.types[parameter.value[0]] }}
+                </template>
+            </span>
+            <span v-if="parameter.valueCount">
+                <with-unit-type v-if="parameter.unitType" :unit-type="parameter.unitType">
+                    {{ parameter.valueCount }}
+                </with-unit-type>
+                <template v-else>
+                    {{ parameter.valueCount }}
+                </template>
+            </span>
+            <span v-else-if="parameter.types">
+                <template v-if="!parameter.icon">{{ parameter.name }} - </template>
+                <template v-if="parameter.multiple">
+                    <span
+                        v-for="(value, index) in parameter.value"
+                        :key="parameter.name + index"
+                        class="object-parameters__value"
+                    >
+                        {{ parameter.types[value] }}
+                    </span>
+                </template>
+                <template v-else>
+                    {{ parameter.types[parameter.value] }}
+                </template>
+            </span>
+            <span v-else>{{ parameter.name }}</span>
         </li>
     </ul>
 </template>
@@ -47,17 +80,15 @@ export default {
         WithUnitType
     },
     props: {
-        object: {
+        parameters: {
             type: Object,
-            required: true,
-            default: () => {}
+            required: true
         }
     },
     data() {
         return {
             unitTypes
         };
-    },
-    computed: {}
+    }
 };
 </script>

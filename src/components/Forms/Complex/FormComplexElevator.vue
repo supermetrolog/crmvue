@@ -127,8 +127,9 @@
                     </FormGroup>
                 </Tab>
             </Tabs>
-            <div class="row">
-                <Submit class="col-3 mx-auto" success>Сохранить</Submit>
+            <div class="row justify-content-center">
+                <Submit success class="col-3">Сохранить</Submit>
+                <Button v-if="elevator" class="col-3 ml-2" danger>Удалить</Button>
             </div>
         </Form>
     </Modal>
@@ -149,14 +150,18 @@ import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import Chip from '@/components/common/Chip.vue';
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
 import { min } from '@//validators';
+import Button from "@/components/common/Button.vue";
 
 export default {
     name: 'FormComplexElevator',
-    components: { DoubleInput, Chip, RadioChip, Modal, Loader },
+    components: {Button, DoubleInput, Chip, RadioChip, Modal, Loader },
     mixins: [ComplexFormMixin],
     emits: ['close'],
     props: {
-        elevator: Object
+        elevator: {
+            type: Object,
+            default: null
+        }
     },
     data() {
         return {

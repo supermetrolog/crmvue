@@ -6,7 +6,10 @@
             :price="price"
             :parameters="parameters"
         />
-        <ComplexOfferTabs class="deal-detailed-info__trade-offer-tabs" />
+        <ComplexOfferTabs
+            :trade-offers="deal.blocks"
+            class="deal-detailed-info__trade-offer-tabs"
+        />
     </div>
 </template>
 
@@ -15,24 +18,42 @@ import ComplexDealBuilding from '@/components/Complex/Deal/ComplexDealBuilding.v
 import ComplexOfferTabs from '@/components/Complex/Offer/ComplexOfferTabs.vue';
 
 export default {
-    name: 'ComplexDealInfoDetailed',
+    name: 'ComplexDealDetailedInfo',
     components: {
         ComplexOfferTabs,
         ComplexDealBuilding
     },
+    provide() {
+        return {
+            dealType: this.deal.dealTypeRecord,
+            dealTypeShort: this.deal.dealTypeRecord.title[0]
+        };
+    },
     props: {
-        area: {
-            type: Object
-        },
-        price: {
-            type: Object
-        },
-        parameters: {
-            type: Object
+        deal: {
+            type: Object,
+            required: true
         }
     },
     data() {
         return {};
+    },
+    computed: {
+        area() {
+            return {
+                min: this.deal.calculated_area_min,
+                max: this.deal.calculated_area_max
+            };
+        },
+        price() {
+            return {
+                min: this.deal.calculated_price_min,
+                max: this.deal.calculated_price_max
+            };
+        },
+        parameters() {
+            return [];
+        }
     },
     methods: {}
 };

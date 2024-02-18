@@ -1,3 +1,5 @@
+import { unitTypes } from '@/const/unitTypes';
+
 export const DropdownList = {
     theme: [
         { value: 0, name: '(не выбрана)' },
@@ -391,4 +393,23 @@ export const DealStatusList = {
     [DealStatusType.SOLD_OUT]: 'Продано',
     [DealStatusType.UNKNOWN]: 'Неизвестно',
     [DealStatusType.FREE]: 'Свободно, размечено'
+};
+
+export const PriceOptionTypes = {
+    RUB_PER_SQUARE_METERS_PER_YEAR: 1,
+    RUB_PER_SQUARE_METERS_PER_MONTH: 2,
+    RUB_PER_MONTH: 3
+};
+
+export const PriceOptionList = {
+    [PriceOptionTypes.RUB_PER_SQUARE_METERS_PER_YEAR]: {
+        unitType: unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR
+    },
+    [PriceOptionTypes.RUB_PER_SQUARE_METERS_PER_MONTH]: {
+        unitType: unitTypes.RUB_PER_SQUARE_METERS_PER_MONTH,
+        func: value => Math.floor(value / 12)
+    },
+    [PriceOptionTypes.RUB_PER_MONTH]: {
+        unitType: unitTypes.RUB_PER_MONTH
+    }
 };

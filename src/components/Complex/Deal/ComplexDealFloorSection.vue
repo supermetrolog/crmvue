@@ -86,6 +86,13 @@ export default {
                 );
             }
 
+            if (this.section.area_field_min || this.section.area_field_max) {
+                return this.$formatter.numberOrRangeNew(
+                    this.section.area_field_min,
+                    this.section.area_field_max
+                );
+            }
+
             return '--';
         },
         sectionAdditionalClass() {
@@ -110,7 +117,6 @@ export default {
         checkboxName() {
             return 'checkbox-' + this.section.id;
         }
-    },
-    mounted() {}
+    }
 };
 </script>
