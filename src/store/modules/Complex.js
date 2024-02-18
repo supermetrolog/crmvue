@@ -35,8 +35,7 @@ const Offers = {
             ];
 
             if (complex && complex.mixer_parts) {
-                const mixer = JSON.parse(complex.mixer_parts);
-                state.mixer = mixer;
+                state.mixer = complex.mixer_parts;
             }
 
             state.floors = floors;

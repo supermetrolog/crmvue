@@ -58,7 +58,9 @@ export default {
               objects.cranes.location,
               objects.cranes.type,
               objects.commercialOffers.blocks.deal,
-              objects.floorsRecords.parts.floorTypes`
+              objects.commercialOffers.summaryBlock,
+              objects.floorsRecords.parts.floorTypes,
+              objects.elevatorsRecords.elevatorType`
         });
     }
 };

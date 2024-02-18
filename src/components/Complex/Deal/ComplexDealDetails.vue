@@ -117,7 +117,7 @@ export default {
 
             if (this.deal.price_opex === 3) priceObject.value = this.deal.price_opex_value;
             else if (this.deal.price_opex === 2)
-                priceObject.items = JSON.parse(this.deal.inc_opex).map(option => ({
+                priceObject.items = this.deal.inc_opex.map(option => ({
                     ...entityOptions.deal.opex[option]
                 }));
 
@@ -135,7 +135,7 @@ export default {
             if (this.deal.public_services === 3)
                 priceObject.value = this.deal.price_public_services;
             else if (this.deal.public_services === 2)
-                priceObject.items = JSON.parse(this.deal.inc_services).map(option => ({
+                priceObject.items = this.deal.inc_services.map(option => ({
                     ...entityOptions.deal.publicServices[option]
                 }));
 

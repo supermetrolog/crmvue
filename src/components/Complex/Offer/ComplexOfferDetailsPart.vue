@@ -163,8 +163,16 @@ export default {
                             value: currentPropertyObject.types[this.part[property]] ?? '-'
                         };
 
+                    if (this.part[property] instanceof Array)
+                        return { value: this.part[property].length ? 'Да/есть' : '-' };
+
                     return {
-                        value: this.part[property] ? 'Да/есть' : '-'
+                        value:
+                            this.part[property] === 1
+                                ? 'Да/есть'
+                                : this.part[property] === 2
+                                  ? 'Нет'
+                                  : '-'
                     };
                 });
             });

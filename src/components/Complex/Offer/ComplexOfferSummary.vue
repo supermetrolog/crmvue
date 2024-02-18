@@ -113,14 +113,9 @@ export default {
                         if (!this.offer[property] || !this.offer[property].length)
                             return { name: currentPropertyObject.name, value: '-' };
 
-                        const offerProperty =
-                            this.offer[property] instanceof Array
-                                ? this.offer[property]
-                                : JSON.parse(this.offer[property]);
-
                         return {
                             name: currentPropertyObject.name,
-                            value: offerProperty
+                            value: this.offer[property]
                                 .map(element => currentPropertyObject.types[element])
                                 .join(', ')
                         };
