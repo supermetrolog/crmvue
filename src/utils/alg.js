@@ -78,11 +78,17 @@ const predicates = {
         return 0;
     }
 };
+
+const extractPropertiesFromObject = (object, properties) => {
+    return properties.reduce((acc, property) => ({ ...acc, [property]: object[property] }), {});
+};
+
 export const alg = {
     strictMin,
     filterArrayByPropertyEntity,
     extractDeepProperty,
     deleteObjectsWithUndueProperties,
     chunk,
+    extractPropertiesFromObject,
     predicates
 };

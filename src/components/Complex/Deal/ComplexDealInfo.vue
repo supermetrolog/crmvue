@@ -8,6 +8,7 @@
             <div class="deal-info__aside">
                 <ComplexDealDetails :deal="deal" />
                 <ComplexDealOwner v-if="deal.companyRecord" :owner="deal.companyRecord" />
+                <ComplexDealCommission :commissions="commissions" />
             </div>
         </div>
     </div>
@@ -18,10 +19,14 @@ import ComplexDealDetailedInfo from '@/components/Complex/Deal/ComplexDealDetail
 import ComplexDealInfoHeader from '@/components/Complex/Deal/ComplexDealInfoHeader.vue';
 import ComplexDealDetails from '@/components/Complex/Deal/ComplexDealDetails.vue';
 import ComplexDealOwner from '@/components/Complex/Deal/ComplexDealOwner.vue';
+import ComplexDealCommission from '@/components/Complex/Deal/ComplexDealCommission.vue';
+import { entityProperties } from '@/const/properties/properties';
+import { alg } from '@/utils/alg';
 
 export default {
     name: 'ComplexDealInfo',
     components: {
+        ComplexDealCommission,
         ComplexDealOwner,
         ComplexDealDetails,
         ComplexDealInfoHeader,
@@ -35,6 +40,14 @@ export default {
     },
     data() {
         return {};
+    },
+    computed: {
+        commissions() {
+            return alg.extractPropertiesFromObject(
+                this.deal,
+                entityProperties.deal.commissionsList
+            );
+        }
     }
 };
 </script>

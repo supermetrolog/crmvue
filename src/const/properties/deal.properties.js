@@ -173,7 +173,18 @@ const rentBusiness = {
     }
 };
 
+const commissionsList = [
+    'commission_owner_value',
+    'commission_owner',
+    'commission_owner_type',
+    'commission_client_value',
+    'commission_client',
+    'commission_agent_value',
+    'commission_agent'
+];
+
 export const dealProperties = {
     servicesWithCategories,
-    rentBusiness
+    rentBusiness,
+    commissionsList
 };

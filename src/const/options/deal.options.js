@@ -42,9 +42,17 @@ const servicePrice = {
     4: 'Не известно'
 };
 
+const commissionOwner = {
+    1: 'Деньгами',
+    2: 'Деньгами (гарантировано)',
+    3: 'Через каникулы',
+    4: 'Не платит'
+};
+
 export const dealOptions = {
     opex,
     publicServices,
     tax,
-    servicePrice
+    servicePrice,
+    commissionOwner
 };
