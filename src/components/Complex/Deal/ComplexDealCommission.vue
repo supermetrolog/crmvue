@@ -1,12 +1,12 @@
 <template>
-    <div class="deal-info-commission">
-        <p class="deal-info-commission__header">Комиссия</p>
+    <div class="deal-info__block deal-info-commission">
+        <p class="deal-info__block-title">Комиссия</p>
         <ul class="deal-info-commission__list">
             <ComplexDealCommissionItem
                 v-if="!!commissions.commission_owner"
                 label="Комиссия от собственника"
                 cancel-label="Собственник не платит"
-                :cancel="commissions.commission_owner === 2"
+                :cancel="commissionOwnerCanceled"
             >
                 {{ commissions.commission_owner_value }}%, {{ commissionOwnerType }}
             </ComplexDealCommissionItem>
@@ -14,7 +14,7 @@
                 v-if="!!commissions.commission_client"
                 label="Комиссия от клиента"
                 cancel-label="Клиент не платит"
-                :cancel="commissions.commission_client === 2"
+                :cancel="commissionClientCanceled"
             >
                 {{ commissions.commission_client_value }}%
             </ComplexDealCommissionItem>
@@ -22,7 +22,7 @@
                 v-if="!!commissions.commission_agent"
                 label="Комиссия агенту"
                 cancel-label="Агенту не платят"
-                :cancel="commissions.commission_agent === 2"
+                :cancel="commissionAgentCanceled"
             >
                 {{ commissions.commission_agent_value }}%
             </ComplexDealCommissionItem>
@@ -48,6 +48,24 @@ export default {
                 return entityOptions.deal.commissionOwner[this.commissions.commission_owner_type];
 
             return null;
+        },
+        commissionOwnerCanceled() {
+            return (
+                this.commissions.commission_owner ===
+                entityOptions.deal.commissionStatement.CANCELED
+            );
+        },
+        commissionClientCanceled() {
+            return (
+                this.commissions.commission_client ===
+                entityOptions.deal.commissionStatement.CANCELED
+            );
+        },
+        commissionAgentCanceled() {
+            return (
+                this.commissions.commission_agent ===
+                entityOptions.deal.commissionStatement.CANCELED
+            );
         }
     }
 };

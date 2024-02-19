@@ -49,10 +49,28 @@ const commissionOwner = {
     4: 'Не платит'
 };
 
+const commissionStatement = {
+    INCLUDED: 1,
+    CANCELED: 2
+};
+
+const contractStatement = {
+    SIGNED: 1,
+    NOT_SIGNED: 2
+};
+
+const contractTypeStatement = {
+    EXCLUSIVE: 1,
+    SIMPLE: 2
+};
+
 export const dealOptions = {
     opex,
     publicServices,
     tax,
     servicePrice,
-    commissionOwner
+    commissionOwner,
+    commissionStatement,
+    contractStatement,
+    contractTypeStatement
 };
