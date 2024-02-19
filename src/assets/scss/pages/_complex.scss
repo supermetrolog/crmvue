@@ -580,12 +580,8 @@
     &-buttons {
         position: absolute;
         right: 16px;
-        top: 2px;
+        top: -6px;
         z-index: 5;
-
-        & .action-buttons__item button {
-            background-color: white;
-        }
     }
 
     &-content {
@@ -791,13 +787,6 @@
         }
     }
 
-    &:hover {
-        .trade-offer-item__actions {
-            opacity: 1;
-            height: max-content;
-        }
-    }
-
     &__actions {
         height: 0;
         opacity: 0;
@@ -813,45 +802,10 @@
         }
     }
 
-    &__buttons {
-        display: flex;
-        gap: 10px;
-        width: max-content;
-        margin-left: auto;
-        padding: 5px 20px;
-        border-radius: 10px;
-        background-color: #fff;
-        box-shadow: 0 0 5px 1px rgba(13, 31, 47, 0.2);
-    }
-
-    &__button {
-        transition: background-color .6s ease, color .6s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 40px;
-        width: 40px;
-        outline: none;
-        cursor: pointer;
-        border-radius: 50%;
-        font-size: 14px;
-        font-weight: 500;
-        border: none;
-        background-color: rgba(211, 211, 211);
-        text-align: center;
-
-        i {
-            font-size: 16px;
-        }
-
-        &.active {
-            background-color: rgba(38, 142, 80, 0.9);
-            color: #fff;
-        }
-
-        &:hover {
-            background-color: rgba(15, 102, 116, 0.9);
-            color: #fff;
+    &:hover {
+        .trade-offer-item__actions {
+            opacity: 1;
+            height: max-content;
         }
     }
 }
@@ -1502,4 +1456,75 @@
         gap: 5px;
         font-weight: 500;
     }
+}
+
+.complex-actions {
+    &__buttons {
+        display: flex;
+        gap: 10px;
+        width: max-content;
+        margin-left: auto;
+        padding: 5px 20px;
+        border-radius: 10px;
+        background-color: #fff;
+        box-shadow: 0 0 5px 1px rgba(13, 31, 47, 0.2);
+    }
+
+    &__button {
+        transition: background-color .6s ease, color .6s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 40px;
+        width: 40px;
+        outline: none;
+        cursor: pointer;
+        border-radius: 50%;
+        font-size: 14px;
+        font-weight: 500;
+        border: none;
+        background-color: rgba(211, 211, 211);
+        text-align: center;
+
+        i {
+            font-size: 16px;
+        }
+
+        &.active {
+            background-color: rgba(38, 142, 80, 0.9);
+            color: #fff;
+        }
+
+        &:hover {
+            background-color: rgba(15, 102, 116, 0.9);
+            color: #fff;
+        }
+    }
+
+    &--simple {
+        .complex-actions {
+            &__buttons {
+                background-color: transparent;
+                box-shadow: none;
+                border-radius: 0;
+            }
+
+            &__button {
+                background-color: #fff;
+
+                &.active {
+                    background-color: rgba(38, 142, 80, 0.9);
+                    color: #fff;
+                }
+
+                &:hover {
+                    background-color: rgba(15, 102, 116, 0.9);
+                    color: #fff;
+                }
+            }
+        }
+    }
+
+
+
 }

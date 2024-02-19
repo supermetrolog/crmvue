@@ -1,6 +1,6 @@
 <template>
     <div class="ObjectHoldingsTabs">
-        <ActionButton v-bind="actionButtons" class="ObjectHoldingsTabs-buttons" />
+        <ComplexActions simple class="ObjectHoldingsTabs-buttons" :buttons="actionButtons" />
         <Tabs ref="tabs" closed :options="{ useUrlFragment: false }">
             <Tab name="Характеристики">
                 <div v-if="!isPlot" class="ObjectHoldingsTabs-content-properties">
@@ -223,7 +223,6 @@ import { unitTypes } from '@/const/unitTypes';
 import PropertyListItem from '@/components/common/Property/PropertyListItem.vue';
 import PropertyList from '@/components/common/Property/PropertyList.vue';
 import WithUnitType from '@/components/common/WithUnitType.vue';
-import ActionButton from '@/components/common/ActionButton.vue';
 import {
     facingTypes,
     landCategoryTypes,
@@ -232,12 +231,13 @@ import {
     ownTypesLand
 } from '@/const/types';
 import ComplexDeals from '@/components/Complex/Deal/ComplexDeals.vue';
+import ComplexActions from '@/components/Complex/ComplexActions.vue';
 
 export default {
     name: 'ComplexHoldingTabs',
     components: {
+        ComplexActions,
         ComplexDeals,
-        ActionButton,
         WithUnitType,
         PropertyList,
         PropertyListItem
@@ -271,11 +271,11 @@ export default {
         },
         actionButtons() {
             return {
-                edit: { value: true },
+                edit: {},
                 advert: { value: true },
-                dislike: { value: true },
-                notifications: { value: true },
-                pdf: { value: true }
+                dislike: { value: false },
+                notifications: { value: false },
+                pdf: { value: false }
             };
         },
         isPlot() {

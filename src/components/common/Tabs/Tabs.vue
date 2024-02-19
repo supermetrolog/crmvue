@@ -24,6 +24,9 @@ export default {
         },
         selectTab(hash) {
             this.$refs.tabs.selectTab(hash);
+            this.$nextTick(() => {
+                document.querySelector(hash + '-pane').scrollIntoView({ behavior: 'smooth' });
+            });
         }
     },
     mounted() {

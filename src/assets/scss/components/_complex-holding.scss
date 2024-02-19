@@ -82,6 +82,12 @@
     &__carousel {
         margin-bottom: 20px;
         position: relative;
+
+        > .carousel {
+            .carousel__scroll {
+                height: 240px;
+            }
+        }
     }
 
     &__info {
