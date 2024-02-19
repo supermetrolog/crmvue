@@ -1,7 +1,7 @@
 <template>
     <div class="ObjectHoldingsTabs">
         <ActionButton v-bind="actionButtons" class="ObjectHoldingsTabs-buttons" />
-        <Tabs closed :options="{ useUrlFragment: false }">
+        <Tabs ref="tabs" closed :options="{ useUrlFragment: false }">
             <Tab name="Характеристики">
                 <div v-if="!isPlot" class="ObjectHoldingsTabs-content-properties">
                     <PropertyList>
@@ -180,7 +180,7 @@
                     </PropertyList>
                 </div>
             </Tab>
-            <Tab :id="`${object.id}-deals`" :name="`Сделки (${object.commercialOffers.length})`">
+            <Tab :id="`deals-${object.id}`" :name="`Сделки (${object.commercialOffers.length})`">
                 <div class="ObjectHoldingsTabs-content">
                     <ComplexDeals
                         :object="object"
@@ -284,6 +284,17 @@ export default {
             //return this.object.objectType.includes(ObjectTypes.PLOT)
         }
     },
-    methods: {}
+    methods: {},
+    mounted() {
+        if (this.$route.query.offer_id) {
+            const offerId = this.$route.query.offer_id;
+
+            const objectHasTargetDeal = this.object.commercialOffers.some(
+                offer => offer.id == offerId
+            );
+
+            if (objectHasTargetDeal) this.$refs.tabs.selectTab('#deals-' + this.object.id);
+        }
+    }
 };
 </script>

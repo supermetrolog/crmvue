@@ -21,6 +21,9 @@ export default {
     methods: {
         handler() {
             if (this.closed) this.$refs.tabs.selectTab('#hidden-tab');
+        },
+        selectTab(hash) {
+            this.$refs.tabs.selectTab(hash);
         }
     },
     mounted() {
