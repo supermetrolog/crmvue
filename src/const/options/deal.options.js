@@ -49,6 +49,11 @@ const commissionOwner = {
     4: 'Не платит'
 };
 
+const builtToSuit = {
+    1: 'BTS',
+    2: 'BTR'
+};
+
 const commissionStatement = {
     INCLUDED: 1,
     CANCELED: 2
@@ -64,6 +69,11 @@ const contractTypeStatement = {
     SIMPLE: 2
 };
 
+const builtToSuitPlanStatement = {
+    EXIST: 1,
+    NOT_EXIST: 2
+};
+
 export const dealOptions = {
     opex,
     publicServices,
@@ -72,5 +82,7 @@ export const dealOptions = {
     commissionOwner,
     commissionStatement,
     contractStatement,
-    contractTypeStatement
+    contractTypeStatement,
+    builtToSuit,
+    builtToSuitPlanStatement
 };

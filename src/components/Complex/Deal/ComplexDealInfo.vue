@@ -1,6 +1,6 @@
 <template>
     <div class="deal-info">
-        <ComplexDealInfoHeader :visited="deal.agent_visited" />
+        <ComplexDealInfoHeader :specials="dealSpecials" :visited="deal.agent_visited" />
         <div class="deal-info__body">
             <div class="deal-info__content">
                 <ComplexDealDetailedInfo :deal="deal" class="deal-info__detailed-info" />
@@ -67,6 +67,9 @@ export default {
         },
         contractIsSigned() {
             return this.deal.contract_is_signed === entityOptions.deal.contractStatement.SIGNED;
+        },
+        dealSpecials() {
+            return alg.extractPropertiesFromObject(this.deal, entityProperties.deal.specialsList);
         }
     }
 };

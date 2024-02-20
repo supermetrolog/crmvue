@@ -183,8 +183,16 @@ const commissionsList = [
     'commission_agent'
 ];
 
+const specialsList = [
+    'built_to_suit',
+    'built_to_suit_time',
+    'built_to_suit_plan',
+    'built_to_suit_group'
+];
+
 export const dealProperties = {
     servicesWithCategories,
     rentBusiness,
-    commissionsList
+    commissionsList,
+    specialsList
 };

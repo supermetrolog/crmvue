@@ -8,7 +8,8 @@
                 cancel-label="Собственник не платит"
                 :cancel="commissionOwnerCanceled"
             >
-                {{ commissions.commission_owner_value }}%, {{ commissionOwnerType }}
+                {{ $formatter.number(commissions.commission_owner_value) }}%
+                <template v-if="commissionOwnerType">, {{ commissionOwnerType }}</template>
             </ComplexDealCommissionItem>
             <ComplexDealCommissionItem
                 v-if="!!commissions.commission_client"
@@ -16,7 +17,7 @@
                 cancel-label="Клиент не платит"
                 :cancel="commissionClientCanceled"
             >
-                {{ commissions.commission_client_value }}%
+                {{ $formatter.number(commissions.commission_client_value) }}%
             </ComplexDealCommissionItem>
             <ComplexDealCommissionItem
                 v-if="!!commissions.commission_agent"
@@ -24,7 +25,7 @@
                 cancel-label="Агенту не платят"
                 :cancel="commissionAgentCanceled"
             >
-                {{ commissions.commission_agent_value }}%
+                {{ $formatter.number(commissions.commission_agent_value) }}%
             </ComplexDealCommissionItem>
         </ul>
     </div>
