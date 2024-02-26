@@ -8,6 +8,9 @@
                 class="carousel__item"
                 :src="item.src"
             />
+            <template v-if="!slides.length">
+                <NoImage v-for="key in 3" :key="key" />
+            </template>
         </div>
         <Modal
             v-if="modalIsOpen"
@@ -61,10 +64,11 @@
 import Modal from '@/components/common/Modal.vue';
 import { VueAgile } from 'vue-agile';
 import VLazyImage from 'v-lazy-image';
+import NoImage from '@/components/common/NoImage.vue';
 
 export default {
     name: 'Carousel',
-    components: { Modal, VueAgile, VLazyImage },
+    components: { NoImage, Modal, VueAgile, VLazyImage },
     props: {
         slides: {
             type: Array,

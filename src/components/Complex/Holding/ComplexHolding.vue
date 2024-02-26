@@ -2,7 +2,13 @@
     <div class="object-holding">
         <div class="object-holding__body">
             <div class="object-holding__carousel">
-                <div class="object-holding__badge">ID {{ object.id }}</div>
+                <div class="object-holding__badges">
+                    <div class="object-holding__type">
+                        <i v-if="object.is_land" v-tippy="'Участок'" class="fa-solid fa-tree"></i>
+                        <i v-else v-tippy="'Строение'" class="fa-solid fa-warehouse"></i>
+                    </div>
+                    <div class="object-holding__badge">ID {{ object.id }}</div>
+                </div>
                 <Carousel v-if="objectPhoto" :slides="objectPhoto" />
             </div>
             <div class="object-holding__info">

@@ -21,6 +21,12 @@ export default {
     methods: {
         handler() {
             if (this.closed) this.$refs.tabs.selectTab('#hidden-tab');
+        },
+        selectTab(hash) {
+            this.$refs.tabs.selectTab(hash);
+            this.$nextTick(() => {
+                document.querySelector(hash + '-pane').scrollIntoView({ behavior: 'smooth' });
+            });
         }
     },
     mounted() {

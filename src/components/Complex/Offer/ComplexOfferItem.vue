@@ -16,7 +16,7 @@
                 class="trade-offer-item__status"
                 :status="status"
             />
-            <ComplexActions :buttons="actionButtons" />
+            <ComplexActions class="trade-offer-item__actions" :buttons="actionButtons" />
             <span class="trade-offer-item__date">Обновлено {{ formattedLastUpdate }} </span>
         </div>
         <div class="trade-offer-item__tables">

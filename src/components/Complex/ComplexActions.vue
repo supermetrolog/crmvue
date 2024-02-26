@@ -1,11 +1,11 @@
 <template>
-    <div class="trade-offer-item__actions">
-        <div class="trade-offer-item__buttons">
+    <div class="complex-actions" :class="{ 'complex-actions--simple': simple }">
+        <div class="complex-actions__buttons">
             <button
                 v-if="buttons.edit"
                 v-tippy="'Редактировать'"
                 :disabled="buttons.edit.disabled"
-                class="trade-offer-item__button"
+                class="complex-actions__button"
             >
                 <i class="fas fa-pen"></i>
             </button>
@@ -13,7 +13,7 @@
                 v-if="buttons.advert"
                 v-tippy="'Отправить в рекламу'"
                 :disabled="buttons.advert.disabled"
-                class="trade-offer-item__button"
+                class="complex-actions__button"
                 :class="{ active: buttons.advert.value }"
             >
                 <i class="fas fa-rocket"></i>
@@ -22,7 +22,7 @@
                 v-if="buttons.deal"
                 v-tippy="'Создать сделку'"
                 :disabled="buttons.deal.disabled"
-                class="trade-offer-item__button"
+                class="complex-actions__button"
                 :class="{ active: buttons.deal.value }"
             >
                 <i class="fa-solid fa-handshake"></i>
@@ -31,7 +31,7 @@
                 v-if="buttons.pdf"
                 v-tippy="'Открыть PDF'"
                 :disabled="buttons.pdf.disabled"
-                class="trade-offer-item__button"
+                class="complex-actions__button"
             >
                 <i class="fas fa-file-pdf"></i>
             </button>
@@ -39,7 +39,7 @@
                 v-if="buttons.favorite"
                 v-tippy="'Добавить в избранное'"
                 :disabled="buttons.favorite.disabled"
-                class="trade-offer-item__button trade-offer-item__button--orange"
+                class="complex-actions__button"
                 :class="{ active: buttons.favorite.value }"
             >
                 <i class="fas fa-star"></i>
@@ -48,7 +48,7 @@
                 v-if="buttons.notifications"
                 v-tippy="'Создать уведомление'"
                 :disabled="buttons.notifications.disabled"
-                class="trade-offer-item__button"
+                class="complex-actions__button"
                 :class="{ active: buttons.notifications.value }"
             >
                 <i class="fas fa-bell"></i>
@@ -57,7 +57,7 @@
                 v-if="buttons.dislike"
                 v-tippy="`Пожаловаться`"
                 :disabled="buttons.dislike.disabled"
-                class="trade-offer-item__button"
+                class="complex-actions__button"
                 :class="{ active: buttons.dislike.value }"
             >
                 <i class="fa-solid fa-thumbs-down"></i>
@@ -66,7 +66,7 @@
                 v-if="buttons.delete"
                 v-tippy="buttons.delete.label ?? `Удалить`"
                 :disabled="buttons.dislike.disabled"
-                class="trade-offer-item__button trade-offer-item__button--red"
+                class="complex-actions__button"
             >
                 <i class="fa-solid fa-trash"></i>
             </button>
@@ -81,6 +81,10 @@ export default {
         buttons: {
             type: Object,
             default: () => {}
+        },
+        simple: {
+            type: Boolean,
+            default: false
         }
     },
     data() {

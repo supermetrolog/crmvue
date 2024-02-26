@@ -41,10 +41,14 @@
         border-right: $border;
     }
 
-    &__badge {
+    &__badges {
         position: absolute;
         z-index: 3;
         top: 0;
+        display: flex;
+    }
+
+    &__badge {
         padding: 4px 10px;
         width: 100px;
         background-color: #982e06;
@@ -65,9 +69,25 @@
         }
     }
 
+    &__type {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        background: #982e06;
+        border-right: 1px solid rgba(255, 255, 255, .2);
+        color: #fff;
+    }
+
     &__carousel {
         margin-bottom: 20px;
         position: relative;
+
+        > .carousel {
+            .carousel__scroll {
+                height: 240px;
+            }
+        }
     }
 
     &__info {
