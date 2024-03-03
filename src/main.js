@@ -20,6 +20,7 @@ import './assets/scss/style.scss';
 import 'animate.css';
 import Tab from '@/components/common/Tabs/Tab.vue';
 import Tabs from '@/components/common/Tabs/Tabs.vue';
+import Toast from '@/plugins/toast';
 
 axios.defaults.baseURL = apiUrlHelperObject.url();
 
@@ -42,6 +43,11 @@ app.component('Tabs', Tabs)
     .use(Formatter)
     .use(ApiUrlHelper)
     .use(Notifications)
+    .use(Toast, {
+        group: 'app',
+        type: 'info',
+        duration: 1000
+    })
     .use(Maska)
     .use(VueAxios, axios)
     .use(store)
