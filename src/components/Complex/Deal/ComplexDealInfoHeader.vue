@@ -1,28 +1,31 @@
 <template>
     <div class="deal-info-header">
         <ComplexDealInfoSpecials v-if="hasSpecials" :specials="specials" />
-        <p class="deal-info-header__text">
-            <i class="fas fa-walking"></i>
-            <span> [Брокер] </span>
-            <span v-if="visited === 1" class="deal-info-header__text_size_small">
-                / Личное посещение
-            </span>
-        </p>
+        <span v-else></span>
+        <div class="deal-info-header__agent">
+            <span class="deal-info-header__username">{{ consultantName }}</span>
+            <div v-if="visited" class="deal-info-header__visit">
+                <i class="fas fa-walking"></i>
+                <span>Личное посещение</span>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
 import ComplexDealInfoSpecials from '@/components/Complex/Deal/ComplexDealInfoSpecials.vue';
+import { entityOptions } from '@/const/options/options';
 
 export default {
     name: 'ComplexDealInfoHeader',
     components: { ComplexDealInfoSpecials },
     props: {
         consultant: {
-            type: Object
+            type: Object,
+            default: () => {}
         },
         visited: {
-            type: [Number, Boolean],
+            type: Boolean,
             default: false
         },
         specials: {
@@ -32,7 +35,10 @@ export default {
     },
     computed: {
         hasSpecials() {
-            return !!this.specials.built_to_suit;
+            return this.specials.built_to_suit === entityOptions.defaults.booleanStatement.TRUE;
+        },
+        consultantName() {
+            return this.consultant.userProfile.full_name;
         }
     }
 };

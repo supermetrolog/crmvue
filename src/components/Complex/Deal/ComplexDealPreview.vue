@@ -5,22 +5,26 @@
         </button>
         <span class="deal-preview__type">{{ dealName }}</span>
         <p class="deal-preview__company">{{ dealCompany }}</p>
-        <p class="deal-preview__area">
-            {{ dealArea }}
-            <span class="deal-preview__unit">м<sup>2</sup></span>
-        </p>
-        <p class="DealPreviewCard-price">
-            <with-unit-type :unit-type="unitTypes.RUB_PER_SQUARE_METERS_PER_MONTH">
-                {{ dealPrice }}
+        <template v-if="deal.summaryBlock">
+            <with-unit-type class="deal-preview__area" :unit-type="unitTypes.SQUARE_METERS">
+                {{ dealArea }}
             </with-unit-type>
-        </p>
+            <with-unit-type
+                v-if="dealPrice.value !== '0'"
+                class="deal-preview__area"
+                :unit-type="dealPrice.unitType"
+            >
+                {{ dealPrice.value }}
+            </with-unit-type>
+        </template>
         <p
             class="deal-preview__status"
             :class="{
-                'deal-preview__status--success': deal.status_id === DealStatusType.FOR_RENT,
+                'deal-preview__status--success':
+                    deal.status_id === entityOptions.deal.statusStatement.FOR_RENT,
                 'deal-preview__status--danger':
-                    deal.status_id === DealStatusType.RENTED_OUT ||
-                    deal.status_id === DealStatusType.SOLD_OUT
+                    deal.status_id === entityOptions.deal.statusStatement.RENTED_OUT ||
+                    deal.status_id === entityOptions.deal.statusStatement.SOLD_OUT
             }"
         >
             {{ dealStatus }}
@@ -30,14 +34,18 @@
 </template>
 
 <script>
-import { DealStatusList, DealStatusType, DealTypeList } from '@/const/const';
 import { unitTypes } from '@/const/unitTypes';
 import WithUnitType from '@/components/common/WithUnitType.vue';
+import { entityOptions } from '@/const/options/options';
+import { mapper } from '@/utils/mapper';
+import { entityProperties } from '@/const/properties/properties';
+import { reducer } from '@/utils';
 
 export default {
     name: 'ComplexDealPreview',
     components: { WithUnitType },
     emits: ['choose', 'edit'],
+    inject: ['objectIsLand'],
     props: {
         deal: {
             type: Object,
@@ -50,12 +58,13 @@ export default {
     },
     data() {
         return {
-            DealStatusType,
             unitTypes
         };
     },
     computed: {
-        dealTypeList: () => DealTypeList,
+        entityOptions() {
+            return entityOptions;
+        },
         dealName() {
             const dealType = this.deal.deal_type ? this.deal.dealTypeRecord.title : 'Сделка';
             const dealNumber = this.deal.object_id;
@@ -65,28 +74,54 @@ export default {
             return this.deal.companyRecord ? this.deal.companyRecord.nameRu : '--';
         },
         dealStatus() {
-            return DealStatusList[this.deal.status_id];
+            return entityOptions.deal.status[this.deal.status_id];
         },
         dealArea() {
-            if (this.deal.calculated_area_min || this.deal.calculated_area_max)
+            if (this.objectIsLand) {
                 return this.$formatter.numberOrRangeNew(
-                    this.deal.calculated_area_min,
-                    this.deal.calculated_area_max
+                    this.deal.summaryBlock.area_field_min,
+                    this.deal.summaryBlock.area_field_max
                 );
+            }
 
-            return '--';
+            return this.$formatter.numberOrRangeNew(
+                this.deal.summaryBlock.area_warehouse_min,
+                this.deal.summaryBlock.area_warehouse_max
+            );
         },
         dealPrice() {
-            if (this.deal.calculated_price_min || this.deal.calculated_price_max)
-                return this.$formatter.numberOrRangeNew(
-                    this.deal.calculated_price_min,
-                    this.deal.calculated_price_max
-                );
+            if (this.deal.deal_type === entityOptions.deal.typeStatement.SALE) {
+                return {
+                    value: this.$formatter.numberOrRangeNew(
+                        this.deal.summaryBlock.price_sale_min,
+                        this.deal.summaryBlock.price_sale_max
+                    ),
+                    unitType: unitTypes.RUB_PER_SQUARE_METERS
+                };
+            }
 
-            return '--';
-        },
-        typePresence() {
-            return this.deal.price.type && this.deal.price.valueMin;
+            if (this.objectIsLand) {
+                return {
+                    value: this.$formatter.numberOrRangeNew(
+                        this.deal.summaryBlock.price_field_min,
+                        this.deal.summaryBlock.price_field_max
+                    ),
+                    unitType: unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR
+                };
+            }
+
+            const prices = mapper.propertiesToRangeFormat(
+                this.deal.summaryBlock,
+                entityProperties.offer.priceWithSections.warehouse
+            );
+
+            return {
+                value: this.$formatter.numberOrRangeNew(
+                    reducer.min(prices, 'valueMin'),
+                    reducer.max(prices, 'valueMax')
+                ),
+                unitType: unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR
+            };
         }
     },
     methods: {

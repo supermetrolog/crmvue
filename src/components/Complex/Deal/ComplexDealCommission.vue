@@ -8,8 +8,8 @@
                 cancel-label="Собственник не платит"
                 :cancel="commissionOwnerCanceled"
             >
-                {{ $formatter.number(commissions.commission_owner_value) }}%
-                <template v-if="commissionOwnerType">, {{ commissionOwnerType }}</template>
+                <span>{{ $formatter.number(commissions.commission_owner_value) }}%</span>
+                <span v-if="commissionOwnerType">, {{ commissionOwnerType }}</span>
             </ComplexDealCommissionItem>
             <ComplexDealCommissionItem
                 v-if="!!commissions.commission_client"
@@ -39,7 +39,7 @@ export default {
     components: { ComplexDealCommissionItem },
     props: {
         commissions: {
-            type: Array,
+            type: Object,
             required: true
         }
     },

@@ -23,6 +23,7 @@ import { entityOptions } from '@/const/options/options';
 
 export default {
     name: 'ComplexDealInfoSpecials',
+    inject: ['dealType'],
     props: {
         specials: {
             type: Object,
@@ -31,7 +32,7 @@ export default {
     },
     computed: {
         specialsType() {
-            return entityOptions.deal.builtToSuit[this.specials.built_to_suit];
+            return this.dealType.id === entityOptions.deal.typeStatement.SALE ? 'BTS' : 'BTR';
         },
         hasPlan() {
             return (

@@ -30,6 +30,9 @@ export default {
             type: Object,
             default: null
         }
+    },
+    mounted() {
+        console.log('Deal: ', this.deal);
     }
 };
 </script>
