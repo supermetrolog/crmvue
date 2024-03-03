@@ -1,10 +1,13 @@
 <template>
-    <div class="additional-details-service">
+    <div v-if="service.status !== serviceStatement.INCLUDED" class="additional-details-service">
         <div class="additional-details-service__header">
             <span>{{ title }}</span>
-            <span :class="{ disabled: service.status === 2 }">{{ service.label }}</span>
+            <span>{{ service.label }}</span>
         </div>
-        <div v-if="service.status === 3" class="additional-details-service__item">
+        <div
+            v-if="service.status === serviceStatement.NOT_INCLUDED"
+            class="additional-details-service__item"
+        >
             <p class="additional-details-service__label">{{ service.name }}</p>
             <with-unit-type
                 class="additional-details-service__value"
@@ -13,7 +16,10 @@
                 {{ service.value }}
             </with-unit-type>
         </div>
-        <div v-else-if="service.status === 2" class="additional-details-service__elements">
+        <div
+            v-else-if="service.status === serviceStatement.PARTLY"
+            class="additional-details-service__elements"
+        >
             <p
                 v-for="(item, key) in service.items"
                 :key="key"
@@ -24,11 +30,15 @@
             </p>
         </div>
     </div>
+    <p v-else class="additional-details__service">
+        {{ titleAlt }}
+    </p>
 </template>
 
 <script>
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes';
+import { entityOptions } from '@/const/options/options';
 
 export default {
     name: 'ComplexDealDetailsService',
@@ -38,17 +48,21 @@ export default {
             type: String,
             required: true
         },
+        titleAlt: {
+            type: String,
+            required: true
+        },
         service: {
             type: Object,
             required: true
         }
     },
-    data() {
-        return {};
-    },
     computed: {
         unitTypes() {
             return unitTypes;
+        },
+        serviceStatement() {
+            return entityOptions.deal.priceServiceStatement;
         }
     }
 };
