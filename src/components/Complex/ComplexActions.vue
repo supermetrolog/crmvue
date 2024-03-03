@@ -73,9 +73,27 @@
                 <i class="fa-solid fa-thumbs-down"></i>
             </button>
             <button
+                v-if="buttons.copy"
+                v-tippy="`Копировать ссылку`"
+                @click="buttons.copy.handler"
+                :disabled="buttons.copy.disabled"
+                class="complex-actions__button"
+            >
+                <i class="fa-solid fa-share-from-square"></i>
+            </button>
+            <button
+                v-if="buttons.cadastral"
+                v-tippy="buttons.cadastral.label ?? `Открыть на кадастровой карте`"
+                @click="buttons.cadastral.handler"
+                :disabled="buttons.cadastral.disabled"
+                class="complex-actions__button"
+            >
+                <i class="fa-solid fa-map-location-dot"></i>
+            </button>
+            <button
                 v-if="buttons.delete"
                 v-tippy="buttons.delete.label ?? `Удалить`"
-                :disabled="buttons.dislike.disabled"
+                :disabled="buttons.delete.disabled"
                 class="complex-actions__button"
             >
                 <i class="fa-solid fa-trash"></i>

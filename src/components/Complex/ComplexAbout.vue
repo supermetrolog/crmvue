@@ -91,7 +91,6 @@ export default {
     },
     data() {
         return {
-            unitTypes,
             isMobile: this.injectedIsMobile
         };
     },
