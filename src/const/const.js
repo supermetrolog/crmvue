@@ -95,6 +95,15 @@ export const WayOfSending = {
     3: { name: 'Telegram', icon: 'fab fa-telegram' },
     4: { name: 'Viber', icon: 'fab fa-viber' }
 };
+
+export const WayOfSendingList = [
+    { id: 0, name: 'Email', icon: 'fas fa-at' },
+    { id: 1, name: 'SMS', icon: 'fas fa-sms' },
+    { id: 2, name: 'WhatsApp', icon: 'fab fa-whatsapp-square' },
+    { id: 3, name: 'Telegram', icon: 'fab fa-telegram' },
+    { id: 4, name: 'Viber', icon: 'fab fa-viber' }
+];
+
 export const CompanyCategories = {
     0: 'Клиент',
     1: 'Посредник',

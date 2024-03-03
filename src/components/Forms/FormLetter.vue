@@ -76,7 +76,7 @@ import CheckboxIcons from '@/components/common/Forms/CheckboxIcons.vue';
 import Input from '@/components/common/Forms/Input.vue';
 import { VueEditor } from 'vue3-editor';
 import { mapGetters } from 'vuex';
-import { WayOfSending } from '@/const/const.js';
+import { WayOfSendingList } from '@/const/const.js';
 import Utils, { contains } from '@/utils';
 import useValidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
@@ -158,7 +158,7 @@ export default {
     },
     computed: {
         ...mapGetters(['COMPANY_CONTACTS', 'THIS_USER']),
-        wayOfSendingOptions: () => WayOfSending,
+        wayOfSendingOptions: () => WayOfSendingList,
         companyContacts() {
             if (this.alreadySended) return Utils.normalizeContactsForMultiselect(this.COMPANY_CONTACTS);
 
