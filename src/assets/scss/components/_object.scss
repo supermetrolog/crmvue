@@ -10,6 +10,37 @@
         flex-wrap: wrap;
         gap: 5px 10px;
     }
+
+    &__carousel {
+        position: relative;
+
+        &:hover .object-holding__download {
+            opacity: 1;
+        }
+    }
+
+    &__download {
+        position: absolute;
+        z-index: 5;
+        background-color: #fff;
+        width: max-content;
+        padding: 5px 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 5px 1px rgba(13, 31, 47, 0.2);
+        top: 5px;
+        right: 5px;
+        opacity: 0;
+        transition: opacity .5s ease, color .5s ease, background-color .5s ease;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+
+        &:hover {
+            background-color: #268e50;
+            color: #fff;
+        }
+    }
 }
 
 .object-equipment {
@@ -85,7 +116,7 @@
         top: 0;
         left: 0;
         width: 100%;
-        height: 8px;
+        height: 5px;
         border-radius: 5px 5px 0 0;
     }
 

@@ -4154,7 +4154,7 @@ tr.DropdownSwitcherRow {
 // ***************** YMAP *******************
 .ymap {
     .ymap-container {
-        outline: 1px solid variables.$color_dark;
+        transition: height 1s ease;
 
         .ymaps-2-1-79-route-pin__text {
             background-color: rgba(variables.$color_dark, 0.7) !important;
