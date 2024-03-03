@@ -1,17 +1,20 @@
 <template>
     <div v-if="complex" class="ComplexView">
-        <FormComplex
-            v-if="complexFormModalVisible"
-            @close="toggleComplexFormModalVisible"
-            :complex="complex"
-        />
-        <FormModalDelete
-            v-if="complexFormDeleteModalVisible"
-            @close="toggleComplexDeleteFormModalVisible"
-            @delete="deleteComplex(complex.id)"
-            text="комплекс"
-            :title="`Удаление комплекса #${complex.id} (${complex.title || 'Без названия'})`"
-        />
+        <teleport to="body">
+            <FormComplex
+                v-if="complexFormModalVisible"
+                @close="toggleComplexFormModalVisible"
+                :complex="complex"
+            />
+            <FormModalDelete
+                v-if="complexFormDeleteModalVisible"
+                @close="toggleComplexDeleteFormModalVisible"
+                @delete="deleteComplex(complex.id)"
+                text="комплекс"
+                :title="`Удаление комплекса #${complex.id} (${complex.title || 'Без названия'})`"
+            />
+            <ComplexPhotoDownloader ref="downloader" />
+        </teleport>
         <div class="ComplexHeader">
             <div class="ComplexHeader-content">
                 <h1 class="ComplexHeader-name">{{ complex.title || 'Нет названия' }}</h1>
@@ -61,15 +64,30 @@ import ComplexHoldings from '@/components/Complex/Holding/ComplexHoldings.vue';
 import Button from '@/components/common/Button.vue';
 import FormComplex from '@/components/Forms/Complex/FormComplex.vue';
 import FormModalDelete from '@/components/Forms/FormModalDelete.vue';
+import ComplexPhotoDownloader from '@/components/Complex/ComplexPhotoDownloader.vue';
 
 export default {
     name: 'ComplexView',
-    components: { FormModalDelete, FormComplex, Button, ComplexHoldings, ComplexMap, ComplexAbout },
+    components: {
+        ComplexPhotoDownloader,
+        FormModalDelete,
+        FormComplex,
+        Button,
+        ComplexHoldings,
+        ComplexMap,
+        ComplexAbout
+    },
+    provide() {
+        return {
+            openDownloader: (photos, zipName = null) => this.$refs.downloader.open(photos, zipName)
+        };
+    },
     data() {
         return {
             editAccess: true,
             complexFormModalVisible: false,
-            complexFormDeleteModalVisible: false
+            complexFormDeleteModalVisible: false,
+            downloaderPhotos: []
         };
     },
     computed: {
@@ -83,6 +101,9 @@ export default {
                 latitude: this.complex.latitude,
                 longitude: this.complex.longitude
             };
+        },
+        oldComplexUrl() {
+            return this.$url.complexOld(this.complex.id, this.$route.query.offer_id);
         }
     },
     methods: {
