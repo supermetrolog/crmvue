@@ -1,26 +1,26 @@
 <template>
-    <div class="ComplexMap">
-        <div class="ComplexMap-description" :class="{ disabled: mapIsOpened }">
-            <div v-if="location.regionRecord" class="ComplexMap-description-item">
+    <div class="complex-map" :class="{ active: mapIsOpened }">
+        <div class="complex-map__description">
+            <div v-if="location.regionRecord" class="complex-map__label">
                 {{ ucFirst(location.regionRecord.title) }}
             </div>
-            <div v-if="location.districtTypeRecord" class="ComplexMap-description-item">
+            <div v-if="location.districtTypeRecord" class="complex-map__label">
                 {{ ucFirst(location.districtTypeRecord.title) }}
                 {{ ucFirst(location.districtRecord.title) }}
             </div>
-            <div v-if="location.directionRecord" class="ComplexMap-description-item">
+            <div v-if="location.directionRecord" class="complex-map__label">
                 {{ ucFirst(location.directionRecord.title) }}
             </div>
-            <div v-if="location.townRecord" class="ComplexMap-description-item">
+            <div v-if="location.townRecord" class="complex-map__label">
                 {{ ucFirst(location.townRecord.townTypeRecord.title) }}
                 {{ ucFirst(location.townRecord.title) }}
             </div>
-            <div v-if="location.highwayRecord" class="ComplexMap-description-item">
+            <div v-if="location.highwayRecord" class="complex-map__label">
                 {{ ucFirst(location.highwayRecord.title) }} шоссе
             </div>
             <div
                 v-if="location.metroRecord"
-                class="ComplexMap-description-item"
+                class="complex-map__label"
                 :title="location.metroRecord.title"
             >
                 <div>
@@ -28,17 +28,28 @@
                 </div>
                 <span>{{ ucFirst(location.metroRecord.title, true) }}</span>
             </div>
-            <div v-if="location.fromMkad" class="ComplexMap-description-item">
+            <div v-if="location.fromMkad" class="complex-map__label">
                 {{ location.fromMkad }} км от МКАД
             </div>
-            <div class="ComplexMap-description-actions">
-                <button class="ComplexMap-description-actions-item" title="Add new">
-                    <i class="fas fa-plus-circle" />
+            <div class="complex-map__actions">
+                <Tooltip>
+                    <template #trigger>
+                        <button class="complex-map__label complex-map__action">
+                            <i class="fa-solid fa-question"></i>
+                        </button>
+                    </template>
+                    <template #content>
+                        <ComplexMapDescription :location="location" />
+                    </template>
+                </Tooltip>
+                <button v-tippy="'Редактировать'" class="complex-map__label complex-map__action">
+                    <i class="fas fa-pen" />
+                </button>
+                <button v-tippy="'Добавить'" class="complex-map__label complex-map__action">
+                    <i class="fas fa-plus" />
                 </button>
             </div>
-        </div>
-        <div class="ComplexMap-control">
-            <div @click="openMap" class="ComplexMap-button" title="Open map">
+            <div v-tippy="'Открыть карту'" @click="openMap" class="complex-map__control">
                 <i class="fas fa-map-marker-alt" :class="{ active: mapIsOpened }"></i>
             </div>
         </div>
@@ -64,10 +75,12 @@
 <script>
 import YandexMapView from '@/components/common/YandexMap/YandexMapView.vue';
 import YandexMapMarker from '@/components/common/YandexMap/YandexMapMarker.vue';
+import Tooltip from '@/components/common/Tooltip.vue';
+import ComplexMapDescription from '@/components/Complex/ComplexMapDescription.vue';
 
 export default {
     name: 'ComplexMap',
-    components: { YandexMapMarker, YandexMapView },
+    components: { ComplexMapDescription, Tooltip, YandexMapMarker, YandexMapView },
     props: {
         location: {
             type: Object,
@@ -84,7 +97,7 @@ export default {
                     coordorder: 'latlong',
                     enterprise: false,
                     version: '2.1',
-                    height: '70px'
+                    height: '60px'
                 },
                 controls: [
                     'geolocationControl',
@@ -95,7 +108,7 @@ export default {
                     'rulerControl'
                 ],
                 styles: {
-                    height: '75px',
+                    height: '60px',
                     width: '100%'
                 },
                 detailedControls: {
@@ -164,7 +177,7 @@ export default {
         openMap() {
             if (this.mapIsOpened) {
                 this.mapIsOpened = false;
-                this.map.styles.height = '70px';
+                this.map.styles.height = '60px';
                 this.randKey = Math.round(Math.random() * 1000);
                 for (const [key, value] of Object.entries(this.map.detailedControls)) {
                     this.map.detailedControls[key] = { ...value, visible: false };
