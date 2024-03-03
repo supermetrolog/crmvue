@@ -375,7 +375,7 @@
                                     class="complex-document"
                                 >
                                     <a
-                                        :href="presentation"
+                                        :href="$url.file(presentation)"
                                         target="_blank"
                                         class="complex-document__link"
                                     >

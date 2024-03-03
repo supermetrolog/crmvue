@@ -1,3 +1,5 @@
+import { alg } from '@/utils/alg';
+
 const textFormatter = {
     ucFirst(string, full = false) {
         if (full) return string.replace(/(\s|^)[а-яё]/g, letter => letter.toUpperCase());
@@ -72,98 +74,15 @@ export const formatterObject = {
             .split(' ')
             .slice(0, 2)
             .reduce((acc, element) => (acc += element[0] !== '(' ? element[0] : ''), '');
-    }
-};
-
-export const apiUrlHelperObject = {
-    url() {
-        let host = window.location.host;
-
-        if (host === process.env.VUE_APP_RESERVE_HOST) {
-            return process.env.VUE_APP_RESERVE_API_URL;
-        }
-
-        return process.env.VUE_APP_API_URL;
     },
-    objectsUrl() {
-        return process.env.VUE_APP_OBJECTS_PHOTO_URL;
-    },
-    uploadsUrl() {
-        return process.env.VUE_APP_API_URL + process.env.VUE_APP_UPLOADS_PATH;
-    },
-    imagesUrl() {
-        return process.env.VUE_APP_API_URL + process.env.VUE_APP_IMAGES_PATH;
-    },
-    fileNotFoundUrl() {
-        return this.imagesUrl() + process.env.VUE_APP_NOT_FOUND_FILENAME;
-    },
-    getImageUrl(imageName) {
-        return this.imagesUrl() + imageName;
-    },
-    getUserAvatarUrl(filename) {
-        if (!filename) {
-            return this.imagesUrl() + process.env.VUE_APP_NOT_FOUND_AVATAR_NAME;
-        }
-        return this.uploadsUrl() + filename;
-    },
-    getUploadedFileUrl(filename) {
-        if (!filename) {
-            return this.imagesUrl() + process.env.VUE_APP_NOT_FOUND_FILENAME;
-        }
-        return this.uploadsUrl() + filename;
-    },
-    generator() {
-        return generator;
-    }
-};
-const generator = {
-    urlHelper: apiUrlHelperObject,
-    offerUrl(offer) {
-        const baseUrl = process.env.VUE_APP_HOST + '/complex/';
-        let url = baseUrl + offer.complex_id;
-        if (offer.type_id === 3 || !offer) {
-            return url;
-        }
-        if (offer.generalOffersMix) {
-            url += '?offer_id=' + offer.generalOffersMix.original_id + '';
-        } else {
-            url += '?offer_id=' + offer.original_id + '';
-        }
-        return url;
-    },
-    offerUrlOld(offer) {
-        const baseUrl = process.env.VUE_APP_OBJECT_URL + '/complex/';
-        let url = baseUrl + offer.complex_id;
-        if (offer.type_id === 3 || !offer) {
-            return url;
-        }
-        if (offer.generalOffersMix) {
-            url += '?offer_id=[' + offer.generalOffersMix.original_id + ']';
-        } else {
-            url += '?offer_id=[' + offer.original_id + ']';
-        }
-        return url;
-    },
-    objectUrl(complex_id) {
-        const baseUrl = process.env.VUE_APP_HOST + '/complex/';
-        return baseUrl + complex_id;
-    },
-    pdfUrl(offer, user_id) {
-        return (
-            this.urlHelper.url() +
-            `pdf/presentations?type_id=${offer.type_id}&original_id=${offer.original_id}&object_id=${offer.object_id}&consultant=${user_id}&is_new=1`
-        );
+    toCorrectValue(value) {
+        if (alg.isNumeric(value)) return this.number(value);
+        return value;
     }
 };
 
 export const Formatter = {
     install(app) {
         app.config.globalProperties.$formatter = formatterObject;
-    }
-};
-
-export const ApiUrlHelper = {
-    install(app) {
-        app.config.globalProperties.$apiUrlHelper = apiUrlHelperObject;
     }
 };

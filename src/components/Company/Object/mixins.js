@@ -231,7 +231,7 @@ export const MixinObject = {
             });
         },
         offerUrl(offer) {
-            return this.$apiUrlHelper.generator().offerUrl(offer);
+            return this.$url.offerByObject(offer);
         },
         sendObjectsHandler() {
             let data = {

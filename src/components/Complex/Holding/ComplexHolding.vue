@@ -51,7 +51,7 @@ export default {
         objectPhoto() {
             return this.object.photo
                 ? this.object.photo.map(el => ({
-                      src: this.$apiUrlHelper.objectsUrl() + el
+                      src: this.$url.api.objects() + el
                   }))
                 : [];
         }

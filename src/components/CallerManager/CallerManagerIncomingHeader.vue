@@ -37,7 +37,7 @@ export default {
     computed: {},
     methods: {
         getCompanyUrl(id) {
-            return this.$apiUrlHelper.url() + '/companies/' + id;
+            return this.$url.company(id);
         }
     }
 };

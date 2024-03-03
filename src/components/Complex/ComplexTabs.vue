@@ -82,7 +82,7 @@ export default {
         photos() {
             return this.offer.photos
                 ? this.offer.photos.map(el => ({
-                      src: this.$apiUrlHelper.objectsUrl() + el
+                      src: this.$url.api.objects() + el
                   }))
                 : [];
         },

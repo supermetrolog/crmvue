@@ -3,7 +3,7 @@
         <div class="row no-gutters">
             <div class="col-4" :title="object.description_auto || 'нет описания'">
                 <div class="image-container">
-                    <a :href="$apiUrlHelper.generator().objectUrl(object.complex_id)" target="_blank">
+                    <a :href="$url.complex(object.complex_id)" target="_blank">
                         <img :src="object.thumb" alt="image" />
                     </a>
                 </div>

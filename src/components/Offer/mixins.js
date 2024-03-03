@@ -30,10 +30,10 @@ export const MixinOfferItem = {
             'SEARCH_FAVORITES_OFFERS'
         ]),
         getOfferUrl(offer) {
-            return this.$apiUrlHelper.generator().offerUrl(offer);
+            return this.$url.offerByObject(offer);
         },
         getOldOfferUrl(offer) {
-            return this.$apiUrlHelper.generator().offerUrlOld(offer);
+            return this.$url.offerOldByObject(offer);
         },
         async clickFavoriteOffer(offer) {
             if (!this.FAVORITES_OFFERS.find(item => item.original_id == offer.original_id)) {
@@ -43,7 +43,13 @@ export const MixinOfferItem = {
             this.$emit('deleteFavoriteOffer', offer);
         },
         clickViewPdf(offer) {
-            window.open(this.$apiUrlHelper.generator().pdfUrl(offer, this.THIS_USER.id), '_blank');
+            window.open(
+                this.$url.pdf(
+                    { type_id: 2, offer_id: offer.original_id, object_id: offer.object_id },
+                    this.THIS_USER.id
+                ),
+                '_blank'
+            );
         }
     }
 };
