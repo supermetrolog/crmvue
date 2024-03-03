@@ -1,6 +1,6 @@
 <template>
     <teleport to="body">
-        <Modal @close="$emit('close')" class="autosize" title="Создание события">
+        <Modal @close="$emit('close')" class="modal-form-event" title="Создание события">
             <FormEvent
                 @created="(...argv) => $emit('created', ...argv)"
                 @updated="(...argv) => $emit('updated', ...argv)"

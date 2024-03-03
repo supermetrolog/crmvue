@@ -3,6 +3,7 @@
         @close="$emit('close')"
         class="modal-form-complex-building"
         :title="false ? 'Редактирование строения' : 'Создание строения'"
+        has-tabs
     >
         <template #header>
             <CheckboxChip v-model="form.test_only" :value="form.test_only" text="Тестовый лот" />
@@ -65,6 +66,7 @@
                                     class="col-md-4 col-12"
                                     :options="objectTypeListWareHouse"
                                 />
+
                                 <CheckboxIcons
                                     v-model="form.purposes"
                                     @extraSelect="selectObjectType"
@@ -259,10 +261,10 @@ import { yandexmap } from '@/utils';
 import Loader from '@/components/common/Loader.vue';
 import { ComplexFormMixin } from '@/components/Forms/Complex/mixin';
 import Modal from '@/components/common/Modal.vue';
-import { facingTypes, objectClassTypes, ownTypes } from '@/const/types';
 import { ObjectTypeList } from '@/const/const';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
+import { entityOptions } from '@/const/options/options';
 
 export default {
     name: 'FormComplexBuildingCreate',
@@ -343,13 +345,13 @@ export default {
         objectTypeListProduction: () => ObjectTypeList.production,
         objectTypeListPlot: () => ObjectTypeList.plot,
         objectClassOptions() {
-            return Object.values(objectClassTypes);
+            return Object.values(entityOptions.object.class);
         },
         facingTypeOptions() {
-            return Object.values(facingTypes);
+            return Object.values(entityOptions.object.facing);
         },
         ownTypeOptions() {
-            return Object.values(ownTypes);
+            return Object.values(entityOptions.object.ownType);
         }
     },
     methods: {

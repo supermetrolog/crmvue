@@ -1,8 +1,8 @@
 import api from '@/api/api';
-import { floorNameTypes } from '@/const/types';
 import { reducer } from '@/utils';
 import { alg } from '@/utils/alg';
 import { entityProperties } from '@/const/properties/properties';
+import { entityOptions } from '@/const/options/options';
 
 const AREA_TYPES = [
     { property: ['floor', 'mezzanine'], labelTemplate: '$1' },
@@ -66,7 +66,10 @@ const Offers = {
 
                     AREA_TYPES.forEach(areaType => {
                         areaProperties[areaType.property[0]].push({
-                            label: areaType.labelTemplate.replace('$1', floorNameTypes[key]),
+                            label: areaType.labelTemplate.replace(
+                                '$1',
+                                entityOptions.floor.name[key]
+                            ),
                             valueMin: reducer[reducerMinFunctionName](
                                 currentParts,
                                 areaType.property.map(property => `area_${property}_min`)

@@ -5,7 +5,7 @@
                 v-if="sendObjectsModalVisible || sendRouteModalVisible"
                 @close="closeSendModal"
                 title="Отправка"
-                class="autosize"
+                class="modal-form-letter"
             >
                 <FormLetter
                     @send="sendLetter"
