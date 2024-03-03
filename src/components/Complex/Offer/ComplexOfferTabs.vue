@@ -1,20 +1,16 @@
 <template>
     <div class="trade-offer-tabs">
         <p class="trade-offer-tabs__title">Торговые предложения</p>
-        <Tabs
-            :options="{ useUrlFragment: false }"
-            nav-class="trade-offer-tabs__list"
-            nav-item-link-class="trade-offer-tabs__link"
-        >
+        <Tabs :options="{ useUrlFragment: false }">
             <Tab :name="activeTradeOffersTitle">
-                <div class="trade-offer-tabs__tab-body">
+                <div v-if="activeOffers.length" class="trade-offer-tabs__tab-body">
                     <ComplexOfferItem
                         v-for="tradeOffer in activeOffers"
                         :key="tradeOffer.id"
                         :trade-offer="tradeOffer"
                     />
                 </div>
-                <p v-if="!activeOffers.length">Список активных торговых предложений пуст.</p>
+                <EmptyData v-else>Список активных торговых предложений пуст..</EmptyData>
             </Tab>
             <Tab v-if="completeOffers.length" :name="completeTradeOffersTitle">
                 <div class="trade-offer-tabs__tab-body">
@@ -27,14 +23,17 @@
                 </div>
             </Tab>
             <Tab :name="archiveTradeOffersTitle">
-                <div class="trade-offer-tabs__tab-body trade-offer-tabs__tab-body_opacity">
+                <div
+                    v-if="archiveOffers.length"
+                    class="trade-offer-tabs__tab-body trade-offer-tabs__tab-body_opacity"
+                >
                     <ComplexOfferItem
                         v-for="tradeOffer in archiveOffers"
                         :key="tradeOffer.id"
                         :trade-offer="tradeOffer"
                     />
                 </div>
-                <p v-if="!archiveOffers.length">Список архивных торговых предложений пуст.</p>
+                <EmptyData v-else>Список архивных торговых предложений пуст..</EmptyData>
             </Tab>
         </Tabs>
     </div>
@@ -42,10 +41,12 @@
 
 <script>
 import ComplexOfferItem from '@/components/Complex/Offer/ComplexOfferItem.vue';
+import EmptyData from '@/components/common/EmptyData.vue';
 
 export default {
     name: 'ComplexOfferTabs',
     components: {
+        EmptyData,
         ComplexOfferItem
     },
     props: {

@@ -6,7 +6,7 @@
                 v-for="(item, key) in advertisements"
                 :key="'adv-' + key"
                 class="trade-offer-advertisements__item"
-                :class="{ active: isActiveAdv(item) }"
+                :class="{ active: item.active }"
             >
                 <template #trigger>
                     <span class="trade-offer-advertisements__header">
@@ -47,11 +47,6 @@ export default {
         advertisements: {
             type: Array,
             default: () => []
-        }
-    },
-    methods: {
-        isActiveAdv(adv) {
-            return adv.properties.filter(element => element.value).length;
         }
     }
 };

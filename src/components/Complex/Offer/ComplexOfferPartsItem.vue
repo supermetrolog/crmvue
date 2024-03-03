@@ -48,8 +48,8 @@
 <script>
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes';
-import { DealStatusList, DealStatusType } from '@/const/const';
 import Tooltip from '@/components/common/Tooltip.vue';
+import { entityOptions } from '@/const/options/options';
 
 export default {
     name: 'ComplexOfferPartsItem',
@@ -77,29 +77,36 @@ export default {
                 );
             }
 
+            if (this.part.area_field_min || this.part.area_field_max) {
+                return this.$formatter.numberOrRangeNew(
+                    this.part.area_field_min,
+                    this.part.area_field_max
+                );
+            }
+
             return '--';
         },
         sectionStatus() {
             if (this.part.is_active) return 'Свободно, размечено';
 
             return this.part.deal_type
-                ? DealStatusList[this.part.deal_type]
+                ? entityOptions.deal.status[this.part.deal_type]
                 : 'Сдано или нераспределено';
         },
         sectionAdditionalClass() {
             return {
                 'deal-section__status--success': this.part.is_active,
                 'deal-section__status--danger':
-                    this.part.deal_type === DealStatusType.RENTED_OUT ||
-                    this.part.deal_type === DealStatusType.FOR_RENT,
+                    this.part.deal_type === entityOptions.deal.statusStatement.RENTED_OUT ||
+                    this.part.deal_type === entityOptions.deal.statusStatement.FOR_RENT,
                 'deal-section__status--white': this.part.is_active
             };
         },
         appropriateSectionClass() {
             if (this.part.is_active) return 'deal-section--green';
             if (
-                this.part.deal_type === DealStatusType.RENTED_OUT ||
-                this.part.deal_type === DealStatusType.FOR_RENT
+                this.part.deal_type === entityOptions.deal.statusStatement.RENTED_OUT ||
+                this.part.deal_type === entityOptions.deal.statusStatement.FOR_RENT
             )
                 return 'deal-section--purple';
 

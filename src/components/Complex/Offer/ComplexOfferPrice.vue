@@ -84,7 +84,7 @@
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes';
 import ComplexOfferPriceTable from '@/components/Complex/Offer/ComplexOfferPriceTable.vue';
-import { DealStatusType, PriceOptionTypes } from '@/const/const';
+import { PriceOptionTypes } from '@/const/const';
 
 export default {
     name: 'ComplexOfferPrice',
@@ -123,9 +123,6 @@ export default {
     computed: {
         PriceOptionTypes() {
             return PriceOptionTypes;
-        },
-        DealStatusType() {
-            return DealStatusType;
         },
         unitTypes() {
             return unitTypes;
