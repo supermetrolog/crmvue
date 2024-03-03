@@ -202,7 +202,7 @@ export default {
             }
 
             return {
-                src: (this.apiUrl || this.$apiUrlHelper.objectsUrl()) + element,
+                src: (this.apiUrl || this.$url.api.objects()) + element,
                 fileType: this.getFileType(element)
             };
         },

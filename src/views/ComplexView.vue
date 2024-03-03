@@ -25,15 +25,26 @@
                     {{ $formatter.date(complex.last_update, true) }}
                 </span>
             </div>
-            <div v-if="editAccess" class="complex-header__actions">
-                <Button @click="toggleComplexFormModalVisible" icon>
-                    <span>Редактировать</span>
-                    <i class="fas fa-pen edit"></i>
-                </Button>
-                <Button @click="toggleComplexDeleteFormModalVisible" danger icon>
-                    <span>Удалить</span>
-                    <i class="fas fa-trash edit"></i>
-                </Button>
+            <div class="complex-header__actions">
+                <a
+                    class="button button--icon"
+                    :href="oldComplexUrl"
+                    target="_blank
+"
+                >
+                    <span>Перейти на старую версию</span>
+                    <i class="fas fa-eye edit"></i>
+                </a>
+                <template v-if="editAccess">
+                    <Button @click="toggleComplexFormModalVisible" icon>
+                        <span>Редактировать</span>
+                        <i class="fas fa-pen edit"></i>
+                    </Button>
+                    <Button @click="toggleComplexDeleteFormModalVisible" danger icon>
+                        <span>Удалить</span>
+                        <i class="fas fa-trash edit"></i>
+                    </Button>
+                </template>
             </div>
         </div>
         <ComplexMap :location="complexLocation" />

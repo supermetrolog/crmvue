@@ -15,7 +15,7 @@ export default {
             return Math.floor(Math.random() * (52 - 1 + 1)) + 1;
         },
         src() {
-            return this.$apiUrlHelper.getImageUrl(this.randomNumber + '.jpg');
+            return this.$url.api.getImage(this.randomNumber + '.jpg');
         }
     }
 };

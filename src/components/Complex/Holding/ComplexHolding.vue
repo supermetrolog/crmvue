@@ -9,14 +9,24 @@
                     </div>
                     <div class="object-holding__badge">ID {{ object.id }}</div>
                 </div>
-                <Carousel v-if="objectPhoto" :slides="objectPhoto" />
+                <Carousel
+                    v-if="objectPhoto"
+                    :title="`Объект #${object.id}`"
+                    :slides="objectPhoto"
+                />
+                <button
+                    v-if="objectPhoto.length"
+                    @click.prevent="openDownloader(objectPhoto)"
+                    class="object-holding__download"
+                >
+                    Скачать фотографии
+                </button>
             </div>
             <div class="object-holding__info">
                 <div class="object-holding__info-left">
                     <ComplexHoldingParameters :object="object" />
                 </div>
                 <div class="object-holding__info-right">
-                    <!--TODO: Установить причину отсутствия контактов, хотя в старом сайте они есть-->
                     <ComplexHoldingCompany v-if="object.company" :company="object.company" />
                     <span v-else>Компания не найдена..</span>
                 </div>
@@ -41,6 +51,12 @@ export default {
         ComplexHoldingParameters,
         Carousel
     },
+    provide() {
+        return {
+            objectIsLand: this.object.is_land
+        };
+    },
+    inject: { openDownloader: 'openDownloader' },
     props: {
         object: {
             type: Object,

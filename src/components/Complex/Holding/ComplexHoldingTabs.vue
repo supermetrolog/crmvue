@@ -242,6 +242,7 @@ export default {
         PropertyList,
         PropertyListItem
     },
+    inject: { openDownloader: 'openDownloader' },
     props: {
         object: {
             type: Object,
@@ -272,19 +273,46 @@ export default {
         actionButtons() {
             return {
                 edit: {},
-                advert: { value: true },
                 dislike: { value: false },
                 notifications: { value: false },
-                pdf: { value: false }
+                delete: {},
+                cadastral: {
+                    disabled: !this.object.cadastral_number,
+                    handler: () => {
+                        window.open(this.$url.cadastral(this.object.cadastral_number), '_blank');
+                    }
+                },
+                photos: {
+                    disabled: !this.objectPhoto.length,
+                    handler: () => this.openDownloader(this.objectPhoto)
+                }
             };
         },
-        isPlot() {
-            return 0;
-            // TODO: Проверить различие типов объекта и вывода этого блока на других объектах
-            //return this.object.objectType.includes(ObjectTypes.PLOT)
+        objectPhoto() {
+            return this.object.photo
+                ? this.object.photo.map(el => ({
+                      src: this.$url.api.objects() + el
+                  }))
+                : [];
+        },
+        floors() {
+            return this.object.floorsRecords.filter(floor => floor.number);
+        },
+        sections() {
+            const properties = this.object.is_land
+                ? entityProperties.object.characteristicsForLandWithSections
+                : entityProperties.object.characteristicsWithSections;
+
+            return mapper.propertiesToTableFormatWithSections(this.object, properties);
+        },
+        sectionsTemplate() {
+            return [
+                ['main', 'security'],
+                ['railway', 'communications'],
+                ['infrastructure', 'allow']
+            ];
         }
     },
-    methods: {},
     mounted() {
         if (this.$route.query.offer_id) {
             const offerId = this.$route.query.offer_id;

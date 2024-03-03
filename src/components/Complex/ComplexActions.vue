@@ -30,6 +30,7 @@
             <button
                 v-if="buttons.pdf"
                 v-tippy="'Открыть PDF'"
+                @click="buttons.pdf.handler"
                 :disabled="buttons.pdf.disabled"
                 class="complex-actions__button"
             >
@@ -52,6 +53,15 @@
                 :class="{ active: buttons.notifications.value }"
             >
                 <i class="fas fa-bell"></i>
+            </button>
+            <button
+                v-if="buttons.photos"
+                v-tippy="`Скачать фотографии`"
+                @click="buttons.photos.handler"
+                :disabled="buttons.photos.disabled"
+                class="complex-actions__button"
+            >
+                <i class="fa-regular fa-image"></i>
             </button>
             <button
                 v-if="buttons.dislike"
