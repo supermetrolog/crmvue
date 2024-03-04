@@ -123,7 +123,6 @@ export const FormMixin = {
         district_moscow: [],
         status: null,
         firstFloorOnly: null,
-        ad_avito: null,
         ad_realtor: null,
         ad_cian: null,
         ad_yandex: null,

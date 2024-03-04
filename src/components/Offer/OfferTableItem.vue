@@ -29,7 +29,9 @@
             </div>
         </Td>
         <Td>
-            <a :href="$url.offerOldByObject(offer)" class="photo-button button">Старая версия</a>
+            <a :href="$url.offerOldByObject(offer)" target="_blank" class="photo-button button"
+                >Старая версия</a
+            >
             <div class="photo">
                 <a :href="$url.offerByObject(offer)" target="_blank">
                     <div class="image-container">

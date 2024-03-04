@@ -1,5 +1,11 @@
 <template>
-    <div v-if="deal.price_sale_min || deal.price_sale_max" class="complex-deal-table__table">
+    <div
+        v-if="
+            deal.summaryBlock &&
+            (deal.summaryBlock.price_sale_min || deal.summaryBlock.price_sale_max)
+        "
+        class="complex-deal-table__table"
+    >
         <with-unit-type class="complex-deal-table__title" :unit-type="priceOption.unitType">
             {{ $formatter.numberOrRangeNew(mainPrice.min, mainPrice.max) }}
         </with-unit-type>
@@ -10,7 +16,12 @@
                     class="complex-deal-table__value"
                     :unit-type="unitTypes.RUB_PER_SQUARE_METERS"
                 >
-                    {{ $formatter.numberOrRangeNew(deal.price_sale_min, deal.price_sale_max) }}
+                    {{
+                        $formatter.numberOrRangeNew(
+                            deal.summaryBlock.price_sale_min,
+                            deal.summaryBlock.price_sale_max
+                        )
+                    }}
                 </with-unit-type>
             </li>
         </ul>
@@ -21,6 +32,7 @@
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes';
 import EmptyData from '@/components/common/EmptyData.vue';
+import { reducer } from '@/utils';
 
 export default {
     components: { EmptyData, WithUnitType },
@@ -40,19 +52,16 @@ export default {
             return unitTypes;
         },
         mainPrice() {
-            let [areaMin, areaMax] = [this.deal.area_field_min, this.deal.area_field_max];
+            const activeBlocks = this.deal.blocks.filter(offer => !offer.deleted && !offer.deal_id);
 
-            if (!this.objectIsLand) {
-                areaMin = this.deal.area_warehouse_min;
-                areaMax =
-                    this.deal.area_warehouse_max +
-                    (this.deal.area_office_max || 0) +
-                    this.deal.area_tech_max;
-            }
+            const [areaMin, areaMax] = [
+                reducer.strictMin(activeBlocks, 'area_min'),
+                reducer.max(activeBlocks, 'area_max')
+            ];
 
             return {
-                min: this.priceOption.func(this.deal.price_sale_min, areaMin),
-                max: this.priceOption.func(this.deal.price_sale_max, areaMax)
+                min: this.priceOption.func(this.deal.summaryBlock.price_sale_min, areaMin),
+                max: this.priceOption.func(this.deal.summaryBlock.price_sale_max, areaMax)
             };
         }
     }
