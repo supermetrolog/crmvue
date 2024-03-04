@@ -1,6 +1,11 @@
 <template>
     <div class="deal-info">
-        <ComplexDealInfoHeader :visited="deal.agent_visited" />
+        <ComplexDealInfoHeader
+            v-if="deal.consultant"
+            :consultant="deal.consultant"
+            :specials="dealSpecials"
+            :visited="agentVisited"
+        />
         <div class="deal-info__body">
             <div class="deal-info__content">
                 <ComplexDealDetailedInfo :deal="deal" class="deal-info__detailed-info" />
@@ -22,7 +27,7 @@
 <script>
 import ComplexDealDetailedInfo from '@/components/Complex/Deal/ComplexDealDetailedInfo.vue';
 import ComplexDealInfoHeader from '@/components/Complex/Deal/ComplexDealInfoHeader.vue';
-import ComplexDealDetails from '@/components/Complex/Deal/ComplexDealDetails.vue';
+import ComplexDealDetails from '@/components/Complex/Deal/Details/ComplexDealDetails.vue';
 import ComplexDealOwner from '@/components/Complex/Deal/ComplexDealOwner.vue';
 import ComplexDealCommission from '@/components/Complex/Deal/ComplexDealCommission.vue';
 import { entityProperties } from '@/const/properties/properties';
@@ -41,6 +46,12 @@ export default {
         ComplexDealDetails,
         ComplexDealInfoHeader,
         ComplexDealDetailedInfo
+    },
+    provide() {
+        return {
+            dealType: this.deal.dealTypeRecord,
+            dealTypeShort: this.deal.dealTypeRecord.title[0]
+        };
     },
     props: {
         deal: {
@@ -65,8 +76,14 @@ export default {
                 this.deal.commission_agent
             );
         },
+        agentVisited() {
+            return this.deal.agent_visited === entityOptions.defaults.booleanStatement.TRUE;
+        },
         contractIsSigned() {
             return this.deal.contract_is_signed === entityOptions.deal.contractStatement.SIGNED;
+        },
+        dealSpecials() {
+            return alg.extractPropertiesFromObject(this.deal, entityProperties.deal.specialsList);
         }
     }
 };

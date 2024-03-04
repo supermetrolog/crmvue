@@ -6,18 +6,18 @@
             </li>
             <li class="trade-offer-details-table__head">№ блока:</li>
             <li
-                v-for="parameter in Object.keys(floorPartCharacteristics)"
-                :key="parameter"
+                v-for="(parameter, index) in floorPartCharacteristics"
+                :key="index"
                 class="trade-offer-details-table__section"
             >
-                <p class="trade-offer-details-table__subtitle">{{ parameterTypes[parameter] }}</p>
+                <p class="trade-offer-details-table__subtitle">{{ parameter.name }}</p>
                 <ul class="trade-offer-details-table__properties">
                     <li
-                        v-for="subparameter in Object.keys(floorPartCharacteristics[parameter])"
-                        :key="subparameter"
+                        v-for="(subparameter, key) in Object.keys(parameter.properties)"
+                        :key="key"
                         class="trade-offer-details-table__property"
                     >
-                        {{ floorPartCharacteristics[parameter][subparameter].name }}
+                        {{ parameter.properties[subparameter].name }}
                     </li>
                 </ul>
             </li>
@@ -36,16 +36,14 @@
 </template>
 
 <script>
-import { OfferParametersMixin } from '@/components/Complex/Offer/mixins';
 import ComplexOfferDetailsPart from '@/components/Complex/Offer/ComplexOfferDetailsPart.vue';
-import { floorPartCharacteristics } from '@/const/properties';
+import { entityProperties } from '@/const/properties/properties';
 
 const tableHeadColors = ['green', 'blue', 'cyan', 'orange', 'red', 'purple'];
 
 export default {
     name: 'ComplexOfferDetails',
     components: { ComplexOfferDetailsPart },
-    mixins: [OfferParametersMixin],
     props: {
         floors: {
             type: Array,
@@ -59,7 +57,7 @@ export default {
     },
     computed: {
         floorPartCharacteristics() {
-            return floorPartCharacteristics;
+            return entityProperties.part.characteristicsWithSections;
         },
         parts() {
             return this.floors
@@ -70,7 +68,7 @@ export default {
                     ],
                     []
                 )
-                .filter(part => part.active);
+                .sort((first, second) => first.floor.order_row - second.floor.order_row);
         }
     }
 };

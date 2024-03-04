@@ -48,11 +48,10 @@ export default {
     },
     computed: {
         buildingsCount() {
-            let buildings = this.objects.filter(holding => holding.object_type.includes(1));
-            return buildings.length;
+            return this.objects.filter(holding => !holding.is_land).length;
         },
         landsCount() {
-            return this.objects.filter(holding => holding.object_type.includes(2)).length;
+            return this.objects.filter(holding => holding.is_land).length;
         },
         sortedObjects() {
             return [...this.objects].reverse();

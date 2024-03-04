@@ -3,6 +3,7 @@
         @close="$emit('close')"
         class="modal-form-complex"
         :title="complex ? 'Редактирование комплекса' : 'Добавление комплекса'"
+        has-tabs
     >
         <Loader v-if="loader" class="center" />
         <Form @submit="onSubmit">

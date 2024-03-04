@@ -21,7 +21,7 @@
 </template>
 <script>
 export default {
-    name: 'ComplexOfferServices',
+    name: 'ComplexServices',
     props: {
         services: {
             type: Array,

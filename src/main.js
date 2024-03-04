@@ -7,12 +7,11 @@ import VueAxios from 'vue-axios';
 import PhoneNumber from '@/components/common/PhoneNumber.vue';
 import Notifications from '@kyvg/vue3-notification';
 import Maska from 'maska';
-import { ApiUrlHelper, apiUrlHelperObject, Formatter } from '@/plugins/index.js';
+import { Formatter } from '@/plugins/index.js';
 import UniqueID from '@/plugins/uid';
 import { VueAgile } from 'vue-agile';
 import { plugin as VueTippy } from 'vue-tippy';
 import 'tippy.js/dist/tippy.css'; // optional for styling
-
 import '@vueform/multiselect/themes/default.css';
 import './assets/fontawesome/css/fontawesome.min.css';
 import './assets/fontawesome/css/all.min.css';
@@ -20,8 +19,11 @@ import './assets/scss/style.scss';
 import 'animate.css';
 import Tab from '@/components/common/Tabs/Tab.vue';
 import Tabs from '@/components/common/Tabs/Tabs.vue';
+import Toast from '@/plugins/toast';
 
-axios.defaults.baseURL = apiUrlHelperObject.url();
+import Url, { $generatorURL } from '@/plugins/url';
+
+axios.defaults.baseURL = $generatorURL.api.url();
 
 const app = createApp(App);
 
@@ -40,8 +42,13 @@ app.component('Tabs', Tabs)
     })
     .use(UniqueID)
     .use(Formatter)
-    .use(ApiUrlHelper)
+    .use(Url)
     .use(Notifications)
+    .use(Toast, {
+        group: 'app',
+        type: 'info',
+        duration: 1000
+    })
     .use(Maska)
     .use(VueAxios, axios)
     .use(store)

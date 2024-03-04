@@ -42,7 +42,7 @@
                 :key="index"
                 @click="removeElement(index)"
                 :value="index"
-                :html="element"
+                :html="options[element]"
             />
         </div>
         <slot />

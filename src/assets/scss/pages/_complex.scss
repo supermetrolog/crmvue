@@ -1,81 +1,29 @@
 @use '../utils/variables';
 @use '../utils/mixins';
 
-.ComplexMap {
+.complex-map {
     margin: 10px 0;
     position: relative;
-    min-height: 70px;
+    min-height: 60px;
+    border: 1px solid rgba(0, 0, 0, .2);
 
-    &-description {
+    &__description {
         position: absolute;
         top: 0;
-        z-index: 2;
+        z-index: 3;
 
         padding: 0 10px;
 
-        width: 90%;
-        height: 70px;
+        width: 100%;
+        height: 60px;
 
         display: flex;
         align-items: center;
         gap: 10px;
+        backdrop-filter: blur(7px);;
 
         overflow-x: auto;
         scroll-behavior: smooth;
-
-        &.disabled {
-            pointer-events: none;
-        }
-
-        &-item {
-            border: 0.5px solid variables.$color_grey;
-            background-color: variables.$color_light_trans;
-            border-radius: 5px;
-            padding: 10px 10px;
-            text-decoration: underline;
-            font-weight: bold;
-            font-size: 13px;
-            white-space: nowrap;
-
-            &[title] {
-                display: flex;
-                align-items: center;
-                gap: 5px;
-
-                div {
-                    width: max-content;
-
-                    img {
-                        height: 15px;
-                        width: auto;
-                    }
-                }
-            }
-        }
-
-        &-actions {
-            z-index: 2;
-
-            height: 70px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-
-            &-item {
-                background: inherit;
-                border: none;
-
-                i {
-                    cursor: pointer;
-
-                    &:hover {
-                        opacity: 0.5;
-                    }
-                }
-            }
-        }
 
         &::-webkit-scrollbar-thumb {
             background-color: transparent;
@@ -86,31 +34,70 @@
         }
     }
 
-    &-control {
-        position: absolute;
-        right: 10px;
-        top: 0;
-        height: 70px;
-        z-index: 3;
+    &__label {
+        background-color: #fff;
+        border-radius: 5px;
+        padding: 0 10px;
+        height: 35px;
+        font-weight: bold;
         display: flex;
+        gap: 5px;
         align-items: center;
+        font-size: 13px;
+        white-space: nowrap;
+        box-shadow: 0 0 5px 2px rgba(13, 31, 47, 0.2);
+
+        &[title] {
+            div {
+                width: max-content;
+
+                img {
+                    height: 15px;
+                    width: auto;
+                }
+            }
+        }
     }
 
-    &-button {
-        font-size: 20px;
-        z-index: 3;
-        background-color: variables.$color_grey_alt;
-        border: 1px solid variables.$color_grey;
-        width: 33px;
-        height: 33px;
-        text-align: center;
-        border-radius: 5px;
-        color: variables.$color_grey;
-        opacity: 0.8;
+    &__actions {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    &__action {
+        border: none;
         cursor: pointer;
+        width: 35px;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color .5s ease, color .5s ease;
 
         &:hover {
-            opacity: 0.5;
+            color: #268e50;
+            background-color: #e7e7e7;
+        }
+    }
+
+    &__control {
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #fff;
+        box-shadow: 0 0 5px 2px rgba(13, 31, 47, 0.2);
+        transition: background-color .5s ease, color .5s ease;
+        width: 35px;
+        height: 35px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-left: auto;
+
+        &:hover {
+            opacity: 0.8;
+            background-color: #e7e7e7;
         }
 
         & i.active {
@@ -119,64 +106,76 @@
     }
 }
 
-.ComplexAbout {
-    margin-bottom: 20px;
+.complex-map-description {
+    max-width: 500px;
+    margin: 10px 0;
 
-    &-content {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr;
+    &__list {
+        display: flex;
+        flex-direction: column;
         gap: 10px;
     }
 
-    &-property {
-        color: black;
+    &__item {
         display: flex;
+        gap: 40px;
+        justify-content: space-between;
+    }
+
+    i {
+        font-size: 18px;
+        opacity: .6;
+    }
+
+    &__name {
+        display: flex;
+        align-items: center;
         gap: 5px;
-        white-space: nowrap;
-        overflow-x: hidden;
-        text-overflow: ellipsis;
 
-        & span {
-            color: variables.$color_grey;
-            white-space: nowrap;
-            overflow-x: hidden;
-            text-overflow: ellipsis;
+        span {
+            opacity: .6;
+        }
+
+        &:not(:has(span)) {
+            opacity: .6;
         }
     }
 
-    .tabs-component-panels {
-        padding: 10px 0;
+    &__on {
+        opacity: 1!important;
+        color: #268e50;
     }
 
-    .tabs-component-tab-a::before {
-        background-color: variables.$color_success;
+    &__off {
+        pacity: 1!important;
+        color: #cb1132;
     }
 
-    .tabs-component-tab-a.is-active {
-        color: variables.$color_success;
+
+    &__block {
+        margin-top: 10px;
     }
 
-    @media screen and (max-width: variables.$laptop_size) {
-        .ComplexAbout {
-            &-content {
-                grid-template-columns: 1fr 1fr 1fr;
-            }
-        }
+    &__subtitle {
+        margin-bottom: 5px;
     }
-    @media screen and (max-width: variables.$tablet_size) {
-        .ComplexAbout {
-            &-content {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
+
+    &__elements {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
     }
-    @media screen and (max-width: variables.$phone_size) {
-        .ObjectAbout {
-            &-content {
-                grid-template-columns: 1fr;
-            }
-        }
+
+    &__element {
+        padding: 5px;
+        border-radius: 5px;
+        background-color: rgba(211, 211, 211, .5);
+        width: max-content;
     }
+}
+
+.complex-about {
+    margin-bottom: 20px;
 }
 
 .object-holding-parameters {
@@ -274,56 +273,6 @@
             font-weight: bold;
             font-size: 1em;
         }
-    }
-
-    &-types {
-        display: flex;
-        gap: 5px;
-        flex-wrap: wrap;
-
-        .object-type-box {
-            font-size: 22px;
-            display: flex;
-            width: 40px;
-            height: 40px;
-            align-items: center;
-            justify-content: center;
-            border-radius: 5px;
-            border: 1px solid rgba(211, 211, 211, 1);
-            margin-right: 1px;
-            background-color: rgba(201, 201, 201, 0.8);
-            color: #000;
-        }
-    }
-}
-
-.object-parameters {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-
-    &__item {
-        align-items: center;
-        display: flex;
-        gap: 10px;
-        font-size: 13px;
-        font-weight: 700;
-        border-radius: 4px;
-        background-color: rgba(201, 201, 201, 0.8);
-        padding: 7px 10px;
-
-        & i {
-            font-size: 18px;
-        }
-
-        .object-parameters__value:not(:last-child)::after {
-            content: ', '
-        }
-    }
-
-    &__text {
-        display: flex;
-        gap: 3px;
     }
 }
 
@@ -540,7 +489,7 @@
 
         position: sticky;
         top: 50px;
-        z-index: 6;
+        z-index: 7;
         margin-bottom: 20px;
 
         height: 50px;
@@ -581,7 +530,7 @@
         position: absolute;
         right: 16px;
         top: -6px;
-        z-index: 5;
+        z-index: 6;
     }
 
     &-content {
@@ -609,7 +558,7 @@
     > .tabs-component > .tabs-component-tabs {
         position: sticky;
         top: 99px;
-        z-index: 4;
+        z-index: 5;
         background-color: variables.$color_grey_alt;
         padding: 10px;
         border-bottom: $border;
@@ -655,6 +604,14 @@
                 grid-template-columns: 1fr;
             }
         }
+    }
+}
+
+.object-holdings-tabs {
+    &__list {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
     }
 }
 
@@ -704,108 +661,6 @@
             &::before {
                 width: 100%;
             }
-        }
-    }
-}
-
-.trade-offer-item {
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 0 15px 2px rgba(13, 31, 47, .25);
-    margin-bottom: 70px;
-    position: relative;
-
-    &__line {
-        padding: 10px;
-    }
-
-    &__body {
-        padding: 10px;
-    }
-
-    &__label {
-        display: flex;
-        gap: 5px;
-        padding: 5px;
-        background-color: rgba(0, 122, 49, 0.85);
-        border-radius: 4px;
-        color: #fff;
-        font-weight: 500;
-        font-size: 14px;
-
-        &--archived {
-            background-color: rgba(203, 17, 50, 0.85);
-        }
-    }
-
-    &__footer {
-        display: flex;
-        align-items: flex-end;
-        justify-content: flex-end;
-        padding: 10px;
-        border-top: 1px solid rgba(0, 0, 0, .2);
-    }
-
-    &__help {
-        font-size: 14px;
-    }
-
-    &__tabs {
-        width: 100%;
-        margin-top: 25px;
-    }
-
-    &__status {
-        text-align: end
-    }
-
-    &__tables {
-        display: flex;
-        border-bottom: 1px solid rgba(0, 0, 0, .2)
-    }
-
-    &__header {
-        width: 100%;
-        display: flex;
-        gap: 5px;
-        padding: 10px;
-        justify-content: space-between;
-        border-bottom: 1px solid rgba(0, 0, 0, .2);
-    }
-
-    &__date {
-        font-size: 14px;
-        color: variables.$color_grey;
-        margin-left: auto;
-    }
-
-    &__text {
-        font-size: 13px;
-
-        &_color_grey {
-            color: variables.$color_grey;
-        }
-    }
-
-    &__actions {
-        height: 0;
-        opacity: 0;
-        position: absolute;
-        right: 0;
-        top: -60px;
-        padding: 5px 0;
-        transition: opacity .5s ease;
-
-        &:hover {
-            opacity: 1;
-            height: max-content;
-        }
-    }
-
-    &:hover {
-        .trade-offer-item__actions {
-            opacity: 1;
-            height: max-content;
         }
     }
 }
@@ -878,7 +733,9 @@
         padding: 10px;
     }
 
-
+    &__button {
+        margin: 0 10px;
+    }
 }
 
 .trade-offer-table {
@@ -1231,6 +1088,10 @@
             background-color: #9f3f87;
         }
     }
+
+    &__values {
+        display: flex;
+    }
 }
 
 .complex {
@@ -1265,6 +1126,7 @@
         transition: background-color .5s ease, color .5s ease;
         text-align: center;
         background-color: rgba(211, 211, 211, 0.5);
+        height: 100%;
 
         &:hover {
             background-color: rgba(203, 203, 203, 0.8);
@@ -1478,13 +1340,16 @@
         height: 40px;
         width: 40px;
         outline: none;
-        cursor: pointer;
         border-radius: 50%;
         font-size: 14px;
         font-weight: 500;
         border: none;
         background-color: rgba(211, 211, 211);
         text-align: center;
+
+        &:not([disabled]) {
+            cursor: pointer;
+        }
 
         i {
             font-size: 16px;
@@ -1495,7 +1360,7 @@
             color: #fff;
         }
 
-        &:hover {
+        &:not([disabled]):hover {
             background-color: rgba(15, 102, 116, 0.9);
             color: #fff;
         }
@@ -1517,7 +1382,7 @@
                     color: #fff;
                 }
 
-                &:hover {
+                &:not([disabled]):hover {
                     background-color: rgba(15, 102, 116, 0.9);
                     color: #fff;
                 }
@@ -1527,4 +1392,62 @@
 
 
 
+}
+
+.complex-photo-downloader {
+    &__item {
+        opacity: .3;
+        cursor: pointer;
+        position: relative;
+        border-radius: 5px;
+        overflow: hidden;
+        transition: opacity .5s ease-in-out;
+
+        &:hover {
+            opacity: .7;
+        }
+
+
+        &.active {
+            opacity: 1;
+        }
+    }
+
+    &__image {
+        width: 100%;
+        object-fit: cover;
+        aspect-ratio: 1 / 1;
+    }
+
+    &__text {
+        margin-bottom: 10px;
+
+        span {
+            font-weight: 500;
+        }
+    }
+
+    &__actions {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+
+        .button {
+            width: 100%;
+        }
+    }
+
+    &__select {
+        width: 100%!important;
+        margin-bottom: 10px;
+    }
+
+    &__configs {
+        margin-bottom: 15px;
+    }
+
+    &__list {
+        max-height: 380px;
+        overflow-y: auto;
+    }
 }

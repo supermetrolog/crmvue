@@ -49,6 +49,14 @@ const commissionOwner = {
     4: 'Не платит'
 };
 
+const status = {
+    1: 'Сдается',
+    2: 'Сдано',
+    3: 'Продано',
+    4: 'Неизвестно',
+    5: 'Свободно, размечено'
+};
+
 const commissionStatement = {
     INCLUDED: 1,
     CANCELED: 2
@@ -60,8 +68,40 @@ const contractStatement = {
 };
 
 const contractTypeStatement = {
-    EXCLUSIVE: 1,
-    SIMPLE: 2
+    SIMPLE: 1,
+    EXCLUSIVE: 2
+};
+
+const builtToSuitPlanStatement = {
+    EXIST: 1,
+    NOT_EXIST: 2
+};
+
+const saleCompanyStatement = {
+    READY_TO_SALE: 1,
+    NOT_SALE: 2
+};
+
+const priceServiceStatement = {
+    INCLUDED: 1,
+    PARTLY: 2,
+    NOT_INCLUDED: 3,
+    UNKNOWN: 4
+};
+
+const typeStatement = {
+    RENT: 1,
+    SALE: 2,
+    STORAGE: 3,
+    SUBLEASE: 4
+};
+
+const statusStatement = {
+    FOR_RENT: 1,
+    RENTED_OUT: 2,
+    SOLD_OUT: 3,
+    UNKNOWN: 4,
+    FREE: 5
 };
 
 export const dealOptions = {
@@ -72,5 +112,11 @@ export const dealOptions = {
     commissionOwner,
     commissionStatement,
     contractStatement,
-    contractTypeStatement
+    contractTypeStatement,
+    builtToSuitPlanStatement,
+    saleCompanyStatement,
+    priceServiceStatement,
+    typeStatement,
+    status,
+    statusStatement
 };

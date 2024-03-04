@@ -44,7 +44,10 @@ const deleteObjectsWithUndueProperties = (
     if (properties instanceof Array)
         return iterObject.reduce((acc, element) => {
             const countPropertiesAfterPredicate = properties.filter(
-                property => element[property] === value || element[property] === null
+                property =>
+                    element[property] == value ||
+                    element[property] === null ||
+                    (element[property] instanceof Array && !element[property].length)
             ).length;
 
             if (
@@ -56,9 +59,10 @@ const deleteObjectsWithUndueProperties = (
             return [...acc, element];
         }, []);
 
-    return iterObject.filter(
-        element => element[properties] !== value && element[properties] !== null
-    );
+    return iterObject.filter(element => {
+        if (element[properties] instanceof Array) return element[properties].length;
+        return element[properties] != value && element[properties] !== null;
+    });
 };
 
 const chunk = (array, size) => {
@@ -66,6 +70,16 @@ const chunk = (array, size) => {
 
     for (let i = 0; i < array.length; i += size) {
         result.push(array.slice(i, i + size));
+    }
+
+    return result;
+};
+
+const parts = (array, size) => {
+    const result = Array.from(Array(Math.min(array.length, size)), () => []);
+
+    for (let i = 0; i < array.length; i++) {
+        result[i % size].push(array[i]);
     }
 
     return result;
@@ -83,6 +97,10 @@ const extractPropertiesFromObject = (object, properties) => {
     return properties.reduce((acc, property) => ({ ...acc, [property]: object[property] }), {});
 };
 
+const isNumeric = num => {
+    return !isNaN(+num);
+};
+
 export const alg = {
     strictMin,
     filterArrayByPropertyEntity,
@@ -90,5 +108,7 @@ export const alg = {
     deleteObjectsWithUndueProperties,
     chunk,
     extractPropertiesFromObject,
+    isNumeric,
+    parts,
     predicates
 };

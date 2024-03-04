@@ -21,7 +21,7 @@
                     :key="key"
                     class="object-equipment__element"
                 >
-                    <span class="object-equipment__category">{{ property.label }}:</span>
+                    <span class="object-equipment__category">{{ property.name }}:</span>
                     <with-unit-type v-if="property.unitType" :unit-type="property.unitType">
                         {{ property.value }}
                     </with-unit-type>
@@ -34,10 +34,10 @@
 
 <script>
 import Tooltip from '@/components/common/Tooltip.vue';
-import { craneProperties } from '@/const/properties';
-import { alg } from '@/utils/alg';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import IconCrane from '@/components/common/Icons/IconCrane.vue';
+import { entityProperties } from '@/const/properties/properties';
+import { mapper } from '@/utils/mapper';
 
 export default {
     name: 'ComplexHoldingParametersCrane',
@@ -50,30 +50,10 @@ export default {
     },
     computed: {
         properties() {
-            const properties = Object.keys(craneProperties).map(key => {
-                const propertiesObject = {
-                    ...craneProperties[key]
-                };
-
-                if (craneProperties[key].condition) {
-                    propertiesObject.value = this.crane[craneProperties[key].condition]
-                        ? alg.extractDeepProperty(this.crane, key)[0]
-                        : null;
-
-                    return propertiesObject;
-                }
-
-                if (craneProperties[key].unitType) {
-                    propertiesObject.value = this.crane[key];
-                } else {
-                    propertiesObject.value =
-                        this.crane[key] === 1 ? 'Да/есть' : this.crane[key] === 0 ? 'Нет' : null;
-                }
-
-                return propertiesObject;
-            });
-
-            return alg.deleteObjectsWithUndueProperties(properties, 'value', 0);
+            return mapper.propertiesToTableFormat(
+                this.crane,
+                entityProperties.crane.characteristics
+            );
         },
         status() {
             if (this.crane.state && this.crane.state.id > 1) {

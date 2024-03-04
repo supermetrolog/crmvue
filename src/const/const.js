@@ -1,26 +1,5 @@
 import { unitTypes } from '@/const/unitTypes';
 
-export const DropdownList = {
-    theme: [
-        { value: 0, name: '(не выбрана)' },
-        { value: 1, name: 'Гражданское право' },
-        { value: 2, name: 'Пенсия' },
-        { value: 3, name: 'Мошенничество' },
-        { value: 4, name: 'ДТП' },
-        { value: 5, name: 'Кредиты' },
-        { value: 6, name: 'Авто' }
-    ],
-    status: [
-        { value: 0, name: '(не выбран)' },
-        { value: 1, name: 'Договор' },
-        { value: 2, name: 'БК' },
-        { value: 3, name: 'Бесплатные документы' },
-        { value: 4, name: 'Шел в гос учреждение' },
-        { value: 5, name: 'Нет 18 лет' },
-        { value: 6, name: 'Ушел с ресепа' }
-    ]
-};
-
 export const Timeline = [
     {
         id: 0,
@@ -95,6 +74,15 @@ export const WayOfSending = {
     3: { name: 'Telegram', icon: 'fab fa-telegram' },
     4: { name: 'Viber', icon: 'fab fa-viber' }
 };
+
+export const WayOfSendingList = [
+    { id: 0, name: 'Email', icon: 'fas fa-at' },
+    { id: 1, name: 'SMS', icon: 'fas fa-sms' },
+    { id: 2, name: 'WhatsApp', icon: 'fab fa-whatsapp-square' },
+    { id: 3, name: 'Telegram', icon: 'fab fa-telegram' },
+    { id: 4, name: 'Viber', icon: 'fab fa-viber' }
+];
+
 export const CompanyCategories = {
     0: 'Клиент',
     1: 'Посредник',
@@ -379,37 +367,43 @@ export const NotificationTypeList = {
     17: 'fas fa-binoculars text-warning'
 };
 
-export const DealStatusType = {
-    FOR_RENT: 1,
-    RENTED_OUT: 2,
-    SOLD_OUT: 3,
-    UNKNOWN: 4,
-    FREE: 5
-};
-
-export const DealStatusList = {
-    [DealStatusType.FOR_RENT]: 'Сдается',
-    [DealStatusType.RENTED_OUT]: 'Сдано',
-    [DealStatusType.SOLD_OUT]: 'Продано',
-    [DealStatusType.UNKNOWN]: 'Неизвестно',
-    [DealStatusType.FREE]: 'Свободно, размечено'
-};
-
 export const PriceOptionTypes = {
     RUB_PER_SQUARE_METERS_PER_YEAR: 1,
     RUB_PER_SQUARE_METERS_PER_MONTH: 2,
-    RUB_PER_MONTH: 3
+    RUB_PER_MONTH: 3,
+    RUB_PER_SQUARE_METERS: 4,
+    RUB_PER_ALL: 5,
+    RUB_PER_PALLET_PLACE_PER_DAY: 6
 };
 
 export const PriceOptionList = {
     [PriceOptionTypes.RUB_PER_SQUARE_METERS_PER_YEAR]: {
-        unitType: unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR
+        id: PriceOptionTypes.RUB_PER_SQUARE_METERS_PER_YEAR,
+        unitType: unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR,
+        func: value => value
     },
     [PriceOptionTypes.RUB_PER_SQUARE_METERS_PER_MONTH]: {
+        id: PriceOptionTypes.RUB_PER_SQUARE_METERS_PER_MONTH,
         unitType: unitTypes.RUB_PER_SQUARE_METERS_PER_MONTH,
         func: value => Math.floor(value / 12)
     },
     [PriceOptionTypes.RUB_PER_MONTH]: {
+        id: PriceOptionTypes.RUB_PER_MONTH,
         unitType: unitTypes.RUB_PER_MONTH
+    },
+    [PriceOptionTypes.RUB_PER_SQUARE_METERS]: {
+        id: PriceOptionTypes.RUB_PER_SQUARE_METERS,
+        unitType: unitTypes.RUB_PER_SQUARE_METERS,
+        func: value => value
+    },
+    [PriceOptionTypes.RUB_PER_ALL]: {
+        id: PriceOptionTypes.RUB_PER_ALL,
+        unitType: unitTypes.RUB,
+        func: (priceValue, areaValue) => priceValue * areaValue
+    },
+    [PriceOptionTypes.RUB_PER_PALLET_PLACE_PER_DAY]: {
+        id: PriceOptionTypes.RUB_PER_PALLET_PLACE_PER_DAY,
+        unitType: unitTypes.RUB_PER_PALLET_PLACE_PER_DAY,
+        func: value => value
     }
 };

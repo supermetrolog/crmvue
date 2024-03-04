@@ -1,48 +1,25 @@
 <template>
-    <ul class="object-parameters">
+    <ul class="complex-parameters">
         <li
-            v-for="(parameter, index) in parameters.range"
+            v-for="(parameter, index) in parameters"
             :key="'range-' + index"
             v-tippy="parameter.name"
-            class="object-parameters__item"
+            class="complex-parameters__item"
         >
             <i v-if="parameter.icon" :class="parameter.icon" />
-            <span class="object-parameters__text">
+            <span v-if="parameter.range" class="complex-parameters__text">
                 <template v-if="!parameter.icon">{{ parameter.name }} - </template>
                 <with-unit-type :unit-type="parameter.unitType">
                     {{ $formatter.numberOrRangeNew(parameter.valueMin, parameter.valueMax) }}
                 </with-unit-type>
             </span>
-        </li>
-        <li
-            v-for="(parameter, index) in parameters.count"
-            :key="'count-' + index"
-            v-tippy="parameter.name"
-            class="object-parameters__item"
-        >
-            <i v-if="parameter.icon" :class="parameter.icon" />
-            <span class="object-parameters__text">
+            <span v-else-if="parameter.count" class="complex-parameters__text">
                 <template v-if="!parameter.icon">{{ parameter.name }} - </template>
                 <with-unit-type :unit-type="parameter.unitType">
-                    {{ parameter.value }}
+                    {{ $formatter.toCorrectValue(parameter.value) }}
                 </with-unit-type>
             </span>
-        </li>
-        <li
-            v-for="(parameter, index) in parameters.type"
-            :key="'type-' + index"
-            v-tippy="parameter.name"
-            class="object-parameters__item"
-        >
-            <i v-if="parameter.icon" :class="parameter.icon" />
-            <span v-if="parameter.withCount">
-                <template v-if="!parameter.icon">{{ parameter.name }} - </template>
-                {{ parameter.value[1] }} шт.
-                <template v-if="parameter.types">
-                    , {{ parameter.types[parameter.value[0]] }}
-                </template>
-            </span>
-            <span v-if="parameter.valueCount">
+            <span v-else-if="parameter.valueCount">
                 <with-unit-type v-if="parameter.unitType" :unit-type="parameter.unitType">
                     {{ parameter.valueCount }}
                 </with-unit-type>
@@ -50,21 +27,28 @@
                     {{ parameter.valueCount }}
                 </template>
             </span>
-            <span v-else-if="parameter.types">
-                <template v-if="!parameter.icon">{{ parameter.name }} - </template>
-                <template v-if="parameter.multiple">
-                    <span
-                        v-for="(value, index) in parameter.value"
-                        :key="parameter.name + index"
-                        class="object-parameters__value"
-                    >
-                        {{ parameter.types[value] }}
+            <template v-else-if="parameter.types">
+                <span v-if="parameter.withCount">
+                    <span v-if="!parameter.icon">{{ parameter.name }} - </span>
+                    <span>{{ parameter.value[1] }} шт.</span>
+                    <span v-if="parameter.types">, {{ parameter.types[parameter.value[0]] }}</span>
+                </span>
+                <span v-else>
+                    <span v-if="!parameter.icon">{{ parameter.name }} - </span>
+                    <template v-if="parameter.multiple">
+                        <span
+                            v-for="(value, index) in parameter.value"
+                            :key="parameter.name + index"
+                            class="complex-parameters__value"
+                        >
+                            {{ parameter.types[value] }}
+                        </span>
+                    </template>
+                    <span v-else>
+                        {{ parameter.types[parameter.value] }}
                     </span>
-                </template>
-                <template v-else>
-                    {{ parameter.types[parameter.value] }}
-                </template>
-            </span>
+                </span>
+            </template>
             <span v-else>{{ parameter.name }}</span>
         </li>
     </ul>

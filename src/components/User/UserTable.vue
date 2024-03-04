@@ -134,7 +134,7 @@ export default {
             this.userForDelete = null;
         },
         getAvatarUrl(avatarName) {
-            return this.$apiUrlHelper.getUserAvatarUrl(avatarName);
+            return this.$url.api.getUserAvatar(avatarName);
         }
     }
 };

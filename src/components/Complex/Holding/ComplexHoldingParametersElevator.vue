@@ -1,38 +1,75 @@
 <template>
     <li class="object-equipment">
-        <svg
-            class="object-equipment__icon"
-            fill="#000000"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 512.001 512.001"
-            xml:space="preserve"
-        >
-            <path
-                d="M225.911,53.362L179.365,6.817c-9.087-9.089-23.824-9.089-32.912,0L99.907,53.362c-9.089,9.087-9.089,23.824,0,32.912
-			c9.089,9.087,23.825,9.087,32.912,0l30.09-30.09L193,86.274c4.543,4.544,10.499,6.817,16.455,6.817
-			c5.956,0,11.913-2.273,16.455-6.817C234.999,77.187,234.999,62.451,225.911,53.362z"
-            />
-            <path
-                d="M412.092,6.817c-9.087-9.089-23.823-9.089-32.912,0l-30.089,30.09l-30.09-30.09c-9.087-9.089-23.824-9.089-32.912,0
-			c-9.089,9.087-9.089,23.824,0,32.912l46.545,46.545c4.544,4.544,10.501,6.817,16.457,6.817c5.956,0,11.912-2.273,16.455-6.817
-			l46.545-46.545C421.181,30.642,421.181,15.905,412.092,6.817z"
-            />
-            <path
-                d="M412.092,146.453c-4.364-4.364-10.285-6.816-16.457-6.816l-139.365,0.014c-0.091-0.003-0.18-0.014-0.27-0.014
-			c-0.092,0-0.178,0.012-0.27,0.014l-139.368,0.014c-12.853,0-23.271,10.418-23.271,23.271v325.792
-			c0,12.853,10.42,23.273,23.273,23.273h279.273c12.853,0,23.273-10.42,23.273-23.273V162.91
-			C418.91,156.736,416.458,150.817,412.092,146.453z M232.728,465.455h-93.091V186.206l93.091-0.009V465.455z M372.364,465.455
-			h-93.091V186.192l93.091-0.009V465.455z"
-            />
-        </svg>
+        <span v-if="hasBadStatus" class="object-equipment__info"></span>
+        <Tooltip>
+            <template #trigger>
+                <IconElevator class="object-equipment__icon" />
+                <p v-if="title" class="object-equipment__header">
+                    {{ title }}
+                </p>
+                <p v-if="elevator.elevator_capacity" class="object-equipment__header">
+                    {{ elevator.elevator_capacity }} тонн
+                </p>
+            </template>
+            <template #content>
+                <span v-if="hasBadStatus" class="object-equipment__status">{{ status }}</span>
+                <p
+                    v-for="(property, key) in properties"
+                    :key="key"
+                    class="object-equipment__element"
+                >
+                    <span class="object-equipment__category">{{ property.name }}:</span>
+                    <with-unit-type v-if="property.unitType" :unit-type="property.unitType">
+                        {{ property.value }}
+                    </with-unit-type>
+                    <span v-else>{{ property.value }}</span>
+                </p>
+            </template>
+        </Tooltip>
     </li>
 </template>
 
 <script>
+import { mapper } from '@/utils/mapper';
+import { entityProperties } from '@/const/properties/properties';
+import Tooltip from '@/components/common/Tooltip.vue';
+import IconElevator from '@/components/common/Icons/IconElevator.vue';
+import WithUnitType from '@/components/common/WithUnitType.vue';
+import { entityOptions } from '@/const/options/options';
+import { alg } from '@/utils/alg';
+
 export default {
     name: 'ComplexHoldingParametersElevator',
+    components: { WithUnitType, IconElevator, Tooltip },
     props: {
-        elevator: Object
+        elevator: {
+            type: Object,
+            required: true
+        }
+    },
+    computed: {
+        properties() {
+            const properties = mapper.propertiesToTableFormat(
+                this.elevator,
+                entityProperties.elevator.characteristics
+            );
+
+            return alg.deleteObjectsWithUndueProperties(properties, 'value', 0);
+        },
+        hasBadStatus() {
+            return (
+                this.elevator.elevator_condition ===
+                    entityOptions.elevator.conditionStatement.NEED_MAINTENANCE ||
+                this.elevator.elevator_condition ===
+                    entityOptions.elevator.conditionStatement.NEED_REPAIR
+            );
+        },
+        status() {
+            return entityOptions.elevator.condition[this.elevator.elevator_condition];
+        },
+        title() {
+            return entityOptions.elevator.type[this.elevator.elevator_type];
+        }
     }
 };
 </script>

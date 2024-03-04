@@ -37,17 +37,17 @@
                 class="trade-offer-item__table"
             />
         </div>
-        <div class="trade-offer-item__line">
+        <div class="trade-offer-item__content">
+            <ComplexPurposes
+                v-if="tradeOffer.purposes_block.length"
+                :purposes="tradeOffer.purposes_block"
+            />
             <ComplexParameters :parameters="parameters" />
-        </div>
-        <div class="trade-offer-item__line">
             <ComplexOfferAdvertisements :advertisements="advertisements" />
         </div>
         <ComplexTabs class="trade-offer-item__tabs" :offer="tradeOffer" />
         <div class="trade-offer-item__footer">
-            <div>
-                <span class="trade-offer-item__date">Создано {{ formattedPublishDate }}</span>
-            </div>
+            <span class="trade-offer-item__date">Создано {{ formattedPublishDate }}</span>
         </div>
     </div>
 </template>
@@ -57,11 +57,6 @@ import { unitTypes } from '@/const/unitTypes';
 import ComplexOfferArea from '@/components/Complex/Offer/ComplexOfferArea.vue';
 import { alg } from '@/utils/alg';
 import ComplexOfferPrice from '@/components/Complex/Offer/ComplexOfferPrice.vue';
-import {
-    tradeOfferAdvertisements,
-    tradeOfferParameters,
-    tradeOfferPriceProperties
-} from '@/const/properties';
 import { reducer } from '@/utils';
 import ComplexOfferStatus from '@/components/Complex/Offer/ComplexOfferStatus.vue';
 import ComplexTabs from '@/components/Complex/ComplexTabs.vue';
@@ -69,10 +64,15 @@ import ComplexActions from '@/components/Complex/ComplexActions.vue';
 import ComplexOfferAdvertisements from '@/components/Complex/Offer/ComplexOfferAdvertisements.vue';
 import { PriceOptionList, PriceOptionTypes } from '@/const/const';
 import ComplexParameters from '@/components/Complex/ComplexParameters.vue';
+import { entityProperties } from '@/const/properties/properties';
+import { mapper } from '@/utils/mapper';
+import ComplexPurposes from '@/components/Complex/ComplexPurposes.vue';
+import { mapGetters } from 'vuex';
 
 export default {
     name: 'ComplexOfferItem',
     components: {
+        ComplexPurposes,
         ComplexParameters,
         ComplexOfferAdvertisements,
         ComplexActions,
@@ -98,23 +98,33 @@ export default {
         };
     },
     computed: {
-        priceProperties: () => tradeOfferPriceProperties,
+        ...mapGetters(['THIS_USER']),
+        priceProperties: () => entityProperties.offer.priceWithSections,
         parts() {
             return this.$store.getters['Complex/getPartsByIds'](this.tradeOffer.parts);
-        },
-        partsWithFloors() {
-            return this.$store.getters['Complex/getPartsByIdsWithFloors'](this.tradeOffer.parts);
         },
         actionButtons() {
             return {
                 edit: {},
-                advert: { value: true },
-                dislike: { value: true },
+                advert: { value: this.hasAdvertisements },
+                dislike: { value: false },
                 favorite: { value: false },
-                notifications: { value: true },
-                pdf: {},
+                notifications: { value: false },
+                pdf: {
+                    handler: () => {
+                        const urlLink = this.$url.pdf(
+                            {
+                                type_id: 1,
+                                offer_id: this.tradeOffer.id,
+                                object_id: this.tradeOffer.object_id
+                            },
+                            this.THIS_USER.id
+                        );
+                        window.open(urlLink, '_blank');
+                    }
+                },
                 deal: { value: false },
-                delete: { value: false, label: 'Архивировать' }
+                delete: { value: this.isArchived, label: 'Архивировать', disabled: this.isArchived }
             };
         },
         areaTableTitle() {
@@ -292,55 +302,35 @@ export default {
             };
         },
         parameters() {
-            const ranges = Object.keys(tradeOfferParameters.range).map(key => ({
-                valueMin: this.tradeOffer[`${key}_min`],
-                valueMax: this.tradeOffer[`${key}_max`],
-                ...tradeOfferParameters.range[key]
-            }));
-
-            const counts = Object.keys(tradeOfferParameters.count).map(key => ({
-                value: this.tradeOffer[key],
-                ...tradeOfferParameters.count[key]
-            }));
-
-            const types = Object.keys(tradeOfferParameters.types).map(key => {
-                let value = this.tradeOffer[key];
-
-                if (tradeOfferParameters.types[key].withCount) value = value.length ? value : null;
-
-                return {
-                    value: value,
-                    ...tradeOfferParameters.types[key]
-                };
-            });
-
-            return {
-                range: alg.deleteObjectsWithUndueProperties(ranges, ['valueMin', 'valueMax'], 0, {
-                    strict: true
-                }),
-                count: counts,
-                type: alg.deleteObjectsWithUndueProperties(types, 'value', 0)
-            };
+            return mapper.propertiesToParametersFormat(
+                this.tradeOffer,
+                entityProperties.offer.parameters
+            );
         },
         advertisements() {
-            return Object.keys(tradeOfferAdvertisements).map(key => {
-                const properties = Object.keys(tradeOfferAdvertisements[key].properties).map(
-                    property => ({
-                        label: tradeOfferAdvertisements[key].properties[property].label,
-                        value: this.tradeOffer[property]
-                    })
-                );
-                return { label: tradeOfferAdvertisements[key].label, properties: properties };
+            return Object.keys(entityProperties.offer.advertisements).map(key => {
+                const properties = Object.keys(
+                    entityProperties.offer.advertisements[key].properties
+                ).map(property => ({
+                    label: entityProperties.offer.advertisements[key].properties[property].label,
+                    value: this.tradeOffer[property]
+                }));
+
+                return {
+                    label: entityProperties.offer.advertisements[key].label,
+                    active: properties.some(element => element.value),
+                    properties: properties
+                };
             });
+        },
+        hasAdvertisements() {
+            return this.advertisements.some(element => element.active);
         },
         isArchived() {
             return this.tradeOffer.deal_id || this.tradeOffer.deleted;
         },
         isFinished() {
             return !!this.tradeOffer.deal_id;
-        },
-        computedPriceOption() {
-            return this.priceOption;
         },
         pallets() {
             return this.$formatter.numberOrRangeNew(

@@ -1,5 +1,38 @@
 import { dealOptions } from '@/const/options/deal.options';
+import { floorOptions } from '@/const/options/floor.options';
+import { partOptions } from '@/const/options/part.options';
+import { complexOptions } from '@/const/options/complex.options';
+import { objectOptions } from '@/const/options/object.options';
+import { elevatorOptions } from '@/const/options/elevator.options';
+import { craneOptions } from '@/const/options/crane.options';
+import { contactOptions } from '@/const/options/contact.options';
+import { locationOptions } from '@/const/options/location.options';
+
+const defaultsOptions = {
+    boolean: {
+        1: 'Да/есть',
+        2: 'Нет'
+    },
+    booleanSimple: {
+        1: 'Да',
+        2: 'Нет'
+    },
+    booleanStatement: {
+        UNKNOWN: 0,
+        TRUE: 1,
+        FALSE: 2
+    }
+};
 
 export const entityOptions = {
-    deal: dealOptions
+    deal: dealOptions,
+    floor: floorOptions,
+    part: partOptions,
+    complex: complexOptions,
+    object: objectOptions,
+    elevator: elevatorOptions,
+    crane: craneOptions,
+    contact: contactOptions,
+    location: locationOptions,
+    defaults: defaultsOptions
 };

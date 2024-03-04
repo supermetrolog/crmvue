@@ -3,6 +3,7 @@
         @close="clickCloseModal"
         :title="formdata ? 'Редактирование компании' : 'Создание компании'"
         class="modal-form-company"
+        has-tabs
     >
         <Form @submit="onSubmit">
             <Tabs :options="{ useUrlFragment: false }">

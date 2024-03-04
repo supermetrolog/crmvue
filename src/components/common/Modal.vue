@@ -1,5 +1,5 @@
 <template>
-    <div ref="modal" class="modal active" role="dialog">
+    <div ref="modal" class="modal active" role="dialog" :class="{ 'modal--with-tabs': hasTabs }">
         <div @click="clickCancelButton" class="modal__blackout"></div>
         <div class="modal__container">
             <div class="modal__header">
@@ -8,7 +8,11 @@
                 </p>
                 <slot name="header"></slot>
                 <div class="modal__close">
-                    <i v-tippy="'Закрыть окно'" @click.prevent="clickCancelButton" class="icon fa-solid fa-xmark"></i>
+                    <i
+                        v-tippy="'Закрыть окно'"
+                        @click.prevent="clickCancelButton"
+                        class="icon fa-solid fa-xmark"
+                    ></i>
                 </div>
             </div>
             <div class="modal__body">
@@ -27,6 +31,10 @@ export default {
     props: {
         title: {
             type: String
+        },
+        hasTabs: {
+            type: Boolean,
+            default: false
         }
     },
     data() {

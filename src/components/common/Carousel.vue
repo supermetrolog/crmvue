@@ -16,7 +16,7 @@
             v-if="modalIsOpen"
             @close="clickCloseModal"
             class="carousel__modal"
-            title="Просмотр изображений"
+            :title="modalTitle"
         >
             <VueAgile
                 ref="main"
@@ -77,6 +77,10 @@ export default {
         grid: {
             type: Boolean,
             default: false
+        },
+        title: {
+            type: String,
+            default: null
         }
     },
     data() {
@@ -95,6 +99,11 @@ export default {
                 slidesToShow: 3
             }
         };
+    },
+    computed: {
+        modalTitle() {
+            return 'Просмотр изображений' + (this.title ? `. ${this.title}` : '');
+        }
     },
     methods: {
         openModal(id) {

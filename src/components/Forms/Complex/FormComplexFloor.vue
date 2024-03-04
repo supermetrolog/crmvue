@@ -3,10 +3,8 @@
         @close="$emit('close')"
         :title="floor ? 'Редактирование этажа' : 'Добавление этажа'"
         class="form-complex-floor"
+        has-tabs
     >
-        <template #header>
-            <CheckboxChip v-model="form.test_only" :value="form.test_only" text="Тестовый лот" />
-        </template>
         <Loader v-if="loader" class="center" />
         <Form @submit="onSubmit">
             <Tabs :options="{ useUrlFragment: false, defaultTabHash: 'main' }">

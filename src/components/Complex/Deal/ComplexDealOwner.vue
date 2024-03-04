@@ -29,7 +29,7 @@
         <ComplexDealOwnerContact v-if="owner.mainContact" :contact="owner.mainContact" />
         <p v-else>Отсутсвует</p>
         <p @click="isOpenListContact = !isOpenListContact" class="object-holding-company__subtitle">
-            Полный список контактов:
+            Полный список контактов ({{ contacts.length }}):
             <i v-if="isOpenListContact" class="fa-solid fa-caret-up"></i>
             <i v-else class="fa-solid fa-caret-down"></i>
         </p>
@@ -39,6 +39,7 @@
                 :key="contact.id"
                 :contact="contact"
             />
+            <p v-if="!contacts.length">Список контактов пуст..</p>
         </DropdownContainer>
     </div>
 </template>

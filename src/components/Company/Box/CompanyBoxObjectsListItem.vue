@@ -85,7 +85,7 @@ export default {
             if (photo && Array.isArray(photo)) {
                 return 'https://pennylane.pro' + photo[0];
             }
-            return this.$apiUrlHelper.fileNotFoundUrl();
+            return this.$url.api.fileNotFound();
         },
         objectUrl() {
             return 'https://pennylane.pro/complex/' + this.object.complex_id;

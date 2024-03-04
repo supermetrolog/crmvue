@@ -6,7 +6,7 @@
     >
         <div class="row no-gutters px-2 object-offer-inf">
             <div class="col-12 text-left">
-                <a :href="$apiUrlHelper.generator().offerUrl(offer)" target="_blank">
+                <a :href="$url.offerByObject(offer)" target="_blank">
                     <span class="object-offer__visual_id">{{ offer.visual_id }}</span>
                     <span>{{ offer.deal_type_name }}</span>
                     <span>
