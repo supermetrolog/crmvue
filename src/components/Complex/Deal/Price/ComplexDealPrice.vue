@@ -18,13 +18,13 @@
             v-else-if="isStorageDeal"
             @set-price-option="setPriceOption"
             :price-option="priceOption"
-            :deal="deal"
+            :deal="deal.summaryBlock"
         />
         <ComplexDealPriceRent
             v-else
             @set-price-option="setPriceOption"
             :price-option="priceOption"
-            :deal="deal"
+            :deal="deal.summaryBlock"
         />
     </div>
 </template>
@@ -44,7 +44,6 @@ export default {
         ComplexDealPriceRent,
         ComplexDealPriceSale
     },
-    inject: ['dealType'],
     props: {
         deal: {
             type: Object,
@@ -60,13 +59,13 @@ export default {
     },
     computed: {
         isSaleDeal() {
-            return this.dealType.id === entityOptions.deal.typeStatement.SALE;
+            return this.deal.deal_type === entityOptions.deal.typeStatement.SALE;
         },
         isStorageDeal() {
-            return this.dealType.id === entityOptions.deal.typeStatement.STORAGE;
+            return this.deal.deal_type === entityOptions.deal.typeStatement.STORAGE;
         },
         dealTypeName() {
-            return [null, 'rent', 'sale', 'storage', 'rent'][this.dealType.id];
+            return [null, 'rent', 'sale', 'storage', 'rent'][this.deal.deal_type];
         }
     },
     methods: {
@@ -79,9 +78,9 @@ export default {
         }
     },
     created() {
-        if (this.dealType.id === entityOptions.deal.typeStatement.SALE) {
+        if (this.deal.deal_type === entityOptions.deal.typeStatement.SALE) {
             this.priceOption = { ...PriceOptionList[PriceOptionTypes.RUB_PER_SQUARE_METERS] };
-        } else if (this.dealType.id === entityOptions.deal.typeStatement.STORAGE) {
+        } else if (this.deal.deal_type === entityOptions.deal.typeStatement.STORAGE) {
             this.priceOption = {
                 ...PriceOptionList[PriceOptionTypes.RUB_PER_PALLET_PLACE_PER_DAY]
             };

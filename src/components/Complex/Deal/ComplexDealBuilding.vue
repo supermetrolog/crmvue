@@ -7,7 +7,7 @@
                     :deal="deal.summaryBlock"
                     :original="deal"
                 />
-                <ComplexDealPrice class="building-info__table" :deal="deal.summaryBlock" />
+                <ComplexDealPrice class="building-info__table" :deal="deal" />
             </div>
             <ComplexPurposes
                 v-if="deal.summaryBlock.purposes_block.length"
