@@ -216,7 +216,12 @@ router.beforeEach((to, from, next) => {
     const access_token = localStorage.getItem('access_token');
 
     if (to.meta.auth.isAuth && !access_token) {
-        return next({ name: 'login', replace: true });
+        localStorage.setItem('redirect_link', to.fullPath);
+
+        return next({
+            name: 'login',
+            replace: true
+        });
     }
 
     if (!to.meta.auth.isAuth && access_token) {

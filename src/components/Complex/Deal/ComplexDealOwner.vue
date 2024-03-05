@@ -1,69 +1,62 @@
 <template>
-    <div class="deal-owner">
-        <router-link :to="'/companies/' + owner.company_id" target="_blank">
-            <p :title="owner.name" class="owner_name deal-owner__text">
-                {{ owner.name }}
+    <div class="object-holding-company">
+        <p class="object-holding-company__title">Информация о компании</p>
+        <div class="object-holding-company__header">
+            <router-link
+                v-tippy="owner.description"
+                class="object-holding-company__name"
+                :to="'/companies/' + owner.id"
+                target="_blank"
+            >
+                {{ owner.full_name }}
+            </router-link>
+            <p class="object-holding-company__message">
+                <span>
+                    {{ plural(contacts.length, '%d контакт', '%d контакта', '%d контактов') }},
+                </span>
+                <span>
+                    {{ plural(owner.request_count, '%d запрос', '%d запроса', '%d запросов') }},
+                </span>
+                <span>
+                    {{ plural(owner.object_count, '%d объект', '%d объекта', '%d объектов') }}
+                </span>
             </p>
-        </router-link>
-        <!-- РЕЙТИНГ ПОКА НЕ РЕАЛИЗОВАН -->
-        <!-- <rating :rating="owner.rating" class="deal-owner__rating" /> -->
-
-        <!-- ПОКА НЕ РЕАЛИЗОВАНО -->
-        <!-- <ul class="deal-owner__links">
-        <li class="deal-owner__text deal-owner__text_link">
-          {{
-            plural(owner.contacts, "%d контакт", "%d контакта", "%d контактов")
-          }},
-        </li>
-        <li class="deal-owner__text deal-owner__text_link">
-          {{ plural(owner.requests, "%d запрос", "%d запроса", "%d запросов") }},
-        </li>
-        <li class="deal-owner__text deal-owner__text_link">
-          {{ plural(owner.objects, "%d объект", "%d объекта", "%d объектов") }}
-        </li>
-      </ul> -->
-        <!-- ПРЕДСТАВИТЕЛЬ -->
-        <p class="deal-owner__text deal-owner__text_weigth_bold">
-            {{ owner.representative.name }}
+        </div>
+        <div v-if="owner.rating" class="object-holding-company__rating">
+            <Rating :rating="owner.rating" />
+        </div>
+        <p class="object-holding-company__subtitle">Основной контакт:</p>
+        <ComplexDealOwnerContact v-if="owner.mainContact" :contact="owner.mainContact" />
+        <p v-else>Отсутсвует</p>
+        <p @click="isOpenListContact = !isOpenListContact" class="object-holding-company__subtitle">
+            Полный список контактов ({{ contacts.length }}):
+            <i v-if="isOpenListContact" class="fa-solid fa-caret-up"></i>
+            <i v-else class="fa-solid fa-caret-down"></i>
         </p>
-        <p class="deal-owner__text deal-owner__text_color_grey">
-            {{ owner.representative.post }}
-        </p>
-        <!-- КОНТАКТЫ -->
-        <ul class="deal-owner__phones">
-            <li v-for="phone in owner.phones" :key="phone.id" class="deal-owner__text">
-                {{ $formatter.formatPhoneNumber(phone.phone) }}
-            </li>
-        </ul>
-
-        <ul class="deal-owner__emails">
-            <li v-for="email in owner.emails" :key="email.id" class="deal-owner__text">
-                {{ email.email }}
-            </li>
-        </ul>
+        <DropdownContainer v-model="isOpenListContact" class="object-holding-company__list">
+            <ComplexDealOwnerContact
+                v-for="contact in contacts"
+                :key="contact.id"
+                :contact="contact"
+            />
+            <p v-if="!contacts.length">Список контактов пуст..</p>
+        </DropdownContainer>
     </div>
-
-    <!--    <p :title="owner.name" class="deal-owner__text">{{ owner.name }}</p>-->
-    <!--    <span>{{ owner.mainContact.phones.map((el) => el.phone).join(',') }}</span>-->
-    <!--    <span>{{ owner.mainContact.emails.map((el) => el.email).join(',') }}</span>-->
-
-    <!-- <ul class="deal_owner__phone-numbers">
-      <li
-        v-for="number in owner.phoneNumbers"
-        :key="number"
-        class="deal-owner__text"
-      >
-        {{ $formatter.formatPhoneNumber(number) }}
-      </li>
-    </ul> -->
 </template>
 
 <script>
 import plural from 'plural-ru';
+import DropdownContainer from '@/components/common/Dropdown/DropdownContainer.vue';
+import ComplexDealOwnerContact from '@/components/Complex/Deal/ComplexDealOwnerContact.vue';
+import { mapActions } from 'vuex';
+import Rating from '@/components/common/Rating.vue';
 
 export default {
     name: 'ComplexDealOwner',
     components: {
+        Rating,
+        ComplexDealOwnerContact,
+        DropdownContainer
         //  Rating,
     },
     props: {
@@ -74,9 +67,17 @@ export default {
     },
     data() {
         return {
-            plural: plural
+            plural: plural,
+            contacts: [],
+            isOpenListContact: false
         };
     },
-    computed: {}
+    computed: {},
+    methods: {
+        ...mapActions({ fetchContacts: 'FETCH_COMPANY_CONTACTS' })
+    },
+    async mounted() {
+        this.contacts = await this.fetchContacts(this.owner.id);
+    }
 };
 </script>

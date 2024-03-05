@@ -145,6 +145,52 @@
             margin-left: 5px;
         }
     }
+
+    &--with-tabs {
+        .modal {
+            &__body {
+                padding: 0 0 15px;
+            }
+        }
+
+        .container-fluid {
+            padding: 0;
+            margin: 0;
+        }
+
+
+        .tabs-component {
+            &-tabs {
+                padding: 0 30px;
+                background-color: rgba(211, 211, 211, .3);
+                border-bottom: 1px solid rgba(0, 0, 0, .1);
+            }
+
+            &-tab {
+
+                &.is-active {
+                    background-color: #268e50;
+                }
+            }
+
+            &-tab-a {
+                padding: 10px 15px;
+
+
+                &.is-active {
+                    color: #fff;
+
+                    &::before {
+                        display: none;
+                    }
+                }
+            }
+
+            &-panel {
+                padding: 0 30px;
+            }
+        }
+    }
 }
 
 @keyframes fadeIn {
@@ -163,9 +209,11 @@
 @include mixins.modal-width(modal-form-company-request-clone, 750px);
 @include mixins.modal-width(modal-form-floor-block, 1200px);
 @include mixins.modal-width(modal-form-complex-building, 900px);
-@include mixins.modal-width(modal-form-complex-plot, 900px);
+@include mixins.modal-width(modal-form-complex-plot, 1000px);
 @include mixins.modal-width(modal-form-complex-crane, 900px);
 @include mixins.modal-width(modal-form-complex-elevator, 950px);
 @include mixins.modal-width(modal-form-offer-search, 1400px);
 @include mixins.modal-width(modal-form-delete, 600px);
 @include mixins.modal-width(modal-form-complex, 950px);
+@include mixins.modal-width(modal-complex-photo-downloader, 1100px);
+@include mixins.modal-width(modal-form-letter, 1200px);

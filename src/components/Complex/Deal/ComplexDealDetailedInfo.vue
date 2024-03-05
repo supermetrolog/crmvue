@@ -1,12 +1,10 @@
 <template>
     <div class="deal-detailed-info">
-        <ComplexDealBuilding
-            class="deal-detailed-info__building-info"
-            :area="area"
-            :price="price"
-            :parameters="parameters"
+        <ComplexDealBuilding class="deal-detailed-info__building-info" :deal="deal" />
+        <ComplexOfferTabs
+            :trade-offers="deal.blocks"
+            class="deal-detailed-info__trade-offer-tabs"
         />
-        <ComplexOfferTabs class="deal-detailed-info__trade-offer-tabs" />
     </div>
 </template>
 
@@ -15,25 +13,16 @@ import ComplexDealBuilding from '@/components/Complex/Deal/ComplexDealBuilding.v
 import ComplexOfferTabs from '@/components/Complex/Offer/ComplexOfferTabs.vue';
 
 export default {
-    name: 'ComplexDealInfoDetailed',
+    name: 'ComplexDealDetailedInfo',
     components: {
         ComplexOfferTabs,
         ComplexDealBuilding
     },
     props: {
-        area: {
-            type: Object
-        },
-        price: {
-            type: Object
-        },
-        parameters: {
-            type: Object
+        deal: {
+            type: Object,
+            required: true
         }
-    },
-    data() {
-        return {};
-    },
-    methods: {}
+    }
 };
 </script>

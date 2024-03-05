@@ -1,0 +1,29 @@
+.complex-parameters {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+
+    &__item {
+        align-items: center;
+        display: flex;
+        gap: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        border-radius: 4px;
+        background-color: rgba(201, 201, 201, 0.8);
+        padding: 7px 10px;
+
+        & i {
+            font-size: 18px;
+        }
+
+        .complex-parameters__value:not(:last-child)::after {
+            content: ', '
+        }
+    }
+
+    &__text {
+        display: flex;
+        gap: 3px;
+    }
+}

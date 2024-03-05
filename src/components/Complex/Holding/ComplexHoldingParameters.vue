@@ -10,7 +10,7 @@
                         {{ formattedArea }}
                     </with-unit-type>
                     <span v-else>не заполнено</span>
-                    <template v-if="!object.object_type.includes(3)">
+                    <template v-if="!object.is_land">
                         (по этажам:
                         <with-unit-type
                             v-if="object.area_floor_full !== null"
@@ -26,69 +26,62 @@
                     {{ object.address || 'Адрес не заполнен' }}
                 </p>
             </div>
-            <div v-if="object.purposes" class="ObjectHoldingsParameters-types">
-                <template v-if="object.purposes.length > 0 && object.object_type">
-                    <strong
-                        v-for="purpose of object.purposes"
-                        :key="purpose"
-                        v-tippy="getObjectTypeName(purpose)"
-                        class="object-type-box"
-                    >
-                        <i :class="getObjectTypeIcon(purpose)"></i>
-                    </strong>
-                </template>
-            </div>
-            <div v-if="object" class="ObjectHoldingsParameters-provision">
-                <ComplexParameters :object="object" />
-            </div>
-            <div class="ObjectHoldingsParameters-equipment">
-                <teleport to="body">
-                    <FormComplexCrane
-                        v-if="craneFormIsVisible"
-                        @close="toggleCraneFormIsVisible()"
-                        :crane="forms.crane"
-                    />
-                    <FormComplexElevator
-                        v-if="elevatorFormIsVisible"
-                        @close="toggleElevatorFormIsVisible()"
-                        :elevator="forms.elevator"
-                    />
-                    <FormComplexFloor
-                        v-if="floorFormIsVisible"
-                        @close="toggleFloorFormVisible()"
-                        :floor="forms.floor"
-                        :object="object"
-                    />
-                </teleport>
-                <p class="object-holding__label">Краны</p>
-                <ul class="object-holding__list mb-2">
+            <ComplexPurposes
+                v-if="object.purposes.length && object.object_type"
+                :purposes="object.purposes"
+            />
+            <ComplexParameters v-if="parameters" :parameters="parameters" />
+            <div v-if="hasEquipment || isModerator" class="ObjectHoldingsParameters-equipment">
+                <ul class="object-holding__list">
                     <ComplexHoldingParametersCrane
                         v-for="crane in object.cranes"
                         :key="crane.id"
                         @click.stop="toggleCraneFormIsVisible(crane)"
                         :crane="crane"
                     />
-                    <li>
-                        <button @click.stop="toggleCraneFormIsVisible()" class="object-equipment">
-                            <i class="fas fa-plus-circle"></i> Добавить кран
-                        </button>
+                    <ComplexHoldingParametersElevator
+                        v-for="elevator in object.elevatorsRecords"
+                        :key="elevator.id"
+                        @click.stop="toggleElevatorFormIsVisible(elevator)"
+                        :elevator="elevator"
+                    />
+                    <li
+                        v-if="isModerator"
+                        @click.stop="toggleCraneFormIsVisible()"
+                        class="object-equipment object-equipment--form"
+                    >
+                        <teleport to="body">
+                            <FormComplexCrane
+                                v-if="craneFormIsVisible"
+                                @close="toggleCraneFormIsVisible()"
+                                :crane="forms.crane"
+                            />
+                        </teleport>
+                        <IconCrane class="object-equipment__icon" />
+                        <i class="fa-solid fa-plus"></i>
                     </li>
-                </ul>
-                <p class="object-holding__label">Подъемники</p>
-                <ul class="object-holding__list">
-                    <li>
-                        <button @click="toggleElevatorFormIsVisible()" class="object-equipment">
-                            <i class="fas fa-plus-circle"></i> Добавить подъемник
-                        </button>
+                    <li
+                        v-if="isModerator"
+                        @click="toggleElevatorFormIsVisible()"
+                        class="object-equipment object-equipment--form"
+                    >
+                        <teleport to="body">
+                            <FormComplexElevator
+                                v-if="elevatorFormIsVisible"
+                                @close="toggleElevatorFormIsVisible()"
+                                :elevator="forms.elevator"
+                            />
+                        </teleport>
+                        <IconElevator class="object-equipment__icon" />
+                        <i class="fa-solid fa-plus"></i>
                     </li>
                 </ul>
             </div>
         </div>
-        <div v-if="object.floorsRecords.length" class="object-holding-parameters__floors">
-            <p class="object-holding-parameters__subtitle">Этажи</p>
+        <div v-if="floors.length" class="object-holding-parameters__floors">
             <ul class="object-holding-parameters__floors-list">
                 <li
-                    v-for="floor in object.floorsRecords"
+                    v-for="floor in floors"
                     :key="floor.number.id"
                     @click="toggleFloorFormVisible(floor)"
                     class="object-holding-parameters__floor"
@@ -101,9 +94,18 @@
                     <!--                ></i>-->
                 </li>
                 <li
+                    v-if="isModerator"
                     @click="toggleFloorFormVisible()"
                     class="object-holding-parameters__floor object-holding-parameters__floor--empty"
                 >
+                    <teleport to="body">
+                        <FormComplexFloor
+                            v-if="floorFormIsVisible"
+                            @close="toggleFloorFormVisible()"
+                            :floor="forms.floor"
+                            :object="object"
+                        />
+                    </teleport>
                     <span>Добавить этаж</span>
                 </li>
             </ul>
@@ -113,7 +115,6 @@
 
 <script>
 import { unitTypes } from '@/const/unitTypes';
-import { objectPurposes } from '@/const/types';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import ComplexParameters from '@/components/Complex/ComplexParameters.vue';
 import FormComplexCrane from '@/components/Forms/Complex/FormComplexCrane.vue';
@@ -121,10 +122,21 @@ import FormComplexElevator from '@/components/Forms/Complex/FormComplexElevator.
 import ComplexHoldingParametersCrane from '@/components/Complex/Holding/ComplexHoldingParametersCrane.vue';
 import FormComplexFloor from '@/components/Forms/Complex/FormComplexFloor.vue';
 import { reducer } from '@/utils';
+import { mapGetters } from 'vuex';
+import ComplexHoldingParametersElevator from '@/components/Complex/Holding/ComplexHoldingParametersElevator.vue';
+import IconCrane from '@/components/common/Icons/IconCrane.vue';
+import IconElevator from '@/components/common/Icons/IconElevator.vue';
+import { mapper } from '@/utils/mapper';
+import { entityProperties } from '@/const/properties/properties';
+import ComplexPurposes from '@/components/Complex/ComplexPurposes.vue';
 
 export default {
     name: 'ComplexHoldingParameters',
     components: {
+        ComplexPurposes,
+        IconElevator,
+        IconCrane,
+        ComplexHoldingParametersElevator,
         FormComplexFloor,
         ComplexHoldingParametersCrane,
         FormComplexElevator,
@@ -153,7 +165,7 @@ export default {
     },
     computed: {
         formattedArea() {
-            if (this.object.object_type.includes(3)) {
+            if (this.object.is_land) {
                 return this.$formatter.number(this.object.area_field_full);
             } else {
                 return this.$formatter.number(this.object.area_building);
@@ -161,14 +173,30 @@ export default {
         },
         formattedFloorArea() {
             return this.$formatter.number(
-                reducer.sum(this.object.floorsRecords, [
+                reducer.sum(this.floors, [
                     'area_floor_full',
                     'area_mezzanine_full',
                     'area_tech_full',
                     'area_office_full'
                 ])
             );
-        }
+        },
+        parameters() {
+            return mapper.propertiesToParametersFormat(
+                this.object,
+                entityProperties.object.parameters
+            );
+        },
+        hasEquipment() {
+            return (
+                (this.object.cranes && this.object.cranes.length) ||
+                (this.object.elevators && this.object.elevators.length)
+            );
+        },
+        floors() {
+            return this.object.floorsRecords.filter(floor => floor.number);
+        },
+        ...mapGetters({ isModerator: 'isModerator' })
     },
     methods: {
         toggleFloorFormVisible(floor = null) {
@@ -182,12 +210,6 @@ export default {
         toggleElevatorFormIsVisible(elevator = null) {
             this.forms.elevator = elevator;
             this.elevatorFormIsVisible = !this.elevatorFormIsVisible;
-        },
-        getObjectTypeIcon(purpose) {
-            return objectPurposes[purpose].icon;
-        },
-        getObjectTypeName(purpose) {
-            return objectPurposes[purpose].name;
         }
     }
 };

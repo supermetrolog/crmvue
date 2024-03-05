@@ -3,6 +3,7 @@
         @close="$emit('close')"
         class="modal-form-complex-plot"
         :title="false ? 'Редактирование участка' : 'Создание участка'"
+        has-tabs
     >
         <template #header>
             <CheckboxChip v-model="form.test_only" :value="form.test_only" text="Тестовый лот" />
@@ -630,20 +631,9 @@ import { mapActions } from 'vuex';
 import { yandexmap } from '@/utils';
 import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
-import {
-    entryTerritoryTypes,
-    feeTypes,
-    gasTypes,
-    guardTypes,
-    internetTypes,
-    landCategoryTypes,
-    landscapeTypes,
-    ownTypesLand,
-    waterTypes
-} from '@/const/types';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
-import { ObjectTypeList } from '@/const/const';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
+import { entityOptions } from '@/const/options/options';
 
 export default {
     name: 'FormComplexPlotCreate',
@@ -802,35 +792,35 @@ export default {
         };
     },
     computed: {
-        objectTypeListWareHouse: () => ObjectTypeList.warehouse,
-        objectTypeListProduction: () => ObjectTypeList.production,
-        objectTypeListPlot: () => ObjectTypeList.plot,
+        objectTypeListWareHouse: () => entityOptions.object.purposesWithSections.warehouse,
+        objectTypeListProduction: () => entityOptions.object.purposesWithSections.production,
+        objectTypeListPlot: () => entityOptions.object.purposesWithSections.plot,
         ownTypeLandOptions() {
-            return Object.values(ownTypesLand);
+            return Object.values(entityOptions.object.ownTypeLand);
         },
         landCategoryOptions() {
-            return Object.values(landCategoryTypes);
+            return Object.values(entityOptions.object.landCategory);
         },
         landscapeTypeOptions() {
-            return Object.values(landscapeTypes);
+            return Object.values(entityOptions.object.landscape);
         },
         waterTypeOptions() {
-            return Object.values(waterTypes);
+            return Object.values(entityOptions.complex.water);
         },
         gasTypeOptions() {
-            return Object.values(gasTypes);
+            return Object.values(entityOptions.complex.water);
         },
         internetTypeOptions() {
-            return Object.values(internetTypes);
+            return Object.values(entityOptions.complex.internet);
         },
         guardTypeOptions() {
-            return Object.values(guardTypes);
+            return Object.values(entityOptions.complex.guard);
         },
         feeTypeOptions() {
-            return Object.values(feeTypes);
+            return Object.values(entityOptions.complex.fee);
         },
         entryTerritoryTypeOptions() {
-            return Object.values(entryTerritoryTypes);
+            return Object.values(entityOptions.complex.entryTerritory);
         }
     },
     methods: {

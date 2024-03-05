@@ -3,6 +3,7 @@
         @close="$emit('close')"
         class="modal-form-complex-elevator"
         :title="elevator ? 'Редактирование подъемника' : 'Добавление подъемника'"
+        has-tabs
     >
         <Loader v-if="loader" class="center" />
         <Form @submit="onSubmit" class="equipment-form">
@@ -127,8 +128,9 @@
                     </FormGroup>
                 </Tab>
             </Tabs>
-            <div class="row">
-                <Submit class="col-3 mx-auto" success>Сохранить</Submit>
+            <div class="row justify-content-center">
+                <Submit success class="col-3">Сохранить</Submit>
+                <Button v-if="elevator" class="col-3 ml-2" danger>Удалить</Button>
             </div>
         </Form>
     </Modal>
@@ -136,12 +138,6 @@
 
 <script>
 import { ComplexFormMixin } from '@/components/Forms/Complex/mixin';
-import {
-    elevatorTypes,
-    liftingDeviceConditionTypes,
-    liftingDeviceControlsTypes,
-    liftingDeviceLocationTypes
-} from '@/const/liftingDevices';
 import { helpers, minValue, required } from '@vuelidate/validators';
 import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
@@ -149,14 +145,19 @@ import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import Chip from '@/components/common/Chip.vue';
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
 import { min } from '@//validators';
+import Button from '@/components/common/Button.vue';
+import { entityOptions } from '@/const/options/options';
 
 export default {
     name: 'FormComplexElevator',
-    components: { DoubleInput, Chip, RadioChip, Modal, Loader },
+    components: { Button, DoubleInput, Chip, RadioChip, Modal, Loader },
     mixins: [ComplexFormMixin],
     emits: ['close'],
     props: {
-        elevator: Object
+        elevator: {
+            type: Object,
+            default: null
+        }
     },
     data() {
         return {
@@ -195,16 +196,16 @@ export default {
     },
     computed: {
         elevatorTypeOptions() {
-            return Object.values(elevatorTypes);
+            return Object.values(entityOptions.elevator.type);
         },
         elevatorLocationOptions() {
-            return Object.values(liftingDeviceLocationTypes);
+            return Object.values(entityOptions.elevator.location);
         },
         elevatorControlsOptions() {
-            return Object.values(liftingDeviceControlsTypes);
+            return Object.values(entityOptions.elevator.controls);
         },
         elevatorConditionOptions() {
-            return Object.values(liftingDeviceConditionTypes);
+            return Object.values(entityOptions.elevator.condition);
         },
         formElevatorValidators() {
             return [{ func: min(1), message: 'Значение должно быть больше 0' }];

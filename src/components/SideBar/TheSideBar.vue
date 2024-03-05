@@ -27,7 +27,7 @@ export default {
         ...mapGetters(['THIS_USER']),
         src() {
             if (this.THIS_USER) {
-                return this.$apiUrlHelper.getUserAvatarUrl(this.THIS_USER.userProfile.avatar);
+                return this.$url.api.getUserAvatar(this.THIS_USER.userProfile.avatar);
             }
             return null;
         }

@@ -84,7 +84,6 @@
 
     &__line {
         position: relative;
-        height: 100%;
         display: flex;
         gap: 4px;
         width: 100%;
@@ -191,50 +190,44 @@
     }
 }
 
-.ObjectDeals {
-    &-actions {
-        width: 100%;
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        gap: 15px;
-
-        &-label {
-            color: variables.$color_grey;
-            font-size: 13px;
-        }
-
-        &-list {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-
-        &-item {
-        }
-
-        &-button {
-            background: none;
-            border: none;
-            font-size: 13px;
-            color: variables.$color_default_link;
-            text-decoration: underline;
-            cursor: pointer;
-            padding: 0px;
-        }
-    }
-
-    &-list {
+.object-deals {
+    &__list {
         display: flex;
 
         margin-top: 10px;
         margin-bottom: 40px;
-        background-color: lighten(variables.$color_light_grey, 9);
+        background-color: #e1e8ec;
         width: 100%;
     }
 }
 
+.object-deals-actions {
+    display: flex;
+    align-items: flex-end;
+    gap: 15px;
+    width: max-content;
+    margin-left: auto;
+    margin-bottom: 10px;
+
+    &__label {
+        color: variables.$color_grey;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    &__list {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+    }
+
+    &__item {
+    }
+}
+
 .deal-info {
+    margin-top: 20px;
+
     &__body {
         max-width: 100%;
         display: grid;
@@ -247,32 +240,65 @@
     }
 
     &__aside {
-        border-left: 1px solid variables.$color_light_grey;
+        border-left: 1px solid rgba(0, 0, 0, .1);
+        border-right: 1px solid rgba(0, 0, 0, .1);
+
+        .object-holding-company {
+            padding: 20px;
+            background-color: #e6eedd;
+            border-top: 1px solid #d6d6d6;
+            border-bottom: 1px solid #d6d6d6;
+            overflow-y: auto;
+        }
+    }
+
+    &__block {
+        padding: 20px;
+    }
+
+    &__block-title {
+        font-weight: 500;
+        margin-bottom: 5px;
     }
 }
 
 
 .deal-info-header {
     display: grid;
-    grid-template-columns: repeat(2, 1fr) 340px;
+    grid-template-columns: 1.5fr 0.5fr;
+    gap: 65px;
     padding: 30px 15px;
-    margin-top: 25px;
     align-items: center;
     background-color: #e1e8ec;
 
-    &__text {
+    &__list {
+        display: flex;
+    }
+
+    &__item {
+        display: flex;
+    }
+
+    &__agent {
         font-size: 14px;
-        font-weight: 900;
-        line-height: 17px;
+        display: flex;
+        background-color: #0f6674;
+        border-radius: 5px;
+        color: #fff;
+        width: max-content;
+    }
 
-        &_color_red {
-            color: variables.$color_danger;
-        }
+    &__username {
+        font-weight: 500;
+        padding: 5px 10px;
+    }
 
-        &_size_small {
-            font-weight: 400;
-            font-size: 13px;
-        }
+    &__visit {
+        padding: 5px 10px;
+        border-left: 1px solid rgba(255, 255, 255, .1);
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
 
     &__button {
@@ -283,6 +309,7 @@
         color: variables.$color_default_link;
         text-decoration: underline;
         font-size: 13px;
+        width: max-content;
 
         &.active {
             background-color: variables.$color_danger;
@@ -295,7 +322,7 @@
 
 .deal-detailed-info {
     &__trade-offer-tabs {
-        margin-top: 55px;
+        margin-top: 25px;
     }
 }
 
@@ -340,15 +367,6 @@
 .building-info {
     border-bottom: 1px solid variables.$color_light_grey;
 
-    &__table-list {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        column-gap: 30px;
-    }
-
-    &__table {
-    }
-
     &__heading {
         font-size: 22px;
         font-weight: 900;
@@ -360,66 +378,58 @@
     }
 
     &__line {
-        display: flex;
-
-        & .object-parameters {
-            background-color: variables.$color_light;
-            border: 1px solid variables.$color_light_grey;
-            margin-top: 10px;
-            margin-bottom: 15px;
-            padding-left: 10px;
-            padding-right: 10px;
-            width: 100%;
-        }
-    }
-}
-
-.additional-details {
-    padding: 15px 20px;
-
-    &__list {
-        margin-top: 15px;
+        position: relative;
     }
 
-    &__item {
+    &__buttons {
+        position: absolute;
+        top: 2px;
+        right: 10px;
+    }
+
+    &__tabs {
+        width: 100%;
+    }
+
+    &__empty {
+        margin-bottom: 20px;
+    }
+
+    &__content {
+        margin-bottom: 20px;
         display: flex;
-        gap: 25px;
+        flex-direction: column;
+        gap: 15px;
+    }
 
-        &_color_red {
-            color: variables.$color_danger;
-        }
+    &__tables {
+        display: grid;
+        margin-bottom: 5px;
+        grid-template-columns: repeat(2, 1fr);
+        column-gap: 30px;
+    }
 
-        &_heading {
-            display: inline-block;
-            font-size: 14px;
-            font-weight: 600;
+    &__table {
+        padding: 24px!important;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 15px 2px rgba(13, 31, 47, .1);
 
-            & i {
-                color: variables.$color_success;
+        .complex-deal-table {
+            &__heading {
+                font-size: 22px;
+                margin-bottom: 10px;
             }
-        }
-    }
 
-    &__item-label {
-        // text-decoration: underline;
-        font-size: 14px;
-        font-weight: 400;
-        color: variables.$color_grey;
-        max-width: 25ch;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-    }
+            &__title {
+                font-size: 22px;
+            }
 
-    &__item-value {
-        font-size: 14px;
-        font-weight: 400;
-        white-space: nowrap;
-
-        & span:last-of-type {
-            font-weight: 400;
-            font-size: 12px;
-            color: variables.$color_grey;
+            &__table:not(:has(.complex-deal-table__heading)) {
+                .complex-deal-table__title {
+                    margin-bottom: 10px;
+                }
+            }
         }
     }
 }
@@ -534,5 +544,312 @@
             transform: rotate(45deg);
             box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.2);
         }
+    }
+}
+
+.additional-details {
+    padding: 15px 20px;
+
+    &__chip {
+        padding: 5px;
+        background-color: #0f6674;
+        color: #fff;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        text-align: center;
+        opacity: .7;
+    }
+
+    &__title {
+        text-align: center;
+        background-color: #0f6674;
+        color: #fff;
+        border-radius: 5px;
+        padding: 5px;
+    }
+
+    &__item-label {
+        // text-decoration: underline;
+        font-size: 14px;
+        font-weight: 400;
+        color: variables.$color_grey;
+        max-width: 25ch;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    &__item-value {
+        font-size: 14px;
+        font-weight: 400;
+        white-space: nowrap;
+
+        & span:last-of-type {
+            font-weight: 400;
+            font-size: 12px;
+            color: variables.$color_grey;
+        }
+    }
+
+    &__specials {
+        margin: 10px 0;
+    }
+
+    &__category {
+        margin-bottom: 10px;
+        font-weight: 500;
+        font-size: 14px;
+    }
+
+    &__services {
+        margin: 25px 0 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    &__service {
+        padding: 5px;
+        background-color: #268e50;
+        opacity: .9;
+        color: #fff;
+        border-radius: 5px;
+        font-size: 14px;
+        text-align: center;
+        font-weight: 500;
+    }
+
+    &__item {
+        font-size: 14px;
+        display: flex;
+        justify-content: space-between;
+    }
+}
+
+.additional-details-service {
+    padding: 10px;
+    box-shadow: 0 0 15px 2px rgba(13, 31, 47, .15);
+    border-radius: 5px;
+    position: relative;
+    font-size: 14px;
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        position: absolute;
+        top: -16px;
+        font-weight: 500;
+        width: calc(100% - 20px);
+
+        span {
+            padding: 5px;
+            background-color: #0f6674;
+            color: #fff;
+            border-radius: 5px;
+
+            &:last-child {
+                background-color: rgba(203, 17, 50, 0.85);
+                font-weight: 400;
+            }
+        }
+    }
+
+    &__item   {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+
+    &__elements {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+
+    &__element {
+        padding: 5px;
+        display: flex;
+        gap: 5px;
+        align-items: center;
+        background-color: #268e50;
+        color: #fff;
+        border-radius: 5px;
+    }
+}
+
+.additional-details-business {
+    box-shadow: 0 0 15px 2px rgba(13, 31, 47, .1);
+    background-color: #fff;
+    margin-top: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    overflow: hidden;
+
+    &__title {
+        padding: 5px;
+        background-color: #0f6674;
+        color: #fff;
+        border-radius: 5px 5px 0 0;
+        font-weight: 500;
+    }
+
+    &__list {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__item {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px;
+        border-bottom: 1px solid rgba(0, 0, 0, .1);
+    }
+
+    &__label {
+        color: #757070;
+    }
+}
+
+.deal-info-commission {
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
+    border-top: 1px solid rgba(0, 0, 0, .1);
+
+    &__list {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        font-size: 14px;
+    }
+
+    &__item {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding: 5px 10px;
+        border-radius: 5px;
+        background-color: #268e50;
+        color: #fff;
+
+        &.cancel {
+            background-color: rgba(203, 17, 50, 0.85);
+        }
+    }
+
+    &__value {
+        margin-left: auto;
+        display: flex;
+        font-weight: 500;
+    }
+}
+
+.deal-info-contract {
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
+
+    &__item {
+        background-color: rgba(211, 211, 211, .8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        border-radius: 5px;
+        padding: 10px;
+        font-size: 14px;
+        font-weight: 500;
+
+        &--exclusive {
+            background-color: rgba(203, 17, 50, 0.85);
+            color: #fff;
+        }
+
+        i {
+            font-size: 22px;
+        }
+    }
+}
+
+.deal-info-description {
+    border-top: 1px solid rgba(0, 0, 0, .1);
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
+
+    &__body {
+        overflow-wrap: anywhere;
+    }
+}
+
+.complex-deal-specials {
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    background-color: #0f6674;
+    color: #fff;
+    width: max-content;
+    font-size: 14px;
+
+    &__body {
+        padding: 5px 10px;
+        font-weight: 500;
+    }
+
+    &__plan {
+        padding: 5px 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-left: 1px solid rgba(255, 255, 255, .1);
+    }
+}
+
+.property-grid {
+    display: grid;
+    gap: 40px;
+    grid-auto-columns: 1fr;
+    grid-auto-flow: column;
+
+    &__column {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+}
+
+.property-table {
+    box-shadow: 0 0 5px 1px rgba(13, 31, 47, .1);
+    border-radius: 4px;
+    overflow: hidden;
+    height: max-content;
+    font-size: 14px;
+    width: 100%;
+
+    &__element {
+        display: flex;
+    }
+
+    &__title {
+        font-weight: 500;
+        border-radius: 4px 4px 0 0;
+        padding: 5px 10px;
+        background-color: #0f6674;
+        color: #fff;
+    }
+
+    &__name {
+        flex-basis: 55%;
+        color: #7c7c86;
+    }
+
+    &__item {
+        padding: 5px 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        &:nth-child(odd) {
+            background-color: #d6d6d6;
+        }
+    }
+
+    &__value {
+        flex-basis: 40%;
     }
 }

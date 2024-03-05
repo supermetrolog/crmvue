@@ -67,7 +67,6 @@
 </template>
 
 <script>
-import { DealStatusType } from '@/const/const';
 import FormComplexFloorBlock from '@/components/Forms/Complex/FormComplexFloorBlock.vue';
 import ComplexDealFloorHead from '@/components/Complex/Deal/ComplexDealFloorHead.vue';
 import ComplexDealFloorSection from '@/components/Complex/Deal/ComplexDealFloorSection.vue';
@@ -94,7 +93,6 @@ export default {
     },
     data() {
         return {
-            DealStatusType,
             blockFormIsVisible: false,
             floorFormIsVisible: false,
             currentEditSection: null,
@@ -103,7 +101,7 @@ export default {
     },
     methods: {
         getFloorArea(floor) {
-            return floor.area_floor_full || floor.area_mezzanine_full || 0;
+            return floor.area_floor_full || floor.area_mezzanine_full || floor.area_field_full || 0;
         },
         toggleCreateBlockForm(floor = null) {
             this.currentEditFloor = floor;
@@ -120,6 +118,10 @@ export default {
 
             if (floor.area_mezzanine_full) {
                 return floor.area_mezzanine_full - reducer.sum(floor.parts, 'area_mezzanine_max');
+            }
+
+            if (floor.area_field_full) {
+                return floor.area_field_full - reducer.sum(floor.parts, 'area_field_max');
             }
 
             return '--';

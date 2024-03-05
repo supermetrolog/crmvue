@@ -1,80 +1,61 @@
 <template>
     <div class="building-info">
-        <div class="building-info__table-list">
-            <PropertyList class="building-info__table">
-                <p class="building-info__heading">
-                    {{ formattedAreaSum }}
-                    <span> м<sup>2</sup> </span>
-                </p>
-                <PropertyListItem
-                    v-for="(prop, idx) in area.properties"
-                    :key="prop.label + idx"
-                    :name="prop.label"
-                    :value="prop.value"
-                    :value-min="prop.valueMin"
-                    :value-max="prop.valueMax"
-                    :unit-type="unitTypes.SQUARE_METERS"
+        <div v-if="hasActiveOffers" class="building-info__content">
+            <div class="building-info__tables">
+                <ComplexDealArea
+                    class="building-info__table"
+                    :deal="deal.summaryBlock"
+                    :original="deal"
                 />
-            </PropertyList>
-            <PropertyList class="building-info__table">
-                <p class="building-info__heading">
-                    {{ formattedPriceSum }}
-                    <span> ₽ </span>
-                </p>
-                <PropertyListItem
-                    v-for="(prop, idx) in price.properties"
-                    :key="prop.label + idx"
-                    :value="prop.value"
-                    :value-min="prop.valueMin"
-                    :value-max="prop.valueMax"
-                    :name="prop.label"
-                    :unit-type="unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR"
-                />
-            </PropertyList>
+                <ComplexDealPrice class="building-info__table" :deal="deal" />
+            </div>
+            <ComplexPurposes
+                v-if="deal.summaryBlock.purposes_block.length"
+                :purposes="deal.summaryBlock.purposes_block"
+            />
+            <ComplexParameters v-if="parameters.length" :parameters="parameters" />
         </div>
+        <EmptyData v-else class="building-info__empty">
+            Данные о сделке отсутсвуют в связи с отсутствием торговых предложений.
+        </EmptyData>
         <div class="building-info__line">
-            <!--      <parameters-->
-            <!--					-->
-            <!--        :height="parameters.summary.parameters.characteristics.height"-->
-            <!--        :floorType="parameters.summary.parameters.characteristics.floorType"-->
-            <!--        :gatesNumber="parameters.summary.parameters.characteristics.gatesNumber"-->
-            <!--        :electricity="parameters.summary.parameters.communications.electricity"-->
-            <!--        :heating="parameters.summary.parameters.communications.heating"-->
-            <!--        :sewage="parameters.summary.parameters.communications.sewage"-->
-            <!--        :gasForProduction="-->
-            <!--          parameters.summary.parameters.communications.gasForProduction-->
-            <!--        "-->
-            <!--        :liftingDevices="parameters.summary.parameters.liftingDevices.lifts"-->
-            <!--        :shelving="parameters.summary.parameters.facilities.shelving"-->
-            <!--      />-->
-        </div>
-        <div class="building-info__line">
-            <ComplexTabs :parameters="parameters" class="building-info__tabs" />
-            <ActionButton v-bind="actionButtons" class="building-info__buttons" />
+            <ComplexDealTabs
+                :has-active-offers="hasActiveOffers"
+                :deal="dealPrepared"
+                class="building-info__tabs"
+            />
+            <ComplexActions class="building-info__buttons" simple :buttons="actionButtons" />
         </div>
     </div>
 </template>
 
 <script>
 import { unitTypes } from '@/const/unitTypes';
-import PropertyList from '@/components/common/Property/PropertyList.vue';
-import PropertyListItem from '@/components/common/Property/PropertyListItem.vue';
-import ActionButton from '@/components/common/ActionButton.vue';
-import ComplexTabs from '@/components/Complex/ComplexTabs.vue';
+import ComplexParameters from '@/components/Complex/ComplexParameters.vue';
+import ComplexActions from '@/components/Complex/ComplexActions.vue';
+import ComplexDealTabs from '@/components/Complex/Deal/ComplexDealTabs.vue';
+import { entityProperties } from '@/const/properties/properties';
+import { mapper } from '@/utils/mapper';
+import ComplexDealArea from '@/components/Complex/Deal/ComplexDealArea.vue';
+import EmptyData from '@/components/common/EmptyData.vue';
+import { mapGetters } from 'vuex';
+import ComplexDealPrice from '@/components/Complex/Deal/Price/ComplexDealPrice.vue';
+import ComplexPurposes from '@/components/Complex/ComplexPurposes.vue';
 
 export default {
     name: 'ComplexDealBuilding',
-    components: { ComplexTabs, ActionButton, PropertyListItem, PropertyList },
+    components: {
+        ComplexPurposes,
+        ComplexDealPrice,
+        EmptyData,
+        ComplexDealArea,
+        ComplexDealTabs,
+        ComplexActions,
+        ComplexParameters
+    },
+    inject: ['dealFloors', 'openDownloader'],
     props: {
-        area: {
-            type: Object,
-            required: true
-        },
-        price: {
-            type: Object,
-            required: true
-        },
-        parameters: {
+        deal: {
             type: Object,
             required: true
         }
@@ -85,24 +66,78 @@ export default {
         };
     },
     computed: {
-        actionButtons() {
+        ...mapGetters(['THIS_USER']),
+        photos() {
+            if (!this.deal.summaryBlock) return [];
+
+            const photos =
+                this.deal.summaryBlock.photos instanceof Array
+                    ? this.deal.summaryBlock.photos
+                    : Object.values(this.deal.summaryBlock.photos);
+
+            return photos.map(el => ({
+                src: this.$url.api.objects() + el
+            }));
+        },
+        dealPrepared() {
             return {
-                advert: { value: true },
-                dislike: { value: true },
-                favorite: { value: true },
-                notifications: { value: true },
-                pdf: { value: true }
+                ...this.deal,
+                floors: this.floors
             };
         },
-        formattedAreaSum() {
-            const { valueMin, valueMax } = this.area.sum;
-            return this.$formatter.numberOrRangeNew(valueMin, valueMax);
+        partsObject() {
+            return this.deal.blocks.reduce((acc, block) => {
+                block.parts.forEach(part => (acc[part] = true));
+
+                return acc;
+            }, {});
         },
-        formattedPriceSum() {
-            const { valueMin, valueMax } = this.price.sum;
-            return this.$formatter.numberOrRangeNew(valueMin, valueMax);
+        floors() {
+            return [...this.dealFloors].map(floor => ({
+                ...floor,
+                parts: floor.parts.filter(part => this.partsObject[part.id])
+            }));
+        },
+        actionButtons() {
+            return {
+                dislike: {},
+                favorite: {},
+                notifications: {},
+                pdf: {
+                    disabled: !this.hasActiveOffers,
+                    handler: () => {
+                        const urlLink = this.$url.pdf(
+                            { type_id: 2, offer_id: this.deal.id, object_id: this.deal.object_id },
+                            this.THIS_USER.id
+                        );
+                        window.open(urlLink, '_blank');
+                    }
+                },
+                delete: {},
+                copy: {
+                    handler: async () => {
+                        const url = this.$url.offer(this.$route.params.complex_id, this.deal.id);
+
+                        await navigator.clipboard.writeText(url);
+
+                        this.$toast('Ссылка на сделку скопирована');
+                    }
+                },
+                photos: {
+                    disabled: !this.photos.length || !this.hasActiveOffers,
+                    handler: () => this.openDownloader(this.photos)
+                }
+            };
+        },
+        parameters() {
+            return mapper.propertiesToParametersFormat(
+                this.deal.summaryBlock,
+                entityProperties.deal.parameters
+            );
+        },
+        hasActiveOffers() {
+            return this.deal.blocks.some(offer => !offer.deleted && !offer.deal_id);
         }
-    },
-    methods: {}
+    }
 };
 </script>

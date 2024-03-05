@@ -344,10 +344,17 @@ export default {
             return newRecommended == this.offer.original_id;
         },
         offerUrl() {
-            return this.$apiUrlHelper.generator().offerUrl(this.offer);
+            return this.$url.offerByObject(this.offer);
         },
         pdfUrl() {
-            return this.$apiUrlHelper.generator().pdfUrl(this.offer, this.THIS_USER.id);
+            return this.$url.pdf(
+                {
+                    type_id: 2,
+                    offer_id: this.offer.original_id,
+                    object_id: this.offer.object_id
+                },
+                this.THIS_USER.id
+            );
         },
         taxForm() {
             if (
@@ -404,7 +411,7 @@ export default {
             window.open(this.offerUrl, '_blank');
         },
         getOfferUrl(offer) {
-            return this.$apiUrlHelper.generator().offerUrl(offer);
+            return this.$url.offerByObject(offer);
         }
     },
     mounted() {

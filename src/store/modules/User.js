@@ -101,6 +101,9 @@ const User = {
         },
         USERS(state) {
             return state.users;
+        },
+        isModerator(state) {
+            return state.thisUser.role > 2;
         }
     }
 };

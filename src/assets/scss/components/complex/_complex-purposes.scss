@@ -1,0 +1,19 @@
+.complex-purposes {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+
+    &__item {
+        font-size: 22px;
+        display: flex;
+        width: 40px;
+        height: 40px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 5px;
+        border: 1px solid rgba(211, 211, 211, 1);
+        margin-right: 1px;
+        background-color: rgba(201, 201, 201, 0.8);
+        color: #000;
+    }
+}

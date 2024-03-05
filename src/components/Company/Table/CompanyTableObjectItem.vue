@@ -3,7 +3,7 @@
         <div class="row no-gutters CompanyTableObjectItem-wrapper">
             <div class="col-2" :title="object.description_auto || 'нет описания'">
                 <div class="image-container">
-                    <a :href="$apiUrlHelper.generator().objectUrl(object.complex_id)" target="_blank">
+                    <a :href="$url.complex(object.complex_id)" target="_blank">
                         <img :src="object.thumb" alt="image" />
                         <span class="object_id">
                             {{ object.id }}
@@ -29,7 +29,10 @@
                         :offer="offer"
                     />
                 </div>
-                <div v-else class="col-4 text-grey text-center none d-flex justify-content-center align-items-center">
+                <div
+                    v-else
+                    class="col-4 text-grey text-center none d-flex justify-content-center align-items-center"
+                >
                     нет активных
                 </div>
             </div>

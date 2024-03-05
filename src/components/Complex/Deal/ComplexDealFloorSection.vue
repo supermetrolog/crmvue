@@ -32,10 +32,10 @@
     </div>
 </template>
 <script>
-import { DealStatusList, DealStatusType } from '@/const/const.js';
 import { unitTypes } from '@/const/unitTypes';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import Form from '@/components/common/Forms/Form.vue';
+import { entityOptions } from '@/const/options/options';
 
 export default {
     name: 'ComplexDealFloorSection',
@@ -57,8 +57,6 @@ export default {
     },
     data() {
         return {
-            DealStatusType,
-            DealStatusList,
             unitTypes,
             isChecked: this.section ? this.section.checked : false
         };
@@ -68,7 +66,7 @@ export default {
             if (this.section.is_active) return 'Свободно, размечено';
 
             return this.section.deal_type
-                ? DealStatusList[this.section.deal_type]
+                ? entityOptions.deal.status[this.section.deal_type]
                 : 'Сдано или нераспределено';
         },
         formattedArea() {
@@ -86,22 +84,29 @@ export default {
                 );
             }
 
+            if (this.section.area_field_min || this.section.area_field_max) {
+                return this.$formatter.numberOrRangeNew(
+                    this.section.area_field_min,
+                    this.section.area_field_max
+                );
+            }
+
             return '--';
         },
         sectionAdditionalClass() {
             return {
                 'deal-section__status--success': this.section.is_active,
                 'deal-section__status--danger':
-                    this.section.deal_type === DealStatusType.RENTED_OUT ||
-                    this.section.deal_type === DealStatusType.FOR_RENT,
+                    this.section.deal_type === entityOptions.deal.statusStatement.RENTED_OUT ||
+                    this.section.deal_type === entityOptions.deal.statusStatement.FOR_RENT,
                 'deal-section__status--white': this.section.is_active
             };
         },
         appropriateSectionClass() {
             if (this.section.is_active) return 'deal-section--green';
             if (
-                this.section.deal_type === DealStatusType.RENTED_OUT ||
-                this.section.deal_type === DealStatusType.FOR_RENT
+                this.section.deal_type === entityOptions.deal.statusStatement.RENTED_OUT ||
+                this.section.deal_type === entityOptions.deal.statusStatement.FOR_RENT
             )
                 return 'deal-section--purple';
 
@@ -110,7 +115,6 @@ export default {
         checkboxName() {
             return 'checkbox-' + this.section.id;
         }
-    },
-    mounted() {}
+    }
 };
 </script>

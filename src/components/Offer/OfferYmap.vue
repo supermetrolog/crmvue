@@ -110,7 +110,7 @@ export default {
             return clusterId;
         },
         getOfferUrl(offer) {
-            return this.$apiUrlHelper.generator().objectUrl(offer.complex_id);
+            return this.$url.complex(offer.complex_id);
         }
     }
 };

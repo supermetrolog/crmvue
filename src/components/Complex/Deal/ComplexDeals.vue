@@ -1,24 +1,35 @@
 <template>
-    <div class="ObjectDeals">
+    <div class="object-deals">
         <!-- первая узкая белая панель вверху -->
-        <div class="ObjectDeals-actions">
-            <p class="ObjectDeals-actions-label">Создать сделку:</p>
-            <ul class="ObjectDeals-actions-list">
-                <li class="ObjectDeals-actions-item">
-                    <button class="ObjectDeals-actions-button">аренда</button>
+        <div class="object-deals-actions">
+            <ul class="object-deals-actions__list">
+                <li>
+                    <Button icon small>
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Аренда</span>
+                    </Button>
                 </li>
-                <li class="ObjectDeals-actions-item">
-                    <button class="ObjectDeals-actions-button">субаренда</button>
+                <li>
+                    <Button icon small>
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Субаренда</span>
+                    </Button>
                 </li>
-                <li class="ObjectDeals-actions-item">
-                    <button class="ObjectDeals-actions-button">продажа</button>
+                <li>
+                    <Button icon small>
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Продажа</span>
+                    </Button>
                 </li>
-                <li class="ObjectDeals-actions-item">
-                    <button class="ObjectDeals-actions-button">ответ-хранение</button>
+                <li>
+                    <Button icon small>
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Ответ-хранение</span>
+                    </Button>
                 </li>
             </ul>
         </div>
-        <div v-if="deals.length" class="ObjectDeals-list">
+        <div v-if="deals.length" class="object-deals__list">
             <ComplexDealPreview
                 v-for="deal in deals"
                 :key="deal.id"
@@ -27,6 +38,7 @@
                 :is-current="currentDealId === deal.id"
             />
         </div>
+        <EmptyData v-else>Список сделок пуст..</EmptyData>
         <AnimationTransition fast>
             <ComplexDealItem
                 v-if="currentDealId"
@@ -43,10 +55,12 @@
 import ComplexDealPreview from '@/components/Complex/Deal/ComplexDealPreview.vue';
 import ComplexDealItem from '@/components/Complex/Deal/ComplexDealItem.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import Button from '@/components/common/Button.vue';
+import EmptyData from '@/components/common/EmptyData.vue';
 
 export default {
     name: 'ComplexDeals',
-    components: { AnimationTransition, ComplexDealItem, ComplexDealPreview },
+    components: { EmptyData, Button, AnimationTransition, ComplexDealItem, ComplexDealPreview },
     props: {
         deals: {
             type: Array,
@@ -63,7 +77,7 @@ export default {
     },
     data() {
         return {
-            currentDealId: this.deals[0] ? this.deals[0].id : null
+            currentDealId: null
         };
     },
     computed: {
@@ -85,7 +99,7 @@ export default {
     },
     methods: {
         choseDeal(id) {
-            this.currentDealId = id;
+            this.currentDealId = this.currentDealId === id ? null : id;
         }
     },
     mounted() {

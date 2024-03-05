@@ -23,7 +23,7 @@ export default {
             return this.array[this.clickCount];
         },
         src() {
-            return this.$apiUrlHelper.getImageUrl('joke.gif');
+            return this.$url.api.getImage('joke.gif');
         }
     },
     methods: {

@@ -1,38 +1,55 @@
 <template>
-    <ul class="object-parameters">
-        <li v-if="object.ceiling_height" class="object-parameters__item">
-            <i class="fas fa-arrow-up" />
-            {{ $formatter.number(object.ceiling_height) }} <span>м</span>
-        </li>
-        <li v-if="object.floor_type" class="object-parameters__item">
-            <i class="fas fa-arrow-down" />
-            {{ object.floor_type }}
-        </li>
-        <li v-if="object.gas" class="object-parameters__item">
-            <i class="fas fa-fire" />
-            Газ в цеху
-        </li>
-        <li v-if="object.power" class="object-parameters__item">
-            <i class="fas fa-bolt" />
-            <with-unit-type :unit-type="unitTypes.KILOWATT">
-                {{ $formatter.number(object.power) }}
-            </with-unit-type>
-        </li>
-        <li v-if="object.heating" class="object-parameters__item">
-            <i class="fa fa-thermometer-full" />
-            Отопление
-        </li>
-        <li v-if="object.sewage" class="object-parameters__item">
-            <i class="fas fa-shower" />
-            Канализация
-        </li>
-        <li v-if="object.water" class="object-parameters__item">
-            <i class="fas fa-tint"></i>
-            Водоснабжение
-        </li>
-        <li v-if="object.internet" class="object-parameters__item">
-            <i class="fas fa-wifi"></i>
-            Интернет, {{ object.internet_type }}
+    <ul class="complex-parameters">
+        <li
+            v-for="(parameter, index) in parameters"
+            :key="'range-' + index"
+            v-tippy="parameter.name"
+            class="complex-parameters__item"
+        >
+            <i v-if="parameter.icon" :class="parameter.icon" />
+            <span v-if="parameter.range" class="complex-parameters__text">
+                <template v-if="!parameter.icon">{{ parameter.name }} - </template>
+                <with-unit-type :unit-type="parameter.unitType">
+                    {{ $formatter.numberOrRangeNew(parameter.valueMin, parameter.valueMax) }}
+                </with-unit-type>
+            </span>
+            <span v-else-if="parameter.count" class="complex-parameters__text">
+                <template v-if="!parameter.icon">{{ parameter.name }} - </template>
+                <with-unit-type :unit-type="parameter.unitType">
+                    {{ $formatter.toCorrectValue(parameter.value) }}
+                </with-unit-type>
+            </span>
+            <span v-else-if="parameter.valueCount">
+                <with-unit-type v-if="parameter.unitType" :unit-type="parameter.unitType">
+                    {{ parameter.valueCount }}
+                </with-unit-type>
+                <template v-else>
+                    {{ parameter.valueCount }}
+                </template>
+            </span>
+            <template v-else-if="parameter.types">
+                <span v-if="parameter.withCount">
+                    <span v-if="!parameter.icon">{{ parameter.name }} - </span>
+                    <span>{{ parameter.value[1] }} шт.</span>
+                    <span v-if="parameter.types">, {{ parameter.types[parameter.value[0]] }}</span>
+                </span>
+                <span v-else>
+                    <span v-if="!parameter.icon">{{ parameter.name }} - </span>
+                    <template v-if="parameter.multiple">
+                        <span
+                            v-for="(value, index) in parameter.value"
+                            :key="parameter.name + index"
+                            class="complex-parameters__value"
+                        >
+                            {{ parameter.types[value] }}
+                        </span>
+                    </template>
+                    <span v-else>
+                        {{ parameter.types[parameter.value] }}
+                    </span>
+                </span>
+            </template>
+            <span v-else>{{ parameter.name }}</span>
         </li>
     </ul>
 </template>
@@ -47,17 +64,15 @@ export default {
         WithUnitType
     },
     props: {
-        object: {
+        parameters: {
             type: Object,
-            required: true,
-            default: () => {}
+            required: true
         }
     },
     data() {
         return {
             unitTypes
         };
-    },
-    computed: {}
+    }
 };
 </script>

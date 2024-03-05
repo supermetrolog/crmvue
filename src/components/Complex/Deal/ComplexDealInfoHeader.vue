@@ -1,71 +1,44 @@
 <template>
     <div class="deal-info-header">
-        <p class="deal-info-header__text deal-info-header__text_color_red">
-            <i class="fas fa-briefcase"></i>
-            {{ headCompany }}
-            <span class="deal-info-header__text_size_small">- {{ projectAvailability }}</span>
-        </p>
-        <ul class="deal-info-header__list">
-            <li class="deal-info-header__item">
-                <button
-                    id="per_square_meter_per_year"
-                    class="deal-info-header__button"
-                    :class="{ active: filterSquareMeterPerYear }"
-                >
-                    м<sup>2</sup>/год
-                </button>
-                <button
-                    id="per_square_meter_per_month"
-                    class="deal-info-header__button"
-                    :class="{ active: filterSquareMeterPerMonth }"
-                >
-                    м<sup>2</sup>/месяц
-                </button>
-                <button id="per_month" class="deal-info-header__button" :class="{ active: filterPerMonth }">
-                    в месяц
-                </button>
-            </li>
-        </ul>
-        <p class="deal-info-header__text">
-            <i class="fas fa-walking"></i>
-            {{ consultant.name }}
-            <span class="deal-info-header__text_size_small">/ {{ consultant.visitType }}</span>
-        </p>
+        <ComplexDealInfoSpecials v-if="hasSpecials" :specials="specials" />
+        <span v-else></span>
+        <div class="deal-info-header__agent">
+            <span class="deal-info-header__username">{{ consultantName }}</span>
+            <div v-if="visited" class="deal-info-header__visit">
+                <i class="fas fa-walking"></i>
+                <span>Личное посещение</span>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
+import ComplexDealInfoSpecials from '@/components/Complex/Deal/ComplexDealInfoSpecials.vue';
+import { entityOptions } from '@/const/options/options';
+
 export default {
     name: 'ComplexDealInfoHeader',
-    components: {},
+    components: { ComplexDealInfoSpecials },
     props: {
-        company: {
-            type: Object
-        },
         consultant: {
-            type: Object
+            type: Object,
+            default: () => {}
+        },
+        visited: {
+            type: Boolean,
+            default: false
+        },
+        specials: {
+            type: Object,
+            default: () => null
         }
     },
-    data() {
-        return {
-            activeFilter: 'per_month'
-        };
-    },
     computed: {
-        headCompany() {
-            return `${this.company.name}/${this.company.duration}`;
+        hasSpecials() {
+            return this.specials.built_to_suit === entityOptions.defaults.booleanStatement.TRUE;
         },
-        projectAvailability() {
-            return this.company.projectAvailability ? 'проект имеется' : 'проекта нет';
-        },
-        filterPerMonth() {
-            return this.activeFilter === 'per_month';
-        },
-        filterSquareMeterPerMonth() {
-            return this.activeFilter === 'square_meter_per_month';
-        },
-        filterSquareMeterPerYear() {
-            return this.activeFilter === 'square_meter_per_year';
+        consultantName() {
+            return this.consultant.userProfile.full_name;
         }
     }
 };

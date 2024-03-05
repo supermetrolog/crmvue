@@ -1,289 +1,183 @@
 <template>
     <div class="ObjectHoldingsTabs">
-        <ActionButton v-bind="actionButtons" class="ObjectHoldingsTabs-buttons" />
-        <Tabs :options="{ useUrlFragment: false }">
+        <ComplexActions simple class="ObjectHoldingsTabs-buttons" :buttons="actionButtons" />
+        <Tabs ref="tabs" closed :options="{ useUrlFragment: false }">
             <Tab name="Характеристики">
-                <div v-if="!isPlot" class="ObjectHoldingsTabs-content-properties">
-                    <PropertyList>
-                        <PropertyListItem name="Общая площадь">
-                            <with-unit-type
-                                v-if="object.area_building !== null"
-                                class="ObjectHoldingsTabs-content-property"
-                                :unit-type="unitTypes.SQUARE_METERS"
-                            >
-                                {{ $formatter.number(object.area_building) }}
-                            </with-unit-type>
-                        </PropertyListItem>
-                        <PropertyListItem name="S - пола">
-                            <with-unit-type
-                                v-if="object.area_floor_full !== null"
-                                class="ObjectHoldingsTabs-content-property"
-                                :unit-type="unitTypes.SQUARE_METERS"
-                            >
-                                {{ $formatter.number(object.area_floor_full) }}
-                            </with-unit-type>
-                        </PropertyListItem>
-                        <PropertyListItem name="S - мезонина">
-                            <with-unit-type
-                                v-if="object.area_mezzanine_full !== null"
-                                class="ObjectHoldingsTabs-content-property"
-                                :unit-type="unitTypes.SQUARE_METERS"
-                            >
-                                {{ $formatter.number(object.area_mezzanine_full) }}
-                            </with-unit-type>
-                        </PropertyListItem>
-                    </PropertyList>
-                    <PropertyList>
-                        <PropertyListItem name="S - офисов">
-                            <with-unit-type
-                                v-if="object.area_office_full !== null"
-                                class="ObjectHoldingsTabs-content-property"
-                                :unit-type="unitTypes.SQUARE_METERS"
-                            >
-                                {{ $formatter.number(object.area_office_full) }}
-                            </with-unit-type>
-                        </PropertyListItem>
-                        <PropertyListItem name="S - техническая">
-                            <with-unit-type
-                                v-if="object.area_tech_full !== null"
-                                class="ObjectHoldingsTabs-content-property"
-                                :unit-type="unitTypes.SQUARE_METERS"
-                            >
-                                {{ $formatter.number(object.area_tech_full) }}
-                            </with-unit-type>
-                        </PropertyListItem>
-                        <PropertyListItem name="Этажность склада">
-                            <with-unit-type
-                                v-if="object.floors !== null"
-                                class="ObjectHoldingsTabs-content-property"
-                                :unit-type="unitTypes.FLOORS"
-                            >
-                                {{ $formatter.number(object.floors) }}
-                            </with-unit-type>
-                        </PropertyListItem>
-                        <PropertyListItem name="Класс объекта">
-                            <p
-                                v-if="object.object_class !== null"
-                                class="ObjectHoldingsTabs-content-property"
-                            >
-                                {{ object.object_class_text }}
-                            </p>
-                        </PropertyListItem>
-                    </PropertyList>
-                    <PropertyList>
-                        <PropertyListItem name="Внешняя отделка">
-                            <p
-                                v-if="object.facing_type !== null"
-                                class="ObjectHoldingsTabs-content-property"
-                                :title="object.facing_type"
-                            >
-                                {{ facingTypes[object.facing_type] }}
-                            </p>
-                        </PropertyListItem>
-                        <PropertyListItem name="Год постройки">
-                            <with-unit-type
-                                v-if="object.yearBuild !== null"
-                                class="ObjectHoldingsTabs-content-property"
-                                :unit-type="unitTypes.YEAR"
-                            >
-                                {{ object.year_build }}
-                            </with-unit-type>
-                        </PropertyListItem>
-                        <PropertyListItem name="Год последнего ремонта">
-                            <with-unit-type
-                                v-if="object.year_repair !== null"
-                                class="ObjectHoldingsTabs-content-property"
-                                :unit-type="unitTypes.YEAR"
-                            >
-                                {{ object.year_repair }}
-                            </with-unit-type>
-                        </PropertyListItem>
-                    </PropertyList>
-                    <PropertyList>
-                        <PropertyListItem name="Кадастровый №">
-                            <p
-                                v-if="object.cadastral_number !== null"
-                                class="ObjectHoldingsTabs-content-property"
-                                :title="object.cadastral_number"
-                            >
-                                {{ object.cadastral_number }}
-                            </p>
-                        </PropertyListItem>
-                        <PropertyListItem name="Правовой статус строения">
-                            <p
-                                v-if="object.own_type !== null"
-                                class="ObjectHoldingsTabs-content-property"
-                            >
-                                {{ ownTypes[object.own_type] }}
-                            </p>
-                        </PropertyListItem>
-                        <PropertyListItem name="Ограничения">
-                            <p
-                                v-if="object.land_use_restrictions !== null"
-                                class="ObjectHoldingsTabs-content-property"
-                            >
-                                {{ object.land_use_restrictions }}
-                            </p>
-                        </PropertyListItem>
-                    </PropertyList>
-                </div>
-                <div v-else class="ObjectHoldingsTabs-content-properties">
-                    <PropertyList>
-                        <PropertyListItem name="Площадь участка">
-                            <with-unit-type
-                                v-if="object.area_field_full !== null"
-                                class="ObjectHoldingsTabs-content-property"
-                                :unit-type="unitTypes.SQUARE_METERS"
-                                :value="$formatter.number(object.area_field_full)"
-                            />
-                        </PropertyListItem>
-                        <PropertyListItem name="Кадастровый № участка">
-                            <p
-                                v-if="object.cadastral_number_land !== null"
-                                class="ObjectHoldingsTabs-content-property"
-                            >
-                                {{ object.cadastral_number_land }}
-                            </p>
-                        </PropertyListItem>
-                        <PropertyListItem name="Правовой статус зем. уч.">
-                            <p
-                                v-if="object.own_type_land !== null"
-                                class="ObjectHoldingsTabs-content-property"
-                            >
-                                {{ ownTypesLand[object.own_type_land] }}
-                            </p>
-                        </PropertyListItem>
-                        <PropertyListItem name="Категория земли">
-                            <p
-                                v-if="object.land_category !== null"
-                                class="ObjectHoldingsTabs-content-property"
-                            >
-                                {{ landCategoryTypes[object.land_category] }}
-                            </p>
-                        </PropertyListItem>
-                        <PropertyListItem name="Рельеф участка">
-                            <p
-                                v-if="object.object.landscape_type !== null"
-                                class="ObjectHoldingsTabs-content-property"
-                            >
-                                {{ landscapeTypes[object.landscape_type] }}
-                            </p>
-                        </PropertyListItem>
-                        <PropertyListItem name="Ограничения">
-                            <p
-                                v-if="object.land_use_restrictions !== null"
-                                class="ObjectHoldingsTabs-content-property"
-                            >
-                                {{ object.land_use_restrictions }}
-                            </p>
-                        </PropertyListItem>
-                    </PropertyList>
-                </div>
+                <PropertyGrid
+                    v-if="object.is_land"
+                    :template="sectionsTemplate"
+                    :sections="sections"
+                />
+                <PropertyGrid v-else :columns="4" :sections="sections" />
             </Tab>
-            <Tab name="Сделки">
+            <Tab :id="`deals-${object.id}`" :name="`Сделки (${object.commercialOffers.length})`">
                 <div class="ObjectHoldingsTabs-content">
                     <ComplexDeals
                         :object="object"
                         :deals="object.commercialOffers"
-                        :floors="object.floorsRecords"
+                        :floors="floors"
                     />
                 </div>
             </Tab>
-            <Tab name="Карта сделок"></Tab>
-            <Tab name="Планировки"></Tab>
-            <Tab name="Презентации">
-                <template v-if="object.building_presentations.length">
-                    <div
-                        v-for="(presentation, index) in object.building_presentations"
-                        :key="index"
-                        class="complex-document"
-                    >
+            <Tab name="Карта сделок">
+                <p>В разработке..</p>
+            </Tab>
+            <Tab name="Описание">
+                <div v-if="object.description" v-html="object.description"></div>
+                <EmptyData v-else>Описание отсутствует..</EmptyData>
+            </Tab>
+            <Tab name="Планировки">
+                <div class="object-holdings-tabs__list">
+                    <template v-if="object.building_layouts.length">
+                        <div
+                            v-for="(layout, index) in object.building_layouts"
+                            :key="index"
+                            class="complex-document"
+                        >
+                            <a :href="layout" target="_blank" class="complex-document__link">
+                                <i class="fa-regular fa-file complex-document__preview" />
+                                <p class="complex-document__name">Планировка #{{ index }}</p>
+                            </a>
+                        </div>
+                    </template>
+                    <div class="complex-document complex-document--green">
                         <a href="#" class="complex-document__link">
-                            <i class="fa-regular fa-file-powerpoint complex-document__preview" />
-                            <p class="complex-document__name">Название презентации</p>
+                            <i class="fa-regular fa-file complex-document__preview" />
+                            <p class="complex-document__name">Добавить планировку</p>
                         </a>
                     </div>
-                </template>
-                <div v-else class="complex-document complex-document--green">
-                    <a href="#" class="complex-document__link">
-                        <i class="fa-regular fa-file-powerpoint complex-document__preview" />
-                        <p class="complex-document__name">Добавить презентацию</p>
-                    </a>
                 </div>
             </Tab>
-            <Tab name="Договоры"></Tab>
-            <Tab name="Описание"></Tab>
-            <Tab name="Задачи"></Tab>
+            <Tab name="Презентации">
+                <div class="object-holdings-tabs__list">
+                    <template v-if="object.building_presentations.length">
+                        <div
+                            v-for="(presentation, index) in object.building_presentations"
+                            :key="index"
+                            class="complex-document"
+                        >
+                            <a :href="presentation" target="_blank" class="complex-document__link">
+                                <i
+                                    class="fa-regular fa-file-powerpoint complex-document__preview"
+                                />
+                                <p class="complex-document__name">Презентация #{{ index }}</p>
+                            </a>
+                        </div>
+                    </template>
+                    <div class="complex-document complex-document--green">
+                        <a href="#" class="complex-document__link">
+                            <i class="fa-regular fa-file-powerpoint complex-document__preview" />
+                            <p class="complex-document__name">Добавить презентацию</p>
+                        </a>
+                    </div>
+                </div>
+            </Tab>
+            <Tab name="Договоры">
+                <div class="object-holdings-tabs__list">
+                    <template v-if="object.building_contracts && object.building_contracts.length">
+                        <div
+                            v-for="(contract, index) in object.building_contracts"
+                            :key="index"
+                            class="complex-document"
+                        >
+                            <a :href="contract" target="_blank" class="complex-document__link">
+                                <i class="fa-regular fa-file-pdf complex-document__preview" />
+                                <p class="complex-document__name">Контракт #{{ index }}</p>
+                            </a>
+                        </div>
+                    </template>
+                    <div class="complex-document complex-document--green">
+                        <a href="#" class="complex-document__link">
+                            <i class="fa-regular fa-file-pdf complex-document__preview" />
+                            <p class="complex-document__name">Добавить контракт</p>
+                        </a>
+                    </div>
+                </div>
+            </Tab>
+            <Tab name="Задачи">
+                <p>В разработке..</p>
+            </Tab>
         </Tabs>
     </div>
 </template>
 
 <script>
-import { unitTypes } from '@/const/unitTypes';
-import PropertyListItem from '@/components/common/Property/PropertyListItem.vue';
-import PropertyList from '@/components/common/Property/PropertyList.vue';
-import WithUnitType from '@/components/common/WithUnitType.vue';
-import ActionButton from '@/components/common/ActionButton.vue';
-import {
-    facingTypes,
-    landCategoryTypes,
-    landscapeTypes,
-    ownTypes,
-    ownTypesLand
-} from '@/const/types';
 import ComplexDeals from '@/components/Complex/Deal/ComplexDeals.vue';
+import ComplexActions from '@/components/Complex/ComplexActions.vue';
+import { mapper } from '@/utils/mapper';
+import { entityProperties } from '@/const/properties/properties';
+import PropertyGrid from '@/components/common/Property/PropertyGrid.vue';
+import EmptyData from '@/components/common/EmptyData.vue';
 
 export default {
     name: 'ComplexHoldingTabs',
     components: {
-        ComplexDeals,
-        ActionButton,
-        WithUnitType,
-        PropertyList,
-        PropertyListItem
+        EmptyData,
+        PropertyGrid,
+        ComplexActions,
+        ComplexDeals
     },
+    inject: { openDownloader: 'openDownloader' },
     props: {
         object: {
             type: Object,
             required: true
         }
     },
-    data() {
-        return {
-            unitTypes
-        };
-    },
     computed: {
-        landscapeTypes() {
-            return landscapeTypes;
-        },
-        landCategoryTypes() {
-            return landCategoryTypes;
-        },
-        ownTypesLand() {
-            return ownTypesLand;
-        },
-        ownTypes() {
-            return ownTypes;
-        },
-        facingTypes() {
-            return facingTypes;
-        },
         actionButtons() {
             return {
-                edit: { value: true },
-                advert: { value: true },
-                dislike: { value: true },
-                notifications: { value: true },
-                pdf: { value: true }
+                edit: {},
+                dislike: { value: false },
+                notifications: { value: false },
+                delete: {},
+                cadastral: {
+                    disabled: !this.object.cadastral_number,
+                    handler: () => {
+                        window.open(this.$url.cadastral(this.object.cadastral_number), '_blank');
+                    }
+                },
+                photos: {
+                    disabled: !this.objectPhoto.length,
+                    handler: () => this.openDownloader(this.objectPhoto)
+                }
             };
         },
-        isPlot() {
-            return 0;
-            // TODO: Проверить различие типов объекта и вывода этого блока на других объектах
-            //return this.object.objectType.includes(ObjectTypes.PLOT)
+        objectPhoto() {
+            return this.object.photo
+                ? this.object.photo.map(el => ({
+                      src: this.$url.api.objects() + el
+                  }))
+                : [];
+        },
+        floors() {
+            return this.object.floorsRecords.filter(floor => floor.number);
+        },
+        sections() {
+            const properties = this.object.is_land
+                ? entityProperties.object.characteristicsForLandWithSections
+                : entityProperties.object.characteristicsWithSections;
+
+            return mapper.propertiesToTableFormatWithSections(this.object, properties);
+        },
+        sectionsTemplate() {
+            return [
+                ['main', 'security'],
+                ['railway', 'communications'],
+                ['infrastructure', 'allow']
+            ];
         }
     },
-    methods: {}
+    mounted() {
+        if (this.$route.query.offer_id) {
+            const offerId = this.$route.query.offer_id;
+
+            const objectHasTargetDeal = this.object.commercialOffers.some(
+                offer => offer.id == offerId
+            );
+
+            if (objectHasTargetDeal) this.$refs.tabs.selectTab('#deals-' + this.object.id);
+        }
+    }
 };
 </script>

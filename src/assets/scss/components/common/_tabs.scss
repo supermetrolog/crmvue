@@ -5,6 +5,9 @@
     &-tabs {
         display: flex;
         column-gap: 20px;
+        background-color: variables.$color_grey_alt;
+        padding: 10px;;
+        gap: 0;
     }
 
     &-tab {
@@ -67,5 +70,16 @@
 
     &-panels {
         padding: 20px 20px;
+    }
+
+    &.closed {
+        .hidden-tab {
+            display: none;
+        }
+
+        .tabs-component-panels:has(> #hidden-tab-pane[aria-hidden="false"]) {
+            display: none;
+        }
+
     }
 }

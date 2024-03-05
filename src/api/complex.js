@@ -38,6 +38,8 @@ export default {
               location.townCentralRecord,
               location.metroRecord,
               location.districtTypeRecord,
+              location.highwayRelevantRecords,
+              location.townsRelevantRecords,
               author.userProfile,
               agent.userProfile,
               objects.purposesRecords,
@@ -45,11 +47,15 @@ export default {
               internetTypes,
               waterTypes,
               objects.commercialOffers.dealTypeRecord,
+              objects.commercialOffers.consultant.userProfile,
+              objects.commercialOffers.summaryBlock,
               objects.commercialOffers.companyRecord.mainContact.phones,
               objects.commercialOffers.companyRecord.mainContact.emails,
+              objects.commercialOffers.blocks.deal,
               objects.floorsRecords.number,
               objects.floorsRecords.parts,
               objects.floorsRecords.floorTypes,
+              objects.floorsRecords.parts.floorTypes,
               objects.cranes.controls,
               objects.cranes.state,
               objects.cranes.beam,
@@ -57,8 +63,9 @@ export default {
               objects.cranes.hoisting,
               objects.cranes.location,
               objects.cranes.type,
-              objects.commercialOffers.blocks.deal,
-              objects.floorsRecords.parts.floorTypes`
+              objects.elevatorsRecords.elevatorType
+            ,
+            `
         });
     }
 };

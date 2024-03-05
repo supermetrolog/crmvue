@@ -296,54 +296,36 @@
                 <div class="col-12 mt-2">
                     <span class="form__subtitle">Реклама</span>
                     <div class="form__row justify-content-around">
-                        <div class="form__column">
-                            <span class="form__subtitle">Realtor.ru</span>
-                            <div class="form__row">
-                                <RadioChip
-                                    v-model="form.ad_realtor"
-                                    label="Да"
-                                    :value="1"
-                                    unselect
-                                />
-                                <RadioChip
-                                    v-model="form.ad_realtor"
-                                    label="Нет"
-                                    :value="0"
-                                    unselect
-                                />
-                            </div>
-                        </div>
-                        <div class="form__column">
-                            <span class="form__subtitle">Циан</span>
-                            <div class="form__row">
-                                <RadioChip v-model="form.ad_cian" label="Да" :value="1" unselect />
-                                <RadioChip v-model="form.ad_cian" label="Нет" :value="0" unselect />
-                            </div>
-                        </div>
-                        <div class="form__column">
-                            <span class="form__subtitle">Яндекс</span>
-                            <div class="form__row">
-                                <RadioChip
-                                    v-model="form.ad_yandex"
-                                    label="Да"
-                                    :value="1"
-                                    unselect
-                                />
-                                <RadioChip
-                                    v-model="form.ad_yandex"
-                                    label="Нет"
-                                    :value="0"
-                                    unselect
-                                />
-                            </div>
-                        </div>
-                        <div class="form__column">
-                            <span class="form__subtitle">Бесплатные</span>
-                            <div class="form__row">
-                                <RadioChip v-model="form.ad_free" label="Да" :value="1" unselect />
-                                <RadioChip v-model="form.ad_free" label="Нет" :value="0" unselect />
-                            </div>
-                        </div>
+                        <RadioGroup
+                            v-model="form.ad_avito"
+                            unselect
+                            class="form__column"
+                            label="Авито"
+                        />
+                        <RadioGroup
+                            v-model="form.ad_realtor"
+                            unselect
+                            class="form__column"
+                            label="Realtor.ru"
+                        />
+                        <RadioGroup
+                            v-model="form.ad_cian"
+                            unselect
+                            class="form__column"
+                            label="Циан"
+                        />
+                        <RadioGroup
+                            v-model="form.ad_yandex"
+                            unselect
+                            class="form__column"
+                            label="Яндекс"
+                        />
+                        <RadioGroup
+                            v-model="form.ad_free"
+                            unselect
+                            class="form__column"
+                            label="Бесплатные"
+                        />
                     </div>
                 </div>
             </div>
@@ -366,10 +348,19 @@ import {
     ceilingHeightValidators,
     pricePerFloorValidators
 } from '@//validators/fields';
+import RadioGroup from '@/components/common/Forms/RadioGroup.vue';
 
 export default {
     name: 'FormModalOfferSearch',
-    components: { DoubleInput, RadioChip, CheckboxChip, AnimationTransition, Button, Modal },
+    components: {
+        RadioGroup,
+        DoubleInput,
+        RadioChip,
+        CheckboxChip,
+        AnimationTransition,
+        Button,
+        Modal
+    },
     mixins: [FormMixin],
     emits: ['close'],
     data() {

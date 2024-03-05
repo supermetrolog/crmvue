@@ -16,12 +16,11 @@
                     @click="clickFavoriteOffer(offer)"
                     class="fas fa-star"
                     :class="{
-                        selected: FAVORITES_OFFERS.find(item => item.original_id == offer.original_id)
+                        selected: FAVORITES_OFFERS.find(
+                            item => item.original_id == offer.original_id
+                        )
                     }"
                 ></i>
-                <a :href="getOfferUrl(offer)" target="_blank">
-                    <i class="fa-solid fa-eye"></i>
-                </a>
                 <i @click="clickViewPdf(offer)" class="fas fa-file-pdf"></i>
                 <div @click="clickOpenMore" class="actions-more">
                     <i v-if="!dropdownIsOpen" class="fa fa-chevron-down"></i>
@@ -29,22 +28,31 @@
                 </div>
             </div>
         </Td>
-        <Td class="photo">
-            <a :href="getOldOfferUrl(offer)" target="_blank">
-                <div class="image-container">
-                    <img :src="offer.thumb" alt="image" />
-                    <span class="deal_type" :class="{ passive: offer.status != 1 }">
-                        {{ offer.deal_type_name }}
-                    </span>
-                    <span class="object_class">
-                        {{ offer.class_name }}
-                    </span>
-                    <span v-if="offer.hide_from_market" class="hide_from_market" title="Не выгружается">
-                        <i class="fas fa-eye-slash"></i>
-                    </span>
-                    <span v-if="offer.test_only" class="test_only"> Тестовый лот </span>
-                </div>
-            </a>
+        <Td>
+            <a :href="$url.offerOldByObject(offer)" target="_blank" class="photo-button button"
+                >Старая версия</a
+            >
+            <div class="photo">
+                <a :href="$url.offerByObject(offer)" target="_blank">
+                    <div class="image-container">
+                        <img :src="offer.thumb" alt="image" />
+                        <span class="deal_type" :class="{ passive: offer.status != 1 }">
+                            {{ offer.deal_type_name }}
+                        </span>
+                        <span class="object_class">
+                            {{ offer.class_name }}
+                        </span>
+                        <span
+                            v-if="offer.hide_from_market"
+                            class="hide_from_market"
+                            title="Не выгружается"
+                        >
+                            <i class="fas fa-eye-slash"></i>
+                        </span>
+                        <span v-if="offer.test_only" class="test_only"> Тестовый лот </span>
+                    </div>
+                </a>
+            </div>
         </Td>
         <Td class="region">
             <p v-if="offer.region_name" class="region_item">
@@ -63,7 +71,9 @@
                 {{ offer.town_name }}
             </p>
             <p v-if="offer.highway_name">{{ offer.highway_name }} <small>шоссе</small></p>
-            <p v-if="offer.highway_moscow_name">{{ offer.highway_moscow_name }} <small>шоссе</small></p>
+            <p v-if="offer.highway_moscow_name">
+                {{ offer.highway_moscow_name }} <small>шоссе</small>
+            </p>
             <hr />
             <p v-if="offer.address">
                 {{ offer.address }}
@@ -88,14 +98,16 @@
             <p v-if="offer.deal_type == 2">
                 {{ offer.calc_price_sale }} <small>руб за м<sup>2</sup></small>
             </p>
-            <p v-if="offer.deal_type == 3">{{ offer.calc_price_safe_pallet }} <small>руб за 1 п. м.</small></p>
+            <p v-if="offer.deal_type == 3">
+                {{ offer.calc_price_safe_pallet }} <small>руб за 1 п. м.</small>
+            </p>
             <span v-if="offer.offer && offer.offer.tax_form">
                 {{ taxForm }}
             </span>
         </Td>
         <Td class="company_about">
             <template v-if="offer.company !== null">
-                <a :href="getOldOfferUrl(offer)" target="_blank">
+                <a :href="$url.offerByObject(offer)" target="_blank">
                     {{ offer.company.full_name }}
                 </a>
                 <div v-if="contact" class="contact">
@@ -108,7 +120,12 @@
                     >
                         {{ email.email }}
                     </a>
-                    <PhoneNumber v-for="phone of contact.phones" :key="phone.id" :phone="phone" :contact="contact" />
+                    <PhoneNumber
+                        v-for="phone of contact.phones"
+                        :key="phone.id"
+                        :phone="phone"
+                        :contact="contact"
+                    />
                 </div>
             </template>
         </Td>

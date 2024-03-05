@@ -13,6 +13,18 @@
         height: 180px;
     }
 
+    &__grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+
+        .carousel__item {
+            width: 180px;
+            height: 110px;
+            object-fit: cover;
+        }
+    }
+
     &__item {
         cursor: pointer;
         height: 100%;

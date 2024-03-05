@@ -3,14 +3,11 @@
         @close="$emit('close')"
         :title="section ? 'Редактирование блока' : 'Добавление блока'"
         class="modal-form-floor-block"
+        has-tabs
     >
         <Loader v-if="loader" class="center" />
         <Form @submit="onSubmit">
-            <Tabs
-                :options="{ useUrlFragment: false, defaultTabHash: 'main' }"
-                nav-class="create-floor-block-form__tab-list"
-                nav-item-link-class="create-floor-block-form__tab-link"
-            >
+            <Tabs :options="{ useUrlFragment: false, defaultTabHash: 'main' }">
                 <Tab id="main" name="Характеристики">
                     <FormGroup>
                         <DoubleInput
@@ -379,7 +376,6 @@ import {
     gateTypes,
     gridColumnTypes,
     lightingTypes,
-    objectPurposes,
     rackTypes,
     ventilationTypes
 } from '@/const/types';
@@ -395,6 +391,7 @@ import {
 } from '@//validators/fields';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import RadioGroup from '@/components/common/Forms/RadioGroup.vue';
+import { entityOptions } from '@/const/options/options';
 
 export default {
     name: 'FormComplexFloorBlock',
@@ -532,9 +529,9 @@ export default {
     computed: {
         blockPossiblePurposes() {
             const result = [];
-            for (const purpose in objectPurposes) {
+            for (const purpose in entityOptions.object.purposes) {
                 if (this.object.purposes.find(el => el == purpose)) {
-                    result.push({ id: purpose, ...objectPurposes[purpose] });
+                    result.push({ id: purpose, ...entityOptions.object.purposes[purpose] });
                 }
             }
             return result;

@@ -1,19 +1,22 @@
 <template>
     <div class="carousel">
-        <div class="carousel__scroll">
-            <img
+        <div :class="{ carousel__scroll: !grid, carousel__grid: grid }">
+            <VLazyImage
                 v-for="(item, idx) in slides"
                 :key="item.src"
                 @click="openModal(idx)"
                 class="carousel__item"
                 :src="item.src"
             />
+            <template v-if="!slides.length">
+                <NoImage v-for="key in 3" :key="key" />
+            </template>
         </div>
         <Modal
             v-if="modalIsOpen"
             @close="clickCloseModal"
             class="carousel__modal"
-            title="Просмотр изображений"
+            :title="modalTitle"
         >
             <VueAgile
                 ref="main"
@@ -27,7 +30,7 @@
                     class="carousel__slide"
                     :class="`slide--${slideKey}`"
                 >
-                    <img class="carousel__image" :src="slide.src" alt="img" />
+                    <VLazyImage class="carousel__image" :src="slide.src" alt="img" />
                 </div>
             </VueAgile>
             <VueAgile
@@ -44,7 +47,7 @@
                     class="carousel__thumbnail"
                     :class="`slide--${idx}`"
                 >
-                    <img class="carousel__image" :src="slide.src" alt="" />
+                    <VLazyImage class="carousel__image" :src="slide.src" alt="" />
                 </div>
                 <template #prevButton>
                     <i class="fas fa-chevron-left"></i>
@@ -60,14 +63,24 @@
 <script>
 import Modal from '@/components/common/Modal.vue';
 import { VueAgile } from 'vue-agile';
+import VLazyImage from 'v-lazy-image';
+import NoImage from '@/components/common/NoImage.vue';
 
 export default {
     name: 'Carousel',
-    components: { Modal, VueAgile },
+    components: { NoImage, Modal, VueAgile, VLazyImage },
     props: {
         slides: {
             type: Array,
             required: true
+        },
+        grid: {
+            type: Boolean,
+            default: false
+        },
+        title: {
+            type: String,
+            default: null
         }
     },
     data() {
@@ -86,6 +99,11 @@ export default {
                 slidesToShow: 3
             }
         };
+    },
+    computed: {
+        modalTitle() {
+            return 'Просмотр изображений' + (this.title ? `. ${this.title}` : '');
+        }
     },
     methods: {
         openModal(id) {

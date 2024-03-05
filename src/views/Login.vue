@@ -102,7 +102,11 @@ export default {
 
                 if (response !== false) {
                     await this.$store.dispatch('INIT');
-                    await this.$router.push('/');
+
+                    const redirectLink = localStorage.getItem('redirect_link');
+                    if (redirectLink) localStorage.removeItem('redirect_link');
+
+                    await this.$router.push(redirectLink || '/');
                 }
 
                 this.loader = false;

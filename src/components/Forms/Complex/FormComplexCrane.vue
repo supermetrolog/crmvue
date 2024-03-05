@@ -3,6 +3,7 @@
         @close="$emit('close')"
         class="modal-form-complex-crane"
         :title="crane ? 'Редактирование крана' : 'Добавление крана'"
+        has-tabs
     >
         <Loader v-if="loader" class="center" />
         <Form @submit="onSubmit" class="equipment-form">
@@ -142,8 +143,9 @@
                     </FormGroup>
                 </Tab>
             </Tabs>
-            <div class="row">
-                <Submit success class="col-3 mx-auto">Сохранить</Submit>
+            <div class="row justify-content-center">
+                <Submit success class="col-3">Сохранить</Submit>
+                <Button v-if="crane" class="col-3 ml-2" danger>Удалить</Button>
             </div>
         </Form>
     </Modal>
@@ -154,20 +156,13 @@ import { helpers, minValue, required } from '@vuelidate/validators';
 import { ComplexFormMixin } from '@/components/Forms/Complex/mixin';
 import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
-import {
-    craneBeamsAmountTypes,
-    craneBeamTypes,
-    craneHoistingTypes,
-    craneTypes,
-    liftingDeviceConditionTypes,
-    liftingDeviceControlsTypes,
-    liftingDeviceLocationTypes
-} from '@/const/liftingDevices';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
+import Button from '@/components/common/Button.vue';
+import { entityOptions } from '@/const/options/options';
 
 export default {
     name: 'FormComplexCrane',
-    components: { RadioChip, Modal, Loader },
+    components: { Button, RadioChip, Modal, Loader },
     mixins: [ComplexFormMixin],
     emits: ['close'],
     props: {
@@ -219,25 +214,25 @@ export default {
     },
     computed: {
         craneTypeOptions() {
-            return Object.values(craneTypes);
+            return Object.values(entityOptions.crane.type);
         },
         craneLocationOptions() {
-            return Object.values(liftingDeviceLocationTypes);
+            return Object.values(entityOptions.crane.location);
         },
         craneBeamOptions() {
-            return Object.values(craneBeamTypes);
+            return Object.values(entityOptions.crane.beam);
         },
         craneBeamsAmountOptions() {
-            return Object.values(craneBeamsAmountTypes);
+            return Object.values(entityOptions.crane.beamAmount);
         },
         craneHoistingOptions() {
-            return Object.values(craneHoistingTypes);
+            return Object.values(entityOptions.crane.hoisting);
         },
         craneControlsOptions() {
-            return Object.values(liftingDeviceControlsTypes);
+            return Object.values(entityOptions.crane.controls);
         },
         craneConditionOptions() {
-            return Object.values(liftingDeviceConditionTypes);
+            return Object.values(entityOptions.crane.condition);
         }
     },
     methods: {

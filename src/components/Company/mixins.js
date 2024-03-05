@@ -4,7 +4,6 @@ import {
     CompanyCategories,
     CompanyFormOrganization,
     PassiveWhy,
-    PositionList,
     RatingList
 } from '@/const/const';
 import Progress from '@/components/common/Progress.vue';
@@ -19,6 +18,7 @@ import {
     RegionList
 } from '@/const/const.js';
 import FileInput from '@/components/common/Forms/FileInput.vue';
+import { entityOptions } from '@/const/options/options';
 
 export const MixinCompanyView = {
     components: {
@@ -35,7 +35,7 @@ export const MixinCompanyView = {
     },
     computed: {
         ratingOptions: () => RatingList,
-        positionOptions: () => PositionList
+        positionOptions: () => entityOptions.contact.positionList
     },
     methods: {
         category(categoryValue) {
