@@ -40,6 +40,7 @@ export default {
               location.districtTypeRecord,
               location.highwayRelevantRecords,
               location.townsRelevantRecords,
+              location.districtFormerRecord,
               author.userProfile,
               agent.userProfile,
               objects.purposesRecords,

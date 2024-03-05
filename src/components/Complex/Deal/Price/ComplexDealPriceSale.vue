@@ -2,12 +2,12 @@
     <div
         v-if="
             deal.summaryBlock &&
-            (deal.summaryBlock.price_sale_min || deal.summaryBlock.price_sale_max)
+            (deal.summaryBlock.price_sale_min || deal.summaryBlock.price_field_min)
         "
         class="complex-deal-table__table"
     >
         <with-unit-type class="complex-deal-table__title" :unit-type="priceOption.unitType">
-            {{ $formatter.numberOrRangeNew(mainPrice.min, mainPrice.max) }}
+            {{ $formatter.numberOrRangeStrict(mainPrice.min, mainPrice.max) }}
         </with-unit-type>
         <ul class="complex-deal-table__description">
             <li class="complex-deal-table__grid-title">
@@ -17,7 +17,7 @@
                     :unit-type="unitTypes.RUB_PER_SQUARE_METERS"
                 >
                     {{
-                        $formatter.numberOrRangeNew(
+                        $formatter.numberOrRangeStrict(
                             deal.summaryBlock.price_sale_min,
                             deal.summaryBlock.price_sale_max
                         )
@@ -59,9 +59,14 @@ export default {
                 reducer.max(activeBlocks, 'area_max')
             ];
 
+            const priceMin =
+                this.deal.summaryBlock.price_sale_min || this.deal.summaryBlock.price_field_min;
+            const priceMax =
+                this.deal.summaryBlock.price_sale_max || this.deal.summaryBlock.price_field_max;
+
             return {
-                min: this.priceOption.func(this.deal.summaryBlock.price_sale_min, areaMin),
-                max: this.priceOption.func(this.deal.summaryBlock.price_sale_max, areaMax)
+                min: this.priceOption.func(priceMin, areaMin),
+                max: this.priceOption.func(priceMax, areaMax)
             };
         }
     }

@@ -125,7 +125,11 @@ export default {
                 },
                 photos: {
                     disabled: !this.photos.length || !this.hasActiveOffers,
-                    handler: () => this.openDownloader(this.photos)
+                    handler: () =>
+                        this.openDownloader(
+                            this.photos,
+                            `Объект-${this.deal.object_id}-Сделка-${this.deal.id}`
+                        )
                 }
             };
         },

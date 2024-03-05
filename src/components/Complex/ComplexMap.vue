@@ -39,7 +39,8 @@
                         </button>
                     </template>
                     <template #content>
-                        <ComplexMapDescription :location="location" />
+                        <ComplexMapDescription v-if="location.id" :location="location" />
+                        <p v-else>Информация о локации не доступна..</p>
                     </template>
                 </Tooltip>
                 <button v-tippy="'Редактировать'" class="complex-map__label complex-map__action">
@@ -193,6 +194,9 @@ export default {
                 this.map.behaviors = ['drag', 'multiTouch', 'scrollZoom'];
             }
         }
+    },
+    created() {
+        console.log(this.location);
     }
 };
 </script>

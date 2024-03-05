@@ -16,7 +16,7 @@
                 />
                 <button
                     v-if="objectPhoto.length"
-                    @click.prevent="openDownloader(objectPhoto)"
+                    @click.prevent="openDownloader(objectPhoto, `Объект-${object.id}`)"
                     class="object-holding__download"
                 >
                     Скачать фотографии

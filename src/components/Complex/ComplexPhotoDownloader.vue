@@ -12,6 +12,16 @@
                         Выбрано изображений: <span>{{ downloadsCount }}</span> из
                         <span>{{ photos.length }}</span>
                     </p>
+                    <Form class="complex-photo-downloader__form mb-2">
+                        <Input
+                            v-model="zipname"
+                            :v="v$.zipname"
+                            reactive
+                            required
+                            label="Название архива"
+                            class="complex-photo-downloader__input"
+                        />
+                    </Form>
                     <div class="complex-photo-downloader__actions">
                         <Button @click="download" success :disabled="!downloadsCount">
                             Скачать выбранное
@@ -53,15 +63,19 @@ import Modal from '@/components/common/Modal.vue';
 import VLazyImage from 'v-lazy-image';
 import Button from '@/components/common/Button.vue';
 import useValidate from '@vuelidate/core';
+import Form from '@/components/common/Forms/Form.vue';
+import Input from '@/components/common/Forms/Input.vue';
+import { helpers, minLength, required } from '@vuelidate/validators';
 
 export default {
     name: 'ComplexPhotoDownloader',
-    components: { Button, Modal, VLazyImage },
+    components: { Input, Form, Button, Modal, VLazyImage },
     data() {
         return {
             opened: false,
             photos: [],
             downloads: {},
+            zipname: null,
             v$: useValidate()
         };
     },
@@ -70,22 +84,37 @@ export default {
             return Object.values(this.downloads).filter(Boolean).length;
         }
     },
+    validations() {
+        return {
+            zipname: {
+                minLength: helpers.withMessage('Минимум 3 символа', minLength(3)),
+                required: helpers.withMessage('Заполните название', required)
+            }
+        };
+    },
     methods: {
-        open(photos) {
+        open(photos, name = null) {
             this.photos = photos;
             this.downloads = photos.reduce((acc, _, key) => ({ ...acc, [key]: false }), {});
             this.opened = true;
+            this.zipname = name;
         },
         close() {
             this.opened = false;
             this.downloads = {};
             this.photos = [];
+            this.zipname = null;
         },
         toggleDownload(index) {
             this.downloads[index] = !this.downloads[index];
         },
         createLink(params) {
-            return this.$url.api.archiver() + '?files[]=' + params.join('&files[]=');
+            return (
+                this.$url.api.archiver() +
+                '?files[]=' +
+                params.join('&files[]=') +
+                `&name=${this.zipname}`
+            );
         },
         download() {
             const link = this.createLink(
