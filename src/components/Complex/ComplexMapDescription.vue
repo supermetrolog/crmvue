@@ -100,7 +100,6 @@ export default {
             required: true
         }
     },
-    data() {},
     computed: {
         directionOptions() {
             return entityOptions.location.direction;
