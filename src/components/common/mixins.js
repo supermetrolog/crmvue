@@ -25,7 +25,7 @@ export const TableContentMixin = {
         await this.initialRouteSettings();
         this.mounted = true;
         this.watcher = this.$watch('$route', (newValue, oldValue) => {
-            if (newValue.path == oldValue.path) {
+            if (newValue.path == oldValue.path && newValue.fullPath !== oldValue.fullPath) {
                 this.getContent();
             }
         });
