@@ -1,0 +1,67 @@
+.messenger-dialog {
+    padding: 10px;
+
+    &:not(:last-child) {
+        border-bottom: 1px solid rgba(0, 0, 0, .1);
+    }
+
+    &__body {
+        margin-bottom: 10px;
+    }
+
+    &__footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+
+.messenger-dialog-offer {
+    &__body {
+        display: flex;
+        gap: 5px;
+    }
+
+    &__image {
+        width: 105px;
+        height: 75px;
+        object-fit: cover;
+    }
+}
+
+.messenger-dialog-functions {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+
+    &__item {
+        position: relative;
+        background-color: #0f6674;
+        border-radius: 50%;
+        height: 35px;
+        width: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        line-height: 18px;
+        font-size: 18px;
+    }
+
+    &__chip {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        border-radius: 50%;
+        height: 15px;
+        width: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        line-height: 11px;
+        background-color: #f93154;
+        color: #fff;
+        font-weight: 600;
+    }
+}

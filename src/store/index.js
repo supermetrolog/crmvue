@@ -17,6 +17,7 @@ import CallerManager from './modules/CallerManager';
 import Location from './modules/Location';
 import Complex from './modules/Complex';
 import axios from 'axios';
+import Messenger from '@/store/modules/Messenger';
 
 const store = createStore({
     state: {},
@@ -34,7 +35,8 @@ const store = createStore({
                 return false;
             }
             await context.dispatch('SET_USER');
-            axios.defaults.headers.common['Authorization'] = `Bearer ${context.getters.THIS_USER.access_token}`;
+            axios.defaults.headers.common['Authorization'] =
+                `Bearer ${context.getters.THIS_USER.access_token}`;
             await context.dispatch('SET_WINDOW_NAME');
             await context.dispatch('WEBSOCKET_STOP');
             await context.dispatch('WEBSOCKET_RUN');
@@ -64,7 +66,8 @@ const store = createStore({
         Offers,
         CallerManager,
         Location,
-        Complex
+        Complex,
+        Messenger
     }
 });
 store.checkAction = function (name) {

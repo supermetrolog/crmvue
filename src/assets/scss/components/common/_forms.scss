@@ -126,6 +126,16 @@
         outline: none;
         width: 100%;
 
+        &--rounded {
+            border-radius: 20px;
+            background-color: #F3F3F3;
+            border: none;
+
+            &:active, &:focus {
+                outline: 2px solid rgba(0, 0, 0, .3);
+            }
+        }
+
         &:not(:disabled):focus, &:not(:disabled):active {
             border-color: #186a8d;
         }
