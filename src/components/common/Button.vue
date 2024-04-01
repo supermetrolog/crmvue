@@ -79,8 +79,7 @@ export default {
         }
     },
     methods: {
-        clickHandler(event) {
-            if (this.prevent) event.preventDefault();
+        clickHandler() {
             this.$emit('click');
         }
     }

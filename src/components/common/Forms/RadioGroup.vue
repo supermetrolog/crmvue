@@ -1,7 +1,7 @@
 <template>
     <div class="radio-group" :class="{ required: required }">
         <p v-if="label" class="radio-group__label">{{ label }}</p>
-        <div class="radio-group__list mt-1">
+        <div class="radio-group__list">
             <label class="radio-chip" :class="{ active: isActive(first) }">
                 <input
                     v-model="field"

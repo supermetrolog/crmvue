@@ -1,5 +1,5 @@
 <template>
-    <Tippy class="tooltip">
+    <Tippy class="tooltip" :class="{ pre: preFormat }">
         <template #default>
             <slot name="trigger">
                 <i :class="icon" />
@@ -28,6 +28,10 @@ export default {
         icon: {
             type: String,
             default: 'fa-solid fa-circle-info'
+        },
+        preFormat: {
+            type: Boolean,
+            default: false
         }
     }
 };
