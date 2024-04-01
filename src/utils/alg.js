@@ -101,6 +101,20 @@ const isNumeric = num => {
     return !isNaN(+num);
 };
 
+const debounce = function (fnc, delay) {
+    let timeout = null;
+
+    return function (...args) {
+        if (timeout) clearTimeout(timeout);
+
+        const context = this;
+
+        timeout = setTimeout(() => {
+            fnc.apply(context, args);
+        }, delay);
+    };
+};
+
 export const alg = {
     strictMin,
     filterArrayByPropertyEntity,
@@ -110,5 +124,6 @@ export const alg = {
     extractPropertiesFromObject,
     isNumeric,
     parts,
+    debounce,
     predicates
 };
