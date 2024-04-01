@@ -1,11 +1,23 @@
 @use '../utils/variables';
+@use '../utils/mixins';
 
-body.is-modal {
-    overflow: hidden;
-    padding-right: 5px;
-
-    .header {
+body {
+    &.is-modal {
+        overflow: hidden;
         padding-right: 5px;
+
+        .header {
+            padding-right: 5px;
+        }
+    }
+
+    &:has(.messenger.active.has-panel) {
+        overflow: hidden;
+        padding-right: 5px;
+
+        .header {
+            padding-right: 5px;
+        }
     }
 }
 

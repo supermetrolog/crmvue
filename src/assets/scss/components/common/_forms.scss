@@ -629,6 +629,10 @@
         display: flex;
         flex-wrap: wrap;
         gap: 5px;
+
+        &:not(:first-child) {
+            margin-top: 0.25rem;
+        }
     }
 
     &.required &__label::after {

@@ -10,7 +10,11 @@
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 100;
+    z-index: 4000;
+
+    .v-dropdown-container {
+        z-index: 4003;
+    }
 
     &:has(.loader) {
         z-index: 80;
@@ -22,7 +26,7 @@
         position: absolute;
         top: 0;
         left: 0;
-        z-index: 21;
+        z-index: 4001;
         background-color: rgba(0, 0, 0, 0.25);
     }
 
@@ -48,9 +52,9 @@
         min-width: 300px;
         max-height: 95vh;
         max-width: 100%;
-        margin: 20px;
         overflow: hidden;
-        z-index: 22;
+        margin: 20px;
+        z-index: 4002;
         box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
         border-radius: 15px;
         visibility: hidden;
@@ -80,6 +84,7 @@
         font-weight: normal;
         max-height: 90vh;
         overflow: hidden auto;
+        scrollbar-gutter: stable;
     }
 
     &__close {
@@ -191,6 +196,10 @@
             }
         }
     }
+
+    &--relative {
+        position: absolute;
+    }
 }
 
 @keyframes fadeIn {
@@ -217,3 +226,4 @@
 @include mixins.modal-width(modal-form-complex, 950px);
 @include mixins.modal-width(modal-complex-photo-downloader, 1100px);
 @include mixins.modal-width(modal-form-letter, 1200px);
+@include mixins.modal-width(modal-messenger-attachment, 1200px);
