@@ -191,7 +191,7 @@ import CompanyBoxContactList from './CompanyBoxContactList.vue';
 import CompanyBoxLayout from '@/components/Company/Box/CompanyBoxLayout.vue';
 import { MixinCompanyDetailInfo } from '@/components/Company/mixins.js';
 import { CompanyCategories } from '@/const/const';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 export default {
     name: 'CompanyBox',
@@ -239,7 +239,7 @@ export default {
     },
     methods: {
         dateFormatter(date) {
-            return moment(date).format('DD.MM.YYYY');
+            return dayjs(date).format('DD.MM.YYYY');
         }
     },
     mounted() {

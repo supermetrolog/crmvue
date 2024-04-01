@@ -156,11 +156,11 @@ import Textarea from '@/components/common/Forms/Textarea.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import api from '@//api/api.js';
 import { CompanyFormOrganization } from '@/const/const.js';
-import moment from 'moment';
 import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import Submit from '@/components/common/Forms/Submit.vue';
+import dayjs from 'dayjs';
 
 export default {
     name: 'FormCompanyDeal',
@@ -227,7 +227,7 @@ export default {
                 floorPrice: null,
                 clientLegalEntity: null,
                 description: null,
-                dealDate: moment(new Date()).format('YYYY-MM-DD'),
+                dealDate: dayjs(new Date()).format('YYYY-MM-DD'),
                 contractTerm: null,
                 is_our: 1,
                 is_competitor: 0,

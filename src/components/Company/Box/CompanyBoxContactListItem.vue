@@ -47,7 +47,7 @@
 
 <script>
 import { PositionList } from '@/const/const.js';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 export default {
     name: 'CompanyBoxContactListItem',
@@ -67,7 +67,7 @@ export default {
             if (!date) {
                 return false;
             }
-            return moment(date).format('DD.MM.YYYY');
+            return dayjs(date).format('DD.MM.YYYY');
         },
         mainPhone() {
             return this.contact.phones.find(phone => phone.isMain);

@@ -39,7 +39,7 @@
             />
         </div>
         <EmptyData v-else>Список сделок пуст..</EmptyData>
-        <AnimationTransition fast>
+        <AnimationTransition :speed="0.1">
             <ComplexDealItem
                 v-if="currentDealId"
                 :key="currentDealId"

@@ -125,8 +125,8 @@ import { mapActions, mapGetters } from 'vuex';
 import useValidate from '@vuelidate/core';
 import { ActivePassive, FeedbackIcons, PassiveWhyContact, PositionList } from '@/const/const.js';
 import api from '@/api/api';
-import moment from 'moment';
 import Modal from '@/components/common/Modal.vue';
+import dayjs from 'dayjs';
 
 export default {
     name: 'CompanyContactModal',
@@ -230,7 +230,7 @@ export default {
         },
 
         dateHandler(date) {
-            return moment(date).format('DD.MM.YYYY');
+            return dayjs(date).format('DD.MM.YYYY');
         }
     },
     mounted() {

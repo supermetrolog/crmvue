@@ -23,8 +23,8 @@
 </template>
 
 <script>
-import moment from 'moment';
 import CompanyTableTimeline from '@/components/Company/Table/CompanyTableTimeline.vue';
+import dayjs from 'dayjs';
 
 export default {
     name: 'CompanyTableRequestRow',
@@ -49,7 +49,7 @@ export default {
     },
     computed: {
         formattedDate() {
-            return moment(this.date).format('DD.MM.YYYY');
+            return dayjs(this.date).format('DD.MM.YYYY');
         }
     },
     methods: {

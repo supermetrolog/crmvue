@@ -5,7 +5,7 @@
         <!-- <CallerManager /> -->
         <main>
             <router-view v-slot="{ Component }">
-                <AnimationTransition fast>
+                <AnimationTransition :speed="0.1">
                     <component :is="Component" :key="$route.path"></component>
                 </AnimationTransition>
             </router-view>
