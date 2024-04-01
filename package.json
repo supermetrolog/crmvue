@@ -21,6 +21,7 @@
     "maska": "^1.4.2",
     "moment": "^2.29.1",
     "plural-ru": "^2.0.2",
+    "v-dropdown": "^3.0.0",
     "v-lazy-image": "^2.1.1",
     "v3-infinite-loading": "^1.2.2",
     "vue": "^3.0.0",
