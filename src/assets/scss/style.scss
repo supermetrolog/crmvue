@@ -7,6 +7,7 @@
 @use 'layouts';
 @use 'components';
 @use 'pages';
+@use 'utils/helpers';
 @use 'utils/mixins';
 
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,400;1,500;1,700&display=swap");
@@ -6151,7 +6152,7 @@ button.filters {
 }
 
 .tooltip {
-    &__text {
+    &--pre &__text {
         white-space: pre;
     }
 }
@@ -6168,7 +6169,28 @@ button.filters {
     border-radius: 10px;
     background-color: #fff;
 
+    img {
+        height: 125px;
+    }
+
+    &--no-rounded {
+        border-radius: 0;
+        box-shadow: none;
+    }
+
     &__text {
         font-weight: 500;
     }
+}
+
+.rounded-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.dp__action_button {
+    padding: 5px;
+    height: max-content;
 }

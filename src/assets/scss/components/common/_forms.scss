@@ -1,4 +1,5 @@
 @use '../../utils/variables';
+@use '../../utils/mixins';
 
 .invalid:not(:disabled):not(.is-disabled) {
     border-bottom: 2px solid variables.$color_danger !important;
@@ -35,10 +36,7 @@
     }
 
     &__row {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        flex-wrap: wrap;
+        @include mixins.flex-box($a: center, $gap: 5px, $wrap: true);
     }
 
     &__delimiter {
@@ -100,10 +98,7 @@
     }
 
     &__column {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 5px;
+        @include mixins.flex-box($a: center, $gap: 5px, $d: column);
     }
 
     &__block {
@@ -162,11 +157,10 @@
     }
 
     &__caption {
+        @include mixins.flex-box($a: center);
         padding: 0 6px 0 8px;
         height: calc(100% - 2px);
         position: absolute;
-        display: flex;
-        align-items: center;
         bottom: 1px;
         left: 0;
         border-right: 1px solid #d1d5db;
@@ -199,8 +193,7 @@
         width: 100%;
 
         &--row {
-            display: flex;
-            gap: 5px;
+            @include mixins.flex-box($gap: 5px);
         }
     }
 
@@ -226,9 +219,7 @@
     }
 
     &__stars {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
+        @include mixins.flex-box($gap: 5px, $d: column);
     }
 
     &__star {
@@ -237,9 +228,7 @@
     }
 
     &__chips {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 5px;
+        @include mixins.flex-box($gap: 5px, $wrap: true);
     }
 
     &__tooltip {
@@ -270,10 +259,8 @@
     }
 
     &__list {
+        @include mixins.flex-box($gap: 3px, $d: column);
         list-style: decimal;
-        display: flex;
-        flex-direction: column;
-        gap: 3px;
         font-size: 14px;
         padding-left: 15px;
     }
@@ -307,12 +294,10 @@
     }
 
     &__label {
+        @include mixins.flex-box($a: center, $j: center);
         padding: 5px 15px;
         border: 1px solid #d1d5db;
         border-radius: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         transition: all .5s ease;
         min-height: 35px;
         min-width: 35px;
@@ -503,10 +488,7 @@
 }
 
 .double-input {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-wrap: wrap;
+    @include mixins.flex-box($gap: 6px, $a: center, $wrap: true);
 
     label {
         flex-basis: calc(50% - 3px);
@@ -543,9 +525,7 @@
 
 .checkbox-icons {
     &__body {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
+        @include mixins.flex-box($gap: 5px, $d: column);
     }
 
     &__extra-label {
@@ -575,21 +555,17 @@
     }
 
     &__list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 5px;
+        @include mixins.flex-box($gap: 5px, $wrap: true);
         max-width: 100%;
     }
 
     &__label {
-        display: flex;
-        justify-content: center;
+        @include mixins.flex-box($a: center, $j: center);
+        @include mixins.transition(background-color .5s, color .5s);
         height: 45px;
         width: 45px;
-        align-items: center;
         border-radius: 4px;
         cursor: pointer;
-        transition: background-color .5s ease, color .5s ease;
         background-color: rgba(211, 211, 211, 0.7);
 
         &:hover {
@@ -626,9 +602,7 @@
     }
 
     &__list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 5px;
+        @include mixins.flex-box($gap: 5px, $wrap: true);
 
         &:not(:first-child) {
             margin-top: 0.25rem;
@@ -657,10 +631,8 @@
 
 .form-delete {
     &__body {
-        display: flex;
-        gap: 20px;
+        @include mixins.flex-box($a: center, $gap: 20px);
         padding: 30px 50px;
-        align-items: center;
     }
 
     &__icon {
@@ -692,11 +664,9 @@
     }
 
     &__field {
+        @include mixins.flex-box($a: center, $d: column);
         margin: 0 auto  ;
         padding: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
         border: 1px dashed #b8becb;
         border-radius: 4px;
         cursor: pointer;
@@ -738,12 +708,10 @@
 
 .file {
     &__body {
+        @include mixins.flex-box($a: center, $j: center);
         aspect-ratio: 1 / 1;
         background-color: rgba(211, 211, 211, 0.7);
         border-radius: 4px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         position: relative;
         transition: background-color .5s ease;
 
@@ -774,40 +742,31 @@
     }
 
     &__actions {
+        @include mixins.flex-box($a: center, $gap: 5px);
+        @include mixins.transition(visibility .5s, opacity .5s);
         position: absolute;
         top: 5px;
         right: 5px;
-        display: flex;
-        align-items: center;
-        gap: 5px;
         visibility: hidden;
         opacity: 0;
-        transition: visibility .5s ease, opacity .5s ease;
     }
 
     &__action {
+        @include mixins.flex-box($a: center, $j: center);
         cursor: pointer;
         border-radius: 50%;
         border: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         height: 25px;
         width: 25px;
     }
 
     &__description {
+        @include mixins.flex-box($j: flex-start, $gap: 5px, $d: column);
         text-align: start;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        gap: 5px;
     }
 
     &__description-list {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
+        @include mixins.flex-box($gap: 5px, $d: column);
     }
 
     &__subtitle {
@@ -815,8 +774,7 @@
     }
 
     &__option {
-        display: flex;
-        gap: 5px;
+        @include mixins.flex-box($gap: 5px);
 
         span:nth-child(2) {
             word-break: break-word;

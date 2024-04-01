@@ -53,15 +53,11 @@ main {
 
     &__functions {
         margin-top: 10px;
-        display: flex;
-        align-items: center;
-        gap: 5px;
+        @include mixins.flex-box($a: center, $gap: 5px);
     }
 
     &__actions {
-        display: flex;
-        align-items: flex-end;
-        gap: 10px;
+        @include mixins.flex-box($a: flex-end, $gap: 10px);
     }
 }
 
@@ -72,13 +68,11 @@ main {
 }
 
 .chip {
+    @include mixins.flex-box($a: center, $gap: 5px);
     padding: 5px 10px;
     background-color: #e0e0e0;
     border-radius: 4px;
     color: #2d2f34;
-    display: flex;
-    align-items: center;
-    gap: 5px;
 
     &__icon {
         cursor: pointer;
@@ -90,8 +84,7 @@ main {
 }
 
 .with-unit-type {
-    display: flex;
-    gap: 3px;
+    @include mixins.flex-box($gap: 3px);
 }
 
 .row {

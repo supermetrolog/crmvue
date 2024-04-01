@@ -1,0 +1,67 @@
+@use 'mixins';
+
+.color {
+    &-danger {
+        color: #9f3f56;
+    }
+
+    &-success {
+        color: #10b981;
+    }
+
+    &-warning {
+        color: #f88f01;
+    }
+}
+
+.bg {
+    &-black {
+        background-color: #000;
+    }
+
+    &-orange {
+        background-color: #e8b501;
+    }
+
+    &-red {
+        background-color: #9f3f56;
+    }
+
+    &-btn {
+        &-success {
+            background-color: #10b981;
+            color: #fff;
+
+            @include mixins.hover {
+                background-color: #009665;
+            }
+        }
+
+        &-warning {
+            background-color: #f88f01;
+            color: #fff;
+
+            @include mixins.hover {
+                background-color: #a46104;
+            }
+        }
+
+        &-danger {
+            background-color: #f93154;
+            color: #fff;
+
+            @include mixins.hover {
+                background-color: #cb1132;
+            }
+        }
+
+        &-primary {
+            background-color: #11698e;
+            color: #fff;
+
+            @include mixins.hover {
+                background-color: #085373;
+            }
+        }
+    }
+}

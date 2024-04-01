@@ -1,4 +1,5 @@
 @use '../utils/variables';
+@use '../utils/mixins';
 
 .UserProfile {
     position: relative;
@@ -20,9 +21,8 @@
     }
 
     &-table {
+        @include mixins.flex-box($d: column);
         width: 100%;
-        display: flex;
-        flex-direction: column;
     }
 
     &-row {
@@ -40,10 +40,9 @@
         }
 
         .data {
+            @include mixins.flex-box($d: column);
             float: left;
             word-wrap: break-word;
-            display: flex;
-            flex-direction: column;
             // width: 360px;
             // overflow: auto;
             // line-height: 16px;

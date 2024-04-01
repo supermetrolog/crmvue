@@ -1,15 +1,13 @@
+@use '../../utils/mixins';
+
 .complex-purposes {
-    display: flex;
-    gap: 5px;
-    flex-wrap: wrap;
+    @include mixins.flex-box($gap: 5px, $wrap: true);
 
     &__item {
+        @include mixins.flex-box($a: center, $j: center);
         font-size: 22px;
-        display: flex;
         width: 40px;
         height: 40px;
-        align-items: center;
-        justify-content: center;
         border-radius: 5px;
         border: 1px solid rgba(211, 211, 211, 1);
         margin-right: 1px;

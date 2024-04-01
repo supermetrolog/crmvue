@@ -49,11 +49,10 @@
     }
 
     &__badge {
+        @include mixins.flex-box($j: center);
         padding: 4px 10px;
         width: 100px;
         background-color: #982e06;
-        display: flex;
-        justify-content: center;
         font-weight: bold;
         color: white;
 
@@ -70,9 +69,7 @@
     }
 
     &__type {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        @include mixins.flex-box($a: center, $j: space-between);
         width: 36px;
         background: #982e06;
         border-right: 1px solid rgba(255, 255, 255, .2);
@@ -95,8 +92,7 @@
         max-height: 470px;
 
         &-left {
-            display: flex;
-            flex-direction: column;
+            @include mixins.flex-box($d: column);
             width: 70%;
         }
 

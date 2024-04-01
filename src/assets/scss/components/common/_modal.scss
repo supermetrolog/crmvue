@@ -2,9 +2,7 @@
 @use '../../utils/mixins';
 
 .modal {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    @include mixins.flex-box($a: center, $j: center);
     position: fixed;
     top: 0;
     left: 0;
@@ -118,23 +116,19 @@
     }
 
     &__header {
+        @include mixins.flex-box($a: center, $gap: 5px);
         border-bottom: 1px solid lighten(variables.$color_grey, 35);
         font-size: 20px;
         font-weight: 500;
         position: relative;
-        display: flex;
-        align-items: center;
-        gap: 5px;
         padding-right: 45px;
 
         .times-container {
+            @include mixins.flex-box($a: center, $j: center);
             position: absolute;
             right: 10px;
             top: 0;
             bottom: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
 
             i {
                 cursor: pointer;

@@ -1,4 +1,5 @@
 @use '../utils/variables';
+@use '../utils/mixins';
 
 .object-holding {
     &__label {
@@ -6,9 +7,7 @@
     }
 
     &__list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 5px 10px;
+        @include mixins.flex-box($gap: 5px 10px, $wrap: true);
     }
 
     &__carousel {
@@ -55,17 +54,11 @@
     background-color: rgba(211, 211, 211, 0.8);
 
     .tooltip {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+        @include mixins.flex-box($a: center, $j: center, $d: column);
     }
 
     &__header {
-        max-width: 100%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        @include mixins.text-overflow();
     }
 
     &__category {
@@ -85,18 +78,15 @@
     }
 
     &__element {
-        display: flex;
-        gap: 3px;
+        @include mixins.flex-box($gap: 3px);
     }
 
     &--form {
+        @include mixins.flex-box($gap: 8px, $d: column);
         border-style: dashed;
         cursor: pointer;
         transition: background-color .5s ease, color .5s ease, border-color .5s ease;
         height: 102px;
-        display: flex;
-        gap: 8px;
-        flex-direction: column;
         border-color: #00b74a;
         background-color: rgba(0, 183, 74, 0.3);
 
@@ -121,9 +111,7 @@
     }
 
     &__line {
-        display: flex;
-        gap: 20px;
-        justify-content: space-between;
+        @include mixins.flex-box($j: space-between, $gap: 20px);
     }
 
     &__status {

@@ -1,3 +1,5 @@
+@use '../../utils/mixins';
+
 .complex-deal-table {
     padding: 12px;
     position: relative;
@@ -15,8 +17,7 @@
     }
 
     &__header {
-        display: flex;
-        justify-content: space-between;
+        @include mixins.flex-box($j: space-between);
         font-weight: 600;
         width: 100%;
 
@@ -26,15 +27,11 @@
     }
 
     &__area {
-        display: flex;
-        justify-content: space-between;
-        gap: 50px;
+        @include mixins.flex-box($j: space-between, $gap: 50px);
     }
 
     &__heading {
-        display: flex;
-        gap: 5px;
-        align-items: center;
+        @include mixins.flex-box($a: center, $gap: 5px);
     }
 
     &__grid-item {
@@ -42,8 +39,7 @@
     }
 
     &__grid-title {
-        display: flex;
-        justify-content: space-between;
+        @include mixins.flex-box($j: space-between);
         margin-bottom: 5px;
         font-size: 14px;
 
@@ -63,9 +59,7 @@
     }
 
     &__value {
-        display: flex;
-        align-items: center;
-        gap: 5px;
+        @include mixins.flex-box($a: center, $gap: 5px);
 
         i {
             font-size: 16px;
@@ -88,8 +82,7 @@
 }
 
 .complex-deal-price-formatter {
-    display: flex;
-    gap: 10px;
+    @include mixins.flex-box($gap: 10px);
 
     &__option {
         cursor: pointer;

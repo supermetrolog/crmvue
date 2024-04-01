@@ -1,4 +1,5 @@
 @use '../utils/variables';
+@use '../utils/mixins';
 
 $basic_step_border: 0.5px solid black;
 $basic_step_color: variables.$color_grey_alt;
@@ -201,14 +202,10 @@ $warning_step_thin_border: 1px solid variables.$color_warning;
         }
 
         .OfferTableDropdown-header-actions {
+            @include mixins.flex-box($j: space-between, $a: center, $gap: 5px);
             position: absolute;
             right: 2%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 5px;
-            margin: 5px;
-            margin-top: 20px;
+            margin: 20px 5px 5px 5px;
 
             button {
                 background: none;
@@ -243,11 +240,8 @@ $warning_step_thin_border: 1px solid variables.$color_warning;
                     position: relative;
 
                     .OfferTableDropdown-menu-item-link {
+                        @include mixins.flex-box($j: center, $a: center, $d: column);
                         height: 100%;
-                        display: flex;
-                        flex-direction: column;
-                        justify-content: center;
-                        align-items: center;
                         padding: 10px;
                         color: black;
                         text-align: start;
@@ -266,19 +260,17 @@ $warning_step_thin_border: 1px solid variables.$color_warning;
                         }
 
                         .suffix {
+                            @include mixins.flex-box($a: center, $j: center);
                             position: absolute;
                             right: 0;
                             top: -9px;
                             background-color: #c03;
                             color: #fff;
                             margin-left: 0.35em;
-                            align-items: center;
                             border-radius: 1.25rem;
-                            display: flex;
                             font-size: 0.75rem;
                             flex-shrink: 0;
                             height: 1.25rem;
-                            justify-content: center;
                             line-height: 1.25rem;
                             width: 1.25rem;
                             padding: 0 0.1em;
@@ -344,14 +336,11 @@ $warning_step_thin_border: 1px solid variables.$color_warning;
 }
 
 .MiniOffersItem-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    @include mixins.flex-box($a: center, $j: space-between);
     min-width: 4.5rem;
 
     .MiniOffersItem-actions-item_avito {
-        display: flex;
-        align-items: center;
+        @include mixins.flex-box($a: center);
 
         .MiniOffersItem-actions-toggler {
             cursor: pointer;
@@ -442,16 +431,12 @@ $warning_step_thin_border: 1px solid variables.$color_warning;
     }
 
     &-step {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        @include mixins.flex-box($a: center, $j: center, $d: column);
         position: relative;
         height: $step_height;
 
         .step-name {
-            display: flex;
-            align-items: center;
+            @include mixins.flex-box($a: center);
         }
 
         i {

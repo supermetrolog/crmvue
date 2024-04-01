@@ -1,4 +1,5 @@
 @use '../utils/variables';
+@use '../utils/mixins';
 
 .company-table {
     .badge {
@@ -7,15 +8,11 @@
     }
 
     &__filters {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 5px 10px;
+        @include mixins.flex-box($gap: 5px 10px, $wrap: true);
     }
 
     &__actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
+        @include mixins.flex-box($j: flex-end, $gap: 10px);
     }
 
     width: 100%;
@@ -78,10 +75,8 @@
                     padding: 3px 0;
 
                     .scroller {
-                        display: flex;
+                        @include mixins.flex-box($a: center, $j: center);
                         height: 60px;
-                        align-items: center;
-                        justify-content: center;
                     }
 
                     span {
