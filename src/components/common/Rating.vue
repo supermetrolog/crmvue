@@ -1,12 +1,11 @@
 <template>
-    <div class="rating">
+    <div class="rating" :class="className">
         <i
-            v-for="value in 5"
+            v-for="value in max"
             :key="value"
             class="far fa-star"
             :class="{
-                'fas fa-star': value <= rating,
-                red: value <= rating
+                'fas fill': value <= rating
             }"
         >
         </i>
@@ -20,6 +19,21 @@ export default {
         rating: {
             type: Number,
             required: true
+        },
+        max: {
+            type: Number,
+            default: 5
+        },
+        color: {
+            type: String,
+            default: null
+        }
+    },
+    computed: {
+        className() {
+            if (this.color) return 'rating--' + this.color;
+
+            return null;
         }
     }
 };

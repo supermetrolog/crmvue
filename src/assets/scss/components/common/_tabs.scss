@@ -44,7 +44,6 @@
 
             &.is-active {
                 color: darken($color: variables.$color_success, $amount: 12);
-                font-weight: 700;
 
                 &::before {
                     width: 100%;
