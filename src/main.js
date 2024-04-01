@@ -22,6 +22,15 @@ import Tabs from '@/components/common/Tabs/Tabs.vue';
 import Toast from '@/plugins/toast';
 
 import Url, { $generatorURL } from '@/plugins/url';
+import dayjs from 'dayjs';
+import isToday from 'dayjs/plugin/isToday';
+import isYesterday from 'dayjs/plugin/isYesterday';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.extend(isToday);
+dayjs.extend(isYesterday);
+dayjs.extend(relativeTime);
+dayjs.locale('ru');
 
 axios.defaults.baseURL = $generatorURL.api.url();
 
