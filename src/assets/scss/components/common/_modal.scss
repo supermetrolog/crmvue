@@ -44,6 +44,7 @@
     }
 
     &__container {
+        @include mixins.flex-box($d: column);
         position: relative;
         background-color: #fff;
         color: variables.$color_dark;
@@ -80,7 +81,6 @@
         width: 100%;
         padding: 15px 20px;
         font-weight: normal;
-        max-height: 90vh;
         overflow: hidden auto;
         scrollbar-gutter: stable;
     }

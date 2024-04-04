@@ -132,7 +132,7 @@
         }
 
         &:not(:disabled):focus, &:not(:disabled):active {
-            border-color: #186a8d;
+            border-color: #186a8d!important;
         }
 
         &--unit {
@@ -177,8 +177,8 @@
         width: 100%;
         resize: none;
 
-        &:focus, &:active {
-            border-color: #186a8d;
+        &:not(:disabled):focus, &:not(:disabled):active {
+            border-color: #186a8d!important;
         }
     }
 
@@ -295,10 +295,10 @@
 
     &__label {
         @include mixins.flex-box($a: center, $j: center);
+        @include mixins.transition(background-color .5s, border-color .5s, color .5s);
         padding: 5px 15px;
         border: 1px solid #d1d5db;
         border-radius: 15px;
-        transition: all .5s ease;
         min-height: 35px;
         min-width: 35px;
         background-color: #fff;
@@ -374,11 +374,11 @@
 }
 
 .radio-chip {
+    @include mixins.transition(background-color .5s, border-color .5s, color .5s);
     cursor: pointer;
     padding: 5px 15px;
     border: 1px solid #d1d5db;
     border-radius: 15px;
-    transition: all .5s ease;
     min-height: 35px;
     min-width: 35px;
     background-color: #fff;
