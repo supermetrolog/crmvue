@@ -10,6 +10,7 @@
                     class="radio-chip__input"
                     :class="inputClasses"
                     :value="first"
+                    :disabled="disabled"
                 />
                 {{ firstLabel }}
             </label>
@@ -21,6 +22,7 @@
                     class="radio-chip__input"
                     :class="inputClasses"
                     :value="second"
+                    :disabled="disabled"
                 />
                 {{ secondLabel }}
             </label>

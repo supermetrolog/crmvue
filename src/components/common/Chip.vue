@@ -1,7 +1,12 @@
 <template>
     <div class="chip">
         <span class="chip__content" v-html="html"></span>
-        <i @click="$emit('click', value)" class="chip__icon fa-solid fa-xmark" :title="title" />
+        <i
+            v-if="value !== null"
+            @click="$emit('click', value)"
+            class="chip__icon fa-solid fa-xmark"
+            :title="title"
+        />
     </div>
 </template>
 <script>
@@ -11,7 +16,7 @@ export default {
     props: {
         value: {
             type: [String, Number, Boolean],
-            required: true
+            default: null
         },
         title: {
             type: String,

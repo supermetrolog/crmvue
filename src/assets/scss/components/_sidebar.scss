@@ -56,14 +56,14 @@
 }
 
 .avatar {
-    &__preview {
-        @include mixins.flex-box($a: center);
-        border-radius: 50%;
-        height: 60px;
-        width: 60px;
-        background-color: variables.$color_light_grey;
-        overflow: hidden;
-    }
+    @include mixins.flex-box($a: center);
+    border-radius: 50%;
+    background-color: variables.$color_light_grey;
+    overflow: hidden;
+    flex-shrink: 0;
+
+    height: var(--size);
+    width: var(--size);
 
     &__image {
         max-width: 100%;

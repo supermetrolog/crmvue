@@ -1,13 +1,14 @@
 @use '../../utils/mixins';
 
 .hover-actions {
-    height: 0;
+    max-height: 0;
+    overflow: hidden;
     opacity: 0;
     position: absolute;
     right: 0;
     top: -55px;
-    padding: 5px 0;
-    @include mixins.transition(opacity .5s);
+    margin: 5px 0;
+    @include mixins.transition(opacity .5s, max-height .5s);
 
     &__content {
         @include mixins.flex-box($gap: 10px);
@@ -36,6 +37,11 @@
             cursor: pointer;
         }
 
+        &.active {
+            background-color: #10b981;
+            color: #fff;
+        }
+
         @include mixins.hover {
             background-color: rgba(15, 102, 116, 0.9);
             color: #fff;
@@ -49,7 +55,8 @@
     &:hover {
         .hover-actions {
             opacity: 1;
-            height: max-content;
+            max-height: 1000px;
+            overflow: initial;
         }
     }
 }

@@ -10,6 +10,7 @@
                 :type="type"
                 :placeholder="placeholder"
                 :value="modelValue"
+                :disabled="disabled"
             />
         </label>
         <ValidationMessage

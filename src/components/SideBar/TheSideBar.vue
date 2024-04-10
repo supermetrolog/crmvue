@@ -1,12 +1,8 @@
 <template>
     <div class="sidebar">
-        <div class="sidebar__avatar avatar">
+        <div class="sidebar__avatar">
             <router-link to="/account">
-                <div v-if="THIS_USER" class="avatar__container">
-                    <div class="avatar__preview">
-                        <img :src="src" class="avatar__image" alt="Аватар" />
-                    </div>
-                </div>
+                <Avatar v-if="THIS_USER" :src="THIS_USER.userProfile?.avatar" />
             </router-link>
         </div>
         <hr />
@@ -17,20 +13,16 @@
 <script>
 import { mapGetters } from 'vuex';
 import SideBarMenu from '@/components/SideBar/SideBarMenu.vue';
+import Avatar from '@/components/common/Avatar.vue';
 
 export default {
     name: 'TheSideBar',
     components: {
+        Avatar,
         SideBarMenu
     },
     computed: {
-        ...mapGetters(['THIS_USER']),
-        src() {
-            if (this.THIS_USER) {
-                return this.$url.api.getUserAvatar(this.THIS_USER.userProfile.avatar);
-            }
-            return null;
-        }
+        ...mapGetters(['THIS_USER'])
     }
 };
 </script>

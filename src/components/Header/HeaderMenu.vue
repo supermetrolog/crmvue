@@ -14,7 +14,7 @@ export default {
     },
     data() {
         return {
-            nav: InternalMenu.setting
+            nav: null
         };
     },
     watch: {

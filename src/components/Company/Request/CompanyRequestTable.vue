@@ -88,7 +88,7 @@
                                 <p class="d-inline">
                                     {{
                                         request.districts
-                                            .map(elem => districtList[elem.district][1])
+                                            .map(elem => districtList[elem.district])
                                             .join(', ')
                                     }}
                                 </p>
