@@ -4248,6 +4248,11 @@ tr.DropdownSwitcherRow {
         border: 1px solid variables.$color_grey !important;
         border-radius: 0 !important;
     }
+
+    &-dropdown {
+        z-index: 99999;
+        height: max-content;
+    }
 }
 
 //*********** PHONE NUMBER *************

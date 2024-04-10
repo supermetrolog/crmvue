@@ -10,6 +10,7 @@
     "dev": "vue-cli-service serve --port 8081"
   },
   "dependencies": {
+    "@floating-ui/vue": "^1.0.6",
     "@kyvg/vue3-notification": "^2.3.3",
     "@vueform/multiselect": "2.2.1",
     "@vuelidate/core": "^2.0.0-alpha.19",

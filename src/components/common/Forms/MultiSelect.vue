@@ -5,8 +5,9 @@
                 {{ label }}
             </span>
             <Multiselect
-                ref="multiselect"
+                ref="reference"
                 v-model="field"
+                @click="onClick"
                 @change="onChange($event)"
                 class="form__multiselect"
                 :class="[inputClasses, extraClasses]"
@@ -54,6 +55,8 @@ import Multiselect from '@vueform/multiselect';
 import Mixin from './mixins.js';
 import Chip from '@/components/common/Chip.vue';
 import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { autoPlacement, autoUpdate, useFloating } from '@floating-ui/vue';
 
 export default {
     name: 'Select',
@@ -155,6 +158,44 @@ export default {
             type: Boolean,
             default: false
         }
+    },
+    setup() {
+        const reference = ref(null);
+        const floating = ref(null);
+
+        const { floatingStyles } = useFloating(reference, floating, {
+            whileElementsMounted: autoUpdate,
+            middleware: [autoPlacement()]
+        });
+
+        const onClick = () => {
+            floating.value.style.width = `${reference.value.$el.offsetWidth}px`;
+        };
+
+        onMounted(() => {
+            floating.value = reference.value.$el.querySelector('.multiselect-dropdown');
+            floating.value.style.width = `${reference.value.$el.offsetWidth}px`;
+            document.body.appendChild(floating.value);
+        });
+
+        onUnmounted(() => {
+            floating.value.remove();
+        });
+
+        watch(
+            () => floatingStyles,
+            () => {
+                Object.assign(floating.value.style, floatingStyles.value);
+            },
+            { deep: true }
+        );
+
+        return {
+            reference,
+            floating,
+            floatingStyles,
+            onClick
+        };
     },
     data() {
         return {
