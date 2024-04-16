@@ -22,6 +22,7 @@ import Toast from '@/plugins/toast';
 
 import Url, { $generatorURL } from '@/plugins/url';
 import dayjs from 'dayjs';
+import 'dayjs/locale/ru';
 import isToday from 'dayjs/plugin/isToday';
 import isYesterday from 'dayjs/plugin/isYesterday';
 import relativeTime from 'dayjs/plugin/relativeTime';
