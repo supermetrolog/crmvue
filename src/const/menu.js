@@ -17,10 +17,9 @@ export const Menu = {
             id: 2,
             name: 'Календарь',
             icon: 'fa-solid fa-calendar',
-            url: '/calendar',
-            exact: true
+            url: '/calendar'
         },
-        { id: 3, name: 'Настройки', icon: 'fas fa-cog', url: '/setting' },
+        { id: 3, name: 'Настройки', icon: 'fas fa-cog', url: '/settings' },
         { id: 4, name: 'Юзеры', icon: 'fas fa-users', url: '/users' },
         {
             id: 5,
@@ -41,6 +40,19 @@ export const Menu = {
             name: 'Предложка',
             icon: 'fa-solid fa-city',
             url: '/offers'
+        },
+        {
+            id: 7,
+            name: 'Барахолка',
+            icon: 'fa-solid fa-shop',
+            url: '/equipments'
+        },
+        {
+            id: 2,
+            name: 'Календарь',
+            icon: 'fa-solid fa-calendar-days',
+            url: '/calendar',
+            exact: true
         },
         {
             id: 5,
@@ -65,11 +77,5 @@ export const InternalMenu = {
         { id: 1, name: 'группы компаний', url: '/companies/groups' },
         { id: 2, name: 'запросы', url: '/companies/requests' },
         { id: 3, name: 'сделки', url: '/companies/deals' }
-    ],
-    setting: [
-        { id: 0, name: 'все', url: '/setting/', exact: true },
-        { id: 1, name: 'в работе', url: '/setting/in-work' },
-        { id: 2, name: 'сделка', url: '/setting/deal' },
-        { id: 3, name: 'брак', url: '/setting/brak' }
     ]
 };

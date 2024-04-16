@@ -1,5 +1,5 @@
 <template>
-    <div class="setting">
+    <div class="settings">
         <div class="row">
             <div class="col-12"></div>
         </div>
@@ -8,7 +8,7 @@
 
 <script>
 export default {
-    name: 'Setting',
+    name: 'Settings',
     components: {},
     data() {
         return {};
