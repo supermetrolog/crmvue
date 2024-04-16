@@ -78,7 +78,11 @@ $sizes: (
         @if ($duration) { $_duration: $duration }
         @if ($func) { $_func: $func }
 
-        $transition-list: $transition-list + ", #{$property} #{$_duration} #{$_func}";
+        @if (string.length($transition-list) > 0) {
+            $transition-list: $transition-list + ", ";
+        }
+
+        $transition-list: $transition-list + "#{$property} #{$_duration} #{$_func}";
     }
 
     @return string.unquote($transition-list);

@@ -1,7 +1,7 @@
 export const $generatorURL = {
-    _api: process.env.VUE_APP_API_URL,
-    _host: process.env.VUE_APP_HOST,
-    _old_host: process.env.VUE_APP_OBJECT_URL,
+    _api: import.meta.env.VITE_VUE_APP_API_URL,
+    _host: import.meta.env.VITE_VUE_APP_HOST,
+    _old_host: import.meta.env.VITE_VUE_APP_OBJECT_URL,
     _cadastral: 'https://pkk5.rosreestr.ru/#x=4034393.888696498&y=6756994.231129&z=20',
     offerByObject: function (offer) {
         let url = this._host + '/complex/' + offer.complex_id;
@@ -36,7 +36,7 @@ export const $generatorURL = {
         return url;
     },
     complexOld: function (complexID, offerID = null) {
-        const baseUrl = process.env.VUE_APP_OBJECT_URL + '/complex/';
+        const baseUrl = import.meta.env.VITE_VUE_APP_OBJECT_URL + '/complex/';
         let url = baseUrl + complexID;
 
         if (offerID) {
@@ -58,7 +58,7 @@ export const $generatorURL = {
         );
     },
     file: function (url) {
-        return process.env.VUE_APP_OBJECTS_PHOTO_URL + url;
+        return import.meta.env.VITE_VUE_APP_OBJECTS_PHOTO_URL + url;
     },
     cadastral: function (number) {
         return this._cadastral + '&text=' + number + '&type=1&app=search&opened=1';
@@ -67,39 +67,39 @@ export const $generatorURL = {
         url: function () {
             let host = window.location.host;
 
-            if (host === process.env.VUE_APP_RESERVE_HOST) {
-                return process.env.VUE_APP_RESERVE_API_URL;
+            if (host === import.meta.env.VITE_VUE_APP_RESERVE_HOST) {
+                return import.meta.env.VITE_VUE_APP_RESERVE_API_URL;
             }
 
-            return process.env.VUE_APP_API_URL;
+            return import.meta.env.VITE_VUE_APP_API_URL;
         },
         objects: function () {
-            return process.env.VUE_APP_OBJECTS_PHOTO_URL;
+            return import.meta.env.VITE_VUE_APP_OBJECTS_PHOTO_URL;
         },
         uploads: function () {
-            return process.env.VUE_APP_API_URL + process.env.VUE_APP_UPLOADS_PATH;
+            return import.meta.env.VITE_VUE_APP_API_URL + import.meta.env.VITE_VUE_APP_UPLOADS_PATH;
         },
         imagesUrl: function () {
-            return process.env.VUE_APP_API_URL + process.env.VUE_APP_IMAGES_PATH;
+            return import.meta.env.VITE_VUE_APP_API_URL + import.meta.env.VITE_VUE_APP_IMAGES_PATH;
         },
         fileNotFound: function () {
-            return this.imagesUrl() + process.env.VUE_APP_NOT_FOUND_FILENAME;
+            return this.imagesUrl() + import.meta.env.VITE_VUE_APP_NOT_FOUND_FILENAME;
         },
         archiver: function () {
-            return process.env.VUE_APP_API_URL + 'archiver/download';
+            return import.meta.env.VITE_VUE_APP_API_URL + 'archiver/download';
         },
         getImage: function (imageName) {
             return this.imagesUrl() + imageName;
         },
         getUserAvatar: function (filename) {
             if (!filename) {
-                return this.imagesUrl() + process.env.VUE_APP_NOT_FOUND_AVATAR_NAME;
+                return this.imagesUrl() + import.meta.env.VITE_VUE_APP_NOT_FOUND_AVATAR_NAME;
             }
             return this.uploads() + filename;
         },
         getUploadedFileUrl: function (filename) {
             if (!filename) {
-                return this.imagesUrl() + process.env.VUE_APP_NOT_FOUND_FILENAME;
+                return this.imagesUrl() + import.meta.env.VITE_VUE_APP_NOT_FOUND_FILENAME;
             }
             return this.uploads() + filename;
         }

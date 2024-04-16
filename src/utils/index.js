@@ -1,10 +1,10 @@
 import { loadYmap } from 'vue-yandex-maps';
-import crypto from 'crypto-browserify';
 import { alg } from '@/utils/alg';
+import sha256 from 'crypto-js/sha256';
 
 export const yandexmap = {
     settings: {
-        apiKey: process.env.VUE_APP_YANDEX_MAP_KEY,
+        apiKey: import.meta.env.VITE_VUE_APP_YANDEX_MAP_KEY,
         lang: 'ru_RU',
         coordorder: 'latlong',
         enterprise: false,
@@ -117,7 +117,7 @@ export const yandexmap = {
     }
 };
 export const waitHash = data => {
-    return crypto.createHash('sha256').update(JSON.stringify(data)).digest('base64');
+    return sha256(JSON.stringify(data)).toString();
 };
 
 export const contains = (target, pattern = []) => {
@@ -281,6 +281,23 @@ export const dataMapper = (object, rules) => {
     }
 
     return newObject;
+};
+
+export const cloneObject = object => JSON.parse(JSON.stringify(object));
+
+export const getObjectWithoutEmptyFields = _object => {
+    const object = cloneObject(_object);
+
+    for (const key in object) {
+        if (Object.hasOwnProperty.call(object, key)) {
+            const value = object[key];
+            if (value === null || value === '' || (Array.isArray(value) && !value.length)) {
+                delete object[key];
+            }
+        }
+    }
+
+    return object;
 };
 
 export const reducer = {

@@ -15,7 +15,6 @@ import 'tippy.js/dist/tippy.css'; // optional for styling
 import '@vueform/multiselect/themes/default.css';
 import './assets/fontawesome/css/fontawesome.min.css';
 import './assets/fontawesome/css/all.min.css';
-import './assets/scss/style.scss';
 import 'animate.css';
 import Tab from '@/components/common/Tabs/Tab.vue';
 import Tabs from '@/components/common/Tabs/Tabs.vue';

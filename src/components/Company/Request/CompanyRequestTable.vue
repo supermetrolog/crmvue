@@ -139,7 +139,7 @@ class="text-dark"
 </template>
 
 <script>
-import Td from '@/components/common/Table/Td';
+import Td from '@/components/common/Table/Td.vue';
 import { MixinRequestTable } from '../mixins';
 import Loader from '@/components/common/Loader.vue';
 

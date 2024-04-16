@@ -1,5 +1,5 @@
 <template>
-    <VLazyImage :src="require(`@/assets/image/no_photo.png`)" />
+    <VLazyImage src="@/assets/image/no_photo.png" />
 </template>
 <script>
 import VLazyImage from 'v-lazy-image';

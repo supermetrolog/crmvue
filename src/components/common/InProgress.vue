@@ -1,7 +1,7 @@
 <template>
     <EmptyData no-rounded>
         <template #image>
-            <img :src="require('@/assets/image/in-progress.gif')" alt="in progress image" />
+            <img src="@/assets/image/in-progress.gif" alt="in progress image" />
         </template>
         В разработке..
     </EmptyData>

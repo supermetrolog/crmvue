@@ -47,7 +47,7 @@ const Websocket = {
             if (context.getters.SOCKET || !context.getters.THIS_USER) {
                 return;
             }
-            let socket = new WebSocket(process.env.VUE_APP_WS_URL);
+            let socket = new WebSocket(import.meta.env.VITE_VUE_APP_WS_URL);
             socket.onopen = function () {
                 return context.dispatch('EVENT_WEBSOCKET_ON_OPEN');
             };
@@ -93,7 +93,8 @@ const Websocket = {
             }
         },
         EVENT_WEBSOCKET_ON_ERROR(context) {
-            notifyOptions.text = 'Не удалось подключиться к Websocket серверу. Обратитесь к администратору.';
+            notifyOptions.text =
+                'Не удалось подключиться к Websocket серверу. Обратитесь к администратору.';
             notifyOptions.title = 'Websocket server';
             notifyOptions.type = 'error';
             notify(notifyOptions);

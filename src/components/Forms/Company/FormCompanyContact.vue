@@ -239,6 +239,7 @@ import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import Submit from '@/components/common/Forms/Submit.vue';
+import { cloneObject } from '@/utils/index.js';
 
 export default {
     name: 'FormCompanyContact',
@@ -506,8 +507,7 @@ export default {
         await this.FETCH_CONSULTANT_LIST();
         this.forms.company_id = this.company_id;
         if (this.formdata) {
-            // eslint-disable-next-line no-undef
-            this.forms = { ...this.forms, ...structuredClone(this.formdata) };
+            this.forms = { ...this.forms, ...cloneObject(this.formdata) };
         }
         this.loader = false;
     }
