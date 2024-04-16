@@ -3,6 +3,7 @@
         ref="modal"
         class="modal active"
         role="dialog"
+        :style="{ '--modal-width': width ? width + 'px' : 'auto' }"
         :class="{ 'modal--with-tabs': hasTabs, 'modal--relative': relative }"
     >
         <div @click="clickCancelButton" class="modal__blackout"></div>
@@ -25,6 +26,13 @@
                     <slot></slot>
                 </div>
             </div>
+            <div v-if="$slots.footer" class="modal__footer">
+                <div class="container-fluid">
+                    <div class="modal__buttons">
+                        <slot name="footer"></slot>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -44,6 +52,10 @@ export default {
         relative: {
             type: Boolean,
             default: false
+        },
+        width: {
+            type: [Number, String],
+            default: null
         }
     },
     data() {
@@ -79,5 +91,3 @@ export default {
     }
 };
 </script>
-
-<style></style>

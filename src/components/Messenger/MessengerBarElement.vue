@@ -1,12 +1,12 @@
 <template>
-    <div class="messenger-button__element" :class="className">
-        <span v-if="label" class="messenger-button__chip">{{ label }}</span>
+    <div class="messenger-bar__element rounded-icon" :class="className">
+        <span v-if="label" class="messenger-bar__chip">{{ label }}</span>
         <i :class="icon"></i>
     </div>
 </template>
 <script>
 export default {
-    name: 'MessengerButtonElement',
+    name: 'MessengerBarElement',
     props: {
         icon: {
             type: String,
@@ -16,14 +16,14 @@ export default {
             type: [String, Number],
             default: null
         },
-        name: {
+        color: {
             type: String,
             default: null
         }
     },
     computed: {
         className() {
-            if (this.name) return ['icon--' + this.name];
+            if (this.color) return ['bg-' + this.color];
             return null;
         }
     }

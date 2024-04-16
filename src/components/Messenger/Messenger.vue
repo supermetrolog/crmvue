@@ -1,57 +1,75 @@
 <template>
-    <div class="messenger" :class="{ active: isOpen }">
-        <MessengerButton @click="isOpen = !isOpen" />
+    и
+    <div class="messenger" :class="classList">
+        <teleport to="body">
+            <AnimationTransition :speed="0.7">
+                <div v-if="isOpen && hasPanel" class="messenger-backdrop"></div>
+            </AnimationTransition>
+        </teleport>
+        <MessengerBar @click="isOpen = !isOpen" />
         <div v-if="isActive" ref="body" class="messenger__content">
             <MessengerAside class="messenger__aside" />
             <MessengerPanel class="messenger__panel" />
-            <MessengerChat v-if="currentDialog" class="messenger__chat" />
-            <MessengerChatEmpty v-else />
+            <MessengerChat class="messenger__chat" />
         </div>
+        <teleport to="body">
+            <MessengerAttachment ref="attachments" />
+        </teleport>
     </div>
 </template>
 <script>
 import MessengerAside from '@/components/Messenger/Aside/MessengerAside.vue';
 import MessengerChat from '@/components/Messenger/Chat/MessengerChat.vue';
 import MessengerPanel from '@/components/Messenger/Panel/MessengerPanel.vue';
-import MessengerButton from '@/components/Messenger/MessengerButton.vue';
-import MessengerChatEmpty from '@/components/Messenger/Chat/MessengerChatEmpty.vue';
+import MessengerBar from '@/components/Messenger/MessengerBar.vue';
 import { mapState } from 'vuex';
+import MessengerAttachment from '@/components/Messenger/MessengerAttachment.vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
 
 export default {
     name: 'Messenger',
     components: {
-        MessengerChatEmpty,
-        MessengerButton,
+        AnimationTransition,
+        MessengerAttachment,
+        MessengerBar,
         MessengerPanel,
         MessengerChat,
         MessengerAside
     },
+    provide() {
+        return {
+            $openAttachments: () => this.$refs.attachments?.open()
+        };
+    },
     data() {
         return {
             isOpen: false,
+            hasPanel: false,
             isActive: false,
             timeout: null
         };
     },
     computed: {
-        ...mapState({ currentDialog: state => state.Messenger.currentDialog })
+        ...mapState({
+            currentAsideDialogID: state => state.Messenger.currentAsideDialogID
+        }),
+        classList() {
+            return { active: this.isOpen, 'has-panel': this.hasPanel };
+        }
     },
     watch: {
         isOpen(value) {
             if (value) {
-                document.body.classList.add('is-modal');
-
                 this.isActive = true;
 
                 if (this.timeout) clearTimeout(this.timeout);
                 this.timeout = null;
             } else {
-                document.body.classList.remove('is-modal');
-
-                this.timeout = setTimeout(() => {
-                    this.isActive = false;
-                }, 700);
+                if (!this.currentAsideDialogID) this.hasPanel = false;
             }
+        },
+        currentAsideDialogID(value) {
+            this.hasPanel = this.hasPanel || value;
         }
     },
     methods: {
