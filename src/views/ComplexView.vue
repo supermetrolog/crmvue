@@ -120,7 +120,6 @@ export default {
     },
     async created() {
         await this.fetchComplex(this.$route.params.complex_id);
-        console.log('Complex: ', this.complex);
     }
 };
 </script>

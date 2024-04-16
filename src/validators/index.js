@@ -36,7 +36,7 @@ export const anyHasProperty = (property, _value) => value => {
 };
 
 export const empty = value => {
-    return value === null || value === '';
+    return value === null || value === '' || value === undefined;
 };
 
 export const emptyWithProperty = property => value => {

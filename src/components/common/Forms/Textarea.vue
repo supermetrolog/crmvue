@@ -74,12 +74,13 @@ export default {
                 () => this.modelValue,
                 async () => {
                     this.$refs.textarea.style.height = 'auto';
-
-                    await this.$nextTick();
                     this.$refs.textarea.style.height = this.$refs.textarea.scrollHeight + 'px';
                 }
             );
         }
+    },
+    mounted() {
+        this.$refs.textarea.style.height = this.$refs.textarea.scrollHeight + 'px';
     }
 };
 </script>

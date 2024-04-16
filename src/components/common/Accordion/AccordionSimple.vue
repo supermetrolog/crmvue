@@ -46,7 +46,7 @@ export default {
             this.isOpen = !this.isOpen;
         }
     },
-    mounted() {
+    created() {
         this.isOpen = this.opened;
     }
 };
