@@ -75,6 +75,19 @@ export default {
     methods: {
         escapeHandler(event) {
             if (this.isActive && event.code === 'Escape') this.isOpen = false;
+        },
+        openChat(companyID, offerID) {
+            this.isOpen = true;
+            this.$store.dispatch('Messenger/selectPanel', {
+                objectID: companyID,
+                dialogID: offerID,
+                dialogType: 'object'
+            });
+            this.$store.dispatch('Messenger/selectChat', {
+                objectID: companyID,
+                dialogID: offerID,
+                dialogType: 'object'
+            });
         }
     },
     mounted() {
