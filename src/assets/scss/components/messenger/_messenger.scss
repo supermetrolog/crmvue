@@ -1,69 +1,64 @@
+@use '../../utils/mixins';
+
 .messenger {
     position: fixed;
     bottom: 0;
     right: 0;
     width: 80vw;
     height: 100vh;
-    overflow: hidden;
-    z-index: 20;
-    padding-left: 20px;
+    z-index: 100;
 
-    display: flex;
-
-    transform: translateX(calc(100% - 100px));
+    transform: translateX(100%);
     transition: transform .7s ease-in-out;
 
     &.active {
-        transform: translateX(0);
+        transform: translateX(75%);
+
+        &.has-panel {
+            transform: translateX(0);
+        }
+    }
+
+    &-backdrop {
+        height: 100vh;
+        width: 100vw;
+        background-color: rgba(30, 30, 30, .9);
+        position: fixed;
+        z-index: 10;
+        right: 0;
+        top: 0;
     }
 
     &__content {
         background-color: #fff;
         box-shadow: 0 0 15px 5px rgba(13, 31, 47, .2);
-        display: flex;
+        display: grid;
+        grid-template-columns: 25% 25% 50%;
         width: 100%;
         height: 100%;
     }
 
-    &__chat {
-        flex-basis: 50%;
-    }
-
-    &__aside {
-        flex-basis: 25%;
-    }
-
-    &__panel {
-        flex-basis: 25%;
-    }
-
-    &__content {
-        height: 100%;
-    }
-
     &__empty {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        @include mixins.flex-box($a: center, $j: center);
         height: 100%;
-        flex-basis: 50%;
         background-color: #f8f8f8;
         font-size: 150px;
         position: relative;
         z-index: 11;
+        opacity: .5;
     }
 }
 
-.messenger-button {
+.messenger-bar {
+    transform: translateX(-80px) translateY(calc(50vh - 50%));
+    position: absolute;
     z-index: 20;
     margin: auto 0;
     background-color: #fff;
     box-shadow: 0 0 15px 5px rgba(13, 31, 47, .2);
     padding: 15px;
-    display: flex;
+    @include mixins.flex-box($a: center, $d: column);
     width: max-content;
-    align-items: center;
-    flex-direction: column;
     gap: 20px;
     cursor: pointer;
     transition: color .5s ease-in-out, opacity .5s ease-in-out;
@@ -80,13 +75,13 @@
     &__element {
         position: relative;
         background-color: #0f6674;
-        border-radius: 50%;
         height: 50px;
         width: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         color: #fff;
+
+        &.disabled {
+            opacity: .4;
+        }
     }
 
     &__chip {
@@ -96,9 +91,7 @@
         border-radius: 50%;
         height: 20px;
         width: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        @include mixins.flex-box($a: center, $j: center);
         font-size: 11px;
         line-height: 11px;
         background-color: #f93154;
@@ -107,16 +100,28 @@
     }
 }
 
-.icon {
-    &--tasks {
-        background-color: #000!important;
-    }
+.messenger-warning {
+    color: #f93154!important;
+    font-weight: 500;
 
-    &--info {
-        background-color: #E8B501!important;
+    &--simple {
+        color: #fff!important;
+        opacity: .5;
     }
+}
 
-    &--notifications {
-        background-color: #9f3f56!important;
+.link {
+    text-decoration: underline;
+    color: inherit;
+}
+
+.messenger-attachment {
+    &__footer {
+        margin-top: 20px;
+        @include mixins.flex-box($j: center, $gap: 10px);
     }
+}
+
+.modal-messenger-attachment {
+    z-index: 4004;
 }

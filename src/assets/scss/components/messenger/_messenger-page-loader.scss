@@ -1,0 +1,10 @@
+@use '../../utils/mixins';
+
+.messenger-page-loader {
+    height: 100%;
+    width: 100%;
+    background-color: #f8f8f8;
+    position: relative;
+    z-index: 12;
+    @include mixins.flex-box($a: center, $j: center);
+}

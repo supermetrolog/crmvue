@@ -1,0 +1,36 @@
+.messenger-loader {
+    bottom: 0;
+    position: absolute;
+    left: 0;
+    background-color: #10b981;
+    transform: translateX(-100%);
+    height: 2px;
+    width: 100%;
+    z-index: 10;
+
+    &.load {
+        animation: loading 2s ease-in;
+    }
+
+    &.finish {
+        animation: finishLoading .3s ease;
+    }
+}
+
+@keyframes loading {
+    30% {
+        transform: translateX(-50%);
+    }
+    100% {
+        transform: translateX(-30%);
+    }
+}
+
+@keyframes finishLoading {
+    from {
+        transform: translateX(-30%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
