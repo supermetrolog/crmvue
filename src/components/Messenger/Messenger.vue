@@ -1,5 +1,4 @@
 <template>
-    и
     <div class="messenger" :class="classList">
         <teleport to="body">
             <AnimationTransition :speed="0.7">
@@ -94,6 +93,7 @@ export default {
         document.addEventListener('keydown', this.escapeHandler);
     },
     unmounted() {
+        this.$store.commit('Messenger/clearState');
         document.removeEventListener('keydown', this.escapeHandler);
     }
 };
