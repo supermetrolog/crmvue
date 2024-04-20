@@ -9,7 +9,9 @@
         </div>
         <EmptyData v-else-if="!objects.length" no-rounded>Предложения не найдены..</EmptyData>
         <VirtualDragList
-            v-show="objects.length && !isLoading"
+            v-if="objects.length"
+            v-show="!isLoading"
+            ref="virtualList"
             :data-source="objects"
             data-key="id"
             class="messenger-aside__list"
@@ -112,6 +114,9 @@ export default {
     watch: {
         objects(value) {
             this.lastDialogsCount = Math.min(value.length, 5) || 1;
+        },
+        async isLoading(value) {
+            if (this.objects.length && value) this.$refs.virtualList.scrollToTop();
         }
     },
     methods: {
