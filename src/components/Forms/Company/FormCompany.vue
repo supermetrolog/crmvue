@@ -3,6 +3,7 @@
         @close="clickCloseModal"
         :title="formdata ? 'Редактирование компании' : 'Создание компании'"
         class="modal-form-company"
+        width="1000"
         has-tabs
     >
         <Form @submit="onSubmit">

@@ -5,12 +5,13 @@
             <UserPickerElement
                 v-for="user in filteredUsers"
                 :key="user.id"
-                @click="toggleUser(user)"
+                @click="toggleUser(user.id)"
                 :user="user"
-                :class="{ selected: selectedUsers[user.id].selected }"
+                :class="{ selected: selectedUsers[user.id] }"
             />
         </div>
         <MessengerButton
+            v-if="!single"
             @click="toggleSelectedAll"
             class="w-100"
             :class="{ active: modelValue.length === users.length }"
@@ -37,6 +38,10 @@ export default {
         modelValue: {
             type: Array,
             default: () => []
+        },
+        single: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
@@ -66,46 +71,52 @@ export default {
         }
     },
     watch: {
-        modelValue(newValue) {
-            if (!newValue.length)
-                Object.keys(this.selectedUsers).forEach(
-                    key => (this.selectedUsers[key].selected = false)
-                );
-            else {
-                newValue.forEach(element => (this.selectedUsers[element.id].selected = true));
+        modelValue(newValue, oldValue) {
+            if (this.single) {
+                if (oldValue) this.selectedUsers[oldValue] = false;
+                if (newValue) this.selectedUsers[newValue] = true;
+            } else {
+                if (oldValue?.length)
+                    oldValue.forEach(userID => (this.selectedUsers[userID] = false));
+                if (newValue?.length)
+                    newValue.forEach(userID => (this.selectedUsers[userID] = true));
             }
         }
     },
     methods: {
-        toggleUser(user) {
-            this.selectedUsers[user.id].selected = !this.selectedUsers[user.id].selected;
-
-            if (this.selectedUsers[user.id].selected) {
+        toggleUser(userID) {
+            if (this.selectedUsers[userID]) {
                 this.$emit(
                     'update:modelValue',
-                    this.modelValue.concat(this.selectedUsers[user.id].profile)
+                    this.single ? null : this.modelValue.filter(element => element !== userID)
                 );
             } else {
                 this.$emit(
                     'update:modelValue',
-                    Object.keys(this.selectedUsers)
-                        .filter(key => this.selectedUsers[key].selected)
-                        .map(key => this.selectedUsers[key].profile)
+                    this.single ? userID : this.modelValue.concat([userID])
                 );
             }
         },
         toggleSelectedAll() {
             if (this.modelValue.length === this.users.length) this.$emit('update:modelValue', []);
-            else this.$emit('update:modelValue', this.users);
+            else
+                this.$emit(
+                    'update:modelValue',
+                    this.users.map(user => user.id)
+                );
         }
     },
     created() {
         this.selectedUsers = this.users.reduce((acc, user) => {
-            acc[user.id] = { profile: user, selected: false };
+            acc[user.id] = false;
             return acc;
         }, {});
 
-        this.modelValue.forEach(element => (this.selectedUsers[element.id].selected = true));
+        if (this.single) {
+            if (this.modelValue) this.selectedUsers[this.modelValue] = true;
+        } else {
+            this.modelValue.forEach(userID => (this.selectedUsers[userID] = true));
+        }
     }
 };
 </script>

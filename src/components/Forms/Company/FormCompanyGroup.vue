@@ -2,7 +2,7 @@
     <Modal
         @close="clickCloseModal"
         :title="formdata ? 'Изменение группы компаний' : 'Создание группы компаний'"
-        class="modal-form-company-group"
+        width="600"
     >
         <Form @submit="onSubmit">
             <Loader v-if="loader" class="center" />

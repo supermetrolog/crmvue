@@ -203,7 +203,10 @@
 
     &__group {
         height: min-content;
-        margin-bottom: 10px;
+
+        &:not(&:last-child) {
+            margin-bottom: 10px;
+        }
 
         &--list {
             gap: 5px;
@@ -713,7 +716,7 @@
 
 .file {
     &__body {
-        @include mixins.flex-box($a: center, $j: center);
+        @include mixins.flex-box($d: column);
         aspect-ratio: 1 / 1;
         background-color: rgba(211, 211, 211, 0.7);
         border-radius: 4px;
@@ -738,6 +741,8 @@
 
     &__icon {
         font-size: 50px;
+        flex-grow: 1;
+        @include mixins.flex-box($a: center, $j: center);
     }
 
     &__description {
@@ -787,15 +792,11 @@
     }
 
     &__name {
-        position: absolute;
-        bottom: 0;
         width: 100%;
         padding: 0 5px;
         text-align: center;
         color: #000;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        @include mixins.text-overflow();
     }
 
     &--new .file__body {

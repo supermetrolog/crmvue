@@ -1,52 +1,51 @@
 <template>
-    <div class="complex-photo-downloader">
-        <Modal
-            v-if="opened"
-            @close="close"
-            class="modal-complex-photo-downloader"
-            title="Выбор изображений для скачивания"
-        >
-            <div class="row">
-                <div class="complex-photo-downloader__options col-3">
-                    <p class="complex-photo-downloader__text">
-                        Выбрано изображений: <span>{{ downloadsCount }}</span> из
-                        <span>{{ photos.length }}</span>
-                    </p>
-                    <div class="complex-photo-downloader__actions">
-                        <Button @click="download" success :disabled="!downloadsCount">
-                            Скачать выбранное
-                        </Button>
-                        <Button @click="downloadAll">Скачать все изображения</Button>
-                    </div>
-                </div>
-                <div class="complex-photo-downloader__body col-9">
-                    <Button
-                        @click="selectAll"
-                        :disabled="downloadsCount === photos.length"
-                        class="complex-photo-downloader__select"
-                        small
-                    >
-                        Выбрать все
+    <Modal
+        v-if="opened"
+        @close="close"
+        title="Выбор изображений для скачивания"
+        class="complex-photo-downloader"
+        width="1100"
+    >
+        <div class="row">
+            <div class="complex-photo-downloader__options col-3">
+                <p class="complex-photo-downloader__text">
+                    Выбрано изображений: <span>{{ downloadsCount }}</span> из
+                    <span>{{ photos.length }}</span>
+                </p>
+                <div class="complex-photo-downloader__actions">
+                    <Button @click="download" success :disabled="!downloadsCount">
+                        Скачать выбранное
                     </Button>
-                    <ul class="complex-photo-downloader__list row">
-                        <li v-for="(photo, key) in photos" :key="key" class="col-3">
-                            <div
-                                @click="toggleDownload(key)"
-                                class="complex-photo-downloader__item"
-                                :class="{ active: downloads[key] }"
-                            >
-                                <VLazyImage
-                                    :ref="`image-${key}`"
-                                    class="complex-photo-downloader__image"
-                                    :src="photo.src || photo"
-                                />
-                            </div>
-                        </li>
-                    </ul>
+                    <Button @click="downloadAll">Скачать все изображения</Button>
                 </div>
             </div>
-        </Modal>
-    </div>
+            <div class="complex-photo-downloader__body col-9">
+                <Button
+                    @click="selectAll"
+                    :disabled="downloadsCount === photos.length"
+                    class="complex-photo-downloader__select"
+                    small
+                >
+                    Выбрать все
+                </Button>
+                <ul class="complex-photo-downloader__list row">
+                    <li v-for="(photo, key) in photos" :key="key" class="col-3">
+                        <div
+                            @click="toggleDownload(key)"
+                            class="complex-photo-downloader__item"
+                            :class="{ active: downloads[key] }"
+                        >
+                            <VLazyImage
+                                :ref="`image-${key}`"
+                                class="complex-photo-downloader__image"
+                                :src="photo.src || photo"
+                            />
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </Modal>
 </template>
 <script>
 import Modal from '@/components/common/Modal.vue';

@@ -70,7 +70,7 @@
 
     &__type {
         @include mixins.flex-box($a: center, $j: space-between);
-        width: 36px;
+        padding: 0 5px;
         background: #982e06;
         border-right: 1px solid rgba(255, 255, 255, .2);
         color: #fff;

@@ -1,9 +1,9 @@
 <template>
     <Modal
         @close="$emit('close')"
-        class="modal-form-complex"
         :title="complex ? 'Редактирование комплекса' : 'Добавление комплекса'"
         has-tabs
+        width="950"
     >
         <Loader v-if="loader" class="center" />
         <Form @submit="onSubmit">

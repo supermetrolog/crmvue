@@ -1,8 +1,8 @@
 <template>
     <Modal
         @close="$emit('close')"
-        class="modal-form-complex-building"
         :title="false ? 'Редактирование строения' : 'Создание строения'"
+        width="900"
         has-tabs
     >
         <template #header>

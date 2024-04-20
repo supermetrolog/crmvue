@@ -1,8 +1,8 @@
 <template>
     <Modal
         @close="$emit('close')"
-        class="modal-form-complex-crane"
         :title="crane ? 'Редактирование крана' : 'Добавление крана'"
+        width="900"
         has-tabs
     >
         <Loader v-if="loader" class="center" />

@@ -2,7 +2,7 @@
     <Modal
         @close="$emit('close')"
         :title="section ? 'Редактирование блока' : 'Добавление блока'"
-        class="modal-form-floor-block"
+        width="1200"
         has-tabs
     >
         <Loader v-if="loader" class="center" />

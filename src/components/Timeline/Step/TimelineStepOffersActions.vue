@@ -5,7 +5,7 @@
                 v-if="sendObjectsModalVisible"
                 @close="closeSendObjectsModal"
                 title="Отправка"
-                class="modal-form-letter"
+                width="1200"
             >
                 <FormLetter
                     @send="sendOffers"

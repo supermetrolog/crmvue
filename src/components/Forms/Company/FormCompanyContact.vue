@@ -3,7 +3,7 @@
         <Modal
             @close="$emit('closeCompanyForm')"
             :title="formdata ? 'Изменение контакта' : 'Создание контакта'"
-            class="modal-form-company-contact"
+            width="1300"
         >
             <template #header>
                 <CheckboxChip

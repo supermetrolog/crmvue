@@ -1,9 +1,5 @@
 <template>
-    <Modal
-        @close="$emit('close')"
-        class="modal-form-company-request-clone"
-        title="Клонирование запроса"
-    >
+    <Modal @close="$emit('close')" width="750" title="Клонирование запроса">
         <Form @submit="onSubmit">
             <Loader v-if="loader" class="center" />
             <FormGroup>
