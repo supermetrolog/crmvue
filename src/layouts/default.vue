@@ -10,7 +10,7 @@
                 </AnimationTransition>
             </router-view>
         </main>
-        <Messenger ref="messenger" />
+        <Messenger v-if="THIS_USER" ref="messenger" />
         <teleport to="body">
             <Previewer ref="previewer" />
             <Confirmer ref="confirmer" />
@@ -25,6 +25,7 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import Messenger from '@/components/Messenger/Messenger.vue';
 import Previewer from '@/components/common/Previewer.vue';
 import Confirmer from '@/components/common/Confirmer.vue';
+import { mapGetters } from 'vuex';
 
 export default {
     name: 'Default',
@@ -43,6 +44,9 @@ export default {
                 this.$refs.messenger.openChat(companyID, offerID),
             $confirmPopup: async text => this.$refs.confirmer.open(text)
         };
+    },
+    computed: {
+        ...mapGetters(['THIS_USER'])
     }
 };
 </script>

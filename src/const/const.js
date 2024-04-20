@@ -252,7 +252,7 @@ export const DirectionList = {
     7: { short: 'Ю-З', full: 'Юго-Запад' }
 };
 export const RoleList = {
-    1: 'Гость',
+    1: 'Просмотр',
     2: 'Консультант',
     3: 'Модератор',
     4: 'Директор',

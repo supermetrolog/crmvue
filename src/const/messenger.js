@@ -29,6 +29,21 @@ const buttons = {
     }
 };
 
+const categories = {
+    1: 'Аренда',
+    2: 'Продажа',
+    3: 'Арендаторы',
+    4: 'Развитие'
+};
+
+const additions = {
+    1: 'Task',
+    2: 'Notification',
+    3: 'Reminder'
+};
+
 export const messenger = {
-    buttons
+    buttons,
+    categories,
+    additions
 };

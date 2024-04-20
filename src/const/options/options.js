@@ -7,6 +7,9 @@ import { elevatorOptions } from '@/const/options/elevator.options';
 import { craneOptions } from '@/const/options/crane.options';
 import { contactOptions } from '@/const/options/contact.options';
 import { locationOptions } from '@/const/options/location.options';
+import { requestOptions } from '@/const/options/request.options';
+import { companyOptions } from '@/const/options/company.options';
+import { equipmentOptions } from '@/const/options/equipment.options.js';
 
 const defaultsOptions = {
     boolean: {
@@ -34,5 +37,8 @@ export const entityOptions = {
     crane: craneOptions,
     contact: contactOptions,
     location: locationOptions,
+    request: requestOptions,
+    company: companyOptions,
+    equipment: equipmentOptions,
     defaults: defaultsOptions
 };
