@@ -14,6 +14,8 @@ import location from './location.js';
 import letter from './letter.js';
 import companyLogs from './companyLogs.js';
 import complex from './complex';
+import messenger from '@//api/messenger';
+import task from '@//api/task';
 
 export default {
     user,
@@ -31,5 +33,7 @@ export default {
     location,
     letter,
     companyLogs,
-    complex
+    complex,
+    messenger,
+    task
 };
