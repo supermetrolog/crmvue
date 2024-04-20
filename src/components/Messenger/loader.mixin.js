@@ -15,22 +15,28 @@ export const LoaderMixin = {
         clearLoadingTimeout() {
             clearTimeout(this.loadingTimeout);
             this.loadingTimeout = null;
+        },
+        originalLoaderHandler() {
+            this.isLoading = true;
+
+            if (this.loadingTimeout) this.clearLoadingTimeout();
+
+            this.loadingTimeout = setTimeout(() => {
+                if (!this.originalLoader) this.isLoading = false;
+                if (this.loadingTimeout) this.clearLoadingTimeout();
+            }, this.loadingDelay);
         }
     },
     watch: {
         originalLoader(value) {
             if (value) {
-                this.isLoading = true;
-
-                if (this.loadingTimeout) this.clearLoadingTimeout();
-
-                this.loadingTimeout = setTimeout(() => {
-                    if (!this.originalLoader) this.isLoading = false;
-                    if (this.loadingTimeout) this.clearLoadingTimeout();
-                }, this.loadingDelay);
+                this.originalLoaderHandler();
             } else {
                 if (!this.loadingTimeout) this.isLoading = false;
             }
         }
+    },
+    created() {
+        if (this.originalLoader) this.originalLoaderHandler();
     }
 };
