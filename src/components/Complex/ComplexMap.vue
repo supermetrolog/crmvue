@@ -92,7 +92,7 @@ export default {
             ucFirst: this.$formatter.text().ucFirst,
             map: {
                 settings: {
-                    apiKey: import.meta.env.VUE_APP_YANDEX_MAP_KEY,
+                    apiKey: import.meta.env.VITE_VUE_APP_YANDEX_MAP_KEY,
                     lang: 'ru_RU',
                     coordorder: 'latlong',
                     enterprise: false,
