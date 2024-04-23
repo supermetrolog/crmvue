@@ -41,20 +41,6 @@
         color: #fff;
     }
 
-    &__avatar {
-        height: 50px;
-        width: 50px;
-        border-radius: 50%;
-        overflow: hidden;
-        @include mixins.light-border;
-
-        img {
-            object-fit: cover;
-            height: 100%;
-            width: 100%;
-        }
-    }
-
     &__username {
         font-weight: 500;
     }

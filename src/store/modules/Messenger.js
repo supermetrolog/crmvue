@@ -9,6 +9,7 @@ const getInitialState = () => ({
     chatMembersUsers: [],
 
     messages: [],
+    messagesPagination: {},
 
     newMessage: '',
     querySearch: '',
@@ -64,6 +65,9 @@ const Messenger = {
             if (messageIndex !== -1) {
                 state.messages[messageIndex] = { ...state.messages[messageIndex], ...newMessage };
             }
+        },
+        setMessagesPagination(state, value) {
+            state.messagesPagination = value;
         },
 
         setCurrentRecipient(state, value) {
@@ -223,7 +227,7 @@ const Messenger = {
         async selectChat(context, { dialogID, dialogType }) {
             if (dialogID === context.state.currentPanelDialogID) {
                 context.commit('setCurrentPanelDialogID', null);
-                context.commit('setCurrentChat', null);
+                context.commit('setCurrentChat', false);
                 context.commit('setCurrentPinned', null);
                 return;
             }
@@ -231,14 +235,19 @@ const Messenger = {
             context.commit('setCurrentDialogType', dialogType);
             context.commit('setCurrentPanelDialogID', dialogID);
             context.commit('setMessages', []);
+            context.commit('setMessagesPagination', {});
             context.commit('setLoadingChat', true);
 
-            const dialog = await api.messenger.getDialog(dialogID, dialogType);
+            const [dialog, messages] = await Promise.all([
+                api.messenger.getDialog(dialogID),
+                api.messenger.getMessages(dialogID)
+            ]);
 
             //context.commit('setCurrentPinned', pinned);
-            context.commit('setCurrentChat', dialog.messages || null);
+            context.commit('setCurrentChat', true);
             context.commit('setCurrentDialog', dialog);
-            context.commit('setMessages', [...dialog.messages]);
+            context.commit('setMessages', messages.data);
+            context.commit('setMessagesPagination', messages.pagination);
             context.commit('setLoadingChat', false);
         },
         async getCompanyObjects() {
@@ -344,8 +353,7 @@ const Messenger = {
         },
         async addTask({ commit }, { messageID, options }) {
             const addition = await api.task.createFromMessage(messageID, {
-                user_id: options.user_id,
-                message: options.message,
+                ...options,
                 status: 1
             });
 
@@ -438,6 +446,28 @@ const Messenger = {
                 });
 
                 return data.pagination.currentPage === data.pagination.pageCount;
+            }
+
+            return null;
+        },
+
+        async loadMessages({ commit, state }) {
+            if (
+                state.messagesPagination.currentPage === state.messagesPagination.pageCount ||
+                state.messagesPagination.pageCount === 0
+            )
+                return true;
+
+            const { data, pagination } = await api.messenger.getMessages(
+                state.currentDialog.id,
+                state.messagesPagination.currentPage + 1
+            );
+
+            if (data) {
+                commit('addMessages', data);
+                commit('setMessagesPagination', pagination);
+
+                return pagination.currentPage === pagination.pageCount;
             }
 
             return null;

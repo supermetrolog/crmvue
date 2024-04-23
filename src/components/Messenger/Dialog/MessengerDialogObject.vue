@@ -1,9 +1,5 @@
 <template>
-    <div
-        :id="`dialog-object-${model.id}`"
-        class="messenger-dialog messenger-dialog-offer"
-        :class="{ current: current }"
-    >
+    <div class="messenger-dialog messenger-dialog-offer" :class="{ current: current }">
         <div class="messenger-dialog__body messenger-dialog-offer__body">
             <div class="messenger-dialog-offer__preview">
                 <VLazyImage
@@ -14,9 +10,7 @@
                 <span class="messenger-dialog-offer__id">ID{{ model.object.id }}</span>
             </div>
             <div class="messenger-dialog-offer__description">
-                <p class="messenger-dialog-offer__company">
-                    Company #{{ model.object.company_id }}
-                </p>
+                <p class="messenger-dialog-offer__company">{{ companyName }}</p>
                 <p class="messenger-dialog-offer__category">
                     <i class="fa-solid fa-up-long"></i>
                     <span>{{ dealType }}</span>
@@ -38,6 +32,8 @@ import MessengerDialogPhone from '@/components/Messenger/Dialog/MessengerDialogP
 import MessengerDialogFunctions from '@/components/Messenger/Dialog/MessengerDialogFunctions.vue';
 import VLazyImage from 'v-lazy-image';
 import Tooltip from '@/components/common/Tooltip.vue';
+import { alg } from '@/utils/alg.js';
+import { entityOptions } from '@/const/options/options.js';
 
 export default {
     name: 'MessengerDialogObject',
@@ -54,7 +50,12 @@ export default {
     },
     computed: {
         dealType() {
-            return this.model.type === 'rent_or_sale' ? 'Аренда | Продажа' : 'Ответ-хранение';
+            return entityOptions.object.dealTypeString[this.model.type];
+        },
+        companyName() {
+            if (alg.isNumeric(this.model.object.company.nameRu))
+                return 'Компания #' + this.model.object.company.nameRu;
+            return this.model.object.company.nameRu;
         }
     }
 };

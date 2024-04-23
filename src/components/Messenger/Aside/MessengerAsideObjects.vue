@@ -2,7 +2,7 @@
     <MessengerAsideSection
         class="messenger-aside-offers"
         :loading="isLoading"
-        :title="`Предложения (${objects.length})`"
+        :title="`Предложения (${objects.length}/${pagination?.totalCount || 0})`"
     >
         <div v-if="isLoading" class="messenger-aside__list">
             <MessengerDialogObjectSkeleton v-for="i in lastDialogsCount" :key="i" />

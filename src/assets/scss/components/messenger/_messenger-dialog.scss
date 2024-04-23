@@ -101,6 +101,7 @@
         width: 100%;
         flex-basis: 50%;
         height: max-content;
+        flex-shrink: 0;
     }
 
     &__image {

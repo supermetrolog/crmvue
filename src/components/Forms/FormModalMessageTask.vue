@@ -8,7 +8,7 @@
         <Stepper @complete="submit" :steps="steps" :v="v$.form" keep-alive>
             <template #1>
                 <Spinner v-if="loading" center class="spinner--green" />
-                <UserPicker v-else v-model="form.user_id" single :users="users" />
+                <UserPicker v-else v-model="form.user_id" single :users="consultants" />
             </template>
             <template #2>
                 <DatePicker v-model="form.date.end" size="70px" class="mx-auto" />
@@ -29,7 +29,6 @@ import UserPicker from '@/components/common/Forms/UserPicker/UserPicker.vue';
 import { helpers, required } from '@vuelidate/validators';
 import useValidate from '@vuelidate/core';
 import Textarea from '@/components/common/Forms/Textarea.vue';
-
 export default {
     name: 'FormModalMessageTask',
     components: {
@@ -45,7 +44,7 @@ export default {
         return {
             v$: useValidate(),
             loading: false,
-            users: [],
+            consultants: [],
             form: {
                 message: null,
                 date: {
@@ -76,7 +75,7 @@ export default {
     watch: {
         opened(newValue) {
             if (newValue) {
-                this.fetchUsers();
+                if (!this.consultants?.length) this.fetchConsultants();
 
                 this.form = {
                     date: {
@@ -85,14 +84,14 @@ export default {
                     user_id: this.promiseProps?.user_id ?? null,
                     message: this.promiseProps?.message
                 };
-            } else this.users = [];
+            }
         }
     },
     methods: {
-        async fetchUsers() {
+        async fetchConsultants() {
             this.loading = true;
 
-            this.users = await this.$store.dispatch('getConsultants');
+            this.consultants = await this.$store.dispatch('getConsultants');
 
             this.loading = false;
         },

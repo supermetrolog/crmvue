@@ -16,7 +16,7 @@
                     </with-unit-type>
                 </span>
             </p>
-            <p>{{ dialog.messages.length }} сообщений</p>
+            <p>{{ messagesCount }}</p>
         </div>
     </div>
 </template>
@@ -24,6 +24,7 @@
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { entityOptions } from '@/const/options/options.js';
 import { unitTypes } from '@/const/unitTypes.js';
+import plural from 'plural-ru';
 
 export default {
     name: 'MessengerChatHeaderRequest',
@@ -43,6 +44,10 @@ export default {
         },
         isActive() {
             return this.dialog.model.status === entityOptions.request.statusStatement.ACTIVE;
+        },
+        messagesCount() {
+            const count = this.$store.state.Messenger.messagesPagination.totalCount;
+            return plural(count, '%d сообщение', '%d сообщения', '%d сообщений');
         }
     }
 };

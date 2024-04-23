@@ -3,7 +3,7 @@
         ref="list"
         class="messenger-aside-requests"
         :loading="isLoading"
-        :title="`Запросы (${requests.length})`"
+        :title="`Запросы (${requests.length}/${pagination?.totalCount || 0})`"
     >
         <template v-if="isLoading">
             <MessengerDialogRequestSkeleton v-for="i in lastDialogsCount" :key="i" />

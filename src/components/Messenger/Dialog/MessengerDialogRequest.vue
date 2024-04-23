@@ -1,9 +1,5 @@
 <template>
-    <div
-        :id="`dialog-request-${model.id}`"
-        class="messenger-dialog messenger-dialog-request"
-        :class="{ current: current }"
-    >
+    <div class="messenger-dialog messenger-dialog-request" :class="{ current: current }">
         <span
             v-if="model.expressRequest"
             v-tippy="'Экспресс-запрос'"
@@ -83,6 +79,7 @@ import { entityOptions } from '@/const/options/options';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes';
 import Tooltip from '@/components/common/Tooltip.vue';
+import { alg } from '@/utils/alg.js';
 
 export default {
     name: 'MessengerDialogRequest',
@@ -107,7 +104,10 @@ export default {
             return unitTypes;
         },
         companyName() {
-            return this.model.company.full_name;
+            if (alg.isNumeric(this.model.company.nameRu))
+                return 'Компания #' + this.model.company.nameRu;
+
+            return this.model.company.nameRu;
         },
         isActive() {
             return this.model.status === entityOptions.request.statusStatement.ACTIVE;
@@ -148,7 +148,7 @@ export default {
             if (!this.model.regions) return '';
 
             return this.model.regions
-                .map(element => this.$formatter.text().ucFirst(element.info.title))
+                .map(element => entityOptions.location.region[element.region])
                 .join(', ');
         },
         locationText() {

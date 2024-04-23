@@ -3,6 +3,12 @@
         <MessengerChatHeader />
         <!--        <MessengerChatPinned v-if="pinnedMessage" :message="pinnedMessage" />-->
         <div ref="chat" class="messenger-chat__body">
+            <InfiniteLoading @infinite="loadMessages">
+                <template #complete><span></span></template>
+                <template #spinner>
+                    <Spinner class="spinner--green mx-auto" />
+                </template>
+            </InfiniteLoading>
             <template v-for="(section, id) in messagesByDays" :key="id">
                 <MessengerChatLabel class="messenger-chat__label" :date="section.label" />
                 <template v-for="message in section.messages" :key="message.id">
@@ -26,14 +32,18 @@
 import MessengerChatHeader from '@/components/Messenger/Chat/Header/MessengerChatHeader.vue';
 import MessengerChatMessage from '@/components/Messenger/Chat/Message/MessengerChatMessage.vue';
 import MessengerChatForm from '@/components/Messenger/Chat/Form/MessengerChatForm.vue';
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import MessengerChatLabel from '@/components/Messenger/Chat/MessengerChatLabel.vue';
 import MessengerChatNotification from '@/components/Messenger/Chat/MessengerChatNotification.vue';
 import dayjs from 'dayjs';
+import InfiniteLoading from 'v3-infinite-loading';
+import Spinner from '@/components/common/Spinner.vue';
 
 export default {
     name: 'MessengerChatContent',
     components: {
+        Spinner,
+        InfiniteLoading,
         MessengerChatNotification,
         MessengerChatLabel,
         MessengerChatForm,
@@ -81,7 +91,8 @@ export default {
         lastMessage: {
             handler(newValue, oldValue) {
                 if (!newValue) return;
-                if (newValue?.id !== oldValue?.id) this.scrollToEnd();
+                if (newValue?.id !== oldValue?.id && newValue.from.model.id === THIS_USER.id)
+                    this.scrollToEnd();
             },
             deep: true
         }
@@ -90,6 +101,11 @@ export default {
         async scrollToEnd() {
             await this.$nextTick();
             this.$refs.chat.scrollTop = this.$refs.chat.scrollHeight;
+        },
+        async loadMessages($state) {
+            const isLastPage = await this.$store.dispatch('Messenger/loadMessages');
+            if (isLastPage) $state.complete();
+            else $state.loaded();
         }
     },
     mounted() {

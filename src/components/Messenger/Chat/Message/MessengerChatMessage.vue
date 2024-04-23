@@ -1,6 +1,6 @@
 <template>
     <div class="messenger-chat-message" :class="classList">
-        <Avatar v-if="!self" :src="null" size="55" />
+        <Avatar v-if="!self" :src="message.from.model.userProfile.avatar" size="55" />
         <div class="messenger-chat-message__content hover-actions-trigger">
             <MessengerChatMessageActions
                 @pin="pinMessage"
@@ -90,15 +90,14 @@ export default {
             };
         },
         username() {
-            return this.message.from.model.username;
+            let username = this.message.from.model.userProfile.middle_name;
 
-            // let username = this.message.sender.middle_name;
-            //
-            // if (this.message.sender.first_name)
-            //     username += ` ${this.message.sender.first_name[0]}.`;
-            // if (this.message.sender.last_name) username += ` ${this.message.sender.last_name[0]}.`;
-            //
-            // return username;
+            if (this.message.from.model.userProfile?.first_name)
+                username += ` ${this.message.from.model.userProfile.first_name[0]}.`;
+            if (this.message.from.model.userProfile?.last_name)
+                username += ` ${this.message.from.model.userProfile.last_name[0]}.`;
+
+            return username;
         },
         categories() {
             return messenger.categories[this.message.category];

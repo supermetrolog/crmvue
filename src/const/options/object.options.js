@@ -117,6 +117,12 @@ const purposesWithSections = {
     ]
 };
 
+const dealTypeString = {
+    rent_or_sale: 'Аренда | Продажа',
+    response_storage: 'Ответ-хранение',
+    sublease: 'Субаренда'
+};
+
 export const objectOptions = {
     class: _class,
     facing,
@@ -125,5 +131,6 @@ export const objectOptions = {
     landCategory,
     landscape,
     purposes,
-    purposesWithSections
+    purposesWithSections,
+    dealTypeString
 };

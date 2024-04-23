@@ -1,8 +1,6 @@
 <template>
     <div class="user-picker-element" :class="{ disabled: !this.user.selected }">
-        <div class="user-picker-element__avatar">
-            <VLazyImage :src="avatar" :alt="user.userProfile.full_name" />
-        </div>
+        <Avatar :src="user.userProfile.avatar" size="50" />
         <div class="user-picker-element__description">
             <p class="user-picker-element__username">{{ user.userProfile.medium_name }}</p>
             <p class="user-picker-element__role">{{ role }}</p>
@@ -10,12 +8,12 @@
     </div>
 </template>
 <script>
-import VLazyImage from 'v-lazy-image';
 import { RoleList } from '@/const/const';
+import Avatar from '@/components/common/Avatar.vue';
 
 export default {
     name: 'UserPickerElement',
-    components: { VLazyImage },
+    components: { Avatar },
     props: {
         user: {
             type: Object,
@@ -23,9 +21,6 @@ export default {
         }
     },
     computed: {
-        avatar() {
-            return this.$url.api.getUserAvatar(this.user.userProfile.avatar);
-        },
         role() {
             return RoleList[this.user.role] || 'Должность не установлена';
         }

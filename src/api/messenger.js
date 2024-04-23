@@ -26,12 +26,27 @@ export default {
     async getPanel(companyID) {
         return await api.companies.getCompany(companyID);
     },
-    async getDialog(dialogID, modelType) {
-        const url = `/chat-members?model_type=${modelType}&id=${dialogID}`;
+    async getDialog(dialogID) {
+        const url = `/chat-members?id=${dialogID}`;
 
         try {
             const response = await axios.get(url);
             return response.data?.length ? response.data[0] : null;
+        } catch (e) {
+            ErrorHandle.setError(e);
+            return null;
+        }
+    },
+    async getMessages(memberID, page = 1) {
+        const params = new URLSearchParams({ to_chat_member_id: memberID, page }).toString();
+        const url = `/chat-member-messages?${params}`;
+
+        try {
+            const response = await axios.get(url);
+            return {
+                data: SuccessHandler.getData(response),
+                pagination: SuccessHandler.getPaginationData(response)
+            };
         } catch (e) {
             ErrorHandle.setError(e);
             return null;
