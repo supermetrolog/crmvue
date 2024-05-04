@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 export default {
     name: 'CompanyLogsItem',
@@ -45,42 +45,23 @@ export default {
                 value: null,
                 type: 1
             };
-            const dateFormat = 'DD.MM.YYYY';
-            const timeFormat = 'HH:mm';
-            let date = moment(this.logItem.created_at).format(dateFormat);
 
-            if (this.preventLogItem) {
-                let preventDate = moment(this.preventLogItem.created_at).format(dateFormat);
-                if (date == preventDate) {
-                    result.value = moment(this.logItem.created_at).format(timeFormat);
-                    result.type = 0;
-                    return result;
-                }
-            }
+            let date = dayjs(this.logItem.created_at);
 
-            let currentDate = moment(new Date()).format(dateFormat);
-            if (date == currentDate) {
-                result.value = 'сегодня';
-                return result;
-            }
-            let preventDayDate = moment().subtract(1, 'days').format(dateFormat);
-            if (date == preventDayDate) {
-                result.value = 'вчера';
-                return result;
-            }
-            result.value = date;
+            if (this.preventLogItem && date.isSame(dayjs(this.preventLogItem.created_at), 'day')) {
+                result.value = date.format('HH:mm');
+                result.type = 0;
+            } else if (date.isToday()) result.value = 'Сегодня';
+            else if (date.isYesterday()) result.value = 'Вчера';
+            else result.value = date.format('DD.MM.YYYY');
+
             return result;
         },
         isSameUser() {
-            if (this.preventLogItem?.user === this.logItem.user && !this.date.type) {
-                return true;
-            } else {
-                return false;
-            }
+            return this.preventLogItem?.user === this.logItem.user && !this.date.type;
         },
         time() {
-            const timeFormat = 'HH:mm';
-            return moment(this.logItem.created_at).format(timeFormat);
+            return dayjs(this.logItem.created_at).format('HH:mm');
         }
     }
 };

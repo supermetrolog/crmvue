@@ -49,7 +49,7 @@
                 </li>
             </ul>
         </div>
-        <div v-if="location.direction_relevant.length" class="complex-map-description__block">
+        <div v-if="location.direction_relevant?.length" class="complex-map-description__block">
             <p class="complex-map-description__subtitle">Смежные направления:</p>
             <ul class="complex-map-description__elements">
                 <li
@@ -61,7 +61,7 @@
                 </li>
             </ul>
         </div>
-        <div v-if="location.highways_relevant.length" class="complex-map-description__block">
+        <div v-if="location.highways_relevant?.length" class="complex-map-description__block">
             <p class="complex-map-description__subtitle">Смежные шоссе:</p>
             <ul class="complex-map-description__elements">
                 <li
@@ -73,7 +73,10 @@
                 </li>
             </ul>
         </div>
-        <div v-if="location.highways_moscow_relevant.length" class="complex-map-description__block">
+        <div
+            v-if="location.highways_moscow_relevant?.length"
+            class="complex-map-description__block"
+        >
             <span class="complex-map-description__subtitle">Доп. шоссе Москвы:</span>
             <ul class="complex-map-description__elements">
                 <li

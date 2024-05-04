@@ -1,4 +1,5 @@
 @use '../utils/variables';
+@use '../utils/mixins';
 
 .company-item-request {
     $request_thin_border: 0.3px solid black;
@@ -92,9 +93,7 @@
             padding: 4px;
             width: 15px;
             height: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            @include mixins.flex-box($a: center, $j: center);
             cursor: pointer;
             opacity: 0.4;
 
@@ -133,9 +132,5 @@
 }
 
 .company-item-requests {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
+    @include mixins.flex-box($a: center, $j: center, $gap: 10px, $d: column);
 }

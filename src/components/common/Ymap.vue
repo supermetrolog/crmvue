@@ -58,7 +58,7 @@ export default {
                 warning: null
             },
             settings: {
-                apiKey: process.env.VUE_APP_YANDEX_MAP_KEY,
+                apiKey: import.meta.env.VITE_VUE_APP_YANDEX_MAP_KEY,
                 lang: 'ru_RU',
                 coordorder: 'latlong',
                 enterprise: false,

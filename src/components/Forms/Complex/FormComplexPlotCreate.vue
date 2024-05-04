@@ -1,8 +1,8 @@
 <template>
     <Modal
         @close="$emit('close')"
-        class="modal-form-complex-plot"
         :title="false ? 'Редактирование участка' : 'Создание участка'"
+        width="1000"
         has-tabs
     >
         <template #header>

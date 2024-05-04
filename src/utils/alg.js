@@ -11,23 +11,23 @@ const filterArrayByPropertyEntity = (array, property) => {
     }, {});
 };
 
+const extractObject = (obj, prop) => {
+    if (prop.length > 1) {
+        if (obj[prop[0]] instanceof Array)
+            return obj[prop[0]].reduce(
+                (acc, element) => [...acc, ...extractObject(element, prop.slice(1))],
+                []
+            );
+
+        return extractObject(obj[prop[0]], prop.slice(1));
+    }
+
+    if (obj[prop[0]] instanceof Array) return obj[prop[0]];
+
+    return [obj[prop[0]]];
+};
+
 const extractDeepProperty = (object, properties) => {
-    const extractObject = (obj, prop) => {
-        if (prop.length > 1) {
-            if (obj[prop[0]] instanceof Array)
-                return obj[prop[0]].reduce(
-                    (acc, element) => [...acc, ...extractObject(element, prop.slice(1))],
-                    []
-                );
-
-            return extractObject(obj[prop[0]], prop.slice(1));
-        }
-
-        if (obj[prop[0]] instanceof Array) return obj[prop[0]];
-
-        return [obj[prop[0]]];
-    };
-
     if (properties instanceof Array) {
         return properties.map(propertiesItem => extractObject(object, propertiesItem.split('.')));
     }
@@ -101,6 +101,20 @@ const isNumeric = num => {
     return !isNaN(+num);
 };
 
+const debounce = function (fnc, delay) {
+    let timeout = null;
+
+    return function (...args) {
+        if (timeout) clearTimeout(timeout);
+
+        const context = this;
+
+        timeout = setTimeout(() => {
+            fnc.apply(context, args);
+        }, delay);
+    };
+};
+
 export const alg = {
     strictMin,
     filterArrayByPropertyEntity,
@@ -110,5 +124,6 @@ export const alg = {
     extractPropertiesFromObject,
     isNumeric,
     parts,
+    debounce,
     predicates
 };

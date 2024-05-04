@@ -1,0 +1,111 @@
+@use '../../utils/mixins';
+
+.messenger-panel {
+    border-right: 1px solid rgba(0, 0, 0, .1);
+    border-left: 1px solid rgba(0, 0, 0, .1);
+    background-color: #f8f8f8;
+    height: 100%;
+    max-height: 100vh;
+
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    &__content {
+        overflow-x: hidden;
+    }
+}
+
+.messenger-panel--empty {
+    flex-basis: 25%;
+}
+
+.messenger-panel-section {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+    &__name {
+        padding: 5px 10px;
+        font-size: 14px;
+        background-color: #566B6E;
+        color: #fff;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+}
+
+.messenger-panel-company {
+    &__card {
+        padding: 15px;
+        font-size: 14px;
+    }
+
+    &__name {
+        font-weight: 600;
+        font-size: 16px;
+    }
+
+    &__subtitle {
+        font-weight: 600;
+        @include mixins.flex-box($a: center, $gap: 3px);
+        margin-bottom: 2px;
+    }
+
+    &__rating {
+        font-size: 16px;
+    }
+
+    &__site {
+        color: #828282;
+        font-weight: 500;
+    }
+
+    &__option {
+        @include mixins.text-overflow()
+    }
+
+    &__tabs {
+        .tabs-component-tabs {
+            border-top: 1px solid rgba(0, 0, 0, .2);
+            border-bottom: 1px solid rgba(0, 0, 0, .2);
+            padding: 0;
+            background-color: #f8f8f8;
+            gap: 0;
+        }
+
+        .tabs-component-tab:not(.hidden-tab) {
+            position: relative;
+            flex-grow: 1;
+
+            &:not(&:last-child)::after {
+                content: '';
+                display: block;
+                height: 20px;
+                width: 2px;
+                background-color: rgba(0, 0, 0, .2);
+                position: absolute;
+                right: -1px;
+                top: calc(50% - 10px);
+            }
+        }
+
+        .tabs-component-tab-a {
+            width: 100%;
+            padding: 10px 2px;
+            text-align: center;
+
+            &:hover {
+                background-color: rgba(16, 185, 129, 0.4);
+            }
+        }
+
+        .tabs-component-panels {
+            padding: 0!important;
+        }
+    }
+
+    &__list {
+        max-height: 500px;
+        overflow-y: auto
+    }
+}

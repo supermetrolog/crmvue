@@ -112,7 +112,7 @@
 
 <script>
 import { CompanyCategories } from '@/const/const.js';
-import Progress from '@/components/common/Progress';
+import Progress from '@/components/common/Progress.vue';
 
 export default {
     name: 'CompanyGridView',

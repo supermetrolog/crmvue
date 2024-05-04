@@ -1,4 +1,5 @@
 @use '../utils/variables';
+@use '../utils/mixins';
 
 .header {
     width: 100%;
@@ -23,13 +24,10 @@
     }
 
     &__right {
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
+        @include mixins.flex-box($a: center, $j: flex-end);
     }
 
     &__actions {
-        display: flex;
-        gap:  20px;
+        @include mixins.flex-box($gap: 20px)
     }
 }

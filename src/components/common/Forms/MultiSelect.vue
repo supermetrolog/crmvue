@@ -5,13 +5,14 @@
                 {{ label }}
             </span>
             <Multiselect
-                ref="multiselect"
                 v-model="field"
+                @click="onClick"
                 @change="onChange($event)"
                 class="form__multiselect"
                 :class="[inputClasses, extraClasses]"
                 :placeholder="placeholder"
                 :mode="mode"
+                append-to-body
                 :options="options"
                 :close-on-select="closeOnSelect"
                 :searchable="searchable"

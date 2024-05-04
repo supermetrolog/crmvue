@@ -4,7 +4,8 @@ import SuccessHandler from './success';
 
 export default {
     async getConsultantList() {
-        const url = 'users?fields=id,username,status,userProfile&expand=userProfile';
+        const url =
+            'users?fields=id,username,status,userProfile,role&expand=userProfile,userProfile.phones,userProfile.emails';
         let data = false;
         await axios
             .get(url)

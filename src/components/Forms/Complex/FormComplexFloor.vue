@@ -327,7 +327,7 @@
 <script>
 import { helpers, maxValue, minValue, required } from '@vuelidate/validators';
 import { mapActions } from 'vuex';
-import { yandexmap } from '@/utils';
+import { cloneObject, yandexmap } from '@/utils';
 import Loader from '@/components/common/Loader.vue';
 import { ComplexFormMixin } from '@/components/Forms/Complex/mixin';
 import Modal from '@/components/common/Modal.vue';
@@ -541,8 +541,7 @@ export default {
     },
     created() {
         if (this.floor) {
-            // eslint-disable-next-line no-undef
-            this.form = structuredClone(this.floor);
+            this.form = cloneObject(this.floor);
             this.normalizeForm(this.arrayParams);
         }
     }

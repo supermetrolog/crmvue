@@ -124,14 +124,14 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions } from 'vuex';
 import useValidate from '@vuelidate/core';
 import { helpers, or, required, requiredIf } from '@vuelidate/validators';
 import Form from '@/components/common/Forms/Form.vue';
 import Input from '@/components/common/Forms/Input.vue';
 import PropogationInput from '@/components/common/Forms/PropogationInput.vue';
 import FileInput from '@/components/common/Forms/FileInput.vue';
-import Utils from '@/utils';
+import Utils, { cloneObject } from '@/utils';
 import { RoleList } from '@/const/const.js';
 import Modal from '@/components/common/Modal.vue';
 import Loader from '@/components/common/Loader.vue';
@@ -183,7 +183,6 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(['CONSULTANT_LIST']),
         roleOptions: () => RoleList,
         formEmailsValidators() {
             return [{ func: validateEmail, message: 'Укажите корректный Email' }];
@@ -294,8 +293,7 @@ export default {
     created() {
         this.loader = true;
         if (this.formdata) {
-            // eslint-disable-next-line no-undef
-            this.form = { ...this.form, ...structuredClone(this.formdata) };
+            this.form = { ...this.form, ...cloneObject(this.formdata) };
             this.form = Utils.normalizeDataForUserForm(this.form);
         }
         this.loader = false;

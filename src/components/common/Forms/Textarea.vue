@@ -1,14 +1,16 @@
 <template>
     <div class="form__control">
-        <label class="form__label" :class="{ required: required }">
-            <span v-if="label">{{ label }}</span>
+        <label :class="{ required: required }">
+            <span v-if="label" class="form__label">{{ label }}</span>
             <textarea
+                ref="textarea"
                 @input="onInput"
                 class="form__textarea"
                 :class="inputClasses"
                 :type="type"
                 :placeholder="placeholder"
                 :value="modelValue"
+                :disabled="disabled"
             />
         </label>
         <ValidationMessage
@@ -21,6 +23,7 @@
 <script>
 import Mixin from './mixins.js';
 import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
+import { watch } from 'vue';
 
 export default {
     name: 'Textarea',
@@ -50,6 +53,10 @@ export default {
         placeholder: {
             type: String,
             default: ''
+        },
+        autoHeight: {
+            type: Boolean,
+            default: false
         }
         // maska: {
         //   default: null,
@@ -60,6 +67,20 @@ export default {
             this.validate();
             this.$emit('update:modelValue', $event.target.value.trim());
         }
+    },
+    created() {
+        if (this.autoHeight) {
+            watch(
+                () => this.modelValue,
+                async () => {
+                    this.$refs.textarea.style.height = 'auto';
+                    this.$refs.textarea.style.height = this.$refs.textarea.scrollHeight + 'px';
+                }
+            );
+        }
+    },
+    mounted() {
+        this.$refs.textarea.style.height = this.$refs.textarea.scrollHeight + 'px';
     }
 };
 </script>

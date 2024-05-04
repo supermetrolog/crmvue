@@ -62,8 +62,8 @@
 </template>
 
 <script>
-import moment from 'moment';
 import Dropdown from '@/components/common/Dropdown/Dropdown.vue';
+import dayjs from 'dayjs';
 
 export default {
     name: 'CompanyBoxObjectsRenter',
@@ -82,7 +82,7 @@ export default {
     computed: {},
     methods: {
         dateFormatter(date) {
-            return moment(date).format('DD.MM.YYYY');
+            return dayjs(date).format('DD.MM.YYYY');
         }
     }
 };

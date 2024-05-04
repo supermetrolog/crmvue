@@ -5,7 +5,13 @@
     font-size: 12px;
     color: variables.$color_grey;
 
-    & i.red {
+    i.fill {
         color: darken($color: variables.$color_danger, $amount: 25);
+    }
+
+    &--yellow {
+        i.fill {
+            color: #f88f01;
+        }
     }
 }

@@ -1,11 +1,15 @@
 <template>
     <div class="calendar">
-        <h1>Calendar</h1>
+        <h1>Календарь</h1>
+        <InProgress />
     </div>
 </template>
 
 <script>
+import InProgress from '@/components/common/InProgress.vue';
+
 export default {
-    name: 'Calendar'
+    name: 'Calendar',
+    components: { InProgress }
 };
 </script>

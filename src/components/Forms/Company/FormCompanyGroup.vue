@@ -2,7 +2,7 @@
     <Modal
         @close="clickCloseModal"
         :title="formdata ? 'Изменение группы компаний' : 'Создание группы компаний'"
-        class="modal-form-company-group"
+        width="600"
     >
         <Form @submit="onSubmit">
             <Loader v-if="loader" class="center" />
@@ -59,6 +59,7 @@ import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
 import { onlyRussian } from '@//validators';
 import Submit from '@/components/common/Forms/Submit.vue';
+import { cloneObject } from '@/utils/index.js';
 
 export default {
     name: 'FormCompanyGroup',
@@ -144,8 +145,7 @@ export default {
     async mounted() {
         this.loader = true;
         if (this.formdata) {
-            const cloneFormdata = JSON.stringify(this.formdata);
-            this.form = { ...this.form, ...JSON.parse(cloneFormdata) };
+            this.form = { ...this.form, ...cloneObject(this.formdata) };
         }
         this.loader = false;
     }

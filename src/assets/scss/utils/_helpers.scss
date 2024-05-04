@@ -1,0 +1,39 @@
+@use 'mixins';
+
+.color {
+    &-danger {
+        color: #9f3f56;
+    }
+
+    &-success {
+        color: #10b981;
+    }
+
+    &-warning {
+        color: #f88f01;
+    }
+}
+
+.bg {
+    &-black {
+        background-color: #000;
+    }
+
+    &-orange {
+        background-color: #e8b501;
+    }
+
+    &-red {
+        background-color: #9f3f56;
+    }
+
+    &-btn {
+        @include mixins.bg-color-scheme(
+            success #10b981 #009665 #fff,
+            warning #f88f01 #a46104 #fff,
+            danger #f93154 #cb1132 #fff,
+            primary #11698e #085373 #fff,
+            light-danger #f93154 #cb1132 #fff
+        );
+    }
+}

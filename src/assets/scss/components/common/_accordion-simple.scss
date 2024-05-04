@@ -1,0 +1,25 @@
+@use "../../utils/mixins";
+
+.accordion-simple {
+    &__header {
+        @include mixins.flex-box($a: center, $gap: 5px);
+        @include mixins.transition(background-color .25s);
+        cursor: pointer;
+    }
+
+    &__body {
+        overflow: hidden;
+        max-height: 0;
+        transition: max-height .5s cubic-bezier(0, 1, 0, 1) -0.1s;
+
+        &.active {
+            max-height: 10000px;
+            transition-timing-function: cubic-bezier(0.5, 0, 1, 0);
+            transition-delay: 0s;
+        }
+    }
+
+    &__trigger {
+        cursor: pointer;
+    }
+}

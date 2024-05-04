@@ -1,5 +1,11 @@
 <template>
-    <div ref="modal" class="modal active" role="dialog" :class="{ 'modal--with-tabs': hasTabs }">
+    <div
+        ref="modal"
+        class="modal active"
+        role="dialog"
+        :style="{ '--modal-width': width ? width + 'px' : 'auto' }"
+        :class="{ 'modal--with-tabs': hasTabs, 'modal--relative': relative }"
+    >
         <div @click="clickCancelButton" class="modal__blackout"></div>
         <div class="modal__container">
             <div class="modal__header">
@@ -20,6 +26,13 @@
                     <slot></slot>
                 </div>
             </div>
+            <div v-if="$slots.footer" class="modal__footer">
+                <div class="container-fluid">
+                    <div class="modal__buttons">
+                        <slot name="footer"></slot>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -35,6 +48,14 @@ export default {
         hasTabs: {
             type: Boolean,
             default: false
+        },
+        relative: {
+            type: Boolean,
+            default: false
+        },
+        width: {
+            type: [Number, String],
+            default: null
         }
     },
     data() {
@@ -47,27 +68,26 @@ export default {
             this.$emit('close');
         },
         escapeHandler(event) {
+            event.stopImmediatePropagation();
             if (event.code === 'Escape') this.$emit('close');
         }
     },
     mounted() {
-        if (document.body.style.overflow === 'hidden') {
+        document.addEventListener('keydown', this.escapeHandler, true);
+        this.$refs.modal.classList.add('fadein');
+
+        if (document.body.classList.contains('is-modal')) {
             this.alreadyHidden = true;
             return;
         }
 
         document.body.classList.add('is-modal');
-        document.addEventListener('keydown', this.escapeHandler);
-
-        this.$refs.modal.classList.add('fadein');
     },
     unmounted() {
+        document.removeEventListener('keydown', this.escapeHandler, true);
         if (this.alreadyHidden) return;
 
-        document.removeEventListener('keydown', this.escapeHandler);
         document.body.classList.remove('is-modal');
     }
 };
 </script>
-
-<style></style>

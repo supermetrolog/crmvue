@@ -17,8 +17,8 @@
 </template>
 
 <script>
-import moment from 'moment';
 import CompanyTableObjectItem from '@/components/Company/Table/CompanyTableObjectItem.vue';
+import dayjs from 'dayjs';
 
 export default {
     name: 'CompanyTableObjectRow',
@@ -39,7 +39,7 @@ export default {
             if (!date) {
                 return 'Нет данных';
             }
-            return moment(date).format('DD.MM.YYYY');
+            return dayjs(date).format('DD.MM.YYYY');
         }
     }
 };

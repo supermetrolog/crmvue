@@ -2,7 +2,7 @@
     <Modal
         @close="$emit('close')"
         :title="section ? 'Редактирование блока' : 'Добавление блока'"
-        class="modal-form-floor-block"
+        width="1200"
         has-tabs
     >
         <Loader v-if="loader" class="center" />
@@ -392,6 +392,7 @@ import {
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import RadioGroup from '@/components/common/Forms/RadioGroup.vue';
 import { entityOptions } from '@/const/options/options';
+import { cloneObject } from '@/utils/index.js';
 
 export default {
     name: 'FormComplexFloorBlock',
@@ -581,8 +582,7 @@ export default {
     },
     created() {
         if (this.section !== null) {
-            // eslint-disable-next-line no-undef
-            this.form = { ...this.form, ...structuredClone(this.section) };
+            this.form = { ...this.form, ...cloneObject(this.section) };
         }
     }
 };

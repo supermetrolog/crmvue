@@ -1,9 +1,8 @@
 @use '../utils/variables';
+@use '../utils/mixins';
 
 .login-layout {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    @include mixins.flex-box($a: center, $j: center);
     position: fixed;
     top: 0;
     left: 0;

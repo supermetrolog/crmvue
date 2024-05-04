@@ -78,6 +78,10 @@ export const formatterObject = {
     toCorrectValue(value) {
         if (alg.isNumeric(value)) return this.number(value);
         return value;
+    },
+    toCorrectUrl(value) {
+        if (value.match(/^https?:\/\//)) return value;
+        return 'https://' + value;
     }
 };
 

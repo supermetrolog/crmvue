@@ -2,9 +2,9 @@ import api from '@/api/api';
 import CompanyObjectsList from '@/components/Company/CompanyObjectsList.vue';
 import FormOfferSearch from '@/components/Forms/Offer/FormOfferSearch.vue';
 import Pagination from '@/components/common/Pagination/Pagination.vue';
+import sha256 from 'crypto-js/sha256';
 import { mapActions, mapGetters } from 'vuex';
 import { notify } from '@kyvg/vue3-notification';
-import crypto from 'crypto';
 import CommentWithAutoSetComment, {
     AlreadySendOffersComment,
     DONE_COMMENT_TYPE,
@@ -379,7 +379,7 @@ export const MixinAllObject = {
         ...mapActions(['SEARCH_FAVORITES_OFFERS']),
         async getAllObjects(query = {}, withLoader = true) {
             this.allObjectsLoader = withLoader;
-            let hash = crypto.createHash('sha256').update(JSON.stringify(query)).digest('base64');
+            let hash = sha256(JSON.stringify(query)).toString();
             this.waitHash = hash;
             query = {
                 type_id: [1, 2, 3],

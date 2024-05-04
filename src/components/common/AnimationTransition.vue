@@ -1,5 +1,9 @@
 <template>
-    <transition mode="out-in" :enter-active-class="enterActiveClass" :leave-active-class="leaveActiveClass">
+    <transition
+        mode="out-in"
+        :enter-active-class="enterActiveClass"
+        :leave-active-class="leaveActiveClass"
+    >
         <slot />
     </transition>
 </template>
@@ -8,21 +12,32 @@ export default {
     name: 'AnimationTransition',
     props: {
         animation: {
-            type: String,
-            default: 'fade'
+            type: Object,
+            default: () => ({
+                enter: 'fadeIn',
+                leave: 'fadeOut'
+            })
         },
-        fast: {
-            type: Boolean,
-            default: false
+        speed: {
+            type: Number,
+            default: 1
         }
     },
     computed: {
         enterActiveClass() {
-            return 'animate__animated animate__fadeIn' + (this.fast ? ' animate--fast' : '');
+            return 'animate__animated animate__' + this.animation.enter;
         },
         leaveActiveClass() {
-            return 'animate__animated animate__fadeOut' + (this.fast ? ' animate--fast' : '');
+            return 'animate__animated animate__' + this.animation.leave;
+        },
+        duration() {
+            return this.speed + 's';
         }
     }
 };
 </script>
+<style scoped>
+.animate__animated {
+    --animate-duration: v-bind(duration);
+}
+</style>

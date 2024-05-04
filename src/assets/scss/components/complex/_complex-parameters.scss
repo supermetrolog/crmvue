@@ -1,12 +1,10 @@
+@use '../../utils/mixins';
+
 .complex-parameters {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
+    @include mixins.flex-box($gap: 10px, $wrap: true);
 
     &__item {
-        align-items: center;
-        display: flex;
-        gap: 10px;
+        @include mixins.flex-box($a: center, $gap: 10px);
         font-size: 13px;
         font-weight: 700;
         border-radius: 4px;
@@ -23,7 +21,6 @@
     }
 
     &__text {
-        display: flex;
-        gap: 3px;
+        @include mixins.flex-box($gap: 3px);
     }
 }

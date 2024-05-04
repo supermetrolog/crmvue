@@ -1,4 +1,5 @@
 @use "../../utils/variables";
+@use "../../utils/mixins";
 
 .trade-offer-item {
     background-color: #ffffff;
@@ -8,15 +9,12 @@
     position: relative;
 
     &__content {
+        @include mixins.flex-box($gap: 15px, $d: column);
         padding: 10px;
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
     }
 
     &__label {
-        display: flex;
-        gap: 5px;
+        @include mixins.flex-box($gap: 5px);
         padding: 5px;
         background-color: rgba(0, 122, 49, 0.85);
         border-radius: 4px;
@@ -30,9 +28,7 @@
     }
 
     &__footer {
-        display: flex;
-        align-items: flex-end;
-        justify-content: flex-end;
+        @include mixins.flex-box($a: flex-end, $j: flex-end);
         padding: 10px;
         border-top: 1px solid rgba(0, 0, 0, .2);
     }
@@ -52,11 +48,9 @@
     }
 
     &__header {
+        @include mixins.flex-box($j: space-between, $gap: 5px);
         width: 100%;
-        display: flex;
-        gap: 5px;
         padding: 10px;
-        justify-content: space-between;
         border-bottom: 1px solid rgba(0, 0, 0, .2);
     }
 

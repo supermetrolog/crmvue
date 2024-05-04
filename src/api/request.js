@@ -7,7 +7,7 @@ export default {
         const url =
             'requests/company-requests/' +
             id +
-            '?expand=contact.emails,consultant.userProfile,directions,districts,gateTypes,objectClasses,objectTypes,objectTypesGeneral,regions.info,deal.company,deal.offer,deal.consultant.userProfile,deal.offer.generalOffersMix,deal.competitor,timeline_progress&sort=-created_at';
+            '?expand=contact.emails,company,consultant.userProfile,directions,districts,gateTypes,objectClasses,objectTypes,objectTypesGeneral,regions.info,deal.company,deal.offer,deal.consultant.userProfile,deal.offer.generalOffersMix,deal.competitor,timeline_progress&sort=-created_at';
 
         let data = false;
         await axios
@@ -27,10 +27,12 @@ export default {
                 data = SuccessHandler.getData(Response);
             })
             .catch(e => ErrorHandle.setError(e));
-        return data;
+        return data[0];
     },
     async searchRequests(query, expand = null) {
-        expand = expand || 'regions.info,directions,districts,company,consultant.userProfile,timeline_progress';
+        expand =
+            expand ||
+            'regions.info,directions,districts,company,consultant.userProfile,timeline_progress';
         query = new URLSearchParams(query).toString();
         let url = 'requests?' + query + '&expand=' + expand;
         let data = false;

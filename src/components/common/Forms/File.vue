@@ -2,13 +2,16 @@
     <div class="file">
         <a :href="file.src" class="file__body" target="_blank">
             <VLazyImage
-                v-if="file.fileType.name === 'image'"
+                v-if="fileType.name === 'image'"
+                @click.prevent.stop="$openPreviewer(file.src)"
                 :src="file.src"
                 class="file__image"
                 alt="file image"
             />
             <template v-else>
-                <i class="file__icon" :class="file.fileType.icon" />
+                <div class="file__icon">
+                    <i :class="fileType.icon" />
+                </div>
                 <p class="file__name">{{ fileName }}</p>
             </template>
             <div class="file__actions">
@@ -28,7 +31,7 @@
                                 </li>
                                 <li class="file__option">
                                     <span>Тип файла: </span>
-                                    <span>{{ file.fileType.title }}</span>
+                                    <span>{{ fileType.title }}</span>
                                 </li>
                                 <li v-if="file.size" class="file__option">
                                     <span>Размер: </span>
@@ -57,6 +60,9 @@
 <script>
 import VLazyImage from 'v-lazy-image';
 import Tooltip from '@/components/common/Tooltip.vue';
+import { fileTypes } from '@/const/types';
+
+const fileTypesList = Object.values(fileTypes);
 
 export default {
     name: 'File',
@@ -65,6 +71,7 @@ export default {
         VLazyImage
     },
     emits: ['delete'],
+    inject: ['$openPreviewer'],
     props: {
         file: {
             type: Object,
@@ -89,6 +96,17 @@ export default {
             }
 
             return size.toFixed(2) + ' ' + type[i];
+        },
+        fileType() {
+            let extension = this.fileName.split('.').slice(-1)[0];
+
+            return (
+                fileTypesList.find(element => element.extensions.includes(extension)) || {
+                    name: 'unknown',
+                    title: 'Не установлено',
+                    icon: 'fa-solid fa-file-circle-question'
+                }
+            );
         }
     }
 };

@@ -24,7 +24,7 @@
                 :title="location.metroRecord.title"
             >
                 <div>
-                    <img :src="require(`@/assets/image/metro.png`)" alt="метро" />
+                    <img src="@/assets/image/metro.png" alt="метро" />
                 </div>
                 <span>{{ ucFirst(location.metroRecord.title, true) }}</span>
             </div>
@@ -92,7 +92,7 @@ export default {
             ucFirst: this.$formatter.text().ucFirst,
             map: {
                 settings: {
-                    apiKey: process.env.VUE_APP_YANDEX_MAP_KEY,
+                    apiKey: import.meta.env.VITE_VUE_APP_YANDEX_MAP_KEY,
                     lang: 'ru_RU',
                     coordorder: 'latlong',
                     enterprise: false,

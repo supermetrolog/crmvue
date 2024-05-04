@@ -9,7 +9,10 @@
                 @blur="onBlur"
                 @keypress.enter.prevent
                 class="form__input"
-                :class="[inputClasses, { 'form__input--unit': unit }]"
+                :class="[
+                    inputClasses,
+                    { 'form__input--unit': unit, 'form__input--rounded': rounded }
+                ]"
                 :style="paddingRightStyle"
                 :type="type"
                 :placeholder="placeholder"
@@ -92,6 +95,10 @@ export default {
             default: null
         },
         reactive: {
+            type: Boolean,
+            default: false
+        },
+        rounded: {
             type: Boolean,
             default: false
         }

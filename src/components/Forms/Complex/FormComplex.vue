@@ -1,9 +1,9 @@
 <template>
     <Modal
         @close="$emit('close')"
-        class="modal-form-complex"
         :title="complex ? 'Редактирование комплекса' : 'Добавление комплекса'"
         has-tabs
+        width="950"
     >
         <Loader v-if="loader" class="center" />
         <Form @submit="onSubmit">
@@ -422,7 +422,7 @@
 
 <script>
 import { helpers, maxValue, minValue, required } from '@vuelidate/validators';
-import { yandexmap } from '@/utils';
+import { cloneObject, yandexmap } from '@/utils';
 import Loader from '@/components/common/Loader.vue';
 import { ComplexFormMixin } from '@/components/Forms/Complex/mixin';
 import Modal from '@/components/common/Modal.vue';
@@ -563,8 +563,7 @@ export default {
     },
     created() {
         if (this.complex) {
-            // eslint-disable-next-line no-undef
-            this.form = { ...this.form, ...structuredClone(this.complex) };
+            this.form = { ...this.form, ...cloneObject(this.complex) };
         }
     }
 };

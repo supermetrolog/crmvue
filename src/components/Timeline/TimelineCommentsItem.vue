@@ -37,9 +37,9 @@
 </template>
 
 <script>
-import moment from 'moment';
 import api from '@/api/api.js';
 import LetterViewModal from '@/components/common/Letter/LetterViewModal.vue';
+import dayjs from 'dayjs';
 
 export default {
     name: 'TimelineCommentsItem',
@@ -62,50 +62,28 @@ export default {
     },
     computed: {
         isSystemComment() {
-            if (!this.data.title) {
-                return true;
-            }
-            if (this.data.title.includes('система')) {
-                return true;
-            }
-            return false;
+            return !this.data.title || this.data.title.includes('система');
         },
 
         date() {
-            // const dateFormat = "YYYY-MM-DDTHH:mm:ss";
             const result = {
                 value: null,
                 type: 1
             };
-            const dateFormat = 'YYYY-MM-DD';
-            const timeFormat = 'HH:mm';
-            let date = moment(this.data.created_at).format(dateFormat);
 
-            if (this.preventComment) {
-                let preventDate = moment(this.preventComment.created_at).format(dateFormat);
-                if (date == preventDate) {
-                    result.value = moment(this.data.created_at).format(timeFormat);
-                    result.type = 0;
-                    return result;
-                }
-            }
+            let date = dayjs(this.data.created_at);
 
-            let currentDate = moment(new Date()).format(dateFormat);
-            if (date == currentDate) {
-                result.value = 'сегодня';
-                return result;
-            }
-            let preventDayDate = moment().subtract(1, 'days').format(dateFormat);
-            if (date == preventDayDate) {
-                result.value = 'вчера';
-                return result;
-            }
-            result.value = this.data.created_at_format;
+            if (this.preventComment && date.isSame(dayjs(this.preventComment.created_at), 'day')) {
+                result.value = date.format('HH:mm');
+                result.type = 0;
+            } else if (date.isToday()) result.value = 'Сегодня';
+            else if (date.isYesterday()) result.value = 'Вчера';
+            else result.value = this.data.created_at_format;
+
             return result;
         },
         time() {
-            const timeFormat = 'HH:mm';
-            return moment(this.data.created_at).format(timeFormat);
+            return dayjs(this.data.created_at).format('HH:mm');
         },
         timeHTML() {
             return `<span class="d-inline time">${this.time} </span>`;

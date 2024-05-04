@@ -16,6 +16,7 @@
                     ></i>
                 </AnimationTransition>
                 <input
+                    :ref="'input-' + index"
                     v-model="field[index][firstName]"
                     v-maska="maska"
                     @input.stop.prevent="onInput"

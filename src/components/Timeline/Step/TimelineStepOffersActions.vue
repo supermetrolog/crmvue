@@ -5,7 +5,7 @@
                 v-if="sendObjectsModalVisible"
                 @close="closeSendObjectsModal"
                 title="Отправка"
-                class="modal-form-letter"
+                width="1200"
             >
                 <FormLetter
                     @send="sendOffers"
@@ -91,7 +91,7 @@
                                 >
                                     <template #btnContent>
                                         <span>ЛУЧШЕЕ</span>
-                                        <Tooltip :text="firstRecommendedDescription" />
+                                        <Tooltip :text="firstRecommendedDescription" pre-format />
                                     </template>
                                 </CustomButton>
                                 <CustomButton
@@ -106,7 +106,7 @@
                                 >
                                     <template #btnContent>
                                         <span>СРЕДНЕЕ</span>
-                                        <Tooltip :text="twoRecommendedDescription" />
+                                        <Tooltip :text="twoRecommendedDescription" pre-format />
                                     </template>
                                 </CustomButton>
                                 <CustomButton
@@ -121,7 +121,7 @@
                                 >
                                     <template #btnContent>
                                         <span>ПАССИВ</span>
-                                        <Tooltip :text="threeRecommendedDescription" />
+                                        <Tooltip :text="threeRecommendedDescription" pre-format />
                                     </template>
                                 </CustomButton>
                             </div>

@@ -71,7 +71,9 @@
         <Td class="text-center CompanyTableItem-consultant">
             {{ company.consultant.userProfile.short_name }}
         </Td>
-        <Td class="CompanyTableItem-notif text-warning"><span v-if="false">Пора позвонить клиенту</span></Td>
+        <Td class="CompanyTableItem-notif text-warning"
+            ><span v-if="false">Пора позвонить клиенту</span></Td
+        >
         <Td class="text-center date" sort="created_at">
             {{ formattedDate }}
         </Td>
@@ -92,8 +94,8 @@ import { MixinCompanyView } from '@/components/Company/mixins.js';
 import Tr from '@/components/common/Table/Tr.vue';
 import Td from '@/components/common/Table/Td.vue';
 import { mapGetters } from 'vuex';
-import moment from 'moment';
 import { ActivityProfileList } from '@/const/const.js';
+import dayjs from 'dayjs';
 
 export default {
     name: 'CompanyTableItem',
@@ -120,11 +122,14 @@ export default {
             return this.company.requests.filter(request => request.status === 2);
         },
         formattedDate() {
-            let date = new Date(this.company.created_at);
-            return moment(date).format('DD.MM.YYYY');
+            return dayjs(this.company.created_at).format('DD.MM.YYYY');
         },
         isThereDropdown() {
-            return this.activeRequests.length || this.archiveRequests.length || this.company.objects.length;
+            return (
+                this.activeRequests.length ||
+                this.archiveRequests.length ||
+                this.company.objects.length
+            );
         }
     },
     methods: {

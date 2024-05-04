@@ -39,7 +39,7 @@
             />
         </div>
         <EmptyData v-else>Список сделок пуст..</EmptyData>
-        <AnimationTransition fast>
+        <AnimationTransition :speed="0.1">
             <ComplexDealItem
                 v-if="currentDealId"
                 :key="currentDealId"
@@ -57,6 +57,7 @@ import ComplexDealItem from '@/components/Complex/Deal/ComplexDealItem.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import Button from '@/components/common/Button.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
+import { cloneObject } from '@/utils/index.js';
 
 export default {
     name: 'ComplexDeals',
@@ -85,8 +86,7 @@ export default {
             return this.deals.find(deal => deal.id === this.currentDealId);
         },
         sortedCurrentDealFloors() {
-            // eslint-disable-next-line no-undef
-            const floors = structuredClone(this.floors);
+            const floors = cloneObject(this.floors);
 
             floors.forEach(floor => {
                 floor.parts = floor.parts.filter(part => part.offer_id === this.currentDeal.id);

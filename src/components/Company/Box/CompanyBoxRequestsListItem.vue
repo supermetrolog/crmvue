@@ -172,13 +172,13 @@ import {
     ObjectTypeList,
     unknownMovingDate
 } from '@/const/const.js';
-import moment from 'moment';
 import { mapGetters } from 'vuex';
 import Dropdown from '@/components/common/Dropdown/Dropdown.vue';
 import DropdownContainer from '@/components/common/Dropdown/DropdownContainer.vue';
 import DealListItem from '@/components/Deal/DealListItem.vue';
 import Progress from '@/components/common/Progress.vue';
 import Button from '@/components/common/Button.vue';
+import dayjs from 'dayjs';
 
 export default {
     name: 'CompanyBoxRequestsListItem',
@@ -287,7 +287,7 @@ export default {
             return this.objectTypeListPlot.find(item => item.id == objectType).name;
         },
         dateFormatter(date) {
-            return moment(date).format('DD.MM.YYYY');
+            return dayjs(date).format('DD.MM.YYYY');
         },
         clickUpdateRequest() {
             this.$emit('clickUpdateRequest', this.request);

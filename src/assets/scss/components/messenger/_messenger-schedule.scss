@@ -1,0 +1,94 @@
+@use '../../utils/mixins';
+
+.schedule {
+    max-width: max-content;
+
+    .dp__calendar {
+        --dp-highlight-color: rgba(16, 185, 129, 0.3);
+
+        &_row {
+            gap: 5px;
+        }
+
+        &_item {
+            .dp__cell_inner:not(.dp__today) {
+                @include mixins.light-border;
+            }
+        }
+    }
+
+    .dp__action_row {
+        display: none;
+    }
+
+    .dp__month_year_col_nav {
+        @include mixins.flex-box($j: center);
+        @include mixins.hover {
+            background: var(--dp-hover-color)
+        }
+
+        border-radius: 4px;
+    }
+}
+
+.date-picker-tooltip {
+    background-color: red;
+}
+
+.dp__tooltip_content {
+    @include mixins.flex-box($d: column, $gap: 5px);
+}
+
+.schedule-sidebar {
+    @include mixins.flex-box($d: column);
+    width: 150px;
+    height: 100%;
+
+    &__body {
+
+    }
+
+    &__footer {
+        margin-top: auto;
+
+        @include mixins.flex-box($d: column, $gap: 10px);
+    }
+
+    &__button {
+        width: 100%;
+    }
+
+    &__day {
+        text-align: center;
+        font-weight: 500;
+        height: 150px;
+        border-radius: 4px;
+        overflow: hidden;
+        box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+        @include mixins.light-border;
+        @include mixins.flex-box($j: space-between, $d: column);
+    }
+
+    &__day-title {
+        background-color: #10b981;
+        color: #fff;
+    }
+}
+
+.schedule-tooltip {
+    width: 100%;
+    text-align: left;
+    padding: 5px 10px;
+    border-radius: 10px;
+    background-color: #fff;
+    @include mixins.light-border;
+    @include mixins.flex-box($gap: 10px, $a: center);
+    font-weight: 500!important;
+
+    &__icon {
+        font-size: 14px;
+        height: 30px;
+        width: 30px;
+        color: #fff;
+    }
+}

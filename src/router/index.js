@@ -17,29 +17,18 @@ const routes = [
                     layout: 'default',
                     auth: { isAuth: true, role: ['moderator', 'administrator'] }
                 },
-                component: () => import('../views/Setting.vue')
+                component: () => import('@/views/Settings.vue')
             }
         ]
     },
     {
-        path: '/setting',
-        name: 'setting',
+        path: '/settings',
+        name: 'settings',
         meta: {
             layout: 'default',
             auth: { isAuth: true, role: ['moderator', 'administrator'] }
         },
-        component: () => import('../views/Setting.vue'),
-        children: [
-            {
-                path: ':mod',
-                name: 'setting',
-                meta: {
-                    layout: 'default',
-                    auth: { isAuth: true, role: ['moderator', 'administrator'] }
-                },
-                component: () => import('../views/Setting.vue')
-            }
-        ]
+        component: () => import('@/views/Settings.vue')
     },
     {
         path: '/calendar',
@@ -149,8 +138,28 @@ const routes = [
             auth: { isAuth: true, role: ['moderator', 'administrator'] }
         },
         component: () => import('../views/Account/View.vue'),
+        redirect: { name: 'profile' },
         children: [
-            // later
+            {
+                path: '',
+                name: 'profile',
+                component: () => import('../views/Account/Profile.vue')
+            },
+            {
+                path: 'activity',
+                name: 'profile-activity',
+                component: () => import('../views/Account/Activity.vue')
+            },
+            {
+                path: 'edit',
+                name: 'profile-edit',
+                component: () => import('../views/Account/Edit.vue')
+            },
+            {
+                path: 'consultants',
+                name: 'profile-consultants',
+                component: () => import('../views/Account/Consultants.vue')
+            }
         ]
     },
     {

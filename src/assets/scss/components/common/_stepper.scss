@@ -1,0 +1,125 @@
+@use "../../utils/mixins";
+
+.stepper {
+    position: relative;
+    margin: 15px 0;
+
+    &__progress {
+        height: 15px;
+        background: #fff;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        overflow: hidden;
+        box-shadow: 0 0 5px 1px rgba(13, 31, 47, .2);
+    }
+
+    &__progress-bar {
+        transition: width 1s ease;
+        border-radius: 10px;
+        height: 100%;
+        background-color: #4B8AEB;
+    }
+
+    &__navigation {
+        @include mixins.flex-box($gap: 10px, $wrap: true);
+        margin-bottom: 15px;
+        padding: 15px;
+        background-color: #fff;
+        box-shadow: 0 0 5px 1px rgba(13, 31, 47, .2);
+        border-radius: 10px;
+    }
+
+    &__step {
+        background-color: #F5F5F5;
+        border-radius: 10px;
+        padding: 5px 15px;
+        color: #7B7B7B;
+        @include mixins.light-border;
+        @include mixins.transition(border-color, background-color);
+
+        &.viewed {
+            background-color: rgba(16, 185, 129, 0.8);
+            color: #fff;
+        }
+
+        &.error {
+            background-color: rgba(159, 63, 86, .6);
+            border-color: #9f3f56;
+            color: #fff;
+        }
+
+        &:hover, &.active {
+            border-color: #4B8AEB;
+            background-color: rgba(75, 138, 235, 0.8);
+            color: #fff;
+        }
+    }
+
+    &__step-id {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-right: 7px;
+        color: #fff;
+        line-height: 24px;
+        text-align: center;
+        background-color: rgba(0, 0, 0, 0.38);
+        border-radius: 50%;
+    }
+
+    &__body {
+        position: relative;
+        padding: 15px;
+        background-color: #fff;
+        box-shadow: 0 0 5px 1px rgba(13, 31, 47, .2);
+        border-radius: 10px;
+        margin-bottom: 15px;
+        display: flex;
+        overflow: hidden;
+    }
+
+    &__content {
+        @include mixins.transition(transform 1s ease-out);
+        transform: translateX(calc(-100% - 30px));
+        width: 100%;
+        position: absolute;
+
+        &.active~& {
+            transform: translateX(calc(100% + 30px));
+        }
+
+        &.active {
+            transform: translateX(0);
+            @include mixins.transition(transform 1s ease-out);
+            position: relative;
+        }
+    }
+
+    &__item {
+        width: 100%;
+    }
+
+    &__footer {
+        padding: 10px 15px;
+        background-color: #fff;
+        box-shadow: 0 0 5px 1px rgba(13, 31, 47, .2);
+        border-radius: 10px;
+        @include mixins.flex-box($j: center, $gap: 10px);
+    }
+
+    &__validation {
+        border-radius: 10px;
+        @include mixins.flex-box($gap: 10px, $wrap: true);
+        margin-bottom: 15px;
+    }
+
+    &__error {
+        box-shadow: 0 0 5px 1px rgba(13, 31, 47, .2);
+        padding: 5px 10px;
+        border-radius: 10px;
+        background-color: rgba(159, 63, 86, .9);
+        color: #fff;
+        flex-grow: 1;
+        text-align: center;
+    }
+}

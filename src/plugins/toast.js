@@ -1,10 +1,16 @@
 import { notify } from '@kyvg/vue3-notification';
 
+export let $toast = null;
+
 function $notifyFactory(defaultOptions) {
-    return function $showNotify(text, options = {}) {
+    const toastInstance = function $showNotify(text, options = {}) {
         options.text = text;
         notify({ ...defaultOptions, ...options });
     };
+
+    $toast = toastInstance;
+
+    return toastInstance;
 }
 
 const Toast = {

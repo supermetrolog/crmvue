@@ -1,20 +1,11 @@
 @use '../../utils/variables';
-
-.pagination {
-
-}
-
+@use '../../utils/mixins';
 
 .pagination-classic {
-    display: flex;
-    gap: 10px;
-    align-items: flex-end;
-    flex-wrap: wrap;
+    @include mixins.flex-box($a: flex-end, $gap: 10px, $wrap: true);
 
     &__pages {
-        display: flex;
-        align-items: center;
-        gap: 5px;
+        @include mixins.flex-box($a: center, $gap: 5px);
     }
 
     &__button {

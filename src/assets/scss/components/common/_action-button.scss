@@ -1,11 +1,10 @@
 @use '../../utils/variables';
+@use '../../utils/mixins';
 
 .action-buttons {
-    display: flex;
+    @include mixins.flex-box($j: right, $gap: 5px);
     flex-grow: 2;
     flex-wrap: nowrap;
-    justify-content: right;
-    gap: 5px;
 
     &__item {
         font-size: 17px;
@@ -14,9 +13,7 @@
     &__button {
         width: 35px;
         height: 35px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        @include mixins.flex-box($a: center, $j: center);
         background-color: inherit;
         border: 1px solid variables.$color_light_grey;
         border-radius: 50%;

@@ -57,6 +57,13 @@ const status = {
     5: 'Свободно, размечено'
 };
 
+const type = {
+    1: 'Аренда',
+    2: 'Продажа',
+    3: 'Ответ. хранение',
+    4: 'Субаренда'
+};
+
 const commissionStatement = {
     INCLUDED: 1,
     CANCELED: 2
@@ -116,6 +123,7 @@ export const dealOptions = {
     builtToSuitPlanStatement,
     saleCompanyStatement,
     priceServiceStatement,
+    type,
     typeStatement,
     status,
     statusStatement

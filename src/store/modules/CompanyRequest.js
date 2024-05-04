@@ -66,6 +66,9 @@ const CompanyRequest = {
             const requests = await api.request.getRequests(id);
             context.commit('updateCompanyRequests', requests);
             return requests;
+        },
+        async getCompanyRequests(_, id) {
+            return await api.request.getRequests(id);
         }
     },
 

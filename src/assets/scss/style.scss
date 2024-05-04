@@ -7,6 +7,7 @@
 @use 'layouts';
 @use 'components';
 @use 'pages';
+@use 'utils/helpers';
 @use 'utils/mixins';
 
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,400;1,500;1,700&display=swap");
@@ -4247,6 +4248,11 @@ tr.DropdownSwitcherRow {
         border: 1px solid variables.$color_grey !important;
         border-radius: 0 !important;
     }
+
+    &-dropdown {
+        z-index: 9999!important;
+        height: max-content;
+    }
 }
 
 //*********** PHONE NUMBER *************
@@ -6151,7 +6157,7 @@ button.filters {
 }
 
 .tooltip {
-    &__text {
+    &--pre &__text {
         white-space: pre;
     }
 }
@@ -6168,7 +6174,58 @@ button.filters {
     border-radius: 10px;
     background-color: #fff;
 
+    img {
+        height: 125px;
+    }
+
+    &--no-rounded {
+        border-radius: 0;
+        box-shadow: none;
+    }
+
     &__text {
         font-weight: 500;
     }
+}
+
+.rounded-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.dp__action_button {
+    padding: 5px;
+    height: max-content;
+}
+
+.previewer {
+    img {
+        max-height: 60vh;
+        max-width: 80vw;
+    }
+}
+
+.confirmer {
+    &__text {
+        text-align: center;
+        margin-bottom: 20px;
+        font-weight: 500;
+    }
+
+    &__actions {
+        @include mixins.flex-box($gap: 10px);
+
+        .messenger-button {
+            flex-grow: 1;
+        }
+    }
+}
+
+.white-block {
+    background-color: #fff;
+    box-shadow: 0 0 10px 1px rgba(0, 0, 0, .1);
+    border-radius: 5px;
+    padding: 15px;
 }

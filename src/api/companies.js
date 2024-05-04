@@ -46,7 +46,7 @@ export default {
         const url =
             'companies/' +
             id +
-            '?expand=contacts.emails,contacts.phones,contacts.websites,contacts.contactComments,broker,companyGroup,consultant,consultant.userProfile,categories,productRanges,files,dealsRequestEmpty.consultant.userProfile,dealsRequestEmpty.offer.generalOffersMix,dealsRequestEmpty.competitor';
+            '?expand=contacts.emails,contacts.phones,contacts.websites,contacts.contactComments,contacts.wayOfInformings,broker,companyGroup,consultant,consultant.userProfile,categories,productRanges,files,dealsRequestEmpty.consultant.userProfile,dealsRequestEmpty.offer.generalOffersMix,dealsRequestEmpty.competitor';
         let data = false;
         await axios
             .get(url)

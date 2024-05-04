@@ -3,6 +3,7 @@
         @close="clickCloseModal"
         :title="formdata ? 'Редактирование компании' : 'Создание компании'"
         class="modal-form-company"
+        width="1000"
         has-tabs
     >
         <Form @submit="onSubmit">
@@ -407,7 +408,7 @@ import {
     PassiveWhy,
     RatingList
 } from '@/const/const.js';
-import Utils, { yandexmap } from '@/utils';
+import Utils, { cloneObject, yandexmap } from '@/utils';
 import api from '@//api/api.js';
 import Modal from '@/components/common/Modal.vue';
 import Loader from '@/components/common/Loader.vue';
@@ -732,8 +733,7 @@ export default {
             this.FETCH_COMPANY_IN_THE_BANK_LIST()
         ]);
         if (this.formdata) {
-            // eslint-disable-next-line no-undef
-            this.form = { ...this.form, ...structuredClone(this.formdata) };
+            this.form = { ...this.form, ...cloneObject(this.formdata) };
 
             this.form = Utils.normalizeDataForCompanyForm(this.form);
         }

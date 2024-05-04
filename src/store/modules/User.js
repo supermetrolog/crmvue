@@ -90,6 +90,10 @@ const User = {
         },
         async DELETE_USER(_, id) {
             return await api.user.deleteUser(id);
+        },
+        async getConsultants() {
+            let data = await api.functions.getConsultantList();
+            return (data ?? []).filter(user => user.role < 5);
         }
     },
     getters: {
