@@ -6,7 +6,7 @@
   "scripts": {
     "serve": "vite --open --mode server --port 8080",
     "build": "vite build",
-    "stage": "vite --mode stage",
+    "stage": "vite build --mode stage",
     "lint": "eslit src",
     "dev": "vite",
     "preview": "vite preview"
