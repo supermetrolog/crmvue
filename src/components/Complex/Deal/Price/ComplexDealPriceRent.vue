@@ -1,7 +1,7 @@
 <template>
     <div v-if="prices.warehouse.length || prices.range.length" class="complex-deal-table__table">
         <with-unit-type class="complex-deal-table__title" :unit-type="priceOption.unitType">
-            {{ $formatter.numberOrRangeNew(mainPrice.valueMin, mainPrice.valueMax) }}
+            {{ $formatter.numberOrRangeStrict(mainPrice.valueMin, mainPrice.valueMax) }}
         </with-unit-type>
         <ul class="complex-deal-table__description">
             <li
@@ -29,8 +29,8 @@
                         class="complex-deal-table__value"
                         :unit-type="price.unitType || priceOption.unitType"
                     >
-                        <template v-if="price.valueMin">
-                            {{ $formatter.numberOrRangeNew(price.valueMin, price.valueMax) }}
+                        <template v-if="price.valueMin || price.valueMax">
+                            {{ $formatter.numberOrRangeStrict(price.valueMin, price.valueMax) }}
                         </template>
                         <template v-else>
                             {{ $formatter.number(price.value) }}

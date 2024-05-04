@@ -46,6 +46,11 @@ export const formatterObject = {
         if (valueMin === valueMax) return this.number(valueMin);
         return this.number(valueMin) + ' - ' + this.number(valueMax);
     },
+    numberOrRangeStrict(valueMin, valueMax) {
+        if (valueMin === valueMax) return this.number(valueMin);
+        if (valueMin === 0) return this.number(valueMax);
+        return this.number(valueMin) + ' - ' + this.number(valueMax);
+    },
     formatPhoneNumber(value) {
         let cleaned = ('' + value).replace(/\D/g, '');
 

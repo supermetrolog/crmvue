@@ -78,35 +78,35 @@ export default {
         },
         dealArea() {
             if (this.objectIsLand) {
-                return this.$formatter.numberOrRangeNew(
+                return this.$formatter.numberOrRangeStrict(
                     this.deal.summaryBlock.area_field_min,
                     this.deal.summaryBlock.area_field_max
                 );
             }
 
-            return this.$formatter.numberOrRangeNew(
+            return this.$formatter.numberOrRangeStrict(
                 this.deal.summaryBlock.area_warehouse_min,
                 this.deal.summaryBlock.area_warehouse_max
             );
         },
         dealPrice() {
-            if (this.deal.deal_type === entityOptions.deal.typeStatement.SALE) {
-                return {
-                    value: this.$formatter.numberOrRangeNew(
-                        this.deal.summaryBlock.price_sale_min,
-                        this.deal.summaryBlock.price_sale_max
-                    ),
-                    unitType: unitTypes.RUB_PER_SQUARE_METERS
-                };
-            }
-
             if (this.objectIsLand) {
                 return {
-                    value: this.$formatter.numberOrRangeNew(
+                    value: this.$formatter.numberOrRangeStrict(
                         this.deal.summaryBlock.price_field_min,
                         this.deal.summaryBlock.price_field_max
                     ),
                     unitType: unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR
+                };
+            }
+
+            if (this.deal.deal_type === entityOptions.deal.typeStatement.SALE) {
+                return {
+                    value: this.$formatter.numberOrRangeStrict(
+                        this.deal.summaryBlock.price_sale_min,
+                        this.deal.summaryBlock.price_sale_max
+                    ),
+                    unitType: unitTypes.RUB_PER_SQUARE_METERS
                 };
             }
 
@@ -116,7 +116,7 @@ export default {
             );
 
             return {
-                value: this.$formatter.numberOrRangeNew(
+                value: this.$formatter.numberOrRangeStrict(
                     reducer.min(prices, 'valueMin'),
                     reducer.max(prices, 'valueMax')
                 ),

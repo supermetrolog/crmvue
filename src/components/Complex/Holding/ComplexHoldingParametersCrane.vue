@@ -38,6 +38,7 @@ import WithUnitType from '@/components/common/WithUnitType.vue';
 import IconCrane from '@/components/common/Icons/IconCrane.vue';
 import { entityProperties } from '@/const/properties/properties';
 import { mapper } from '@/utils/mapper';
+import { alg } from '@/utils/alg';
 
 export default {
     name: 'ComplexHoldingParametersCrane',
@@ -50,9 +51,10 @@ export default {
     },
     computed: {
         properties() {
-            return mapper.propertiesToTableFormat(
-                this.crane,
-                entityProperties.crane.characteristics
+            return alg.deleteObjectsWithUndueProperties(
+                mapper.propertiesToTableFormat(this.crane, entityProperties.crane.characteristics),
+                'value',
+                0
             );
         },
         status() {

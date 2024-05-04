@@ -16,7 +16,7 @@
                     class="complex-deal-table__value"
                     :unit-type="price.unitType || priceOption.unitType"
                 >
-                    <template v-if="price.valueMin">
+                    <template v-if="price.valueMin || price.valueMax">
                         {{ $formatter.numberOrRangeNew(price.valueMin, price.valueMax) }}
                     </template>
                     <template v-else>

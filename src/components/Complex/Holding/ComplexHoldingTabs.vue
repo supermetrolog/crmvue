@@ -139,7 +139,7 @@ export default {
                 },
                 photos: {
                     disabled: !this.objectPhoto.length,
-                    handler: () => this.openDownloader(this.objectPhoto)
+                    handler: () => this.openDownloader(this.objectPhoto, `Объект-${this.object.id}`)
                 }
             };
         },
