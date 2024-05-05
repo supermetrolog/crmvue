@@ -384,7 +384,7 @@ textarea::-webkit-scrollbar-thumb {
 
             border-top: 1px solid variables.$color_light_grey;
 
-            .avatar {
+            .notify-icon {
                 padding-top: 14px;
 
                 .image-circle {
@@ -459,7 +459,7 @@ textarea::-webkit-scrollbar-thumb {
     &.calls {
         .comments-panel__content {
             .item {
-                .avatar {
+                .notify-icon {
                     i {
                         color: black;
                     }
@@ -4346,7 +4346,7 @@ tr.DropdownSwitcherRow {
                 width: 100px;
             }
 
-            .avatar {
+            .image-icon {
                 border-radius: 50%;
                 height: 70px;
                 width: 70px;

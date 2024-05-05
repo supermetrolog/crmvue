@@ -23,7 +23,7 @@
                     @click="
                         selectPanel({
                             dialogID: record.id,
-                            companyID: record.model.object.company_id,
+                            companyID: record.model.object.company?.id,
                             dialogType: record.model_type
                         })
                     "

@@ -151,22 +151,8 @@ const Messenger = {
             }
         },
 
-        pinMessage(state, messageID) {
-            if (state.currentPinned) {
-                state.currentPinned.pinned = false;
-            }
-
-            if (state.currentPinned?.id === messageID) {
-                state.currentPinned = null;
-                return;
-            }
-
-            const message = state.messages.find(message => message.id === messageID);
-
-            if (message) {
-                message.pinned = !message.pinned;
-                state.currentPinned = message;
-            }
+        pinMessage(state, message) {
+            state.currentPinned = message;
         },
         pinMessageToObject(state, messageID) {
             const messageIndex = state.messages.findIndex(message => message.id === messageID);
@@ -238,12 +224,13 @@ const Messenger = {
             context.commit('setMessagesPagination', {});
             context.commit('setLoadingChat', true);
 
-            const [dialog, messages] = await Promise.all([
+            const [dialog, messages, pinned] = await Promise.all([
                 api.messenger.getDialog(dialogID),
-                api.messenger.getMessages(dialogID)
+                api.messenger.getMessages(dialogID),
+                api.messenger.getPinned(dialogID)
             ]);
 
-            //context.commit('setCurrentPinned', pinned);
+            context.commit('setCurrentPinned', pinned);
             context.commit('setCurrentChat', true);
             context.commit('setCurrentDialog', dialog);
             context.commit('setMessages', messages.data);
@@ -273,10 +260,14 @@ const Messenger = {
             // return [];
         },
 
-        async sendMessage({ commit, state }) {
-            const text = state.newMessage.replaceAll('\n', '<br />');
+        async sendMessage({ commit, state }, options) {
+            const message = state.newMessage.replaceAll('\n', '<br />');
 
-            const response = await api.messenger.sendMessage(state.currentPanelDialogID, text);
+            const response = await api.messenger.sendMessage(state.currentPanelDialogID, {
+                message,
+                contact_ids: state.currentRecipient ? [state.currentRecipient.id] : [],
+                ...options
+            });
 
             if (response) {
                 commit('addMessages', [response]);
@@ -294,7 +285,7 @@ const Messenger = {
         },
 
         async reportContact(context, { contact }) {
-            $toast(`${contact.full_name} отмечен как неактуальный контакт`, { duration: 3000 });
+            $toast(`${contact.full_name} отмечен(а) как неактуальный контакт`, { duration: 3000 });
 
             context.commit('addMessages', [
                 {
@@ -422,8 +413,16 @@ const Messenger = {
         async updateAddition(context, addition) {
             context.commit('updateAddition', addition);
         },
-        async pinMessage(context, messageID) {
-            context.commit('pinMessage', messageID);
+        async pinMessage({ state, commit }, message) {
+            const pinned = await api.messenger.pinMessage(state.currentDialog.id, message.id);
+
+            if (pinned) {
+                commit('pinMessage', message);
+
+                return true;
+            }
+
+            return false;
         },
         async pinMessageToObject(context, message) {
             context.commit('pinMessageToObject', message.id);

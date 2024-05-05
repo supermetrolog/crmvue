@@ -10,7 +10,9 @@
                 <span class="messenger-dialog-offer__id">ID{{ model.object.id }}</span>
             </div>
             <div class="messenger-dialog-offer__description">
-                <p class="messenger-dialog-offer__company">{{ companyName }}</p>
+                <p v-if="model.object.company" class="messenger-dialog-offer__company">
+                    {{ companyName }}
+                </p>
                 <p class="messenger-dialog-offer__category">
                     <i class="fa-solid fa-up-long"></i>
                     <span>{{ dealType }}</span>

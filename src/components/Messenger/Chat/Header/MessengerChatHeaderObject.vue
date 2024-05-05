@@ -32,6 +32,9 @@ export default {
             return entityOptions.object.dealTypeString[this.dialog.model.type];
         },
         companyName() {
+            if (!this.dialog.model.object.company)
+                return 'компании #' + this.dialog.model.object.company_id;
+
             if (alg.isNumeric(this.dialog.model.object.company.nameRu))
                 return 'Компания #' + this.dialog.model.object.company.nameRu;
 

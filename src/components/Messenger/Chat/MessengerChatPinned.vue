@@ -3,7 +3,7 @@
         <i class="fa-solid fa-lock"></i>
         <div
             class="messenger-chat-pinned__text"
-            v-html="message.text?.length ? message.text : fileNames"
+            v-html="message.message?.length ? message.message : fileNames"
         ></div>
     </div>
 </template>

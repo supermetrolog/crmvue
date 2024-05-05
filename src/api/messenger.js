@@ -27,11 +27,11 @@ export default {
         return await api.companies.getCompany(companyID);
     },
     async getDialog(dialogID) {
-        const url = `/chat-members?id=${dialogID}`;
+        const url = `/chat-members/${dialogID}`;
 
         try {
             const response = await axios.get(url);
-            return response.data?.length ? response.data[0] : null;
+            return response.data ?? null;
         } catch (e) {
             ErrorHandle.setError(e);
             return null;
@@ -47,6 +47,29 @@ export default {
                 data: SuccessHandler.getData(response),
                 pagination: SuccessHandler.getPaginationData(response)
             };
+        } catch (e) {
+            ErrorHandle.setError(e);
+            return null;
+        }
+    },
+    async pinMessage(memberID, messageID) {
+        const url = `/chat-members/pin-message`;
+        const payload = { chat_member_id: memberID, chat_member_message_id: messageID };
+
+        try {
+            const response = await axios.post(url, payload);
+            return response.status === 200;
+        } catch (e) {
+            ErrorHandle.setError(e);
+            return null;
+        }
+    },
+    async getPinned(dialogID) {
+        const url = `/chat-members/${dialogID}/pinned-message`;
+
+        try {
+            const response = await axios.get(url);
+            return response.data ?? null;
         } catch (e) {
             ErrorHandle.setError(e);
             return null;

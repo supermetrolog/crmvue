@@ -46,9 +46,7 @@ export default {
     },
     computed: {
         usersText() {
-            return 'User #' + this.addition.user_id;
-            // if (this.addition?.users === null) return 'всех';
-            // else return this.addition?.users.join(', ');
+            return this.addition.user.userProfile.middle_name;
         },
         expiredDate() {
             return dayjs(this.addition.end).format('DD.MM.YYYY');

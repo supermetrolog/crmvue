@@ -28,9 +28,8 @@
             </HoverActionsButton>
             <HoverActionsButton
                 @click="$emit('pin')"
-                disabled
-                :label="message.pinned ? 'Открепить' : 'Закрепить'"
-                :active="message.pinned"
+                :label="pinned ? 'Открепить' : 'Закрепить'"
+                :active="pinned"
             >
                 <i class="fa-solid fa-thumbtack"></i>
             </HoverActionsButton>
@@ -53,6 +52,10 @@ export default {
         message: {
             type: Object,
             required: true
+        },
+        pinned: {
+            type: Boolean,
+            default: false
         }
     }
 };

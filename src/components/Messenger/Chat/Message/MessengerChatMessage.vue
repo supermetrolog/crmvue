@@ -7,6 +7,7 @@
                 @edit="editMessage"
                 @pin-to-object="pinToObject"
                 :message="message"
+                :pinned="pinned"
             />
             <MessengerChatMessageAdditions v-if="additions" :additions="additions" />
             <div
@@ -48,7 +49,6 @@
 </template>
 <script>
 import { mapMutations } from 'vuex';
-import { messenger } from '@/const/messenger';
 import { entityOptions } from '@/const/options/options';
 import Avatar from '@/components/common/Avatar.vue';
 import MessengerChatMessageActions from '@/components/Messenger/Chat/Message/MessengerChatMessageActions.vue';
@@ -73,6 +73,10 @@ export default {
             required: true
         },
         self: {
+            type: Boolean,
+            default: false
+        },
+        pinned: {
             type: Boolean,
             default: false
         }
@@ -121,7 +125,8 @@ export default {
             this.$toast(`Контакт изменен на ${this.message.recipient?.full_name}`);
         },
         async pinMessage() {
-            await this.$store.dispatch('Messenger/pinMessage', this.message.id);
+            await this.$store.dispatch('Messenger/pinMessage', this.message);
+
             this.$toast(
                 this.message.pinned
                     ? 'Сообщение успешно закреплено'

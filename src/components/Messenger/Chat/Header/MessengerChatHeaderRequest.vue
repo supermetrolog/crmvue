@@ -2,8 +2,8 @@
     <div class="messenger-chat-header-request">
         <div class="messenger-chat-header__description">
             <p class="messenger-chat-header__title">
-                <span>Запрос от Компании #{{ dialog.model.company_id }}</span>
-                <span class="messenger-chat-header__id"> , ID{{ dialog.model.id }} </span>
+                <span>Запрос от {{ companyName }}</span>
+                <span class="messenger-chat-header__id">, ID{{ dialog.model.id }} </span>
             </p>
             <p class="messenger-chat-header__deals">
                 <i v-if="isActive" class="fa-solid fa-up-long"></i>
@@ -25,6 +25,7 @@ import WithUnitType from '@/components/common/WithUnitType.vue';
 import { entityOptions } from '@/const/options/options.js';
 import { unitTypes } from '@/const/unitTypes.js';
 import plural from 'plural-ru';
+import { alg } from '@/utils/alg.js';
 
 export default {
     name: 'MessengerChatHeaderRequest',
@@ -48,6 +49,14 @@ export default {
         messagesCount() {
             const count = this.$store.state.Messenger.messagesPagination.totalCount;
             return plural(count, '%d сообщение', '%d сообщения', '%d сообщений');
+        },
+        companyName() {
+            if (!this.dialog.model.company) return 'компании #' + this.dialog.model.company_id;
+
+            if (alg.isNumeric(this.dialog.model.company.nameRu))
+                return 'Компания #' + this.dialog.model.company.nameRu;
+
+            return this.dialog.model.company.nameRu;
         }
     }
 };

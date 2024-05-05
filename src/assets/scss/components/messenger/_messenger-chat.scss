@@ -115,6 +115,7 @@
     }
 
     &__deals {
+        @include mixins.flex-box($gap: 5px, $a: center);
         color: #05865f;
         font-weight: 500;
     }

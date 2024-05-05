@@ -1,7 +1,7 @@
 <template>
     <div class="messenger-chat__content">
         <MessengerChatHeader />
-        <!--        <MessengerChatPinned v-if="pinnedMessage" :message="pinnedMessage" />-->
+        <MessengerChatPinned v-if="pinnedMessage" :message="pinnedMessage" />
         <div ref="chat" class="messenger-chat__body">
             <InfiniteLoading @infinite="loadMessages">
                 <template #complete><span></span></template>
@@ -16,6 +16,7 @@
                         v-if="message.from.model_type === 'user'"
                         :self="message.from.model.id === THIS_USER.id"
                         :message="message"
+                        :pinned="message.id === pinnedMessage?.id"
                     />
                     <MessengerChatNotification v-else :message="message" />
                 </template>
@@ -38,10 +39,12 @@ import MessengerChatNotification from '@/components/Messenger/Chat/MessengerChat
 import dayjs from 'dayjs';
 import InfiniteLoading from 'v3-infinite-loading';
 import Spinner from '@/components/common/Spinner.vue';
+import MessengerChatPinned from '@/components/Messenger/Chat/MessengerChatPinned.vue';
 
 export default {
     name: 'MessengerChatContent',
     components: {
+        MessengerChatPinned,
         Spinner,
         InfiniteLoading,
         MessengerChatNotification,
@@ -91,7 +94,7 @@ export default {
         lastMessage: {
             handler(newValue, oldValue) {
                 if (!newValue) return;
-                if (newValue?.id !== oldValue?.id && newValue.from.model.id === THIS_USER.id)
+                if (newValue?.id !== oldValue?.id && newValue.from.model.id === this.THIS_USER.id)
                     this.scrollToEnd();
             },
             deep: true

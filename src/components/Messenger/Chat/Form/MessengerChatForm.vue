@@ -88,10 +88,8 @@ export default {
             );
 
             const sended = await this.$store.dispatch('Messenger/sendMessage', {
-                sender: this.THIS_USER.userProfile,
-                recipient: this.currentContact,
-                category: this.currentCategory,
-                attachments: this.currentFiles
+                tag_ids: this.currentCategory ? [this.currentCategory] : []
+                // attachments: this.currentFiles
             });
 
             if (sended) {
