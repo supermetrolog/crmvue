@@ -18,6 +18,7 @@ import Location from './modules/Location';
 import Complex from './modules/Complex';
 import axios from 'axios';
 import Messenger from '@/store/modules/Messenger';
+import Task from '@/store/modules/Task.js';
 
 const store = createStore({
     state: {},
@@ -67,7 +68,8 @@ const store = createStore({
         CallerManager,
         Location,
         Complex,
-        Messenger
+        Messenger,
+        Task
     }
 });
 store.checkAction = function (name) {

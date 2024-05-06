@@ -14,7 +14,7 @@
         <MessengerChatEmpty v-else />
         <teleport to="body">
             <MessengerSchedule ref="schedule" />
-            <FormModalMessageTask ref="taskCreator" />
+            <FormModalTask ref="taskCreator" />
             <FormModalMessageNotification ref="notificationCreator" />
             <FormModalMessageReminder ref="reminderCreator" />
             <FormModalMessage ref="messageUpdate" />
@@ -32,7 +32,7 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import MessengerSchedule from '@/components/Messenger/Schedule/MessengerSchedule.vue';
 import MessengerQuizHelper from '@/components/Messenger/Quiz/MessengerQuizHelper.vue';
 import MessengerChatSettings from '@/components/Messenger/Chat/Settings/MessengerChatSettings.vue';
-import FormModalMessageTask from '@/components/Forms/FormModalMessageTask.vue';
+import FormModalTask from '@/components/Forms/FormModalTask.vue';
 import FormModalMessageNotification from '@/components/Forms/FormModalMessageNotification.vue';
 import FormModalMessageReminder from '@/components/Forms/FormModalMessageReminder.vue';
 import FormModalMessage from '@/components/Forms/FormModalMessage.vue';
@@ -43,7 +43,7 @@ export default {
         FormModalMessage,
         FormModalMessageReminder,
         FormModalMessageNotification,
-        FormModalMessageTask,
+        FormModalTask,
         MessengerChatSettings,
         MessengerQuizHelper,
         MessengerSchedule,

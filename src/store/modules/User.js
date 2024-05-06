@@ -4,7 +4,8 @@ const User = {
     state: {
         consultantList: [],
         thisUser: null,
-        users: []
+        users: [],
+        consultants: []
     },
     mutations: {
         updateConsultantList(state, data) {
@@ -23,6 +24,9 @@ const User = {
         },
         updateUsers(state, data) {
             state.users = data;
+        },
+        setConsultants(state, consultants) {
+            state.consultants = consultants;
         }
     },
     actions: {
@@ -91,9 +95,16 @@ const User = {
         async DELETE_USER(_, id) {
             return await api.user.deleteUser(id);
         },
-        async getConsultants() {
-            let data = await api.functions.getConsultantList();
-            return (data ?? []).filter(user => user.role < 5);
+        async getConsultants({ state, commit }) {
+            if (state.consultants.length) return state.consultants;
+
+            const data = await api.functions.getConsultantList();
+            commit(
+                'setConsultants',
+                (data ?? []).filter(user => user.role < 5)
+            );
+
+            return state.consultants;
         }
     },
     getters: {

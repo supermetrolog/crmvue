@@ -30,7 +30,7 @@ import { helpers, required } from '@vuelidate/validators';
 import useValidate from '@vuelidate/core';
 import Textarea from '@/components/common/Forms/Textarea.vue';
 export default {
-    name: 'FormModalMessageTask',
+    name: 'FormModalTask',
     components: {
         Textarea,
         UserPicker,
