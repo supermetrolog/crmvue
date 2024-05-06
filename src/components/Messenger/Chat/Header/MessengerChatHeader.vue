@@ -3,15 +3,15 @@
         <div class="messenger-chat-header__body">
             <component :is="componentName" :dialog="currentDialog" />
         </div>
-        <!--        <div class="messenger-chat-header__functions">-->
-        <!--            <button-->
-        <!--                v-tippy="'Открыть панель чата'"-->
-        <!--                @click="$toggleSettings"-->
-        <!--                class="messenger-chat-header__function rounded-icon"-->
-        <!--            >-->
-        <!--                <i class="fa-solid fa-table-columns"></i>-->
-        <!--            </button>-->
-        <!--        </div>-->
+        <div class="messenger-chat-header__functions">
+            <button
+                v-tippy="'Открыть панель чата'"
+                @click="$toggleSettings"
+                class="messenger-chat-header__function rounded-icon"
+            >
+                <i class="fa-solid fa-table-columns"></i>
+            </button>
+        </div>
     </div>
 </template>
 <script>
