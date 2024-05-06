@@ -163,6 +163,50 @@ const routes = [
         ]
     },
     {
+        path: '/dashboard',
+        name: 'dashboard',
+        meta: {
+            layout: 'default',
+            auth: { isAuth: true, role: ['moderator', 'administrator'] }
+        },
+        component: () => import('../views/Dashboard/View.vue'),
+        children: [
+            {
+                path: '',
+                name: 'dashboard-main',
+                component: () => import('../views/Dashboard/Main.vue')
+            },
+            {
+                path: 'company',
+                name: 'dashboard-company',
+                component: () => import('../views/Dashboard/Company.vue')
+            },
+            {
+                path: 'tasks',
+                name: 'dashboard-tasks',
+                component: () => import('../views/Dashboard/Tasks/Main.vue'),
+                redirect: { name: 'dashboard-tasks-board' },
+                children: [
+                    {
+                        path: 'board',
+                        name: 'dashboard-tasks-board',
+                        component: () => import('../views/Dashboard/Tasks/Board.vue')
+                    },
+                    {
+                        path: 'table',
+                        name: 'dashboard-tasks-table',
+                        component: () => import('../views/Dashboard/Tasks/Table.vue')
+                    }
+                ]
+            },
+            {
+                path: 'timelines',
+                name: 'dashboard-timelines',
+                component: () => import('../views/Dashboard/Timelines.vue')
+            }
+        ]
+    },
+    {
         path: '/offers',
         name: 'offers',
         meta: {

@@ -14,6 +14,9 @@
                                 <router-link class="account-view__link" to="/account/activity">
                                     Активность
                                 </router-link>
+                                <router-link class="account-view__link" to="/dashboard">
+                                    Дашборд
+                                </router-link>
                                 <router-link class="account-view__link" to="/account/edit">
                                     Редактировать профиль
                                 </router-link>
