@@ -398,6 +398,11 @@
     &__text {
         @include mixins.text-overflow($break: break-all);
     }
+
+    &__date {
+        margin-left: auto;
+        font-weight: 400;
+    }
 }
 
 .messenger-chat-settings {
@@ -542,5 +547,5 @@
 }
 
 .messenger-chat-form-recipient-dropdown {
-    z-index: 4004;
+    z-index: 4004!important;
 }

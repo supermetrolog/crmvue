@@ -1,5 +1,9 @@
 <template>
-    <div class="messenger-chat-header-object">
+    <router-link
+        :to="'/complex/' + dialog.model.object.complex_id"
+        target="_blank"
+        class="messenger-chat-header-object"
+    >
         <div class="messenger-chat-header__preview">
             <VLazyImage :src="dialog.model.object.thumb" alt="chat preview" />
         </div>
@@ -11,7 +15,7 @@
             <p class="messenger-chat-header__deals">{{ dealType }}</p>
             <p>{{ messagesCount }}</p>
         </div>
-    </div>
+    </router-link>
 </template>
 <script>
 import VLazyImage from 'v-lazy-image';

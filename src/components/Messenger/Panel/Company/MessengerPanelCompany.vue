@@ -1,6 +1,13 @@
 <template>
     <div class="messenger-panel-company">
         <div class="messenger-panel-company__card">
+            <HoverActionsButton
+                @click="$emit('edit')"
+                label="Редактировать компанию"
+                class="messenger-panel-company__action"
+            >
+                <i class="fa-solid fa-pen"></i>
+            </HoverActionsButton>
             <p class="messenger-panel-company__name">{{ companyName }}</p>
             <div class="messenger-panel-company__subtitle">
                 <span>ID{{ company.id }} | </span>
@@ -48,10 +55,12 @@
 import Rating from '@/components/common/Rating.vue';
 import { entityOptions } from '@/const/options/options';
 import MessengerPanelCompanyTabs from '@/components/Messenger/Panel/Company/MessengerPanelCompanyTabs.vue';
+import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 
 export default {
     name: 'MessengerPanelCompany',
-    components: { MessengerPanelCompanyTabs, Rating },
+    components: { HoverActionsButton, MessengerPanelCompanyTabs, Rating },
+    emits: ['edit'],
     props: {
         company: {
             type: Object,

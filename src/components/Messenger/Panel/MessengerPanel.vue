@@ -1,8 +1,8 @@
 <template>
     <div class="messenger-panel">
         <MessengerPanelLoader v-if="isLoading" />
-        <MessengerPanelContent v-else-if="hasPanel" />
-        <MessengerPanelEmpty v-else />
+        <MessengerPanelEmpty v-else-if="!hasPanel" />
+        <MessengerPanelContent v-if="hasPanel" v-show="!isLoading" />
     </div>
 </template>
 <script>
