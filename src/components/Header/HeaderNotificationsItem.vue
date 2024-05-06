@@ -1,6 +1,6 @@
 <template>
     <div class="row item no-gutters">
-        <div class="col-2 avatar text-center">
+        <div class="col-2 notify-icon text-center">
             <i v-if="isSystemNotification" :class="notificationTypeList[notification.type]"></i>
             <div v-else class="image-circle">
                 <img

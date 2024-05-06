@@ -26,23 +26,23 @@
                 <span v-tippy="originalDate" class="messenger-chat-message__date">
                     {{ formattedDate }},
                 </span>
-                <!--                <span v-if="message.recipient">-->
-                <!--                    с-->
-                <!--                    <a-->
-                <!--                        @click.prevent="changeRecipient"-->
-                <!--                        href="#"-->
-                <!--                        class="messenger-chat-message__recipient"-->
-                <!--                    >-->
-                <!--                        {{ recipientUsername }}-->
-                <!--                    </a>-->
-                <!--                </span>-->
-                <span>без звонка</span>
-                <!--                <template v-if="message.category">-->
-                <!--                    <span>, </span>-->
-                <!--                    <span class="messenger-chat-message__categories">-->
-                <!--                        {{ categories }}-->
-                <!--                    </span>-->
-                <!--                </template>-->
+                <span v-if="message.contacts.length">
+                    с
+                    <a
+                        @click.prevent="changeRecipient"
+                        href="#"
+                        class="messenger-chat-message__recipient"
+                    >
+                        {{ recipientUsername }}
+                    </a>
+                </span>
+                <span v-else>без звонка</span>
+                <template v-if="message.tags.length">
+                    <span>, </span>
+                    <span class="messenger-chat-message__categories">
+                        {{ categories }}
+                    </span>
+                </template>
             </div>
         </div>
     </div>
@@ -104,13 +104,17 @@ export default {
             return username;
         },
         categories() {
-            return messenger.categories[this.message.category];
+            return this.message.tags
+                .map(element => this.$formatter.text().ucFirst(element.name))
+                .join(', ');
         },
         recipientUsername() {
-            if (this.message.recipient?.type === entityOptions.contact.typeStatement.GENERAL)
+            const contact = this.message.contacts[0];
+
+            if (contact.type === entityOptions.contact.typeStatement.GENERAL)
                 return 'Общий контакт';
 
-            return this.message.recipient?.first_and_last_name;
+            return contact.first_name + (contact.last_name ? ` ${contact.last_name}` : '');
         },
         additions() {
             if (!this.message.tasks?.length) return null;
@@ -121,8 +125,8 @@ export default {
     methods: {
         ...mapMutations({ setCurrentRecipient: 'Messenger/setCurrentRecipient' }),
         changeRecipient() {
-            this.setCurrentRecipient(this.message.recipient);
-            this.$toast(`Контакт изменен на ${this.message.recipient?.full_name}`);
+            this.setCurrentRecipient({ contactID: this.message.contacts[0].id });
+            this.$toast(`Контакт изменен на ${this.recipientUsername}`);
         },
         async pinMessage() {
             await this.$store.dispatch('Messenger/pinMessage', this.message);

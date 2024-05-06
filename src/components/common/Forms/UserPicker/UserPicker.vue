@@ -36,7 +36,7 @@ export default {
             default: () => []
         },
         modelValue: {
-            type: Array,
+            type: [Array, Number],
             default: () => []
         },
         single: {

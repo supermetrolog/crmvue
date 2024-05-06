@@ -1,12 +1,11 @@
 <template>
     <div class="form__control" :class="{ 'form__control--disabled': disabled }">
-        <label for="" class="form__label" :class="{ required: required }">
-            <span v-if="label">
+        <label for="" :class="{ required: required }">
+            <span v-if="label" class="form__label">
                 {{ label }}
             </span>
             <Multiselect
                 v-model="field"
-                @click="onClick"
                 @change="onChange($event)"
                 class="form__multiselect"
                 :class="[inputClasses, extraClasses]"

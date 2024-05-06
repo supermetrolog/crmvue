@@ -6,7 +6,7 @@
         </div>
         <div class="messenger-chat-form-contact__description">
             <p class="messenger-chat-form-contact__username">
-                {{ contact.full_name }}
+                {{ fullName }}
             </p>
             <p class="messenger-chat-form-contact__staff">
                 <span v-if="contact.position">
@@ -35,6 +35,13 @@ export default {
     computed: {
         position() {
             return entityOptions.contact.position[this.contact.position];
+        },
+        fullName() {
+            if (this.contact.full_name) return this.contact.full_name;
+            return (
+                this.contact.first_name +
+                (this.contact.last_name ? ` ${this.contact.last_name}` : '')
+            );
         }
     }
 };

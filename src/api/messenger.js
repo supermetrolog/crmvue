@@ -77,7 +77,7 @@ export default {
     },
     async sendMessage(memberID, message) {
         const url = '/chat-member-messages';
-        const formData = { message: message, to_chat_member_id: memberID };
+        const formData = { ...message, to_chat_member_id: memberID };
 
         try {
             const response = await axios.post(url, formData);

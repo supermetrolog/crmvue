@@ -70,8 +70,13 @@ const Messenger = {
             state.messagesPagination = value;
         },
 
-        setCurrentRecipient(state, value) {
-            state.currentRecipient = value;
+        setCurrentRecipient(state, { contact, contactID }) {
+            if (contact) state.currentRecipient = contact;
+            else if (contactID)
+                state.currentRecipient = state.currentPanel.contacts.find(
+                    element => element.id === contactID
+                );
+            else state.currentRecipient = null;
         },
         setCurrentDialog(state, value) {
             state.currentDialog = value;
@@ -188,7 +193,7 @@ const Messenger = {
             return null;
         },
         async selectPanel(context, { companyID, dialogID, dialogType }) {
-            context.commit('setCurrentRecipient', null);
+            context.commit('setCurrentRecipient', { contact: null });
 
             if (dialogID === context.state.currentAsideDialogID) {
                 context.commit('setCurrentAsideDialogID', null);

@@ -7,13 +7,13 @@
         <!--                :files="currentFiles"-->
         <!--            />-->
         <!--        </AnimationTransition>-->
-        <!--        <div class="messenger-chat-form__settings">-->
-        <!--            <MessengerChatFormRecipient @change="setCurrentContact" :current="currentContact" />-->
-        <!--            <MessengerChatFormCategories-->
-        <!--                @change="changeCurrentCategory"-->
-        <!--                :current="currentCategory"-->
-        <!--            />-->
-        <!--        </div>-->
+        <div class="messenger-chat-form__settings">
+            <MessengerChatFormRecipient @change="setCurrentContact" :current="currentContact" />
+            <MessengerChatFormCategories
+                @change="changeCurrentCategory"
+                :current="currentCategory"
+            />
+        </div>
         <Form @submit.prevent class="messenger-chat-form__field" method="post">
             <!--            <Button @click="attachFile" class="messenger-chat-form__button" warning icon>-->
             <!--                <i class="fa-solid fa-paperclip"></i>-->
@@ -42,10 +42,14 @@ import Form from '@/components/common/Forms/Form.vue';
 import { mapGetters, mapState } from 'vuex';
 import Button from '@/components/common/Button.vue';
 import Textarea from '@/components/common/Forms/Textarea.vue';
+import MessengerChatFormRecipient from '@/components/Messenger/Chat/Form/MessengerChatFormRecipient.vue';
+import MessengerChatFormCategories from '@/components/Messenger/Chat/Form/MessengerChatFormCategories.vue';
 
 export default {
     name: 'MessengerChatForm',
     components: {
+        MessengerChatFormCategories,
+        MessengerChatFormRecipient,
         Textarea,
         Button,
         Form
@@ -75,7 +79,7 @@ export default {
             else this.sendMessage();
         },
         setCurrentContact(contact) {
-            this.$store.commit('Messenger/setCurrentRecipient', contact);
+            this.$store.commit('Messenger/setCurrentRecipient', { contact });
         },
         async sendMessage() {
             this.message = this.message.replace(/(\n)+$/g, '');
