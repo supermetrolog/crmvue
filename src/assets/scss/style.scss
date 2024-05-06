@@ -6229,3 +6229,7 @@ button.filters {
     border-radius: 5px;
     padding: 15px;
 }
+
+.form-modal-task-status {
+    @include mixins.flex-box($gap: 20px, $j: center);
+}

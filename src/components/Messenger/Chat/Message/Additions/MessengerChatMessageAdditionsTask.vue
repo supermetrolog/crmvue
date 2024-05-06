@@ -11,20 +11,21 @@
             </span>
         </template>
         <template #content>Задача для {{ usersText }} до {{ expiredDate }}</template>
-        <template #actions>
-            <HoverActionsButton @click="$editTask($messageID, addition)" label="Редактировать">
-                <i class="fa-solid fa-pen"></i>
-            </HoverActionsButton>
-            <HoverActionsButton @click="remove" label="Удалить">
-                <i class="fa-solid fa-trash"></i>
-            </HoverActionsButton>
+        <template v-if="editable || draggable" #actions>
+            <template v-if="editable">
+                <HoverActionsButton @click="$editTask($messageID, addition)" label="Редактировать">
+                    <i class="fa-solid fa-pen"></i>
+                </HoverActionsButton>
+                <HoverActionsButton @click="remove" label="Удалить">
+                    <i class="fa-solid fa-trash"></i>
+                </HoverActionsButton>
+            </template>
             <HoverActionsButton
-                @click.stop="complete"
-                disabled
-                label="Выполнено"
-                :active="addition.completed"
+                v-if="draggable"
+                @click.stop="$editTaskStatus($messageID, addition)"
+                label="Изменить статус"
             >
-                <i class="fa-solid fa-check-double"></i>
+                <i class="fa-solid fa-arrow-right-arrow-left"></i>
             </HoverActionsButton>
         </template>
     </MessengerChatMessageAdditionsItem>
@@ -37,11 +38,19 @@ import MessengerChatMessageAdditionsItem from '@/components/Messenger/Chat/Messa
 export default {
     name: 'MessengerChatMessageAdditionsTask',
     components: { MessengerChatMessageAdditionsItem, HoverActionsButton },
-    inject: ['$confirmPopup', '$editTask', '$messageID'],
+    inject: ['$confirmPopup', '$editTask', '$messageID', '$editTaskStatus'],
     props: {
         addition: {
             type: Object,
             required: true
+        },
+        editable: {
+            type: Boolean,
+            default: false
+        },
+        draggable: {
+            type: Boolean,
+            default: false
         }
     },
     computed: {

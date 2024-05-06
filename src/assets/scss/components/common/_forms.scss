@@ -406,6 +406,42 @@
     }
 }
 
+.radio-icon {
+    @include mixins.flex-box($a: center, $j: center, $d: column, $gap: 5px);
+    font-size: 14px;
+    height: 120px;
+    width: 120px;
+    border-radius: 50%;
+    opacity: .4;
+    cursor: pointer;
+    padding: 5px;
+
+    @include mixins.transition(opacity, color);
+
+    &__input {
+        display: none;
+    }
+
+    &:hover {
+        opacity: 1;
+        color: #fff;
+    }
+
+    &.active {
+        opacity: 1;
+        color: #fff;
+    }
+
+    &__icon  {
+        font-size: 30px;
+    }
+
+    &__label {
+        text-align: center;
+        font-weight: 500;
+    }
+}
+
 .multiselect {
     max-height: unset !important;
     box-shadow: none !important;

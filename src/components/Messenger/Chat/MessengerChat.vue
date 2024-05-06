@@ -15,6 +15,7 @@
         <teleport to="body">
             <MessengerSchedule ref="schedule" />
             <FormModalTask ref="taskCreator" />
+            <FormModalTaskStatus ref="taskStatusEditor" />
             <FormModalMessageNotification ref="notificationCreator" />
             <FormModalMessageReminder ref="reminderCreator" />
             <FormModalMessage ref="messageUpdate" />
@@ -36,10 +37,13 @@ import FormModalTask from '@/components/Forms/FormModalTask.vue';
 import FormModalMessageNotification from '@/components/Forms/FormModalMessageNotification.vue';
 import FormModalMessageReminder from '@/components/Forms/FormModalMessageReminder.vue';
 import FormModalMessage from '@/components/Forms/FormModalMessage.vue';
+import FormModalTaskStatus from '@/components/Forms/FormModalTaskStatus.vue';
+import api from '@/api/api.js';
 
 export default {
     name: 'MessengerChat',
     components: {
+        FormModalTaskStatus,
         FormModalMessage,
         FormModalMessageReminder,
         FormModalMessageNotification,
@@ -66,6 +70,7 @@ export default {
             $editNotification: this.editNotification,
             $createTask: this.createTask,
             $editTask: this.editTask,
+            $editTaskStatus: this.editTaskStatus,
             $messageUpdate: props => this.$refs.messageUpdate.open(props)
         };
     },
@@ -129,6 +134,18 @@ export default {
                 });
 
                 this.$toast('Задача успешно изменена.');
+            }
+        },
+        async editTaskStatus(messageID, task) {
+            const response = await this.$refs.taskStatusEditor.open(task);
+
+            if (response) {
+                const statusUpdated = api.task.changeStatus(task.id, response.status);
+
+                if (statusUpdated) {
+                    task.status = response.status;
+                    this.$toast('Статус задачи успешно изменен.');
+                }
             }
         },
         async editReminder(reminder) {
