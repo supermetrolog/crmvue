@@ -1,0 +1,94 @@
+@use '../../utils/mixins';
+@use '../../utils/variables';
+
+.dashboard-kanban-board {
+    background-color: #F5F5F5;
+    border-radius: 5px;
+    box-shadow: 2px 1px 20px 3px rgba(0, 0, 0, .1);
+
+    &__header {
+        @include mixins.flex-box($gap: 10px, $a: center);
+        padding: 15px;
+        border-bottom: 1px solid #ddd;
+        font-weight: 500;
+    }
+
+    &__body {
+        overflow-y: auto;
+    }
+
+    &__virtual {
+        padding: 15px 10px 15px 15px;
+        min-height: 600px;
+        max-height: 900px;
+        scrollbar-gutter: stable;
+
+        .virtual-dnd-list-item {
+            margin-bottom: 15px;
+        }
+    }
+
+    &__list {
+        @include mixins.flex-box($d: column, $gap: 15px);
+        min-height: 600px;
+    }
+
+    &__actions {
+        margin-left: auto;
+    }
+
+    &__label {
+        padding: 5px;
+        text-align: center;
+        background-color: variables.$bg-success-l;
+        font-weight: 500;
+        border-radius: 20px;
+        font-size: 14px;
+    }
+}
+
+.dashboard-kanban-task {
+    position: relative;
+    border-radius: 5px;
+    border: 1px solid #efefef;
+    background-color: #fff;
+
+    &.updating {
+        opacity: .5;
+    }
+
+    &__expired {
+        font-size: 30px;
+    }
+
+    &__header {
+        @include mixins.flex-box($a: center, $gap: 10px);
+        padding: 15px 15px 10px;
+        border-bottom: 1px solid #efefef;;
+
+        &.expired {
+            background-color: variables.$bg-danger-l;
+        }
+    }
+
+    &__badge {
+        margin-left: auto;
+    }
+
+    &__body {
+        @include mixins.flex-box($gap: 5px);
+        padding: 10px 15px;
+        border-bottom: 1px solid #efefef;;
+    }
+
+    &__footer {
+        padding: 10px 15px 15px;
+        color: #b7b8bb;
+        font-size: 14px;
+        @include mixins.flex-box($j: space-between, $a: center, $gap: 5px);
+    }
+
+    &__actions {
+        @include mixins.flex-box($gap: 5px);
+    }
+}

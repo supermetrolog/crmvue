@@ -1,0 +1,206 @@
+@use '../../utils/mixins';
+@use '../../utils/variables';
+
+
+.dashboard-card {
+    border-radius: 5px;
+    box-shadow: 0 0 10px 1px rgba(0, 0, 0, .1);
+    background-color: #fff;
+
+    &__header {
+        padding: 15px;
+    }
+
+    &__header-body {
+        @include mixins.flex-box($a: center, $j: space-between);
+    }
+
+    &__content {
+        padding: 15px;
+    }
+
+    &__title {
+        font-size: 20px;
+        font-weight: 500;
+    }
+
+    &__link {
+        color: #006666;
+        font-weight: 500;
+        font-size: 14px;
+        overflow-x: hidden;
+
+        &::after {
+            content: '';
+            display: block;
+            height: 2px;
+            width: 100%;
+            background-color: #006666;
+            transform: translateX(100%);
+            @include mixins.transition(transform)
+        }
+
+        &:hover::after {
+           transform: translateX(0);
+        }
+    }
+}
+
+.dashboard-status-card {
+    border-bottom: 2px solid #86909C;
+
+    &--primary {
+        border-bottom-color: variables.$cl-primary;
+    }
+
+    &--danger {
+        border-bottom-color: variables.$cl-danger;
+    }
+
+    &--success {
+        border-bottom-color: variables.$cl-success;
+    }
+
+    &--warning {
+        border-bottom-color: variables.$cl-warning;
+    }
+
+    &__body {
+        @include mixins.flex-box($a: center, $j: space-between);
+    }
+
+    &__label {
+        color: #86909C;
+        font-weight: 500;
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+
+    &__value {
+        font-size: 24px;
+        font-weight: 600;
+    }
+
+    &__icon {
+        @include mixins.flex-box($a: center, $j: center);
+        height: 45px;
+        width: 45px;
+        font-size: 22px;
+        border-radius: 5px;
+        background-color: rgba(230, 233, 235, 0.3);
+
+        @include mixins.bg-color-scheme(
+            danger variables.$bg-danger none variables.$cl-danger,
+            primary variables.$bg-primary,
+            success variables.$bg-success none variables.$cl-success,
+            warning variables.$bg-warning none variables.$cl-warning
+        );
+    }
+}
+
+.dashboard-card-link {
+    @include mixins.flex-box($a: center, $gap: 10px);
+    position: relative;
+    cursor: pointer;
+
+    &::after {
+        content: '';
+        display: block;
+        height: 100%;
+        width: 3px;
+        background-color: #10b981;
+        position: absolute;
+        right: -15px;
+        opacity: 0;
+        @include mixins.transition(opacity);
+    }
+
+    &:hover::after, &.active::after {
+        opacity: 1;
+    }
+
+    &__value {
+        @include mixins.transition(color .2s);
+        color: initial;
+    }
+
+    &.active &__value {
+        font-weight: 500;
+        color: #10b981;
+    }
+
+    &:hover &__value {
+        color: #10b981;
+    }
+
+    &__badge {
+        padding: 2px 7px;
+        color: #fff;
+        font-size: 12px;
+        background-color: #006666;
+        border-radius: 20px;
+        margin-left: auto;
+    }
+}
+
+.dashboard-card-task {
+    @include mixins.flex-box($a: center, $gap: 10px);
+    padding: 10px 0;
+
+    &.expired {
+        background-color: variables.$bg-danger-l;
+        padding: 10px;
+    }
+
+    &:not(:last-child) {
+        border-bottom: 1px solid #ecf3fa;
+    }
+
+    &__text {
+        @include mixins.transition(color);
+        @include mixins.text-overflow();
+
+        &.completed {
+            text-decoration: line-through;
+        }
+
+        &.deleted {
+            color: #999999;
+            opacity: .5;
+        }
+    }
+
+    &:hover &__text.deleted {
+        color: #2c323f;
+    }
+
+    &__meta {
+        position: relative;
+        @include mixins.flex-box($a: center, $gap: 10px);
+        margin-left: auto;
+        flex-shrink: 0;
+    }
+
+    &__moves {
+        position: relative;
+    }
+
+    &__moves-options {
+        right: 0;
+        left: unset;
+        box-shadow: 0 0 5px 1px rgba(13, 31, 47, 0.2);
+        max-height: unset;
+        opacity: 1;
+    }
+
+    &__icon {
+        font-size: 24px;
+    }
+
+    &__row {
+        > span:first-child {
+            opacity: .5;
+            font-weight: 500;
+        }
+    }
+}
