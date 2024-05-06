@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="dashboard-kanban-task__footer">
-            <span>Исполнители:</span>
+            <span>Задача #{{ task.id }}, исполнители:</span>
             <Avatar
                 v-tippy="task.user?.userProfile?.medium_name"
                 :src="task.user?.userProfile?.avatar"

@@ -90,10 +90,10 @@
         background-color: rgba(230, 233, 235, 0.3);
 
         @include mixins.bg-color-scheme(
-            danger variables.$bg-danger none variables.$cl-danger,
-            primary variables.$bg-primary,
-            success variables.$bg-success none variables.$cl-success,
-            warning variables.$bg-warning none variables.$cl-warning
+            danger variables.$bg-danger-l none variables.$cl-danger,
+            primary variables.$bg-primary-l,
+            success variables.$bg-success-l none variables.$cl-success,
+            warning variables.$bg-warning-l none variables.$cl-warning
         );
     }
 }

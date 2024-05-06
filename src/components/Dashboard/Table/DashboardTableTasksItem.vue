@@ -5,6 +5,11 @@
             class="dashboard-card-task__icon fa-solid fa-fire dashboard-cl-danger"
         ></i>
         <span>#{{ task.id }}</span>
+        <Avatar
+            v-tippy="`Назначена на ${task.user.userProfile.medium_name}`"
+            :src="task.user.userProfile.avatar"
+            :size="35"
+        />
         <p
             class="dashboard-card-task__text"
             :class="{ deleted: isDeleted, completed: isCompleted }"
@@ -27,16 +32,20 @@
                             <span>{{ updatedDate }}</span>
                         </p>
                         <p class="dashboard-card-task__row">
-                            <span>Обновлено: </span>
-                            <span>{{ updatedDate }}</span>
+                            <span>Сгорает: </span>
+                            <span>{{ expiredFullDate }}</span>
+                        </p>
+                        <p v-if="task.created_by_type === 'user'" class="dashboard-card-task__row">
+                            <span>Создано пользователем: </span>
+                            <span>{{ task.created_by.userProfile.medium_name }}</span>
                         </p>
                         <p class="dashboard-card-task__row">
-                            <span>Обновлено: </span>
-                            <span>{{ updatedDate }}</span>
+                            <span>Назначена на: </span>
+                            <span>{{ task.user.userProfile.medium_name }}</span>
                         </p>
-                        <p class="dashboard-card-task__row">
-                            <span>Обновлено: </span>
-                            <span>{{ updatedDate }}</span>
+                        <p v-if="task.deleted_at" class="dashboard-card-task__row">
+                            <span>Удалено: </span>
+                            <span>{{ deletedDate }}</span>
                         </p>
                     </div>
                 </template>
@@ -101,6 +110,12 @@
                     <i class="fa-solid fa-trash" />
                 </HoverActionsButton>
             </template>
+            <Avatar
+                v-if="task.created_by_type === 'user'"
+                v-tippy="`Создана пользователем ${task.created_by.userProfile.medium_name}`"
+                :src="task.created_by.userProfile.avatar"
+                :size="35"
+            />
         </div>
     </div>
 </template>
@@ -111,10 +126,11 @@ import HoverActionsButton from '@/components/common/HoverActions/HoverActionsBut
 import { entityOptions } from '@/const/options/options.js';
 import dayjs from 'dayjs';
 import Tooltip from '@/components/common/Tooltip.vue';
+import Avatar from '@/components/common/Avatar.vue';
 
 export default {
     name: 'DashboardTableTasksItem',
-    components: { Tooltip, HoverActionsButton, DashboardChip },
+    components: { Avatar, Tooltip, HoverActionsButton, DashboardChip },
     emits: ['delete', 'edit', 'toggle-status'],
     props: {
         task: {
@@ -156,6 +172,12 @@ export default {
 
             if (dayjsDate.isSame(dayjs(), 'year')) return dayjs(this.task.end).format('D MMMM');
             return dayjs(this.task.end).format('D MMMM YYYY');
+        },
+        expiredFullDate() {
+            return dayjs(this.task.end).format('D MMMM YYYY, HH:mm');
+        },
+        deletedDate() {
+            return dayjs(this.task.deleted_at).format('D MMMM YYYY, HH:mm');
         },
         createdDate() {
             return dayjs(this.task.created_at).format('D MMMM YYYY, HH:mm');

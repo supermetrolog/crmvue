@@ -2,6 +2,7 @@ import api from '@//api/api';
 import { $toast } from '@/plugins/toast';
 import dayjs from 'dayjs';
 import { alg } from '@/utils/alg.js';
+import { entityOptions } from '@/const/options/options.js';
 
 const getInitialState = () => ({
     chatMembersObjects: [],
