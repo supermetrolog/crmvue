@@ -129,13 +129,13 @@ export default {
             this.$toast(`Контакт изменен на ${this.recipientUsername}`);
         },
         async pinMessage() {
-            await this.$store.dispatch('Messenger/pinMessage', this.message);
-
-            this.$toast(
-                this.message.pinned
-                    ? 'Сообщение успешно закреплено'
-                    : 'Сообщение успешно откреплено'
-            );
+            if (this.pinned) {
+                const unpinned = await this.$store.dispatch('Messenger/unpinMessage');
+                if (unpinned) this.$toast('Сообщение успешно откреплено');
+            } else {
+                const pinned = await this.$store.dispatch('Messenger/pinMessage', this.message);
+                if (pinned) this.$toast('Сообщение успешно закреплено');
+            }
         },
         async editMessage() {
             const updated = await this.$messageUpdate(this.message);

@@ -170,10 +170,6 @@ const Messenger = {
                 ] = addition;
             }
         },
-
-        pinMessage(state, message) {
-            state.currentPinned = message;
-        },
         pinMessageToObject(state, messageID) {
             const messageIndex = state.messages.findIndex(message => message.id === messageID);
 

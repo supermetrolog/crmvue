@@ -13,7 +13,7 @@
             </div>
             <div class="modal__body">
                 <div class="messenger-chat-settings-window__content">
-                    <Spinner v-if="isLoading" center class="spinner--green" />
+                    <Spinner v-if="isLoading" center />
                     <FileList v-else-if="photos.length" :files="photos" class="file-list--images" />
                     <EmptyData v-else>Список фотографий пуст..</EmptyData>
                 </div>

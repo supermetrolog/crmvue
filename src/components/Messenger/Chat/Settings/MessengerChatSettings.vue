@@ -5,7 +5,7 @@
                 <p>Файлы, опросы и прочее</p>
                 <i @click="toggle" class="fa-regular fa-circle-xmark"></i>
             </div>
-            <Spinner v-if="isLoading" center class="spinner--green" />
+            <Spinner v-if="isLoading" center />
             <div v-else-if="opened" class="messenger-chat-settings__body">
                 <div
                     v-if="currentDialog.model_type === 'object'"

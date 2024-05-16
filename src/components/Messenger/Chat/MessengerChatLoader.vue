@@ -1,6 +1,6 @@
 <template>
     <div class="messenger-page-loader">
-        <Spinner class="spinner--green" />
+        <Spinner />
     </div>
 </template>
 <script>

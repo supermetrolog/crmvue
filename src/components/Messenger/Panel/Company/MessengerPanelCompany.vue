@@ -48,7 +48,7 @@
                 </li>
             </ul>
         </div>
-        <MessengerPanelCompanyTabs :company="company" />
+        <MessengerPanelCompanyTabs :key="company.id" :company="company" />
     </div>
 </template>
 <script>

@@ -1,12 +1,14 @@
 <template>
     <div class="messenger-chat__content">
         <MessengerChatHeader />
-        <MessengerChatPinned v-if="pinnedMessage" :message="pinnedMessage" />
+        <AnimationTransition>
+            <MessengerChatPinned v-if="pinnedMessage" :message="pinnedMessage" />
+        </AnimationTransition>
         <div ref="chat" class="messenger-chat__body">
             <InfiniteLoading @infinite="loadMessages">
                 <template #complete><span></span></template>
                 <template #spinner>
-                    <Spinner class="spinner--green mx-auto" />
+                    <Spinner />
                 </template>
             </InfiniteLoading>
             <template v-for="(section, id) in messagesByDays" :key="id">
@@ -40,10 +42,12 @@ import dayjs from 'dayjs';
 import InfiniteLoading from 'v3-infinite-loading';
 import Spinner from '@/components/common/Spinner.vue';
 import MessengerChatPinned from '@/components/Messenger/Chat/MessengerChatPinned.vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
 
 export default {
     name: 'MessengerChatContent',
     components: {
+        AnimationTransition,
         MessengerChatPinned,
         Spinner,
         InfiniteLoading,
