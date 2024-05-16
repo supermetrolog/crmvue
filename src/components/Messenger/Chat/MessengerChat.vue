@@ -16,7 +16,7 @@
             <MessengerSchedule ref="schedule" />
             <FormModalTask ref="taskCreator" />
             <FormModalTaskStatus ref="taskStatusEditor" />
-            <FormModalMessageNotification ref="notificationCreator" />
+            <FormModalMessageAlert ref="alertCreator" />
             <FormModalMessageReminder ref="reminderCreator" />
             <FormModalMessage ref="messageUpdate" />
         </teleport>
@@ -34,7 +34,7 @@ import MessengerSchedule from '@/components/Messenger/Schedule/MessengerSchedule
 import MessengerQuizHelper from '@/components/Messenger/Quiz/MessengerQuizHelper.vue';
 import MessengerChatSettings from '@/components/Messenger/Chat/Settings/MessengerChatSettings.vue';
 import FormModalTask from '@/components/Forms/FormModalTask.vue';
-import FormModalMessageNotification from '@/components/Forms/FormModalMessageNotification.vue';
+import FormModalMessageAlert from '@/components/Forms/FormModalMessageAlert.vue';
 import FormModalMessageReminder from '@/components/Forms/FormModalMessageReminder.vue';
 import FormModalMessage from '@/components/Forms/FormModalMessage.vue';
 import FormModalTaskStatus from '@/components/Forms/FormModalTaskStatus.vue';
@@ -46,7 +46,7 @@ export default {
         FormModalTaskStatus,
         FormModalMessage,
         FormModalMessageReminder,
-        FormModalMessageNotification,
+        FormModalMessageAlert,
         FormModalTask,
         MessengerChatSettings,
         MessengerQuizHelper,
@@ -64,12 +64,8 @@ export default {
             $toggleQuiz: () => this.$refs.quiz.toggle(),
             $toggleQuizHelper: () => this.$refs.quizHelper.toggle(),
             $toggleSettings: () => this.$refs.chatSettings.toggle(),
-            $createReminder: this.createReminder,
-            $editReminder: this.editReminder,
-            $createNotification: this.createNotification,
-            $editNotification: this.editNotification,
-            $createTask: this.createTask,
-            $editTask: this.editTask,
+            $createAddition: this.createAddition,
+            $editAddition: this.editAddition,
             $editTaskStatus: this.editTaskStatus,
             $messageUpdate: props => this.$refs.messageUpdate.open(props)
         };
@@ -82,59 +78,40 @@ export default {
         })
     },
     methods: {
-        async createReminder(messageID) {
-            const response = await this.$refs.reminderCreator.open();
+        async createAddition({ messageID, additionType, successMessage, errorMessage = null }) {
+            const creatorResponse = await this.$refs[additionType + 'Creator'].open();
+            if (!creatorResponse) return;
 
-            if (response) {
-                this.$store.dispatch('Messenger/addReminder', {
-                    messageID: messageID,
-                    options: response
-                });
-                this.$toast('Напоминание успешно создано!');
-            }
+            const response = await this.$store.dispatch(
+                'Messenger/add' + this.$formatter.text().ucFirst(additionType),
+                {
+                    messageID,
+                    options: creatorResponse
+                }
+            );
+
+            if (response) this.$toast(successMessage);
+            else this.$toast(errorMessage ?? 'Произошла ошибка. Попробуйте позже');
         },
-        async createTask(messageID) {
-            const taskResponse = await this.$refs.taskCreator.open();
-            if (!taskResponse) return;
+        async editAddition({
+            messageID,
+            addition,
+            additionType,
+            successMessage,
+            errorMessage = null
+        }) {
+            const creatorResponse = await this.$refs[additionType + 'Creator'].open(addition);
+            if (!creatorResponse) return;
 
-            const response = await this.$store.dispatch('Messenger/addTask', {
-                messageID: messageID,
-                options: taskResponse
+            const response = this.$store.dispatch('Messenger/updateAddition', {
+                messageID,
+                additionID: addition.id,
+                additionType,
+                payload: creatorResponse
             });
 
-            if (response) {
-                this.$toast('Задача успешно создана!');
-            } else {
-                this.$toast('Произошла ошибка. Попробуйте позже');
-            }
-        },
-        async createNotification(messageID) {
-            const response = await this.$refs.notificationCreator.open();
-
-            if (response) {
-                this.$store.dispatch('Messenger/addNotification', {
-                    messageID: messageID,
-                    users: response
-                });
-                this.$toast('Уведомление успешно создано!');
-            }
-        },
-        async editTask(messageID, task) {
-            const response = await this.$refs.taskCreator.open(task);
-
-            if (response) {
-                this.$store.dispatch('Messenger/updateTask', {
-                    messageID,
-                    taskID: task.id,
-                    payload: {
-                        message: response.message,
-                        user_id: response.user_id,
-                        status: 1
-                    }
-                });
-
-                this.$toast('Задача успешно изменена.');
-            }
+            if (response) this.$toast(successMessage);
+            else this.$toast(errorMessage ?? 'Произошла ошибка. Попробуйте позже');
         },
         async editTaskStatus(messageID, task) {
             const response = await this.$refs.taskStatusEditor.open(task);
@@ -146,30 +123,6 @@ export default {
                     task.status = response.status;
                     this.$toast('Статус задачи успешно изменен.');
                 }
-            }
-        },
-        async editReminder(reminder) {
-            const response = await this.$refs.reminderCreator.open(reminder);
-
-            if (response) {
-                this.$store.dispatch('Messenger/updateAddition', {
-                    ...reminder,
-                    ...response
-                });
-
-                this.$toast('Напоминание успешно изменено.');
-            }
-        },
-        async editNotification(notification) {
-            const response = await this.$refs.notificationCreator.open(notification);
-
-            if (response) {
-                this.$store.dispatch('Messenger/updateAddition', {
-                    ...notification,
-                    ...response
-                });
-
-                this.$toast('Уведомление успешно изменено.');
             }
         }
     }
