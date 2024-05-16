@@ -5,8 +5,10 @@
         </div>
         <div class="messenger-chat-header__description">
             <p class="messenger-chat-header__title">
-                <span>от {{ companyName }}</span>
-                <span class="messenger-chat-header__id"> , ID{{ dialog.model.object.id }} </span>
+                <span>
+                    от {{ $formatter.companyName(company, dialog.model.object.company_id) }}
+                </span>
+                <span class="messenger-chat-header__id">, ID{{ dialog.model.object.id }}</span>
             </p>
             <p class="messenger-chat-header__deals">{{ dealType }}</p>
             <p>{{ messagesCount }}</p>
@@ -15,9 +17,9 @@
 </template>
 <script>
 import VLazyImage from 'v-lazy-image';
-import { alg } from '@/utils/alg.js';
 import { entityOptions } from '@/const/options/options.js';
 import plural from 'plural-ru';
+import { mapState } from 'vuex';
 export default {
     name: 'MessengerChatHeaderObject',
     components: { VLazyImage },
@@ -28,17 +30,9 @@ export default {
         }
     },
     computed: {
+        ...mapState({ company: state => state.Messenger.currentPanel }),
         dealType() {
             return entityOptions.object.dealTypeString[this.dialog.model.type];
-        },
-        companyName() {
-            if (!this.dialog.model.object.company)
-                return 'компании #' + this.dialog.model.object.company_id;
-
-            if (alg.isNumeric(this.dialog.model.object.company.nameRu))
-                return 'Компания #' + this.dialog.model.object.company.nameRu;
-
-            return this.dialog.model.object.company.nameRu;
         },
         messagesCount() {
             const count = this.$store.state.Messenger.messagesPagination.totalCount;

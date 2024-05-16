@@ -11,7 +11,7 @@
             <p class="messenger-dialog-request__header">
                 <span class="messenger-dialog-request__id">ID{{ model.id }}</span>
                 <span v-if="model.company" class="messenger-dialog-request__company">
-                    от: {{ companyName }}
+                    от: {{ $formatter.companyName(model.company, model.company.id) }}
                 </span>
             </p>
             <p v-if="hasActivity" class="messenger-dialog-request__category">
@@ -79,7 +79,6 @@ import { entityOptions } from '@/const/options/options';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes';
 import Tooltip from '@/components/common/Tooltip.vue';
-import { alg } from '@/utils/alg.js';
 
 export default {
     name: 'MessengerDialogRequest',
@@ -102,12 +101,6 @@ export default {
     computed: {
         unitTypes() {
             return unitTypes;
-        },
-        companyName() {
-            if (alg.isNumeric(this.model.company.nameRu))
-                return 'Компания #' + this.model.company.nameRu;
-
-            return this.model.company.nameRu;
         },
         isActive() {
             return this.model.status === entityOptions.request.statusStatement.ACTIVE;

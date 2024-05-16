@@ -11,7 +11,7 @@
             </div>
             <div class="messenger-dialog-offer__description">
                 <p v-if="model.object.company" class="messenger-dialog-offer__company">
-                    {{ companyName }}
+                    {{ $formatter.companyName(model.object.company, model.object.company.id) }}
                 </p>
                 <p class="messenger-dialog-offer__category">
                     <i class="fa-solid fa-up-long"></i>
@@ -34,7 +34,6 @@ import MessengerDialogPhone from '@/components/Messenger/Dialog/MessengerDialogP
 import MessengerDialogFunctions from '@/components/Messenger/Dialog/MessengerDialogFunctions.vue';
 import VLazyImage from 'v-lazy-image';
 import Tooltip from '@/components/common/Tooltip.vue';
-import { alg } from '@/utils/alg.js';
 import { entityOptions } from '@/const/options/options.js';
 
 export default {
@@ -53,11 +52,6 @@ export default {
     computed: {
         dealType() {
             return entityOptions.object.dealTypeString[this.model.type];
-        },
-        companyName() {
-            if (alg.isNumeric(this.model.object.company.nameRu))
-                return 'Компания #' + this.model.object.company.nameRu;
-            return this.model.object.company.nameRu;
         }
     }
 };
