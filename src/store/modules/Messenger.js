@@ -271,29 +271,15 @@ const Messenger = {
             commit('setMessagesPagination', messages.pagination);
             commit('setLoadingChat', false);
         },
-        async getCompanyObjects() {
-            // try {
-            //     const objects = await api.companyObjects.search({ company_id, page });
-            //     console.log(objects, 'objects');
-            //
-            //     const data = await api.messenger.getChats({
-            //         model_type: 'object',
-            //         model_id: [23, 24]
-            //     });
-            //     console.log(data);
-            //     return [];
-            // } catch {
-            //     return [];
-            // }
-        },
-        async getCompanyRequests() {
-            // const data = await api.request.getRequests(id);
-            //
-            // if (data) return data;
-            //
-            // return [];
-        },
+        async getCompanyChats(_, { companyID, modelType, page = 1 }) {
+            const data = await api.messenger.getChats({
+                model_type: modelType,
+                company_id: companyID,
+                page: page
+            });
 
+            return data ?? { data: [], pagination: null };
+        },
         async sendMessage({ commit, state }, options) {
             const message = state.newMessage.replaceAll('\n', '<br />');
 
@@ -313,9 +299,23 @@ const Messenger = {
             $toast('Произошла ошибка при отправке сообщения');
             return false;
         },
-        async updateMessage() {
-            // context.commit('updateMessage', message);
-            // return true;
+        async updateMessage({ commit }, { id, message = null, tag = null, contact = null }) {
+            const payload = {
+                id,
+                message,
+                tag_ids: tag ? [tag] : [],
+                contact_ids: contact ? [contact] : []
+            };
+
+            const updatedMessage = await api.messenger.updateMessage(payload);
+
+            if (updatedMessage) {
+                commit('updateMessage', updatedMessage);
+                return true;
+            }
+
+            $toast('Произошла ошибка при отправке запроса');
+            return false;
         },
 
         async reportContact(context, { contact }) {
@@ -452,8 +452,17 @@ const Messenger = {
             const pinned = await api.messenger.pinMessage(state.currentDialog.id, message.id);
 
             if (pinned) {
-                commit('pinMessage', message);
+                commit('setCurrentPinned', message);
+                return true;
+            }
 
+            return false;
+        },
+        async unpinMessage({ state, commit }) {
+            const unpinned = await api.messenger.unpinMessage(state.currentDialog.id);
+
+            if (unpinned) {
+                commit('setCurrentPinned', null);
                 return true;
             }
 
