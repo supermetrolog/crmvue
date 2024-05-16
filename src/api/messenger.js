@@ -37,8 +37,35 @@ export default {
             return null;
         }
     },
+    async getDialogByQuery(query) {
+        const params = new URLSearchParams(query).toString();
+        const url = `/chat-members?${params}`;
+
+        try {
+            const response = await axios.get(url);
+            return response.data?.length ? response.data[0] : null;
+        } catch (e) {
+            ErrorHandle.setError(e);
+            return null;
+        }
+    },
     async getMessages(memberID, page = 1) {
         const params = new URLSearchParams({ to_chat_member_id: memberID, page }).toString();
+        const url = `/chat-member-messages?${params}`;
+
+        try {
+            const response = await axios.get(url);
+            return {
+                data: SuccessHandler.getData(response),
+                pagination: SuccessHandler.getPaginationData(response)
+            };
+        } catch (e) {
+            ErrorHandle.setError(e);
+            return null;
+        }
+    },
+    async getMessagesByQuery(query) {
+        const params = new URLSearchParams(query).toString();
         const url = `/chat-member-messages?${params}`;
 
         try {
@@ -55,6 +82,18 @@ export default {
     async pinMessage(memberID, messageID) {
         const url = `/chat-members/pin-message`;
         const payload = { chat_member_id: memberID, chat_member_message_id: messageID };
+
+        try {
+            const response = await axios.post(url, payload);
+            return response.status === 200;
+        } catch (e) {
+            ErrorHandle.setError(e);
+            return null;
+        }
+    },
+    async unpinMessage(memberID) {
+        const url = `/chat-members/unpin-message`;
+        const payload = { chat_member_id: memberID };
 
         try {
             const response = await axios.post(url, payload);
@@ -87,6 +126,17 @@ export default {
             return null;
         }
     },
+    async updateMessage(message) {
+        const url = `/chat-member-messages/${message.id}`;
+
+        try {
+            const response = await axios.put(url, message);
+            return response.data;
+        } catch (e) {
+            ErrorHandle.setError(e);
+            return null;
+        }
+    },
     async getFiles() {
         return files;
     },
@@ -95,5 +145,35 @@ export default {
     },
     async getQuizzes() {
         return quizzes;
+    },
+    async getUserChatMembers() {
+        try {
+            const [firstPart, secondPart, lastPart] = await Promise.all([
+                axios.get('/chat-members?model_type=user'),
+                axios.get('/chat-members?model_type=user&page=2'),
+                axios.get('/chat-members?model_type=user&page=3')
+            ]);
+
+            const chatMembers = {};
+
+            firstPart.data.forEach(element => (chatMembers[element.model_id] = element.id));
+            secondPart.data.forEach(element => (chatMembers[element.model_id] = element.id));
+            lastPart.data.forEach(element => (chatMembers[element.model_id] = element.id));
+
+            return chatMembers;
+        } catch (e) {
+            ErrorHandle.setError(e);
+            return null;
+        }
+    },
+    async getUserChatMember(userID) {
+        try {
+            const response = await axios.get('/chat-members?model_type=user&model_id=' + userID);
+
+            return response?.data?.length ? response.data[0].id : null;
+        } catch (e) {
+            ErrorHandle.setError(e);
+            return null;
+        }
     }
 };

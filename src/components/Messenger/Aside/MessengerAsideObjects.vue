@@ -12,6 +12,7 @@
             v-if="objects.length"
             v-show="!isLoading"
             ref="virtualList"
+            disabled
             :data-source="objects"
             data-key="id"
             class="messenger-aside__list"
