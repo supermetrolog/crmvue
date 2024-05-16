@@ -78,6 +78,10 @@
     background-color: #F3F3F3;
     border-bottom: 1px solid rgba(0, 0, 0, .1);
 
+    &__functions {
+        @include mixins.flex-box($gap: 5px);
+    }
+
     &__function {
         @include mixins.clear-button;
         background-color: transparent;

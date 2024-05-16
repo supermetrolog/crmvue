@@ -1,7 +1,7 @@
 <template>
     <div class="sidebar">
         <div class="sidebar__avatar">
-            <router-link to="/account">
+            <router-link to="/dashboard">
                 <Avatar v-if="THIS_USER" :src="THIS_USER.userProfile?.avatar" />
             </router-link>
         </div>

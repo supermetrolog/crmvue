@@ -45,6 +45,9 @@
     &__name {
         font-weight: 600;
         font-size: 16px;
+        display: inline-block;
+        color: inherit;
+        text-decoration: underline;
         max-width: calc(100% - 40px);
     }
 
