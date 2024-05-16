@@ -33,15 +33,25 @@ export default {
         targetUsername() {
             if (!this.consultants.length) return '-';
 
-            return this.consultants.find(user => Number(user.id) === Number(this.modelValue))
+            return this.consultants.find(user => Number(user.id) === Number(this.modelValue.id))
                 .userProfile.medium_name;
         },
         value: {
             get() {
-                return this.modelValue;
+                return this.modelValue?.id;
             },
             set(value) {
-                this.$emit('update:modelValue', value);
+                this.$emit(
+                    'update:modelValue',
+                    value
+                        ? {
+                              id: value,
+                              chat_member_id: this.consultants.find(
+                                  user => Number(user.id) === Number(value)
+                              ).chat_member_id
+                          }
+                        : null
+                );
             }
         }
     },

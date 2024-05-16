@@ -88,6 +88,6 @@ export const InternalMenu = {
         { id: 0, name: 'Главная', url: '/dashboard', exact: true },
         { id: 1, name: 'Сводка', url: '/dashboard/company' },
         { id: 2, name: 'Задачи', url: '/dashboard/tasks/board' },
-        { id: 3, name: 'Таймлайны', url: '/dashboard/timelines' }
+        { id: 3, name: 'Запросы', url: '/dashboard/requests' }
     ]
 };

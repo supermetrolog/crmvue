@@ -200,9 +200,9 @@ const routes = [
                 ]
             },
             {
-                path: 'timelines',
-                name: 'dashboard-timelines',
-                component: () => import('../views/Dashboard/Timelines.vue')
+                path: 'requests',
+                name: 'dashboard-requests',
+                component: () => import('../views/Dashboard/Requests.vue')
             }
         ]
     },
@@ -243,6 +243,15 @@ const routes = [
             auth: { isAuth: true, role: ['moderator', 'administrator'] }
         },
         component: () => import('@/views/ComplexView.vue')
+    },
+    {
+        path: '/equipments',
+        name: 'equipments',
+        meta: {
+            layout: 'default',
+            auth: { isAuth: true, role: ['moderator', 'administrator'] }
+        },
+        component: () => import('../views/Equipments.vue')
     },
     {
         path: '/:catchAll(.*)',

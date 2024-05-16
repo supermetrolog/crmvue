@@ -4,10 +4,10 @@
             <div class="row">
                 <div class="col-12 mb-2 d-flex align-items-center">
                     <h1>Сводка компании</h1>
-                    <DashboardTargetUser v-model="targetUserID" />
+                    <DashboardTargetUser v-model="targetUser" />
                 </div>
                 <div class="col-xl-9">
-                    <DashboardStatsTasksCount class="mb-3" :user="targetUserID" />
+                    <DashboardStatsTasksCount class="mb-3" :user="targetUser?.id" />
                     <div class="row mb-3">
                         <div class="col-6">
                             <DashboardCard title="Статистика активности">
@@ -54,7 +54,7 @@ export default {
     components: { DashboardTargetUser, DashboardStatsTasksCount, InProgress, DashboardCard },
     data() {
         return {
-            targetUserID: null
+            targetUser: null
         };
     }
 };

@@ -173,7 +173,7 @@ export default {
         MultiSelect
     },
     mixins: [DebouncedQuerySearchMixin, LoaderMixin],
-    inject: ['$targetUserID'],
+    inject: ['$targetUser'],
     data() {
         return {
             tasks: {
@@ -209,12 +209,12 @@ export default {
         originalLoader() {
             return this.loadingState;
         },
-        targetUserID() {
-            return this.$targetUserID();
+        targetUser() {
+            return this.$targetUser();
         }
     },
     watch: {
-        targetUserID() {
+        targetUser() {
             Promise.all([this.fetchCounts(), this.fetchTasks()]);
         },
         '$route.query': function (newQuery, oldQuery) {
@@ -246,14 +246,14 @@ export default {
         async fetchTasks() {
             this.loadingState = true;
 
-            const additionsQuery = this.targetUserID ? { user_id: this.targetUserID } : {};
+            const additionsQuery = this.targetUser ? { user_id: this.targetUser.id } : {};
             let query = { ...this.$route.query, ...additionsQuery };
             this.tasks = await api.task.get(query);
 
             this.loadingState = false;
         },
         async fetchCounts() {
-            const additionsQuery = this.targetUserID ? { user_id: this.targetUserID } : {};
+            const additionsQuery = this.targetUser ? { user_id: this.targetUser.id } : {};
 
             const data = await Promise.all([
                 api.task.getCount({ ...additionsQuery, deleted: 0 }),
@@ -331,14 +331,15 @@ export default {
 
             if (this.$route.query.sort) this.sortingOption = this.$route.query.sort;
             else query.sort = this.sortingOption;
-            console.log(query);
 
             await this.$router.replace({ query: query });
         }
     },
     async created() {
+        this.fetchCounts();
+
         await this.setQuery();
-        Promise.all([this.fetchCounts(), this.fetchTasks()]);
+        if (!this.loadingState && !this.tasks.pagination) this.fetchTasks();
     }
 };
 </script>

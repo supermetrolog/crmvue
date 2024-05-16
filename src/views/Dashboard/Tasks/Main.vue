@@ -4,7 +4,7 @@
             <div class="row mb-4">
                 <div class="col-12 mb-2 d-flex align-items-center">
                     <h1>Задачи</h1>
-                    <DashboardTargetUser v-model="targetUserID" />
+                    <DashboardTargetUser v-model="targetUser" />
                 </div>
                 <div class="col-6">
                     <router-link
@@ -53,19 +53,22 @@ export default {
     },
     provide() {
         return {
-            $targetUserID: () => this.targetUserID
+            $targetUser: () => this.targetUser
         };
     },
     data() {
         return {
-            targetUserID: null
+            targetUser: null
         };
     },
     computed: {
         ...mapGetters(['THIS_USER'])
     },
     created() {
-        this.targetUserID = this.THIS_USER.id;
+        this.targetUser = {
+            id: this.THIS_USER.id,
+            chat_member_id: this.THIS_USER.chat_member_id
+        };
     }
 };
 </script>

@@ -51,10 +51,17 @@ const User = {
             if (!getters.THIS_USER || !access_token) {
                 return;
             }
-            let newUserData = await api.user.getUser(getters.THIS_USER.id);
+
+            let [newUserData, chatMemberUser] = await Promise.all([
+                api.user.getUser(getters.THIS_USER.id),
+                api.messenger.getUserChatMember(getters.THIS_USER.id)
+            ]);
             if (!newUserData) {
                 return;
             }
+
+            newUserData.chat_member_id = chatMemberUser;
+
             localStorage.setItem('user', JSON.stringify(newUserData));
             newUserData.access_token = access_token;
             commit('setUser', newUserData);
@@ -98,10 +105,18 @@ const User = {
         async getConsultants({ state, commit }) {
             if (state.consultants.length) return state.consultants;
 
-            const data = await api.functions.getConsultantList();
+            const [consultants, chatMembers] = await Promise.all([
+                api.functions.getConsultantList(),
+                api.messenger.getUserChatMembers()
+            ]);
+
+            consultants.forEach(user => {
+                user.chat_member_id = chatMembers[user.id];
+            });
+
             commit(
                 'setConsultants',
-                (data ?? []).filter(user => user.role < 5)
+                (consultants ?? []).filter(user => user.role < 5)
             );
 
             return state.consultants;

@@ -99,7 +99,7 @@ export default {
     name: 'DashboardTasksBoard',
     components: { FormModalTask, Button, DashboardRoundedIcon, DashboardKanbanBoard },
     mixins: [LoaderMixin],
-    inject: ['$confirmPopup', '$targetUserID'],
+    inject: ['$confirmPopup', '$targetUser'],
     data() {
         return {
             newTasks: {
@@ -126,12 +126,12 @@ export default {
         originalLoader() {
             return this.loadingState;
         },
-        targetUserID() {
-            return this.$targetUserID();
+        targetUser() {
+            return this.$targetUser();
         }
     },
     watch: {
-        targetUserID() {
+        targetUser() {
             this.fetchTasks();
         }
     },
@@ -140,7 +140,7 @@ export default {
             this.loadingState = true;
 
             [this.newTasks, this.inProgressTasks, this.completedTasks, this.canceledTasks] =
-                await this.$store.dispatch('Task/getTasks', this.targetUserID);
+                await this.$store.dispatch('Task/getTasks', this.targetUser?.id);
 
             this.loadingState = false;
         },
