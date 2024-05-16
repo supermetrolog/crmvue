@@ -40,8 +40,10 @@ export default {
     provide() {
         return {
             $openPreviewer: image => this.$refs.previewer.toggle(image),
-            $openMessengerChat: (companyID, offerID) =>
-                this.$refs.messenger.openChat(companyID, offerID),
+            $openMessengerChat: ({ companyID, objectID, chatMemberID }) => {
+                if (chatMemberID) this.$refs.messenger.openChatByID(chatMemberID);
+                else this.$refs.messenger.openChat(companyID, objectID);
+            },
             $confirmPopup: async text => this.$refs.confirmer.open(text)
         };
     },

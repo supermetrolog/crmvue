@@ -11,6 +11,7 @@
             <p>
                 {{ offer.visual_id }}
             </p>
+            <i v-tippy="`Открыть в чате`" @click="openInChat" class="fa-solid fa-comment"></i>
             <div v-if="offer.type_id !== 3" class="offer-table-item__actions">
                 <i
                     @click="clickFavoriteOffer(offer)"
@@ -29,9 +30,9 @@
             </div>
         </Td>
         <Td>
-            <a :href="$url.offerOldByObject(offer)" target="_blank" class="photo-button button"
-                >Старая версия</a
-            >
+            <a :href="$url.offerOldByObject(offer)" target="_blank" class="photo-button button">
+                Старая версия
+            </a>
             <div class="photo">
                 <a :href="$url.offerByObject(offer)" target="_blank">
                     <div class="image-container">
@@ -175,6 +176,7 @@ export default {
     name: 'OfferTableItem',
     components: { OfferTableDropdown, Loader, Tr, Td, DropDown },
     mixins: [MixinOfferItem],
+    inject: ['$openMessengerChat'],
     props: {
         offer: {
             type: Object
@@ -231,6 +233,12 @@ export default {
         },
         async handleAvitoToggle() {
             await this.searchMiniOffers();
+        },
+        openInChat() {
+            this.$openMessengerChat({
+                companyID: this.offer.company_id,
+                objectID: this.offer.object_id
+            });
         }
     }
 };

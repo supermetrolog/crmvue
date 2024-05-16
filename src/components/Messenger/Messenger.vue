@@ -24,6 +24,7 @@ import MessengerBar from '@/components/Messenger/MessengerBar.vue';
 import { mapState } from 'vuex';
 import MessengerAttachment from '@/components/Messenger/MessengerAttachment.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import api from '@/api/api.js';
 
 export default {
     name: 'Messenger',
@@ -75,17 +76,71 @@ export default {
         escapeHandler(event) {
             if (this.isActive && event.code === 'Escape') this.isOpen = false;
         },
-        openChat(companyID, offerID) {
-            this.isOpen = true;
-            this.$store.dispatch('Messenger/selectPanel', {
-                objectID: companyID,
-                dialogID: offerID,
-                dialogType: 'object'
+        async openChat(companyID, objectID) {
+            const dialog = await api.messenger.getDialogByQuery({
+                model_type: 'object',
+                object_id: objectID
             });
+
+            if (!dialog) {
+                this.$toast('Данные по объекту не были найдены в чате');
+                return;
+            }
+
+            this.isOpen = true;
+
+            this.$store.dispatch('Messenger/selectPanel', {
+                companyID: companyID,
+                dialogID: dialog.id,
+                dialogType: 'object',
+                anywayOpen: true
+            });
+
             this.$store.dispatch('Messenger/selectChat', {
-                objectID: companyID,
-                dialogID: offerID,
-                dialogType: 'object'
+                dialogID: dialog.id,
+                companyID: companyID,
+                dialogType: 'object',
+                anywayOpen: true
+            });
+        },
+        async openChatByID(chatMemberID) {
+            const dialog = await api.messenger.getDialogByQuery({ id: chatMemberID });
+
+            if (!dialog) {
+                this.$toast('Данные о чате не были найдены в системе.');
+                return;
+            }
+
+            let companyID = null;
+
+            switch (dialog.model_type) {
+                case 'object': {
+                    companyID = dialog.model.object.company?.id;
+                    break;
+                }
+                case 'request': {
+                    companyID = dialog.model.company_id;
+                    break;
+                }
+                case 'user': {
+                    return;
+                }
+            }
+
+            this.isOpen = true;
+
+            this.$store.dispatch('Messenger/selectPanel', {
+                companyID: companyID,
+                dialogID: dialog.id,
+                dialogType: dialog.model_type,
+                anywayOpen: true
+            });
+
+            this.$store.dispatch('Messenger/selectChat', {
+                dialogID: dialog.id,
+                companyID: companyID,
+                dialogType: dialog.model_type,
+                anywayOpen: true
             });
         }
     },

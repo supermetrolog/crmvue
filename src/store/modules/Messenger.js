@@ -207,7 +207,12 @@ const Messenger = {
             commit('setLoadingAside', false);
             return null;
         },
-        async selectPanel({ commit, state }, { companyID, dialogID, dialogType }) {
+        async selectPanel(
+            { commit, state },
+            { companyID, dialogID, dialogType, anywayOpen = false }
+        ) {
+            if (dialogID === state.currentAsideDialogID && anywayOpen) return;
+
             commit('setCurrentRecipient', { contact: null });
 
             if (dialogID === state.currentAsideDialogID) {
@@ -241,7 +246,9 @@ const Messenger = {
                 }
             }
         },
-        async selectChat({ commit, state }, { dialogID, dialogType }) {
+        async selectChat({ commit, state }, { dialogID, dialogType, anywayOpen = false }) {
+            if (dialogID === state.currentPanelDialogID && anywayOpen) return;
+
             if (dialogID === state.currentPanelDialogID) {
                 commit('setCurrentPanelDialogID', null);
                 commit('setCurrentChat', false);
