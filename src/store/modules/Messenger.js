@@ -28,7 +28,7 @@ const getInitialState = () => ({
     currentPanelCompanyID: null,
 
     countNewMessages: 0,
-    countNewNotifications: 0,
+    countNewAlerts: 0,
     countNewTasks: 0,
     countNewReminders: 0,
 
@@ -63,8 +63,9 @@ const Messenger = {
         },
         updateMessage(state, newMessage) {
             let messageIndex = state.messages.findIndex(message => message.id === newMessage.id);
+
             if (messageIndex !== -1) {
-                state.messages[messageIndex] = { ...state.messages[messageIndex], ...newMessage };
+                Object.assign(state.messages[messageIndex], newMessage);
             }
         },
         setMessagesPagination(state, value) {
@@ -366,12 +367,11 @@ const Messenger = {
 
             return true;
         },
-        async addNotification({ commit }, { messageID }) {
-            // ONLY TESTING
-            const addition = null; // axios fetch
+        async addAlert({ commit }, { messageID, options }) {
+            const addition = await api.alert.createFromMessage(messageID, options);
 
             if (addition) {
-                commit('addAddition', { messageID, additionType: 'notification', addition });
+                commit('addAddition', { messageID, additionType: 'alert', addition });
                 return true;
             }
 
@@ -390,14 +390,14 @@ const Messenger = {
 
             return false;
         },
-        async deleteTask({ commit }, { messageID, taskID }) {
-            const response = await api.task.delete(taskID);
+        async deleteAddition({ commit }, { messageID, additionID, additionType }) {
+            const response = await api[additionType].delete(additionID);
 
             if (response) {
                 commit('deleteAddition', {
-                    additionType: 'task',
-                    additionID: taskID,
-                    messageID: messageID
+                    additionType,
+                    additionID,
+                    messageID
                 });
 
                 return true;
@@ -405,12 +405,12 @@ const Messenger = {
 
             return false;
         },
-        async updateTask({ commit }, { messageID, taskID, payload }) {
-            const addition = await api.task.update(taskID, payload);
+        async updateAddition({ commit }, { messageID, additionID, additionType, payload }) {
+            const addition = await api[additionType].update(additionID, payload);
 
             if (addition) {
                 commit('updateAddition', {
-                    additionType: 'task',
+                    additionType,
                     addition,
                     messageID
                 });
@@ -445,14 +445,6 @@ const Messenger = {
             return await api.messenger.getQuizzes(context.state.currentDialog);
         },
 
-        async completeTask(context, task) {
-            // ONLY TESTING
-            context.commit('completeTask', task);
-        },
-
-        async updateAddition({ commit }, addition) {
-            commit('updateAddition', addition);
-        },
         async pinMessage({ state, commit }, message) {
             const pinned = await api.messenger.pinMessage(state.currentDialog.id, message.id);
 
