@@ -32,7 +32,7 @@ export default {
     async searchRequests(query, expand = null) {
         expand =
             expand ||
-            'regions.info,directions,districts,company,consultant.userProfile,timeline_progress';
+            'regions.info,directions,districts,company,consultant.userProfile,timeline_progress,gateTypes,objectClasses,objectTypes,objectTypesGeneral';
         query = new URLSearchParams(query).toString();
         let url = 'requests?' + query + '&expand=' + expand;
         let data = false;

@@ -25,8 +25,16 @@ const status = {
     4: 'Отложено'
 };
 
+const statusList = [
+    { value: 1, label: 'Новая' },
+    { value: 2, label: 'В процессе' },
+    { value: 3, label: 'Выполнено' },
+    { value: 4, label: 'Отложено' }
+];
+
 export const taskOptions = {
     statusTypes,
     statusNames,
+    statusList,
     status
 };

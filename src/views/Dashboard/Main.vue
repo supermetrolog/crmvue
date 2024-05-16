@@ -21,12 +21,7 @@
                     </div>
                     <div class="row">
                         <div class="col-12">
-                            <DashboardCard
-                                title="Последние таймлайны"
-                                view-all-link="/dashboard/timelines"
-                            >
-                                <InProgress />
-                            </DashboardCard>
+                            <DashboardStatsRequests :user="user.id" />
                         </div>
                     </div>
                 </div>
@@ -34,9 +29,7 @@
                     <DashboardCard title="Лог активности" class="mb-3">
                         <InProgress />
                     </DashboardCard>
-                    <DashboardCard title="Последние сообщения">
-                        <InProgress />
-                    </DashboardCard>
+                    <DashboardStatsMessages :user="user.chat_member_id" />
                 </div>
             </div>
         </div>
@@ -47,10 +40,14 @@ import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
 import InProgress from '@/components/common/InProgress.vue';
 import DashboardStatsTasksCount from '@/components/Dashboard/Stats/DashboardStatsTasksCount.vue';
 import { mapGetters } from 'vuex';
+import DashboardStatsMessages from '@/components/Dashboard/Stats/DashboardStatsMessages.vue';
+import DashboardStatsRequests from '@/components/Dashboard/Stats/DashboardStatsRequests.vue';
 
 export default {
     name: 'DashboardMain',
     components: {
+        DashboardStatsRequests,
+        DashboardStatsMessages,
         DashboardStatsTasksCount,
         DashboardCard,
         InProgress

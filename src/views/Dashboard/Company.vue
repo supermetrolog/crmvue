@@ -22,12 +22,7 @@
                     </div>
                     <div class="row">
                         <div class="col-12">
-                            <DashboardCard
-                                title="Последние таймлайны"
-                                view-all-link="/dashboard/timelines"
-                            >
-                                <InProgress />
-                            </DashboardCard>
+                            <DashboardStatsRequests :user="targetUser?.id" />
                         </div>
                     </div>
                 </div>
@@ -35,9 +30,7 @@
                     <DashboardCard title="Лог активности" class="mb-3">
                         <InProgress />
                     </DashboardCard>
-                    <DashboardCard title="Последние сообщения">
-                        <InProgress />
-                    </DashboardCard>
+                    <DashboardStatsMessages :user="targetUser?.chat_member_id" />
                 </div>
             </div>
         </div>
@@ -48,10 +41,19 @@ import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
 import InProgress from '@/components/common/InProgress.vue';
 import DashboardStatsTasksCount from '@/components/Dashboard/Stats/DashboardStatsTasksCount.vue';
 import DashboardTargetUser from '@/components/Dashboard/DashboardTargetUser.vue';
+import DashboardStatsMessages from '@/components/Dashboard/Stats/DashboardStatsMessages.vue';
+import DashboardStatsRequests from '@/components/Dashboard/Stats/DashboardStatsRequests.vue';
 
 export default {
     name: 'DashboardCompany',
-    components: { DashboardTargetUser, DashboardStatsTasksCount, InProgress, DashboardCard },
+    components: {
+        DashboardStatsRequests,
+        DashboardStatsMessages,
+        DashboardTargetUser,
+        DashboardStatsTasksCount,
+        InProgress,
+        DashboardCard
+    },
     data() {
         return {
             targetUser: null
