@@ -10,7 +10,13 @@
                 class="col-12"
                 :options="passiveWhyOptions"
             />
-            <Textarea v-model="form.passive_why_comment" label="Комментарий" class="col-12 mt-2" />
+            <Textarea
+                v-model="form.passive_why_comment"
+                :v="v$.form.passive_why_comment"
+                required
+                label="Комментарий"
+                class="col-12 mt-2"
+            />
             <Submit class="col-12 mt-2" button-classes="btn-danger"> Завершить</Submit>
         </FormGroup>
     </Form>
@@ -61,7 +67,10 @@ export default {
         return {
             form: {
                 passive_why: {
-                    required: helpers.withMessage('выберите причину', required)
+                    required: helpers.withMessage('Выберите причину', required)
+                },
+                passive_why_comment: {
+                    required: helpers.withMessage('Укажите комментарий', required)
                 }
             }
         };

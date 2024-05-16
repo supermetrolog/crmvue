@@ -5,6 +5,7 @@
                 {{ label }}
             </span>
             <Multiselect
+                ref="multiselect"
                 v-model="field"
                 @change="onChange($event)"
                 class="form__multiselect"
@@ -201,7 +202,7 @@ export default {
             this.field.splice(index, 1);
         }
     },
-    mounted() {
+    created() {
         if (this.name) {
             this.setData();
         }
