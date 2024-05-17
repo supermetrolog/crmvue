@@ -6,6 +6,7 @@ import { elevatorProperties } from '@/const/properties/elevator.properties';
 import { partProperties } from '@/const/properties/part.properties';
 import { craneProperties } from '@/const/properties/crane.properties';
 import { locationProperties } from '@/const/properties/location.properties';
+import { requestProperties } from '@/const/properties/request.properties.js';
 
 export const entityProperties = {
     deal: dealProperties,
@@ -15,5 +16,6 @@ export const entityProperties = {
     elevator: elevatorProperties,
     crane: craneProperties,
     part: partProperties,
-    location: locationProperties
+    location: locationProperties,
+    request: requestProperties
 };

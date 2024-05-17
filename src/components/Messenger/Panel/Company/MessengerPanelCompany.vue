@@ -8,7 +8,13 @@
             >
                 <i class="fa-solid fa-pen"></i>
             </HoverActionsButton>
-            <p class="messenger-panel-company__name">{{ companyName }}</p>
+            <a
+                :href="'/companies/' + company.id"
+                target="_blank"
+                class="messenger-panel-company__name"
+            >
+                {{ $formatter.companyName(company, company.id) }}
+            </a>
             <div class="messenger-panel-company__subtitle">
                 <span>ID{{ company.id }} | </span>
                 <Rating
@@ -68,9 +74,6 @@ export default {
         }
     },
     computed: {
-        companyName() {
-            return this.company.nameRu || this.company.nameEng || 'Без названия';
-        },
         website() {
             const generalContact = this.company.contacts.find(
                 contact => contact.type === entityOptions.contact.typeStatement.GENERAL

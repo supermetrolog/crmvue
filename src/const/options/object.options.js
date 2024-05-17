@@ -123,6 +123,8 @@ const dealTypeString = {
     sublease: 'Субаренда'
 };
 
+const typeGeneralList = [{ name: 'Производство' }, { name: 'Склад' }, { name: 'Участок' }];
+
 export const objectOptions = {
     class: _class,
     facing,
@@ -132,5 +134,6 @@ export const objectOptions = {
     landscape,
     purposes,
     purposesWithSections,
-    dealTypeString
+    dealTypeString,
+    typeGeneralList
 };

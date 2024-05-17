@@ -9,22 +9,7 @@
             </div>
             <Form class="dashboard-requests-page__form mb-4">
                 <FormGroup class="justify-content-between">
-                    <div class="col-12 col-lg-6 col-xl-8 d-flex align-items-end">
-                        <Input
-                            v-model="debouncedQuerySearch"
-                            placeholder="ID, название компании"
-                            class="w-100"
-                            label="Поиск"
-                        />
-                        <Button
-                            @click="querySearch = null"
-                            :disabled="!debouncedQuerySearch?.length"
-                            class="ml-2"
-                            danger
-                        >
-                            Очистить
-                        </Button>
-                    </div>
+                    <FormCompanyRequestSearch class="col-12 col-lg-6 col-xl-8" without-consultant />
                     <div class="col-12 col-lg-6 col-xl-4 col-xxl-3">
                         <div class="d-flex align-items-end">
                             <MultiSelect
@@ -64,7 +49,7 @@
                                 :key="request.id"
                                 @edit="editRequest(request)"
                                 @toggle-disable="toggleDisableRequest(request)"
-                                @view="viewRequest"
+                                @view="viewRequest(request)"
                                 :request="request"
                                 :editable="userCanEdit(request)"
                                 class="col-12 col-md-6 col-lg-4 col-xxl-3"
@@ -87,16 +72,24 @@
             </div>
         </div>
         <teleport to="body">
+            <DashboardCardRequestView
+                v-if="requestViewIsVisible"
+                @close="requestViewIsVisible = false"
+                @edit="editRequest(requestView)"
+                @toggle-disable="toggleDisableRequest(requestView)"
+                :editable="userCanEdit(requestView)"
+                :request="requestView"
+            />
             <FormModalCompanyRequestDisable
                 v-if="formCompleteIsVisible"
                 @close="formCompleteIsVisible = false"
-                @disabled="updateRequest"
+                @disabled="updateRequest(completeRequest)"
                 :request_id="completeRequest.id"
             />
             <FormCompanyRequest
                 v-if="formRequestIsVisible"
                 @closeCompanyForm="formRequestIsVisible = false"
-                @updated="updateRequest"
+                @updated="updateRequest(completeRequest)"
                 :formdata="completeRequest"
             />
         </teleport>
@@ -105,11 +98,9 @@
 <script>
 import DashboardTargetUser from '@/components/Dashboard/DashboardTargetUser.vue';
 import { mapGetters } from 'vuex';
-import Input from '@/components/common/Forms/Input.vue';
 import PaginationClassic from '@/components/common/Pagination/PaginationClassic.vue';
 import Button from '@/components/common/Button.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
-import { DebouncedQuerySearchMixin } from '@/components/common/Forms/debounced.mixins.js';
 import Form from '@/components/common/Forms/Form.vue';
 import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import { waitHash } from '@/utils/index.js';
@@ -120,10 +111,14 @@ import DashboardCardRequestSkeleton from '@/components/Dashboard/Card/DashboardC
 import EmptyData from '@/components/common/EmptyData.vue';
 import FormModalCompanyRequestDisable from '@/components/Forms/Company/FormModalCompanyRequestDisable.vue';
 import FormCompanyRequest from '@/components/Forms/Company/FormCompanyRequest.vue';
+import DashboardCardRequestView from '@/components/Dashboard/Card/DashboardCardRequestView.vue';
+import FormCompanyRequestSearch from '@/components/Forms/Company/FormCompanyRequestSearch.vue';
 
 export default {
     name: 'DashboardRequests',
     components: {
+        FormCompanyRequestSearch,
+        DashboardCardRequestView,
         FormCompanyRequest,
         FormModalCompanyRequestDisable,
         EmptyData,
@@ -134,10 +129,9 @@ export default {
         MultiSelect,
         Button,
         PaginationClassic,
-        Input,
         DashboardTargetUser
     },
-    mixins: [DebouncedQuerySearchMixin, LoaderMixin],
+    mixins: [LoaderMixin],
     provide() {
         return {
             $targetUser: () => this.targetUser
@@ -174,6 +168,8 @@ export default {
             loadingState: false,
             formCompleteIsVisible: false,
             formRequestIsVisible: false,
+            requestViewIsVisible: false,
+            requestView: null,
             completeRequest: null
         };
     },
@@ -226,18 +222,19 @@ export default {
         async toggleDisableRequest(request) {
             if (request.status === 0) {
                 await api.request.undisable(request.id);
+                this.updateRequest(request);
             } else {
                 this.completeRequest = request;
                 this.formCompleteIsVisible = true;
             }
         },
-        async updateRequest() {
+        async updateRequest(request) {
             const requestResponse = await api.request.searchRequests({
-                id: this.completeRequest.id
+                id: request.id
             });
 
             if (requestResponse?.data?.length) {
-                Object.assign(this.completeRequest, requestResponse.data[0]);
+                Object.assign(request, requestResponse.data[0]);
             }
 
             this.formCompleteIsVisible = false;
@@ -261,6 +258,10 @@ export default {
             else query.sort = this.sortingOption;
 
             await this.$router.replace({ query: query });
+        },
+        viewRequest(request) {
+            this.requestView = request;
+            this.requestViewIsVisible = true;
         }
     },
     async created() {

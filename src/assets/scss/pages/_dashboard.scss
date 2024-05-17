@@ -33,6 +33,14 @@
             background-color: variables.$bg-success-l;
         }
     }
+
+    &-gray {
+        background-color: variables.$bg-gray;
+
+        &-l {
+            background-color: variables.$bg-gray-l;
+        }
+    }
 }
 
 .dashboard-cl {

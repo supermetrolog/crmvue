@@ -203,7 +203,7 @@
                     v-model="form.pricePerFloor"
                     maska="##########"
                     label="Цена"
-                    unit="₽ за м<sup>2</sup>/год"
+                    :unit="pricePerFloorUnit"
                     type="number"
                     class="col-4"
                 />
@@ -561,6 +561,15 @@ export default {
         },
         formAreaValidators() {
             return areaRangeValidators(this.form.maxArea);
+        },
+        pricePerFloorUnit() {
+            if (
+                this.form.dealType === null ||
+                this.form.dealType === undefined ||
+                this.form.dealType === 1
+            )
+                return '₽';
+            return '₽ за м<sup>2</sup>/год';
         }
     },
     validations() {

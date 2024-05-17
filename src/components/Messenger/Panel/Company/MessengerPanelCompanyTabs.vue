@@ -2,18 +2,16 @@
     <div class="messenger-panel-company__tabs">
         <Tabs ref="tabs" @changed="setCurrentTab" closed :options="{ useUrlFragment: false }">
             <Tab :id="`object-${company.id}`" :name="`Объекты (${company.object_count})`">
-                <InProgress />
-                <!--                <MessengerPanelCompanyObjects-->
-                <!--                    v-if="currentTab === `object-${company.id}`"-->
-                <!--                    :companyID="company.id"-->
-                <!--                />-->
+                <MessengerPanelCompanyObjects
+                    v-if="currentTab === `object-${company.id}`"
+                    :companyID="company.id"
+                />
             </Tab>
             <Tab :id="`request-${company.id}`" :name="`Запросы (${company.request_count})`">
-                <InProgress />
-                <!--                <MessengerPanelCompanyRequests-->
-                <!--                    v-if="currentTab === `request-${company.id}`"-->
-                <!--                    :companyID="company.id"-->
-                <!--                />-->
+                <MessengerPanelCompanyRequests
+                    v-if="currentTab === `request-${company.id}`"
+                    :companyID="company.id"
+                />
             </Tab>
             <Tab :name="`Услуги (0)`">
                 <InProgress />
@@ -28,10 +26,12 @@
 import Tabs from '@/components/common/Tabs/Tabs.vue';
 import InProgress from '@/components/common/InProgress.vue';
 import { mapState } from 'vuex';
+import MessengerPanelCompanyObjects from '@/components/Messenger/Panel/Company/MessengerPanelCompanyObjects.vue';
+import MessengerPanelCompanyRequests from '@/components/Messenger/Panel/Company/MessengerPanelCompanyRequests.vue';
 
 export default {
     name: 'MessengerPanelCompanyTabs',
-    components: { InProgress, Tabs },
+    components: { MessengerPanelCompanyRequests, MessengerPanelCompanyObjects, InProgress, Tabs },
     provide() {
         return {
             lastRenderedObjectCount: () => this.lastRenderedObjectsCount,

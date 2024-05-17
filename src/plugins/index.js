@@ -1,4 +1,5 @@
 import { alg } from '@/utils/alg';
+import dayjs from 'dayjs';
 
 const textFormatter = {
     ucFirst(string, full = false) {
@@ -68,6 +69,9 @@ export const formatterObject = {
         if (withTime) options = { ...options, hour: 'numeric', minute: 'numeric' };
 
         return new Date(value * 1000).toLocaleDateString('ru', options);
+    },
+    toDate(date, format) {
+        return dayjs(date).format(format ? format : 'D.MM.YY, HH:mm');
     },
     initials(full_name) {
         return full_name
