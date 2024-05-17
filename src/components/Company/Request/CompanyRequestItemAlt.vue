@@ -249,10 +249,7 @@ export default {
             });
         },
         getObjectTypesGeneral(types) {
-            return types
-                .map(type => type.type)
-                .map(type => this.objectTypesGeneralList[type])
-                .join(', ');
+            return types.map(type => this.objectTypesGeneralList[type.type]).join(', ');
         },
         getObjectTypeIcon(objectType) {
             if (objectType < 12) {

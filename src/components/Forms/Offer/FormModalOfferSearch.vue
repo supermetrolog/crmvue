@@ -25,11 +25,9 @@
                         >
                             избранные
                         </Button>
-                        <AnimationTransition>
-                            <Button v-if="filterCount" @click="resetForm" danger>
-                                Сбросить фильтры
-                            </Button>
-                        </AnimationTransition>
+                        <Button @click="resetForm" :disabled="!filterCount" danger>
+                            Сбросить фильтры
+                        </Button>
                     </div>
                 </div>
             </div>

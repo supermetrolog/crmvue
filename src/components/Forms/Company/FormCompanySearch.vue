@@ -15,9 +15,7 @@
                     <i v-if="extraVisible" class="fas fa-angle-up"></i>
                     <i v-else class="fas fa-angle-down"></i>
                 </Button>
-                <AnimationTransition>
-                    <Button v-if="filterCount" @click="resetForm" danger>Сбросить фильтры</Button>
-                </AnimationTransition>
+                <Button @click="resetForm" :disabled="!filterCount" danger>Сбросить фильтры</Button>
             </div>
         </div>
         <div v-show="extraVisible" class="form-search__extra col-12">
@@ -103,14 +101,18 @@ import Form from '@/components/common/Forms/Form.vue';
 import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import Input from '@/components/common/Forms/Input.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
-import {ActivePassive, ActivityGroupList, ActivityProfileList, CompanyCategories} from '@/const/const.js';
-import {SearchFormMixin} from '@/components/common/mixins.js';
+import {
+    ActivePassive,
+    ActivityGroupList,
+    ActivityProfileList,
+    CompanyCategories
+} from '@/const/const.js';
+import { SearchFormMixin } from '@/components/common/mixins.js';
 import Button from '@/components/common/Button.vue';
-import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
-import {helpers} from '@vuelidate/validators';
-import {maxDate, onlyEnglish, onlyRussian} from '@//validators';
+import { helpers } from '@vuelidate/validators';
+import { maxDate, onlyEnglish, onlyRussian } from '@//validators';
 import useVuelidate from '@vuelidate/core';
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
 
@@ -120,7 +122,6 @@ export default {
         DoubleInput,
         RadioChip,
         CheckboxChip,
-        AnimationTransition,
         Button,
         Form,
         FormGroup,
@@ -164,7 +165,7 @@ export default {
                     property: 'first'
                 }
             ];
-        },
+        }
     },
     defaultFormProperties: {
         all: null,
