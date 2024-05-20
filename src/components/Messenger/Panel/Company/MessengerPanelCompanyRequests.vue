@@ -1,23 +1,40 @@
 <template>
-    <div class="messenger-panel-company__list">
-        <template v-if="isLoading">
+    <div>
+        <div v-if="isLoading" class="messenger-panel-company__list">
             <MessengerDialogRequestSkeleton v-for="i in lastRenderedObjectCount()" :key="i" />
-        </template>
-        <template v-else-if="requests.length">
-            <MessengerDialogRequest
-                v-for="request in requests"
-                :key="request.id"
-                @click="
-                    selectChat({
-                        dialogID: request.id,
-                        dialogType: request.model_type
-                    })
-                "
-                :current="request.id === currentDialogID"
-                :model="request"
-            />
-        </template>
-        <EmptyData v-else no-rounded>Запросы не найдены..</EmptyData>
+        </div>
+        <EmptyData v-else-if="!requests.length" no-rounded>Запросы не найдены..</EmptyData>
+        <VirtualDragList
+            v-if="requests.length"
+            v-show="!isLoading"
+            ref="virtualList"
+            disabled
+            :data-source="requests"
+            data-key="id"
+            class="messenger-panel-company__list"
+            :keeps="20"
+        >
+            <template #item="{ record }">
+                <MessengerDialogRequest
+                    @click="
+                        selectChat({
+                            dialogID: record.id,
+                            dialogType: record.model_type
+                        })
+                    "
+                    :current="record.id === currentDialogID"
+                    :model="record"
+                />
+            </template>
+            <template v-if="requests.length >= 20" #footer>
+                <InfiniteLoading @infinite="loadRequests">
+                    <template #complete><span></span></template>
+                    <template #spinner>
+                        <Spinner />
+                    </template>
+                </InfiniteLoading>
+            </template>
+        </VirtualDragList>
     </div>
 </template>
 <script>
@@ -26,10 +43,16 @@ import MessengerDialogRequestSkeleton from '@/components/Messenger/Dialog/Messen
 import MessengerDialogRequest from '@/components/Messenger/Dialog/MessengerDialogRequest.vue';
 import { mapActions, mapState } from 'vuex';
 import { LoaderMixin } from '@/components/Messenger/loader.mixin.js';
+import InfiniteLoading from 'v3-infinite-loading';
+import VirtualDragList from 'vue-virtual-draglist';
+import Spinner from '@/components/common/Spinner.vue';
 
 export default {
     name: 'MessengerPanelCompanyRequests',
     components: {
+        Spinner,
+        VirtualDragList,
+        InfiniteLoading,
         MessengerDialogRequest,
         MessengerDialogRequestSkeleton,
         EmptyData
@@ -77,6 +100,24 @@ export default {
             this.pagination = data.pagination;
 
             this.loadingState = false;
+        },
+        async loadRequests($state) {
+            if (this.pagination.currentPage === this.pagination.pageCount) {
+                $state.complete();
+                return;
+            }
+
+            const data = await this.getCompanyRequests({
+                companyID: this.companyID,
+                modelType: 'request',
+                page: this.pagination.currentPage + 1
+            });
+
+            if (data.data?.length) this.requests.push(...data.data);
+            if (data.pagination) this.pagination = data.pagination;
+
+            if (this.pagination.currentPage === this.pagination.pageCount) $state.complete();
+            $state.loaded();
         }
     },
     created() {

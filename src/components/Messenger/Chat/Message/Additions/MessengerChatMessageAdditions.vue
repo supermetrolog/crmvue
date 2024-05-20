@@ -4,18 +4,27 @@
             v-for="addition in activeAdditions.tasks"
             :key="addition"
             :addition="addition"
-            :editable="userCanEdit('task', addition)"
-            :draggable="userCanDrag('task', addition)"
+            :editable="userCanEdit(addition)"
+            :draggable="userCanDrag(addition)"
+        />
+        <MessengerChatMessageAdditionsAlert
+            v-for="addition in activeAdditions.alerts"
+            :key="addition"
+            :addition="addition"
+            :editable="userCanEdit(addition)"
+            :draggable="userCanDrag(addition)"
         />
     </div>
 </template>
 <script>
 import MessengerChatMessageAdditionsTask from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditionsTask.vue';
 import { mapGetters } from 'vuex';
+import MessengerChatMessageAdditionsAlert from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditionsAlert.vue';
 
 export default {
     name: 'MessengerChatMessageAdditions',
     components: {
+        MessengerChatMessageAdditionsAlert,
         MessengerChatMessageAdditionsTask
     },
     props: {
@@ -35,26 +44,18 @@ export default {
         }
     },
     methods: {
-        userCanDrag(additionType, addition) {
-            if (additionType === 'task') {
-                return (
-                    Number(addition.created_by_id) === Number(this.currentUser.id) ||
-                    Number(addition.user_id) === Number(this.currentUser.id) ||
-                    this.$store.getters.isModerator
-                );
-            }
-
-            return false;
+        userCanDrag(addition) {
+            return (
+                Number(addition.created_by_id) === Number(this.currentUser.id) ||
+                Number(addition.user_id) === Number(this.currentUser.id) ||
+                this.$store.getters.isModerator
+            );
         },
-        userCanEdit(additionType, addition) {
-            if (additionType === 'task') {
-                return (
-                    Number(addition.created_by_id) === Number(this.currentUser.id) ||
-                    this.$store.getters.isModerator
-                );
-            }
-
-            return false;
+        userCanEdit(addition) {
+            return (
+                Number(addition.created_by_id) === Number(this.currentUser.id) ||
+                this.$store.getters.isModerator
+            );
         }
     }
 };

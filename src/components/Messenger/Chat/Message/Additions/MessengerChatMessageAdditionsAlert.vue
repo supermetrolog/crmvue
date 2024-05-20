@@ -16,7 +16,7 @@
                         messageID: $messageID,
                         addition,
                         additionType: 'alert',
-                        successMessage: 'Уведомление успешно создано!'
+                        successMessage: 'Уведомление успешно обновлено!'
                     })
                 "
                 label="Редактировать"
@@ -36,7 +36,7 @@ import MessengerChatMessageAdditionsItem from '@/components/Messenger/Chat/Messa
 export default {
     name: 'MessengerChatMessageAdditionsAlert',
     components: { MessengerChatMessageAdditionsItem, HoverActionsButton },
-    inject: ['$confirmPopup', '$editAlert', '$messageID'],
+    inject: ['$confirmPopup', '$editAddition', '$messageID'],
     props: {
         addition: {
             type: Object,

@@ -218,9 +218,20 @@ const Messenger = {
         clearState(state) {
             const initialState = getInitialState();
             Object.keys(initialState).forEach(key => (state[key] = initialState[key]));
+        },
+        setCounts(state, obj) {
+            Object.keys(obj).forEach(key => {
+                state['countNew' + key.charAt(0).toUpperCase() + key.slice(1)] = obj[key];
+            });
         }
     },
     actions: {
+        async updateCounters({ rootGetters, commit }) {
+            const counters = await api.messenger.getCounters(rootGetters.THIS_USER?.id);
+            if (counters) {
+                commit('setCounts', counters);
+            }
+        },
         async updateDialogs({ state, commit }) {
             commit('setLoadingAside', true);
 
