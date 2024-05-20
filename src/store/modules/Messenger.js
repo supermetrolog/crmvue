@@ -4,15 +4,32 @@ import dayjs from 'dayjs';
 import { alg } from '@/utils/alg.js';
 import { entityOptions } from '@/const/options/options.js';
 
+const needCacheMessage = (dialogID, asideID, panelID) => {
+    // Лучше не трогать условие.. Оно долго выводилось
+    return Boolean(
+        panelID !== null && (dialogID !== asideID || panelID === dialogID || asideID !== panelID)
+    );
+};
+
 const getInitialState = () => ({
-    chatMembersObjects: [],
-    chatMembersRequests: [],
-    chatMembersUsers: [],
+    chatMembersObjects: {
+        data: [],
+        pagination: null
+    },
+    chatMembersRequests: {
+        data: [],
+        pagination: null
+    },
+    chatMembersUsers: {
+        data: [],
+        pagination: null
+    },
 
     messages: [],
     messagesPagination: {},
 
     newMessage: '',
+    cachedNewMessages: {},
     querySearch: '',
 
     currentDialogType: null,
@@ -22,6 +39,7 @@ const getInitialState = () => ({
     currentPanel: null,
     currentRecipient: null,
     currentPinned: null,
+    currentCategory: null,
 
     currentAsideDialogID: null,
     currentPanelDialogID: null,
@@ -53,6 +71,25 @@ const Messenger = {
         },
         setNewMessage(state, value) {
             state.newMessage = value;
+        },
+        setCurrentCategory(state, value) {
+            state.currentCategory = value;
+        },
+        setCachedMessage(state) {
+            if (!state.newMessage.length) {
+                if (state.currentPanelDialogID in state.cachedNewMessages)
+                    delete state.cachedNewMessages[state.currentPanelDialogID];
+                return;
+            }
+
+            state.cachedNewMessages[state.currentPanelDialogID] = {
+                message: state.newMessage,
+                contact: state.currentRecipient?.id ?? null,
+                tag: state.currentCategory
+            };
+        },
+        clearCachedMessage(state, chatMemberID) {
+            delete state.cachedNewMessages[chatMemberID];
         },
 
         setMessages(state, value) {
@@ -242,8 +279,17 @@ const Messenger = {
                 }
             }
         },
-        async selectChat({ commit, state }, { dialogID, dialogType, anywayOpen = false }) {
+        async selectChat({ commit, state, getters }, { dialogID, dialogType, anywayOpen = false }) {
+            if (needCacheMessage(dialogID, state.currentAsideDialogID, state.currentPanelDialogID))
+                commit('setCachedMessage');
+
+            if (!state.currentAsideDialogID) {
+                commit('setCurrentPanelDialogID', null);
+                return;
+            }
+
             if (dialogID === state.currentPanelDialogID && anywayOpen) return;
+            if (getters.hasCachedMessage) commit('setCurrentRecipient', { contact: null });
 
             if (dialogID === state.currentPanelDialogID) {
                 commit('setCurrentPanelDialogID', null);
@@ -252,6 +298,7 @@ const Messenger = {
                 return;
             }
 
+            commit('setCurrentCategory', null);
             commit('setCurrentDialogType', dialogType);
             commit('setCurrentPanelDialogID', dialogID);
             commit('setMessages', []);
@@ -280,7 +327,7 @@ const Messenger = {
 
             return data ?? { data: [], pagination: null };
         },
-        async sendMessage({ commit, state }, options) {
+        async sendMessage({ commit, state, getters }, options) {
             const message = state.newMessage.replaceAll('\n', '<br />');
 
             const response = await api.messenger.sendMessage(state.currentPanelDialogID, {
@@ -290,6 +337,9 @@ const Messenger = {
             });
 
             if (response) {
+                if (getters.hasCachedMessage)
+                    commit('clearCachedMessage', state.currentPanelDialogID);
+
                 commit('addMessages', [response]);
                 commit('setNewMessage', '');
 
@@ -304,7 +354,7 @@ const Messenger = {
                 id,
                 message,
                 tag_ids: tag ? [tag] : [],
-                contact_ids: contact ? [contact] : []
+                contact_ids: contact ? [contact.id] : []
             };
 
             const updatedMessage = await api.messenger.updateMessage(payload);
@@ -515,18 +565,28 @@ const Messenger = {
             }
 
             return null;
+        },
+        setCurrentMessageFromCache({ state, commit }) {
+            const cachedMessage = state.cachedNewMessages[state.currentPanelDialogID];
+
+            commit('setNewMessage', cachedMessage.message);
+            commit('setCurrentRecipient', { contactID: cachedMessage.contact });
+            commit('setCurrentCategory', cachedMessage.tag);
         }
     },
     getters: {
         hasQuery(state) {
-            return state.querySearch.length;
+            return Boolean(state.querySearch.length);
         },
         hasDialogs(state) {
-            return (
-                state.chatMembersObjects.length +
-                state.chatMembersRequests.length +
-                state.chatMembersUsers.length
+            return Boolean(
+                state.chatMembersObjects.data.length ||
+                    state.chatMembersRequests.data.length ||
+                    state.chatMembersUsers.data.length
             );
+        },
+        hasCachedMessage(state) {
+            return state.currentChat && state.currentPanelDialogID in state.cachedNewMessages;
         }
     }
 };
