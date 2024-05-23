@@ -7,7 +7,7 @@
         }"
     >
         <div class="col-12 text-center general-info py-2">
-            <div class="header row mb-0">
+            <div class="head row mb-0">
                 <div class="index col-12 p-0 text-center">
                     <!-- <i
                       class="fas fa-times text-danger delete"

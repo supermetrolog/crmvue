@@ -13,69 +13,80 @@
                 }
             ]"
         />
-        <Modal v-if="modalVisible" @close="clickCloseModal" title="Контакт" class="z-index text-left">
-            <div class="modal-content">
-                <Loader v-if="loader" class="center" />
-                <div class="row">
-                    <div v-if="company" class="col-6 box">
-                        <router-link
-                            :to="'/companies/' + company.id"
-                            target="_blank"
-                            class="mb-2 text-center title text-primary d-block"
-                        >
-                            Компания #{{ company.id }}
-                        </router-link>
-
-                        <div class="inner">
-                            <!-- <p>{{ company.nameRu }} - {{ company.nameEng }}</p> -->
-                            <Company :company="company" />
-                        </div>
-                    </div>
-                    <div v-if="contact" class="col-6 text-center box" :class="{ 'col-12': !company }">
-                        <h4 class="mb-2">Контакт</h4>
-                        <div v-if="currentContactForCall" class="current-phone inner text-light">
-                            <CompanyContactList
-                                @createComment="refreshContacts"
-                                @deleteContact="refreshContacts"
-                                @openContactFormForUpdate="openContactFormForUpdate"
-                                :contacts="currentContactForCall"
-                            />
-                            <p class="mb-1 text-light">
-                                {{ phone.phone }}{{ phone.exten ? ` => ${phone.exten}` : '' }}
-                            </p>
-                            <button class="btn btn-primary scale">
-                                <i class="fas fa-phone-volume mr-1"></i> позвонить
-                            </button>
-                        </div>
-                        <h4 class="mb-2 mt-2">Все контакты</h4>
-                        <div class="inner">
-                            <CompanyContactList
-                                @createComment="refreshContacts"
-                                @deleteContact="refreshContacts"
-                                @openContactFormForUpdate="openContactFormForUpdate"
-                                :contacts="companyContacts"
-                            />
-                        </div>
-                    </div>
-                    <div v-else class="col-12 text-center box">
-                        <h4 class="mb-2">Нет в базе</h4>
-                        <div class="current-phone inner text-light">
-                            <p class="mb-1 text-light">{{ phone.phone }}</p>
-                            <button class="btn btn-primary scale btn-large">
-                                <i class="fas fa-phone-volume mr-1"></i> позвонить
-                            </button>
-                            <button
-                                @click="clickOpenCompanyContactForm"
-                                class="btn btn-primary scale btn-large d-block mx-auto mt-2"
+        <teleport to="body">
+            <Modal v-if="modalVisible" @close="clickCloseModal" title="Контакт" width="500">
+                <div class="modal-content">
+                    <Loader v-if="loader" class="center" />
+                    <div class="row">
+                        <div v-if="company" class="col-6 box">
+                            <router-link
+                                :to="'/companies/' + company.id"
+                                target="_blank"
+                                class="mb-2 text-center title text-primary d-block"
                             >
-                                создать контакт
-                            </button>
+                                Компания #{{ company.id }}
+                            </router-link>
+
+                            <div class="inner">
+                                <!-- <p>{{ company.nameRu }} - {{ company.nameEng }}</p> -->
+                                <Company :company="company" />
+                            </div>
+                        </div>
+                        <div
+                            v-if="contact"
+                            class="col-6 text-center box"
+                            :class="{ 'col-12': !company }"
+                        >
+                            <h4 class="mb-2">Контакт</h4>
+                            <div
+                                v-if="currentContactForCall"
+                                class="current-phone inner text-light"
+                            >
+                                <CompanyContactList
+                                    @createComment="refreshContacts"
+                                    @deleteContact="refreshContacts"
+                                    @openContactFormForUpdate="openContactFormForUpdate"
+                                    :contacts="currentContactForCall"
+                                />
+                                <p class="mb-1 text-light">
+                                    {{ phone.phone }}{{ phone.exten ? ` => ${phone.exten}` : '' }}
+                                </p>
+                                <button class="btn btn-primary scale">
+                                    <i class="fas fa-phone-volume mr-1"></i> позвонить
+                                </button>
+                            </div>
+                            <h4 class="mb-2 mt-2">Все контакты</h4>
+                            <div class="inner">
+                                <CompanyContactList
+                                    @createComment="refreshContacts"
+                                    @deleteContact="refreshContacts"
+                                    @openContactFormForUpdate="openContactFormForUpdate"
+                                    :contacts="companyContacts"
+                                />
+                            </div>
+                        </div>
+                        <div v-else class="col-12 text-center box">
+                            <h4 class="mb-2">Нет в базе</h4>
+                            <div class="current-phone inner text-light">
+                                <p class="mb-1 text-light">{{ phone.phone }}</p>
+                                <button class="btn btn-primary scale btn-large">
+                                    <i class="fas fa-phone-volume mr-1"></i> позвонить
+                                </button>
+                                <button
+                                    @click="clickOpenCompanyContactForm"
+                                    class="btn btn-primary scale btn-large d-block mx-auto mt-2"
+                                >
+                                    создать контакт
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </Modal>
-        <a @click.prevent="clickLink" :class="classList" :href="'tel:' + phone.phone">{{ phoneText }}</a>
+            </Modal>
+        </teleport>
+        <a @click.prevent="clickLink" :class="classList" :href="'tel:' + phone.phone">{{
+            phoneText
+        }}</a>
     </div>
 </template>
 
