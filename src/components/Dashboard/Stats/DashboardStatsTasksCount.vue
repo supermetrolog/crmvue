@@ -76,28 +76,22 @@ export default {
 
             const userParams = this.user ? { user_id: this.user } : {};
 
-            const data = await Promise.all([
-                api.task.getCount(userParams),
-                api.task.getCount({ ...userParams, status: 3 }),
-                api.task.getCount({ ...userParams, status: 2 }),
-                api.task.getCount({ ...userParams, expired: 1 })
-            ]);
+            const data = await api.task.getStatistics(userParams);
 
-            if (data.length) {
+            if (data) {
+                const allTasksCount = Object.values(data).reduce(
+                    (acc, element) => acc + Number(element),
+                    0
+                );
+
                 gsap.to(this.counts, {
                     delay: 0.5,
                     duration: 1,
-                    all: data[0],
-                    completed: data[1],
-                    inProgress: data[2],
-                    expired: data[3]
+                    all: allTasksCount,
+                    completed: Number(data.done),
+                    inProgress: Number(data.accepted),
+                    expired: Number(data.created)
                 });
-                // this.counts = {
-                //     all: data[0],
-                //     completed: data[1],
-                //     inProgress: data[2],
-                //     expired: data[3]
-                // };
             }
 
             this.loadingState = false;

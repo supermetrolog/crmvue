@@ -54,7 +54,7 @@
             </div>
             <div class="dashboard-card-request__body">
                 <p class="dashboard-card-request__company">
-                    {{ $formatter.companyName(request.company, request.company.id) }}
+                    {{ companyName }}
                 </p>
                 <p class="dashboard-card-request__address" v-html="address"></p>
                 <div class="dashboard-card-request__parameters">
@@ -105,6 +105,7 @@ import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { mapGetters } from 'vuex';
+import { alg } from '@/utils/alg.js';
 
 dayjs.extend(customParseFormat);
 
@@ -213,6 +214,11 @@ export default {
         },
         isDisabled() {
             return this.request.status === 0;
+        },
+        companyName() {
+            return alg.isNumeric(this.request.company.full_name)
+                ? 'Компания №' + this.request.company.full_name
+                : this.request.company.full_name;
         }
     }
 };

@@ -1,7 +1,7 @@
 <template>
     <Modal @close="$emit('close')" :title="'Просмотр запроса #' + request.id" width="1200">
         <Spinner v-if="isLoading" />
-        <div v-else class="dashboard-card-request-view">
+        <div v-else class="dashboard-card-view">
             <div class="row">
                 <div class="col-12">
                     <DashboardCard
@@ -10,11 +10,11 @@
                             'dashboard-bg-success-l': isCompleted
                         }"
                     >
-                        <div class="dashboard-card-request-view__header">
+                        <div class="dashboard-card-view__header">
                             <span v-if="request.name">{{ request.name }}; </span>
                             <span>
                                 Запрос от
-                                <b>{{ $formatter.companyName(request.company) }}</b>
+                                <b>{{ companyName }}</b>
                             </span>
                             <DashboardChip class="ml-2" :class="statusClass">
                                 <div class="d-flex align-items-center">
@@ -32,7 +32,7 @@
                             >
                                 Срочный запрос
                             </DashboardChip>
-                            <div class="dashboard-card-request-view__actions">
+                            <div class="dashboard-card-view__actions">
                                 <HoverActionsButton
                                     v-if="editable"
                                     @click="$emit('edit')"
@@ -64,20 +64,20 @@
                 </div>
                 <div class="col-8">
                     <DashboardCard class="mb-2">
-                        <p class="dashboard-card-request-view__subtitle">Адрес</p>
+                        <p class="dashboard-card-view__subtitle">Адрес</p>
                         <p v-html="address"></p>
                     </DashboardCard>
                     <DashboardCard class="mb-2">
                         <div class="row">
                             <div class="col-4">
-                                <div class="dashboard-card-request-view__block">
-                                    <p class="dashboard-card-request-view__helper">Создано</p>
+                                <div class="dashboard-card-view__block">
+                                    <p class="dashboard-card-view__helper">Создано</p>
                                     <p>{{ $formatter.toDate(request.created_at) }}</p>
                                 </div>
                             </div>
                             <div class="col-4">
-                                <div class="dashboard-card-request-view__block">
-                                    <p class="dashboard-card-request-view__helper">Обновлено</p>
+                                <div class="dashboard-card-view__block">
+                                    <p class="dashboard-card-view__helper">Обновлено</p>
                                     <p>
                                         {{
                                             request.updated_at
@@ -88,8 +88,8 @@
                                 </div>
                             </div>
                             <div class="col-4">
-                                <div class="dashboard-card-request-view__block">
-                                    <p class="dashboard-card-request-view__helper">Дата переезда</p>
+                                <div class="dashboard-card-view__block">
+                                    <p class="dashboard-card-view__helper">Дата переезда</p>
                                     <p>
                                         {{
                                             request.unknownMovingDate
@@ -102,12 +102,12 @@
                         </div>
                     </DashboardCard>
                     <DashboardCard class="mb-2">
-                        <p class="dashboard-card-request-view__subtitle">О таймлайне</p>
+                        <p class="dashboard-card-view__subtitle">О таймлайне</p>
                         <div>
                             <p>{{ $formatter.text().ucFirst(request.format_name) }}</p>
                             <Progress class="mb-2" :percent="request.timeline_progress" />
                             <p>
-                                <span class="dashboard-card-request-view__category">
+                                <span class="dashboard-card-view__category">
                                     Последнее обновление:
                                 </span>
                                 <span>
@@ -121,7 +121,7 @@
                         </div>
                     </DashboardCard>
                     <DashboardCard class="mb-2">
-                        <p class="dashboard-card-request-view__subtitle">Тип объекта</p>
+                        <p class="dashboard-card-view__subtitle">Тип объекта</p>
                         <div class="row mb-2">
                             <div
                                 v-for="(element, key) in objectTypesGeneral"
@@ -142,12 +142,12 @@
                         </div>
                         <div class="row">
                             <div class="col-4">
-                                <div class="dashboard-card-request-view__purposes">
+                                <div class="dashboard-card-view__purposes">
                                     <DashboardChip
                                         v-for="(element, key) in objectTypes.production"
                                         :key="key"
                                         v-tippy="element.name"
-                                        class="dashboard-card-request-view__purpose"
+                                        class="dashboard-card-view__purpose"
                                         :class="
                                             element.included
                                                 ? 'dashboard-bg-success dashboard-cl-white'
@@ -159,12 +159,12 @@
                                 </div>
                             </div>
                             <div class="col-4">
-                                <div class="dashboard-card-request-view__purposes">
+                                <div class="dashboard-card-view__purposes">
                                     <DashboardChip
                                         v-for="(element, key) in objectTypes.warehouse"
                                         :key="key"
                                         v-tippy="element.name"
-                                        class="dashboard-card-request-view__purpose"
+                                        class="dashboard-card-view__purpose"
                                         :class="
                                             element.included
                                                 ? 'dashboard-bg-success dashboard-cl-white'
@@ -176,12 +176,12 @@
                                 </div>
                             </div>
                             <div class="col-4">
-                                <div class="dashboard-card-request-view__purposes">
+                                <div class="dashboard-card-view__purposes">
                                     <DashboardChip
                                         v-for="(element, key) in objectTypes.plot"
                                         :key="key"
                                         v-tippy="element.name"
-                                        class="dashboard-card-request-view__purpose"
+                                        class="dashboard-card-view__purpose"
                                         :class="
                                             element.included
                                                 ? 'dashboard-bg-success dashboard-cl-white'
@@ -195,7 +195,7 @@
                         </div>
                     </DashboardCard>
                     <DashboardCard>
-                        <p class="dashboard-card-request-view__subtitle">Описание</p>
+                        <p class="dashboard-card-view__subtitle">Описание</p>
                         <p>
                             {{ request.description?.length ? request.description : 'Не заполнено' }}
                         </p>
@@ -203,19 +203,19 @@
                 </div>
                 <div class="col-4">
                     <DashboardCard class="mb-2">
-                        <p class="dashboard-card-request-view__subtitle mb-2">О компании</p>
-                        <p class="dashboard-card-request-view__property">
-                            <span class="dashboard-card-request-view__category">Компания:</span>
+                        <p class="dashboard-card-view__subtitle mb-2">О компании</p>
+                        <p class="dashboard-card-view__property">
+                            <span class="dashboard-card-view__category">Компания:</span>
                             <span>{{ $formatter.companyName(request.company) }}</span>
                         </p>
-                        <p class="dashboard-card-request-view__property">
-                            <span class="dashboard-card-request-view__category">Контакт:</span>
+                        <p class="dashboard-card-view__property">
+                            <span class="dashboard-card-view__category">Контакт:</span>
                             <span v-if="contact">{{ contact.full_name }}</span>
                             <span v-else>Загрузка..</span>
                         </p>
                     </DashboardCard>
                     <DashboardCard class="mb-2">
-                        <p class="dashboard-card-request-view__subtitle mb-2">Консультант</p>
+                        <p class="dashboard-card-view__subtitle mb-2">Консультант</p>
                         <div class="d-flex align-items-center">
                             <Avatar :src="request.consultant.userProfile.avatar" size="40" />
                             <span class="ml-2">
@@ -224,11 +224,9 @@
                         </div>
                     </DashboardCard>
                     <DashboardCard class="mb-2">
-                        <p class="dashboard-card-request-view__subtitle mb-2">Характеристики</p>
-                        <p class="dashboard-card-request-view__property">
-                            <span class="dashboard-card-request-view__category">
-                                Высота потолка:
-                            </span>
+                        <p class="dashboard-card-view__subtitle mb-2">Характеристики</p>
+                        <p class="dashboard-card-view__property">
+                            <span class="dashboard-card-view__category"> Высота потолка: </span>
                             <span v-if="request.minCeilingHeight || request.maxCeilingHeight">
                                 <with-unit-type :unit-type="unitTypes.METERS">
                                     <span v-if="request.minCeilingHeight">
@@ -241,10 +239,8 @@
                             </span>
                             <span v-else>не указано</span>
                         </p>
-                        <p class="dashboard-card-request-view__property">
-                            <span class="dashboard-card-request-view__category">
-                                Площадь пола:
-                            </span>
+                        <p class="dashboard-card-view__property">
+                            <span class="dashboard-card-view__category"> Площадь пола: </span>
                             <with-unit-type
                                 v-if="request.minArea || request.maxArea"
                                 :unit-type="unitTypes.SQUARE_METERS"
@@ -258,10 +254,8 @@
                             </with-unit-type>
                             <span v-else>не указано</span>
                         </p>
-                        <p class="dashboard-card-request-view__property">
-                            <span class="dashboard-card-request-view__category">
-                                Электричество:
-                            </span>
+                        <p class="dashboard-card-view__property">
+                            <span class="dashboard-card-view__category"> Электричество: </span>
                             <with-unit-type
                                 v-if="request.electricity"
                                 :unit-type="unitTypes.KILOWATT"
@@ -270,8 +264,8 @@
                             </with-unit-type>
                             <span v-else>не указано</span>
                         </p>
-                        <p class="dashboard-card-request-view__property">
-                            <span class="dashboard-card-request-view__category">Цена:</span>
+                        <p class="dashboard-card-view__property">
+                            <span class="dashboard-card-view__category">Цена:</span>
                             <with-unit-type
                                 v-if="request.pricePerFloor"
                                 :unit-type="
@@ -284,8 +278,8 @@
                             </with-unit-type>
                             <span v-else>не указано</span>
                         </p>
-                        <p class="dashboard-card-request-view__property">
-                            <span class="dashboard-card-request-view__category">Типы ворот:</span>
+                        <p class="dashboard-card-view__property">
+                            <span class="dashboard-card-view__category">Типы ворот:</span>
                             <template v-if="request.gateTypes.length">
                                 {{ gateTypes }}
                             </template>
@@ -293,10 +287,10 @@
                         </p>
                     </DashboardCard>
                     <DashboardCard class="mb-2">
-                        <p class="dashboard-card-request-view__subtitle mb-2">Класс объекта</p>
+                        <p class="dashboard-card-view__subtitle mb-2">Класс объекта</p>
                         <div
                             v-if="request.objectClasses.length"
-                            class="dashboard-card-request-view__requirements"
+                            class="dashboard-card-view__requirements"
                         >
                             <DashboardChip
                                 v-for="(element, key) in objectClasses"
@@ -314,11 +308,8 @@
                         <p v-else>Не заполнено</p>
                     </DashboardCard>
                     <DashboardCard>
-                        <p class="dashboard-card-request-view__subtitle mb-2">Требования</p>
-                        <div
-                            v-if="requirements.length"
-                            class="dashboard-card-request-view__requirements"
-                        >
+                        <p class="dashboard-card-view__subtitle mb-2">Требования</p>
+                        <div v-if="requirements.length" class="dashboard-card-view__requirements">
                             <DashboardChip
                                 v-for="(requirement, key) in requirements"
                                 :key="key"
@@ -365,6 +356,7 @@ import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
 import { cloneObject } from '@/utils/index.js';
 import { mapGetters } from 'vuex';
+import { alg } from '@/utils/alg.js';
 
 export default {
     name: 'DashboardCardRequestView',
@@ -522,6 +514,11 @@ export default {
         },
         isDisabled() {
             return this.request.status === 0;
+        },
+        companyName() {
+            return alg.isNumeric(this.request.company.full_name)
+                ? 'Компания №' + this.request.company.full_name
+                : this.request.company.full_name;
         },
         ...mapGetters({ currentUser: 'THIS_USER' })
     },

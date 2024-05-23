@@ -95,5 +95,17 @@ export default {
             ErrorHandle.setError(e);
             return null;
         }
+    },
+    async getStatistics(options) {
+        const params = new URLSearchParams(options).toString();
+        const url = params ? `/tasks/statistic?${params}` : '/tasks/statistic';
+
+        try {
+            const response = await axios.get(url);
+            return response.data?.length ? response.data[0] : null;
+        } catch (e) {
+            ErrorHandle.setError(e);
+            return null;
+        }
     }
 };
