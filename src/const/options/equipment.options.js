@@ -1,6 +1,6 @@
 const usedStatus = {
-    1: 'Б/У',
-    2: 'Новый'
+    1: 'Новое',
+    2: 'Б/У'
 };
 
 const category = {
@@ -13,4 +13,20 @@ const category = {
     7: 'Другое'
 };
 
-export const equipmentOptions = { usedStatus, category };
+const tax = {
+    1: 'С НДС',
+    2: 'Без НДС'
+};
+
+const availability = {
+    1: 'В наличии',
+    2: 'Под заказ'
+};
+
+const delivery = {
+    1: 'Платная доставка',
+    2: 'Доставка включена',
+    3: 'Самовывоз'
+};
+
+export const equipmentOptions = { usedStatus, category, tax, availability, delivery };

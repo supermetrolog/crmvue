@@ -300,6 +300,60 @@ export const getObjectWithoutEmptyFields = _object => {
     return object;
 };
 
+export const optionsToList = options => {
+    return Object.keys(options).map(key => ({ value: Number(key), label: options[key] }));
+};
+
+export const multiselectAdapter = (options, value, label) => {
+    if (typeof label === 'string')
+        return options.map(item => ({ value: item[value], label: item[label] }));
+    else if (typeof label === 'function') {
+        return options.map(item => ({ value: item[value], label: label(item) }));
+    }
+};
+
+export const multiselectAdapterToObject = (options, value, label) => {
+    if (typeof label === 'string')
+        return options.reduce((arr, item) => {
+            arr[item[value]] = item[label];
+            return arr;
+        }, {});
+    else if (typeof label === 'function') {
+        return options.reduce((arr, item) => {
+            arr[item[value]] = label(item);
+            return arr;
+        }, {});
+    }
+};
+
+export const deleteEmptyFields = object => {
+    const deletedFields = [];
+
+    for (const key in object) {
+        if (Object.hasOwnProperty.call(object, key)) {
+            const value = object[key];
+            if (value === null || value === '' || (Array.isArray(value) && !value.length)) {
+                delete object[key];
+                deletedFields.push(key);
+            }
+        }
+    }
+
+    return deletedFields;
+};
+
+export const assignQueryToForm = (query, formObject) => {
+    Object.keys(query).forEach(key => {
+        if (key in formObject) {
+            if (Array.isArray(formObject[key]) && !Array.isArray(query[key]))
+                formObject[key] = [query[key]];
+            else if (Array.isArray(query[key]) && !Array.isArray(formObject[key])) {
+                formObject[key] = query[key][query[key].length - 1];
+            } else formObject[key] = query[key];
+        }
+    });
+};
+
 export const reducer = {
     sum: (element, fields = null) => {
         if (fields === null) return element.reduce((acc, el) => acc + el, 0);
