@@ -71,7 +71,6 @@ export default {
     emits: ['close'],
     data() {
         return {
-            loader: false,
             quizzes: [],
             currentQuizPreview: null,
             lastQuizzesSize: 7
@@ -86,9 +85,6 @@ export default {
             else title += ', без вонка, от ';
 
             return title + dayjs(this.currentQuizPreview.created_at).format('DD.MM.YYYY');
-        },
-        originalLoader() {
-            return this.loader;
         }
     },
     watch: {
@@ -101,11 +97,11 @@ export default {
     },
     methods: {
         async fetchQuizzes() {
-            this.loader = true;
+            this.loadingState = true;
 
             this.quizzes = await this.$store.dispatch('Messenger/getCurrentChatQuizzes');
 
-            this.loader = false;
+            this.loadingState = false;
         }
     },
     created() {

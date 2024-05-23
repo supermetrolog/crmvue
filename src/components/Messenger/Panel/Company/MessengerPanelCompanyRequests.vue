@@ -68,15 +68,11 @@ export default {
     data() {
         return {
             requests: [],
-            pagination: null,
-            loadingState: false
+            pagination: null
         };
     },
     computed: {
-        ...mapState({ currentDialogID: state => state.Messenger.currentPanelDialogID }),
-        originalLoader() {
-            return this.loadingState;
-        }
+        ...mapState({ currentDialogID: state => state.Messenger.currentPanelDialogID })
     },
     watch: {
         isLoading(value) {

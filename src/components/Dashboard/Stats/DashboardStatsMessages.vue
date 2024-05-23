@@ -59,14 +59,8 @@ export default {
     },
     data() {
         return {
-            loadingState: false,
             messages: []
         };
-    },
-    computed: {
-        originalLoader() {
-            return this.loadingState;
-        }
     },
     watch: {
         user() {

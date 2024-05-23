@@ -57,7 +57,6 @@ export default {
     },
     data() {
         return {
-            loadingState: false,
             counts: {
                 all: 0,
                 completed: 0,
@@ -65,11 +64,6 @@ export default {
                 expired: 0
             }
         };
-    },
-    computed: {
-        originalLoader() {
-            return this.loadingState;
-        }
     },
     watch: {
         user() {

@@ -393,7 +393,6 @@ export default {
     },
     data() {
         return {
-            loadingState: true,
             contact: null
         };
     },
@@ -403,9 +402,6 @@ export default {
         },
         unknownMovingDate() {
             return unknownMovingDate;
-        },
-        originalLoader() {
-            return this.loadingState;
         },
         address() {
             const directions = this.request.directions?.length

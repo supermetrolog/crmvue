@@ -3,12 +3,13 @@ export const LoaderMixin = {
         return {
             isLoading: false,
             loadingTimeout: null,
-            loadingDelay: 500
+            loadingDelay: 500,
+            loadingState: false
         };
     },
     computed: {
         originalLoader() {
-            return false;
+            return this.loadingState;
         }
     },
     methods: {

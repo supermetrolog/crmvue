@@ -165,7 +165,6 @@ export default {
                     label: 'По обновлению данных (сначала свежие)'
                 }
             ],
-            loadingState: false,
             formCompleteIsVisible: false,
             formRequestIsVisible: false,
             requestViewIsVisible: false,
@@ -174,10 +173,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(['THIS_USER']),
-        originalLoader() {
-            return this.loadingState;
-        }
+        ...mapGetters(['THIS_USER'])
     },
     watch: {
         targetUser() {

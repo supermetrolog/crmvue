@@ -24,21 +24,15 @@ export default {
     mixins: [LoaderMixin],
     data() {
         return {
-            loading: false,
             consultants: []
         };
     },
-    computed: {
-        originalLoader() {
-            return this.loading;
-        }
-    },
     async created() {
-        this.loading = true;
+        this.loadingState = true;
 
         this.consultants = await this.$store.dispatch('getConsultants');
 
-        this.loading = false;
+        this.loadingState = false;
     }
 };
 </script>
