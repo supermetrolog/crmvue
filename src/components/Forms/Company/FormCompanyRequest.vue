@@ -442,7 +442,7 @@ import Chip from '@/components/common/Chip.vue';
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
 import { areaRangeValidators, ceilingHeightValidators } from '@//validators/fields';
 import dayjs from 'dayjs';
-import { cloneObject } from '@/utils/index.js';
+import { cloneObject, multiselectAdapter } from '@/utils/index.js';
 
 export default {
     name: 'FormCompanyRequest',
@@ -738,12 +738,7 @@ export default {
                 query = { all: query };
             }
             const companies = await api.companies.searchCompanies(query);
-            return this.multiselectAdapter(companies.data, 'id', 'full_name');
-        },
-        multiselectAdapter(array, valueProp, labelProp) {
-            return array.map(item => {
-                return { value: item[valueProp], label: item[labelProp] };
-            });
+            return multiselectAdapter(companies.data, 'id', 'full_name');
         },
         onChangeCompany() {
             this.form.contact_id = null;
@@ -758,10 +753,8 @@ export default {
                 query = { company_id: query };
             }
             const contacts = await api.contacts.searchContacts(query);
-            this.contactOptions = this.multiselectAdapter(
-                contacts.data,
-                'id',
-                'first_and_last_name'
+            this.contactOptions = multiselectAdapter(contacts.data, 'id', contact =>
+                contact.type === 1 ? 'Основной контакт' : contact.first_and_last_name
             );
         },
         changeObjectTypesGeneral(data) {

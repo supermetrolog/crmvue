@@ -199,16 +199,12 @@ export default {
                 5: { deleted: 0, expired: 1 },
                 6: { deleted: 1 }
             },
-            counts: {},
-            loadingState: false
+            counts: {}
         };
     },
     computed: {
         taskMenuTypes: () => entityOptions.task.statusTypes,
         ...mapGetters({ user: 'THIS_USER' }),
-        originalLoader() {
-            return this.loadingState;
-        },
         targetUser() {
             return this.$targetUser();
         }

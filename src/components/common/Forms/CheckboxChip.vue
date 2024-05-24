@@ -15,6 +15,7 @@
                 v-model="field"
                 @change="onChange"
                 @click="onClick"
+                :disabled="disabled"
                 :value="value"
                 :true-value="1"
                 :false-value="0"

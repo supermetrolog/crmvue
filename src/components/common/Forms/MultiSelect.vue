@@ -37,13 +37,13 @@
             </Multiselect>
         </label>
         <ValidationMessage v-if="hasValidationError" :message="v.$errors[0].$message" />
-        <div v-if="multiple && field.length" class="form__chips">
+        <div v-if="multiple && field.length" class="form__chips mt-2">
             <Chip
                 v-for="(element, index) in field"
                 :key="index"
                 @click="removeElement(index)"
-                :value="index"
-                :html="options[element]"
+                :value="element"
+                :html="multipleProperty ? options[element][multipleProperty] : options[element]"
             />
         </div>
         <slot />
@@ -155,6 +155,10 @@ export default {
         multiple: {
             type: Boolean,
             default: false
+        },
+        multipleProperty: {
+            type: String,
+            default: null
         }
     },
     data() {

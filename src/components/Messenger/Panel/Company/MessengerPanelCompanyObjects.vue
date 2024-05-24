@@ -1,23 +1,40 @@
 <template>
     <div class="messenger-panel-company__list">
-        <template v-if="isLoading">
+        <div v-if="isLoading" class="messenger-panel-company__list">
             <MessengerDialogObjectSkeleton v-for="i in lastRenderedObjectCount()" :key="i" />
-        </template>
-        <template v-else-if="objects.length">
-            <MessengerDialogObject
-                v-for="object in objects"
-                :key="object.id"
-                @click="
-                    selectChat({
-                        dialogID: object.id,
-                        dialogType: object.model_type
-                    })
-                "
-                :current="object.id === currentDialogID"
-                :model="object.model"
-            />
-        </template>
-        <EmptyData v-else no-rounded>Предложения не найдены..</EmptyData>
+        </div>
+        <EmptyData v-else-if="!objects.length" no-rounded>Объекты не найдены..</EmptyData>
+        <VirtualDragList
+            v-if="objects.length"
+            v-show="!isLoading"
+            ref="virtualList"
+            disabled
+            :data-source="objects"
+            data-key="id"
+            class="messenger-panel-company__list"
+            :keeps="20"
+        >
+            <template #item="{ record }">
+                <MessengerDialogObject
+                    @click="
+                        selectChat({
+                            dialogID: record.id,
+                            dialogType: record.model_type
+                        })
+                    "
+                    :current="record.id === currentDialogID"
+                    :model="record.model"
+                />
+            </template>
+            <template v-if="objects.length >= 20" #footer>
+                <InfiniteLoading @infinite="loadObjects">
+                    <template #complete><span></span></template>
+                    <template #spinner>
+                        <Spinner />
+                    </template>
+                </InfiniteLoading>
+            </template>
+        </VirtualDragList>
     </div>
 </template>
 <script>
@@ -26,10 +43,16 @@ import MessengerDialogObjectSkeleton from '@/components/Messenger/Dialog/Messeng
 import EmptyData from '@/components/common/EmptyData.vue';
 import { mapActions, mapState } from 'vuex';
 import { LoaderMixin } from '@/components/Messenger/loader.mixin.js';
+import InfiniteLoading from 'v3-infinite-loading';
+import VirtualDragList from 'vue-virtual-draglist';
+import Spinner from '@/components/common/Spinner.vue';
 
 export default {
     name: 'MessengerPanelCompanyObjects',
     components: {
+        Spinner,
+        VirtualDragList,
+        InfiniteLoading,
         MessengerDialogObjectSkeleton,
         MessengerDialogObject,
         EmptyData
@@ -45,15 +68,11 @@ export default {
     data() {
         return {
             objects: [],
-            pagination: null,
-            loadingState: false
+            pagination: null
         };
     },
     computed: {
-        ...mapState({ currentDialogID: state => state.Messenger.currentPanelDialogID }),
-        originalLoader() {
-            return this.loadingState;
-        }
+        ...mapState({ currentDialogID: state => state.Messenger.currentPanelDialogID })
     },
     watch: {
         isLoading(value) {
@@ -77,6 +96,24 @@ export default {
             this.pagination = data.pagination;
 
             this.loadingState = false;
+        },
+        async loadObjects($state) {
+            if (this.pagination.currentPage === this.pagination.pageCount) {
+                $state.complete();
+                return;
+            }
+
+            const data = await this.getCompanyObjects({
+                companyID: this.companyID,
+                modelType: 'object',
+                page: this.pagination.currentPage + 1
+            });
+
+            if (data.data?.length) this.objects.push(...data.data);
+            if (data.pagination) this.pagination = data.pagination;
+
+            if (this.pagination.currentPage === this.pagination.pageCount) $state.complete();
+            $state.loaded();
         }
     },
     created() {

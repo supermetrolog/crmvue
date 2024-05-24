@@ -41,7 +41,8 @@ const store = createStore({
             await context.dispatch('SET_WINDOW_NAME');
             await context.dispatch('WEBSOCKET_STOP');
             await context.dispatch('WEBSOCKET_RUN');
-            context.dispatch('REFRESH_USER');
+            await context.dispatch('REFRESH_USER');
+            context.dispatch('Messenger/updateCounters');
         },
         DESTROY(context) {
             context.dispatch('WEBSOCKET_STOP');

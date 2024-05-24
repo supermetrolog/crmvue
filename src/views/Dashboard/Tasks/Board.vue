@@ -118,14 +118,10 @@ export default {
                 data: [],
                 pagination: null
             },
-            createFormIsVisible: false,
-            loadingState: false
+            createFormIsVisible: false
         };
     },
     computed: {
-        originalLoader() {
-            return this.loadingState;
-        },
         targetUser() {
             return this.$targetUser();
         }

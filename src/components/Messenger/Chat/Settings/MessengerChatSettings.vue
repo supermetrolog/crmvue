@@ -66,23 +66,19 @@ export default {
     data() {
         return {
             opened: false,
-            loading: false,
             currentPanel: null
         };
     },
     computed: {
-        ...mapState({ currentDialog: state => state.Messenger.currentDialog }),
-        originalLoader() {
-            return this.loading;
-        }
+        ...mapState({ currentDialog: state => state.Messenger.currentDialog })
     },
     methods: {
         toggle() {
             this.opened = !this.opened;
 
             if (this.opened) {
-                this.loading = true;
-                setTimeout(() => (this.loading = false), 500);
+                this.loadingState = true;
+                setTimeout(() => (this.loadingState = false), 500);
             } else {
                 this.currentPanel = null;
             }

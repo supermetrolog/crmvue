@@ -117,9 +117,7 @@ export default {
             return contact.first_name + (contact.last_name ? ` ${contact.last_name}` : '');
         },
         additions() {
-            if (!this.message.tasks?.length) return null;
-
-            return { tasks: this.message.tasks };
+            return { tasks: this.message.tasks, alerts: this.message.alerts };
         }
     },
     methods: {

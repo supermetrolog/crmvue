@@ -175,5 +175,18 @@ export default {
             ErrorHandle.setError(e);
             return null;
         }
+    },
+    async getCounters(userID) {
+        try {
+            const response = await Promise.all([
+                api.task.getCount({ deleted: 0, user_id: userID }),
+                api.task.getCount({ deleted: 0, status: 3, user_id: userID })
+            ]);
+
+            return { tasks: response[0] - response[1] };
+        } catch (e) {
+            ErrorHandle.setError(e);
+            return null;
+        }
     }
 };

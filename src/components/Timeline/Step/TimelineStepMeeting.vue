@@ -124,7 +124,7 @@ export default {
                     text: 'Отлично, идём дальше',
                     emited_event: 'done',
                     withWayOfSending: false,
-                    classes: 'col-2 pr-1'
+                    classes: 'col-4 col-xl-3 col-xxl-2 pr-1'
                 }
             ];
         }

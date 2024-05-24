@@ -73,10 +73,6 @@
     &__footer {
         width: 100%;
         padding: 15px;
-
-        i {
-            color: variables.$color_dark !important;
-        }
     }
 
     &__body {
@@ -91,6 +87,7 @@
         cursor: pointer;
         position: absolute;
         right: 15px;
+        color: variables.$color_dark;
     }
 
     &.fullscreen {

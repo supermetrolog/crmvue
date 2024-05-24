@@ -8,7 +8,11 @@
         <!--            />-->
         <!--        </AnimationTransition>-->
         <div class="messenger-chat-form__settings">
-            <MessengerChatFormRecipient @change="setCurrentContact" :current="currentContact" />
+            <MessengerChatFormRecipient
+                @change="setCurrentContact"
+                :current="currentContact"
+                :without-auto-toggle="hasCachedMessage"
+            />
             <MessengerChatFormCategories
                 @change="changeCurrentCategory"
                 :current="currentCategory"
@@ -57,7 +61,6 @@ export default {
     inject: ['$openAttachments'],
     data() {
         return {
-            currentCategory: null,
             currentFiles: []
         };
     },
@@ -71,7 +74,15 @@ export default {
             }
         },
         ...mapState({ currentContact: state => state.Messenger.currentRecipient }),
-        ...mapGetters(['THIS_USER'])
+        ...mapGetters({ THIS_USER: 'THIS_USER', hasCachedMessage: 'Messenger/hasCachedMessage' }),
+        currentCategory: {
+            get() {
+                return this.$store.state.Messenger.currentCategory;
+            },
+            set(value) {
+                this.$store.commit('Messenger/setCurrentCategory', value);
+            }
+        }
     },
     methods: {
         keyHandler(event) {
@@ -112,6 +123,11 @@ export default {
         },
         deleteFile(id) {
             this.currentFiles.splice(id, 1);
+        }
+    },
+    mounted() {
+        if (this.hasCachedMessage) {
+            this.$store.dispatch('Messenger/setCurrentMessageFromCache');
         }
     }
 };

@@ -124,7 +124,6 @@ export default {
     },
     data() {
         return {
-            loadingState: false,
             requests: [],
             columns: [
                 {
@@ -166,10 +165,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters({ currentUser: 'THIS_USER' }),
-        originalLoader() {
-            return this.loadingState;
-        }
+        ...mapGetters({ currentUser: 'THIS_USER' })
     },
     watch: {
         user() {

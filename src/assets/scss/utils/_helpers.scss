@@ -41,3 +41,21 @@
 .c-pointer {
     cursor: pointer;
 }
+
+.gap {
+    &-1 {
+        gap: .25rem;
+    }
+
+    &-2 {
+        gap: .5rem;
+    }
+
+    &-3 {
+        gap: 1rem
+    }
+
+    &-4 {
+        gap: 1.5rem;
+    }
+}

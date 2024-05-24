@@ -290,7 +290,7 @@
     }
 }
 
-.dashboard-card-request-view {
+.dashboard-card-view {
     &__header {
         @include mixins.flex-box($gap: 5px, $a: center);
     }
@@ -335,5 +335,15 @@
     &__actions {
         margin-left: auto;
         @include mixins.flex-box($gap: 5px);
+    }
+
+    &__preview {
+        height: 400px;
+    }
+
+    &__photo {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 }
