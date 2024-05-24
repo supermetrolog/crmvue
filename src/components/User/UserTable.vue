@@ -1,12 +1,13 @@
 <template>
     <div class="users-table">
-        <Modal v-if="userForDelete" @close="clickCloseModal" title="Удаление контакта" class="autosize">
+        <Modal v-if="userForDelete" @close="clickCloseModal" title="Удаление контакта" width="600">
             <div class="row no-gutters">
                 <div class="col-12 text-center">
                     <h4 class="text-dark">
                         Вы уверены что хотите удалить пользователя
                         <span class="text-grey">
-                            "{{ userForDelete.userProfile.first_name }} {{ userForDelete.userProfile.middle_name }}"
+                            "{{ userForDelete.userProfile.first_name }}
+                            {{ userForDelete.userProfile.middle_name }}"
                         </span>
                         ?
                     </h4>
@@ -14,10 +15,14 @@
                 </div>
                 <div class="col-12 mt-4 text-center">
                     <Loader v-if="deleteLoader" class="center small" />
-                    <button @click="deleteUser(userForDelete)" class="btn btn-danger" :disabled="deleteLoader">
-                        Удалить
-                    </button>
-                    <button @click="clickCloseModal" class="btn btn-primary ml-1" :disabled="deleteLoader">Нет</button>
+                    <div class="list justify-content-center">
+                        <Button @click="deleteUser(userForDelete)" danger :disabled="deleteLoader">
+                            Удалить
+                        </Button>
+                        <Button @click="clickCloseModal" :disabled="deleteLoader">
+                            Отменить
+                        </Button>
+                    </div>
                 </div>
             </div>
         </Modal>
@@ -37,9 +42,7 @@
             <template v-if="!loader" #tbody>
                 <Tr v-for="user in users" :key="user.id">
                     <Td class="avatar-container">
-                        <div class="avatar mx-auto">
-                            <img :src="getAvatarUrl(user.userProfile.avatar)" alt="Аватар" />
-                        </div>
+                        <Avatar :src="user.userProfile.avatar" />
                     </Td>
                     <Td class="text-left">
                         {{ user.userProfile.middle_name }}
@@ -47,7 +50,11 @@
                     </Td>
                     <Td>
                         <div>
-                            <PhoneNumber v-for="phone in user.userProfile.phones" :key="phone" :phone="phone" />
+                            <PhoneNumber
+                                v-for="phone in user.userProfile.phones"
+                                :key="phone"
+                                :phone="phone"
+                            />
                             <a
                                 v-for="email in user.userProfile.emails"
                                 :key="email.email"
@@ -74,7 +81,10 @@
                         {{ user.updated_at_format }}
                     </Td>
                     <Td class="action">
-                        <button @click="$emit('clickEdit', user)" class="btn btn-action text-primary">
+                        <button
+                            @click="$emit('clickEdit', user)"
+                            class="btn btn-action text-primary"
+                        >
                             <i class="fas fa-user-edit"></i>
                         </button>
                         <button @click="clickDeleteUser(user)" class="btn btn-action text-danger">
@@ -95,10 +105,14 @@ import Td from '@/components/common/Table/Td.vue';
 import { mapActions } from 'vuex';
 import Modal from '@/components/common/Modal.vue';
 import Loader from '@/components/common/Loader.vue';
+import Button from '@/components/common/Button.vue';
+import Avatar from '@/components/common/Avatar.vue';
 
 export default {
     name: 'UserTable',
     components: {
+        Avatar,
+        Button,
         Loader,
         Modal,
         Table,
@@ -132,9 +146,6 @@ export default {
             this.$emit('deletedUser');
             this.deleteLoader = false;
             this.userForDelete = null;
-        },
-        getAvatarUrl(avatarName) {
-            return this.$url.api.getUserAvatar(avatarName);
         }
     }
 };

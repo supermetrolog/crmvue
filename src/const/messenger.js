@@ -7,7 +7,7 @@ const buttons = {
         ],
         empty: 'У вас нет невыполненных задач'
     },
-    notifications: {
+    alerts: {
         plural: [
             'У вас %d новое уведомление',
             'У вас %d новых уведомления',
@@ -32,13 +32,13 @@ const buttons = {
 const categories = {
     1: 'Аренда',
     2: 'Продажа',
-    3: 'Арендаторы',
-    4: 'Развитие'
+    3: 'Развитие',
+    4: 'Арендаторы'
 };
 
 const additions = {
     1: 'Task',
-    2: 'Notification',
+    2: 'Alert',
     3: 'Reminder'
 };
 

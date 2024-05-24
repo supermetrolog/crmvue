@@ -15,7 +15,8 @@ import letter from './letter.js';
 import companyLogs from './companyLogs.js';
 import complex from './complex';
 import messenger from '@//api/messenger';
-import task from '@//api/task';
+import task from '@/api/task';
+import alert from '@/api/alert';
 
 export default {
     user,
@@ -35,5 +36,6 @@ export default {
     companyLogs,
     complex,
     messenger,
-    task
+    task,
+    alert
 };

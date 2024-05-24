@@ -4,7 +4,8 @@ const User = {
     state: {
         consultantList: [],
         thisUser: null,
-        users: []
+        users: [],
+        consultants: []
     },
     mutations: {
         updateConsultantList(state, data) {
@@ -23,6 +24,9 @@ const User = {
         },
         updateUsers(state, data) {
             state.users = data;
+        },
+        setConsultants(state, consultants) {
+            state.consultants = consultants;
         }
     },
     actions: {
@@ -47,10 +51,17 @@ const User = {
             if (!getters.THIS_USER || !access_token) {
                 return;
             }
-            let newUserData = await api.user.getUser(getters.THIS_USER.id);
+
+            let [newUserData, chatMemberUser] = await Promise.all([
+                api.user.getUser(getters.THIS_USER.id),
+                api.messenger.getUserChatMember(getters.THIS_USER.id)
+            ]);
             if (!newUserData) {
                 return;
             }
+
+            newUserData.chat_member_id = chatMemberUser;
+
             localStorage.setItem('user', JSON.stringify(newUserData));
             newUserData.access_token = access_token;
             commit('setUser', newUserData);
@@ -91,9 +102,24 @@ const User = {
         async DELETE_USER(_, id) {
             return await api.user.deleteUser(id);
         },
-        async getConsultants() {
-            let data = await api.functions.getConsultantList();
-            return (data ?? []).filter(user => user.role < 5);
+        async getConsultants({ state, commit }) {
+            if (state.consultants.length) return state.consultants;
+
+            const [consultants, chatMembers] = await Promise.all([
+                api.functions.getConsultantList(),
+                api.messenger.getUserChatMembers()
+            ]);
+
+            consultants.forEach(user => {
+                user.chat_member_id = chatMembers[user.id];
+            });
+
+            commit(
+                'setConsultants',
+                (consultants ?? []).filter(user => user.role < 5)
+            );
+
+            return state.consultants;
         }
     },
     getters: {

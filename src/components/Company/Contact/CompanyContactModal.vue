@@ -1,6 +1,10 @@
 <template>
     <div class="fuck">
-        <Modal @close="clickCloseModal" :title="contact.isMain ? 'Основной контакт' : 'Контакт'" class="normal">
+        <Modal
+            @close="clickCloseModal"
+            :title="contact.isMain ? 'Основной контакт' : 'Контакт'"
+            width="800"
+        >
             <div class="CompanyContactModal">
                 <div class="CompanyContactModal-left">
                     <p class="CompanyContactModal-left-name">
@@ -61,16 +65,19 @@
                     </div>
                     <div v-if="!contact.status" class="CompanyContactModal-left-passive">
                         <span>Пассив</span>
-                        <span
-v-if="contact.passive_why !== null"
-                            >({{ passiveWhyOptions.find(elem => elem.value == contact.passive_why).label }})</span
+                        <span v-if="contact.passive_why !== null"
+                            >({{
+                                passiveWhyOptions.find(elem => elem.value == contact.passive_why)
+                                    .label
+                            }})</span
                         >
-                        <span v-if="contact.passive_why_comment"> по причине {{ contact.passive_why_comment }}</span>
+                        <span v-if="contact.passive_why_comment">
+                            по причине {{ contact.passive_why_comment }}</span
+                        >
                     </div>
                     <div></div>
                     <div class="CompanyContactModal-websites">
-                        <template
-v-if="contact.websites"
+                        <template v-if="contact.websites"
                             ><a
                                 v-for="website in contact.websites"
                                 :key="website"
@@ -86,7 +93,9 @@ v-if="contact.websites"
                 <div class="CompanyContactModal-right">
                     <div v-if="contact.warning" class="CompanyContactModal-warning text-danger">
                         <span>ВНИМАНИЕ!!!</span>
-                        <span v-if="contact.warning_why_comment"> - {{ contact.warning_why_comment }}</span>
+                        <span v-if="contact.warning_why_comment">
+                            - {{ contact.warning_why_comment }}</span
+                        >
                     </div>
                     <p>Комментарии</p>
                     <hr />
@@ -95,7 +104,11 @@ v-if="contact.websites"
                         ref="comments"
                         class="CompanyContactModal-right-comments"
                     >
-                        <div v-for="comment in contact.contactComments" :key="comment.id" class="contact-comment">
+                        <div
+                            v-for="comment in contact.contactComments"
+                            :key="comment.id"
+                            class="contact-comment"
+                        >
                             <strong>{{ comment.author.userProfile.short_name }}</strong>
                             <p>{{ comment.comment }}</p>
                             <small class="text-grey">{{ dateHandler(comment.created_at) }}</small>
@@ -109,8 +122,7 @@ v-if="contact.websites"
 
                 <div class="CompanyContactModal-footer">
                     <hr />
-                    <span
-v-if="contact.consultant?.userProfile.short_name"
+                    <span v-if="contact.consultant?.userProfile?.short_name"
                         >конс: {{ contact.consultant.userProfile.short_name }}</span
                     >
                     <span v-else></span>

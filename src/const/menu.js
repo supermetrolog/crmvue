@@ -30,6 +30,12 @@ export const Menu = {
     ],
     agent: [
         {
+            id: 8,
+            name: 'Дашборд',
+            icon: 'fa-solid fa-chart-line',
+            url: '/dashboard'
+        },
+        {
             id: 0,
             name: 'Компании',
             icon: 'fa-solid fa-industry',
@@ -77,5 +83,11 @@ export const InternalMenu = {
         { id: 1, name: 'группы компаний', url: '/companies/groups' },
         { id: 2, name: 'запросы', url: '/companies/requests' },
         { id: 3, name: 'сделки', url: '/companies/deals' }
+    ],
+    dashboard: [
+        { id: 0, name: 'Главная', url: '/dashboard', exact: true },
+        { id: 1, name: 'Сводка', url: '/dashboard/company' },
+        { id: 2, name: 'Задачи', url: '/dashboard/tasks/board' },
+        { id: 3, name: 'Запросы', url: '/dashboard/requests' }
     ]
 };

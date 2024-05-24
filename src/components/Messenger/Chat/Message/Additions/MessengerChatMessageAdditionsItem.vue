@@ -6,13 +6,14 @@
                 <slot name="content"></slot>
             </p>
             <span
+                v-if="$slots.actions"
                 @click.stop="settingsIsVisible = !settingsIsVisible"
                 class="messenger-chat-message-addition__settings"
             >
                 <i class="fa-solid fa-ellipsis-vertical"></i>
             </span>
         </div>
-        <AnimationTransition :speed="0.5">
+        <AnimationTransition v-if="$slots.actions" :speed="0.5">
             <div v-if="settingsIsVisible" class="messenger-chat-message-addition-settings">
                 <slot name="actions"></slot>
             </div>

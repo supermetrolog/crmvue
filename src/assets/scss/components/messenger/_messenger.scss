@@ -50,7 +50,7 @@
 }
 
 .messenger-bar {
-    transform: translateX(-80px) translateY(calc(50vh - 50%));
+    transform: translateX(-70px) translateY(calc(50vh - 50%));
     position: absolute;
     z-index: 20;
     margin: auto 0;
@@ -59,7 +59,7 @@
     padding: 15px;
     @include mixins.flex-box($a: center, $d: column);
     width: max-content;
-    gap: 20px;
+    gap: 10px;
     cursor: pointer;
     transition: color .5s ease-in-out, opacity .5s ease-in-out;
     opacity: .5;
@@ -69,14 +69,14 @@
     }
 
     i {
-        font-size: 26px;
+        font-size: 22px;
     }
 
     &__element {
         position: relative;
         background-color: #0f6674;
-        height: 50px;
-        width: 50px;
+        height: 40px;
+        width: 40px;
         color: #fff;
 
         &.disabled {

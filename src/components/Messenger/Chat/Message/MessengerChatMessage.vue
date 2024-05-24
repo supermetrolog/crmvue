@@ -7,6 +7,7 @@
                 @edit="editMessage"
                 @pin-to-object="pinToObject"
                 :message="message"
+                :pinned="pinned"
             />
             <MessengerChatMessageAdditions v-if="additions" :additions="additions" />
             <div
@@ -25,30 +26,29 @@
                 <span v-tippy="originalDate" class="messenger-chat-message__date">
                     {{ formattedDate }},
                 </span>
-                <!--                <span v-if="message.recipient">-->
-                <!--                    с-->
-                <!--                    <a-->
-                <!--                        @click.prevent="changeRecipient"-->
-                <!--                        href="#"-->
-                <!--                        class="messenger-chat-message__recipient"-->
-                <!--                    >-->
-                <!--                        {{ recipientUsername }}-->
-                <!--                    </a>-->
-                <!--                </span>-->
-                <span>без звонка</span>
-                <!--                <template v-if="message.category">-->
-                <!--                    <span>, </span>-->
-                <!--                    <span class="messenger-chat-message__categories">-->
-                <!--                        {{ categories }}-->
-                <!--                    </span>-->
-                <!--                </template>-->
+                <span v-if="message.contacts.length">
+                    с
+                    <a
+                        @click.prevent="changeRecipient"
+                        href="#"
+                        class="messenger-chat-message__recipient"
+                    >
+                        {{ recipientUsername }}
+                    </a>
+                </span>
+                <span v-else>без звонка</span>
+                <template v-if="message.tags.length">
+                    <span>, </span>
+                    <span class="messenger-chat-message__categories">
+                        {{ categories }}
+                    </span>
+                </template>
             </div>
         </div>
     </div>
 </template>
 <script>
 import { mapMutations } from 'vuex';
-import { messenger } from '@/const/messenger';
 import { entityOptions } from '@/const/options/options';
 import Avatar from '@/components/common/Avatar.vue';
 import MessengerChatMessageActions from '@/components/Messenger/Chat/Message/MessengerChatMessageActions.vue';
@@ -73,6 +73,10 @@ export default {
             required: true
         },
         self: {
+            type: Boolean,
+            default: false
+        },
+        pinned: {
             type: Boolean,
             default: false
         }
@@ -100,13 +104,17 @@ export default {
             return username;
         },
         categories() {
-            return messenger.categories[this.message.category];
+            return this.message.tags
+                .map(element => this.$formatter.text().ucFirst(element.name))
+                .join(', ');
         },
         recipientUsername() {
-            if (this.message.recipient?.type === entityOptions.contact.typeStatement.GENERAL)
+            const contact = this.message.contacts[0];
+
+            if (contact.type === entityOptions.contact.typeStatement.GENERAL)
                 return 'Общий контакт';
 
-            return this.message.recipient?.first_and_last_name;
+            return contact.first_name + (contact.last_name ? ` ${contact.last_name}` : '');
         },
         additions() {
             if (!this.message.tasks?.length) return null;
@@ -117,16 +125,17 @@ export default {
     methods: {
         ...mapMutations({ setCurrentRecipient: 'Messenger/setCurrentRecipient' }),
         changeRecipient() {
-            this.setCurrentRecipient(this.message.recipient);
-            this.$toast(`Контакт изменен на ${this.message.recipient?.full_name}`);
+            this.setCurrentRecipient({ contactID: this.message.contacts[0].id });
+            this.$toast(`Контакт изменен на ${this.recipientUsername}`);
         },
         async pinMessage() {
-            await this.$store.dispatch('Messenger/pinMessage', this.message.id);
-            this.$toast(
-                this.message.pinned
-                    ? 'Сообщение успешно закреплено'
-                    : 'Сообщение успешно откреплено'
-            );
+            if (this.pinned) {
+                const unpinned = await this.$store.dispatch('Messenger/unpinMessage');
+                if (unpinned) this.$toast('Сообщение успешно откреплено');
+            } else {
+                const pinned = await this.$store.dispatch('Messenger/pinMessage', this.message);
+                if (pinned) this.$toast('Сообщение успешно закреплено');
+            }
         },
         async editMessage() {
             const updated = await this.$messageUpdate(this.message);

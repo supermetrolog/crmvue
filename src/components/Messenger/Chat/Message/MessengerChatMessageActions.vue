@@ -2,20 +2,40 @@
     <div class="messenger-chat-message-actions">
         <HoverActions>
             <HoverActionsButton
-                @click="$createNotification(message.id)"
-                disabled
+                @click="
+                    $createAddition({
+                        messageID: message.id,
+                        additionType: 'alert',
+                        successMessage: 'Уведомление успешно создано!'
+                    })
+                "
                 label="Добавить уведомление"
             >
                 <i class="fa-solid fa-exclamation"></i>
             </HoverActionsButton>
             <HoverActionsButton
-                @click="$createReminder(message.id)"
+                @click="
+                    $createAddition({
+                        messageID: message.id,
+                        additionType: 'reminder',
+                        successMessage: 'Напоминание успешно создано!'
+                    })
+                "
                 disabled
                 label="Добавить напоминание"
             >
                 <i class="fa-solid fa-bell"></i>
             </HoverActionsButton>
-            <HoverActionsButton @click="$createTask(message.id)" label="Добавить задачу">
+            <HoverActionsButton
+                @click="
+                    $createAddition({
+                        messageID: message.id,
+                        additionType: 'task',
+                        successMessage: 'Задача успешно создана!'
+                    })
+                "
+                label="Добавить задачу"
+            >
                 <i class="fa-solid fa-bolt"></i>
             </HoverActionsButton>
             <HoverActionsButton
@@ -28,13 +48,12 @@
             </HoverActionsButton>
             <HoverActionsButton
                 @click="$emit('pin')"
-                disabled
-                :label="message.pinned ? 'Открепить' : 'Закрепить'"
-                :active="message.pinned"
+                :label="pinned ? 'Открепить' : 'Закрепить'"
+                :active="pinned"
             >
                 <i class="fa-solid fa-thumbtack"></i>
             </HoverActionsButton>
-            <HoverActionsButton @click="$emit('edit')" disabled label="Редактировать">
+            <HoverActionsButton v-if="canEdit" @click="$emit('edit')" label="Редактировать">
                 <i class="fa-solid fa-pen"></i>
             </HoverActionsButton>
         </HoverActions>
@@ -43,16 +62,30 @@
 <script>
 import HoverActions from '@/components/common/HoverActions/HoverActions.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
+import { mapGetters } from 'vuex';
 
 export default {
     name: 'MessengerChatMessageActions',
     components: { HoverActionsButton, HoverActions },
     emits: ['pin', 'edit', 'pinToObject'],
-    inject: ['$createTask', '$createReminder', '$createNotification'],
+    inject: ['$createAddition'],
     props: {
         message: {
             type: Object,
             required: true
+        },
+        pinned: {
+            type: Boolean,
+            default: false
+        }
+    },
+    computed: {
+        ...mapGetters({ user: 'THIS_USER' }),
+        canEdit() {
+            return (
+                this.message.from.model_type === 'user' &&
+                this.message.from.model.id === this.user.id
+            );
         }
     }
 };

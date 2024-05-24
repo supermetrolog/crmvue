@@ -12,6 +12,7 @@
             v-if="objects.length"
             v-show="!isLoading"
             ref="virtualList"
+            disabled
             :data-source="objects"
             data-key="id"
             class="messenger-aside__list"
@@ -23,7 +24,7 @@
                     @click="
                         selectPanel({
                             dialogID: record.id,
-                            companyID: record.model.object.company_id,
+                            companyID: record.model.object.company?.id,
                             dialogType: record.model_type
                         })
                     "

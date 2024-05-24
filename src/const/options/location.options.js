@@ -59,10 +59,16 @@ const region = {
     15: 'Волгоградская область'
 };
 
+const positionMKAD = {
+    0: 'Внутри МКАД',
+    1: 'Снаружи МКАД'
+};
+
 export const locationOptions = {
     direction,
     cianRegion,
     directionWithShort,
     district,
-    region
+    region,
+    positionMKAD
 };

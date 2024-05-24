@@ -35,6 +35,8 @@
 }
 
 .messenger-panel-company {
+    position: relative;
+
     &__card {
         padding: 15px;
         font-size: 14px;
@@ -43,6 +45,10 @@
     &__name {
         font-weight: 600;
         font-size: 16px;
+        display: inline-block;
+        color: inherit;
+        text-decoration: underline;
+        max-width: calc(100% - 40px);
     }
 
     &__subtitle {
@@ -107,5 +113,11 @@
     &__list {
         max-height: 500px;
         overflow-y: auto
+    }
+
+    &__action {
+        position: absolute;
+        right: 10px;
+        top: 10px;
     }
 }

@@ -13,6 +13,7 @@
             v-if="requests.length"
             v-show="!isLoading"
             ref="virtualList"
+            disabled
             :data-source="requests"
             data-key="id"
             class="messenger-aside__list"

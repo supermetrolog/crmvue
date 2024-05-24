@@ -1,0 +1,339 @@
+@use '../../utils/mixins';
+@use '../../utils/variables';
+
+
+.dashboard-card {
+    border-radius: 5px;
+    box-shadow: 0 0 10px 1px rgba(0, 0, 0, .1);
+    background-color: #fff;
+
+    &__header {
+        padding: 15px;
+    }
+
+    &__header-body {
+        @include mixins.flex-box($a: center, $j: space-between);
+    }
+
+    &__content {
+        padding: 15px;
+    }
+
+    &__title {
+        font-size: 20px;
+        font-weight: 500;
+    }
+
+    &__link {
+        color: #006666;
+        font-weight: 500;
+        font-size: 14px;
+        overflow-x: hidden;
+
+        &::after {
+            content: '';
+            display: block;
+            height: 2px;
+            width: 100%;
+            background-color: #006666;
+            transform: translateX(100%);
+            @include mixins.transition(transform)
+        }
+
+        &:hover::after {
+           transform: translateX(0);
+        }
+    }
+}
+
+.dashboard-status-card {
+    border-bottom: 2px solid #86909C;
+
+    &--primary {
+        border-bottom-color: variables.$cl-primary;
+    }
+
+    &--danger {
+        border-bottom-color: variables.$cl-danger;
+    }
+
+    &--success {
+        border-bottom-color: variables.$cl-success;
+    }
+
+    &--warning {
+        border-bottom-color: variables.$cl-warning;
+    }
+
+    &__body {
+        @include mixins.flex-box($a: center, $j: space-between);
+    }
+
+    &__label {
+        color: #86909C;
+        font-weight: 500;
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+
+    &__value {
+        font-size: 24px;
+        font-weight: 600;
+    }
+
+    &__icon {
+        @include mixins.flex-box($a: center, $j: center);
+        height: 45px;
+        width: 45px;
+        font-size: 22px;
+        border-radius: 5px;
+        background-color: rgba(230, 233, 235, 0.3);
+
+        @include mixins.bg-color-scheme(
+            danger variables.$bg-danger-l none variables.$cl-danger,
+            primary variables.$bg-primary-l,
+            success variables.$bg-success-l none variables.$cl-success,
+            warning variables.$bg-warning-l none variables.$cl-warning
+        );
+    }
+}
+
+.dashboard-card-link {
+    @include mixins.flex-box($a: center, $gap: 10px);
+    position: relative;
+    cursor: pointer;
+
+    &::after {
+        content: '';
+        display: block;
+        height: 100%;
+        width: 3px;
+        background-color: #10b981;
+        position: absolute;
+        right: -15px;
+        opacity: 0;
+        @include mixins.transition(opacity);
+    }
+
+    &:hover::after, &.active::after {
+        opacity: 1;
+    }
+
+    &__value {
+        @include mixins.transition(color .2s);
+        color: initial;
+    }
+
+    &.active &__value {
+        font-weight: 500;
+        color: #10b981;
+    }
+
+    &:hover &__value {
+        color: #10b981;
+    }
+
+    &__badge {
+        padding: 2px 7px;
+        color: #fff;
+        font-size: 12px;
+        background-color: #006666;
+        border-radius: 20px;
+        margin-left: auto;
+    }
+}
+
+.dashboard-card-task {
+    @include mixins.flex-box($a: center, $gap: 10px);
+    padding: 10px 0;
+
+    &.expired {
+        background-color: variables.$bg-danger-l;
+        padding: 10px;
+    }
+
+    &:not(:last-child) {
+        border-bottom: 1px solid #ecf3fa;
+    }
+
+    &__text {
+        @include mixins.transition(color);
+        @include mixins.text-overflow();
+
+        &.completed {
+            text-decoration: line-through;
+        }
+
+        &.deleted {
+            color: #999999;
+            opacity: .5;
+        }
+    }
+
+    &:hover &__text.deleted {
+        color: #2c323f;
+    }
+
+    &__meta {
+        position: relative;
+        @include mixins.flex-box($a: center, $gap: 10px);
+        margin-left: auto;
+        flex-shrink: 0;
+    }
+
+    &__moves {
+        position: relative;
+    }
+
+    &__moves-options {
+        right: 0;
+        left: unset;
+        box-shadow: 0 0 5px 1px rgba(13, 31, 47, 0.2);
+        max-height: unset;
+        opacity: 1;
+    }
+
+    &__icon {
+        font-size: 24px;
+    }
+
+    &__row {
+        > span:first-child {
+            opacity: .5;
+            font-weight: 500;
+        }
+    }
+}
+
+.dashboard-card-message {
+    @include mixins.flex-box($gap: 5px, $a: center);
+    padding: 10px 0;
+    border-bottom: 1px solid #ecf3fa;
+
+    &:first-child {
+        border-top: 1px solid #ecf3fa;
+    }
+
+    &__icon {
+        margin-right: 5px;
+    }
+
+    &__date {
+        margin-left: auto;
+        font-size: 12px;
+        color: variables.$color_grey;
+    }
+
+    &__text {
+        font-size: 14px;
+        @include mixins.text-overflow($break: break-all);
+    }
+}
+
+.dashboard-card-request {
+    &__wrapper {
+        background-color: #fff;
+        box-shadow: 0 1px 2px rgba(56, 65, 74, .15);
+    }
+
+    &__header {
+        @include mixins.flex-box($gap: 5px, $a: center);
+        padding: 10px;
+        border-bottom: 1px dashed #e9ebec;
+        font-size: 14px;
+    }
+
+    &__functions {
+        margin-left: auto;
+        @include mixins.flex-box($gap: 5px);
+    }
+
+    &__date {
+        color: #878a99;
+    }
+
+    &__body {
+        padding: 10px;
+    }
+
+    &__company {
+        font-weight: 500;
+    }
+
+    &__address {
+        color: #878a99;
+        font-size: 14px;
+        @include mixins.text-overflow(2);
+        height: 42px;
+        margin-bottom: 5px;
+    }
+
+    &__parameters {
+        @include mixins.flex-box();
+        margin-bottom: 10px;
+    }
+
+    &__parameter {
+        flex-basis: 50%;
+    }
+
+    &__parameter-name {
+        color: #878a99;
+        margin-bottom: 2px;
+    }
+
+    &__footer {
+        @include mixins.flex-box($gap: 5px, $a: center, $j: space-between);
+        padding: 10px;
+        border-top: 1px dashed #e9ebec;
+        font-size: 14px;
+    }
+}
+
+.dashboard-card-request-view {
+    &__header {
+        @include mixins.flex-box($gap: 5px, $a: center);
+    }
+
+    &__helper {
+        color: variables.$color_grey;
+        font-weight: 500;
+        font-size: 15px;
+    }
+
+    &__subtitle {
+        margin-bottom: 10px;
+        font-weight: 500;
+        font-size: 15px;
+    }
+
+    &__purposes {
+        @include mixins.flex-box($wrap: wrap, $gap: 5px);
+    }
+
+    &__purpose {
+        width: calc(25% - 4px)!important;
+        aspect-ratio: 1;
+        @include mixins.flex-box($a: center, $j: center);
+    }
+
+    &__requirements {
+        @include mixins.flex-box($gap: 5px, $wrap: wrap);
+    }
+
+    &__property {
+        p {
+            display: inline;
+        }
+    }
+
+    &__category {
+        font-weight: 500;
+        margin-right: 5px;
+    }
+
+    &__actions {
+        margin-left: auto;
+        @include mixins.flex-box($gap: 5px);
+    }
+}

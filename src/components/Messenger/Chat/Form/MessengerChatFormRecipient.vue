@@ -97,7 +97,7 @@ export default {
             if (mainContact)
                 return {
                     ...mainContact,
-                    full_name: 'Общиий контакт',
+                    full_name: 'Общий контакт',
                     general: true
                 };
 

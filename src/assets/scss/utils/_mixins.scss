@@ -101,7 +101,7 @@ $sizes: (
                 color: $color;
             }
 
-            @if ($bg-hover-color) {
+            @if ($bg-hover-color != none) {
                 &:not(:disabled):hover {
                     background-color: $bg-hover-color;
                 }

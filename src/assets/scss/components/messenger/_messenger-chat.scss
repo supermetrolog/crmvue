@@ -78,6 +78,10 @@
     background-color: #F3F3F3;
     border-bottom: 1px solid rgba(0, 0, 0, .1);
 
+    &__functions {
+        @include mixins.flex-box($gap: 5px);
+    }
+
     &__function {
         @include mixins.clear-button;
         background-color: transparent;
@@ -115,6 +119,7 @@
     }
 
     &__deals {
+        @include mixins.flex-box($gap: 5px, $a: center);
         color: #05865f;
         font-weight: 500;
     }
@@ -397,6 +402,11 @@
     &__text {
         @include mixins.text-overflow($break: break-all);
     }
+
+    &__date {
+        margin-left: auto;
+        font-weight: 400;
+    }
 }
 
 .messenger-chat-settings {
@@ -541,5 +551,5 @@
 }
 
 .messenger-chat-form-recipient-dropdown {
-    z-index: 4004;
+    z-index: 4004!important;
 }

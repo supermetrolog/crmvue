@@ -10,6 +10,7 @@ import { locationOptions } from '@/const/options/location.options';
 import { requestOptions } from '@/const/options/request.options';
 import { companyOptions } from '@/const/options/company.options';
 import { equipmentOptions } from '@/const/options/equipment.options.js';
+import { taskOptions } from '@/const/options/task.options.js';
 
 const defaultsOptions = {
     boolean: {
@@ -40,5 +41,6 @@ export const entityOptions = {
     request: requestOptions,
     company: companyOptions,
     equipment: equipmentOptions,
+    task: taskOptions,
     defaults: defaultsOptions
 };

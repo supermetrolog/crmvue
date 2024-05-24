@@ -33,11 +33,9 @@
         <template #footer>
             <MessengerButton @click="apply" color="success">Применить</MessengerButton>
             <MessengerButton @click="$emit('close')">Отмена</MessengerButton>
-            <AnimationTransition>
-                <MessengerButton v-if="hasFilters" @click="clear" color="danger">
-                    Очистить фильтры
-                </MessengerButton>
-            </AnimationTransition>
+            <MessengerButton @click="clear" :disabled="!hasFilters" color="danger">
+                Очистить фильтры
+            </MessengerButton>
         </template>
     </Modal>
 </template>
@@ -47,7 +45,6 @@ import Form from '@/components/common/Forms/Form.vue';
 import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';
-import AnimationTransition from '@/components/common/AnimationTransition.vue';
 
 const callFilters = {
     0: 'Менее 30 дней',
@@ -65,7 +62,7 @@ const dealTypeFilters = {
 
 export default {
     name: 'FormModalMessengerFilters',
-    components: { AnimationTransition, MessengerButton, CheckboxChip, FormGroup, Form, Modal },
+    components: { MessengerButton, CheckboxChip, FormGroup, Form, Modal },
     props: {
         modelValue: {
             type: Object,

@@ -9,8 +9,7 @@
                 :key="request.id"
                 @click="
                     selectChat({
-                        companyID: request.model.object.companyID,
-                        dialogID: request.model.id,
+                        dialogID: request.id,
                         dialogType: request.model_type
                     })
                 "
@@ -26,6 +25,7 @@ import EmptyData from '@/components/common/EmptyData.vue';
 import MessengerDialogRequestSkeleton from '@/components/Messenger/Dialog/MessengerDialogRequestSkeleton.vue';
 import MessengerDialogRequest from '@/components/Messenger/Dialog/MessengerDialogRequest.vue';
 import { mapActions, mapState } from 'vuex';
+import { LoaderMixin } from '@/components/Messenger/loader.mixin.js';
 
 export default {
     name: 'MessengerPanelCompanyRequests',
@@ -34,6 +34,7 @@ export default {
         MessengerDialogRequestSkeleton,
         EmptyData
     },
+    mixins: [LoaderMixin],
     inject: ['lastRenderedObjectCount', 'setLastRendererObjectCount'],
     props: {
         companyID: {
@@ -44,47 +45,42 @@ export default {
     data() {
         return {
             requests: [],
-            isLoading: false
+            pagination: null,
+            loadingState: false
         };
     },
     computed: {
-        ...mapState({ currentDialogID: state => state.Messenger.currentPanelDialogID })
+        ...mapState({ currentDialogID: state => state.Messenger.currentPanelDialogID }),
+        originalLoader() {
+            return this.loadingState;
+        }
     },
     watch: {
-        isLoading: {
-            handler(value) {
-                if (!value) this.setLastRendererObjectCount(Math.min(this.requests.length, 3) || 1);
-            },
-            deep: true
+        isLoading(value) {
+            if (!value) this.setLastRendererObjectCount(Math.min(this.requests.length, 3) || 1);
         }
     },
     methods: {
         ...mapActions({
             selectChat: 'Messenger/selectChat',
-            getCompanyRequests: 'Messenger/getCompanyRequests'
+            getCompanyRequests: 'Messenger/getCompanyChats'
         }),
-        async loadRequests() {
-            this.isLoading = true;
+        async fetchRequests() {
+            this.loadingState = true;
 
-            let loadingCompleted = false;
-            let timeout = setTimeout(() => {
-                if (loadingCompleted) this.isLoading = false;
+            const data = await this.getCompanyRequests({
+                companyID: this.companyID,
+                modelType: 'request'
+            });
 
-                clearTimeout(timeout);
-                timeout = null;
-            }, 500);
+            this.requests = data.data;
+            this.pagination = data.pagination;
 
-            this.requests = await this.getCompanyRequests(this.companyID);
-            loadingCompleted = true;
-
-            if (!timeout) this.isLoading = false;
-        },
-        scrollToElement(element) {
-            element.scrollIntoView({ behavior: 'smooth' });
+            this.loadingState = false;
         }
     },
     created() {
-        this.loadRequests();
+        this.fetchRequests();
     }
 };
 </script>

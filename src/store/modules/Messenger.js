@@ -2,6 +2,7 @@ import api from '@//api/api';
 import { $toast } from '@/plugins/toast';
 import dayjs from 'dayjs';
 import { alg } from '@/utils/alg.js';
+import { entityOptions } from '@/const/options/options.js';
 
 const getInitialState = () => ({
     chatMembersObjects: [],
@@ -27,7 +28,7 @@ const getInitialState = () => ({
     currentPanelCompanyID: null,
 
     countNewMessages: 0,
-    countNewNotifications: 0,
+    countNewAlerts: 0,
     countNewTasks: 0,
     countNewReminders: 0,
 
@@ -62,22 +63,41 @@ const Messenger = {
         },
         updateMessage(state, newMessage) {
             let messageIndex = state.messages.findIndex(message => message.id === newMessage.id);
+
             if (messageIndex !== -1) {
-                state.messages[messageIndex] = { ...state.messages[messageIndex], ...newMessage };
+                Object.assign(state.messages[messageIndex], newMessage);
             }
         },
         setMessagesPagination(state, value) {
             state.messagesPagination = value;
         },
 
-        setCurrentRecipient(state, value) {
-            state.currentRecipient = value;
+        setCurrentRecipient(state, { contact, contactID }) {
+            if (contact) state.currentRecipient = contact;
+            else if (contactID) {
+                const contact = state.currentPanel.contacts.find(
+                    element => element.id === contactID
+                );
+
+                if (contact.type === entityOptions.contact.typeStatement.GENERAL) {
+                    state.currentRecipient = {
+                        ...contact,
+                        full_name: 'Общий контакт',
+                        general: true
+                    };
+                } else {
+                    state.currentRecipient = contact;
+                }
+            } else state.currentRecipient = null;
         },
         setCurrentDialog(state, value) {
             state.currentDialog = value;
         },
         setCurrentPanel(state, value) {
             state.currentPanel = value;
+        },
+        updateCurrentPanel(state, value) {
+            Object.assign(state.currentPanel, value);
         },
         setCurrentPanelID(state, value) {
             state.currentPanelID = value;
@@ -150,24 +170,6 @@ const Messenger = {
                 ] = addition;
             }
         },
-
-        pinMessage(state, messageID) {
-            if (state.currentPinned) {
-                state.currentPinned.pinned = false;
-            }
-
-            if (state.currentPinned?.id === messageID) {
-                state.currentPinned = null;
-                return;
-            }
-
-            const message = state.messages.find(message => message.id === messageID);
-
-            if (message) {
-                message.pinned = !message.pinned;
-                state.currentPinned = message;
-            }
-        },
         pinMessageToObject(state, messageID) {
             const messageIndex = state.messages.findIndex(message => message.id === messageID);
 
@@ -201,82 +203,91 @@ const Messenger = {
             commit('setLoadingAside', false);
             return null;
         },
-        async selectPanel(context, { companyID, dialogID, dialogType }) {
-            context.commit('setCurrentRecipient', null);
+        async selectPanel(
+            { commit, state },
+            { companyID, dialogID, dialogType, anywayOpen = false }
+        ) {
+            if (dialogID === state.currentAsideDialogID && anywayOpen) return;
 
-            if (dialogID === context.state.currentAsideDialogID) {
-                context.commit('setCurrentAsideDialogID', null);
-                context.commit('setCurrentPanel', null);
-                context.commit('setCurrentPanelID', null);
-                context.commit('setCurrentPanelCompanyID', null);
-                context.commit('setCurrentDialogType', null);
+            commit('setCurrentRecipient', { contact: null });
+
+            if (dialogID === state.currentAsideDialogID) {
+                commit('setCurrentAsideDialogID', null);
+                commit('setCurrentPanel', null);
+                commit('setCurrentPanelID', null);
+                commit('setCurrentPanelCompanyID', null);
+                commit('setCurrentDialogType', null);
                 return;
             }
 
-            context.commit('setCurrentAsideDialogID', dialogID);
-            context.commit('setCurrentPanelCompanyID', companyID);
-            context.commit('setCurrentDialogType', dialogType);
+            commit('setCurrentAsideDialogID', dialogID);
+            commit('setCurrentPanelCompanyID', companyID);
+            commit('setCurrentDialogType', dialogType);
 
-            context.commit('setLoadingPanel', true);
+            commit('setLoadingPanel', true);
 
             const data = await api.messenger.getPanel(companyID);
 
-            context.commit('setCurrentPanel', data || null);
-            context.commit('setLoadingPanel', false);
+            commit('setCurrentPanel', data || null);
+            commit('setLoadingPanel', false);
         },
-        async selectChat(context, { dialogID, dialogType }) {
-            if (dialogID === context.state.currentPanelDialogID) {
-                context.commit('setCurrentPanelDialogID', null);
-                context.commit('setCurrentChat', false);
-                context.commit('setCurrentPinned', null);
+        async updatePanel({ commit, state }) {
+            const panel = await api.messenger.getPanel(state.currentPanelCompanyID);
+
+            if (panel) {
+                commit('updateCurrentPanel', panel);
+
+                if (state.currentChat && state.currentRecipient) {
+                    commit('setCurrentRecipient', { contactID: state.currentRecipient?.id });
+                }
+            }
+        },
+        async selectChat({ commit, state }, { dialogID, dialogType, anywayOpen = false }) {
+            if (dialogID === state.currentPanelDialogID && anywayOpen) return;
+
+            if (dialogID === state.currentPanelDialogID) {
+                commit('setCurrentPanelDialogID', null);
+                commit('setCurrentChat', false);
+                commit('setCurrentPinned', null);
                 return;
             }
 
-            context.commit('setCurrentDialogType', dialogType);
-            context.commit('setCurrentPanelDialogID', dialogID);
-            context.commit('setMessages', []);
-            context.commit('setMessagesPagination', {});
-            context.commit('setLoadingChat', true);
+            commit('setCurrentDialogType', dialogType);
+            commit('setCurrentPanelDialogID', dialogID);
+            commit('setMessages', []);
+            commit('setMessagesPagination', {});
+            commit('setLoadingChat', true);
 
-            const [dialog, messages] = await Promise.all([
+            const [dialog, messages, pinned] = await Promise.all([
                 api.messenger.getDialog(dialogID),
-                api.messenger.getMessages(dialogID)
+                api.messenger.getMessages(dialogID),
+                api.messenger.getPinned(dialogID)
             ]);
 
-            //context.commit('setCurrentPinned', pinned);
-            context.commit('setCurrentChat', true);
-            context.commit('setCurrentDialog', dialog);
-            context.commit('setMessages', messages.data);
-            context.commit('setMessagesPagination', messages.pagination);
-            context.commit('setLoadingChat', false);
+            commit('setCurrentPinned', pinned);
+            commit('setCurrentChat', true);
+            commit('setCurrentDialog', dialog);
+            commit('setMessages', messages.data);
+            commit('setMessagesPagination', messages.pagination);
+            commit('setLoadingChat', false);
         },
-        async getCompanyObjects() {
-            // try {
-            //     const objects = await api.companyObjects.search({ company_id, page });
-            //     console.log(objects, 'objects');
-            //
-            //     const data = await api.messenger.getChats({
-            //         model_type: 'object',
-            //         model_id: [23, 24]
-            //     });
-            //     console.log(data);
-            //     return [];
-            // } catch {
-            //     return [];
-            // }
-        },
-        async getCompanyRequests() {
-            // const data = await api.request.getRequests(id);
-            //
-            // if (data) return data;
-            //
-            // return [];
-        },
+        async getCompanyChats(_, { companyID, modelType, page = 1 }) {
+            const data = await api.messenger.getChats({
+                model_type: modelType,
+                company_id: companyID,
+                page: page
+            });
 
-        async sendMessage({ commit, state }) {
-            const text = state.newMessage.replaceAll('\n', '<br />');
+            return data ?? { data: [], pagination: null };
+        },
+        async sendMessage({ commit, state }, options) {
+            const message = state.newMessage.replaceAll('\n', '<br />');
 
-            const response = await api.messenger.sendMessage(state.currentPanelDialogID, text);
+            const response = await api.messenger.sendMessage(state.currentPanelDialogID, {
+                message,
+                contact_ids: state.currentRecipient ? [state.currentRecipient.id] : [],
+                ...options
+            });
 
             if (response) {
                 commit('addMessages', [response]);
@@ -288,13 +299,28 @@ const Messenger = {
             $toast('Произошла ошибка при отправке сообщения');
             return false;
         },
-        async updateMessage() {
-            // context.commit('updateMessage', message);
-            // return true;
+        async updateMessage({ commit }, { id, message = null, tag = null, contact = null }) {
+            const payload = {
+                id,
+                message,
+                tag_ids: tag ? [tag] : [],
+                contact_ids: contact ? [contact] : []
+            };
+
+            const updatedMessage = await api.messenger.updateMessage(payload);
+
+            if (updatedMessage) {
+                commit('updateMessage', updatedMessage);
+                return true;
+            }
+
+            $toast('Произошла ошибка при отправке запроса');
+            return false;
         },
 
         async reportContact(context, { contact }) {
-            $toast(`${contact.full_name} отмечен как неактуальный контакт`, { duration: 3000 });
+            // ONLY TESTING
+            $toast(`${contact.full_name} отмечен(а) как неактуальный контакт`, { duration: 3000 });
 
             context.commit('addMessages', [
                 {
@@ -307,6 +333,7 @@ const Messenger = {
             return true;
         },
         async addCall(context, { contact, date }) {
+            // ONLY TESTING
             const formattedDate = dayjs(date).format('DD.MM.YYYY, HH:mm');
 
             context.commit('addMessages', [
@@ -320,6 +347,7 @@ const Messenger = {
             return true;
         },
         async sendQuiz(context, { contact }) {
+            // ONLY TESTING// ONLY TESTING
             context.commit('addMessages', [
                 {
                     id: context.state.messages.length + 1,
@@ -331,6 +359,7 @@ const Messenger = {
             return true;
         },
         async sendBreakObject(context) {
+            // ONLY TESTING
             context.commit('addMessages', [
                 {
                     id: context.state.messages.length + 1,
@@ -341,11 +370,11 @@ const Messenger = {
 
             return true;
         },
-        async addNotification({ commit }, { messageID }) {
-            const addition = null; // axios fetch
+        async addAlert({ commit }, { messageID, options }) {
+            const addition = await api.alert.createFromMessage(messageID, options);
 
             if (addition) {
-                commit('addAddition', { messageID, additionType: 'notification', addition });
+                commit('addAddition', { messageID, additionType: 'alert', addition });
                 return true;
             }
 
@@ -364,14 +393,14 @@ const Messenger = {
 
             return false;
         },
-        async deleteTask({ commit }, { messageID, taskID }) {
-            const response = await api.task.delete(taskID);
+        async deleteAddition({ commit }, { messageID, additionID, additionType }) {
+            const response = await api[additionType].delete(additionID);
 
             if (response) {
                 commit('deleteAddition', {
-                    additionType: 'task',
-                    additionID: taskID,
-                    messageID: messageID
+                    additionType,
+                    additionID,
+                    messageID
                 });
 
                 return true;
@@ -379,12 +408,12 @@ const Messenger = {
 
             return false;
         },
-        async updateTask({ commit }, { messageID, taskID, payload }) {
-            const addition = await api.task.update(taskID, payload);
+        async updateAddition({ commit }, { messageID, additionID, additionType, payload }) {
+            const addition = await api[additionType].update(additionID, payload);
 
             if (addition) {
                 commit('updateAddition', {
-                    additionType: 'task',
+                    additionType,
                     addition,
                     messageID
                 });
@@ -395,6 +424,7 @@ const Messenger = {
             return false;
         },
         async addReminder({ commit }, { messageID }) {
+            // ONLY TESTING
             const addition = null; // axios fetch
 
             if (addition) {
@@ -406,26 +436,40 @@ const Messenger = {
         },
 
         async getCurrentChatFiles(context) {
+            // ONLY TESTING
             return await api.messenger.getFiles(context.state.currentDialog);
         },
         async getCurrentChatPhotos(context) {
+            // ONLY TESTING
             return await api.messenger.getPhotos(context.state.currentDialog);
         },
         async getCurrentChatQuizzes(context) {
+            // ONLY TESTING
             return await api.messenger.getQuizzes(context.state.currentDialog);
         },
 
-        async completeTask(context, task) {
-            context.commit('completeTask', task);
-        },
+        async pinMessage({ state, commit }, message) {
+            const pinned = await api.messenger.pinMessage(state.currentDialog.id, message.id);
 
-        async updateAddition(context, addition) {
-            context.commit('updateAddition', addition);
+            if (pinned) {
+                commit('setCurrentPinned', message);
+                return true;
+            }
+
+            return false;
         },
-        async pinMessage(context, messageID) {
-            context.commit('pinMessage', messageID);
+        async unpinMessage({ state, commit }) {
+            const unpinned = await api.messenger.unpinMessage(state.currentDialog.id);
+
+            if (unpinned) {
+                commit('setCurrentPinned', null);
+                return true;
+            }
+
+            return false;
         },
         async pinMessageToObject(context, message) {
+            // ONLY TESTING
             context.commit('pinMessageToObject', message.id);
             return true;
         },

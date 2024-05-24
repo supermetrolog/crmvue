@@ -1,7 +1,7 @@
 <template>
     <EmptyData no-rounded>
         <template #image>
-            <img src="@/assets/image/in-progress.gif" alt="in progress image" />
+            <i class="fa-solid fa-code mb-3" style="font-size: 80px"></i>
         </template>
         В разработке..
     </EmptyData>

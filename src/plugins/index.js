@@ -1,4 +1,5 @@
 import { alg } from '@/utils/alg';
+import dayjs from 'dayjs';
 
 const textFormatter = {
     ucFirst(string, full = false) {
@@ -69,6 +70,9 @@ export const formatterObject = {
 
         return new Date(value * 1000).toLocaleDateString('ru', options);
     },
+    toDate(date, format) {
+        return dayjs(date).format(format ? format : 'D.MM.YY, HH:mm');
+    },
     initials(full_name) {
         return full_name
             .split(' ')
@@ -82,6 +86,16 @@ export const formatterObject = {
     toCorrectUrl(value) {
         if (value.match(/^https?:\/\//)) return value;
         return 'https://' + value;
+    },
+    companyName(company, companyID) {
+        if (!company || company?.noName) return 'Компания #' + companyID;
+
+        if (alg.isNumeric(company.nameRu)) return 'Компания №' + company.nameRu;
+
+        let companyName = company.nameRu;
+        if (company.nameEng) companyName += ' - ' + company.nameEng;
+
+        return companyName;
     }
 };
 

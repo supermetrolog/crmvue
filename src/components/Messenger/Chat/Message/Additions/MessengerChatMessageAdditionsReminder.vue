@@ -7,7 +7,17 @@
         </template>
         <template #content>Напоминание {{ formattedDate }} для {{ usersText }}</template>
         <template #actions>
-            <HoverActionsButton @click="$editReminder(addition)" label="Редактировать">
+            <HoverActionsButton
+                @click="
+                    $editAddition({
+                        messageID: $messageID,
+                        addition,
+                        additionType: 'reminder',
+                        successMessage: 'Напоминание успешно создано!'
+                    })
+                "
+                label="Редактировать"
+            >
                 <i class="fa-solid fa-pen"></i>
             </HoverActionsButton>
             <HoverActionsButton @click="remove" label="Удалить">
@@ -24,7 +34,7 @@ import MessengerChatMessageAdditionsItem from '@/components/Messenger/Chat/Messa
 export default {
     name: 'MessengerChatMessageAdditionsReminder',
     components: { MessengerChatMessageAdditionsItem, HoverActionsButton },
-    inject: ['$confirmPopup', '$editReminder'],
+    inject: ['$confirmPopup', '$editAddition'],
     props: {
         addition: {
             type: Object,
@@ -47,8 +57,14 @@ export default {
             );
 
             if (confirmed) {
-                await this.$store.dispatch('Messenger/removeAddition', this.addition);
-                this.$toast('Напоминание удалено.');
+                const deleted = await this.$store.dispatch('Messenger/deleteAddition', {
+                    messageID: this.$messageID,
+                    additionID: this.addition.id,
+                    additionType: 'reminder'
+                });
+
+                if (deleted) this.$toast('Напоминание удалено.');
+                else this.$toast('Произошла ошибка. Попробуйте позже.');
             }
         }
     }

@@ -1,11 +1,6 @@
 <template>
-    <div class="spinner" :class="{ center }">
-        <div class="spinner__dot"></div>
-        <div class="spinner__dot"></div>
-        <div class="spinner__dot"></div>
-        <div class="spinner__dot"></div>
-        <div class="spinner__dot"></div>
-        <div class="spinner__dot"></div>
+    <div class="spinner" :class="{ center: center }">
+        <div class="spinner__clip"></div>
     </div>
 </template>
 <script>

@@ -203,7 +203,7 @@
                     v-model="form.pricePerFloor"
                     maska="##########"
                     label="Цена"
-                    unit="₽ за м<sup>2</sup>/год"
+                    :unit="pricePerFloorUnit"
                     type="number"
                     class="col-4"
                 />
@@ -442,6 +442,7 @@ import Chip from '@/components/common/Chip.vue';
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
 import { areaRangeValidators, ceilingHeightValidators } from '@//validators/fields';
 import dayjs from 'dayjs';
+import { cloneObject } from '@/utils/index.js';
 
 export default {
     name: 'FormCompanyRequest',
@@ -560,12 +561,15 @@ export default {
         },
         formAreaValidators() {
             return areaRangeValidators(this.form.maxArea);
-        }
-    },
-    watch: {
-        form: {
-            deep: true,
-            handler() {}
+        },
+        pricePerFloorUnit() {
+            if (
+                this.form.dealType === null ||
+                this.form.dealType === undefined ||
+                this.form.dealType === 1
+            )
+                return '₽';
+            return '₽ за м<sup>2</sup>/год';
         }
     },
     validations() {
@@ -808,12 +812,12 @@ export default {
             }
         }
     },
-    async created() {
+    created() {
         this.loader = true;
-        await this.FETCH_CONSULTANT_LIST();
-        this.form.company_id = this.company_id;
+        this.FETCH_CONSULTANT_LIST();
+        if (this.company_id) this.form.company_id = this.company_id;
         if (this.formdata) {
-            this.form = { ...this.form, ...this.formdata };
+            Object.assign(this.form, cloneObject(this.formdata));
         }
         this.loader = false;
     }

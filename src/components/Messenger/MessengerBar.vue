@@ -8,11 +8,11 @@
             :label="countNewTasks"
         />
         <MessengerBarElement
-            v-tippy="notificationsButtonTitle"
-            :class="{ disabled: !countNewNotifications }"
+            v-tippy="alertsButtonTitle"
+            :class="{ disabled: !countNewAlerts }"
             color="orange"
             icon="fa-solid fa-exclamation"
-            :label="countNewNotifications"
+            :label="countNewAlerts"
         />
         <MessengerBarElement
             v-tippy="remindersButtonTitle"
@@ -42,7 +42,7 @@ export default {
         ...mapState({
             countNewTasks: state => state.Messenger.countNewTasks,
             countNewMessages: state => state.Messenger.countNewMessages,
-            countNewNotifications: state => state.Messenger.countNewNotifications,
+            countNewAlerts: state => state.Messenger.countNewAlerts,
             countNewReminders: state => state.Messenger.countNewReminders
         }),
         tasksButtonTitle() {
@@ -57,14 +57,11 @@ export default {
 
             return messenger.buttons.messages.empty;
         },
-        notificationsButtonTitle() {
-            if (this.countNewNotifications)
-                return plural(
-                    this.countNewNotifications,
-                    ...messenger.buttons.notifications.plural
-                );
+        alertsButtonTitle() {
+            if (this.countNewAlerts)
+                return plural(this.countNewAlerts, ...messenger.buttons.alerts.plural);
 
-            return messenger.buttons.notifications.empty;
+            return messenger.buttons.alerts.empty;
         },
         remindersButtonTitle() {
             if (this.countNewReminders)

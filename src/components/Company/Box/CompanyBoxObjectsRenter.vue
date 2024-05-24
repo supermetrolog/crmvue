@@ -20,12 +20,16 @@
             <span v-else>нет лого</span>
         </a>
         <div class="CompanyBoxObjectsRenter-info">
-            <span class="CompanyBoxObjectsRenter-info-name">{{ deal.company.nameRu || deal.company.nameEng }}</span>
+            <span class="CompanyBoxObjectsRenter-info-name">
+                {{ $formatter.companyName(deal.company) }}
+            </span>
             <ul class="CompanyBoxObjectsRenter-info-list">
                 <li>
                     <span>чья сделка:</span>
                     <span v-if="deal.is_our == 1">PENNY LANE REALTY</span>
-                    <span v-else-if="deal.is_competitor">{{ deal.competitor.full_name || 'неизвестно' }}</span>
+                    <span v-else-if="deal.is_competitor">{{
+                        deal.competitor.full_name || 'неизвестно'
+                    }}</span>
                     <span v-else>нет данных</span>
                 </li>
                 <li>
@@ -46,7 +50,9 @@
                     </li>
                     <li>
                         <span>консультант:</span>
-                        <span v-if="deal.consultant?.userProfile">{{ deal.consultant.userProfile.short_name }}</span>
+                        <span v-if="deal.consultant?.userProfile">{{
+                            deal.consultant.userProfile.short_name
+                        }}</span>
                         <span v-else>нет данных</span>
                     </li>
                     <li>

@@ -5,11 +5,16 @@
                 <p>Файлы, опросы и прочее</p>
                 <i @click="toggle" class="fa-regular fa-circle-xmark"></i>
             </div>
-            <Spinner v-if="isLoading" center class="spinner--green" />
+            <Spinner v-if="isLoading" center />
             <div v-else-if="opened" class="messenger-chat-settings__body">
-                <div class="messenger-chat-settings__preview">
-                    <span class="messenger-chat-settings__id">{{ currentDialog.id }}</span>
-                    <img :src="currentDialog.thumb" alt="object preview" />
+                <div
+                    v-if="currentDialog.model_type === 'object'"
+                    class="messenger-chat-settings__preview"
+                >
+                    <span class="messenger-chat-settings__id">
+                        {{ currentDialog.model.object.id }}
+                    </span>
+                    <img :src="currentDialog.model.object.thumb" alt="object preview" />
                 </div>
                 <div class="messenger-chat-settings__list">
                     <MessengerChatSettingsLink

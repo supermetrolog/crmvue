@@ -2,7 +2,7 @@
     <section class="companies-requests">
         <div class="container-fluid">
             <div class="row mb-4">
-                <FormCompanyRequestSearch v-if="mounted" class="col-12" />
+                <FormCompanyRequestSearch class="col-8" />
             </div>
             <div class="row justify-content-between">
                 <PaginationClassic

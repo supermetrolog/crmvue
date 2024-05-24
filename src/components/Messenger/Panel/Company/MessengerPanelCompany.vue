@@ -1,7 +1,20 @@
 <template>
     <div class="messenger-panel-company">
         <div class="messenger-panel-company__card">
-            <p class="messenger-panel-company__name">{{ companyName }}</p>
+            <HoverActionsButton
+                @click="$emit('edit')"
+                label="Редактировать компанию"
+                class="messenger-panel-company__action"
+            >
+                <i class="fa-solid fa-pen"></i>
+            </HoverActionsButton>
+            <a
+                :href="'/companies/' + company.id"
+                target="_blank"
+                class="messenger-panel-company__name"
+            >
+                {{ $formatter.companyName(company, company.id) }}
+            </a>
             <div class="messenger-panel-company__subtitle">
                 <span>ID{{ company.id }} | </span>
                 <Rating
@@ -41,17 +54,19 @@
                 </li>
             </ul>
         </div>
-        <MessengerPanelCompanyTabs :company="company" />
+        <MessengerPanelCompanyTabs :key="company.id" :company="company" />
     </div>
 </template>
 <script>
 import Rating from '@/components/common/Rating.vue';
 import { entityOptions } from '@/const/options/options';
 import MessengerPanelCompanyTabs from '@/components/Messenger/Panel/Company/MessengerPanelCompanyTabs.vue';
+import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 
 export default {
     name: 'MessengerPanelCompany',
-    components: { MessengerPanelCompanyTabs, Rating },
+    components: { HoverActionsButton, MessengerPanelCompanyTabs, Rating },
+    emits: ['edit'],
     props: {
         company: {
             type: Object,
@@ -59,9 +74,6 @@ export default {
         }
     },
     computed: {
-        companyName() {
-            return this.company.nameRu || this.company.nameEng || 'Без названия';
-        },
         website() {
             const generalContact = this.company.contacts.find(
                 contact => contact.type === entityOptions.contact.typeStatement.GENERAL
