@@ -6207,7 +6207,9 @@ button.filters {
     }
 }
 
-.confirmer {
+.confirm {
+    z-index: 4100;
+
     &__text {
         text-align: center;
         margin-bottom: 20px;

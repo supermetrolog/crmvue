@@ -25,12 +25,12 @@ import api from '@/api/api.js';
 import DashboardTasksItemSkeleton from '@/components/Dashboard/Table/DashboardTableTasksItemSkeleton.vue';
 import { mapGetters } from 'vuex';
 import EmptyData from '@/components/common/EmptyData.vue';
+import { useConfirm } from '@/composables/useConfirm.js';
 
 export default {
     name: 'DashboardTableTasks',
     components: { EmptyData, DashboardTasksItemSkeleton, DashboardTableTasksItem },
     emits: ['update', 'edit'],
-    inject: ['$confirmPopup'],
     props: {
         tasks: {
             type: Array,
@@ -40,6 +40,10 @@ export default {
             type: Boolean,
             default: false
         }
+    },
+    setup() {
+        const { confirm } = useConfirm();
+        return { confirm };
     },
     data() {
         return {
@@ -56,7 +60,7 @@ export default {
     },
     methods: {
         async deleteTask(task) {
-            const confirmed = await this.$confirmPopup(
+            const confirmed = await this.confirm(
                 'Вы уверены, что хотите безвозвратно удалить задачу?'
             );
             if (!confirmed) return;

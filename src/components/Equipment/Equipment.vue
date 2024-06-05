@@ -117,23 +117,23 @@ import { entityOptions } from '@/const/options/options.js';
 import { unitTypes } from '@/const/unitTypes.js';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import dayjs from 'dayjs';
-import equipments from '../../views/Equipments.vue';
+import { useConfirm } from '@/composables/useConfirm.js';
 
 export default {
     name: 'Equipment',
     components: { HoverActionsButton, CompanyContact, CompanyElement, VLazyImage },
     emits: ['edit', 'view'],
-    inject: ['$confirmPopup'],
     props: {
         equipment: {
             type: Object,
             required: true
         }
     },
+    setup() {
+        const { confirm } = useConfirm();
+        return { confirm };
+    },
     computed: {
-        equipments() {
-            return equipments;
-        },
         unitTypes() {
             return unitTypes;
         },
@@ -166,7 +166,7 @@ export default {
     },
     methods: {
         async togglePassive() {
-            const confirmed = await this.$confirmPopup(
+            const confirmed = await this.confirm(
                 this.isPassive
                     ? 'Вы уверены, что хотите снять объект с пассива?'
                     : 'Вы уверены, что хотите отправить объект в пассив?'
@@ -177,7 +177,7 @@ export default {
             }
         },
         async remove() {
-            const confirmed = await this.$confirmPopup(
+            const confirmed = await this.confirm(
                 'Вы уверены, что хотите безвозвратно удалить объект?'
             );
 

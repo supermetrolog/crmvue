@@ -21,16 +21,20 @@
 import plural from 'plural-ru';
 import dayjs from 'dayjs';
 import MessengerChatPinnedView from '@/components/Messenger/Chat/MessengerChatPinnedView.vue';
+import { useConfirm } from '@/composables/useConfirm.js';
 
 export default {
     name: 'MessengerChatPinned',
     components: { MessengerChatPinnedView },
-    inject: ['$confirmPopup'],
     props: {
         message: {
             type: Object,
             required: true
         }
+    },
+    setup() {
+        const { confirm } = useConfirm();
+        return { confirm };
     },
     data() {
         return {
@@ -52,9 +56,7 @@ export default {
     },
     methods: {
         async unpin() {
-            const confirmed = await this.$confirmPopup(
-                'Вы уверены, что хотите открепить сообщение?'
-            );
+            const confirmed = await this.confirm('Вы уверены, что хотите открепить сообщение?');
             if (!confirmed) return;
 
             const unpinned = await this.$store.dispatch('Messenger/unpinMessage');

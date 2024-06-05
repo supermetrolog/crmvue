@@ -46,17 +46,21 @@ import AccountCard from '@/components/Account/AccountCard.vue';
 import { mapGetters } from 'vuex';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import Button from '@/components/common/Button.vue';
+import { useConfirm } from '@/composables/useConfirm.js';
 
 export default {
     name: 'AccountMain',
     components: { Button, AnimationTransition, AccountCard },
-    inject: ['$confirmPopup'],
+    setup() {
+        const { confirm } = useConfirm();
+        return { confirm };
+    },
     computed: {
         ...mapGetters(['THIS_USER'])
     },
     methods: {
         async logout() {
-            const confirmed = await this.$confirmPopup('Вы уверены, что хотите выйти из аккаунта?');
+            const confirmed = await this.confirm('Вы уверены, что хотите выйти из аккаунта?');
             if (confirmed) {
                 await this.$store.dispatch('LOGOUT');
                 return this.$router.push('/login');
