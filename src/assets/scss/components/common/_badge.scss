@@ -1,0 +1,84 @@
+@use '../../utils/variables';
+
+.badge {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    padding: 2px;
+    font-size: 9px;
+    font-weight: bold;
+    border-radius: 5px;
+    text-align: center;
+
+    &.autosize {
+        width: auto;
+        height: auto;
+        display: inline;
+        padding: 5px 10px;
+        border-radius: 0;
+    }
+
+    &.badge-dark {
+        background-color: variables.$color_dark;
+        color: white;
+    }
+
+    &.badge-warning {
+        background-color: variables.$color_warning;
+    }
+
+    &.badge-danger {
+        background-color: variables.$color_danger;
+        color: white;
+    }
+
+    &.badge-grey {
+        background-color: variables.$color_grey;
+        color: variables.$color_dark;
+    }
+
+    &.badge-info {
+        background-color: variables.$color_info;
+        color: white;
+    }
+
+    &.badge-primary {
+        background-color: variables.$color_primary;
+        color: white;
+    }
+
+    &.badge-success {
+        background-color: variables.$color_success_dark;
+        color: white;
+    }
+
+    &.badge-dark-warning {
+        background-color: #a02121;
+        color: white;
+    }
+
+    &.badge-light-blue {
+        background-color: darken(variables.$color_info, 10);
+        color: white;
+    }
+
+    &.badge-blue-green {
+        background-color: variables.$color_success_alt;
+        color: white;
+    }
+
+    &.badge-pale-red {
+        background-color: #812375;
+        color: white;
+    }
+
+    &.badge-secondary {
+        background-color: variables.$color_secondary;
+        color: white;
+    }
+
+    &.badge-black {
+        background-color: black;
+        color: white;
+    }
+}

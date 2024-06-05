@@ -16,10 +16,13 @@
                             <Td class="description">
                                 {{ item.description }}
                             </Td>
-                            <Td class="text-right">
-                                <button @click="$emit('clickEdit', item)" class="btn btn-action text-primary">
+                            <Td>
+                                <HoverActionsButton
+                                    @click="$emit('clickEdit', item)"
+                                    class="mx-auto"
+                                >
                                     <i class="fas fa-edit"></i>
-                                </button>
+                                </HoverActionsButton>
                             </Td>
                         </Tr>
                     </template>
@@ -34,10 +37,12 @@ import Table from '@/components/common/Table/Table.vue';
 import Tr from '@/components/common/Table/Tr.vue';
 import Th from '@/components/common/Table/Th.vue';
 import Td from '@/components/common/Table/Td.vue';
+import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 
 export default {
     name: 'CompanyGroupsTable',
     components: {
+        HoverActionsButton,
         Table,
         Tr,
         Th,

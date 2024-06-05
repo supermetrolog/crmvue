@@ -1,296 +1,174 @@
 <template>
-    <div class="px-2" :class="col">
+    <div>
         <div
-            v-if="offer.noOffer"
-            class="object-offer only"
-            :class="[{ general: offer.type_id === 2 }]"
-        >
-            <div class="row no-gutters object-info">
-                <div class="col-12 align-self-center">
-                    <div class="image-container">
-                        <div class="params">
-                            <span>{{ offer.deal_type_name }} </span>
-                            <span class="object_class">
-                                {{ offer.class_name }}
-                            </span>
-                            <span
-                                v-if="offer.duplicate_count > 1"
-                                class="duplicate_count"
-                                title="количество отправлений"
-                            >
-                                {{ offer.duplicate_count }}
-                            </span>
-                        </div>
-                        <span class="visual_id">
-                            {{ offer.visual_id }}
-                        </span>
-                        <span v-if="offer.type_id == 2" class="badge badge-secondary isGeneral">
-                            Общий
-                        </span>
-                        <span v-else-if="offer.type_id == 1" class="badge badge-info isGeneral">
-                            Блок
-                        </span>
-                        <span v-else class="badge badge-warning isGeneral">Неизвестно</span>
-                        <a @click.prevent href="#" target="_blank">
-                            <img :src="offer.image" alt="image" />
-                        </a>
-                        <div @click.prevent="clickUnSelectObject" class="icon-unselect">
-                            <i class="fas fa-check" />
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 main text-center">
-                    <span v-if="offer.status != 1" class="badge badge-warning mb-1">В архиве</span>
-                    <div class="actions">
-                        <i @click="clickView(offer)" class="fas fa-eye" />
-                    </div>
-                    <div class="price">
-                        <i class="fas fa-ruble-sign" />
-                        <p class="value">{{ offer.price }} <small></small></p>
-                    </div>
-                    <div class="area">
-                        <i class="fas fa-square-full" />
-                        <p>
-                            {{ offer.area }}
-                            <small>м<sup>2</sup></small>
-                        </p>
-                    </div>
-                    <div v-if="offer.comments" class="comments">
-                        <p v-if="offer.comments.length" class="title">Комментарии</p>
-                        <p
-                            v-for="comment in offer.comments"
-                            :key="comment.id"
-                            :class="{ current: comment.timeline_step_id == currentStepId }"
-                        >
-                            {{ comment.comment }}
-                        </p>
-                    </div>
-                    <div class="address">
-                        <p class="title">Адрес</p>
-                        <p>{{ offer.address }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div
-            v-else
-            class="object-offer only"
+            class="object-offer object-offer--only"
             :class="[
                 {
-                    passive: offer.status !== 1,
+                    passive: isPassive,
                     general: offer.type_id === 2,
                     selected: isSelected
                 }
             ]"
         >
-            <div class="row no-gutters object-info">
+            <div class="row no-gutters object-offer__info">
                 <div class="col-12 align-self-center">
-                    <div class="image-container">
-                        <div class="params">
-                            <span>{{ offer.deal_type_name }} </span>
-                            <span class="object_class">
+                    <div class="object-offer__preview">
+                        <div class="object-offer__chips">
+                            <DashboardChip v-if="offer.deal_type_name" class="object-offer__chip">
+                                {{ offer.deal_type_name }}
+                            </DashboardChip>
+                            <DashboardChip
+                                v-else-if="isPassive"
+                                class="object-offer__chip dashboard-bg-danger text-white"
+                            >
+                                Пассив
+                            </DashboardChip>
+                            <DashboardChip v-tippy="'Класс объекта'" class="object-offer__chip">
                                 {{ offer.class_name }}
-                            </span>
-                            <span
+                            </DashboardChip>
+                            <DashboardChip
                                 v-if="offer.duplicate_count > 1"
-                                class="duplicate_count"
-                                title="количество отправлений"
+                                v-tippy="'Количество отправлений'"
+                                class="object-offer__duplicate"
                             >
                                 {{ offer.duplicate_count }}
-                            </span>
+                            </DashboardChip>
+                            <DashboardChip class="object-offer__chip ml-auto">
+                                {{ offer.visual_id }}
+                            </DashboardChip>
                         </div>
-                        <span class="visual_id">
-                            {{ offer.visual_id }}
-                        </span>
-                        <span v-if="offer.test_only" class="badge badge-danger isGeneral test_only">
+                        <span
+                            v-if="offer.test_only"
+                            class="object-offer__badge object-offer__test-only"
+                        >
                             Тестовый лот
                         </span>
-                        <span v-if="offer.type_id == 2" class="badge badge-secondary isGeneral">
+                        <span
+                            v-if="offer.type_id === 2"
+                            class="object-offer__badge object-offer__is-main"
+                        >
                             Общий
                         </span>
-                        <span v-else-if="offer.type_id == 1" class="badge badge-info isGeneral">
+                        <span
+                            v-else-if="offer.type_id === 1"
+                            class="object-offer__badge object-offer__is-block"
+                        >
                             Блок
                         </span>
-                        <span v-else class="badge badge-warning isGeneral">Неизвестно</span>
-                        <a @click.prevent="clickSelectObject" href="#" target="_blank">
-                            <img :src="offer.thumb" alt="image" />
+                        <span v-else class="object-offer__badge object-offer__is-undefined">
+                            Неизвестно
+                        </span>
+                        <a
+                            @click.prevent="select"
+                            class="object-offer__photo"
+                            href="#"
+                            target="_blank"
+                        >
+                            <VLazyImage :src="offer.thumb" alt="image" />
                         </a>
-                        <div @click.prevent="clickUnSelectObject" class="icon-unselect">
+                        <div
+                            @click.prevent="$emit('unselect', offer)"
+                            class="object-offer__unselect"
+                        >
                             <i class="fas fa-check" />
                         </div>
                     </div>
                 </div>
                 <div
-                    class="col-12 main text-center"
+                    class="col-12 px-2 object-offer__content text-center"
                     :class="{ 'animated-background': isNewRecommended }"
                 >
-                    <span v-if="offer.status != 1" class="badge badge-warning mb-1">Пассив</span>
-                    <div v-if="isSelected" class="comment">
+                    <DashboardChip
+                        v-if="isPassive"
+                        class="dashboard-bg-danger text-white mx-auto mb-1"
+                    >
+                        Пассив
+                    </DashboardChip>
+                    <Form v-if="isSelected" class="object-offer__form mb-2">
                         <textarea
                             ref="comment"
                             v-model.trim="localComment"
                             @blur="unfocusTextarea"
                             @keypress.enter="enterTextarea"
-                            class="mb-1"
+                            class="form__textarea"
                             rows="3"
                             placeholder="Комментарий клиенту"
                         />
-                    </div>
-                    <div class="actions">
-                        <div class="mb-2">
-                            <span v-if="isNewRecommended" class="badge badge-success">
-                                новое в
-                            </span>
-                        </div>
-                        <i
-                            v-if="offer.type_id != 3"
-                            @click="clickFavotiteOffer(offer)"
-                            class="fas fa-star"
-                            :class="{
-                                selected: FAVORITES_OFFERS.find(
-                                    item => item.original_id == offer.original_id
-                                )
-                            }"
-                        />
-                        <i
-                            v-if="offer.type_id != 3"
-                            @click="clickViewPdf(offer)"
-                            class="fas fa-file-pdf"
-                        />
-                        <i @click="clickView(offer)" class="fas fa-eye" />
-                    </div>
-                    <div class="location">
-                        <p v-if="offer.district_name">
-                            {{ offer.district_name }}
-                        </p>
-                        <p
-                            v-if="offer.region_name && offer.district_moscow_name"
-                            class="region_item"
+                    </Form>
+                    <div class="object-offer__actions mb-2">
+                        <HoverActionsButton
+                            v-if="offer.type_id !== 3"
+                            @click="toggleFavorite(offer)"
+                            :label="isFavorite ? 'Удалить из избранного' : 'Добавить в избранное'"
+                            :active="isFavorite"
                         >
-                            {{ offer.region_name }}
-                        </p>
-                        —
-                        <p v-if="offer.district_moscow_name">
-                            {{ offer.district_moscow_name }}
-                        </p>
-                        <p v-if="offer.direction_name && offer.district_moscow_name">
-                            — {{ offer.direction_name }}
-                        </p>
-                        <p v-if="offer.direction_name && !offer.district_moscow_name">
-                            {{ offer.direction_name }}
-                        </p>
+                            <i class="fa-solid fa-star" />
+                        </HoverActionsButton>
+                        <a v-if="offer.type_id !== 3" :href="pdfUrl" target="_blank">
+                            <HoverActionsButton v-tippy="'Открыть в PDF'">
+                                <i class="fa-solid fa-file-pdf" />
+                            </HoverActionsButton>
+                        </a>
+                        <a :href="$url.offerByObject(offer)" target="_blank">
+                            <HoverActionsButton v-tippy="'Открыть страницу предложения'">
+                                <i class="fa-solid fa-eye" />
+                            </HoverActionsButton>
+                        </a>
                     </div>
-                    <div class="object_type">
-                        <p>
-                            {{ offer.object_type_name }}
-                        </p>
+                    <div class="object-offer__location">
+                        {{ location }}
                     </div>
-                    <div class="price">
-                        <i class="fas fa-ruble-sign" />
-                        <p v-if="offer.deal_type == 1 || offer.deal_type == 4" class="value">
-                            <!-- {{ offer.calc_price_general }} -->
-                            {{ offer.calc_price_warehouse }}
-                            <small>руб за м<sup>2</sup>/г</small>
-                        </p>
-                        <p v-if="offer.deal_type == 2" class="value">
-                            {{ offer.calc_price_sale }} <small>руб за м<sup>2</sup></small>
-                        </p>
-                        <p v-if="offer.deal_type == 3" class="value">
-                            {{ offer.calc_price_safe_pallet }} <small>руб за 1 п. м.</small>
-                        </p>
-                        <small class="tax">
+                    <p class="mb-1">{{ offer.object_type_name }}</p>
+                    <div v-if="offer.deal_type" class="object-offer__price mb-1">
+                        <DashboardChip class="dashboard-bg-success-l">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="fa-solid fa-ruble-sign" />
+                                <with-unit-type
+                                    v-if="offer.deal_type === 1 || offer.deal_type === 4"
+                                    :unit-type="unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR"
+                                >
+                                    {{ offer.calc_price_warehouse }}
+                                </with-unit-type>
+                                <with-unit-type
+                                    v-else-if="offer.deal_type === 2"
+                                    :unit-type="unitTypes.RUB_PER_SQUARE_METERS"
+                                >
+                                    {{ offer.calc_price_sale }}
+                                </with-unit-type>
+                            </div>
+                        </DashboardChip>
+                        <DashboardChip v-if="taxForm" class="dashboard-bg-gray-l">
                             {{ taxForm }}
-                        </small>
+                        </DashboardChip>
                     </div>
-                    <div class="area">
-                        <i class="fas fa-square-full" />
-                        <p>
-                            {{ offer.calc_area_general }}
-                            <small>м<sup>2</sup></small>
-                        </p>
-                    </div>
-                    <div @click="toggleExtraInfoVisible" class="extraVisible">
-                        <i
-                            v-if="!extraInfoVisible"
-                            class="far fa-arrow-alt-circle-down text-center mt-1 extra"
-                        />
-                        <i
-                            v-if="extraInfoVisible"
-                            class="far fa-arrow-alt-circle-up text-center mt-1 extra"
-                        />
-                    </div>
+                    <DashboardChip class="dashboard-bg-success-l mx-auto">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-square-full" />
+                            <with-unit-type :unit-type="unitTypes.SQUARE_METERS">
+                                {{ offer.calc_area_general }}
+                            </with-unit-type>
+                        </div>
+                    </DashboardChip>
                 </div>
-                <div v-if="extraInfoVisible" class="col-12 text-center">
-                    <div v-if="offer.comments" class="comments">
-                        <p v-if="offer.comments.length" class="title">Комментарии</p>
-                        <p
-                            v-for="comment in offer.comments"
-                            :key="comment.id"
-                            :class="{ current: comment.timeline_step_id == currentStepId }"
-                        >
-                            {{ comment.comment }}
-                        </p>
-                    </div>
-                    <div class="params">
-                        <div class="params__item">
-                            <p class="title">Площадь объекта:</p>
-                            <p class="value">
-                                {{ $formatter.number(offer.area_building) }}
-                                <small> м<sup>2</sup></small>
-                            </p>
-                        </div>
-                        <div class="params__item">
-                            <p class="title">Этажи:</p>
-                            <p class="value">{{ offer.calc_floors }}</p>
-                        </div>
-                        <div class="params__item">
-                            <p class="title">Потолки:</p>
-                            <p class="value">{{ offer.calc_ceilingHeight }} <small>м</small></p>
-                        </div>
-                        <div class="params__item">
-                            <p class="title">Электричество:</p>
-                            <p class="value">
-                                {{ $formatter.number(offer.power_value) }} <small>кВт</small>
-                            </p>
-                        </div>
-                        <div class="params__item">
-                            <p class="title">Тип ворот:</p>
-                            <p class="value">{{ offer.gate_type }}</p>
-                        </div>
-                        <div class="params__item">
-                            <p class="title">Отапливаемый:</p>
-                            <p class="value">{{ offer.heated ? 'да' : 'нет' }}</p>
-                        </div>
-                        <div class="params__item">
-                            <p class="title">Антипыль:</p>
-                            <p class="value">{{ offer.self_leveling ? 'да' : 'нет' }}</p>
-                        </div>
-                        <div class="params__item">
-                            <p class="title">Краны:</p>
-                            <p class="value">{{ offer.has_cranes ? 'да' : 'нет' }}</p>
-                        </div>
-                        <div class="params__item">
-                            <p class="title">От МКАД:</p>
-                            <p class="value">{{ offer.from_mkad }} <small>км</small></p>
-                        </div>
-                    </div>
-
-                    <div class="address">
-                        <p class="title">Адрес</p>
-                        <p>{{ offer.address }}</p>
-                    </div>
-                    <div class="description">
-                        <p class="title">Ручное описание</p>
-                        <p>
-                            {{ offer.object.description || '—' }}
-                        </p>
-                    </div>
-                    <div class="description-auto">
-                        <p class="title">Авто описание</p>
-                        <p>
-                            {{ offer.object.description_auto || '—' }}
-                        </p>
-                    </div>
+                <div class="col-12">
+                    <AccordionSimple without-render>
+                        <template #title>
+                            <AccordionSimpleTrigger>
+                                <DashboardChip class="dashboard-bg-light w-100 br-0">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <span>Дополнительная информация</span>
+                                        <AccordionSimpleTriggerIcon />
+                                    </div>
+                                </DashboardChip>
+                            </AccordionSimpleTrigger>
+                        </template>
+                        <template #body>
+                            <CompanyObjectItemOfferOnlyExternal
+                                :currentStepID="currentStepID"
+                                :offer="offer"
+                            />
+                        </template>
+                    </AccordionSimple>
                 </div>
             </div>
         </div>
@@ -300,10 +178,31 @@
 <script>
 import { TaxFormList } from '@/const/const.js';
 import { mapActions, mapGetters } from 'vuex';
+import { unitTypes } from '@/const/unitTypes.js';
+import AccordionSimpleTriggerIcon from '@/components/common/Accordion/AccordionSimpleTriggerIcon.vue';
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
+import AccordionSimpleTrigger from '@/components/common/Accordion/AccordionSimpleTrigger.vue';
+import CompanyObjectItemOfferOnlyExternal from '@/components/Company/Object/CompanyObjectItemOfferOnlyExternal.vue';
+import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
+import VLazyImage from 'v-lazy-image';
+import Form from '@/components/common/Forms/Form.vue';
+import WithUnitType from '@/components/common/WithUnitType.vue';
 
 export default {
     name: 'CompanyObjectItemOfferOnly',
-    emits: ['select', 'unSelect', 'addComment', 'deleteFavoriteOffer'],
+    components: {
+        WithUnitType,
+        Form,
+        VLazyImage,
+        HoverActionsButton,
+        CompanyObjectItemOfferOnlyExternal,
+        AccordionSimpleTrigger,
+        AccordionSimple,
+        DashboardChip,
+        AccordionSimpleTriggerIcon
+    },
+    emits: ['select', 'unselect', 'addComment', 'deleteFavoriteOffer'],
     props: {
         offer: {
             type: Object
@@ -314,15 +213,13 @@ export default {
         },
         col: {
             type: String,
-            default() {
-                return 'col-4';
-            }
+            default: 'col-4'
         },
         disabled: {
             type: Boolean,
             default: true
         },
-        currentStepId: {
+        currentStepID: {
             type: Number
         }
     },
@@ -333,18 +230,18 @@ export default {
         };
     },
     computed: {
+        unitTypes() {
+            return unitTypes;
+        },
         ...mapGetters(['THIS_USER', 'FAVORITES_OFFERS']),
-        taxFormList: () => TaxFormList,
         isNewRecommended() {
             const newRecommended = this.$route.query.new_original_id;
             if (!newRecommended) return false;
+
             if (Array.isArray(newRecommended)) {
                 return newRecommended.includes(this.offer.original_id.toString());
             }
-            return newRecommended == this.offer.original_id;
-        },
-        offerUrl() {
-            return this.$url.offerByObject(this.offer);
+            return Number(newRecommended) === this.offer.original_id;
         },
         pdfUrl() {
             return this.$url.pdf(
@@ -357,67 +254,52 @@ export default {
             );
         },
         taxForm() {
-            if (
-                this.offer.generalOffersMix &&
-                this.offer.generalOffersMix.offer &&
-                this.offer.generalOffersMix.offer.tax_form
-            ) {
-                return TaxFormList.find(
-                    item => item.value == this.offer.generalOffersMix.offer.tax_form
-                ).label;
-            }
-
+            if (this.offer.generalOffersMix?.offer?.tax_form)
+                return TaxFormList[this.offer.generalOffersMix.offer.tax_form - 1].label;
             return null;
-        }
-    },
-    watch: {
-        offer: {
-            handler() {},
-            deep: true
+        },
+        isFavorite() {
+            return this.$store.state.Offers.favoritesOffersCache[this.offer.original_id];
+        },
+        isPassive() {
+            return this.offer.status !== 1;
+        },
+        location() {
+            return [
+                this.offer.district_name,
+                this.offer.region_name,
+                this.offer.district_moscow_name,
+                this.offer.direction_name
+            ]
+                .filter(Boolean)
+                .join(' — ');
         }
     },
     methods: {
         ...mapActions(['ADD_FAVORITES_OFFER', 'DELETE_FAVORITES_OFFERS']),
-        toggleExtraInfoVisible() {
-            this.extraInfoVisible = !this.extraInfoVisible;
-        },
-        clickSelectObject() {
-            if (this.disabled || this.offer.type_id == 3) return;
+        select() {
+            if (this.disabled || this.offer.type_id === 3) return;
+
             this.$emit('select', this.offer);
-            setTimeout(() => {
+            this.$nextTick(() => {
                 this.$refs.comment.focus();
             });
-        },
-        clickUnSelectObject() {
-            this.$emit('unSelect', this.offer);
         },
         enterTextarea() {
             this.$refs.comment.blur();
         },
         unfocusTextarea() {
-            this.$emit('addComment', this.offer, this.localComment);
+            this.$emit('addComment', this.offer.id, this.localComment);
         },
-        async clickFavotiteOffer(offer) {
-            if (!this.FAVORITES_OFFERS.find(item => item.original_id == offer.original_id)) {
-                return this.ADD_FAVORITES_OFFER(offer);
-            }
+        async toggleFavorite(offer) {
+            if (!this.isFavorite) return await this.ADD_FAVORITES_OFFER(offer);
+
             await this.DELETE_FAVORITES_OFFERS(offer);
             this.$emit('deleteFavoriteOffer', offer);
-        },
-        clickViewPdf() {
-            window.open(this.pdfUrl, '_blank');
-        },
-        clickView() {
-            window.open(this.offerUrl, '_blank');
-        },
-        getOfferUrl(offer) {
-            return this.$url.offerByObject(offer);
         }
     },
-    mounted() {
-        if (this.offer.comment) {
-            this.localComment = this.offer.comment;
-        }
+    created() {
+        if (this.offer.comment) this.localComment = this.offer.comment;
     }
 };
 </script>
@@ -431,13 +313,13 @@ export default {
 
 @keyframes gradient {
     0% {
-        background-position: 0% 50%;
+        background-position: 0 50%;
     }
     50% {
         background-position: 100% 50%;
     }
     100% {
-        background-position: 0% 50%;
+        background-position: 0 50%;
     }
 }
 </style>

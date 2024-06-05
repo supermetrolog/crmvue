@@ -18,6 +18,15 @@ const position = {
     16: 'Агент'
 };
 
+const wayOfCommunicate = {
+    0: { label: 'Звонок', icon: 'fa-solid fa-phone' },
+    1: { label: 'Viber', icon: 'fa-brands fa-viber' },
+    2: { label: 'SMS', icon: 'fa-solid fa-comment' },
+    3: { label: 'Telegram', icon: 'fa-solid fa-paper-plane' },
+    4: { label: 'WhatsApp', icon: 'fa-brands fa-whatsapp' },
+    5: { label: 'Email', icon: 'fa-solid fa-at' }
+};
+
 const positionList = [
     { value: 0, label: 'Акционер' },
     { value: 1, label: 'Генеральный директор' },
@@ -46,5 +55,6 @@ const typeStatement = {
 export const contactOptions = {
     positionList,
     position,
-    typeStatement
+    typeStatement,
+    wayOfCommunicate
 };

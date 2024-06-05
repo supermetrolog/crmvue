@@ -14,6 +14,7 @@
     text-transform: uppercase;
     height: max-content;
     position: relative;
+    width: max-content;
 
     &:not(:disabled) {
         cursor: pointer;
@@ -37,18 +38,67 @@
         }
     }
 
-    @include mixins.bg-color-scheme(warning #f88f01 #a46104, success #10b981 #009665, danger #f93154 #cb1132);
-
-    &--info {
-        background-color: #f8f9fa;
-        color: #000;
-    }
+    @include mixins.bg-color-scheme(warning #f88f01 #a46104, success #10b981 #009665, danger #f93154 #cb1132, info #e7e7e7 #d3d3d3 #000);
 
     &--small {
         padding: 5px 10px;
     }
 
-    &:disabled, &--disabled {
+    &:disabled {
         opacity: .4;
+    }
+
+    &--disabled:not(:disabled):not(&--solid) {
+        opacity: .6;
+    }
+
+    &--disabled:not(:disabled):hover {
+        opacity: 1;
+    }
+
+    &--solid {
+        border: 3px solid #11698e;
+
+        &:disabled {
+            border-color: transparent;
+        }
+
+        &.button--disabled {
+            background-color: rgba(17, 105, 142, 0.4);
+        }
+
+        &.button {
+            &--warning {
+                border-color: #f88f01;
+
+                &.button--disabled {
+                    background-color: rgba(248, 143, 1, 0.4);
+                }
+            }
+
+            &--success {
+                border-color: #10b981;
+
+                &.button--disabled {
+                    background-color: rgba(16, 185, 129, 0.4);
+                }
+            }
+
+            &--danger {
+                border-color: #f93154;
+
+                &.button--disabled {
+                    background-color: rgba(249, 49, 84, 0.4);
+                }
+            }
+
+            &--info {
+                border-color: #e7e7e7;
+
+                &.button--disabled {
+                    background-color: rgba(231, 231, 231, 0.4);
+                }
+            }
+        }
     }
 }

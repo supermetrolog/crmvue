@@ -1,18 +1,15 @@
 <template>
-    <div class="comments">
-        <div class="reminders">
-            <ul class="comments">
-                <li v-if="!data.length" class="text-center m-0">
-                    <p>нет комментариев</p>
-                </li>
-                <TimelineCommentsItem
-                    v-for="(comment, index) in data"
-                    :key="comment.id"
-                    :data="comment"
-                    :prevent-comment="getPreventComment(index)"
-                />
-            </ul>
-        </div>
+    <div class="timeline-logs-comments">
+        <p v-if="!data.length" class="text-center my-4">Нет комментириев</p>
+        <ul class="timeline-logs-comments__list">
+            <TimelineCommentsItem
+                v-for="(comment, index) in data"
+                :key="comment.id"
+                @view="$emit('view', $event)"
+                :data="comment"
+                :prevent-comment="getPreventComment(index)"
+            />
+        </ul>
     </div>
 </template>
 
@@ -24,12 +21,13 @@ export default {
     components: {
         TimelineCommentsItem
     },
+    emits: ['view'],
     props: {
         data: {
-            type: Array
+            type: Array,
+            default: () => []
         }
     },
-
     methods: {
         getPreventComment(index) {
             if (!index) {

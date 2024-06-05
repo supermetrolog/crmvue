@@ -1,177 +1,169 @@
 <template>
-    <div class="timeline-header">
+    <div class="timeline-page-header">
+        <div class="d-flex align-items-center">
+            <h2 class="timeline-page-header__title">{{ title }}</h2>
+            <TimelineStatus class="mx-2" :request="request" :disabled="timeline.status === 0" />
+            <div class="timeline-page-header__consultants d-flex gap-2 ml-auto">
+                <Button
+                    v-for="timelineItem in timelineList"
+                    :key="timelineItem.id"
+                    @click="changeTimeline(timelineItem.consultant_id)"
+                    :info="!isViewedUser(timelineItem.consultant.id)"
+                >
+                    {{ timelineItem.consultant.userProfile.short_name }}
+                </Button>
+            </div>
+            <div class="timeline-page-header__functions d-flex gap-2 ml-2">
+                <Button @click="disableFormIsVisible = true" danger :disabled="disabled">
+                    Завершить
+                </Button>
+                <Button @click="dealFormIsVisible = true" :disabled="disabled">
+                    Создать сделку
+                </Button>
+                <Button warning :disabled="true">Передать</Button>
+                <Button warning :disabled="true">Отказатся</Button>
+            </div>
+        </div>
+        <div class="mt-2 d-flex gap-3">
+            <Button @click="$emit('change-tab', 'main')" :info="currentTab !== 'main'">
+                Прохождение Таймлайна
+            </Button>
+            <Button
+                v-tippy="messagesTippy"
+                @click="$emit('change-tab', 'log')"
+                :class="{ 'animate__animated animate__flash': messagesHasAnimation }"
+                :badge="messagesCount"
+                :info="currentTab !== 'log'"
+            >
+                Логи Таймлайна
+            </Button>
+        </div>
         <teleport to="body">
             <FormModalCompanyRequestDisable
-                v-if="disableFormVisible"
-                @disabled="disabledTimeline"
-                @close="clickCloseDisableForm"
-                title="Завершение таймлана"
-                :request_id="currentRequest.id"
+                v-if="disableFormIsVisible"
+                @close="disableFormIsVisible = false"
+                @disabled="onDisabledTimeline"
+                :request_id="request.id"
             />
-        </teleport>
-        <teleport to="body">
             <FormCompanyDeal
-                v-if="dealFormVisible"
-                @close="clickCloseDealForm"
-                @created="createdDeal"
-                :company_id="currentRequest.company_id"
-                :request_id="currentRequest.id"
+                v-if="dealFormIsVisible"
+                @close="dealFormIsVisible = false"
+                @created="onCreatedDeal"
+                :company_id="request.company_id"
+                :request_id="request.id"
+                :deal-type="request.dealType"
+                :is-our-deal="true"
             />
         </teleport>
-        <div>
-            <TimelineStatus v-if="currentRequest && TIMELINE" :request="currentRequest" :timeline="TIMELINE" />
-        </div>
-        <div>
-            <div v-if="TIMELINE_LIST.length" class="timeline-list">
-                <div
-                    v-for="timeline in TIMELINE_LIST"
-                    :key="timeline.id"
-                    class="timeline-actions timeline-list-item p-1"
-                >
-                    <CustomButton
-                        @confirm="changeTimeline(timeline.consultant.id)"
-                        :options="{
-                            btnActive: $route.query.consultant_id == timeline.consultant.id,
-                            btnClass: 'primary',
-                            defaultBtn: true,
-                            disabled: false
-                        }"
-                    >
-                        <template #btnContent>
-                            {{ timeline.consultant.userProfile.short_name }}
-                        </template>
-                    </CustomButton>
-                </div>
-            </div>
-        </div>
-        <div>
-            <div v-if="!disabled" class="timeline-list">
-                <div class="timeline-actions timeline-list-item px-1">
-                    <CustomButton
-                        @confirm="clickOpenDisableForm"
-                        :options="{
-                            btnClass: 'danger',
-                            defaultBtn: true,
-                            disabled: disabled
-                        }"
-                    >
-                        <template #btnContent> завершить</template>
-                    </CustomButton>
-                </div>
-                <div class="timeline-actions timeline-list-item px-1">
-                    <CustomButton
-                        @confirm="clickOpenDealForm"
-                        :options="{
-                            btnClass: 'primary',
-                            defaultBtn: true,
-                            disabled: disabled
-                        }"
-                    >
-                        <template #btnContent> создать сделку</template>
-                    </CustomButton>
-                </div>
-                <div class="timeline-actions timeline-list-item px-1">
-                    <CustomButton
-                        @confirm="clickOpenDisableForm"
-                        :options="{
-                            btnClass: 'warning',
-                            defaultBtn: true,
-                            disabled: true
-                        }"
-                    >
-                        <template #btnContent> передать</template>
-                    </CustomButton>
-                </div>
-                <div class="timeline-actions timeline-list-item px-1">
-                    <CustomButton
-                        @confirm="clickOpenDisableForm"
-                        :options="{
-                            btnClass: 'warning',
-                            defaultBtn: true,
-                            disabled: true
-                        }"
-                    >
-                        <template #btnContent> отказаться</template>
-                    </CustomButton>
-                </div>
-            </div>
-        </div>
     </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
-import TimelineStatus from './TimelineStatus.vue';
+import { mapGetters } from 'vuex';
+import Button from '@/components/common/Button.vue';
 import FormModalCompanyRequestDisable from '@/components/Forms/Company/FormModalCompanyRequestDisable.vue';
 import FormCompanyDeal from '@/components/Forms/Company/FormCompanyDeal.vue';
-import CustomButton from '@/components/common/CustomButton.vue';
+import TimelineStatus from '@/components/Timeline/TimelineStatus.vue';
 
 export default {
     name: 'TimelineHeader',
     components: {
-        CustomButton,
+        TimelineStatus,
         FormCompanyDeal,
         FormModalCompanyRequestDisable,
-        TimelineStatus
+        Button
     },
+    emits: ['change-tab'],
     props: {
         disabled: {
             type: Boolean,
             default: false
         },
-        currentRequest: {
+        request: {
             type: Object,
             required: true
         },
-        timelineExist: {
-            type: Boolean,
-            default: false
+        currentTab: {
+            type: String,
+            default: 'main'
+        },
+        title: {
+            type: String,
+            default: null
         }
     },
     data() {
         return {
-            disableFormVisible: false,
-            dealFormVisible: false
+            disableFormIsVisible: false,
+            dealFormIsVisible: false,
+            messagesHasAnimation: false,
+            messagesAnimation: null
         };
     },
     computed: {
-        ...mapGetters(['TIMELINE_LIST', 'TIMELINE'])
+        ...mapGetters({ timelineList: 'TIMELINE_LIST', timeline: 'TIMELINE' }),
+        messagesCount() {
+            return this.timeline.timelineSteps.reduce(
+                (total, current) => total + current.timelineActionComments?.length,
+                0
+            );
+        },
+        messagesTippy() {
+            const totalText = 'Всего сообщений по таймлайну: ' + this.messagesCount + '<br>';
+
+            const currentStep = this.timeline.timelineSteps[Number(this.$route.query.step) || 0];
+
+            if (!currentStep) return totalText;
+
+            const localText =
+                'Сообщений на текущем шаге: ' + currentStep.timelineActionComments?.length;
+
+            return totalText + localText;
+        }
+    },
+    watch: {
+        messagesCount(newValue, oldValue) {
+            if (newValue > oldValue) this.createAnimation();
+        }
     },
     methods: {
-        ...mapActions(['FETCH_COMPANY_REQUESTS']),
-        clickOpenDisableForm() {
-            this.disableFormVisible = true;
+        async onCreatedDeal() {
+            await this.$store.dispatch('FETCH_COMPANY_REQUESTS', this.request.company_id);
+            this.$emit('close');
         },
-        clickCloseDisableForm() {
-            this.disableFormVisible = false;
-        },
-        clickOpenDealForm() {
-            this.dealFormVisible = true;
-        },
-        clickCloseDealForm() {
-            this.dealFormVisible = false;
-        },
-        async createdDeal() {
-            if (await this.FETCH_COMPANY_REQUESTS(this.$route.params.id)) {
-                this.$emit('close');
-            }
-        },
-        async disabledTimeline() {
-            if (await this.FETCH_COMPANY_REQUESTS(this.$route.params.id)) {
-                this.clickCloseDisableForm();
-                this.$emit('close');
-            }
+        async onDisabledTimeline() {
+            await this.$store.dispatch('FETCH_COMPANY_REQUESTS', this.request.company_id);
+            this.$emit('close');
         },
         async changeTimeline(consultant_id) {
             let query = {
                 ...this.$route.query
             };
+
             query.consultant_id = consultant_id;
             query.step = 0;
+
             await this.$router.push({ query: query });
+        },
+        isViewedUser(userID) {
+            return Number(this.$route.query.consultant_id) === Number(userID);
+        },
+        clearAnimation() {
+            clearTimeout(this.messagesAnimation);
+            this.messagesAnimation = null;
+        },
+        createAnimation() {
+            this.clearAnimation();
+            this.messagesHasAnimation = true;
+
+            setTimeout(() => {
+                this.messagesHasAnimation = false;
+                this.clearAnimation();
+            }, 1000);
         }
+    },
+    beforeUnmount() {
+        this.clearAnimation();
     }
 };
 </script>
-
-<style></style>

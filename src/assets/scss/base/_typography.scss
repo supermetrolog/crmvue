@@ -1,0 +1,37 @@
+@use "../utils/variables";
+
+.text-danger {
+    color: variables.$color_danger !important;
+}
+
+.text-warning {
+    color: variables.$color_warning !important;
+}
+
+.text-dark {
+    color: variables.$color_dark !important;
+}
+
+.text-success {
+    color: variables.$color_success !important;
+}
+
+.text-success_alt {
+    color: variables.$color_success_alt !important;
+}
+
+.text-success_dark {
+    color: variables.$color_success_dark !important;
+}
+
+.text-grey {
+    color: variables.$color_grey !important;
+}
+
+.text-light {
+    color: variables.$color_light !important;
+}
+
+.text-primary {
+    color: variables.$color_primary !important;
+}
