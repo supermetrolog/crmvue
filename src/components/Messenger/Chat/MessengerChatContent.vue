@@ -24,10 +24,10 @@
                 </template>
             </template>
         </div>
-        <!--        <div @click="$toggleQuiz" class="messenger-chat__quiz-toggle">-->
-        <!--            <i class="fa-solid fa-chevron-up"></i>-->
-        <!--            <p>Открыть новый опросник с клиентом</p>-->
-        <!--        </div>-->
+        <div @click="$toggleQuiz" class="messenger-chat__quiz-toggle">
+            <i class="fa-solid fa-chevron-up"></i>
+            <p>Открыть новый опросник с клиентом</p>
+        </div>
         <MessengerChatForm />
     </div>
 </template>

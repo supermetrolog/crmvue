@@ -1,7 +1,10 @@
 <template>
     <MessengerChatMessageAdditionsItem>
         <template #icon>
-            <span class="messenger-chat-message-addition__icon rounded-icon bg-red">
+            <span
+                v-tippy="addition.message"
+                class="messenger-chat-message-addition__icon rounded-icon bg-red"
+            >
                 <i class="fa-solid fa-bell"></i>
             </span>
         </template>
@@ -48,11 +51,10 @@ export default {
     },
     computed: {
         usersText() {
-            if (this.addition?.users === null) return 'всех';
-            else return this.addition?.users.join(', ');
+            return this.addition.user.userProfile.middle_name;
         },
         formattedDate() {
-            return dayjs(this.addition.reminder).format('DD.MM.YYYY в HH:MM');
+            return dayjs(this.addition.notify_at).format('DD.MM.YYYY в HH:MM');
         }
     },
     methods: {

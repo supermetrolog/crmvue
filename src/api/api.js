@@ -18,6 +18,7 @@ import messenger from '@//api/messenger';
 import task from '@/api/task';
 import alert from '@/api/alert';
 import equipment from '@/api/equipment';
+import reminder from '@/api/reminder.js';
 
 export default {
     user,
@@ -39,5 +40,6 @@ export default {
     messenger,
     task,
     alert,
-    equipment
+    equipment,
+    reminder
 };
