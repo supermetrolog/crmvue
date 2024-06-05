@@ -241,6 +241,8 @@ import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import Submit from '@/components/common/Forms/Submit.vue';
 import { cloneObject } from '@/utils/index.js';
 
+// TODO: Убрать Teleport и отрефачить все использоания этой формы
+
 export default {
     name: 'FormCompanyContact',
     components: {

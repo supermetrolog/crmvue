@@ -1,113 +1,117 @@
 <template>
-    <div class="phone-number fuck">
-        <FormCompanyContact
-            v-if="companyContactFormVisible"
-            @closeCompanyForm="clickCloseCompanyContactForm"
-            @updated="refreshContacts"
-            @created="$emit('createdContact')"
-            :formdata="contactForUpdate"
-            :phones="[
-                {
-                    phone: phone.phone,
-                    exten: null
-                }
-            ]"
-        />
+    <div class="phone-number">
         <teleport to="body">
-            <Modal v-if="modalVisible" @close="clickCloseModal" title="Контакт" width="500">
-                <div class="modal-content">
-                    <Loader v-if="loader" class="center" />
-                    <div class="row">
-                        <div v-if="company" class="col-6 box">
-                            <router-link
-                                :to="'/companies/' + company.id"
-                                target="_blank"
-                                class="mb-2 text-center title text-primary d-block"
-                            >
-                                Компания #{{ company.id }}
-                            </router-link>
-
-                            <div class="inner">
-                                <!-- <p>{{ company.nameRu }} - {{ company.nameEng }}</p> -->
-                                <Company :company="company" />
-                            </div>
+            <Modal v-if="externalIsVisible" @close="closeExternal" title="Контакт" width="1200">
+                <div v-if="isLoading" class="phone-number__loading">
+                    <Spinner class="absolute-center" />
+                </div>
+                <div v-else class="row">
+                    <div v-if="company" class="col-6">
+                        <h3 class="text-center">Компания</h3>
+                        <div class="inner-y">
+                            <Company :company="company" class="mx-2" />
                         </div>
-                        <div
-                            v-if="contact"
-                            class="col-6 text-center box"
-                            :class="{ 'col-12': !company }"
-                        >
-                            <h4 class="mb-2">Контакт</h4>
-                            <div
-                                v-if="currentContactForCall"
-                                class="current-phone inner text-light"
-                            >
-                                <CompanyContactList
-                                    @createComment="refreshContacts"
-                                    @deleteContact="refreshContacts"
-                                    @openContactFormForUpdate="openContactFormForUpdate"
-                                    :contacts="currentContactForCall"
-                                />
-                                <p class="mb-1 text-light">
-                                    {{ phone.phone }}{{ phone.exten ? ` => ${phone.exten}` : '' }}
-                                </p>
-                                <button class="btn btn-primary scale">
-                                    <i class="fas fa-phone-volume mr-1"></i> позвонить
-                                </button>
-                            </div>
-                            <h4 class="mb-2 mt-2">Все контакты</h4>
-                            <div class="inner">
-                                <CompanyContactList
-                                    @createComment="refreshContacts"
-                                    @deleteContact="refreshContacts"
-                                    @openContactFormForUpdate="openContactFormForUpdate"
-                                    :contacts="companyContacts"
-                                />
-                            </div>
-                        </div>
-                        <div v-else class="col-12 text-center box">
-                            <h4 class="mb-2">Нет в базе</h4>
-                            <div class="current-phone inner text-light">
-                                <p class="mb-1 text-light">{{ phone.phone }}</p>
-                                <button class="btn btn-primary scale btn-large">
-                                    <i class="fas fa-phone-volume mr-1"></i> позвонить
-                                </button>
-                                <button
-                                    @click="clickOpenCompanyContactForm"
-                                    class="btn btn-primary scale btn-large d-block mx-auto mt-2"
+                    </div>
+                    <div v-if="contact" class="col-6" :class="{ 'col-12': !company }">
+                        <h3 class="mb-2 text-center">Контакт</h3>
+                        <div v-if="currentContactForCall">
+                            <CompanyContactList
+                                @created-comment="refreshContacts"
+                                @deleted="refreshContacts"
+                                @start-editing="startEditing"
+                                :contacts="currentContactForCall"
+                                :read-only="readOnly"
+                            />
+                            <div class="mt-3">
+                                <DashboardChip
+                                    class="dashboard-bg-success-l phone-number__main mx-auto"
                                 >
-                                    создать контакт
-                                </button>
+                                    {{ phone.phone }}{{ phone.exten ? ` => ${phone.exten}` : '' }}
+                                </DashboardChip>
+                                <Button icon success class="w-100 mt-1">
+                                    <i class="fas fa-phone-volume" />
+                                    <span>Позвонить</span>
+                                </Button>
                             </div>
                         </div>
+                        <h3 class="mb-1 mt-4 text-center">Все контакты</h3>
+                        <CompanyContactList
+                            @created-comment="refreshContacts"
+                            @deleted="refreshContacts"
+                            @start-editing="startEditing"
+                            :contacts="companyContacts"
+                            :read-only="readOnly"
+                            class="inner-y phone-number__contacts"
+                        />
+                    </div>
+                    <div v-else class="offset-3 col-6">
+                        <DashboardCard>
+                            <DashboardChip
+                                class="dashboard-bg-danger-l phone-number__main w-100 text-center mb-4"
+                            >
+                                Нет в базе
+                            </DashboardChip>
+                            <DashboardChip
+                                class="dashboard-bg-success-l phone-number__main mx-auto mb-2"
+                            >
+                                {{ phone.phone }}{{ phone.exten ? ` => ${phone.exten}` : '' }}
+                            </DashboardChip>
+                            <Button icon success class="mb-2 w-100">
+                                <span>Позвонить</span>
+                                <i class="fas fa-phone-volume mr-1"></i>
+                            </Button>
+                            <Button @click="companyContactFormIsVisible = true" class="w-100">
+                                Создать контакт
+                            </Button>
+                        </DashboardCard>
                     </div>
                 </div>
             </Modal>
+            <FormCompanyContact
+                v-if="companyContactFormIsVisible"
+                @closeCompanyForm="cancelEditing"
+                @updated="refreshContacts"
+                @created="$emit('created-contact')"
+                :formdata="editableContact"
+                :phones="[
+                    {
+                        phone: phone.phone,
+                        exten: null
+                    }
+                ]"
+            />
         </teleport>
-        <a @click.prevent="clickLink" :class="classList" :href="'tel:' + phone.phone">{{
-            phoneText
-        }}</a>
+        <a @click.prevent="openExternal" :class="classList" :href="'tel:' + phone.phone">
+            {{ phoneText }}
+        </a>
     </div>
 </template>
 
 <script>
 import api from '@/api/api';
-import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
 import FormCompanyContact from '@/components/Forms/Company/FormCompanyContact.vue';
 import CompanyContactList from '@/components/Company/Contact/CompanyContactList.vue';
 import Company from '@/components/Company/Company.vue';
+import Spinner from '@/components/common/Spinner.vue';
+import Button from '@/components/common/Button.vue';
+import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
 
 export default {
     name: 'PhoneNumber',
     components: {
+        DashboardCard,
+        DashboardChip,
+        Button,
+        Spinner,
         CompanyContactList,
         Modal,
-        Loader,
         FormCompanyContact,
         Company
     },
-    emits: ['createdContact'],
+    emits: ['created-contact'],
     props: {
         phone: {
             type: Object,
@@ -130,14 +134,17 @@ export default {
             default: false
         }
     },
+    setup() {
+        const { isLoading } = useDelayedLoader();
+        return { isLoading };
+    },
     data() {
         return {
-            modalVisible: false,
             company: null,
-            companyContacts: null,
-            loader: false,
-            contactForUpdate: null,
-            companyContactFormVisible: false
+            companyContacts: [],
+            companyContactFormIsVisible: false,
+            externalIsVisible: false,
+            editableContact: null
         };
     },
     computed: {
@@ -154,43 +161,48 @@ export default {
             return [currentContact];
         },
         phoneText() {
-            if (this.text) {
-                return this.text;
-            }
+            if (this.text) return this.text;
             let name = this.phone.phone;
-            if (this.phone.exten) {
-                name += ' => ' + this.phone.exten;
-            }
+            if (this.phone.exten) name += ' => ' + this.phone.exten;
             return name;
         }
     },
     methods: {
-        async clickLink() {
-            this.modalVisible = true;
+        async openExternal() {
+            this.externalIsVisible = true;
+
             if (this.contact) {
-                this.loader = true;
-                const company = await api.companies.getCompany(this.contact.company_id);
-                this.company = company[0];
-                this.companyContacts = await api.contacts.getContacts(this.contact.company_id);
-                this.loader = false;
+                this.isLoading = true;
+
+                const data = await Promise.all([
+                    api.companies.getCompany(this.contact.company_id),
+                    api.contacts.getContacts(this.contact.company_id)
+                ]);
+
+                this.company = data[0];
+                this.companyContacts = data[1];
+
+                this.isLoading = false;
+            }
+        },
+        closeExternal() {
+            this.externalIsVisible = false;
+
+            if (this.contact) {
+                this.company = null;
+                this.companyContacts = [];
             }
         },
         async refreshContacts() {
             this.companyContacts = await api.contacts.getContacts(this.contact.company_id);
         },
-        clickCloseModal() {
-            this.modalVisible = false;
+        startEditing(contact) {
+            this.editableContact = contact;
+            this.companyContactFormIsVisible = true;
         },
-        openContactFormForUpdate(contact) {
-            this.contactForUpdate = contact;
-            this.clickOpenCompanyContactForm();
-        },
-        clickCloseCompanyContactForm() {
-            this.companyContactFormVisible = false;
-            this.contactForUpdate = null;
-        },
-        clickOpenCompanyContactForm() {
-            this.companyContactFormVisible = true;
+        cancelEditing() {
+            this.companyContactFormIsVisible = true;
+            this.editableContact = null;
         }
     }
 };
