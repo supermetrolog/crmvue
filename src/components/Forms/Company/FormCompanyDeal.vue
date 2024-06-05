@@ -3,6 +3,7 @@
         @close="$emit('close')"
         :title="formdata ? 'Редактирование сделки' : 'Создание сделки'"
         class="form-company-deal"
+        :width="1000"
     >
         <Loader v-if="loader" class="center" />
         <Form @submit="onSubmit">
@@ -313,12 +314,6 @@ export default {
             return false;
         }
     },
-    watch: {
-        form: {
-            handler() {},
-            deep: true
-        }
-    },
     methods: {
         ...mapActions([
             'FETCH_CONSULTANT_LIST',
@@ -489,9 +484,9 @@ export default {
             return array;
         }
     },
-    async mounted() {
+    created() {
         this.loader = true;
-        await this.FETCH_CONSULTANT_LIST();
+
         this.form.request_id = this.request_id;
         this.form.company_id = this.company_id;
         this.form.consultant_id = this.THIS_USER.id;
@@ -500,6 +495,7 @@ export default {
         this.form.complex_id = this.complex_id;
         this.form.type_id = this.type_id;
         this.form.visual_id = this.visual_id;
+
         if (this.formdata) {
             this.form = { ...this.form, ...this.formdata };
         }
@@ -511,6 +507,9 @@ export default {
             type_id: this.form.type_id,
             visual_id: this.form.visual_id
         };
+
+        this.FETCH_CONSULTANT_LIST();
+
         this.loader = false;
     }
 };

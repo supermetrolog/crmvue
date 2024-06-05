@@ -60,6 +60,10 @@ export default {
         disabled: {
             type: [Boolean, Number],
             default: false
+        },
+        solid: {
+            type: Boolean,
+            default: false
         }
     },
     computed: {
@@ -74,7 +78,8 @@ export default {
                 'button--success': this.success,
                 'button--info': this.info,
                 'button--danger': this.danger,
-                'button--disabled': !this.active
+                'button--disabled': !this.active,
+                'button--solid': this.solid
             };
         }
     },

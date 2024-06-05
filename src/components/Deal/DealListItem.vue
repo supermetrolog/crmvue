@@ -1,7 +1,7 @@
 <template>
     <div class="deal-item">
-        <i v-if="!reedOnly" @click="openDealFormForUpdate" class="fas fa-pen text-primary edit"></i>
-        <i v-if="!reedOnly" @click="deleteDeal" class="fas fa-times text-danger delete"></i>
+        <i v-if="!readOnly" @click="openDealFormForUpdate" class="fas fa-pen text-primary edit"></i>
+        <i v-if="!readOnly" @click="deleteDeal" class="fas fa-times text-danger delete"></i>
         <div class="row">
             <div class="col-4 text-center align-self-center">
                 <i class="fas fa-handshake"></i>
@@ -27,12 +27,16 @@
                     </div>
                     <div class="col-4 text-right pr-2"><p>площадь:</p></div>
                     <div class="col-8 pl-4">
-                        <strong v-if="deal.area">{{ $formatter.number(deal.area) }} м<sup>2</sup></strong>
+                        <strong v-if="deal.area"
+                            >{{ $formatter.number(deal.area) }} м<sup>2</sup></strong
+                        >
                         <strong v-else>—</strong>
                     </div>
                     <div class="col-4 text-right pr-2"><p>цена пола:</p></div>
                     <div class="col-8 pl-4">
-                        <strong v-if="deal.floorPrice">{{ $formatter.currency(deal.floorPrice) }}</strong>
+                        <strong v-if="deal.floorPrice">{{
+                            $formatter.currency(deal.floorPrice)
+                        }}</strong>
                         <strong v-else>—</strong>
                     </div>
                     <div class="col-4 text-right pr-2"><p>юр. лицо:</p></div>
@@ -57,7 +61,10 @@
                     <div class="col-8 pl-4">
                         <strong>{{ deal.consultant.userProfile.short_name || '—' }}</strong>
                     </div>
-                    <div class="col-4 text-right pr-2" title="Срок окончания контракта (если это аренда) (в месяцах)">
+                    <div
+                        class="col-4 text-right pr-2"
+                        title="Срок окончания контракта (если это аренда) (в месяцах)"
+                    >
                         <p>срок:</p>
                     </div>
                     <div class="col-8 pl-4">
@@ -80,7 +87,7 @@ export default {
         deal: {
             type: Object
         },
-        reedOnly: {
+        readOnly: {
             type: Boolean,
             default: false
         }

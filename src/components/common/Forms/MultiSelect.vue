@@ -43,7 +43,7 @@
                 :key="index"
                 @click="removeElement(index)"
                 :value="element"
-                :html="multipleProperty ? options[element][multipleProperty] : options[element]"
+                :html="multipleProperty ? element[multipleProperty] : options[element]"
             />
         </div>
         <slot />

@@ -46,7 +46,7 @@
                     </template>
                 </Tooltip>
                 <button
-                    v-if="!reedOnly"
+                    v-if="!readOnly"
                     v-tippy="'Удалить'"
                     @click.prevent="$emit('delete')"
                     class="file__action"
@@ -77,7 +77,7 @@ export default {
             type: Object,
             required: true
         },
-        reedOnly: {
+        readOnly: {
             type: Boolean,
             default: false
         }

@@ -46,6 +46,7 @@ export const TableContentMixin = {
 };
 
 import { mapActions, mapGetters } from 'vuex';
+import { watch } from 'vue';
 
 export const SearchFormMixin = {
     emits: ['search', 'reset'],
@@ -115,25 +116,24 @@ export const SearchFormMixin = {
         }
     },
     async mounted() {
-        if (!this.noUrl) {
-            await this.setQueryFields();
-        } else {
-            this.$watch(
-                'queryParams',
+        if (this.noUrl) {
+            watch(
+                () => this.queryParams,
                 () => {
                     this.setQueryFieldsNoUrl();
                 },
                 { deep: true }
             );
             this.setQueryFieldsNoUrl();
-        }
-        this.$watch(
-            'form',
+        } else await this.setQueryFields();
+
+        watch(
+            () => this.form,
             () => {
                 clearTimeout(this.setTimeout);
                 this.setTimeout = setTimeout(() => this.onSubmit(), 500);
             },
-            { deep: true }
+            { deep: true, immediate: this.noUrl }
         );
     },
     beforeUnmount() {

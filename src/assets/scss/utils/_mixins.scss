@@ -64,7 +64,7 @@ $sizes: (
 }
 
 @mixin hover {
-    &:not([disabled]):hover{
+    &:not([disabled]):not(.disabled):hover{
         @content;
     }
 }
@@ -102,7 +102,7 @@ $sizes: (
             }
 
             @if ($bg-hover-color != none) {
-                &:not(:disabled):hover {
+                &:not(:disabled):not(.disabled):hover {
                     background-color: $bg-hover-color;
                 }
             }
