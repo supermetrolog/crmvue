@@ -46,7 +46,7 @@
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { entityProperties } from '@/const/properties/properties';
 import { mapper } from '@/utils/mapper';
-import { reducer } from '@/utils';
+import { reducer } from '@/utils/reducer.js';
 import EmptyData from '@/components/common/EmptyData.vue';
 
 export default {

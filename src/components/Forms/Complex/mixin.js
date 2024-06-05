@@ -33,16 +33,6 @@ export const ComplexFormMixin = {
         onSubmit() {
             console.log('SUBMIT');
         },
-        deleteEmptyFields(object) {
-            for (const key in object) {
-                if (Object.hasOwnProperty.call(object, key)) {
-                    const value = object[key];
-                    if (value === null || value === '' || (Array.isArray(value) && !value.length)) {
-                        delete object[key];
-                    }
-                }
-            }
-        },
         normalizeForm(params) {
             params.forEach(param => {
                 if (!Array.isArray(this.form[param])) this.form[param] = [];

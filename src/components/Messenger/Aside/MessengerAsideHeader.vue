@@ -23,7 +23,7 @@
 <script>
 import Form from '@/components/common/Forms/Form.vue';
 import Input from '@/components/common/Forms/Input.vue';
-import { alg } from '@/utils/alg';
+import { debounce } from '@/utils/debounce.js';
 import { mapActions } from 'vuex';
 
 export default {
@@ -52,7 +52,7 @@ export default {
         }
     },
     created() {
-        this.debouncedUpdateDialogs = alg.debounce(this.updateDialogs, 200);
+        this.debouncedUpdateDialogs = debounce(this.updateDialogs, 200);
     }
 };
 </script>

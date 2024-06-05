@@ -1,5 +1,6 @@
 import { alg } from '@/utils/alg';
 import { formatterObject } from '@/plugins';
+import { deleteObjectsWithEmptyProperties } from '@/utils/deleteObjectsWithEmptyProperties.js';
 
 const propertiesToTableFormat = (object, props) => {
     return Object.keys(props).reduce((acc, property) => {
@@ -172,7 +173,7 @@ const propertiesToParametersFormat = (object, properties) => {
         });
     }
 
-    return alg.deleteObjectsWithUndueProperties(formattedObject, 'value', 0);
+    return deleteObjectsWithEmptyProperties(formattedObject, 'value', 0);
 };
 
 const propertiesToPrices = (object, properties, isRange = false) => {

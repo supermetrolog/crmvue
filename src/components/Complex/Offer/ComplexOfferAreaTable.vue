@@ -55,8 +55,8 @@
 <script>
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes';
-import { alg } from '@/utils/alg';
 import Tooltip from '@/components/common/Tooltip.vue';
+import { predicate } from '@/utils/predicate.js';
 
 export default {
     name: 'ComplexOfferAreaTable',
@@ -84,7 +84,7 @@ export default {
             return unitTypes;
         },
         areaProperties() {
-            return [...this.area.description].sort(alg.predicates.compareString('label'));
+            return [...this.area.description].sort(predicate.compareByProperty('label'));
         }
     }
 };

@@ -36,7 +36,7 @@ import Tooltip from '@/components/common/Tooltip.vue';
 import IconElevator from '@/components/common/Icons/IconElevator.vue';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { entityOptions } from '@/const/options/options';
-import { alg } from '@/utils/alg';
+import { deleteObjectsWithEmptyProperties } from '@/utils/deleteObjectsWithEmptyProperties.js';
 
 export default {
     name: 'ComplexHoldingParametersElevator',
@@ -54,7 +54,7 @@ export default {
                 entityProperties.elevator.characteristics
             );
 
-            return alg.deleteObjectsWithUndueProperties(properties, 'value', 0);
+            return deleteObjectsWithEmptyProperties(properties, 'value', 0);
         },
         hasBadStatus() {
             return (

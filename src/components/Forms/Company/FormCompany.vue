@@ -408,7 +408,8 @@ import {
     PassiveWhy,
     RatingList
 } from '@/const/const.js';
-import Utils, { cloneObject, yandexmap } from '@/utils';
+import Utils, { cloneObject } from '@/utils';
+import { yandexmap } from '@/utils/yandexMap.js';
 import api from '@//api/api.js';
 import Modal from '@/components/common/Modal.vue';
 import Loader from '@/components/common/Loader.vue';

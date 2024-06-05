@@ -628,7 +628,7 @@
 import { helpers, minValue, required } from '@vuelidate/validators';
 import { ComplexFormMixin } from '@/components/Forms/Complex/mixin';
 import { mapActions } from 'vuex';
-import { yandexmap } from '@/utils';
+import { yandexmap } from '@/utils/yandexMap.js';
 import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';

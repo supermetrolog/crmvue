@@ -57,7 +57,7 @@ import { unitTypes } from '@/const/unitTypes';
 import ComplexOfferArea from '@/components/Complex/Offer/ComplexOfferArea.vue';
 import { alg } from '@/utils/alg';
 import ComplexOfferPrice from '@/components/Complex/Offer/ComplexOfferPrice.vue';
-import { reducer } from '@/utils';
+import { reducer } from '@/utils/reducer.js';
 import ComplexOfferStatus from '@/components/Complex/Offer/ComplexOfferStatus.vue';
 import ComplexTabs from '@/components/Complex/ComplexTabs.vue';
 import ComplexActions from '@/components/Complex/ComplexActions.vue';
@@ -68,6 +68,7 @@ import { entityProperties } from '@/const/properties/properties';
 import { mapper } from '@/utils/mapper';
 import ComplexPurposes from '@/components/Complex/ComplexPurposes.vue';
 import { mapGetters } from 'vuex';
+import { deleteObjectsWithEmptyProperties } from '@/utils/deleteObjectsWithEmptyProperties.js';
 
 export default {
     name: 'ComplexOfferItem',
@@ -246,7 +247,7 @@ export default {
                     ...acc,
                     [key]: {
                         ...current,
-                        description: alg.deleteObjectsWithUndueProperties(
+                        description: deleteObjectsWithEmptyProperties(
                             current.description,
                             'valueMax',
                             0
@@ -294,11 +295,11 @@ export default {
             }));
 
             return {
-                range: alg.deleteObjectsWithUndueProperties(rangePrices, 'valueMax', 0),
-                service: alg.deleteObjectsWithUndueProperties(servicePrices, 'value', 0),
-                warehouse: alg.deleteObjectsWithUndueProperties(warehousePrices, 'valueMax', 0),
-                serviceIn: alg.deleteObjectsWithUndueProperties(serviceInPrices, 'value', 0),
-                serviceOut: alg.deleteObjectsWithUndueProperties(serviceOutPrices, 'value', 0)
+                range: deleteObjectsWithEmptyProperties(rangePrices, 'valueMax', 0),
+                service: deleteObjectsWithEmptyProperties(servicePrices, 'value', 0),
+                warehouse: deleteObjectsWithEmptyProperties(warehousePrices, 'valueMax', 0),
+                serviceIn: deleteObjectsWithEmptyProperties(serviceInPrices, 'value', 0),
+                serviceOut: deleteObjectsWithEmptyProperties(serviceOutPrices, 'value', 0)
             };
         },
         parameters() {

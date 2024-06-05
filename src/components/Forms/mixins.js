@@ -21,9 +21,10 @@ import {
     YesNo,
     YesNoFUCK
 } from '@/const/const.js';
-import { assignQueryToForm, cloneObject, deleteEmptyFields } from '@/utils/index.js';
+import { assignQueryToForm, cloneObject } from '@/utils/index.js';
 import { watch } from 'vue';
-import { alg } from '@/utils/alg.js';
+import { debounce } from '@/utils/debounce.js';
+import { deleteEmptyFields } from '@/utils/deleteEmptyFields.js';
 
 export const FormMixin = {
     mixins: [SearchFormMixin],
@@ -183,7 +184,7 @@ export const FormMixin = {
             });
             this.form.object_type = array;
             let query = { ...this.form };
-            this.deleteEmptyFields(query);
+            deleteEmptyFields(query);
             await this.$router.replace({ query });
         },
         changeRegion() {
@@ -262,7 +263,7 @@ export const WithQueryFiltersMixin = {
             let query = this.$route.query;
             assignQueryToForm(query, this.form);
         },
-        onFormChanged: alg.debounce(async function () {
+        onFormChanged: debounce(async function () {
             await this.setQuery();
             await this.afterSetQuery();
         }, 350),

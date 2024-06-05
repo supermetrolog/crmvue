@@ -18,7 +18,7 @@
                 <Button @click="resetForm" :disabled="!filterCount" danger>Сбросить фильтры</Button>
             </div>
         </div>
-        <div v-show="extraVisible" class="form-search__extra col-12">
+        <Modal v-show="extraVisible" @close="extraVisible = false" title="Фильтры">
             <FormGroup>
                 <MultiSelect
                     v-model="form.consultant_id"
@@ -92,7 +92,7 @@
                     </div>
                 </div>
             </FormGroup>
-        </div>
+        </Modal>
     </Form>
 </template>
 
@@ -115,10 +115,13 @@ import { helpers } from '@vuelidate/validators';
 import { maxDate, onlyEnglish, onlyRussian } from '@//validators';
 import useVuelidate from '@vuelidate/core';
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
+import { deleteEmptyFields } from '@/utils/deleteEmptyFields.js';
+import Modal from '@/components/common/Modal.vue';
 
 export default {
     name: 'FormCompanySearch',
     components: {
+        Modal,
         DoubleInput,
         RadioChip,
         CheckboxChip,
@@ -186,7 +189,7 @@ export default {
                 this.form.categories = [this.form.categories];
             }
             let query = { ...this.form };
-            this.deleteEmptyFields(query);
+            deleteEmptyFields(query);
             await this.$router.replace({ query });
         }
     }

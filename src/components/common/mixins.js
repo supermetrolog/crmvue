@@ -1,3 +1,5 @@
+import { deleteEmptyFields } from '@/utils/deleteEmptyFields.js';
+
 export const TableContentMixin = {
     data() {
         return {
@@ -93,7 +95,8 @@ export const SearchFormMixin = {
             } else {
                 query = { ...this.form };
             }
-            this.deleteEmptyFields(query);
+
+            deleteEmptyFields(query);
 
             query.page = 1;
             if (!this.noUrl) {
@@ -105,17 +108,6 @@ export const SearchFormMixin = {
             this.form = { ...this.$options.defaultFormProperties };
             this.$emit('reset');
         },
-        deleteEmptyFields(object) {
-            for (const key in object) {
-                if (Object.hasOwnProperty.call(object, key)) {
-                    const value = object[key];
-                    if (value === null || value === '' || (Array.isArray(value) && !value.length)) {
-                        delete object[key];
-                    }
-                }
-            }
-        },
-
         setQueryFieldsNoUrl() {
             if (this.queryParams) {
                 this.form = { ...this.form, ...this.queryParams };
