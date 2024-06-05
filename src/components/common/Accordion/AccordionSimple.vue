@@ -7,7 +7,7 @@
             </div>
         </slot>
         <div class="accordion-simple__body" :class="{ active: isOpen }">
-            <div class="accordion-simple__wrapper">
+            <div v-if="!withoutRender || isOpened" class="accordion-simple__wrapper">
                 <slot name="body"></slot>
             </div>
         </div>
@@ -34,20 +34,48 @@ export default {
         opened: {
             type: Boolean,
             default: false
+        },
+        withoutRender: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
         return {
-            isOpen: false
+            isOpen: false,
+            isOpened: false,
+            closingTimeout: null
         };
     },
     methods: {
         toggle() {
             this.isOpen = !this.isOpen;
+
+            if (this.withoutRender) {
+                if (this.isOpen) {
+                    this.isOpened = true;
+                    this.clearTimeout();
+                } else this.close();
+            } else this.isOpened = this.isOpen;
+        },
+        close() {
+            clearTimeout(this.closingTimeout);
+
+            this.closingTimeout = setTimeout(() => {
+                this.isOpened = false;
+                this.clearTimeout();
+            }, 500);
+        },
+        clearTimeout() {
+            clearTimeout(this.closingTimeout);
+            this.closingTimeout = null;
         }
     },
     created() {
         this.isOpen = this.opened;
+    },
+    beforeUnmount() {
+        this.clearTimeout();
     }
 };
 </script>
