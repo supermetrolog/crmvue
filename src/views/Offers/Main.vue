@@ -4,7 +4,6 @@
             <div class="row">
                 <FormModalOfferSearch
                     v-if="searchFormModalVisible"
-                    ref="search"
                     @close="toggleSearchFormModalVisible"
                 />
                 <FormOfferSearchExternal
@@ -122,7 +121,6 @@ export default {
             await this.SEARCH_OFFERS({ query });
             this.loader = false;
         },
-
         nextAndScrollToStart(page) {
             this.next(page);
             this.scrollToStart();

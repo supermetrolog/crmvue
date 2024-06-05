@@ -5,8 +5,18 @@
             <span v-if="COMPANY.passive_why !== null"> ({{ passiveWhyList[COMPANY.passive_why].label }})</span>
             <span v-if="COMPANY.passive_why_comment !== null"> комм: {{ COMPANY.passive_why_comment }}</span>
         </p>
-        <Timeline v-if="timelineVisible && COMPANY && COMPANY_REQUESTS[0]" @close="closeTimeline" />
-        <FormCompanyDeal v-if="dealFormVisible" @close="clickCloseDealForm" @updated="updatedDeal" :formdata="deal" />
+        <teleport to="body">
+            <Timeline
+                v-if="timelineVisible && COMPANY && COMPANY_REQUESTS[0]"
+                @close="closeTimeline"
+            />
+        </teleport>
+        <FormCompanyDeal
+            v-if="dealFormVisible"
+            @close="clickCloseDealForm"
+            @updated="updatedDeal"
+            :formdata="deal"
+        />
         <FormCompanyRequest
             v-if="companyRequestFormVisible"
             @closeCompanyForm="clickCloseCompanyRequestForm"
@@ -117,7 +127,8 @@ export default {
             request: null,
             contact: null,
             company: null,
-            deal: null
+            deal: null,
+            loading: null
         };
     },
     computed: {
@@ -264,7 +275,7 @@ export default {
             await this.CREATE_CONTACT_COMMENT(data);
         }
     },
-    async created() {
+    mounted() {
         this.getCompany();
         this.getCompanyContacts();
         this.getCompanyObjects();
@@ -273,5 +284,3 @@ export default {
     }
 };
 </script>
-
-<style></style>

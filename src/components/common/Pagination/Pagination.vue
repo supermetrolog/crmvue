@@ -1,53 +1,53 @@
 <template>
-    <div v-show="paginationVisible" class="pagination py-4">
-        <button v-show="!loader" @click.prevent="clickLoadMore" class="btn btn-primary">
-            показать еще
-            <i class="fas fa-list-ul d-inline ml-1"></i>
-        </button>
-        <Loader v-if="loader" class="center small py-4 no-absolute" />
+    <div v-show="isVisible" class="mt-2">
+        <Button v-show="!isLoading" @click="load" :disabled="disabled" class="w-100" icon>
+            <span>Показать ещё</span>
+            <i class="fas fa-list-ul"></i>
+        </Button>
+        <Spinner v-if="isLoading" />
     </div>
 </template>
 
 <script>
-import Loader from '../Loader.vue';
+import Spinner from '@/components/common/Spinner.vue';
+import Button from '@/components/common/Button.vue';
 
 export default {
     name: 'Pagination',
     components: {
-        Loader
+        Button,
+        Spinner
     },
-    emits: ['loadMore', 'next'],
+    emits: ['load-more', 'next'],
     props: {
         pagination: {
             type: Object
+        },
+        disabled: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
         return {
-            loader: false,
-            pageNumber: 1
+            isLoading: false
         };
     },
     computed: {
-        paginationVisible() {
-            if (!this.pagination) {
-                return false;
-            }
+        isVisible() {
+            if (!this.pagination) return false;
             return this.pagination.pageCount > this.pagination.currentPage;
         }
     },
-    watch: {
-        pagination() {
-            this.loader = false;
-        }
-    },
     methods: {
-        clickLoadMore() {
+        async load() {
             if (this.pagination.pageCount > this.pagination.currentPage) {
-                this.loader = true;
-                this.$emit('loadMore');
-                this.pageNumber++;
-                this.$emit('next', this.pageNumber);
+                this.isLoading = true;
+
+                await this.$emit('load-more');
+                await this.$emit('next', this.pagination.currentPage + 1);
+
+                this.isLoading = false;
             }
         }
     }
