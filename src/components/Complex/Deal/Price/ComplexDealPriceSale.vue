@@ -32,7 +32,7 @@
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes';
 import EmptyData from '@/components/common/EmptyData.vue';
-import { reducer } from '@/utils';
+import { reducer } from '@/utils/reducer.js';
 
 export default {
     components: { EmptyData, WithUnitType },

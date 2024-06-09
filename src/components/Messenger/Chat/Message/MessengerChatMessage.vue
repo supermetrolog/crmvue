@@ -117,7 +117,11 @@ export default {
             return contact.first_name + (contact.last_name ? ` ${contact.last_name}` : '');
         },
         additions() {
-            return { tasks: this.message.tasks, alerts: this.message.alerts };
+            return {
+                tasks: this.message.tasks,
+                alerts: this.message.alerts,
+                reminders: this.message.reminders
+            };
         }
     },
     methods: {

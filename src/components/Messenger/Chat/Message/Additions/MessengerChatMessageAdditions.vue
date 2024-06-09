@@ -14,16 +14,25 @@
             :editable="userCanEdit(addition)"
             :draggable="userCanDrag(addition)"
         />
+        <MessengerChatMessageAdditionsReminder
+            v-for="addition in activeAdditions.reminders"
+            :key="addition"
+            :addition="addition"
+            :editable="userCanEdit(addition)"
+            :draggable="userCanDrag(addition)"
+        />
     </div>
 </template>
 <script>
 import MessengerChatMessageAdditionsTask from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditionsTask.vue';
 import { mapGetters } from 'vuex';
 import MessengerChatMessageAdditionsAlert from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditionsAlert.vue';
+import MessengerChatMessageAdditionsReminder from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditionsReminder.vue';
 
 export default {
     name: 'MessengerChatMessageAdditions',
     components: {
+        MessengerChatMessageAdditionsReminder,
         MessengerChatMessageAdditionsAlert,
         MessengerChatMessageAdditionsTask
     },

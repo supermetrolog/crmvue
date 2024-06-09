@@ -1,103 +1,59 @@
 <template>
-    <div class="company-request-list company-contact-list">
-        <AnimationTransition>
-            <Modal
-                v-if="deletedContactItem"
-                @close="clickCloseModal"
-                title="Удаление контакта"
-                class="modal-form-company-contact-remove"
-            >
-                <div class="row no-gutters">
-                    <div class="col-12 text-center">
-                        <h4 class="text-dark">Вы уверены что хотите удалить контакт?</h4>
-                        <CompanyContactItem :contact="deletedContactItem" :reed-only="true" />
-                    </div>
-                    <div class="col-12 mt-4 text-center">
-                        <Loader v-if="deleteLoader" class="center small" />
-                        <button
-                            @click="deleteContact(deletedContactItem)"
-                            class="btn btn-danger"
-                            :disabled="deleteLoader"
-                        >
-                            Удалить
-                        </button>
-                        <button
-                            @click="clickCloseModal"
-                            class="btn btn-primary ml-1"
-                            :disabled="deleteLoader"
-                        >
-                            Нет
-                        </button>
-                    </div>
-                </div>
-            </Modal>
-        </AnimationTransition>
+    <div class="company-contact-list">
         <CompanyContactItem
             v-for="contact of contacts"
             :key="contact.id"
-            @openContactFormForUpdate="openContactFormForUpdate"
-            @createComment="createComment"
-            @deleteContact="clickDeleteContact"
+            @start-editing="$emit('start-editing', $event)"
+            @create-comment="createComment"
+            @delete-contact="deleteContact"
             :contact="contact"
-            :create-comment-loader="createCommentLoader"
+            :read-only="readOnly"
         />
     </div>
 </template>
 
 <script>
 import { mapActions } from 'vuex';
-import Modal from '@/components/common/Modal.vue';
-import Loader from '@/components/common/Loader.vue';
 import CompanyContactItem from '@/components/Company/Contact/CompanyContactItem.vue';
-import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import { useConfirm } from '@/composables/useConfirm.js';
 
 export default {
     name: 'CompanyContactList',
     components: {
-        AnimationTransition,
-        CompanyContactItem,
-        Loader,
-        Modal
+        CompanyContactItem
     },
-    emits: ['openContactFormForUpdate', 'createComment', 'deleteContact'],
+    emits: ['start-editing', 'created-comment', 'deleted'],
     props: {
         contacts: {
-            type: Array
+            type: Array,
+            default: () => []
+        },
+        readOnly: {
+            type: Boolean,
+            default: false
         }
     },
-    data() {
-        return {
-            deletedContactItem: false,
-            deleteLoader: false,
-            createCommentLoader: false
-        };
+    setup() {
+        const { confirm } = useConfirm();
+        return { confirm };
     },
     methods: {
         ...mapActions(['DELETE_CONTACT', 'CREATE_CONTACT_COMMENT']),
-        openContactFormForUpdate(contact) {
-            this.$emit('openContactFormForUpdate', contact);
-        },
-        clickCloseModal() {
-            this.deletedContactItem = null;
-        },
-        clickDeleteContact(contact) {
-            this.deletedContactItem = contact;
-        },
         async createComment(data) {
-            this.createCommentLoader = true;
             await this.CREATE_CONTACT_COMMENT(data);
-            this.$emit('createComment');
-            this.createCommentLoader = false;
+            this.$emit('created-comment');
         },
         async deleteContact(contact) {
-            this.deleteLoader = true;
-            await this.DELETE_CONTACT(contact);
-            this.$emit('deleteContact');
-            this.deleteLoader = false;
-            this.deletedContactItem = null;
+            const confirmed = await this.confirm(
+                'Вы уверены, что хотите удалить контакт ' + contact.header + '?'
+            );
+
+            if (confirmed) {
+                await this.DELETE_CONTACT(this.deletingContact);
+                this.$emit('deleted');
+            }
         }
-    },
-    mounted() {}
+    }
 };
 </script>
 

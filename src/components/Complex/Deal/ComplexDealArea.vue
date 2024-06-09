@@ -64,7 +64,7 @@ import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes';
 import { entityProperties } from '@/const/properties/properties';
 import { mapper } from '@/utils/mapper';
-import { reducer } from '@/utils';
+import { reducer } from '@/utils/reducer.js';
 
 export default {
     name: 'ComplexDealArea',

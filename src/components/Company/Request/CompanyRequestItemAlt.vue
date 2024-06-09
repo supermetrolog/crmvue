@@ -1,187 +1,183 @@
 <template>
-    <div class="CompanyRequestItemAlt row m-0 py-4 pb-5 px-2">
-        <div @click="openCompanyRequestFormForUpdate" class="edit-btn">
-            <i class="fas fa-pen m-2 edit"></i>
-        </div>
-        <div class="col-4">
-            <p class="text-danger mb-1">
-                {{ dealType.toUpperCase() }}
-                {{ request.minArea + ' - ' + request.maxArea }}
-                <span>
-                    м<sup><small>2</small></sup>
-                </span>
-            </p>
-            <div class="location mb-4">
-                <div class="region">
-                    <strong>
-                        {{
-                            request.regions
-                                .map(elem => $formatter.text().ucFirst(elem.info.title))
-                                .join(', ')
-                        }}
-                    </strong>
-                </div>
-                <div v-if="request.directions.length" class="region-parameters">
-                    <p class="d-block"><b>Московская область:</b></p>
+    <div class="company-request-item-alt p-3">
+        <div class="row">
+            <div class="col-12">
+                <DashboardCard>
+                    <div class="dashboard-card-view__header">
+                        <strong class="mr-2">
+                            #{{ request.id }}
+                            <span v-if="request.name">, {{ request.name }}</span>
+                        </strong>
+                        <DashboardCardRequestStatus :request="request" />
+                        <DashboardChip
+                            v-if="request.expressRequest"
+                            class="dashboard-bg-danger dashboard-cl-white"
+                        >
+                            Срочный запрос
+                        </DashboardChip>
+                        <DashboardChip class="dashboard-bg-light">
+                            {{ dealType }}
+                        </DashboardChip>
+                        <DashboardChip v-if="request.heated !== null" class="dashboard-bg-light">
+                            {{ temperature }}
+                        </DashboardChip>
+                        <div class="dashboard-card-view__actions">
+                            <HoverActionsButton
+                                v-if="!readOnly"
+                                @click="$emit('start-editing')"
+                                label="Редактировать"
+                            >
+                                <i class="fa-solid fa-pen" />
+                            </HoverActionsButton>
+                        </div>
+                    </div>
+                </DashboardCard>
+            </div>
+            <div class="col-8">
+                <DashboardCard class="mb-2">
+                    <p class="dashboard-card-view__subtitle">Адрес</p>
+                    <DashboardCardRequestAddress :request="request" />
+                </DashboardCard>
+                <DashboardCard class="mb-2">
+                    <p class="dashboard-card-view__subtitle">Тип объекта</p>
+                    <DashboardCardRequestObjectTypes :request="request" />
+                </DashboardCard>
+                <DashboardCard>
+                    <p class="dashboard-card-view__subtitle">Описание</p>
                     <p>
-                        {{
-                            request.directions
-                                .map(elem => directionList[elem.direction].full)
-                                .join(', ')
-                        }}
+                        {{ request.description?.length ? request.description : 'Не заполнено' }}
                     </p>
-                </div>
-                <div v-if="request.districts.length" class="region-parameters">
-                    <p class="d-block"><b>Москва:</b></p>
-                    <p>
-                        {{ request.districts.map(elem => districtList[elem.district]).join(', ') }}
+                </DashboardCard>
+            </div>
+            <div class="col-4">
+                <DashboardCard class="mb-2">
+                    <p class="dashboard-card-view__subtitle mb-2">Характеристики</p>
+                    <p class="dashboard-card-view__property">
+                        <span class="dashboard-card-view__category">Высота потолка:</span>
+                        <span v-if="request.minCeilingHeight || request.maxCeilingHeight">
+                            <with-unit-type :unit-type="unitTypes.METERS">
+                                <span v-if="request.minCeilingHeight">
+                                    от {{ $formatter.number(request.minCeilingHeight) }}
+                                </span>
+                                <span v-if="request.maxCeilingHeight">
+                                    до {{ $formatter.number(request.maxCeilingHeight) }}
+                                </span>
+                            </with-unit-type>
+                        </span>
+                        <span v-else>не указано</span>
                     </p>
-                </div>
-                <div>
-                    <p v-if="!request.distanceFromMKADnotApplicable">
-                        До {{ request.distanceFromMKAD }} км от МКАД
+                    <p class="dashboard-card-view__property">
+                        <span class="dashboard-card-view__category">Площадь пола:</span>
+                        <with-unit-type
+                            v-if="request.minArea || request.maxArea"
+                            :unit-type="unitTypes.SQUARE_METERS"
+                        >
+                            <span v-if="request.minArea">
+                                от {{ $formatter.number(request.minArea) }}
+                            </span>
+                            <span v-if="request.maxArea">
+                                до {{ $formatter.number(request.maxArea) }}
+                            </span>
+                        </with-unit-type>
+                        <span v-else>не указано</span>
                     </p>
-                </div>
+                    <p class="dashboard-card-view__property">
+                        <span class="dashboard-card-view__category">Электричество:</span>
+                        <with-unit-type v-if="request.electricity" :unit-type="unitTypes.KILOWATT">
+                            {{ $formatter.number(request.electricity) }}
+                        </with-unit-type>
+                        <span v-else>не указано</span>
+                    </p>
+                    <p class="dashboard-card-view__property">
+                        <span class="dashboard-card-view__category">Цена:</span>
+                        <with-unit-type
+                            v-if="request.pricePerFloor"
+                            :unit-type="
+                                request.dealType === 1
+                                    ? unitTypes.RUB
+                                    : unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR
+                            "
+                        >
+                            {{ $formatter.number(request.pricePerFloor) }}
+                        </with-unit-type>
+                        <span v-else>не указано</span>
+                    </p>
+                    <p class="dashboard-card-view__property">
+                        <span class="dashboard-card-view__category">Типы ворот:</span>
+                        <template v-if="request.gateTypes.length">
+                            {{ gateTypes }}
+                        </template>
+                        <span v-else>не указано</span>
+                    </p>
+                    <div class="dashboard-card-view__property">
+                        <span class="dashboard-card-view__category">Дата переезда:</span>
+                        <p>
+                            {{
+                                request.unknownMovingDate
+                                    ? unknownMovingTitle
+                                    : $formatter.toDate(request.movingDate)
+                            }}
+                        </p>
+                    </div>
+                </DashboardCard>
+                <DashboardCard class="mb-2">
+                    <p class="dashboard-card-view__subtitle mb-2">Класс объекта</p>
+                    <div v-if="request.objectClasses.length" class="d-flex flex-wrap gap-1">
+                        <DashboardChip
+                            v-for="(element, key) in objectClasses"
+                            :key="key"
+                            class="d-flex align-items-center"
+                            :class="
+                                element.included
+                                    ? 'dashboard-bg-success dashboard-cl-white'
+                                    : 'dashboard-bg-gray-l'
+                            "
+                        >
+                            <span>{{ element.name }}</span>
+                        </DashboardChip>
+                    </div>
+                    <p v-else>Не заполнено</p>
+                </DashboardCard>
+                <DashboardCard>
+                    <p class="dashboard-card-view__subtitle mb-2">Требования</p>
+                    <DashboardCardRequestRequirements :request="request" />
+                </DashboardCard>
             </div>
-            <div>
-                <span class="mr-3">Класс объекта</span>
-                <strong>
-                    {{
-                        request.objectClasses
-                            .map(elem => objectClassList[elem.object_class])
-                            .join(',')
-                    }}
-                </strong>
-                <strong v-if="!request.objectClasses.length">нет данных</strong>
-            </div>
-
-            <div v-if="request.objectTypes" class="parameters-inner d-flex flex-column">
-                <span class="mb-1">Тип объекта</span>
-                <div v-if="!!request.objectTypes.length">
-                    <strong
-                        v-for="objectType of request.objectTypes"
-                        :key="objectType.id"
-                        class="object-type-box"
-                        :title="getObjectTypeName(objectType.object_type)"
-                    >
-                        <i :class="getObjectTypeIcon(objectType.object_type)"></i>
-                    </strong>
-                </div>
-                <div v-if="!!request.objectTypesGeneral.length">
-                    <strong>{{ getObjectTypesGeneral(request.objectTypesGeneral) }}</strong>
-                </div>
-                <div v-if="!request.objectTypes.length && !request.objectTypesGeneral.length">
-                    <p>нет данных</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-8 CompanyRequestItemAlt-info-right">
-            <div class="d-flex mb-4">
-                <span>Цена пола</span>
-                <strong v-if="request.pricePerFloor" class="text-left">
-                    <small>до</small> {{ request.pricePerFloor }}
-                    <small>руб. за м<sup>2</sup>/год</small>
-                </strong>
-                <strong v-else>нет данных</strong>
-            </div>
-            <div class="d-flex">
-                <span>Этажность</span>
-                <strong class="parameters-inner">
-                    {{ request.firstFloorOnly ? 'только 1' : 'нет данных' }}
-                </strong>
-            </div>
-            <div class="d-flex">
-                <span>Темп. режим</span>
-                <strong class="parameters-inner">
-                    {{ temperatureHandler }}
-                </strong>
-            </div>
-            <div class="d-flex">
-                <span>Высота потолков</span>
-                <strong class="parameters-inner">
-                    {{ request.format_ceilingHeight }}
-                    <span>м</span>
-                </strong>
-            </div>
-            <div class="d-flex">
-                <span>Качество пола</span>
-                <strong class="parameters-inner">
-                    {{ request.antiDustOnly ? 'только антипыль' : 'нет данных' }}
-                </strong>
-            </div>
-            <div class="d-flex mb-4">
-                <span>Ворота</span>
-                <div>
-                    <strong v-if="!request.gateTypes.length">нет данных</strong>
-                    <strong v-if="request.gateTypes.length">
-                        {{ request.gateTypes.map(elem => gateTypeList[elem.gate_type]).join(', ') }}
-                    </strong>
-                </div>
-            </div>
-            <div class="d-flex">
-                <span>Электричество</span>
-                <strong class="parameters-inner">
-                    {{ request.electricity ? `от ${request.electricity} кВт` : 'нет данных' }}
-                </strong>
-            </div>
-            <div class="d-flex">
-                <span>Наличие крана</span>
-                <strong class="parameters-inner">
-                    {{ request.haveCranes ? 'да' : 'нет' }}
-                </strong>
-            </div>
-            <div class="d-flex">
-                <span>Ж/д ветка</span>
-                <strong class="parameters-inner">
-                    {{ request.trainLine ? 'да' : 'нет' }}
-                </strong>
-            </div>
-            <!-- <p v-if="request.trainLine">
-              длина ж/д ветки <small class="text-grey">(м)</small>
-            </p>
-            <p class="parameters-inner" v-if="request.trainLine">
-              {{ request.trainLineLength ?? "нет данных" }}
-            </p>
-            <p>дата переезда</p>
-            <p class="parameters-inner" v-if="request.movingDate">
-              {{ request.movingDate_format }}
-            </p>
-            <p class="parameters-inner" v-if="request.unknownMovingDate !== null">
-              {{ unknownMovingDateOptions[request.unknownMovingDate][1] }}
-            </p> -->
-        </div>
-        <div class="col-12 mt-5 d-flex flex-column">
-            <span>Описание:</span>
-            <strong class="parameters-inner">
-                {{ request.description ?? 'нет данных' }}
-            </strong>
         </div>
     </div>
 </template>
 
 <script>
-import {
-    DealTypeList,
-    DirectionList,
-    DistrictList,
-    GateTypeList,
-    ObjectClassList,
-    ObjectTypeList,
-    ObjectTypesGeneralList,
-    PassiveWhyRequest,
-    RegionList,
-    unknownMovingDate
-} from '@/const/const.js';
-import { mapGetters } from 'vuex';
+import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
+import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import { entityOptions } from '@/const/options/options.js';
+import WithUnitType from '@/components/common/WithUnitType.vue';
+import { unitTypes } from '@/const/unitTypes.js';
+import DashboardCardRequestObjectTypes from '@/components/Dashboard/Card/DashboardCardRequestObjectTypes.vue';
+import DashboardCardRequestRequirements from '@/components/Dashboard/Card/DashboardCardRequestRequirements.vue';
+import DashboardCardRequestAddress from '@/components/Dashboard/Card/DashboardCardRequestAddress.vue';
+import DashboardCardRequestStatus from '@/components/Dashboard/Card/DashboardCardRequestStatus.vue';
+import { unknownMovingDate } from '@/const/const.js';
 
 export default {
     name: 'CompanyRequestItemAlt',
-    emits: ['openCompanyRequestFormForUpdate', 'deleteRequest', 'cloneRequest'],
+    components: {
+        DashboardCardRequestStatus,
+        DashboardCardRequestAddress,
+        DashboardCardRequestRequirements,
+        DashboardCardRequestObjectTypes,
+        WithUnitType,
+        DashboardChip,
+        DashboardCard,
+        HoverActionsButton
+    },
+    emits: ['start-editing'],
     props: {
         request: {
             type: Object
         },
-        reedOnly: {
+        readOnly: {
             type: Boolean,
             default: false
         },
@@ -195,96 +191,36 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['THIS_USER']),
-        objectClassList: () => ObjectClassList,
-        gateTypeList: () => GateTypeList,
-        objectTypesGeneralList: () => ObjectTypesGeneralList,
-        objectTypeListWareHouse: () => ObjectTypeList.warehouse,
-        objectTypeListProduction: () => ObjectTypeList.production,
-        objectTypeListPlot: () => ObjectTypeList.plot,
-        regionList: () => RegionList,
-        directionList: () => DirectionList,
-        districtList: () => DistrictList,
-        dealTypeList: () => DealTypeList,
-        passiveWhyOptions: () => PassiveWhyRequest,
-        unknownMovingDateOptions: () => unknownMovingDate,
+        unitTypes() {
+            return unitTypes;
+        },
         dealType() {
-            return this.dealTypeList[this.request.dealType].label;
+            return entityOptions.deal.type[Number(this.request.dealType) + 1];
         },
-        temperatureHandler() {
-            if (this.request.heated === 0) {
-                return 'холодный';
-            }
-            if (this.request.heated === 1) {
-                return 'отапливаемый';
-            } else {
-                return 'нет данных';
-            }
-        }
-    },
-    methods: {
-        openCompanyRequestFormForUpdate() {
-            this.$emit('openCompanyRequestFormForUpdate', this.request);
+        temperature() {
+            if (this.request.heated === 0) return 'Холодный';
+            if (this.request.heated === 1) return 'Отапливаемый';
+            return null;
         },
-        deleteRequest() {
-            this.$emit('deleteRequest', this.request);
+        unknownMovingTitle() {
+            return unknownMovingDate[this.request.unknownMovingDate];
         },
-        cloneRequest() {
-            let data = {
-                ...this.request
-            };
-            delete data.id;
-            delete data.created_at;
-            delete data.updated_at;
-            data.status = data.status == 2 ? 1 : data.status;
-            this.$emit('cloneRequest', data);
+        gateTypes() {
+            return this.request.gateTypes
+                .map(element => entityOptions.floor.gate[element.gate_type + 1])
+                .join(', ');
         },
-        clickTimeline() {
-            this.$router.push({
-                query: {
-                    request_id: this.request.id,
-                    consultant_id: this.THIS_USER.id,
-                    step: 0
-                }
-            });
-        },
-        getObjectTypesGeneral(types) {
-            return types.map(type => this.objectTypesGeneralList[type.type]).join(', ');
-        },
-        getObjectTypeIcon(objectType) {
-            if (objectType < 12) {
-                return this.objectTypeListWareHouse.find(item => item.id == objectType).icon;
-            }
-            if (objectType < 25) {
-                return this.objectTypeListProduction.find(item => item.id == objectType).icon;
-            }
-            return this.objectTypeListPlot.find(item => item.id == objectType).icon;
-        },
-        getObjectTypeName(objectType) {
-            if (objectType < 12) {
-                return this.objectTypeListWareHouse.find(item => item.id == objectType).name;
-            }
-            if (objectType < 25) {
-                return this.objectTypeListProduction.find(item => item.id == objectType).name;
-            }
-            return this.objectTypeListPlot.find(item => item.id == objectType).name;
-        },
-        clickOnItem(event) {
-            if (this.reedOnly || ['I', 'BUTTON', 'A'].includes(event.target.tagName)) {
-                return;
-            }
+        objectClasses() {
+            const classes = Object.values(entityOptions.object.class).map(value => ({
+                name: value
+            }));
 
-            const query = { ...this.$route.query };
-            if (query.selected_request && query.selected_request == this.request.id) {
-                delete query.selected_request;
-            } else {
-                query.selected_request = this.request.id;
-            }
+            this.request.objectClasses.forEach(
+                element => (classes[element.object_class].included = true)
+            );
 
-            this.$router.replace({ query });
+            return classes;
         }
     }
 };
 </script>
-
-<style></style>

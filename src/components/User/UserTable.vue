@@ -81,15 +81,12 @@
                         {{ user.updated_at_format }}
                     </Td>
                     <Td class="action">
-                        <button
-                            @click="$emit('clickEdit', user)"
-                            class="btn btn-action text-primary"
-                        >
-                            <i class="fas fa-user-edit"></i>
-                        </button>
-                        <button @click="clickDeleteUser(user)" class="btn btn-action text-danger">
+                        <HoverActionsButton @click="$emit('clickEdit', user)" class="mb-1">
+                            <i class="fas fa-pen"></i>
+                        </HoverActionsButton>
+                        <HoverActionsButton @click="clickDeleteUser(user)">
                             <i class="fas fa-trash-alt"></i>
-                        </button>
+                        </HoverActionsButton>
                     </Td>
                 </Tr>
             </template>
@@ -107,10 +104,12 @@ import Modal from '@/components/common/Modal.vue';
 import Loader from '@/components/common/Loader.vue';
 import Button from '@/components/common/Button.vue';
 import Avatar from '@/components/common/Avatar.vue';
+import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 
 export default {
     name: 'UserTable',
     components: {
+        HoverActionsButton,
         Avatar,
         Button,
         Loader,
@@ -150,5 +149,3 @@ export default {
     }
 };
 </script>
-
-<style></style>

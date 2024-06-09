@@ -70,7 +70,7 @@
 import FormComplexFloorBlock from '@/components/Forms/Complex/FormComplexFloorBlock.vue';
 import ComplexDealFloorHead from '@/components/Complex/Deal/ComplexDealFloorHead.vue';
 import ComplexDealFloorSection from '@/components/Complex/Deal/ComplexDealFloorSection.vue';
-import { reducer } from '@/utils';
+import { reducer } from '@/utils/reducer.js';
 import FormComplexFloor from '@/components/Forms/Complex/FormComplexFloor.vue';
 
 export default {

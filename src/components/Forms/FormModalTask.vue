@@ -87,10 +87,20 @@ export default {
                         message: this.promiseProps.message,
                         status: this.promiseProps.status ?? 1
                     };
-            }
+            } else this.clearForm();
         }
     },
     methods: {
+        clearForm() {
+            this.form = {
+                message: null,
+                date: {
+                    end: null
+                },
+                user_id: null,
+                status: 1
+            };
+        },
         async fetchConsultants() {
             this.loading = true;
 

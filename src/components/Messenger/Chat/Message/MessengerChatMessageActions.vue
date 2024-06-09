@@ -21,7 +21,6 @@
                         successMessage: 'Напоминание успешно создано!'
                     })
                 "
-                disabled
                 label="Добавить напоминание"
             >
                 <i class="fa-solid fa-bell"></i>

@@ -1,5 +1,5 @@
 <template>
-    <button v-tippy="label" class="hover-actions__button" :class="{ active: active }">
+    <button v-tippy="label" class="hover-actions__button" :class="{ active: active, small: small }">
         <slot></slot>
     </button>
 </template>
@@ -12,6 +12,10 @@ export default {
             default: null
         },
         active: {
+            type: Boolean,
+            default: false
+        },
+        small: {
             type: Boolean,
             default: false
         }

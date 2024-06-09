@@ -200,6 +200,7 @@
                             :value="form.water"
                             text="Вода"
                             multiple
+                            :disabled-value="2"
                         />
                         <CheckboxChip v-model="form.gas" :value="form.gas" text="Газ" multiple />
                         <CheckboxChip
@@ -207,36 +208,42 @@
                             :value="form.steam"
                             text="Пар"
                             multiple
+                            :disabled-value="2"
                         />
                         <CheckboxChip
                             v-model="form.sewage_central"
                             :value="form.sewage_central"
                             text="Канализация"
                             multiple
+                            :disabled-value="2"
                         />
                         <CheckboxChip
                             v-model="form.racks"
                             :value="form.racks"
                             text="Стелажи"
                             multiple
+                            :disabled-value="2"
                         />
                         <CheckboxChip
                             v-model="form.railway"
                             :value="form.railway"
                             text="Ж/Д ветка"
                             multiple
+                            :disabled-value="2"
                         />
                         <CheckboxChip
                             v-model="form.has_cranes"
                             :value="form.has_cranes"
                             text="Краны"
                             multiple
+                            :disabled-value="2"
                         />
                         <CheckboxChip
                             v-model="form.firstFloorOnly"
                             :value="form.firstFloorOnly"
                             text="Только 1 этаж"
                             multiple
+                            :disabled-value="2"
                         />
                     </div>
                 </div>

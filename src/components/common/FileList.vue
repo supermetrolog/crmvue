@@ -10,7 +10,7 @@
                     :key="file.id"
                     @delete="$emit('delete')"
                     :file="file"
-                    :reed-only="!editable"
+                    :read-only="!editable"
                 />
             </div>
         </div>

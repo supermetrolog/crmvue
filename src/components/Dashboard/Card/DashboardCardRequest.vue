@@ -4,18 +4,18 @@
             <div
                 class="dashboard-card-request__header"
                 :class="{
-                    'dashboard-bg-danger-l': request.status === 0,
-                    'dashboard-bg-success': request.status === 2
+                    'dashboard-bg-danger-l': isDisabled,
+                    'dashboard-bg-success': isCompleted
                 }"
             >
                 <i
-                    v-if="request.expressRequest"
+                    v-if="request.expressRequest && !isCompleted"
                     v-tippy="'Экспресс-запрос'"
                     class="fa-solid fa-fire medium-icon dashboard-cl-danger"
                 ></i>
                 <span
                     class="dashboard-card-request__date"
-                    :class="{ 'dashboard-cl-white': request.status === 2 }"
+                    :class="{ 'dashboard-cl-white': isCompleted }"
                 >
                     Обновлено {{ updatedAt }}
                 </span>
@@ -39,7 +39,7 @@
                         </HoverActionsButton>
                     </template>
                     <router-link
-                        v-if="request.consultant_id == currentUser.id"
+                        v-if="request.consultant_id === currentUser.id"
                         :to="`/companies/${request.company_id}?request_id=${request.id}&consultant_id=${currentUser.id}&step=0`"
                         target="_blank"
                     >
@@ -64,7 +64,7 @@
                             <div class="d-flex align-items-center">
                                 <p>{{ status }}</p>
                                 <i
-                                    v-if="request.status == 0"
+                                    v-if="isDisabled"
                                     v-tippy="statusTippy"
                                     class="fa-regular fa-question-circle ml-2 icon"
                                 />

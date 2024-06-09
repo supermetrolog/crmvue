@@ -1,7 +1,10 @@
 <template>
     <MessengerChatMessageAdditionsItem>
         <template #icon>
-            <span class="messenger-chat-message-addition__icon rounded-icon bg-red">
+            <span
+                v-tippy="addition.message"
+                class="messenger-chat-message-addition__icon rounded-icon bg-red"
+            >
                 <i class="fa-solid fa-bell"></i>
             </span>
         </template>
@@ -30,29 +33,33 @@
 import dayjs from 'dayjs';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import MessengerChatMessageAdditionsItem from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditionsItem.vue';
+import { useConfirm } from '@/composables/useConfirm.js';
 
 export default {
     name: 'MessengerChatMessageAdditionsReminder',
     components: { MessengerChatMessageAdditionsItem, HoverActionsButton },
-    inject: ['$confirmPopup', '$editAddition'],
+    inject: ['$editAddition', '$messageID'],
     props: {
         addition: {
             type: Object,
             required: true
         }
     },
+    setup() {
+        const { confirm } = useConfirm();
+        return { confirm };
+    },
     computed: {
         usersText() {
-            if (this.addition?.users === null) return 'всех';
-            else return this.addition?.users.join(', ');
+            return this.addition.user.userProfile.middle_name;
         },
         formattedDate() {
-            return dayjs(this.addition.reminder).format('DD.MM.YYYY в HH:MM');
+            return dayjs(this.addition.notify_at).format('DD.MM.YYYY в HH:MM');
         }
     },
     methods: {
         async remove() {
-            const confirmed = await this.$confirmPopup(
+            const confirmed = await this.confirm(
                 'Вы уверены, что хотите безвозвратно удалить напоминание?'
             );
 

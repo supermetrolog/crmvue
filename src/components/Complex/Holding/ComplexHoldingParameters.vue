@@ -121,7 +121,7 @@ import FormComplexCrane from '@/components/Forms/Complex/FormComplexCrane.vue';
 import FormComplexElevator from '@/components/Forms/Complex/FormComplexElevator.vue';
 import ComplexHoldingParametersCrane from '@/components/Complex/Holding/ComplexHoldingParametersCrane.vue';
 import FormComplexFloor from '@/components/Forms/Complex/FormComplexFloor.vue';
-import { reducer } from '@/utils';
+import { reducer } from '@/utils/reducer.js';
 import { mapGetters } from 'vuex';
 import ComplexHoldingParametersElevator from '@/components/Complex/Holding/ComplexHoldingParametersElevator.vue';
 import IconCrane from '@/components/common/Icons/IconCrane.vue';

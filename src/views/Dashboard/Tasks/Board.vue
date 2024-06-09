@@ -94,12 +94,17 @@ import { entityOptions } from '@/const/options/options.js';
 import Button from '@/components/common/Button.vue';
 import FormModalTask from '@/components/Forms/FormModalTask.vue';
 import { LoaderMixin } from '@/components/Messenger/loader.mixin.js';
+import { useConfirm } from '@/composables/useConfirm.js';
 
 export default {
     name: 'DashboardTasksBoard',
     components: { FormModalTask, Button, DashboardRoundedIcon, DashboardKanbanBoard },
     mixins: [LoaderMixin],
-    inject: ['$confirmPopup', '$targetUser'],
+    inject: ['$targetUser'],
+    setup() {
+        const { confirm } = useConfirm();
+        return { confirm };
+    },
     data() {
         return {
             newTasks: {
@@ -189,7 +194,7 @@ export default {
             task.isUpdating = false;
         },
         async deleteTask(task) {
-            const confirmed = await this.$confirmPopup('Вы уверены, что хотите удалить задачу?');
+            const confirmed = await this.confirm('Вы уверены, что хотите удалить задачу?');
 
             if (confirmed) {
                 const deleted = await api.task.delete(task.id);

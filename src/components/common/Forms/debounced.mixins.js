@@ -1,4 +1,4 @@
-import { alg } from '@/utils/alg';
+import { debounce } from '@/utils/debounce.js';
 
 export const DebouncedQuerySearchMixin = {
     data() {
@@ -8,7 +8,7 @@ export const DebouncedQuerySearchMixin = {
     },
     computed: {
         debouncedQuerySearch: {
-            set: alg.debounce(function (value) {
+            set: debounce(function (value) {
                 this.querySearch = value;
             }, 500),
             get() {

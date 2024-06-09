@@ -7,11 +7,14 @@
     >
         <Stepper @complete="submit" :steps="steps" :v="v$.form" keep-alive>
             <template #1>
-                <Spinner v-if="loading" center class="spinner--green" />
-                <UserPicker v-else v-model="form.users" :users="users" />
+                <Spinner v-if="loading" center />
+                <UserPicker v-else v-model="form.user_id" single :users="consultants" />
             </template>
             <template #2>
-                <DatePicker v-model="form.date.reminder" size="70px" class="mx-auto" />
+                <DatePicker v-model="form.notify_at" size="70px" class="mx-auto" />
+            </template>
+            <template #3>
+                <Textarea v-model="form.message" label="Описание" />
             </template>
         </Stepper>
     </Modal>
@@ -25,10 +28,12 @@ import { AsyncModalMixin } from '@/components/common/mixins';
 import UserPicker from '@/components/common/Forms/UserPicker/UserPicker.vue';
 import { helpers, required } from '@vuelidate/validators';
 import useValidate from '@vuelidate/core';
+import Textarea from '@/components/common/Forms/Textarea.vue';
 
 export default {
     name: 'FormModalMessageReminder',
     components: {
+        Textarea,
         UserPicker,
         Modal,
         Spinner,
@@ -40,12 +45,12 @@ export default {
         return {
             v$: useValidate(),
             loading: false,
-            users: [],
+            consultants: [],
             form: {
-                date: {
-                    reminder: null
-                },
-                users: []
+                message: null,
+                notify_at: null,
+                user_id: null,
+                status: 1
             }
         };
     },
@@ -53,12 +58,16 @@ export default {
         steps() {
             return [
                 {
-                    name: 'users',
+                    name: 'user_id',
                     title: 'Выбор сотрудников'
                 },
                 {
-                    name: 'date',
+                    name: 'notify_at',
                     title: 'Выбор даты'
+                },
+                {
+                    name: 'message',
+                    title: 'Дополнительное описание'
                 }
             ];
         }
@@ -66,42 +75,50 @@ export default {
     watch: {
         opened(newValue) {
             if (newValue) {
-                this.form = {
-                    date: {
-                        reminder: this.promiseProps?.reminder
-                    },
-                    users: this.promiseProps?.users ?? []
-                };
+                if (!this.consultants?.length) this.fetchConsultants();
 
-                this.fetchUsers();
-            } else this.users = [];
+                if (this.promiseProps) {
+                    this.form = {
+                        user_id: this.promiseProps.user_id,
+                        notify_at: this.promiseProps.notify_at,
+                        message: this.promiseProps.message ?? null,
+                        status: this.promiseProps.status ?? 1
+                    };
+                }
+            } else this.clearForm();
         }
     },
     methods: {
-        async fetchUsers() {
+        async fetchConsultants() {
             this.loading = true;
 
-            this.users = await this.$store.dispatch('getConsultants');
+            this.consultants = await this.$store.dispatch('getConsultants');
 
             this.loading = false;
         },
+        clearForm() {
+            this.form = {
+                message: null,
+                notify_at: null,
+                user_id: null,
+                status: 1
+            };
+        },
         submit() {
-            this.resolve({
-                reminder: this.form.date.reminder,
-                users: this.form.users.length === this.users.length ? true : this.form.users
-            });
+            this.resolve(this.form);
         }
     },
     validations() {
         return {
             form: {
-                date: {
-                    reminder: {
-                        required: helpers.withMessage('Выберите дату напоминания!', required)
-                    }
+                notify_at: {
+                    required: helpers.withMessage('Выберите дату напоминания!', required)
                 },
-                users: {
-                    minLength: helpers.withMessage('Выберите хотя бы одного сотрудника!', required)
+                user_id: {
+                    minLength: helpers.withMessage('Выберите сотрудника!', required)
+                },
+                message: {
+                    required: helpers.withMessage('Укажите сообщение к напоминанию', required)
                 }
             }
         };

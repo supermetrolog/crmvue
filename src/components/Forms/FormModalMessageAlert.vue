@@ -11,7 +11,7 @@
                 <UserPicker v-else v-model="form.user_id" single :users="consultants" />
             </template>
             <template #2>
-                <Textarea v-model="form.message" label="Описание задачи" />
+                <Textarea v-model="form.message" label="Описание" />
             </template>
         </Stepper>
     </Modal>
@@ -65,12 +65,12 @@ export default {
         opened(newValue) {
             if (newValue) {
                 if (!this.consultants?.length) this.fetchConsultants();
-
-                this.form = {
-                    user_id: this.promiseProps?.user_id ?? null,
-                    message: this.promiseProps?.message
-                };
-            }
+                if (this.promiseProps)
+                    this.form = {
+                        user_id: this.promiseProps.user_id,
+                        message: this.promiseProps.message
+                    };
+            } else this.clearForm();
         }
     },
     methods: {
@@ -80,6 +80,12 @@ export default {
             this.consultants = await this.$store.dispatch('getConsultants');
 
             this.loading = false;
+        },
+        clearForm() {
+            this.form = {
+                message: null,
+                user_id: null
+            };
         },
         submit() {
             this.resolve({

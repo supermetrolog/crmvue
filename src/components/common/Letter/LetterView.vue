@@ -1,79 +1,84 @@
 <template>
     <div class="letter-view">
-        <div class="letter-view-info">
-            <KeyValue>
-                <Key> От:</Key>
-                <Value>
-                    <p class="letter-contact-value letter-from">
-                        {{ letter.user.userProfile.short_name }},
-                        <span class="letter-c-value">{{ letter.sender_email }}</span>
-                    </p>
-                </Value>
-                <Key> Кому:</Key>
-                <Value>
-                    <p
+        <KeyValue>
+            <Key>От:</Key>
+            <Value>
+                <DashboardChip class="dashboard-bg-success-l">
+                    {{ letter.user.userProfile.short_name }},
+                    <span class="letter-view__link">{{ letter.sender_email }}</span>
+                </DashboardChip>
+            </Value>
+            <Key>Кому:</Key>
+            <Value>
+                <div class="d-flex flex-wrap gap-1">
+                    <DashboardChip
                         v-for="lEmail in letter.letterEmails"
                         :key="lEmail.id"
-                        class="letter-contact-value letter-target"
+                        class="dashboard-bg-primary-l"
                     >
                         <template v-if="lEmail.contact">
                             {{ lEmail.contact.first_and_last_name }},
                         </template>
-                        <span class="letter-c-value">{{ lEmail.email }}</span>
-                    </p>
-                    <p
+                        <span class="letter-view__link">{{ lEmail.email }}</span>
+                    </DashboardChip>
+                    <DashboardChip
                         v-for="lPhone in letter.letterPhones"
                         :key="lPhone.id"
-                        class="letter-contact-value letter-target"
+                        class="dashboard-bg-primary-l"
                     >
                         <template v-if="lPhone.contact">
                             {{ lPhone.contact.first_and_last_name }}
                         </template>
-                        <span class="letter-c-value">{{ lPhone.phone }}</span>
-                    </p>
-                </Value>
-                <Key> Способ:</Key>
-                <Value>
-                    <i
-                        v-for="lWay in letter.letterWays"
-                        :key="lWay.id"
-                        :title="getWayByIndex(lWay.way).name"
-                        :class="[getWayByIndex(lWay.way).icon, 'letter-way']"
-                    ></i>
-                </Value>
-                <Key> Метод:</Key>
-                <Value>
-                    <span v-if="letter.shipping_method" class="letter-shipping-method success">
-                        CRM
-                    </span>
-                    <span v-else class="letter-shipping-method dark">Другими методами</span>
-                </Value>
-                <Key> Компания:</Key>
-                <Value>
-                    <a
-                        class="letter-company"
-                        :href="'companies/' + letter.company_id"
-                        target="_blank"
+                        <span class="letter-view__link">{{ lPhone.phone }}</span>
+                    </DashboardChip>
+                </div>
+            </Value>
+            <Key>Способ:</Key>
+            <Value>
+                <div class="d-flex flex-wrap gap-1">
+                    <DashboardChip
+                        v-for="(way, key) in letterWays"
+                        :key="key"
+                        class="dashboard-bg-gray-l"
                     >
-                        {{ letter.company.full_name }}
-                    </a>
+                        <div class="d-flex align-items-center gap-1">
+                            <span>{{ way.name }}</span>
+                            <i class="icon" :class="way.icon" />
+                        </div>
+                    </DashboardChip>
+                </div>
+            </Value>
+            <Key>Метод:</Key>
+            <Value>
+                <DashboardChip
+                    v-if="letter.shipping_method"
+                    class="dashboard-bg-success dashboard-cl-white"
+                >
+                    CRM
+                </DashboardChip>
+                <DashboardChip v-else class="dashboard-bg-danger-l">
+                    Другими методами
+                </DashboardChip>
+            </Value>
+            <Key>Компания:</Key>
+            <Value>
+                <a class="text-primary" :href="$url.company(letter.company_id)" target="_blank">
+                    {{ letter.company.full_name }}
+                </a>
+            </Value>
+            <template v-if="letter.shipping_method">
+                <Key>Тема:</Key>
+                <Value>
+                    <p v-html="letter.subject"></p>
                 </Value>
-                <template v-if="letter.shipping_method">
-                    <Key> Тема:</Key>
-                    <Value>
-                        <p class="letter-subject" v-html="letter.subject"></p>
-                    </Value>
-                    <Key> Контент:</Key>
-                    <Value>
-                        <p class="letter-content" v-html="letter.body"></p>
-                    </Value>
-                </template>
-            </KeyValue>
-        </div>
-        <div class="letter-view-offers mt-3">
-            <div class="objects">
-                <CompanyObjectsList :objects="getOffers()" :disabled="true" col="col-3" />
-            </div>
+                <Key>Контент:</Key>
+                <Value>
+                    <p v-html="letter.body"></p>
+                </Value>
+            </template>
+        </KeyValue>
+        <div class="objects mt-2">
+            <CompanyObjectsList label="test" :objects="offers" disabled col="col-3" />
         </div>
     </div>
 </template>
@@ -84,10 +89,12 @@ import Value from '@/components/common/KeyValue/Value.vue';
 import KeyValue from '@/components/common/KeyValue/KeyValue.vue';
 import { WayOfSending } from '@/const/const';
 import CompanyObjectsList from '@/components/Company/CompanyObjectsList.vue';
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 
 export default {
     name: 'LetterView',
     components: {
+        DashboardChip,
         CompanyObjectsList,
         Key,
         Value,
@@ -99,21 +106,16 @@ export default {
             required: true
         }
     },
-    methods: {
-        getWayByIndex(index) {
-            return WayOfSending[index];
+    computed: {
+        letterWays() {
+            return this.letter.letterWays.map(element => WayOfSending[element.way]);
         },
-        getOffers() {
+        offers() {
             return this.letter.letterOffers.map(item => {
-                if (item.offer && item.offer.id) {
-                    return item.offer;
-                } else {
-                    return { ...item, noOffer: true };
-                }
+                if (item.offer?.id) return item.offer;
+                else return { ...item, noOffer: true };
             });
         }
     }
 };
 </script>
-
-<style></style>

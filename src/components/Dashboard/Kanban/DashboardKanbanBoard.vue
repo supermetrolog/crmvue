@@ -47,9 +47,7 @@
                             </DashboardChip>
                         </template>
                     </InfiniteLoading>
-                    <p v-if="!items.length" class="dashboard-kanban-board__label mb-2">
-                        Список задач пуст...
-                    </p>
+                    <EmptyLabel v-if="!items.length" class="mb-2">Список задач пуст...</EmptyLabel>
                 </template>
             </VirtualDragList>
         </div>
@@ -63,10 +61,12 @@ import InfiniteLoading from 'v3-infinite-loading';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { mapGetters } from 'vuex';
 import DashboardKanbanTaskSkeleton from '@/components/Dashboard/Kanban/DashboardKanbanTaskSkeleton.vue';
+import EmptyLabel from '@/components/common/EmptyLabel.vue';
 
 export default {
     name: 'DashboardKanbanBoard',
     components: {
+        EmptyLabel,
         DashboardKanbanTaskSkeleton,
         DashboardChip,
         InfiniteLoading,

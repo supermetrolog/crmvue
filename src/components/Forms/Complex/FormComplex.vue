@@ -422,7 +422,8 @@
 
 <script>
 import { helpers, maxValue, minValue, required } from '@vuelidate/validators';
-import { cloneObject, yandexmap } from '@/utils';
+import { cloneObject } from '@/utils';
+import { yandexmap } from '@/utils/yandexMap.js';
 import Loader from '@/components/common/Loader.vue';
 import { ComplexFormMixin } from '@/components/Forms/Complex/mixin';
 import Modal from '@/components/common/Modal.vue';

@@ -18,7 +18,7 @@
                 :disabled="disabled"
                 :value="value"
                 :true-value="1"
-                :false-value="0"
+                :false-value="disabledValue"
                 type="checkbox"
             />
             {{ text }}
@@ -78,6 +78,10 @@ export default {
         property: {
             type: String,
             default: null
+        },
+        disabledValue: {
+            type: [Number, String],
+            default: 0
         }
     },
     data() {
@@ -103,7 +107,7 @@ export default {
             return Boolean(this.field);
         },
         isDisabled() {
-            return this.multiple && this.field == 0;
+            return this.multiple && this.field == this.disabledValue;
         }
     },
     watch: {
@@ -128,7 +132,7 @@ export default {
         onChange() {
             this.validate();
 
-            if (this.multiple && this.modelValue == 0) {
+            if (this.multiple && this.modelValue == this.disabledValue) {
                 this.field = null;
             }
 

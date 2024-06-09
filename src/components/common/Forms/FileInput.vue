@@ -7,7 +7,7 @@
                 </span>
             </label>
             <div
-                v-if="!reedOnly"
+                v-if="!readOnly"
                 @click="clickOpenFile"
                 @dragover.prevent="isDragEnter = true"
                 @dragleave.prevent="isDragEnter = false"
@@ -38,6 +38,7 @@
                     :file="file"
                     class="file--new"
                     :class="fileWidthClass"
+                    :read-only="readOnly"
                 />
                 <File
                     v-for="(file, index) in files"
@@ -45,6 +46,7 @@
                     @delete="deleteFile(index)"
                     :file="file"
                     :class="fileWidthClass"
+                    :read-only="readOnly"
                 />
             </div>
         </div>
@@ -79,7 +81,7 @@ export default {
             type: String,
             default: '.*'
         },
-        reedOnly: {
+        readOnly: {
             type: Boolean,
             default: false
         },
@@ -98,6 +100,14 @@ export default {
         onlyLinks: {
             type: Boolean,
             default: false
+        },
+        itemClass: {
+            type: String,
+            default: null
+        },
+        itemSize: {
+            type: Number,
+            default: 50
         }
     },
     data() {
@@ -118,6 +128,8 @@ export default {
             return this.onlyImages ? 'image/*' : this.accept;
         },
         fileWidthClass() {
+            if (this.itemClass) return this.itemClass;
+
             return [
                 {
                     'col-6': this.single && this.onlyImages,

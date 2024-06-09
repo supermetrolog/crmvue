@@ -23,7 +23,7 @@
 <script>
 import Input from '@/components/common/Forms/Input.vue';
 import UserPickerElement from '@/components/common/Forms/UserPicker/UserPickerElement.vue';
-import { alg } from '@/utils/alg';
+import { debounce } from '@/utils/debounce.js';
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';
 
 export default {
@@ -62,7 +62,7 @@ export default {
             }));
         },
         debouncedUserQuerySearch: {
-            set: alg.debounce(function (value) {
+            set: debounce(function (value) {
                 this.userQuerySearch = value;
             }, 200),
             get() {

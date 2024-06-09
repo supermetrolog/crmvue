@@ -13,7 +13,7 @@
         <Messenger v-if="THIS_USER" ref="messenger" />
         <teleport to="body">
             <Previewer ref="previewer" />
-            <Confirmer ref="confirmer" />
+            <Confirm />
         </teleport>
     </div>
 </template>
@@ -24,13 +24,13 @@ import TheHeader from '@/components/Header/TheHeader.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import Messenger from '@/components/Messenger/Messenger.vue';
 import Previewer from '@/components/common/Previewer.vue';
-import Confirmer from '@/components/common/Confirmer.vue';
 import { mapGetters } from 'vuex';
+import Confirm from '@/components/common/Confirm.vue';
 
 export default {
     name: 'Default',
     components: {
-        Confirmer,
+        Confirm,
         Previewer,
         Messenger,
         AnimationTransition,
@@ -43,8 +43,7 @@ export default {
             $openMessengerChat: ({ companyID, objectID, chatMemberID }) => {
                 if (chatMemberID) this.$refs.messenger.openChatByID(chatMemberID);
                 else this.$refs.messenger.openChat(companyID, objectID);
-            },
-            $confirmPopup: async text => this.$refs.confirmer.open(text)
+            }
         };
     },
     computed: {

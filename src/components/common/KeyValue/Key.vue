@@ -1,5 +1,5 @@
 <template>
-    <dt class="key text-right">
+    <dt class="key-value__key text-right">
         <slot />
     </dt>
 </template>
@@ -9,5 +9,3 @@ export default {
     name: 'Key'
 };
 </script>
-
-<style></style>

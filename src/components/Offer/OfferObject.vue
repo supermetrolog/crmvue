@@ -1,32 +1,54 @@
 <template>
-    <div v-if="offers.length" class="object-view scroller">
-        <div class="control-panel">
-            Предложений: {{ offers.length }}
-            <i @click="clickCloseHandler" class="fas fa-times"></i>
+    <AnimationTransition :speed="0.5" :animation="{ enter: 'slideInLeft', leave: 'slideOutLeft' }">
+        <div v-if="offers.length" class="object-view scroller">
+            <HoverActionsButton @click="close" label="Закрыть панель" class="object-view__close">
+                <i class="fas fa-times"></i>
+            </HoverActionsButton>
+            <Spinner v-if="isLoading" />
+            <div v-else>
+                <DashboardChip class="dashboard-bg-gray-l w-100 text-center mb-2">
+                    Предложений: {{ offers.length }}
+                </DashboardChip>
+                <div class="row no-gutters">
+                    <CompanyObjectItemOfferOnly
+                        v-for="offer in offers"
+                        :key="offer.id"
+                        :offer="offer"
+                        class="col-12"
+                    />
+                </div>
+            </div>
         </div>
-        <div class="row no-gutters">
-            <CompanyObjectItemOfferOnly
-                v-for="offer in offers"
-                :key="offer.id"
-                :offer="offer"
-                class="col-12"
-            />
-        </div>
-    </div>
+    </AnimationTransition>
 </template>
 
 <script>
 import { mapActions } from 'vuex';
 import CompanyObjectItemOfferOnly from '@/components/Company/Object/CompanyObjectItemOfferOnly.vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import Spinner from '@/components/common/Spinner.vue';
+import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 
 export default {
     name: 'OfferObject',
-    components: { CompanyObjectItemOfferOnly },
+    components: {
+        HoverActionsButton,
+        DashboardChip,
+        Spinner,
+        AnimationTransition,
+        CompanyObjectItemOfferOnly
+    },
     props: {
         offerIds: {
             type: Array,
             default: () => []
         }
+    },
+    setup() {
+        const { isLoading } = useDelayedLoader();
+        return { isLoading };
     },
     data() {
         return {
@@ -40,53 +62,30 @@ export default {
     },
     methods: {
         ...mapActions(['SEARCH_OFFERS']),
-        clickCloseHandler() {
+        close() {
             this.offers = [];
         },
         async fetchOffers() {
-            if (!this.offerIds.length) {
-                return;
-            }
+            this.isLoading = true;
 
-            let query = {
-                id: this.offerIds
-            };
+            if (!this.offerIds.length) return;
 
-            const { data: offers } = await this.SEARCH_OFFERS({ query });
+            const { data: offers } = await this.SEARCH_OFFERS({
+                query: {
+                    id: this.offerIds
+                }
+            });
 
-            query = {
+            const query = {
                 object_id: offers.map(el => el.object_id),
                 expand: 'generalOffersMix,contact.emails,contact.phones,object,company.mainContact.phones,company.mainContact.emails,offer,consultant.userProfile'
             };
 
             const { data: allOffers } = await this.SEARCH_OFFERS({ query });
             this.offers = allOffers;
+
+            this.isLoading = false;
         }
     }
 };
 </script>
-
-<style scoped lang="scss">
-.object-view {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    background-color: #f7f7f7;
-    padding: 1rem 1.5rem 1.5rem;
-    width: 400px;
-}
-
-.control-panel {
-    position: relative;
-    padding: 0 0.5rem;
-}
-
-.control-panel i {
-    position: absolute;
-    top: 2px;
-    right: -15px;
-    font-size: 24px;
-    cursor: pointer;
-}
-</style>

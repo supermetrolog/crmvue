@@ -81,7 +81,6 @@ import api from '@/api/api.js';
 import { LoaderMixin } from '@/components/Messenger/loader.mixin.js';
 import Spinner from '@/components/common/Spinner.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
-import edit from '@/views/Account/Edit.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import EquipmentCardView from '@/components/Equipment/EquipmentCardView.vue';
 import { mapGetters } from 'vuex';
@@ -128,9 +127,6 @@ export default {
         };
     },
     computed: {
-        edit() {
-            return edit;
-        },
         ...mapGetters({ currentUser: 'THIS_USER', isModerator: 'isModerator' })
     },
     watch: {

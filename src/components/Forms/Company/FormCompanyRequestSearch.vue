@@ -407,6 +407,7 @@ import {
 import useVuelidate from '@vuelidate/core';
 import { onlyPositiveNumber } from '@//validators';
 import Modal from '@/components/common/Modal.vue';
+import { deleteEmptyFields } from '@/utils/deleteEmptyFields.js';
 
 export default {
     name: 'FormCompanyRequestSearch',
@@ -581,7 +582,7 @@ export default {
             });
             this.form.objectTypes = array;
             let query = { ...this.form };
-            this.deleteEmptyFields(query);
+            deleteEmptyFields(query);
             await this.$router.replace({ query });
         }
     },

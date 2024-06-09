@@ -16,16 +16,7 @@
                                 Запрос от
                                 <b>{{ companyName }}</b>
                             </span>
-                            <DashboardChip class="ml-2" :class="statusClass">
-                                <div class="d-flex align-items-center">
-                                    <p>{{ status }}</p>
-                                    <i
-                                        v-if="request.status == 0"
-                                        v-tippy="statusTippy"
-                                        class="fa-regular fa-question-circle ml-2 icon"
-                                    />
-                                </div>
-                            </DashboardChip>
+                            <DashboardCardRequestStatus class="ml-2" :request="request" />
                             <DashboardChip
                                 v-if="request.expressRequest"
                                 class="dashboard-bg-danger dashboard-cl-white"
@@ -65,7 +56,7 @@
                 <div class="col-8">
                     <DashboardCard class="mb-2">
                         <p class="dashboard-card-view__subtitle">Адрес</p>
-                        <p v-html="address"></p>
+                        <DashboardCardRequestAddress :request="request" />
                     </DashboardCard>
                     <DashboardCard class="mb-2">
                         <div class="row">
@@ -122,77 +113,7 @@
                     </DashboardCard>
                     <DashboardCard class="mb-2">
                         <p class="dashboard-card-view__subtitle">Тип объекта</p>
-                        <div class="row mb-2">
-                            <div
-                                v-for="(element, key) in objectTypesGeneral"
-                                :key="key"
-                                class="col-4"
-                            >
-                                <DashboardChip
-                                    class="w-100 text-center"
-                                    :class="
-                                        element.included
-                                            ? 'dashboard-bg-success dashboard-cl-white'
-                                            : 'dashboard-bg-gray-l'
-                                    "
-                                >
-                                    {{ element.name }}
-                                </DashboardChip>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="dashboard-card-view__purposes">
-                                    <DashboardChip
-                                        v-for="(element, key) in objectTypes.production"
-                                        :key="key"
-                                        v-tippy="element.name"
-                                        class="dashboard-card-view__purpose"
-                                        :class="
-                                            element.included
-                                                ? 'dashboard-bg-success dashboard-cl-white'
-                                                : 'dashboard-bg-gray-l'
-                                        "
-                                    >
-                                        <i class="icon" :class="element.icon" />
-                                    </DashboardChip>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="dashboard-card-view__purposes">
-                                    <DashboardChip
-                                        v-for="(element, key) in objectTypes.warehouse"
-                                        :key="key"
-                                        v-tippy="element.name"
-                                        class="dashboard-card-view__purpose"
-                                        :class="
-                                            element.included
-                                                ? 'dashboard-bg-success dashboard-cl-white'
-                                                : 'dashboard-bg-gray-l'
-                                        "
-                                    >
-                                        <i class="icon" :class="element.icon" />
-                                    </DashboardChip>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="dashboard-card-view__purposes">
-                                    <DashboardChip
-                                        v-for="(element, key) in objectTypes.plot"
-                                        :key="key"
-                                        v-tippy="element.name"
-                                        class="dashboard-card-view__purpose"
-                                        :class="
-                                            element.included
-                                                ? 'dashboard-bg-success dashboard-cl-white'
-                                                : 'dashboard-bg-gray-l'
-                                        "
-                                    >
-                                        <i class="icon" :class="element.icon" />
-                                    </DashboardChip>
-                                </div>
-                            </div>
-                        </div>
+                        <DashboardCardRequestObjectTypes :request="request" />
                     </DashboardCard>
                     <DashboardCard>
                         <p class="dashboard-card-view__subtitle">Описание</p>
@@ -288,10 +209,7 @@
                     </DashboardCard>
                     <DashboardCard class="mb-2">
                         <p class="dashboard-card-view__subtitle mb-2">Класс объекта</p>
-                        <div
-                            v-if="request.objectClasses.length"
-                            class="dashboard-card-view__requirements"
-                        >
+                        <div v-if="request.objectClasses.length" class="d-flex gap-1 flex-wrap">
                             <DashboardChip
                                 v-for="(element, key) in objectClasses"
                                 :key="key"
@@ -309,29 +227,7 @@
                     </DashboardCard>
                     <DashboardCard>
                         <p class="dashboard-card-view__subtitle mb-2">Требования</p>
-                        <div v-if="requirements.length" class="dashboard-card-view__requirements">
-                            <DashboardChip
-                                v-for="(requirement, key) in requirements"
-                                :key="key"
-                                class="d-flex align-items-center"
-                                :class="
-                                    requirement.included
-                                        ? 'dashboard-bg-success-l'
-                                        : 'dashboard-bg-danger-l'
-                                "
-                            >
-                                <span>{{ requirement.name }}</span>
-                                <i
-                                    class="icon ml-2"
-                                    :class="
-                                        requirement.included
-                                            ? 'fa-regular fa-circle-check'
-                                            : 'fa-solid fa-ban'
-                                    "
-                                ></i>
-                            </DashboardChip>
-                        </div>
-                        <p v-else>Отстуствуют</p>
+                        <DashboardCardRequestRequirements :request="request" />
                     </DashboardCard>
                 </div>
             </div>
@@ -344,25 +240,30 @@ import HoverActionsButton from '@/components/common/HoverActions/HoverActionsBut
 import Avatar from '@/components/common/Avatar.vue';
 import { entityOptions } from '@/const/options/options.js';
 import Progress from '@/components/common/Progress.vue';
-import { PassiveWhyRequest, unknownMovingDate } from '@/const/const.js';
+import { unknownMovingDate } from '@/const/const.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import Modal from '@/components/common/Modal.vue';
 import api from '@/api/api.js';
 import { LoaderMixin } from '@/components/Messenger/loader.mixin.js';
 import Spinner from '@/components/common/Spinner.vue';
 import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
-import { entityProperties } from '@/const/properties/properties.js';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
-import { cloneObject } from '@/utils/index.js';
 import { mapGetters } from 'vuex';
 import { alg } from '@/utils/alg.js';
+import DashboardCardRequestObjectTypes from '@/components/Dashboard/Card/DashboardCardRequestObjectTypes.vue';
+import DashboardCardRequestRequirements from '@/components/Dashboard/Card/DashboardCardRequestRequirements.vue';
+import DashboardCardRequestAddress from '@/components/Dashboard/Card/DashboardCardRequestAddress.vue';
+import DashboardCardRequestStatus from '@/components/Dashboard/Card/DashboardCardRequestStatus.vue';
 
 export default {
     name: 'DashboardCardRequestView',
     components: {
+        DashboardCardRequestStatus,
+        DashboardCardRequestAddress,
+        DashboardCardRequestRequirements,
+        DashboardCardRequestObjectTypes,
         WithUnitType,
-
         DashboardCard,
         Spinner,
         Modal,
@@ -392,106 +293,8 @@ export default {
         unitTypes() {
             return unitTypes;
         },
-        unknownMovingDate() {
-            return unknownMovingDate;
-        },
-        address() {
-            const directions = this.request.directions?.length
-                ? '<b>Московская область:</b> ' +
-                  this.request.directions
-                      .map(
-                          element =>
-                              entityOptions.location.directionWithShort[element.direction].full
-                      )
-                      .join(', ')
-                : '';
-
-            const districts = this.request.districts?.length
-                ? '<b>Москва:</b> ' +
-                  this.request.districts
-                      .map(element => entityOptions.location.district[element.district])
-                      .join(', ')
-                : '';
-
-            const regions = this.request.regions?.length
-                ? this.request.regions
-                      .map(element => this.$formatter.text().ucFirst(element.info.title))
-                      .join(', ')
-                : '';
-
-            const distanceMKAD = !this.request.distanceFromMKADnotApplicable
-                ? `До ${this.request.distanceFromMKAD} км до МКАД`
-                : '';
-
-            return [regions, distanceMKAD, directions, districts]
-                .filter(element => element.length)
-                .join('; ');
-        },
-        status() {
-            if (this.request.status === 0) return 'Пассив';
-            else if (this.request.status === 1) return 'Актив';
-            return 'Завершен';
-        },
-        statusClass() {
-            if (this.request.status === 0) return 'dashboard-bg-danger-l';
-            else if (this.request.status === 1) return 'dashboard-bg-success-l';
-            return 'dashboard-bg-success dashboard-cl-white';
-        },
-        statusTippy() {
-            let text = PassiveWhyRequest[this.request.passive_why].label;
-            if (this.request.passive_why_comment) text += ': ' + this.request.passive_why_comment;
-            return text;
-        },
-        requirements() {
-            const properties = Object.keys(entityProperties.request.parameters).reduce(
-                (acc, property) => {
-                    if (this.request[property] !== null)
-                        acc.push({
-                            ...entityProperties.request.parameters[property],
-                            included: Boolean(this.request[property])
-                        });
-                    return acc;
-                },
-                []
-            );
-
-            let trainProperty = null;
-            if (this.request.trainLine !== null) {
-                trainProperty = { name: 'Ж/Д ветка', included: Boolean(this.request.trainLine) };
-                if (trainProperty.included && this.request.trainLineLength)
-                    trainProperty.name += ' - ' + this.request.trainLineLength + 'м';
-            }
-
-            if (trainProperty) properties.push(trainProperty);
-
-            return properties;
-        },
         unknownMovingTitle() {
             return unknownMovingDate[this.request.unknownMovingDate];
-        },
-        objectTypesGeneral() {
-            const types = cloneObject(entityOptions.object.typeGeneralList);
-
-            this.request.objectTypesGeneral.forEach(
-                element => (types[element.type].included = true)
-            );
-
-            return types;
-        },
-        objectTypes() {
-            const types = cloneObject(entityOptions.object.purposesWithSections);
-
-            this.request.objectTypes.forEach(element => {
-                if (element.object_type < 12) {
-                    types.production[element.object_type].included = true;
-                } else if (element.object_type < 25)
-                    types.warehouse[element.object_type - 11].included = true;
-                else {
-                    types.plot[element.object_type - 25].included = true;
-                }
-            });
-
-            return types;
         },
         gateTypes() {
             return this.request.gateTypes

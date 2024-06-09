@@ -1,49 +1,49 @@
 <template>
-    <div class="extra-block">
-        <div class="row no-gutters scroller">
+    <div class="timeline-logs">
+        <teleport to="body">
+            <LetterViewModal
+                v-if="letterViewIsVisible"
+                @close="letterViewIsVisible = false"
+                :letterID="viewingLetterID"
+            />
+        </teleport>
+        <div class="timeline-logs__scroller row">
             <div class="col-12">
-                <div class="row no-gutters">
-                    <div class="col-12">
-                        <Accordion @changed="tabSwitched" :default-tab-hash="step.id">
-                            <AccordionItem
-                                v-for="timelineStep in TIMELINE.timelineSteps"
-                                :id="timelineStep.id"
-                                :key="timelineStep.id"
-                                :title="
-                                    timelineStepOptions[timelineStep.number].name +
-                                    ` (${timelineStep.timelineActionComments.length})`
-                                "
-                                :title-classes="titleClasses(timelineStep)"
-                            >
-                                <TimelineComments :data="timelineStep.timelineActionComments" />
-                                <Form
-                                    :ref="'#' + timelineStep.id"
-                                    @submit="onSubmit(timelineStep)"
-                                    class="mb-3 p-2"
-                                >
-                                    <FormGroup v-if="!disabled">
-                                        <Textarea
-                                            v-model="form.comment"
-                                            class="col-12"
-                                            :v="v$.form.comment"
-                                            placeholder="Добавьте комментарий по процессу"
-                                        />
-                                        <Submit
-                                            v-if="!loader"
-                                            class="col-6 mx-auto mt-1"
-                                            :disabled="disabled"
-                                        >
-                                            Добавить
-                                        </Submit>
-                                        <div v-if="loader" class="col-12 mt-4">
-                                            <Loader class="center small py-2 no-absolute" />
-                                        </div>
-                                    </FormGroup>
-                                </Form>
-                            </AccordionItem>
-                        </Accordion>
-                    </div>
-                </div>
+                <Accordion @changed="tabSwitched" :default-tab-hash="step.id">
+                    <AccordionItem
+                        v-for="timelineStep in TIMELINE.timelineSteps"
+                        :id="timelineStep.id"
+                        :key="timelineStep.id"
+                        :title="
+                            timelineStepOptions[timelineStep.number].label +
+                            ` (${timelineStep.timelineActionComments.length})`
+                        "
+                        :title-classes="
+                            timelineStep.status === 1 ? 'success_block' : 'warning_block'
+                        "
+                    >
+                        <div class="timeline-logs__wrapper">
+                            <TimelineComments
+                                @view="viewLetter"
+                                :data="timelineStep.timelineActionComments"
+                            />
+                            <Form :ref="'#' + timelineStep.id" @submit="onSubmit(timelineStep)">
+                                <FormGroup v-if="!disabled">
+                                    <Textarea
+                                        v-model="form.comment"
+                                        class="col-12"
+                                        :v="v$.form.comment"
+                                        :disabled="loader"
+                                        placeholder="Добавьте комментарий по процессу"
+                                    />
+                                    <Submit success class="col-4 mx-auto mt-1" :disabled="loader">
+                                        Добавить
+                                    </Submit>
+                                </FormGroup>
+                            </Form>
+                        </div>
+                    </AccordionItem>
+                </Accordion>
             </div>
         </div>
     </div>
@@ -61,14 +61,14 @@ import AccordionItem from '@/components/common/Accordion/AccordionItem.vue';
 import useValidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
 import api from '@/api/api';
-import Loader from '@/components/common/Loader.vue';
 import TimelineComments from '@/components/Timeline/TimelineComments.vue';
+import LetterViewModal from '@/components/common/Letter/LetterViewModal.vue';
 
 export default {
     name: 'TimelineExtraBlock',
     components: {
+        LetterViewModal,
         TimelineComments,
-        Loader,
         Form,
         Textarea,
         Submit,
@@ -92,7 +92,10 @@ export default {
             form: {
                 comment: null
             },
-            currentTimelineStepId: this.step.id
+            currentTimelineStepId: this.step.id,
+            scrollingTimeout: null,
+            letterViewIsVisible: false,
+            viewingLetterID: null
         };
     },
     computed: {
@@ -103,7 +106,7 @@ export default {
         return {
             form: {
                 comment: {
-                    required: helpers.withMessage('введите комментарий', required)
+                    required: helpers.withMessage('Введите комментарий', required)
                 }
             }
         };
@@ -117,31 +120,24 @@ export default {
         tabSwitched(item) {
             this.scrollToFormDelay(item.tab.hash);
         },
-        titleClasses(step) {
-            if (step.status == 1) {
-                return 'success_block';
-            }
-            return 'warning_block';
-        },
         scrollToFormDelay(hash) {
-            setTimeout(() => this.scrollToForm(hash), 500);
+            clearTimeout(this.scrollingTimeout);
+            this.scrollingTimeout = setTimeout(() => this.scrollToForm(hash), 500);
         },
         scrollToForm(hash) {
-            if (!hash) {
-                return;
-            }
-            let options = {
+            if (!hash) return;
+
+            this.$refs[hash][0].$el.scrollIntoView({
                 behavior: 'smooth',
                 block: 'end',
                 alignToTop: false
-            };
-            this.$refs[hash][0].$el.scrollIntoView(options);
+            });
         },
         async onSubmit(step) {
             this.v$.$validate();
-            if (this.v$.form.$error) {
-                return;
-            }
+
+            if (this.v$.form.$error) return;
+
             this.loader = true;
             const comments = [
                 {
@@ -153,16 +149,23 @@ export default {
                     type: 3
                 }
             ];
+
             if (await api.timeline.addActionComments(comments)) {
                 this.$emit('commentAdded');
                 this.form.comment = null;
                 this.v$.$reset();
                 this.scrollToFormDelay('#' + step.id);
             }
+
             this.loader = false;
+        },
+        async viewLetter(letterID) {
+            this.viewingLetterID = letterID;
+            this.letterViewIsVisible = true;
         }
+    },
+    beforeUnmount() {
+        clearTimeout(this.scrollingTimeout);
     }
 };
 </script>
-
-<style></style>

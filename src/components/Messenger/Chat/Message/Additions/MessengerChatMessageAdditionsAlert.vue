@@ -32,16 +32,21 @@
 <script>
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import MessengerChatMessageAdditionsItem from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditionsItem.vue';
+import { useConfirm } from '@/composables/useConfirm.js';
 
 export default {
     name: 'MessengerChatMessageAdditionsAlert',
     components: { MessengerChatMessageAdditionsItem, HoverActionsButton },
-    inject: ['$confirmPopup', '$editAddition', '$messageID'],
+    inject: ['$editAddition', '$messageID'],
     props: {
         addition: {
             type: Object,
             required: true
         }
+    },
+    setup() {
+        const { confirm } = useConfirm();
+        return { confirm };
     },
     computed: {
         usersText() {
@@ -50,7 +55,7 @@ export default {
     },
     methods: {
         async remove() {
-            const confirmed = await this.$confirmPopup(
+            const confirmed = await this.confirm(
                 'Вы уверены, что хотите безвозвратно удалить уведомление?'
             );
 

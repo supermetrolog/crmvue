@@ -17,7 +17,8 @@ const Offers = {
         offer: null,
         pagination: null,
         wait_hash: null,
-        favoritesOffers: []
+        favoritesOffers: [],
+        favoritesOffersCache: {}
     },
     mutations: {
         updateOffers(state, { data, concat }) {
@@ -38,9 +39,14 @@ const Offers = {
         },
         addFavoritesOffer(state, data) {
             state.favoritesOffers.push(data);
+            state.favoritesOffersCache[data.original_id] = true;
         },
         updateFavoritesOffers(state, data) {
             state.favoritesOffers = data;
+            state.favoritesOffersCache = data.reduce((acc, element) => {
+                acc[element.original_id] = true;
+                return acc;
+            }, {});
         }
     },
     actions: {
@@ -134,7 +140,6 @@ const Offers = {
         WAIT_HASH(state) {
             return state.wait_hash;
         },
-
         FAVORITES_OFFERS(state) {
             return state.favoritesOffers;
         }

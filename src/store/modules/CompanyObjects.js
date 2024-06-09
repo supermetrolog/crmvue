@@ -1,15 +1,6 @@
 import api from '@/api/api';
+import { deleteEmptyFields } from '@/utils/deleteEmptyFields.js';
 
-const deleteEmptyFields = object => {
-    for (const key in object) {
-        if (Object.hasOwnProperty.call(object, key)) {
-            const value = object[key];
-            if (value === null || value === '' || (Array.isArray(value) && !value.length)) {
-                delete object[key];
-            }
-        }
-    }
-};
 const CompanyObjects = {
     state: {
         companyObjects: [],

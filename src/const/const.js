@@ -3,43 +3,110 @@ import { unitTypes } from '@/const/unitTypes';
 export const Timeline = [
     {
         id: 0,
-        stepName: 'Meeting',
-        name: 'Знакомство',
-        class: 'primary',
-        icon: 'fas fa-phone-alt'
+        name: 'Meeting',
+        label: 'Знакомство',
+        icon: 'fa-solid fa-phone-alt',
+        steps: [
+            {
+                id: 0,
+                name: 'MeetingActivity',
+                label: 'Изучение деятельности',
+                checkDone: point => point.additional === 1
+            },
+            {
+                id: 1,
+                name: 'MeetingConfirmation',
+                label: 'Подтверждение запроса',
+                checkDone: point => point.done === 1
+            }
+        ]
     },
     {
         id: 1,
-        stepName: 'Offers',
-        name: 'Предложение',
-        class: 'success',
-        icon: 'fas fa-city'
+        name: 'Offers',
+        label: 'Предложение',
+        icon: 'fa-solid fa-city'
     },
     {
         id: 2,
-        stepName: 'Feedback',
-        name: 'Обратная связь',
-        class: 'dark-warning',
-        icon: 'fas bullhorn'
+        name: 'Feedback',
+        label: 'Обратная связь',
+        icon: 'fa-solid fa-bullhorn',
+        steps: [
+            {
+                id: 0,
+                name: 'FeedbackInterest',
+                label: 'Интерес клиента',
+                checkDone: point => point.timelineStepObjects.length > 0
+            },
+            {
+                id: 1,
+                name: 'FeedbackCommunication',
+                label: 'Способ связи',
+                checkDone: point => point.timelineStepFeedbackways.length > 0
+            }
+        ]
     },
     {
         id: 3,
-        stepName: 'Inspection',
-        name: 'Организация осмотров',
-        class: 'light-blue',
-        icon: 'fab watchman-monitoring'
+        name: 'Inspection',
+        label: 'Организация осмотров',
+        icon: 'fa-solid fa-map-location-dot',
+        steps: [
+            {
+                id: 0,
+                name: 'InspectionObjects',
+                label: 'Объекты для просмотра',
+                checkDone: point => point.timelineStepObjects.length > 0
+            },
+            {
+                id: 1,
+                name: 'InspectionSending',
+                label: 'Отправление информации',
+                checkDone: point => point.additional === 1
+            }
+        ]
     },
-    { id: 4, stepName: 'Visit', name: 'Показы', class: 'blue-green', icon: 'fas eye' },
+    {
+        id: 4,
+        name: 'Visit',
+        label: 'Показы',
+        icon: 'fa-solid fa-eye'
+    },
     {
         id: 5,
-        stepName: 'Interest',
-        name: 'Интерес к объектам',
-        class: 'danger',
-        icon: 'fas heartbeat'
+        name: 'Interest',
+        label: 'Интерес к объектам',
+        icon: 'fa-solid fa-heartbeat'
     },
-    { id: 6, stepName: 'Talk', name: 'Переговоры', class: 'pale-red', icon: 'fas comments-dollar' },
-    { id: 7, stepName: 'Deal', name: 'Сделка', class: 'black', icon: 'far handshake' }
+    {
+        id: 6,
+        name: 'Talk',
+        label: 'Переговоры',
+        icon: 'fa-solid fa-comments-dollar'
+    },
+    {
+        id: 7,
+        name: 'Deal',
+        label: 'Сделка',
+        icon: 'fa-regular fa-handshake',
+        steps: [
+            {
+                id: 0,
+                name: 'DealDecision',
+                label: 'Решение по объекту',
+                checkDone: point => point.timelineStepObjects.length > 0
+            },
+            {
+                id: 1,
+                name: 'DealConfirmation',
+                label: 'Заключение сделки',
+                checkDone: point => point.status === 1
+            }
+        ]
+    }
 ];
+
 export const CallerTypeList = {
     0: 'клиент',
     1: 'собсвтенник',
@@ -50,13 +117,13 @@ export const CallerTypeList = {
     6: 'оценщик'
 };
 export const FeedbackList = {
-    0: 'Email',
-    1: 'Звонок: Я',
-    2: 'Звонок: Он',
-    3: 'WhatsApp',
-    4: 'Viber',
-    5: 'SMS',
-    6: 'Telegram'
+    0: { label: 'Email', icon: 'fa-solid fa-envelope-circle-check' },
+    1: { label: 'Звонок: Я', icon: 'fa-solid fa-headset' },
+    2: { label: 'Звонок: Он', icon: 'fa-solid fa-phone-volume' },
+    3: { label: 'WhatsApp', icon: 'fa-brands fa-whatsapp' },
+    4: { label: 'Viber', icon: 'fa-brands fa-viber' },
+    5: { label: 'SMS', icon: 'fa-regular fa-comments' },
+    6: { label: 'Telegram', icon: 'fa-brands fa-telegram' }
 };
 
 export const FeedbackIcons = {
@@ -405,5 +472,53 @@ export const PriceOptionList = {
         id: PriceOptionTypes.RUB_PER_PALLET_PLACE_PER_DAY,
         unitType: unitTypes.RUB_PER_PALLET_PLACE_PER_DAY,
         func: value => value
+    }
+};
+
+export const TimelineRecommendedDescriptions = {
+    RENT: {
+        TOTAL: [
+            'Вид сделки',
+            'Цена +30%',
+            'Площадь',
+            'Направление и регион',
+            'Высота потолков',
+            'Качество пола',
+            'Расстояние от МКАД +30%',
+            'Тип ворот',
+            'Этажность',
+            'Наличие к/б',
+            'Отапливаемость',
+            'Электричество'
+        ],
+        MEDIUM: [
+            'Вид сделки',
+            'Площадь +/- 20%',
+            'Высота потолков -2 метра',
+            'Направление и регион',
+            'Качество пола',
+            'Расстояние от МКАД +30%',
+            'Этажность',
+            'Наличие к/б'
+        ],
+        LITE: ['Площадь объекта целиком', 'Направление и регион', 'Расстояние от МКАД +30%']
+    },
+    SALE: {
+        TOTAL: [
+            'Вид сделки',
+            'Цена +30%',
+            'Площадь +/- 30%',
+            'Направление и регион',
+            'Высота потолков',
+            'Качество пола',
+            'Расстояние от МКАД +30%',
+            'Тип ворот',
+            'Этажность',
+            'Наличие к/б',
+            'Отапливаемость',
+            'Электричество'
+        ],
+        MEDIUM: ['Вид сделки', 'Цена +50%', 'Расстояние от МКАД +50%', 'Этажность'],
+        LITE: ['Площадь объекта целиком +/- 30%', 'Направление и регион', 'Расстояние от МКАД +50%']
     }
 };

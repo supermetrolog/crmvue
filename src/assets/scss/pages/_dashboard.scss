@@ -41,11 +41,19 @@
             background-color: variables.$bg-gray-l;
         }
     }
+
+    &-light {
+        background-color: variables.$color_grey_alt;
+    }
 }
 
 .dashboard-cl {
     &-danger {
         color: variables.$cl-danger;
+
+        &-l {
+            color: variables.$cl-danger-l;
+        }
     }
 
     &-warning {

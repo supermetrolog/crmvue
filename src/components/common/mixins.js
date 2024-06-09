@@ -1,3 +1,5 @@
+import { deleteEmptyFields } from '@/utils/deleteEmptyFields.js';
+
 export const TableContentMixin = {
     data() {
         return {
@@ -44,6 +46,7 @@ export const TableContentMixin = {
 };
 
 import { mapActions, mapGetters } from 'vuex';
+import { watch } from 'vue';
 
 export const SearchFormMixin = {
     emits: ['search', 'reset'],
@@ -93,7 +96,8 @@ export const SearchFormMixin = {
             } else {
                 query = { ...this.form };
             }
-            this.deleteEmptyFields(query);
+
+            deleteEmptyFields(query);
 
             query.page = 1;
             if (!this.noUrl) {
@@ -105,17 +109,6 @@ export const SearchFormMixin = {
             this.form = { ...this.$options.defaultFormProperties };
             this.$emit('reset');
         },
-        deleteEmptyFields(object) {
-            for (const key in object) {
-                if (Object.hasOwnProperty.call(object, key)) {
-                    const value = object[key];
-                    if (value === null || value === '' || (Array.isArray(value) && !value.length)) {
-                        delete object[key];
-                    }
-                }
-            }
-        },
-
         setQueryFieldsNoUrl() {
             if (this.queryParams) {
                 this.form = { ...this.form, ...this.queryParams };
@@ -123,25 +116,24 @@ export const SearchFormMixin = {
         }
     },
     async mounted() {
-        if (!this.noUrl) {
-            await this.setQueryFields();
-        } else {
-            this.$watch(
-                'queryParams',
+        if (this.noUrl) {
+            watch(
+                () => this.queryParams,
                 () => {
                     this.setQueryFieldsNoUrl();
                 },
                 { deep: true }
             );
             this.setQueryFieldsNoUrl();
-        }
-        this.$watch(
-            'form',
+        } else await this.setQueryFields();
+
+        watch(
+            () => this.form,
             () => {
                 clearTimeout(this.setTimeout);
                 this.setTimeout = setTimeout(() => this.onSubmit(), 500);
             },
-            { deep: true }
+            { deep: true, immediate: this.noUrl }
         );
     },
     beforeUnmount() {

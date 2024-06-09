@@ -223,6 +223,9 @@ const Messenger = {
             Object.keys(obj).forEach(key => {
                 state['countNew' + key.charAt(0).toUpperCase() + key.slice(1)] = obj[key];
             });
+        },
+        incrementMessages(state) {
+            state.messagesPagination.totalCount++;
         }
     },
     actions: {
@@ -352,6 +355,7 @@ const Messenger = {
                     commit('clearCachedMessage', state.currentPanelDialogID);
 
                 commit('addMessages', [response]);
+                commit('incrementMessages');
                 commit('setNewMessage', '');
 
                 return true;
@@ -454,6 +458,19 @@ const Messenger = {
 
             return false;
         },
+        async addReminder({ commit }, { messageID, options }) {
+            const addition = await api.reminder.createFromMessage(messageID, {
+                ...options,
+                status: 1
+            });
+
+            if (addition) {
+                commit('addAddition', { messageID, additionType: 'reminder', addition });
+                return true;
+            }
+
+            return false;
+        },
         async deleteAddition({ commit }, { messageID, additionID, additionType }) {
             const response = await api[additionType].delete(additionID);
 
@@ -484,18 +501,6 @@ const Messenger = {
 
             return false;
         },
-        async addReminder({ commit }, { messageID }) {
-            // ONLY TESTING
-            const addition = null; // axios fetch
-
-            if (addition) {
-                commit('addAddition', { messageID, additionType: 'reminder', addition });
-                return true;
-            }
-
-            return false;
-        },
-
         async getCurrentChatFiles(context) {
             // ONLY TESTING
             return await api.messenger.getFiles(context.state.currentDialog);

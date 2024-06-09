@@ -39,7 +39,7 @@ import WithUnitType from '@/components/common/WithUnitType.vue';
 import { entityOptions } from '@/const/options/options';
 import { mapper } from '@/utils/mapper';
 import { entityProperties } from '@/const/properties/properties';
-import { reducer } from '@/utils';
+import { reducer } from '@/utils/reducer.js';
 
 export default {
     name: 'ComplexDealPreview',

@@ -116,7 +116,7 @@ export const MixinCompanyDetailInfo = {
             return 'text-dark far fa-star';
         },
         category(categoryValue) {
-            return CompanyCategories[categoryValue].name;
+            return CompanyCategories[categoryValue];
         },
         href(value) {
             if (value.includes('http://') || value.includes('https://')) {
