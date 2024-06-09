@@ -18,7 +18,6 @@
             data-key="id"
             class="messenger-aside__list"
             :keeps="20"
-            itemClass="messenger-aside-dialog"
         >
             <template #item="{ record }">
                 <MessengerDialogRequest
