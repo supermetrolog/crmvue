@@ -17,8 +17,7 @@ export default {
     },
     async searchContacts(query) {
         query = new URLSearchParams(query).toString();
-        // const url = `contacts?${query}expand=contactComments,contactComments.author,contactComments.author.userProfile,emails,phones,websites,consultant,consultant.userProfile,wayOfInformings&sort=-created_at`;
-        const url = `contacts?${query}`;
+        const url = `contacts?${query}&expand=emails,phones,websites,wayOfInformings`;
         let data = false;
 
         await axios

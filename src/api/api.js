@@ -19,6 +19,7 @@ import task from '@/api/task';
 import alert from '@/api/alert';
 import equipment from '@/api/equipment';
 import reminder from '@/api/reminder.js';
+import call from '@/api/call.js';
 
 export default {
     user,
@@ -41,5 +42,6 @@ export default {
     task,
     alert,
     equipment,
-    reminder
+    reminder,
+    call
 };

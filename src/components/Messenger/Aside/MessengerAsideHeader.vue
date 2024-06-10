@@ -52,7 +52,7 @@ export default {
         }
     },
     created() {
-        this.debouncedUpdateDialogs = debounce(this.updateDialogs, 200);
+        this.debouncedUpdateDialogs = debounce(this.updateDialogs, 400);
     }
 };
 </script>

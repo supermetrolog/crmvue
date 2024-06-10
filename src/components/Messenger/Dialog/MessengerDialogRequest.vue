@@ -67,7 +67,11 @@
             <p v-else class="messenger-warning">Адрес не заполнен</p>
         </div>
         <div class="messenger-dialog__footer">
-            <MessengerDialogPhone :info="{ lastCall: lastCall ?? model.updated_at }" />
+            <MessengerDialogPhone
+                @click.stop="$emit('update-call')"
+                :last-call="lastCall"
+                :updated-at="model.updated_at"
+            />
             <MessengerDialogFunctions />
         </div>
     </div>
@@ -88,6 +92,7 @@ export default {
         MessengerDialogPhone,
         MessengerDialogFunctions
     },
+    emits: ['update-call'],
     props: {
         model: {
             type: Object,
