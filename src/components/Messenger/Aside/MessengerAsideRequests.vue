@@ -31,6 +31,7 @@
                     :current="record.id === currentDialogID"
                     :model="record.model"
                     :class="{ skeleton: isLoading }"
+                    :last-call="record.last_call"
                 />
             </template>
             <template v-if="requests.length >= 20" #footer>

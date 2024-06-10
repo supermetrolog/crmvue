@@ -23,8 +23,8 @@
                 </p>
             </div>
         </div>
-        <div v-if="false" class="messenger-dialog__footer">
-            <MessengerDialogPhone :info="{ lastCall: '2024-01-10T08:39:18.760Z' }" />
+        <div class="messenger-dialog__footer">
+            <MessengerDialogPhone :info="{ lastCall: lastCall ?? model.updated_at }" />
             <MessengerDialogFunctions />
         </div>
     </div>
@@ -47,6 +47,10 @@ export default {
         current: {
             type: Boolean,
             default: false
+        },
+        lastCall: {
+            type: String,
+            default: null
         }
     },
     computed: {
