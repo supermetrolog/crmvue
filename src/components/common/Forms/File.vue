@@ -1,10 +1,10 @@
 <template>
     <div class="file">
-        <a :href="file.src" class="file__body" target="_blank">
+        <a :href="filePath" class="file__body" target="_blank">
             <VLazyImage
                 v-if="fileType.name === 'image'"
-                @click.prevent.stop="$openPreviewer(file.src)"
-                :src="file.src"
+                @click.prevent.stop="$openPreviewer(filePath)"
+                :src="filePath"
                 class="file__image"
                 alt="file image"
             />
@@ -84,6 +84,7 @@ export default {
     },
     computed: {
         fileName() {
+            if (this.file.original_name) return this.file.original_name;
             return this.file.name || this.file.src.split('/').slice(-1)[0];
         },
         fileSize() {
@@ -98,7 +99,7 @@ export default {
             return size.toFixed(2) + ' ' + type[i];
         },
         fileType() {
-            let extension = this.fileName.split('.').slice(-1)[0];
+            let extension = this.file.extension ?? this.fileName.split('.').slice(-1)[0];
 
             return (
                 fileTypesList.find(element => element.extensions.includes(extension)) || {
@@ -107,6 +108,9 @@ export default {
                     icon: 'fa-solid fa-file-circle-question'
                 }
             );
+        },
+        filePath() {
+            return this.file.src ?? this.$url.api.getUploadedFileUrl(this.file.path);
         }
     }
 };

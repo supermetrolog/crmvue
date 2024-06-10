@@ -81,7 +81,9 @@ export default {
             return Object.keys(sections)
                 .map(key => ({
                     label: dayjs(key),
-                    messages: sections[key]
+                    messages: sections[key].sort(
+                        (first, second) => first.dayjs_date - second.dayjs_date
+                    )
                 }))
                 .sort((first, second) => first.label - second.label);
         },

@@ -1,5 +1,11 @@
 <template>
     <div ref="list" class="file-list">
+        <InfiniteLoading @infinite="$emit('load', $event)">
+            <template #complete><span></span></template>
+            <template #spinner>
+                <Spinner />
+            </template>
+        </InfiniteLoading>
         <div v-for="(section, id) in preparedFiles" :key="id" class="file-list__section">
             <span class="file-list__label">
                 {{ getLabel(section.label) }}
@@ -21,14 +27,16 @@ import File from '@/components/common/Forms/File.vue';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { ScrollToEndMixin } from '@/components/common/mixins';
+import Spinner from '@/components/common/Spinner.vue';
+import InfiniteLoading from 'v3-infinite-loading';
 
 dayjs.extend(customParseFormat);
 
 export default {
     name: 'FileList',
-    components: { File },
+    components: { Spinner, File, InfiniteLoading },
     mixins: [ScrollToEndMixin],
-    emits: ['delete'],
+    emits: ['delete', 'load'],
     props: {
         files: {
             type: Array,

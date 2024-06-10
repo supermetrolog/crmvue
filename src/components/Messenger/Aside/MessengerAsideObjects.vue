@@ -17,7 +17,6 @@
             data-key="id"
             class="messenger-aside__list"
             :keeps="20"
-            itemClass="messenger-aside-dialog"
         >
             <template v-slot:item="{ record }">
                 <MessengerDialogObject
@@ -31,6 +30,7 @@
                     :current="record.id === currentDialogID"
                     :model="record.model"
                     :class="{ skeleton: isLoading }"
+                    :last-call="record.last_call"
                 />
             </template>
             <template v-if="objects.length >= 20" #footer>

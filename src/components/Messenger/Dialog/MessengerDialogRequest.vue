@@ -66,8 +66,8 @@
             </p>
             <p v-else class="messenger-warning">Адрес не заполнен</p>
         </div>
-        <div v-if="false" class="messenger-dialog__footer">
-            <MessengerDialogPhone :info="{ lastCall: lastCallDate + '-10T08:39:18.760Z' }" />
+        <div class="messenger-dialog__footer">
+            <MessengerDialogPhone :info="{ lastCall: lastCall ?? model.updated_at }" />
             <MessengerDialogFunctions />
         </div>
     </div>
@@ -96,6 +96,10 @@ export default {
         current: {
             type: Boolean,
             default: false
+        },
+        lastCall: {
+            type: String,
+            default: null
         }
     },
     computed: {
@@ -146,10 +150,6 @@ export default {
         },
         locationText() {
             return [this.regionsText, ...this.directions, ...this.districts].join(', ');
-        },
-        lastCallDate() {
-            const date = Math.round(12 * Math.random());
-            return `${2023 + Math.round(Math.random())}-${date > 9 ? date : '0' + date}`;
         }
     }
 };

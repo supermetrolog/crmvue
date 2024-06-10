@@ -1,6 +1,4 @@
 import api from '@//api/api';
-import files from '@//test-data/files.json';
-import photos from '@//test-data/photos.json';
 import quizzes from '@//test-data/quizzes.json';
 import axios from 'axios';
 import SuccessHandler from '@/api/success/index.js';
@@ -119,7 +117,7 @@ export default {
         const formData = { ...message, to_chat_member_id: memberID };
 
         try {
-            const response = await axios.post(url, formData);
+            const response = await axios.postForm(url, formData);
             return response.data;
         } catch (e) {
             ErrorHandle.setError(e);
@@ -130,18 +128,28 @@ export default {
         const url = `/chat-member-messages/${message.id}`;
 
         try {
-            const response = await axios.put(url, message);
+            const response = await axios.patchForm(url, message);
             return response.data;
         } catch (e) {
             ErrorHandle.setError(e);
             return null;
         }
     },
-    async getFiles() {
-        return files;
-    },
-    async getPhotos() {
-        return photos;
+    async getMedia(chatMemberID, { extension = null, page = 1 }) {
+        const url =
+            `/chat-members/${chatMemberID}/media` +
+            (extension ? `?extension=${extension}&page=${page}` : `?page=${page}`);
+
+        try {
+            const response = await axios.get(url);
+            return {
+                data: SuccessHandler.getData(response),
+                pagination: SuccessHandler.getPaginationData(response)
+            };
+        } catch (e) {
+            ErrorHandle.setError(e);
+            return null;
+        }
     },
     async getQuizzes() {
         return quizzes;

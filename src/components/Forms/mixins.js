@@ -28,7 +28,6 @@ import { deleteEmptyFields } from '@/utils/deleteEmptyFields.js';
 
 export const FormMixin = {
     mixins: [SearchFormMixin],
-    name: 'OfferSearchForm',
     components: {
         Form,
         FormGroup,

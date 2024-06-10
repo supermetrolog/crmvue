@@ -125,7 +125,7 @@
 </template>
 
 <script>
-import { FeedbackIcons, PassiveWhyContact } from '@/const/const.js';
+import { PassiveWhyContact } from '@/const/const.js';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
@@ -160,8 +160,6 @@ export default {
         };
     },
     computed: {
-        wayOfInformings: () => FeedbackIcons,
-        passiveWhyOptions: () => PassiveWhyContact,
         name() {
             if (this.contact.type) {
                 return 'Общий контакт';
@@ -181,12 +179,6 @@ export default {
         }
     },
     methods: {
-        getWayClass(way) {
-            return this.wayOfInformings[way].icon;
-        },
-        getWayTitle(way) {
-            return this.wayOfInformings[way].name;
-        },
         createComment(comment) {
             this.$emit('create-comment', {
                 contact_id: this.contact.id,
@@ -202,5 +194,3 @@ export default {
     }
 };
 </script>
-
-<style></style>

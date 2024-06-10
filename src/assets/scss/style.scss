@@ -876,7 +876,7 @@ tr.DropdownSwitcherRow {
 
     &-good::after {
         background-position: bottom 35px right 10px;
-        background-image: url("../image/icon-hug.png");
+        background-image: url("@/assets/image/icon-hug.png");
         filter: brightness(1);
         background-size: 50%;
         background-repeat: no-repeat;
@@ -976,118 +976,6 @@ tr.DropdownSwitcherRow {
         .CompanyBoxContactListItem-edit {
             display: block;
         }
-    }
-}
-
-.CompanyContactModal {
-    max-width: 50vw;
-    min-width: 50vw;
-    display: grid;
-    gap: 0 0;
-    grid-template-columns: 50% 50%;
-    grid-template-areas:
-    "left right"
-    "footer footer";
-    position: relative;
-
-    &-warning {
-        width: 100%;
-        font-weight: bolder;
-    }
-
-    &-edit {
-        position: absolute;
-        top: -20px;
-    }
-
-    &-left {
-        grid-area: left;
-
-        &-name {
-            font-size: 20px;
-        }
-
-        .edit {
-            &:hover {
-                transform: scale(1.1);
-                transition: all 150ms ease-in 0s;
-                cursor: pointer;
-            }
-        }
-
-        &-phone {
-            a {
-                font-size: 18px;
-            }
-
-            &-main {
-                &::after {
-                    content: " основной";
-                    font-size: 12px;
-                    font-weight: bolder;
-                    color: variables.$color_danger_dark;
-                }
-            }
-        }
-
-        &-email {
-            &-main {
-                &::after {
-                    content: " основной";
-                    font-size: 12px;
-                    font-weight: bolder;
-                    color: variables.$color_danger_dark;
-                }
-            }
-        }
-
-        &-passive {
-            span {
-                &:first-child {
-                    background-color: variables.$color_warning;
-                    padding: 2px 6px;
-                    font-weight: bolder;
-                }
-            }
-        }
-    }
-
-    &-websites {
-        display: flex;
-        flex-direction: column;
-    }
-
-    &-right {
-        grid-area: right;
-
-        &-comments {
-            max-height: 250px;
-            overflow-y: auto;
-
-            .contact-comment {
-                p {
-                    font-weight: normal;
-                }
-            }
-        }
-
-        &-send_comment {
-            margin-top: 10px;
-
-            textarea {
-                width: 100%;
-                resize: none;
-                border-radius: 0;
-
-                &:focus-visible {
-                    outline: none;
-                }
-            }
-        }
-    }
-
-    &-footer {
-        grid-area: footer;
     }
 }
 
@@ -1381,7 +1269,7 @@ tr.DropdownSwitcherRow {
 
             span {
                 padding: 10px 0 10px 10px;
-                background-color: rgba(variables.$color:black, $alpha: 0.5);
+                background-color: rgba($color:black, $alpha: 0.5);
             }
 
             width: 100%;
@@ -1920,7 +1808,7 @@ tr.DropdownSwitcherRow {
         font-size: 14px;
         font-weight: bold;
         color: variables.$color_success_alt;
-        background-color: rgba(variables.$color:variables.$color_light, $alpha: 0.85);
+        background-color: rgba($color:variables.$color_light, $alpha: 0.85);
         top: 0;
         margin: 5px;
     }
@@ -1940,7 +1828,7 @@ tr.DropdownSwitcherRow {
         bottom: 0;
         left: 0;
         right: 0;
-        background-color: rgba(variables.$color:#ffffff, $alpha: 0.9);
+        background-color: rgba($color:#ffffff, $alpha: 0.9);
         z-index: 2;
     }
 
@@ -1982,7 +1870,7 @@ tr.DropdownSwitcherRow {
                 font-size: 16px;
                 font-weight: bold;
                 color: variables.$color_success_alt;
-                background-color: rgba(variables.$color:variables.$color_light, $alpha: 0.85);
+                background-color: rgba($color:variables.$color_light, $alpha: 0.85);
 
                 &.deal_type {
                     top: 10px;
@@ -1999,7 +1887,7 @@ tr.DropdownSwitcherRow {
                     right: 10px;
                     padding: 0 5px;
                     color: variables.$color_light;
-                    background-color: rgba(variables.$color:variables.$color_danger, $alpha: 0.85);
+                    background-color: rgba($color:variables.$color_danger, $alpha: 0.85);
                 }
             }
         }
