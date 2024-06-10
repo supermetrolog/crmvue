@@ -501,13 +501,16 @@ const Messenger = {
 
             return false;
         },
-        async getCurrentChatFiles(context) {
-            // ONLY TESTING
-            return await api.messenger.getFiles(context.state.currentDialog);
+        async getCurrentChatFiles({ state }, page) {
+            return await api.messenger.getMedia(state.currentPanelDialogID, {
+                page
+            });
         },
-        async getCurrentChatPhotos(context) {
-            // ONLY TESTING
-            return await api.messenger.getPhotos(context.state.currentDialog);
+        async getCurrentChatPhotos({ state }, page) {
+            return await api.messenger.getMedia(state.currentPanelDialogID, {
+                extension: 'jpg',
+                page
+            });
         },
         async getCurrentChatQuizzes(context) {
             // ONLY TESTING
