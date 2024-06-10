@@ -24,6 +24,7 @@
                     "
                     :current="record.id === currentDialogID"
                     :model="record.model"
+                    :last-call="record.last_call"
                 />
             </template>
             <template v-if="objects.length >= 20" #footer>

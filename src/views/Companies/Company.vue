@@ -10,6 +10,12 @@
                 v-if="timelineVisible && COMPANY && COMPANY_REQUESTS[0]"
                 @close="closeTimeline"
             />
+            <CompanyContactModal
+                v-if="contactModalVisible"
+                @close="clickCloseContactModal"
+                @start-editing="openContactFormForUpdate"
+                :contact="contact"
+            />
         </teleport>
         <FormCompanyDeal
             v-if="dealFormVisible"
@@ -38,12 +44,6 @@
             @closeCompanyForm="clickCloseCompanyForm"
             @updated="updatedCompany"
             :formdata="COMPANY"
-        />
-        <CompanyContactModal
-            v-if="contactModalVisible"
-            @closeContactModal="clickCloseContactModal"
-            @clickEditContact="openContactFormForUpdate"
-            :contact="contact"
         />
         <div class="company-wrapper">
             <Loader v-if="loaderCompanyDetailInfo"></Loader>
