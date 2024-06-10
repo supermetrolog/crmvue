@@ -15,12 +15,12 @@
                 class="messenger-chat-message__body"
                 v-html="message.message"
             ></div>
-            <!--            <AnimationTransition>-->
-            <!--                <MessengerChatMessageAttachments-->
-            <!--                    v-if="message.attachments?.length"-->
-            <!--                    :files="message.attachments"-->
-            <!--                />-->
-            <!--            </AnimationTransition>-->
+            <AnimationTransition>
+                <MessengerChatMessageAttachments
+                    v-if="message.attachments?.length"
+                    :files="message.attachments"
+                />
+            </AnimationTransition>
             <div class="messenger-chat-message__footer">
                 <span>{{ username }}, </span>
                 <span v-tippy="originalDate" class="messenger-chat-message__date">
@@ -53,15 +53,19 @@ import { entityOptions } from '@/const/options/options';
 import Avatar from '@/components/common/Avatar.vue';
 import MessengerChatMessageActions from '@/components/Messenger/Chat/Message/MessengerChatMessageActions.vue';
 import MessengerChatMessageAdditions from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditions.vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import MessengerChatMessageAttachments from '@/components/Messenger/Chat/Message/MessengerChatMessageAttachments.vue';
 
 export default {
     name: 'MessengerChatMessage',
     components: {
+        MessengerChatMessageAttachments,
+        AnimationTransition,
         MessengerChatMessageAdditions,
         MessengerChatMessageActions,
         Avatar
     },
-    inject: ['$openCreator', '$messageUpdate'],
+    inject: ['$messageUpdate'],
     provide() {
         return {
             $messageID: this.message.id

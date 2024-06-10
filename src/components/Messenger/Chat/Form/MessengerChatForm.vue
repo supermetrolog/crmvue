@@ -1,12 +1,12 @@
 <template>
     <div class="messenger-chat-form">
-        <!--        <AnimationTransition :speed="0.5">-->
-        <!--            <MessengerChatFormAttachments-->
-        <!--                v-if="currentFiles.length"-->
-        <!--                @delete="deleteFile"-->
-        <!--                :files="currentFiles"-->
-        <!--            />-->
-        <!--        </AnimationTransition>-->
+        <AnimationTransition :speed="0.5">
+            <MessengerChatFormAttachments
+                v-if="currentFiles.fileList.length"
+                @delete="deleteFile"
+                :files="currentFiles.fileList"
+            />
+        </AnimationTransition>
         <div class="messenger-chat-form__settings">
             <MessengerChatFormRecipient
                 @change="setCurrentContact"
@@ -19,9 +19,9 @@
             />
         </div>
         <Form @submit.prevent class="messenger-chat-form__field" method="post">
-            <!--            <Button @click="attachFile" class="messenger-chat-form__button" warning icon>-->
-            <!--                <i class="fa-solid fa-paperclip"></i>-->
-            <!--            </Button>-->
+            <Button @click="attachFile" class="messenger-chat-form__button" warning icon>
+                <i class="fa-solid fa-paperclip"></i>
+            </Button>
             <Textarea
                 v-model.trim="message"
                 @keydown.enter.prevent="keyHandler"
@@ -32,7 +32,7 @@
             <Button
                 @click="sendMessage"
                 class="messenger-chat-form__button"
-                :disabled="!message.length && !currentFiles.length"
+                :disabled="!message.length && !currentFiles.fileList.length"
                 success
                 icon
             >
@@ -48,10 +48,14 @@ import Button from '@/components/common/Button.vue';
 import Textarea from '@/components/common/Forms/Textarea.vue';
 import MessengerChatFormRecipient from '@/components/Messenger/Chat/Form/MessengerChatFormRecipient.vue';
 import MessengerChatFormCategories from '@/components/Messenger/Chat/Form/MessengerChatFormCategories.vue';
+import MessengerChatFormAttachments from '@/components/Messenger/Chat/Form/MessengerChatFormAttachments.vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
 
 export default {
     name: 'MessengerChatForm',
     components: {
+        AnimationTransition,
+        MessengerChatFormAttachments,
         MessengerChatFormCategories,
         MessengerChatFormRecipient,
         Textarea,
@@ -61,7 +65,10 @@ export default {
     inject: ['$openAttachments'],
     data() {
         return {
-            currentFiles: []
+            currentFiles: {
+                fileList: [],
+                files: []
+            }
         };
     },
     computed: {
@@ -95,7 +102,7 @@ export default {
         async sendMessage() {
             this.message = this.message.replace(/(\n)+$/g, '');
 
-            if (!this.message.length && !this.currentFiles.length) return;
+            if (!this.message.length && !this.currentFiles.fileList.length) return;
 
             this.message = this.message.replace(
                 /(https?\S*)/g,
@@ -103,26 +110,32 @@ export default {
             );
 
             const sended = await this.$store.dispatch('Messenger/sendMessage', {
-                tag_ids: this.currentCategory ? [this.currentCategory] : []
-                // attachments: this.currentFiles
+                tag_ids: this.currentCategory ? [this.currentCategory] : [],
+                files: this.currentFiles.fileList
             });
 
             if (sended) {
-                this.currentFiles = [];
+                this.currentFiles = {
+                    files: [],
+                    fileList: []
+                };
             }
         },
         changeCurrentCategory(value) {
             this.currentCategory = value;
         },
         async attachFile() {
-            const files = await this.$openAttachments();
+            const attachmentResponse = await this.$openAttachments();
 
-            if (files?.length) {
-                this.currentFiles.push(...files);
+            if (attachmentResponse?.fileList?.length) {
+                this.currentFiles.files.push(...attachmentResponse.files);
+                this.currentFiles.fileList.push(...attachmentResponse.fileList);
+                console.log(this.currentFiles.fileList);
             }
         },
         deleteFile(id) {
-            this.currentFiles.splice(id, 1);
+            this.currentFiles.fileList.splice(id, 1);
+            this.currentFiles.files.splice(id, 1);
         }
     },
     mounted() {

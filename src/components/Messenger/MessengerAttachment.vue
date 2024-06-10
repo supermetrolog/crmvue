@@ -48,7 +48,7 @@ export default {
     },
     methods: {
         submit() {
-            this.resolve(this.form.fileList);
+            this.resolve(this.form);
         }
     }
 };
