@@ -422,7 +422,6 @@ export default {
         },
         async alreadySentObjects(event) {
             const sendingSuccessfully = await this.alreadySent(event);
-            console.log(sendingSuccessfully);
             if (sendingSuccessfully) this.$emit('next-step');
         }
     }

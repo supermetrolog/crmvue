@@ -7,11 +7,10 @@
             inline
             :markers="markers"
             select-text="Выбрать"
-            show-now-button
             auto-apply
-            now-button-label="Сегодня"
             month-name-format="long"
-            :highlight-week-days="[0, 6]"
+            :highlight="{ weekdays: [0, 6] }"
+            :style="{ '--dp-cell-size': size }"
         >
             <template #calendar-header="{ index, day }">
                 <div :class="index === 5 || index === 6 ? 'color-success' : ''">
@@ -117,10 +116,3 @@ export default {
     }
 };
 </script>
-<style lang="scss">
-.dp__calendar {
-    &_item {
-        --dp-cell-size: v-bind(size);
-    }
-}
-</style>

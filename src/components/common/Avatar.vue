@@ -1,6 +1,10 @@
 <template>
     <div class="avatar" :style="{ '--size': size + 'px' }">
-        <VLazyImage class="avatar__image" :src="$url.api.getUserAvatar(src)" />
+        <VLazyImage
+            @error="hasError = true"
+            class="avatar__image"
+            :src="hasError ? $url.api.fileNotFound() : $url.api.getUserAvatar(src)"
+        />
     </div>
 </template>
 <script>
@@ -17,6 +21,11 @@ export default {
             type: [String, Number],
             default: 60
         }
+    },
+    data() {
+        return {
+            hasError: false
+        };
     }
 };
 </script>

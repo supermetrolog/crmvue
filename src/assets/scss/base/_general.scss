@@ -24,7 +24,10 @@ body {
 main {
     min-height: 100vh;
     background-color: variables.$color_overflow;
-    padding: 75px 25px 50px 100px;
+
+    @include mixins.media("min", "md") {
+        padding: 75px 25px 50px 100px;
+    }
 }
 
 .animate {
@@ -84,7 +87,7 @@ main {
 }
 
 .with-unit-type {
-    @include mixins.flex-box($gap: 3px);
+    display: inline-block;
 }
 
 .row {

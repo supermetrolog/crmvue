@@ -241,11 +241,7 @@
                             :resolve-on-load="true"
                             label="Номенклатура товара"
                             class="col-12 mt-2"
-                            :options="
-                                async () => {
-                                    return await getProductRangeList();
-                                }
-                            "
+                            :options="COMPANY_PRODUCT_RANGE_LIST"
                             name="product"
                         />
                     </div>
@@ -372,6 +368,7 @@
                             v-model:data="form.files"
                             label="Документы"
                             class="col-12"
+                            sortable
                         >
                             Выбрать файлы
                         </FileInput>
@@ -727,17 +724,19 @@ export default {
     },
     async created() {
         this.loader = true;
+
         await Promise.all([
             this.FETCH_CONSULTANT_LIST(),
             this.FETCH_COMPANY_GROUP_LIST(),
             this.FETCH_COMPANY_PRODUCT_RANGE_LIST(),
             this.FETCH_COMPANY_IN_THE_BANK_LIST()
         ]);
+
         if (this.formdata) {
             this.form = { ...this.form, ...cloneObject(this.formdata) };
-
             this.form = Utils.normalizeDataForCompanyForm(this.form);
         }
+
         this.loader = false;
     }
 };

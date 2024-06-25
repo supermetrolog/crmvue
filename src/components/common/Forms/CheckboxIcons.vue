@@ -5,7 +5,7 @@
             <div
                 v-if="extraLabel"
                 @click="clickExtraLabel"
-                class="checkbox-icons__extra-label"
+                class="checkbox-icons__extra-label mb-1"
                 :class="{
                     active:
                         isAllSelected ||

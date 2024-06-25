@@ -18,7 +18,7 @@
                 <Button @click="resetForm" :disabled="!filterCount" danger>Сбросить фильтры</Button>
             </div>
         </div>
-        <Modal v-show="extraVisible" @close="extraVisible = false" title="Фильтры">
+        <Modal v-if="extraVisible" @close="extraVisible = false" title="Фильтры">
             <FormGroup>
                 <MultiSelect
                     v-model="form.consultant_id"

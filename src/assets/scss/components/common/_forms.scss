@@ -131,7 +131,7 @@
                     }
 
                     &:disabled {
-                        background-color: rgba(variables.$color: variables.$color_grey, $alpha: 0.2);
+                        background-color: rgba($color: variables.$color_grey, $alpha: 0.2);
                     }
                 }
             }
@@ -741,8 +741,6 @@
     }
 
     &-tags {
-        max-width: 80% !important;
-        padding-left: 0 !important;
         margin: .25rem auto .25rem .25rem;
 
         input {
@@ -1084,6 +1082,7 @@
     }
 
     &--new .file__body {
+        margin: 3px;
         outline: 3px solid #10b981;
     }
 }

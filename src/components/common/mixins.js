@@ -99,7 +99,6 @@ export const SearchFormMixin = {
 
             deleteEmptyFields(query);
 
-            query.page = 1;
             if (!this.noUrl) {
                 this.$router.replace({ query });
             }

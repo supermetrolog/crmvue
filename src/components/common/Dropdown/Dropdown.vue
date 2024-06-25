@@ -5,11 +5,11 @@
         <template v-if="title">
             <span>{{ title }}</span>
             <span v-if="mainNumber || sideNumber">
-                ({{ mainNumber }}
+                <span>({{ mainNumber }}</span>
                 <span v-if="sideNumber" class="side_number">
                     {{ `/${sideNumber}` }}
                 </span>
-                )
+                <span>)</span>
             </span>
         </template>
     </button>

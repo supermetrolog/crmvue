@@ -10,6 +10,10 @@
     margin: 5px 0;
     @include mixins.transition(opacity .5s, max-height .5s);
 
+    &.small {
+        top: -50px;
+    }
+
     &__content {
         @include mixins.flex-box($gap: 10px);
         width: max-content;
@@ -69,6 +73,7 @@
             opacity: 1;
             max-height: 1000px;
             overflow: initial;
+            padding-bottom: 10px;
         }
     }
 }

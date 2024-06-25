@@ -502,18 +502,19 @@ export default {
         normalizeForm() {
             this.forms.phones = this.forms.phones.filter(element => element.phone.length);
             this.forms.emails = this.forms.emails.filter(element => element.email.length);
+        },
+        async fetchConsultants() {
+            this.loader = true;
+            await this.FETCH_CONSULTANT_LIST();
+            this.loader = false;
         }
     },
-    async mounted() {
-        this.loader = true;
-        await this.FETCH_CONSULTANT_LIST();
+    created() {
         this.forms.company_id = this.company_id;
         if (this.formdata) {
             this.forms = { ...this.forms, ...cloneObject(this.formdata) };
         }
-        this.loader = false;
+        this.fetchConsultants();
     }
 };
 </script>
-
-<style></style>
