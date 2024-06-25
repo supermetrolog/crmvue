@@ -26,6 +26,7 @@ import 'dayjs/locale/ru';
 import isToday from 'dayjs/plugin/isToday';
 import isYesterday from 'dayjs/plugin/isYesterday';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { vIntersection } from '@/directives/intersection.js';
 
 dayjs.extend(isToday);
 dayjs.extend(isYesterday);
@@ -40,6 +41,7 @@ app.config.performance = true;
 app.component('Tabs', Tabs)
     .component('Tab', Tab)
     .component('PhoneNumber', PhoneNumber)
+    .directive('intersection', vIntersection)
     .use(VueAgile)
     .use(VueTippy, {
         directive: 'tippy',
