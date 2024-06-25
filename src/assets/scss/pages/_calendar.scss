@@ -1,0 +1,19 @@
+@use '../utils/mixins';
+
+.calendar-view {
+    &__week {
+        @include mixins.flex-box($gap: 5px, $a: center);
+        margin-bottom: 10px;
+    }
+
+    &__list, &__block {
+        @include mixins.flex-box($d: column, $gap: 10px);
+    }
+
+    &__list {
+        padding: 5px;
+        margin: 0 -5px;
+        overflow-y: auto;
+        max-height: 100%;
+    }
+}
