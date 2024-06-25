@@ -1087,3 +1087,97 @@
         outline: 3px solid #10b981;
     }
 }
+
+.switch {
+    @include mixins.flex-box($gap: 5px, $a: center);
+
+    &__wrapper {
+        height: 24px;
+        width: 50px;
+        border-radius: 20px;
+        border: 1px solid rgba(0, 0, 0, .1);
+        position: relative;
+        transition: background-color .2s ease-in-out;
+        background-color: #dcdfe6;
+        display: block;
+
+        &:not(.disabled) {
+            cursor: pointer;
+        }
+
+        &.disabled {
+            opacity: .6;
+        }
+    }
+
+    &__input {
+        height: 0;
+        width: 0;
+        opacity: 0;
+        visibility: hidden;
+        position: absolute;
+    }
+
+    &__circle {
+        left: 2px;
+        top: 2px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background-color: #fff;
+        position: absolute;
+        transition: 0.1s ease-in-out;
+    }
+
+    &__label {
+        @include mixins.transition(color);
+    }
+
+    &:not(&:has(&__input:checked)) {
+        .switch__label--false {
+            color: variables.$bg_success;
+        }
+    }
+
+    &:has(&__input:checked) {
+        .switch {
+            &__wrapper {
+                background-color: variables.$bg_success;
+            }
+
+            &__circle {
+                transform: translateX(26px);
+            }
+
+            &__label--true {
+                color: variables.$bg_success;
+            }
+        }
+    }
+}
+
+.color-picker {
+    @include mixins.flex-box($a: center, $gap: 10px, $wrap: wrap);
+
+    &__label {
+        font-weight: 500;
+    }
+
+    &__element {
+        border: 2px solid rgba(0, 0, 0, .2);
+        aspect-ratio: 1 / 1;
+        @include mixins.transition(opacity);
+        @include mixins.hover {
+            cursor: pointer;
+            opacity: .7;
+        }
+
+        &--circle {
+            border-radius: 50%;
+        }
+    }
+}
+
+.color-picker-popup {
+    z-index: 4005!important;
+}

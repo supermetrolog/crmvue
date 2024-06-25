@@ -13,6 +13,7 @@
     "docs": "jsdoc --configure jsdoc.json --verbose"
   },
   "dependencies": {
+    "@floating-ui/vue": "^1.0.6",
     "@kyvg/vue3-notification": "^2.3.3",
     "@vueform/multiselect": "^2.6.3",
     "@vuelidate/core": "^2.0.0-alpha.19",
@@ -34,6 +35,8 @@
     "vue": "3.4",
     "vue-agile": "^2.0.0",
     "vue-axios": "^3.2.4",
+    "vue-cal": "^4.8.1",
+    "vue-color-kit": "^1.0.5",
     "vue-draggable-next": "^2.1.1",
     "vue-router": "^4.0.0-0",
     "vue-tippy": "^6.4.1",
