@@ -16,10 +16,12 @@ import companyLogs from './companyLogs.js';
 import complex from './complex';
 import messenger from '@//api/messenger';
 import task from '@/api/task';
-import alert from '@/api/alert';
+import notification from '@/api/notification.js';
 import equipment from '@/api/equipment';
 import reminder from '@/api/reminder.js';
 import call from '@/api/call.js';
+import survey from '@/api/survey.js';
+import question from '@/api/question.js';
 
 export default {
     user,
@@ -40,8 +42,10 @@ export default {
     complex,
     messenger,
     task,
-    alert,
+    notification,
     equipment,
     reminder,
-    call
+    call,
+    survey,
+    question
 };

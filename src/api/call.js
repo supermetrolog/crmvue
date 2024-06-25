@@ -39,6 +39,17 @@ export default {
             return null;
         }
     },
+    async getByID(id) {
+        const url = `/calls/${id}`;
+
+        try {
+            const response = await axios.get(url);
+            return response.data;
+        } catch (e) {
+            ErrorHandle.setError(e);
+            return null;
+        }
+    },
     async delete(callID) {
         const url = `/calls/${callID}`;
 

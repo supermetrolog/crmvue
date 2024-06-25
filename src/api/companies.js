@@ -75,26 +75,19 @@ export default {
             .catch(e => ErrorHandle.setError(e));
         return data;
     },
-    async updateCompany(formdata) {
-        const url = `companies/${formdata.id}`;
+    async updateCompany(formData) {
+        const url = `companies/${formData.id}`;
+        const files = formData.fileList;
+        delete formData.fileList;
         let data = false;
-        formdata = getFormDataWithFiles(formdata, true);
-        // let FD = new FormData();
-        // FD.append('data', new Blob([JSON.stringify(formdata)]), { type: 'application/x-www-form-urlencoded' });
 
-        // formdata = FD;
-        let config = {
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'multipart/form-data'
-            }
-        };
         await axios
-            .patch(url, formdata, config)
+            .patchForm(url, { files, data: JSON.stringify(formData) })
             .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
             .catch(e => ErrorHandle.setError(e));
+
         return data;
     },
 
