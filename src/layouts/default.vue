@@ -14,6 +14,7 @@
         <teleport to="body">
             <Previewer ref="previewer" />
             <Confirm />
+            <PhoneNumberPopup />
         </teleport>
     </div>
 </template>
@@ -26,10 +27,12 @@ import Messenger from '@/components/Messenger/Messenger.vue';
 import Previewer from '@/components/common/Previewer.vue';
 import { mapGetters } from 'vuex';
 import Confirm from '@/components/common/Confirm.vue';
+import PhoneNumberPopup from '@/components/common/PhoneNumberPopup.vue';
 
 export default {
     name: 'Default',
     components: {
+        PhoneNumberPopup,
         Confirm,
         Previewer,
         Messenger,
