@@ -56,7 +56,6 @@
 
 <script>
 import { FormMixin } from '@/components/Forms/mixins.js';
-import { waitHash } from '@/utils';
 import Button from '@/components/common/Button.vue';
 import ButtonLink from '@/components/common/ButtonLink.vue';
 

@@ -1,11 +1,4 @@
-import {
-    ActivityGroupList,
-    ActivityProfileList,
-    CompanyCategories,
-    CompanyFormOrganization,
-    PassiveWhy,
-    RatingList
-} from '@/const/const';
+import { CompanyCategories, RatingList } from '@/const/const';
 import Progress from '@/components/common/Progress.vue';
 import Table from '@/components/common/Table/Table.vue';
 import Tr from '@/components/common/Table/Tr.vue';
@@ -17,7 +10,6 @@ import {
     PassiveWhyRequest,
     RegionList
 } from '@/const/const.js';
-import FileInput from '@/components/common/Forms/FileInput.vue';
 import { entityOptions } from '@/const/options/options';
 
 export const MixinCompanyView = {

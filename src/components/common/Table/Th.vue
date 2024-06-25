@@ -30,7 +30,7 @@ export default {
             const newSortParams = [];
             let existSort = false;
             words.forEach(item => {
-                if (item == this.sort || item == `-${this.sort}`) {
+                if (item === this.sort || item == `-${this.sort}`) {
                     existSort = true;
                     if (item === this.sort) {
                         newSortParams.push(`-${this.sort}`);

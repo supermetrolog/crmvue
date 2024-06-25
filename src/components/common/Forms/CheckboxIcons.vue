@@ -147,8 +147,7 @@ export default {
             this.options.forEach(item => {
                 options.push(item.id);
             });
-            let result = this.includesArray(options, data);
-            return result;
+            return this.includesArray(options, data);
         },
         includesArray(a1, a2) {
             let result = a1.filter(function (i) {
@@ -201,5 +200,3 @@ export default {
     }
 };
 </script>
-
-<style></style>

@@ -159,8 +159,7 @@ export default {
     watch: {
         $route: {
             handler() {
-                if (this.$route.query.request_id) this.timelineIsVisible = true;
-                else this.timelineIsVisible = false;
+                this.timelineIsVisible = !!this.$route.query.request_id;
             },
             immediate: true
         }

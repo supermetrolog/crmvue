@@ -78,7 +78,7 @@
                             class="col-12"
                             :filterResults="false"
                             :min-chars="1"
-                            :resolve-on-load="formdata ? true : false"
+                            :resolve-on-load="Boolean(formdata)"
                             :delay="0"
                             :searchable="true"
                             :options="
@@ -255,7 +255,7 @@
                             class="col-12"
                             :filterResults="false"
                             :min-chars="1"
-                            :resolve-on-load="formdata ? true : false"
+                            :resolve-on-load="Boolean(formdata)"
                             :delay="0"
                             :searchable="true"
                             :options="
@@ -686,8 +686,8 @@ export default {
         customRequiredNameRu(value) {
             if (!this.form.noName) {
                 if (
-                    (value != null && value != '') ||
-                    (this.form.nameEng != null && this.form.nameEng != '')
+                    (value !== null && value !== '') ||
+                    (this.form.nameEng != null && this.form.nameEng !== '')
                 ) {
                     return true;
                 }

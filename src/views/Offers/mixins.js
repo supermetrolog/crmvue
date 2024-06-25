@@ -197,10 +197,10 @@ export default {
         ...mapActions(['FETCH_CONSULTANT_LIST', 'FETCH_REGION_LIST']),
         removeFilter(filter) {
             const query = { ...this.$route.query };
-            if (filter == 'fakeRegion') {
+            if (filter === 'fakeRegion') {
                 delete query['region'];
             }
-            if (filter == 'region') {
+            if (filter === 'region') {
                 delete query['fakeRegion'];
                 delete query['direction'];
                 delete query['district_moscow'];

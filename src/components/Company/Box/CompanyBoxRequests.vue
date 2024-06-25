@@ -28,7 +28,7 @@
                 v-if="disabledRequestItem"
                 @close="disabledRequestItem = null"
                 @disabled="onRequestIsDisabled"
-                :request_id="disabledRequestItem.id"
+                :request_id="disabledRequestItem?.id"
             />
             <FormModalCompanyRequestClone
                 v-if="!!clonedRequestItem"

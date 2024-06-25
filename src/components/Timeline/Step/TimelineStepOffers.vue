@@ -209,11 +209,6 @@ import { entityOptions } from '@/const/options/options.js';
 import { deleteEmptyFields } from '@/utils/deleteEmptyFields.js';
 import { TimelineRecommendedDescriptions } from '@/const/const.js';
 import TimelineSearchRecommendations from '@/components/Timeline/TimelineSearchRecommedations.vue';
-import {
-    InspectionDoneComment,
-    InspectionOffersNotFound,
-    OffersNotFoundComment
-} from '@/components/Timeline/comments.js';
 
 export default {
     name: 'TimelineStepOffers',

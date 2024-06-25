@@ -60,7 +60,7 @@ const Companies = {
             context.commit('setCompanyWaitHash', hash);
             const data = await api.companies.searchCompanies(query);
             if (data) {
-                if (hash == context.getters.COMPANY_WAIT_HASH) {
+                if (hash === context.getters.COMPANY_WAIT_HASH) {
                     context.commit('updateCompanies', { data, concat });
                 } else {
                     return false;
