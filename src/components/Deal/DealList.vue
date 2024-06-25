@@ -1,20 +1,5 @@
 <template>
     <div class="deal-list">
-        <Modal v-if="deletedDealItem" @close="clickCloseModal" title="Удаление сделки " class="action-modal autosize">
-            <div class="row no-gutters">
-                <div class="col-12 text-center">
-                    <h4 class="text-dark">Вы уверены что хотите удалить сделку?</h4>
-                    <DealListItem :deal="deletedDealItem" :reed-only="true" />
-                </div>
-                <div class="col-12 mt-4 text-center">
-                    <Loader v-if="deleteLoader" class="center small" />
-                    <button @click="deleteDeal(deletedDealItem)" class="btn btn-danger" :disabled="deleteLoader">
-                        Удалить
-                    </button>
-                    <button @click="clickCloseModal" class="btn btn-primary ml-1" :disabled="deleteLoader">Нет</button>
-                </div>
-            </div>
-        </Modal>
         <hr />
         <div v-if="deals.length" class="row mb-2">
             <div class="col-12 text-center">
@@ -24,8 +9,8 @@
         <DealListItem
             v-for="deal in deals"
             :key="deal.id"
-            @openDealFormForUpdate="openDealFormForUpdate"
-            @deleteDeal="clickDeleteDeal"
+            @update="updateDeal(deal)"
+            @delete="deleteDeal(deal)"
             class="mb-2 mt-1"
             :deal="deal"
         />
@@ -34,48 +19,45 @@
 
 <script>
 import { mapActions } from 'vuex';
-import Modal from '@/components/common/Modal.vue';
 import DealListItem from '@/components/Deal/DealListItem.vue';
-import Loader from '@/components/common/Loader.vue';
+import { useConfirm } from '@/composables/useConfirm.js';
 
 export default {
     name: 'DealList',
     components: {
-        Loader,
-        DealListItem,
-        Modal
+        DealListItem
     },
+    emits: ['update', 'deleted'],
     props: {
         deals: {
-            type: Array
+            type: Array,
+            default: () => []
         }
+    },
+    setup() {
+        const { confirm } = useConfirm();
+        return { confirm };
     },
     data() {
         return {
-            deletedDealItem: null,
-            deleteLoader: false
+            isLoading: false
         };
     },
     methods: {
         ...mapActions(['DELETE_DEAL']),
-        openDealFormForUpdate(deal) {
-            this.$emit('openDealFormForUpdate', deal);
-        },
-        clickCloseModal() {
-            this.deletedDealItem = null;
-        },
-        clickDeleteDeal(deal) {
-            this.deletedDealItem = deal;
-        },
         async deleteDeal(deal) {
-            this.deleteLoader = true;
+            const confirmed = confirm('Вы уверены, что хотите удалить сделку?');
+            if (!confirmed) return;
+
+            this.isLoading = true;
             await this.DELETE_DEAL(deal);
-            this.deleteLoader = false;
-            this.deletedDealItem = null;
+            this.isLoading = false;
+
             this.$emit('deleted');
+        },
+        updateDeal(deal) {
+            this.$emit('update', deal);
         }
     }
 };
 </script>
-
-<style></style>

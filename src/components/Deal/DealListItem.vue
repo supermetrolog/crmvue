@@ -1,10 +1,24 @@
 <template>
     <div class="deal-item">
-        <i v-if="!readOnly" @click="openDealFormForUpdate" class="fas fa-pen text-primary edit"></i>
-        <i v-if="!readOnly" @click="deleteDeal" class="fas fa-times text-danger delete"></i>
+        <HoverActionsButton
+            v-if="!readOnly"
+            @click="updateDeal"
+            label="Редактировать"
+            class="deal-item__edit"
+        >
+            <i class="fa-solid fa-pen"></i>
+        </HoverActionsButton>
+        <HoverActionsButton
+            v-if="!readOnly"
+            @click="deleteDeal"
+            label="Удалить"
+            class="deal-item__delete"
+        >
+            <i class="fa-solid fa-times"></i>
+        </HoverActionsButton>
         <div class="row">
             <div class="col-4 text-center align-self-center">
-                <i class="fas fa-handshake"></i>
+                <i class="fas fa-handshake deal-item__icon"></i>
             </div>
             <div class="col-8 pl-0">
                 <div class="row no-gutters">
@@ -81,8 +95,12 @@
 </template>
 
 <script>
+import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
+
 export default {
     name: 'DealListItem',
+    components: { HoverActionsButton },
+    emits: ['update', 'delete'],
     props: {
         deal: {
             type: Object
@@ -99,14 +117,12 @@ export default {
     },
 
     methods: {
-        openDealFormForUpdate() {
-            this.$emit('openDealFormForUpdate', this.deal);
+        updateDeal() {
+            this.$emit('update');
         },
         deleteDeal() {
-            this.$emit('deleteDeal', this.deal);
+            this.$emit('delete');
         }
     }
 };
 </script>
-
-<style></style>

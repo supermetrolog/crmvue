@@ -119,15 +119,26 @@
         }
     }
 
-    &__parameters {
-        p {
-            font-weight: bold;
-        }
-    }
-
     .deal-item {
         border: none;
         padding: 0;
+    }
+
+    &__parameters {
+        @include mixins.flex-box($gap: 5px, $d: column);
+    }
+}
+
+.company-item-request-parameter {
+    &__name {
+        font-weight: 600;
+    }
+
+    &__unit-type {
+        color: variables.$color_grey;
+        font-weight: normal!important;
+        font-size: 14px;
+        margin-left: 3px;
     }
 }
 
@@ -140,55 +151,26 @@
     background-color: variables.$color_grey_alt;
 }
 
+.company-page {
+    &__chip {
+        font-size: 16px!important;
+    }
+
+    &__row {
+        @include mixins.flex-box($gap: 10px);
+        @include mixins.media('max', 'lg') {
+            flex-direction: column;
+        }
+    }
+
+    &__column {
+        @include mixins.media('min', 'lg') {
+            flex-basis: 33%;
+        }
+    }
+}
+
 .company {
-    height: 90vh;
-    margin-top: 25px;
-
-    &-wrapper {
-        display: grid;
-        gap: variables.$grid_gap;
-        grid-template-columns: repeat(3, 26%) 20%;
-        // grid-template-rows: repeat(4, 24%);
-        grid-template-areas:
-      "A A A B"
-      "A A A B"
-      "C D E B"
-      "C D E B";
-        padding-bottom: 20px;
-
-        .grid-a {
-            grid-area: A;
-        }
-
-        .grid-b {
-            grid-area: B;
-        }
-
-        .grid-c {
-            grid-area: C;
-        }
-
-        .grid-d {
-            grid-area: D;
-        }
-
-        .grid-e {
-            grid-area: E;
-        }
-    }
-
-    &-passive {
-        margin-bottom: 2px;
-
-        span {
-            &:first-child {
-                font-size: larger;
-                background-color: variables.$color_warning;
-                padding: 3px;
-            }
-        }
-    }
-
     &-request-list {
         .action-modal {
             .modal-container {
@@ -437,5 +419,257 @@
         font-size: 10px;
         color: variables.$color_info;
         cursor: pointer;
+    }
+}
+
+
+
+.CompanyBoxObjectsListItem {
+    width: 100%;
+    padding: 2px;
+    margin-bottom: 10px;
+    border: 1px variables.$color_light_grey solid;
+    background-color: lighten(variables.$color_light, 3);
+    position: relative;
+
+    &-wrapper {
+        display: flex;
+    }
+
+    &-image {
+        width: 30%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &-container {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            a {
+                width: 100%;
+
+                img {
+                    height: 100px;
+                    width: 100%;
+                    object-fit: cover;
+                    object-position: center;
+                }
+            }
+        }
+    }
+
+    &-info {
+        font-size: 13px;
+        padding: 5px;
+        width: 68%;
+        margin-left: 2%;
+
+        &-title {
+            font-weight: bolder;
+            font-size: 16px;
+        }
+
+        &-address {
+        }
+
+        &-direction {
+        }
+
+        &-mkad {
+        }
+    }
+
+    &-dropdown {
+        hr {
+            margin: 4px 0;
+        }
+
+        &-switchers {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+
+        &-offers {
+            max-height: 0;
+            padding: 0;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0, 1, 0, 1) -0.1s;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+
+            &.open {
+                max-height: 9999px;
+                transition-timing-function: cubic-bezier(0.5, 0, 1, 0);
+                transition-delay: 0s;
+            }
+        }
+    }
+}
+
+.CompanyBoxObjectsOffer {
+    border: 1px solid variables.$color_success;
+    font-size: 14px;
+    padding: 5px;
+
+    &.passive {
+        filter: grayscale(1);
+    }
+
+    &-wrapper {
+        text-decoration: none;
+        color: #2d2f34;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+    }
+
+    &-visual_id {
+        float: left;
+        font-weight: bold;
+        color: variables.$color_success_alt;
+    }
+
+    &-block {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+    }
+}
+
+.CompanyBoxObjectsRenter {
+    position: relative;
+    padding: 5px;
+    border: 1px solid variables.$color_grey;
+    display: flex;
+    gap: 5px;
+
+    &:first-child {
+        margin-top: 20px;
+    }
+
+    &:last-child {
+        margin-bottom: 20px;
+    }
+
+    &-success {
+        background-color: variables.$color_success_dark;
+    }
+
+    &-danger {
+        background-color: lighten(variables.$color_danger_dark, 6);
+    }
+
+    &-logo {
+        $renter_logo_size: 60px;
+        min-height: $renter_logo_size;
+        max-height: $renter_logo_size;
+        min-width: $renter_logo_size;
+        max-width: $renter_logo_size;
+        border-radius: 100%;
+        background-color: variables.$color_light;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 10px;
+        overflow: hidden;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+    }
+
+    &-info {
+        padding: 5px;
+        font-size: 12px;
+        width: 100%;
+
+        &-name {
+            font-weight: bold;
+        }
+
+        &-list {
+            list-style: none;
+            display: table;
+            width: 90%;
+
+            li {
+                display: table-row;
+
+                span {
+                    display: table-cell;
+                    width: 65%;
+                    float: left;
+
+                    &:first-child {
+                        font-weight: 300;
+                        width: 30%;
+                        margin-right: 5%;
+                    }
+                }
+            }
+        }
+    }
+
+    &-button {
+        position: absolute;
+        right: 6px;
+        bottom: 3px;
+    }
+
+    .fa-bolt {
+        position: absolute;
+        right: 5px;
+        color: variables.$color_light;
+    }
+}
+
+// COMPANY VIEW MEDIA QUERIES
+
+@media screen and (max-width: variables.$phone_size) {
+    .CompanyBoxMain {
+        &-content {
+            flex-direction: column;
+        }
+
+        &-contacts {
+            // display: flex;
+            // flex-direction: column;
+        }
+
+        &-left {
+            width: 100%;
+            margin-bottom: 20px;
+
+            &-list {
+                width: 100%;
+            }
+        }
+
+        &-right {
+            width: 100%;
+        }
+
+        .CompanyBoxContactList {
+            flex-direction: column;
+            gap: 5px;
+
+            &Item {
+                margin: 0;
+            }
+        }
     }
 }

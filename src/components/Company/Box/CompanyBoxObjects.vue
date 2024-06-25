@@ -1,9 +1,7 @@
 <template>
-    <CompanyBoxLayout class="CompanyBoxObjects" :class="'grid-c'">
+    <CompanyBoxLayout>
         <template #header>
-            <div class="CompanyBoxObjects-header">
-                <span>ОБЪЕКТЫ ({{ objects.length }}), АРЕНДАТОРЫ ({{ rentersCount }})</span>
-            </div>
+            <span>ОБЪЕКТЫ ({{ objects.length }}), АРЕНДАТОРЫ ({{ rentersCount }})</span>
         </template>
         <template #content>
             <CompanyBoxObjectsList :objects="objects" />
@@ -28,9 +26,7 @@ export default {
     },
     computed: {
         rentersCount() {
-            return this.objects.reduce(function (acc, object) {
-                return acc + (object.deals.length ? object.deals.length : 0);
-            }, 0);
+            return this.objects.reduce((acc, object) => acc + object.deals?.length, 0);
         }
     }
 };
