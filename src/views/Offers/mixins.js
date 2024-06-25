@@ -119,10 +119,11 @@ export default {
                     if (!value) return null;
                     return YesNo[value];
                 },
-				ad_avito: value => {
-					if (!value) return null;
-					return YesNo[value];
-				}
+                ad_avito: value => {
+                    if (!value) return null;
+                    return YesNo[value];
+                },
+                sort: value => value
             }
         };
     },
@@ -176,20 +177,21 @@ export default {
         class: 'Класс:',
         heated: 'Отопление:',
         water: 'Вода',
-        gas: "Газ",
-        steam: "Пар",
-        sewage_central: "КНС",
-        is_fake: "Показать фейковые",
-        racks: "Стеллажи",
-        railway: "Ж/Д ветка",
-        has_cranes: "Краны",
-        firstFloorOnly: "Только 1 этаж",
+        gas: 'Газ',
+        steam: 'Пар',
+        sewage_central: 'КНС',
+        is_fake: 'Показать фейковые',
+        racks: 'Стеллажи',
+        railway: 'Ж/Д ветка',
+        has_cranes: 'Краны',
+        firstFloorOnly: 'Только 1 этаж',
         ad_realtor: 'Realtor.ru:',
         ad_cian: 'Циан:',
         ad_yandex: 'Яндекс:',
         ad_free: 'Бесплатно:',
         ad_avito: 'Авито:',
         favorites: 'Избранные',
+        sort: 'Сортировка:'
     },
     methods: {
         ...mapActions(['FETCH_CONSULTANT_LIST', 'FETCH_REGION_LIST']),

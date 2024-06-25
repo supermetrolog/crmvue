@@ -1,7 +1,8 @@
 import { mapActions, mapGetters } from 'vuex';
-import { DirectionList, DistrictList, RegionList, TaxFormList } from '@/const/const.js';
 
 export const MixinOfferItem = {
+    emits: ['favorite-deleted'],
+    inject: ['$openMessengerChat'],
     data() {
         return {
             dropdownIsOpen: false
@@ -9,18 +10,20 @@ export const MixinOfferItem = {
     },
     props: {
         offer: {
-            type: Object
+            type: Object,
+            required: true
         }
     },
     computed: {
-        ...mapGetters(['FAVORITES_OFFERS', 'THIS_USER']),
-        directionList: () => DirectionList,
-        districtList: () => DistrictList,
-        regionList: () => RegionList,
-        taxFormList: () => TaxFormList,
+        ...mapGetters({ currentUser: 'THIS_USER' }),
         contact() {
-            let contact = this.offer.contact || this.offer.company.mainContact;
-            return contact;
+            return this.offer.contact || this.offer.company?.mainContact;
+        },
+        isFavorite() {
+            return this.$store.state.Offers.favoritesOffersCache[this.offer.original_id];
+        },
+        isPassive() {
+            return this.offer.status !== 1;
         }
     },
     methods: {
@@ -29,27 +32,29 @@ export const MixinOfferItem = {
             'DELETE_FAVORITES_OFFERS',
             'SEARCH_FAVORITES_OFFERS'
         ]),
-        getOfferUrl(offer) {
-            return this.$url.offerByObject(offer);
+        async toggleFavorite() {
+            if (!this.isFavorite) return this.ADD_FAVORITES_OFFER(this.offer);
+            await this.DELETE_FAVORITES_OFFERS(this.offer);
+            this.$emit('favorite-deleted', this.offer);
         },
-        getOldOfferUrl(offer) {
-            return this.$url.offerOldByObject(offer);
-        },
-        async clickFavoriteOffer(offer) {
-            if (!this.FAVORITES_OFFERS.find(item => item.original_id == offer.original_id)) {
-                return this.ADD_FAVORITES_OFFER(offer);
-            }
-            await this.DELETE_FAVORITES_OFFERS(offer);
-            this.$emit('deleteFavoriteOffer', offer);
-        },
-        clickViewPdf(offer) {
+        openPDF() {
             window.open(
                 this.$url.pdf(
-                    { type_id: 2, offer_id: offer.original_id, object_id: offer.object_id },
-                    this.THIS_USER.id
+                    {
+                        type_id: 2,
+                        offer_id: this.offer.original_id,
+                        object_id: this.offer.object_id
+                    },
+                    this.currentUser.id
                 ),
                 '_blank'
             );
+        },
+        openInChat() {
+            this.$openMessengerChat({
+                companyID: this.offer.company_id,
+                objectID: this.offer.object_id
+            });
         }
     }
 };
