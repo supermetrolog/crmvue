@@ -1,48 +1,50 @@
 <template>
-    <div class="messenger-chat-message" :class="classList">
-        <Avatar v-if="!self" :src="message.from.model.userProfile.avatar" size="55" />
-        <div class="messenger-chat-message__content hover-actions-trigger">
-            <MessengerChatMessageActions
-                @pin="pinMessage"
-                @edit="editMessage"
-                @pin-to-object="pinToObject"
-                :message="message"
-                :pinned="pinned"
-            />
-            <MessengerChatMessageAdditions v-if="additions" :additions="additions" />
-            <div
-                v-if="message.message"
-                class="messenger-chat-message__body"
-                v-html="message.message"
-            ></div>
-            <AnimationTransition>
-                <MessengerChatMessageAttachments
-                    v-if="message.attachments?.length"
-                    :files="message.attachments"
+    <div :id="'message-' + message.id" class="messenger-chat-message" :class="classList">
+        <div class="messenger-chat-message__wrapper">
+            <Avatar v-if="!self" :src="message.from.model.userProfile.avatar" size="55" />
+            <div class="messenger-chat-message__content hover-actions-trigger">
+                <MessengerChatMessageActions
+                    @pin="pinMessage"
+                    @edit="editMessage"
+                    @pin-to-object="pinToObject"
+                    :message="message"
+                    :pinned="pinned"
                 />
-            </AnimationTransition>
-            <div class="messenger-chat-message__footer">
-                <span>{{ username }}, </span>
-                <span v-tippy="originalDate" class="messenger-chat-message__date">
-                    {{ formattedDate }},
-                </span>
-                <span v-if="message.contacts.length">
-                    с
-                    <a
-                        @click.prevent="changeRecipient"
-                        href="#"
-                        class="messenger-chat-message__recipient"
-                    >
-                        {{ recipientUsername }}
-                    </a>
-                </span>
-                <span v-else>без звонка</span>
-                <template v-if="message.tags.length">
-                    <span>, </span>
-                    <span class="messenger-chat-message__categories">
-                        {{ categories }}
+                <MessengerChatMessageAdditions v-if="additions" :additions="additions" />
+                <div
+                    v-if="message.message"
+                    class="messenger-chat-message__body"
+                    v-html="message.message"
+                ></div>
+                <AnimationTransition>
+                    <MessengerChatMessageAttachments
+                        v-if="message.files.length"
+                        :files="message.files"
+                    />
+                </AnimationTransition>
+                <div class="messenger-chat-message__footer">
+                    <span>{{ username }}, </span>
+                    <span v-tippy="originalDate" class="messenger-chat-message__date">
+                        {{ formattedDate }},
                     </span>
-                </template>
+                    <span v-if="message.contacts.length">
+                        с
+                        <a
+                            @click.prevent="changeRecipient"
+                            href="#"
+                            class="messenger-chat-message__recipient"
+                        >
+                            {{ recipientUsername }}
+                        </a>
+                    </span>
+                    <span v-else>без звонка</span>
+                    <template v-if="message.tags.length">
+                        <span>, </span>
+                        <span class="messenger-chat-message__categories">
+                            {{ categories }}
+                        </span>
+                    </template>
+                </div>
             </div>
         </div>
     </div>
@@ -94,7 +96,8 @@ export default {
         },
         classList() {
             return {
-                'messenger-chat-message--right': this.self
+                'messenger-chat-message--right': this.self,
+                'messenger-chat-message--not-viewed': this.message.notViewed
             };
         },
         username() {
@@ -123,7 +126,7 @@ export default {
         additions() {
             return {
                 tasks: this.message.tasks,
-                alerts: this.message.alerts,
+                alerts: this.message.notifications,
                 reminders: this.message.reminders
             };
         }

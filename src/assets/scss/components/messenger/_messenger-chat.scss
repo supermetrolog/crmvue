@@ -32,7 +32,7 @@
     &__body {
         position: relative;
         padding: 20px;
-        @include mixins.flex-box($gap: 15px, $d: column);
+        @include mixins.flex-box($gap: 5px, $d: column);
         height: 100%;
         overflow-y: auto;
     }
@@ -54,6 +54,7 @@
     }
 
     &__quiz-toggle {
+        position: relative;
         padding: 5px 20px;
         background-color: #10b981;
         font-weight: 500;
@@ -63,11 +64,16 @@
         transition: opacity .5s ease;
         opacity: .7;
 
-        @include mixins.flex-box($d: column);
-
+        @include mixins.flex-box($j: center, $a: center);
         &:hover {
             opacity: 1;
         }
+    }
+    
+    &__scroll-button {
+        position: absolute;
+        right: 20px;
+        bottom: 20px;
     }
 }
 
@@ -551,5 +557,5 @@
 }
 
 .messenger-chat-form-recipient-dropdown {
-    z-index: 4004!important;
+    z-index: 4000!important;
 }

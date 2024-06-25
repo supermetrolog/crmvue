@@ -4,7 +4,7 @@
             v-for="(file, key) in files"
             :key="key"
             :file="file"
-            reed-only
+            read-only
             class="messenger-chat-message__attachment"
         />
     </div>

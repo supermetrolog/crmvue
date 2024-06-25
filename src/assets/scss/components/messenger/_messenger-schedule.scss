@@ -3,50 +3,15 @@
 .schedule {
     max-width: max-content;
 
-    .dp__calendar {
-        --dp-highlight-color: rgba(16, 185, 129, 0.3);
-
-        &_row {
-            gap: 5px;
-        }
-
-        &_item {
-            .dp__cell_inner:not(.dp__today) {
-                @include mixins.light-border;
-            }
-        }
-    }
-
     .dp__action_row {
         display: none;
     }
-
-    .dp__month_year_col_nav {
-        @include mixins.flex-box($j: center);
-        @include mixins.hover {
-            background: var(--dp-hover-color)
-        }
-
-        border-radius: 4px;
-    }
-}
-
-.date-picker-tooltip {
-    background-color: red;
-}
-
-.dp__tooltip_content {
-    @include mixins.flex-box($d: column, $gap: 5px);
 }
 
 .schedule-sidebar {
     @include mixins.flex-box($d: column);
     width: 150px;
     height: 100%;
-
-    &__body {
-
-    }
 
     &__footer {
         margin-top: auto;

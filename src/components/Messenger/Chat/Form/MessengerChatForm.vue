@@ -130,7 +130,6 @@ export default {
             if (attachmentResponse?.fileList?.length) {
                 this.currentFiles.files.push(...attachmentResponse.files);
                 this.currentFiles.fileList.push(...attachmentResponse.fileList);
-                console.log(this.currentFiles.fileList);
             }
         },
         deleteFile(id) {

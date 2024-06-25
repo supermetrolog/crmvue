@@ -11,7 +11,14 @@
                 <UserPicker v-else v-model="form.user_id" single :users="consultants" />
             </template>
             <template #2>
-                <Textarea v-model="form.message" label="Описание" />
+                <Input
+                    v-model="form.description.subject"
+                    class="mb-2"
+                    type="text"
+                    label="Заголовок"
+                    required
+                />
+                <Textarea v-model="form.description.message" label="Описание" required />
             </template>
         </Stepper>
     </Modal>
@@ -25,10 +32,12 @@ import Stepper from '@/components/common/Stepper.vue';
 import Textarea from '@/components/common/Forms/Textarea.vue';
 import useValidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
+import Input from '@/components/common/Forms/Input.vue';
 
 export default {
     name: 'FormModalMessageAlert',
     components: {
+        Input,
         Textarea,
         Stepper,
         UserPicker,
@@ -42,8 +51,11 @@ export default {
             loading: false,
             consultants: [],
             form: {
-                message: null,
-                user_id: null
+                user_id: null,
+                description: {
+                    message: null,
+                    subject: null
+                }
             }
         };
     },
@@ -55,7 +67,7 @@ export default {
                     title: 'Выбор сотрудников'
                 },
                 {
-                    name: 'message',
+                    name: 'description',
                     title: 'Дополнительное сообщение'
                 }
             ];
@@ -68,7 +80,10 @@ export default {
                 if (this.promiseProps)
                     this.form = {
                         user_id: this.promiseProps.user_id,
-                        message: this.promiseProps.message
+                        description: {
+                            message: this.promiseProps.message,
+                            subject: this.promiseProps.subject
+                        }
                     };
             } else this.clearForm();
         }
@@ -83,14 +98,18 @@ export default {
         },
         clearForm() {
             this.form = {
-                message: null,
-                user_id: null
+                user_id: null,
+                description: {
+                    message: null,
+                    subject: null
+                }
             };
         },
         submit() {
             this.resolve({
                 user_id: this.form.user_id,
-                message: this.form.message
+                message: this.form.description.message,
+                subject: this.form.description.subject
             });
         }
     },
@@ -98,7 +117,15 @@ export default {
         return {
             form: {
                 user_id: {
-                    minLength: helpers.withMessage('Выберите сотрудника!', required)
+                    required: helpers.withMessage('Выберите сотрудника!', required)
+                },
+                description: {
+                    message: {
+                        required: helpers.withMessage('Укажите заголовок уведомления', required)
+                    },
+                    subject: {
+                        required: helpers.withMessage('Укажите небольшое описание', required)
+                    }
                 }
             }
         };
