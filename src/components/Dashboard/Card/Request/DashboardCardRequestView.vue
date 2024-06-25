@@ -251,10 +251,10 @@ import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
 import { mapGetters } from 'vuex';
 import { alg } from '@/utils/alg.js';
-import DashboardCardRequestObjectTypes from '@/components/Dashboard/Card/DashboardCardRequestObjectTypes.vue';
-import DashboardCardRequestRequirements from '@/components/Dashboard/Card/DashboardCardRequestRequirements.vue';
-import DashboardCardRequestAddress from '@/components/Dashboard/Card/DashboardCardRequestAddress.vue';
-import DashboardCardRequestStatus from '@/components/Dashboard/Card/DashboardCardRequestStatus.vue';
+import DashboardCardRequestObjectTypes from '@/components/Dashboard/Card/Request/DashboardCardRequestObjectTypes.vue';
+import DashboardCardRequestRequirements from '@/components/Dashboard/Card/Request/DashboardCardRequestRequirements.vue';
+import DashboardCardRequestAddress from '@/components/Dashboard/Card/Request/DashboardCardRequestAddress.vue';
+import DashboardCardRequestStatus from '@/components/Dashboard/Card/Request/DashboardCardRequestStatus.vue';
 
 export default {
     name: 'DashboardCardRequestView',
