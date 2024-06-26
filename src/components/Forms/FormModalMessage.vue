@@ -93,7 +93,7 @@ export default {
                 this.form = {
                     id: this.promiseProps.id,
                     message: this.promiseProps.message,
-                    files: this.promiseProps.files
+                    files: cloneObject(this.promiseProps.files)
                 };
 
                 this.currentTag = this.promiseProps.tags.length

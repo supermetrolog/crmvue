@@ -30,10 +30,14 @@
                 </template>
             </template>
             <div ref="scrollEnd" v-intersection="scrollObserver" class="messenger-chat__end"></div>
-            <MessengerChatScrollButton @scroll="scrollToEnd" :visible="scrollButtonIsVisible" />
         </div>
-        <div @click="$toggleQuiz" class="messenger-chat__quiz-toggle">
-            <div>
+        <MessengerChatScrollButton
+            @scroll="scrollToEnd"
+            :style="{ top: scrollButtonTop }"
+            :visible="scrollButtonIsVisible"
+        />
+        <div ref="quiz" class="messenger-chat__quiz-toggle">
+            <div @click="$toggleQuiz">
                 <i class="fa-solid fa-chevron-up"></i>
                 <p>Открыть новый опросник с клиентом</p>
             </div>
@@ -56,6 +60,8 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { debounce } from '@/utils/debounce.js';
 import api from '@/api/api.js';
 import MessengerChatScrollButton from '@/components/Messenger/Chat/MessengerChatScrollButton.vue';
+import { useElementBounding } from '@vueuse/core';
+import { computed, ref } from 'vue';
 
 export default {
     name: 'MessengerChatContent',
@@ -72,6 +78,13 @@ export default {
         MessengerChatHeader
     },
     inject: ['$toggleQuiz'],
+    setup() {
+        const quiz = ref(null);
+        const { top } = useElementBounding(quiz);
+        const scrollButtonTop = computed(() => top.value - 45 + 'px');
+
+        return { quiz, scrollButtonTop };
+    },
     data() {
         return {
             scrolled: false,
