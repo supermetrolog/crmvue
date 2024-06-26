@@ -1,6 +1,6 @@
 <template>
     <div class="offer-table-mobile-view row">
-        <Loader v-if="loader" class="center small" />
+        <Loader v-if="loader" />
         <OfferMobileItem
             v-for="offer in offers"
             :key="offer.id"

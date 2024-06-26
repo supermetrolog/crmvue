@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-12">
             <Form @submit="onSubmit">
-                <Loader v-if="isLoading" class="center" />
+                <Loader v-if="isLoading" />
                 <FormGroup class="mb-1">
                     <MultiSelect
                         ref="contactSelect"

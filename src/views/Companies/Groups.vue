@@ -11,7 +11,7 @@
             <div class="col-12">
                 <Button @click="clickOpenCompanyGroupsForm">Создать группу компаний</Button>
                 <div class="box mt-2">
-                    <Loader v-if="loader" class="center" />
+                    <Loader v-if="loader" />
                     <CompanyGroupsTable
                         v-if="COMPANY_GROUPS.length"
                         @clickEdit="clickOpenCompanyGroupsFormForUpdate"

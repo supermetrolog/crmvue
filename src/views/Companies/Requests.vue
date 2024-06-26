@@ -17,8 +17,12 @@
             </div>
             <div class="row">
                 <div class="col-12 offers-page__table">
-                    <Loader v-if="loader && !REQUESTS.length" class="center" />
-                    <CompanyRequestTable v-if="!isMobile && REQUESTS.length" :loader="loader" :requests="REQUESTS" />
+                    <Loader v-if="loader && !REQUESTS.length" />
+                    <CompanyRequestTable
+                        v-if="!isMobile && REQUESTS.length"
+                        :loader="loader"
+                        :requests="REQUESTS"
+                    />
                     <CompanyRequestTableMobile
                         v-if="isMobile && REQUESTS.length"
                         :loader="loader"

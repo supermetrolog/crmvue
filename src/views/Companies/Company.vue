@@ -54,7 +54,7 @@
             </div>
         </DashboardChip>
         <div class="company-page__wrapper">
-            <Loader v-if="companyIsLoading"></Loader>
+            <Loader v-if="companyIsLoading" />
             <CompanyBox
                 v-if="!companyIsLoading"
                 @edit-company="companyFormIsVisible = true"

@@ -9,7 +9,7 @@
                     <a @click.prevent="viewedAll" href="#"> прочитать все </a>
                 </div>
             </div>
-            <Loader v-if="loader" class="center" />
+            <Loader v-if="loader" />
             <div v-if="!loader" class="row no-gutters">
                 <div class="col-12">
                     <div class="comments-item">

@@ -55,7 +55,7 @@
                             :loader="loader"
                         />
                         <template v-else>
-                            <Loader v-if="loader" class="center" />
+                            <Loader v-if="loader" />
                             <EmptyData v-else>Ничего не найдено</EmptyData>
                         </template>
                     </AnimationTransition>

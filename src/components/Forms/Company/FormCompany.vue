@@ -8,7 +8,7 @@
     >
         <Form @submit="onSubmit">
             <Tabs :options="{ useUrlFragment: false }">
-                <Loader v-if="loader" class="center" />
+                <Loader v-if="loader" />
                 <Tab name="Основное">
                     <div class="row mb-2">
                         <CheckboxChip

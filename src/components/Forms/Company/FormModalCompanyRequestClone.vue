@@ -1,7 +1,7 @@
 <template>
     <Modal @close="$emit('close')" width="750" title="Клонирование запроса">
         <Form @submit="onSubmit">
-            <Loader v-if="loader" class="center" />
+            <Loader v-if="loader" />
             <FormGroup>
                 <MultiSelect
                     v-model="form.consultant_id"

@@ -5,7 +5,7 @@
         width="600"
     >
         <Form @submit="onSubmit">
-            <Loader v-if="loader" class="center" />
+            <Loader v-if="loader" />
             <FormGroup>
                 <Input
                     v-model="form.nameRu"

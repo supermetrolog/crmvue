@@ -1,6 +1,6 @@
 <template>
     <Form @submit="onSubmit">
-        <Loader v-if="loader" class="center" />
+        <Loader v-if="loader" />
         <FormGroup>
             <MultiSelect
                 v-model="form.passive_why"

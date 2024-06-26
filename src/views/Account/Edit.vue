@@ -1,9 +1,9 @@
 <template>
     <Form @submit="onSubmit" class="account-edit">
-        <Loader v-if="isLoading" />
         <div class="row">
             <div class="col-lg-8">
                 <div class="account-section">
+                    <Loader v-if="isLoading" />
                     <p class="account-section__title">Редактирование профиля</p>
                     <FormGroup>
                         <Input
@@ -51,8 +51,6 @@
                         />
                         <Input
                             v-model="form.password"
-                            :v="v$.form.password"
-                            required
                             label="Пароль"
                             class="col-12 col-sm-6 col-lg-12 col-xl-4"
                             type="password"
@@ -168,12 +166,6 @@ export default {
                 },
                 username: {
                     required: helpers.withMessage('Введите юзернейм', required)
-                },
-                password: {
-                    required: helpers.withMessage(
-                        'Введите пароль для подтверждения личности',
-                        required
-                    )
                 },
                 email: {
                     email: helpers.withMessage('Заполните email правильно', validateEmail)

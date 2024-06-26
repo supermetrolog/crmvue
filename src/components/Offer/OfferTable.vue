@@ -15,7 +15,7 @@
             </Tr>
         </template>
         <template #tbody>
-            <Loader v-if="loader" class="center" />
+            <Loader v-if="loader" />
             <OfferTableItem
                 v-for="offer in offers"
                 :key="offer.id"

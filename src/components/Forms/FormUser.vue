@@ -5,7 +5,7 @@
         class="modal-form-user"
     >
         <Form @submit="onSubmit">
-            <Loader v-if="loader" class="center" />
+            <Loader v-if="loader" />
             <div class="row">
                 <Input
                     v-model="form.username"

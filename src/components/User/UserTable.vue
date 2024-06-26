@@ -14,7 +14,7 @@
                     <h5 class="m-0 text-success_alt">Username: {{ userForDelete.username }}</h5>
                 </div>
                 <div class="col-12 mt-4 text-center">
-                    <Loader v-if="deleteLoader" class="center small" />
+                    <Loader v-if="deleteLoader" />
                     <div class="list justify-content-center">
                         <Button @click="deleteUser(userForDelete)" danger :disabled="deleteLoader">
                             Удалить

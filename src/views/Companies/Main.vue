@@ -33,7 +33,7 @@
             </div>
             <div class="row">
                 <div class="col-12 offers-page__table">
-                    <Loader v-if="loader && !COMPANIES.length" class="center" />
+                    <Loader v-if="loader && !COMPANIES.length" />
                     <CompanyTable
                         v-if="COMPANIES.length && !isMobile"
                         :companies="COMPANIES"

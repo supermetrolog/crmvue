@@ -2,10 +2,10 @@
     <Modal
         @close="clickCloseModal"
         :title="!formdata ? 'Создание запроса' : 'Изменение запроса'"
-        class="modal-form-company-request"
+        width="1500"
     >
         <Form @submit="onSubmit">
-            <Loader v-if="loader" class="center" />
+            <Loader v-if="loader" />
             <FormGroup class="mb-2">
                 <Input v-model="form.name" label="Название" class="col-12" />
             </FormGroup>
