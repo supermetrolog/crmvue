@@ -17,12 +17,16 @@ export default {
         value: {
             type: [String, Number],
             default: null
+        },
+        message: {
+            type: String,
+            default: 'Значение скопировано'
         }
     },
     methods: {
         async copy() {
             await navigator.clipboard.writeText(this.value);
-            this.$toast('Значение скопировано');
+            this.$toast(this.message);
         }
     }
 };

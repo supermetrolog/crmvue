@@ -41,6 +41,7 @@
             v-if="contact.emails.length"
             :value="mainMail"
             class="company-box-contact__email"
+            message="Электронная почта скопирована"
         >
             <span>{{ mainMail }}</span>
         </CopyField>
