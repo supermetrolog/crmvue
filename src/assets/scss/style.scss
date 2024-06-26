@@ -677,7 +677,6 @@ tr.DropdownSwitcherRow {
 
         h1 {
             text-transform: uppercase;
-            // color: variables.$color_light;
             color: variables.$color_danger;
 
             span {
@@ -692,10 +691,10 @@ tr.DropdownSwitcherRow {
         }
 
         img {
-            box-shadow: 0 0 50px rgba(0, 0, 0, 0.9);
             display: block;
             margin: 0 auto;
             min-height: 270px;
+            max-height: 100%;
             border-radius: 3px;
         }
     }

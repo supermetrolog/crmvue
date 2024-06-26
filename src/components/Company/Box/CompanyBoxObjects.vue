@@ -4,8 +4,14 @@
             <span>ОБЪЕКТЫ ({{ objects.length }}), АРЕНДАТОРЫ ({{ rentersCount }})</span>
         </template>
         <template #content>
-            <CompanyBoxObjectsList :objects="objects" />
-            <NoData v-if="!objects.length" />
+            <CompanyBoxObjectsList
+                v-if="objects.length"
+                @load="$emit('load', $event)"
+                :objects="objects"
+            />
+            <div v-else class="company-box-empty">
+                <EmptyData class="company-box-empty__data"> Нет данных </EmptyData>
+            </div>
         </template>
     </CompanyBoxLayout>
 </template>
@@ -14,10 +20,12 @@
 import CompanyBoxObjectsList from './CompanyBoxObjectsList.vue';
 import CompanyBoxLayout from '@/components/Company/Box/CompanyBoxLayout.vue';
 import NoData from '@/components/common/NoData.vue';
+import EmptyData from '@/components/common/EmptyData.vue';
 
 export default {
     name: 'CompanyBoxObjects',
-    components: { NoData, CompanyBoxLayout, CompanyBoxObjectsList },
+    components: { EmptyData, NoData, CompanyBoxLayout, CompanyBoxObjectsList },
+    emits: ['load'],
     props: {
         objects: {
             type: Array,

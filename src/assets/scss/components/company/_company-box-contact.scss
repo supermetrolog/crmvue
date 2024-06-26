@@ -40,8 +40,9 @@
 
     &__name {
         cursor: pointer;
-        @include mixins.transition();
+        @include mixins.text-overflow(2);
         z-index: 1;
+        text-align: center;
     }
 
     &__position {

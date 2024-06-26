@@ -13,7 +13,7 @@
                     :pagination="pagination"
                     class="col-12"
                 />
-                <Loader v-if="loader" class="center" />
+                <Loader v-if="loader" />
                 <template v-for="object in objects" :key="object.id">
                     <CompanyObjectItemNoOffer
                         v-if="objects.noOffer"

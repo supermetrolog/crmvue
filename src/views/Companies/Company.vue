@@ -8,7 +8,8 @@
             <CompanyContactModal
                 v-if="contactModalIsVisible"
                 @close="contactModalIsVisible = false"
-                @start-editing="updateContact"
+                @start-editing="showContactForm"
+                @delete-contact="deleteContact"
                 :contact="contact"
             />
         </teleport>
@@ -28,7 +29,7 @@
         />
         <FormCompanyContact
             v-if="contactFormIsVisible"
-            @closeCompanyForm="closeContactForm"
+            @close="closeContactForm"
             @created="getCompanyContacts"
             @updated="getCompanyContacts"
             :company_id="COMPANY.id"
@@ -66,11 +67,12 @@
             <div class="company-page__row">
                 <CompanyBoxObjects
                     v-if="!objectsIsLoading"
+                    @load="loadObjects"
                     :objects="COMPANY_OBJECTS"
-                    class="company-page__column"
+                    class="company-page__column mb-2"
                 />
                 <CompanyBoxRequests
-                    v-if="!requestsIsLoading"
+                    v-if="!requestsIsLoading && !companyIsLoading"
                     @update-deal="updateDeal"
                     @deal-deleted="getCompany(false)"
                     @create-request="requestFormIsVisible = true"
@@ -79,7 +81,7 @@
                     @request-disabled="getCompanyRequests"
                     :requests="COMPANY_REQUESTS"
                     :deals="COMPANY.dealsRequestEmpty"
-                    class="company-page__column"
+                    class="company-page__column mb-2"
                 />
                 <CompanyBoxServices v-if="!companyIsLoading" class="company-page__column" />
             </div>
@@ -97,12 +99,12 @@ import FormCompanyContact from '@/components/Forms/Company/FormCompanyContact.vu
 import FormCompanyDeal from '@/components/Forms/Company/FormCompanyDeal.vue';
 import CompanyBoxObjects from '@/components/Company/Box/CompanyBoxObjects.vue';
 import CompanyContactModal from '@/components/Company/Contact/CompanyContactModal.vue';
-import CompanyBoxLogs from '@/components/Company/Box/CompanyBoxLogs.vue';
 import CompanyBox from '@/components/Company/Box/CompanyBox.vue';
 import FormCompanyRequest from '@/components/Forms/Company/FormCompanyRequest.vue';
 import Timeline from '@/components/Timeline/Timeline.vue';
 import CompanyBoxServices from '@/components/Company/Box/CompanyBoxServices.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import { useConfirm } from '@/composables/useConfirm.js';
 
 export default {
     name: 'Company',
@@ -112,7 +114,6 @@ export default {
         Timeline,
         FormCompanyRequest,
         CompanyBox,
-        CompanyBoxLogs,
         CompanyBoxRequests,
         CompanyContactModal,
         CompanyBoxObjects,
@@ -127,6 +128,10 @@ export default {
             editContact: contact => this.updateContact(contact),
             createContactComment: data => this.createContactComment(data)
         };
+    },
+    setup() {
+        const { confirm } = useConfirm();
+        return { confirm };
     },
     data() {
         return {
@@ -171,9 +176,10 @@ export default {
             'FETCH_COMPANY_CONTACTS',
             'FETCH_COMPANY_OBJECTS',
             'ADD_TO_TRANSITION_LIST',
-            'CREATE_CONTACT_COMMENT'
+            'CREATE_CONTACT_COMMENT',
+            'DELETE_CONTACT'
         ]),
-        async getCompany(withLoader = true) {
+        async getCompany(withLoader = false) {
             this.companyIsLoading = withLoader;
             await this.FETCH_COMPANY(this.$route.params.id);
             this.companyIsLoading = false;
@@ -185,28 +191,32 @@ export default {
 
             this.ADD_TO_TRANSITION_LIST(this.COMPANY);
         },
-        async getCompanyRequests() {
-            this.requestsIsLoading = true;
+        async getCompanyRequests(withLoader = false) {
+            this.requestsIsLoading = withLoader;
             await this.FETCH_COMPANY_REQUESTS(this.$route.params.id);
             this.requestsIsLoading = false;
         },
-        async getCompanyContacts(withLoader = true) {
+        async getCompanyContacts(withLoader = false) {
             this.contactsIsLoading = withLoader;
             await this.FETCH_COMPANY_CONTACTS(this.$route.params.id);
             this.contactsIsLoading = false;
         },
-        async getCompanyObjects(withLoader = true) {
+        async getCompanyObjects(withLoader = false) {
             this.objectsIsLoading = withLoader;
             await this.FETCH_COMPANY_OBJECTS(this.$route.params.id);
             this.objectsIsLoading = false;
         },
+        async loadObjects($state) {
+            const isLastPage = await this.$store.dispatch(
+                'loadCompanyObjects',
+                this.$route.params.id
+            );
+            if (isLastPage) $state.complete();
+            else $state.loaded();
+        },
         openContact(contact) {
             this.contactModalIsVisible = true;
             this.contact = contact;
-        },
-        updateContact(contact) {
-            this.contact = contact;
-            this.showContactForm();
         },
         createContact() {
             this.contact = null;
@@ -229,7 +239,7 @@ export default {
             this.deal = null;
         },
         onDealUpdated() {
-            this.getCompany(false);
+            this.getCompany();
         },
         closeRequestForm() {
             this.requestFormIsVisible = false;
@@ -245,7 +255,7 @@ export default {
         },
         onCompanyUpdated() {
             this.getCompany();
-            this.getCompanyContacts(false);
+            this.getCompanyContacts();
         },
         closeTimeline() {
             this.timelineIsVisible = false;
@@ -253,13 +263,20 @@ export default {
         },
         async createContactComment(data) {
             await this.CREATE_CONTACT_COMMENT(data);
+        },
+        async deleteContact() {
+            const confirmed = this.confirm('Вы уверены, что хотите бевзозвратно удалить контакт?');
+            if (confirmed) await this.DELETE_CONTACT(this.contact);
         }
     },
     created() {
-        this.getCompany();
-        this.getCompanyContacts();
-        this.getCompanyObjects();
-        this.getCompanyRequests();
+        this.getCompany(true);
+        this.getCompanyContacts(true);
+        this.getCompanyObjects(true);
+        this.getCompanyRequests(true);
+    },
+    unmounted() {
+        this.$store.commit('clearCompanyObjectsStore');
     }
 };
 </script>

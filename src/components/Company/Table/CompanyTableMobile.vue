@@ -1,6 +1,6 @@
 <template>
     <ul class="company-table-view">
-        <Loader v-if="loader" class="center" />
+        <Loader v-if="loader" />
         <li v-for="company in companies" :key="company.id" class="CompanyViewItem p-2 mb-3">
             <div class="text-center p-0"></div>
             <div class="name" sort="nameRu">
@@ -40,17 +40,30 @@
                 </div>
                 <div class="text-center contacts col-6">
                     <template v-if="company.mainContact">
-                        <p v-if="!company.mainContact.phones.length && !company.mainContact.emails.length">&#8212;</p>
+                        <p
+                            v-if="
+                                !company.mainContact.phones.length &&
+                                !company.mainContact.emails.length
+                            "
+                        >
+                            &#8212;
+                        </p>
                         <p class="name">{{ company.mainContact.first_and_last_name }}</p>
                         <p
                             v-if="
                                 company.mainContact &&
                                 !company.mainContact.position_unknown &&
-                                positionOptions.find(item => item.value == company.mainContact.position)
+                                positionOptions.find(
+                                    item => item.value == company.mainContact.position
+                                )
                             "
                             class="position"
                         >
-                            {{ positionOptions.find(item => item.value == company.mainContact.position).label }}
+                            {{
+                                positionOptions.find(
+                                    item => item.value == company.mainContact.position
+                                ).label
+                            }}
                         </p>
                         <a
                             v-for="email of company.mainContact.emails"
@@ -71,7 +84,8 @@
                 </div>
             </div>
             <div>
-                <span>Консультант - </span><span>{{ company.consultant.userProfile.short_name }}</span>
+                <span>Консультант - </span
+                ><span>{{ company.consultant.userProfile.short_name }}</span>
             </div>
             <div class="date" sort="created_at">
                 {{ company.created_at_format }}

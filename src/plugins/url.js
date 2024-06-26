@@ -88,6 +88,9 @@ export const $generatorURL = {
         archiver: function () {
             return import.meta.env.VITE_VUE_APP_API_URL + 'archiver/download';
         },
+        getUploadUrl: function (src) {
+            return this.objects() + src;
+        },
         getImage: function (imageName) {
             return this.imagesUrl() + imageName;
         },

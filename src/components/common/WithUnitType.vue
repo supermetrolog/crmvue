@@ -34,6 +34,7 @@ import UnitTypeRubPerPiecePerDay from '@/components/common/UnitTypes/UnitTypeRub
 import UnitTypeRubPerSquareMetersPerDay from '@/components/common/UnitTypes/UnitTypeRubPerSquareMetersPerDay.vue';
 import UnitTypeRubPerCubicMetersPerDay from '@/components/common/UnitTypes/UnitTypeRubPerCubicMetersPerDay.vue';
 import UnitTypeYear from '@/components/common/UnitTypes/UnitTypeYear.vue';
+import UnitTypeRubPerPalletPlace from '@/components/common/UnitTypes/UnitTypeRubPerPalletPlace.vue';
 
 export default {
     name: 'WithUnitType',
@@ -64,7 +65,8 @@ export default {
         UnitTypeRubPerPiecePerDay,
         UnitTypeRubPerSquareMetersPerDay,
         UnitTypeRubPerCubicMetersPerDay,
-        UnitTypeYear
+        UnitTypeYear,
+        UnitTypeRubPerPalletPlace
     },
     props: {
         unitType: {

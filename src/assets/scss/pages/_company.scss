@@ -43,10 +43,7 @@
         &:nth-child(2) {
             grid-area: type;
             border-bottom: $request_thin_border;
-
-            &:hover .company-item-request__actions {
-                display: flex;
-            }
+            @include mixins.flex-box($a: center, $j: space-between);
         }
     }
 
@@ -76,47 +73,7 @@
     }
 
     &__actions {
-        display: none;
-        gap: 3px;
-        position: absolute;
-        top: -7px;
-        right: 2px;
-
-        &:hover {
-            display: flex;
-        }
-
-        .fas {
-            border-radius: 100%;
-            border: black 0.5px solid;
-            font-size: 8px;
-            padding: 4px;
-            width: 15px;
-            height: 15px;
-            @include mixins.flex-box($a: center, $j: center);
-            cursor: pointer;
-            opacity: 0.4;
-
-            &:hover {
-                opacity: 1;
-            }
-
-            &.fa-pen {
-                background-color: variables.$color_info;
-            }
-
-            &.fa-clone {
-                background-color: variables.$color_success_dark;
-            }
-
-            &.fa-times {
-                background-color: variables.$color_danger;
-            }
-
-            &.fa-undo {
-                background-color: variables.$color_warning;
-            }
-        }
+       @include mixins.flex-box($gap: 5px);
     }
 
     .deal-item {
@@ -143,7 +100,11 @@
 }
 
 .company-item-requests {
-    @include mixins.flex-box($a: center, $j: center, $gap: 10px, $d: column);
+    @include mixins.flex-box($gap: 10px, $d: column);
+    overflow-y: auto;
+    padding: 0 5px;
+    margin: 0 -5px;
+    max-height: calc(100% - 10px);
 }
 
 .company-request-item-alt {
@@ -166,6 +127,13 @@
     &__column {
         @include mixins.media('min', 'lg') {
             flex-basis: 33%;
+        }
+
+        max-height: 750px;
+
+        .company-box-layout__content {
+            max-height: 700px;
+            height: 100%;
         }
     }
 }
@@ -419,257 +387,5 @@
         font-size: 10px;
         color: variables.$color_info;
         cursor: pointer;
-    }
-}
-
-
-
-.CompanyBoxObjectsListItem {
-    width: 100%;
-    padding: 2px;
-    margin-bottom: 10px;
-    border: 1px variables.$color_light_grey solid;
-    background-color: lighten(variables.$color_light, 3);
-    position: relative;
-
-    &-wrapper {
-        display: flex;
-    }
-
-    &-image {
-        width: 30%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        &-container {
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            a {
-                width: 100%;
-
-                img {
-                    height: 100px;
-                    width: 100%;
-                    object-fit: cover;
-                    object-position: center;
-                }
-            }
-        }
-    }
-
-    &-info {
-        font-size: 13px;
-        padding: 5px;
-        width: 68%;
-        margin-left: 2%;
-
-        &-title {
-            font-weight: bolder;
-            font-size: 16px;
-        }
-
-        &-address {
-        }
-
-        &-direction {
-        }
-
-        &-mkad {
-        }
-    }
-
-    &-dropdown {
-        hr {
-            margin: 4px 0;
-        }
-
-        &-switchers {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 5px;
-        }
-
-        &-offers {
-            max-height: 0;
-            padding: 0;
-            overflow: hidden;
-            transition: all 0.3s cubic-bezier(0, 1, 0, 1) -0.1s;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-
-            &.open {
-                max-height: 9999px;
-                transition-timing-function: cubic-bezier(0.5, 0, 1, 0);
-                transition-delay: 0s;
-            }
-        }
-    }
-}
-
-.CompanyBoxObjectsOffer {
-    border: 1px solid variables.$color_success;
-    font-size: 14px;
-    padding: 5px;
-
-    &.passive {
-        filter: grayscale(1);
-    }
-
-    &-wrapper {
-        text-decoration: none;
-        color: #2d2f34;
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 10px;
-        align-items: center;
-    }
-
-    &-visual_id {
-        float: left;
-        font-weight: bold;
-        color: variables.$color_success_alt;
-    }
-
-    &-block {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 10px;
-        flex-wrap: nowrap;
-        white-space: nowrap;
-    }
-}
-
-.CompanyBoxObjectsRenter {
-    position: relative;
-    padding: 5px;
-    border: 1px solid variables.$color_grey;
-    display: flex;
-    gap: 5px;
-
-    &:first-child {
-        margin-top: 20px;
-    }
-
-    &:last-child {
-        margin-bottom: 20px;
-    }
-
-    &-success {
-        background-color: variables.$color_success_dark;
-    }
-
-    &-danger {
-        background-color: lighten(variables.$color_danger_dark, 6);
-    }
-
-    &-logo {
-        $renter_logo_size: 60px;
-        min-height: $renter_logo_size;
-        max-height: $renter_logo_size;
-        min-width: $renter_logo_size;
-        max-width: $renter_logo_size;
-        border-radius: 100%;
-        background-color: variables.$color_light;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 10px;
-        overflow: hidden;
-
-        img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-        }
-    }
-
-    &-info {
-        padding: 5px;
-        font-size: 12px;
-        width: 100%;
-
-        &-name {
-            font-weight: bold;
-        }
-
-        &-list {
-            list-style: none;
-            display: table;
-            width: 90%;
-
-            li {
-                display: table-row;
-
-                span {
-                    display: table-cell;
-                    width: 65%;
-                    float: left;
-
-                    &:first-child {
-                        font-weight: 300;
-                        width: 30%;
-                        margin-right: 5%;
-                    }
-                }
-            }
-        }
-    }
-
-    &-button {
-        position: absolute;
-        right: 6px;
-        bottom: 3px;
-    }
-
-    .fa-bolt {
-        position: absolute;
-        right: 5px;
-        color: variables.$color_light;
-    }
-}
-
-// COMPANY VIEW MEDIA QUERIES
-
-@media screen and (max-width: variables.$phone_size) {
-    .CompanyBoxMain {
-        &-content {
-            flex-direction: column;
-        }
-
-        &-contacts {
-            // display: flex;
-            // flex-direction: column;
-        }
-
-        &-left {
-            width: 100%;
-            margin-bottom: 20px;
-
-            &-list {
-                width: 100%;
-            }
-        }
-
-        &-right {
-            width: 100%;
-        }
-
-        .CompanyBoxContactList {
-            flex-direction: column;
-            gap: 5px;
-
-            &Item {
-                margin: 0;
-            }
-        }
     }
 }

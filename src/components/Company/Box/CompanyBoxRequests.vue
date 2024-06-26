@@ -12,6 +12,7 @@
         </template>
         <template #content>
             <CompanyBoxRequestsList
+                v-if="requests.length"
                 @update="$emit('update-request', $event)"
                 @clone="clonedRequestItem = $event"
                 @disable="disableRequest"
@@ -23,7 +24,9 @@
                 @deleted="$emit('deal-deleted')"
                 :deals="deals"
             />
-            <NoData v-if="!requests.length" />
+            <div v-if="!requests.length && !deals.length" class="company-box-empty">
+                <EmptyData class="company-box-empty__data">Нет данных</EmptyData>
+            </div>
             <FormModalCompanyRequestDisable
                 v-if="disabledRequestItem"
                 @close="disabledRequestItem = null"
@@ -43,24 +46,24 @@
 <script>
 import { mapActions } from 'vuex';
 import api from '@/api/api';
-import NoData from '@/components/common/NoData.vue';
 import CompanyBoxRequestsList from '@/components/Company/Box/CompanyBoxRequestsList.vue';
 import DealList from '@/components/Deal/DealList.vue';
 import CompanyBoxLayout from '@/components/Company/Box/CompanyBoxLayout.vue';
 import FormModalCompanyRequestClone from '@/components/Forms/Company/FormModalCompanyRequestClone.vue';
 import FormModalCompanyRequestDisable from '@/components/Forms/Company/FormModalCompanyRequestDisable.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
+import EmptyData from '@/components/common/EmptyData.vue';
 
 export default {
     name: 'CompanyBoxRequests',
     components: {
+        EmptyData,
         HoverActionsButton,
         FormModalCompanyRequestDisable,
         FormModalCompanyRequestClone,
         CompanyBoxLayout,
         DealList,
-        CompanyBoxRequestsList,
-        NoData
+        CompanyBoxRequestsList
     },
     emits: [
         'update-deal',

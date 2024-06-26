@@ -6,8 +6,9 @@
                 {{ $formatter.numberOrRangeNew(request.minArea, request.maxArea) }}
             </WithUnitType>
         </div>
-        <div class="company-item-request__header hover-actions-trigger">
-            <HoverActions v-if="!readOnly" class="small">
+        <div class="company-item-request__header">
+            <p>{{ status }}</p>
+            <div v-if="!readOnly" class="company-item-request__actions">
                 <HoverActionsButton
                     v-if="!isDone"
                     @click="$emit('update')"
@@ -28,8 +29,7 @@
                     <i v-if="isDisabled" class="fa-solid fa-undo" />
                     <i v-else class="fa-solid fa-times" />
                 </HoverActionsButton>
-            </HoverActions>
-            <p>{{ status }}</p>
+            </div>
         </div>
         <div class="company-item-request__location">
             <div class="company-item-request__subject">
@@ -197,7 +197,6 @@ import { mapGetters } from 'vuex';
 import DealListItem from '@/components/Deal/DealListItem.vue';
 import Progress from '@/components/common/Progress.vue';
 import Button from '@/components/common/Button.vue';
-import HoverActions from '@/components/common/HoverActions/HoverActions.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
@@ -216,7 +215,6 @@ export default {
         CompanyBoxRequestsListItemParameter,
         WithUnitType,
         HoverActionsButton,
-        HoverActions,
         Button,
         DealListItem,
         Progress
