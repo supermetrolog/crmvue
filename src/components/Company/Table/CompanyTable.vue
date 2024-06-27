@@ -19,7 +19,7 @@
                 :key="company.id"
                 :company="company"
                 :odd="!(idx % 2)"
-            ></CompanyTableItem>
+            />
         </template>
     </Table>
 </template>

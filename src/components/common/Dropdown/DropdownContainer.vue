@@ -1,5 +1,5 @@
 <template>
-    <div class="DropdownContainer" :class="{ open: modelValue }">
+    <div class="dropdown-container" :class="{ open: modelValue }">
         <slot></slot>
     </div>
 </template>

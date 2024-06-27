@@ -1,5 +1,5 @@
 <template>
-    <div class="company-contact">
+    <div class="company-contact" :class="{ inactive: inactive }">
         <p class="company-contact__name">{{ contact.full_name || 'Без имени' }}</p>
         <p v-if="contact.position" class="company-contact__position">{{ position }}</p>
         <p v-else class="error-message">Должность не указана</p>
@@ -24,23 +24,15 @@
         </div>
     </div>
 </template>
-<script>
+<script setup>
+import { computed } from 'vue';
 import { entityOptions } from '@/const/options/options.js';
 import PhoneNumber from '@/components/common/PhoneNumber.vue';
 
-export default {
-    name: 'CompanyContact',
-    components: { PhoneNumber },
-    props: {
-        contact: {
-            type: Object,
-            required: true
-        }
-    },
-    computed: {
-        position() {
-            return entityOptions.contact.position[this.contact.position];
-        }
-    }
-};
+const props = defineProps({
+    contact: { type: Object, required: true },
+    inactive: { type: Boolean, default: false }
+});
+
+const position = computed(() => entityOptions.contact.position[props.contact.position]);
 </script>

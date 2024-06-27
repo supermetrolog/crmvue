@@ -34,13 +34,6 @@
                                 />
                             </div>
                         </DashboardChip>
-                        <DashboardChip
-                            v-for="(category, key) in categories"
-                            :key="key"
-                            class="dashboard-bg-light"
-                        >
-                            {{ category }}
-                        </DashboardChip>
                         <DashboardChip v-if="company.rating" class="dashboard-bg-light">
                             <Rating
                                 class="company-detail-info__rating"
@@ -48,6 +41,15 @@
                                 :max="3"
                                 color="yellow"
                             />
+                        </DashboardChip>
+                    </div>
+                    <div v-if="company.categories?.length" class="d-flex gap-2 mt-2">
+                        <DashboardChip
+                            v-for="(category, key) in categories"
+                            :key="key"
+                            class="dashboard-bg-light"
+                        >
+                            {{ category }}
                         </DashboardChip>
                     </div>
                 </div>
@@ -137,15 +139,25 @@
                     {{ company.description || '&#8212;' }}
                 </CompanyDetailRow>
                 <CompanyDetailRow label="Документы">
-                    <div v-if="company.files.length" class="row">
-                        <File
-                            v-for="(file, index) in company.files"
-                            :key="index"
-                            :file="file"
-                            reed-only
-                            class="col-2"
-                        />
-                    </div>
+                    <AccordionSimple v-if="company.files.length" without-render>
+                        <template #title>
+                            <AccordionSimpleTriggerButton
+                                :label="`Просмотреть документы (${company.files.length})`"
+                            />
+                        </template>
+                        <template #body>
+                            <div class="row mt-2">
+                                <File
+                                    v-for="(file, index) in company.files"
+                                    :key="index"
+                                    :file="file"
+                                    read-only
+                                    class="col-4"
+                                />
+                            </div>
+                        </template>
+                    </AccordionSimple>
+                    <span v-else>&#8212;</span>
                 </CompanyDetailRow>
                 <div class="col-12">
                     <AccordionSimple>
@@ -188,10 +200,12 @@ import AccordionSimpleTriggerIcon from '@/components/common/Accordion/AccordionS
 import Rating from '@/components/common/Rating.vue';
 import Progress from '@/components/common/Progress.vue';
 import File from '@/components/common/Forms/File.vue';
+import AccordionSimpleTriggerButton from '@/components/common/Accordion/AccordionSimpleTriggerButton.vue';
 
 export default {
     name: 'Company',
     components: {
+        AccordionSimpleTriggerButton,
         File,
         Progress,
         Rating,

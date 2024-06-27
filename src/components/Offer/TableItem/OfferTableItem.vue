@@ -104,11 +104,7 @@
                     <DashboardChip v-else class="dashboard-bg-danger text-white">
                         Пассив
                     </DashboardChip>
-                    <div class="offer-table-item-date mt-1">
-                        <p class="offer-table-item-date__name">Обновление</p>
-                        <p class="offer-table-item-date__value">{{ updatedAt.day }}</p>
-                        <p class="offer-table-item-date__time">{{ updatedAt.time }}</p>
-                    </div>
+                    <TableDateBlock class="mt-1" :date="updatedAt" label="Обновление" />
                 </div>
             </div>
         </Td>
@@ -139,16 +135,17 @@ import OfferTableItemArea from '@/components/Offer/TableItem/OfferTableItemArea.
 import CompanyContact from '@/components/Company/CompanyContact.vue';
 import CompanyElement from '@/components/Company/CompanyElement.vue';
 import Avatar from '@/components/common/Avatar.vue';
-import dayjs from 'dayjs';
 import OfferTableItemPreview from '@/components/Offer/TableItem/OfferTableItemPreview.vue';
 import OfferTableItemAddress from '@/components/Offer/TableItem/OfferTableItemAddress.vue';
 import OfferTableItemPrice from '@/components/Offer/TableItem/OfferTableItemPrice.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import Spinner from '@/components/common/Spinner.vue';
+import TableDateBlock from '@/components/common/Table/TableDateBlock.vue';
 
 export default {
     name: 'OfferTableItem',
     components: {
+        TableDateBlock,
         Spinner,
         OfferTableItemPrice,
         OfferTableItemAddress,
@@ -186,12 +183,7 @@ export default {
     },
     computed: {
         updatedAt() {
-            const date = dayjs(this.offer.last_update * 1000);
-
-            return {
-                day: date.isToday() ? 'Сегодня' : date.format('D.MM.YY'),
-                time: date.format('HH:mm')
-            };
+            return this.offer.last_update * 1000;
         }
     },
     methods: {

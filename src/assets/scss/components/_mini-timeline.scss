@@ -1,0 +1,142 @@
+@use '../utils/mixins';
+@use '../utils/variables';
+
+$basic_step_border: 0.5px solid black;
+$basic_step_color: variables.$color_grey_alt;
+$done_step_border: 2px solid variables.$color_success;
+$done_step_thin_border: 1px solid variables.$color_success;
+$warning_step_border: 2px solid variables.$color_warning;
+$warning_step_thin_border: 1px solid variables.$color_warning;
+
+.mini-timeline {
+    $step_height: 60px;
+    font-size: 12px;
+    color: #000;
+    overflow-x: clip;
+
+    &__arrow {
+        width: 100%;
+        height: 50%;
+        background-color: variables.$color_grey_alt;
+
+        &--top {
+            transform: skew(45deg, 0deg);
+            border-left: 1px solid rgba(0, 0, 0, .3);
+        }
+
+        &--bottom {
+            transform: skew(-45deg, 0deg);
+            border-left: 1px solid rgba(0, 0, 0, .3);
+        }
+    }
+
+    &__step {
+        @include mixins.flex-box($a: center, $j: center, $d: column);
+        position: relative;
+        height: $step_height;
+        opacity: .5;
+
+        &:first-child {
+            .mini-timeline__arrow {
+                border-left: none!important;
+            }
+
+            &::before {
+                content: "";
+                height: $step_height;
+                width: calc($step_height / 2);
+                background-color: variables.$color_grey_alt;
+                position: absolute;
+                z-index: 2;
+                left: 0;
+            }
+        }
+
+        &:last-child {
+            .MiniTimeline-arrow {
+                border-right: none !important;
+            }
+
+            &::after {
+                content: "";
+                height: $step_height;
+                width: calc($step_height / 2);
+                background-color: variables.$color_grey_alt;
+                position: absolute;
+                z-index: 2;
+                right: 0;
+            }
+        }
+
+        &.done {
+            opacity: 1;
+
+            .mini-timeline__arrow {
+                &--top {
+                    border-left: $done_step_thin_border;
+                    border-right: $done_step_thin_border;
+                }
+
+                &--bottom {
+                    border-left: $done_step_thin_border;
+                    border-right: $done_step_thin_border;
+                }
+            }
+
+            i {
+                color: variables.$color_success;
+                background: rgb(255, 255, 255);
+                background: radial-gradient(circle,
+                        rgba(255, 255, 255, 1) 50%,
+                        rgba(253, 29, 29, 0) 49%,
+                        rgba(252, 176, 69, 0) 52%);
+            }
+        }
+
+        &.in-process {
+            opacity: 1;
+
+            &::before {
+                background-color: variables.$color_warning_dark !important;
+            }
+
+            &::after {
+                background-color: variables.$color_warning_dark !important;
+            }
+
+            .mini-timeline__arrow {
+                &--top {
+                    background-color: variables.$color_warning_dark;
+                    border-left: $warning_step_thin_border;
+                    border-right: $warning_step_thin_border;
+                }
+
+                &--bottom {
+                    background-color: variables.$color_warning_dark;
+                    border-left: $warning_step_thin_border;
+                    border-right: $warning_step_thin_border;
+                }
+            }
+
+            i {
+                color: black;
+            }
+        }
+
+        &.attention {
+            opacity: 1;
+        }
+    }
+
+    &__step-name {
+        @include mixins.flex-box($a: center);
+    }
+
+    &__step-content {
+        position: absolute;
+        z-index: 5;
+        font-weight: 500;
+        padding: 5px 5px 5px 17px;
+    }
+
+}

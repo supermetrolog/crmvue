@@ -3,8 +3,4 @@
         <slot />
     </div>
 </template>
-<script>
-export default {
-    name: 'EmptyLabel'
-};
-</script>
+<script setup></script>

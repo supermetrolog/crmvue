@@ -1,61 +1,53 @@
 <template>
-    <tr class="TableRequestRow">
+    <tr class="table-request-row">
         <td></td>
         <td colspan="5">
             <CompanyTableTimeline
                 v-for="timeline in timelines"
                 :key="timeline.id"
-                @click="clickTimeline"
-                class="CompanyTableItem-block-timeline"
+                @click="openTimeline"
+                class="company-table-item__timeline"
                 :current-steps="timeline.timelineSteps"
                 :request-name="requestName"
             />
         </td>
-        <td class="text-warning CompanyTableItem-notif">
+        <td class="text-warning">
             <div class="d-flex justify-content-center align-items-center">
-                {{ attention ? 'Уделите внимание запросу!' : '' }}
+                <span v-if="attention">Уделите внимание запросу!</span>
             </div>
         </td>
-        <td class="date text-center">
-            <div>{{ formattedDate }}</div>
+        <td>
+            <div class="d-flex justify-content-center">
+                <TableDateBlock :date="date" label="Обновление" />
+            </div>
         </td>
     </tr>
 </template>
 
-<script>
+<script setup>
 import CompanyTableTimeline from '@/components/Company/Table/CompanyTableTimeline.vue';
-import dayjs from 'dayjs';
+import TableDateBlock from '@/components/common/Table/TableDateBlock.vue';
 
-export default {
-    name: 'CompanyTableRequestRow',
-    components: { CompanyTableTimeline },
-    props: {
-        timelines: {
-            type: Array,
-            required: true
-        },
-        requestName: {
-            type: String,
-            required: true
-        },
-        date: {
-            type: String,
-            default: new Date()
-        },
-        attention: {
-            type: Boolean,
-            default: false
-        }
+defineProps({
+    timelines: {
+        type: Array,
+        required: true
     },
-    computed: {
-        formattedDate() {
-            return dayjs(this.date).format('DD.MM.YYYY');
-        }
+    requestName: {
+        type: String,
+        required: true
     },
-    methods: {
-        clickTimeline() {
-            this.$emit('clickTimeline');
-        }
+    date: {
+        type: String,
+        required: true
+    },
+    attention: {
+        type: Boolean,
+        default: false
     }
-};
+});
+
+const emit = defineEmits(['open-timeline']);
+
+const openTimeline = () => emit('open-timeline');
 </script>

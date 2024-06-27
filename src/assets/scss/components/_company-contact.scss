@@ -18,6 +18,10 @@
     @include mixins.light-border;
     border-radius: 5px;
 
+    &.inactive {
+        opacity: .5;
+    }
+
     &__name {
         font-weight: 500;
     }

@@ -1,39 +1,21 @@
 <template>
-    <div class="CompanyTableObjectOffer mt-0 mb-2 col-12 p-0">
-        <div class="object-offer-inf">
-            <div>
-                <b
-                    >{{ dealTypeName }}
-                    {{ offer.calc_area_general }}
-                    м<sup>2</sup>
-                </b>
-            </div>
-        </div>
+    <div class="company-table-object-offer">
+        <b>
+            <span>{{ dealType }},</span>
+            <WithUnitType class="ml-1" :unit-type="unitTypes.SQUARE_METERS">
+                {{ offer.calc_area_general }}
+            </WithUnitType>
+        </b>
     </div>
 </template>
 
-<script>
-export default {
-    name: 'CompanyTableObjectOffer',
-    props: {
-        offer: {
-            type: Object
-        }
-    },
-    computed: {
-        dealTypeName() {
-            let result;
-            if (this.offer.deal_type == 1 || this.offer.deal_type == 4) {
-                result = 'Аренда';
-            }
-            if (this.offer.deal_type == 2) {
-                result = 'Продажа';
-            }
-            if (this.offer.deal_type == 3) {
-                result = 'О/Х';
-            }
-            return result;
-        }
-    }
-};
+<script setup>
+import { computed } from 'vue';
+import { entityOptions } from '@/const/options/options.js';
+import WithUnitType from '@/components/common/WithUnitType.vue';
+import { unitTypes } from '@/const/unitTypes.js';
+
+const props = defineProps({ offer: { type: Object, required: true } });
+
+const dealType = computed(() => entityOptions.deal.type[props.offer.deal_type]);
 </script>

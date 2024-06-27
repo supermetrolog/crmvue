@@ -384,7 +384,7 @@ tr.TableRequestRow {
     }
 }
 
-tr.TableObjectRow {
+.table-object-row {
     height: 1px !important;
 
     td {
@@ -393,52 +393,8 @@ tr.TableObjectRow {
 
         & > div {
             border-top: variables.$grey_thin_border;
-            border-bottom: variables.$grey_thin_border;
             height: 100%;
         }
-    }
-}
-
-// ********** DropdownSwitcherRow ***********
-tr.DropdownSwitcherRow {
-    height: 110% !important;
-    min-height: 80% !important;
-
-    td {
-        padding-bottom: 5px !important;
-    }
-}
-
-// ********** Dropdown Switcher & Container ***********
-.DropdownSwitcher {
-    font-weight: 500;
-    font-size: 14px;
-    border: medium none;
-    background-image: none;
-    background: transparent;
-    background-color: transparent;
-    padding: 0;
-    cursor: pointer;
-    display: flex;
-    gap: 5px;
-    justify-content: center;
-    align-items: center;
-
-    .side_number {
-        color: gray !important;
-    }
-}
-
-.DropdownContainer {
-    max-height: 0;
-    padding: 0;
-    overflow: hidden;
-    transition: all 0.3s cubic-bezier(0, 1, 0, 1) -0.1s;
-
-    &.open {
-        max-height: 9999px;
-        transition-timing-function: cubic-bezier(0.5, 0, 1, 0);
-        transition-delay: 0s;
     }
 }
 
@@ -1165,63 +1121,6 @@ tr.DropdownSwitcherRow {
             align-items: center;
             overflow: hidden;
         }
-    }
-}
-
-// ************** COMPANY TABLE OBJECT ITEM *************
-.CompanyTableObjectItem {
-    max-height: 115px;
-    padding: 3px;
-
-    .item__title {
-        p:first-child {
-            border-right: 0;
-            padding-right: 0;
-        }
-    }
-
-    &-wrapper {
-        max-height: 110px;
-
-        .scroller {
-            max-height: 100px;
-        }
-
-        .image-container {
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            img {
-                height: 100px;
-                width: 100%;
-                object-fit: cover;
-                object-position: center;
-            }
-        }
-    }
-
-    .address p {
-        max-height: 80px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .object_id {
-        position: absolute;
-        padding: 3px;
-        font-size: 14px;
-        font-weight: bold;
-        color: variables.$color_success_alt;
-        background-color: rgba($color:variables.$color_light, $alpha: 0.85);
-        top: 0;
-        margin: 5px;
-    }
-
-    .none {
-        vertical-align: middle;
     }
 }
 
