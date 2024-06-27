@@ -47,7 +47,11 @@
         </Td>
         <Td class="company-table-item__date" sort="created_at">
             <div class="d-flex">
-                <TableDateBlock class="mx-auto" :date="company.updated_at" label="Обновление" />
+                <TableDateBlock
+                    class="mx-auto"
+                    :date="company.updated_at || company.created_at"
+                    label="Обновление"
+                />
             </div>
         </Td>
     </Tr>
