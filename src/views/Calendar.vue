@@ -5,7 +5,7 @@
                 <h2>Календарь событий</h2>
                 <DashboardTargetUser v-model="targetUser" />
             </div>
-            <div class="col-8">
+            <div class="col-12 col-xl-8">
                 <Calendar
                     ref="calendar"
                     @event-created="createEvent"
@@ -13,7 +13,7 @@
                     :events="events"
                 />
             </div>
-            <div class="col-4">
+            <div class="col-12 col-xl-4">
                 <div class="calendar-view__week">
                     <Button v-tippy="'На неделю назад'" @click="changeWeek(-7)" success small>
                         <i class="fa-solid fa-chevron-left" />
