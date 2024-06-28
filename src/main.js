@@ -13,6 +13,7 @@ import { VueAgile } from 'vue-agile';
 import { plugin as VueTippy } from 'vue-tippy';
 import 'tippy.js/dist/tippy.css'; // optional for styling
 import '@vueform/multiselect/themes/default.css';
+import 'vue-color-kit/dist/vue-color-kit.css';
 import './assets/fontawesome/css/fontawesome.min.css';
 import './assets/fontawesome/css/all.min.css';
 import 'animate.css';
@@ -26,6 +27,7 @@ import 'dayjs/locale/ru';
 import isToday from 'dayjs/plugin/isToday';
 import isYesterday from 'dayjs/plugin/isYesterday';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { vIntersection } from '@/directives/intersection.js';
 
 dayjs.extend(isToday);
 dayjs.extend(isYesterday);
@@ -40,6 +42,7 @@ app.config.performance = true;
 app.component('Tabs', Tabs)
     .component('Tab', Tab)
     .component('PhoneNumber', PhoneNumber)
+    .directive('intersection', vIntersection)
     .use(VueAgile)
     .use(VueTippy, {
         directive: 'tippy',

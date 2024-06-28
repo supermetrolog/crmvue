@@ -1,7 +1,7 @@
 <template>
     <Modal @close="$emit('close')" title="Создание события" width="600">
         <Form @submit="onSubmit">
-            <Loader v-if="isLoading" class="center" />
+            <Loader v-if="isLoading" />
             <FormGroup class="mb-2">
                 <Input v-model="form.title" class="col-12" label="Название" :v="v$.form.title" />
                 <Input

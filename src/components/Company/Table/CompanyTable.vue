@@ -13,13 +13,13 @@
             </Tr>
         </template>
         <template #tbody>
-            <Loader v-if="loader" class="center" />
+            <Loader v-if="loader" />
             <CompanyTableItem
                 v-for="(company, idx) in companies"
                 :key="company.id"
                 :company="company"
                 :odd="!(idx % 2)"
-            ></CompanyTableItem>
+            />
         </template>
     </Table>
 </template>

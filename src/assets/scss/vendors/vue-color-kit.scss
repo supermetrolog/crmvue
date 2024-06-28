@@ -1,0 +1,14 @@
+@use '../utils/mixins';
+
+.hu-color-picker {
+    width: min-content!important;
+
+    .colors {
+        @include mixins.flex-box($wrap: wrap, $gap: 10px);
+        margin-top: 10px;
+
+        .item {
+            margin: 0;
+        }
+    }
+}

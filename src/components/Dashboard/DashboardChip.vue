@@ -3,8 +3,4 @@
         <slot></slot>
     </div>
 </template>
-<script>
-export default {
-    name: 'DashboardChip'
-};
-</script>
+<script setup></script>

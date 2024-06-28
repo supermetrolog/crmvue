@@ -48,7 +48,7 @@
             v-if="hasValidationError && !disabled"
             :message="v.$errors[0].$message"
         />
-        <Button @click="addInput" prevent icon small success class="mt-1">
+        <Button @click="addInput" :disabled="hasEmptyInput" prevent icon small success class="mt-1">
             <i class="fas fa-plus"></i>
             {{ addText }}
         </Button>

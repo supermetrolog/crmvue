@@ -16,7 +16,7 @@
                         </button>
                     </div>
                     <div class="col-12">
-                        <Loader v-if="loader" class="center" />
+                        <Loader v-if="loader" />
                         <UserTable
                             v-if="USERS.length"
                             @clickEdit="clickOpenUserFormForUpdate"

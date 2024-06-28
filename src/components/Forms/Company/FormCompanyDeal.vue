@@ -5,7 +5,7 @@
         class="form-company-deal"
         :width="1000"
     >
-        <Loader v-if="loader" class="center" />
+        <Loader v-if="loader" />
         <Form @submit="onSubmit">
             <FormGroup class="mb-4">
                 <CheckboxChip

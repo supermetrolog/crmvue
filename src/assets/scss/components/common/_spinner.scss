@@ -9,6 +9,7 @@
         position: absolute;
         top: calc(50% - 50px);
         left: calc(50% - 50px);
+        z-index: 5000;
     }
 
     &__clip {

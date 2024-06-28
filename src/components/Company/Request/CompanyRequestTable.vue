@@ -15,7 +15,7 @@
                 </Tr>
             </template>
             <template #tbody>
-                <Loader v-if="loader" class="center" />
+                <Loader v-if="loader" />
                 <Tr v-for="request in requests" :key="request.id">
                     <Td class="text-center pr-0">
                         {{ request.id }}
@@ -101,9 +101,17 @@
                         </div>
                     </Td>
                     <Td class="text-center">
-                        <router-link :to="'/companies/' + request.company.id" target="_blank" class="text-primary">
+                        <router-link
+                            :to="'/companies/' + request.company.id"
+                            target="_blank"
+                            class="text-primary"
+                        >
                             <p :class="{ 'text-warning': !request.company.status }">
-                                {{ request.company.full_name == '-' ? '&#8212;' : request.company.full_name }}
+                                {{
+                                    request.company.full_name == '-'
+                                        ? '&#8212;'
+                                        : request.company.full_name
+                                }}
                             </p>
                         </router-link>
                     </Td>
@@ -119,14 +127,14 @@
                     </Td>
                     <Td class="text-center status" sort="status">
                         <h4 v-if="request.status == 1" class="text-success">Актив</h4>
-                        <span v-else-if="request.status == 2" class="badge badge-blue-green"> Завершен </span>
+                        <span v-else-if="request.status == 2" class="badge badge-blue-green">
+                            Завершен
+                        </span>
                         <span v-else class="badge badge-warning"> Пассив </span>
                         <div v-if="!request.status" class="passive-why">
                             <p class="text-warning d-inline-block">
                                 <b>{{ passiveWhyOptions[request.passive_why].label }}</b>
-                                <span
-v-if="request.passive_why_comment"
-class="text-dark"
+                                <span v-if="request.passive_why_comment" class="text-dark"
                                     >: {{ request.passive_why_comment }}</span
                                 >
                             </p>

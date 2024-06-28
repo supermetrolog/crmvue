@@ -10,20 +10,23 @@
                 </Tr>
             </template>
             <template #tbody>
-                <Loader v-if="loader" class="center" />
+                <Loader v-if="loader" />
                 <tr v-for="request in requests" :key="request.id">
                     <td colspan="4" class="p-0">
                         <div class="CompanyViewItem mt-3">
                             <div class="text-center status col-12 px-0" sort="status">
                                 <h4 v-if="request.status == 1" class="text-success">Актив</h4>
-                                <span v-else-if="request.status == 2" class="badge badge-blue-green"> Завершен </span>
+                                <span
+                                    v-else-if="request.status == 2"
+                                    class="badge badge-blue-green"
+                                >
+                                    Завершен
+                                </span>
                                 <span v-else class="badge badge-warning"> Пассив </span>
                                 <div v-if="!request.status" class="passive-why">
                                     <p class="text-warning d-inline-block">
                                         <b>{{ passiveWhyOptions[request.passive_why].label }}</b>
-                                        <span
-v-if="request.passive_why_comment"
-class="text-dark"
+                                        <span v-if="request.passive_why_comment" class="text-dark"
                                             >: {{ request.passive_why_comment }}</span
                                         >
                                     </p>
@@ -51,7 +54,10 @@ class="text-dark"
                                     </div>
 
                                     <div class="col-12">
-                                        <Progress :percent="request.timeline_progress" title="Обработано" />
+                                        <Progress
+                                            :percent="request.timeline_progress"
+                                            title="Обработано"
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -81,7 +87,9 @@ class="text-dark"
                                         <p>
                                             {{
                                                 request.regions
-                                                    .map(elem => $formatter.text().ucFirst(elem.info.title))
+                                                    .map(elem =>
+                                                        $formatter.text().ucFirst(elem.info.title)
+                                                    )
                                                     .join(', ')
                                             }}
                                         </p>
@@ -120,7 +128,11 @@ class="text-dark"
                                     class="text-primary"
                                 >
                                     <p :class="{ 'text-warning': !request.company.status }">
-                                        {{ request.company.full_name == '-' ? '&#8212;' : request.company.full_name }}
+                                        {{
+                                            request.company.full_name == '-'
+                                                ? '&#8212;'
+                                                : request.company.full_name
+                                        }}
                                     </p>
                                 </router-link>
                             </div>

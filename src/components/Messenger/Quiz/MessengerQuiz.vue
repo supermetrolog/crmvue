@@ -87,14 +87,19 @@ export default {
             this.opened = !this.opened;
         },
         async send() {
-            const quizSent = await this.$store.dispatch('Messenger/sendQuiz', {
-                contact: this.currentRecipient
-            });
-
-            if (quizSent) {
-                this.close();
-                this.$toast('Опросник успешно завершен.');
-            }
+            // const response = await api.survey.create({
+            //     user_id: this.THIS_USER.id,
+            //     contact_id: this.currentRecipient.id
+            // });
+            // console.log(response);
+            // const quizSent = await this.$store.dispatch('Messenger/sendQuiz', {
+            //     contact: this.currentRecipient
+            // });
+            //
+            // if (quizSent) {
+            //     this.close();
+            //     this.$toast('Опросник успешно завершен.');
+            // }
         },
         async breakObject() {
             const requestSent = await this.$store.dispatch('Messenger/sendBreakObject');

@@ -5,7 +5,7 @@
         width="900"
         has-tabs
     >
-        <Loader v-if="loader" class="center" />
+        <Loader v-if="loader" />
         <Form @submit="onSubmit" class="equipment-form">
             <Tabs :options="{ useUrlFragment: false, defaultTabHash: 'main' }">
                 <Tab id="craneCharacteristics" name="Характеpистики">

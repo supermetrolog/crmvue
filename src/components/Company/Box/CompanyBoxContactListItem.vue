@@ -1,45 +1,55 @@
 <template>
     <div
-        @click="clickContact"
-        class="CompanyBoxContactListItem"
+        class="company-box-contact"
         :class="{
-            'CompanyBoxContactListItem-is_main': contact.isMain,
-            'CompanyBoxContactListItem-good': !!contact.good
+            'company-box-contact--main': contact.isMain,
+            'company-box-contact--good': !!contact.good
         }"
     >
-        <span v-if="!contact.status" class="CompanyBoxContactListItem-passive">Пассив</span>
-        <div v-if="!contact.type" @click.stop="editContact(contact)" class="CompanyBoxContactListItem-edit">[ред.]</div>
-        <div v-if="!!contact.warning && contact.status" class="CompanyBoxContactListItem-status text-danger">
-            <span>ВНИМАНИЕ!!!</span>
+        <div class="company-box-contact__header mb-1">
+            <DashboardChip v-if="!contact.status" class="dashboard-bg-warning">
+                Пассив
+            </DashboardChip>
+            <DashboardChip
+                v-if="!!contact.warning && contact.status"
+                class="dashboard-bg-danger text-white"
+            >
+                Внимание!
+            </DashboardChip>
+            <DashboardChip
+                v-if="contact.faceToFaceMeeting"
+                v-tippy="'Очная встреча'"
+                class="dashboard-bg-success"
+            >
+                <i class="fa-solid fa-street-view"></i>
+            </DashboardChip>
         </div>
-        <i
-            v-if="contact.faceToFaceMeeting"
-            title="Очная встреча"
-            class="CompanyBoxContactListItem-status mr-2 text-dark fa-solid fa-street-view"
-        ></i>
-        <strong v-if="!contact.type" class="CompanyBoxContactListItem-name" :title="contact.full_name || ''">{{
-            contact.full_name || 'Имя неизвестно'
-        }}</strong>
-        <strong v-if="contact.type" class="CompanyBoxContactListItem-name">Общий контакт</strong>
-        <span class="CompanyBoxContactListItem-position">{{
-            contact.position_unknown ? 'Должность неизвестна' : position
-        }}</span>
+        <strong v-if="contact.type" class="company-box-contact__name">Общий контакт</strong>
+        <strong v-else class="company-box-contact__name">
+            {{ contact.full_name || 'Имя неизвестно' }}
+        </strong>
+        <span class="company-box-contact__position">
+            {{ contact.position_unknown ? 'Должность неизвестна' : position }}
+        </span>
         <PhoneNumber
             v-if="contact.phones.length"
-            class="CompanyBoxContactListItem-phone"
+            class="company-box-contact__phone"
             :phone="mainPhone || contact.phones[0]"
             :contact="contact"
         />
-        <div v-if="contact.emails.length" class="CompanyBoxContactListItem-email">
-            <a :href="'mailto:' + mainMail" class="d-block">
-                {{ mainMail }}
-            </a>
-        </div>
+        <CopyField
+            v-if="contact.emails.length"
+            :value="mainMail"
+            class="company-box-contact__email"
+            message="Электронная почта скопирована"
+        >
+            <span>{{ mainMail }}</span>
+        </CopyField>
         <hr />
-        <div v-if="contact.consultant" class="CompanyBoxContactListItem-consultant">
+        <div v-if="contact.consultant" class="company-box-contact__consultant">
             <span>
                 конс: {{ contact.consultant.userProfile.short_name }}
-                <template v-if="updateDate">{{ updateDate }}</template>
+                <template v-if="updatedAt">{{ updatedAt }}</template>
             </span>
         </div>
     </div>
@@ -48,10 +58,12 @@
 <script>
 import { PositionList } from '@/const/const.js';
 import dayjs from 'dayjs';
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import CopyField from '@/components/common/CopyField.vue';
 
 export default {
     name: 'CompanyBoxContactListItem',
-    inject: ['openContact', 'editContact'],
+    components: { CopyField, DashboardChip },
     props: {
         contact: {
             type: Object,
@@ -62,11 +74,9 @@ export default {
         position() {
             return this.contact.position ? PositionList[this.contact.position].label : '-';
         },
-        updateDate() {
+        updatedAt() {
             let date = this.contact.updated_at ? this.contact.updated_at : this.contact.created_at;
-            if (!date) {
-                return false;
-            }
+            if (!date) return false;
             return dayjs(date).format('DD.MM.YYYY');
         },
         mainPhone() {
@@ -74,16 +84,8 @@ export default {
         },
         mainMail() {
             let mainMail = this.contact.emails.find(email => email.isMain);
-            if (mainMail) {
-                return mainMail.email;
-            } else {
-                return this.contact.emails[0].email;
-            }
-        }
-    },
-    methods: {
-        clickContact() {
-            this.openContact(this.contact);
+            if (mainMail) return mainMail.email;
+            else return this.contact.emails[0].email;
         }
     }
 };

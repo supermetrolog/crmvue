@@ -1,10 +1,10 @@
 <template>
-    <div class="CompanyBoxLayout" :class="this.class">
-        <div class="inner">
-            <div class="CompanyBoxLayout-header">
+    <div class="company-box-layout">
+        <div class="company-box-layout__inner">
+            <div class="company-box-layout__header">
                 <slot name="header" />
             </div>
-            <div class="CompanyBoxLayout-content">
+            <div class="company-box-layout__content">
                 <slot name="content" />
             </div>
         </div>
@@ -13,11 +13,6 @@
 
 <script>
 export default {
-    name: 'CompanyBoxLayout',
-    props: {
-        class: {
-            type: String
-        }
-    }
+    name: 'CompanyBoxLayout'
 };
 </script>

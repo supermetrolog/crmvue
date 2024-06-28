@@ -11,15 +11,14 @@
                 <span class="messenger-chat-header__id">, ID{{ dialog.model.object.id }}</span>
             </p>
             <p class="messenger-chat-header__deals">{{ dealType }}</p>
-            <p>{{ messagesCount }}</p>
         </div>
     </div>
 </template>
 <script>
 import VLazyImage from 'v-lazy-image';
 import { entityOptions } from '@/const/options/options.js';
-import plural from 'plural-ru';
 import { mapState } from 'vuex';
+
 export default {
     name: 'MessengerChatHeaderObject',
     components: { VLazyImage },
@@ -33,10 +32,6 @@ export default {
         ...mapState({ company: state => state.Messenger.currentPanel }),
         dealType() {
             return entityOptions.object.dealTypeString[this.dialog.model.type];
-        },
-        messagesCount() {
-            const count = this.$store.state.Messenger.messagesPagination.totalCount;
-            return plural(count, '%d сообщение', '%d сообщения', '%d сообщений');
         }
     }
 };

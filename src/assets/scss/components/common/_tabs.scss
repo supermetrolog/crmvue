@@ -20,12 +20,16 @@
             font-weight: 600;
             transition: background-color 0.3s ease-in-out;
 
-            &:hover {
+            &:not(.is-disabled):hover {
                 background-color: rgba(0, 183, 74, .3);
 
                 &::before {
                     width: 100%;
                 }
+            }
+
+            &.is-disabled {
+                cursor: default;
             }
 
             &::before {

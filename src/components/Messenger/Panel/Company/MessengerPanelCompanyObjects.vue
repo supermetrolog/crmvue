@@ -22,6 +22,15 @@
                             dialogType: record.model_type
                         })
                     "
+                    @update-call="
+                        updateCall(
+                            {
+                                companyID: record.model.object.company?.id,
+                                chatMemberID: record.id
+                            },
+                            record
+                        )
+                    "
                     :current="record.id === currentDialogID"
                     :model="record.model"
                     :last-call="record.last_call"
@@ -42,11 +51,13 @@
 import MessengerDialogObject from '@/components/Messenger/Dialog/MessengerDialogObject.vue';
 import MessengerDialogObjectSkeleton from '@/components/Messenger/Dialog/MessengerDialogObjectSkeleton.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
-import { mapActions, mapState } from 'vuex';
-import { LoaderMixin } from '@/components/Messenger/loader.mixin.js';
+import { mapActions, mapState, useStore } from 'vuex';
 import InfiniteLoading from 'v3-infinite-loading';
 import VirtualDragList from 'vue-virtual-draglist';
 import Spinner from '@/components/common/Spinner.vue';
+import { useInfiniteLoading } from '@/composables/useInfiniteLoading.js';
+import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
+import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 
 export default {
     name: 'MessengerPanelCompanyObjects',
@@ -58,7 +69,6 @@ export default {
         MessengerDialogObject,
         EmptyData
     },
-    mixins: [LoaderMixin],
     inject: ['lastRenderedObjectCount', 'setLastRendererObjectCount'],
     props: {
         companyID: {
@@ -66,10 +76,31 @@ export default {
             required: true
         }
     },
-    data() {
+    setup(props) {
+        const { isLoading } = useDelayedLoader();
+        const store = useStore();
+        const getCompanyObjects = (page = 1) =>
+            store.dispatch('Messenger/getCompanyChats', {
+                companyID: props.companyID,
+                modelType: 'object',
+                page
+            });
+
+        const {
+            items: objects,
+            pagination,
+            load: loadObjects
+        } = useInfiniteLoading(getCompanyObjects);
+
+        const { show: showLastCallPopup } = useAsyncPopup('chatMemberLastCall');
+
         return {
-            objects: [],
-            pagination: null
+            objects,
+            pagination,
+            isLoading,
+            loadObjects,
+            getCompanyObjects,
+            showLastCallPopup
         };
     },
     computed: {
@@ -82,39 +113,21 @@ export default {
     },
     methods: {
         ...mapActions({
-            selectChat: 'Messenger/selectChat',
-            getCompanyObjects: 'Messenger/getCompanyChats'
+            selectChat: 'Messenger/selectChat'
         }),
         async fetchObjects() {
-            this.loadingState = true;
+            this.isLoading = true;
 
-            const data = await this.getCompanyObjects({
-                companyID: this.companyID,
-                modelType: 'object'
-            });
+            const data = await this.getCompanyObjects();
 
             this.objects = data.data;
             this.pagination = data.pagination;
 
-            this.loadingState = false;
+            this.isLoading = false;
         },
-        async loadObjects($state) {
-            if (this.pagination.currentPage === this.pagination.pageCount) {
-                $state.complete();
-                return;
-            }
-
-            const data = await this.getCompanyObjects({
-                companyID: this.companyID,
-                modelType: 'object',
-                page: this.pagination.currentPage + 1
-            });
-
-            if (data.data?.length) this.objects.push(...data.data);
-            if (data.pagination) this.pagination = data.pagination;
-
-            if (this.pagination.currentPage === this.pagination.pageCount) $state.complete();
-            $state.loaded();
+        async updateCall(payload, record) {
+            const response = await this.showLastCallPopup(payload);
+            if (response) record.last_call = response.lastCall;
         }
     },
     created() {

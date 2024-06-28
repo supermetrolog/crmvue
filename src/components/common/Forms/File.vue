@@ -80,6 +80,10 @@ export default {
         readOnly: {
             type: Boolean,
             default: false
+        },
+        draggable: {
+            type: Boolean,
+            default: false
         }
     },
     computed: {

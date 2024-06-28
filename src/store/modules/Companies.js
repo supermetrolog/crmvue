@@ -60,7 +60,7 @@ const Companies = {
             context.commit('setCompanyWaitHash', hash);
             const data = await api.companies.searchCompanies(query);
             if (data) {
-                if (hash == context.getters.COMPANY_WAIT_HASH) {
+                if (hash === context.getters.COMPANY_WAIT_HASH) {
                     context.commit('updateCompanies', { data, concat });
                 } else {
                     return false;
@@ -103,25 +103,22 @@ const Companies = {
             return await api.companies.updateCompanyGroups(formdata);
         },
         async FETCH_COMPANY_GROUP_LIST(context) {
-            if (context.getters.COMPANY_GROUP_LIST.length && !context.getters.COMPANY_GROUPS.length) {
-                return;
-            }
+            if (context.getters.COMPANY_GROUP_LIST.length) return;
+
             let data = await api.companies.getCompanyGroupList();
-            if (data) {
-                context.commit('updateCompanyGroupList', data);
-            }
+            if (data) context.commit('updateCompanyGroupList', data);
         },
         async FETCH_COMPANY_PRODUCT_RANGE_LIST(context) {
+            if (context.state.companyProductRangeList.length) return;
+
             let data = await api.companies.getCompanyProductRangeList();
-            if (data) {
-                context.commit('updateCompanyProductRangeList', data);
-            }
+            if (data) context.commit('updateCompanyProductRangeList', data);
         },
         async FETCH_COMPANY_IN_THE_BANK_LIST(context) {
+            if (context.state.companyInTheBankList.length) return;
+
             let data = await api.companies.getCompanyInTheBankList();
-            if (data) {
-                context.commit('updateCompanyInTheBankList', data);
-            }
+            if (data) context.commit('updateCompanyInTheBankList', data);
         }
     },
     getters: {

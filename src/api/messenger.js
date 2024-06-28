@@ -47,16 +47,15 @@ export default {
             return null;
         }
     },
-    async getMessages(memberID, page = 1) {
-        const params = new URLSearchParams({ to_chat_member_id: memberID, page }).toString();
-        const url = `/chat-member-messages?${params}`;
+    async getMessages(memberID, idLessThen = null) {
+        const params = new URLSearchParams({ to_chat_member_id: memberID });
+        if (idLessThen) params.append('id_less_then', idLessThen);
+
+        const url = `/chat-member-messages?${params.toString()}`;
 
         try {
             const response = await axios.get(url);
-            return {
-                data: SuccessHandler.getData(response),
-                pagination: SuccessHandler.getPaginationData(response)
-            };
+            return SuccessHandler.getData(response);
         } catch (e) {
             ErrorHandle.setError(e);
             return null;
@@ -192,6 +191,15 @@ export default {
             ]);
 
             return { tasks: response[0] - response[1] };
+        } catch (e) {
+            ErrorHandle.setError(e);
+            return null;
+        }
+    },
+    async readMessages(messageID) {
+        try {
+            const response = await axios.post('/chat-member-messages/view-message/' + messageID);
+            return response.status === 200;
         } catch (e) {
             ErrorHandle.setError(e);
             return null;

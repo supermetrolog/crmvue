@@ -1,0 +1,56 @@
+@use "../utils/mixins";
+@use "../utils/variables";
+
+.company-element {
+    padding: 5px;
+    @include mixins.light-border;
+    border-radius: 5px;
+
+    &__name {
+        font-weight: 500;
+        width: max-content;
+        @include mixins.text-overflow();
+    }
+}
+
+.company-contact {
+    padding: 5px;
+    @include mixins.light-border;
+    border-radius: 5px;
+
+    &.inactive {
+        opacity: .5;
+    }
+
+    &__name {
+        font-weight: 500;
+    }
+
+    &__position {
+        margin-bottom: 3px;
+    }
+
+    &__list {
+        @include mixins.flex-box($wrap: wrap, $gap: 5px);
+        position: relative;
+    }
+
+    &__phone {
+        padding: 2px 5px;
+        background-color: #F3F3F3;
+        width: max-content;
+        border-radius: 5px;
+        color: #000;
+        max-width: 100%;
+        overflow-x: auto;
+        @include mixins.transition(background-color);
+        @include mixins.hover {
+            background-color: #d7d7d7;
+        }
+
+        &::-webkit-scrollbar {
+            height: 3px;
+            background-color: lighten(variables.$color_grey, 30);
+        }
+    }
+}

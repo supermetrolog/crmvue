@@ -1,4 +1,5 @@
 @use "../../utils/variables";
+@use "../../utils/mixins";
 
 .object-grid {
     &-item {
@@ -12,127 +13,86 @@
     }
 }
 
-.card {
+.company-grid-card {
     box-shadow: 0 10px 50px rgba(0, 0, 0, 0.25);
     border-radius: 10px;
     overflow: hidden;
 
-
-    &-left {
+    &__preview {
         background-color: darken(variables.$color_primary, 10);
         color: variables.$color_light;
         letter-spacing: 1px;
+        @include mixins.flex-box($d: column, $j: space-between, $gap: 10px);
+        @include mixins.transition(background-color);
+        padding: 15px 20px!important;
 
-        .id {
-            color: lighten(variables.$color_grey, 30);
-            font-weight: 500;
-            margin-bottom: 10px;
-
-            p {
-                display: inline-block;
-                margin-right: 10px;
-                font-weight: 500;
-                font-size: 12px;
-            }
-
-            span {
-                font-size: 12px;
-            }
-        }
-
-        .title {
-            h3 {
-                font-weight: 400;
-            }
-        }
-
-        .footer {
-            p {
-                color: lighten(variables.$color_grey, 30);
-                font-weight: 500;
-                font-size: 12px;
-            }
-
-            display: inline-block;
-            vertical-align: bottom;
+        &:hover {
+            background-color: darken(variables.$color_primary, 3);;
         }
     }
 
-    &-right {
-        .header {
-            .category {
-                p {
-                    text-transform: uppercase;
-                }
-            }
+    &__id {
+        color: lighten(variables.$color_grey, 30);
+        font-weight: 500;
+        font-size: 12px;
+    }
 
-            p {
-                display: inline-block;
-                color: variables.$color_grey;
-                font-size: 12px;
-            }
+    &__name {
+        font-weight: 400;
+    }
+
+    &__date {
+        color: lighten(variables.$color_grey, 30);
+        font-weight: 500;
+        font-size: 12px;
+    }
+
+    &__body {
+        @include mixins.flex-box();
+        padding: 15px 20px!important;
+    }
+
+    &__category {
+        font-size: 12px!important;
+    }
+
+    &__list {
+        display: inline-flex;
+        gap: 5px;
+        flex-wrap: wrap;
+    }
+
+    &__subtitle {
+        font-weight: 500;
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+
+    &__contacts {
+        font-size: 14px;
+        @include mixins.flex-box($d: column, $gap: 5px);
+        padding: 5px;
+        margin: 0 -5px;
+        overflow-y: auto;
+        max-height: 120px;
+        border-bottom: 1px solid rgba(0, 0, 0, .1);
+        border-top: 1px solid rgba(0, 0, 0, .1);
+    }
+
+    &__footer {
+        font-size: 14px;
+        color: variables.$color_grey;
+    }
+
+    &__counts {
+        @include mixins.flex-box($gap: 5px, $wrap: true);
+
+        .dashboard-chip {
+            padding: 3px 6px;
         }
+    }
 
-        .contact-list {
-            max-height: 80px;
-            min-height: 80px;
-            overflow-x: hidden;
-            overflow-y: auto;
-            border-bottom: 1px solid variables.$color_disabled_actions;
-
-            .not-contacts {
-                margin: 0 auto;
-                color: variables.$color_grey;
-                font-weight: normal;
-            }
-
-            &-item {
-                margin-bottom: 5px;
-
-                &.inactive {
-                    .contact-data {
-                        font-size: 13px;
-
-                        a {
-                            display: inline-block;
-                            color: variables.$color_grey;
-                        }
-                    }
-
-                    .name {
-                        padding-right: 5px;
-
-                        p {
-                            color: darken(variables.$color_grey, 15);
-                        }
-                    }
-                }
-
-                .contact-data {
-                    font-size: 13px;
-
-                    a {
-                        display: inline-block;
-                        color: variables.$color_primary;
-                    }
-                }
-
-                .name {
-                    padding-right: 5px;
-
-                    p {
-                        color: darken(variables.$color_grey, 15);
-                    }
-                }
-            }
-        }
-
-        .footer {
-            p {
-                display: inline-block;
-                color: variables.$color_grey;
-                font-size: 12px;
-            }
-        }
+    &__consultant {
+        @include mixins.flex-box($gap: 5px, $a: center);
     }
 }

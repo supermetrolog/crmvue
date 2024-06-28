@@ -1,58 +1,66 @@
 <template>
-    <div
-        class="CompanyBoxObjectsOffer"
-        :class="{ passive: offer.status != 1 }"
-        :title="offer.description || 'нет описания'"
+    <a
+        :href="offerUrl"
+        target="_blank"
+        class="company-box-objects-offer"
+        :class="{ passive: offer.status !== 1 }"
     >
-        <a class="CompanyBoxObjectsOffer-wrapper" :href="offerUrl" target="_blank">
-            <div class="CompanyBoxObjectsOffer-block">
-                <span class="CompanyBoxObjectsOffer-visual_id">{{ offer.visual_id }}</span>
-                <span>{{ offer.deal_type_name }}</span>
-            </div>
-            <div class="CompanyBoxObjectsOffer-block">
-                <b>
-                    {{ offer.calc_area_general }}
-                    м<sup>2</sup>
-                </b>
-                <b v-if="offer.deal_type == 1 || offer.deal_type == 4">
-                    {{ offer.calc_price_warehouse }}
-                    руб за м<sup>2</sup>/г
-                </b>
-                <span v-if="offer.deal_type == 2">
-                    <b> {{ offer.calc_price_sale }} руб за м<sup>2</sup> </b>
-                </span>
-                <span v-if="offer.deal_type == 3">
-                    <b>{{ offer.calc_price_safe_pallet }} руб за 1 п. м. </b>
-                </span>
-            </div>
-        </a>
-    </div>
+        <i
+            v-tippy="offer.description?.length ? offer.description : 'Описание отсутствует'"
+            class="fa-regular fa-question-circle icon"
+        />
+        <DashboardChip class="dashboard-bg-success-l">{{ offer.visual_id }}</DashboardChip>
+        <DashboardChip class="dashboard-bg-success-l">{{ offer.deal_type_name }}</DashboardChip>
+        <DashboardChip class="dashboard-bg-success-l">
+            <WithUnitType :unit-type="unitTypes.SQUARE_METERS">
+                {{ offer.calc_area_general }}
+            </WithUnitType>
+        </DashboardChip>
+        <DashboardChip class="dashboard-bg-success-l">
+            <WithUnitType
+                v-if="offer.deal_type === 1 || offer.deal_type === 4"
+                :unit-type="unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR"
+            >
+                {{ offer.calc_price_warehouse }}
+            </WithUnitType>
+            <WithUnitType
+                v-else-if="offer.deal_type === 2"
+                :unit-type="unitTypes.RUB_PER_SQUARE_METERS"
+            >
+                {{ offer.calc_price_sale }}
+            </WithUnitType>
+            <WithUnitType v-if="offer.deal_type === 3" :unit-type="unitTypes.RUB_PER_PALLET_PLACE">
+                {{ offer.calc_price_safe_pallet }}
+            </WithUnitType>
+        </DashboardChip>
+        <a :href="oldOfferUrl" target="_blank" class="button button--small">Старая версия</a>
+    </a>
 </template>
 
 <script>
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import WithUnitType from '@/components/common/WithUnitType.vue';
+import { unitTypes } from '@/const/unitTypes.js';
+
 export default {
     name: 'CompanyBoxObjectsOffer',
+    components: { WithUnitType, DashboardChip },
     props: {
         offer: {
-            type: Object
+            type: Object,
+            required: true
         }
     },
     computed: {
+        unitTypes() {
+            return unitTypes;
+        },
         offerUrl() {
-            const baseUrl = 'https://pennylane.pro/complex/';
-            let url = baseUrl + this.offer.complex_id;
-            if (this.offer.type_id == 3) {
-                return url;
-            }
-            if (this.offer.generalOffersMix) {
-                url += '?offer_id=' + this.offer.generalOffersMix.original_id + '';
-            } else {
-                url += '?offer_id=' + this.offer.original_id + '';
-            }
-            return url;
+            return this.$url.offerByObject(this.offer);
+        },
+        oldOfferUrl() {
+            return this.$url.offerOldByObject(this.offer);
         }
     }
 };
 </script>
-
-<style></style>

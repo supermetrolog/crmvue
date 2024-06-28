@@ -1,4 +1,5 @@
 @use "../../utils/mixins";
+@use "../../utils/variables";
 
 .accordion-simple {
     &__header {
@@ -21,5 +22,12 @@
 
     &__trigger {
         cursor: pointer;
+    }
+}
+
+.accordion-simple-trigger-button {
+    @include mixins.transition(background-color);
+    @include mixins.hover {
+        background-color: variables.$color_light_grey!important;
     }
 }

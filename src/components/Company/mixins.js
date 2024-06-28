@@ -1,11 +1,4 @@
-import {
-    ActivityGroupList,
-    ActivityProfileList,
-    CompanyCategories,
-    CompanyFormOrganization,
-    PassiveWhy,
-    RatingList
-} from '@/const/const';
+import { CompanyCategories, RatingList } from '@/const/const';
 import Progress from '@/components/common/Progress.vue';
 import Table from '@/components/common/Table/Table.vue';
 import Tr from '@/components/common/Table/Tr.vue';
@@ -17,7 +10,6 @@ import {
     PassiveWhyRequest,
     RegionList
 } from '@/const/const.js';
-import FileInput from '@/components/common/Forms/FileInput.vue';
 import { entityOptions } from '@/const/options/options';
 
 export const MixinCompanyView = {
@@ -66,66 +58,5 @@ export const MixinRequestTable = {
         directionList: () => DirectionList,
         districtList: () => DistrictList,
         passiveWhyOptions: () => PassiveWhyRequest
-    }
-};
-
-export const MixinCompanyDetailInfo = {
-    components: {
-        Progress,
-        FileInput
-    },
-    data() {
-        return {
-            requisistesVisible: false
-        };
-    },
-    props: {
-        company: {
-            type: Object
-        }
-    },
-    computed: {
-        formOfOrganizationOptions: () => CompanyFormOrganization,
-        activityGroupOptions: () => ActivityGroupList,
-        activityProfileOptions: () => ActivityProfileList,
-        passiveWhyOptions: () => PassiveWhy,
-        status() {
-            return this.company.active ? 'Актив' : 'Пассив';
-        },
-        generalContact() {
-            return this.company.contacts.find(item => item.type == 1);
-        },
-        contactsTypeGeneralPhone() {
-            const contacts = this.company.contacts.find(item => item.type == 1);
-            return contacts ? contacts : false;
-        },
-        contactsTypeGeneralEmail() {
-            const contacts = this.company.contacts.filter(item => item.type != 0);
-            return contacts[0] ? contacts[0].emails : false;
-        },
-        contactsTypeGeneralWebsite() {
-            const contacts = this.company.contacts.filter(item => item.type != 0);
-            return contacts[0] ? contacts[0].websites : false;
-        }
-    },
-    methods: {
-        rating(value) {
-            if (this.company.rating >= value) {
-                return 'text-warning fas fa-star';
-            }
-            return 'text-dark far fa-star';
-        },
-        category(categoryValue) {
-            return CompanyCategories[categoryValue];
-        },
-        href(value) {
-            if (value.includes('http://') || value.includes('https://')) {
-                return value;
-            }
-            return 'https://' + value;
-        },
-        toggleRequisistesVisible() {
-            this.requisistesVisible = !this.requisistesVisible;
-        }
     }
 };

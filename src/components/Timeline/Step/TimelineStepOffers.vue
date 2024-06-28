@@ -209,11 +209,6 @@ import { entityOptions } from '@/const/options/options.js';
 import { deleteEmptyFields } from '@/utils/deleteEmptyFields.js';
 import { TimelineRecommendedDescriptions } from '@/const/const.js';
 import TimelineSearchRecommendations from '@/components/Timeline/TimelineSearchRecommedations.vue';
-import {
-    InspectionDoneComment,
-    InspectionOffersNotFound,
-    OffersNotFoundComment
-} from '@/components/Timeline/comments.js';
 
 export default {
     name: 'TimelineStepOffers',
@@ -422,7 +417,6 @@ export default {
         },
         async alreadySentObjects(event) {
             const sendingSuccessfully = await this.alreadySent(event);
-            console.log(sendingSuccessfully);
             if (sendingSuccessfully) this.$emit('next-step');
         }
     }

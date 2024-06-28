@@ -98,11 +98,8 @@ export default {
         },
         objectTypes() {
             const types = cloneObject(entityOptions.object.purposesWithSections);
-            console.log(types);
 
             this.request.objectTypes.forEach(element => {
-                console.log(element.object_type);
-
                 if (element.object_type < 12) {
                     types.warehouse[element.object_type].included = true;
                 } else if (element.object_type < 25)

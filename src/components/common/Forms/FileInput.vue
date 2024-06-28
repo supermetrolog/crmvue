@@ -30,25 +30,47 @@
                 :multiple="!single"
                 :accept="acceptList"
             />
-            <div v-if="files.length || localFiles.length" class="file-input__list row">
-                <File
-                    v-for="(file, index) in localFiles"
-                    :key="index"
-                    @delete="deleteLocalFile(index)"
-                    :file="file"
-                    class="file--new"
-                    :class="fileWidthClass"
-                    :read-only="readOnly"
-                />
-                <File
-                    v-for="(file, index) in files"
-                    :key="index"
-                    @delete="deleteFile(index)"
-                    :file="file"
-                    :class="fileWidthClass"
-                    :read-only="readOnly"
-                />
-            </div>
+            <VirtualDragList
+                v-if="localFiles.length"
+                v-model="localFiles"
+                group="local-files"
+                :data-key="'name'"
+                :keeps="40"
+                chosenClass="chosen"
+                :sortable="sortable && !readOnly"
+                wrapClass="file-input__list row"
+            >
+                <template #item="{ record: file, index }">
+                    <File
+                        @delete="deleteLocalFile(index)"
+                        :file="file"
+                        class="file--new"
+                        :class="fileWidthClass"
+                        :read-only="readOnly"
+                        :draggable="sortable"
+                    />
+                </template>
+            </VirtualDragList>
+            <VirtualDragList
+                v-if="files.length"
+                v-model="files"
+                group="files"
+                :data-key="'id'"
+                :keeps="40"
+                chosenClass="chosen"
+                :sortable="sortable && !readOnly"
+                wrapClass="file-input__list row"
+            >
+                <template #item="{ record: file, index }">
+                    <File
+                        @delete="deleteFile(index)"
+                        :file="file"
+                        :class="fileWidthClass"
+                        :read-only="readOnly"
+                        :draggable="sortable"
+                    />
+                </template>
+            </VirtualDragList>
         </div>
     </div>
 </template>
@@ -56,10 +78,11 @@
 <script>
 import { fileTypes } from '@/const/types';
 import File from '@/components/common/Forms/File.vue';
+import VirtualDragList from 'vue-virtual-draglist';
 
 export default {
     name: 'FileInput',
-    components: { File },
+    components: { VirtualDragList, File },
     props: {
         data: {
             type: [Array, String],
@@ -108,6 +131,10 @@ export default {
         itemSize: {
             type: Number,
             default: 50
+        },
+        sortable: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
@@ -183,10 +210,11 @@ export default {
                 this.localFiles = [];
                 this.$emit('update:data', null);
             }
+
             this.setProperties(files);
         },
         setProperties(files) {
-            files.map(file => {
+            files.forEach(file => {
                 file.created_at = 'Только что';
                 file.fileType = this.getFileType(file.name);
 

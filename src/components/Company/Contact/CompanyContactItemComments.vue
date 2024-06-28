@@ -1,6 +1,6 @@
 <template>
     <div class="company-contact-item__comments position-relative">
-        <Loader v-if="isLoading" class="small center" />
+        <Loader v-if="isLoading" />
         <div class="col-12">
             <div v-if="comments.length">
                 <div v-for="comment in comments" :key="comment.id">

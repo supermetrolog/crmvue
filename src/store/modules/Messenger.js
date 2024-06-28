@@ -26,7 +26,8 @@ const getInitialState = () => ({
     },
 
     messages: [],
-    messagesPagination: {},
+    lastNotViewedMessageID: null,
+    lessThenMessageId: null,
 
     newMessage: '',
     cachedNewMessages: {},
@@ -104,9 +105,6 @@ const Messenger = {
             if (messageIndex !== -1) {
                 Object.assign(state.messages[messageIndex], newMessage);
             }
-        },
-        setMessagesPagination(state, value) {
-            state.messagesPagination = value;
         },
 
         setCurrentRecipient(state, { contact, contactID }) {
@@ -224,8 +222,11 @@ const Messenger = {
                 state['countNew' + key.charAt(0).toUpperCase() + key.slice(1)] = obj[key];
             });
         },
-        incrementMessages(state) {
-            state.messagesPagination.totalCount++;
+        setLastNotViewedMessage(state, messageID) {
+            state.lastNotViewedMessageID = messageID;
+        },
+        setLessThenMessageId(state, messageID) {
+            state.lessThenMessageId = messageID;
         }
     },
     actions: {
@@ -316,7 +317,7 @@ const Messenger = {
             commit('setCurrentDialogType', dialogType);
             commit('setCurrentPanelDialogID', dialogID);
             commit('setMessages', []);
-            commit('setMessagesPagination', {});
+            commit('setLastNotViewedMessage', null);
             commit('setLoadingChat', true);
 
             const [dialog, messages, pinned] = await Promise.all([
@@ -328,8 +329,28 @@ const Messenger = {
             commit('setCurrentPinned', pinned);
             commit('setCurrentChat', true);
             commit('setCurrentDialog', dialog);
-            commit('setMessages', messages.data);
-            commit('setMessagesPagination', messages.pagination);
+
+            if (messages.length) {
+                commit(
+                    'setMessages',
+                    messages.map(message => {
+                        message.notViewed = true;
+                        return message;
+                    })
+                );
+
+                commit('setLastNotViewedMessage', messages[0].id);
+                commit('setLessThenMessageId', messages[0].id);
+
+                if (messages.length <= 10) {
+                    const _messages = await api.messenger.getMessages(dialogID, messages[0].id);
+                    if (_messages.length) {
+                        commit('addMessages', _messages);
+                        commit('setLessThenMessageId', _messages[0].id);
+                    }
+                }
+            }
+
             commit('setLoadingChat', false);
         },
         async getCompanyChats(_, { companyID, modelType, page = 1 }) {
@@ -355,7 +376,6 @@ const Messenger = {
                     commit('clearCachedMessage', state.currentPanelDialogID);
 
                 commit('addMessages', [response]);
-                commit('incrementMessages');
                 commit('setNewMessage', '');
 
                 return true;
@@ -436,7 +456,7 @@ const Messenger = {
             return true;
         },
         async addAlert({ commit }, { messageID, options }) {
-            const addition = await api.alert.createFromMessage(messageID, options);
+            const addition = await api.notification.createFromMessage(messageID, options);
 
             if (addition) {
                 commit('addAddition', { messageID, additionType: 'alert', addition });
@@ -564,26 +584,15 @@ const Messenger = {
             return null;
         },
 
-        async loadMessages({ commit, state }) {
-            if (
-                state.messagesPagination.currentPage === state.messagesPagination.pageCount ||
-                state.messagesPagination.pageCount === 0
-            )
-                return true;
+        async loadMessages({ commit, state }, lastMessageID) {
+            const messages = await api.messenger.getMessages(state.currentDialog.id, lastMessageID);
 
-            const { data, pagination } = await api.messenger.getMessages(
-                state.currentDialog.id,
-                state.messagesPagination.currentPage + 1
-            );
-
-            if (data) {
-                commit('addMessages', data);
-                commit('setMessagesPagination', pagination);
-
-                return pagination.currentPage === pagination.pageCount;
+            if (messages?.length) {
+                commit('addMessages', messages);
+                commit('setLessThenMessageId', messages[0].id);
             }
 
-            return null;
+            return messages?.length === 0;
         },
         setCurrentMessageFromCache({ state, commit }) {
             const cachedMessage = state.cachedNewMessages[state.currentPanelDialogID];

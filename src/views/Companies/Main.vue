@@ -13,29 +13,62 @@
                 />
                 <FormCompanySearch v-if="mounted" class="col-12" />
             </div>
-            <div class="row justify-content-between">
-                <PaginationClassic
-                    v-if="COMPANIES_PAGINATION"
-                    ref="firstPagination"
-                    @next="next"
-                    class="col-6"
-                    :pagination="COMPANIES_PAGINATION"
-                />
-                <div class="company-table__actions col-6">
-                    <Button @click="companyGroupsFormVisible = true" success :disabled="loader">Создать группу компаний</Button>
-                    <Button @click="companyFormVisible = true" success :disabled="loader">Создать компанию</Button>
-                    <RefreshButton @click="getCompanies" :disabled="loader" />
+            <div class="row">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between">
+                        <PaginationClassic
+                            v-if="COMPANIES_PAGINATION"
+                            ref="firstPagination"
+                            @next="next"
+                            :pagination="COMPANIES_PAGINATION"
+                        />
+                        <div class="company-table__actions">
+                            <Switch
+                                v-model="viewMode"
+                                false-title="Таблица"
+                                true-title="Карточки"
+                            />
+                            <Button
+                                @click="companyGroupsFormVisible = true"
+                                success
+                                :disabled="loader"
+                            >
+                                Создать группу компаний
+                            </Button>
+                            <Button @click="companyFormVisible = true" success :disabled="loader">
+                                Создать компанию
+                            </Button>
+                            <RefreshButton @click="getCompanies" :disabled="loader" />
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-12 offers-page__table">
-                    <Loader v-if="loader && !COMPANIES.length" class="center" />
-                    <CompanyTable v-if="COMPANIES.length && !isMobile" :companies="COMPANIES" :loader="loader" />
-                    <CompanyTableMobile v-if="COMPANIES.length && isMobile" :companies="COMPANIES" :loader="loader" />
-                    <h1 v-if="!COMPANIES.length && !loader" class="text-center text-dark py-5">НИЧЕГО НЕ НАЙДЕНО</h1>
+                    <AnimationTransition :speed="0.2">
+                        <component
+                            :is="currentViewComponentName"
+                            v-if="COMPANIES.length && !isMobile"
+                            :companies="COMPANIES"
+                            :loader="loader"
+                        />
+                        <CompanyTableMobile
+                            v-else-if="COMPANIES.length && isMobile"
+                            :companies="COMPANIES"
+                            :loader="loader"
+                        />
+                        <template v-else>
+                            <Loader v-if="loader" />
+                            <EmptyData v-else>Ничего не найдено</EmptyData>
+                        </template>
+                    </AnimationTransition>
                 </div>
                 <div class="col-12">
-                    <PaginationClassic v-if="COMPANIES_PAGINATION" @next="next" :pagination="COMPANIES_PAGINATION" />
+                    <PaginationClassic
+                        v-if="COMPANIES_PAGINATION"
+                        @next="nextAndScrollToStart"
+                        :pagination="COMPANIES_PAGINATION"
+                    />
                 </div>
             </div>
         </div>
@@ -54,10 +87,18 @@ import PaginationClassic from '@/components/common/Pagination/PaginationClassic.
 import CompanyTableMobile from '@/components/Company/Table/CompanyTableMobile.vue';
 import RefreshButton from '@/components/common/RefreshButton.vue';
 import Button from '@/components/common/Button.vue';
+import Switch from '@/components/common/Forms/Switch.vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import EmptyData from '@/components/common/EmptyData.vue';
+import CompanyGrid from '@/components/Company/CompanyGrid.vue';
 
 export default {
     name: 'CompaniesMain',
     components: {
+        CompanyGrid,
+        EmptyData,
+        AnimationTransition,
+        Switch,
         RefreshButton,
         CompanyTableMobile,
         PaginationClassic,
@@ -78,7 +119,10 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(['COMPANIES', 'COMPANIES_PAGINATION', 'THIS_USER'])
+        ...mapGetters(['COMPANIES', 'COMPANIES_PAGINATION', 'THIS_USER']),
+        currentViewComponentName() {
+            return this.viewMode ? 'CompanyGrid' : 'CompanyTable';
+        }
     },
     methods: {
         ...mapActions(['FETCH_COMPANIES', 'SEARCH_COMPANIES']),
@@ -91,6 +135,18 @@ export default {
             await this.SEARCH_COMPANIES({ query });
             this.loader = false;
         },
+        nextAndScrollToStart(page) {
+            this.next(page);
+            this.scrollToStart();
+        },
+        scrollToStart() {
+            let options = {
+                behavior: 'smooth',
+                block: 'end',
+                alignToTop: false
+            };
+            this.$refs.firstPagination.$el.scrollIntoView(options);
+        },
         clickCloseCompanyForm() {
             this.companyFormVisible = false;
         },
@@ -100,5 +156,3 @@ export default {
     }
 };
 </script>
-
-<style></style>

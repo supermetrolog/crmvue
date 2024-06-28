@@ -5,7 +5,7 @@
         width="1200"
         has-tabs
     >
-        <Loader v-if="loader" class="center" />
+        <Loader v-if="loader" />
         <Form @submit="onSubmit">
             <Tabs :options="{ useUrlFragment: false, defaultTabHash: 'main' }">
                 <Tab id="main" name="Характеристики">

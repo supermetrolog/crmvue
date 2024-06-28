@@ -3,7 +3,7 @@
         <template #thead>
             <Tr>
                 <Th>#</Th>
-                <Th></Th>
+                <Th>Объект</Th>
                 <Th>регион</Th>
                 <Th :sort="sortable ? 'from_mkad' : null">мкад</Th>
                 <Th :sort="sortable ? 'area' : null">площадь</Th>
@@ -12,17 +12,16 @@
                 <Th>консультант</Th>
                 <Th>реклама</Th>
                 <Th :sort="sortable ? 'last_update' : null">обновление</Th>
-                <Th :sort="sortable ? 'status' : null">статус</Th>
             </Tr>
         </template>
         <template #tbody>
-            <Loader v-if="loader" class="center" />
+            <Loader v-if="loader" />
             <OfferTableItem
-                v-for="(offer, idx) in offers"
+                v-for="offer in offers"
                 :key="offer.id"
+                @favorite-deleted="$emit('favorite-deleted')"
                 :offer="offer"
                 :loader="loader"
-                :odd="!(idx % 2)"
             />
         </template>
     </Table>
@@ -32,7 +31,7 @@
 import Table from '@/components/common/Table/Table.vue';
 import Tr from '@/components/common/Table/Tr.vue';
 import Th from '@/components/common/Table/Th.vue';
-import OfferTableItem from '@/components/Offer/OfferTableItem.vue';
+import OfferTableItem from '@/components/Offer/TableItem/OfferTableItem.vue';
 import Loader from '@/components/common/Loader.vue';
 
 export default {
@@ -44,6 +43,7 @@ export default {
         Tr,
         Th
     },
+    emits: ['favorite-deleted'],
     props: {
         offers: {
             type: Array
@@ -56,9 +56,6 @@ export default {
             type: Boolean,
             default: true
         }
-    },
-    data() {
-        return {};
     }
 };
 </script>

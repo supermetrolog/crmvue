@@ -1,48 +1,40 @@
 <template>
-    <tr class="TableObjectRow">
+    <tr class="table-object-row">
         <td></td>
-        <td colspan="2">
-            <CompanyTableObjectItem :object="object" :col="'col-12'" />
+        <td colspan="4">
+            <CompanyTableObjectItem :object="object" class="col-12" />
         </td>
-        <td colspan="3">
+        <td>
             <div></div>
         </td>
-        <td class="text-warning CompanyTableItem-notif">
-            <div>{{ attention ? 'Объект давно не обновляли!' : '' }}</div>
+        <td class="text-warning">
+            <div>
+                <span v-if="attention">Объект давно не обновляли!</span>
+            </div>
         </td>
-        <td class="date text-center">
-            <div>{{ formattedDate }}</div>
+        <td>
+            <div class="d-flex justify-content-center">
+                <TableDateBlock :date="date" label="Обновление" />
+            </div>
         </td>
     </tr>
 </template>
 
-<script>
+<script setup>
 import CompanyTableObjectItem from '@/components/Company/Table/CompanyTableObjectItem.vue';
-import dayjs from 'dayjs';
+import TableDateBlock from '@/components/common/Table/TableDateBlock.vue';
+import { computed } from 'vue';
 
-export default {
-    name: 'CompanyTableObjectRow',
-    components: { CompanyTableObjectItem },
-    props: {
-        object: {
-            type: Object,
-            required: true
-        },
-        attention: {
-            type: Boolean,
-            default: false
-        }
+const props = defineProps({
+    object: {
+        type: Object,
+        required: true
     },
-    computed: {
-        formattedDate() {
-            let date = new Date(this.object.last_update * 1000);
-            if (!date) {
-                return 'Нет данных';
-            }
-            return dayjs(date).format('DD.MM.YYYY');
-        }
+    attention: {
+        type: Boolean,
+        default: false
     }
-};
-</script>
+});
 
-<style></style>
+const date = computed(() => props.object.last_update * 1000);
+</script>

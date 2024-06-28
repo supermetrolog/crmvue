@@ -7,6 +7,7 @@
         <CompanyContactItem
             @start-editing="$emit('start-editing')"
             @create-comment="createComment"
+            @delete-contact="$emit('delete-contact')"
             :contact="contact"
             :read-only="readOnly"
         />
@@ -23,7 +24,7 @@ export default {
         CompanyContactItem,
         Modal
     },
-    emits: ['close', 'start-editing'],
+    emits: ['close', 'start-editing', 'delete-contact'],
     inject: ['createContactComment'],
     props: {
         contact: {

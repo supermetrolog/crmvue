@@ -13,6 +13,7 @@
         </div>
         <teleport to="body">
             <MessengerAttachment ref="attachments" />
+            <FormModalChatMemberLastCall />
         </teleport>
     </div>
 </template>
@@ -25,10 +26,12 @@ import { mapState } from 'vuex';
 import MessengerAttachment from '@/components/Messenger/MessengerAttachment.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import api from '@/api/api.js';
+import FormModalChatMemberLastCall from '@/components/Forms/FormModalChatMemberLastCall.vue';
 
 export default {
     name: 'Messenger',
     components: {
+        FormModalChatMemberLastCall,
         AnimationTransition,
         MessengerAttachment,
         MessengerBar,

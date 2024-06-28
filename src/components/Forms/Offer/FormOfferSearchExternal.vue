@@ -56,7 +56,6 @@
 
 <script>
 import { FormMixin } from '@/components/Forms/mixins.js';
-import { waitHash } from '@/utils';
 import Button from '@/components/common/Button.vue';
 import ButtonLink from '@/components/common/ButtonLink.vue';
 
@@ -76,14 +75,14 @@ export default {
         }
     },
     watch: {
-        '$route.query': function (newQuery, oldQuery) {
-            delete newQuery.page;
-            delete oldQuery.page;
-            if (waitHash(newQuery) !== waitHash(oldQuery)) {
-                this.setDefaultFields();
-                this.setQueryFields();
-            }
-        }
+        // '$route.query': function (newQuery, oldQuery) {
+        //     delete newQuery.page;
+        //     delete oldQuery.page;
+        //     if (waitHash(newQuery) !== waitHash(oldQuery)) {
+        //         this.setDefaultFields();
+        //         this.setQueryFields();
+        //     }
+        // }
     },
     methods: {
         clickFavorites() {

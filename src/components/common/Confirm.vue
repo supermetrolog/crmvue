@@ -8,8 +8,8 @@
     >
         <p class="confirm__text">{{ message }}</p>
         <div class="confirm__actions">
-            <MessengerButton @click="cancel" color="success">Подтвердить</MessengerButton>
-            <MessengerButton @click="submit" color="danger">Отмена</MessengerButton>
+            <MessengerButton @click="submit" color="success">Подтвердить</MessengerButton>
+            <MessengerButton @click="cancel" color="danger">Отмена</MessengerButton>
         </div>
     </Modal>
 </template>

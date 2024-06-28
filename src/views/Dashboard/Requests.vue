@@ -106,12 +106,12 @@ import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import { waitHash } from '@/utils/index.js';
 import api from '@/api/api.js';
 import { LoaderMixin } from '@/components/Messenger/loader.mixin.js';
-import DashboardCardRequest from '@/components/Dashboard/Card/DashboardCardRequest.vue';
-import DashboardCardRequestSkeleton from '@/components/Dashboard/Card/DashboardCardRequestSkeleton.vue';
+import DashboardCardRequest from '@/components/Dashboard/Card/Request/DashboardCardRequest.vue';
+import DashboardCardRequestSkeleton from '@/components/Dashboard/Card/Request/DashboardCardRequestSkeleton.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import FormModalCompanyRequestDisable from '@/components/Forms/Company/FormModalCompanyRequestDisable.vue';
 import FormCompanyRequest from '@/components/Forms/Company/FormCompanyRequest.vue';
-import DashboardCardRequestView from '@/components/Dashboard/Card/DashboardCardRequestView.vue';
+import DashboardCardRequestView from '@/components/Dashboard/Card/Request/DashboardCardRequestView.vue';
 import FormCompanyRequestSearch from '@/components/Forms/Company/FormCompanyRequestSearch.vue';
 
 export default {

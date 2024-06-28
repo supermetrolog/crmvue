@@ -8,23 +8,8 @@
                 </div>
                 <div class="col-xl-9">
                     <DashboardStatsTasksCount class="mb-3" :user="targetUser?.id" />
-                    <div class="row mb-3">
-                        <div class="col-6">
-                            <DashboardCard title="Статистика активности">
-                                <InProgress />
-                            </DashboardCard>
-                        </div>
-                        <div class="col-6">
-                            <DashboardCard title="События сегодня">
-                                <InProgress />
-                            </DashboardCard>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <DashboardStatsRequests :user="targetUser?.id" />
-                        </div>
-                    </div>
+                    <DashboardStatsEvents :user="targetUser?.id" class="mb-3" />
+                    <DashboardStatsRequests :user="targetUser?.id" />
                 </div>
                 <div class="col-xl-3">
                     <DashboardCard title="Лог активности" class="mb-3">
@@ -43,10 +28,12 @@ import DashboardStatsTasksCount from '@/components/Dashboard/Stats/DashboardStat
 import DashboardTargetUser from '@/components/Dashboard/DashboardTargetUser.vue';
 import DashboardStatsMessages from '@/components/Dashboard/Stats/DashboardStatsMessages.vue';
 import DashboardStatsRequests from '@/components/Dashboard/Stats/DashboardStatsRequests.vue';
+import DashboardStatsEvents from '@/components/Dashboard/Stats/DashboardStatsEvents.vue';
 
 export default {
     name: 'DashboardCompany',
     components: {
+        DashboardStatsEvents,
         DashboardStatsRequests,
         DashboardStatsMessages,
         DashboardTargetUser,

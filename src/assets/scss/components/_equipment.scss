@@ -125,39 +125,3 @@
         }
     }
 }
-
-.company-element {
-    padding: 5px;
-    @include mixins.light-border;
-    border-radius: 5px;
-
-    &__name {
-        font-weight: 500;
-        @include mixins.text-overflow();
-    }
-}
-
-.company-contact {
-    padding: 5px;
-    @include mixins.light-border;
-    border-radius: 5px;
-
-    &__name {
-        font-weight: 500;
-    }
-
-    &__position {
-        margin-bottom: 3px;
-    }
-
-    &__phone {
-        padding: 2px 5px;
-        background-color: #F3F3F3;
-        width: max-content;
-        border-radius: 5px;
-
-        &:not(&:last-child) {
-            margin-bottom: 3px;
-        }
-    }
-}

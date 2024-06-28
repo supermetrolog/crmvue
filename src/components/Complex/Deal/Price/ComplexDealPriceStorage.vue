@@ -58,19 +58,17 @@ export default {
             );
         },
         formattedPrices() {
-            return Object.values(this.prices)
-                .reduce((acc, list) => [...acc, ...list])
-                .map(price => {
-                    if (price.valueMin || price.valueMax) {
-                        return {
-                            ...price,
-                            valueMin: this.priceOption.func(price.valueMin),
-                            valueMax: this.priceOption.func(price.valueMax)
-                        };
-                    }
+            return Object.values(this.prices).map(price => {
+                if (price.valueMin || price.valueMax) {
+                    return {
+                        ...price,
+                        valueMin: this.priceOption.func(price.valueMin),
+                        valueMax: this.priceOption.func(price.valueMax)
+                    };
+                }
 
-                    return { ...price, value: this.priceOption.func(price.value) };
-                });
+                return { ...price, value: this.priceOption.func(price.value) };
+            });
         },
         mainPrice() {
             return {

@@ -3,7 +3,7 @@
         <div class="d-flex align-items-center">
             <p>{{ status }}</p>
             <i
-                v-if="request.status == 0"
+                v-if="request.status === 0"
                 v-tippy="statusTippy"
                 class="fa-regular fa-question-circle ml-2 icon"
             />

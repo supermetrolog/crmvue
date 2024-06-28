@@ -2,6 +2,10 @@
     <section>
         <div class="container-fluid">
             <div class="row">
+                <FormComplex
+                    v-if="complexFormModalVisible"
+                    @close="toggleComplexFormModalVisible"
+                />
                 <FormModalOfferSearch
                     v-if="searchFormModalVisible"
                     @close="toggleSearchFormModalVisible"
@@ -33,25 +37,28 @@
                     :pagination="OFFERS_PAGINATION"
                 />
                 <div class="company-table__actions col-4">
+                    <Switch v-model="isCardView" false-title="Таблица" true-title="Карточки" />
+                    <Button @click="toggleComplexFormModalVisible" success :disabled="loader">
+                        Создать комплекс
+                    </Button>
                     <RefreshButton @click="getOffers(true)" :disabled="loader" />
                 </div>
             </div>
             <div class="row">
                 <div class="col-12 offers-page__table">
-                    <Loader v-if="loader && !OFFERS.length" class="center" />
-                    <OfferTable
-                        v-if="OFFERS.length && !isMobile"
-                        @deleteFavoriteOffer="deleteFavoriteOffer"
-                        :offers="OFFERS"
-                        :loader="loader"
-                    />
-                    <OfferTableMobile
-                        v-if="OFFERS.length && isMobile"
-                        @deleteFavoriteOffer="deleteFavoriteOffer"
-                        :offers="OFFERS"
-                        :loader="loader"
-                    />
-                    <h1 v-if="!OFFERS.length && !loader" class="text-center text-dark py-5">НИЧЕГО НЕ НАЙДЕНО</h1>
+                    <AnimationTransition :speed="0.2">
+                        <component
+                            :is="currentViewComponentName"
+                            v-if="OFFERS.length"
+                            @favorite-deleted="deleteFavoriteOffer"
+                            :offers="OFFERS"
+                            :loader="loader"
+                        />
+                        <template v-else>
+                            <Loader v-if="loader" />
+                            <EmptyData v-else>Ничего не найдено</EmptyData>
+                        </template>
+                    </AnimationTransition>
                 </div>
                 <div class="col-12">
                     <PaginationClassic
@@ -77,10 +84,20 @@ import Loader from '@/components/common/Loader.vue';
 import OfferTableMobile from '@/components/Offer/OfferTableMobile.vue';
 import OfferTable from '@/components/Offer/OfferTable.vue';
 import Chip from '@/components/common/Chip.vue';
+import FormComplex from '@/components/Forms/Complex/FormComplex.vue';
+import Button from '@/components/common/Button.vue';
+import EmptyData from '@/components/common/EmptyData.vue';
+import Switch from '@/components/common/Forms/Switch.vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
 
 export default {
     name: 'OffersMain',
     components: {
+        AnimationTransition,
+        Switch,
+        EmptyData,
+        Button,
+        FormComplex,
         Chip,
         OfferTable,
         OfferTableMobile,
@@ -92,8 +109,17 @@ export default {
     },
     mixins: [TableContentMixin, FilterMixin],
     inject: ['isMobile'],
+    data() {
+        return {
+            complexFormModalVisible: false,
+            isCardView: false
+        };
+    },
     computed: {
-        ...mapGetters(['OFFERS_PAGINATION', 'OFFERS'])
+        ...mapGetters(['OFFERS_PAGINATION', 'OFFERS']),
+        currentViewComponentName() {
+            return this.isCardView ? 'OfferTableMobile' : 'OfferTable';
+        }
     },
     methods: {
         ...mapActions(['SEARCH_OFFERS', 'SEARCH_FAVORITES_OFFERS']),
@@ -140,9 +166,10 @@ export default {
                 await this.SEARCH_FAVORITES_OFFERS();
                 this.getContent(false);
             }
+        },
+        toggleComplexFormModalVisible() {
+            this.complexFormModalVisible = !this.complexFormModalVisible;
         }
     }
 };
 </script>
-
-<style></style>

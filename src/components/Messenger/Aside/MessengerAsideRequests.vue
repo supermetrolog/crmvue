@@ -28,6 +28,15 @@
                             dialogType: record.model_type
                         })
                     "
+                    @update-call="
+                        updateCall(
+                            {
+                                companyID: record.model.company_id,
+                                chatMemberID: record.id
+                            },
+                            record
+                        )
+                    "
                     :current="record.id === currentDialogID"
                     :model="record.model"
                     :class="{ skeleton: isLoading }"
@@ -78,6 +87,7 @@ import { mapState } from 'vuex';
 import VirtualDragList from 'vue-virtual-draglist';
 import { LoaderMixin } from '@/components/Messenger/loader.mixin.js';
 import InfiniteLoading from 'v3-infinite-loading';
+import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 
 export default {
     name: 'MessengerAsideRequests',
@@ -99,6 +109,10 @@ export default {
             type: Object,
             default: null
         }
+    },
+    setup() {
+        const { show: showLastCallPopup } = useAsyncPopup('chatMemberLastCall');
+        return { showLastCallPopup };
     },
     data() {
         return {
@@ -128,6 +142,10 @@ export default {
             const isLastPage = await this.$store.dispatch('Messenger/loadDialogs', 'request');
             if (isLastPage) $state.complete();
             else $state.loaded();
+        },
+        async updateCall(payload, record) {
+            const response = await this.showLastCallPopup(payload);
+            if (response) record.last_call = response.lastCall;
         }
     }
 };

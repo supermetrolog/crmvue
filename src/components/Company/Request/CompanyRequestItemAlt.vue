@@ -154,10 +154,10 @@ import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { entityOptions } from '@/const/options/options.js';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
-import DashboardCardRequestObjectTypes from '@/components/Dashboard/Card/DashboardCardRequestObjectTypes.vue';
-import DashboardCardRequestRequirements from '@/components/Dashboard/Card/DashboardCardRequestRequirements.vue';
-import DashboardCardRequestAddress from '@/components/Dashboard/Card/DashboardCardRequestAddress.vue';
-import DashboardCardRequestStatus from '@/components/Dashboard/Card/DashboardCardRequestStatus.vue';
+import DashboardCardRequestObjectTypes from '@/components/Dashboard/Card/Request/DashboardCardRequestObjectTypes.vue';
+import DashboardCardRequestRequirements from '@/components/Dashboard/Card/Request/DashboardCardRequestRequirements.vue';
+import DashboardCardRequestAddress from '@/components/Dashboard/Card/Request/DashboardCardRequestAddress.vue';
+import DashboardCardRequestStatus from '@/components/Dashboard/Card/Request/DashboardCardRequestStatus.vue';
 import { unknownMovingDate } from '@/const/const.js';
 
 export default {

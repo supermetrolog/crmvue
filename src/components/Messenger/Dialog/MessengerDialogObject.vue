@@ -24,7 +24,11 @@
             </div>
         </div>
         <div class="messenger-dialog__footer">
-            <MessengerDialogPhone :info="{ lastCall: lastCall ?? model.updated_at }" />
+            <MessengerDialogPhone
+                @click.stop="$emit('update-call')"
+                :last-call="lastCall"
+                :updated-at="model.object.updated_at"
+            />
             <MessengerDialogFunctions />
         </div>
     </div>
@@ -39,6 +43,7 @@ import { entityOptions } from '@/const/options/options.js';
 export default {
     name: 'MessengerDialogObject',
     components: { Tooltip, MessengerDialogFunctions, MessengerDialogPhone, VLazyImage },
+    emits: ['update-call'],
     props: {
         model: {
             type: Object,

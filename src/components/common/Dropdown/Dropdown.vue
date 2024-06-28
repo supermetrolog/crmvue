@@ -1,41 +1,30 @@
 <template>
-    <button @click="switchDropdown" class="DropdownSwitcher">
-        <i v-if="!modelValue" class="fa fa-chevron-down"></i>
+    <button
+        v-tippy="'Нажмите, чтобы открыть содержимое'"
+        @click="modelValue = !modelValue"
+        class="dropdown-switcher dashboard-chip"
+    >
         <i v-if="modelValue" class="fa fa-chevron-up"></i>
+        <i v-else class="fa fa-chevron-down"></i>
         <template v-if="title">
             <span>{{ title }}</span>
-            <span
-v-if="mainNumber || sideNumber"
-                >({{ mainNumber }}<span v-if="sideNumber" class="side_number">{{ `/${sideNumber}` }}</span
-                >)</span
-            >
+            <span v-if="mainNumber || sideNumber">
+                <span>({{ mainNumber }}</span>
+                <span v-if="sideNumber" class="dropdown-switcher__side">
+                    {{ `/${sideNumber}` }}
+                </span>
+                <span>)</span>
+            </span>
         </template>
     </button>
 </template>
 
-<script>
-export default {
-    name: 'Dropdown',
-    emits: ['update:modelValue'],
-    props: {
-        title: {
-            type: String,
-            default: null
-        },
-        mainNumber: {
-            type: Number,
-            default: null
-        },
-        sideNumber: {
-            type: Number,
-            default: null
-        },
-        modelValue: Boolean
-    },
-    methods: {
-        switchDropdown() {
-            this.$emit('update:modelValue', !this.modelValue);
-        }
-    }
-};
+<script setup>
+defineProps({
+    title: { type: String, default: null },
+    mainNumber: { type: Number, default: null },
+    sideNumber: { type: Number, default: null }
+});
+
+const modelValue = defineModel({ type: Boolean });
 </script>

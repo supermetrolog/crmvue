@@ -1,9 +1,18 @@
 <template>
     <div class="messenger-dialog__phone" :class="className">
-        <span v-tippy="daysFromNowTippy" class="messenger-dialog__last-call">
-            от {{ formattedDate }}
-        </span>
-        <span v-if="className" class="messenger-dialog__icon">
+        <Tooltip>
+            <template #trigger>
+                <span class="messenger-dialog__last-call">от {{ formattedDate }}</span>
+            </template>
+            <template #content>
+                <p>{{ daysFromNowTippy }}</p>
+                <p v-if="lastCall">
+                    Звонок совершил(а) {{ lastCall.user?.userProfile?.medium_name }}
+                </p>
+                <p v-else>Дата сформирована на основе последнего обновления объекта/зпроса</p>
+            </template>
+        </Tooltip>
+        <span class="messenger-dialog__icon">
             <i class="fa-solid fa-phone"></i>
         </span>
     </div>
@@ -11,23 +20,35 @@
 <script>
 import dayjs from 'dayjs';
 import plural from 'plural-ru';
+import Tooltip from '@/components/common/Tooltip.vue';
 
 export default {
     name: 'MessengerDialogPhone',
+    components: { Tooltip },
     props: {
-        info: {
+        lastCall: {
             type: Object,
+            default: null
+        },
+        updatedAt: {
+            type: [String, Number],
             required: true
         }
     },
     computed: {
+        correctDate() {
+            if (this.lastCall) return this.lastCall.created_at;
+            return this.updatedAt;
+        },
         formattedDate() {
-            return dayjs(this.info.lastCall).format('DD.MM.YYYY');
+            return dayjs(this.correctDate).format('DD.MM.YYYY');
         },
         daysFromNow() {
-            return dayjs().diff(dayjs(this.info.lastCall), 'day');
+            return dayjs().diff(dayjs(this.correctDate), 'day');
         },
         daysFromNowTippy() {
+            if (this.daysFromNow === 0) return 'Сегодня';
+            if (this.daysFromNow === 1) return 'Вчера';
             return plural(this.daysFromNow, '%d день назад', '%d дня назад', '%d дней назад');
         },
         className() {

@@ -8,7 +8,7 @@
     >
         <Form @submit="onSubmit">
             <Tabs :options="{ useUrlFragment: false }">
-                <Loader v-if="loader" class="center" />
+                <Loader v-if="loader" />
                 <Tab name="Основное">
                     <div class="row mb-2">
                         <CheckboxChip
@@ -78,7 +78,7 @@
                             class="col-12"
                             :filterResults="false"
                             :min-chars="1"
-                            :resolve-on-load="formdata ? true : false"
+                            :resolve-on-load="Boolean(formdata)"
                             :delay="0"
                             :searchable="true"
                             :options="
@@ -241,11 +241,7 @@
                             :resolve-on-load="true"
                             label="Номенклатура товара"
                             class="col-12 mt-2"
-                            :options="
-                                async () => {
-                                    return await getProductRangeList();
-                                }
-                            "
+                            :options="COMPANY_PRODUCT_RANGE_LIST"
                             name="product"
                         />
                     </div>
@@ -259,7 +255,7 @@
                             class="col-12"
                             :filterResults="false"
                             :min-chars="1"
-                            :resolve-on-load="formdata ? true : false"
+                            :resolve-on-load="Boolean(formdata)"
                             :delay="0"
                             :searchable="true"
                             :options="
@@ -372,6 +368,7 @@
                             v-model:data="form.files"
                             label="Документы"
                             class="col-12"
+                            sortable
                         >
                             Выбрать файлы
                         </FileInput>
@@ -689,8 +686,8 @@ export default {
         customRequiredNameRu(value) {
             if (!this.form.noName) {
                 if (
-                    (value != null && value != '') ||
-                    (this.form.nameEng != null && this.form.nameEng != '')
+                    (value !== null && value !== '') ||
+                    (this.form.nameEng != null && this.form.nameEng !== '')
                 ) {
                     return true;
                 }
@@ -727,17 +724,19 @@ export default {
     },
     async created() {
         this.loader = true;
+
         await Promise.all([
             this.FETCH_CONSULTANT_LIST(),
             this.FETCH_COMPANY_GROUP_LIST(),
             this.FETCH_COMPANY_PRODUCT_RANGE_LIST(),
             this.FETCH_COMPANY_IN_THE_BANK_LIST()
         ]);
+
         if (this.formdata) {
             this.form = { ...this.form, ...cloneObject(this.formdata) };
-
             this.form = Utils.normalizeDataForCompanyForm(this.form);
         }
+
         this.loader = false;
     }
 };

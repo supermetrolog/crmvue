@@ -7,13 +7,13 @@
         width="800"
     >
         <div class="messenger-chat-form">
-            <!--            <AnimationTransition :speed="0.5">-->
-            <!--                <MessengerChatFormAttachments-->
-            <!--                    v-if="form.attachments?.length"-->
-            <!--                    @delete="deleteFile"-->
-            <!--                    :files="form.attachments"-->
-            <!--                />-->
-            <!--            </AnimationTransition>-->
+            <AnimationTransition :speed="0.5">
+                <MessengerChatFormAttachments
+                    v-if="form.files.length"
+                    @delete="deleteFile"
+                    :files="form.files"
+                />
+            </AnimationTransition>
             <div class="messenger-chat-form__settings">
                 <MessengerChatFormRecipient
                     @change="currentContact = $event"
@@ -24,9 +24,9 @@
                 <MessengerChatFormCategories @change="currentTag = $event" :current="currentTag" />
             </div>
             <Form @submit.prevent class="messenger-chat-form__field" method="post">
-                <!--                <Button @click="attachFile" class="messenger-chat-form__button" warning icon>-->
-                <!--                    <i class="fa-solid fa-paperclip"></i>-->
-                <!--                </Button>-->
+                <Button @click="attachFile" class="messenger-chat-form__button" warning icon>
+                    <i class="fa-solid fa-paperclip"></i>
+                </Button>
                 <Textarea
                     v-model.trim="form.message"
                     @keydown.enter.prevent="keyHandler"
@@ -59,10 +59,14 @@ import Textarea from '@/components/common/Forms/Textarea.vue';
 import MessengerChatFormRecipient from '@/components/Messenger/Chat/Form/MessengerChatFormRecipient.vue';
 import Form from '@/components/common/Forms/Form.vue';
 import { cloneObject } from '@/utils/index.js';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import MessengerChatFormAttachments from '@/components/Messenger/Chat/Form/MessengerChatFormAttachments.vue';
 
 export default {
     name: 'FormModalMessage',
     components: {
+        MessengerChatFormAttachments,
+        AnimationTransition,
         MessengerChatFormRecipient,
         MessengerChatFormCategories,
         Modal,
@@ -76,7 +80,8 @@ export default {
         return {
             form: {
                 id: null,
-                message: null
+                message: null,
+                files: []
             },
             currentTag: null,
             currentContact: null
@@ -87,7 +92,8 @@ export default {
             if (value) {
                 this.form = {
                     id: this.promiseProps.id,
-                    message: this.promiseProps.message
+                    message: this.promiseProps.message,
+                    files: cloneObject(this.promiseProps.files)
                 };
 
                 this.currentTag = this.promiseProps.tags.length
@@ -99,7 +105,8 @@ export default {
             } else {
                 this.form = {
                     id: null,
-                    message: null
+                    message: null,
+                    files: []
                 };
 
                 this.currentContact = null;
@@ -133,13 +140,13 @@ export default {
             const files = await this.$openAttachments();
 
             if (files) {
-                if (this.form.attachments?.length) {
-                    this.form.attachments.push(...files);
-                } else this.form.attachments = [...files];
+                if (this.form.files.length) {
+                    this.form.files.push(...files);
+                } else this.form.files = [...files];
             }
         },
         deleteFile(id) {
-            this.form.attachments.splice(id, 1);
+            this.form.files.splice(id, 1);
         }
     }
 };

@@ -2,8 +2,8 @@
     <DashboardChip @click="formIsVisible = true" class="dashboard-page__switch">
         {{ modelValue ? targetUsername : 'Общее' }}
     </DashboardChip>
-    <teleport v-if="formIsVisible" to="body">
-        <Modal @close="formIsVisible = false" title="Выбор сотрудника">
+    <teleport to="body">
+        <Modal v-if="formIsVisible" @close="formIsVisible = false" title="Выбор сотрудника">
             <UserPicker v-model="value" single :users="consultants" />
         </Modal>
     </teleport>

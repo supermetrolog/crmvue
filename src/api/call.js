@@ -3,8 +3,8 @@ import ErrorHandle from '@/api/errors/index.js';
 import SuccessHandler from '@/api/success/index.js';
 
 export default {
-    async createFromMessage(messageID, options) {
-        const url = `/chat-member-messages/create-alert/${messageID}`;
+    async createForChatMember(chatMemberID, options) {
+        const url = `/chat-members/${chatMemberID}/called`;
 
         try {
             const response = await axios.post(url, options);
@@ -14,11 +14,9 @@ export default {
             return null;
         }
     },
-    async create(options, config = { many: false }) {
-        const url = config.many ? '/alerts/for-users' : '/alerts';
-
+    async create(options) {
         try {
-            const response = await axios.post(url, options);
+            const response = await axios.post('/calls', options);
             return response.data;
         } catch (e) {
             ErrorHandle.setError(e);
@@ -27,7 +25,7 @@ export default {
     },
     async get(options) {
         const params = new URLSearchParams(options).toString();
-        const url = params ? `/alerts?${params}` : '/alerts';
+        const url = params ? `/calls?${params}` : '/calls';
 
         try {
             const response = await axios.get(url);
@@ -41,41 +39,37 @@ export default {
             return null;
         }
     },
-    async delete(alertID) {
-        const url = `/alerts/${alertID}`;
+    async getByID(id) {
+        const url = `/calls/${id}`;
+
+        try {
+            const response = await axios.get(url);
+            return response.data;
+        } catch (e) {
+            ErrorHandle.setError(e);
+            return null;
+        }
+    },
+    async delete(callID) {
+        const url = `/calls/${callID}`;
 
         try {
             const response = await axios.delete(url);
-
             return response.status === 200;
         } catch (e) {
             ErrorHandle.setError(e);
             return null;
         }
     },
-    async update(alertID, payload) {
-        const url = `/alerts/${alertID}`;
+    async update(callID, payload) {
+        const url = `/calls/${callID}`;
 
         try {
             const response = await axios.put(url, payload);
-
             return response.data;
         } catch (e) {
             ErrorHandle.setError(e);
             return null;
         }
     }
-    // async getCount(options) {
-    //     const params = new URLSearchParams(options).toString();
-    //
-    //     try {
-    //         const response = await axios.get(params ? `/tasks?${params}` : '/tasks');
-    //         const pagination = SuccessHandler.getPaginationData(response);
-    //
-    //         return pagination.totalCount;
-    //     } catch (e) {
-    //         ErrorHandle.setError(e);
-    //         return null;
-    //     }
-    // }
 };

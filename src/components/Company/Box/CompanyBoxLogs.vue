@@ -19,7 +19,7 @@
                     />
                     <Submit class="mt-1 w-100">Добавить</Submit>
                     <div v-if="loader" class="col-12 mt-4">
-                        <Loader class="center small py-2 no-absolute" />
+                        <Loader class="small py-2 no-absolute" />
                     </div>
                 </FormGroup>
             </Form>

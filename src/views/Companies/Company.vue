@@ -1,74 +1,90 @@
 <template>
-    <div class="company">
-        <p v-if="!loaderCompanyDetailInfo && COMPANY.status === 0" class="company-passive">
-            <span>Пассив</span>
-            <span v-if="COMPANY.passive_why !== null"> ({{ passiveWhyList[COMPANY.passive_why].label }})</span>
-            <span v-if="COMPANY.passive_why_comment !== null"> комм: {{ COMPANY.passive_why_comment }}</span>
-        </p>
+    <div class="company-page">
         <teleport to="body">
             <Timeline
-                v-if="timelineVisible && COMPANY && COMPANY_REQUESTS[0]"
+                v-if="timelineIsVisible && COMPANY && COMPANY_REQUESTS[0]"
                 @close="closeTimeline"
             />
             <CompanyContactModal
-                v-if="contactModalVisible"
-                @close="clickCloseContactModal"
-                @start-editing="openContactFormForUpdate"
+                v-if="contactModalIsVisible"
+                @close="contactModalIsVisible = false"
+                @start-editing="showContactForm"
+                @delete-contact="deleteContact"
                 :contact="contact"
             />
         </teleport>
         <FormCompanyDeal
-            v-if="dealFormVisible"
-            @close="clickCloseDealForm"
-            @updated="updatedDeal"
+            v-if="dealFormIsVisible"
+            @close="closeDealForm"
+            @updated="onDealUpdated"
             :formdata="deal"
         />
         <FormCompanyRequest
-            v-if="companyRequestFormVisible"
-            @closeCompanyForm="clickCloseCompanyRequestForm"
-            @created="createdRequest"
-            @updated="updatedRequest"
+            v-if="requestFormIsVisible"
+            @closeCompanyForm="closeRequestForm"
+            @created="getCompanyRequests"
+            @updated="getCompanyRequests"
             :company_id="COMPANY.id"
             :formdata="request"
         />
         <FormCompanyContact
-            v-if="companyContactFormVisible"
-            @closeCompanyForm="clickCloseCompanyContactForm"
-            @created="createdContact"
-            @updated="updatedContact"
+            v-if="contactFormIsVisible"
+            @close="closeContactForm"
+            @created="getCompanyContacts"
+            @updated="getCompanyContacts"
             :company_id="COMPANY.id"
             :formdata="contact"
         />
         <FormCompany
-            v-if="companyFormVisible"
-            @closeCompanyForm="clickCloseCompanyForm"
-            @updated="updatedCompany"
+            v-if="companyFormIsVisible"
+            @closeCompanyForm="closeCompanyForm"
+            @updated="onCompanyUpdated"
             :formdata="COMPANY"
         />
-        <div class="company-wrapper">
-            <Loader v-if="loaderCompanyDetailInfo"></Loader>
+        <DashboardChip
+            v-if="!companyIsLoading && COMPANY.status === 0"
+            class="company-page__chip dashboard-bg-danger text-white w-100 mb-2"
+        >
+            <div class="d-flex align-items-center justify-content-center">
+                <p>Пассив</p>
+                <i
+                    v-if="COMPANY.passive_why !== null"
+                    v-tippy="passiveWhyComment"
+                    class="fa-regular fa-question-circle ml-2 icon"
+                />
+            </div>
+        </DashboardChip>
+        <div class="company-page__wrapper">
+            <Loader v-if="companyIsLoading" />
             <CompanyBox
-                v-if="!loaderCompanyDetailInfo"
-                @editCompany="clickOpenCompanyForm"
-                @createContact="openContactFormForCreate"
+                v-if="!companyIsLoading"
+                @edit-company="companyFormIsVisible = true"
+                @create-contact="createContact"
                 :company="COMPANY"
                 :contacts="COMPANY_CONTACTS"
+                class="mb-2"
             />
-            <CompanyBoxLogs v-if="!loaderCompanyDetailInfo" :company="COMPANY" />
-            <CompanyBoxObjects v-if="!loaderCompanyObjects" :objects="COMPANY_OBJECTS" />
-            <CompanyBoxRequests
-                v-if="!loaderCompanyRequests"
-                @openDealFormForUpdate="openDealFormForUpdate"
-                @dealDeleted="getCompany(false)"
-                @clickCreateRequest="clickOpenCompanyRequestForm"
-                @openCompanyRequestFormForUpdate="openCompanyRequestFormForUpdate"
-                @requestCloned="getCompanyRequests"
-                @requestDisabled="getCompanyRequests"
-                :requests="companyRequests"
-                :deals="COMPANY.dealsRequestEmpty"
-                :loading="loaderCompanyRequests"
-            />
-            <CompanyBoxServices v-if="!loaderCompanyDetailInfo" />
+            <div class="company-page__row">
+                <CompanyBoxObjects
+                    v-if="!objectsIsLoading"
+                    @load="loadObjects"
+                    :objects="COMPANY_OBJECTS"
+                    class="company-page__column mb-2"
+                />
+                <CompanyBoxRequests
+                    v-if="!requestsIsLoading && !companyIsLoading"
+                    @update-deal="updateDeal"
+                    @deal-deleted="getCompany(false)"
+                    @create-request="requestFormIsVisible = true"
+                    @update-request="updateRequest"
+                    @request-cloned="getCompanyRequests"
+                    @request-disabled="getCompanyRequests"
+                    :requests="COMPANY_REQUESTS"
+                    :deals="COMPANY.dealsRequestEmpty"
+                    class="company-page__column mb-2"
+                />
+                <CompanyBoxServices v-if="!companyIsLoading" class="company-page__column" />
+            </div>
         </div>
     </div>
 </template>
@@ -83,20 +99,21 @@ import FormCompanyContact from '@/components/Forms/Company/FormCompanyContact.vu
 import FormCompanyDeal from '@/components/Forms/Company/FormCompanyDeal.vue';
 import CompanyBoxObjects from '@/components/Company/Box/CompanyBoxObjects.vue';
 import CompanyContactModal from '@/components/Company/Contact/CompanyContactModal.vue';
-import CompanyBoxLogs from '@/components/Company/Box/CompanyBoxLogs.vue';
 import CompanyBox from '@/components/Company/Box/CompanyBox.vue';
 import FormCompanyRequest from '@/components/Forms/Company/FormCompanyRequest.vue';
 import Timeline from '@/components/Timeline/Timeline.vue';
 import CompanyBoxServices from '@/components/Company/Box/CompanyBoxServices.vue';
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import { useConfirm } from '@/composables/useConfirm.js';
 
 export default {
     name: 'Company',
     components: {
+        DashboardChip,
         CompanyBoxServices,
         Timeline,
         FormCompanyRequest,
         CompanyBox,
-        CompanyBoxLogs,
         CompanyBoxRequests,
         CompanyContactModal,
         CompanyBoxObjects,
@@ -108,45 +125,48 @@ export default {
     provide() {
         return {
             openContact: contact => this.openContact(contact),
-            editContact: contact => this.openContactFormForUpdate(contact),
+            editContact: contact => this.updateContact(contact),
             createContactComment: data => this.createContactComment(data)
         };
     },
+    setup() {
+        const { confirm } = useConfirm();
+        return { confirm };
+    },
     data() {
         return {
-            loaderCompanyDetailInfo: true,
-            loaderCompanyRequests: true,
-            loaderCompanyContacts: true,
-            loaderCompanyObjects: true,
-            companyRequestFormVisible: false,
-            companyContactFormVisible: false,
-            contactModalVisible: false,
-            companyFormVisible: false,
-            dealFormVisible: false,
-            timelineVisible: false,
+            companyIsLoading: false,
+            requestsIsLoading: false,
+            contactsIsLoading: false,
+            objectsIsLoading: false,
+
+            requestFormIsVisible: false,
+            contactFormIsVisible: false,
+            companyFormIsVisible: false,
+            dealFormIsVisible: false,
+            timelineIsVisible: false,
+            contactModalIsVisible: false,
+
             request: null,
             contact: null,
             company: null,
-            deal: null,
-            loading: null
+            deal: null
         };
     },
     computed: {
-        ...mapGetters([
-            'COMPANY',
-            'COMPANY_REQUESTS',
-            'COMPANY_CONTACTS',
-            'COMPANY_OBJECTS',
-            'TIMELINE_LIST'
-        ]),
-        passiveWhyList: () => PassiveWhy,
-        companyRequests() {
-            return this.COMPANY_REQUESTS;
+        ...mapGetters(['COMPANY', 'COMPANY_REQUESTS', 'COMPANY_CONTACTS', 'COMPANY_OBJECTS']),
+        passiveWhyComment() {
+            let text = PassiveWhy[this.COMPANY.passive_why].label;
+            if (this.COMPANY.passive_why_comment) text += ': ' + this.COMPANY.passive_why_comment;
+            return text;
         }
     },
     watch: {
-        $route() {
-            this.timeline();
+        $route: {
+            handler() {
+                this.timelineIsVisible = !!this.$route.query.request_id;
+            },
+            immediate: true
         }
     },
     methods: {
@@ -156,131 +176,107 @@ export default {
             'FETCH_COMPANY_CONTACTS',
             'FETCH_COMPANY_OBJECTS',
             'ADD_TO_TRANSITION_LIST',
-            'CREATE_CONTACT_COMMENT'
+            'CREATE_CONTACT_COMMENT',
+            'DELETE_CONTACT'
         ]),
-        async getCompany(withLoader = true) {
-            this.loaderCompanyDetailInfo = withLoader;
+        async getCompany(withLoader = false) {
+            this.companyIsLoading = withLoader;
             await this.FETCH_COMPANY(this.$route.params.id);
-            this.loaderCompanyDetailInfo = false;
+            this.companyIsLoading = false;
+
             if (!this.COMPANY) {
                 this.$router.replace('/not-found');
                 return;
             }
+
             this.ADD_TO_TRANSITION_LIST(this.COMPANY);
         },
-        async getCompanyRequests() {
-            this.loaderCompanyRequests = true;
+        async getCompanyRequests(withLoader = false) {
+            this.requestsIsLoading = withLoader;
             await this.FETCH_COMPANY_REQUESTS(this.$route.params.id);
-            this.loaderCompanyRequests = false;
+            this.requestsIsLoading = false;
         },
-        async getCompanyContacts(withLoader = true) {
-            this.loaderCompanyContacts = withLoader;
+        async getCompanyContacts(withLoader = false) {
+            this.contactsIsLoading = withLoader;
             await this.FETCH_COMPANY_CONTACTS(this.$route.params.id);
-            this.loaderCompanyContacts = false;
+            this.contactsIsLoading = false;
         },
-        async getCompanyObjects(withLoader = true) {
-            this.loaderCompanyObjects = withLoader;
+        async getCompanyObjects(withLoader = false) {
+            this.objectsIsLoading = withLoader;
             await this.FETCH_COMPANY_OBJECTS(this.$route.params.id);
-            this.loaderCompanyObjects = false;
+            this.objectsIsLoading = false;
         },
-        openCompanyFormForUpdate(company) {
-            this.company = company;
-            this.clickOpenCompanyForm();
-        },
-        clickCloseCompanyForm() {
-            this.companyFormVisible = false;
-            this.company = null;
-        },
-        clickOpenCompanyForm() {
-            this.companyFormVisible = true;
-        },
-        clickCloseCompanyRequestForm() {
-            this.companyRequestFormVisible = false;
-            this.request = null;
-        },
-        clickOpenCompanyRequestForm() {
-            this.companyRequestFormVisible = true;
-        },
-        openCompanyRequestFormForUpdate(request) {
-            this.request = request;
-            this.clickOpenCompanyRequestForm();
-        },
-        clickOpenDealForm() {
-            this.dealFormVisible = true;
-        },
-        clickCloseDealForm() {
-            this.dealFormVisible = false;
-            this.deal = null;
-        },
-        openDealFormForUpdate(deal) {
-            this.deal = deal;
-            this.clickOpenDealForm();
+        async loadObjects($state) {
+            const isLastPage = await this.$store.dispatch(
+                'loadCompanyObjects',
+                this.$route.params.id
+            );
+            if (isLastPage) $state.complete();
+            else $state.loaded();
         },
         openContact(contact) {
-            this.contactModalVisible = true;
+            this.contactModalIsVisible = true;
             this.contact = contact;
-            // this.openContactFormForUpdate(contact);
         },
-        clickCloseContactModal() {
-            this.contactModalVisible = false;
-        },
-        openContactFormForUpdate(contact) {
-            this.contact = contact;
-            this.clickOpenCompanyContactForm();
-        },
-        clickCloseCompanyContactForm() {
-            this.companyContactFormVisible = false;
-
+        createContact() {
             this.contact = null;
+            this.showContactForm();
         },
-        openContactFormForCreate() {
-            this.contact = null;
-            this.clickOpenCompanyContactForm();
+        showContactForm() {
+            this.contactModalIsVisible = false;
+            this.contactFormIsVisible = true;
         },
-        clickOpenCompanyContactForm() {
-            this.contactModalVisible = false;
-            this.companyContactFormVisible = true;
+        updateDeal(deal) {
+            this.deal = deal;
+            this.dealFormIsVisible = true;
         },
-        createdRequest() {
-            this.getCompanyRequests();
+        updateRequest(request) {
+            this.request = request;
+            this.requestFormIsVisible = true;
         },
-        updatedRequest() {
-            this.getCompanyRequests();
+        closeDealForm() {
+            this.dealFormIsVisible = false;
+            this.deal = null;
         },
-        updatedDeal() {
-            this.getCompany(false);
-        },
-        createdContact() {
-            this.getCompanyContacts();
-        },
-        updatedContact() {
-            this.getCompanyContacts();
-        },
-        updatedCompany() {
+        onDealUpdated() {
             this.getCompany();
-            this.getCompanyContacts(false);
         },
-        timeline() {
-            if (this.$route.query.request_id) {
-                this.timelineVisible = true;
-            } else {
-                this.timelineVisible = false;
-            }
+        closeRequestForm() {
+            this.requestFormIsVisible = false;
+            this.request = null;
+        },
+        closeContactForm() {
+            this.contactFormIsVisible = false;
+            this.contact = null;
+        },
+        closeCompanyForm() {
+            this.companyFormIsVisible = false;
+            this.company = null;
+        },
+        onCompanyUpdated() {
+            this.getCompany();
+            this.getCompanyContacts();
         },
         closeTimeline() {
-            this.timelineVisible = false;
+            this.timelineIsVisible = false;
             this.$router.push({ name: 'company' });
         },
         async createContactComment(data) {
             await this.CREATE_CONTACT_COMMENT(data);
+        },
+        async deleteContact() {
+            const confirmed = this.confirm('Вы уверены, что хотите бевзозвратно удалить контакт?');
+            if (confirmed) await this.DELETE_CONTACT(this.contact);
         }
     },
-    mounted() {
-        this.getCompany();
-        this.getCompanyContacts();
-        this.getCompanyObjects();
-        this.getCompanyRequests();
-        this.timeline();
+    created() {
+        this.getCompany(true);
+        this.getCompanyContacts(true);
+        this.getCompanyObjects(true);
+        this.getCompanyRequests(true);
+    },
+    unmounted() {
+        this.$store.commit('clearCompanyObjectsStore');
     }
 };
 </script>
