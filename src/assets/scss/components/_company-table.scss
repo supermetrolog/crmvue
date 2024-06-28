@@ -164,6 +164,14 @@
             opacity: 0.5;
         }
     }
+
+    &__product-ranges {
+        @include mixins.flex-box($gap: 5px, $wrap: wrap);
+    }
+
+    &__company-group {
+        font-size: 14px;
+    }
 }
 
 .dropdown-switcher {

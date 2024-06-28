@@ -19,7 +19,7 @@
                         {{ category }}
                     </DashboardChip>
                     <span>ID {{ company.id }}</span>
-                    <Rating :rating="rating" :max="3" color="yellow" />
+                    <Rating v-if="company.rating" :rating="company.rating" color="yellow" />
                 </div>
             </div>
         </template>
@@ -236,9 +236,6 @@ export default {
             let commonContact = this.company.contacts.find(contact => contact.type === 1);
             if (commonContact) return commonContact.websites.map(item => item.website);
             return [];
-        },
-        rating() {
-            return (this.company.rating + 3) / 3;
         },
         activityGroup() {
             return ActivityGroupList[this.company.activityGroup].label;

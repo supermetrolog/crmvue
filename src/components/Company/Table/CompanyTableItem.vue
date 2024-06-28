@@ -1,18 +1,43 @@
 <template>
     <Tr class="company-table-item" :class="{ CompanyTableOdd: odd, CompanyTableEven: !odd }">
         <Td class="text-center company-table-item__id">
-            {{ company.id }}
+            <p>{{ company.id }}</p>
+            <DashboardChip
+                v-if="isPassive"
+                v-tippy="passiveWhyComment"
+                class="dashboard-bg-danger text-white mt-1"
+            >
+                <div class="d-flex align-items-center gap-1">
+                    <span>Пассив</span>
+                    <i class="fa-regular fa-question-circle" />
+                </div>
+            </DashboardChip>
         </Td>
         <Td class="company-table-item__name" sort="nameRu">
             <a class="company-table-item__title" :href="$url.company(company.id)" target="_blank">
-                <h4 :class="{ 'text-warning': !company.status }">
+                <h4 :class="{ 'text-warning': isPassive }">
                     {{ company.full_name }}
                 </h4>
             </a>
+            <p v-if="company.companyGroup" class="company-table-item__company-group">
+                {{ company.companyGroup.full_name }}
+            </p>
             <span v-if="company.activityProfile !== null" class="company-table-item__profile">
                 {{ activityProfile }}
             </span>
-            <Rating :rating="rating" :max="3" color="yellow" />
+            <div
+                v-if="company.productRanges?.length"
+                class="company-table-item__product-ranges my-1"
+            >
+                <DashboardChip
+                    v-for="productRange in company.productRanges"
+                    :key="productRange.id"
+                    class="dashboard-bg-light"
+                >
+                    {{ $formatter.text().ucFirst(productRange.product) }}
+                </DashboardChip>
+            </div>
+            <Rating v-if="company.rating" :rating="company.rating" color="yellow" />
         </Td>
         <Td class="company-table-item__categories">
             <div v-if="company.categories.length" class="company-table-item__list">
@@ -72,7 +97,7 @@ import Td from '@/components/common/Table/Td.vue';
 import { useStore } from 'vuex';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { ActivityProfileList, CompanyCategories } from '@/const/const.js';
+import { ActivityProfileList, CompanyCategories, PassiveWhy } from '@/const/const.js';
 import Rating from '@/components/common/Rating.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import CompanyContact from '@/components/Company/CompanyContact.vue';
@@ -97,7 +122,13 @@ const activityProfile = computed(() => ActivityProfileList[props.company.activit
 const categories = computed(() =>
     props.company.categories.map(({ category }) => CompanyCategories[category])
 );
-const rating = computed(() => (props.company.rating + 3) / 3);
+const isPassive = computed(() => props.company.status === 0);
+const passiveWhyComment = computed(() => {
+    if (!props.company.passive_why) return 'Причина не указана';
+    let text = PassiveWhy[props.company.passive_why].label;
+    if (props.company.passive_why_comment) text += ': ' + props.company.passive_why_comment;
+    return text;
+});
 
 const openTimeline = requestID => {
     const route = router.resolve({
