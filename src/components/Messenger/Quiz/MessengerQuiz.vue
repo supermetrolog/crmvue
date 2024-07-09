@@ -74,7 +74,7 @@ export default {
                     date: schedule,
                     contact: this.currentRecipient
                 });
-                this.$toast('Дата следующего звонка успешно выбрана');
+                this.$notify('Дата следующего звонка успешно выбрана');
             }
         },
         open() {
@@ -105,7 +105,7 @@ export default {
             const requestSent = await this.$store.dispatch('Messenger/sendBreakObject');
 
             if (requestSent) {
-                this.$toast('Объект помечен снесенным.');
+                this.$notify('Объект помечен снесенным.');
             }
         }
     }

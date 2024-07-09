@@ -135,35 +135,35 @@ export default {
         ...mapMutations({ setCurrentRecipient: 'Messenger/setCurrentRecipient' }),
         changeRecipient() {
             this.setCurrentRecipient({ contactID: this.message.contacts[0].id });
-            this.$toast(`Контакт изменен на ${this.recipientUsername}`);
+            this.$notify(`Контакт изменен на ${this.recipientUsername}`);
         },
         async pinMessage() {
             if (this.pinned) {
                 const unpinned = await this.$store.dispatch('Messenger/unpinMessage');
-                if (unpinned) this.$toast('Сообщение успешно откреплено');
+                if (unpinned) this.$notify('Сообщение успешно откреплено');
             } else {
                 const pinned = await this.$store.dispatch('Messenger/pinMessage', this.message);
-                if (pinned) this.$toast('Сообщение успешно закреплено');
+                if (pinned) this.$notify('Сообщение успешно закреплено');
             }
         },
         async editMessage() {
             const updated = await this.$messageUpdate(this.message);
 
             if (updated) {
-                this.$toast('Сообщение успешно обновлена');
+                this.$notify('Сообщение успешно обновлена');
             }
         },
         async pinToObject() {
             const pinned = await this.$store.dispatch('Messenger/pinMessageToObject', this.message);
 
             if (pinned) {
-                this.$toast(
+                this.$notify(
                     this.message.pinnedToObject
                         ? 'Сообщение успешно закреплено за объектом'
                         : 'Сообщение успешно откреплено от объекта'
                 );
             } else {
-                this.$toast('Произошла ошибка. Попробуйте еще раз');
+                this.$notify('Произошла ошибка. Попробуйте еще раз');
             }
         }
     }

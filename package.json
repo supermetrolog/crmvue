@@ -4,13 +4,14 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "serve": "vite --open --mode server --port 8080",
+    "serve": "vite --open --mode server --port 8081",
     "build": "vite build",
     "stage": "vite build --mode stage",
-    "lint": "eslit src",
+    "lint": "eslint src",
     "dev": "vite",
     "preview": "vite preview",
-    "docs": "jsdoc --configure jsdoc.json --verbose"
+    "docs": "jsdoc --configure jsdoc.json --verbose",
+    "test": "vitest"
   },
   "dependencies": {
     "@floating-ui/vue": "^1.0.6",

@@ -92,8 +92,8 @@ export default {
                     additionType: 'task'
                 });
 
-                if (deleted) this.$toast('Задача удалена.');
-                else this.$toast('Произошла ошибка. Попробуйте позже.');
+                if (deleted) this.$notify('Задача удалена.');
+                else this.$notify('Произошла ошибка. Попробуйте позже.');
             }
         }
     }

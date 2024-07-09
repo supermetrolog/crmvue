@@ -66,8 +66,8 @@ export default {
                     additionType: 'alert'
                 });
 
-                if (deleted) this.$toast('Уведомление удалено.');
-                else this.$toast('Произошла ошибка. Попробуйте позже.');
+                if (deleted) this.$notify('Уведомление удалено.');
+                else this.$notify('Произошла ошибка. Попробуйте позже.');
             }
         }
     }

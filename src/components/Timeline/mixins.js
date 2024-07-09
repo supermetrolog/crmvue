@@ -1,5 +1,5 @@
 import { mapActions, mapGetters } from 'vuex';
-import { cloneObject, waitHash } from '@/utils/index.js';
+import { cloneObject } from '@/utils/index.js';
 import api from '@/api/api.js';
 import CommentWithAutoSetComment, {
     AlreadySendOffersComment,

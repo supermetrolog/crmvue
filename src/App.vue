@@ -1,5 +1,5 @@
 <template>
-    <notifications position="bottom right" group="app" />
+    <notifications position="bottom right" group="app" pause-on-hover />
     <component :is="layoutName" />
 </template>
 

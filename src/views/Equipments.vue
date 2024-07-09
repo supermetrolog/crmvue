@@ -164,10 +164,10 @@ export default {
             this.editingEquipment.title = 'Test';
 
             this.editingEquipment = null;
-            this.$toast('Оборудование #id успешно изменено');
+            this.$notify('Оборудование #id успешно изменено');
         },
         onCreatedEquipment() {
-            this.$toast('Оборудование успешно создано');
+            this.$notify('Оборудование успешно создано');
         },
         viewEquipment(equipment) {
             this.viewingEquipment = equipment;

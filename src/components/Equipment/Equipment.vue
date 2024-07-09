@@ -173,7 +173,9 @@ export default {
             );
 
             if (confirmed) {
-                this.$toast(this.isPassive ? 'Объект снят с пассива' : 'Объект отправлен в пассив');
+                this.$notify(
+                    this.isPassive ? 'Объект снят с пассива' : 'Объект отправлен в пассив'
+                );
             }
         },
         async remove() {
@@ -182,7 +184,7 @@ export default {
             );
 
             if (confirmed) {
-                this.$toast('Объект успешно удален.');
+                this.$notify('Объект успешно удален.');
             }
         }
     }

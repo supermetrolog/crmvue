@@ -184,7 +184,7 @@ export default {
                 if (updated) {
                     await this.$store.dispatch('REFRESH_USER');
                 } else {
-                    this.$toast('При обновлении пользователя произошла ошибка. Попробуйте позже.');
+                    this.$notify('При обновлении пользователя произошла ошибка. Попробуйте позже.');
                 }
 
                 this.form.password = null;

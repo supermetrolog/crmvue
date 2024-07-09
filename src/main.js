@@ -19,7 +19,6 @@ import './assets/fontawesome/css/all.min.css';
 import 'animate.css';
 import Tab from '@/components/common/Tabs/Tab.vue';
 import Tabs from '@/components/common/Tabs/Tabs.vue';
-import Toast from '@/plugins/toast';
 
 import Url, { $generatorURL } from '@/plugins/url';
 import dayjs from 'dayjs';
@@ -55,8 +54,7 @@ app.component('Tabs', Tabs)
     .use(UniqueID)
     .use(Formatter)
     .use(Url)
-    .use(Notifications)
-    .use(Toast, {
+    .use(Notifications, {
         group: 'app',
         type: 'info',
         duration: 1000

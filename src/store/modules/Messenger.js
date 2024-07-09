@@ -1,8 +1,8 @@
 import api from '@//api/api';
-import { $toast } from '@/plugins/toast';
 import dayjs from 'dayjs';
 import { alg } from '@/utils/alg.js';
 import { entityOptions } from '@/const/options/options.js';
+import { notify } from '@kyvg/vue3-notification';
 
 const needCacheMessage = (dialogID, asideID, panelID) => {
     // Лучше не трогать условие.. Оно долго выводилось
@@ -381,7 +381,7 @@ const Messenger = {
                 return true;
             }
 
-            $toast('Произошла ошибка при отправке сообщения');
+            notify('Произошла ошибка при отправке сообщения');
             return false;
         },
         async updateMessage({ commit }, { id, message = null, tag = null, contact = null }) {
@@ -399,13 +399,13 @@ const Messenger = {
                 return true;
             }
 
-            $toast('Произошла ошибка при отправке запроса');
+            notify('Произошла ошибка при отправке запроса');
             return false;
         },
 
         async reportContact(context, { contact }) {
             // ONLY TESTING
-            $toast(`${contact.full_name} отмечен(а) как неактуальный контакт`, { duration: 3000 });
+            notify(`${contact.full_name} отмечен(а) как неактуальный контакт`, { duration: 3000 });
 
             context.commit('addMessages', [
                 {

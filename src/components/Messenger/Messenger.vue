@@ -86,7 +86,7 @@ export default {
             });
 
             if (!dialog) {
-                this.$toast('Данные по объекту не были найдены в чате');
+                this.$notify('Данные по объекту не были найдены в чате');
                 return;
             }
 
@@ -110,7 +110,7 @@ export default {
             const dialog = await api.messenger.getDialogByQuery({ id: chatMemberID });
 
             if (!dialog) {
-                this.$toast('Данные о чате не были найдены в системе.');
+                this.$notify('Данные о чате не были найдены в системе.');
                 return;
             }
 

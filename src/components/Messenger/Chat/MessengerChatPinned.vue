@@ -60,7 +60,7 @@ export default {
             if (!confirmed) return;
 
             const unpinned = await this.$store.dispatch('Messenger/unpinMessage');
-            if (unpinned) this.$toast('Сообщение успешно откреплено');
+            if (unpinned) this.$notify('Сообщение успешно откреплено');
         }
     }
 };

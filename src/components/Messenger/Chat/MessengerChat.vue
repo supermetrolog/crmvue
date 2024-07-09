@@ -90,8 +90,8 @@ export default {
                 }
             );
 
-            if (response) this.$toast(successMessage);
-            else this.$toast(errorMessage ?? 'Произошла ошибка. Попробуйте позже');
+            if (response) this.$notify(successMessage);
+            else this.$notify(errorMessage ?? 'Произошла ошибка. Попробуйте позже');
         },
         async editAddition({
             messageID,
@@ -110,8 +110,8 @@ export default {
                 payload: creatorResponse
             });
 
-            if (response) this.$toast(successMessage);
-            else this.$toast(errorMessage ?? 'Произошла ошибка. Попробуйте позже');
+            if (response) this.$notify(successMessage);
+            else this.$notify(errorMessage ?? 'Произошла ошибка. Попробуйте позже');
         },
         async editTaskStatus(messageID, task) {
             const response = await this.$refs.taskStatusEditor.open(task);
@@ -121,7 +121,7 @@ export default {
 
                 if (statusUpdated) {
                     task.status = response.status;
-                    this.$toast('Статус задачи успешно изменен.');
+                    this.$notify('Статус задачи успешно изменен.');
                 }
             }
         }
