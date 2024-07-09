@@ -1,63 +1,51 @@
 <template>
     <div class="deal-list">
         <hr />
-        <div v-if="deals.length" class="row mb-2">
-            <div class="col-12 text-center">
-                <p>Сделки без запроса - {{ deals.length }}</p>
+        <template v-if="deals.length">
+            <h4 class="text-center">Сделки без запроса - {{ deals.length }}</h4>
+            <div class="deal-list__vertical mt-1">
+                <DealListItem
+                    v-for="deal in deals"
+                    :key="deal.id"
+                    @update="updateDeal(deal)"
+                    @delete="deleteDeal(deal)"
+                    class="mb-2 mt-1"
+                    :deal="deal"
+                />
             </div>
-        </div>
-        <DealListItem
-            v-for="deal in deals"
-            :key="deal.id"
-            @update="updateDeal(deal)"
-            @delete="deleteDeal(deal)"
-            class="mb-2 mt-1"
-            :deal="deal"
-        />
+        </template>
     </div>
 </template>
 
-<script>
-import { mapActions } from 'vuex';
+<script setup>
+import { useStore } from 'vuex';
 import DealListItem from '@/components/Deal/DealListItem.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
+import { shallowRef } from 'vue';
 
-export default {
-    name: 'DealList',
-    components: {
-        DealListItem
-    },
-    emits: ['update', 'deleted'],
-    props: {
-        deals: {
-            type: Array,
-            default: () => []
-        }
-    },
-    setup() {
-        const { confirm } = useConfirm();
-        return { confirm };
-    },
-    data() {
-        return {
-            isLoading: false
-        };
-    },
-    methods: {
-        ...mapActions(['DELETE_DEAL']),
-        async deleteDeal(deal) {
-            const confirmed = confirm('Вы уверены, что хотите удалить сделку?');
-            if (!confirmed) return;
-
-            this.isLoading = true;
-            await this.DELETE_DEAL(deal);
-            this.isLoading = false;
-
-            this.$emit('deleted');
-        },
-        updateDeal(deal) {
-            this.$emit('update', deal);
-        }
+const emit = defineEmits(['update', 'deleted']);
+defineProps({
+    deals: {
+        type: Array,
+        default: () => []
     }
+});
+
+const store = useStore();
+const { confirm } = useConfirm();
+const isLoading = shallowRef(false);
+const deleteDeal = async deal => {
+    const confirmed = await confirm('Вы уверены, что хотите удалить сделку?');
+    if (!confirmed) return;
+
+    isLoading.value = true;
+    await store.dispatch('DELETE_DEAL', deal);
+    isLoading.value = false;
+
+    emit('deleted');
+};
+
+const updateDeal = deal => {
+    emit('update', deal);
 };
 </script>

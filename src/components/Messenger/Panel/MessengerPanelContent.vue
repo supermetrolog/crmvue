@@ -14,9 +14,9 @@
         <Teleport to="body">
             <FormCompany
                 v-if="companyFormIsVisible"
-                @closeCompanyForm="companyFormIsVisible = false"
+                @close="companyFormIsVisible = false"
                 @updated="updateCompany"
-                :formdata="company"
+                :form-data="company"
             />
         </Teleport>
     </div>

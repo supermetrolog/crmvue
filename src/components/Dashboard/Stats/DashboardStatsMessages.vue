@@ -31,65 +31,48 @@
     </DashboardCard>
 </template>
 
-<script>
-import { LoaderMixin } from '@/components/Messenger/loader.mixin.js';
+<script setup>
 import api from '@/api/api.js';
 import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
 import DashboardCardMessage from '@/components/Dashboard/Card/DashboardCardMessage.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import DashboardCardMessageSkeleton from '@/components/Dashboard/Card/DashboardCardMessageSkeleton.vue';
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';
+import { inject, onBeforeMount, ref, watch } from 'vue';
+import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 
-export default {
-    name: 'DashboardStatsMessages',
-    components: {
-        MessengerButton,
-        DashboardCardMessageSkeleton,
-        EmptyData,
-        DashboardCardMessage,
-        DashboardCard
-    },
-    mixins: [LoaderMixin],
-    inject: ['$openMessengerChat'],
-    props: {
-        user: {
-            type: Number,
-            default: null
-        }
-    },
-    data() {
-        return {
-            messages: []
-        };
-    },
-    watch: {
-        user() {
-            this.fetchMessages();
-        }
-    },
-    methods: {
-        async fetchMessages() {
-            this.loadingState = true;
-
-            const userParams = this.user ? { from_chat_member_id: this.user } : {};
-
-            const response = await api.messenger.getMessagesByQuery({
-                ...userParams,
-                sort: '-created_at'
-            });
-
-            this.messages = response.data.slice(0, 10);
-
-            this.loadingState = false;
-        },
-        openInChat(chatMemberID) {
-            this.$openMessengerChat({
-                chatMemberID: chatMemberID
-            });
-        }
-    },
-    created() {
-        this.fetchMessages();
+const $openMessengerChat = inject('$openMessengerChat');
+const props = defineProps({
+    user: {
+        type: Number,
+        default: null
     }
+});
+
+const { isLoading } = useDelayedLoader();
+const messages = ref([]);
+
+const openInChat = chatMemberID => {
+    $openMessengerChat({ chatMemberID });
 };
+
+const fetchMessages = async () => {
+    isLoading.value = true;
+
+    const userParams = props.user ? { from_chat_member_id: props.user } : {};
+
+    const response = await api.messenger.getMessagesByQuery({
+        ...userParams,
+        sort: '-created_at'
+    });
+
+    if (response) messages.value = response.data.slice(0, 10);
+
+    isLoading.value = false;
+};
+
+watch(() => props.user, fetchMessages);
+onBeforeMount(() => {
+    fetchMessages();
+});
 </script>
