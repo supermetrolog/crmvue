@@ -35,35 +35,26 @@
     </p>
 </template>
 
-<script>
+<script setup>
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes';
 import { entityOptions } from '@/const/options/options';
+import { computed } from 'vue';
 
-export default {
-    name: 'ComplexDealDetailsService',
-    components: { WithUnitType },
-    props: {
-        title: {
-            type: String,
-            required: true
-        },
-        titleAlt: {
-            type: String,
-            required: true
-        },
-        service: {
-            type: Object,
-            required: true
-        }
+defineProps({
+    title: {
+        type: String,
+        required: true
     },
-    computed: {
-        unitTypes() {
-            return unitTypes;
-        },
-        serviceStatement() {
-            return entityOptions.deal.priceServiceStatement;
-        }
+    titleAlt: {
+        type: String,
+        required: true
+    },
+    service: {
+        type: Object,
+        required: true
     }
-};
+});
+
+const serviceStatement = computed(() => entityOptions.deal.priceServiceStatement);
 </script>

@@ -29,7 +29,7 @@
     </li>
 </template>
 
-<script>
+<script setup>
 import { mapper } from '@/utils/mapper';
 import { entityProperties } from '@/const/properties/properties';
 import Tooltip from '@/components/common/Tooltip.vue';
@@ -37,39 +37,30 @@ import IconElevator from '@/components/common/Icons/IconElevator.vue';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { entityOptions } from '@/const/options/options';
 import { deleteObjectsWithEmptyProperties } from '@/utils/deleteObjectsWithEmptyProperties.js';
+import { computed } from 'vue';
 
-export default {
-    name: 'ComplexHoldingParametersElevator',
-    components: { WithUnitType, IconElevator, Tooltip },
-    props: {
-        elevator: {
-            type: Object,
-            required: true
-        }
-    },
-    computed: {
-        properties() {
-            const properties = mapper.propertiesToTableFormat(
-                this.elevator,
-                entityProperties.elevator.characteristics
-            );
-
-            return deleteObjectsWithEmptyProperties(properties, 'value', 0);
-        },
-        hasBadStatus() {
-            return (
-                this.elevator.elevator_condition ===
-                    entityOptions.elevator.conditionStatement.NEED_MAINTENANCE ||
-                this.elevator.elevator_condition ===
-                    entityOptions.elevator.conditionStatement.NEED_REPAIR
-            );
-        },
-        status() {
-            return entityOptions.elevator.condition[this.elevator.elevator_condition];
-        },
-        title() {
-            return entityOptions.elevator.type[this.elevator.elevator_type];
-        }
+const props = defineProps({
+    elevator: {
+        type: Object,
+        required: true
     }
-};
+});
+
+const properties = computed(() => {
+    const _properties = mapper.propertiesToTableFormat(
+        props.elevator,
+        entityProperties.elevator.characteristics
+    );
+
+    return deleteObjectsWithEmptyProperties(_properties, 'value', 0);
+});
+const hasBadStatus = computed(() => {
+    return (
+        props.elevator.elevator_condition ===
+            entityOptions.elevator.conditionStatement.NEED_MAINTENANCE ||
+        props.elevator.elevator_condition === entityOptions.elevator.conditionStatement.NEED_REPAIR
+    );
+});
+const status = computed(() => entityOptions.elevator.condition[props.elevator.elevator_condition]);
+const title = computed(() => entityOptions.elevator.type[props.elevator.elevator_type]);
 </script>

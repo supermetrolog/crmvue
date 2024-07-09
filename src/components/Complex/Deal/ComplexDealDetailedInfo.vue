@@ -8,21 +8,14 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import ComplexDealBuilding from '@/components/Complex/Deal/ComplexDealBuilding.vue';
 import ComplexOfferTabs from '@/components/Complex/Offer/ComplexOfferTabs.vue';
 
-export default {
-    name: 'ComplexDealDetailedInfo',
-    components: {
-        ComplexOfferTabs,
-        ComplexDealBuilding
-    },
-    props: {
-        deal: {
-            type: Object,
-            required: true
-        }
+defineProps({
+    deal: {
+        type: Object,
+        required: true
     }
-};
+});
 </script>

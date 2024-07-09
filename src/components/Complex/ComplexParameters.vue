@@ -10,13 +10,13 @@
             <span v-if="parameter.range" class="complex-parameters__text">
                 <template v-if="!parameter.icon">{{ parameter.name }} - </template>
                 <with-unit-type :unit-type="parameter.unitType">
-                    {{ $formatter.numberOrRangeNew(parameter.valueMin, parameter.valueMax) }}
+                    {{ toNumberOrRangeFormat(parameter.valueMin, parameter.valueMax) }}
                 </with-unit-type>
             </span>
             <span v-else-if="parameter.count" class="complex-parameters__text">
                 <template v-if="!parameter.icon">{{ parameter.name }} - </template>
                 <with-unit-type :unit-type="parameter.unitType">
-                    {{ $formatter.toCorrectValue(parameter.value) }}
+                    {{ toCorrectFormat(parameter.value) }}
                 </with-unit-type>
             </span>
             <span v-else-if="parameter.valueCount">
@@ -54,25 +54,14 @@
     </ul>
 </template>
 
-<script>
-import { unitTypes } from '@/const/unitTypes';
+<script setup>
 import WithUnitType from '@/components/common/WithUnitType.vue';
+import { toCorrectFormat, toNumberOrRangeFormat } from '@/utils/formatter.js';
 
-export default {
-    name: 'ComplexParameters',
-    components: {
-        WithUnitType
-    },
-    props: {
-        parameters: {
-            type: Object,
-            required: true
-        }
-    },
-    data() {
-        return {
-            unitTypes
-        };
+defineProps({
+    parameters: {
+        type: Object,
+        required: true
     }
-};
+});
 </script>

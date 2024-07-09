@@ -3,14 +3,7 @@
         <Tabs closed :options="{ useUrlFragment: false }">
             <Tab v-if="complex" name="О комплексе">
                 <div class="complex-about__content">
-                    <PropertyGrid
-                        :template="[
-                            ['areas', 'security'],
-                            ['communications'],
-                            ['railway', 'infrastructure']
-                        ]"
-                        :sections="parameters"
-                    />
+                    <PropertyGrid :template="template" :sections="parameters" />
                 </div>
             </Tab>
             <Tab name="План Территории">
@@ -70,37 +63,25 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import PropertyGrid from '@/components/common/Property/PropertyGrid.vue';
 import { mapper } from '@/utils/mapper';
 import { entityProperties } from '@/const/properties/properties';
+import { computed } from 'vue';
 
-export default {
-    name: 'ComplexAbout',
-    components: { PropertyGrid },
-    inject: {
-        injectedIsMobile: {
-            from: 'isMobile'
-        }
-    },
-    props: {
-        complex: {
-            type: Object,
-            required: true
-        }
-    },
-    data() {
-        return {
-            isMobile: this.injectedIsMobile
-        };
-    },
-    computed: {
-        parameters() {
-            return mapper.propertiesToTableFormatWithSections(
-                this.complex,
-                entityProperties.complex.characteristicsWithSections
-            );
-        }
+const props = defineProps({
+    complex: {
+        type: Object,
+        required: true
     }
-};
+});
+
+const template = [['areas', 'security'], ['communications'], ['railway', 'infrastructure']];
+
+const parameters = computed(() => {
+    return mapper.propertiesToTableFormatWithSections(
+        props.complex,
+        entityProperties.complex.characteristicsWithSections
+    );
+});
 </script>

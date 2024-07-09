@@ -19,18 +19,18 @@
             Данные о сделке отсутсвуют в связи с отсутствием торговых предложений.
         </EmptyData>
         <div class="building-info__line">
+            <ComplexActions class="building-info__buttons" simple :buttons="actionButtons" />
             <ComplexDealTabs
                 :has-active-offers="hasActiveOffers"
-                :deal="dealPrepared"
+                :deal="deal"
+                :floors="floors"
                 class="building-info__tabs"
             />
-            <ComplexActions class="building-info__buttons" simple :buttons="actionButtons" />
         </div>
     </div>
 </template>
 
-<script>
-import { unitTypes } from '@/const/unitTypes';
+<script setup>
 import ComplexParameters from '@/components/Complex/ComplexParameters.vue';
 import ComplexActions from '@/components/Complex/ComplexActions.vue';
 import ComplexDealTabs from '@/components/Complex/Deal/ComplexDealTabs.vue';
@@ -38,106 +38,92 @@ import { entityProperties } from '@/const/properties/properties';
 import { mapper } from '@/utils/mapper';
 import ComplexDealArea from '@/components/Complex/Deal/ComplexDealArea.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
-import { mapGetters } from 'vuex';
+import { useStore } from 'vuex';
 import ComplexDealPrice from '@/components/Complex/Deal/Price/ComplexDealPrice.vue';
 import ComplexPurposes from '@/components/Complex/ComplexPurposes.vue';
+import { computed, inject } from 'vue';
+import { $generatorURL as $url } from '@/plugins/url.js';
+import { useRoute } from 'vue-router';
+import { notify } from '@kyvg/vue3-notification';
 
-export default {
-    name: 'ComplexDealBuilding',
-    components: {
-        ComplexPurposes,
-        ComplexDealPrice,
-        EmptyData,
-        ComplexDealArea,
-        ComplexDealTabs,
-        ComplexActions,
-        ComplexParameters
-    },
-    inject: ['dealFloors', 'openDownloader'],
-    props: {
-        deal: {
-            type: Object,
-            required: true
-        }
-    },
-    data() {
-        return {
-            unitTypes
-        };
-    },
-    computed: {
-        ...mapGetters(['THIS_USER']),
-        photos() {
-            if (!this.deal.summaryBlock) return [];
+const store = useStore();
+const route = useRoute();
 
-            const photos =
-                this.deal.summaryBlock.photos instanceof Array
-                    ? this.deal.summaryBlock.photos
-                    : Object.values(this.deal.summaryBlock.photos);
+const dealFloors = inject('dealFloors');
+const openDownloader = inject('openDownloader');
 
-            return photos.map(el => ({
-                src: this.$url.api.objects() + el
-            }));
-        },
-        dealPrepared() {
-            return {
-                ...this.deal,
-                floors: this.floors
-            };
-        },
-        partsObject() {
-            return this.deal.blocks.reduce((acc, block) => {
-                block.parts.forEach(part => (acc[part] = true));
-
-                return acc;
-            }, {});
-        },
-        floors() {
-            return [...this.dealFloors].map(floor => ({
-                ...floor,
-                parts: floor.parts.filter(part => this.partsObject[part.id])
-            }));
-        },
-        actionButtons() {
-            return {
-                dislike: {},
-                favorite: {},
-                notifications: {},
-                pdf: {
-                    disabled: !this.hasActiveOffers,
-                    handler: () => {
-                        const urlLink = this.$url.pdf(
-                            { type_id: 2, offer_id: this.deal.id, object_id: this.deal.object_id },
-                            this.THIS_USER.id
-                        );
-                        window.open(urlLink, '_blank');
-                    }
-                },
-                delete: {},
-                copy: {
-                    handler: async () => {
-                        const url = this.$url.offer(this.$route.params.complex_id, this.deal.id);
-
-                        await navigator.clipboard.writeText(url);
-
-                        this.$toast('Ссылка на сделку скопирована');
-                    }
-                },
-                photos: {
-                    disabled: !this.photos.length || !this.hasActiveOffers,
-                    handler: () => this.openDownloader(this.photos)
-                }
-            };
-        },
-        parameters() {
-            return mapper.propertiesToParametersFormat(
-                this.deal.summaryBlock,
-                entityProperties.deal.parameters
-            );
-        },
-        hasActiveOffers() {
-            return this.deal.blocks.some(offer => !offer.deleted && !offer.deal_id);
-        }
+const props = defineProps({
+    deal: {
+        type: Object,
+        required: true
     }
-};
+});
+
+const hasActiveOffers = computed(() =>
+    props.deal.blocks.some(offer => !offer.deleted && !offer.deal_id)
+);
+
+const photos = computed(() => {
+    if (!props.deal.summaryBlock) return [];
+
+    const photos =
+        props.deal.summaryBlock.photos instanceof Array
+            ? props.deal.summaryBlock.photos
+            : Object.values(props.deal.summaryBlock.photos);
+
+    return photos.map(el => ({
+        src: $url.api.objects() + el
+    }));
+});
+
+const partsObject = computed(() => {
+    return props.deal.blocks.reduce((acc, block) => {
+        block.parts.forEach(part => (acc[part] = true));
+        return acc;
+    }, {});
+});
+
+const floors = computed(() => {
+    return [...dealFloors].map(floor => ({
+        ...floor,
+        parts: floor.parts.filter(part => partsObject.value[part.id])
+    }));
+});
+
+const actionButtons = computed(() => {
+    return {
+        dislike: {},
+        favorite: {},
+        notifications: {},
+        pdf: {
+            disabled: !hasActiveOffers.value,
+            handler: () => {
+                const urlLink = $url.pdf(
+                    { type_id: 2, offer_id: props.deal.id, object_id: props.deal.object_id },
+                    store.getters.THIS_USER
+                );
+                window.open(urlLink, '_blank');
+            }
+        },
+        delete: {},
+        copy: {
+            handler: async () => {
+                const url = $url.offer(route.params.complex_id, props.deal.id);
+                await navigator.clipboard.writeText(url);
+                notify('Ссылка на сделку скопирована');
+            }
+        },
+        photos: {
+            disabled: !photos.value.length || !hasActiveOffers.value,
+            handler: () => openDownloader(photos.value)
+        }
+    };
+});
+
+const parameters = computed(() => {
+    return mapper.propertiesToParametersFormat(
+        props.deal.summaryBlock,
+        entityProperties.deal.parameters
+    );
+});
 </script>

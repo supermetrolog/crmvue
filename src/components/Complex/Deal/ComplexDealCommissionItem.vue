@@ -8,22 +8,19 @@
         </span>
     </li>
 </template>
-<script>
-export default {
-    name: 'ComplexDealCommissionItem',
-    props: {
-        label: {
-            type: String,
-            default: null
-        },
-        cancel: {
-            type: Boolean,
-            default: false
-        },
-        cancelLabel: {
-            type: String,
-            default: null
-        }
+<script setup>
+defineProps({
+    label: {
+        type: String,
+        default: null
+    },
+    cancel: {
+        type: Boolean,
+        default: false
+    },
+    cancelLabel: {
+        type: String,
+        default: null
     }
-};
+});
 </script>

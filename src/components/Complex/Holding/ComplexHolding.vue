@@ -36,41 +36,29 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import Carousel from '@/components/common/Carousel.vue';
 import ComplexHoldingParameters from '@/components/Complex/Holding/ComplexHoldingParameters.vue';
 import ComplexHoldingTabs from '@/components/Complex/Holding/ComplexHoldingTabs.vue';
 import ComplexHoldingCompany from '@/components/Complex/Holding/ComplexHoldingCompany.vue';
+import { computed, inject, provide } from 'vue';
+import { $generatorURL as $url } from '@/plugins/url.js';
 
-export default {
-    name: 'ComplexHolding',
-    components: {
-        ComplexHoldingCompany,
-        ComplexHoldingTabs,
-
-        ComplexHoldingParameters,
-        Carousel
-    },
-    provide() {
-        return {
-            objectIsLand: this.object.is_land
-        };
-    },
-    inject: { openDownloader: 'openDownloader' },
-    props: {
-        object: {
-            type: Object,
-            required: true
-        }
-    },
-    computed: {
-        objectPhoto() {
-            return this.object.photo
-                ? this.object.photo.map(el => ({
-                      src: this.$url.api.objects() + el
-                  }))
-                : [];
-        }
+const props = defineProps({
+    object: {
+        type: Object,
+        required: true
     }
-};
+});
+
+provide('objectIsLand', props.object.is_land);
+const openDownloader = inject('openDownloader');
+
+const objectPhoto = computed(() =>
+    props.object.photo
+        ? props.object.photo.map(el => ({
+              src: $url.api.objects() + el
+          }))
+        : []
+);
 </script>

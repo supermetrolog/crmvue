@@ -13,21 +13,16 @@
         </ul>
     </div>
 </template>
-<script>
+<script setup>
 import { entityOptions } from '@/const/options/options';
+import { computed } from 'vue';
 
-export default {
-    name: 'ComplexDealDetailsSpecialTerms',
-    props: {
-        terms: {
-            type: Array,
-            required: true
-        }
-    },
-    computed: {
-        booleanStatement() {
-            return entityOptions.defaults.booleanStatement;
-        }
+defineProps({
+    terms: {
+        type: Array,
+        required: true
     }
-};
+});
+
+const booleanStatement = computed(() => entityOptions.defaults.booleanStatement);
 </script>

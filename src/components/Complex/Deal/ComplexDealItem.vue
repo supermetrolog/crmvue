@@ -5,31 +5,25 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import ComplexDealFloors from '@/components/Complex/Deal/ComplexDealFloors.vue';
 import ComplexDealInfo from '@/components/Complex/Deal/ComplexDealInfo.vue';
+import { provide } from 'vue';
 
-export default {
-    name: 'ComplexDealItem',
-    components: { ComplexDealInfo, ComplexDealFloors },
-    provide() {
-        return {
-            dealFloors: this.floors
-        };
+const props = defineProps({
+    floors: {
+        type: Array,
+        default: () => []
     },
-    props: {
-        floors: {
-            type: Array,
-            default: () => []
-        },
-        object: {
-            type: Object,
-            default: null
-        },
-        deal: {
-            type: Object,
-            default: null
-        }
+    object: {
+        type: Object,
+        default: null
+    },
+    deal: {
+        type: Object,
+        default: null
     }
-};
+});
+
+provide('dealFloors', props.floors);
 </script>

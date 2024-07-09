@@ -27,7 +27,7 @@
             <li class="complex-map-description__item">
                 <span class="complex-map-description__name">Основа (нас. пункт)</span>
                 <span v-if="location.townRecord" class="complex-map-description__value">
-                    {{ $formatter.text().ucFirst(location.townRecord.title) }}
+                    {{ ucFirst(location.townRecord.title) }}
                 </span>
             </li>
             <!--            <li class="complex-map-description__item">-->
@@ -45,7 +45,7 @@
                     :key="key"
                     class="complex-map-description__element"
                 >
-                    {{ $formatter.text().ucFirst(town.title) }}
+                    {{ ucFirst(town.title) }}
                 </li>
             </ul>
         </div>
@@ -57,7 +57,7 @@
                     :key="key"
                     class="complex-map-description__element"
                 >
-                    {{ directionOptions[direction] }}
+                    {{ entityOptions.location.direction[direction] }}
                 </li>
             </ul>
         </div>
@@ -69,7 +69,7 @@
                     :key="key"
                     class="complex-map-description__element"
                 >
-                    {{ $formatter.text().ucFirst(highway.title) }}
+                    {{ ucFirst(highway.title) }}
                 </li>
             </ul>
         </div>
@@ -84,41 +84,35 @@
                     :key="key"
                     class="complex-map-description__element"
                 >
-                    {{ $formatter.text().ucFirst(highway.title) }}
+                    {{ ucFirst(highway.title) }}
                 </li>
             </ul>
         </div>
     </div>
 </template>
 
-<script>
+<script setup>
 import { entityOptions } from '@/const/options/options';
 import { entityProperties } from '@/const/properties/properties';
+import { ucFirst } from '@/utils/formatter.js';
+import { computed } from 'vue';
 
-export default {
-    name: 'ComplexMapDescription',
-    props: {
-        location: {
-            type: Object,
-            required: true
-        }
-    },
-    data() {},
-    computed: {
-        directionOptions() {
-            return entityOptions.location.direction;
-        },
-        properties() {
-            return Object.keys(entityProperties.location.characteristics).map(key => ({
-                name: entityProperties.location.characteristics[key].name,
-                label: entityOptions.defaults.booleanSimple[this.location[key]] || '-',
-                value: this.location[key]
-            }));
-        },
-        cianRegion() {
-            return entityOptions.location.cianRegion[this.location.cian_region] || '-';
-        }
-    },
-    methods: {}
-};
+const props = defineProps({
+    location: {
+        type: Object,
+        required: true
+    }
+});
+
+const properties = computed(() => {
+    return Object.keys(entityProperties.location.characteristics).map(key => ({
+        name: entityProperties.location.characteristics[key].name,
+        label: entityOptions.defaults.booleanSimple[props.location[key]] || '-',
+        value: props.location[key]
+    }));
+});
+
+const cianRegion = computed(
+    () => entityOptions.location.cianRegion[props.location.cian_region] || '-'
+);
 </script>

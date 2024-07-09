@@ -66,74 +66,62 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import FormComplexFloorBlock from '@/components/Forms/Complex/FormComplexFloorBlock.vue';
 import ComplexDealFloorHead from '@/components/Complex/Deal/ComplexDealFloorHead.vue';
 import ComplexDealFloorSection from '@/components/Complex/Deal/ComplexDealFloorSection.vue';
 import { reducer } from '@/utils/reducer.js';
 import FormComplexFloor from '@/components/Forms/Complex/FormComplexFloor.vue';
+import { ref, shallowRef } from 'vue';
 
-export default {
-    name: 'ComplexDealFloors',
-    components: {
-        FormComplexFloor,
-        ComplexDealFloorSection,
-        ComplexDealFloorHead,
-        FormComplexFloorBlock
+defineProps({
+    floors: {
+        type: Array,
+        default: () => []
     },
-    props: {
-        floors: {
-            type: Array,
-            default: () => []
-        },
-        object: {
-            object: Object,
-            required: true
-        }
-    },
-    data() {
-        return {
-            blockFormIsVisible: false,
-            floorFormIsVisible: false,
-            currentEditSection: null,
-            currentEditFloor: null
-        };
-    },
-    methods: {
-        getFloorArea(floor) {
-            return floor.area_floor_full || floor.area_mezzanine_full || floor.area_field_full || 0;
-        },
-        toggleCreateBlockForm(floor = null) {
-            this.currentEditFloor = floor;
-            this.currentEditSection = null;
-            this.blockFormIsVisible = !this.blockFormIsVisible;
-        },
-        getSectionWidth(mainArea, sectionArea) {
-            return `${(sectionArea / mainArea) * 100}%`;
-        },
-        getUnknownSectionArea(floor) {
-            if (floor.area_floor_full) {
-                return floor.area_floor_full - reducer.sum(floor.parts, 'area_floor_max');
-            }
-
-            if (floor.area_mezzanine_full) {
-                return floor.area_mezzanine_full - reducer.sum(floor.parts, 'area_mezzanine_max');
-            }
-
-            if (floor.area_field_full) {
-                return floor.area_field_full - reducer.sum(floor.parts, 'area_field_max');
-            }
-
-            return '--';
-        },
-        toggleEditFloorForm(floor = null) {
-            this.currentEditFloor = floor;
-            this.floorFormIsVisible = !this.floorFormIsVisible;
-        },
-        openEditBlockForm(section) {
-            this.currentEditSection = section;
-            this.blockFormIsVisible = true;
-        }
+    object: {
+        type: Object,
+        required: true
     }
+});
+
+const blockFormIsVisible = shallowRef(false);
+const floorFormIsVisible = shallowRef(false);
+const currentEditSection = ref(null);
+const currentEditFloor = ref(null);
+
+const getFloorArea = floor => {
+    return floor.area_floor_full || floor.area_mezzanine_full || floor.area_field_full || 0;
+};
+const toggleCreateBlockForm = (floor = null) => {
+    currentEditFloor.value = floor;
+    currentEditSection.value = null;
+    blockFormIsVisible.value = !blockFormIsVisible.value;
+};
+const getSectionWidth = (mainArea, sectionArea) => {
+    return `${(sectionArea / mainArea) * 100}%`;
+};
+const getUnknownSectionArea = floor => {
+    if (floor.area_floor_full) {
+        return floor.area_floor_full - reducer.sum(floor.parts, 'area_floor_max');
+    }
+
+    if (floor.area_mezzanine_full) {
+        return floor.area_mezzanine_full - reducer.sum(floor.parts, 'area_mezzanine_max');
+    }
+
+    if (floor.area_field_full) {
+        return floor.area_field_full - reducer.sum(floor.parts, 'area_field_max');
+    }
+
+    return '--';
+};
+const toggleEditFloorForm = (floor = null) => {
+    currentEditFloor.value = floor;
+    floorFormIsVisible.value = !floorFormIsVisible.value;
+};
+const openEditBlockForm = section => {
+    currentEditSection.value = section;
+    blockFormIsVisible.value = true;
 };
 </script>

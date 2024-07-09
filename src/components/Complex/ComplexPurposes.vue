@@ -10,21 +10,18 @@
         </strong>
     </div>
 </template>
-<script>
+<script setup>
 import { entityOptions } from '@/const/options/options';
+import { computed } from 'vue';
 
-export default {
-    name: 'ComplexPurposes',
-    props: {
-        purposes: {
-            type: Array,
-            required: true
-        }
-    },
-    computed: {
-        preparedPurposes() {
-            return this.purposes.map(purpose => entityOptions.object.purposes[purpose]);
-        }
+const props = defineProps({
+    purposes: {
+        type: Array,
+        required: true
     }
-};
+});
+
+const preparedPurposes = computed(() => {
+    return props.purposes.map(purpose => entityOptions.object.purposes[purpose]);
+});
 </script>

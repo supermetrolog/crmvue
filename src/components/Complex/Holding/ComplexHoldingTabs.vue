@@ -101,83 +101,80 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import ComplexDeals from '@/components/Complex/Deal/ComplexDeals.vue';
 import ComplexActions from '@/components/Complex/ComplexActions.vue';
 import { mapper } from '@/utils/mapper';
 import { entityProperties } from '@/const/properties/properties';
 import PropertyGrid from '@/components/common/Property/PropertyGrid.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
+import { computed, inject, onMounted, ref } from 'vue';
+import { $generatorURL as $url } from '@/plugins/url.js';
+import { useRoute } from 'vue-router';
 
-export default {
-    name: 'ComplexHoldingTabs',
-    components: {
-        EmptyData,
-        PropertyGrid,
-        ComplexActions,
-        ComplexDeals
-    },
-    inject: { openDownloader: 'openDownloader' },
-    props: {
-        object: {
-            type: Object,
-            required: true
-        }
-    },
-    computed: {
-        actionButtons() {
-            return {
-                edit: {},
-                dislike: { value: false },
-                notifications: { value: false },
-                delete: {},
-                cadastral: {
-                    disabled: !this.object.cadastral_number,
-                    handler: () => {
-                        window.open(this.$url.cadastral(this.object.cadastral_number), '_blank');
-                    }
-                },
-                photos: {
-                    disabled: !this.objectPhoto.length,
-                    handler: () => this.openDownloader(this.objectPhoto)
-                }
-            };
-        },
-        objectPhoto() {
-            return this.object.photo
-                ? this.object.photo.map(el => ({
-                      src: this.$url.api.objects() + el
-                  }))
-                : [];
-        },
-        floors() {
-            return this.object.floorsRecords.filter(floor => floor.number);
-        },
-        sections() {
-            const properties = this.object.is_land
-                ? entityProperties.object.characteristicsForLandWithSections
-                : entityProperties.object.characteristicsWithSections;
+const route = useRoute();
 
-            return mapper.propertiesToTableFormatWithSections(this.object, properties);
-        },
-        sectionsTemplate() {
-            return [
-                ['main', 'security'],
-                ['railway', 'communications'],
-                ['infrastructure', 'allow']
-            ];
-        }
-    },
-    mounted() {
-        if (this.$route.query.offer_id) {
-            const offerId = this.$route.query.offer_id;
-
-            const objectHasTargetDeal = this.object.commercialOffers.some(
-                offer => offer.id == offerId
-            );
-
-            if (objectHasTargetDeal) this.$refs.tabs.selectTab('#deals-' + this.object.id);
-        }
+const openDownloader = inject('openDownloader');
+const props = defineProps({
+    object: {
+        type: Object,
+        required: true
     }
-};
+});
+
+const sectionsTemplate = [
+    ['main', 'security'],
+    ['railway', 'communications'],
+    ['infrastructure', 'allow']
+];
+
+const tabs = ref(null);
+
+const actionButtons = computed(() => {
+    return {
+        edit: {},
+        dislike: { value: false },
+        notifications: { value: false },
+        delete: {},
+        cadastral: {
+            disabled: !props.object.cadastral_number,
+            handler: () => {
+                window.open($url.cadastral(props.object.cadastral_number), '_blank');
+            }
+        },
+        photos: {
+            disabled: !objectPhoto.value.length,
+            handler: () => openDownloader(objectPhoto.value)
+        }
+    };
+});
+
+const objectPhoto = computed(() =>
+    props.object.photo
+        ? props.object.photo.map(el => ({
+              src: $url.api.objects() + el
+          }))
+        : []
+);
+
+const floors = computed(() => props.object.floorsRecords.filter(floor => floor.number));
+const sections = computed(() => {
+    const properties = props.object.is_land
+        ? entityProperties.object.characteristicsForLandWithSections
+        : entityProperties.object.characteristicsWithSections;
+
+    return mapper.propertiesToTableFormatWithSections(props.object, properties);
+});
+
+onMounted(() => {
+    if (route.query.offer_id) {
+        const offerId = route.query.offer_id;
+
+        const objectHasTargetDeal = props.object.commercialOffers.some(
+            offer => Number(offer.id) === Number(offerId)
+        );
+
+        if (objectHasTargetDeal) tabs.value?.selectTab('#deals-' + props.object.id);
+    }
+});
 </script>

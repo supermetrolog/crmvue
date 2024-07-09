@@ -60,7 +60,7 @@
     </Tabs>
 </template>
 
-<script>
+<script setup>
 import Carousel from '@/components/common/Carousel.vue';
 import ComplexOfferSummary from '@/components/Complex/Offer/ComplexOfferSummary.vue';
 import ComplexOfferDetails from '@/components/Complex/Offer/ComplexOfferDetails.vue';
@@ -68,51 +68,45 @@ import ComplexOfferParts from '@/components/Complex/Offer/ComplexOfferParts.vue'
 import ComplexServices from '@/components/Complex/ComplexServices.vue';
 import Button from '@/components/common/Button.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
+import { computed, inject } from 'vue';
+import { useStore } from 'vuex';
+import { $generatorURL as $url } from '@/plugins/url.js';
 
-export default {
-    name: 'ComplexTabs',
-    components: {
-        EmptyData,
-        Button,
-        ComplexServices,
-        ComplexOfferParts,
-        ComplexOfferDetails,
-        ComplexOfferSummary,
-        Carousel
-    },
-    inject: { dealFloors: 'dealFloors', dealType: 'dealType', openDownloader: 'openDownloader' },
-    props: {
-        offer: {
-            type: Object,
-            required: true
-        }
-    },
-    data() {
-        return {};
-    },
-    computed: {
-        photos() {
-            return this.offer.photos
-                ? this.offer.photos.map(el => ({
-                      src: this.$url.api.objects() + el
-                  }))
-                : [];
-        },
-        floors() {
-            return [...this.dealFloors].map(floor => ({
-                ...floor,
-                parts: [...floor.parts].map(part => ({
-                    ...part,
-                    active: this.offer.parts.includes(part.id)
-                }))
-            }));
-        },
-        services() {
-            return this.$store.getters['Complex/getDealServicesById'](this.offer.offer_id);
-        },
-        servicesLength() {
-            return this.services.reduce((acc, category) => acc + category.properties.length, 0);
-        }
+const store = useStore();
+
+const dealFloors = inject('dealFloors');
+const dealType = inject('dealType');
+const openDownloader = inject('openDownloader');
+
+const props = defineProps({
+    offer: {
+        type: Object,
+        required: true
     }
-};
+});
+
+const services = computed(() => {
+    return store.getters['Complex/getDealServicesById'](props.offer.offer_id);
+});
+const servicesLength = computed(() => {
+    return services.value.reduce((acc, category) => acc + category.properties.length, 0);
+});
+
+const photos = computed(() => {
+    return props.offer.photos
+        ? props.offer.photos.map(el => ({
+              src: $url.file(el)
+          }))
+        : [];
+});
+
+const floors = computed(() => {
+    return [...dealFloors].map(floor => ({
+        ...floor,
+        parts: [...floor.parts].map(part => ({
+            ...part,
+            active: props.offer.parts.includes(part.id)
+        }))
+    }));
+});
 </script>

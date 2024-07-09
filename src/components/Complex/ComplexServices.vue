@@ -19,14 +19,11 @@
         </div>
     </div>
 </template>
-<script>
-export default {
-    name: 'ComplexServices',
-    props: {
-        services: {
-            type: Array,
-            default: () => []
-        }
+<script setup>
+defineProps({
+    services: {
+        type: Array,
+        default: () => []
     }
-};
+});
 </script>
