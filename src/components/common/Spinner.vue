@@ -3,14 +3,6 @@
         <div class="spinner__clip"></div>
     </div>
 </template>
-<script>
-export default {
-    name: 'Spinner',
-    props: {
-        center: {
-            type: Boolean,
-            default: false
-        }
-    }
-};
+<script setup>
+defineProps({ center: { type: Boolean, default: false } });
 </script>

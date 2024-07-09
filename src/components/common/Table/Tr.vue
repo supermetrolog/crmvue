@@ -4,10 +4,4 @@
     </tr>
 </template>
 
-<script>
-export default {
-    name: 'Tr'
-};
-</script>
-
-<style></style>
+<script setup></script>

@@ -6,11 +6,6 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import Spinner from '@/components/common/Spinner.vue';
-
-export default {
-    name: 'Loader',
-    components: { Spinner }
-};
 </script>

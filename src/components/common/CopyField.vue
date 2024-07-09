@@ -26,7 +26,7 @@ export default {
     methods: {
         async copy() {
             await navigator.clipboard.writeText(this.value);
-            this.$toast(this.message);
+            this.$notify(this.message);
         }
     }
 };

@@ -79,9 +79,9 @@
         />
         <FormCompany
             v-if="companyFormIsVisible"
-            @closeCompanyForm="companyFormIsVisible = false"
+            @close="companyFormIsVisible = false"
             @updated="fetchCompany(false)"
-            :formdata="company"
+            :form-data="company"
         />
     </Modal>
 </template>

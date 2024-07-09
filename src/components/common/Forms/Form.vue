@@ -4,11 +4,6 @@
     </form>
 </template>
 
-<script>
-export default {
-    name: 'Form',
-    emits: ['submit']
-};
+<script setup>
+defineEmits(['submit']);
 </script>
-
-<style></style>

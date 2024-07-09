@@ -1,19 +1,18 @@
 <template>
-    <div class="form__control" :class="{ 'form__control--disabled': disabled }">
+    <div ref="currentEl" class="form__control" :class="{ 'form__control--disabled': disabled }">
         <label>
             <span v-if="label" class="form__label">{{ label }}</span>
             <input
                 ref="input"
                 @input="onInput($event.target.value.trim())"
                 @focus="onFocus"
-                @blur="onBlur"
-                @keypress.enter.prevent
+                @keypress.enter="keyPressEnter"
                 class="form__input"
                 :class="[
-                    inputClasses,
+                    validationClass,
                     { 'form__input--unit': unit, 'form__input--rounded': rounded }
                 ]"
-                :style="paddingRightStyle"
+                :style="unit ? paddingRightStyle : undefined"
                 :type="type"
                 :placeholder="placeholder"
                 :disabled="disabled"
@@ -24,8 +23,8 @@
             />
             <span v-if="unit" ref="unit" class="form__unit" v-html="unit"></span>
         </label>
-        <div v-if="searchable" class="searchable">
-            <div v-show="searchableVisible" class="searchable-container">
+        <div v-if="searchable" ref="searchableEl" class="searchable">
+            <div v-show="searchableIsVisible" class="searchable-container">
                 <ul>
                     <li
                         v-for="(item, index) in localeOptions"
@@ -46,129 +45,136 @@
     </div>
 </template>
 
-<script>
-import Mixin from './mixins.js';
+<script setup>
 import ValidationInfo from '@/components/common/Forms/ValidationInfo.vue';
 import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
+import { computed, onMounted, ref, shallowRef, toRef, watch } from 'vue';
+import { onClickOutside } from '@vueuse/core';
+import { useFormControlValidation } from '@/composables/useFormControlValidation.js';
 
-export default {
-    name: 'Input',
-    components: { ValidationMessage, ValidationInfo },
-    mixins: [Mixin],
-    props: {
-        modelValue: {
-            type: [String, Number],
-            default: ''
-        },
-        v: {
-            type: Object,
-            default: null
-        },
-        type: {
-            type: String,
-            default: 'text'
-        },
-        label: {
-            type: String,
-            default: null
-        },
-        placeholder: {
-            type: String,
-            default: ''
-        },
-        searchable: {
-            type: Boolean,
-            default: false
-        },
-        options: {
-            type: [Array, Object],
-            default: () => []
-        },
-        min: {
-            type: [String, Number]
-        },
-        max: {
-            type: [String, Number]
-        },
-        unit: {
-            type: String,
-            default: null
-        },
-        reactive: {
-            type: Boolean,
-            default: false
-        },
-        rounded: {
-            type: Boolean,
-            default: false
-        }
-    },
-    data() {
-        return {
-            searchableVisible: false,
-            localeOptions: this.options
-        };
-    },
-    computed: {
-        paddingRightStyle() {
-            // Расчет ширины блока с единицой измерения
-            if (this.unit) {
-                let unitWidth = this.unit.replaceAll('/', '').replaceAll('<sup>', '').length * 10;
-                let validationWidth = this.v && this.v.$dirty ? 20 : 0;
-                return `padding-right: ${unitWidth + 20 + validationWidth}px`;
-            }
+const modelValue = defineModel({
+    type: [String, Number],
+    default: ''
+});
 
-            return null;
-        }
+const props = defineProps({
+    v: {
+        type: Object,
+        default: null
     },
-    watch: {
-        options() {
-            this.localeOptions = this.options;
-        }
+    type: {
+        type: String,
+        default: 'text'
     },
-    methods: {
-        onInput(value) {
-            if (value !== this.modelValue) {
-                this.validate();
-                this.$emit('update:modelValue', value);
-                this.search(value);
-            }
-        },
-        search(value) {
-            if (!this.searchable) return;
+    label: {
+        type: String,
+        default: null
+    },
+    placeholder: {
+        type: String,
+        default: ''
+    },
+    searchable: {
+        type: Boolean,
+        default: false
+    },
+    options: {
+        type: [Array, Object],
+        default: () => []
+    },
+    min: {
+        type: [String, Number]
+    },
+    max: {
+        type: [String, Number]
+    },
+    unit: {
+        type: String,
+        default: null
+    },
+    rounded: {
+        type: Boolean,
+        default: false
+    },
+    disabled: {
+        type: [Boolean, Number],
+        default: false
+    },
+    reactive: {
+        type: [Boolean, Number],
+        default: false
+    },
+    required: {
+        type: Boolean,
+        default: false
+    },
+    withEnterSubmit: {
+        type: Boolean,
+        default: false
+    }
+});
 
-            this.searchableVisible = true;
-            this.localeOptions = [];
-            this.options.map(item => {
-                if (item.toLowerCase().indexOf(value.toLowerCase()) !== -1) {
-                    this.localeOptions.push(item);
-                }
-            });
-        },
-        onFocus() {
-            if (this.searchable) this.searchableVisible = true;
-        },
-        close(e) {
-            if (!this.$el.contains(e.target)) this.searchableVisible = false;
-        },
-        selectItem(item) {
-            this.onInput(item);
-            this.searchableVisible = false;
-        }
-    },
-    mounted() {
-        if (this.searchable) {
-            document.addEventListener('click', this.close);
-        }
+const searchableIsVisible = shallowRef(false);
+const localeOptions = ref(props.options);
+const currentEl = ref(null);
+const searchableEl = ref(null);
 
-        if (this.reactive) this.validate();
-    },
-    beforeUnmount() {
-        if (this.searchable) {
-            document.removeEventListener('click', this.close);
-        }
+const paddingRightStyle = computed(() => {
+    let unitWidth = props.unit.replaceAll('/', '').replaceAll('<sup>', '').length * 10;
+    let validationWidth = props.v && props.v.$dirty ? 20 : 0;
+    return `padding-right: ${unitWidth + 20 + validationWidth}px`;
+});
+
+watch(
+    () => props.options,
+    () => {
+        localeOptions.value = props.options;
+    }
+);
+
+const search = value => {
+    if (!props.searchable) return;
+
+    searchableIsVisible.value = true;
+    localeOptions.value = props.options.filter(
+        element => element.toLowerCase().indexOf(value.toLowerCase()) !== -1
+    );
+};
+
+const onFocus = () => {
+    if (props.searchable) searchableIsVisible.value = true;
+};
+
+const { hasValidation, hasValidationError, validate, validationClass } = useFormControlValidation(
+    toRef(props, 'v'),
+    modelValue,
+    { reactive: props.reactive }
+);
+
+const onInput = value => {
+    if (value !== modelValue.value) {
+        validate();
+        modelValue.value = value;
+        search(value);
     }
 };
-</script>
 
-<style></style>
+const close = () => {
+    searchableIsVisible.value = false;
+};
+
+const selectItem = item => {
+    onInput(item);
+    searchableIsVisible.value = false;
+};
+
+const keyPressEnter = event => {
+    if (!props.withEnterSubmit) event.preventDefault();
+};
+
+if (props.searchable) onClickOutside(searchableEl, close);
+
+onMounted(() => {
+    if (props.reactive) validate();
+});
+</script>

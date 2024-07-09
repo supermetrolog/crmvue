@@ -1,12 +1,12 @@
 <template>
-    <VTab v-bind="$attrs">
-        <slot />
+    <VTab ref="tab" v-bind="$attrs">
+        <slot v-if="isActive" />
     </VTab>
 </template>
-<script>
+<script setup>
 import { Tab as VTab } from 'vue3-tabs-component';
-export default {
-    name: 'Tab',
-    components: { VTab }
-};
+import { computed, ref } from 'vue';
+
+const tab = ref(null);
+const isActive = computed(() => tab.value?.isActive ?? false);
 </script>

@@ -27,12 +27,19 @@
                 :disabled="Boolean(disabled)"
                 :hide-selected="hideSelected"
                 :groups="groups"
+                no-results-text="Ничего не найдено"
+                no-options-text="Список пуст"
             >
                 <template #singlelabel="{ value }">
                     <slot name="singlelabel" :value="value" />
                 </template>
-                <template #option="{ option }">
-                    <slot name="option" :option="option" />
+                <template #option="{ option, isSelected, isPointed }">
+                    <slot
+                        name="option"
+                        :option="option"
+                        :isSelected="isSelected"
+                        :isPointed="isPointed"
+                    />
                 </template>
             </Multiselect>
         </label>

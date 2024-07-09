@@ -38,6 +38,7 @@
                 :keeps="40"
                 chosenClass="chosen"
                 :sortable="sortable && !readOnly"
+                :disabled="!sortable"
                 wrapClass="file-input__list row"
             >
                 <template #item="{ record: file, index }">
@@ -59,6 +60,7 @@
                 :keeps="40"
                 chosenClass="chosen"
                 :sortable="sortable && !readOnly"
+                :disabled="!sortable"
                 wrapClass="file-input__list row"
             >
                 <template #item="{ record: file, index }">

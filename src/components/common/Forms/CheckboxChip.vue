@@ -12,7 +12,7 @@
             }"
         >
             <input
-                v-model="field"
+                v-model="modelValue"
                 @change="onChange"
                 @click="onClick"
                 :disabled="disabled"
@@ -28,119 +28,105 @@
     </div>
 </template>
 
-<script>
-import Mixin from './mixins.js';
-export default {
-    name: 'CheckboxChip',
-    mixins: [Mixin],
-    emits: ['change', 'update:modelValue'],
-    props: {
-        modelValue: {
-            type: [Array, Number, String, Boolean],
-            default: () => []
-        },
-        text: {
-            type: [String, Number, null],
-            default: null
-        },
-        required: {
-            type: Boolean,
-            default: false
-        },
-        name: {
-            type: String,
-            default: null
-        },
-        disabled: {
-            type: Boolean,
-            default: false
-        },
-        value: {
-            type: [String, Number, Boolean],
-            default: false
-        },
-        icon: {
-            type: String,
-            default: null
-        },
-        danger: {
-            type: Boolean,
-            default: false
-        },
-        v: {
-            type: Object,
-            default: null
-        },
-        multiple: {
-            type: Boolean,
-            default: null
-        },
-        property: {
-            type: String,
-            default: null
-        },
-        disabledValue: {
-            type: [Number, String],
-            default: 0
-        }
+<script setup>
+import { useFormControlValidation } from '@/composables/useFormControlValidation.js';
+import { computed, ref, toRef } from 'vue';
+
+const modelValue = defineModel({ type: [Array, Number, String, Boolean] });
+const emit = defineEmits(['change']);
+const props = defineProps({
+    text: {
+        type: [String, Number, null],
+        default: null
     },
-    data() {
-        return {
-            field: this.modelValue
-        };
+    required: {
+        type: Boolean,
+        default: false
     },
-    computed: {
-        isActive() {
-            if (this.field instanceof Array) {
-                if (this.property === null) {
-                    return (
-                        this.field.includes(this.value) ||
-                        this.field.includes(this.value.toString())
-                    );
-                }
-
-                return this.field.some(element => element[this.property] == this.value);
-            }
-
-            if (this.multiple) return this.field == 1;
-
-            return Boolean(this.field);
-        },
-        isDisabled() {
-            return this.multiple && this.field == this.disabledValue;
-        }
+    name: {
+        type: String,
+        default: null
     },
-    watch: {
-        modelValue() {
-            this.field = this.modelValue;
-        }
+    disabled: {
+        type: Boolean,
+        default: false
     },
-    methods: {
-        onClick(event) {
-            if (this.property === null) return true;
-
-            event.preventDefault();
-
-            if (this.isActive)
-                this.field = [
-                    ...this.field.filter(element => element[this.property] != this.value)
-                ];
-            else this.field = [...this.field, { [this.property]: this.value }];
-
-            this.onChange();
-        },
-        onChange() {
-            this.validate();
-
-            if (this.multiple && this.modelValue == this.disabledValue) {
-                this.field = null;
-            }
-
-            this.$emit('update:modelValue', this.field);
-            this.$emit('change', this.field);
-        }
+    value: {
+        type: [String, Number, Boolean],
+        default: false
+    },
+    icon: {
+        type: String,
+        default: null
+    },
+    danger: {
+        type: Boolean,
+        default: false
+    },
+    v: {
+        type: Object,
+        default: null
+    },
+    multiple: {
+        type: Boolean,
+        default: null
+    },
+    property: {
+        type: String,
+        default: null
+    },
+    disabledValue: {
+        type: [Number, String],
+        default: 0
+    },
+    reactive: {
+        type: Boolean,
+        default: false
     }
+});
+
+const field = ref(modelValue);
+
+const { hasValidationError, validate } = useFormControlValidation(toRef(props, 'v'), modelValue, {
+    reactive: props.reactive
+});
+
+const isActive = computed(() => {
+    if (modelValue.value instanceof Array) {
+        if (props.property === null) {
+            return (
+                modelValue.value.includes(props.value) ||
+                modelValue.value.includes(props.value.toString())
+            );
+        }
+
+        return modelValue.value.some(element => element[props.property] == props.value);
+    }
+
+    if (props.multiple) return Number(modelValue.value) === 1;
+
+    return Boolean(modelValue.value);
+});
+
+const isDisabled = computed(() => props.multiple && modelValue.value == props.disabledValue);
+
+const onClick = event => {
+    if (props.property === null) return true;
+
+    event.preventDefault();
+
+    if (isActive.value)
+        modelValue.value = [
+            ...modelValue.value.filter(element => element[props.property] != props.value)
+        ];
+    else modelValue.value = [...modelValue.value, { [props.property]: props.value }];
+
+    onChange();
+};
+
+const onChange = () => {
+    validate();
+    if (props.multiple && modelValue.value == props.disabledValue) modelValue.value = null;
+    emit('change', modelValue.value);
 };
 </script>
-
-<style></style>

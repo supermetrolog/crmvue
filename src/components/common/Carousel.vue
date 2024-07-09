@@ -9,15 +9,10 @@
                 :src="item.src"
             />
             <template v-if="!slides.length">
-                <NoImage v-for="key in 3" :key="key" />
+                <NoImage v-for="key in 3" :key="key" class="carousel__item" />
             </template>
         </div>
-        <Modal
-            v-if="modalIsOpen"
-            @close="clickCloseModal"
-            class="carousel__modal"
-            :title="modalTitle"
-        >
+        <Modal v-if="modalIsOpen" @close="closeModal" class="carousel__modal" :title="modalTitle">
             <VueAgile
                 ref="main"
                 class="carousel__slides"
@@ -60,60 +55,53 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import Modal from '@/components/common/Modal.vue';
 import { VueAgile } from 'vue-agile';
 import VLazyImage from 'v-lazy-image';
 import NoImage from '@/components/common/NoImage.vue';
+import { computed, shallowRef } from 'vue';
 
-export default {
-    name: 'Carousel',
-    components: { NoImage, Modal, VueAgile, VLazyImage },
-    props: {
-        slides: {
-            type: Array,
-            required: true
-        },
-        grid: {
-            type: Boolean,
-            default: false
-        },
-        title: {
-            type: String,
-            default: null
-        }
+const props = defineProps({
+    slides: {
+        type: Array,
+        default: () => []
     },
-    data() {
-        return {
-            modalIsOpen: false,
-            currentSlideIndex: 0,
-            mainOptions: {
-                dots: false,
-                fade: true,
-                navButtons: false
-            },
-            listOptions: {
-                centerMode: true,
-                dots: false,
-                navButtons: true,
-                slidesToShow: 3
-            }
-        };
+    grid: {
+        type: Boolean,
+        default: false
     },
-    computed: {
-        modalTitle() {
-            return 'Просмотр изображений' + (this.title ? `. ${this.title}` : '');
-        }
-    },
-    methods: {
-        openModal(id) {
-            this.modalIsOpen = true;
-            this.currentSlideIndex = id;
-        },
-        clickCloseModal() {
-            this.currentSlideIndex = 0;
-            this.modalIsOpen = false;
-        }
+    title: {
+        type: String,
+        default: null
     }
+});
+
+const mainOptions = {
+    dots: false,
+    fade: true,
+    navButtons: false
+};
+
+const listOptions = {
+    centerMode: true,
+    dots: false,
+    navButtons: true,
+    slidesToShow: 3
+};
+
+const modalIsOpen = shallowRef(false);
+const currentSlideIndex = shallowRef(0);
+
+const modalTitle = computed(() => 'Просмотр изображений' + (props.title ?? ''));
+
+const openModal = id => {
+    modalIsOpen.value = true;
+    currentSlideIndex.value = id;
+};
+
+const closeModal = () => {
+    currentSlideIndex.value = 0;
+    modalIsOpen.value = false;
 };
 </script>

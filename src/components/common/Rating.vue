@@ -1,5 +1,5 @@
 <template>
-    <div class="rating" :class="className">
+    <div class="rating" :class="'rating--' + color">
         <i
             v-for="value in max"
             :key="value"
@@ -12,29 +12,19 @@
     </div>
 </template>
 
-<script>
-export default {
-    name: 'Rating',
-    props: {
-        rating: {
-            type: Number,
-            required: true
-        },
-        max: {
-            type: Number,
-            default: 5
-        },
-        color: {
-            type: String,
-            default: null
-        }
+<script setup>
+defineProps({
+    rating: {
+        type: Number,
+        required: true
     },
-    computed: {
-        className() {
-            if (this.color) return 'rating--' + this.color;
-
-            return null;
-        }
+    max: {
+        type: Number,
+        default: 5
+    },
+    color: {
+        type: String,
+        default: null
     }
-};
+});
 </script>
