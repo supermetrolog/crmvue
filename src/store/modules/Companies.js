@@ -1,5 +1,5 @@
 import api from '@/api/api';
-import { waitHash } from '../../utils';
+import { useQueryHash } from '@/utils/useQueryHash.js';
 
 const Companies = {
     state: {
@@ -9,8 +9,7 @@ const Companies = {
         companyGroups: [],
         companyGroupList: [],
         companyProductRangeList: [],
-        companyInTheBankList: [],
-        company_wait_hash: null
+        companyInTheBankList: []
     },
     mutations: {
         updateCompanies(state, { data, concat }) {
@@ -43,9 +42,6 @@ const Companies = {
         },
         updateCompanyInTheBankList(state, data) {
             state.companyInTheBankList = data;
-        },
-        setCompanyWaitHash(state, hash) {
-            state.company_wait_hash = hash;
         }
     },
     actions: {
@@ -55,35 +51,18 @@ const Companies = {
                 context.commit('updateCompanies', companies);
             }
         },
-        async SEARCH_COMPANIES(context, { query, concat = false }) {
-            let hash = waitHash(query);
-            context.commit('setCompanyWaitHash', hash);
+        async SEARCH_COMPANIES({ commit }, { query, concat = false }) {
+            const { setHash, confirmHash } = useQueryHash('companies');
+            setHash(query);
+
             const data = await api.companies.searchCompanies(query);
             if (data) {
-                if (hash === context.getters.COMPANY_WAIT_HASH) {
-                    context.commit('updateCompanies', { data, concat });
-                } else {
-                    return false;
-                }
+                if (confirmHash(query)) commit('updateCompanies', { data, concat });
+                else return false;
             }
 
             return data;
         },
-        // async SEARCH_COMPANIES(context, { query, saveState = true }) {
-        //     const search = query.searchText;
-        //     const queryParams = {
-        //         nameEng: search,
-        //         nameRu: search,
-        //         officeAdress: search,
-        //         legalAddress: search,
-        //         "contact.phone": search,
-        //     };
-        //     const result = await api.companies.searchCompanies(queryParams);
-        //     if (result && saveState) {
-        //         context.commit('updateCompanies', result);
-        //     }
-        //     return result;
-        // },
         async FETCH_COMPANY(context, id) {
             const company = await api.companies.getCompany(id);
             if (company) {
@@ -142,9 +121,6 @@ const Companies = {
         },
         COMPANY_IN_THE_BANK_LIST(state) {
             return state.companyInTheBankList;
-        },
-        COMPANY_WAIT_HASH(state) {
-            return state.company_wait_hash;
         }
     }
 };

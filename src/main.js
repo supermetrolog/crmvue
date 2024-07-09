@@ -27,6 +27,7 @@ import isToday from 'dayjs/plugin/isToday';
 import isYesterday from 'dayjs/plugin/isYesterday';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { vIntersection } from '@/directives/intersection.js';
+import { axiosRequestInterceptor } from '@/services/axios.js';
 
 dayjs.extend(isToday);
 dayjs.extend(isYesterday);
@@ -34,6 +35,7 @@ dayjs.extend(relativeTime);
 dayjs.locale('ru');
 
 axios.defaults.baseURL = $generatorURL.api.url();
+axios.interceptors.request.use(axiosRequestInterceptor);
 
 const app = createApp(App);
 

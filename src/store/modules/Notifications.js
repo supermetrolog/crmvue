@@ -90,7 +90,7 @@ const Notifications = {
             return state.notifications;
         },
         NOTIFICATIONS_COUNT(state) {
-            return state.notificationsCount;
+            return Number(state.notificationsCount);
         },
         NOTIFICATIONS_PAGINATION(state) {
             return state.notificationsPagination;

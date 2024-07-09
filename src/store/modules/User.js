@@ -1,4 +1,5 @@
 import api from '@/api/api';
+import { useAuth } from '@/composables/useAuth.js';
 
 const User = {
     state: {
@@ -79,10 +80,13 @@ const User = {
             localStorage.removeItem('user');
             context.commit('setUser', null);
         },
-        async login(context, formdata) {
-            const response = await api.user.auth.login(formdata);
+        async login({ dispatch }, formData) {
+            const response = await api.user.auth.login(formData);
             if (response !== false) {
-                context.dispatch('SET_USER');
+                const { login } = useAuth();
+
+                dispatch('SET_USER');
+                login();
             }
             return response;
         },
