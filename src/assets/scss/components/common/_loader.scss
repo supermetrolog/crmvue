@@ -6,7 +6,7 @@
     right: 0;
     margin: auto;
     background-color: rgba(247, 247, 247, 0.678);
-    z-index: 5000;
+    z-index: 100;
 
     &.no-absolute {
         position: relative !important;
@@ -20,4 +20,8 @@
         top: calc(50% - 50px);
         left: calc(50% - 50px);
     }
+}
+
+.modal .loader {
+    z-index: 5000;
 }

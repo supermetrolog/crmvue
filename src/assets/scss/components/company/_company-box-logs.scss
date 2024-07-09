@@ -1,0 +1,115 @@
+@use '../../utils/variables';
+@use '../../utils/mixins';
+
+.CompanyBoxLogs {
+    position: sticky;
+    top: 50px;
+    height: 90vh;
+
+    &-form {
+        margin-top: 5px;
+
+        .form-container {
+            width: 100%;
+        }
+    }
+
+    .CompanyBoxLayout-header {
+        @include mixins.flex-box($a: center, $j: center);
+    }
+
+    .CompanyBoxLayout-content {
+        height: 95%;
+        @include mixins.flex-box($d: column, $j: space-between);
+    }
+}
+
+.CompanyLogsItem {
+    width: 100%;
+
+    &-date {
+        @include mixins.flex-box($j: center);
+    }
+
+    &-user {
+        @include mixins.flex-box($j: flex-end);
+
+        i {
+            font-size: 14px;
+        }
+    }
+
+    &-message {
+        * {
+            font-size: 16px;
+        }
+
+        &-time {
+            font-weight: bold !important;
+            margin-right: 3px;
+        }
+
+        &-text {
+            font-weight: normal;
+        }
+    }
+
+    .main {
+        text-align: center;
+        color: variables.$color_dark;
+        padding: 3px;
+        margin-bottom: 10px;
+        border-bottom: 1px solid variables.$color_light_grey;
+
+        .time {
+            font-size: 12px;
+            font-weight: bold;
+
+        }
+    }
+
+    .noMain {
+        text-align: right;
+    }
+
+    a {
+        color: variables.$color_dark;
+        font-weight: bold;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    i {
+        color: variables.$color_success_alt;
+        font-size: 14px;
+    }
+}
+
+.CompanyLogsList {
+    @include mixins.flex-box($d: column, $a: center, $gap: 15px);
+    height: auto;
+    overflow-y: auto;
+    padding-right: 8px;
+
+    &-empty {
+        @include mixins.flex-box($a: flex-start, $j: center, $d: column);
+    }
+
+    &::-webkit-scrollbar-track {
+        border-radius: 4px;
+        background: variables.$color_light_grey;
+    }
+
+    &::-webkit-scrollbar {
+        border-radius: 4px;
+        width: 8px;
+        background: #7e7e7e;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        border-radius: 4px;
+        background: #7e7e7e;
+    }
+}

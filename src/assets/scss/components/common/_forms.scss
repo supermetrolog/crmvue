@@ -299,15 +299,19 @@
             margin-top: 5px;
         }
 
+        &:has(.form__tooltip) {
+            position: relative;
+        }
+
         &:has(.form__tooltip) .form__input {
-            padding-right: 35px;
+            padding-right: 45px;
         }
 
         &:not(&--reactive) {
             label {
                 &:has(.invalid), &:has(.valid) {
                     .form__unit {
-                        right: 35px;
+                        right: 45px;
                     }
                 }
             }
@@ -468,12 +472,19 @@
     }
 
     &__stars {
-        @include mixins.flex-box($gap: 5px, $d: column);
+        @include mixins.flex-box($gap: 5px, $a: center);
+        width: max-content;
     }
 
     &__star {
-        cursor: pointer;
+        background-color: unset;
+        border: none;
         font-size: 30px;
+        cursor: pointer;
+
+        &:hover {
+            opacity: .6;
+        }
     }
 
     &__chips {
@@ -614,6 +625,15 @@
 .form-company-deal {
     .form__textarea {
         height: 100px;
+    }
+
+    &__offer {
+        @include mixins.flex-box($gap: 5px, $a: center);
+    }
+
+    &__thumb {
+        height: 40px;
+        width: 40px;
     }
 }
 
@@ -1099,6 +1119,7 @@
         transition: background-color .2s ease-in-out;
         background-color: #dcdfe6;
         display: block;
+        flex-shrink: 0;
 
         &:not(.disabled) {
             cursor: pointer;
@@ -1129,12 +1150,22 @@
     }
 
     &__label {
+        display: inline;
+        background-color: unset;
+        border: unset;
+        width: unset;
         @include mixins.transition(color);
+        @include mixins.hover {
+            color: variables.$bg_success;
+        }
+
+        cursor: pointer;
     }
 
     &:not(&:has(&__input:checked)) {
         .switch__label--false {
             color: variables.$bg_success;
+            font-weight: 500;
         }
     }
 
@@ -1150,6 +1181,7 @@
 
             &__label--true {
                 color: variables.$bg_success;
+                font-weight: 500;
             }
         }
     }

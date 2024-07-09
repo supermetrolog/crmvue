@@ -5,7 +5,7 @@
     font-size: 14px;
     border: 1px solid black;
     width: 130px;
-    height: 80px;
+    height: 90px;
 
     &__top {
         @include mixins.flex-box($a: center, $d: column);
@@ -24,19 +24,8 @@
     }
 
     &__bottom {
-        @include mixins.flex-box($a: center, $j: center, $gap: 5px);
-    }
-
-    &__button {
-        background: none;
-        border: none;
-        cursor: pointer;
-        width: max-content;
-        font-size: 16px;
-
-        &:hover {
-            opacity: 0.6;
-        }
+        @include mixins.flex-box($a: center, $j: center, $gap: 10px);
+        padding: 5px 0;
     }
 }
 
@@ -79,7 +68,7 @@
     padding: 5px 15px 15px 5px;
     border: 1px solid;
     border-left: 14px solid;
-    height: 80px;
+    height: 90px;
     min-width: 200px;
 
     &__area {
@@ -350,12 +339,21 @@
 
     &__line {
         position: relative;
+        background-color: #e7e7e7;
+
+        @include mixins.media('max', 'xxl') {
+            padding-top: 5px;
+        }
     }
 
     &__buttons {
-        position: absolute;
-        top: 2px;
-        right: 10px;
+        z-index: 2;
+
+        @include mixins.media('min', 'xxl') {
+            position: absolute;
+            top: 2px;
+            right: 10px;
+        }
     }
 
     &__tabs {

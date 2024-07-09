@@ -4,6 +4,15 @@
 .pagination-classic {
     @include mixins.flex-box($a: flex-end, $gap: 10px, $wrap: true);
 
+    &.disabled {
+        opacity: .5;
+    }
+
+    &.disabled &__button {
+        cursor: default;
+        pointer-events: none;
+    }
+
     &__pages {
         @include mixins.flex-box($a: center, $gap: 5px);
     }

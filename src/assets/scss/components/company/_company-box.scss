@@ -8,6 +8,8 @@
         position: relative;
         height: 100%;
 
+        @include mixins.flex-box($d: column);
+
         &.no-height {
             min-height: auto;
         }
