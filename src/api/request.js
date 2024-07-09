@@ -1,6 +1,6 @@
 import axios from 'axios';
-import ErrorHandle from './errors';
-import SuccessHandler from './success';
+import { setRequestError } from '@/api/helpers/setRequestError.js';
+import { SuccessHandler } from '@/api/helpers/successHandler.js';
 
 export default {
     async getRequests(id) {
@@ -15,7 +15,7 @@ export default {
             .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch(e => ErrorHandle.setError(e));
+            .catch(e => setRequestError(e));
         return data;
     },
     async getRequest(id) {
@@ -26,7 +26,7 @@ export default {
             .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch(e => ErrorHandle.setError(e));
+            .catch(e => setRequestError(e));
         return data[0];
     },
     async searchRequests(query, expand = null) {
@@ -51,7 +51,7 @@ export default {
             .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch(e => ErrorHandle.setError(e));
+            .catch(e => setRequestError(e));
         return data;
     },
     async updateRequest(formdata) {
@@ -62,7 +62,7 @@ export default {
             .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch(e => ErrorHandle.setError(e));
+            .catch(e => setRequestError(e));
         return data;
     },
     async deleteRequest(request_id) {
@@ -73,7 +73,7 @@ export default {
             .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch(e => ErrorHandle.setError(e));
+            .catch(e => setRequestError(e));
         return data;
     },
 
@@ -85,7 +85,7 @@ export default {
             .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch(e => ErrorHandle.setError(e));
+            .catch(e => setRequestError(e));
         return data;
     },
 
@@ -97,7 +97,7 @@ export default {
             .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch(e => ErrorHandle.setError(e));
+            .catch(e => setRequestError(e));
         return data;
     }
 };

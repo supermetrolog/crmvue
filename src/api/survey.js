@@ -1,5 +1,5 @@
 import axios from 'axios';
-import ErrorHandle from '@/api/errors/index.js';
+import { setRequestError } from '@/api/helpers/setRequestError.js';
 
 const URL = '/surveys';
 
@@ -9,7 +9,7 @@ export default {
             const response = await axios.post(URL, options);
             return response.data;
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
@@ -18,7 +18,7 @@ export default {
             const response = await axios.get(`${URL}/${id}`);
             return response.data;
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
@@ -27,7 +27,7 @@ export default {
             const response = await axios.get(URL);
             return response.data;
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
@@ -36,7 +36,7 @@ export default {
             const response = await axios.delete(`${URL}/${id}`);
             return response.status === 200;
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
@@ -45,7 +45,7 @@ export default {
             const response = await axios.put(`${URL}/${id}`, payload);
             return response.data;
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     }

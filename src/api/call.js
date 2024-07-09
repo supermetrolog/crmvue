@@ -1,6 +1,6 @@
 import axios from 'axios';
-import ErrorHandle from '@/api/errors/index.js';
-import SuccessHandler from '@/api/success/index.js';
+import { setRequestError } from '@/api/helpers/setRequestError.js';
+import { SuccessHandler } from '@/api/helpers/successHandler.js';
 
 export default {
     async createForChatMember(chatMemberID, options) {
@@ -10,7 +10,7 @@ export default {
             const response = await axios.post(url, options);
             return response.data;
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
@@ -19,7 +19,7 @@ export default {
             const response = await axios.post('/calls', options);
             return response.data;
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
@@ -35,7 +35,7 @@ export default {
                 pagination: SuccessHandler.getPaginationData(response)
             };
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
@@ -46,7 +46,7 @@ export default {
             const response = await axios.get(url);
             return response.data;
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
@@ -57,7 +57,7 @@ export default {
             const response = await axios.delete(url);
             return response.status === 200;
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
@@ -68,7 +68,7 @@ export default {
             const response = await axios.put(url, payload);
             return response.data;
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     }

@@ -1,6 +1,6 @@
 import axios from 'axios';
-import ErrorHandle from './errors';
-import SuccessHandler from './success';
+import { setRequestError } from '@/api/helpers/setRequestError.js';
+import { SuccessHandler } from '@/api/helpers/successHandler.js';
 
 export default {
     async getContacts(company_id) {
@@ -12,7 +12,7 @@ export default {
             .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch(e => ErrorHandle.setError(e));
+            .catch(e => setRequestError(e));
         return data;
     },
     async searchContacts(query) {
@@ -27,7 +27,7 @@ export default {
                 data.data = SuccessHandler.getData(Response);
                 data.pagination = SuccessHandler.getPaginationData(Response);
             })
-            .catch(e => ErrorHandle.setError(e));
+            .catch(e => setRequestError(e));
         return data;
     },
     async createContact(formdata) {
@@ -38,7 +38,7 @@ export default {
             .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch(e => ErrorHandle.setError(e));
+            .catch(e => setRequestError(e));
         return data;
     },
     async updateContact(formdata) {
@@ -49,7 +49,7 @@ export default {
             .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch(e => ErrorHandle.setError(e));
+            .catch(e => setRequestError(e));
         return data;
     },
     async deleteContact(contact_id) {
@@ -60,7 +60,7 @@ export default {
             .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch(e => ErrorHandle.setError(e));
+            .catch(e => setRequestError(e));
         return data;
     },
     async createComment(formdata) {
@@ -71,7 +71,7 @@ export default {
             .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch(e => ErrorHandle.setError(e));
+            .catch(e => setRequestError(e));
         return data;
     }
 };
