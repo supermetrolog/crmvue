@@ -1,14 +1,14 @@
-import { ref } from 'vue';
+import { ref, shallowRef } from 'vue';
 
 /**
  * @description Флаг видимости Popup
- * @type {Ref<UnwrapRef<boolean>>}
+ * @type {shallowRef<boolean>}
  */
-const isVisible = ref(false);
+const isVisible = shallowRef(false);
 
 /**
  * @description Текущее сообщение в Popup
- * @type {Ref<UnwrapRef<string>>}
+ * @type {Ref<string>}
  */
 const message = ref('');
 
