@@ -1,20 +1,22 @@
 <template>
-    <Form @submit="onSubmit">
+    <Form>
         <FormGroup>
             <div class="col-12">
                 <div class="d-flex align-items-end">
                     <Input
                         v-model="form.all"
-                        @keydown.enter="onSubmit"
                         label="Поиск"
                         class="w-100"
                         placeholder="ID запроса, название компании"
                     />
                     <div class="form-search__actions ml-4">
-                        <Button @click="extraVisible = !extraVisible" :badge="filterCount || false">
+                        <Button
+                            @click="extraIsVisible = !extraIsVisible"
+                            :badge="filtersCount || false"
+                        >
                             <span>Фильтры</span>
                         </Button>
-                        <Button @click="resetForm" :disabled="!filterCount" danger>
+                        <Button @click="resetForm" :disabled="!filtersCount" danger>
                             Сбросить фильтры
                         </Button>
                     </div>
@@ -23,8 +25,8 @@
         </FormGroup>
         <teleport to="body">
             <Modal
-                v-if="extraVisible"
-                @close="extraVisible = false"
+                v-if="extraIsVisible"
+                @close="extraIsVisible = false"
                 title="Фильтры по сделкам"
                 width="1400"
             >
@@ -46,7 +48,7 @@
                                 v-model="form.dealType"
                                 label="Тип сделки"
                                 class="col-md-2 col-6 mb-2"
-                                :options="dealTypeList"
+                                :options="DealTypeList"
                             />
                             <Input
                                 v-model="form.maxDistanceFromMKAD"
@@ -56,6 +58,7 @@
                                 label="Удаленность от МКАД"
                                 unit="км"
                                 type="number"
+                                reactive
                                 class="col-md-3 col-6 mb-2"
                             />
                             <Input
@@ -127,7 +130,7 @@
                                             }
                                         "
                                     />
-                                    <div v-if="form.regions.length" class="col-12">
+                                    <div v-if="form.regions?.length" class="col-12">
                                         <div class="form__row mt-1">
                                             <Chip
                                                 v-for="(region, index) in checkedRegions"
@@ -142,7 +145,7 @@
                                         <span class="form__subtitle">Тип ворот</span>
                                         <div class="form__row mt-1">
                                             <CheckboxChip
-                                                v-for="(gateType, index) in gateTypeList"
+                                                v-for="(gateType, index) in GateTypeList"
                                                 :key="index"
                                                 v-model="form.gateTypes"
                                                 :value="index"
@@ -188,7 +191,7 @@
                                         <span class="form__subtitle">Классы</span>
                                         <div class="form__row mt-1">
                                             <CheckboxChip
-                                                v-for="(classItem, index) in objectClassList"
+                                                v-for="(classItem, index) in ObjectClassList"
                                                 :key="index"
                                                 v-model="form.objectClasses"
                                                 :value="index"
@@ -224,7 +227,7 @@
                                             <span class="form__subtitle">Направления МО</span>
                                             <div class="form__row mt-1">
                                                 <CheckboxChip
-                                                    v-for="(directionItem, index) in directionList"
+                                                    v-for="(directionItem, index) in DirectionList"
                                                     :key="index"
                                                     v-model="form.directions"
                                                     :value="index"
@@ -241,7 +244,7 @@
                                             <span class="form__subtitle">Округа Москвы</span>
                                             <div class="form__row mt-1">
                                                 <CheckboxChip
-                                                    v-for="(districtItem, index) in districtList"
+                                                    v-for="(districtItem, index) in DistrictList"
                                                     :key="index"
                                                     v-model="form.districts"
                                                     :value="index"
@@ -258,9 +261,7 @@
                                             <span class="form__subtitle">МКАД</span>
                                             <div class="form__row mt-1">
                                                 <RadioChip
-                                                    v-for="(
-                                                        mkadOption, index
-                                                    ) in outsideMkadOptions"
+                                                    v-for="(mkadOption, index) in OutsideMkad"
                                                     :key="index"
                                                     v-model="form.outside_mkad"
                                                     :label="mkadOption"
@@ -343,24 +344,24 @@
                                 v-model="form.objectTypesGeneral"
                                 class="col-12 large bg"
                                 label="Тип объекта"
-                                :options="objectTypesGeneralList"
+                                :options="ObjectTypesGeneralList"
                             />
                         </FormGroup>
                         <FormGroup>
                             <CheckboxIcons
                                 v-model="form.objectTypes"
                                 class="col pr-1"
-                                :options="objectTypeListWareHouse"
+                                :options="ObjectTypeList.warehouse"
                             />
                             <CheckboxIcons
                                 v-model="form.objectTypes"
                                 class="col pr-1"
-                                :options="objectTypeListProduction"
+                                :options="ObjectTypeList.production"
                             />
                             <CheckboxIcons
                                 v-model="form.objectTypes"
                                 class="col"
-                                :options="objectTypeListPlot"
+                                :options="ObjectTypeList.plot"
                             />
                         </FormGroup>
                     </div>
@@ -370,28 +371,14 @@
     </Form>
 </template>
 
-<script>
+<script setup>
 import Form from '@/components/common/Forms/Form.vue';
 import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import Input from '@/components/common/Forms/Input.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import CheckboxIcons from '@/components/common/Forms/CheckboxIcons.vue';
 import Checkbox from '@/components/common/Forms/Checkbox.vue';
-import {
-    ActivePassive,
-    DealTypeList,
-    DirectionList,
-    DistrictList,
-    GateTypeList,
-    ObjectClassList,
-    ObjectTypeList,
-    ObjectTypesGeneralList,
-    OutsideMkad,
-    RegionList,
-    YesNo
-} from '@/const/const.js';
-import { SearchFormMixin } from '@/components/common/mixins.js';
-import { mapActions, mapGetters } from 'vuex';
+import { useStore } from 'vuex';
 import Button from '@/components/common/Button.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import Chip from '@/components/common/Chip.vue';
@@ -408,190 +395,172 @@ import useVuelidate from '@vuelidate/core';
 import { onlyPositiveNumber } from '@//validators';
 import Modal from '@/components/common/Modal.vue';
 import { deleteEmptyFields } from '@/utils/deleteEmptyFields.js';
+import { useSearchForm } from '@/composables/useSearchForm.js';
+import { useRoute, useRouter } from 'vue-router';
+import { computed, onBeforeMount, onMounted, reactive, shallowRef } from 'vue';
+import {
+    DealTypeList,
+    DirectionList,
+    DistrictList,
+    GateTypeList,
+    ObjectClassList,
+    ObjectTypeList,
+    ObjectTypesGeneralList,
+    OutsideMkad
+} from '@/const/const.js';
 
-export default {
-    name: 'FormCompanyRequestSearch',
-    components: {
-        Modal,
-        DoubleInput,
-        RadioChip,
-        CheckboxChip,
-        Chip,
-        AnimationTransition,
-        Button,
-        Form,
-        FormGroup,
-        Input,
-        MultiSelect,
-        CheckboxIcons,
-        Checkbox
-    },
-    mixins: [SearchFormMixin],
-    props: {
-        withoutConsultant: {
-            type: Boolean,
-            default: false
-        }
-    },
-    data() {
-        return {
-            v$: useVuelidate()
-        };
-    },
-    computed: {
-        ...mapGetters(['REGION_LIST']),
-        activePassiveOptions: () => ActivePassive,
-        objectTypeListWareHouse: () => ObjectTypeList.warehouse,
-        objectTypeListProduction: () => ObjectTypeList.production,
-        objectTypeListPlot: () => ObjectTypeList.plot,
-        yesNoOptions: () => YesNo,
-        outsideMkadOptions: () => OutsideMkad,
-        objectClassList: () => ObjectClassList,
-        gateTypeList: () => GateTypeList,
-        dealTypeList: () => DealTypeList,
-        regionList: () => RegionList,
-        directionList: () => DirectionList,
-        districtList: () => DistrictList,
-        objectTypesGeneralList: () => ObjectTypesGeneralList,
-        checkedRegions() {
-            if (this.REGION_LIST) {
-                return this.form.regions.map(element => ({
-                    id: element,
-                    label: this.REGION_LIST.find(region => region.value == element).label
-                }));
-            }
+const route = useRoute();
+const router = useRouter();
+const store = useStore();
 
-            return [];
+defineProps({
+    withoutConsultant: {
+        type: Boolean,
+        default: false
+    }
+});
+
+const formTemplate = {
+    all: null,
+    status: null,
+    consultant_id: null,
+    dateStart: null,
+    dateEnd: null,
+    objectTypes: [],
+    objectTypesGeneral: [],
+    rangeMinArea: null,
+    rangeMaxArea: null,
+    rangeMinPricePerFloor: null,
+    rangeMaxPricePerFloor: null,
+    rangeMinCeilingHeight: null,
+    rangeMaxCeilingHeight: null,
+    maxDistanceFromMKAD: null,
+    water: null,
+    gaz: null,
+    steam: null,
+    sewerage: null,
+    shelving: null,
+    objectClasses: [],
+    haveCranes: null,
+    heated: null,
+    maxElectricity: null,
+    antiDustOnly: null,
+    expressRequest: null,
+    firstFloorOnly: null,
+    trainLine: null,
+    gateTypes: [],
+    dealType: null,
+    regions: [],
+    districts: [],
+    directions: [],
+    outside_mkad: null,
+    region_neardy: null
+};
+
+const form = reactive({ ...formTemplate });
+const extraIsVisible = shallowRef(false);
+
+const REGION_LIST = computed(() => store.getters.REGION_LIST);
+const checkedRegions = computed(() => {
+    if (REGION_LIST.value) {
+        return form.regions.map(element => ({
+            id: element,
+            label: REGION_LIST.value.find(region => region.value == element).label
+        }));
+    }
+
+    return [];
+});
+
+const formCeilingHeightValidators = computed(() =>
+    ceilingHeightValidators(form.rangeMaxCeilingHeight)
+);
+const formDateValidators = computed(() => dateRangeValidators(form.dateEnd));
+const formPricePerFloorValidators = computed(() =>
+    pricePerFloorValidators(form.rangeMaxPricePerFloor)
+);
+const formAreaValidators = computed(() => areaRangeValidators(form.rangeMaxArea));
+const pricePerFloorUnit = computed(() => {
+    if (form.dealType === null || form.dealType === undefined || form.dealType === 1) return '₽';
+    return '₽ за м<sup>2</sup>/год';
+});
+
+const FETCH_REGION_LIST = () => store.dispatch('FETCH_REGION_LIST');
+const FETCH_CONSULTANT_LIST = () => store.dispatch('FETCH_CONSULTANT_LIST');
+
+const changeRegion = () => {
+    if (form.regions == null) {
+        form.directions = [];
+        form.districts = [];
+    }
+    if (!form.regions.some(item => item == 1)) {
+        form.directions = [];
+        form.region_neardy = null;
+    }
+    if (!form.regions.some(item => item == 6)) {
+        form.districts = [];
+        form.outside_mkad = null;
+    }
+};
+
+const removeRegion = index => {
+    form.regions.splice(index, 1);
+    changeRegion();
+};
+
+const setQueryFields = async () => {
+    Object.assign(form, route.query);
+
+    if (form.objectClasses && !Array.isArray(form.objectClasses)) {
+        form.objectClasses = [form.objectClasses];
+    }
+    if (form.gateTypes && !Array.isArray(form.gateTypes)) {
+        form.gateTypes = [form.gateTypes];
+    }
+    if (form.gateTypesGeneral && !Array.isArray(form.gateTypesGeneral)) {
+        form.gateTypesGeneral = [form.gateTypesGeneral];
+    }
+    if (form.objectTypes && !Array.isArray(form.objectTypes)) {
+        form.objectTypes = [form.objectTypes];
+    }
+    if (form.regions && !Array.isArray(form.regions)) {
+        form.regions = [form.regions];
+    }
+    if (form.districts && !Array.isArray(form.districts)) {
+        form.districts = [form.districts];
+    }
+    if (form.directions && !Array.isArray(form.directions)) {
+        form.directions = [form.directions];
+    }
+
+    if (form.objectTypes) {
+        form.objectTypes = form.objectTypes.map(element => +element);
+    }
+
+    let query = { ...form };
+    deleteEmptyFields(query);
+    await router.replace({ query });
+};
+
+const rules = {
+    form: {
+        maxDistanceFromMKAD: {
+            min: onlyPositiveNumber('Некорректная отрицательная удаленность')
         },
-        formCeilingHeightValidators() {
-            return ceilingHeightValidators(this.form.rangeMaxCeilingHeight);
-        },
-        formDateValidators() {
-            return dateRangeValidators(this.form.dateEnd);
-        },
-        formPricePerFloorValidators() {
-            return pricePerFloorValidators(this.form.rangeMaxPricePerFloor);
-        },
-        formAreaValidators() {
-            return areaRangeValidators(this.form.rangeMaxArea);
-        },
-        pricePerFloorUnit() {
-            if (
-                this.form.dealType === null ||
-                this.form.dealType === undefined ||
-                this.form.dealType === 1
-            )
-                return '₽';
-            return '₽ за м<sup>2</sup>/год';
-        }
-    },
-    validations() {
-        return {
-            form: {
-                maxDistanceFromMKAD: {
-                    min: onlyPositiveNumber('Некорректная отрицательная удаленность')
-                },
-                maxElectricity: {
-                    min: onlyPositiveNumber()
-                }
-            }
-        };
-    },
-    defaultFormProperties: {
-        all: null,
-        status: null,
-        consultant_id: null,
-        dateStart: null,
-        dateEnd: null,
-        objectTypes: [],
-        objectTypesGeneral: [],
-        rangeMinArea: null,
-        rangeMaxArea: null,
-        rangeMinPricePerFloor: null,
-        rangeMaxPricePerFloor: null,
-        rangeMinCeilingHeight: null,
-        rangeMaxCeilingHeight: null,
-        maxDistanceFromMKAD: null,
-        water: null,
-        gaz: null,
-        steam: null,
-        sewerage: null,
-        shelving: null,
-        objectClasses: [],
-        haveCranes: null,
-        heated: null,
-        maxElectricity: null,
-        antiDustOnly: null,
-        expressRequest: null,
-        firstFloorOnly: null,
-        trainLine: null,
-        gateTypes: [],
-        dealType: null,
-        regions: [],
-        districts: [],
-        directions: [],
-        outside_mkad: null,
-        region_neardy: null
-    },
-    methods: {
-        ...mapActions(['FETCH_REGION_LIST']),
-        removeRegion(index) {
-            this.form.regions.splice(index, 1);
-            this.changeRegion();
-        },
-        changeRegion() {
-            if (this.form.regions == null) {
-                this.form.directions = [];
-                this.form.districts = [];
-            }
-            if (!this.form.regions.find(item => item == 1)) {
-                this.form.directions = [];
-                this.form.region_neardy = null;
-            }
-            if (!this.form.regions.find(item => item == 6)) {
-                this.form.districts = [];
-                this.form.outside_mkad = null;
-            }
-        },
-        async setQueryFields() {
-            this.form = { ...this.form, ...this.$route.query };
-            if (this.form.objectClasses && !Array.isArray(this.form.objectClasses)) {
-                this.form.objectClasses = [this.form.objectClasses];
-            }
-            if (this.form.gateTypes && !Array.isArray(this.form.gateTypes)) {
-                this.form.gateTypes = [this.form.gateTypes];
-            }
-            if (this.form.gateTypesGeneral && !Array.isArray(this.form.gateTypesGeneral)) {
-                this.form.gateTypesGeneral = [this.form.gateTypesGeneral];
-            }
-            if (this.form.objectTypes && !Array.isArray(this.form.objectTypes)) {
-                this.form.objectTypes = [this.form.objectTypes];
-            }
-            if (this.form.regions && !Array.isArray(this.form.regions)) {
-                this.form.regions = [this.form.regions];
-            }
-            if (this.form.districts && !Array.isArray(this.form.districts)) {
-                this.form.districts = [this.form.districts];
-            }
-            if (this.form.directions && !Array.isArray(this.form.directions)) {
-                this.form.directions = [this.form.directions];
-            }
-            let array = [];
-            this.form.objectTypes.forEach(item => {
-                array.push(+item);
-            });
-            this.form.objectTypes = array;
-            let query = { ...this.form };
-            deleteEmptyFields(query);
-            await this.$router.replace({ query });
-        }
-    },
-    async mounted() {
-        if (this.form.regions.length) {
-            await this.FETCH_REGION_LIST();
+        maxElectricity: {
+            min: onlyPositiveNumber()
         }
     }
 };
-</script>
 
-<style></style>
+const v$ = useVuelidate(rules, { form });
+const { filtersCount, resetForm } = useSearchForm(form, () => {}, {
+    url: true,
+    setQuery: setQueryFields,
+    template: formTemplate
+});
+
+onBeforeMount(() => {
+    if (form.regions?.length) FETCH_REGION_LIST();
+});
+</script>

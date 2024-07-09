@@ -17,9 +17,9 @@
             />
             <FormCompany
                 v-if="companyFormIsVisible"
-                @closeCompanyForm="companyFormIsVisible = false"
+                @close="companyFormIsVisible = false"
                 @updated="onCompanyUpdated"
-                :formdata="COMPANY"
+                :form-data="COMPANY"
             />
         </teleport>
         <div class="row">

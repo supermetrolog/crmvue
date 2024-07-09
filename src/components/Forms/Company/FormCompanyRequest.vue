@@ -431,7 +431,7 @@ import Checkbox from '@/components/common/Forms/Checkbox.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import Textarea from '@/components/common/Forms/Textarea.vue';
 import CheckboxIcons from '@/components/common/Forms/CheckboxIcons.vue';
-import Submit from '@/components/common/Forms/Submit.vue';
+import Submit from '@/components/common/Forms/FormSubmit.vue';
 import api from '@//api/api.js';
 import Modal from '@/components/common/Modal.vue';
 import Loader from '@/components/common/Loader.vue';

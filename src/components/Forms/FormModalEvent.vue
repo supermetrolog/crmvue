@@ -36,7 +36,7 @@ import Input from '@/components/common/Forms/Input.vue';
 import { helpers, required } from '@vuelidate/validators';
 import { mapActions } from 'vuex';
 import useValidate from '@vuelidate/core';
-import Submit from '@/components/common/Forms/Submit.vue';
+import Submit from '@/components/common/Forms/FormSubmit.vue';
 
 export default {
     name: 'FormModalEvent',

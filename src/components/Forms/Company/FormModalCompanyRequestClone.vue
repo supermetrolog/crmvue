@@ -22,7 +22,7 @@
 
 <script>
 import Modal from '@/components/common/Modal.vue';
-import Submit from '@/components/common/Forms/Submit.vue';
+import Submit from '@/components/common/Forms/FormSubmit.vue';
 import Form from '@/components/common/Forms/Form.vue';
 import Loader from '@/components/common/Loader.vue';
 import CompanyBoxRequestsListItem from '@/components/Company/Box/CompanyBoxRequestsListItem.vue';

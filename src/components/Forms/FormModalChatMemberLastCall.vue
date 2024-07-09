@@ -71,7 +71,7 @@ import MessengerChatFormRecipientContact from '@/components/Messenger/Chat/Form/
 import MessengerChatFormRecipientCard from '@/components/Messenger/Chat/Form/MessengerChatFormRecipientCard.vue';
 import { entityOptions } from '@/const/options/options.js';
 import { useStore } from 'vuex';
-import { $toast } from '@/plugins/toast.js';
+import { notify } from '@kyvg/vue3-notification';
 
 const contacts = ref([]);
 const current = ref(null);
@@ -132,10 +132,10 @@ async function updateLastCall() {
     });
 
     if (callObject) {
-        $toast('Дата последнего звонка успешно обновлена');
+        notify('Дата последнего звонка успешно обновлена');
         submit({ lastCall: callObject });
     } else {
-        $toast('Произошла ошибка. Попробуйте еще раз.');
+        notify('Произошла ошибка. Попробуйте еще раз.');
     }
 }
 

@@ -206,7 +206,7 @@ import { yandexmap } from '@/utils/yandexMap.js';
 import api from '@//api/api.js';
 import Modal from '@/components/common/Modal.vue';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
-import Submit from '@/components/common/Forms/Submit.vue';
+import Submit from '@/components/common/Forms/FormSubmit.vue';
 import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import { entityOptions } from '@/const/options/options.js';
 import RadioOptions from '@/components/common/Forms/RadioOptions.vue';

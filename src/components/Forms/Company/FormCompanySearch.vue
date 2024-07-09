@@ -10,15 +10,15 @@
         </div>
         <div class="col-4 align-self-end">
             <div class="form-search__actions">
-                <Button @click="extraVisible = !extraVisible" icon :badge="filterCount || false">
-                    <span>Фильтры</span>
-                    <i v-if="extraVisible" class="fas fa-angle-up"></i>
-                    <i v-else class="fas fa-angle-down"></i>
+                <Button @click="extraIsVisible = !extraIsVisible" :badge="filtersCount || false">
+                    Фильтры
                 </Button>
-                <Button @click="resetForm" :disabled="!filterCount" danger>Сбросить фильтры</Button>
+                <Button @click="resetForm" :disabled="!filtersCount" danger>
+                    Сбросить фильтры
+                </Button>
             </div>
         </div>
-        <Modal v-if="extraVisible" @close="extraVisible = false" title="Фильтры">
+        <Modal v-if="extraIsVisible" @close="extraIsVisible = false" title="Фильтры">
             <FormGroup>
                 <MultiSelect
                     v-model="form.consultant_id"
@@ -53,14 +53,14 @@
                     title="Группа деятельности"
                     label="Группа дея-ти"
                     class="col-md-4"
-                    :options="activityGroupOptions"
+                    :options="ActivityGroupList"
                 />
                 <MultiSelect
                     v-model="form.activityProfile"
                     title="Профиль деятельности"
                     label="Профиль дея-ти"
                     class="col-md-4"
-                    :options="activityProfileOptions"
+                    :options="ActivityProfileList"
                 />
                 <DoubleInput
                     v-model:first="form.dateStart"
@@ -76,7 +76,7 @@
                     <span class="form__subtitle">Категория</span>
                     <div class="form__row mt-1">
                         <CheckboxChip
-                            v-for="(option, index) in categoryOptions"
+                            v-for="(option, index) in CompanyCategories"
                             :key="index"
                             v-model="form.categories"
                             :value="index"
@@ -96,104 +96,91 @@
     </Form>
 </template>
 
-<script>
+<script setup>
 import Form from '@/components/common/Forms/Form.vue';
 import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import Input from '@/components/common/Forms/Input.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
-import {
-    ActivePassive,
-    ActivityGroupList,
-    ActivityProfileList,
-    CompanyCategories
-} from '@/const/const.js';
-import { SearchFormMixin } from '@/components/common/mixins.js';
+import { ActivityGroupList, ActivityProfileList, CompanyCategories } from '@/const/const.js';
 import Button from '@/components/common/Button.vue';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import { helpers } from '@vuelidate/validators';
 import { maxDate, onlyEnglish, onlyRussian } from '@//validators';
-import useVuelidate from '@vuelidate/core';
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
 import { deleteEmptyFields } from '@/utils/deleteEmptyFields.js';
 import Modal from '@/components/common/Modal.vue';
+import { computed, reactive, shallowRef } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useSearchForm } from '@/composables/useSearchForm.js';
+import { useStore } from 'vuex';
+import useValidate from '@vuelidate/core';
 
-export default {
-    name: 'FormCompanySearch',
-    components: {
-        Modal,
-        DoubleInput,
-        RadioChip,
-        CheckboxChip,
-        Button,
-        Form,
-        FormGroup,
-        Input,
-        MultiSelect
-    },
-    mixins: [SearchFormMixin],
-    data() {
-        return {
-            v$: useVuelidate()
-        };
-    },
-    validations() {
-        return {
-            form: {
-                nameRu: {
-                    onlyRussian: helpers.withMessage(
-                        'Название должно быть на русском языке',
-                        onlyRussian
-                    )
-                },
-                nameEng: {
-                    onlyEnglish: helpers.withMessage(
-                        'Название должно быть на английском языке',
-                        onlyEnglish
-                    )
-                }
-            }
-        };
-    },
-    computed: {
-        categoryOptions: () => CompanyCategories,
-        activityGroupOptions: () => ActivityGroupList,
-        activityProfileOptions: () => ActivityProfileList,
-        activePassiveOptions: () => ActivePassive,
-        formDateValidators() {
-            return [
-                {
-                    func: maxDate(this.form.dateEnd),
-                    message: 'Дата ОТ не может быть позже ДО',
-                    property: 'first'
-                }
-            ];
-        }
-    },
-    defaultFormProperties: {
-        all: null,
-        nameRu: null,
-        nameEng: null,
-        consultant_id: null,
-        categories: [],
-        activityGroup: null,
-        activityProfile: null,
-        dateStart: null,
-        dateEnd: null,
-        status: null
-    },
-    methods: {
-        async setQueryFields() {
-            this.form = { ...this.form, ...this.$route.query };
-            if (this.form.categories && !Array.isArray(this.form.categories)) {
-                this.form.categories = [this.form.categories];
-            }
-            let query = { ...this.form };
-            deleteEmptyFields(query);
-            await this.$router.replace({ query });
+const route = useRoute();
+const router = useRouter();
+const store = useStore();
+
+const emit = defineEmits(['search', 'reset']);
+
+const formTemplate = {
+    all: null,
+    nameRu: null,
+    nameEng: null,
+    consultant_id: null,
+    categories: [],
+    activityGroup: null,
+    activityProfile: null,
+    dateStart: null,
+    dateEnd: null,
+    status: null
+};
+
+const form = reactive({});
+const extraIsVisible = shallowRef(false);
+
+const formDateValidators = computed(() => [
+    {
+        func: maxDate(form.dateEnd),
+        message: 'Дата ОТ не может быть позже ДО',
+        property: 'first'
+    }
+]);
+
+const setQueryFields = async () => {
+    Object.assign(form, route.query);
+
+    if (form.categories && !Array.isArray(form.categories)) form.categories = [form.categories];
+
+    let query = { ...form };
+    deleteEmptyFields(query);
+    await router.replace({ query });
+};
+
+const rules = {
+    form: {
+        nameRu: {
+            onlyRussian: helpers.withMessage('Название должно быть на русском языке', onlyRussian)
+        },
+        nameEng: {
+            onlyEnglish: helpers.withMessage(
+                'Название должно быть на английском языке',
+                onlyEnglish
+            )
         }
     }
 };
-</script>
 
-<style></style>
+const onSubmit = query => {
+    emit('search', query);
+};
+
+const FETCH_CONSULTANT_LIST = () => store.dispatch('FETCH_CONSULTANT_LIST');
+
+const v$ = useValidate(rules, { form });
+const { filtersCount, resetForm } = useSearchForm(form, {
+    template: formTemplate,
+    submit: onSubmit,
+    syncWithQuery: true,
+    setQuery: setQueryFields
+});
+</script>

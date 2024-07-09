@@ -54,7 +54,7 @@ import { mapGetters } from 'vuex';
 import { Timeline } from '@/const/const';
 import Form from '@/components/common/Forms/Form.vue';
 import Textarea from '@/components/common/Forms/Textarea.vue';
-import Submit from '@/components/common/Forms/Submit.vue';
+import Submit from '@/components/common/Forms/FormSubmit.vue';
 import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import Accordion from '@/components/common/Accordion/Accordion.vue';
 import AccordionItem from '@/components/common/Accordion/AccordionItem.vue';

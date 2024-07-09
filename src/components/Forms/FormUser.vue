@@ -137,7 +137,7 @@ import Modal from '@/components/common/Modal.vue';
 import Loader from '@/components/common/Loader.vue';
 import { emptyWithProperty, everyProperty, validateEmail, validatePhone } from '@//validators';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
-import Submit from '@/components/common/Forms/Submit.vue';
+import Submit from '@/components/common/Forms/FormSubmit.vue';
 
 export default {
     name: 'FormUser',

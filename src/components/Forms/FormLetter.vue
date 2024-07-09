@@ -103,7 +103,7 @@ import Utils from '@/utils';
 import useValidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
 import Loader from '@/components/common/Loader.vue';
-import Submit from '@/components/common/Forms/Submit.vue';
+import Submit from '@/components/common/Forms/FormSubmit.vue';
 import plural from 'plural-ru';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';

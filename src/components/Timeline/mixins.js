@@ -361,9 +361,6 @@ export const TimelineStepWithSearchableObjectsMixin = {
         ...mapActions(['SEARCH_FAVORITES_OFFERS']),
         async fetchObjects(query = {}, withLoader = true) {
             if (withLoader) this.isSearchLoading = true;
-            const hash = waitHash(query);
-            this.waitHash = hash;
-
             query = {
                 type_id: [1, 2, 3],
                 page: this.currentPage,
