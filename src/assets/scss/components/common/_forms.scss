@@ -269,6 +269,7 @@
 
         &:has(.form__multiselect).required > span {
             position: relative;
+            width: max-content;
 
             &::after {
                 content: '*';
@@ -311,7 +312,7 @@
             label {
                 &:has(.invalid), &:has(.valid) {
                     .form__unit {
-                        right: 45px;
+                        right: 35px;
                     }
                 }
             }
@@ -1211,4 +1212,16 @@
 
 .color-picker-popup {
     z-index: 4005!important;
+}
+
+.vue-editor {
+    &__label {
+        font-weight: 500;
+    }
+
+    .ql-editor {
+        font-size: 16px;
+        min-height: 200px;
+        max-height: 400px;
+    }
 }
