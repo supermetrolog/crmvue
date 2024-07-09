@@ -4,14 +4,4 @@
     </div>
 </template>
 
-<script>
-export default {
-    name: 'Companies',
-    components: {
-        // Company
-        // Table,
-        // Timeline,
-    },
-    mounted() {}
-};
-</script>
+<script setup></script>

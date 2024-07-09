@@ -6,7 +6,7 @@
     >
         <CompanyContactItem
             @start-editing="$emit('start-editing')"
-            @create-comment="createComment"
+            @create-comment="createContactComment"
             @delete-contact="$emit('delete-contact')"
             :contact="contact"
             :read-only="readOnly"
@@ -14,32 +14,22 @@
     </Modal>
 </template>
 
-<script>
+<script setup>
 import Modal from '@/components/common/Modal.vue';
 import CompanyContactItem from '@/components/Company/Contact/CompanyContactItem.vue';
+import { inject, onMounted } from 'vue';
 
-export default {
-    name: 'CompanyContactModal',
-    components: {
-        CompanyContactItem,
-        Modal
+defineEmits(['close', 'start-editing', 'delete-contact']);
+const createContactComment = inject('createContactComment');
+
+const props = defineProps({
+    contact: {
+        type: Object,
+        required: true
     },
-    emits: ['close', 'start-editing', 'delete-contact'],
-    inject: ['createContactComment'],
-    props: {
-        contact: {
-            type: Object,
-            required: true
-        },
-        readOnly: {
-            type: Boolean,
-            default: false
-        }
-    },
-    methods: {
-        createComment(options) {
-            this.createContactComment(options);
-        }
+    readOnly: {
+        type: Boolean,
+        default: false
     }
-};
+});
 </script>

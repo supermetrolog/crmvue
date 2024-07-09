@@ -304,7 +304,6 @@ export default {
         },
         objectTypes() {
             return this.request.objectTypes.map(({ object_type }) => {
-                console.log(object_type);
                 return entityOptions.object.purposes[object_type];
             });
         },

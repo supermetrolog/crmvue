@@ -24,23 +24,21 @@
     </Table>
 </template>
 
-<script>
+<script setup>
 import CompanyTableItem from '@/components/Company/Table/CompanyTableItem.vue';
-import { MixinCompanyView } from '@/components/Company/mixins.js';
 import Table from '@/components/common/Table/Table.vue';
 import Th from '@/components/common/Table/Th.vue';
 import Tr from '@/components/common/Table/Tr.vue';
 import Loader from '@/components/common/Loader.vue';
 
-export default {
-    name: 'CompanyTable',
-    components: {
-        Loader,
-        Table,
-        Tr,
-        Th,
-        CompanyTableItem
+defineProps({
+    companies: {
+        type: Array,
+        default: () => []
     },
-    mixins: [MixinCompanyView]
-};
+    loader: {
+        type: Boolean,
+        default: false
+    }
+});
 </script>

@@ -32,7 +32,7 @@ import { mapActions, mapGetters } from 'vuex';
 import Textarea from '@/components/common/Forms/Textarea.vue';
 import Form from '@/components/common/Forms/Form.vue';
 import FormGroup from '@/components/common/Forms/FormGroup.vue';
-import Submit from '@/components/common/Forms/Submit.vue';
+import Submit from '@/components/common/Forms/FormSubmit.vue';
 import useValidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
 import Loader from '@/components/common/Loader.vue';
