@@ -33,11 +33,19 @@
 .company-box-main {
     &__header {
         @include mixins.flex-box($a: center);
+        @include mixins.media('max', 'md') {
+            flex-wrap: wrap;
+            gap: 10px;
+        }
     }
 
     &__info {
         @include mixins.flex-box($a: center, $gap: 10px);
         font-size: 12px;
+
+        @include mixins.media('max', 'md') {
+            flex-wrap: wrap;
+        }
     }
 
     &__actions {
@@ -62,6 +70,13 @@
     &__block {
         @include mixins.media('min', 'lg') {
             flex-basis: 50%;
+        }
+
+        .tabs-component-tabs {
+            overflow-x: auto;
+            &::-webkit-scrollbar {
+                height: 5px;
+            }
         }
     }
 

@@ -65,7 +65,7 @@ $sizes: (
 }
 
 @mixin hover {
-    &:not([disabled]):not(.disabled):hover{
+    &:not([disabled]):not(.disabled):hover {
         @content;
     }
 }

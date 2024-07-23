@@ -171,8 +171,7 @@
 }
 
 .object-deals-actions {
-    @include mixins.flex-box($a: flex-end, $gap: 15px);
-    width: max-content;
+    @include mixins.flex-box($j: flex-end, $gap: 15px);
     margin-left: auto;
     margin-bottom: 10px;
 
@@ -184,6 +183,19 @@
 
     &__list {
         @include mixins.flex-box($j: center, $gap: 5px);
+
+        @include mixins.media('max', 'md') {
+            flex-wrap: wrap;
+            justify-content: unset;
+
+            li {
+                flex-basis: calc(50% - 5px);
+
+                .button {
+                    width: 100%;
+                }
+            }
+        }
     }
 }
 
@@ -522,7 +534,7 @@
         border-radius: 5px;
         margin-bottom: 10px;
         text-align: center;
-        opacity: .7;
+        font-weight: 500;
     }
 
     &__title {
@@ -749,6 +761,10 @@
     gap: 40px;
     grid-auto-columns: 1fr;
     grid-auto-flow: column;
+
+    @include mixins.media('max', 'md') {
+        grid-auto-flow: unset;
+    }
 
     &__column {
         @include mixins.flex-box($d: column, $gap: 20px);

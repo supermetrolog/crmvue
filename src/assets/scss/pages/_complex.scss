@@ -12,15 +12,10 @@
         position: absolute;
         top: 0;
         z-index: 3;
-
         padding: 0 10px;
-
         width: 100%;
         height: 60px;
-
-
         backdrop-filter: blur(7px);;
-
         overflow-x: auto;
         scroll-behavior: smooth;
 
@@ -39,11 +34,11 @@
         border-radius: 5px;
         padding: 0 10px;
         height: 35px;
-        font-weight: bold;
+        font-weight: 500;
         font-size: 13px;
         white-space: nowrap;
         box-shadow: 0 0 5px 2px rgba(13, 31, 47, 0.2);
-
+        text-decoration: underline;
 
         &[title] {
             div {
@@ -63,11 +58,12 @@
 
     &__action {
         @include mixins.flex-box($a: center, $j: center);
+        @include mixins.transition(background-color .5s, color .5s);
         border: none;
         cursor: pointer;
         width: 35px;
         font-size: 18px;
-        transition: background-color .5s ease, color .5s ease;
+        text-decoration: none;
 
         &:hover {
             color: #268e50;
@@ -77,10 +73,10 @@
 
     &__control {
         @include mixins.flex-box($a: center, $j: center);
+        @include mixins.transition(background-color .5s, color .5s);
         font-size: 18px;
         background-color: #fff;
         box-shadow: 0 0 5px 2px rgba(13, 31, 47, 0.2);
-        transition: background-color .5s ease, color .5s ease;
         width: 35px;
         height: 35px;
         border-radius: 5px;
@@ -155,7 +151,37 @@
 }
 
 .complex-about {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+
+    @include mixins.media('max', 'md') {
+        .property-grid {
+            grid-auto-flow: unset;
+        }
+
+        .tabs-component {
+            &-tabs {
+                overflow-x: auto;
+            }
+
+            &-tab-a {
+                width: max-content;
+            }
+        }
+    }
+}
+
+.complex-tabs {
+    @include mixins.flex-box($gap: 5px, $a: center);
+
+    &__link {
+        background-color: variables.$color_grey_alt;
+        color: inherit;
+        @include mixins.transition(background-color);
+
+        &.is-active, &:hover {
+            background-color: variables.$bg-success-l;
+        }
+    }
 }
 
 .object-holding-parameters {
@@ -227,6 +253,8 @@
         border: 1px solid variables.$color_light_grey;
         @include mixins.flex-box($gap: 20px, $d: column);
         flex-grow: 2;
+        overflow-y: auto;
+        max-height: 410px;
     }
 
     &-main {
@@ -245,7 +273,7 @@
 
         &-address {
             font-weight: bold;
-            font-size: 1em;
+            font-size: 14px;
         }
     }
 }
@@ -377,7 +405,7 @@
 .object-holding-company {
     &__title {
         font-size: 13px;
-        font-weight: 500;
+        opacity: .5;
         margin-bottom: 5px;
     }
 
@@ -387,6 +415,7 @@
 
     &__name {
         color: #000;
+        font-weight: 500;
         width: max-content;
     }
 
@@ -420,8 +449,16 @@
     padding: 30px 0 15px;
     background: #f7faff;
 
+    @include mixins.media('max', 'md') {
+        flex-direction: column;
+    }
+
     &-content {
         width: 80%;
+
+        @include mixins.media('max', 'md') {
+            width: 100%;
+        }
     }
 
     &-name {
@@ -441,6 +478,11 @@
 .complex-header {
     &__actions {
         @include mixins.flex-box($j: flex-end, $gap: 10px);
+
+        @include mixins.media('max', 'md') {
+            flex-wrap: wrap;
+            justify-content: unset;
+        }
     }
 }
 
@@ -454,33 +496,51 @@
         font-size: 14px;
         line-height: 53px;
         font-weight: 900;
-
         position: sticky;
         top: 50px;
         z-index: 7;
         margin-bottom: 20px;
-
         height: 50px;
-
         color: variables.$color_light;
+
+        @include mixins.media('max', 'md') {
+            top: -10px;
+        }
     }
 
     &-body {
         @include mixins.flex-box($d: column);
-        gap: $gap;
+        gap: 20px;
     }
 }
 
 .ObjectHoldingsTabs {
     $border: 1px solid #cacaca;
-    margin-bottom: 20px;
     position: relative;
 
+    @include mixins.media('max', 'lg') {
+        .object-holdings-tabs__tabs {
+            overflow-x: auto;
+
+            .complex-tabs__link {
+                width: max-content;
+            }
+        }
+    }
+
     &-buttons {
-        position: absolute;
-        right: 16px;
-        top: -6px;
-        z-index: 6;
+        @include mixins.media('max', 'lg') {
+            background-color: #e7e7e7;
+            border-left: 1px solid #cacaca;
+            border-right: 1px solid #cacaca;
+        }
+
+        @include mixins.media('min', 'lg') {
+            position: absolute;
+            right: 16px;
+            top: -5px;
+            z-index: 6;
+        }
     }
 
     &-content {
@@ -503,18 +563,6 @@
                 text-overflow: ellipsis;
             }
         }
-    }
-
-    > .tabs-component > .tabs-component-tabs {
-        position: sticky;
-        top: 99px;
-        z-index: 5;
-        background-color: variables.$color_grey_alt;
-        padding: 10px;
-        border-bottom: $border;
-        border-left: $border;
-        border-right: $border;
-        gap: 0;
     }
 
     .tabs-component-panels {
@@ -560,6 +608,30 @@
 .object-holdings-tabs {
     &__list {
         @include mixins.flex-box($gap: 10px, $wrap: true);
+    }
+
+    &__tabs {
+        position: sticky;
+        top: 99px;
+        z-index: 5;
+        background-color: variables.$color_grey_alt;
+        padding: 1em;
+        border-bottom: 1px solid #cacaca;
+        border-left: 1px solid #cacaca;
+        border-right: 1px solid #cacaca;
+        flex-wrap: wrap;
+
+        @include mixins.media('max', 'md') {
+            top: 40px
+        }
+
+        .complex-tabs__link {
+            background-color: variables.$bg-gray-l;
+
+            &.is-active, &:hover {
+                background-color: variables.$bg-success-l;
+            }
+        }
     }
 }
 
@@ -738,7 +810,7 @@
 
     &__subtitle {
         font-size: 14px;
-        font-weight: 500;
+        opacity: .6;
     }
 
     &__title {

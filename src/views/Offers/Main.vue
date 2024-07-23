@@ -33,11 +33,16 @@
                     v-if="OFFERS_PAGINATION"
                     ref="firstPagination"
                     @next="next"
-                    class="col-6"
+                    class="col-12 col-md-6"
                     :pagination="OFFERS_PAGINATION"
                 />
-                <div class="company-table__actions col-4">
-                    <Switch v-model="isCardView" false-title="Таблица" true-title="Карточки" />
+                <div class="company-table__actions col-12 col-md-4">
+                    <Switch
+                        v-if="!isMobile"
+                        v-model="isCardView"
+                        false-title="Таблица"
+                        true-title="Карточки"
+                    />
                     <Button @click="toggleComplexFormModalVisible" success :disabled="loader">
                         Создать комплекс
                     </Button>
@@ -118,6 +123,7 @@ export default {
     computed: {
         ...mapGetters(['OFFERS_PAGINATION', 'OFFERS']),
         currentViewComponentName() {
+            if (this.isMobile) return 'OfferTableMobile';
             return this.isCardView ? 'OfferTableMobile' : 'OfferTable';
         }
     },

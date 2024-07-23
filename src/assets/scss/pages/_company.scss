@@ -133,8 +133,10 @@
             flex-basis: 33%;
         }
 
-        max-height: 1150px;
-        min-height: 550px;
+        @include mixins.media('min', 'md') {
+            max-height: 1150px;
+            min-height: 550px;
+        }
 
         .company-box-layout__content {
             max-height: 1100px;

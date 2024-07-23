@@ -1,5 +1,5 @@
 <template>
-    <div class="company-page">
+    <div class="company-page container-fluid">
         <teleport to="body">
             <Timeline
                 v-if="timelineIsVisible && COMPANY && COMPANY_REQUESTS[0]"
@@ -21,11 +21,11 @@
         />
         <FormCompanyRequest
             v-if="requestFormIsVisible"
-            @closeCompanyForm="closeRequestForm"
+            @close="closeRequestForm"
             @created="getCompanyRequests"
             @updated="getCompanyRequests"
-            :company_id="COMPANY.id"
-            :formdata="request"
+            :company-id="COMPANY.id"
+            :form-data="request"
         />
         <FormCompanyContact
             v-if="contactFormIsVisible"

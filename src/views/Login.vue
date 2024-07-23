@@ -94,8 +94,6 @@ const v$ = useVuelidate(rules, { form });
 const hasValidationError = computed(() => v$.value.$error);
 
 const submit = async () => {
-    console.log('SUBMIT');
-
     v$.value.$validate();
     if (v$.value.form.$error) return;
 

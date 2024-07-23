@@ -1,5 +1,5 @@
 <template>
-    <div v-if="complex" class="ComplexView">
+    <div v-if="complex" class="ComplexView container-fluid">
         <teleport to="body">
             <FormComplex
                 v-if="complexFormModalVisible"

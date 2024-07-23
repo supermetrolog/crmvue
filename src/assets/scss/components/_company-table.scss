@@ -8,6 +8,9 @@
 
     &__actions {
         @include mixins.flex-box($j: flex-end, $gap: 10px);
+        @include mixins.media('max', 'md') {
+            justify-content: center;
+        }
     }
 
     width: 100%;

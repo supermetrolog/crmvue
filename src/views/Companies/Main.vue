@@ -1,7 +1,7 @@
 <template>
     <section>
         <div class="container-fluid">
-            <div class="row mb-4">
+            <div class="row mb-2 mb-md-4">
                 <FormCompany
                     v-if="companyFormIsVisible"
                     @close="companyFormIsVisible = false"
@@ -11,15 +11,16 @@
             </div>
             <div class="row">
                 <div class="col-12">
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex flex-column flex-md-row justify-content-between">
                         <PaginationClassic
-                            v-if="COMPANIES_PAGINATION"
+                            v-if="COMPANIES_PAGINATION && COMPANIES.length"
                             ref="firstPagination"
                             @next="next"
                             :pagination="COMPANIES_PAGINATION"
                         />
-                        <div class="company-table__actions">
+                        <div class="company-table__actions justify-content-start">
                             <Switch
+                                v-if="!isMobile"
                                 v-model="viewMode"
                                 false-title="Таблица"
                                 true-title="Карточки"
@@ -41,12 +42,7 @@
                     <AnimationTransition :speed="0.2">
                         <component
                             :is="currentViewComponentName"
-                            v-if="COMPANIES.length && !isMobile"
-                            :companies="COMPANIES"
-                            :loader="isLoadingOriginal"
-                        />
-                        <CompanyTableMobile
-                            v-else-if="COMPANIES.length && isMobile"
+                            v-if="COMPANIES.length"
                             :companies="COMPANIES"
                             :loader="isLoadingOriginal"
                         />
@@ -73,17 +69,17 @@ import FormCompanySearch from '@/components/Forms/Company/FormCompanySearch.vue'
 import CompanyTable from '@/components/Company/Table/CompanyTable.vue';
 import CompanyGrid from '@/components/Company/CompanyGrid.vue';
 import PaginationClassic from '@/components/common/Pagination/PaginationClassic.vue';
-import CompanyTableMobile from '@/components/Company/Table/CompanyTableMobile.vue';
 import RefreshButton from '@/components/common/RefreshButton.vue';
 import Button from '@/components/common/Button.vue';
 import Switch from '@/components/common/Forms/Switch.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
-import { computed, inject, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useTableContent } from '@/composables/useTableContent.js';
 import { useRoute } from 'vue-router';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import Spinner from '@/components/common/Spinner.vue';
+import { useMobile } from '@/composables/useMobile.js';
 
 const route = useRoute();
 const store = useStore();
@@ -91,7 +87,7 @@ const store = useStore();
 const COMPANIES = computed(() => store.getters.COMPANIES);
 const COMPANIES_PAGINATION = computed(() => store.getters.COMPANIES_PAGINATION);
 
-const isMobile = inject('isMobile');
+const isMobile = useMobile();
 const { isLoading, isLoadingOriginal } = useDelayedLoader(true);
 const viewMode = ref(false);
 const companyFormIsVisible = ref(false);
@@ -107,5 +103,8 @@ const { next, nextWithScroll, queryIsInitialized } = useTableContent(getCompanie
     scrollTo: firstPagination
 });
 
-const currentViewComponentName = computed(() => (viewMode.value ? CompanyGrid : CompanyTable));
+const currentViewComponentName = computed(() => {
+    if (isMobile) return CompanyGrid;
+    return viewMode.value ? CompanyGrid : CompanyTable;
+});
 </script>

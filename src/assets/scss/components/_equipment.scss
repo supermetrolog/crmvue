@@ -9,6 +9,10 @@
         @include mixins.flex-box($a: center, $gap: 10px);
         border-bottom: 1px solid rgba(0, 0, 0, .1);
         padding: 5px 15px;
+
+        @include mixins.media('max', 'md') {
+            flex-wrap: wrap;
+        }
     }
 
     &__chip {
@@ -39,33 +43,57 @@
     &__actions {
         @include mixins.flex-box($a: center, $gap: 5px);
         margin-left: auto;
+
+        @include mixins.media('max', 'md') {
+            width: 100%;
+            margin-left: 0;
+        }
     }
 
     &__body {
         @include mixins.flex-box($gap: 10px);
         padding: 15px;
         min-height: 210px;
+        max-height: 260px;
+
+        @include mixins.media('max', 'md') {
+            flex-direction: column;
+            max-height: unset;
+        }
     }
 
     &__aside {
-        width: 250px;
-        flex-shrink: 0;
+        @include mixins.media('min', 'md') {
+            width: 250px;
+            flex-shrink: 0;
+        }
+    }
+
+    &__content {
+        width: 100%;
     }
 
     &__preview {
-        width: 250px;
         height: 180px;
+
+        @include mixins.media('min', 'md') {
+            width: 250px;
+        }
+
     }
 
     &__photo {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        border: 1px solid rgba(0, 0, 0, .1);
     }
 
     &__meta {
-        width: 220px;
-        flex-shrink: 0;
+        @include mixins.media('min', 'md') {
+            width: 220px;
+            flex-shrink: 0;
+        }
     }
 
     &__price {
@@ -89,22 +117,27 @@
     }
 
     &__address {
-        margin-left: auto;
-        width: 240px;
-        padding: 0 10px;
-        border-left: 1px solid rgba(0, 0, 0, .1);
-        border-right: 1px solid rgba(0, 0, 0, .1);
-        flex-shrink: 0;
+       @include mixins.media('min', 'md') {
+           margin-left: auto;
+           width: 240px;
+           padding: 0 10px;
+           border-left: 1px solid rgba(0, 0, 0, .1);
+           border-right: 1px solid rgba(0, 0, 0, .1);
+           flex-shrink: 0;
+       }
     }
 
     &__contact {
         @include mixins.flex-box($d: column, $gap: 5px);
-        width: 280px;
-        max-width: 25%;
-        border-right: 1px solid rgba(0, 0, 0, .1);
-        padding: 0 10px 0 0;
-        font-size: 14px;
-        flex-shrink: 0;
+
+        @include mixins.media('min', 'md') {
+            width: 280px;
+            max-width: 25%;
+            border-right: 1px solid rgba(0, 0, 0, .1);
+            padding: 0 10px 0 0;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
     }
 
     &__text {
@@ -123,5 +156,12 @@
         &:hover {
             text-decoration: underline;
         }
+    }
+
+    &__description-text {
+        opacity: .8;
+        font-size: 14px;
+        overflow-y: auto;
+        max-height: 150px;
     }
 }

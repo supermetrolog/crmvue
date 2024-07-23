@@ -52,13 +52,14 @@ import PaginationClassic from '@/components/common/Pagination/PaginationClassic.
 import CompanyRequestTable from '@/components/Company/Request/CompanyRequestTable.vue';
 import CompanyRequestTableMobile from '@/components/Company/Request/CompanyRequestTableMobile.vue';
 import RefreshButton from '@/components/common/RefreshButton.vue';
-import { computed, inject, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useTableContent } from '@/composables/useTableContent.js';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { useRoute } from 'vue-router';
 import EmptyData from '@/components/common/EmptyData.vue';
 import Spinner from '@/components/common/Spinner.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import { useMobile } from '@/composables/useMobile.js';
 
 const store = useStore();
 const route = useRoute();
@@ -66,7 +67,7 @@ const route = useRoute();
 const { isLoading, isLoadingOriginal } = useDelayedLoader();
 
 const firstPagination = ref(null);
-const isMobile = inject('isMobile');
+const isMobile = useMobile();
 
 const REQUESTS = computed(() => store.getters.REQUESTS);
 const REQUESTS_PAGINATION = computed(() => store.getters.REQUESTS_PAGINATION);
