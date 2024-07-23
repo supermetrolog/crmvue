@@ -150,9 +150,6 @@ export default {
             return null;
         }
     },
-    async getQuizzes() {
-        return quizzes;
-    },
     async getUserChatMembers() {
         try {
             const [firstPart, secondPart, lastPart] = await Promise.all([

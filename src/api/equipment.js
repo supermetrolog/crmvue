@@ -1,12 +1,37 @@
 import axios from 'axios';
 import { setRequestError } from '@/api/helpers/setRequestError.js';
-import equipments from '@/test-data/equipments.json';
+import { SuccessHandler } from '@/api/helpers/successHandler.js';
+import { formToPayload } from '@/utils/index.js';
+
+const URL = '/equipment';
+
+const params = [
+    'name',
+    'address',
+    'description',
+    'company_id',
+    'contact_id',
+    'consultant_id',
+    'category',
+    'availability',
+    'delivery',
+    'deliveryPrice',
+    'price',
+    'benefit',
+    'tax',
+    'count',
+    'state',
+    'status',
+    'passive_type',
+    'passive_comment',
+    'files',
+    'photos'
+];
 
 export default {
     async create(options) {
-        const url = '/equipments';
         try {
-            const response = await axios.post(url, options);
+            const response = await axios.postForm(URL, options);
             return response.data;
         } catch (e) {
             setRequestError(e);
@@ -14,23 +39,12 @@ export default {
         }
     },
     async list(options) {
-        // const params = new URLSearchParams(options).toString();
-        // const url = params ? `/equipments?${params}` : '/equipments';
-
         try {
-            // const response = await axios.get(url);
-
-            // return {
-            //     data: SuccessHandler.getData(response),
-            //     pagination: SuccessHandler.getPaginationData(response)
-            // };
+            const response = await axios.get(URL, { params: options });
 
             return {
-                data: equipments,
-                pagination: {
-                    currentPage: options.page ? options.page : 1,
-                    pageCount: 12
-                }
+                data: SuccessHandler.getData(response),
+                pagination: SuccessHandler.getPaginationData(response)
             };
         } catch (e) {
             setRequestError(e);
@@ -38,10 +52,8 @@ export default {
         }
     },
     async get(id) {
-        const url = `/equipments/${id}`;
-
         try {
-            const response = await axios.get(url);
+            const response = await axios.get(`${URL}/${id}`);
             return response.data;
         } catch (e) {
             setRequestError(e);
@@ -49,10 +61,8 @@ export default {
         }
     },
     async delete(id) {
-        const url = `/equipments/${id}`;
-
         try {
-            const response = await axios.delete(url);
+            const response = await axios.delete(`${URL}/${id}`);
             return response.status === 200;
         } catch (e) {
             setRequestError(e);
@@ -60,10 +70,17 @@ export default {
         }
     },
     async update(id, payload) {
-        const url = `/equipments/${id}`;
-
         try {
-            const response = await axios.put(url, payload);
+            const response = await axios.patchForm(`${URL}/${id}`, formToPayload(payload, params));
+            return response.data;
+        } catch (e) {
+            setRequestError(e);
+            return null;
+        }
+    },
+    async called(id, payload) {
+        try {
+            const response = await axios.post(`${URL}/${id}/called`, payload);
             return response.data;
         } catch (e) {
             setRequestError(e);

@@ -14,6 +14,24 @@ export default {
             return null;
         }
     },
+    async createAnswerOption(options) {
+        try {
+            const response = await axios.post('/question-answers', options);
+            return SuccessHandler.getData(response);
+        } catch (e) {
+            setRequestError(e);
+            return null;
+        }
+    },
+    async updateAnswerOption(id, options) {
+        try {
+            const response = await axios.put('/question-answers/' + id, options);
+            return SuccessHandler.getData(response);
+        } catch (e) {
+            setRequestError(e);
+            return null;
+        }
+    },
     async createWithAnswer() {},
     async get(id) {
         try {

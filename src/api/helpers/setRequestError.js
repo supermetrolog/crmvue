@@ -3,7 +3,6 @@ import store from '../../store';
 import router from '../../router';
 import { abortRequests } from '@/services/axios.js';
 import { useAuth } from '@/composables/useAuth.js';
-import { useRouter } from 'vue-router';
 
 const notifyOptions = {
     group: 'app',
@@ -15,16 +14,34 @@ const ValidationErrorHttpStatusCode = 422;
 const AuthErrorHttpStatusCode = 401;
 
 function getTitle(data) {
-    return data.name + ' (Ошибка #' + data.status + ')';
+    return data.name + ' (Ошибка #' + (data.status ?? data.code) + ')';
+}
+
+function errorsToNotifications(errors) {
+    // eslint-disable-next-line no-unused-vars
+    return Object.entries(errors).reduce((acc, [_, value]) => {
+        acc.push(...value);
+        return acc;
+    }, []);
 }
 
 function handleValidationError(data) {
-    data.message = JSON.parse(data.message);
+    data.name = 'Ошибка валидации';
     notifyOptions.title = getTitle(data);
-    data.message.map(item => {
-        notifyOptions.text = item;
-        notify(notifyOptions);
-    });
+
+    if (data.message) {
+        data.message = JSON.parse(data.message);
+        data.message.map(item => {
+            notifyOptions.text = item;
+            notify(notifyOptions);
+        });
+    } else if (data.errors) {
+        const notifications = errorsToNotifications(data.errors);
+        notifications.forEach(message => {
+            notifyOptions.text = message;
+            notify(notifyOptions);
+        });
+    }
 }
 
 function handleUnknownError(data) {
@@ -43,6 +60,7 @@ export async function setRequestError(event) {
     if (!event.response) return;
 
     const data = event.response.data;
+    if (!('status' in data)) data.status = event.response.status;
 
     if (data.status === AuthErrorHttpStatusCode) {
         const { setRedirect } = useAuth();

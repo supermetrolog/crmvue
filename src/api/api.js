@@ -22,6 +22,7 @@ import reminder from '@/api/reminder.js';
 import call from '@/api/call.js';
 import survey from '@/api/survey.js';
 import question from '@/api/question.js';
+import field from '@/api/field.js';
 
 export default {
     user,
@@ -47,5 +48,6 @@ export default {
     reminder,
     call,
     survey,
-    question
+    question,
+    field
 };

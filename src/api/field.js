@@ -2,13 +2,13 @@ import axios from 'axios';
 import { setRequestError } from '@/api/helpers/setRequestError.js';
 import { SuccessHandler } from '@/api/helpers/successHandler.js';
 
-const URL = '/surveys';
+const URL = '/fields';
 
 export default {
     async create(options) {
         try {
-            const response = await axios.post(URL + '/with-survey-question-answer', options);
-            return response.data;
+            const response = await axios.post(URL, options);
+            return SuccessHandler.getData(response);
         } catch (e) {
             setRequestError(e);
             return null;
@@ -16,21 +16,17 @@ export default {
     },
     async get(id) {
         try {
-            const response = await axios.get(`${URL}/${id}/with-questions`);
-            return response.data;
+            const response = await axios.get(`${URL}/${id}`);
+            return SuccessHandler.getData(response);
         } catch (e) {
             setRequestError(e);
             return null;
         }
     },
-    async list(options) {
+    async list() {
         try {
-            const response = await axios.get(URL, { params: options });
-
-            return {
-                data: SuccessHandler.getData(response),
-                pagination: SuccessHandler.getPaginationData(response)
-            };
+            const response = await axios.get(URL);
+            return SuccessHandler.getData(response);
         } catch (e) {
             setRequestError(e);
             return null;
@@ -48,7 +44,7 @@ export default {
     async update(id, payload) {
         try {
             const response = await axios.put(`${URL}/${id}`, payload);
-            return response.data;
+            return SuccessHandler.getData(response);
         } catch (e) {
             setRequestError(e);
             return null;
