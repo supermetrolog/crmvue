@@ -8,6 +8,7 @@ import CommentWithAutoSetComment, {
     SendOffersComment
 } from '@/components/Timeline/comments.js';
 import { notify } from '@kyvg/vue3-notification';
+import { useQueryHash } from '@/utils/useQueryHash.js';
 
 export const TimelineStepMixin = {
     emits: ['update-step', 'updated-objects', 'next-step'],
@@ -370,6 +371,9 @@ export const TimelineStepWithSearchableObjectsMixin = {
                 ...query
             };
 
+            const { setHash, confirmHash } = useQueryHash('search-favorite-offers');
+            setHash(query);
+
             if (!this.FAVORITES_OFFERS.length) await this.SEARCH_FAVORITES_OFFERS();
             if (query.favorites) {
                 query.original_id = this.FAVORITES_OFFERS.map(item => item.original_id);
@@ -379,7 +383,8 @@ export const TimelineStepWithSearchableObjectsMixin = {
 
             const data = await api.companyObjects.searchOffers(query);
 
-            if (hash === this.waitHash) this.setObjects(data);
+            if (confirmHash(query)) this.setObjects(data);
+
             if (withLoader) this.isSearchLoading = false;
         },
         async setPreventStepObjects() {

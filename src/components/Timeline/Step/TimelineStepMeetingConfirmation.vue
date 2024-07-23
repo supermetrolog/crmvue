@@ -3,9 +3,9 @@
         <teleport to="body">
             <FormCompanyRequest
                 v-if="companyRequestFormIsVisible"
-                @closeCompanyForm="companyRequestFormIsVisible = false"
+                @close="companyRequestFormIsVisible = false"
                 @updated="fetchCompanyRequests"
-                :formdata="currentRequest"
+                :form-data="currentRequest"
             />
         </teleport>
         <div class="row">

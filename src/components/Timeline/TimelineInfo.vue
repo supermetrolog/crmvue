@@ -55,7 +55,7 @@ export default {
             default: null
         },
         success: {
-            type: Boolean,
+            type: [Boolean, Number],
             default: false
         },
         disabled: {

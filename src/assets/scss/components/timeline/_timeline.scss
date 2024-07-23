@@ -66,6 +66,21 @@
     &__title {
         @include mixins.text-overflow();
     }
+
+    &__function {
+        opacity: .8;
+
+        @include mixins.hover {
+            opacity: 1;
+        }
+    }
+
+    &__consultant {
+        &.active {
+            background-color: variables.$bg-success;
+            color: #fff;
+        }
+    }
 }
 
 .timeline-info {

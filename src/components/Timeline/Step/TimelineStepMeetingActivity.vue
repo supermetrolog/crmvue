@@ -10,7 +10,7 @@
             />
             <FormCompanyContact
                 v-if="companyContactFormIsVisible"
-                @closeCompanyForm="cancelContactEditing"
+                @close="cancelContactEditing"
                 @updated="fetchCompanyContacts"
                 :company_id="COMPANY.id"
                 :formdata="editableContact"
@@ -86,7 +86,7 @@
                 <CompanyContactList
                     @start-editing="startContactEditing"
                     class="inner-y"
-                    :contacts="COMPANY_CONTACTS"
+                    :contacts="contacts"
                 />
             </div>
         </div>
@@ -138,7 +138,17 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(['COMPANY', 'COMPANY_CONTACTS', 'THIS_USER'])
+        ...mapGetters(['COMPANY', 'COMPANY_CONTACTS', 'THIS_USER']),
+        contacts() {
+            const mainContactIndex = this.COMPANY_CONTACTS.findIndex(element => element.isMain);
+            if (mainContactIndex)
+                return [
+                    this.COMPANY_CONTACTS[mainContactIndex],
+                    ...this.COMPANY_CONTACTS.toSpliced(mainContactIndex, 1)
+                ];
+
+            return this.COMPANY_CONTACTS;
+        }
     },
     methods: {
         ...mapActions([
@@ -217,5 +227,3 @@ export default {
     }
 };
 </script>
-
-<style></style>

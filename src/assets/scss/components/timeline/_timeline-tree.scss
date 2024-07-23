@@ -1,4 +1,5 @@
 @use '../../utils/mixins';
+@use '../../utils/variables';
 
 .timeline-tree {
     @include mixins.flex-box($d: column);
@@ -49,6 +50,7 @@
                 width: 25px;
                 margin: 0 5px;
                 font-size: 27px;
+                border-radius: 50%;
             }
 
             &__label {
@@ -61,12 +63,11 @@
         flex-shrink: 0;
         height: 35px;
         width: 35px;
-        border-radius: 50%;
-        border: 5px solid #cecece;
+        border: 6px solid #cecece;
         background-color: #fff;
         position: relative;
         z-index: 10;
-        font-size: 37px;
+        font-size: 34px;
 
         &:has(i) {
             border-color: transparent;
@@ -74,8 +75,12 @@
 
         i {
             position: absolute;
-            left: -6px;
-            top: -6px;
+            left: -5px;
+            top: -5px;
+        }
+
+        &.done {
+            border-color: variables.$cl-success!important;
         }
     }
 
@@ -98,9 +103,25 @@
         }
     }
 
+    &--done {
+        .timeline-tree-step__point {
+            border-color: variables.$cl-success!important;
+        }
+    }
+
     &--selected {
-        background-color: #ffe7ba;
+        background-color: rgba(57, 166, 218, 0.5);
         z-index: 10;
         position: relative;
+
+        .timeline-tree-step__point {
+            border-color: #39a6da!important;
+        }
+    }
+
+    &__icon {
+        &-selected {
+           color: rgb(57, 166, 218);
+        }
     }
 }
