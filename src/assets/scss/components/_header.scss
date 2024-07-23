@@ -115,3 +115,37 @@
         transform: scale(1);
     }
 }
+
+.mobile-header {
+    &__wrapper {
+        width: 100%;
+        height: 65px;
+        border-bottom: 1px solid  rgba(0, 0, 0, .2);
+        padding: 10px 15px;
+        background-color: #243539;
+        @include mixins.flex-box($gap: 10px, $a: center);
+    }
+
+    &__backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 100vw;
+        background-color: rgba(0, 0, 0, .5);
+        z-index: 5000;
+    }
+
+    .avatar {
+        border: 1px solid rgba(0, 0, 0, .6);
+    }
+
+    &__button {
+        background-color: transparent;
+        border: none;
+        font-size: 30px;
+        color: #fff;
+        width: max-content;
+        cursor: pointer;
+    }
+}

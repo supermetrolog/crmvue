@@ -40,38 +40,47 @@ export const Menu = {
             id: 8,
             name: 'Дашборд',
             icon: 'fa-solid fa-chart-line',
-            url: '/dashboard'
+            url: '/dashboard',
+            internal: 'dashboard',
+            key: 'dashboard'
         },
         {
             id: 0,
             name: 'Компании',
             icon: 'fa-solid fa-industry',
-            url: '/companies'
+            url: '/companies',
+            internal: 'companies',
+            key: 'company'
         },
         {
             id: 6,
             name: 'Предложка',
             icon: 'fa-solid fa-city',
-            url: '/offers'
+            url: '/offers',
+            internal: 'offers',
+            key: 'offers'
         },
         {
             id: 7,
             name: 'Барахолка',
             icon: 'fa-solid fa-shop',
-            url: '/equipments'
+            url: '/equipments',
+            key: 'equipments'
         },
         {
             id: 2,
             name: 'Календарь',
             icon: 'fa-solid fa-calendar-days',
             url: '/calendar',
-            exact: true
+            exact: true,
+            key: 'calendar'
         },
         {
             id: 5,
             name: 'Аккаунт',
             icon: 'fa-solid fa-user-astronaut',
-            url: '/account'
+            url: '/account',
+            key: 'account'
         }
     ]
 };
