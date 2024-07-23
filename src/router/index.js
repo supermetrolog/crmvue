@@ -8,7 +8,8 @@ const routes = [
         name: 'statistic',
         meta: {
             layout: 'default',
-            auth: { isAuth: true, role: ['moderator', 'administrator'] }
+            auth: { isAuth: true, role: ['moderator', 'administrator'] },
+            title: 'Статистика'
         },
         component: () => import('../views/Statistic.vue'),
         children: [
@@ -28,7 +29,8 @@ const routes = [
         name: 'settings',
         meta: {
             layout: 'default',
-            auth: { isAuth: true, role: ['moderator', 'administrator'] }
+            auth: { isAuth: true, role: ['moderator', 'administrator'] },
+            title: 'Настройки'
         },
         component: () => import('@/views/Settings.vue')
     },
@@ -37,7 +39,8 @@ const routes = [
         name: 'calendar',
         meta: {
             layout: 'default',
-            auth: { isAuth: true, role: ['moderator', 'administrator'] }
+            auth: { isAuth: true, role: ['moderator', 'administrator'] },
+            title: 'Календарь'
         },
         component: () => import('../views/Calendar.vue')
     },
@@ -52,7 +55,8 @@ const routes = [
         name: 'companies',
         meta: {
             layout: 'default',
-            auth: { isAuth: true, role: ['moderator', 'administrator'] }
+            auth: { isAuth: true, role: ['moderator', 'administrator'] },
+            title: 'Список компаний'
         },
         component: () => import('../views/Companies/Companies.vue'),
         children: [
@@ -61,7 +65,8 @@ const routes = [
                 name: 'company',
                 meta: {
                     layout: 'default',
-                    auth: { isAuth: true, role: ['moderator', 'administrator'] }
+                    auth: { isAuth: true, role: ['moderator', 'administrator'] },
+                    title: 'Обзор компании'
                 },
                 component: () => import('../views/Companies/Company.vue')
             },
@@ -79,7 +84,8 @@ const routes = [
                 name: 'CompaniesRequests',
                 meta: {
                     layout: 'default',
-                    auth: { isAuth: true, role: ['moderator', 'administrator'] }
+                    auth: { isAuth: true, role: ['moderator', 'administrator'] },
+                    title: 'Список запросов'
                 },
                 component: () => import('../views/Companies/Requests.vue')
             },
@@ -88,7 +94,8 @@ const routes = [
                 name: 'CompaniesDeals',
                 meta: {
                     layout: 'default',
-                    auth: { isAuth: true, role: ['moderator', 'administrator'] }
+                    auth: { isAuth: true, role: ['moderator', 'administrator'] },
+                    title: 'Список сделок'
                 },
                 component: () => import('../views/Companies/Deals.vue')
             },
@@ -97,7 +104,8 @@ const routes = [
                 name: 'CompaniesGroups',
                 meta: {
                     layout: 'default',
-                    auth: { isAuth: true, role: ['moderator', 'administrator'] }
+                    auth: { isAuth: true, role: ['moderator', 'administrator'] },
+                    title: 'Группы компаний'
                 },
                 component: () => import('../views/Companies/Groups.vue')
             }
@@ -108,7 +116,8 @@ const routes = [
         name: 'users',
         meta: {
             layout: 'default',
-            auth: { isAuth: true, role: ['moderator', 'administrator'] }
+            auth: { isAuth: true, role: ['moderator', 'administrator'] },
+            title: 'Пользователи'
         },
         component: () => import('../views/Users/Users.vue'),
         children: [
@@ -137,7 +146,8 @@ const routes = [
         name: 'account',
         meta: {
             layout: 'default',
-            auth: { isAuth: true, role: ['moderator', 'administrator'] }
+            auth: { isAuth: true, role: ['moderator', 'administrator'] },
+            title: 'Личный кабинет'
         },
         component: () => import('../views/Account/View.vue'),
         redirect: { name: 'profile' },
@@ -150,16 +160,25 @@ const routes = [
             {
                 path: 'activity',
                 name: 'profile-activity',
+                meta: {
+                    title: 'Активность'
+                },
                 component: () => import('../views/Account/Activity.vue')
             },
             {
                 path: 'edit',
                 name: 'profile-edit',
+                meta: {
+                    title: 'Редактирование пользователя'
+                },
                 component: () => import('../views/Account/Edit.vue')
             },
             {
                 path: 'consultants',
                 name: 'profile-consultants',
+                meta: {
+                    title: 'Список коллег'
+                },
                 component: () => import('../views/Account/Consultants.vue')
             }
         ]
@@ -169,7 +188,8 @@ const routes = [
         name: 'dashboard',
         meta: {
             layout: 'default',
-            auth: { isAuth: true, role: ['moderator', 'administrator'] }
+            auth: { isAuth: true, role: ['moderator', 'administrator'] },
+            title: 'Dashboard'
         },
         component: () => import('../views/Dashboard/View.vue'),
         children: [
@@ -186,6 +206,9 @@ const routes = [
             {
                 path: 'tasks',
                 name: 'dashboard-tasks',
+                meta: {
+                    title: 'Dashboard | Задачи'
+                },
                 component: () => import('../views/Dashboard/Tasks/Main.vue'),
                 redirect: { name: 'dashboard-tasks-board' },
                 children: [
@@ -204,6 +227,9 @@ const routes = [
             {
                 path: 'requests',
                 name: 'dashboard-requests',
+                meta: {
+                    title: 'Dashboard | Запросы'
+                },
                 component: () => import('../views/Dashboard/Requests.vue')
             }
         ]
@@ -213,7 +239,8 @@ const routes = [
         name: 'offers',
         meta: {
             layout: 'default',
-            auth: { isAuth: true, role: ['moderator', 'administrator'] }
+            auth: { isAuth: true, role: ['moderator', 'administrator'] },
+            title: 'Выдача предложений'
         },
         component: () => import('../views/Offers/Offers.vue'),
         children: [
@@ -242,7 +269,8 @@ const routes = [
         name: 'ComplexView',
         meta: {
             layout: 'default',
-            auth: { isAuth: true, role: ['moderator', 'administrator'] }
+            auth: { isAuth: true, role: ['moderator', 'administrator'] },
+            title: 'Просмотр комплекса'
         },
         component: () => import('@/views/ComplexView.vue')
     },
@@ -251,7 +279,8 @@ const routes = [
         name: 'equipments',
         meta: {
             layout: 'default',
-            auth: { isAuth: true, role: ['moderator', 'administrator'] }
+            auth: { isAuth: true, role: ['moderator', 'administrator'] },
+            title: 'Барахолка'
         },
         component: () => import('../views/Equipments.vue')
     },

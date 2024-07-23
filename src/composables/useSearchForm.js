@@ -53,7 +53,6 @@ export function useSearchForm(form, options) {
     function queryToForm() {
         const cleanedQuery = toCleanObject(route.query);
 
-        console.log('queryToForm');
         Object.keys(template).forEach(key => {
             if (Array.isArray(cleanedQuery[key]) && !compareArrays(form[key], cleanedQuery[key]))
                 form[key] = cleanedQuery[key];
@@ -91,7 +90,6 @@ export function useSearchForm(form, options) {
     stopFormWatch = watch(
         () => form,
         () => {
-            console.log('on submit delayed');
             clearTimeout(timeout);
             timeout = setTimeout(() => onSubmit(), delay);
         },

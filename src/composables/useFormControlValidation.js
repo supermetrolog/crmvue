@@ -1,8 +1,8 @@
-import { computed, shallowRef, toRefs } from 'vue';
+import { computed } from 'vue';
 import { toValue } from '@vueuse/core';
 
 export function useFormControlValidation(v, modelValue, options) {
-    const { reactive = shallowRef(false) } = toRefs(options);
+    const _reactive = options?.reactive ?? false;
 
     const hasValidation = computed(() =>
         Boolean(v.value && v.value.$dirty && (v.value.$model || v.value.$error))
@@ -15,7 +15,7 @@ export function useFormControlValidation(v, modelValue, options) {
         if (v.value.required) {
             return {
                 invalid: v.value.$error,
-                valid: v.value.$dirty && !v.value.$error && !reactive.value
+                valid: v.value.$dirty && !v.value.$error && !_reactive
             };
         } else {
             const value = toValue(modelValue);
@@ -23,7 +23,7 @@ export function useFormControlValidation(v, modelValue, options) {
             if (Array.isArray(value)) {
                 return {
                     invalid: v.value.$error,
-                    valid: v.value.$dirty && !v.value.$error && modelValue.length && !reactive.value
+                    valid: v.value.$dirty && !v.value.$error && modelValue.length && !_reactive
                 };
             }
 
@@ -34,7 +34,7 @@ export function useFormControlValidation(v, modelValue, options) {
                     !v.value.$error &&
                     modelValue !== null &&
                     modelValue !== '' &&
-                    !reactive.value
+                    !_reactive
             };
         }
     });
