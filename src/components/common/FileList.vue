@@ -1,7 +1,9 @@
 <template>
     <div ref="list" class="file-list">
-        <InfiniteLoading @infinite="$emit('load', $event)">
-            <template #complete><span></span></template>
+        <InfiniteLoading v-if="isScrolled" @infinite="$emit('load', $event)">
+            <template #complete>
+                <EmptyLabel>Файлов больше нет..</EmptyLabel>
+            </template>
             <template #spinner>
                 <Spinner />
             </template>
@@ -22,55 +24,62 @@
         </div>
     </div>
 </template>
-<script>
+<script setup>
 import File from '@/components/common/Forms/File.vue';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import { ScrollToEndMixin } from '@/components/common/mixins';
 import Spinner from '@/components/common/Spinner.vue';
 import InfiniteLoading from 'v3-infinite-loading';
+import EmptyLabel from '@/components/common/EmptyLabel.vue';
+import { computed, nextTick, onMounted, ref, shallowRef } from 'vue';
 
 dayjs.extend(customParseFormat);
 
-export default {
-    name: 'FileList',
-    components: { Spinner, File, InfiniteLoading },
-    mixins: [ScrollToEndMixin],
-    emits: ['delete', 'load'],
-    props: {
-        files: {
-            type: Array,
-            required: true
-        },
-        editable: {
-            type: Boolean,
-            default: false
-        }
+defineEmits(['delete', 'load']);
+const props = defineProps({
+    files: {
+        type: Array,
+        required: true
     },
-    computed: {
-        preparedFiles() {
-            const sections = this.files.reduce((acc, file) => {
-                const dayjsObjectFormat = dayjs(file.created_at).format('MM-YYYY');
-
-                if (dayjsObjectFormat in acc) acc[dayjsObjectFormat].push(file);
-                else acc[dayjsObjectFormat] = [file];
-
-                return acc;
-            }, {});
-
-            return Object.keys(sections)
-                .map(key => ({
-                    label: dayjs(key, 'MM-YYYY'),
-                    files: sections[key]
-                }))
-                .sort((first, second) => first.label - second.label);
-        }
-    },
-    methods: {
-        getLabel(date) {
-            if (date.isSame(Date.now(), 'year')) return date.format('MMMM');
-            return date.format('MMMM, YYYY');
-        }
+    editable: {
+        type: Boolean,
+        default: false
     }
+});
+
+const list = ref(null);
+const isScrolled = shallowRef(false);
+
+const getLabel = date => {
+    if (date.isSame(Date.now(), 'year')) return date.format('MMMM');
+    return date.format('MMMM, YYYY');
 };
+
+const preparedFiles = computed(() => {
+    const sections = props.files.reduce((acc, file) => {
+        const dayjsObjectFormat = dayjs(file.created_at).format('MM-YYYY');
+
+        if (dayjsObjectFormat in acc) acc[dayjsObjectFormat].push(file);
+        else acc[dayjsObjectFormat] = [file];
+
+        return acc;
+    }, {});
+
+    return Object.keys(sections)
+        .map(key => ({
+            label: dayjs(key, 'MM-YYYY'),
+            files: sections[key]
+        }))
+        .sort((first, second) => first.label - second.label);
+});
+
+const scrollToEnd = async () => {
+    await nextTick();
+    if (list.value) list.value.scrollTop = list.value.scrollHeight;
+};
+
+onMounted(async () => {
+    await scrollToEnd();
+    isScrolled.value = true;
+});
 </script>
