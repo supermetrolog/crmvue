@@ -1,35 +1,41 @@
 <template>
     <div class="messenger-quiz-preview">
-        <div class="messenger-quiz-preview__list">
-            <MessengerQuizPreviewQuestion
-                v-for="(question, key) in quiz.answers"
-                :key="key"
-                :question="question"
-                class="messenger-quiz-preview__element"
-            />
+        <Spinner v-if="isLoading" />
+        <div v-else-if="quiz">
+            <MessengerQuizPreviewInfo :quiz="quiz" />
+            <div class="messenger-quiz-preview__list">
+                <MessengerQuizPreviewQuestion
+                    v-for="question in quiz.questions"
+                    :key="question.id"
+                    :question="question"
+                    class="messenger-quiz-preview__element"
+                />
+            </div>
         </div>
     </div>
 </template>
-<script>
-import dayjs from 'dayjs';
+<script setup>
 import MessengerQuizPreviewQuestion from '@/components/Messenger/Quiz/MessengerQuizPreviewQuestion.vue';
+import { ref, shallowRef } from 'vue';
+import Spinner from '@/components/common/Spinner.vue';
+import api from '@/api/api.js';
+import MessengerQuizPreviewInfo from '@/components/Messenger/Quiz/MessengerQuizPreviewInfo.vue';
 
-export default {
-    name: 'MessengerQuizPreview',
-    components: { MessengerQuizPreviewQuestion },
-    props: {
-        quiz: {
-            type: Object,
-            required: true
-        }
-    },
-    computed: {
-        recipient() {
-            return this.quiz.contact ? `с ${this.quiz.contact}` : 'без звонка';
-        },
-        createdAt() {
-            return dayjs(this.quiz.created_at).format('DD.MM.YYYY');
-        }
+const props = defineProps({
+    quizId: {
+        type: Number,
+        required: true
     }
+});
+
+const isLoading = shallowRef(false);
+const quiz = ref(null);
+
+const getQuiz = async () => {
+    isLoading.value = true;
+    quiz.value = await api.survey.get(props.quizId);
+    isLoading.value = false;
 };
+
+getQuiz();
 </script>

@@ -1,7 +1,5 @@
 <template>
-    <MessengerChatMessageAdditionsItem
-        :class="{ completed: addition.completed, expired: isExpired }"
-    >
+    <MessengerChatMessageAdditionsItem :class="{ completed: isCompleted, expired: isExpired }">
         <template #icon>
             <span
                 v-tippy="addition.message"
@@ -40,62 +38,60 @@
         </template>
     </MessengerChatMessageAdditionsItem>
 </template>
-<script>
+<script setup>
 import dayjs from 'dayjs';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import MessengerChatMessageAdditionsItem from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditionsItem.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
+import { computed, inject } from 'vue';
+import { useStore } from 'vuex';
+import { useNotify } from '@/utils/useNotify.js';
+import { taskOptions } from '@/const/options/task.options.js';
 
-export default {
-    name: 'MessengerChatMessageAdditionsTask',
-    components: { MessengerChatMessageAdditionsItem, HoverActionsButton },
-    inject: ['$editAddition', '$messageID', '$editTaskStatus'],
-    props: {
-        addition: {
-            type: Object,
-            required: true
-        },
-        editable: {
-            type: Boolean,
-            default: false
-        },
-        draggable: {
-            type: Boolean,
-            default: false
-        }
-    },
-    setup() {
-        const { confirm } = useConfirm();
-        return { confirm };
-    },
-    computed: {
-        usersText() {
-            return this.addition.user.userProfile.middle_name;
-        },
-        expiredDate() {
-            return dayjs(this.addition.end).format('DD.MM.YYYY');
-        },
-        isExpired() {
-            return dayjs(this.addition.end).diff(dayjs(), 'day') <= 3;
-        }
-    },
-    methods: {
-        async remove() {
-            const confirmed = await this.confirm(
-                'Вы уверены, что хотите безвозвратно удалить задачу?'
-            );
+const $editAddition = inject('$editAddition');
+const $messageID = inject('$messageID');
+const $editTaskStatus = inject('$editTaskStatus');
 
-            if (confirmed) {
-                const deleted = await this.$store.dispatch('Messenger/deleteAddition', {
-                    messageID: this.$messageID,
-                    additionID: this.addition.id,
-                    additionType: 'task'
-                });
+const props = defineProps({
+    addition: {
+        type: Object,
+        required: true
+    },
+    editable: {
+        type: Boolean,
+        default: false
+    },
+    draggable: {
+        type: Boolean,
+        default: false
+    }
+});
 
-                if (deleted) this.$notify('Задача удалена.');
-                else this.$notify('Произошла ошибка. Попробуйте позже.');
-            }
-        }
+const { confirm } = useConfirm();
+const notify = useNotify();
+const store = useStore();
+
+const usersText = computed(() => props.addition.user.userProfile.middle_name);
+const expiredDate = computed(() => dayjs(props.addition.end).format('DD.MM.YYYY'));
+const isExpired = computed(() => dayjs(props.addition.end).diff(dayjs(), 'day') <= 3);
+const isCompleted = computed(
+    () =>
+        props.addition.status === taskOptions.statusTypes.COMPLETED ||
+        props.addition.status === taskOptions.statusTypes.CANCELED
+);
+
+const remove = async () => {
+    const confirmed = await confirm('Вы уверены, что хотите безвозвратно удалить задачу?');
+
+    if (confirmed) {
+        const deleted = await store.dispatch('Messenger/deleteAddition', {
+            messageID: $messageID,
+            additionID: props.addition.id,
+            additionType: 'task'
+        });
+
+        if (deleted) notify.success('Задача удалена.');
+        else notify.error('Произошла ошибка. Попробуйте позже.');
     }
 };
 </script>

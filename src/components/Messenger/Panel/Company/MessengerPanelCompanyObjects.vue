@@ -32,6 +32,7 @@
                         )
                     "
                     :current="record.id === currentDialogID"
+                    :statistic="record.statistic"
                     :model="record.model"
                     :last-call="record.last_call"
                 />

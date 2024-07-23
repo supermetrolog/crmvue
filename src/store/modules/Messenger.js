@@ -3,6 +3,8 @@ import dayjs from 'dayjs';
 import { alg } from '@/utils/alg.js';
 import { entityOptions } from '@/const/options/options.js';
 import { notify } from '@kyvg/vue3-notification';
+import { messagesToSections } from '@/utils/mapper.js';
+import { ucFirst } from '@/utils/formatter.js';
 
 const needCacheMessage = (dialogID, asideID, panelID) => {
     // Лучше не трогать условие.. Оно долго выводилось
@@ -93,20 +95,39 @@ const Messenger = {
             delete state.cachedNewMessages[chatMemberID];
         },
 
-        setMessages(state, value) {
-            state.messages = value;
+        setMessages(state, messages) {
+            state.messages = messagesToSections(messages).messages;
         },
         addMessages(state, value) {
-            state.messages.push(...value);
+            const { messages, hasLeakedMessages } = messagesToSections(
+                value,
+                state.messages[state.messages.length - 1].dayjs_date,
+                true
+            );
+
+            if (hasLeakedMessages) {
+                state.messages.push(...messages.toSpliced(0, 1));
+            } else {
+                state.messages.push(...messages);
+            }
+        },
+        unshiftMessages(state, messages) {
+            const { messages: newMessages, hasLeakedMessages } = messagesToSections(
+                messages,
+                state.messages[0].label
+            );
+
+            if (hasLeakedMessages) state.messages.splice(0, 1);
+            state.messages.unshift(...newMessages);
         },
         updateMessage(state, newMessage) {
             let messageIndex = state.messages.findIndex(message => message.id === newMessage.id);
 
             if (messageIndex !== -1) {
+                newMessage.is_viewed = true;
                 Object.assign(state.messages[messageIndex], newMessage);
             }
         },
-
         setCurrentRecipient(state, { contact, contactID }) {
             if (contact) state.currentRecipient = contact;
             else if (contactID) {
@@ -227,6 +248,25 @@ const Messenger = {
         },
         setLessThenMessageId(state, messageID) {
             state.lessThenMessageId = messageID;
+        },
+        updateDialogCounts(state, messageID) {
+            const modelTypeName = 'chatMembers' + ucFirst(state.currentDialog.model_type) + 's';
+
+            const chatMemberIndex = state[modelTypeName].data.findIndex(
+                element => element.id === state.currentDialog.id
+            );
+            if (chatMemberIndex !== -1) {
+                let count = 0;
+                for (
+                    let i = state.messages.length - 1;
+                    i > 0 && state.messages[i].id !== messageID;
+                    i--
+                ) {
+                    if (!state.messages[i].isLabel) count++;
+                }
+
+                state[modelTypeName].data[chatMemberIndex].statistic.messages = count;
+            }
         }
     },
     actions: {
@@ -242,6 +282,7 @@ const Messenger = {
             const options = {};
 
             if (alg.isNumeric(state.querySearch)) options.model_id = state.querySearch;
+            else options.search = state.querySearch;
 
             const chats = await Promise.all([
                 api.messenger.getChats({ model_type: 'object', ...options }),
@@ -331,24 +372,8 @@ const Messenger = {
             commit('setCurrentDialog', dialog);
 
             if (messages.length) {
-                commit(
-                    'setMessages',
-                    messages.map(message => {
-                        message.notViewed = true;
-                        return message;
-                    })
-                );
-
-                commit('setLastNotViewedMessage', messages[0].id);
+                commit('setMessages', messages);
                 commit('setLessThenMessageId', messages[0].id);
-
-                if (messages.length <= 10) {
-                    const _messages = await api.messenger.getMessages(dialogID, messages[0].id);
-                    if (_messages.length) {
-                        commit('addMessages', _messages);
-                        commit('setLessThenMessageId', _messages[0].id);
-                    }
-                }
             }
 
             commit('setLoadingChat', false);
@@ -374,6 +399,8 @@ const Messenger = {
             if (response) {
                 if (getters.hasCachedMessage)
                     commit('clearCachedMessage', state.currentPanelDialogID);
+
+                response.is_viewed = true;
 
                 commit('addMessages', [response]);
                 commit('setNewMessage', '');
@@ -426,18 +453,6 @@ const Messenger = {
                     id: context.state.messages.length + 1,
                     sender: null,
                     text: `<b>${context.rootGetters.THIS_USER?.userProfile?.full_name}</b> назначил созвон с <b>${contact.full_name}</b> на <b>${formattedDate}</b>.`
-                }
-            ]);
-
-            return true;
-        },
-        async sendQuiz(context, { contact }) {
-            // ONLY TESTING// ONLY TESTING
-            context.commit('addMessages', [
-                {
-                    id: context.state.messages.length + 1,
-                    sender: null,
-                    text: `<b>${context.rootGetters.THIS_USER?.userProfile?.full_name}</b> создал опросник с <b>${contact.full_name}</b>.`
                 }
             ]);
 
@@ -532,9 +547,12 @@ const Messenger = {
                 page
             });
         },
-        async getCurrentChatQuizzes(context) {
-            // ONLY TESTING
-            return await api.messenger.getQuizzes(context.state.currentDialog);
+        async getCurrentChatQuizzes({ state }, { page = 1, search = undefined }) {
+            return await api.survey.list({
+                chat_member_id: state.currentDialog.id,
+                page,
+                search: search
+            });
         },
 
         async pinMessage({ state, commit }, message) {
@@ -584,15 +602,18 @@ const Messenger = {
             return null;
         },
 
-        async loadMessages({ commit, state }, lastMessageID) {
-            const messages = await api.messenger.getMessages(state.currentDialog.id, lastMessageID);
+        async loadMessages({ commit, state }) {
+            const messages = await api.messenger.getMessages(
+                state.currentDialog.id,
+                state.lessThenMessageId
+            );
 
             if (messages?.length) {
-                commit('addMessages', messages);
+                commit('unshiftMessages', messages);
                 commit('setLessThenMessageId', messages[0].id);
             }
 
-            return messages?.length === 0;
+            return messages?.length < 30;
         },
         setCurrentMessageFromCache({ state, commit }) {
             const cachedMessage = state.cachedNewMessages[state.currentPanelDialogID];
@@ -600,6 +621,16 @@ const Messenger = {
             commit('setNewMessage', cachedMessage.message);
             commit('setCurrentRecipient', { contactID: cachedMessage.contact });
             commit('setCurrentCategory', cachedMessage.tag);
+        },
+        async readMessages({ state, commit }, messageID) {
+            const reads = api.messenger.readMessages(messageID);
+
+            if (reads) {
+                commit('updateDialogCounts', messageID);
+                return true;
+            }
+
+            return false;
         }
     },
     getters: {

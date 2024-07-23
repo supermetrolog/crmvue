@@ -1,70 +1,46 @@
 <template>
-    <Modal v-if="opened" @close="close" :title="title || 'Выбор даты и времени'">
+    <Modal v-if="isOpened" @close="close" :title="title || 'Выбор даты и времени'">
         <DatePicker v-model="date" @select="select" :markers="markers" />
     </Modal>
 </template>
-<script>
+<script setup>
 import Modal from '@/components/common/Modal.vue';
-import dayjs from 'dayjs';
 import DatePicker from '@/components/common/Forms/DatePicker/DatePicker.vue';
+import { ref, shallowRef } from 'vue';
 
-export default {
-    name: 'MessengerSchedule',
-    components: {
-        DatePicker,
-        Modal
-    },
-    data() {
-        return {
-            opened: false,
-            date: null,
-            title: null,
-            markers: [
-                {
-                    date: dayjs().add(2, 'day').toDate(),
-                    type: 'dot',
-                    tooltip: [{ text: 'Tooltip 1' }, { text: 'Tooltip 2' }],
-                    color: 'red'
-                }
-            ]
-        };
-    },
-    methods: {
-        open(options = { date: null, title: null }) {
-            this.date = options.date;
-            this.title = options.title;
-            this.markers = [
-                {
-                    date: dayjs().add(2, 'day').toDate(),
-                    type: 'line',
-                    tooltip: [
-                        { text: 'Tooltip 1', count: 1, type: 1 },
-                        { text: 'Tooltip 2', count: 20, type: 2 }
-                    ],
-                    color: 'red'
-                }
-            ];
+const isOpened = shallowRef(false);
+const date = ref(null);
+const title = ref(null);
+const markers = ref([]);
 
-            let resolve, reject;
-            const promise = new Promise((ok, fail) => {
-                resolve = ok;
-                reject = fail;
-            });
+let promiseController = null;
 
-            this.$options.promiseController = { resolve, reject };
+const open = (options = { date: null, title: null }) => {
+    date.value = options.date;
+    title.value = options.title;
 
-            this.opened = true;
+    let resolve, reject;
+    const promise = new Promise((ok, fail) => {
+        resolve = ok;
+        reject = fail;
+    });
 
-            return promise;
-        },
-        close() {
-            this.$options.promiseController.resolve(false);
-            this.opened = false;
-        },
-        select() {
-            this.$options.promiseController.resolve(this.date);
-            this.opened = false;
-        }
-    }
+    promiseController = { resolve, reject };
+    isOpened.value = true;
+
+    return promise;
 };
+
+const close = () => {
+    promiseController.resolve(false);
+    isOpened.value = false;
+    promiseController = null;
+};
+
+const select = () => {
+    promiseController.resolve(date.value);
+    isOpened.value = false;
+};
+
+defineExpose({ open });
 </script>

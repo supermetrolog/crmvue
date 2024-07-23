@@ -4,40 +4,64 @@
         <AnimationTransition>
             <MessengerChatPinned v-if="pinnedMessage" :message="pinnedMessage" />
         </AnimationTransition>
-        <div class="messenger-chat__body">
-            <InfiniteLoading v-if="messages.length && scrolled" @infinite="loadMessages">
-                <template #complete><span></span></template>
-                <template #spinner>
-                    <Spinner />
-                </template>
-            </InfiniteLoading>
-            <template v-for="(section, id) in messagesByDays" :key="id">
-                <MessengerChatLabel class="messenger-chat__label" :date="section.label" />
-                <template v-for="message in section.messages" :key="message.id">
+        {{ isLoading }}
+        <VirtualDragList
+            ref="virtual"
+            disabled
+            :data-source="messages"
+            data-key="id"
+            :keeps="60"
+            :keepOffset="true"
+            class="messenger-chat__virtual"
+            wrap-class="messenger-chat__body"
+        >
+            <template #header>
+                <InfiniteLoading v-if="messages.length && scrolled" @infinite="loadMessages">
+                    <template #complete>
+                        <EmptyLabel>Больше сообщений нет..</EmptyLabel>
+                    </template>
+                    <template #spinner>
+                        <Spinner v-if="isLoading" class="small" />
+                    </template>
+                </InfiniteLoading>
+            </template>
+            <template #item="{ record: message }">
+                <div>
+                    <MessengerChatLabel
+                        v-if="message.isLabel"
+                        class="messenger-chat__label"
+                        :date="message.label"
+                    />
                     <MessengerChatMessage
-                        v-if="message.from.model_type === 'user'"
+                        v-else-if="message.from.model_type === 'user'"
                         v-intersection="
-                            message.notViewed
-                                ? ([{ isIntersecting }], observer) =>
+                            message.is_viewed
+                                ? null
+                                : ([{ isIntersecting }], observer) =>
                                       messageIntersectionObserver(isIntersecting, observer, message)
-                                : null
                         "
                         :self="message.from.model.id === currentUser.id"
                         :message="message"
                         :pinned="message.id === pinnedMessage?.id"
                     />
                     <MessengerChatNotification v-else :message="message" />
-                </template>
+                </div>
             </template>
-            <div ref="scrollEnd" v-intersection="scrollObserver" class="messenger-chat__end"></div>
-        </div>
+            <template #footer>
+                <div
+                    ref="scrollEnd"
+                    v-intersection="scrollObserver"
+                    class="messenger-chat__end"
+                ></div>
+            </template>
+        </VirtualDragList>
         <MessengerChatScrollButton
             @scroll="scrollToEnd"
             :style="{ top: scrollButtonTop }"
             :visible="scrollButtonIsVisible"
         />
-        <div ref="quiz" class="messenger-chat__quiz-toggle">
-            <div @click="$toggleQuiz">
+        <div ref="quiz" @click="$toggleQuiz" class="messenger-chat__quiz-toggle">
+            <div>
                 <i class="fa-solid fa-chevron-up"></i>
                 <p>Открыть новый опросник с клиентом</p>
             </div>
@@ -45,127 +69,88 @@
         <MessengerChatForm />
     </div>
 </template>
-<script>
+<script setup>
 import MessengerChatHeader from '@/components/Messenger/Chat/Header/MessengerChatHeader.vue';
 import MessengerChatMessage from '@/components/Messenger/Chat/Message/MessengerChatMessage.vue';
 import MessengerChatForm from '@/components/Messenger/Chat/Form/MessengerChatForm.vue';
-import { mapGetters, mapState } from 'vuex';
+import { useStore } from 'vuex';
 import MessengerChatLabel from '@/components/Messenger/Chat/MessengerChatLabel.vue';
 import MessengerChatNotification from '@/components/Messenger/Chat/MessengerChatNotification.vue';
-import dayjs from 'dayjs';
 import InfiniteLoading from 'v3-infinite-loading';
 import Spinner from '@/components/common/Spinner.vue';
 import MessengerChatPinned from '@/components/Messenger/Chat/MessengerChatPinned.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { debounce } from '@/utils/debounce.js';
-import api from '@/api/api.js';
 import MessengerChatScrollButton from '@/components/Messenger/Chat/MessengerChatScrollButton.vue';
 import { useElementBounding } from '@vueuse/core';
-import { computed, ref } from 'vue';
+import { computed, inject, nextTick, onMounted, ref, shallowRef } from 'vue';
+import VirtualDragList from 'vue-virtual-draglist';
+import EmptyLabel from '@/components/common/EmptyLabel.vue';
+import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 
-export default {
-    name: 'MessengerChatContent',
-    components: {
-        MessengerChatScrollButton,
-        AnimationTransition,
-        MessengerChatPinned,
-        Spinner,
-        InfiniteLoading,
-        MessengerChatNotification,
-        MessengerChatLabel,
-        MessengerChatForm,
-        MessengerChatMessage,
-        MessengerChatHeader
-    },
-    inject: ['$toggleQuiz'],
-    setup() {
-        const quiz = ref(null);
-        const { top } = useElementBounding(quiz);
-        const scrollButtonTop = computed(() => top.value - 45 + 'px');
+const store = useStore();
+const $toggleQuiz = inject('$toggleQuiz');
 
-        return { quiz, scrollButtonTop };
-    },
-    data() {
-        return {
-            scrolled: false,
-            scrollButtonIsVisible: false
-        };
-    },
-    computed: {
-        ...mapGetters({ currentUser: 'THIS_USER', isModerator: 'isModerator' }),
-        ...mapState({
-            isLoading: state => state.Messenger.loadingChat,
-            messages: state => state.Messenger.messages,
-            pinnedMessage: state => state.Messenger.currentPinned,
-            currentRecipient: state => state.Messenger.currentRecipient
-        }),
-        messagesByDays() {
-            const sections = this.messages.reduce((acc, message) => {
-                const dayjsObject = dayjs(message.created_at);
-                const dayjsObjectFormat = dayjsObject.format('MM.DD.YYYY');
+const quiz = ref(null);
+const scrollEnd = ref(null);
+const virtual = ref(null);
+const scrolled = shallowRef(false);
+const scrollButtonIsVisible = shallowRef(false);
+const { isLoading } = useDelayedLoader(false, 1500);
 
-                if (dayjsObjectFormat in acc)
-                    acc[dayjsObjectFormat].push({ ...message, dayjs_date: dayjsObject });
-                else acc[dayjsObjectFormat] = [{ ...message, dayjs_date: dayjsObject }];
+const { top } = useElementBounding(quiz);
+const scrollButtonTop = computed(() => top.value - 45 + 'px');
 
-                return acc;
-            }, {});
+const messages = computed(() => store.state.Messenger.messages);
+const pinnedMessage = computed(() => store.state.Messenger.currentPinned);
+const currentUser = computed(() => store.getters.THIS_USER);
 
-            return Object.keys(sections)
-                .map(key => ({
-                    label: dayjs(key),
-                    messages: sections[key].sort(
-                        (first, second) => first.dayjs_date - second.dayjs_date
-                    )
-                }))
-                .sort((first, second) => first.label - second.label);
-        }
-    },
-    methods: {
-        async scrollToNotViewed() {
-            await this.$nextTick();
+const scrollToNotViewed = async () => {
+    await nextTick();
 
-            const message = document.querySelector(
-                '#message-' + this.$store.state.Messenger.lastNotViewedMessageID
-            );
+    const notViewedMessage = messages.value.find(element => !element.is_viewed && !element.isLabel);
 
-            if (message) message.scrollIntoView({ block: 'end' });
-            this.scrolled = true;
-        },
-        async scrollToEnd() {
-            await this.$nextTick();
-            this.$refs.scrollEnd.scrollIntoView({ behavior: 'smooth' });
-        },
-        async loadMessages($state) {
-            const isLastPage = await this.$store.dispatch(
-                'Messenger/loadMessages',
-                this.$store.state.Messenger.lessThenMessageId
-            );
+    if (notViewedMessage) virtual.value.scrollToKey(notViewedMessage.id);
+    else virtual.value.scrollToBottom();
 
-            if (isLastPage) $state.complete();
-            else $state.loaded();
-        },
-        messageIntersectionObserver(isIntersecting, observer, message) {
-            if (!isIntersecting) return;
-
-            if (!message.notViewed) {
-                observer.disconnect();
-                return;
-            }
-
-            //this.debouncedReadMessage(message.id);
-            console.log(message);
-
-            message.notViewed = false;
-            observer.disconnect();
-        },
-        debouncedReadMessage: debounce(api.messenger.readMessages, 2000),
-        scrollObserver([{ isIntersecting }]) {
-            this.scrollButtonIsVisible = !isIntersecting;
-        }
-    },
-    mounted() {
-        this.scrollToNotViewed();
-    }
+    scrolled.value = true;
 };
+const scrollToEnd = async () => {
+    await nextTick();
+    virtual.value.scrollToBottom();
+};
+const loadMessages = async $state => {
+    console.log('LOAD');
+    if (isLoading.value) return;
+
+    isLoading.value = true;
+    const isLastPage = await store.dispatch('Messenger/loadMessages');
+    isLoading.value = false;
+
+    if (isLastPage) $state.complete();
+    else $state.loaded();
+};
+const messageIntersectionObserver = (isIntersecting, observer, message) => {
+    if (!isIntersecting) return;
+
+    if (message.is_viewed) {
+        observer.disconnect();
+        return;
+    }
+
+    debouncedReadMessage(message.id);
+
+    message.is_viewed = true;
+    observer.disconnect();
+};
+
+const readMessages = args => store.dispatch('Messenger/readMessages', args);
+const debouncedReadMessage = debounce(readMessages, 2000);
+const scrollObserver = ([{ isIntersecting }]) => {
+    scrollButtonIsVisible.value = !isIntersecting;
+};
+
+onMounted(() => {
+    if (messages.value.length) scrollToNotViewed();
+});
 </script>

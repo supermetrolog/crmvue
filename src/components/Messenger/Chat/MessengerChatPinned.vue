@@ -12,10 +12,10 @@
         ></div>
         <span class="messenger-chat-pinned__date">{{ date }}</span>
         <i v-tippy="'Открепить сообщение'" @click="unpin" class="fa-solid fa-xmark c-pointer"></i>
+        <teleport to="body">
+            <MessengerChatPinnedView v-if="viewIsOpened" @close="viewIsOpened = false" />
+        </teleport>
     </div>
-    <teleport to="body">
-        <MessengerChatPinnedView v-if="viewIsOpened" @close="viewIsOpened = false" />
-    </teleport>
 </template>
 <script>
 import plural from 'plural-ru';

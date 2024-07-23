@@ -20,39 +20,28 @@
         </Form>
     </div>
 </template>
-<script>
+<script setup>
 import Form from '@/components/common/Forms/Form.vue';
 import Input from '@/components/common/Forms/Input.vue';
 import { debounce } from '@/utils/debounce.js';
-import { mapActions } from 'vuex';
+import { useStore } from 'vuex';
+import { computed } from 'vue';
 
-export default {
-    name: 'MessengerAsideHeader',
-    components: { Input, Form },
-    data() {
-        return {
-            debouncedUpdateDialogs: null
-        };
+const store = useStore();
+const updateDialogs = () => store.dispatch('Messenger/updateDialogs');
+const debouncedUpdateDialogs = debounce(updateDialogs, 400);
+
+const querySearch = computed({
+    get() {
+        return store.state.Messenger.querySearch;
     },
-    computed: {
-        querySearch: {
-            get() {
-                return this.$store.state.Messenger.querySearch;
-            },
-            set(value) {
-                this.$store.commit('Messenger/setQuerySearch', value);
-                this.debouncedUpdateDialogs(value);
-            }
-        }
-    },
-    methods: {
-        ...mapActions({ updateDialogs: 'Messenger/updateDialogs' }),
-        clearQuery() {
-            this.querySearch = '';
-        }
-    },
-    created() {
-        this.debouncedUpdateDialogs = debounce(this.updateDialogs, 400);
+    set(value) {
+        store.commit('Messenger/setQuerySearch', value);
+        debouncedUpdateDialogs(value);
     }
+});
+
+const clearQuery = () => {
+    querySearch.value = '';
 };
 </script>

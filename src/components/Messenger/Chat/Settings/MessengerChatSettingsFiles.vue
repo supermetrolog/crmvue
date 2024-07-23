@@ -26,7 +26,7 @@
         </div>
     </div>
 </template>
-<script>
+<script setup>
 import Spinner from '@/components/common/Spinner.vue';
 import FileList from '@/components/common/FileList.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
@@ -34,36 +34,25 @@ import { useStore } from 'vuex';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { useInfiniteLoading } from '@/composables/useInfiniteLoading.js';
 
-export default {
-    name: 'MessengerChatSettingsFiles',
-    components: { EmptyData, FileList, Spinner },
-    emits: ['close'],
-    setup() {
-        const store = useStore();
-        const getCurrentChatFiles = page => store.dispatch('Messenger/getCurrentChatFiles', page);
+defineEmits(['close']);
 
-        const { isLoading } = useDelayedLoader();
-        const {
-            load: loadFiles,
-            items: files,
-            pagination
-        } = useInfiniteLoading(getCurrentChatFiles);
+const store = useStore();
+const getCurrentChatFiles = page => store.dispatch('Messenger/getCurrentChatFiles', page);
 
-        return { isLoading, loadFiles, files, pagination, getCurrentChatFiles };
-    },
-    methods: {
-        async fetchFiles() {
-            this.isLoading = true;
-            const data = await this.getCurrentChatFiles();
+const { isLoading } = useDelayedLoader();
+const { load: loadFiles, items: files, pagination } = useInfiniteLoading(getCurrentChatFiles);
 
-            this.files = data.data;
-            this.pagination = data.pagination;
+const fetchFiles = async () => {
+    isLoading.value = true;
+    const data = await getCurrentChatFiles();
 
-            this.isLoading = false;
-        }
-    },
-    created() {
-        this.fetchFiles();
+    if (data) {
+        files.value = data.data;
+        pagination.value = data.pagination;
     }
+
+    isLoading.value = false;
 };
+
+fetchFiles();
 </script>

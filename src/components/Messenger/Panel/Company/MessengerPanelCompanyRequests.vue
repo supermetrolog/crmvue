@@ -33,6 +33,7 @@
                     "
                     :current="record.id === currentDialogID"
                     :model="record.model"
+                    :statistic="record.statistic"
                     :last-call="record.last_call"
                 />
             </template>

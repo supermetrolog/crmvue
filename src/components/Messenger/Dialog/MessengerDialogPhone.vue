@@ -9,7 +9,7 @@
                 <p v-if="lastCall">
                     Звонок совершил(а) {{ lastCall.user?.userProfile?.medium_name }}
                 </p>
-                <p v-else>Дата сформирована на основе последнего обновления объекта/зпроса</p>
+                <p v-else>Дата сформирована на основе последнего обновления объекта/запроса</p>
             </template>
         </Tooltip>
         <span class="messenger-dialog__icon">
@@ -31,7 +31,7 @@ export default {
             default: null
         },
         updatedAt: {
-            type: [String, Number],
+            type: [String, Number, null],
             required: true
         }
     },

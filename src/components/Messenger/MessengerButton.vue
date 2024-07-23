@@ -1,21 +1,21 @@
 <template>
-    <button class="messenger-button" :class="colorClass">
+    <button class="messenger-button" :class="colorClass" :disabled="disabled">
         <slot></slot>
     </button>
 </template>
-<script>
-export default {
-    name: 'MessengerButton',
-    props: {
-        color: {
-            type: String,
-            default: null
-        }
+<script setup>
+import { computed } from 'vue';
+
+const props = defineProps({
+    color: {
+        type: String,
+        default: null
     },
-    computed: {
-        colorClass() {
-            return this.color ? `bg-btn--${this.color}` : null;
-        }
+    disabled: {
+        type: Boolean,
+        default: false
     }
-};
+});
+
+const colorClass = computed(() => (props.color ? `bg-btn--${props.color}` : null));
 </script>

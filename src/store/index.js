@@ -20,6 +20,7 @@ import axios from 'axios';
 import Messenger from '@/store/modules/Messenger';
 import Task from '@/store/modules/Task.js';
 import { useAuth } from '@/composables/useAuth.js';
+import Quizz from '@/store/modules/Quiz.js';
 
 const store = createStore({
     state: {},
@@ -78,7 +79,8 @@ const store = createStore({
         Location,
         Complex,
         Messenger,
-        Task
+        Task,
+        Quizz
     }
 });
 store.checkAction = function (name) {
