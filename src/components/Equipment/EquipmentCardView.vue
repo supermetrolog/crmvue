@@ -1,7 +1,6 @@
 <template>
     <Modal @close="$emit('close')" :title="'Просмотр оборудования #' + equipment.id" width="1200">
-        <Spinner v-if="isLoading" />
-        <div v-else class="dashboard-card-view">
+        <div class="dashboard-card-view">
             <div class="row">
                 <div class="col-12">
                     <DashboardCard
@@ -11,9 +10,9 @@
                     >
                         <div class="dashboard-card-view__header">
                             <h3 v-if="equipment.name">{{ equipment.name }}</h3>
-                            <DashboardChip class="ml-2" :class="statusClass">
+                            <DashboardChip class="ml-md-2" :class="statusClass">
                                 <div class="d-flex align-items-center">
-                                    <p>{{ status }}</p>
+                                    <p>{{ isPassive ? 'Пассив' : 'Актив' }}</p>
                                     <i
                                         v-if="isPassive"
                                         v-tippy="statusTippy"
@@ -30,24 +29,42 @@
                                     <span class="ml-2">Выгодное предложение</span>
                                 </div>
                             </DashboardChip>
-                            <div v-if="editable" class="dashboard-card-view__actions">
-                                <HoverActionsButton @click="$emit('edit')" label="Редактировать">
-                                    <i class="fa-solid fa-pen" />
-                                </HoverActionsButton>
+                            <div class="dashboard-card-view__actions">
                                 <HoverActionsButton
-                                    @click="$emit('toggle-passive')"
-                                    :label="isPassive ? 'Восстановить' : 'Отправить в пассив'"
+                                    @click="$emit('called')"
+                                    label="Обновить последний звонок"
                                 >
-                                    <i
-                                        class="fa-solid"
-                                        :class="isPassive ? 'fa-rotate-right' : 'fa-ban'"
-                                    ></i>
+                                    <i class="fa-solid fa-phone" />
+                                </HoverActionsButton>
+                                <template v-if="canEdit">
+                                    <HoverActionsButton
+                                        @click="$emit('edit')"
+                                        label="Редактировать"
+                                    >
+                                        <i class="fa-solid fa-pen" />
+                                    </HoverActionsButton>
+                                    <HoverActionsButton
+                                        @click="$emit('toggle-passive')"
+                                        :label="isPassive ? 'Восстановить' : 'Отправить в пассив'"
+                                    >
+                                        <i
+                                            class="fa-solid"
+                                            :class="isPassive ? 'fa-rotate-right' : 'fa-ban'"
+                                        ></i>
+                                    </HoverActionsButton>
+                                </template>
+                                <HoverActionsButton
+                                    v-if="canRemove"
+                                    @click="$emit('remove')"
+                                    label="Удалить"
+                                >
+                                    <i class="fa-solid fa-trash" />
                                 </HoverActionsButton>
                             </div>
                         </div>
                     </DashboardCard>
                 </div>
-                <div class="col-8">
+                <div class="col-md-8 col-12">
                     <DashboardCard class="mb-2">
                         <p class="dashboard-card-view__subtitle">
                             Фотографии ({{ equipment.photos?.length ?? 0 }})
@@ -65,50 +82,44 @@
                     </DashboardCard>
                     <DashboardCard class="mb-2">
                         <div class="row">
-                            <div class="col-4">
+                            <div class="col-md-3 col-6">
                                 <div class="dashboard-card-view__block">
                                     <p class="dashboard-card-view__helper">Создано</p>
                                     <p>{{ $formatter.toDate(equipment.created_at) }}</p>
                                 </div>
                             </div>
-                            <div class="col-4">
+                            <div class="col-md-3 col-6">
                                 <div class="dashboard-card-view__block">
                                     <p class="dashboard-card-view__helper">Обновлено</p>
-                                    <p>
-                                        {{
-                                            equipment.updated_at
-                                                ? $formatter.toDate(equipment.updated_at)
-                                                : 'Не обновлялось'
-                                        }}
-                                    </p>
+                                    <p>{{ lastUpdateDate }}</p>
                                 </div>
                             </div>
-                            <div class="col-4">
+                            <div class="col-md-3 col-6">
+                                <div class="dashboard-card-view__block">
+                                    <p class="dashboard-card-view__helper">Последний звонок</p>
+                                    <p>{{ lastCallDate }}</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6">
                                 <div class="dashboard-card-view__block">
                                     <p class="dashboard-card-view__helper">Дата архивации</p>
-                                    <p>
-                                        {{
-                                            equipment.archived_at
-                                                ? $formatter.toDate(equipment.equipment_at)
-                                                : 'Активно'
-                                        }}
-                                    </p>
+                                    <p>{{ archivedDate }}</p>
                                 </div>
                             </div>
                         </div>
                     </DashboardCard>
                     <DashboardCard>
                         <p class="dashboard-card-view__subtitle">Описание</p>
-                        <p>
-                            {{
-                                equipment.description?.length
-                                    ? equipment.description
-                                    : 'Не заполнено'
-                            }}
-                        </p>
+                        <div class="dashboard-card-view__description">
+                            <div
+                                v-if="equipment.description?.length"
+                                v-html="equipment.description"
+                            ></div>
+                            <p v-else>Не заполнено</p>
+                        </div>
                     </DashboardCard>
                 </div>
-                <div class="col-4">
+                <div class="col-md-4 col-12">
                     <DashboardCard class="mb-2">
                         <p class="dashboard-card-view__subtitle mb-2">О компании</p>
                         <CompanyElement :company="equipment.company" class="mb-2" />
@@ -165,10 +176,10 @@
                         <p v-if="equipment.delivery === 1" class="dashboard-card-view__property">
                             <span class="dashboard-card-view__category">Цена доставки:</span>
                             <with-unit-type
-                                v-if="equipment.delivery_price"
+                                v-if="equipment.deliveryPrice"
                                 :unit-type="unitTypes.RUB"
                             >
-                                {{ $formatter.number(equipment.delivery_price) }}
+                                {{ $formatter.number(equipment.deliveryPrice) }}
                             </with-unit-type>
                             <span v-else>не указано</span>
                         </p>
@@ -179,107 +190,93 @@
     </Modal>
 </template>
 
-<script>
+<script setup>
 import CompanyElement from '@/components/Company/CompanyElement.vue';
 import CompanyContact from '@/components/Company/CompanyContact.vue';
-import dayjs from 'dayjs';
-import Spinner from '@/components/common/Spinner.vue';
 import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
 import Avatar from '@/components/common/Avatar.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import Modal from '@/components/common/Modal.vue';
-import { LoaderMixin } from '@/components/Messenger/loader.mixin.js';
-import { PassiveWhyRequest } from '@/const/const.js';
 import Carousel from '@/components/common/Carousel.vue';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
-import { entityOptions } from '@/const/options/options.js';
 import EmptyData from '@/components/common/EmptyData.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
+import { computed } from 'vue';
+import { equipmentOptions } from '@/const/options/equipment.options.js';
+import { toDateFormat } from '@/utils/formatter.js';
 
-export default {
-    name: 'EquipmentCardView',
-    components: {
-        HoverActionsButton,
-        EmptyData,
-        WithUnitType,
-        Carousel,
-        Modal,
-        DashboardChip,
-        Avatar,
-        DashboardCard,
-        Spinner,
-        CompanyContact,
-        CompanyElement
+defineEmits(['close', 'edit', 'toggle-passive', 'called', 'remove']);
+const props = defineProps({
+    equipment: {
+        type: Object,
+        required: true
     },
-    mixins: [LoaderMixin],
-    emits: ['close', 'edit', 'toggle-passive'],
-    props: {
-        equipment: {
-            type: Object,
-            required: true
-        },
-        editable: {
-            type: Boolean,
-            default: false
-        }
+    canEdit: {
+        type: Boolean,
+        default: false
     },
-    computed: {
-        unitTypes() {
-            return unitTypes;
-        },
-        lastCallDate() {
-            if (!this.equipment.lastCall) return 'Неизвестно';
-            return dayjs(this.equipment.lastCall).format('DD.MM.YYYY, HH:mm');
-        },
-        lastUpdateDate() {
-            return dayjs(this.equipment.updated_at).format('DD.MM.YYYY, HH:mm');
-        },
-        isPassive() {
-            return false;
-        },
-        status() {
-            if (this.equipment.status === 1) return 'Актив';
-            return 'Пассив';
-        },
-        statusClass() {
-            if (this.equipment.status === 1) return 'dashboard-bg-success-l';
-            return 'dashboard-bg-danger-l';
-        },
-        statusTippy() {
-            let text = PassiveWhyRequest[this.equipment.passive_why].label;
-            if (this.equipment.passive_why_comment)
-                text += ': ' + this.equipment.passive_why_comment;
-            return text;
-        },
-        photos() {
-            return this.equipment.photos.map(el => ({
-                src: el
-            }));
-        },
-        availability() {
-            if (this.equipment.availability)
-                return entityOptions.equipment.availability[this.equipment.availability];
-            return 'не указано';
-        },
-        category() {
-            if (this.equipment.category)
-                return entityOptions.equipment.category[this.equipment.category];
-            return 'не указано';
-        },
-        state() {
-            if (this.equipment.state)
-                return entityOptions.equipment.usedStatus[this.equipment.state];
-            return 'не указано';
-        },
-        delivery() {
-            if (this.equipment.delivery)
-                return entityOptions.equipment.delivery[this.equipment.delivery];
-            return 'не указано';
-        },
-        tax() {
-            return entityOptions.equipment.tax[this.equipment.tax];
-        }
+    canRemove: {
+        type: Boolean,
+        default: false
     }
-};
+});
+
+const isPassive = computed(
+    () => props.equipment.status === equipmentOptions.statusStatement.PASSIVE
+);
+
+const statusClass = computed(() => {
+    if (isPassive.value) return 'dashboard-bg-danger-l';
+    return 'dashboard-bg-success-l';
+});
+
+const statusTippy = computed(() => {
+    let text = equipmentOptions.passiveType[props.equipment.passive_type];
+    if (props.equipment.passive_comment) text += ': ' + props.equipment.passive_comment;
+    return text;
+});
+
+const lastCallDate = computed(() => {
+    if (!props.equipment.last_call) return 'Отсутствует';
+    return toDateFormat(props.equipment.last_call.created_at);
+});
+
+const lastUpdateDate = computed(() => {
+    if (props.equipment.updated_at) return toDateFormat(props.equipment.updated_at);
+    return 'Не обновлялось';
+});
+
+const archivedDate = computed(() => {
+    if (isPassive.value && props.equipment.archived_at)
+        return toDateFormat(props.equipment.archived_at);
+    return 'Активно';
+});
+
+const photos = computed(() => props.equipment.photos.map(el => ({ src: el })));
+
+const availability = computed(() => {
+    if (props.equipment.availability)
+        return equipmentOptions.availability[props.equipment.availability];
+    return 'не указано';
+});
+
+const category = computed(() => {
+    if (props.equipment.category) return equipmentOptions.category[props.equipment.category];
+    return 'не указано';
+});
+
+const state = computed(() => {
+    if (props.equipment.state) return equipmentOptions.usedStatus[props.equipment.state];
+    return 'не указано';
+});
+
+const delivery = computed(() => {
+    if (props.equipment.delivery) return equipmentOptions.delivery[props.equipment.delivery];
+    return 'не указано';
+});
+
+const tax = computed(() => {
+    return equipmentOptions.tax[props.equipment.tax];
+});
 </script>

@@ -13,17 +13,19 @@
                 <HoverActionsButton label="Открыть в чате" disabled>
                     <i class="fa-solid fa-comment"></i>
                 </HoverActionsButton>
-                <HoverActionsButton @click="$emit('edit')" label="Редактировать">
-                    <i class="fa-solid fa-pen"></i>
-                </HoverActionsButton>
-                <HoverActionsButton
-                    @click="togglePassive"
-                    :active="isPassive"
-                    :label="isPassive ? 'Снять с пассива' : 'Отправить в пассив'"
-                >
-                    <i class="fa-solid fa-ban"></i>
-                </HoverActionsButton>
-                <HoverActionsButton @click="remove" label="Удалить">
+                <template v-if="canEdit">
+                    <HoverActionsButton @click="$emit('edit')" label="Редактировать">
+                        <i class="fa-solid fa-pen"></i>
+                    </HoverActionsButton>
+                    <HoverActionsButton
+                        @click="$emit('toggle-passive')"
+                        :active="isPassive"
+                        :label="isPassive ? 'Снять с пассива' : 'Отправить в пассив'"
+                    >
+                        <i class="fa-solid fa-ban"></i>
+                    </HoverActionsButton>
+                </template>
+                <HoverActionsButton v-if="canRemove" @click="$emit('remove')" label="Удалить">
                     <i class="fa-solid fa-trash"></i>
                 </HoverActionsButton>
             </div>
@@ -31,35 +33,45 @@
         <div class="equipment__body">
             <div class="equipment__aside">
                 <div @click="$emit('view')" class="equipment__preview c-pointer">
-                    <VLazyImage :src="equipment.preview" class="equipment__photo" />
+                    <VLazyImage
+                        v-if="equipment.preview"
+                        :src="equipment.preview"
+                        class="equipment__photo"
+                    />
+                    <NoImage v-else class="equipment__photo" />
                 </div>
             </div>
             <div class="equipment__content">
                 <div class="equipment__description">
                     <div class="equipment__badges">
-                        <p class="equipment__badge">
+                        <p v-if="equipment.availability === 1" class="equipment__badge">
                             <span class="equipment__badge">В наличии</span>
                             <b v-if="equipment.count">({{ equipment.count }})</b>
-                            <span>, {{ usedStatus }}</span>
+                            <span v-if="equipment.state">, {{ usedStatus }}</span>
                         </p>
-                        <span class="equipment__badge">Под заказ</span>
+                        <span v-else-if="equipment.availability === 2" class="equipment__badge">
+                            Под заказ
+                        </span>
+                        <span
+                            v-if="equipment.benefit"
+                            class="equipment__badge dashboard-bg-success-l"
+                        >
+                            Выгодное предложение
+                        </span>
                     </div>
                     <p @click="$emit('view')" class="equipment__title c-pointer">
                         {{ equipment.name }}
                     </p>
-                    <p class="equipment__description">{{ equipment.description }}</p>
+                    <div
+                        @click="$emit('view')"
+                        class="equipment__description-text c-pointer"
+                        v-html="equipment.description"
+                    ></div>
                 </div>
             </div>
             <div class="equipment__address">
                 <p class="equipment__text">Адрес</p>
-                <p>
-                    Предлагает много текст тут будет Предлагает много текст тут будет Предлагает
-                    много текст тут будет
-                </p>
-                <p>
-                    Предлагает много текст тут будет Предлагает много текст тут будет Предлагает
-                    много текст тут будет
-                </p>
+                <p>{{ equipment.address }}</p>
             </div>
             <div class="equipment__contact">
                 <p class="equipment__text">Предлагает</p>
@@ -93,7 +105,7 @@
                         class="equipment__badge"
                     >
                         <i class="fa-solid fa-user-tie"></i>
-                        <span>{{ equipment.consultant.userProfile.short_name }}</span>
+                        <span>{{ equipment.consultant.userProfile.medium_name }}</span>
                     </p>
                     <p v-tippy="'Дата последнего звонка'" class="equipment__badge">
                         <i class="fa-solid fa-phone-volume"></i>
@@ -109,84 +121,56 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import VLazyImage from 'v-lazy-image';
 import CompanyElement from '@/components/Company/CompanyElement.vue';
 import CompanyContact from '@/components/Company/CompanyContact.vue';
-import { entityOptions } from '@/const/options/options.js';
-import { unitTypes } from '@/const/unitTypes.js';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import dayjs from 'dayjs';
-import { useConfirm } from '@/composables/useConfirm.js';
+import NoImage from '@/components/common/NoImage.vue';
+import { computed } from 'vue';
+import { equipmentOptions } from '@/const/options/equipment.options.js';
+import { useStore } from 'vuex';
 
-export default {
-    name: 'Equipment',
-    components: { HoverActionsButton, CompanyContact, CompanyElement, VLazyImage },
-    emits: ['edit', 'view'],
-    props: {
-        equipment: {
-            type: Object,
-            required: true
-        }
-    },
-    setup() {
-        const { confirm } = useConfirm();
-        return { confirm };
-    },
-    computed: {
-        unitTypes() {
-            return unitTypes;
-        },
-        usedStatus() {
-            return entityOptions.equipment.usedStatus[this.equipment.used_status];
-        },
-        category() {
-            return entityOptions.equipment.category[this.equipment.category];
-        },
-        isPassive() {
-            return this.equipment.status === 2;
-        },
-        lastCallDate() {
-            if (!this.equipment.lastCall) return 'Неизвестно';
-            return dayjs(this.equipment.lastCall).format('DD.MM.YYYY, HH:mm');
-        },
-        lastUpdateDate() {
-            const dayjsDate = dayjs(this.equipment.updated_at);
+const store = useStore();
 
-            if (dayjsDate.isToday()) return `Сегодня, ${dayjsDate.format('HH:mm')}`;
-            if (dayjsDate.isYesterday()) return `Вчера, ${dayjsDate.format('HH:mm')}`;
-            return dayjsDate.format('D.MM.YY, HH:mm');
-        },
-        tax() {
-            return entityOptions.equipment.tax[this.equipment.tax];
-        },
-        delivery() {
-            return entityOptions.equipment.delivery[this.equipment.delivery];
-        }
-    },
-    methods: {
-        async togglePassive() {
-            const confirmed = await this.confirm(
-                this.isPassive
-                    ? 'Вы уверены, что хотите снять объект с пассива?'
-                    : 'Вы уверены, что хотите отправить объект в пассив?'
-            );
-
-            if (confirmed) {
-                this.$notify(
-                    this.isPassive ? 'Объект снят с пассива' : 'Объект отправлен в пассив'
-                );
-            }
-        },
-        async remove() {
-            const confirmed = await this.confirm(
-                'Вы уверены, что хотите безвозвратно удалить объект?'
-            );
-
-            if (confirmed) {
-                this.$notify('Объект успешно удален.');
-            }
-        }
+defineEmits(['edit', 'view', 'toggle-passive', 'remove']);
+const props = defineProps({
+    equipment: {
+        type: Object,
+        required: true
     }
-};
+});
+
+const canRemove = computed(() => store.getters.isModerator);
+const canEdit = computed(() => {
+    return store.getters.isModerator || props.equipment.created_by_id == store.getters.THIS_USER.id;
+});
+
+const usedStatus = computed(() => equipmentOptions.usedStatus[props.equipment.state]);
+const category = computed(() => equipmentOptions.category[props.equipment.category]);
+const isPassive = computed(
+    () => props.equipment.status === equipmentOptions.statusStatement.PASSIVE
+);
+const tax = computed(() => equipmentOptions.tax[props.equipment.tax]);
+const delivery = computed(() => equipmentOptions.delivery[props.equipment.delivery]);
+
+const lastCallDate = computed(() => {
+    if (props.equipment.last_call) {
+        const date = dayjs(props.equipment.last_call.created_at);
+
+        if (date.isToday()) return date.format('Сегодня, HH:mm');
+        else return date.format('DD.MM.YYYY, HH:mm');
+    }
+
+    return 'Отсутствует';
+});
+
+const lastUpdateDate = computed(() => {
+    const dayjsDate = dayjs(props.equipment.updated_at);
+
+    if (dayjsDate.isToday()) return `Сегодня, ${dayjsDate.format('HH:mm')}`;
+    if (dayjsDate.isYesterday()) return `Вчера, ${dayjsDate.format('HH:mm')}`;
+    return dayjsDate.format('D.MM.YY, HH:mm');
+});
 </script>
