@@ -66,7 +66,7 @@
         </div>
         <FormCompanyContact
             v-if="companyContactFormIsVisible"
-            @closeCompanyForm="cancelEditing"
+            @close="cancelEditing"
             @updated="refreshContacts"
             @created="$emit('created-contact')"
             :formdata="editableContact"

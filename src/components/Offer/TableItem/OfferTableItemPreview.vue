@@ -3,7 +3,7 @@
         <a
             :href="$url.offerOldByObject(offer)"
             target="_blank"
-            class="button offer-table-item__button"
+            class="button button--small offer-table-item__button"
         >
             Старая версия
         </a>
@@ -23,21 +23,16 @@
                 {{ offer.class_name }}
             </DashboardChip>
         </div>
-        <DashboardChip
-            v-if="offer.object_type?.length"
-            class="offer-table-item-preview__object-type dashboard-bg-light mb-2"
-        >
-            {{ offer.object_type_name }}
-        </DashboardChip>
         <a
             class="offer-table-item-preview__container"
             :href="$url.offerByObject(offer)"
             target="_blank"
         >
-            <VLazyImage
-                @error="hasError = true"
-                :src="hasError ? $url.api.fileNotFound() : offer.thumb"
-                alt="image"
+            <VLazyImage v-if="!offer.thumb" :src="$url.api.fileNotFound()" alt="image" />
+            <OfferTableItemPreviewMotionSlider
+                v-else
+                :thumb="offer.thumb"
+                :photos="offer.object.photo"
             />
             <div class="offer-table-item-preview__parameters">
                 <span
@@ -60,32 +55,42 @@
                 <span v-if="offer.is_fake" class="offer-table-item-preview__chip">Фейк</span>
             </div>
         </a>
+        <div v-if="offer.object_type?.length" class="offer-table-item-preview__types">
+            <DashboardChip
+                v-for="element in objectTypes"
+                :key="element.id"
+                v-tippy="element.name"
+                class="dashboard-bg-light"
+            >
+                <i :class="element.icon" />
+            </DashboardChip>
+        </div>
     </div>
 </template>
 
-<script>
+<script setup>
 import VLazyImage from 'v-lazy-image';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import { computed } from 'vue';
+import { objectOptions } from '@/const/options/object.options.js';
+import OfferTableItemPreviewMotionSlider from '@/components/Offer/TableItem/OfferTableItemPreviewMotionSlider.vue';
 
-export default {
-    name: 'OfferTableItemPreview',
-    components: {
-        DashboardChip,
-        VLazyImage
+const props = defineProps({
+    offer: {
+        type: Object,
+        required: true
     },
-    props: {
-        offer: {
-            type: Object
-        },
-        isPassive: {
-            type: Boolean,
-            default: false
-        }
-    },
-    data() {
-        return {
-            hasError: false
-        };
+    isPassive: {
+        type: Boolean,
+        default: false
     }
-};
+});
+
+const objectTypes = computed(() => {
+    return props.offer.object_type.map((element, index) => ({
+        id: index,
+        name: objectOptions.typeGeneral[element].name,
+        icon: objectOptions.typeGeneral[element].icon
+    }));
+});
 </script>

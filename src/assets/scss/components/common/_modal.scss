@@ -145,9 +145,16 @@
     }
 
     &--with-tabs {
+        align-items: unset;
+        padding-top: 100px;
+
         .modal {
             &__body {
                 padding: 0 0 15px;
+            }
+
+            &__container {
+                height: max-content;
             }
         }
 
@@ -225,3 +232,26 @@
 }
 
 @include mixins.modal-width(messenger-chat-settings-window, 800px);
+
+.modal-slider {
+    &__preview {
+        max-height: 50vh;
+        object-fit: cover;
+        margin: 0 auto;
+    }
+
+    &__list {
+        width: max-content;
+        max-width: 100%;
+        margin: 15px auto 0;
+        @include mixins.flex-box($wrap: true, $j: flex-start, $gap: 5px,);
+
+        img {
+            cursor: pointer;
+            border: 1px solid rgba(0, 0, 0, .1);
+            height: 80px;
+            width: 80px;
+            object-fit: cover;
+        }
+    }
+}

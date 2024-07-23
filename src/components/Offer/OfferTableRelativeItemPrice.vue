@@ -17,23 +17,19 @@
                 {{ offer.calc_price_safe_pallet }} <small>руб за 1 п. м.</small>
             </p>
         </div>
-        <span v-if="offer.deal_type && offer.offer.tax_form">
+        <span v-if="offer.deal_type && offer.tax_form">
             {{ taxForm }}
         </span>
         <div class="offer-table-item-price__additional">
-            <p v-if="!!offer.offer.price_opex" class="offer-table-item-price__item">
-                OPEX - {{ opex }}
-            </p>
-            <p v-if="!!offer.offer.public_services" class="offer-table-item-price__item">
+            <p v-if="!!offer.price_opex" class="offer-table-item-price__item">OPEX - {{ opex }}</p>
+            <p v-if="!!offer.public_services" class="offer-table-item-price__item">
                 КУ - {{ publicServices }}
             </p>
         </div>
-        <div v-if="offer.offer.built_to_suit === 1" class="offer-table-item-price__built">
+        <div v-if="offer.built_to_suit === 1" class="offer-table-item-price__built">
             <p>
                 <span>{{ builtToSuitType }}</span>
-                <span v-if="offer.offer.built_to_suit_time">
-                    / {{ offer.offer.built_to_suit_time }} мес.
-                </span>
+                <span v-if="offer.built_to_suit_time"> / {{ offer.built_to_suit_time }} мес. </span>
             </p>
         </div>
     </div>
@@ -52,11 +48,11 @@ const props = defineProps({
     }
 });
 
-const taxForm = computed(() => dealOptions.tax[props.offer.offer.tax_form]);
-const opex = computed(() => dealOptions.servicePrice[props.offer.offer.price_opex]);
-const publicServices = computed(() => dealOptions.servicePrice[props.offer.offer.public_services]);
+const taxForm = computed(() => dealOptions.tax[props.offer.tax_form]);
+const opex = computed(() => dealOptions.servicePrice[props.offer.price_opex]);
+const publicServices = computed(() => dealOptions.servicePrice[props.offer.public_services]);
 const builtToSuitType = computed(() => {
-    return props.offer.offer.deal_type === dealOptions.typeStatement.SALE
+    return props.offer.deal_type === dealOptions.typeStatement.SALE
         ? 'Built To Sale'
         : 'Built To Rent';
 });

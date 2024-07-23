@@ -53,10 +53,6 @@ const props = defineProps({
         type: [Boolean, Number, String],
         default: true
     },
-    prevent: {
-        type: Boolean,
-        default: false
-    },
     disabled: {
         type: [Boolean, Number],
         default: false

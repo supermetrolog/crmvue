@@ -10,14 +10,14 @@
         <AnimationTransition>
             <FormCompanyRequest
                 v-if="requestFormVisible"
-                @closeCompanyForm="requestFormVisible = false"
-                :company_id="createdCompanyId"
+                @close="requestFormVisible = false"
+                :company-id="createdCompanyId"
             />
         </AnimationTransition>
         <AnimationTransition>
             <FormCompanyContact
                 v-if="contactFormVisible"
-                @closeCompanyForm="contactFormVisible = false"
+                @close="contactFormVisible = false"
                 :company_id="createdCompanyId"
             />
         </AnimationTransition>

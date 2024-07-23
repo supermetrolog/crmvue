@@ -24,13 +24,6 @@
                     <HoverActionsButton @click="openPDF" label="Открыть PDF">
                         <i class="fa-solid fa-file-pdf" />
                     </HoverActionsButton>
-                    <HoverActionsButton
-                        @click="toggleDescriptionVisible"
-                        label="Подробнее о блоках"
-                    >
-                        <i v-if="!dropdownIsOpen" class="fa-solid fa-chevron-down"></i>
-                        <i v-else class="fa-solid fa-chevron-up"></i>
-                    </HoverActionsButton>
                 </template>
             </div>
         </Td>
@@ -51,8 +44,7 @@
         </Td>
         <Td class="offer-table-item__price" sort="price">
             <div class="d-flex justify-content-center">
-                <OfferTableItemPrice v-if="offer.offer" :offer="offer" />
-                <p v-else>—</p>
+                <OfferTableRelativeItemPrice :offer="offer" />
             </div>
         </Td>
         <Td class="offer-table-item__company">
@@ -61,28 +53,12 @@
                 :company="offer.company"
                 class="offer-table-item__company-element mb-2"
             />
-            <CompanyContact
-                v-if="contact"
-                class="offer-table-item__company-element"
-                :contact="contact"
-            />
         </Td>
         <Td class="offer-table-item__consultant">
             <div class="d-flex justify-content-center">
-                <div v-if="offer.consultant">
+                <div v-if="offer.agent_id">
                     <div class="d-flex gap-2 align-items-center offer-table-item__avatar">
-                        <Avatar
-                            v-tippy="offer.consultant.userProfile.full_name"
-                            size="40"
-                            :src="offer.consultant.userProfile.avatar"
-                        />
-                        <div
-                            v-if="offer.object?.agent_visited"
-                            v-tippy="'Был на объекте'"
-                            class="offer-table-item__visited"
-                        >
-                            <i class="fa-solid fa-person-walking"></i>
-                        </div>
+                        <AvatarEmpty :contact="offer.agent_name" />
                     </div>
                 </div>
                 <p v-else>—</p>
@@ -123,26 +99,11 @@
             </div>
         </Td>
     </Tr>
-    <tr v-if="dropdownIsOpen && isLoading" class="offer-table-item__loader">
-        <Spinner class="absolute-center" />
-    </tr>
-    <DropDown>
-        <OfferTableItemDropdown
-            v-if="dropdownIsOpen && !isLoading"
-            @toggle-avito="handleAvitoToggle"
-            :offer="offer"
-            :mini-offers="miniOffers"
-        />
-    </DropDown>
 </template>
 
-<script>
-import DropDown from '@/components/common/DropDown.vue';
+<script setup>
 import Td from '@/components/common/Table/Td.vue';
 import Tr from '@/components/common/Table/Tr.vue';
-import api from '@/api/api.js';
-import { MixinOfferItem } from '@/components/Offer/mixins.js';
-import OfferTableItemDropdown from '@/components/Offer/TableItem/OfferTableItemDropdown.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import OfferTableItemArea from '@/components/Offer/TableItem/OfferTableItemArea.vue';
@@ -151,87 +112,57 @@ import CompanyElement from '@/components/Company/CompanyElement.vue';
 import Avatar from '@/components/common/Avatar.vue';
 import OfferTableItemPreview from '@/components/Offer/TableItem/OfferTableItemPreview.vue';
 import OfferTableItemAddress from '@/components/Offer/TableItem/OfferTableItemAddress.vue';
-import OfferTableItemPrice from '@/components/Offer/TableItem/OfferTableItemPrice.vue';
-import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
-import Spinner from '@/components/common/Spinner.vue';
 import TableDateBlock from '@/components/common/Table/TableDateBlock.vue';
-import { useConfirm } from '@/composables/useConfirm.js';
-import dayjs from 'dayjs';
-import { useNotify } from '@/utils/useNotify.js';
+import { computed, inject } from 'vue';
+import { useStore } from 'vuex';
+import { $generatorURL } from '@/plugins/url.js';
+import OfferTableRelativeItemPrice from '@/components/Offer/OfferTableRelativeItemPrice.vue';
+import AvatarEmpty from '@/components/common/AvatarEmpty.vue';
+import { toInitialsFormat } from '@/utils/formatter.js';
 
-export default {
-    name: 'OfferTableItem',
-    components: {
-        TableDateBlock,
-        Spinner,
-        OfferTableItemPrice,
-        OfferTableItemAddress,
-        OfferTableItemPreview,
-        Avatar,
-        CompanyElement,
-        CompanyContact,
-        OfferTableItemArea,
-        DashboardChip,
-        HoverActionsButton,
-        OfferTableItemDropdown,
-        Tr,
-        Td,
-        DropDown
-    },
-    mixins: [MixinOfferItem],
-    props: {
-        loader: {
-            type: Boolean,
-            default: false
-        },
-        sortable: {
-            type: Boolean,
-            default: true
-        }
-    },
-    setup() {
-        const { isLoading } = useDelayedLoader();
-        const { confirm } = useConfirm();
-        const notify = useNotify();
-
-        return { isLoading, confirm, notify };
-    },
-    data() {
-        return {
-            miniOffers: []
-        };
-    },
-    computed: {
-        updatedAt() {
-            return this.offer.last_update * 1000;
-        }
-    },
-    methods: {
-        async searchMiniOffers(withLoading = false) {
-            if (withLoading) this.isLoading = true;
-
-            const response = await api.offers.search({
-                type_id: [1],
-                status: 3, // Нужно чтобы прилетали и активные и пассивные
-                object_id: this.offer.object_id
-            });
-
-            if (response) this.miniOffers = response.data;
-            if (withLoading) this.isLoading = false;
-        },
-        async handleAvitoToggle() {
-            await this.searchMiniOffers();
-        },
-        toggleDescriptionVisible() {
-            if (this.dropdownIsOpen) {
-                this.miniOffers = [];
-                this.dropdownIsOpen = false;
-                return;
-            }
-
-            this.dropdownIsOpen = true;
-            this.searchMiniOffers(true);
-        }
+const emit = defineEmits(['favorite-deleted']);
+const $openMessengerChat = inject('$openMessengerChat');
+const props = defineProps({
+    offer: {
+        type: Object,
+        required: true
     }
+});
+
+const store = useStore();
+
+const updatedAt = computed(() => {
+    return props.offer.last_update * 1000;
+});
+
+const isFavorite = computed(() => store.state.Offers.favoritesOffersCache[props.offer.original_id]);
+const isPassive = computed(() => props.offer.status !== 1);
+
+const toggleFavorite = async () => {
+    if (!isFavorite.value) return await store.dispatch('ADD_FAVORITES_OFFER', props.offer);
+
+    const deleted = await store.dispatch('DELETE_FAVORITES_OFFERS', props.offer);
+    if (deleted) emit('favorite-deleted', props.offer);
+};
+
+const openPDF = () => {
+    window.open(
+        $generatorURL.pdf(
+            {
+                type_id: 2,
+                offer_id: props.offer.original_id,
+                object_id: props.offer.object_id
+            },
+            store.getters.THIS_USER.id
+        ),
+        '_blank'
+    );
+};
+
+const openInChat = () => {
+    $openMessengerChat({
+        companyID: props.offer.company_id,
+        objectID: props.offer.object_id
+    });
 };
 </script>

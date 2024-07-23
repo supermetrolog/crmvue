@@ -1,5 +1,5 @@
 <template>
-    <div class="avatar" :style="{ '--size': size + 'px' }">
+    <div v-tippy="label" class="avatar" :style="{ '--size': size + 'px' }">
         <VLazyImage
             @error="hasError = true"
             class="avatar__image"
@@ -14,11 +14,15 @@ import { shallowRef } from 'vue';
 defineProps({
     src: {
         type: String,
-        default: null
+        default: undefined
     },
     size: {
         type: [String, Number],
         default: 60
+    },
+    label: {
+        type: String,
+        default: undefined
     }
 });
 
