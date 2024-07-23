@@ -1,4 +1,5 @@
 import { alg } from '@/utils/alg.js';
+import dayjs from 'dayjs';
 
 /**
  * Сформировать название компании
@@ -70,4 +71,15 @@ export function toInitialsFormat(full_name) {
 export function toCorrectFormat(value) {
     if (alg.isNumeric(value)) toNumberFormat(value);
     return value;
+}
+
+/**
+ * Преобразование в формат вывода даты
+ *
+ * @param {Date, string} date - дата
+ * @param {string} format - формат вывода даты
+ * @returns {string}
+ */
+export function toDateFormat(date, format = 'D.MM.YY, HH:mm') {
+    return dayjs(date).format(format);
 }

@@ -1,6 +1,7 @@
 import { alg } from '@/utils/alg';
 import { formatterObject } from '@/plugins';
 import { deleteObjectsWithEmptyProperties } from '@/utils/deleteObjectsWithEmptyProperties.js';
+import dayjs from 'dayjs';
 
 const propertiesToTableFormat = (object, props) => {
     return Object.keys(props).reduce((acc, property) => {
@@ -214,6 +215,62 @@ const propertiesToRangeFormat = (object, properties) => {
         return acc;
     }, []);
 };
+
+/**
+ * Создает `label` для сообщений. Имеет свойство `isLabel = true` для отличия от сообщений.
+ * `id` генерирует на основе сообщения.
+ *
+ * @param {Message} message
+ * @returns {MessageLabel}
+ */
+function createLabel(message) {
+    return {
+        isLabel: true,
+        label: message.dayjs_date,
+        id: message.id + '-label'
+    };
+}
+
+/**
+ * @typedef MessagesToSectionsResult
+ * @property {array<Message|MessageLabel>} messages
+ * @property {boolean} hasLeakedMessages
+ */
+
+/**
+ * Анализ сообщений и вставка label'ов между сообщениями из разных дней.
+ * Дополнительно добавление `dayjs_date` в тело сообщения.
+ *
+ * @param {array<Message>} messages - список сырых сообщений
+ * @param {dayjs.Dayjs|null} [lastMessageDate=null]
+ * @param {boolean} [reversed=false] - проверка на соответсвие дате с начала
+ * @returns {MessagesToSectionsResult} - список сообщений + label'ов между ними
+ */
+export function messagesToSections(messages, lastMessageDate = null, reversed = false) {
+    let hasLeakedMessages = false;
+
+    const _messages = messages.reduce((acc, message, index) => {
+        message.dayjs_date = dayjs(message.created_at);
+
+        if (index === 0) {
+            if (lastMessageDate && reversed)
+                hasLeakedMessages = message.dayjs_date.isSame(lastMessageDate, 'day');
+            acc.push(createLabel(message), message);
+            return acc;
+        }
+
+        if (index === messages.length - 1 && lastMessageDate && !reversed)
+            hasLeakedMessages = message.dayjs_date.isSame(lastMessageDate, 'day');
+
+        if (messages[index - 1].dayjs_date.isBefore(message.dayjs_date, 'day'))
+            acc.push(createLabel(message), message);
+        else acc.push(message);
+
+        return acc;
+    }, []);
+
+    return { messages: _messages, hasLeakedMessages };
+}
 
 export const mapper = {
     propertiesToTableFormat,
