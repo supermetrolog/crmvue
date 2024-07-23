@@ -9,12 +9,13 @@
                 v-model="field"
                 @change="onChange($event)"
                 class="form__multiselect"
-                :class="[inputClasses, extraClasses]"
+                :class="[validationClass, extraClasses]"
                 :placeholder="placeholder"
                 :mode="mode"
                 append-to-body
-                :options="options"
+                :options="_options"
                 :close-on-select="closeOnSelect"
+                :clear-on-select="clearOnSelect"
                 :searchable="searchable"
                 :create-tag="createTag"
                 :can-deselect="canDeselect"
@@ -44,181 +45,200 @@
             </Multiselect>
         </label>
         <ValidationMessage v-if="hasValidationError" :message="v.$errors[0].$message" />
-        <div v-if="multiple && field.length" class="form__chips mt-2">
+        <div v-if="multiple && field?.length && localeOptions?.length" class="form__chips mt-2">
             <Chip
-                v-for="(element, index) in field"
-                :key="index"
+                v-for="(element, index) in selectedOptions"
+                :key="multipleProperty ? element.value : element"
                 @click="removeElement(index)"
-                :value="element"
-                :html="multipleProperty ? element[multipleProperty] : options[element]"
+                :value="multipleProperty ? element.value : element"
+                :html="multipleProperty ? element[multipleProperty] : localeOptions[element]"
             />
         </div>
         <slot />
     </div>
 </template>
 
-<script>
+<script setup>
 import Multiselect from '@vueform/multiselect';
-import Mixin from './mixins.js';
 import Chip from '@/components/common/Chip.vue';
 import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
+import { computed, ref, toRef, watch } from 'vue';
+import { useFormControlValidation } from '@/composables/useFormControlValidation.js';
 
-export default {
-    name: 'Select',
-    components: {
-        ValidationMessage,
-        Chip,
-        Multiselect
+const emit = defineEmits(['change']);
+const props = defineProps({
+    v: {
+        type: Object,
+        default: null
     },
-    mixins: [Mixin],
-    props: {
-        modelValue: {
-            default: ''
-        },
-        v: {
-            type: Object,
-            default: null
-        },
-        label: {
-            type: String,
-            default: null
-        },
-        placeholder: {
-            type: String,
-            default: ''
-        },
-        options: {
-            required: true
-        },
-        settings: {
-            type: Object
-        },
-        mode: {
-            type: String,
-            default: 'single'
-        },
-        closeOnSelect: {
-            type: Boolean,
-            default: true
-        },
-        clearOnSelect: {
-            type: Boolean,
-            default: false
-        },
-        searchable: {
-            type: Boolean,
-            default: false
-        },
-        createTag: {
-            type: Boolean,
-            default: false
-        },
-        canDeselect: {
-            type: Boolean,
-            default: false
-        },
-        filterResults: {
-            type: Boolean,
-            default: true
-        },
-        minChars: {
-            type: Number,
-            default: 1
-        },
-        resolveOnLoad: {
-            type: Boolean,
-            default: true
-        },
-        delay: {
-            type: Number,
-            default: 0
-        },
-        extraClasses: {
-            type: String,
-            default: ''
-        },
-        loading: {
-            type: Boolean,
-            default: false
-        },
-        name: {
-            type: String,
-            default: null
-        },
-        hideSelected: {
-            type: Boolean,
-            default: false
-        },
-        groups: {
-            type: Boolean,
-            default: false
-        },
-        multipleLabel: {
-            type: Function,
-            default: n => {
-                return `выбрано => ${n.length}`;
-            }
-        },
-        multiple: {
-            type: Boolean,
-            default: false
-        },
-        multipleProperty: {
-            type: String,
-            default: null
+    label: {
+        type: String,
+        default: null
+    },
+    placeholder: {
+        type: String,
+        default: 'Выберите значение..'
+    },
+    options: {
+        type: [Function, Array, Object],
+        required: true
+    },
+    mode: {
+        type: String,
+        default: 'single'
+    },
+    closeOnSelect: {
+        type: Boolean,
+        default: true
+    },
+    clearOnSelect: {
+        type: Boolean,
+        default: false
+    },
+    searchable: {
+        type: Boolean,
+        default: false
+    },
+    createTag: {
+        type: Boolean,
+        default: false
+    },
+    canDeselect: {
+        type: Boolean,
+        default: false
+    },
+    filterResults: {
+        type: Boolean,
+        default: true
+    },
+    minChars: {
+        type: Number,
+        default: 1
+    },
+    resolveOnLoad: {
+        type: Boolean,
+        default: true
+    },
+    delay: {
+        type: Number,
+        default: 0
+    },
+    extraClasses: {
+        type: String,
+        default: ''
+    },
+    loading: {
+        type: Boolean,
+        default: false
+    },
+    name: {
+        type: String,
+        default: null
+    },
+    hideSelected: {
+        type: Boolean,
+        default: false
+    },
+    groups: {
+        type: Boolean,
+        default: false
+    },
+    multipleLabel: {
+        type: Function,
+        default: n => {
+            return `выбрано => ${n.length}`;
         }
     },
-    data() {
-        return {
-            field: this.modelValue,
-            localeSettings: {
-                canDeselect: false,
-                ...this.settings
-            }
-        };
+    multiple: {
+        type: Boolean,
+        default: false
     },
-    watch: {
-        modelValue() {
-            if (this.name) {
-                this.setData();
-            } else {
-                this.field = this.modelValue;
-            }
-        }
+    multipleProperty: {
+        type: String,
+        default: undefined
     },
-    methods: {
-        onChange(value) {
-            this.field = value;
-
-            this.validate();
-            if (this.name) {
-                let array = [];
-                this.field.forEach(item => {
-                    array.push({ [this.name]: item });
-                });
-                this.$emit('update:modelValue', array);
-                this.$emit('change', array);
-            } else {
-                this.$emit('update:modelValue', this.field);
-                this.$emit('change', this.field);
-            }
-        },
-        setData() {
-            this.field = [];
-            this.modelValue.forEach(item => {
-                this.field.push(item[this.name]);
-            });
-        },
-        removeElement(index) {
-            this.field.splice(index, 1);
-        }
+    transform: {
+        type: Function,
+        default: value => value
     },
-    created() {
-        if (this.name) {
-            this.setData();
-        }
+    disabled: {
+        type: [Boolean, Number],
+        default: false
+    },
+    reactive: {
+        type: [Boolean, Number],
+        default: false
+    },
+    required: {
+        type: Boolean,
+        default: false
     }
-};
-</script>
+});
 
-<style></style>
+const modelValue = defineModel();
+const field = ref(modelValue.value);
+const localeOptions = ref([]);
+
+const { hasValidationError, validate, validationClass } = useFormControlValidation(
+    toRef(props, 'v'),
+    field,
+    { reactive: props.reactive }
+);
+
+const setData = () => {
+    if (modelValue.value?.length)
+        field.value = modelValue.value.map(element => element[props.name]);
+    else field.value = [];
+};
+
+const _options = computed(() => {
+    if (typeof props.options === 'function')
+        return async (...args) => {
+            const response = await props.options(...args);
+            localeOptions.value = response;
+            return response;
+        };
+
+    return props.options;
+});
+
+const selectedOptions = computed(() => {
+    if (props.multipleProperty) {
+        return field.value.map(element => {
+            return localeOptions.value.find(item => item.value == element);
+        });
+    } else return localeOptions;
+});
+
+watch(modelValue, newValue => {
+    if (props.name) setData();
+    else if (field.value !== newValue) field.value = newValue;
+});
+
+const removeElement = index => {
+    field.value.splice(index, 1);
+};
+
+const onChange = value => {
+    if (field.value === null && value === undefined) return;
+
+    if (props.name) {
+        const newModelValue = value.map(element => ({ [props.name]: props.transform(element) }));
+        modelValue.value = newModelValue;
+        emit('change', newModelValue);
+    } else {
+        let finalValue = null;
+
+        if (Array.isArray(value)) finalValue = value.map(props.transform);
+        else finalValue = props.transform(value);
+
+        modelValue.value = finalValue;
+        emit('change', finalValue);
+    }
+
+    validate();
+};
+
+if (props.name) setData();
+if (typeof props.options !== 'function') localeOptions.value = props.options;
+</script>

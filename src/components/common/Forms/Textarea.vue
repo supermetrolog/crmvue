@@ -1,5 +1,5 @@
 <template>
-    <div class="form__control">
+    <div class="form__control" :class="{ 'form__control--disabled': disabled }">
         <label :class="{ required: required }">
             <span v-if="label" class="form__label">{{ label }}</span>
             <textarea

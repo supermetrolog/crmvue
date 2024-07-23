@@ -5,7 +5,7 @@
                 <MultiSelect
                     v-model="form.category"
                     label="Тип оборудования"
-                    class="col-6"
+                    class="col-12 col-md-6"
                     mode="multiple"
                     :close-on-select="false"
                     multiple
@@ -13,8 +13,9 @@
                 />
                 <MultiSelect
                     v-model="form.consultant_id"
+                    placeholder="Выберите консультанта.."
                     label="Консультант"
-                    class="col-6"
+                    class="col-12 col-md-6"
                     mode="multiple"
                     multiple
                     :close-on-select="false"
@@ -26,62 +27,77 @@
                     v-model:first="form.minCount"
                     v-model:second="form.maxCount"
                     label="Количество"
-                    class="col-md-3 col-6"
+                    class="col-md-3 col-12"
                     type="number"
-                    unit="₽"
+                    unit="шт"
                     reactive
                     :validators="formCountValidators"
                 />
-                <CheckboxOptions
+                <RadioOptions
                     v-model="form.availability"
                     label="Наличие"
-                    class="col-3"
+                    class="col-md-3 col-6"
                     :options="availabilityOptions"
+                    unselect
                 />
                 <DoubleInput
                     v-model:first="form.minPrice"
                     v-model:second="form.maxPrice"
                     label="Цена"
-                    class="col-md-3 col-6"
+                    class="col-md-3 col-12"
                     type="number"
                     unit="₽"
                     reactive
                     :validators="formPriceValidators"
                 />
-                <CheckboxOptions
+                <RadioOptions
                     v-model="form.tax"
                     label="Система налогообложения"
-                    class="col-3"
+                    class="col-md-3 col-12"
                     :options="taxOptions"
+                    unselect
                 />
             </FormGroup>
             <FormGroup class="mb-4 align-items-end">
-                <CheckboxOptions
+                <RadioOptions
                     v-model="form.state"
-                    class="col-2"
+                    class="col-md-4 col-12"
                     label="Состояние"
                     :options="usedOptions"
+                    unselect
                 />
-                <CheckboxChip
-                    v-model="form.benefit"
-                    class="align-self-end col-4"
-                    text="Выгодное предложение"
-                    icon="fa-solid fa-sack-dollar"
+                <RadioOptions
+                    v-model="form.status"
+                    label="Статус"
+                    class="col-md-2 col-12"
+                    :options="statusOptions"
+                    unselect
                 />
                 <CheckboxOptions
                     v-model="form.delivery"
                     label="Способы получения"
-                    class="col-6"
+                    class="col-md-6 col-12"
                     :options="deliveryOptions"
+                />
+            </FormGroup>
+            <FormGroup>
+                <Switch
+                    v-model="form.benefit"
+                    :transform="Number"
+                    only-true
+                    class="col-12"
+                    true-title="Выгодное предложение"
+                    false-title="Любое предложение"
                 />
             </FormGroup>
             <FormGroup>
                 <MultiSelect
                     v-model="form.company_id"
                     @change="onChangeCompany"
+                    placeholder="Введите название компании или ID.."
                     extra-classes="long-text"
                     label="Компания"
-                    class="col-6"
+                    class="col-md-6 col-12"
                     :filterResults="false"
                     :min-chars="1"
                     :resolve-on-load="true"
@@ -95,9 +111,10 @@
                 />
                 <MultiSelect
                     v-model="form.contact_id"
+                    placeholder="Выберите контакт из списка.."
                     extra-classes="long-text"
                     label="Контакт"
-                    class="col-6"
+                    class="col-md-6 col-12"
                     :disabled="!form.company_id"
                     :options="contactOptions"
                 />
@@ -111,30 +128,33 @@ import Form from '@/components/common/Forms/Form.vue';
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import Modal from '@/components/common/Modal.vue';
-import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import FormGroup from '@/components/common/Forms/FormGroup.vue';
-import { multiselectAdapter, multiselectAdapterToObject, optionsToList } from '@/utils/index.js';
+import { optionsToList } from '@/utils/index.js';
+import { multiselectAdapter, multiselectAdapterToObject } from '@/utils/adapters.js';
 import { entityOptions } from '@/const/options/options.js';
 import { pricePerFloorValidators } from '@/validators/fields.js';
 import { mapGetters } from 'vuex';
 import api from '@/api/api.js';
 import { max, min } from '@/validators/index.js';
-import CheckboxOptions from '@/components/common/Forms/CheckboxOptions.vue';
 import { WithQueryFiltersMixin } from '@/components/Forms/mixins.js';
+import Switch from '@/components/common/Forms/Switch.vue';
+import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
+import CheckboxOptions from '@/components/common/Forms/CheckboxOptions.vue';
 
 export default {
     name: 'FormEquipmentFilters',
     components: {
         CheckboxOptions,
+        RadioOptions,
+        Switch,
         FormGroup,
-        CheckboxChip,
         Modal,
         MultiSelect,
         DoubleInput,
         Form
     },
     mixins: [WithQueryFiltersMixin],
-    emits: ['changed'],
+    emits: ['changed', 'close'],
     data() {
         return {
             form: {
@@ -143,15 +163,15 @@ export default {
                 deliveryIncPrice: null,
                 delivery: [],
                 benefit: null,
-                tax: [],
-                availability: [],
+                tax: null,
+                availability: null,
                 minCount: null,
                 maxCount: null,
                 company_id: null,
                 contact_id: null,
-                consultant_id: [],
-                state: [],
-                category: []
+                consultant_id: null,
+                state: null,
+                category: null
             },
             contactOptions: {}
         };
@@ -162,6 +182,7 @@ export default {
         deliveryOptions: () => optionsToList(entityOptions.equipment.delivery),
         usedOptions: () => optionsToList(entityOptions.equipment.usedStatus),
         categoryOptions: () => entityOptions.equipment.category,
+        statusOptions: () => entityOptions.equipment.status,
         formPriceValidators() {
             return pricePerFloorValidators(this.form.maxPrice);
         },

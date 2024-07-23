@@ -22,6 +22,7 @@
                 :required="required"
             />
             <span v-if="unit" ref="unit" class="form__unit" v-html="unit"></span>
+            <slot />
         </label>
         <div v-if="searchable" ref="searchableEl" class="searchable">
             <div v-show="searchableIsVisible" class="searchable-container">
@@ -41,7 +42,6 @@
             v-if="hasValidationError && !disabled"
             :message="v.$errors[0].$message"
         />
-        <slot />
     </div>
 </template>
 
@@ -154,7 +154,8 @@ const { hasValidation, hasValidationError, validate, validationClass } = useForm
 const onInput = value => {
     if (value !== modelValue.value) {
         validate();
-        modelValue.value = value;
+        if (props.type === 'number') modelValue.value = Number(value);
+        else modelValue.value = value;
         search(value);
     }
 };

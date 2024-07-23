@@ -37,7 +37,8 @@ const props = defineProps({
     falseTitle: { type: String, default: null },
     label: { type: String, default: null },
     checked: { type: [Number, Boolean], default: false },
-    transform: { type: Function, default: Boolean }
+    transform: { type: Function, default: Boolean },
+    onlyTrue: { type: Boolean, default: false }
 });
 
 const modelValue = defineModel();
@@ -47,6 +48,11 @@ const field = computed({
         return Boolean(modelValue.value);
     },
     set(value) {
+        if (props.onlyTrue && !value) {
+            modelValue.value = null;
+            return null;
+        }
+
         modelValue.value = props.transform(value);
         return value;
     }

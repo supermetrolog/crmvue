@@ -2,21 +2,27 @@
     <Form>
         <FormGroup>
             <div class="col-12">
-                <div class="d-flex align-items-end">
+                <div class="d-flex align-items-end flex-column flex-md-row">
                     <Input
                         v-model="debouncedQuerySearch"
                         label="Поиск"
                         placeholder="ID, адрес, собственник, название, описание"
                         class="w-100"
                     />
-                    <div class="ml-2 d-flex gap-2">
+                    <div class="ml-md-2 mt-2 mt-md-0 d-flex gap-2 w-100">
                         <Button
                             @click="filtersIsVisible = true"
                             :badge="filtersCount > 0 ? filtersCount : false"
+                            class="flex-grow-1 flex-md-grow-0"
                         >
                             Фильтры
                         </Button>
-                        <Button @click="clearQuery" :disabled="!hasDifference" danger>
+                        <Button
+                            @click="clearQuery"
+                            class="flex-grow-1 flex-md-grow-0"
+                            :disabled="!hasDifference"
+                            danger
+                        >
                             Очистить
                         </Button>
                     </div>

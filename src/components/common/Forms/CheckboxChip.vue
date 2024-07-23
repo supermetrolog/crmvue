@@ -85,8 +85,6 @@ const props = defineProps({
     }
 });
 
-const field = ref(modelValue);
-
 const { hasValidationError, validate } = useFormControlValidation(toRef(props, 'v'), modelValue, {
     reactive: props.reactive
 });

@@ -1,11 +1,12 @@
 <template>
-    <div>
-        <span class="form__label">{{ label }}</span>
+    <div class="radio-options">
+        <span v-if="label" class="form__label" :class="{ required: required }">{{ label }}</span>
         <div class="form__row mt-1">
             <RadioChip
-                v-for="(option, key) in options"
-                :key="key"
-                v-model="field"
+                v-for="option in preparedOptions"
+                :key="option.value"
+                v-model="modelValue"
+                @change="validate"
                 :value="option.value"
                 :label="option.label"
                 :unselect="unselect"
@@ -16,57 +17,48 @@
     </div>
 </template>
 
-<script>
-import Mixin from './mixins.js';
+<script setup>
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
+import { computed, toRef } from 'vue';
+import { useFormControlValidation } from '@/composables/useFormControlValidation.js';
 
-export default {
-    name: 'RadioOptions',
-    components: { ValidationMessage, RadioChip },
-    mixins: [Mixin],
-    props: {
-        modelValue: {
-            type: [Array, Number, String],
-            default: 0
-        },
-        label: {
-            type: String,
-            default: null
-        },
-        unselect: {
-            type: Boolean,
-            default: false
-        },
-        options: {
-            type: Array,
-            required: true
-        },
-        v: {
-            type: Object,
-            default: null
-        }
+const modelValue = defineModel({ type: [Number, String, Boolean] });
+
+const props = defineProps({
+    label: {
+        type: String,
+        default: null
     },
-    data() {
-        return {
-            field: this.modelValue
-        };
+    options: {
+        type: [Array, Object],
+        required: true
     },
-    watch: {
-        modelValue() {
-            this.field = this.modelValue;
-        },
-        field() {
-            this.validate();
-            this.$emit('update:modelValue', this.field);
-        }
+    v: {
+        type: Object,
+        default: null
     },
-    methods: {
-        isActive(value) {
-            return this.modelValue == value;
-        }
+    disabled: {
+        type: Boolean,
+        default: false
+    },
+    required: {
+        type: Boolean,
+        default: false
+    },
+    unselect: {
+        type: Boolean,
+        default: false
     }
-};
-</script>
+});
 
-<style></style>
+const preparedOptions = computed(() => {
+    if (Array.isArray(props.options)) return props.options;
+    return Object.keys(props.options).map(key => ({
+        value: Number(key),
+        label: props.options[key]
+    }));
+});
+
+const { hasValidationError, validate } = useFormControlValidation(toRef(props, 'v'), modelValue);
+</script>

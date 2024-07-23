@@ -5,13 +5,11 @@
     </div>
 </template>
 
-<script>
-export default {
-    name: 'FormGroup',
-    props: {
-        subtitle: String
+<script setup>
+defineProps({
+    subtitle: {
+        type: String,
+        default: undefined
     }
-};
+});
 </script>
-
-<style></style>

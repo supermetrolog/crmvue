@@ -24,20 +24,24 @@
             </div>
         </FormGroup>
         <teleport to="body">
-            <Modal
-                v-if="extraIsVisible"
-                @close="extraIsVisible = false"
-                title="Фильтры по сделкам"
-                width="1400"
-            >
+            <Modal v-if="extraIsVisible" @close="extraIsVisible = false" width="1400">
+                <template #header>
+                    <Switch
+                        v-model="form.expressRequest"
+                        :transform="Number"
+                        false-title="Обычный запрос"
+                        true-title="Срочный запрос"
+                        only-true
+                    />
+                </template>
                 <Form>
                     <div class="form-search__extra col-12">
-                        <div class="row">
+                        <FormGroup>
                             <MultiSelect
                                 v-model="form.consultant_id"
                                 :disabled="withoutConsultant"
                                 label="Консультант"
-                                class="col-md-4 col-6 mb-2"
+                                class="col-md-4 col-6"
                                 :options="
                                     async () => {
                                         return await FETCH_CONSULTANT_LIST();
@@ -47,19 +51,8 @@
                             <MultiSelect
                                 v-model="form.dealType"
                                 label="Тип сделки"
-                                class="col-md-2 col-6 mb-2"
+                                class="col-md-4 col-6"
                                 :options="DealTypeList"
-                            />
-                            <Input
-                                v-model="form.maxDistanceFromMKAD"
-                                maska="###"
-                                :v="v$.form.maxDistanceFromMKAD"
-                                placeholder="не более"
-                                label="Удаленность от МКАД"
-                                unit="км"
-                                type="number"
-                                reactive
-                                class="col-md-3 col-6 mb-2"
                             />
                             <Input
                                 v-model="form.maxElectricity"
@@ -69,8 +62,10 @@
                                 label="Электричество"
                                 unit="кВт"
                                 type="number"
-                                class="col-md-3 col-6 mb-2"
+                                class="col-md-4 col-6 mb-2"
                             />
+                        </FormGroup>
+                        <FormGroup>
                             <DoubleInput
                                 v-model:first="form.rangeMinArea"
                                 v-model:second="form.rangeMaxArea"
@@ -110,8 +105,8 @@
                                 reactive
                                 :validators="formDateValidators"
                             />
-                        </div>
-                        <div class="row mt-2">
+                        </FormGroup>
+                        <FormGroup>
                             <div class="col-8">
                                 <div class="row">
                                     <MultiSelect
@@ -119,8 +114,10 @@
                                         @change="changeRegion"
                                         label="Регионы"
                                         class="col-12"
-                                        mode="multiple"
                                         :close-on-select="false"
+                                        mode="multiple"
+                                        multiple
+                                        multiple-property="label"
                                         :options="
                                             async () => {
                                                 await FETCH_REGION_LIST();
@@ -130,75 +127,35 @@
                                             }
                                         "
                                     />
-                                    <div v-if="form.regions?.length" class="col-12">
-                                        <div class="form__row mt-1">
-                                            <Chip
-                                                v-for="(region, index) in checkedRegions"
-                                                :key="index"
-                                                @click="removeRegion"
-                                                :value="index"
-                                                :html="region.label"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div class="col-7 mt-2">
-                                        <span class="form__subtitle">Тип ворот</span>
-                                        <div class="form__row mt-1">
-                                            <CheckboxChip
-                                                v-for="(gateType, index) in GateTypeList"
-                                                :key="index"
-                                                v-model="form.gateTypes"
-                                                :value="index"
-                                                :text="gateType"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div class="col-2 mt-2">
-                                        <span class="form__subtitle">Отапливаемый</span>
-                                        <div class="form__row mt-1">
-                                            <RadioChip
-                                                v-model="form.heated"
-                                                label="Нет"
-                                                :value="0"
-                                                unselect
-                                            />
-                                            <RadioChip
-                                                v-model="form.heated"
-                                                label="Да"
-                                                :value="1"
-                                                unselect
-                                            />
-                                        </div>
-                                    </div>
-                                    <div class="col-3 mt-2">
-                                        <span class="form__subtitle">Статус</span>
-                                        <div class="form__row mt-1">
-                                            <RadioChip
-                                                v-model="form.status"
-                                                label="Пассив"
-                                                :value="0"
-                                                unselect
-                                            />
-                                            <RadioChip
-                                                v-model="form.status"
-                                                label="Актив"
-                                                :value="1"
-                                                unselect
-                                            />
-                                        </div>
-                                    </div>
-                                    <div class="col-7 mt-2">
-                                        <span class="form__subtitle">Классы</span>
-                                        <div class="form__row mt-1">
-                                            <CheckboxChip
-                                                v-for="(classItem, index) in ObjectClassList"
-                                                :key="index"
-                                                v-model="form.objectClasses"
-                                                :value="index"
-                                                :text="classItem"
-                                            />
-                                        </div>
-                                    </div>
+                                    <Input
+                                        v-model="form.maxDistanceFromMKAD"
+                                        maska="###"
+                                        :v="v$.form.maxDistanceFromMKAD"
+                                        placeholder="не более"
+                                        label="Удаленность от МКАД"
+                                        unit="км"
+                                        type="number"
+                                        reactive
+                                        class="col-6"
+                                    />
+                                    <MultiSelect
+                                        v-model="form.status"
+                                        label="Статус"
+                                        class="col-6"
+                                        :options="entityOptions.request.status"
+                                    />
+                                    <CheckboxOptions
+                                        v-model="form.gateTypes"
+                                        :options="GateTypeList"
+                                        class="col-12"
+                                        label="Тип ворот"
+                                    />
+                                    <CheckboxOptions
+                                        v-model="form.objectClasses"
+                                        :options="ObjectClassList"
+                                        class="col-12"
+                                        label="Классы"
+                                    />
                                 </div>
                             </div>
                             <div class="col-4">
@@ -273,95 +230,67 @@
                                     </AnimationTransition>
                                 </div>
                             </div>
-                            <div class="col-12 mt-2">
-                                <span class="form__subtitle">Прочее</span>
-                                <div class="form__row mt-1">
-                                    <CheckboxChip
-                                        v-model="form.water"
-                                        :value="form.water"
-                                        text="Вода"
-                                        multiple
-                                    />
-                                    <CheckboxChip
-                                        v-model="form.gaz"
-                                        :value="form.gaz"
-                                        text="Газ"
-                                        multiple
-                                    />
-                                    <CheckboxChip
-                                        v-model="form.steam"
-                                        :value="form.steam"
-                                        text="Пар"
-                                        multiple
-                                    />
-                                    <CheckboxChip
-                                        v-model="form.sewerage"
-                                        :value="form.sewerage"
-                                        text="Канализация"
-                                        multiple
-                                    />
-                                    <CheckboxChip
-                                        v-model="form.shelving"
-                                        :value="form.shelving"
-                                        text="Стелажи"
-                                        multiple
-                                    />
-                                    <CheckboxChip
-                                        v-model="form.trainLine"
-                                        :value="form.trainLine"
-                                        text="Ж/Д ветка"
-                                        multiple
-                                    />
-                                    <CheckboxChip
-                                        v-model="form.haveCranes"
-                                        :value="form.haveCranes"
-                                        text="Краны"
-                                        multiple
-                                    />
-                                    <CheckboxChip
-                                        v-model="form.firstFloorOnly"
-                                        :value="form.firstFloorOnly"
-                                        text="Только 1 этаж"
-                                        multiple
-                                    />
-                                    <CheckboxChip
-                                        v-model="form.antiDustOnly"
-                                        :value="form.antiDustOnly"
-                                        text="Только антипыль"
-                                        multiple
-                                    />
-                                    <CheckboxChip
-                                        v-model="form.expressRequest"
-                                        :value="form.expressRequest"
-                                        text="Срочный запрос"
-                                        multiple
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                        <FormGroup class="my-2">
-                            <Checkbox
-                                v-model="form.objectTypesGeneral"
-                                class="col-12 large bg"
-                                label="Тип объекта"
-                                :options="ObjectTypesGeneralList"
+                        </FormGroup>
+                        <FormGroup class="mt-2">
+                            <SwitchSlider v-model="form.heated" class="col-6" label="Отопление" />
+                            <SwitchSlider v-model="form.water" class="col-6" label="Вода" />
+                            <SwitchSlider v-model="form.gaz" class="col-6" label="Газ" />
+                            <SwitchSlider v-model="form.steam" class="col-6" label="Пар" />
+                            <SwitchSlider
+                                v-model="form.sewerage"
+                                class="col-6"
+                                label="Канализация"
+                            />
+                            <SwitchSlider v-model="form.shelving" class="col-6" label="Стелажи" />
+                            <SwitchSlider
+                                v-model="form.trainLine"
+                                class="col-6"
+                                label="Ж/Д ветка"
+                            />
+                            <SwitchSlider v-model="form.haveCranes" class="col-6" label="Краны" />
+                        </FormGroup>
+                        <FormGroup class="mt-3">
+                            <Switch
+                                v-model="form.firstFloorOnly"
+                                :transform="Number"
+                                class="col-6"
+                                false-title="Любое количество этажей"
+                                true-title="Только 1 этаж"
+                                only-true
+                            />
+                            <Switch
+                                v-model="form.antiDustOnly"
+                                :transform="Number"
+                                class="col-6"
+                                false-title="Любое покрытие пола"
+                                true-title="Только антипыль"
+                                only-true
                             />
                         </FormGroup>
-                        <FormGroup>
-                            <CheckboxIcons
-                                v-model="form.objectTypes"
-                                class="col pr-1"
-                                :options="ObjectTypeList.warehouse"
+                        <FormGroup class="mt-3">
+                            <ObjectTypePicker
+                                v-model:value="form.objectTypes"
+                                v-model:extra="form.objectTypesGeneral"
+                                :extra-value="1"
+                                label="Склад"
+                                :options="objectPurposesWithSectionsOptions.warehouse"
+                                class="col-md-4"
                             />
-                            <CheckboxIcons
-                                v-model="form.objectTypes"
-                                class="col pr-1"
-                                :options="ObjectTypeList.production"
+                            <ObjectTypePicker
+                                v-model:value="form.objectTypes"
+                                v-model:extra="form.objectTypesGeneral"
+                                :extra-value="2"
+                                label="Производство"
+                                :options="objectPurposesWithSectionsOptions.production"
+                                class="col-md-4"
                             />
-                            <CheckboxIcons
-                                v-model="form.objectTypes"
-                                class="col"
-                                :options="ObjectTypeList.plot"
+                            <ObjectTypePicker
+                                v-model:value="form.objectTypes"
+                                v-model:extra="form.objectTypesGeneral"
+                                :extra-value="3"
+                                label="Участок"
+                                :options="objectPurposesWithSectionsOptions.plot"
+                                class="col-md-4"
                             />
                         </FormGroup>
                     </div>
@@ -376,12 +305,9 @@ import Form from '@/components/common/Forms/Form.vue';
 import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import Input from '@/components/common/Forms/Input.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
-import CheckboxIcons from '@/components/common/Forms/CheckboxIcons.vue';
-import Checkbox from '@/components/common/Forms/Checkbox.vue';
 import { useStore } from 'vuex';
 import Button from '@/components/common/Button.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import Chip from '@/components/common/Chip.vue';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
@@ -397,17 +323,21 @@ import Modal from '@/components/common/Modal.vue';
 import { deleteEmptyFields } from '@/utils/deleteEmptyFields.js';
 import { useSearchForm } from '@/composables/useSearchForm.js';
 import { useRoute, useRouter } from 'vue-router';
-import { computed, onBeforeMount, onMounted, reactive, shallowRef } from 'vue';
+import { computed, onBeforeMount, reactive, shallowRef } from 'vue';
 import {
     DealTypeList,
     DirectionList,
     DistrictList,
     GateTypeList,
     ObjectClassList,
-    ObjectTypeList,
-    ObjectTypesGeneralList,
     OutsideMkad
 } from '@/const/const.js';
+import { objectPurposesWithSectionsOptions } from '@/const/options/object.options.js';
+import ObjectTypePicker from '@/components/common/Forms/ObjectTypePicker.vue';
+import SwitchSlider from '@/components/common/Forms/SwitchSlider.vue';
+import Switch from '@/components/common/Forms/Switch.vue';
+import { entityOptions } from '@/const/options/options.js';
+import CheckboxOptions from '@/components/common/Forms/CheckboxOptions.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -461,16 +391,6 @@ const form = reactive({ ...formTemplate });
 const extraIsVisible = shallowRef(false);
 
 const REGION_LIST = computed(() => store.getters.REGION_LIST);
-const checkedRegions = computed(() => {
-    if (REGION_LIST.value) {
-        return form.regions.map(element => ({
-            id: element,
-            label: REGION_LIST.value.find(region => region.value == element).label
-        }));
-    }
-
-    return [];
-});
 
 const formCeilingHeightValidators = computed(() =>
     ceilingHeightValidators(form.rangeMaxCeilingHeight)
@@ -489,23 +409,20 @@ const FETCH_REGION_LIST = () => store.dispatch('FETCH_REGION_LIST');
 const FETCH_CONSULTANT_LIST = () => store.dispatch('FETCH_CONSULTANT_LIST');
 
 const changeRegion = () => {
-    if (form.regions == null) {
+    if (form.regions === null) {
         form.directions = [];
         form.districts = [];
     }
-    if (!form.regions.some(item => item == 1)) {
+
+    if (!form.regions.some(item => Number(item.region ?? item) === 1)) {
         form.directions = [];
         form.region_neardy = null;
     }
-    if (!form.regions.some(item => item == 6)) {
+
+    if (!form.regions.some(item => Number(item.region ?? item) === 6)) {
         form.districts = [];
         form.outside_mkad = null;
     }
-};
-
-const removeRegion = index => {
-    form.regions.splice(index, 1);
-    changeRegion();
 };
 
 const setQueryFields = async () => {
@@ -523,6 +440,9 @@ const setQueryFields = async () => {
     if (form.objectTypes && !Array.isArray(form.objectTypes)) {
         form.objectTypes = [form.objectTypes];
     }
+    if (form.objectTypesGeneral && !Array.isArray(form.objectTypesGeneral)) {
+        form.objectTypesGeneral = [form.objectTypesGeneral];
+    }
     if (form.regions && !Array.isArray(form.regions)) {
         form.regions = [form.regions];
     }
@@ -534,7 +454,10 @@ const setQueryFields = async () => {
     }
 
     if (form.objectTypes) {
-        form.objectTypes = form.objectTypes.map(element => +element);
+        form.objectTypes = form.objectTypes.map(Number);
+    }
+    if (form.objectTypesGeneral) {
+        form.objectTypesGeneral = form.objectTypesGeneral.map(Number);
     }
 
     let query = { ...form };
@@ -554,10 +477,10 @@ const rules = {
 };
 
 const v$ = useVuelidate(rules, { form });
-const { filtersCount, resetForm } = useSearchForm(form, () => {}, {
-    url: true,
-    setQuery: setQueryFields,
-    template: formTemplate
+const { filtersCount, resetForm } = useSearchForm(form, {
+    template: formTemplate,
+    syncWithQuery: true,
+    setQuery: setQueryFields
 });
 
 onBeforeMount(() => {

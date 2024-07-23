@@ -11,24 +11,28 @@
                 <Loader v-if="isLoading" />
                 <Tab name="Основное">
                     <div class="row mb-2">
-                        <CheckboxChip
-                            v-model="form.noName"
-                            :value="form.noName"
-                            text="Без названия"
-                            class="col-12 mb-2"
-                        />
-                        <Input
-                            v-model.trim="form.nameRu"
-                            :disabled="form.noName"
-                            :v="v$.form.nameRu"
-                            :maska="{
-                                mask: 'Z*',
-                                tokens: { Z: { pattern: /[а-яА-Я0-9 (--)]/ } }
-                            }"
-                            :required="!form.nameEng"
-                            label="Название Ru"
-                            class="col-6"
-                        />
+                        <div class="col-6">
+                            <div class="row">
+                                <Input
+                                    v-model.trim="form.nameRu"
+                                    :disabled="form.noName"
+                                    :v="v$.form.nameRu"
+                                    :maska="{
+                                        mask: 'Z*',
+                                        tokens: { Z: { pattern: /[а-яА-Я0-9 (--)]/ } }
+                                    }"
+                                    :required="!form.nameEng"
+                                    label="Название Ru"
+                                    class="col-12"
+                                />
+                                <Switch
+                                    v-model="form.noName"
+                                    false-title="С названием"
+                                    true-title="Без названия"
+                                    class="col-12"
+                                />
+                            </div>
+                        </div>
                         <Input
                             v-model.trim="form.nameEng"
                             :disabled="form.noName"
@@ -416,6 +420,7 @@ import Submit from '@/components/common/Forms/FormSubmit.vue';
 import { computed, onBeforeMount, reactive, shallowRef } from 'vue';
 import { normalizeDataForCompanyForm } from '@/utils/normalizeForm.js';
 import { validationRulesForCompany } from '@/validators/rules.js';
+import Switch from '@/components/common/Forms/Switch.vue';
 
 const emit = defineEmits(['updated', 'created', 'close']);
 const props = defineProps({

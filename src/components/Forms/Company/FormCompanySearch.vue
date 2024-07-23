@@ -1,23 +1,28 @@
 <template>
-    <Form @submit="onSubmit" class="row">
-        <div class="col-8">
-            <Input
-                v-model="form.all"
-                @keydown.enter="onSubmit"
-                label="Поиск"
-                placeholder="Название компании, ID компании, ФИО брокера, ФИО контакта, телефон"
-            />
-        </div>
-        <div class="col-4 align-self-end">
-            <div class="form-search__actions">
-                <Button @click="extraIsVisible = !extraIsVisible" :badge="filtersCount || false">
-                    Фильтры
-                </Button>
-                <Button @click="resetForm" :disabled="!filtersCount" danger>
-                    Сбросить фильтры
-                </Button>
+    <Form @submit="onSubmit">
+        <FormGroup>
+            <div class="col-12 col-md-8">
+                <Input
+                    v-model="form.all"
+                    @keydown.enter="onSubmit"
+                    label="Поиск"
+                    placeholder="Название компании, ID компании, ФИО брокера, ФИО контакта, телефон"
+                />
             </div>
-        </div>
+            <div class="col-12 col-md-4 align-self-end">
+                <div class="form-search__actions">
+                    <Button
+                        @click="extraIsVisible = !extraIsVisible"
+                        :badge="filtersCount || false"
+                    >
+                        Фильтры
+                    </Button>
+                    <Button @click="resetForm" :disabled="!filtersCount" danger>
+                        Сбросить фильтры
+                    </Button>
+                </div>
+            </div>
+        </FormGroup>
         <Modal v-if="extraIsVisible" @close="extraIsVisible = false" title="Фильтры">
             <FormGroup>
                 <MultiSelect
@@ -34,7 +39,7 @@
                     v-model="form.nameRu"
                     label="Название RU"
                     placeholder="Название (Ru)"
-                    class="col-md-4 col-6"
+                    class="col-md-4 col-12"
                     :v="v$.form.nameRu"
                     reactive
                 />
@@ -42,7 +47,7 @@
                     v-model="form.nameEng"
                     label="Название ENG"
                     placeholder="Название (Eng)"
-                    class="col-md-4 col-6"
+                    class="col-md-4 col-12"
                     :v="v$.form.nameEng"
                     reactive
                 />
@@ -52,45 +57,38 @@
                     v-model="form.activityGroup"
                     title="Группа деятельности"
                     label="Группа дея-ти"
-                    class="col-md-4"
+                    class="col-12 col-md-4"
                     :options="ActivityGroupList"
                 />
                 <MultiSelect
                     v-model="form.activityProfile"
                     title="Профиль деятельности"
                     label="Профиль дея-ти"
-                    class="col-md-4"
+                    class="col-12 col-md-4"
                     :options="ActivityProfileList"
                 />
                 <DoubleInput
                     v-model:first="form.dateStart"
                     v-model:second="form.dateEnd"
                     label="Дата"
-                    class="col-4"
+                    class="col-12 col-md-4"
                     type="date"
                     :validators="formDateValidators"
                 />
             </FormGroup>
             <FormGroup>
-                <div class="col-md-8 col-12">
-                    <span class="form__subtitle">Категория</span>
-                    <div class="form__row mt-1">
-                        <CheckboxChip
-                            v-for="(option, index) in CompanyCategories"
-                            :key="index"
-                            v-model="form.categories"
-                            :value="index"
-                            :text="$formatter.text().ucFirst(option)"
-                        />
-                    </div>
-                </div>
-                <div class="col-md-4 col-12">
-                    <span class="form__subtitle">Статус</span>
-                    <div class="form__row mt-1">
-                        <RadioChip v-model="form.status" label="Актив" :value="1" unselect />
-                        <RadioChip v-model="form.status" label="Пассив" :value="0" unselect />
-                    </div>
-                </div>
+                <CheckboxOptions
+                    v-model="form.categories"
+                    class="col-md-8 col-12"
+                    label="Категория"
+                    :options="CompanyCategories"
+                />
+                <RadioOptions
+                    v-model="form.status"
+                    class="col-md-4 col-12"
+                    label="Статус"
+                    :options="ActivePassive"
+                />>
             </FormGroup>
         </Modal>
     </Form>
@@ -101,10 +99,13 @@ import Form from '@/components/common/Forms/Form.vue';
 import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import Input from '@/components/common/Forms/Input.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
-import { ActivityGroupList, ActivityProfileList, CompanyCategories } from '@/const/const.js';
+import {
+    ActivePassive,
+    ActivityGroupList,
+    ActivityProfileList,
+    CompanyCategories
+} from '@/const/const.js';
 import Button from '@/components/common/Button.vue';
-import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
-import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import { helpers } from '@vuelidate/validators';
 import { maxDate, onlyEnglish, onlyRussian } from '@//validators';
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
@@ -115,6 +116,8 @@ import { useRoute, useRouter } from 'vue-router';
 import { useSearchForm } from '@/composables/useSearchForm.js';
 import { useStore } from 'vuex';
 import useValidate from '@vuelidate/core';
+import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
+import CheckboxOptions from '@/components/common/Forms/CheckboxOptions.vue';
 
 const route = useRoute();
 const router = useRouter();

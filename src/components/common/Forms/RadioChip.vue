@@ -14,6 +14,7 @@
 <script setup>
 import { computed, ref } from 'vue';
 
+const emit = defineEmits(['change']);
 const modelValue = defineModel();
 const props = defineProps({
     required: {
@@ -45,5 +46,6 @@ const isActive = computed(() => modelValue.value == props.value);
 const onChange = () => {
     if (props.unselect && props.value == field.value) modelValue.value = null;
     else modelValue.value = props.value;
+    emit('change');
 };
 </script>

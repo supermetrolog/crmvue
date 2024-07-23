@@ -314,35 +314,29 @@
                             <div class="col-12">
                                 <span class="form__subtitle">Тип объекта</span>
                                 <div class="row mt-2">
-                                    <CheckboxIcons
-                                        v-model="form.purposes"
-                                        @extraSelect="selectObjectType"
-                                        extra-label="склад"
-                                        :no-all-select="true"
+                                    <ObjectTypePicker
+                                        v-model:value="form.purposes"
+                                        v-model:extra="form.object_type"
                                         :extra-value="1"
-                                        :extra-options="form.object_type"
-                                        class="col-md-4 col-12"
-                                        :options="objectTypeListWareHouse"
+                                        label="Склад"
+                                        :options="objectPurposesWithSectionsOptions.warehouse"
+                                        class="col-md-4"
                                     />
-                                    <CheckboxIcons
-                                        v-model="form.purposes"
-                                        @extraSelect="selectObjectType"
-                                        extra-label="производство"
-                                        :no-all-select="true"
+                                    <ObjectTypePicker
+                                        v-model:value="form.purposes"
+                                        v-model:extra="form.object_type"
                                         :extra-value="2"
-                                        :extra-options="form.object_type"
-                                        class="col-md-5 col-12"
-                                        :options="objectTypeListProduction"
+                                        label="Производство"
+                                        :options="objectPurposesWithSectionsOptions.production"
+                                        class="col-md-4"
                                     />
-                                    <CheckboxIcons
-                                        v-model="form.purposes"
-                                        @extraSelect="selectObjectType"
-                                        extra-label="участок"
-                                        :no-all-select="true"
+                                    <ObjectTypePicker
+                                        v-model:value="form.purposes"
+                                        v-model:extra="form.object_type"
                                         :extra-value="3"
-                                        :extra-options="form.object_type"
-                                        class="col-md-3 col-12"
-                                        :options="objectTypeListPlot"
+                                        label="Участок"
+                                        :options="objectPurposesWithSectionsOptions.plot"
+                                        class="col-md-4"
                                     />
                                 </div>
                             </div>
@@ -444,10 +438,20 @@ import useVuelidate from '@vuelidate/core';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import Modal from '@/components/common/Modal.vue';
+import ObjectTypePicker from '@/components/common/Forms/ObjectTypePicker.vue';
+import { objectPurposesWithSectionsOptions } from '@/const/options/object.options.js';
 
 export default {
     name: 'FormOfferSearch',
-    components: { Modal, RadioChip, CheckboxChip, DoubleInput, AnimationTransition, Button },
+    components: {
+        ObjectTypePicker,
+        Modal,
+        RadioChip,
+        CheckboxChip,
+        DoubleInput,
+        AnimationTransition,
+        Button
+    },
     mixins: [FormMixin],
     data() {
         return {
@@ -455,6 +459,9 @@ export default {
         };
     },
     computed: {
+        objectPurposesWithSectionsOptions() {
+            return objectPurposesWithSectionsOptions;
+        },
         formCeilingHeightValidators() {
             return ceilingHeightValidators(this.form.rangeMaxCeilingHeight);
         },
