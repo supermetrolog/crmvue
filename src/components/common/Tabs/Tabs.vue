@@ -16,16 +16,26 @@
 </template>
 <script setup>
 import { Tabs as VTabs } from 'vue3-tabs-component';
-import { nextTick, onMounted, ref } from 'vue';
+import { nextTick, onMounted, provide, ref } from 'vue';
 
 const emit = defineEmits(['changed']);
 const props = defineProps({
     closed: {
         type: Boolean,
         default: false
+    },
+    alwaysRender: {
+        type: Boolean,
+        default: false
+    },
+    withTransition: {
+        type: Boolean,
+        default: false
     }
 });
 
+provide('always-render', props.alwaysRender);
+provide('with-transition', props.withTransition);
 const tabs = ref(null);
 
 const selectTab = hash => {
