@@ -10,7 +10,7 @@
                         <i class="fa-solid fa-pen" />
                     </HoverActionsButton>
                 </div>
-                <div class="company-box-main__info ml-auto">
+                <div class="company-box-main__info ml-md-auto">
                     <DashboardChip
                         v-for="(category, key) in categories"
                         :key="key"

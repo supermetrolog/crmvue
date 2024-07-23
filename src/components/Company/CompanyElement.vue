@@ -1,7 +1,8 @@
 <template>
     <div class="company-element">
         <router-link class="company-element__name" :to="'/companies/' + company.id" target="_blank">
-            {{ company.full_name }}
+            <span v-if="!company.noName">{{ company.full_name }}</span>
+            <span v-else>Компания #{{ company.id }}</span>
         </router-link>
         <div v-if="company.rating" class="company-element__rating">
             <Rating :rating="company.rating" />
@@ -19,31 +20,25 @@
         </p>
     </div>
 </template>
-<script>
+<script setup>
 import Rating from '@/components/common/Rating.vue';
 import plural from 'plural-ru';
 import { entityOptions } from '@/const/options/options.js';
+import { computed } from 'vue';
 
-export default {
-    name: 'CompanyElement',
-    components: { Rating },
-    props: {
-        company: {
-            type: Object,
-            required: true
-        }
-    },
-    computed: {
-        contactsLength() {
-            if (!this.company.contacts?.length) return 0;
+const props = defineProps({
+    company: {
+        type: Object,
+        required: true
+    }
+});
 
-            return this.company.contacts.reduce(
-                (acc, contact) =>
-                    (acc += contact.type === entityOptions.contact.typeStatement.PERSONAL),
-                0
-            );
-        }
-    },
-    methods: { plural }
-};
+const contactsLength = computed(() => {
+    if (!props.company.contacts?.length) return 0;
+
+    return props.company.contacts.reduce(
+        (acc, contact) => acc + contact.type === entityOptions.contact.typeStatement.PERSONAL,
+        0
+    );
+});
 </script>

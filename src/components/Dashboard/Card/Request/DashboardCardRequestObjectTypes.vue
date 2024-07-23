@@ -18,9 +18,9 @@
             <div class="col-4">
                 <div class="d-flex flex-wrap gap-1">
                     <DashboardChip
-                        v-for="(element, key) in objectTypes.production"
-                        :key="key"
-                        v-tippy="element.name"
+                        v-for="element in objectTypes.production"
+                        :key="element.id"
+                        v-tippy="element.value.name"
                         class="dashboard-card-view__purpose"
                         :class="
                             element.included
@@ -28,16 +28,16 @@
                                 : 'dashboard-bg-gray-l'
                         "
                     >
-                        <i class="icon" :class="element.icon" />
+                        <i class="icon" :class="element.value.icon" />
                     </DashboardChip>
                 </div>
             </div>
             <div class="col-4">
                 <div class="d-flex flex-wrap gap-1">
                     <DashboardChip
-                        v-for="(element, key) in objectTypes.warehouse"
-                        :key="key"
-                        v-tippy="element.name"
+                        v-for="element in objectTypes.warehouse"
+                        :key="element.id"
+                        v-tippy="element.value.name"
                         class="dashboard-card-view__purpose"
                         :class="
                             element.included
@@ -45,16 +45,16 @@
                                 : 'dashboard-bg-gray-l'
                         "
                     >
-                        <i class="icon" :class="element.icon" />
+                        <i class="icon" :class="element.value.icon" />
                     </DashboardChip>
                 </div>
             </div>
             <div class="col-4">
                 <div class="d-flex flex-wrap gap-1">
                     <DashboardChip
-                        v-for="(element, key) in objectTypes.plot"
-                        :key="key"
-                        v-tippy="element.name"
+                        v-for="element in objectTypes.plot"
+                        :key="element.id"
+                        v-tippy="element.value.name"
                         class="dashboard-card-view__purpose"
                         :class="
                             element.included
@@ -62,7 +62,7 @@
                                 : 'dashboard-bg-gray-l'
                         "
                     >
-                        <i class="icon" :class="element.icon" />
+                        <i class="icon" :class="element.value.icon" />
                     </DashboardChip>
                 </div>
             </div>
@@ -70,47 +70,47 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import { entityOptions } from '@/const/options/options.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { cloneObject } from '@/utils/index.js';
+import { computed } from 'vue';
 
-export default {
-    name: 'DashboardCardRequestObjectTypes',
-    components: {
-        DashboardChip
-    },
-    props: {
-        request: {
-            type: Object,
-            required: true
-        }
-    },
-    computed: {
-        objectTypesGeneral() {
-            const types = cloneObject(entityOptions.object.typeGeneralList);
-
-            this.request.objectTypesGeneral.forEach(
-                element => (types[element.type].included = true)
-            );
-
-            return types;
-        },
-        objectTypes() {
-            const types = cloneObject(entityOptions.object.purposesWithSections);
-
-            this.request.objectTypes.forEach(element => {
-                if (element.object_type < 12) {
-                    types.warehouse[element.object_type].included = true;
-                } else if (element.object_type < 25)
-                    types.production[element.object_type - 12].included = true;
-                else {
-                    types.plot[element.object_type - 25].included = true;
-                }
-            });
-
-            return types;
-        }
+const props = defineProps({
+    request: {
+        type: Object,
+        required: true
     }
-};
+});
+
+const objectTypesGeneral = computed(() => {
+    const types = cloneObject(entityOptions.object.typeGeneralList);
+
+    props.request.objectTypesGeneral.forEach(element => (types[element.type].included = true));
+
+    return types;
+});
+
+const objectTypes = computed(() => {
+    const _objectTypes = props.request.objectTypes.reduce((acc, element) => {
+        acc[element.object_type] = true;
+        return acc;
+    }, {});
+
+    return {
+        warehouse: Object.entries(entityOptions.object.purposesWithSections.warehouse).map(
+            ([key, value]) => {
+                return { id: key, included: Boolean(_objectTypes[key]), value };
+            }
+        ),
+        production: Object.entries(entityOptions.object.purposesWithSections.production).map(
+            ([key, value]) => {
+                return { id: key, included: Boolean(_objectTypes[key]), value };
+            }
+        ),
+        plot: Object.entries(entityOptions.object.purposesWithSections.plot).map(([key, value]) => {
+            return { id: key, included: Boolean(_objectTypes[key]), value };
+        })
+    };
+});
 </script>
