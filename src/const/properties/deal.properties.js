@@ -421,6 +421,77 @@ const characteristicsWithSectionsForLand = [
     }
 ];
 
+const mainParameters = {
+    range: {
+        ceiling_height: {
+            name: 'Высота потолка',
+            unitType: unitTypes.METERS,
+            icon: 'fa-solid fa-arrows-down-to-line fa-rotate-180'
+        },
+        temperature: {
+            name: 'Температурный режим',
+            unitType: unitTypes.CELCIUS,
+            icon: 'fa-solid fa-temperature-three-quarters'
+        },
+        load_floor: {
+            name: 'Нагрузка на пол',
+            unitType: unitTypes.TON_PER_SQUARE_METER,
+            icon: 'fa-solid fa-weight-hanging'
+        },
+        load_mezzanine: {
+            name: 'Нагрузка на мезонин',
+            unitType: unitTypes.TON_PER_SQUARE_METER,
+            icon: 'fa-solid fa-weight-scale'
+        },
+        pallet_place: {
+            name: 'Количество паллет-мест',
+            unitType: unitTypes.PALLET_PLACE,
+            icon: 'fa-solid fa-pallet'
+        }
+    },
+    types: {
+        heating_exists: {
+            name: 'Отопление',
+            icon: 'fa fa-thermometer-full'
+        },
+        gas_exists: {
+            name: 'Газ',
+            icon: 'fas fa-fire'
+        },
+        floor_types: {
+            name: 'Тип пола',
+            icon: 'fas fa-arrow-down',
+            multiple: true,
+            types: entityOptions.floor.floorTypes
+        },
+        floor_types_land: {
+            name: 'Тип покрытия',
+            icon: 'fas fa-arrow-down',
+            multiple: true,
+            types: entityOptions.floor.floorTypes
+        },
+        safe_type: {
+            name: 'Тип хранения',
+            icon: 'fa-solid fa-boxes-stacked',
+            multiple: true,
+            types: entityOptions.part.safe
+        },
+        rack_types: {
+            name: 'Стеллажи',
+            icon: 'fa-solid fa-box-archive',
+            multiple: true,
+            types: entityOptions.part.rack
+        }
+    },
+    count: {
+        power: {
+            name: 'Электричество',
+            icon: 'fas fa-bolt',
+            unitType: unitTypes.KILOWATT
+        }
+    }
+};
+
 const parameters = {
     range: {
         ceiling_height: {
@@ -628,5 +699,6 @@ export const dealProperties = {
     characteristicsWithSections,
     characteristicsWithSectionsForLand,
     parameters,
+    mainParameters,
     area
 };
