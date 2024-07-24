@@ -346,7 +346,7 @@ const Call = {
             return state.calls;
         },
         CALLS_COUNT(state) {
-            return state.callsCount;
+            return Number(state.callsCount);
         },
         CALLS_PAGINATION(state) {
             return state.callsPagination;

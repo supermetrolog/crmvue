@@ -6,15 +6,15 @@
                     <h1>Дашборд</h1>
                 </div>
                 <div class="col-xl-9">
-                    <DashboardStatsTasksCount :user="user.id" class="mb-3" />
-                    <DashboardStatsEvents :user="user.id" class="mb-3" />
-                    <DashboardStatsRequests :user="user.id" />
+                    <DashboardStatsTasksCount :user="user?.id" class="mb-3" />
+                    <DashboardStatsEvents :user="user?.id" class="mb-3" />
+                    <DashboardStatsRequests :user="user?.id" />
                 </div>
                 <div class="col-xl-3">
                     <DashboardCard title="Лог активности" class="mb-3">
                         <InProgress />
                     </DashboardCard>
-                    <DashboardStatsMessages :user="user.chat_member_id" />
+                    <DashboardStatsMessages :user="user?.chat_member_id" />
                 </div>
             </div>
         </div>

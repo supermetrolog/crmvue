@@ -68,7 +68,7 @@ export default {
             const deleted = await api.task.delete(task.id);
             if (deleted) {
                 task.deleted_at = new Date();
-                this.$toast('Задача успешно удалена');
+                this.$notify('Задача успешно удалена');
             }
         },
         async editTask(oldTask) {
@@ -79,7 +79,7 @@ export default {
 
             if (task) {
                 Object.assign(oldTask, task);
-                this.$toast('Задача успешно изменена');
+                this.$notify('Задача успешно изменена');
             }
         },
         async toggleStatus(task, status) {
@@ -87,7 +87,7 @@ export default {
 
             if (task) {
                 Object.assign(task, newTask);
-                this.$toast('Статус задачи успешно изменен');
+                this.$notify('Статус задачи успешно изменен');
             }
         },
         userCanDrag(task) {

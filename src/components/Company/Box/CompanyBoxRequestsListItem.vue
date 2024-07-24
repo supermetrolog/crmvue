@@ -202,9 +202,9 @@ import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
 import CompanyBoxRequestsListItemParameter from '@/components/Company/Box/CompanyBoxRequestsListItemParameter.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
-import { entityOptions } from '@/const/options/options.js';
 import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
 import AccordionSimpleTriggerButton from '@/components/common/Accordion/AccordionSimpleTriggerButton.vue';
+import { objectPurposesOptions } from '@/const/options/object.options.js';
 
 export default {
     name: 'CompanyBoxRequestsListItem',
@@ -304,8 +304,7 @@ export default {
         },
         objectTypes() {
             return this.request.objectTypes.map(({ object_type }) => {
-                console.log(object_type);
-                return entityOptions.object.purposes[object_type];
+                return objectPurposesOptions[object_type];
             });
         },
         unknownMovingOption() {

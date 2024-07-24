@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <a :href="$url.offerByObject(offer)">
         <p v-if="offer.region_name" class="font-weight-bold">
             {{ offer.region_name }}
         </p>
@@ -21,17 +21,14 @@
         <p v-if="offer.address">
             {{ offer.address }}
         </p>
-    </div>
+    </a>
 </template>
 
-<script>
-export default {
-    name: 'OfferTableItemAddress',
-    props: {
-        offer: {
-            type: Object,
-            required: true
-        }
+<script setup>
+defineProps({
+    offer: {
+        type: Object,
+        required: true
     }
-};
+});
 </script>

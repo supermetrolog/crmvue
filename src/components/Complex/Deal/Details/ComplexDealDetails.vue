@@ -4,19 +4,12 @@
         <h2 v-tippy="'Система налогооблажения'" class="additional-details__title">
             {{ taxForm }}
         </h2>
-        <div v-if="hasServices" class="additional-details__services">
-            <ComplexDealDetailsService
-                v-if="!!priceOpex.status && priceOpex.status !== serviceStatement.UNKNOWN"
-                title="Эксплуатация"
-                title-alt="Эксплуатационные расходы включены в стоимость"
-                :service="priceOpex"
-            />
-            <ComplexDealDetailsService
-                v-if="!!priceService.status && priceService.status !== serviceStatement.UNKNOWN"
-                title="Коммунальные услуги"
-                title-alt="Коммунальные услуги включены в стоимость"
-                :service="priceService"
-            />
+        <div class="additional-details__specials">
+            <p class="additional-details__category">Дополнительные расходы</p>
+            <ul class="additional-details__list">
+                <ComplexDealDetailsService title="OPEX" :service="priceOpex" />
+                <ComplexDealDetailsService title="Ком. услуги" :service="priceService" />
+            </ul>
         </div>
         <ComplexDealDetailsSpecialTerms v-if="hasSpecialTerms" :terms="specialTerms" />
         <ComplexDealDetailsBusiness
@@ -27,121 +20,118 @@
     </div>
 </template>
 
-<script>
-import { unitTypes } from '@/const/unitTypes.js';
+<script setup>
 import ComplexDealDetailsBusiness from '@/components/Complex/Deal/Details/ComplexDealDetailsBusiness.vue';
 import { entityProperties } from '@/const/properties/properties';
 import { entityOptions } from '@/const/options/options';
 import ComplexDealDetailsService from '@/components/Complex/Deal/Details/ComplexDealDetailsService.vue';
 import ComplexDealDetailsSpecialTerms from '@/components/Complex/Deal/Details/ComplexDealDetailsSpecialTerms.vue';
+import { computed } from 'vue';
+import { toNumberOrRangeFormat } from '@/utils/formatter.js';
+import { dealOptions } from '@/const/options/deal.options.js';
 
-export default {
-    name: 'ComplexDealDetails',
-    components: {
-        ComplexDealDetailsSpecialTerms,
-        ComplexDealDetailsService,
-        ComplexDealDetailsBusiness
-    },
-    props: {
-        deal: {
-            type: Object,
-            required: true
+const props = defineProps({
+    deal: {
+        type: Object,
+        required: true
+    }
+});
+
+const taxForm = computed(() => {
+    if (props.deal.tax_form) return entityOptions.deal.tax[props.deal.tax_form];
+    return null;
+});
+const hasBusiness = computed(
+    () => props.deal.rent_business === entityOptions.defaults.booleanStatement.TRUE
+);
+const businessProperties = computed(() => {
+    return Object.keys(entityProperties.deal.rentBusiness).map(property => ({
+        ...entityProperties.deal.rentBusiness[property],
+        value: props.deal[property]
+    }));
+});
+const hasSpecialTerms = computed(() => {
+    return (
+        props.deal.deal_type !== entityOptions.deal.typeStatement.SALE &&
+        (props.deal.holidays || props.deal.deposit || props.deal.pledge)
+    );
+});
+
+const specialTerms = computed(() => {
+    return [
+        {
+            label: 'Каникулы',
+            property: props.deal.holidays,
+            value: props.deal.holidays_value_min
+                ? toNumberOrRangeFormat(
+                      props.deal.holidays_value_min,
+                      props.deal.holidays_value_max
+                  )
+                : null
+        },
+        {
+            label: 'Депозит',
+            property: props.deal.deposit,
+            value: props.deal.deposit_value
+        },
+        {
+            label: 'Залоговый платеж',
+            property: props.deal.pledge
         }
-    },
-    computed: {
-        unitTypes() {
-            return unitTypes;
-        },
-        serviceStatement() {
-            return entityOptions.deal.priceServiceStatement;
-        },
-        taxForm() {
-            if (this.deal.tax_form) return entityOptions.deal.tax[this.deal.tax_form];
-            return null;
-        },
-        hasBusiness() {
-            return this.deal.rent_business === entityOptions.defaults.booleanStatement.TRUE;
-        },
-        businessProperties() {
-            return Object.keys(entityProperties.deal.rentBusiness).map(property => ({
-                ...entityProperties.deal.rentBusiness[property],
-                value: this.deal[property]
-            }));
-        },
-        hasServices() {
-            return (
-                (!!this.deal.price_opex &&
-                    this.deal.price_opex !== this.serviceStatement.UNKNOWN) ||
-                (!!this.deal.public_services &&
-                    this.deal.public_services !== this.serviceStatement.UNKNOWN)
-            );
-        },
-        hasSpecialTerms() {
-            return (
-                this.deal.deal_type !== entityOptions.deal.typeStatement.SALE &&
-                (this.deal.holidays || this.deal.deposit || this.deal.pledge)
-            );
-        },
-        specialTerms() {
-            return [
-                {
-                    label: 'Каникулы',
-                    property: this.deal.holidays,
-                    value: this.deal.holidays_value_min
-                        ? this.$formatter.numberOrRangeNew(
-                              this.deal.holidays_value_min,
-                              this.deal.holidays_value_max
-                          )
-                        : null
-                },
-                {
-                    label: 'Депозит',
-                    property: this.deal.deposit,
-                    value: this.deal.deposit_value
-                },
-                {
-                    label: 'Залоговый платеж',
-                    property: this.deal.pledge
-                }
-            ].filter(element => element.property);
-        },
-        priceOpex() {
-            const priceObject = {
-                status: this.deal.price_opex,
-                label: entityOptions.deal.servicePrice[this.deal.price_opex] || '-',
-                name: 'Цена OPEX',
-                value: null
+    ].filter(element => element.property);
+});
+
+const priceOpex = computed(() => {
+    switch (props.deal.price_opex) {
+        case dealOptions.priceServiceStatement.INCLUDED: {
+            return { label: 'Включено в стоимость' };
+        }
+        case dealOptions.priceServiceStatement.PARTLY: {
+            return {
+                items: props.deal.inc_opex.map(option => ({
+                    ...dealOptions.opex[option]
+                }))
             };
-
-            if (this.deal.price_opex === entityOptions.deal.priceServiceStatement.NOT_INCLUDED)
-                priceObject.value = this.deal.price_opex_value;
-            else if (this.deal.price_opex === entityOptions.deal.priceServiceStatement.PARTLY)
-                priceObject.items = this.deal.inc_opex.map(option => ({
-                    ...entityOptions.deal.opex[option]
-                }));
-
-            return priceObject;
-        },
-        priceService() {
-            const priceObject = {
-                status: this.deal.public_services,
-                label: entityOptions.deal.servicePrice[this.deal.public_services] || '-',
-                name: 'Ком. платеж',
-                value: null
-            };
-
-            if (this.deal.public_services === entityOptions.deal.priceServiceStatement.NOT_INCLUDED)
-                priceObject.value = this.deal.price_public_services;
-            else if (this.deal.public_services === entityOptions.deal.priceServiceStatement.PARTLY)
-                priceObject.items = this.deal.inc_services.map(option => ({
-                    ...entityOptions.deal.publicServices[option]
-                }));
-
-            return priceObject;
-        },
-        isSaleCompany() {
-            return this.deal.sale_company === entityOptions.deal.saleCompanyStatement.READY_TO_SALE;
+        }
+        case dealOptions.priceServiceStatement.NOT_INCLUDED: {
+            return { value: props.deal.price_opex_value };
+        }
+        case dealOptions.priceServiceStatement.UNKNOWN: {
+            return { label: 'Неизвестно' };
+        }
+        default: {
+            return { label: 'Не заполнено' };
         }
     }
-};
+});
+
+const priceService = computed(() => {
+    switch (props.deal.public_services) {
+        case dealOptions.priceServiceStatement.INCLUDED: {
+            return { label: 'Включено в стоимость' };
+        }
+        case dealOptions.priceServiceStatement.PARTLY: {
+            return {
+                items: props.deal.inc_opex.map(option => ({
+                    ...dealOptions.publicServices[option]
+                }))
+            };
+        }
+        case dealOptions.priceServiceStatement.NOT_INCLUDED: {
+            return { value: props.deal.price_public_services };
+        }
+        case dealOptions.priceServiceStatement.UNKNOWN: {
+            return { label: 'Неизвестно' };
+        }
+        default: {
+            return { label: 'Не заполнено' };
+        }
+    }
+});
+
+console.log(props.deal);
+
+const isSaleCompany = computed(
+    () => props.deal.sale_company === entityOptions.deal.saleCompanyStatement.READY_TO_SALE
+);
 </script>

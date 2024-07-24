@@ -21,7 +21,7 @@
                     :current="currentContact"
                     dropdown-class="messenger-chat-form-recipient-dropdown"
                 />
-                <MessengerChatFormCategories @change="currentTag = $event" :current="currentTag" />
+                <MessengerChatFormCategories v-model="currentTag" />
             </div>
             <Form @submit.prevent class="messenger-chat-form__field" method="post">
                 <Button @click="attachFile" class="messenger-chat-form__button" warning icon>

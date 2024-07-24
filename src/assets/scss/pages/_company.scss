@@ -44,6 +44,10 @@
             grid-area: type;
             border-bottom: $request_thin_border;
             @include mixins.flex-box($a: center, $j: space-between);
+            @include mixins.media('max', 'xxl') {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
         }
     }
 
@@ -104,7 +108,7 @@
     overflow-y: auto;
     padding: 0 5px;
     margin: 0 -5px;
-    max-height: calc(100% - 10px);
+    max-height: 500px;
 }
 
 .company-request-item-alt {
@@ -129,11 +133,13 @@
             flex-basis: 33%;
         }
 
-        max-height: 750px;
-        min-height: 450px;
+        @include mixins.media('min', 'md') {
+            max-height: 1150px;
+            min-height: 550px;
+        }
 
         .company-box-layout__content {
-            max-height: 700px;
+            max-height: 1100px;
             height: 100%;
         }
     }

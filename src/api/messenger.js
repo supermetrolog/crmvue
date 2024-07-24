@@ -1,8 +1,7 @@
 import api from '@//api/api';
-import quizzes from '@//test-data/quizzes.json';
 import axios from 'axios';
-import SuccessHandler from '@/api/success/index.js';
-import ErrorHandle from '@/api/errors/index.js';
+import { SuccessHandler } from '@/api/helpers/successHandler.js';
+import { setRequestError } from '@/api/helpers/setRequestError.js';
 
 export default {
     async getChats(options) {
@@ -17,7 +16,7 @@ export default {
                 pagination: SuccessHandler.getPaginationData(response)
             };
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
@@ -31,7 +30,7 @@ export default {
             const response = await axios.get(url);
             return response.data ?? null;
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
@@ -43,7 +42,7 @@ export default {
             const response = await axios.get(url);
             return response.data?.length ? response.data[0] : null;
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
@@ -57,7 +56,7 @@ export default {
             const response = await axios.get(url);
             return SuccessHandler.getData(response);
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
@@ -72,7 +71,7 @@ export default {
                 pagination: SuccessHandler.getPaginationData(response)
             };
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
@@ -84,7 +83,7 @@ export default {
             const response = await axios.post(url, payload);
             return response.status === 200;
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
@@ -96,7 +95,7 @@ export default {
             const response = await axios.post(url, payload);
             return response.status === 200;
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
@@ -107,7 +106,7 @@ export default {
             const response = await axios.get(url);
             return response.data ?? null;
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
@@ -119,7 +118,7 @@ export default {
             const response = await axios.postForm(url, formData);
             return response.data;
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
@@ -130,7 +129,7 @@ export default {
             const response = await axios.patchForm(url, message);
             return response.data;
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
@@ -146,12 +145,9 @@ export default {
                 pagination: SuccessHandler.getPaginationData(response)
             };
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
-    },
-    async getQuizzes() {
-        return quizzes;
     },
     async getUserChatMembers() {
         try {
@@ -169,7 +165,7 @@ export default {
 
             return chatMembers;
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
@@ -179,7 +175,7 @@ export default {
 
             return response?.data?.length ? response.data[0].id : null;
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
@@ -192,7 +188,7 @@ export default {
 
             return { tasks: response[0] - response[1] };
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
@@ -201,7 +197,7 @@ export default {
             const response = await axios.post('/chat-member-messages/view-message/' + messageID);
             return response.status === 200;
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     }

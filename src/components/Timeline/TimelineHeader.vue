@@ -8,20 +8,36 @@
                     v-for="timelineItem in timelineList"
                     :key="timelineItem.id"
                     @click="changeTimeline(timelineItem.consultant_id)"
-                    :info="!isViewedUser(timelineItem.consultant.id)"
+                    class="timeline-page-header__consultant"
+                    info
+                    :class="{ active: isViewedUser(timelineItem.consultant.id) }"
                 >
                     {{ timelineItem.consultant.userProfile.short_name }}
                 </Button>
             </div>
             <div class="timeline-page-header__functions d-flex gap-2 ml-2">
-                <Button @click="disableFormIsVisible = true" danger :disabled="disabled">
+                <Button
+                    @click="disableFormIsVisible = true"
+                    info
+                    class="dashboard-bg-danger-l timeline-page-header__function"
+                    :disabled="disabled"
+                >
                     Завершить
                 </Button>
-                <Button @click="dealFormIsVisible = true" :disabled="disabled">
+                <Button
+                    @click="dealFormIsVisible = true"
+                    info
+                    class="dashboard-bg-success-l timeline-page-header__function"
+                    :disabled="disabled"
+                >
                     Создать сделку
                 </Button>
-                <Button warning :disabled="true">Передать</Button>
-                <Button warning :disabled="true">Отказатся</Button>
+                <Button info class="timeline-page-header__function" :disabled="true">
+                    Передать
+                </Button>
+                <Button info class="timeline-page-header__function" :disabled="true">
+                    Отказатся
+                </Button>
             </div>
         </div>
         <div class="mt-2 d-flex gap-3">

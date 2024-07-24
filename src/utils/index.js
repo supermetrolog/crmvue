@@ -175,28 +175,6 @@ export const optionsToList = options => {
     return Object.keys(options).map(key => ({ value: Number(key), label: options[key] }));
 };
 
-export const multiselectAdapter = (options, value, label) => {
-    if (typeof label === 'string')
-        return options.map(item => ({ value: item[value], label: item[label] }));
-    else if (typeof label === 'function') {
-        return options.map(item => ({ value: item[value], label: label(item) }));
-    }
-};
-
-export const multiselectAdapterToObject = (options, value, label) => {
-    if (typeof label === 'string')
-        return options.reduce((arr, item) => {
-            arr[item[value]] = item[label];
-            return arr;
-        }, {});
-    else if (typeof label === 'function') {
-        return options.reduce((arr, item) => {
-            arr[item[value]] = label(item);
-            return arr;
-        }, {});
-    }
-};
-
 export const assignQueryToForm = (query, formObject) => {
     Object.keys(query).forEach(key => {
         if (key in formObject) {
@@ -208,3 +186,18 @@ export const assignQueryToForm = (query, formObject) => {
         }
     });
 };
+
+/**
+ * Выборка только нужных свойств перед отправкой запроса
+ *
+ * @param {object} form - форма
+ * @param {array} template - список свойств
+ * @returns {object}
+ */
+export function formToPayload(form, template) {
+    return template.reduce((acc, key) => {
+        if (form[key] !== undefined) acc[key] = form[key];
+
+        return acc;
+    }, {});
+}

@@ -1,12 +1,12 @@
 <template>
-    <div class="messenger-chat-settings" :class="{ active: opened }">
+    <div class="messenger-chat-settings" :class="{ active: isOpened }">
         <div class="messenger-chat-settings__wrapper">
             <div class="messenger-chat-settings__header">
                 <p>Файлы, опросы и прочее</p>
                 <i @click="toggle" class="fa-regular fa-circle-xmark"></i>
             </div>
             <Spinner v-if="isLoading" class="absolute-center" />
-            <div v-else-if="opened" class="messenger-chat-settings__body">
+            <div v-else-if="isOpened" class="messenger-chat-settings__body">
                 <div
                     v-if="currentDialog.model_type === 'object'"
                     class="messenger-chat-settings__preview"
@@ -37,7 +37,7 @@
                     </MessengerChatSettingsLink>
                 </div>
                 <div class="messenger-chat-settings__footer">
-                    <MessengerButton color="danger" class="w-100">
+                    <MessengerButton disabled color="danger" class="w-100">
                         Отправить чат в архив
                     </MessengerButton>
                 </div>
@@ -46,46 +46,37 @@
         <MessengerChatSettingsPanel v-model="currentPanel" />
     </div>
 </template>
-<script>
-import { mapState } from 'vuex';
+<script setup>
+import { useStore } from 'vuex';
 import Spinner from '@/components/common/Spinner.vue';
-import { LoaderMixin } from '@/components/Messenger/loader.mixin';
 import MessengerChatSettingsLink from '@/components/Messenger/Chat/Settings/MessengerChatSettingsLink.vue';
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';
 import MessengerChatSettingsPanel from '@/components/Messenger/Chat/Settings/MessengerChatSettingsPanel.vue';
+import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
+import { computed, shallowRef } from 'vue';
 
-export default {
-    name: 'MessengerChatSettings',
-    components: {
-        MessengerChatSettingsPanel,
-        MessengerButton,
-        MessengerChatSettingsLink,
-        Spinner
-    },
-    mixins: [LoaderMixin],
-    data() {
-        return {
-            opened: false,
-            currentPanel: null
-        };
-    },
-    computed: {
-        ...mapState({ currentDialog: state => state.Messenger.currentDialog })
-    },
-    methods: {
-        toggle() {
-            this.opened = !this.opened;
+const store = useStore();
+const { isLoading } = useDelayedLoader();
 
-            if (this.opened) {
-                this.loadingState = true;
-                setTimeout(() => (this.loadingState = false), 500);
-            } else {
-                this.currentPanel = null;
-            }
-        },
-        togglePanel(panelName) {
-            this.currentPanel = this.currentPanel === panelName ? null : panelName;
-        }
+const isOpened = shallowRef(false);
+const currentPanel = shallowRef(null);
+
+const currentDialog = computed(() => store.state.Messenger.currentDialog);
+
+const toggle = () => {
+    isOpened.value = !isOpened.value;
+
+    if (isOpened.value) {
+        isLoading.value = true;
+        setTimeout(() => (isLoading.value = false), 500);
+    } else {
+        currentPanel.value = null;
     }
 };
+
+const togglePanel = panelName => {
+    currentPanel.value = currentPanel.value === panelName ? null : panelName;
+};
+
+defineExpose({ toggle });
 </script>

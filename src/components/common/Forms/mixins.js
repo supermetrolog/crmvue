@@ -46,10 +46,10 @@ export default {
             return '';
         },
         hasValidationError() {
-            return this.v && this.v.$error;
+            return Boolean(this.v && this.v.$error);
         },
         hasValidation() {
-            return this.v && this.v.$dirty && (this.v.$model || this.v.$error);
+            return Boolean(this.v && this.v.$dirty && (this.v.$model || this.v.$error));
         }
     },
     methods: {

@@ -8,35 +8,26 @@
         </AnimationTransition>
     </div>
 </template>
-<script>
+<script setup>
 import MessengerChatSettingsPhotos from '@/components/Messenger/Chat/Settings/MessengerChatSettingsPhotos.vue';
 import MessengerChatSettingsFiles from '@/components/Messenger/Chat/Settings/MessengerChatSettingsFiles.vue';
 import MessengerChatSettingsQuizzes from '@/components/Messenger/Chat/Settings/MessengerChatSettingsQuizzes.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
-export default {
-    name: 'MessengerChatSettingsPanel',
+import { computed } from 'vue';
+import { ucFirst } from '@/utils/formatter.js';
+
+defineOptions({
     components: {
-        AnimationTransition,
-        MessengerChatSettingsFiles,
         MessengerChatSettingsPhotos,
+        MessengerChatSettingsFiles,
         MessengerChatSettingsQuizzes
-    },
-    emits: ['update:modelValue'],
-    props: {
-        modelValue: {
-            type: String,
-            default: null
-        }
-    },
-    computed: {
-        panelName() {
-            return 'MessengerChatSettings' + this.$formatter.text().ucFirst(this.modelValue);
-        }
-    },
-    methods: {
-        close() {
-            this.$emit('update:modelValue', null);
-        }
     }
+});
+const modelValue = defineModel({ type: String, default: null });
+
+const close = () => {
+    modelValue.value = null;
 };
+
+const panelName = computed(() => 'MessengerChatSettings' + ucFirst(modelValue.value));
 </script>

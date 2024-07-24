@@ -7,15 +7,12 @@
         <slot></slot>
     </button>
 </template>
-<script>
-export default {
-    name: 'ComplexDealPriceFormatterOption',
-    emits: ['change'],
-    props: {
-        active: {
-            type: Boolean,
-            default: false
-        }
+<script setup>
+defineEmits(['change']);
+defineProps({
+    active: {
+        type: Boolean,
+        default: false
     }
-};
+});
 </script>

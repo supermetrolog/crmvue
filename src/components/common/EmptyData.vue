@@ -8,14 +8,11 @@
         </p>
     </div>
 </template>
-<script>
-export default {
-    name: 'EmptyData',
-    props: {
-        noRounded: {
-            type: Boolean,
-            default: false
-        }
+<script setup>
+defineProps({
+    noRounded: {
+        type: Boolean,
+        default: false
     }
-};
+});
 </script>

@@ -30,18 +30,18 @@
                 :multiple="!single"
                 :accept="acceptList"
             />
-            <VirtualDragList
+            <VueDraggableNext
                 v-if="localFiles.length"
                 v-model="localFiles"
                 group="local-files"
-                :data-key="'name'"
-                :keeps="40"
-                chosenClass="chosen"
-                :sortable="sortable && !readOnly"
-                wrapClass="file-input__list row"
+                class="file-input__list row"
+                :animation="false"
+                :disabled="!sortable || readOnly"
             >
-                <template #item="{ record: file, index }">
+                <transition-group type="transition" name="flip-list">
                     <File
+                        v-for="(file, index) in localFiles"
+                        :key="file.src"
                         @delete="deleteLocalFile(index)"
                         :file="file"
                         class="file--new"
@@ -49,28 +49,28 @@
                         :read-only="readOnly"
                         :draggable="sortable"
                     />
-                </template>
-            </VirtualDragList>
-            <VirtualDragList
+                </transition-group>
+            </VueDraggableNext>
+            <VueDraggableNext
                 v-if="files.length"
                 v-model="files"
                 group="files"
-                :data-key="'id'"
-                :keeps="40"
-                chosenClass="chosen"
-                :sortable="sortable && !readOnly"
-                wrapClass="file-input__list row"
+                class="file-input__list row"
+                :animation="false"
+                :disabled="!sortable || readOnly"
             >
-                <template #item="{ record: file, index }">
+                <transition-group type="transition" name="flip-list">
                     <File
+                        v-for="(file, index) in files"
+                        :key="file.src"
                         @delete="deleteFile(index)"
                         :file="file"
                         :class="fileWidthClass"
                         :read-only="readOnly"
                         :draggable="sortable"
                     />
-                </template>
-            </VirtualDragList>
+                </transition-group>
+            </VueDraggableNext>
         </div>
     </div>
 </template>
@@ -78,11 +78,11 @@
 <script>
 import { fileTypes } from '@/const/types';
 import File from '@/components/common/Forms/File.vue';
-import VirtualDragList from 'vue-virtual-draglist';
+import { VueDraggableNext } from 'vue-draggable-next';
 
 export default {
     name: 'FileInput',
-    components: { VirtualDragList, File },
+    components: { VueDraggableNext, File },
     props: {
         data: {
             type: [Array, String],
@@ -196,11 +196,10 @@ export default {
         getFileType(meta) {
             let extension = meta.split('.').slice(-1)[0];
 
-            const currentType =
+            return (
                 this.allowedTypeList.find(element => element.extensions.includes(extension)) ||
-                this.unknownFileType;
-
-            return currentType;
+                this.unknownFileType
+            );
         },
         onChange($event) {
             const files = Array.from($event.target.files);
@@ -274,3 +273,11 @@ export default {
     }
 };
 </script>
+<style>
+.flip-list-move {
+    transition: transform 0.5s;
+}
+.no-move {
+    transition: transform 0s;
+}
+</style>

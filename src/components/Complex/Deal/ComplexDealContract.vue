@@ -10,18 +10,15 @@
         </p>
     </div>
 </template>
-<script>
+<script setup>
 import { entityOptions } from '@/const/options/options';
+import { computed } from 'vue';
 
-export default {
-    name: 'ComplexDealContract',
-    props: {
-        type: Number
-    },
-    computed: {
-        isExclusive() {
-            return this.type === entityOptions.deal.contractTypeStatement.EXCLUSIVE;
-        }
-    }
-};
+const props = defineProps({
+    type: Number
+});
+
+const isExclusive = computed(() => {
+    return props.type === entityOptions.deal.contractTypeStatement.EXCLUSIVE;
+});
 </script>

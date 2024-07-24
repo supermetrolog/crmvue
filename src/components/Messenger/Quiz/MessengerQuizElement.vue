@@ -1,8 +1,8 @@
 <template>
     <div class="messenger-quiz-element">
-        <Avatar :src="quiz.author?.avatar" />
+        <Avatar :src="quiz.user?.avatar" />
         <div class="messenger-quiz-element__description">
-            <p class="messenger-quiz-element__author">{{ quiz.author?.short_name }}</p>
+            <p class="messenger-quiz-element__author">{{ quiz.user?.short_name }}</p>
             <p v-if="quiz.contact">Звонок с {{ quiz.contact }}</p>
             <p v-else>Без звонка</p>
         </div>
@@ -11,22 +11,16 @@
         </div>
     </div>
 </template>
-<script>
+<script setup>
 import Avatar from '@/components/common/Avatar.vue';
-import dayjs from 'dayjs';
-export default {
-    name: 'MessengerQuizElement',
-    components: { Avatar },
-    props: {
-        quiz: {
-            type: Object,
-            required: true
-        }
-    },
-    computed: {
-        createdAt() {
-            return dayjs(this.quiz.created_at).format('DD.MM.YYYY, HH:mm');
-        }
+import { computed } from 'vue';
+import { toDateFormat } from '@/utils/formatter.js';
+const props = defineProps({
+    quiz: {
+        type: Object,
+        required: true
     }
-};
+});
+
+const createdAt = computed(() => toDateFormat(props.quiz.created_at));
 </script>

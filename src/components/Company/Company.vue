@@ -7,7 +7,7 @@
                         <i class="fa-solid fa-eye"></i>
                     </HoverActionsButton>
                 </a>
-                <HoverActionsButton @click="$emit('start-editing')" label="Редактировать">
+                <HoverActionsButton @click="emit('start-editing')" label="Редактировать">
                     <i class="fa-solid fa-pen"></i>
                 </HoverActionsButton>
             </div>
@@ -37,8 +37,7 @@
                         <DashboardChip v-if="company.rating" class="dashboard-bg-light">
                             <Rating
                                 class="company-detail-info__rating"
-                                :rating="rating"
-                                :max="3"
+                                :rating="company.rating"
                                 color="yellow"
                             />
                         </DashboardChip>
@@ -181,7 +180,7 @@
     </DashboardCard>
 </template>
 
-<script>
+<script setup>
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
@@ -201,60 +200,32 @@ import Rating from '@/components/common/Rating.vue';
 import Progress from '@/components/common/Progress.vue';
 import File from '@/components/common/Forms/File.vue';
 import AccordionSimpleTriggerButton from '@/components/common/Accordion/AccordionSimpleTriggerButton.vue';
+import { computed } from 'vue';
 
-export default {
-    name: 'Company',
-    components: {
-        AccordionSimpleTriggerButton,
-        File,
-        Progress,
-        Rating,
-        AccordionSimpleTriggerIcon,
-        AccordionSimpleTrigger,
-        CompanyDetailExternal,
-        AccordionSimple,
-        CompanyDetailRow,
-        DashboardChip,
-        DashboardCard,
-        HoverActionsButton
-    },
-    emits: ['start-editing'],
-    props: {
-        company: {
-            type: Object,
-            required: true
-        }
-    },
-    computed: {
-        generalContact() {
-            return this.company.contacts.find(item => item.type === 1);
-        },
-        formOfOrganization() {
-            return CompanyFormOrganization[this.company.formOfOrganization].label;
-        },
-        activityGroup() {
-            return ActivityGroupList[this.company.activityGroup].label;
-        },
-        activityProfile() {
-            return ActivityProfileList[this.company.activityProfile].label;
-        },
-        status() {
-            return this.company.active ? 'Актив' : 'Пассив';
-        },
-        statusColor() {
-            return this.company.active ? 'dashboard-bg-success' : 'dashboard-bg-danger';
-        },
-        categories() {
-            return this.company.categories.map(element => CompanyCategories[element.category]);
-        },
-        statusTippy() {
-            let text = PassiveWhy[this.company.passive_why].label;
-            if (this.company.passive_why_comment) text += ': ' + this.company.passive_why_comment;
-            return text;
-        },
-        rating() {
-            return (this.company.rating + 3) / 3;
-        }
+const emit = defineEmits(['start-editing']);
+const props = defineProps({
+    company: {
+        type: Object,
+        required: true
     }
-};
+});
+
+const generalContact = computed(() => props.company.contacts.find(item => item.type === 1));
+const formOfOrganization = computed(
+    () => CompanyFormOrganization[props.company.formOfOrganization].label
+);
+const activityGroup = computed(() => ActivityGroupList[props.company.activityGroup].label);
+const activityProfile = computed(() => ActivityProfileList[props.company.activityProfile].label);
+const status = computed(() => (props.company.active ? 'Актив' : 'Пассив'));
+const statusColor = computed(() =>
+    props.company.active ? 'dashboard-bg-success' : 'dashboard-bg-danger'
+);
+const categories = computed(() =>
+    props.company.categories.map(element => CompanyCategories[element.category])
+);
+const statusTippy = computed(() => {
+    let text = PassiveWhy[this.company.passive_why].label;
+    if (this.company.passive_why_comment) text += ': ' + this.company.passive_why_comment;
+    return text;
+});
 </script>

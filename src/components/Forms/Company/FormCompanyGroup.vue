@@ -1,15 +1,15 @@
 <template>
     <Modal
-        @close="clickCloseModal"
-        :title="formdata ? 'Изменение группы компаний' : 'Создание группы компаний'"
+        @close="emit('close')"
+        :title="formData ? 'Изменение группы компаний' : 'Создание группы компаний'"
         width="600"
     >
         <Form @submit="onSubmit">
-            <Loader v-if="loader" />
+            <Loader v-if="isLoading" />
             <FormGroup>
                 <Input
                     v-model="form.nameRu"
-                    :v="v$.form.nameRu"
+                    :v="v$.nameRu"
                     label="Название Ru"
                     required
                     class="col-12 mb-2"
@@ -20,6 +20,7 @@
                 />
                 <Input
                     v-model="form.nameEng"
+                    :v="v$.nameEng"
                     label="Название Eng"
                     class="col-8"
                     :maska="{
@@ -32,21 +33,21 @@
                     label="ФО"
                     title="Форма организации"
                     class="col-4"
-                    :options="formOfOrganizationOptions"
+                    :options="CompanyFormOrganization"
                 />
             </FormGroup>
             <FormGroup>
                 <Textarea v-model="form.description" label="Описание" class="col-12" />
             </FormGroup>
             <Submit success center class="mt-3 mx-auto">
-                {{ formdata ? 'Сохранить' : 'Создать' }}
+                {{ formData ? 'Сохранить' : 'Создать' }}
             </Submit>
         </Form>
     </Modal>
 </template>
 
-<script>
-import { mapActions } from 'vuex';
+<script setup>
+import { useStore } from 'vuex';
 import useValidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
 import Form from '@/components/common/Forms/Form.vue';
@@ -57,99 +58,64 @@ import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import { CompanyFormOrganization } from '@/const/const.js';
 import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
-import { onlyRussian } from '@//validators';
-import Submit from '@/components/common/Forms/Submit.vue';
-import { cloneObject } from '@/utils/index.js';
+import { onlyEnglish, onlyRussian } from '@//validators';
+import Submit from '@/components/common/Forms/FormSubmit.vue';
+import { onMounted, reactive, shallowRef } from 'vue';
 
-export default {
-    name: 'FormCompanyGroup',
-    components: {
-        Submit,
-        Modal,
-        Loader,
-        FormGroup,
-        Form,
-        Input,
-        Textarea,
-        MultiSelect
-    },
-    emits: ['closeCompanyGroupsForm', 'updated', 'created'],
-    props: {
-        formdata: {
-            type: Object,
-            default: null
-        }
-    },
-    data() {
-        return {
-            v$: useValidate(),
-            loader: false,
-            form: {
-                nameRu: null,
-                nameEng: null,
-                description: null,
-                formOfOrganization: null
-            }
-        };
-    },
-    computed: {
-        formOfOrganizationOptions: () => CompanyFormOrganization
-    },
-    validations() {
-        return {
-            form: {
-                nameRu: {
-                    required: helpers.withMessage('Введите название', required),
-                    onlyRussian: helpers.withMessage(
-                        'Название должно быть на русском языке',
-                        onlyRussian
-                    )
-                }
-            }
-        };
-    },
-    methods: {
-        ...mapActions(['CREATE_COMPANY_GROUPS', 'UPDATE_COMPANY_GROUPS']),
+const emit = defineEmits(['close', 'updated', 'created']);
+const props = defineProps({ formData: { type: Object, default: null } });
+const store = useStore();
 
-        async onSubmit() {
-            this.v$.$validate();
-            if (!this.v$.form.$error) {
-                this.loader = true;
-                if (this.formdata) {
-                    this.update();
-                } else {
-                    this.create();
-                }
-            }
-        },
+const isLoading = shallowRef(false);
+const form = reactive({
+    nameRu: null,
+    nameEng: null,
+    description: null,
+    formOfOrganization: null
+});
 
-        async update() {
-            if (await this.UPDATE_COMPANY_GROUPS(this.form)) {
-                this.$emit('updated');
-                this.clickCloseModal();
-            }
-            this.loader = false;
-        },
-        async create() {
-            if (await this.CREATE_COMPANY_GROUPS(this.form)) {
-                this.$emit('created');
-
-                this.clickCloseModal();
-            }
-            this.loader = false;
-        },
-        clickCloseModal() {
-            this.$emit('closeCompanyGroupsForm');
-        }
+const rules = {
+    nameRu: {
+        required: helpers.withMessage('Введите название', required),
+        onlyRussian: helpers.withMessage('Название должно быть на русском языке', onlyRussian)
     },
-    async mounted() {
-        this.loader = true;
-        if (this.formdata) {
-            this.form = { ...this.form, ...cloneObject(this.formdata) };
-        }
-        this.loader = false;
+    nameEng: {
+        onlyEnglish: helpers.withMessage('Название должно быть на английском языке', onlyEnglish)
     }
 };
-</script>
 
-<style></style>
+const v$ = useValidate(rules, form);
+
+const update = async () => {
+    isLoading.value = true;
+    const updated = await store.dispatch('UPDATE_COMPANY_GROUPS', form);
+    if (updated) {
+        emit('updated');
+        emit('close');
+    }
+    isLoading.value = false;
+};
+
+const create = async () => {
+    isLoading.value = true;
+    const created = await store.dispatch('CREATE_COMPANY_GROUPS', form);
+    if (created) {
+        emit('created');
+        emit('close');
+    }
+    isLoading.value = false;
+};
+
+const onSubmit = () => {
+    v$.$validate();
+
+    if (!v$.form.$error) {
+        if (props.formData) update();
+        else create();
+    }
+};
+
+onMounted(() => {
+    if (props.formData) Object.assign(form, props.formData);
+});
+</script>

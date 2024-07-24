@@ -1,6 +1,6 @@
 <template>
     <Form @submit="onSubmit" class="row">
-        <div class="col-6">
+        <div class="col-12 col-md-6">
             <Input
                 v-model="form.all"
                 @keydown.enter="onSubmit"
@@ -9,7 +9,7 @@
                 class="main-input"
             />
         </div>
-        <div class="col-2 align-self-end">
+        <div class="col-12 col-md-2 align-self-end">
             <div class="offer-search__actions">
                 <Button @click="$emit('openFilters')" icon :badge="filterCount || false">
                     <i class="icon fa-solid fa-sliders"></i>
@@ -36,7 +36,7 @@
             </div>
         </div>
         <div class="col-12">
-            <div class="offer-search__functions">
+            <div class="offer-search__functions flex-wrap">
                 <Button @click="clickFavorites" icon warning small>
                     <i class="fa-solid fa-star"></i>
                     <span>Избранные</span>

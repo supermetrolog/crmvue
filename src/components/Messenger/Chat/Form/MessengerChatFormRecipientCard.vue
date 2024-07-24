@@ -87,7 +87,7 @@
         </HoverActions>
         <FormCompanyContact
             v-if="updateContactModalVisible"
-            @close-company-form="updateContactModalVisible = false"
+            @close="updateContactModalVisible = false"
             :formdata="contact"
         />
     </div>

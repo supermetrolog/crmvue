@@ -1,12 +1,11 @@
 import api from '@/api/api';
-import { waitHash } from '../../utils';
+import { useQueryHash } from '@/utils/useQueryHash.js';
 
 const CompanyRequest = {
     state: {
         companyRequests: {},
         requests: [],
-        pagination: null,
-        request_wait_hash: null
+        pagination: null
     },
     mutations: {
         updateCompanyRequests(state, data) {
@@ -22,35 +21,20 @@ const CompanyRequest = {
         },
         deleteRequest(state, request_id) {
             state.companyRequests = state.companyRequests.filter(item => item.id != request_id);
-        },
-        setRequestWaitHash(state, hash) {
-            state.request_wait_hash = hash;
         }
     },
     actions: {
-        async SEARCH_REQUESTS(context, { query, concat = false }) {
-            let hash = waitHash(query);
-            context.commit('setRequestWaitHash', hash);
+        async SEARCH_REQUESTS({ commit }, { query, concat = false }) {
+            const { setHash, confirmHash } = useQueryHash('company-requests');
+            setHash(query);
+
             const data = await api.request.searchRequests(query);
             if (data) {
-                if (hash == context.getters.REQUEST_WAIT_HASH) {
-                    context.commit('updateRequests', { data, concat });
-                } else {
-                    return false;
-                }
+                if (confirmHash(query)) commit('updateRequests', { data, concat });
+                else return false;
             }
             return data;
         },
-        // async SEARCH_REQUESTS(_, query) {
-        //     const search = query.searchText;
-        //     const queryParams = {
-        //         minArea: search,
-        //         dealType: search,
-        //         maxArea: search,
-        //     };
-        //     const result = await api.request.searchRequests(queryParams);
-        //     return result;
-        // },
         async CREATE_REQUEST(context, formdata) {
             return await api.request.createRequest(formdata);
         },
@@ -81,9 +65,6 @@ const CompanyRequest = {
         },
         REQUESTS_PAGINATION(state) {
             return state.pagination;
-        },
-        REQUEST_WAIT_HASH(state) {
-            return state.request_wait_hash;
         }
     }
 };

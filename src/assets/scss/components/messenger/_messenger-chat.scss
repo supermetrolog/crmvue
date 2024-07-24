@@ -29,12 +29,18 @@
         @include mixins.flex-box($d: column);
     }
 
+    &__virtual {
+        padding: 10px 20px;
+        height: max-content;
+        margin-top: auto;
+    }
+
+    //&__messages {
+    //    @include mixins.flex-box($d: column, $j: flex-end);
+    //}
+
     &__body {
         position: relative;
-        padding: 20px;
-        @include mixins.flex-box($gap: 5px, $d: column);
-        height: 100%;
-        overflow-y: auto;
     }
 
     &__label {

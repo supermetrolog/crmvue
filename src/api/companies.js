@@ -1,6 +1,6 @@
 import axios from 'axios';
-import ErrorHandle from './errors';
-import SuccessHandler from './success';
+import { setRequestError } from '@/api/helpers/setRequestError.js';
+import { SuccessHandler } from '@/api/helpers/successHandler.js';
 
 function getFormDataWithFiles(formdata1, forUpdate = false) {
     let formdata = { ...formdata1 };
@@ -39,7 +39,7 @@ export default {
             .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch(e => ErrorHandle.setError(e));
+            .catch(e => setRequestError(e));
         return data;
     },
     async getCompany(id) {
@@ -53,7 +53,7 @@ export default {
             .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch(e => ErrorHandle.setError(e));
+            .catch(e => setRequestError(e));
         return data;
     },
     async createCompany(formdata) {
@@ -72,7 +72,7 @@ export default {
             .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch(e => ErrorHandle.setError(e));
+            .catch(e => setRequestError(e));
         return data;
     },
     async updateCompany(formData) {
@@ -86,7 +86,7 @@ export default {
             .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch(e => ErrorHandle.setError(e));
+            .catch(e => setRequestError(e));
 
         return data;
     },
@@ -99,7 +99,7 @@ export default {
             .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch(e => ErrorHandle.setError(e));
+            .catch(e => setRequestError(e));
         return data;
     },
     async getCompanyInTheBankList() {
@@ -110,7 +110,7 @@ export default {
             .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch(e => ErrorHandle.setError(e));
+            .catch(e => setRequestError(e));
         return data;
     },
     async searchCompanies(query) {
@@ -135,7 +135,7 @@ export default {
             .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch(e => ErrorHandle.setError(e));
+            .catch(e => setRequestError(e));
         return data;
     },
     async createCompanyGroups(formdata) {
@@ -146,7 +146,7 @@ export default {
             .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch(e => ErrorHandle.setError(e));
+            .catch(e => setRequestError(e));
         return data;
     },
     async updateCompanyGroups(formdata) {
@@ -157,7 +157,7 @@ export default {
             .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch(e => ErrorHandle.setError(e));
+            .catch(e => setRequestError(e));
         return data;
     }
 };

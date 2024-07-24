@@ -1,4 +1,5 @@
 @use '../../utils/mixins';
+@use '../../utils/variables';
 
 .messenger-quiz {
     background-color: #F3F3F3;
@@ -45,6 +46,25 @@
 
         i {
             margin-right: 5px;
+        }
+    }
+
+    &__done {
+        position: absolute;
+        z-index: 6;
+        overflow: hidden;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background-color: rgba(0, 0, 0, .2);
+        backdrop-filter: blur(1px);
+        @include mixins.flex-box($j: center, $a: center);
+    }
+
+    &__done-button {
+        &.hidden {
+            opacity: 0;
         }
     }
 }
@@ -180,5 +200,20 @@
         border-radius: 10px;
         background-color: #F3F3F3;
         width: 100%;
+    }
+}
+
+.messenger-quiz-preview-info {
+    &__content {
+        @include mixins.flex-box($gap: 10px, $a: center)
+    }
+
+    &__icon {
+        font-size: 18px;
+        background-color: variables.$bg-success-l;
+        height: 35px;
+        width: 35px;
+        border-radius: 50%;
+        @include mixins.flex-box($a: center, $j: center);
     }
 }

@@ -1,6 +1,6 @@
 import axios from 'axios';
-import ErrorHandle from './errors';
-import SuccessHandler from './success';
+import { setRequestError } from '@/api/helpers/setRequestError.js';
+import { SuccessHandler } from '@/api/helpers/successHandler.js';
 
 export default {
     async fetchComplex(id, params) {
@@ -15,7 +15,7 @@ export default {
                 pagination: SuccessHandler.getPaginationData(response)
             };
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
         }
     },
 

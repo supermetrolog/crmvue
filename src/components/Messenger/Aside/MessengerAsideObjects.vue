@@ -38,6 +38,7 @@
                     "
                     :current="record.id === currentDialogID"
                     :model="record.model"
+                    :statistic="record.statistic"
                     :class="{ skeleton: isLoading }"
                     :last-call="record.last_call"
                 />

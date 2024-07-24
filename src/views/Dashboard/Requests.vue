@@ -88,9 +88,9 @@
             />
             <FormCompanyRequest
                 v-if="formRequestIsVisible"
-                @closeCompanyForm="formRequestIsVisible = false"
+                @close="formRequestIsVisible = false"
                 @updated="updateRequest(completeRequest)"
-                :formdata="completeRequest"
+                :form-data="completeRequest"
             />
         </teleport>
     </section>

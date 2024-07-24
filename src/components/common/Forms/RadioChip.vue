@@ -11,60 +11,41 @@
     </label>
 </template>
 
-<script>
-import Mixin from './mixins.js';
+<script setup>
+import { computed, ref } from 'vue';
 
-export default {
-    name: 'RadioChip',
-    mixins: [Mixin],
-    props: {
-        modelValue: {
-            type: [Array, Number, String],
-            default: 0
-        },
-        required: {
-            type: Boolean,
-            default: false
-        },
-        label: {
-            type: String,
-            default: null
-        },
-        value: {
-            type: [String, Number, Boolean, null],
-            default: null
-        },
-        unselect: {
-            type: Boolean,
-            default: false
-        }
+const emit = defineEmits(['change']);
+const modelValue = defineModel();
+const props = defineProps({
+    required: {
+        type: Boolean,
+        default: false
     },
-    data() {
-        return {
-            field: this.modelValue
-        };
+    label: {
+        type: String,
+        default: null
     },
-    computed: {
-        isActive() {
-            return this.modelValue == this.value;
-        }
+    value: {
+        type: [String, Number, Boolean, null],
+        default: null
     },
-    watch: {
-        modelValue() {
-            this.field = this.modelValue;
-        }
+    unselect: {
+        type: Boolean,
+        default: false
     },
-    methods: {
-        onChange() {
-            if (this.unselect && this.value == this.field) {
-                this.field = null;
-            } else {
-                this.field = this.value;
-            }
-            this.$emit('update:modelValue', this.field);
-        }
+    disabled: {
+        type: Boolean,
+        default: false
     }
+});
+
+const field = ref(modelValue);
+
+const isActive = computed(() => modelValue.value == props.value);
+
+const onChange = () => {
+    if (props.unselect && props.value == field.value) modelValue.value = null;
+    else modelValue.value = props.value;
+    emit('change');
 };
 </script>
-
-<style></style>

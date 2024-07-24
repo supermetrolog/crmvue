@@ -5,205 +5,251 @@
         class="form-complex-floor"
         has-tabs
     >
-        <Loader v-if="loader" />
+        <Loader v-if="isLoading" />
         <Form @submit="onSubmit">
             <Tabs :options="{ useUrlFragment: false, defaultTabHash: 'main' }">
                 <Tab id="main" name="Основное">
-                    <div class="row">
-                        <Input
-                            v-model="form.area_floor_full"
-                            :v="v$.form.area_floor_full"
-                            label="S - пола"
-                            class="col-4"
-                            type="number"
-                            unit="м<sup>2</sup>"
-                            required
-                        />
-                        <Input
-                            v-model="form.area_office_full"
-                            :v="v$.form.area_office_full"
-                            label="S - офисов"
-                            class="col-4"
-                            type="number"
-                            unit="м<sup>2</sup>"
-                        />
-                        <Input
-                            v-model="form.area_tech_full"
-                            :v="v$.form.area_tech_full"
-                            label="S - техническая"
-                            class="col-4"
-                            type="number"
-                            unit="м<sup>2</sup>"
-                        />
-                        <Textarea v-model="form.description" label="Описание" class="col-12 mt-2" />
-                    </div>
-                </Tab>
-                <Tab name="Характериcтики/Оборудование">
-                    <div class="row">
-                        <DoubleInput
-                            v-model:first="form.ceiling_height_min"
-                            v-model:second="form.ceiling_height_max"
-                            label="Высота потолков"
-                            class="col-6"
-                            unit="м"
-                            type="number"
-                        />
-                        <DoubleInput
-                            v-model:first="form.load_floor_min"
-                            v-model:second="form.load_floor_max"
-                            label="Нагрузка на пол"
-                            class="col-6"
-                            unit="т/м<sup>2</sup>"
-                            type="number"
-                        />
-                    </div>
-                    <div class="row mt-2">
-                        <div class="col-6">
-                            <span class="form__subtitle">Тип пола</span>
-                            <div class="form__row mt-1">
-                                <CheckboxChip
-                                    v-for="(type, index) in floorTypes"
-                                    :key="index"
-                                    v-model="form.floor_types"
-                                    :value="index"
-                                    :text="type"
+                    <template v-if="isRealFloor">
+                        <div class="row mb-2">
+                            <template v-if="isMezzanine">
+                                <Input
+                                    v-model="form.area_mezzanine_full"
+                                    :v="v$.form.area_mezzanine_full"
+                                    label="S - мезанина"
+                                    class="col-4"
+                                    type="number"
+                                    unit="м<sup>2</sup>"
+                                    required
                                 />
-                            </div>
+                                <InputRelation
+                                    class="col-2"
+                                    :original="form.area_mezzanine_full"
+                                    :related="related.area_mezzanine_full"
+                                >
+                                    <WithUnitType :unit-type="unitTypes.SQUARE_METERS">
+                                        {{ related.area_mezzanine_full }}
+                                    </WithUnitType>
+                                </InputRelation>
+                            </template>
+                            <template v-else>
+                                <Input
+                                    v-model="form.area_floor_full"
+                                    :v="v$.form.area_floor_full"
+                                    label="S - пола"
+                                    class="col-4"
+                                    type="number"
+                                    unit="м<sup>2</sup>"
+                                    required
+                                />
+                                <InputRelation
+                                    class="col-2"
+                                    :original="form.area_floor_full"
+                                    :related="related.area_floor_full"
+                                >
+                                    <WithUnitType :unit-type="unitTypes.SQUARE_METERS">
+                                        {{ related.area_floor_full }}
+                                    </WithUnitType>
+                                </InputRelation>
+                            </template>
+                            <DoubleInput
+                                v-model:first="form.ceiling_height_min"
+                                v-model:second="form.ceiling_height_max"
+                                :v-first="v$.form.ceiling_height_min"
+                                :v-second="v$.form.ceiling_height_max"
+                                :validators="formCeilingHeightValidators"
+                                required
+                                label="Высота потолков"
+                                class="col-6"
+                                unit="м"
+                                type="number"
+                            />
                         </div>
-                        <MultiSelect
-                            v-model="form.column_grids"
-                            required
-                            title="Сетки колонн"
-                            label="Сетки колонн"
-                            :close-on-select="false"
-                            class="col-6"
-                            mode="multiple"
-                            multiple
-                            :options="gridColumnTypes"
-                        />
-                    </div>
-                    <div class="row mt-2">
-                        <!--                        {{ form.gates }}-->
-                        <!--                        <MultiSelect-->
-                        <!--                            v-model="form.gates"-->
-                        <!--                            :v="v$.form.gates"-->
-                        <!--                            title="Тип ворот"-->
-                        <!--                            label="Тип ворот"-->
-                        <!--                            class="col-4"-->
-                        <!--                            :options="gateTypeOptions"-->
-                        <!--                            required-->
-                        <!--                        />-->
-                        <!--                        <Input-->
-                        <!--                            v-model="form.gatesCount"-->
-                        <!--                            :v="v$.form.gatesCount"-->
-                        <!--                            label="Количество"-->
-                        <!--                            class="col-2"-->
-                        <!--                            type="number"-->
-                        <!--                            unit="шт"-->
-                        <!--                            required-->
-                        <!--                        />-->
-                        <DoubleInput
-                            v-model:first="form.temperature_min"
-                            v-model:second="form.temperature_max"
-                            label="Темп. режим"
-                            class="col-6"
-                            unit="°С"
-                            type="number"
-                        />
-                    </div>
-                    <p class="form__block">Подъемные устройства</p>
-                    <div class="row">
-                        <div class="col-4">
-                            <span class="form__subtitle">Лифт/подъемники</span>
-                            <div class="form__row mt-1">
-                                <RadioChip
-                                    v-model="form.elevators"
-                                    label="Нет"
-                                    :value="0"
-                                    unselect
-                                />
-                                <RadioChip
-                                    v-model="form.elevators"
-                                    label="Да"
-                                    :value="1"
-                                    unselect
-                                />
-                            </div>
+                        <div class="row mb-2">
+                            <Input
+                                v-model="form.area_office_full"
+                                :v="v$.form.area_office_full"
+                                label="S - офисов"
+                                class="col-4"
+                                type="number"
+                                unit="м<sup>2</sup>"
+                            />
+                            <InputRelation
+                                class="col-2"
+                                :original="form.area_office_full"
+                                :related="related.area_office_full"
+                            >
+                                <WithUnitType :unit-type="unitTypes.SQUARE_METERS">
+                                    {{ related.area_office_full }}
+                                </WithUnitType>
+                            </InputRelation>
+                            <DoubleInput
+                                v-model:first="form.load_floor_min"
+                                v-model:second="form.load_floor_max"
+                                :v-first="v$.form.load_floor_min"
+                                :v-second="v$.form.load_floor_max"
+                                :validators="formLoadFloorValidators"
+                                label="Нагрузка на пол"
+                                class="col-6"
+                                unit="т/м<sup>2</sup>"
+                                type="number"
+                            />
                         </div>
-                        <div class="col-4">
-                            <span class="form__subtitle">Крановые устройства</span>
-                            <div class="form__row mt-1">
-                                <RadioChip
-                                    v-model="form.has_cranes"
-                                    label="Нет"
-                                    :value="0"
-                                    unselect
-                                />
-                                <RadioChip
-                                    v-model="form.has_cranes"
-                                    label="Да"
-                                    :value="1"
-                                    unselect
-                                />
-                            </div>
+                        <div class="row">
+                            <Input
+                                v-model="form.area_tech_full"
+                                :v="v$.form.area_tech_full"
+                                label="S - техническая"
+                                class="col-4"
+                                type="number"
+                                unit="м<sup>2</sup>"
+                            />
+                            <InputRelation
+                                class="col-2"
+                                :original="form.area_tech_full"
+                                :related="related.area_tech_full"
+                            >
+                                <WithUnitType :unit-type="unitTypes.SQUARE_METERS">
+                                    {{ related.area_tech_full }}
+                                </WithUnitType>
+                            </InputRelation>
+                            <DoubleInput
+                                v-model:first="form.temperature_min"
+                                v-model:second="form.temperature_max"
+                                label="Темп. режим"
+                                class="col-6"
+                                unit="°С"
+                                type="number"
+                            />
                         </div>
-                        <div class="col-4">
-                            <span class="form__subtitle">Подкрановые пути</span>
-                            <div class="form__row mt-1">
-                                <RadioChip
-                                    v-model="form.cranes_runways"
-                                    label="Нет"
-                                    :value="0"
-                                    unselect
-                                />
-                                <RadioChip
-                                    v-model="form.cranes_runways"
-                                    label="Да"
-                                    :value="1"
-                                    unselect
-                                />
-                            </div>
+                        <div class="row mt-2">
+                            <CheckboxOptions
+                                v-model="form.floor_types"
+                                :v="v$.form.floor_types"
+                                class="col-6"
+                                :options="realFloorTypeOptions"
+                                label="Тип пола"
+                                required
+                            />
+                            <MultiSelect
+                                v-model="form.column_grids"
+                                :v="v$.form.column_grids"
+                                required
+                                title="Сетки колонн"
+                                label="Сетки колонн"
+                                :close-on-select="false"
+                                class="col-6"
+                                mode="multiple"
+                                multiple
+                                :options="gridColumnTypes"
+                            />
                         </div>
-                    </div>
+                        <div v-if="isFirstFloor" class="row mt-2">
+                            <GateTypesPicker
+                                v-model="form.gates"
+                                label="Тип и количество ворот"
+                                class="col-12"
+                            />
+                        </div>
+                    </template>
+                    <template v-else>
+                        <div class="row">
+                            <Input
+                                v-model="form.area_field_full"
+                                :v="v$.form.area_field_full"
+                                label="S - участка"
+                                class="col-4"
+                                type="number"
+                                unit="м<sup>2</sup>"
+                                required
+                            />
+                            <InputRelation
+                                class="col-2"
+                                :original="form.area_field_full"
+                                :related="related.area_field_full"
+                            >
+                                <WithUnitType :unit-type="unitTypes.SQUARE_METERS">
+                                    {{ related.area_field_full }}
+                                </WithUnitType>
+                            </InputRelation>
+                            <DoubleInput
+                                v-model:first="form.land_length"
+                                v-model:second="form.land_width"
+                                label="Габариты"
+                                class="col-6"
+                                type="number"
+                                unit="м"
+                                required
+                                first-label="Длина"
+                                second-label="Ширина"
+                                :v-first="v$.form.land_length"
+                                :v-second="v$.form.land_width"
+                            />
+                        </div>
+                        <div class="row mt-2">
+                            <MultiSelect
+                                v-model="form.landscape_type"
+                                :v="v$.form.landscape_type"
+                                title="Рельеф участка"
+                                label="Рельеф участка"
+                                class="col-6"
+                                required
+                                :options="landscapeTypeOptions"
+                            />
+                            <CheckboxOptions
+                                v-model="form.floor_types_land"
+                                class="col-6"
+                                label="Типы покрытия"
+                                unselect
+                                :options="landFloorTypeOptions"
+                            />
+                        </div>
+                    </template>
                 </Tab>
                 <Tab name="Безопасность/Коммуникации">
                     <p class="form__block">Безопасность</p>
                     <div class="row">
-                        <div class="col-2">
-                            <span class="form__subtitle">Дымоудаление</span>
-                            <div class="form__row mt-1">
-                                <RadioChip v-model="form.smoke_exhaust" label="Нет" :value="0" />
-                                <RadioChip v-model="form.smoke_exhaust" label="Да" :value="1" />
-                            </div>
-                        </div>
-                        <div class="col-2">
-                            <span class="form__subtitle">Видеонаблюдение</span>
-                            <div class="form__row mt-1">
-                                <RadioChip v-model="form.video_control" label="Нет" :value="0" />
-                                <RadioChip v-model="form.video_control" label="Да" :value="1" />
-                            </div>
-                        </div>
-                        <div class="col-2">
-                            <span class="form__subtitle">Контроль доступа</span>
-                            <div class="form__row mt-1">
-                                <RadioChip v-model="form.access_control" label="Нет" :value="0" />
-                                <RadioChip v-model="form.access_control" label="Да" :value="1" />
-                            </div>
-                        </div>
-                        <div class="col-3">
-                            <span class="form__subtitle">Охранная сигнализация</span>
-                            <div class="form__row mt-1">
-                                <RadioChip v-model="form.security_alert" label="Нет" :value="0" />
-                                <RadioChip v-model="form.security_alert" label="Да" :value="1" />
-                            </div>
-                        </div>
-                        <div class="col-3">
-                            <span class="form__subtitle">Пожарная сигнализация</span>
-                            <div class="form__row mt-1">
-                                <RadioChip v-model="form.fire_alert" label="Нет" :value="0" />
-                                <RadioChip v-model="form.fire_alert" label="Да" :value="1" />
-                            </div>
-                        </div>
+                        <RadioOptions
+                            v-model="form.video_control"
+                            class="col-3"
+                            label="Видеонаблюдение"
+                            unselect
+                            :options="entityOptions.defaults.booleanSimple"
+                        />
+                        <RadioOptions
+                            v-model="form.access_control"
+                            class="col-3"
+                            label="Контроль доступа"
+                            unselect
+                            :options="entityOptions.defaults.booleanSimple"
+                        />
+                        <RadioOptions
+                            v-model="form.security_alert"
+                            class="col-3"
+                            label="Охранная сигнализация"
+                            unselect
+                            :options="entityOptions.defaults.booleanSimple"
+                        />
+                        <RadioOptions
+                            v-model="form.barrier"
+                            class="col-3"
+                            label="Шлагбаум"
+                            unselect
+                            :options="entityOptions.defaults.booleanSimple"
+                        />
+                        <RadioOptions
+                            v-model="form.fence"
+                            class="col-3"
+                            label="Забор по периметру"
+                            unselect
+                            :options="entityOptions.defaults.booleanSimple"
+                        />
+                        <RadioOptions
+                            v-model="form.fire_alert"
+                            class="col-3"
+                            label="Пожарная сигнализация"
+                            unselect
+                            :options="entityOptions.defaults.booleanSimple"
+                        />
                         <MultiSelect
                             v-model="form.firefighting_type"
                             :v="v$.form.firefighting_type"
@@ -211,109 +257,76 @@
                             label="Пожаротушение"
                             class="col-4 mt-2"
                             required
-                            :options="firefightingTypeOptions"
+                            :options="firefightingTypes"
                         />
                     </div>
                     <p class="form__block">Коммуникации</p>
                     <div class="row">
-                        <Input
-                            v-model="form.power"
-                            :v="v$.form.power"
-                            label="Электричество"
-                            class="col-2"
-                            type="number"
-                            unit="кВт"
+                        <CheckboxOptions
+                            v-model="form.water_type"
+                            class="col-6"
+                            label="Тип водоснабжения"
+                            unselect
+                            :options="waterTypes"
                         />
+                        <RadioOptions
+                            v-model="form.sewage"
+                            :v="v$.form.sewage"
+                            class="col-3"
+                            label="Канализация"
+                            unselect
+                            required
+                            :options="entityOptions.defaults.booleanSimple"
+                        />
+                        <RadioOptions
+                            v-model="form.gas"
+                            class="col-3"
+                            label="Газ для пр-ва"
+                            unselect
+                            :options="entityOptions.defaults.booleanSimple"
+                        />
+                        <RadioOptions
+                            v-model="form.steam"
+                            class="col-3"
+                            label="Пар для пр-ва"
+                            unselect
+                            :options="entityOptions.defaults.booleanSimple"
+                        />
+                        <RadioOptions
+                            v-model="form.phone_line"
+                            class="col-3"
+                            label="Телефония"
+                            unselect
+                            :options="entityOptions.defaults.booleanSimple"
+                        />
+                        <RadioOptions
+                            v-model="form.internet"
+                            class="col-3"
+                            label="Интернет"
+                            unselect
+                            :options="entityOptions.defaults.booleanSimple"
+                        />
+                    </div>
+                    <div class="row mt-2">
                         <MultiSelect
                             v-model="form.ventilation"
                             :v="v$.form.ventilation"
                             title="Вентиляция"
                             label="Вентиляция"
-                            class="col-3"
-                            :options="ventilationTypeOptions"
+                            class="col-5"
+                            :options="ventilationTypes"
                         />
-                        <div class="col-7">
-                            <span class="form__subtitle">Освещение</span>
-                            <div class="form__row mt-1">
-                                <CheckboxChip
-                                    v-for="(type, index) in lightingTypes"
-                                    :key="index"
-                                    v-model="form.lighting"
-                                    :value="index"
-                                    :text="type"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mt-2">
-                        <div class="col-3 mb-2">
-                            <span class="form__subtitle">Отапливаемый</span>
-                            <div class="form__row mt-1">
-                                <RadioChip v-model="form.heated" label="Нет" :value="0" />
-                                <RadioChip v-model="form.heated" label="Да" :value="1" />
-                            </div>
-                        </div>
-                        <div class="col-3 mb-2">
-                            <span class="form__subtitle">Водоснабжение</span>
-                            <div class="form__row mt-1">
-                                <RadioChip v-model="form.water" label="Нет" :value="0" />
-                                <RadioChip v-model="form.water" label="Да" :value="1" />
-                            </div>
-                        </div>
-                        <div class="col-3 mb-2">
-                            <span class="form__subtitle">Канализация</span>
-                            <div class="form__row mt-1">
-                                <RadioChip v-model="form.sewage" label="Нет" :value="0" />
-                                <RadioChip v-model="form.sewage" label="Да" :value="1" />
-                            </div>
-                        </div>
-                        <div class="col-3 mb-2">
-                            <span class="form__subtitle">Климат контроль</span>
-                            <div class="form__row mt-1">
-                                <RadioChip v-model="form.climate_control" label="Нет" :value="0" />
-                                <RadioChip v-model="form.climate_control" label="Да" :value="1" />
-                            </div>
-                        </div>
-                        <div class="col-3">
-                            <span class="form__subtitle">Газ для пр-ва</span>
-                            <div class="form__row mt-1">
-                                <RadioChip v-model="form.gas" label="Нет" :value="0" />
-                                <RadioChip v-model="form.gas" label="Да" :value="1" />
-                            </div>
-                        </div>
-                        <div class="col-3">
-                            <span class="form__subtitle">Пар для пр-ва</span>
-                            <div class="form__row mt-1">
-                                <RadioChip v-model="form.steam" label="Нет" :value="0" />
-                                <RadioChip v-model="form.steam" label="Да" :value="1" />
-                            </div>
-                        </div>
-                        <div class="col-3">
-                            <span class="form__subtitle">Телефония</span>
-                            <div class="form__row mt-1">
-                                <RadioChip v-model="form.phone_line" label="Нет" :value="0" />
-                                <RadioChip v-model="form.phone_line" label="Да" :value="1" />
-                            </div>
-                        </div>
-                        <div class="col-3">
-                            <span class="form__subtitle">Интернет</span>
-                            <div class="form__row mt-1">
-                                <RadioChip v-model="form.internet" label="Нет" :value="0" />
-                                <RadioChip v-model="form.internet" label="Да" :value="1" />
-                            </div>
-                        </div>
+                        <CheckboxOptions
+                            v-model="form.lighting"
+                            class="col-7"
+                            label="Освещение"
+                            :options="lightingTypes"
+                        />
                     </div>
                 </Tab>
                 <Tab name="Фотографии">
                     <div class="row">
-                        <FileInput
-                            v-model:native="form.photosList"
-                            v-model:data="form.photos"
-                            label="Фотографии"
-                            class="col-12"
-                        >
-                            Выбрать файлы
-                        </FileInput>
+                        <PhotoPicker v-model="form.photos" :photos="related.photo" />
                     </div>
                 </Tab>
             </Tabs>
@@ -324,227 +337,143 @@
     </Modal>
 </template>
 
-<script>
-import { helpers, maxValue, minValue, required } from '@vuelidate/validators';
-import { mapActions } from 'vuex';
+<script setup>
 import { cloneObject } from '@/utils';
-import { yandexmap } from '@/utils/yandexMap.js';
 import Loader from '@/components/common/Loader.vue';
-import { ComplexFormMixin } from '@/components/Forms/Complex/mixin';
 import Modal from '@/components/common/Modal.vue';
 import {
-    entranceBlockTypes,
     firefightingTypes,
-    floorTypes,
-    gateTypes,
     gridColumnTypes,
     lightingTypes,
-    ventilationTypes
+    ventilationTypes,
+    waterTypes
 } from '@/const/types';
-import { ObjectTypeList } from '@/const/const';
-import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
-import RadioChip from '@/components/common/Forms/RadioChip.vue';
+import Input from '@/components/common/Forms/Input.vue';
+import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
+import Submit from '@/components/common/Forms/FormSubmit.vue';
+import Form from '@/components/common/Forms/Form.vue';
+import { computed, onBeforeMount, reactive, shallowRef } from 'vue';
+import useVuelidate from '@vuelidate/core';
+import { validationRulesForFloor } from '@/validators/rules/floor.js';
+import WithUnitType from '@/components/common/WithUnitType.vue';
+import { unitTypes } from '@/const/unitTypes.js';
+import InputRelation from '@/components/common/Forms/InputRelation.vue';
+import CheckboxOptions from '@/components/common/Forms/CheckboxOptions.vue';
+import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
+import { entityOptions } from '@/const/options/options.js';
+import { ceilingHeightValidators, loadFloorValidators } from '@/validators/fields.js';
+import GateTypesPicker from '@/components/common/Forms/GateTypesPicker.vue';
+import PhotoPicker from '@/components/common/Forms/PhotoPicker.vue';
+import { landscapeTypeOptions } from '@/const/options/object.options.js';
+import { landFloorTypeOptions, realFloorTypeOptions } from '@/const/options/floor.options.js';
 
-export default {
-    name: 'FormComplexFloor',
-    components: { RadioChip, DoubleInput, CheckboxChip, Modal, Loader },
-    mixins: [ComplexFormMixin],
-    emits: ['close'],
-    props: {
-        floor: {
-            type: Object,
-            default: null
-        },
-        object: {
-            type: Object,
-            required: true
-        }
+defineEmits(['close']);
+const props = defineProps({
+    floor: {
+        type: Object,
+        default: null
     },
-    data() {
-        return {
-            selectedCompany: null,
-            form: {
-                access_control: null,
-                area_field_full: null,
-                area_floor_full: null,
-                area_mezzanine_full: null,
-                area_office_full: null,
-                area_tech_full: null,
-                barrier: null,
-                ceiling_height: null,
-                ceiling_height_max: null,
-                ceiling_height_min: null,
-                climate_control: null,
-                column_grid: null,
-                column_grid_length: null,
-                column_grid_width: null,
-                column_grids: [],
-                cranes_cathead: null,
-                cranes_overhead: null,
-                deleted: null,
-                description: null,
-                elevators: [],
-                fence: null,
-                fire_alert: null,
-                firefighting_type: null,
-                floorTypes: [],
-                floor_num: null,
-                floor_num_id: null,
-                floor_type: Object,
-                floor_types: [],
-                floor_types_land: null,
-                gas: null,
-                gates: [],
-                heated: null,
-                heating: null,
-                heating_value: null,
-                hoists: [],
-                id: null,
-                internet: null,
-                internet_value: null,
-                land: null,
-                land_length: null,
-                land_width: null,
-                landscape_type: null,
-                last_update: null,
-                lifts: [],
-                lighting: [],
-                lighting_value: null,
-                load_floor: null,
-                load_floor_max: null,
-                load_floor_min: null,
-                number: {
-                    id: null,
-                    title: null,
-                    description: null,
-                    sign: null,
-                    color: null,
-                    order_row: null
-                },
-                object_id: null,
-                order_row: null,
-                parts: [],
-                phone_line: null,
-                photo_block: [],
-                power: null,
-                power_value: null,
-                publ_time: null,
-                security_alert: null,
-                sewage: null,
-                sewage_value: null,
-                smoke_exhaust: null,
-                steam: null,
-                telphers: null,
-                temperature: null,
-                temperature_max: null,
-                temperature_min: null,
-                title: null,
-                title_empty_communications: null,
-                title_empty_cranes: null,
-                title_empty_infrastructure: null,
-                title_empty_main: null,
-                title_empty_security: null,
-                title_empty_stats: null,
-                ventilation: null,
-                video_control: null,
-                water: null
-            },
-            arrayParams: [
-                'photo_block',
-                'parts',
-                'lifts',
-                'lighting',
-                'hoists',
-                'gates',
-                'floor_types',
-                'floorTypes',
-                'elevators',
-                'column_grids'
-            ]
-        };
+    related: {
+        type: Object,
+        required: true
     },
-    validations() {
-        return {
-            form: {
-                address: {
-                    required: helpers.withMessage('заполните поле', required)
-                },
-                company_id: {
-                    required: helpers.withMessage('заполните поле', required)
-                },
-                area_building: {
-                    required: helpers.withMessage('заполните поле', required)
-                },
-                object_class: {
-                    required: helpers.withMessage('выберите класс объекта', required)
-                },
-                year_build: {
-                    minValue: helpers.withMessage('минимальное значение - 1800', minValue(1800)),
-                    maxValue: helpers.withMessage(
-                        `максимальное значение - ${new Date().getFullYear()}`,
-                        maxValue(new Date().getFullYear())
-                    )
-                },
-                year_repair: {
-                    minValue: helpers.withMessage('минимальное значение - 1800', minValue(1800)),
-                    maxValue: helpers.withMessage(
-                        `максимальное значение - ${new Date().getFullYear()}`,
-                        maxValue(new Date().getFullYear())
-                    )
-                },
-                cadastral_number: {
-                    required: helpers.withMessage('заполните поле', required)
-                }
-            }
-        };
-    },
-    computed: {
-        objectTypeListWareHouse: () => ObjectTypeList.warehouse,
-        objectTypeListProduction: () => ObjectTypeList.production,
-        objectTypeListPlot: () => ObjectTypeList.plot,
-        lightingTypes: () => lightingTypes,
-        gridColumnTypes: () => gridColumnTypes,
-        floorTypes: () => floorTypes,
-        entranceBlockTypeOptions() {
-            return Object.values(entranceBlockTypes);
-        },
-        gateTypeOptions() {
-            return Object.values(gateTypes);
-        },
-        ventilationTypeOptions() {
-            return Object.values(ventilationTypes);
-        },
-        firefightingTypeOptions() {
-            return Object.values(firefightingTypes);
-        }
-    },
-    methods: {
-        ...mapActions(['SEARCH_COMPANIES']),
-        onChangeAddress() {
-            console.log('CHANGE ADDRESS');
-        },
-        async onChangeCompany() {
-            console.log('CHANGE COMPANY');
-        },
-        async searchCompany() {
-            return ['ОАО Тореадор', 'ЗАО ИнкЛомМет'];
-        },
-        async searchAddress(query) {
-            return await yandexmap.getAddress(query);
-        },
-        selectObjectType(isSelected, type) {
-            this.form.object_type = this.form.object_type.filter(item => item !== type);
-            if (isSelected) {
-                this.form.object_type.push(type);
-            }
-        }
-    },
-    created() {
-        if (this.floor) {
-            this.form = cloneObject(this.floor);
-            this.normalizeForm(this.arrayParams);
-        }
+    fillFloor: {
+        type: Object,
+        default: null
     }
+});
+
+const arrayParams = [
+    'photo_block',
+    'parts',
+    'lifts',
+    'lighting',
+    'hoists',
+    'gates',
+    'floor_types',
+    'floorTypes',
+    'elevators',
+    'column_grids'
+];
+
+const isLoading = shallowRef(false);
+
+const form = reactive({
+    area_floor_full: null,
+    area_office_full: null,
+    area_tech_full: null,
+    ceiling_height_min: null,
+    ceiling_height_max: null,
+    load_floor_min: null,
+    load_floor_max: null,
+    temperature_min: null,
+    temperature_max: null,
+    floor_types: [],
+    column_grids: [],
+    gates: [],
+    smoke_exhaust: null,
+    video_control: null,
+    access_control: null,
+    security_alert: null,
+    fire_alert: null,
+    firefighting_type: null,
+    heated: null,
+    water: null,
+    sewage: null,
+    climate_control: null,
+    gas: null,
+    steam: null,
+    phone_line: null,
+    internet: null,
+    ventilation: null,
+    lighting: [],
+    photos: [],
+    area_mezzanine_full: null,
+    area_field_full: null,
+    land_length: null,
+    land_width: null,
+    landscape_type: null,
+    floor_types_land: [],
+    barrier: null,
+    fence: null,
+    water_type: []
+});
+
+const v$ = useVuelidate({ form: validationRulesForFloor }, { form });
+
+const formCeilingHeightValidators = computed(() => {
+    return ceilingHeightValidators(form.ceiling_height_max);
+});
+
+const formLoadFloorValidators = computed(() => {
+    return loadFloorValidators(form.load_floor_max);
+});
+
+const floorNumber = computed(() => {
+    return props.floor ? Number(props.floor.number.id) : Number(props.fillFloor);
+});
+const isRealFloor = computed(() => {
+    return floorNumber.value !== 16;
+});
+const isFirstFloor = computed(() => {
+    return floorNumber.value === 1;
+});
+const isMezzanine = computed(() => {
+    return floorNumber.value > 1 && floorNumber.value < 6;
+});
+
+const normalizeForm = () => {
+    arrayParams.forEach(param => {
+        if (!Array.isArray(form[param])) form[param] = [];
+    });
 };
+
+const onSubmit = () => {};
+
+onBeforeMount(() => {
+    console.log(props.related);
+    if (props.floor) Object.assign(form, cloneObject(props.floor));
+    normalizeForm();
+});
 </script>

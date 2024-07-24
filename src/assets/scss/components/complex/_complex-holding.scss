@@ -89,19 +89,31 @@
 
     &__info {
         display: flex;
-        max-height: 470px;
+
+        @include mixins.media('min', 'md') {
+            max-height: 470px;
+        }
+
+        @include mixins.media('max', 'md') {
+            flex-direction: column;
+        }
 
         &-left {
             @include mixins.flex-box($d: column);
-            width: 70%;
+            @include mixins.media('min', 'md') {
+                width: 70%;
+            }
         }
 
         &-right {
-            width: 30%;
             padding: 20px;
             background-color: variables.$color_olive_light;
             border: 1px solid variables.$color_light_grey;
             overflow-y: auto;
+
+            @include mixins.media('min', 'md') {
+                width: 30%;
+            }
         }
     }
 }

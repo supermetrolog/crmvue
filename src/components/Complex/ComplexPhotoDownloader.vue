@@ -1,6 +1,6 @@
 <template>
     <Modal
-        v-if="opened"
+        v-if="isOpened"
         @close="close"
         title="Выбор изображений для скачивания"
         class="complex-photo-downloader"
@@ -47,59 +47,51 @@
         </div>
     </Modal>
 </template>
-<script>
+<script setup>
 import Modal from '@/components/common/Modal.vue';
 import VLazyImage from 'v-lazy-image';
 import Button from '@/components/common/Button.vue';
-import useValidate from '@vuelidate/core';
+import { computed, ref, shallowRef } from 'vue';
+import { $generatorURL as $url } from '@/plugins/url.js';
 
-export default {
-    name: 'ComplexPhotoDownloader',
-    components: { Button, Modal, VLazyImage },
-    data() {
-        return {
-            opened: false,
-            photos: [],
-            downloads: {},
-            v$: useValidate()
-        };
-    },
-    computed: {
-        downloadsCount() {
-            return Object.values(this.downloads).filter(Boolean).length;
-        }
-    },
-    methods: {
-        open(photos) {
-            this.photos = photos;
-            this.downloads = photos.reduce((acc, _, key) => ({ ...acc, [key]: false }), {});
-            this.opened = true;
-        },
-        close() {
-            this.opened = false;
-            this.downloads = {};
-            this.photos = [];
-        },
-        toggleDownload(index) {
-            this.downloads[index] = !this.downloads[index];
-        },
-        createLink(params) {
-            return this.$url.api.archiver() + '?files[]=' + params.join('&files[]=');
-        },
-        download() {
-            const link = this.createLink(
-                this.photos.filter((_, key) => this.downloads[key]).map(photo => photo.src)
-            );
+const isOpened = shallowRef(false);
+const photos = ref([]);
+const downloads = ref({});
 
-            window.open(link, '_blank').focus();
-        },
-        downloadAll() {
-            const link = this.createLink(this.photos.map(photo => photo.src));
-            window.open(link, '_blank').focus();
-        },
-        selectAll() {
-            this.downloads = this.photos.reduce((acc, _, key) => ({ ...acc, [key]: true }), {});
-        }
-    }
+const downloadsCount = computed(() => {
+    return Object.values(downloads.value).filter(Boolean).length;
+});
+
+const open = _photos => {
+    photos.value = _photos;
+    downloads.value = _photos.reduce((acc, _, key) => ({ ...acc, [key]: false }), {});
+    isOpened.value = true;
+};
+
+defineExpose({ open });
+const close = () => {
+    isOpened.value = false;
+    downloads.value = {};
+    photos.value = [];
+};
+const toggleDownload = index => {
+    downloads.value[index] = !downloads.value[index];
+};
+const createLink = params => {
+    return $url.api.archiver() + '?files[]=' + params.join('&files[]=');
+};
+const download = () => {
+    const link = createLink(
+        photos.value.filter((_, key) => downloads.value[key]).map(photo => photo.src)
+    );
+
+    window.open(link, '_blank').focus();
+};
+const downloadAll = () => {
+    const link = createLink(photos.value.map(photo => photo.src));
+    window.open(link, '_blank').focus();
+};
+const selectAll = () => {
+    downloads.value = photos.value.reduce((acc, _, key) => ({ ...acc, [key]: true }), {});
 };
 </script>

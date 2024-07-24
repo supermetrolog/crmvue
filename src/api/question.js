@@ -1,6 +1,6 @@
 import axios from 'axios';
-import ErrorHandle from '@/api/errors/index.js';
-import SuccessHandler from '@/api/success/index.js';
+import { setRequestError } from '@/api/helpers/setRequestError.js';
+import { SuccessHandler } from '@/api/helpers/successHandler.js';
 
 const URL = '/questions';
 
@@ -10,7 +10,25 @@ export default {
             const response = await axios.post(URL, options);
             return SuccessHandler.getData(response);
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
+            return null;
+        }
+    },
+    async createAnswerOption(options) {
+        try {
+            const response = await axios.post('/question-answers', options);
+            return SuccessHandler.getData(response);
+        } catch (e) {
+            setRequestError(e);
+            return null;
+        }
+    },
+    async updateAnswerOption(id, options) {
+        try {
+            const response = await axios.put('/question-answers/' + id, options);
+            return SuccessHandler.getData(response);
+        } catch (e) {
+            setRequestError(e);
             return null;
         }
     },
@@ -20,7 +38,7 @@ export default {
             const response = await axios.get(`${URL}/${id}`);
             return SuccessHandler.getData(response);
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
@@ -29,7 +47,7 @@ export default {
             const response = await axios.get(`${URL}/with-question-answer`);
             return SuccessHandler.getData(response);
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
@@ -38,7 +56,7 @@ export default {
             const response = await axios.get(URL);
             return SuccessHandler.getData(response);
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
@@ -47,7 +65,7 @@ export default {
             const response = await axios.delete(`${URL}/${id}`);
             return response.status === 200;
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
@@ -56,7 +74,7 @@ export default {
             const response = await axios.put(`${URL}/${id}`, payload);
             return SuccessHandler.getData(response);
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     }

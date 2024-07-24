@@ -61,6 +61,10 @@ main {
 
     &__actions {
         @include mixins.flex-box($a: flex-end, $gap: 10px);
+
+        @include mixins.media('max', 'md') {
+            flex-wrap: wrap;
+        }
     }
 }
 
@@ -178,4 +182,8 @@ main {
             background-color: variables.$bg-primary-l;
         }
     }
+}
+
+.no-rounded {
+    border-radius: 0!important;
 }

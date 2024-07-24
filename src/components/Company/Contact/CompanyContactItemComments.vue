@@ -19,44 +19,29 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import Loader from '@/components/common/Loader.vue';
 import Textarea from '@/components/common/Forms/Textarea.vue';
 import Button from '@/components/common/Button.vue';
 import EmptyLabel from '@/components/common/EmptyLabel.vue';
+import { shallowRef } from 'vue';
 
-export default {
-    name: 'CompanyContactItemComments',
-    components: {
-        EmptyLabel,
-        Button,
-        Textarea,
-        Loader
-    },
-    emits: ['create'],
-    props: {
-        comments: {
-            type: Array,
-            required: true
-        }
-    },
-    data() {
-        return {
-            comment: '',
-            isLoading: false
-        };
-    },
-    methods: {
-        async createComment() {
-            this.isLoading = true;
-
-            await this.$emit('create', this.comment);
-            this.comment = '';
-
-            this.isLoading = false;
-        }
+const emit = defineEmits(['create']);
+defineProps({
+    comments: {
+        type: Array,
+        required: true
     }
+});
+
+const comment = shallowRef('');
+const isLoading = shallowRef(false);
+
+const createComment = async () => {
+    isLoading.value = true;
+    await emit('create', comment.value);
+    comment.value = '';
+
+    isLoading.value = false;
 };
 </script>
-
-<style></style>

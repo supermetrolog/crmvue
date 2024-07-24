@@ -38,7 +38,6 @@ const CompanyObjects = {
         async loadCompanyObjects({ commit, state }, company_id) {
             if (state.pagination && state.pagination.currentPage === state.pagination.pageCount)
                 return true;
-            console.log(state.pagination);
             const page = state.pagination?.currentPage ?? 1;
             const response = await api.companyObjects.search({ company_id, page: page + 1 });
 

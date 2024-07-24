@@ -169,18 +169,3 @@ export const AsyncModalMixin = {
         }
     }
 };
-
-export const ScrollToEndMixin = {
-    methods: {
-        async scrollListToEnd() {
-            await this.$nextTick();
-
-            if (this.$refs.list) {
-                this.$refs.list.scrollTop = this.$refs.list.scrollHeight;
-            }
-        }
-    },
-    mounted() {
-        this.scrollListToEnd();
-    }
-};

@@ -1,5 +1,5 @@
 <template>
-    <div class="avatar" :style="{ '--size': size + 'px' }">
+    <div v-tippy="label" class="avatar" :style="{ '--size': size + 'px' }">
         <VLazyImage
             @error="hasError = true"
             class="avatar__image"
@@ -7,25 +7,24 @@
         />
     </div>
 </template>
-<script>
+<script setup>
 import VLazyImage from 'v-lazy-image';
-export default {
-    name: 'Avatar',
-    components: { VLazyImage },
-    props: {
-        src: {
-            type: String,
-            default: null
-        },
-        size: {
-            type: [String, Number],
-            default: 60
-        }
+import { shallowRef } from 'vue';
+
+defineProps({
+    src: {
+        type: String,
+        default: undefined
     },
-    data() {
-        return {
-            hasError: false
-        };
+    size: {
+        type: [String, Number],
+        default: 60
+    },
+    label: {
+        type: String,
+        default: undefined
     }
-};
+});
+
+const hasError = shallowRef(false);
 </script>

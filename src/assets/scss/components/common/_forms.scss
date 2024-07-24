@@ -269,6 +269,7 @@
 
         &:has(.form__multiselect).required > span {
             position: relative;
+            width: max-content;
 
             &::after {
                 content: '*';
@@ -299,8 +300,12 @@
             margin-top: 5px;
         }
 
+        &:has(.form__tooltip) {
+            position: relative;
+        }
+
         &:has(.form__tooltip) .form__input {
-            padding-right: 35px;
+            padding-right: 45px;
         }
 
         &:not(&--reactive) {
@@ -468,12 +473,19 @@
     }
 
     &__stars {
-        @include mixins.flex-box($gap: 5px, $d: column);
+        @include mixins.flex-box($gap: 5px, $a: center);
+        width: max-content;
     }
 
     &__star {
-        cursor: pointer;
+        background-color: unset;
+        border: none;
         font-size: 30px;
+        cursor: pointer;
+
+        &:hover {
+            opacity: .6;
+        }
     }
 
     &__chips {
@@ -614,6 +626,15 @@
 .form-company-deal {
     .form__textarea {
         height: 100px;
+    }
+
+    &__offer {
+        @include mixins.flex-box($gap: 5px, $a: center);
+    }
+
+    &__thumb {
+        height: 40px;
+        width: 40px;
     }
 }
 
@@ -1088,7 +1109,7 @@
 }
 
 .switch {
-    @include mixins.flex-box($gap: 5px, $a: center);
+    @include mixins.flex-box($gap: 10px, $a: center);
 
     &__wrapper {
         height: 24px;
@@ -1099,6 +1120,7 @@
         transition: background-color .2s ease-in-out;
         background-color: #dcdfe6;
         display: block;
+        flex-shrink: 0;
 
         &:not(.disabled) {
             cursor: pointer;
@@ -1129,12 +1151,23 @@
     }
 
     &__label {
+        padding: 0;
+        display: inline;
+        background-color: unset;
+        border: unset;
+        width: unset;
         @include mixins.transition(color);
+        @include mixins.hover {
+            color: variables.$bg_success;
+        }
+
+        cursor: pointer;
     }
 
     &:not(&:has(&__input:checked)) {
         .switch__label--false {
             color: variables.$bg_success;
+            font-weight: 500;
         }
     }
 
@@ -1150,6 +1183,7 @@
 
             &__label--true {
                 color: variables.$bg_success;
+                font-weight: 500;
             }
         }
     }
@@ -1179,4 +1213,301 @@
 
 .color-picker-popup {
     z-index: 4005!important;
+}
+
+.vue-editor {
+    &__label {
+        font-weight: 500;
+    }
+
+    .ql-editor {
+        font-size: 16px;
+        min-height: 200px;
+        max-height: 400px;
+    }
+}
+
+
+.object-type-picker {
+    &__wrapper {
+        @include mixins.flex-box($d: column, $gap: 5px);
+    }
+
+    &__extra {
+        padding: 5px;
+        color: variables.$color_dark;
+        outline: 1px dashed variables.$color_dark;
+        font-weight: 500;
+        text-transform: uppercase;
+        border-radius: 2px;
+        border: none;
+        cursor: pointer;
+        font-size: 13px;
+        text-align: center;
+        background-color: transparent;
+        @include mixins.transition(background-color, color, outline-color);
+
+        @include mixins.hover {
+            background-color: rgba(16, 185, 129, 0.7);
+        }
+
+        &.active {
+            background-color: rgba(16, 185, 129, 1);
+            color: #fff;
+            outline-color: transparent;
+        }
+    }
+
+    &__list {
+        @include mixins.flex-box($gap: 5px, $wrap: true);
+        max-width: 100%;
+    }
+
+    &__button {
+        @include mixins.flex-box($a: center, $j: center);
+        @include mixins.transition(background-color .5s, color .5s);
+        height: 45px;
+        width: 45px;
+        border-radius: 4px;
+        border: none;
+        background-color: rgba(211, 211, 211, 0.7);
+        font-size: 22px;
+
+        &:not([disabled]) {
+            cursor: pointer;
+        }
+
+        @include mixins.hover {
+            background-color: rgba(16, 185, 129, 0.7);
+        }
+
+        &.active {
+            background-color: rgba(16, 185, 129, 1);
+            color: variables.$color_light;
+        }
+    }
+}
+
+.floor-picker {
+    &__label {
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+
+    &__list {
+        @include mixins.flex-box($d: column, $gap: 5px);
+    }
+
+    &__button {
+        @include mixins.transition(background-color, border-color, color);
+        cursor: pointer;
+        padding: 5px 15px;
+        border: 1px solid #d1d5db;
+        border-radius: 5px;
+        min-height: 35px;
+        min-width: 35px;
+        background-color: #fff;
+
+        @include mixins.hover {
+            background-color: rgba(16, 185, 129, 0.6);
+            color: #fff;
+        }
+
+        &.active {
+            background-color: #10b981;
+            border-color: #10b981;
+            color: #fff;
+        }
+    }
+}
+
+.building-picker {
+    &__header {
+        @include mixins.flex-box($gap: 10px, $wrap: true);
+    }
+
+    &__list {
+        @include mixins.flex-box($wrap: true, $gap: 10px);
+    }
+}
+
+.building-picker-object {
+    border: 1px solid rgba(0, 0, 0, .3);
+    border-radius: 5px;
+    opacity: .6;
+    @include mixins.transition(opacity);
+    @include mixins.flex-box($d: column);
+    width: 200px;
+
+    &.selected {
+        opacity: 1;
+        outline: 3px solid variables.$cl-success;
+    }
+
+    &:not(.disabled) {
+        cursor: pointer;
+    }
+
+    &__id {
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        color: #fff;
+        font-size: 12px!important;
+    }
+
+    &__preview {
+        height: 150px;
+        width: 100%;
+        position: relative;
+    }
+
+    &__image {
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    &__content {
+        padding: 5px;
+    }
+
+    &__description {
+        font-size: 14px;
+        @include mixins.text-overflow(2);
+    }
+}
+
+.input-relation {
+    margin-top: 27px;
+
+    .dashboard-chip {
+        padding: 9px 10px;
+        @include mixins.transition(background-color);
+    }
+}
+
+.radio-options, .checkbox-options {
+    .form__label.required::after {
+        content: '*';
+        font-size: 18px;
+        color: variables.$color_danger;
+        margin-left: 3px;
+    }
+}
+
+.gate-types-picker {
+    &__label {
+        padding: 5px;
+        background-color: variables.$color_grey_alt;
+        border-radius: 5px;
+
+        @include mixins.flex-box($gap: 5px);
+    }
+
+    &__select {
+        max-width: 350px;
+    }
+
+    &__input {
+        max-width: 200px;
+    }
+
+    &__buttons {
+        @include mixins.flex-box($gap: 10px);
+    }
+}
+
+.file-picker {
+    &__header {
+        @include mixins.flex-box($gap: 10px, $wrap: true);
+    }
+
+    &__preview {
+        aspect-ratio: 1 / 1;
+        opacity: .5;
+        @include mixins.transition(opacity);
+        border-radius: 5px;
+
+        &.active {
+            opacity: 1;
+            outline: 3px solid variables.$cl-success;
+        }
+    }
+
+    &:not(.disabled) &__preview {
+        cursor: pointer;
+    }
+
+    &__image {
+        border-radius: 5px;
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
+}
+
+.switch-slider {
+    &.disabled &__wrapper {
+        opacity: .5;
+    }
+
+    &__wrapper {
+        @include mixins.flex-box($gap: 15px, $a: center);
+    }
+
+    &__label {
+        font-weight: 500;
+        display: inline;
+        width: 120px;
+    }
+
+    &__buttons {
+        @include mixins.flex-box($gap: 5px);
+        padding: 5px;
+        border-radius: 5px;
+        background-color: rgba(211, 211, 211, 0.4);
+    }
+
+    &__button {
+        &:not(.disabled) {
+            cursor: pointer;
+        }
+
+        border: none;
+        background-color: #fff;
+        width: max-content;
+        padding: 5px 10px;
+        border-radius: 5px;
+        opacity: .8;
+
+        @include mixins.transition(background-color, color, opacity);
+        @include mixins.hover {
+            background-color: variables.$cl-success;
+            color: #fff;
+            opacity: 1;
+        }
+
+        &.active {
+            background-color: rgba(16, 185, 129, 0.8);
+            color: #fff;
+            opacity: 1;
+        }
+
+        &--unknown {
+            &.active {
+                color: #000;
+                background-color: rgba(16, 185, 129, 0.3);
+                opacity: .8;
+            }
+
+            @include mixins.hover {
+                color: #000;
+                background-color: rgba(16, 185, 129, 0.3);
+                opacity: .8;
+            }
+        }
+    }
 }

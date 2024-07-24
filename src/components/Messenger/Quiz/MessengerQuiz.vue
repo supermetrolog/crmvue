@@ -1,5 +1,5 @@
 <template>
-    <div v-if="opened" class="messenger-quiz">
+    <div v-if="isOpened" class="messenger-quiz">
         <div class="messenger-quiz__header">
             <p>
                 {{ THIS_USER.userProfile.full_name }}, {{ recipient }}, от
@@ -11,103 +11,120 @@
             <i class="fa-solid fa-chevron-left"></i>
             <span>Отрыть список возможных вопросов клиенту</span>
         </p>
+        <Spinner v-if="isLoading" class="my-4" />
         <div class="messenger-quiz__content">
             <MessengerQuizQuestion
                 v-for="question in questions"
+                ref="questionRefs"
                 :key="question.id"
                 :question="question"
                 class="messenger-quiz__question"
             />
         </div>
         <div class="messenger-quiz__footer">
-            <MessengerButton @click="send" color="success"> Готово </MessengerButton>
-            <MessengerButton @click="openSchedule" :disabled="!currentRecipient">
-                Запланировать звонок
+            <MessengerButton @click="send" color="success" :disabled="isCompleted">
+                Готово
             </MessengerButton>
-            <MessengerButton
-                @click="reportContact({ contact: currentRecipient })"
-                :disabled="!currentRecipient || currentRecipient.not_actual"
-            >
-                Контакт не актуален
-            </MessengerButton>
-            <MessengerButton @click="breakObject" color="danger">Снесен</MessengerButton>
+            <MessengerButton @click="openSchedule" disabled>Запланировать звонок</MessengerButton>
+            <MessengerButton disabled>Контакт не актуален</MessengerButton>
+            <MessengerButton disabled color="danger">Снесен</MessengerButton>
         </div>
+        <MessengerQuizComplete v-if="isCompleted" @close="close" />
     </div>
 </template>
-<script>
+<script setup>
 import MessengerQuizQuestion from '@/components/Messenger/Quiz/MessengerQuizQuestion.vue';
-import { questions } from '@/const/quiz';
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { useStore } from 'vuex';
 import dayjs from 'dayjs';
+import { computed, inject, ref, shallowRef } from 'vue';
+import { useNotify } from '@/utils/useNotify.js';
+import Spinner from '@/components/common/Spinner.vue';
+import { useConfirm } from '@/composables/useConfirm.js';
+import api from '@/api/api.js';
+import MessengerQuizComplete from '@/components/Messenger/Quiz/MessengerQuizComplete.vue';
 
-export default {
-    name: 'MessengerQuiz',
-    components: { MessengerButton, MessengerQuizQuestion },
-    inject: ['$openSchedule', '$toggleQuizHelper'],
-    data() {
-        return {
-            opened: false
-        };
-    },
-    computed: {
-        ...mapGetters(['THIS_USER']),
-        ...mapState({ currentRecipient: state => state.Messenger.currentRecipient }),
-        questions() {
-            return questions.rent;
-        },
-        currentDate() {
-            return dayjs().format('DD.MM.YYYY');
-        },
-        recipient() {
-            if (this.currentRecipient) return `с ${this.currentRecipient.full_name}`;
-            return 'без звонка';
-        }
-    },
-    methods: {
-        ...mapActions({ reportContact: 'Messenger/reportContact' }),
-        async openSchedule() {
-            const schedule = await this.$openSchedule();
+const store = useStore();
+const notify = useNotify();
+const { confirm } = useConfirm();
 
-            if (schedule) {
-                this.$store.dispatch('Messenger/addCall', {
-                    date: schedule,
-                    contact: this.currentRecipient
-                });
-                this.$toast('Дата следующего звонка успешно выбрана');
-            }
-        },
-        open() {
-            this.opened = true;
-        },
-        close() {
-            this.opened = false;
-        },
-        toggle() {
-            this.opened = !this.opened;
-        },
-        async send() {
-            // const response = await api.survey.create({
-            //     user_id: this.THIS_USER.id,
-            //     contact_id: this.currentRecipient.id
-            // });
-            // console.log(response);
-            // const quizSent = await this.$store.dispatch('Messenger/sendQuiz', {
-            //     contact: this.currentRecipient
-            // });
-            //
-            // if (quizSent) {
-            //     this.close();
-            //     this.$toast('Опросник успешно завершен.');
-            // }
-        },
-        async breakObject() {
-            const requestSent = await this.$store.dispatch('Messenger/sendBreakObject');
+const $openSchedule = inject('$openSchedule');
+const $toggleQuizHelper = inject('$toggleQuizHelper');
 
-            if (requestSent) {
-                this.$toast('Объект помечен снесенным.');
-            }
-        }
+const isOpened = shallowRef(false);
+const isLoading = shallowRef(false);
+const isCompleted = shallowRef(false);
+const currentDate = shallowRef(dayjs().format('DD.MM.YYYY'));
+const questionRefs = ref([]);
+
+const THIS_USER = computed(() => store.getters.THIS_USER);
+const questions = computed(() => store.state.Quizz.questions);
+
+const currentRecipient = computed(() => store.state.Messenger.currentRecipient);
+const recipient = computed(() => {
+    if (currentRecipient.value) return `с ${currentRecipient.value.full_name}`;
+    return 'без звонка';
+});
+
+const openSchedule = async () => {
+    const schedule = await $openSchedule();
+
+    if (schedule) {
+        await store.dispatch('Messenger/addCall', {
+            date: schedule,
+            contact: currentRecipient.value
+        });
+        notify.info('Дата следующего звонка успешно выбрана');
+    }
+};
+
+const close = () => {
+    isCompleted.value = false;
+    isOpened.value = false;
+};
+
+const open = () => {
+    isOpened.value = true;
+};
+
+const fetchQuestions = async () => {
+    isLoading.value = true;
+    await store.dispatch('fetchQuestions');
+    isLoading.value = false;
+};
+
+const toggle = () => {
+    if (!isOpened.value && questions.value.length === 0) fetchQuestions();
+    if (isOpened.value) close();
+    else open();
+};
+
+defineExpose({ toggle });
+
+const send = async () => {
+    const confirmed = await confirm('Подтвердите заполнение опросника');
+    if (!confirmed) return;
+
+    isLoading.value = true;
+
+    const forms = questionRefs.value.map(element => element.getForm());
+
+    const created = await api.survey.create({
+        contact_id: currentRecipient.value.id,
+        user_id: THIS_USER.value.id,
+        question_answers: forms.flat()
+    });
+
+    isLoading.value = false;
+
+    if (created) {
+        isCompleted.value = true;
+        notify.success();
+
+        setTimeout(() => {
+            close();
+            isCompleted.value = false;
+        }, 5000);
     }
 };
 </script>

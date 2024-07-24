@@ -27,6 +27,7 @@ export const deleteEmptyFields = (object, withResult = false) => {
     for (const key in object) {
         if (Object.hasOwnProperty.call(object, key)) {
             const value = object[key];
+
             if (
                 value === null ||
                 value === '' ||

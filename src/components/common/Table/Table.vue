@@ -9,16 +9,11 @@
     </table>
 </template>
 
-<script>
-export default {
-    name: 'Table',
-    props: {
-        fluid: {
-            type: Boolean,
-            default: false
-        }
+<script setup>
+defineProps({
+    fluid: {
+        type: Boolean,
+        default: false
     }
-};
+});
 </script>
-
-<style></style>

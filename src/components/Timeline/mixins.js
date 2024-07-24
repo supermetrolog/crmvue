@@ -1,5 +1,5 @@
 import { mapActions, mapGetters } from 'vuex';
-import { cloneObject, waitHash } from '@/utils/index.js';
+import { cloneObject } from '@/utils/index.js';
 import api from '@/api/api.js';
 import CommentWithAutoSetComment, {
     AlreadySendOffersComment,
@@ -8,6 +8,7 @@ import CommentWithAutoSetComment, {
     SendOffersComment
 } from '@/components/Timeline/comments.js';
 import { notify } from '@kyvg/vue3-notification';
+import { useQueryHash } from '@/utils/useQueryHash.js';
 
 export const TimelineStepMixin = {
     emits: ['update-step', 'updated-objects', 'next-step'],
@@ -361,9 +362,6 @@ export const TimelineStepWithSearchableObjectsMixin = {
         ...mapActions(['SEARCH_FAVORITES_OFFERS']),
         async fetchObjects(query = {}, withLoader = true) {
             if (withLoader) this.isSearchLoading = true;
-            const hash = waitHash(query);
-            this.waitHash = hash;
-
             query = {
                 type_id: [1, 2, 3],
                 page: this.currentPage,
@@ -372,6 +370,9 @@ export const TimelineStepWithSearchableObjectsMixin = {
                 timeline_id: this.TIMELINE.id,
                 ...query
             };
+
+            const { setHash, confirmHash } = useQueryHash('search-favorite-offers');
+            setHash(query);
 
             if (!this.FAVORITES_OFFERS.length) await this.SEARCH_FAVORITES_OFFERS();
             if (query.favorites) {
@@ -382,7 +383,8 @@ export const TimelineStepWithSearchableObjectsMixin = {
 
             const data = await api.companyObjects.searchOffers(query);
 
-            if (hash === this.waitHash) this.setObjects(data);
+            if (confirmHash(query)) this.setObjects(data);
+
             if (withLoader) this.isSearchLoading = false;
         },
         async setPreventStepObjects() {

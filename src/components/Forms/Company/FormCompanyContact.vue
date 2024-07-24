@@ -239,7 +239,7 @@ import {
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
-import Submit from '@/components/common/Forms/Submit.vue';
+import Submit from '@/components/common/Forms/FormSubmit.vue';
 import { cloneObject } from '@/utils/index.js';
 import Spinner from '@/components/common/Spinner.vue';
 

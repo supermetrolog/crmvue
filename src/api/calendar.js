@@ -1,6 +1,6 @@
 import axios from 'axios';
-import ErrorHandle from './errors';
-import SuccessHandler from './success';
+import { setRequestError } from '@/api/helpers/setRequestError.js';
+import { SuccessHandler } from '@/api/helpers/successHandler.js';
 
 export default {
     async fetchCalendar(consultant_id, page) {
@@ -15,7 +15,7 @@ export default {
                 data.data = SuccessHandler.getData(Response);
                 data.pagination = SuccessHandler.getPaginationData(Response);
             })
-            .catch(e => ErrorHandle.setError(e));
+            .catch(e => setRequestError(e));
         return data;
     },
     async createEvent(formdata) {
@@ -26,7 +26,7 @@ export default {
             .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch(e => ErrorHandle.setError(e));
+            .catch(e => setRequestError(e));
 
         return data;
     }

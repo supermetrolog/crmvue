@@ -19,12 +19,11 @@
 <script>
 import CompanyBoxObjectsList from './CompanyBoxObjectsList.vue';
 import CompanyBoxLayout from '@/components/Company/Box/CompanyBoxLayout.vue';
-import NoData from '@/components/common/NoData.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 
 export default {
     name: 'CompanyBoxObjects',
-    components: { EmptyData, NoData, CompanyBoxLayout, CompanyBoxObjectsList },
+    components: { EmptyData, CompanyBoxLayout, CompanyBoxObjectsList },
     emits: ['load'],
     props: {
         objects: {

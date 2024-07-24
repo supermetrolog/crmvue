@@ -19,7 +19,6 @@ import './assets/fontawesome/css/all.min.css';
 import 'animate.css';
 import Tab from '@/components/common/Tabs/Tab.vue';
 import Tabs from '@/components/common/Tabs/Tabs.vue';
-import Toast from '@/plugins/toast';
 
 import Url, { $generatorURL } from '@/plugins/url';
 import dayjs from 'dayjs';
@@ -28,6 +27,7 @@ import isToday from 'dayjs/plugin/isToday';
 import isYesterday from 'dayjs/plugin/isYesterday';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { vIntersection } from '@/directives/intersection.js';
+import { axiosRequestInterceptor } from '@/services/axios.js';
 
 dayjs.extend(isToday);
 dayjs.extend(isYesterday);
@@ -35,6 +35,7 @@ dayjs.extend(relativeTime);
 dayjs.locale('ru');
 
 axios.defaults.baseURL = $generatorURL.api.url();
+axios.interceptors.request.use(axiosRequestInterceptor);
 
 const app = createApp(App);
 
@@ -55,8 +56,7 @@ app.component('Tabs', Tabs)
     .use(UniqueID)
     .use(Formatter)
     .use(Url)
-    .use(Notifications)
-    .use(Toast, {
+    .use(Notifications, {
         group: 'app',
         type: 'info',
         duration: 1000

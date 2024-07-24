@@ -1,6 +1,6 @@
 import axios from 'axios';
-import ErrorHandle from '@/api/errors/index.js';
-import SuccessHandler from '@/api/success/index.js';
+import { setRequestError } from '@/api/helpers/setRequestError.js';
+import { SuccessHandler } from '@/api/helpers/successHandler.js';
 
 export default {
     async createFromMessage(messageID, options) {
@@ -13,7 +13,7 @@ export default {
             });
             return SuccessHandler.getData(response);
         } catch (e) {
-            ErrorHandle.setError(e);
+            await setRequestError(e);
             return null;
         }
     }

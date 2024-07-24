@@ -1,29 +1,60 @@
 <template>
     <div class="switch">
-        <span v-if="falseTitle" class="switch__label switch__label--false">{{ falseTitle }}</span>
+        <button
+            v-if="falseTitle"
+            @click.prevent="field = false"
+            class="switch__label switch__label--false"
+        >
+            {{ falseTitle }}
+        </button>
         <label v-tippy="label" class="switch__wrapper" :class="{ disabled: disabled }">
             <input
-                v-model="modelValue"
+                v-model="field"
                 @change="$emit('change', modelValue, $event)"
                 :disabled="disabled"
                 class="switch__input"
                 type="checkbox"
-                :checked="checked"
+                :checked="Boolean(checked)"
             />
             <span class="switch__circle"></span>
         </label>
-        <span v-if="trueTitle" class="switch__label switch__label--true">{{ trueTitle }}</span>
+        <button
+            v-if="trueTitle"
+            @click.prevent="field = true"
+            class="switch__label switch__label--true"
+        >
+            {{ trueTitle }}
+        </button>
     </div>
 </template>
 <script setup>
+import { computed } from 'vue';
+
 defineEmits(['change']);
-defineProps({
+const props = defineProps({
     disabled: { type: Boolean, default: false },
     trueTitle: { type: String, default: null },
     falseTitle: { type: String, default: null },
     label: { type: String, default: null },
-    checked: { type: [Number, Boolean], default: false }
+    checked: { type: [Number, Boolean], default: false },
+    transform: { type: Function, default: Boolean },
+    onlyTrue: { type: Boolean, default: false }
 });
 
 const modelValue = defineModel();
+
+const field = computed({
+    get() {
+        return Boolean(modelValue.value);
+    },
+    set(value) {
+        if (props.onlyTrue && !value) {
+            modelValue.value = null;
+            return null;
+        }
+
+        modelValue.value = props.transform(value);
+        return value;
+    }
+});
 </script>

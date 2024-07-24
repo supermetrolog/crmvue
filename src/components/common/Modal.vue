@@ -6,7 +6,7 @@
         :style="{ '--modal-width': width ? width + 'px' : 'auto' }"
         :class="{ 'modal--with-tabs': hasTabs, 'modal--relative': relative }"
     >
-        <div @click="clickCancelButton" class="modal__blackout"></div>
+        <div @click="close" class="modal__blackout"></div>
         <div class="modal__container">
             <div class="modal__header">
                 <p v-if="title">
@@ -16,7 +16,7 @@
                 <div class="modal__close">
                     <i
                         v-tippy="'Закрыть окно'"
-                        @click.prevent="clickCancelButton"
+                        @click.prevent="close"
                         class="icon fa-solid fa-xmark"
                     ></i>
                 </div>
@@ -37,57 +37,53 @@
     </div>
 </template>
 
-<script>
-export default {
-    name: 'Modal',
-    emits: ['close'],
-    props: {
-        title: {
-            type: String
-        },
-        hasTabs: {
-            type: Boolean,
-            default: false
-        },
-        relative: {
-            type: Boolean,
-            default: false
-        },
-        width: {
-            type: [Number, String],
-            default: null
-        }
-    },
-    data() {
-        return {
-            alreadyHidden: false
-        };
-    },
-    methods: {
-        clickCancelButton() {
-            this.$emit('close');
-        },
-        escapeHandler(event) {
-            event.stopImmediatePropagation();
-            if (event.code === 'Escape') this.$emit('close');
-        }
-    },
-    mounted() {
-        document.addEventListener('keydown', this.escapeHandler, true);
-        this.$refs.modal.classList.add('fadein');
+<script setup>
+import { onMounted, onUnmounted, ref, shallowRef } from 'vue';
 
-        if (document.body.classList.contains('is-modal')) {
-            this.alreadyHidden = true;
-            return;
-        }
-
-        document.body.classList.add('is-modal');
+const emit = defineEmits(['close']);
+defineProps({
+    title: {
+        type: String
     },
-    unmounted() {
-        document.removeEventListener('keydown', this.escapeHandler, true);
-        if (this.alreadyHidden) return;
-
-        document.body.classList.remove('is-modal');
+    hasTabs: {
+        type: Boolean,
+        default: false
+    },
+    relative: {
+        type: Boolean,
+        default: false
+    },
+    width: {
+        type: [Number, String],
+        default: null
     }
+});
+
+const alreadyHidden = shallowRef(false);
+const modal = ref(null);
+
+const close = () => emit('close');
+const escapeHandler = event => {
+    event.stopImmediatePropagation();
+    if (event.code === 'Escape') close();
 };
+
+onMounted(() => {
+    document.addEventListener('keydown', escapeHandler, true);
+    modal.value.classList.add('fadein');
+
+    if (document.body.classList.contains('is-modal')) {
+        alreadyHidden.value = true;
+        return;
+    }
+
+    document.body.classList.add('is-modal');
+});
+
+onUnmounted(() => {
+    document.removeEventListener('keydown', escapeHandler, true);
+    if (alreadyHidden.value) return;
+
+    document.body.classList.remove('is-modal');
+});
 </script>

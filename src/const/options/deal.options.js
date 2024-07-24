@@ -8,7 +8,7 @@ const publicServices = {
         icon: 'fa-solid fa-droplet'
     },
     3: {
-        name: 'Элекричество',
+        name: 'Электричество',
         icon: 'fa-solid fa-plug-circle-bolt'
     }
 };
@@ -30,7 +30,7 @@ const opex = {
 
 const tax = {
     1: 'Triple Net',
-    2: 'УСН',
+    2: 'Упрощенная СН',
     3: 'С НДС',
     4: 'Без НДС'
 };

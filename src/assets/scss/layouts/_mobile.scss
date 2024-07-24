@@ -1,0 +1,10 @@
+.v-mobile-layout {
+    height: 100vh;
+
+    &__content {
+        padding: 10px 0;
+        min-height: calc(100vh - 65px);
+        height: calc(100vh - 65px);
+        overflow-y: auto;
+    }
+}

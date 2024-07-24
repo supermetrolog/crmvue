@@ -7,34 +7,26 @@
         <slot />
     </transition>
 </template>
-<script>
-export default {
-    name: 'AnimationTransition',
-    props: {
-        animation: {
-            type: Object,
-            default: () => ({
-                enter: 'fadeIn',
-                leave: 'fadeOut'
-            })
-        },
-        speed: {
-            type: Number,
-            default: 1
-        }
+<script setup>
+import { computed } from 'vue';
+
+const props = defineProps({
+    animation: {
+        type: Object,
+        default: () => ({
+            enter: 'fadeIn',
+            leave: 'fadeOut'
+        })
     },
-    computed: {
-        enterActiveClass() {
-            return 'animate__animated animate__' + this.animation.enter;
-        },
-        leaveActiveClass() {
-            return 'animate__animated animate__' + this.animation.leave;
-        },
-        duration() {
-            return this.speed + 's';
-        }
+    speed: {
+        type: Number,
+        default: 1
     }
-};
+});
+
+const enterActiveClass = computed(() => 'animate__animated animate__' + props.animation.enter);
+const leaveActiveClass = computed(() => 'animate__animated animate__' + props.animation.leave);
+const duration = computed(() => props.speed + 's');
 </script>
 <style scoped>
 .animate__animated {

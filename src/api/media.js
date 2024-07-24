@@ -1,5 +1,5 @@
 import axios from 'axios';
-import ErrorHandle from '@/api/errors/index.js';
+import { setRequestError } from '@/api/helpers/setRequestError.js';
 
 export default {
     // async createFromMessage(messageID, options) {
@@ -9,7 +9,7 @@ export default {
     //         const response = await axios.post(url, options);
     //         return response.data;
     //     } catch (e) {
-    //         ErrorHandle.setError(e);
+    //         setRequestError(e);
     //         return null;
     //     }
     // },
@@ -19,7 +19,7 @@ export default {
     //         const response = await axios.post(url, options);
     //         return response.data;
     //     } catch (e) {
-    //         ErrorHandle.setError(e);
+    //         setRequestError(e);
     //         return null;
     //     }
     // },
@@ -35,7 +35,7 @@ export default {
     //             pagination: SuccessHandler.getPaginationData(response)
     //         };
     //     } catch (e) {
-    //         ErrorHandle.setError(e);
+    //         setRequestError(e);
     //         return null;
     //     }
     // },
@@ -44,7 +44,7 @@ export default {
             const response = await axios.get('/media/' + mediaID);
             return response.data;
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
@@ -53,7 +53,7 @@ export default {
             const response = await axios.delete('/media/' + mediaID);
             return response.status === 200;
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     }
@@ -64,7 +64,7 @@ export default {
     //         const response = await axios.put(url, payload);
     //         return response.data;
     //     } catch (e) {
-    //         ErrorHandle.setError(e);
+    //         setRequestError(e);
     //         return null;
     //     }
     // }

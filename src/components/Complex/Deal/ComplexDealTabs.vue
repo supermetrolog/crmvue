@@ -15,7 +15,7 @@
             <div class="offer-tabs__body">
                 <ComplexOfferDetails
                     v-if="hasActiveOffers"
-                    :floors="deal.floors"
+                    :floors="floors"
                     class="offers-tabs__offer-details"
                 />
                 <EmptyData v-else>Информация о блоках отсутствует...</EmptyData>
@@ -57,7 +57,7 @@
     </Tabs>
 </template>
 
-<script>
+<script setup>
 import { entityOptions } from '@/const/options/options';
 import ComplexServices from '@/components/Complex/ComplexServices.vue';
 import ComplexOfferDetails from '@/components/Complex/Offer/ComplexOfferDetails.vue';
@@ -65,53 +65,47 @@ import ComplexDealSummary from '@/components/Complex/Deal/ComplexDealSummary.vue
 import Carousel from '@/components/common/Carousel.vue';
 import Button from '@/components/common/Button.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
+import { computed, inject } from 'vue';
+import { useStore } from 'vuex';
+import { $generatorURL as $url } from '@/plugins/url.js';
 
-export default {
-    name: 'ComplexDealTabs',
-    components: {
-        EmptyData,
-        Button,
-        Carousel,
-        ComplexDealSummary,
-        ComplexOfferDetails,
-        ComplexServices
-    },
-    inject: ['openDownloader'],
-    props: {
-        deal: {
-            type: Object,
-            required: true
-        },
-        hasActiveOffers: {
-            type: Boolean,
-            default: false
-        }
-    },
-    data() {
-        return {};
-    },
-    computed: {
-        photos() {
-            if (!this.deal.summaryBlock) return [];
+const store = useStore();
 
-            const photos =
-                this.deal.summaryBlock.photos instanceof Array
-                    ? this.deal.summaryBlock.photos
-                    : Object.values(this.deal.summaryBlock.photos);
-
-            return photos.map(el => ({
-                src: this.$url.api.objects() + el
-            }));
-        },
-        services() {
-            return this.$store.getters['Complex/getDealServicesById'](this.deal.id);
-        },
-        servicesLength() {
-            return this.services.reduce((acc, category) => acc + category.properties.length, 0);
-        },
-        isStorageDealType() {
-            return this.deal.deal_type === entityOptions.deal.typeStatement.STORAGE;
-        }
+const props = defineProps({
+    deal: {
+        type: Object,
+        required: true
+    },
+    hasActiveOffers: {
+        type: Boolean,
+        default: false
+    },
+    floors: {
+        type: Array,
+        default: () => []
     }
-};
+});
+
+const openDownloader = inject('openDownloader');
+
+const photos = computed(() => {
+    if (!props.deal.summaryBlock) return [];
+
+    const photos =
+        props.deal.summaryBlock.photos instanceof Array
+            ? props.deal.summaryBlock.photos
+            : Object.values(props.deal.summaryBlock.photos);
+
+    return photos.map(el => ({
+        src: $url.file(el)
+    }));
+});
+
+const services = computed(() => store.getters['Complex/getDealServicesById'](props.deal.id));
+const servicesLength = computed(() =>
+    services.value.reduce((acc, category) => acc + category.properties.length, 0)
+);
+const isStorageDealType = computed(
+    () => props.deal.deal_type === entityOptions.deal.typeStatement.STORAGE
+);
 </script>

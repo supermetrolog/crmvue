@@ -4,6 +4,7 @@
             <button
                 v-if="buttons.edit"
                 v-tippy="'Редактировать'"
+                @click="buttons.edit.handler"
                 :disabled="buttons.edit.disabled"
                 class="complex-actions__button"
             >
@@ -102,22 +103,15 @@
     </div>
 </template>
 
-<script>
-export default {
-    name: 'ComplexActions',
-    props: {
-        buttons: {
-            type: Object,
-            default: () => {}
-        },
-        simple: {
-            type: Boolean,
-            default: false
-        }
+<script setup>
+defineProps({
+    buttons: {
+        type: Object,
+        default: () => {}
     },
-    data() {
-        return {};
-    },
-    methods: {}
-};
+    simple: {
+        type: Boolean,
+        default: false
+    }
+});
 </script>

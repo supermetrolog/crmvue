@@ -124,73 +124,46 @@
     </DashboardCard>
 </template>
 
-<script>
+<script setup>
 import { PassiveWhyContact } from '@/const/const.js';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
-import { entityOptions } from '@/const/options/options.js';
 import Button from '@/components/common/Button.vue';
 import CompanyContactItemComments from '@/components/Company/Contact/CompanyContactItemComments.vue';
+import { computed, shallowRef } from 'vue';
+import { contactOptions } from '@/const/options/contact.options.js';
 
-export default {
-    name: 'CompanyContactItem',
-    components: {
-        CompanyContactItemComments,
-        Button,
-        DashboardCard,
-        DashboardChip,
-        HoverActionsButton
+const emit = defineEmits(['start-editing', 'delete-contact', 'create-comment']);
+const props = defineProps({
+    contact: {
+        type: Object,
+        required: true
     },
-    emits: ['start-editing', 'delete-contact', 'create-comment'],
-    props: {
-        contact: {
-            type: Object,
-            required: true
-        },
-        readOnly: {
-            type: Boolean,
-            default: false
-        }
-    },
-    data() {
-        return {
-            extraInfoIsVisible: false,
-            comment: ''
-        };
-    },
-    computed: {
-        name() {
-            if (this.contact.type) {
-                return 'Общий контакт';
-            }
-            return this.contact.first_and_last_name;
-        },
-        position() {
-            return entityOptions.contact.position[this.contact.position];
-        },
-        wayOfCommunicate() {
-            return this.contact.wayOfInformings.map(
-                element => entityOptions.contact.wayOfCommunicate[element.way]
-            );
-        },
-        passiveWhy() {
-            return PassiveWhyContact[this.contact.passive_why].label;
-        }
-    },
-    methods: {
-        createComment(comment) {
-            this.$emit('create-comment', {
-                contact_id: this.contact.id,
-                comment
-            });
-        },
-        editContact() {
-            this.$emit('start-editing', this.contact);
-        },
-        deleteContact() {
-            this.$emit('delete-contact', { ...this.contact, header: this.name });
-        }
+    readOnly: {
+        type: Boolean,
+        default: false
     }
+});
+
+const extraInfoIsVisible = shallowRef(false);
+
+const name = computed(() =>
+    props.contact.type ? 'Общий контакт' : props.contact.first_and_last_name
+);
+const position = computed(() => contactOptions.position[props.contact.position]);
+const wayOfCommunicate = computed(() =>
+    props.contact.wayOfInformings.map(element => contactOptions.wayOfCommunicate[element.way])
+);
+const passiveWhy = computed(() => PassiveWhyContact[props.contact.passive_why].label);
+
+const createComment = comment => {
+    emit('create-comment', { contact_id: props.contact.id, comment: comment });
+};
+const editContact = () => {
+    emit('start-editing', props.contact);
+};
+const deleteContact = () => {
+    emit('delete-contact', { ...props.contact, header: name.value });
 };
 </script>

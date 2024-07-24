@@ -1,16 +1,35 @@
 <template>
-    <td :class="{ sortable: sort_asc || sort_desc, sort_asc, sort_desc }">
+    <td :class="{ sortable: isAscSort || isDescSort, sort_asc: isAscSort, sort_desc: isDescSort }">
         <slot />
     </td>
 </template>
 
-<script>
-import TableMixin from './mixins.js';
+<script setup>
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
 
-export default {
-    name: 'Td',
-    mixins: [TableMixin]
-};
+const route = useRoute();
+
+const props = defineProps({
+    sort: {
+        type: String,
+        default: null
+    }
+});
+
+const isDescSort = computed(() => {
+    const query = { ...route.query };
+    if (!query.sort) return false;
+
+    const words = query.sort.split(',');
+    return words.some(item => item === `-${props.sort}`);
+});
+
+const isAscSort = computed(() => {
+    const query = { ...route.query };
+    if (!query.sort) return false;
+
+    const words = query.sort.split(',');
+    return words.some(item => item === props.sort);
+});
 </script>
-
-<style></style>

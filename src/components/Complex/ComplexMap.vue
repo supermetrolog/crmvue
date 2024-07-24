@@ -72,127 +72,127 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import YandexMapView from '@/components/common/YandexMap/YandexMapView.vue';
 import YandexMapMarker from '@/components/common/YandexMap/YandexMapMarker.vue';
 import Tooltip from '@/components/common/Tooltip.vue';
 import ComplexMapDescription from '@/components/Complex/ComplexMapDescription.vue';
+import { nextTick, onUnmounted, reactive, shallowRef } from 'vue';
+import { ucFirst } from '@/utils/formatter.js';
 
-export default {
-    name: 'ComplexMap',
-    components: { ComplexMapDescription, Tooltip, YandexMapMarker, YandexMapView },
-    props: {
-        location: {
-            type: Object,
-            required: true
-        }
+defineProps({
+    location: {
+        type: Object,
+        required: true
+    }
+});
+
+const map = reactive({
+    settings: {
+        apiKey: import.meta.env.VITE_VUE_APP_YANDEX_MAP_KEY,
+        lang: 'ru_RU',
+        coordorder: 'latlong',
+        enterprise: false,
+        version: '2.1',
+        height: '60px'
     },
-    data() {
-        return {
-            ucFirst: this.$formatter.text().ucFirst,
-            map: {
-                settings: {
-                    apiKey: import.meta.env.VITE_VUE_APP_YANDEX_MAP_KEY,
-                    lang: 'ru_RU',
-                    coordorder: 'latlong',
-                    enterprise: false,
-                    version: '2.1',
-                    height: '60px'
-                },
-                controls: [
-                    'geolocationControl',
-                    'searchControl',
-                    'trafficControl',
-                    'typeSelector',
-                    'zoomControl',
-                    'rulerControl'
-                ],
-                styles: {
-                    height: '60px',
-                    width: '100%'
-                },
-                detailedControls: {
-                    zoomControl: {
-                        position: {
-                            right: '10px',
-                            top: '110px'
-                        },
-                        visible: false
-                    },
-                    geolocationControl: {
-                        position: {
-                            top: '70px',
-                            left: '10px'
-                        },
-                        visible: false
-                    },
-                    trafficControl: {
-                        position: {
-                            top: '70px',
-                            right: '140px'
-                        },
-                        visible: false
-                    },
-                    typeSelector: {
-                        position: {
-                            top: '70px',
-                            right: '45px'
-                        },
-                        visible: false
-                    },
-                    searchControl: {
-                        position: {
-                            top: '70px',
-                            left: '45px'
-                        },
-                        visible: false
-                    },
-                    fullscreenControl: {
-                        position: {
-                            top: '70px',
-                            right: '10px'
-                        },
-                        visible: false
-                    },
-                    rulerControl: {
-                        visible: false
-                    }
-                },
-                behaviors: []
+    controls: [
+        'geolocationControl',
+        'searchControl',
+        'trafficControl',
+        'typeSelector',
+        'zoomControl',
+        'rulerControl'
+    ],
+    styles: {
+        height: '60px',
+        width: '100%'
+    },
+    detailedControls: {
+        zoomControl: {
+            position: {
+                right: '10px',
+                top: '110px'
             },
-            mapIsOpened: false,
-            randKey: 0,
-            isAdmin: true
-        };
-    },
-    computed: {
-        complexCoords() {
-            const { latitude, longitude } = this.location;
-            return latitude && longitude
-                ? [latitude, longitude]
-                : [55.75554289958026, 37.619346417968764];
+            visible: false
+        },
+        geolocationControl: {
+            position: {
+                top: '70px',
+                left: '10px'
+            },
+            visible: false
+        },
+        trafficControl: {
+            position: {
+                top: '70px',
+                right: '140px'
+            },
+            visible: false
+        },
+        typeSelector: {
+            position: {
+                top: '70px',
+                right: '45px'
+            },
+            visible: false
+        },
+        searchControl: {
+            position: {
+                top: '70px',
+                left: '45px'
+            },
+            visible: false
+        },
+        fullscreenControl: {
+            position: {
+                top: '70px',
+                right: '10px'
+            },
+            visible: false
+        },
+        rulerControl: {
+            visible: false
         }
     },
-    methods: {
-        openMap() {
-            if (this.mapIsOpened) {
-                this.mapIsOpened = false;
-                this.map.styles.height = '60px';
-                this.randKey = Math.round(Math.random() * 1000);
-                for (const [key, value] of Object.entries(this.map.detailedControls)) {
-                    this.map.detailedControls[key] = { ...value, visible: false };
-                }
-                this.map.behaviors = [];
-            } else {
-                this.mapIsOpened = true;
-                this.map.styles.height = '500px';
-                this.randKey = Math.round(Math.random() * 1000);
-                for (const [key, value] of Object.entries(this.map.detailedControls)) {
-                    this.map.detailedControls[key] = { ...value, visible: true };
-                }
-                this.map.behaviors = ['drag', 'multiTouch', 'scrollZoom'];
-            }
-        }
+    behaviors: []
+});
+
+const mapIsOpened = shallowRef(false);
+const randKey = shallowRef(0);
+let timeout = null;
+
+const openMap = () => {
+    clearTimeout(timeout);
+
+    if (mapIsOpened.value) {
+        mapIsOpened.value = false;
+        map.styles.height = '60px';
+        timeout = setTimeout(() => {
+            randKey.value = randKey.value + 1;
+        }, 1000);
+
+        Object.keys(map.detailedControls).forEach(key => {
+            map.detailedControls[key].visible = false;
+        });
+
+        map.behaviors = [];
+    } else {
+        mapIsOpened.value = true;
+        map.styles.height = '500px';
+        timeout = setTimeout(() => {
+            randKey.value = randKey.value + 1;
+        }, 1000);
+
+        Object.keys(map.detailedControls).forEach(key => {
+            map.detailedControls[key].visible = true;
+        });
+
+        map.behaviors = ['drag', 'multiTouch', 'scrollZoom'];
     }
 };
+
+onUnmounted(() => {
+    clearTimeout(timeout);
+});
 </script>

@@ -13,10 +13,7 @@
                 :current="currentContact"
                 :without-auto-toggle="hasCachedMessage"
             />
-            <MessengerChatFormCategories
-                @change="changeCurrentCategory"
-                :current="currentCategory"
-            />
+            <MessengerChatFormCategories v-model="currentCategory" />
         </div>
         <Form @submit.prevent class="messenger-chat-form__field" method="post">
             <Button @click="attachFile" class="messenger-chat-form__button" warning icon>
@@ -120,9 +117,6 @@ export default {
                     fileList: []
                 };
             }
-        },
-        changeCurrentCategory(value) {
-            this.currentCategory = value;
         },
         async attachFile() {
             const attachmentResponse = await this.$openAttachments();

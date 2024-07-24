@@ -17,7 +17,7 @@
                 {{ offer.calc_price_safe_pallet }} <small>руб за 1 п. м.</small>
             </p>
         </div>
-        <span v-if="offer.deal_type && offer.offer.tax_form" class="font-weight-bold">
+        <span v-if="offer.deal_type && offer.offer.tax_form">
             {{ taxForm }}
         </span>
         <div class="offer-table-item-price__additional">
@@ -39,40 +39,25 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
-import { entityOptions } from '@/const/options/options.js';
+import { computed } from 'vue';
+import { dealOptions } from '@/const/options/deal.options.js';
 
-export default {
-    name: 'OfferTableItemPrice',
-    components: {
-        WithUnitType
-    },
-    props: {
-        offer: {
-            type: Object,
-            required: true
-        }
-    },
-    computed: {
-        unitTypes() {
-            return unitTypes;
-        },
-        taxForm() {
-            return entityOptions.deal.tax[this.offer.offer.tax_form];
-        },
-        opex() {
-            return entityOptions.deal.servicePrice[this.offer.offer.price_opex];
-        },
-        publicServices() {
-            return entityOptions.deal.servicePrice[this.offer.offer.public_services];
-        },
-        builtToSuitType() {
-            return this.offer.offer.deal_type === entityOptions.deal.typeStatement.SALE
-                ? 'Built To Sale'
-                : 'Built To Rent';
-        }
+const props = defineProps({
+    offer: {
+        type: Object,
+        required: true
     }
-};
+});
+
+const taxForm = computed(() => dealOptions.tax[props.offer.offer.tax_form]);
+const opex = computed(() => dealOptions.servicePrice[props.offer.offer.price_opex]);
+const publicServices = computed(() => dealOptions.servicePrice[props.offer.offer.public_services]);
+const builtToSuitType = computed(() => {
+    return props.offer.offer.deal_type === dealOptions.typeStatement.SALE
+        ? 'Built To Sale'
+        : 'Built To Rent';
+});
 </script>

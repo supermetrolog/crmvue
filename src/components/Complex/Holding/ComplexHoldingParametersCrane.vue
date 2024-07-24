@@ -32,36 +32,25 @@
     </li>
 </template>
 
-<script>
+<script setup>
 import Tooltip from '@/components/common/Tooltip.vue';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import IconCrane from '@/components/common/Icons/IconCrane.vue';
 import { entityProperties } from '@/const/properties/properties';
 import { mapper } from '@/utils/mapper';
+import { computed } from 'vue';
 
-export default {
-    name: 'ComplexHoldingParametersCrane',
-    components: { IconCrane, WithUnitType, Tooltip },
-    props: {
-        crane: {
-            type: Object,
-            required: true
-        }
-    },
-    computed: {
-        properties() {
-            return mapper.propertiesToTableFormat(
-                this.crane,
-                entityProperties.crane.characteristics
-            );
-        },
-        status() {
-            if (this.crane.state && this.crane.state.id > 1) {
-                return this.crane.state.title;
-            }
-
-            return null;
-        }
+const props = defineProps({
+    crane: {
+        type: Object,
+        required: true
     }
-};
+});
+const properties = computed(() => {
+    return mapper.propertiesToTableFormat(props.crane, entityProperties.crane.characteristics);
+});
+const status = computed(() => {
+    if (props.crane.state && props.crane.state.id > 1) return props.crane.state.title;
+    return null;
+});
 </script>

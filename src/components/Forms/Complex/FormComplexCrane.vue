@@ -5,29 +5,12 @@
         width="900"
         has-tabs
     >
-        <Loader v-if="loader" />
+        <Loader v-if="isLoading" />
         <Form @submit="onSubmit" class="equipment-form">
             <Tabs :options="{ useUrlFragment: false, defaultTabHash: 'main' }">
-                <Tab id="craneCharacteristics" name="Характеpистики">
+                <Tab id="craneCharacteristics" name="Характеристики">
                     <div class="row">
-                        <MultiSelect
-                            v-model="form.type.title"
-                            title="Классификация крана"
-                            label="Классификация крана"
-                            class="col-5 mb-2"
-                            :options="craneTypeOptions"
-                        />
-                        <MultiSelect
-                            v-model="form.location.title"
-                            :v="v$.form.crane_location"
-                            title="Расположение"
-                            label="Расположение"
-                            class="col-4"
-                            :options="craneLocationOptions"
-                            required
-                        />
                         <Input
-                            v-if="form"
                             v-model="form.crane_capacity"
                             :v="v$.form.crane_capacity"
                             label="Грузоподъемность"
@@ -37,48 +20,23 @@
                             unit="т"
                             required
                         />
-                        <MultiSelect
-                            v-model="form.crane_beam"
-                            title="Тип балки"
-                            label="Тип балки"
-                            class="col-5 mb-2"
-                            :options="craneBeamOptions"
-                        />
-                        <MultiSelect
-                            v-model="form.crane_beams_amount"
-                            title="Кол-во балок/мостов"
-                            label="Кол-во балок/мостов"
-                            class="col-4"
-                            :options="craneBeamsAmountOptions"
-                        />
                         <Input
-                            v-if="form"
                             v-model="form.crane_span"
                             :v="v$.form.crane_span"
                             class="col-3"
                             label="Длина пролета"
                             type="number"
                             unit="м"
-                            required
-                        />
-                        <MultiSelect
-                            v-model="form.crane_hoisting"
-                            title="Тип подъемн. механизма"
-                            label="Тип подъемн. механизма"
-                            class="col-5 mb-2"
-                            :options="craneHoistingOptions"
-                        />
-                        <MultiSelect
-                            v-model="form.crane_controls"
-                            title="Тип управления"
-                            label="Тип управления"
-                            :close-on-select="false"
-                            class="col-4"
-                            mode="multiple"
-                            :options="craneControlsOptions"
                         />
                         <Input
-                            v-if="form"
+                            v-model="form.crane_hooks"
+                            :v="v$.form.crane_hooks"
+                            class="col-3"
+                            label="Количество крюков"
+                            type="number"
+                            unit="шт"
+                        />
+                        <Input
                             v-model="form.crane_hook_height"
                             :v="v$.form.crane_hook_height"
                             class="col-3"
@@ -87,47 +45,74 @@
                             unit="м"
                         />
                         <MultiSelect
+                            v-model="form.crane_type"
+                            title="Классификация крана"
+                            label="Классификация крана"
+                            class="col-4"
+                            :options="entityOptions.crane.type"
+                        />
+                        <MultiSelect
+                            v-model="form.crane_location"
+                            :v="v$.form.crane_location"
+                            title="Расположение"
+                            label="Расположение"
+                            class="col-4"
+                            :options="entityOptions.crane.location"
+                            required
+                        />
+                        <MultiSelect
+                            v-model="form.crane_beam"
+                            title="Тип балки"
+                            label="Тип балки"
+                            class="col-4"
+                            :options="entityOptions.crane.beam"
+                        />
+                        <MultiSelect
+                            v-model="form.crane_beams_amount"
+                            title="Кол-во балок/мостов"
+                            label="Кол-во балок/мостов"
+                            class="col-4"
+                            :options="entityOptions.crane.beamAmount"
+                        />
+                        <MultiSelect
+                            v-model="form.crane_hoisting"
+                            title="Тип подъемн. механизма"
+                            label="Тип подъемн. механизма"
+                            class="col-4"
+                            :options="entityOptions.crane.hoisting"
+                        />
+                        <MultiSelect
+                            v-model="form.crane_controls"
+                            title="Тип управления"
+                            label="Тип управления"
+                            :close-on-select="false"
+                            class="col-4"
+                            mode="multiple"
+                            multiple
+                            :options="entityOptions.crane.controls"
+                        />
+                        <MultiSelect
                             v-model="form.crane_condition"
                             title="Состояние"
                             label="Состояние"
-                            class="col-5"
-                            :options="craneConditionOptions"
+                            class="col-6"
+                            :options="entityOptions.crane.condition"
                         />
-                        <div class="col-3">
-                            <span class="form__subtitle">Под надзором</span>
-                            <div class="form__row mt-1">
-                                <RadioChip
-                                    v-model="form.crane_supervision"
-                                    label="Нет"
-                                    :value="0"
-                                    unselect
-                                />
-                                <RadioChip
-                                    v-model="form.crane_supervision"
-                                    label="Да"
-                                    :value="1"
-                                    unselect
-                                />
-                            </div>
-                        </div>
-                        <div class="col-3">
-                            <span class="form__subtitle">Есть документы</span>
-                            <div class="form__row mt-1">
-                                <RadioChip
-                                    v-model="form.crane_documents"
-                                    label="Нет"
-                                    :value="0"
-                                    unselect
-                                />
-                                <RadioChip
-                                    v-model="form.crane_documents"
-                                    label="Да"
-                                    :value="1"
-                                    unselect
-                                />
-                            </div>
-                        </div>
-                        <Textarea v-model="form.description" label="Описание" class="col-12 mt-2" />
+                        <RadioOptions
+                            v-model="form.crane_supervision"
+                            label="Под надзором"
+                            :options="entityOptions.defaults.booleanSimple"
+                            unselect
+                            class="col-3"
+                        />
+                        <RadioOptions
+                            v-model="form.crane_documents"
+                            label="Есть документы"
+                            :options="entityOptions.defaults.booleanSimple"
+                            unselect
+                            class="col-3"
+                        />
+                        <VueEditor v-model="form.description" class="col-12" label="Описание" />
                     </div>
                 </Tab>
                 <Tab id="cranePhoto" name="Фотографии">
@@ -144,105 +129,63 @@
                 </Tab>
             </Tabs>
             <div class="row justify-content-center">
-                <Submit success class="col-3">Сохранить</Submit>
+                <FormSubmit success class="col-3">Сохранить</FormSubmit>
                 <Button v-if="crane" class="col-3 ml-2" danger>Удалить</Button>
             </div>
         </Form>
     </Modal>
 </template>
 
-<script>
-import { helpers, minValue, required } from '@vuelidate/validators';
-import { ComplexFormMixin } from '@/components/Forms/Complex/mixin';
+<script setup>
 import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
-import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import Button from '@/components/common/Button.vue';
 import { entityOptions } from '@/const/options/options';
+import Input from '@/components/common/Forms/Input.vue';
+import FileInput from '@/components/common/Forms/FileInput.vue';
+import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
+import FormSubmit from '@/components/common/Forms/FormSubmit.vue';
+import Form from '@/components/common/Forms/Form.vue';
+import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import useVuelidate from '@vuelidate/core';
+import { onBeforeMount, reactive, shallowRef } from 'vue';
+import { validationRulesForCrane } from '@/validators/rules/crane.js';
 import { cloneObject } from '@/utils/index.js';
+import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
+import VueEditor from '@/components/common/Forms/VueEditor.vue';
 
-export default {
-    name: 'FormComplexCrane',
-    components: { Button, RadioChip, Modal, Loader },
-    mixins: [ComplexFormMixin],
-    emits: ['close'],
-    props: {
-        crane: Object
-    },
-    data() {
-        return {
-            form: {
-                crane_capacity: null,
-                type: {
-                    title: null
-                },
-                location: {
-                    title: null
-                },
-                crane_beam: null,
-                crane_span: null,
-                crane_beams_amount: null,
-                crane_hoisting: null,
-                crane_controls: [],
-                crane_hook_height: null,
-                crane_supervision: null,
-                crane_documents: null,
-                crane_condition: null,
-                photosList: [],
-                photos: []
-            }
-        };
-    },
-    validations() {
-        return {
-            form: {
-                crane_location: {
-                    required: helpers.withMessage('выберите один из вариантов', required)
-                },
-                crane_capacity: {
-                    required: helpers.withMessage('заполните поле', required),
-                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
-                },
-                crane_span: {
-                    required: helpers.withMessage('заполните поле', required),
-                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
-                },
-                crane_hook_height: {
-                    minValue: helpers.withMessage('значение должно быть больше 0', minValue(1))
-                }
-            }
-        };
-    },
-    computed: {
-        craneTypeOptions() {
-            return Object.values(entityOptions.crane.type);
-        },
-        craneLocationOptions() {
-            return Object.values(entityOptions.crane.location);
-        },
-        craneBeamOptions() {
-            return Object.values(entityOptions.crane.beam);
-        },
-        craneBeamsAmountOptions() {
-            return Object.values(entityOptions.crane.beamAmount);
-        },
-        craneHoistingOptions() {
-            return Object.values(entityOptions.crane.hoisting);
-        },
-        craneControlsOptions() {
-            return Object.values(entityOptions.crane.controls);
-        },
-        craneConditionOptions() {
-            return Object.values(entityOptions.crane.condition);
-        }
-    },
-    methods: {
-        onSubmit() {}
-    },
-    created() {
-        if (this.crane) {
-            this.form = cloneObject(this.crane);
-        }
+defineEmits(['close']);
+const props = defineProps({
+    crane: {
+        type: Object,
+        default: null
     }
-};
+});
+
+const isLoading = shallowRef(false);
+
+const form = reactive({
+    crane_capacity: null,
+    crane_type: null,
+    crane_location: null,
+    crane_beam: null,
+    crane_span: null,
+    crane_beams_amount: null,
+    crane_hoisting: null,
+    crane_controls: [],
+    crane_hook_height: null,
+    crane_supervision: null,
+    crane_documents: null,
+    crane_condition: null,
+    photosList: [],
+    photos: []
+});
+
+const v$ = useVuelidate({ form: validationRulesForCrane }, { form });
+
+const onSubmit = () => {};
+
+onBeforeMount(() => {
+    if (props.crane) Object.assign(form, cloneObject(props.crane));
+});
 </script>

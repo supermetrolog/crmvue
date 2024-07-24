@@ -3,21 +3,21 @@
         <AnimationTransition>
             <FormCompany
                 v-if="companyFormVisible"
-                @closeCompanyForm="companyFormVisible = false"
+                @close="companyFormVisible = false"
                 @created="createdCompany"
             />
         </AnimationTransition>
         <AnimationTransition>
             <FormCompanyRequest
                 v-if="requestFormVisible"
-                @closeCompanyForm="requestFormVisible = false"
-                :company_id="createdCompanyId"
+                @close="requestFormVisible = false"
+                :company-id="createdCompanyId"
             />
         </AnimationTransition>
         <AnimationTransition>
             <FormCompanyContact
                 v-if="contactFormVisible"
-                @closeCompanyForm="contactFormVisible = false"
+                @close="contactFormVisible = false"
                 :company_id="createdCompanyId"
             />
         </AnimationTransition>
@@ -26,13 +26,19 @@
                 <b>НЕИЗВЕСТНЫЙ КОНТАКТ</b>
             </div>
             <div class="col-12 text-center mt-3">
-                <button @click="companyFormVisible = true" class="btn btn-primary">Создать компанию</button>
+                <button @click="companyFormVisible = true" class="btn btn-primary">
+                    Создать компанию
+                </button>
             </div>
             <div class="col-12 text-center mt-3">
-                <button @click="contactFormVisible = true" class="btn btn-primary">Создать контакт</button>
+                <button @click="contactFormVisible = true" class="btn btn-primary">
+                    Создать контакт
+                </button>
             </div>
             <div class="col-12 text-center mt-3">
-                <button @click="requestFormVisible = true" class="btn btn-primary">Создать запрос</button>
+                <button @click="requestFormVisible = true" class="btn btn-primary">
+                    Создать запрос
+                </button>
             </div>
         </div>
     </div>

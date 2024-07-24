@@ -1,0 +1,83 @@
+@use '../../utils/variables';
+
+.btn {
+    color: variables.$color_light;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    border: unset;
+    border-radius: 2px;
+    padding: 0.625rem 1.5rem 0.5rem;
+    line-height: 1.5;
+    // box-shadow: 0 2px 5px 0 rgba(100, 100, 100, 1);
+    cursor: pointer;
+
+    &:active {
+        box-shadow: 0 2px 5px 0 rgba(100, 100, 100, 0.7);
+        transform: scale(0.95) !important;
+        transition: transform 0.05s ease-in-out;
+    }
+
+    &:hover {
+        box-shadow: 0 2px 5px 0 rgba(100, 100, 100, 0.7);
+    }
+
+    &.scale {
+        &:hover {
+            transform: scale(1.02);
+        }
+
+        transition: transform 0.05s ease-in-out;
+    }
+
+    &:disabled {
+        background-color: variables.$color_grey;
+        cursor: default;
+        pointer-events: none;
+    }
+
+    &-alt {
+        padding: 0.3rem;
+    }
+}
+
+.btn-danger {
+    background-color: variables.$color_danger;
+    color: variables.$color_light;
+    border-color: darken(variables.$color_danger, 5);
+
+    &:active {
+        background-color: darken(variables.$color_danger, 5);
+    }
+}
+
+.btn-success {
+    background-color: variables.$color_success;
+    color: variables.$color_light;
+    // border: 1px solid darken(variables.$color_success, 13);
+    border-color: darken(variables.$color_success, 1);
+
+    &:active {
+        background-color: darken(variables.$color_success, 5);
+    }
+}
+
+.btn-dark {
+    background-color: variables.$color_dark;
+    color: variables.$color_light;
+    border-color: darken(variables.$color_dark, 5);
+
+    &:active {
+        background-color: darken(variables.$color_dark, 5);
+    }
+}
+
+.btn-primary {
+    background-color: variables.$color_primary !important;
+    color: variables.$color_light;
+    border-color: darken(variables.$color_primary, 5);
+
+    &:active {
+        background-color: darken(variables.$color_primary, 5);
+    }
+}

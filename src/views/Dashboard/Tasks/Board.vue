@@ -182,7 +182,7 @@ export default {
                 this[prevArrayName].pagination.totalCount--;
                 this[tasksArrayName].pagination.totalCount++;
 
-                this.$toast('Статус задачи успешно изменен');
+                this.$notify('Статус задачи успешно изменен');
             } else {
                 this[prevArrayName].data.unshift(task);
                 this[tasksArrayName].data.splice(
@@ -208,7 +208,7 @@ export default {
                         1
                     );
 
-                    this.$toast('Задача удалена');
+                    this.$notify('Задача удалена');
                 }
             }
         },

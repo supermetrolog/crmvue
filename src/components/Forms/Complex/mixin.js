@@ -5,7 +5,7 @@ import Input from '@/components/common/Forms/Input.vue';
 import FileInput from '@/components/common/Forms/FileInput.vue';
 import CheckboxIcons from '@/components/common/Forms/CheckboxIcons.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
-import Submit from '@/components/common/Forms/Submit.vue';
+import Submit from '@/components/common/Forms/FormSubmit.vue';
 import Form from '@/components/common/Forms/Form.vue';
 import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import useValidate from '@vuelidate/core';

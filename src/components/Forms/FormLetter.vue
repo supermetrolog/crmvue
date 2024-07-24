@@ -75,11 +75,7 @@
                         <Input v-model="form.subject" class="col-12" placeholder="Тема письма" />
                     </FormGroup>
                     <FormGroup class="pb-5">
-                        <VueEditor
-                            v-model="form.message"
-                            class="col-12"
-                            :editor-toolbar="customToolbar"
-                        />
+                        <VueEditor v-model="form.message" class="col-12" />
                     </FormGroup>
                 </template>
             </Form>
@@ -96,23 +92,24 @@ import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import CheckboxIcons from '@/components/common/Forms/CheckboxIcons.vue';
 import Input from '@/components/common/Forms/Input.vue';
-import { VueEditor } from 'vue3-editor';
 import { mapGetters } from 'vuex';
 import { WayOfSendingList } from '@/const/const.js';
 import Utils from '@/utils';
 import useValidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
 import Loader from '@/components/common/Loader.vue';
-import Submit from '@/components/common/Forms/Submit.vue';
+import Submit from '@/components/common/Forms/FormSubmit.vue';
 import plural from 'plural-ru';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import { contains } from '@/utils/contains.js';
+import VueEditor from '@/components/common/Forms/VueEditor.vue';
 
 export default {
     name: 'FormLetter',
     components: {
+        VueEditor,
         CheckboxChip,
         AnimationTransition,
         DashboardChip,
@@ -122,8 +119,7 @@ export default {
         Form,
         FormGroup,
         Input,
-        CheckboxIcons,
-        VueEditor
+        CheckboxIcons
     },
     props: {
         alreadySended: {

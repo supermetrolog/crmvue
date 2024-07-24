@@ -70,8 +70,8 @@ export default {
                     additionType: 'reminder'
                 });
 
-                if (deleted) this.$toast('Напоминание удалено.');
-                else this.$toast('Произошла ошибка. Попробуйте позже.');
+                if (deleted) this.$notify('Напоминание удалено.');
+                else this.$notify('Произошла ошибка. Попробуйте позже.');
             }
         }
     }

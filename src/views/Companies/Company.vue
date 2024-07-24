@@ -1,5 +1,5 @@
 <template>
-    <div class="company-page">
+    <div class="company-page container-fluid">
         <teleport to="body">
             <Timeline
                 v-if="timelineIsVisible && COMPANY && COMPANY_REQUESTS[0]"
@@ -21,11 +21,11 @@
         />
         <FormCompanyRequest
             v-if="requestFormIsVisible"
-            @closeCompanyForm="closeRequestForm"
+            @close="closeRequestForm"
             @created="getCompanyRequests"
             @updated="getCompanyRequests"
-            :company_id="COMPANY.id"
-            :formdata="request"
+            :company-id="COMPANY.id"
+            :form-data="request"
         />
         <FormCompanyContact
             v-if="contactFormIsVisible"
@@ -37,9 +37,9 @@
         />
         <FormCompany
             v-if="companyFormIsVisible"
-            @closeCompanyForm="closeCompanyForm"
+            @close="closeCompanyForm"
             @updated="onCompanyUpdated"
-            :formdata="COMPANY"
+            :form-data="COMPANY"
         />
         <DashboardChip
             v-if="!companyIsLoading && COMPANY.status === 0"
@@ -69,7 +69,7 @@
                     v-if="!objectsIsLoading"
                     @load="loadObjects"
                     :objects="COMPANY_OBJECTS"
-                    class="company-page__column mb-2"
+                    class="company-page__column mb-2 mb-lg-0"
                 />
                 <CompanyBoxRequests
                     v-if="!requestsIsLoading && !companyIsLoading"
@@ -81,7 +81,7 @@
                     @request-disabled="getCompanyRequests"
                     :requests="COMPANY_REQUESTS"
                     :deals="COMPANY.dealsRequestEmpty"
-                    class="company-page__column mb-2"
+                    class="company-page__column mb-2 mb-lg-0"
                 />
                 <CompanyBoxServices v-if="!companyIsLoading" class="company-page__column" />
             </div>
@@ -89,9 +89,9 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import CompanyBoxRequests from '@/components/Company/Box/CompanyBoxRequests.vue';
-import { mapActions, mapGetters } from 'vuex';
+import { useStore } from 'vuex';
 import { PassiveWhy } from '@/const/const.js';
 import Loader from '@/components/common/Loader.vue';
 import FormCompany from '@/components/Forms/Company/FormCompany.vue';
@@ -105,178 +105,166 @@ import Timeline from '@/components/Timeline/Timeline.vue';
 import CompanyBoxServices from '@/components/Company/Box/CompanyBoxServices.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
+import { computed, onBeforeMount, onUnmounted, provide, ref, shallowRef, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
-export default {
-    name: 'Company',
-    components: {
-        DashboardChip,
-        CompanyBoxServices,
-        Timeline,
-        FormCompanyRequest,
-        CompanyBox,
-        CompanyBoxRequests,
-        CompanyContactModal,
-        CompanyBoxObjects,
-        FormCompanyDeal,
-        FormCompanyContact,
-        FormCompany,
-        Loader
-    },
-    provide() {
-        return {
-            openContact: contact => this.openContact(contact),
-            editContact: contact => this.updateContact(contact),
-            createContactComment: data => this.createContactComment(data)
-        };
-    },
-    setup() {
-        const { confirm } = useConfirm();
-        return { confirm };
-    },
-    data() {
-        return {
-            companyIsLoading: false,
-            requestsIsLoading: false,
-            contactsIsLoading: false,
-            objectsIsLoading: false,
+provide('openContact', openContact);
+provide('createContactComment', createContactComment);
 
-            requestFormIsVisible: false,
-            contactFormIsVisible: false,
-            companyFormIsVisible: false,
-            dealFormIsVisible: false,
-            timelineIsVisible: false,
-            contactModalIsVisible: false,
+const store = useStore();
+const route = useRoute();
+const router = useRouter();
+const { confirm } = useConfirm();
 
-            request: null,
-            contact: null,
-            company: null,
-            deal: null
-        };
-    },
-    computed: {
-        ...mapGetters(['COMPANY', 'COMPANY_REQUESTS', 'COMPANY_CONTACTS', 'COMPANY_OBJECTS']),
-        passiveWhyComment() {
-            let text = PassiveWhy[this.COMPANY.passive_why].label;
-            if (this.COMPANY.passive_why_comment) text += ': ' + this.COMPANY.passive_why_comment;
-            return text;
-        }
-    },
-    watch: {
-        $route: {
-            handler() {
-                this.timelineIsVisible = !!this.$route.query.request_id;
-            },
-            immediate: true
-        }
-    },
-    methods: {
-        ...mapActions([
-            'FETCH_COMPANY',
-            'FETCH_COMPANY_REQUESTS',
-            'FETCH_COMPANY_CONTACTS',
-            'FETCH_COMPANY_OBJECTS',
-            'ADD_TO_TRANSITION_LIST',
-            'CREATE_CONTACT_COMMENT',
-            'DELETE_CONTACT'
-        ]),
-        async getCompany(withLoader = false) {
-            this.companyIsLoading = withLoader;
-            await this.FETCH_COMPANY(this.$route.params.id);
-            this.companyIsLoading = false;
+const companyIsLoading = shallowRef(false);
+const requestsIsLoading = shallowRef(false);
+const objectsIsLoading = shallowRef(false);
+const contactsIsLoading = shallowRef(false);
 
-            if (!this.COMPANY) {
-                this.$router.replace('/not-found');
-                return;
-            }
+const requestFormIsVisible = shallowRef(false);
+const contactFormIsVisible = shallowRef(false);
+const companyFormIsVisible = shallowRef(false);
+const dealFormIsVisible = shallowRef(false);
+const timelineIsVisible = shallowRef(false);
+const contactModalIsVisible = shallowRef(false);
 
-            this.ADD_TO_TRANSITION_LIST(this.COMPANY);
-        },
-        async getCompanyRequests(withLoader = false) {
-            this.requestsIsLoading = withLoader;
-            await this.FETCH_COMPANY_REQUESTS(this.$route.params.id);
-            this.requestsIsLoading = false;
-        },
-        async getCompanyContacts(withLoader = false) {
-            this.contactsIsLoading = withLoader;
-            await this.FETCH_COMPANY_CONTACTS(this.$route.params.id);
-            this.contactsIsLoading = false;
-        },
-        async getCompanyObjects(withLoader = false) {
-            this.objectsIsLoading = withLoader;
-            await this.FETCH_COMPANY_OBJECTS(this.$route.params.id);
-            this.objectsIsLoading = false;
-        },
-        async loadObjects($state) {
-            const isLastPage = await this.$store.dispatch(
-                'loadCompanyObjects',
-                this.$route.params.id
-            );
-            if (isLastPage) $state.complete();
-            else $state.loaded();
-        },
-        openContact(contact) {
-            this.contactModalIsVisible = true;
-            this.contact = contact;
-        },
-        createContact() {
-            this.contact = null;
-            this.showContactForm();
-        },
-        showContactForm() {
-            this.contactModalIsVisible = false;
-            this.contactFormIsVisible = true;
-        },
-        updateDeal(deal) {
-            this.deal = deal;
-            this.dealFormIsVisible = true;
-        },
-        updateRequest(request) {
-            this.request = request;
-            this.requestFormIsVisible = true;
-        },
-        closeDealForm() {
-            this.dealFormIsVisible = false;
-            this.deal = null;
-        },
-        onDealUpdated() {
-            this.getCompany();
-        },
-        closeRequestForm() {
-            this.requestFormIsVisible = false;
-            this.request = null;
-        },
-        closeContactForm() {
-            this.contactFormIsVisible = false;
-            this.contact = null;
-        },
-        closeCompanyForm() {
-            this.companyFormIsVisible = false;
-            this.company = null;
-        },
-        onCompanyUpdated() {
-            this.getCompany();
-            this.getCompanyContacts();
-        },
-        closeTimeline() {
-            this.timelineIsVisible = false;
-            this.$router.push({ name: 'company' });
-        },
-        async createContactComment(data) {
-            await this.CREATE_CONTACT_COMMENT(data);
-        },
-        async deleteContact() {
-            const confirmed = this.confirm('Вы уверены, что хотите бевзозвратно удалить контакт?');
-            if (confirmed) await this.DELETE_CONTACT(this.contact);
-        }
+const request = ref(null);
+const contact = ref(null);
+const company = ref(null);
+const deal = ref(null);
+
+const COMPANY = computed(() => store.getters.COMPANY);
+const COMPANY_REQUESTS = computed(() => store.getters.COMPANY_REQUESTS);
+const COMPANY_CONTACTS = computed(() => store.getters.COMPANY_CONTACTS);
+const COMPANY_OBJECTS = computed(() => store.getters.COMPANY_OBJECTS);
+
+const passiveWhyComment = computed(() => {
+    let text = PassiveWhy[COMPANY.value.passive_why].label;
+    if (COMPANY.value.passive_why_comment) text += ': ' + COMPANY.value.passive_why_comment;
+    return text;
+});
+
+watch(
+    () => route.query,
+    () => {
+        timelineIsVisible.value = !!route.query.request_id;
     },
-    created() {
-        this.getCompany(true);
-        this.getCompanyContacts(true);
-        this.getCompanyObjects(true);
-        this.getCompanyRequests(true);
-    },
-    unmounted() {
-        this.$store.commit('clearCompanyObjectsStore');
+    { immediate: true }
+);
+
+const getCompany = async (withLoader = false) => {
+    companyIsLoading.value = withLoader;
+    await store.dispatch('FETCH_COMPANY', route.params.id);
+    companyIsLoading.value = false;
+
+    if (!COMPANY.value) {
+        await router.replace('/not-found');
+        return;
     }
+
+    await store.dispatch('ADD_TO_TRANSITION_LIST', COMPANY.value);
 };
+
+const getCompanyRequests = async (withLoader = false) => {
+    requestsIsLoading.value = withLoader;
+    await store.dispatch('FETCH_COMPANY_REQUESTS', route.params.id);
+    requestsIsLoading.value = false;
+};
+
+const getCompanyContacts = async (withLoader = false) => {
+    contactsIsLoading.value = withLoader;
+    await store.dispatch('FETCH_COMPANY_CONTACTS', route.params.id);
+    contactsIsLoading.value = false;
+};
+
+const getCompanyObjects = async (withLoader = false) => {
+    objectsIsLoading.value = withLoader;
+    await store.dispatch('FETCH_COMPANY_OBJECTS', route.params.id);
+    objectsIsLoading.value = false;
+};
+
+const loadObjects = async $state => {
+    const isLastPage = await store.dispatch('loadCompanyObjects', route.params.id);
+    if (isLastPage) $state.complete();
+    else $state.loaded();
+};
+
+function openContact(_contact) {
+    contact.value = _contact;
+    contactModalIsVisible.value = true;
+}
+
+const showContactForm = () => {
+    contactModalIsVisible.value = false;
+    contactFormIsVisible.value = true;
+};
+
+const createContact = () => {
+    contact.value = null;
+    showContactForm();
+};
+
+const updateDeal = _deal => {
+    deal.value = _deal;
+    dealFormIsVisible.value = true;
+};
+
+const updateRequest = _request => {
+    request.value = _request;
+    requestFormIsVisible.value = true;
+};
+
+const closeDealForm = () => {
+    deal.value = null;
+    dealFormIsVisible.value = false;
+};
+
+const onDealUpdated = () => {
+    getCompany();
+};
+
+const closeRequestForm = () => {
+    requestFormIsVisible.value = false;
+    request.value = null;
+};
+
+const closeContactForm = () => {
+    contactFormIsVisible.value = false;
+    contact.value = null;
+};
+
+const closeCompanyForm = () => {
+    company.value = null;
+    companyFormIsVisible.value = false;
+};
+
+const onCompanyUpdated = () => {
+    getCompany();
+    getCompanyContacts();
+};
+
+const closeTimeline = () => {
+    timelineIsVisible.value = false;
+    router.push({ name: 'company' });
+};
+
+async function createContactComment(data) {
+    await store.dispatch('CREATE_CONTACT_COMMENT', data);
+}
+
+const deleteContact = async () => {
+    const confirmed = await confirm('Вы уверены, что хотите бевзозвратно удалить контакт?');
+    if (confirmed) await store.dispatch('DELETE_CONTACT', contact.value);
+};
+
+onBeforeMount(() => {
+    getCompany(true);
+    getCompanyContacts(true);
+    getCompanyObjects(true);
+    getCompanyRequests(true);
+});
+
+onUnmounted(() => {
+    store.commit('clearCompanyObjectsStore');
+});
 </script>

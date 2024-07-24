@@ -1,6 +1,7 @@
 const usedStatus = {
     1: 'Новое',
-    2: 'Б/У'
+    2: 'Б/У',
+    3: 'Требуется ремонт'
 };
 
 const category = {
@@ -29,4 +30,31 @@ const delivery = {
     3: 'Самовывоз'
 };
 
-export const equipmentOptions = { usedStatus, category, tax, availability, delivery };
+const status = {
+    1: 'Актив',
+    2: 'Пассив'
+};
+
+const statusStatement = {
+    ACTIVE: 1,
+    PASSIVE: 2
+};
+
+const passiveType = {
+    1: 'Продано',
+    2: 'Устарело',
+    3: 'Отменено',
+    4: 'Удалено модератором',
+    5: 'Иное'
+};
+
+export const equipmentOptions = {
+    usedStatus,
+    category,
+    tax,
+    availability,
+    delivery,
+    status,
+    statusStatement,
+    passiveType
+};

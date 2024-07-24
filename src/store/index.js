@@ -19,6 +19,8 @@ import Complex from './modules/Complex';
 import axios from 'axios';
 import Messenger from '@/store/modules/Messenger';
 import Task from '@/store/modules/Task.js';
+import { useAuth } from '@/composables/useAuth.js';
+import Quizz from '@/store/modules/Quiz.js';
 
 const store = createStore({
     state: {},
@@ -32,9 +34,13 @@ const store = createStore({
             window.name = '';
         },
         async INIT(context) {
-            if (!localStorage.getItem('user')) {
-                return false;
+            const { isAuth, login } = useAuth();
+
+            if (!isAuth.value) {
+                if (localStorage.getItem('user')) login();
+                else return false;
             }
+
             await context.dispatch('SET_USER');
             axios.defaults.headers.common['Authorization'] =
                 `Bearer ${context.getters.THIS_USER.access_token}`;
@@ -44,10 +50,13 @@ const store = createStore({
             await context.dispatch('REFRESH_USER');
             context.dispatch('Messenger/updateCounters');
         },
-        DESTROY(context) {
-            context.dispatch('WEBSOCKET_STOP');
-            context.dispatch('DROP_USER');
-            context.dispatch('UNSET_WINDOW_NAME');
+        DESTROY({ dispatch }) {
+            const { logout } = useAuth();
+
+            dispatch('WEBSOCKET_STOP');
+            dispatch('DROP_USER');
+            dispatch('UNSET_WINDOW_NAME');
+            logout();
         }
     },
     getters: {},
@@ -70,7 +79,8 @@ const store = createStore({
         Location,
         Complex,
         Messenger,
-        Task
+        Task,
+        Quizz
     }
 });
 store.checkAction = function (name) {

@@ -1,33 +1,38 @@
 import axios from 'axios';
-import ErrorHandle from '@/api/errors/index.js';
+import { setRequestError } from '@/api/helpers/setRequestError.js';
+import { SuccessHandler } from '@/api/helpers/successHandler.js';
 
 const URL = '/surveys';
 
 export default {
     async create(options) {
         try {
-            const response = await axios.post(URL, options);
+            const response = await axios.post(URL + '/with-survey-question-answer', options);
             return response.data;
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
     async get(id) {
         try {
-            const response = await axios.get(`${URL}/${id}`);
+            const response = await axios.get(`${URL}/${id}/with-questions`);
             return response.data;
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
-    async list() {
+    async list(options) {
         try {
-            const response = await axios.get(URL);
-            return response.data;
+            const response = await axios.get(URL, { params: options });
+
+            return {
+                data: SuccessHandler.getData(response),
+                pagination: SuccessHandler.getPaginationData(response)
+            };
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
@@ -36,7 +41,7 @@ export default {
             const response = await axios.delete(`${URL}/${id}`);
             return response.status === 200;
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     },
@@ -45,7 +50,7 @@ export default {
             const response = await axios.put(`${URL}/${id}`, payload);
             return response.data;
         } catch (e) {
-            ErrorHandle.setError(e);
+            setRequestError(e);
             return null;
         }
     }

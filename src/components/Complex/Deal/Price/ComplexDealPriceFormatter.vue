@@ -36,28 +36,19 @@
         </ComplexDealPriceFormatterOption>
     </div>
 </template>
-<script>
+<script setup>
 import { PriceOptionTypes } from '@/const/const';
 import ComplexDealPriceFormatterOption from '@/components/Complex/Deal/Price/ComplexDealPriceFormatterOption.vue';
 
-export default {
-    name: 'ComplexDealPriceFormatter',
-    components: { ComplexDealPriceFormatterOption },
-    emits: ['change-format'],
-    props: {
-        priceOption: {
-            type: Object,
-            required: true
-        },
-        dealType: {
-            type: String,
-            default: 'rent'
-        }
+defineEmits(['change-format']);
+defineProps({
+    priceOption: {
+        type: Object,
+        required: true
     },
-    computed: {
-        PriceOptionTypes() {
-            return PriceOptionTypes;
-        }
+    dealType: {
+        type: String,
+        default: 'rent'
     }
-};
+});
 </script>

@@ -5,12 +5,8 @@
     </Button>
 </template>
 
-<script>
+<script setup>
 import Button from '@/components/common/Button.vue';
 
-export default {
-    name: 'RefreshButton',
-    components: { Button },
-    emits: ['click']
-};
+defineEmits(['click']);
 </script>

@@ -56,7 +56,7 @@ export const maxDate = dateLimit => date => {
 };
 
 export const onlyPositiveNumber = (message = 'Некорректное отрицательное значение') =>
-    helpers.withMessage(message, min(0));
+    helpers.withMessage(message, min(1));
 
 export const validateUrl = value => {
     const with_protocol_regex = new RegExp(

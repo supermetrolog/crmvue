@@ -1,9 +1,12 @@
 <template>
     <div class="timeline-tree-step" :class="className">
-        <div class="timeline-tree-step__point">
-            <i v-if="selected" class="fa-solid fa-circle-play dashboard-cl-warning"></i>
+        <div class="timeline-tree-step__point" :class="{ done: done }">
+            <i
+                v-if="selected"
+                class="fa-solid fa-circle-play timeline-tree-step__icon-selected"
+            ></i>
             <i v-else-if="attention" class="fa-solid fa-circle-exclamation"></i>
-            <i v-else-if="process" class="fa-solid fa-clock dashboard-cl-warning"></i>
+            <i v-else-if="process" class="fa-solid fa-clock timeline-tree-step__icon-selected"></i>
             <i v-else-if="done" class="fa-solid fa-circle-check dashboard-cl-success"></i>
         </div>
         <i v-if="icon" class="timeline-tree-step__icon icon" :class="icon" />

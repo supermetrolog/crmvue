@@ -1,7 +1,14 @@
-import { customRef, ref } from 'vue';
+import { customRef, shallowRef } from 'vue';
+
+/**
+ * Composable для лоадера с задержкой
+ * @param {boolean} [value=false] - Начальное значение
+ * @param {number} [delay = 500] - Задержка в *мс*
+ * @returns {{isLoading: Ref<boolean>, isLoadingOriginal: shallowRef<boolean>}}
+ */
 
 export function useDelayedLoader(value = false, delay = 500) {
-    const isLoadingOriginal = ref(value);
+    const isLoadingOriginal = shallowRef(value);
 
     const isLoading = customRef((track, trigger) => {
         let timeout;
@@ -21,6 +28,7 @@ export function useDelayedLoader(value = false, delay = 500) {
                     timeout = setTimeout(() => {
                         value = false;
                         trigger();
+                        clearTimeout(timeout);
                     }, delay);
                 }
             }

@@ -1,12 +1,20 @@
 <template>
-    <VTab v-bind="$attrs">
-        <slot />
+    <VTab ref="tab" v-bind="$attrs">
+        <template v-if="!withTransition">
+            <slot v-if="alwaysRender || isActive" />
+        </template>
+        <AnimationTransition v-else :speed="2">
+            <slot v-if="alwaysRender || isActive" />
+        </AnimationTransition>
     </VTab>
 </template>
-<script>
+<script setup>
 import { Tab as VTab } from 'vue3-tabs-component';
-export default {
-    name: 'Tab',
-    components: { VTab }
-};
+import { computed, inject, ref } from 'vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
+
+const alwaysRender = inject('always-render', false);
+const withTransition = inject('with-transition', false);
+const tab = ref(null);
+const isActive = computed(() => tab.value?.isActive ?? false);
 </script>

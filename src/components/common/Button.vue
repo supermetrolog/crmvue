@@ -1,6 +1,6 @@
 <template>
     <button
-        @click.prevent="clickHandler"
+        @click.prevent="$emit('click')"
         class="button"
         :class="classButton"
         :title="title"
@@ -12,81 +12,66 @@
         <slot />
     </button>
 </template>
-<script>
-export default {
-    name: 'Button',
-    emits: ['click'],
-    props: {
-        icon: {
-            type: Boolean,
-            default: false
-        },
-        title: {
-            type: String,
-            default: ''
-        },
-        warning: {
-            type: Boolean,
-            default: false
-        },
-        small: {
-            type: Boolean,
-            default: false
-        },
-        success: {
-            type: Boolean,
-            default: false
-        },
-        info: {
-            type: Boolean,
-            default: false
-        },
-        danger: {
-            type: Boolean,
-            default: false
-        },
-        badge: {
-            type: [String, Number, Boolean],
-            default: false
-        },
-        active: {
-            type: [Boolean, Number, String],
-            default: true
-        },
-        prevent: {
-            type: Boolean,
-            default: false
-        },
-        disabled: {
-            type: [Boolean, Number],
-            default: false
-        },
-        solid: {
-            type: Boolean,
-            default: false
-        }
+<script setup>
+import { computed } from 'vue';
+
+defineEmits(['click']);
+const props = defineProps({
+    icon: {
+        type: Boolean,
+        default: false
     },
-    computed: {
-        hasBadge() {
-            return this.badge !== false;
-        },
-        classButton() {
-            return {
-                'button--icon': this.icon,
-                'button--warning': this.warning,
-                'button--small': this.small,
-                'button--success': this.success,
-                'button--info': this.info,
-                'button--danger': this.danger,
-                'button--disabled': !this.active,
-                'button--solid': this.solid
-            };
-        }
+    title: {
+        type: String,
+        default: ''
     },
-    methods: {
-        clickHandler() {
-            this.$emit('click');
-        }
+    warning: {
+        type: Boolean,
+        default: false
+    },
+    small: {
+        type: Boolean,
+        default: false
+    },
+    success: {
+        type: Boolean,
+        default: false
+    },
+    info: {
+        type: Boolean,
+        default: false
+    },
+    danger: {
+        type: Boolean,
+        default: false
+    },
+    badge: {
+        type: [String, Number, Boolean],
+        default: false
+    },
+    active: {
+        type: [Boolean, Number, String],
+        default: true
+    },
+    disabled: {
+        type: [Boolean, Number],
+        default: false
+    },
+    solid: {
+        type: Boolean,
+        default: false
     }
-};
+});
+
+const hasBadge = computed(() => props.badge !== false);
+const classButton = computed(() => ({
+    'button--icon': props.icon,
+    'button--warning': props.warning,
+    'button--small': props.small,
+    'button--success': props.success,
+    'button--info': props.info,
+    'button--danger': props.danger,
+    'button--disabled': !props.active,
+    'button--solid': props.solid
+}));
 </script>

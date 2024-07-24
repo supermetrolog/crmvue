@@ -6,9 +6,8 @@
     &__item {
         @include mixins.flex-box($a: center, $gap: 10px);
         font-size: 13px;
-        font-weight: 700;
         border-radius: 4px;
-        background-color: rgba(201, 201, 201, 0.8);
+        background-color: rgba(201, 201, 201, 0.4);
         padding: 7px 10px;
 
         & i {
@@ -22,5 +21,14 @@
 
     &__text {
         @include mixins.flex-box($gap: 3px);
+    }
+
+    &__button {
+        cursor: pointer;
+        @include mixins.transition(background-color);
+
+        &:hover {
+            background-color: rgba(201, 201, 201, 1);
+        }
     }
 }

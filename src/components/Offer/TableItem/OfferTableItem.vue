@@ -70,14 +70,22 @@
         <Td class="offer-table-item__consultant">
             <div class="d-flex justify-content-center">
                 <div v-if="offer.consultant">
-                    <p v-if="offer.object?.agent_visited" class="offer-table-item__visited">
-                        Был на объекте
-                    </p>
-                    <div class="d-flex gap-2 align-items-center">
-                        <Avatar size="30" :src="offer.consultant.userProfile.avatar" />
-                        <span>{{ offer.consultant.userProfile.full_name }}</span>
+                    <div class="d-flex gap-2 align-items-center offer-table-item__avatar">
+                        <Avatar
+                            v-tippy="offer.consultant.userProfile.full_name"
+                            size="40"
+                            :src="offer.consultant.userProfile.avatar"
+                        />
+                        <div
+                            v-if="offer.object?.agent_visited"
+                            v-tippy="'Был на объекте'"
+                            class="offer-table-item__visited"
+                        >
+                            <i class="fa-solid fa-person-walking"></i>
+                        </div>
                     </div>
                 </div>
+                <p v-else>—</p>
             </div>
         </Td>
         <Td class="offer-table-item__advertisement">
@@ -105,6 +113,12 @@
                         Пассив
                     </DashboardChip>
                     <TableDateBlock class="mt-1" :date="updatedAt" label="Обновление" />
+                    <TableDateBlock
+                        v-if="offer.last_call"
+                        class="mt-1"
+                        :date="offer.last_call.created_at"
+                        label="Звонок"
+                    />
                 </div>
             </div>
         </Td>
@@ -141,6 +155,8 @@ import OfferTableItemPrice from '@/components/Offer/TableItem/OfferTableItemPric
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import Spinner from '@/components/common/Spinner.vue';
 import TableDateBlock from '@/components/common/Table/TableDateBlock.vue';
+import { useConfirm } from '@/composables/useConfirm.js';
+import { useNotify } from '@/utils/useNotify.js';
 
 export default {
     name: 'OfferTableItem',
@@ -174,7 +190,10 @@ export default {
     },
     setup() {
         const { isLoading } = useDelayedLoader();
-        return { isLoading };
+        const { confirm } = useConfirm();
+        const notify = useNotify();
+
+        return { isLoading, confirm, notify };
     },
     data() {
         return {

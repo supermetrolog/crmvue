@@ -6,8 +6,4 @@
         <i class="fa-solid fa-arrow-up-right-from-square"></i>
     </button>
 </template>
-<script>
-export default {
-    name: 'MessengerChatSettingsLink'
-};
-</script>
+<script setup></script>

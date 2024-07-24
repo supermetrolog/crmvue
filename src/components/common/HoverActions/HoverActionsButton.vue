@@ -3,22 +3,19 @@
         <slot></slot>
     </button>
 </template>
-<script>
-export default {
-    name: 'HoverActionsButton',
-    props: {
-        label: {
-            type: String,
-            default: null
-        },
-        active: {
-            type: Boolean,
-            default: false
-        },
-        small: {
-            type: Boolean,
-            default: false
-        }
+<script setup>
+defineProps({
+    label: {
+        type: String,
+        default: null
+    },
+    active: {
+        type: Boolean,
+        default: false
+    },
+    small: {
+        type: Boolean,
+        default: false
     }
-};
+});
 </script>

@@ -2,6 +2,8 @@
 @use '../utils/mixins';
 
 .offer-table-item {
+    vertical-align: top;
+
     .passive {
         color: variables.$color_warning!important;
     }
@@ -31,16 +33,21 @@
     }
 
     &__preview {
-        width: 280px;
+        width: 270px;
         position: relative;
     }
 
     &__region {
         width: 280px;
         text-transform: capitalize;
+
+        a {
+            color: inherit;
+        }
     }
 
     &__from-mkad {
+        font-weight: 700;
         width: 80px;
     }
 
@@ -53,7 +60,7 @@
     }
 
     &__consultant {
-        width: 240px;
+        width: 80px;
     }
 
     &__company {
@@ -63,10 +70,19 @@
 
     &__company-element {
         max-width: 280px;
-        background-color: rgba(255, 255, 255, .5);
+        border: none!important;
+        padding: 0!important;
 
         .company-contact__phone {
             background-color: #e7e7e7;
+        }
+
+        .company-element {
+            &__name {
+                font-weight: 700;
+                color: #000;
+                text-decoration: underline;
+            }
         }
     }
 
@@ -89,10 +105,20 @@
         width: 100px;
     }
 
+    &__avatar {
+        position: relative;
+    }
+
     &__visited {
-        color: variables.$color_danger_dark;
-        margin-bottom: 5px;
-        font-weight: 500;
+        position: absolute;
+        right: -6px;
+        bottom: -6px;
+        background-color: variables.$color_grey_alt;
+        border: 1px solid rgba(0, 0, 0, .1);
+        height: 25px;
+        width: 25px;
+        border-radius: 50%;
+        @include mixins.flex-box($a: center, $j: center);
         font-size: 14px;
     }
 
@@ -103,7 +129,7 @@
 
 .offer-table-item-area {
     &__title {
-        font-weight: 500;
+        font-weight: 700;
     }
 
     &__additional {
@@ -138,13 +164,24 @@
         @include mixins.flex-box($gap: 5px);
     }
 
-    &__object-type {
-        width: 100%!important;
-        text-align: center;
+    &__types {
+        @include mixins.flex-box($gap: 5px);
+        margin-top: 5px;
     }
 
     &__container {
         position: relative;
+        height: 180px;
+        min-width: 270px;
+        display: block;
+
+        img {
+            max-height: 100%;
+            max-width: 100%;
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+        }
     }
 
     &__parameters, &__publishes {
@@ -261,16 +298,18 @@
 
     &__suffix {
         @include mixins.flex-box($a: center, $j: center);
-        position: absolute;
-        right: 5px;
-        top: 5px;
-        background-color: #c03;
-        color: #fff;
-        border-radius: 50%;
-        font-size: 12px;
-        flex-shrink: 0;
-        height: 20px;
-        width: 20px;
+        padding: 3px!important;
+        font-size: 13px!important;
+    }
+
+    .tabs-component-tab .tabs-component-tab-a {
+        @include mixins.flex-box($gap: 5px, $a: center);
+    }
+
+    &__list {
+        .offer-table-item {
+            background-color: rgba(#e4eddb, .8)!important;
+        }
     }
 }
 
@@ -376,6 +415,71 @@
             height: 200px;
             width: 100%;
             object-fit: cover;
+        }
+    }
+}
+
+.offer-table-item-preview-slider {
+    @include mixins.flex-box($a: center, $j: center);
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    height: 45px;
+    width: 45px;
+    background-color: rgba(variables.$color_light_grey, .5);
+    backdrop-filter: blur(1px);
+    color: #000;
+    font-size: 20px;
+}
+
+.offer-table-item-motion-slider {
+    height: 100%;
+    position: relative;
+
+    &__list {
+        @include mixins.flex-box($gap: 5px);
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        padding: 0 5px;
+    }
+
+    &__image {
+        display: none;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+
+        &.active {
+            display: block;
+        }
+    }
+
+    &__info {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        @include mixins.flex-box($a: center, $j: center, $d: column);
+        z-index: 4;
+        background-color: rgba(0, 0, 0, .4);
+        color: #fff;
+    }
+
+    &__ghost {
+        position: relative;
+        z-index: 5;
+        height: calc(100% - 4px);
+        border-bottom: 4px solid rgba(255, 255, 255, .5);
+
+        &.active {
+            border-bottom-color: variables.$color_light_blue;
         }
     }
 }

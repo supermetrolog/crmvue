@@ -36,21 +36,17 @@
         </div>
     </div>
 </template>
-<script>
+<script setup>
 import { Tippy } from 'vue-tippy';
 
-export default {
-    name: 'ValidationInfo',
-    components: { Tippy },
-    props: {
-        validator: {
-            type: Object,
-            default: null
-        },
-        errors: {
-            type: Array,
-            default: () => []
-        }
+defineProps({
+    validator: {
+        type: Object,
+        default: null
+    },
+    errors: {
+        type: Array,
+        default: () => []
     }
-};
+});
 </script>

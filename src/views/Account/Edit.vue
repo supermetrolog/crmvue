@@ -93,7 +93,7 @@ import FileInput from '@/components/common/Forms/FileInput.vue';
 import { emptyWithProperty, everyProperty, validateEmail, validatePhone } from '@//validators';
 import useValidate from '@vuelidate/core';
 import { helpers, or, required, requiredIf } from '@vuelidate/validators';
-import Submit from '@/components/common/Forms/Submit.vue';
+import Submit from '@/components/common/Forms/FormSubmit.vue';
 import Loader from '@/components/common/Loader.vue';
 import Utils, { cloneObject } from '@/utils';
 
@@ -184,7 +184,7 @@ export default {
                 if (updated) {
                     await this.$store.dispatch('REFRESH_USER');
                 } else {
-                    this.$toast('При обновлении пользователя произошла ошибка. Попробуйте позже.');
+                    this.$notify('При обновлении пользователя произошла ошибка. Попробуйте позже.');
                 }
 
                 this.form.password = null;

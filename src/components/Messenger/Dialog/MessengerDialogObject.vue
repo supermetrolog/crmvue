@@ -29,7 +29,7 @@
                 :last-call="lastCall"
                 :updated-at="model.object.updated_at"
             />
-            <MessengerDialogFunctions />
+            <MessengerDialogFunctions :counts="statistic" />
         </div>
     </div>
 </template>
@@ -54,8 +54,12 @@ export default {
             default: false
         },
         lastCall: {
-            type: String,
+            type: Object,
             default: null
+        },
+        statistic: {
+            type: Object,
+            required: true
         }
     },
     computed: {

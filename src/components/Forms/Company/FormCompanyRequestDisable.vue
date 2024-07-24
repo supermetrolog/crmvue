@@ -27,7 +27,7 @@ import Form from '@/components/common/Forms/Form.vue';
 import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import Textarea from '@/components/common/Forms/Textarea.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
-import Submit from '@/components/common/Forms/Submit.vue';
+import Submit from '@/components/common/Forms/FormSubmit.vue';
 import useValidate from '@vuelidate/core';
 import { PassiveWhyRequest } from '@/const/const.js';
 import { helpers, required } from '@vuelidate/validators';

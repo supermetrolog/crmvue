@@ -29,7 +29,7 @@
     </DashboardCard>
 </template>
 
-<script>
+<script setup>
 import api from '@/api/api.js';
 import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';
@@ -41,68 +41,49 @@ import Spinner from '@/components/common/Spinner.vue';
 import EmptyLabel from '@/components/common/EmptyLabel.vue';
 import DashboardCardEvent from '@/components/Dashboard/Card/DashboardCardEvent.vue';
 import objectSupport from 'dayjs/plugin/objectSupport';
+import { computed, onBeforeMount, ref, shallowRef, watch } from 'vue';
 
 dayjs.extend(objectSupport);
 
-export default {
-    name: 'DashboardStatsEvents',
-    components: {
-        DashboardCardEvent,
-        EmptyLabel,
-        Spinner,
-        DashboardChip,
-        Scheduler,
-        MessengerButton,
-        DashboardCard
-    },
-    props: {
-        user: {
-            type: Number,
-            default: null
-        }
-    },
-    setup() {
-        const { isLoading } = useDelayedLoader();
-        return { isLoading };
-    },
-    data() {
-        return {
-            events: [],
-            date: new Date(),
-            isMonthMode: null
-        };
-    },
-    computed: {
-        formattedDay() {
-            return dayjs(this.date).format('D MMMM');
-        }
-    },
-    watch: {
-        user() {
-            this.fetchEvents();
-        }
-    },
-    methods: {
-        async fetchEvents() {
-            this.isLoading = true;
-
-            const userParams = this.user ? { user_id: this.user } : {};
-
-            const response = await api.reminder.get(userParams);
-
-            this.events = response.data ?? [];
-
-            this.isLoading = false;
-        },
-        onChangeDate() {
-            this.fetchEvents();
-        },
-        onModeChanged(mode) {
-            this.isMonthMode = mode;
-        }
-    },
-    created() {
-        this.fetchEvents();
+const props = defineProps({
+    user: {
+        type: Number,
+        default: null
     }
+});
+
+const { isLoading } = useDelayedLoader();
+
+const events = ref([]);
+const date = ref(new Date());
+const isMonthMode = shallowRef(false);
+
+const formattedDay = computed(() => dayjs(date.value).format('D MMMM'));
+
+const fetchEvents = async () => {
+    isLoading.value = true;
+
+    const userParams = props.user ? { user_id: props.user } : {};
+    const response = await api.reminder.get(userParams);
+
+    if (response) {
+        events.value = response.data ?? [];
+    }
+
+    isLoading.value = false;
 };
+
+const onChangeDate = () => {
+    fetchEvents();
+};
+
+const onModeChanged = mode => {
+    isMonthMode.value = mode;
+};
+
+watch(() => props.user, fetchEvents);
+
+onBeforeMount(() => {
+    fetchEvents();
+});
 </script>
