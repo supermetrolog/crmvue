@@ -256,9 +256,9 @@
     &__agent {
         font-size: 14px;
         display: flex;
-        background-color: #0f6674;
+        background-color: #d1d1d7;
         border-radius: 5px;
-        color: #fff;
+        color: #000;
         width: max-content;
     }
 
@@ -377,7 +377,7 @@
     }
 
     &__content {
-        @include mixins.flex-box($d: column, $gap: 15px);
+        @include mixins.flex-box($d: column, $gap: 10px);
         margin-bottom: 20px;
     }
 
@@ -529,8 +529,8 @@
 
     &__chip {
         padding: 5px;
-        background-color: #0f6674;
-        color: #fff;
+        background-color: variables.$color_grey_alt;
+        color: #000;
         border-radius: 5px;
         margin-bottom: 10px;
         text-align: center;
@@ -538,11 +538,13 @@
     }
 
     &__title {
-        text-align: center;
-        background-color: #0f6674;
-        color: #fff;
+        background-color: variables.$color_grey_alt;
+        color: #000;
         border-radius: 5px;
-        padding: 5px;
+        padding: 5px 10px;
+        width: max-content;
+        font-weight: 500;
+        font-size: 20px;
     }
 
     &__item-label {
@@ -595,8 +597,19 @@
     }
 
     &__item {
-        @include mixins.flex-box($j: space-between);
+        @include mixins.flex-box($j: space-between, $a: center);
         font-size: 14px;
+    }
+
+    &__elements {
+        @include mixins.flex-box($a: center, $gap: 5px, $wrap: wrap);
+    }
+
+    &__element {
+        padding: 3px 5px;
+        background-color: variables.$color_grey_alt;
+        border-radius: 5px;
+        @include mixins.flex-box($a: center, $gap: 5px);
     }
 }
 
@@ -690,11 +703,11 @@
         @include mixins.flex-box($a: center, $gap: 10px);
         padding: 5px 10px;
         border-radius: 5px;
-        background-color: #268e50;
-        color: #fff;
+        background-color: variables.$bg-success-l;
+        color: #000;
 
         &.cancel {
-            background-color: rgba(203, 17, 50, 0.85);
+            background-color: variables.$bg-danger-l;
         }
     }
 
@@ -717,8 +730,8 @@
         font-weight: 500;
 
         &--exclusive {
-            background-color: rgba(203, 17, 50, 0.85);
-            color: #fff;
+            background-color: rgba(254, 106, 73, 0.7);
+            color: #000;
         }
 
         i {
@@ -739,8 +752,8 @@
 .complex-deal-specials {
     @include mixins.flex-box($a: center);
     border-radius: 5px;
-    background-color: #0f6674;
-    color: #fff;
+    background-color: #d1d1d7;
+    color: #000;
     width: max-content;
     font-size: 14px;
 

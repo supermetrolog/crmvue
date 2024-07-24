@@ -32,7 +32,7 @@
             @click="isOpenListContact = !isOpenListContact"
             class="dashboard-bg-success-l object-holding-company__button"
         >
-            Полный список контактов ({{ contacts.length }}):
+            Полный список контактов ({{ contacts.length }})
             <i v-if="isOpenListContact" class="fa-solid fa-caret-up"></i>
             <i v-else class="fa-solid fa-caret-down"></i>
         </DashboardChip>

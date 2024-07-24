@@ -77,7 +77,7 @@ import YandexMapView from '@/components/common/YandexMap/YandexMapView.vue';
 import YandexMapMarker from '@/components/common/YandexMap/YandexMapMarker.vue';
 import Tooltip from '@/components/common/Tooltip.vue';
 import ComplexMapDescription from '@/components/Complex/ComplexMapDescription.vue';
-import { reactive, shallowRef } from 'vue';
+import { nextTick, onUnmounted, reactive, shallowRef } from 'vue';
 import { ucFirst } from '@/utils/formatter.js';
 
 defineProps({
@@ -160,12 +160,17 @@ const map = reactive({
 
 const mapIsOpened = shallowRef(false);
 const randKey = shallowRef(0);
+let timeout = null;
 
 const openMap = () => {
+    clearTimeout(timeout);
+
     if (mapIsOpened.value) {
         mapIsOpened.value = false;
         map.styles.height = '60px';
-        randKey.value = Math.round(Math.random() * 1000);
+        timeout = setTimeout(() => {
+            randKey.value = randKey.value + 1;
+        }, 1000);
 
         Object.keys(map.detailedControls).forEach(key => {
             map.detailedControls[key].visible = false;
@@ -175,7 +180,9 @@ const openMap = () => {
     } else {
         mapIsOpened.value = true;
         map.styles.height = '500px';
-        randKey.value = Math.round(Math.random() * 1000);
+        timeout = setTimeout(() => {
+            randKey.value = randKey.value + 1;
+        }, 1000);
 
         Object.keys(map.detailedControls).forEach(key => {
             map.detailedControls[key].visible = true;
@@ -184,4 +191,8 @@ const openMap = () => {
         map.behaviors = ['drag', 'multiTouch', 'scrollZoom'];
     }
 };
+
+onUnmounted(() => {
+    clearTimeout(timeout);
+});
 </script>

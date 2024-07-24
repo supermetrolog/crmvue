@@ -11,8 +11,8 @@
     </div>
 </template>
 <script setup>
-import { entityOptions } from '@/const/options/options';
 import { computed } from 'vue';
+import { objectPurposesOptions } from '@/const/options/object.options.js';
 
 const props = defineProps({
     purposes: {
@@ -22,6 +22,6 @@ const props = defineProps({
 });
 
 const preparedPurposes = computed(() => {
-    return props.purposes.map(purpose => entityOptions.object.purposes[purpose]);
+    return props.purposes.map(purpose => objectPurposesOptions[purpose]);
 });
 </script>

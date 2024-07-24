@@ -1,5 +1,5 @@
 <template>
-    <div class="object-holding">
+    <div v-intersection="intersectionObserver" class="object-holding" :class="{ target: target }">
         <div class="object-holding__body">
             <div class="object-holding__carousel">
                 <div class="object-holding__badges">
@@ -32,7 +32,7 @@
                 </div>
             </div>
         </div>
-        <ComplexHoldingTabs :object="object" />
+        <ComplexHoldingTabs @edit="$emit('edit')" :object="object" />
     </div>
 </template>
 
@@ -44,10 +44,15 @@ import ComplexHoldingCompany from '@/components/Complex/Holding/ComplexHoldingCo
 import { computed, inject, provide } from 'vue';
 import { $generatorURL as $url } from '@/plugins/url.js';
 
+const emit = defineEmits(['edit', 'intersected']);
 const props = defineProps({
     object: {
         type: Object,
         required: true
+    },
+    target: {
+        type: Boolean,
+        default: false
     }
 });
 
@@ -61,4 +66,8 @@ const objectPhoto = computed(() =>
           }))
         : []
 );
+
+const intersectionObserver = ([{ isIntersecting }]) => {
+    emit('intersected', isIntersecting);
+};
 </script>

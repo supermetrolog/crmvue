@@ -3,25 +3,25 @@
         <div class="object-deals-actions">
             <ul class="object-deals-actions__list">
                 <li>
-                    <Button icon small>
+                    <Button info icon small>
                         <i class="fa-solid fa-plus"></i>
                         <span>Аренда</span>
                     </Button>
                 </li>
                 <li>
-                    <Button icon small>
+                    <Button info icon small>
                         <i class="fa-solid fa-plus"></i>
                         <span>Субаренда</span>
                     </Button>
                 </li>
                 <li>
-                    <Button icon small>
+                    <Button info icon small>
                         <i class="fa-solid fa-plus"></i>
                         <span>Продажа</span>
                     </Button>
                 </li>
                 <li>
-                    <Button icon small>
+                    <Button info icon small>
                         <i class="fa-solid fa-plus"></i>
                         <span>Ответ-хранение</span>
                     </Button>

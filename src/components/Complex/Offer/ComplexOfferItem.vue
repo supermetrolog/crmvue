@@ -42,7 +42,6 @@
                 v-if="tradeOffer.purposes_block.length"
                 :purposes="tradeOffer.purposes_block"
             />
-            <ComplexParameters :parameters="parameters" />
             <ComplexOfferAdvertisements :advertisements="advertisements" />
         </div>
         <ComplexTabs class="trade-offer-item__tabs" :offer="tradeOffer" />
@@ -63,9 +62,7 @@ import ComplexTabs from '@/components/Complex/ComplexTabs.vue';
 import ComplexActions from '@/components/Complex/ComplexActions.vue';
 import ComplexOfferAdvertisements from '@/components/Complex/Offer/ComplexOfferAdvertisements.vue';
 import { PriceOptionList, PriceOptionTypes } from '@/const/const';
-import ComplexParameters from '@/components/Complex/ComplexParameters.vue';
 import { entityProperties } from '@/const/properties/properties';
-import { mapper } from '@/utils/mapper';
 import ComplexPurposes from '@/components/Complex/ComplexPurposes.vue';
 import { mapGetters } from 'vuex';
 import { deleteObjectsWithEmptyProperties } from '@/utils/deleteObjectsWithEmptyProperties.js';
@@ -74,7 +71,6 @@ export default {
     name: 'ComplexOfferItem',
     components: {
         ComplexPurposes,
-        ComplexParameters,
         ComplexOfferAdvertisements,
         ComplexActions,
         ComplexOfferStatus,
@@ -301,12 +297,6 @@ export default {
                 serviceIn: deleteObjectsWithEmptyProperties(serviceInPrices, 'value', 0),
                 serviceOut: deleteObjectsWithEmptyProperties(serviceOutPrices, 'value', 0)
             };
-        },
-        parameters() {
-            return mapper.propertiesToParametersFormat(
-                this.tradeOffer,
-                entityProperties.offer.parameters
-            );
         },
         advertisements() {
             return Object.keys(entityProperties.offer.advertisements).map(key => {

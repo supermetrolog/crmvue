@@ -51,6 +51,14 @@
             </template>
             <span v-else>{{ parameter.name }}</span>
         </li>
+        <li
+            v-if="withMore"
+            v-tippy="modelValue ? 'Скрыть дополнительные параметры' : 'Показать полный список'"
+            @click.prevent="modelValue = !modelValue"
+            class="complex-parameters__item complex-parameters__button"
+        >
+            <i class="fa-solid" :class="modelValue ? 'fa-eye-slash' : 'fa-eye'" />
+        </li>
     </ul>
 </template>
 
@@ -58,10 +66,15 @@
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { toCorrectFormat, toNumberOrRangeFormat } from '@/utils/formatter.js';
 
+const modelValue = defineModel('more', { type: Boolean, default: false });
 defineProps({
     parameters: {
         type: Object,
         required: true
+    },
+    withMore: {
+        type: Boolean,
+        default: false
     }
 });
 </script>

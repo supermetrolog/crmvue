@@ -11,8 +11,8 @@
             <FormComplexFloor
                 v-if="floorFormIsVisible"
                 @close="toggleEditFloorForm"
-                :object="object"
                 :floor="currentEditFloor"
+                :related="object"
             />
         </teleport>
         <ul class="deal-floors__list">

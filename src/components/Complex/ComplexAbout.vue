@@ -1,6 +1,11 @@
 <template>
     <div id="ComplexAbout" class="complex-about">
-        <Tabs closed :options="{ useUrlFragment: false }">
+        <Tabs
+            nav-class="complex-tabs"
+            nav-item-link-class="complex-tabs__link dashboard-chip"
+            closed
+            :options="{ useUrlFragment: false }"
+        >
             <Tab v-if="complex" name="О комплексе">
                 <div class="complex-about__content">
                     <PropertyGrid :template="template" :sections="parameters" />

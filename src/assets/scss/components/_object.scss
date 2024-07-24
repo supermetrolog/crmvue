@@ -2,6 +2,28 @@
 @use '../utils/mixins';
 
 .object-holding {
+    &::before {
+        content: '';
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
+        background-color: rgba(variables.$cl-success, .3);
+        @include mixins.transition(opacity);
+        opacity: 0;
+    }
+
+    &.target {
+        position: relative;
+
+        &::before {
+            z-index: 10;
+            opacity: 1;
+        }
+    }
+
     &__label {
         margin-bottom: 5px;
     }
@@ -442,5 +464,43 @@
         position: absolute;
         right: 1rem;
         top: .5rem;
+    }
+}
+
+.object-holding-chat {
+    z-index: 10;
+    position: fixed;
+    bottom: 50px;
+    right: 50px;
+    height: 80px;
+    width: 80px;
+
+    &__button {
+        height: 100%;
+        width: 100%;
+        border-radius: 50%;
+        background-color: variables.$bg-gray-l;
+        color: variables.$bg-gray-l;
+        cursor: pointer;
+        font-size: 30px;
+        @include mixins.flex-box($a: center, $j: center);
+        @include mixins.transition(color, background-color);
+
+        &:hover, &.active {
+           background-color: variables.$bg-success;
+           color: #fff;
+        }
+    }
+
+    &__list {
+        position: absolute;
+        right: 100%;
+        bottom: 100%;
+        padding: 10px;
+        background-color: #fff;
+        width: max-content;
+        border-radius: 5px;
+        @include mixins.flex-box($d: column, $gap: 5px);
+        box-shadow: 0 7px 20px rgba(0, 0, 0, 0.25);;
     }
 }

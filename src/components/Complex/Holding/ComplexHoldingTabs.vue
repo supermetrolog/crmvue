@@ -1,7 +1,13 @@
 <template>
     <div class="ObjectHoldingsTabs">
         <ComplexActions simple class="ObjectHoldingsTabs-buttons" :buttons="actionButtons" />
-        <Tabs ref="tabs" closed :options="{ useUrlFragment: false }">
+        <Tabs
+            ref="tabs"
+            nav-class="complex-tabs object-holdings-tabs__tabs"
+            nav-item-link-class="complex-tabs__link dashboard-chip"
+            closed
+            :options="{ useUrlFragment: false }"
+        >
             <Tab name="Характеристики">
                 <PropertyGrid
                     v-if="object.is_land"
@@ -114,6 +120,7 @@ import { useRoute } from 'vue-router';
 
 const route = useRoute();
 
+const emit = defineEmits(['edit']);
 const openDownloader = inject('openDownloader');
 const props = defineProps({
     object: {
@@ -132,7 +139,11 @@ const tabs = ref(null);
 
 const actionButtons = computed(() => {
     return {
-        edit: {},
+        edit: {
+            handler: () => {
+                emit('edit');
+            }
+        },
         dislike: { value: false },
         notifications: { value: false },
         delete: {},

@@ -13,9 +13,10 @@
             />
             <FormComplexFloor
                 v-if="floorFormIsVisible"
-                @close="toggleFloorFormVisible()"
+                @close="closeFloorForm"
                 :floor="forms.floor"
-                :object="object"
+                :fill-floor="forms.fillFloor"
+                :related="object"
             />
         </teleport>
         <div class="ObjectHoldingsParameters-wrapper">
@@ -82,30 +83,13 @@
                 </ul>
             </div>
         </div>
-        <div v-if="floors.length" class="object-holding-parameters__floors">
-            <ul class="object-holding-parameters__floors-list">
-                <li
-                    v-for="floor in floors"
-                    :key="floor.number.id"
-                    @click="toggleFloorFormVisible(floor)"
-                    class="object-holding-parameters__floor"
-                >
-                    <span>{{ floor.number.title }}</span>
-                    <!--                <i-->
-                    <!--                    v-if="floor.danger"-->
-                    <!--                    class="fas fa-exclamation-circle text-danger"-->
-                    <!--                    title="Внимание"-->
-                    <!--                ></i>-->
-                </li>
-                <li
-                    v-if="isModerator"
-                    @click="toggleFloorFormVisible()"
-                    class="object-holding-parameters__floor object-holding-parameters__floor--empty"
-                >
-                    <span>Добавить этаж</span>
-                </li>
-            </ul>
-        </div>
+        <ComplexHoldingParametersFloors
+            v-if="object.floors_building.length"
+            @fill="fillFloor"
+            @edit="startEditFloor"
+            :floors="object.floorsRecords"
+            :floors-building="object.floors_building"
+        />
     </div>
 </template>
 
@@ -118,7 +102,7 @@ import FormComplexElevator from '@/components/Forms/Complex/FormComplexElevator.
 import ComplexHoldingParametersCrane from '@/components/Complex/Holding/ComplexHoldingParametersCrane.vue';
 import FormComplexFloor from '@/components/Forms/Complex/FormComplexFloor.vue';
 import { reducer } from '@/utils/reducer.js';
-import { mapGetters, useStore } from 'vuex';
+import { useStore } from 'vuex';
 import ComplexHoldingParametersElevator from '@/components/Complex/Holding/ComplexHoldingParametersElevator.vue';
 import IconCrane from '@/components/common/Icons/IconCrane.vue';
 import IconElevator from '@/components/common/Icons/IconElevator.vue';
@@ -127,6 +111,7 @@ import { entityProperties } from '@/const/properties/properties';
 import ComplexPurposes from '@/components/Complex/ComplexPurposes.vue';
 import { computed, reactive, shallowRef } from 'vue';
 import { toNumberFormat } from '@/utils/formatter.js';
+import ComplexHoldingParametersFloors from '@/components/Complex/Holding/ComplexHoldingParametersFloors.vue';
 
 const store = useStore();
 
@@ -136,6 +121,8 @@ const props = defineProps({
         required: true
     }
 });
+
+console.log(props.object);
 
 const craneFormIsVisible = shallowRef(false);
 const elevatorFormIsVisible = shallowRef(false);
@@ -160,11 +147,10 @@ const hasEquipment = computed(() => {
         (props.object.elevators && props.object.elevators.length)
     );
 });
-const floors = computed(() => props.object.floorsRecords.filter(floor => floor.number));
 const isModerator = computed(() => store.getters.isModerator);
 const formattedFloorArea = computed(() => {
     return toNumberFormat(
-        reducer.sum(floors.value, [
+        reducer.sum(props.object.floorsRecords, [
             'area_floor_full',
             'area_mezzanine_full',
             'area_tech_full',
@@ -173,11 +159,11 @@ const formattedFloorArea = computed(() => {
     );
 });
 
-const toggleFloorFormVisible = (floor = null) => {
-    forms.floor = floor;
-    floorFormIsVisible.value = !floorFormIsVisible.value;
+const closeFloorForm = () => {
+    forms.floor = null;
+    forms.fillFloor = null;
+    floorFormIsVisible.value = false;
 };
-
 const toggleCraneFormIsVisible = (crane = null) => {
     forms.crane = crane;
     craneFormIsVisible.value = !craneFormIsVisible.value;
@@ -185,5 +171,15 @@ const toggleCraneFormIsVisible = (crane = null) => {
 const toggleElevatorFormIsVisible = (elevator = null) => {
     forms.elevator = elevator;
     elevatorFormIsVisible.value = !elevatorFormIsVisible.value;
+};
+
+const startEditFloor = floor => {
+    forms.floor = floor;
+    floorFormIsVisible.value = true;
+};
+
+const fillFloor = floor => {
+    forms.fillFloor = floor;
+    floorFormIsVisible.value = true;
 };
 </script>

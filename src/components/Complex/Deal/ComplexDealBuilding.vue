@@ -13,7 +13,11 @@
                 v-if="deal.summaryBlock.purposes_block.length"
                 :purposes="deal.summaryBlock.purposes_block"
             />
-            <ComplexParameters v-if="parameters.length" :parameters="parameters" />
+            <ComplexParameters
+                v-model:more="parametersIsVisible"
+                with-more
+                :parameters="parametersIsVisible ? parameters : mainParameters"
+            />
         </div>
         <EmptyData v-else class="building-info__empty">
             Данные о сделке отсутсвуют в связи с отсутствием торговых предложений.
@@ -34,17 +38,17 @@
 import ComplexParameters from '@/components/Complex/ComplexParameters.vue';
 import ComplexActions from '@/components/Complex/ComplexActions.vue';
 import ComplexDealTabs from '@/components/Complex/Deal/ComplexDealTabs.vue';
-import { entityProperties } from '@/const/properties/properties';
 import { mapper } from '@/utils/mapper';
 import ComplexDealArea from '@/components/Complex/Deal/ComplexDealArea.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import { useStore } from 'vuex';
 import ComplexDealPrice from '@/components/Complex/Deal/Price/ComplexDealPrice.vue';
 import ComplexPurposes from '@/components/Complex/ComplexPurposes.vue';
-import { computed, inject } from 'vue';
+import { computed, inject, shallowRef } from 'vue';
 import { $generatorURL as $url } from '@/plugins/url.js';
 import { useRoute } from 'vue-router';
 import { notify } from '@kyvg/vue3-notification';
+import { dealProperties } from '@/const/properties/deal.properties.js';
 
 const store = useStore();
 const route = useRoute();
@@ -58,6 +62,8 @@ const props = defineProps({
         required: true
     }
 });
+
+const parametersIsVisible = shallowRef(false);
 
 const hasActiveOffers = computed(() =>
     props.deal.blocks.some(offer => !offer.deleted && !offer.deal_id)
@@ -121,9 +127,13 @@ const actionButtons = computed(() => {
 });
 
 const parameters = computed(() => {
+    return mapper.propertiesToParametersFormat(props.deal.summaryBlock, dealProperties.parameters);
+});
+
+const mainParameters = computed(() => {
     return mapper.propertiesToParametersFormat(
         props.deal.summaryBlock,
-        entityProperties.deal.parameters
+        dealProperties.mainParameters
     );
 });
 </script>

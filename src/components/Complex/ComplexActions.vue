@@ -4,6 +4,7 @@
             <button
                 v-if="buttons.edit"
                 v-tippy="'Редактировать'"
+                @click="buttons.edit.handler"
                 :disabled="buttons.edit.disabled"
                 class="complex-actions__button"
             >
