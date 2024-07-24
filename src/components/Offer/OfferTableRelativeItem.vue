@@ -107,9 +107,7 @@ import Tr from '@/components/common/Table/Tr.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import OfferTableItemArea from '@/components/Offer/TableItem/OfferTableItemArea.vue';
-import CompanyContact from '@/components/Company/CompanyContact.vue';
 import CompanyElement from '@/components/Company/CompanyElement.vue';
-import Avatar from '@/components/common/Avatar.vue';
 import OfferTableItemPreview from '@/components/Offer/TableItem/OfferTableItemPreview.vue';
 import OfferTableItemAddress from '@/components/Offer/TableItem/OfferTableItemAddress.vue';
 import TableDateBlock from '@/components/common/Table/TableDateBlock.vue';
@@ -118,7 +116,6 @@ import { useStore } from 'vuex';
 import { $generatorURL } from '@/plugins/url.js';
 import OfferTableRelativeItemPrice from '@/components/Offer/OfferTableRelativeItemPrice.vue';
 import AvatarEmpty from '@/components/common/AvatarEmpty.vue';
-import { toInitialsFormat } from '@/utils/formatter.js';
 
 const emit = defineEmits(['favorite-deleted']);
 const $openMessengerChat = inject('$openMessengerChat');

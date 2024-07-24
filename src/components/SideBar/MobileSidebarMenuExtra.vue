@@ -34,7 +34,6 @@ import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
 import AccordionSimpleTrigger from '@/components/common/Accordion/AccordionSimpleTrigger.vue';
 import AccordionSimpleTriggerIcon from '@/components/common/Accordion/AccordionSimpleTriggerIcon.vue';
 import { InternalMenu } from '@/const/menu.js';
-import { useRoute } from 'vue-router';
 
 defineProps({
     link: {
@@ -42,6 +41,4 @@ defineProps({
         required: true
     }
 });
-
-const route = useRoute();
 </script>

@@ -62,8 +62,6 @@ const props = defineProps({
 const isReady = shallowRef(false);
 const vivus = ref(null);
 
-const _size = computed(() => props.size + 'px');
-
 defineExpose({ play: () => vivus.value.play() });
 
 const onReady = () => {

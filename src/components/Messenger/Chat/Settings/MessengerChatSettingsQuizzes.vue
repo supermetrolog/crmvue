@@ -49,7 +49,7 @@
                 :title="currentQuizPreviewTitle"
                 width="800"
             >
-                <MessengerQuizPreview :quiz-id="currentQuizPreview.id" />
+                <MessengerQuizPreview :quiz-id="currentQuizPreview?.id" />
             </Modal>
         </teleport>
     </div>
@@ -91,6 +91,7 @@ const lastQuizzesSize = shallowRef(7);
 
 const currentQuizPreviewTitle = computed(() => {
     return 'Просмотр опроса';
+    // eslint-disable-next-line no-unreachable
     let title = currentQuizPreview.value.author.short_name;
 
     if (currentQuizPreview.value.contact) title += `, с ${currentQuizPreview.value.contact}, от `;

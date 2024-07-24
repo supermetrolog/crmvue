@@ -1,5 +1,4 @@
 import api from '@//api/api';
-import quizzes from '@//test-data/quizzes.json';
 import axios from 'axios';
 import { SuccessHandler } from '@/api/helpers/successHandler.js';
 import { setRequestError } from '@/api/helpers/setRequestError.js';

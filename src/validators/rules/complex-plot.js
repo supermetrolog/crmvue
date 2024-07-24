@@ -1,4 +1,4 @@
-import { helpers, minValue, required } from '@vuelidate/validators';
+import { helpers, required } from '@vuelidate/validators';
 import { onlyPositiveNumber } from '@/validators/index.js';
 
 export const validationRulesForComplexPlot = {

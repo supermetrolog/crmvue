@@ -196,11 +196,10 @@ export default {
         getFileType(meta) {
             let extension = meta.split('.').slice(-1)[0];
 
-            const currentType =
+            return (
                 this.allowedTypeList.find(element => element.extensions.includes(extension)) ||
-                this.unknownFileType;
-
-            return currentType;
+                this.unknownFileType
+            );
         },
         onChange($event) {
             const files = Array.from($event.target.files);

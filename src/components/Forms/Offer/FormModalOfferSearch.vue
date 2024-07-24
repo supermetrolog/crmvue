@@ -320,7 +320,6 @@ import Modal from '@/components/common/Modal.vue';
 import Button from '@/components/common/Button.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
-import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
 import { onlyPositiveNumber } from '@//validators';
 import useValidate from '@vuelidate/core';
@@ -345,7 +344,6 @@ export default {
         ObjectTypePicker,
         RadioGroup,
         DoubleInput,
-        RadioChip,
         CheckboxChip,
         AnimationTransition,
         Button,
@@ -353,9 +351,9 @@ export default {
     },
     mixins: [FormMixin],
     emits: ['close'],
-    data() {
+    data(v$ = useValidate()) {
         return {
-            v$: useValidate()
+            v$: v$
         };
     },
     computed: {

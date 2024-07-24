@@ -622,7 +622,7 @@ const Messenger = {
             commit('setCurrentRecipient', { contactID: cachedMessage.contact });
             commit('setCurrentCategory', cachedMessage.tag);
         },
-        async readMessages({ state, commit }, messageID) {
+        async readMessages({ commit }, messageID) {
             const reads = api.messenger.readMessages(messageID);
 
             if (reads) {

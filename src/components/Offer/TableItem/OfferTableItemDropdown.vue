@@ -98,7 +98,6 @@ import Tab from '@/components/common/Tabs/Tab.vue';
 import { computed } from 'vue';
 import { dealOptions } from '@/const/options/deal.options.js';
 import OfferTableRelativeItem from '@/components/Offer/OfferTableRelativeItem.vue';
-import OfferTableItem from '@/components/Offer/TableItem/OfferTableItem.vue';
 import OfferTableItemObject from '@/components/Offer/TableItem/OfferTableItemObject.vue';
 
 const props = defineProps({

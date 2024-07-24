@@ -156,7 +156,6 @@ import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import Spinner from '@/components/common/Spinner.vue';
 import TableDateBlock from '@/components/common/Table/TableDateBlock.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
-import dayjs from 'dayjs';
 import { useNotify } from '@/utils/useNotify.js';
 
 export default {

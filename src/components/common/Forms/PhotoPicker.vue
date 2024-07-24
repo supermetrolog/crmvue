@@ -34,7 +34,6 @@ import VLazyImage from 'v-lazy-image';
 import { computed } from 'vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import Button from '@/components/common/Button.vue';
-import { cloneObject } from '@/utils/index.js';
 
 const modelValue = defineModel({ type: Array, required: true });
 const props = defineProps({
