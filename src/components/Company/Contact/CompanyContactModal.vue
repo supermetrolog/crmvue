@@ -1,6 +1,7 @@
 <template>
     <Modal
         @close="$emit('close')"
+        show
         :title="contact.isMain ? 'Основной контакт' : 'Контакт'"
         width="800"
     >
@@ -17,12 +18,12 @@
 <script setup>
 import Modal from '@/components/common/Modal.vue';
 import CompanyContactItem from '@/components/Company/Contact/CompanyContactItem.vue';
-import { inject, onMounted } from 'vue';
+import { inject } from 'vue';
 
 defineEmits(['close', 'start-editing', 'delete-contact']);
 const createContactComment = inject('createContactComment');
 
-const props = defineProps({
+defineProps({
     contact: {
         type: Object,
         required: true

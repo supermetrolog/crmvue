@@ -1,7 +1,7 @@
 <template>
     <Modal
-        v-if="opened"
         @close="close"
+        :show="opened"
         class="modal-form-message"
         title="Редактирование сообщения"
         width="800"

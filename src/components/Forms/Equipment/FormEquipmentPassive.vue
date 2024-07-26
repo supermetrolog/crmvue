@@ -1,5 +1,5 @@
 <template>
-    <Modal @close="$emit('close')" title="Редактирование оборудования" width="700">
+    <Modal @close="$emit('close')" show title="Редактирование оборудования" width="700">
         <Loader v-if="isLoading" />
         <Form @submit="onSubmit">
             <FormGroup>

@@ -35,46 +35,53 @@
                 />
             </template>
         </div>
-        <Modal v-if="modalIsOpen" @close="closeModal" class="carousel__modal" :title="modalTitle">
-            <VueAgile
-                ref="main"
-                class="carousel__slides"
-                :options="mainOptions"
-                :initialSlide="currentSlideIndex"
+        <teleport to="body">
+            <Modal
+                @close="closeModal"
+                :show="modalIsOpen"
+                class="carousel__modal"
+                :title="modalTitle"
             >
-                <div
-                    v-for="(slide, slideKey) in slides"
-                    :key="slideKey"
-                    class="carousel__slide"
-                    :class="`slide--${slideKey}`"
+                <VueAgile
+                    ref="main"
+                    class="carousel__slides"
+                    :options="mainOptions"
+                    :initialSlide="currentSlideIndex"
                 >
-                    <VLazyImage class="carousel__image" :src="slide.src" alt="img" />
-                </div>
-            </VueAgile>
-            <VueAgile
-                ref="thumbnails"
-                @after-change="$refs.main.goTo($event.currentSlide)"
-                :options="listOptions"
-                class="carousel__thumbnails"
-                :initialSlide="currentSlideIndex"
-            >
-                <div
-                    v-for="(slide, idx) in slides"
-                    :key="idx"
-                    @click="$refs.thumbnails.goTo(idx)"
-                    class="carousel__thumbnail"
-                    :class="`slide--${idx}`"
+                    <div
+                        v-for="(slide, slideKey) in slides"
+                        :key="slideKey"
+                        class="carousel__slide"
+                        :class="`slide--${slideKey}`"
+                    >
+                        <VLazyImage class="carousel__image" :src="slide.src" alt="img" />
+                    </div>
+                </VueAgile>
+                <VueAgile
+                    ref="thumbnails"
+                    @after-change="$refs.main.goTo($event.currentSlide)"
+                    :options="listOptions"
+                    class="carousel__thumbnails"
+                    :initialSlide="currentSlideIndex"
                 >
-                    <VLazyImage class="carousel__image" :src="slide.src" alt="" />
-                </div>
-                <template #prevButton>
-                    <i class="fas fa-chevron-left"></i>
-                </template>
-                <template #nextButton>
-                    <i class="fas fa-chevron-right"></i>
-                </template>
-            </VueAgile>
-        </Modal>
+                    <div
+                        v-for="(slide, idx) in slides"
+                        :key="idx"
+                        @click="$refs.thumbnails.goTo(idx)"
+                        class="carousel__thumbnail"
+                        :class="`slide--${idx}`"
+                    >
+                        <VLazyImage class="carousel__image" :src="slide.src" alt="" />
+                    </div>
+                    <template #prevButton>
+                        <i class="fas fa-chevron-left"></i>
+                    </template>
+                    <template #nextButton>
+                        <i class="fas fa-chevron-right"></i>
+                    </template>
+                </VueAgile>
+            </Modal>
+        </teleport>
     </div>
 </template>
 

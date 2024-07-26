@@ -49,8 +49,8 @@
             </FormGroup>
             <teleport to="body">
                 <Modal
-                    v-if="extraVisible"
                     @close="extraVisible = false"
+                    :show="extraVisible"
                     title="Фильтры предложений"
                     width="1200"
                 >

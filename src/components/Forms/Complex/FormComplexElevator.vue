@@ -1,6 +1,7 @@
 <template>
     <Modal
         @close="$emit('close')"
+        show
         :title="elevator ? 'Редактирование подъемника' : 'Добавление подъемника'"
         width="950"
         has-tabs

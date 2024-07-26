@@ -1,5 +1,5 @@
 <template>
-    <Modal @close="$emit('close')" :title="title" class="modal-form-delete" width="600">
+    <Modal @close="$emit('close')" show :title="title" class="modal-form-delete" width="600">
         <Form @submit.prevent="onSubmit" class="form-delete">
             <div class="form-delete__body">
                 <p class="form-delete__text">

@@ -1,5 +1,5 @@
 <template>
-    <Modal v-if="isVisible" @close="cancel" title="Новое событие" width="1200">
+    <Modal @close="cancel" :show="isVisible" title="Новое событие" width="1200">
         <Stepper @complete="submit" :steps="steps" :v="v$.form" keep-alive>
             <template #1>
                 <Form>

@@ -1,5 +1,5 @@
 <template>
-    <Modal @close="$emit('close')" :title="title" :width="1200">
+    <Modal @close="$emit('close')" show :title="title" :width="1200">
         <Spinner v-if="isLoading" />
         <LetterView v-else :letter="letter" />
     </Modal>

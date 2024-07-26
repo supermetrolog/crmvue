@@ -1,5 +1,5 @@
 <template>
-    <Modal v-if="isVisible" @close="cancel" width="600" title="Обновление даты последнего звонка">
+    <Modal @close="cancel" :show="isVisible" width="600" title="Обновление даты последнего звонка">
         <Spinner v-if="isLoading" />
         <template v-else>
             <div class="row mb-1">

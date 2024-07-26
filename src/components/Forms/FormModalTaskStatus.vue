@@ -1,5 +1,5 @@
 <template>
-    <Modal v-if="opened" @close="close" width="800" title="Изменение статуса задачи">
+    <Modal @close="close" :show="opened" width="800" title="Изменение статуса задачи">
         <div class="form-modal-task-status mb-4">
             <RadioIcon
                 v-for="(status, value) in statusOptions"

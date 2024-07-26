@@ -1,6 +1,7 @@
 <template>
     <Modal
         @close="clickCloseModal"
+        show
         :title="formdata ? 'Изменение пользователя' : 'Создание пользователя'"
         class="modal-form-user"
     >

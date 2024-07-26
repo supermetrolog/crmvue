@@ -1,5 +1,5 @@
 <template>
-    <Modal @close="$emit('close')" width="800" title="Настройка фильтров">
+    <Modal @close="$emit('close')" show width="800" title="Настройка фильтров">
         <Form>
             <FormGroup>
                 <div class="col-12">

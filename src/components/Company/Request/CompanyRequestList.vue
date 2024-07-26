@@ -1,8 +1,8 @@
 <template>
     <div class="company-request-list fuck">
         <Modal
-            v-if="deletedRequestItem"
             @close="clickCloseModal"
+            :show="deletedRequestItem"
             title="Удаление запроса "
             class="action-modal"
         >
@@ -31,8 +31,8 @@
             </div>
         </Modal>
         <Modal
-            v-if="clonedRequestItem"
             @close="clickCloseModal"
+            :show="clonedRequestItem"
             title="Клонирование запроса "
             class="action-modal"
         >

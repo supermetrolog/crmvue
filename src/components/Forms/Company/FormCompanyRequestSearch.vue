@@ -24,7 +24,7 @@
             </div>
         </FormGroup>
         <teleport to="body">
-            <Modal v-if="extraIsVisible" @close="extraIsVisible = false" width="1400">
+            <Modal @close="extraIsVisible = false" :show="extraIsVisible" width="1400">
                 <template #header>
                     <Switch
                         v-model="form.expressRequest"

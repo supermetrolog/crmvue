@@ -1,12 +1,14 @@
 <template>
     <div class="users-all">
-        <FormUser
-            v-if="userFormVisible"
-            @closeUserForm="clickCloseUserForm"
-            @created="getUsers"
-            @updated="getUsers"
-            :formdata="userForUpdate"
-        />
+        <teleport to="body">
+            <FormUser
+                v-if="userFormVisible"
+                @closeUserForm="clickCloseUserForm"
+                @created="getUsers"
+                @updated="getUsers"
+                :formdata="userForUpdate"
+            />
+        </teleport>
         <div class="row">
             <div class="col-7 mx-auto">
                 <div class="row">

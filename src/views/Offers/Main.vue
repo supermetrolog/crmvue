@@ -2,10 +2,12 @@
     <section>
         <div class="container-fluid">
             <div class="row">
-                <FormComplex
-                    v-if="complexFormModalVisible"
-                    @close="toggleComplexFormModalVisible"
-                />
+                <teleport to="body">
+                    <FormComplex
+                        v-if="complexFormModalVisible"
+                        @close="toggleComplexFormModalVisible"
+                    />
+                </teleport>
                 <FormModalOfferSearch
                     v-if="searchFormModalVisible"
                     @close="toggleSearchFormModalVisible"
@@ -28,9 +30,8 @@
                     </div>
                 </div>
             </div>
-            <div class="row justify-content-between">
+            <div v-if="OFFERS_PAGINATION" class="row justify-content-between">
                 <PaginationClassic
-                    v-if="OFFERS_PAGINATION"
                     ref="firstPagination"
                     @next="next"
                     class="col-12 col-md-6"

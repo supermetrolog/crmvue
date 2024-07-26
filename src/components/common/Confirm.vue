@@ -1,7 +1,7 @@
 <template>
     <Modal
-        v-if="isVisible"
         @close="cancel"
+        :show="isVisible"
         width="450"
         class="confirm"
         title="Подтверждение действия"

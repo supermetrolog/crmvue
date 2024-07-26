@@ -1,5 +1,10 @@
 <template>
-    <Modal @close="$emit('close')" :title="'Просмотр оборудования #' + equipment.id" width="1200">
+    <Modal
+        @close="$emit('close')"
+        show
+        :title="'Просмотр оборудования #' + equipment.id"
+        width="1200"
+    >
         <div class="dashboard-card-view">
             <div class="row">
                 <div class="col-12">

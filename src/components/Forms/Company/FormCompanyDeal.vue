@@ -1,5 +1,5 @@
 <template>
-    <Modal @close="$emit('close')" class="form-company-deal" :width="1000">
+    <Modal @close="$emit('close')" show class="form-company-deal" :width="1000">
         <template #header>
             <Switch
                 v-model="form.is_our"

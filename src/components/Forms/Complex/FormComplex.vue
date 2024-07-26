@@ -1,6 +1,7 @@
 <template>
     <Modal
         @close="$emit('close')"
+        show
         :title="complex ? 'Редактирование комплекса' : 'Добавление комплекса'"
         has-tabs
         width="1200"

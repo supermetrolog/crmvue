@@ -23,74 +23,78 @@
                 </div>
             </div>
         </FormGroup>
-        <Modal v-if="extraIsVisible" @close="extraIsVisible = false" title="Фильтры">
-            <FormGroup>
-                <MultiSelect
-                    v-model="form.consultant_id"
-                    label="Консультант"
-                    class="col-md-4 col-12"
-                    :options="
-                        async () => {
-                            return await FETCH_CONSULTANT_LIST();
-                        }
-                    "
-                />
-                <Input
-                    v-model="form.nameRu"
-                    label="Название RU"
-                    placeholder="Название (Ru)"
-                    class="col-md-4 col-12"
-                    :v="v$.form.nameRu"
-                    reactive
-                />
-                <Input
-                    v-model="form.nameEng"
-                    label="Название ENG"
-                    placeholder="Название (Eng)"
-                    class="col-md-4 col-12"
-                    :v="v$.form.nameEng"
-                    reactive
-                />
-            </FormGroup>
-            <FormGroup>
-                <MultiSelect
-                    v-model="form.activityGroup"
-                    title="Группа деятельности"
-                    label="Группа дея-ти"
-                    class="col-12 col-md-4"
-                    :options="ActivityGroupList"
-                />
-                <MultiSelect
-                    v-model="form.activityProfile"
-                    title="Профиль деятельности"
-                    label="Профиль дея-ти"
-                    class="col-12 col-md-4"
-                    :options="ActivityProfileList"
-                />
-                <DoubleInput
-                    v-model:first="form.dateStart"
-                    v-model:second="form.dateEnd"
-                    label="Дата"
-                    class="col-12 col-md-4"
-                    type="date"
-                    :validators="formDateValidators"
-                />
-            </FormGroup>
-            <FormGroup>
-                <CheckboxOptions
-                    v-model="form.categories"
-                    class="col-md-8 col-12"
-                    label="Категория"
-                    :options="CompanyCategories"
-                />
-                <RadioOptions
-                    v-model="form.status"
-                    class="col-md-4 col-12"
-                    label="Статус"
-                    :options="ActivePassive"
-                />>
-            </FormGroup>
-        </Modal>
+        <teleport to="body">
+            <Modal @close="extraIsVisible = false" :show="extraIsVisible" title="Фильтры">
+                <Form>
+                    <FormGroup>
+                        <MultiSelect
+                            v-model="form.consultant_id"
+                            label="Консультант"
+                            class="col-md-4 col-12"
+                            :options="
+                                async () => {
+                                    return await FETCH_CONSULTANT_LIST();
+                                }
+                            "
+                        />
+                        <Input
+                            v-model="form.nameRu"
+                            label="Название RU"
+                            placeholder="Название (Ru)"
+                            class="col-md-4 col-12"
+                            :v="v$.form.nameRu"
+                            reactive
+                        />
+                        <Input
+                            v-model="form.nameEng"
+                            label="Название ENG"
+                            placeholder="Название (Eng)"
+                            class="col-md-4 col-12"
+                            :v="v$.form.nameEng"
+                            reactive
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <MultiSelect
+                            v-model="form.activityGroup"
+                            title="Группа деятельности"
+                            label="Группа дея-ти"
+                            class="col-12 col-md-4"
+                            :options="ActivityGroupList"
+                        />
+                        <MultiSelect
+                            v-model="form.activityProfile"
+                            title="Профиль деятельности"
+                            label="Профиль дея-ти"
+                            class="col-12 col-md-4"
+                            :options="ActivityProfileList"
+                        />
+                        <DoubleInput
+                            v-model:first="form.dateStart"
+                            v-model:second="form.dateEnd"
+                            label="Дата"
+                            class="col-12 col-md-4"
+                            type="date"
+                            :validators="formDateValidators"
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <CheckboxOptions
+                            v-model="form.categories"
+                            class="col-md-8 col-12"
+                            label="Категория"
+                            :options="CompanyCategories"
+                        />
+                        <RadioOptions
+                            v-model="form.status"
+                            class="col-md-4 col-12"
+                            label="Статус"
+                            :options="ActivePassive"
+                        />
+                    </FormGroup>
+                </Form>
+            </Modal>
+        </teleport>
     </Form>
 </template>
 

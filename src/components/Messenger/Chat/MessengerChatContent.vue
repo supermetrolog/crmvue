@@ -4,7 +4,6 @@
         <AnimationTransition>
             <MessengerChatPinned v-if="pinnedMessage" :message="pinnedMessage" />
         </AnimationTransition>
-        {{ isLoading }}
         <VirtualDragList
             ref="virtual"
             disabled

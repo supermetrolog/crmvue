@@ -44,8 +44,8 @@
         </div>
         <teleport to="body">
             <Modal
-                v-if="currentQuizPreview"
                 @close="currentQuizPreview = null"
+                :show="currentQuizPreview"
                 :title="currentQuizPreviewTitle"
                 width="800"
             >
@@ -76,11 +76,12 @@ defineEmits(['close']);
 const store = useStore();
 const { isLoading } = useDelayedLoader();
 
-const loadQuizzes = page =>
-    store.dispatch('Messenger/getCurrentChatQuizzes', {
+const loadQuizzes = async page => {
+    return await store.dispatch('Messenger/getCurrentChatQuizzes', {
         page,
         search: querySearch.value?.length ? querySearch.value : undefined
     });
+};
 
 const { items: quizzes, pagination, load } = useInfiniteLoading(loadQuizzes);
 

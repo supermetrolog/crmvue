@@ -1,7 +1,7 @@
 <template>
     <Modal
-        v-if="isOpened"
         @close="close"
+        :show="isOpened"
         title="Выбор изображений для скачивания"
         class="complex-photo-downloader"
         width="1100"

@@ -4,6 +4,7 @@
         :title="section ? 'Редактирование блока' : 'Добавление блока'"
         width="1200"
         has-tabs
+        show
     >
         <Loader v-if="loader" />
         <Form @submit="onSubmit">

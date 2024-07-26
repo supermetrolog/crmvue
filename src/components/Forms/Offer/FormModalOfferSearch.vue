@@ -1,5 +1,5 @@
 <template>
-    <Modal @close="$emit('close')" width="1400" title="Фильтры">
+    <Modal @close="$emit('close')" show width="1400" title="Фильтры">
         <template #header>
             <span v-if="filterCount" class="badge badge-danger">
                 {{ filterCount }}

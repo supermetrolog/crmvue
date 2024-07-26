@@ -1,12 +1,14 @@
 <template>
     <section class="company-groups">
-        <FormCompanyGroup
-            v-if="companyGroupFormIsVisible"
-            @close="closeCompanyGroupForm"
-            @created="fetchCompanyGroups"
-            @updated="fetchCompanyGroups"
-            :form-data="editingGroup"
-        />
+        <teleport to="body">
+            <FormCompanyGroup
+                v-if="companyGroupFormIsVisible"
+                @close="closeCompanyGroupForm"
+                @created="fetchCompanyGroups"
+                @updated="fetchCompanyGroups"
+                :form-data="editingGroup"
+            />
+        </teleport>
         <div class="row">
             <div class="col-12">
                 <Button @click="companyGroupFormIsVisible = true" success>

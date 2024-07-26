@@ -12,35 +12,35 @@
                 @delete-contact="deleteContact"
                 :contact="contact"
             />
+            <FormCompanyDeal
+                v-if="dealFormIsVisible"
+                @close="closeDealForm"
+                @updated="onDealUpdated"
+                :formdata="deal"
+            />
+            <FormCompanyRequest
+                v-if="requestFormIsVisible"
+                @close="closeRequestForm"
+                @created="getCompanyRequests"
+                @updated="getCompanyRequests"
+                :company-id="COMPANY.id"
+                :form-data="request"
+            />
+            <FormCompanyContact
+                v-if="contactFormIsVisible"
+                @close="closeContactForm"
+                @created="getCompanyContacts"
+                @updated="getCompanyContacts"
+                :company_id="COMPANY.id"
+                :formdata="contact"
+            />
+            <FormCompany
+                v-if="companyFormIsVisible"
+                @close="closeCompanyForm"
+                @updated="onCompanyUpdated"
+                :form-data="COMPANY"
+            />
         </teleport>
-        <FormCompanyDeal
-            v-if="dealFormIsVisible"
-            @close="closeDealForm"
-            @updated="onDealUpdated"
-            :formdata="deal"
-        />
-        <FormCompanyRequest
-            v-if="requestFormIsVisible"
-            @close="closeRequestForm"
-            @created="getCompanyRequests"
-            @updated="getCompanyRequests"
-            :company-id="COMPANY.id"
-            :form-data="request"
-        />
-        <FormCompanyContact
-            v-if="contactFormIsVisible"
-            @close="closeContactForm"
-            @created="getCompanyContacts"
-            @updated="getCompanyContacts"
-            :company_id="COMPANY.id"
-            :formdata="contact"
-        />
-        <FormCompany
-            v-if="companyFormIsVisible"
-            @close="closeCompanyForm"
-            @updated="onCompanyUpdated"
-            :form-data="COMPANY"
-        />
         <DashboardChip
             v-if="!companyIsLoading && COMPANY.status === 0"
             class="company-page__chip dashboard-bg-danger text-white w-100 mb-2"

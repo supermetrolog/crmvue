@@ -1,5 +1,5 @@
 <template>
-    <Modal @close="$emit('close')" width="1000" has-tabs>
+    <Modal @close="$emit('close')" show width="1000" has-tabs>
         <template #header>
             <Switch
                 v-model="form.benefit"
