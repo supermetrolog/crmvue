@@ -39,7 +39,7 @@
             <CompanyTableRequestRow
                 v-for="archiveRequest in archiveRequests"
                 :key="archiveRequest.id"
-                @open-timeline="openTimeline(archiveRequest)"
+                @open-timeline="openTimeline(archiveRequest.id)"
                 class="content-archive"
                 :class="{ CompanyTableOdd: odd, CompanyTableEven: !odd }"
                 :timelines="archiveRequest.timelines"

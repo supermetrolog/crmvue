@@ -88,6 +88,8 @@
 }
 
 .company-table-item {
+    vertical-align: top;
+
     td {
         padding: 10px!important;
     }
@@ -131,10 +133,14 @@
         .company-element {
             max-width: 230px;
         }
+
+        .company-contact {
+            border: none;
+        }
     }
 
     &__consultant {
-        width: 300px;
+        width: 100px;
     }
 
     &__notify {

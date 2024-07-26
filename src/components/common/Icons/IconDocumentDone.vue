@@ -46,9 +46,9 @@
 </template>
 <script setup>
 import VueVivus from '@/components/common/VueVivus.vue';
-import { computed, ref, shallowRef } from 'vue';
+import { ref, shallowRef } from 'vue';
 
-const props = defineProps({
+defineProps({
     size: {
         type: Number,
         default: 100

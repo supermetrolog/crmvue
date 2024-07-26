@@ -1,5 +1,5 @@
 <template>
-    <div class="col-12 col-sm-6 col-lg-4 col-xxl-3">
+    <div>
         <DashboardCard class="offer-table-item-mobile" :class="{ passive: isPassive }">
             <OfferTableItemPreview :is-passive="isPassive" :offer="offer" class="mb-1" />
             <div class="offer-table-item-mobile__header">
@@ -118,8 +118,7 @@
     </div>
 </template>
 
-<script>
-import { MixinOfferItem } from '@/components/Offer/mixins.js';
+<script setup>
 import OfferTableItemPrice from '@/components/Offer/TableItem/OfferTableItemPrice.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import OfferTableItemPreview from '@/components/Offer/TableItem/OfferTableItemPreview.vue';
@@ -132,23 +131,56 @@ import OfferTableItemMobileAddress from '@/components/Offer/TableItem/OfferTable
 import OfferTableItemArea from '@/components/Offer/TableItem/OfferTableItemArea.vue';
 import CompanyContact from '@/components/Company/CompanyContact.vue';
 import CompanyElement from '@/components/Company/CompanyElement.vue';
+import { computed, inject } from 'vue';
+import { useStore } from 'vuex';
+import { $generatorURL } from '@/plugins/url.js';
 
-export default {
-    name: 'OfferTableMobileItem',
-    components: {
-        CompanyElement,
-        CompanyContact,
-        OfferTableItemArea,
-        OfferTableItemMobileAddress,
-        AccordionSimpleTriggerIcon,
-        AccordionSimpleTrigger,
-        DashboardChip,
-        AccordionSimple,
-        DashboardCard,
-        OfferTableItemPreview,
-        HoverActionsButton,
-        OfferTableItemPrice
-    },
-    mixins: [MixinOfferItem]
+const emit = defineEmits(['favorite-deleted']);
+const props = defineProps({
+    offer: {
+        type: Object,
+        required: true
+    }
+});
+
+const $openMessengerChat = inject('$openMessengerChat');
+
+const store = useStore();
+
+const contact = computed(() => {
+    return props.offer.contact || props.offer.company?.mainContact;
+});
+const isFavorite = computed(() => {
+    return store.state.Offers.favoritesOffersCache[props.offer.original_id];
+});
+const isPassive = computed(() => {
+    return props.offer.status !== 1;
+});
+const toggleFavorite = async () => {
+    if (!isFavorite.value) return store.dispatch('ADD_FAVORITES_OFFER', props.offer);
+
+    await store.dispatch('DELETE_FAVORITES_OFFERS', props.offer);
+    emit('favorite-deleted', props.offer);
+};
+
+const openInChat = () => {
+    $openMessengerChat({
+        companyID: props.offer.company_id,
+        objectID: props.offer.object_id
+    });
+};
+
+const openPDF = () => {
+    window.open(
+        $generatorURL.pdf(
+            {
+                type_id: 2,
+                offer_id: props.offer.original_id,
+                object_id: props.offer.object_id
+            },
+            store.getters.THIS_USER
+        ),
+        '_blank'
+    );
 };
 </script>

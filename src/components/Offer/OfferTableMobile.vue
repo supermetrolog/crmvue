@@ -6,6 +6,7 @@
             :key="offer.id"
             @favorite-deleted="$emit('favorite-deleted')"
             :offer="offer"
+            class="col-12 col-sm-6 col-lg-4 col-xxl-3"
         />
     </div>
 </template>

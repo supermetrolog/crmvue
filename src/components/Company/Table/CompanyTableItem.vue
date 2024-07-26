@@ -52,23 +52,22 @@
             <p v-else>&#8212;</p>
         </Td>
         <Td class="company-table-item__contacts">
-            <CompanyContact
-                v-if="company.mainContact"
-                class="bg-white"
-                :contact="company.mainContact"
-            />
+            <CompanyContact v-if="company.mainContact" :contact="company.mainContact" />
             <p v-else class="text-center">&#8212;</p>
         </Td>
-        <Td class="text-center company-table-item__survey"><span></span></Td>
+        <Td class="text-center company-table-item__survey"><span>&#8212;</span></Td>
         <Td class="company-table-item__consultant">
             <div v-if="company.consultant" class="company-table-item__consultant-wrapper">
-                <Avatar :src="company.consultant.userProfile.avatar" size="35" />
-                <span>{{ company.consultant.userProfile.medium_name }}</span>
+                <Avatar
+                    :label="company.consultant.userProfile.medium_name"
+                    :src="company.consultant.userProfile.avatar"
+                    size="35"
+                />
             </div>
             <p v-else class="text-center">&#8212;</p>
         </Td>
-        <Td class="company-table-item__notify text-warning">
-            <span v-if="false">Пора позвонить клиенту</span>
+        <Td class="text-center company-table-item__notify">
+            <span>&#8212;</span><span v-if="false">Пора позвонить клиенту</span>
         </Td>
         <Td class="company-table-item__date" sort="created_at">
             <div class="d-flex">
