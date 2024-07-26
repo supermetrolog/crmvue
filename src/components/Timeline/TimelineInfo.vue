@@ -40,32 +40,23 @@
         </div>
     </div>
 </template>
-<script>
+<script setup>
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import Button from '@/components/common/Button.vue';
 
-export default {
-    name: 'TimelineInfo',
-    components: { Button, DashboardChip, AnimationTransition },
-    emits: ['next'],
-    props: {
-        title: {
-            type: String,
-            default: null
-        },
-        success: {
-            type: [Boolean, Number],
-            default: false
-        },
-        disabled: {
-            type: Boolean,
-            default: false
-        },
-        withoutNext: {
-            type: Boolean,
-            default: false
-        }
-    }
-};
+defineEmits(['next']);
+defineProps({
+    title: {
+        type: String,
+        default: null
+    },
+    success: {
+        type: [Boolean, Number],
+        default: false
+    },
+    disabled: Boolean,
+    withoutNext: Boolean,
+    hasTutorial: Boolean
+});
 </script>

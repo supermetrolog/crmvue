@@ -15,26 +15,19 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import TimelineTreeStep from '@/components/Timeline/TimelineTreeStep.vue';
-import { Timeline } from '@/const/const.js';
+import { Timeline as steps } from '@/const/const.js';
 
-export default {
-    name: 'TimelineTree',
-    components: { TimelineTreeStep },
-    emits: ['select'],
-    props: {
-        current: {
-            type: Array,
-            default: () => []
-        },
-        selected: {
-            type: Number,
-            default: null
-        }
+defineEmits(['select']);
+defineProps({
+    current: {
+        type: Array,
+        default: () => []
     },
-    computed: {
-        steps: () => Timeline
+    selected: {
+        type: Number,
+        default: null
     }
-};
+});
 </script>

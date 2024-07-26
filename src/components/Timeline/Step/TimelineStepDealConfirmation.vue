@@ -39,50 +39,51 @@
                     </template>
                 </TimelineInfo>
             </div>
-            <div class="offset-3 col-6">
-                <DealListItem v-if="currentRequest.deal" :deal="currentRequest.deal" read-only />
+            <div class="offset-2 col-8 pb-4">
+                <TimelineDeal v-if="currentRequest.deal" :deal="currentRequest.deal" />
             </div>
         </div>
     </div>
 </template>
 
-<script>
-import { TimelineStepMixin } from '@/components/Timeline/mixins.js';
+<script setup>
 import TimelineInfo from '@/components/Timeline/TimelineInfo.vue';
-import { TalkDoneComment, TalkOffersNotFound } from '@/components/Timeline/comments.js';
 import Button from '@/components/common/Button.vue';
 import FormCompanyDeal from '@/components/Forms/Company/FormCompanyDeal.vue';
-import DealListItem from '@/components/Deal/DealListItem.vue';
-import { mapActions } from 'vuex';
+import { useStore } from 'vuex';
+import { useTimelineStep } from '@/composables/useTimelineStep.js';
+import { shallowRef, toRef } from 'vue';
+import { useRoute } from 'vue-router';
+import TimelineDeal from '@/components/Timeline/TimelineDeal.vue';
+import { useConfetti } from '@/composables/useConfetti.js';
 
-export default {
-    name: 'TimelineStepDealConfirmation',
-    components: { DealListItem, FormCompanyDeal, Button, TimelineInfo },
-    mixins: [TimelineStepMixin],
-    data() {
-        return {
-            dealFormIsVisible: false
-        };
+const store = useStore();
+const route = useRoute();
+
+const emit = defineEmits(['update-step', 'updated-objects', 'next-step']);
+const props = defineProps({
+    step: {
+        type: Object,
+        required: true
     },
-    computed: {},
-    methods: {
-        ...mapActions(['FETCH_COMPANY_REQUESTS']),
-        getNegativeComment(step) {
-            return [new TalkOffersNotFound(step)];
-        },
-        getDoneComment(step) {
-            return [new TalkDoneComment(step, this.selectedObjects)];
-        },
-        updateStep(form) {
-            this.data.deal = form;
-            this.data.status = 1;
-
-            this.$emit('update-step', this.data, false, () => {
-                this.FETCH_COMPANY_REQUESTS(this.$route.params.id);
-            });
-        }
+    disabled: {
+        type: Boolean,
+        default: false
     }
+});
+
+const { confetti } = useConfetti();
+
+const dealFormIsVisible = shallowRef(false);
+const { currentRequest, data } = useTimelineStep(toRef(props, 'step'));
+
+const updateStep = form => {
+    data.value.deal = form;
+    data.value.status = 1;
+
+    emit('update-step', data.value, false, () => {
+        store.dispatch('FETCH_COMPANY_REQUESTS', route.params.id);
+        confetti();
+    });
 };
 </script>
-
-<style></style>
