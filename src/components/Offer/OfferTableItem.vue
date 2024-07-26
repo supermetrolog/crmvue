@@ -107,7 +107,7 @@
         </Td>
         <Td class="company_about">
             <template v-if="offer.company !== null">
-                <a :href="$url.offerByObject(offer)" target="_blank">
+                <a :href="$url.company(offer.company_id)" target="_blank">
                     {{ offer.company.full_name }}
                 </a>
                 <div v-if="contact" class="contact">
