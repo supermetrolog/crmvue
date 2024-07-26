@@ -103,6 +103,7 @@ const submit = async () => {
     if (loggedIn) {
         await store.dispatch('INIT');
         if (redirectRoute.value) {
+            if (redirectRoute.value.includes('/login')) setRedirect('/');
             await router.push({ path: redirectRoute.value });
             setRedirect(null);
         } else {

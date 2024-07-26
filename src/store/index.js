@@ -50,7 +50,7 @@ const store = createStore({
             await context.dispatch('REFRESH_USER');
             context.dispatch('Messenger/updateCounters');
         },
-        DESTROY({ dispatch }) {
+        async DESTROY({ dispatch }) {
             const { logout } = useAuth();
 
             dispatch('WEBSOCKET_STOP');

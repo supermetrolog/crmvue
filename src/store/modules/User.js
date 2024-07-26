@@ -87,6 +87,7 @@ const User = {
 
                 dispatch('SET_USER');
                 login();
+                return true;
             }
             return response;
         },
