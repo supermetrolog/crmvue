@@ -1,9 +1,9 @@
 <template>
     <div class="messenger-quiz-element">
-        <Avatar :src="quiz.user?.avatar" />
+        <Avatar :src="quiz.user?.userProfile?.avatar" />
         <div class="messenger-quiz-element__description">
             <p class="messenger-quiz-element__author">{{ quiz.user?.short_name }}</p>
-            <p v-if="quiz.contact">Звонок с {{ quiz.contact }}</p>
+            <p v-if="quiz.contact">Звонок с {{ contactName }}</p>
             <p v-else>Без звонка</p>
         </div>
         <div class="messenger-quiz-element__meta">
@@ -14,7 +14,7 @@
 <script setup>
 import Avatar from '@/components/common/Avatar.vue';
 import { computed } from 'vue';
-import { toDateFormat } from '@/utils/formatter.js';
+import { getContactFullName, toDateFormat } from '@/utils/formatter.js';
 const props = defineProps({
     quiz: {
         type: Object,
@@ -23,4 +23,5 @@ const props = defineProps({
 });
 
 const createdAt = computed(() => toDateFormat(props.quiz.created_at));
+const contactName = computed(() => getContactFullName(props.quiz.contact));
 </script>

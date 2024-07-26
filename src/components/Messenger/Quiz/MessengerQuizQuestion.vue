@@ -110,13 +110,13 @@ const getForm = () => {
     if (hasMainQuestion.value)
         list.push({
             question_answer_id: props.question.answers['yes-no'][0].id,
-            value: form.main.toString()
+            value: form.main
         });
 
     if (hasTabQuestions.value) {
         const answers = props.question.answers.tab.map(element => ({
             question_answer_id: element.id,
-            value: form.tab.some(_element => Number(_element) === element.id).toString()
+            value: form.tab.some(_element => Number(_element) === element.id)
         }));
 
         list.push(...answers);
@@ -125,7 +125,7 @@ const getForm = () => {
     if (hasTextQuestions.value) {
         const answers = props.question.answers['text-answer'].map(element => ({
             question_answer_id: element.id,
-            value: form.description[element.id].toString()
+            value: form.description[element.id]
         }));
 
         list.push(...answers);
@@ -134,7 +134,7 @@ const getForm = () => {
     if (hasCheckboxQuestions.value) {
         const answers = props.question.answers.checkbox.map(element => ({
             question_answer_id: element.id,
-            value: form.checkbox.some(_element => Number(_element) === element.id).toString()
+            value: form.checkbox.some(_element => Number(_element) === element.id)
         }));
 
         list.push(...answers);

@@ -6,10 +6,7 @@
                 class="fa-solid fa-circle-check color-success animate__animated animate__tada"
             ></i>
             <i
-                v-else-if="
-                    hasMainQuestion &&
-                    question.answers['yes-no'][0].surveyQuestionAnswer.value !== null
-                "
+                v-else-if="hasMainQuestion && mainQuestionAnswer !== null"
                 class="fa-solid fa-circle-exclamation color-warning animate__animated animate__pulse"
             ></i>
             <i
@@ -23,15 +20,13 @@
                 <Chip
                     html="Да"
                     :class="{
-                        'dashboard-bg-success text-white':
-                            question.answers['yes-no'][0].surveyQuestionAnswer.value == 1
+                        'dashboard-bg-success text-white': mainQuestionAnswer === 1
                     }"
                 />
                 <Chip
                     html="Нет"
                     :class="{
-                        'dashboard-bg-success text-white':
-                            question.answers['yes-no'][0].surveyQuestionAnswer.value == 0
+                        'dashboard-bg-success text-white': mainQuestionAnswer === 0
                     }"
                 />
             </div>
@@ -43,9 +38,7 @@
                 :key="addition.id"
                 :html="addition.value"
                 :class="{
-                    'dashboard-bg-success text-white': Boolean(
-                        JSON.parse(addition.surveyQuestionAnswer.value)
-                    )
+                    'dashboard-bg-success text-white': Boolean(addition.surveyQuestionAnswer.value)
                 }"
             />
         </div>
@@ -66,9 +59,7 @@
                 :key="interest.id"
                 :html="interest.value"
                 :class="{
-                    'dashboard-bg-success text-white': Boolean(
-                        JSON.parse(interest.surveyQuestionAnswer.value)
-                    )
+                    'dashboard-bg-success text-white': Boolean(interest.surveyQuestionAnswer.value)
                 }"
             />
         </div>
@@ -106,4 +97,8 @@ const hasMainQuestion = computed(() => Boolean(props.question.answers['yes-no'])
 const hasTabQuestions = computed(() => Boolean(props.question.answers.tab));
 const hasTextQuestions = computed(() => Boolean(props.question.answers['text-answer']));
 const hasCheckboxQuestions = computed(() => Boolean(props.question.answers.checkbox));
+
+const mainQuestionAnswer = computed(
+    () => props.question.answers['yes-no'][0].surveyQuestionAnswer.value
+);
 </script>

@@ -112,6 +112,7 @@ const send = async () => {
     const created = await api.survey.create({
         contact_id: currentRecipient.value.id,
         user_id: THIS_USER.value.id,
+        chat_member_id: store.state.Messenger.currentDialog.id,
         question_answers: forms.flat()
     });
 
