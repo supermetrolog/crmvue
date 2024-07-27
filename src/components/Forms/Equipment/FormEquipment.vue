@@ -91,6 +91,8 @@
                     <FormGroup>
                         <RadioOptions
                             v-model="form.state"
+                            :v="v$.form.state"
+                            required
                             class="col-12"
                             label="Состояние"
                             unselect
@@ -103,7 +105,6 @@
                             label="Статус"
                             class="col-sm-6 col-12"
                             :options="equipmentOptions.status"
-                            unselect
                         />
                         <MultiSelect
                             v-model="form.passive_type"
@@ -188,14 +189,21 @@
                 </Tab>
                 <Tab name="Фотографии">
                     <div class="row">
-                        <FileInput v-model:native="form.photos" label="Фотографии" class="col-12">
+                        <FileInput
+                            v-if="false"
+                            v-model:native="form.photos"
+                            label="Фотографии"
+                            class="col-12"
+                        >
                             Выбрать файлы
                         </FileInput>
+                        <InProgress class="mx-auto" />
                     </div>
                 </Tab>
                 <Tab name="Документы">
                     <div class="row">
                         <FileInput
+                            v-if="false"
                             v-model:native="form.fileList"
                             v-model:data="form.files"
                             label="Документы"
@@ -203,6 +211,7 @@
                         >
                             Выбрать файлы
                         </FileInput>
+                        <InProgress class="mx-auto" />
                     </div>
                 </Tab>
                 <div class="row mt-4 align-self-end">
@@ -239,6 +248,7 @@ import Loader from '@/components/common/Loader.vue';
 import { equipmentOptions } from '@/const/options/equipment.options.js';
 import Textarea from '@/components/common/Forms/Textarea.vue';
 import { useFormData } from '@/utils/useFormData.js';
+import InProgress from '@/components/common/InProgress.vue';
 
 const store = useStore();
 
