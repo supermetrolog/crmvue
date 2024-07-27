@@ -10,18 +10,17 @@
             :data-source="messages"
             data-key="id"
             :keeps="60"
-            :keepOffset="true"
             class="messenger-chat__virtual"
+            :class="{ 'scroll-lock': scrollIsLock }"
             wrap-class="messenger-chat__body"
         >
             <template #header>
+                <Loader v-if="isLoading" />
                 <InfiniteLoading v-if="messages.length && scrolled" @infinite="loadMessages">
                     <template #complete>
                         <EmptyLabel>Больше сообщений нет..</EmptyLabel>
                     </template>
-                    <template #spinner>
-                        <Spinner v-if="isLoading" class="small" />
-                    </template>
+                    <template #spinner><span></span></template>
                 </InfiniteLoading>
             </template>
             <template #item="{ record: message }">
@@ -76,16 +75,16 @@ import { useStore } from 'vuex';
 import MessengerChatLabel from '@/components/Messenger/Chat/MessengerChatLabel.vue';
 import MessengerChatNotification from '@/components/Messenger/Chat/MessengerChatNotification.vue';
 import InfiniteLoading from 'v3-infinite-loading';
-import Spinner from '@/components/common/Spinner.vue';
 import MessengerChatPinned from '@/components/Messenger/Chat/MessengerChatPinned.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { debounce } from '@/utils/debounce.js';
 import MessengerChatScrollButton from '@/components/Messenger/Chat/MessengerChatScrollButton.vue';
 import { useElementBounding } from '@vueuse/core';
-import { computed, inject, nextTick, onMounted, ref, shallowRef } from 'vue';
+import { computed, inject, nextTick, onMounted, ref, shallowRef, watch } from 'vue';
 import VirtualDragList from 'vue-virtual-draglist';
 import EmptyLabel from '@/components/common/EmptyLabel.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
+import Loader from '@/components/common/Loader.vue';
 
 const store = useStore();
 const $toggleQuiz = inject('$toggleQuiz');
@@ -95,7 +94,8 @@ const scrollEnd = ref(null);
 const virtual = ref(null);
 const scrolled = shallowRef(false);
 const scrollButtonIsVisible = shallowRef(false);
-const { isLoading } = useDelayedLoader(false, 1500);
+const scrollIsLock = shallowRef(false);
+const { isLoading } = useDelayedLoader(false, 700);
 
 const { top } = useElementBounding(quiz);
 const scrollButtonTop = computed(() => top.value - 45 + 'px');
@@ -103,6 +103,23 @@ const scrollButtonTop = computed(() => top.value - 45 + 'px');
 const messages = computed(() => store.state.Messenger.messages);
 const pinnedMessage = computed(() => store.state.Messenger.currentPinned);
 const currentUser = computed(() => store.getters.THIS_USER);
+
+watch(
+    () => messages.value.length,
+    (value, oldValue) => {
+        console.log(oldValue, value);
+        if (scrollIsLock.value) {
+            nextTick(() => {
+                virtual.value.scrollToKey(messages.value[value - oldValue].id);
+                scrollIsLock.value = false;
+            });
+        }
+    }
+);
+
+watch(isLoading, value => {
+    if (!value && scrollIsLock.value) scrollIsLock.value = false;
+});
 
 const scrollToNotViewed = async () => {
     await nextTick();
@@ -119,11 +136,14 @@ const scrollToEnd = async () => {
     virtual.value.scrollToBottom();
 };
 const loadMessages = async $state => {
-    console.log('LOAD');
+    console.log('load messages');
     if (isLoading.value) return;
 
     isLoading.value = true;
+    scrollIsLock.value = true;
+
     const isLastPage = await store.dispatch('Messenger/loadMessages');
+
     isLoading.value = false;
 
     if (isLastPage) $state.complete();
@@ -136,6 +156,7 @@ const messageIntersectionObserver = (isIntersecting, observer, message) => {
         observer.disconnect();
         return;
     }
+    console.log('read message');
 
     debouncedReadMessage(message.id);
 

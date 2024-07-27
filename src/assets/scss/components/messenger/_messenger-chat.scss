@@ -33,6 +33,10 @@
         padding: 10px 20px;
         height: max-content;
         margin-top: auto;
+
+        &.scroll-lock {
+            overflow: hidden hidden!important;
+        }
     }
 
     //&__messages {
