@@ -48,14 +48,16 @@ const getInitialState = () => ({
     currentPanelDialogID: null,
     currentPanelCompanyID: null,
 
-    countNewMessages: 0,
-    countNewAlerts: 0,
-    countNewTasks: 0,
-    countNewReminders: 0,
+    unreadMessageCount: 0,
+    unreadNotificationCount: 0,
+    unreadTaskCount: 0,
+    unreadReminderCount: 0,
 
     loadingChat: false,
     loadingAside: false,
-    loadingPanel: false
+    loadingPanel: false,
+
+    countersInterval: null
 });
 
 const Messenger = {
@@ -239,9 +241,10 @@ const Messenger = {
             Object.keys(initialState).forEach(key => (state[key] = initialState[key]));
         },
         setCounts(state, obj) {
-            Object.keys(obj).forEach(key => {
-                state['countNew' + key.charAt(0).toUpperCase() + key.slice(1)] = obj[key];
-            });
+            state.unreadTaskCount = Number(obj.unread_task_count);
+            state.unreadMessageCount = Number(obj.unread_message_count);
+            state.unreadNotificationCount = Number(obj.unread_notification_count);
+            state.unreadReminderCount = Number(obj.unread_reminder_count);
         },
         setLastNotViewedMessage(state, messageID) {
             state.lastNotViewedMessageID = messageID;
@@ -267,14 +270,30 @@ const Messenger = {
 
                 state[modelTypeName].data[chatMemberIndex].statistic.messages = count;
             }
+        },
+        clearCountersInterval(state) {
+            clearInterval(state.countersInterval);
+            state.countersInterval = null;
+        },
+        setCountersInterval(state, interval) {
+            state.countersInterval = interval;
         }
     },
     actions: {
+        async setCountersUpdater({ state, dispatch, commit }) {
+            if (state.countersInterval !== null) commit('clearCountersInterval');
+
+            dispatch('updateCounters');
+            commit(
+                'setCountersInterval',
+                setTimeout(() => {
+                    dispatch('updateCounters');
+                }, 30000)
+            );
+        },
         async updateCounters({ rootGetters, commit }) {
-            const counters = await api.messenger.getCounters(rootGetters.THIS_USER?.id);
-            if (counters) {
-                commit('setCounts', counters);
-            }
+            const counters = await api.messenger.getStatistics([rootGetters.THIS_USER?.id]);
+            if (counters) commit('setCounts', counters[0]);
         },
         async updateDialogs({ state, commit }) {
             commit('setLoadingAside', true);
@@ -474,7 +493,7 @@ const Messenger = {
             const addition = await api.notification.createFromMessage(messageID, options);
 
             if (addition) {
-                commit('addAddition', { messageID, additionType: 'alert', addition });
+                commit('addAddition', { messageID, additionType: 'notification', addition });
                 return true;
             }
 

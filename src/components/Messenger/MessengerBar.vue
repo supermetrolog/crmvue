@@ -2,73 +2,68 @@
     <div class="messenger-bar">
         <MessengerBarElement
             v-tippy="tasksButtonTitle"
-            :class="{ disabled: !countNewTasks }"
+            :class="{ disabled: !unreadTaskCount }"
             color="black"
             icon="fa-solid fa-bolt"
-            :label="countNewTasks"
+            :label="unreadTaskCount"
         />
         <MessengerBarElement
             v-tippy="alertsButtonTitle"
-            :class="{ disabled: !countNewAlerts }"
+            :class="{ disabled: !unreadNotificationCount }"
             color="orange"
             icon="fa-solid fa-exclamation"
-            :label="countNewAlerts"
+            :label="unreadNotificationCount"
         />
         <MessengerBarElement
             v-tippy="remindersButtonTitle"
-            :class="{ disabled: !countNewReminders }"
+            :class="{ disabled: !unreadReminderCount }"
             color="red"
             icon="fa-solid fa-bell"
-            :label="countNewReminders"
+            :label="unreadReminderCount"
         />
         <MessengerBarElement
             v-tippy="messagesButtonTitle"
-            :class="{ disabled: !countNewMessages }"
+            :class="{ disabled: !unreadMessageCount }"
             icon="fa-solid fa-envelope"
-            :label="countNewMessages"
+            :label="unreadMessageCount"
         />
     </div>
 </template>
-<script>
+<script setup>
 import MessengerBarElement from '@/components/Messenger/MessengerBarElement.vue';
-import { mapState } from 'vuex';
+import { useStore } from 'vuex';
 import plural from 'plural-ru';
 import { messenger } from '@/const/messenger';
+import { computed } from 'vue';
 
-export default {
-    name: 'MessengerBar',
-    components: { MessengerBarElement },
-    computed: {
-        ...mapState({
-            countNewTasks: state => state.Messenger.countNewTasks,
-            countNewMessages: state => state.Messenger.countNewMessages,
-            countNewAlerts: state => state.Messenger.countNewAlerts,
-            countNewReminders: state => state.Messenger.countNewReminders
-        }),
-        tasksButtonTitle() {
-            if (this.countNewTasks)
-                return plural(this.countNewTasks, ...messenger.buttons.tasks.plural);
+const store = useStore();
 
-            return messenger.buttons.tasks.empty;
-        },
-        messagesButtonTitle() {
-            if (this.countNewMessages)
-                return plural(this.countNewMessages, ...messenger.buttons.messages.plural);
+const unreadTaskCount = computed(() => store.state.Messenger.unreadTaskCount);
+const unreadMessageCount = computed(() => store.state.Messenger.unreadMessageCount);
+const unreadNotificationCount = computed(() => store.state.Messenger.unreadNotificationCount);
+const unreadReminderCount = computed(() => store.state.Messenger.unreadReminderCount);
 
-            return messenger.buttons.messages.empty;
-        },
-        alertsButtonTitle() {
-            if (this.countNewAlerts)
-                return plural(this.countNewAlerts, ...messenger.buttons.alerts.plural);
+const tasksButtonTitle = computed(() => {
+    if (unreadTaskCount.value > 0)
+        return plural(unreadTaskCount.value, ...messenger.buttons.tasks.plural);
+    return messenger.buttons.tasks.empty;
+});
 
-            return messenger.buttons.alerts.empty;
-        },
-        remindersButtonTitle() {
-            if (this.countNewReminders)
-                return plural(this.countNewReminders, ...messenger.buttons.reminders.plural);
+const messagesButtonTitle = computed(() => {
+    if (unreadMessageCount.value > 0)
+        return plural(unreadMessageCount.value, ...messenger.buttons.messages.plural);
+    return messenger.buttons.messages.empty;
+});
 
-            return messenger.buttons.reminders.empty;
-        }
-    }
-};
+const alertsButtonTitle = computed(() => {
+    if (unreadNotificationCount.value > 0)
+        return plural(unreadNotificationCount.value, ...messenger.buttons.alerts.plural);
+    return messenger.buttons.alerts.empty;
+});
+
+const remindersButtonTitle = computed(() => {
+    if (unreadReminderCount.value > 0)
+        return plural(unreadReminderCount.value, ...messenger.buttons.reminders.plural);
+    return messenger.buttons.reminders.empty;
+});
 </script>

@@ -33,7 +33,7 @@ const store = createStore({
         UNSET_WINDOW_NAME() {
             window.name = '';
         },
-        async INIT(context) {
+        async INIT({ dispatch, getters }) {
             const { isAuth, login } = useAuth();
 
             if (!isAuth.value) {
@@ -41,21 +41,23 @@ const store = createStore({
                 else return false;
             }
 
-            await context.dispatch('SET_USER');
+            dispatch('SET_USER');
             axios.defaults.headers.common['Authorization'] =
-                `Bearer ${context.getters.THIS_USER.access_token}`;
-            await context.dispatch('SET_WINDOW_NAME');
-            await context.dispatch('WEBSOCKET_STOP');
-            await context.dispatch('WEBSOCKET_RUN');
-            await context.dispatch('REFRESH_USER');
-            context.dispatch('Messenger/updateCounters');
+                `Bearer ${getters.THIS_USER.access_token}`;
+
+            dispatch('SET_WINDOW_NAME');
+            dispatch('WEBSOCKET_STOP');
+            dispatch('WEBSOCKET_RUN');
+            dispatch('REFRESH_USER');
+            dispatch('Messenger/setCountersUpdater');
         },
-        async DESTROY({ dispatch }) {
+        async DESTROY({ dispatch, commit }) {
             const { logout } = useAuth();
 
             dispatch('WEBSOCKET_STOP');
             dispatch('DROP_USER');
             dispatch('UNSET_WINDOW_NAME');
+            commit('Messenger/clearCountersInterval');
             logout();
         }
     },
@@ -83,6 +85,7 @@ const store = createStore({
         Quizz
     }
 });
+
 store.checkAction = function (name) {
     return Object.keys(this._actions).includes(name);
 };
