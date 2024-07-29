@@ -5,13 +5,13 @@
     >
         <template #icon>
             <span
-                v-tippy="addition.message"
+                v-tippy="addition.subject"
                 class="messenger-chat-message-addition__icon rounded-icon bg-orange"
             >
                 <i class="fa-solid fa-exclamation"></i>
             </span>
         </template>
-        <template #content>С уведомлением для {{ 'aboba' }}</template>
+        <template #content>С уведомлением для {{ addition.user.userProfile.middle_name }}</template>
         <template v-if="editable" #actions
             >>
             <HoverActionsButton
@@ -59,7 +59,6 @@ const props = defineProps({
     }
 });
 
-const usersText = computed(() => props.addition.user.userProfile.middle_name);
 const isCompleted = computed(() => props.addition.viewed_at !== null);
 
 const remove = async () => {
@@ -76,6 +75,4 @@ const remove = async () => {
         else notify.error('Произошла ошибка. Попробуйте позже.');
     }
 };
-
-console.log(props.addition);
 </script>

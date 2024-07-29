@@ -265,7 +265,7 @@ const Messenger = {
                     i > 0 && state.messages[i].id !== messageID;
                     i--
                 ) {
-                    if (!state.messages[i].isLabel) count++;
+                    if (!state.messages[i].isLabel && !state.messages[i].is_viewed) count++;
                 }
 
                 state[modelTypeName].data[chatMemberIndex].statistic.messages = count;
@@ -292,7 +292,9 @@ const Messenger = {
             );
         },
         async updateCounters({ rootGetters, commit }) {
-            const counters = await api.messenger.getStatistics([rootGetters.THIS_USER?.id]);
+            const counters = await api.messenger.getStatistics([
+                rootGetters.THIS_USER?.chat_member_id
+            ]);
             if (counters) commit('setCounts', counters[0]);
         },
         async updateDialogs({ state, commit }) {

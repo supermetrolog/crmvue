@@ -107,7 +107,6 @@ const currentUser = computed(() => store.getters.THIS_USER);
 watch(
     () => messages.value.length,
     (value, oldValue) => {
-        console.log(oldValue, value);
         if (scrollIsLock.value) {
             nextTick(() => {
                 virtual.value.scrollToKey(messages.value[value - oldValue].id);
@@ -136,7 +135,6 @@ const scrollToEnd = async () => {
     virtual.value.scrollToBottom();
 };
 const loadMessages = async $state => {
-    console.log('load messages');
     if (isLoading.value) return;
 
     isLoading.value = true;
@@ -152,19 +150,23 @@ const loadMessages = async $state => {
 const messageIntersectionObserver = (isIntersecting, observer, message) => {
     if (!isIntersecting) return;
 
-    if (message.is_viewed) {
+    if (message.is_viewed || message._is_viewed) {
         observer.disconnect();
         return;
     }
-    console.log('read message');
 
     debouncedReadMessage(message.id);
 
-    message.is_viewed = true;
+    message._is_viewed = true;
+    setTimeout(() => {
+        message.is_viewed = true;
+    }, 1200);
     observer.disconnect();
 };
 
-const readMessages = args => store.dispatch('Messenger/readMessages', args);
+const readMessages = async messageID => {
+    await store.dispatch('Messenger/readMessages', messageID);
+};
 const debouncedReadMessage = debounce(readMessages, 2000);
 const scrollObserver = ([{ isIntersecting }]) => {
     scrollButtonIsVisible.value = !isIntersecting;

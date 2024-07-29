@@ -2,6 +2,7 @@
 
 .messenger-chat-message {
     padding: 10px 5px;
+    margin: 5px 0;
     @include mixins.transition(background-color);
 
     &__wrapper {
