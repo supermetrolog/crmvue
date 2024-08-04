@@ -15,6 +15,7 @@
                     События {{ formattedDay }}
                 </DashboardChip>
                 <Spinner v-if="isLoading" />
+                <InProgress v-else-if="true" />
                 <div v-else-if="events.length && !isMonthMode" class="dashboard-stats-events__list">
                     <DashboardCardEvent
                         v-for="event in events"
@@ -42,6 +43,7 @@ import EmptyLabel from '@/components/common/EmptyLabel.vue';
 import DashboardCardEvent from '@/components/Dashboard/Card/DashboardCardEvent.vue';
 import objectSupport from 'dayjs/plugin/objectSupport';
 import { computed, onBeforeMount, ref, shallowRef, watch } from 'vue';
+import InProgress from '@/components/common/InProgress.vue';
 
 dayjs.extend(objectSupport);
 

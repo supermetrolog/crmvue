@@ -1,6 +1,7 @@
 <template>
     <div class="calendar-view">
-        <div class="row">
+        <InProgress />
+        <div v-if="false" class="row">
             <div class="col-12 mb-2 d-flex align-items-center">
                 <h2>Календарь событий</h2>
                 <DashboardTargetUser v-model="targetUser" />
@@ -56,12 +57,20 @@ import weekday from 'dayjs/plugin/weekday';
 import Button from '@/components/common/Button.vue';
 import CalendarEventCard from '@/components/Calendar/CalendarEventCard.vue';
 import { weekdays } from '@/const/const.js';
+import InProgress from '@/components/common/InProgress.vue';
 
 dayjs.extend(weekday);
 
 export default {
     name: 'CalendarView',
-    components: { CalendarEventCard, Button, DashboardChip, DashboardTargetUser, Calendar },
+    components: {
+        InProgress,
+        CalendarEventCard,
+        Button,
+        DashboardChip,
+        DashboardTargetUser,
+        Calendar
+    },
     data() {
         return {
             currentWeekStart: dayjs().weekday(0),
