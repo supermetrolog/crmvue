@@ -22,9 +22,8 @@
         </teleport>
     </div>
 </template>
-<script>
-import { mapState } from 'vuex';
-import { LoaderMixin } from '@/components/Messenger/loader.mixin';
+<script setup>
+import { useStore } from 'vuex';
 import MessengerChatLoader from '@/components/Messenger/Chat/MessengerChatLoader.vue';
 import MessengerChatContent from '@/components/Messenger/Chat/MessengerChatContent.vue';
 import MessengerChatEmpty from '@/components/Messenger/Chat/MessengerChatEmpty.vue';
@@ -39,92 +38,95 @@ import FormModalMessageReminder from '@/components/Forms/FormModalMessageReminde
 import FormModalMessage from '@/components/Forms/FormModalMessage.vue';
 import FormModalTaskStatus from '@/components/Forms/FormModalTaskStatus.vue';
 import api from '@/api/api.js';
+import { computed, ref, watch, provide, reactive } from 'vue';
+import { ucFirst } from '@/utils/formatter.js';
+import { useNotify } from '@/utils/useNotify.js';
+import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 
-export default {
-    name: 'MessengerChat',
-    components: {
-        FormModalTaskStatus,
-        FormModalMessage,
-        FormModalMessageReminder,
-        FormModalMessageAlert,
-        FormModalTask,
-        MessengerChatSettings,
-        MessengerQuizHelper,
-        MessengerSchedule,
-        AnimationTransition,
-        MessengerQuiz,
-        MessengerChatEmpty,
-        MessengerChatContent,
-        MessengerChatLoader
-    },
-    mixins: [LoaderMixin],
-    provide() {
-        return {
-            $openSchedule: async () => this.$refs.schedule.open(),
-            $toggleQuiz: () => this.$refs.quiz.toggle(),
-            $toggleQuizHelper: () => this.$refs.quizHelper.toggle(),
-            $toggleSettings: () => this.$refs.chatSettings.toggle(),
-            $createAddition: this.createAddition,
-            $editAddition: this.editAddition,
-            $editTaskStatus: this.editTaskStatus,
-            $messageUpdate: props => this.$refs.messageUpdate.open(props)
-        };
-    },
-    computed: {
-        ...mapState({
-            originalLoader: state => state.Messenger.loadingChat,
-            currentChat: state => state.Messenger.currentChat,
-            currentPanel: state => state.Messenger.currentPanel
-        })
-    },
-    methods: {
-        async createAddition({ messageID, additionType, successMessage, errorMessage = null }) {
-            const creatorResponse = await this.$refs[additionType + 'Creator'].open();
-            if (!creatorResponse) return;
+const store = useStore();
+const notify = useNotify();
 
-            const response = await this.$store.dispatch(
-                'Messenger/add' + this.$formatter.text().ucFirst(additionType),
-                {
-                    messageID,
-                    options: creatorResponse
-                }
-            );
+const taskCreator = ref(null);
+const alertCreator = ref(null);
+const reminderCreator = ref(null);
 
-            if (response) this.$notify(successMessage);
-            else this.$notify(errorMessage ?? 'Произошла ошибка. Попробуйте позже');
-        },
-        async editAddition({
-            messageID,
-            addition,
-            additionType,
-            successMessage,
-            errorMessage = null
-        }) {
-            const creatorResponse = await this.$refs[additionType + 'Creator'].open(addition);
-            if (!creatorResponse) return;
+const creators = reactive({
+    task: taskCreator,
+    alert: alertCreator,
+    reminder: reminderCreator
+});
 
-            const response = this.$store.dispatch('Messenger/updateAddition', {
-                messageID,
-                additionID: addition.id,
-                additionType,
-                payload: creatorResponse
-            });
+const schedule = ref(null);
+const taskStatusEditor = ref(null);
+const messageUpdate = ref(null);
+const quiz = ref(null);
+const quizHelper = ref(null);
+const chatSettings = ref(null);
 
-            if (response) this.$notify(successMessage);
-            else this.$notify(errorMessage ?? 'Произошла ошибка. Попробуйте позже');
-        },
-        async editTaskStatus(messageID, task) {
-            const response = await this.$refs.taskStatusEditor.open(task);
+const createAddition = async ({ messageID, additionType, successMessage, errorMessage = null }) => {
+    const creatorResponse = await creators[additionType].open();
+    if (!creatorResponse) return;
 
-            if (response) {
-                const statusUpdated = api.task.changeStatus(task.id, response.status);
+    const response = await store.dispatch('Messenger/add' + ucFirst(additionType), {
+        messageID,
+        options: creatorResponse
+    });
 
-                if (statusUpdated) {
-                    task.status = response.status;
-                    this.$notify('Статус задачи успешно изменен.');
-                }
-            }
+    if (response) notify.success(successMessage);
+    else notify.error(errorMessage ?? 'Произошла ошибка. Попробуйте позже');
+};
+
+const editAddition = async ({
+    messageID,
+    addition,
+    additionType,
+    successMessage,
+    errorMessage = null
+}) => {
+    const creatorResponse = await creators[additionType].open(addition);
+    if (!creatorResponse) return;
+
+    const response = store.dispatch('Messenger/updateAddition', {
+        messageID,
+        additionID: addition.id,
+        additionType,
+        payload: creatorResponse
+    });
+
+    if (response) notify.success(successMessage);
+    else notify.error(errorMessage ?? 'Произошла ошибка. Попробуйте позже');
+};
+
+const editTaskStatus = async (messageID, task) => {
+    const response = await taskStatusEditor.value.open(task);
+
+    if (response) {
+        const statusUpdated = api.task.changeStatus(task.id, response.status);
+
+        if (statusUpdated) {
+            task.status = response.status;
+            notify.success('Статус задачи успешно изменен.');
         }
     }
 };
+
+provide('$createAddition', createAddition);
+provide('$editAddition', editAddition);
+provide('$editTaskStatus', editTaskStatus);
+provide('$openSchedule', async () => await schedule.value.open());
+provide('$toggleQuiz', () => quiz.value.toggle());
+provide('$toggleQuizHelper', () => quizHelper.value.toggle());
+provide('$toggleSettings', () => chatSettings.value.toggle());
+provide('$messageUpdate', props => messageUpdate.value.open(props));
+
+const currentChat = computed(() => store.state.Messenger.currentChat);
+const currentPanel = computed(() => store.state.Messenger.currentPanel);
+
+const { isLoading } = useDelayedLoader();
+watch(
+    () => store.state.Messenger.loadingChat,
+    value => {
+        isLoading.value = value;
+    }
+);
 </script>

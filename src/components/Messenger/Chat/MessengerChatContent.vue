@@ -129,6 +129,7 @@ const scrollToNotViewed = async () => {
     else virtual.value.scrollToBottom();
 
     scrolled.value = true;
+    scrollIsLock.value = false;
 };
 const scrollToEnd = async () => {
     await nextTick();
@@ -173,6 +174,9 @@ const scrollObserver = ([{ isIntersecting }]) => {
 };
 
 onMounted(() => {
-    if (messages.value.length) scrollToNotViewed();
+    if (messages.value.length) {
+        scrollIsLock.value = true;
+        scrollToNotViewed();
+    }
 });
 </script>

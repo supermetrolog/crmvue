@@ -11,57 +11,30 @@
                 :section="section"
             />
         </div>
+        <InProgress />
     </div>
 </template>
-<script>
+<script setup>
 import MessengerQuizHelperSection from '@/components/Messenger/Quiz/MessengerQuizHelperSection.vue';
+import { shallowRef } from 'vue';
+import InProgress from '@/components/common/InProgress.vue';
 
-export default {
-    name: 'MessengerQuizHelper',
-    components: { MessengerQuizHelperSection },
-    data() {
-        return {
-            opened: false,
-            sections: [
-                {
-                    id: 1,
-                    title: 'Площадь. Продажа',
-                    questions: [
-                        'Есть ли сейчас площади на продажу? Есть ли сейчас площади на продажу? Есть ли сейчас площади на продажу? Есть ли сейчас площади на продажу?',
-                        'Освободится ли в течении года?'
-                    ]
-                },
-                {
-                    id: 2,
-                    title: 'Площадь. Продажа',
-                    questions: [
-                        'Есть ли сейчас площади на продажу?',
-                        'Освободится ли в течении года?'
-                    ]
-                },
-                {
-                    id: 3,
-                    title: 'Площадь. Продажа',
-                    questions: [
-                        'Есть ли сейчас площади на продажу?',
-                        'Освободится ли в течении года?'
-                    ]
-                },
-                {
-                    id: 4,
-                    title: 'Площадь. Продажа',
-                    questions: [
-                        'Есть ли сейчас площади на продажу?',
-                        'Освободится ли в течении года?'
-                    ]
-                }
-            ]
-        };
-    },
-    methods: {
-        toggle() {
-            this.opened = !this.opened;
-        }
+const sections = [
+    {
+        id: 1,
+        title: 'Площадь. Продажа',
+        questions: [
+            'Есть ли сейчас площади на продажу? Есть ли сейчас площади на продажу? Есть ли сейчас площади на продажу? Есть ли сейчас площади на продажу?',
+            'Освободится ли в течении года?'
+        ]
     }
+];
+
+const opened = shallowRef(false);
+
+const toggle = () => {
+    opened.value = !opened.value;
 };
+
+defineExpose({ toggle });
 </script>

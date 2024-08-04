@@ -12,8 +12,7 @@
             </span>
         </template>
         <template #content>С уведомлением для {{ addition.user.userProfile.middle_name }}</template>
-        <template v-if="editable" #actions
-            >>
+        <template v-if="editable" #actions>
             <HoverActionsButton
                 @click="
                     $editAddition({

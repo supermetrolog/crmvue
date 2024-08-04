@@ -137,13 +137,4 @@ const dealOwner = computed(() => {
             ? getCompanyName(props.deal.competitor, props.deal.competitor_company_id)
             : 'не указан';
 });
-
-const openInChat = () => {
-    this.$openMessengerChat({
-        companyID: this.offer.company_id,
-        objectID: this.offer.object_id
-    });
-};
-
-console.log(props.deal);
 </script>

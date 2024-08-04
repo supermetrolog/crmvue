@@ -48,7 +48,7 @@ const store = createStore({
             dispatch('SET_WINDOW_NAME');
             dispatch('WEBSOCKET_STOP');
             dispatch('WEBSOCKET_RUN');
-            dispatch('REFRESH_USER');
+            await dispatch('REFRESH_USER');
             dispatch('Messenger/setCountersUpdater');
         },
         async DESTROY({ dispatch, commit }) {

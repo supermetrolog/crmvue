@@ -38,7 +38,7 @@
                 <i class="fa-solid fa-bolt"></i>
             </HoverActionsButton>
             <HoverActionsButton
-                @click="$emit('pinToObject')"
+                @click="$emit('pin-to-object')"
                 disabled
                 :active="message.pinnedToObject"
                 :label="message.pinnedToObject ? 'Открепить от объекта' : 'Закрепить за объектом'"
@@ -58,34 +58,31 @@
         </HoverActions>
     </div>
 </template>
-<script>
+<script setup>
 import HoverActions from '@/components/common/HoverActions/HoverActions.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
-import { mapGetters } from 'vuex';
+import { useStore } from 'vuex';
+import { computed, inject } from 'vue';
 
-export default {
-    name: 'MessengerChatMessageActions',
-    components: { HoverActionsButton, HoverActions },
-    emits: ['pin', 'edit', 'pinToObject'],
-    inject: ['$createAddition'],
-    props: {
-        message: {
-            type: Object,
-            required: true
-        },
-        pinned: {
-            type: Boolean,
-            default: false
-        }
+defineEmits(['pin', 'edit', 'pin-to-object']);
+const props = defineProps({
+    message: {
+        type: Object,
+        required: true
     },
-    computed: {
-        ...mapGetters({ user: 'THIS_USER' }),
-        canEdit() {
-            return (
-                this.message.from.model_type === 'user' &&
-                this.message.from.model.id === this.user.id
-            );
-        }
+    pinned: {
+        type: Boolean,
+        default: false
     }
-};
+});
+
+const store = useStore();
+const $createAddition = inject('$createAddition');
+
+const canEdit = computed(() => {
+    return (
+        props.message.from.model_type === 'user' &&
+        props.message.from.model.id === store.getters.THIS_USER.id
+    );
+});
 </script>

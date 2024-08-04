@@ -37,6 +37,4 @@ const photos = computed(() =>
 const docs = computed(() =>
     props.files.filter(element => element.extension !== 'jpg' && element.extension !== 'png')
 );
-
-console.log(props.files);
 </script>

@@ -101,11 +101,19 @@ const Messenger = {
             state.messages = messagesToSections(messages).messages;
         },
         addMessages(state, value) {
-            const { messages, hasLeakedMessages } = messagesToSections(
-                value,
-                state.messages[state.messages.length - 1].dayjs_date,
-                true
-            );
+            let messages = [];
+            let hasLeakedMessages = false;
+
+            if (state.messages.length) {
+                const obj = messagesToSections(
+                    value,
+                    state.messages[state.messages.length - 1].dayjs_date,
+                    true
+                );
+
+                messages = obj.messages;
+                hasLeakedMessages = obj.hasLeakedMessages;
+            }
 
             if (hasLeakedMessages) {
                 state.messages.push(...messages.toSpliced(0, 1));
@@ -286,7 +294,7 @@ const Messenger = {
             dispatch('updateCounters');
             commit(
                 'setCountersInterval',
-                setTimeout(() => {
+                setInterval(() => {
                     dispatch('updateCounters');
                 }, 30000)
             );
@@ -432,10 +440,14 @@ const Messenger = {
             notify('Произошла ошибка при отправке сообщения');
             return false;
         },
-        async updateMessage({ commit }, { id, message = null, tag = null, contact = null }) {
+        async updateMessage(
+            { commit, state },
+            { id, message = null, tag = null, contact = null, files = [], fileList = [] }
+        ) {
             const payload = {
                 id,
                 message,
+                files: files.concat(fileList),
                 tag_ids: tag ? [tag] : [],
                 contact_ids: contact ? [contact.id] : []
             };
@@ -444,6 +456,9 @@ const Messenger = {
 
             if (updatedMessage) {
                 commit('updateMessage', updatedMessage);
+                if (state.currentPinned && id === state.currentPinned.id)
+                    commit('setCurrentPinned', updatedMessage);
+
                 return true;
             }
 

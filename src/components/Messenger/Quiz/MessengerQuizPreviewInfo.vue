@@ -40,7 +40,7 @@ const position = computed(() => contactOptions.position[props.quiz.contact.posit
 const fullName = computed(() => {
     if (props.quiz.contact.full_name) return props.quiz.contact.full_name;
     else if (props.quiz.contact.middle_name || props.quiz.contact.first_name)
-        return `${props.quiz.contact.middle_name} ${props.quiz.contact.first_name}`;
+        return `${props.quiz.contact.middle_name ?? ''} ${props.quiz.contact.first_name ?? ''}`;
     else if (props.quiz.contact.type === contactOptions.typeStatement.GENERAL)
         return 'Основной контакт';
     return 'Без имени';

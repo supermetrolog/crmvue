@@ -1,4 +1,5 @@
 @use '../../utils/mixins';
+@use '../../utils/variables';
 
 .messenger-chat {
     position: relative;
@@ -562,6 +563,10 @@
 
     &__file {
         width: calc(100% / 8)
+    }
+
+    &.new-attachments &__file {
+        border: 2px solid variables.$bg-success;
     }
 }
 

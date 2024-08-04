@@ -155,7 +155,6 @@ const closeModal = () => {
 
 const createGallery = () => {
     const width = carousel.value.clientWidth;
-    console.log(width);
     const _count = Math.floor(width / IMAGE_SIZE);
     flexBasis.value = 100 / _count;
 

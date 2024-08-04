@@ -76,8 +76,6 @@ const props = defineProps({
 
 const isPassive = computed(() => props.object.status !== 1);
 
-console.log(props.object);
-
 const updatedAt = computed(() => {
     return props.object.last_update * 1000;
 });
