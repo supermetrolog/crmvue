@@ -7,7 +7,7 @@
         class="complex-deal-table__table"
     >
         <with-unit-type class="complex-deal-table__title" :unit-type="priceOption.unitType">
-            {{ toNumberOrRangeStrictFormat(mainPrice.min, mainPrice.max) }}
+            {{ toNumberOrRangeFormat(mainPrice.min, mainPrice.max) }}
         </with-unit-type>
         <ul class="complex-deal-table__description">
             <li class="complex-deal-table__grid-title">
@@ -17,7 +17,7 @@
                     :unit-type="unitTypes.RUB_PER_SQUARE_METERS"
                 >
                     {{
-                        toNumberOrRangeStrictFormat(
+                        toNumberOrRangeFormat(
                             deal.summaryBlock.price_sale_min,
                             deal.summaryBlock.price_sale_max
                         )
@@ -60,4 +60,6 @@ const mainPrice = computed(() => {
         max: props.priceOption.func(props.deal.summaryBlock.price_sale_max, areaMax)
     };
 });
+
+// TODO: Сделать strict мод для toNumberOrRangeFormat
 </script>

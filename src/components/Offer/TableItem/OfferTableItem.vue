@@ -185,7 +185,7 @@ const dropdownIsOpen = shallowRef(false);
 const updatedAt = computed(() => props.offer.last_update * 1000);
 const currentUser = computed(() => store.getters.THIS_USER);
 const contact = computed(() => props.offer.contact || props.offer.company?.mainContact);
-const isFavorite = computed(() => store.state.favoritesOffersCache[props.offer.original_id]);
+const isFavorite = computed(() => store.state.Offers.favoritesOffersCache[props.offer.original_id]);
 const isPassive = computed(() => props.offer.status !== 1);
 
 const searchMiniOffers = async (withLoading = false) => {
