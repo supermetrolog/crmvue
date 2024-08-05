@@ -71,6 +71,8 @@ import EmptyData from '@/components/common/EmptyData.vue';
 import { computed, inject } from 'vue';
 import { useStore } from 'vuex';
 import { $generatorURL as $url } from '@/plugins/url.js';
+import Tab from "@/components/common/Tabs/Tab.vue";
+import Tabs from "@/components/common/Tabs/Tabs.vue";
 
 const store = useStore();
 

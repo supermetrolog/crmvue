@@ -38,6 +38,7 @@ export default {
               location.townCentralRecord,
               location.metroRecord,
               location.districtTypeRecord,
+              location.districtFormerRecord,
               location.highwayRelevantRecords,
               location.townsRelevantRecords,
               location.districtFormerRecord,
