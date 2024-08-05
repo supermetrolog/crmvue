@@ -23,7 +23,6 @@
             Данные о сделке отсутсвуют в связи с отсутствием торговых предложений.
         </EmptyData>
         <div class="building-info__line">
-            <ComplexActions class="building-info__buttons" simple :buttons="actionButtons" />
             <ComplexDealTabs
                 :has-active-offers="hasActiveOffers"
                 :deal="deal"

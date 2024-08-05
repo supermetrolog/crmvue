@@ -2,7 +2,7 @@
     <div
         v-if="
             deal.summaryBlock &&
-            (deal.summaryBlock.price_sale_min || deal.summaryBlock.price_sale_max)
+            (deal.summaryBlock.price_sale_min || deal.summaryBlock.price_field_min)
         "
         class="complex-deal-table__table"
     >

@@ -32,7 +32,10 @@
         </Tab>
         <Tab :name="`Фотографии (${hasActiveOffers ? photos.length : 0})`">
             <div v-if="hasActiveOffers && photos.length" class="offer-tabs__content">
-                <Button @click="openDownloader(photos)" class="offer-tabs__button">
+                <Button
+                    @click="openDownloader(photos, `Объект-${deal.object_id}-Сделка-${deal.id}`)"
+                    class="offer-tabs__button"
+                >
                     Скачать фотографии
                 </Button>
                 <div class="offer-tabs__body">

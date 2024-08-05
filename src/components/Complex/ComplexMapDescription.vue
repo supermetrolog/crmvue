@@ -30,12 +30,12 @@
                     {{ ucFirst(location.townRecord.title) }}
                 </span>
             </li>
-            <!--            <li class="complex-map-description__item">-->
-            <!--                <span class="complex-map-description__name">Старый район</span>-->
-            <!--                <span v-if="location.townRecord" class="complex-map-description__value">-->
-            <!--                    {{ location.district_former }}-->
-            <!--                </span>-->
-            <!--            </li>-->
+            <li class="complex-map-description__item">
+                <span class="complex-map-description__name">Старый район</span>
+                <span v-if="location.district_former" class="complex-map-description__value">
+                    {{ ucFirst(location.districtFormerRecord.title) }}
+                </span>
+            </li>
         </ul>
         <div v-if="location.towns_relevant" class="complex-map-description__block">
             <p class="complex-map-description__subtitle">Показывать в населенных пунктах:</p>
