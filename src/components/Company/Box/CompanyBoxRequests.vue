@@ -27,18 +27,20 @@
             <div v-if="!requests.length && !deals.length" class="company-box-empty">
                 <EmptyData class="company-box-empty__data">Нет данных</EmptyData>
             </div>
-            <FormModalCompanyRequestDisable
-                v-if="disabledRequestItem"
-                @close="disabledRequestItem = null"
-                @disabled="onRequestIsDisabled"
-                :request_id="disabledRequestItem?.id"
-            />
-            <FormModalCompanyRequestClone
-                v-if="!!clonedRequestItem"
-                @close="closeModal"
-                @cloned="onRequestCloned"
-                :request="clonedRequestItem"
-            />
+            <teleport to="body">
+                <FormModalCompanyRequestDisable
+                    v-if="disabledRequestItem"
+                    @close="disabledRequestItem = null"
+                    @disabled="onRequestIsDisabled"
+                    :request_id="disabledRequestItem?.id"
+                />
+                <FormModalCompanyRequestClone
+                    v-if="!!clonedRequestItem"
+                    @close="closeModal"
+                    @cloned="onRequestCloned"
+                    :request="clonedRequestItem"
+                />
+            </teleport>
         </template>
     </CompanyBoxLayout>
 </template>

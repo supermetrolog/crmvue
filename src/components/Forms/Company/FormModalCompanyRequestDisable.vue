@@ -1,5 +1,5 @@
 <template>
-    <Modal @close="$emit('close')" width="550" :title="title">
+    <Modal @close="$emit('close')" show width="550" :title="title">
         <FormCompanyRequestDisable @disabled="$emit('disabled')" :request_id="request_id" />
     </Modal>
 </template>

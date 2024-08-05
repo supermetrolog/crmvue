@@ -1,6 +1,7 @@
 <template>
     <Modal
         @close="emit('close')"
+        show
         :title="formData ? 'Изменение группы компаний' : 'Создание группы компаний'"
         width="600"
     >

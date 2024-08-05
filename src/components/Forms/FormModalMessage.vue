@@ -1,12 +1,20 @@
 <template>
     <Modal
-        v-if="opened"
         @close="close"
+        :show="opened"
         class="modal-form-message"
         title="Редактирование сообщения"
         width="800"
     >
         <div class="messenger-chat-form">
+            <AnimationTransition :speed="0.5">
+                <MessengerChatFormAttachments
+                    v-if="form.fileList.length"
+                    @delete="deleteLocalFile"
+                    :files="form.fileList"
+                    class="new-attachments"
+                />
+            </AnimationTransition>
             <AnimationTransition :speed="0.5">
                 <MessengerChatFormAttachments
                     v-if="form.files.length"
@@ -81,7 +89,8 @@ export default {
             form: {
                 id: null,
                 message: null,
-                files: []
+                files: [],
+                fileList: []
             },
             currentTag: null,
             currentContact: null
@@ -93,7 +102,8 @@ export default {
                 this.form = {
                     id: this.promiseProps.id,
                     message: this.promiseProps.message,
-                    files: cloneObject(this.promiseProps.files)
+                    files: cloneObject(this.promiseProps.files),
+                    fileList: []
                 };
 
                 this.currentTag = this.promiseProps.tags.length
@@ -106,7 +116,8 @@ export default {
                 this.form = {
                     id: null,
                     message: null,
-                    files: []
+                    files: [],
+                    fileList: []
                 };
 
                 this.currentContact = null;
@@ -135,18 +146,20 @@ export default {
             } else {
                 this.close();
             }
+            ``;
         },
         async attachFile() {
             const files = await this.$openAttachments();
-
             if (files) {
-                if (this.form.files.length) {
-                    this.form.files.push(...files);
-                } else this.form.files = [...files];
+                if (files.files?.length) this.form.files.push(...files.files);
+                if (files.fileList?.length) this.form.fileList.push(...files.fileList);
             }
         },
         deleteFile(id) {
             this.form.files.splice(id, 1);
+        },
+        deleteLocalFile(id) {
+            this.form.fileList.splice(id, 1);
         }
     }
 };

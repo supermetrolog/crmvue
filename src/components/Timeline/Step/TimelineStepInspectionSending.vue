@@ -2,8 +2,8 @@
     <div class="timeline-step">
         <teleport to="body">
             <Modal
-                v-if="sendModalIsVisible"
                 @close="sendModalIsVisible = false"
+                :show="sendModalIsVisible"
                 title="Отправка маршрута"
                 width="1200"
             >

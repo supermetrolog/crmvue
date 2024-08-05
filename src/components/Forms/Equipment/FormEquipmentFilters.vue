@@ -1,5 +1,5 @@
 <template>
-    <Modal @close="$emit('close')" title="Фильтры" width="1400">
+    <Modal @close="$emit('close')" show title="Фильтры" width="1400">
         <Form>
             <FormGroup class="mb-4">
                 <MultiSelect

@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useAuth } from '@/composables/useAuth.js';
-import { notify } from '@kyvg/vue3-notification';
+import { useNotify } from '@/utils/useNotify.js';
 
 const routes = [
     {
@@ -305,25 +305,23 @@ const router = createRouter({
     routes
 });
 
-const { isAuth, setRedirect } = useAuth();
-
 router.beforeEach(to => {
+    const { isAuth, setRedirect } = useAuth();
     const accessToken = localStorage.getItem('access_token');
 
     if (to.meta.auth.isAuth) {
         if (!accessToken || !isAuth.value) {
             setRedirect(to.fullPath);
-            notify({
-                text: 'Для доступа к запрашиваемой странице необходимо авторизоваться',
-                duration: 3000
-            });
+
+            const notify = useNotify();
+            notify.info('Для доступа к запрашиваемой странице необходимо авторизоваться');
+
             return { name: 'login' };
         }
     } else if (isAuth.value || accessToken) {
-        notify({
-            text: 'Вы уже авторизованы',
-            duration: 2000
-        });
+        const notify = useNotify();
+        notify.info('Вы уже авторизованы');
+
         return { name: 'root' };
     }
 });

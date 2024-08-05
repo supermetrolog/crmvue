@@ -1,5 +1,5 @@
 <template>
-    <Modal @close="$emit('close')" title="Контакт" width="1200">
+    <Modal @close="$emit('close')" show title="Контакт" width="1200">
         <div v-if="isLoading" class="phone-number__loading">
             <Spinner class="absolute-center" />
         </div>

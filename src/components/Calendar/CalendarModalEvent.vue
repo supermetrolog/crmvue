@@ -1,6 +1,7 @@
 <template>
     <Modal
         @close="$emit('close')"
+        show
         class="calendar-modal-event dashboard-card-view"
         width="1200"
         :title="event.title"

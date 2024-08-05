@@ -1,5 +1,5 @@
 <template>
-    <Modal @close="$emit('close')" width="1300" has-tabs>
+    <Modal @close="$emit('close')" show width="1300" has-tabs>
         <template #header>
             <Switch v-model="form.test_only" false-title="Обычный лот" true-title="Тестовый лот" />
         </template>

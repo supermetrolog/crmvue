@@ -3,7 +3,7 @@
         {{ modelValue ? targetUsername : 'Общее' }}
     </DashboardChip>
     <teleport to="body">
-        <Modal v-if="formIsVisible" @close="formIsVisible = false" title="Выбор сотрудника">
+        <Modal @close="formIsVisible = false" :show="formIsVisible" title="Выбор сотрудника">
             <UserPicker v-model="value" single :users="consultants" />
         </Modal>
     </teleport>

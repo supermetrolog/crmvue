@@ -1,7 +1,7 @@
 <template>
     <Modal
-        v-if="opened"
         @close="close"
+        :show="opened"
         width="1200"
         :title="promiseProps ? 'Редактирование напоминания' : 'Создание напоминания'"
     >

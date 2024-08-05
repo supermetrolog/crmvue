@@ -4,6 +4,7 @@
         :title="crane ? 'Редактирование крана' : 'Добавление крана'"
         width="900"
         has-tabs
+        show
     >
         <Loader v-if="isLoading" />
         <Form @submit="onSubmit" class="equipment-form">

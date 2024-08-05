@@ -1,15 +1,18 @@
 <template>
-    <MessengerChatMessageAdditionsItem class="messenger-chat-message-addition--warning">
+    <MessengerChatMessageAdditionsItem
+        class="messenger-chat-message-addition--warning"
+        :class="{ completed: isCompleted }"
+    >
         <template #icon>
             <span
-                v-tippy="addition.message"
+                v-tippy="addition.subject"
                 class="messenger-chat-message-addition__icon rounded-icon bg-orange"
             >
                 <i class="fa-solid fa-exclamation"></i>
             </span>
         </template>
-        <template #content>С уведомлением для {{ usersText }}</template>
-        <template #actions>
+        <template #content>С уведомлением для {{ addition.user.userProfile.middle_name }}</template>
+        <template v-if="editable" #actions>
             <HoverActionsButton
                 @click="
                     $editAddition({
@@ -29,47 +32,46 @@
         </template>
     </MessengerChatMessageAdditionsItem>
 </template>
-<script>
+<script setup>
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import MessengerChatMessageAdditionsItem from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditionsItem.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
+import { computed, inject } from 'vue';
+import { useStore } from 'vuex';
+import { useNotify } from '@/utils/useNotify.js';
 
-export default {
-    name: 'MessengerChatMessageAdditionsAlert',
-    components: { MessengerChatMessageAdditionsItem, HoverActionsButton },
-    inject: ['$editAddition', '$messageID'],
-    props: {
-        addition: {
-            type: Object,
-            required: true
-        }
-    },
-    setup() {
-        const { confirm } = useConfirm();
-        return { confirm };
-    },
-    computed: {
-        usersText() {
-            return this.addition.user.userProfile.middle_name;
-        }
-    },
-    methods: {
-        async remove() {
-            const confirmed = await this.confirm(
-                'Вы уверены, что хотите безвозвратно удалить уведомление?'
-            );
+const store = useStore();
+const { confirm } = useConfirm();
+const notify = useNotify();
 
-            if (confirmed) {
-                const deleted = await this.$store.dispatch('Messenger/deleteAddition', {
-                    messageID: this.$messageID,
-                    additionID: this.addition.id,
-                    additionType: 'alert'
-                });
+const $editAddition = inject('$editAddition');
+const $messageID = inject('$messageID');
 
-                if (deleted) this.$notify('Уведомление удалено.');
-                else this.$notify('Произошла ошибка. Попробуйте позже.');
-            }
-        }
+const props = defineProps({
+    addition: {
+        type: Object,
+        required: true
+    },
+    editable: {
+        type: Boolean,
+        default: false
+    }
+});
+
+const isCompleted = computed(() => props.addition.viewed_at !== null);
+
+const remove = async () => {
+    const confirmed = await confirm('Вы уверены, что хотите безвозвратно удалить уведомление?');
+
+    if (confirmed) {
+        const deleted = await store.dispatch('Messenger/deleteAddition', {
+            messageID: $messageID,
+            additionID: props.addition.id,
+            additionType: 'alert'
+        });
+
+        if (deleted) notify.success('Уведомление удалено.');
+        else notify.error('Произошла ошибка. Попробуйте позже.');
     }
 };
 </script>

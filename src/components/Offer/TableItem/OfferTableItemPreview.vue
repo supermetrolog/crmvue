@@ -32,7 +32,7 @@
             <OfferTableItemPreviewMotionSlider
                 v-else
                 :thumb="offer.thumb"
-                :photos="offer.object.photo"
+                :photos="offer.object?.photo ?? offer.photos ?? []"
             />
             <div class="offer-table-item-preview__parameters">
                 <span

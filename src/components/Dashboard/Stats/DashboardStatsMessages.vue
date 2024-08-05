@@ -16,7 +16,8 @@
             </template>
             <template v-else>
                 <div class="col-12">
-                    <div v-if="messages.length" class="dashboard-stats-messages__column">
+                    <InProgress v-if="true" />
+                    <div v-else-if="messages.length" class="dashboard-stats-messages__column">
                         <DashboardCardMessage
                             v-for="message in messages"
                             :key="message.id"
@@ -40,6 +41,7 @@ import DashboardCardMessageSkeleton from '@/components/Dashboard/Card/DashboardC
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';
 import { inject, onBeforeMount, ref, watch } from 'vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
+import InProgress from '@/components/common/InProgress.vue';
 
 const $openMessengerChat = inject('$openMessengerChat');
 const props = defineProps({
@@ -63,7 +65,7 @@ const fetchMessages = async () => {
 
     const response = await api.messenger.getMessagesByQuery({
         ...userParams,
-        sort: '-created_at'
+        sort: '-id'
     });
 
     if (response) messages.value = response.data.slice(0, 10);

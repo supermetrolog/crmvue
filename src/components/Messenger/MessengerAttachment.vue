@@ -1,7 +1,7 @@
 <template>
     <Modal
-        v-if="opened"
         @close="close"
+        :show="opened"
         title="Загрузка файлов и изображений"
         class="modal-messenger-attachment"
         width="1200"

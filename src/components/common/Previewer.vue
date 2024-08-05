@@ -1,5 +1,5 @@
 <template>
-    <Modal v-if="opened" @close="toggle" class="modal-previewer" title="Просмотр изображения">
+    <Modal @close="toggle" :show="opened" class="modal-previewer" title="Просмотр изображения">
         <div class="previewer">
             <VLazyImage :src="image" alt="image preview" />
         </div>

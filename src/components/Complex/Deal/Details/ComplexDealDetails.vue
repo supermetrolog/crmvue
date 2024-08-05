@@ -129,8 +129,6 @@ const priceService = computed(() => {
     }
 });
 
-console.log(props.deal);
-
 const isSaleCompany = computed(
     () => props.deal.sale_company === entityOptions.deal.saleCompanyStatement.READY_TO_SALE
 );

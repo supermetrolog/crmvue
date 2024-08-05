@@ -1,31 +1,42 @@
 <template>
     <div class="users-table">
-        <Modal v-if="userForDelete" @close="clickCloseModal" title="Удаление контакта" width="600">
-            <div class="row no-gutters">
-                <div class="col-12 text-center">
-                    <h4 class="text-dark">
-                        Вы уверены что хотите удалить пользователя
-                        <span class="text-grey">
-                            "{{ userForDelete.userProfile.first_name }}
-                            {{ userForDelete.userProfile.middle_name }}"
-                        </span>
-                        ?
-                    </h4>
-                    <h5 class="m-0 text-success_alt">Username: {{ userForDelete.username }}</h5>
-                </div>
-                <div class="col-12 mt-4 text-center">
-                    <Loader v-if="deleteLoader" />
-                    <div class="list justify-content-center">
-                        <Button @click="deleteUser(userForDelete)" danger :disabled="deleteLoader">
-                            Удалить
-                        </Button>
-                        <Button @click="clickCloseModal" :disabled="deleteLoader">
-                            Отменить
-                        </Button>
+        <teleport to="body">
+            <Modal
+                @close="clickCloseModal"
+                :show="userForDelete"
+                title="Удаление контакта"
+                width="600"
+            >
+                <div class="row no-gutters">
+                    <div class="col-12 text-center">
+                        <h4 class="text-dark">
+                            Вы уверены что хотите удалить пользователя
+                            <span class="text-grey">
+                                "{{ userForDelete.userProfile.first_name }}
+                                {{ userForDelete.userProfile.middle_name }}"
+                            </span>
+                            ?
+                        </h4>
+                        <h5 class="m-0 text-success_alt">Username: {{ userForDelete.username }}</h5>
+                    </div>
+                    <div class="col-12 mt-4 text-center">
+                        <Loader v-if="deleteLoader" />
+                        <div class="list justify-content-center">
+                            <Button
+                                @click="deleteUser(userForDelete)"
+                                danger
+                                :disabled="deleteLoader"
+                            >
+                                Удалить
+                            </Button>
+                            <Button @click="clickCloseModal" :disabled="deleteLoader">
+                                Отменить
+                            </Button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </Modal>
+            </Modal>
+        </teleport>
         <Table>
             <template #thead>
                 <Tr>

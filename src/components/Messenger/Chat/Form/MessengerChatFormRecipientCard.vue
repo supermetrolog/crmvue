@@ -85,11 +85,13 @@
                 <i class="fa-solid fa-user-slash"></i>
             </HoverActionsButton>
         </HoverActions>
-        <FormCompanyContact
-            v-if="updateContactModalVisible"
-            @close="updateContactModalVisible = false"
-            :formdata="contact"
-        />
+        <teleport to="body">
+            <FormCompanyContact
+                v-if="updateContactModalVisible"
+                @close="updateContactModalVisible = false"
+                :formdata="contact"
+            />
+        </teleport>
     </div>
 </template>
 <script>

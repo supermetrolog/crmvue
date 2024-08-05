@@ -35,12 +35,6 @@
                             </DashboardChip>
                         </div>
                         <span
-                            v-if="offer.test_only"
-                            class="object-offer__badge object-offer__test-only"
-                        >
-                            Тестовый лот
-                        </span>
-                        <span
                             v-if="offer.type_id === 2"
                             class="object-offer__badge object-offer__is-main"
                         >
@@ -56,7 +50,7 @@
                             Неизвестно
                         </span>
                         <a @click.prevent class="object-offer__photo" href="#" target="_blank">
-                            <VLazyImage :src="offer.thumb" alt="image" />
+                            <VLazyImage :src="offer.image" alt="image" />
                         </a>
                     </div>
                 </div>
@@ -68,7 +62,7 @@
                         В архиве
                     </DashboardChip>
                     <div class="object-offer__actions mb-2">
-                        <a :href="$url.offerByObject(offer)" target="_blank">
+                        <a :href="$url.offer(offer.complex_id, offer.id)" target="_blank">
                             <HoverActionsButton v-tippy="'Открыть страницу предложения'">
                                 <i class="fa-solid fa-eye" />
                             </HoverActionsButton>
@@ -118,32 +112,25 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
 import VLazyImage from 'v-lazy-image';
+import { computed } from 'vue';
 
-export default {
-    name: 'CompanyObjectItemNoOffer',
-    components: { VLazyImage, WithUnitType, HoverActionsButton, DashboardChip },
-    props: {
-        offer: {
-            type: Object
-        },
-        currentStepID: {
-            type: Number,
-            required: true
-        }
+const props = defineProps({
+    offer: {
+        type: Object
     },
-    computed: {
-        unitTypes() {
-            return unitTypes;
-        },
-        isPassive() {
-            return this.offer.status !== 1;
-        }
+    currentStepID: {
+        type: Number,
+        required: true
     }
-};
+});
+
+const isPassive = computed(() => {
+    return props.offer.status !== 1;
+});
 </script>

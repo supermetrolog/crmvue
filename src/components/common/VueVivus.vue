@@ -1,5 +1,5 @@
 <template>
-    <div @click="play" class="vue-vivus">
+    <div @click="play()" class="vue-vivus">
         <slot :uid="vivusID"></slot>
     </div>
 </template>

@@ -31,54 +31,49 @@ const User = {
         }
     },
     actions: {
-        async FETCH_CONSULTANT_LIST(context) {
-            if (context.getters.CONSULTANT_LIST.length) {
-                return context.getters.CONSULTANT_LIST;
-            }
+        async FETCH_CONSULTANT_LIST({ getters, commit }) {
+            if (getters.CONSULTANT_LIST.length) return getters.CONSULTANT_LIST;
+
             let data = await api.functions.getConsultantList();
             if (data) {
-                context.commit('updateConsultantList', data);
-                return context.getters.CONSULTANT_LIST;
+                commit('updateConsultantList', data);
+                return getters.CONSULTANT_LIST;
             }
+
+            return [];
         },
-        async FETCH_USERS(context) {
+        async FETCH_USERS({ commit }) {
             let data = await api.user.getUsers();
-            if (data) {
-                context.commit('updateUsers', data);
-            }
+            if (data) commit('updateUsers', data);
         },
         async REFRESH_USER({ getters, commit }) {
             const access_token = localStorage.getItem('access_token');
-            if (!getters.THIS_USER || !access_token) {
-                return;
-            }
+            if (!getters.THIS_USER || !access_token) return;
 
             let [newUserData, chatMemberUser] = await Promise.all([
                 api.user.getUser(getters.THIS_USER.id),
                 api.messenger.getUserChatMember(getters.THIS_USER.id)
             ]);
-            if (!newUserData) {
-                return;
-            }
+
+            if (!newUserData) return;
 
             newUserData.chat_member_id = chatMemberUser;
-
             localStorage.setItem('user', JSON.stringify(newUserData));
             newUserData.access_token = access_token;
             commit('setUser', newUserData);
         },
-        SET_USER(context) {
-            if (!context.getters.THIS_USER) {
+        SET_USER({ getters, commit }) {
+            if (!getters.THIS_USER) {
                 let user = JSON.parse(localStorage.getItem('user'));
                 user.access_token = localStorage.getItem('access_token');
-                context.commit('setUser', user);
+                commit('setUser', user);
             }
-            return context.getters.THIS_USER;
+            return getters.THIS_USER;
         },
-        DROP_USER(context) {
+        DROP_USER({ commit }) {
             localStorage.removeItem('access_token');
             localStorage.removeItem('user');
-            context.commit('setUser', null);
+            commit('setUser', null);
         },
         async login({ dispatch }, formData) {
             const response = await api.user.auth.login(formData);
@@ -87,14 +82,13 @@ const User = {
 
                 dispatch('SET_USER');
                 login();
+                return true;
             }
             return response;
         },
-        async LOGOUT(context) {
+        async LOGOUT({ dispatch }) {
             const response = await api.user.auth.logout();
-            if (response !== false) {
-                context.dispatch('DESTROY');
-            }
+            if (response !== false) dispatch('DESTROY');
             return response;
         },
         async CREATE_USER(_, formdata) {

@@ -47,7 +47,7 @@ export default {
         activeAdditions() {
             // Определение только активных задач/напоминаний и т.д
             return Object.keys(this.additions).reduce((acc, key) => {
-                acc[key] = this.additions[key].filter(addition => addition.deleted_at === null);
+                acc[key] = this.additions[key].filter(addition => addition.deleted_at == null);
                 return acc;
             }, {});
         }

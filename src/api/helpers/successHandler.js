@@ -33,7 +33,11 @@ function setNotify(response) {
 export const SuccessHandler = {
     getData(Response) {
         if (Response.data && typeof Response.data !== 'string') {
-            if (!Array.isArray(Response.data) && 'message' in Response.data) {
+            if (
+                !Array.isArray(Response.data) &&
+                'message' in Response.data &&
+                'data' in Response.data
+            ) {
                 setNotify(Response);
                 return Response.data.data;
             }

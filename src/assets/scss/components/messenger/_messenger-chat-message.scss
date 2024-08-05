@@ -2,6 +2,7 @@
 
 .messenger-chat-message {
     padding: 10px 5px;
+    margin: 5px 0;
     @include mixins.transition(background-color);
 
     &__wrapper {
@@ -76,8 +77,6 @@
 
     &__attachments {
         padding: 5px 10px;
-        @include mixins.flex-box($gap: 5px, $wrap: true);
-
         &:has(.file__image):has(.file__icon) {
             .messenger-chat-message__attachment {
                 flex-basis: unset;
@@ -89,7 +88,11 @@
         }
     }
 
-    &__attachment {
+    &__photos {
+        @include mixins.flex-box($gap: 5px, $wrap: true);
+    }
+
+    &__photo {
         min-width: 60px;
         flex-basis: calc(25% - 4px);
         font-size: 12px;
@@ -103,22 +106,28 @@
                 &:has(.file__image) {
                     display: block;
                 }
-
-                &:not(:has(.file__image)) {
-                    padding: 10px 0;
-                    aspect-ratio: 1 / 1;
-                    max-width: 100px;
-                }
             }
 
             &__image {
                 max-height: 300px;
                 object-fit: unset;
             }
+        }
+    }
 
-            &__icon {
-                font-size: 40px;
-            }
+    &__files {
+        @include mixins.flex-box($gap: 5px, $wrap: true)
+    }
+
+    &__attachment {
+        .file__icon {
+            font-size: 36px;
+        }
+
+        .file__body {
+            padding: 10px 0;
+            aspect-ratio: 1 / 1;
+            max-width: 100px;
         }
     }
 }

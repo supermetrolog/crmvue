@@ -5,6 +5,7 @@
         class="modal-form-company"
         width="1000"
         has-tabs
+        show
     >
         <Form @submit="onSubmit">
             <Tabs :options="{ useUrlFragment: false }">

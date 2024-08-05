@@ -15,6 +15,9 @@ env:
   VITE_VUE_APP_API_URL: https://api.pennylane.pro/
   VITE_VUE_APP_HOST: https://clients.pennylane.pro
   VITE_VUE_APP_WS_URL: wss://api.pennylane.pro/websocket/
+  VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_INFO: 90
+  VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_WARNING: 180
+  VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_DANGER: 360
 jobs:
   web-deploy:
     name: 🎉 Deploy

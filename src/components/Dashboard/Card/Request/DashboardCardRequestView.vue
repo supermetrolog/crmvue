@@ -1,5 +1,5 @@
 <template>
-    <Modal @close="$emit('close')" :title="'Просмотр запроса #' + request.id" width="1200">
+    <Modal @close="$emit('close')" show :title="'Просмотр запроса #' + request.id" width="1200">
         <Spinner v-if="isLoading" />
         <div v-else class="dashboard-card-view">
             <div class="row">

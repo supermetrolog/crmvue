@@ -8,6 +8,7 @@
                         label="Поиск"
                         placeholder="ID, адрес, собственник, название, описание"
                         class="w-100"
+                        disabled
                     />
                     <div class="ml-md-2 mt-2 mt-md-0 d-flex gap-2 w-100">
                         <Button

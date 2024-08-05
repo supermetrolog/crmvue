@@ -201,3 +201,45 @@
 .timeline-routes-error {
     font-size: 22px!important;
 }
+
+.timeline-deal {
+    position: relative;
+
+    &::after {
+        content: '';
+        display: block;
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 2;
+        background-image: url('@/assets/image/money.png');
+        background-size: 40%;
+        opacity: .07;
+    }
+
+    .dashboard-card__header {
+        border-bottom: 1px solid #d9d9dc;
+        z-index: 3;
+        position: relative;
+    }
+
+    .dashboard-card__content {
+        z-index: 3;
+        position: relative;
+    }
+
+    &__header {
+        @include mixins.flex-box($a: center, $gap: 10px);
+    }
+
+    &__title {
+        font-size: 20px;
+        font-weight: 500;
+    }
+
+    &__list {
+        @include mixins.flex-box($wrap: true, $gap: 5px);
+    }
+}

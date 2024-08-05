@@ -11,7 +11,7 @@
             <i class="fa-solid fa-chevron-left"></i>
             <span>Отрыть список возможных вопросов клиенту</span>
         </p>
-        <Spinner v-if="isLoading" class="my-4" />
+        <Loader v-if="isLoading" class="my-4" />
         <div class="messenger-quiz__content">
             <MessengerQuizQuestion
                 v-for="question in questions"
@@ -39,10 +39,10 @@ import { useStore } from 'vuex';
 import dayjs from 'dayjs';
 import { computed, inject, ref, shallowRef } from 'vue';
 import { useNotify } from '@/utils/useNotify.js';
-import Spinner from '@/components/common/Spinner.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
 import api from '@/api/api.js';
 import MessengerQuizComplete from '@/components/Messenger/Quiz/MessengerQuizComplete.vue';
+import Loader from '@/components/common/Loader.vue';
 
 const store = useStore();
 const notify = useNotify();
@@ -112,6 +112,7 @@ const send = async () => {
     const created = await api.survey.create({
         contact_id: currentRecipient.value.id,
         user_id: THIS_USER.value.id,
+        chat_member_id: store.state.Messenger.currentDialog.id,
         question_answers: forms.flat()
     });
 

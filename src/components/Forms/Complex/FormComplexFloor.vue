@@ -3,6 +3,7 @@
         @close="$emit('close')"
         :title="floor ? 'Редактирование этажа' : 'Добавление этажа'"
         class="form-complex-floor"
+        show
         has-tabs
     >
         <Loader v-if="isLoading" />

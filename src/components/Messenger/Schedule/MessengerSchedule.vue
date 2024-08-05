@@ -1,5 +1,5 @@
 <template>
-    <Modal v-if="isOpened" @close="close" :title="title || 'Выбор даты и времени'">
+    <Modal @close="close" :show="isOpened" :title="title || 'Выбор даты и времени'">
         <DatePicker v-model="date" @select="select" :markers="markers" />
     </Modal>
 </template>

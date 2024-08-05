@@ -122,8 +122,6 @@ const props = defineProps({
     }
 });
 
-console.log(props.object);
-
 const craneFormIsVisible = shallowRef(false);
 const elevatorFormIsVisible = shallowRef(false);
 const floorFormIsVisible = shallowRef(false);

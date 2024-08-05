@@ -1,25 +1,40 @@
 <template>
     <div class="messenger-chat-message__attachments">
-        <File
-            v-for="(file, key) in files"
-            :key="key"
-            :file="file"
-            read-only
-            class="messenger-chat-message__attachment"
-        />
+        <div class="messenger-chat-message__photos">
+            <File
+                v-for="(file, key) in photos"
+                :key="key"
+                :file="file"
+                read-only
+                class="messenger-chat-message__photo"
+            />
+        </div>
+        <div class="messenger-chat-message__files mt-2">
+            <File
+                v-for="(file, key) in docs"
+                :key="key"
+                :file="file"
+                read-only
+                class="messenger-chat-message__attachment"
+            />
+        </div>
     </div>
 </template>
-<script>
+<script setup>
 import File from '@/components/common/Forms/File.vue';
+import { computed } from 'vue';
 
-export default {
-    name: 'MessengerChatMessageAttachments',
-    components: { File },
-    props: {
-        files: {
-            type: Array,
-            required: true
-        }
+const props = defineProps({
+    files: {
+        type: Array,
+        required: true
     }
-};
+});
+
+const photos = computed(() =>
+    props.files.filter(element => element.extension === 'jpg' || element.extension === 'png')
+);
+const docs = computed(() =>
+    props.files.filter(element => element.extension !== 'jpg' && element.extension !== 'png')
+);
 </script>

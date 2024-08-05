@@ -2,6 +2,9 @@
     <div class="v-main-layout">
         <TheSideBar />
         <TheHeader />
+        <div v-if="confettiIsVisible" class="v-main-layout__confetti">
+            <ConfettiExplosion :duration="duration" />
+        </div>
         <!-- <CallerManager /> -->
         <main>
             <router-view v-slot="{ Component }">
@@ -19,38 +22,30 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import TheSideBar from '@/components/SideBar/TheSideBar.vue';
 import TheHeader from '@/components/Header/TheHeader.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import Messenger from '@/components/Messenger/Messenger.vue';
 import Previewer from '@/components/common/Previewer.vue';
-import { mapGetters } from 'vuex';
+import { useStore } from 'vuex';
 import Confirm from '@/components/common/Confirm.vue';
 import PhoneNumberPopup from '@/components/common/PhoneNumberPopup.vue';
+import ConfettiExplosion from 'vue-confetti-explosion';
+import { computed, provide, ref } from 'vue';
+import { useConfetti } from '@/composables/useConfetti.js';
 
-export default {
-    name: 'Default',
-    components: {
-        PhoneNumberPopup,
-        Confirm,
-        Previewer,
-        Messenger,
-        AnimationTransition,
-        TheHeader,
-        TheSideBar
-    },
-    provide() {
-        return {
-            $openPreviewer: image => this.$refs.previewer.toggle(image),
-            $openMessengerChat: ({ companyID, objectID, chatMemberID }) => {
-                if (chatMemberID) this.$refs.messenger.openChatByID(chatMemberID);
-                else this.$refs.messenger.openChat(companyID, objectID);
-            }
-        };
-    },
-    computed: {
-        ...mapGetters(['THIS_USER'])
-    }
-};
+const store = useStore();
+const { isVisible: confettiIsVisible, duration } = useConfetti();
+
+const messenger = ref(null);
+const previewer = ref(null);
+
+const THIS_USER = computed(() => store.getters.THIS_USER);
+
+provide('$openPreviewer', image => previewer.value.toggle(image));
+provide('$openMessengerChat', ({ companyID, objectID, chatMemberID }) => {
+    if (chatMemberID) messenger.value.openChatByID(chatMemberID);
+    else messenger.value.openChat(companyID, objectID);
+});
 </script>
