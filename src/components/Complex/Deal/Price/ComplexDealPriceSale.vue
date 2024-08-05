@@ -2,12 +2,12 @@
     <div
         v-if="
             deal.summaryBlock &&
-            (deal.summaryBlock.price_sale_min || deal.summaryBlock.price_sale_max)
+            (deal.summaryBlock.price_sale_min || deal.summaryBlock.price_field_min)
         "
         class="complex-deal-table__table"
     >
         <with-unit-type class="complex-deal-table__title" :unit-type="priceOption.unitType">
-            {{ toNumberOrRangeFormat(mainPrice.min, mainPrice.max) }}
+            {{ toNumberOrRangeStrictFormat(mainPrice.min, mainPrice.max) }}
         </with-unit-type>
         <ul class="complex-deal-table__description">
             <li class="complex-deal-table__grid-title">
@@ -17,7 +17,7 @@
                     :unit-type="unitTypes.RUB_PER_SQUARE_METERS"
                 >
                     {{
-                        toNumberOrRangeFormat(
+                        toNumberOrRangeStrictFormat(
                             deal.summaryBlock.price_sale_min,
                             deal.summaryBlock.price_sale_max
                         )
