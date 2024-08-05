@@ -18,11 +18,6 @@
                 <div v-if="currentTab === 'main'" class="timeline-page__wrapper row">
                     <div class="col-10">
                         <div class="timeline-page__content" :class="{ disabled: disabled }">
-                            <TimelineTutorialStep
-                                :scene="1"
-                                title="Обзор таймлайна"
-                                text="Добро пожаловать в таймлайн запроса. Цель прохождения таймлайна - закрыть запрос и совершить сделку"
-                            />
                             <Loader v-if="isStepLoading" />
                             <div class="timeline-page__current">
                                 <AnimationTransition :speed="0.5">
@@ -93,15 +88,10 @@ import TimelineExtraBlock from '@/components/Timeline/TimelineExtraBlock.vue';
 import TimelineStepDealDecision from '@/components/Timeline/Step/TimelineStepDealDecision.vue';
 import TimelineStepDealConfirmation from '@/components/Timeline/Step/TimelineStepDealConfirmation.vue';
 import { Timeline } from '@/const/const.js';
-import { StagePlayScene, StagePlaySpotlight } from 'vue-stage-play';
-import TimelineTutorialStep from '@/components/Timeline/TimelineTutorialStep.vue';
 
 export default {
     name: 'Timeline',
     components: {
-        TimelineTutorialStep,
-        StagePlaySpotlight,
-        StagePlayScene,
         TimelineExtraBlock,
         TimelineBackdrop,
         AnimationTransition,
