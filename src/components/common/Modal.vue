@@ -40,7 +40,7 @@
 </template>
 
 <script setup>
-import { shallowRef, watch } from 'vue';
+import { onBeforeUnmount, shallowRef, watch } from 'vue';
 
 const emit = defineEmits(['close']);
 const props = defineProps({
@@ -79,7 +79,7 @@ watch(
             if (document.body.classList.contains('is-modal')) {
                 alreadyHidden.value = true;
                 return;
-            }
+            } else alreadyHidden.value = false;
 
             document.body.classList.add('is-modal');
         } else {
@@ -91,6 +91,12 @@ watch(
     },
     { immediate: true }
 );
+
+onBeforeUnmount(() => {
+    document.removeEventListener('keydown', escapeHandler, true);
+    if (alreadyHidden.value) return;
+    document.body.classList.remove('is-modal');
+});
 </script>
 <style>
 .modal-enter-from {
