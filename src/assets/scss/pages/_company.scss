@@ -1,4 +1,5 @@
 @use '../utils/variables';
+@use '../utils/mixins';
 
 .company-item-request {
     $request_thin_border: 0.3px solid black;
@@ -42,9 +43,10 @@
         &:nth-child(2) {
             grid-area: type;
             border-bottom: $request_thin_border;
-
-            &:hover .company-item-request__actions {
-                display: flex;
+            @include mixins.flex-box($a: center, $j: space-between);
+            @include mixins.media('max', 'xxl') {
+                flex-wrap: wrap;
+                justify-content: center;
             }
         }
     }
@@ -75,67 +77,322 @@
     }
 
     &__actions {
-        display: none;
-        gap: 3px;
-        position: absolute;
-        top: -7px;
-        right: 2px;
-
-        &:hover {
-            display: flex;
-        }
-
-        .fas {
-            border-radius: 100%;
-            border: black 0.5px solid;
-            font-size: 8px;
-            padding: 4px;
-            width: 15px;
-            height: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            opacity: 0.4;
-
-            &:hover {
-                opacity: 1;
-            }
-
-            &.fa-pen {
-                background-color: variables.$color_info;
-            }
-
-            &.fa-clone {
-                background-color: variables.$color_success_dark;
-            }
-
-            &.fa-times {
-                background-color: variables.$color_danger;
-            }
-
-            &.fa-undo {
-                background-color: variables.$color_warning;
-            }
-        }
-    }
-
-    &__parameters {
-        p {
-            font-weight: bold;
-        }
+       @include mixins.flex-box($gap: 5px);
     }
 
     .deal-item {
         border: none;
         padding: 0;
     }
+
+    &__parameters {
+        @include mixins.flex-box($gap: 5px, $d: column);
+    }
+}
+
+.company-item-request-parameter {
+    &__name {
+        font-weight: 600;
+    }
+
+    &__unit-type {
+        color: variables.$color_grey;
+        font-weight: normal!important;
+        font-size: 14px;
+        margin-left: 3px;
+    }
 }
 
 .company-item-requests {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
+    @include mixins.flex-box($gap: 10px, $d: column);
+    overflow-y: auto;
+    padding: 0 5px;
+    margin: 0 -5px;
+    max-height: 500px;
+}
+
+.company-request-item-alt {
+    border-radius: 10px;
+    background-color: variables.$color_grey_alt;
+}
+
+.company-page {
+    &__chip {
+        font-size: 16px!important;
+    }
+
+    &__row {
+        @include mixins.flex-box($gap: 10px);
+        @include mixins.media('max', 'lg') {
+            flex-direction: column;
+        }
+    }
+
+    &__column {
+        @include mixins.media('min', 'lg') {
+            flex-basis: 33%;
+        }
+
+        @include mixins.media('min', 'md') {
+            max-height: 1150px;
+            min-height: 550px;
+        }
+
+        .company-box-layout__content {
+            max-height: 1100px;
+            height: 100%;
+        }
+    }
+}
+
+.company {
+    &-request-list {
+        .action-modal {
+            .modal-container {
+                max-width: 450px;
+
+                .modal-body {
+                    padding-left: 35px !important;
+                    padding-right: 35px !important;
+                }
+            }
+        }
+
+        .item {
+            hr {
+                border-radius: 0 !important;
+            }
+
+            font-size: 14px;
+
+            .general-info {
+                border: 2px solid lighten(variables.$color_grey, 35);
+            }
+
+            .deal-info {
+                .deal-item {
+                    border: none;
+                    padding: 0;
+                }
+
+                border: 2px solid variables.$color_dark;
+                border-top: none;
+            }
+
+            p {
+                font-weight: normal;
+            }
+
+            &:hover {
+                i {
+                    opacity: 1 !important;
+                }
+            }
+
+            i.scale {
+                &:hover {
+                    transform: scale(1.1);
+                }
+
+                transition: all 0.07s ease-in-out;
+            }
+
+            .header {
+                position: relative;
+
+                i.edit,
+                i.delete,
+                i.clone {
+                    position: absolute;
+                    opacity: 0;
+                    padding: 5px;
+                    cursor: pointer;
+
+                    &:hover {
+                        transform: scale(1.3);
+                    }
+
+                    transition: all 0.07s ease-in-out;
+                }
+
+                i.edit {
+                    top: 5px;
+                    right: 5px;
+                }
+
+                i.delete {
+                    top: 5px;
+                    left: 5px;
+                }
+
+                i.clone {
+                    top: 5px;
+                    right: 30px;
+                }
+
+                .actions {
+                    i {
+                        padding: 5px;
+                        cursor: pointer;
+                        font-size: 13px;
+                    }
+                }
+
+                .index {
+                    small {
+                        border-radius: 2px;
+                    }
+                }
+
+                p {
+                    text-transform: capitalize;
+                    display: inline-block;
+                }
+
+                p.normal {
+                    text-transform: none !important;
+                }
+
+                span {
+                    display: inline-block;
+                    margin-left: 5px;
+                }
+
+                color: variables.$color_secondary;
+            }
+
+            .body {
+
+                .phone-list,
+                .email-list {
+                    a {
+                        text-decoration: none;
+                        color: variables.$color_dark;
+
+                        &:hover {
+                            color: variables.$color_primary;
+                        }
+                    }
+                }
+
+                .main-info {
+                    .location {
+                        .region {
+                            display: inline;
+                            text-transform: capitalize;
+                        }
+
+                        .region-parameters {
+                            p {
+                                display: inline-block;
+                                margin-right: 5px;
+                            }
+                        }
+                    }
+                }
+
+                .open-extra-info {
+                    font-size: 20px;
+                    cursor: pointer;
+                    color: variables.$color_primary;
+                }
+
+                .extra-info {
+                    user-select: none;
+
+                    .parameters {
+                        p {
+                            padding: 0 3px 0 3px;
+                            font-weight: bold;
+                        }
+
+                        &-inner {
+                            font-style: italic;
+                            color: variables.$color_grey;
+                            font-weight: normal !important;
+
+                            p {
+                                display: inline-block;
+                                font-weight: normal !important;
+                            }
+                        }
+
+                        .single {
+                            font-size: 12px;
+                            text-transform: uppercase;
+                            color: variables.$color_success_alt;
+                        }
+                    }
+                }
+            }
+
+            .footer {
+                p {
+                    font-size: 13px;
+                }
+
+                .consultant {
+                    display: inline-block;
+                    color: variables.$color_grey;
+                }
+
+                .date {
+                    display: inline-block;
+                    color: variables.$color_grey;
+                }
+            }
+
+            &.active {
+                .general-info {
+                    border-color: variables.$color_success;
+
+                    .header {
+                        color: variables.$color_success;
+                    }
+                }
+            }
+
+            &.done {
+                .general-info {
+                    border-color: variables.$color_success_alt;
+
+                    .header {
+                        color: variables.$color_success_alt;
+                    }
+                }
+            }
+
+            transition: all 0.1s ease-in-out;
+
+            &.selected {
+                transform: scale(1.25);
+                padding-bottom: 70px;
+                padding-top: 70px;
+
+                .general-info {
+                    background-color: variables.$color_light;
+                    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.35);
+
+                    .header {
+                        color: variables.$color_success_alt;
+                    }
+                }
+
+                .deal-info {
+                    background-color: variables.$color_light;
+                    box-shadow: 0 5px 10px 5px rgba(0, 0, 0, 0.35);
+                }
+            }
+        }
+    }
+
+    .no-data-container img {
+        box-shadow: none;
+    }
+
+    .edit_btn {
+        font-size: 10px;
+        color: variables.$color_info;
+        cursor: pointer;
+    }
 }

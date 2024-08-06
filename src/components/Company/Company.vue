@@ -1,499 +1,231 @@
 <template>
-    <div v-if="company" class="row no-gutters company-detail-info">
-        <div class="col-12">
-            <div class="row">
-                <div v-if="!company.status" class="col-12 text-center mb-3">
-                    <h3 class="text-warning">Пассив!</h3>
-                    <p class="text-dark">
-                        <b>{{ passiveWhyOptions[company.passive_why].label }}</b>
-                    </p>
-                    <p class="text-dark">{{ company.passive_why_comment }}</p>
-                    <hr />
-                </div>
-                <div class="col-12 text-center mb-2">
-                    <i :class="rating(1)"></i>
-                    <i :class="rating(3)"></i>
-                    <i :class="rating(5)"></i>
-                </div>
-                <div class="col-12 text-center mb-3">
-                    <p class="d-inline-block pl-2 status">
-                        <span
-                            :class="{
-                                'bg-dark': !company.active,
-                                'bg-success': company.active
-                            }"
-                            >{{ status }}</span
-                        >
-                    </p>
-                    <p
-                        v-for="categoryItem of company.categories"
-                        :key="categoryItem.id"
-                        class="d-inline-block pl-2 pb-2 category"
-                    >
-                        <span>{{ category(categoryItem.category) }}</span>
-                    </p>
-                </div>
-                <div class="col-12 text-center">
-                    <Progress :percent="company.progress_percent" />
-                </div>
+    <DashboardCard>
+        <div class="company-detail-info">
+            <div class="company-detail-info__actions">
+                <a :href="$url.company(company.id)" target="_blank">
+                    <HoverActionsButton label="Перейти на страницу компании">
+                        <i class="fa-solid fa-eye"></i>
+                    </HoverActionsButton>
+                </a>
+                <HoverActionsButton @click="emit('start-editing')" label="Редактировать">
+                    <i class="fa-solid fa-pen"></i>
+                </HoverActionsButton>
             </div>
-        </div>
-        <div class="col-12 text-center mt-2">
-            <h4 class="m-0">ID: {{ company.id }}</h4>
-        </div>
-        <div class="col-12 text-center px-3 pb-3 pt-0">
-            <h3>
-                {{ company.full_name }}
-            </h3>
-        </div>
-        <div class="col-12">
-            <div class="row no-gutters">
-                <div class="col-12 company-detail-info-item">
-                    <div class="row no-gutters">
-                        <div class="col-3">
-                            <strong> Адрес: </strong>
-                        </div>
-                        <div class="col-9 text-right align-self-center">
-                            <p>
-                                {{ company.officeAdress || '&#8212;' }}
-                            </p>
-                        </div>
-                    </div>
+            <div class="row">
+                <div class="col-12">
+                    <DashboardChip class="dashboard-bg-light w-100">
+                        <span class="company-detail-info__title">
+                            {{ company.full_name }} (ID: {{ company.id }})
+                        </span>
+                    </DashboardChip>
                 </div>
-                <div class="col-12 company-detail-info-item">
-                    <div class="row no-gutters">
-                        <div class="col-4">
-                            <strong>Телефон: </strong>
-                        </div>
-                        <div class="col-8 text-right align-self-center">
-                            <template v-if="generalContact && generalContact.phones.length">
-                                <PhoneNumber
-                                    v-for="phone in generalContact.phones"
-                                    :key="phone.id"
-                                    :phone="phone"
-                                    :contact="generalContact"
-                                    class-list="text-right"
+                <div class="col-12">
+                    <Progress :percent="company.progress_percent" :height="8" />
+                </div>
+                <div class="col-12 mb-2">
+                    <div class="d-flex align-items-end gap-2">
+                        <DashboardChip class="dashboard-cl-white" :class="statusColor">
+                            <div class="d-flex align-items-center">
+                                <span>{{ status }}</span>
+                                <i
+                                    v-if="!company.status"
+                                    v-tippy="statusTippy"
+                                    class="fa-regular fa-question-circle ml-2 icon"
                                 />
-                            </template>
-                            <p v-else>&#8212;</p>
-                        </div>
+                            </div>
+                        </DashboardChip>
+                        <DashboardChip v-if="company.rating" class="dashboard-bg-light">
+                            <Rating
+                                class="company-detail-info__rating"
+                                :rating="company.rating"
+                                color="yellow"
+                            />
+                        </DashboardChip>
+                    </div>
+                    <div v-if="company.categories?.length" class="d-flex gap-2 mt-2">
+                        <DashboardChip
+                            v-for="(category, key) in categories"
+                            :key="key"
+                            class="dashboard-bg-light"
+                        >
+                            {{ category }}
+                        </DashboardChip>
                     </div>
                 </div>
-                <div class="col-12 company-detail-info-item">
-                    <div class="row no-gutters">
-                        <div class="col-4">
-                            <strong>Email: </strong>
-                        </div>
-                        <div class="col-8 text-right align-self-center">
-                            <template v-if="generalContact && generalContact.emails.length">
-                                <a
-                                    v-for="email of generalContact.emails"
-                                    :key="email.id"
-                                    :href="'mailto:' + email.email"
-                                >
-                                    {{ email.email }}
-                                </a>
-                            </template>
-                            <p v-else>&#8212;</p>
-                        </div>
+                <CompanyDetailRow label="Адрес">
+                    {{ company.officeAdress || '&#8212;' }}
+                </CompanyDetailRow>
+                <CompanyDetailRow label="Общий телефон">
+                    <div v-if="generalContact?.phones?.length" class="vertical-list">
+                        <PhoneNumber
+                            v-for="phone in generalContact.phones"
+                            :key="phone.id"
+                            :phone="phone"
+                            :contact="generalContact"
+                            class-list="text-left font-weight-bold"
+                        />
                     </div>
-                </div>
-                <div class="col-12 company-detail-info-item">
-                    <div class="row no-gutters">
-                        <div class="col-4">
-                            <strong>Вебсайт: </strong>
-                        </div>
-                        <div class="col-8 text-right align-self-center">
-                            <template v-if="generalContact && generalContact.websites.length">
-                                <a
-                                    v-for="website of generalContact.websites"
-                                    :key="website.id"
-                                    :href="href(website.website)"
-                                    target="_blank"
-                                >
-                                    {{ website.website }}
-                                </a>
-                            </template>
-                            <p v-else>&#8212;</p>
-                        </div>
+                </CompanyDetailRow>
+                <CompanyDetailRow label="Email">
+                    <div v-if="generalContact?.emails?.length" class="vertical-list">
+                        <a
+                            v-for="email of generalContact.emails"
+                            :key="email.id"
+                            :href="'mailto:' + email.email"
+                        >
+                            {{ email.email }}
+                        </a>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12">
-            <div class="row no-gutters">
-                <div class="col-12 company-detail-info-item">
-                    <div class="row no-gutters">
-                        <div class="col-5">
-                            <strong>ГК: </strong>
-                        </div>
-                        <div class="col-7 text-right align-self-center">
-                            <p v-if="company.companyGroup">
-                                {{ company.companyGroup.full_name }}
-                            </p>
-                            <p v-else>&#8212;</p>
-                        </div>
+                </CompanyDetailRow>
+                <CompanyDetailRow label="Вебсайт">
+                    <div v-if="generalContact?.websites?.length" class="vertical-list">
+                        <a
+                            v-for="website of generalContact.websites"
+                            :key="website.id"
+                            :href="$formatter.toCorrectUrl(website.website)"
+                            target="_blank"
+                        >
+                            {{ website.website }}
+                        </a>
                     </div>
-                </div>
-                <div class="col-12 company-detail-info-item">
-                    <div class="row no-gutters">
-                        <div class="col-5">
-                            <strong>Форма Организации: </strong>
-                        </div>
-                        <div class="col-7 text-right align-self-center">
-                            <p v-if="company.formOfOrganization !== null">
-                                {{ formOfOrganizationOptions[company.formOfOrganization].label }}
-                            </p>
-                            <p v-else>&#8212;</p>
-                        </div>
+                </CompanyDetailRow>
+                <CompanyDetailRow label="Группа компаний">
+                    <span v-if="company.companyGroup">
+                        {{ company.companyGroup.full_name }}
+                    </span>
+                </CompanyDetailRow>
+                <CompanyDetailRow label="Форма организации">
+                    <span v-if="company.formOfOrganization !== null">
+                        {{ formOfOrganization }}
+                    </span>
+                </CompanyDetailRow>
+                <CompanyDetailRow label="Группа деятельности">
+                    <span v-if="company.activityGroup !== null">
+                        {{ activityGroup }}
+                    </span>
+                </CompanyDetailRow>
+                <CompanyDetailRow label="Профиль деятельности">
+                    <span v-if="company.activityProfile !== null">
+                        {{ activityProfile }}
+                    </span>
+                </CompanyDetailRow>
+                <CompanyDetailRow label="Номенклатура товара">
+                    <div v-if="company.productRanges.length" class="d-flex gap-1 flex-wrap">
+                        <DashboardChip
+                            v-for="product of company.productRanges"
+                            :key="product.id"
+                            class="dashboard-bg-light"
+                        >
+                            <span class="company-detail-info__product">{{ product.product }}</span>
+                        </DashboardChip>
                     </div>
-                </div>
-                <div class="col-12 company-detail-info-item">
-                    <div class="row no-gutters">
-                        <div class="col-5">
-                            <strong>Группа деятельности: </strong>
-                        </div>
-                        <div class="col-7 text-right align-self-center">
-                            <p v-if="company.activityGroup !== null">
-                                {{ activityGroupOptions[company.activityGroup].label }}
-                            </p>
-                            <p v-else>&#8212;</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 company-detail-info-item">
-                    <div class="row no-gutters">
-                        <div class="col-5">
-                            <strong>Профиль деятельности: </strong>
-                        </div>
-                        <div class="col-7 text-right align-self-center">
-                            <p v-if="company.activityProfile !== null">
-                                {{ activityProfileOptions[company.activityProfile].label }}
-                            </p>
-                            <p v-else>&#8212;</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 company-detail-info-item" :class="{ 'product-range': company.productRanges.length }">
-                    <div class="row no-gutters">
-                        <div class="col-5">
-                            <strong>Наменклатура товара: </strong>
-                        </div>
-                        <div class="col-7 text-right align-self-center">
-                            <p
-                                v-for="product of company.productRanges"
-                                :key="product.id"
-                                class="d-inline-block"
-                                style="line-break: anywhere; white-space: break-spaces !important"
-                            >
-                                {{ product.product }}
-                            </p>
-                            <p
-                                v-if="!company.productRanges.length"
-                                class="d-inline-block"
-                                style="line-break: anywhere; white-space: break-spaces !important"
-                            >
-                                &#8212;
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 company-detail-info-item">
-                    <div class="row no-gutters">
-                        <div class="col-3">
-                            <strong>Внес: </strong>
-                        </div>
-                        <div class="col-9 text-right align-self-center">
-                            <p>
-                                {{ company.consultant.userProfile.short_name }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 company-detail-info-item">
-                    <div class="row no-gutters">
-                        <div class="col-4">
-                            <strong>Описание: </strong>
-                        </div>
-                        <div class="col-8 text-right align-self-center">
-                            <p>
-                                {{ company.description || '&#8212;' }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 company-detail-info-item">
-                    <div class="row no-gutters">
-                        <div class="col-4">
-                            <strong>Поступление: </strong>
-                        </div>
-                        <div class="col-8 text-right align-self-center">
-                            <p>
-                                {{ company.created_at_format }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 company-detail-info-item">
-                    <div class="row no-gutters">
-                        <div class="col-4">
-                            <strong>Обновление: </strong>
-                        </div>
-                        <div class="col-8 text-right align-self-center">
-                            <p>
-                                {{ company.updated_at_format || '&#8212;' }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 company-detail-info-item">
-                    <div class="row no-gutters">
-                        <div class="col-4">
-                            <strong>Обработано: </strong>
-                        </div>
-                        <div class="col-8 text-right align-self-center">
-                            <p>
-                                {{ company.processed ? 'Да' : 'Нет' }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 company-detail-info-item">
-                    <div class="row no-gutters">
-                        <div class="col-4">
-                            <strong>Документы: </strong>
-                        </div>
-                        <div class="col-8 text-right align-self-center">
-                            <FileInput v-if="company.files.length" :data="company.files" :reed-only="true" />
-                            <p v-else>&#8212;</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 text-center mt-3">
-            <h4 @click.prevent="toggleRequisistesVisible" class="requisistes-show-btn">
-                дополнительно
-                <i v-if="!requisistesVisible" class="fas fa-sort-down visible"></i>
-                <i v-else class="fas fa-sort-up unvisible"></i>
-            </h4>
-        </div>
-        <div v-show="requisistesVisible" class="col-12 requisistes pt-3">
-            <div class="row">
+                </CompanyDetailRow>
+                <CompanyDetailRow label="Внёс">
+                    <span v-if="company.consultant">
+                        {{ company.consultant.userProfile.short_name }}
+                    </span>
+                </CompanyDetailRow>
+                <CompanyDetailRow label="Поступление">
+                    {{ company.created_at_format }}
+                </CompanyDetailRow>
+                <CompanyDetailRow label="Обновление">
+                    {{ company.updated_at_format || '&#8212;' }}
+                </CompanyDetailRow>
+                <CompanyDetailRow label="Обработано">
+                    {{ company.processed ? 'Да' : 'Нет' }}
+                </CompanyDetailRow>
+                <CompanyDetailRow label="Описание">
+                    {{ company.description || '&#8212;' }}
+                </CompanyDetailRow>
+                <CompanyDetailRow label="Документы">
+                    <AccordionSimple v-if="company.files.length" without-render>
+                        <template #title>
+                            <AccordionSimpleTriggerButton
+                                :label="`Просмотреть документы (${company.files.length})`"
+                            />
+                        </template>
+                        <template #body>
+                            <div class="row mt-2">
+                                <File
+                                    v-for="(file, index) in company.files"
+                                    :key="index"
+                                    :file="file"
+                                    read-only
+                                    class="col-4"
+                                />
+                            </div>
+                        </template>
+                    </AccordionSimple>
+                    <span v-else>&#8212;</span>
+                </CompanyDetailRow>
                 <div class="col-12">
-                    <div class="row no-gutters">
-                        <div class="col-12 company-detail-info-item">
-                            <div class="row no-gutters">
-                                <div class="col-3">
-                                    <strong>Юр. адрес: </strong>
-                                </div>
-                                <div class="col-9 text-right align-self-center">
-                                    <p v-if="company.legalAddress">
-                                        {{ company.legalAddress }}
-                                    </p>
-                                    <p v-else>&#8212;</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 company-detail-info-item">
-                            <div class="row no-gutters">
-                                <div class="col-3">
-                                    <strong>ОГРН: </strong>
-                                </div>
-                                <div class="col-9 text-right align-self-center">
-                                    <p v-if="company.ogrn" class="text-primary">
-                                        {{ company.ogrn }}
-                                    </p>
-                                    <p v-else>&#8212;</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 company-detail-info-item">
-                            <div class="row no-gutters">
-                                <div class="col-3">
-                                    <strong>ИНН: </strong>
-                                </div>
-                                <div class="col-9 text-right align-self-center">
-                                    <p v-if="company.inn">
-                                        {{ company.inn }}
-                                    </p>
-                                    <p v-else>&#8212;</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 company-detail-info-item">
-                            <div class="row no-gutters">
-                                <div class="col-3">
-                                    <strong>КПП: </strong>
-                                </div>
-                                <div class="col-9 text-right align-self-center">
-                                    <p v-if="company.kpp">
-                                        {{ company.kpp }}
-                                    </p>
-                                    <p v-else>&#8212;</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 company-detail-info-item">
-                            <div class="row no-gutters">
-                                <div class="col-3">
-                                    <strong>БИК: </strong>
-                                </div>
-                                <div class="col-9 text-right align-self-center">
-                                    <p v-if="company.bik">
-                                        {{ company.bik }}
-                                    </p>
-                                    <p v-else>&#8212;</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 company-detail-info-item">
-                            <div class="row no-gutters">
-                                <div class="col-3">
-                                    <strong>ОКПО: </strong>
-                                </div>
-                                <div class="col-9 text-right align-self-center">
-                                    <p v-if="company.okpo">
-                                        {{ company.okpo }}
-                                    </p>
-                                    <p v-else>&#8212;</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 company-detail-info-item">
-                            <div class="row no-gutters">
-                                <div class="col-3">
-                                    <strong>ОКВЭД: </strong>
-                                </div>
-                                <div class="col-9 text-right align-self-center">
-                                    <p v-if="company.okved">
-                                        {{ company.okved }}
-                                    </p>
-                                    <p v-else>&#8212;</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12">
-                    <div class="row no-gutters">
-                        <div class="col-12 company-detail-info-item">
-                            <div class="row no-gutters">
-                                <div class="col-3">
-                                    <strong>Рсч/сч: </strong>
-                                </div>
-                                <div class="col-9 text-right align-self-center">
-                                    <p v-if="company.checkingAccount">
-                                        {{ company.checkingAccount }}
-                                    </p>
-                                    <p v-else>&#8212;</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 company-detail-info-item">
-                            <div class="row no-gutters">
-                                <div class="col-3">
-                                    <strong>Крсп/сч: </strong>
-                                </div>
-                                <div class="col-9 text-right align-self-center">
-                                    <p v-if="company.correspondentAccount">
-                                        {{ company.correspondentAccount }}
-                                    </p>
-                                    <p v-else>&#8212;</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 company-detail-info-item">
-                            <div class="row no-gutters">
-                                <div class="col-3">
-                                    <strong>В банке: </strong>
-                                </div>
-                                <div class="col-9 text-right align-self-center">
-                                    <p v-if="company.inTheBank">
-                                        {{ company.inTheBank }}
-                                    </p>
-                                    <p v-else>&#8212;</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 company-detail-info-item">
-                            <div class="row no-gutters">
-                                <div class="col-5">
-                                    <strong>Имя подписанта: </strong>
-                                </div>
-                                <div class="col-7 text-right align-self-center">
-                                    <p v-if="company.signatoryName">
-                                        {{ company.signatoryName }}
-                                    </p>
-                                    <p v-else>&#8212;</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 company-detail-info-item">
-                            <div class="row no-gutters">
-                                <div class="col-5">
-                                    <strong>Фамилия подписанта: </strong>
-                                </div>
-                                <div class="col-7 text-right align-self-center">
-                                    <p v-if="company.signatoryMiddleName">
-                                        {{ company.signatoryMiddleName }}
-                                    </p>
-                                    <p v-else>&#8212;</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 company-detail-info-item">
-                            <div class="row no-gutters">
-                                <div class="col-5">
-                                    <strong>Отчество подписанта: </strong>
-                                </div>
-                                <div class="col-7 text-right align-self-center">
-                                    <p v-if="company.signatoryLastName">
-                                        {{ company.signatoryLastName }}
-                                    </p>
-                                    <p v-else>&#8212;</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 company-detail-info-item">
-                            <div class="row no-gutters">
-                                <div class="col-3">
-                                    <strong>№ документа: </strong>
-                                </div>
-                                <div class="col-9 text-right align-self-center">
-                                    <p v-if="company.documentNumber">
-                                        {{ company.documentNumber }}
-                                    </p>
-                                    <p v-else>&#8212;</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 company-detail-info-item">
-                            <div class="row no-gutters">
-                                <div class="col-5">
-                                    <strong>Действует на основе: </strong>
-                                </div>
-                                <div class="col-7 text-right align-self-center">
-                                    <p v-if="company.basis">
-                                        {{ company.basis }}
-                                    </p>
-                                    <p v-else>&#8212;</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <AccordionSimple>
+                        <template #title>
+                            <AccordionSimpleTrigger>
+                                <DashboardChip class="dashboard-bg-light w-100">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <span>Дополнительная информация</span>
+                                        <AccordionSimpleTriggerIcon />
+                                    </div>
+                                </DashboardChip>
+                            </AccordionSimpleTrigger>
+                        </template>
+                        <template #body>
+                            <CompanyDetailExternal class="mt-2" :company="company" />
+                        </template>
+                    </AccordionSimple>
                 </div>
             </div>
         </div>
-    </div>
-    <div v-else>Компания не найдена</div>
+    </DashboardCard>
 </template>
 
-<script>
-import { MixinCompanyDetailInfo } from '@/components/Company/mixins.js';
+<script setup>
+import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
+import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import CompanyDetailRow from '@/components/Company/CompanyDetailRow.vue';
+import {
+    ActivityGroupList,
+    ActivityProfileList,
+    CompanyCategories,
+    CompanyFormOrganization,
+    PassiveWhy
+} from '@/const/const.js';
+import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
+import CompanyDetailExternal from '@/components/Company/CompanyDetailExternal.vue';
+import AccordionSimpleTrigger from '@/components/common/Accordion/AccordionSimpleTrigger.vue';
+import AccordionSimpleTriggerIcon from '@/components/common/Accordion/AccordionSimpleTriggerIcon.vue';
+import Rating from '@/components/common/Rating.vue';
+import Progress from '@/components/common/Progress.vue';
+import File from '@/components/common/Forms/File.vue';
+import AccordionSimpleTriggerButton from '@/components/common/Accordion/AccordionSimpleTriggerButton.vue';
+import { computed } from 'vue';
 
-export default {
-    name: 'Company',
-    mixins: [MixinCompanyDetailInfo]
-};
+const emit = defineEmits(['start-editing']);
+const props = defineProps({
+    company: {
+        type: Object,
+        required: true
+    }
+});
+
+const generalContact = computed(() => props.company.contacts.find(item => item.type === 1));
+const formOfOrganization = computed(
+    () => CompanyFormOrganization[props.company.formOfOrganization].label
+);
+const activityGroup = computed(() => ActivityGroupList[props.company.activityGroup].label);
+const activityProfile = computed(() => ActivityProfileList[props.company.activityProfile].label);
+const status = computed(() => (props.company.active ? 'Актив' : 'Пассив'));
+const statusColor = computed(() =>
+    props.company.active ? 'dashboard-bg-success' : 'dashboard-bg-danger'
+);
+const categories = computed(() =>
+    props.company.categories.map(element => CompanyCategories[element.category])
+);
+const statusTippy = computed(() => {
+    let text = PassiveWhy[this.company.passive_why].label;
+    if (this.company.passive_why_comment) text += ': ' + this.company.passive_why_comment;
+    return text;
+});
 </script>

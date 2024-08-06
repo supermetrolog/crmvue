@@ -1,18 +1,33 @@
 @use '../utils/variables';
+@use '../utils/mixins';
 
-body.is-modal {
-    overflow: hidden;
-    padding-right: 5px;
-
-    .header {
+body {
+    &.is-modal {
+        overflow: hidden;
         padding-right: 5px;
+
+        .header {
+            padding-right: 5px;
+        }
+    }
+
+    &:has(.messenger.active.has-panel) {
+        overflow: hidden;
+        padding-right: 5px;
+
+        .header {
+            padding-right: 5px;
+        }
     }
 }
 
 main {
     min-height: 100vh;
     background-color: variables.$color_overflow;
-    padding: 75px 25px 50px 100px;
+
+    @include mixins.media("min", "md") {
+        padding: 75px 25px 50px 100px;
+    }
 }
 
 .animate {
@@ -41,15 +56,15 @@ main {
 
     &__functions {
         margin-top: 10px;
-        display: flex;
-        align-items: center;
-        gap: 5px;
+        @include mixins.flex-box($a: center, $gap: 5px);
     }
 
     &__actions {
-        display: flex;
-        align-items: flex-end;
-        gap: 10px;
+        @include mixins.flex-box($a: flex-end, $gap: 10px);
+
+        @include mixins.media('max', 'md') {
+            flex-wrap: wrap;
+        }
     }
 }
 
@@ -60,13 +75,11 @@ main {
 }
 
 .chip {
+    @include mixins.flex-box($a: center, $gap: 5px);
     padding: 5px 10px;
     background-color: #e0e0e0;
     border-radius: 4px;
     color: #2d2f34;
-    display: flex;
-    align-items: center;
-    gap: 5px;
 
     &__icon {
         cursor: pointer;
@@ -78,10 +91,99 @@ main {
 }
 
 .with-unit-type {
-    display: flex;
-    gap: 3px;
+    display: inline-block;
 }
 
 .row {
     row-gap: .5rem;
+}
+
+.dp__flex_display {
+    display: block;
+}
+
+.dp__main {
+    .dp {
+        &--arrow-btn-nav {
+            width: max-content;
+
+            &:last-child .dp__inner_nav {
+                margin-left: auto;
+            }
+        }
+
+        &--tp-wrap {
+            max-width: 100%;
+        }
+
+        &__calendar {
+            --dp-highlight-color: rgba(16, 185, 129, 0.3);
+
+            &_row {
+                gap: 5px;
+            }
+
+            &_item {
+                .dp__cell_inner:not(.dp__today) {
+                    @include mixins.light-border;
+                }
+            }
+        }
+
+        &__tooltip_content {
+            @include mixins.flex-box($d: column, $gap: 5px);
+        }
+
+        &__month_year_col_nav {
+            @include mixins.flex-box($j: center);
+            @include mixins.hover {
+                background: var(--dp-hover-color)
+            }
+
+            border-radius: 4px;
+        }
+    }
+}
+
+.date-picker-tooltip {
+    background-color: red;
+}
+
+
+.error-message {
+    color: variables.$color_danger;
+    font-size: 14px;
+}
+
+.multi-datepicker {
+    width: max-content;
+
+    .dp__flex_display {
+        display: flex;
+    }
+}
+
+.copy-field {
+    display: inline-flex;
+
+    &__button {
+        background-color: variables.$color_grey_alt;
+        border: 1px solid variables.$bg-primary-l;
+        border-radius: 5px;
+        height: 26px;
+        width: 26px;
+        font-size: 14px;
+        @include mixins.flex-box($a: center, $j: center);
+        margin-left: 5px;
+        cursor: pointer;
+
+        @include mixins.transition(background-color);
+        @include mixins.hover {
+            background-color: variables.$bg-primary-l;
+        }
+    }
+}
+
+.no-rounded {
+    border-radius: 0!important;
 }

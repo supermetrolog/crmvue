@@ -31,90 +31,77 @@
         </div>
     </div>
 </template>
-<script>
+<script setup>
 import { unitTypes } from '@/const/unitTypes';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import Form from '@/components/common/Forms/Form.vue';
 import { entityOptions } from '@/const/options/options';
+import { computed, shallowRef } from 'vue';
+import { toNumberOrRangeFormat } from '@/utils/formatter.js';
 
-export default {
-    name: 'ComplexDealFloorSection',
-    components: { WithUnitType, Form },
-    emits: ['editSection'],
-    props: {
-        section: {
-            type: Object,
-            default: () => {}
-        },
-        empty: {
-            type: Boolean,
-            default: false
-        },
-        emptyArea: {
-            type: Number,
-            default: 0
-        }
+defineEmits(['editSection']);
+
+const props = defineProps({
+    section: {
+        type: Object,
+        default: () => {}
     },
-    data() {
-        return {
-            unitTypes,
-            isChecked: this.section ? this.section.checked : false
-        };
+    empty: {
+        type: Boolean,
+        default: false
     },
-    computed: {
-        sectionStatus() {
-            if (this.section.is_active) return 'Свободно, размечено';
-
-            return this.section.deal_type
-                ? entityOptions.deal.status[this.section.deal_type]
-                : 'Сдано или нераспределено';
-        },
-        formattedArea() {
-            if (this.section.area_floor_min || this.section.area_floor_max) {
-                return this.$formatter.numberOrRangeNew(
-                    this.section.area_floor_min,
-                    this.section.area_floor_max
-                );
-            }
-
-            if (this.section.area_mezzanine_min || this.section.area_mezzanine_max) {
-                return this.$formatter.numberOrRangeNew(
-                    this.section.area_mezzanine_min,
-                    this.section.area_mezzanine_max
-                );
-            }
-
-            if (this.section.area_field_min || this.section.area_field_max) {
-                return this.$formatter.numberOrRangeNew(
-                    this.section.area_field_min,
-                    this.section.area_field_max
-                );
-            }
-
-            return '--';
-        },
-        sectionAdditionalClass() {
-            return {
-                'deal-section__status--success': this.section.is_active,
-                'deal-section__status--danger':
-                    this.section.deal_type === entityOptions.deal.statusStatement.RENTED_OUT ||
-                    this.section.deal_type === entityOptions.deal.statusStatement.FOR_RENT,
-                'deal-section__status--white': this.section.is_active
-            };
-        },
-        appropriateSectionClass() {
-            if (this.section.is_active) return 'deal-section--green';
-            if (
-                this.section.deal_type === entityOptions.deal.statusStatement.RENTED_OUT ||
-                this.section.deal_type === entityOptions.deal.statusStatement.FOR_RENT
-            )
-                return 'deal-section--purple';
-
-            return 'deal-section--grey';
-        },
-        checkboxName() {
-            return 'checkbox-' + this.section.id;
-        }
+    emptyArea: {
+        type: Number,
+        default: 0
     }
-};
+});
+
+const isChecked = shallowRef(props.section ? props.section.checked : false);
+
+const sectionStatus = computed(() => {
+    if (props.section.is_active) return 'Свободно, размечено';
+
+    return props.section.deal_type
+        ? entityOptions.deal.status[props.section.deal_type]
+        : 'Сдано или нераспределено';
+});
+const formattedArea = computed(() => {
+    if (props.section.area_floor_min || props.section.area_floor_max) {
+        return toNumberOrRangeFormat(props.section.area_floor_min, props.section.area_floor_max);
+    }
+
+    if (props.section.area_mezzanine_min || props.section.area_mezzanine_max) {
+        return toNumberOrRangeFormat(
+            props.section.area_mezzanine_min,
+            props.section.area_mezzanine_max
+        );
+    }
+
+    if (props.section.area_field_min || props.section.area_field_max) {
+        return toNumberOrRangeFormat(props.section.area_field_min, props.section.area_field_max);
+    }
+
+    return '--';
+});
+const sectionAdditionalClass = computed(() => {
+    return {
+        'deal-section__status--success': props.section.is_active,
+        'deal-section__status--danger':
+            props.section.deal_type === entityOptions.deal.statusStatement.RENTED_OUT ||
+            props.section.deal_type === entityOptions.deal.statusStatement.FOR_RENT,
+        'deal-section__status--white': props.section.is_active
+    };
+});
+const appropriateSectionClass = computed(() => {
+    if (props.section.is_active) return 'deal-section--green';
+
+    if (
+        props.section.deal_type === entityOptions.deal.statusStatement.RENTED_OUT ||
+        props.section.deal_type === entityOptions.deal.statusStatement.FOR_RENT
+    )
+        return 'deal-section--purple';
+
+    return 'deal-section--grey';
+});
+const checkboxName = computed(() => 'checkbox-' + props.section.id);
 </script>

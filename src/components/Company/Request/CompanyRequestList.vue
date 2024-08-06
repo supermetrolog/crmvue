@@ -1,32 +1,66 @@
 <template>
     <div class="company-request-list fuck">
-        <Modal v-if="deletedRequestItem" @close="clickCloseModal" title="Удаление запроса " class="action-modal">
+        <Modal
+            @close="clickCloseModal"
+            :show="deletedRequestItem"
+            title="Удаление запроса "
+            class="action-modal"
+        >
             <div class="row no-gutters">
                 <div class="col-12 text-center">
                     <h4 class="text-dark">Вы уверены что хотите удалить запрос?</h4>
                     <CompanyRequestItem :request="deletedRequestItem" :reed-only="true" />
                 </div>
                 <div class="col-12 mt-4 text-center">
-                    <Loader v-if="deleteLoader" class="center small" />
-                    <button @click="deleteRequest(deletedRequestItem)" class="btn btn-danger" :disabled="deleteLoader">
+                    <Loader v-if="deleteLoader" />
+                    <button
+                        @click="deleteRequest(deletedRequestItem)"
+                        class="btn btn-danger"
+                        :disabled="deleteLoader"
+                    >
                         Удалить
                     </button>
-                    <button @click="clickCloseModal" class="btn btn-primary ml-1" :disabled="deleteLoader">Нет</button>
+                    <button
+                        @click="clickCloseModal"
+                        class="btn btn-primary ml-1"
+                        :disabled="deleteLoader"
+                    >
+                        Нет
+                    </button>
                 </div>
             </div>
         </Modal>
-        <Modal v-if="clonedRequestItem" @close="clickCloseModal" title="Клонирование запроса " class="action-modal">
+        <Modal
+            @close="clickCloseModal"
+            :show="clonedRequestItem"
+            title="Клонирование запроса "
+            class="action-modal"
+        >
             <div class="row no-gutters">
                 <div class="col-12 text-center">
                     <h4 class="text-dark">Вы уверены, что хотите клонировать этот запрос?</h4>
-                    <CompanyRequestItem :request="clonedRequestItem" :reed-only="true" :with-deal="false" />
+                    <CompanyRequestItem
+                        :request="clonedRequestItem"
+                        :reed-only="true"
+                        :with-deal="false"
+                    />
                 </div>
                 <div class="col-12 mt-4 text-center">
-                    <Loader v-if="cloneLoader" class="center small" />
-                    <button @click="cloneRequest(clonedRequestItem)" class="btn btn-success" :disabled="cloneLoader">
+                    <Loader v-if="cloneLoader" />
+                    <button
+                        @click="cloneRequest(clonedRequestItem)"
+                        class="btn btn-success"
+                        :disabled="cloneLoader"
+                    >
                         Клонировать
                     </button>
-                    <button @click="clickCloseModal" class="btn btn-primary ml-1" :disabled="cloneLoader">Нет</button>
+                    <button
+                        @click="clickCloseModal"
+                        class="btn btn-primary ml-1"
+                        :disabled="cloneLoader"
+                    >
+                        Нет
+                    </button>
                 </div>
             </div>
         </Modal>

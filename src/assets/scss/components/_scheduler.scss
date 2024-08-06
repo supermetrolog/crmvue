@@ -1,0 +1,17 @@
+@use '../utils/mixins';
+
+.scheduler {
+    &__header {
+        @include mixins.flex-box($j: space-between);
+    }
+
+    .dp__calendar {
+        &_item {
+            flex-basis: calc(100% / 7);
+        }
+    }
+
+    .dp__overlay.dp--overlay-relative {
+        width: 100%!important;
+    }
+}

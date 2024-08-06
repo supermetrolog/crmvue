@@ -36,7 +36,7 @@ export const anyHasProperty = (property, _value) => value => {
 };
 
 export const empty = value => {
-    return value === null || value === '';
+    return value === null || value === '' || value === undefined;
 };
 
 export const emptyWithProperty = property => value => {
@@ -56,7 +56,7 @@ export const maxDate = dateLimit => date => {
 };
 
 export const onlyPositiveNumber = (message = 'Некорректное отрицательное значение') =>
-    helpers.withMessage(message, min(0));
+    helpers.withMessage(message, min(1));
 
 export const validateUrl = value => {
     const with_protocol_regex = new RegExp(

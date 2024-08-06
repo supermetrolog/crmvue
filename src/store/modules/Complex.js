@@ -1,5 +1,5 @@
 import api from '@/api/api';
-import { reducer } from '@/utils';
+import { reducer } from '@/utils/reducer.js';
 import { alg } from '@/utils/alg';
 import { entityProperties } from '@/const/properties/properties';
 import { entityOptions } from '@/const/options/options';

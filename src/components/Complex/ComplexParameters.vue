@@ -10,13 +10,13 @@
             <span v-if="parameter.range" class="complex-parameters__text">
                 <template v-if="!parameter.icon">{{ parameter.name }} - </template>
                 <with-unit-type :unit-type="parameter.unitType">
-                    {{ $formatter.numberOrRangeNew(parameter.valueMin, parameter.valueMax) }}
+                    {{ toNumberOrRangeFormat(parameter.valueMin, parameter.valueMax) }}
                 </with-unit-type>
             </span>
             <span v-else-if="parameter.count" class="complex-parameters__text">
                 <template v-if="!parameter.icon">{{ parameter.name }} - </template>
                 <with-unit-type :unit-type="parameter.unitType">
-                    {{ $formatter.toCorrectValue(parameter.value) }}
+                    {{ toCorrectFormat(parameter.value) }}
                 </with-unit-type>
             </span>
             <span v-else-if="parameter.valueCount">
@@ -51,28 +51,30 @@
             </template>
             <span v-else>{{ parameter.name }}</span>
         </li>
+        <li
+            v-if="withMore"
+            v-tippy="modelValue ? 'Скрыть дополнительные параметры' : 'Показать полный список'"
+            @click.prevent="modelValue = !modelValue"
+            class="complex-parameters__item complex-parameters__button"
+        >
+            <i class="fa-solid" :class="modelValue ? 'fa-eye-slash' : 'fa-eye'" />
+        </li>
     </ul>
 </template>
 
-<script>
-import { unitTypes } from '@/const/unitTypes';
+<script setup>
 import WithUnitType from '@/components/common/WithUnitType.vue';
+import { toCorrectFormat, toNumberOrRangeFormat } from '@/utils/formatter.js';
 
-export default {
-    name: 'ComplexParameters',
-    components: {
-        WithUnitType
+const modelValue = defineModel('more', { type: Boolean, default: false });
+defineProps({
+    parameters: {
+        type: Object,
+        required: true
     },
-    props: {
-        parameters: {
-            type: Object,
-            required: true
-        }
-    },
-    data() {
-        return {
-            unitTypes
-        };
+    withMore: {
+        type: Boolean,
+        default: false
     }
-};
+});
 </script>

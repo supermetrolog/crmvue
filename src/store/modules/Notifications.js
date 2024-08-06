@@ -56,11 +56,10 @@ const Notifications = {
         RESET_NOTIFICATIONS(context) {
             context.commit('reset');
         },
-        async FETCH_NOTIF_COUNT_POOL(context) {
-            const socket = context.getters.SOCKET;
-            if (!context.getters.SETED_USER_ID_FLAG) {
-                return;
-            }
+        async FETCH_NOTIF_COUNT_POOL({ rootGetters }) {
+            if (!rootGetters.SETED_USER_ID_FLAG) return;
+
+            const socket = rootGetters.SOCKET;
             await socket.send(
                 JSON.stringify({
                     action: 'sendPool',
@@ -90,7 +89,7 @@ const Notifications = {
             return state.notifications;
         },
         NOTIFICATIONS_COUNT(state) {
-            return state.notificationsCount;
+            return Number(state.notificationsCount);
         },
         NOTIFICATIONS_PAGINATION(state) {
             return state.notificationsPagination;

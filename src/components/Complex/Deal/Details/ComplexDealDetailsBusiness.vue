@@ -15,24 +15,21 @@
                     class="additional-details-business__value"
                     :unit-type="property.unitType"
                 >
-                    {{ $formatter.number(property.value) }}
+                    {{ toNumberFormat(property.value) }}
                 </with-unit-type>
                 <span v-else>[не заполнено]</span>
             </li>
         </ul>
     </div>
 </template>
-<script>
+<script setup>
 import WithUnitType from '@/components/common/WithUnitType.vue';
+import { toNumberFormat } from '@/utils/formatter.js';
 
-export default {
-    name: 'ComplexDealDetailsBusiness',
-    components: { WithUnitType },
-    props: {
-        properties: {
-            type: Array,
-            required: true
-        }
+defineProps({
+    properties: {
+        type: Array,
+        required: true
     }
-};
+});
 </script>

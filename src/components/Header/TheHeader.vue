@@ -2,10 +2,10 @@
     <header class="header">
         <div class="header__wrapper">
             <div class="row no-gutters">
-                <div class="col-md-6 align-self-center">
+                <div class="col-8 col-md-6 align-self-center">
                     <HeaderMenu />
                 </div>
-                <div class="col-md-6">
+                <div class="col-8 col-md-6 align-self-center">
                     <div class="header__right">
                         <HeaderActions />
                         <HeaderFunctions />
@@ -16,19 +16,8 @@
     </header>
 </template>
 
-<script>
+<script setup>
 import HeaderMenu from '@/components/Header/HeaderMenu.vue';
 import HeaderActions from '@/components/Header/HeaderActions.vue';
 import HeaderFunctions from '@/components/Header/HeaderFunctions.vue';
-
-export default {
-    name: 'TheHeader',
-    components: {
-        HeaderFunctions,
-        HeaderActions,
-        HeaderMenu
-    }
-};
 </script>
-
-<style></style>

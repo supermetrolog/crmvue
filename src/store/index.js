@@ -17,6 +17,10 @@ import CallerManager from './modules/CallerManager';
 import Location from './modules/Location';
 import Complex from './modules/Complex';
 import axios from 'axios';
+import Messenger from '@/store/modules/Messenger';
+import Task from '@/store/modules/Task.js';
+import { useAuth } from '@/composables/useAuth.js';
+import Quizz from '@/store/modules/Quiz.js';
 
 const store = createStore({
     state: {},
@@ -29,21 +33,32 @@ const store = createStore({
         UNSET_WINDOW_NAME() {
             window.name = '';
         },
-        async INIT(context) {
-            if (!localStorage.getItem('user')) {
-                return false;
+        async INIT({ dispatch, getters }) {
+            const { isAuth, login } = useAuth();
+
+            if (!isAuth.value) {
+                if (localStorage.getItem('user')) login();
+                else return false;
             }
-            await context.dispatch('SET_USER');
-            axios.defaults.headers.common['Authorization'] = `Bearer ${context.getters.THIS_USER.access_token}`;
-            await context.dispatch('SET_WINDOW_NAME');
-            await context.dispatch('WEBSOCKET_STOP');
-            await context.dispatch('WEBSOCKET_RUN');
-            context.dispatch('REFRESH_USER');
+
+            dispatch('SET_USER');
+            axios.defaults.headers.common['Authorization'] =
+                `Bearer ${getters.THIS_USER.access_token}`;
+
+            dispatch('SET_WINDOW_NAME');
+            dispatch('WEBSOCKET_STOP');
+            dispatch('WEBSOCKET_RUN');
+            await dispatch('REFRESH_USER');
+            dispatch('Messenger/setCountersUpdater');
         },
-        DESTROY(context) {
-            context.dispatch('WEBSOCKET_STOP');
-            context.dispatch('DROP_USER');
-            context.dispatch('UNSET_WINDOW_NAME');
+        async DESTROY({ dispatch, commit }) {
+            const { logout } = useAuth();
+
+            dispatch('WEBSOCKET_STOP');
+            dispatch('DROP_USER');
+            dispatch('UNSET_WINDOW_NAME');
+            commit('Messenger/clearCountersInterval');
+            logout();
         }
     },
     getters: {},
@@ -64,9 +79,13 @@ const store = createStore({
         Offers,
         CallerManager,
         Location,
-        Complex
+        Complex,
+        Messenger,
+        Task,
+        Quizz
     }
 });
+
 store.checkAction = function (name) {
     return Object.keys(this._actions).includes(name);
 };

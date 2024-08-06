@@ -1,69 +1,87 @@
 <template>
-    <div class="send-objects">
-        <div class="row no-gutters">
-            <div class="col-12">
-                <Form @submit="onSubmit" class="autosize">
-                    <Loader v-if="loader" class="center" />
-                    <FormGroup class="mb-2">
-                        <div class="col-2">
-                            <button class="btn btn-primary">Отправить</button>
-                        </div>
-
-                        <MultiSelect
-                            ref="contactSelect"
-                            v-model="form.contactForSendMessage"
-                            :without-label="true"
-                            required
-                            :v="v$.form.contactForSendMessage"
-                            :options="contactsOptions"
-                            :clear-on-select="true"
-                            :close-on-select="false"
-                            :hide-selected="false"
-                            :groups="true"
-                            class="col-4"
-                            :multiple-label="
-                                n => {
-                                    return `${n.length} ${n.length == 1 ? 'контакт выбран' : 'контакта выбрано'}`;
-                                }
-                            "
-                            placeholder="Выберите контакт"
-                            mode="multiple"
-                        >
-                            <div class="col-12 align-self-center">
-                                {{ form.contactForSendMessage.map(elem => elem.value).join(', ') }}
-                            </div>
-                        </MultiSelect>
-                        <Checkbox
+    <div class="row">
+        <div class="col-12">
+            <Form @submit="onSubmit">
+                <Loader v-if="isLoading" />
+                <FormGroup class="mb-1">
+                    <MultiSelect
+                        ref="contactSelect"
+                        v-model="form.contactForSendMessage"
+                        :without-label="true"
+                        required
+                        :v="v$.form.contactForSendMessage"
+                        :options="contactsOptions"
+                        :clear-on-select="true"
+                        :close-on-select="false"
+                        :hide-selected="false"
+                        :groups="true"
+                        class="col-5"
+                        :multiple-label="
+                            n =>
+                                plural(
+                                    n.length,
+                                    '%d контакт выбран',
+                                    '%d контакта выбрано',
+                                    '%d контактов выбрано'
+                                )
+                        "
+                        placeholder="Выберите контакт"
+                        mode="multiple"
+                        label="Контакт клиента"
+                    />
+                    <CheckboxIcons
+                        v-if="alreadySended"
+                        v-model="form.wayOfSending"
+                        :v="v$.form.wayOfSending"
+                        required
+                        label="Способ связи"
+                        :options="wayOfSendingOptions"
+                    />
+                    <div class="mt-3 ml-2">
+                        <CheckboxChip
                             v-model="form.selfSend"
-                            @change="clickSendMe"
-                            label="Отправить себе"
-                            class="col-1 large ml-5"
-                            :false-value="0"
-                            mode="inline"
+                            @change="changeSelfSend"
+                            :value="form.selfSend"
+                            text="Отправить себе"
+                            class="mt-4"
                         />
-                        <CheckboxIcons
-                            v-if="alreadySended"
-                            v-model="form.wayOfSending"
-                            :v="v$.form.wayOfSending"
-                            required
-                            label="Способ связи"
-                            class="text-center col-3"
-                            :options="wayOfSendingOptions"
-                        />
+                    </div>
+                </FormGroup>
+                <AnimationTransition :speed="0.5">
+                    <FormGroup v-if="form.contactForSendMessage?.length">
+                        <div class="col-12">
+                            <p class="mb-1">Выбранные контакты:</p>
+                            <div class="d-flex gap-1 flex-wrap">
+                                <DashboardChip
+                                    v-for="(contact, key) in form.contactForSendMessage"
+                                    :key="key"
+                                    class="dashboard-bg-light"
+                                >
+                                    {{ contact.value }}
+                                </DashboardChip>
+                            </div>
+                        </div>
                     </FormGroup>
-                    <FormGroup v-if="!alreadySended" class="mb-2">
+                </AnimationTransition>
+                <FormGroup>
+                    <div class="col-12">
+                        <Submit class="w-100" :disabled="disabled || v$?.$errors?.length" success>
+                            Отправить
+                        </Submit>
+                    </div>
+                </FormGroup>
+                <template v-if="!alreadySended">
+                    <FormGroup class="mb-2">
                         <Input v-model="form.subject" class="col-12" placeholder="Тема письма" />
                     </FormGroup>
-                    <FormGroup v-if="!alreadySended" class="mb-2 pb-5">
-                        <VueEditor v-model="form.message" class="col-12" :editor-toolbar="customToolbar" />
+                    <FormGroup class="pb-5">
+                        <VueEditor v-model="form.message" class="col-12" />
                     </FormGroup>
-                </Form>
-            </div>
+                </template>
+            </Form>
         </div>
-        <div class="row no-gutters">
-            <div class="col-12">
-                <slot></slot>
-            </div>
+        <div class="col-12">
+            <slot></slot>
         </div>
     </div>
 </template>
@@ -74,26 +92,34 @@ import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import CheckboxIcons from '@/components/common/Forms/CheckboxIcons.vue';
 import Input from '@/components/common/Forms/Input.vue';
-import { VueEditor } from 'vue3-editor';
 import { mapGetters } from 'vuex';
 import { WayOfSendingList } from '@/const/const.js';
-import Utils, { contains } from '@/utils';
+import Utils from '@/utils';
 import useValidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
-import Checkbox from '@/components/common/Forms/Checkbox.vue';
 import Loader from '@/components/common/Loader.vue';
+import Submit from '@/components/common/Forms/FormSubmit.vue';
+import plural from 'plural-ru';
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
+import { contains } from '@/utils/contains.js';
+import VueEditor from '@/components/common/Forms/VueEditor.vue';
 
 export default {
     name: 'FormLetter',
     components: {
+        VueEditor,
+        CheckboxChip,
+        AnimationTransition,
+        DashboardChip,
+        Submit,
         Loader,
         MultiSelect,
         Form,
         FormGroup,
         Input,
-        CheckboxIcons,
-        VueEditor,
-        Checkbox
+        CheckboxIcons
     },
     props: {
         alreadySended: {
@@ -103,7 +129,7 @@ export default {
         formdata: {
             type: Object
         },
-        loader: {
+        disabled: {
             type: Boolean,
             default: false
         }
@@ -130,17 +156,26 @@ export default {
                 message: null,
                 subject: null,
                 company_id: null
-            }
+            },
+            isLoading: false
         };
     },
     validations() {
         return {
             form: {
                 contactForSendMessage: {
-                    required: helpers.withMessage('выберите контакт', required)
+                    required: helpers.withMessage('Выберите контакт', required),
+                    requiredPhoneIfWayExist: helpers.withMessage(
+                        'Выберите телефон для привязки к выбранному методу связи',
+                        this.requiredPhoneIfWayExistValidator
+                    ),
+                    requiredEmailIfWayExist: helpers.withMessage(
+                        'Выберите почту для привязки к выбранному методу связи',
+                        this.requiredEmailIfWayExistValidator
+                    )
                 },
                 wayOfSending: {
-                    required: helpers.withMessage('выберите способ связи', required),
+                    required: helpers.withMessage('Выберите способ связи', required),
                     requiredPhone: helpers.withMessage(
                         'Выберите способ связи для номеров телефона',
                         this.requiredPhone
@@ -149,9 +184,6 @@ export default {
                         'Выберите способ связи для электронной почты',
                         this.requiredEmail
                     )
-                },
-                company_id: {
-                    required: helpers.withMessage('выберите компанию', required)
                 }
             }
         };
@@ -160,35 +192,36 @@ export default {
         ...mapGetters(['COMPANY_CONTACTS', 'THIS_USER']),
         wayOfSendingOptions: () => WayOfSendingList,
         companyContacts() {
-            if (this.alreadySended) return Utils.normalizeContactsForMultiselect(this.COMPANY_CONTACTS);
+            if (this.alreadySended)
+                return Utils.normalizeContactsForMultiselect(this.COMPANY_CONTACTS);
 
             return Utils.normalizeContactsForMultiselectOnlyEmails(this.COMPANY_CONTACTS);
         }
     },
     watch: {
-        form: {
-            handler() {},
-            deep: true
-        },
         companyContacts() {
             this.contactsOptions = this.companyContacts;
         }
     },
 
     methods: {
+        plural,
         async onSubmit() {
             await this.v$.$validate();
             if (this.v$.form.$error) return;
 
+            this.isLoading = true;
             this.normalizeContacts();
 
             if (this.alreadySended) {
                 this.form.message = null;
                 this.form.subject = null;
-                this.$emit('alreadySent', this.form);
+                await this.$emit('alreadySent', this.form);
             } else {
-                this.$emit('send', this.form);
+                await this.$emit('send', this.form);
             }
+
+            this.isLoading = false;
         },
         normalizeContacts() {
             let emails = this.form.contactForSendMessage.filter(elem => elem.type === 1);
@@ -209,7 +242,7 @@ export default {
         requiredPhone() {
             if (
                 this.form.contactForSendMessage.find(elem => elem.type === 0) &&
-                !contains(this.form.wayOfSending, [1, 2, 3, 4])
+                !contains.any(this.form.wayOfSending, [1, 2, 3, 4])
             ) {
                 return false;
             }
@@ -218,19 +251,34 @@ export default {
         requiredEmail() {
             if (
                 this.form.contactForSendMessage.find(elem => elem.type === 1) &&
-                !contains(this.form.wayOfSending, [0])
+                !contains.any(this.form.wayOfSending, [0])
             ) {
                 return false;
             }
             return true;
         },
-        clickSendMe() {
-            if (!this.THIS_USER.userProfile.emails || !this.THIS_USER.userProfile.emails.length) {
-                setTimeout(() => (this.form.selfSend = 0), 0); // Без этого watcher в компоненте Checkbox не срабатывает
+        requiredPhoneIfWayExistValidator() {
+            return !(
+                contains.any(this.form.wayOfSending, [1, 2, 3, 4]) &&
+                !contains.anyWithProperty(this.form.contactForSendMessage, 'type', [0])
+            );
+        },
+        requiredEmailIfWayExistValidator() {
+            return !(
+                contains.any(this.form.wayOfSending, [0]) &&
+                !contains.anyWithProperty(this.form.contactForSendMessage, 'type', [1])
+            );
+        },
+        changeSelfSend() {
+            if (!this.THIS_USER.userProfile.emails?.length) {
+                this.form.selfSend = 0;
                 return;
             }
+
             let groupName = 'Себе: ' + this.THIS_USER.userProfile.short_name;
-            const alreadyPushedSelfContacts = this.contactsOptions.find(group => group.label === groupName);
+            const alreadyPushedSelfContacts = this.contactsOptions.find(
+                group => group.label === groupName
+            );
             const contacts = [];
             this.THIS_USER.userProfile.emails.forEach(email => {
                 contacts.push({
@@ -243,8 +291,11 @@ export default {
                     }
                 });
             });
+
             if (alreadyPushedSelfContacts) {
-                this.contactsOptions = this.contactsOptions.filter(group => group.label != groupName);
+                this.contactsOptions = this.contactsOptions.filter(
+                    group => group.label != groupName
+                );
                 let beforeSelectedContacts = [...this.form.contactForSendMessage];
                 this.$refs.contactSelect.$refs.multiselect.clear();
                 beforeSelectedContacts = beforeSelectedContacts.filter(elem => elem.id != 'hui');
@@ -264,7 +315,10 @@ export default {
                 label: groupName,
                 options: contacts
             });
-            setTimeout(() => this.$refs.contactSelect.$refs.multiselect.select(contacts[0]), 100);
+
+            this.$nextTick(() => {
+                this.$refs.contactSelect.$refs.multiselect.select(contacts[0]);
+            });
         },
         setDefaultContact() {
             if (this.formdata && this.formdata.defaultContactForSend) {
@@ -285,8 +339,9 @@ export default {
         this.setDefaultContact();
         this.contactsOptions = this.companyContacts;
         this.form = { ...this.form, ...this.formdata };
+
         if (this.form.selfSend === 1) {
-            this.clickSendMe();
+            this.changeSelfSend();
         }
     }
 };

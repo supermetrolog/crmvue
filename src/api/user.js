@@ -1,6 +1,6 @@
 import axios from 'axios';
-import ErrorHandle from './errors';
-import SuccessHandler from './success';
+import { setRequestError } from '@/api/helpers/setRequestError.js';
+import { SuccessHandler } from '@/api/helpers/successHandler.js';
 
 function getFormDataWithFiles(formdata1) {
     let formdata = { ...formdata1 };
@@ -28,7 +28,7 @@ export default {
                     localStorage.setItem('access_token', data.access_token);
                     localStorage.setItem('user', JSON.stringify(data.user));
                 })
-                .catch(e => ErrorHandle.setError(e));
+                .catch(e => setRequestError(e));
             return data;
         },
         async logout() {
@@ -41,7 +41,7 @@ export default {
                     localStorage.removeItem('access_token');
                     localStorage.removeItem('user');
                 })
-                .catch(e => ErrorHandle.setError(e));
+                .catch(e => setRequestError(e));
             return data;
         }
     },
@@ -53,7 +53,7 @@ export default {
             .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch(e => ErrorHandle.setError(e));
+            .catch(e => setRequestError(e));
         return data;
     },
     async getUser(id) {
@@ -64,7 +64,7 @@ export default {
             .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch(e => ErrorHandle.setError(e));
+            .catch(e => setRequestError(e));
         return data;
     },
     async createUser(formdata) {
@@ -83,7 +83,7 @@ export default {
             .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch(e => ErrorHandle.setError(e));
+            .catch(e => setRequestError(e));
         return data;
     },
     async updateUser(formdata) {
@@ -102,7 +102,7 @@ export default {
             .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch(e => ErrorHandle.setError(e));
+            .catch(e => setRequestError(e));
         return data;
     },
     async deleteUser(id) {
@@ -113,7 +113,7 @@ export default {
             .then(Response => {
                 data = SuccessHandler.getData(Response);
             })
-            .catch(e => ErrorHandle.setError(e));
+            .catch(e => setRequestError(e));
         return data;
     }
 };

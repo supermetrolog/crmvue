@@ -6,20 +6,20 @@
             </div>
         </template>
         <template #content>
-            <NoData v-if="!services.length" />
-            <Joke />
+            <div v-if="!services.length" class="company-box-empty">
+                <EmptyData class="company-box-empty__data"> Нет данных </EmptyData>
+            </div>
         </template>
     </CompanyBoxLayout>
 </template>
 
 <script>
-import Joke from '@/components/common/Joke.vue';
-import NoData from '@/components/common/NoData.vue';
 import CompanyBoxLayout from '@/components/Company/Box/CompanyBoxLayout.vue';
+import EmptyData from '@/components/common/EmptyData.vue';
 
 export default {
     name: 'CompanyBoxServices',
-    components: { CompanyBoxLayout, NoData, Joke },
+    components: { EmptyData, CompanyBoxLayout },
     props: {
         services: {
             type: Array,

@@ -1,3 +1,32 @@
+const position = {
+    0: 'Акционер',
+    1: 'Генеральный директор',
+    2: 'Коммерческий директор',
+    3: 'Финансовый директор',
+    4: 'Операционный директор',
+    5: 'Управляющий директор',
+    6: 'Директор по логистике',
+    7: 'Начальник склада',
+    8: 'Менеджер по проектам',
+    9: 'Охранник',
+    10: 'Главный инженер',
+    11: 'Секретарь',
+    12: 'Представитель управляющей компании',
+    13: 'Представитель на объекте',
+    14: 'Бухгалтер',
+    15: 'Юрист',
+    16: 'Агент'
+};
+
+const wayOfCommunicate = {
+    0: { label: 'Звонок', icon: 'fa-solid fa-phone' },
+    1: { label: 'Viber', icon: 'fa-brands fa-viber' },
+    2: { label: 'SMS', icon: 'fa-solid fa-comment' },
+    3: { label: 'Telegram', icon: 'fa-solid fa-paper-plane' },
+    4: { label: 'WhatsApp', icon: 'fa-brands fa-whatsapp' },
+    5: { label: 'Email', icon: 'fa-solid fa-at' }
+};
+
 const positionList = [
     { value: 0, label: 'Акционер' },
     { value: 1, label: 'Генеральный директор' },
@@ -18,6 +47,14 @@ const positionList = [
     { value: 16, label: 'Агент' }
 ];
 
+const typeStatement = {
+    GENERAL: 1,
+    PERSONAL: 0
+};
+
 export const contactOptions = {
-    positionList
+    positionList,
+    position,
+    typeStatement,
+    wayOfCommunicate
 };

@@ -1,21 +1,25 @@
 <template>
     <section class="company-groups">
-        <FormCompanyGroup
-            v-if="companyGroupsFormVisible"
-            @closeCompanyGroupsForm="clickCloseCompanyGroupsForm"
-            @created="getCompanyGroups"
-            @updated="getCompanyGroups"
-            :formdata="companyGroupsForUpdate"
-        />
+        <teleport to="body">
+            <FormCompanyGroup
+                v-if="companyGroupFormIsVisible"
+                @close="closeCompanyGroupForm"
+                @created="fetchCompanyGroups"
+                @updated="fetchCompanyGroups"
+                :form-data="editingGroup"
+            />
+        </teleport>
         <div class="row">
             <div class="col-12">
-                <Button @click="clickOpenCompanyGroupsForm">Создать группу компаний</Button>
+                <Button @click="companyGroupFormIsVisible = true" success>
+                    Создать группу компаний
+                </Button>
                 <div class="box mt-2">
-                    <Loader v-if="loader" class="center" />
+                    <Spinner v-if="isLoading" />
                     <CompanyGroupsTable
-                        v-if="COMPANY_GROUPS.length"
-                        @clickEdit="clickOpenCompanyGroupsFormForUpdate"
-                        @deleted="getCompanyGroups"
+                        v-else-if="COMPANY_GROUPS.length"
+                        @edit="updateGroup"
+                        @deleted="fetchCompanyGroups"
                         :company-groups="COMPANY_GROUPS"
                     />
                 </div>
@@ -24,55 +28,38 @@
     </section>
 </template>
 
-<script>
-import { mapActions, mapGetters } from 'vuex';
-import Loader from '@/components/common/Loader.vue';
+<script setup>
+import { useStore } from 'vuex';
 import CompanyGroupsTable from '@/components/Company/CompanyGroupsTable.vue';
 import FormCompanyGroup from '@/components/Forms/Company/FormCompanyGroup.vue';
 import Button from '@/components/common/Button.vue';
+import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
+import { computed, onMounted, ref } from 'vue';
+import Spinner from '@/components/common/Spinner.vue';
 
-export default {
-    name: 'CompanyGroups',
-    components: {
-        Button,
-        FormCompanyGroup,
-        CompanyGroupsTable,
-        Loader
-    },
-    data() {
-        return {
-            loader: false,
-            companyGroupsFormVisible: false,
-            companyGroupsForUpdate: null
-        };
-    },
-    computed: {
-        ...mapGetters(['COMPANY_GROUPS'])
-    },
-    methods: {
-        ...mapActions(['FETCH_COMPANY_GROUP_LIST']),
+const store = useStore();
 
-        clickOpenCompanyGroupsForm() {
-            this.companyGroupsFormVisible = true;
-        },
-        clickCloseCompanyGroupsForm() {
-            this.companyGroupsForUpdate = null;
-            this.companyGroupsFormVisible = false;
-        },
-        clickOpenCompanyGroupsFormForUpdate(companyGroup) {
-            this.companyGroupsForUpdate = companyGroup;
-            this.companyGroupsFormVisible = true;
-        },
-        async getCompanyGroups() {
-            this.loader = true;
-            await this.FETCH_COMPANY_GROUP_LIST();
-            this.loader = false;
-        }
-    },
-    mounted() {
-        this.getCompanyGroups();
-    }
+const { isLoading } = useDelayedLoader();
+const companyGroupFormIsVisible = ref(false);
+const editingGroup = ref(null);
+
+const COMPANY_GROUPS = computed(() => store.getters.COMPANY_GROUPS);
+
+const fetchCompanyGroups = async () => {
+    isLoading.value = true;
+    await store.dispatch('FETCH_COMPANY_GROUP_LIST');
+    isLoading.value = false;
 };
-</script>
+const updateGroup = group => {
+    editingGroup.value = group;
+    companyGroupFormIsVisible.value = true;
+};
+const closeCompanyGroupForm = () => {
+    companyGroupFormIsVisible.value = false;
+    editingGroup.value = null;
+};
 
-<style></style>
+onMounted(() => {
+    fetchCompanyGroups();
+});
+</script>

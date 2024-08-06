@@ -1,0 +1,54 @@
+@use '../../utils/variables';
+@use '../../utils/mixins';
+
+.company-detail-info {
+    position: relative;
+    font-size: 16px;
+
+    a {
+        font-weight: inherit;
+        color: inherit;
+        width: max-content;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    &__title {
+        font-size: 18px;
+        text-align: center;
+        width: 100%;
+        display: inline-block;
+    }
+
+    &__actions {
+        @include mixins.flex-box($gap: 5px);
+        position: absolute;
+        top: 71px;
+        right: 0;
+        z-index: 2;
+
+        a:hover {
+            text-decoration: none;
+        }
+    }
+
+    &__row {
+        padding-top: 2px;
+        padding-bottom: 2px;
+    }
+
+    &__product {
+        font-size: 13px;
+    }
+
+    &__category {
+        color: variables.$color_dark_grey;
+        font-weight: 500;
+    }
+
+    &__rating {
+        font-size: 14px;
+    }
+}

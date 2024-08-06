@@ -1,5 +1,5 @@
 <template>
-    <div v-if="complex" class="ComplexView">
+    <div v-if="complex" class="ComplexView container-fluid">
         <teleport to="body">
             <FormComplex
                 v-if="complexFormModalVisible"
@@ -120,7 +120,6 @@ export default {
     },
     async created() {
         await this.fetchComplex(this.$route.params.complex_id);
-        console.log('Complex: ', this.complex);
     }
 };
 </script>

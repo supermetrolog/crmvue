@@ -1,4 +1,5 @@
 @use '../utils/variables';
+@use '../utils/mixins';
 
 .sidebar {
     height: 100%;
@@ -6,7 +7,7 @@
     position: fixed;
     z-index: 9;
     background-color: variables.$color_sidebar_bg;
-    box-shadow: 4px 0px 10px rgba(0, 0, 0, 0.25);
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.25);
 
     &__avatar {
         padding: 10px 5px 5px;
@@ -26,6 +27,7 @@
     }
 
     &__link {
+        @include mixins.flex-box($a: center, $d: column, $gap: 10px);
         padding: 7px 0 7px 0;
         color: #f7f7f7;
         font-weight: 700;
@@ -34,10 +36,6 @@
         width: 100%;
         height: 100%;
         transition: color .15s ease;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
 
         &:hover {
             color: #46cdcf;
@@ -58,75 +56,136 @@
 }
 
 .avatar {
-    &__preview {
-        border-radius: 50%;
-        height: 60px;
-        width: 60px;
-        background-color: variables.$color_light_grey;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-    }
+    @include mixins.flex-box($a: center);
+    border-radius: 50%;
+    background-color: variables.$color_light_grey;
+    overflow: hidden;
+    flex-shrink: 0;
+
+    height: var(--size);
+    width: var(--size);
 
     &__image {
         max-width: 100%;
+        width: 100%;
         height: 100%;
         object-fit: cover;
+    }
+
+    &--empty {
+        justify-content: center;
+        font-weight: 500;
+        font-size: 18px;
+        color: rgba(0, 0, 0, .4)
     }
 }
 
 .sidebar-mobile {
-    height: 100%;
-    width: 100vw;
-    z-index: 99;
-    padding-top: 80px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 5001;
+    width: 270px;
+    transform: translateX(-270px);
+    @include mixins.transition(transform);
+    background-color: #f1eded;
+
+    &.active {
+        transform: translateX(0);
+    }
 
     &__wrapper {
-        display: flex;
-        flex-direction: column;
-
-        &__menu {
-            .nav-link_mobile {
-                display: flex;
-                justify-content: space-around;
-                align-items: center;
-                gap: 20px;
-                font-size: 20px;
-
-                .link-name_mobile {
-                    width: 50vw;
-                }
-
-                .link-icon_mobile {
-                    width: 20vw;
-                    font-size: 30px;
-
-                    .fas {
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                    }
-                }
-            }
-        }
+        @include mixins.flex-box($d: column);
     }
 
-    &__user {
-        width: 100%;
-    }
-
-    .HeaderNavMobile {
-        margin-top: 20px;
+    &__close {
+        background-color: transparent;
+        border: none;
         padding: 0;
+        height: max-content;
+        width: max-content;
+        cursor: pointer;
+    }
 
-        .nav-list.vertical .nav-item .nav-link__content {
-            padding-left: 20px;
+    &__top {
+        padding: 10px 20px;
+        @include mixins.flex-box($gap: 20px, $a: center);
+        font-size: 24px;
+        height: 65px;
+        border-bottom: 1px solid rgba(0, 0, 0, .1);
+    }
+}
+
+.sidebar-mobile-menu {
+    padding: 5px 10px;
+    overflow-y: auto;
+    max-height: 100%;
+    scrollbar-gutter: stable;
+
+    &__list {
+        @include mixins.flex-box($d: column, $gap: 5px);
+    }
+
+    &__link {
+        padding: 7px 15px;
+        width: 100%;
+        color: #000;
+        border-radius: 10px;
+        font-weight: 500;
+        @include mixins.flex-box($gap: 15px, $a: center);
+        @include mixins.transition(background-color);
+
+        @include mixins.hover {
+            background-color: rgba(16, 185, 129, 0.4);
         }
 
-        .nav-item {
-            .nav-link {
-                font-size: 20px;
-            }
+        &.active {
+            background-color: rgba(16, 185, 129, 0.3);
         }
+
+        i {
+            width: 20px;
+            font-size: 18px;
+        }
+    }
+
+    &__accordion {
+        padding: 7px 15px;
+        color: #000;
+        border-radius: 10px;
+        font-weight: 500;
+        @include mixins.flex-box($j: space-between, $a: center);
+        @include mixins.transition(background-color);
+
+        @include mixins.hover {
+            background-color: rgba(16, 185, 129, 0.4);
+        }
+
+        &.current {
+            background-color: rgba(16, 185, 129, 0.3);
+        }
+
+    }
+
+    &__accordion-label {
+        @include mixins.flex-box($gap: 15px, $a: center);
+
+        i {
+            width: 20px;
+            font-size: 18px;
+        }
+    }
+
+    &__accordion-body {
+        margin: 5px 0 5px 20px;
+        padding: 5px 0 5px 15px;
+        border-left: 1px solid rgba(0, 0, 0, .1);
+        @include mixins.flex-box($d: column, $gap: 5px);
+    }
+
+    &__submenu {
+        border-left: 1px solid rgba(0, 0, 0, .1);
+        margin: 5px 0;
     }
 }

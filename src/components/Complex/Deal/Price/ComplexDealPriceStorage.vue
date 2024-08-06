@@ -1,7 +1,7 @@
 <template>
     <div v-if="prices.length" class="complex-deal-table__table">
         <with-unit-type class="complex-deal-table__title" :unit-type="priceOption.unitType">
-            {{ $formatter.numberOrRangeNew(mainPrice.valueMin, mainPrice.valueMax) }}
+            {{ toNumberOrRangeFormat(mainPrice.valueMin, mainPrice.valueMax) }}
         </with-unit-type>
         <ul class="complex-deal-table__description">
             <li
@@ -17,10 +17,10 @@
                     :unit-type="price.unitType || priceOption.unitType"
                 >
                     <template v-if="price.valueMin || price.valueMax">
-                        {{ $formatter.numberOrRangeNew(price.valueMin, price.valueMax) }}
+                        {{ toNumberOrRangeFormat(price.valueMin, price.valueMax) }}
                     </template>
                     <template v-else>
-                        {{ $formatter.number(price.value) }}
+                        {{ toNumberFormat(price.value) }}
                     </template>
                 </with-unit-type>
             </li>
@@ -28,56 +28,52 @@
     </div>
     <EmptyData v-else>Данные о ценах отсутствуют..</EmptyData>
 </template>
-<script>
+
+<script setup>
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { mapper } from '@/utils/mapper';
 import { entityProperties } from '@/const/properties/properties';
-import { reducer } from '@/utils';
+import { reducer } from '@/utils/reducer.js';
 import EmptyData from '@/components/common/EmptyData.vue';
+import { computed } from 'vue';
+import { toNumberFormat, toNumberOrRangeFormat } from '@/utils/formatter.js';
 
-export default {
-    name: 'ComplexDealPriceStorage',
-    components: { EmptyData, WithUnitType },
-    inject: ['objectIsLand'],
-    props: {
-        priceOption: {
-            type: Object,
-            required: true
-        },
-        deal: {
-            type: Object,
-            required: true
-        }
+const props = defineProps({
+    priceOption: {
+        type: Object,
+        required: true
     },
-    computed: {
-        prices() {
-            return mapper.propertiesToPrices(
-                this.deal,
-                entityProperties.offer.priceWithSections.range,
-                true
-            );
-        },
-        formattedPrices() {
-            return Object.values(this.prices)
-                .reduce((acc, list) => [...acc, ...list])
-                .map(price => {
-                    if (price.valueMin || price.valueMax) {
-                        return {
-                            ...price,
-                            valueMin: this.priceOption.func(price.valueMin),
-                            valueMax: this.priceOption.func(price.valueMax)
-                        };
-                    }
+    deal: {
+        type: Object,
+        required: true
+    }
+});
 
-                    return { ...price, value: this.priceOption.func(price.value) };
-                });
-        },
-        mainPrice() {
+const prices = computed(() => {
+    return mapper.propertiesToPrices(
+        props.deal,
+        entityProperties.offer.priceWithSections.range,
+        true
+    );
+});
+
+const formattedPrices = computed(() => {
+    return Object.values(prices.value).map(price => {
+        if (price.valueMin || price.valueMax) {
             return {
-                valueMin: this.priceOption.func(reducer.min(this.prices, 'valueMin')),
-                valueMax: this.priceOption.func(reducer.max(this.prices, 'valueMax'))
+                ...price,
+                valueMin: props.priceOption.func(price.valueMin),
+                valueMax: props.priceOption.func(price.valueMax)
             };
         }
-    }
-};
+
+        return { ...price, value: props.priceOption.func(price.value) };
+    });
+});
+const mainPrice = computed(() => {
+    return {
+        valueMin: props.priceOption.func(reducer.min(prices.value, 'valueMin')),
+        valueMax: props.priceOption.func(reducer.max(prices.value, 'valueMax'))
+    };
+});
 </script>

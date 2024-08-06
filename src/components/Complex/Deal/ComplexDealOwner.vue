@@ -28,11 +28,14 @@
         <p class="object-holding-company__subtitle">Основной контакт:</p>
         <ComplexDealOwnerContact v-if="owner.mainContact" :contact="owner.mainContact" />
         <p v-else>Отсутсвует</p>
-        <p @click="isOpenListContact = !isOpenListContact" class="object-holding-company__subtitle">
-            Полный список контактов ({{ contacts.length }}):
+        <DashboardChip
+            @click="isOpenListContact = !isOpenListContact"
+            class="dashboard-bg-success-l object-holding-company__button"
+        >
+            Полный список контактов ({{ contacts.length }})
             <i v-if="isOpenListContact" class="fa-solid fa-caret-up"></i>
             <i v-else class="fa-solid fa-caret-down"></i>
-        </p>
+        </DashboardChip>
         <DropdownContainer v-model="isOpenListContact" class="object-holding-company__list">
             <ComplexDealOwnerContact
                 v-for="contact in contacts"
@@ -50,10 +53,12 @@ import DropdownContainer from '@/components/common/Dropdown/DropdownContainer.vu
 import ComplexDealOwnerContact from '@/components/Complex/Deal/ComplexDealOwnerContact.vue';
 import { mapActions } from 'vuex';
 import Rating from '@/components/common/Rating.vue';
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 
 export default {
     name: 'ComplexDealOwner',
     components: {
+        DashboardChip,
         Rating,
         ComplexDealOwnerContact,
         DropdownContainer

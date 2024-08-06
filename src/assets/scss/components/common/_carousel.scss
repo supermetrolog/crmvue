@@ -1,3 +1,5 @@
+@use "../../utils/mixins";
+
 .carousel {
     &__modal {
         .modal__body {
@@ -6,17 +8,14 @@
     }
 
     &__scroll {
-        display: flex;
-        gap: 10px;
+        @include mixins.flex-box($gap: 10px);
         overflow-x: auto;
         scroll-behavior: smooth;
         height: 180px;
     }
 
     &__grid {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
+        @include mixins.flex-box($gap: 10px, $wrap: true);
 
         .carousel__item {
             width: 180px;
@@ -28,6 +27,8 @@
     &__item {
         cursor: pointer;
         height: 100%;
+        width: 320px;
+        object-fit: cover;
     }
 
     &__thumbnails {
@@ -56,11 +57,9 @@
     }
 
     &__slide {
-        align-items: center;
+        @include mixins.flex-box($a: center, $j: center);
         color: #fff;
-        display: flex;
         height: 500px;
-        justify-content: center;
     }
 
     &__thumbnail {
@@ -79,6 +78,37 @@
         object-fit: cover;
         object-position: center;
         width: 100%;
+    }
+
+    &__gallery {
+        display: flex;
+        flex-wrap: wrap;
+        position: relative;
+    }
+
+    &__cell {
+        width: 50%;
+        height: 50%;
+        border: 1px solid rgba(0, 0, 0, .1);
+
+        &:nth-child(n + 2) {
+            border-top: unset;
+        }
+
+        &:nth-child(odd) {
+            border-right: unset;
+        }
+    }
+
+    &__helper {
+        width: 50%;
+        height: 50%;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background-color: rgba(0, 0, 0, .4);
+        @include mixins.flex-box($a: center, $j: center, $d: column);
+        color: #fff;
     }
 }
 

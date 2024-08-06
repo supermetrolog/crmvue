@@ -7,7 +7,7 @@
         class="complex-deal-table__table"
     >
         <with-unit-type class="complex-deal-table__title" :unit-type="priceOption.unitType">
-            {{ $formatter.numberOrRangeStrict(mainPrice.min, mainPrice.max) }}
+            {{ toNumberOrRangeFormat(mainPrice.min, mainPrice.max) }}
         </with-unit-type>
         <ul class="complex-deal-table__description">
             <li class="complex-deal-table__grid-title">
@@ -17,7 +17,7 @@
                     :unit-type="unitTypes.RUB_PER_SQUARE_METERS"
                 >
                     {{
-                        $formatter.numberOrRangeStrict(
+                        toNumberOrRangeFormat(
                             deal.summaryBlock.price_sale_min,
                             deal.summaryBlock.price_sale_max
                         )
@@ -28,47 +28,38 @@
     </div>
     <EmptyData v-else>Данные о ценах отсутствуют..</EmptyData>
 </template>
-<script>
+<script setup>
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes';
 import EmptyData from '@/components/common/EmptyData.vue';
-import { reducer } from '@/utils';
+import { reducer } from '@/utils/reducer.js';
+import { computed } from 'vue';
+import { toNumberOrRangeFormat } from '@/utils/formatter.js';
 
-export default {
-    components: { EmptyData, WithUnitType },
-    inject: ['objectIsLand'],
-    props: {
-        deal: {
-            type: Object,
-            required: true
-        },
-        priceOption: {
-            type: Object,
-            required: true
-        }
+const props = defineProps({
+    deal: {
+        type: Object,
+        required: true
     },
-    computed: {
-        unitTypes() {
-            return unitTypes;
-        },
-        mainPrice() {
-            const activeBlocks = this.deal.blocks.filter(offer => !offer.deleted && !offer.deal_id);
-
-            const [areaMin, areaMax] = [
-                reducer.strictMin(activeBlocks, 'area_min'),
-                reducer.max(activeBlocks, 'area_max')
-            ];
-
-            const priceMin =
-                this.deal.summaryBlock.price_sale_min || this.deal.summaryBlock.price_field_min;
-            const priceMax =
-                this.deal.summaryBlock.price_sale_max || this.deal.summaryBlock.price_field_max;
-
-            return {
-                min: this.priceOption.func(priceMin, areaMin),
-                max: this.priceOption.func(priceMax, areaMax)
-            };
-        }
+    priceOption: {
+        type: Object,
+        required: true
     }
-};
+});
+
+const mainPrice = computed(() => {
+    const activeBlocks = props.deal.blocks.filter(offer => !offer.deleted && !offer.deal_id);
+
+    const [areaMin, areaMax] = [
+        reducer.strictMin(activeBlocks, 'area_min'),
+        reducer.max(activeBlocks, 'area_max')
+    ];
+
+    return {
+        min: props.priceOption.func(props.deal.summaryBlock.price_sale_min, areaMin),
+        max: props.priceOption.func(props.deal.summaryBlock.price_sale_max, areaMax)
+    };
+});
+
+// TODO: Сделать strict мод для toNumberOrRangeFormat
 </script>

@@ -1,38 +1,54 @@
 <template>
-    <div v-if="request.status == 2">
-        <h3 class="text-success m-0">ЗАВЕРШЕН</h3>
-    </div>
-    <div v-else-if="request.status == 0">
-        <h3 class="text-warning m-0 d-inline">ПАССИВ</h3>
-        <i class="ml-1 text-dark m-0 d-inline">
-            ({{ passiveWhyOptions.find(elem => elem.value == request.passive_why).label }})
-        </i>
-        <i class="ml-1 text-dark m-0 d-inline"> - {{ request.passive_why_comment }}</i>
-    </div>
-    <div v-else-if="timeline && timeline.status == 0">
-        <h3 class="text-warning m-0">НЕАКТИВЕН</h3>
-    </div>
+    <DashboardChip :class="statusClass">
+        <div v-if="!disabled" class="d-flex align-items-center">
+            <p>{{ status }}</p>
+            <i
+                v-if="isPassive"
+                v-tippy="statusTippy"
+                class="fa-regular fa-question-circle ml-2 icon"
+            />
+        </div>
+        <span v-else>Неактивен</span>
+    </DashboardChip>
 </template>
 
 <script>
 import { PassiveWhyRequest } from '@/const/const';
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import { entityOptions } from '@/const/options/options.js';
 
 export default {
     name: 'TimelineStatus',
+    components: { DashboardChip },
     props: {
         request: {
             type: Object,
             required: true
         },
-        timeline: {
-            type: Object,
-            required: true
+        disabled: {
+            type: Boolean,
+            default: false
         }
     },
     computed: {
-        passiveWhyOptions: () => PassiveWhyRequest
+        isPassive() {
+            return this.request.status === 0;
+        },
+        status() {
+            return entityOptions.request.status[this.request.status];
+        },
+        statusClass() {
+            if (this.disabled) return 'dashboard-bg-gray-l';
+
+            if (this.request.status === 0) return 'dashboard-bg-danger-l';
+            else if (this.request.status === 1) return 'dashboard-bg-success-l';
+            return 'dashboard-bg-success dashboard-cl-white';
+        },
+        statusTippy() {
+            let text = PassiveWhyRequest[this.request.passive_why].label;
+            if (this.request.passive_why_comment) text += ': ' + this.request.passive_why_comment;
+            return text;
+        }
     }
 };
 </script>
-
-<style></style>

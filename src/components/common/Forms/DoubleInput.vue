@@ -9,9 +9,8 @@
     >
         <span v-if="label" class="form__label">{{ label }}</span>
         <div class="double-input">
-            {{ inputClasses }}
             <label>
-                <span v-if="!withoutCaption" class="form__caption">от</span>
+                <span v-if="!withoutCaption" class="form__caption">{{ firstLabel }}</span>
                 <input
                     ref="input"
                     @input="onFirstInput($event.target.value.trim())"
@@ -19,9 +18,10 @@
                     class="form__input"
                     :class="[
                         firstInputValidationClass,
+                        paddingLeftStyleFirst,
                         { 'form__input--unit': unit, 'form__input--title': !withoutCaption }
                     ]"
-                    :style="paddingRightStyle.first"
+                    :style="[paddingRightStyle.first, paddingLeftStyleFirst]"
                     :type="type"
                     :disabled="disabled"
                     :value="first"
@@ -31,7 +31,7 @@
             </label>
             <i v-if="withoutCaption" class="form__separator fa-solid fa-x" />
             <label>
-                <span v-if="!withoutCaption" class="form__caption">до</span>
+                <span v-if="!withoutCaption" class="form__caption">{{ secondLabel }}</span>
                 <input
                     ref="input"
                     @input="onSecondInput($event.target.value.trim())"
@@ -41,7 +41,7 @@
                         secondInputValidationClass,
                         { 'form__input--unit': unit, 'form__input--title': !withoutCaption }
                     ]"
-                    :style="paddingRightStyle.second"
+                    :style="[paddingRightStyle.second, paddingLeftStyleSecond]"
                     :type="type"
                     :disabled="disabled"
                     :value="second"
@@ -104,6 +104,14 @@ export default {
         withoutCaption: {
             type: Boolean,
             default: false
+        },
+        firstLabel: {
+            type: String,
+            default: 'от'
+        },
+        secondLabel: {
+            type: String,
+            default: 'до'
         }
     },
     computed: {
@@ -173,6 +181,12 @@ export default {
                 first: null,
                 second: null
             };
+        },
+        paddingLeftStyleFirst() {
+            return `padding-left: ${this.firstLabel.length * 12 + 14}px`;
+        },
+        paddingLeftStyleSecond() {
+            return `padding-left: ${this.secondLabel.length * 12 + 14}px`;
         },
         firstInputErrors() {
             return this.errors.filter(element => !element.property || element.property === 'first');

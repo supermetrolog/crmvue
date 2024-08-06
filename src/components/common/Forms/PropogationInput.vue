@@ -1,7 +1,7 @@
 <template>
     <div class="form__group propogation-input">
         <span class="form__label">{{ label }}</span>
-        <div v-for="(item, index) in field" :key="index" class="form__control">
+        <div v-for="(item, index) in modelValue" :key="index" class="form__control">
             <label
                 @mouseenter="isDeleteShowList[index] = true"
                 @mouseleave="isDeleteShowList[index] = false"
@@ -16,8 +16,8 @@
                     ></i>
                 </AnimationTransition>
                 <input
-                    :ref="'input-' + index"
-                    v-model="field[index][this.propertyName]"
+                    ref="inputs"
+                    v-model="modelValue[index][propertyName]"
                     v-maska="maska"
                     @input.stop.prevent="onInput"
                     @keypress.enter.prevent
@@ -26,8 +26,8 @@
                     :required="required"
                     :placeholder="placeholder"
                     :class="{
-                        invalid: isValid(index),
-                        valid: !isValid(index)
+                        invalid: isInvalid(index),
+                        valid: !isInvalid(index)
                     }"
                 />
             </label>
@@ -44,110 +44,106 @@
     </div>
 </template>
 
-<script>
-import Mixin from './mixins.js';
+<script setup>
 import Button from '@/components/common/Button.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
+import { computed, nextTick, onBeforeMount, ref, toRef } from 'vue';
+import { useFormControlValidation } from '@/composables/useFormControlValidation.js';
 
-export default {
-    name: 'PropogationInput',
-    components: { ValidationMessage, AnimationTransition, Button },
-    mixins: [Mixin],
-    props: {
-        modelValue: {
-            type: Array,
-            default: () => this.createDefaultField()
-        },
-        required: {
-            type: Boolean,
-            default: false
-        },
-        v: {
-            type: Object,
-            default: null
-        },
-        label: {
-            type: String,
-            default: null
-        },
-        maska: {
-            default: null
-        },
-        placeholder: {
-            type: String
-        },
-        propertyName: {
-            type: String,
-            required: true
-        },
-        addText: {
-            type: String,
-            default: 'Добавить поле'
-        },
-        validators: {
-            type: Array,
-            default: () => []
-        }
+const props = defineProps({
+    required: {
+        type: Boolean,
+        default: false
     },
-    data() {
-        return {
-            field: null,
-            isDeleteShowList: [false]
-        };
+    v: {
+        type: Object,
+        default: null
     },
-    computed: {
-        hasEmptyInput() {
-            return this.field.filter(item => !item[this.propertyName].length).length;
-        },
-        errors() {
-            return this.field.map(field => {
-                return this.validators.reduce(
-                    (acc, validator) =>
-                        !validator.func(field[this.propertyName]) && field[this.propertyName].length
-                            ? [...acc, validator.message]
-                            : acc,
-                    []
-                );
-            });
-        }
+    label: {
+        type: String,
+        default: null
     },
-    watch: {
-        modelValue() {
-            if (!this.modelValue.length) this.field = [this.createDefaultField()];
-            else this.field = this.modelValue;
-        }
+    maska: {
+        default: null
     },
-    methods: {
-        onInput() {
-            this.validate();
-            this.$emit('update:modelValue', this.field);
-        },
-        deleteInput(index) {
-            if (this.field.length === 1) return;
-            this.field = this.field.filter((_, idx) => idx != index);
-            this.$emit('update:modelValue', this.field);
-        },
-        addInput() {
-            if (!this.hasEmptyInput) {
-                this.field.push(this.createDefaultField());
-                this.$nextTick(() => {
-                    this.$refs['input-' + (this.field.length - 1)][0].focus();
-                });
-            }
-        },
-        isValid(index) {
-            return this.errors[index].length && this.field[index][this.propertyName].length;
-        },
-        createDefaultField() {
-            return { [this.propertyName]: '' };
-        }
+    placeholder: {
+        type: String
     },
-    created() {
-        if (!this.modelValue.length) this.field = [this.createDefaultField()];
-        else this.field = this.modelValue;
+    propertyName: {
+        type: String,
+        required: true
+    },
+    addText: {
+        type: String,
+        default: 'Добавить поле'
+    },
+    validators: {
+        type: Array,
+        default: () => []
+    },
+    disabled: {
+        type: [Boolean, Number],
+        default: false
+    },
+    reactive: {
+        type: [Boolean, Number],
+        default: false
+    }
+});
+
+const createDefaultField = () => {
+    return { [props.propertyName]: '' };
+};
+
+const modelValue = defineModel({
+    type: Array
+});
+
+const isDeleteShowList = ref([false]);
+const inputs = ref([]);
+
+const hasEmptyInput = computed(() =>
+    modelValue.value.some(item => !item[props.propertyName].length)
+);
+const errors = computed(() => {
+    return modelValue.value.map(field => {
+        return props.validators.reduce(
+            (acc, validator) =>
+                !validator.func(field[props.propertyName]) && field[props.propertyName].length
+                    ? [...acc, validator.message]
+                    : acc,
+            []
+        );
+    });
+});
+
+const { hasValidationError, validate } = useFormControlValidation(toRef(props, 'v'), modelValue, {
+    reactive: props.reactive
+});
+
+const onInput = () => {
+    validate();
+};
+
+const deleteInput = index => {
+    if (modelValue.value.length === 1) return;
+    modelValue.value = modelValue.value.filter((_, idx) => idx !== Number(index));
+};
+
+const addInput = () => {
+    if (!hasEmptyInput.value) {
+        modelValue.value.push(createDefaultField());
+        nextTick(() => {
+            inputs.value[modelValue.value.length - 1].focus();
+        });
     }
 };
-</script>
 
-<style></style>
+const isInvalid = index =>
+    errors.value[index].length && modelValue.value[index][props.propertyName].length;
+
+onBeforeMount(() => {
+    if (!modelValue.value.length) modelValue.value = [createDefaultField()];
+});
+</script>

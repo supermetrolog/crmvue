@@ -1,6 +1,11 @@
 <template>
-    <div @click="onChooseDeal" class="deal-preview" :class="{ active: isCurrent }">
-        <button v-if="isCurrent" v-tippy="'Редактировать'" class="deal-preview__button">
+    <div @click="$emit('choose', deal.id)" class="deal-preview" :class="{ active: isCurrent }">
+        <button
+            v-if="isCurrent"
+            v-tippy="'Редактировать'"
+            @click.prevent="$emit('edit')"
+            class="deal-preview__button"
+        >
             <i class="fas fa-pen"></i>
         </button>
         <span class="deal-preview__type">{{ dealName }}</span>
@@ -33,104 +38,89 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import { unitTypes } from '@/const/unitTypes';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { entityOptions } from '@/const/options/options';
 import { mapper } from '@/utils/mapper';
 import { entityProperties } from '@/const/properties/properties';
-import { reducer } from '@/utils';
+import { reducer } from '@/utils/reducer.js';
+import { computed, inject } from 'vue';
+import { toNumberOrRangeFormat } from '@/utils/formatter.js';
 
-export default {
-    name: 'ComplexDealPreview',
-    components: { WithUnitType },
-    emits: ['choose', 'edit'],
-    inject: ['objectIsLand'],
-    props: {
-        deal: {
-            type: Object,
-            required: true
-        },
-        isCurrent: {
-            type: Boolean,
-            default: false
-        }
+defineEmits(['choose', 'edit']);
+const objectIsLand = inject('objectIsLand');
+
+const props = defineProps({
+    deal: {
+        type: Object,
+        required: true
     },
-    data() {
-        return {
-            unitTypes
-        };
-    },
-    computed: {
-        entityOptions() {
-            return entityOptions;
-        },
-        dealName() {
-            const dealType = this.deal.deal_type ? this.deal.dealTypeRecord.title : 'Сделка';
-            const dealNumber = this.deal.object_id;
-            return `${dealType} ${dealNumber}-${dealType[0]}`;
-        },
-        dealCompany() {
-            return this.deal.companyRecord ? this.deal.companyRecord.nameRu : '--';
-        },
-        dealStatus() {
-            return entityOptions.deal.status[this.deal.status_id];
-        },
-        dealArea() {
-            if (this.objectIsLand) {
-                return this.$formatter.numberOrRangeStrict(
-                    this.deal.summaryBlock.area_field_min,
-                    this.deal.summaryBlock.area_field_max
-                );
-            }
-
-            return this.$formatter.numberOrRangeStrict(
-                this.deal.summaryBlock.area_warehouse_min,
-                this.deal.summaryBlock.area_warehouse_max
-            );
-        },
-        dealPrice() {
-            if (this.objectIsLand) {
-                return {
-                    value: this.$formatter.numberOrRangeStrict(
-                        this.deal.summaryBlock.price_field_min,
-                        this.deal.summaryBlock.price_field_max
-                    ),
-                    unitType: unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR
-                };
-            }
-
-            if (this.deal.deal_type === entityOptions.deal.typeStatement.SALE) {
-                return {
-                    value: this.$formatter.numberOrRangeStrict(
-                        this.deal.summaryBlock.price_sale_min,
-                        this.deal.summaryBlock.price_sale_max
-                    ),
-                    unitType: unitTypes.RUB_PER_SQUARE_METERS
-                };
-            }
-
-            const prices = mapper.propertiesToRangeFormat(
-                this.deal.summaryBlock,
-                entityProperties.offer.priceWithSections.warehouse
-            );
-
-            return {
-                value: this.$formatter.numberOrRangeStrict(
-                    reducer.min(prices, 'valueMin'),
-                    reducer.max(prices, 'valueMax')
-                ),
-                unitType: unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR
-            };
-        }
-    },
-    methods: {
-        onChooseDeal() {
-            this.$emit('choose', this.deal.id);
-        },
-        onClickEdit() {
-            this.$emit('edit');
-        }
+    isCurrent: {
+        type: Boolean,
+        default: false
     }
-};
+});
+
+const dealName = computed(() => {
+    const dealType = props.deal.deal_type ? props.deal.dealTypeRecord.title : 'Сделка';
+    const dealNumber = props.deal.object_id;
+    return `${dealType} ${dealNumber}-${dealType[0]}`;
+});
+
+const dealCompany = computed(() => {
+    return props.deal.companyRecord ? props.deal.companyRecord.nameRu : '--';
+});
+const dealStatus = computed(() => {
+    return entityOptions.deal.status[props.deal.status_id];
+});
+
+const dealArea = computed(() => {
+    if (objectIsLand) {
+        return toNumberOrRangeFormat(
+            props.deal.summaryBlock.area_field_min,
+            props.deal.summaryBlock.area_field_max
+        );
+    }
+
+    return toNumberOrRangeFormat(
+        props.deal.summaryBlock.area_warehouse_min,
+        props.deal.summaryBlock.area_warehouse_max
+    );
+});
+
+const dealPrice = computed(() => {
+    if (props.deal.deal_type === entityOptions.deal.typeStatement.SALE) {
+        return {
+            value: toNumberOrRangeFormat(
+                props.deal.summaryBlock.price_sale_min,
+                props.deal.summaryBlock.price_sale_max
+            ),
+            unitType: unitTypes.RUB_PER_SQUARE_METERS
+        };
+    }
+
+    if (objectIsLand) {
+        return {
+            value: toNumberOrRangeFormat(
+                props.deal.summaryBlock.price_field_min,
+                props.deal.summaryBlock.price_field_max
+            ),
+            unitType: unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR
+        };
+    }
+
+    const prices = mapper.propertiesToRangeFormat(
+        props.deal.summaryBlock,
+        entityProperties.offer.priceWithSections.warehouse
+    );
+
+    return {
+        value: toNumberOrRangeFormat(
+            reducer.min(prices, 'valueMin'),
+            reducer.max(prices, 'valueMax')
+        ),
+        unitType: unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR
+    };
+});
 </script>

@@ -15,103 +15,102 @@
         <div class="login__body">
             <div class="row no-gutters">
                 <div class="col-12">
-                    <form @submit.prevent="submitForm" class="login__form">
-                        <Loader v-if="loader" />
-                        <div class="row">
-                            <div class="col-12 input-group">
-                                <label>логин</label>
-                                <input
-                                    v-model.trim="form.username"
-                                    @input="v$.form.username.$touch"
-                                    :class="{
-                                        invalid: v$.form.username.$error,
-                                        valid: v$.form.username.$dirty && !v$.form.username.$error
-                                    }"
-                                    type="text"
-                                />
-                                <div v-if="v$.form.username.$error" class="col-12 text-center error-container pb-0">
-                                    <span>{{ v$.form.username.$errors[0].$message }}</span>
-                                </div>
-                                <label>пароль</label>
-                                <input
-                                    v-model.trim="form.password"
-                                    @input="v$.form.password.$touch"
-                                    :class="{
-                                        invalid: v$.form.password.$error,
-                                        valid: v$.form.password.$dirty && !v$.form.password.$error
-                                    }"
-                                    type="password"
-                                />
-                                <div v-if="v$.form.password.$error" class="col-12 text-center error-container pb-0">
-                                    <span>{{ v$.form.password.$errors[0].$message }}</span>
-                                </div>
+                    <Form @submit="submit" class="login__form">
+                        <Loader v-if="isLoading" />
+                        <FormGroup class="mb-3">
+                            <Input
+                                v-model="form.username"
+                                :v="v$.form.username"
+                                required
+                                label="Логин"
+                                class="col-12 mb-2"
+                                with-enter-submit
+                            />
+                            <Input
+                                v-model="form.password"
+                                :v="v$.form.password"
+                                required
+                                class="col-12"
+                                label="Пароль"
+                                type="password"
+                                with-enter-submit
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <div class="col-12">
+                                <FormSubmit
+                                    class="w-100 btn-dark"
+                                    :disabled="isLoading || hasValidationError"
+                                >
+                                    Войти
+                                </FormSubmit>
                             </div>
-                            <div class="col-12 mt-2">
-                                <button class="btn btn-dark btn-large" :disabled="loader">Войти</button>
-                            </div>
-                        </div>
-                    </form>
+                        </FormGroup>
+                    </Form>
                 </div>
             </div>
         </div>
     </div>
 </template>
 
-<script>
-import useValidate from '@vuelidate/core';
+<script setup>
 import { helpers, minLength, required } from '@vuelidate/validators';
 import Loader from '@/components/common/Loader.vue';
-import { mapActions } from 'vuex';
+import { useStore } from 'vuex';
+import { computed, shallowReactive, shallowRef } from 'vue';
+import { useAuth } from '@/composables/useAuth.js';
+import { useRouter } from 'vue-router';
+import Input from '@/components/common/Forms/Input.vue';
+import Form from '@/components/common/Forms/Form.vue';
+import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import FormSubmit from '@/components/common/Forms/FormSubmit.vue';
+import useVuelidate from '@vuelidate/core';
 
-export default {
-    name: 'Login',
-    components: { Loader },
-    data() {
-        return {
-            v$: useValidate(),
-            loader: false,
-            form: {
-                username: null,
-                password: null
-            }
-        };
-    },
-    validations() {
-        return {
-            form: {
-                username: {
-                    required: helpers.withMessage('заполните логин', required),
-                    minLength: helpers.withMessage('логин не может быть меньше 4 символов', minLength(4))
-                },
-                password: {
-                    required: helpers.withMessage('заполните пароль', required),
-                    minLength: helpers.withMessage('пароль не может быть меньше 4 символов', minLength(4))
-                }
-            }
-        };
-    },
-    methods: {
-        ...mapActions(['login']),
+const store = useStore();
+const router = useRouter();
+const { redirectRoute, setRedirect } = useAuth();
 
-        async submitForm() {
-            this.v$.$validate();
+const isLoading = shallowRef(false);
+const form = shallowReactive({
+    username: null,
+    password: null
+});
 
-            if (!this.v$.form.$error) {
-                this.loader = true;
-                const response = await this.login(this.form);
-
-                if (response !== false) {
-                    await this.$store.dispatch('INIT');
-
-                    const redirectLink = localStorage.getItem('redirect_link');
-                    if (redirectLink) localStorage.removeItem('redirect_link');
-
-                    await this.$router.push(redirectLink || '/');
-                }
-
-                this.loader = false;
-            }
+const rules = {
+    form: {
+        username: {
+            required: helpers.withMessage('Заполните логин', required),
+            minLength: helpers.withMessage('Логин не может быть меньше 4 символов', minLength(4))
+        },
+        password: {
+            required: helpers.withMessage('Заполните пароль', required),
+            minLength: helpers.withMessage('Пароль не может быть меньше 4 символов', minLength(4))
         }
     }
+};
+
+const v$ = useVuelidate(rules, { form });
+
+const hasValidationError = computed(() => v$.value.$error);
+
+const submit = async () => {
+    v$.value.$validate();
+    if (v$.value.form.$error) return;
+
+    isLoading.value = true;
+
+    const loggedIn = await store.dispatch('login', form);
+    if (loggedIn) {
+        await store.dispatch('INIT');
+        if (redirectRoute.value) {
+            if (redirectRoute.value.includes('/login')) setRedirect('/');
+            await router.push({ path: redirectRoute.value });
+            setRedirect(null);
+        } else {
+            await router.push({ name: 'root' });
+        }
+    }
+
+    isLoading.value = false;
 };
 </script>

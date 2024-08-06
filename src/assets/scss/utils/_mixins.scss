@@ -1,4 +1,5 @@
 @use 'variables';
+@use "sass:string";
 
 $sizes: (
         "xs": 320px,
@@ -6,6 +7,7 @@ $sizes: (
         "md": 768px,
         "lg": 992px,
         "xl": 1200px,
+        "xxl": 1400px
 );
 
 @mixin media($minmax, $media) {
@@ -27,5 +29,84 @@ $sizes: (
 @mixin modal-width($modal-name, $width) {
     .#{$modal-name} .modal__container {
         width: $width;
+    }
+}
+
+@mixin text-overflow($row-count: 1, $break: break-word) {
+    text-overflow: ellipsis;
+    max-width: 100%;
+    display: -webkit-box;
+    -webkit-line-clamp: $row-count;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: $break;
+}
+
+@mixin flex-box($a: none, $j: none, $gap: none, $d: none, $wrap: none) {
+    display: flex;
+
+    @if ($a != none) { align-items: $a; }
+    @if ($j != none) { justify-content: $j; }
+    @if ($gap != none) { gap: $gap; }
+    @if ($d != none) { flex-direction: $d; }
+    @if ($wrap != none) { flex-wrap: wrap }
+}
+
+@mixin light-border() {
+    border: 1px solid rgba(0, 0, 0, .1);
+}
+
+@mixin clear-button() {
+    outline: none;
+
+    &:not([disabled]) {
+        cursor: pointer;
+    }
+}
+
+@mixin hover {
+    &:not([disabled]):not(.disabled):hover {
+        @content;
+    }
+}
+
+@function propertiesToTransition($args) {
+    $transition-list: "";
+
+    @each $property, $duration, $func in $args {
+        $_duration: .3s;
+        $_func: ease;
+        @if ($duration) { $_duration: $duration }
+        @if ($func) { $_func: $func }
+
+        @if (string.length($transition-list) > 0) {
+            $transition-list: $transition-list + ", ";
+        }
+
+        $transition-list: $transition-list + "#{$property} #{$_duration} #{$_func}";
+    }
+
+    @return string.unquote($transition-list);
+}
+
+@mixin transition($args...) {
+    transition: propertiesToTransition($args);
+}
+
+@mixin bg-color-scheme($args...) {
+    @each $style-name, $bg-color, $bg-hover-color, $color in $args {
+        &--#{$style-name} {
+            background-color: $bg-color;
+
+            @if ($color) {
+                color: $color;
+            }
+
+            @if ($bg-hover-color != none) {
+                &:not(:disabled):not(.disabled):hover {
+                    background-color: $bg-hover-color;
+                }
+            }
+        }
     }
 }

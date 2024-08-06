@@ -18,28 +18,22 @@
         </div>
     </div>
 </template>
-<script>
+<script setup>
 import { entityOptions } from '@/const/options/options';
+import { computed, inject } from 'vue';
 
-export default {
-    name: 'ComplexDealInfoSpecials',
-    inject: ['dealType'],
-    props: {
-        specials: {
-            type: Object,
-            required: true
-        }
-    },
-    computed: {
-        specialsType() {
-            return this.dealType.id === entityOptions.deal.typeStatement.SALE ? 'BTS' : 'BTR';
-        },
-        hasPlan() {
-            return (
-                this.specials.built_to_suit_plan ===
-                entityOptions.deal.builtToSuitPlanStatement.EXIST
-            );
-        }
+const dealType = inject('dealType');
+const props = defineProps({
+    specials: {
+        type: Object,
+        required: true
     }
-};
+});
+
+const specialsType = computed(() =>
+    dealType.id === entityOptions.deal.typeStatement.SALE ? 'BTS' : 'BTR'
+);
+const hasPlan = computed(
+    () => props.specials.built_to_suit_plan === entityOptions.deal.builtToSuitPlanStatement.EXIST
+);
 </script>

@@ -7,7 +7,7 @@
                 </span>
             </label>
             <div
-                v-if="!reedOnly"
+                v-if="!readOnly"
                 @click="clickOpenFile"
                 @dragover.prevent="isDragEnter = true"
                 @dragleave.prevent="isDragEnter = false"
@@ -30,23 +30,47 @@
                 :multiple="!single"
                 :accept="acceptList"
             />
-            <div v-if="files.length || localFiles.length" class="file-input__list row">
-                <File
-                    v-for="(file, index) in localFiles"
-                    :key="index"
-                    @delete="deleteLocalFile(index)"
-                    :file="file"
-                    class="file--new"
-                    :class="fileWidthClass"
-                />
-                <File
-                    v-for="(file, index) in files"
-                    :key="index"
-                    @delete="deleteFile(index)"
-                    :file="file"
-                    :class="fileWidthClass"
-                />
-            </div>
+            <VueDraggableNext
+                v-if="localFiles.length"
+                v-model="localFiles"
+                group="local-files"
+                class="file-input__list row"
+                :animation="false"
+                :disabled="!sortable || readOnly"
+            >
+                <transition-group type="transition" name="flip-list">
+                    <File
+                        v-for="(file, index) in localFiles"
+                        :key="file.src"
+                        @delete="deleteLocalFile(index)"
+                        :file="file"
+                        class="file--new"
+                        :class="fileWidthClass"
+                        :read-only="readOnly"
+                        :draggable="sortable"
+                    />
+                </transition-group>
+            </VueDraggableNext>
+            <VueDraggableNext
+                v-if="files.length"
+                v-model="files"
+                group="files"
+                class="file-input__list row"
+                :animation="false"
+                :disabled="!sortable || readOnly"
+            >
+                <transition-group type="transition" name="flip-list">
+                    <File
+                        v-for="(file, index) in files"
+                        :key="file.src"
+                        @delete="deleteFile(index)"
+                        :file="file"
+                        :class="fileWidthClass"
+                        :read-only="readOnly"
+                        :draggable="sortable"
+                    />
+                </transition-group>
+            </VueDraggableNext>
         </div>
     </div>
 </template>
@@ -54,10 +78,11 @@
 <script>
 import { fileTypes } from '@/const/types';
 import File from '@/components/common/Forms/File.vue';
+import { VueDraggableNext } from 'vue-draggable-next';
 
 export default {
     name: 'FileInput',
-    components: { File },
+    components: { VueDraggableNext, File },
     props: {
         data: {
             type: [Array, String],
@@ -79,7 +104,7 @@ export default {
             type: String,
             default: '.*'
         },
-        reedOnly: {
+        readOnly: {
             type: Boolean,
             default: false
         },
@@ -96,6 +121,18 @@ export default {
             default: null
         },
         onlyLinks: {
+            type: Boolean,
+            default: false
+        },
+        itemClass: {
+            type: String,
+            default: null
+        },
+        itemSize: {
+            type: Number,
+            default: 50
+        },
+        sortable: {
             type: Boolean,
             default: false
         }
@@ -118,6 +155,8 @@ export default {
             return this.onlyImages ? 'image/*' : this.accept;
         },
         fileWidthClass() {
+            if (this.itemClass) return this.itemClass;
+
             return [
                 {
                     'col-6': this.single && this.onlyImages,
@@ -157,11 +196,10 @@ export default {
         getFileType(meta) {
             let extension = meta.split('.').slice(-1)[0];
 
-            const currentType =
+            return (
                 this.allowedTypeList.find(element => element.extensions.includes(extension)) ||
-                this.unknownFileType;
-
-            return currentType;
+                this.unknownFileType
+            );
         },
         onChange($event) {
             const files = Array.from($event.target.files);
@@ -171,10 +209,11 @@ export default {
                 this.localFiles = [];
                 this.$emit('update:data', null);
             }
+
             this.setProperties(files);
         },
         setProperties(files) {
-            files.map(file => {
+            files.forEach(file => {
                 file.created_at = 'Только что';
                 file.fileType = this.getFileType(file.name);
 
@@ -234,3 +273,11 @@ export default {
     }
 };
 </script>
+<style>
+.flip-list-move {
+    transition: transform 0.5s;
+}
+.no-move {
+    transition: transform 0s;
+}
+</style>

@@ -1,22 +1,18 @@
 <template>
-    <Modal
-        @close="$emit('close')"
-        class="modal-form-company-request-clone"
-        title="Клонирование запроса"
-    >
+    <Modal @close="$emit('close')" show width="750" title="Клонирование запроса">
         <Form @submit="onSubmit">
-            <Loader v-if="loader" class="center" />
+            <Loader v-if="loader" />
             <FormGroup>
                 <MultiSelect
                     v-model="form.consultant_id"
                     :v="v$.form.consultant_id"
                     required
                     label="Консультант"
-                    class="col-6 text-center mx-auto"
+                    class="col-8 text-center mx-auto"
                     :options="CONSULTANT_LIST"
                 />
                 <div class="col-12 text-center mt-4">
-                    <CompanyBoxRequestsListItem :request="request" :reed-only="true" />
+                    <CompanyBoxRequestsListItem :request="request" read-only />
                 </div>
                 <Submit class="col-4 mt-2 mx-auto" success>Клонировать</Submit>
             </FormGroup>
@@ -26,7 +22,7 @@
 
 <script>
 import Modal from '@/components/common/Modal.vue';
-import Submit from '@/components/common/Forms/Submit.vue';
+import Submit from '@/components/common/Forms/FormSubmit.vue';
 import Form from '@/components/common/Forms/Form.vue';
 import Loader from '@/components/common/Loader.vue';
 import CompanyBoxRequestsListItem from '@/components/Company/Box/CompanyBoxRequestsListItem.vue';
@@ -105,5 +101,3 @@ export default {
     }
 };
 </script>
-
-<style></style>

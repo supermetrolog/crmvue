@@ -1,28 +1,35 @@
 <template>
-    <transition mode="out-in" :enter-active-class="enterActiveClass" :leave-active-class="leaveActiveClass">
+    <transition
+        mode="out-in"
+        :enter-active-class="enterActiveClass"
+        :leave-active-class="leaveActiveClass"
+    >
         <slot />
     </transition>
 </template>
-<script>
-export default {
-    name: 'AnimationTransition',
-    props: {
-        animation: {
-            type: String,
-            default: 'fade'
-        },
-        fast: {
-            type: Boolean,
-            default: false
-        }
+<script setup>
+import { computed } from 'vue';
+
+const props = defineProps({
+    animation: {
+        type: Object,
+        default: () => ({
+            enter: 'fadeIn',
+            leave: 'fadeOut'
+        })
     },
-    computed: {
-        enterActiveClass() {
-            return 'animate__animated animate__fadeIn' + (this.fast ? ' animate--fast' : '');
-        },
-        leaveActiveClass() {
-            return 'animate__animated animate__fadeOut' + (this.fast ? ' animate--fast' : '');
-        }
+    speed: {
+        type: Number,
+        default: 1
     }
-};
+});
+
+const enterActiveClass = computed(() => 'animate__animated animate__' + props.animation.enter);
+const leaveActiveClass = computed(() => 'animate__animated animate__' + props.animation.leave);
+const duration = computed(() => props.speed + 's');
 </script>
+<style scoped>
+.animate__animated {
+    --animate-duration: v-bind(duration);
+}
+</style>

@@ -4,45 +4,35 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import { entityProperties } from '@/const/properties/properties';
 import { mapper } from '@/utils/mapper';
 import PropertyGrid from '@/components/common/Property/PropertyGrid.vue';
+import { computed, inject } from 'vue';
 
-export default {
-    name: 'ComplexDealSummary',
-    components: { PropertyGrid },
-    inject: ['objectIsLand'],
-    props: {
-        summary: {
-            type: Object,
-            required: true
-        }
-    },
-    data() {
-        return {};
-    },
-    computed: {
-        parameters() {
-            const currentProperties = this.objectIsLand
-                ? entityProperties.deal.characteristicsWithSectionsForLand
-                : entityProperties.deal.characteristicsWithSections;
-
-            return mapper.propertiesToTableFormatWithSections(this.summary, currentProperties);
-        },
-        gridTemplate() {
-            if (this.objectIsLand) {
-                return [
-                    ['characteristics', 'communications'],
-                    ['security', 'lifting']
-                ];
-            }
-
-            return [
-                ['characteristics', 'security', 'lifting'],
-                ['communications', 'equipment']
-            ];
-        }
+const objectIsLand = inject('objectIsLand');
+const props = defineProps({
+    summary: {
+        type: Object,
+        required: true
     }
-};
+});
+
+const gridTemplate = objectIsLand
+    ? [
+          ['characteristics', 'communications'],
+          ['security', 'lifting']
+      ]
+    : [
+          ['characteristics', 'security', 'lifting'],
+          ['communications', 'equipment']
+      ];
+
+const parameters = computed(() => {
+    const currentProperties = objectIsLand
+        ? entityProperties.deal.characteristicsWithSectionsForLand
+        : entityProperties.deal.characteristicsWithSections;
+
+    return mapper.propertiesToTableFormatWithSections(props.summary, currentProperties);
+});
 </script>

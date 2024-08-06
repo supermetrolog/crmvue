@@ -1,0 +1,127 @@
+@use '../../utils/mixins';
+
+.messenger {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 80vw;
+    height: 100vh;
+    z-index: 100;
+
+    transform: translateX(100%);
+    transition: transform .7s ease-in-out;
+
+    &.active {
+        transform: translateX(75%);
+
+        &.has-panel {
+            transform: translateX(0);
+        }
+    }
+
+    &-backdrop {
+        height: 100vh;
+        width: 100vw;
+        background-color: rgba(30, 30, 30, .9);
+        position: fixed;
+        z-index: 10;
+        right: 0;
+        top: 0;
+    }
+
+    &__content {
+        background-color: #fff;
+        box-shadow: 0 0 15px 5px rgba(13, 31, 47, .2);
+        display: grid;
+        grid-template-columns: 25% 25% 50%;
+        width: 100%;
+        height: 100%;
+    }
+
+    &__empty {
+        @include mixins.flex-box($a: center, $j: center);
+        height: 100%;
+        background-color: #f8f8f8;
+        font-size: 150px;
+        position: relative;
+        z-index: 11;
+        opacity: .5;
+    }
+}
+
+.messenger-bar {
+    transform: translateX(-70px) translateY(calc(50vh - 50%));
+    position: absolute;
+    z-index: 20;
+    margin: auto 0;
+    background-color: #fff;
+    box-shadow: 0 0 15px 5px rgba(13, 31, 47, .2);
+    padding: 15px;
+    @include mixins.flex-box($a: center, $d: column);
+    width: max-content;
+    gap: 10px;
+    cursor: pointer;
+    transition: color .5s ease-in-out, opacity .5s ease-in-out;
+    opacity: .5;
+
+    &:hover {
+        opacity: 1;
+    }
+
+    i {
+        font-size: 22px;
+    }
+
+    &__element {
+        position: relative;
+        background-color: #0f6674;
+        height: 40px;
+        width: 40px;
+        color: #fff;
+
+        &.disabled {
+            opacity: .4;
+        }
+    }
+
+    &__chip {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        border-radius: 50%;
+        height: 20px;
+        width: 20px;
+        @include mixins.flex-box($a: center, $j: center);
+        font-size: 11px;
+        line-height: 11px;
+        background-color: #f93154;
+        color: #fff;
+        font-weight: 600;
+    }
+}
+
+.messenger-warning {
+    color: #f93154!important;
+    font-weight: 500;
+
+    &--simple {
+        color: #fff!important;
+        opacity: .5;
+    }
+}
+
+.link {
+    text-decoration: underline;
+    color: inherit;
+}
+
+.messenger-attachment {
+    &__footer {
+        margin-top: 20px;
+        @include mixins.flex-box($j: center, $gap: 10px);
+    }
+}
+
+.modal-messenger-attachment {
+    z-index: 4004;
+}

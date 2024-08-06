@@ -1,0 +1,183 @@
+@use '../../utils/mixins';
+
+.account-view {
+    @include mixins.flex-box($gap: 30px, $a: flex-start);
+
+    &__title {
+        font-size: 20px;
+        margin-bottom: 15px;
+        font-weight: 500;
+    }
+
+    &__panel {
+        flex-shrink: 0;
+
+        .account-section {
+            padding: 0!important;
+        }
+    }
+
+    &__nav {
+        @include mixins.flex-box($d: column);
+        background-color: #fff;
+        border-radius: 0 0 5px 5px;
+    }
+
+    &__link {
+        padding: 10px 15px 10px 10px;
+        border-left: 5px solid #fff;
+        color: inherit;
+        @include mixins.transition(background-color, border-color);
+
+        &:hover, &.router-link-exact-active {
+            background-color: #f0f0f0;
+            border-color: #11698e;
+        }
+
+        &:last-child {
+            border-radius: 0 0 5px 5px;
+        }
+    }
+
+    &__card {
+        border-radius: 5px 5px 0 0;
+    }
+
+    &__content {
+        width: 100%;
+    }
+}
+
+.account-section {
+    background-color: #fff;
+    box-shadow: 0 0 10px 1px rgba(0, 0, 0, .1);
+    border-radius: 5px;
+    padding: 15px;
+
+    &:not(&:last-child) {
+        margin-bottom: 15px;
+    }
+
+    &__title {
+        font-size: 18px;
+        font-weight: 500;
+        margin-bottom: 20px;
+    }
+}
+
+.account-card {
+    background-color: #11698e;
+    color: #fff;
+    padding: 30px;
+    text-align: center;
+
+    &__avatar {
+        margin: 0 auto 25px;
+        border: 5px solid rgba(255, 255, 255, .05);
+    }
+
+    &__username {
+        font-weight: 500;
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+}
+
+.account-profile {
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-row-gap: 10px;
+        grid-column-gap: 20px;
+
+        @include mixins.media('max', 'md') {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    &__category {
+        @include mixins.flex-box($j: space-between);
+        padding: 5px 10px;
+        background-color: #f0f0f0;
+        border-radius: 5px;
+    }
+
+    &__property {
+        font-weight: 500;
+    }
+
+    &__value-list {
+        @include mixins.flex-box($gap: 5px);
+        @include mixins.text-overflow();
+        max-width: 60%;
+    }
+
+    &__value-list &__value {
+        &:not(&:last-child)::after {
+            content: ', ';
+        }
+    }
+}
+
+.account-edit {
+    &__avatar {
+        text-align: center;
+
+        .file {
+            width: 100%;
+            max-width: 100%;
+            flex-basis: 100%;
+        }
+    }
+}
+
+.account-consultant {
+    @include mixins.flex-box($gap: 20px);
+
+    &__body {
+        width: 100%;
+    }
+
+    &__title {
+        margin-bottom: 5px;
+        @include mixins.flex-box($j: space-between);
+
+        @include mixins.media('max', 'md') {
+            flex-direction: column;
+        }
+    }
+
+    &__role {
+        padding: 5px 10px;
+        font-size: 14px;
+        background-color: #d1d5db;
+        width: max-content;
+        border-radius: 20px;
+    }
+
+    &__username {
+        font-weight: 500;
+        font-size: 18px;
+    }
+
+    &__actions {
+        margin-top: 10px;
+        @include mixins.flex-box($gap: 5px);
+
+        @include mixins.media('max', 'md') {
+            flex-direction: column;
+
+            .button {
+                width: 100%;
+            }
+        }
+    }
+
+    &__contacts  {
+        @include mixins.text-overflow(2);
+    }
+
+    &__helper {
+        color: #f93154;
+    }
+}

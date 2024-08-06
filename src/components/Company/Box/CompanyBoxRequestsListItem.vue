@@ -1,163 +1,185 @@
 <template>
-    <div class="company-item-request" :class="{ done: request.status === 2, active: request.status === 1 }">
+    <div class="company-item-request" :class="{ done: isDone, active: isActive }">
         <div class="company-item-request__header">
-            <p>
-                {{ dealType }} {{ request.minArea + ' - ' + request.maxArea }} м<sup><small>2</small></sup>
-            </p>
+            <span>{{ dealType }}, </span>
+            <WithUnitType :unit-type="unitTypes.SQUARE_METERS">
+                {{ $formatter.numberOrRangeNew(request.minArea, request.maxArea) }}
+            </WithUnitType>
         </div>
         <div class="company-item-request__header">
-            <div v-if="!reedOnly" class="company-item-request__actions">
-                <i v-if="request.status !== 2" @click="clickUpdateRequest" class="fas fa-pen" title="редактировать"></i>
-                <i @click="clickCloneRequest" class="fas fa-clone" title="клонировать"></i>
-                <i
-                    v-if="request.status !== 2"
-                    @click="clickDisableRequest"
-                    class="fas"
-                    :class="{ 'fa-undo': request.status === 0, 'fa-times': request.status !== 0 }"
-                    :title="request.status === 0 ? 'восстановить' : 'удалить'"
-                ></i>
-            </div>
             <p>{{ status }}</p>
+            <div v-if="!readOnly" class="company-item-request__actions">
+                <HoverActionsButton
+                    v-if="!isDone"
+                    @click="$emit('update')"
+                    small
+                    label="Редактировать"
+                >
+                    <i class="fa-solid fa-pen" />
+                </HoverActionsButton>
+                <HoverActionsButton @click="$emit('clone')" small label="Клонировать">
+                    <i class="fa-solid fa-clone" />
+                </HoverActionsButton>
+                <HoverActionsButton
+                    v-if="!isDone"
+                    @click="$emit('disable')"
+                    small
+                    :label="isDisabled ? 'Восстановить' : 'Удалить'"
+                >
+                    <i v-if="isDisabled" class="fa-solid fa-undo" />
+                    <i v-else class="fa-solid fa-times" />
+                </HoverActionsButton>
+            </div>
         </div>
         <div class="company-item-request__location">
             <div class="company-item-request__subject">
                 <strong>
-                    {{ request.regions.map(elem => $formatter.text().ucFirst(elem.info.title)).join(', ') }}
+                    {{ regions }}
                 </strong>
             </div>
             <div v-if="request.directions.length" class="company-item-request__region">
                 <p><b>Московская область:</b></p>
-                <span>
-                    {{
-                        request.directions
-                            .map(elem => directionList[elem.direction].full)
-                            .join(', ')
-                    }}
-                </span>
+                <span>{{ directions }}</span>
             </div>
-            <div v-if="request.districts.length" class="company-item-request_region">
+            <div v-if="request.districts.length" class="company-item-request__region">
                 <p><b>Москва:</b></p>
                 <span>
-                    {{ request.districts.map(elem => districtList[elem.district]).join(', ') }}
+                    {{ districts }}
                 </span>
             </div>
             <div>
-                <p v-if="!request.distanceFromMKADnotApplicable">до {{ request.distanceFromMKAD }} км до МКАД</p>
+                <p v-if="!request.distanceFromMKADnotApplicable">
+                    до {{ request.distanceFromMKAD }} км до МКАД
+                </p>
             </div>
-            <Dropdown v-model="moreIsOpen" class="more-button" title="Подробнее" />
-            <DropdownContainer v-model="moreIsOpen">
-                <hr />
-                <div class="row company-item-request__parameters">
-                    <div class="col-6">
-                        <p>отапливаемый</p>
-                        <span class="parameters-inner">
+            <AccordionSimple class="mt-1" without-render>
+                <template #title>
+                    <AccordionSimpleTriggerButton />
+                </template>
+                <template #body>
+                    <hr />
+                    <div class="company-item-request__parameters">
+                        <CompanyBoxRequestsListItemParameter label="Высота потолков">
+                            <template #unit-type>(м)</template>
+                            <template v-if="!!request.format_ceilingHeight" #extended>
+                                <WithUnitType :unit-type="unitTypes.METERS">
+                                    {{ request.format_ceilingHeight }}
+                                </WithUnitType>
+                            </template>
+                        </CompanyBoxRequestsListItemParameter>
+                        <CompanyBoxRequestsListItemParameter label="Площадь пола">
+                            <template #unit-type>(м<sup>2</sup>)</template>
+                            <template #extended>
+                                <WithUnitType :unit-type="unitTypes.SQUARE_METERS">
+                                    {{
+                                        $formatter.numberOrRangeNew(
+                                            request.minArea,
+                                            request.maxArea
+                                        )
+                                    }}
+                                </WithUnitType>
+                            </template>
+                        </CompanyBoxRequestsListItemParameter>
+                        <CompanyBoxRequestsListItemParameter label="Отапливаемый">
                             {{ request.heated ? 'да' : 'нет' }}
-                        </span>
-                        <p>краны</p>
-                        <span class="parameters-inner">
+                        </CompanyBoxRequestsListItemParameter>
+                        <CompanyBoxRequestsListItemParameter label="Краны">
                             {{ request.haveCranes ? 'есть' : 'нет' }}
-                        </span>
-                        <p>только антипыль</p>
-                        <span class="parameters-inner">
+                        </CompanyBoxRequestsListItemParameter>
+                        <CompanyBoxRequestsListItemParameter label="Только антипыль">
                             {{ request.antiDustOnly ? 'да' : 'нет' }}
-                        </span>
-                        <p>высота потолков <small class="text-grey">(м)</small></p>
-                        <span class="parameters-inner">
-                            {{ request.format_ceilingHeight }}
-                        </span>
-                        <p>площадь пола <small class="text-grey">(м<sup>2</sup>)</small></p>
-                        <span class="parameters-inner">
-                            {{ request.minArea + ' - ' + request.maxArea }}
-                        </span>
-                        <p>классы</p>
-                        <div class="parameters-inner">
-                            <span>
-                                {{
-                                    request.objectClasses
-                                        .map(elem => objectClassList[elem.object_class])
-                                        .join(', ')
-                                }}
-                            </span>
-                            <span v-if="!request.objectClasses.length">нет данных</span>
-                        </div>
-                        <p>тип объекта</p>
-                        <div v-if="request.objectTypes" class="parameters-inner">
-                            <span
-                                v-for="objectType of request.objectTypes"
-                                :key="objectType.id"
-                                :title="getObjectTypeName(objectType.object_type)"
-                            >
-                                <i :class="getObjectTypeIcon(objectType.object_type)"></i>
-                            </span>
-                            <span v-if="!request.objectTypes.length">нет данных</span>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <p>только 1-й этаж</p>
-                        <span class="parameters-inner">
+                        </CompanyBoxRequestsListItemParameter>
+                        <CompanyBoxRequestsListItemParameter label="Только 1-й этаж">
                             {{ request.firstFloorOnly ? 'да' : 'нет' }}
-                        </span>
-                        <p>ж/д ветка</p>
-                        <span class="parameters-inner">
+                        </CompanyBoxRequestsListItemParameter>
+                        <CompanyBoxRequestsListItemParameter label="Классы">
+                            <template v-if="request.objectClasses?.length">
+                                {{ objectClasses }}
+                            </template>
+                        </CompanyBoxRequestsListItemParameter>
+                        <CompanyBoxRequestsListItemParameter label="Тип объекта">
+                            <template v-if="request.objectTypes?.length" #extended>
+                                <div class="d-flex gap-1 flex-wrap">
+                                    <DashboardChip
+                                        v-for="(element, key) in objectTypes"
+                                        :key="key"
+                                        v-tippy="element.name"
+                                        class="dashboard-bg-success-l"
+                                    >
+                                        <i :class="element.icon" />
+                                    </DashboardChip>
+                                </div>
+                            </template>
+                        </CompanyBoxRequestsListItemParameter>
+                        <CompanyBoxRequestsListItemParameter label="Ж/Д ветка">
                             {{ request.trainLine ? 'есть' : 'нет' }}
-                        </span>
-                        <span v-if="request.trainLine"> длина ж/д ветки <small class="text-grey">(м)</small> </span>
-                        <span v-if="request.trainLine" class="parameters-inner">
-                            {{ request.trainLineLength ?? 'нет данных' }}
-                        </span>
-                        <p>дата переезда</p>
-                        <span v-if="request.movingDate" class="parameters-inner">
-                            {{ request.movingDate_format }}
-                        </span>
-                        <span v-if="request.unknownMovingDate !== null" class="parameters-inner">
-                            {{ unknownMovingDateOptions[request.unknownMovingDate] }}
-                        </span>
-                        <p>цена пола <small class="text-grey">(р)</small></p>
-                        <span class="parameters-inner">
-                            {{ request.pricePerFloor ?? 'нет данных' }}
-                        </span>
-                        <p>электричество</p>
-                        <span class="parameters-inner">
-                            {{ request.electricity ?? 'нет данных' }}
-                            <small v-if="request.electricity" class="text-grey">(кВт)</small>
-                        </span>
-
-                        <p class="font-weight-bold">ворота</p>
-                        <div class="parameters-inner">
-                            <span v-if="!request.gateTypes.length">нет данных</span>
-                            <span v-else>
-                                {{
-                                    request.gateTypes
-                                        .map(elem => gateTypeList[elem.gate_type])
-                                        .join(', ')
-                                }}
-                            </span>
-                        </div>
+                        </CompanyBoxRequestsListItemParameter>
+                        <CompanyBoxRequestsListItemParameter
+                            v-if="request.trainLine"
+                            label="Длина Ж/Д ветки"
+                        >
+                            <template #unit-type>(м)</template>
+                            <template v-if="request.trainLineLength" #extended>
+                                <WithUnitType :unit-type="unitTypes.METERS">
+                                    {{ request.trainLineLength }}
+                                </WithUnitType>
+                            </template>
+                        </CompanyBoxRequestsListItemParameter>
+                        <CompanyBoxRequestsListItemParameter label="Дата переезда">
+                            <template v-if="request.movingDate">
+                                {{ request.movingDate_format }}
+                            </template>
+                            <template v-else-if="request.unknownMovingDate !== null">
+                                {{ unknownMovingOption }}
+                            </template>
+                        </CompanyBoxRequestsListItemParameter>
+                        <CompanyBoxRequestsListItemParameter label="Цена пола">
+                            <template #unit-type>(₽)</template>
+                            <template v-if="request.pricePerFloor" #extended>
+                                <WithUnitType :unit-type="unitTypes.RUB">
+                                    {{ $formatter.number(request.pricePerFloor) }}
+                                </WithUnitType>
+                            </template>
+                        </CompanyBoxRequestsListItemParameter>
+                        <CompanyBoxRequestsListItemParameter label="Электричество">
+                            <template #unit-type>(кВт)</template>
+                            <template v-if="request.electricity" #extended>
+                                <WithUnitType :unit-type="unitTypes.KILOWATT">
+                                    {{ $formatter.number(request.electricity) }}
+                                </WithUnitType>
+                            </template>
+                        </CompanyBoxRequestsListItemParameter>
+                        <CompanyBoxRequestsListItemParameter label="Ворота">
+                            <template v-if="request.gateTypes?.length">
+                                {{ gateTypes }}
+                            </template>
+                        </CompanyBoxRequestsListItemParameter>
+                        <CompanyBoxRequestsListItemParameter label="Описание">
+                            <template v-if="request.description">
+                                {{ request.description }}
+                            </template>
+                        </CompanyBoxRequestsListItemParameter>
                     </div>
-                    <div class="col-12 mt-2">
-                        <p>Описание</p>
-                        <span class="parameters-inner">
-                            {{ request.description ?? 'нет данных' }}
-                        </span>
-                    </div>
-                </div>
-            </DropdownContainer>
+                </template>
+            </AccordionSimple>
         </div>
         <div class="company-item-request__timeline">
-            <p v-if="request.consultant.userProfile.short_name">
+            <p v-if="request.consultant?.userProfile?.short_name">
                 конс: <span>{{ request.consultant.userProfile.short_name }}</span>
             </p>
-            <p v-if="request.created_at">
-                {{ dateFormatter(request.created_at) }}
-            </p>
-            <Progress class="mt-4" :percent="request.timeline_progress" title="Обработано" />
-            <Button v-if="!reedOnly" @click="clickTimeline" small>таймлайн</Button>
+            <p v-if="request.created_at">{{ createdAt }}</p>
+            <Progress class="mt-4 mb-2" :percent="request.timeline_progress" title="Обработано" />
+            <Button v-if="!readOnly" @click="openTimeline" small>таймлайн</Button>
         </div>
         <div v-if="request.deal" class="company-item-request__footer">
-            <Dropdown v-if="request.deal" v-model="dealIsOpen" :title="dealTitle" />
-            <DropdownContainer v-model="dealIsOpen">
-                <DealListItem :deal="request.deal" :reed-only="true" />
-            </DropdownContainer>
+            <AccordionSimple without-render>
+                <template #title>
+                    <AccordionSimpleTriggerButton :label="dealTitle" />
+                </template>
+                <template #body>
+                    <DealListItem class="mt-1" :deal="request.deal" read-only />
+                </template>
+            </AccordionSimple>
         </div>
     </div>
 </template>
@@ -169,21 +191,35 @@ import {
     DistrictList,
     GateTypeList,
     ObjectClassList,
-    ObjectTypeList,
     unknownMovingDate
 } from '@/const/const.js';
-import moment from 'moment';
 import { mapGetters } from 'vuex';
-import Dropdown from '@/components/common/Dropdown/Dropdown.vue';
-import DropdownContainer from '@/components/common/Dropdown/DropdownContainer.vue';
 import DealListItem from '@/components/Deal/DealListItem.vue';
 import Progress from '@/components/common/Progress.vue';
 import Button from '@/components/common/Button.vue';
+import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
+import WithUnitType from '@/components/common/WithUnitType.vue';
+import { unitTypes } from '@/const/unitTypes.js';
+import CompanyBoxRequestsListItemParameter from '@/components/Company/Box/CompanyBoxRequestsListItemParameter.vue';
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
+import AccordionSimpleTriggerButton from '@/components/common/Accordion/AccordionSimpleTriggerButton.vue';
+import { objectPurposesOptions } from '@/const/options/object.options.js';
 
 export default {
     name: 'CompanyBoxRequestsListItem',
-    components: { Button, DealListItem, DropdownContainer, Dropdown, Progress },
-    emits: ['clickUpdateRequest', 'clickDisableRequest', 'clickCloneRequest'],
+    components: {
+        AccordionSimpleTriggerButton,
+        AccordionSimple,
+        DashboardChip,
+        CompanyBoxRequestsListItemParameter,
+        WithUnitType,
+        HoverActionsButton,
+        Button,
+        DealListItem,
+        Progress
+    },
+    emits: ['update', 'disable', 'clone'],
     props: {
         request: {
             status: Number,
@@ -214,52 +250,77 @@ export default {
             deal: Object,
             default: () => {}
         },
-        reedOnly: {
+        readOnly: {
             type: Boolean,
             default: false
         }
     },
-    data() {
-        return {
-            dealIsOpen: false,
-            moreIsOpen: false
-        };
-    },
     computed: {
         ...mapGetters(['THIS_USER']),
-        dealTypeList: () => DealTypeList,
-        directionList: () => DirectionList,
-        districtList: () => DistrictList,
-        objectTypeListWareHouse: () => ObjectTypeList.warehouse,
-        objectTypeListProduction: () => ObjectTypeList.production,
-        objectTypeListPlot: () => ObjectTypeList.plot,
-        objectClassList: () => ObjectClassList,
-        gateTypeList: () => GateTypeList,
-        unknownMovingDateOptions: () => unknownMovingDate,
+        unitTypes() {
+            return unitTypes;
+        },
         dealType() {
-            let dealType = this.dealTypeList[this.request.dealType].label;
+            let dealType = DealTypeList[this.request.dealType].label;
             return dealType[0].toUpperCase() + dealType.slice(1);
         },
         status() {
-            if (this.request.status == 2) {
-                return 'Завершен';
-            }
-            if (this.request.status == 1) {
-                return 'В работе';
-            }
-            if (this.request.status == 0) {
-                return 'Пассив';
-            } else {
-                return '';
-            }
+            if (this.isDone) return 'Завершен';
+            if (this.isActive) return 'В работе';
+            if (this.isDisabled) return 'Пассив';
+            return '';
         },
         dealTitle() {
-            let company_name = this.request.deal.company.nameRu || this.request.deal.company.nameEng;
-            return `Сделка: компания ${company_name}, ${this.dateFormatter(this.request.deal.dealDate)}`;
+            let company_name =
+                this.request.deal.company.nameRu || this.request.deal.company.nameEng;
+            return `Сделка: компания ${company_name}, ${this.$formatter.toDate(this.request.deal.dealDate, 'DD.MM.YY')}`;
+        },
+        isDone() {
+            return this.request.status === 2;
+        },
+        isActive() {
+            return this.request.status === 1;
+        },
+        isDisabled() {
+            return this.request.status === 0;
+        },
+        directions() {
+            return this.request.directions
+                .map(elem => DirectionList[elem.direction].full)
+                .join(', ');
+        },
+        regions() {
+            return this.request.regions
+                .map(elem => this.$formatter.text().ucFirst(elem.info.title))
+                .join(', ');
+        },
+        districts() {
+            return this.request.districts.map(elem => DistrictList[elem.district]).join(', ');
+        },
+        objectClasses() {
+            return this.request.objectClasses
+                .map(elem => ObjectClassList[elem.object_class])
+                .join(', ');
+        },
+        objectTypes() {
+            return this.request.objectTypes.map(({ object_type }) => {
+                return objectPurposesOptions[object_type];
+            });
+        },
+        unknownMovingOption() {
+            return unknownMovingDate[this.request.unknownMovingDate];
+        },
+        gateTypes() {
+            return this.request.gateTypes
+                .map(({ gate_type }) => GateTypeList[gate_type])
+                .join(', ');
+        },
+        createdAt() {
+            return this.$formatter.toDate(this.request.created_at, 'DD.MM.YYYY, HH:mm');
         }
     },
     methods: {
-        clickTimeline() {
+        openTimeline() {
             this.$router.push({
                 query: {
                     request_id: this.request.id,
@@ -267,36 +328,6 @@ export default {
                     step: 0
                 }
             });
-        },
-        getObjectTypeIcon(objectType) {
-            if (objectType < 12) {
-                return this.objectTypeListWareHouse.find(item => item.id == objectType).icon;
-            }
-            if (objectType < 25) {
-                return this.objectTypeListProduction.find(item => item.id == objectType).icon;
-            }
-            return this.objectTypeListPlot.find(item => item.id == objectType).icon;
-        },
-        getObjectTypeName(objectType) {
-            if (objectType < 12) {
-                return this.objectTypeListWareHouse.find(item => item.id == objectType).name;
-            }
-            if (objectType < 25) {
-                return this.objectTypeListProduction.find(item => item.id == objectType).name;
-            }
-            return this.objectTypeListPlot.find(item => item.id == objectType).name;
-        },
-        dateFormatter(date) {
-            return moment(date).format('DD.MM.YYYY');
-        },
-        clickUpdateRequest() {
-            this.$emit('clickUpdateRequest', this.request);
-        },
-        clickCloneRequest() {
-            this.$emit('clickCloneRequest', this.request);
-        },
-        clickDisableRequest() {
-            this.$emit('clickDisableRequest', this.request);
         }
     }
 };

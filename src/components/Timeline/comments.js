@@ -128,6 +128,13 @@ export class SendOffersComment extends AlreadySendOffersComment {
     }
 }
 
+export class InspectionSendingRouteComment extends AlreadySendOffersComment {
+    _setComment() {
+        this.type = SEND_OFFERS_COMMENT_TYPE;
+        this.comment = `Клиенту отправлен маршрут на Яндекс.Картах для посещения объектов`;
+    }
+}
+
 export class FeedbackOffersNotFoundComment extends CommentWithAutoSetComment {
     _setComment() {
         this.comment = 'Предложения клиента не заинтересовали, попробуйте поискать еще варианты';

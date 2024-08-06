@@ -1,6 +1,6 @@
 <template>
     <div class="key-value">
-        <dl class="wrapper">
+        <dl class="key-value__wrapper">
             <slot />
         </dl>
     </div>
@@ -11,5 +11,3 @@ export default {
     name: 'KeyValue'
 };
 </script>
-
-<style></style>

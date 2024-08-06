@@ -1,27 +1,22 @@
 <template>
     <div class="form__control">
-        <label class="form__label form__stars" :class="{ required: required }">
+        <div class="form__label" :class="{ required: required }">
             <span v-if="label">{{ label }}</span>
-            <span v-if="options">
-                <label v-for="(option, key) in options" :key="key">
+            <div tabindex="0" class="form__stars">
+                <button
+                    v-for="key in max"
+                    :key="key"
+                    @click.prevent="onChange(key)"
+                    tabindex="-1"
+                    class="form__star"
+                >
                     <i
-                        class="far fa-star form__star"
-                        :class="{ 'text-warning fas fa-star': field >= key }"
-                    ></i>
-                    <input
-                        v-model="field"
-                        type="radio"
-                        class="d-none"
-                        :class="inputClasses"
-                        :value="key"
+                        class="fa-star text-warning"
+                        :class="key <= field ? 'fa-solid' : 'fa-regular'"
                     />
-                    {{ option.name }}
-                </label>
-            </span>
-            <template v-else>
-                <input v-model="field" type="radio" :class="inputClasses" :value="1" />
-            </template>
-        </label>
+                </button>
+            </div>
+        </div>
         <div v-if="v && v.$error" class="error-container">
             <p>{{ v.$errors[0].$message }}</p>
         </div>
@@ -29,52 +24,39 @@
     </div>
 </template>
 
-<script>
-import Mixin from './mixins.js';
+<script setup>
+import { computed } from 'vue';
 
-export default {
-    name: 'RadioStars',
-    mixins: [Mixin],
-    props: {
-        modelValue: {
-            type: [Array, Number],
-            default: () => []
-        },
-        required: {
-            type: Boolean,
-            default: false
-        },
-        v: {
-            type: Object,
-            default: null
-        },
-        label: {
-            type: String,
-            default: null
-        },
-        options: {
-            type: Object,
-            default: null
-        }
+const modelValue = defineModel({ type: Number, default: null });
+const props = defineProps({
+    required: {
+        type: Boolean,
+        default: false
     },
-    data() {
-        return {
-            field: this.modelValue
-        };
+    v: {
+        type: Object,
+        default: null
     },
-    watch: {
-        field() {
-            this.onChange();
-        },
-        modelValue() {
-            this.field = this.modelValue;
-        }
+    label: {
+        type: String,
+        default: null
     },
-    methods: {
-        onChange() {
-            this.validate();
-            this.$emit('update:modelValue', this.field);
-        }
+    max: {
+        type: Number,
+        default: 5
     }
+});
+
+const field = computed(() => modelValue.value);
+
+const validate = () => {
+    if (props.v) props.v.$touch();
+};
+
+const onChange = value => {
+    if (value > props.max) return;
+
+    validate();
+    modelValue.value = value;
 };
 </script>

@@ -1,105 +1,90 @@
 <template>
     <div class="deal-item">
-        <i v-if="!reedOnly" @click="openDealFormForUpdate" class="fas fa-pen text-primary edit"></i>
-        <i v-if="!reedOnly" @click="deleteDeal" class="fas fa-times text-danger delete"></i>
+        <HoverActionsButton
+            v-if="!readOnly"
+            @click="$emit('update')"
+            label="Редактировать"
+            class="deal-item__edit"
+        >
+            <i class="fa-solid fa-pen"></i>
+        </HoverActionsButton>
+        <HoverActionsButton
+            v-if="!readOnly"
+            @click="$emit('delete')"
+            label="Удалить"
+            class="deal-item__delete"
+        >
+            <i class="fa-solid fa-times"></i>
+        </HoverActionsButton>
         <div class="row">
             <div class="col-4 text-center align-self-center">
-                <i class="fas fa-handshake"></i>
+                <i class="fas fa-handshake deal-item__icon"></i>
             </div>
             <div class="col-8 pl-0">
                 <div class="row no-gutters">
-                    <div class="col-4 text-right pr-2"><p>название:</p></div>
-                    <div class="col-8 pl-4">
-                        <strong>{{ deal.name || '—' }}</strong>
-                    </div>
-                    <div class="col-4 text-right pr-2"><p>объект:</p></div>
-                    <div class="col-8 pl-4">
-                        <strong v-if="deal.offer">
-                            <a :href="offerUrl" target="_blanc">
-                                {{ deal.offer.visual_id }}
-                            </a>
-                        </strong>
-                        <strong v-else>
-                            <a :href="offerUrl" target="_blanc">
-                                {{ deal.object_id }}
-                            </a>
-                        </strong>
-                    </div>
-                    <div class="col-4 text-right pr-2"><p>площадь:</p></div>
-                    <div class="col-8 pl-4">
-                        <strong v-if="deal.area">{{ $formatter.number(deal.area) }} м<sup>2</sup></strong>
-                        <strong v-else>—</strong>
-                    </div>
-                    <div class="col-4 text-right pr-2"><p>цена пола:</p></div>
-                    <div class="col-8 pl-4">
-                        <strong v-if="deal.floorPrice">{{ $formatter.currency(deal.floorPrice) }}</strong>
-                        <strong v-else>—</strong>
-                    </div>
-                    <div class="col-4 text-right pr-2"><p>юр. лицо:</p></div>
-                    <div class="col-8 pl-4">
-                        <strong>{{ deal.clientLegalEntity_full_name || '—' }}</strong>
-                    </div>
-                    <div v-if="deal.is_competitor" class="col-4 text-right pr-2 text-danger">
-                        <p>конкурент:</p>
-                    </div>
-                    <div v-if="deal.is_competitor" class="col-8 pl-4">
-                        <strong>
-                            <router-link :to="'/companies/' + deal.competitor.id">
-                                {{ deal.competitor.full_name || '—' }}
-                            </router-link>
-                        </strong>
-                    </div>
-                    <div class="col-4 text-right pr-2"><p>дата сделки:</p></div>
-                    <div class="col-8 pl-4">
-                        <strong>{{ deal.dealDate_format || '—' }}</strong>
-                    </div>
-                    <div class="col-4 text-right pr-2"><p>консультант:</p></div>
-                    <div class="col-8 pl-4">
-                        <strong>{{ deal.consultant.userProfile.short_name || '—' }}</strong>
-                    </div>
-                    <div class="col-4 text-right pr-2" title="Срок окончания контракта (если это аренда) (в месяцах)">
-                        <p>срок:</p>
-                    </div>
-                    <div class="col-8 pl-4">
-                        <strong>{{ deal.contractTerm || '—' }}</strong>
-                    </div>
-                    <div class="col-4 text-right pr-2"><p>описание:</p></div>
-                    <div class="col-8 pl-4">
-                        <strong>{{ deal.description || '—' }}</strong>
-                    </div>
+                    <DealListItemRow label="Название">{{ deal.name || '—' }}</DealListItemRow>
+                    <DealListItemRow label="Объект">
+                        <a :href="offerUrl" target="_blank">
+                            {{ deal.offer ? deal.offer.visual_id : deal.object_id }}
+                        </a>
+                    </DealListItemRow>
+                    <DealListItemRow label="Площадь">
+                        <WithUnitType v-if="deal.area" :unit-type="unitTypes.SQUARE_METERS">
+                            {{ $formatter.number(deal.area) }}
+                        </WithUnitType>
+                    </DealListItemRow>
+                    <DealListItemRow label="Цена пола">
+                        <WithUnitType v-if="deal.floorPrice" :unit-type="unitTypes.RUB">
+                            {{ $formatter.number(deal.floorPrice) }}
+                        </WithUnitType>
+                    </DealListItemRow>
+                    <DealListItemRow label="Юр. лицо">
+                        {{ deal.clientLegalEntity_full_name || '—' }}
+                    </DealListItemRow>
+                    <DealListItemRow v-if="deal.is_competitor" label="Конкурент">
+                        <router-link :to="competitorUrl">
+                            {{ deal.competitor.full_name || '—' }}
+                        </router-link>
+                    </DealListItemRow>
+                    <DealListItemRow label="Дата сделки">
+                        {{ deal.dealDate_format || '—' }}
+                    </DealListItemRow>
+                    <DealListItemRow label="Консультант">
+                        {{ deal.consultant?.userProfile?.short_name || '—' }}
+                    </DealListItemRow>
+                    <DealListItemRow label="Срок">
+                        {{ deal.contractTerm || '—' }}
+                    </DealListItemRow>
+                    <DealListItemRow label="Описание">
+                        {{ deal.description || '—' }}
+                    </DealListItemRow>
                 </div>
             </div>
         </div>
     </div>
 </template>
 
-<script>
-export default {
-    name: 'DealListItem',
-    props: {
-        deal: {
-            type: Object
-        },
-        reedOnly: {
-            type: Boolean,
-            default: false
-        }
-    },
-    computed: {
-        offerUrl() {
-            return this.$url.offerByObject(this.deal.offer ? this.deal.offer : this.deal);
-        }
-    },
+<script setup>
+import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
+import { computed } from 'vue';
+import { $generatorURL as $url } from '@/plugins/url.js';
+import DealListItemRow from '@/components/Deal/DealListItemRow.vue';
+import WithUnitType from '@/components/common/WithUnitType.vue';
+import { unitTypes } from '@/const/unitTypes.js';
 
-    methods: {
-        openDealFormForUpdate() {
-            this.$emit('openDealFormForUpdate', this.deal);
-        },
-        deleteDeal() {
-            this.$emit('deleteDeal', this.deal);
-        }
+defineEmits(['update', 'delete']);
+const props = defineProps({
+    deal: {
+        type: Object
+    },
+    readOnly: {
+        type: Boolean,
+        default: false
     }
-};
-</script>
+});
 
-<style></style>
+const offerUrl = computed(() =>
+    $url.offerByObject(props.deal.offer ? props.deal.offer : props.deal)
+);
+const competitorUrl = computed(() => $url.company(props.deal.competitor.id));
+</script>

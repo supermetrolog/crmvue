@@ -1,0 +1,98 @@
+@use 'mixins';
+@use 'variables';
+
+.color {
+    &-danger {
+        color: #9f3f56;
+    }
+
+    &-success {
+        color: #10b981;
+    }
+
+    &-warning {
+        color: #f88f01;
+    }
+}
+
+.bg {
+    &-black {
+        background-color: #000;
+    }
+
+    &-orange {
+        background-color: #e8b501;
+    }
+
+    &-red {
+        background-color: #9f3f56;
+    }
+
+    &-btn {
+        @include mixins.bg-color-scheme(
+            success #10b981 #009665 #fff,
+            warning #f88f01 #a46104 #fff,
+            danger #f93154 #cb1132 #fff,
+            primary #11698e #085373 #fff,
+            light-danger #f93154 #cb1132 #fff
+        );
+    }
+
+    &-white {
+        background-color: #fff;
+    }
+}
+
+.c-pointer {
+    cursor: pointer;
+}
+
+.gap {
+    &-1 {
+        gap: .25rem;
+    }
+
+    &-2 {
+        gap: .5rem;
+    }
+
+    &-3 {
+        gap: 1rem
+    }
+
+    &-4 {
+        gap: 1.5rem;
+    }
+}
+
+.vertical-list {
+    @include mixins.flex-box($d: column);
+}
+
+.bg-primary {
+    background-color: variables.$color_primary;
+}
+
+.bg-danger {
+    background-color: variables.$color_danger;
+}
+
+.bg-dark {
+    background-color: variables.$color_dark;
+}
+
+.bg-warning {
+    background-color: variables.$color_warning;
+}
+
+.bg-success {
+    background-color: variables.$color_success;
+}
+
+.bg-success-alt {
+    background-color: variables.$color_success_alt;
+}
+
+.br-0 {
+    border-radius: 0;
+}

@@ -301,11 +301,10 @@ const Call = {
         RESET_CALLS(context) {
             context.commit('reset');
         },
-        async FETCH_CALLS_COUNT_POOL(context) {
-            const socket = context.getters.SOCKET;
-            if (!context.getters.SETED_USER_ID_FLAG) {
-                return;
-            }
+        async FETCH_CALLS_COUNT_POOL({ rootGetters }) {
+            if (!rootGetters.SETED_USER_ID_FLAG) return;
+
+            const socket = rootGetters.SOCKET;
             await socket.send(
                 JSON.stringify({
                     action: 'sendPool',
@@ -346,7 +345,7 @@ const Call = {
             return state.calls;
         },
         CALLS_COUNT(state) {
-            return state.callsCount;
+            return Number(state.callsCount);
         },
         CALLS_PAGINATION(state) {
             return state.callsPagination;

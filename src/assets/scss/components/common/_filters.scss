@@ -1,0 +1,80 @@
+@use '../../utils/mixins';
+
+.filters {
+    @include mixins.flex-box($d: column);
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px 1px rgba(0, 0, 0, .1);
+
+    &__item {
+        padding: 8px 15px;
+        border-bottom: 1px solid #EAEAEA;
+        border-top: 1px solid #EAEAEA;
+    }
+
+    &__category {
+        border-bottom: 1px solid #EAEAEA;
+
+        &:not(&:first-child) {
+            border-top: 1px solid #EAEAEA;
+        }
+
+        &:first-child, &:first-child .accordion-simple__trigger {
+            border-radius: 5px 5px 0 0;
+        }
+
+        &:last-child, &:last-child .accordion-simple__trigger {
+            border-radius: 0 0 5px 5px;
+        }
+
+        &.selected {
+            .accordion-simple__trigger {
+                color: #10b981;
+                font-weight: 500;
+            }
+        }
+
+        .accordion-simple__trigger {
+            padding: 8px 13px;
+
+            @include mixins.flex-box($a: center, $gap: 5px);
+            @include mixins.transition(background-color .4s, color .4s);
+            @include mixins.hover {
+                background-color: #10b981;
+                color: #fff;
+            }
+
+            &.active {
+                font-weight: 500;
+                border-bottom: 1px solid rgba(0, 0, 0, .1);
+            }
+        }
+
+        .accordion-simple__icon {
+            font-size: 18px;
+        }
+    }
+
+    &__body {
+        margin: 8px 13px;
+    }
+
+    &__options {
+        @include mixins.flex-box($d: column, $gap: 8px);
+
+        label {
+            background-color: #f0f0f0;
+            border: none;
+            box-shadow: 0 0 2px 1px rgba(0, 0, 0, .1);
+        }
+    }
+
+    &__option {
+        text-align: center;
+    }
+
+    &__footer {
+        padding: 15px;
+        @include mixins.flex-box($d: column, $gap: 5px);
+    }
+}

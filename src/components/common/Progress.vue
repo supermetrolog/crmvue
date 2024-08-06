@@ -1,6 +1,6 @@
 <template>
     <div class="progress">
-        <div class="progress-bar">
+        <div class="progress-bar" :style="{ height: height + 'px' }">
             <div class="percent" :style="{ width: percent + '%' }" :class="percentClass"></div>
         </div>
         <div class="progress-label">
@@ -19,6 +19,10 @@ export default {
         title: {
             type: String,
             default: 'Заполнения'
+        },
+        height: {
+            type: Number,
+            default: 4
         }
     },
     computed: {

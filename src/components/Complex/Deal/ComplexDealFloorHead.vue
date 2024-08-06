@@ -3,67 +3,60 @@
         <div class="deal-floor__top">
             <p class="deal-floor__label" :title="name">{{ name }}</p>
             <with-unit-type class="deal-floor__label" :unit-type="unitTypes.SQUARE_METERS">
-                {{ $formatter.number(area) }}
+                {{ formattedArea }}
             </with-unit-type>
         </div>
         <div class="deal-floor__bottom">
-            <button
-                v-tippy="'Редактировать этаж'"
+            <HoverActionsButton
                 @click="$emit('openEditForm')"
                 class="deal-floor__button"
+                label="Редактировать этаж"
+                small
             >
-                <i class="fa-solid fa-pen-to-square"></i>
-            </button>
-            <button v-tippy="'Добавить блок'" @click="$emit('openForm')" class="deal-floor__button">
-                <i class="fa-solid fa-circle-plus"></i>
-            </button>
+                <i class="fa-solid fa-pen" />
+            </HoverActionsButton>
+            <HoverActionsButton
+                @click="$emit('openForm')"
+                class="deal-floor__button"
+                label="Добавить блок"
+                small
+            >
+                <i class="fa-solid fa-plus"></i>
+            </HoverActionsButton>
         </div>
     </div>
 </template>
 
-<script>
+<script setup>
 import { unitTypes } from '@/const/unitTypes';
 import WithUnitType from '@/components/common/WithUnitType.vue';
+import { computed } from 'vue';
+import { toNumberFormat } from '@/utils/formatter.js';
+import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 
-export default {
-    name: 'ComplexDealFloorHead',
-    components: {
-        WithUnitType
+defineEmits(['openForm', 'openEditForm']);
+
+const props = defineProps({
+    number: {
+        id: Number,
+        title: String,
+        description: String,
+        sign: Number,
+        color: String,
+        order_row: Number
     },
-    props: {
-        number: {
-            id: Number,
-            title: String,
-            description: String,
-            sign: Number,
-            color: String,
-            order_row: Number
-        },
-        area: {
-            type: Number,
-            default: null
-        },
-        checked: {
-            type: Boolean
-        }
+    area: {
+        type: Number,
+        default: null
     },
-    data() {
-        return {
-            unitTypes,
-            isChecked: this.checked
-        };
-    },
-    computed: {
-        formattedArea() {
-            return this.$formatter.number(this.area);
-        },
-        headInputId() {
-            return 'floor-check_' + this.number.title;
-        },
-        name() {
-            return this.number ? this.number.title : 'Нет названия';
-        }
-    },
-    methods: {}
-};
+    checked: {
+        type: Boolean
+    }
+});
+
+// const isChecked = shallowRef(props.checked);
+
+// const headInputId = computed(() => 'floor-check_' + props.number.title);
+const formattedArea = computed(() => toNumberFormat(props.area));
+const name = computed(() => (props.number ? props.number.title : 'Нет названия'));
 </script>

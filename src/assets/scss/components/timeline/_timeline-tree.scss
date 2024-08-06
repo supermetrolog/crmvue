@@ -1,0 +1,127 @@
+@use '../../utils/mixins';
+@use '../../utils/variables';
+
+.timeline-tree {
+    @include mixins.flex-box($d: column);
+
+    &__title {
+        font-size: 20px;
+        font-weight: 500;
+        margin-bottom: 15px;
+    }
+
+    &__progress {
+        position: relative;
+        @include mixins.flex-box($d: column);
+    }
+
+    &__line {
+        position: absolute;
+        height: calc(100% - 30px);
+        width: 5px;
+        top: 10px;
+        left: 20px;
+        background-color: #cecece;
+        z-index: 9;
+    }
+}
+
+.timeline-tree-item {
+    &__steps {
+        @include mixins.flex-box($d: column);
+    }
+}
+
+.timeline-tree-step {
+    @include mixins.flex-box($gap: 10px, $a: center);
+    padding: 5px;
+
+    @include mixins.transition(background-color .3s);
+
+    @include mixins.hover {
+        cursor: pointer;
+        background-color: #d1d5db;
+    }
+
+    &.point {
+        .timeline-tree-step {
+            &__point {
+                height: 25px;
+                width: 25px;
+                margin: 0 5px;
+                font-size: 27px;
+                border-radius: 50%;
+            }
+
+            &__label {
+                font-size: 14px;
+            }
+        }
+    }
+
+    &__point {
+        flex-shrink: 0;
+        height: 35px;
+        width: 35px;
+        border: 6px solid #cecece;
+        background-color: #fff;
+        position: relative;
+        z-index: 10;
+        font-size: 34px;
+
+        &:has(i) {
+            border-color: transparent;
+        }
+
+        i {
+            position: absolute;
+            left: -5px;
+            top: -5px;
+        }
+
+        &.done {
+            border-color: variables.$cl-success!important;
+        }
+    }
+
+    &__label {
+        font-weight: 500;
+        color: #525252;
+    }
+
+    &__label, &__icon {
+        opacity: .5;
+    }
+
+    &--available {
+        .timeline-tree-step__label, .timeline-tree-step__icon {
+            opacity: 1;
+        }
+
+        .timeline-tree-step__point {
+            border-color: #39a6da;
+        }
+    }
+
+    &--done {
+        .timeline-tree-step__point {
+            border-color: variables.$cl-success!important;
+        }
+    }
+
+    &--selected {
+        background-color: rgba(57, 166, 218, 0.5);
+        z-index: 10;
+        position: relative;
+
+        .timeline-tree-step__point {
+            border-color: #39a6da!important;
+        }
+    }
+
+    &__icon {
+        &-selected {
+           color: rgb(57, 166, 218);
+        }
+    }
+}

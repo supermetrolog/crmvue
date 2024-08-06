@@ -4,18 +4,21 @@ on:
       - master
 name: 🚀 Deploy website on push
 env:
-  VUE_APP_UPLOADS_PATH: uploads/
-  VUE_APP_IMAGES_PATH: images/
-  VUE_APP_NOT_FOUND_FILENAME: no-image.jpg
-  VUE_APP_NOT_FOUND_AVATAR_NAME: no-avatar.png
-  VUE_APP_OBJECTS_PHOTO_URL: https://pennylane.pro
-  VUE_APP_RESERVE_API_URL: https://reserve-api.supermetrolog.ru/
-  VUE_APP_RESERVE_HOST: https://reserve-clients.supermetrolog.ru
-  VUE_APP_OBJECT_URL: https://pennylane.pro/
-  VUE_APP_API_URL: https://api.pennylane.pro/
-  VUE_APP_HOST: https://clients.pennylane.pro
-  VUE_APP_WS_URL: wss://api.pennylane.pro/websocket/
-  VUE_APP_YANDEX_MAP_KEY: ${{ secrets.vue_app_yandex_map_key }}
+  VITE_VUE_APP_UPLOADS_PATH: uploads/
+  VITE_VUE_APP_IMAGES_PATH: images/
+  VITE_VUE_APP_NOT_FOUND_FILENAME: no-image.jpg
+  VITE_VUE_APP_NOT_FOUND_AVATAR_NAME: no-avatar.png
+  VITE_VUE_APP_OBJECTS_PHOTO_URL: https://pennylane.pro
+  VITE_VUE_APP_RESERVE_API_URL: https://reserve-api.supermetrolog.ru/
+  VITE_VUE_APP_RESERVE_HOST: https://reserve-clients.supermetrolog.ru
+  VITE_VUE_APP_OBJECT_URL: https://pennylane.pro/
+  VITE_VUE_APP_API_URL: https://api.pennylane.pro/
+  VITE_VUE_APP_HOST: https://clients.pennylane.pro
+  VITE_VUE_APP_WS_URL: wss://api.pennylane.pro/websocket/
+  VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_INFO: 90
+  VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_WARNING: 180
+  VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_DANGER: 360
+    VUE_APP_YANDEX_MAP_KEY: ${{ secrets.VITE_VUE_app_yandex_map_key }}
 jobs:
   web-deploy:
     name: 🎉 Deploy
@@ -24,10 +27,10 @@ jobs:
       - name: 🚚 Get latest code
         uses: actions/checkout@v2
 
-      - name: Use Node.js 16
+      - name: Use Node.js 18
         uses: actions/setup-node@v2-beta
         with:
-          node-version: "16"
+          node-version: "18"
 
       - name: 🔨 Build Project
         run: |

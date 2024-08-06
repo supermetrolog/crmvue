@@ -1,28 +1,22 @@
 @use '../utils/variables';
+@use '../utils/mixins';
 
 .deal-floor {
     font-size: 14px;
     border: 1px solid black;
     width: 130px;
-    height: 80px;
+    height: 90px;
 
     &__top {
+        @include mixins.flex-box($a: center, $d: column);
         background-color: variables.$color_dark_grey;
         padding: 5px 15px;
-        display: flex;
-        align-items: center;
-        flex-direction: column;
     }
 
     &__label {
         color: #fff;
         font-weight: 700;
-        text-overflow: ellipsis;
-        max-width: 100%;
-        display: -webkit-box;
-        -webkit-line-clamp: 1;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
+        @include mixins.text-overflow();
 
         &:nth-child(2) {
             font-weight: 300;
@@ -30,40 +24,21 @@
     }
 
     &__bottom {
-        display: flex;
-        gap: 5px;
-        align-items: center;
-        justify-content: center;
-    }
-
-    &__button {
-        background: none;
-        border: none;
-        cursor: pointer;
-        width: max-content;
-        font-size: 16px;
-
-        &:hover {
-            opacity: 0.6;
-        }
+        @include mixins.flex-box($a: center, $j: center, $gap: 10px);
+        padding: 5px 0;
     }
 }
 
 .deal-floors {
-    display: flex;
-    gap: 10px;
+    @include mixins.flex-box($gap: 10px);
 
     &__list {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
+        @include mixins.flex-box($gap: 10px, $d: column);
         padding-bottom: 20px;
     }
 
     &__item {
-        display: flex;
-        gap: 13px;
-        align-items: center;
+        @include mixins.flex-box($a: center, $gap: 13px);
     }
 
     &__sections {
@@ -73,31 +48,27 @@
     }
 
     &__body {
+        @include mixins.flex-box($d: column, $gap: 10px);
         padding-left: 14px;
-        box-shadow: inset 0 0px 15px -10px rgba(0, 0, 0, 0.5);
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
+        box-shadow: inset 0 0 15px -10px rgba(0, 0, 0, 0.5);
         height: 100%;
         width: 100%;
     }
 
     &__line {
+        @include mixins.flex-box($gap: 4px);
         position: relative;
-        display: flex;
-        gap: 4px;
         width: 100%;
     }
 }
 
 .deal-section {
+    @include mixins.flex-box($d: column);
     position: relative;
-    display: flex;
-    flex-direction: column;
     padding: 5px 15px 15px 5px;
     border: 1px solid;
     border-left: 14px solid;
-    height: 80px;
+    height: 90px;
     min-width: 200px;
 
     &__area {
@@ -178,11 +149,9 @@
     }
 
     &__functions {
+        @include mixins.flex-box($a: center, $gap: 5px);
         margin-top: 5px;
-        display: flex;
         margin-left: auto;
-        align-items: center;
-        gap: 5px;
     }
 
     &__button {
@@ -202,10 +171,7 @@
 }
 
 .object-deals-actions {
-    display: flex;
-    align-items: flex-end;
-    gap: 15px;
-    width: max-content;
+    @include mixins.flex-box($j: flex-end, $gap: 15px);
     margin-left: auto;
     margin-bottom: 10px;
 
@@ -216,12 +182,20 @@
     }
 
     &__list {
-        display: flex;
-        gap: 5px;
-        align-items: center;
-    }
+        @include mixins.flex-box($j: center, $gap: 5px);
 
-    &__item {
+        @include mixins.media('max', 'md') {
+            flex-wrap: wrap;
+            justify-content: unset;
+
+            li {
+                flex-basis: calc(50% - 5px);
+
+                .button {
+                    width: 100%;
+                }
+            }
+        }
     }
 }
 
@@ -282,9 +256,9 @@
     &__agent {
         font-size: 14px;
         display: flex;
-        background-color: #0f6674;
+        background-color: #d1d1d7;
         border-radius: 5px;
-        color: #fff;
+        color: #000;
         width: max-content;
     }
 
@@ -294,11 +268,9 @@
     }
 
     &__visit {
+        @include mixins.flex-box($a: center, $gap: 10px);
         padding: 5px 10px;
         border-left: 1px solid rgba(255, 255, 255, .1);
-        display: flex;
-        align-items: center;
-        gap: 10px;
     }
 
     &__button {
@@ -379,12 +351,21 @@
 
     &__line {
         position: relative;
+        background-color: #e7e7e7;
+
+        @include mixins.media('max', 'xxl') {
+            padding-top: 5px;
+        }
     }
 
     &__buttons {
-        position: absolute;
-        top: 2px;
-        right: 10px;
+        z-index: 2;
+
+        @include mixins.media('min', 'xxl') {
+            position: absolute;
+            top: 2px;
+            right: 10px;
+        }
     }
 
     &__tabs {
@@ -396,10 +377,8 @@
     }
 
     &__content {
+        @include mixins.flex-box($d: column, $gap: 10px);
         margin-bottom: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
     }
 
     &__tables {
@@ -435,12 +414,10 @@
 }
 
 .deal-preview {
-    display: flex;
-    flex-direction: column;
+    @include mixins.flex-box($d: column);
+
     position: relative;
-
     padding: 10px;
-
     width: 225px;
 
     background-color: lighten(variables.$color_light_grey, 9);
@@ -552,20 +529,22 @@
 
     &__chip {
         padding: 5px;
-        background-color: #0f6674;
-        color: #fff;
+        background-color: variables.$color_grey_alt;
+        color: #000;
         border-radius: 5px;
         margin-bottom: 10px;
         text-align: center;
-        opacity: .7;
+        font-weight: 500;
     }
 
     &__title {
-        text-align: center;
-        background-color: #0f6674;
-        color: #fff;
+        background-color: variables.$color_grey_alt;
+        color: #000;
         border-radius: 5px;
-        padding: 5px;
+        padding: 5px 10px;
+        width: max-content;
+        font-weight: 500;
+        font-size: 20px;
     }
 
     &__item-label {
@@ -602,10 +581,8 @@
     }
 
     &__services {
+        @include mixins.flex-box($d: column, $gap: 25px);
         margin: 25px 0 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 25px;
     }
 
     &__service {
@@ -620,9 +597,19 @@
     }
 
     &__item {
+        @include mixins.flex-box($j: space-between, $a: center);
         font-size: 14px;
-        display: flex;
-        justify-content: space-between;
+    }
+
+    &__elements {
+        @include mixins.flex-box($a: center, $gap: 5px, $wrap: wrap);
+    }
+
+    &__element {
+        padding: 3px 5px;
+        background-color: variables.$color_grey_alt;
+        border-radius: 5px;
+        @include mixins.flex-box($a: center, $gap: 5px);
     }
 }
 
@@ -634,8 +621,7 @@
     font-size: 14px;
 
     &__header {
-        display: flex;
-        justify-content: space-between;
+        @include mixins.flex-box($j: space-between);
         position: absolute;
         top: -16px;
         font-weight: 500;
@@ -655,23 +641,18 @@
     }
 
     &__item   {
-        display: flex;
-        justify-content: space-between;
+        @include mixins.flex-box($j: space-between);
         margin-top: 10px;
     }
 
     &__elements {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
+        @include mixins.flex-box($gap: 10px, $wrap: true);
         margin-top: 20px;
     }
 
     &__element {
+        @include mixins.flex-box($a: center, $gap: 5px);
         padding: 5px;
-        display: flex;
-        gap: 5px;
-        align-items: center;
         background-color: #268e50;
         color: #fff;
         border-radius: 5px;
@@ -695,13 +676,11 @@
     }
 
     &__list {
-        display: flex;
-        flex-direction: column;
+        @include mixins.flex-box($d: column);
     }
 
     &__item {
-        display: flex;
-        justify-content: space-between;
+        @include mixins.flex-box($j: space-between);
         padding: 5px;
         border-bottom: 1px solid rgba(0, 0, 0, .1);
     }
@@ -716,23 +695,19 @@
     border-top: 1px solid rgba(0, 0, 0, .1);
 
     &__list {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
+        @include mixins.flex-box($d: column, $gap: 5px);
         font-size: 14px;
     }
 
     &__item {
-        display: flex;
-        gap: 10px;
-        align-items: center;
+        @include mixins.flex-box($a: center, $gap: 10px);
         padding: 5px 10px;
         border-radius: 5px;
-        background-color: #268e50;
-        color: #fff;
+        background-color: variables.$bg-success-l;
+        color: #000;
 
         &.cancel {
-            background-color: rgba(203, 17, 50, 0.85);
+            background-color: variables.$bg-danger-l;
         }
     }
 
@@ -747,19 +722,16 @@
     border-bottom: 1px solid rgba(0, 0, 0, .1);
 
     &__item {
+        @include mixins.flex-box($a: center, $j: center, $gap: 10px);
         background-color: rgba(211, 211, 211, .8);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
         border-radius: 5px;
         padding: 10px;
         font-size: 14px;
         font-weight: 500;
 
         &--exclusive {
-            background-color: rgba(203, 17, 50, 0.85);
-            color: #fff;
+            background-color: rgba(254, 106, 73, 0.7);
+            color: #000;
         }
 
         i {
@@ -778,11 +750,10 @@
 }
 
 .complex-deal-specials {
-    display: flex;
-    align-items: center;
+    @include mixins.flex-box($a: center);
     border-radius: 5px;
-    background-color: #0f6674;
-    color: #fff;
+    background-color: #d1d1d7;
+    color: #000;
     width: max-content;
     font-size: 14px;
 
@@ -792,10 +763,8 @@
     }
 
     &__plan {
+        @include mixins.flex-box($a: center, $gap: 10px);
         padding: 5px 10px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
         border-left: 1px solid rgba(255, 255, 255, .1);
     }
 }
@@ -806,10 +775,12 @@
     grid-auto-columns: 1fr;
     grid-auto-flow: column;
 
+    @include mixins.media('max', 'md') {
+        grid-auto-flow: unset;
+    }
+
     &__column {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
+        @include mixins.flex-box($d: column, $gap: 20px);
     }
 }
 
@@ -839,10 +810,8 @@
     }
 
     &__item {
+        @include mixins.flex-box($a: center, $j: space-between);
         padding: 5px 10px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
 
         &:nth-child(odd) {
             background-color: #d6d6d6;

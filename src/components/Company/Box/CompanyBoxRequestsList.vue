@@ -3,9 +3,9 @@
         <CompanyBoxRequestsListItem
             v-for="request of requests"
             :key="request.id"
-            @clickUpdateRequest="clickUpdateRequest(request)"
-            @clickCloneRequest="clickCloneRequest(request)"
-            @clickDisableRequest="clickDisableRequest(request)"
+            @update="update(request)"
+            @clone="clone(request)"
+            @disable="disable(request)"
             :request="request"
         />
     </div>
@@ -17,6 +17,7 @@ import CompanyBoxRequestsListItem from '@/components/Company/Box/CompanyBoxReque
 export default {
     name: 'CompanyBoxRequestsList',
     components: { CompanyBoxRequestsListItem },
+    emits: ['update', 'clone', 'disable'],
     props: {
         requests: {
             type: Array,
@@ -24,14 +25,14 @@ export default {
         }
     },
     methods: {
-        clickUpdateRequest(request) {
-            this.$emit('clickUpdateRequest', request);
+        clone(request) {
+            this.$emit('clone', request);
         },
-        clickCloneRequest(request) {
-            this.$emit('clickCloneRequest', request);
+        update(request) {
+            this.$emit('update', request);
         },
-        clickDisableRequest(request) {
-            this.$emit('clickDisableRequest', request);
+        disable(request) {
+            this.$emit('disable', request);
         }
     }
 };

@@ -1,26 +1,30 @@
 <template>
-    <div class="rating">
+    <div class="rating" :class="'rating--' + color">
         <i
-            v-for="value in 5"
+            v-for="value in max"
             :key="value"
             class="far fa-star"
             :class="{
-                'fas fa-star': value <= rating,
-                red: value <= rating
+                'fas fill': value <= rating
             }"
         >
         </i>
     </div>
 </template>
 
-<script>
-export default {
-    name: 'Rating',
-    props: {
-        rating: {
-            type: Number,
-            required: true
-        }
+<script setup>
+defineProps({
+    rating: {
+        type: Number,
+        required: true
+    },
+    max: {
+        type: Number,
+        default: 5
+    },
+    color: {
+        type: String,
+        default: null
     }
-};
+});
 </script>

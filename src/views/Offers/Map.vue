@@ -2,11 +2,13 @@
     <section>
         <div class="container-fluid">
             <div ref="searchContainer" class="row">
-                <FormModalOfferSearch
-                    v-if="mounted && searchFormModalVisible"
-                    ref="search"
-                    @close="searchFormModalVisible = false"
-                />
+                <teleport to="body">
+                    <FormModalOfferSearch
+                        v-if="mounted && searchFormModalVisible"
+                        ref="search"
+                        @close="searchFormModalVisible = false"
+                    />
+                </teleport>
                 <FormOfferSearchExternal
                     v-if="mounted"
                     @openFilters="searchFormModalVisible = true"
@@ -128,7 +130,9 @@ export default {
                 type_id: [2, 3],
                 fields: 'latitude,longitude,address,complex_id,status,thumb,test_only,id',
                 objectsOnly: 1,
-                original_id: routeQuery.favorites ? this.FAVORITES_OFFERS.map(item => item.original_id) : null,
+                original_id: routeQuery.favorites
+                    ? this.FAVORITES_OFFERS.map(item => item.original_id)
+                    : null,
                 page: 1,
                 noWith: 1,
                 'per-page': 0
@@ -176,7 +180,10 @@ export default {
         },
         setYmapSize() {
             this.ymapStyles.height =
-                window.innerHeight - this.$refs.searchContainer.getClientRects()[0].height - 105 + 'px';
+                window.innerHeight -
+                this.$refs.searchContainer.getClientRects()[0].height -
+                105 +
+                'px';
         }
     },
     updated() {

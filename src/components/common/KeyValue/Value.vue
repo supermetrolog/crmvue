@@ -1,5 +1,5 @@
 <template>
-    <dd class="value">
+    <dd class="key-value__value">
         <slot />
     </dd>
 </template>
@@ -9,5 +9,3 @@ export default {
     name: 'Value'
 };
 </script>
-
-<style></style>

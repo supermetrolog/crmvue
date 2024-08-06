@@ -8,9 +8,7 @@
                         class="complex-deal-table__title"
                         :unit-type="unitTypes.PALLET_PLACE"
                     >
-                        {{
-                            $formatter.numberOrRangeNew(palletPlace.valueMin, palletPlace.valueMax)
-                        }}
+                        {{ toNumberOrRangeFormat(palletPlace.valueMin, palletPlace.valueMax) }}
                     </with-unit-type>
                     /
                 </template>
@@ -18,7 +16,7 @@
                     class="complex-deal-table__title"
                     :unit-type="unitTypes.SQUARE_METERS"
                 >
-                    {{ $formatter.numberOrRangeNew(mainArea.valueMin, mainArea.valueMax) }}
+                    {{ toNumberOrRangeFormat(mainArea.valueMin, mainArea.valueMax) }}
                 </with-unit-type>
             </div>
             <ul class="complex-deal-table__description">
@@ -32,10 +30,7 @@
                         :unit-type="unitTypes.SQUARE_METERS"
                     >
                         {{
-                            $formatter.numberOrRangeNew(
-                                deal.area_warehouse_min,
-                                deal.area_warehouse_max
-                            )
+                            toNumberOrRangeFormat(deal.area_warehouse_min, deal.area_warehouse_max)
                         }}
                     </with-unit-type>
                 </li>
@@ -51,79 +46,74 @@
                         class="complex-deal-table__value"
                         :unit-type="unitTypes.SQUARE_METERS"
                     >
-                        {{ $formatter.numberOrRangeNew(area.valueMin, area.valueMax) }}
+                        {{ toNumberOrRangeFormat(area.valueMin, area.valueMax) }}
                     </with-unit-type>
                 </li>
             </ul>
         </div>
     </div>
 </template>
-<script>
+<script setup>
 import { entityOptions } from '@/const/options/options';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes';
 import { entityProperties } from '@/const/properties/properties';
 import { mapper } from '@/utils/mapper';
-import { reducer } from '@/utils';
+import { reducer } from '@/utils/reducer.js';
+import { computed, inject } from 'vue';
+import { toNumberOrRangeFormat } from '@/utils/formatter.js';
 
-export default {
-    name: 'ComplexDealArea',
-    components: { WithUnitType },
-    inject: ['dealType', 'objectIsLand'],
-    props: {
-        deal: {
-            type: Object,
-            required: true
-        },
-        original: {
-            type: Object,
-            default: null
-        }
+const dealType = inject('dealType');
+const objectIsLand = inject('objectIsLand');
+
+const props = defineProps({
+    deal: {
+        type: Object,
+        required: true
     },
-    computed: {
-        unitTypes() {
-            return unitTypes;
-        },
-        isStorageDeal() {
-            return this.dealType.id === entityOptions.deal.typeStatement.STORAGE;
-        },
-        hasWarehouseArea() {
-            return (
-                !this.objectIsLand && (this.deal.area_warehouse_min || this.deal.area_warehouse_max)
-            );
-        },
-        mainArea() {
-            if (this.original) {
-                const activeBlocks = this.original.blocks.filter(
-                    offer => !offer.deleted && !offer.deal_id
-                );
-
-                return {
-                    valueMin: reducer.strictMin(activeBlocks, 'area_min'),
-                    valueMax: reducer.max(activeBlocks, 'area_max')
-                };
-            }
-
-            return {
-                valueMin: this.deal.area_warehouse_min,
-                valueMax:
-                    this.deal.area_warehouse_max +
-                    (this.deal.area_office_max || 0) +
-                    (this.deal.area_tech_max || 0)
-            };
-        },
-        areaList() {
-            return mapper.propertiesToRangeFormat(this.deal, entityProperties.deal.area);
-        },
-        palletPlace() {
-            if (this.deal.pallet_place_min || this.deal.pallet_place_max)
-                return {
-                    valueMin: this.deal.pallet_place_min,
-                    valueMax: this.deal.pallet_place_max
-                };
-
-            return null;
-        }
+    original: {
+        type: Object,
+        default: null
     }
-};
+});
+
+const isStorageDeal = computed(() => dealType.id === entityOptions.deal.typeStatement.STORAGE);
+const hasWarehouseArea = computed(
+    () => !objectIsLand && (props.deal.area_warehouse_min || props.deal.area_warehouse_max)
+);
+
+const mainArea = computed(() => {
+    if (props.original) {
+        const activeBlocks = props.original.blocks.filter(
+            offer => !offer.deleted && !offer.deal_id
+        );
+
+        return {
+            valueMin: reducer.strictMin(activeBlocks, 'area_min'),
+            valueMax: reducer.max(activeBlocks, 'area_max')
+        };
+    }
+
+    return {
+        valueMin: props.deal.area_warehouse_min,
+        valueMax:
+            props.deal.area_warehouse_max +
+            (props.deal.area_office_max || 0) +
+            (props.deal.area_tech_max || 0)
+    };
+});
+
+const areaList = computed(() =>
+    mapper.propertiesToRangeFormat(props.deal, entityProperties.deal.area)
+);
+
+const palletPlace = computed(() => {
+    if (props.deal.pallet_place_min || props.deal.pallet_place_max)
+        return {
+            valueMin: props.deal.pallet_place_min,
+            valueMax: props.deal.pallet_place_max
+        };
+
+    return null;
+});
 </script>

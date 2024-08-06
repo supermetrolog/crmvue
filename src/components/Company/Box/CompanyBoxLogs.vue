@@ -19,7 +19,7 @@
                     />
                     <Submit class="mt-1 w-100">Добавить</Submit>
                     <div v-if="loader" class="col-12 mt-4">
-                        <Loader class="center small py-2 no-absolute" />
+                        <Loader class="small py-2 no-absolute" />
                     </div>
                 </FormGroup>
             </Form>
@@ -32,7 +32,7 @@ import { mapActions, mapGetters } from 'vuex';
 import Textarea from '@/components/common/Forms/Textarea.vue';
 import Form from '@/components/common/Forms/Form.vue';
 import FormGroup from '@/components/common/Forms/FormGroup.vue';
-import Submit from '@/components/common/Forms/Submit.vue';
+import Submit from '@/components/common/Forms/FormSubmit.vue';
 import useValidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
 import Loader from '@/components/common/Loader.vue';

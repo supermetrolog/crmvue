@@ -1,8 +1,16 @@
 <template>
-    <div :key="render" class="ymap">
-        <p class="text-info">РАССТОЯНИЕ: {{ route.length }}, ВРЕМЯ: {{ route.time }}</p>
+    <div class="ymap">
+        <div class="d-flex gap-2 flex-wrap mb-2">
+            <DashboardChip class="dashboard-bg-success-l">
+                Расстояние: {{ route.length }}
+            </DashboardChip>
+            <DashboardChip class="dashboard-bg-success-l">
+                Время в пути: {{ route.time }}
+            </DashboardChip>
+        </div>
         <yandex-map
             v-if="mounted"
+            :key="render"
             ref="map"
             :settings="settings"
             :options="options.mapOptions"
@@ -32,10 +40,12 @@
 
 <script>
 import { loadYmap, yandexMap } from 'vue-yandex-maps';
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import { mapGetters } from 'vuex';
 
 export default {
     name: 'Ymap',
-    components: { yandexMap },
+    components: { DashboardChip, yandexMap },
     props: {
         manualRoute: {
             type: Array,
@@ -58,7 +68,7 @@ export default {
                 warning: null
             },
             settings: {
-                apiKey: process.env.VUE_APP_YANDEX_MAP_KEY,
+                apiKey: import.meta.env.VITE_VUE_APP_YANDEX_MAP_KEY,
                 lang: 'ru_RU',
                 coordorder: 'latlong',
                 enterprise: false,
@@ -84,6 +94,7 @@ export default {
         };
     },
     computed: {
+        ...mapGetters(['CURRENT_STEP_OBJECTS']),
         dataForRoute() {
             const data = {
                 coords: []
@@ -129,6 +140,8 @@ export default {
             }
         },
         buildRoute() {
+            if (!this.$refs.map) return;
+
             const myMap = this.$refs.map.$options.static.myMap;
             this.clearMyMap(myMap);
             var multiRoute = new window.ymaps.multiRouter.MultiRoute(
@@ -199,7 +212,7 @@ export default {
         }
     },
     async mounted() {
-        await loadYmap({ ...this.settings, debug: true });
+        await loadYmap({ ...this.settings, debug: false });
         this.mounted = true;
         this.runBuildRoute();
     }

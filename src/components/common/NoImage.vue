@@ -1,12 +1,4 @@
 <template>
-    <VLazyImage :src="require(`@/assets/image/no_photo.png`)" />
+    <img src="@/assets/image/no_photo.png" alt="no image" />
 </template>
-<script>
-import VLazyImage from 'v-lazy-image';
-export default {
-    name: 'NoImage',
-    components: {
-        VLazyImage
-    }
-};
-</script>
+<script setup></script>

@@ -1,13 +1,15 @@
 <template>
     <Modal
-        @close="$emit('closeCompanyForm')"
+        @close="$emit('close')"
         :title="formdata ? 'Изменение контакта' : 'Создание контакта'"
-        class="modal-form-company-contact"
+        width="1300"
+        show
     >
         <template #header>
             <CheckboxChip v-model="forms.isMain" :value="forms.isMain" text="Основной контакт" />
         </template>
-        <Loader v-if="loader" class="center" />
+        <Loader v-if="isLoading" />
+        <Spinner v-if="isFetching" />
         <Form v-else @submit="onSubmit">
             <div class="row">
                 <Input v-model="forms.middle_name" label="Фамилия" class="col-4" />
@@ -232,11 +234,16 @@ import {
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
-import Submit from '@/components/common/Forms/Submit.vue';
+import Submit from '@/components/common/Forms/FormSubmit.vue';
+import { cloneObject } from '@/utils/index.js';
+import Spinner from '@/components/common/Spinner.vue';
+
+// TODO: Убрать Teleport и отрефачить все использоания этой формы
 
 export default {
     name: 'FormCompanyContact',
     components: {
+        Spinner,
         Submit,
         RadioChip,
         AnimationTransition,
@@ -250,7 +257,7 @@ export default {
         MultiSelect,
         Textarea
     },
-    emits: ['closeCompanyForm', 'updated', 'created'],
+    emits: ['close', 'updated', 'created'],
     props: {
         formdata: {
             type: Object,
@@ -264,7 +271,8 @@ export default {
     data() {
         return {
             v$: useValidate(),
-            loader: false,
+            isLoading: false,
+            isFetching: false,
             selectedCompany: null,
             forms: {
                 company_id: null,
@@ -364,12 +372,6 @@ export default {
             }
         };
     },
-    watch: {
-        forms: {
-            handler() {},
-            deep: true
-        }
-    },
     methods: {
         ...mapActions([
             'FETCH_CONSULTANT_LIST',
@@ -380,8 +382,8 @@ export default {
         async onSubmit() {
             this.v$.$validate();
             if (!this.v$.forms.$error) {
-                this.loader = true;
                 this.normalizeForm();
+
                 if (this.formdata) {
                     await this.updateContact();
                 } else {
@@ -390,24 +392,30 @@ export default {
             }
         },
         async updateContact() {
+            this.isLoading = true;
+
             if (await this.UPDATE_CONTACT(this.forms)) {
                 this.$emit('updated');
-                this.$emit('closeCompanyForm');
+                this.$emit('close');
             }
-            this.loader = false;
+
+            this.isLoading = false;
         },
         async createContact() {
+            this.isLoading = true;
+
             if (await this.CREATE_CONTACT(this.forms)) {
                 this.$emit('created');
-                this.$emit('closeCompanyForm');
+                this.$emit('close');
             }
-            this.loader = false;
+
+            this.isLoading = false;
         },
         changeWarning() {
             this.forms.warning ? (this.forms.good = 0) : '';
         },
         changePosition() {
-            if (this.forms.position !== null) {
+            if (this.forms.position) {
                 this.forms.position_unknown = 0;
             }
         },
@@ -429,22 +437,12 @@ export default {
             );
         },
         customRequiredPassiveWhy() {
-            if (this.forms.status) {
-                return true;
-            }
-            if (!required.$validator(this.forms.passive_why)) {
-                return false;
-            }
-            return true;
+            if (this.forms.status) return true;
+            return Boolean(required.$validator(this.forms.passive_why));
         },
         customRequiredWarningWhyComment() {
-            if (!this.forms.warning) {
-                return true;
-            }
-            if (!required.$validator(this.forms.warning_why_comment)) {
-                return false;
-            }
-            return true;
+            if (!this.forms.warning) return true;
+            return Boolean(required.$validator(this.forms.warning_why_comment));
         },
         async searchCompany(query) {
             let result = null;
@@ -472,7 +470,7 @@ export default {
         },
         changeIsMainEmail(changedEmail) {
             this.forms.emails = this.forms.emails.map(elem => {
-                if (elem.email == changedEmail.email) {
+                if (elem.email === changedEmail.email) {
                     elem.isMain = changedEmail.isMain ? 1 : null;
                     return elem;
                 }
@@ -482,7 +480,7 @@ export default {
         },
         changeIsMainPhone(changedPhone) {
             this.forms.phones = this.forms.phones.map(elem => {
-                if (elem.phone == changedPhone.phone) {
+                if (elem.phone === changedPhone.phone) {
                     elem.isMain = changedPhone.isMain ? 1 : null;
                     return elem;
                 }
@@ -493,19 +491,18 @@ export default {
         normalizeForm() {
             this.forms.phones = this.forms.phones.filter(element => element.phone.length);
             this.forms.emails = this.forms.emails.filter(element => element.email.length);
+            this.forms.invalidPhones = this.forms.invalidPhones.filter(({ phone }) => phone.length);
+        },
+        async fetchConsultants() {
+            this.isFetching = true;
+            await this.FETCH_CONSULTANT_LIST();
+            this.isFetching = false;
         }
     },
-    async mounted() {
-        this.loader = true;
-        await this.FETCH_CONSULTANT_LIST();
+    created() {
         this.forms.company_id = this.company_id;
-        if (this.formdata) {
-            // eslint-disable-next-line no-undef
-            this.forms = { ...this.forms, ...structuredClone(this.formdata) };
-        }
-        this.loader = false;
+        if (this.formdata) Object.assign(this.forms, cloneObject(this.formdata));
+        this.fetchConsultants();
     }
 };
 </script>
-
-<style></style>

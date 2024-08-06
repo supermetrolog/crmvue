@@ -1,7 +1,10 @@
 <template>
     <div class="row item no-gutters">
-        <div class="col-2 avatar text-center">
-            <i class="fas fa-phone-alt" :class="[call_ended_status.iconClass, call_ended_status.icon]"></i>
+        <div class="col-2 notify-icon text-center">
+            <i
+                class="fas fa-phone-alt"
+                :class="[call_ended_status.iconClass, call_ended_status.icon]"
+            ></i>
         </div>
         <div class="col-10 message text-left">
             <p class="title">

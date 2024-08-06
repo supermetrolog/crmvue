@@ -1,5 +1,5 @@
 <template>
-    <Modal @close="$emit('close')" class="modal-form-offer-search" title="Фильтры">
+    <Modal @close="$emit('close')" show width="1400" title="Фильтры">
         <template #header>
             <span v-if="filterCount" class="badge badge-danger">
                 {{ filterCount }}
@@ -7,7 +7,7 @@
         </template>
         <Form @submit="onSubmit">
             <div class="row mb-2">
-                <div class="col-8">
+                <div class="col-12 col-md-8">
                     <Input
                         v-model="form.all"
                         @keydown.enter="onSubmit"
@@ -15,7 +15,7 @@
                         placeholder="ID, адрес, собственник, телефон, ФИО"
                     />
                 </div>
-                <div class="col-4 align-self-end">
+                <div class="col-12 col-md-4 align-self-end">
                     <div class="offer-search__actions">
                         <Button
                             @click="clickFavorites"
@@ -25,11 +25,9 @@
                         >
                             избранные
                         </Button>
-                        <AnimationTransition>
-                            <Button v-if="filterCount" @click="resetForm" danger>
-                                Сбросить фильтры
-                            </Button>
-                        </AnimationTransition>
+                        <Button @click="resetForm" :disabled="!filterCount" danger>
+                            Сбросить фильтры
+                        </Button>
                     </div>
                 </div>
             </div>
@@ -87,7 +85,7 @@
                     v-model:first="form.rangeMinArea"
                     v-model:second="form.rangeMaxArea"
                     label="S пола"
-                    class="col-3"
+                    class="col-md-3 col-12"
                     unit="м<sup>2</sup>"
                     type="number"
                     :validators="formAreaValidators"
@@ -97,7 +95,7 @@
                     v-model:first="form.rangeMinPricePerFloor"
                     v-model:second="form.rangeMaxPricePerFloor"
                     label="Цена (продажи, аренды, о-х)"
-                    class="col-3"
+                    class="col-md-3 col-12"
                     unit="₽"
                     type="number"
                     reactive
@@ -107,7 +105,7 @@
                     v-model:first="form.rangeMinCeilingHeight"
                     v-model:second="form.rangeMaxCeilingHeight"
                     label="Высота потолков"
-                    class="col-3"
+                    class="col-md-3 col-12"
                     unit="м"
                     type="number"
                     reactive
@@ -117,7 +115,7 @@
                     v-model="form.fakeRegion"
                     @change="changeRegion"
                     label="Регионы"
-                    class="col-md-3 col-6"
+                    class="col-md-3 col-sm-6 col-12"
                     mode="single"
                     :options="
                         async () => {
@@ -156,45 +154,27 @@
                         </div>
                     </div>
                 </AnimationTransition>
-                <div class="col-2">
-                    <span class="form__subtitle">Классы</span>
-                    <div class="form__row mt-1">
-                        <CheckboxChip
-                            v-for="(objectClass, index) in objectClassList"
-                            :key="index"
-                            v-model="form.class"
-                            :value="index"
-                            :text="objectClass"
-                        />
-                    </div>
-                </div>
-                <div class="col-5">
-                    <span class="form__subtitle">Тип ворот</span>
-                    <div class="form__row mt-1">
-                        <CheckboxChip
-                            v-for="(gateType, index) in gateTypeList"
-                            :key="index"
-                            v-model="form.gates"
-                            :value="index"
-                            :text="gateType"
-                        />
-                    </div>
-                </div>
-                <div class="col-5">
-                    <span class="form__subtitle">Тип пола</span>
-                    <div class="form__row mt-1">
-                        <CheckboxChip
-                            v-for="(floorType, index) in floorTypesFUCKOptions"
-                            :key="index"
-                            v-model="form.floor_types"
-                            :value="index"
-                            :text="floorType"
-                        />
-                    </div>
-                </div>
+                <CheckboxOptions
+                    v-model="form.class"
+                    class="col-md-2 col-12"
+                    label="Классы"
+                    :options="objectClassList"
+                />
+                <CheckboxOptions
+                    v-model="form.gates"
+                    class="col-md-5 col-12"
+                    label="Тип ворот"
+                    :options="gateTypeList"
+                />
+                <CheckboxOptions
+                    v-model="form.floor_types"
+                    class="col-md-5 col-12"
+                    label="Тип пола"
+                    :options="floorTypesFUCKOptions"
+                />
             </div>
             <div class="row mt-2">
-                <div class="col-7">
+                <div class="col-md-7 col-12">
                     <span class="form__subtitle">Прочее</span>
                     <div class="form__row mt-1">
                         <CheckboxChip
@@ -202,6 +182,7 @@
                             :value="form.water"
                             text="Вода"
                             multiple
+                            :disabled-value="2"
                         />
                         <CheckboxChip v-model="form.gas" :value="form.gas" text="Газ" multiple />
                         <CheckboxChip
@@ -209,87 +190,87 @@
                             :value="form.steam"
                             text="Пар"
                             multiple
+                            :disabled-value="2"
                         />
                         <CheckboxChip
                             v-model="form.sewage_central"
                             :value="form.sewage_central"
                             text="Канализация"
                             multiple
+                            :disabled-value="2"
                         />
                         <CheckboxChip
                             v-model="form.racks"
                             :value="form.racks"
                             text="Стелажи"
                             multiple
+                            :disabled-value="2"
                         />
                         <CheckboxChip
                             v-model="form.railway"
                             :value="form.railway"
                             text="Ж/Д ветка"
                             multiple
+                            :disabled-value="2"
                         />
                         <CheckboxChip
                             v-model="form.has_cranes"
                             :value="form.has_cranes"
                             text="Краны"
                             multiple
+                            :disabled-value="2"
                         />
                         <CheckboxChip
                             v-model="form.firstFloorOnly"
                             :value="form.firstFloorOnly"
                             text="Только 1 этаж"
                             multiple
+                            :disabled-value="2"
                         />
                     </div>
                 </div>
-                <div class="col-2">
-                    <span class="form__subtitle">Статус</span>
-                    <div class="form__row mt-1">
-                        <RadioChip v-model="form.status" label="Актив" :value="1" unselect />
-                        <RadioChip v-model="form.status" label="Пассив" :value="2" unselect />
-                    </div>
-                </div>
-                <div class="col-2">
-                    <span class="form__subtitle">Отопление</span>
-                    <div class="form__row mt-1">
-                        <RadioChip v-model="form.heated" label="Да" :value="1" unselect />
-                        <RadioChip v-model="form.heated" label="Нет" :value="2" unselect />
-                    </div>
-                </div>
+                <RadioOptions
+                    v-model="form.status"
+                    class="col-md-2 col-12"
+                    label="Статус"
+                    :options="ActivePassiveFUCK"
+                    unselect
+                />
+                <RadioOptions
+                    v-model="form.heated"
+                    class="col-md-2 col-12"
+                    label="Отопление"
+                    :options="entityOptions.defaults.booleanSimple"
+                    unselect
+                />
             </div>
             <div class="row mt-2">
                 <div class="col-12">
                     <span class="form__subtitle">Тип объекта</span>
                     <div class="row mt-2">
-                        <CheckboxIcons
-                            v-model="form.purposes"
-                            @extraSelect="selectObjectType"
-                            extra-label="склад"
-                            :no-all-select="true"
+                        <ObjectTypePicker
+                            v-model:value="form.purposes"
+                            v-model:extra="form.object_type"
                             :extra-value="1"
-                            :extra-options="form.object_type"
-                            class="col-md-4 col-12"
-                            :options="objectTypeListWareHouse"
+                            label="Склад"
+                            :options="objectPurposesWithSectionsOptions.warehouse"
+                            class="col-md-4"
                         />
-                        <CheckboxIcons
-                            v-model="form.purposes"
-                            @extraSelect="selectObjectType"
-                            extra-label="производство"
-                            :no-all-select="true"
+                        <ObjectTypePicker
+                            v-model:value="form.purposes"
+                            v-model:extra="form.object_type"
                             :extra-value="2"
-                            :extra-options="form.object_type"
-                            class="col-md-4 col-12"
-                            :options="objectTypeListProduction"
+                            label="Производство"
+                            :options="objectPurposesWithSectionsOptions.production"
+                            class="col-md-4"
                         />
-                        <CheckboxIcons
-                            v-model="form.purposes"
-                            @extraSelect="selectObjectType"
-                            extra-label="участок"
-                            :no-all-select="true"
+                        <ObjectTypePicker
+                            v-model:value="form.purposes"
+                            v-model:extra="form.object_type"
                             :extra-value="3"
-                            :extra-options="form.object_type"
-                            class="col-md-4 col-12"
-                            :options="objectTypeListPlot"
+                            label="Участок"
+                            :options="objectPurposesWithSectionsOptions.plot"
+                            class="col-md-4"
                         />
                     </div>
                 </div>
@@ -339,7 +320,6 @@ import Modal from '@/components/common/Modal.vue';
 import Button from '@/components/common/Button.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
-import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
 import { onlyPositiveNumber } from '@//validators';
 import useValidate from '@vuelidate/core';
@@ -349,13 +329,21 @@ import {
     pricePerFloorValidators
 } from '@//validators/fields';
 import RadioGroup from '@/components/common/Forms/RadioGroup.vue';
+import ObjectTypePicker from '@/components/common/Forms/ObjectTypePicker.vue';
+import { objectPurposesWithSectionsOptions } from '@/const/options/object.options.js';
+import CheckboxOptions from '@/components/common/Forms/CheckboxOptions.vue';
+import { entityOptions } from '@/const/options/options.js';
+import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
+import { ActivePassive, ActivePassiveFUCK } from '@/const/const.js';
 
 export default {
     name: 'FormModalOfferSearch',
     components: {
+        RadioOptions,
+        CheckboxOptions,
+        ObjectTypePicker,
         RadioGroup,
         DoubleInput,
-        RadioChip,
         CheckboxChip,
         AnimationTransition,
         Button,
@@ -363,12 +351,24 @@ export default {
     },
     mixins: [FormMixin],
     emits: ['close'],
-    data() {
+    data(v$ = useValidate()) {
         return {
-            v$: useValidate()
+            v$: v$
         };
     },
     computed: {
+        ActivePassiveFUCK() {
+            return ActivePassiveFUCK;
+        },
+        ActivePassive() {
+            return ActivePassive;
+        },
+        entityOptions() {
+            return entityOptions;
+        },
+        objectPurposesWithSectionsOptions() {
+            return objectPurposesWithSectionsOptions;
+        },
         formCeilingHeightValidators() {
             return ceilingHeightValidators(this.form.rangeMaxCeilingHeight);
         },

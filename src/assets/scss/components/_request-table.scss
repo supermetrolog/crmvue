@@ -1,0 +1,56 @@
+@use '../utils/mixins';
+@use '../utils/variables';
+
+.request-table {
+    a {
+        color: variables.$color_primary;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    table {
+        width: 100%;
+    }
+
+    &__deal {
+        width: 300px;
+
+        h4 {
+            text-transform: capitalize;
+            color: variables.$color_primary
+        }
+    }
+
+    &__passive-why {
+        p {
+            font-size: 12px;
+        }
+    }
+
+    &__status {
+        width: 130px;
+    }
+
+    &__date {
+        width: 140px;
+    }
+
+    &__badge {
+        font-size: 12px;
+        width: 100%;
+        height: auto;
+        border-radius: 0;
+        padding: 5px 10px;
+        text-transform: uppercase;
+    }
+
+    &__price {
+        width: 250px;
+    }
+
+    &__area  {
+        width: 250px;
+    }
+}

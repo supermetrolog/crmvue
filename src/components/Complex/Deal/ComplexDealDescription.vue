@@ -4,14 +4,11 @@
         <div class="deal-info-description__body" v-html="description"></div>
     </div>
 </template>
-<script>
-export default {
-    name: 'ComplexDealDescription',
-    props: {
-        description: {
-            type: String,
-            required: true
-        }
+<script setup>
+defineProps({
+    description: {
+        type: String,
+        required: true
     }
-};
+});
 </script>

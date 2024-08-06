@@ -33,34 +33,32 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import { PositionList } from '@/const/const';
+import { computed } from 'vue';
+import { toInitialsFormat } from '@/utils/formatter.js';
 
-export default {
-    name: 'ComplexDealOwnerContact',
-    props: {
-        contact: {
-            type: Object,
-            required: true
-        }
-    },
-    computed: {
-        avatarText() {
-            if (this.contact.middle_name && this.contact.first_name)
-                return `${this.contact.first_name[0]}${this.contact.middle_name[0]}`;
-
-            if (this.contact.full_name) return this.$formatter.initials(this.contact.full_name);
-            else return '?';
-        },
-        position() {
-            return PositionList[this.contact.position].label;
-        },
-        fullName() {
-            if (this.contact.full_name) return this.contact.full_name;
-
-            if (this.contact.type === 1) return '[Общий контакт]';
-            return '-';
-        }
+const props = defineProps({
+    contact: {
+        type: Object,
+        required: true
     }
-};
+});
+
+const position = computed(() => PositionList[props.contact.position].label);
+
+const avatarText = computed(() => {
+    if (props.contact.middle_name && props.contact.first_name)
+        return `${props.contact.first_name[0]}${props.contact.middle_name[0]}`;
+
+    if (props.contact.full_name) return toInitialsFormat(props.contact.full_name);
+    else return '?';
+});
+
+const fullName = computed(() => {
+    if (props.contact.full_name) return props.contact.full_name;
+
+    if (props.contact.type === 1) return '[Общий контакт]';
+    return '-';
+});
 </script>

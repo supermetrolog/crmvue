@@ -42,7 +42,6 @@
                 v-if="tradeOffer.purposes_block.length"
                 :purposes="tradeOffer.purposes_block"
             />
-            <ComplexParameters :parameters="parameters" />
             <ComplexOfferAdvertisements :advertisements="advertisements" />
         </div>
         <ComplexTabs class="trade-offer-item__tabs" :offer="tradeOffer" />
@@ -57,23 +56,21 @@ import { unitTypes } from '@/const/unitTypes';
 import ComplexOfferArea from '@/components/Complex/Offer/ComplexOfferArea.vue';
 import { alg } from '@/utils/alg';
 import ComplexOfferPrice from '@/components/Complex/Offer/ComplexOfferPrice.vue';
-import { reducer } from '@/utils';
+import { reducer } from '@/utils/reducer.js';
 import ComplexOfferStatus from '@/components/Complex/Offer/ComplexOfferStatus.vue';
 import ComplexTabs from '@/components/Complex/ComplexTabs.vue';
 import ComplexActions from '@/components/Complex/ComplexActions.vue';
 import ComplexOfferAdvertisements from '@/components/Complex/Offer/ComplexOfferAdvertisements.vue';
 import { PriceOptionList, PriceOptionTypes } from '@/const/const';
-import ComplexParameters from '@/components/Complex/ComplexParameters.vue';
 import { entityProperties } from '@/const/properties/properties';
-import { mapper } from '@/utils/mapper';
 import ComplexPurposes from '@/components/Complex/ComplexPurposes.vue';
 import { mapGetters } from 'vuex';
+import { deleteObjectsWithEmptyProperties } from '@/utils/deleteObjectsWithEmptyProperties.js';
 
 export default {
     name: 'ComplexOfferItem',
     components: {
         ComplexPurposes,
-        ComplexParameters,
         ComplexOfferAdvertisements,
         ComplexActions,
         ComplexOfferStatus,
@@ -246,7 +243,7 @@ export default {
                     ...acc,
                     [key]: {
                         ...current,
-                        description: alg.deleteObjectsWithUndueProperties(
+                        description: deleteObjectsWithEmptyProperties(
                             current.description,
                             'valueMax',
                             0
@@ -294,18 +291,12 @@ export default {
             }));
 
             return {
-                range: alg.deleteObjectsWithUndueProperties(rangePrices, 'valueMax', 0),
-                service: alg.deleteObjectsWithUndueProperties(servicePrices, 'value', 0),
-                warehouse: alg.deleteObjectsWithUndueProperties(warehousePrices, 'valueMax', 0),
-                serviceIn: alg.deleteObjectsWithUndueProperties(serviceInPrices, 'value', 0),
-                serviceOut: alg.deleteObjectsWithUndueProperties(serviceOutPrices, 'value', 0)
+                range: deleteObjectsWithEmptyProperties(rangePrices, 'valueMax', 0),
+                service: deleteObjectsWithEmptyProperties(servicePrices, 'value', 0),
+                warehouse: deleteObjectsWithEmptyProperties(warehousePrices, 'valueMax', 0),
+                serviceIn: deleteObjectsWithEmptyProperties(serviceInPrices, 'value', 0),
+                serviceOut: deleteObjectsWithEmptyProperties(serviceOutPrices, 'value', 0)
             };
-        },
-        parameters() {
-            return mapper.propertiesToParametersFormat(
-                this.tradeOffer,
-                entityProperties.offer.parameters
-            );
         },
         advertisements() {
             return Object.keys(entityProperties.offer.advertisements).map(key => {

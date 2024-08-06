@@ -1,9 +1,7 @@
 <template>
-    <div class="modal-form-company-request-disable">
-        <Modal @close="$emit('close')" class="autosize" :title="title">
-            <FormCompanyRequestDisable @disabled="$emit('disabled')" :request_id="request_id" />
-        </Modal>
-    </div>
+    <Modal @close="$emit('close')" show width="550" :title="title">
+        <FormCompanyRequestDisable @disabled="$emit('disabled')" :request_id="request_id" />
+    </Modal>
 </template>
 
 <script>

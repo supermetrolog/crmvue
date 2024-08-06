@@ -3,11 +3,9 @@
 
 .tabs-component {
     &-tabs {
-        display: flex;
-        column-gap: 20px;
+        @include mixins.flex-box($gap: 0 20px);
         background-color: variables.$color_grey_alt;
         padding: 10px;;
-        gap: 0;
     }
 
     &-tab {
@@ -19,15 +17,19 @@
             text-transform: capitalize;
             color: variables.$color_grey;
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
             transition: background-color 0.3s ease-in-out;
 
-            &:hover {
+            &:not(.is-disabled):hover {
                 background-color: rgba(0, 183, 74, .3);
 
                 &::before {
                     width: 100%;
                 }
+            }
+
+            &.is-disabled {
+                cursor: default;
             }
 
             &::before {
@@ -44,7 +46,6 @@
 
             &.is-active {
                 color: darken($color: variables.$color_success, $amount: 12);
-                font-weight: 700;
 
                 &::before {
                     width: 100%;

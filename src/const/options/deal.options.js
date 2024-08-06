@@ -8,7 +8,7 @@ const publicServices = {
         icon: 'fa-solid fa-droplet'
     },
     3: {
-        name: 'Элекричество',
+        name: 'Электричество',
         icon: 'fa-solid fa-plug-circle-bolt'
     }
 };
@@ -30,7 +30,7 @@ const opex = {
 
 const tax = {
     1: 'Triple Net',
-    2: 'УСН',
+    2: 'Упрощенная СН',
     3: 'С НДС',
     4: 'Без НДС'
 };
@@ -39,7 +39,7 @@ const servicePrice = {
     1: 'Включено',
     2: 'Частично',
     3: 'Не включено',
-    4: 'Не известно'
+    4: 'Неизвестно'
 };
 
 const commissionOwner = {
@@ -55,6 +55,13 @@ const status = {
     3: 'Продано',
     4: 'Неизвестно',
     5: 'Свободно, размечено'
+};
+
+const type = {
+    1: 'Аренда',
+    2: 'Продажа',
+    3: 'Ответ. хранение',
+    4: 'Субаренда'
 };
 
 const commissionStatement = {
@@ -116,6 +123,7 @@ export const dealOptions = {
     builtToSuitPlanStatement,
     saleCompanyStatement,
     priceServiceStatement,
+    type,
     typeStatement,
     status,
     statusStatement

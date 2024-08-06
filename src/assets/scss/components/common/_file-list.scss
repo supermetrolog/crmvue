@@ -1,0 +1,30 @@
+@use '../../utils/mixins';
+
+.file-list {
+    @include mixins.flex-box($d: column, $gap: 20px);
+    max-height: 70vh;
+    overflow-y: auto;
+
+    &__label {
+        display: inline-block;
+        margin-bottom: 10px;
+        padding: 7px 12px;
+        background-color: rgba(211, 211, 211, 0.8);
+        font-size: 14px;
+        font-weight: 600;
+        border-radius: 15px;
+    }
+
+    &__row {
+        @include mixins.flex-box($gap: 10px, $wrap: true);
+
+        .file {
+            width: 100px;
+        }
+    }
+
+    &--images .file {
+        @include mixins.light-border;
+        flex-basis: calc((100% - 50px) / 6);
+    }
+}

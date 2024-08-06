@@ -1,27 +1,18 @@
 <template>
-    <router-link class="nav-item" :to="data.url" exact-active-class="active" :exact="data.exact">
-        <a @click="clickedLink" href="#" class="nav-link">
-            <div class="nav-link__content">{{ data.name }}</div>
-        </a>
+    <router-link class="header-link" :to="data.url" exact-active-class="active" :exact="data.exact">
+        <DashboardChip class="header-link__chip dashboard-bg-gray-l">
+            {{ data.name }}
+        </DashboardChip>
     </router-link>
 </template>
 
-<script>
-export default {
-    name: 'HeaderMenuItem',
-    props: {
-        data: {
-            type: Object
-        }
-    },
-    methods: {
-        clickedLink(e) {
-            if (this.$route.path == this.data.url) {
-                e.preventDefault();
-            }
-        }
-    }
-};
-</script>
+<script setup>
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 
-<style></style>
+defineProps({
+    data: {
+        type: Object,
+        required: true
+    }
+});
+</script>

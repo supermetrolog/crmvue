@@ -1,22 +1,17 @@
 <template>
-    <Modal
-        @close="$emit('close')"
-        :title="formdata ? 'Редактирование сделки' : 'Создание сделки'"
-        class="form-company-deal"
-    >
-        <Loader v-if="loader" class="center" />
+    <Modal @close="$emit('close')" show class="form-company-deal" :width="1000">
+        <template #header>
+            <Switch
+                v-model="form.is_our"
+                @change="changeIsCompetitor"
+                :transform="Number"
+                :checked="form.is_our"
+                false-title="Сделка конкурентов"
+                true-title="Наша сделка"
+            />
+        </template>
+        <Loader v-if="isLoading" />
         <Form @submit="onSubmit">
-            <FormGroup class="mb-4">
-                <CheckboxChip
-                    v-model="form.is_our"
-                    @change="form.is_our ? (form.is_competitor = 0) : (form.is_competitor = 1)"
-                    :disabled="isOurDeal"
-                    :false-value="0"
-                    :value="1"
-                    text="Наша сделка"
-                    class="col-12"
-                />
-            </FormGroup>
             <FormGroup>
                 <MultiSelect
                     v-model="form.competitor_company_id"
@@ -33,13 +28,14 @@
                     :searchable="true"
                     :options="
                         async query => {
+                            if (!query?.length) return [];
                             return await searchCompetitorCompany(query);
                         }
                     "
                 />
                 <MultiSelect
                     v-model="form.offerHandler"
-                    @change="form = { ...form, ...form.offerHandler }"
+                    @change="changeOfferHandler"
                     :v="v$.form.object_id"
                     :disabled="!!object_id"
                     extra-classes="long-text"
@@ -53,10 +49,30 @@
                     :searchable="true"
                     :options="
                         async query => {
+                            if (!query?.length) return [];
                             return await searchOffer(query);
                         }
                     "
-                />
+                >
+                    <template #option="{ option }">
+                        <div class="form-company-deal__offer">
+                            <VLazyImage
+                                :src="option.description.thumb"
+                                class="form-company-deal__thumb"
+                                alt="company deal thumb"
+                            />
+                            <p>
+                                <span>
+                                    <b> #{{ option.value.visual_id }} </b>,
+                                </span>
+                                <span v-if="option.description.deal">
+                                    {{ option.description.deal }},
+                                </span>
+                                <span>{{ option.description.district }}</span>
+                            </p>
+                        </div>
+                    </template>
+                </MultiSelect>
             </FormGroup>
             <FormGroup>
                 <Input v-model="form.name" label="Название" class="col-6 pr-1" />
@@ -82,6 +98,7 @@
                     :searchable="true"
                     :options="
                         async query => {
+                            if (!query?.length) return [];
                             return await searchCompany(query);
                         }
                     "
@@ -109,7 +126,7 @@
                     label="ФО"
                     title="Форма организации"
                     class="col-3"
-                    :options="formOfOrganizationOptions"
+                    :options="CompanyFormOrganization"
                 />
                 <Input
                     v-model="form.floorPrice"
@@ -127,28 +144,26 @@
                     class="col-6"
                     :options="CONSULTANT_LIST"
                 />
-                <Input v-model="form.dealDate" label="Дата сделки" type="date" class="col-6">
-                    <Input
-                        v-if="contractTermVisible"
-                        v-model="form.contractTerm"
-                        label="Срок контракта в месяцах"
-                        class="col-12 p-0 mt-1"
-                        maska="####"
-                    />
-                </Input>
+                <Input v-model="form.dealDate" label="Дата сделки" type="date" class="col-3" />
+                <Input
+                    v-model="form.contractTerm"
+                    label="Срок контракта в месяцах"
+                    :disabled="!contractTermVisible"
+                    class="col-3"
+                    maska="####"
+                />
             </FormGroup>
             <FormGroup>
                 <Textarea v-model="form.description" label="Описание" class="col-12" />
             </FormGroup>
-            <Submit success class="col-4 mx-auto">{{ formdata ? 'Сохранить' : 'Создать' }}</Submit>
+            <Submit success class="col-4 mx-auto">{{ formData ? 'Сохранить' : 'Создать' }}</Submit>
         </Form>
     </Modal>
 </template>
 
-<script>
-import { mapActions, mapGetters } from 'vuex';
-import useValidate from '@vuelidate/core';
-import { helpers, required } from '@vuelidate/validators';
+<script setup>
+import { useStore } from 'vuex';
+import useVuelidate from '@vuelidate/core';
 import Form from '@/components/common/Forms/Form.vue';
 import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import Input from '@/components/common/Forms/Input.vue';
@@ -156,364 +171,306 @@ import Textarea from '@/components/common/Forms/Textarea.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import api from '@//api/api.js';
 import { CompanyFormOrganization } from '@/const/const.js';
-import moment from 'moment';
 import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
-import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
-import Submit from '@/components/common/Forms/Submit.vue';
+import Submit from '@/components/common/Forms/FormSubmit.vue';
+import dayjs from 'dayjs';
+import { computed, onBeforeMount, reactive, ref, shallowRef } from 'vue';
+import { validationRulesForCompanyDeal } from '@/validators/rules.js';
+import Switch from '@/components/common/Forms/Switch.vue';
+import VLazyImage from 'v-lazy-image';
+import axios from 'axios';
 
-export default {
-    name: 'FormCompanyDeal',
-    components: {
-        Submit,
-        CheckboxChip,
-        Modal,
-        Loader,
-        Form,
-        FormGroup,
-        Input,
-        Textarea,
-        MultiSelect
+const emit = defineEmits(['updated', 'created', 'close']);
+const props = defineProps({
+    formData: {
+        type: Object
     },
+    request_id: {
+        type: Number
+    },
+    company_id: {
+        type: Number
+    },
+    object_id: {
+        type: Number
+    },
+    complex_id: {
+        type: Number
+    },
+    type_id: {
+        type: Number
+    },
+    original_id: {
+        type: Number
+    },
+    visual_id: {
+        type: String
+    },
+    isOurDeal: {
+        type: Boolean,
+        default: false
+    },
+    dealType: {
+        type: Number,
+        default: null
+    }
+});
 
-    props: {
-        formdata: {
-            type: Object
-        },
-        request_id: {
-            type: Number
-        },
-        company_id: {
-            type: Number
-        },
-        object_id: {
-            type: Number
-        },
-        complex_id: {
-            type: Number
-        },
-        type_id: {
-            type: Number
-        },
-        original_id: {
-            type: Number
-        },
-        visual_id: {
-            type: String
-        },
-        isOurDeal: {
-            type: Boolean,
-            default: false
-        },
-        dealType: {
-            type: Number,
-            default: null
-        }
-    },
-    data() {
-        return {
-            loader: false,
-            v$: useValidate(),
-            selectedCompany: null,
-            selectedCompetitorCompany: null,
-            selectedOffer: null,
-            requestOptions: [],
-            form: {
-                request_id: null,
-                company_id: null,
-                consultant_id: null,
-                name: null,
-                area: null,
-                floorPrice: null,
-                clientLegalEntity: null,
-                description: null,
-                dealDate: moment(new Date()).format('YYYY-MM-DD'),
-                contractTerm: null,
-                is_our: 1,
-                is_competitor: 0,
-                competitor_company_id: null,
-                complex_id: null,
-                object_id: null,
-                type_id: null,
-                formOfOrganization: null,
-                offerHandler: null,
-                original_id: null,
-                visual_id: null
-            }
-        };
-    },
-    validations() {
-        return {
-            form: {
-                consultant_id: {
-                    required: helpers.withMessage('выберите консультанта', required)
-                },
-                company_id: {
-                    required: helpers.withMessage('заполните поле', required)
-                },
-                competitor_company_id: {
-                    customRequired: helpers.withMessage('заполните поле', () => {
-                        if (!this.form.is_our && !this.form.competitor_company_id) {
-                            return false;
-                        }
-                        return true;
-                    })
-                },
-                object_id: {
-                    required: helpers.withMessage('выберите предложение', () => {
-                        if (
-                            this.form.object_id &&
-                            this.form.original_id &&
-                            this.form.type_id &&
-                            this.form.visual_id &&
-                            this.form.complex_id
-                        ) {
-                            return true;
-                        }
-                        return false;
-                    })
-                },
-                type_id: {
-                    required: helpers.withMessage('выберите предложение', required)
-                },
-                original_id: {
-                    required: helpers.withMessage('выберите предложение', required)
-                },
-                visual_id: {
-                    required: helpers.withMessage('выберите предложение', required)
-                },
-                complex_id: {
-                    required: helpers.withMessage('выберите предложение', required)
-                },
-                request_id: {
-                    customRequired: helpers.withMessage('выберите предложение', () => {
-                        if (this.request_id && !this.form.request_id) {
-                            return false;
-                        }
-                        return true;
-                    })
-                }
-            }
-        };
-    },
-    computed: {
-        ...mapGetters(['CONSULTANT_LIST', 'THIS_USER']),
-        formOfOrganizationOptions: () => CompanyFormOrganization,
-        contractTermVisible() {
-            if (!this.requestOptions.length || !this.form.request_id) return false;
-            const currentRequestOption = this.requestOptions.find(
-                item => item.value == this.form.request_id
+const store = useStore();
+
+const isLoading = shallowRef(false);
+const selectedCompany = ref(null);
+const selectedCompetitorCompany = ref(null);
+const selectedOffer = ref(null);
+const requestOptions = ref([]);
+
+const form = reactive({
+    request_id: null,
+    company_id: null,
+    consultant_id: null,
+    name: null,
+    area: null,
+    floorPrice: null,
+    clientLegalEntity: null,
+    description: null,
+    dealDate: dayjs(new Date()).format('YYYY-MM-DD'),
+    contractTerm: null,
+    is_our: 1,
+    is_competitor: 0,
+    competitor_company_id: null,
+    complex_id: null,
+    object_id: null,
+    type_id: null,
+    formOfOrganization: null,
+    offerHandler: null,
+    original_id: null,
+    visual_id: null
+});
+
+const v$ = useVuelidate({ form: validationRulesForCompanyDeal }, { form });
+
+const CONSULTANT_LIST = computed(() => store.getters.CONSULTANT_LIST);
+
+const changeIsCompetitor = () => {
+    form.is_competitor = Number(!form.is_our);
+};
+const contractTermVisible = () => {
+    if (!requestOptions.value.length || !form.request_id) return false;
+
+    const currentRequestOption = requestOptions.value.find(item => item.value == form.request_id);
+
+    return (
+        (currentRequestOption && currentRequestOption.label.indexOf('аренда') !== -1) ||
+        currentRequestOption.label.indexOf('ответ-хранение') !== -1
+    );
+};
+
+const update = async () => {
+    const updated = store.dispatch('UPDATE_DEAL', form);
+
+    if (updated) {
+        emit('updated', form);
+        emit('close');
+    }
+
+    isLoading.value = false;
+};
+
+const create = async () => {
+    const created = store.dispatch('CREATE_DEAL', form);
+
+    if (created) {
+        emit('created', form);
+        emit('close');
+    }
+
+    isLoading.value = false;
+};
+
+const onSubmit = () => {
+    v$.value.$validate();
+
+    if (!form.clientLegalEntity) form.formOfOrganization = null;
+
+    if (!v$.value.form.$error) {
+        isLoading.value = true;
+
+        if (props.formData) update();
+        else create();
+    }
+};
+
+const onChangeCompany = async () => {
+    if (props.request_id) return;
+
+    form.request_id = null;
+    requestOptions.value = [];
+
+    if (!form.company_id) return;
+
+    const requestList = await api.request.searchRequests({
+        company_id: form.company_id,
+        status: [1, 0]
+    });
+
+    requestList.data.forEach(item => {
+        requestOptions.value.push({
+            value: item.id,
+            label: item.format_name + '^2'
+        });
+    });
+};
+
+const searchCompany = async query => {
+    let array = [];
+    let requestList = null;
+
+    requestOptions.value = [];
+
+    if (props.formData || props.company_id) {
+        if (!selectedCompany.value) {
+            selectedCompany.value = await api.companies.getCompany(
+                props.formData ? props.formData.company_id : props.company_id
             );
-            if (
-                (currentRequestOption && currentRequestOption.label.indexOf('аренда') !== -1) ||
-                currentRequestOption.label.indexOf('ответ-хранение') !== -1
-            ) {
-                return true;
-            }
-            return false;
-        }
-    },
-    watch: {
-        form: {
-            handler() {},
-            deep: true
-        }
-    },
-    methods: {
-        ...mapActions([
-            'FETCH_CONSULTANT_LIST',
-            'CREATE_DEAL',
-            'UPDATE_DEAL',
-            'SEARCH_COMPANIES',
-            'SEARCH_REQUESTS',
-            'CREATE_DEAL',
-            'UPDATE_DEAL',
-            'SEARCH_OBJECTS'
-        ]),
-        onSubmit() {
-            this.v$.$validate();
-            !this.form.clientLegalEntity ? (this.form.formOfOrganization = null) : '';
-            if (!this.v$.form.$error) {
-                this.loader = true;
-                if (this.formdata) {
-                    this.update();
-                } else {
-                    this.create();
-                }
-            }
-        },
-        async update() {
-            if (await this.UPDATE_DEAL(this.form)) {
-                this.$emit('updated', this.form);
-                this.clickCloseModal();
-            }
-            this.loader = false;
-        },
-        async create() {
-            if (await this.CREATE_DEAL(this.form)) {
-                this.$emit('created', this.form);
-                this.clickCloseModal();
-            }
-            this.loader = false;
-        },
-        clickCloseModal() {
-            this.$emit('close');
-        },
-        async onChangeCompany() {
-            if (this.request_id) return;
-            this.form.request_id = null;
-            this.requestOptions = [];
-            if (!this.form.company_id) return;
-            let requestList = null;
+
             requestList = await api.request.searchRequests({
-                company_id: this.form.company_id,
-                status: [1, 0]
+                company_id: props.formData ? props.formData.company_id : props.company_id
             });
+        }
+
+        if (requestList && Array.isArray(requestList.data)) {
             requestList.data.forEach(item => {
-                this.requestOptions.push({
+                requestOptions.value.push({
                     value: item.id,
                     label: item.format_name + '^2'
                 });
             });
-        },
-        async searchCompany(query) {
-            let result = null;
-            let array = [];
-            let requestList = null;
-            this.requestOptions = [];
-            if (this.formdata || this.company_id) {
-                if (!this.selectedCompany) {
-                    this.selectedCompany = await api.companies.getCompany(
-                        this.formdata ? this.formdata.company_id : this.company_id
-                    );
-                    requestList = await api.request.searchRequests({
-                        company_id: this.formdata ? this.formdata.company_id : this.company_id
-                    });
-                }
-                if (requestList && Array.isArray(requestList.data)) {
-                    requestList.data.forEach(item => {
-                        this.requestOptions.push({
-                            value: item.id,
-                            label: item.format_name + '^2'
-                        });
-                    });
-                }
-
-                array.push({
-                    value: this.selectedCompany.id,
-                    label: this.selectedCompany.full_name
-                });
-            }
-            query = {
-                all: query
-            };
-            result = await api.companies.searchCompanies(query);
-            result.data.forEach(item => {
-                array.push({ value: item.id, label: item.full_name });
-            });
-            return array;
-        },
-        async searchCompetitorCompany(query) {
-            let result = null;
-            let array = [];
-            if (this.formdata || this.competitor_company_id) {
-                if (!this.selectedCompetitorCompany) {
-                    this.selectedCompetitorCompany = await api.companies.getCompany(
-                        this.formdata ? this.formdata.company_id : this.company_id
-                    );
-                }
-
-                array.push({
-                    value: this.selectedCompetitorCompany.id,
-                    label: this.selectedCompetitorCompany.full_name
-                });
-            }
-            query = {
-                all: query
-            };
-            result = await api.companies.searchCompanies(query);
-            result.data.forEach(item => {
-                array.push({ value: item.id, label: item.full_name });
-            });
-            return array;
-        },
-        async searchOffer(query) {
-            let result = null;
-            let array = [];
-            if (this.formdata || this.object_id) {
-                if (!this.selectedOffer) {
-                    const params = {
-                        original_id: this.formdata
-                            ? this.formdata.offer.original_id
-                            : this.original_id,
-                        object_id: this.formdata ? this.formdata.offer.object_id : this.object_id,
-                        type_id: this.formdata ? this.formdata.offer.type_id : this.type_id,
-                        'per-page': 1
-                    };
-                    let data = await api.companyObjects.searchOffers(params);
-                    data = data.data;
-                    if (data.length) {
-                        this.selectedOffer = data[0];
-                    }
-                }
-
-                array.push({
-                    value: {
-                        original_id: this.selectedOffer.original_id,
-                        object_id: this.selectedOffer.object_id,
-                        type_id: this.selectedOffer.type_id,
-                        visual_id: this.selectedOffer.visual_id,
-                        complex_id: this.selectedOffer.complex_id
-                    },
-                    label: this.selectedOffer.visual_id
-                });
-            }
-            query = {
-                all: query,
-                type_id: [1, 2, 3],
-                'per-page': 10
-            };
-            result = await api.companyObjects.searchOffers(query);
-            result.data.forEach(item => {
-                array.push({
-                    value: {
-                        original_id: item.original_id,
-                        object_id: item.object_id,
-                        type_id: item.type_id,
-                        visual_id: item.visual_id,
-                        complex_id: item.complex_id
-                    },
-                    label: item.visual_id
-                });
-            });
-            return array;
-        }
-    },
-    async mounted() {
-        this.loader = true;
-        await this.FETCH_CONSULTANT_LIST();
-        this.form.request_id = this.request_id;
-        this.form.company_id = this.company_id;
-        this.form.consultant_id = this.THIS_USER.id;
-        this.form.object_id = this.object_id;
-        this.form.original_id = this.original_id;
-        this.form.complex_id = this.complex_id;
-        this.form.type_id = this.type_id;
-        this.form.visual_id = this.visual_id;
-        if (this.formdata) {
-            this.form = { ...this.form, ...this.formdata };
         }
 
-        this.form.offerHandler = {
-            object_id: this.form.object_id,
-            original_id: this.form.original_id,
-            complex_id: this.form.complex_id,
-            type_id: this.form.type_id,
-            visual_id: this.form.visual_id
-        };
-        this.loader = false;
+        array.push({
+            value: selectedCompany.value.id,
+            label: selectedCompany.value.full_name
+        });
     }
-};
-</script>
 
-<style></style>
+    const result = await api.companies.searchCompanies({ all: query });
+    result.data.forEach(item => {
+        array.push({ value: item.id, label: item.full_name });
+    });
+
+    return array;
+};
+
+const searchCompetitorCompany = async query => {
+    const array = [];
+
+    if (props.formData || props.competitor_company_id) {
+        if (!selectedCompetitorCompany.value)
+            selectedCompetitorCompany.value = await api.companies.getCompany(
+                props.formData ? props.formData.company_id : props.company_id
+            );
+        array.push({
+            value: selectedCompetitorCompany.value.id,
+            label: selectedCompetitorCompany.value.full_name
+        });
+    }
+
+    const result = await api.companies.searchCompanies({ all: query });
+    result.data.forEach(item => {
+        array.push({ value: item.id, label: item.full_name });
+    });
+
+    return array;
+};
+
+const searchOffer = async query => {
+    let array = [];
+
+    if (props.formData || props.object_id) {
+        if (!selectedOffer.value) {
+            const params = {
+                original_id: props.formData ? props.formData.offer?.original_id : props.original_id,
+                object_id: props.formData ? props.formData.offer.object_id : props.object_id,
+                type_id: props.formData ? props.formData.offer.type_id : props.type_id,
+                'per-page': 1
+            };
+
+            let data = await api.companyObjects.searchOffers(params);
+            if (data?.data?.length) selectedOffer.value = data.data[0];
+        }
+
+        array.push({
+            value: {
+                original_id: selectedOffer.value.original_id,
+                object_id: selectedOffer.value.object_id,
+                type_id: selectedOffer.value.type_id,
+                visual_id: selectedOffer.value.visual_id,
+                complex_id: selectedOffer.value.complex_id
+            },
+            label: selectedOffer.value.visual_id
+        });
+    }
+
+    const result = await api.companyObjects.searchOffers({
+        all: query,
+        type_id: [1, 2, 3],
+        'per-page': 10
+    });
+
+    result.data.forEach(item => {
+        array.push({
+            value: {
+                original_id: item.original_id,
+                object_id: item.object_id,
+                type_id: item.type_id,
+                visual_id: item.visual_id,
+                complex_id: item.complex_id
+            },
+            description: {
+                thumb: item.thumb,
+                deal: item.deal_type_name,
+                area: item.calc_area_floor,
+                district: item.district_name
+            },
+            label: item.visual_id
+        });
+    });
+
+    return array;
+};
+
+const changeOfferHandler = () => {
+    Object.assign(form, form.offerHandler);
+};
+
+const setForm = () => {
+    form.request_id = props.request_id;
+    form.company_id = props.company_id;
+    form.consultant_id = props.consultant_id;
+    form.object_id = props.object_id;
+    form.original_id = props.original_id;
+    form.complex_id = props.complex_id;
+    form.type_id = props.type_id;
+    form.visual_id = props.visual_id;
+
+    if (props.formData) Object.assign(form, props.formData);
+
+    form.offerHandler = {
+        object_id: form.object_id,
+        original_id: form.original_id,
+        complex_id: form.complex_id,
+        type_id: form.type_id,
+        visual_id: form.visual_id
+    };
+};
+
+onBeforeMount(async () => {
+    isLoading.value = true;
+
+    setForm();
+    await store.dispatch('FETCH_CONSULTANT_LIST');
+
+    isLoading.value = false;
+});
+</script>

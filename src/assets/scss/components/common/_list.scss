@@ -1,5 +1,5 @@
+@use "../../utils/mixins";
+
 .list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+    @include mixins.flex-box($gap: 10px, $wrap: true);
 }

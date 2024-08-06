@@ -28,32 +28,24 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import plural from 'plural-ru';
-import { mapActions } from 'vuex';
+import { useStore } from 'vuex';
 import Rating from '@/components/common/Rating.vue';
+import { onMounted, ref } from 'vue';
 
-export default {
-    name: 'ComplexHoldingCompany',
-    components: {
-        Rating
-    },
-    props: {
-        company: {
-            type: Object
-        }
-    },
-    data() {
-        return {
-            plural: plural,
-            contacts: []
-        };
-    },
-    methods: {
-        ...mapActions({ fetchContacts: 'FETCH_COMPANY_CONTACTS' })
-    },
-    async mounted() {
-        this.contacts = await this.fetchContacts(this.company.id);
+const store = useStore();
+
+const props = defineProps({
+    company: {
+        type: Object,
+        required: true
     }
-};
+});
+
+const contacts = ref([]);
+
+onMounted(async () => {
+    contacts.value = await store.dispatch('FETCH_COMPANY_CONTACTS', props.company.id);
+});
 </script>

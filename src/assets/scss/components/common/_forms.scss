@@ -1,4 +1,5 @@
 @use '../../utils/variables';
+@use '../../utils/mixins';
 
 .invalid:not(:disabled):not(.is-disabled) {
     border-bottom: 2px solid variables.$color_danger !important;
@@ -15,6 +16,252 @@
 }
 
 .form {
+    .searchable {
+        display: block;
+        width: 100%;
+        position: relative;
+        background-color: black;
+        z-index: 1;
+
+        &-container {
+            position: absolute;
+            left: 0;
+            right: 0;
+            background-color: variables.$color_light;
+            max-height: 200px;
+            overflow-x: hidden;
+            overflow-y: auto;
+            border: 1px solid variables.$color_grey;
+            border-top: none;
+        }
+
+        ul {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+
+            li {
+                color: variables.$color_dark;
+                padding: 10px 10px;
+                font-weight: 500;
+                width: 100%;
+                list-style: none;
+                cursor: pointer;
+
+                &:hover {
+                    background-color: darken(variables.$color_light, 5);
+                }
+            }
+        }
+    }
+
+    .error-container {
+        padding: 2px 0 0;
+        text-align: center;
+
+        p {
+            font-size: 11px;
+            font-weight: normal;
+            text-transform: uppercase;
+            color: variables.$color_danger;
+        }
+    }
+
+
+    &-item {
+        &-label {
+            display: inline !important;
+            font-size: 15px;
+            width: 100%;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+            padding-bottom: 10px;
+            color: variables.$color_sidebar_bg;
+            position: relative;
+
+            & > p:first-child {
+                display: inline;
+                font-size: 15px;
+                font-weight: 600;
+                letter-spacing: 0.4px;
+                color: variables.$color_sidebar_bg;
+                position: relative;
+            }
+
+            &.required {
+                & > p:first-child {
+                    &::before {
+                        content: "*";
+                        position: absolute;
+                        right: -10px;
+                        color: variables.$color_danger;
+                        font-size: 16px;
+                    }
+                }
+            }
+        }
+
+        input,
+        select,
+        textarea,
+        .multiselect {
+            width: 100%;
+            letter-spacing: 0.35px;
+            resize: none;
+            font-size: 18px;
+            font-weight: 500;
+            padding: 2px 5px;
+            // color: darken(variables.$color_secondary, 15);
+            color: variables.$color_secondary;
+            border: 1px solid variables.$color_grey;
+            border-radius: unset;
+            max-width: 100%;
+
+            &:not(textarea) {
+                min-height: 34px;
+                max-height: 34px;
+            }
+
+            &:not([type="checkbox"]) {
+                &:not([type="radio"]) {
+                    &:focus {
+                        border-radius: unset;
+                        outline: 1px solid variables.$color_primary;
+                    }
+
+                    &:disabled {
+                        background-color: rgba($color: variables.$color_grey, $alpha: 0.2);
+                    }
+                }
+            }
+        }
+
+        input,
+        textarea {
+            display: block;
+        }
+
+        textarea {
+            height: 200px;
+        }
+
+        &.checkbox {
+            &.inline {
+                label {
+                    font-size: 12px;
+                    font-weight: normal;
+                    color: variables.$color_grey;
+
+                    div {
+                        display: flex;
+                        align-items: flex-end;
+                    }
+                }
+            }
+
+            &.bg {
+                div {
+                    display: flex;
+                    justify-content: space-around;
+
+                    label {
+                        display: flex;
+                        justify-content: center;
+                        outline: 1px dashed black;
+                        width: 100%;
+                        text-align: center;
+                        padding: 5px 0;
+                        font-weight: bold;
+                        border-radius: 3px;
+                        font-size: 12px;
+
+                        &:last-child {
+                            margin-right: 0;
+                        }
+
+                        &.checked {
+                            background-color: variables.$color_success_alt;
+                            color: variables.$color_light;
+                            outline: none;
+                        }
+                    }
+
+                    input {
+                        display: none !important;
+                    }
+                }
+            }
+        }
+
+        &.checkbox,
+        &.radio {
+            &.small {
+                label {
+                    // text-transform: lowercase;
+                    font-size: 11px !important;
+
+                    input[type="radio"] {
+                        // display: inline-block;
+                        min-height: 18px;
+                    }
+                }
+            }
+
+            &.large {
+                input[type="radio"],
+                input[type="checkbox"] {
+                    display: inline;
+                    width: 33px;
+                }
+            }
+
+            label {
+                display: inline-flex;
+                align-self: center;
+                align-items: center;
+
+                &:not(.form-item-label) {
+                    cursor: pointer;
+                    font-weight: normal;
+                    text-transform: uppercase;
+                    font-size: 13px;
+                    margin-right: 4px;
+                }
+            }
+
+            input[type="radio"],
+            input[type="checkbox"] {
+                display: inline;
+                width: 18px;
+                margin: 0 4px 0 0;
+            }
+
+            &.text {
+                input {
+                    display: none;
+                }
+
+                label.clicked-label {
+                    text-transform: none;
+                    border: 1px solid variables.$color_primary;
+                    border-radius: 10px;
+                    color: variables.$color_primary;
+                    padding: 5px 9px;
+                    background-color: variables.$color_light;
+                    margin-bottom: 4px;
+
+                    &.checked {
+                        background-color: variables.$color_primary;
+                        color: variables.$color_light;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.form {
     position: relative;
 
     label {
@@ -22,6 +269,7 @@
 
         &:has(.form__multiselect).required > span {
             position: relative;
+            width: max-content;
 
             &::after {
                 content: '*';
@@ -35,10 +283,7 @@
     }
 
     &__row {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        flex-wrap: wrap;
+        @include mixins.flex-box($a: center, $gap: 5px, $wrap: true);
     }
 
     &__delimiter {
@@ -55,8 +300,12 @@
             margin-top: 5px;
         }
 
+        &:has(.form__tooltip) {
+            position: relative;
+        }
+
         &:has(.form__tooltip) .form__input {
-            padding-right: 35px;
+            padding-right: 45px;
         }
 
         &:not(&--reactive) {
@@ -100,10 +349,7 @@
     }
 
     &__column {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 5px;
+        @include mixins.flex-box($a: center, $gap: 5px, $d: column);
     }
 
     &__block {
@@ -126,8 +372,18 @@
         outline: none;
         width: 100%;
 
+        &--rounded {
+            border-radius: 20px;
+            background-color: #F3F3F3;
+            border: none;
+
+            &:active, &:focus {
+                outline: 2px solid rgba(0, 0, 0, .3);
+            }
+        }
+
         &:not(:disabled):focus, &:not(:disabled):active {
-            border-color: #186a8d;
+            border-color: #186a8d!important;
         }
 
         &--unit {
@@ -152,11 +408,10 @@
     }
 
     &__caption {
+        @include mixins.flex-box($a: center);
         padding: 0 6px 0 8px;
         height: calc(100% - 2px);
         position: absolute;
-        display: flex;
-        align-items: center;
         bottom: 1px;
         left: 0;
         border-right: 1px solid #d1d5db;
@@ -173,8 +428,8 @@
         width: 100%;
         resize: none;
 
-        &:focus, &:active {
-            border-color: #186a8d;
+        &:not(:disabled):focus, &:not(:disabled):active {
+            border-color: #186a8d!important;
         }
     }
 
@@ -189,8 +444,7 @@
         width: 100%;
 
         &--row {
-            display: flex;
-            gap: 5px;
+            @include mixins.flex-box($gap: 5px);
         }
     }
 
@@ -200,7 +454,10 @@
 
     &__group {
         height: min-content;
-        margin-bottom: 10px;
+
+        &:not(&:last-child) {
+            margin-bottom: 10px;
+        }
 
         &--list {
             gap: 5px;
@@ -216,20 +473,23 @@
     }
 
     &__stars {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
+        @include mixins.flex-box($gap: 5px, $a: center);
+        width: max-content;
     }
 
     &__star {
-        cursor: pointer;
+        background-color: unset;
+        border: none;
         font-size: 30px;
+        cursor: pointer;
+
+        &:hover {
+            opacity: .6;
+        }
     }
 
     &__chips {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 5px;
+        @include mixins.flex-box($gap: 5px, $wrap: true);
     }
 
     &__tooltip {
@@ -260,10 +520,8 @@
     }
 
     &__list {
+        @include mixins.flex-box($gap: 3px, $d: column);
         list-style: decimal;
-        display: flex;
-        flex-direction: column;
-        gap: 3px;
         font-size: 14px;
         padding-left: 15px;
     }
@@ -290,6 +548,7 @@
 
     i {
         margin-left: 5px;
+        font-size: 18px;
     }
 
     input {
@@ -297,13 +556,11 @@
     }
 
     &__label {
+        @include mixins.flex-box($a: center, $j: center);
+        @include mixins.transition(background-color .5s, border-color .5s, color .5s);
         padding: 5px 15px;
         border: 1px solid #d1d5db;
         border-radius: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all .5s ease;
         min-height: 35px;
         min-width: 35px;
         background-color: #fff;
@@ -370,6 +627,15 @@
     .form__textarea {
         height: 100px;
     }
+
+    &__offer {
+        @include mixins.flex-box($gap: 5px, $a: center);
+    }
+
+    &__thumb {
+        height: 40px;
+        width: 40px;
+    }
 }
 
 .form-complex-floor {
@@ -379,11 +645,11 @@
 }
 
 .radio-chip {
+    @include mixins.transition(background-color .5s, border-color .5s, color .5s);
     cursor: pointer;
     padding: 5px 15px;
     border: 1px solid #d1d5db;
     border-radius: 15px;
-    transition: all .5s ease;
     min-height: 35px;
     min-width: 35px;
     background-color: #fff;
@@ -405,6 +671,42 @@
 
     &:has(.invalid) {
         border-bottom: 2px solid variables.$color_danger !important;
+    }
+}
+
+.radio-icon {
+    @include mixins.flex-box($a: center, $j: center, $d: column, $gap: 5px);
+    font-size: 14px;
+    height: 120px;
+    width: 120px;
+    border-radius: 50%;
+    opacity: .4;
+    cursor: pointer;
+    padding: 5px;
+
+    @include mixins.transition(opacity, color);
+
+    &__input {
+        display: none;
+    }
+
+    &:hover {
+        opacity: 1;
+        color: #fff;
+    }
+
+    &.active {
+        opacity: 1;
+        color: #fff;
+    }
+
+    &__icon  {
+        font-size: 30px;
+    }
+
+    &__label {
+        text-align: center;
+        font-weight: 500;
     }
 }
 
@@ -460,8 +762,6 @@
     }
 
     &-tags {
-        max-width: 80% !important;
-        padding-left: 0 !important;
         margin: .25rem auto .25rem .25rem;
 
         input {
@@ -493,14 +793,12 @@
 }
 
 .double-input {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-wrap: wrap;
+    @include mixins.flex-box($gap: 6px, $a: center, $wrap: true);
 
     label {
         flex-basis: calc(50% - 3px);
         min-width: 150px;
+        flex-grow: 1;
     }
 
     &:has(.form__separator) label {
@@ -532,11 +830,9 @@
 }
 
 .checkbox-icons {
-    &__body {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-    }
+    //&__body {
+    //    @include mixins.flex-box($gap: 5px, $d: column);
+    //}
 
     &__extra-label {
         padding: 5px;
@@ -565,21 +861,17 @@
     }
 
     &__list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 5px;
+        @include mixins.flex-box($gap: 5px, $wrap: true);
         max-width: 100%;
     }
 
     &__label {
-        display: flex;
-        justify-content: center;
+        @include mixins.flex-box($a: center, $j: center);
+        @include mixins.transition(background-color .5s, color .5s);
         height: 45px;
         width: 45px;
-        align-items: center;
         border-radius: 4px;
         cursor: pointer;
-        transition: background-color .5s ease, color .5s ease;
         background-color: rgba(211, 211, 211, 0.7);
 
         &:hover {
@@ -616,9 +908,11 @@
     }
 
     &__list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 5px;
+        @include mixins.flex-box($gap: 5px, $wrap: true);
+
+        &:not(:first-child) {
+            margin-top: 0.25rem;
+        }
     }
 
     &.required &__label::after {
@@ -643,10 +937,8 @@
 
 .form-delete {
     &__body {
-        display: flex;
-        gap: 20px;
+        @include mixins.flex-box($a: center, $gap: 20px);
         padding: 30px 50px;
-        align-items: center;
     }
 
     &__icon {
@@ -675,14 +967,16 @@
         position: relative;
         display: inline-block;
         margin-bottom: 5px;
+
+        &:empty {
+            display: block;
+        }
     }
 
     &__field {
+        @include mixins.flex-box($a: center, $d: column);
         margin: 0 auto  ;
         padding: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
         border: 1px dashed #b8becb;
         border-radius: 4px;
         cursor: pointer;
@@ -724,14 +1018,13 @@
 
 .file {
     &__body {
+        @include mixins.flex-box($d: column);
         aspect-ratio: 1 / 1;
         background-color: rgba(211, 211, 211, 0.7);
         border-radius: 4px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         position: relative;
         transition: background-color .5s ease;
+        width: initial!important;
 
         &:hover {
             background-color: rgba(16, 185, 129, 0.3);
@@ -751,6 +1044,8 @@
 
     &__icon {
         font-size: 50px;
+        flex-grow: 1;
+        @include mixins.flex-box($a: center, $j: center);
     }
 
     &__description {
@@ -760,40 +1055,31 @@
     }
 
     &__actions {
+        @include mixins.flex-box($a: center, $gap: 5px);
+        @include mixins.transition(visibility .5s, opacity .5s);
         position: absolute;
         top: 5px;
         right: 5px;
-        display: flex;
-        align-items: center;
-        gap: 5px;
         visibility: hidden;
         opacity: 0;
-        transition: visibility .5s ease, opacity .5s ease;
     }
 
     &__action {
+        @include mixins.flex-box($a: center, $j: center);
         cursor: pointer;
         border-radius: 50%;
         border: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         height: 25px;
         width: 25px;
     }
 
     &__description {
+        @include mixins.flex-box($j: flex-start, $gap: 5px, $d: column);
         text-align: start;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        gap: 5px;
     }
 
     &__description-list {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
+        @include mixins.flex-box($gap: 5px, $d: column);
     }
 
     &__subtitle {
@@ -801,8 +1087,7 @@
     }
 
     &__option {
-        display: flex;
-        gap: 5px;
+        @include mixins.flex-box($gap: 5px);
 
         span:nth-child(2) {
             word-break: break-word;
@@ -810,18 +1095,419 @@
     }
 
     &__name {
-        position: absolute;
-        bottom: 0;
         width: 100%;
         padding: 0 5px;
         text-align: center;
         color: #000;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        @include mixins.text-overflow();
     }
 
     &--new .file__body {
+        margin: 3px;
         outline: 3px solid #10b981;
+    }
+}
+
+.switch {
+    @include mixins.flex-box($gap: 10px, $a: center);
+
+    &__wrapper {
+        height: 24px;
+        width: 50px;
+        border-radius: 20px;
+        border: 1px solid rgba(0, 0, 0, .1);
+        position: relative;
+        transition: background-color .2s ease-in-out;
+        background-color: #dcdfe6;
+        display: block;
+        flex-shrink: 0;
+
+        &:not(.disabled) {
+            cursor: pointer;
+        }
+
+        &.disabled {
+            opacity: .6;
+        }
+    }
+
+    &__input {
+        height: 0;
+        width: 0;
+        opacity: 0;
+        visibility: hidden;
+        position: absolute;
+    }
+
+    &__circle {
+        left: 2px;
+        top: 2px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background-color: #fff;
+        position: absolute;
+        transition: 0.1s ease-in-out;
+    }
+
+    &__label {
+        padding: 0;
+        display: inline;
+        background-color: unset;
+        border: unset;
+        width: unset;
+        @include mixins.transition(color);
+        @include mixins.hover {
+            color: variables.$bg_success;
+        }
+
+        cursor: pointer;
+    }
+
+    &:not(&:has(&__input:checked)) {
+        .switch__label--false {
+            color: variables.$bg_success;
+            font-weight: 500;
+        }
+    }
+
+    &:has(&__input:checked) {
+        .switch {
+            &__wrapper {
+                background-color: variables.$bg_success;
+            }
+
+            &__circle {
+                transform: translateX(26px);
+            }
+
+            &__label--true {
+                color: variables.$bg_success;
+                font-weight: 500;
+            }
+        }
+    }
+}
+
+.color-picker {
+    @include mixins.flex-box($a: center, $gap: 10px, $wrap: wrap);
+
+    &__label {
+        font-weight: 500;
+    }
+
+    &__element {
+        border: 2px solid rgba(0, 0, 0, .2);
+        aspect-ratio: 1 / 1;
+        @include mixins.transition(opacity);
+        @include mixins.hover {
+            cursor: pointer;
+            opacity: .7;
+        }
+
+        &--circle {
+            border-radius: 50%;
+        }
+    }
+}
+
+.color-picker-popup {
+    z-index: 4005!important;
+}
+
+.vue-editor {
+    &__label {
+        font-weight: 500;
+    }
+
+    .ql-editor {
+        font-size: 16px;
+        min-height: 200px;
+        max-height: 400px;
+    }
+}
+
+
+.object-type-picker {
+    &__wrapper {
+        @include mixins.flex-box($d: column, $gap: 5px);
+    }
+
+    &__extra {
+        padding: 5px;
+        color: variables.$color_dark;
+        outline: 1px dashed variables.$color_dark;
+        font-weight: 500;
+        text-transform: uppercase;
+        border-radius: 2px;
+        border: none;
+        cursor: pointer;
+        font-size: 13px;
+        text-align: center;
+        background-color: transparent;
+        @include mixins.transition(background-color, color, outline-color);
+
+        @include mixins.hover {
+            background-color: rgba(16, 185, 129, 0.7);
+        }
+
+        &.active {
+            background-color: rgba(16, 185, 129, 1);
+            color: #fff;
+            outline-color: transparent;
+        }
+    }
+
+    &__list {
+        @include mixins.flex-box($gap: 5px, $wrap: true);
+        max-width: 100%;
+    }
+
+    &__button {
+        @include mixins.flex-box($a: center, $j: center);
+        @include mixins.transition(background-color .5s, color .5s);
+        height: 45px;
+        width: 45px;
+        border-radius: 4px;
+        border: none;
+        background-color: rgba(211, 211, 211, 0.7);
+        font-size: 22px;
+
+        &:not([disabled]) {
+            cursor: pointer;
+        }
+
+        @include mixins.hover {
+            background-color: rgba(16, 185, 129, 0.7);
+        }
+
+        &.active {
+            background-color: rgba(16, 185, 129, 1);
+            color: variables.$color_light;
+        }
+    }
+}
+
+.floor-picker {
+    &__label {
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+
+    &__list {
+        @include mixins.flex-box($d: column, $gap: 5px);
+    }
+
+    &__button {
+        @include mixins.transition(background-color, border-color, color);
+        cursor: pointer;
+        padding: 5px 15px;
+        border: 1px solid #d1d5db;
+        border-radius: 5px;
+        min-height: 35px;
+        min-width: 35px;
+        background-color: #fff;
+
+        @include mixins.hover {
+            background-color: rgba(16, 185, 129, 0.6);
+            color: #fff;
+        }
+
+        &.active {
+            background-color: #10b981;
+            border-color: #10b981;
+            color: #fff;
+        }
+    }
+}
+
+.building-picker {
+    &__header {
+        @include mixins.flex-box($gap: 10px, $wrap: true);
+    }
+
+    &__list {
+        @include mixins.flex-box($wrap: true, $gap: 10px);
+    }
+}
+
+.building-picker-object {
+    border: 1px solid rgba(0, 0, 0, .3);
+    border-radius: 5px;
+    opacity: .6;
+    @include mixins.transition(opacity);
+    @include mixins.flex-box($d: column);
+    width: 200px;
+
+    &.selected {
+        opacity: 1;
+        outline: 3px solid variables.$cl-success;
+    }
+
+    &:not(.disabled) {
+        cursor: pointer;
+    }
+
+    &__id {
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        color: #fff;
+        font-size: 12px!important;
+    }
+
+    &__preview {
+        height: 150px;
+        width: 100%;
+        position: relative;
+    }
+
+    &__image {
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    &__content {
+        padding: 5px;
+    }
+
+    &__description {
+        font-size: 14px;
+        @include mixins.text-overflow(2);
+    }
+}
+
+.input-relation {
+    margin-top: 27px;
+
+    .dashboard-chip {
+        padding: 9px 10px;
+        @include mixins.transition(background-color);
+    }
+}
+
+.radio-options, .checkbox-options {
+    .form__label.required::after {
+        content: '*';
+        font-size: 18px;
+        color: variables.$color_danger;
+        margin-left: 3px;
+    }
+}
+
+.gate-types-picker {
+    &__label {
+        padding: 5px;
+        background-color: variables.$color_grey_alt;
+        border-radius: 5px;
+
+        @include mixins.flex-box($gap: 5px);
+    }
+
+    &__select {
+        max-width: 350px;
+    }
+
+    &__input {
+        max-width: 200px;
+    }
+
+    &__buttons {
+        @include mixins.flex-box($gap: 10px);
+    }
+}
+
+.file-picker {
+    &__header {
+        @include mixins.flex-box($gap: 10px, $wrap: true);
+    }
+
+    &__preview {
+        aspect-ratio: 1 / 1;
+        opacity: .5;
+        @include mixins.transition(opacity);
+        border-radius: 5px;
+
+        &.active {
+            opacity: 1;
+            outline: 3px solid variables.$cl-success;
+        }
+    }
+
+    &:not(.disabled) &__preview {
+        cursor: pointer;
+    }
+
+    &__image {
+        border-radius: 5px;
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
+}
+
+.switch-slider {
+    &.disabled &__wrapper {
+        opacity: .5;
+    }
+
+    &__wrapper {
+        @include mixins.flex-box($gap: 15px, $a: center);
+    }
+
+    &__label {
+        font-weight: 500;
+        display: inline;
+        width: 120px;
+    }
+
+    &__buttons {
+        @include mixins.flex-box($gap: 5px);
+        padding: 5px;
+        border-radius: 5px;
+        background-color: rgba(211, 211, 211, 0.4);
+    }
+
+    &__button {
+        &:not(.disabled) {
+            cursor: pointer;
+        }
+
+        border: none;
+        background-color: #fff;
+        width: max-content;
+        padding: 5px 10px;
+        border-radius: 5px;
+        opacity: .8;
+
+        @include mixins.transition(background-color, color, opacity);
+        @include mixins.hover {
+            background-color: variables.$cl-success;
+            color: #fff;
+            opacity: 1;
+        }
+
+        &.active {
+            background-color: rgba(16, 185, 129, 0.8);
+            color: #fff;
+            opacity: 1;
+        }
+
+        &--unknown {
+            &.active {
+                color: #000;
+                background-color: rgba(16, 185, 129, 0.3);
+                opacity: .8;
+            }
+
+            @include mixins.hover {
+                color: #000;
+                background-color: rgba(16, 185, 129, 0.3);
+                opacity: .8;
+            }
+        }
     }
 }

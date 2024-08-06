@@ -1,0 +1,245 @@
+@use '../../utils/mixins';
+@use '../../utils/variables';
+
+.modal-timeline {
+    z-index: 200;
+
+    .modal__header {
+        align-items: start;
+    }
+
+    .modal__close {
+        margin-top: 9px;
+    }
+}
+
+.timeline-page {
+    padding: 10px 0;
+
+    .tabs-component {
+        &-tabs {
+            padding: 0;
+            background-color: transparent;
+        }
+    }
+
+    &__content {
+        overflow-y: auto;
+        scrollbar-gutter: stable;
+        max-height: calc(100vh - 150px);
+        padding-right: 5px;
+    }
+
+    &__current {
+        overflow-x: hidden;
+    }
+}
+
+.timeline-backdrop {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    @include mixins.flex-box($a: center, $j: center);
+    backdrop-filter: blur(2px);
+    z-index: 10;
+    background-color: rgba(255, 255, 255, 0.5);
+
+    &__message {
+        padding: 20px;
+        border-radius: 10px;
+        background-color: variables.$color_grey_alt;
+    }
+
+    &__title {
+        font-size: 20px;
+        font-weight: 500;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+}
+
+.timeline-page-header {
+    width: 100%;
+
+    &__title {
+        @include mixins.text-overflow();
+    }
+
+    &__function {
+        opacity: .8;
+
+        @include mixins.hover {
+            opacity: 1;
+        }
+    }
+
+    &__consultant {
+        &.active {
+            background-color: variables.$bg-success;
+            color: #fff;
+        }
+    }
+}
+
+.timeline-info {
+    padding: 10px;
+    border-radius: 0 5px 5px 0;
+    background-color: #efefef;
+    border-left: 4px solid #dbdbdb;
+
+    &.success {
+        background-color: #effaf5;
+        border-color: #48c78e;
+    }
+
+    &__content {
+        @include mixins.flex-box($gap: 5px)
+    }
+
+    &__icon {
+        font-size: 40px;
+        margin-top: 10px;
+        margin-right: 5px;
+    }
+
+    &__title {
+        font-size: 20px;
+        font-weight: 500;
+        margin-bottom: 5px;
+        @include mixins.flex-box($gap: 10px);
+    }
+
+    &__description {
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+
+    &__footer {
+        border-top: 1px solid #c5c5c5;
+        padding: 15px 0 10px;
+    }
+}
+
+.timeline-recommendations {
+    &__title {
+        font-weight: 500;
+    }
+}
+
+.timeline-feedback-picker {
+    &__title {
+        font-size: 17px;
+        font-weight: 500;
+    }
+
+    &__element {
+        .checkbox-chip__label {
+            flex-direction: column-reverse;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            width: 110px;
+            font-size: 15px;
+            font-weight: 500;
+
+            i {
+                font-size: 24px;
+            }
+        }
+    }
+}
+
+.timeline-routes {
+    padding: 10px;
+    border-radius: 5px;
+    background-color: variables.$bg-gray-l;
+
+    &__item {
+        margin: 5px 0;
+        position: relative;
+    }
+
+    &__route {
+        cursor: pointer;
+        @include mixins.transition(background-color .3s, color .3s);
+
+        &:hover {
+            background-color: variables.$bg-success;
+            color: #fff;
+        }
+    }
+
+    &__multiselect {
+        width: 100%;
+        margin-right: 40px;
+    }
+
+    &__chip {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: #71b732;
+        color: #fff;
+
+        font-size: 16px!important;
+        width: 35px!important;
+        height: 35px;
+        @include mixins.flex-box($a: center, $j: center);
+
+        &.first {
+            background-color: variables.$color_success_alt
+        }
+
+        &.last {
+            background-color: variables.$color_danger;
+        }
+    }
+}
+
+.timeline-routes-error {
+    font-size: 22px!important;
+}
+
+.timeline-deal {
+    position: relative;
+
+    &::after {
+        content: '';
+        display: block;
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 2;
+        background-image: url('@/assets/image/money.png');
+        background-size: 40%;
+        opacity: .07;
+    }
+
+    .dashboard-card__header {
+        border-bottom: 1px solid #d9d9dc;
+        z-index: 3;
+        position: relative;
+    }
+
+    .dashboard-card__content {
+        z-index: 3;
+        position: relative;
+    }
+
+    &__header {
+        @include mixins.flex-box($a: center, $gap: 10px);
+    }
+
+    &__title {
+        font-size: 20px;
+        font-weight: 500;
+    }
+
+    &__list {
+        @include mixins.flex-box($wrap: true, $gap: 5px);
+    }
+}

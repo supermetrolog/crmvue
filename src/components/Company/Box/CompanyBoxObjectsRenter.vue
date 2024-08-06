@@ -1,73 +1,75 @@
 <template>
     <div
-        class="CompanyBoxObjectsRenter"
+        class="company-box-objects-renter"
         :class="{
-            'CompanyBoxObjectsRenter-success': deal.is_our,
-            'CompanyBoxObjectsRenter-danger': deal.restOfTheTerm < 60 && deal.restOfTheTerm > 1
+            'company-box-objects-renter--success': deal.is_our,
+            'company-box-objects-renter--danger': isExpired
         }"
     >
         <i
-            v-if="deal.restOfTheTerm < 60 && deal.restOfTheTerm > 1"
-            class="fas fa-bolt fa-solid"
-            title="Скоро истечет!"
+            v-if="isExpired"
+            v-tippy="'Скоро истечет!'"
+            class="fa-bolt fa-solid icon company-box-objects-renter__expired"
         ></i>
-        <a class="CompanyBoxObjectsRenter-logo">
-            <img
-                v-if="deal.logo"
-                src="https://upload.wikimedia.org/wikipedia/sco/thumb/b/bf/KFC_logo.svg/1200px-KFC_logo.svg.png"
-                alt="нет лого"
-            />
-            <span v-else>нет лого</span>
-        </a>
-        <div class="CompanyBoxObjectsRenter-info">
-            <span class="CompanyBoxObjectsRenter-info-name">{{ deal.company.nameRu || deal.company.nameEng }}</span>
-            <ul class="CompanyBoxObjectsRenter-info-list">
-                <li>
-                    <span>чья сделка:</span>
-                    <span v-if="deal.is_our == 1">PENNY LANE REALTY</span>
-                    <span v-else-if="deal.is_competitor">{{ deal.competitor.full_name || 'неизвестно' }}</span>
-                    <span v-else>нет данных</span>
-                </li>
-                <li>
-                    <span>площадь:</span>
-                    <span v-if="deal.area">{{ deal.area }} м2</span>
-                    <span v-else>нет данных</span>
-                </li>
+        <div class="company-box-objects-renter__info">
+            <p class="company-box-objects-renter__title">
+                {{ $formatter.companyName(deal.company) }}
+            </p>
+            <ul class="company-box-objects-renter__list">
+                <CompanyBoxObjectsRenterParameter label="Чья сделка">
+                    <template v-if="deal.is_our === 1">PENNY LANE REALTY</template>
+                    <template v-else-if="deal.is_competitor">
+                        {{ deal.competitor.full_name || 'Неизвестно' }}
+                    </template>
+                </CompanyBoxObjectsRenterParameter>
+                <CompanyBoxObjectsRenterParameter label="Площадь">
+                    <WithUnitType v-if="deal.area" :unit-type="unitTypes.SQUARE_METERS">
+                        {{ $formatter.number(deal.area) }}
+                    </WithUnitType>
+                </CompanyBoxObjectsRenterParameter>
+                <CompanyBoxObjectsRenterParameter label="Цена пола">
+                    <WithUnitType
+                        v-if="deal.floorPrice"
+                        :unit-type="unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR"
+                    >
+                        {{ $formatter.number(deal.floorPrice) }}
+                    </WithUnitType>
+                </CompanyBoxObjectsRenterParameter>
                 <template v-if="extraIsOpen">
-                    <li>
-                        <span>цена пола:</span>
-                        <span v-if="deal.floorPrice">{{ deal.floorPrice }} м2/г</span>
-                        <span v-else>нет данных</span>
-                    </li>
-                    <li>
-                        <span>дата сделки:</span>
-                        <span v-if="deal.dealDate">{{ dateFormatter(deal.dealDate) }}</span>
-                        <span v-else>нет данных</span>
-                    </li>
-                    <li>
-                        <span>консультант:</span>
-                        <span v-if="deal.consultant?.userProfile">{{ deal.consultant.userProfile.short_name }}</span>
-                        <span v-else>нет данных</span>
-                    </li>
-                    <li>
-                        <span>срок:</span>
-                        <span v-if="deal.contractTerm">{{ deal.contractTerm }} месяцев</span>
-                        <span v-else>нет данных</span>
-                    </li>
+                    <CompanyBoxObjectsRenterParameter label="Дата сделки">
+                        <template v-if="deal.dealDate">{{ createdAt }}</template>
+                    </CompanyBoxObjectsRenterParameter>
+                    <CompanyBoxObjectsRenterParameter label="Консультант">
+                        <template v-if="deal.consultant?.userProfile">
+                            {{ deal.consultant.userProfile.short_name }}
+                        </template>
+                    </CompanyBoxObjectsRenterParameter>
+                    <CompanyBoxObjectsRenterParameter label="Срок">
+                        <template v-if="deal.contractTerm">
+                            {{ deal.contractTerm }} месяцев
+                        </template>
+                    </CompanyBoxObjectsRenterParameter>
                 </template>
             </ul>
         </div>
-        <Dropdown v-model="extraIsOpen" class="CompanyBoxObjectsRenter-button" />
+        <Dropdown
+            v-model="extraIsOpen"
+            v-tippy="'Подробнее'"
+            class="company-box-objects-renter__dropdown"
+        />
     </div>
 </template>
 
 <script>
-import moment from 'moment';
 import Dropdown from '@/components/common/Dropdown/Dropdown.vue';
+import dayjs from 'dayjs';
+import CompanyBoxObjectsRenterParameter from '@/components/Company/Box/CompanyBoxObjectsRenterParameter.vue';
+import WithUnitType from '@/components/common/WithUnitType.vue';
+import { unitTypes } from '@/const/unitTypes.js';
 
 export default {
     name: 'CompanyBoxObjectsRenter',
-    components: { Dropdown },
+    components: { WithUnitType, CompanyBoxObjectsRenterParameter, Dropdown },
     props: {
         deal: {
             type: Object,
@@ -79,10 +81,17 @@ export default {
             extraIsOpen: false
         };
     },
-    computed: {},
+    computed: {
+        unitTypes() {
+            return unitTypes;
+        },
+        isExpired() {
+            return this.deal.restOfTheTerm < 60 && this.deal.restOfTheTerm > 1;
+        }
+    },
     methods: {
-        dateFormatter(date) {
-            return moment(date).format('DD.MM.YYYY');
+        createdAt() {
+            return dayjs(this.deal.dealDate).format('DD.MM.YY');
         }
     }
 };

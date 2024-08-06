@@ -1,6 +1,6 @@
 <template>
     <div class="users-all">
-        <AnimationTransition>
+        <teleport to="body">
             <FormUser
                 v-if="userFormVisible"
                 @closeUserForm="clickCloseUserForm"
@@ -8,15 +8,17 @@
                 @updated="getUsers"
                 :formdata="userForUpdate"
             />
-        </AnimationTransition>
+        </teleport>
         <div class="row">
             <div class="col-7 mx-auto">
                 <div class="row">
                     <div class="col-12 mt-2 mb-4">
-                        <button @click="clickOpenUserForm" class="btn btn-primary scale">Создать пользователя</button>
+                        <button @click="clickOpenUserForm" class="btn btn-primary scale">
+                            Создать пользователя
+                        </button>
                     </div>
                     <div class="col-12">
-                        <Loader v-if="loader" class="center" />
+                        <Loader v-if="loader" />
                         <UserTable
                             v-if="USERS.length"
                             @clickEdit="clickOpenUserFormForUpdate"
@@ -35,12 +37,10 @@ import { mapActions, mapGetters } from 'vuex';
 import Loader from '@/components/common/Loader.vue';
 import UserTable from '@/components/User/UserTable.vue';
 import FormUser from '@/components/Forms/FormUser.vue';
-import AnimationTransition from '@/components/common/AnimationTransition.vue';
 
 export default {
     name: 'UsersMain',
     components: {
-        AnimationTransition,
         FormUser,
         UserTable,
         Loader

@@ -1,6 +1,6 @@
 <template>
     <div class="row item no-gutters">
-        <div class="col-2 avatar text-center">
+        <div class="col-2 notify-icon text-center">
             <i v-if="isSystemNotification" :class="notificationTypeList[notification.type]"></i>
             <div v-else class="image-circle">
                 <img
@@ -19,7 +19,7 @@
             <p class="text" v-html="notification.body"></p>
             <HeaderNotificationsActions :type="notification.type" :status="notification.status" />
         </div>
-        <span v-if="isNew" class="badge"> new </span>
+        <span v-if="isNew" class="badge">new</span>
     </div>
 </template>
 
@@ -45,13 +45,8 @@ export default {
     computed: {
         notificationTypeList: () => NotificationTypeList,
         isSystemNotification() {
-            return this.notification.type < Object.values(this.notificationTypeList).length
-                ? true
-                : false;
+            return this.notification.type < Object.values(this.notificationTypeList).length;
         }
-    },
-    methods: {}
+    }
 };
 </script>
-
-<style></style>

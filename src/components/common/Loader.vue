@@ -1,16 +1,11 @@
 <template>
     <div class="loader">
         <div class="loader__container">
-            <div class="loader__item"></div>
-            <div class="loader__item"></div>
-            <div class="loader__item"></div>
-            <div class="loader__item"></div>
+            <Spinner />
         </div>
     </div>
 </template>
 
-<script>
-export default {
-    name: 'Loader'
-};
+<script setup>
+import Spinner from '@/components/common/Spinner.vue';
 </script>

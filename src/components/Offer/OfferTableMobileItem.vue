@@ -1,202 +1,186 @@
 <template>
-    <Tr
-        class="OfferMobileItem"
-        :class="{
-            passive: offer.status != 1
-        }"
-    >
-        <td colspan="2" class="OfferMobileItem-wrapper">
-            <div class="photo">
-                <a :href="getOfferUrl(offer)" target="_blank">
-                    <div class="image-container">
-                        <img :src="offer.thumb" alt="image" />
-                        <span v-if="offer.status == 1" class="deal_type">
-                            {{ offer.deal_type_name }}
-                        </span>
-                        <span v-else class="deal_type">Пассив</span>
-                        <span class="deal_type visual_id">
-                            {{ offer.visual_id }}
-                        </span>
-                        <span class="object_class">
-                            {{ offer.class_name }}
-                        </span>
-                        <span v-if="offer.test_only" class="test_only"> Тестовый лот </span>
-                    </div>
-                </a>
-            </div>
-            <div class="info">
-                <div class="description">
-                    <div class="price" sort="price">
-                        <div v-html="priceHandler" />
-                    </div>
-                    <div class="area" sort="area">
-                        <p>
-                            {{ offer.calc_area_general }}
-                            <small>м<sup>2</sup></small>
-                        </p>
-                    </div>
-                    <div class="region">
-                        <p v-if="offer.region_name" class="region_item">
-                            {{ offer.region_name
-                            }}<span v-if="offer.district_name">
-                                {{ `, ${offer.district_name}` }}
-                            </span>
-                        </p>
-                    </div>
-                    <div class="company_about">
-                        <template v-if="offer.company !== null">
-                            <router-link :to="'/companies/' + offer.company.id" target="_blank">
-                                {{ offer.company.full_name }}
-                            </router-link>
-                        </template>
-                    </div>
-                </div>
-                <div class="id" :class="{ passive: offer.status != 1 }">
-                    <div v-if="offer.type_id != 3" class="actions">
-                        <i
-                            @click="clickFavoriteOffer(offer)"
-                            class="fas fa-star"
-                            :class="{
-                                selected: FAVORITES_OFFERS.find(item => item.original_id == offer.original_id)
-                            }"
-                        ></i>
-                        <i @click="clickViewPdf(offer)" class="fas fa-file-pdf"></i>
-                        <div @click="clickOpenMore" class="actions-more">
-                            <i v-if="!dropdownIsOpen" class="fa fa-chevron-down"></i>
-                            <i v-if="dropdownIsOpen" class="fa fa-chevron-up"></i>
-                        </div>
-                    </div>
+    <div>
+        <DashboardCard class="offer-table-item-mobile" :class="{ passive: isPassive }">
+            <OfferTableItemPreview :is-passive="isPassive" :offer="offer" class="mb-1" />
+            <div class="offer-table-item-mobile__header">
+                <DashboardChip class="dashboard-bg-light">
+                    {{ offer.visual_id }}
+                </DashboardChip>
+                <div class="offer-table-item-mobile__actions">
+                    <HoverActionsButton @click="openInChat" label="Открыть в чате">
+                        <i class="fa-solid fa-comment" />
+                    </HoverActionsButton>
+                    <template v-if="offer.type_id !== 3">
+                        <HoverActionsButton
+                            @click="toggleFavorite"
+                            :label="isFavorite ? 'Удалить из избранного' : 'Добавить в избранное'"
+                            :active="isFavorite"
+                        >
+                            <i class="fa-solid fa-star" />
+                        </HoverActionsButton>
+                        <HoverActionsButton @click="openPDF" label="Открыть PDF">
+                            <i class="fa-solid fa-file-pdf" />
+                        </HoverActionsButton>
+                    </template>
                 </div>
             </div>
-        </td>
-    </Tr>
-    <DropDown>
-        <tr v-if="dropdownIsOpen" class="OfferMobileItem-dropdown">
-            <td colspan="2" class="container">
-                <!-- <span @click="isVisibleMain = !isVisibleMain">Основное</span> -->
-                <div class="column">
-                    <div class="region">
-                        <p v-if="offer.district_moscow_name">Москва, {{ offer.district_moscow_name }}</p>
-                        <p v-if="offer.direction_name">
-                            {{ offer.direction_name }}
-                        </p>
-                        <p v-if="offer.highway_name">{{ offer.highway_name }} шоссе</p>
-                        <p v-if="offer.highway_moscow_name">{{ offer.highway_moscow_name }} шоссе</p>
-                        <hr />
-                        <div>
-                            <strong class="label">Адрес</strong>
-                            <br />
-                            <a
-                                v-if="offer.address"
-                                :href="`https://yandex.ru/maps/?pt=${offer.longitude},${offer.latitude}&z=12&l=map`"
-                                >{{ offer.address }}</a
-                            >
-                        </div>
-                    </div>
-                    <div class="from_mkad" sort="from_mkad">
-                        <p v-if="offer.from_mkad">{{ offer.from_mkad }} <small>км от МКАД</small></p>
-                    </div>
-                    <div class="company_about">
-                        <template v-if="offer.company !== null">
-                            <router-link :to="'/companies/' + offer.company.id" target="_blank">
-                                {{ offer.company.full_name }}
-                            </router-link>
-                            <br />
-                            <strong class="label">Контакты</strong>
-                            <div v-if="contact" class="contact">
-                                {{ contact.full_name }}
-                                <a
-                                    v-for="email of contact.emails"
-                                    :key="email.email"
-                                    :href="'mailto:' + email.email"
-                                    class="d-block"
-                                >
-                                    {{ email.email }}
-                                </a>
-                                <PhoneNumber
-                                    v-for="phone of contact.phones"
-                                    :key="phone.id"
-                                    :phone="phone"
-                                    :contact="contact"
-                                />
+            <p class="offer-table-item-mobile__address my-1">{{ offer.address }}</p>
+            <div class="row">
+                <div class="col-6">
+                    <OfferTableItemArea :offer="offer" />
+                </div>
+                <div class="col-6">
+                    <OfferTableItemPrice v-if="offer.offer" :offer="offer" />
+                    <p v-else>—</p>
+                </div>
+            </div>
+            <AccordionSimple without-render class="mt-1">
+                <template #title>
+                    <AccordionSimpleTrigger>
+                        <DashboardChip class="offer-table-item-mobile__dropdown dashboard-bg-light">
+                            <div class="d-flex justify-content-center gap-2">
+                                <span>Подробнее</span>
+                                <AccordionSimpleTriggerIcon />
                             </div>
-                        </template>
+                        </DashboardChip>
+                    </AccordionSimpleTrigger>
+                </template>
+                <template #body>
+                    <div class="py-1">
+                        <OfferTableItemMobileAddress :offer="offer" class="mb-1" />
+                        <DashboardChip
+                            v-if="offer.from_mkad"
+                            class="dashboard-bg-light w-100 text-center"
+                        >
+                            {{ offer.from_mkad }} <small>км от МКАД</small>
+                        </DashboardChip>
+                        <hr />
+                        <CompanyElement
+                            v-if="offer.company"
+                            :company="offer.company"
+                            class="offer-table-item__company-element my-2"
+                        />
+                        <p v-else class="error-message">Компания не заполнена</p>
+                        <CompanyContact
+                            v-if="contact"
+                            class="offer-table-item__company-element my-2"
+                            :contact="contact"
+                        />
+                        <p v-else class="error-message">Контакт не заполнен</p>
+                        <hr />
+                        <p class="offer-table-item-mobile__label">Статус</p>
+                        <DashboardChip
+                            v-if="offer.status === 1"
+                            class="dashboard-bg-success-l w-100 text-center my-1"
+                        >
+                            Актив
+                        </DashboardChip>
+                        <DashboardChip
+                            v-else
+                            class="dashboard-bg-danger text-white w-100 text-center my-1"
+                        >
+                            Пассив
+                        </DashboardChip>
+                        <p class="offer-table-item-mobile__label">Консультант</p>
+                        <DashboardChip
+                            v-if="offer.object?.agent_visited"
+                            class="dashboard-bg-danger-l w-100 text-center my-1"
+                        >
+                            Был на объекте
+                        </DashboardChip>
+                        <DashboardChip class="w-100 dashboard-bg-light text-center my-1">
+                            <span v-if="offer.consultant">
+                                {{ offer.consultant.userProfile.full_name }}
+                            </span>
+                            <span v-else>—</span>
+                        </DashboardChip>
+                        <p class="offer-table-item-mobile__label">Реклама</p>
+                        <div class="offer-table-item-mobile__advertisements my-1">
+                            <DashboardChip class="dashboard-bg-light">Realtor.ru</DashboardChip>
+                            <DashboardChip v-if="offer.ad_cian" class="dashboard-bg-light">
+                                Циан
+                            </DashboardChip>
+                            <DashboardChip v-if="offer.ad_yandex" class="dashboard-bg-light">
+                                Яндекс
+                            </DashboardChip>
+                            <DashboardChip v-if="offer.ad_avito" class="dashboard-bg-light">
+                                Авито
+                            </DashboardChip>
+                            <DashboardChip v-if="offer.ad_free" class="dashboard-bg-light">
+                                Бесплатные
+                            </DashboardChip>
+                        </div>
                     </div>
-                    <div class="consultant">
-                        <strong class="label">Консультант</strong>
-                        <p v-if="offer.consultant">
-                            {{ offer.consultant.userProfile.full_name }}
-                        </p>
-                    </div>
-
-                    <div class="add">
-                        <strong class="label">Реклама</strong>
-                        <p v-if="offer.ad_realtor">Realtor.ru</p>
-                        <p v-if="offer.ad_cian">Циан</p>
-                        <p v-if="offer.ad_yandex">Яндекс</p>
-                        <p v-if="offer.ad_free">Бесплатные</p>
-                    </div>
-                    <strong class="label">Последняя активность</strong>
-                    <div class="date" sort="last_update">
-                        {{ offer.last_update_format }}
-                    </div>
-                </div>
-            </td>
-        </tr>
-    </DropDown>
+                </template>
+            </AccordionSimple>
+            <p class="text-right mt-1 text-grey">Обновление: {{ offer.last_update_format }}</p>
+        </DashboardCard>
+    </div>
 </template>
 
-<script>
-import Tr from '@/components/common/Table/Tr.vue';
-import { MixinOfferItem } from '@/components/Offer/mixins.js';
-import DropDown from '@/components/common/DropDown.vue';
+<script setup>
+import OfferTableItemPrice from '@/components/Offer/TableItem/OfferTableItemPrice.vue';
+import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
+import OfferTableItemPreview from '@/components/Offer/TableItem/OfferTableItemPreview.vue';
+import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
+import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import AccordionSimpleTrigger from '@/components/common/Accordion/AccordionSimpleTrigger.vue';
+import AccordionSimpleTriggerIcon from '@/components/common/Accordion/AccordionSimpleTriggerIcon.vue';
+import OfferTableItemMobileAddress from '@/components/Offer/TableItem/OfferTableItemMobileAddress.vue';
+import OfferTableItemArea from '@/components/Offer/TableItem/OfferTableItemArea.vue';
+import CompanyContact from '@/components/Company/CompanyContact.vue';
+import CompanyElement from '@/components/Company/CompanyElement.vue';
+import { computed, inject } from 'vue';
+import { useStore } from 'vuex';
+import { $generatorURL } from '@/plugins/url.js';
 
-export default {
-    name: 'OfferTableMobileItem',
-    components: {
-        DropDown,
-        Tr
-    },
-    mixins: [MixinOfferItem],
-    data() {
-        return {
-            isVisibleMain: false
-        };
-    },
-    computed: {
-        priceHandler() {
-            let result;
-            if (this.offer.deal_type == 1 || this.offer.deal_type == 4) {
-                result = `${this.offer.calc_price_warehouse} <small>руб за м<sup>2</sup>/г</small>`;
-            }
-            if (this.offer.deal_type == 2) {
-                result = `${this.offer.calc_price_sale} <small>руб за м<sup>2</sup></small>`;
-            }
-            if (this.offer.deal_type == 3) {
-                result = `${this.offer.calc_price_safe_pallet} <small>руб за 1 п. м.</small>`;
-            }
-            if (!this.offer.deal_type) {
-                result = 'Цена не указана';
-            }
-            if (this.offer.generalOffersMix.offer.tax_form) {
-                result =
-                    result +
-                    ' ' +
-                    `<small class="tax-form">${
-                        this.taxFormList.find(item => item.value == this.offer.generalOffersMix.offer.tax_form).label
-                    }</small>`;
-            }
-
-            return `<p>${result}</p>`;
-        }
-    },
-    methods: {
-        clickOpenMore() {
-            if (this.dropdownIsOpen) {
-                return (this.dropdownIsOpen = false);
-            }
-            this.dropdownIsOpen = true;
-        }
+const emit = defineEmits(['favorite-deleted']);
+const props = defineProps({
+    offer: {
+        type: Object,
+        required: true
     }
+});
+
+const $openMessengerChat = inject('$openMessengerChat');
+
+const store = useStore();
+
+const contact = computed(() => {
+    return props.offer.contact || props.offer.company?.mainContact;
+});
+const isFavorite = computed(() => {
+    return store.state.Offers.favoritesOffersCache[props.offer.original_id];
+});
+const isPassive = computed(() => {
+    return props.offer.status !== 1;
+});
+const toggleFavorite = async () => {
+    if (!isFavorite.value) return store.dispatch('ADD_FAVORITES_OFFER', props.offer);
+
+    await store.dispatch('DELETE_FAVORITES_OFFERS', props.offer);
+    emit('favorite-deleted', props.offer);
+};
+
+const openInChat = () => {
+    $openMessengerChat({
+        companyID: props.offer.company_id,
+        objectID: props.offer.object_id
+    });
+};
+
+const openPDF = () => {
+    window.open(
+        $generatorURL.pdf(
+            {
+                type_id: 2,
+                offer_id: props.offer.original_id,
+                object_id: props.offer.object_id
+            },
+            store.getters.THIS_USER
+        ),
+        '_blank'
+    );
 };
 </script>

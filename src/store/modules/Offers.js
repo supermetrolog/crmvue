@@ -1,23 +1,14 @@
 import api from '@/api/api';
-import { waitHash } from '@/utils';
+import { deleteEmptyFields } from '@/utils/deleteEmptyFields.js';
+import { useQueryHash } from '@/utils/useQueryHash.js';
 
-const deleteEmptyFields = object => {
-    for (const key in object) {
-        if (Object.hasOwnProperty.call(object, key)) {
-            const value = object[key];
-            if (value === null || value === '' || (Array.isArray(value) && !value.length)) {
-                delete object[key];
-            }
-        }
-    }
-};
 const Offers = {
     state: {
         offers: [],
         offer: null,
         pagination: null,
-        wait_hash: null,
-        favoritesOffers: []
+        favoritesOffers: [],
+        favoritesOffersCache: {}
     },
     mutations: {
         updateOffers(state, { data, concat }) {
@@ -33,27 +24,27 @@ const Offers = {
 
             state.offers = [...state.slice(0, offerIndex), data, ...state.slice(offerIndex + 1)];
         },
-        setWaitHash(state, hash) {
-            state.wait_hash = hash;
-        },
         addFavoritesOffer(state, data) {
             state.favoritesOffers.push(data);
+            state.favoritesOffersCache[data.original_id] = true;
         },
         updateFavoritesOffers(state, data) {
             state.favoritesOffers = data;
+            state.favoritesOffersCache = data.reduce((acc, element) => {
+                acc[element.original_id] = true;
+                return acc;
+            }, {});
         }
     },
     actions: {
-        async SEARCH_OFFERS(context, { query, concat = false }) {
-            let hash = waitHash(query);
-            context.commit('setWaitHash', hash);
+        async SEARCH_OFFERS({ commit }, { query, concat = false }) {
+            const { setHash, confirmHash } = useQueryHash('offers');
+            setHash(query);
+
             const data = await api.offers.search(query);
             if (data) {
-                if (hash == context.getters.WAIT_HASH) {
-                    context.commit('updateOffers', { data, concat });
-                } else {
-                    return false;
-                }
+                if (confirmHash(query)) commit('updateOffers', { data, concat });
+                else return false;
             }
             return data;
         },
@@ -93,15 +84,21 @@ const Offers = {
 
             context.commit(
                 'updateFavoritesOffers',
-                context.getters.FAVORITES_OFFERS.filter(item => item.original_id != offer.original_id)
+                context.getters.FAVORITES_OFFERS.filter(
+                    item => item.original_id != offer.original_id
+                )
             );
             context.commit('addFavoritesOffer', newOffer);
         },
         async DELETE_FAVORITES_OFFERS(context, data) {
-            const deleteId = context.getters.FAVORITES_OFFERS.find(item => item.original_id == data.original_id).id;
+            const deleteId = context.getters.FAVORITES_OFFERS.find(
+                item => item.original_id == data.original_id
+            ).id;
             context.commit(
                 'updateFavoritesOffers',
-                context.getters.FAVORITES_OFFERS.filter(item => item.original_id != data.original_id)
+                context.getters.FAVORITES_OFFERS.filter(
+                    item => item.original_id != data.original_id
+                )
             );
             await api.offers.deleteFavoriteOffer(deleteId);
         },
@@ -119,6 +116,16 @@ const Offers = {
                 context.commit('updateFavoritesOffers', data.data);
             }
             return data;
+        },
+
+        async getOffers(context, query) {
+            const data = await api.offers.search(query);
+
+            if (data) {
+                return data.data;
+            }
+
+            return null;
         }
     },
     getters: {
@@ -131,10 +138,6 @@ const Offers = {
         OFFERS_PAGINATION(state) {
             return state.pagination;
         },
-        WAIT_HASH(state) {
-            return state.wait_hash;
-        },
-
         FAVORITES_OFFERS(state) {
             return state.favoritesOffers;
         }

@@ -1,21 +1,16 @@
 @use '../utils/variables';
+@use '../utils/mixins';
 
 .company-table {
-    .badge {
-        font-size: 14px;
-        text-transform: uppercase;
-    }
-
     &__filters {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 5px 10px;
+        @include mixins.flex-box($gap: 5px 10px, $wrap: true);
     }
 
     &__actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
+        @include mixins.flex-box($j: flex-end, $gap: 10px);
+        @include mixins.media('max', 'md') {
+            justify-content: center;
+        }
     }
 
     width: 100%;
@@ -31,39 +26,6 @@
             }
 
             td {
-                &.name {
-                    text-transform: none;
-                    font-weight: 500;
-
-                    a {
-                        width: 100%;
-                        height: 100%;
-                        display: block;
-                        color: variables.$color_primary;
-
-                        h4 {
-                            &:hover {
-                                text-decoration: underline;
-                            }
-                        }
-
-                        p {
-                            &:hover {
-                                text-decoration: none;
-                            }
-                        }
-                    }
-                }
-
-                &.categories {
-                    div {
-                        max-width: 300px;
-                    }
-
-                    span {
-                        font-size: 12px;
-                    }
-                }
 
                 &.count {
                     span {
@@ -78,10 +40,8 @@
                     padding: 3px 0;
 
                     .scroller {
-                        display: flex;
+                        @include mixins.flex-box($a: center, $j: center);
                         height: 60px;
-                        align-items: center;
-                        justify-content: center;
                     }
 
                     span {
@@ -93,27 +53,6 @@
                 &.date {
                     width: 100px;
                     font-size: 12px;
-                }
-
-                &.contacts {
-                    a {
-                        display: block;
-                        font-size: 15px;
-                        color: variables.$color_primary;
-
-                        &:hover {
-                            text-decoration: underline;
-                        }
-                    }
-
-                    .name {
-                        font-weight: normal;
-                    }
-
-                    .position {
-                        font-weight: normal;
-                        color: darken(variables.$color_grey, 10);
-                    }
                 }
             }
         }
@@ -146,90 +85,133 @@
     &-tasks {
         width: 10%;
     }
-
-    &-date {
-        width: 10%;
-    }
 }
 
 .company-table-item {
+    vertical-align: top;
+
+    td {
+        padding: 10px!important;
+    }
+
+    &__id {
+        width: 100px;
+    }
+
     &__actions {
         width: max-content;
+    }
 
-        button {
-            border: medium none;
-            background: transparent;
-            width: min-content;
+    &__name {
+        text-transform: none;
+        font-weight: 500;
+    }
 
-            &:hover {
-                cursor: pointer;
-            }
+    &__title {
+        width: 100%;
+        color: variables.$color_primary;
+
+        &:hover {
+            text-decoration: underline;
         }
     }
 
+    &__profile {
+        color: variables.$color_grey;
+        font-size: 12px;
+    }
+
+    &__categories {
+        text-align: center;
+        width: 250px;
+    }
+
+    &__contacts {
+        width: 250px;
+        font-size: 14px;
+
+        .company-element {
+            max-width: 230px;
+        }
+
+        .company-contact {
+            border: none;
+        }
+    }
+
+    &__consultant {
+        width: 100px;
+    }
+
+    &__notify {
+        width: 100px;
+    }
+
+    &__survey {
+        width: 100px;
+    }
+
+    &__date {
+        width: 120px;
+    }
+
+    &__consultant-wrapper {
+        @include mixins.flex-box($a: center, $j: center, $gap: 10px);
+    }
+
+    &__list {
+        @include mixins.flex-box($gap: 5px, $wrap: wrap, $j: center);
+    }
+
+    &__timeline {
+        &:hover {
+            cursor: pointer;
+            opacity: 0.7;
+        }
+
+        &:active {
+            opacity: 0.5;
+        }
+    }
+
+    &__product-ranges {
+        @include mixins.flex-box($gap: 5px, $wrap: wrap);
+    }
+
+    &__company-group {
+        font-size: 14px;
+    }
 }
 
-// ********** COMPANY TABLE ITEM ***********
-.CompanyTableItem {
-    &-block {
-        margin-bottom: 10px;
+.dropdown-switcher {
+    cursor: pointer;
+    border: none;
+    @include mixins.flex-box($gap: 5px, $a: center, $j: center);
+    @include mixins.transition(opacity);
 
-        .company-objects-list__item .image-container {
-            height: 100px;
-            width: 100%;
-
-            a {
-                width: 100%;
-            }
-        }
-
-        &-timeline {
-            &:hover {
-                cursor: pointer;
-                opacity: 0.7;
-            }
-
-            &:active {
-                // border: 2px solid black;
-                opacity: 0.5;
-            }
-        }
+    &__side {
+        color: gray!important;
     }
 
-    &-dropdown {
-        height: auto !important;
-        min-height: auto !important;
-    }
-
-    .name {
-        &-type {
-            color: variables.$color_grey;
-            font-size: 12px;
-            font-weight: normal;
-        }
-    }
-
-    &-notif {
-        // white-space: nowrap;
-        font-size: 11px;
-        text-align: center !important;
-        border-right: variables.$grey_thin_border;
-        border-left: variables.$grey_thin_border;
-    }
-
-    &-consultant {
-        white-space: nowrap;
+    &:hover {
+        opacity: .7;
     }
 }
 
-table {
-    tr.CompanyTableItem {
-        td {
-            padding: 10px;
-            vertical-align: top;
-        }
+.dropdown-container {
+    max-height: 0;
+    padding: 0;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0, 1, 0, 1) -0.1s;
+
+    &.open {
+        max-height: 9999px;
+        transition-timing-function: cubic-bezier(0.5, 0, 1, 0);
+        transition-delay: 0s;
     }
 }
+
+// legacy...
 
 tr.CompanyTableOdd {
     background-color: darken(variables.$color_light, 3) !important;
@@ -241,16 +223,66 @@ tr.CompanyTableEven {
     border-color: variables.$color_light !important;
 }
 
-.CompanyTableObjectOffer {
-    background-color: variables.$color_success_dark;
+.dropdown-switcher-row {
+    height: 110% !important;
+    min-height: 80% !important;
+
+    td {
+        padding-bottom: 5px !important;
+    }
+}
+
+.table-request-row {
+    height: 1px !important;
+    min-height: 80% !important;
+
+    td {
+        padding: 0 0 10px 0 !important;
+        height: inherit;
+
+        & > div {
+            border-top: variables.$grey_thin_border;
+            border-bottom: variables.$grey_thin_border;
+            height: 100%;
+        }
+    }
+}
+
+.company-table-object-item {
+    padding: 10px;
+    max-height: 160px;
+
+    &__thumb {
+        display: block;
+    }
+
+    &__image {
+        height: 100px;
+        width: 100%;
+        object-fit: cover;
+    }
+
+    &__title {
+        @include mixins.flex-box($gap: 5px, $wrap: wrap);
+    }
+
+    &__scroller {
+        overflow-y: auto;
+        max-height: 130px;
+    }
+}
+
+.company-table-object-offer {
+    background-color: variables.$bg-success;
+    padding: 3px;
     color: variables.$color_light;
     font-size: 12px;
 
-    @media screen and (max-width: variables.$laptop_size) {
+    @include mixins.media('max', 'xxl') {
         font-size: 10px;
     }
 
-    @media screen and (max-width: variables.$tablet_size) {
+    @include mixins.media('max', 'md') {
         font-size: 8px;
     }
 }

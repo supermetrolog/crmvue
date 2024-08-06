@@ -122,7 +122,7 @@ export default {
         setData() {
             this.field = [];
             this.modelValue.forEach(item => {
-                this.field.push(item[this.name]);
+                this.field.push(String(item[this.name]));
             });
         }
     },

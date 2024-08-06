@@ -1,0 +1,15 @@
+.key-value {
+    &__wrapper {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-gap: 0.5em;
+    }
+
+    &__key {
+        font-weight: bold!important;
+    }
+
+    &__value {
+        font-weight: normal!important;
+    }
+}
