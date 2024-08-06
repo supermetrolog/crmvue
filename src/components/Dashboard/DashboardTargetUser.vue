@@ -33,8 +33,12 @@ export default {
         targetUsername() {
             if (!this.consultants.length) return '-';
 
-            return this.consultants.find(user => Number(user.id) === Number(this.modelValue.id))
-                .userProfile.medium_name;
+            const consultant = this.consultants.find(
+                user => Number(user.id) === Number(this.modelValue.id)
+            );
+
+            if (consultant) return consultant.userProfile.medium_name;
+            return '-';
         },
         value: {
             get() {
