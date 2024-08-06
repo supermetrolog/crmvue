@@ -113,7 +113,7 @@ const Messenger = {
 
                 messages = obj.messages;
                 hasLeakedMessages = obj.hasLeakedMessages;
-            } else messages = messagesToSections(value);
+            } else messages = messagesToSections(value).messages;
 
             if (hasLeakedMessages) {
                 state.messages.push(...messages.toSpliced(0, 1));
