@@ -1,6 +1,7 @@
 <template>
     <div class="messenger-bar">
         <MessengerBarElement
+            v-if="unreadTaskCount > 0"
             v-tippy="tasksButtonTitle"
             :class="{ disabled: !unreadTaskCount }"
             color="black"
@@ -8,6 +9,7 @@
             :label="unreadTaskCount"
         />
         <MessengerBarElement
+            v-if="unreadNotificationCount > 0"
             v-tippy="alertsButtonTitle"
             :class="{ disabled: !unreadNotificationCount }"
             color="orange"
@@ -15,6 +17,7 @@
             :label="unreadNotificationCount"
         />
         <MessengerBarElement
+            v-if="unreadReminderCount > 0"
             v-tippy="remindersButtonTitle"
             :class="{ disabled: !unreadReminderCount }"
             color="red"

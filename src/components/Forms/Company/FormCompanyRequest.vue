@@ -535,6 +535,7 @@ onBeforeMount(() => {
     if (props.formData) {
         Object.assign(form, cloneObject(props.formData));
         normalizeFormData();
+        searchContacts();
     }
 
     isLoading.value = false;
