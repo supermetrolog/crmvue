@@ -308,7 +308,10 @@ const Messenger = {
         async updateDialogs({ state, commit }) {
             commit('setLoadingAside', true);
 
-            const options = {};
+            const options = {
+                object: {},
+                request: {}
+            };
 
             if (alg.isNumeric(state.querySearch)) options.model_id = state.querySearch;
             else options.search = state.querySearch;
