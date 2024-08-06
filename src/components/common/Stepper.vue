@@ -62,13 +62,13 @@
             </template>
         </div>
         <div class="stepper__footer">
-            <MessengerButton @click="selectStep(currentStep - 1)" :disabled="currentStep === 0">
+            <MessengerButton v-if="currentStep > 0" @click="selectStep(currentStep - 1)">
                 Назад
             </MessengerButton>
             <MessengerButton @click="complete" color="success"> Завершить </MessengerButton>
             <MessengerButton
+                v-if="currentStep < steps.length - 1"
                 @click="selectStep(currentStep + 1)"
-                :disabled="currentStep === steps.length - 1"
             >
                 Далее
             </MessengerButton>
