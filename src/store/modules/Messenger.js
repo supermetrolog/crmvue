@@ -313,12 +313,17 @@ const Messenger = {
                 request: {}
             };
 
-            if (alg.isNumeric(state.querySearch)) options.model_id = state.querySearch;
-            else options.search = state.querySearch;
+            if (alg.isNumeric(state.querySearch)) {
+                options.object.object_id = state.querySearch;
+                options.request.model_id = state.querySearch;
+            } else {
+                options.object.search = state.querySearch;
+                options.request.search = state.querySearch;
+            }
 
             const chats = await Promise.all([
-                api.messenger.getChats({ model_type: 'object', ...options }),
-                api.messenger.getChats({ model_type: 'request', ...options })
+                api.messenger.getChats({ model_type: 'object', ...options.object }),
+                api.messenger.getChats({ model_type: 'request', ...options.request })
             ]);
 
             if (chats) {
