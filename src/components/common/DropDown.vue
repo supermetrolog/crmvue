@@ -4,11 +4,7 @@
     </transition>
 </template>
 
-<script>
-export default {
-    name: 'DropDown'
-};
-</script>
+<script setup></script>
 
 <style lang="scss" scoped>
 .dropdown-enter-active {

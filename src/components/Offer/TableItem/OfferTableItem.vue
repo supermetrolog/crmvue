@@ -136,12 +136,11 @@
     </DropDown>
 </template>
 
-<script>
+<script setup>
 import DropDown from '@/components/common/DropDown.vue';
 import Td from '@/components/common/Table/Td.vue';
 import Tr from '@/components/common/Table/Tr.vue';
 import api from '@/api/api.js';
-import { MixinOfferItem } from '@/components/Offer/mixins.js';
 import OfferTableItemDropdown from '@/components/Offer/TableItem/OfferTableItemDropdown.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
@@ -155,82 +154,91 @@ import OfferTableItemPrice from '@/components/Offer/TableItem/OfferTableItemPric
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import Spinner from '@/components/common/Spinner.vue';
 import TableDateBlock from '@/components/common/Table/TableDateBlock.vue';
-import { useConfirm } from '@/composables/useConfirm.js';
-import { useNotify } from '@/utils/useNotify.js';
+import { computed, ref, shallowRef, inject } from 'vue';
+import { useStore } from 'vuex';
+import { $generatorURL as $url } from '@/plugins/url.js';
 
-export default {
-    name: 'OfferTableItem',
-    components: {
-        TableDateBlock,
-        Spinner,
-        OfferTableItemPrice,
-        OfferTableItemAddress,
-        OfferTableItemPreview,
-        Avatar,
-        CompanyElement,
-        CompanyContact,
-        OfferTableItemArea,
-        DashboardChip,
-        HoverActionsButton,
-        OfferTableItemDropdown,
-        Tr,
-        Td,
-        DropDown
+const emit = defineEmits(['favorite-deleted']);
+const props = defineProps({
+    offer: {
+        type: Object,
+        required: true
     },
-    mixins: [MixinOfferItem],
-    props: {
-        loader: {
-            type: Boolean,
-            default: false
-        },
-        sortable: {
-            type: Boolean,
-            default: true
-        }
+    loader: {
+        type: Boolean,
+        default: false
     },
-    setup() {
-        const { isLoading } = useDelayedLoader();
-        const { confirm } = useConfirm();
-        const notify = useNotify();
-
-        return { isLoading, confirm, notify };
-    },
-    data() {
-        return {
-            miniOffers: []
-        };
-    },
-    computed: {
-        updatedAt() {
-            return this.offer.last_update * 1000;
-        }
-    },
-    methods: {
-        async searchMiniOffers(withLoading = false) {
-            if (withLoading) this.isLoading = true;
-
-            const response = await api.offers.search({
-                type_id: [1],
-                status: 3, // Нужно чтобы прилетали и активные и пассивные
-                object_id: this.offer.object_id
-            });
-
-            if (response) this.miniOffers = response.data;
-            if (withLoading) this.isLoading = false;
-        },
-        async handleAvitoToggle() {
-            await this.searchMiniOffers();
-        },
-        toggleDescriptionVisible() {
-            if (this.dropdownIsOpen) {
-                this.miniOffers = [];
-                this.dropdownIsOpen = false;
-                return;
-            }
-
-            this.dropdownIsOpen = true;
-            this.searchMiniOffers(true);
-        }
+    sortable: {
+        type: Boolean,
+        default: true
     }
+});
+
+const { isLoading } = useDelayedLoader();
+const store = useStore();
+
+const $openMessengerChat = inject('$openMessengerChat');
+
+const miniOffers = ref([]);
+const dropdownIsOpen = shallowRef(false);
+
+const updatedAt = computed(() => props.offer.last_update * 1000);
+const currentUser = computed(() => store.getters.THIS_USER);
+const contact = computed(() => props.offer.contact || props.offer.company?.mainContact);
+const isFavorite = computed(() => store.state.Offers.favoritesOffersCache[props.offer.original_id]);
+const isPassive = computed(() => props.offer.status !== 1);
+
+const searchMiniOffers = async (withLoading = false) => {
+    if (withLoading) isLoading.value = true;
+
+    const response = await api.offers.search({
+        type_id: [1],
+        status: 3, // Нужно чтобы прилетали и активные и пассивные
+        object_id: props.offer.object_id
+    });
+
+    if (response) miniOffers.value = response.data;
+    if (withLoading) isLoading.value = false;
+};
+const handleAvitoToggle = async () => {
+    await searchMiniOffers();
+};
+const toggleDescriptionVisible = () => {
+    if (dropdownIsOpen.value) {
+        miniOffers.value = [];
+        dropdownIsOpen.value = false;
+        return;
+    }
+
+    dropdownIsOpen.value = true;
+    searchMiniOffers(true);
+};
+
+const openInChat = () => {
+    $openMessengerChat({
+        companyID: props.offer.company_id,
+        objectID: props.offer.object_id
+    });
+};
+
+const openPDF = () => {
+    window.open(
+        $url.pdf(
+            {
+                type_id: 2,
+                offer_id: props.offer.original_id,
+                object_id: props.offer.object_id
+            },
+            currentUser.value.id
+        ),
+        '_blank'
+    );
+};
+
+const toggleFavorite = async () => {
+    if (!isFavorite.value) return store.dispatch('ADD_FAVORITES_OFFER', props.offer);
+
+    await store.dispatch('DELETE_FAVORITES_OFFERS', props.offer);
+    emit('favorite-deleted', props.offer);
 };
 </script>

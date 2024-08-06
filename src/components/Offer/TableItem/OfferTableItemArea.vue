@@ -26,23 +26,14 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
 
-export default {
-    name: 'OfferTableItemArea',
-    components: { WithUnitType },
-    props: {
-        offer: {
-            type: Object,
-            required: true
-        }
-    },
-    computed: {
-        unitTypes() {
-            return unitTypes;
-        }
+defineProps({
+    offer: {
+        type: Object,
+        required: true
     }
-};
+});
 </script>

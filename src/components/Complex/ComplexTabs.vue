@@ -35,7 +35,11 @@
             </div>
         </Tab>
         <Tab :name="`Фотографии (${photos.length})`">
-            <Button v-if="photos.length" @click="openDownloader(photos)" class="offer-tabs__button">
+            <Button
+                v-if="photos.length"
+                @click="openDownloader(photos, `Объект-${offer.object_id}-ТП-${offer.id}`)"
+                class="offer-tabs__button"
+            >
                 Скачать фотографии
             </Button>
             <div class="offer-tabs__body">
