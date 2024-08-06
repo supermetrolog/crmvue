@@ -113,7 +113,7 @@ const Messenger = {
 
                 messages = obj.messages;
                 hasLeakedMessages = obj.hasLeakedMessages;
-            }
+            } else messages = messagesToSections(value);
 
             if (hasLeakedMessages) {
                 state.messages.push(...messages.toSpliced(0, 1));
@@ -308,7 +308,10 @@ const Messenger = {
         async updateDialogs({ state, commit }) {
             commit('setLoadingAside', true);
 
-            const options = {};
+            const options = {
+                object: {},
+                request: {}
+            };
 
             if (alg.isNumeric(state.querySearch)) options.model_id = state.querySearch;
             else options.search = state.querySearch;

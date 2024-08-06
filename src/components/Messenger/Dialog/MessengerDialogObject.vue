@@ -27,7 +27,7 @@
             <MessengerDialogPhone
                 @click.stop="$emit('update-call')"
                 :last-call="lastCall"
-                :updated-at="model.object.updated_at"
+                :updated-at="updatedAt"
             />
             <MessengerDialogFunctions :counts="statistic" />
         </div>
@@ -65,6 +65,9 @@ export default {
     computed: {
         dealType() {
             return entityOptions.object.dealTypeString[this.model.type];
+        },
+        updatedAt() {
+            return this.model.object.updated_at * 1000;
         }
     }
 };
