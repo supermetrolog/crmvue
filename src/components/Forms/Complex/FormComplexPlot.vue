@@ -56,7 +56,7 @@
                                 <ObjectTypePicker
                                     v-model:value="form.purposes"
                                     v-model:extra="form.object_type"
-                                    :extra-value="3"
+                                    :extra-value="2"
                                     label="Участок"
                                     :options="objectPurposesWithSectionsOptions.plot"
                                     class="col-12"

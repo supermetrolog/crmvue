@@ -86,9 +86,9 @@ const props = defineProps({
 const objectTypesGeneral = computed(() => {
     const types = cloneObject(entityOptions.object.typeGeneralList);
 
-    props.request.objectTypesGeneral.forEach(
-        element => (types[element.type === 0 ? 1 : element.type - 1].included = true)
-    );
+    for (const element of props.request.objectTypesGeneral) {
+        if (element.type < 3 && element.type >= 0) types[element.type].included = true;
+    }
 
     return types;
 });

@@ -203,7 +203,7 @@
                         <ObjectTypePicker
                             v-model:value="form.objectTypes"
                             v-model:extra="form.objectTypesGeneral"
-                            :extra-value="1"
+                            :extra-value="0"
                             label="Склад"
                             :options="objectPurposesWithSectionsOptions.warehouse"
                             class="col-md-4"
@@ -211,7 +211,7 @@
                         <ObjectTypePicker
                             v-model:value="form.objectTypes"
                             v-model:extra="form.objectTypesGeneral"
-                            :extra-value="2"
+                            :extra-value="1"
                             label="Производство"
                             :options="objectPurposesWithSectionsOptions.production"
                             class="col-md-4"
@@ -219,7 +219,7 @@
                         <ObjectTypePicker
                             v-model:value="form.objectTypes"
                             v-model:extra="form.objectTypesGeneral"
-                            :extra-value="3"
+                            :extra-value="2"
                             label="Участок"
                             :options="objectPurposesWithSectionsOptions.plot"
                             class="col-md-4"

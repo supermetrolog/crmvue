@@ -68,7 +68,7 @@ export default {
                 object_type: value => {
                     if (!value) return null;
                     if (!Array.isArray(value)) value = [value];
-                    const options = { 1: 'Склад', 2: 'Производство', 3: 'Участок' };
+                    const options = { 0: 'Склад', 1: 'Производство', 2: 'Участок' };
                     return value.map(elem => options[elem]).join(', ');
                 },
                 region: value => {
@@ -231,8 +231,7 @@ export default {
         }
     },
     async created() {
-        await this.FETCH_CONSULTANT_LIST();
-        await this.FETCH_REGION_LIST();
+        await Promise.allSettled([this.FETCH_REGION_LIST(), this.FETCH_CONSULTANT_LIST()]);
         this.mounted = true;
     }
 };

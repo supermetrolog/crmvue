@@ -126,14 +126,14 @@ const dealTypeString = {
 };
 
 const typeGeneral = {
-    1: { name: 'Производство', icon: 'fa-solid fa-warehouse' },
-    2: { name: 'Склад', icon: 'fa-solid fa-industry' },
-    3: { name: 'Участок', icon: 'fa-solid fa-mountain-sun' }
+    0: { name: 'Склад', icon: 'fa-solid fa-warehouse' },
+    1: { name: 'Производство', icon: 'fa-solid fa-industry' },
+    2: { name: 'Участок', icon: 'fa-solid fa-mountain-sun' }
 };
 
 const typeGeneralList = [
-    { name: 'Производство', icon: 'fa-solid fa-warehouse' },
-    { name: 'Склад', icon: 'fa-solid fa-industry' },
+    { name: 'Склад', icon: 'fa-solid fa-warehouse' },
+    { name: 'Производство', icon: 'fa-solid fa-industry' },
     { name: 'Участок', icon: 'fa-solid fa-mountain-sun' }
 ];
 
