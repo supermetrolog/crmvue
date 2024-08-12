@@ -68,7 +68,7 @@ export default {
                 object_type: value => {
                     if (!value) return null;
                     if (!Array.isArray(value)) value = [value];
-                    const options = { 0: 'Склад', 1: 'Производство', 2: 'Участок' };
+                    const options = { 1: 'Склад', 2: 'Производство', 3: 'Участок' };
                     return value.map(elem => options[elem]).join(', ');
                 },
                 region: value => {

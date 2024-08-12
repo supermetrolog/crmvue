@@ -89,8 +89,8 @@ const props = defineProps({
 const objectTypes = computed(() => {
     return props.offer.object_type.map((element, index) => ({
         id: index,
-        name: objectOptions.typeGeneral[element].name,
-        icon: objectOptions.typeGeneral[element].icon
+        name: objectOptions.typeGeneral[element - 1].name,
+        icon: objectOptions.typeGeneral[element - 1].icon
     }));
 });
 </script>
