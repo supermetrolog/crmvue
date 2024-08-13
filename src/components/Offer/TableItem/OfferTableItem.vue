@@ -73,7 +73,7 @@
                     <div class="d-flex gap-2 align-items-center offer-table-item__avatar">
                         <Avatar
                             v-tippy="offer.consultant.userProfile.full_name"
-                            size="40"
+                            :size="55"
                             :src="offer.consultant.userProfile.avatar"
                         />
                         <div
@@ -154,7 +154,7 @@ import OfferTableItemPrice from '@/components/Offer/TableItem/OfferTableItemPric
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import Spinner from '@/components/common/Spinner.vue';
 import TableDateBlock from '@/components/common/Table/TableDateBlock.vue';
-import { computed, ref, shallowRef, inject } from 'vue';
+import { computed, inject, ref, shallowRef } from 'vue';
 import { useStore } from 'vuex';
 import { $generatorURL as $url } from '@/plugins/url.js';
 

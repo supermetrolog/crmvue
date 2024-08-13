@@ -61,7 +61,7 @@
                 <Avatar
                     :label="company.consultant.userProfile.medium_name"
                     :src="company.consultant.userProfile.avatar"
-                    size="35"
+                    :size="55"
                 />
             </div>
             <p v-else class="text-center">&#8212;</p>
