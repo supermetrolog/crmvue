@@ -65,7 +65,9 @@
             <MessengerButton v-if="currentStep > 0" @click="selectStep(currentStep - 1)">
                 Назад
             </MessengerButton>
-            <MessengerButton @click="complete" color="success"> Завершить </MessengerButton>
+            <MessengerButton @click="complete" color="success" :disabled="hasError">
+                Завершить
+            </MessengerButton>
             <MessengerButton
                 v-if="currentStep < steps.length - 1"
                 @click="selectStep(currentStep + 1)"
@@ -75,77 +77,61 @@
         </div>
     </div>
 </template>
-<script>
+<script setup>
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import { computed, ref, shallowRef } from 'vue';
 
-export default {
-    name: 'Stepper',
-    components: { AnimationTransition, MessengerButton },
-    emits: ['complete'],
-    props: {
-        keepAlive: {
-            type: Boolean,
-            default: false
-        },
-        steps: {
-            type: Array,
-            required: true
-        },
-        v: {
-            type: Object,
-            default: null
-        }
+const emit = defineEmits(['complete']);
+const props = defineProps({
+    keepAlive: {
+        type: Boolean,
+        default: false
     },
-    data() {
-        return {
-            currentStep: 0,
-            viewed: {}
-        };
+    steps: {
+        type: Array,
+        required: true
     },
-    computed: {
-        progress() {
-            return (100 / this.steps.length) * (this.currentStep + 1);
-        },
-        stepErrors() {
-            return this.v[this.steps[this.currentStep].name].$errors;
-        }
-    },
-    methods: {
-        selectStep(step) {
-            this.validateCurrentStep();
-
-            this._switchStep(step);
-        },
-        _switchStep(step) {
-            this.viewed[this.currentStep] = true;
-            this.currentStep = step;
-        },
-        complete() {
-            this.validate();
-
-            if (!this.hasError()) this.$emit('complete');
-        },
-        validate() {
-            if (this.v) this.v.$touch();
-        },
-        validateCurrentStep() {
-            if (this.v && this.v[this.steps[this.currentStep].name])
-                this.v[this.steps[this.currentStep].name].$touch();
-        },
-        stepHasError(step = this.steps[this.currentStep]) {
-            if (this.v && this.v[step.name]) {
-                return this.v[step.name].$error;
-            }
-
-            return false;
-        },
-        hasError() {
-            return this.v?.$error;
-        }
-    },
-    created() {
-        this.v.$reset();
+    v: {
+        type: Object,
+        default: null
     }
+});
+
+const currentStep = shallowRef(0);
+const viewed = ref({});
+
+const progress = computed(() => (100 / props.steps.length) * (currentStep.value + 1));
+const stepErrors = computed(() => {
+    return props.v[props.steps[currentStep.value].name].$errors;
+});
+const hasError = computed(() => props.v?.$error || props.v.$errors?.length > 0);
+
+if (props.v) props.v.$reset();
+const _switchStep = step => {
+    viewed.value[currentStep.value] = true;
+    currentStep.value = step;
+};
+
+const validateCurrentStep = () => {
+    if (props.v && props.v[props.steps[currentStep.value].name])
+        props.v[props.steps[currentStep.value].name].$touch();
+};
+
+const selectStep = step => {
+    validateCurrentStep();
+    _switchStep(step);
+};
+
+const complete = () => {
+    validate();
+    if (!hasError.value) emit('complete');
+};
+const validate = () => {
+    if (props.v) props.v.$touch();
+};
+const stepHasError = (step = props.steps[currentStep.value]) => {
+    if (props.v && props.v[step.name]) return props.v[step.name].$error;
+    return false;
 };
 </script>
