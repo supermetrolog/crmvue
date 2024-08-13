@@ -18,7 +18,7 @@ env:
   VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_INFO: 90
   VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_WARNING: 180
   VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_DANGER: 360
-  VITE_VUE_APP_YANDEX_MAP_KEY: ${{ secrets.VITE_VUE_app_yandex_map_key }}
+  VITE_VUE_APP_YANDEX_MAP_KEY: ${{ secrets.vue_app_yandex_map_key }}
 jobs:
   web-deploy:
     name: 🎉 Deploy

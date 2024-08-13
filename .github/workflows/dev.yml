@@ -15,7 +15,7 @@ env:
   VITE_VUE_APP_API_URL: https://api.supermetrolog.ru/
   VITE_VUE_APP_HOST: https://clients.supermetrolog.ru
   VITE_VUE_APP_WS_URL: wss://api.supermetrolog.pro/websocket/
-  VITE_VUE_APP_YANDEX_MAP_KEY: ${{ secrets.VITE_VUE_app_yandex_map_key }}
+  VITE_VUE_APP_YANDEX_MAP_KEY: ${{ secrets.vue_app_yandex_map_key }}
   VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_INFO: 90
   VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_WARNING: 180
   VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_DANGER: 360
