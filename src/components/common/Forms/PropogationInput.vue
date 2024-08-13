@@ -1,7 +1,7 @@
 <template>
     <div class="form__group propogation-input">
         <span class="form__label">{{ label }}</span>
-        <div v-for="(item, index) in modelValue" :key="index" class="form__control">
+        <div v-for="(item, index) in fields" :key="index" class="form__control">
             <label
                 @mouseenter="isDeleteShowList[index] = true"
                 @mouseleave="isDeleteShowList[index] = false"
@@ -17,7 +17,7 @@
                 </AnimationTransition>
                 <input
                     ref="inputs"
-                    v-model="modelValue[index][propertyName]"
+                    v-model="fields[index][propertyName]"
                     v-maska="maska"
                     @input.stop.prevent="onInput"
                     @keypress.enter.prevent
@@ -102,12 +102,11 @@ const modelValue = defineModel({
 
 const isDeleteShowList = ref([false]);
 const inputs = ref([]);
+const fields = ref([]);
 
-const hasEmptyInput = computed(() =>
-    modelValue.value.some(item => !item[props.propertyName].length)
-);
+const hasEmptyInput = computed(() => fields.value.some(item => !item[props.propertyName].length));
 const errors = computed(() => {
-    return modelValue.value.map(field => {
+    return fields.value.map(field => {
         return props.validators.reduce(
             (acc, validator) =>
                 !validator.func(field[props.propertyName]) && field[props.propertyName].length
@@ -122,28 +121,39 @@ const { hasValidationError, validate } = useFormControlValidation(toRef(props, '
     reactive: props.reactive
 });
 
+const fieldIsEmpty = fieldIndex => {
+    return fields.value[fieldIndex][props.propertyName].length === 0;
+};
+
 const onInput = () => {
+    if (fieldIsEmpty(fields.value.length - 1)) modelValue.value = fields.value.toSpliced(-1, 1);
+    else modelValue.value = [...fields.value];
+
     validate();
 };
 
 const deleteInput = index => {
-    if (modelValue.value.length === 1) return;
-    modelValue.value = modelValue.value.filter((_, idx) => idx !== Number(index));
+    if (fields.value.length === 1) return;
+    fields.value.splice(index, 1);
+
+    if (fieldIsEmpty(fields.value.length - 1)) modelValue.value = fields.value.toSpliced(-1, 1);
+    else modelValue.value = [...fields.value];
 };
 
 const addInput = () => {
     if (!hasEmptyInput.value) {
-        modelValue.value.push(createDefaultField());
+        fields.value.push(createDefaultField());
         nextTick(() => {
-            inputs.value[modelValue.value.length - 1].focus();
+            inputs.value[fields.value.length - 1].focus();
         });
     }
 };
 
 const isInvalid = index =>
-    errors.value[index].length && modelValue.value[index][props.propertyName].length;
+    errors.value[index].length && fields.value[index][props.propertyName].length;
 
 onBeforeMount(() => {
-    if (!modelValue.value.length) modelValue.value = [createDefaultField()];
+    if (!modelValue.value.length) fields.value = [createDefaultField()];
+    else fields.value = [...modelValue.value];
 });
 </script>
