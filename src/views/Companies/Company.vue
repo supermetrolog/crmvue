@@ -86,6 +86,9 @@
                 <CompanyBoxServices v-if="!companyIsLoading" class="company-page__column" />
             </div>
         </div>
+        <button v-tippy="'Открыть в чате'" @click="openInChat" class="company-page__chat">
+            <i class="fa-solid fa-comment" />
+        </button>
     </div>
 </template>
 
@@ -105,11 +108,12 @@ import Timeline from '@/components/Timeline/Timeline.vue';
 import CompanyBoxServices from '@/components/Company/Box/CompanyBoxServices.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
-import { computed, onBeforeMount, onUnmounted, provide, ref, shallowRef, watch } from 'vue';
+import { computed, inject, onBeforeMount, onUnmounted, provide, ref, shallowRef, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 provide('openContact', openContact);
 provide('createContactComment', createContactComment);
+const $openMessengerChat = inject('$openMessengerChat');
 
 const store = useStore();
 const route = useRoute();
@@ -255,6 +259,10 @@ async function createContactComment(data) {
 const deleteContact = async () => {
     const confirmed = await confirm('Вы уверены, что хотите бевзозвратно удалить контакт?');
     if (confirmed) await store.dispatch('DELETE_CONTACT', contact.value);
+};
+
+const openInChat = () => {
+    $openMessengerChat({ companyID: COMPANY.value.id });
 };
 
 onBeforeMount(() => {

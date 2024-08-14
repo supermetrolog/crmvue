@@ -1,17 +1,22 @@
 <template>
     <Tr class="company-table-item" :class="{ CompanyTableOdd: odd, CompanyTableEven: !odd }">
         <Td class="text-center company-table-item__id">
-            <p>{{ company.id }}</p>
+            <p class="mb-1">{{ company.id }}</p>
             <DashboardChip
                 v-if="isPassive"
                 v-tippy="passiveWhyComment"
-                class="dashboard-bg-danger text-white mt-1"
+                class="dashboard-bg-danger text-white mb-2"
             >
                 <div class="d-flex align-items-center gap-1">
                     <span>Пассив</span>
                     <i class="fa-regular fa-question-circle" />
                 </div>
             </DashboardChip>
+            <div class="company-table-item__buttons">
+                <HoverActionsButton @click="openInChat" label="Открыть в чате">
+                    <i class="fa-solid fa-comment" />
+                </HoverActionsButton>
+            </div>
         </Td>
         <Td class="company-table-item__name" sort="nameRu">
             <a class="company-table-item__title" :href="$url.company(company.id)" target="_blank">
@@ -94,7 +99,7 @@ import CompanyTableDropdown from '@/components/Company/Table/CompanyTableDropdow
 import Tr from '@/components/common/Table/Tr.vue';
 import Td from '@/components/common/Table/Td.vue';
 import { useStore } from 'vuex';
-import { computed } from 'vue';
+import { computed, inject } from 'vue';
 import { useRouter } from 'vue-router';
 import { ActivityProfileList, CompanyCategories, PassiveWhy } from '@/const/const.js';
 import Rating from '@/components/common/Rating.vue';
@@ -102,6 +107,7 @@ import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import CompanyContact from '@/components/Company/CompanyContact.vue';
 import Avatar from '@/components/common/Avatar.vue';
 import TableDateBlock from '@/components/common/Table/TableDateBlock.vue';
+import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 
 const store = useStore();
 const router = useRouter();
@@ -110,6 +116,8 @@ const props = defineProps({
     company: { type: Object, required: true },
     odd: { type: Boolean, default: false }
 });
+
+const $openMessengerChat = inject('$openMessengerChat');
 
 const activeRequests = computed(() => props.company.requests.filter(({ status }) => status === 1));
 const archiveRequests = computed(() => props.company.requests.filter(({ status }) => status === 2));
@@ -140,5 +148,9 @@ const openTimeline = requestID => {
     });
 
     window.open(route.href);
+};
+
+const openInChat = () => {
+    $openMessengerChat({ companyID: props.company.id });
 };
 </script>

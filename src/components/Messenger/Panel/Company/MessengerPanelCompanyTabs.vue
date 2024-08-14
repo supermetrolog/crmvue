@@ -1,13 +1,13 @@
 <template>
     <div class="messenger-panel-company__tabs">
         <Tabs ref="tabs" @changed="setCurrentTab" closed :options="{ useUrlFragment: false }">
-            <Tab :id="`object-${company.id}`" :name="`Объекты (${company.object_count})`">
+            <Tab :id="`object-${company.id}`" :name="`Объекты (${company.objects_count})`">
                 <MessengerPanelCompanyObjects
                     v-if="currentTab === `object-${company.id}`"
                     :companyID="company.id"
                 />
             </Tab>
-            <Tab :id="`request-${company.id}`" :name="`Запросы (${company.request_count})`">
+            <Tab :id="`request-${company.id}`" :name="`Запросы (${company.requests_count})`">
                 <MessengerPanelCompanyRequests
                     v-if="currentTab === `request-${company.id}`"
                     :companyID="company.id"

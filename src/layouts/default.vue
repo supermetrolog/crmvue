@@ -44,8 +44,10 @@ const previewer = ref(null);
 const THIS_USER = computed(() => store.getters.THIS_USER);
 
 provide('$openPreviewer', image => previewer.value.toggle(image));
-provide('$openMessengerChat', ({ companyID, objectID, chatMemberID }) => {
+provide('$openMessengerChat', ({ companyID = null, objectID = null, chatMemberID = null }) => {
     if (chatMemberID) messenger.value.openChatByID(chatMemberID);
+    else if (companyID !== null && objectID === null)
+        messenger.value.openChatByCompanyID(companyID);
     else messenger.value.openChat(companyID, objectID);
 });
 </script>
