@@ -135,12 +135,12 @@ main {
         }
 
         &__month_year_col_nav {
+            border-radius: 4px;
+
             @include mixins.flex-box($j: center);
             @include mixins.hover {
                 background: var(--dp-hover-color)
             }
-
-            border-radius: 4px;
         }
     }
 }

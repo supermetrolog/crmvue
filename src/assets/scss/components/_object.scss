@@ -233,6 +233,8 @@
     }
 
     &-item {
+        transition: all 0.1s ease-in-out;
+
         &-table {
             width: 100% !important;
 
@@ -241,12 +243,12 @@
             }
 
             &.selected {
+                transform: scale(1) !important;
+
                 .icon {
                     display: flex !important;
                     cursor: pointer;
                 }
-
-                transform: scale(1) !important;
 
                 textarea {
                     width: 100%;
@@ -321,14 +323,14 @@
         }
 
         &.selected {
+            transform: scale(1.02);
+
             .header {
                 .icon {
                     display: flex !important;
                     cursor: pointer;
                 }
             }
-
-            transform: scale(1.02);
         }
 
         .header {
@@ -434,8 +436,6 @@
                 text-transform: uppercase;
             }
         }
-
-        transition: all 0.1s ease-in-out;
     }
 }
 

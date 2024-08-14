@@ -15,34 +15,30 @@
             <div class="account-consultant__actions">
                 <Button v-tippy="`В разработке..`" small success>Активность</Button>
                 <Button v-tippy="`В разработке..`" small success>Написать</Button>
+                <Button v-if="canEdit" @click="$emit('edit')" small>Редактировать</Button>
             </div>
         </div>
     </div>
 </template>
-<script>
+<script setup>
 import Avatar from '@/components/common/Avatar.vue';
 import { RoleList } from '@/const/const';
 import Button from '@/components/common/Button.vue';
+import { computed } from 'vue';
 
-export default {
-    name: 'AccountConsultant',
-    components: { Button, Avatar },
-    props: {
-        user: {
-            type: Object,
-            required: true
-        }
+defineEmits(['edit']);
+const props = defineProps({
+    user: {
+        type: Object,
+        required: true
     },
-    computed: {
-        userRole() {
-            return RoleList[this.user.role];
-        },
-        emails() {
-            return this.user.userProfile.emails.map(email => email.email).join(', ');
-        },
-        phones() {
-            return this.user.userProfile.phones.map(phone => phone.phone).join(', ');
-        }
+    canEdit: {
+        type: Boolean,
+        default: false
     }
-};
+});
+
+const userRole = computed(() => RoleList[props.user.role]);
+const emails = computed(() => props.user.userProfile.emails.map(el => el.email).join(', '));
+const phones = computed(() => props.user.userProfile.phones.map(el => el.phone).join(', '));
 </script>

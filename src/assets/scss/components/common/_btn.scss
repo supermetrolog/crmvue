@@ -23,11 +23,11 @@
     }
 
     &.scale {
+        transition: transform 0.05s ease-in-out;
+
         &:hover {
             transform: scale(1.02);
         }
-
-        transition: transform 0.05s ease-in-out;
     }
 
     &:disabled {

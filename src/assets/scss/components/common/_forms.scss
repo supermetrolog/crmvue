@@ -732,11 +732,12 @@
     }
 
     &-option {
+        margin: 2.5px 0;
+
         &.is-selected {
             background-color: #0075ff !important;
         }
 
-        margin: 2.5px 0 2.5px 0;
     }
 
     &-search {
@@ -1156,12 +1157,12 @@
         background-color: unset;
         border: unset;
         width: unset;
+        cursor: pointer;
+
         @include mixins.transition(color);
         @include mixins.hover {
             color: variables.$bg_success;
         }
-
-        cursor: pointer;
     }
 
     &:not(&:has(&__input:checked)) {
@@ -1472,16 +1473,16 @@
     }
 
     &__button {
-        &:not(.disabled) {
-            cursor: pointer;
-        }
-
         border: none;
         background-color: #fff;
         width: max-content;
         padding: 5px 10px;
         border-radius: 5px;
         opacity: .8;
+
+        &:not(.disabled) {
+            cursor: pointer;
+        }
 
         @include mixins.transition(background-color, color, opacity);
         @include mixins.hover {

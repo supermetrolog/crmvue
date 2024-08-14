@@ -140,7 +140,7 @@
 
     &__title {
         margin-bottom: 5px;
-        @include mixins.flex-box($j: space-between);
+        @include mixins.flex-box($j: space-between, $wrap: true);
 
         @include mixins.media('max', 'md') {
             flex-direction: column;
@@ -162,7 +162,7 @@
 
     &__actions {
         margin-top: 10px;
-        @include mixins.flex-box($gap: 5px);
+        @include mixins.flex-box($gap: 5px, $wrap: true);
 
         @include mixins.media('max', 'md') {
             flex-direction: column;

@@ -423,12 +423,12 @@
     background-color: lighten(variables.$color_light_grey, 9);
     border-right: 1px solid #989898;
 
+    font-size: 13px;
+    line-height: 17px;
+
     &:first-of-type {
         border-left: 1px solid #989898;
     }
-
-    font-size: 13px;
-    line-height: 17px;
 
     &:hover &__button {
         visibility: visible;

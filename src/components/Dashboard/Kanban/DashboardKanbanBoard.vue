@@ -17,7 +17,7 @@
             </div>
             <VirtualDragList
                 v-else
-                v-model="items"
+                v-model="modelValue"
                 @drop="dropHandler"
                 group="kanban"
                 class="dashboard-kanban-board__virtual"
@@ -47,92 +47,67 @@
                             </DashboardChip>
                         </template>
                     </InfiniteLoading>
-                    <EmptyLabel v-if="!items.length" class="mb-2">Список задач пуст...</EmptyLabel>
+                    <EmptyLabel v-if="!modelValue.length" class="mb-2"
+                        >Список задач пуст...</EmptyLabel
+                    >
                 </template>
             </VirtualDragList>
         </div>
     </div>
 </template>
 
-<script>
+<script setup>
 import DashboardKanbanTask from '@/components/Dashboard/Kanban/DashboardKanbanTask.vue';
 import VirtualDragList from 'vue-virtual-draglist';
 import InfiniteLoading from 'v3-infinite-loading';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
-import { mapGetters } from 'vuex';
+import { useStore } from 'vuex';
 import DashboardKanbanTaskSkeleton from '@/components/Dashboard/Kanban/DashboardKanbanTaskSkeleton.vue';
 import EmptyLabel from '@/components/common/EmptyLabel.vue';
+import { computed, shallowRef, watch } from 'vue';
 
-export default {
-    name: 'DashboardKanbanBoard',
-    components: {
-        EmptyLabel,
-        DashboardKanbanTaskSkeleton,
-        DashboardChip,
-        InfiniteLoading,
-        VirtualDragList,
-        DashboardKanbanTask
+const store = useStore();
+
+const emit = defineEmits(['load', 'add', 'delete', 'edit']);
+const props = defineProps({
+    title: {
+        type: String,
+        required: true
     },
-    emits: ['load', 'add', 'delete', 'edit', 'update:modelValue'],
-    props: {
-        title: {
-            type: String,
-            required: true
-        },
-        modelValue: {
-            type: Array,
-            required: true
-        },
-        pagination: {
-            type: Object,
-            default: null
-        },
-        isLoading: {
-            type: Boolean,
-            default: false
-        }
+    pagination: {
+        type: Object,
+        default: null
     },
-    data() {
-        return {
-            lastElementsCount: 3
-        };
-    },
-    computed: {
-        ...mapGetters({ currentUser: 'THIS_USER' }),
-        items: {
-            get() {
-                return this.modelValue;
-            },
-            set(value) {
-                this.$emit('update:modelValue', value);
-            }
-        }
-    },
-    watch: {
-        isLoading(value) {
-            if (!value) this.lastElementsCount = Math.min(this.items.length, 4) || 1;
-        }
-    },
-    methods: {
-        dropHandler(event) {
-            if (event.changed && event.oldIndex === -1) this.$emit('add', event.item);
-        },
-        userCanDrag(task) {
-            return (
-                task.deleted_at === null &&
-                (Number(task.created_by_id) === Number(this.currentUser.id) ||
-                    Number(task.user_id) === Number(this.currentUser.id) ||
-                    this.$store.getters.isModerator)
-            );
-        },
-        userCanEdit(task) {
-            return (
-                Number(task.created_by_id) === Number(this.currentUser.id) ||
-                this.$store.getters.isModerator
-            );
-        }
+    isLoading: {
+        type: Boolean,
+        default: false
     }
+});
+const modelValue = defineModel({ type: Array, default: () => [] });
+
+const lastElementsCount = shallowRef(3);
+
+const currentUser = computed(() => store.getters.THIS_USER);
+watch(
+    () => props.isLoading,
+    value => {
+        if (!value) lastElementsCount.value = Math.min(modelValue.value.length, 4) || 1;
+    }
+);
+
+const dropHandler = event => {
+    if (event.changed && event.oldIndex === -1) emit('add', event.item);
 };
+const userCanDrag = task => {
+    return (
+        task.deleted_at === null &&
+        (Number(task.created_by_id) === Number(currentUser.value.id) ||
+            Number(task.user_id) === Number(currentUser.value.id) ||
+            store.getters.isModerator)
+    );
+};
+const userCanEdit = task =>
+    Number(task.created_by_id) === Number(currentUser.value.id) || store.getters.isModerator;
 </script>
 <style>
 .flip-list-move {
