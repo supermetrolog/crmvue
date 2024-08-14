@@ -6,24 +6,22 @@
     </nav>
 </template>
 
-<script>
+<script setup>
 import { Menu } from '@/const/menu.js';
-import { mapGetters } from 'vuex';
+import { useStore } from 'vuex';
 import SideBarMenuItem from '@/components/SideBar/SideBarMenuItem.vue';
+import { computed } from 'vue';
+import { userOptions } from '@/const/options/user.options.js';
 
-export default {
-    name: 'SideBarMenu',
-    components: {
-        SideBarMenuItem
-    },
-    computed: {
-        ...mapGetters(['THIS_USER']),
-        menu() {
-            if (this.THIS_USER && this.THIS_USER.username === 'admin') {
-                return Menu.admin;
-            }
-            return Menu.agent;
-        }
-    }
-};
+const store = useStore();
+
+const menu = computed(() => {
+    if (
+        store.getters.THIS_USER &&
+        (store.getters.THIS_USER.username === 'admin' ||
+            store.getters.THIS_USER.role === userOptions.roleStatement.ADMIN)
+    )
+        return Menu.admin;
+    return Menu.agent;
+});
 </script>

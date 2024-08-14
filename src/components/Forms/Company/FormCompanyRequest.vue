@@ -200,10 +200,18 @@
                         />
                     </FormGroup>
                     <FormGroup>
+                        <AnimationTransition :speed="0.4">
+                            <div v-if="v$.form.objectTypesGeneral.$error" class="col-12">
+                                <DashboardChip class="dashboard-bg-danger-l w-100 text-center">
+                                    {{ v$.form.objectTypesGeneral.$errors[0].$message }}
+                                </DashboardChip>
+                            </div>
+                        </AnimationTransition>
                         <ObjectTypePicker
                             v-model:value="form.objectTypes"
                             v-model:extra="form.objectTypesGeneral"
-                            :extra-value="1"
+                            :extra-value="0"
+                            :v="v$.form.objectTypesGeneral"
                             label="Склад"
                             :options="objectPurposesWithSectionsOptions.warehouse"
                             class="col-md-4"
@@ -211,7 +219,8 @@
                         <ObjectTypePicker
                             v-model:value="form.objectTypes"
                             v-model:extra="form.objectTypesGeneral"
-                            :extra-value="2"
+                            :extra-value="1"
+                            :v="v$.form.objectTypesGeneral"
                             label="Производство"
                             :options="objectPurposesWithSectionsOptions.production"
                             class="col-md-4"
@@ -219,7 +228,8 @@
                         <ObjectTypePicker
                             v-model:value="form.objectTypes"
                             v-model:extra="form.objectTypesGeneral"
-                            :extra-value="3"
+                            :extra-value="2"
+                            :v="v$.form.objectTypesGeneral"
                             label="Участок"
                             :options="objectPurposesWithSectionsOptions.plot"
                             class="col-md-4"
@@ -363,6 +373,7 @@ import Tabs from '@/components/common/Tabs/Tabs.vue';
 import Tab from '@/components/common/Tabs/Tab.vue';
 import SwitchSlider from '@/components/common/Forms/SwitchSlider.vue';
 import VueEditor from '@/components/common/Forms/VueEditor.vue';
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 
 const store = useStore();
 
@@ -502,7 +513,6 @@ const { searchContacts, contacts } = useSearchContacts(
 );
 
 const onChangeCompany = () => {
-    console.log('CHANGE COMPANY');
     form.contact_id = null;
     searchContacts(form.company_id);
 };

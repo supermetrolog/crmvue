@@ -89,22 +89,22 @@
 
 .messenger-chat-header {
     padding: 10px;
-    @include mixins.flex-box($a: center, $j: space-between);
     min-height: 70px;
     background-color: #F3F3F3;
     border-bottom: 1px solid rgba(0, 0, 0, .1);
+    @include mixins.flex-box($a: center, $j: space-between);
 
     &__functions {
         @include mixins.flex-box($gap: 5px);
     }
 
     &__function {
-        @include mixins.clear-button;
         background-color: transparent;
         border: none;
         font-size: 24px;
         color: #7c7c86;
 
+        @include mixins.clear-button;
         @include mixins.transition(color .2s);
         @include mixins.hover {
             color: #10b981;
@@ -135,9 +135,9 @@
     }
 
     &__deals {
-        @include mixins.flex-box($gap: 5px, $a: center);
         color: #05865f;
         font-weight: 500;
+        @include mixins.flex-box($gap: 5px, $a: center);
     }
 }
 
@@ -171,8 +171,8 @@
     border-top: 1px solid rgba(0, 0, 0, .1);
 
     &__settings {
-        @include mixins.flex-box($a: flex-end, $j: space-between, $gap: 15px);
         margin-bottom: 10px;
+        @include mixins.flex-box($a: flex-end, $j: space-between, $gap: 15px);
 
         @media screen and (max-width: 1800px) {
             flex-wrap: wrap;
@@ -271,7 +271,6 @@
 }
 
 .messenger-chat-form-contact {
-    @include mixins.flex-box($a: center, $gap: 10px);
     transition: background-color .5s ease, color .5s ease;
     padding: 5px 10px;
     font-size: 14px;
@@ -280,6 +279,7 @@
     height: 52px;
     min-width: 290px;
     max-width: 350px;
+    @include mixins.flex-box($a: center, $gap: 10px);
 
     &.static {
         @media screen and (max-width: 1800px) {
@@ -343,11 +343,11 @@
     border-radius: 5px;
 
     &__header {
-        @include mixins.flex-box($a: center);
         background-color: #17b775;
         color: #fff;
         padding: 15px 15px 10px;
         border-radius: 5px 5px 0 0;
+        @include mixins.flex-box($a: center);
     }
 
     &__description {
@@ -405,11 +405,11 @@
 }
 
 .messenger-chat-pinned {
-    @include mixins.flex-box($a: center, $gap: 10px);
     padding: 7px 10px;
     background-color: #17b775;
     color: #fff;
     font-weight: 500;
+    @include mixins.flex-box($a: center, $gap: 10px);
 
     i {
         font-size: 18px;
@@ -430,10 +430,11 @@
     width: 50%;
     position: absolute;
     z-index: 15;
-    @include mixins.transition(transform .5s);
     border-right: none;
     bottom: 0;
     right: 0;
+    transform: translateX(100%);
+    @include mixins.transition(transform .5s);
 
     &__wrapper {
         @include mixins.flex-box($d: column);
@@ -444,8 +445,6 @@
         position: relative;
 
     }
-
-    transform: translateX(100%);
 
     &.active {
         transform: translateX(0);
@@ -475,9 +474,9 @@
 
     &__preview {
         position: relative;
-        @include mixins.light-border;
         width: 100%;
         height: 200px;
+        @include mixins.light-border;
 
         img {
             object-fit: cover;
@@ -550,10 +549,10 @@
     }
 
     &__list {
-        @include mixins.flex-box($d: column, $gap: 10px);
         overflow-y: auto;
         max-height: 600px;
         position: relative;
+        @include mixins.flex-box($d: column, $gap: 10px);
     }
 }
 

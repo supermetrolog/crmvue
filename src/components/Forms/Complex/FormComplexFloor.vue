@@ -473,7 +473,6 @@ const normalizeForm = () => {
 const onSubmit = () => {};
 
 onBeforeMount(() => {
-    console.log(props.related);
     if (props.floor) Object.assign(form, cloneObject(props.floor));
     normalizeForm();
 });

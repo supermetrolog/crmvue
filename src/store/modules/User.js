@@ -1,5 +1,6 @@
 import api from '@/api/api';
 import { useAuth } from '@/composables/useAuth.js';
+import { userOptions } from '@/const/options/user.options.js';
 
 const User = {
     state: {
@@ -108,16 +109,24 @@ const User = {
                 api.messenger.getUserChatMembers()
             ]);
 
-            consultants.forEach(user => {
-                user.chat_member_id = chatMembers[user.id];
-            });
+            if (consultants) {
+                consultants.forEach(user => {
+                    user.chat_member_id = chatMembers[user.id];
+                });
 
-            commit(
-                'setConsultants',
-                (consultants ?? []).filter(user => user.role < 5)
-            );
+                commit(
+                    'setConsultants',
+                    consultants.filter(element => element.role < 5)
+                );
+            }
 
             return state.consultants;
+        },
+        async getActiveConsultants({ state, getters, dispatch }) {
+            if (state.consultants.length) return getters.activeConsultants;
+
+            await dispatch('getConsultants');
+            return getters.activeConsultants;
         }
     },
     getters: {
@@ -132,6 +141,11 @@ const User = {
         },
         isModerator(state) {
             return state.thisUser.role > 2;
+        },
+        activeConsultants(state) {
+            return state.consultants.filter(
+                element => element.status === userOptions.statusStatement.ACTIVE
+            );
         }
     }
 };

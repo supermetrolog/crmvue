@@ -1,7 +1,6 @@
 @use '../../utils/mixins';
 
 .messenger-button {
-    @include mixins.clear-button;
 
     border-radius: 20px;
     background-color: #fff;
@@ -10,6 +9,7 @@
     padding: 7px 15px;
     border: none;
     box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+    @include mixins.clear-button;
     @include mixins.transition(background-color .2s, opacity .2s);
 
     @include mixins.hover {

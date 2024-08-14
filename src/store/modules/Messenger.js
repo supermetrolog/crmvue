@@ -361,6 +361,19 @@ const Messenger = {
             commit('setCurrentPanel', data || null);
             commit('setLoadingPanel', false);
         },
+        async selectPanelWithoutDialog({ commit }, companyID) {
+            commit('setCurrentPanelID', null);
+            commit('setCurrentAsideDialogID', null);
+            commit('setCurrentPanelCompanyID', companyID);
+            commit('setCurrentDialogType', 'object');
+
+            commit('setLoadingPanel', true);
+
+            const data = await api.messenger.getPanel(companyID);
+
+            commit('setCurrentPanel', data || null);
+            commit('setLoadingPanel', false);
+        },
         async updatePanel({ commit, state }) {
             const panel = await api.messenger.getPanel(state.currentPanelCompanyID);
 
@@ -376,7 +389,7 @@ const Messenger = {
             if (needCacheMessage(dialogID, state.currentAsideDialogID, state.currentPanelDialogID))
                 commit('setCachedMessage');
 
-            if (!state.currentAsideDialogID) {
+            if (!state.currentAsideDialogID && !state.currentPanelCompanyID) {
                 commit('setCurrentPanelDialogID', null);
                 return;
             }

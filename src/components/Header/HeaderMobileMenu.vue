@@ -1,7 +1,7 @@
 <template>
     <nav class="header-mobile-menu">
         <ul>
-            <li v-for="menuItem in Menu.agent" :key="menuItem.id">
+            <li v-for="menuItem in menu" :key="menuItem.id">
                 <router-link
                     class="header-mobile-menu__link"
                     active-class="active"
@@ -17,4 +17,19 @@
 </template>
 <script setup>
 import { Menu } from '@/const/menu.js';
+import { useStore } from 'vuex';
+import { computed } from 'vue';
+import { userOptions } from '@/const/options/user.options.js';
+
+const store = useStore();
+
+const menu = computed(() => {
+    if (
+        store.getters.THIS_USER &&
+        (store.getters.THIS_USER.username === 'admin' ||
+            store.getters.THIS_USER.role === userOptions.roleStatement.ADMIN)
+    )
+        return Menu.admin;
+    return Menu.agent;
+});
 </script>
