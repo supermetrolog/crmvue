@@ -286,7 +286,6 @@ const archiveUser = async () => {
 };
 
 if (props.formData) {
-    console.log(props.formData);
     Object.assign(form, cloneObject(props.formData));
     Utils.normalizeDataForUserForm(form);
 }

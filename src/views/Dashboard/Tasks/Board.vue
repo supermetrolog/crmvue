@@ -124,7 +124,6 @@ const tasks = reactive({
     }
 });
 const taskForm = shallowRef(null);
-const formIsVisible = shallowRef(false);
 
 const targetUser = computed(() => $targetUser);
 
@@ -171,7 +170,6 @@ const loadTasks = async ($state, statusName) => {
     }
 };
 const changeTaskStatus = async (task, statusName) => {
-    console.log(task);
     task.isUpdating = true;
 
     const status = taskOptions.statusTypes[statusName.toUpperCase()];

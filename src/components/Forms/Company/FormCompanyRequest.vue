@@ -513,7 +513,6 @@ const { searchContacts, contacts } = useSearchContacts(
 );
 
 const onChangeCompany = () => {
-    console.log('CHANGE COMPANY');
     form.contact_id = null;
     searchContacts(form.company_id);
 };
