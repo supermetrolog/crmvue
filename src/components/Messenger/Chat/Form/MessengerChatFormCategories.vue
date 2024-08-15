@@ -1,19 +1,30 @@
 <template>
     <div class="messenger-chat-form__categories">
-        <RadioChip
-            v-for="(category, key) in messenger.categories"
-            :key="category"
+        <RadioOptions
             v-model="currentID"
-            :value="Number(key)"
-            :label="category"
+            :v="v"
             unselect
-            class="messenger-chat-form__category"
+            required
+            :options="tags"
+            item-class="messenger-chat-form__category"
         />
     </div>
 </template>
 <script setup>
-import { messenger } from '@/const/messenger';
-import RadioChip from '@/components/common/Forms/RadioChip.vue';
+import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
+import { computed } from 'vue';
+import { useStore } from 'vuex';
+
+const store = useStore();
 
 const currentID = defineModel();
+defineProps({
+    v: { type: Object }
+});
+
+const tags = computed(() =>
+    store.state.Messenger.tags.map(element => ({ value: element.id, label: element.name }))
+);
+
+store.dispatch('Messenger/fetchTags');
 </script>

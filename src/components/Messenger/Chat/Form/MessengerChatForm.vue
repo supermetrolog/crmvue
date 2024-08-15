@@ -13,7 +13,7 @@
                 :current="currentContact"
                 :without-auto-toggle="hasCachedMessage"
             />
-            <MessengerChatFormCategories v-model="currentCategory" />
+            <MessengerChatFormCategories v-model="currentCategory" :v="v$.currentCategory" />
         </div>
         <Form @submit.prevent class="messenger-chat-form__field" method="post">
             <Button @click="attachFile" class="messenger-chat-form__button" warning icon>
@@ -47,6 +47,8 @@ import MessengerChatFormRecipient from '@/components/Messenger/Chat/Form/Messeng
 import MessengerChatFormCategories from '@/components/Messenger/Chat/Form/MessengerChatFormCategories.vue';
 import MessengerChatFormAttachments from '@/components/Messenger/Chat/Form/MessengerChatFormAttachments.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import useVuelidate from '@vuelidate/core';
+import { helpers, required } from '@vuelidate/validators';
 
 export default {
     name: 'MessengerChatForm',
@@ -65,7 +67,8 @@ export default {
             currentFiles: {
                 fileList: [],
                 files: []
-            }
+            },
+            v$: useVuelidate()
         };
     },
     computed: {
@@ -97,6 +100,9 @@ export default {
             this.$store.commit('Messenger/setCurrentRecipient', { contact });
         },
         async sendMessage() {
+            this.v$.$validate();
+            if (this.v$.$error) return;
+
             this.message = this.message.replace(/(\n)+$/g, '');
 
             if (!this.message.length && !this.currentFiles.fileList.length) return;
@@ -130,6 +136,13 @@ export default {
             this.currentFiles.fileList.splice(id, 1);
             this.currentFiles.files.splice(id, 1);
         }
+    },
+    validations() {
+        return {
+            currentCategory: {
+                required: helpers.withMessage('Выберите категорию!', required)
+            }
+        };
     },
     mounted() {
         if (this.hasCachedMessage) {
