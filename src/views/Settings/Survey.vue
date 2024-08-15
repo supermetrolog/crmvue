@@ -54,8 +54,8 @@
                         </Button>
                     </AnimationTransition>
                     <AnimationTransition :speed="0.5">
-                        <div v-if="viewQuestionsIsVisible">
-                            <div v-if="previewQuestions.length" class="row mt-2">
+                        <div v-if="viewQuestionsIsVisible" class="mt-3">
+                            <div v-if="previewQuestions.length" class="row">
                                 <Loader v-if="questionsIsLoading" />
                                 <div
                                     v-for="question in previewQuestions"
@@ -64,6 +64,7 @@
                                 >
                                     <MessengerQuizQuestion
                                         @edit-answer="editQuestionField"
+                                        @add-answer="addAnswer"
                                         @edit="editQuestion(question)"
                                         @delete="deleteQuestion(question)"
                                         show-id
@@ -453,6 +454,15 @@ const onQuestionAnswerDeleted = () => {
 const openQuestionsPreview = () => {
     fetchQuestions();
     viewQuestionsIsVisible.value = true;
+};
+
+const addAnswer = (questionID, answerType) => {
+    editingQuestionAnswer.value = {
+        category: answerType,
+        question_id: questionID
+    };
+
+    questionAnswerFormIsVisible.value = true;
 };
 
 fetchQuestions();

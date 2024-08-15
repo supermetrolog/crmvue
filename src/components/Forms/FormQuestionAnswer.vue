@@ -2,7 +2,9 @@
     <Modal
         @close="emit('close')"
         show
-        :title="formData ? 'Редактирование варианта ответа' : 'Создание варианта ответа'"
+        :title="
+            formData && formData.id ? 'Редактирование варианта ответа' : 'Создание варианта ответа'
+        "
         width="1200"
     >
         <Form @submit="onSubmit">
@@ -190,13 +192,17 @@ const onSubmit = async () => {
 
     isLoading.value = true;
 
-    if (props.formData) await updateAnswer();
+    if (props.formData && props.formData.id) await updateAnswer();
     else await createAnswer();
 
     isLoading.value = false;
 };
 
 if (props.formData) {
-    Object.assign(form, { ...props.formData });
+    if (props.formData.id) Object.assign(form, { ...props.formData });
+    else {
+        form.question_id = props.formData.question_id;
+        form.category = props.formData.category;
+    }
 }
 </script>

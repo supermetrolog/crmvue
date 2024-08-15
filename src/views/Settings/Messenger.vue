@@ -41,6 +41,7 @@
                             :key="tag.id"
                             @delete="deleteTag(tag)"
                             @edit="editTag(tag)"
+                            :is-deleted="tag.deleted_at !== null"
                             :element="tag"
                             can-edit
                         >

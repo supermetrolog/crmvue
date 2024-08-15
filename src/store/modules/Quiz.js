@@ -12,7 +12,11 @@ const Quizz = {
     actions: {
         async fetchQuestions({ commit }) {
             const answers = await api.question.getWithAnswers();
-            if (answers?.length) commit('setQuestions', answers);
+            if (answers)
+                commit(
+                    'setQuestions',
+                    answers.data.filter(element => element.deleted_at === null)
+                );
         }
     },
     getters: {}

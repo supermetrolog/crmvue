@@ -117,6 +117,15 @@
         right: 5px;
         @include mixins.flex-box($gap: 5px, $a: center);
     }
+
+    &__button {
+        padding: 5px 15px;
+        height: max-content;
+
+        i {
+            font-size: 14px;
+        }
+    }
 }
 
 .messenger-quiz-helper {
