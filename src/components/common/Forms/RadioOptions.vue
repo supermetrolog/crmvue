@@ -11,6 +11,7 @@
                 :label="option.label"
                 :unselect="unselect"
                 :disabled="disabled"
+                :class="[itemClass, { invalid: hasValidationError }]"
             />
         </div>
         <ValidationMessage v-if="hasValidationError" :message="v.$errors[0].$message" />
@@ -49,6 +50,10 @@ const props = defineProps({
     unselect: {
         type: Boolean,
         default: false
+    },
+    itemClass: {
+        type: String,
+        default: null
     }
 });
 

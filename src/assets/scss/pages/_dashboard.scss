@@ -124,6 +124,14 @@
     padding: 5px 10px;
     border-radius: 5px;
     font-weight: 500;
+
+    @include mixins.transition(opacity);
+
+    &.disabled {
+        cursor: default!important;
+        pointer-events: none;
+        opacity: .5;
+    }
 }
 
 .dashboard-stats-block {

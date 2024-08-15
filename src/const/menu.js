@@ -38,15 +38,22 @@ export const Menu = {
             url: '/calendar',
             exact: true
         },
-        { id: 3, name: 'Настройки', icon: 'fas fa-cog', url: '/settings', key: 'settings' },
-        { id: 4, name: 'Юзеры', icon: 'fas fa-users', url: '/users', key: 'users' },
         {
             id: 5,
             name: 'Аккаунт',
             icon: 'fa-solid fa-user-astronaut',
             url: '/account',
             key: 'account'
-        }
+        },
+        {
+            id: 3,
+            name: 'Настройки',
+            icon: 'fas fa-cog',
+            url: '/settings',
+            key: 'settings',
+            internal: 'settings'
+        },
+        { id: 4, name: 'Юзеры', icon: 'fas fa-users', url: '/users', key: 'users' }
     ],
     agent: [
         {
@@ -118,5 +125,9 @@ export const InternalMenu = {
         { id: 1, name: 'Сводка', url: '/dashboard/company' },
         { id: 2, name: 'Задачи', url: '/dashboard/tasks/board' },
         { id: 3, name: 'Запросы', url: '/dashboard/requests' }
+    ],
+    settings: [
+        { id: 0, name: 'Опросник', url: '/settings/survey' },
+        { id: 1, name: 'Мессенджер', url: '/settings/messenger' }
     ]
 };

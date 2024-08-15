@@ -28,6 +28,8 @@ export default {
             
               objects.company.mainContact.phones,
               objects.company.mainContact.emails,
+              objects.company.objects_count,
+              objects.company.requests_count,
               
               location.regionRecord,
               location.highwayRecord,
@@ -52,6 +54,8 @@ export default {
               objects.commercialOffers.summaryBlock,
               objects.commercialOffers.companyRecord.mainContact.phones,
               objects.commercialOffers.companyRecord.mainContact.emails,
+              objects.commercialOffers.companyRecord.objects_count,
+              objects.commercialOffers.companyRecord.requests_count,
               objects.commercialOffers.blocks.deal,
               objects.floorsRecords.number,
               objects.floorsRecords.parts,

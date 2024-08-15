@@ -1,7 +1,6 @@
 @use '../../utils/mixins';
 
 .messenger-button {
-
     border-radius: 20px;
     background-color: #fff;
     font-weight: 500;
@@ -22,5 +21,9 @@
 
     &[disabled] {
         opacity: .5;
+    }
+
+    &.small {
+        padding: 4px 10px;
     }
 }

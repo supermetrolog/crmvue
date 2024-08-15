@@ -264,7 +264,7 @@ const createUser = async () => {
 };
 
 const onSubmit = async () => {
-    // v$.value.$validate();
+    v$.value.$validate();
     if (v$.value.form.$error) return;
 
     isLoading.value = true;

@@ -140,7 +140,13 @@ const User = {
             return state.users;
         },
         isModerator(state) {
-            return state.thisUser.role > 2;
+            return state.thisUser.role > userOptions.roleStatement.CONSULTANT;
+        },
+        isAdmin(state) {
+            return state.thisUser.role === userOptions.roleStatement.ADMIN;
+        },
+        isDirector(state) {
+            return state.thisUser.role === userOptions.roleStatement.DIRECTOR;
         },
         activeConsultants(state) {
             return state.consultants.filter(

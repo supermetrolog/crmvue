@@ -30,7 +30,8 @@ const menu = computed(() => {
     if (
         store.getters.THIS_USER &&
         (store.getters.THIS_USER.username === 'admin' ||
-            store.getters.THIS_USER.role === userOptions.roleStatement.ADMIN)
+            store.getters.THIS_USER.role === userOptions.roleStatement.ADMIN ||
+            store.getters.THIS_USER.role === userOptions.roleStatement.DIRECTOR)
     )
         return Menu.admin;
     return Menu.agent;
