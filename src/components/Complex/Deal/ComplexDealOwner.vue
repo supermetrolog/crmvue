@@ -15,10 +15,10 @@
                     {{ plural(contacts.length, '%d контакт', '%d контакта', '%d контактов') }},
                 </span>
                 <span>
-                    {{ plural(owner.request_count, '%d запрос', '%d запроса', '%d запросов') }},
+                    {{ plural(owner.requests_count, '%d запрос', '%d запроса', '%d запросов') }},
                 </span>
                 <span>
-                    {{ plural(owner.object_count, '%d объект', '%d объекта', '%d объектов') }}
+                    {{ plural(owner.objects_count, '%d объект', '%d объекта', '%d объектов') }}
                 </span>
             </p>
         </div>

@@ -140,7 +140,7 @@ export default {
                 ...this.$route.query,
                 type_id: [2, 3],
                 // type_id: [2],
-                expand: 'contact.emails,contact.phones,object,company.mainContact.phones,company.mainContact.emails,offer,consultant.userProfile'
+                expand: 'contact.emails,contact.phones,object,company.mainContact.phones,company.mainContact.emails,offer,consultant.userProfile,company.objects_count,company.requests_count'
             };
             if (!this.FAVORITES_OFFERS.length) {
                 await this.SEARCH_FAVORITES_OFFERS();

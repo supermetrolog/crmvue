@@ -55,7 +55,6 @@ export default {
         }
     },
     async getAnswers(page = 1) {
-        console.log('aboba');
         try {
             const response = await axios.get('/question-answers', { params: { page } });
             return {
