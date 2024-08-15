@@ -105,6 +105,18 @@
             max-height: 146px;
         }
     }
+
+    &__actions {
+        margin-bottom: 5px;
+        @include mixins.flex-box($wrap: true, $gap: 5px);
+    }
+
+    &__edits {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        @include mixins.flex-box($gap: 5px, $a: center);
+    }
 }
 
 .messenger-quiz-helper {
