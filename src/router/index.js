@@ -20,7 +20,7 @@ const routes = [
                     layout: 'default',
                     auth: { isAuth: true, role: ['moderator', 'administrator'] }
                 },
-                component: () => import('@/views/Settings.vue')
+                component: () => import('@/views/Settings/Survey.vue')
             }
         ]
     },
@@ -32,7 +32,30 @@ const routes = [
             auth: { isAuth: true, role: ['moderator', 'administrator'] },
             title: 'Настройки'
         },
-        component: () => import('@/views/Settings.vue')
+        component: () => import('@/views/Settings/View.vue'),
+        redirect: { name: 'settings-survey' },
+        children: [
+            {
+                path: 'survey',
+                name: 'settings-survey',
+                meta: {
+                    layout: 'default',
+                    auth: { isAuth: true, role: ['moderator', 'administrator'] },
+                    title: 'Настройки опросника'
+                },
+                component: () => import('../views/Settings/Survey.vue')
+            },
+            {
+                path: 'messenger',
+                name: 'settings-messenger',
+                meta: {
+                    layout: 'default',
+                    auth: { isAuth: true, role: ['moderator', 'administrator'] },
+                    title: 'Настройки мессенджера'
+                },
+                component: () => import('../views/Settings/Messenger.vue')
+            }
+        ]
     },
     {
         path: '/calendar',

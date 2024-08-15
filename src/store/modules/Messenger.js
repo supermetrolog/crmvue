@@ -27,6 +27,7 @@ const getInitialState = () => ({
         pagination: null
     },
 
+    tags: [],
     messages: [],
     lastNotViewedMessageID: null,
     lessThenMessageId: null,
@@ -285,6 +286,9 @@ const Messenger = {
         },
         setCountersInterval(state, interval) {
             state.countersInterval = interval;
+        },
+        setTags(state, tags) {
+            state.tags = tags;
         }
     },
     actions: {
@@ -688,6 +692,21 @@ const Messenger = {
             }
 
             return false;
+        },
+        async fetchTags({ commit, state }) {
+            if (state.tags.length) return state.tags;
+
+            const response = await api.messengerTag.list();
+            if (response) {
+                commit('setTags', response.data);
+                return response.data;
+            }
+
+            return null;
+        },
+        async refreshTags({ commit, dispatch }) {
+            commit('setTags', []);
+            dispatch('fetchTags');
         }
     },
     getters: {

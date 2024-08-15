@@ -45,7 +45,23 @@ export default {
     async getWithAnswers() {
         try {
             const response = await axios.get(`${URL}/with-question-answer`);
-            return SuccessHandler.getData(response);
+            return {
+                data: SuccessHandler.getData(response),
+                pagination: SuccessHandler.getPaginationData(response)
+            };
+        } catch (e) {
+            setRequestError(e);
+            return null;
+        }
+    },
+    async getAnswers(page = 1) {
+        console.log('aboba');
+        try {
+            const response = await axios.get('/question-answers', { params: { page } });
+            return {
+                data: SuccessHandler.getData(response),
+                pagination: SuccessHandler.getPaginationData(response)
+            };
         } catch (e) {
             setRequestError(e);
             return null;
@@ -54,7 +70,10 @@ export default {
     async list() {
         try {
             const response = await axios.get(URL);
-            return SuccessHandler.getData(response);
+            return {
+                data: SuccessHandler.getData(response),
+                pagination: SuccessHandler.getPaginationData(response)
+            };
         } catch (e) {
             setRequestError(e);
             return null;
@@ -63,6 +82,15 @@ export default {
     async delete(id) {
         try {
             const response = await axios.delete(`${URL}/${id}`);
+            return response.status === 200;
+        } catch (e) {
+            setRequestError(e);
+            return null;
+        }
+    },
+    async deleteAnswer(id) {
+        try {
+            const response = await axios.delete(`/question-answers/${id}`);
             return response.status === 200;
         } catch (e) {
             setRequestError(e);

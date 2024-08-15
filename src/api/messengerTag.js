@@ -2,7 +2,7 @@ import axios from 'axios';
 import { setRequestError } from '@/api/helpers/setRequestError.js';
 import { SuccessHandler } from '@/api/helpers/successHandler.js';
 
-const URL = '/fields';
+const URL = '/chat-member-message-tags';
 
 export default {
     async create(options) {
