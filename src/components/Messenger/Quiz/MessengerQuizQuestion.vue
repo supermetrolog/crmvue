@@ -2,6 +2,10 @@
     <div class="messenger-quiz-question">
         <AccordionSimple opened>
             <template #title>
+                <div v-if="canEdit" class="messenger-quiz-question__actions">
+                    <Button @click="$emit('edit')" small success>Редактировать</Button>
+                    <Button @click="$emit('delete')" small danger>Удалить</Button>
+                </div>
                 <div class="messenger-quiz-question__header">
                     <i
                         v-if="hasFullAnswer"
@@ -16,40 +20,62 @@
                         class="fa-solid fa-circle-exclamation color-danger animate__animated animate__flash"
                     ></i>
                     <p class="messenger-quiz-question__title">
-                        {{ question.text }}
+                        <span v-if="showId" class="mr-1">#{{ question.id }}</span>
+                        <span>{{ question.text }}</span>
                     </p>
-                    <RadioGroup v-if="question.answers['yes-no']" v-model="form.main" unselect />
+                    <RadioGroup v-if="question.answers?.['yes-no']" v-model="form.main" unselect />
                     <AccordionSimpleTrigger />
                 </div>
             </template>
             <template #body>
-                <div v-if="question.answers.tab" class="messenger-quiz-question__additions">
+                <div v-if="question.answers?.tab" class="messenger-quiz-question__additions">
                     <CheckboxChip
-                        v-for="answer in question.answers.tab"
+                        v-for="answer in tabs"
                         :key="answer.id"
                         v-model="form.tab"
+                        @icon-clicked="$emit('edit-answer', answer)"
                         :value="answer.id"
                         :text="answer.value"
+                        :icon="canEdit ? 'fa-solid fa-pen' : undefined"
+                        icon-label="Редактировать"
                     />
                 </div>
-                <div v-if="question.answers['text-answer']">
-                    <Textarea
-                        v-for="answer in question.answers['text-answer']"
-                        :key="answer.id"
-                        v-model="form.description[answer.id]"
-                        :placeholder="answer.value"
-                        class="messenger-quiz-question__field"
-                        auto-height
-                    />
+                <div v-if="question.answers?.['text-answer']">
+                    <div v-for="answer in texts" :key="answer.id" class="position-relative">
+                        <Textarea
+                            v-model="form.description[answer.id]"
+                            :placeholder="answer.value"
+                            class="messenger-quiz-question__field"
+                            auto-height
+                        />
+                        <div v-if="canEdit" class="messenger-quiz-question__edits">
+                            <HoverActionsButton
+                                @click="$emit('edit-answer', answer)"
+                                label="Редактировать"
+                                small
+                            >
+                                <i class="fa-solid fa-pen" />
+                            </HoverActionsButton>
+                        </div>
+                    </div>
                 </div>
-                <div v-if="question.answers.checkbox" class="messenger-quiz-question__interests">
-                    <CheckboxChip
-                        v-for="answer in question.answers.checkbox"
-                        :key="answer.id"
-                        v-model="form.checkbox"
-                        :value="answer.id"
-                        :text="answer.value"
-                    />
+                <p v-if="canEdit">Дополнительные возможности</p>
+                <div class="messenger-quiz-question__interests">
+                    <template v-if="question.answers?.checkbox">
+                        <CheckboxChip
+                            v-for="answer in checkboxes"
+                            :key="answer.id"
+                            v-model="form.checkbox"
+                            @icon-clicked="$emit('edit-answer', answer)"
+                            :value="answer.id"
+                            :text="answer.value"
+                            :icon="canEdit ? 'fa-solid fa-pen' : undefined"
+                            icon-label="Редактировать"
+                        />
+                    </template>
+                    <Button v-if="canEdit" @click="$emit('add-answer', 'checkbox')" small>
+                        Добавить
+                    </Button>
                 </div>
             </template>
         </AccordionSimple>
@@ -62,11 +88,22 @@ import Textarea from '@/components/common/Forms/Textarea.vue';
 import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
 import AccordionSimpleTrigger from '@/components/common/Accordion/AccordionSimpleTrigger.vue';
 import { computed, reactive } from 'vue';
+import Button from '@/components/common/Button.vue';
+import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 
+defineEmits(['edit', 'delete', 'edit-answer', 'add-answer']);
 const props = defineProps({
     question: {
         type: Object,
         required: true
+    },
+    showId: {
+        type: Boolean,
+        default: false
+    },
+    canEdit: {
+        type: Boolean,
+        default: false
     }
 });
 
@@ -88,10 +125,20 @@ const hasFullAnswer = computed(() =>
     })
 );
 
-const hasMainQuestion = computed(() => Boolean(props.question.answers['yes-no']));
-const hasTabQuestions = computed(() => Boolean(props.question.answers.tab));
-const hasTextQuestions = computed(() => Boolean(props.question.answers['text-answer']));
-const hasCheckboxQuestions = computed(() => Boolean(props.question.answers.checkbox));
+const hasMainQuestion = computed(() => Boolean(props.question.answers?.['yes-no']));
+const hasTabQuestions = computed(() => Boolean(props.question.answers?.tab));
+const hasTextQuestions = computed(() => Boolean(props.question.answers?.['text-answer']));
+const hasCheckboxQuestions = computed(() => Boolean(props.question.answers?.checkbox));
+
+const tabs = computed(() =>
+    props.question.answers.tab.filter(element => element.deleted_at === null)
+);
+const texts = computed(() =>
+    props.question.answers['text-answer'].filter(element => element.deleted_at === null)
+);
+const checkboxes = computed(() =>
+    props.question.answers.checkbox.filter(element => element.deleted_at === null)
+);
 
 const initForm = () => {
     if (hasMainQuestion.value) form.main = null;
