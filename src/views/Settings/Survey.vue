@@ -39,7 +39,18 @@
                             title="Список вопросов"
                             :size="previewQuestions.length"
                             :pagination="questionsPagination"
-                        />
+                        >
+                            <template #extra>
+                                <DashboardChip
+                                    @click="refreshQuestions"
+                                    class="settings-form__button settings-form__button--info"
+                                    :class="{ disabled: refreshIsLoading }"
+                                >
+                                    <i class="fa-solid fa-rotate" />
+                                    <span class="ml-1">Обновить вопросы в чате</span>
+                                </DashboardChip>
+                            </template>
+                        </SettingsFormHeader>
                     </template>
                     <AnimationTransition :speed="0.2">
                         <Button
@@ -217,9 +228,24 @@ import SettingsFormHeader from '@/components/Settings/SettingsFormHeader.vue';
 import Loader from '@/components/common/Loader.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import SettingsFormElement from '@/components/Settings/SettingsFormElement.vue';
+import { useStore } from 'vuex';
+
+const defaultFields = {
+    RADIO: 1,
+    CHECKBOX: 2,
+    TEXTAREA: 3
+};
+
+const fieldsByCategory = {
+    'yes-no': defaultFields.RADIO,
+    checkbox: defaultFields.CHECKBOX,
+    'text-answer': defaultFields.TEXTAREA,
+    tab: defaultFields.CHECKBOX
+};
 
 const { confirm } = useConfirm();
 const notify = useNotify();
+const store = useStore();
 
 const questions = ref([]);
 const { isLoading: questionsIsLoading } = useDelayedLoader();
@@ -228,6 +254,8 @@ const questionsPagination = ref(null);
 const fields = ref([]);
 const { isLoading: fieldsIsLoading } = useDelayedLoader();
 const fieldsPagination = ref(null);
+
+const { isLoading: refreshIsLoading } = useDelayedLoader();
 
 const questionAnswers = ref([]);
 const { isLoading: answersIsLoading } = useDelayedLoader();
@@ -249,7 +277,7 @@ const previewQuestions = computed(() =>
 const fieldsOptions = computed(() => {
     return fields.value.map(element => ({
         value: element.id,
-        label: `#${element.id} ${element.field_type}(${element.type})`
+        label: `#${element.id} ${element.field_type} (${element.type})`
     }));
 });
 
@@ -459,10 +487,17 @@ const openQuestionsPreview = () => {
 const addAnswer = (questionID, answerType) => {
     editingQuestionAnswer.value = {
         category: answerType,
-        question_id: questionID
+        question_id: questionID,
+        field_id: fieldsByCategory[answerType]
     };
 
     questionAnswerFormIsVisible.value = true;
+};
+
+const refreshQuestions = async () => {
+    refreshIsLoading.value = true;
+    await store.dispatch('fetchQuestions');
+    refreshIsLoading.value = false;
 };
 
 fetchQuestions();

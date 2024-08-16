@@ -38,7 +38,7 @@
                 :key="addition.id"
                 :html="addition.value"
                 :class="{
-                    'dashboard-bg-success text-white': Boolean(addition.surveyQuestionAnswer.value)
+                    'dashboard-bg-success text-white': Boolean(addition.surveyQuestionAnswer?.value)
                 }"
             />
         </div>
@@ -47,7 +47,7 @@
                 v-for="addition in question.answers['text-answer']"
                 :key="addition.id"
                 disabled
-                :model-value="addition.surveyQuestionAnswer.value"
+                :model-value="addition.surveyQuestionAnswer?.value"
                 :label="addition.value"
                 class="messenger-quiz-question__field mt-1"
                 auto-height
@@ -59,7 +59,7 @@
                 :key="interest.id"
                 :html="interest.value"
                 :class="{
-                    'dashboard-bg-success text-white': Boolean(interest.surveyQuestionAnswer.value)
+                    'dashboard-bg-success text-white': Boolean(interest.surveyQuestionAnswer?.value)
                 }"
             />
         </div>
@@ -98,7 +98,9 @@ const hasTabQuestions = computed(() => Boolean(props.question.answers.tab));
 const hasTextQuestions = computed(() => Boolean(props.question.answers['text-answer']));
 const hasCheckboxQuestions = computed(() => Boolean(props.question.answers.checkbox));
 
-const mainQuestionAnswer = computed(
-    () => props.question.answers['yes-no'][0].surveyQuestionAnswer.value
-);
+const mainQuestionAnswer = computed(() => {
+    if (props.question.answers['yes-no'][0].surveyQuestionAnswer)
+        return props.question.answers['yes-no'][0].surveyQuestionAnswer.value;
+    return null;
+});
 </script>

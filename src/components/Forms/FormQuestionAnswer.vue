@@ -108,10 +108,10 @@ const props = defineProps({
 });
 
 const categoryOptions = {
-    'yes-no': 'Да/Нет',
-    'text-answer': 'Текстовый ответ',
-    tab: 'Таб чекбоксов',
-    checkbox: 'Дополнительные чекбоксы'
+    'yes-no': 'Да/Нет [yes-no]',
+    'text-answer': 'Текстовые поля [text-answer]',
+    tab: 'Основные опции [tab]',
+    checkbox: 'Дополнительные возможности [checkbox]'
 };
 
 const notify = useNotify();
@@ -199,10 +199,6 @@ const onSubmit = async () => {
 };
 
 if (props.formData) {
-    if (props.formData.id) Object.assign(form, { ...props.formData });
-    else {
-        form.question_id = props.formData.question_id;
-        form.category = props.formData.category;
-    }
+    Object.assign(form, { ...props.formData });
 }
 </script>
