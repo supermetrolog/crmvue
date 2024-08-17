@@ -18,12 +18,10 @@ export const validationRulesForUser = {
 };
 
 export const validationRulesForUserProfile = {
-    userProfile: {
-        first_name: {
-            required: helpers.withMessage('Введите имя', required)
-        },
-        middle_name: {
-            required: helpers.withMessage('Введите фамилию', required)
-        }
+    first_name: {
+        required: helpers.withMessage('Введите имя', required)
+    },
+    middle_name: {
+        required: helpers.withMessage('Введите фамилию', required)
     }
 };
