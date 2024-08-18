@@ -1,5 +1,12 @@
 import api from '@/api/api';
 import { useAuth } from '@/composables/useAuth.js';
+import {
+    getUserInLocalStorage,
+    LOCALSTORAGE_PREFIX,
+    LS_ACCESS_TOKEN_KEY,
+    removeUserInLocalStorage,
+    setUserInLocalStorage
+} from '@/utils/localStorage.js';
 import { userOptions } from '@/const/options/user.options.js';
 
 const User = {
@@ -48,7 +55,7 @@ const User = {
             if (data) commit('updateUsers', data);
         },
         async REFRESH_USER({ getters, commit }) {
-            const access_token = localStorage.getItem('access_token');
+            const access_token = localStorage.getItem(LOCALSTORAGE_PREFIX + LS_ACCESS_TOKEN_KEY);
             if (!getters.THIS_USER || !access_token) return;
 
             let [newUserData, chatMemberUser] = await Promise.all([
@@ -59,33 +66,32 @@ const User = {
             if (!newUserData) return;
 
             newUserData.chat_member_id = chatMemberUser;
-            localStorage.setItem('user', JSON.stringify(newUserData));
+            setUserInLocalStorage(newUserData, access_token);
             newUserData.access_token = access_token;
             commit('setUser', newUserData);
         },
         SET_USER({ getters, commit }) {
-            if (!getters.THIS_USER) {
-                let user = JSON.parse(localStorage.getItem('user'));
-                user.access_token = localStorage.getItem('access_token');
+            if (getters.THIS_USER) return getters.THIS_USER;
+            const user = getUserInLocalStorage();
+            if (user) {
+                user.access_token = localStorage.getItem(LOCALSTORAGE_PREFIX + LS_ACCESS_TOKEN_KEY);
                 commit('setUser', user);
             }
-            return getters.THIS_USER;
         },
         DROP_USER({ commit }) {
-            localStorage.removeItem('access_token');
-            localStorage.removeItem('user');
+            removeUserInLocalStorage();
             commit('setUser', null);
         },
         async login({ dispatch }, formData) {
             const response = await api.user.auth.login(formData);
-            if (response !== false) {
+            if (response) {
                 const { login } = useAuth();
-
                 dispatch('SET_USER');
                 login();
                 return true;
             }
-            return response;
+
+            return false;
         },
         async LOGOUT({ dispatch }) {
             const response = await api.user.auth.logout();

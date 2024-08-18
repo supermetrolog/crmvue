@@ -203,7 +203,7 @@ const emailsValidator = everyProperty(
     requiredIf(() => {
         return (
             form.userProfile.emails.length > 1 ||
-            (props.formData && props.formdata.userProfile.emails.length)
+            (props.formData && props.formData.userProfile.emails.length)
         );
     }),
     'email'
@@ -213,7 +213,7 @@ const phonesValidator = everyProperty(
     requiredIf(() => {
         return (
             form.userProfile.phones.length > 1 ||
-            (props.formData && props.formdata.userProfile.phones.length)
+            (props.formData && props.formData.userProfile.phones.length)
         );
     }),
     'phone'
