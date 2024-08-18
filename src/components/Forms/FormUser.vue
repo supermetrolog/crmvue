@@ -162,6 +162,7 @@ import Button from '@/components/common/Button.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
 import { userOptions } from '@/const/options/user.options.js';
 import { helpers, or, requiredIf } from '@vuelidate/validators';
+import api from '@/api/api.js';
 
 const emit = defineEmits(['close', 'updated', 'created']);
 const props = defineProps({
@@ -245,7 +246,7 @@ const v$ = useVuelidate(
 );
 
 const updateUser = async () => {
-    const updated = await store.dispatch('UPDATE_USER', form);
+    const updated = await api.user.update(props.formData.id, form);
 
     if (updated) {
         emit('updated');
@@ -255,7 +256,7 @@ const updateUser = async () => {
 };
 
 const createUser = async () => {
-    const created = await store.dispatch('CREATE_USER', form);
+    const created = await api.user.create(form);
 
     if (created) {
         emit('created');

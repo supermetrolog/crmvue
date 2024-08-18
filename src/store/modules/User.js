@@ -44,7 +44,7 @@ const User = {
             return [];
         },
         async FETCH_USERS({ commit }) {
-            let data = await api.user.getUsers();
+            let data = await api.user.list();
             if (data) commit('updateUsers', data);
         },
         async REFRESH_USER({ getters, commit }) {
@@ -52,7 +52,7 @@ const User = {
             if (!getters.THIS_USER || !access_token) return;
 
             let [newUserData, chatMemberUser] = await Promise.all([
-                api.user.getUser(getters.THIS_USER.id),
+                api.user.get(getters.THIS_USER.id),
                 api.messenger.getUserChatMember(getters.THIS_USER.id)
             ]);
 
@@ -91,15 +91,6 @@ const User = {
             const response = await api.user.auth.logout();
             if (response !== false) dispatch('DESTROY');
             return response;
-        },
-        async CREATE_USER(_, formdata) {
-            return await api.user.createUser(formdata);
-        },
-        async UPDATE_USER(_, formdata) {
-            return await api.user.updateUser(formdata);
-        },
-        async DELETE_USER(_, id) {
-            return await api.user.deleteUser(id);
         },
         async getConsultants({ state, commit }) {
             if (state.consultants.length) return state.consultants;
