@@ -134,11 +134,9 @@
     }
 
     &__badge {
-        padding: 2px 7px;
-        color: #fff;
-        font-size: 12px;
-        background-color: #006666;
-        border-radius: 20px;
+        color: #000;
+        font-size: 14px;
+        font-weight: 500;
         margin-left: auto;
     }
 }
@@ -157,9 +155,9 @@
     }
 
     &__content {
-        padding: 10px;
+        padding: 0 0 0 5px;
         width: 100%;
-        @include mixins.flex-box($a: center, $gap: 10px);
+        @include mixins.flex-box($a: center, $gap: 5px);
     }
 
     &.expired {
@@ -187,6 +185,14 @@
         .dashboard-card-task-date {
             background-color: #b4e3aa;
         }
+    }
+
+    &:not(&.self) {
+        font-weight: 300;
+    }
+
+    &.self {
+        font-weight: 500;
     }
 
     &__text {
@@ -306,9 +312,26 @@
 
     &__labels {
         position: absolute;
-        left: 0;
-        top: -20px;
-        @include mixins.flex-box($gap: 5px);
+        left: -1px;
+        top: -21px;
+        @include mixins.flex-box($gap: 3px);
+
+        &.moved {
+            left: 42px;
+        }
+    }
+
+    &__id {
+        width: 32px;
+    }
+
+    &__way {
+        font-size: 28px;
+        width: 32px;
+    }
+
+    &:has(&__way) &__id {
+        width: 50px;
     }
 }
 
@@ -317,7 +340,7 @@
     font-size: 14px;
     color: #fff;
     padding: 0 5px;
-    background-color: red;
+    background-color: variables.$bg-danger;
 
     &.canceled {
         background-color: #c78a1b;

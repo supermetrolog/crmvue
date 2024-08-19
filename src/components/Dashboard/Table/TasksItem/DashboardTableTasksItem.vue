@@ -2,11 +2,11 @@
     <div
         @click="$emit('view', $event)"
         class="dashboard-card-task"
-        :class="{ expired: isAlreadyExpired, completed: isCompleted }"
+        :class="{ expired: isAlreadyExpired, completed: isCompleted, self: isForMe }"
     >
-        <div class="dashboard-card-task__labels">
+        <div class="dashboard-card-task__labels" :class="{ moved: isMyTask || isViewing }">
             <DashboardTableTasksItemLabel v-if="isNew">Новая</DashboardTableTasksItemLabel>
-            <DashboardTableTasksItemLabel v-if="isImportant">
+            <DashboardTableTasksItemLabel v-if="isImportant || 1" class="dashboard-bg-success">
                 Срочная
             </DashboardTableTasksItemLabel>
             <DashboardTableTasksItemLabel v-if="isCanceled" class="canceled">
@@ -15,22 +15,26 @@
         </div>
         <div class="dashboard-card-task__body">
             <div class="dashboard-card-task__content">
-                <div v-if="isMyTask" v-tippy="'Назначена мной'" class="dashboard-card-task__icon">
+                <div
+                    v-if="isMyTask"
+                    v-tippy="'Назначена мной'"
+                    class="dashboard-card-task__icon dashboard-card-task__way"
+                >
                     <i class="fa-solid fa-arrow-right-long"></i>
                 </div>
                 <div
                     v-else-if="isViewing"
                     v-tippy="'Вы являетесь наблюдателем'"
-                    class="dashboard-card-task__icon"
+                    class="dashboard-card-task__icon dashboard-card-task__way"
                 >
                     <i class="fa-solid fa-eye"></i>
                 </div>
-                <span>#{{ task.id }}</span>
+                <span class="dashboard-card-task__id">#{{ task.id }}</span>
                 <Avatar
                     v-if="task.created_by_type === 'user'"
                     v-tippy="`Создана сотрудником ${task.created_by.userProfile.medium_name}`"
                     :src="task.created_by.userProfile.avatar"
-                    :size="45"
+                    :size="55"
                 />
                 <DashboardTableTasksItemSystem v-else label="Системная задача" :size="45" />
                 <p
@@ -44,13 +48,13 @@
                         <Avatar
                             v-tippy="`${task.user.userProfile.medium_name} наблюдает`"
                             :src="task.user.userProfile.avatar"
-                            :size="30"
+                            :size="40"
                             :class="{ 'dashboard-card-task__not-viewed': false }"
                         />
                         <Avatar
                             v-tippy="`${task.user.userProfile.medium_name} наблюдает`"
                             :src="task.user.userProfile.avatar"
-                            :size="30"
+                            :size="40"
                             :class="{ 'dashboard-card-task__not-viewed': true }"
                         />
                     </div>
@@ -58,7 +62,7 @@
                         v-if="!isForMe"
                         v-tippy="`Назначена для ${task.user.userProfile.medium_name}`"
                         :src="task.user.userProfile.avatar"
-                        :size="45"
+                        :size="55"
                         rectangle
                         :class="{ 'dashboard-card-task__not-viewed': true }"
                     />
