@@ -8,7 +8,7 @@
                 @click="toggleUser(user.id)"
                 :selected="searchCache[index]"
                 :user="user"
-                :class="{ selected: selectedUsers[user.id] }"
+                :class="{ selected: selectedUsers[user.id], current: currentUser.id === user.id }"
             />
         </div>
         <MessengerButton
@@ -27,6 +27,7 @@ import UserPickerElement from '@/components/common/Forms/UserPicker/UserPickerEl
 import { debounce } from '@/utils/debounce.js';
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';
 import { computed, ref, shallowRef, watch } from 'vue';
+import { useStore } from 'vuex';
 
 const modelValue = defineModel({
     type: [Array, Number],
@@ -44,6 +45,8 @@ const props = defineProps({
     }
 });
 
+const store = useStore();
+
 const userQuerySearch = shallowRef('');
 const selectedUsers = ref(
     props.users.reduce((acc, user) => {
@@ -55,6 +58,8 @@ const selectedUsers = ref(
 if (props.single) {
     if (modelValue.value) selectedUsers.value[modelValue.value] = true;
 } else modelValue.value.forEach(userID => (selectedUsers.value[userID] = true));
+
+const currentUser = computed(() => store.getters.THIS_USER);
 
 const searchCache = computed(() => {
     return props.users.map(user =>
