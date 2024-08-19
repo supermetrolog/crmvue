@@ -538,8 +538,21 @@
 }
 
 .checkbox {
+    cursor: pointer;
+    @include mixins.flex-box($d: column, $gap: 5px);
+
     &__label {
         font-size: 18px !important;
+    }
+
+    &__row {
+        display: block;
+
+        input {
+            width: 20px;
+            height: 20px;
+            margin: 0!important;
+        }
     }
 }
 

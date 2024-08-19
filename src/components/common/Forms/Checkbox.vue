@@ -1,137 +1,74 @@
 <template>
-    <div class="form-item checkbox" :class="mode">
-        <label class="form-item-label" :class="{ required: required }" for="fuck">
-            <p v-if="mode == '' && label">
-                {{ mode == '' ? label : '' }}
-            </p>
-            <div v-if="options">
-                <label
-                    v-for="(option, index) in options"
-                    :key="index"
-                    class="clicked-label"
-                    :class="{ checked: field.includes(index) }"
-                >
-                    <input
-                        v-model="field"
-                        @change.stop="onChange"
-                        type="checkbox"
-                        :class="inputClasses"
-                        :value="index"
-                        :disabled="disabled"
-                    />
-                    {{ option }}
-                </label>
-            </div>
-            <div v-else>
-                <input
-                    v-model="field"
-                    @change.stop="onChange"
-                    type="checkbox"
-                    :class="inputClasses"
-                    :true-value="trueValue"
-                    :false-value="falseValue"
-                    :disabled="disabled"
-                />
-                {{ mode == 'inline' ? label : '' }}
-            </div>
-        </label>
-        <div v-if="v && v.$error" class="error-container pt-0">
-            <p>{{ v.$errors[0].$message }}</p>
+    <div @click.stop class="checkbox">
+        <div class="checkbox__row">
+            <input
+                v-model="modelValue"
+                @change.stop="onChange"
+                :checked="checked"
+                type="checkbox"
+                :class="validationClass"
+                :true-value="trueValue"
+                :false-value="falseValue"
+                :disabled="disabled"
+            />
+            <slot />
         </div>
-        <slot />
+        <ValidationMessage v-if="hasValidationError" :message="v.$errors[0].$message" />
     </div>
 </template>
 
-<script>
-import Mixin from './mixins.js';
+<script setup>
+import { useFormControlValidation } from '@/composables/useFormControlValidation.js';
+import { toRef } from 'vue';
+import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
 
-export default {
-    name: 'Checkbox',
-    mixins: [Mixin],
-    props: {
-        modelValue: {
-            type: [Array, Number, String],
-            default: () => []
-        },
-        required: {
-            type: Boolean,
-            default: false
-        },
-        v: {
-            type: Object,
-            default: null
-        },
-        label: {
-            type: String,
-            default: null
-        },
-        mode: {
-            type: String,
-            default: ''
-        },
-        options: {
-            type: Object,
-            default: null
-        },
-        name: {
-            type: String,
-            default: null
-        },
-        disabled: {
-            type: Boolean,
-            default: false
-        },
-        trueValue: {
-            type: [Number, String, Object],
-            default: 1
-        },
-        falseValue: {
-            type: [Number, String, Object],
-            default: null
-        }
+const emit = defineEmits(['change']);
+const modelValue = defineModel({ type: Boolean, default: false });
+const props = defineProps({
+    required: {
+        type: Boolean,
+        default: false
     },
-    data() {
-        return {
-            field: this.modelValue
-        };
+    v: {
+        type: Object,
+        default: null
     },
-    watch: {
-        modelValue() {
-            if (this.name) {
-                this.setData();
-            } else {
-                this.field = this.modelValue;
-            }
-        }
+    label: {
+        type: String,
+        default: null
     },
-    methods: {
-        onChange() {
-            this.validate();
-            if (this.name) {
-                let array = [];
-                this.field.forEach(item => {
-                    array.push({ [this.name]: item });
-                });
-                this.$emit('update:modelValue', array);
-                this.$emit('change', this.field);
-            } else {
-                this.$emit('update:modelValue', this.field);
-                this.$emit('change', this.field);
-            }
-        },
-        setData() {
-            this.field = [];
-            this.modelValue.forEach(item => {
-                this.field.push(String(item[this.name]));
-            });
-        }
+    name: {
+        type: String,
+        default: null
     },
-    mounted() {
-        if (this.name) {
-            this.setData();
-        }
+    disabled: {
+        type: Boolean,
+        default: false
+    },
+    trueValue: {
+        type: [Number, String, Object, Boolean],
+        default: true
+    },
+    falseValue: {
+        type: [Number, String, Object, Boolean],
+        default: false
+    },
+    checked: {
+        type: Boolean,
+        default: false
     }
+});
+
+const { hasValidationError, validate, validationClass } = useFormControlValidation(
+    toRef(props, 'v'),
+    modelValue
+);
+
+if (props.checked) modelValue.value = props.trueValue;
+
+const onChange = () => {
+    console.log('on change');
+    validate();
+    emit('change', modelValue.value);
 };
 </script>
-
-<style></style>
