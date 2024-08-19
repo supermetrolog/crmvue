@@ -75,10 +75,10 @@ import dayjs from 'dayjs';
 import Avatar from '@/components/common/Avatar.vue';
 import { computed } from 'vue';
 import { taskOptions } from '@/const/options/task.options.js';
-import DashboardTableTasksItemSystem from '@/components/Dashboard/Table/DashboardTableTasksItemSystem.vue';
+import DashboardTableTasksItemSystem from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemSystem.vue';
 import { useStore } from 'vuex';
-import DashboardTableTasksItemDate from '@/components/Dashboard/Table/DashboardTableTasksItemDate.vue';
-import DashboardTableTasksItemLabel from '@/components/Dashboard/Table/DashboardTableTasksItemLabel.vue';
+import DashboardTableTasksItemDate from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemDate.vue';
+import DashboardTableTasksItemLabel from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemLabel.vue';
 
 defineEmits(['view']);
 const props = defineProps({

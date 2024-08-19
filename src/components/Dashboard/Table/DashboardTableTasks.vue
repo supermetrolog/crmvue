@@ -16,12 +16,12 @@
 </template>
 
 <script setup>
-import DashboardTableTasksItem from '@/components/Dashboard/Table/DashboardTableTasksItem.vue';
-import DashboardTasksItemSkeleton from '@/components/Dashboard/Table/DashboardTableTasksItemSkeleton.vue';
+import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItem.vue';
+import DashboardTasksItemSkeleton from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemSkeleton.vue';
 import { useStore } from 'vuex';
 import EmptyData from '@/components/common/EmptyData.vue';
 import { computed, h, inject, ref, shallowRef, watch } from 'vue';
-import DashboardTableTasksItemPreview from '@/components/Dashboard/Table/DashboardTableTasksItemPreview.vue';
+import DashboardTableTasksItemPreview from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemPreview.vue';
 import { useTippy } from 'vue-tippy';
 
 defineEmits(['edit']);

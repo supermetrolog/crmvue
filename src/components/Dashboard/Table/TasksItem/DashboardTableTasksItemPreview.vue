@@ -103,9 +103,9 @@
 
 <script setup>
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
-import DashboardTableTasksItemPreviewStatus from '@/components/Dashboard/Table/DashboardTableTasksItemPreviewStatus.vue';
+import DashboardTableTasksItemPreviewStatus from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemPreviewStatus.vue';
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue';
-import DashboardTableTasksItemPreviewRow from '@/components/Dashboard/Table/DashboardTableTasksItemPreviewRow.vue';
+import DashboardTableTasksItemPreviewRow from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemPreviewRow.vue';
 import api from '@/api/api.js';
 import { useNotify } from '@/utils/useNotify.js';
 import { useConfirm } from '@/composables/useConfirm.js';
