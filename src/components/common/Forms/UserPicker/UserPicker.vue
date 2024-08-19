@@ -3,9 +3,10 @@
         <Input v-model="debouncedUserQuerySearch" rounded placeholder="Введите имя брокера.." />
         <div ref="list" class="user-picker__list">
             <UserPickerElement
-                v-for="user in filteredUsers"
+                v-for="(user, index) in users"
                 :key="user.id"
                 @click="toggleUser(user.id)"
+                :selected="searchCache[index]"
                 :user="user"
                 :class="{ selected: selectedUsers[user.id] }"
             />
@@ -20,104 +21,93 @@
         </MessengerButton>
     </div>
 </template>
-<script>
+<script setup>
 import Input from '@/components/common/Forms/Input.vue';
 import UserPickerElement from '@/components/common/Forms/UserPicker/UserPickerElement.vue';
 import { debounce } from '@/utils/debounce.js';
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';
+import { computed, ref, shallowRef, watch } from 'vue';
 
-export default {
-    name: 'UserPicker',
-    components: { MessengerButton, UserPickerElement, Input },
-    emits: ['update:modelValue'],
-    props: {
-        users: {
-            type: Array,
-            default: () => []
-        },
-        modelValue: {
-            type: [Array, Number],
-            default: () => []
-        },
-        single: {
-            type: Boolean,
-            default: false
-        }
+const modelValue = defineModel({
+    type: [Array, Number],
+    default: () => []
+});
+const emit = defineEmits(['select']);
+const props = defineProps({
+    users: {
+        type: Array,
+        default: () => []
     },
-    data() {
-        return {
-            userQuerySearch: '',
-            selectedUsers: {}
-        };
-    },
-    computed: {
-        filteredUsers() {
-            return this.users.map(user => ({
-                ...user,
-                selected:
-                    !this.userQuerySearch.length ||
-                    user.userProfile.full_name
-                        .toLowerCase()
-                        .includes(this.userQuerySearch.toLowerCase())
-            }));
-        },
-        debouncedUserQuerySearch: {
-            set: debounce(function (value) {
-                this.userQuerySearch = value;
-            }, 200),
-            get() {
-                return this.userQuerySearch;
-            }
-        }
-    },
-    watch: {
-        modelValue(newValue, oldValue) {
-            if (this.single) {
-                if (oldValue) this.selectedUsers[oldValue] = false;
-                if (newValue) this.selectedUsers[newValue] = true;
-            } else {
-                if (oldValue?.length)
-                    oldValue.forEach(userID => (this.selectedUsers[userID] = false));
-                if (newValue?.length)
-                    newValue.forEach(userID => (this.selectedUsers[userID] = true));
-            }
-        }
-    },
-    methods: {
-        toggleUser(userID) {
-            if (this.selectedUsers[userID]) {
-                this.$emit(
-                    'update:modelValue',
-                    this.single ? null : this.modelValue.filter(element => element !== userID)
-                );
-            } else {
-                this.$emit(
-                    'update:modelValue',
-                    this.single ? userID : this.modelValue.concat([userID])
-                );
-            }
-        },
-        toggleSelectedAll() {
-            if (this.modelValue.length === this.users.length) this.$emit('update:modelValue', []);
-            else
-                this.$emit(
-                    'update:modelValue',
-                    this.users.map(user => user.id)
-                );
-        }
-    },
-    created() {
-        this.selectedUsers = this.users.reduce((acc, user) => {
-            acc[user.id] = false;
-            return acc;
-        }, {});
+    single: {
+        type: Boolean,
+        default: false
+    }
+});
 
-        if (this.single) {
-            if (this.modelValue) this.selectedUsers[this.modelValue] = true;
+const userQuerySearch = shallowRef('');
+const selectedUsers = ref(
+    props.users.reduce((acc, user) => {
+        acc[user.id] = false;
+        return acc;
+    }, {})
+);
+
+if (props.single) {
+    if (modelValue.value) selectedUsers.value[modelValue.value] = true;
+} else modelValue.value.forEach(userID => (selectedUsers.value[userID] = true));
+
+const searchCache = computed(() => {
+    return props.users.map(user =>
+        Boolean(
+            !userQuerySearch.value.length ||
+                user.userProfile.full_name
+                    .toLowerCase()
+                    .includes(userQuerySearch.value.toLowerCase())
+        )
+    );
+});
+
+const debouncedUserQuerySearch = computed({
+    get() {
+        return userQuerySearch.value;
+    },
+    set: debounce(function (value) {
+        userQuerySearch.value = value;
+    }, 200)
+});
+
+watch(
+    () => modelValue.value,
+    (newValue, oldValue) => {
+        if (props.single) {
+            if (oldValue) selectedUsers.value[oldValue] = false;
+            if (newValue) selectedUsers.value[newValue] = true;
         } else {
-            this.modelValue.forEach(userID => (this.selectedUsers[userID] = true));
+            if (oldValue?.length) oldValue.forEach(userID => (selectedUsers.value[userID] = false));
+            if (newValue?.length) newValue.forEach(userID => (selectedUsers.value[userID] = true));
         }
     }
+);
+
+const toggleUser = userID => {
+    if (selectedUsers.value[userID]) {
+        if (props.single) modelValue.value = null;
+        else {
+            const elementIndex = modelValue.value.findIndex(element => element === userID);
+            if (elementIndex !== -1) modelValue.value.splice(elementIndex, 1);
+        }
+    } else {
+        if (props.single) modelValue.value = userID;
+        else modelValue.value.push(userID);
+    }
+
+    emit('select', modelValue.value);
+};
+
+const toggleSelectedAll = () => {
+    if (modelValue.value.length === props.users.length) modelValue.value = [];
+    else modelValue.value = props.user.map(user => user.id);
+
+    emit('select', modelValue.value);
 };
 </script>
-<style></style>

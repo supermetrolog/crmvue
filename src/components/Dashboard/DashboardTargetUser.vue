@@ -8,59 +8,49 @@
         </Modal>
     </teleport>
 </template>
-<script>
+<script setup>
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import UserPicker from '@/components/common/Forms/UserPicker/UserPicker.vue';
 import Modal from '@/components/common/Modal.vue';
+import { computed, ref, shallowRef } from 'vue';
+import { useStore } from 'vuex';
 
-export default {
-    name: 'DashboardTargetUser',
-    components: { Modal, UserPicker, DashboardChip },
-    emits: ['update:modelValue'],
-    props: {
-        modelValue: {
-            type: [Number, String],
-            required: true
-        }
-    },
-    data() {
-        return {
-            formIsVisible: false,
-            consultants: []
-        };
-    },
-    computed: {
-        targetUsername() {
-            if (!this.consultants.length) return '-';
+const modelValue = defineModel({ type: Object, required: true });
 
-            const consultant = this.consultants.find(
-                user => Number(user.id) === Number(this.modelValue.id)
-            );
+const store = useStore();
 
-            if (consultant) return consultant.userProfile.medium_name;
-            return '-';
-        },
-        value: {
-            get() {
-                return this.modelValue?.id;
-            },
-            set(value) {
-                this.$emit(
-                    'update:modelValue',
-                    value
-                        ? {
-                              id: value,
-                              chat_member_id: this.consultants.find(
-                                  user => Number(user.id) === Number(value)
-                              ).chat_member_id
-                          }
-                        : null
-                );
-            }
-        }
+const formIsVisible = shallowRef(false);
+const consultants = ref([]);
+
+const targetUsername = computed(() => {
+    if (!consultants.value.length) return '-';
+
+    const consultant = consultants.value.find(
+        user => Number(user.id) === Number(modelValue.value.id)
+    );
+    if (consultant) return consultant.userProfile.medium_name;
+
+    return '-';
+});
+
+const value = computed({
+    get() {
+        return modelValue.value?.id;
     },
-    async created() {
-        this.consultants = await this.$store.dispatch('getConsultants');
+    set(value) {
+        if (value)
+            modelValue.value = {
+                id: value,
+                chat_member_id: consultants.value.find(user => Number(user.id) === Number(value))
+                    .chat_member_id
+            };
+        else modelValue.value = null;
     }
+});
+
+const fetchConsultants = async () => {
+    consultants.value = await store.dispatch('getConsultants');
 };
+
+fetchConsultants();
 </script>
