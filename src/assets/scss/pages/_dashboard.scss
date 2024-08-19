@@ -109,6 +109,10 @@
     }
 }
 
+.dashboard-tasks-table {
+    @include mixins.flex-box($d: column, $gap: 10px);
+}
+
 .dashboard-rounded-icon {
     @include mixins.flex-box($a: center, $j: center);
     height: var(--icon-size);
@@ -220,5 +224,61 @@
 
     &:hover {
         color: variables.$bg-success
+    }
+}
+
+.dashboard-task-item-preview {
+    width: 450px;
+
+    &__actions {
+        padding-top: 5px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #7e7e7e;
+        @include mixins.flex-box($gap: 10px);
+    }
+
+    &__description {
+        margin: 10px 0;
+    }
+
+    &__label {
+        color: #ada8a8;
+        font-weight: 500;
+    }
+
+    &__message {
+        background-color: #423f3f;
+        border-radius: 5px;
+        padding: 10px;
+    }
+
+    &__chip {
+        background-color: #423f3f;
+    }
+
+    &__chips {
+        @include mixins.flex-box($gap: 5px, $wrap: true);
+    }
+
+    &__info {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        grid-gap: 5px;
+    }
+
+    &__category {
+        color: #ada8a8;
+    }
+
+    &__relation {
+        margin-top: 10px;
+    }
+
+    .messenger-dialog {
+        background-color: #423f3f;
+    }
+
+    .messenger-dialog-request__id, .messenger-dialog-offer__id {
+        color: #000;
     }
 }

@@ -11,12 +11,7 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
-
-export default {
-    name: 'DashboardTableTasksItemSkeleton',
-    components: { HoverActionsButton, DashboardChip }
-};
 </script>

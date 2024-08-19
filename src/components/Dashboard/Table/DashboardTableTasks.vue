@@ -7,103 +7,122 @@
             <DashboardTableTasksItem
                 v-for="task in tasks"
                 :key="task.id"
-                @delete="deleteTask(task)"
-                @edit="$emit('edit', task)"
-                @toggle-status="toggleStatus(task, $event)"
+                @view="openPreviewer(task, $event)"
                 :task="task"
-                :editable="userCanEdit(task)"
-                :draggable="userCanDrag(task)"
             />
             <EmptyData v-if="!tasks.length">Список задач пуст..</EmptyData>
         </template>
     </div>
 </template>
 
-<script>
+<script setup>
 import DashboardTableTasksItem from '@/components/Dashboard/Table/DashboardTableTasksItem.vue';
-import api from '@/api/api.js';
 import DashboardTasksItemSkeleton from '@/components/Dashboard/Table/DashboardTableTasksItemSkeleton.vue';
-import { mapGetters } from 'vuex';
+import { useStore } from 'vuex';
 import EmptyData from '@/components/common/EmptyData.vue';
-import { useConfirm } from '@/composables/useConfirm.js';
+import { computed, h, inject, ref, shallowRef, watch } from 'vue';
+import DashboardTableTasksItemPreview from '@/components/Dashboard/Table/DashboardTableTasksItemPreview.vue';
+import { useTippy } from 'vue-tippy';
 
-export default {
-    name: 'DashboardTableTasks',
-    components: { EmptyData, DashboardTasksItemSkeleton, DashboardTableTasksItem },
-    emits: ['update', 'edit'],
-    props: {
-        tasks: {
-            type: Array,
-            default: () => []
-        },
-        isLoading: {
-            type: Boolean,
-            default: false
-        }
+defineEmits(['edit']);
+const props = defineProps({
+    tasks: {
+        type: Array,
+        default: () => []
     },
-    setup() {
-        const { confirm } = useConfirm();
-        return { confirm };
-    },
-    data() {
-        return {
-            lastElementsCount: 5
-        };
-    },
-    computed: {
-        ...mapGetters({ currentUser: 'THIS_USER' })
-    },
-    watch: {
-        isLoading(value) {
-            if (!value) this.lastElementsCount = Math.min(this.tasks.length, 5) || 4;
-        }
-    },
-    methods: {
-        async deleteTask(task) {
-            const confirmed = await this.confirm(
-                'Вы уверены, что хотите безвозвратно удалить задачу?'
-            );
-            if (!confirmed) return;
-
-            const deleted = await api.task.delete(task.id);
-            if (deleted) {
-                task.deleted_at = new Date();
-                this.$notify('Задача успешно удалена');
-            }
-        },
-        async editTask(oldTask) {
-            const taskPayload = await this.$refs.taskForm.open(oldTask);
-            if (!taskPayload) return;
-
-            const task = await api.task.update(oldTask.id, { ...oldTask, ...taskPayload });
-
-            if (task) {
-                Object.assign(oldTask, task);
-                this.$notify('Задача успешно изменена');
-            }
-        },
-        async toggleStatus(task, status) {
-            const newTask = await api.task.update(task.id, { ...task, status });
-
-            if (task) {
-                Object.assign(task, newTask);
-                this.$notify('Статус задачи успешно изменен');
-            }
-        },
-        userCanDrag(task) {
-            return (
-                task.deleted_at === null &&
-                (Number(task.created_by_id) === Number(this.currentUser.id) ||
-                    Number(task.user_id) === Number(this.currentUser.id) ||
-                    this.$store.getters.isModerator)
-            );
-        },
-        userCanEdit(task) {
-            return (
-                Number(task.created_by_id) === Number(this.currentUser.id) ||
-                this.$store.getters.isModerator
-            );
-        }
+    isLoading: {
+        type: Boolean,
+        default: false
     }
+});
+const $openMessengerChat = inject('$openMessengerChat');
+
+const store = useStore();
+
+const lastElementsCount = shallowRef(5);
+const currentTask = ref(null);
+const previewIsVisible = shallowRef(false);
+
+watch(
+    () => props.isLoading,
+    value => {
+        if (!value) lastElementsCount.value = Math.min(props.tasks.length, 5) || 4;
+    }
+);
+
+const userCanDrag = computed(() => {
+    if (!currentTask.value) return false;
+    return Boolean(
+        currentTask.value.deleted_at === null &&
+            (Number(currentTask.value.created_by_id) === Number(store.getters.THIS_USER.id) ||
+                Number(currentTask.value.user_id) === Number(store.getters.THIS_USER.id) ||
+                store.getters.isModerator)
+    );
+});
+
+const userCanEdit = computed(() => {
+    if (!currentTask.value) return false;
+    return Boolean(
+        Number(currentTask.value.created_by_id) === Number(store.getters.THIS_USER.id) ||
+            store.getters.isModerator
+    );
+});
+
+const openPreviewer = (task, event) => {
+    if (currentTask.value && currentTask.value.id === task.id && previewIsVisible.value) return;
+
+    previewIsVisible.value = true;
+    currentTask.value = task;
+    setProps({
+        getReferenceClientRect: () => ({
+            width: 0,
+            height: 0,
+            top: event.clientY,
+            bottom: event.clientY,
+            left: event.clientX,
+            right: event.clientX
+        })
+    });
+
+    show();
 };
+
+const { show, setProps } = useTippy(() => document.body, {
+    content: computed(() =>
+        h(DashboardTableTasksItemPreview, {
+            task: currentTask.value,
+            draggable: userCanDrag.value,
+            editable: userCanEdit.value,
+            visible: previewIsVisible.value,
+            onUpdated(task) {
+                Object.assign(currentTask.value, task);
+            },
+            onToChat() {
+                const companyID =
+                    currentTask.value.relation.model_type === 'request'
+                        ? currentTask.value.relation.model.company_id
+                        : currentTask.value.relation.model.object.company_id;
+
+                $openMessengerChat({
+                    companyID,
+                    objectID: currentTask.value.relation.model.id,
+                    modelType: currentTask.value.relation.model_type
+                });
+            }
+        })
+    ),
+    placement: 'bottom-start',
+    trigger: 'manual',
+    interactive: true,
+    arrow: false,
+    offset: [10, 10],
+    onClickOutside() {
+        previewIsVisible.value = false;
+    },
+    onHidden() {
+        previewIsVisible.value = false;
+    },
+    zIndex: 3333,
+    maxWidth: 500
+});
 </script>

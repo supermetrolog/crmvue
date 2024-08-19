@@ -123,7 +123,7 @@ export const InternalMenu = {
     dashboard: [
         { id: 0, name: 'Главная', url: '/dashboard', exact: true },
         { id: 1, name: 'Сводка', url: '/dashboard/company' },
-        { id: 2, name: 'Задачи', url: '/dashboard/tasks/board' },
+        { id: 2, name: 'Задачи', url: '/dashboard/tasks/table' },
         { id: 3, name: 'Запросы', url: '/dashboard/requests' }
     ],
     settings: [

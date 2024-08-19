@@ -32,9 +32,17 @@ const statusList = [
     { value: 4, label: 'Отложено' }
 ];
 
+const statusColor = {
+    1: 'dashboard-bg-primary-l',
+    2: 'dashboard-bg-warning-l',
+    3: 'dashboard-bg-success-l',
+    4: 'dashboard-bg-danger-l'
+};
+
 export const taskOptions = {
     statusTypes,
     statusNames,
     statusList,
-    status
+    status,
+    statusColor
 };

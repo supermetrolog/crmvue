@@ -1,26 +1,17 @@
 <template>
     <section class="dashboard-tasks-page">
         <div class="container-fluid">
-            <div class="row mb-4">
+            <div class="row mb-2">
                 <div class="col-12 mb-2 d-flex align-items-center">
                     <h1>Задачи</h1>
                     <DashboardTargetUser v-model="targetUser" />
-                </div>
-                <div class="col-6">
-                    <router-link
-                        v-slot="{ isActive, navigate }"
-                        :to="{ name: 'dashboard-tasks-board' }"
-                    >
-                        <Button @click="navigate" :success="isActive" class="w-100">Доска</Button>
-                    </router-link>
-                </div>
-                <div class="col-6">
-                    <router-link
-                        v-slot="{ isActive, navigate }"
-                        :to="{ name: 'dashboard-tasks-table' }"
-                    >
-                        <Button @click="navigate" :success="isActive" class="w-100">Таблица</Button>
-                    </router-link>
+                    <Switch
+                        v-model="isBoardMode"
+                        @change="changeMode"
+                        class="ml-auto"
+                        false-title="Таблица"
+                        true-title="Доска"
+                    />
                 </div>
             </div>
         </div>
@@ -31,44 +22,29 @@
         </router-view>
     </section>
 </template>
-<script>
-import Button from '@/components/common/Button.vue';
+<script setup>
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
-import Form from '@/components/common/Forms/Form.vue';
-import Modal from '@/components/common/Modal.vue';
-import UserPicker from '@/components/common/Forms/UserPicker/UserPicker.vue';
 import DashboardTargetUser from '@/components/Dashboard/DashboardTargetUser.vue';
-import { mapGetters } from 'vuex';
-export default {
-    name: 'DashboardTasksMain',
-    components: {
-        DashboardTargetUser,
-        UserPicker,
-        Modal,
-        Form,
-        DashboardChip,
-        AnimationTransition,
-        Button
-    },
-    provide() {
-        return {
-            $targetUser: () => this.targetUser
-        };
-    },
-    data() {
-        return {
-            targetUser: null
-        };
-    },
-    computed: {
-        ...mapGetters(['THIS_USER'])
-    },
-    created() {
-        this.targetUser = {
-            id: this.THIS_USER.id,
-            chat_member_id: this.THIS_USER.chat_member_id
-        };
-    }
+import { useStore } from 'vuex';
+import Switch from '@/components/common/Forms/Switch.vue';
+import { provide, ref, shallowRef } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+
+const store = useStore();
+const route = useRoute();
+const router = useRouter();
+
+const targetUser = ref({
+    id: store.getters.THIS_USER.id,
+    chat_member_id: store.getters.THIS_USER.chat_member_id
+});
+const isBoardMode = shallowRef(false);
+
+provide('$targetUser', () => targetUser.value);
+
+const changeMode = () => {
+    router.push({ name: isBoardMode.value ? 'dashboard-tasks-board' : 'dashboard-tasks-table' });
 };
+
+if (route.name === 'dashboard-tasks-board') isBoardMode.value = true;
 </script>
