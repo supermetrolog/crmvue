@@ -67,7 +67,6 @@ const { hasValidationError, validate, validationClass } = useFormControlValidati
 if (props.checked) modelValue.value = props.trueValue;
 
 const onChange = () => {
-    console.log('on change');
     validate();
     emit('change', modelValue.value);
 };

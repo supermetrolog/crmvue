@@ -154,9 +154,12 @@ const { hasValidation, hasValidationError, validate, validationClass } = useForm
 const onInput = value => {
     if (value !== modelValue.value) {
         validate();
-        if (props.type === 'number') modelValue.value = Number(value);
-        else modelValue.value = value;
-        search(value);
+
+        if (props.type === 'number') {
+            modelValue.value = value.length ? Number(value) : null;
+        } else modelValue.value = value;
+
+        if (props.searchable) search(value);
     }
 };
 

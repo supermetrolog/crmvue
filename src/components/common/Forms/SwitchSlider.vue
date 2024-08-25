@@ -5,7 +5,7 @@
             <div class="switch-slider__buttons">
                 <button
                     @click.prevent="select(trueValue)"
-                    :class="{ active: modelValue === 1 }"
+                    :class="{ active: modelValue == trueValue }"
                     :disabled="disabled"
                     class="switch-slider__button"
                 >
@@ -21,7 +21,7 @@
                 </button>
                 <button
                     @click.prevent="select(falseValue)"
-                    :class="{ active: modelValue === 0 }"
+                    :class="{ active: modelValue == falseValue }"
                     :disabled="disabled"
                     class="switch-slider__button"
                 >
