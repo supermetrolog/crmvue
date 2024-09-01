@@ -2,23 +2,9 @@ import axios from 'axios';
 import { setRequestError } from '@/api/helpers/setRequestError.js';
 import { SuccessHandler } from '@/api/helpers/successHandler.js';
 
-const URL = '/alerts';
+const URL = '/task-tags';
 
 export default {
-    async createFromMessage(messageID, options) {
-        const url = `/chat-member-messages/create-notification/${messageID}`;
-
-        try {
-            const response = await axios.post(url, {
-                channel: 'web',
-                ...options
-            });
-            return SuccessHandler.getData(response);
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
-    },
     async get(id) {
         try {
             const response = await axios.get(`${URL}/${id}`);
@@ -30,11 +16,26 @@ export default {
     },
     async list(options) {
         try {
-            const response = await axios.get(URL, options);
-            return {
-                data: SuccessHandler.getData(response),
-                pagination: SuccessHandler.getPaginationData(response)
-            };
+            const response = await axios.get(URL, { params: options });
+            return SuccessHandler.getData(response);
+        } catch (e) {
+            await setRequestError(e);
+            return null;
+        }
+    },
+    async all() {
+        try {
+            const response = await axios.get(`${URL}/all`);
+            return SuccessHandler.getData(response);
+        } catch (e) {
+            await setRequestError(e);
+            return null;
+        }
+    },
+    async create(payload) {
+        try {
+            const response = await axios.post(URL, payload);
+            return SuccessHandler.getData(response);
         } catch (e) {
             await setRequestError(e);
             return null;
@@ -52,7 +53,7 @@ export default {
     async update(id, payload) {
         try {
             const response = await axios.put(`${URL}/${id}`, payload);
-            return response.data;
+            return SuccessHandler.getData(response);
         } catch (e) {
             await setRequestError(e);
             return null;
