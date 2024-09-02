@@ -91,15 +91,15 @@ watch(
             if (oldValue?.length) oldValue.forEach(userID => (selectedUsers.value[userID] = false));
             if (newValue?.length) newValue.forEach(userID => (selectedUsers.value[userID] = true));
         }
-    }
+    },
+    { deep: true }
 );
 
 const toggleUser = userID => {
     if (selectedUsers.value[userID]) {
         if (props.single) modelValue.value = null;
         else {
-            const elementIndex = modelValue.value.findIndex(element => element === userID);
-            if (elementIndex !== -1) modelValue.value.splice(elementIndex, 1);
+            modelValue.value = modelValue.value.filter(element => element !== userID);
         }
     } else {
         if (props.single) modelValue.value = userID;
@@ -111,7 +111,7 @@ const toggleUser = userID => {
 
 const toggleSelectedAll = () => {
     if (modelValue.value.length === props.users.length) modelValue.value = [];
-    else modelValue.value = props.user.map(user => user.id);
+    else modelValue.value = props.users.map(user => user.id);
 
     emit('select', modelValue.value);
 };
