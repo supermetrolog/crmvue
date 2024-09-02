@@ -764,6 +764,8 @@
     }
 
     &-tag {
+        padding: 5px 10px!important;
+        margin: 0!important;
         overflow: hidden;
         max-width: 100%;
         line-break: anywhere;
@@ -772,11 +774,17 @@
         &-remove {
             padding: 0 !important;
             margin: 0 !important;
+            margin-left: 5px!important;
+
+            &-icon {
+                height: 1.15rem!important;
+            }
         }
     }
 
     &-tags {
-        margin: .25rem auto .25rem .25rem;
+        margin: 0!important;
+        gap: 5px;
 
         input {
             background-color: lighten(variables.$color_grey, 40);
@@ -784,13 +792,14 @@
             // color: black;
 
             margin: 0;
-            padding: 0;
+            padding: 5px 10px;
             border: none;
-            height: 25px;
+            height: 28px;
             max-height: unset !important;
             max-width: 100% !important;
             word-wrap: break-word;
             min-height: 25px !important;
+            line-height: normal;
 
             &:focus {
                 outline: none !important;

@@ -55,6 +55,16 @@ const routes = [
                     title: 'Настройки мессенджера'
                 },
                 component: () => import('../views/Settings/Messenger.vue')
+            },
+            {
+                path: 'tasks',
+                name: 'settings-tasks',
+                meta: {
+                    layout: 'default',
+                    auth: { isAuth: true, role: ['moderator', 'administrator'] },
+                    title: 'Настройки задач'
+                },
+                component: () => import('../views/Settings/Tasks.vue')
             }
         ]
     },

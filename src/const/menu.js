@@ -128,6 +128,7 @@ export const InternalMenu = {
     ],
     settings: [
         { id: 0, name: 'Опросник', url: '/settings/survey' },
-        { id: 1, name: 'Мессенджер', url: '/settings/messenger' }
+        { id: 1, name: 'Мессенджер', url: '/settings/messenger' },
+        { id: 1, name: 'Задачи', url: '/settings/tasks' }
     ]
 };
