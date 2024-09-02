@@ -8,6 +8,14 @@ const statusTypes = {
     DELETED: 6
 };
 
+const clearStatusTypes = {
+    NEW: 1,
+    IN_PROGRESS: 2,
+    COMPLETED: 3,
+    CANCELED: 4,
+    EXPIRED: 5
+};
+
 const statusNames = {
     0: 'all',
     1: 'new',
@@ -33,10 +41,16 @@ const statusList = [
 ];
 
 const statusColor = {
-    1: 'dashboard-bg-primary-l',
-    2: 'dashboard-bg-warning-l',
-    3: 'dashboard-bg-success-l',
-    4: 'dashboard-bg-danger-l'
+    1: 'dashboard-cl-primary',
+    2: 'dashboard-cl-warning',
+    3: 'dashboard-cl-success',
+    4: 'dashboard-cl-danger'
+};
+
+const typeStatement = {
+    RECEIVED: 'user_id',
+    GIVEN: 'created_by_id',
+    VIEWING: 'observer_id'
 };
 
 export const taskOptions = {
@@ -44,5 +58,7 @@ export const taskOptions = {
     statusNames,
     statusList,
     status,
-    statusColor
+    statusColor,
+    typeStatement,
+    clearStatusTypes
 };

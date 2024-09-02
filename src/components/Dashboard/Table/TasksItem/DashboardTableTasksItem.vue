@@ -6,11 +6,15 @@
     >
         <div class="dashboard-card-task__labels" :class="{ moved: isMyTask || isViewing }">
             <DashboardTableTasksItemLabel v-if="isNew">Новая</DashboardTableTasksItemLabel>
-            <DashboardTableTasksItemLabel v-if="isImportant || 1" class="dashboard-bg-success">
-                Срочная
-            </DashboardTableTasksItemLabel>
             <DashboardTableTasksItemLabel v-if="isCanceled" class="canceled">
-                Отложенная
+                Отложено до {{ impossibleDate }}
+            </DashboardTableTasksItemLabel>
+            <DashboardTableTasksItemLabel
+                v-for="tag in task.tags"
+                :key="tag.id"
+                :style="{ 'background-color': '#' + tag.color }"
+            >
+                {{ tag.name }}
             </DashboardTableTasksItemLabel>
         </div>
         <div class="dashboard-card-task__body">
@@ -44,18 +48,18 @@
                     {{ task.message }}
                 </p>
                 <div class="dashboard-card-task__meta">
-                    <div v-if="!isForMe" class="dashboard-card-task__viewers">
+                    <div
+                        v-if="!isForMe && task.observers?.length"
+                        class="dashboard-card-task__viewers"
+                    >
                         <Avatar
-                            v-tippy="`${task.user.userProfile.medium_name} наблюдает`"
-                            :src="task.user.userProfile.avatar"
+                            v-for="observer in task.observers"
+                            :key="observer.user.id"
+                            v-tippy="`${observer.user.userProfile.medium_name} наблюдает`"
+                            :src="observer.user.userProfile.avatar"
                             :size="40"
-                            :class="{ 'dashboard-card-task__not-viewed': false }"
-                        />
-                        <Avatar
-                            v-tippy="`${task.user.userProfile.medium_name} наблюдает`"
-                            :src="task.user.userProfile.avatar"
-                            :size="40"
-                            :class="{ 'dashboard-card-task__not-viewed': true }"
+                            class="dashboard-card-task__user"
+                            :class="{ 'dashboard-card-task__not-viewed': !observer.viewed_at }"
                         />
                     </div>
                     <Avatar
@@ -64,7 +68,8 @@
                         :src="task.user.userProfile.avatar"
                         :size="55"
                         rectangle
-                        :class="{ 'dashboard-card-task__not-viewed': true }"
+                        class="dashboard-card-task__user"
+                        :class="{ 'dashboard-card-task__not-viewed': !task.is_viewed }"
                     />
                 </div>
             </div>
@@ -83,6 +88,7 @@ import DashboardTableTasksItemSystem from '@/components/Dashboard/Table/TasksIte
 import { useStore } from 'vuex';
 import DashboardTableTasksItemDate from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemDate.vue';
 import DashboardTableTasksItemLabel from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemLabel.vue';
+import { toDateFormat } from '@/utils/formatter.js';
 
 defineEmits(['view']);
 const props = defineProps({
@@ -95,8 +101,6 @@ const props = defineProps({
 const store = useStore();
 
 const isNew = computed(() => props.task.status === taskOptions.statusTypes.NEW);
-// TODO: Create important dependency
-const isImportant = computed(() => false);
 const isMyTask = computed(() => {
     return (
         props.task.created_by_type === 'user' &&
@@ -112,4 +116,5 @@ const expiredDayjs = computed(() => dayjs(props.task.end));
 const isCanceled = computed(() => props.task.status === taskOptions.statusTypes.CANCELED);
 const isAlreadyExpired = computed(() => expiredDayjs.value.isBefore(dayjs()) && !isCompleted.value);
 const isDeleted = computed(() => props.task.deleted_at !== null);
+const impossibleDate = computed(() => toDateFormat(props.task.impossible_to, 'D.MM.YY'));
 </script>

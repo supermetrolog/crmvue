@@ -1,8 +1,5 @@
 <template>
     <div class="container-fluid">
-        <teleport to="body">
-            <FormModalTask ref="taskForm" />
-        </teleport>
         <div class="row">
             <div class="col-3">
                 <DashboardKanbanBoard
@@ -20,9 +17,6 @@
                             icon="fa-solid fa-list-ul"
                             class="dashboard-bg-primary-l"
                         />
-                    </template>
-                    <template #action>
-                        <Button @click="createTask" small success> Создать задачу </Button>
                     </template>
                 </DashboardKanbanBoard>
             </div>
@@ -90,20 +84,20 @@
 import DashboardKanbanBoard from '@/components/Dashboard/Kanban/DashboardKanbanBoard.vue';
 import api from '@/api/api.js';
 import DashboardRoundedIcon from '@/components/Dashboard/DashboardRoundedIcon.vue';
-import Button from '@/components/common/Button.vue';
-import FormModalTask from '@/components/Forms/FormModalTask.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
-import { computed, inject, reactive, shallowRef, watch } from 'vue';
+import { computed, inject, reactive, watch } from 'vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { useStore } from 'vuex';
 import { taskOptions } from '@/const/options/task.options.js';
 import { useNotify } from '@/utils/useNotify.js';
+import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 
 const $targetUser = inject('$targetUser');
 const { confirm } = useConfirm();
 const notify = useNotify();
 const { isLoading } = useDelayedLoader();
 const store = useStore();
+const { show: showTaskCreator } = useAsyncPopup('taskCreator');
 
 const tasks = reactive({
     new: {
@@ -123,7 +117,6 @@ const tasks = reactive({
         pagination: null
     }
 });
-const taskForm = shallowRef(null);
 
 const targetUser = computed(() => $targetUser);
 
@@ -213,22 +206,8 @@ const deleteTask = async task => {
         }
     }
 };
-const createTask = async () => {
-    const taskPayload = await taskForm.value.open();
-    if (!taskPayload) return;
-
-    const task = await api.task.create({
-        ...taskPayload,
-        status: 1
-    });
-
-    if (task) {
-        tasks.new.data.unshift(task);
-        tasks.new.pagination.totalCount++;
-    }
-};
 const editTask = async oldTask => {
-    const taskPayload = await taskForm.value.open(oldTask);
+    const taskPayload = await showTaskCreator(oldTask);
     if (!taskPayload) return;
 
     const task = await api.task.update(oldTask.id, { ...oldTask, ...taskPayload });

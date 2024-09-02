@@ -14,10 +14,9 @@
         <MessengerChatEmpty v-else />
         <teleport to="body">
             <MessengerSchedule ref="schedule" />
-            <FormModalTask ref="taskCreator" />
             <FormModalTaskStatus ref="taskStatusEditor" />
-            <FormModalMessageAlert ref="alertCreator" />
-            <FormModalMessageReminder ref="reminderCreator" />
+            <FormModalMessageAlert />
+            <FormModalMessageReminder />
             <FormModalMessage ref="messageUpdate" />
         </teleport>
     </div>
@@ -32,29 +31,29 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import MessengerSchedule from '@/components/Messenger/Schedule/MessengerSchedule.vue';
 import MessengerQuizHelper from '@/components/Messenger/Quiz/MessengerQuizHelper.vue';
 import MessengerChatSettings from '@/components/Messenger/Chat/Settings/MessengerChatSettings.vue';
-import FormModalTask from '@/components/Forms/FormModalTask.vue';
 import FormModalMessageAlert from '@/components/Forms/FormModalMessageAlert.vue';
 import FormModalMessageReminder from '@/components/Forms/FormModalMessageReminder.vue';
 import FormModalMessage from '@/components/Forms/FormModalMessage.vue';
 import FormModalTaskStatus from '@/components/Forms/FormModalTaskStatus.vue';
 import api from '@/api/api.js';
-import { computed, ref, watch, provide, reactive } from 'vue';
+import { computed, provide, ref, watch } from 'vue';
 import { ucFirst } from '@/utils/formatter.js';
 import { useNotify } from '@/utils/useNotify.js';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
+import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 
 const store = useStore();
 const notify = useNotify();
 
-const taskCreator = ref(null);
-const alertCreator = ref(null);
-const reminderCreator = ref(null);
+const { show: showTaskCreator } = useAsyncPopup('taskCreator');
+const { show: showAlertCreator } = useAsyncPopup('alertCreator');
+const { show: showReminderCreator } = useAsyncPopup('reminderCreator');
 
-const creators = reactive({
-    task: taskCreator,
-    alert: alertCreator,
-    reminder: reminderCreator
-});
+const creators = {
+    task: showTaskCreator,
+    alert: showAlertCreator,
+    reminder: showReminderCreator
+};
 
 const schedule = ref(null);
 const taskStatusEditor = ref(null);
@@ -64,7 +63,7 @@ const quizHelper = ref(null);
 const chatSettings = ref(null);
 
 const createAddition = async ({ messageID, additionType, successMessage, errorMessage = null }) => {
-    const creatorResponse = await creators[additionType].open();
+    const creatorResponse = await creators[additionType]();
     if (!creatorResponse) return;
 
     const response = await store.dispatch('Messenger/add' + ucFirst(additionType), {
@@ -83,7 +82,7 @@ const editAddition = async ({
     successMessage,
     errorMessage = null
 }) => {
-    const creatorResponse = await creators[additionType].open(addition);
+    const creatorResponse = await creators[additionType](addition);
     if (!creatorResponse) return;
 
     const response = store.dispatch('Messenger/updateAddition', {

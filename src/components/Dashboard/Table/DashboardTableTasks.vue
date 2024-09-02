@@ -23,8 +23,9 @@ import EmptyData from '@/components/common/EmptyData.vue';
 import { computed, h, inject, ref, shallowRef, watch } from 'vue';
 import DashboardTableTasksItemPreview from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemPreview.vue';
 import { useTippy } from 'vue-tippy';
+import api from '@/api/api.js';
+import { toDateFormat } from '@/utils/formatter.js';
 
-defineEmits(['edit']);
 const props = defineProps({
     tasks: {
         type: Array,
@@ -42,6 +43,7 @@ const store = useStore();
 const lastElementsCount = shallowRef(5);
 const currentTask = ref(null);
 const previewIsVisible = shallowRef(false);
+const previewIsLoading = shallowRef(false);
 
 watch(
     () => props.isLoading,
@@ -68,11 +70,19 @@ const userCanEdit = computed(() => {
     );
 });
 
+const fetchTaskPreview = async id => {
+    previewIsLoading.value = true;
+    const response = await api.task.getOne(id);
+    if (response) currentTask.value = response;
+    previewIsLoading.value = false;
+};
+
 const openPreviewer = (task, event) => {
     if (currentTask.value && currentTask.value.id === task.id && previewIsVisible.value) return;
 
+    fetchTaskPreview(task.id);
+
     previewIsVisible.value = true;
-    currentTask.value = task;
     setProps({
         getReferenceClientRect: () => ({
             width: 0,
@@ -87,27 +97,37 @@ const openPreviewer = (task, event) => {
     show();
 };
 
-const { show, setProps } = useTippy(() => document.body, {
+const { show, setProps, hide } = useTippy(() => document.body, {
     content: computed(() =>
         h(DashboardTableTasksItemPreview, {
             task: currentTask.value,
             draggable: userCanDrag.value,
             editable: userCanEdit.value,
             visible: previewIsVisible.value,
+            loading: previewIsLoading.value,
             onUpdated(task) {
                 Object.assign(currentTask.value, task);
+                const currentTaskIndex = props.tasks.findIndex(element => element.id === task.id);
+                if (currentTaskIndex !== -1) Object.assign(props.tasks[currentTaskIndex], task);
             },
-            onToChat() {
-                const companyID =
-                    currentTask.value.relation.model_type === 'request'
-                        ? currentTask.value.relation.model.company_id
-                        : currentTask.value.relation.model.object.company_id;
+            async onToChat(payload) {
+                const opened = await $openMessengerChat(payload);
+                if (opened) hide();
+            },
+            onRead() {
+                const viewerIndex = currentTask.value.observers.findIndex(
+                    element => element.user_id === store.getters.THIS_USER.id
+                );
+                if (viewerIndex !== -1)
+                    currentTask.value.observers[viewerIndex].viewed_at = toDateFormat(Date.now());
 
-                $openMessengerChat({
-                    companyID,
-                    objectID: currentTask.value.relation.model.id,
-                    modelType: currentTask.value.relation.model_type
-                });
+                const currentTaskIndex = props.tasks.findIndex(
+                    element => element.id === currentTask.value.id
+                );
+                if (currentTaskIndex !== -1)
+                    Object.assign(props.tasks[currentTaskIndex].observers[viewerIndex], {
+                        viewed_at: toDateFormat(Date.now())
+                    });
             }
         })
     ),
@@ -116,6 +136,24 @@ const { show, setProps } = useTippy(() => document.body, {
     interactive: true,
     arrow: false,
     offset: [10, 10],
+    popperOptions: {
+        strategy: 'fixed',
+        modifiers: [
+            {
+                name: 'flip',
+                options: {
+                    fallbackPlacements: ['bottom', 'right']
+                }
+            },
+            {
+                name: 'preventOverflow',
+                options: {
+                    altAxis: true,
+                    tether: false
+                }
+            }
+        ]
+    },
     onClickOutside() {
         previewIsVisible.value = false;
     },
@@ -123,6 +161,6 @@ const { show, setProps } = useTippy(() => document.body, {
         previewIsVisible.value = false;
     },
     zIndex: 3333,
-    maxWidth: 500
+    maxWidth: 1000
 });
 </script>

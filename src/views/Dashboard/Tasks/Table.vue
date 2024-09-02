@@ -1,111 +1,29 @@
 <template>
     <div class="container-fluid">
-        <teleport to="body">
-            <FormModalTask ref="taskForm" />
-        </teleport>
         <div class="row">
-            <div class="col-xl-3">
+            <div class="col-xl-3 col-xxl-2">
                 <DashboardCard>
-                    <div class="dashboard-aside">
-                        <Button @click="createTask" class="w-100" success>Создать задачу</Button>
-                        <div class="dashboard-aside__menu mt-3">
-                            <DashboardCardNavLink
-                                @click.prevent="setCurrentTaskType(taskMenuTypes.ALL)"
-                                :icon="{
-                                    name: 'fa-solid fa-list-ul',
-                                    class: 'dashboard-bg-primary-l'
-                                }"
-                                :badge="counts.all"
-                                :active="currentTaskStatus === taskMenuTypes.ALL"
-                            >
-                                Все задачи
-                            </DashboardCardNavLink>
-                            <DashboardCardNavLink
-                                @click.prevent="setCurrentTaskType(taskMenuTypes.NEW)"
-                                :icon="{
-                                    name: 'fa-solid fa-plus',
-                                    class: 'dashboard-bg-primary-l'
-                                }"
-                                :badge="counts.new"
-                                :active="currentTaskStatus === taskMenuTypes.NEW"
-                            >
-                                Новые
-                            </DashboardCardNavLink>
-                            <DashboardCardNavLink
-                                @click.prevent="setCurrentTaskType(taskMenuTypes.IN_PROGRESS)"
-                                :icon="{
-                                    name: 'fa-regular fa-hourglass-half',
-                                    class: 'dashboard-bg-warning-l'
-                                }"
-                                :badge="counts.inProgress"
-                                :active="currentTaskStatus === taskMenuTypes.IN_PROGRESS"
-                            >
-                                В процессе
-                            </DashboardCardNavLink>
-                            <DashboardCardNavLink
-                                @click="setCurrentTaskType(taskMenuTypes.COMPLETED)"
-                                :icon="{
-                                    name: 'fa-regular fa-circle-check',
-                                    class: 'dashboard-bg-success-l'
-                                }"
-                                :badge="counts.completed"
-                                :active="currentTaskStatus === taskMenuTypes.COMPLETED"
-                            >
-                                Выполненные
-                            </DashboardCardNavLink>
-                            <DashboardCardNavLink
-                                @click="setCurrentTaskType(taskMenuTypes.CANCELED)"
-                                :icon="{
-                                    name: 'fa-solid fa-pause',
-                                    class: 'dashboard-bg-danger-l'
-                                }"
-                                :badge="counts.canceled"
-                                :active="currentTaskStatus === taskMenuTypes.CANCELED"
-                            >
-                                Отложенные
-                            </DashboardCardNavLink>
-                            <DashboardCardNavLink
-                                @click="setCurrentTaskType(taskMenuTypes.EXPIRED)"
-                                :icon="{
-                                    name: 'fa-solid fa-fire',
-                                    class: 'dashboard-bg-warning-l'
-                                }"
-                                :badge="counts.expired"
-                                :active="currentTaskStatus === taskMenuTypes.EXPIRED"
-                            >
-                                Сгоревшие
-                            </DashboardCardNavLink>
-                            <DashboardCardNavLink
-                                @click="setCurrentTaskType(taskMenuTypes.DELETED)"
-                                :icon="{
-                                    name: 'fa-solid fa-trash',
-                                    class: 'dashboard-bg-danger-l'
-                                }"
-                                :badge="counts.deleted"
-                                :active="currentTaskStatus === taskMenuTypes.DELETED"
-                            >
-                                Удаленные
-                            </DashboardCardNavLink>
-                        </div>
+                    <div class="dashboard-aside position-relative">
+                        <DashboardTableTasksFilters
+                            v-model:status="filterStatus"
+                            v-model:type="filterType"
+                            :counts="counts"
+                            :relations="relations"
+                        />
                     </div>
                 </DashboardCard>
             </div>
-            <div class="col-xl-9">
+            <div class="col-xl-9 col-xxl-10">
                 <DashboardCard class="dashboard-task-table">
                     <template #header>
                         <div class="dashboard-task-table__header">
                             <Form>
                                 <FormGroup class="align-items-end">
                                     <div class="col-8 d-flex align-items-end">
-                                        <Input
-                                            v-model="debouncedQuerySearch"
-                                            disabled
-                                            label="Поиск"
-                                            class="w-100"
-                                        />
+                                        <Input v-model="querySearch" label="Поиск" class="w-100" />
                                         <Button
                                             @click="querySearch = null"
-                                            :disabled="!debouncedQuerySearch?.length"
+                                            :disabled="!querySearch?.length"
                                             class="ml-2"
                                             danger
                                         >
@@ -130,212 +48,210 @@
                             </Form>
                         </div>
                     </template>
-                    <DashboardTableTasks
-                        @edit="editTask"
-                        :is-loading="isLoading"
-                        :tasks="tasks.data"
-                    />
+                    <DashboardTableTasks :is-loading="isLoading" :tasks="tasks.data" />
                 </DashboardCard>
             </div>
         </div>
     </div>
 </template>
-<script>
+<script setup>
 import PaginationClassic from '@/components/common/Pagination/PaginationClassic.vue';
 import Input from '@/components/common/Forms/Input.vue';
 import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import Form from '@/components/common/Forms/Form.vue';
-import DashboardCardNavLink from '@/components/Dashboard/Card/DashboardCardNavLink.vue';
 import Button from '@/components/common/Button.vue';
 import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
-import { DebouncedQuerySearchMixin } from '@/components/common/Forms/debounced.mixins.js';
-import { entityOptions } from '@/const/options/options.js';
-import { mapGetters } from 'vuex';
-import { waitHash } from '@/utils/index.js';
-import FormModalTask from '@/components/Forms/FormModalTask.vue';
 import DashboardTableTasks from '@/components/Dashboard/Table/DashboardTableTasks.vue';
-import { LoaderMixin } from '@/components/Messenger/loader.mixin.js';
 import api from '@/api/api.js';
+import DashboardTableTasksFilters from '@/components/Dashboard/Table/DashboardTableTasksFilters.vue';
+import { inject, onBeforeMount, reactive, ref, shallowRef, toRef, watch } from 'vue';
+import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
+import { debounce } from '@/utils/debounce.js';
+import { useQueryHash } from '@/utils/useQueryHash.js';
+import gsap from 'gsap';
 
-export default {
-    name: 'DashboardTasksTable',
-    components: {
-        DashboardTableTasks,
-        FormModalTask,
-        PaginationClassic,
-        Input,
-        FormGroup,
-        Form,
-        DashboardCardNavLink,
-        Button,
-        DashboardCard,
-        MultiSelect
+const $targetUser = inject('$targetUser');
+
+const { isLoading } = useDelayedLoader();
+
+const sortingOptions = [
+    { value: '-updated_at', label: 'По умолчанию' },
+    { value: 'created_at', label: 'Сначала старые' },
+    { value: '-created_at', label: 'Сначала новые' },
+    { value: 'end', label: 'Сначала истекающие' }
+];
+
+const tasks = reactive({
+    data: [],
+    pagination: null
+});
+const querySearch = shallowRef('');
+const counts = ref({
+    all: 0,
+    accepted: 0,
+    created: 0,
+    done: 0,
+    impossible: 0
+});
+const relations = ref({
+    by_user: 0,
+    by_created_by: 0,
+    by_observer: 0
+});
+const sortingOption = shallowRef('-updated_at');
+const filterStatus = ref([]);
+const filterType = ref([]);
+
+const targetUser = toRef($targetUser);
+
+watch(
+    () => targetUser.value,
+    value => {
+        if (value != null) fetchRelationCounts();
+        Promise.all([fetchCounts(), fetchTasks()]);
+    }
+);
+
+watch(querySearch, () => {
+    debouncedForInputTasks();
+});
+
+watch(
+    filterStatus,
+    () => {
+        debouncedFetchTasks();
     },
-    mixins: [DebouncedQuerySearchMixin, LoaderMixin],
-    inject: ['$targetUser'],
-    data() {
-        return {
-            tasks: {
-                data: [],
-                pagination: null
-            },
-            sortingOption: '-updated_at',
-            currentTaskStatus: 0,
-            sortingOptions: [
-                { value: '-updated_at', label: 'По умолчанию' },
-                { value: 'id', label: 'По ID (возрастание)' },
-                { value: '-id', label: 'По ID (убывание)' },
-                { value: 'created_at', label: 'Сначала старые' },
-                { value: '-created_at', label: 'Сначала новые' },
-                { value: 'end', label: 'Сначала истекающие' }
-            ],
-            tasksTypeOptions: {
-                0: { deleted: 0 },
-                1: { status: 1, deleted: 0 },
-                2: { status: 2, deleted: 0 },
-                3: { status: 3, deleted: 0 },
-                4: { status: 4, deleted: 0 },
-                5: { deleted: 0, expired: 1 },
-                6: { deleted: 1 }
-            },
-            counts: {}
-        };
+    { deep: true }
+);
+
+watch(
+    filterType,
+    () => {
+        debouncedFetchTasks();
+        debouncedFetchCounts();
     },
-    computed: {
-        taskMenuTypes: () => entityOptions.task.statusTypes,
-        ...mapGetters({ user: 'THIS_USER' }),
-        targetUser() {
-            return this.$targetUser();
-        }
-    },
-    watch: {
-        targetUser() {
-            Promise.all([this.fetchCounts(), this.fetchTasks()]);
-        },
-        '$route.query': function (newQuery, oldQuery) {
-            if (waitHash(newQuery) !== waitHash(oldQuery)) {
-                this.fetchTasks();
-            }
-        },
-        async querySearch(value) {
-            let query = { ...this.$route.query };
+    { deep: true }
+);
 
-            if (value?.length) {
-                query.all = value;
-            } else {
-                delete query.all;
-            }
+watch(sortingOption, () => {
+    debouncedFetchTasks();
+});
 
-            await this.$router.replace({ query });
-        },
-        async sortingOption(value) {
-            if (value) this.$router.replace({ query: { ...this.$route.query, sort: value } });
-        }
-    },
-    methods: {
-        async setNextPage(number) {
-            let query = { ...this.$route.query };
-            query.page = number;
-            await this.$router.replace({ query });
-        },
-        async fetchTasks() {
-            this.loadingState = true;
+const setNextPage = async page => {
+    debouncedFetchTasks(page);
+};
 
-            const additionsQuery = this.targetUser ? { user_id: this.targetUser.id } : {};
-            let query = { ...this.$route.query, ...additionsQuery };
-            this.tasks = await api.task.get(query);
+const setModeInQuery = query => {
+    filterType.value.forEach(element => {
+        query[element] = targetUser.value.id;
+    });
 
-            this.loadingState = false;
-        },
-        async fetchCounts() {
-            const additionsQuery = this.targetUser ? { user_id: this.targetUser.id } : {};
+    query.multiple = 1;
+};
 
-            const data = await Promise.all([
-                api.task.getCount({ ...additionsQuery, deleted: 0 }),
-                api.task.getCount({ status: 1, ...additionsQuery, deleted: 0 }),
-                api.task.getCount({ status: 2, ...additionsQuery, deleted: 0 }),
-                api.task.getCount({ status: 3, ...additionsQuery, deleted: 0 }),
-                api.task.getCount({ status: 4, ...additionsQuery, deleted: 0 }),
-                api.task.getCount({ deleted: 0, ...additionsQuery, expired: 1 }),
-                api.task.getCount({ deleted: 1, ...additionsQuery })
-            ]);
+const createQuery = page => {
+    const query = { page };
 
-            if (data.length) {
-                this.counts = {
-                    all: data[0],
-                    new: data[1],
-                    inProgress: data[2],
-                    completed: data[3],
-                    canceled: data[4],
-                    expired: data[5],
-                    deleted: data[6]
-                };
-            }
-        },
-        async setCurrentTaskType(status) {
-            this.currentTaskStatus = status;
-            this.querySearch = '';
-            this.sortingOption = this.sortingOptions[0].value;
-            await this.$router.replace({ query: this.tasksTypeOptions[status] });
+    if (querySearch.value?.length) query.message = querySearch.value;
+    if (filterStatus.value.length) {
+        query.status = filterStatus.value;
+    }
+    if (filterType.value.length) setModeInQuery(query);
+    else if (targetUser.value) {
+        query.created_by_id = targetUser.value.id;
+        query.observer_id = targetUser.value.id;
+        query.user_id = targetUser.value.id;
+        query.multiple = 1;
+    }
+    if (sortingOption.value) query.sort = sortingOption.value;
 
-            if (this.$route.query.status !== this.tasksTypeOptions[status])
-                await this.$router.replace({ query: this.tasksTypeOptions[status] });
-        },
-        async createTask() {
-            const taskPayload = await this.$refs.taskForm.open();
-            if (!taskPayload) return;
+    return query;
+};
 
-            taskPayload.status = 1;
-            const task = await api.task.create(taskPayload);
+const createCountsQuery = () => {
+    const query = {};
 
-            if (task) {
-                this.tasks.data.unshift(task);
-                this.tasks.pagination.totalCount++;
-            }
-        },
-        async editTask(oldTask) {
-            const taskPayload = await this.$refs.taskForm.open(oldTask);
-            if (!taskPayload) return;
+    if (filterType.value.length) {
+        filterType.value.forEach(element => {
+            query[element] = targetUser.value.id;
+        });
+    } else if (targetUser.value) {
+        query.created_by_id = targetUser.value.id;
+        query.observer_id = targetUser.value.id;
+        query.user_id = targetUser.value.id;
+    }
 
-            const task = await api.task.update(oldTask.id, { ...oldTask, ...taskPayload });
+    return query;
+};
 
-            if (task) {
-                Object.assign(oldTask, task);
-            }
-        },
-        async setQuery() {
-            const query = { ...this.$route.query };
+const { setHash, confirmHash } = useQueryHash('search-tasks');
 
-            if (this.$route.query.status) {
-                const status = Number(this.$route.query.status);
+const fetchTasks = async (page = 1) => {
+    isLoading.value = true;
+    const query = createQuery(page);
+    setHash(query);
 
-                if (status < 6 && status > 0) {
-                    this.currentTaskStatus = status;
-                } else {
-                    delete query.status;
-                    this.currentTaskStatus = 0;
-                    query.deleted = 0;
-                }
-            } else {
-                query.deleted = 0;
-            }
+    const response = await api.task.get(query);
+    if (response && confirmHash(query)) {
+        tasks.data = response.data;
+        tasks.pagination = response.pagination;
+    }
 
-            if (Number(this.$route.query.deleted) === 1) {
-                this.currentTaskStatus = 5;
-            }
+    isLoading.value = false;
+};
 
-            if (this.$route.query.sort) this.sortingOption = this.$route.query.sort;
-            else query.sort = this.sortingOption;
+const { setHash: setCountsHash, confirmHash: confirmCountsHash } = useQueryHash('counts-tasks');
 
-            await this.$router.replace({ query: query });
-        }
-    },
-    async created() {
-        this.fetchCounts();
+const fetchCounts = async () => {
+    const query = createCountsQuery();
+    setCountsHash(query);
 
-        await this.setQuery();
-        if (!this.loadingState && !this.tasks.pagination) this.fetchTasks();
+    const response = await api.task.getCounts(query);
+    if (response && confirmCountsHash(query)) {
+        gsap.to(counts.value, {
+            delay: 0.5,
+            duration: 2,
+            all: Number(response.all),
+            created: Number(response.created),
+            accepted: Number(response.accepted),
+            done: Number(response.done),
+            impossible: Number(response.impossible)
+        });
     }
 };
+
+const { setHash: setRelationCountsHash, confirmHash: confirmRelationCountsHash } =
+    useQueryHash('relation-counts-tasks');
+
+const fetchRelationCounts = async () => {
+    const query = {};
+    if (targetUser.value) query.user_id = targetUser.value.id;
+    setRelationCountsHash(query);
+
+    const response = await api.task.getRelationCounts(query);
+    if (response && confirmRelationCountsHash(query)) {
+        gsap.to(relations.value, {
+            delay: 0.5,
+            duration: 2,
+            by_user: Number(response.by_user),
+            by_created_by: Number(response.by_created_by),
+            by_observer: Number(response.by_observer)
+        });
+    }
+};
+
+const debouncedFetchTasks = debounce(fetchTasks, 400);
+const debouncedFetchCounts = debounce(fetchCounts, 400);
+const debouncedForInputTasks = debounce(fetchTasks, 500);
+
+const init = () => {
+    fetchCounts();
+    fetchTasks();
+    fetchRelationCounts();
+};
+
+onBeforeMount(() => {
+    init();
+});
 </script>

@@ -223,15 +223,7 @@
     &__moves {
         position: relative;
     }
-
-    &__moves-options {
-        right: 0;
-        left: unset;
-        box-shadow: 0 0 5px 1px rgba(13, 31, 47, 0.2);
-        max-height: unset;
-        opacity: 1;
-    }
-
+    
     &__row {
         > span:first-child {
             opacity: .5;
@@ -306,8 +298,12 @@
         }
     }
 
+    &__user {
+        border: 2px solid #1fc41f;
+    }
+
     &__not-viewed {
-        border: 2px solid red;
+        border-color: red;
     }
 
     &__labels {
@@ -369,6 +365,15 @@
     i {
         font-size: 26px;
         width: 26px;
+    }
+}
+
+.dashboard-card-task-moves {
+    &__comment {
+        .form__textarea {
+            height: 50px;
+            min-height: 50px;
+        }
     }
 }
 
