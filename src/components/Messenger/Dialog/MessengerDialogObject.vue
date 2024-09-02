@@ -25,7 +25,6 @@
         </div>
         <div class="messenger-dialog__footer">
             <MessengerDialogPhone
-                v-if="lastCall"
                 @click.stop="$emit('update-call')"
                 :last-call="lastCall"
                 :updated-at="updatedAt"
