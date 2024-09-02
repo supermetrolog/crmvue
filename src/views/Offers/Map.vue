@@ -22,7 +22,7 @@
                         <Chip
                             v-for="(item, index) in selectedFilterList"
                             :key="index"
-                            @click="removeFilter"
+                            @delete="removeFilter(item.value)"
                             :value="item.value"
                             :html="item.label"
                         />
