@@ -6,6 +6,7 @@
                     <h1>Задачи</h1>
                     <DashboardTargetUser v-model="targetUser" />
                     <Switch
+                        v-if="false"
                         v-model="isBoardMode"
                         @change="changeMode"
                         class="ml-auto"
