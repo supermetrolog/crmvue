@@ -88,7 +88,7 @@ const tasks = reactive({
 });
 const querySearch = shallowRef('');
 const counts = ref({
-    all: 0,
+    total: 0,
     accepted: 0,
     created: 0,
     done: 0,
@@ -212,11 +212,7 @@ const fetchCounts = async () => {
         gsap.to(counts.value, {
             delay: 0.5,
             duration: 2,
-            all: Number(response.all),
-            created: Number(response.created),
-            accepted: Number(response.accepted),
-            done: Number(response.done),
-            impossible: Number(response.impossible)
+            ...response
         });
     }
 };
@@ -234,9 +230,7 @@ const fetchRelationCounts = async () => {
         gsap.to(relations.value, {
             delay: 0.5,
             duration: 2,
-            by_user: Number(response.by_user),
-            by_created_by: Number(response.by_created_by),
-            by_observer: Number(response.by_observer)
+            ...response
         });
     }
 };

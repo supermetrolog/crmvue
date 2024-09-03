@@ -8,7 +8,7 @@
                     name: 'fa-solid fa-list-ul',
                     class: 'dashboard-bg-primary-l'
                 }"
-                :badge="counts.all.toFixed()"
+                :badge="counts.total.toFixed()"
                 :active="field.all"
             >
                 Все задачи
