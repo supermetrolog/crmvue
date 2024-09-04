@@ -53,7 +53,7 @@
                         class="dashboard-card-task__viewers"
                     >
                         <Avatar
-                            v-for="observer in task.observers"
+                            v-for="observer in observers"
                             :key="observer.user.id"
                             v-tippy="`${observer.user.userProfile.medium_name} наблюдает`"
                             :src="observer.user.userProfile.avatar"
@@ -116,5 +116,12 @@ const expiredDayjs = computed(() => dayjs(props.task.end));
 const isCanceled = computed(() => props.task.status === taskOptions.statusTypes.CANCELED);
 const isAlreadyExpired = computed(() => expiredDayjs.value.isBefore(dayjs()) && !isCompleted.value);
 const isDeleted = computed(() => props.task.deleted_at !== null);
-const impossibleDate = computed(() => toDateFormat(props.task.impossible_to, 'D.MM.YY'));
+const impossibleDate = computed(() => {
+    if (props.task.impossible_to) return toDateFormat(props.task.impossible_to, 'D.MM.YY');
+    return 'неизвестной даты';
+});
+
+const observers = computed(() => {
+    return props.task.observers.filter(element => element.user_id !== props.task.user_id);
+});
 </script>
