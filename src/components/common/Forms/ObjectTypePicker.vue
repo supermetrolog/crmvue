@@ -4,7 +4,7 @@
             <button
                 @click.prevent="toggleDisabled"
                 class="object-type-picker__extra"
-                :class="{ active: !disabled }"
+                :class="{ active: !disabled, invalid: hasValidationError }"
             >
                 {{ label }}
             </button>
@@ -23,17 +23,12 @@
                     <i :class="option.icon" />
                 </button>
             </div>
-            <ValidationMessage
-                v-if="hasValidationError && !disabled"
-                :message="v.$errors[0].$message"
-            />
         </div>
     </div>
 </template>
 
 <script setup>
 import { computed } from 'vue';
-import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
 
 const modelValue = defineModel('value');
 const extraModelValue = defineModel('extra');

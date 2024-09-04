@@ -23,10 +23,13 @@ export default {
             return null;
         }
     },
-    async list() {
+    async list(page = 1) {
         try {
-            const response = await axios.get(URL);
-            return SuccessHandler.getData(response);
+            const response = await axios.get(URL, { params: { page } });
+            return {
+                data: SuccessHandler.getData(response),
+                pagination: SuccessHandler.getPaginationData(response)
+            };
         } catch (e) {
             setRequestError(e);
             return null;

@@ -143,6 +143,28 @@
             height: 100%;
         }
     }
+
+    &__chat {
+        border: none;
+        z-index: 10;
+        position: fixed;
+        bottom: 50px;
+        right: 50px;
+        height: 80px;
+        width: 80px;
+        border-radius: 50%;
+        background-color: rgba(138, 138, 138, 0.3);
+        color: rgba(138, 138, 138, 0.3);
+        cursor: pointer;
+        font-size: 30px;
+        @include mixins.flex-box($a: center, $j: center);
+        @include mixins.transition(color .3s, background-color .3s);
+
+        &:hover {
+            background-color: rgb(16, 185, 129);
+            color: #fff;
+        }
+    }
 }
 
 .company {

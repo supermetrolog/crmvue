@@ -27,6 +27,7 @@ const getInitialState = () => ({
         pagination: null
     },
 
+    tags: [],
     messages: [],
     lastNotViewedMessageID: null,
     lessThenMessageId: null,
@@ -285,6 +286,9 @@ const Messenger = {
         },
         setCountersInterval(state, interval) {
             state.countersInterval = interval;
+        },
+        setTags(state, tags) {
+            state.tags = tags;
         }
     },
     actions: {
@@ -361,6 +365,19 @@ const Messenger = {
             commit('setCurrentPanel', data || null);
             commit('setLoadingPanel', false);
         },
+        async selectPanelWithoutDialog({ commit }, companyID) {
+            commit('setCurrentPanelID', null);
+            commit('setCurrentAsideDialogID', null);
+            commit('setCurrentPanelCompanyID', companyID);
+            commit('setCurrentDialogType', 'object');
+
+            commit('setLoadingPanel', true);
+
+            const data = await api.messenger.getPanel(companyID);
+
+            commit('setCurrentPanel', data || null);
+            commit('setLoadingPanel', false);
+        },
         async updatePanel({ commit, state }) {
             const panel = await api.messenger.getPanel(state.currentPanelCompanyID);
 
@@ -376,7 +393,7 @@ const Messenger = {
             if (needCacheMessage(dialogID, state.currentAsideDialogID, state.currentPanelDialogID))
                 commit('setCachedMessage');
 
-            if (!state.currentAsideDialogID) {
+            if (!state.currentAsideDialogID && !state.currentPanelCompanyID) {
                 commit('setCurrentPanelDialogID', null);
                 return;
             }
@@ -675,6 +692,21 @@ const Messenger = {
             }
 
             return false;
+        },
+        async fetchTags({ commit, state }) {
+            if (state.tags.length) return state.tags;
+
+            const response = await api.messengerTag.list();
+            if (response) {
+                commit('setTags', response.data);
+                return response.data;
+            }
+
+            return null;
+        },
+        async refreshTags({ commit, dispatch }) {
+            commit('setTags', []);
+            dispatch('fetchTags');
         }
     },
     getters: {

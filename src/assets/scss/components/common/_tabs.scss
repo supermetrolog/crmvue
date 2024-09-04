@@ -3,9 +3,9 @@
 
 .tabs-component {
     &-tabs {
-        @include mixins.flex-box($gap: 0 20px);
         background-color: variables.$color_grey_alt;
         padding: 10px;;
+        @include mixins.flex-box($gap: 0 20px);
     }
 
     &-tab {
@@ -60,11 +60,13 @@
 
         &.invalid {
             border: unset !important;
+
             a {
+                color: variables.$color_danger;
+
                 &.is-active::before {
                     background-color: variables.$color_danger !important;
                 }
-                color: variables.$color_danger;
             }
         }
     }

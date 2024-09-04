@@ -257,7 +257,7 @@ tr.TableRequestRow {
             }
 
             .action {
-                width: 80px;
+                width: 100px;
             }
         }
     }
@@ -753,7 +753,7 @@ tr.TableRequestRow {
 }
 
 .empty-label {
-    padding: 5px;
+    padding: 5px 10px;
     text-align: center;
     background-color: variables.$bg-success-l;
     font-weight: 500;

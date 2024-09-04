@@ -28,6 +28,7 @@
                                 />
                                 <Switch
                                     v-model="form.noName"
+                                    :transform="Number"
                                     false-title="С названием"
                                     true-title="Без названия"
                                     class="col-12"

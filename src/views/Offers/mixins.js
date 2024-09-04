@@ -231,8 +231,7 @@ export default {
         }
     },
     async created() {
-        await this.FETCH_CONSULTANT_LIST();
-        await this.FETCH_REGION_LIST();
+        await Promise.allSettled([this.FETCH_REGION_LIST(), this.FETCH_CONSULTANT_LIST()]);
         this.mounted = true;
     }
 };

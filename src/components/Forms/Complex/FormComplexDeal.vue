@@ -56,7 +56,7 @@
                                 <ObjectTypePicker
                                     v-model:value="form.purposes"
                                     v-model:extra="form.object_type"
-                                    :extra-value="1"
+                                    :extra-value="0"
                                     label="Склад"
                                     :options="objectPurposesWithSectionsOptions.warehouse"
                                     class="col-md-6"
@@ -64,7 +64,7 @@
                                 <ObjectTypePicker
                                     v-model:value="form.purposes"
                                     v-model:extra="form.object_type"
-                                    :extra-value="2"
+                                    :extra-value="1"
                                     label="Производство"
                                     :options="objectPurposesWithSectionsOptions.production"
                                     class="col-md-6"

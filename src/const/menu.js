@@ -4,20 +4,32 @@ export const Menu = {
             id: 8,
             name: 'Дашборд',
             icon: 'fa-solid fa-chart-line',
-            url: '/dashboard'
+            url: '/dashboard',
+            internal: 'dashboard',
+            key: 'dashboard'
         },
         {
             id: 0,
             name: 'Компании',
             icon: 'fa-solid fa-industry',
-            url: '/companies'
+            url: '/companies',
+            internal: 'companies',
+            key: 'company'
         },
-        { id: 6, name: 'Предложка', icon: 'fas fa-city', url: '/offers' },
+        {
+            id: 6,
+            name: 'Предложка',
+            icon: 'fas fa-city',
+            url: '/offers',
+            internal: 'offers',
+            key: 'offers'
+        },
         {
             id: 7,
             name: 'Барахолка',
             icon: 'fa-solid fa-shop',
-            url: '/equipments'
+            url: '/equipments',
+            key: 'equipments'
         },
         {
             id: 2,
@@ -26,14 +38,22 @@ export const Menu = {
             url: '/calendar',
             exact: true
         },
-        { id: 3, name: 'Настройки', icon: 'fas fa-cog', url: '/settings' },
-        { id: 4, name: 'Юзеры', icon: 'fas fa-users', url: '/users' },
         {
             id: 5,
             name: 'Аккаунт',
             icon: 'fa-solid fa-user-astronaut',
-            url: '/account'
-        }
+            url: '/account',
+            key: 'account'
+        },
+        {
+            id: 3,
+            name: 'Настройки',
+            icon: 'fas fa-cog',
+            url: '/settings',
+            key: 'settings',
+            internal: 'settings'
+        },
+        { id: 4, name: 'Юзеры', icon: 'fas fa-users', url: '/users', key: 'users' }
     ],
     agent: [
         {
@@ -103,7 +123,12 @@ export const InternalMenu = {
     dashboard: [
         { id: 0, name: 'Главная', url: '/dashboard', exact: true },
         { id: 1, name: 'Сводка', url: '/dashboard/company' },
-        { id: 2, name: 'Задачи', url: '/dashboard/tasks/board' },
+        { id: 2, name: 'Задачи', url: '/dashboard/tasks/table' },
         { id: 3, name: 'Запросы', url: '/dashboard/requests' }
+    ],
+    settings: [
+        { id: 0, name: 'Опросник', url: '/settings/survey' },
+        { id: 1, name: 'Мессенджер', url: '/settings/messenger' },
+        { id: 1, name: 'Задачи', url: '/settings/tasks' }
     ]
 };

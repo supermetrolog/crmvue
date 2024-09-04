@@ -201,3 +201,14 @@ export function formToPayload(form, template) {
         return acc;
     }, {});
 }
+
+/**
+ * Удалит элемент из массива с помощью array.splice (примитив)
+ *
+ * @param {(number|string|boolean)[]} array
+ * @param {number|string|boolean} value
+ */
+export function spliceWithPrimitive(array, value) {
+    const index = array.findIndex(element => element === value);
+    if (index !== -1) array.splice(index, 1);
+}

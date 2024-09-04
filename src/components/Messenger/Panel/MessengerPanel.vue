@@ -18,7 +18,12 @@ export default {
     mixins: [LoaderMixin],
     computed: {
         ...mapState({
-            hasPanel: state => state.Messenger.currentAsideDialogID,
+            hasPanel: state => {
+                return (
+                    state.Messenger.currentAsideDialogID != null ||
+                    state.Messenger.currentPanelCompanyID != null
+                );
+            },
             originalLoader: state => state.Messenger.loadingPanel
         })
     }

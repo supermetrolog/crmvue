@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useAuth } from '@/composables/useAuth.js';
 import { useNotify } from '@/utils/useNotify.js';
+import { LOCALSTORAGE_PREFIX, LS_ACCESS_TOKEN_KEY } from '@/utils/localStorage.js';
 
 const routes = [
     {
@@ -20,7 +21,7 @@ const routes = [
                     layout: 'default',
                     auth: { isAuth: true, role: ['moderator', 'administrator'] }
                 },
-                component: () => import('@/views/Settings.vue')
+                component: () => import('@/views/Settings/Survey.vue')
             }
         ]
     },
@@ -32,7 +33,40 @@ const routes = [
             auth: { isAuth: true, role: ['moderator', 'administrator'] },
             title: 'Настройки'
         },
-        component: () => import('@/views/Settings.vue')
+        component: () => import('@/views/Settings/View.vue'),
+        redirect: { name: 'settings-survey' },
+        children: [
+            {
+                path: 'survey',
+                name: 'settings-survey',
+                meta: {
+                    layout: 'default',
+                    auth: { isAuth: true, role: ['moderator', 'administrator'] },
+                    title: 'Настройки опросника'
+                },
+                component: () => import('../views/Settings/Survey.vue')
+            },
+            {
+                path: 'messenger',
+                name: 'settings-messenger',
+                meta: {
+                    layout: 'default',
+                    auth: { isAuth: true, role: ['moderator', 'administrator'] },
+                    title: 'Настройки мессенджера'
+                },
+                component: () => import('../views/Settings/Messenger.vue')
+            },
+            {
+                path: 'tasks',
+                name: 'settings-tasks',
+                meta: {
+                    layout: 'default',
+                    auth: { isAuth: true, role: ['moderator', 'administrator'] },
+                    title: 'Настройки задач'
+                },
+                component: () => import('../views/Settings/Tasks.vue')
+            }
+        ]
     },
     {
         path: '/calendar',
@@ -306,11 +340,11 @@ const router = createRouter({
 });
 
 router.beforeEach(to => {
-    const { isAuth, setRedirect } = useAuth();
-    const accessToken = localStorage.getItem('access_token');
+    const { isAuth, setRedirect, login } = useAuth();
+    if (!isAuth.value && localStorage.getItem(LOCALSTORAGE_PREFIX + LS_ACCESS_TOKEN_KEY)) login();
 
     if (to.meta.auth.isAuth) {
-        if (!accessToken || !isAuth.value) {
+        if (!isAuth.value) {
             setRedirect(to.fullPath);
 
             const notify = useNotify();
@@ -318,7 +352,7 @@ router.beforeEach(to => {
 
             return { name: 'login' };
         }
-    } else if (isAuth.value || accessToken) {
+    } else if (isAuth.value) {
         const notify = useNotify();
         notify.info('Вы уже авторизованы');
 

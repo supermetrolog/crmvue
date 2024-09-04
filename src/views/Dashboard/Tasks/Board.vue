@@ -1,17 +1,14 @@
 <template>
     <div class="container-fluid">
-        <teleport to="body">
-            <FormModalTask ref="taskForm" />
-        </teleport>
         <div class="row">
             <div class="col-3">
                 <DashboardKanbanBoard
-                    v-model="newTasks.data"
+                    v-model="tasks.new.data"
                     @delete="deleteTask"
                     @edit="editTask"
                     @load="loadTasks($event, 'new')"
                     @add="changeTaskStatus($event, 'new')"
-                    :pagination="newTasks.pagination"
+                    :pagination="tasks.new.pagination"
                     :is-loading="isLoading"
                     title="Новые"
                 >
@@ -21,19 +18,16 @@
                             class="dashboard-bg-primary-l"
                         />
                     </template>
-                    <template #action>
-                        <Button @click="createTask" small success> Создать задачу </Button>
-                    </template>
                 </DashboardKanbanBoard>
             </div>
             <div class="col-3">
                 <DashboardKanbanBoard
-                    v-model="inProgressTasks.data"
+                    v-model="tasks.inProgress.data"
                     @delete="deleteTask"
                     @edit="editTask"
                     @load="loadTasks($event, 'inProgress')"
                     @add="changeTaskStatus($event, 'in_Progress')"
-                    :pagination="inProgressTasks.pagination"
+                    :pagination="tasks.inProgress.pagination"
                     :is-loading="isLoading"
                     title="В процессе"
                 >
@@ -47,12 +41,12 @@
             </div>
             <div class="col-3">
                 <DashboardKanbanBoard
-                    v-model="completedTasks.data"
+                    v-model="tasks.completed.data"
                     @delete="deleteTask"
                     @edit="editTask"
                     @load="loadTasks($event, 'completed')"
                     @add="changeTaskStatus($event, 'completed')"
-                    :pagination="completedTasks.pagination"
+                    :pagination="tasks.completed.pagination"
                     :is-loading="isLoading"
                     title="Выполнено"
                 >
@@ -66,12 +60,12 @@
             </div>
             <div class="col-3">
                 <DashboardKanbanBoard
-                    v-model="canceledTasks.data"
+                    v-model="tasks.canceled.data"
                     @delete="deleteTask"
                     @edit="editTask"
                     @load="loadTasks($event, 'canceled')"
                     @add="changeTaskStatus($event, 'canceled')"
-                    :pagination="canceledTasks.pagination"
+                    :pagination="tasks.canceled.pagination"
                     :is-loading="isLoading"
                     title="Приостановлено"
                 >
@@ -86,159 +80,142 @@
         </div>
     </div>
 </template>
-<script>
+<script setup>
 import DashboardKanbanBoard from '@/components/Dashboard/Kanban/DashboardKanbanBoard.vue';
 import api from '@/api/api.js';
 import DashboardRoundedIcon from '@/components/Dashboard/DashboardRoundedIcon.vue';
-import { entityOptions } from '@/const/options/options.js';
-import Button from '@/components/common/Button.vue';
-import FormModalTask from '@/components/Forms/FormModalTask.vue';
-import { LoaderMixin } from '@/components/Messenger/loader.mixin.js';
 import { useConfirm } from '@/composables/useConfirm.js';
+import { computed, inject, reactive, watch } from 'vue';
+import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
+import { useStore } from 'vuex';
+import { taskOptions } from '@/const/options/task.options.js';
+import { useNotify } from '@/utils/useNotify.js';
+import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 
-export default {
-    name: 'DashboardTasksBoard',
-    components: { FormModalTask, Button, DashboardRoundedIcon, DashboardKanbanBoard },
-    mixins: [LoaderMixin],
-    inject: ['$targetUser'],
-    setup() {
-        const { confirm } = useConfirm();
-        return { confirm };
+const $targetUser = inject('$targetUser');
+const { confirm } = useConfirm();
+const notify = useNotify();
+const { isLoading } = useDelayedLoader();
+const store = useStore();
+const { show: showTaskCreator } = useAsyncPopup('taskCreator');
+
+const tasks = reactive({
+    new: {
+        data: [],
+        pagination: null
     },
-    data() {
-        return {
-            newTasks: {
-                data: [],
-                pagination: null
-            },
-            inProgressTasks: {
-                data: [],
-                pagination: null
-            },
-            completedTasks: {
-                data: [],
-                pagination: null
-            },
-            canceledTasks: {
-                data: [],
-                pagination: null
-            },
-            createFormIsVisible: false
-        };
+    inProgress: {
+        data: [],
+        pagination: null
     },
-    computed: {
-        targetUser() {
-            return this.$targetUser();
-        }
+    completed: {
+        data: [],
+        pagination: null
     },
-    watch: {
-        targetUser() {
-            this.fetchTasks();
-        }
-    },
-    methods: {
-        async fetchTasks() {
-            this.loadingState = true;
+    canceled: {
+        data: [],
+        pagination: null
+    }
+});
 
-            [this.newTasks, this.inProgressTasks, this.completedTasks, this.canceledTasks] =
-                await this.$store.dispatch('Task/getTasks', this.targetUser?.id);
+const targetUser = computed(() => $targetUser);
 
-            this.loadingState = false;
-        },
-        async loadTasks($state, statusName) {
-            const { currentPage, pageCount } = this[`${statusName}Tasks`].pagination;
+watch(
+    () => targetUser.value,
+    () => {
+        fetchTasks();
+    }
+);
 
-            if (pageCount === 0 || currentPage === pageCount) {
-                $state.complete();
-                return;
-            }
+const fetchTasks = async () => {
+    isLoading.value = true;
 
-            const statusID = entityOptions.task.statusTypes[statusName];
-            const page = currentPage + 1;
+    const response = await store.dispatch('Task/getTasks', targetUser.value?.id);
 
-            const response = await api.task.get({ status: statusID, page, deleted: 0 });
+    if (response) {
+        tasks.new = response[0];
+        tasks.inProgress = response[1];
+        tasks.completed = response[2];
+        tasks.canceled = response[3];
+    }
 
-            if (response) {
-                this[`${statusName}Tasks`].pagination = response.pagination;
-                this[`${statusName}Tasks`].data.push(...response.data);
+    isLoading.value = false;
+};
+const loadTasks = async ($state, statusName) => {
+    const { currentPage, pageCount } = tasks[statusName].pagination;
 
-                if (response.pagination.currentPage === response.pagination.pageCount)
-                    $state.complete();
-                else $state.loaded();
-            }
-        },
-        async changeTaskStatus(task, statusName) {
-            task.isUpdating = true;
+    if (pageCount === 0 || currentPage === pageCount) {
+        $state.complete();
+        return;
+    }
 
-            const status = entityOptions.task.statusTypes[statusName.toUpperCase()];
-            const updatedTask = await api.task.changeStatus(task.id, status);
+    const statusID = taskOptions.statusTypes[statusName];
+    const page = currentPage + 1;
 
-            const prevArrayName =
-                entityOptions.task.statusNames[task.status].replaceAll('_', '') + 'Tasks';
-            const tasksArrayName = `${statusName.replaceAll('_', '')}Tasks`;
+    const response = await api.task.get({ status: statusID, page, deleted: 0 });
 
-            if (updatedTask) {
-                task.status = status;
-                this[prevArrayName].pagination.totalCount--;
-                this[tasksArrayName].pagination.totalCount++;
+    if (response) {
+        tasks[statusName].pagination = response.pagination;
+        tasks[statusName].data.push(...response.data);
 
-                this.$notify('Статус задачи успешно изменен');
-            } else {
-                this[prevArrayName].data.unshift(task);
-                this[tasksArrayName].data.splice(
-                    this[tasksArrayName].data.findIndex(element => element.id === task.id),
-                    1
-                );
-            }
-
-            task.isUpdating = false;
-        },
-        async deleteTask(task) {
-            const confirmed = await this.confirm('Вы уверены, что хотите удалить задачу?');
-
-            if (confirmed) {
-                const deleted = await api.task.delete(task.id);
-
-                if (deleted) {
-                    const arrayName =
-                        entityOptions.task.statusNames[task.status].replaceAll('_', '') + 'Tasks';
-                    this[arrayName].pagination.totalCount--;
-                    this[arrayName].data.splice(
-                        this[arrayName].data.findIndex(element => element.id === task.id),
-                        1
-                    );
-
-                    this.$notify('Задача удалена');
-                }
-            }
-        },
-        async createTask() {
-            const taskPayload = await this.$refs.taskForm.open();
-            if (!taskPayload) return;
-
-            const task = await api.task.create({
-                ...taskPayload,
-                status: 1
-            });
-
-            if (task) {
-                this.newTasks.data.unshift(task);
-                this.newTasks.pagination.totalCount++;
-            }
-        },
-        async editTask(oldTask) {
-            const taskPayload = await this.$refs.taskForm.open(oldTask);
-            if (!taskPayload) return;
-
-            const task = await api.task.update(oldTask.id, { ...oldTask, ...taskPayload });
-
-            if (task) {
-                Object.assign(oldTask, task);
-            }
-        }
-    },
-    created() {
-        this.fetchTasks();
+        if (response.pagination.currentPage === response.pagination.pageCount) $state.complete();
+        else $state.loaded();
     }
 };
+const changeTaskStatus = async (task, statusName) => {
+    task.isUpdating = true;
+
+    const status = taskOptions.statusTypes[statusName.toUpperCase()];
+    const updatedTask = await api.task.changeStatus(task.id, status);
+
+    const prevArrayName = taskOptions.statusNames[task.status].replaceAll('_', '');
+    const tasksArrayName = statusName.replaceAll('_', '');
+
+    if (updatedTask) {
+        task.status = status;
+        tasks[prevArrayName].pagination.totalCount--;
+        tasks[tasksArrayName].pagination.totalCount++;
+
+        notify.success('Статус задачи успешно изменен');
+    } else {
+        tasks[prevArrayName].data.unshift(task);
+        tasks[tasksArrayName].data.splice(
+            tasks[tasksArrayName].data.findIndex(element => element.id === task.id),
+            1
+        );
+        notify.error('Произошла ошибка. Попробуйте позже');
+    }
+
+    task.isUpdating = false;
+};
+const deleteTask = async task => {
+    const confirmed = await confirm('Вы уверены, что хотите удалить задачу?');
+
+    if (confirmed) {
+        const deleted = await api.task.delete(task.id);
+
+        if (deleted) {
+            const arrayName = taskOptions.statusNames[task.status].replaceAll('_', '');
+            tasks[arrayName].pagination.totalCount--;
+            tasks[arrayName].data.splice(
+                tasks[arrayName].data.findIndex(element => element.id === task.id),
+                1
+            );
+
+            notify.success('Задача удалена');
+        }
+    }
+};
+const editTask = async oldTask => {
+    const taskPayload = await showTaskCreator(oldTask);
+    if (!taskPayload) return;
+
+    const task = await api.task.update(oldTask.id, { ...oldTask, ...taskPayload });
+
+    if (task) {
+        Object.assign(oldTask, task);
+    }
+};
+
+fetchTasks();
 </script>

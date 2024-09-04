@@ -37,12 +37,11 @@
                         color: variables.$color_info;
                         display: inline-block;
                         cursor: pointer;
+                        position: relative;
 
                         &:hover {
                             text-decoration: underline;
                         }
-
-                        position: relative;
 
                         .sortable__icon {
                             position: absolute;

@@ -1,133 +1,147 @@
 <template>
     <Modal
-        @close="clickCloseModal"
+        @close="$emit('close')"
         show
-        :title="formdata ? 'Изменение пользователя' : 'Создание пользователя'"
+        :title="formData ? 'Изменение пользователя' : 'Создание пользователя'"
         class="modal-form-user"
+        has-tabs
+        width="1300"
     >
         <Form @submit="onSubmit">
-            <Loader v-if="loader" />
-            <div class="row">
-                <Input
-                    v-model="form.username"
-                    :disabled="!!formdata"
-                    :v="v$.form.username"
-                    label="Юзернейм"
-                    required
-                    class="col-4"
-                />
-                <Input
-                    v-model="form.password"
-                    :v="v$.form.password"
-                    label="Пароль"
-                    :required="!formdata"
-                    class="col-4"
-                />
-                <Input
-                    v-model="form.userProfile.caller_id"
-                    :disabled="!!formdata"
-                    label="Добавочный номер"
-                    maska="##########"
-                    class="col-4"
-                />
-            </div>
-            <div class="row mt-2">
-                <Input
-                    v-model="form.userProfile.middle_name"
-                    label="Фамилия"
-                    :v="v$.form.userProfile.middle_name"
-                    required
-                    class="col-4"
-                />
-                <Input
-                    v-model="form.userProfile.first_name"
-                    label="Имя"
-                    :v="v$.form.userProfile.first_name"
-                    required
-                    class="col-4"
-                />
-                <Input v-model="form.userProfile.last_name" label="Отчество" class="col-4" />
-            </div>
-            <div class="row mt-2">
-                <Input
-                    v-model="form.email"
-                    :v="v$.form.email"
-                    label="Email для почты"
-                    class="col-4"
-                    title="Необходим для отправки предложений с аккаунта пользователя"
-                />
-                <Input
-                    v-model="form.email_username"
-                    label="Email логин"
-                    class="col-4"
-                    title="Необходим для отправки предложений с аккаунта пользователя"
-                />
-                <Input
-                    v-model="form.email_password"
-                    label="Email пароль"
-                    class="col-4"
-                    title="Необходим для отправки предложений с аккаунта пользователя"
-                />
-            </div>
-            <div class="row mt-2">
-                <PropogationInput
-                    v-model="form.userProfile.phones"
-                    :v="v$.form.userProfile.phones"
-                    :validators="formPhonesValidators"
-                    label="Телефон"
-                    property-name="phone"
-                    :maska="['+# (###) ###-##-##', '+## (###) ###-##-##', '+### (###) ###-##-##']"
-                    class="col-4"
-                    add-text="Добавить телефон"
-                />
-                <PropogationInput
-                    v-model="form.userProfile.emails"
-                    :v="v$.form.userProfile.emails"
-                    :validators="formEmailsValidators"
-                    label="Emails"
-                    class="col-4"
-                    property-name="email"
-                />
-                <FileInput
-                    v-model:native="form.userProfile.fileList"
-                    v-model:data="form.userProfile.avatar"
-                    label="Аватар"
-                    class="col-4 text-center"
-                    single
-                    only-images
-                    :api-url="$url.api.uploads()"
-                    accept="image/jpeg,image/png,image/jpg"
-                >
-                    Выбрать аватар
-                </FileInput>
-            </div>
-            <div class="row mt-2">
-                <div class="col-12">
-                    <span class="form__subtitle">Роль</span>
-                    <div class="form__row mt-1">
-                        <RadioChip
-                            v-for="(role, value) in roleOptions"
-                            :key="value"
-                            v-model="form.role"
-                            :label="role"
-                            :value="Number(value)"
+            <Loader v-if="isLoading" />
+            <Tabs>
+                <Tab name="Основные данные">
+                    <FormGroup>
+                        <Input
+                            v-model="form.username"
+                            :disabled="!!formData"
+                            :v="v$.form.username"
+                            label="Username"
+                            :required="!formData"
+                            class="col-4"
                         />
-                    </div>
+                        <Input
+                            v-model="form.password"
+                            :v="v$.form.password"
+                            label="Пароль"
+                            :required="!formData"
+                            class="col-4"
+                        />
+                    </FormGroup>
+                    <p class="form__block">Данные профиля</p>
+                    <FormGroup>
+                        <Input
+                            v-model="form.userProfile.middle_name"
+                            label="Фамилия"
+                            :v="v$.form.userProfile.middle_name"
+                            required
+                            class="col-4"
+                        />
+                        <Input
+                            v-model="form.userProfile.first_name"
+                            label="Имя"
+                            :v="v$.form.userProfile.first_name"
+                            required
+                            class="col-4"
+                        />
+                        <Input
+                            v-model="form.userProfile.last_name"
+                            label="Отчество"
+                            class="col-4"
+                        />
+                        <Input
+                            v-model="form.userProfile.caller_id"
+                            :disabled="!!formData"
+                            label="Добавочный номер"
+                            maska="##########"
+                            class="col-4"
+                        />
+                        <PropogationInput
+                            v-model="form.userProfile.phones"
+                            :v="v$.form.userProfile.phones"
+                            :validators="formPhonesValidators"
+                            label="Телефон"
+                            property-name="phone"
+                            :maska="[
+                                '+# (###) ###-##-##',
+                                '+## (###) ###-##-##',
+                                '+### (###) ###-##-##'
+                            ]"
+                            class="col-4"
+                            add-text="Добавить телефон"
+                        />
+                        <PropogationInput
+                            v-model="form.userProfile.emails"
+                            :v="v$.form.userProfile.emails"
+                            :validators="formEmailsValidators"
+                            label="Emails"
+                            class="col-4"
+                            property-name="email"
+                        />
+                    </FormGroup>
+                    <p class="form__block">Данные почты</p>
+                    <FormGroup>
+                        <Input
+                            v-model="form.email"
+                            :v="v$.form.email"
+                            label="Email для почты"
+                            class="col-4"
+                            title="Необходим для отправки предложений с аккаунта пользователя"
+                        />
+                        <Input
+                            v-model="form.email_username"
+                            label="Email логин"
+                            class="col-4"
+                            title="Необходим для отправки предложений с аккаунта пользователя"
+                        />
+                        <Input
+                            v-model="form.email_password"
+                            label="Email пароль"
+                            class="col-4"
+                            title="Необходим для отправки предложений с аккаунта пользователя"
+                        />
+                    </FormGroup>
+                    <p class="form__block">Статус</p>
+                    <FormGroup>
+                        <RadioOptions
+                            v-model="form.role"
+                            class="col-12"
+                            label="Роль"
+                            :options="RoleList"
+                        />
+                    </FormGroup>
+                </Tab>
+                <Tab name="Аватар">
+                    <FormGroup>
+                        <FileInput
+                            v-model:native="form.userProfile.fileList"
+                            v-model:data="form.userProfile.avatar"
+                            class="col-12 text-center"
+                            single
+                            only-images
+                            :api-url="$url.api.uploads()"
+                            accept="image/jpeg,image/png,image/jpg"
+                        >
+                            Выбрать аватар
+                        </FileInput>
+                    </FormGroup>
+                </Tab>
+            </Tabs>
+            <FormGroup>
+                <div class="d-flex mx-auto gap-2">
+                    <Submit small success>
+                        {{ formData ? 'Сохранить' : 'Создать' }}
+                    </Submit>
+                    <Button v-if="!!formData" @click="archiveUser" info>Отправить в архив</Button>
                 </div>
-            </div>
-            <div class="row mt-3">
-                <Submit class="col-3 mx-auto" small success>
-                    {{ formdata ? 'Сохранить' : 'Создать' }}
-                </Submit>
-            </div>
+            </FormGroup>
         </Form>
     </Modal>
 </template>
 
-<script>
-import { mapActions } from 'vuex';
-import useValidate from '@vuelidate/core';
-import { helpers, or, required, requiredIf } from '@vuelidate/validators';
+<script setup>
+import { useStore } from 'vuex';
+import useVuelidate from '@vuelidate/core';
 import Form from '@/components/common/Forms/Form.vue';
 import Input from '@/components/common/Forms/Input.vue';
 import PropogationInput from '@/components/common/Forms/PropogationInput.vue';
@@ -137,169 +151,143 @@ import { RoleList } from '@/const/const.js';
 import Modal from '@/components/common/Modal.vue';
 import Loader from '@/components/common/Loader.vue';
 import { emptyWithProperty, everyProperty, validateEmail, validatePhone } from '@//validators';
-import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import Submit from '@/components/common/Forms/FormSubmit.vue';
+import { reactive, shallowRef } from 'vue';
+import { validationRulesForUser, validationRulesForUserProfile } from '@/validators/rules/user.js';
+import Tabs from '@/components/common/Tabs/Tabs.vue';
+import Tab from '@/components/common/Tabs/Tab.vue';
+import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
+import Button from '@/components/common/Button.vue';
+import { useConfirm } from '@/composables/useConfirm.js';
+import { userOptions } from '@/const/options/user.options.js';
+import { helpers, or, requiredIf } from '@vuelidate/validators';
+import api from '@/api/api.js';
 
-export default {
-    name: 'FormUser',
-    components: {
-        Submit,
-        RadioChip,
-        Loader,
-        Modal,
-        Form,
-        Input,
-        FileInput,
-        PropogationInput
-    },
-    emits: ['closeUserForm', 'updated', 'created'],
-    props: {
-        formdata: {
-            type: Object,
-            default: null
-        }
-    },
-    data() {
-        return {
-            v$: useValidate(),
-            loader: false,
-            form: {
-                username: null,
-                password: null,
-                email: null,
-                email_username: null,
-                email_password: null,
-                role: 2,
-                userProfile: {
-                    first_name: null,
-                    middle_name: null,
-                    last_name: null,
-                    phones: [],
-                    emails: [],
-                    caller_id: null,
-                    avatar: null,
-                    fileList: []
-                }
-            }
-        };
-    },
-    computed: {
-        roleOptions: () => RoleList,
-        formEmailsValidators() {
-            return [{ func: validateEmail, message: 'Укажите корректный Email' }];
-        },
-        formPhonesValidators() {
-            return [{ func: validatePhone, message: 'Укажите корректный телефон' }];
-        }
-    },
-    validations() {
-        return {
-            form: {
-                userProfile: {
-                    first_name: {
-                        required: helpers.withMessage('Введите имя', required)
-                    },
-                    middle_name: {
-                        required: helpers.withMessage('Введите фамилию', required)
-                    },
-                    emails: {
-                        required: helpers.withMessage(
-                            'Пустые поля недопустимы',
-                            everyProperty(
-                                requiredIf(
-                                    () =>
-                                        this.form.userProfile.emails.length > 1 ||
-                                        this.formdata.userProfile.emails.length
-                                ),
-                                'email'
-                            )
-                        ),
-                        everyHasCorrectEmail: helpers.withMessage(
-                            '',
-                            or(emptyWithProperty('email'), everyProperty(validateEmail, 'email'))
-                        )
-                    },
-                    phones: {
-                        requiredIfMany: helpers.withMessage(
-                            'Пустые поля недопустимы',
-                            everyProperty(
-                                requiredIf(
-                                    () =>
-                                        this.form.userProfile.phones.length > 1 ||
-                                        this.formdata.userProfile.phones.length
-                                ),
-                                'phone'
-                            )
-                        ),
-                        everyHasCorrectPhone: helpers.withMessage(
-                            '',
-                            or(emptyWithProperty('phone'), everyProperty(validatePhone, 'phone'))
-                        )
-                    }
-                },
-                username: {
-                    required: helpers.withMessage('Введите юзернейм', required)
-                },
-                password: {
-                    customRequired: helpers.withMessage('Введите пароль', this.customRequired)
-                },
-                email: {
-                    email: helpers.withMessage('Заполните email правильно', validateEmail)
-                }
-            }
-        };
-    },
-    methods: {
-        ...mapActions(['CREATE_USER', 'UPDATE_USER', 'REFRESH_USER']),
-        async onSubmit() {
-            this.v$.$validate();
-            if (!this.v$.form.$error) {
-                this.loader = true;
-                if (this.formdata) {
-                    this.updateUser();
-                } else {
-                    this.createUser();
-                }
-            }
-        },
-        async updateUser() {
-            if (await this.UPDATE_USER(this.form)) {
-                this.$emit('updated');
-                this.clickCloseModal();
-                this.REFRESH_USER();
-            }
-            this.loader = false;
-        },
-        async createUser() {
-            if (await this.CREATE_USER(this.form)) {
-                this.$emit('created');
+const emit = defineEmits(['close', 'updated', 'created']);
+const props = defineProps({
+    formData: {
+        type: Object,
+        default: null
+    }
+});
 
-                this.clickCloseModal();
-            }
-            this.loader = false;
-        },
-        clickCloseModal() {
-            this.$emit('closeUserForm');
-        },
-        customRequired(value) {
-            if (!this.formdata) {
-                if (value != null) {
-                    return true;
+const store = useStore();
+const { confirm } = useConfirm();
+
+const isLoading = shallowRef(false);
+
+const form = reactive({
+    username: null,
+    password: null,
+    email: null,
+    email_username: null,
+    email_password: null,
+    role: 2,
+    userProfile: {
+        first_name: null,
+        middle_name: null,
+        last_name: null,
+        phones: [],
+        emails: [],
+        caller_id: null,
+        avatar: null,
+        fileList: []
+    }
+});
+
+const formEmailsValidators = [{ func: validateEmail, message: 'Укажите корректный Email' }];
+const formPhonesValidators = [{ func: validatePhone, message: 'Укажите корректный телефон' }];
+
+const emailsValidator = everyProperty(
+    requiredIf(() => {
+        return (
+            form.userProfile.emails.length > 1 ||
+            (props.formData && props.formData.userProfile.emails.length)
+        );
+    }),
+    'email'
+);
+
+const phonesValidator = everyProperty(
+    requiredIf(() => {
+        return (
+            form.userProfile.phones.length > 1 ||
+            (props.formData && props.formData.userProfile.phones.length)
+        );
+    }),
+    'phone'
+);
+
+const v$ = useVuelidate(
+    {
+        form: {
+            ...validationRulesForUser,
+            userProfile: {
+                ...validationRulesForUserProfile,
+                emails: {
+                    required: helpers.withMessage('Пустые поля недопустимы', emailsValidator),
+                    everyHasCorrectEmail: helpers.withMessage(
+                        '',
+                        or(emptyWithProperty('email'), everyProperty(validateEmail, 'email'))
+                    )
+                },
+                phones: {
+                    requiredIfMany: helpers.withMessage('Пустые поля недопустимы', phonesValidator),
+                    everyHasCorrectPhone: helpers.withMessage(
+                        '',
+                        or(emptyWithProperty('phone'), everyProperty(validatePhone, 'phone'))
+                    )
                 }
-                return false;
             }
-            return true;
         }
     },
-    created() {
-        this.loader = true;
-        if (this.formdata) {
-            this.form = { ...this.form, ...cloneObject(this.formdata) };
-            this.form = Utils.normalizeDataForUserForm(this.form);
-        }
-        this.loader = false;
+    { form }
+);
+
+const updateUser = async () => {
+    const updated = await api.user.update(props.formData.id, form);
+
+    if (updated) {
+        emit('updated');
+        emit('close');
+        store.dispatch('REFRESH_USER');
     }
 };
-</script>
 
-<style></style>
+const createUser = async () => {
+    const created = await api.user.create(form);
+
+    if (created) {
+        emit('created');
+        emit('close');
+    }
+};
+
+const onSubmit = async () => {
+    v$.value.$validate();
+    if (v$.value.form.$error) return;
+
+    isLoading.value = true;
+    if (props.formData) await updateUser();
+    else await createUser();
+    isLoading.value = false;
+};
+
+const archiveUser = async () => {
+    const confirmed = await confirm(
+        'Вы уверены, что хотите отправить пользователя в архив? Это действие нельзя отменить'
+    );
+    if (!confirmed) return;
+
+    isLoading.value = true;
+    form.status = userOptions.statusStatement.INACTIVE;
+    await updateUser();
+    isLoading.value = false;
+};
+
+if (props.formData) {
+    Object.assign(form, cloneObject(props.formData));
+    Utils.normalizeDataForUserForm(form);
+}
+</script>

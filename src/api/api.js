@@ -23,6 +23,8 @@ import call from '@/api/call.js';
 import survey from '@/api/survey.js';
 import question from '@/api/question.js';
 import field from '@/api/field.js';
+import messengerTag from '@/api/messengerTag.js';
+import taskTag from '@/api/taskTag.js';
 
 export default {
     user,
@@ -49,5 +51,7 @@ export default {
     call,
     survey,
     question,
-    field
+    field,
+    messengerTag,
+    taskTag
 };

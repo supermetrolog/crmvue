@@ -18,7 +18,7 @@
             <div class="col-4">
                 <div class="d-flex flex-wrap gap-1">
                     <DashboardChip
-                        v-for="element in objectTypes.production"
+                        v-for="element in objectTypes.warehouse"
                         :key="element.id"
                         v-tippy="element.value.name"
                         class="dashboard-card-view__purpose"
@@ -35,7 +35,7 @@
             <div class="col-4">
                 <div class="d-flex flex-wrap gap-1">
                     <DashboardChip
-                        v-for="element in objectTypes.warehouse"
+                        v-for="element in objectTypes.production"
                         :key="element.id"
                         v-tippy="element.value.name"
                         class="dashboard-card-view__purpose"
@@ -86,9 +86,9 @@ const props = defineProps({
 const objectTypesGeneral = computed(() => {
     const types = cloneObject(entityOptions.object.typeGeneralList);
 
-    props.request.objectTypesGeneral.forEach(
-        element => (types[element.type === 0 ? 1 : element.type - 1].included = true)
-    );
+    for (const element of props.request.objectTypesGeneral) {
+        if (element.type < 3 && element.type >= 0) types[element.type].included = true;
+    }
 
     return types;
 });

@@ -3,9 +3,9 @@
         <Spinner v-if="isLoading" />
         <div v-else-if="quiz">
             <MessengerQuizPreviewInfo :quiz="quiz" />
-            <div class="messenger-quiz-preview__list">
+            <div v-if="quiz.questions.length" class="messenger-quiz-preview__list">
                 <MessengerQuizPreviewQuestion
-                    v-for="question in quiz.questions"
+                    v-for="question in questions"
                     :key="question.id"
                     :question="question"
                     class="messenger-quiz-preview__element"
@@ -16,10 +16,11 @@
 </template>
 <script setup>
 import MessengerQuizPreviewQuestion from '@/components/Messenger/Quiz/MessengerQuizPreviewQuestion.vue';
-import { ref, shallowRef } from 'vue';
+import { computed, ref, shallowRef } from 'vue';
 import Spinner from '@/components/common/Spinner.vue';
 import api from '@/api/api.js';
 import MessengerQuizPreviewInfo from '@/components/Messenger/Quiz/MessengerQuizPreviewInfo.vue';
+import dayjs from 'dayjs';
 
 const props = defineProps({
     quizId: {
@@ -37,5 +38,14 @@ const getQuiz = async () => {
     isLoading.value = false;
 };
 
+const questions = computed(() =>
+    quiz.value.questions.filter(element => {
+        return (
+            dayjs(element.created_at).isBefore(quiz.value.created_at) &&
+            (element.deleted_at === null ||
+                dayjs(element.deleted_at).isAfter(quiz.value.created_at))
+        );
+    })
+);
 getQuiz();
 </script>

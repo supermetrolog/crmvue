@@ -14,7 +14,7 @@
             <input
                 v-model="modelValue"
                 @change="onChange"
-                @click="onClick"
+                @click.stop="onClick"
                 :disabled="disabled"
                 :value="value"
                 :true-value="1"
@@ -22,7 +22,12 @@
                 type="checkbox"
             />
             {{ text }}
-            <i v-if="icon" :class="icon"></i>
+            <i
+                v-if="icon"
+                v-tippy="iconLabel"
+                @click.stop.prevent="$emit('icon-clicked')"
+                :class="icon"
+            ></i>
         </label>
         <slot />
     </div>
@@ -30,10 +35,10 @@
 
 <script setup>
 import { useFormControlValidation } from '@/composables/useFormControlValidation.js';
-import { computed, ref, toRef } from 'vue';
+import { computed, toRef } from 'vue';
 
 const modelValue = defineModel({ type: [Array, Number, String, Boolean] });
-const emit = defineEmits(['change']);
+const emit = defineEmits(['change', 'icon-clicked']);
 const props = defineProps({
     text: {
         type: [String, Number, null],
@@ -82,6 +87,10 @@ const props = defineProps({
     reactive: {
         type: Boolean,
         default: false
+    },
+    iconLabel: {
+        type: String,
+        default: null
     }
 });
 

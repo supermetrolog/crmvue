@@ -11,9 +11,8 @@
         <!--        <Messenger v-if="THIS_USER" ref="messenger" class="v-mobile-layout__messenger" />-->
         <teleport to="body">
             <Previewer ref="previewer" />
-            <Confirm />
-            <PhoneNumberPopup />
         </teleport>
+        <PopupsWrapper />
     </div>
 </template>
 
@@ -28,10 +27,12 @@ import Confirm from '@/components/common/Confirm.vue';
 import PhoneNumberPopup from '@/components/common/PhoneNumberPopup.vue';
 import TheMobileHeader from '@/components/Header/TheMobileHeader.vue';
 import TheMobileSidebar from '@/components/SideBar/TheMobileSidebar.vue';
+import PopupsWrapper from '@/components/common/PopupsWrapper.vue';
 
 export default {
     name: 'Mobile',
     components: {
+        PopupsWrapper,
         TheMobileSidebar,
         TheMobileHeader,
         PhoneNumberPopup,

@@ -51,13 +51,13 @@
                             <div class="company-grid-card__footer">
                                 <div class="company-grid-card__counts">
                                     <DashboardChip class="dashboard-bg-light">
-                                        Запросы: {{ company.request_count }}
+                                        Запросы: {{ company.requests_count }}
                                     </DashboardChip>
                                     <DashboardChip class="dashboard-bg-light">
-                                        Предложения: {{ company.offer_count }}
+                                        Предложения: {{ company.offers_count }}
                                     </DashboardChip>
                                     <DashboardChip class="dashboard-bg-light">
-                                        Сделки: {{ company.object_count }}
+                                        Сделки: {{ company.objects_count }}
                                     </DashboardChip>
                                 </div>
                                 <div class="company-grid-card__consultant mt-2">
