@@ -146,8 +146,6 @@ const {
 onPopupShowed(() => {
     if (!consultants.value.length) fetchConsultants();
 
-    console.log(props.value.observers);
-
     if (props.value)
         form.value = {
             message: props.value.message,
