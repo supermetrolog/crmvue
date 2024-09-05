@@ -230,12 +230,12 @@ import DashboardTableTasksItemPreviewComments from '@/components/Dashboard/Table
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import DashboardTableTasksItemPreviewComment from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemPreviewComment.vue';
 import { useStore } from 'vuex';
-import TaskTagOption from '@/components/common/Forms/TaskTagOption.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import Spinner from '@/components/common/Spinner.vue';
 import MessengerChatShortMessage from '@/components/Messenger/Chat/Message/MessengerChatShortMessage.vue';
 import EmptyLabel from '@/components/common/EmptyLabel.vue';
 import Textarea from '@/components/common/Forms/Textarea.vue';
+import { debounce } from '@/utils/debounce.js';
 
 const emit = defineEmits(['updated', 'to-chat', 'read']);
 const props = defineProps({
@@ -298,12 +298,14 @@ const dayToExpiredFromNow = computed(() =>
     plural(Math.abs(expiredDayjs.value.diff(dayjs(), 'days')), '%d день', '%d дня', '%d дней')
 );
 const status = computed(() => taskOptions.status[props.task.status]);
-const statusColor = computed(() => taskOptions.statusColor[props.task.status]);
+const statusIcon = computed(() => taskOptions.statusIcon[props.task.status]);
 const canBeDeleted = computed(() => store.getters.isAdmin || store.getters.isDirector);
 const canBeViewed = computed(() => {
-    if (props.task.observers?.length) {
+    if (props.task?.observers?.length) {
         return props.task.observers.some(
-            element => element.user.id === store.getters.THIS_USER.id && element.viewed_at === null
+            observer =>
+                Number(observer.user_id) === Number(store.getters.THIS_USER.id) &&
+                observer.viewed_at === null
         );
     }
 
@@ -356,8 +358,9 @@ const currentDialogComponent = computed(() => {
 
 watch(
     () => [props.visible, props.task?.id],
-    () => {
+    ([isVisibleNewValue]) => {
         commentsIsOpen.value = false;
+        if (isVisibleNewValue && canBeViewed.value) debouncedReadTask();
     }
 );
 
@@ -413,4 +416,6 @@ const toChat = () => {
         objectID
     });
 };
+
+const debouncedReadTask = debounce(readTask, 500);
 </script>
