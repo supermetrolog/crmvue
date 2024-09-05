@@ -161,7 +161,7 @@ const createQuery = page => {
     if (filterStatus.value.length) {
         query.status = filterStatus.value;
     }
-    if (filterType.value.length) setModeInQuery(query);
+    if (filterType.value.length && targetUser.value.id) setModeInQuery(query);
     else if (targetUser.value) {
         query.created_by_id = targetUser.value.id;
         query.observer_id = targetUser.value.id;
@@ -176,7 +176,7 @@ const createQuery = page => {
 const createCountsQuery = () => {
     const query = {};
 
-    if (filterType.value.length) {
+    if (filterType.value.length && targetUser.value) {
         filterType.value.forEach(element => {
             query[element] = targetUser.value.id;
         });

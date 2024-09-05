@@ -22,13 +22,6 @@
                     <HoverActionsButton @click="toChat" label="Перейти в чат">
                         <i class="fa-solid fa-comment-alt" />
                     </HoverActionsButton>
-                    <!--                    <HoverActionsButton-->
-                    <!--                        v-if="!canBeViewed"-->
-                    <!--                        @click.stop="moveSettingsIsVisible = !moveSettingsIsVisible"-->
-                    <!--                        label="Стать наблюдателем"-->
-                    <!--                    >-->
-                    <!--                        <i class="fa-solid fa-eye"></i>-->
-                    <!--                    </HoverActionsButton>-->
                     <HoverActionsButton v-if="editable" @click="editTask" label="Редактировать">
                         <i class="fa-solid fa-pen" />
                     </HoverActionsButton>
@@ -47,14 +40,14 @@
                             Задача #{{ task.id }}
                         </DashboardChip>
                         <DashboardChip
-                            class="dashboard-task-item-preview__chip"
-                            :class="statusColor"
+                            class="dashboard-task-item-preview__chip dashboard-task-item-preview__status"
                         >
-                            {{ status }}
+                            <i :class="statusIcon" />
+                            <span>{{ status }}</span>
                         </DashboardChip>
                         <DashboardChip
                             v-if="isAlreadyExpired"
-                            class="dashboard-task-item-preview__chip dashboard-cl-danger"
+                            class="dashboard-bg-danger text-white"
                         >
                             Просрочено
                         </DashboardChip>
@@ -65,9 +58,10 @@
                             <DashboardChip
                                 v-for="tag in task.tags"
                                 :key="tag.id"
-                                class="dashboard-task-item-preview__chip"
+                                class="dashboard-task-item-preview__tag"
+                                :style="{ backgroundColor: '#' + tag.color }"
                             >
-                                <TaskTagOption :tag="tag" />
+                                <span>{{ tag.name ?? tag.label }}</span>
                             </DashboardChip>
                         </div>
                     </template>

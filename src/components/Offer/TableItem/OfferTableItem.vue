@@ -90,7 +90,9 @@
         </Td>
         <Td class="offer-table-item__advertisement">
             <div class="offer-table-item__advertisements">
-                <DashboardChip class="dashboard-bg-light">Realtor.ru</DashboardChip>
+                <DashboardChip v-if="offer.ad_realtor" class="dashboard-bg-light">
+                    Realtor.ru
+                </DashboardChip>
                 <DashboardChip v-if="offer.ad_cian" class="dashboard-bg-light">Циан</DashboardChip>
                 <DashboardChip v-if="offer.ad_yandex" class="dashboard-bg-light">
                     Яндекс
