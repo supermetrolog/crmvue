@@ -110,7 +110,10 @@ const isMyTask = computed(() => {
 const isForMe = computed(() => {
     return Number(props.task.user_id) === Number(store.getters.THIS_USER.id);
 });
-const isViewing = computed(() => !isMyTask.value && !isForMe.value);
+const isObserving = computed(() =>
+    props.task.observers.some(observer => observer.user_id === store.getters.THIS_USER.id)
+);
+const isViewing = computed(() => !isMyTask.value && !isForMe.value && isObserving.value);
 const isCompleted = computed(() => props.task.status === taskOptions.statusTypes.COMPLETED);
 const expiredDayjs = computed(() => dayjs(props.task.end));
 const isCanceled = computed(() => props.task.status === taskOptions.statusTypes.CANCELED);
