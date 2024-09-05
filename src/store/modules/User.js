@@ -1,5 +1,12 @@
 import api from '@/api/api';
 import { useAuth } from '@/composables/useAuth.js';
+import {
+    getUserInLocalStorage,
+    LOCALSTORAGE_PREFIX,
+    LS_ACCESS_TOKEN_KEY,
+    removeUserInLocalStorage,
+    setUserInLocalStorage
+} from '@/utils/localStorage.js';
 import { userOptions } from '@/const/options/user.options.js';
 
 const User = {
@@ -44,62 +51,52 @@ const User = {
             return [];
         },
         async FETCH_USERS({ commit }) {
-            let data = await api.user.getUsers();
+            let data = await api.user.list();
             if (data) commit('updateUsers', data);
         },
         async REFRESH_USER({ getters, commit }) {
-            const access_token = localStorage.getItem('access_token');
+            const access_token = localStorage.getItem(LOCALSTORAGE_PREFIX + LS_ACCESS_TOKEN_KEY);
             if (!getters.THIS_USER || !access_token) return;
 
             let [newUserData, chatMemberUser] = await Promise.all([
-                api.user.getUser(getters.THIS_USER.id),
+                api.user.get(getters.THIS_USER.id),
                 api.messenger.getUserChatMember(getters.THIS_USER.id)
             ]);
 
             if (!newUserData) return;
 
             newUserData.chat_member_id = chatMemberUser;
-            localStorage.setItem('user', JSON.stringify(newUserData));
+            setUserInLocalStorage(newUserData, access_token);
             newUserData.access_token = access_token;
             commit('setUser', newUserData);
         },
         SET_USER({ getters, commit }) {
-            if (!getters.THIS_USER) {
-                let user = JSON.parse(localStorage.getItem('user'));
-                user.access_token = localStorage.getItem('access_token');
+            if (getters.THIS_USER) return getters.THIS_USER;
+            const user = getUserInLocalStorage();
+            if (user) {
+                user.access_token = localStorage.getItem(LOCALSTORAGE_PREFIX + LS_ACCESS_TOKEN_KEY);
                 commit('setUser', user);
             }
-            return getters.THIS_USER;
         },
         DROP_USER({ commit }) {
-            localStorage.removeItem('access_token');
-            localStorage.removeItem('user');
+            removeUserInLocalStorage();
             commit('setUser', null);
         },
         async login({ dispatch }, formData) {
             const response = await api.user.auth.login(formData);
-            if (response !== false) {
+            if (response) {
                 const { login } = useAuth();
-
                 dispatch('SET_USER');
                 login();
                 return true;
             }
-            return response;
+
+            return false;
         },
         async LOGOUT({ dispatch }) {
             const response = await api.user.auth.logout();
             if (response !== false) dispatch('DESTROY');
             return response;
-        },
-        async CREATE_USER(_, formdata) {
-            return await api.user.createUser(formdata);
-        },
-        async UPDATE_USER(_, formdata) {
-            return await api.user.updateUser(formdata);
-        },
-        async DELETE_USER(_, id) {
-            return await api.user.deleteUser(id);
         },
         async getConsultants({ state, commit }) {
             if (state.consultants.length) return state.consultants;

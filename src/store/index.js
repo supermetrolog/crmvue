@@ -21,6 +21,7 @@ import Messenger from '@/store/modules/Messenger';
 import Task from '@/store/modules/Task.js';
 import { useAuth } from '@/composables/useAuth.js';
 import Quizz from '@/store/modules/Quiz.js';
+import { getUserInLocalStorage } from '@/utils/localStorage.js';
 
 const store = createStore({
     state: {},
@@ -37,7 +38,7 @@ const store = createStore({
             const { isAuth, login } = useAuth();
 
             if (!isAuth.value) {
-                if (localStorage.getItem('user')) login();
+                if (getUserInLocalStorage()) login();
                 else return false;
             }
 

@@ -11,7 +11,7 @@
             <p class="messenger-dialog-request__header">
                 <span class="messenger-dialog-request__id">ID{{ model.id }}</span>
                 <span v-if="model.company" class="messenger-dialog-request__company">
-                    от: {{ $formatter.companyName(model.company, model.company.id) }}
+                    от: {{ companyName }}
                 </span>
             </p>
             <p v-if="hasActivity" class="messenger-dialog-request__category">
@@ -23,7 +23,7 @@
                 <span v-if="dealType" class="messenger-dialog-request__type">{{ dealType }}</span>
                 <span v-if="model.minArea || model.maxArea">
                     <with-unit-type :unit-type="unitTypes.SQUARE_METERS">
-                        {{ $formatter.numberOrRangeNew(model.minArea, model.maxArea) }}
+                        {{ areaRange }}
                     </with-unit-type>
                 </span>
             </p>
@@ -72,94 +72,79 @@
                 :last-call="lastCall"
                 :updated-at="model.updated_at"
             />
-            <MessengerDialogFunctions :counts="statistic" />
+            <MessengerDialogFunctions v-if="statistic" :counts="statistic" />
         </div>
     </div>
 </template>
-<script>
+<script setup>
 import MessengerDialogFunctions from '@/components/Messenger/Dialog/MessengerDialogFunctions.vue';
 import MessengerDialogPhone from '@/components/Messenger/Dialog/MessengerDialogPhone.vue';
-import { entityOptions } from '@/const/options/options';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes';
 import Tooltip from '@/components/common/Tooltip.vue';
+import { computed } from 'vue';
+import { requestOptions } from '@/const/options/request.options.js';
+import { companyOptions } from '@/const/options/company.options.js';
+import { dealOptions } from '@/const/options/deal.options.js';
+import { locationOptions } from '@/const/options/location.options.js';
+import { getCompanyName, toNumberOrRangeFormat } from '@/utils/formatter.js';
 
-export default {
-    name: 'MessengerDialogRequest',
-    components: {
-        Tooltip,
-        WithUnitType,
-        MessengerDialogPhone,
-        MessengerDialogFunctions
+defineEmits(['update-call']);
+const props = defineProps({
+    model: {
+        type: Object,
+        required: true
     },
-    emits: ['update-call'],
-    props: {
-        model: {
-            type: Object,
-            required: true
-        },
-        current: {
-            type: Boolean,
-            default: false
-        },
-        lastCall: {
-            type: Object,
-            default: null
-        },
-        statistic: {
-            type: Object,
-            required: true
-        }
+    current: {
+        type: Boolean,
+        default: false
     },
-    computed: {
-        unitTypes() {
-            return unitTypes;
-        },
-        isActive() {
-            return this.model.status === entityOptions.request.statusStatement.ACTIVE;
-        },
-        hasActivity() {
-            return (
-                this.model?.company &&
-                (this.model?.company.activityGroup !== null ||
-                    this.model?.company.activityProfile !== null)
-            );
-        },
-        categoryName() {
-            const activityInfo = [
-                entityOptions.company.activityGroup[this.model.company.activityGroup],
-                entityOptions.company.activityProfile[this.model.company.activityProfile]
-            ].filter(Boolean);
-
-            return activityInfo.length ? activityInfo.join(': ') : null;
-        },
-        dealType() {
-            return entityOptions.deal.type[this.model.dealType + 1];
-        },
-        directions() {
-            if (!this.model.directions) return [];
-
-            return this.model.directions.map(
-                element => entityOptions.location.directionWithShort[element.direction].full
-            );
-        },
-        districts() {
-            if (!this.model.districts) return [];
-
-            return this.model.districts.map(
-                element => entityOptions.location.district[element.district]
-            );
-        },
-        regionsText() {
-            if (!this.model.regions) return '';
-
-            return this.model.regions
-                .map(element => entityOptions.location.region[element.region])
-                .join(', ');
-        },
-        locationText() {
-            return [this.regionsText, ...this.directions, ...this.districts].join(', ');
-        }
+    lastCall: {
+        type: Object,
+        default: null
+    },
+    statistic: {
+        type: Object,
+        default: null
     }
-};
+});
+
+const isActive = computed(() => props.model.status === requestOptions.statusStatement.ACTIVE);
+const hasActivity = computed(() => {
+    return (
+        props.model?.company &&
+        (props.model.company.activityGroup !== null || props.model.company.activityProfile !== null)
+    );
+});
+const categoryName = computed(() => {
+    const activityInfo = [
+        companyOptions.activityGroup[props.model.company.activityGroup],
+        companyOptions.activityProfile[props.model.company.activityProfile]
+    ].filter(Boolean);
+
+    return activityInfo.length ? activityInfo.join(': ') : null;
+});
+const dealType = computed(() => dealOptions.type[props.model.dealType + 1]);
+const directions = computed(() => {
+    if (!props.model.directions) return [];
+
+    return props.model.directions.map(
+        element => locationOptions.directionWithShort[element.direction].full
+    );
+});
+const districts = computed(() => {
+    if (!props.model.districts) return [];
+
+    return props.model.districts.map(element => locationOptions.district[element.district]);
+});
+const regionsText = computed(() => {
+    if (!props.model.regions) return '';
+
+    return props.model.regions.map(element => locationOptions.region[element.region]).join(', ');
+});
+const locationText = computed(() => {
+    return [regionsText.value, ...directions.value, ...districts.value].join(', ');
+});
+const companyName = computed(() => getCompanyName(props.model.company, props.model.company.id));
+const areaRange = computed(() => toNumberOrRangeFormat(props.model.minArea, props.model.maxArea));
 </script>

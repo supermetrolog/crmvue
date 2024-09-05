@@ -81,7 +81,7 @@ export function toCorrectFormat(value) {
 /**
  * Преобразование в формат вывода даты
  *
- * @param {Date, string} date - дата
+ * @param {Date, string, number} date - дата
  * @param {string} format - формат вывода даты
  * @returns {string}
  */

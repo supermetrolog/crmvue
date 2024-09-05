@@ -9,16 +9,6 @@
             <i class="fa-solid fa-bolt"></i>
         </div>
         <div
-            v-if="counts.reminders > 0"
-            v-tippy="remindersButtonTitle"
-            class="messenger-dialog-functions__item bg-red rounded-icon"
-        >
-            <span class="messenger-dialog-functions__chip rounded-icon">
-                {{ counts.reminders }}
-            </span>
-            <i class="fa-solid fa-bell"></i>
-        </div>
-        <div
             v-if="counts.notifications > 0"
             v-tippy="alertsButtonTitle"
             class="messenger-dialog-functions__item bg-orange rounded-icon"
@@ -31,10 +21,9 @@
         <div
             v-if="counts.messages > 0"
             v-tippy="messagesButtonTitle"
-            class="messenger-dialog-functions__item rounded-icon"
+            class="messenger-dialog-functions__item messenger-dialog-functions__messages rounded-icon"
         >
-            <span class="messenger-dialog-functions__chip rounded-icon">{{ counts.messages }}</span>
-            <i class="fa-solid fa-envelope"></i>
+            {{ counts.messages }}
         </div>
     </div>
 </template>
@@ -64,10 +53,5 @@ const alertsButtonTitle = computed(() => {
     if (props.counts.notifications)
         return plural(props.counts.notifications, ...messenger.buttons.alerts.plural);
     return messenger.buttons.alerts.empty;
-});
-const remindersButtonTitle = computed(() => {
-    if (props.counts.reminders)
-        return plural(props.counts.reminders, ...messenger.buttons.reminders.plural);
-    return messenger.buttons.reminders.empty;
 });
 </script>

@@ -18,7 +18,7 @@
                 <div class="col-12 col-md-4 align-self-end">
                     <div class="offer-search__actions">
                         <Button
-                            @click="clickFavorites"
+                            @click="toggleFavorites"
                             warning
                             :active="form.favorites"
                             :badge="favoritesCount || false"
@@ -46,22 +46,11 @@
                     v-model="form.deal_type"
                     label="Тип сделки"
                     class="col-md-2 col-12 mb-2"
-                    :options="dealTypeList"
+                    :options="DealTypeList"
+                    placeholder="Выберите тип.."
                 />
                 <Input
-                    v-if="typeof form.approximateDistanceFromMKAD == 'undefined'"
-                    v-model="form.rangeMaxDistanceFromMKAD"
-                    maska="###"
-                    placeholder="не более"
-                    label="Удаленность от МКАД"
-                    class="col-md-3 col-12"
-                    unit="км"
-                    type="number"
-                    :v="v$.form.rangeMaxDistanceFromMKAD"
-                    reactive
-                />
-                <Input
-                    v-else
+                    v-if="hasApproximateDistance"
                     v-model="form.approximateDistanceFromMKAD"
                     maska="###"
                     placeholder="не более"
@@ -69,6 +58,17 @@
                     class="col-md-3 col-12"
                     unit="км"
                     type="number"
+                />
+                <Input
+                    v-else
+                    v-model="form.rangeMaxDistanceFromMKAD"
+                    :v="v$.form.rangeMaxDistanceFromMKAD"
+                    placeholder="не более"
+                    label="Удаленность от МКАД"
+                    class="col-md-3 col-12"
+                    unit="км"
+                    type="number"
+                    reactive
                 />
                 <Input
                     v-model="form.rangeMinElectricity"
@@ -131,7 +131,7 @@
                         <span class="form__subtitle">Округа Москвы</span>
                         <div class="form__row mt-1">
                             <CheckboxChip
-                                v-for="(districtItem, index) in districtList"
+                                v-for="(districtItem, index) in DistrictList"
                                 :key="index"
                                 v-model="form.district_moscow"
                                 :value="index"
@@ -145,7 +145,7 @@
                         <span class="form__subtitle">Направления МО</span>
                         <div class="form__row mt-1">
                             <CheckboxChip
-                                v-for="(directionItem, index) in directionList"
+                                v-for="(directionItem, index) in DirectionList"
                                 :key="index"
                                 v-model="form.direction"
                                 :value="index"
@@ -158,90 +158,88 @@
                     v-model="form.class"
                     class="col-md-2 col-12"
                     label="Классы"
-                    :options="objectClassList"
+                    :options="ObjectClassList"
                 />
                 <CheckboxOptions
                     v-model="form.gates"
                     class="col-md-5 col-12"
                     label="Тип ворот"
-                    :options="gateTypeList"
+                    :options="GateTypeList"
                 />
                 <CheckboxOptions
                     v-model="form.floor_types"
                     class="col-md-5 col-12"
                     label="Тип пола"
-                    :options="floorTypesFUCKOptions"
+                    :options="realFloorTypeOptions"
                 />
             </div>
-            <div class="row mt-2">
-                <div class="col-md-7 col-12">
-                    <span class="form__subtitle">Прочее</span>
-                    <div class="form__row mt-1">
-                        <CheckboxChip
-                            v-model="form.water"
-                            :value="form.water"
-                            text="Вода"
-                            multiple
-                            :disabled-value="2"
-                        />
-                        <CheckboxChip v-model="form.gas" :value="form.gas" text="Газ" multiple />
-                        <CheckboxChip
-                            v-model="form.steam"
-                            :value="form.steam"
-                            text="Пар"
-                            multiple
-                            :disabled-value="2"
-                        />
-                        <CheckboxChip
-                            v-model="form.sewage_central"
-                            :value="form.sewage_central"
-                            text="Канализация"
-                            multiple
-                            :disabled-value="2"
-                        />
-                        <CheckboxChip
-                            v-model="form.racks"
-                            :value="form.racks"
-                            text="Стелажи"
-                            multiple
-                            :disabled-value="2"
-                        />
-                        <CheckboxChip
-                            v-model="form.railway"
-                            :value="form.railway"
-                            text="Ж/Д ветка"
-                            multiple
-                            :disabled-value="2"
-                        />
-                        <CheckboxChip
-                            v-model="form.has_cranes"
-                            :value="form.has_cranes"
-                            text="Краны"
-                            multiple
-                            :disabled-value="2"
-                        />
-                        <CheckboxChip
-                            v-model="form.firstFloorOnly"
-                            :value="form.firstFloorOnly"
-                            text="Только 1 этаж"
-                            multiple
-                            :disabled-value="2"
-                        />
-                    </div>
-                </div>
-                <RadioOptions
-                    v-model="form.status"
-                    class="col-md-2 col-12"
-                    label="Статус"
-                    :options="ActivePassiveFUCK"
-                    unselect
-                />
-                <RadioOptions
+            <p class="form__block">Коммуникации</p>
+            <div class="row">
+                <SwitchSlider
                     v-model="form.heated"
-                    class="col-md-2 col-12"
+                    class="col-12 col-lg-6 col-xxl-4"
                     label="Отопление"
-                    :options="entityOptions.defaults.booleanSimple"
-                    unselect
+                    :false-value="2"
+                />
+                <SwitchSlider
+                    v-model="form.water"
+                    class="col-12 col-lg-6 col-xxl-4"
+                    label="Вода"
+                    :false-value="2"
+                />
+                <SwitchSlider
+                    v-model="form.gas"
+                    class="col-12 col-lg-6 col-xxl-4"
+                    label="Газ"
+                    :false-value="2"
+                />
+                <SwitchSlider
+                    v-model="form.steam"
+                    class="col-12 col-lg-6 col-xxl-4"
+                    label="Пар"
+                    :false-value="2"
+                />
+                <SwitchSlider
+                    v-model="form.sewage_central"
+                    class="col-12 col-lg-6 col-xxl-4"
+                    label="Канализация"
+                    :false-value="2"
+                />
+                <SwitchSlider
+                    v-model="form.racks"
+                    class="col-12 col-lg-6 col-xxl-4"
+                    label="Стелажи"
+                    :false-value="2"
+                />
+                <SwitchSlider
+                    v-model="form.railway"
+                    class="col-12 col-lg-6 col-xxl-4"
+                    label="Ж/Д ветка"
+                    :false-value="2"
+                />
+                <SwitchSlider
+                    v-model="form.has_cranes"
+                    class="col-12 col-lg-6 col-xxl-4"
+                    label="Краны"
+                    :false-value="2"
+                />
+                <SwitchSlider
+                    v-model="form.firstFloorOnly"
+                    class="col-12 col-lg-6 col-xxl-4"
+                    label="Только 1 этаж"
+                    :false-value="2"
+                />
+            </div>
+            <p class="form__block">Статус</p>
+            <div class="row mt-2">
+                <SwitchSlider
+                    v-model="form.status"
+                    class="col-12 col-lg-6 col-xxl-4"
+                    label="Статус"
+                    unknown-title="Любой"
+                    true-title="Актив"
+                    false-title="Пассив"
+                    :false-value="2"
                 />
             </div>
             <div class="row mt-2">
@@ -274,122 +272,298 @@
                         />
                     </div>
                 </div>
-                <div class="col-12 mt-2">
-                    <span class="form__subtitle">Реклама</span>
-                    <div class="form__row justify-content-around">
-                        <RadioGroup
-                            v-model="form.ad_avito"
-                            unselect
-                            class="form__column"
-                            label="Авито"
-                        />
-                        <RadioGroup
-                            v-model="form.ad_realtor"
-                            unselect
-                            class="form__column"
-                            label="Realtor.ru"
-                        />
-                        <RadioGroup
-                            v-model="form.ad_cian"
-                            unselect
-                            class="form__column"
-                            label="Циан"
-                        />
-                        <RadioGroup
-                            v-model="form.ad_yandex"
-                            unselect
-                            class="form__column"
-                            label="Яндекс"
-                        />
-                        <RadioGroup
-                            v-model="form.ad_free"
-                            unselect
-                            class="form__column"
-                            label="Бесплатные"
-                        />
-                    </div>
-                </div>
+            </div>
+            <p class="form__block">Реклама</p>
+            <div class="row">
+                <SwitchSlider
+                    v-model="form.ad_avito"
+                    class="col-12 col-lg-6 col-xl-4"
+                    label="Авито"
+                />
+                <SwitchSlider
+                    v-model="form.ad_realtor"
+                    class="col-12 col-lg-6 col-xl-4"
+                    label="Realtor.ru"
+                />
+                <SwitchSlider
+                    v-model="form.ad_cian"
+                    class="col-12 col-lg-6 col-xl-4"
+                    label="Циан"
+                />
+                <SwitchSlider
+                    v-model="form.ad_yandex"
+                    class="col-12 col-lg-6 col-xl-4"
+                    label="Яндекс"
+                />
+                <SwitchSlider
+                    v-model="form.ad_free"
+                    class="col-12 col-lg-6 col-xl-4"
+                    label="Бесплатные"
+                />
             </div>
         </Form>
     </Modal>
 </template>
 
-<script>
-import { FormMixin } from '@/components/Forms/mixins.js';
+<script setup>
+import Form from '@/components/common/Forms/Form.vue';
+import Input from '@/components/common/Forms/Input.vue';
+import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import Modal from '@/components/common/Modal.vue';
 import Button from '@/components/common/Button.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
-import { onlyPositiveNumber } from '@//validators';
-import useValidate from '@vuelidate/core';
+import useVuelidate from '@vuelidate/core';
 import {
     areaRangeValidators,
     ceilingHeightValidators,
     pricePerFloorValidators
 } from '@//validators/fields';
-import RadioGroup from '@/components/common/Forms/RadioGroup.vue';
 import ObjectTypePicker from '@/components/common/Forms/ObjectTypePicker.vue';
 import { objectPurposesWithSectionsOptions } from '@/const/options/object.options.js';
 import CheckboxOptions from '@/components/common/Forms/CheckboxOptions.vue';
-import { entityOptions } from '@/const/options/options.js';
-import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
-import { ActivePassive, ActivePassiveFUCK } from '@/const/const.js';
+import {
+    DealTypeList,
+    DirectionList,
+    DistrictList,
+    GateTypeList,
+    ObjectClassList
+} from '@/const/const.js';
+import { computed, onBeforeUnmount, onMounted, reactive, watch } from 'vue';
+import { deleteEmptyFields } from '@/utils/deleteEmptyFields.js';
+import { useRoute, useRouter } from 'vue-router';
+import { singleToArrayByKeys } from '@/utils/alg.js';
+import { useStore } from 'vuex';
+import { helpers, minValue } from '@vuelidate/validators';
+import { realFloorTypeOptions } from '@/const/options/floor.options.js';
+import SwitchSlider from '@/components/common/Forms/SwitchSlider.vue';
 
-export default {
-    name: 'FormModalOfferSearch',
-    components: {
-        RadioOptions,
-        CheckboxOptions,
-        ObjectTypePicker,
-        RadioGroup,
-        DoubleInput,
-        CheckboxChip,
-        AnimationTransition,
-        Button,
-        Modal
-    },
-    mixins: [FormMixin],
-    emits: ['close'],
-    data(v$ = useValidate()) {
-        return {
-            v$: v$
-        };
-    },
-    computed: {
-        ActivePassiveFUCK() {
-            return ActivePassiveFUCK;
-        },
-        ActivePassive() {
-            return ActivePassive;
-        },
-        entityOptions() {
-            return entityOptions;
-        },
-        objectPurposesWithSectionsOptions() {
-            return objectPurposesWithSectionsOptions;
-        },
-        formCeilingHeightValidators() {
-            return ceilingHeightValidators(this.form.rangeMaxCeilingHeight);
-        },
-        formPricePerFloorValidators() {
-            return pricePerFloorValidators(this.form.rangeMaxPricePerFloor);
-        },
-        formAreaValidators() {
-            return areaRangeValidators(this.form.rangeMaxArea);
+const emit = defineEmits(['close', 'search', 'reset']);
+
+const REGIONS = {
+    MSK_AND_MO: 'mskandmo',
+    MSK_INSIDE_MKAD: 'mskinsidemkad',
+    MO_AND_MSK_OUTSIDE_MKAD: 'moandmskoutsidemkad',
+    MO_AND_REGIONS: 'moandregionneardy'
+};
+
+const formKeysOnlyArray = [
+    'purposes',
+    'class',
+    'gates',
+    'region',
+    'direction',
+    'district_moscow',
+    'object_type',
+    'floor_types'
+];
+
+const defaultForm = {
+    all: null,
+    rangeMinElectricity: null,
+    rangeMaxDistanceFromMKAD: null,
+    deal_type: null,
+    agent_id: null,
+    rangeMaxArea: null,
+    rangeMinArea: null,
+    rangeMaxPricePerFloor: null,
+    rangeMinPricePerFloor: null,
+    rangeMinCeilingHeight: null,
+    rangeMaxCeilingHeight: null,
+    class: [],
+    gates: [],
+    heated: null,
+    water: null,
+    gas: null,
+    steam: null,
+    sewage_central: null,
+    is_fake: null,
+    racks: null,
+    railway: null,
+    has_cranes: null,
+    floor_types: [],
+    purposes: [],
+    object_type: [],
+    region: [],
+    fakeRegion: null,
+    direction: [],
+    district_moscow: [],
+    status: null,
+    firstFloorOnly: null,
+    ad_realtor: null,
+    ad_cian: null,
+    ad_yandex: null,
+    ad_free: null,
+    ad_avito: null,
+    favorites: null,
+    outside_mkad: null,
+    region_neardy: null
+};
+
+const route = useRoute();
+const router = useRouter();
+const store = useStore();
+
+let timeout = null;
+const form = reactive({});
+
+const formCeilingHeightValidators = computed(() =>
+    ceilingHeightValidators(form.rangeMaxCeilingHeight)
+);
+const formPricePerFloorValidators = computed(() =>
+    pricePerFloorValidators(form.rangeMaxPricePerFloor)
+);
+const formAreaValidators = computed(() => areaRangeValidators(form.rangeMaxArea));
+
+const hasApproximateDistance = computed(() => {
+    return Object.hasOwnProperty.call(form, 'approximateDistanceFromMKAD');
+});
+const REGION_LIST = computed(() => store.getters.REGION_LIST);
+const favoritesCount = computed(() => store.getters.FAVORITES_OFFERS.length);
+const filterCount = computed(() => {
+    let count = 0;
+
+    Object.keys(defaultForm).forEach(key => {
+        const value = form[key];
+        if (
+            value !== null &&
+            value !== '' &&
+            key !== 'fakeRegion' &&
+            key !== 'region_neardy' &&
+            key !== 'outside_mkad'
+        ) {
+            if (Array.isArray(value)) {
+                if (value.length) count++;
+            } else {
+                count++;
+            }
+        }
+    });
+
+    return count;
+});
+
+const v$ = useVuelidate(
+    {
+        form: {
+            rangeMaxDistanceFromMKAD: {
+                min: helpers.withMessage('Некорректная минимальная удаленность', minValue(0))
+            },
+            rangeMinElectricity: {
+                min: helpers.withMessage('Некорректное минимальное электричество', minValue(0))
+            }
         }
     },
-    validations() {
-        return {
-            form: {
-                rangeMaxDistanceFromMKAD: {
-                    min: onlyPositiveNumber('Некорректная отрицательная удаленность')
-                },
-                rangeMinElectricity: {
-                    min: onlyPositiveNumber()
-                }
-            }
-        };
+    {
+        form
     }
+);
+
+const FETCH_CONSULTANT_LIST = async () => {
+    return await store.dispatch('FETCH_CONSULTANT_LIST');
 };
+const FETCH_REGION_LIST = async () => {
+    return await store.dispatch('FETCH_REGION_LIST');
+};
+
+const onSubmit = async () => {
+    const query = { ...route.query, ...form };
+
+    deleteEmptyFields(query);
+
+    await router.replace({ query });
+    emit('search', query);
+};
+
+const toggleFavorites = () => {
+    if (form.favorites) form.favorites = null;
+    else form.favorites = 1;
+};
+
+const setDefaultRegionOptions = () => {
+    form.direction = [];
+    form.district_moscow = [];
+    form.region_neardy = null;
+    form.outside_mkad = null;
+};
+
+const toDefaultForm = () => {
+    Object.keys(defaultForm).forEach(key => {
+        form[key] = defaultForm[key];
+    });
+};
+
+const resetForm = () => {
+    toDefaultForm();
+    emit('reset');
+};
+
+const changeRegion = () => {
+    setDefaultRegionOptions();
+
+    if (
+        form.fakeRegion == null ||
+        (Array.isArray(form.fakeRegion) && form.fakeRegion.length === 0)
+    ) {
+        form.region = [];
+        return;
+    }
+
+    switch (form.fakeRegion) {
+        case REGIONS.MSK_AND_MO: {
+            form.region = [1, 6];
+            return;
+        }
+        case REGIONS.MSK_INSIDE_MKAD: {
+            form.region = [6];
+            form.outside_mkad = 0;
+            return;
+        }
+        case REGIONS.MO_AND_MSK_OUTSIDE_MKAD: {
+            form.region = [1, 6];
+            form.outside_mkad = 1;
+            return;
+        }
+        case REGIONS.MO_AND_REGIONS: {
+            form.region = [1];
+            form.region_neardy = 1;
+            return;
+        }
+    }
+
+    form.region = form.fakeRegion;
+};
+
+const setQueryFields = async () => {
+    Object.assign(form, route.query);
+
+    singleToArrayByKeys(form, formKeysOnlyArray);
+
+    form.purposes = form.purposes.map(Number);
+    form.object_type = form.object_type.map(Number);
+
+    const query = { ...form };
+    deleteEmptyFields(query);
+    await router.replace({ query });
+};
+
+toDefaultForm();
+
+onMounted(async () => {
+    await setQueryFields();
+
+    watch(
+        () => form,
+        () => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => onSubmit(), 500);
+        },
+        { deep: true }
+    );
+});
+
+onBeforeUnmount(() => {
+    clearTimeout(timeout);
+});
 </script>

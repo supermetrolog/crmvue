@@ -92,12 +92,12 @@ import Table from '@/components/common/Table/Table.vue';
 import Tr from '@/components/common/Table/Tr.vue';
 import Th from '@/components/common/Table/Th.vue';
 import Td from '@/components/common/Table/Td.vue';
-import { useStore } from 'vuex';
 import Avatar from '@/components/common/Avatar.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import { shallowRef } from 'vue';
 import { useConfirm } from '@/composables/useConfirm.js';
 import { userOptions } from '@/const/options/user.options.js';
+import api from '@/api/api.js';
 
 const emit = defineEmits(['deleted', 'edit']);
 defineProps({
@@ -107,7 +107,6 @@ defineProps({
     }
 });
 
-const store = useStore();
 const { confirm } = useConfirm();
 
 const isLoading = shallowRef(false);
@@ -121,7 +120,7 @@ const deleteUser = async user => {
     if (!confirmed) return;
 
     isLoading.value = true;
-    const deleted = store.dispatch('DELETE_USER', user.id);
+    const deleted = api.user.delete(user.id);
     if (deleted) emit('deleted');
     isLoading.value = false;
 };

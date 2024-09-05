@@ -14,25 +14,21 @@
         </template>
     </Tippy>
 </template>
-<script>
+<script setup>
 import { Tippy } from 'vue-tippy';
 
-export default {
-    name: 'Tooltip',
-    components: { Tippy },
-    props: {
-        text: {
-            type: String,
-            default: null
-        },
-        icon: {
-            type: String,
-            default: 'fa-solid fa-circle-info'
-        },
-        preFormat: {
-            type: Boolean,
-            default: false
-        }
+defineProps({
+    text: {
+        type: String,
+        default: null
+    },
+    icon: {
+        type: String,
+        default: 'fa-solid fa-circle-info'
+    },
+    preFormat: {
+        type: Boolean,
+        default: false
     }
-};
+});
 </script>

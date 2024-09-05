@@ -28,6 +28,10 @@
 
     cursor: pointer;
 
+    &.current {
+        background-color: #c9bd62;
+    }
+
     &:hover {
         background-color: #84debb;
     }

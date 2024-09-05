@@ -96,3 +96,27 @@
 .br-0 {
     border-radius: 0;
 }
+
+.in-progress {
+    pointer-events: none;
+    position: relative;
+
+    &::before {
+        content: 'В разработке..';
+        @include mixins.flex-box($a: center, $j: center);
+        font-weight: 500;
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        background-color: rgba(255, 255, 255, .1);
+        backdrop-filter: blur(2px);
+        z-index: 2;
+    }
+}
+
+.circle {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    border: 1px solid #cecece;
+}

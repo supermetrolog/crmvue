@@ -96,6 +96,7 @@ import { helpers, or, required, requiredIf } from '@vuelidate/validators';
 import Submit from '@/components/common/Forms/FormSubmit.vue';
 import Loader from '@/components/common/Loader.vue';
 import Utils, { cloneObject } from '@/utils';
+import api from '@/api/api.js';
 
 export default {
     name: 'AccountEdit',
@@ -179,7 +180,7 @@ export default {
             if (!this.v$.form.$error) {
                 this.isLoading = true;
 
-                const updated = await this.$store.dispatch('UPDATE_USER', this.form);
+                const updated = await api.user.update(this.form.id, this.form);
 
                 if (updated) {
                     await this.$store.dispatch('REFRESH_USER');

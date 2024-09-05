@@ -1,119 +1,104 @@
 import axios from 'axios';
 import { setRequestError } from '@/api/helpers/setRequestError.js';
 import { SuccessHandler } from '@/api/helpers/successHandler.js';
+import { removeUserInLocalStorage, setUserInLocalStorage } from '@/utils/localStorage.js';
 
-function getFormDataWithFiles(formdata1) {
-    let formdata = { ...formdata1 };
-    let FD = new FormData();
-    if (!formdata.userProfile.fileList) {
-        FD.append('data', JSON.stringify(formdata));
-        return FD;
+const URL = '/users';
+
+function payloadToData(payload) {
+    if (payload.userProfile.fileList?.length) {
+        const files = payload.userProfile.fileList;
+        delete payload.userProfile.fileList;
+
+        return { files, data: JSON.stringify(payload) };
     }
-    for (let i = 0; i < formdata.userProfile.fileList.length; i++) {
-        FD.append('files[]', formdata.userProfile.fileList[i]);
-    }
-    FD.append('data', JSON.stringify(formdata));
-    return FD;
+    return { data: JSON.stringify(payload) };
 }
 
 export default {
     auth: {
-        async login(formdata) {
-            const url = 'users/login?expand=userProfile';
-            let data = false;
-            await axios
-                .post(url, formdata)
-                .then(Response => {
-                    data = SuccessHandler.getData(Response);
-                    localStorage.setItem('access_token', data.access_token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                })
-                .catch(e => setRequestError(e));
-            return data;
+        async login(payload) {
+            try {
+                const response = await axios.post(URL + '/login', payload, {
+                    params: { expand: 'userProfile' }
+                });
+                if (response) {
+                    const user = SuccessHandler.getData(response);
+                    setUserInLocalStorage(user.user, user.access_token);
+                    return user;
+                }
+            } catch (e) {
+                await setRequestError(e);
+            }
+
+            return false;
         },
         async logout() {
-            const url = 'users/logout';
-            let data = false;
-            await axios
-                .post(url)
-                .then(Response => {
-                    data = SuccessHandler.getData(Response);
-                    localStorage.removeItem('access_token');
-                    localStorage.removeItem('user');
-                })
-                .catch(e => setRequestError(e));
-            return data;
+            try {
+                const response = await axios.post(URL + '/logout');
+                if (response) {
+                    removeUserInLocalStorage();
+                    return SuccessHandler.getData(response);
+                }
+            } catch (e) {
+                await setRequestError(e);
+            }
+
+            return null;
         }
     },
-    async getUsers() {
-        const url = 'users?expand=userProfile.phones,userProfile.emails';
-        let data = false;
-        await axios
-            .get(url)
-            .then(Response => {
-                data = SuccessHandler.getData(Response);
-            })
-            .catch(e => setRequestError(e));
-        return data;
-    },
-    async getUser(id) {
-        const url = 'users/' + id + '?expand=userProfile.phones,userProfile.emails';
-        let data = false;
-        await axios
-            .get(url)
-            .then(Response => {
-                data = SuccessHandler.getData(Response);
-            })
-            .catch(e => setRequestError(e));
-        return data;
-    },
-    async createUser(formdata) {
-        const url = 'users';
-        let data = false;
-        formdata = getFormDataWithFiles(formdata);
+    async list() {
+        try {
+            const response = await axios.get(URL, {
+                params: { expand: 'userProfile.phones,userProfile.emails' }
+            });
+            if (response) return SuccessHandler.getData(response);
+        } catch (e) {
+            await setRequestError(e);
+        }
 
-        let config = {
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'multipart/form-data'
-            }
-        };
-        await axios
-            .post(url, formdata, config)
-            .then(Response => {
-                data = SuccessHandler.getData(Response);
-            })
-            .catch(e => setRequestError(e));
-        return data;
+        return null;
     },
-    async updateUser(formdata) {
-        const url = `users/${formdata.id}`;
-        let data = false;
-        formdata = getFormDataWithFiles(formdata);
+    async get(id) {
+        try {
+            const response = await axios.get(`${URL}/${id}`, {
+                params: { expand: 'userProfile.phones,userProfile.emails' }
+            });
+            if (response) return SuccessHandler.getData(response);
+        } catch (e) {
+            await setRequestError(e);
+        }
 
-        let config = {
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'multipart/form-data'
-            }
-        };
-        await axios
-            .patch(url, formdata, config)
-            .then(Response => {
-                data = SuccessHandler.getData(Response);
-            })
-            .catch(e => setRequestError(e));
-        return data;
+        return null;
     },
-    async deleteUser(id) {
-        const url = `users/${id}`;
-        let data = false;
-        await axios
-            .delete(url)
-            .then(Response => {
-                data = SuccessHandler.getData(Response);
-            })
-            .catch(e => setRequestError(e));
-        return data;
+    async create(payload) {
+        try {
+            const response = await axios.postForm(URL, payloadToData(payload));
+            if (response) return SuccessHandler.getData(response);
+        } catch (e) {
+            await setRequestError(e);
+        }
+
+        return null;
+    },
+    async update(id, payload) {
+        try {
+            const response = await axios.patchForm(`${URL}/${id}`, payloadToData(payload));
+            if (response) return SuccessHandler.getData(response);
+        } catch (e) {
+            await setRequestError(e);
+        }
+
+        return null;
+    },
+    async delete(id) {
+        try {
+            const response = await axios.delete(`${URL}/${id}`);
+            if (response) return SuccessHandler.getData(response);
+        } catch (e) {
+            await setRequestError(e);
+        }
+
+        return null;
     }
 };

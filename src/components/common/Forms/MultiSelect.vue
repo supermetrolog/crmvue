@@ -42,6 +42,28 @@
                         :isPointed="isPointed"
                     />
                 </template>
+                <template #tag="{ option, disabled, handleTagRemove }">
+                    <slot
+                        name="tag"
+                        :option="option"
+                        :disabled="disabled"
+                        :handleTagRemove="handleTagRemove"
+                    >
+                        <div class="multiselect-tag">
+                            <span>
+                                <slot name="tag" :option="option" :disabled="disabled">
+                                    {{ option.label }}
+                                </slot>
+                            </span>
+                            <i
+                                v-if="!disabled"
+                                v-tippy="'Удалить'"
+                                @click="handleTagRemove(option, $event)"
+                                class="ml-1 fa-solid fa-close"
+                            />
+                        </div>
+                    </slot>
+                </template>
             </Multiselect>
         </label>
         <ValidationMessage v-if="hasValidationError" :message="v.$errors[0].$message" />
@@ -49,7 +71,7 @@
             <Chip
                 v-for="(element, index) in selectedOptions"
                 :key="multipleProperty ? element.value : element"
-                @click="removeElement(index)"
+                @delete="removeElement(index)"
                 :value="multipleProperty ? element.value : element"
                 :html="multipleProperty ? element[multipleProperty] : localeOptions[element]"
             />

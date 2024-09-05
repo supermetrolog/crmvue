@@ -10,7 +10,6 @@
         <label v-tippy="label" class="switch__wrapper" :class="{ disabled: disabled }">
             <input
                 v-model="field"
-                @change="$emit('change', modelValue, $event)"
                 :disabled="disabled"
                 class="switch__input"
                 type="checkbox"
@@ -30,7 +29,7 @@
 <script setup>
 import { computed } from 'vue';
 
-defineEmits(['change']);
+const emit = defineEmits(['change']);
 const props = defineProps({
     disabled: { type: Boolean, default: false },
     trueTitle: { type: String, default: null },
@@ -50,10 +49,12 @@ const field = computed({
     set(value) {
         if (props.onlyTrue && !value) {
             modelValue.value = null;
+            emit('change', modelValue.value);
             return null;
         }
 
         modelValue.value = props.transform(value);
+        emit('change', modelValue.value);
         return value;
     }
 });

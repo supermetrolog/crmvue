@@ -57,13 +57,16 @@
 
 .avatar {
     @include mixins.flex-box($a: center);
-    border-radius: 50%;
     background-color: variables.$color_light_grey;
     overflow: hidden;
     flex-shrink: 0;
 
     height: var(--size);
     width: var(--size);
+
+    &:not(.rectangle) {
+        border-radius: 50%;
+    }
 
     &__image {
         max-width: 100%;

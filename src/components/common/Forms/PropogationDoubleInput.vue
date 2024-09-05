@@ -52,7 +52,6 @@
             <i class="fas fa-plus"></i>
             {{ addText }}
         </Button>
-        {{ modelValue }}
     </div>
 </template>
 

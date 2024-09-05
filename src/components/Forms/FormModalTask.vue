@@ -1,141 +1,209 @@
 <template>
     <Modal
         @close="close"
-        :show="opened"
+        :show="isVisible"
         width="1200"
-        :title="promiseProps ? 'Редактирование задачи' : 'Создание задачи'"
+        :title="props ? 'Редактирование задачи' : 'Создание задачи'"
     >
         <Stepper @complete="submit" :steps="steps" :v="v$.form" keep-alive>
             <template #1>
-                <Spinner v-if="loading" center />
+                <Spinner v-if="isLoading" center />
                 <UserPicker v-else v-model="form.user_id" single :users="consultants" />
             </template>
             <template #2>
                 <DatePicker v-model="form.date.end" size="70px" class="mx-auto" />
             </template>
             <template #3>
-                <Textarea v-model="form.message" label="Описание задачи" />
+                <MultiSelect
+                    v-model="form.tags"
+                    label="Тэги"
+                    mode="tags"
+                    searchable
+                    class="col-12 mb-2"
+                    :options="getTagsOptions"
+                    :resolve-on-load="true"
+                    :close-on-select="false"
+                    placeholder="&nbsp;&nbsp;Выберите тэг.."
+                >
+                    <template #option="{ option }">
+                        <TaskTagOption :tag="option" />
+                    </template>
+                    <template #tag="{ option, disabled, handleTagRemove }">
+                        <div
+                            class="multiselect-tag"
+                            :style="{ backgroundColor: '#' + option.color, color: '#fff' }"
+                        >
+                            <span>{{ option.label }}</span>
+                            <i
+                                v-if="!disabled"
+                                v-tippy="'Удалить'"
+                                @click="handleTagRemove(option, $event)"
+                                class="ml-1 fa-solid fa-close"
+                            />
+                        </div>
+                    </template>
+                </MultiSelect>
+                <Textarea v-model="form.message" class="col-12" label="Описание задачи" />
+            </template>
+            <template #4>
+                <Spinner v-if="isLoading" center />
+                <UserPicker v-else v-model="form.observers" :users="consultantsForObservers" />
             </template>
         </Stepper>
     </Modal>
 </template>
-<script>
+<script setup>
 import Stepper from '@/components/common/Stepper.vue';
 import DatePicker from '@/components/common/Forms/DatePicker/DatePicker.vue';
 import Spinner from '@/components/common/Spinner.vue';
 import Modal from '@/components/common/Modal.vue';
-import { AsyncModalMixin } from '@/components/common/mixins';
 import UserPicker from '@/components/common/Forms/UserPicker/UserPicker.vue';
 import { helpers, required } from '@vuelidate/validators';
-import useValidate from '@vuelidate/core';
+import useVuelidate from '@vuelidate/core';
 import Textarea from '@/components/common/Forms/Textarea.vue';
-export default {
-    name: 'FormModalTask',
-    components: {
-        Textarea,
-        UserPicker,
-        Modal,
-        Spinner,
-        DatePicker,
-        Stepper
-    },
-    mixins: [AsyncModalMixin],
-    data() {
-        return {
-            v$: useValidate(),
-            loading: false,
-            consultants: [],
-            form: {
-                message: null,
-                date: {
-                    end: null
-                },
-                user_id: null,
-                status: 1
-            }
-        };
-    },
-    computed: {
-        steps() {
-            return [
-                {
-                    name: 'user_id',
-                    title: 'Выбор сотрудников'
-                },
-                {
-                    name: 'date',
-                    title: 'Выбор даты'
-                },
-                {
-                    name: 'message',
-                    title: 'Описание задачи'
-                }
-            ];
-        }
-    },
-    watch: {
-        opened(newValue) {
-            if (newValue) {
-                if (!this.consultants?.length) this.fetchConsultants();
+import { useStore } from 'vuex';
+import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
+import TaskTagOption from '@/components/common/Forms/TaskTagOption.vue';
+import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
+import { computed, onUnmounted, ref, shallowRef } from 'vue';
 
-                if (this.promiseProps)
-                    this.form = {
-                        date: {
-                            end: this.promiseProps.end
-                        },
-                        user_id: this.promiseProps.user_id,
-                        message: this.promiseProps.message,
-                        status: this.promiseProps.status ?? 1
-                    };
-            } else this.clearForm();
-        }
-    },
-    methods: {
-        clearForm() {
-            this.form = {
-                message: null,
-                date: {
-                    end: null
-                },
-                user_id: null,
-                status: 1
-            };
-        },
-        async fetchConsultants() {
-            this.loading = true;
+const store = useStore();
 
-            this.consultants = await this.$store.dispatch('getConsultants');
-
-            this.loading = false;
-        },
-        submit() {
-            this.resolve({
-                end: this.form.date.end,
-                user_id: this.form.user_id,
-                message: this.form.message,
-                status: this.form.status
-            });
-        }
+const steps = [
+    {
+        name: 'user_id',
+        title: 'Выбор сотрудников'
     },
-    validations() {
-        return {
-            form: {
-                date: {
-                    end: {
-                        required: helpers.withMessage('Выберите дату истечения задачи!', required)
-                    }
-                },
-                user_id: {
-                    minLength: helpers.withMessage('Выберите сотрудника!', required)
-                },
-                message: {
-                    required: helpers.withMessage(
-                        'Описание задачи является обязательным!',
-                        required
-                    )
-                }
-            }
-        };
+    {
+        name: 'date',
+        title: 'Выбор даты'
+    },
+    {
+        name: 'message',
+        title: 'Описание задачи'
+    },
+    {
+        name: 'observers',
+        title: 'Наблюдатели'
     }
+];
+
+const consultants = ref([]);
+const isLoading = shallowRef(false);
+const form = ref({
+    message: null,
+    date: {
+        end: null,
+        start: null
+    },
+    tags: [],
+    user_id: null,
+    status: 1,
+    observers: []
+});
+
+const tagsOptions = computed(() => store.getters['Task/tagsOptions']);
+
+const consultantsForObservers = computed(() => {
+    return consultants.value.filter(element => element.id !== form.value.user_id);
+});
+
+const clearForm = () => {
+    form.value = {
+        message: null,
+        date: {
+            end: null,
+            start: null
+        },
+        user_id: null,
+        status: 1,
+        tags: [],
+        observers: []
+    };
 };
+
+const fetchConsultants = async () => {
+    isLoading.value = true;
+    consultants.value = await store.dispatch('getConsultants');
+    isLoading.value = false;
+};
+
+const getTagsOptions = async () => {
+    if (tagsOptions.value.length) return tagsOptions.value;
+    await store.dispatch('Task/fetchTags');
+    return tagsOptions.value;
+};
+
+const {
+    isVisible,
+    onPopupShowed,
+    destroy: destroyPopup,
+    submit: _submit,
+    cancel,
+    props
+} = useAsyncPopup('taskCreator');
+
+onPopupShowed(() => {
+    if (!consultants.value.length) fetchConsultants();
+
+    if (props.value)
+        form.value = {
+            message: props.value.message,
+            date: {
+                end: props.value.end,
+                start: props.value.start
+            },
+            user_id: props.value.user_id,
+            status: props.value.status ?? 1,
+            tags: props.value.tags ? props.value.tags.map(element => element.id) : [],
+            observers: props.value.observers
+                ? props.value.observers.map(element => element.user_id)
+                : []
+        };
+});
+
+const v$ = useVuelidate(
+    {
+        form: {
+            date: {
+                end: {
+                    required: helpers.withMessage('Выберите дату истечения задачи!', required)
+                }
+            },
+            user_id: {
+                minLength: helpers.withMessage('Выберите сотрудника!', required)
+            },
+            message: {
+                required: helpers.withMessage('Описание задачи является обязательным!', required)
+            }
+        }
+    },
+    { form }
+);
+
+const formToPayload = () => {
+    return {
+        start: form.value.date.start,
+        end: form.value.date.end,
+        user_id: form.value.user_id,
+        message: form.value.message,
+        status: form.value.status,
+        tag_ids: form.value.tags,
+        observer_ids: form.value.observers
+    };
+};
+
+const submit = () => {
+    _submit(formToPayload());
+    clearForm();
+};
+
+const close = () => {
+    cancel();
+    clearForm();
+};
+
+onUnmounted(() => {
+    destroyPopup();
+});
 </script>

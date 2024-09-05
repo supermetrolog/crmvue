@@ -78,11 +78,13 @@ const escapeHandler = event => {
     if (isActive.value && event.code === 'Escape') isOpen.value = false;
 };
 
-const openChat = async (companyID, objectID) => {
-    const dialog = await api.messenger.getDialogByQuery({
-        model_type: 'object',
-        object_id: objectID
-    });
+const openChat = async (companyID, objectID, modelType = 'object') => {
+    const query = { model_type: modelType };
+
+    if (modelType === 'object') query.object_id = objectID;
+    else if (modelType === 'request') query.request_id = objectID;
+
+    const dialog = await api.messenger.getDialogByQuery(query);
 
     if (!dialog) {
         notify.info('Данные по объекту не были найдены в чате');
@@ -94,16 +96,18 @@ const openChat = async (companyID, objectID) => {
     store.dispatch('Messenger/selectPanel', {
         companyID: companyID,
         dialogID: dialog.id,
-        dialogType: 'object',
+        dialogType: modelType,
         anywayOpen: true
     });
 
     store.dispatch('Messenger/selectChat', {
         dialogID: dialog.id,
         companyID: companyID,
-        dialogType: 'object',
+        dialogType: modelType,
         anywayOpen: true
     });
+
+    return true;
 };
 
 const openChatByID = async chatMemberID => {
@@ -145,11 +149,14 @@ const openChatByID = async chatMemberID => {
         dialogType: dialog.model_type,
         anywayOpen: true
     });
+
+    return true;
 };
 
 const openChatByCompanyID = companyID => {
     isOpen.value = true;
     store.dispatch('Messenger/selectPanelWithoutDialog', companyID);
+    return true;
 };
 
 defineExpose({ openChat, openChatByID, openChatByCompanyID });

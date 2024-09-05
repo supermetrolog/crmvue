@@ -78,7 +78,7 @@ import YandexMapView from '@/components/common/YandexMap/YandexMapView.vue';
 import YandexMapMarker from '@/components/common/YandexMap/YandexMapMarker.vue';
 import Tooltip from '@/components/common/Tooltip.vue';
 import ComplexMapDescription from '@/components/Complex/ComplexMapDescription.vue';
-import { nextTick, onUnmounted, reactive, shallowRef } from 'vue';
+import { onUnmounted, reactive, shallowRef } from 'vue';
 import { ucFirst } from '@/utils/formatter.js';
 
 defineProps({

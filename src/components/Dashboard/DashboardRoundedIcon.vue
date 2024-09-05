@@ -8,22 +8,19 @@
     </span>
 </template>
 
-<script>
-export default {
-    name: 'DashboardRoundedIcon',
-    props: {
-        size: {
-            type: [Number, String],
-            default: 35
-        },
-        color: {
-            type: String,
-            default: null
-        },
-        icon: {
-            type: String,
-            required: true
-        }
+<script setup>
+defineProps({
+    size: {
+        type: [Number, String],
+        default: 35
+    },
+    color: {
+        type: String,
+        default: null
+    },
+    icon: {
+        type: String,
+        required: true
     }
-};
+});
 </script>

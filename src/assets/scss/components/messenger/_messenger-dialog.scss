@@ -3,6 +3,7 @@
 .messenger-dialog {
     padding: 10px 15px;
     transition: background-color .5s ease;
+    position: relative;
 
     &:not(.skeleton-body) {
         cursor: pointer;
@@ -20,59 +21,53 @@
         opacity: .8;
     }
 
-    &__body {
-        margin-bottom: 10px;
-    }
-
     &__footer {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        opacity: .7;
         @include mixins.flex-box($j: space-between, $a: center, $gap: 5px, $wrap: true);
+        @include mixins.transition(opacity);
+
+        &:hover {
+            opacity: 1;
+        }
+
     }
 
     &__phone {
-        @include mixins.flex-box($a: center, $j: space-between);
-        padding: 3px;
-        min-width: 160px;
-        width: 100%;
-        max-width: 50%;
-        background-color: #eaeaec;
-        border-radius: 20px;
-        cursor: pointer;
-        transition: background-color .5s ease;
-        font-weight: 500;
-        box-shadow: 0 0 5px 2px rgba(0, 0, 0, .1);
+        border-radius: 50%;
+        height: 30px;
+        width: 30px;
+        line-height: 16px;
+        font-size: 16px;
+        border: 2px solid;
+        background-color: #fff;
+        @include mixins.flex-box($a: center, $j: center);
+        @include mixins.transition(border-color, color, background-color);
 
         &:hover {
             background-color: #d7d7da;
         }
 
         &--danger {
-            background-color: #f93154;
-            color: #fff;
+            border-color: #f93154;
+            color: #f93154;
 
             &:hover {
-                background-color: #b4223d;
+                color: #fff;
+                background-color: #f93154;
             }
         }
 
         &--warning {
-            background-color: #f88f01;
+            border-color: #b66b09;
+            color: #b66b09;
 
             &:hover {
-                background-color: #ffbb69;
+                color: #fff;
+                background-color: #b66b09;
             }
-        }
-
-        &--info {
-            background-color: #17b775;
-            color: #fff;
-
-            &:hover {
-                background-color: #118f5b;
-            }
-        }
-
-        i {
-            color: #000;
         }
     }
 
@@ -158,6 +153,8 @@
             }
         }
     }
+
+
 }
 
 .messenger-dialog-functions {
@@ -166,11 +163,11 @@
     &__item {
         position: relative;
         background-color: #0f6674;
-        height: 35px;
-        width: 35px;
+        height: 30px;
+        width: 30px;
         color: #fff;
-        line-height: 18px;
-        font-size: 18px;
+        line-height: 16px;
+        font-size: 16px;
     }
 
     &__chip {
@@ -184,6 +181,10 @@
         background-color: #f93154;
         color: #fff;
         font-weight: 600;
+    }
+
+    &__messages {
+        font-size: 14px;
     }
 }
 
