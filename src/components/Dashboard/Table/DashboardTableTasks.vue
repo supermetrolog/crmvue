@@ -26,6 +26,7 @@ import { useTippy } from 'vue-tippy';
 import api from '@/api/api.js';
 import { toDateFormat } from '@/utils/formatter.js';
 
+const emit = defineEmits(['task-updated']);
 const props = defineProps({
     tasks: {
         type: Array,
@@ -121,19 +122,18 @@ const { show, setProps, hide } = useTippy(() => document.body, {
                 if (viewerIndex !== -1)
                     currentTask.value.observers[viewerIndex].viewed_at = toDateFormat(Date.now());
 
-                const currentTaskIndex = props.tasks.findIndex(
-                    element => element.id === currentTask.value.id
-                );
-                if (currentTaskIndex !== -1)
-                    Object.assign(props.tasks[currentTaskIndex].observers[viewerIndex], {
-                        viewed_at: toDateFormat(Date.now())
-                    });
+                emit('task-updated', {
+                    id: currentTask.value.id,
+                    observers: currentTask.value.observers,
+                    is_viewed: currentTask.value.user_id === store.getters.THIS_USER.id
+                });
             }
         })
     ),
     placement: 'bottom-start',
     trigger: 'manual',
     interactive: true,
+    theme: 'white',
     arrow: false,
     offset: [10, 10],
     popperOptions: {

@@ -239,7 +239,7 @@
 
         &:first-child {
             padding-right: 9px;
-            border-right: 1px solid #7e7e7e;
+            border-right: 1px solid #afaeae;
         }
 
         &:last-child {
@@ -250,7 +250,7 @@
     &__actions {
         padding-top: 5px;
         padding-bottom: 10px;
-        border-bottom: 1px solid #7e7e7e;
+        border-bottom: 1px solid #afaeae;
         @include mixins.flex-box($gap: 10px);
     }
 
@@ -259,18 +259,22 @@
     }
 
     &__label {
-        color: #ada8a8;
+        color: #888686;
         font-weight: 500;
     }
 
     &__message {
-        background-color: #423f3f;
+        background-color: #e8e5e5;
         border-radius: 5px;
         padding: 10px;
     }
 
     &__chip {
-        background-color: #423f3f;
+        background-color: #d6d6d6;
+    }
+
+    &__tag {
+        color: #fff;
     }
 
     &__chips {
@@ -284,7 +288,7 @@
     }
 
     &__category {
-        color: #ada8a8;
+        color: #837f7f;
     }
 
     &__relation {
@@ -292,7 +296,7 @@
     }
 
     .messenger-dialog {
-        background-color: #423f3f;
+        background-color: #d6d6d6;
     }
 
     .messenger-dialog-request__id, .messenger-dialog-offer__id {
@@ -300,17 +304,17 @@
     }
 
     &__button {
-        background-color: #575757;
+        background-color: #c0bbbb;
         width: max-content;
-        color: #fff;
+        color: #000;
         border: none;
         border-radius: 5px;
-        padding: 5px;
+        padding: 5px 7px;
         @include mixins.transition(background-color);
         @include mixins.clear-button;
 
         @include mixins.hover {
-            background-color: #6e6c6c;
+            background-color: #B3D7C6;
         }
 
         &[disabled] {
@@ -320,7 +324,8 @@
 
     &__comments {
         padding: 10px;
-        background-color: #423f3f;
+        background-color: #fff;
+        box-shadow: 0 0 10px 1px rgba(0, 0, 0, .4);
         position: absolute;
         width: calc(100% - 20px);
         top: 20px;
@@ -348,62 +353,66 @@
         }
 
         .messenger-chat-message__content {
-            background-color: #e3dcdc;
+            background-color: #d6d6d6;
             box-shadow: unset;
         }
     }
 
     &__form {
-        border-top: 1px solid #7e7e7e;
+        border-top: 1px solid #afaeae;
         margin-top: 7px;
         padding-top: 7px;
     }
 
     &__textarea {
         .form__textarea {
-            background-color: #575656;
-            color: #fff;
-            border-color: #423f3f;
+            border-color: #b9b0b0;
             height: 40px;
             min-height: 40px;
         }
 
         .form__label {
-            color: #ada8a8;
+            color: #888686;
         }
+    }
+
+    &__status {
+        @include mixins.flex-box($gap: 5px, $a: center);
     }
 
     &__close {
         font-size: 20px;
-        color: #ada8a8;
+        color: #837f7f;
         cursor: pointer;
         @include mixins.transition(color);
 
         &:hover {
-            color: #dac9c9;
+            color: #625c5c;
         }
     }
 }
 
 .dashboard-task-item-preview-status {
     padding: 10px;
-    background-color: #423f3f;
+    background-color: #fff;
+    box-shadow: 0 0 10px 1px rgba(0, 0, 0, .4);
     position: absolute;
     width: calc(100% - 20px);
     top: 20px;
     left: 10px;
     height: calc(100% - 40px);
     border-radius: 10px;
+    overflow-y: auto;
     @include mixins.flex-box($d: column, $gap: 10px);
 
     &__header {
         @include mixins.flex-box($j: space-between);
         padding-bottom: 7px;
-        border-bottom: 1px solid #7e7e7e;
+        border-bottom: 1px solid #afaeae;
     }
 
     &__form {
-        border-top: 1px solid #7e7e7e;
+        border-top: 1px solid #afaeae;
         margin-top: 7px;
         padding-top: 7px;
     }
@@ -427,19 +436,17 @@
     }
 
     .form__textarea, .form__input {
-        background-color: #575656;
-        color: #fff;
-        border-color: #423f3f;
+        border-color: #b9b0b0;
     }
 
     &__preview {
         @include mixins.flex-box($a: center);
-        border-bottom: 1px solid #7e7e7e;
+        border-bottom: 1px solid #afaeae;
         padding-bottom: 7px;
     }
 
     &__chip {
-        background-color: #545252;
+        background-color: #d6d6d6;
     }
 }
 
@@ -447,14 +454,14 @@
 
 .dashboard-task-item-preview-comment {
     padding: 5px;
-    background-color: #575656;
+    background-color: #c5c0c0;
     border-radius: 3px;
 
     &__footer {
         margin-top: 3px;
-        border-top: 1px solid #423f3f;
+        border-top: 1px solid #afaeae;
         padding-top: 3px;
-        color: #a6a6a6;
+        color: #6e6b6b;
         @include mixins.flex-box($a: center, $j: space-between);
     }
 }
