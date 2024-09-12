@@ -12,6 +12,14 @@ const role = {
     5: 'Админ'
 };
 
+const beautifulRole = {
+    1: 'Гость',
+    2: 'Консультант',
+    3: 'Модератор',
+    4: 'Директор',
+    5: 'Программист'
+};
+
 const roleStatement = {
     VIEW_ONLY: 1,
     CONSULTANT: 2,
@@ -23,5 +31,6 @@ const roleStatement = {
 export const userOptions = {
     statusStatement,
     role,
-    roleStatement
+    roleStatement,
+    beautifulRole
 };
