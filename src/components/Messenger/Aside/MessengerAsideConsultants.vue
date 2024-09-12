@@ -10,7 +10,7 @@
                 :title="`Сотрудники (${consultants.length}/${pagination?.totalCount || 0})`"
             >
                 <div v-if="isLoading" class="messenger-aside__list">
-                    <MessengerDialogObjectSkeleton v-for="i in lastDialogsCount" :key="i" />
+                    <MessengerDialogUserSkeleton v-for="i in lastElementsCount" :key="i" />
                 </div>
                 <EmptyData v-else-if="!consultants.length" no-rounded>
                     Сотрудники не найдены..
@@ -54,7 +54,6 @@
 <script setup>
 import { useStore } from 'vuex';
 import { computed, onBeforeMount, ref, shallowRef, watch } from 'vue';
-import MessengerDialogObjectSkeleton from '@/components/Messenger/Dialog/MessengerDialogObjectSkeleton.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import MessengerAsideSection from '@/components/Messenger/Aside/MessengerAsideSection.vue';
 import InfiniteLoading from 'v3-infinite-loading';
@@ -62,6 +61,8 @@ import VirtualDragList from 'vue-virtual-draglist';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import MessengerDialogUser from '@/components/Messenger/Dialog/MessengerDialogUser.vue';
 import MessengerAsideConsultantsHeader from '@/components/Messenger/Aside/MessengerAsideConsultantsHeader.vue';
+import { useSkeleton } from '@/composables/useSkeleton.js';
+import MessengerDialogUserSkeleton from '@/components/Messenger/Dialog/MessengerDialogUserSkeleton.vue';
 
 const props = defineProps({
     currentTab: {
@@ -73,7 +74,6 @@ const props = defineProps({
 const store = useStore();
 const { isLoading } = useDelayedLoader();
 
-const lastDialogsCount = shallowRef(5);
 const virtualList = shallowRef(null);
 const filters = ref([{ key: 'status', value: 10 }]);
 const sorts = ref(null);
@@ -83,6 +83,8 @@ const pagination = computed(() => store.state.Messenger.chatMembersUsers.paginat
 
 const hasQuery = computed(() => store.getters['Messenger/hasConsultantsQuery']);
 const hasDialogs = computed(() => consultants.value.length);
+
+const { lastElementsCount } = useSkeleton(consultants, { defaultCounts: 10 });
 
 const createPayload = () => {
     const payload = filters.value.reduce((acc, element) => {
@@ -109,13 +111,6 @@ watch(
     () => store.state.Messenger.loadingAside,
     value => {
         isLoading.value = value;
-    }
-);
-
-watch(
-    () => consultants.value.length,
-    value => {
-        lastDialogsCount.value = Math.min(value, 5) || 1;
     }
 );
 

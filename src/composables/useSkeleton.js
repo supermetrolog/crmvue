@@ -6,7 +6,7 @@ export function useSkeleton(list, options = {}) {
     watch(
         () => list.value.length,
         value => {
-            lastElementsCount.value = Math.min(value, 5) || 1;
+            lastElementsCount.value = Math.min(value, options.defaultCounts ?? 5) || 1;
         }
     );
 
