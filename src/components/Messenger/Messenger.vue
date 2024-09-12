@@ -7,7 +7,7 @@
             <MessengerAttachment ref="attachments" />
             <FormModalChatMemberLastCall />
         </teleport>
-        <MessengerBar @click="isOpen = !isOpen" />
+        <MessengerBar @select="selectTab" :current="currentTab" />
         <div v-if="isActive" ref="body" class="messenger__content">
             <MessengerAside class="messenger__aside" />
             <MessengerPanel class="messenger__panel" />

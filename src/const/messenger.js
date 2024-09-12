@@ -46,8 +46,37 @@ const additions = {
     3: 'Reminder'
 };
 
+const tabs = {
+    OBJECTS: 'objects',
+    REQUESTS: 'requests',
+    USERS: 'users'
+};
+
+const tabsGroups = {
+    [tabs.OBJECTS]: 'objects',
+    [tabs.REQUESTS]: 'objects',
+    [tabs.USERS]: 'users'
+};
+
+const tabFilters = {
+    CALL: 'call',
+    TASK: '-task',
+    NOTIFICATION: '-notification',
+    MESSAGE: '-message'
+};
+
+const dialogTypes = {
+    USER: 'user',
+    OBJECT: 'object',
+    REQUEST: 'request'
+};
+
 export const messenger = {
     buttons,
     categories,
-    additions
+    additions,
+    tabs,
+    tabsGroups,
+    dialogTypes,
+    tabFilters
 };
