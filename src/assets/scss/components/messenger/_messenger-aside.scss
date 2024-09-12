@@ -1,6 +1,8 @@
 @use "../../utils/mixins";
 
 .messenger-aside {
+    background-color: #f8f8f8;
+
     &__list {
         overflow-y: auto;
         height: max-content;
@@ -11,7 +13,7 @@
 
     &__body {
         height: 100%;
-        max-height: calc(100vh - 86px);
+        max-height: calc(100vh - 71px);
         overflow-y: auto;
 
         &::-webkit-scrollbar {
@@ -33,6 +35,22 @@
             &.active {
                 opacity: 1;
             }
+        }
+    }
+
+    &__offers.reversed {
+        .messenger-aside-offers {
+            transform: translateY(var(--requests-height));
+        }
+
+        .messenger-aside-requests {
+            transform: translateY(var(--negative-offers-height));
+        }
+    }
+
+    &__offers.reversing {
+        .messenger-aside-offers, .messenger-aside-requests {
+            @include mixins.transition(transform .8s);
         }
     }
 }
@@ -99,14 +117,24 @@
 }
 
 .messenger-aside-offers {
+    background-color: #f8f8f8;
+
     .messenger-aside__list {
-        max-height: 548px;
+        max-height: 70vh;
     }
 }
 
 .messenger-aside-requests {
+    background-color: #f8f8f8;
+
     .messenger-aside__list {
-        max-height: 564px;
+        max-height: 70vh;
+    }
+}
+
+.messenger-aside-users {
+    .messenger-aside__list {
+        max-height: 90vh;
     }
 }
 
@@ -154,12 +182,16 @@
     }
 }
 
-.messenger-dialog {
-    &:nth-child(even) {
-        background-color: #efefef;
-    }
+.messenger-aside__list {
+    .virtual-dnd-list-item {
+        &:nth-child(even) {
+            .messenger-dialog {
+                background-color: #efefef;
+            }
+        }
 
-    &:not(:last-child) {
-        border-bottom: 1px solid rgba(0, 0, 0, .1);
+        &:not(:last-child) {
+            border-bottom: 1px solid rgba(0, 0, 0, .1);
+        }
     }
 }

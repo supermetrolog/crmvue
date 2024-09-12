@@ -18,35 +18,59 @@
                     </with-unit-type>
                 </span>
             </p>
+            <p class="messenger-chat-header__address">{{ locationText }}</p>
         </div>
     </div>
 </template>
-<script>
+<script setup>
 import WithUnitType from '@/components/common/WithUnitType.vue';
-import { entityOptions } from '@/const/options/options.js';
 import { unitTypes } from '@/const/unitTypes.js';
-import { mapState } from 'vuex';
+import { useStore } from 'vuex';
+import { computed } from 'vue';
+import { locationOptions } from '@/const/options/location.options.js';
+import { dealOptions } from '@/const/options/deal.options.js';
+import { requestOptions } from '@/const/options/request.options.js';
 
-export default {
-    name: 'MessengerChatHeaderRequest',
-    components: { WithUnitType },
-    props: {
-        dialog: {
-            type: Object,
-            required: true
-        }
-    },
-    computed: {
-        ...mapState({ company: state => state.Messenger.currentPanel }),
-        unitTypes() {
-            return unitTypes;
-        },
-        dealType() {
-            return entityOptions.deal.type[this.dialog.model.dealType + 1];
-        },
-        isActive() {
-            return this.dialog.model.status === entityOptions.request.statusStatement.ACTIVE;
-        }
+const props = defineProps({
+    dialog: {
+        type: Object,
+        required: true
     }
-};
+});
+
+const store = useStore();
+
+const company = computed(() => store.state.Messenger.currentPanel);
+
+const dealType = computed(() => {
+    return dealOptions.type[props.dialog.model.dealType + 1];
+});
+
+const isActive = computed(() => {
+    return props.dialog.model.status === requestOptions.statusStatement.ACTIVE;
+});
+
+const directions = computed(() => {
+    if (!props.dialog.model.directions) return [];
+
+    return props.dialog.model.directions.map(
+        element => locationOptions.directionWithShort[element.direction].full
+    );
+});
+const districts = computed(() => {
+    if (!props.dialog.model.districts) return [];
+
+    return props.dialog.model.districts.map(element => locationOptions.district[element.district]);
+});
+const regionsText = computed(() => {
+    if (!props.dialog.model.regions) return '';
+
+    return props.dialog.model.regions
+        .map(element => locationOptions.region[element.region])
+        .join(', ');
+});
+
+const locationText = computed(() => {
+    return [regionsText.value, ...directions.value, ...districts.value].join(', ');
+});
 </script>

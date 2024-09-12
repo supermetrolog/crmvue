@@ -23,9 +23,9 @@
 <script setup>
 import Form from '@/components/common/Forms/Form.vue';
 import Input from '@/components/common/Forms/Input.vue';
-import { debounce } from '@/utils/debounce.js';
 import { useStore } from 'vuex';
 import { computed } from 'vue';
+import { debounce } from '@/utils/debounce.js';
 
 const emit = defineEmits(['load']);
 
@@ -33,10 +33,10 @@ const store = useStore();
 
 const querySearch = computed({
     get() {
-        return store.state.Messenger.querySearch;
+        return store.state.Messenger.consultantsQuerySearch;
     },
     set(value) {
-        store.commit('Messenger/setQuerySearch', value);
+        store.commit('Messenger/setConsultantsQuerySearch', value);
         debouncedUpdate();
     }
 });

@@ -1,6 +1,6 @@
 <template>
     <Modal @close="$emit('close')" show title="Просмотр закрепленного сообщения" width="800">
-        <div class="d-flex justify-content-center my-5">
+        <div class="col-12 my-5">
             <MessengerChatMessage v-if="message" :message="message" pinned />
         </div>
     </Modal>

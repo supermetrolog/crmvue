@@ -10,7 +10,10 @@
                     :message="message"
                     :pinned="pinned"
                 />
-                <MessengerChatMessageAdditions v-if="additions" :additions="additions" />
+                <MessengerChatMessageAdditions
+                    :tasks="message.tasks"
+                    :notifications="message.notifications"
+                />
                 <div
                     v-if="message.message"
                     class="messenger-chat-message__body"
@@ -116,14 +119,6 @@ const recipientUsername = computed(() => {
     const contact = props.message.contacts[0];
     if (contact.type === entityOptions.contact.typeStatement.GENERAL) return 'Общий контакт';
     return contact.first_name + (contact.last_name ? ` ${contact.last_name}` : '');
-});
-
-const additions = computed(() => {
-    return {
-        tasks: props.message.tasks,
-        alerts: props.message.notifications,
-        reminders: props.message.reminders
-    };
 });
 
 const changeRecipient = () => {

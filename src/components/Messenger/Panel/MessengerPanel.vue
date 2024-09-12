@@ -1,31 +1,26 @@
 <template>
-    <div class="messenger-panel">
-        <MessengerPanelLoader v-if="isLoading" />
-        <MessengerPanelEmpty v-else-if="!hasPanel" />
-        <MessengerPanelContent v-if="hasPanel" v-show="!isLoading" />
+    <div class="messenger-column">
+        <AnimationTransition :speed="0.5">
+            <component :is="currentMessengerPanelComponent" />
+        </AnimationTransition>
     </div>
 </template>
-<script>
-import MessengerPanelContent from '@/components/Messenger/Panel/MessengerPanelContent.vue';
-import MessengerPanelEmpty from '@/components/Messenger/Panel/MessengerPanelEmpty.vue';
-import MessengerPanelLoader from '@/components/Messenger/Panel/MessengerPanelLoader.vue';
-import { mapState } from 'vuex';
-import { LoaderMixin } from '@/components/Messenger/loader.mixin';
+<script setup>
+import { messenger } from '@/const/messenger.js';
+import { computed } from 'vue';
+import MessengerPanelForUser from '@/components/Messenger/Panel/MessengerPanelForUser.vue';
+import MessengerPanelForObject from '@/components/Messenger/Panel/MessengerPanelForObject.vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
 
-export default {
-    name: 'MessengerPanel',
-    components: { MessengerPanelLoader, MessengerPanelEmpty, MessengerPanelContent },
-    mixins: [LoaderMixin],
-    computed: {
-        ...mapState({
-            hasPanel: state => {
-                return (
-                    state.Messenger.currentAsideDialogID != null ||
-                    state.Messenger.currentPanelCompanyID != null
-                );
-            },
-            originalLoader: state => state.Messenger.loadingPanel
-        })
+const props = defineProps({
+    currentTab: {
+        type: Object,
+        default: null
     }
-};
+});
+
+const currentMessengerPanelComponent = computed(() => {
+    if (props.currentTab.name === messenger.tabs.USERS) return MessengerPanelForUser;
+    else return MessengerPanelForObject;
+});
 </script>

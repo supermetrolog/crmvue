@@ -56,66 +56,60 @@
         </VDropdown>
     </div>
 </template>
-<script>
-import { mapState } from 'vuex';
+<script setup>
+import { useStore } from 'vuex';
 import MessengerChatFormRecipientContact from '@/components/Messenger/Chat/Form/MessengerChatFormRecipientContact.vue';
 import { entityOptions } from '@/const/options/options';
 import MessengerChatFormRecipientCard from '@/components/Messenger/Chat/Form/MessengerChatFormRecipientCard.vue';
 import VDropdown from '@/components/common/Dropdown/VDropdown.vue';
+import { computed } from 'vue';
+import { tryOnBeforeMount } from '@vueuse/core';
 
-export default {
-    name: 'MessengerChatFormRecipient',
-    components: {
-        MessengerChatFormRecipientCard,
-        MessengerChatFormRecipientContact,
-        VDropdown
+const emit = defineEmits(['change']);
+const props = defineProps({
+    current: {
+        type: Object,
+        default: () => null
     },
-    emits: ['change'],
-    props: {
-        current: {
-            type: Object,
-            default: () => null
-        },
-        withoutAutoToggle: {
-            type: Boolean,
-            default: false
-        },
-        dropdownClass: {
-            type: String,
-            default: null
-        }
+    withoutAutoToggle: {
+        type: Boolean,
+        default: false
     },
-    computed: {
-        ...mapState({
-            company: state => state.Messenger.currentPanel
-        }),
-        mainContact() {
-            const mainContact = this.company.contacts.find(
-                contact => contact.type === entityOptions.contact.typeStatement.GENERAL
-            );
-
-            if (mainContact)
-                return {
-                    ...mainContact,
-                    full_name: 'Общий контакт',
-                    general: true
-                };
-
-            return null;
-        },
-        contacts() {
-            return this.company.contacts.filter(
-                contact => contact.type !== entityOptions.contact.typeStatement.GENERAL
-            );
-        }
-    },
-    created() {
-        if (!this.current && !this.withoutAutoToggle) {
-            this.$emit(
-                'change',
-                this.contacts.find(contact => contact.isMain)
-            );
-        }
+    dropdownClass: {
+        type: String,
+        default: null
     }
-};
+});
+
+const store = useStore();
+
+const company = computed(() => store.state.Messenger.currentPanel);
+const mainContact = computed(() => {
+    const mainContact = company.value.contacts.find(
+        contact => contact.type === entityOptions.contact.typeStatement.GENERAL
+    );
+
+    if (mainContact)
+        return {
+            ...mainContact,
+            full_name: 'Общий контакт',
+            general: true
+        };
+
+    return null;
+});
+const contacts = computed(() => {
+    return company.value.contacts.filter(
+        contact => contact.type !== entityOptions.contact.typeStatement.GENERAL
+    );
+});
+
+tryOnBeforeMount(() => {
+    if (!props.current && !props.withoutAutoToggle) {
+        emit(
+            'change',
+            contacts.value.find(contact => contact.isMain)
+        );
+    }
+});
 </script>

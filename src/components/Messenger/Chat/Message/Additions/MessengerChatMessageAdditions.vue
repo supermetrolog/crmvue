@@ -1,71 +1,79 @@
 <template>
     <div class="messenger-chat-message__additions">
         <MessengerChatMessageAdditionsTask
-            v-for="addition in activeAdditions.tasks"
-            :key="addition"
-            :addition="addition"
-            :editable="userCanEdit(addition)"
-            :draggable="userCanDrag(addition)"
+            v-for="task in tasks"
+            :key="task.id"
+            @read="readTask(task)"
+            :addition="task"
+            :editable="userCanEdit(task)"
+            :draggable="userCanDrag(task)"
         />
         <MessengerChatMessageAdditionsAlert
-            v-for="addition in activeAdditions.alerts"
-            :key="addition"
-            :addition="addition"
-            :editable="userCanEdit(addition)"
-            :draggable="userCanDrag(addition)"
-        />
-        <MessengerChatMessageAdditionsReminder
-            v-for="addition in activeAdditions.reminders"
-            :key="addition"
-            :addition="addition"
-            :editable="userCanEdit(addition)"
-            :draggable="userCanDrag(addition)"
+            v-for="notification in notifications"
+            :key="notification.id"
+            :addition="notification"
+            :editable="userCanEdit(notification)"
+            :draggable="userCanDrag(notification)"
         />
     </div>
 </template>
-<script>
+<script setup>
 import MessengerChatMessageAdditionsTask from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditionsTask.vue';
-import { mapGetters } from 'vuex';
 import MessengerChatMessageAdditionsAlert from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditionsAlert.vue';
-import MessengerChatMessageAdditionsReminder from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditionsReminder.vue';
+import { useStore } from 'vuex';
+import dayjs from 'dayjs';
+import api from '@/api/api.js';
+import { useNotify } from '@/utils/useNotify.js';
+import { inject } from 'vue';
 
-export default {
-    name: 'MessengerChatMessageAdditions',
-    components: {
-        MessengerChatMessageAdditionsReminder,
-        MessengerChatMessageAdditionsAlert,
-        MessengerChatMessageAdditionsTask
+const messageId = inject('$messageID');
+
+defineProps({
+    tasks: {
+        type: Array,
+        required: true
     },
-    props: {
-        additions: {
-            type: Object,
-            required: true
-        }
-    },
-    computed: {
-        ...mapGetters({ currentUser: 'THIS_USER' }),
-        activeAdditions() {
-            // Определение только активных задач/напоминаний и т.д
-            return Object.keys(this.additions).reduce((acc, key) => {
-                acc[key] = this.additions[key].filter(addition => addition.deleted_at == null);
-                return acc;
-            }, {});
-        }
-    },
-    methods: {
-        userCanDrag(addition) {
-            return (
-                Number(addition.created_by_id) === Number(this.currentUser.id) ||
-                Number(addition.user_id) === Number(this.currentUser.id) ||
-                this.$store.getters.isModerator
-            );
-        },
-        userCanEdit(addition) {
-            return (
-                Number(addition.created_by_id) === Number(this.currentUser.id) ||
-                this.$store.getters.isModerator
-            );
-        }
+    notifications: {
+        type: Array,
+        required: true
     }
+});
+
+const store = useStore();
+const notify = useNotify();
+
+const userCanDrag = addition => {
+    return (
+        Number(addition.created_by_id) === Number(store.getters.THIS_USER.id) ||
+        Number(addition.user_id) === Number(store.getters.THIS_USER.id) ||
+        store.getters.isModerator
+    );
+};
+
+const userCanEdit = addition => {
+    return (
+        Number(addition.created_by_id) === Number(store.getters.THIS_USER.id) ||
+        store.getters.isModerator
+    );
+};
+
+const readTask = async task => {
+    const payload = {
+        chatMemberId: store.state.Messenger.currentDialog.id,
+        modelType: store.state.Messenger.currentDialog.model_type
+    };
+
+    task.isLoading = true;
+    const observed = await api.task.read(task.id);
+    task.isLoading = false;
+
+    if (!observed) notify.info('При чтении задачи произошла ошибка. Попробуйте позже.');
+
+    notify.success('Задача успешно прочитана.');
+    store.commit('Messenger/onTaskObserved', payload);
+    const observerIndex = task.observers.findIndex(
+        observer => observer.user_id === store.getters.THIS_USER.id
+    );
+    if (observerIndex !== -1) task.observers[observerIndex].viewed_at = dayjs();
 };
 </script>

@@ -9,9 +9,9 @@
         </teleport>
         <MessengerBar @select="selectTab" :current="currentTab" />
         <div v-if="isActive" ref="body" class="messenger__content">
-            <MessengerAside class="messenger__aside" />
-            <MessengerPanel class="messenger__panel" />
-            <MessengerChat class="messenger__chat" />
+            <MessengerAside :current-tab="currentTab" />
+            <MessengerPanel :current-tab="currentTab" />
+            <MessengerChat :current-tab="currentTab" />
         </div>
     </div>
 </template>
