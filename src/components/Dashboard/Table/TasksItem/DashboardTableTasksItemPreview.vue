@@ -22,13 +22,6 @@
                     <HoverActionsButton @click="toChat" label="Перейти в чат">
                         <i class="fa-solid fa-comment-alt" />
                     </HoverActionsButton>
-                    <!--                    <HoverActionsButton-->
-                    <!--                        v-if="!canBeViewed"-->
-                    <!--                        @click.stop="moveSettingsIsVisible = !moveSettingsIsVisible"-->
-                    <!--                        label="Стать наблюдателем"-->
-                    <!--                    >-->
-                    <!--                        <i class="fa-solid fa-eye"></i>-->
-                    <!--                    </HoverActionsButton>-->
                     <HoverActionsButton v-if="editable" @click="editTask" label="Редактировать">
                         <i class="fa-solid fa-pen" />
                     </HoverActionsButton>
@@ -47,14 +40,14 @@
                             Задача #{{ task.id }}
                         </DashboardChip>
                         <DashboardChip
-                            class="dashboard-task-item-preview__chip"
-                            :class="statusColor"
+                            class="dashboard-task-item-preview__chip dashboard-task-item-preview__status"
                         >
-                            {{ status }}
+                            <i :class="statusIcon" />
+                            <span>{{ status }}</span>
                         </DashboardChip>
                         <DashboardChip
                             v-if="isAlreadyExpired"
-                            class="dashboard-task-item-preview__chip dashboard-cl-danger"
+                            class="dashboard-bg-danger text-white"
                         >
                             Просрочено
                         </DashboardChip>
@@ -65,9 +58,10 @@
                             <DashboardChip
                                 v-for="tag in task.tags"
                                 :key="tag.id"
-                                class="dashboard-task-item-preview__chip"
+                                class="dashboard-task-item-preview__tag"
+                                :style="{ backgroundColor: '#' + tag.color }"
                             >
-                                <TaskTagOption :tag="tag" />
+                                <span>{{ tag.name ?? tag.label }}</span>
                             </DashboardChip>
                         </div>
                     </template>
@@ -230,12 +224,13 @@ import DashboardTableTasksItemPreviewComments from '@/components/Dashboard/Table
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import DashboardTableTasksItemPreviewComment from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemPreviewComment.vue';
 import { useStore } from 'vuex';
-import TaskTagOption from '@/components/common/Forms/TaskTagOption.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import Spinner from '@/components/common/Spinner.vue';
 import MessengerChatShortMessage from '@/components/Messenger/Chat/Message/MessengerChatShortMessage.vue';
 import EmptyLabel from '@/components/common/EmptyLabel.vue';
 import Textarea from '@/components/common/Forms/Textarea.vue';
+import { debounce } from '@/utils/debounce.js';
+import MessengerDialogUser from '@/components/Messenger/Dialog/MessengerDialogUser.vue';
 
 const emit = defineEmits(['updated', 'to-chat', 'read']);
 const props = defineProps({
@@ -298,12 +293,14 @@ const dayToExpiredFromNow = computed(() =>
     plural(Math.abs(expiredDayjs.value.diff(dayjs(), 'days')), '%d день', '%d дня', '%d дней')
 );
 const status = computed(() => taskOptions.status[props.task.status]);
-const statusColor = computed(() => taskOptions.statusColor[props.task.status]);
+const statusIcon = computed(() => taskOptions.statusIcon[props.task.status]);
 const canBeDeleted = computed(() => store.getters.isAdmin || store.getters.isDirector);
 const canBeViewed = computed(() => {
-    if (props.task.observers?.length) {
+    if (props.task?.observers?.length) {
         return props.task.observers.some(
-            element => element.user.id === store.getters.THIS_USER.id && element.viewed_at === null
+            observer =>
+                Number(observer.user_id) === Number(store.getters.THIS_USER.id) &&
+                observer.viewed_at === null
         );
     }
 
@@ -351,13 +348,15 @@ const readTask = async () => {
 
 const currentDialogComponent = computed(() => {
     if (props.task.related_by.chat_member.model_type === 'request') return MessengerDialogRequest;
+    if (props.task.related_by.chat_member.model_type === 'user') return MessengerDialogUser;
     return MessengerDialogObject;
 });
 
 watch(
     () => [props.visible, props.task?.id],
-    () => {
+    ([isVisibleNewValue]) => {
         commentsIsOpen.value = false;
+        if (isVisibleNewValue && canBeViewed.value) debouncedReadTask();
     }
 );
 
@@ -396,21 +395,25 @@ const changeStatus = async payload => {
 
 const toChat = () => {
     const modelType = props.task.related_by.chat_member.model_type;
-    let companyID = null;
-    let objectID = null;
-
     if (modelType === 'request') {
-        companyID = props.task.related_by.chat_member.model.company_id;
-        objectID = props.task.related_by.chat_member.model.id;
+        emit('to-chat', {
+            companyID: props.task.related_by.chat_member.model.company_id,
+            modelType,
+            objectID: props.task.related_by.chat_member.model.id
+        });
     } else if (modelType === 'object') {
-        companyID = props.task.related_by.chat_member.model.object.company.id;
-        objectID = props.task.related_by.chat_member.model.object.id;
+        emit('to-chat', {
+            companyID: props.task.related_by.chat_member.model.object.company.id,
+            modelType,
+            objectID: props.task.related_by.chat_member.model.object.id
+        });
+    } else {
+        emit('to-chat', {
+            userID: props.task.related_by.chat_member.model.id,
+            modelType
+        });
     }
-
-    emit('to-chat', {
-        companyID,
-        modelType,
-        objectID
-    });
 };
+
+const debouncedReadTask = debounce(readTask, 500);
 </script>

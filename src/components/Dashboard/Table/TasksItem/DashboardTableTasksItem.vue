@@ -1,8 +1,13 @@
 <template>
     <div
-        @click="$emit('view', $event)"
         class="dashboard-card-task"
-        :class="{ expired: isAlreadyExpired, completed: isCompleted, self: isForMe }"
+        :class="{
+            expired: isAlreadyExpired,
+            completed: isCompleted,
+            self: isForMe,
+            myself: isMyTask,
+            viewing: isViewing
+        }"
     >
         <div class="dashboard-card-task__labels" :class="{ moved: isMyTask || isViewing }">
             <DashboardTableTasksItemLabel v-if="isNew">Новая</DashboardTableTasksItemLabel>
@@ -17,22 +22,29 @@
                 {{ tag.name }}
             </DashboardTableTasksItemLabel>
         </div>
-        <div class="dashboard-card-task__body">
+        <div
+            v-if="isMyTask && isForMe"
+            v-tippy="'Назначена самому себе'"
+            class="dashboard-card-task__icon dashboard-card-task__way"
+        >
+            <i class="fa-solid fa-user-tag"></i>
+        </div>
+        <div
+            v-else-if="isMyTask"
+            v-tippy="'Назначена мной'"
+            class="dashboard-card-task__icon dashboard-card-task__way"
+        >
+            <i class="fa-solid fa-arrow-right-long"></i>
+        </div>
+        <div
+            v-else-if="isViewing"
+            v-tippy="'Вы являетесь наблюдателем'"
+            class="dashboard-card-task__icon dashboard-card-task__way"
+        >
+            <i class="fa-solid fa-eye" :class="{ 'dashboard-cl-success': isViewed }"></i>
+        </div>
+        <div @click="$emit('view', $event)" class="dashboard-card-task__body">
             <div class="dashboard-card-task__content">
-                <div
-                    v-if="isMyTask"
-                    v-tippy="'Назначена мной'"
-                    class="dashboard-card-task__icon dashboard-card-task__way"
-                >
-                    <i class="fa-solid fa-arrow-right-long"></i>
-                </div>
-                <div
-                    v-else-if="isViewing"
-                    v-tippy="'Вы являетесь наблюдателем'"
-                    class="dashboard-card-task__icon dashboard-card-task__way"
-                >
-                    <i class="fa-solid fa-eye"></i>
-                </div>
                 <span class="dashboard-card-task__id">#{{ task.id }}</span>
                 <Avatar
                     v-if="task.created_by_type === 'user'"
@@ -110,7 +122,15 @@ const isMyTask = computed(() => {
 const isForMe = computed(() => {
     return Number(props.task.user_id) === Number(store.getters.THIS_USER.id);
 });
-const isViewing = computed(() => !isMyTask.value && !isForMe.value);
+const isObserving = computed(() =>
+    props.task.observers.some(observer => observer.user_id === store.getters.THIS_USER.id)
+);
+const isViewed = computed(() =>
+    props.task.observers.some(
+        observer => observer.user_id === store.getters.THIS_USER.id && observer.viewed_at !== null
+    )
+);
+const isViewing = computed(() => !isMyTask.value && !isForMe.value && isObserving.value);
 const isCompleted = computed(() => props.task.status === taskOptions.statusTypes.COMPLETED);
 const expiredDayjs = computed(() => dayjs(props.task.end));
 const isCanceled = computed(() => props.task.status === taskOptions.statusTypes.CANCELED);

@@ -47,6 +47,13 @@ const statusColor = {
     4: 'dashboard-cl-danger'
 };
 
+const statusIcon = {
+    1: 'fa-solid fa-plus',
+    2: 'fa-regular fa-hourglass-half',
+    3: 'fa-solid fa-check',
+    4: 'fa-solid fa-pause'
+};
+
 const typeStatement = {
     RECEIVED: 'user_id',
     GIVEN: 'created_by_id',
@@ -59,6 +66,7 @@ export const taskOptions = {
     statusList,
     status,
     statusColor,
+    statusIcon,
     typeStatement,
     clearStatusTypes
 };

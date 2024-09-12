@@ -48,7 +48,11 @@
                             </Form>
                         </div>
                     </template>
-                    <DashboardTableTasks :is-loading="isLoading" :tasks="tasks.data" />
+                    <DashboardTableTasks
+                        @task-updated="onTaskUpdated"
+                        :is-loading="isLoading"
+                        :tasks="tasks.data"
+                    />
                 </DashboardCard>
             </div>
         </div>
@@ -157,7 +161,7 @@ const createQuery = page => {
     if (filterStatus.value.length) {
         query.status = filterStatus.value;
     }
-    if (filterType.value.length) setModeInQuery(query);
+    if (filterType.value.length && targetUser.value.id) setModeInQuery(query);
     else if (targetUser.value) {
         query.created_by_id = targetUser.value.id;
         query.observer_id = targetUser.value.id;
@@ -172,7 +176,7 @@ const createQuery = page => {
 const createCountsQuery = () => {
     const query = {};
 
-    if (filterType.value.length) {
+    if (filterType.value.length && targetUser.value) {
         filterType.value.forEach(element => {
             query[element] = targetUser.value.id;
         });
@@ -238,6 +242,11 @@ const fetchRelationCounts = async () => {
 const debouncedFetchTasks = debounce(fetchTasks, 400);
 const debouncedFetchCounts = debounce(fetchCounts, 400);
 const debouncedForInputTasks = debounce(fetchTasks, 500);
+
+const onTaskUpdated = task => {
+    const taskIndex = tasks.data.findIndex(element => element.id === task.id);
+    if (taskIndex !== -1) Object.assign(tasks.data[taskIndex], task);
+};
 
 const init = () => {
     fetchCounts();
