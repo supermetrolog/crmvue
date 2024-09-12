@@ -9,12 +9,12 @@
         cursor: pointer;
 
         &:hover {
-            background-color: rgba(16, 185, 129, 0.4);
+            background-color: rgba(16, 185, 129, 0.4)!important;
         }
     }
 
     &.current {
-        background-color: rgba(16, 185, 129, 0.6);
+        background-color: rgba(16, 185, 129, 0.6)!important;
     }
 
     &.archived {
@@ -126,6 +126,10 @@
         .tooltip {
             margin-right: 5px;
         }
+    }
+
+    &:has(&__address:hover) .messenger-dialog__footer {
+        opacity: .1;
     }
 
     &__company {
@@ -278,5 +282,25 @@
         span:last-child {
             margin-left: 5px;
         }
+    }
+
+    &:has(&__regions:hover) .messenger-dialog__footer {
+        opacity: .1;
+    }
+}
+
+.messenger-dialog-user {
+    &__body {
+        @include mixins.flex-box($gap: 10px);
+    }
+
+    &__name {
+        font-weight: 500;
+    }
+
+    &__role {
+        font-size: 14px;
+        color: #05865f;
+        font-weight: 500;
     }
 }
