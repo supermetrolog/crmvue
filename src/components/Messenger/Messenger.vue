@@ -32,10 +32,12 @@ import {
     onUnmounted,
     provide,
     ref,
+    shallowReactive,
     shallowRef,
     watch
 } from 'vue';
 import { useNotify } from '@/utils/useNotify.js';
+import { messenger } from '@/const/messenger.js';
 
 const store = useStore();
 const notify = useNotify();
@@ -45,6 +47,11 @@ const isOpen = shallowRef(false);
 const hasPanel = shallowRef(false);
 const isActive = shallowRef(false);
 const timeout = shallowRef(null);
+
+const currentTab = shallowReactive({
+    name: null,
+    sort: null
+});
 
 provide('$openAttachments', () => attachments.value?.open());
 
@@ -91,7 +98,11 @@ const openChat = async (companyID, objectID, modelType = 'object') => {
         return;
     }
 
-    isOpen.value = true;
+    if (
+        messenger.tabsGroups[modelType + 's'] !==
+        messenger.tabsGroups[store.state.Messenger.currentDialogType + 's']
+    )
+        store.commit('Messenger/setCurrentPanel', null);
 
     store.dispatch('Messenger/selectPanel', {
         companyID: companyID,
@@ -106,6 +117,9 @@ const openChat = async (companyID, objectID, modelType = 'object') => {
         dialogType: modelType,
         anywayOpen: true
     });
+
+    currentTab.name = dialog.model_type + 's';
+    isOpen.value = true;
 
     return true;
 };
@@ -134,10 +148,12 @@ const openChatByID = async chatMemberID => {
         }
     }
 
+    store.commit('Messenger/setCurrentPanel', null);
+    currentTab.name = dialog.model_type + 's';
     isOpen.value = true;
 
     store.dispatch('Messenger/selectPanel', {
-        companyID: companyID,
+        companyID,
         dialogID: dialog.id,
         dialogType: dialog.model_type,
         anywayOpen: true
@@ -145,7 +161,7 @@ const openChatByID = async chatMemberID => {
 
     store.dispatch('Messenger/selectChat', {
         dialogID: dialog.id,
-        companyID: companyID,
+        companyID,
         dialogType: dialog.model_type,
         anywayOpen: true
     });
@@ -153,13 +169,71 @@ const openChatByID = async chatMemberID => {
     return true;
 };
 
+const selectTab = (tab, tabSorting = null) => {
+    const oldTab = {
+        name: currentTab.name,
+        sort: currentTab.sort
+    };
+
+    if (oldTab.name !== tab) {
+        currentTab.name = tab;
+        currentTab.sort = null;
+    }
+
+    if (tabSorting === currentTab.sort && oldTab.name === tab) {
+        currentTab.sort = null;
+    } else if (tabSorting !== null) {
+        currentTab.sort = tabSorting;
+    }
+
+    store.commit('Messenger/setCurrentAsidePanel', tab);
+
+    if (tab !== null && messenger.tabsGroups[tab] !== messenger.tabsGroups[oldTab.name])
+        store.commit('Messenger/setCurrentPanel', null);
+
+    if (oldTab.name === null || isOpen.value === false) isOpen.value = true;
+    else if (tab === oldTab.name && tabSorting === null) isOpen.value = false;
+};
+
 const openChatByCompanyID = companyID => {
+    store.commit('Messenger/setCurrentPanel', null);
+    currentTab.name = messenger.tabs.OBJECTS;
     isOpen.value = true;
     store.dispatch('Messenger/selectPanelWithoutDialog', companyID);
     return true;
 };
 
-defineExpose({ openChat, openChatByID, openChatByCompanyID });
+const openChatByUserID = async userId => {
+    const dialog = await api.messenger.getDialogByQuery({ user_id: userId });
+
+    if (!dialog) {
+        notify.info('Данные о чате не были найдены в системе.');
+        return;
+    }
+
+    currentTab.name = messenger.tabs.USERS;
+    store.commit('Messenger/setCurrentAsidePanel', messenger.tabs.USERS);
+    store.commit('Messenger/setCurrentPanel', null);
+    isOpen.value = true;
+
+    store.dispatch('Messenger/selectPanel', {
+        userID: dialog.model.id,
+        dialogID: dialog.id,
+        dialogType: dialog.model_type,
+        anywayOpen: true
+    });
+
+    store.dispatch('Messenger/selectChat', {
+        userID: dialog.model.id,
+        dialogID: dialog.id,
+        dialogType: dialog.model_type,
+        anywayOpen: true
+    });
+
+    return true;
+};
+
+defineExpose({ openChat, openChatByID, openChatByCompanyID, openChatByUserID });
 
 onMounted(() => {
     document.addEventListener('keydown', escapeHandler);

@@ -44,11 +44,19 @@ const THIS_USER = computed(() => store.getters.THIS_USER);
 provide('$openPreviewer', image => previewer.value.toggle(image));
 provide(
     '$openMessengerChat',
-    async ({ companyID = null, objectID = null, chatMemberID = null, modelType = 'object' }) => {
+    async ({
+        companyID = null,
+        objectID = null,
+        chatMemberID = null,
+        modelType = 'object',
+        userID = null
+    }) => {
         if (chatMemberID) return await messenger.value.openChatByID(chatMemberID);
         else if (companyID !== null && objectID === null)
             return await messenger.value.openChatByCompanyID(companyID);
-        else {
+        else if (userID !== null) {
+            return await messenger.value.openChatByUserID(userID);
+        } else {
             return await messenger.value.openChat(companyID, objectID, modelType);
         }
     }
