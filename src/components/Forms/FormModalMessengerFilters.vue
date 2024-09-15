@@ -1,35 +1,6 @@
 <template>
-    <Modal @close="$emit('close')" show width="800" title="Настройка фильтров">
-        <Form>
-            <FormGroup>
-                <div class="col-12">
-                    <span class="form__subtitle">Дата последнего звонка</span>
-                    <div class="form__row mt-1">
-                        <CheckboxChip
-                            v-for="(filter, index) in callFilters"
-                            :key="index"
-                            v-model="form.call"
-                            :value="index"
-                            :text="filter"
-                        />
-                    </div>
-                </div>
-            </FormGroup>
-            <FormGroup>
-                <div class="col-12">
-                    <span class="form__subtitle">Вид сделки</span>
-                    <div class="form__row mt-1">
-                        <CheckboxChip
-                            v-for="(dealType, index) in dealTypeFilters"
-                            :key="index"
-                            v-model="form.dealType"
-                            :value="index"
-                            :text="dealType"
-                        />
-                    </div>
-                </div>
-            </FormGroup>
-        </Form>
+    <Modal @close="$emit('close')" show width="900" title="Настройка фильтров">
+        <component :is="currentFiltersComponent" v-model="localeModelValue" />
         <template #footer>
             <MessengerButton @click="apply" color="success">Применить</MessengerButton>
             <MessengerButton @click="$emit('close')">Отмена</MessengerButton>
@@ -39,65 +10,44 @@
         </template>
     </Modal>
 </template>
-<script>
+<script setup>
 import Modal from '@/components/common/Modal.vue';
-import Form from '@/components/common/Forms/Form.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
-import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';
+import { computed, onBeforeMount, ref } from 'vue';
+import { useStore } from 'vuex';
+import { messenger } from '@/const/messenger.js';
+import MessengerAsideFiltersForConsultants from '@/components/Messenger/Aside/Filters/MessengerAsideFiltersForConsultants.vue';
+import MessengerAsideFiltersForObjects from '@/components/Messenger/Aside/Filters/MessengerAsideFiltersForObjects.vue';
 
-const callFilters = {
-    0: 'Менее 30 дней',
-    1: 'Более 30 дней',
-    2: 'Более 60 дней',
-    3: 'Более 90 дней'
+const COMPONENTS = {
+    [messenger.tabs.OBJECTS]: MessengerAsideFiltersForObjects,
+    [messenger.tabs.REQUESTS]: MessengerAsideFiltersForObjects,
+    [messenger.tabs.USERS]: MessengerAsideFiltersForConsultants
 };
 
-const dealTypeFilters = {
-    0: 'Аренда',
-    1: 'Продажа',
-    2: 'Ответ-хранение',
-    3: 'Субаренда'
+const store = useStore();
+
+const modelValue = defineModel({ type: Array, default: () => [] });
+const localeModelValue = ref([]);
+
+const hasFilters = computed(() => localeModelValue.value.length || modelValue.value.length);
+
+const clear = () => {
+    modelValue.value = [];
+    localeModelValue.value = [];
 };
 
-export default {
-    name: 'FormModalMessengerFilters',
-    components: { MessengerButton, CheckboxChip, FormGroup, Form, Modal },
-    props: {
-        modelValue: {
-            type: Object,
-            required: true
-        }
-    },
-    data() {
-        return {
-            callFilters: callFilters,
-            dealTypeFilters: dealTypeFilters,
-            form: {
-                call: [],
-                dealType: []
-            }
-        };
-    },
-    computed: {
-        hasFilters() {
-            return this.form.call.length || this.form.dealType.length;
-        }
-    },
-    methods: {
-        apply() {
-            this.$emit('update:modelValue', this.form);
-            this.$emit('close');
-        },
-        clear() {
-            this.form = {
-                call: [],
-                dealType: []
-            };
-        }
-    },
-    created() {
-        this.form = { ...this.form, ...this.modelValue };
-    }
+const apply = () => {
+    modelValue.value = localeModelValue.value;
 };
+
+const currentFiltersComponent = computed(() => {
+    if (store.state.Messenger.currentAsidePanel)
+        return COMPONENTS[store.state.Messenger.currentAsidePanel];
+    return COMPONENTS[messenger.tabs.OBJECTS];
+});
+
+onBeforeMount(() => {
+    if (modelValue.value.length) localeModelValue.value = modelValue.value;
+});
 </script>

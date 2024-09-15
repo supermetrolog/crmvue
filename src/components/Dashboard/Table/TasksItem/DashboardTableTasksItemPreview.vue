@@ -230,6 +230,7 @@ import MessengerChatShortMessage from '@/components/Messenger/Chat/Message/Messe
 import EmptyLabel from '@/components/common/EmptyLabel.vue';
 import Textarea from '@/components/common/Forms/Textarea.vue';
 import { debounce } from '@/utils/debounce.js';
+import MessengerDialogUser from '@/components/Messenger/Dialog/MessengerDialogUser.vue';
 
 const emit = defineEmits(['updated', 'to-chat', 'read']);
 const props = defineProps({
@@ -347,6 +348,7 @@ const readTask = async () => {
 
 const currentDialogComponent = computed(() => {
     if (props.task.related_by.chat_member.model_type === 'request') return MessengerDialogRequest;
+    if (props.task.related_by.chat_member.model_type === 'user') return MessengerDialogUser;
     return MessengerDialogObject;
 });
 
@@ -393,22 +395,24 @@ const changeStatus = async payload => {
 
 const toChat = () => {
     const modelType = props.task.related_by.chat_member.model_type;
-    let companyID = null;
-    let objectID = null;
-
     if (modelType === 'request') {
-        companyID = props.task.related_by.chat_member.model.company_id;
-        objectID = props.task.related_by.chat_member.model.id;
+        emit('to-chat', {
+            companyID: props.task.related_by.chat_member.model.company_id,
+            modelType,
+            objectID: props.task.related_by.chat_member.model.id
+        });
     } else if (modelType === 'object') {
-        companyID = props.task.related_by.chat_member.model.object.company.id;
-        objectID = props.task.related_by.chat_member.model.object.id;
+        emit('to-chat', {
+            companyID: props.task.related_by.chat_member.model.object.company.id,
+            modelType,
+            objectID: props.task.related_by.chat_member.model.object.id
+        });
+    } else {
+        emit('to-chat', {
+            userID: props.task.related_by.chat_member.model.id,
+            modelType
+        });
     }
-
-    emit('to-chat', {
-        companyID,
-        modelType,
-        objectID
-    });
 };
 
 const debouncedReadTask = debounce(readTask, 500);

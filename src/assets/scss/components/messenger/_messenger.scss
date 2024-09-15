@@ -4,7 +4,7 @@
     position: fixed;
     bottom: 0;
     right: 0;
-    width: 80vw;
+    width: calc(100vw - 140px);
     height: 100vh;
     z-index: 100;
 
@@ -16,6 +16,10 @@
 
         &.has-panel {
             transform: translateX(0);
+        }
+
+        .messenger-bar-tab {
+            opacity: 1;
         }
     }
 
@@ -30,7 +34,6 @@
     }
 
     &__content {
-        background-color: #fff;
         box-shadow: 0 0 15px 5px rgba(13, 31, 47, .2);
         display: grid;
         grid-template-columns: 25% 25% 50%;
@@ -50,53 +53,96 @@
 }
 
 .messenger-bar {
-    transform: translateX(-70px) translateY(calc(50vh - 50%));
+    transform: translateX(-68px) translateY(calc(50vh - 50%));
     position: absolute;
     z-index: 20;
-    margin: auto 0;
-    background-color: #fff;
     box-shadow: 0 0 15px 5px rgba(13, 31, 47, .2);
-    padding: 15px;
     @include mixins.flex-box($a: center, $d: column);
     width: max-content;
-    gap: 10px;
+}
+
+.messenger-bar-tab {
+    opacity: .3;
+    background-color: #fff;
+    padding: 15px 8px 15px 5px;
     cursor: pointer;
-    transition: color .5s ease-in-out, opacity .5s ease-in-out;
-    opacity: .5;
+    border-left: 1px solid rgba(0, 0, 0, 0.4);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+    border-top: 1px solid rgba(0, 0, 0, 0.4);
+    @include mixins.transition(color .5s ease-in-out, opacity .5s ease-in-out, background-color);
+    @include mixins.flex-box($a: center);
 
     &:hover {
         opacity: 1;
+        background-color: #caf1e4;
     }
 
-    i {
-        font-size: 22px;
+    &.active {
+        background-color: #6fd2b1;
+
+        .messenger-bar-tab__element.active {
+            opacity: 1;
+            box-shadow: 0 0 1px 2px rgba(0, 0, 0, .1);
+            filter: grayscale(0);
+        }
+    }
+
+    &__label {
+        writing-mode: vertical-lr;
+        transform: rotateZ(180deg);
+    }
+
+    &__list {
+        @include mixins.flex-box($d: column, $gap: 5px);
     }
 
     &__element {
         position: relative;
         background-color: #0f6674;
-        height: 40px;
-        width: 40px;
+        height: 30px;
+        width: 30px;
         color: #fff;
+        @include mixins.transition(opacity);
+
+        opacity: .8;
+        filter: grayscale(.8);
 
         &.disabled {
-            opacity: .4;
+            opacity: .2;
+        }
+
+        &:hover {
+            opacity: .8;
+            filter: grayscale(0);
+        }
+
+        i {
+            font-size: 16px;
         }
     }
 
     &__chip {
         position: absolute;
-        top: -4px;
-        right: -4px;
+        top: -6px;
+        right: -6px;
         border-radius: 50%;
         height: 20px;
-        width: 20px;
-        @include mixins.flex-box($a: center, $j: center);
+        min-width: 20px;
+        width: max-content;
+        padding: 0 3px;
         font-size: 11px;
         line-height: 11px;
         background-color: #f93154;
         color: #fff;
         font-weight: 600;
+        border: 1px solid rgba(0, 0, 0, .2);
+        @include mixins.flex-box($a: center, $j: center);
+    }
+
+    &__phone {
+        background-color: #fff;
+        border: 2px solid #f93154;
+        color: #f93154;
     }
 }
 
@@ -124,4 +170,68 @@
 
 .modal-messenger-attachment {
     z-index: 4004;
+}
+
+.messenger-tabs {
+    width: 40px;
+    z-index: 11;
+    flex-shrink: 0;
+
+    &__tab {
+        min-height: 120px;
+        padding: 15px 5px;
+        writing-mode: vertical-lr;
+        transform: rotate(180deg);
+        background-color: #dfdfde;
+        border: 1px solid rgba(0, 0, 0, .1);
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        @include mixins.flex-box($a: center, $j: center);
+        @include mixins.transition(background-color);
+
+        @include mixins.hover {
+            background-color:  #6fd2b1;
+        }
+
+        &.active {
+            background-color:  #6fd2b1;
+
+            @include mixins.hover {
+                background-color: #28d39b;
+            }
+        }
+    }
+
+    &__count {
+        writing-mode: initial;
+        transform: rotateZ(180deg);
+        padding: 3px;
+        height: 24px;
+        width: 24px;
+        border: 1px solid #000;
+        font-size: 12px;
+        border-radius: 50%;
+        background-color: #fff;
+        @include mixins.flex-box($a: center, $j: center);
+    }
+}
+
+.messenger-page {
+    background-color: #f8f8f8;
+}
+
+.messenger-column {
+    position: relative;
+
+    &::before {
+        content: '';
+        display: block;
+        height: 100%;
+        width: calc(100% - 40px);
+        background-color: #f8f8f8;
+        position: absolute;
+        right: 0;
+        z-index: -1;
+    }
 }

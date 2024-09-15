@@ -5,6 +5,7 @@ import { entityOptions } from '@/const/options/options.js';
 import { notify } from '@kyvg/vue3-notification';
 import { messagesToSections } from '@/utils/mapper.js';
 import { ucFirst } from '@/utils/formatter.js';
+import { messenger } from '@/const/messenger.js';
 
 const needCacheMessage = (dialogID, asideID, panelID) => {
     // Лучше не трогать условие.. Оно долго выводилось
@@ -35,6 +36,7 @@ const getInitialState = () => ({
     newMessage: '',
     cachedNewMessages: {},
     querySearch: '',
+    consultantsQuerySearch: '',
 
     currentDialogType: null,
 
@@ -48,11 +50,34 @@ const getInitialState = () => ({
     currentAsideDialogID: null,
     currentPanelDialogID: null,
     currentPanelCompanyID: null,
+    currentPanelUserID: null,
+    currentAsidePanel: null,
 
     unreadMessageCount: 0,
     unreadNotificationCount: 0,
     unreadTaskCount: 0,
     unreadReminderCount: 0,
+
+    counts: {
+        objects: {
+            outdated_call_count: 0,
+            unread_message_count: 0,
+            unread_task_count: 0,
+            unread_reminder_count: 0
+        },
+        requests: {
+            outdated_call_count: 0,
+            unread_message_count: 0,
+            unread_task_count: 0,
+            unread_reminder_count: 0
+        },
+        users: {
+            outdated_call_count: 0,
+            unread_message_count: 0,
+            unread_task_count: 0,
+            unread_reminder_count: 0
+        }
+    },
 
     loadingChat: false,
     loadingAside: false,
@@ -68,12 +93,18 @@ const Messenger = {
         setDialogs(state, dialogs) {
             [state.chatMembersObjects, state.chatMembersRequests] = [...dialogs];
         },
+        setConsultantsDialogs(state, dialogs) {
+            state.chatMembersUsers = dialogs;
+        },
         addDialogs(state, { dialogType, dialogs, pagination }) {
             state[`chatMembers${dialogType}`].data.push(...dialogs);
             state[`chatMembers${dialogType}`].pagination = pagination;
         },
         setQuerySearch(state, value) {
             state.querySearch = value;
+        },
+        setConsultantsQuerySearch(state, value) {
+            state.consultantsQuerySearch = value;
         },
         setNewMessage(state, value) {
             state.newMessage = value;
@@ -186,6 +217,9 @@ const Messenger = {
         setCurrentPanelCompanyID(state, value) {
             state.currentPanelCompanyID = value;
         },
+        setCurrentPanelUserID(state, value) {
+            state.currentPanelUserID = value;
+        },
         setCurrentDialogType(state, value) {
             state.currentDialogType = value;
         },
@@ -204,15 +238,6 @@ const Messenger = {
             const currentMessage = state.messages.find(message => message.id === messageID);
 
             if (currentMessage) currentMessage[`${additionType}s`].push(addition);
-        },
-
-        completeTask() {
-            // const message = state.messages.find(message => message.id === task.message_id);
-            //
-            // if (message) {
-            //     const addition = message.additions.find(addition => addition.id === task.id);
-            //     addition.completed = !addition.completed;
-            // }
         },
 
         deleteAddition(state, { additionType, messageID, additionID }) {
@@ -249,36 +274,16 @@ const Messenger = {
             const initialState = getInitialState();
             Object.keys(initialState).forEach(key => (state[key] = initialState[key]));
         },
-        setCounts(state, obj) {
-            state.unreadTaskCount = Number(obj.unread_task_count);
-            state.unreadMessageCount = Number(obj.unread_message_count);
-            state.unreadNotificationCount = Number(obj.unread_notification_count);
-            state.unreadReminderCount = Number(obj.unread_reminder_count);
+        setCounts(state, counts) {
+            state.counts.objects = counts[0].value[0];
+            state.counts.requests = counts[1].value[0];
+            state.counts.users = counts[2].value[0];
         },
         setLastNotViewedMessage(state, messageID) {
             state.lastNotViewedMessageID = messageID;
         },
         setLessThenMessageId(state, messageID) {
             state.lessThenMessageId = messageID;
-        },
-        updateDialogCounts(state, messageID) {
-            const modelTypeName = 'chatMembers' + ucFirst(state.currentDialog.model_type) + 's';
-
-            const chatMemberIndex = state[modelTypeName].data.findIndex(
-                element => element.id === state.currentDialog.id
-            );
-            if (chatMemberIndex !== -1) {
-                let count = 0;
-                for (
-                    let i = state.messages.length - 1;
-                    i > 0 && state.messages[i].id !== messageID;
-                    i--
-                ) {
-                    if (!state.messages[i].isLabel && !state.messages[i].is_viewed) count++;
-                }
-
-                state[modelTypeName].data[chatMemberIndex].statistic.messages = count;
-            }
         },
         clearCountersInterval(state) {
             clearInterval(state.countersInterval);
@@ -289,6 +294,91 @@ const Messenger = {
         },
         setTags(state, tags) {
             state.tags = tags;
+        },
+        setCurrentAsidePanel(state, value) {
+            if (messenger.tabsGroups[state.currentAsidePanel] !== messenger.tabsGroups[value]) {
+                state.currentPanelCompanyID = null;
+                state.currentAsideDialogID = null;
+                state.currentPanelDialogID = null;
+                state.currentChat = null;
+            }
+
+            state.currentAsidePanel = value;
+        },
+
+        onTaskObserved(state, { chatMemberId, modelType }) {
+            const chatMemberStateName = 'chatMembers' + ucFirst(modelType) + 's';
+
+            const chatMemberIndex = state[chatMemberStateName].data.findIndex(
+                element => element.id === chatMemberId
+            );
+
+            if (chatMemberIndex !== -1) {
+                state[chatMemberStateName].data[chatMemberIndex].statistic.tasks--;
+            }
+
+            if (state.counts[`${modelType}s`].unread_task_count > 0)
+                state.counts[`${modelType}s`].unread_task_count--;
+        },
+        onMessagesReads(state, messageId) {
+            const chatMemberStateName =
+                'chatMembers' + ucFirst(state.currentDialog.model_type) + 's';
+            const chatMemberIndex = state[chatMemberStateName].data.findIndex(
+                element => element.id === state.currentDialog.id
+            );
+
+            if (chatMemberIndex !== -1) {
+                const oldNotViewedMessagedCount =
+                    state[chatMemberStateName].data[chatMemberIndex].statistic.messages;
+                const oldNotViewedNotificationsCount =
+                    state[chatMemberStateName].data[chatMemberIndex].statistic.notifications;
+
+                let notViewedMessagesCount = 0;
+                let notViewedNotificationsCount = 0;
+                for (
+                    let i = state.messages.length - 1;
+                    i > 0 && state.messages[i].id !== messageId;
+                    i--
+                ) {
+                    if (!state.messages[i].isLabel) {
+                        if (!state.messages[i].is_viewed) notViewedMessagesCount++;
+                        if (state.messages[i].notifications.length) {
+                            notViewedNotificationsCount += state.messages[i].notifications.reduce(
+                                (acc, element) => {
+                                    if (element.viewed_at === null) acc++;
+                                    return acc;
+                                },
+                                0
+                            );
+                        }
+                    }
+                }
+
+                state[chatMemberStateName].data[chatMemberIndex].statistic.messages =
+                    notViewedMessagesCount;
+                state[chatMemberStateName].data[chatMemberIndex].statistic.notifications =
+                    notViewedNotificationsCount;
+
+                const readsCount = oldNotViewedMessagedCount - notViewedMessagesCount;
+                const readsNotificationsCount =
+                    oldNotViewedNotificationsCount - notViewedNotificationsCount;
+
+                if (
+                    state.counts[state.currentDialog.model_type + 's'].unread_message_count >=
+                    readsCount
+                ) {
+                    state.counts[state.currentDialog.model_type + 's'].unread_message_count -=
+                        readsCount;
+                }
+
+                if (
+                    state.counts[state.currentDialog.model_type + 's'].unread_notification_count >=
+                    readsNotificationsCount
+                ) {
+                    state.counts[state.currentDialog.model_type + 's'].unread_notification_count -=
+                        readsNotificationsCount;
+                }
+            }
         }
     },
     actions: {
@@ -300,16 +390,19 @@ const Messenger = {
                 'setCountersInterval',
                 setInterval(() => {
                     dispatch('updateCounters');
-                }, 30000)
+                }, 60000)
             );
         },
         async updateCounters({ rootGetters, commit }) {
-            const counters = await api.messenger.getStatistics([
-                rootGetters.THIS_USER?.chat_member_id
+            const response = await Promise.allSettled([
+                api.messenger.getStatistics([rootGetters.THIS_USER?.chat_member_id], ['object']),
+                api.messenger.getStatistics([rootGetters.THIS_USER?.chat_member_id], ['request']),
+                api.messenger.getStatistics([rootGetters.THIS_USER?.chat_member_id], ['user'])
             ]);
-            if (counters) commit('setCounts', counters[0]);
+
+            if (response) commit('setCounts', response);
         },
-        async updateDialogs({ state, commit }) {
+        async updateDialogs({ state, commit }, payload) {
             commit('setLoadingAside', true);
 
             const options = {
@@ -325,6 +418,20 @@ const Messenger = {
                 options.request.search = state.querySearch;
             }
 
+            switch (state.currentAsidePanel) {
+                case messenger.tabs.OBJECTS: {
+                    Object.assign(options.object, payload);
+                    break;
+                }
+                case messenger.tabs.REQUESTS: {
+                    Object.assign(options.request, payload);
+                    break;
+                }
+                default: {
+                    break;
+                }
+            }
+
             const chats = await Promise.all([
                 api.messenger.getChats({ model_type: 'object', ...options.object }),
                 api.messenger.getChats({ model_type: 'request', ...options.request })
@@ -337,9 +444,23 @@ const Messenger = {
             commit('setLoadingAside', false);
             return null;
         },
+        async updateConsultantsDialogs({ state, commit }, payload) {
+            commit('setLoadingAside', true);
+
+            const chats = await api.messenger.getChats({
+                model_type: 'user',
+                search: state.consultantsQuerySearch?.length ? state.consultantsQuerySearch : null,
+                ...payload
+            });
+
+            if (chats) commit('setConsultantsDialogs', chats);
+
+            commit('setLoadingAside', false);
+            return null;
+        },
         async selectPanel(
             { commit, state },
-            { companyID, dialogID, dialogType, anywayOpen = false }
+            { userID = null, companyID = null, dialogID, dialogType, anywayOpen = false }
         ) {
             if (dialogID === state.currentAsideDialogID && anywayOpen) return;
 
@@ -350,17 +471,25 @@ const Messenger = {
                 commit('setCurrentPanel', null);
                 commit('setCurrentPanelID', null);
                 commit('setCurrentPanelCompanyID', null);
+                commit('setCurrentPanelUserID', null);
                 commit('setCurrentDialogType', null);
                 return;
             }
 
             commit('setCurrentAsideDialogID', dialogID);
             commit('setCurrentPanelCompanyID', companyID);
+            commit('setCurrentPanelUserID', userID);
             commit('setCurrentDialogType', dialogType);
 
             commit('setLoadingPanel', true);
 
-            const data = await api.messenger.getPanel(companyID);
+            let data = null;
+
+            if (userID) {
+                data = await api.messenger.getUser(userID);
+            } else {
+                data = await api.messenger.getPanel(companyID);
+            }
 
             commit('setCurrentPanel', data || null);
             commit('setLoadingPanel', false);
@@ -642,12 +771,14 @@ const Messenger = {
             return true;
         },
 
-        async loadDialogs({ commit, state }, modelType) {
-            const modelTypePlural = modelType.charAt(0).toUpperCase() + modelType.slice(1) + 's';
+        async loadDialogs({ commit, state }, options) {
+            const modelTypePlural =
+                options.modelType.charAt(0).toUpperCase() + options.modelType.slice(1) + 's';
 
             const data = await api.messenger.getChats({
-                model_type: modelType,
-                page: state[`chatMembers${modelTypePlural}`].pagination.currentPage + 1
+                model_type: options.modelType,
+                page: state[`chatMembers${modelTypePlural}`].pagination.currentPage + 1,
+                ...options.payload
             });
 
             if (data) {
@@ -687,7 +818,7 @@ const Messenger = {
             const reads = api.messenger.readMessages(messageID);
 
             if (reads) {
-                commit('updateDialogCounts', messageID);
+                commit('onMessagesReads', messageID);
                 return true;
             }
 
@@ -713,15 +844,34 @@ const Messenger = {
         hasQuery(state) {
             return Boolean(state.querySearch.length);
         },
+        hasConsultantsQuery(state) {
+            return Boolean(state.consultantsQuerySearch.length);
+        },
         hasDialogs(state) {
             return Boolean(
-                state.chatMembersObjects.data.length ||
-                    state.chatMembersRequests.data.length ||
-                    state.chatMembersUsers.data.length
+                state.chatMembersObjects.data.length || state.chatMembersRequests.data.length
             );
         },
         hasCachedMessage(state) {
             return state.currentChat && state.currentPanelDialogID in state.cachedNewMessages;
+        },
+        currentDaysCountAfterLastCall(state) {
+            if (!state.currentDialog) return null;
+            let daysFromNow = 0;
+
+            if (state.currentDialog.last_call)
+                daysFromNow = dayjs().diff(state.currentDialog.last_call.created_at, 'day');
+            else {
+                if (state.currentDialog.model_type === 'object')
+                    daysFromNow = dayjs().diff(
+                        state.currentDialog.model.object.last_update * 1000,
+                        'day'
+                    );
+                else if (state.currentDialog.model_type === 'request')
+                    daysFromNow = dayjs().diff(state.currentDialog.model.updated_at, 'day');
+            }
+
+            return daysFromNow;
         }
     }
 };

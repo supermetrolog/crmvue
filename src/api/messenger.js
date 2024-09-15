@@ -6,12 +6,9 @@ import { setRequestError } from '@/api/helpers/setRequestError.js';
 const URL = '/chat-members';
 
 export default {
-    async getChats(options) {
-        const params = new URLSearchParams(options).toString();
-        const url = `${URL}?${params}`;
-
+    async getChats(params) {
         try {
-            const response = await axios.get(url);
+            const response = await axios.get(URL, { params });
 
             return {
                 data: SuccessHandler.getData(response),
@@ -25,23 +22,21 @@ export default {
     async getPanel(companyID) {
         return await api.companies.getCompany(companyID);
     },
-    async getDialog(dialogID) {
-        const url = `/chat-members/${dialogID}`;
-
+    async getUser(id) {
+        return await api.user.get(id);
+    },
+    async getDialog(id) {
         try {
-            const response = await axios.get(url);
+            const response = await axios.get(`${URL}/${id}`);
             return response.data ?? null;
         } catch (e) {
             await setRequestError(e);
             return null;
         }
     },
-    async getDialogByQuery(query) {
-        const params = new URLSearchParams(query).toString();
-        const url = `/chat-members?${params}`;
-
+    async getDialogByQuery(params) {
         try {
-            const response = await axios.get(url);
+            const response = await axios.get(URL, { params });
             return response.data?.length ? response.data[0] : null;
         } catch (e) {
             await setRequestError(e);
@@ -203,16 +198,10 @@ export default {
             return null;
         }
     },
-    /**
-     * Статистика по chat_member
-     *
-     * @param options
-     * @returns {Promise<*|null>}
-     */
-    async getStatistics(options = []) {
+    async getStatistics(chatMemberIds, modelTypes = ['object', 'request']) {
         try {
             const response = await axios.get(`${URL}/statistic`, {
-                params: { chat_member_ids: options }
+                params: { chat_member_ids: chatMemberIds, model_types: modelTypes }
             });
 
             return SuccessHandler.getData(response);

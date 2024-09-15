@@ -3,20 +3,23 @@
 
 .messenger-chat {
     position: relative;
+    z-index: 11;
     height: 100vh;
+    width: 100%;
     font-size: 14px;
+    @include mixins.flex-box($j: space-between);
 
     .messenger-loader {
         top: 0;
     }
 
-    &:not(&:has(.messenger__empty))::before {
+    &:not(&:has(.messenger__empty)) &__wrapper::before {
         content: '';
         display: block;
         height: 100%;
         width: 100%;
         background-image: url('@/assets/image/messages.jpg');
-        opacity: .25;
+        opacity: .35;
         z-index: 10;
         position: absolute;
         top: 0;
@@ -24,10 +27,19 @@
     }
 
     &__content {
+        width: 100%;
+        position: relative;
+        height: 100vh;
+        z-index: 11;
+        @include mixins.flex-box($d: column);
+    }
+
+    &__wrapper {
+        background-color: #fff;
+        width: calc(100% - 40px);
         position: relative;
         z-index: 11;
         height: 100vh;
-        @include mixins.flex-box($d: column);
     }
 
     &__virtual {
@@ -113,7 +125,7 @@
 
     &__preview {
         width: 100px;
-        height: 50px;
+        height: 54px;
 
         img {
             object-fit: cover;
@@ -138,6 +150,10 @@
         color: #05865f;
         font-weight: 500;
         @include mixins.flex-box($gap: 5px, $a: center);
+    }
+
+    &__address {
+        @include mixins.text-overflow();
     }
 }
 
@@ -410,7 +426,7 @@
 
 .messenger-chat-pinned {
     padding: 7px 10px;
-    background-color: #17b775;
+    background-color: #a4a4ab;
     color: #fff;
     font-weight: 500;
     @include mixins.flex-box($a: center, $gap: 10px);
@@ -426,6 +442,7 @@
     &__date {
         margin-left: auto;
         font-weight: 400;
+        flex-shrink: 0;
     }
 }
 
@@ -529,7 +546,7 @@
 
     &__panel {
         transition: transform .7s ease .7s, background-color ease .7s;
-        width: 200%;
+        width: calc(200% + 60px);
         position: absolute;
         z-index: 15;
         top: 0;
@@ -575,4 +592,17 @@
 
 .messenger-chat-form-recipient-dropdown {
     z-index: 4000!important;
+}
+
+.messenger-chat-header-user {
+    @include mixins.flex-box($gap: 10px, $a: center);
+
+    &__avatar {
+        border: 1px solid rgba(0, 0, 0, .1);
+    }
+
+    &__title {
+        font-weight: 500;
+        font-size: 16px;
+    }
 }

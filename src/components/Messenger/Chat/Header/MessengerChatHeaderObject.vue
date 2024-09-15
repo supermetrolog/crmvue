@@ -11,6 +11,7 @@
                 <span class="messenger-chat-header__id">, ID{{ dialog.model.object.id }}</span>
             </p>
             <p class="messenger-chat-header__deals">{{ dealType }}</p>
+            <p class="messenger-chat-header__address">{{ dialog.model.object.address }}</p>
         </div>
     </div>
 </template>

@@ -1,11 +1,12 @@
 <template>
     <MessengerAsideSection
         class="messenger-aside-offers"
+        :class="{ loading: isLoading }"
         :loading="isLoading"
         :title="`Предложения (${objects.length}/${pagination?.totalCount || 0})`"
     >
         <div v-if="isLoading" class="messenger-aside__list">
-            <MessengerDialogObjectSkeleton v-for="i in lastDialogsCount" :key="i" />
+            <MessengerDialogObjectSkeleton v-for="i in lastElementsCount" :key="i" />
         </div>
         <EmptyData v-else-if="!objects.length" no-rounded>Предложения не найдены..</EmptyData>
         <VirtualDragList
@@ -44,7 +45,7 @@
                 />
             </template>
             <template v-if="objects.length >= 20" #footer>
-                <InfiniteLoading @infinite="loadObjects">
+                <InfiniteLoading @infinite="$emit('load', $event)">
                     <template #complete><span></span></template>
                     <template #spinner>
                         <MessengerDialogObjectSkeleton />
@@ -52,103 +53,62 @@
                 </InfiniteLoading>
             </template>
         </VirtualDragList>
-        <!--        <MessengerAsideArchive-->
-        <!--            :title="`Показать архивные предложения (${objects.length})`"-->
-        <!--        >-->
-        <!--            <div v-if="objects.length" class="messenger-aside__list">-->
-        <!--                <template v-if="isLoading">-->
-        <!--                    <MessengerDialogObjectSkeleton v-for="i in lastDialogsCount" :key="i" />-->
-        <!--                </template>-->
-        <!--                <template v-else>-->
-        <!--                    <MessengerDialogObject-->
-        <!--                        v-for="object in objects"-->
-        <!--                        :key="object.id"-->
-        <!--                        @click="-->
-        <!--                            selectPanel({-->
-        <!--                                companyID: object.model.object.company_id,-->
-        <!--                                dialogID: object.model.id,-->
-        <!--                                dialogType: object.model_type-->
-        <!--                            })-->
-        <!--                        "-->
-        <!--                        :current="object.model.id === currentDialogID"-->
-        <!--                        :model="object.model"-->
-        <!--                        class="archived"-->
-        <!--                    />-->
-        <!--                </template>-->
-        <!--            </div>-->
-        <!--            <EmptyData v-else no-rounded>Предложения не найдены..</EmptyData>-->
-        <!--        </MessengerAsideArchive>-->
     </MessengerAsideSection>
 </template>
-<script>
+<script setup>
 import MessengerDialogObject from '@/components/Messenger/Dialog/MessengerDialogObject.vue';
 import MessengerAsideSection from '@/components/Messenger/Aside/MessengerAsideSection.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import MessengerDialogObjectSkeleton from '@/components/Messenger/Dialog/MessengerDialogObjectSkeleton.vue';
-import { mapState } from 'vuex';
-import { LoaderMixin } from '@/components/Messenger/loader.mixin.js';
+import { useStore } from 'vuex';
 import InfiniteLoading from 'v3-infinite-loading';
 import VirtualDragList from 'vue-virtual-draglist';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
+import { computed, shallowRef, toRef, watch } from 'vue';
+import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
+import { useSkeleton } from '@/composables/useSkeleton.js';
 
-export default {
-    name: 'MessengerAsideObjects',
-    components: {
-        MessengerDialogObjectSkeleton,
-        MessengerDialogObject,
-        EmptyData,
-        MessengerAsideSection,
-        InfiniteLoading,
-        VirtualDragList
+defineEmits(['load']);
+const props = defineProps({
+    objects: {
+        type: Array,
+        default: () => []
     },
-    mixins: [LoaderMixin],
-    props: {
-        objects: {
-            type: Array,
-            default: () => []
-        },
-        pagination: {
-            type: Object,
-            default: null
-        }
-    },
-    setup() {
-        const { show: showLastCallPopup } = useAsyncPopup('chatMemberLastCall');
-        return { showLastCallPopup };
-    },
-    data() {
-        return {
-            lastDialogsCount: 5
-        };
-    },
-    computed: {
-        ...mapState({
-            currentDialogID: state => state.Messenger.currentAsideDialogID,
-            originalLoader: state => state.Messenger.loadingAside
-        })
-    },
-    watch: {
-        objects(value) {
-            this.lastDialogsCount = Math.min(value.length, 5) || 1;
-        },
-        async isLoading(value) {
-            if (this.objects.length && value) this.$refs.virtualList.scrollToTop();
-        }
-    },
-    methods: {
-        async loadObjects($state) {
-            const isLastPage = await this.$store.dispatch('Messenger/loadDialogs', 'object');
-            if (isLastPage) $state.complete();
-            else $state.loaded();
-        },
-        selectPanel(options) {
-            this.$store.dispatch('Messenger/selectPanel', options);
-            this.$store.dispatch('Messenger/selectChat', options);
-        },
-        async updateCall(payload, record) {
-            const response = await this.showLastCallPopup(payload);
-            if (response) record.last_call = response.lastCall;
-        }
+    pagination: {
+        type: Object,
+        default: null
     }
+});
+
+const store = useStore();
+
+const { lastElementsCount } = useSkeleton(toRef(() => props.objects));
+const { show: showLastCallPopup } = useAsyncPopup('chatMemberLastCall');
+const { isLoading } = useDelayedLoader();
+
+const virtualList = shallowRef(null);
+
+const currentDialogID = computed(() => store.state.Messenger.currentAsideDialogID);
+
+watch(
+    () => store.state.Messenger.loadingAside,
+    value => {
+        isLoading.value = value;
+    },
+    { immediate: true }
+);
+
+watch(isLoading, value => {
+    if (props.objects.length && value) virtualList.value.scrollToTop();
+});
+
+const selectPanel = options => {
+    store.dispatch('Messenger/selectPanel', options);
+    store.dispatch('Messenger/selectChat', options);
+};
+
+const updateCall = async (payload, record) => {
+    const response = await showLastCallPopup(payload);
+    if (response) record.last_call = response.lastCall;
 };
 </script>

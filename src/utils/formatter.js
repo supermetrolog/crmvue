@@ -11,6 +11,8 @@ import dayjs from 'dayjs';
 export const getCompanyName = (company, companyID) => {
     if (!company || company?.noName) return 'Компания #' + companyID;
 
+    if (company.full_name) return company.full_name;
+
     if (alg.isNumeric(company.nameRu)) return 'Компания №' + company.nameRu;
 
     let companyName = company.nameRu;
@@ -87,4 +89,15 @@ export function toCorrectFormat(value) {
  */
 export function toDateFormat(date, format = 'D.MM.YY, HH:mm') {
     return dayjs(date).format(format);
+}
+
+/**
+ * Преобразование в корректный URL (добавление https:// в случае отсутствия)
+ *
+ * @param {string} url Некорректный или корректный URL
+ * @return {string} Корректный URL
+ */
+export function toCorrectUrl(url) {
+    if (url.match(/^https?:\/\//)) return url;
+    return 'https://' + url;
 }

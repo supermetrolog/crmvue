@@ -300,7 +300,7 @@
         position: absolute;
         right: 0;
         height: 100%;
-        z-index: 10;
+        z-index: 7;
     }
 
     &:has(&__date-helper:hover) {
@@ -383,7 +383,7 @@
     position: absolute;
     right: 0;
     height: 100%;
-    z-index: 10;
+    z-index: 7;
     background-color: #fdfcfc;
     @include mixins.transition(transform .5s, opacity .5s);
     @include mixins.flex-box($a: center, $gap: 15px);
