@@ -3,7 +3,7 @@
     position: absolute;
     left: 0;
     background-color: #10b981;
-    transform: translateX(-100%);
+    transform: translateX(calc(-100% - 1px));
     height: 2px;
     width: 100%;
     z-index: 10;

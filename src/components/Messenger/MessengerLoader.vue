@@ -1,42 +1,32 @@
 <template>
-    <div ref="loader" class="messenger-loader" :class="classList"></div>
+    <div ref="loader" class="messenger-loader" :class="{ load: active, finish: finishing }"></div>
 </template>
-<script>
-export default {
-    name: 'MessengerLoader',
-    props: {
-        active: {
-            type: Boolean,
-            default: false
-        }
-    },
-    data() {
-        return {
-            timeout: null,
-            finishing: false
-        };
-    },
-    computed: {
-        classList() {
-            return {
-                load: this.active,
-                finish: this.finishing
-            };
-        }
-    },
-    watch: {
-        active(value) {
-            if (!value) {
-                if (this.timeout) clearTimeout(this.timeout);
+<script setup>
+import { shallowRef, watch } from 'vue';
 
-                this.finishing = true;
+const props = defineProps({
+    active: {
+        type: Boolean,
+        default: false
+    }
+});
 
-                this.timeout = setTimeout(() => {
-                    this.finishing = false;
-                    if (this.timeout) clearTimeout(this.timeout);
-                }, 400);
-            }
+let timeout = null;
+const finishing = shallowRef(false);
+
+watch(
+    () => props.active,
+    value => {
+        if (!value) {
+            if (timeout) clearTimeout(timeout);
+
+            finishing.value = true;
+
+            timeout = setTimeout(() => {
+                finishing.value = false;
+                if (timeout) clearTimeout(timeout);
+            }, 400);
         }
     }
-};
+);
 </script>

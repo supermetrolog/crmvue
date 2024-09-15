@@ -1,18 +1,18 @@
 <template>
     <div class="messenger-chat-header">
         <div class="messenger-chat-header__body">
-            <component :is="componentName" :dialog="currentDialog" />
+            <component :is="currentComponentName" :dialog="currentDialog" />
         </div>
         <div class="messenger-chat-header__functions">
-            <router-link
+            <a
                 v-if="currentDialog.model_type === 'object' && linkToObject"
                 v-tippy="'Открыть на сайте'"
-                :to="linkToObject"
+                :href="linkToObject"
                 target="_blank"
                 class="messenger-chat-header__function rounded-icon"
             >
                 <i class="fa-solid fa-up-right-from-square"></i>
-            </router-link>
+            </a>
             <button
                 v-tippy="'Открыть панель чата'"
                 @click="$toggleSettings"
@@ -23,29 +23,32 @@
         </div>
     </div>
 </template>
-<script>
-import { mapState } from 'vuex';
+<script setup>
+import { useStore } from 'vuex';
+import { computed, inject } from 'vue';
+import { ucFirst } from '@/utils/formatter.js';
+import { getLinkComplex } from '@/utils/url.js';
 import MessengerChatHeaderObject from '@/components/Messenger/Chat/Header/MessengerChatHeaderObject.vue';
 import MessengerChatHeaderRequest from '@/components/Messenger/Chat/Header/MessengerChatHeaderRequest.vue';
+import MessengerChatHeaderUser from '@/components/Messenger/Chat/Header/MessengerChatHeaderUser.vue';
 
-export default {
-    name: 'MessengerChatHeader',
-    components: { MessengerChatHeaderObject, MessengerChatHeaderRequest },
-    inject: ['$toggleSettings'],
-    computed: {
-        ...mapState({ currentDialog: state => state.Messenger.currentDialog }),
-        componentName() {
-            return (
-                'MessengerChatHeader' +
-                this.$formatter.text().ucFirst(this.currentDialog.model_type)
-            );
-        },
-        linkToObject() {
-            if (this.currentDialog.model.object.complex_id)
-                return '/complex/' + this.currentDialog.model.object.complex_id;
-
-            return null;
-        }
-    }
+const COMPONENTS = {
+    MessengerChatHeaderObject: MessengerChatHeaderObject,
+    MessengerChatHeaderRequest: MessengerChatHeaderRequest,
+    MessengerChatHeaderUser: MessengerChatHeaderUser
 };
+
+const store = useStore();
+
+const $toggleSettings = inject('$toggleSettings');
+
+const currentDialog = computed(() => store.state.Messenger.currentDialog);
+const currentComponentName = computed(
+    () => COMPONENTS['MessengerChatHeader' + ucFirst(currentDialog.value.model_type)]
+);
+const linkToObject = computed(() => {
+    if (currentDialog.value.model.object.complex_id)
+        return getLinkComplex(currentDialog.value.model.object.complex_id);
+    return null;
+});
 </script>

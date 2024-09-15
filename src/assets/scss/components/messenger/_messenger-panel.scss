@@ -1,19 +1,21 @@
 @use '../../utils/mixins';
 
 .messenger-panel {
-    border-right: 1px solid rgba(0, 0, 0, .1);
-    border-left: 1px solid rgba(0, 0, 0, .1);
-    background-color: #f8f8f8;
     height: 100%;
     max-height: 100vh;
+    position: relative;
+    width: 100%;
 
     overflow-y: auto;
+
+    @include mixins.flex-box();
 
     &::-webkit-scrollbar {
         display: none;
     }
 
-    &__content {
+    &__wrapper {
+        width: 100%;
         overflow-x: hidden;
     }
 }
@@ -110,6 +112,10 @@
         }
     }
 
+    &__tab {
+        font-size: 14px;
+    }
+
     &__list {
         max-height: 500px;
         overflow-y: auto
@@ -119,5 +125,19 @@
         position: absolute;
         right: 10px;
         top: 10px;
+    }
+
+    &__heading {
+        border-top: 1px solid rgba(0, 0, 0, .1);
+    }
+}
+
+.messenger-panel-consultant {
+    &__section {
+        padding: 10px;
+    }
+
+    &__grid {
+        @include mixins.flex-box($d: column, $gap: 10px)
     }
 }

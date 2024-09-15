@@ -1,73 +1,62 @@
 <template>
     <div class="messenger-panel-company__tabs">
-        <Tabs ref="tabs" @changed="setCurrentTab" closed :options="{ useUrlFragment: false }">
-            <Tab :id="`object-${company.id}`" :name="`Объекты (${company.objects_count})`">
-                <MessengerPanelCompanyObjects
-                    v-if="currentTab === `object-${company.id}`"
-                    :companyID="company.id"
-                />
-            </Tab>
-            <Tab :id="`request-${company.id}`" :name="`Запросы (${company.requests_count})`">
-                <MessengerPanelCompanyRequests
-                    v-if="currentTab === `request-${company.id}`"
-                    :companyID="company.id"
-                />
-            </Tab>
-            <Tab :name="`Услуги (0)`">
-                <InProgress />
-            </Tab>
-            <Tab :name="`Сделки (0)`">
-                <InProgress />
-            </Tab>
-        </Tabs>
+        <MessengerPanelCompanyTab
+            title="Объекты"
+            :count="company.objects_count"
+            :opened="isOpened.object"
+        >
+            <MessengerPanelCompanyObjects :companyID="company.id" />
+        </MessengerPanelCompanyTab>
+        <MessengerPanelCompanyTab
+            title="Запросы"
+            :count="company.requests_count"
+            :opened="isOpened.request"
+        >
+            <MessengerPanelCompanyRequests :companyID="company.id" />
+        </MessengerPanelCompanyTab>
+        <MessengerPanelCompanyTab title="Услуги">
+            <InProgress />
+        </MessengerPanelCompanyTab>
+        <MessengerPanelCompanyTab title="Сделки">
+            <InProgress />
+        </MessengerPanelCompanyTab>
     </div>
 </template>
-<script>
-import Tabs from '@/components/common/Tabs/Tabs.vue';
+<script setup>
 import InProgress from '@/components/common/InProgress.vue';
-import { mapState } from 'vuex';
+import { useStore } from 'vuex';
 import MessengerPanelCompanyObjects from '@/components/Messenger/Panel/Company/MessengerPanelCompanyObjects.vue';
 import MessengerPanelCompanyRequests from '@/components/Messenger/Panel/Company/MessengerPanelCompanyRequests.vue';
+import { computed, onBeforeMount, provide, shallowReactive, shallowRef } from 'vue';
+import MessengerPanelCompanyTab from '@/components/Messenger/Panel/Company/MessengerPanelCompanyTab.vue';
 
-export default {
-    name: 'MessengerPanelCompanyTabs',
-    components: { MessengerPanelCompanyRequests, MessengerPanelCompanyObjects, InProgress, Tabs },
-    provide() {
-        return {
-            lastRenderedObjectCount: () => this.lastRenderedObjectsCount,
-            setLastRendererObjectCount: value => this.setLastRendererObjectCount(value)
-        };
-    },
-    props: {
-        company: {
-            type: Object,
-            required: true
-        }
-    },
-    data() {
-        return {
-            currentTab: null,
-            lastRenderedObjectsCount: 1
-        };
-    },
-    computed: {
-        ...mapState({
-            currentPanelCompanyID: state => state.Messenger.currentPanelCompanyID,
-            currentDialogType: state => state.Messenger.currentDialogType
-        })
-    },
-    methods: {
-        setCurrentTab(tabName) {
-            this.currentTab = tabName;
-        },
-        setLastRendererObjectCount(value) {
-            this.lastRenderedObjectsCount = value;
-        }
-    },
-    mounted() {
-        if (this.currentPanelCompanyID === this.company.id) {
-            this.$refs.tabs.selectTab(`#${this.currentDialogType}-${this.company.id}`);
-        }
+const props = defineProps({
+    company: {
+        type: Object,
+        required: true
     }
+});
+
+const store = useStore();
+
+const lastRenderedObjectsCount = shallowRef(1);
+const isOpened = shallowReactive({
+    object: false,
+    request: false
+});
+
+provide('lastRenderedObjectCount', () => lastRenderedObjectsCount.value);
+provide('setLastRendererObjectCount', () => value => setLastRendererObjectCount(value));
+
+const currentPanelCompanyID = computed(() => store.state.Messenger.currentPanelCompanyID);
+const currentDialogType = computed(() => store.state.Messenger.currentDialogType);
+const setLastRendererObjectCount = value => {
+    lastRenderedObjectsCount.value = value;
 };
+
+onBeforeMount(() => {
+    if (currentPanelCompanyID.value === props.company.id) {
+        isOpened[currentDialogType.value] = true;
+    }
+});
 </script>

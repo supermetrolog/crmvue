@@ -1,43 +1,26 @@
 <template>
-    <div class="messenger-aside">
-        <MessengerAsideHeader />
-        <div class="messenger-aside__body">
-            <MessengerAsideObjects
-                :objects="chatMembersObjects.data"
-                :pagination="chatMembersObjects.pagination"
-            />
-            <MessengerAsideRequests
-                :requests="chatMembersRequests.data"
-                :pagination="chatMembersRequests.pagination"
-            />
-        </div>
+    <div class="messenger-page">
+        <AnimationTransition :speed="0.5">
+            <component :is="currentMessengerAsideComponent" :current-tab="currentTab" />
+        </AnimationTransition>
     </div>
 </template>
-<script>
-import MessengerAsideHeader from '@/components/Messenger/Aside/MessengerAsideHeader.vue';
-import { mapActions, mapGetters, mapState } from 'vuex';
-import MessengerAsideObjects from '@/components/Messenger/Aside/MessengerAsideObjects.vue';
-import MessengerAsideRequests from '@/components/Messenger/Aside/MessengerAsideRequests.vue';
+<script setup>
+import { computed } from 'vue';
+import { messenger } from '@/const/messenger.js';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import MessengerAsideConsultants from '@/components/Messenger/Aside/MessengerAsideConsultants.vue';
+import MessengerAsideOffers from '@/components/Messenger/Aside/MessengerAsideOffers.vue';
 
-export default {
-    name: 'MessengerAside',
-    components: {
-        MessengerAsideObjects,
-        MessengerAsideRequests,
-        MessengerAsideHeader
-    },
-    computed: {
-        ...mapGetters(['Messenger/hasQuery', 'Messenger/hasDialogs']),
-        ...mapState({
-            chatMembersObjects: state => state.Messenger.chatMembersObjects,
-            chatMembersRequests: state => state.Messenger.chatMembersRequests
-        })
-    },
-    methods: {
-        ...mapActions({ updateDialogs: 'Messenger/updateDialogs' })
-    },
-    created() {
-        if (!this.hasQuery && !this.hasDialogs) this.updateDialogs();
+const props = defineProps({
+    currentTab: {
+        type: Object,
+        default: null
     }
-};
+});
+
+const currentMessengerAsideComponent = computed(() => {
+    if (props.currentTab?.name === messenger.tabs.USERS) return MessengerAsideConsultants;
+    else return MessengerAsideOffers;
+});
 </script>

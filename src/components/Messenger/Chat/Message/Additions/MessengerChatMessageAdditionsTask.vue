@@ -1,5 +1,12 @@
 <template>
-    <MessengerChatMessageAdditionsItem :class="{ completed: isCompleted, expired: isExpired }">
+    <MessengerChatMessageAdditionsItem
+        :class="{
+            completed: isCompleted,
+            expired: isExpired,
+            observing: isObserving,
+            observed: isObserved
+        }"
+    >
         <template #icon>
             <span
                 v-tippy="addition.message"
@@ -7,8 +14,21 @@
             >
                 <i class="fa-solid fa-bolt"></i>
             </span>
+            <span
+                v-if="isObserving"
+                v-tippy="observingText"
+                @click="read"
+                class="messenger-chat-message-addition__observer rounded-icon"
+                :class="{ observed: isObserved, loading: addition.isLoading }"
+            >
+                <i class="fa-solid fa-eye"></i>
+            </span>
         </template>
-        <template #content>Задача для {{ usersText }} до {{ expiredDate }}</template>
+        <template #content>
+            <div>
+                <span>Задача для {{ usersText }} до {{ expiredDate }}</span>
+            </div>
+        </template>
         <template v-if="editable || draggable" #actions>
             <template v-if="editable">
                 <HoverActionsButton
@@ -52,6 +72,7 @@ const $editAddition = inject('$editAddition');
 const $messageID = inject('$messageID');
 const $editTaskStatus = inject('$editTaskStatus');
 
+const emit = defineEmits(['read']);
 const props = defineProps({
     addition: {
         type: Object,
@@ -80,6 +101,23 @@ const isCompleted = computed(
         props.addition.status === taskOptions.statusTypes.CANCELED
 );
 
+const isObserving = computed(() => {
+    return props.addition.observers.some(
+        observer => observer.user_id === store.getters.THIS_USER.id
+    );
+});
+
+const isObserved = computed(() => {
+    return props.addition.observers.some(
+        observer => observer.user_id === store.getters.THIS_USER.id && observer.viewed_at !== null
+    );
+});
+const observingText = computed(() => {
+    if (props.addition.isLoading) return 'Чтение.. Ожидайте';
+    if (isObserved.value) return 'Просмотрено';
+    return 'Нажмите, чтобы отметить задачу просмотренной';
+});
+
 const remove = async () => {
     const confirmed = await confirm('Вы уверены, что хотите безвозвратно удалить задачу?');
 
@@ -93,5 +131,9 @@ const remove = async () => {
         if (deleted) notify.success('Задача удалена.');
         else notify.error('Произошла ошибка. Попробуйте позже.');
     }
+};
+
+const read = () => {
+    if (isObserving.value && !isObserved.value && !props.addition.isLoading) emit('read');
 };
 </script>

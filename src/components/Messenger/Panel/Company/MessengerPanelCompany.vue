@@ -13,7 +13,7 @@
                 target="_blank"
                 class="messenger-panel-company__name"
             >
-                {{ $formatter.companyName(company, company.id) }}
+                {{ companyName }}
             </a>
             <div class="messenger-panel-company__subtitle">
                 <span>ID{{ company.id }} | </span>
@@ -57,46 +57,43 @@
         <MessengerPanelCompanyTabs :key="company.id" :company="company" />
     </div>
 </template>
-<script>
+<script setup>
 import Rating from '@/components/common/Rating.vue';
-import { entityOptions } from '@/const/options/options';
 import MessengerPanelCompanyTabs from '@/components/Messenger/Panel/Company/MessengerPanelCompanyTabs.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
+import { computed } from 'vue';
+import { getCompanyName, toCorrectUrl, ucFirst } from '@/utils/formatter.js';
+import { companyOptions } from '@/const/options/company.options.js';
+import { contactOptions } from '@/const/options/contact.options.js';
 
-export default {
-    name: 'MessengerPanelCompany',
-    components: { HoverActionsButton, MessengerPanelCompanyTabs, Rating },
-    emits: ['edit'],
-    props: {
-        company: {
-            type: Object,
-            required: true
-        }
-    },
-    computed: {
-        website() {
-            const generalContact = this.company.contacts.find(
-                contact => contact.type === entityOptions.contact.typeStatement.GENERAL
-            );
-
-            if (generalContact && generalContact.websites.length) {
-                const link = generalContact.websites[0].website;
-                return this.$formatter.toCorrectUrl(link);
-            }
-
-            return null;
-        },
-        activityGroup() {
-            return entityOptions.company.activityGroup[this.company.activityGroup];
-        },
-        activityProfile() {
-            return entityOptions.company.activityProfile[this.company.activityProfile];
-        },
-        productRanges() {
-            return this.company.productRanges
-                .map(element => this.$formatter.text().ucFirst(element.product))
-                .join(', ');
-        }
+defineEmits(['edit']);
+const props = defineProps({
+    company: {
+        type: Object,
+        required: true
     }
-};
+});
+
+const website = computed(() => {
+    const generalContact = props.company.contacts.find(
+        contact => contact.type === contactOptions.typeStatement.GENERAL
+    );
+
+    if (generalContact && generalContact.websites.length) {
+        return toCorrectUrl(generalContact.websites[0].website);
+    }
+
+    return null;
+});
+const activityGroup = computed(() => {
+    return companyOptions.activityGroup[props.company.activityGroup];
+});
+const activityProfile = computed(() => {
+    return companyOptions.activityProfile[props.company.activityProfile];
+});
+const productRanges = computed(() => {
+    return props.company.productRanges.map(element => ucFirst(element.product)).join(', ');
+});
+
+const companyName = computed(() => getCompanyName(props.company, props.company.id));
 </script>

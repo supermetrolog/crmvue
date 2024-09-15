@@ -170,6 +170,10 @@
         color: #f1f1f1;
     }
 
+    &.observing {
+        background-color: rgba(246, 236, 55, 0.2);
+    }
+
     &__content {
         @include mixins.flex-box($a: center, $gap: 5px);
         @include mixins.transition(opacity .5s);
@@ -212,6 +216,34 @@
         color: #000;
         opacity: 0;
         @include mixins.transition(opacity .7s);
+    }
+
+    &__observer {
+        color: #7e7e7e;
+        font-size: 26px;
+        cursor: pointer;
+        @include mixins.transition(color, opacity);
+
+        &:not(.observed):hover {
+            color: #36b68e;
+        }
+
+        &.observed {
+            color: #10B981;
+        }
+
+        &.loading {
+            animation: blink .5s infinite alternate-reverse;
+        }
+    }
+}
+
+@keyframes blink {
+    from {
+        opacity: .5;
+    }
+    to {
+        opacity: 1;
     }
 }
 

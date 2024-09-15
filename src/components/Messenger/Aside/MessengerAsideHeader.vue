@@ -12,7 +12,7 @@
             </button>
             <button
                 v-tippy="'Обновить выдачу'"
-                @click.prevent="updateDialogs"
+                @click.prevent="$emit('load')"
                 class="messenger-aside-header__button rounded-icon"
             >
                 <i class="fa-solid fa-rotate"></i>
@@ -27,9 +27,9 @@ import { debounce } from '@/utils/debounce.js';
 import { useStore } from 'vuex';
 import { computed } from 'vue';
 
+const emit = defineEmits(['load']);
+
 const store = useStore();
-const updateDialogs = () => store.dispatch('Messenger/updateDialogs');
-const debouncedUpdateDialogs = debounce(updateDialogs, 400);
 
 const querySearch = computed({
     get() {
@@ -37,9 +37,13 @@ const querySearch = computed({
     },
     set(value) {
         store.commit('Messenger/setQuerySearch', value);
-        debouncedUpdateDialogs(value);
+        debouncedUpdate();
     }
 });
+
+const debouncedUpdate = debounce(() => {
+    emit('load');
+}, 500);
 
 const clearQuery = () => {
     querySearch.value = '';

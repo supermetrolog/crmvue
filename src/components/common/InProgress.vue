@@ -6,11 +6,6 @@
         В разработке..
     </EmptyData>
 </template>
-<script>
+<script setup>
 import EmptyData from '@/components/common/EmptyData.vue';
-
-export default {
-    name: 'InProgress',
-    components: { EmptyData }
-};
 </script>

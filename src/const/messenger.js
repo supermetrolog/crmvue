@@ -1,11 +1,11 @@
 const buttons = {
     tasks: {
         plural: [
-            'У вас %d невыполненная задача',
-            'У вас %d невыполненные задачи',
-            'У вас %d невыполненных задач'
+            'У вас %d непрочитанная задача',
+            'У вас %d непрочитанные задачи',
+            'У вас %d непрочитанных задач'
         ],
-        empty: 'У вас нет невыполненных задач'
+        empty: 'У вас нет новых задач'
     },
     alerts: {
         plural: [
@@ -15,9 +15,13 @@ const buttons = {
         ],
         empty: 'У вас нет новых уведомлений'
     },
-    reminders: {
-        plural: ['У вас %d напоминание', 'У вас %d напоминания', 'У вас %d напоминаний'],
-        empty: 'У вас нет напоминаний'
+    calls: {
+        plural: [
+            'У вас %d устаревший чат',
+            'У вас %d устаревших чата',
+            'У вас %d устаревших чатов'
+        ],
+        empty: 'У вас нет устаревших чатов'
     },
     messages: {
         plural: [
@@ -42,8 +46,37 @@ const additions = {
     3: 'Reminder'
 };
 
+const tabs = {
+    OBJECTS: 'objects',
+    REQUESTS: 'requests',
+    USERS: 'users'
+};
+
+const tabsGroups = {
+    [tabs.OBJECTS]: 'objects',
+    [tabs.REQUESTS]: 'objects',
+    [tabs.USERS]: 'users'
+};
+
+const tabFilters = {
+    CALL: 'call',
+    TASK: '-task',
+    NOTIFICATION: '-notification',
+    MESSAGE: '-message'
+};
+
+const dialogTypes = {
+    USER: 'user',
+    OBJECT: 'object',
+    REQUEST: 'request'
+};
+
 export const messenger = {
     buttons,
     categories,
-    additions
+    additions,
+    tabs,
+    tabsGroups,
+    dialogTypes,
+    tabFilters
 };
