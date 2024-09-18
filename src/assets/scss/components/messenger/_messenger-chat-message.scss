@@ -165,13 +165,13 @@
         width: 3px;
     }
 
-    &.expired {
-        background-color: rgba(249, 49, 84, .8);
-        color: #f1f1f1;
-    }
-
     &.observing {
         background-color: rgba(246, 236, 55, 0.2);
+    }
+
+    &.expired {
+        background-color: rgba(249, 49, 84, .8)!important;
+        color: #f1f1f1;
     }
 
     &__content {
@@ -180,7 +180,7 @@
     }
 
     &.completed {
-        background-color: transparent;
+        background-color: transparent!important;
     }
 
     &.completed &__content {
@@ -234,6 +234,18 @@
 
         &.loading {
             animation: blink .5s infinite alternate-reverse;
+        }
+    }
+
+    &.expired &__observer {
+        color: #ffffff;
+
+        &:not(.observed):hover {
+            color: #797979;
+        }
+
+        &.observed {
+            color: #000000;
         }
     }
 }

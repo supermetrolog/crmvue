@@ -1,7 +1,11 @@
 <template>
     <div @click="$emit('select')" class="messenger-bar-tab">
-        <p class="messenger-bar-tab__label">{{ label }}</p>
         <div class="messenger-bar-tab__list">
+            <div v-tippy="label" class="messenger-bar-tab__icon mb-1">
+                <slot name="icon">
+                    <i :class="icon"></i>
+                </slot>
+            </div>
             <MessengerBarElement
                 v-tippy="callsButtonTitle"
                 @click.stop="$emit('select', messenger.tabFilters.CALL)"
@@ -65,6 +69,10 @@ const props = defineProps({
         required: true
     },
     current: {
+        type: String,
+        default: null
+    },
+    icon: {
         type: String,
         default: null
     }
