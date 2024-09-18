@@ -7,6 +7,7 @@
                 </slot>
             </div>
             <MessengerBarElement
+                v-if="counts.outdated_call_count > 0"
                 v-tippy="callsButtonTitle"
                 @click.stop="$emit('select', messenger.tabFilters.CALL)"
                 class="messenger-bar-tab__phone"
@@ -18,6 +19,7 @@
                 :label="counts.outdated_call_count"
             />
             <MessengerBarElement
+                v-if="counts.unread_task_count"
                 v-tippy="tasksButtonTitle"
                 @click.stop="$emit('select', messenger.tabFilters.TASK)"
                 class="bg-black"
@@ -29,6 +31,7 @@
                 :label="counts.unread_task_count"
             />
             <MessengerBarElement
+                v-if="counts.unread_notification_count"
                 v-tippy="alertsButtonTitle"
                 @click.stop="$emit('select', messenger.tabFilters.NOTIFICATION)"
                 class="bg-orange"
@@ -40,6 +43,7 @@
                 :label="counts.unread_notification_count"
             />
             <MessengerBarElement
+                v-if="counts.unread_message_count"
                 v-tippy="messagesButtonTitle"
                 @click.stop="$emit('select', messenger.tabFilters.MESSAGE)"
                 :class="{
