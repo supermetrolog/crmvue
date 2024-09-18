@@ -495,6 +495,8 @@
 }
 
 .dashboard-card-view {
+    min-height: 700px;
+
     &__header {
         @include mixins.flex-box($gap: 5px, $a: center);
         @include mixins.media('max', 'md') {
