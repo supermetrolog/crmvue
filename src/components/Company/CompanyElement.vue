@@ -34,11 +34,15 @@ const props = defineProps({
 });
 
 const contactsLength = computed(() => {
-    if (!props.company.contacts?.length) return 0;
+    if (Object.hasOwn(props.company, 'contacts')) {
+        if (!props.company.contacts?.length) return 0;
 
-    return props.company.contacts.reduce(
-        (acc, contact) => acc + contact.type === entityOptions.contact.typeStatement.PERSONAL,
-        0
-    );
+        return props.company.contacts.reduce(
+            (acc, contact) => acc + contact.type === entityOptions.contact.typeStatement.PERSONAL,
+            0
+        );
+    } else {
+        return props.company.contacts_count;
+    }
 });
 </script>
