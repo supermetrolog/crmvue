@@ -50,6 +50,9 @@
                     <HoverActionsButton @click="$emit('view')" label="Подробнее">
                         <i class="fa-solid fa-eye"></i>
                     </HoverActionsButton>
+                    <HoverActionsButton @click="$emit('to-chat')" label="Открыть в чате">
+                        <i class="fa-solid fa-comment" />
+                    </HoverActionsButton>
                 </div>
             </div>
             <div class="dashboard-card-request__body">
@@ -112,7 +115,7 @@ dayjs.extend(customParseFormat);
 export default {
     name: 'DashboardCardRequest',
     components: { DashboardChip, Progress, Avatar, HoverActionsButton },
-    emits: ['edit', 'toggle-disable', 'view'],
+    emits: ['edit', 'toggle-disable', 'view', 'to-chat'],
     props: {
         request: {
             type: Object,

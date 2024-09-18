@@ -85,7 +85,7 @@
                             :filterResults="false"
                             :min-chars="1"
                             :resolve-on-load="Boolean(formData)"
-                            :delay="0"
+                            :delay="600"
                             :searchable="true"
                             :options="
                                 async query => {
@@ -264,7 +264,7 @@
                             :filterResults="false"
                             :min-chars="1"
                             :resolve-on-load="Boolean(formData)"
-                            :delay="0"
+                            :delay="600"
                             :searchable="true"
                             :options="
                                 async query => {
@@ -516,7 +516,6 @@ const onSubmit = () => {
         else createCompany();
     }
 };
-
 const getAddress = async query => {
     if (props.formData) return await yandexmap.getAddress(query, props.formData.officeAdress);
     return await yandexmap.getAddress(query);
