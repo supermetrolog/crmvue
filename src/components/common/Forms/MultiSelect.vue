@@ -242,7 +242,7 @@ const removeElement = index => {
 };
 
 const onChange = value => {
-    if (field.value === null && value === undefined) return;
+    if (value === undefined) return;
 
     if (props.name) {
         const newModelValue = value.map(element => ({ [props.name]: props.transform(element) }));

@@ -12,7 +12,7 @@ import { companyOptions } from '@/const/options/company.options';
 import { equipmentOptions } from '@/const/options/equipment.options.js';
 import { taskOptions } from '@/const/options/task.options.js';
 
-const defaultsOptions = {
+export const defaultsOptions = {
     boolean: {
         1: 'Да/есть',
         2: 'Нет'
