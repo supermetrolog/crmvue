@@ -1,7 +1,15 @@
 <template>
-    <Tr>
-        <Td class="text-center pr-0">
-            {{ request.id }}
+    <Tr class="request-table-item">
+        <Td class="text-center request-table-item__id">
+            <p class="mb-1">#{{ request.id }}</p>
+            <div class="request-table-item__buttons">
+                <HoverActionsButton @click="$emit('to-chat')" label="Открыть в чате">
+                    <i class="fa-solid fa-comment" />
+                </HoverActionsButton>
+                <HoverActionsButton @click="$emit('view')" label="Подробнее">
+                    <i class="fa-solid fa-eye" />
+                </HoverActionsButton>
+            </div>
         </Td>
         <Td class="request-table__deal" sort="dealType">
             <div class="row no-gutters">
@@ -27,7 +35,7 @@
                 </div>
             </div>
         </Td>
-        <Td class="text-center request-table__area">
+        <Td class="text-center request-table__area request-table-item__area">
             <WithUnitType :unit-type="unitTypes.SQUARE_METERS">
                 <b>{{ $formatter.numberOrRangeNew(request.minArea, request.maxArea) }}</b>
             </WithUnitType>
@@ -67,17 +75,27 @@
                 </p>
             </div>
         </Td>
-        <Td class="text-center">
-            <a :href="$url.company(request.company.id)" target="_blank" class="text-primary">
-                <p :class="{ 'text-warning': !request.company.status }">
-                    {{ request.company.full_name }}
-                </p>
-            </a>
+        <Td>
+            <CompanyElement
+                v-if="request.company"
+                class="request-table-item__company"
+                :company="request.company"
+            />
+            <p v-else>&#8212;</p>
+            <CompanyContact
+                v-if="request.contact"
+                class="request-table-item__contact mt-2"
+                :contact="request.contact"
+            />
         </Td>
         <Td class="text-center">
-            <p v-if="request.consultant">
-                {{ request.consultant.userProfile.short_name }}
-            </p>
+            <Avatar
+                v-if="request.consultant"
+                class="mx-auto"
+                size="55"
+                :src="request.consultant.userProfile.avatar"
+                :label="request.consultant.userProfile.medium_name"
+            />
             <p v-else>&#8212;</p>
         </Td>
         <Td class="text-center request-table__date" sort="updated_at">
@@ -115,7 +133,12 @@ import { unitTypes } from '@/const/unitTypes.js';
 import { computed } from 'vue';
 import { ucFirst } from '@/utils/formatter.js';
 import { DealTypeList, DirectionList, DistrictList, PassiveWhyRequest } from '@/const/const.js';
+import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
+import Avatar from '@/components/common/Avatar.vue';
+import CompanyElement from '@/components/Company/CompanyElement.vue';
+import CompanyContact from '@/components/Company/CompanyContact.vue';
 
+defineEmits(['to-chat', 'view']);
 const props = defineProps({
     request: {
         type: Object,

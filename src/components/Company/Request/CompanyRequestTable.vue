@@ -1,6 +1,6 @@
 <template>
     <div class="request-table">
-        <Table>
+        <Table v-if="requests.length">
             <template #thead>
                 <Tr>
                     <Th>#</Th>
@@ -19,10 +19,13 @@
                 <CompanyRequestTableItem
                     v-for="request in requests"
                     :key="request.id"
+                    @to-chat="$emit('to-chat', request)"
+                    @view="$emit('view', request)"
                     :request="request"
                 />
             </template>
         </Table>
+        <Spinner v-else-if="loader" />
     </div>
 </template>
 
@@ -32,7 +35,9 @@ import Tr from '@/components/common/Table/Tr.vue';
 import Table from '@/components/common/Table/Table.vue';
 import Loader from '@/components/common/Loader.vue';
 import CompanyRequestTableItem from '@/components/Company/Request/CompanyRequestTableItem.vue';
+import Spinner from '@/components/common/Spinner.vue';
 
+defineEmits(['to-chat', 'view', 'toggle-disable', 'edit']);
 defineProps({
     requests: {
         type: Array,

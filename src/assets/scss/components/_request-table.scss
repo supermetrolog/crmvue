@@ -54,3 +54,42 @@
         width: 250px;
     }
 }
+
+.request-table-item {
+    td {
+        padding: 5px 10px!important;
+    }
+
+    &__buttons {
+        @include mixins.flex-box($d: column, $gap: 5px, $a: center);
+    }
+
+    &__company {
+        max-width: 260px;
+        border: none !important;
+        padding: 0 !important;
+        font-size: 14px;
+
+        .company-element__name {
+            font-weight: 700;
+            color: #000;
+            text-decoration: underline;
+        }
+    }
+
+    &__contact {
+        max-width: 260px;
+        border: none !important;
+        padding: 0 !important;
+        font-size: 14px;
+
+        .company-contact__phone {
+            background-color: #e7e7e7;
+            color: inherit;
+        }
+    }
+
+    &__area {
+        max-width: 150px;
+    }
+}

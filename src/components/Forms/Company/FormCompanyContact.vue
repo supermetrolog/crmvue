@@ -139,7 +139,7 @@
                     :filterResults="false"
                     :min-chars="1"
                     :resolve-on-load="true"
-                    :delay="0"
+                    :delay="600"
                     :searchable="true"
                     :options="
                         async query => {

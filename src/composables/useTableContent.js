@@ -1,4 +1,4 @@
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { onBeforeUnmount, onMounted, shallowRef, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { noop } from '@vueuse/core';
@@ -19,9 +19,9 @@ export function useTableContent(fetch, options = {}) {
 
     /**
      * Флаг инициализации `query`.
-     * @type {Ref<boolean>}
+     * @type {shallowRef<boolean>}
      */
-    const queryIsInitialized = ref(false);
+    const queryIsInitialized = shallowRef(false);
 
     let stop = noop;
     let { initQuery = noop, scrollTo = null } = options;
