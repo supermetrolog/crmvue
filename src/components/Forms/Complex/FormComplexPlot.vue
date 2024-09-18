@@ -19,7 +19,7 @@
                             :filterResults="false"
                             :min-chars="1"
                             :resolve-on-load="true"
-                            :delay="500"
+                            :delay="600"
                             :searchable="true"
                             :v="v$.form.address"
                             :options="

@@ -29,7 +29,7 @@
                             :filterResults="false"
                             :min-chars="1"
                             :resolve-on-load="!!complex"
-                            :delay="0"
+                            :delay="600"
                             :searchable="true"
                             required
                             label="Адрес комплекса"
@@ -536,7 +536,7 @@ import {
     internetTypes,
     waterTypes
 } from '@/const/types';
-import { onBeforeMount, onMounted, reactive, shallowRef } from 'vue';
+import { onBeforeMount, reactive, shallowRef } from 'vue';
 import { validationRulesForComplex } from '@/validators/rules/complex.js';
 import Switch from '@/components/common/Forms/Switch.vue';
 import Tab from '@/components/common/Tabs/Tab.vue';
