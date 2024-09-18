@@ -1,8 +1,8 @@
 <template>
     <Modal @close="$emit('close')" show :title="'Просмотр запроса #' + request.id" width="1200">
-        <Spinner v-if="isLoading" />
-        <div v-else class="dashboard-card-view">
-            <div class="row">
+        <div class="dashboard-card-view">
+            <Spinner v-if="isLoading" class="absolute-center" />
+            <div v-else class="row">
                 <div class="col-12">
                     <DashboardCard
                         :class="{
@@ -24,6 +24,12 @@
                                 Срочный запрос
                             </DashboardChip>
                             <div class="dashboard-card-view__actions">
+                                <HoverActionsButton
+                                    @click="$emit('to-chat')"
+                                    label="Открыть в чате"
+                                >
+                                    <i class="fa-solid fa-comment" />
+                                </HoverActionsButton>
                                 <HoverActionsButton
                                     v-if="editable"
                                     @click="$emit('edit')"
@@ -112,14 +118,14 @@
                         </div>
                     </DashboardCard>
                     <DashboardCard class="mb-2">
-                        <p class="dashboard-card-view__subtitle">Тип объекта</p>
-                        <DashboardCardRequestObjectTypes :request="request" />
-                    </DashboardCard>
-                    <DashboardCard>
                         <p class="dashboard-card-view__subtitle">Описание</p>
                         <p>
                             {{ request.description?.length ? request.description : 'Не заполнено' }}
                         </p>
+                    </DashboardCard>
+                    <DashboardCard>
+                        <p class="dashboard-card-view__subtitle">Тип объекта</p>
+                        <DashboardCardRequestObjectTypes :request="request" />
                     </DashboardCard>
                 </div>
                 <div class="col-4">
@@ -132,7 +138,7 @@
                         <p class="dashboard-card-view__property">
                             <span class="dashboard-card-view__category">Контакт:</span>
                             <span v-if="contact">{{ contact.full_name }}</span>
-                            <span v-else>Загрузка..</span>
+                            <span v-else>Информация отсутствует..</span>
                         </p>
                     </DashboardCard>
                     <DashboardCard class="mb-2">
@@ -273,7 +279,7 @@ export default {
         HoverActionsButton
     },
     mixins: [LoaderMixin],
-    emits: ['close', 'edit'],
+    emits: ['close', 'edit', 'to-chat'],
     props: {
         request: {
             type: Object,
