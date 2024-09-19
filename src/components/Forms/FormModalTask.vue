@@ -105,6 +105,7 @@ const form = ref({
 const tagsOptions = computed(() => store.getters['Task/tagsOptions']);
 
 const consultantsForObservers = computed(() => {
+    if (store.getters.isAdmin) return consultants.value;
     return consultants.value.filter(element => element.id !== form.value.user_id);
 });
 
