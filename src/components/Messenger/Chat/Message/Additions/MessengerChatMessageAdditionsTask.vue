@@ -19,16 +19,23 @@
             <span
                 v-tippy="observingText"
                 @click="read"
-                class="messenger-chat-message-addition__observer rounded-icon"
+                class="messenger-chat-message-addition__observing rounded-icon"
                 :class="{ observed: isObserved, loading: addition.isLoading }"
             >
                 <i class="fa-solid fa-eye"></i>
             </span>
         </template>
-        <template #content>
-            <div>
-                <span>Задача для {{ usersText }} до {{ expiredDate }}</span>
-            </div>
+        <template #content>Задача для {{ usersText }} до {{ expiredDate }}</template>
+        <template v-if="addition.observers.length" #external>
+            <Avatar
+                v-for="observer in addition.observers"
+                :key="observer.id"
+                class="messenger-chat-message-addition__observer"
+                :class="{ viewed: observer.viewed_at !== null }"
+                :label="observer.user.userProfile.medium_name + ' наблюдает'"
+                :size="30"
+                :src="observer.user.userProfile.avatar"
+            />
         </template>
         <template v-if="editable || draggable" #actions>
             <template v-if="editable">
@@ -68,6 +75,7 @@ import { computed, inject } from 'vue';
 import { useStore } from 'vuex';
 import { useNotify } from '@/utils/useNotify.js';
 import { taskOptions } from '@/const/options/task.options.js';
+import Avatar from '@/components/common/Avatar.vue';
 
 const $editAddition = inject('$editAddition');
 const $messageID = inject('$messageID');
