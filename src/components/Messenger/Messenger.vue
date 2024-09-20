@@ -2,7 +2,11 @@
     <div class="messenger" :class="classList">
         <teleport to="body">
             <AnimationTransition :speed="0.7">
-                <div v-if="isOpen && hasPanel" class="messenger-backdrop"></div>
+                <div
+                    v-if="isOpen && hasPanel"
+                    @click="isOpen = false"
+                    class="messenger-backdrop"
+                ></div>
             </AnimationTransition>
             <MessengerAttachment ref="attachments" />
             <FormModalChatMemberLastCall />
