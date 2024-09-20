@@ -194,6 +194,10 @@
         width: 30px;
         color: #fff;
         flex-shrink: 0;
+
+        &.completed {
+            background-color: #10b981;
+        }
     }
 
     &--warning {
