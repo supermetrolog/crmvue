@@ -208,14 +208,8 @@
         opacity: 1;
     }
 
-    &__settings {
-        margin-left: auto;
-        font-size: 22px;
+    &__trigger {
         cursor: pointer;
-        padding: 3px;
-        color: #000;
-        opacity: 0;
-        @include mixins.transition(opacity .7s);
     }
 
     &__observer {
@@ -255,7 +249,8 @@
     box-shadow: 0 0 5px 1px rgba(13, 31, 47, 0.2);
 
     bottom: 0;
-    left: 100%;
+    right: 100%;
+    left: auto;
     top: auto;
     position: absolute;
     max-height: 1000px;
@@ -263,17 +258,9 @@
     height: max-content;
     padding: 5px;
     margin: 0 5px;
-
-    &__button {
-    }
 }
 
 .messenger-chat-message--right {
-    .messenger-chat-message-addition-settings {
-        right: 100%;
-        left: auto;
-    }
-
     .messenger-chat-message-actions .hover-actions {
         right: 0;
         left: unset;

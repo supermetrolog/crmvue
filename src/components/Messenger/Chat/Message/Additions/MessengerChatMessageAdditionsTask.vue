@@ -14,8 +14,9 @@
             >
                 <i class="fa-solid fa-bolt"></i>
             </span>
+        </template>
+        <template v-if="isObserving" #additionalIcons>
             <span
-                v-if="isObserving"
                 v-tippy="observingText"
                 @click="read"
                 class="messenger-chat-message-addition__observer rounded-icon"
