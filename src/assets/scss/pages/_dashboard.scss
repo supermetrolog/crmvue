@@ -129,7 +129,7 @@
     border-radius: 5px;
     font-weight: 500;
 
-    @include mixins.transition(opacity);
+    @include mixins.transition(opacity, background-color, color);
 
     &.disabled {
         cursor: default!important;

@@ -9,18 +9,14 @@
         />
     </div>
 </template>
-<script>
+<script setup>
 import File from '@/components/common/Forms/File.vue';
 
-export default {
-    name: 'MessengerChatFormAttachments',
-    components: { File },
-    emits: ['delete'],
-    props: {
-        files: {
-            type: Array,
-            required: true
-        }
+defineEmits(['delete']);
+defineProps({
+    files: {
+        type: Array,
+        required: true
     }
-};
+});
 </script>
