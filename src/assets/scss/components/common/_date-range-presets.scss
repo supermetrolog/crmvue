@@ -1,0 +1,30 @@
+@use '../../utils/mixins';
+@use '../../utils/variables';
+
+.date-range-presets {
+    &__title {
+        font-weight: 500;
+        margin-bottom: 5px;
+    }
+
+    &__list {
+        @include mixins.flex-box($d: column, $gap: 10px);
+    }
+
+    &__item {
+        padding: 10px!important;
+        text-align: center;
+        width: 100%!important;
+        cursor: pointer;
+
+        @include mixins.hover {
+            background-color: variables.$bg-success;
+            color: #fff;
+        }
+
+        &.active {
+            background-color: variables.$bg-success;
+            color: #fff;
+        }
+    }
+}

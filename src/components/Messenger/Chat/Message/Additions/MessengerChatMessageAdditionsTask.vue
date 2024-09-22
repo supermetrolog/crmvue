@@ -22,6 +22,7 @@
             <span
                 v-tippy="addition.message"
                 class="messenger-chat-message-addition__icon rounded-icon bg-black"
+                :class="{ completed: isCompleted }"
             >
                 <i class="fa-solid fa-bolt"></i>
             </span>
@@ -66,24 +67,23 @@
             <DashboardChip class="dashboard-bg-success text-white">Выполнено</DashboardChip>
         </template>
         <template v-if="editable || draggable" #actions>
-            <template v-if="editable">
-                <HoverActionsButton
-                    @click="
-                        $editAddition({
-                            messageID: $messageID,
-                            addition,
-                            additionType: 'task',
-                            successMessage: 'Задача успешно создана!'
-                        })
-                    "
-                    label="Редактировать"
-                >
-                    <i class="fa-solid fa-pen"></i>
-                </HoverActionsButton>
-                <HoverActionsButton @click="remove" label="Удалить">
-                    <i class="fa-solid fa-trash"></i>
-                </HoverActionsButton>
-            </template>
+            <HoverActionsButton
+                v-if="editable"
+                @click="
+                    $editAddition({
+                        messageID: $messageID,
+                        addition,
+                        additionType: 'task',
+                        successMessage: 'Задача успешно обновлена!'
+                    })
+                "
+                label="Редактировать"
+            >
+                <i class="fa-solid fa-pen"></i>
+            </HoverActionsButton>
+            <HoverActionsButton v-if="isAdmin" @click="remove" label="Удалить">
+                <i class="fa-solid fa-trash"></i>
+            </HoverActionsButton>
             <HoverActionsButton
                 v-if="draggable"
                 @click.stop="$editTaskStatus($messageID, addition)"
@@ -159,6 +159,8 @@ const observingText = computed(() => {
 
 const observers = computed(() => props.addition.observers.slice(0, 3));
 const observersDiff = computed(() => props.addition.observers.length - 3);
+
+const isAdmin = computed(() => store.getters.isAdmin);
 
 const remove = async () => {
     const confirmed = await confirm('Вы уверены, что хотите безвозвратно удалить задачу?');
