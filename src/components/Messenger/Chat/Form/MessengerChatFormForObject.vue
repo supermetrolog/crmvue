@@ -22,6 +22,7 @@
             <Textarea
                 v-model.trim="message"
                 @keydown.enter.prevent="keyHandler"
+                @paste="pasteHandler"
                 placeholder="Напишите сообщение..."
                 class="messenger-chat-form__editor"
                 auto-height
@@ -38,9 +39,9 @@
         </Form>
     </div>
 </template>
-<script>
+<script setup>
 import Form from '@/components/common/Forms/Form.vue';
-import { mapGetters, mapState } from 'vuex';
+import { useStore } from 'vuex';
 import Button from '@/components/common/Button.vue';
 import Textarea from '@/components/common/Forms/Textarea.vue';
 import MessengerChatFormRecipient from '@/components/Messenger/Chat/Form/MessengerChatFormRecipient.vue';
@@ -49,105 +50,132 @@ import MessengerChatFormAttachments from '@/components/Messenger/Chat/Form/Messe
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import useVuelidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
+import { computed, inject, onBeforeMount, reactive } from 'vue';
+import imageCompression from 'browser-image-compression';
+import { useNotify } from '@/utils/useNotify.js';
 
-export default {
-    name: 'MessengerChatForm',
-    components: {
-        AnimationTransition,
-        MessengerChatFormAttachments,
-        MessengerChatFormCategories,
-        MessengerChatFormRecipient,
-        Textarea,
-        Button,
-        Form
+const compressionOptions = {
+    maxSizeMB: 1,
+    maxWidthOrHeight: 1920,
+    useWebWorker: true
+};
+
+const $openAttachments = inject('$openAttachments');
+const store = useStore();
+const notify = useNotify();
+
+const currentFiles = reactive({
+    fileList: [],
+    files: []
+});
+
+const currentContact = computed(() => store.state.Messenger.currentRecipient);
+const hasCachedMessage = computed(() => store.getters['Messenger/hasCachedMessage']);
+
+const message = computed({
+    get() {
+        return store.state.Messenger.newMessage;
     },
-    inject: ['$openAttachments'],
-    data() {
-        return {
-            currentFiles: {
-                fileList: [],
-                files: []
-            },
-            v$: useVuelidate()
-        };
+    set(value) {
+        store.commit('Messenger/setNewMessage', value);
+    }
+});
+
+const currentCategory = computed({
+    get() {
+        return store.state.Messenger.currentCategory;
     },
-    computed: {
-        message: {
-            get() {
-                return this.$store.state.Messenger.newMessage;
-            },
-            set(value) {
-                this.$store.commit('Messenger/setNewMessage', value);
-            }
-        },
-        ...mapState({ currentContact: state => state.Messenger.currentRecipient }),
-        ...mapGetters({ THIS_USER: 'THIS_USER', hasCachedMessage: 'Messenger/hasCachedMessage' }),
+    set(value) {
+        store.commit('Messenger/setCurrentCategory', value);
+    }
+});
+
+const v$ = useVuelidate(
+    {
         currentCategory: {
-            get() {
-                return this.$store.state.Messenger.currentCategory;
-            },
-            set(value) {
-                this.$store.commit('Messenger/setCurrentCategory', value);
-            }
+            required: helpers.withMessage('Выберите категорию!', required)
         }
     },
-    methods: {
-        keyHandler(event) {
-            if (event.shiftKey) this.message += '\n';
-            else this.sendMessage();
-        },
-        setCurrentContact(contact) {
-            this.$store.commit('Messenger/setCurrentRecipient', { contact });
-        },
-        async sendMessage() {
-            this.v$.$validate();
-            if (this.v$.$error) return;
+    {
+        currentCategory
+    }
+);
 
-            this.message = this.message.replace(/(\n)+$/g, '');
+const sendMessage = async () => {
+    v$.value.$validate();
+    if (v$.value.$error) return;
 
-            if (!this.message.length && !this.currentFiles.fileList.length) return;
+    message.value = message.value.replace(/(\n)+$/g, '');
 
-            this.message = this.message.replace(
-                /(https?\S*)/g,
-                '<a href="$1" target="_blank">$1</a>'
+    if (!message.value.length) return;
+
+    message.value = message.value.replace(/(https?\S*)/g, '<a href="$1" target="_blank">$1</a>');
+
+    const send = await store.dispatch('Messenger/sendMessage', {
+        tag_ids: currentCategory.value ? [currentCategory.value] : [],
+        files: currentFiles.fileList
+    });
+
+    if (send) {
+        currentFiles.fileList = [];
+        currentFiles.files = [];
+    }
+};
+
+const keyHandler = event => {
+    if (event.shiftKey) message.value = message.value + '\n';
+    else sendMessage();
+};
+
+const pasteHandler = async event => {
+    if (event.clipboardData.files.length) {
+        const files = Array.from(event.clipboardData.files);
+
+        try {
+            const compressionFiles = await Promise.allSettled(
+                files.map(element => imageCompression(element, compressionOptions))
             );
 
-            const sended = await this.$store.dispatch('Messenger/sendMessage', {
-                tag_ids: this.currentCategory ? [this.currentCategory] : [],
-                files: this.currentFiles.fileList
-            });
+            compressionFiles.forEach(fileObject => {
+                const file = fileObject.value;
+                const reader = new FileReader();
 
-            if (sended) {
-                this.currentFiles = {
-                    files: [],
-                    fileList: []
+                reader.onload = event => {
+                    file.src = event.target.result;
+                    currentFiles.files.push(file);
+                    currentFiles.fileList.push(file);
                 };
-            }
-        },
-        async attachFile() {
-            const attachmentResponse = await this.$openAttachments();
 
-            if (attachmentResponse?.fileList?.length) {
-                this.currentFiles.files.push(...attachmentResponse.files);
-                this.currentFiles.fileList.push(...attachmentResponse.fileList);
-            }
-        },
-        deleteFile(id) {
-            this.currentFiles.fileList.splice(id, 1);
-            this.currentFiles.files.splice(id, 1);
-        }
-    },
-    validations() {
-        return {
-            currentCategory: {
-                required: helpers.withMessage('Выберите категорию!', required)
-            }
-        };
-    },
-    mounted() {
-        if (this.hasCachedMessage) {
-            this.$store.dispatch('Messenger/setCurrentMessageFromCache');
+                reader.readAsDataURL(file);
+            });
+        } catch (e) {
+            notify.error(
+                'Произошла ошибка при оптимизации файла. Попробуйте еще раз или используйте другой файл',
+                'Загрузка файла'
+            );
         }
     }
 };
+
+const setCurrentContact = contact => {
+    store.commit('Messenger/setCurrentRecipient', { contact });
+};
+
+const attachFile = async () => {
+    const attachmentResponse = await $openAttachments();
+
+    if (attachmentResponse?.fileList?.length) {
+        currentFiles.files.push(...attachmentResponse.files);
+        currentFiles.fileList.push(...attachmentResponse.fileList);
+    }
+};
+
+const deleteFile = id => {
+    currentFiles.fileList.splice(id, 1);
+    currentFiles.files.splice(id, 1);
+};
+
+onBeforeMount(() => {
+    if (hasCachedMessage.value) store.dispatch('Messenger/setCurrentMessageFromCache');
+});
 </script>
