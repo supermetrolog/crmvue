@@ -1,6 +1,9 @@
 <template>
     <div class="messenger-chat-message-addition" :class="{ viewed: settingsIsVisible }">
         <div class="messenger-chat-message-addition__content">
+            <div v-if="$slots.functions" class="messenger-chat-message-addition__functions">
+                <slot name="functions"></slot>
+            </div>
             <div
                 ref="iconEl"
                 @click.stop="clickToIconHandler"
@@ -8,7 +11,9 @@
             >
                 <slot name="icon"></slot>
             </div>
-            <slot name="additionalIcons"></slot>
+            <div v-if="$slots.additionalIcons" class="messenger-chat-message-addition__icons">
+                <slot name="additionalIcons"></slot>
+            </div>
             <p class="messenger-chat-message-addition__text">
                 <slot name="content"></slot>
             </p>

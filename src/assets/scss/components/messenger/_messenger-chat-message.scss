@@ -166,11 +166,11 @@
     }
 
     &.expired {
-        background-color: rgba(249, 49, 84, .8);
+        background-color: rgba(129, 0, 12, 0.8);
         color: #f1f1f1;
     }
 
-    &.observing {
+    &.observing:not(.observed) {
         background-color: rgba(246, 236, 55, 0.2);
     }
 
@@ -184,8 +184,12 @@
     }
 
     &.completed &__content {
-        opacity: .3;
+        opacity: .5;
         color: #9f3f56;
+    }
+
+    &.completed &__text {
+        text-decoration: line-through;
     }
 
     &__icon {
@@ -219,20 +223,27 @@
     &__observing {
         color: #7e7e7e;
         font-size: 26px;
-        cursor: pointer;
         @include mixins.transition(color, opacity);
 
-        &:not(.observed):hover {
-            color: #36b68e;
-        }
+        &:not(.observed) {
+            cursor: pointer;
 
-        &.observed {
-            color: #10B981;
+            &:hover {
+                color: #36b68e;
+            }
         }
 
         &.loading {
             animation: blink .5s infinite alternate-reverse;
         }
+    }
+
+    &__observing.observed {
+        color: #0d9d41;
+    }
+
+    &.expired &__observing.observed {
+        color: #4de75f;
     }
 
     &__external {
@@ -246,6 +257,26 @@
         &.viewed {
             border-color: #1fc41f;
         }
+    }
+
+    &__icons {
+        @include mixins.flex-box($gap: 2px);
+    }
+
+    &__functions {
+        @include mixins.flex-box($gap: 2px);
+    }
+
+    &__circle {
+        height: 30px;
+        width: 30px;
+        border-radius: 50%;
+        border: 2px solid #000000;
+        color: #000;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        @include mixins.flex-box($a: center, $j: center);
     }
 }
 

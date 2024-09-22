@@ -7,16 +7,7 @@
             observed: isObserved
         }"
     >
-        <template #icon>
-            <span
-                v-tippy="addition.message"
-                class="messenger-chat-message-addition__icon rounded-icon bg-black"
-                :class="{ completed: isCompleted }"
-            >
-                <i class="fa-solid fa-bolt"></i>
-            </span>
-        </template>
-        <template v-if="isObserving" #additionalIcons>
+        <template v-if="isObserving" #functions>
             <span
                 v-tippy="observingText"
                 @click="read"
@@ -26,10 +17,18 @@
                 <i class="fa-solid fa-eye"></i>
             </span>
         </template>
-        <template #content>Задача для {{ usersText }} до {{ expiredDate }}</template>
-        <template v-if="addition.observers.length" #external>
+        <template #icon>
+            <span
+                v-tippy="addition.message"
+                class="messenger-chat-message-addition__icon rounded-icon bg-black"
+                :class="{ completed: isCompleted }"
+            >
+                <i class="fa-solid fa-bolt"></i>
+            </span>
+        </template>
+        <template #additionalIcons>
             <Avatar
-                v-for="observer in addition.observers"
+                v-for="observer in observers"
                 :key="observer.id"
                 class="messenger-chat-message-addition__observer"
                 :class="{ viewed: observer.viewed_at !== null }"
@@ -37,6 +36,34 @@
                 :size="30"
                 :src="observer.user.userProfile.avatar"
             />
+            <Tippy interactive>
+                <div
+                    v-if="addition.observers.length > 3"
+                    class="messenger-chat-message-addition__circle"
+                >
+                    +{{ observersDiff }}0
+                </div>
+                <template #content>
+                    <p class="mb-1">Список всех наблюдателей:</p>
+                    <div class="d-flex gap-1 flex-wrap">
+                        <Avatar
+                            v-for="observer in addition.observers"
+                            :key="observer.id"
+                            class="messenger-chat-message-addition__observer"
+                            :class="{ viewed: observer.viewed_at !== null }"
+                            :label="observer.user.userProfile.medium_name + ' наблюдает'"
+                            :size="30"
+                            :src="observer.user.userProfile.avatar"
+                        />
+                    </div>
+                </template>
+            </Tippy>
+        </template>
+        <template #content>
+            Задача #{{ addition.id }} для {{ usersText }} до {{ expiredDate }}
+        </template>
+        <template v-if="isCompleted" #external>
+            <DashboardChip class="dashboard-bg-success text-white">Выполнено</DashboardChip>
         </template>
         <template v-if="editable || draggable" #actions>
             <HoverActionsButton
@@ -76,6 +103,8 @@ import { useStore } from 'vuex';
 import { useNotify } from '@/utils/useNotify.js';
 import { taskOptions } from '@/const/options/task.options.js';
 import Avatar from '@/components/common/Avatar.vue';
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import { Tippy } from 'vue-tippy';
 
 const $editAddition = inject('$editAddition');
 const $messageID = inject('$messageID');
@@ -126,6 +155,9 @@ const observingText = computed(() => {
     if (isObserved.value) return 'Просмотрено';
     return 'Нажмите, чтобы отметить задачу просмотренной';
 });
+
+const observers = computed(() => props.addition.observers.slice(0, 3));
+const observersDiff = computed(() => props.addition.observers.length - 3);
 
 const isAdmin = computed(() => store.getters.isAdmin);
 
