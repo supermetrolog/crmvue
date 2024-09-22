@@ -11,7 +11,25 @@
                 <UserPicker v-else v-model="form.user_id" single :users="consultants" />
             </template>
             <template #2>
-                <DatePicker v-model="form.date.end" size="70px" class="mx-auto" />
+                <div class="d-flex justify-content-center gap-3">
+                    <div class="date-range-presets">
+                        <p class="date-range-presets__title">
+                            Шаблоны продолжительности выполнения
+                        </p>
+                        <div class="date-range-presets__list">
+                            <DashboardChip
+                                v-for="preset in presets"
+                                :key="preset.id"
+                                @click="selectRange(preset.value)"
+                                class="date-range-presets__item dashboard-bg-success-l"
+                                :class="{ active: currentRange === preset.value }"
+                            >
+                                {{ preset.label }}
+                            </DashboardChip>
+                        </div>
+                    </div>
+                    <DatePicker v-model="form.date.end" size="70px" />
+                </div>
             </template>
             <template #3>
                 <MultiSelect
@@ -66,6 +84,8 @@ import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import TaskTagOption from '@/components/common/Forms/TaskTagOption.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import { computed, onUnmounted, ref, shallowRef } from 'vue';
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import dayjs from 'dayjs';
 
 const store = useStore();
 
@@ -88,6 +108,49 @@ const steps = [
     }
 ];
 
+const presets = [
+    {
+        id: 1,
+        value: 1,
+        label: '1 день'
+    },
+    {
+        id: 2,
+        value: 2,
+        label: '2 дня'
+    },
+    {
+        id: 3,
+        value: 3,
+        label: '3 дня'
+    },
+    {
+        id: 4,
+        value: 5,
+        label: '5 дней'
+    },
+    {
+        id: 5,
+        value: 7,
+        label: 'Неделя'
+    },
+    {
+        id: 6,
+        value: 14,
+        label: '2 недели'
+    },
+    {
+        id: 7,
+        value: 30,
+        label: 'Месяц'
+    },
+    {
+        id: 8,
+        value: 183,
+        label: 'Пол года'
+    }
+];
+
 const consultants = ref([]);
 const isLoading = shallowRef(false);
 const form = ref({
@@ -106,6 +169,11 @@ const tagsOptions = computed(() => store.getters['Task/tagsOptions']);
 
 const consultantsForObservers = computed(() => {
     return consultants.value.filter(element => element.id !== form.value.user_id);
+});
+
+const currentRange = computed(() => {
+    if (form.value.date.end === null) return 0;
+    return Math.round(dayjs(form.value.date.end).diff(dayjs(), 'day', true));
 });
 
 const clearForm = () => {
@@ -201,6 +269,10 @@ const submit = () => {
 const close = () => {
     cancel();
     clearForm();
+};
+
+const selectRange = range => {
+    form.value.date.end = dayjs().add(range, 'day').toDate();
 };
 
 onUnmounted(() => {
