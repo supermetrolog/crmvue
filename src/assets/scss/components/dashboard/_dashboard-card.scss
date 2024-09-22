@@ -207,7 +207,7 @@
         }
     }
 
-    &.viewing {
+    &.viewing:not(.viewed):not(.completed) {
         .dashboard-card-task__body {
             background-color: rgba(246, 236, 55, 0.2);
             font-weight: 500;

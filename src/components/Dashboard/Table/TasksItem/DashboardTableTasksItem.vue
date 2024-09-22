@@ -6,7 +6,8 @@
             completed: isCompleted,
             self: isForMe,
             myself: isMyTask,
-            viewing: isViewing
+            viewing: isViewing,
+            viewed: isViewed
         }"
     >
         <div class="dashboard-card-task__labels" :class="{ moved: isMyTask || isViewing }">
