@@ -7,9 +7,8 @@
             observed: isObserved
         }"
     >
-        <template #functions>
+        <template v-if="isObserving" #functions>
             <span
-                v-if="isObserving"
                 v-tippy="observingText"
                 @click="read"
                 class="messenger-chat-message-addition__observing rounded-icon"
