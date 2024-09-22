@@ -143,7 +143,7 @@
 
     &::before {
         position: absolute;
-        right: 0;
+        left: 0;
         bottom: 0;
         content: '';
         display: block;
@@ -194,6 +194,10 @@
         width: 30px;
         color: #fff;
         flex-shrink: 0;
+
+        &.completed {
+            background-color: #10b981;
+        }
     }
 
     &--warning {
@@ -212,7 +216,7 @@
         cursor: pointer;
     }
 
-    &__observer {
+    &__observing {
         color: #7e7e7e;
         font-size: 26px;
         cursor: pointer;
@@ -228,6 +232,19 @@
 
         &.loading {
             animation: blink .5s infinite alternate-reverse;
+        }
+    }
+
+    &__external {
+        margin-left: auto;
+        @include mixins.flex-box($gap: 2px);
+    }
+
+    &__observer {
+        border: 2px solid red;
+
+        &.viewed {
+            border-color: #1fc41f;
         }
     }
 }

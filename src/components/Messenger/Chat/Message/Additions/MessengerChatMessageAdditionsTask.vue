@@ -11,6 +11,7 @@
             <span
                 v-tippy="addition.message"
                 class="messenger-chat-message-addition__icon rounded-icon bg-black"
+                :class="{ completed: isCompleted }"
             >
                 <i class="fa-solid fa-bolt"></i>
             </span>
@@ -19,36 +20,42 @@
             <span
                 v-tippy="observingText"
                 @click="read"
-                class="messenger-chat-message-addition__observer rounded-icon"
+                class="messenger-chat-message-addition__observing rounded-icon"
                 :class="{ observed: isObserved, loading: addition.isLoading }"
             >
                 <i class="fa-solid fa-eye"></i>
             </span>
         </template>
-        <template #content>
-            <div>
-                <span>Задача для {{ usersText }} до {{ expiredDate }}</span>
-            </div>
+        <template #content>Задача для {{ usersText }} до {{ expiredDate }}</template>
+        <template v-if="addition.observers.length" #external>
+            <Avatar
+                v-for="observer in addition.observers"
+                :key="observer.id"
+                class="messenger-chat-message-addition__observer"
+                :class="{ viewed: observer.viewed_at !== null }"
+                :label="observer.user.userProfile.medium_name + ' наблюдает'"
+                :size="30"
+                :src="observer.user.userProfile.avatar"
+            />
         </template>
         <template v-if="editable || draggable" #actions>
-            <template v-if="editable">
-                <HoverActionsButton
-                    @click="
-                        $editAddition({
-                            messageID: $messageID,
-                            addition,
-                            additionType: 'task',
-                            successMessage: 'Задача успешно создана!'
-                        })
-                    "
-                    label="Редактировать"
-                >
-                    <i class="fa-solid fa-pen"></i>
-                </HoverActionsButton>
-                <HoverActionsButton @click="remove" label="Удалить">
-                    <i class="fa-solid fa-trash"></i>
-                </HoverActionsButton>
-            </template>
+            <HoverActionsButton
+                v-if="editable"
+                @click="
+                    $editAddition({
+                        messageID: $messageID,
+                        addition,
+                        additionType: 'task',
+                        successMessage: 'Задача успешно обновлена!'
+                    })
+                "
+                label="Редактировать"
+            >
+                <i class="fa-solid fa-pen"></i>
+            </HoverActionsButton>
+            <HoverActionsButton v-if="isAdmin" @click="remove" label="Удалить">
+                <i class="fa-solid fa-trash"></i>
+            </HoverActionsButton>
             <HoverActionsButton
                 v-if="draggable"
                 @click.stop="$editTaskStatus($messageID, addition)"
@@ -68,6 +75,7 @@ import { computed, inject } from 'vue';
 import { useStore } from 'vuex';
 import { useNotify } from '@/utils/useNotify.js';
 import { taskOptions } from '@/const/options/task.options.js';
+import Avatar from '@/components/common/Avatar.vue';
 
 const $editAddition = inject('$editAddition');
 const $messageID = inject('$messageID');
@@ -118,6 +126,8 @@ const observingText = computed(() => {
     if (isObserved.value) return 'Просмотрено';
     return 'Нажмите, чтобы отметить задачу просмотренной';
 });
+
+const isAdmin = computed(() => store.getters.isAdmin);
 
 const remove = async () => {
     const confirmed = await confirm('Вы уверены, что хотите безвозвратно удалить задачу?');

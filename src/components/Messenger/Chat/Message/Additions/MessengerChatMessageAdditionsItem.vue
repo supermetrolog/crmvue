@@ -12,6 +12,9 @@
             <p class="messenger-chat-message-addition__text">
                 <slot name="content"></slot>
             </p>
+            <div v-if="$slots.external" class="messenger-chat-message-addition__external">
+                <slot name="external"></slot>
+            </div>
         </div>
         <AnimationTransition v-if="$slots.actions" :speed="0.5">
             <div
