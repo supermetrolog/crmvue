@@ -1,46 +1,47 @@
 <template>
     <div class="messenger-chat-message-addition" :class="{ viewed: settingsIsVisible }">
         <div class="messenger-chat-message-addition__content">
-            <slot name="icon"></slot>
+            <div
+                ref="iconEl"
+                @click.stop="clickToIconHandler"
+                class="messenger-chat-message-addition__trigger"
+            >
+                <slot name="icon"></slot>
+            </div>
+            <slot name="additionalIcons"></slot>
             <p class="messenger-chat-message-addition__text">
                 <slot name="content"></slot>
             </p>
-            <span
-                v-if="$slots.actions"
-                @click.stop="settingsIsVisible = !settingsIsVisible"
-                class="messenger-chat-message-addition__settings"
-            >
-                <i class="fa-solid fa-ellipsis-vertical"></i>
-            </span>
         </div>
         <AnimationTransition v-if="$slots.actions" :speed="0.5">
-            <div v-if="settingsIsVisible" class="messenger-chat-message-addition-settings">
+            <div
+                v-if="settingsIsVisible"
+                v-on-click-outside="clickOutside"
+                class="messenger-chat-message-addition-settings"
+            >
                 <slot name="actions"></slot>
             </div>
         </AnimationTransition>
     </div>
 </template>
-<script>
+<script setup>
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import { shallowRef, useSlots } from 'vue';
+import { vOnClickOutside } from '@vueuse/components';
 
-export default {
-    name: 'MessengerChatMessageAdditionsItem',
-    components: { AnimationTransition },
-    data() {
-        return {
-            settingsIsVisible: false
-        };
+const slots = useSlots();
+
+const settingsIsVisible = shallowRef(false);
+const iconEl = shallowRef(null);
+
+const clickOutside = [
+    () => {
+        settingsIsVisible.value = false;
     },
-    watch: {
-        settingsIsVisible(newValue) {
-            if (newValue) document.addEventListener('click', this.settingsClickHandler);
-            else document.removeEventListener('click', this.settingsClickHandler);
-        }
-    },
-    methods: {
-        settingsClickHandler() {
-            this.settingsIsVisible = false;
-        }
-    }
+    { ignore: [iconEl] }
+];
+
+const clickToIconHandler = () => {
+    if (slots.actions) settingsIsVisible.value = !settingsIsVisible.value;
 };
 </script>
