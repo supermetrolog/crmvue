@@ -1,5 +1,6 @@
 import { alg } from '@/utils/alg.js';
 import dayjs from 'dayjs';
+import { dayjsFromMoscow } from '@/utils/index.js';
 
 /**
  * Сформировать название компании
@@ -88,6 +89,7 @@ export function toCorrectFormat(value) {
  * @returns {string}
  */
 export function toDateFormat(date, format = 'D.MM.YY, HH:mm') {
+    if (typeof date === 'string') return dayjsFromMoscow(date).format(format);
     return dayjs(date).format(format);
 }
 
