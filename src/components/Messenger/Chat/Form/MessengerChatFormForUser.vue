@@ -1,5 +1,6 @@
 <template>
     <div class="messenger-chat-form">
+        <Loader v-if="isLoading" />
         <AnimationTransition :speed="0.5">
             <MessengerChatFormAttachments
                 v-if="currentFiles.length || loadingFiles.length"
@@ -43,11 +44,12 @@ import Textarea from '@/components/common/Forms/Textarea.vue';
 import MessengerChatFormCategories from '@/components/Messenger/Chat/Form/MessengerChatFormCategories.vue';
 import MessengerChatFormAttachments from '@/components/Messenger/Chat/Form/MessengerChatFormAttachments.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import { computed, inject, onMounted, ref } from 'vue';
+import { computed, inject, onMounted, ref, shallowRef } from 'vue';
 import { useNotify } from '@/utils/useNotify.js';
 import imageCompression from 'browser-image-compression';
 import { MAX_FILES_COUNT, SIZE_TO_COMPRESSION } from '@/const/messenger.js';
 import { blobToFile } from '@/utils/index.js';
+import Loader from '@/components/common/Loader.vue';
 
 const compressionOptions = {
     maxSizeMB: 1,
@@ -59,8 +61,10 @@ const store = useStore();
 const notify = useNotify();
 const $openAttachments = inject('$openAttachments');
 
+const isLoading = shallowRef(false);
 const currentFiles = ref([]);
 const loadingFiles = ref([]);
+
 const canBeSend = computed(() => {
     return (
         message.value.length &&
@@ -94,6 +98,7 @@ const sendMessage = async () => {
 
     if (!message.value.length) return;
 
+    isLoading.value = true;
     message.value = message.value.replace(/(https?\S*)/g, '<a href="$1" target="_blank">$1</a>');
 
     const sends = await store.dispatch('Messenger/sendMessage', {
@@ -104,6 +109,8 @@ const sendMessage = async () => {
     if (sends) {
         currentFiles.value = [];
     }
+
+    isLoading.value = false;
 };
 
 const pasteHandler = async event => {
