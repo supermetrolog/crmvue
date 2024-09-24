@@ -235,3 +235,14 @@
         z-index: -1;
     }
 }
+
+.messenger-task-preview {
+    min-height: 500px;
+    position: relative;
+}
+
+.messenger-task-previewer {
+    border: 2px solid rgba(0, 0, 0, .1);
+    padding: 0 10px;
+    font-size: 14px;
+}

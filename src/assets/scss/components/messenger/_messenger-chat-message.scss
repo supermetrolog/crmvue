@@ -213,7 +213,7 @@
     }
 
     &.observing:not(.observed) {
-        background-color: rgba(246, 236, 55, 0.2);
+        background-color: rgba(246, 236, 55, 0.2)!important;
     }
 
     &__content {
