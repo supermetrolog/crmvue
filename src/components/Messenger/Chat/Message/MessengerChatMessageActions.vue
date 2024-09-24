@@ -1,6 +1,9 @@
 <template>
     <div class="messenger-chat-message-actions">
         <HoverActions>
+            <HoverActionsButton @click="$emit('reply')" label="Ответить">
+                <i class="fa-solid fa-reply"></i>
+            </HoverActionsButton>
             <HoverActionsButton
                 @click="
                     $createAddition({
@@ -40,7 +43,7 @@
             >
                 <i class="fa-solid fa-thumbtack"></i>
             </HoverActionsButton>
-            <HoverActionsButton v-if="canEdit" @click="$emit('edit')" label="Редактировать">
+            <HoverActionsButton v-if="canBeEdited" @click="$emit('edit')" label="Редактировать">
                 <i class="fa-solid fa-pen"></i>
             </HoverActionsButton>
             <HoverActionsButton v-if="canBeDeleted" @click="$emit('delete')" label="Удалить">
@@ -57,7 +60,7 @@ import { computed, inject } from 'vue';
 import dayjs from 'dayjs';
 import { dayjsFromMoscow } from '@/utils/index.js';
 
-defineEmits(['pin', 'edit', 'pin-to-object', 'delete']);
+defineEmits(['pin', 'edit', 'pin-to-object', 'delete', 'reply']);
 const props = defineProps({
     message: {
         type: Object,
@@ -72,18 +75,23 @@ const props = defineProps({
 const store = useStore();
 const $createAddition = inject('$createAddition');
 
-const canEdit = computed(() => {
+const isRecent = computed(
+    () => dayjs().diff(dayjsFromMoscow(props.message.created_at), 'minute') < 10
+);
+
+const canBeEdited = computed(() => {
     return (
-        props.message.from.model_type === 'user' &&
-        props.message.from.model.id === store.getters.THIS_USER.id
+        store.getters.isAdmin ||
+        (props.message.from.model_type === 'user' &&
+            props.message.from.model.id === store.getters.THIS_USER.id &&
+            isRecent.value)
     );
 });
 
 const canBeDeleted = computed(() => {
     return (
         store.getters.isAdmin ||
-        (store.getters.THIS_USER.id === props.message.from.model.id &&
-            dayjs().diff(dayjsFromMoscow(props.message.created_at), 'minute') < 10)
+        (store.getters.THIS_USER.id === props.message.from.model.id && isRecent.value)
     );
 });
 </script>
