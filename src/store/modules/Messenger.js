@@ -382,8 +382,20 @@ const Messenger = {
             }
         },
         onMessageDeleted(state, messageId) {
-            const deleted = spliceById(state.messages, messageId);
-            console.log(deleted, messageId);
+            spliceById(state.messages, messageId);
+
+            for (
+                let i = state.messages.length - 1;
+                i > 0 && state.messages[i].id !== messageId;
+                i--
+            ) {
+                if (!state.messages[i].isLabel) {
+                    if (state.messages[i].reply_to_id === messageId) {
+                        state.messages[i].reply_to.deleted_at = dayjs();
+                        break;
+                    } else if (state.messages[i].id < messageId) break;
+                }
+            }
         }
     },
     actions: {
