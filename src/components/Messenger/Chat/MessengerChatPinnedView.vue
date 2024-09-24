@@ -5,24 +5,21 @@
         </div>
     </Modal>
 </template>
-<script>
+<script setup>
 import MessengerChatMessage from '@/components/Messenger/Chat/Message/MessengerChatMessage.vue';
 import Modal from '@/components/common/Modal.vue';
-import { mapGetters } from 'vuex';
-import dayjs from 'dayjs';
+import { useStore } from 'vuex';
+import { dayjsFromMoscow } from '@/utils/index.js';
+import { computed } from 'vue';
 
-export default {
-    name: 'MessengerChatPinnedView',
-    components: { Modal, MessengerChatMessage },
-    emits: ['close'],
-    computed: {
-        message() {
-            const pinned = this.$store.state.Messenger.currentPinned;
-            pinned.dayjs_date = dayjs(pinned.created_at);
+defineEmits(['close']);
 
-            return pinned;
-        },
-        ...mapGetters({ currentUser: 'THIS_USER' })
-    }
-};
+const store = useStore();
+
+const message = computed(() => {
+    const pinned = store.state.Messenger.currentPinned;
+    pinned.dayjs_date = dayjsFromMoscow(pinned.created_at);
+
+    return pinned;
+});
 </script>

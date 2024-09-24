@@ -1,12 +1,14 @@
 <template>
     <div :id="'message-' + message.id" class="messenger-chat-message" :class="classList">
-        <div class="messenger-chat-message__wrapper">
+        <div class="messenger-chat-message__wrapper position-relative">
+            <Loader v-if="isDeleteLoading" class="absolute-center" small />
             <Avatar v-if="!self" :src="message.from.model.userProfile.avatar" size="55" />
             <div class="messenger-chat-message__content hover-actions-trigger">
                 <MessengerChatMessageActions
                     @pin="pinMessage"
                     @edit="editMessage"
                     @pin-to-object="pinToObject"
+                    @delete="deleteMessage"
                     :message="message"
                     :pinned="pinned"
                 />
@@ -60,15 +62,20 @@ import MessengerChatMessageActions from '@/components/Messenger/Chat/Message/Mes
 import MessengerChatMessageAdditions from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditions.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import MessengerChatMessageAttachments from '@/components/Messenger/Chat/Message/MessengerChatMessageAttachments.vue';
-import { computed, inject, provide } from 'vue';
+import { computed, inject, provide, shallowRef } from 'vue';
 import { useNotify } from '@/utils/useNotify.js';
 import { ucFirst } from '@/utils/formatter.js';
+import { useConfirm } from '@/composables/useConfirm.js';
+import api from '@/api/api.js';
+import Loader from '@/components/common/Loader.vue';
 
 const store = useStore();
 const notify = useNotify();
+const { confirm } = useConfirm();
 
 const $messageUpdate = inject('$messageUpdate');
 
+const emit = defineEmits(['deleted']);
 const props = defineProps({
     message: {
         type: Object,
@@ -85,6 +92,8 @@ const props = defineProps({
 });
 
 provide('$messageID', props.message.id);
+
+const isDeleteLoading = shallowRef(false);
 
 const originalDate = computed(() => {
     return props.message.dayjs_date.format('D MMMM YYYY., H:mm:ss');
@@ -150,5 +159,21 @@ const pinToObject = async () => {
     } else {
         notify.error('Произошла ошибка. Попробуйте еще раз');
     }
+};
+
+const deleteMessage = async () => {
+    const confirmed = await confirm('Вы действительно хотите удалить сообщение?');
+    if (!confirmed) return;
+
+    isDeleteLoading.value = true;
+
+    const deleted = await api.messenger.deleteMessage(props.message.id);
+    if (deleted) {
+        if (props.pinned) pinMessage();
+        notify.success('Сообщение успешно удалено');
+        emit('deleted');
+    }
+
+    isDeleteLoading.value = false;
 };
 </script>

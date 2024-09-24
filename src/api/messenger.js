@@ -209,5 +209,14 @@ export default {
             await setRequestError(e);
             return null;
         }
+    },
+    async deleteMessage(id) {
+        try {
+            const response = await axios.delete(`/chat-member-messages/${id}`);
+            return response.status === 200;
+        } catch (e) {
+            await setRequestError();
+            return false;
+        }
     }
 };

@@ -6,6 +6,7 @@ import { notify } from '@kyvg/vue3-notification';
 import { messagesToSections } from '@/utils/mapper.js';
 import { ucFirst } from '@/utils/formatter.js';
 import { messenger } from '@/const/messenger.js';
+import { spliceById } from '@/utils/index.js';
 
 const needCacheMessage = (dialogID, asideID, panelID) => {
     // Лучше не трогать условие.. Оно долго выводилось
@@ -379,6 +380,10 @@ const Messenger = {
                         readsNotificationsCount;
                 }
             }
+        },
+        onMessageDeleted(state, messageId) {
+            const deleted = spliceById(state.messages, messageId);
+            console.log(deleted, messageId);
         }
     },
     actions: {

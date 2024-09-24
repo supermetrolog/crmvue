@@ -38,6 +38,7 @@
                                 : ([{ isIntersecting }], observer) =>
                                       messageIntersectionObserver(isIntersecting, observer, message)
                         "
+                        @deleted="onMessageDeleted(message.id)"
                         :self="message.from.model.id === currentUser.id"
                         :message="message"
                         :pinned="message.id === pinnedMessage?.id"
@@ -164,6 +165,10 @@ const readMessages = async messageID => {
 const debouncedReadMessage = debounce(readMessages, 2000);
 const scrollObserver = ([{ isIntersecting }]) => {
     scrollButtonIsVisible.value = !isIntersecting;
+};
+
+const onMessageDeleted = messageId => {
+    store.commit('Messenger/onMessageDeleted', messageId);
 };
 
 onMounted(() => {
