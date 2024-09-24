@@ -396,6 +396,17 @@ const Messenger = {
                     } else if (state.messages[i].id < messageId) break;
                 }
             }
+        },
+        onQuizCompleted(state, lastCall) {
+            const chatMemberStateName =
+                'chatMembers' + ucFirst(state.currentDialog.model_type) + 's';
+
+            const chatMemberIndex = state[chatMemberStateName].data.findIndex(
+                element => element.id === state.currentDialog.id
+            );
+
+            if (chatMemberIndex !== -1)
+                state[chatMemberStateName].data[chatMemberIndex].last_call = lastCall;
         }
     },
     actions: {

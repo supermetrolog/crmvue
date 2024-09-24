@@ -69,6 +69,18 @@
                 background-color: #b66b09;
             }
         }
+
+        &.disabled {
+            border-color: #7c7471!important;
+            color: #7c7471!important;
+            opacity: .4;
+
+            &:hover {
+                color: #7c7471!important;
+                background-color: #a9a4a3;
+                opacity: 1;
+            }
+        }
     }
 
     &__last-call {
