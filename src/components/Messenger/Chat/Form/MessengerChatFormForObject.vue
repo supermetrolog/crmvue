@@ -2,9 +2,10 @@
     <div class="messenger-chat-form">
         <AnimationTransition :speed="0.5">
             <MessengerChatFormAttachments
-                v-if="currentFiles.fileList.length"
+                v-if="currentFiles.length || loadingFiles.length"
                 @delete="deleteFile"
-                :files="currentFiles.fileList"
+                :files="currentFiles"
+                :loadings="loadingFiles"
             />
         </AnimationTransition>
         <div class="messenger-chat-form__settings">
@@ -30,7 +31,7 @@
             <Button
                 @click="sendMessage"
                 class="messenger-chat-form__button"
-                :disabled="!message.length && !currentFiles.fileList.length"
+                :disabled="!canBeSend"
                 success
                 icon
             >
@@ -50,9 +51,11 @@ import MessengerChatFormAttachments from '@/components/Messenger/Chat/Form/Messe
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import useVuelidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
-import { computed, inject, onBeforeMount, reactive } from 'vue';
+import { computed, inject, onBeforeMount, ref } from 'vue';
 import imageCompression from 'browser-image-compression';
 import { useNotify } from '@/utils/useNotify.js';
+import { MAX_FILES_COUNT, SIZE_TO_COMPRESSION } from '@/const/messenger.js';
+import { blobToFile } from '@/utils/index.js';
 
 const compressionOptions = {
     maxSizeMB: 1,
@@ -64,9 +67,14 @@ const $openAttachments = inject('$openAttachments');
 const store = useStore();
 const notify = useNotify();
 
-const currentFiles = reactive({
-    fileList: [],
-    files: []
+const currentFiles = ref([]);
+const loadingFiles = ref([]);
+const canBeSend = computed(() => {
+    return (
+        message.value.length &&
+        currentFiles.value.length <= MAX_FILES_COUNT &&
+        loadingFiles.value.length === 0
+    );
 });
 
 const currentContact = computed(() => store.state.Messenger.currentRecipient);
@@ -113,12 +121,11 @@ const sendMessage = async () => {
 
     const send = await store.dispatch('Messenger/sendMessage', {
         tag_ids: currentCategory.value ? [currentCategory.value] : [],
-        files: currentFiles.fileList
+        files: currentFiles.value
     });
 
     if (send) {
-        currentFiles.fileList = [];
-        currentFiles.files = [];
+        currentFiles.value = [];
     }
 };
 
@@ -131,29 +138,52 @@ const pasteHandler = async event => {
     if (event.clipboardData.files.length) {
         const files = Array.from(event.clipboardData.files);
 
-        try {
-            const compressionFiles = await Promise.allSettled(
-                files.map(element => imageCompression(element, compressionOptions))
-            );
+        files.forEach(file => {
+            file.created_at = 'Только что';
 
-            compressionFiles.forEach(fileObject => {
-                const file = fileObject.value;
-                const reader = new FileReader();
+            if (file.type.match('image')) {
+                if (file.size >= SIZE_TO_COMPRESSION) {
+                    const uid = `${file.name}-${file.lastModified}`;
+                    loadingFiles.value.push({ id: uid, progress: 0 });
 
-                reader.onload = event => {
-                    file.src = event.target.result;
-                    currentFiles.files.push(file);
-                    currentFiles.fileList.push(file);
-                };
+                    try {
+                        imageCompression(file, {
+                            ...compressionOptions,
+                            onProgress: value => {
+                                const index = loadingFiles.value.findIndex(
+                                    element => element.id === uid
+                                );
+                                if (index !== -1) loadingFiles.value[index].progress = value;
+                            }
+                        }).then(async compressed => {
+                            const _file = blobToFile(compressed, file);
+                            _file.src = await imageCompression.getDataUrlFromFile(compressed);
 
-                reader.readAsDataURL(file);
-            });
-        } catch (e) {
-            notify.error(
-                'Произошла ошибка при оптимизации файла. Попробуйте еще раз или используйте другой файл',
-                'Загрузка файла'
-            );
-        }
+                            currentFiles.value.push(_file);
+                            const index = loadingFiles.value.findIndex(
+                                element => element.id === uid
+                            );
+                            if (index !== -1) loadingFiles.value.splice(index, 1);
+                        });
+                    } catch (e) {
+                        notify.error(
+                            'Произошла ошибка при оптимизации изображения. Попробуйте еще раз или используйте другое изображение',
+                            'Загрузка изображения'
+                        );
+
+                        const index = loadingFiles.value.findIndex(element => element.id === uid);
+                        if (index !== -1) loadingFiles.value.splice(index, 1);
+                    }
+                } else {
+                    imageCompression.getDataUrlFromFile(file).then(src => {
+                        file.src = src;
+                        currentFiles.value.push(file);
+                    });
+                }
+            } else {
+                currentFiles.value.push(file);
+            }
+        });
     }
 };
 
@@ -165,14 +195,12 @@ const attachFile = async () => {
     const attachmentResponse = await $openAttachments();
 
     if (attachmentResponse?.fileList?.length) {
-        currentFiles.files.push(...attachmentResponse.files);
-        currentFiles.fileList.push(...attachmentResponse.fileList);
+        currentFiles.value.push(...attachmentResponse.fileList);
     }
 };
 
 const deleteFile = id => {
-    currentFiles.fileList.splice(id, 1);
-    currentFiles.files.splice(id, 1);
+    currentFiles.value.splice(id, 1);
 };
 
 onBeforeMount(() => {

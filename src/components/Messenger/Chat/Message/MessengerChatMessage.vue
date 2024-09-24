@@ -123,7 +123,7 @@ const recipientUsername = computed(() => {
 
 const changeRecipient = () => {
     store.commit('Messenger/setCurrentRecipient', { contactID: props.message.contacts[0].id });
-    notify.success(`Контакт изменен на ${recipientUsername.value}`);
+    notify.info(`Контакт изменен на ${recipientUsername.value}`, 'Выбор контакта');
 };
 const pinMessage = async () => {
     if (props.pinned) {

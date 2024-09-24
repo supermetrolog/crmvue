@@ -1057,6 +1057,11 @@
                 opacity: 1;
             }
         }
+
+        &--loading {
+            background-color: #d7d3d3;
+            @include mixins.flex-box($a: center, $j: center);
+        }
     }
 
     &__image {
