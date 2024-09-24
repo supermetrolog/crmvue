@@ -1,23 +1,23 @@
 @use "../../utils/variables";
+@use "../../utils/mixins";
 
 .progress {
-    &-bar {
+    &__bar {
         height: 4px;
         width: 100%;
         background-color: lighten(variables.$color_grey, 25);
         border-radius: 3px;
-
-        .percent {
-            height: 100%;
-            border-radius: 3px;
-        }
     }
 
-    &-label {
-        p {
-            font-weight: 400;
-            color: variables.$color_grey;
-            font-size: 12px;
-        }
+    &__percent {
+        height: 100%;
+        border-radius: 3px;
+        @include mixins.transition(width);
+    }
+
+    &__label {
+        font-weight: 400;
+        color: variables.$color_grey;
+        font-size: 12px;
     }
 }
