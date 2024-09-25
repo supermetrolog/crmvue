@@ -102,6 +102,7 @@ import { useStore } from 'vuex';
 import DashboardTableTasksItemDate from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemDate.vue';
 import DashboardTableTasksItemLabel from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemLabel.vue';
 import { toDateFormat } from '@/utils/formatter.js';
+import { dayjsFromMoscow } from '@/utils/index.js';
 
 defineEmits(['view']);
 const props = defineProps({
@@ -133,7 +134,7 @@ const isViewed = computed(() =>
 );
 const isViewing = computed(() => !isMyTask.value && !isForMe.value && isObserving.value);
 const isCompleted = computed(() => props.task.status === taskOptions.statusTypes.COMPLETED);
-const expiredDayjs = computed(() => dayjs(props.task.end));
+const expiredDayjs = computed(() => dayjsFromMoscow(props.task.end));
 const isCanceled = computed(() => props.task.status === taskOptions.statusTypes.CANCELED);
 const isAlreadyExpired = computed(() => expiredDayjs.value.isBefore(dayjs()) && !isCompleted.value);
 const isDeleted = computed(() => props.task.deleted_at !== null);

@@ -28,6 +28,7 @@ import dayjs from 'dayjs';
 import { computed } from 'vue';
 import { taskOptions } from '@/const/options/task.options.js';
 import { useStore } from 'vuex';
+import { dayjsFromMoscow } from '@/utils/index.js';
 
 const props = defineProps({
     task: {
@@ -39,7 +40,7 @@ const props = defineProps({
 const store = useStore();
 
 const isCompleted = computed(() => props.task.status === taskOptions.statusTypes.COMPLETED);
-const expiredDayjs = computed(() => dayjs(props.task.end));
+const expiredDayjs = computed(() => dayjsFromMoscow(props.task.end));
 const isExpired = computed(() => expiredDayjs.value.diff(dayjs(), 'day') < 3 && !isCompleted.value);
 const isForMe = computed(() => Number(props.task.user_id) === Number(store.getters.THIS_USER.id));
 

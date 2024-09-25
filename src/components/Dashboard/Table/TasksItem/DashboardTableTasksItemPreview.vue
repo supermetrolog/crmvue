@@ -231,6 +231,8 @@ import EmptyLabel from '@/components/common/EmptyLabel.vue';
 import Textarea from '@/components/common/Forms/Textarea.vue';
 import { debounce } from '@/utils/debounce.js';
 import MessengerDialogUser from '@/components/Messenger/Dialog/MessengerDialogUser.vue';
+import { dayjsFromMoscow } from '@/utils/index.js';
+import { toDateFormat } from '@/utils/formatter.js';
 
 const emit = defineEmits(['updated', 'to-chat', 'read']);
 const props = defineProps({
@@ -271,16 +273,16 @@ const isDeleted = computed(() => props.task.deleted_at !== null);
 const isAlreadyExpired = computed(() => expiredDayjs.value.isBefore(dayjs()) && !isCompleted.value);
 const isCanceled = computed(() => props.task.status === taskOptions.statusTypes.CANCELED);
 
-const expiredDayjs = computed(() => dayjs(props.task.end));
-const deletedDate = computed(() => dayjs(props.task.deleted_at).format('D MMMM YYYY, HH:mm'));
-const createdDate = computed(() => dayjs(props.task.created_at).format('D MMMM YYYY, HH:mm'));
-const updatedDate = computed(() => dayjs(props.task.updated_at).format('D MMMM YYYY, HH:mm'));
+const expiredDayjs = computed(() => dayjsFromMoscow(props.task.end));
+const deletedDate = computed(() => toDateFormat(props.task.deleted_at, 'D MMMM YYYY, HH:mm'));
+const createdDate = computed(() => toDateFormat(props.task.created_at, 'D MMMM YYYY, HH:mm'));
+const updatedDate = computed(() => toDateFormat(props.task.updated_at, 'D MMMM YYYY, HH:mm'));
 const expiredDate = computed(() => {
     if (expiredDayjs.value.isSame(dayjs(), 'year')) expiredDayjs.value.format('D MMMM');
     return expiredDayjs.value.format('D MMMM YYYY');
 });
-const startDate = computed(() => dayjs(props.task.start).format('D MMMM YYYY'));
-const impossibleDate = computed(() => dayjs(props.task.impossible_to).format('D MMMM YYYY'));
+const startDate = computed(() => toDateFormat(props.task.start, 'D MMMM YYYY'));
+const impossibleDate = computed(() => toDateFormat(props.task.impossible_to, 'D MMMM YYYY'));
 const dayToExpired = computed(() => {
     const diff = Math.abs(
         expiredDayjs.value.diff(props.task.start ?? props.task.created_at, 'days')
@@ -312,7 +314,7 @@ const viewersText = computed(() =>
 
 const chatMemberMessage = computed(() => {
     const message = props.task.related_by.chat_member_message;
-    message.dayjs_date = dayjs(message.created_at);
+    message.dayjs_date = dayjsFromMoscow(message.created_at);
     return message;
 });
 
