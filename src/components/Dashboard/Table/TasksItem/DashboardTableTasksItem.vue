@@ -82,7 +82,9 @@
                         :size="55"
                         rectangle
                         class="dashboard-card-task__user"
-                        :class="{ 'dashboard-card-task__not-viewed': !task.is_viewed }"
+                        :class="{
+                            'dashboard-card-task__not-viewed': !task.is_viewed && !isCompleted
+                        }"
                     />
                 </div>
             </div>
