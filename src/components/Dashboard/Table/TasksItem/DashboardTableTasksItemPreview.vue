@@ -1,5 +1,6 @@
 <template>
     <div v-if="visible" class="dashboard-task-item-preview pb-2">
+        <Loader v-if="isLoading" />
         <Spinner v-if="loading" class="absolute-center" />
         <template v-else>
             <div class="dashboard-task-item-preview__column">
@@ -19,7 +20,16 @@
                             <i class="fa-solid fa-arrow-right-arrow-left"></i>
                         </HoverActionsButton>
                     </div>
-                    <HoverActionsButton @click="toChat" label="Перейти в чат">
+                    <div v-if="canBeSuspend" class="dashboard-card-task__moves">
+                        <HoverActionsButton @click.stop="toImpossible" label="Отложить">
+                            <i class="fa-solid fa-eye-slash"></i>
+                        </HoverActionsButton>
+                    </div>
+                    <HoverActionsButton
+                        v-if="task.related_by"
+                        @click="toChat"
+                        label="Перейти в чат"
+                    >
                         <i class="fa-solid fa-comment-alt" />
                     </HoverActionsButton>
                     <HoverActionsButton v-if="editable" @click="editTask" label="Редактировать">
@@ -233,6 +243,9 @@ import { debounce } from '@/utils/debounce.js';
 import MessengerDialogUser from '@/components/Messenger/Dialog/MessengerDialogUser.vue';
 import { dayjsFromMoscow } from '@/utils/index.js';
 import { toDateFormat } from '@/utils/formatter.js';
+import Loader from '@/components/common/Loader.vue';
+
+const DAYS_TO_IMPOSSIBLE = 30;
 
 const emit = defineEmits(['updated', 'to-chat', 'read']);
 const props = defineProps({
@@ -267,6 +280,7 @@ const newComment = shallowRef(null);
 const moveSettingsIsVisible = shallowRef(false);
 const commentsIsOpen = shallowRef(false);
 const statusIsChanging = shallowRef(false);
+const isLoading = shallowRef(false);
 
 const isCompleted = computed(() => props.task.status === taskOptions.statusTypes.COMPLETED);
 const isDeleted = computed(() => props.task.deleted_at !== null);
@@ -316,6 +330,13 @@ const chatMemberMessage = computed(() => {
     const message = props.task.related_by.chat_member_message;
     message.dayjs_date = dayjsFromMoscow(message.created_at);
     return message;
+});
+
+const canBeSuspend = computed(() => {
+    return (
+        dayjsFromMoscow(props.task.end).subtract(DAYS_TO_IMPOSSIBLE, 'day').isAfter(dayjs()) &&
+        !isCanceled.value
+    );
 });
 
 const editTask = async () => {
@@ -393,6 +414,17 @@ const changeStatus = async payload => {
     }
 
     statusIsChanging.value = false;
+};
+
+const toImpossible = async () => {
+    isLoading.value = true;
+
+    await changeStatus({
+        status: taskOptions.statusTypes.CANCELED,
+        impossible_to: dayjs(props.task.end).subtract(DAYS_TO_IMPOSSIBLE, 'day').toDate()
+    });
+
+    isLoading.value = false;
 };
 
 const toChat = () => {

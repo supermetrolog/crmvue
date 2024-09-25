@@ -39,9 +39,12 @@
                                       messageIntersectionObserver(isIntersecting, observer, message)
                         "
                         @deleted="onMessageDeleted(message.id)"
+                        @reply="replyTo = message"
+                        @cancel-reply="replyTo = null"
                         :self="message.from.model.id === currentUser.id"
                         :message="message"
                         :pinned="message.id === pinnedMessage?.id"
+                        :reply="message.id === replyTo?.id"
                     />
                     <MessengerChatNotification v-else :message="message" />
                 </div>
@@ -59,7 +62,7 @@
             :style="{ top: scrollButtonTop }"
             :visible="scrollButtonIsVisible"
         />
-        <MessengerChatForm />
+        <MessengerChatForm @cancel-reply="replyTo = null" :reply-to="replyTo" />
     </div>
 </template>
 <script setup>
@@ -89,6 +92,8 @@ const virtual = ref(null);
 const scrolled = shallowRef(false);
 const scrollButtonIsVisible = shallowRef(false);
 const scrollIsLock = shallowRef(false);
+const replyTo = shallowRef(null);
+
 const { isLoading } = useDelayedLoader(false, 700);
 
 const { top } = useElementBounding(quiz);

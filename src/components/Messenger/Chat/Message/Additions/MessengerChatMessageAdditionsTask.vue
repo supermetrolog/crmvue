@@ -20,6 +20,7 @@
         <template #icon>
             <span
                 v-tippy="addition.message"
+                @click="showPreview"
                 class="messenger-chat-message-addition__icon rounded-icon bg-black"
                 :class="{ completed: isCompleted }"
             >
@@ -41,7 +42,7 @@
                     v-if="addition.observers.length > 3"
                     class="messenger-chat-message-addition__circle"
                 >
-                    +{{ observersDiff }}0
+                    +{{ observersDiff }}
                 </div>
                 <template #content>
                     <p class="mb-1">Список всех наблюдателей:</p>
@@ -65,50 +66,18 @@
         <template v-if="isCompleted" #external>
             <DashboardChip class="dashboard-bg-success text-white">Выполнено</DashboardChip>
         </template>
-        <template v-if="editable || draggable" #actions>
-            <HoverActionsButton
-                v-if="editable"
-                @click="
-                    $editAddition({
-                        messageID: $messageID,
-                        addition,
-                        additionType: 'task',
-                        successMessage: 'Задача успешно обновлена!'
-                    })
-                "
-                label="Редактировать"
-            >
-                <i class="fa-solid fa-pen"></i>
-            </HoverActionsButton>
-            <HoverActionsButton v-if="isAdmin" @click="remove" label="Удалить">
-                <i class="fa-solid fa-trash"></i>
-            </HoverActionsButton>
-            <HoverActionsButton
-                v-if="draggable"
-                @click.stop="$editTaskStatus($messageID, addition)"
-                label="Изменить статус"
-            >
-                <i class="fa-solid fa-arrow-right-arrow-left"></i>
-            </HoverActionsButton>
-        </template>
     </MessengerChatMessageAdditionsItem>
 </template>
 <script setup>
 import dayjs from 'dayjs';
-import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import MessengerChatMessageAdditionsItem from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditionsItem.vue';
-import { useConfirm } from '@/composables/useConfirm.js';
-import { computed, inject } from 'vue';
+import { computed } from 'vue';
 import { useStore } from 'vuex';
-import { useNotify } from '@/utils/useNotify.js';
 import { taskOptions } from '@/const/options/task.options.js';
 import Avatar from '@/components/common/Avatar.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { Tippy } from 'vue-tippy';
-
-const $editAddition = inject('$editAddition');
-const $messageID = inject('$messageID');
-const $editTaskStatus = inject('$editTaskStatus');
+import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 
 const emit = defineEmits(['read']);
 const props = defineProps({
@@ -126,8 +95,8 @@ const props = defineProps({
     }
 });
 
-const { confirm } = useConfirm();
-const notify = useNotify();
+const { show: showTaskPreviewer } = useAsyncPopup('messengerTaskPreview');
+
 const store = useStore();
 
 const usersText = computed(() => props.addition.user.userProfile.middle_name);
@@ -159,21 +128,9 @@ const observingText = computed(() => {
 const observers = computed(() => props.addition.observers.slice(0, 3));
 const observersDiff = computed(() => props.addition.observers.length - 3);
 
-const isAdmin = computed(() => store.getters.isAdmin);
-
-const remove = async () => {
-    const confirmed = await confirm('Вы уверены, что хотите безвозвратно удалить задачу?');
-
-    if (confirmed) {
-        const deleted = await store.dispatch('Messenger/deleteAddition', {
-            messageID: $messageID,
-            additionID: props.addition.id,
-            additionType: 'task'
-        });
-
-        if (deleted) notify.success('Задача удалена.');
-        else notify.error('Произошла ошибка. Попробуйте позже.');
-    }
+const showPreview = async () => {
+    const task = await showTaskPreviewer({ task: props.addition });
+    if (task) Object.assign(props.addition, task);
 };
 
 const read = () => {

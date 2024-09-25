@@ -1,5 +1,5 @@
 <template>
-    <component :is="currentComponent" />
+    <component :is="currentComponent" @cancel-reply="$emit('cancel-reply')" :reply-to="replyTo" />
 </template>
 <script setup>
 import { useStore } from 'vuex';
@@ -13,6 +13,14 @@ const COMPONENTS = {
     [messenger.tabs.REQUESTS]: MessengerChatFormForObject,
     [messenger.tabs.USERS]: MessengerChatFormForUser
 };
+
+defineEmits(['cancel-reply']);
+defineProps({
+    replyTo: {
+        type: Object,
+        default: null
+    }
+});
 
 const store = useStore();
 

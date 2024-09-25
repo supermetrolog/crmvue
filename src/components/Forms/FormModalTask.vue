@@ -168,7 +168,9 @@ const form = ref({
 const tagsOptions = computed(() => store.getters['Task/tagsOptions']);
 
 const consultantsForObservers = computed(() => {
-    return consultants.value.filter(element => element.id !== form.value.user_id);
+    return consultants.value.filter(
+        element => element.id !== form.value.user_id && element.id !== store.getters.THIS_USER.id
+    );
 });
 
 const currentRange = computed(() => {

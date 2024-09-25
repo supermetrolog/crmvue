@@ -2,6 +2,14 @@
     <div class="messenger-chat-form">
         <Loader v-if="isLoading" />
         <AnimationTransition :speed="0.5">
+            <MessengerChatFormReply
+                v-if="replyTo"
+                @cancel="$emit('cancel-reply')"
+                class="mb-1"
+                :message="replyTo"
+            />
+        </AnimationTransition>
+        <AnimationTransition :speed="0.5">
             <MessengerChatFormAttachments
                 v-if="currentFiles.length || loadingFiles.length"
                 @delete="deleteFile"
@@ -50,12 +58,21 @@ import imageCompression from 'browser-image-compression';
 import { MAX_FILES_COUNT, SIZE_TO_COMPRESSION } from '@/const/messenger.js';
 import { blobToFile } from '@/utils/index.js';
 import Loader from '@/components/common/Loader.vue';
+import MessengerChatFormReply from '@/components/Messenger/Chat/Form/MessengerChatFormReply.vue';
 
 const compressionOptions = {
     maxSizeMB: 1,
     maxWidthOrHeight: 1920,
     useWebWorker: true
 };
+
+const props = defineProps({
+    replyTo: {
+        type: Object,
+        default: null
+    }
+});
+const emit = defineEmits(['cancel-reply']);
 
 const store = useStore();
 const notify = useNotify();
@@ -69,7 +86,8 @@ const canBeSend = computed(() => {
     return (
         message.value.length &&
         currentFiles.value.length <= MAX_FILES_COUNT &&
-        loadingFiles.value.length === 0
+        loadingFiles.value.length === 0 &&
+        !isLoading.value
     );
 });
 
@@ -103,11 +121,13 @@ const sendMessage = async () => {
 
     const sends = await store.dispatch('Messenger/sendMessage', {
         tag_ids: currentCategory.value ? [currentCategory.value] : [],
-        files: currentFiles.value
+        files: currentFiles.value,
+        reply_to_id: props.replyTo?.id
     });
 
     if (sends) {
         currentFiles.value = [];
+        emit('cancel-reply');
     }
 
     isLoading.value = false;

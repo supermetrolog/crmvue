@@ -1,4 +1,5 @@
 @use '../../utils/mixins';
+@use '../../utils/variables';
 
 .messenger-chat-message {
     padding: 10px 5px;
@@ -9,6 +10,10 @@
         max-width: 80%;
         width: max-content;
         @include mixins.flex-box($a: flex-end, $gap: 20px);
+
+        &.deleted {
+            align-items: center;
+        }
     }
 
     ol, ul {
@@ -130,6 +135,43 @@
             max-width: 100px;
         }
     }
+
+    &--reply {
+        background-color: rgba(137, 236, 108, 0.34);
+        border-radius: 10px;
+    }
+
+    &__reply {
+        @include mixins.flex-box($gap: 5px);
+        width: max-content;
+        max-width: 100%;
+    }
+
+    &__button {
+        cursor: pointer;
+
+        &:hover {
+            background-color: variables.$bg-primary;
+        }
+    }
+}
+
+.messenger-chat-message-reply {
+    background-color: rgba(0, 255, 205, 0.2);
+    border-left: 3px solid variables.$bg-success;
+
+    .messenger-chat-message__wrapper {
+        max-width: 100%;
+    }
+
+    &__files {
+        padding: 3px!important;
+        margin: 7px 7px 0;
+
+        .accordion-simple-trigger-button {
+            background-color: variables.$bg-success-l;
+        }
+    }
 }
 
 .messenger-chat-message-addition {
@@ -171,7 +213,7 @@
     }
 
     &.observing:not(.observed) {
-        background-color: rgba(246, 236, 55, 0.2);
+        background-color: rgba(246, 236, 55, 0.2)!important;
     }
 
     &__content {

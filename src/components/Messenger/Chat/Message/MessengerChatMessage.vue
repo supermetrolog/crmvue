@@ -1,5 +1,10 @@
 <template>
     <div :id="'message-' + message.id" class="messenger-chat-message" :class="classList">
+        <MessengerChatMessageReplyInfo
+            v-if="reply"
+            @cancel="$emit('cancel-reply')"
+            class="mb-2 ml-auto"
+        />
         <div class="messenger-chat-message__wrapper position-relative">
             <Loader v-if="isDeleteLoading" class="absolute-center" small />
             <Avatar v-if="!self" :src="message.from.model.userProfile.avatar" size="55" />
@@ -9,9 +14,11 @@
                     @edit="editMessage"
                     @pin-to-object="pinToObject"
                     @delete="deleteMessage"
+                    @reply="$emit('reply')"
                     :message="message"
                     :pinned="pinned"
                 />
+                <MessengerChatMessageReply v-if="message.reply_to_id" :message="message.reply_to" />
                 <MessengerChatMessageAdditions
                     :tasks="message.tasks"
                     :notifications="message.notifications"
@@ -68,6 +75,8 @@ import { ucFirst } from '@/utils/formatter.js';
 import { useConfirm } from '@/composables/useConfirm.js';
 import api from '@/api/api.js';
 import Loader from '@/components/common/Loader.vue';
+import MessengerChatMessageReplyInfo from '@/components/Messenger/Chat/Message/MessengerChatMessageReplyInfo.vue';
+import MessengerChatMessageReply from '@/components/Messenger/Chat/Message/MessengerChatMessageReply.vue';
 
 const store = useStore();
 const notify = useNotify();
@@ -75,7 +84,7 @@ const { confirm } = useConfirm();
 
 const $messageUpdate = inject('$messageUpdate');
 
-const emit = defineEmits(['deleted']);
+const emit = defineEmits(['deleted', 'reply', 'cancel-reply']);
 const props = defineProps({
     message: {
         type: Object,
@@ -88,6 +97,10 @@ const props = defineProps({
     pinned: {
         type: Boolean,
         default: false
+    },
+    reply: {
+        type: Boolean,
+        default: true
     }
 });
 
@@ -105,7 +118,8 @@ const formattedDate = computed(() => {
 const classList = computed(() => {
     return {
         'messenger-chat-message--right': props.self,
-        'messenger-chat-message--not-viewed': !props.message.is_viewed
+        'messenger-chat-message--not-viewed': !props.message.is_viewed,
+        'messenger-chat-message--reply': props.reply
     };
 });
 
