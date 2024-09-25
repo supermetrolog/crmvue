@@ -21,5 +21,5 @@ const props = defineProps({
     }
 });
 
-const createdAt = computed(() => toDateFormat(props.comment.createdAt));
+const createdAt = computed(() => toDateFormat(props.comment.created_at));
 </script>

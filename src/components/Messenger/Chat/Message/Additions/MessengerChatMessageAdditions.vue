@@ -24,9 +24,6 @@ import { useStore } from 'vuex';
 import dayjs from 'dayjs';
 import api from '@/api/api.js';
 import { useNotify } from '@/utils/useNotify.js';
-import { inject } from 'vue';
-
-const messageId = inject('$messageID');
 
 defineProps({
     tasks: {

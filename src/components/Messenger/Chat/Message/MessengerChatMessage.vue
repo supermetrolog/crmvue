@@ -1,15 +1,24 @@
 <template>
     <div :id="'message-' + message.id" class="messenger-chat-message" :class="classList">
-        <div class="messenger-chat-message__wrapper">
+        <MessengerChatMessageReplyInfo
+            v-if="reply"
+            @cancel="$emit('cancel-reply')"
+            class="mb-2 ml-auto"
+        />
+        <div class="messenger-chat-message__wrapper position-relative">
+            <Loader v-if="isDeleteLoading" class="absolute-center" small />
             <Avatar v-if="!self" :src="message.from.model.userProfile.avatar" size="55" />
             <div class="messenger-chat-message__content hover-actions-trigger">
                 <MessengerChatMessageActions
                     @pin="pinMessage"
                     @edit="editMessage"
                     @pin-to-object="pinToObject"
+                    @delete="deleteMessage"
+                    @reply="$emit('reply')"
                     :message="message"
                     :pinned="pinned"
                 />
+                <MessengerChatMessageReply v-if="message.reply_to_id" :message="message.reply_to" />
                 <MessengerChatMessageAdditions
                     :tasks="message.tasks"
                     :notifications="message.notifications"
@@ -60,15 +69,22 @@ import MessengerChatMessageActions from '@/components/Messenger/Chat/Message/Mes
 import MessengerChatMessageAdditions from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditions.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import MessengerChatMessageAttachments from '@/components/Messenger/Chat/Message/MessengerChatMessageAttachments.vue';
-import { computed, inject, provide } from 'vue';
+import { computed, inject, provide, shallowRef } from 'vue';
 import { useNotify } from '@/utils/useNotify.js';
 import { ucFirst } from '@/utils/formatter.js';
+import { useConfirm } from '@/composables/useConfirm.js';
+import api from '@/api/api.js';
+import Loader from '@/components/common/Loader.vue';
+import MessengerChatMessageReplyInfo from '@/components/Messenger/Chat/Message/MessengerChatMessageReplyInfo.vue';
+import MessengerChatMessageReply from '@/components/Messenger/Chat/Message/MessengerChatMessageReply.vue';
 
 const store = useStore();
 const notify = useNotify();
+const { confirm } = useConfirm();
 
 const $messageUpdate = inject('$messageUpdate');
 
+const emit = defineEmits(['deleted', 'reply', 'cancel-reply']);
 const props = defineProps({
     message: {
         type: Object,
@@ -81,10 +97,16 @@ const props = defineProps({
     pinned: {
         type: Boolean,
         default: false
+    },
+    reply: {
+        type: Boolean,
+        default: true
     }
 });
 
 provide('$messageID', props.message.id);
+
+const isDeleteLoading = shallowRef(false);
 
 const originalDate = computed(() => {
     return props.message.dayjs_date.format('D MMMM YYYY., H:mm:ss');
@@ -96,7 +118,8 @@ const formattedDate = computed(() => {
 const classList = computed(() => {
     return {
         'messenger-chat-message--right': props.self,
-        'messenger-chat-message--not-viewed': !props.message.is_viewed
+        'messenger-chat-message--not-viewed': !props.message.is_viewed,
+        'messenger-chat-message--reply': props.reply
     };
 });
 
@@ -123,7 +146,7 @@ const recipientUsername = computed(() => {
 
 const changeRecipient = () => {
     store.commit('Messenger/setCurrentRecipient', { contactID: props.message.contacts[0].id });
-    notify.success(`Контакт изменен на ${recipientUsername.value}`);
+    notify.info(`Контакт изменен на ${recipientUsername.value}`, 'Выбор контакта');
 };
 const pinMessage = async () => {
     if (props.pinned) {
@@ -150,5 +173,21 @@ const pinToObject = async () => {
     } else {
         notify.error('Произошла ошибка. Попробуйте еще раз');
     }
+};
+
+const deleteMessage = async () => {
+    const confirmed = await confirm('Вы действительно хотите удалить сообщение?');
+    if (!confirmed) return;
+
+    isDeleteLoading.value = true;
+
+    const deleted = await api.messenger.deleteMessage(props.message.id);
+    if (deleted) {
+        if (props.pinned) pinMessage();
+        notify.success('Сообщение успешно удалено');
+        emit('deleted');
+    }
+
+    isDeleteLoading.value = false;
 };
 </script>

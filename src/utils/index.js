@@ -1,4 +1,5 @@
 import sha256 from 'crypto-js/sha256';
+import dayjs from 'dayjs';
 
 /**
  * @function waitHash
@@ -203,7 +204,7 @@ export function formToPayload(form, template) {
 }
 
 /**
- * Удалит элемент из массива с помощью array.splice (примитив)
+ * Remove element in array using `array.splice()` (only primitives)
  *
  * @param {(number|string|boolean)[]} array
  * @param {number|string|boolean} value
@@ -211,4 +212,44 @@ export function formToPayload(form, template) {
 export function spliceWithPrimitive(array, value) {
     const index = array.findIndex(element => element === value);
     if (index !== -1) array.splice(index, 1);
+}
+
+/**
+ * Convert Blob to File
+ *
+ * @param {Blob} blob
+ * @param {File} oldFile
+ * @return {File}
+ */
+export function blobToFile(blob, oldFile) {
+    const file = new File([blob], oldFile.name);
+
+    file.created_at = oldFile.created_at ?? 'Только что';
+    if (file.size !== oldFile.size) file.originalSize = oldFile.size;
+
+    return file;
+}
+
+/**
+ * Convert date in Moscow timezone from string to dayjs-object in local time
+ *
+ * @param {string} stringDate
+ * @return {dayjs.Dayjs}
+ */
+export function dayjsFromMoscow(stringDate) {
+    return dayjs(stringDate + 'Z+3');
+}
+
+/**
+ * Remove element in array by `id` property in object using `array.splice()`
+ *
+ * @param {object[]} array
+ * @param {number|string} id
+ * @return {boolean} - Returns true if element with given id exist in array, otherwise false
+ */
+export function spliceById(array, id) {
+    const index = array.findIndex(element => element.id === id);
+    if (index !== -1) array.splice(index, 1);
+
+    return index !== -1;
 }

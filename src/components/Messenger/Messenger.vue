@@ -2,10 +2,15 @@
     <div class="messenger" :class="classList">
         <teleport to="body">
             <AnimationTransition :speed="0.7">
-                <div v-if="isOpen && hasPanel" class="messenger-backdrop"></div>
+                <div
+                    v-if="isOpen && hasPanel"
+                    @click="isOpen = false"
+                    class="messenger-backdrop"
+                ></div>
             </AnimationTransition>
             <MessengerAttachment ref="attachments" />
             <FormModalChatMemberLastCall />
+            <MessengerTaskPreview />
         </teleport>
         <MessengerBar @select="selectTab" :current="currentTab" />
         <div v-if="isActive" ref="body" class="messenger__content">
@@ -38,6 +43,7 @@ import {
 } from 'vue';
 import { useNotify } from '@/utils/useNotify.js';
 import { messenger } from '@/const/messenger.js';
+import MessengerTaskPreview from '@/components/Messenger/MessengerTaskPreview.vue';
 
 const store = useStore();
 const notify = useNotify();

@@ -1,6 +1,6 @@
 <template>
     <div class="messenger-quiz-question">
-        <AccordionSimple opened>
+        <AccordionSimple ref="accordion" opened>
             <template #title>
                 <div v-if="canEdit" class="messenger-quiz-question__actions">
                     <Button @click="$emit('edit')" small success>Редактировать</Button>
@@ -8,7 +8,7 @@
                 </div>
                 <div class="messenger-quiz-question__header">
                     <i
-                        v-if="hasFullAnswer"
+                        v-if="hasFullAnswer || isDisabled"
                         class="fa-solid fa-circle-check color-success animate__animated animate__tada"
                     ></i>
                     <i
@@ -51,6 +51,7 @@
                             :text="answer.value"
                             :icon="canEdit ? 'fa-solid fa-pen' : undefined"
                             icon-label="Редактировать"
+                            :disabled="isDisabled"
                         />
                     </template>
                     <MessengerButton
@@ -74,6 +75,7 @@
                                 :placeholder="answer.value"
                                 class="messenger-quiz-question__field"
                                 auto-height
+                                :disabled="isDisabled"
                             />
                             <div v-if="canEdit" class="messenger-quiz-question__edits">
                                 <HoverActionsButton
@@ -110,6 +112,7 @@
                             :text="answer.value"
                             :icon="canEdit ? 'fa-solid fa-pen' : undefined"
                             icon-label="Редактировать"
+                            :disabled="isDisabled"
                         />
                     </template>
                     <MessengerButton
@@ -131,7 +134,7 @@ import RadioGroup from '@/components/common/Forms/RadioGroup.vue';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import Textarea from '@/components/common/Forms/Textarea.vue';
 import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
-import { computed, reactive, watch } from 'vue';
+import { computed, reactive, shallowRef, watch } from 'vue';
 import Button from '@/components/common/Button.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
@@ -155,6 +158,7 @@ const props = defineProps({
 });
 
 const form = reactive({});
+const accordion = shallowRef(null);
 
 const hasFullAnswer = computed(() =>
     Object.values(form).every(element => {
@@ -186,6 +190,8 @@ const texts = computed(() =>
 const checkboxes = computed(() =>
     props.question.answers.checkbox.filter(element => element.deleted_at === null)
 );
+
+const isDisabled = computed(() => form.main === 0);
 
 const initForm = () => {
     if (hasMainQuestion.value) form.main = null;

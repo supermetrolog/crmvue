@@ -1,7 +1,7 @@
 <template>
     <Tooltip v-if="isVisible">
         <template #trigger>
-            <span :class="className" class="messenger-dialog__phone">
+            <span :class="[className, { disabled: disabled }]" class="messenger-dialog__phone">
                 <i class="fa-solid fa-phone"></i>
             </span>
         </template>
@@ -27,6 +27,10 @@ const props = defineProps({
     updatedAt: {
         type: [String, Number, null],
         required: true
+    },
+    disabled: {
+        type: Boolean,
+        default: false
     }
 });
 

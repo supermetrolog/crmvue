@@ -7,70 +7,77 @@
             observed: isObserved
         }"
     >
-        <template #icon>
+        <template v-if="isObserving" #functions>
             <span
-                v-tippy="addition.message"
-                class="messenger-chat-message-addition__icon rounded-icon bg-black"
-            >
-                <i class="fa-solid fa-bolt"></i>
-            </span>
-            <span
-                v-if="isObserving"
                 v-tippy="observingText"
                 @click="read"
-                class="messenger-chat-message-addition__observer rounded-icon"
+                class="messenger-chat-message-addition__observing rounded-icon"
                 :class="{ observed: isObserved, loading: addition.isLoading }"
             >
                 <i class="fa-solid fa-eye"></i>
             </span>
         </template>
-        <template #content>
-            <div>
-                <span>Задача для {{ usersText }} до {{ expiredDate }}</span>
-            </div>
-        </template>
-        <template v-if="editable || draggable" #actions>
-            <template v-if="editable">
-                <HoverActionsButton
-                    @click="
-                        $editAddition({
-                            messageID: $messageID,
-                            addition,
-                            additionType: 'task',
-                            successMessage: 'Задача успешно создана!'
-                        })
-                    "
-                    label="Редактировать"
-                >
-                    <i class="fa-solid fa-pen"></i>
-                </HoverActionsButton>
-                <HoverActionsButton @click="remove" label="Удалить">
-                    <i class="fa-solid fa-trash"></i>
-                </HoverActionsButton>
-            </template>
-            <HoverActionsButton
-                v-if="draggable"
-                @click.stop="$editTaskStatus($messageID, addition)"
-                label="Изменить статус"
+        <template #icon>
+            <span
+                v-tippy="addition.message"
+                @click="showPreview"
+                class="messenger-chat-message-addition__icon rounded-icon bg-black"
+                :class="{ completed: isCompleted }"
             >
-                <i class="fa-solid fa-arrow-right-arrow-left"></i>
-            </HoverActionsButton>
+                <i class="fa-solid fa-bolt"></i>
+            </span>
+        </template>
+        <template #additionalIcons>
+            <Avatar
+                v-for="observer in observers"
+                :key="observer.id"
+                class="messenger-chat-message-addition__observer"
+                :class="{ viewed: observer.viewed_at !== null }"
+                :label="observer.user.userProfile.medium_name + ' наблюдает'"
+                :size="30"
+                :src="observer.user.userProfile.avatar"
+            />
+            <Tippy interactive>
+                <div
+                    v-if="addition.observers.length > 3"
+                    class="messenger-chat-message-addition__circle"
+                >
+                    +{{ observersDiff }}
+                </div>
+                <template #content>
+                    <p class="mb-1">Список всех наблюдателей:</p>
+                    <div class="d-flex gap-1 flex-wrap">
+                        <Avatar
+                            v-for="observer in addition.observers"
+                            :key="observer.id"
+                            class="messenger-chat-message-addition__observer"
+                            :class="{ viewed: observer.viewed_at !== null }"
+                            :label="observer.user.userProfile.medium_name + ' наблюдает'"
+                            :size="30"
+                            :src="observer.user.userProfile.avatar"
+                        />
+                    </div>
+                </template>
+            </Tippy>
+        </template>
+        <template #content>
+            Задача #{{ addition.id }} для {{ usersText }} до {{ expiredDate }}
+        </template>
+        <template v-if="isCompleted" #external>
+            <DashboardChip class="dashboard-bg-success text-white">Выполнено</DashboardChip>
         </template>
     </MessengerChatMessageAdditionsItem>
 </template>
 <script setup>
 import dayjs from 'dayjs';
-import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import MessengerChatMessageAdditionsItem from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditionsItem.vue';
-import { useConfirm } from '@/composables/useConfirm.js';
-import { computed, inject } from 'vue';
+import { computed } from 'vue';
 import { useStore } from 'vuex';
-import { useNotify } from '@/utils/useNotify.js';
 import { taskOptions } from '@/const/options/task.options.js';
-
-const $editAddition = inject('$editAddition');
-const $messageID = inject('$messageID');
-const $editTaskStatus = inject('$editTaskStatus');
+import Avatar from '@/components/common/Avatar.vue';
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import { Tippy } from 'vue-tippy';
+import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 
 const emit = defineEmits(['read']);
 const props = defineProps({
@@ -88,8 +95,8 @@ const props = defineProps({
     }
 });
 
-const { confirm } = useConfirm();
-const notify = useNotify();
+const { show: showTaskPreviewer } = useAsyncPopup('messengerTaskPreview');
+
 const store = useStore();
 
 const usersText = computed(() => props.addition.user.userProfile.middle_name);
@@ -118,19 +125,12 @@ const observingText = computed(() => {
     return 'Нажмите, чтобы отметить задачу просмотренной';
 });
 
-const remove = async () => {
-    const confirmed = await confirm('Вы уверены, что хотите безвозвратно удалить задачу?');
+const observers = computed(() => props.addition.observers.slice(0, 3));
+const observersDiff = computed(() => props.addition.observers.length - 3);
 
-    if (confirmed) {
-        const deleted = await store.dispatch('Messenger/deleteAddition', {
-            messageID: $messageID,
-            additionID: props.addition.id,
-            additionType: 'task'
-        });
-
-        if (deleted) notify.success('Задача удалена.');
-        else notify.error('Произошла ошибка. Попробуйте позже.');
-    }
+const showPreview = async () => {
+    const task = await showTaskPreviewer({ task: props.addition });
+    if (task) Object.assign(props.addition, task);
 };
 
 const read = () => {

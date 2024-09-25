@@ -1,4 +1,5 @@
 @use '../../utils/mixins';
+@use '../../utils/variables';
 
 .messenger-chat-message {
     padding: 10px 5px;
@@ -9,6 +10,10 @@
         max-width: 80%;
         width: max-content;
         @include mixins.flex-box($a: flex-end, $gap: 20px);
+
+        &.deleted {
+            align-items: center;
+        }
     }
 
     ol, ul {
@@ -130,6 +135,43 @@
             max-width: 100px;
         }
     }
+
+    &--reply {
+        background-color: rgba(137, 236, 108, 0.34);
+        border-radius: 10px;
+    }
+
+    &__reply {
+        @include mixins.flex-box($gap: 5px);
+        width: max-content;
+        max-width: 100%;
+    }
+
+    &__button {
+        cursor: pointer;
+
+        &:hover {
+            background-color: variables.$bg-primary;
+        }
+    }
+}
+
+.messenger-chat-message-reply {
+    background-color: rgba(0, 255, 205, 0.2);
+    border-left: 3px solid variables.$bg-success;
+
+    .messenger-chat-message__wrapper {
+        max-width: 100%;
+    }
+
+    &__files {
+        padding: 3px!important;
+        margin: 7px 7px 0;
+
+        .accordion-simple-trigger-button {
+            background-color: variables.$bg-success-l;
+        }
+    }
 }
 
 .messenger-chat-message-addition {
@@ -143,7 +185,7 @@
 
     &::before {
         position: absolute;
-        right: 0;
+        left: 0;
         bottom: 0;
         content: '';
         display: block;
@@ -165,13 +207,13 @@
         width: 3px;
     }
 
-    &.observing {
-        background-color: rgba(246, 236, 55, 0.2);
+    &.expired {
+        background-color: rgba(129, 0, 12, 0.8);
+        color: #f1f1f1;
     }
 
-    &.expired {
-        background-color: rgba(249, 49, 84, .8)!important;
-        color: #f1f1f1;
+    &.observing:not(.observed) {
+        background-color: rgba(246, 236, 55, 0.2);
     }
 
     &__content {
@@ -184,8 +226,12 @@
     }
 
     &.completed &__content {
-        opacity: .3;
+        opacity: .5;
         color: #9f3f56;
+    }
+
+    &.completed &__text {
+        text-decoration: line-through;
     }
 
     &__icon {
@@ -194,6 +240,10 @@
         width: 30px;
         color: #fff;
         flex-shrink: 0;
+
+        &.completed {
+            background-color: #10b981;
+        }
     }
 
     &--warning {
@@ -208,28 +258,21 @@
         opacity: 1;
     }
 
-    &__settings {
-        margin-left: auto;
-        font-size: 22px;
+    &__trigger {
         cursor: pointer;
-        padding: 3px;
-        color: #000;
-        opacity: 0;
-        @include mixins.transition(opacity .7s);
     }
 
-    &__observer {
+    &__observing {
         color: #7e7e7e;
         font-size: 26px;
-        cursor: pointer;
         @include mixins.transition(color, opacity);
 
-        &:not(.observed):hover {
-            color: #36b68e;
-        }
+        &:not(.observed) {
+            cursor: pointer;
 
-        &.observed {
-            color: #10B981;
+            &:hover {
+                color: #36b68e;
+            }
         }
 
         &.loading {
@@ -237,16 +280,45 @@
         }
     }
 
-    &.expired &__observer {
-        color: #ffffff;
+    &__observing.observed {
+        color: #0d9d41;
+    }
 
-        &:not(.observed):hover {
-            color: #797979;
-        }
+    &.expired &__observing.observed {
+        color: #4de75f;
+    }
 
-        &.observed {
-            color: #000000;
+    &__external {
+        margin-left: auto;
+        @include mixins.flex-box($gap: 2px);
+    }
+
+    &__observer {
+        border: 2px solid red;
+
+        &.viewed {
+            border-color: #1fc41f;
         }
+    }
+
+    &__icons {
+        @include mixins.flex-box($gap: 2px);
+    }
+
+    &__functions {
+        @include mixins.flex-box($gap: 2px);
+    }
+
+    &__circle {
+        height: 30px;
+        width: 30px;
+        border-radius: 50%;
+        border: 2px solid #000000;
+        color: #000;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        @include mixins.flex-box($a: center, $j: center);
     }
 }
 
@@ -267,7 +339,8 @@
     box-shadow: 0 0 5px 1px rgba(13, 31, 47, 0.2);
 
     bottom: 0;
-    left: 100%;
+    right: 100%;
+    left: auto;
     top: auto;
     position: absolute;
     max-height: 1000px;
@@ -275,17 +348,9 @@
     height: max-content;
     padding: 5px;
     margin: 0 5px;
-
-    &__button {
-    }
 }
 
 .messenger-chat-message--right {
-    .messenger-chat-message-addition-settings {
-        right: 100%;
-        left: auto;
-    }
-
     .messenger-chat-message-actions .hover-actions {
         right: 0;
         left: unset;

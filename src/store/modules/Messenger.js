@@ -6,6 +6,7 @@ import { notify } from '@kyvg/vue3-notification';
 import { messagesToSections } from '@/utils/mapper.js';
 import { ucFirst } from '@/utils/formatter.js';
 import { messenger } from '@/const/messenger.js';
+import { spliceById } from '@/utils/index.js';
 
 const needCacheMessage = (dialogID, asideID, panelID) => {
     // Лучше не трогать условие.. Оно долго выводилось
@@ -379,6 +380,33 @@ const Messenger = {
                         readsNotificationsCount;
                 }
             }
+        },
+        onMessageDeleted(state, messageId) {
+            spliceById(state.messages, messageId);
+
+            for (
+                let i = state.messages.length - 1;
+                i > 0 && state.messages[i].id !== messageId;
+                i--
+            ) {
+                if (!state.messages[i].isLabel) {
+                    if (state.messages[i].reply_to_id === messageId) {
+                        state.messages[i].reply_to.deleted_at = dayjs();
+                        break;
+                    } else if (state.messages[i].id < messageId) break;
+                }
+            }
+        },
+        onQuizCompleted(state, lastCall) {
+            const chatMemberStateName =
+                'chatMembers' + ucFirst(state.currentDialog.model_type) + 's';
+
+            const chatMemberIndex = state[chatMemberStateName].data.findIndex(
+                element => element.id === state.currentDialog.id
+            );
+
+            if (chatMemberIndex !== -1)
+                state[chatMemberStateName].data[chatMemberIndex].last_call = lastCall;
         }
     },
     actions: {

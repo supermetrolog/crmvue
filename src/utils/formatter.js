@@ -1,5 +1,6 @@
 import { alg } from '@/utils/alg.js';
 import dayjs from 'dayjs';
+import { dayjsFromMoscow } from '@/utils/index.js';
 
 /**
  * Сформировать название компании
@@ -88,6 +89,7 @@ export function toCorrectFormat(value) {
  * @returns {string}
  */
 export function toDateFormat(date, format = 'D.MM.YY, HH:mm') {
+    if (typeof date === 'string') return dayjsFromMoscow(date).format(format);
     return dayjs(date).format(format);
 }
 
@@ -100,4 +102,29 @@ export function toDateFormat(date, format = 'D.MM.YY, HH:mm') {
 export function toCorrectUrl(url) {
     if (url.match(/^https?:\/\//)) return url;
     return 'https://' + url;
+}
+
+const sizeUnits = [
+    { id: 1, label: 'б', name: 'byte' },
+    { id: 2, label: 'Кб', name: 'kilobyte' },
+    { id: 3, label: 'Мб', name: 'megabyte' },
+    { id: 4, label: 'Гб', name: 'gigabyte' },
+    { id: 5, label: 'Тб', name: 'terabyte' },
+    { id: 6, label: 'Пб', name: 'petabyte' }
+];
+/**
+ * Преобразование размера файла к наибольшей единице измерения
+ *
+ * @param {number} size - Оргиниальный размер в байтах
+ * @returns {string}
+ */
+export function toFileSizeFormat(size) {
+    let i = 0;
+
+    while ((size / 1000) | 0 && i < sizeUnits.length - 1) {
+        size /= 1024;
+        i++;
+    }
+
+    return size.toFixed(2) + ' ' + sizeUnits[i].label;
 }

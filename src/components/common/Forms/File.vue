@@ -37,6 +37,10 @@
                                     <span>Размер: </span>
                                     <span>{{ fileSize }}</span>
                                 </li>
+                                <li v-if="file.originalSize" class="file__option">
+                                    <span>Оргинитальный размер (до сжатия): </span>
+                                    <span>{{ originalFileSize }}</span>
+                                </li>
                                 <li v-if="file.created_at" class="file__option">
                                     <span>Добавлен: </span>
                                     <span>{{ file.created_at }}</span>
@@ -57,65 +61,55 @@
         </a>
     </div>
 </template>
-<script>
+<script setup>
 import VLazyImage from 'v-lazy-image';
 import Tooltip from '@/components/common/Tooltip.vue';
 import { fileTypes } from '@/const/types';
+import { computed, inject } from 'vue';
+import { toFileSizeFormat } from '@/utils/formatter.js';
+import { getLinkUploadedFile } from '@/utils/url.js';
 
 const fileTypesList = Object.values(fileTypes);
 
-export default {
-    name: 'File',
-    components: {
-        Tooltip,
-        VLazyImage
+defineEmits(['delete']);
+const props = defineProps({
+    file: {
+        type: Object,
+        required: true
     },
-    emits: ['delete'],
-    inject: ['$openPreviewer'],
-    props: {
-        file: {
-            type: Object,
-            required: true
-        },
-        readOnly: {
-            type: Boolean,
-            default: false
-        },
-        draggable: {
-            type: Boolean,
-            default: false
-        }
+    readOnly: {
+        type: Boolean,
+        default: false
     },
-    computed: {
-        fileName() {
-            if (this.file.original_name) return this.file.original_name;
-            return this.file.name || this.file.src.split('/').slice(-1)[0];
-        },
-        fileSize() {
-            let size = +this.file.size;
-            let i = 0,
-                type = ['б', 'Кб', 'Мб', 'Гб', 'Тб', 'Пб'];
-            while ((size / 1000) | 0 && i < type.length - 1) {
-                size /= 1024;
-                i++;
-            }
-
-            return size.toFixed(2) + ' ' + type[i];
-        },
-        fileType() {
-            let extension = this.file.extension ?? this.fileName.split('.').slice(-1)[0];
-
-            return (
-                fileTypesList.find(element => element.extensions.includes(extension)) || {
-                    name: 'unknown',
-                    title: 'Не установлено',
-                    icon: 'fa-solid fa-file-circle-question'
-                }
-            );
-        },
-        filePath() {
-            return this.file.src ?? this.$url.api.getUploadedFileUrl(this.file.path);
-        }
+    draggable: {
+        type: Boolean,
+        default: false
     }
-};
+});
+
+const $openPreviewer = inject('$openPreviewer');
+
+const fileName = computed(() => {
+    if (props.file.original_name) return props.file.original_name;
+    return props.file.name || props.file.src.split('/').slice(-1)[0];
+});
+
+const fileSize = computed(() => toFileSizeFormat(Number(props.file.size)));
+const originalFileSize = computed(() => toFileSizeFormat(Number(props.file.originalSize)));
+
+const fileType = computed(() => {
+    let extension = props.file.extension ?? fileName.value.split('.').slice(-1)[0];
+
+    return (
+        fileTypesList.find(element => element.extensions.includes(extension)) || {
+            name: 'unknown',
+            title: 'Не установлено',
+            icon: 'fa-solid fa-file-circle-question'
+        }
+    );
+});
+
+const filePath = computed(() => {
+    return props.file.src ?? getLinkUploadedFile(props.file.path);
+});
 </script>

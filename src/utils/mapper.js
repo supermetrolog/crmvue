@@ -1,7 +1,7 @@
 import { alg } from '@/utils/alg';
 import { formatterObject } from '@/plugins';
 import { deleteObjectsWithEmptyProperties } from '@/utils/deleteObjectsWithEmptyProperties.js';
-import dayjs from 'dayjs';
+import { dayjsFromMoscow } from '@/utils/index.js';
 
 const propertiesToTableFormat = (object, props) => {
     return Object.keys(props).reduce((acc, property) => {
@@ -250,7 +250,7 @@ export function messagesToSections(messages, lastMessageDate = null, reversed = 
     let hasLeakedMessages = false;
 
     const _messages = messages.reduce((acc, message, index) => {
-        message.dayjs_date = dayjs(message.created_at);
+        message.dayjs_date = dayjsFromMoscow(message.created_at);
 
         if (index === 0) {
             if (lastMessageDate && reversed)

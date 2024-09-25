@@ -79,6 +79,15 @@
 import { fileTypes } from '@/const/types';
 import File from '@/components/common/Forms/File.vue';
 import { VueDraggableNext } from 'vue-draggable-next';
+import imageCompression from 'browser-image-compression';
+import { blobToFile } from '@/utils/index.js';
+import { SIZE_TO_COMPRESSION } from '@/const/messenger.js';
+
+const compressionOptions = {
+    maxSizeMB: 1,
+    maxWidthOrHeight: 1920,
+    useWebWorker: true
+};
 
 export default {
     name: 'FileInput',
@@ -218,13 +227,18 @@ export default {
                 file.fileType = this.getFileType(file.name);
 
                 if (file.type.match('image')) {
-                    const reader = new FileReader();
-                    reader.onload = ev => {
-                        file.src = ev.target.result;
-                        this.localFiles.push(file);
-                    };
-                    reader.readAsDataURL(file);
-
+                    if (file.size >= SIZE_TO_COMPRESSION) {
+                        imageCompression(file, compressionOptions).then(async compressed => {
+                            const _file = blobToFile(compressed, file);
+                            _file.src = await imageCompression.getDataUrlFromFile(compressed);
+                            this.localFiles.push(_file);
+                        });
+                    } else {
+                        imageCompression.getDataUrlFromFile(file).then(src => {
+                            file.src = src;
+                            this.localFiles.push(file);
+                        });
+                    }
                     return file;
                 } else {
                     this.localFiles.push(file);

@@ -16,6 +16,7 @@
                 :key="number"
                 @click="next(number)"
                 :active="number === pagination.currentPage"
+                :class="{ loading: nextPage === number && isDisabled }"
             >
                 {{ number }}
             </PaginationPage>
@@ -65,8 +66,8 @@ const props = defineProps({
     }
 });
 
-const isDisabled = shallowRef(false);
 let timeout = null;
+const nextPage = shallowRef(props.pagination.currentPage);
 
 const isLastPage = computed(
     () =>
@@ -98,15 +99,13 @@ const pageList = computed(() => {
     return Array.from(Array(max - min + 1).keys()).map((_, key) => min + key);
 });
 
+const isDisabled = computed(() => props.pagination.currentPage !== nextPage.value);
+
 const next = page => {
     if (isDisabled.value) return;
-    isDisabled.value = true;
-    emit('next', page);
 
-    timeout = setTimeout(() => {
-        isDisabled.value = false;
-        clearTimeout(timeout);
-    }, 300);
+    nextPage.value = page;
+    emit('next', page);
 };
 
 onUnmounted(() => {
