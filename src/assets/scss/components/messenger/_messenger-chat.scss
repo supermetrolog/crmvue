@@ -579,14 +579,28 @@
 
 .messenger-chat-form-attachments {
     margin-bottom: 10px;
-    @include mixins.flex-box($gap: 5px, $wrap: true);
+
+    &__list {
+        @include mixins.flex-box($gap: 5px, $wrap: true);
+    }
 
     &__file {
-        width: calc(100% / 8)
+        width: calc(100% / 8);
+        border: 1px solid #d3d3d3;
+
+        &.error {
+            border-color: rgb(231, 19, 68);
+            border-width: 3px;
+        }
     }
 
     &.new-attachments &__file {
         border: 2px solid variables.$bg-success;
+    }
+
+    &.error &__file {
+        border-color: rgb(231, 19, 68);
+        border-width: 3px;
     }
 }
 

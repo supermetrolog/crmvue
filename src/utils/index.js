@@ -212,3 +212,19 @@ export function spliceWithPrimitive(array, value) {
     const index = array.findIndex(element => element === value);
     if (index !== -1) array.splice(index, 1);
 }
+
+/**
+ * Convert Blob to File
+ *
+ * @param {Blob} blob
+ * @param {File} oldFile
+ * @return {File}
+ */
+export function blobToFile(blob, oldFile) {
+    const file = new File([blob], oldFile.name);
+
+    file.created_at = oldFile.created_at ?? 'Только что';
+    if (file.size !== oldFile.size) file.originalSize = oldFile.size;
+
+    return file;
+}

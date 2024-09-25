@@ -70,6 +70,10 @@ const dialogTypes = {
     OBJECT: 'object',
     REQUEST: 'request'
 };
+export const SIZE_TO_COMPRESSION = 2097152; // 2 megabyte
+export const MAX_FILES_COUNT = 20;
+export const MAX_FILE_SIZE = 8388608; // 8 megabyte
+export const MAX_FILE_SIZE_HUMANIZE = '8МБ';
 
 export const messenger = {
     buttons,
