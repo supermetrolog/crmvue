@@ -71,6 +71,7 @@
                 @click.stop="$emit('update-call')"
                 :last-call="lastCall"
                 :updated-at="model.updated_at"
+                :disabled="isDisabled"
             />
             <MessengerDialogFunctions v-if="statistic" :counts="statistic" />
         </div>
@@ -88,6 +89,7 @@ import { companyOptions } from '@/const/options/company.options.js';
 import { dealOptions } from '@/const/options/deal.options.js';
 import { locationOptions } from '@/const/options/location.options.js';
 import { getCompanyName, toNumberOrRangeFormat } from '@/utils/formatter.js';
+import { useStore } from 'vuex';
 
 defineEmits(['update-call']);
 const props = defineProps({
@@ -109,6 +111,9 @@ const props = defineProps({
     }
 });
 
+const store = useStore();
+
+const isDisabled = computed(() => store.getters.THIS_USER.id !== props.model.agent_id);
 const isActive = computed(() => props.model.status === requestOptions.statusStatement.ACTIVE);
 const hasActivity = computed(() => {
     return (

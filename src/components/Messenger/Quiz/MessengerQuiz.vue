@@ -142,6 +142,14 @@ const fetchQuestions = async () => {
     isLoading.value = false;
 };
 const send = async () => {
+    if (currentRecipient.value === null) {
+        notify.info(
+            'Пожалуйста, выберите контакта, от корого вы узнали информацию.',
+            'Контакт для опроса'
+        );
+        return;
+    }
+
     const confirmed = await confirm('Подтвердите заполнение опросника');
     if (!confirmed) return;
 
@@ -177,6 +185,8 @@ const updateLastCall = async () => {
 
     if (callObject) {
         notify.success('Дата последнего звонка успешно обновлена');
+        store.state.Messenger.currentDialog.last_call = callObject;
+        store.commit('Messenger/onQuizCompleted', callObject);
     } else {
         notify.info('Произошла ошибка. Попробуйте еще раз.');
     }

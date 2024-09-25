@@ -28,6 +28,7 @@
                 @click.stop="$emit('update-call')"
                 :last-call="lastCall"
                 :updated-at="updatedAt"
+                :disabled="isDisabled"
             />
             <MessengerDialogFunctions v-if="statistic" :counts="statistic" />
         </div>
@@ -41,6 +42,7 @@ import Tooltip from '@/components/common/Tooltip.vue';
 import { computed } from 'vue';
 import { objectOptions } from '@/const/options/object.options.js';
 import { getCompanyName } from '@/utils/formatter.js';
+import { useStore } from 'vuex';
 
 defineEmits(['update-call']);
 const props = defineProps({
@@ -62,6 +64,9 @@ const props = defineProps({
     }
 });
 
+const store = useStore();
+
+const isDisabled = computed(() => props.model.object.consultant_id !== store.getters.THIS_USER.id);
 const dealType = computed(() => objectOptions.dealTypeString[props.model.type]);
 const updatedAt = computed(() => props.model.object.updated_at * 1000);
 const companyName = computed(() =>
