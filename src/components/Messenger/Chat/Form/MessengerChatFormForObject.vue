@@ -161,12 +161,19 @@ const keyHandler = event => {
     else sendMessage();
 };
 
+let pastedUniqueIndex = 1;
+
 const pasteHandler = async event => {
     if (event.clipboardData.files.length) {
         const files = Array.from(event.clipboardData.files);
 
-        files.forEach(file => {
+        files.forEach(element => {
+            const file = new File([element], pastedUniqueIndex + '-' + element.name, {
+                type: element.type
+            });
             file.created_at = 'Только что';
+
+            pastedUniqueIndex++;
 
             if (file.type.match('image')) {
                 if (file.size >= SIZE_TO_COMPRESSION) {
@@ -187,6 +194,7 @@ const pasteHandler = async event => {
                             _file.src = await imageCompression.getDataUrlFromFile(compressed);
 
                             currentFiles.value.push(_file);
+
                             const index = loadingFiles.value.findIndex(
                                 element => element.id === uid
                             );
