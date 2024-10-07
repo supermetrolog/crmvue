@@ -8,20 +8,20 @@
                         <div class="account-section">
                             <AccountCard class="account-view__card" :user="THIS_USER" />
                             <div class="account-view__nav">
-                                <router-link class="account-view__link" to="/account">
+                                <router-link class="account-view__link" :to="{ name: 'profile' }">
                                     Профиль
                                 </router-link>
-                                <router-link class="account-view__link" to="/account/activity">
-                                    Активность
-                                </router-link>
-                                <router-link class="account-view__link" to="/dashboard">
-                                    Дашборд
-                                </router-link>
-                                <router-link class="account-view__link" to="/account/edit">
+                                <router-link
+                                    class="account-view__link"
+                                    :to="{ name: 'profile-edit' }"
+                                >
                                     Редактировать профиль
                                 </router-link>
-                                <router-link class="account-view__link" to="/account/consultants">
-                                    Список сотрудников
+                                <router-link
+                                    class="account-view__link"
+                                    :to="{ name: 'profile-sessions' }"
+                                >
+                                    Безопасность
                                 </router-link>
                             </div>
                         </div>

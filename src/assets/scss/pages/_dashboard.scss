@@ -136,6 +136,14 @@
         pointer-events: none;
         opacity: .5;
     }
+
+    &--with-icon {
+        @include mixins.flex-box($a: center, $gap: 5px);
+
+        i {
+            font-size: 15px;
+        }
+    }
 }
 
 .dashboard-stats-block {

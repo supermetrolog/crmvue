@@ -53,7 +53,14 @@ export const Menu = {
             key: 'settings',
             internal: 'settings'
         },
-        { id: 4, name: 'Юзеры', icon: 'fas fa-users', url: '/users', key: 'users' }
+        {
+            id: 4,
+            name: 'Юзеры',
+            icon: 'fas fa-users',
+            url: '/users',
+            key: 'users',
+            internal: 'users'
+        }
     ],
     agent: [
         {
@@ -130,5 +137,9 @@ export const InternalMenu = {
         { id: 0, name: 'Опросник', url: '/settings/survey' },
         { id: 1, name: 'Мессенджер', url: '/settings/messenger' },
         { id: 1, name: 'Задачи', url: '/settings/tasks' }
+    ],
+    users: [
+        { id: 0, name: 'Управление', url: '/users' },
+        { id: 1, name: 'Безопасность', url: '/users/sessions' }
     ]
 };
