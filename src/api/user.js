@@ -5,26 +5,14 @@ import { removeUserInLocalStorage, setUserInLocalStorage } from '@/utils/localSt
 
 const URL = '/users';
 
-function payloadToData(payload) {
-    if (payload.userProfile.fileList?.length) {
-        const files = payload.userProfile.fileList;
-        delete payload.userProfile.fileList;
-
-        return { files, data: JSON.stringify(payload) };
-    }
-    return { data: JSON.stringify(payload) };
-}
-
 export default {
     auth: {
         async login(payload) {
             try {
-                const response = await axios.post(URL + '/login', payload, {
-                    params: { expand: 'userProfile' }
-                });
+                const response = await axios.post(URL + '/login', payload);
                 if (response) {
                     const user = SuccessHandler.getData(response);
-                    setUserInLocalStorage(user.user, user.access_token);
+                    setUserInLocalStorage(user.user, user.access_token, user.access_token_id);
                     return user;
                 }
             } catch (e) {
@@ -47,10 +35,32 @@ export default {
             return null;
         }
     },
-    async list() {
+    sessions: {
+        async list(id) {
+            try {
+                const response = await axios.get(`${URL}/${id}/sessions`);
+                if (response) return SuccessHandler.getData(response);
+            } catch (e) {
+                await setRequestError(e);
+            }
+
+            return null;
+        },
+        async drop(id) {
+            try {
+                const response = await axios.delete(`${URL}/${id}/sessions`);
+                if (response) return SuccessHandler.getData(response);
+            } catch (e) {
+                await setRequestError(e);
+            }
+
+            return null;
+        }
+    },
+    async list(params) {
         try {
             const response = await axios.get(URL, {
-                params: { expand: 'userProfile.phones,userProfile.emails' }
+                params
             });
             if (response) return SuccessHandler.getData(response);
         } catch (e) {
@@ -61,9 +71,7 @@ export default {
     },
     async get(id) {
         try {
-            const response = await axios.get(`${URL}/${id}`, {
-                params: { expand: 'userProfile.phones,userProfile.emails' }
-            });
+            const response = await axios.get(`${URL}/${id}`);
             if (response) return SuccessHandler.getData(response);
         } catch (e) {
             await setRequestError(e);
@@ -73,7 +81,7 @@ export default {
     },
     async create(payload) {
         try {
-            const response = await axios.postForm(URL, payloadToData(payload));
+            const response = await axios.postForm(URL, payload);
             if (response) return SuccessHandler.getData(response);
         } catch (e) {
             await setRequestError(e);
@@ -83,7 +91,7 @@ export default {
     },
     async update(id, payload) {
         try {
-            const response = await axios.patchForm(`${URL}/${id}`, payloadToData(payload));
+            const response = await axios.patchForm(`${URL}/${id}`, payload);
             if (response) return SuccessHandler.getData(response);
         } catch (e) {
             await setRequestError(e);

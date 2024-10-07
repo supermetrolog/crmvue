@@ -25,6 +25,7 @@ import question from '@/api/question.js';
 import field from '@/api/field.js';
 import messengerTag from '@/api/messengerTag.js';
 import taskTag from '@/api/taskTag.js';
+import session from '@/api/session.js';
 
 export default {
     user,
@@ -53,5 +54,6 @@ export default {
     question,
     field,
     messengerTag,
-    taskTag
+    taskTag,
+    session
 };
