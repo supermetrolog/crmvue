@@ -114,7 +114,7 @@
                 <Tab name="Аватар">
                     <FormGroup>
                         <FileInput
-                            v-model:native="form.userProfile.fileList"
+                            v-model:native="form.files"
                             v-model:data="form.userProfile.avatar"
                             class="col-12 text-center"
                             single
@@ -191,9 +191,9 @@ const form = reactive({
         phones: [],
         emails: [],
         caller_id: null,
-        avatar: null,
-        fileList: []
-    }
+        avatar: null
+    },
+    files: []
 });
 
 const formEmailsValidators = [{ func: validateEmail, message: 'Укажите корректный Email' }];
