@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { setRequestError } from '@/api/helpers/setRequestError.js';
 import { SuccessHandler } from '@/api/helpers/successHandler.js';
 
 const URL = '/users';
@@ -7,102 +6,53 @@ const URL = '/users';
 export default {
     auth: {
         async login(payload) {
-            try {
-                const response = await axios.post(URL + '/login', payload);
-                if (response) {
-                    return SuccessHandler.getData(response);
-                }
-            } catch (e) {
-                await setRequestError(e);
-            }
-
+            const response = await axios.post(URL + '/login', payload);
+            if (response) return SuccessHandler.getData(response);
             return false;
         },
         async logout() {
-            try {
-                const response = await axios.post(URL + '/logout');
-                if (response) {
-                    return SuccessHandler.getData(response);
-                }
-            } catch (e) {
-                await setRequestError(e);
-            }
-
+            const response = await axios.post(URL + '/logout');
+            if (response) return SuccessHandler.getData(response);
             return null;
         }
     },
     sessions: {
         async list(id) {
-            try {
-                const response = await axios.get(`${URL}/${id}/sessions`);
-                if (response) return SuccessHandler.getData(response);
-            } catch (e) {
-                await setRequestError(e);
-            }
-
+            const response = await axios.get(`${URL}/${id}/sessions`);
+            if (response) return SuccessHandler.getData(response);
             return null;
         },
         async drop(id) {
-            try {
-                const response = await axios.delete(`${URL}/${id}/sessions`);
-                if (response) return SuccessHandler.getData(response);
-            } catch (e) {
-                await setRequestError(e);
-            }
-
+            const response = await axios.delete(`${URL}/${id}/sessions`);
+            if (response) return SuccessHandler.getData(response);
             return null;
         }
     },
     async list(params) {
-        try {
-            const response = await axios.get(URL, {
-                params
-            });
-            if (response) return SuccessHandler.getData(response);
-        } catch (e) {
-            await setRequestError(e);
-        }
-
+        const response = await axios.get(URL, {
+            params
+        });
+        if (response) return SuccessHandler.getData(response);
         return null;
     },
     async get(id) {
-        try {
-            const response = await axios.get(`${URL}/${id}`);
-            if (response) return SuccessHandler.getData(response);
-        } catch (e) {
-            await setRequestError(e);
-        }
-
+        const response = await axios.get(`${URL}/${id}`);
+        if (response) return SuccessHandler.getData(response);
         return null;
     },
     async create(payload) {
-        try {
-            const response = await axios.postForm(URL, payload);
-            if (response) return SuccessHandler.getData(response);
-        } catch (e) {
-            await setRequestError(e);
-        }
-
+        const response = await axios.postForm(URL, payload);
+        if (response) return SuccessHandler.getData(response);
         return null;
     },
     async update(id, payload) {
-        try {
-            const response = await axios.patchForm(`${URL}/${id}`, payload);
-            if (response) return SuccessHandler.getData(response);
-        } catch (e) {
-            await setRequestError(e);
-        }
-
+        const response = await axios.patchForm(`${URL}/${id}`, payload);
+        if (response) return SuccessHandler.getData(response);
         return null;
     },
     async delete(id) {
-        try {
-            const response = await axios.delete(`${URL}/${id}`);
-            if (response) return SuccessHandler.getData(response);
-        } catch (e) {
-            await setRequestError(e);
-        }
-
+        const response = await axios.delete(`${URL}/${id}`);
+        if (response) return SuccessHandler.getData(response);
         return null;
     }
 };
