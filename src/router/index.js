@@ -156,22 +156,31 @@ const routes = [
         component: () => import('../views/Users/Users.vue'),
         children: [
             {
-                path: '/users/:id',
+                path: '',
+                name: 'users-table',
+                meta: {
+                    layout: 'default',
+                    auth: { isAuth: true, role: ['moderator', 'administrator'] }
+                },
+                component: () => import('../views/Users/Main.vue')
+            },
+            {
+                path: 'sessions',
+                name: 'users-sessions',
+                meta: {
+                    layout: 'default',
+                    auth: { isAuth: true, role: ['moderator', 'administrator'] }
+                },
+                component: () => import('../views/Users/Sessions.vue')
+            },
+            {
+                path: ':id',
                 name: 'user',
                 meta: {
                     layout: 'default',
                     auth: { isAuth: true, role: ['moderator', 'administrator'] }
                 },
                 component: () => import('../views/Users/User.vue')
-            },
-            {
-                path: '',
-                name: 'UsersMain',
-                meta: {
-                    layout: 'default',
-                    auth: { isAuth: true, role: ['moderator', 'administrator'] }
-                },
-                component: () => import('../views/Users/Main.vue')
             }
         ]
     },
@@ -192,12 +201,12 @@ const routes = [
                 component: () => import('../views/Account/Profile.vue')
             },
             {
-                path: 'activity',
-                name: 'profile-activity',
+                path: 'sessions',
+                name: 'profile-sessions',
                 meta: {
-                    title: 'Активность'
+                    title: 'Безопасность'
                 },
-                component: () => import('../views/Account/Activity.vue')
+                component: () => import('../views/Account/Sessions.vue')
             },
             {
                 path: 'edit',
