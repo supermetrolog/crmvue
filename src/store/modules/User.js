@@ -1,9 +1,8 @@
 import api from '@/api/api';
 import { useAuth } from '@/composables/useAuth.js';
 import {
-    getUserInLocalStorage,
-    LOCALSTORAGE_PREFIX,
-    LS_ACCESS_TOKEN_KEY,
+    getAccessTokenFromLocalStorage,
+    getUserFromLocalStorage,
     removeUserInLocalStorage,
     setUserInLocalStorage
 } from '@/utils/localStorage.js';
@@ -55,8 +54,8 @@ const User = {
             if (data) commit('updateUsers', data);
         },
         async REFRESH_USER({ getters, commit }) {
-            const access_token = localStorage.getItem(LOCALSTORAGE_PREFIX + LS_ACCESS_TOKEN_KEY);
-            if (!getters.THIS_USER || !access_token) return;
+            const { accessToken, accessTokenId } = getAccessTokenFromLocalStorage();
+            if (!getters.THIS_USER || !accessToken || !accessTokenId) return;
 
             let [newUserData, chatMemberUser] = await Promise.all([
                 api.user.get(getters.THIS_USER.id),
@@ -66,15 +65,20 @@ const User = {
             if (!newUserData) return;
 
             newUserData.chat_member_id = chatMemberUser;
-            setUserInLocalStorage(newUserData, access_token);
-            newUserData.access_token = access_token;
+            setUserInLocalStorage(newUserData, accessToken, accessTokenId);
+            newUserData.access_token = accessToken;
+            newUserData.access_token_id = accessTokenId;
             commit('setUser', newUserData);
         },
         SET_USER({ getters, commit }) {
             if (getters.THIS_USER) return getters.THIS_USER;
-            const user = getUserInLocalStorage();
+            const user = getUserFromLocalStorage();
+
             if (user) {
-                user.access_token = localStorage.getItem(LOCALSTORAGE_PREFIX + LS_ACCESS_TOKEN_KEY);
+                const { accessToken, accessTokenId } = getAccessTokenFromLocalStorage();
+                user.access_token = accessToken;
+                user.access_token_id = accessTokenId;
+
                 commit('setUser', user);
             }
         },
@@ -83,9 +87,13 @@ const User = {
             commit('setUser', null);
         },
         async login({ dispatch }, formData) {
-            const response = await api.user.auth.login(formData);
-            if (response) {
-                const { login } = useAuth();
+            const { login } = useAuth();
+
+            const user = await api.user.auth.login(formData);
+
+            if (user) {
+                setUserInLocalStorage(user.user, user.access_token, user.access_token_id);
+
                 dispatch('SET_USER');
                 login();
                 return true;
@@ -93,9 +101,11 @@ const User = {
 
             return false;
         },
-        async LOGOUT({ dispatch }) {
+        async logout({ dispatch }) {
             const response = await api.user.auth.logout();
-            if (response !== false) dispatch('DESTROY');
+            if (response !== false) {
+                dispatch('DESTROY');
+            }
             return response;
         },
         async getConsultants({ state, commit }) {

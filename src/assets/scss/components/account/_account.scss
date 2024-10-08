@@ -1,4 +1,5 @@
 @use '../../utils/mixins';
+@use '../../utils/variables';
 
 .account-view {
     @include mixins.flex-box($gap: 30px, $a: flex-start);
@@ -61,7 +62,11 @@
     &__title {
         font-size: 18px;
         font-weight: 500;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
+    }
+
+    &__actions {
+        @include mixins.flex-box($gap: 5px, $j: flex-end);
     }
 }
 
@@ -179,5 +184,52 @@
 
     &__helper {
         color: #f93154;
+    }
+}
+
+.account-sessions {
+
+}
+
+.account-session {
+    &__body {
+        width: 100%;
+        border: 2px solid variables.$bg-gray-l!important;
+        border-radius: 5px;
+        padding: 10px;
+        @include mixins.transition(background-color);
+        @include mixins.flex-box($a: center, $gap: 10px);
+        @include mixins.hover {
+            background-color: variables.$bg-gray-l;
+        }
+
+        &.current {
+            border-color: variables.$bg-success!important;
+        }
+    }
+
+    &__icon {
+        font-size: 38px;
+        color: variables.$bg-gray
+    }
+
+    &__header {
+        margin-bottom: 5px;
+        @include mixins.flex-box($gap: 5px, $wrap: true);
+    }
+
+    &__chip {
+        padding: 3px 7px!important;
+        font-size: 12px!important;
+    }
+
+    &__footer {
+        @include mixins.flex-box($a: center, $gap: 5px);
+    }
+
+    &__actions {
+        align-self: flex-start;
+        margin-left: auto;
+        @include mixins.flex-box($gap: 5px);
     }
 }

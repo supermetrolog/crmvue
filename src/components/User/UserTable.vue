@@ -76,6 +76,12 @@
                             >
                                 <i class="fas fa-pen"></i>
                             </HoverActionsButton>
+                            <HoverActionsButton
+                                @click="$emit('show-sessions', user.id)"
+                                label="Управлять сессиями"
+                            >
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </HoverActionsButton>
                             <HoverActionsButton @click="deleteUser(user)" label="Удалить">
                                 <i class="fas fa-trash-alt"></i>
                             </HoverActionsButton>
@@ -99,7 +105,7 @@ import { useConfirm } from '@/composables/useConfirm.js';
 import { userOptions } from '@/const/options/user.options.js';
 import api from '@/api/api.js';
 
-const emit = defineEmits(['deleted', 'edit']);
+const emit = defineEmits(['deleted', 'edit', 'show-sessions']);
 defineProps({
     users: {
         type: Array,
