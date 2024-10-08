@@ -87,10 +87,13 @@ const User = {
             commit('setUser', null);
         },
         async login({ dispatch }, formData) {
-            const response = await api.user.auth.login(formData);
+            const { login } = useAuth();
 
-            if (response) {
-                const { login } = useAuth();
+            const user = await api.user.auth.login(formData);
+
+            if (user) {
+                setUserInLocalStorage(user.user, user.access_token, user.access_token_id);
+
                 dispatch('SET_USER');
                 login();
                 return true;
@@ -98,9 +101,11 @@ const User = {
 
             return false;
         },
-        async LOGOUT({ dispatch }) {
+        async logout({ dispatch }) {
             const response = await api.user.auth.logout();
-            if (response !== false) dispatch('DESTROY');
+            if (response !== false) {
+                dispatch('DESTROY');
+            }
             return response;
         },
         async getConsultants({ state, commit }) {

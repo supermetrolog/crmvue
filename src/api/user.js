@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { setRequestError } from '@/api/helpers/setRequestError.js';
 import { SuccessHandler } from '@/api/helpers/successHandler.js';
-import { removeUserInLocalStorage, setUserInLocalStorage } from '@/utils/localStorage.js';
 
 const URL = '/users';
 
@@ -11,9 +10,7 @@ export default {
             try {
                 const response = await axios.post(URL + '/login', payload);
                 if (response) {
-                    const user = SuccessHandler.getData(response);
-                    setUserInLocalStorage(user.user, user.access_token, user.access_token_id);
-                    return user;
+                    return SuccessHandler.getData(response);
                 }
             } catch (e) {
                 await setRequestError(e);
@@ -25,7 +22,6 @@ export default {
             try {
                 const response = await axios.post(URL + '/logout');
                 if (response) {
-                    removeUserInLocalStorage();
                     return SuccessHandler.getData(response);
                 }
             } catch (e) {

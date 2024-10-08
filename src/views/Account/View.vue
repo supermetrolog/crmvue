@@ -1,12 +1,12 @@
 <template>
-    <div v-if="THIS_USER" class="account-main">
+    <div v-if="currentUser" class="account-main">
         <div class="container-fluid">
             <div class="row">
                 <div class="offset-xl-1 col-lg-3 col-xl-2">
                     <div class="account-view__panel">
                         <Button @click="logout" class="w-100 mb-2" danger>Выйти из аккаунта</Button>
                         <div class="account-section">
-                            <AccountCard class="account-view__card" :user="THIS_USER" />
+                            <AccountCard class="account-view__card" :user="currentUser" />
                             <div class="account-view__nav">
                                 <router-link class="account-view__link" :to="{ name: 'profile' }">
                                     Профиль
@@ -41,31 +41,26 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import AccountCard from '@/components/Account/AccountCard.vue';
-import { mapGetters } from 'vuex';
+import { useStore } from 'vuex';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import Button from '@/components/common/Button.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
+import { computed } from 'vue';
+import { useRouter } from 'vue-router';
 
-export default {
-    name: 'AccountMain',
-    components: { Button, AnimationTransition, AccountCard },
-    setup() {
-        const { confirm } = useConfirm();
-        return { confirm };
-    },
-    computed: {
-        ...mapGetters(['THIS_USER'])
-    },
-    methods: {
-        async logout() {
-            const confirmed = await this.confirm('Вы уверены, что хотите выйти из аккаунта?');
-            if (confirmed) {
-                await this.$store.dispatch('LOGOUT');
-                return this.$router.push('/login');
-            }
-        }
+const { confirm } = useConfirm();
+const store = useStore();
+const router = useRouter();
+
+const currentUser = computed(() => store.getters.THIS_USER);
+
+async function logout() {
+    const confirmed = await confirm('Вы уверены, что хотите выйти из аккаунта?');
+    if (confirmed) {
+        await store.dispatch('logout');
+        await router.push({ name: 'login' });
     }
-};
+}
 </script>
