@@ -19,7 +19,13 @@
     }
 
     &__id {
-        width: 75px;
+        width: 90px;
+        height: 1px;
+    }
+
+    &__aside {
+        @include mixins.flex-box($d: column, $gap: 5px);
+        height: 100%;
     }
 
     &__actions {
@@ -102,29 +108,129 @@
     }
 
     &__date {
-        width: 100px;
+        width: 140px;
     }
 
-    &__avatar {
-        position: relative;
-    }
-
-    &__visited {
-        position: absolute;
-        right: -6px;
-        bottom: -6px;
-        background-color: rgb(14, 161, 110);
-        color: #ffffff;
+    &__icon {
         border: 1px solid rgba(0, 0, 0, .1);
-        height: 30px;
-        width: 30px;
+        height: 40px;
+        width: 40px;
         border-radius: 50%;
+        font-size: 22px;
         @include mixins.flex-box($a: center, $j: center);
-        font-size: 14px;
+
+        &.exclusive {
+            background-color: variables.$bg-warning-l;
+        }
     }
 
-    &__loader {
-        height: 130px!important;
+    &__relations {
+        @include mixins.flex-box($gap: 1px,  $a: flex-end);
+    }
+
+    &__relation-button {
+        border-radius: 20px;
+        border: none;
+        background-color: transparent;
+        font-size: 14px;
+        font-weight: 500;
+        color: #fff;
+        writing-mode: vertical-rl;
+        transform: rotateZ(180deg);
+        cursor: pointer;
+        height: 120px;
+        width: max-content;
+        text-align: left;
+        opacity: .5;
+        @include mixins.transition(background-color, opacity);
+
+        &--sale {
+            background-color: #e35790;
+
+            @include mixins.hover {
+                background-color: #b9356a;
+            }
+        }
+
+        &--rent {
+            background-color: #5461b6;
+
+            @include mixins.hover {
+                background-color: #2f3e96;
+            }
+        }
+
+        &--storage {
+            background-color: #a82c94;
+
+            @include mixins.hover {
+                background-color: #8c1a79;
+            }
+        }
+
+        &--sublease {
+            background-color: #d59857;
+
+            @include mixins.hover {
+                background-color: #a97236;
+            }
+        }
+
+        @include mixins.hover {
+            opacity: 1;
+        }
+
+        &.active {
+            opacity: 1;
+        }
+    }
+
+    &__close {
+        border-bottom: 1px solid #000;
+    }
+
+    &__chip {
+        width: 100%!important;
+        text-align: center;
+    }
+
+    &__call {
+        width: 100%!important;
+        text-align: center;
+        cursor: pointer;
+        background-color: variables.$bg-success-l;
+        margin-top: 5px;
+        justify-content: center;
+
+        @include mixins.hover {
+            background-color: variables.$bg-success;
+            color: #fff;
+        }
+
+        &.expired {
+            background-color: variables.$bg-danger;
+            color: #fff;
+
+            @include mixins.hover {
+                background-color: variables.$bg-danger-l;
+                color: #000;
+            }
+        }
+    }
+
+    &__chat {
+        margin: 10px auto;
+        background-color: variables.$bg-success-l;
+        height: 50px;
+        width: 50px;
+
+        i {
+            font-size: 18px;
+        }
+
+        span {
+            font-size: 14px;
+        }
     }
 }
 
@@ -141,6 +247,22 @@
 
     &__item {
         display: inline-block;
+    }
+
+    &__label {
+        font-size: 14px;
+        font-weight: 500;
+        padding: 3px 5px;
+        border: 2px solid rgba(16, 185, 129, 0.4);
+        border-radius: 5px;
+        color: #10b981;
+        cursor: pointer;
+        width: max-content;
+        @include mixins.transition(background-color, color);
+        @include mixins.hover {
+            background-color:  #10b981;
+            color: #fff;
+        }
     }
 }
 
@@ -162,7 +284,7 @@
 
 .offer-table-item-preview {
     &__header {
-        @include mixins.flex-box($gap: 5px);
+        @include mixins.flex-box($gap: 5px, $wrap: true);
     }
 
     &__types {
@@ -203,6 +325,11 @@
         font-weight: 500;
         color: variables.$color_light;
         background-color: rgba($color:variables.$color_danger, $alpha: 0.7);
+    }
+
+    &__area {
+        cursor: pointer;
+        font-size: 16px;
     }
 }
 
@@ -260,54 +387,11 @@
         padding: 0!important;
     }
 
-    .tabs-component {
-        &-panels {
-            padding: 0!important;
-        }
-
-        &-tabs {
-            padding: 0;
-            gap: 0;
-        }
-
-        &-tab-a {
-            padding: 20px 25px 15px;
-            height: 100%;
-            border-right: 1px solid rgba(0, 0, 0, .1);
-            text-transform: unset;
-
-            &::before {
-                display: none;
-            }
-
-            &.is-active {
-                background-color: rgba(0, 183, 74, 0.3);
-                color: #000;
-            }
-        }
-    }
-
-    &__center {
-        text-align: center;
-    }
-
-    &__sale {
-        .tabs-component-tab-a {
-            color: #c03!important;
-        }
-    }
-
-    &__suffix {
-        @include mixins.flex-box($a: center, $j: center);
-        padding: 3px!important;
-        font-size: 13px!important;
-    }
-
-    .tabs-component-tab .tabs-component-tab-a {
-        @include mixins.flex-box($gap: 5px, $a: center);
-    }
 
     &__list {
+        display: table;
+        width: 100%;
+
         .offer-table-item {
             background-color: rgba(#e4eddb, .8)!important;
         }
@@ -332,6 +416,7 @@
     thead {
         color: variables.$color_primary;
         text-transform: unset;
+        height: 40px!important;
 
         th {
             font-weight: 600!important;
@@ -340,6 +425,8 @@
         }
 
         tr {
+            height: 40px;
+
             th {
                 border-right: 1px dotted rgba(0, 0, 0, .4);
                 border-bottom: 1px dotted rgba(0, 0, 0, .4);
@@ -356,12 +443,27 @@
             border-bottom: 1px dotted rgba(0, 0, 0, 0.4);
         }
     }
+
+    th, td {
+        padding-left: 20px!important;
+    }
 }
 
-.offer-mini-list-empty {
-    width: max-content;
-    margin: 0 auto;
-    padding: 5px 15px!important;
+.offer-mini-list-item {
+    background-color: #f3f3f3;
+    height: 50px!important;
+
+    &.archived {
+        opacity: .25;
+    }
+
+    td {
+        padding: 0 10px 0 20px!important;
+    }
+
+    &__functions {
+        @include mixins.flex-box($gap: 5px);
+    }
 }
 
 .offer-table-item-mobile {
@@ -482,5 +584,11 @@
         &.active {
             border-bottom-color: variables.$color_light_blue;
         }
+    }
+}
+
+.offer-table-item-preview-area {
+    &__description {
+        color: #afafaf
     }
 }

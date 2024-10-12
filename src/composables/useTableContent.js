@@ -33,8 +33,11 @@ export function useTableContent(fetch, options = {}) {
      * @returns {Promise<void>}
      */
     async function next(page) {
-        const query = { ...route.query, page };
+        console.log('next, page:', page);
+        const query = { ...route.query };
+        query.page = page;
         await router.replace({ query });
+        console.log('router replaced, page:', page, '=>', route.query.page);
     }
 
     /**
@@ -70,7 +73,9 @@ export function useTableContent(fetch, options = {}) {
         stop = watch(
             () => [route.path, route.fullPath],
             ([newPath, newFullPath], [oldPath, oldFullPath]) => {
-                if (newPath === oldPath && newFullPath !== oldFullPath) fetch();
+                if (newPath === oldPath && newFullPath !== oldFullPath) {
+                    fetch();
+                }
             }
         );
 
