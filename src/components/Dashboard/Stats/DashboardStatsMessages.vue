@@ -39,11 +39,11 @@ import DashboardCardMessage from '@/components/Dashboard/Card/DashboardCardMessa
 import EmptyData from '@/components/common/EmptyData.vue';
 import DashboardCardMessageSkeleton from '@/components/Dashboard/Card/DashboardCardMessageSkeleton.vue';
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';
-import { inject, onBeforeMount, ref, watch } from 'vue';
+import { onBeforeMount, ref, watch } from 'vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import InProgress from '@/components/common/InProgress.vue';
+import { useMessenger } from '@/components/Messenger/useMessenger.js';
 
-const $openMessengerChat = inject('$openMessengerChat');
 const props = defineProps({
     user: {
         type: Number,
@@ -51,11 +51,12 @@ const props = defineProps({
     }
 });
 
+const { openChatById } = useMessenger();
 const { isLoading } = useDelayedLoader();
 const messages = ref([]);
 
 const openInChat = chatMemberID => {
-    $openMessengerChat({ chatMemberID });
+    openChatById(chatMemberID);
 };
 
 const fetchMessages = async () => {

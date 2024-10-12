@@ -103,7 +103,7 @@ export default {
         setQueryToForm() {
             this.initForm();
 
-            const query = this.$route.query;
+            const query = { ...this.$route.query };
 
             delete query.page;
             delete query.all;

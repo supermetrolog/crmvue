@@ -40,7 +40,7 @@
             <ComplexHoldingChat
                 v-if="holdingsQueue.length"
                 v-model:target="targetObjectID"
-                @open="openChat"
+                @open="openInChat"
                 :queue="holdingsQueue"
             />
         </AnimationTransition>
@@ -51,18 +51,20 @@
 import FormComplexPlot from '@/components/Forms/Complex/FormComplexPlot.vue';
 import ComplexHolding from '@/components/Complex/Holding/ComplexHolding.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
-import { computed, inject, ref, shallowRef } from 'vue';
+import { computed, ref, shallowRef } from 'vue';
 import FormComplexHolding from '@/components/Forms/Complex/FormComplexHolding.vue';
 import ComplexHoldingChat from '@/components/Complex/Holding/ComplexHoldingChat.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import { useMessenger } from '@/components/Messenger/useMessenger.js';
 
-const $openMessengerChat = inject('$openMessengerChat');
 const props = defineProps({
     objects: {
         type: Array,
         default: () => []
     }
 });
+
+const { openChat } = useMessenger();
 
 const plotFormIsVisible = shallowRef(false);
 const holdingFormIsVisible = shallowRef(false);
@@ -101,11 +103,8 @@ const onIntersected = (objectID, isIntersecting) => {
     }
 };
 
-const openChat = objectID => {
+const openInChat = objectID => {
     const object = props.objects.find(element => element.id === objectID);
-    $openMessengerChat({
-        companyID: object.company_id,
-        objectID: objectID
-    });
+    if (object) openChat(object.company_id, objectID, 'object');
 };
 </script>
