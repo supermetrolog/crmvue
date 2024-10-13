@@ -108,17 +108,17 @@ import HoverActionsButton from '@/components/common/HoverActions/HoverActionsBut
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import OfferTableItemArea from '@/components/Offer/TableItem/OfferTableItemArea.vue';
 import CompanyElement from '@/components/Company/CompanyElement.vue';
-import OfferTableItemPreview from '@/components/Offer/TableItem/OfferTableItemPreview.vue';
+import OfferTableItemPreview from '@/components/Offer/TableItem/Preview/OfferTableItemPreview.vue';
 import OfferTableItemAddress from '@/components/Offer/TableItem/OfferTableItemAddress.vue';
 import TableDateBlock from '@/components/common/Table/TableDateBlock.vue';
-import { computed, inject } from 'vue';
+import { computed } from 'vue';
 import { useStore } from 'vuex';
-import { $generatorURL } from '@/plugins/url.js';
 import OfferTableRelativeItemPrice from '@/components/Offer/OfferTableRelativeItemPrice.vue';
 import AvatarEmpty from '@/components/common/AvatarEmpty.vue';
+import { useMessenger } from '@/components/Messenger/useMessenger.js';
+import { getLinkPDF } from '@/utils/url.js';
 
 const emit = defineEmits(['favorite-deleted']);
-const $openMessengerChat = inject('$openMessengerChat');
 const props = defineProps({
     offer: {
         type: Object,
@@ -127,6 +127,7 @@ const props = defineProps({
 });
 
 const store = useStore();
+const { openChat } = useMessenger();
 
 const updatedAt = computed(() => {
     return props.offer.last_update * 1000;
@@ -144,7 +145,7 @@ const toggleFavorite = async () => {
 
 const openPDF = () => {
     window.open(
-        $generatorURL.pdf(
+        getLinkPDF(
             {
                 type_id: 2,
                 offer_id: props.offer.original_id,
@@ -157,9 +158,6 @@ const openPDF = () => {
 };
 
 const openInChat = () => {
-    $openMessengerChat({
-        companyID: props.offer.company_id,
-        objectID: props.offer.object_id
-    });
+    openChat(props.offer.company_id, props.offer.object_id, 'object');
 };
 </script>

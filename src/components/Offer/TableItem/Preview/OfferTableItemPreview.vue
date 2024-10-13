@@ -1,7 +1,7 @@
 <template>
     <div class="offer-table-item-preview">
         <a
-            :href="$url.offerOldByObject(offer)"
+            :href="offerOldUrl"
             target="_blank"
             class="button button--small offer-table-item__button"
         >
@@ -10,7 +10,7 @@
         <div class="offer-table-item-preview__header mb-1">
             <DashboardChip v-if="isPassive" class="dashboard-bg-danger-l">Пассив</DashboardChip>
             <DashboardChip v-else class="dashboard-bg-success-l">
-                {{ offer.deal_type_name }}
+                {{ dealType }}
             </DashboardChip>
             <DashboardChip
                 v-if="offer.hide_from_market"
@@ -22,13 +22,15 @@
             <DashboardChip v-tippy="'Класс объекта'" class="dashboard-bg-danger-l">
                 {{ offer.class_name }}
             </DashboardChip>
+            <DashboardChip v-tippy="'Общая площадь объекта'" class="dashboard-bg-gray-l" with-icon>
+                <i class="fa-solid fa-expand"></i>
+                <WithUnitType :unit-type="unitTypes.SQUARE_METERS">
+                    {{ fullArea }}
+                </WithUnitType>
+            </DashboardChip>
         </div>
-        <a
-            class="offer-table-item-preview__container"
-            :href="$url.offerByObject(offer)"
-            target="_blank"
-        >
-            <VLazyImage v-if="!offer.thumb" :src="$url.api.fileNotFound()" alt="image" />
+        <a class="offer-table-item-preview__container" :href="offerUrl" target="_blank">
+            <VLazyImage v-if="!offer.thumb" :src="getApiFileNotFound()" alt="image" />
             <OfferTableItemPreviewMotionSlider
                 v-else
                 :thumb="offer.thumb"
@@ -55,15 +57,17 @@
                 <span v-if="offer.is_fake" class="offer-table-item-preview__chip">Фейк</span>
             </div>
         </a>
-        <div v-if="offer.object_type?.length" class="offer-table-item-preview__types">
-            <DashboardChip
-                v-for="element in objectTypes"
-                :key="element.id"
-                v-tippy="element.name"
-                class="dashboard-bg-light"
-            >
-                <i :class="element.icon" />
-            </DashboardChip>
+        <div class="offer-table-item-preview__types">
+            <template v-if="offer.object_type?.length">
+                <DashboardChip
+                    v-for="element in objectTypes"
+                    :key="element.id"
+                    v-tippy="element.name"
+                    class="dashboard-bg-gray-l"
+                >
+                    <i :class="element.icon" />
+                </DashboardChip>
+            </template>
         </div>
     </div>
 </template>
@@ -74,6 +78,11 @@ import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { computed } from 'vue';
 import { objectOptions } from '@/const/options/object.options.js';
 import OfferTableItemPreviewMotionSlider from '@/components/Offer/TableItem/OfferTableItemPreviewMotionSlider.vue';
+import { dealOptions } from '@/const/options/deal.options.js';
+import WithUnitType from '@/components/common/WithUnitType.vue';
+import { unitTypes } from '@/const/unitTypes.js';
+import { toNumberFormat } from '@/utils/formatter.js';
+import { getApiFileNotFound, getLinkOfferByObject, getLinkOfferOldByObject } from '@/utils/url.js';
 
 const props = defineProps({
     offer: {
@@ -93,4 +102,12 @@ const objectTypes = computed(() => {
         icon: objectOptions.typeGeneral[element - 1].icon
     }));
 });
+
+const dealType = computed(() => dealOptions.type[props.offer.deal_type]);
+const fullArea = computed(() => {
+    if (props.offer.object.is_land) return toNumberFormat(props.offer.object.area_field_full);
+    return toNumberFormat(props.offer.object.area_building);
+});
+const offerUrl = computed(() => getLinkOfferByObject(props.offer));
+const offerOldUrl = computed(() => getLinkOfferOldByObject(props.offer));
 </script>

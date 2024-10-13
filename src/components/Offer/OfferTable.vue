@@ -27,35 +27,25 @@
     </Table>
 </template>
 
-<script>
+<script setup>
 import Table from '@/components/common/Table/Table.vue';
 import Tr from '@/components/common/Table/Tr.vue';
 import Th from '@/components/common/Table/Th.vue';
 import OfferTableItem from '@/components/Offer/TableItem/OfferTableItem.vue';
 import Loader from '@/components/common/Loader.vue';
 
-export default {
-    name: 'OfferTable',
-    components: {
-        Loader,
-        OfferTableItem,
-        Table,
-        Tr,
-        Th
+defineEmits(['favorite-deleted']);
+defineProps({
+    offers: {
+        type: Array
     },
-    emits: ['favorite-deleted'],
-    props: {
-        offers: {
-            type: Array
-        },
-        loader: {
-            type: Boolean,
-            default: false
-        },
-        sortable: {
-            type: Boolean,
-            default: true
-        }
+    loader: {
+        type: Boolean,
+        default: false
+    },
+    sortable: {
+        type: Boolean,
+        default: true
     }
-};
+});
 </script>
