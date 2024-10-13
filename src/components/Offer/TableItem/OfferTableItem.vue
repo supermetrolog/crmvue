@@ -6,32 +6,31 @@
         }"
     >
         <Td class="offer-table-item__id text-center" :class="{ passive: isPassive }">
-            <p class="mb-1">
-                {{ offer.visual_id }}
-            </p>
-            <div class="offer-table-item__actions">
-                <HoverActionsButton @click="openInChat" label="Открыть в чате">
-                    <i class="fa-solid fa-comment" />
-                </HoverActionsButton>
-                <template v-if="offer.type_id !== 3">
-                    <HoverActionsButton
-                        @click="toggleFavorite"
-                        :label="isFavorite ? 'Удалить из избранного' : 'Добавить в избранное'"
-                        :active="isFavorite"
-                    >
-                        <i class="fa-solid fa-star" />
-                    </HoverActionsButton>
-                    <HoverActionsButton @click="openPDF" label="Открыть PDF">
-                        <i class="fa-solid fa-file-pdf" />
-                    </HoverActionsButton>
-                    <HoverActionsButton
-                        @click="toggleDescriptionVisible"
-                        label="Подробнее о блоках"
-                    >
-                        <i v-if="!dropdownIsOpen" class="fa-solid fa-chevron-down"></i>
-                        <i v-else class="fa-solid fa-chevron-up"></i>
-                    </HoverActionsButton>
-                </template>
+            <div class="offer-table-item__aside">
+                <p class="mb-1">
+                    {{ offer.visual_id }}
+                </p>
+                <div class="offer-table-item__actions">
+                    <template v-if="offer.type_id !== 3">
+                        <HoverActionsButton
+                            @click="toggleFavorite"
+                            :label="isFavorite ? 'Удалить из избранного' : 'Добавить в избранное'"
+                            :active="isFavorite"
+                        >
+                            <i class="fa-solid fa-star" />
+                        </HoverActionsButton>
+                        <HoverActionsButton @click="openPDF" label="Открыть PDF">
+                            <i class="fa-solid fa-file-pdf" />
+                        </HoverActionsButton>
+                    </template>
+                </div>
+                <OfferTableItemRelationSelect
+                    v-if="offer.type_id !== 3 && offer.object?.offers?.length"
+                    @open="openRelations"
+                    :offers="offer.object.offers"
+                    :current="offer.id"
+                    :current-tab="currentRelationTab"
+                />
             </div>
         </Td>
         <Td class="offer-table-item__preview">
@@ -46,7 +45,7 @@
         </Td>
         <Td class="offer-table-item__area" sort="area">
             <div class="d-flex justify-content-center">
-                <OfferTableItemArea :offer="offer" />
+                <OfferTableItemArea @show-blocks="showBlocks" :offer="offer" />
             </div>
         </Td>
         <Td class="offer-table-item__price" sort="price">
@@ -69,19 +68,27 @@
         </Td>
         <Td class="offer-table-item__consultant">
             <div class="d-flex justify-content-center">
-                <div v-if="offer.consultant">
-                    <div class="d-flex gap-2 align-items-center offer-table-item__avatar">
-                        <Avatar
-                            v-tippy="offer.consultant.userProfile.full_name"
-                            :size="55"
-                            :src="offer.consultant.userProfile.avatar"
-                        />
+                <div v-if="offer.consultant" class="d-flex flex-column align-items-center gap-1">
+                    <Avatar
+                        v-tippy="offer.consultant.userProfile.full_name"
+                        :size="55"
+                        :src="offer.consultant.userProfile.avatar"
+                    />
+                    <div class="d-flex gap-1 align-items-center">
                         <div
                             v-if="offer.object?.agent_visited"
                             v-tippy="'Был на объекте'"
-                            class="offer-table-item__visited"
+                            class="offer-table-item__icon"
                         >
                             <i class="fa-solid fa-person-walking"></i>
+                        </div>
+                        <div
+                            v-if="contractIsSigned"
+                            v-tippy="contractTippy"
+                            class="offer-table-item__icon"
+                            :class="{ exclusive: isExclusive }"
+                        >
+                            <i class="pl-2 fa-solid fa-file-signature"></i>
                         </div>
                     </div>
                 </div>
@@ -106,38 +113,60 @@
             </div>
         </Td>
         <Td class="offer-table-item__date" sort="last_update">
-            <div class="d-flex justify-content-center">
-                <div>
-                    <DashboardChip v-if="offer.status === 1" class="dashboard-bg-success-l">
-                        Актив
-                    </DashboardChip>
-                    <DashboardChip v-else class="dashboard-bg-danger text-white">
-                        Пассив
-                    </DashboardChip>
-                    <TableDateBlock class="mt-1" :date="updatedAt" label="Обновление" />
-                    <TableDateBlock
-                        v-if="offer.last_call"
-                        class="mt-1"
-                        :date="offer.last_call.created_at"
-                        label="Звонок"
-                    />
+            <DashboardChip
+                v-if="isPassive"
+                class="dashboard-bg-danger offer-table-item__chip text-white"
+            >
+                Пассив
+            </DashboardChip>
+            <DashboardChip v-else class="dashboard-bg-success-l offer-table-item__chip">
+                Актив
+            </DashboardChip>
+            <OfferTableItemCall @click="openSurvey" :call="offer.last_call" />
+            <HoverActionsButton
+                @click="openInChat"
+                class="my-2 mx-auto offer-table-item__chat"
+                :label="`У вас ${offer.unread_message_count} непрочитанных сообщений по этому объекту`"
+            >
+                <div class="d-flex flex-column">
+                    <i class="fa-solid fa-comment" />
+                    <span>{{ offer.unread_message_count }}</span>
                 </div>
-            </div>
+            </HoverActionsButton>
+            <TableDateBlock class="text-center" :date="updatedAt" label="Обновление" />
         </Td>
     </Tr>
-    <tr v-if="dropdownIsOpen && isLoading" class="offer-table-item__loader">
-        <Spinner class="absolute-center" />
-    </tr>
     <DropDown>
-        <OfferTableItemDropdown
-            v-if="dropdownIsOpen && !isLoading"
-            @toggle-avito="handleAvitoToggle"
-            :offer="offer"
-            :mini-offers="miniOffers"
-        />
+        <OfferTableItemDropdown v-if="blocksDropdownIsOpen">
+            <Button
+                v-tippy="'Свернуть информацию о блоках'"
+                @click="blocksDropdownIsOpen = false"
+                class="offer-table-item__close w-100"
+                info
+            >
+                <i class="fas fa-angle-up"></i>
+            </Button>
+            <Spinner v-if="blocksIsLoading" class="m-4" />
+            <OfferMiniList v-else :offers="blockOffers" />
+        </OfferTableItemDropdown>
+    </DropDown>
+    <DropDown>
+        <OfferTableItemDropdown v-if="relationDropdownIsOpen">
+            <Button
+                v-tippy="'Скрыть информацию о предложении'"
+                @click="relationDropdownIsOpen = false"
+                class="offer-table-item__close w-100"
+                info
+            >
+                <i class="fas fa-angle-up"></i>
+            </Button>
+            <Spinner v-if="relationsIsLoading" class="m-4" />
+            <div v-else class="offer-table-item-dropdown__list">
+                <OfferTableItem v-for="offer in relatedOffers" :key="offer.id" :offer="offer" />
+            </div>
+        </OfferTableItemDropdown>
     </DropDown>
 </template>
-
 <script setup>
 import DropDown from '@/components/common/DropDown.vue';
 import Td from '@/components/common/Table/Td.vue';
@@ -150,17 +179,25 @@ import OfferTableItemArea from '@/components/Offer/TableItem/OfferTableItemArea.
 import CompanyContact from '@/components/Company/CompanyContact.vue';
 import CompanyElement from '@/components/Company/CompanyElement.vue';
 import Avatar from '@/components/common/Avatar.vue';
-import OfferTableItemPreview from '@/components/Offer/TableItem/OfferTableItemPreview.vue';
+import OfferTableItemPreview from '@/components/Offer/TableItem/Preview/OfferTableItemPreview.vue';
 import OfferTableItemAddress from '@/components/Offer/TableItem/OfferTableItemAddress.vue';
 import OfferTableItemPrice from '@/components/Offer/TableItem/OfferTableItemPrice.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import Spinner from '@/components/common/Spinner.vue';
 import TableDateBlock from '@/components/common/Table/TableDateBlock.vue';
-import { computed, inject, ref, shallowRef } from 'vue';
+import { computed, shallowRef } from 'vue';
 import { useStore } from 'vuex';
-import { $generatorURL as $url } from '@/plugins/url.js';
+import OfferTableItemRelationSelect from '@/components/Offer/TableItem/OfferTableItemRelationSelect.vue';
+import { dealOptions } from '@/const/options/deal.options.js';
+import OfferMiniList from '@/components/Offer/OfferMiniList.vue';
+import Button from '@/components/common/Button.vue';
+import OfferTableItem from '@/components/Offer/TableItem/OfferTableItem.vue';
+import OfferTableItemCall from '@/components/Offer/TableItem/OfferTableItemCall.vue';
+import { useMessenger } from '@/components/Messenger/useMessenger.js';
+import { getLinkPDF } from '@/utils/url.js';
+import { messenger } from '@/const/messenger.js';
 
-const emit = defineEmits(['favorite-deleted']);
+const emit = defineEmits(['favorite-deleted', 'open-survey']);
 const props = defineProps({
     offer: {
         type: Object,
@@ -176,56 +213,98 @@ const props = defineProps({
     }
 });
 
-const { isLoading } = useDelayedLoader();
+const { isLoading: blocksIsLoading } = useDelayedLoader();
+const { isLoading: relationsIsLoading } = useDelayedLoader();
 const store = useStore();
+const { openChat } = useMessenger();
 
-const $openMessengerChat = inject('$openMessengerChat');
-
-const miniOffers = ref([]);
-const dropdownIsOpen = shallowRef(false);
+const currentRelationTab = shallowRef(null);
+const relatedOffers = shallowRef([]);
+const blockOffers = shallowRef([]);
+const blocksDropdownIsOpen = shallowRef(false);
+const relationDropdownIsOpen = shallowRef(false);
 
 const updatedAt = computed(() => props.offer.last_update * 1000);
 const currentUser = computed(() => store.getters.THIS_USER);
 const contact = computed(() => props.offer.contact || props.offer.company?.mainContact);
 const isFavorite = computed(() => store.state.Offers.favoritesOffersCache[props.offer.original_id]);
 const isPassive = computed(() => props.offer.status !== 1);
+const isExclusive = computed(
+    () => props.offer.offer.contract_is_signed_type === dealOptions.contractTypeStatement.EXCLUSIVE
+);
+const contractIsSigned = computed(
+    () => props.offer.offer?.contract_is_signed === dealOptions.contractStatement.SIGNED
+);
+const contractTippy = computed(
+    () => dealOptions.contractType[props.offer.offer.contract_is_signed_type] + ' подписан'
+);
 
-const searchMiniOffers = async (withLoading = false) => {
-    if (withLoading) isLoading.value = true;
+const searchRelatedOffers = async (dealType, withLoading = false) => {
+    if (withLoading) relationsIsLoading.value = true;
+
+    const response = await api.offers.search({
+        type_id: [2],
+        deal_type: dealType - 1,
+        status: 3, // Нужно чтобы прилетали и активные и пассивные
+        object_id: props.offer.object_id,
+        expand:
+            'contact.emails,contact.phones,' +
+            'object,' +
+            'company.mainContact.phones,company.mainContact.emails,company.objects_count,company.requests_count,company.contacts_count,' +
+            'offer,' +
+            'consultant.userProfile'
+    });
+
+    if (response) relatedOffers.value = response.data;
+    if (withLoading) relationsIsLoading.value = false;
+};
+
+const searchBlockOffers = async () => {
+    blocksIsLoading.value = true;
 
     const response = await api.offers.search({
         type_id: [1],
         status: 3, // Нужно чтобы прилетали и активные и пассивные
-        object_id: props.offer.object_id
+        object_id: props.offer.object_id,
+        parent_id: props.offer.original_id
     });
 
-    if (response) miniOffers.value = response.data;
-    if (withLoading) isLoading.value = false;
+    if (response) blockOffers.value = response.data;
+    blocksIsLoading.value = false;
 };
-const handleAvitoToggle = async () => {
-    await searchMiniOffers();
-};
-const toggleDescriptionVisible = () => {
-    if (dropdownIsOpen.value) {
-        miniOffers.value = [];
-        dropdownIsOpen.value = false;
+
+const openRelations = type => {
+    if (currentRelationTab.value === type) {
+        relationDropdownIsOpen.value = false;
+        currentRelationTab.value = null;
         return;
     }
 
-    dropdownIsOpen.value = true;
-    searchMiniOffers(true);
+    relatedOffers.value = [];
+    relationDropdownIsOpen.value = true;
+    currentRelationTab.value = type;
+    searchRelatedOffers(type, true);
 };
 
-const openInChat = () => {
-    $openMessengerChat({
-        companyID: props.offer.company_id,
-        objectID: props.offer.object_id
-    });
+const showBlocks = () => {
+    if (blocksDropdownIsOpen.value) {
+        blocksDropdownIsOpen.value = false;
+        blockOffers.value = [];
+        return;
+    }
+
+    blocksDropdownIsOpen.value = true;
+    searchBlockOffers();
 };
+
+const openInChat = () =>
+    openChat(props.offer.company_id, props.offer.object_id, messenger.dialogTypes.OBJECT);
+
+const openSurvey = () => {};
 
 const openPDF = () => {
     window.open(
-        $url.pdf(
+        getLinkPDF(
             {
                 type_id: 2,
                 offer_id: props.offer.original_id,

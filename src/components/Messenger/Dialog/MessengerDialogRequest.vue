@@ -113,7 +113,7 @@ const props = defineProps({
 
 const store = useStore();
 
-const isDisabled = computed(() => store.getters.THIS_USER.id !== props.model.agent_id);
+const isDisabled = computed(() => store.getters.THIS_USER.id !== props.model.consultant_id);
 const isActive = computed(() => props.model.status === requestOptions.statusStatement.ACTIVE);
 const hasActivity = computed(() => {
     return (

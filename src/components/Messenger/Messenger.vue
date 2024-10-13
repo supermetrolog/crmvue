@@ -11,6 +11,7 @@
             <MessengerAttachment ref="attachments" />
             <FormModalChatMemberLastCall />
             <MessengerTaskPreview />
+            <FormModalMessage />
         </teleport>
         <MessengerBar @select="selectTab" :current="currentTab" />
         <div v-if="isActive" ref="body" class="messenger__content">
@@ -44,6 +45,7 @@ import {
 import { useNotify } from '@/utils/useNotify.js';
 import { messenger } from '@/const/messenger.js';
 import MessengerTaskPreview from '@/components/Messenger/MessengerTaskPreview.vue';
+import FormModalMessage from '@/components/Forms/FormModalMessage.vue';
 
 const store = useStore();
 const notify = useNotify();

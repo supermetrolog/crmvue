@@ -82,9 +82,7 @@ const getInitialState = () => ({
 
     loadingChat: false,
     loadingAside: false,
-    loadingPanel: false,
-
-    countersInterval: null
+    loadingPanel: false
 });
 
 const Messenger = {
@@ -290,9 +288,6 @@ const Messenger = {
             clearInterval(state.countersInterval);
             state.countersInterval = null;
         },
-        setCountersInterval(state, interval) {
-            state.countersInterval = interval;
-        },
         setTags(state, tags) {
             state.tags = tags;
         },
@@ -410,17 +405,6 @@ const Messenger = {
         }
     },
     actions: {
-        async setCountersUpdater({ state, dispatch, commit }) {
-            if (state.countersInterval !== null) commit('clearCountersInterval');
-
-            dispatch('updateCounters');
-            commit(
-                'setCountersInterval',
-                setInterval(() => {
-                    dispatch('updateCounters');
-                }, 60000)
-            );
-        },
         async updateCounters({ rootGetters, commit }) {
             const response = await Promise.allSettled([
                 api.messenger.getStatistics([rootGetters.THIS_USER?.chat_member_id], ['object']),
@@ -602,7 +586,7 @@ const Messenger = {
             const message = state.newMessage.replaceAll('\n', '<br />');
 
             const response = await api.messenger.sendMessage(state.currentPanelDialogID, {
-                message,
+                message: message.length ? message : null,
                 contact_ids: state.currentRecipient ? [state.currentRecipient.id] : [],
                 ...options
             });
@@ -624,12 +608,13 @@ const Messenger = {
         },
         async updateMessage(
             { commit, state },
-            { id, message = null, tag = null, contact = null, files = [], fileList = [] }
+            { id, message = null, tag = null, contact = null, files = [], currentFiles = [] }
         ) {
             const payload = {
                 id,
                 message,
-                files: files.concat(fileList),
+                files: files,
+                current_files: currentFiles.map(element => element.id),
                 tag_ids: tag ? [tag] : [],
                 contact_ids: contact ? [contact.id] : []
             };

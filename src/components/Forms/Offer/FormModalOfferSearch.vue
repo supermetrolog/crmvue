@@ -9,7 +9,7 @@
             <div class="row mb-2">
                 <div class="col-12 col-md-8">
                     <Input
-                        v-model="form.all"
+                        v-model="querySearch"
                         @keydown.enter="onSubmit"
                         label="Поиск"
                         placeholder="ID, адрес, собственник, телефон, ФИО"
@@ -36,6 +36,7 @@
                     v-model="form.agent_id"
                     label="Консультант"
                     class="col-12 col-md-4"
+                    resolve-on-load
                     :options="
                         async () => {
                             return await FETCH_CONSULTANT_LIST();
@@ -338,6 +339,7 @@ import { useStore } from 'vuex';
 import { helpers, minValue } from '@vuelidate/validators';
 import { realFloorTypeOptions } from '@/const/options/floor.options.js';
 import SwitchSlider from '@/components/common/Forms/SwitchSlider.vue';
+import { useQuerySearch } from '@/composables/useQuerySearch.js';
 
 const emit = defineEmits(['close', 'search', 'reset']);
 
@@ -407,6 +409,8 @@ const store = useStore();
 
 let timeout = null;
 const form = reactive({});
+
+const { querySearch } = useQuerySearch();
 
 const formCeilingHeightValidators = computed(() =>
     ceilingHeightValidators(form.rangeMaxCeilingHeight)

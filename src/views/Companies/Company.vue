@@ -108,17 +108,18 @@ import Timeline from '@/components/Timeline/Timeline.vue';
 import CompanyBoxServices from '@/components/Company/Box/CompanyBoxServices.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
-import { computed, inject, onBeforeMount, onUnmounted, provide, ref, shallowRef, watch } from 'vue';
+import { computed, onBeforeMount, onUnmounted, provide, ref, shallowRef, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useMessenger } from '@/components/Messenger/useMessenger.js';
 
 provide('openContact', openContact);
 provide('createContactComment', createContactComment);
-const $openMessengerChat = inject('$openMessengerChat');
 
 const store = useStore();
 const route = useRoute();
 const router = useRouter();
 const { confirm } = useConfirm();
+const { openChatByCompanyId } = useMessenger();
 
 const companyIsLoading = shallowRef(false);
 const requestsIsLoading = shallowRef(false);
@@ -262,7 +263,7 @@ const deleteContact = async () => {
 };
 
 const openInChat = () => {
-    $openMessengerChat({ companyID: COMPANY.value.id });
+    openChatByCompanyId(COMPANY.value.id);
 };
 
 onBeforeMount(() => {

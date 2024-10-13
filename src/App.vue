@@ -14,15 +14,11 @@ import { initializeDevice } from '@/composables/useMobile.js';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 
-defineOptions({
-    components: {
-        Default,
-        Login,
-        Empty,
-        Mobile,
-        Notifications
-    }
-});
+const LAYOUTS = {
+    login: Login,
+    empty: Empty,
+    default: Default
+};
 
 const route = useRoute();
 const store = useStore();
@@ -30,8 +26,10 @@ const store = useStore();
 const isMobile = initializeDevice();
 
 const layoutComponent = computed(() => {
+    if (route.meta.layout === 'login') return Login;
     if (isMobile) return Mobile;
-    return route.meta.layout;
+
+    return LAYOUTS[route.meta.layout];
 });
 
 store.dispatch('INIT');

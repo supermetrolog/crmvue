@@ -15,6 +15,7 @@
         </main>
         <Messenger v-if="THIS_USER" ref="messenger" />
         <teleport to="body">
+            <MessengerOpeningLoader :show="isOpening" />
             <Previewer ref="previewer" />
         </teleport>
         <PopupsWrapper />
@@ -29,36 +30,20 @@ import Messenger from '@/components/Messenger/Messenger.vue';
 import Previewer from '@/components/common/Previewer.vue';
 import { useStore } from 'vuex';
 import ConfettiExplosion from 'vue-confetti-explosion';
-import { computed, provide, ref } from 'vue';
+import { computed, provide, shallowRef } from 'vue';
 import { useConfetti } from '@/composables/useConfetti.js';
 import PopupsWrapper from '@/components/common/PopupsWrapper.vue';
+import { createMessengerContext } from '@/components/Messenger/useMessenger.js';
+import MessengerOpeningLoader from '@/components/Messenger/MessengerOpeningLoader.vue';
 
 const store = useStore();
 const { isVisible: confettiIsVisible, duration } = useConfetti();
 
-const messenger = ref(null);
-const previewer = ref(null);
+const messenger = shallowRef(null);
+const previewer = shallowRef(null);
 
 const THIS_USER = computed(() => store.getters.THIS_USER);
 
+const { isOpening } = createMessengerContext(messenger);
 provide('$openPreviewer', image => previewer.value.toggle(image));
-provide(
-    '$openMessengerChat',
-    async ({
-        companyID = null,
-        objectID = null,
-        chatMemberID = null,
-        modelType = 'object',
-        userID = null
-    }) => {
-        if (chatMemberID) return await messenger.value.openChatByID(chatMemberID);
-        else if (companyID !== null && objectID === null)
-            return await messenger.value.openChatByCompanyID(companyID);
-        else if (userID !== null) {
-            return await messenger.value.openChatByUserID(userID);
-        } else {
-            return await messenger.value.openChat(companyID, objectID, modelType);
-        }
-    }
-);
 </script>

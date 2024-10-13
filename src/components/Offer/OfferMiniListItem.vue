@@ -1,124 +1,148 @@
 <template>
-    <Tr :class="{ archived: offer.status === 2 }">
+    <Tr class="offer-mini-list-item">
+        <Td>
+            <div class="offer-mini-list-item__functions">
+                <HoverActionsButton
+                    @click="$emit('open-pdf')"
+                    :disabled="loading"
+                    label="Открыть PDF"
+                >
+                    <i class="fa-solid fa-file-pdf" />
+                </HoverActionsButton>
+                <HoverActionsButton
+                    @click="$emit('toggle-favorite', !isFavorite)"
+                    :disabled="loading"
+                    :active="isFavorite"
+                    :label="isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'"
+                >
+                    <i class="fa-solid fa-star" />
+                </HoverActionsButton>
+            </div>
+        </Td>
         <Td>{{ offer.visual_id }}</Td>
         <Td>{{ offer.calc_floors }} эт.</Td>
         <Td>
-            <with-unit-type class="font-weight-bold" :unit-type="unitTypes.SQUARE_METERS">
+            <WithUnitType class="font-weight-bold" :unit-type="unitTypes.SQUARE_METERS">
                 {{ offer.calc_area_general }}
-            </with-unit-type>
+            </WithUnitType>
         </Td>
         <Td>
-            <with-unit-type :unit-type="unitTypes.METERS">
-                {{
-                    $formatter.numberOrRangeNew(offer.ceiling_height_min, offer.ceiling_height_max)
-                }}
-            </with-unit-type>
+            <WithUnitType :unit-type="unitTypes.METERS">
+                {{ ceilingHeight }}
+            </WithUnitType>
         </Td>
-        <Td>{{ $formatter.text().ucFirst(offer.floor_type) }}</Td>
+        <Td>{{ floorType }}</Td>
         <Td>
             <p>{{ offer.gate_num }} шт./{{ offer.gate_type }}</p>
         </Td>
         <Td>
-            <p>{{ offer.heated ? 'Теплый' : 'Холодный' }}</p>
-            <with-unit-type
-                v-if="offer.temperature_min && offer.temperature_max"
-                :unit-type="unitTypes.CELCIUS"
-            >
-                {{ $formatter.numberOrRangeNew(offer.temperature_min, offer.temperature_max) }}
-            </with-unit-type>
-            <p v-else>—</p>
+            <div class="d-flex">
+                <span>{{ offer.heated ? 'Теплый' : 'Холодный' }}</span>
+                <WithUnitType
+                    v-if="offer.temperature_min || offer.temperature_max"
+                    class="ml-1"
+                    :unit-type="unitTypes.CELCIUS"
+                >
+                    {{ offer.calc_temperature }}
+                </WithUnitType>
+            </div>
         </Td>
         <Td>
-            <with-unit-type
+            <WithUnitType
                 class="font-weight-bold"
                 :unit-type="
                     offer.deal_type === 2 ? unitTypes.RUB : unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR
                 "
             >
                 {{ offer.calc_price_general }}
-            </with-unit-type>
+            </WithUnitType>
         </Td>
         <Td>
-            <div v-if="offer.status !== 2" class="offer-mini__advertisement">
-                <i
+            <div v-if="!isPassive" class="offer-mini__advertisement">
+                <DashboardChip
                     v-if="offer.ad_cian"
-                    v-tippy="'Циан'"
-                    class="fa-solid fa-rocket icon"
-                    style="color: blue"
-                />
-                <i
+                    class="offer-mini-list-item__chip dashboard-bg-gray-l"
+                >
+                    Циан
+                </DashboardChip>
+                <DashboardChip
                     v-if="offer.ad_yandex"
-                    v-tippy="'Яндекс'"
-                    class="fa-solid fa-rocket icon"
-                    style="color: orange"
-                />
-                <i
+                    class="offer-mini-list-item__chip dashboard-bg-gray-l"
+                >
+                    Яндекс
+                </DashboardChip>
+                <DashboardChip
                     v-if="offer.ad_realtor"
-                    v-tippy="'Realtor.ru'"
-                    class="fa-solid fa-rocket icon"
-                    style="color: red"
-                />
-                <i
+                    class="offer-mini-list-item__chip dashboard-bg-gray-l"
+                >
+                    Readys.ru
+                </DashboardChip>
+                <DashboardChip
                     v-if="offer.ad_free"
-                    v-tippy="'Бесплатная'"
-                    class="fa-solid fa-rocket icon"
-                    style="color: green"
-                />
-                <Switch
-                    @change="toggleAvito"
-                    :checked="offer.ad_avito"
-                    label="Авито"
-                    :disabled="avitoIsLoading"
-                />
+                    class="offer-mini-list-item__chip dashboard-bg-gray-l"
+                >
+                    Бесплатная
+                </DashboardChip>
+                <DashboardChip class="offer-mini-list-item__chip dashboard-bg-gray-l">
+                    <div class="d-flex gap-1 align-items-center">
+                        <span>Авито</span>
+                        <Switch
+                            @change="toggleAvito"
+                            :checked="offer.ad_avito"
+                            label="Авито"
+                            :disabled="avitoIsLoading"
+                        />
+                    </div>
+                </DashboardChip>
             </div>
             <p v-else>—</p>
         </Td>
     </Tr>
 </template>
 
-<script>
+<script setup>
 import Tr from '@/components/common/Table/Tr.vue';
 import Td from '@/components/common/Table/Td.vue';
-import { mapActions } from 'vuex';
+import { useStore } from 'vuex';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
 import Switch from '@/components/common/Forms/Switch.vue';
+import { computed, shallowRef } from 'vue';
+import api from '@/api/api.js';
+import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
+import { toNumberOrRangeFormat, ucFirst } from '@/utils/formatter.js';
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 
-export default {
-    name: 'OfferMiniListItem',
-    components: {
-        Switch,
-        WithUnitType,
-        Td,
-        Tr
+const emit = defineEmits(['toggle-avito', 'open-pdf', 'toggle-favorite']);
+const props = defineProps({
+    offer: {
+        type: Object,
+        required: true
     },
-    emits: ['toggle-avito'],
-    props: {
-        offer: {
-            type: Object,
-            default: () => {}
-        }
-    },
-    data() {
-        return {
-            avitoIsLoading: false
-        };
-    },
-    computed: {
-        unitTypes() {
-            return unitTypes;
-        }
-    },
-    methods: {
-        ...mapActions(['TOGGLE_AVITO_AD']),
-        async toggleAvito() {
-            this.avitoIsLoading = true;
-
-            const status = await this.TOGGLE_AVITO_AD(this.offer.original_id);
-            if (status) this.$emit('toggle-avito');
-
-            this.avitoIsLoading = false;
-        }
+    loading: {
+        type: Boolean,
+        default: false
     }
+});
+
+const store = useStore();
+
+const avitoIsLoading = shallowRef(false);
+
+const isFavorite = computed(() => store.state.Offers.favoritesOffersCache[props.offer.original_id]);
+const ceilingHeight = computed(() =>
+    toNumberOrRangeFormat(props.offer.ceiling_height_min, props.offer.ceiling_height_max)
+);
+const isPassive = computed(() => props.offer.status === 2);
+
+const toggleAvito = async () => {
+    avitoIsLoading.value = true;
+
+    const status = await api.offers.toggleAvitoAd(props.offer.original_id);
+    if (status) emit('toggle-avito');
+
+    avitoIsLoading.value = false;
 };
+
+const floorType = ucFirst(props.offer.floor_type);
 </script>

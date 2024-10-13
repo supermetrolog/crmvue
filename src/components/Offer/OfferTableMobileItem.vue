@@ -121,7 +121,7 @@
 <script setup>
 import OfferTableItemPrice from '@/components/Offer/TableItem/OfferTableItemPrice.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
-import OfferTableItemPreview from '@/components/Offer/TableItem/OfferTableItemPreview.vue';
+import OfferTableItemPreview from '@/components/Offer/TableItem/Preview/OfferTableItemPreview.vue';
 import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
 import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
@@ -131,9 +131,10 @@ import OfferTableItemMobileAddress from '@/components/Offer/TableItem/OfferTable
 import OfferTableItemArea from '@/components/Offer/TableItem/OfferTableItemArea.vue';
 import CompanyContact from '@/components/Company/CompanyContact.vue';
 import CompanyElement from '@/components/Company/CompanyElement.vue';
-import { computed, inject } from 'vue';
+import { computed } from 'vue';
 import { useStore } from 'vuex';
 import { $generatorURL } from '@/plugins/url.js';
+import { useMessenger } from '@/components/Messenger/useMessenger.js';
 
 const emit = defineEmits(['favorite-deleted']);
 const props = defineProps({
@@ -143,8 +144,7 @@ const props = defineProps({
     }
 });
 
-const $openMessengerChat = inject('$openMessengerChat');
-
+const { openChat } = useMessenger();
 const store = useStore();
 
 const contact = computed(() => {
@@ -164,10 +164,7 @@ const toggleFavorite = async () => {
 };
 
 const openInChat = () => {
-    $openMessengerChat({
-        companyID: props.offer.company_id,
-        objectID: props.offer.object_id
-    });
+    openChat(props.offer.company_id, props.offer.object_id, 'object');
 };
 
 const openPDF = () => {

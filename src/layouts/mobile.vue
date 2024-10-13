@@ -16,44 +16,14 @@
     </div>
 </template>
 
-<script>
-import TheSideBar from '@/components/SideBar/TheSideBar.vue';
-import TheHeader from '@/components/Header/TheHeader.vue';
+<script setup>
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import Messenger from '@/components/Messenger/Messenger.vue';
 import Previewer from '@/components/common/Previewer.vue';
-import { mapGetters } from 'vuex';
-import Confirm from '@/components/common/Confirm.vue';
-import PhoneNumberPopup from '@/components/common/PhoneNumberPopup.vue';
 import TheMobileHeader from '@/components/Header/TheMobileHeader.vue';
-import TheMobileSidebar from '@/components/SideBar/TheMobileSidebar.vue';
 import PopupsWrapper from '@/components/common/PopupsWrapper.vue';
+import { provide, shallowRef } from 'vue';
 
-export default {
-    name: 'Mobile',
-    components: {
-        PopupsWrapper,
-        TheMobileSidebar,
-        TheMobileHeader,
-        PhoneNumberPopup,
-        Confirm,
-        Previewer,
-        Messenger,
-        AnimationTransition,
-        TheHeader,
-        TheSideBar
-    },
-    provide() {
-        return {
-            $openPreviewer: image => this.$refs.previewer.toggle(image),
-            $openMessengerChat: ({ companyID, objectID, chatMemberID }) => {
-                if (chatMemberID) this.$refs.messenger.openChatByID(chatMemberID);
-                else this.$refs.messenger.openChat(companyID, objectID);
-            }
-        };
-    },
-    computed: {
-        ...mapGetters(['THIS_USER'])
-    }
-};
+const previewer = shallowRef(null);
+
+provide('$openPreviewer', image => previewer.value.toggle(image));
 </script>

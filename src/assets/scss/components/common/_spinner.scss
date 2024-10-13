@@ -31,6 +31,13 @@
             width: 50px;
         }
     }
+
+    &.mini {
+        .spinner__clip {
+            height: 25px;
+            width: 25px;
+        }
+    }
 }
 
 @keyframes v-clipDelay {

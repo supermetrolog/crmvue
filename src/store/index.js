@@ -50,7 +50,6 @@ const store = createStore({
             dispatch('WEBSOCKET_STOP');
             dispatch('WEBSOCKET_RUN');
             await dispatch('REFRESH_USER');
-            dispatch('Messenger/setCountersUpdater');
         },
         async DESTROY({ dispatch, commit }) {
             const { logout } = useAuth();

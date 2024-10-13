@@ -32,14 +32,15 @@
         />
     </div>
 </template>
-<script></script>
 <script setup>
 import MessengerBarTab from '@/components/Messenger/MessengerBarTab.vue';
-import { computed } from 'vue';
+import { computed, onMounted, watch } from 'vue';
 import { useStore } from 'vuex';
 import { messenger } from '@/const/messenger.js';
 import IconWarehouse from '@/components/common/Icons/IconWarehouse.vue';
 import IconRequests from '@/components/common/Icons/IconRequests.vue';
+import { useDocumentVisibility, useIntervalFn } from '@vueuse/core';
+import { DELAY_BETWEEN_UPDATING_STATISTICS } from '@/configs/messenger.config.js';
 
 defineEmits(['select']);
 defineProps({
@@ -54,4 +55,22 @@ const store = useStore();
 const objectCounts = computed(() => store.state.Messenger.counts.objects);
 const requestCounts = computed(() => store.state.Messenger.counts.requests);
 const userCounts = computed(() => store.state.Messenger.counts.users);
+
+const statisticsInterval = useIntervalFn(() => {
+    store.dispatch('Messenger/updateCounters');
+}, DELAY_BETWEEN_UPDATING_STATISTICS);
+
+const documentVisibility = useDocumentVisibility();
+
+watch(documentVisibility, (current, prev) => {
+    if (current === 'visible' && prev === 'hidden') {
+        statisticsInterval.resume();
+    } else {
+        statisticsInterval.pause();
+    }
+});
+
+onMounted(() => {
+    store.dispatch('Messenger/updateCounters');
+});
 </script>
