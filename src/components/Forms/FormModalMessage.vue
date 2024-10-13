@@ -1,25 +1,26 @@
 <template>
     <Modal
         @close="close"
-        :show="opened"
+        :show="isVisible"
         class="modal-form-message"
         title="Редактирование сообщения"
         width="800"
     >
         <div class="messenger-chat-form">
+            <Loader v-if="isLoading" />
             <AnimationTransition :speed="0.5">
                 <MessengerChatFormAttachments
-                    v-if="form.fileList.length"
+                    v-if="form.files.length"
                     @delete="deleteLocalFile"
-                    :files="form.fileList"
+                    :files="form.files"
                     class="new-attachments"
                 />
             </AnimationTransition>
             <AnimationTransition :speed="0.5">
                 <MessengerChatFormAttachments
-                    v-if="form.files.length"
+                    v-if="form.currentFiles.length"
                     @delete="deleteFile"
-                    :files="form.files"
+                    :files="form.currentFiles"
                 />
             </AnimationTransition>
             <div class="messenger-chat-form__settings">
@@ -45,12 +46,13 @@
                 <Button
                     @click="sendMessage"
                     class="messenger-chat-form__button"
-                    :disabled="!form.message?.length"
+                    :disabled="!canBeSend"
                     success
                     icon
                 >
                     <i class="fa-solid fa-floppy-disk"></i>
                 </Button>
+                {{ form }}
                 <Button @click="close" class="messenger-chat-form__button" danger icon>
                     <i class="fa-solid fa-xmark"></i>
                 </Button>
@@ -58,9 +60,8 @@
         </div>
     </Modal>
 </template>
-<script>
+<script setup>
 import Modal from '@/components/common/Modal.vue';
-import { AsyncModalMixin } from '@/components/common/mixins';
 import MessengerChatFormCategories from '@/components/Messenger/Chat/Form/MessengerChatFormCategories.vue';
 import Button from '@/components/common/Button.vue';
 import Textarea from '@/components/common/Forms/Textarea.vue';
@@ -69,98 +70,121 @@ import Form from '@/components/common/Forms/Form.vue';
 import { cloneObject } from '@/utils/index.js';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import MessengerChatFormAttachments from '@/components/Messenger/Chat/Form/MessengerChatFormAttachments.vue';
+import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
+import { computed, inject, onUnmounted, ref, shallowRef } from 'vue';
+import { useStore } from 'vuex';
+import { MAX_FILES_COUNT } from '@/const/messenger.js';
+import Loader from '@/components/common/Loader.vue';
 
-export default {
-    name: 'FormModalMessage',
-    components: {
-        MessengerChatFormAttachments,
-        AnimationTransition,
-        MessengerChatFormRecipient,
-        MessengerChatFormCategories,
-        Modal,
-        Button,
-        Textarea,
-        Form
-    },
-    mixins: [AsyncModalMixin],
-    inject: ['$openAttachments'],
-    data() {
-        return {
-            form: {
-                id: null,
-                message: null,
-                files: [],
-                fileList: []
-            },
-            currentTag: null,
-            currentContact: null
-        };
-    },
-    watch: {
-        opened(value) {
-            if (value) {
-                this.form = {
-                    id: this.promiseProps.id,
-                    message: this.promiseProps.message,
-                    files: cloneObject(this.promiseProps.files),
-                    fileList: []
-                };
+const $openAttachments = inject('$openAttachments');
+const store = useStore();
 
-                this.currentTag = this.promiseProps.tags.length
-                    ? this.promiseProps.tags[0].id
-                    : null;
-                this.currentContact = this.promiseProps.contacts.length
-                    ? cloneObject(this.promiseProps.contacts[0])
-                    : null;
-            } else {
-                this.form = {
-                    id: null,
-                    message: null,
-                    files: [],
-                    fileList: []
-                };
+const form = ref({});
+const currentTag = ref(null);
+const currentContact = ref(null);
+const isVisible = shallowRef(false);
+const isLoading = shallowRef(false);
+const loadingFiles = ref([]);
 
-                this.currentContact = null;
-                this.currentTag = null;
-            }
-        }
-    },
-    methods: {
-        keyHandler(event) {
-            if (event.shiftKey) this.form.message += '\n';
-            else this.sendMessage();
-        },
-        async sendMessage() {
-            this.form.message = this.form.message.replace(/(\n)+$/g, '');
+const canBeSend = computed(() => {
+    return (
+        (form.value.message?.length > 0 ||
+            form.value.currentFiles.length > 0 ||
+            form.value.files.length > 0) &&
+        form.value.files.length + form.value.currentFiles.length <= MAX_FILES_COUNT &&
+        loadingFiles.value.length === 0 &&
+        !isLoading.value
+    );
+});
 
-            if (!this.form.message?.length && !this.form.message.length) return;
+const {
+    onPopupShowed,
+    destroy: destroyPopup,
+    submit: _submit,
+    cancel,
+    props
+} = useAsyncPopup('messageUpdater');
 
-            const sended = await this.$store.dispatch('Messenger/updateMessage', {
-                ...this.form,
-                contact: this.currentContact,
-                tag: this.currentTag
-            });
+const propsToForm = () => {
+    form.value = {
+        id: props.value.id,
+        message: props.value.message,
+        currentFiles: cloneObject(props.value.files),
+        files: []
+    };
 
-            if (sended) {
-                this.resolve();
-            } else {
-                this.close();
-            }
-            ``;
-        },
-        async attachFile() {
-            const files = await this.$openAttachments();
-            if (files) {
-                if (files.files?.length) this.form.files.push(...files.files);
-                if (files.fileList?.length) this.form.fileList.push(...files.fileList);
-            }
-        },
-        deleteFile(id) {
-            this.form.files.splice(id, 1);
-        },
-        deleteLocalFile(id) {
-            this.form.fileList.splice(id, 1);
-        }
-    }
+    currentTag.value = props.value.tags.length ? props.value.tags[0].id : null;
+    currentContact.value = props.value.contacts.length
+        ? cloneObject(props.value.contacts[0])
+        : null;
+};
+
+const clearForm = () => {
+    form.value = {};
+    currentContact.value = null;
+    currentTag.value = null;
+};
+
+onPopupShowed(() => {
+    propsToForm();
+    isVisible.value = true;
+});
+
+const formToPayload = () => {
+    return {};
+};
+
+const submit = () => {
+    _submit(formToPayload());
+    isVisible.value = false;
+};
+
+const close = () => {
+    isVisible.value = false;
+    cancel();
+    clearForm();
+};
+
+onUnmounted(() => {
+    destroyPopup();
+});
+
+const deleteLocalFile = id => {
+    form.value.files.splice(id, 1);
+};
+
+const deleteFile = id => {
+    form.value.currentFiles.splice(id, 1);
+};
+
+const attachFile = async () => {
+    const files = await $openAttachments();
+    console.log(files);
+    if (files?.fileList?.length) form.value.files.push(...files.fileList);
+};
+
+const sendMessage = async () => {
+    const message = form.value.message.replace(/(\n)+$/g, '');
+
+    if (!canBeSend.value) return;
+
+    isLoading.value = true;
+
+    const send = await store.dispatch('Messenger/updateMessage', {
+        ...form.value,
+        message,
+        contact: currentContact.value,
+        tag: currentTag.value
+    });
+
+    isLoading.value = false;
+
+    if (send) submit(send);
+    else cancel();
+};
+
+const keyHandler = event => {
+    if (event.shiftKey) form.value.message += '\n';
+    else sendMessage();
 };
 </script>

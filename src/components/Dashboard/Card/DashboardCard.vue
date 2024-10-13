@@ -15,19 +15,15 @@
         </div>
     </div>
 </template>
-
-<script>
-export default {
-    name: 'DashboardCard',
-    props: {
-        title: {
-            type: String,
-            default: null
-        },
-        viewAllLink: {
-            type: String,
-            default: null
-        }
+<script setup>
+defineProps({
+    title: {
+        type: String,
+        default: null
+    },
+    viewAllLink: {
+        type: String,
+        default: null
     }
-};
+});
 </script>
