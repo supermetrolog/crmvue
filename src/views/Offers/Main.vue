@@ -277,12 +277,9 @@ const humanizeFilter = (key, value) => {
 const searchFavoritesOffers = () => store.dispatch('SEARCH_FAVORITES_OFFERS');
 
 const getOffers = async (withLoader = true) => {
-    console.log('get offers fire, query:', { ...route.query });
     isLoading.value = withLoader;
 
     const query = { ...route.query };
-
-    console.log('fetch, query:', query);
 
     query.type_id = [2, 3];
     query.expand =

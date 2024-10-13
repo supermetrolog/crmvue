@@ -1,4 +1,4 @@
-import { tryOnScopeDispose, useDebounceFn } from '@vueuse/core';
+import { tryOnBeforeMount, tryOnScopeDispose, useDebounceFn } from '@vueuse/core';
 import { shallowRef, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -22,6 +22,9 @@ export function useQuerySearch(key = 'all', delay = 500) {
     const stop = watch(querySearch, debouncedQuerySearchHandler);
 
     tryOnScopeDispose(stop);
+    tryOnBeforeMount(() => {
+        if (route.query[key]) querySearch.value = route.query[key];
+    });
 
     return {
         querySearch
