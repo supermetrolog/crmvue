@@ -69,7 +69,7 @@ import MessengerChatMessageActions from '@/components/Messenger/Chat/Message/Mes
 import MessengerChatMessageAdditions from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditions.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import MessengerChatMessageAttachments from '@/components/Messenger/Chat/Message/MessengerChatMessageAttachments.vue';
-import { computed, inject, provide, shallowRef } from 'vue';
+import { computed, provide, shallowRef } from 'vue';
 import { useNotify } from '@/utils/useNotify.js';
 import { ucFirst } from '@/utils/formatter.js';
 import { useConfirm } from '@/composables/useConfirm.js';
@@ -77,12 +77,12 @@ import api from '@/api/api.js';
 import Loader from '@/components/common/Loader.vue';
 import MessengerChatMessageReplyInfo from '@/components/Messenger/Chat/Message/MessengerChatMessageReplyInfo.vue';
 import MessengerChatMessageReply from '@/components/Messenger/Chat/Message/MessengerChatMessageReply.vue';
+import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 
 const store = useStore();
 const notify = useNotify();
 const { confirm } = useConfirm();
-
-const $messageUpdate = inject('$messageUpdate');
+const { show: showMessageUpdateForm } = useAsyncPopup('messageUpdater');
 
 const emit = defineEmits(['deleted', 'reply', 'cancel-reply']);
 const props = defineProps({
@@ -158,7 +158,7 @@ const pinMessage = async () => {
     }
 };
 const editMessage = async () => {
-    const updated = await $messageUpdate(props.message);
+    const updated = await showMessageUpdateForm(props.message);
     if (updated) notify.success('Сообщение успешно обновлено');
 };
 const pinToObject = async () => {

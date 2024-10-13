@@ -66,7 +66,9 @@ const props = defineProps({
 
 const store = useStore();
 
-const isDisabled = computed(() => props.model.object.consultant_id !== store.getters.THIS_USER.id);
+const isDisabled = computed(
+    () => props.model.object.agent_id !== store.getters.THIS_USER.user_id_old
+);
 const dealType = computed(() => objectOptions.dealTypeString[props.model.type]);
 const updatedAt = computed(() => props.model.object.updated_at * 1000);
 const companyName = computed(() =>

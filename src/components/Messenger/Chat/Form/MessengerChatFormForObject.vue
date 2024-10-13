@@ -92,7 +92,7 @@ const loadingFiles = ref([]);
 
 const canBeSend = computed(() => {
     return (
-        message.value.length &&
+        (message.value.length > 0 || currentFiles.value.length > 0) &&
         currentFiles.value.length <= MAX_FILES_COUNT &&
         loadingFiles.value.length === 0 &&
         !isLoading.value
@@ -137,7 +137,7 @@ const sendMessage = async () => {
 
     message.value = message.value.replace(/(\n)+$/g, '');
 
-    if (!message.value.length) return;
+    if (!canBeSend.value) return;
 
     isLoading.value = true;
     message.value = message.value.replace(/(https?\S*)/g, '<a href="$1" target="_blank">$1</a>');
