@@ -79,6 +79,11 @@ const contractTypeStatement = {
     EXCLUSIVE: 2
 };
 
+const contractType = {
+    1: 'Обычный контракт',
+    2: 'Эксклюзивный контракт'
+};
+
 const builtToSuitPlanStatement = {
     EXIST: 1,
     NOT_EXIST: 2
@@ -126,5 +131,6 @@ export const dealOptions = {
     type,
     typeStatement,
     status,
-    statusStatement
+    statusStatement,
+    contractType
 };

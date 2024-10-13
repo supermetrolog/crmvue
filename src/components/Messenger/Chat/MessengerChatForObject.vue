@@ -17,8 +17,6 @@
             <MessengerSchedule ref="schedule" />
             <FormModalTaskStatus ref="taskStatusEditor" />
             <FormModalMessageAlert />
-            <FormModalMessageReminder />
-            <FormModalMessage ref="messageUpdate" />
         </teleport>
     </div>
 </template>
@@ -32,8 +30,6 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import MessengerSchedule from '@/components/Messenger/Schedule/MessengerSchedule.vue';
 import MessengerChatSettings from '@/components/Messenger/Chat/Settings/MessengerChatSettings.vue';
 import FormModalMessageAlert from '@/components/Forms/FormModalMessageAlert.vue';
-import FormModalMessageReminder from '@/components/Forms/FormModalMessageReminder.vue';
-import FormModalMessage from '@/components/Forms/FormModalMessage.vue';
 import FormModalTaskStatus from '@/components/Forms/FormModalTaskStatus.vue';
 import api from '@/api/api.js';
 import { computed, provide, ref, shallowRef, watch } from 'vue';
@@ -54,17 +50,14 @@ const notify = useNotify();
 
 const { show: showTaskCreator } = useAsyncPopup('taskCreator');
 const { show: showAlertCreator } = useAsyncPopup('alertCreator');
-const { show: showReminderCreator } = useAsyncPopup('reminderCreator');
 
 const creators = {
     task: showTaskCreator,
-    alert: showAlertCreator,
-    reminder: showReminderCreator
+    alert: showAlertCreator
 };
 
 const schedule = ref(null);
 const taskStatusEditor = ref(null);
-const messageUpdate = ref(null);
 const quiz = ref(null);
 const quizHelper = ref(null);
 const chatSettings = ref(null);
@@ -141,7 +134,6 @@ provide('$openSchedule', async () => await schedule.value.open());
 provide('$toggleQuiz', () => quiz.value.toggle());
 provide('$toggleQuizHelper', () => quizHelper.value.toggle());
 provide('$toggleSettings', () => chatSettings.value.toggle());
-provide('$messageUpdate', props => messageUpdate.value.open(props));
 
 const currentChat = computed(() => store.state.Messenger.currentChat);
 const currentPanel = computed(() => store.state.Messenger.currentPanel);

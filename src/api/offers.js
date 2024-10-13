@@ -1,121 +1,45 @@
 import axios from 'axios';
-import { setRequestError } from '@/api/helpers/setRequestError.js';
-import { SuccessHandler } from '@/api/helpers/successHandler.js';
+import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData.js';
+import { responseToData } from '@/api/helpers/responseToData.js';
+import { responseHasStatus } from '@/api/helpers/responseHasStatus.js';
+
+const URL = 'oldDb/objects';
 
 export default {
-    async search(query) {
-        query = new URLSearchParams(query).toString();
-        let url = 'oldDb/objects/offers?' + query;
-        let data = false;
-        await axios
-            .get(url)
-            .then(Response => {
-                data = {};
-                data.data = SuccessHandler.getData(Response);
-                data.pagination = SuccessHandler.getPaginationData(Response);
-            })
-            .catch(e => setRequestError(e));
-        return data;
+    async search(params) {
+        const response = await axios.get(`${URL}/offers`, { params });
+        return responseToPaginatedData(response);
     },
-    async searchCount(query) {
-        query = new URLSearchParams(query).toString();
-        let url = 'oldDb/objects/offers-count?' + query;
-        let data = false;
-        await axios
-            .get(url)
-            .then(Response => {
-                data = SuccessHandler.getData(Response);
-            })
-            .catch(e => setRequestError(e));
-        return data;
+    async searchCount(params) {
+        const response = await axios.get(`${URL}/offers-count`, { params });
+        return responseToData(response);
     },
-    async searchMap(query) {
-        query = new URLSearchParams(query).toString();
-        let url = 'oldDb/objects/offers-map?' + query;
-        let data = false;
-        await axios
-            .get(url)
-            .then(Response => {
-                data = {};
-                data.data = SuccessHandler.getData(Response);
-                data.pagination = SuccessHandler.getPaginationData(Response);
-            })
-            .catch(e => setRequestError(e));
-        return data;
+    async searchMap(params) {
+        const response = await axios.get(`${URL}/offers-map`, { params });
+        return responseToPaginatedData(response);
     },
-
-    async searchMapCount(query) {
-        query = new URLSearchParams(query).toString();
-        let url = 'oldDb/objects/offers-map-count?' + query;
-        let data = false;
-        await axios
-            .get(url)
-            .then(Response => {
-                data = SuccessHandler.getData(Response);
-            })
-            .catch(e => setRequestError(e));
-        return data;
+    async searchMapCount(params) {
+        const response = await axios.get(`${URL}/offers-map-count`, { params });
+        return responseToData(response);
     },
-    async searchFavoriteOffers(query) {
-        query = new URLSearchParams(query).toString();
-        let url = 'favorite-offers?' + query;
-        let data = false;
-        await axios
-            .get(url)
-            .then(Response => {
-                data = {};
-                data.data = SuccessHandler.getData(Response);
-                data.pagination = SuccessHandler.getPaginationData(Response);
-            })
-            .catch(e => setRequestError(e));
-        return data;
+    async searchFavoriteOffers(params) {
+        const response = await axios.get('favorite-offers', { params });
+        return responseToPaginatedData(response);
     },
-    async createFavoriteOffer(postData) {
-        let url = 'favorite-offers';
-        let data = false;
-        await axios
-            .post(url, postData)
-            .then(Response => {
-                data = SuccessHandler.getData(Response);
-            })
-            .catch(e => setRequestError(e));
-        return data;
+    async createFavoriteOffer(payload) {
+        const response = await axios.post('favorite-offers', payload);
+        return responseToData(response);
     },
     async deleteFavoriteOffer(id) {
-        let url = 'favorite-offers/' + id;
-        let data = false;
-        await axios
-            .delete(url)
-            .then(Response => {
-                data = SuccessHandler.getData(Response);
-            })
-            .catch(e => setRequestError(e));
-        return data;
+        const response = await axios.delete(`favorite-offers/${id}`);
+        return responseToData(response);
     },
-
     async toggleAvitoAd(id) {
-        let url = `oldDb/objects/toggle-avito-ad/${id}`;
-        try {
-            const res = await axios.post(url, {});
-            return res.status;
-        } catch (e) {
-            setRequestError(e);
-        }
+        const response = await axios.post(`${URL}/toggle-avito-ad/${id}`);
+        return responseHasStatus(response, 200);
     },
-
-    async getOffer(id) {
-        let url = 'oldDb/objects/offers/' + id;
-
-        let data = false;
-
-        await axios
-            .get(url)
-            .then(Response => {
-                data = {};
-                data = SuccessHandler.getData(Response);
-            })
-            .catch(e => setRequestError(e));
-
-        return data;
+    async get(id) {
+        const response = await axios.get(`${URL}/offers/${id}`);
+        return responseToData(response);
     }
 };

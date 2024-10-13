@@ -99,7 +99,7 @@ import CompanyTableDropdown from '@/components/Company/Table/CompanyTableDropdow
 import Tr from '@/components/common/Table/Tr.vue';
 import Td from '@/components/common/Table/Td.vue';
 import { useStore } from 'vuex';
-import { computed, inject } from 'vue';
+import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { ActivityProfileList, CompanyCategories, PassiveWhy } from '@/const/const.js';
 import Rating from '@/components/common/Rating.vue';
@@ -108,16 +108,16 @@ import CompanyContact from '@/components/Company/CompanyContact.vue';
 import Avatar from '@/components/common/Avatar.vue';
 import TableDateBlock from '@/components/common/Table/TableDateBlock.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
+import { useMessenger } from '@/components/Messenger/useMessenger.js';
 
 const store = useStore();
 const router = useRouter();
+const { openChatByCompanyId } = useMessenger();
 
 const props = defineProps({
     company: { type: Object, required: true },
     odd: { type: Boolean, default: false }
 });
-
-const $openMessengerChat = inject('$openMessengerChat');
 
 const activeRequests = computed(() => props.company.requests.filter(({ status }) => status === 1));
 const archiveRequests = computed(() => props.company.requests.filter(({ status }) => status === 2));
@@ -151,6 +151,6 @@ const openTimeline = requestID => {
 };
 
 const openInChat = () => {
-    $openMessengerChat({ companyID: props.company.id });
+    openChatByCompanyId(props.company.id);
 };
 </script>

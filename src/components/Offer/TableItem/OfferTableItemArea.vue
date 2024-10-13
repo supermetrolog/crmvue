@@ -23,6 +23,14 @@
                 <span> - технич.</span>
             </p>
         </div>
+        <div
+            v-if="offer.blocks?.length > 1"
+            v-tippy="'Нажмите, чтобы просмотреть блоки'"
+            @click="$emit('show-blocks')"
+            class="offer-table-item-area__label mt-1"
+        >
+            *собрано из блоков
+        </div>
     </div>
 </template>
 
@@ -30,6 +38,7 @@
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
 
+defineEmits(['show-blocks']);
 defineProps({
     offer: {
         type: Object,

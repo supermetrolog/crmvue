@@ -80,7 +80,7 @@ import PaginationClassic from '@/components/common/Pagination/PaginationClassic.
 import CompanyRequestTable from '@/components/Company/Request/CompanyRequestTable.vue';
 import CompanyRequestTableMobile from '@/components/Company/Request/CompanyRequestTableMobile.vue';
 import RefreshButton from '@/components/common/RefreshButton.vue';
-import { computed, inject, ref, shallowRef } from 'vue';
+import { computed, ref, shallowRef } from 'vue';
 import { useTableContent } from '@/composables/useTableContent.js';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { useRoute } from 'vue-router';
@@ -93,12 +93,13 @@ import FormCompanyRequest from '@/components/Forms/Company/FormCompanyRequest.vu
 import FormModalCompanyRequestDisable from '@/components/Forms/Company/FormModalCompanyRequestDisable.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
 import DashboardCardRequestView from '@/components/Dashboard/Card/Request/DashboardCardRequestView.vue';
+import { useMessenger } from '@/components/Messenger/useMessenger.js';
 
 const store = useStore();
 const route = useRoute();
-
 const { isLoading, isLoadingOriginal } = useDelayedLoader();
 const { confirm } = useConfirm();
+const { openChat } = useMessenger();
 
 const isCardView = shallowRef(false);
 const firstPagination = ref(null);
@@ -175,14 +176,8 @@ const userCanEdit = request => {
     );
 };
 
-const $openMessengerChat = inject('$openMessengerChat');
-
 const openInChat = request => {
-    $openMessengerChat({
-        companyID: request.company_id,
-        modelType: 'request',
-        objectID: request.id
-    });
+    openChat(request.company_id, request.id, 'request');
 };
 
 const toChatFromView = () => {

@@ -2,8 +2,8 @@
     <div class="messenger-chat-message__attachments">
         <div class="messenger-chat-message__photos">
             <File
-                v-for="(file, key) in photos"
-                :key="key"
+                v-for="file in photos"
+                :key="file.id"
                 :file="file"
                 read-only
                 class="messenger-chat-message__photo"
@@ -11,8 +11,8 @@
         </div>
         <div class="messenger-chat-message__files mt-2">
             <File
-                v-for="(file, key) in docs"
-                :key="key"
+                v-for="file in docs"
+                :key="file.id"
                 :file="file"
                 read-only
                 class="messenger-chat-message__attachment"

@@ -20,11 +20,12 @@ import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/Dash
 import DashboardTasksItemSkeleton from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemSkeleton.vue';
 import { useStore } from 'vuex';
 import EmptyData from '@/components/common/EmptyData.vue';
-import { computed, h, inject, ref, shallowRef, watch } from 'vue';
+import { computed, h, ref, shallowRef, watch } from 'vue';
 import DashboardTableTasksItemPreview from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemPreview.vue';
 import { useTippy } from 'vue-tippy';
 import api from '@/api/api.js';
 import { toDateFormat } from '@/utils/formatter.js';
+import { useMessenger } from '@/components/Messenger/useMessenger.js';
 
 const emit = defineEmits(['task-updated']);
 const props = defineProps({
@@ -37,8 +38,8 @@ const props = defineProps({
         default: false
     }
 });
-const $openMessengerChat = inject('$openMessengerChat');
 
+const { openMessenger } = useMessenger();
 const store = useStore();
 
 const lastElementsCount = shallowRef(5);
@@ -112,7 +113,7 @@ const { show, setProps, hide } = useTippy(() => document.body, {
                 if (currentTaskIndex !== -1) Object.assign(props.tasks[currentTaskIndex], task);
             },
             async onToChat(payload) {
-                const opened = await $openMessengerChat(payload);
+                const opened = await openMessenger(payload);
                 if (opened) hide();
             },
             onRead() {

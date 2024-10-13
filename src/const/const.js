@@ -532,3 +532,36 @@ export const weekdays = [
     'Суббота',
     'Воскресение'
 ];
+
+/**
+ * Алиасы для конвертации фильтров в человекопонятное название
+ */
+export const filtersAliases = {
+    polygon: 'Область на карте',
+    rangeMaxArea: 'До:',
+    rangeMinArea: 'От:',
+    rangeMaxDistanceFromMKAD: 'От МКАД:',
+    rangeMinElectricity: 'От:',
+    rangeMaxPricePerFloor: 'До:',
+    rangeMinPricePerFloor: 'От:',
+    rangeMinCeilingHeight: 'Потолки От:',
+    rangeMaxCeilingHeight: 'Потолки До:',
+    class: 'Класс:',
+    heated: 'Отопление:',
+    water: 'Вода',
+    gas: 'Газ',
+    steam: 'Пар',
+    sewage_central: 'КНС',
+    is_fake: 'Показать фейковые',
+    racks: 'Стеллажи',
+    railway: 'Ж/Д ветка',
+    has_cranes: 'Краны',
+    firstFloorOnly: 'Только 1 этаж',
+    ad_realtor: 'Realtor.ru:',
+    ad_cian: 'Циан:',
+    ad_yandex: 'Яндекс:',
+    ad_free: 'Бесплатно:',
+    ad_avito: 'Авито:',
+    favorites: 'Избранные',
+    sort: 'Сортировка:'
+};

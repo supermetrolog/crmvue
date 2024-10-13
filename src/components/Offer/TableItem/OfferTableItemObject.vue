@@ -62,17 +62,19 @@ import Tr from '@/components/common/Table/Tr.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import TableDateBlock from '@/components/common/Table/TableDateBlock.vue';
-import { computed, inject } from 'vue';
+import { computed } from 'vue';
 import OfferTableItemObjectPreview from '@/components/Offer/TableItem/OfferTableItemObjectPreview.vue';
 import OfferTableItemObjectArea from '@/components/Offer/TableItem/OfferTableItemObjectArea.vue';
+import { useMessenger } from '@/components/Messenger/useMessenger.js';
 
-const $openMessengerChat = inject('$openMessengerChat');
 const props = defineProps({
     object: {
         type: Object,
         required: true
     }
 });
+
+const { openChat } = useMessenger();
 
 const isPassive = computed(() => props.object.status !== 1);
 
@@ -81,9 +83,6 @@ const updatedAt = computed(() => {
 });
 
 const openInChat = () => {
-    $openMessengerChat({
-        companyID: props.object.company_id,
-        objectID: props.object.id
-    });
+    openChat(props.object.company_id, props.object.id, 'object');
 };
 </script>

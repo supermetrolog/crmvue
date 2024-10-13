@@ -3,26 +3,23 @@
         <div class="container-fluid">
             <div class="row">
                 <teleport to="body">
-                    <FormComplex
-                        v-if="complexFormModalVisible"
-                        @close="toggleComplexFormModalVisible"
-                    />
+                    <FormComplex v-if="formIsVisible" @close="formIsVisible = false" />
                 </teleport>
                 <FormModalOfferSearch
-                    v-if="searchFormModalVisible"
-                    @close="toggleSearchFormModalVisible"
+                    v-if="searchingIsVisible"
+                    @close="searchingIsVisible = false"
                 />
                 <FormOfferSearchExternal
-                    @openFilters="toggleSearchFormModalVisible"
+                    @openFilters="searchingIsVisible = true"
                     class="col-12"
-                    :offers-count="OFFERS_PAGINATION ? OFFERS_PAGINATION.totalCount : 0"
-                    :objects-count="OFFERS_PAGINATION ? OFFERS_PAGINATION.totalCount : 0"
+                    :offers-count="offersPagination ? offersPagination.totalCount : 0"
+                    :objects-count="offersPagination ? offersPagination.totalCount : 0"
                 />
                 <div class="col-12 my-2">
                     <div class="company-table__filters">
                         <Chip
-                            v-for="(item, index) in selectedFilterList"
-                            :key="index"
+                            v-for="item in selectedFilterList"
+                            :key="item.value"
                             @delete="removeFilter(item.value)"
                             :value="item.value"
                             :html="item.label"
@@ -30,12 +27,12 @@
                     </div>
                 </div>
             </div>
-            <div v-if="OFFERS_PAGINATION" class="row justify-content-between">
+            <div v-if="offersPagination" class="row justify-content-between">
                 <PaginationClassic
-                    ref="firstPagination"
+                    ref="firstPaginationEl"
                     @next="next"
                     class="col-12 col-md-6"
-                    :pagination="OFFERS_PAGINATION"
+                    :pagination="offersPagination"
                 />
                 <div class="company-table__actions col-12 col-md-4">
                     <Switch
@@ -44,10 +41,10 @@
                         false-title="Таблица"
                         true-title="Карточки"
                     />
-                    <Button @click="toggleComplexFormModalVisible" success :disabled="loader">
+                    <Button @click="searchingIsVisible = true" success :disabled="isLoading">
                         Создать комплекс
                     </Button>
-                    <RefreshButton @click="getOffers(true)" :disabled="loader" />
+                    <RefreshButton @click="getOffers(true)" :disabled="isLoading" />
                 </div>
             </div>
             <div class="row">
@@ -55,22 +52,22 @@
                     <AnimationTransition :speed="0.2">
                         <component
                             :is="currentViewComponentName"
-                            v-if="OFFERS.length"
+                            v-if="offers.length"
                             @favorite-deleted="deleteFavoriteOffer"
-                            :offers="OFFERS"
-                            :loader="loader"
+                            :offers="offers"
+                            :loader="isLoading"
                         />
                         <template v-else>
-                            <Loader v-if="loader" />
+                            <Loader v-if="isLoading" />
                             <EmptyData v-else>Ничего не найдено</EmptyData>
                         </template>
                     </AnimationTransition>
                 </div>
                 <div class="col-12">
                     <PaginationClassic
-                        v-if="OFFERS_PAGINATION"
-                        @next="nextAndScrollToStart"
-                        :pagination="OFFERS_PAGINATION"
+                        v-if="offersPagination"
+                        @next="nextWithScroll"
+                        :pagination="offersPagination"
                     />
                 </div>
             </div>
@@ -78,13 +75,10 @@
     </section>
 </template>
 
-<script>
-import { mapActions, mapGetters } from 'vuex';
-import { TableContentMixin } from '@/components/common/mixins.js';
+<script setup>
+import { useStore } from 'vuex';
 import RefreshButton from '@/components/common/RefreshButton.vue';
-import FilterMixin from './mixins.js';
 import FormModalOfferSearch from '@/components/Forms/Offer/FormModalOfferSearch.vue';
-import FormOfferSearchExternal from '@/components/Forms/Offer/FormOfferSearchExternal.vue';
 import PaginationClassic from '@/components/common/Pagination/PaginationClassic.vue';
 import Loader from '@/components/common/Loader.vue';
 import OfferTableMobile from '@/components/Offer/OfferTableMobile.vue';
@@ -95,88 +89,261 @@ import Button from '@/components/common/Button.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import Switch from '@/components/common/Forms/Switch.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import { useMobile } from '@/composables/useMobile.js';
+import { computed, onBeforeMount, shallowRef } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useTableContent } from '@/composables/useTableContent.js';
+import { ActivePassiveFUCK, filtersAliases, GateTypeList, YesNo } from '@/const/const.js';
+import { dealOptions } from '@/const/options/deal.options.js';
+import { objectOptions } from '@/const/options/object.options.js';
+import { defaultsOptions } from '@/const/options/options.js';
+import { floorOptions } from '@/const/options/floor.options.js';
+import { locationOptions } from '@/const/options/location.options.js';
+import FormOfferSearchExternal from '@/components/Forms/Offer/FormOfferSearchExternal.vue';
 
-export default {
-    name: 'OffersMain',
-    components: {
-        AnimationTransition,
-        Switch,
-        EmptyData,
-        Button,
-        FormComplex,
-        Chip,
-        OfferTable,
-        OfferTableMobile,
-        Loader,
-        PaginationClassic,
-        FormOfferSearchExternal,
-        FormModalOfferSearch,
-        RefreshButton
-    },
-    mixins: [TableContentMixin, FilterMixin],
-    inject: ['isMobile'],
-    data() {
-        return {
-            complexFormModalVisible: false,
-            isCardView: false
-        };
-    },
-    computed: {
-        ...mapGetters(['OFFERS_PAGINATION', 'OFFERS']),
-        currentViewComponentName() {
-            if (this.isMobile) return 'OfferTableMobile';
-            return this.isCardView ? 'OfferTableMobile' : 'OfferTable';
-        }
-    },
-    methods: {
-        ...mapActions(['SEARCH_OFFERS', 'SEARCH_FAVORITES_OFFERS']),
-        async getContent(withLoader = true) {
-            await this.getOffers(withLoader);
-        },
-        async getOffers(withLoader = true) {
-            this.loader = withLoader;
+const isMobile = useMobile();
+const store = useStore();
+const route = useRoute();
+const router = useRouter();
 
-            const query = {
-                ...this.$route.query,
-                type_id: [2, 3],
-                // type_id: [2],
-                expand: 'contact.emails,contact.phones,object,company.mainContact.phones,company.mainContact.emails,offer,consultant.userProfile,company.objects_count,company.requests_count'
-            };
-            if (!this.FAVORITES_OFFERS.length) {
-                await this.SEARCH_FAVORITES_OFFERS();
-            }
-            if (this.$route.query.favorites) {
-                query.original_id = this.FAVORITES_OFFERS.map(item => item.original_id);
-                query.type_id = [1, 2];
-                query.object_id = this.FAVORITES_OFFERS.map(item => item.object_id);
-                query.complex_id = this.FAVORITES_OFFERS.map(item => item.complex_id);
-            }
-            await this.SEARCH_OFFERS({ query });
-            this.loader = false;
-        },
-        nextAndScrollToStart(page) {
-            this.next(page);
-            this.scrollToStart();
-        },
-        scrollToStart() {
-            let options = {
-                behavior: 'smooth',
-                block: 'end',
-                alignToTop: false
-            };
-            this.$refs.firstPagination.$el.scrollIntoView(options);
-        },
-        // Переопределено из миксина (судя по всему)
-        initialRouteSettings() {},
-        async deleteFavoriteOffer() {
-            if (this.$route.query.favorites) {
-                await this.SEARCH_FAVORITES_OFFERS();
-                this.getContent(false);
-            }
-        },
-        toggleComplexFormModalVisible() {
-            this.complexFormModalVisible = !this.complexFormModalVisible;
+const isCardView = shallowRef(false);
+const formIsVisible = shallowRef(false);
+const firstPaginationEl = shallowRef(null);
+const isLoading = shallowRef(false);
+const searchingIsVisible = shallowRef(false);
+
+const consultants = computed(() => store.getters.CONSULTANT_LIST);
+const offersPagination = computed(() => store.getters.OFFERS_PAGINATION);
+const offers = computed(() => store.getters.OFFERS);
+const favoritesOffers = computed(() => store.getters.FAVORITES_OFFERS);
+
+const selectedFilterList = computed(() => {
+    const filters = [];
+    const query = { ...route.query };
+
+    delete query.region_neardy;
+    delete query.all;
+    delete query.page;
+    delete query.outside_mkad;
+
+    for (const key in query) {
+        const value = query[key];
+
+        if (key === 'region') {
+            filters.push(humanizeFilter(key, query.fakeRegion));
+        } else if (
+            value !== null &&
+            value !== '' &&
+            key !== 'fakeRegion' &&
+            !(Array.isArray(value) && value.length === 0)
+        ) {
+            filters.push(humanizeFilter(key, value));
         }
     }
+
+    return filters;
+});
+
+const currentViewComponentName = computed(() => {
+    if (isMobile) return OfferTableMobile;
+    return isCardView.value ? OfferTableMobile : OfferTable;
+});
+
+const gettersForFilters = {
+    rangeMinElectricity: value => value + ' кВт',
+    rangeMaxDistanceFromMKAD: value => value + ' км',
+    deal_type: value => dealOptions.type[Number(value) + 1].toUpperCase(),
+    agent_id: value => {
+        if (consultants.value.length)
+            return consultants.value.find(elem => elem.value == value).label;
+        return null;
+    },
+    rangeMinArea: value => value + ' м<sup>2</sup>',
+    rangeMaxArea: value => value + ' м<sup>2</sup>',
+    rangeMinPricePerFloor: value => value + ' р',
+    rangeMaxPricePerFloor: value => value + ' р',
+    rangeMinCeilingHeight: value => value + ' м',
+    rangeMaxCeilingHeight: value => value + ' м',
+    class: value => {
+        if (!value) return null;
+        if (!Array.isArray(value)) value = [value];
+        return value.map(elem => objectOptions.class[elem]).join(', ');
+    },
+    gates: value => {
+        if (!value) return null;
+        if (!Array.isArray(value)) value = [value];
+        return value.map(elem => GateTypeList[elem]).join(', ');
+    },
+    heated: value => {
+        if (!value) return null;
+        return defaultsOptions.booleanSimple[value];
+    },
+    floor_types: value => {
+        if (!value) return null;
+        if (!Array.isArray(value)) value = [value];
+        return value.map(elem => floorOptions.floorTypes[elem]).join(', ');
+    },
+    purposes: value => {
+        if (!value) return null;
+        if (!Array.isArray(value)) value = [value];
+        return value
+            .map(element => {
+                const param = objectOptions.purposes[element];
+                return `<i title="${param.name}"" class="' ${param.icon} '"></i>`;
+            })
+            .join(', ');
+    },
+    object_type: value => {
+        if (!value) return null;
+        if (!Array.isArray(value)) value = [value];
+        return value.map(element => objectOptions.typeGeneral[element - 1].name).join(', ');
+    },
+    region: value => {
+        if (!value || !store.getters.REGION_LIST) return null;
+        const result = store.getters.REGION_LIST.find(region => region.value == value).label;
+
+        if (route.query.polygon) {
+            return '<p class="text-danger">' + result + '</p>';
+        }
+
+        return result;
+    },
+    district_moscow: value => {
+        if (!value) return null;
+        if (!Array.isArray(value)) value = [value];
+        const result = value.map(key => locationOptions.district[key]).join(', ');
+
+        if (route.query.polygon) {
+            return '<p class="text-danger">' + result + '</p>';
+        }
+
+        return result;
+    },
+    direction: value => {
+        if (!value) return null;
+        if (!Array.isArray(value)) value = [value];
+        const result = value.map(elem => locationOptions.directionWithShort[elem].full).join(', ');
+
+        if (route.query.polygon) {
+            return '<p class="text-danger">' + result + '</p>';
+        }
+
+        return result;
+    },
+    status: value => {
+        if (!value) return null;
+        return ActivePassiveFUCK[value];
+    },
+    ad_realtor: value => {
+        if (!value) return null;
+        return YesNo[value];
+    },
+    ad_cian: value => {
+        if (!value) return null;
+        return YesNo[value];
+    },
+    ad_yandex: value => {
+        if (!value) return null;
+        return YesNo[value];
+    },
+    ad_free: value => {
+        if (!value) return null;
+        return YesNo[value];
+    },
+    ad_avito: value => {
+        if (!value) return null;
+        return YesNo[value];
+    },
+    sort: value => value
 };
+
+const humanizeFilter = (key, value) => {
+    const option = {
+        value: key
+    };
+
+    const label = filtersAliases[key] ?? null;
+    const _value = Object.hasOwn(gettersForFilters, key) ? gettersForFilters[key](value) : null;
+
+    if (!label && !_value) {
+        option.label = 'undefined';
+    } else {
+        option.label = [label, _value].filter(el => el !== null).join(' ');
+    }
+
+    return option;
+};
+
+const searchFavoritesOffers = () => store.dispatch('SEARCH_FAVORITES_OFFERS');
+
+const getOffers = async (withLoader = true) => {
+    isLoading.value = withLoader;
+
+    const query = { ...route.query };
+
+    query.type_id = [2, 3];
+    query.expand =
+        'contact.emails,contact.phones,' +
+        'object,' +
+        'company.mainContact.phones,company.mainContact.emails,company.objects_count,company.requests_count,company.contacts_count,' +
+        'offer,' +
+        'consultant.userProfile';
+
+    if (!favoritesOffers.value.length) await searchFavoritesOffers();
+    if (route.query.favorites) {
+        query.original_id = [];
+        query.object_id = [];
+        query.complex_id = [];
+
+        favoritesOffers.value.map(element => {
+            query.original_id.push(element.original_id);
+            query.object_id.push(element.object_id);
+            query.complex_id.push(element.complex_id);
+        });
+
+        query.type_id = [1, 2];
+    }
+
+    await store.dispatch('SEARCH_OFFERS', { query });
+    isLoading.value = false;
+};
+
+const deleteFavoriteOffer = async () => {
+    const hasFavoritesFilter = route.query.favorites;
+
+    if (hasFavoritesFilter) {
+        await searchFavoritesOffers();
+        await getOffers(false);
+    }
+};
+
+const removeFilter = async filter => {
+    const query = { ...route.query };
+
+    if (filter === 'fakeRegion') {
+        delete query['region'];
+    }
+
+    if (filter === 'region') {
+        delete query['fakeRegion'];
+        delete query['direction'];
+        delete query['district_moscow'];
+        delete query['outside_mkad'];
+        delete query['region_neardy'];
+    }
+
+    delete query[filter];
+
+    await router.replace({ query });
+};
+
+const { nextWithScroll, next } = useTableContent(getOffers, {
+    scrollTo: firstPaginationEl,
+    initQuery: () => {}
+});
+
+onBeforeMount(() => {
+    store.dispatch('FETCH_REGION_LIST');
+    store.dispatch('FETCH_CONSULTANT_LIST');
+});
 </script>

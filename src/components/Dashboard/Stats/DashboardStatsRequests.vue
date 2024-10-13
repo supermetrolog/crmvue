@@ -16,7 +16,7 @@
                 <div class="col-12">
                     <DashboardTablePrimitive
                         v-if="requests.length"
-                        :columns="columns"
+                        :columns="DASHBOARD_STATS_REQUESTS_COLUMNS"
                         :items="requests"
                         class="no-padding"
                     >
@@ -29,6 +29,7 @@
                                 ></i>
                                 <router-link
                                     v-if="item.consultant_id == currentUser.id"
+                                    v-tippy="'Открыть таймлайн'"
                                     :to="`/companies/${item.company_id}?request_id=${item.id}&consultant_id=${currentUser.id}&step=0`"
                                     target="_blank"
                                     class="mr-1 d-inline-flex"
@@ -47,11 +48,13 @@
                             </div>
                         </template>
                         <template #company="{ item }">
-                            <span v-if="item.company">{{ getCompanyName(item.company) }}</span>
+                            <span v-if="item.company">
+                                {{ getCurrentCompanyName(item.company) }}
+                            </span>
                             <span v-else>Компания #{{ item.company_id }}</span>
                         </template>
                         <template #deal="{ item }">
-                            {{ $formatter.text().ucFirst(item.format_name) }}
+                            {{ ucFirst(item.format_name) }}
                         </template>
                         <template #progress="{ item }">
                             <Progress :percent="item.timeline_progress" />
@@ -84,204 +87,180 @@
         </div>
     </DashboardCard>
 </template>
-
 <script>
-import { LoaderMixin } from '@/components/Messenger/loader.mixin.js';
+const DASHBOARD_STATS_REQUESTS_COLUMNS = [
+    {
+        key: 'id',
+        label: 'ID',
+        width: '85px'
+    },
+    {
+        key: 'consultant',
+        label: 'Консультант'
+    },
+    {
+        key: 'company',
+        label: 'Компания'
+    },
+    {
+        key: 'deal',
+        label: 'Тип сделки'
+    },
+    {
+        key: 'progress',
+        label: 'Прогресс'
+    },
+    {
+        key: 'status',
+        label: 'Статус',
+        width: '100px'
+    },
+    {
+        key: 'address',
+        label: 'Адрес',
+        width: '300px'
+    },
+    {
+        key: 'updated_at',
+        label: 'Обновлено'
+    }
+];
+</script>
+<script setup>
 import api from '@/api/api.js';
 import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';
 import DashboardTablePrimitive from '@/components/Dashboard/Table/DashboardTablePrimitive.vue';
 import Avatar from '@/components/common/Avatar.vue';
-import { alg } from '@/utils/alg.js';
 import Progress from '@/components/common/Progress.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { PassiveWhyRequest } from '@/const/const.js';
 import Spinner from '@/components/common/Spinner.vue';
 import { entityOptions } from '@/const/options/options.js';
-import { mapGetters } from 'vuex';
+import { useStore } from 'vuex';
 import dayjs from 'dayjs';
+import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
+import { computed, onMounted, ref, watch } from 'vue';
+import { getCompanyName, ucFirst } from '@/utils/formatter.js';
 
-export default {
-    name: 'DashboardStatsRequests',
-    components: {
-        Spinner,
-        DashboardChip,
-        Progress,
-        Avatar,
-        DashboardTablePrimitive,
-        MessengerButton,
-        EmptyData,
-        DashboardCard
-    },
-    mixins: [LoaderMixin],
-    inject: ['$openMessengerChat'],
-    props: {
-        user: {
-            type: Number,
-            default: null
-        }
-    },
-    data() {
-        return {
-            requests: [],
-            columns: [
-                {
-                    key: 'id',
-                    label: 'ID',
-                    width: '85px'
-                },
-                {
-                    key: 'consultant',
-                    label: 'Консультант'
-                },
-                {
-                    key: 'company',
-                    label: 'Компания'
-                },
-                {
-                    key: 'deal',
-                    label: 'Тип сделки'
-                },
-                {
-                    key: 'progress',
-                    label: 'Прогресс'
-                },
-                {
-                    key: 'status',
-                    label: 'Статус',
-                    width: '100px'
-                },
-                {
-                    key: 'address',
-                    label: 'Адрес',
-                    width: '300px'
-                },
-                {
-                    key: 'updated_at',
-                    label: 'Обновлено'
-                }
-            ]
-        };
-    },
-    computed: {
-        ...mapGetters({ currentUser: 'THIS_USER' })
-    },
-    watch: {
-        user() {
-            this.fetchRequests();
-        }
-    },
-    methods: {
-        async fetchRequests() {
-            this.loadingState = true;
+const props = defineProps({
+    user: {
+        type: Number,
+        default: null
+    }
+});
 
-            const userParams = this.user ? { consultant_id: this.user } : {};
+const store = useStore();
+const { isLoading } = useDelayedLoader();
 
-            const response = await api.request.searchRequests({
-                ...userParams,
-                sort: '-related_updated_at,-updated_at'
-            });
+const requests = ref([]);
 
-            if (response) this.requests = response.data.slice(0, 10);
-            else this.requests = [];
+const currentUser = computed(() => store.getters.THIS_USER);
 
-            this.loadingState = false;
-        },
-        openInChat(chatMemberID) {
-            this.$openMessengerChat({
-                chatMemberID: chatMemberID
-            });
-        },
-        getCompanyName(company) {
-            if (alg.isNumeric(company.nameRu)) return 'Компания #' + company.nameRu;
+watch(
+    () => props.user,
+    () => {
+        fetchRequests();
+    }
+);
+const fetchRequests = async () => {
+    isLoading.value = true;
 
-            return company.nameRu + (company.nameEng ? ` - ${company.nameEng}` : '');
-        },
-        getStatus(status) {
-            switch (status) {
-                case 0:
-                    return 'Пассив';
-                case 1:
-                    return 'Актив';
-                case 2:
-                    return 'Завершен';
-            }
-        },
-        getStatusClass(status) {
-            switch (status) {
-                case 0:
-                    return 'dashboard-bg-danger-l';
-                case 1:
-                    return 'dashboard-bg-success-l';
-                case 2:
-                    return 'dashboard-bg-success dashboard-cl-white';
-            }
-        },
-        getStatusTippy(item) {
-            let text = PassiveWhyRequest[item.passive_why].label;
+    const userParams = props.user ? { consultant_id: props.user } : {};
 
-            if (item.passive_why_comment) text += ': ' + item.passive_why_comment;
+    const response = await api.request.searchRequests({
+        ...userParams,
+        sort: '-related_updated_at,-updated_at'
+    });
 
-            return text;
-        },
-        getAddress(item) {
-            const directions = item.directions?.length
-                ? '<b>Московская область:</b> ' +
-                  item.directions
-                      .map(
-                          element =>
-                              entityOptions.location.directionWithShort[element.direction].full
-                      )
-                      .join(', ')
-                : '';
+    if (response) requests.value = response.data.slice(0, 10);
+    else requests.value = [];
 
-            const districts = item.districts?.length
-                ? '<b>Москва:</b> ' +
-                  item.districts
-                      .map(element => entityOptions.location.district[element.district])
-                      .join(', ')
-                : '';
+    isLoading.value = false;
+};
 
-            const regions = item.regions?.length
-                ? item.regions
-                      .map(element => this.$formatter.text().ucFirst(element.info.title))
-                      .join(', ')
-                : '';
+const getCurrentCompanyName = company => getCompanyName(company, company.id);
 
-            const distanceMKAD = !item.distanceFromMKADnotApplicable
-                ? `До ${item.distanceFromMKAD} км до МКАД`
-                : '';
-
-            const stateMKAD =
-                item.outside_mkad !== null
-                    ? `<b>${entityOptions.location.positionMKAD[item.outside_mkad]}</b>`
-                    : '';
-
-            return [regions, stateMKAD, distanceMKAD, directions, districts]
-                .filter(element => element.length)
-                .join('; ');
-        },
-        getUpdatedAt(item) {
-            let dayjsDate = dayjs(item.created_at, 'YYYY-MM-DD HH:mm:ss');
-
-            if (item.related_updated_at) {
-                const date = dayjs(item.related_updated_at, 'YYYY-MM-DD HH:mm:ss');
-                if (dayjsDate.isBefore(date)) dayjsDate = date;
-            }
-
-            if (item.updated_at) {
-                const date = dayjs(item.updated_at, 'YYYY-MM-DD HH:mm:ss');
-                if (dayjsDate.isBefore(date)) dayjsDate = date;
-            }
-
-            if (dayjsDate.isToday()) return `сегодня, ${dayjsDate.format('HH:mm')}`;
-            if (dayjsDate.isYesterday()) return `вчера, ${dayjsDate.format('HH:mm')}`;
-            return dayjsDate.format('D.MM.YY, HH:mm');
-        }
-    },
-    created() {
-        this.fetchRequests();
+const getStatus = status => {
+    switch (status) {
+        case 0:
+            return 'Пассив';
+        case 1:
+            return 'Актив';
+        case 2:
+            return 'Завершен';
     }
 };
+
+const getStatusClass = status => {
+    switch (status) {
+        case 0:
+            return 'dashboard-bg-danger-l';
+        case 1:
+            return 'dashboard-bg-success-l';
+        case 2:
+            return 'dashboard-bg-success dashboard-cl-white';
+    }
+};
+const getStatusTippy = item => {
+    let text = PassiveWhyRequest[item.passive_why].label;
+
+    if (item.passive_why_comment) text += ': ' + item.passive_why_comment;
+
+    return text;
+};
+const getAddress = item => {
+    const directions = item.directions?.length
+        ? '<b>Московская область:</b> ' +
+          item.directions
+              .map(element => entityOptions.location.directionWithShort[element.direction].full)
+              .join(', ')
+        : '';
+
+    const districts = item.districts?.length
+        ? '<b>Москва:</b> ' +
+          item.districts
+              .map(element => entityOptions.location.district[element.district])
+              .join(', ')
+        : '';
+
+    const regions = item.regions?.length
+        ? item.regions.map(element => ucFirst(element.info.title)).join(', ')
+        : '';
+
+    const distanceMKAD = !item.distanceFromMKADnotApplicable
+        ? `До ${item.distanceFromMKAD} км до МКАД`
+        : '';
+
+    const stateMKAD =
+        item.outside_mkad !== null
+            ? `<b>${entityOptions.location.positionMKAD[item.outside_mkad]}</b>`
+            : '';
+
+    return [regions, stateMKAD, distanceMKAD, directions, districts]
+        .filter(element => element.length)
+        .join('; ');
+};
+const getUpdatedAt = item => {
+    let dayjsDate = dayjs(item.created_at, 'YYYY-MM-DD HH:mm:ss');
+
+    if (item.related_updated_at) {
+        const date = dayjs(item.related_updated_at, 'YYYY-MM-DD HH:mm:ss');
+        if (dayjsDate.isBefore(date)) dayjsDate = date;
+    }
+
+    if (item.updated_at) {
+        const date = dayjs(item.updated_at, 'YYYY-MM-DD HH:mm:ss');
+        if (dayjsDate.isBefore(date)) dayjsDate = date;
+    }
+
+    if (dayjsDate.isToday()) return `сегодня, ${dayjsDate.format('HH:mm')}`;
+    if (dayjsDate.isYesterday()) return `вчера, ${dayjsDate.format('HH:mm')}`;
+    return dayjsDate.format('D.MM.YY, HH:mm');
+};
+
+onMounted(() => {
+    fetchRequests();
+});
 </script>
