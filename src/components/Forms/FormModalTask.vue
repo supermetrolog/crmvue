@@ -146,8 +146,18 @@ const presets = [
     },
     {
         id: 8,
+        value: 91,
+        label: '3 месяца'
+    },
+    {
+        id: 9,
         value: 183,
         label: 'Пол года'
+    },
+    {
+        id: 10,
+        value: 273,
+        label: '9 месяцев'
     }
 ];
 
