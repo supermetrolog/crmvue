@@ -96,7 +96,6 @@
                     </DashboardTableTasksItemPreviewRow>
                     <DashboardTableTasksItemPreviewRow label="Исполнение с">
                         <span v-if="task.start">{{ startDate }}</span>
-                        {{ createdDate }}
                     </DashboardTableTasksItemPreviewRow>
                     <DashboardTableTasksItemPreviewRow label="Срок выполнения">
                         <span>{{ dayToExpired }} до {{ expiredDate }}</span>
@@ -402,9 +401,8 @@ watch(
     () => props.task?.id,
     () => {
         clearState();
-        if (props.visible) {
-            console.log('debounced read task');
-            // debouncedReadTask()
+        if (props.visible && canBeViewed.value) {
+            debouncedReadTask();
         }
     }
 );
