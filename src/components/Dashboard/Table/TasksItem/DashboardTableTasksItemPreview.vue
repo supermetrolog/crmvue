@@ -195,6 +195,24 @@
                         @click="toChat"
                         :model="task.related_by.chat_member.model"
                     />
+                    <div class="d-flex mt-1 gap-2">
+                        <button
+                            @click.prevent="toChat"
+                            class="dashboard-task-item-preview__button"
+                            :class="objectCompanyId ? 'w-50' : 'w-100'"
+                        >
+                            <span>Открыть чат</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square ml-2"></i>
+                        </button>
+                        <button
+                            v-if="objectCompanyId"
+                            @click.prevent="toCompany"
+                            class="dashboard-task-item-preview__button w-50"
+                        >
+                            <span>Открыть компанию</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square ml-2"></i>
+                        </button>
+                    </div>
                 </div>
                 <div
                     v-if="task.related_by?.chat_member_message_id"
@@ -247,6 +265,8 @@ import MessengerDialogUser from '@/components/Messenger/Dialog/MessengerDialogUs
 import { dayjsFromMoscow } from '@/utils/index.js';
 import { toDateFormat } from '@/utils/formatter.js';
 import Loader from '@/components/common/Loader.vue';
+import { messenger } from '@/const/messenger.js';
+import { getLinkCompany } from '@/utils/url.js';
 
 const DAYS_TO_IMPOSSIBLE = 30;
 
@@ -390,6 +410,16 @@ const currentDialogComponent = computed(() => {
     return MessengerDialogObject;
 });
 
+const objectCompanyId = computed(() => {
+    if (props.task.related_by.chat_member.model_type === messenger.dialogTypes.OBJECT)
+        return props.task.related_by.chat_member.model.object.company?.id;
+
+    if (props.task.related_by.chat_member.model_type === messenger.dialogTypes.REQUEST)
+        return props.task.related_by.chat_member.model.company?.id;
+
+    return null;
+});
+
 watch(
     () => props.visible,
     newValue => {
@@ -472,6 +502,10 @@ const toChat = () => {
             modelType
         });
     }
+};
+
+const toCompany = () => {
+    window.open(getLinkCompany(objectCompanyId.value), '_blank');
 };
 
 const debouncedReadTask = debounce(readTask, 500);
