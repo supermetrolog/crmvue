@@ -339,6 +339,12 @@ const canBeSuspend = computed(() => {
     );
 });
 
+const clearState = () => {
+    newComment.value = null;
+    moveSettingsIsVisible.value = false;
+    commentsIsOpen.value = false;
+};
+
 const editTask = async () => {
     const taskPayload = await showTaskCreator(props.task);
     if (!taskPayload) return;
@@ -376,10 +382,20 @@ const currentDialogComponent = computed(() => {
 });
 
 watch(
-    () => [props.visible, props.task?.id],
-    ([isVisibleNewValue]) => {
-        commentsIsOpen.value = false;
-        if (isVisibleNewValue && canBeViewed.value) debouncedReadTask();
+    () => props.visible,
+    newValue => {
+        if (newValue && canBeViewed.value) debouncedReadTask();
+    }
+);
+
+watch(
+    () => props.task?.id,
+    () => {
+        clearState();
+        if (props.visible) {
+            console.log('debounced read task');
+            // debouncedReadTask()
+        }
     }
 );
 
@@ -400,6 +416,7 @@ const createComment = async () => {
 };
 
 const onCommentCreated = comment => {
+    newComment.value = null;
     emit('updated', { ...props.task, last_comment: comment });
 };
 
