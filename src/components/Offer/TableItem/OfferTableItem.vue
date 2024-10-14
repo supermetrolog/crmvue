@@ -25,7 +25,7 @@
                     </template>
                 </div>
                 <OfferTableItemRelationSelect
-                    v-if="offer.type_id !== 3 && offer.object?.offers?.length"
+                    v-if="offer.type_id !== 3 && offer.object?.offers?.length && !withoutRelations"
                     @open="openRelations"
                     :offers="offer.object.offers"
                     :current="offer.id"
@@ -45,7 +45,11 @@
         </Td>
         <Td class="offer-table-item__area" sort="area">
             <div class="d-flex justify-content-center">
-                <OfferTableItemArea @show-blocks="showBlocks" :offer="offer" />
+                <OfferTableItemArea
+                    @show-blocks="showBlocks"
+                    @hide-blocks="hideBlocks"
+                    :offer="offer"
+                />
             </div>
         </Td>
         <Td class="offer-table-item__price" sort="price">
@@ -140,7 +144,7 @@
         <OfferTableItemDropdown v-if="blocksDropdownIsOpen">
             <Button
                 v-tippy="'Свернуть информацию о блоках'"
-                @click="blocksDropdownIsOpen = false"
+                @click="hideBlocks"
                 class="offer-table-item__close w-100"
                 info
             >
@@ -162,7 +166,12 @@
             </Button>
             <Spinner v-if="relationsIsLoading" class="m-4" />
             <div v-else class="offer-table-item-dropdown__list">
-                <OfferTableItem v-for="offer in relatedOffers" :key="offer.id" :offer="offer" />
+                <OfferTableItem
+                    v-for="offer in relatedOffers"
+                    :key="offer.id"
+                    :offer="offer"
+                    without-relations
+                />
             </div>
         </OfferTableItemDropdown>
     </DropDown>
@@ -210,6 +219,10 @@ const props = defineProps({
     sortable: {
         type: Boolean,
         default: true
+    },
+    withoutRelations: {
+        type: Boolean,
+        default: false
     }
 });
 
@@ -287,14 +300,12 @@ const openRelations = type => {
 };
 
 const showBlocks = () => {
-    if (blocksDropdownIsOpen.value) {
-        blocksDropdownIsOpen.value = false;
-        blockOffers.value = [];
-        return;
-    }
-
     blocksDropdownIsOpen.value = true;
-    searchBlockOffers();
+    if (!blockOffers.value.length) searchBlockOffers();
+};
+
+const hideBlocks = () => {
+    blocksDropdownIsOpen.value = false;
 };
 
 const openInChat = () =>
