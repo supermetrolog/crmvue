@@ -260,7 +260,12 @@
         width: max-content;
         @include mixins.transition(background-color, color);
         @include mixins.hover {
-            background-color:  #10b981;
+            background-color: variables.$bg-success;
+            color: #fff;
+        }
+
+        &.active {
+            background-color: variables.$bg-success;
             color: #fff;
         }
     }

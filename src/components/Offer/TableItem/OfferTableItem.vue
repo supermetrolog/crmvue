@@ -45,7 +45,11 @@
         </Td>
         <Td class="offer-table-item__area" sort="area">
             <div class="d-flex justify-content-center">
-                <OfferTableItemArea @show-blocks="showBlocks" :offer="offer" />
+                <OfferTableItemArea
+                    @show-blocks="showBlocks"
+                    @hide-blocks="hideBlocks"
+                    :offer="offer"
+                />
             </div>
         </Td>
         <Td class="offer-table-item__price" sort="price">
@@ -140,7 +144,7 @@
         <OfferTableItemDropdown v-if="blocksDropdownIsOpen">
             <Button
                 v-tippy="'Свернуть информацию о блоках'"
-                @click="blocksDropdownIsOpen = false"
+                @click="hideBlocks"
                 class="offer-table-item__close w-100"
                 info
             >
@@ -287,14 +291,12 @@ const openRelations = type => {
 };
 
 const showBlocks = () => {
-    if (blocksDropdownIsOpen.value) {
-        blocksDropdownIsOpen.value = false;
-        blockOffers.value = [];
-        return;
-    }
-
     blocksDropdownIsOpen.value = true;
-    searchBlockOffers();
+    if (!blockOffers.value.length) searchBlockOffers();
+};
+
+const hideBlocks = () => {
+    blocksDropdownIsOpen.value = false;
 };
 
 const openInChat = () =>
