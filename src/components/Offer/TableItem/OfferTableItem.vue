@@ -25,7 +25,7 @@
                     </template>
                 </div>
                 <OfferTableItemRelationSelect
-                    v-if="offer.type_id !== 3 && offer.object?.offers?.length"
+                    v-if="offer.type_id !== 3 && offer.object?.offers?.length && !withoutRelations"
                     @open="openRelations"
                     :offers="offer.object.offers"
                     :current="offer.id"
@@ -166,7 +166,12 @@
             </Button>
             <Spinner v-if="relationsIsLoading" class="m-4" />
             <div v-else class="offer-table-item-dropdown__list">
-                <OfferTableItem v-for="offer in relatedOffers" :key="offer.id" :offer="offer" />
+                <OfferTableItem
+                    v-for="offer in relatedOffers"
+                    :key="offer.id"
+                    :offer="offer"
+                    without-relations
+                />
             </div>
         </OfferTableItemDropdown>
     </DropDown>
@@ -214,6 +219,10 @@ const props = defineProps({
     sortable: {
         type: Boolean,
         default: true
+    },
+    withoutRelations: {
+        type: Boolean,
+        default: false
     }
 });
 
