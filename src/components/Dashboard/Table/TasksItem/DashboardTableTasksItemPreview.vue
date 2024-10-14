@@ -12,7 +12,7 @@
                     >
                         <i class="fa-solid fa-user-check"></i>
                     </HoverActionsButton>
-                    <div v-if="draggable" class="dashboard-card-task__moves">
+                    <div v-if="draggable && canBeEdit" class="dashboard-card-task__moves">
                         <HoverActionsButton
                             @click.stop="moveSettingsIsVisible = !moveSettingsIsVisible"
                             label="Изменить статус"
@@ -32,7 +32,11 @@
                     >
                         <i class="fa-solid fa-comment-alt" />
                     </HoverActionsButton>
-                    <HoverActionsButton v-if="editable" @click="editTask" label="Редактировать">
+                    <HoverActionsButton
+                        v-if="editable && canBeEdit"
+                        @click="editTask"
+                        label="Редактировать"
+                    >
                         <i class="fa-solid fa-pen" />
                     </HoverActionsButton>
                     <HoverActionsButton
@@ -322,6 +326,11 @@ const canBeViewed = computed(() => {
 
     return false;
 });
+
+const canBeEdit = computed(() => {
+    return store.getters.isAdmin || store.getters.isDirector || !isCompleted.value;
+});
+
 const viewersText = computed(() =>
     props.task.observers.map(element => element.user.userProfile.medium_name).join(', ')
 );
@@ -335,7 +344,8 @@ const chatMemberMessage = computed(() => {
 const canBeSuspend = computed(() => {
     return (
         dayjsFromMoscow(props.task.end).subtract(DAYS_TO_IMPOSSIBLE, 'day').isAfter(dayjs()) &&
-        !isCanceled.value
+        !isCanceled.value &&
+        !isCompleted.value
     );
 });
 
