@@ -12,7 +12,7 @@ export function useSearchCompany(defaultQuery) {
             query = { all: querySearch };
         }
 
-        const response = await api.companies.searchCompanies(query);
-        return multiselectAdapter(response.data, 'id', 'full_name');
+        const response = await api.companies.search(query);
+        return multiselectAdapter(response, 'id', 'full_name');
     };
 }

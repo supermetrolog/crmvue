@@ -11,9 +11,11 @@ import { responseToData } from '@/api/helpers/responseToData.js';
 /**
  *
  * @param response
- * @return {PaginationData}
+ * @return {?PaginationData}
  */
 export function responseToPagination(response) {
+    if (response == null) return null;
+
     return {
         totalCount: +response.headers['x-pagination-total-count'],
         perPage: +response.headers['x-pagination-per-page'],
@@ -25,11 +27,11 @@ export function responseToPagination(response) {
 /**
  *
  * @param response
- * @return {{pagination: PaginationData, data: (*|null)}}
+ * @return {{pagination: ?PaginationData, data: (*|null)}}
  */
 export function responseToPaginatedData(response) {
     return {
-        data: responseToData(response),
+        data: responseToData(response) ?? [],
         pagination: responseToPagination(response)
     };
 }

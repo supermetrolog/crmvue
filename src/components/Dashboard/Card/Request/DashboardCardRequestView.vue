@@ -335,7 +335,7 @@ export default {
         async fetchContact() {
             this.loadingState = true;
 
-            const response = await api.contacts.getContacts(this.request.company_id);
+            const response = await api.contacts.getByCompany(this.request.company_id);
 
             if (response.length) {
                 this.contact = response.find(element => element.id === this.request.contact_id);

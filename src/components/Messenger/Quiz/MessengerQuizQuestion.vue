@@ -47,6 +47,7 @@
                             :key="answer.id"
                             v-model="form.tab"
                             @icon-clicked="$emit('edit-answer', answer)"
+                            handled-icon
                             :value="answer.id"
                             :text="answer.value"
                             :icon="canEdit ? 'fa-solid fa-pen' : undefined"
@@ -108,6 +109,7 @@
                             :key="answer.id"
                             v-model="form.checkbox"
                             @icon-clicked="$emit('edit-answer', answer)"
+                            handled-icon
                             :value="answer.id"
                             :text="answer.value"
                             :icon="canEdit ? 'fa-solid fa-pen' : undefined"
