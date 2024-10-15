@@ -9,7 +9,41 @@
                             v-model:type="filterType"
                             :counts="counts"
                             :relations="relations"
-                        />
+                        >
+                            <template #filters>
+                                <MultiSelect
+                                    v-model="taskTags"
+                                    label="Тэги"
+                                    mode="tags"
+                                    searchable
+                                    :options="getTagsOptions"
+                                    :resolve-on-load="true"
+                                    :close-on-select="false"
+                                    placeholder="&nbsp;&nbsp;Выберите тэг.."
+                                >
+                                    <template #option="{ option }">
+                                        <TaskTagOption :tag="option" />
+                                    </template>
+                                    <template #tag="{ option, disabled, handleTagRemove }">
+                                        <div
+                                            class="multiselect-tag"
+                                            :style="{
+                                                backgroundColor: '#' + option.color,
+                                                color: '#fff'
+                                            }"
+                                        >
+                                            <span>{{ option.label }}</span>
+                                            <i
+                                                v-if="!disabled"
+                                                v-tippy="'Удалить'"
+                                                @click="handleTagRemove(option, $event)"
+                                                class="ml-1 fa-solid fa-close"
+                                            />
+                                        </div>
+                                    </template>
+                                </MultiSelect>
+                            </template>
+                        </DashboardTableTasksFilters>
                     </div>
                 </DashboardCard>
             </div>
@@ -53,6 +87,12 @@
                         :is-loading="isLoading"
                         :tasks="tasks.data"
                     />
+                    <PaginationClassic
+                        v-if="tasks.data?.length"
+                        @next="setNextPage"
+                        class="mt-3"
+                        :pagination="tasks.pagination"
+                    />
                 </DashboardCard>
             </div>
         </div>
@@ -74,9 +114,12 @@ import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { debounce } from '@/utils/debounce.js';
 import { useQueryHash } from '@/utils/useQueryHash.js';
 import gsap from 'gsap';
+import { useTagsOptions } from '@/composables/useTagsOptions.js';
+import TaskTagOption from '@/components/common/Forms/TaskTagOption.vue';
 
 const $targetUser = inject('$targetUser');
 
+const { getTagsOptions } = useTagsOptions();
 const { isLoading } = useDelayedLoader();
 
 const sortingOptions = [
@@ -106,6 +149,7 @@ const relations = ref({
 const sortingOption = shallowRef('-updated_at');
 const filterStatus = ref([]);
 const filterType = ref([]);
+const taskTags = ref([]);
 
 const targetUser = toRef($targetUser);
 
@@ -138,7 +182,7 @@ watch(
     { deep: true }
 );
 
-watch(sortingOption, () => {
+watch([sortingOption, taskTags], () => {
     debouncedFetchTasks();
 });
 
@@ -169,6 +213,8 @@ const createQuery = page => {
         query.multiple = 1;
     }
     if (sortingOption.value) query.sort = sortingOption.value;
+
+    query.tag_ids = taskTags.value;
 
     return query;
 };

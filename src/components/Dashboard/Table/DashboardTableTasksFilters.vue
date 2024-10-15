@@ -57,19 +57,14 @@
             >
                 Отложенные
             </DashboardCardNavLink>
-            <!--            <DashboardCardNavLink-->
-            <!--                @select="toggleField('expired')"-->
-            <!--                :icon="{-->
-            <!--                    name: 'fa-solid fa-fire',-->
-            <!--                    class: 'dashboard-bg-warning-l'-->
-            <!--                }"-->
-            <!--                :badge="counts.expired"-->
-            <!--                :active="field.expired"-->
-            <!--            >-->
-            <!--                Сгоревшие-->
-            <!--            </DashboardCardNavLink>-->
         </div>
         <hr />
+        <template v-if="$slots.filters">
+            <div class="dashboard-aside__menu my-1">
+                <slot name="filters" />
+            </div>
+            <hr />
+        </template>
         <AnimationTransition :speed="0.4">
             <div v-if="targetUser" class="dashboard-aside__menu mt-3">
                 <DashboardCardNavLink
