@@ -52,7 +52,6 @@
                 >
                     <i class="fa-solid fa-floppy-disk"></i>
                 </Button>
-                {{ form }}
                 <Button @click="close" class="messenger-chat-form__button" danger icon>
                     <i class="fa-solid fa-xmark"></i>
                 </Button>
