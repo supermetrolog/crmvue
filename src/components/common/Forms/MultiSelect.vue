@@ -31,8 +31,10 @@
                 no-results-text="Ничего не найдено"
                 no-options-text="Список пуст"
             >
-                <template #singlelabel="{ value }">
-                    <slot name="singlelabel" :value="value" />
+                <template v-if="$slots.singlelabel" #singlelabel="{ value }">
+                    <div class="multiselect-single-label">
+                        <slot name="singlelabel" :value="value" />
+                    </div>
                 </template>
                 <template #option="{ option, isSelected, isPointed }">
                     <slot

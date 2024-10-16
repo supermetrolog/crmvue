@@ -813,6 +813,14 @@
         white-space: nowrap;
         text-overflow: ellipsis;
     }
+
+    &.is-active &-single-label {
+        opacity: .7;
+
+        &.custom {
+            opacity: .2;
+        }
+    }
 }
 
 .double-input {
@@ -1537,5 +1545,24 @@
                 opacity: .8;
             }
         }
+    }
+}
+
+.consultant-picker-option {
+    @include mixins.flex-box($gap: 5px, $a: center);
+}
+
+.consultant-picker-option-label {
+    &__username {
+        font-weight: 500;
+    }
+
+    &__parameter {
+        color: #9f9999;
+    }
+
+    &__role {
+        color: #9f9999;
+        font-size: 12px;
     }
 }
