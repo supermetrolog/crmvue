@@ -81,8 +81,9 @@
                 >
                     {{ givenLabel }}
                 </DashboardCardNavLink>
+                <hr class="w-100" />
                 <DashboardCardNavLink
-                    @select="toggleType('viewing')"
+                    @select="toggleIsViewing"
                     :badge="relations.by_observer.toFixed()"
                     :active="types.viewing"
                 >
@@ -181,9 +182,26 @@ const toggleField = key => {
 const toggleType = key => {
     types[key] = !types[key];
 
+    if (types.viewing) {
+        types.viewing = false;
+        const typeId = taskOptions.typeStatement.VIEWING;
+        spliceWithPrimitive(typeModelValue.value, typeId);
+    }
+
     const typeId = taskOptions.typeStatement[key.toUpperCase()];
     if (types[key]) typeModelValue.value.push(typeId);
     else spliceWithPrimitive(typeModelValue.value, typeId);
+};
+
+const toggleIsViewing = () => {
+    if (types.viewing) {
+        types.viewing = false;
+        typeModelValue.value = [];
+    } else {
+        Object.keys(types).forEach(key => (types[key] = false));
+        typeModelValue.value = [taskOptions.typeStatement.VIEWING];
+        types.viewing = true;
+    }
 };
 
 const toggleAll = () => {

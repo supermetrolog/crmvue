@@ -86,7 +86,7 @@ import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import { computed, onUnmounted, ref, shallowRef } from 'vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import dayjs from 'dayjs';
-import { useTagsOptions } from '@/composables/useTagsOptions.js';
+import { useTagsOptions } from '@/composables/options/useTagsOptions.js';
 
 const store = useStore();
 const { getTagsOptions } = useTagsOptions();

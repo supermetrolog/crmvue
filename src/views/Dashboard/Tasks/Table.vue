@@ -5,19 +5,19 @@
                 <DashboardCard>
                     <div class="dashboard-aside position-relative">
                         <DashboardTableTasksFilters
-                            v-model:status="filterStatus"
-                            v-model:type="filterType"
+                            v-model:status="filters.status"
+                            v-model:type="filters.type"
                             :counts="counts"
                             :relations="relations"
                         >
                             <template #filters>
                                 <MultiSelect
-                                    v-model="taskTags"
+                                    v-model="filters.tags"
                                     label="Тэги"
                                     mode="tags"
                                     searchable
                                     :options="getTagsOptions"
-                                    :resolve-on-load="true"
+                                    resolve-on-load
                                     :close-on-select="false"
                                     placeholder="&nbsp;&nbsp;Выберите тэг.."
                                 >
@@ -42,6 +42,20 @@
                                         </div>
                                     </template>
                                 </MultiSelect>
+                                <ConsultantPicker
+                                    v-model="filters.createdById"
+                                    label="Автор"
+                                    placeholder="Выберите сотрудника.."
+                                    :disabled="createdByFilterIsDisabled"
+                                    :options="getConsultantsOptions"
+                                />
+                                <ConsultantPicker
+                                    v-model="filters.userId"
+                                    label="Исполнитель"
+                                    placeholder="Выберите сотрудника.."
+                                    :disabled="userFilterIsDisabled"
+                                    :options="getConsultantsOptions"
+                                />
                             </template>
                         </DashboardTableTasksFilters>
                     </div>
@@ -109,18 +123,30 @@ import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import DashboardTableTasks from '@/components/Dashboard/Table/DashboardTableTasks.vue';
 import api from '@/api/api.js';
 import DashboardTableTasksFilters from '@/components/Dashboard/Table/DashboardTableTasksFilters.vue';
-import { inject, onBeforeMount, reactive, ref, shallowRef, toRef, watch } from 'vue';
+import { computed, inject, onBeforeMount, reactive, ref, shallowRef, toRef, watch } from 'vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { debounce } from '@/utils/debounce.js';
 import { useQueryHash } from '@/utils/useQueryHash.js';
 import gsap from 'gsap';
-import { useTagsOptions } from '@/composables/useTagsOptions.js';
+import { useTagsOptions } from '@/composables/options/useTagsOptions.js';
 import TaskTagOption from '@/components/common/Forms/TaskTagOption.vue';
+import ConsultantPicker from '@/components/common/Forms/ConsultantPicker/ConsultantPicker.vue';
+import { taskOptions } from '@/const/options/task.options.js';
+import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
 
 const $targetUser = inject('$targetUser');
 
 const { getTagsOptions } = useTagsOptions();
+const { getConsultantsOptions } = useConsultantsOptions();
 const { isLoading } = useDelayedLoader();
+
+const filters = reactive({
+    createdById: null,
+    userId: null,
+    tags: [],
+    type: [],
+    status: []
+});
 
 const sortingOptions = [
     { value: '-updated_at', label: 'По умолчанию' },
@@ -133,7 +159,9 @@ const tasks = reactive({
     data: [],
     pagination: null
 });
+
 const querySearch = shallowRef('');
+
 const counts = ref({
     total: 0,
     accepted: 0,
@@ -141,17 +169,24 @@ const counts = ref({
     done: 0,
     impossible: 0
 });
+
 const relations = ref({
     by_user: 0,
     by_created_by: 0,
     by_observer: 0
 });
+
 const sortingOption = shallowRef('-updated_at');
-const filterStatus = ref([]);
-const filterType = ref([]);
-const taskTags = ref([]);
 
 const targetUser = toRef($targetUser);
+
+const createdByFilterIsDisabled = computed(() =>
+    filters.type.includes(taskOptions.typeStatement.GIVEN)
+);
+
+const userFilterIsDisabled = computed(() =>
+    filters.type.includes(taskOptions.typeStatement.RECEIVED)
+);
 
 watch(
     () => targetUser.value,
@@ -166,32 +201,27 @@ watch(querySearch, () => {
 });
 
 watch(
-    filterStatus,
+    () => filters.type,
     () => {
-        debouncedFetchTasks();
-    },
-    { deep: true }
-);
-
-watch(
-    filterType,
-    () => {
-        debouncedFetchTasks();
         debouncedFetchCounts();
     },
     { deep: true }
 );
 
-watch([sortingOption, taskTags], () => {
+watch(sortingOption, () => {
+    debouncedFetchTasks();
+});
+
+watch(filters, () => {
     debouncedFetchTasks();
 });
 
 const setNextPage = async page => {
-    debouncedFetchTasks(page);
+    await fetchTasks(page);
 };
 
 const setModeInQuery = query => {
-    filterType.value.forEach(element => {
+    filters.type.forEach(element => {
         query[element] = targetUser.value.id;
     });
 
@@ -202,10 +232,10 @@ const createQuery = page => {
     const query = { page };
 
     if (querySearch.value?.length) query.message = querySearch.value;
-    if (filterStatus.value.length) {
-        query.status = filterStatus.value;
+    if (filters.status.length) {
+        query.status = filters.status;
     }
-    if (filterType.value.length && targetUser.value.id) setModeInQuery(query);
+    if (filters.type.length && targetUser.value.id) setModeInQuery(query);
     else if (targetUser.value) {
         query.created_by_id = targetUser.value.id;
         query.observer_id = targetUser.value.id;
@@ -214,7 +244,16 @@ const createQuery = page => {
     }
     if (sortingOption.value) query.sort = sortingOption.value;
 
-    query.tag_ids = taskTags.value;
+    if (filters.createdById && !createdByFilterIsDisabled.value) {
+        query.created_by_id = filters.createdById;
+        query.multiple = null;
+    }
+    if (filters.userId && !userFilterIsDisabled.value) {
+        query.user_id = filters.userId;
+        query.multiple = null;
+    }
+
+    query.tag_ids = filters.tags;
 
     return query;
 };
@@ -222,14 +261,26 @@ const createQuery = page => {
 const createCountsQuery = () => {
     const query = {};
 
-    if (filterType.value.length && targetUser.value) {
-        filterType.value.forEach(element => {
+    if (filters.type.length && targetUser.value) {
+        filters.type.forEach(element => {
             query[element] = targetUser.value.id;
         });
+        query.multiple = 1;
     } else if (targetUser.value) {
         query.created_by_id = targetUser.value.id;
         query.observer_id = targetUser.value.id;
         query.user_id = targetUser.value.id;
+        query.multiple = 1;
+    }
+
+    if (filters.createdById && !createdByFilterIsDisabled.value) {
+        query.created_by_id = filters.createdById;
+        query.multiple = null;
+    }
+
+    if (filters.userId && !userFilterIsDisabled.value) {
+        query.user_id = filters.userId;
+        query.multiple = null;
     }
 
     return query;
