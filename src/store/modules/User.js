@@ -17,15 +17,19 @@ const User = {
     },
     mutations: {
         updateConsultantList(state, data) {
-            let newConsultantList = [];
-            data.map(item => {
-                newConsultantList.push({
-                    value: item.id,
-                    label: item.userProfile.short_name,
-                    status: item.status
-                });
+            state.consultantList = data.map(element => {
+                return {
+                    value: element.id,
+                    label: element.userProfile.medium_name,
+                    status: element.status,
+                    avatar: element.userProfile.avatar,
+                    short_name: element.userProfile.short_name,
+                    role: userOptions.beautifulRole[element.role],
+                    email: element.email,
+                    phones: element.userProfile.phones.map(element => element.phone).join(', '),
+                    emails: element.userProfile.emails.map(element => element.email).join(', ')
+                };
             });
-            state.consultantList = newConsultantList;
         },
         setUser(state, user) {
             state.thisUser = user;

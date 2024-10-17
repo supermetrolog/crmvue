@@ -220,7 +220,8 @@ export default {
             default: true
         },
         currentStepID: {
-            type: Number
+            type: Number,
+            default: 0
         }
     },
     data() {

@@ -14,7 +14,7 @@
             <input
                 v-model="modelValue"
                 @change="onChange"
-                @click.stop="onClick"
+                @click="onClick"
                 :disabled="disabled"
                 :value="value"
                 :true-value="1"
@@ -22,12 +22,7 @@
                 type="checkbox"
             />
             {{ text }}
-            <i
-                v-if="icon"
-                v-tippy="iconLabel"
-                @click.stop.prevent="$emit('icon-clicked')"
-                :class="icon"
-            ></i>
+            <i v-if="icon" v-tippy="iconLabel" @click="onIconClick" :class="icon"></i>
         </label>
         <slot />
     </div>
@@ -91,6 +86,10 @@ const props = defineProps({
     iconLabel: {
         type: String,
         default: null
+    },
+    handledIcon: {
+        type: Boolean,
+        default: false
     }
 });
 
@@ -129,6 +128,15 @@ const onClick = event => {
     else modelValue.value = [...modelValue.value, { [props.property]: props.value }];
 
     onChange();
+};
+
+const onIconClick = event => {
+    if (props.handledIcon) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
+
+    emit('icon-clicked');
 };
 
 const onChange = () => {

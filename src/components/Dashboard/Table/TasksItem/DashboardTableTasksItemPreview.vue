@@ -12,7 +12,7 @@
                     >
                         <i class="fa-solid fa-user-check"></i>
                     </HoverActionsButton>
-                    <div v-if="draggable" class="dashboard-card-task__moves">
+                    <div v-if="draggable && canBeEdit" class="dashboard-card-task__moves">
                         <HoverActionsButton
                             @click.stop="moveSettingsIsVisible = !moveSettingsIsVisible"
                             label="Изменить статус"
@@ -32,7 +32,11 @@
                     >
                         <i class="fa-solid fa-comment-alt" />
                     </HoverActionsButton>
-                    <HoverActionsButton v-if="editable" @click="editTask" label="Редактировать">
+                    <HoverActionsButton
+                        v-if="editable && canBeEdit"
+                        @click="editTask"
+                        label="Редактировать"
+                    >
                         <i class="fa-solid fa-pen" />
                     </HoverActionsButton>
                     <HoverActionsButton
@@ -92,7 +96,6 @@
                     </DashboardTableTasksItemPreviewRow>
                     <DashboardTableTasksItemPreviewRow label="Исполнение с">
                         <span v-if="task.start">{{ startDate }}</span>
-                        {{ createdDate }}
                     </DashboardTableTasksItemPreviewRow>
                     <DashboardTableTasksItemPreviewRow label="Срок выполнения">
                         <span>{{ dayToExpired }} до {{ expiredDate }}</span>
@@ -192,6 +195,24 @@
                         @click="toChat"
                         :model="task.related_by.chat_member.model"
                     />
+                    <div class="d-flex mt-1 gap-2">
+                        <button
+                            @click.prevent="toChat"
+                            class="dashboard-task-item-preview__button"
+                            :class="objectCompanyId ? 'w-50' : 'w-100'"
+                        >
+                            <span>Открыть чат</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square ml-2"></i>
+                        </button>
+                        <button
+                            v-if="objectCompanyId"
+                            @click.prevent="toCompany"
+                            class="dashboard-task-item-preview__button w-50"
+                        >
+                            <span>Открыть компанию</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square ml-2"></i>
+                        </button>
+                    </div>
                 </div>
                 <div
                     v-if="task.related_by?.chat_member_message_id"
@@ -244,6 +265,8 @@ import MessengerDialogUser from '@/components/Messenger/Dialog/MessengerDialogUs
 import { dayjsFromMoscow } from '@/utils/index.js';
 import { toDateFormat } from '@/utils/formatter.js';
 import Loader from '@/components/common/Loader.vue';
+import { messenger } from '@/const/messenger.js';
+import { getLinkCompany } from '@/utils/url.js';
 
 const DAYS_TO_IMPOSSIBLE = 30;
 
@@ -322,6 +345,11 @@ const canBeViewed = computed(() => {
 
     return false;
 });
+
+const canBeEdit = computed(() => {
+    return store.getters.isAdmin || store.getters.isDirector || !isCompleted.value;
+});
+
 const viewersText = computed(() =>
     props.task.observers.map(element => element.user.userProfile.medium_name).join(', ')
 );
@@ -335,9 +363,16 @@ const chatMemberMessage = computed(() => {
 const canBeSuspend = computed(() => {
     return (
         dayjsFromMoscow(props.task.end).subtract(DAYS_TO_IMPOSSIBLE, 'day').isAfter(dayjs()) &&
-        !isCanceled.value
+        !isCanceled.value &&
+        !isCompleted.value
     );
 });
+
+const clearState = () => {
+    newComment.value = null;
+    moveSettingsIsVisible.value = false;
+    commentsIsOpen.value = false;
+};
 
 const editTask = async () => {
     const taskPayload = await showTaskCreator(props.task);
@@ -375,11 +410,30 @@ const currentDialogComponent = computed(() => {
     return MessengerDialogObject;
 });
 
+const objectCompanyId = computed(() => {
+    if (props.task.related_by.chat_member.model_type === messenger.dialogTypes.OBJECT)
+        return props.task.related_by.chat_member.model.object.company?.id;
+
+    if (props.task.related_by.chat_member.model_type === messenger.dialogTypes.REQUEST)
+        return props.task.related_by.chat_member.model.company?.id;
+
+    return null;
+});
+
 watch(
-    () => [props.visible, props.task?.id],
-    ([isVisibleNewValue]) => {
-        commentsIsOpen.value = false;
-        if (isVisibleNewValue && canBeViewed.value) debouncedReadTask();
+    () => props.visible,
+    newValue => {
+        if (newValue && canBeViewed.value) debouncedReadTask();
+    }
+);
+
+watch(
+    () => props.task?.id,
+    () => {
+        clearState();
+        if (props.visible && canBeViewed.value) {
+            debouncedReadTask();
+        }
     }
 );
 
@@ -400,6 +454,7 @@ const createComment = async () => {
 };
 
 const onCommentCreated = comment => {
+    newComment.value = null;
     emit('updated', { ...props.task, last_comment: comment });
 };
 
@@ -447,6 +502,10 @@ const toChat = () => {
             modelType
         });
     }
+};
+
+const toCompany = () => {
+    window.open(getLinkCompany(objectCompanyId.value), '_blank');
 };
 
 const debouncedReadTask = debounce(readTask, 500);

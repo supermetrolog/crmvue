@@ -6,7 +6,7 @@ export function useSearchContacts(companyID) {
     const contacts = ref([]);
 
     async function searchContacts(_companyID) {
-        const response = await api.contacts.searchContacts(
+        const response = await api.contacts.list(
             _companyID == null ? { company_id: companyID.value } : { company_id: _companyID }
         );
 

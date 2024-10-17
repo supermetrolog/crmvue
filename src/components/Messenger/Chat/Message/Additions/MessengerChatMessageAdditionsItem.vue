@@ -1,5 +1,8 @@
 <template>
     <div class="messenger-chat-message-addition" :class="{ viewed: settingsIsVisible }">
+        <div v-if="$slots.header" class="messenger-chat-message-addition__header">
+            <slot name="header" />
+        </div>
         <div class="messenger-chat-message-addition__content">
             <div v-if="$slots.functions" class="messenger-chat-message-addition__functions">
                 <slot name="functions"></slot>

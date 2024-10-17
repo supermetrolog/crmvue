@@ -16,7 +16,7 @@
   "dependencies": {
     "@floating-ui/vue": "^1.0.6",
     "@kyvg/vue3-notification": "^3.2.1",
-    "@vueform/multiselect": "^2.6.3",
+    "@vueform/multiselect": "^2.6.10",
     "@vuelidate/core": "^2.0.0-alpha.19",
     "@vuelidate/validators": "^2.0.0-alpha.17",
     "@vuepic/vue-datepicker": "^8.7.0",

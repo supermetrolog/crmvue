@@ -57,19 +57,14 @@
             >
                 Отложенные
             </DashboardCardNavLink>
-            <!--            <DashboardCardNavLink-->
-            <!--                @select="toggleField('expired')"-->
-            <!--                :icon="{-->
-            <!--                    name: 'fa-solid fa-fire',-->
-            <!--                    class: 'dashboard-bg-warning-l'-->
-            <!--                }"-->
-            <!--                :badge="counts.expired"-->
-            <!--                :active="field.expired"-->
-            <!--            >-->
-            <!--                Сгоревшие-->
-            <!--            </DashboardCardNavLink>-->
         </div>
         <hr />
+        <template v-if="$slots.filters">
+            <div class="dashboard-aside__menu my-1">
+                <slot name="filters" />
+            </div>
+            <hr />
+        </template>
         <AnimationTransition :speed="0.4">
             <div v-if="targetUser" class="dashboard-aside__menu mt-3">
                 <DashboardCardNavLink
@@ -86,8 +81,9 @@
                 >
                     {{ givenLabel }}
                 </DashboardCardNavLink>
+                <hr class="w-100" />
                 <DashboardCardNavLink
-                    @select="toggleType('viewing')"
+                    @select="toggleIsViewing"
                     :badge="relations.by_observer.toFixed()"
                     :active="types.viewing"
                 >
@@ -186,9 +182,26 @@ const toggleField = key => {
 const toggleType = key => {
     types[key] = !types[key];
 
+    if (types.viewing) {
+        types.viewing = false;
+        const typeId = taskOptions.typeStatement.VIEWING;
+        spliceWithPrimitive(typeModelValue.value, typeId);
+    }
+
     const typeId = taskOptions.typeStatement[key.toUpperCase()];
     if (types[key]) typeModelValue.value.push(typeId);
     else spliceWithPrimitive(typeModelValue.value, typeId);
+};
+
+const toggleIsViewing = () => {
+    if (types.viewing) {
+        types.viewing = false;
+        typeModelValue.value = [];
+    } else {
+        Object.keys(types).forEach(key => (types[key] = false));
+        typeModelValue.value = [taskOptions.typeStatement.VIEWING];
+        types.viewing = true;
+    }
 };
 
 const toggleAll = () => {

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { setRequestError } from '@/api/helpers/setRequestError.js';
 import { SuccessHandler } from '@/api/helpers/successHandler.js';
+import { responseToData } from '@/api/helpers/responseToData.js';
 
 function getFormDataWithFiles(formdata1, forUpdate = false) {
     let formdata = { ...formdata1 };
@@ -29,7 +30,13 @@ function getFormDataWithFiles(formdata1, forUpdate = false) {
     return FD;
 }
 
+const URL = 'companies';
+
 export default {
+    async search(params) {
+        const response = await axios.get(URL, { params });
+        return responseToData(response);
+    },
     async getCompanies() {
         const url =
             'companies?sort=-categories&expand=requests,contacts.emails,contacts.phones,contacts.contactComments,broker,companyGroup,consultant,consultant.userProfile,productRanges,categories,files';

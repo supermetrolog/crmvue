@@ -86,8 +86,10 @@ import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import { computed, onUnmounted, ref, shallowRef } from 'vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import dayjs from 'dayjs';
+import { useTagsOptions } from '@/composables/options/useTagsOptions.js';
 
 const store = useStore();
+const { getTagsOptions } = useTagsOptions();
 
 const steps = [
     {
@@ -146,8 +148,18 @@ const presets = [
     },
     {
         id: 8,
+        value: 91,
+        label: '3 месяца'
+    },
+    {
+        id: 9,
         value: 183,
         label: 'Пол года'
+    },
+    {
+        id: 10,
+        value: 273,
+        label: '9 месяцев'
     }
 ];
 
@@ -164,8 +176,6 @@ const form = ref({
     status: 1,
     observers: []
 });
-
-const tagsOptions = computed(() => store.getters['Task/tagsOptions']);
 
 const consultantsForObservers = computed(() => {
     if (store.getters.isAdmin) return consultants.value;
@@ -197,12 +207,6 @@ const fetchConsultants = async () => {
     isLoading.value = true;
     consultants.value = await store.dispatch('getConsultants');
     isLoading.value = false;
-};
-
-const getTagsOptions = async () => {
-    if (tagsOptions.value.length) return tagsOptions.value;
-    await store.dispatch('Task/fetchTags');
-    return tagsOptions.value;
 };
 
 const {
