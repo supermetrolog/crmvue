@@ -457,13 +457,16 @@
     left: 0;
     bottom: 0;
     background-color: #f7f7f7;
-    padding: 3.5rem 1.5rem 1.5rem;
+    padding: 1rem 1.5rem;
     width: 400px;
+    border-right: 1px solid rgba(0, 0, 0, .2);
 
-    &__close {
-        position: absolute;
-        right: 1rem;
-        top: .5rem;
+    &__header {
+        @include mixins.flex-box($gap: 10px, $a: center);
+    }
+
+    &__title {
+        @include mixins.text-overflow();
     }
 }
 

@@ -4,6 +4,7 @@ const hashSet = {};
 export function useQueryHash(key) {
     function setHash(query) {
         hashSet[key] = waitHash(query);
+        return hashSet[key];
     }
 
     function confirmHash(query) {
@@ -15,5 +16,14 @@ export function useQueryHash(key) {
         return false;
     }
 
-    return { setHash, confirmHash };
+    function confirmTransformedHash(hash) {
+        if (hash === hashSet[key]) {
+            delete hashSet[key];
+            return true;
+        }
+
+        return false;
+    }
+
+    return { setHash, confirmHash, confirmTransformedHash };
 }
