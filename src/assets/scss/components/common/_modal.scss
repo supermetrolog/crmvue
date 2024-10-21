@@ -67,6 +67,8 @@
         font-weight: normal;
         overflow: hidden auto;
         scrollbar-gutter: stable;
+
+        min-height: var(--modal-body-min-height);
     }
 
     &__close {

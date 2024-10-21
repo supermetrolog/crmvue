@@ -155,6 +155,10 @@
         color: #fff!important;
         opacity: .5;
     }
+
+    &.bold {
+        font-weight: 600;
+    }
 }
 
 .link {
@@ -188,8 +192,8 @@
         font-weight: 600;
         font-size: 14px;
         cursor: pointer;
-        @include mixins.flex-box($a: center, $j: center);
-        @include mixins.transition(background-color);
+        @include mixins.flex-box($a: center, $j: center, $gap: 5px);
+        @include mixins.transition(background-color, color);
 
         @include mixins.hover {
             background-color:  #6fd2b1;
@@ -197,6 +201,7 @@
 
         &.active {
             background-color:  #6fd2b1;
+            color: #000!important;
 
             @include mixins.hover {
                 background-color: #28d39b;
@@ -215,6 +220,10 @@
         border-radius: 50%;
         background-color: #fff;
         @include mixins.flex-box($a: center, $j: center);
+    }
+
+    &__loading {
+        height: 169px;
     }
 }
 

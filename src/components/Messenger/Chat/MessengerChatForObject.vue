@@ -1,7 +1,37 @@
 <template>
     <div class="messenger-chat">
         <MessengerTabs @switch="switchTab" :current="currentTab" :tabs="tabs">
-            <template #quiz>Заполнить опрос</template>
+            <template #quiz>
+                <tippy tag="div" class="messenger-chat__tab-quiz">
+                    <template #default>
+                        <div v-if="isLoading" class="messenger-tabs__loading">
+                            <Spinner class="absolute-center mini" />
+                        </div>
+                        <template v-else>
+                            <i class="fa-solid fa-square-phone-flip messenger-chat__icon-phone" />
+                            <span v-if="currentDialog?.last_call"> Опрос {{ lastCallDate }} </span>
+                            <span v-else>ЗАПОЛНИТЕ ОПРОС!</span>
+                        </template>
+                    </template>
+                    <template #content>
+                        <div v-if="isLoading" class="d-flex align-items-center gap-2 p-2">
+                            <Spinner class="mini" />
+                            <p>Загрузка данных о последнем звонке..</p>
+                        </div>
+                        <div v-else-if="currentDialog">
+                            <div v-if="shouldCall" class="mb-1">
+                                <p class="messenger-warning">ИНФОРМАЦИЯ УСТАРЕЛА!</p>
+                                <p class="messenger-warning">СОЗВОНИТЕСЬ И ЗАПОЛНИТЕ ОПРОСНИК!</p>
+                            </div>
+                            <p v-if="currentDialog?.last_call">
+                                Последний опрос был заполнен {{ lastCallDate }}, звонивший:
+                                {{ currentDialog.last_call.user.userProfile.medium_name }}
+                            </p>
+                            <p v-else>Звонок по объекту отсутствует или не заполнен.</p>
+                        </div>
+                    </template>
+                </tippy>
+            </template>
         </MessengerTabs>
         <MessengerChatLoader v-if="isLoading" />
         <div v-else-if="currentPanel && currentChat" class="messenger-chat__wrapper">
@@ -33,12 +63,14 @@ import FormModalMessageAlert from '@/components/Forms/FormModalMessageAlert.vue'
 import FormModalTaskStatus from '@/components/Forms/FormModalTaskStatus.vue';
 import api from '@/api/api.js';
 import { computed, provide, ref, shallowRef, watch } from 'vue';
-import { ucFirst } from '@/utils/formatter.js';
+import { toDateFormat, ucFirst } from '@/utils/formatter.js';
 import { useNotify } from '@/utils/useNotify.js';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import MessengerTabs from '@/components/Messenger/MessengerTabs.vue';
 import MessengerQuizHelper from '@/components/Messenger/Quiz/MessengerQuizHelper.vue';
+import Spinner from '@/components/common/Spinner.vue';
+import { Tippy } from 'vue-tippy';
 
 const CHAT_TABS = {
     CHAT: 1,
@@ -63,12 +95,16 @@ const quizHelper = ref(null);
 const chatSettings = ref(null);
 const currentTab = shallowRef(CHAT_TABS.CHAT);
 
+const currentDialog = computed(() => store.state.Messenger.currentDialog);
 const shouldCall = computed(() => {
     return (
         store.getters['Messenger/currentDaysCountAfterLastCall'] >
         import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_WARNING
     );
 });
+const lastCallDate = computed(() =>
+    toDateFormat(currentDialog.value.last_call.created_at, 'D.MM.YY')
+);
 
 const tabs = computed(() => [
     { id: CHAT_TABS.CHAT, key: 'chat', label: 'Чат' },
@@ -76,7 +112,7 @@ const tabs = computed(() => [
         id: CHAT_TABS.QUIZ,
         key: 'quiz',
         label: 'Заполните опрос',
-        class: shouldCall.value ? 'dashboard-bg-danger' : undefined
+        class: shouldCall.value && !isLoading.value ? 'bg-danger text-white' : undefined
     }
 ]);
 

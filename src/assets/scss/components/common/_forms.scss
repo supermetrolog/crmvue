@@ -685,6 +685,11 @@
     &:has(.invalid) {
         border-bottom: 2px solid variables.$color_danger !important;
     }
+
+    &:has(input:disabled) {
+        opacity: .6;
+        pointer-events: none;
+    }
 }
 
 .radio-icon {

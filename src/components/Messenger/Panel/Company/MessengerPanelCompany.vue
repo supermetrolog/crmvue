@@ -13,7 +13,10 @@
                 target="_blank"
                 class="messenger-panel-company__name"
             >
-                {{ companyName }}
+                <span v-if="hasUndefinedName" class="messenger-warning bold">
+                    НЕТ УНИКАЛЬНОГО НАЗВАНИЯ
+                </span>
+                <span v-else>{{ companyName }}</span>
             </a>
             <div class="messenger-panel-company__subtitle">
                 <span>ID{{ company.id }} | </span>
@@ -30,8 +33,8 @@
                     {{ website }}
                 </a>
             </p>
-            <p v-else class="messenger-panel-company__site messenger-warning">
-                Сайт: требуется внести
+            <p v-else class="messenger-panel-company__site messenger-warning bold">
+                Сайт: не заполнен
             </p>
             <ul class="messenger-panel-company__options">
                 <li v-if="activityGroup" class="messenger-panel-company__option">
@@ -65,6 +68,7 @@ import { computed } from 'vue';
 import { getCompanyName, toCorrectUrl, ucFirst } from '@/utils/formatter.js';
 import { companyOptions } from '@/const/options/company.options.js';
 import { contactOptions } from '@/const/options/contact.options.js';
+import { alg } from '@/utils/alg.js';
 
 defineEmits(['edit']);
 const props = defineProps({
@@ -72,6 +76,16 @@ const props = defineProps({
         type: Object,
         required: true
     }
+});
+
+const hasUndefinedName = computed(() => {
+    return (
+        props.company.noName ||
+        ((!props.company.nameRu ||
+            (alg.isNumeric(props.company.nameRu) &&
+                Number(props.company.nameRu) === props.company.id)) &&
+            !props.company.nameEng)
+    );
 });
 
 const website = computed(() => {

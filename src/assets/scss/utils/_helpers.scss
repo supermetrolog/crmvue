@@ -13,6 +13,10 @@
     &-warning {
         color: #f88f01;
     }
+
+    &-light {
+        color: #9ca69e;
+    }
 }
 
 .bg {
@@ -34,7 +38,8 @@
             warning #f88f01 #a46104 #fff,
             danger #f93154 #cb1132 #fff,
             primary #11698e #085373 #fff,
-            light-danger #f93154 #cb1132 #fff
+            light-danger #f93154 #cb1132 #fff,
+            dark #7a7a83 #585860 #fff
         );
     }
 

@@ -56,10 +56,10 @@
     </MessengerAsideSection>
 </template>
 <script setup>
-import MessengerDialogObject from '@/components/Messenger/Dialog/MessengerDialogObject.vue';
+import MessengerDialogObject from '@/components/Messenger/Dialog/Object/MessengerDialogObject.vue';
 import MessengerAsideSection from '@/components/Messenger/Aside/MessengerAsideSection.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
-import MessengerDialogObjectSkeleton from '@/components/Messenger/Dialog/MessengerDialogObjectSkeleton.vue';
+import MessengerDialogObjectSkeleton from '@/components/Messenger/Dialog/Object/MessengerDialogObjectSkeleton.vue';
 import { useStore } from 'vuex';
 import InfiniteLoading from 'v3-infinite-loading';
 import VirtualDragList from 'vue-virtual-draglist';

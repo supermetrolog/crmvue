@@ -3,6 +3,7 @@
         @close="$emit('close')"
         width="1300"
         show
+        :min-height="500"
         :title="formdata ? 'Редактирование контакта' : 'Создание нового контакта'"
     >
         <template #header>
@@ -212,7 +213,6 @@
                     {{ formdata ? 'Сохранить' : 'Создать' }}
                 </Submit>
             </div>
-            {{ v$.$errors }}
         </Form>
     </Modal>
 </template>
@@ -383,7 +383,7 @@ const v$ = useVuelidate(
 const updateContact = async () => {
     const updated = await api.contacts.update(props.formdata.id, form);
     if (updated) {
-        emit('updated');
+        emit('updated', props.formdata.id);
         emit('close');
     }
 };

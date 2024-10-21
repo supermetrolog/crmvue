@@ -203,3 +203,12 @@ export function singleToArrayByKeys(obj, keys) {
         if (Object.hasOwnProperty.call(obj, key) && !Array.isArray(obj[key])) obj[key] = [obj[key]];
     });
 }
+
+/**
+ *
+ * @param {object} obj
+ * @return {boolean}
+ */
+export function isEmptyObject(obj) {
+    return Object.keys(obj).length === 0;
+}

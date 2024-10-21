@@ -26,6 +26,7 @@ import field from '@/api/field.js';
 import messengerTag from '@/api/messengerTag.js';
 import taskTag from '@/api/taskTag.js';
 import session from '@/api/session.js';
+import object from '@/api/object.js';
 
 export default {
     user,
@@ -55,5 +56,6 @@ export default {
     field,
     messengerTag,
     taskTag,
-    session
+    session,
+    object
 };

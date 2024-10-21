@@ -3,6 +3,7 @@
         <input
             v-model="field"
             @click="onChange"
+            :disabled="disabled"
             type="radio"
             class="radio-chip__input"
             :value="value"
