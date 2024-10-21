@@ -1,4 +1,5 @@
 @use '../../utils/mixins';
+@use '../../utils/variables';
 
 .messenger-dialog {
     padding: 10px 15px;
@@ -314,5 +315,143 @@
         font-size: 14px;
         color: #05865f;
         font-weight: 500;
+    }
+}
+
+.messenger-dialog-preview-tab {
+    &__header {
+        padding: 5px 10px;
+        border-top: 1px solid #c3e3d4;
+        border-bottom: 1px solid #c3e3d4;
+    }
+
+    &__title {
+        font-weight: 500;
+    }
+
+    &__heading {
+        @include mixins.flex-box($gap: 5px, $a: center);
+
+        &.has-warning {
+            color: variables.$color_danger;
+        }
+    }
+
+    &__body {
+        padding: 5px 10px;
+    }
+}
+
+.messenger-dialog-preview {
+    &__content {
+        border-bottom: 1px solid rgba(0, 0, 0, .4);
+    }
+
+    &__grid {
+        display: grid;
+        row-gap: 5px;
+        column-gap: 10px;
+        grid-template-columns: 3fr 2fr;
+    }
+
+    &__label {
+        max-width: 100%;
+
+        &.editable {
+            display: block;
+            padding: 2px 5px;
+            margin: 0 -5px;
+            border-radius: 5px;
+            cursor: pointer;
+
+            @include mixins.transition(background-color);
+            @include mixins.hover {
+                background-color: #d1d5db;
+            }
+        }
+    }
+
+    &__value {
+        max-width: 100%;
+    }
+
+    &__warning {
+        color: variables.$color_danger;
+        font-weight: 500;
+    }
+
+    &__with-tippy {
+        padding: 2px 5px;
+        margin: 0 -5px;
+        border-radius: 5px;
+        background-color: #d5ded5;
+        @include mixins.transition(background-color);
+        @include mixins.hover {
+            background-color: #b4d7b4;
+        }
+    }
+
+    &__tabs {
+        @include mixins.flex-box($gap: 5px, $a: center);
+        margin-bottom: 5px;
+    }
+
+    &__tab-link {
+        display: block;
+        color: inherit;
+        padding: 5px 10px;
+        background-color: variables.$bg-gray-l;
+        @include mixins.transition(background-color, color);
+
+        &.is-active {
+            background-color: variables.$bg-success;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        @include mixins.hover {
+            background-color: variables.$bg-success;
+            color: #fff;
+        }
+
+        &.is-disabled {
+            pointer-events: none;
+            opacity: .6;
+            background-color: variables.$bg-danger-l;
+        }
+
+        &.skeleton {
+            background-color: transparent;
+            pointer-events: none;
+        }
+    }
+}
+
+.messenger-dialog-preview-tippy {
+    &__title {
+        font-weight: 600;
+    }
+
+    &__label {
+        font-weight: 500;
+        color: #969696;
+    }
+}
+
+.messenger-dialog-preview-storage-services {
+    &__item {
+        color: variables.$cl-danger;
+
+        &:before {
+            content: '- ';
+        }
+
+        &.active {
+            color: variables.$cl-success;
+
+            &:before {
+                content: "+ ";
+            }
+        }
     }
 }

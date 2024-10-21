@@ -249,7 +249,7 @@ import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import dayjs from 'dayjs';
 import plural from 'plural-ru';
 import { taskOptions } from '@/const/options/task.options.js';
-import MessengerDialogObject from '@/components/Messenger/Dialog/MessengerDialogObject.vue';
+import MessengerDialogObject from '@/components/Messenger/Dialog/Object/MessengerDialogObject.vue';
 import MessengerDialogRequest from '@/components/Messenger/Dialog/MessengerDialogRequest.vue';
 import DashboardTableTasksItemPreviewComments from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemPreviewComments.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';

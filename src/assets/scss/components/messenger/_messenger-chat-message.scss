@@ -98,15 +98,14 @@
     }
 
     &__photo {
-        min-width: 60px;
-        flex-basis: calc(25% - 4px);
+        height: 180px;
+        width: 180px;
         font-size: 12px;
-        flex-grow: 1;
 
 
         .file {
             &__body {
-                aspect-ratio: unset;
+                max-width: 200px;
 
                 &:has(.file__image) {
                     display: block;

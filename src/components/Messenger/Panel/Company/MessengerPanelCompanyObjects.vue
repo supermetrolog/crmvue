@@ -36,6 +36,9 @@
                     :model="record.model"
                     :last-call="record.last_call"
                 />
+                <MessengerDialogPreview>
+                    <MessengerDialogObjectPreview :object-id="record.model.object.id" />
+                </MessengerDialogPreview>
             </template>
             <template v-if="objects.length >= 20" #footer>
                 <InfiniteLoading @infinite="loadObjects">
@@ -48,91 +51,77 @@
         </VirtualDragList>
     </div>
 </template>
-<script>
-import MessengerDialogObject from '@/components/Messenger/Dialog/MessengerDialogObject.vue';
-import MessengerDialogObjectSkeleton from '@/components/Messenger/Dialog/MessengerDialogObjectSkeleton.vue';
+<script setup>
+import MessengerDialogObject from '@/components/Messenger/Dialog/Object/MessengerDialogObject.vue';
+import MessengerDialogObjectSkeleton from '@/components/Messenger/Dialog/Object/MessengerDialogObjectSkeleton.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
-import { mapActions, mapState, useStore } from 'vuex';
+import { useStore } from 'vuex';
 import InfiniteLoading from 'v3-infinite-loading';
 import VirtualDragList from 'vue-virtual-draglist';
 import Spinner from '@/components/common/Spinner.vue';
 import { useInfiniteLoading } from '@/composables/useInfiniteLoading.js';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
+import { computed, inject, onMounted, watch } from 'vue';
+import MessengerDialogObjectPreview from '@/components/Messenger/Dialog/Object/MessengerDialogObjectPreview.vue';
+import MessengerDialogPreview from '@/components/Messenger/Dialog/Preview/MessengerDialogPreview.vue';
 
-export default {
-    name: 'MessengerPanelCompanyObjects',
-    components: {
-        Spinner,
-        VirtualDragList,
-        InfiniteLoading,
-        MessengerDialogObjectSkeleton,
-        MessengerDialogObject,
-        EmptyData
-    },
-    inject: ['lastRenderedObjectCount', 'setLastRendererObjectCount'],
-    props: {
-        companyID: {
-            type: Number,
-            required: true
-        }
-    },
-    setup(props) {
-        const { isLoading } = useDelayedLoader();
-        const store = useStore();
-        const getCompanyObjects = (page = 1) =>
-            store.dispatch('Messenger/getCompanyChats', {
-                companyID: props.companyID,
-                modelType: 'object',
-                page
-            });
+const lastRenderedObjectCount = inject('lastRenderedObjectCount');
+const setLastRendererObjectCount = inject('setLastRendererObjectCount');
 
-        const {
-            items: objects,
-            pagination,
-            load: loadObjects
-        } = useInfiniteLoading(getCompanyObjects);
-
-        const { show: showLastCallPopup } = useAsyncPopup('chatMemberLastCall');
-
-        return {
-            objects,
-            pagination,
-            isLoading,
-            loadObjects,
-            getCompanyObjects,
-            showLastCallPopup
-        };
-    },
-    computed: {
-        ...mapState({ currentDialogID: state => state.Messenger.currentPanelDialogID })
-    },
-    watch: {
-        isLoading(value) {
-            if (!value) this.setLastRendererObjectCount(Math.min(this.objects.length, 3) || 1);
-        }
-    },
-    methods: {
-        ...mapActions({
-            selectChat: 'Messenger/selectChat'
-        }),
-        async fetchObjects() {
-            this.isLoading = true;
-
-            const data = await this.getCompanyObjects();
-
-            this.objects = data.data;
-            this.pagination = data.pagination;
-
-            this.isLoading = false;
-        },
-        async updateCall(payload, record) {
-            const response = await this.showLastCallPopup(payload);
-            if (response) record.last_call = response.lastCall;
-        }
-    },
-    created() {
-        this.fetchObjects();
+const props = defineProps({
+    companyID: {
+        type: Number,
+        required: true
     }
+});
+
+const { isLoading } = useDelayedLoader(true);
+const store = useStore();
+const getCompanyObjects = async (page = 1) => {
+    const response = await store.dispatch('Messenger/getCompanyChats', {
+        companyID: props.companyID,
+        modelType: 'object',
+        page
+    });
+
+    return {
+        data: response.data.filter(object => {
+            return object.model.type === 'rent_or_sale';
+        }),
+        pagination: response.pagination
+    };
 };
+
+const { items: objects, pagination, load: loadObjects } = useInfiniteLoading(getCompanyObjects);
+
+const { show: showLastCallPopup } = useAsyncPopup('chatMemberLastCall');
+
+const currentDialogID = computed(() => store.state.Messenger.currentPanelDialogID);
+
+watch(isLoading, value => {
+    if (!value) setLastRendererObjectCount(Math.min(objects.value.length, 3) || 1);
+});
+
+const selectChat = options => store.dispatch('Messenger/selectChat', options);
+
+const fetchObjects = async () => {
+    isLoading.value = true;
+
+    const response = await getCompanyObjects();
+
+    objects.value = response.data;
+    pagination.value = response.pagination;
+
+    isLoading.value = false;
+};
+
+const updateCall = async (payload, record) => {
+    const response = await showLastCallPopup(payload);
+    if (response) record.last_call = response.lastCall;
+};
+
+onMounted(() => {
+    fetchObjects();
+});
 </script>
