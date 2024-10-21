@@ -23,7 +23,12 @@
                         <span v-if="showId" class="mr-1">#{{ question.id }}</span>
                         <span>{{ question.text }}</span>
                     </p>
-                    <RadioGroup v-if="question.answers?.['yes-no']" v-model="form.main" unselect />
+                    <RadioGroup
+                        v-if="question.answers?.['yes-no']"
+                        v-model="form.main"
+                        class="messenger-quiz-question__main"
+                        unselect
+                    />
                     <MessengerButton
                         v-else-if="canEdit"
                         @click="$emit('add-answer', question.id, 'yes-no')"
@@ -42,18 +47,31 @@
                 </DashboardChip>
                 <div class="messenger-quiz-question__additions">
                     <template v-if="question.answers?.tab">
-                        <CheckboxChip
-                            v-for="answer in tabs"
-                            :key="answer.id"
-                            v-model="form.tab"
-                            @icon-clicked="$emit('edit-answer', answer)"
-                            handled-icon
-                            :value="answer.id"
-                            :text="answer.value"
-                            :icon="canEdit ? 'fa-solid fa-pen' : undefined"
-                            icon-label="Редактировать"
-                            :disabled="isDisabled"
-                        />
+                        <template v-if="isRadioAdditions">
+                            <RadioChip
+                                v-for="answer in tabs"
+                                :key="answer.id"
+                                v-model="form.tab"
+                                :value="answer.id"
+                                :label="answer.value"
+                                unselect
+                                :disabled="isDisabled"
+                            />
+                        </template>
+                        <template v-else>
+                            <CheckboxChip
+                                v-for="answer in tabs"
+                                :key="answer.id"
+                                v-model="form.tab"
+                                @icon-clicked="$emit('edit-answer', answer)"
+                                handled-icon
+                                :value="answer.id"
+                                :text="answer.value"
+                                :icon="canEdit ? 'fa-solid fa-pen' : undefined"
+                                icon-label="Редактировать"
+                                :disabled="isDisabled"
+                            />
+                        </template>
                     </template>
                     <MessengerButton
                         v-if="canEdit"
@@ -142,6 +160,7 @@ import HoverActionsButton from '@/components/common/HoverActions/HoverActionsBut
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';
 import AccordionSimpleTrigger from '@/components/common/Accordion/AccordionSimpleTrigger.vue';
+import RadioChip from '@/components/common/Forms/RadioChip.vue';
 
 defineEmits(['edit', 'delete', 'edit-answer', 'add-answer']);
 const props = defineProps({
@@ -182,6 +201,10 @@ const hasMainQuestion = computed(() => Boolean(props.question.answers?.['yes-no'
 const hasTabQuestions = computed(() => Boolean(props.question.answers?.tab));
 const hasTextQuestions = computed(() => Boolean(props.question.answers?.['text-answer']));
 const hasCheckboxQuestions = computed(() => Boolean(props.question.answers?.checkbox));
+
+const isRadioAdditions = computed(() => {
+    return tabs.value.some(answer => answer.field_id === 4);
+});
 
 const tabs = computed(() =>
     props.question.answers.tab.filter(element => element.deleted_at === null)
