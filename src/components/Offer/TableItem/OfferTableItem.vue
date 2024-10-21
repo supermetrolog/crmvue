@@ -152,14 +152,6 @@
     </DropDown>
     <DropDown>
         <OfferTableItemDropdown v-if="relationDropdownIsOpen">
-            <Button
-                v-tippy="'Скрыть информацию о предложении'"
-                @click="relationDropdownIsOpen = false"
-                class="offer-table-item__close w-100"
-                info
-            >
-                <i class="fas fa-angle-up"></i>
-            </Button>
             <Spinner v-if="relationsIsLoading" class="m-4" />
             <div v-else class="offer-table-item-dropdown__list">
                 <OfferTableItem v-for="offer in relatedOffers" :key="offer.id" :offer="offer" />

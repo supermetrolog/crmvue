@@ -138,11 +138,12 @@
         writing-mode: vertical-rl;
         transform: rotateZ(180deg);
         cursor: pointer;
-        height: 120px;
+        height: 125px;
         width: max-content;
         text-align: left;
         opacity: .5;
         @include mixins.transition(background-color, opacity);
+        @include mixins.flex-box($a: center);
 
         &--sale {
             background-color: #e35790;
@@ -182,7 +183,12 @@
 
         &.active {
             opacity: 1;
+            box-shadow: 0 0 1px 4px rgba(0, 0, 0, .2);
         }
+    }
+
+    &__relation-icon {
+        margin-top: auto;
     }
 
     &__close {
