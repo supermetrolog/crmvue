@@ -6,6 +6,7 @@
                     <i :class="icon"></i>
                 </slot>
             </div>
+            <Spinner v-if="loading" class="mini" />
             <MessengerBarElement
                 v-if="counts.outdated_call_count > 0"
                 v-tippy="callsButtonTitle"
@@ -61,6 +62,7 @@ import MessengerBarElement from '@/components/Messenger/MessengerBarElement.vue'
 import plural from 'plural-ru';
 import { messenger } from '@/const/messenger';
 import { computed } from 'vue';
+import Spinner from '@/components/common/Spinner.vue';
 
 defineEmits(['select']);
 const props = defineProps({
@@ -79,6 +81,10 @@ const props = defineProps({
     icon: {
         type: String,
         default: null
+    },
+    loading: {
+        type: Boolean,
+        default: false
     }
 });
 

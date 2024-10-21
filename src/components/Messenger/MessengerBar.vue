@@ -6,6 +6,7 @@
             :class="{ active: current?.name === messenger.tabs.OBJECTS }"
             :counts="objectCounts"
             :current="current.sort"
+            :loading="isInitialLoading"
         >
             <template #icon>
                 <IconWarehouse />
@@ -17,6 +18,7 @@
             :class="{ active: current?.name === messenger.tabs.REQUESTS }"
             :counts="requestCounts"
             :current="current.sort"
+            :loading="isInitialLoading"
         >
             <template #icon>
                 <IconRequests />
@@ -29,12 +31,13 @@
             :class="{ active: current?.name === messenger.tabs.USERS }"
             :counts="userCounts"
             :current="current.sort"
+            :loading="isInitialLoading"
         />
     </div>
 </template>
 <script setup>
 import MessengerBarTab from '@/components/Messenger/MessengerBarTab.vue';
-import { computed, onMounted, watch } from 'vue';
+import { computed, onMounted, shallowRef, watch } from 'vue';
 import { useStore } from 'vuex';
 import { messenger } from '@/const/messenger.js';
 import IconWarehouse from '@/components/common/Icons/IconWarehouse.vue';
@@ -51,6 +54,8 @@ defineProps({
 });
 
 const store = useStore();
+
+const isInitialLoading = shallowRef(true);
 
 const objectCounts = computed(() => store.state.Messenger.counts.objects);
 const requestCounts = computed(() => store.state.Messenger.counts.requests);
@@ -70,7 +75,9 @@ watch(documentVisibility, (current, prev) => {
     }
 });
 
-onMounted(() => {
-    store.dispatch('Messenger/updateCounters');
+onMounted(async () => {
+    isInitialLoading.value = true;
+    await store.dispatch('Messenger/updateCounters');
+    isInitialLoading.value = false;
 });
 </script>
