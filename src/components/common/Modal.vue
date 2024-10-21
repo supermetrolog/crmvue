@@ -40,7 +40,7 @@
 </template>
 
 <script setup>
-import { onBeforeUnmount, shallowRef, watch } from 'vue';
+import { computed, onBeforeUnmount, shallowRef, watch } from 'vue';
 
 const emit = defineEmits(['close']);
 const props = defineProps({
@@ -59,10 +59,16 @@ const props = defineProps({
         type: [Number, String],
         default: null
     },
-    show: Boolean
+    show: Boolean,
+    minHeight: {
+        type: Number,
+        default: 50
+    }
 });
 
 const alreadyHidden = shallowRef(false);
+
+const minHeightSize = computed(() => props.minHeight + 'px');
 
 const close = () => emit('close');
 const escapeHandler = event => {
@@ -98,7 +104,7 @@ onBeforeUnmount(() => {
     document.body.classList.remove('is-modal');
 });
 </script>
-<style>
+<style scoped>
 .modal-enter-from {
     opacity: 0;
 }
@@ -110,5 +116,9 @@ onBeforeUnmount(() => {
 .modal-enter-from .modal__container,
 .modal-leave-to .modal__container {
     transform: scale(1.1);
+}
+
+.modal {
+    --modal-body-min-height: v-bind(minHeightSize);
 }
 </style>
