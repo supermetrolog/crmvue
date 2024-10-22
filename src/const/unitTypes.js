@@ -27,5 +27,6 @@ export const unitTypes = {
     RUB_PER_PALLET_PLACE_PER_DAY: 'RubPerPalletPlacePerDay',
     RUB_PER_PIECE_PER_DAY: 'RubPerPiecePerDay',
     RUB_PER_CUBE_METERS_PER_DAY: 'RubPerCubicMetersPerDay',
-    RUB_PER_PALLET_PLACE: 'RubPerPalletPlace'
+    RUB_PER_PALLET_PLACE: 'RubPerPalletPlace',
+    CUBIC_METERS: 'CubicMeters'
 };

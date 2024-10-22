@@ -457,13 +457,16 @@
     left: 0;
     bottom: 0;
     background-color: #f7f7f7;
-    padding: 3.5rem 1.5rem 1.5rem;
+    padding: 1rem 1.5rem;
     width: 400px;
+    border-right: 1px solid rgba(0, 0, 0, .2);
 
-    &__close {
-        position: absolute;
-        right: 1rem;
-        top: .5rem;
+    &__header {
+        @include mixins.flex-box($gap: 10px, $a: center);
+    }
+
+    &__title {
+        @include mixins.text-overflow();
     }
 }
 
@@ -502,5 +505,51 @@
         border-radius: 5px;
         @include mixins.flex-box($d: column, $gap: 5px);
         box-shadow: 0 7px 20px rgba(0, 0, 0, 0.25);;
+    }
+}
+
+.object-purposes {
+    @include mixins.flex-box($gap: 5px, $wrap: true);
+
+    &__item {
+        @include mixins.flex-box($a: center, $j: center);
+        @include mixins.transition(background-color, color);
+        font-size: var(--purpose-font-size);
+        width: var(--purpose-size);
+        height: var(--purpose-size);
+        border-radius: 5px;
+        border: 1px solid rgba(211, 211, 211, 1);
+        margin-right: 1px;
+        background-color: rgba(201, 201, 201, 0.4);
+        color: #000;
+
+        &.active {
+            background-color: variables.$bg-success;
+            color: #fff;
+        }
+    }
+
+    &__editable {
+        cursor: pointer;
+
+        @include mixins.hover {
+            background-color: variables.$bg-primary;
+            color: #fff;
+        }
+
+        &.selected {
+            background-color: variables.$bg-primary;
+            color: #fff;
+        }
+
+        &.unselected {
+            background-color: rgba(201, 201, 201, 0.4);
+            color: #000;
+            border: 2px solid variables.$bg-danger;
+        }
+
+        &.disabled {
+            pointer-events: none;
+        }
     }
 }

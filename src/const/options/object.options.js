@@ -78,6 +78,12 @@ export const objectPurposesOptions = {
     33: { name: 'АЗС (стройка)', icon: 'fas fa-gas-pump' }
 };
 
+export const objectType = {
+    1: 'warehouse',
+    2: 'production',
+    3: 'plot'
+};
+
 export const objectPurposesWithSectionsOptions = {
     warehouse: {
         1: { name: 'Сухой склад', icon: 'fa-solid fa-warehouse' },
@@ -148,5 +154,6 @@ export const objectOptions = {
     purposesWithSections: objectPurposesWithSectionsOptions,
     dealTypeString,
     typeGeneralList,
-    typeGeneral
+    typeGeneral,
+    objectType
 };

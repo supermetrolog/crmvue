@@ -25,23 +25,17 @@
                         >
                             избранные
                         </Button>
-                        <Button @click="resetForm" :disabled="!filterCount" danger>
+                        <Button @click="resetForm" :disabled="resetIsDisabled" danger>
                             Сбросить фильтры
                         </Button>
                     </div>
                 </div>
             </div>
             <div class="row">
-                <MultiSelect
+                <ConsultantPicker
                     v-model="form.agent_id"
-                    label="Консультант"
+                    :options="getConsultantsOptions"
                     class="col-12 col-md-4"
-                    resolve-on-load
-                    :options="
-                        async () => {
-                            return await FETCH_CONSULTANT_LIST();
-                        }
-                    "
                 />
                 <MultiSelect
                     v-model="form.deal_type"
@@ -116,14 +110,11 @@
                     v-model="form.fakeRegion"
                     @change="changeRegion"
                     label="Регионы"
+                    placeholder="Выберите регион.."
+                    can-deselect
                     class="col-md-3 col-sm-6 col-12"
-                    mode="single"
-                    :options="
-                        async () => {
-                            await FETCH_REGION_LIST();
-                            return REGION_LIST;
-                        }
-                    "
+                    searchable
+                    :options="getRegionsOptions"
                 />
             </div>
             <div class="row mt-2">
@@ -340,6 +331,9 @@ import { helpers, minValue } from '@vuelidate/validators';
 import { realFloorTypeOptions } from '@/const/options/floor.options.js';
 import SwitchSlider from '@/components/common/Forms/SwitchSlider.vue';
 import { useQuerySearch } from '@/composables/useQuerySearch.js';
+import { useRegionsOptions } from '@/composables/options/useRegionsOptions.js';
+import ConsultantPicker from '@/components/common/Forms/ConsultantPicker/ConsultantPicker.vue';
+import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
 
 const emit = defineEmits(['close', 'search', 'reset']);
 
@@ -410,6 +404,8 @@ const store = useStore();
 let timeout = null;
 const form = reactive({});
 
+const { getRegionsOptions } = useRegionsOptions();
+const { getConsultantsOptions } = useConsultantsOptions();
 const { querySearch } = useQuerySearch();
 
 const formCeilingHeightValidators = computed(() =>
@@ -423,7 +419,12 @@ const formAreaValidators = computed(() => areaRangeValidators(form.rangeMaxArea)
 const hasApproximateDistance = computed(() => {
     return Object.hasOwnProperty.call(form, 'approximateDistanceFromMKAD');
 });
-const REGION_LIST = computed(() => store.getters.REGION_LIST);
+
+const resetIsDisabled = computed(() => {
+    return (
+        filterCount.value === 0 && (querySearch.value?.length === 0 || querySearch.value == null)
+    );
+});
 const favoritesCount = computed(() => store.getters.FAVORITES_OFFERS.length);
 const filterCount = computed(() => {
     let count = 0;
@@ -464,13 +465,6 @@ const v$ = useVuelidate(
     }
 );
 
-const FETCH_CONSULTANT_LIST = async () => {
-    return await store.dispatch('FETCH_CONSULTANT_LIST');
-};
-const FETCH_REGION_LIST = async () => {
-    return await store.dispatch('FETCH_REGION_LIST');
-};
-
 const onSubmit = async () => {
     const query = { ...route.query, ...form };
 
@@ -496,6 +490,8 @@ const toDefaultForm = () => {
     Object.keys(defaultForm).forEach(key => {
         form[key] = defaultForm[key];
     });
+
+    querySearch.value = null;
 };
 
 const resetForm = () => {
@@ -536,7 +532,7 @@ const changeRegion = () => {
         }
     }
 
-    form.region = form.fakeRegion;
+    form.region = [form.fakeRegion];
 };
 
 const setQueryFields = async () => {

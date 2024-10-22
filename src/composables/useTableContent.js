@@ -33,11 +33,9 @@ export function useTableContent(fetch, options = {}) {
      * @returns {Promise<void>}
      */
     async function next(page) {
-        console.log('next, page:', page);
         const query = { ...route.query };
         query.page = page;
         await router.replace({ query });
-        console.log('router replaced, page:', page, '=>', route.query.page);
     }
 
     /**

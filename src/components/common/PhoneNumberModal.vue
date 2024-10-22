@@ -156,7 +156,7 @@ export default {
 
             const data = await Promise.all([
                 api.companies.getCompany(this.contact.company_id),
-                api.contacts.getContacts(this.contact.company_id)
+                api.contacts.getByCompany(this.contact.company_id)
             ]);
 
             this.company = data[0];
@@ -165,7 +165,7 @@ export default {
             if (withLoader) this.isLoading = false;
         },
         async refreshContacts() {
-            this.companyContacts = await api.contacts.getContacts(this.contact.company_id);
+            this.companyContacts = await api.contacts.getByCompany(this.contact.company_id);
         },
         startEditing(contact) {
             this.editableContact = contact;

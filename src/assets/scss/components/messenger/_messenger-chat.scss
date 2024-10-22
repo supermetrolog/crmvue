@@ -97,6 +97,17 @@
         position: fixed;
         right: 10px;
     }
+
+    &__icon-phone {
+        font-size: 24px;
+        transform: rotateX(180deg);
+    }
+
+    &__tab-quiz {
+        height: 100%;
+        width: 100%;
+        @include mixins.flex-box($a: center, $j: center, $gap: 5px);
+    }
 }
 
 .messenger-chat-header {

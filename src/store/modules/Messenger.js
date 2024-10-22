@@ -402,6 +402,16 @@ const Messenger = {
 
             if (chatMemberIndex !== -1)
                 state[chatMemberStateName].data[chatMemberIndex].last_call = lastCall;
+        },
+        onContactUpdated(state, contact) {
+            if (!state.currentPanel) return;
+
+            const contactIndex = state.currentPanel.contacts.findIndex(
+                element => element.id === contact.id
+            );
+            if (contactIndex === -1) return;
+
+            Object.assign(state.currentPanel.contacts[contactIndex], contact);
         }
     },
     actions: {
@@ -750,11 +760,11 @@ const Messenger = {
                 page
             });
         },
-        async getCurrentChatQuizzes({ state }, { page = 1, search = undefined }) {
+        async getCurrentChatQuizzes({ state }, params) {
             return await api.survey.list({
                 chat_member_id: state.currentDialog.id,
-                page,
-                search: search
+                page: params?.page ?? 1,
+                search: params?.search
             });
         },
 
@@ -885,6 +895,9 @@ const Messenger = {
             }
 
             return daysFromNow;
+        },
+        currentChatHasLastCall(state) {
+            return state.currentDialog?.last_call != null;
         }
     }
 };

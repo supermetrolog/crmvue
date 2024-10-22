@@ -90,7 +90,7 @@ import EmptyData from '@/components/common/EmptyData.vue';
 import Switch from '@/components/common/Forms/Switch.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { useMobile } from '@/composables/useMobile.js';
-import { computed, onBeforeMount, shallowRef } from 'vue';
+import { computed, shallowRef } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useTableContent } from '@/composables/useTableContent.js';
 import { ActivePassiveFUCK, filtersAliases, GateTypeList, YesNo } from '@/const/const.js';
@@ -340,10 +340,5 @@ const removeFilter = async filter => {
 const { nextWithScroll, next } = useTableContent(getOffers, {
     scrollTo: firstPaginationEl,
     initQuery: () => {}
-});
-
-onBeforeMount(() => {
-    store.dispatch('FETCH_REGION_LIST');
-    store.dispatch('FETCH_CONSULTANT_LIST');
 });
 </script>

@@ -465,6 +465,12 @@
     background-color: #c5c0c0;
     border-radius: 3px;
 
+    &__content {
+        p {
+            word-break: break-word;
+        }
+    }
+
     &__footer {
         margin-top: 3px;
         border-top: 1px solid #afaeae;

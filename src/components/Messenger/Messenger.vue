@@ -97,7 +97,7 @@ const openChat = async (companyID, objectID, modelType = 'object') => {
     const query = { model_type: modelType };
 
     if (modelType === 'object') query.object_id = objectID;
-    else if (modelType === 'request') query.request_id = objectID;
+    else if (modelType === 'request') query.model_id = objectID;
 
     const dialog = await api.messenger.getDialogByQuery(query);
 

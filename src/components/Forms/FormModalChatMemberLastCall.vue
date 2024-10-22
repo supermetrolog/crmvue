@@ -90,7 +90,7 @@ const {
 async function fetchContacts() {
     isLoading.value = true;
 
-    const response = await api.contacts.searchContacts({ company_id: props.value.companyID });
+    const response = await api.contacts.list({ company_id: props.value.companyID });
     contacts.value = response.data;
 
     isLoading.value = false;

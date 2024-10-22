@@ -44,7 +44,7 @@
                 <!--                    <i class="fa-solid fa-heart"></i>-->
                 <!--                    <span>Сохранить поиск</span>-->
                 <!--                </Button>-->
-                <Button @click="resetForm" icon small>
+                <Button @click="resetForm" :disabled="!filterCount" icon small>
                     <i class="fa-solid fa-circle-xmark"></i>
                     <span>Сбросить фильтры</span>
                 </Button>

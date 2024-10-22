@@ -50,19 +50,17 @@
                 </div>
             </template>
             <template #footer>
-                <div
-                    ref="scrollEnd"
-                    v-intersection="scrollObserver"
-                    class="messenger-chat__end"
-                ></div>
+                <div v-intersection="scrollObserver" class="messenger-chat__end"></div>
             </template>
         </VirtualDragList>
         <MessengerChatScrollButton
             @scroll="scrollToEnd"
-            :style="{ top: scrollButtonTop }"
+            :style="{
+                bottom: scrollButtonBottom
+            }"
             :visible="scrollButtonIsVisible"
         />
-        <MessengerChatForm @cancel-reply="replyTo = null" :reply-to="replyTo" />
+        <MessengerChatForm ref="formEl" @cancel-reply="replyTo = null" :reply-to="replyTo" />
     </div>
 </template>
 <script setup>
@@ -77,8 +75,8 @@ import MessengerChatPinned from '@/components/Messenger/Chat/MessengerChatPinned
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { debounce } from '@/utils/debounce.js';
 import MessengerChatScrollButton from '@/components/Messenger/Chat/MessengerChatScrollButton.vue';
-import { useElementBounding } from '@vueuse/core';
-import { computed, nextTick, onMounted, ref, shallowRef, watch } from 'vue';
+import { useElementSize } from '@vueuse/core';
+import { computed, nextTick, onMounted, shallowRef, watch } from 'vue';
 import VirtualDragList from 'vue-virtual-draglist';
 import EmptyLabel from '@/components/common/EmptyLabel.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
@@ -86,9 +84,8 @@ import Loader from '@/components/common/Loader.vue';
 
 const store = useStore();
 
-const quiz = ref(null);
-const scrollEnd = ref(null);
-const virtual = ref(null);
+const formEl = shallowRef(null);
+const virtual = shallowRef(null);
 const scrolled = shallowRef(false);
 const scrollButtonIsVisible = shallowRef(false);
 const scrollIsLock = shallowRef(false);
@@ -96,8 +93,8 @@ const replyTo = shallowRef(null);
 
 const { isLoading } = useDelayedLoader(false, 700);
 
-const { top } = useElementBounding(quiz);
-const scrollButtonTop = computed(() => top.value - 45 + 'px');
+const { height } = useElementSize(formEl);
+const scrollButtonBottom = computed(() => height.value + 45 + 'px');
 
 const messages = computed(() => store.state.Messenger.messages);
 const pinnedMessage = computed(() => store.state.Messenger.currentPinned);

@@ -7,6 +7,18 @@
             observed: isObserved
         }"
     >
+        <template v-if="addition.tags.length" #header>
+            <div class="messenger-chat-message-addition__tags">
+                <div
+                    v-for="tag in addition.tags"
+                    :key="tag.id"
+                    class="messenger-chat-message-addition__tag"
+                    :style="{ backgroundColor: '#' + tag.color }"
+                >
+                    {{ tag.name ?? tag.label }}
+                </div>
+            </div>
+        </template>
         <template v-if="isObserving" #functions>
             <span
                 v-tippy="observingText"
