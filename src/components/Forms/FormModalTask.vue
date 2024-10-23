@@ -3,6 +3,7 @@
         @close="close"
         :show="isVisible"
         width="1200"
+        :close-on-outside-click="false"
         :title="props ? 'Редактирование задачи' : 'Создание задачи'"
     >
         <Stepper @complete="submit" :steps="steps" :v="v$.form" keep-alive>

@@ -7,7 +7,7 @@
             :style="{ '--modal-width': width ? width + 'px' : 'auto' }"
             :class="{ 'modal--with-tabs': hasTabs, 'modal--relative': relative }"
         >
-            <div @click="close" class="modal__blackout"></div>
+            <div @click="onBlackoutClick" class="modal__blackout"></div>
             <div class="modal__container">
                 <div class="modal__header">
                     <p v-if="title">
@@ -63,6 +63,10 @@ const props = defineProps({
     minHeight: {
         type: Number,
         default: 50
+    },
+    closeOnOutsideClick: {
+        type: Boolean,
+        default: true
     }
 });
 
@@ -70,6 +74,9 @@ const alreadyHidden = shallowRef(false);
 
 const minHeightSize = computed(() => props.minHeight + 'px');
 
+const onBlackoutClick = () => {
+    if (props.closeOnOutsideClick) close();
+};
 const close = () => emit('close');
 const escapeHandler = event => {
     event.stopImmediatePropagation();
