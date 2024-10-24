@@ -8,12 +8,12 @@
                     class="messenger-chat-message__body"
                     v-html="message.message"
                 ></div>
-                <AnimationTransition>
-                    <MessengerChatMessageAttachments
-                        v-if="message.files.length"
-                        :files="message.files"
-                    />
-                </AnimationTransition>
+                <div v-if="message.files.length" class="px-2 my-1">
+                    <DashboardChip class="dashboard-bg-success-l">
+                        <span>{{ pluralFilesLength }}</span>
+                        <i class="fa-solid fa-image ml-2"></i>
+                    </DashboardChip>
+                </div>
                 <div class="messenger-chat-message__footer">
                     <span>{{ username }}, </span>
                     <span v-tippy="originalDate" class="messenger-chat-message__date">
@@ -40,10 +40,10 @@
 <script setup>
 import { entityOptions } from '@/const/options/options';
 import Avatar from '@/components/common/Avatar.vue';
-import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import MessengerChatMessageAttachments from '@/components/Messenger/Chat/Message/MessengerChatMessageAttachments.vue';
 import { computed } from 'vue';
 import { ucFirst } from '@/utils/formatter.js';
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import plural from 'plural-ru';
 
 const props = defineProps({
     message: {
@@ -78,5 +78,9 @@ const recipientUsername = computed(() => {
     const contact = props.message.contacts[0];
     if (contact.type === entityOptions.contact.typeStatement.GENERAL) return 'Общий контакт';
     return contact.first_name + (contact.last_name ? ` ${contact.last_name}` : '');
+});
+
+const pluralFilesLength = computed(() => {
+    return plural(props.message.files.length, '+%d файл', '+%d файла', '+%d файлов');
 });
 </script>
