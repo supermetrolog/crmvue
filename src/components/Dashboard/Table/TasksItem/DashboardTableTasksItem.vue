@@ -2,12 +2,13 @@
     <div
         class="dashboard-card-task"
         :class="{
-            expired: isAlreadyExpired,
+            expired: isAlreadyExpired && !isCanceled,
             completed: isCompleted,
             self: isForMe,
             myself: isMyTask,
             viewing: isViewing,
-            viewed: isViewed
+            viewed: isViewed,
+            canceled: isCanceled
         }"
     >
         <div class="dashboard-card-task__labels" :class="{ moved: isMyTask || isViewing }">

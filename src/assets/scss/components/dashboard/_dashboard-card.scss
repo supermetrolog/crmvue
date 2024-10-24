@@ -207,6 +207,12 @@
         }
     }
 
+    &.canceled {
+        .dashboard-card-task__body {
+            opacity: .6;
+        }
+    }
+
     &.viewing:not(.viewed):not(.completed) {
         .dashboard-card-task__body {
             background-color: rgba(246, 236, 55, 0.2);
