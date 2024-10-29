@@ -20,4 +20,8 @@
     .form__textarea:nth-child(2) {
         height: 120px;
     }
+
+    &__deleted-logo {
+        opacity: .4;
+    }
 }
