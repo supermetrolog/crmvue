@@ -63,8 +63,8 @@
                             v-model="form.companyGroup_id"
                             label="Входит в ГК"
                             class="col-4"
-                            :searchable="true"
-                            :options="COMPANY_GROUP_LIST"
+                            searchable
+                            :options="getCompanyGroupsOptions"
                         />
                         <MultiSelect
                             v-model="form.formOfOrganization"
@@ -95,13 +95,12 @@
                         />
                     </div>
                     <div class="row">
-                        <MultiSelect
+                        <ConsultantPicker
                             v-model="form.consultant_id"
                             :v="v$.form.consultant_id"
-                            required
-                            label="Консультант"
+                            :options="getConsultantsOptions"
                             class="col-6"
-                            :options="CONSULTANT_LIST"
+                            required
                         />
                         <PropogationInput
                             v-model="form.contacts.websites"
@@ -244,12 +243,12 @@
                             mode="tags"
                             :close-on-select="false"
                             :loading="false"
-                            :searchable="true"
-                            :create-tag="true"
-                            :resolve-on-load="true"
+                            searchable
+                            create-tag
+                            resolve-on-load
                             label="Номенклатура товара"
                             class="col-12 mt-2"
-                            :options="COMPANY_PRODUCT_RANGE_LIST"
+                            :options="getProductRangeOptions"
                             name="product"
                         />
                     </div>
@@ -315,8 +314,8 @@
                             v-model="form.inTheBank"
                             label="В банке"
                             class="col-4"
-                            :searchable="true"
-                            :options="COMPANY_IN_THE_BANK_LIST"
+                            searchable
+                            :options="getBanksOptions"
                         />
                     </div>
                     <div class="row mt-2">
@@ -372,11 +371,70 @@
                 <Tab name="Документы">
                     <div class="row">
                         <FileInput
-                            v-model:native="form.fileList"
-                            v-model:data="form.files"
+                            v-model:native="newFiles"
+                            v-model:data="oldFiles"
                             label="Документы"
                             class="col-12"
                             sortable
+                        >
+                            Выбрать файлы
+                        </FileInput>
+                    </div>
+                </Tab>
+                <Tab name="Логотип">
+                    <div v-if="formData && formData.logo" class="row mb-1">
+                        <div class="col-12">
+                            <div class="d-flex align-items-center mb-1">
+                                <p class="form__subtitle">Текущий логотип</p>
+                                <Button
+                                    @click="toggleDeletingLogo"
+                                    class="ml-2"
+                                    small
+                                    icon
+                                    danger
+                                    :disabled="logoShouldBeDeleted"
+                                >
+                                    <span>Удалить логотип</span>
+                                    <i class="fa-solid fa-trash" />
+                                </Button>
+                                <AnimationTransition :speed="0.4">
+                                    <Button
+                                        v-if="logoShouldBeDeleted"
+                                        @click="toggleDeletingLogo"
+                                        icon
+                                        small
+                                        class="ml-1"
+                                    >
+                                        <span>Отменить удаление</span>
+                                        <i class="fa-solid fa-rotate-left" />
+                                    </Button>
+                                </AnimationTransition>
+                            </div>
+                            <CompanyLogo
+                                as="div"
+                                :class="{ 'modal-form-company__deleted-logo': logoShouldBeDeleted }"
+                                :company-id="formData.id"
+                                :src="form.logo?.src"
+                            />
+                            <AnimationTransition :speed="0.3">
+                                <DashboardChip
+                                    v-if="logoShouldBeDeleted"
+                                    class="dashboard-bg-danger-l mt-1"
+                                >
+                                    <i class="fa-solid fa-exclamation-triangle mr-1" />
+                                    <span>Логотип будет удален</span>
+                                </DashboardChip>
+                            </AnimationTransition>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <FileInput
+                            v-model:native="newLogo"
+                            single
+                            label="Новый логотип"
+                            class="col-12"
+                            sortable
+                            only-images
                         >
                             Выбрать файлы
                         </FileInput>
@@ -402,7 +460,6 @@ import PropogationDoubleInput from '@/components/common/Forms/PropogationDoubleI
 import RadioStars from '@/components/common/Forms/RadioStars.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import useVuelidate from '@vuelidate/core';
-import { useStore } from 'vuex';
 import {
     ActivityGroupList,
     ActivityProfileList,
@@ -410,7 +467,6 @@ import {
     CompanyFormOrganization,
     PassiveWhy
 } from '@/const/const.js';
-import { cloneObject } from '@/utils';
 import { yandexmap } from '@/utils/yandexMap.js';
 import Modal from '@/components/common/Modal.vue';
 import Loader from '@/components/common/Loader.vue';
@@ -419,10 +475,20 @@ import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { validateEmail, validateUrl } from '@//validators';
 import Submit from '@/components/common/Forms/FormSubmit.vue';
-import { computed, onBeforeMount, reactive, shallowRef } from 'vue';
+import { computed, reactive, ref, shallowRef } from 'vue';
 import { normalizeDataForCompanyForm } from '@/utils/normalizeForm.js';
 import { validationRulesForCompany } from '@/validators/rules.js';
 import Switch from '@/components/common/Forms/Switch.vue';
+import api from '@/api/api.js';
+import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
+import ConsultantPicker from '@/components/common/Forms/ConsultantPicker/ConsultantPicker.vue';
+import { useCompanyGroupsOptions } from '@/composables/options/useCompanyGroupsOptions.js';
+import { useBanksOptions } from '@/composables/options/useBanksOptions.js';
+import { useProductRangesOptions } from '@/composables/options/useProductRangesOptions.js';
+import { useFormData } from '@/utils/useFormData.js';
+import CompanyLogo from '@/components/Company/CompanyLogo.vue';
+import Button from '@/components/common/Button.vue';
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 
 const emit = defineEmits(['updated', 'created', 'close']);
 const props = defineProps({
@@ -432,47 +498,56 @@ const props = defineProps({
     }
 });
 
-const store = useStore();
+const { getConsultantsOptions } = useConsultantsOptions();
+const { getCompanyGroupsOptions } = useCompanyGroupsOptions();
+const { getBanksOptions } = useBanksOptions();
+const { getProductRangeOptions } = useProductRangesOptions();
 
 const isLoading = shallowRef(false);
-const form = reactive({
-    activityGroup: null,
-    activityProfile: null,
-    basis: null,
-    bik: null,
-    categories: [],
-    checkingAccount: null,
-    companyGroup_id: null,
-    consultant_id: null,
-    contacts: { phones: [], emails: [], websites: [] },
-    correspondentAccount: null,
-    description: null,
-    documentNumber: null,
-    formOfOrganization: null,
-    inTheBank: null,
-    inn: null,
-    kpp: null,
-    legalAddress: null,
-    nameBrand: null,
-    nameEng: null,
-    nameRu: null,
-    noName: 0,
-    officeAdress: null,
-    ogrn: null,
-    okpo: null,
-    okved: null,
-    processed: 0,
-    productRanges: [],
-    signatoryLastName: null,
-    signatoryMiddleName: null,
-    signatoryName: null,
-    status: 1,
-    rating: 5,
-    passive_why: null,
-    passive_why_comment: null,
-    files: [],
-    fileList: []
-});
+const { form } = useFormData(
+    reactive({
+        activityGroup: null,
+        activityProfile: null,
+        basis: null,
+        bik: null,
+        categories: [],
+        checkingAccount: null,
+        companyGroup_id: null,
+        consultant_id: null,
+        contacts: { phones: [], emails: [], websites: [] },
+        correspondentAccount: null,
+        description: null,
+        documentNumber: null,
+        formOfOrganization: null,
+        inTheBank: null,
+        inn: null,
+        kpp: null,
+        legalAddress: null,
+        nameBrand: null,
+        nameEng: null,
+        nameRu: null,
+        noName: 0,
+        officeAdress: null,
+        ogrn: null,
+        okpo: null,
+        okved: null,
+        processed: 0,
+        productRanges: [],
+        signatoryLastName: null,
+        signatoryMiddleName: null,
+        signatoryName: null,
+        status: 1,
+        rating: 5,
+        passive_why: null,
+        passive_why_comment: null,
+        files: [],
+        new_files: [],
+        new_logo: null,
+        logo: null,
+        logo_id: null
+    }),
+    props.formData
+);
 
 const v$ = useVuelidate({ form: validationRulesForCompany }, { form });
 
@@ -483,59 +558,89 @@ const formContactsEmailsValidators = computed(() => [
     { func: validateEmail, message: 'Укажите корректный Email' }
 ]);
 
-const COMPANY_GROUP_LIST = computed(() => store.getters.COMPANY_GROUP_LIST);
-const CONSULTANT_LIST = computed(() => store.getters.CONSULTANT_LIST);
-const COMPANY_PRODUCT_RANGE_LIST = computed(() => store.getters.COMPANY_PRODUCT_RANGE_LIST);
-const COMPANY_IN_THE_BANK_LIST = computed(() => store.getters.COMPANY_IN_THE_BANK_LIST);
+const logoShouldBeDeleted = ref(false);
+
+const prepareFormBeforeUpdate = () => {
+    if (logoShouldBeDeleted.value) form.logo_id = null;
+    else form.logo_id = form.logo?.id;
+
+    form.new_logo = form.new_logo?.[0];
+};
+
+const newFiles = computed({
+    get() {
+        if (props.formData) return form.new_files;
+        return form.files;
+    },
+    set(value) {
+        if (props.formData) form.new_files = value;
+        else form.files = value;
+    }
+});
+
+const oldFiles = computed({
+    get() {
+        if (props.formData) return form.files;
+        return [];
+    },
+    set(value) {
+        if (props.formData) form.files = value;
+    }
+});
+
+const newLogo = computed({
+    get() {
+        if (props.formData) return form.new_logo;
+        return form.logo;
+    },
+    set(value) {
+        if (props.formData) form.new_logo = value;
+        else form.logo = value;
+    }
+});
 
 const updateCompany = async () => {
-    if (await store.dispatch('UPDATE_COMPANY', form)) {
+    prepareFormBeforeUpdate();
+
+    const updated = await api.companies.update(props.formData.id, form);
+
+    if (updated) {
         emit('updated');
         emit('close');
     }
-
-    isLoading.value = false;
 };
 const createCompany = async () => {
-    let company_id = await store.dispatch('CREATE_COMPANY', form);
+    const company = await api.companies.create(form);
 
-    if (company_id) {
-        emit('created', company_id);
+    if (company) {
+        emit('created', company.id);
         emit('close');
     }
-
-    isLoading.value = false;
 };
 
-const onSubmit = () => {
+const onSubmit = async () => {
     v$.value.$validate();
 
     if (!v$.value.form.$error) {
         isLoading.value = true;
-        if (props.formData) updateCompany();
-        else createCompany();
+
+        if (props.formData) await updateCompany();
+        else await createCompany();
+
+        isLoading.value = false;
     }
 };
+
+const toggleDeletingLogo = () => {
+    logoShouldBeDeleted.value = !logoShouldBeDeleted.value;
+};
+
 const getAddress = async query => {
     if (props.formData) return await yandexmap.getAddress(query, props.formData.officeAdress);
     return await yandexmap.getAddress(query);
 };
 
-onBeforeMount(async () => {
-    isLoading.value = true;
-
-    if (props.formData) {
-        Object.assign(form, cloneObject(props.formData));
-        Object.assign(form, normalizeDataForCompanyForm(form));
-    }
-
-    await Promise.all([
-        store.dispatch('FETCH_CONSULTANT_LIST'),
-        store.dispatch('FETCH_COMPANY_GROUP_LIST'),
-        store.dispatch('FETCH_COMPANY_PRODUCT_RANGE_LIST'),
-        store.dispatch('FETCH_COMPANY_IN_THE_BANK_LIST')
-    ]);
-
-    isLoading.value = false;
-});
+if (props.formData) {
+    normalizeDataForCompanyForm(form);
+}
 </script>
