@@ -11,6 +11,7 @@ import { messenger } from '@/const/messenger.js';
 const COMPONENTS = {
     [messenger.tabs.OBJECTS]: MessengerChatFormForObject,
     [messenger.tabs.REQUESTS]: MessengerChatFormForObject,
+    [messenger.tabs.COMPANIES]: MessengerChatFormForObject,
     [messenger.tabs.USERS]: MessengerChatFormForUser
 };
 

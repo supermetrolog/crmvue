@@ -7,18 +7,25 @@
                 </slot>
             </div>
             <Spinner v-if="loading" class="mini" />
-            <MessengerBarElement
-                v-if="counts.outdated_call_count > 0"
-                v-tippy="callsButtonTitle"
-                @click.stop="$emit('select', messenger.tabFilters.CALL)"
-                class="messenger-bar-tab__phone"
-                :class="{
-                    disabled: !counts.outdated_call_count,
-                    active: current === messenger.tabFilters.CALL
-                }"
-                icon="fa-solid fa-phone"
-                :label="counts.outdated_call_count"
-            />
+            <Tippy>
+                <template #default>
+                    <MessengerBarElement
+                        v-if="counts.outdated_call_count_all > 0"
+                        @click.stop="$emit('select', messenger.tabFilters.CALL)"
+                        class="messenger-bar-tab__phone"
+                        :class="{
+                            disabled: !counts.outdated_call_count,
+                            active: current === messenger.tabFilters.CALL
+                        }"
+                        icon="fa-solid fa-phone"
+                        :label="counts.outdated_call_count"
+                    />
+                </template>
+                <template #content>
+                    <p>{{ callsButtonTitle }}</p>
+                    <p class="color-light">{{ callsButtonTitleAll }}</p>
+                </template>
+            </Tippy>
             <MessengerBarElement
                 v-if="counts.unread_task_count"
                 v-tippy="tasksButtonTitle"
@@ -63,6 +70,7 @@ import plural from 'plural-ru';
 import { messenger } from '@/const/messenger';
 import { computed } from 'vue';
 import Spinner from '@/components/common/Spinner.vue';
+import { Tippy } from 'vue-tippy';
 
 defineEmits(['select']);
 const props = defineProps({
@@ -109,6 +117,12 @@ const alertsButtonTitle = computed(() => {
 const callsButtonTitle = computed(() => {
     if (props.counts.outdated_call_count > 0)
         return plural(props.counts.outdated_call_count, ...messenger.buttons.calls.plural);
+    return messenger.buttons.calls.empty;
+});
+
+const callsButtonTitleAll = computed(() => {
+    if (props.counts.outdated_call_count_all > 0)
+        return plural(props.counts.outdated_call_count_all, ...messenger.buttons.calls_all.plural);
     return messenger.buttons.calls.empty;
 });
 </script>

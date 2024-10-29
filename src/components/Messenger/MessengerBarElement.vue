@@ -1,6 +1,6 @@
 <template>
     <div class="messenger-bar-tab__element rounded-icon">
-        <span v-if="label" class="messenger-bar-tab__chip">{{ label }}</span>
+        <span class="messenger-bar-tab__chip">{{ label }}</span>
         <i :class="icon"></i>
     </div>
 </template>

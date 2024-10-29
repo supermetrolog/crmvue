@@ -6,10 +6,14 @@
             </span>
         </template>
         <template #content>
+            <p v-if="disabled" class="color-light mb-1">Вы не являетесь консультантом этого чата</p>
+            <p v-else class="color-success mb-1">Вы являетесь консультантом этого чата</p>
             <p>Дата последнего звонка: {{ formattedDate }}</p>
             <p>{{ daysFromNowTippy }}</p>
             <p v-if="lastCall">Звонок совершил(а) {{ lastCall.user?.userProfile?.medium_name }}</p>
-            <p v-else>Дата сформирована на основе последнего обновления объекта/запроса</p>
+            <p v-else class="color-light">
+                Дата сформирована на основе последнего обновления объекта/запроса
+            </p>
         </template>
     </Tooltip>
 </template>

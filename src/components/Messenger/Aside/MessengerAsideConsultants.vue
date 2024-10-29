@@ -78,8 +78,8 @@ const virtualList = shallowRef(null);
 const filters = ref([{ key: 'status', value: 10 }]);
 const sorts = ref(null);
 
-const consultants = computed(() => store.state.Messenger.chatMembersUsers.data);
-const pagination = computed(() => store.state.Messenger.chatMembersUsers.pagination);
+const consultants = computed(() => store.state.Messenger.chatMembersUser.data);
+const pagination = computed(() => store.state.Messenger.chatMembersUser.pagination);
 
 const hasQuery = computed(() => store.getters['Messenger/hasConsultantsQuery']);
 const hasDialogs = computed(() => consultants.value.length);

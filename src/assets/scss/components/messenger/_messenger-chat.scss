@@ -172,6 +172,19 @@
     @include mixins.flex-box($gap: 5px);
 }
 
+.messenger-chat-header-company {
+    @include mixins.flex-box($gap: 5px);
+
+    &__categories {
+        @include mixins.flex-box($gap: 5px, $wrap: true);
+    }
+
+    &__category {
+        font-size: 13px!important;
+        padding: 3px 7px!important;
+    }
+}
+
 .messenger-chat-label {
     padding: 7px 12px;
     background-color: rgba(211, 211, 211, .8);
