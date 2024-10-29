@@ -50,7 +50,7 @@ import FormModalOfferSearch from '@/components/Forms/Offer/FormModalOfferSearch.
 import FormOfferSearchExternal from '@/components/Forms/Offer/FormOfferSearchExternal.vue';
 import OfferYmap from '@/components/Offer/OfferYmap.vue';
 import Chip from '@/components/common/Chip.vue';
-import { computed, onUpdated, ref, shallowReactive, shallowRef } from 'vue';
+import { computed, onUpdated, ref, shallowReactive, shallowRef, useTemplateRef } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useQueryHash } from '@/utils/useQueryHash.js';
 import { dealOptions } from '@/const/options/deal.options.js';
@@ -74,9 +74,10 @@ const store = useStore();
 const { setHash, confirmHash, confirmTransformedHash } = useQueryHash('offers-map');
 const { consultantsOptions } = useConsultantsOptions();
 
+const searchEl = useTemplateRef('searchEl');
+
 const isLoading = shallowRef(false);
 const searchingIsVisible = shallowRef(false);
-const searchEl = shallowRef(false);
 const counts = shallowReactive({
     objects: 0,
     offers: 0
