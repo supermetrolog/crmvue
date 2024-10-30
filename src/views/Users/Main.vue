@@ -12,7 +12,7 @@
         <div class="row">
             <div class="col-12 col-lg-10 mx-auto mb-2">
                 <div class="d-flex align-items-end">
-                    <Form class="w-100 d-flex align-items-end gap-2">
+                    <Form class="w-50 d-flex align-items-end gap-2">
                         <Input
                             v-model="querySearch"
                             placeholder="ФИО, номер, email"
@@ -26,9 +26,15 @@
                             Очистить
                         </Button>
                     </Form>
-                    <Button @click="formIsVisible = true" success class="ml-4 flex-shrink-0">
+                    <Button @click="formIsVisible = true" success class="ml-2 flex-shrink-0">
                         Создать пользователя
                     </Button>
+                    <Switch
+                        v-model="onlyActive"
+                        class="ml-auto"
+                        true-title="Активные"
+                        false-title="Архивные"
+                    />
                 </div>
             </div>
             <div class="col-12 col-lg-10 mx-auto">
@@ -39,6 +45,8 @@
                         @edit="editUser"
                         @deleted="fetchUsers"
                         @show-sessions="showSessions"
+                        @archived="onArchived"
+                        @restored="onRestored"
                         :users="preparedUsers"
                     />
                     <EmptyData v-else>Сотрудник не найден..</EmptyData>
@@ -89,7 +97,7 @@ import { useStore } from 'vuex';
 import Loader from '@/components/common/Loader.vue';
 import UserTable from '@/components/User/UserTable.vue';
 import FormUser from '@/components/Forms/FormUser.vue';
-import { computed, onMounted, ref, shallowRef } from 'vue';
+import { computed, onMounted, ref, shallowRef, watch } from 'vue';
 import Button from '@/components/common/Button.vue';
 import Form from '@/components/common/Forms/Form.vue';
 import Input from '@/components/common/Forms/Input.vue';
@@ -102,6 +110,13 @@ import api from '@/api/api.js';
 import { spliceById } from '@/utils/index.js';
 import { useNotify } from '@/utils/useNotify.js';
 import { useConfirm } from '@/composables/useConfirm.js';
+import Switch from '@/components/common/Forms/Switch.vue';
+
+const STATUSES = {
+    ACTIVE: 10,
+    PASSIVE: 9,
+    DELETED: 0
+};
 
 const store = useStore();
 const notify = useNotify();
@@ -116,6 +131,9 @@ const sessionsIsLoading = shallowRef(false);
 const sessionsIsUpdating = shallowRef(false);
 const sessions = ref([]);
 const sessionsUserId = shallowRef(null);
+
+const onlyActive = ref(true);
+watch(onlyActive, () => fetchUsers());
 
 const searchParams = computed(() => {
     return store.getters.USERS.map(
@@ -151,10 +169,15 @@ const editUser = user => {
     editingUser.value = user;
     formIsVisible.value = true;
 };
+const createPayload = () => {
+    return {
+        status: onlyActive.value ? STATUSES.ACTIVE : STATUSES.PASSIVE
+    };
+};
 
 const fetchUsers = async () => {
     isLoading.value = true;
-    await store.dispatch('FETCH_USERS');
+    await store.dispatch('FETCH_USERS', createPayload());
     isLoading.value = false;
 };
 
@@ -199,6 +222,14 @@ const dropSessions = async () => {
     }
 
     sessionsIsUpdating.value = false;
+};
+
+const onArchived = userId => {
+    store.commit('archive', userId);
+};
+
+const onRestored = userId => {
+    store.commit('restore', userId);
 };
 
 onMounted(() => {

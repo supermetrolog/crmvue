@@ -1,5 +1,6 @@
 <template>
     <div class="users-table">
+        <Loader v-if="isLoading" />
         <Table>
             <template #thead>
                 <Tr>
@@ -15,79 +16,21 @@
                 </Tr>
             </template>
             <template #tbody>
-                <Tr v-for="user in users" :key="user.id">
-                    <Td class="avatar-container">
-                        <Avatar class="mx-auto" :size="70" :src="user.userProfile.avatar" />
-                    </Td>
-                    <Td class="text-left">
-                        {{ user.userProfile.middle_name }}
-                        {{ user.userProfile.first_name }}
-                    </Td>
-                    <Td>
-                        <div>
-                            <PhoneNumber
-                                v-for="phone in user.userProfile.phones"
-                                :key="phone.id"
-                                :phone="phone"
-                                class="d-block"
-                            />
-                            <a
-                                v-for="email in user.userProfile.emails"
-                                :key="email.id"
-                                :href="'mailto:' + email.email"
-                                class="d-block"
-                            >
-                                {{ email.email }}
-                            </a>
-                        </div>
-                        <p
-                            v-if="
-                                user.userProfile.phones.length === 0 &&
-                                user.userProfile.emails.length === 0
-                            "
-                        >
-                            &#8212;
-                        </p>
-                    </Td>
-                    <Td>
-                        <p>{{ role(user.role) }}</p>
-                    </Td>
-                    <Td>
-                        <p>{{ user.username }}</p>
-                    </Td>
-                    <Td>
-                        <span v-if="user.userProfile.caller_id" class="square-badge">
-                            {{ user.userProfile.caller_id }}
-                        </span>
-                        <p v-else>&#8212;</p>
-                    </Td>
-                    <Td class="date">
-                        {{ user.created_at_format }}
-                    </Td>
-                    <Td class="date">
-                        {{ user.updated_at_format }}
-                    </Td>
-                    <Td class="action">
-                        <div class="d-flex gap-2 flex-wrap">
-                            <HoverActionsButton
-                                @click="$emit('edit', user)"
-                                label="Редактировать"
-                                class="mb-1"
-                            >
-                                <i class="fas fa-pen"></i>
-                            </HoverActionsButton>
-                            <HoverActionsButton
-                                @click="$emit('show-sessions', user.id)"
-                                label="Управлять сессиями"
-                            >
-                                <i class="fa-solid fa-shield-halved"></i>
-                            </HoverActionsButton>
-                            <HoverActionsButton @click="deleteUser(user)" label="Удалить">
-                                <i class="fas fa-trash-alt"></i>
-                            </HoverActionsButton>
-                        </div>
-                    </Td>
-                </Tr>
+                <UserTableElement
+                    v-for="user in users"
+                    :key="user.id"
+                    @delete="deleteUser(user)"
+                    @show-sessions="$emit('show-sessions', user.id)"
+                    @edit="$emit('edit', user.id)"
+                    @restore="restore(user)"
+                    @archive="archive(user)"
+                    :class="{
+                        'users-table__element--archived': archivedCache[user.id],
+                        'users-table__element--restored': restoredCache[user.id]
+                    }"
+                    :user="user"
+                    class="users-table__element"
+                />
             </template>
         </Table>
     </div>
@@ -97,16 +40,14 @@
 import Table from '@/components/common/Table/Table.vue';
 import Tr from '@/components/common/Table/Tr.vue';
 import Th from '@/components/common/Table/Th.vue';
-import Td from '@/components/common/Table/Td.vue';
-import Avatar from '@/components/common/Avatar.vue';
-import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
-import { shallowRef } from 'vue';
+import { ref, shallowRef, watch } from 'vue';
 import { useConfirm } from '@/composables/useConfirm.js';
-import { userOptions } from '@/const/options/user.options.js';
 import api from '@/api/api.js';
+import Loader from '@/components/common/Loader.vue';
+import UserTableElement from '@/components/User/UserTableElement.vue';
 
-const emit = defineEmits(['deleted', 'edit', 'show-sessions']);
-defineProps({
+const emit = defineEmits(['deleted', 'edit', 'show-sessions', 'archived', 'restored']);
+const props = defineProps({
     users: {
         type: Array,
         default: () => []
@@ -115,19 +56,64 @@ defineProps({
 
 const { confirm } = useConfirm();
 
+const archivedCache = ref({});
+const restoredCache = ref({});
 const isLoading = shallowRef(false);
 
-const role = _role => userOptions.role[_role];
+watch(
+    () => props.users,
+    () => {
+        archivedCache.value = {};
+        restoredCache.value = {};
+    },
+    { deep: 1 }
+);
 
 const deleteUser = async user => {
     const confirmed = await confirm(
-        `Вы уверены, что хотите удалить пользователя "${user.userProfile.first_name} ${user.userProfile.middle_name}" (Username: ${user.username})?`
+        `Вы уверены, что хотите удалить пользователя "${user.userProfile.full_name}" (Username: ${user.username})?`
     );
     if (!confirmed) return;
 
     isLoading.value = true;
-    const deleted = api.user.delete(user.id);
+    const deleted = await api.user.delete(user.id);
     if (deleted) emit('deleted');
+    isLoading.value = false;
+};
+
+const restore = async user => {
+    const confirmed = await confirm(
+        `Вы уверены, что хотите восстановить пользователя "${user.userProfile.full_name}" (Username: ${user.username})?`
+    );
+
+    if (!confirmed) return;
+
+    isLoading.value = true;
+
+    const restored = await api.user.restore(user.id);
+    if (restored) {
+        restoredCache.value[user.id] = true;
+        emit('restored', user.id);
+    }
+
+    isLoading.value = false;
+};
+
+const archive = async user => {
+    const confirmed = await confirm(
+        `Вы уверены, что хотите архивировать пользователя "${user.userProfile.full_name}" (Username: ${user.username})?`
+    );
+
+    if (!confirmed) return;
+
+    isLoading.value = true;
+
+    const archived = await api.user.archive(user.id);
+    if (archived) {
+        archivedCache.value[user.id] = true;
+        emit('archived', user.id);
+    }
+
     isLoading.value = false;
 };
 </script>
