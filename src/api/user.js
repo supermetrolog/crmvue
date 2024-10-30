@@ -45,5 +45,13 @@ export default {
     async delete(id) {
         const response = await axios.delete(`${URL}/${id}`);
         return responseToData(response);
+    },
+    async archive(id) {
+        const response = await axios.get(`${URL}/${id}/archive`);
+        return responseToData(response);
+    },
+    async restore(id) {
+        const response = await axios.get(`${URL}/${id}/restore`);
+        return responseToData(response);
     }
 };

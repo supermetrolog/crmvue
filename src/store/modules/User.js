@@ -39,6 +39,16 @@ const User = {
         },
         setConsultants(state, consultants) {
             state.consultants = consultants;
+        },
+        restore(state, userId) {
+            const userIndex = state.users.findIndex(user => user.id === userId);
+            if (userIndex !== -1)
+                state.users[userIndex].status = userOptions.statusStatement.ACTIVE;
+        },
+        archive(state, userId) {
+            const userIndex = state.users.findIndex(user => user.id === userId);
+            if (userIndex !== -1)
+                state.users[userIndex].status = userOptions.statusStatement.INACTIVE;
         }
     },
     actions: {
@@ -53,8 +63,8 @@ const User = {
 
             return [];
         },
-        async FETCH_USERS({ commit }) {
-            let data = await api.user.list();
+        async FETCH_USERS({ commit }, params = {}) {
+            let data = await api.user.list(params);
             if (data) commit('updateUsers', data);
         },
         async REFRESH_USER({ getters, commit }) {
