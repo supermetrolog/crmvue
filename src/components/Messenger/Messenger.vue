@@ -38,7 +38,6 @@ import {
     onUnmounted,
     provide,
     ref,
-    shallowReactive,
     shallowRef,
     watch
 } from 'vue';
@@ -46,6 +45,7 @@ import { useNotify } from '@/utils/useNotify.js';
 import { messenger } from '@/const/messenger.js';
 import MessengerTaskPreview from '@/components/Messenger/MessengerTaskPreview.vue';
 import FormModalMessage from '@/components/Forms/FormModalMessage.vue';
+import { createMessengerContext } from '@/components/Messenger/useMessengerContext.js';
 
 const store = useStore();
 const notify = useNotify();
@@ -56,10 +56,7 @@ const hasPanel = shallowRef(false);
 const isActive = shallowRef(false);
 const timeout = shallowRef(null);
 
-const currentTab = shallowReactive({
-    name: null,
-    sort: null
-});
+const { currentTab } = createMessengerContext();
 
 provide('$openAttachments', () => attachments.value?.open());
 
@@ -96,8 +93,28 @@ const escapeHandler = event => {
 const openChat = async (companyID, objectID, modelType = 'object') => {
     const query = { model_type: modelType };
 
-    if (modelType === 'object') query.object_id = objectID;
-    else if (modelType === 'request') query.model_id = objectID;
+    switch (modelType) {
+        case 'object': {
+            query.object_id = objectID;
+            break;
+        }
+        case 'request': {
+            query.model_id = objectID;
+            break;
+        }
+        case 'company': {
+            query.model_id = objectID;
+            break;
+        }
+        case 'user': {
+            query.model_id = objectID;
+            break;
+        }
+        default: {
+            notify.info('Данные по объекту не были найдены в чате');
+            return;
+        }
+    }
 
     const dialog = await api.messenger.getDialogByQuery(query);
 
@@ -107,8 +124,8 @@ const openChat = async (companyID, objectID, modelType = 'object') => {
     }
 
     if (
-        messenger.tabsGroups[modelType + 's'] !==
-        messenger.tabsGroups[store.state.Messenger.currentDialogType + 's']
+        messenger.tabsGroups[modelType] !==
+        messenger.tabsGroups[store.state.Messenger.currentDialogType]
     )
         store.commit('Messenger/setCurrentPanel', null);
 
@@ -126,7 +143,7 @@ const openChat = async (companyID, objectID, modelType = 'object') => {
         anywayOpen: true
     });
 
-    currentTab.name = dialog.model_type + 's';
+    currentTab.name = dialog.model_type;
     isOpen.value = true;
 
     return true;
@@ -157,7 +174,7 @@ const openChatByID = async chatMemberID => {
     }
 
     store.commit('Messenger/setCurrentPanel', null);
-    currentTab.name = dialog.model_type + 's';
+    currentTab.name = dialog.model_type;
     isOpen.value = true;
 
     store.dispatch('Messenger/selectPanel', {

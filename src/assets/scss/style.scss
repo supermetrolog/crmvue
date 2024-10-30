@@ -291,8 +291,18 @@ tr.TableRequestRow {
             }
 
             .action {
-                width: 150px;
+                width: 185px;
             }
+        }
+    }
+
+    &__element {
+        &--archived {
+            opacity: .5!important;
+        }
+
+        &--restored {
+            background-color: rgba(71, 243, 189, 0.3) !important;
         }
     }
 }
@@ -747,9 +757,85 @@ tr.TableRequestRow {
 }
 
 .previewer {
-    img {
-        max-height: 60vh;
-        max-width: 80vw;
+    .agile {
+        &__nav-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: max-content;
+            cursor: pointer;
+
+            &--prev {
+                left: 0;
+            }
+
+            &--next {
+                right: 0;
+            }
+        }
+
+        &__list {
+            margin: 0 65px;
+        }
+    }
+
+    &__slider {
+        @include mixins.flex-box($a: center, $j: center);
+        position: relative;
+
+        img {
+            margin: 0 auto;
+            min-height: 40%;
+            max-height: calc(90vh - 300px);
+        }
+    }
+
+    &__single {
+        @include mixins.flex-box($j: center, $a: center);
+        border: 1px solid rgba(180, 180, 180, 0.5);
+
+        img {
+            max-height: calc(90vh - 160px);
+        }
+    }
+
+    &__thumbnails {
+        @include mixins.flex-box($wrap: true, $j: center, $gap: 5px);
+        max-height: 209px;
+        overflow-y: auto;
+    }
+
+    &__thumbnail {
+        cursor: pointer;
+        border: 1px solid rgba(180, 180, 180, 0.7);
+        @include mixins.transition(opacity .2s);
+
+        img {
+            height: 100px;
+            width: 100px;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        &:not(.active) {
+            opacity: .5;
+        }
+
+        &:hover {
+            opacity: .8;
+        }
+
+        &.active {
+            background-color: variables.$bg-success;
+            border-width: 2px;
+        }
+    }
+
+    &__arrow {
+        height: 55px;
+        width: 55px;
+        font-size: 40px;
+        color: variables.$bg-primary
     }
 }
 
@@ -830,4 +916,10 @@ tr.TableRequestRow {
     .messenger-warning {
         color: variables.$cl-danger!important;
     }
+}
+
+.v-lazy-image:not(.v-lazy-image-loaded) {
+    background: linear-gradient(to right, rgba(130, 130, 130, 0.2) 8%, rgba(130, 130, 130, 0.3) 18%, rgba(130, 130, 130, 0.2) 33%);
+    background-size: 800px 100px;
+    animation: skeleton .7s infinite ease-out;
 }

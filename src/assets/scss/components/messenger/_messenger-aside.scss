@@ -40,16 +40,16 @@
 
     &__offers.reversed {
         .messenger-aside-offers {
-            transform: translateY(var(--requests-height));
+            transform: translateY(var(--companies-height));
         }
 
-        .messenger-aside-requests {
+        .messenger-aside-companies {
             transform: translateY(var(--negative-offers-height));
         }
     }
 
     &__offers.reversing {
-        .messenger-aside-offers, .messenger-aside-requests {
+        .messenger-aside-offers, .messenger-aside-companies {
             @include mixins.transition(transform .8s);
         }
     }
@@ -124,7 +124,7 @@
     }
 }
 
-.messenger-aside-requests {
+.messenger-aside-companies {
     background-color: #f8f8f8;
 
     .messenger-aside__list {

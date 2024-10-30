@@ -24,15 +24,12 @@ const Companies = {
             state.company = data;
         },
         updateCompanyGroupList(state, data) {
-            let newCompanyGroupList = [];
-            data.map(item => {
-                newCompanyGroupList.push({
-                    value: item.id,
-                    label: item.full_name
-                });
-            });
-            state.companyGroupList = newCompanyGroupList;
             state.companyGroups = data;
+
+            state.companyGroupList = data.map(item => ({
+                value: item.id,
+                label: item.nameRu
+            }));
         },
         updateCompanyProductRangeList(state, data) {
             if (!data.length) {
@@ -45,12 +42,6 @@ const Companies = {
         }
     },
     actions: {
-        async FETCH_COMPANIES(context) {
-            const companies = await api.companies.getCompanies();
-            if (companies) {
-                context.commit('updateCompanies', companies);
-            }
-        },
         async SEARCH_COMPANIES({ commit }, { query, concat = false }) {
             const { setHash, confirmHash } = useQueryHash('companies');
             setHash(query);
@@ -68,12 +59,6 @@ const Companies = {
             if (company) {
                 context.commit('updateCompany', company);
             }
-        },
-        async CREATE_COMPANY(_, formdata) {
-            return await api.companies.createCompany(formdata);
-        },
-        async UPDATE_COMPANY(_, formdata) {
-            return await api.companies.updateCompany(formdata);
         },
         async CREATE_COMPANY_GROUPS(_, formdata) {
             return await api.companies.createCompanyGroups(formdata);

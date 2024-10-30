@@ -13,17 +13,14 @@
             </template>
         </MessengerBarTab>
         <MessengerBarTab
-            @select="$emit('select', messenger.tabs.REQUESTS, $event)"
-            label="Запросы"
-            :class="{ active: current?.name === messenger.tabs.REQUESTS }"
-            :counts="requestCounts"
+            @select="$emit('select', messenger.tabs.COMPANIES, $event)"
+            label="Компании"
+            icon="fa-solid fa-industry"
+            :class="{ active: current?.name === messenger.tabs.COMPANIES }"
+            :counts="companiesCounts"
             :current="current.sort"
             :loading="isInitialLoading"
-        >
-            <template #icon>
-                <IconRequests />
-            </template>
-        </MessengerBarTab>
+        />
         <MessengerBarTab
             @select="$emit('select', messenger.tabs.USERS, $event)"
             label="Сотрудники"
@@ -41,7 +38,6 @@ import { computed, onMounted, shallowRef, watch } from 'vue';
 import { useStore } from 'vuex';
 import { messenger } from '@/const/messenger.js';
 import IconWarehouse from '@/components/common/Icons/IconWarehouse.vue';
-import IconRequests from '@/components/common/Icons/IconRequests.vue';
 import { useDocumentVisibility, useIntervalFn } from '@vueuse/core';
 import { DELAY_BETWEEN_UPDATING_STATISTICS } from '@/configs/messenger.config.js';
 
@@ -57,9 +53,9 @@ const store = useStore();
 
 const isInitialLoading = shallowRef(true);
 
-const objectCounts = computed(() => store.state.Messenger.counts.objects);
-const requestCounts = computed(() => store.state.Messenger.counts.requests);
-const userCounts = computed(() => store.state.Messenger.counts.users);
+const objectCounts = computed(() => store.state.Messenger.counts.object);
+const companiesCounts = computed(() => store.state.Messenger.counts.company);
+const userCounts = computed(() => store.state.Messenger.counts.user);
 
 const statisticsInterval = useIntervalFn(() => {
     store.dispatch('Messenger/updateCounters');

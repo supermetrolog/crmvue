@@ -26,7 +26,6 @@ import 'dayjs/locale/ru';
 import isToday from 'dayjs/plugin/isToday';
 import isYesterday from 'dayjs/plugin/isYesterday';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { vIntersection } from '@/directives/intersection.js';
 import { axiosRequestInterceptor, axiosResponseErrorInterceptor } from '@/services/axios.js';
 
 dayjs.extend(isToday);
@@ -44,7 +43,6 @@ app.config.performance = true;
 app.component('Tabs', Tabs)
     .component('Tab', Tab)
     .component('PhoneNumber', PhoneNumber)
-    .directive('intersection', vIntersection)
     .use(VueAgile)
     .use(VueTippy, {
         directive: 'tippy',

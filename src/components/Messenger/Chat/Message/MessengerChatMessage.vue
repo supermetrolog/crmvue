@@ -1,5 +1,10 @@
 <template>
-    <div :id="'message-' + message.id" class="messenger-chat-message" :class="classList">
+    <div
+        :id="'message-' + message.id"
+        ref="target"
+        class="messenger-chat-message"
+        :class="classList"
+    >
         <MessengerChatMessageReplyInfo
             v-if="reply"
             @cancel="$emit('cancel-reply')"
@@ -35,6 +40,7 @@
                     />
                 </AnimationTransition>
                 <div class="messenger-chat-message__footer">
+                    <i v-if="pinned" class="fa-solid fa-lock messenger-chat-message__pinned" />
                     <span>{{ username }}, </span>
                     <span v-tippy="originalDate" class="messenger-chat-message__date">
                         {{ formattedDate }},
@@ -69,7 +75,7 @@ import MessengerChatMessageActions from '@/components/Messenger/Chat/Message/Mes
 import MessengerChatMessageAdditions from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditions.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import MessengerChatMessageAttachments from '@/components/Messenger/Chat/Message/MessengerChatMessageAttachments.vue';
-import { computed, provide, shallowRef } from 'vue';
+import { computed, provide, ref, useTemplateRef } from 'vue';
 import { useNotify } from '@/utils/useNotify.js';
 import { ucFirst } from '@/utils/formatter.js';
 import { useConfirm } from '@/composables/useConfirm.js';
@@ -78,13 +84,14 @@ import Loader from '@/components/common/Loader.vue';
 import MessengerChatMessageReplyInfo from '@/components/Messenger/Chat/Message/MessengerChatMessageReplyInfo.vue';
 import MessengerChatMessageReply from '@/components/Messenger/Chat/Message/MessengerChatMessageReply.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
+import { useIntersectionObserver, useTimeoutFn } from '@vueuse/core';
 
 const store = useStore();
 const notify = useNotify();
 const { confirm } = useConfirm();
 const { show: showMessageUpdateForm } = useAsyncPopup('messageUpdater');
 
-const emit = defineEmits(['deleted', 'reply', 'cancel-reply']);
+const emit = defineEmits(['deleted', 'reply', 'cancel-reply', 'viewed']);
 const props = defineProps({
     message: {
         type: Object,
@@ -101,12 +108,19 @@ const props = defineProps({
     reply: {
         type: Boolean,
         default: true
+    },
+    canBeViewed: {
+        type: Boolean,
+        default: false
     }
 });
 
 provide('$messageID', props.message.id);
 
-const isDeleteLoading = shallowRef(false);
+const isDeleteLoading = ref(false);
+const isViewed = ref(props.message.is_viewed);
+
+const target = useTemplateRef('target');
 
 const originalDate = computed(() => {
     return props.message.dayjs_date.format('D MMMM YYYY., H:mm:ss');
@@ -118,7 +132,7 @@ const formattedDate = computed(() => {
 const classList = computed(() => {
     return {
         'messenger-chat-message--right': props.self,
-        'messenger-chat-message--not-viewed': !props.message.is_viewed,
+        'messenger-chat-message--not-viewed': !props.message.is_viewed && !isViewed.value,
         'messenger-chat-message--reply': props.reply
     };
 });
@@ -190,4 +204,27 @@ const deleteMessage = async () => {
 
     isDeleteLoading.value = false;
 };
+
+const viewLocale = () => {
+    isViewed.value = true;
+};
+
+const { start: delayedViewLocale } = useTimeoutFn(viewLocale, 1100);
+
+const { stop } = useIntersectionObserver(
+    target,
+    ([{ isIntersecting }]) => {
+        if (!isIntersecting) return;
+
+        if (props.message.is_viewed) {
+            stop();
+            return;
+        }
+
+        emit('viewed', props.message.id);
+        delayedViewLocale();
+        stop();
+    },
+    { immediate: props.canBeViewed }
+);
 </script>

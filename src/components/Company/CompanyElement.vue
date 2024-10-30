@@ -1,11 +1,25 @@
 <template>
     <div class="company-element">
-        <router-link class="company-element__name" :to="'/companies/' + company.id" target="_blank">
-            <span v-if="!company.noName">{{ company.full_name }}</span>
-            <span v-else>Компания #{{ company.id }}</span>
-        </router-link>
-        <div v-if="company.rating" class="company-element__rating">
-            <Rating :rating="company.rating" />
+        <div class="company-element__main">
+            <CompanyLogo
+                :company-id="company.id"
+                :company-name="company.full_name"
+                :src="company.logo"
+                :size="42"
+            />
+            <div class="company-element__body">
+                <router-link
+                    class="company-element__name"
+                    :to="'/companies/' + company.id"
+                    target="_blank"
+                >
+                    <span v-if="!company.noName">{{ company.full_name }}</span>
+                    <span v-else>Компания #{{ company.id }}</span>
+                </router-link>
+                <div v-if="company.rating" class="company-element__rating">
+                    <Rating :rating="company.rating" />
+                </div>
+            </div>
         </div>
         <p class="company-element__info">
             <span>
@@ -25,6 +39,7 @@ import Rating from '@/components/common/Rating.vue';
 import plural from 'plural-ru';
 import { entityOptions } from '@/const/options/options.js';
 import { computed } from 'vue';
+import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 
 const props = defineProps({
     company: {

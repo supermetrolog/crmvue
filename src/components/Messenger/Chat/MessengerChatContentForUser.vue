@@ -32,7 +32,7 @@
                     />
                     <MessengerChatMessage
                         v-else-if="message.from.model_type === 'user'"
-                        v-intersection="
+                        v-intersection-observer="
                             message.is_viewed
                                 ? null
                                 : ([{ isIntersecting }], observer) =>
@@ -48,7 +48,7 @@
             <template #footer>
                 <div
                     ref="scrollEnd"
-                    v-intersection="scrollObserver"
+                    v-intersection-observer="scrollObserver"
                     class="messenger-chat__end"
                 ></div>
             </template>
@@ -79,6 +79,7 @@ import VirtualDragList from 'vue-virtual-draglist';
 import EmptyLabel from '@/components/common/EmptyLabel.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import Loader from '@/components/common/Loader.vue';
+import { vIntersectionObserver } from '@vueuse/components';
 
 const store = useStore();
 

@@ -6,9 +6,9 @@
             :class="{ reversed: isReversed, reversing: isReversing }"
             :style="{
                 '--offers-height': offersListHeight + 'px',
-                '--requests-height': requestsListHeight + 'px',
+                '--companies-height': companiesListHeight + 'px',
                 '--negative-offers-height': '-' + offersListHeight + 'px',
-                '--negative-requests-height': '-' + requestsListHeight + 'px'
+                '--negative-companies-height': '-' + companiesListHeight + 'px'
             }"
         >
             <MessengerAsideObjects
@@ -17,11 +17,11 @@
                 :objects="chatMembersObjects.data"
                 :pagination="chatMembersObjects.pagination"
             />
-            <MessengerAsideRequests
-                ref="asideRequests"
-                @load="load($event, 'request')"
-                :requests="chatMembersRequests.data"
-                :pagination="chatMembersRequests.pagination"
+            <MessengerAsideCompanies
+                ref="asideCompanies"
+                @load="load($event, 'company')"
+                :companies="chatMembersCompanies.data"
+                :pagination="chatMembersCompanies.pagination"
             />
         </div>
     </div>
@@ -30,10 +30,10 @@
 import MessengerAsideHeader from '@/components/Messenger/Aside/MessengerAsideHeader.vue';
 import { useStore } from 'vuex';
 import MessengerAsideObjects from '@/components/Messenger/Aside/MessengerAsideObjects.vue';
-import MessengerAsideRequests from '@/components/Messenger/Aside/MessengerAsideRequests.vue';
-import { computed, onBeforeMount, shallowRef, watch } from 'vue';
+import { computed, onBeforeMount, shallowRef, useTemplateRef, watch } from 'vue';
 import { messenger } from '@/const/messenger.js';
 import { useDebounceFn, useElementSize } from '@vueuse/core';
+import MessengerAsideCompanies from '@/components/Messenger/Aside/MessengerAsideCompanies.vue';
 
 const props = defineProps({
     currentTab: {
@@ -44,12 +44,12 @@ const props = defineProps({
 
 const store = useStore();
 
-const asideOffers = shallowRef(null);
-const asideRequests = shallowRef(null);
+const asideOffers = useTemplateRef('asideOffers');
+const asideCompanies = useTemplateRef('asideCompanies');
 const isReversing = shallowRef(false);
 
 const { height: offersListHeight } = useElementSize(asideOffers);
-const { height: requestsListHeight } = useElementSize(asideRequests);
+const { height: companiesListHeight } = useElementSize(asideCompanies);
 
 const debouncedStopReversing = useDebounceFn(() => {
     isReversing.value = false;
@@ -57,9 +57,9 @@ const debouncedStopReversing = useDebounceFn(() => {
 
 const hasQuery = computed(() => store.getters['Messenger/hasQuery']);
 const hasDialogs = computed(() => store.getters['Messenger/hasDialogs']);
-const chatMembersObjects = computed(() => store.state.Messenger.chatMembersObjects);
-const chatMembersRequests = computed(() => store.state.Messenger.chatMembersRequests);
-const isReversed = computed(() => props.currentTab.name === messenger.tabs.REQUESTS);
+const chatMembersObjects = computed(() => store.state.Messenger.chatMembersObject);
+const chatMembersCompanies = computed(() => store.state.Messenger.chatMembersCompany);
+const isReversed = computed(() => props.currentTab.name === messenger.tabs.COMPANIES);
 
 watch(isReversed, () => {
     isReversing.value = true;

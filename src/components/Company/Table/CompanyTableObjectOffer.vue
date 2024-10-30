@@ -3,7 +3,7 @@
         <b>
             <span>{{ dealType }},</span>
             <WithUnitType class="ml-1" :unit-type="unitTypes.SQUARE_METERS">
-                {{ offer.calc_area_general }}
+                {{ toNumberOrRangeFormat(offer.area_min, offer.area_max) }}
             </WithUnitType>
         </b>
     </div>
@@ -14,6 +14,7 @@ import { computed } from 'vue';
 import { entityOptions } from '@/const/options/options.js';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
+import { toNumberOrRangeFormat } from '@/utils/formatter.js';
 
 const props = defineProps({ offer: { type: Object, required: true } });
 

@@ -30,7 +30,7 @@
             </DashboardChip>
         </div>
         <a class="offer-table-item-preview__container" :href="offerUrl" target="_blank">
-            <VLazyImage v-if="!offer.thumb" :src="getApiFileNotFound()" alt="image" />
+            <NoImage v-if="!offer.thumb" />
             <OfferTableItemPreviewMotionSlider
                 v-else
                 :thumb="offer.thumb"
@@ -73,7 +73,6 @@
 </template>
 
 <script setup>
-import VLazyImage from 'v-lazy-image';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { computed } from 'vue';
 import { objectOptions } from '@/const/options/object.options.js';
@@ -82,7 +81,8 @@ import { dealOptions } from '@/const/options/deal.options.js';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
 import { toNumberFormat } from '@/utils/formatter.js';
-import { getApiFileNotFound, getLinkOfferByObject, getLinkOfferOldByObject } from '@/utils/url.js';
+import { getLinkOfferByObject, getLinkOfferOldByObject } from '@/utils/url.js';
+import NoImage from '@/components/common/NoImage.vue';
 
 const props = defineProps({
     offer: {

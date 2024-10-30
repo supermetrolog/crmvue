@@ -6,10 +6,17 @@
     @include mixins.light-border;
     border-radius: 5px;
 
+    &__main {
+        @include mixins.flex-box($gap: 5px);
+    }
+
+    &__body {
+        @include mixins.flex-box($d: column);
+    }
+
     &__name {
         font-weight: 500;
-        width: max-content;
-        @include mixins.text-overflow();
+        @include mixins.text-overflow(2);
     }
 }
 

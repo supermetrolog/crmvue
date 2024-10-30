@@ -10,56 +10,49 @@
             class="messenger-chat-pinned__text"
             v-html="message.message?.length ? message.message : fileNames"
         ></div>
-        <span class="messenger-chat-pinned__date">{{ date }}</span>
+        <span class="messenger-chat-pinned__date">{{ createdAt }}</span>
         <i v-tippy="'Открепить сообщение'" @click="unpin" class="fa-solid fa-xmark c-pointer"></i>
         <MessengerChatPinnedView v-if="viewIsOpened" @close="viewIsOpened = false" />
     </div>
 </template>
-<script>
+<script setup>
 import plural from 'plural-ru';
-import dayjs from 'dayjs';
 import MessengerChatPinnedView from '@/components/Messenger/Chat/MessengerChatPinnedView.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
+import { computed, ref } from 'vue';
+import { toDateFormat } from '@/utils/formatter.js';
+import { useNotify } from '@/utils/useNotify.js';
+import { useStore } from 'vuex';
 
-export default {
-    name: 'MessengerChatPinned',
-    components: { MessengerChatPinnedView },
-    props: {
-        message: {
-            type: Object,
-            required: true
-        }
-    },
-    setup() {
-        const { confirm } = useConfirm();
-        return { confirm };
-    },
-    data() {
-        return {
-            viewIsOpened: false
-        };
-    },
-    computed: {
-        fileNames() {
-            return `${plural(
-                this.message.attachments.length,
-                '%d файл',
-                '%d файла',
-                '%d файлов'
-            )}: ${this.message.attachments.map(attachment => attachment.name).join(', ')}`;
-        },
-        date() {
-            return dayjs(this.message.created_at).format('D.MM.YY, HH:mm');
-        }
-    },
-    methods: {
-        async unpin() {
-            const confirmed = await this.confirm('Вы уверены, что хотите открепить сообщение?');
-            if (!confirmed) return;
-
-            const unpinned = await this.$store.dispatch('Messenger/unpinMessage');
-            if (unpinned) this.$notify('Сообщение успешно откреплено');
-        }
+const props = defineProps({
+    message: {
+        type: Object,
+        required: true
     }
+});
+
+const { confirm } = useConfirm();
+const notify = useNotify();
+const store = useStore();
+
+const viewIsOpened = ref(false);
+
+const fileNames = computed(() => {
+    return `${plural(
+        props.message.files.length,
+        '%d файл',
+        '%d файла',
+        '%d файлов'
+    )}: ${props.message.files.map(attachment => attachment.name).join(', ')}`;
+});
+
+const createdAt = computed(() => toDateFormat(props.message.created_at));
+
+const unpin = async () => {
+    const confirmed = await confirm('Вы уверены, что хотите открепить сообщение?');
+    if (!confirmed) return;
+
+    const unpinned = await store.dispatch('Messenger/unpinMessage');
+    if (unpinned) notify.success('Сообщение успешно откреплено');
 };
 </script>

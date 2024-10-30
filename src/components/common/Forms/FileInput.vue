@@ -284,6 +284,11 @@ export default {
     },
     created() {
         this.setExistFiles();
+    },
+    mounted() {
+        if (this.native) {
+            this.localFiles = this.native;
+        }
     }
 };
 </script>
