@@ -74,6 +74,17 @@
                 </div>
                 <div class="company-box-main__block">
                     <Tabs :options="{ useUrlFragment: false }">
+                        <Tab name="Логотип">
+                            <CompanyLogo
+                                v-tippy="'Нажмите, чтобы просмотреть фотографию'"
+                                @click="previewLogo"
+                                as="div"
+                                :company-id="company.id"
+                                :src="company.logo?.src"
+                                class="mr-2"
+                                :size="90"
+                            />
+                        </Tab>
                         <Tab name="Описание">
                             <span v-if="!!company.description">{{ company.description }}</span>
                             <span v-else>Не указано</span>
@@ -188,61 +199,64 @@
     </CompanyBoxLayout>
 </template>
 
-<script>
-import CompanyBoxContactList from './CompanyBoxContactList.vue';
-import CompanyBoxLayout from '@/components/Company/Box/CompanyBoxLayout.vue';
+<script setup>
 import { ActivityGroupList, ActivityProfileList, CompanyCategories } from '@/const/const';
+import { usePreviewer } from '@/composables/usePreviewer.js';
+import { computed } from 'vue';
+import { useNotify } from '@/utils/useNotify.js';
+import CompanyBoxContactList from '@/components/Company/Box/CompanyBoxContactList.vue';
+import EmptyLabel from '@/components/common/EmptyLabel.vue';
+import File from '@/components/common/Forms/File.vue';
+import Tabs from '@/components/common/Tabs/Tabs.vue';
+import Tab from '@/components/common/Tabs/Tab.vue';
+import CompanyBoxRow from '@/components/Company/Box/CompanyBoxRow.vue';
+import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 import Rating from '@/components/common/Rating.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
-import CompanyBoxRow from '@/components/Company/Box/CompanyBoxRow.vue';
-import File from '@/components/common/Forms/File.vue';
-import EmptyLabel from '@/components/common/EmptyLabel.vue';
+import CompanyBoxLayout from '@/components/Company/Box/CompanyBoxLayout.vue';
 
-export default {
-    name: 'CompanyBox',
-    components: {
-        EmptyLabel,
-        File,
-        CompanyBoxRow,
-        HoverActionsButton,
-        DashboardChip,
-        Rating,
-        CompanyBoxLayout,
-        CompanyBoxContactList
+defineEmits(['create-contact', 'edit-company']);
+
+const props = defineProps({
+    company: {
+        type: Object,
+        default: () => ({})
     },
-    emits: ['create-contact', 'edit-company'],
-    inject: ['isMobile'],
-    props: {
-        company: {
-            type: Object,
-            default: () => {}
-        },
-        contacts: {
-            type: Array,
-            default: () => []
-        }
-    },
-    computed: {
-        productRanges() {
-            return this.company.productRanges
-                .map(range => range.product[0].toUpperCase() + range.product.slice(1))
-                .join(', ');
-        },
-        categories() {
-            return this.company.categories.map(item => CompanyCategories[item.category]);
-        },
-        websites() {
-            let commonContact = this.company.contacts.find(contact => contact.type === 1);
-            if (commonContact) return commonContact.websites.map(item => item.website);
-            return [];
-        },
-        activityGroup() {
-            return ActivityGroupList[this.company.activityGroup].label;
-        },
-        activityProfile() {
-            return ActivityProfileList[this.company.activityProfile].label;
-        }
+    contacts: {
+        type: Array,
+        default: () => []
     }
+});
+
+const { preview } = usePreviewer();
+const notify = useNotify();
+
+const productRanges = computed(() => {
+    return props.company.productRanges
+        .map(range => range.product[0].toUpperCase() + range.product.slice(1))
+        .join(', ');
+});
+
+const categories = computed(() => {
+    return props.company.categories.map(item => CompanyCategories[item.category]);
+});
+
+const websites = computed(() => {
+    let commonContact = props.company.contacts.find(contact => contact.type === 1);
+    if (commonContact) return commonContact.websites.map(item => item.website);
+    return [];
+});
+
+const activityGroup = computed(() => {
+    return ActivityGroupList[props.company.activityGroup].label;
+});
+
+const activityProfile = computed(() => {
+    return ActivityProfileList[props.company.activityProfile].label;
+});
+const previewLogo = () => {
+    if (props.company.logo) preview({ id: props.company.id, src: props.company.logo.src });
+    else notify.info('Логотип компании отсутствует');
 };
 </script>

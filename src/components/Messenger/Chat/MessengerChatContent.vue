@@ -15,7 +15,7 @@
             wrap-class="messenger-chat__body"
         >
             <template #header>
-                <Loader v-if="isLoading" />
+                <Loader v-if="isLoading" class="small" />
                 <InfiniteLoading v-if="messages.length && scrolled" @infinite="loadMessages">
                     <template #complete>
                         <EmptyLabel>Больше сообщений нет..</EmptyLabel>
@@ -32,12 +32,7 @@
                     />
                     <MessengerChatMessage
                         v-else-if="message.from.model_type === 'user'"
-                        v-intersection="
-                            message.is_viewed
-                                ? null
-                                : ([{ isIntersecting }], observer) =>
-                                      messageIntersectionObserver(isIntersecting, observer, message)
-                        "
+                        @viewed="debouncedReadMessage"
                         @deleted="onMessageDeleted(message.id)"
                         @reply="replyTo = message"
                         @cancel-reply="replyTo = null"
@@ -45,12 +40,13 @@
                         :message="message"
                         :pinned="message.id === pinnedMessage?.id"
                         :reply="message.id === replyTo?.id"
+                        :can-be-viewed="!message.is_viewed"
                     />
                     <MessengerChatNotification v-else :message="message" />
                 </div>
             </template>
             <template #footer>
-                <div v-intersection="scrollObserver" class="messenger-chat__end"></div>
+                <div v-intersection-observer="scrollObserver" class="messenger-chat__end"></div>
             </template>
         </VirtualDragList>
         <MessengerChatScrollButton
@@ -65,7 +61,6 @@
 </template>
 <script setup>
 import MessengerChatHeader from '@/components/Messenger/Chat/Header/MessengerChatHeader.vue';
-import MessengerChatMessage from '@/components/Messenger/Chat/Message/MessengerChatMessage.vue';
 import MessengerChatForm from '@/components/Messenger/Chat/Form/MessengerChatForm.vue';
 import { useStore } from 'vuex';
 import MessengerChatLabel from '@/components/Messenger/Chat/MessengerChatLabel.vue';
@@ -76,22 +71,24 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { debounce } from '@/utils/debounce.js';
 import MessengerChatScrollButton from '@/components/Messenger/Chat/MessengerChatScrollButton.vue';
 import { useElementSize } from '@vueuse/core';
-import { computed, nextTick, onMounted, shallowRef, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import VirtualDragList from 'vue-virtual-draglist';
 import EmptyLabel from '@/components/common/EmptyLabel.vue';
-import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
+import MessengerChatMessage from '@/components/Messenger/Chat/Message/MessengerChatMessage.vue';
 import Loader from '@/components/common/Loader.vue';
+import { vIntersectionObserver } from '@vueuse/components';
 
 const store = useStore();
 
-const formEl = shallowRef(null);
-const virtual = shallowRef(null);
+const virtual = useTemplateRef('virtual');
+const formEl = useTemplateRef('formEl');
+
 const scrolled = shallowRef(false);
 const scrollButtonIsVisible = shallowRef(false);
 const scrollIsLock = shallowRef(false);
 const replyTo = shallowRef(null);
 
-const { isLoading } = useDelayedLoader(false, 700);
+const isLoading = ref(false);
 
 const { height } = useElementSize(formEl);
 const scrollButtonBottom = computed(() => height.value + 45 + 'px');
@@ -116,9 +113,8 @@ watch(isLoading, value => {
     if (!value && scrollIsLock.value) scrollIsLock.value = false;
 });
 
-const scrollToNotViewed = async () => {
+const scrollToCorrectPosition = async () => {
     await nextTick();
-
     const notViewedMessage = messages.value.find(element => !element.is_viewed && !element.isLabel);
 
     if (notViewedMessage) virtual.value.scrollToKey(notViewedMessage.id);
@@ -144,22 +140,6 @@ const loadMessages = async $state => {
     if (isLastPage) $state.complete();
     else $state.loaded();
 };
-const messageIntersectionObserver = (isIntersecting, observer, message) => {
-    if (!isIntersecting) return;
-
-    if (message.is_viewed || message._is_viewed) {
-        observer.disconnect();
-        return;
-    }
-
-    debouncedReadMessage(message.id);
-
-    message._is_viewed = true;
-    setTimeout(() => {
-        message.is_viewed = true;
-    }, 1200);
-    observer.disconnect();
-};
 
 const readMessages = async messageID => {
     await store.dispatch('Messenger/readMessages', messageID);
@@ -176,7 +156,7 @@ const onMessageDeleted = messageId => {
 onMounted(() => {
     if (messages.value.length) {
         scrollIsLock.value = true;
-        scrollToNotViewed();
+        scrollToCorrectPosition();
     }
 });
 </script>

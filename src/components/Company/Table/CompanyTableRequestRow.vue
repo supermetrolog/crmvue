@@ -7,7 +7,7 @@
                 :key="timeline.id"
                 @click="openTimeline"
                 class="company-table-item__timeline"
-                :current-steps="timeline.timelineSteps"
+                :current-steps="timeline.steps"
                 :request-name="requestName"
             />
         </td>

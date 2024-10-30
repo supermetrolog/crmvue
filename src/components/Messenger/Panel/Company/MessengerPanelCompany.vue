@@ -1,31 +1,47 @@
 <template>
     <div class="messenger-panel-company">
         <div class="messenger-panel-company__card">
-            <HoverActionsButton
-                @click="$emit('edit')"
-                label="Редактировать компанию"
-                class="messenger-panel-company__action"
-            >
-                <i class="fa-solid fa-pen"></i>
-            </HoverActionsButton>
-            <a
-                :href="'/companies/' + company.id"
-                target="_blank"
-                class="messenger-panel-company__name"
-            >
-                <span v-if="hasUndefinedName" class="messenger-warning bold">
-                    НЕТ УНИКАЛЬНОГО НАЗВАНИЯ
-                </span>
-                <span v-else>{{ companyName }}</span>
-            </a>
-            <div class="messenger-panel-company__subtitle">
-                <span>ID{{ company.id }} | </span>
-                <Rating
-                    class="messenger-panel-company__rating"
-                    :rating="company.rating"
-                    :max="3"
-                    color="yellow"
-                />
+            <div class="messenger-panel-company__actions">
+                <HoverActionsButton
+                    @click="$emit('edit')"
+                    label="Редактировать компанию"
+                    class="messenger-panel-company__action"
+                    small
+                >
+                    <i class="fa-solid fa-pen"></i>
+                </HoverActionsButton>
+                <HoverActionsButton
+                    @click="toChat"
+                    label="Перейти в чат компании"
+                    class="messenger-panel-company__action"
+                    small
+                >
+                    <i class="fa-solid fa-comment"></i>
+                </HoverActionsButton>
+            </div>
+            <div class="messenger-panel-company__header">
+                <CompanyLogo :company-id="company.id" :src="company.logo?.src" :size="60" />
+                <div>
+                    <a
+                        :href="'/companies/' + company.id"
+                        target="_blank"
+                        class="messenger-panel-company__name"
+                    >
+                        <span v-if="hasUndefinedName" class="messenger-warning bold">
+                            НЕТ УНИКАЛЬНОГО НАЗВАНИЯ
+                        </span>
+                        <span v-else>{{ companyName }}</span>
+                    </a>
+                    <div class="messenger-panel-company__subtitle">
+                        <span>ID{{ company.id }} | </span>
+                        <Rating
+                            class="messenger-panel-company__rating"
+                            :rating="company.rating"
+                            :max="3"
+                            color="yellow"
+                        />
+                    </div>
+                </div>
             </div>
             <p v-if="website" class="messenger-panel-company__site">
                 <span>Сайт: </span>
@@ -69,6 +85,9 @@ import { getCompanyName, toCorrectUrl, ucFirst } from '@/utils/formatter.js';
 import { companyOptions } from '@/const/options/company.options.js';
 import { contactOptions } from '@/const/options/contact.options.js';
 import { alg } from '@/utils/alg.js';
+import { useMessenger } from '@/components/Messenger/useMessenger.js';
+import { messenger } from '@/const/messenger.js';
+import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 
 defineEmits(['edit']);
 const props = defineProps({
@@ -77,6 +96,8 @@ const props = defineProps({
         required: true
     }
 });
+
+const { openChat } = useMessenger();
 
 const hasUndefinedName = computed(() => {
     return (
@@ -110,4 +131,8 @@ const productRanges = computed(() => {
 });
 
 const companyName = computed(() => getCompanyName(props.company, props.company.id));
+
+const toChat = () => {
+    openChat(props.company.id, props.company.id, messenger.dialogTypes.COMPANY);
+};
 </script>

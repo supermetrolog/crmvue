@@ -1,5 +1,9 @@
 <template>
-    <div v-intersection="intersectionObserver" class="object-holding" :class="{ target: target }">
+    <div
+        v-intersection-observer="intersectionObserver"
+        class="object-holding"
+        :class="{ target: target }"
+    >
         <div class="object-holding__body">
             <div class="object-holding__carousel">
                 <div class="object-holding__badges">
@@ -43,6 +47,7 @@ import ComplexHoldingTabs from '@/components/Complex/Holding/ComplexHoldingTabs.
 import ComplexHoldingCompany from '@/components/Complex/Holding/ComplexHoldingCompany.vue';
 import { computed, inject, provide } from 'vue';
 import { $generatorURL as $url } from '@/plugins/url.js';
+import { vIntersectionObserver } from '@vueuse/components';
 
 const emit = defineEmits(['edit', 'intersected']);
 const props = defineProps({

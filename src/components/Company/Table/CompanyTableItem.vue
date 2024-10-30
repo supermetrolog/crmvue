@@ -2,16 +2,6 @@
     <Tr class="company-table-item" :class="{ CompanyTableOdd: odd, CompanyTableEven: !odd }">
         <Td class="text-center company-table-item__id">
             <p class="mb-1">{{ company.id }}</p>
-            <DashboardChip
-                v-if="isPassive"
-                v-tippy="passiveWhyComment"
-                class="dashboard-bg-danger text-white mb-2"
-            >
-                <div class="d-flex align-items-center gap-1">
-                    <span>Пассив</span>
-                    <i class="fa-regular fa-question-circle" />
-                </div>
-            </DashboardChip>
             <div class="company-table-item__buttons">
                 <HoverActionsButton @click="openInChat" label="Открыть в чате">
                     <i class="fa-solid fa-comment" />
@@ -19,30 +9,42 @@
             </div>
         </Td>
         <Td class="company-table-item__name" sort="nameRu">
-            <a class="company-table-item__title" :href="$url.company(company.id)" target="_blank">
-                <h4 :class="{ 'text-warning': isPassive }">
-                    {{ company.full_name }}
-                </h4>
-            </a>
-            <p v-if="company.companyGroup" class="company-table-item__company-group">
-                {{ company.companyGroup.full_name }}
-            </p>
-            <span v-if="company.activityProfile !== null" class="company-table-item__profile">
-                {{ activityProfile }}
-            </span>
-            <div
-                v-if="company.productRanges?.length"
-                class="company-table-item__product-ranges my-1"
-            >
-                <DashboardChip
-                    v-for="productRange in company.productRanges"
-                    :key="productRange.id"
-                    class="dashboard-bg-light"
-                >
-                    {{ $formatter.text().ucFirst(productRange.product) }}
-                </DashboardChip>
+            <div class="company-table-item__main">
+                <CompanyLogo
+                    :company-id="company.id"
+                    :company-name="company.full_name"
+                    :src="company.logo"
+                />
+                <div>
+                    <a class="company-table-item__title" :href="companyUrl" target="_blank">
+                        <h4 :class="{ 'text-warning': isPassive }">
+                            {{ company.full_name }}
+                        </h4>
+                    </a>
+                    <p v-if="company.companyGroup" class="company-table-item__company-group">
+                        {{ company.companyGroup.full_name }}
+                    </p>
+                    <span
+                        v-if="company.activityProfile !== null"
+                        class="company-table-item__profile"
+                    >
+                        {{ activityProfile }}
+                    </span>
+                    <div
+                        v-if="company.productRanges?.length"
+                        class="company-table-item__product-ranges my-1"
+                    >
+                        <DashboardChip
+                            v-for="productRange in company.productRanges"
+                            :key="productRange.id"
+                            class="dashboard-bg-light"
+                        >
+                            {{ ucFirst(productRange.product) }}
+                        </DashboardChip>
+                    </div>
+                    <Rating v-if="company.rating" :rating="company.rating" color="yellow" />
+                </div>
             </div>
-            <Rating v-if="company.rating" :rating="company.rating" color="yellow" />
         </Td>
         <Td class="company-table-item__categories">
             <div v-if="company.categories.length" class="company-table-item__list">
@@ -75,13 +77,32 @@
             <span>&#8212;</span><span v-if="false">Пора позвонить клиенту</span>
         </Td>
         <Td class="company-table-item__date" sort="created_at">
-            <div class="d-flex">
-                <TableDateBlock
-                    class="mx-auto"
-                    :date="company.updated_at || company.created_at"
-                    label="Обновление"
-                />
-            </div>
+            <DashboardChip
+                v-if="isPassive"
+                v-tippy="passiveWhyComment"
+                class="dashboard-bg-danger offer-table-item__chip text-white"
+            >
+                Пассив
+            </DashboardChip>
+            <DashboardChip v-else class="dashboard-bg-success-l offer-table-item__chip">
+                Актив
+            </DashboardChip>
+            <!--            <OfferTableItemCall @click="openSurvey" :call="company.last_call" />-->
+            <!--            <HoverActionsButton-->
+            <!--                @click="openInChat"-->
+            <!--                class="my-2 mx-auto offer-table-item__chat"-->
+            <!--                :label="`У вас ${offer.unread_message_count} непрочитанных сообщений по этой компании`"-->
+            <!--            >-->
+            <!--                <div class="d-flex flex-column">-->
+            <!--                    <i class="fa-solid fa-comment" />-->
+            <!--                    <span>{{ offer.unread_message_count }}</span>-->
+            <!--                </div>-->
+            <!--            </HoverActionsButton>-->
+            <TableDateBlock
+                class="text-center"
+                :date="company.updated_at || company.created_at"
+                label="Обновление"
+            />
         </Td>
     </Tr>
     <CompanyTableDropdown
@@ -109,10 +130,14 @@ import Avatar from '@/components/common/Avatar.vue';
 import TableDateBlock from '@/components/common/Table/TableDateBlock.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
+import { getLinkCompany } from '@/utils/url.js';
+import { ucFirst } from '@/utils/formatter.js';
+import CompanyLogo from '@/components/Company/CompanyLogo.vue';
+import { messenger } from '@/const/messenger.js';
 
 const store = useStore();
 const router = useRouter();
-const { openChatByCompanyId } = useMessenger();
+const { openChat } = useMessenger();
 
 const props = defineProps({
     company: { type: Object, required: true },
@@ -137,6 +162,8 @@ const passiveWhyComment = computed(() => {
     return text;
 });
 
+const companyUrl = computed(() => getLinkCompany(props.company.id));
+
 const openTimeline = requestID => {
     const route = router.resolve({
         path: `/companies/${props.company.id}`,
@@ -151,6 +178,8 @@ const openTimeline = requestID => {
 };
 
 const openInChat = () => {
-    openChatByCompanyId(props.company.id);
+    openChat(props.company.id, props.company.id, messenger.dialogTypes.COMPANY);
 };
+
+const openSurvey = () => {};
 </script>

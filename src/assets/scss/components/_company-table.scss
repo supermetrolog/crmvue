@@ -111,6 +111,10 @@
         font-weight: 500;
     }
 
+    &__main {
+        @include mixins.flex-box($gap: 10px);
+    }
+
     &__title {
         width: 100%;
         color: variables.$color_primary;
@@ -288,5 +292,20 @@ tr.CompanyTableEven {
 
     @include mixins.media('max', 'md') {
         font-size: 8px;
+    }
+}
+
+.company-logo {
+    display: block;
+    flex-shrink: 0;
+    border: 1px solid rgba(194, 194, 194, 0.45);
+    @include mixins.transition(opacity);
+
+    &__image {
+        max-width: 100%;
+        max-height: 100%;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 }

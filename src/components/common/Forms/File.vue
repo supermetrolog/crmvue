@@ -3,7 +3,7 @@
         <a :href="filePath" class="file__body" target="_blank">
             <VLazyImage
                 v-if="fileType.name === 'image'"
-                @click.prevent.stop="$openPreviewer(filePath)"
+                @click.prevent.stop="onImageClick"
                 :src="filePath"
                 class="file__image"
                 alt="file image"
@@ -65,13 +65,14 @@
 import VLazyImage from 'v-lazy-image';
 import Tooltip from '@/components/common/Tooltip.vue';
 import { fileTypes } from '@/const/types';
-import { computed, inject } from 'vue';
+import { computed } from 'vue';
 import { toFileSizeFormat } from '@/utils/formatter.js';
 import { getLinkUploadedFile } from '@/utils/url.js';
+import { usePreviewer } from '@/composables/usePreviewer.js';
 
 const fileTypesList = Object.values(fileTypes);
 
-defineEmits(['delete']);
+const emit = defineEmits(['delete', 'preview']);
 const props = defineProps({
     file: {
         type: Object,
@@ -84,10 +85,14 @@ const props = defineProps({
     draggable: {
         type: Boolean,
         default: false
+    },
+    customPreview: {
+        type: Boolean,
+        default: false
     }
 });
 
-const $openPreviewer = inject('$openPreviewer');
+const { preview } = usePreviewer();
 
 const fileName = computed(() => {
     if (props.file.original_name) return props.file.original_name;
@@ -112,4 +117,14 @@ const fileType = computed(() => {
 const filePath = computed(() => {
     return props.file.src ?? getLinkUploadedFile(props.file.path);
 });
+
+const onImageClick = () => {
+    if (props.customPreview) emit('preview');
+    else {
+        preview({
+            src: props.file.src,
+            id: props.file.id
+        });
+    }
+};
 </script>

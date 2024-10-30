@@ -114,7 +114,6 @@
 
             &__image {
                 max-height: 300px;
-                object-fit: unset;
             }
         }
     }
@@ -152,6 +151,11 @@
         &:hover {
             background-color: variables.$bg-primary;
         }
+    }
+
+    &__pinned {
+        margin-right: 5px;
+        font-size: 16px;
     }
 }
 

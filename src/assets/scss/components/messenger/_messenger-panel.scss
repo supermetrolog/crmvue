@@ -50,7 +50,6 @@
         display: inline-block;
         color: inherit;
         text-decoration: underline;
-        max-width: calc(100% - 40px);
     }
 
     &__subtitle {
@@ -121,14 +120,21 @@
         overflow-y: auto
     }
 
-    &__action {
+    &__actions {
         position: absolute;
         right: 10px;
         top: 10px;
+        @include mixins.flex-box($d: column, $gap: 5px);
     }
 
     &__heading {
         border-top: 1px solid rgba(0, 0, 0, .1);
+    }
+
+    &__header {
+        @include mixins.flex-box($gap: 10px);
+        margin-bottom: 5px;
+        max-width: calc(100% - 40px);
     }
 }
 

@@ -23,6 +23,14 @@ const buttons = {
         ],
         empty: 'У вас нет устаревших чатов'
     },
+    calls_all: {
+        plural: [
+            'Всего в базе %d устаревший чат',
+            'Всего в базе %d устаревших чата',
+            'Всего в базе %d устаревших чатов'
+        ],
+        empty: 'У вас нет устаревших чатов'
+    },
     messages: {
         plural: [
             'У вас %d непрочитанное сообщение',
@@ -47,15 +55,24 @@ const additions = {
 };
 
 const tabs = {
-    OBJECTS: 'objects',
-    REQUESTS: 'requests',
-    USERS: 'users'
+    OBJECTS: 'object',
+    REQUESTS: 'request',
+    USERS: 'user',
+    COMPANIES: 'company'
+};
+
+const tabsPlural = {
+    request: 'requests',
+    company: 'companies',
+    user: 'users',
+    object: 'objects'
 };
 
 const tabsGroups = {
     [tabs.OBJECTS]: 'objects',
     [tabs.REQUESTS]: 'objects',
-    [tabs.USERS]: 'users'
+    [tabs.USERS]: 'users',
+    [tabs.COMPANIES]: 'objects'
 };
 
 const tabFilters = {
@@ -68,7 +85,8 @@ const tabFilters = {
 const dialogTypes = {
     USER: 'user',
     OBJECT: 'object',
-    REQUEST: 'request'
+    REQUEST: 'request',
+    COMPANY: 'company'
 };
 export const SIZE_TO_COMPRESSION = 2097152; // 2 megabyte
 export const MAX_FILES_COUNT = 20;
@@ -81,6 +99,7 @@ export const messenger = {
     additions,
     tabs,
     tabsGroups,
+    tabsPlural,
     dialogTypes,
     tabFilters
 };

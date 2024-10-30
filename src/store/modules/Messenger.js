@@ -16,15 +16,19 @@ const needCacheMessage = (dialogID, asideID, panelID) => {
 };
 
 const getInitialState = () => ({
-    chatMembersObjects: {
+    chatMembersObject: {
         data: [],
         pagination: null
     },
-    chatMembersRequests: {
+    chatMembersRequest: {
         data: [],
         pagination: null
     },
-    chatMembersUsers: {
+    chatMembersUser: {
+        data: [],
+        pagination: null
+    },
+    chatMembersCompany: {
         data: [],
         pagination: null
     },
@@ -60,20 +64,30 @@ const getInitialState = () => ({
     unreadReminderCount: 0,
 
     counts: {
-        objects: {
+        object: {
             outdated_call_count: 0,
+            outdated_call_count_all: 0,
             unread_message_count: 0,
             unread_task_count: 0,
             unread_reminder_count: 0
         },
-        requests: {
+        request: {
             outdated_call_count: 0,
+            outdated_call_count_all: 0,
             unread_message_count: 0,
             unread_task_count: 0,
             unread_reminder_count: 0
         },
-        users: {
+        user: {
             outdated_call_count: 0,
+            outdated_call_count_all: 0,
+            unread_message_count: 0,
+            unread_task_count: 0,
+            unread_reminder_count: 0
+        },
+        company: {
+            outdated_call_count: 0,
+            outdated_call_count_all: 0,
             unread_message_count: 0,
             unread_task_count: 0,
             unread_reminder_count: 0
@@ -90,10 +104,10 @@ const Messenger = {
     state: getInitialState(),
     mutations: {
         setDialogs(state, dialogs) {
-            [state.chatMembersObjects, state.chatMembersRequests] = [...dialogs];
+            [state.chatMembersObject, state.chatMembersCompany] = [...dialogs];
         },
         setConsultantsDialogs(state, dialogs) {
-            state.chatMembersUsers = dialogs;
+            state.chatMembersUser = dialogs;
         },
         addDialogs(state, { dialogType, dialogs, pagination }) {
             state[`chatMembers${dialogType}`].data.push(...dialogs);
@@ -243,10 +257,8 @@ const Messenger = {
             const currentMessage = state.messages.find(message => message.id === messageID);
 
             if (currentMessage) {
-                currentMessage[additionType + 's'].splice(
-                    currentMessage[additionType + 's'].findIndex(
-                        addition => addition.id === additionID
-                    ),
+                currentMessage[additionType].splice(
+                    currentMessage[additionType].findIndex(addition => addition.id === additionID),
                     1
                 );
             }
@@ -254,8 +266,8 @@ const Messenger = {
         updateAddition(state, { additionType, messageID, addition }) {
             const currentMessage = state.messages.find(message => message.id === messageID);
             if (currentMessage) {
-                currentMessage[additionType + 's'][
-                    currentMessage[additionType + 's'].findIndex(
+                currentMessage[additionType][
+                    currentMessage[additionType].findIndex(
                         _addition => _addition.id === addition.id
                     )
                 ] = addition;
@@ -274,9 +286,9 @@ const Messenger = {
             Object.keys(initialState).forEach(key => (state[key] = initialState[key]));
         },
         setCounts(state, counts) {
-            state.counts.objects = counts[0].value[0];
-            state.counts.requests = counts[1].value[0];
-            state.counts.users = counts[2].value[0];
+            state.counts.object = counts[0].value[0];
+            state.counts.company = counts[1].value[0];
+            state.counts.user = counts[2].value[0];
         },
         setLastNotViewedMessage(state, messageID) {
             state.lastNotViewedMessageID = messageID;
@@ -303,7 +315,7 @@ const Messenger = {
         },
 
         onTaskObserved(state, { chatMemberId, modelType }) {
-            const chatMemberStateName = 'chatMembers' + ucFirst(modelType) + 's';
+            const chatMemberStateName = 'chatMembers' + ucFirst(modelType);
 
             const chatMemberIndex = state[chatMemberStateName].data.findIndex(
                 element => element.id === chatMemberId
@@ -313,12 +325,11 @@ const Messenger = {
                 state[chatMemberStateName].data[chatMemberIndex].statistic.tasks--;
             }
 
-            if (state.counts[`${modelType}s`].unread_task_count > 0)
-                state.counts[`${modelType}s`].unread_task_count--;
+            if (state.counts[modelType].unread_task_count > 0)
+                state.counts[modelType].unread_task_count--;
         },
         onMessagesReads(state, messageId) {
-            const chatMemberStateName =
-                'chatMembers' + ucFirst(state.currentDialog.model_type) + 's';
+            const chatMemberStateName = 'chatMembers' + ucFirst(state.currentDialog.model_type);
             const chatMemberIndex = state[chatMemberStateName].data.findIndex(
                 element => element.id === state.currentDialog.id
             );
@@ -360,18 +371,16 @@ const Messenger = {
                     oldNotViewedNotificationsCount - notViewedNotificationsCount;
 
                 if (
-                    state.counts[state.currentDialog.model_type + 's'].unread_message_count >=
-                    readsCount
+                    state.counts[state.currentDialog.model_type].unread_message_count >= readsCount
                 ) {
-                    state.counts[state.currentDialog.model_type + 's'].unread_message_count -=
-                        readsCount;
+                    state.counts[state.currentDialog.model_type].unread_message_count -= readsCount;
                 }
 
                 if (
-                    state.counts[state.currentDialog.model_type + 's'].unread_notification_count >=
+                    state.counts[state.currentDialog.model_type].unread_notification_count >=
                     readsNotificationsCount
                 ) {
-                    state.counts[state.currentDialog.model_type + 's'].unread_notification_count -=
+                    state.counts[state.currentDialog.model_type].unread_notification_count -=
                         readsNotificationsCount;
                 }
             }
@@ -393,8 +402,7 @@ const Messenger = {
             }
         },
         onQuizCompleted(state, lastCall) {
-            const chatMemberStateName =
-                'chatMembers' + ucFirst(state.currentDialog.model_type) + 's';
+            const chatMemberStateName = 'chatMembers' + ucFirst(state.currentDialog.model_type);
 
             const chatMemberIndex = state[chatMemberStateName].data.findIndex(
                 element => element.id === state.currentDialog.id
@@ -418,7 +426,7 @@ const Messenger = {
         async updateCounters({ rootGetters, commit }) {
             const response = await Promise.allSettled([
                 api.messenger.getStatistics([rootGetters.THIS_USER?.chat_member_id], ['object']),
-                api.messenger.getStatistics([rootGetters.THIS_USER?.chat_member_id], ['request']),
+                api.messenger.getStatistics([rootGetters.THIS_USER?.chat_member_id], ['company']),
                 api.messenger.getStatistics([rootGetters.THIS_USER?.chat_member_id], ['user'])
             ]);
 
@@ -429,15 +437,18 @@ const Messenger = {
 
             const options = {
                 object: {},
-                request: {}
+                request: {},
+                company: {}
             };
 
             if (alg.isNumeric(state.querySearch)) {
                 options.object.object_id = state.querySearch;
                 options.request.model_id = state.querySearch;
+                options.company.model_id = state.querySearch;
             } else {
                 options.object.search = state.querySearch;
                 options.request.search = state.querySearch;
+                options.company.search = state.querySearch;
             }
 
             switch (state.currentAsidePanel) {
@@ -449,6 +460,10 @@ const Messenger = {
                     Object.assign(options.request, payload);
                     break;
                 }
+                case messenger.tabs.COMPANIES: {
+                    Object.assign(options.request, payload);
+                    break;
+                }
                 default: {
                     break;
                 }
@@ -456,7 +471,8 @@ const Messenger = {
 
             const chats = await Promise.all([
                 api.messenger.getChats({ model_type: 'object', ...options.object }),
-                api.messenger.getChats({ model_type: 'request', ...options.request })
+                // api.messenger.getChats({ model_type: 'request', ...options.request }),
+                api.messenger.getChats({ model_type: 'company', ...options.company })
             ]);
 
             if (chats) {
@@ -796,7 +812,7 @@ const Messenger = {
 
         async loadDialogs({ commit, state }, options) {
             const modelTypePlural =
-                options.modelType.charAt(0).toUpperCase() + options.modelType.slice(1) + 's';
+                options.modelType.charAt(0).toUpperCase() + options.modelType.slice(1);
 
             const data = await api.messenger.getChats({
                 model_type: options.modelType,
@@ -872,7 +888,7 @@ const Messenger = {
         },
         hasDialogs(state) {
             return Boolean(
-                state.chatMembersObjects.data.length || state.chatMembersRequests.data.length
+                state.chatMembersObject.data.length || state.chatMembersCompany.data.length
             );
         },
         hasCachedMessage(state) {

@@ -31,11 +31,13 @@ import { getLinkComplex } from '@/utils/url.js';
 import MessengerChatHeaderObject from '@/components/Messenger/Chat/Header/MessengerChatHeaderObject.vue';
 import MessengerChatHeaderRequest from '@/components/Messenger/Chat/Header/MessengerChatHeaderRequest.vue';
 import MessengerChatHeaderUser from '@/components/Messenger/Chat/Header/MessengerChatHeaderUser.vue';
+import MessengerChatHeaderCompany from '@/components/Messenger/Chat/Header/MessengerChatHeaderCompany.vue';
 
 const COMPONENTS = {
     MessengerChatHeaderObject: MessengerChatHeaderObject,
     MessengerChatHeaderRequest: MessengerChatHeaderRequest,
-    MessengerChatHeaderUser: MessengerChatHeaderUser
+    MessengerChatHeaderUser: MessengerChatHeaderUser,
+    MessengerChatHeaderCompany: MessengerChatHeaderCompany
 };
 
 const store = useStore();

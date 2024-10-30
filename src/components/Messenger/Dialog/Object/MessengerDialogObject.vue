@@ -2,7 +2,7 @@
     <div class="messenger-dialog messenger-dialog-offer" :class="{ current: current }">
         <div class="messenger-dialog__body messenger-dialog-offer__body">
             <div class="messenger-dialog-offer__preview">
-                <VLazyImage
+                <LazyImage
                     :src="model.object.thumb"
                     class="messenger-dialog-offer__image"
                     alt="file image"
@@ -37,7 +37,7 @@
 <script setup>
 import MessengerDialogPhone from '@/components/Messenger/Dialog/MessengerDialogPhone.vue';
 import MessengerDialogFunctions from '@/components/Messenger/Dialog/MessengerDialogFunctions.vue';
-import VLazyImage from 'v-lazy-image';
+import LazyImage from '@/components/common/LazyImage.vue';
 import Tooltip from '@/components/common/Tooltip.vue';
 import { computed } from 'vue';
 import { objectOptions } from '@/const/options/object.options.js';

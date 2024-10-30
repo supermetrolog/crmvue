@@ -1,10 +1,6 @@
 <template>
     <div ref="slider" class="offer-table-item-motion-slider">
-        <VLazyImage
-            @error="hasError = true"
-            :src="hasError ? $url.api.fileNotFound() : thumb"
-            alt="image"
-        />
+        <LazyImage :src="thumb" />
         <div v-if="photos?.length > 1 && isHovered" class="offer-table-item-motion-slider__list">
             <img
                 v-for="element in preparedPhotos"
@@ -38,9 +34,9 @@
 <script setup>
 import { useElementHover } from '@vueuse/core';
 import { computed, ref, shallowRef } from 'vue';
-import VLazyImage from 'v-lazy-image';
 import { $generatorURL } from '@/plugins/url.js';
 import { vElementHover } from '@vueuse/components';
+import LazyImage from '@/components/common/LazyImage.vue';
 
 const props = defineProps({
     thumb: {
@@ -54,7 +50,6 @@ const props = defineProps({
 });
 
 const slider = ref(null);
-const hasError = shallowRef(false);
 const currentPhotoID = shallowRef(0);
 
 const preparedPhotos = computed(() => {

@@ -4,7 +4,9 @@
             <File
                 v-for="file in photos"
                 :key="file.id"
+                @preview="openPreview(file.id)"
                 :file="file"
+                custom-preview
                 read-only
                 class="messenger-chat-message__photo"
             />
@@ -23,6 +25,7 @@
 <script setup>
 import File from '@/components/common/Forms/File.vue';
 import { computed } from 'vue';
+import { usePreviewer } from '@/composables/usePreviewer.js';
 
 const props = defineProps({
     files: {
@@ -31,10 +34,16 @@ const props = defineProps({
     }
 });
 
+const { preview } = usePreviewer();
+
 const photos = computed(() =>
     props.files.filter(element => element.extension === 'jpg' || element.extension === 'png')
 );
 const docs = computed(() =>
     props.files.filter(element => element.extension !== 'jpg' && element.extension !== 'png')
 );
+
+const openPreview = id => {
+    preview(props.files, id);
+};
 </script>

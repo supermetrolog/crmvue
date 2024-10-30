@@ -56,7 +56,7 @@ import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import api from '@/api/api.js';
 import EmptyLabel from '@/components/common/EmptyLabel.vue';
 import DashboardTableTasksItemPreviewComment from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemPreviewComment.vue';
-import { onBeforeMount, ref, shallowRef, watch } from 'vue';
+import { onBeforeMount, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import Spinner from '@/components/common/Spinner.vue';
 import Textarea from '@/components/common/Forms/Textarea.vue';
 import { useNotify } from '@/utils/useNotify.js';
@@ -76,7 +76,7 @@ const { isLoading } = useDelayedLoader();
 const comments = ref([]);
 const newComment = shallowRef('');
 const isCreating = shallowRef(false);
-const commentsNode = shallowRef(null);
+const commentsNode = useTemplateRef('commentsNode');
 
 const fetchComments = async () => {
     isLoading.value = true;
