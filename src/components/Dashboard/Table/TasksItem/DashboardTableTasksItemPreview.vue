@@ -213,6 +213,22 @@
                             <i class="fa-solid fa-arrow-up-right-from-square ml-2"></i>
                         </button>
                     </div>
+                    <Tippy
+                        v-if="objectCompanyId"
+                        interactive
+                        max-width="500"
+                        :interactive-border="30"
+                    >
+                        <template #default>
+                            <button class="dashboard-task-item-preview__button w-100 mt-1">
+                                <span>Список контактов</span>
+                                <i class="fa-solid fa-contact-card ml-2"></i>
+                            </button>
+                        </template>
+                        <template #content>
+                            <DashboardTableTasksItemPreviewContacts :company-id="objectCompanyId" />
+                        </template>
+                    </Tippy>
                 </div>
                 <div
                     v-if="task.related_by?.chat_member_message_id"
@@ -267,6 +283,9 @@ import { toDateFormat } from '@/utils/formatter.js';
 import Loader from '@/components/common/Loader.vue';
 import { messenger } from '@/const/messenger.js';
 import { getLinkCompany } from '@/utils/url.js';
+import { Tippy } from 'vue-tippy';
+import DashboardTableTasksItemPreviewContacts from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemPreviewContacts.vue';
+import MessengerDialogCompany from '@/components/Messenger/Dialog/Company/MessengerDialogCompany.vue';
 
 const DAYS_TO_IMPOSSIBLE = 30;
 
@@ -405,8 +424,12 @@ const readTask = async () => {
 };
 
 const currentDialogComponent = computed(() => {
-    if (props.task.related_by.chat_member.model_type === 'request') return MessengerDialogRequest;
-    if (props.task.related_by.chat_member.model_type === 'user') return MessengerDialogUser;
+    if (props.task.related_by.chat_member.model_type === messenger.dialogTypes.REQUEST)
+        return MessengerDialogRequest;
+    if (props.task.related_by.chat_member.model_type === messenger.dialogTypes.USER)
+        return MessengerDialogUser;
+    if (props.task.related_by.chat_member.model_type === messenger.dialogTypes.COMPANY)
+        return MessengerDialogCompany;
     return MessengerDialogObject;
 });
 
@@ -416,6 +439,9 @@ const objectCompanyId = computed(() => {
 
     if (props.task.related_by.chat_member.model_type === messenger.dialogTypes.REQUEST)
         return props.task.related_by.chat_member.model.company?.id;
+
+    if (props.task.related_by.chat_member.model_type === messenger.dialogTypes.COMPANY)
+        return props.task.related_by.chat_member.model.id;
 
     return null;
 });
@@ -484,23 +510,38 @@ const toImpossible = async () => {
 
 const toChat = () => {
     const modelType = props.task.related_by.chat_member.model_type;
-    if (modelType === 'request') {
-        emit('to-chat', {
-            companyID: props.task.related_by.chat_member.model.company_id,
-            modelType,
-            objectID: props.task.related_by.chat_member.model.id
-        });
-    } else if (modelType === 'object') {
-        emit('to-chat', {
-            companyID: props.task.related_by.chat_member.model.object.company.id,
-            modelType,
-            objectID: props.task.related_by.chat_member.model.object.id
-        });
-    } else {
-        emit('to-chat', {
-            userID: props.task.related_by.chat_member.model.id,
-            modelType
-        });
+
+    switch (modelType) {
+        case 'request':
+            emit('to-chat', {
+                companyID: props.task.related_by.chat_member.model.company_id,
+                modelType,
+                objectID: props.task.related_by.chat_member.model.id
+            });
+            break;
+        case 'object':
+            emit('to-chat', {
+                companyID: props.task.related_by.chat_member.model.object.company.id,
+                modelType,
+                objectID: props.task.related_by.chat_member.model.object.id
+            });
+            break;
+        case 'company':
+            emit('to-chat', {
+                companyID: props.task.related_by.chat_member.model.id,
+                modelType,
+                objectID: props.task.related_by.chat_member.model.id
+            });
+            break;
+        case 'user':
+            emit('to-chat', {
+                userID: props.task.related_by.chat_member.model.id,
+                modelType
+            });
+            break;
+        default:
+            notify.info('Данный тип чата не поддерживается');
+            break;
     }
 };
 

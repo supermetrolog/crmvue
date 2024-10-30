@@ -479,3 +479,50 @@
         @include mixins.flex-box($a: center, $j: space-between);
     }
 }
+
+.dashboard-task-item-preview-contacts {
+    padding: 5px 0;
+    min-width: 200px;
+    min-height: 200px;
+
+    &__list {
+        @include mixins.flex-box($d: column, $gap: 10px);
+        max-height: 500px;
+        overflow-y: auto;
+        scrollbar-gutter: stable;
+        padding-right: 5px;
+    }
+}
+
+.dashboard-task-item-preview-contact {
+    background-color: variables.$bg-gray-l;
+    padding: 5px;
+    border-radius: 5px;
+
+    &__contacts {
+        @include mixins.flex-box($gap: 5px);
+    }
+
+    &__name {
+        font-weight: 500;
+        @include mixins.transition(2);
+    }
+
+    &__column {
+        @include mixins.flex-box($d: column, $gap: 5px);
+        flex-basis: 50%;
+    }
+
+    &__element {
+        color: #ffffff;
+    }
+
+    &__position {
+        color: #918c8c;
+    }
+
+    &__label {
+        color: #e3dada;
+        font-size: 13px;
+    }
+}
