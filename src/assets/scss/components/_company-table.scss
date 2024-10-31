@@ -184,6 +184,11 @@
 
     &__product-ranges {
         @include mixins.flex-box($gap: 5px, $wrap: wrap);
+        max-width: 500px;
+    }
+
+    &__product-range {
+        @include mixins.text-overflow(1);
     }
 
     &__company-group {

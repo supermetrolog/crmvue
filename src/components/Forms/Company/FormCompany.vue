@@ -381,65 +381,6 @@
                         </FileInput>
                     </div>
                 </Tab>
-                <Tab name="Логотип">
-                    <div v-if="formData && formData.logo" class="row mb-1">
-                        <div class="col-12">
-                            <div class="d-flex align-items-center mb-1">
-                                <p class="form__subtitle">Текущий логотип</p>
-                                <Button
-                                    @click="toggleDeletingLogo"
-                                    class="ml-2"
-                                    small
-                                    icon
-                                    danger
-                                    :disabled="logoShouldBeDeleted"
-                                >
-                                    <span>Удалить логотип</span>
-                                    <i class="fa-solid fa-trash" />
-                                </Button>
-                                <AnimationTransition :speed="0.4">
-                                    <Button
-                                        v-if="logoShouldBeDeleted"
-                                        @click="toggleDeletingLogo"
-                                        icon
-                                        small
-                                        class="ml-1"
-                                    >
-                                        <span>Отменить удаление</span>
-                                        <i class="fa-solid fa-rotate-left" />
-                                    </Button>
-                                </AnimationTransition>
-                            </div>
-                            <CompanyLogo
-                                as="div"
-                                :class="{ 'modal-form-company__deleted-logo': logoShouldBeDeleted }"
-                                :company-id="formData.id"
-                                :src="form.logo?.src"
-                            />
-                            <AnimationTransition :speed="0.3">
-                                <DashboardChip
-                                    v-if="logoShouldBeDeleted"
-                                    class="dashboard-bg-danger-l mt-1"
-                                >
-                                    <i class="fa-solid fa-exclamation-triangle mr-1" />
-                                    <span>Логотип будет удален</span>
-                                </DashboardChip>
-                            </AnimationTransition>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <FileInput
-                            v-model:native="newLogo"
-                            single
-                            label="Новый логотип"
-                            class="col-12"
-                            sortable
-                            only-images
-                        >
-                            Выбрать файлы
-                        </FileInput>
-                    </div>
-                </Tab>
                 <div class="row mt-4 align-self-end">
                     <Submit success class="col-3 mx-auto">
                         {{ formData ? 'Сохранить' : 'Создать' }}
@@ -475,7 +416,7 @@ import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { validateEmail, validateUrl } from '@//validators';
 import Submit from '@/components/common/Forms/FormSubmit.vue';
-import { computed, reactive, ref, shallowRef } from 'vue';
+import { computed, reactive, shallowRef } from 'vue';
 import { normalizeDataForCompanyForm } from '@/utils/normalizeForm.js';
 import { validationRulesForCompany } from '@/validators/rules.js';
 import Switch from '@/components/common/Forms/Switch.vue';
@@ -486,9 +427,6 @@ import { useCompanyGroupsOptions } from '@/composables/options/useCompanyGroupsO
 import { useBanksOptions } from '@/composables/options/useBanksOptions.js';
 import { useProductRangesOptions } from '@/composables/options/useProductRangesOptions.js';
 import { useFormData } from '@/utils/useFormData.js';
-import CompanyLogo from '@/components/Company/CompanyLogo.vue';
-import Button from '@/components/common/Button.vue';
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 
 const emit = defineEmits(['updated', 'created', 'close']);
 const props = defineProps({
@@ -541,10 +479,7 @@ const { form } = useFormData(
         passive_why: null,
         passive_why_comment: null,
         files: [],
-        new_files: [],
-        new_logo: null,
-        logo: null,
-        logo_id: null
+        new_files: []
     }),
     props.formData
 );
@@ -558,13 +493,8 @@ const formContactsEmailsValidators = computed(() => [
     { func: validateEmail, message: 'Укажите корректный Email' }
 ]);
 
-const logoShouldBeDeleted = ref(false);
-
 const prepareFormBeforeUpdate = () => {
-    if (logoShouldBeDeleted.value) form.logo_id = null;
-    else form.logo_id = form.logo?.id;
-
-    form.new_logo = form.new_logo?.[0];
+    form.logo_id = props.formData.logo?.id;
 };
 
 const newFiles = computed({
@@ -585,17 +515,6 @@ const oldFiles = computed({
     },
     set(value) {
         if (props.formData) form.files = value;
-    }
-});
-
-const newLogo = computed({
-    get() {
-        if (props.formData) return form.new_logo;
-        return form.logo;
-    },
-    set(value) {
-        if (props.formData) form.new_logo = value;
-        else form.logo = value;
     }
 });
 
@@ -629,10 +548,6 @@ const onSubmit = async () => {
 
         isLoading.value = false;
     }
-};
-
-const toggleDeletingLogo = () => {
-    logoShouldBeDeleted.value = !logoShouldBeDeleted.value;
 };
 
 const getAddress = async query => {

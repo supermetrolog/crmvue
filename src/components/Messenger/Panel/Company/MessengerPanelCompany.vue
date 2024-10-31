@@ -20,7 +20,15 @@
                 </HoverActionsButton>
             </div>
             <div class="messenger-panel-company__header">
-                <CompanyLogo :company-id="company.id" :src="company.logo?.src" :size="60" />
+                <CompanyLogo
+                    v-tippy="'Нажмите, чтобы изменить логотип'"
+                    @click="logoFormIsVisible = true"
+                    as="div"
+                    class="messenger-panel-company__logo"
+                    :company-id="company.id"
+                    :src="updatedLogo?.src ?? company.logo?.src"
+                    :size="60"
+                />
                 <div>
                     <a
                         :href="'/companies/' + company.id"
@@ -74,13 +82,32 @@
             </ul>
         </div>
         <MessengerPanelCompanyTabs :key="company.id" :company="company" />
+        <teleport to="body">
+            <Modal
+                @close="closeForm"
+                :show="logoFormIsVisible"
+                :close-on-outside-click="!logoEdited"
+                :close-on-press-esc="!logoEdited"
+                :min-height="200"
+                title="Обновление логотипа"
+                width="800"
+            >
+                <FormCompanyLogo
+                    @updated="onUpdateLogo"
+                    @deleted="onDeleteLogo"
+                    @canceled="closeForm"
+                    @edited="logoEdited = true"
+                    :company="company"
+                />
+            </Modal>
+        </teleport>
     </div>
 </template>
 <script setup>
 import Rating from '@/components/common/Rating.vue';
 import MessengerPanelCompanyTabs from '@/components/Messenger/Panel/Company/MessengerPanelCompanyTabs.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { getCompanyName, toCorrectUrl, ucFirst } from '@/utils/formatter.js';
 import { companyOptions } from '@/const/options/company.options.js';
 import { contactOptions } from '@/const/options/contact.options.js';
@@ -88,6 +115,10 @@ import { alg } from '@/utils/alg.js';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { messenger } from '@/const/messenger.js';
 import CompanyLogo from '@/components/Company/CompanyLogo.vue';
+import Modal from '@/components/common/Modal.vue';
+import { useStore } from 'vuex';
+import { useNotify } from '@/utils/useNotify.js';
+import FormCompanyLogo from '@/components/Forms/Company/FormCompanyLogo.vue';
 
 defineEmits(['edit']);
 const props = defineProps({
@@ -98,6 +129,12 @@ const props = defineProps({
 });
 
 const { openChat } = useMessenger();
+const store = useStore();
+const notify = useNotify();
+
+const updatedLogo = ref(null);
+const logoFormIsVisible = ref(false);
+const logoEdited = ref(false);
 
 const hasUndefinedName = computed(() => {
     return (
@@ -134,5 +171,24 @@ const companyName = computed(() => getCompanyName(props.company, props.company.i
 
 const toChat = () => {
     openChat(props.company.id, props.company.id, messenger.dialogTypes.COMPANY);
+};
+
+const closeForm = () => {
+    logoFormIsVisible.value = false;
+    logoEdited.value = false;
+};
+
+const onUpdateLogo = logo => {
+    closeForm();
+
+    notify.success('Логотип компании обновлен');
+    store.commit('Messenger/onCompanyLogoUpdated', { id: props.company.id, logo });
+};
+
+const onDeleteLogo = () => {
+    closeForm();
+
+    notify.success('Логотип компании удален');
+    store.commit('Messenger/onCompanyLogoUpdated', { id: props.company.id });
 };
 </script>

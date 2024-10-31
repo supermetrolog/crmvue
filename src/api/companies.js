@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { responseToData } from '@/api/helpers/responseToData.js';
 import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData.js';
+import { responseHasStatus } from '@/api/helpers/responseHasStatus.js';
+import { STATUS_SUCCESS } from '@/api/helpers/statuses.js';
 
 const URL = 'companies';
 
@@ -50,5 +52,13 @@ export default {
     async updateCompanyGroups(payload) {
         const response = await axios.patch(`companygroups/${payload.id}`, payload);
         return responseToData(response);
+    },
+    async updateLogo(companyId, logo) {
+        const response = await axios.postForm(`${URL}/${companyId}/logo`, { logo });
+        return responseToData(response);
+    },
+    async deleteLogo(companyId) {
+        const response = await axios.delete(`${URL}/${companyId}/logo`);
+        return responseHasStatus(response, STATUS_SUCCESS);
     }
 };

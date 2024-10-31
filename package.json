@@ -26,6 +26,7 @@
     "axios": "^1.7.2",
     "browser-image-compression": "^2.0.2",
     "crm": "file:",
+    "cropperjs": "^1.6.2",
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.10",
     "gsap": "^3.12.5",
