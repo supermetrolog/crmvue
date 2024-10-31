@@ -129,6 +129,30 @@
             height: 5px;
         }
     }
+
+    &__logo {
+        position: relative;
+        cursor: pointer;
+
+        &::before {
+            content: '';
+            display: block;
+            opacity: 0;
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: variables.$bg-success-l;
+            @include mixins.transition(opacity);
+        }
+
+        &:hover {
+            &::before {
+                opacity: 1;
+            }
+        }
+    }
 }
 
 .company-box-objects-list {

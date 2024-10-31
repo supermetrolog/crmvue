@@ -420,6 +420,22 @@ const Messenger = {
             if (contactIndex === -1) return;
 
             Object.assign(state.currentPanel.contacts[contactIndex], contact);
+        },
+        onCompanyLogoUpdated(state, { id = null, logo = null }) {
+            if (state.currentPanel?.id === id) state.currentPanel.logo = logo;
+
+            const companyIndex = state.chatMembersCompany.data.findIndex(
+                element => element.model?.id === id
+            );
+
+            if (companyIndex !== -1)
+                state.chatMembersCompany.data[companyIndex].model.logo = logo?.src;
+
+            if (
+                state.currentDialog?.model_type === messenger.dialogTypes.COMPANY &&
+                state.currentDialog.model.id === id
+            )
+                state.currentDialog.model.logo = logo?.src;
         }
     },
     actions: {

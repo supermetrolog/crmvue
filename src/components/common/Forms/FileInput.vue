@@ -31,7 +31,7 @@
                 :accept="acceptList"
             />
             <VueDraggableNext
-                v-if="localFiles.length"
+                v-if="localFiles.length && !custom"
                 v-model="localFiles"
                 group="local-files"
                 class="file-input__list row"
@@ -52,7 +52,7 @@
                 </transition-group>
             </VueDraggableNext>
             <VueDraggableNext
-                v-if="files.length"
+                v-if="files.length && !custom"
                 v-model="files"
                 group="files"
                 class="file-input__list row"
@@ -144,6 +144,10 @@ export default {
         sortable: {
             type: Boolean,
             default: false
+        },
+        custom: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
@@ -179,6 +183,7 @@ export default {
         localFiles: {
             handler() {
                 this.$emit('update:native', this.localFiles);
+                this.$emit('updated', this.localFiles);
             },
             deep: true
         },
@@ -283,10 +288,10 @@ export default {
         }
     },
     created() {
-        this.setExistFiles();
+        if (!this.custom) this.setExistFiles();
     },
     mounted() {
-        if (this.native) {
+        if (this.native && !this.custom) {
             this.localFiles = this.native;
         }
     }

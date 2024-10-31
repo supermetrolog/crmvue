@@ -17,6 +17,7 @@ import 'vue-color-kit/dist/vue-color-kit.css';
 import './assets/fontawesome/css/fontawesome.min.css';
 import './assets/fontawesome/css/all.min.css';
 import 'animate.css';
+import 'cropperjs/dist/cropper.css';
 import Tab from '@/components/common/Tabs/Tab.vue';
 import Tabs from '@/components/common/Tabs/Tabs.vue';
 
