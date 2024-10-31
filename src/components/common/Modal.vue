@@ -8,7 +8,12 @@
             :class="{ 'modal--with-tabs': hasTabs, 'modal--relative': relative }"
         >
             <div @click="onBlackoutClick" class="modal__blackout"></div>
-            <div class="modal__container">
+            <div
+                class="modal__container animate__animated"
+                :class="{
+                    animate__headShake: !canBeClosed
+                }"
+            >
                 <div class="modal__header">
                     <p v-if="title">
                         {{ title }}
@@ -40,7 +45,8 @@
 </template>
 
 <script setup>
-import { computed, onBeforeUnmount, shallowRef, watch } from 'vue';
+import { computed, onBeforeUnmount, ref, shallowRef, watch } from 'vue';
+import { useTimeoutFn } from '@vueuse/core';
 
 const emit = defineEmits(['close']);
 const props = defineProps({
@@ -67,20 +73,40 @@ const props = defineProps({
     closeOnOutsideClick: {
         type: Boolean,
         default: true
+    },
+    closeOnPressEsc: {
+        type: Boolean,
+        default: true
     }
 });
 
 const alreadyHidden = shallowRef(false);
+const canBeClosed = ref(true);
+const { start: showCloseErrorAnimation } = useTimeoutFn(() => {
+    canBeClosed.value = true;
+}, 500);
 
 const minHeightSize = computed(() => props.minHeight + 'px');
 
 const onBlackoutClick = () => {
     if (props.closeOnOutsideClick) close();
+    else tryShowCloseErrorAnimation();
 };
 const close = () => emit('close');
 const escapeHandler = event => {
     event.stopImmediatePropagation();
-    if (event.code === 'Escape') close();
+
+    if (event.code === 'Escape') {
+        if (props.closeOnPressEsc) close();
+        else tryShowCloseErrorAnimation();
+    }
+};
+
+const tryShowCloseErrorAnimation = () => {
+    if (canBeClosed.value) {
+        canBeClosed.value = false;
+        showCloseErrorAnimation();
+    }
 };
 
 watch(
