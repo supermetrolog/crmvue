@@ -76,12 +76,12 @@
                     <Tabs :options="{ useUrlFragment: false }">
                         <Tab name="Логотип">
                             <CompanyLogo
-                                v-tippy="'Нажмите, чтобы просмотреть фотографию'"
-                                @click="previewLogo"
+                                v-tippy="'Нажмите, чтобы редактировать логотип'"
+                                @click="logoFormIsVisible = true"
                                 as="div"
                                 :company-id="company.id"
                                 :src="company.logo?.src"
-                                class="mr-2"
+                                class="company-box-main__logo mr-2"
                                 :size="90"
                             />
                         </Tab>
@@ -195,15 +195,32 @@
             </div>
             <hr />
             <CompanyBoxContactList @create="$emit('create-contact')" :contacts="contacts" />
+            <teleport to="body">
+                <Modal
+                    @close="closeForm"
+                    :show="logoFormIsVisible"
+                    :close-on-outside-click="!logoEdited"
+                    :close-on-press-esc="!logoEdited"
+                    :min-height="200"
+                    title="Обновление логотипа"
+                    width="800"
+                >
+                    <FormCompanyLogo
+                        @updated="onUpdateLogo"
+                        @deleted="onDeleteLogo"
+                        @canceled="closeForm"
+                        @edited="logoEdited = true"
+                        :company="company"
+                    />
+                </Modal>
+            </teleport>
         </template>
     </CompanyBoxLayout>
 </template>
 
 <script setup>
 import { ActivityGroupList, ActivityProfileList, CompanyCategories } from '@/const/const';
-import { usePreviewer } from '@/composables/usePreviewer.js';
-import { computed } from 'vue';
-import { useNotify } from '@/utils/useNotify.js';
+import { computed, ref } from 'vue';
 import CompanyBoxContactList from '@/components/Company/Box/CompanyBoxContactList.vue';
 import EmptyLabel from '@/components/common/EmptyLabel.vue';
 import File from '@/components/common/Forms/File.vue';
@@ -215,6 +232,10 @@ import Rating from '@/components/common/Rating.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import CompanyBoxLayout from '@/components/Company/Box/CompanyBoxLayout.vue';
+import FormCompanyLogo from '@/components/Forms/Company/FormCompanyLogo.vue';
+import Modal from '@/components/common/Modal.vue';
+import { useNotify } from '@/utils/useNotify.js';
+import { useStore } from 'vuex';
 
 defineEmits(['create-contact', 'edit-company']);
 
@@ -229,8 +250,11 @@ const props = defineProps({
     }
 });
 
-const { preview } = usePreviewer();
 const notify = useNotify();
+const store = useStore();
+
+const logoFormIsVisible = ref(false);
+const logoEdited = ref(false);
 
 const productRanges = computed(() => {
     return props.company.productRanges
@@ -255,8 +279,23 @@ const activityGroup = computed(() => {
 const activityProfile = computed(() => {
     return ActivityProfileList[props.company.activityProfile].label;
 });
-const previewLogo = () => {
-    if (props.company.logo) preview({ id: props.company.id, src: props.company.logo.src });
-    else notify.info('Логотип компании отсутствует');
+
+const closeForm = () => {
+    logoFormIsVisible.value = false;
+    logoEdited.value = false;
+};
+
+const onUpdateLogo = logo => {
+    closeForm();
+
+    notify.success('Логотип компании обновлен');
+    if (store.state.company) store.state.company.logo = logo;
+};
+
+const onDeleteLogo = () => {
+    closeForm();
+
+    notify.success('Логотип компании удален');
+    if (store.state.company) store.state.company.logo = null;
 };
 </script>

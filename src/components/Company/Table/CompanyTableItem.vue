@@ -37,7 +37,7 @@
                         <DashboardChip
                             v-for="productRange in company.productRanges"
                             :key="productRange.id"
-                            class="dashboard-bg-light"
+                            class="dashboard-bg-light company-table-item__product-range"
                         >
                             {{ ucFirst(productRange.product) }}
                         </DashboardChip>

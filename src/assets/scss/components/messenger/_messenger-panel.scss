@@ -1,4 +1,5 @@
 @use '../../utils/mixins';
+@use '../../utils/variables';
 
 .messenger-panel {
     height: 100%;
@@ -135,6 +136,30 @@
         @include mixins.flex-box($gap: 10px);
         margin-bottom: 5px;
         max-width: calc(100% - 40px);
+    }
+
+    &__logo {
+        cursor: pointer;
+        position: relative;
+
+        &::before {
+            content: '';
+            display: block;
+            opacity: 0;
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: variables.$bg-success-l;
+            @include mixins.transition(opacity);
+        }
+
+        &:hover {
+            &::before {
+                opacity: 1;
+            }
+        }
     }
 }
 
