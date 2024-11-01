@@ -97,7 +97,7 @@ const editTaskStatus = async (messageID, task) => {
     const response = await taskStatusEditor.value.open(task);
 
     if (response) {
-        const statusUpdated = api.task.changeStatus(task.id, response.status);
+        const statusUpdated = await api.task.changeStatus(task.id, response.status);
 
         if (statusUpdated) {
             task.status = response.status;
