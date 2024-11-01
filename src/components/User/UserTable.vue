@@ -21,7 +21,7 @@
                     :key="user.id"
                     @delete="deleteUser(user)"
                     @show-sessions="$emit('show-sessions', user.id)"
-                    @edit="$emit('edit', user.id)"
+                    @edit="$emit('edit', user)"
                     @restore="restore(user)"
                     @archive="archive(user)"
                     :class="{
