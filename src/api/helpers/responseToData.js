@@ -30,7 +30,7 @@ function setNotify(response) {
 export function responseToData(response) {
     if (response == null) return null;
 
-    if (response.data && typeof response.data !== 'string') {
+    if (response.data && typeof response.data !== 'string' && typeof response.data !== 'number') {
         if (
             !Array.isArray(response.data) &&
             'message' in response.data &&

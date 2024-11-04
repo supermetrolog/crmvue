@@ -68,7 +68,7 @@ export async function setRequestError(event) {
         abortRequests();
         handleAuthError(data);
 
-        if (store) await store.dispatch('DESTROY');
+        if (store) await store.dispatch('destroy');
         setRedirect(router.currentRoute.value.fullPath);
         await router.push('/login');
 
