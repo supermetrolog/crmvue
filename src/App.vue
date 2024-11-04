@@ -25,12 +25,6 @@ const route = useRoute();
 const router = useRouter();
 const store = useStore();
 
-const disableSplash = () => {
-    document.body.classList.add('splash-disabling');
-    useTimeoutFn(() => {
-        document.body.classList.remove('splash-disabling', 'splash');
-    }, 250);
-};
 const isMobile = initializeDevice();
 
 const isInitialized = ref(false);
@@ -41,6 +35,13 @@ const layoutComponent = computed(() => {
 
     return LAYOUTS[route.meta.layout];
 });
+
+const disableSplash = () => {
+    document.body.classList.add('splash-disabling');
+    useTimeoutFn(() => {
+        document.body.classList.remove('splash-disabling', 'splash');
+    }, 250);
+};
 
 const initialize = async () => {
     const initialized = await store.dispatch('initialize');
@@ -55,9 +56,9 @@ initialize();
 
 onMounted(() => {
     isInitialized.value = true;
+    disableSplash();
 });
 </script>
-disableSplash();
 <style lang="scss">
 @import '@/assets/scss/style.scss';
 </style>
