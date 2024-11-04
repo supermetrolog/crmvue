@@ -16,8 +16,7 @@ const CompanyContact = {
                 element => element.id === comment.contact_id
             );
 
-            if (contactIndex !== -1)
-                state.companyContacts[contactIndex].contactComments.push(comment);
+            if (contactIndex !== -1) state.companyContacts[contactIndex].comments.push(comment);
         }
     },
     actions: {
