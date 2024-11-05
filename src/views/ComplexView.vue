@@ -56,21 +56,23 @@ import ComplexHoldings from '@/components/Complex/Holding/ComplexHoldings.vue';
 import Button from '@/components/common/Button.vue';
 import FormComplex from '@/components/Forms/Complex/FormComplex.vue';
 import ComplexPhotoDownloader from '@/components/Complex/ComplexPhotoDownloader.vue';
-import { computed, onBeforeMount, provide, shallowRef } from 'vue';
+import { computed, onBeforeMount, provide, shallowRef, useTemplateRef, watch } from 'vue';
 import { getLinkComplexOld } from '@/utils/url.js';
 import { useRoute, useRouter } from 'vue-router';
 import { toDateFormat } from '@/utils/formatter.js';
 import { useConfirm } from '@/composables/useConfirm.js';
 import EmptyData from '@/components/common/EmptyData.vue';
 import Loader from '@/components/common/Loader.vue';
+import { useDocumentTitle } from '@/composables/useDocumentTitle.js';
 
 const store = useStore();
 const route = useRoute();
 const router = useRouter();
 const { confirm } = useConfirm();
+const { setTitle } = useDocumentTitle();
 
 const isLoading = shallowRef(false);
-const downloader = shallowRef(null);
+const downloader = useTemplateRef('downloader');
 const editAccess = shallowRef(true);
 const formIsVisible = shallowRef(false);
 
@@ -95,11 +97,32 @@ const location = computed(() => {
     return _location;
 });
 
+const locationShortText = computed(() => {
+    if (complex.value.objects?.length) return complex.value.objects[0].address;
+
+    return null;
+});
+
 const formattedDate = computed(() =>
     toDateFormat(complex.value.publ_time * 1000, 'D MMMM YYYY г., в HH:mm')
 );
 const updatedDate = computed(() =>
     toDateFormat(complex.value.last_update * 1000, 'D MMMM YYYY г., в HH:mm')
+);
+
+watch(
+    () => complex.value?.id,
+    value => {
+        if (value) {
+            const title = [
+                complex.value.title || locationShortText.value || 'Нет названия',
+                `Комплекс #${complex.value.id}`
+            ];
+
+            setTitle(title);
+        }
+    },
+    { immediate: true }
 );
 
 const deleteComplex = async () => {
