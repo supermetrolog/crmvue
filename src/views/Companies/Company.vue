@@ -111,6 +111,7 @@ import { useConfirm } from '@/composables/useConfirm.js';
 import { computed, onBeforeMount, onUnmounted, provide, ref, shallowRef, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
+import { useDocumentTitle } from '@/composables/useDocumentTitle.js';
 
 provide('openContact', openContact);
 provide('createContactComment', createContactComment);
@@ -120,6 +121,7 @@ const route = useRoute();
 const router = useRouter();
 const { confirm } = useConfirm();
 const { openChatByCompanyId } = useMessenger();
+const { setTitle } = useDocumentTitle();
 
 const companyIsLoading = shallowRef(false);
 const requestsIsLoading = shallowRef(false);
@@ -153,6 +155,18 @@ watch(
     () => route.query,
     () => {
         timelineIsVisible.value = !!route.query.request_id;
+    },
+    { immediate: true }
+);
+
+watch(
+    () => COMPANY.value?.id,
+    value => {
+        if (value) {
+            const title = [COMPANY.value.full_name, `Компания #${COMPANY.value.id}`];
+
+            setTitle(title);
+        }
     },
     { immediate: true }
 );
