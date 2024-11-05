@@ -15,7 +15,7 @@
         <MessengerBarTab
             @select="$emit('select', messenger.tabs.COMPANIES, $event)"
             label="Компании"
-            icon="fa-solid fa-industry"
+            icon="fa-solid fa-building-user"
             :class="{ active: current?.name === messenger.tabs.COMPANIES }"
             :counts="companiesCounts"
             :current="current.sort"
