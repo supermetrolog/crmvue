@@ -15,12 +15,15 @@
         <MessengerBarTab
             @select="$emit('select', messenger.tabs.COMPANIES, $event)"
             label="Компании"
-            icon="fa-solid fa-building-user"
             :class="{ active: current?.name === messenger.tabs.COMPANIES }"
             :counts="companiesCounts"
             :current="current.sort"
             :loading="isInitialLoading"
-        />
+        >
+            <template #icon>
+                <IconCompanies class="messenger-bar__company-icon" />
+            </template>
+        </MessengerBarTab>
         <MessengerBarTab
             @select="$emit('select', messenger.tabs.USERS, $event)"
             label="Сотрудники"
@@ -40,6 +43,7 @@ import { messenger } from '@/const/messenger.js';
 import IconWarehouse from '@/components/common/Icons/IconWarehouse.vue';
 import { useDocumentVisibility, useIntervalFn } from '@vueuse/core';
 import { DELAY_BETWEEN_UPDATING_STATISTICS } from '@/configs/messenger.config.js';
+import IconCompanies from '@/components/common/Icons/IconCompanies.vue';
 
 defineEmits(['select']);
 defineProps({

@@ -60,6 +60,10 @@
     box-shadow: 0 0 15px 5px rgba(13, 31, 47, .2);
     @include mixins.flex-box($a: center, $d: column);
     width: max-content;
+
+    &__company-icon {
+        margin-left: -5px;
+    }
 }
 
 .messenger-bar-tab {
