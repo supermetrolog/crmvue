@@ -209,7 +209,7 @@ const viewLocale = () => {
     isViewed.value = true;
 };
 
-const { start: delayedViewLocale } = useTimeoutFn(viewLocale, 1100);
+const { start: delayedViewLocale } = useTimeoutFn(viewLocale, 1200, { immediate: false });
 
 const { stop } = useIntersectionObserver(
     target,

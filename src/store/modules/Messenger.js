@@ -870,7 +870,7 @@ const Messenger = {
             commit('setCurrentCategory', cachedMessage.tag);
         },
         async readMessages({ commit }, messageID) {
-            const reads = api.messenger.readMessages(messageID);
+            const reads = await api.messenger.readMessages(messageID);
 
             if (reads) {
                 commit('onMessagesReads', messageID);

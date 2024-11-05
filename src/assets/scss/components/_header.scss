@@ -149,3 +149,19 @@
         cursor: pointer;
     }
 }
+
+.header-activity {
+    padding: 10px;
+
+    &__list {
+        @include mixins.flex-box($d: column, $gap: 5px);
+        max-height: 500px;
+        overflow-y: auto;
+    }
+
+    &__label {
+        margin-bottom: 5px;
+        font-size: 14px;
+        font-weight: 500;
+    }
+}

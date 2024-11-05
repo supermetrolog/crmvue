@@ -100,8 +100,10 @@ const submit = async () => {
     isLoading.value = true;
 
     const loggedIn = await store.dispatch('login', form);
+
     if (loggedIn) {
-        await store.dispatch('INIT');
+        await store.dispatch('initialize');
+
         if (redirectRoute.value) {
             if (redirectRoute.value.includes('/login')) setRedirect('/');
             await router.push({ path: redirectRoute.value });

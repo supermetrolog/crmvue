@@ -115,7 +115,7 @@
                 v-if="extraInfoIsVisible"
                 @create="createComment"
                 class="mt-3"
-                :comments="contact.contactComments"
+                :comments="contact.comments"
             />
         </div>
         <p v-if="contact.consultant" class="company-contact-item__consultant mt-2">

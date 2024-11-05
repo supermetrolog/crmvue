@@ -3,6 +3,18 @@ export const LS_USER_KEY = 'user';
 export const LS_ACCESS_TOKEN_KEY = 'astn';
 export const LS_ACCESS_TOKEN_ID_KEY = 'astnid';
 
+function getUserJSON() {
+    return localStorage.getItem(LOCALSTORAGE_PREFIX + LS_USER_KEY);
+}
+
+function getAccessToken() {
+    return localStorage.getItem(LOCALSTORAGE_PREFIX + LS_ACCESS_TOKEN_KEY);
+}
+
+function getAccessTokenId() {
+    return localStorage.getItem(LOCALSTORAGE_PREFIX + LS_ACCESS_TOKEN_ID_KEY);
+}
+
 /**
  * Соранить пользователя в localStorage
  * @param {User} user
@@ -29,7 +41,7 @@ export function removeUserInLocalStorage() {
  * @return {User | null} - Вернет пользователя, если он валиден в LS, в ином случае - null
  */
 export function getUserFromLocalStorage() {
-    const json = localStorage.getItem(LOCALSTORAGE_PREFIX + LS_USER_KEY);
+    const json = getUserJSON();
     try {
         return JSON.parse(json);
     } catch (e) {
@@ -40,9 +52,13 @@ export function getUserFromLocalStorage() {
     return null;
 }
 
+export function hasAccessTokenInLocalStorage() {
+    return getAccessToken() && getAccessTokenId();
+}
+
 export function getAccessTokenFromLocalStorage() {
     return {
-        accessToken: localStorage.getItem(LOCALSTORAGE_PREFIX + LS_ACCESS_TOKEN_KEY),
-        accessTokenId: localStorage.getItem(LOCALSTORAGE_PREFIX + LS_ACCESS_TOKEN_ID_KEY)
+        accessToken: getAccessToken(),
+        accessTokenId: getAccessTokenId()
     };
 }

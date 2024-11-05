@@ -251,7 +251,7 @@ const updateUser = async () => {
     if (updated) {
         emit('updated');
         emit('close');
-        store.dispatch('REFRESH_USER');
+        store.dispatch('refreshUser');
     }
 };
 

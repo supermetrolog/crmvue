@@ -58,6 +58,7 @@ const currentUser = computed(() => store.getters.THIS_USER);
 
 async function logout() {
     const confirmed = await confirm('Вы уверены, что хотите выйти из аккаунта?');
+
     if (confirmed) {
         await store.dispatch('logout');
         await router.push({ name: 'login' });

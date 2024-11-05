@@ -70,7 +70,7 @@ import MessengerChatPinned from '@/components/Messenger/Chat/MessengerChatPinned
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { debounce } from '@/utils/debounce.js';
 import MessengerChatScrollButton from '@/components/Messenger/Chat/MessengerChatScrollButton.vue';
-import { useElementSize } from '@vueuse/core';
+import { useElementSize, useTimeoutFn } from '@vueuse/core';
 import { computed, nextTick, onMounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import VirtualDragList from 'vue-virtual-draglist';
 import EmptyLabel from '@/components/common/EmptyLabel.vue';
@@ -101,10 +101,10 @@ watch(
     () => messages.value.length,
     (value, oldValue) => {
         if (scrollIsLock.value) {
-            nextTick(() => {
+            useTimeoutFn(() => {
                 virtual.value.scrollToKey(messages.value[value - oldValue].id);
                 scrollIsLock.value = false;
-            });
+            }, 50);
         }
     }
 );
@@ -113,16 +113,21 @@ watch(isLoading, value => {
     if (!value && scrollIsLock.value) scrollIsLock.value = false;
 });
 
-const scrollToCorrectPosition = async () => {
-    await nextTick();
-    const notViewedMessage = messages.value.find(element => !element.is_viewed && !element.isLabel);
+const { start: scrollToCorrectPosition } = useTimeoutFn(
+    () => {
+        const notViewedMessage = messages.value.find(
+            element => !element.is_viewed && !element.isLabel
+        );
 
-    if (notViewedMessage) virtual.value.scrollToKey(notViewedMessage.id);
-    else virtual.value.scrollToBottom();
+        if (notViewedMessage) virtual.value.scrollToKey(notViewedMessage.id);
+        else virtual.value.scrollToBottom();
 
-    scrolled.value = true;
-    scrollIsLock.value = false;
-};
+        scrolled.value = true;
+        scrollIsLock.value = false;
+    },
+    50,
+    { immediate: false }
+);
 const scrollToEnd = async () => {
     await nextTick();
     virtual.value.scrollToBottom();

@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { responseToData } from '@/api/helpers/responseToData.js';
+import { responseHasStatus } from '@/api/helpers/responseHasStatus.js';
+import { STATUS_SUCCESS } from '@/api/helpers/statuses.js';
 
 const URL = '/users';
 
@@ -52,6 +54,14 @@ export default {
     },
     async restore(id) {
         const response = await axios.get(`${URL}/${id}/restore`);
+        return responseToData(response);
+    },
+    async activity() {
+        const response = await axios.post(`${URL}/activity`);
+        return responseHasStatus(response, STATUS_SUCCESS);
+    },
+    async online() {
+        const response = await axios.get(`${URL}/online`);
         return responseToData(response);
     }
 };
