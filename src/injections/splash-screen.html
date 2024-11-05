@@ -20,6 +20,14 @@
     }
 
     body.splash {
+        overflow: hidden;
+        max-height: 100vh;
+
+        #app {
+            max-height: 100vh;
+            overflow: hidden;
+        }
+
         .splash-screen {
             position: fixed;
             top: 0;
@@ -93,6 +101,14 @@
         }
         100% {
             transform: rotate(360deg) scale(1);
+        }
+    }
+
+    @media screen and (max-width: 960px) {
+        body.splash {
+            .splash-screen__logo {
+                width: 280px;
+            }
         }
     }
 </style>
