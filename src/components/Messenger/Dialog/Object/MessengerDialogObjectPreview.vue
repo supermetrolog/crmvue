@@ -110,25 +110,41 @@
                 with-transition
                 :closed="!object.offerMix?.length"
             >
-                <Tab name="Аренда" :is-disabled="!rentOfferMix">
+                <Tab
+                    v-if="objectChatMemberType === objectChatMemberTypes.RENT_OR_SALE"
+                    name="Аренда"
+                    :is-disabled="!rentOfferMix"
+                >
                     <MessengerDialogObjectPreviewRent
                         v-if="rentOfferMix"
                         :offer-mix="rentOfferMix"
                     />
                 </Tab>
-                <Tab name="Продажа" :is-disabled="!saleOfferMix">
+                <Tab
+                    v-if="objectChatMemberType === objectChatMemberTypes.RENT_OR_SALE"
+                    name="Продажа"
+                    :is-disabled="!saleOfferMix"
+                >
                     <MessengerDialogObjectPreviewSale
                         v-if="saleOfferMix"
                         :offer-mix="saleOfferMix"
                     />
                 </Tab>
-                <Tab name="Отв.хран" :is-disabled="!storageOfferMix">
+                <Tab
+                    v-if="objectChatMemberType === objectChatMemberTypes.STORAGE"
+                    name="Отв.хран"
+                    :is-disabled="!storageOfferMix"
+                >
                     <MessengerDialogObjectPreviewStorage
                         v-if="storageOfferMix"
                         :offer-mix="storageOfferMix"
                     />
                 </Tab>
-                <Tab name="Субаренда" :is-disabled="!subleaseOfferMix">
+                <Tab
+                    v-if="objectChatMemberType === objectChatMemberTypes.SUBLEASE"
+                    name="Субаренда"
+                    :is-disabled="!subleaseOfferMix"
+                >
                     <MessengerDialogObjectPreviewSublease
                         v-if="subleaseOfferMix"
                         :offer-mix="subleaseOfferMix"
@@ -159,11 +175,16 @@ import MessengerDialogObjectPreviewSale from '@/components/Messenger/Dialog/Obje
 import MessengerDialogObjectPreviewStorage from '@/components/Messenger/Dialog/Object/MessengerDialogObjectPreviewStorage.vue';
 import MessengerDialogPreviewTippy from '@/components/Messenger/Dialog/Preview/MessengerDialogPreviewTippy.vue';
 import MessengerDialogObjectPreviewSublease from '@/components/Messenger/Dialog/Object/MessengerDialogObjectPreviewSublease.vue';
+import { objectChatMemberTypes } from '@/const/messenger.js';
 
 defineEmits(['update-call']);
 const props = defineProps({
     objectId: {
         type: Number,
+        required: true
+    },
+    objectChatMemberType: {
+        type: String,
         required: true
     }
 });

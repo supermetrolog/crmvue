@@ -9,7 +9,9 @@
                 </div>
             </template>
             <template #body>
-                <slot></slot>
+                <slot>
+                    <span></span>
+                </slot>
             </template>
         </AccordionSimple>
     </div>

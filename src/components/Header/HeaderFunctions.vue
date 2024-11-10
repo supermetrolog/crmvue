@@ -5,17 +5,17 @@
             @click="activityIsVisible = !activityIsVisible"
             :label="activityCountLabelPlural"
             :active="activityIsVisible"
-            class="header__button"
+            class="header__button header__online"
         >
             <Spinner v-if="activityIsLoading" class="mini" />
             <i v-else class="fa-solid fa-user-group"></i>
-            <span
+            <div
                 v-if="!activityIsLoading"
-                class="header__badge badge badge-danger"
-                :class="{ 'badge-success': preparedActivityCount > 1 }"
+                class="header__count"
+                :class="{ 'dashboard-bg-success': preparedActivityCount > 1 }"
             >
                 {{ preparedActivityCount }}
-            </span>
+            </div>
         </HoverActionsButton>
         <AnimationTransition>
             <HeaderActivity v-if="activityIsVisible" v-on-click-outside="activityClickOutside" />

@@ -13,10 +13,7 @@
                 <p v-if="model.object.company" class="messenger-dialog-offer__company">
                     {{ companyName }}
                 </p>
-                <p class="messenger-dialog-offer__category">
-                    <i class="fa-solid fa-up-long"></i>
-                    <span>{{ dealType }}</span>
-                </p>
+                <MessengerDialogObjectDealType :type="model.type" :object="model.object" />
                 <p class="messenger-dialog-offer__address">
                     <Tooltip :text="model.object.address" icon="fa-solid fa-earth-americas" />
                     <span>{{ model.object.address }}</span>
@@ -40,9 +37,9 @@ import MessengerDialogFunctions from '@/components/Messenger/Dialog/MessengerDia
 import LazyImage from '@/components/common/LazyImage.vue';
 import Tooltip from '@/components/common/Tooltip.vue';
 import { computed } from 'vue';
-import { objectOptions } from '@/const/options/object.options.js';
 import { getCompanyName } from '@/utils/formatter.js';
 import { useStore } from 'vuex';
+import MessengerDialogObjectDealType from '@/components/Messenger/Dialog/Object/MessengerDialogObjectDealType.vue';
 
 defineEmits(['update-call']);
 const props = defineProps({
@@ -61,6 +58,10 @@ const props = defineProps({
     statistic: {
         type: Object,
         default: null
+    },
+    allDealTypes: {
+        type: Boolean,
+        default: false
     }
 });
 
@@ -69,7 +70,6 @@ const store = useStore();
 const isDisabled = computed(
     () => props.model.object.agent_id !== store.getters.THIS_USER.user_id_old
 );
-const dealType = computed(() => objectOptions.dealTypeString[props.model.type]);
 const updatedAt = computed(() => props.model.object.updated_at * 1000);
 const companyName = computed(() =>
     getCompanyName(props.model.object.company, props.model.object.company.id)

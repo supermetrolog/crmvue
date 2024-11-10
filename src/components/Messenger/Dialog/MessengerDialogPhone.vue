@@ -22,6 +22,7 @@ import dayjs from 'dayjs';
 import plural from 'plural-ru';
 import Tooltip from '@/components/common/Tooltip.vue';
 import { computed } from 'vue';
+import { toDateFormat } from '@/utils/formatter.js';
 
 const props = defineProps({
     lastCall: {
@@ -48,7 +49,7 @@ const correctDate = computed(() => {
 });
 
 const formattedDate = computed(() => {
-    return dayjs(correctDate.value).format('DD.MM.YYYY');
+    return toDateFormat(correctDate.value, 'DD.MM.YYYY');
 });
 
 const daysFromNow = computed(() => {

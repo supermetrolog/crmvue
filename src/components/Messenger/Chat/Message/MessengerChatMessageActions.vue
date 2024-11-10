@@ -43,7 +43,11 @@
             >
                 <i class="fa-solid fa-thumbtack"></i>
             </HoverActionsButton>
-            <HoverActionsButton v-if="canBeEdited" @click="$emit('edit')" label="Редактировать">
+            <HoverActionsButton
+                v-if="editable && canBeEdited"
+                @click="$emit('edit')"
+                label="Редактировать"
+            >
                 <i class="fa-solid fa-pen"></i>
             </HoverActionsButton>
             <HoverActionsButton v-if="canBeDeleted" @click="$emit('delete')" label="Удалить">
@@ -69,6 +73,10 @@ const props = defineProps({
     pinned: {
         type: Boolean,
         default: false
+    },
+    editable: {
+        type: Boolean,
+        default: true
     }
 });
 

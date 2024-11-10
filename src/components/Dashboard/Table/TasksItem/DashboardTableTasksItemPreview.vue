@@ -218,6 +218,9 @@
                         interactive
                         max-width="500"
                         :interactive-border="30"
+                        :on-show="onTriggerContacts"
+                        :on-hide="onUntriggerContacts"
+                        :delay="[300, null]"
                     >
                         <template #default>
                             <button class="dashboard-task-item-preview__button w-100 mt-1">
@@ -226,7 +229,10 @@
                             </button>
                         </template>
                         <template #content>
-                            <DashboardTableTasksItemPreviewContacts :company-id="objectCompanyId" />
+                            <DashboardTableTasksItemPreviewContacts
+                                :visible="contactsIsVisible"
+                                :company-id="objectCompanyId"
+                            />
                         </template>
                     </Tippy>
                 </div>
@@ -256,7 +262,7 @@
 <script setup>
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import DashboardTableTasksItemPreviewStatus from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemPreviewStatus.vue';
-import { computed, shallowRef, watch } from 'vue';
+import { computed, ref, shallowRef, watch } from 'vue';
 import DashboardTableTasksItemPreviewRow from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemPreviewRow.vue';
 import api from '@/api/api.js';
 import { useNotify } from '@/utils/useNotify.js';
@@ -323,6 +329,7 @@ const moveSettingsIsVisible = shallowRef(false);
 const commentsIsOpen = shallowRef(false);
 const statusIsChanging = shallowRef(false);
 const isLoading = shallowRef(false);
+const contactsIsVisible = ref(false);
 
 const isCompleted = computed(() => props.task.status === taskOptions.statusTypes.COMPLETED);
 const isDeleted = computed(() => props.task.deleted_at !== null);
@@ -550,4 +557,12 @@ const toCompany = () => {
 };
 
 const debouncedReadTask = debounce(readTask, 500);
+
+const onTriggerContacts = () => {
+    contactsIsVisible.value = true;
+};
+
+const onUntriggerContacts = () => {
+    contactsIsVisible.value = false;
+};
 </script>

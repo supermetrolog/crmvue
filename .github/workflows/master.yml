@@ -4,10 +4,6 @@ on:
       - master
 name: 🚀 Deploy website on push
 env:
-  VITE_VUE_APP_UPLOADS_PATH: uploads/
-  VITE_VUE_APP_IMAGES_PATH: images/
-  VITE_VUE_APP_NOT_FOUND_FILENAME: no-image.jpg
-  VITE_VUE_APP_NOT_FOUND_AVATAR_NAME: no-avatar.png
   VITE_VUE_APP_OBJECTS_PHOTO_URL: https://pennylane.pro
   VITE_VUE_APP_RESERVE_API_URL: https://reserve-api.supermetrolog.ru/
   VITE_VUE_APP_RESERVE_HOST: https://reserve-clients.supermetrolog.ru
@@ -15,10 +11,6 @@ env:
   VITE_VUE_APP_API_URL: https://api.pennylane.pro/
   VITE_VUE_APP_HOST: https://clients.pennylane.pro
   VITE_VUE_APP_WS_URL: wss://api.pennylane.pro/websocket/
-  VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_INFO: 90
-  VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_WARNING: 180
-  VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_DANGER: 360
-  VITE_VUE_APP_YANDEX_MAP_KEY: ${{ secrets.vue_app_yandex_map_key }}
 jobs:
   web-deploy:
     name: 🎉 Deploy

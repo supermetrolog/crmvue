@@ -1630,3 +1630,17 @@
         margin-top: 10px;
     }
 }
+
+.company-picker-option {
+    @include mixins.flex-box($gap: 5px);
+    width: 100%;
+
+    &__label {
+        margin-top: 3px;
+    }
+
+    &__id {
+        opacity: .7;
+        font-size: 13px;
+    }
+}

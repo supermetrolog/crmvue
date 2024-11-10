@@ -1,6 +1,6 @@
 <template>
     <div class="messenger-quiz-inline-element">
-        <i class="fa-solid fa-exclamation-triangle messenger-quiz-inline-element__icon"></i>
+        <i class="fa-solid fa-phone-volume messenger-quiz-inline-element__icon"></i>
         <Avatar :size="30" :src="quiz.user?.userProfile?.avatar" />
         <div class="messenger-quiz-inline-element__description">
             <span>{{ createdAt }}, </span>
@@ -8,17 +8,21 @@
             <i class="fa-solid fa-arrow-right-long mx-2"></i>
             <span>{{ contactName }}</span>
         </div>
-        <Button @click="$emit('show')" class="ml-auto" small icon>
+        <HoverActionsButton
+            @click="$emit('show')"
+            label="Посмотреть сводку"
+            class="messenger-quiz-inline-element__button ml-auto"
+            small
+        >
             <i class="fa-solid fa-eye"></i>
-            <span>Посмотреть</span>
-        </Button>
+        </HoverActionsButton>
     </div>
 </template>
 <script setup>
 import Avatar from '@/components/common/Avatar.vue';
 import { computed } from 'vue';
 import { getContactFullName, toDateFormat } from '@/utils/formatter.js';
-import Button from '@/components/common/Button.vue';
+import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 
 defineEmits(['show']);
 const props = defineProps({
@@ -28,6 +32,6 @@ const props = defineProps({
     }
 });
 
-const createdAt = computed(() => toDateFormat(props.quiz.created_at, 'D.MM.YYYY'));
+const createdAt = computed(() => toDateFormat(props.quiz.created_at, 'DD.MM.YY'));
 const contactName = computed(() => getContactFullName(props.quiz.contact));
 </script>

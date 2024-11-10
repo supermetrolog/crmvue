@@ -36,8 +36,8 @@
         <MessengerChatLoader v-if="isLoading" />
         <div v-else-if="currentPanel && currentChat" class="messenger-chat__wrapper">
             <AnimationTransition :speed="0.4">
-                <MessengerChatContent v-if="currentTab === CHAT_TABS.CHAT" />
-                <MessengerQuiz v-else @completed="currentTab = CHAT_TABS.CHAT" />
+                <MessengerChatContent v-if="currentTab === messenger.chatTabs.CHAT" />
+                <MessengerQuiz v-else @completed="switchTab(messenger.chatTabs.CHAT)" />
             </AnimationTransition>
             <MessengerQuizHelper ref="quizHelper" />
             <MessengerChatSettings ref="chatSettings" />
@@ -59,7 +59,7 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import MessengerSchedule from '@/components/Messenger/Schedule/MessengerSchedule.vue';
 import MessengerChatSettings from '@/components/Messenger/Chat/Settings/MessengerChatSettings.vue';
 import FormModalMessageAlert from '@/components/Forms/FormModalMessageAlert.vue';
-import { computed, provide, shallowRef, useTemplateRef, watch } from 'vue';
+import { computed, provide, useTemplateRef, watch } from 'vue';
 import { toDateFormat, ucFirst } from '@/utils/formatter.js';
 import { useNotify } from '@/utils/useNotify.js';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
@@ -68,11 +68,7 @@ import MessengerTabs from '@/components/Messenger/MessengerTabs.vue';
 import MessengerQuizHelper from '@/components/Messenger/Quiz/MessengerQuizHelper.vue';
 import Spinner from '@/components/common/Spinner.vue';
 import { Tippy } from 'vue-tippy';
-
-const CHAT_TABS = {
-    CHAT: 1,
-    QUIZ: 2
-};
+import { messenger } from '@/const/messenger.js';
 
 const store = useStore();
 const notify = useNotify();
@@ -89,26 +85,44 @@ const schedule = useTemplateRef('schedule');
 const quizHelper = useTemplateRef('quizHelper');
 const chatSettings = useTemplateRef('chatSettings');
 
-const currentTab = shallowRef(CHAT_TABS.CHAT);
+const currentTab = computed(() => store.state.Messenger.currentChatTab);
 
 const currentDialog = computed(() => store.state.Messenger.currentDialog);
 const shouldCall = computed(() => {
     return (
-        store.getters['Messenger/currentDaysCountAfterLastCall'] >
-        import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_WARNING
+        store.getters['Messenger/currentDaysCountAfterLastCall'] >=
+        import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_DANGER
     );
 });
 const lastCallDate = computed(() =>
     toDateFormat(currentDialog.value.last_call.created_at, 'D.MM.YY')
 );
 
+const quizTabClass = computed(() => {
+    if (
+        store.getters['Messenger/currentDaysCountAfterLastCall'] >=
+        import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_DANGER
+    ) {
+        return 'bg-danger text-white';
+    }
+
+    if (
+        store.getters['Messenger/currentDaysCountAfterLastCall'] >=
+        import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_WARNING
+    ) {
+        return 'bg-warning';
+    }
+
+    return null;
+});
+
 const tabs = computed(() => [
-    { id: CHAT_TABS.CHAT, key: 'chat', label: 'Чат' },
+    { id: messenger.chatTabs.CHAT, key: 'chat', label: 'Чат' },
     {
-        id: CHAT_TABS.QUIZ,
+        id: messenger.chatTabs.SURVEY,
         key: 'quiz',
         label: 'Заполните опрос',
-        class: shouldCall.value && !isLoading.value ? 'bg-danger text-white' : undefined
+        class: !isLoading.value ? quizTabClass.value : undefined
     }
 ]);
 
@@ -164,6 +178,6 @@ watch(
 );
 
 const switchTab = tabId => {
-    currentTab.value = tabId;
+    store.state.Messenger.currentChatTab = tabId;
 };
 </script>

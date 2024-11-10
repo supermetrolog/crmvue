@@ -28,16 +28,15 @@ export function createMessengerContext(element) {
         };
     }
 
-    const openChatByUserId = createOpenHandler(userId => element.value.openChatByUserID(userId));
-    const openChatByCompanyId = createOpenHandler(companyId =>
-        element.value.openChatByCompanyID(companyId)
+    const openChatByUserId = createOpenHandler((...args) =>
+        element.value.openChatByUserID(...args)
     );
-    const openChatById = createOpenHandler(chatMemberId =>
-        element.value.openChatByID(chatMemberId)
+    const openChatByCompanyId = createOpenHandler(args =>
+        element.value.openChatByCompanyID(...args)
     );
-    const openChat = createOpenHandler((companyId, objectId, modelType) =>
-        element.value.openChat(companyId, objectId, modelType)
-    );
+    const openChatById = createOpenHandler((...args) => element.value.openChatByID(...args));
+    const openChat = createOpenHandler((...args) => element.value.openChat(...args));
+    const openSurvey = createOpenHandler((...args) => element.value.openSurvey(...args));
 
     provide(
         OPEN_MESSENGER_CHAT_INJECTION_KEY,
@@ -62,6 +61,7 @@ export function createMessengerContext(element) {
     provide(OPEN_CHAT_BY_USER_ID_INJECTION_KEY, openChatByUserId);
     provide(OPEN_CHAT_BY_ID_INJECTION_KEY, openChatById);
     provide(OPEN_CHAT_BY_COMPANY_ID_INJECTION_KEY, openChatByCompanyId);
+    provide(OPEN_SURVEY_INJECTION_KEY, openSurvey);
 
     return { isOpening };
 }
@@ -73,7 +73,8 @@ export function useMessenger() {
             openChatById: inject(OPEN_CHAT_BY_ID_INJECTION_KEY),
             openChatByCompanyId: inject(OPEN_CHAT_BY_COMPANY_ID_INJECTION_KEY),
             openChatByUserId: inject(OPEN_CHAT_BY_USER_ID_INJECTION_KEY),
-            openMessenger: inject(OPEN_MESSENGER_CHAT_INJECTION_KEY)
+            openMessenger: inject(OPEN_MESSENGER_CHAT_INJECTION_KEY),
+            openSurvey: inject(OPEN_SURVEY_INJECTION_KEY)
         };
     }
 

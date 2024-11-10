@@ -19,11 +19,13 @@ const User = {
         updateConsultantList(state, data) {
             state.consultantList = data.map(element => {
                 return {
+                    id: element.id,
                     value: element.id,
                     label: element.userProfile.medium_name,
                     status: element.status,
                     avatar: element.userProfile.avatar,
                     short_name: element.userProfile.short_name,
+                    role_id: element.role,
                     role: userOptions.beautifulRole[element.role],
                     email: element.email,
                     phones: element.userProfile.phones.map(element => element.phone).join(', '),
@@ -172,6 +174,11 @@ const User = {
         activeConsultants(state) {
             return state.consultants.filter(
                 element => element.status === userOptions.statusStatement.ACTIVE
+            );
+        },
+        moderator(state) {
+            return state.consultantList.find(
+                element => element.role_id === userOptions.roleStatement.MODERATOR
             );
         }
     }

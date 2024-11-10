@@ -63,6 +63,31 @@
         border-radius: 50%;
         font-size: 12px;
     }
+
+    &__online {
+        width: max-content;
+        padding: 5px 10px;
+        border-radius: 20px;
+        gap: 5px;
+
+        &.active {
+            .header__count {
+                background-color: rgb(24, 131, 100)
+            }
+        }
+    }
+
+    &__count {
+        height: 24px;
+        width: 24px;
+        border-radius: 50%;
+        background-color: variables.$color_grey;
+        color: #fff;
+        flex-shrink: 0;
+        font-size: 13px;
+        @include mixins.transition(background-color);
+        @include mixins.flex-box($a: center, $j: center);
+    }
 }
 
 .header-link {
@@ -157,6 +182,8 @@
         @include mixins.flex-box($d: column, $gap: 5px);
         max-height: 500px;
         overflow-y: auto;
+        padding-right: 5px;
+        margin-right: -5px;
     }
 
     &__label {

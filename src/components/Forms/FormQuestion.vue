@@ -15,6 +15,7 @@
                     class="col-12"
                     required
                 />
+                <Input v-model="form.group" :v="v$.form.group" label="Группа" class="col-12" />
                 <div class="mx-auto d-flex gap-2">
                     <FormSubmit success>Сохранить</FormSubmit>
                     <Button
@@ -53,7 +54,8 @@ const { confirm } = useConfirm();
 
 const isLoading = shallowRef(false);
 const form = reactive({
-    text: null
+    text: null,
+    group: null
 });
 
 const v$ = useVuelidate(

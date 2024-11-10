@@ -5,7 +5,15 @@ on:
     branches-ignore:
       - master
       - dev
-
+env:
+  VITE_VUE_APP_UPLOADS_PATH: uploads/
+  VITE_VUE_APP_IMAGES_PATH: images/
+  VITE_VUE_APP_NOT_FOUND_FILENAME: no-image.jpg
+  VITE_VUE_APP_NOT_FOUND_AVATAR_NAME: no-avatar.png
+  VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_INFO: 60
+  VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_WARNING: 75
+  VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_DANGER: 90
+  VITE_VUE_APP_YANDEX_MAP_KEY: ${{ secrets.vue_app_yandex_map_key }}
 jobs:
   build:
     runs-on: ubuntu-latest

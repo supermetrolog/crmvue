@@ -206,7 +206,6 @@ const createOptions = () => {
         cropBoxResizable: props.cropBoxResizable,
         toggleDragModeOnDblclick: props.toggleDragModeOnDblclick,
         ready() {
-            console.log('is ready');
             isReady.value = true;
         },
         cropend() {

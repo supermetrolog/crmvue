@@ -1,5 +1,4 @@
 import api from '@/api/api.js';
-import { multiselectAdapter } from '@/utils/adapters.js';
 
 export function useSearchCompany(defaultQuery) {
     return async function searchCompany(querySearch) {
@@ -13,6 +12,11 @@ export function useSearchCompany(defaultQuery) {
         }
 
         const response = await api.companies.search(query);
-        return multiselectAdapter(response, 'id', 'full_name');
+
+        return response.map(company => ({
+            value: company.id,
+            label: company.full_name,
+            logo: company.logo
+        }));
     };
 }

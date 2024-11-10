@@ -25,7 +25,16 @@
                 @deleted="onQuestionAnswerDeleted"
                 :fields="fieldsOptions"
                 :questions="questionsOptions"
+                :effects="effectsOptions"
                 :form-data="editingQuestionAnswer"
+            />
+            <FormEffect
+                v-if="effectsFormIsVisible"
+                @close="closeEffectsForm"
+                @updated="onEffectUpdated"
+                @created="onEffectCreated"
+                @deleted="onEffectDeleted"
+                :form-data="editingEffect"
             />
         </Teleport>
         <div class="row">
@@ -93,7 +102,7 @@
                     </AnimationTransition>
                 </DashboardCard>
             </div>
-            <div class="col-6">
+            <div class="col-4">
                 <DashboardCard>
                     <template #header>
                         <SettingsFormHeader
@@ -132,7 +141,37 @@
                     </div>
                 </DashboardCard>
             </div>
-            <div class="col-6">
+            <div class="col-4">
+                <DashboardCard>
+                    <template #header>
+                        <SettingsFormHeader
+                            @add="effectsFormIsVisible = true"
+                            @load="loadEffects"
+                            @refresh="fetchEffects"
+                            title="Управление эффектами"
+                            :size="effects.length"
+                            :pagination="effectsPagination"
+                        />
+                    </template>
+                    <div class="d-flex flex-wrap gap-2 mb-2">
+                        <Loader v-if="effectsIsLoading" small />
+                        <SettingsFormElement
+                            v-for="element in effects"
+                            :key="element.id"
+                            @delete="deleteEffect(element)"
+                            @edit="editEffect(element)"
+                            :element="element"
+                            can-edit
+                        >
+                            <template #text="{ item }">
+                                <span class="mr-1">#{{ item.id }}</span>
+                                <span>{{ item.title }} ({{ item.kind }})</span>
+                            </template>
+                        </SettingsFormElement>
+                    </div>
+                </DashboardCard>
+            </div>
+            <div class="col-4">
                 <DashboardCard>
                     <template #header>
                         <SettingsFormHeader
@@ -214,7 +253,7 @@ import FormField from '@/components/Forms/FormField.vue';
 import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
 import FormQuestion from '@/components/Forms/FormQuestion.vue';
 import MessengerQuizQuestion from '@/components/Messenger/Quiz/MessengerQuizQuestion.vue';
-import { computed, ref, shallowRef } from 'vue';
+import { computed, onMounted, ref, shallowRef } from 'vue';
 import api from '@/api/api.js';
 import EmptyData from '@/components/common/EmptyData.vue';
 import FormQuestionAnswer from '@/components/Forms/FormQuestionAnswer.vue';
@@ -229,6 +268,7 @@ import Loader from '@/components/common/Loader.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import SettingsFormElement from '@/components/Settings/SettingsFormElement.vue';
 import { useStore } from 'vuex';
+import FormEffect from '@/components/Forms/FormEffect.vue';
 
 const defaultFields = {
     RADIO: 1,
@@ -261,14 +301,20 @@ const questionAnswers = ref([]);
 const { isLoading: answersIsLoading } = useDelayedLoader();
 const questionAnswersPagination = ref(null);
 
+const effects = ref([]);
+const { isLoading: effectsIsLoading } = useDelayedLoader();
+const effectsPagination = ref(null);
+
 const viewQuestionsIsVisible = shallowRef(false);
 const fieldFormIsVisible = shallowRef(false);
 const questionFormIsVisible = shallowRef(false);
 const questionAnswerFormIsVisible = shallowRef(false);
+const effectsFormIsVisible = shallowRef(false);
 
 const editingField = shallowRef(false);
 const editingQuestion = shallowRef(false);
 const editingQuestionAnswer = shallowRef(false);
+const editingEffect = shallowRef(false);
 
 const previewQuestions = computed(() =>
     questions.value.filter(element => element.deleted_at === null)
@@ -288,6 +334,13 @@ const questionsOptions = computed(() => {
     }));
 });
 
+const effectsOptions = computed(() => {
+    return effects.value.map(effect => ({
+        value: effect.id,
+        label: effect.title
+    }));
+});
+
 const closeQuestionAnswerForm = () => {
     questionAnswerFormIsVisible.value = false;
     editingQuestionAnswer.value = null;
@@ -301,6 +354,11 @@ const closeQuestionForm = () => {
 const closeFieldForm = () => {
     fieldFormIsVisible.value = false;
     editingField.value = null;
+};
+
+const closeEffectsForm = () => {
+    effectsFormIsVisible.value = false;
+    editingEffect.value = null;
 };
 
 const fetchQuestions = async (page = 1) => {
@@ -337,6 +395,61 @@ const fetchQuestionAnswers = async (page = 1) => {
     }
 
     answersIsLoading.value = false;
+};
+
+const fetchEffects = async (page = 1) => {
+    effectsIsLoading.value = true;
+
+    const response = await api.effect.list({ page });
+    if (response) {
+        effects.value = response.data;
+        effectsPagination.value = response.pagination;
+    }
+
+    effectsIsLoading.value = false;
+};
+
+const loadEffects = async () => {
+    const response = await api.effect.list({ page: effectsPagination.value.currentPage + 1 });
+
+    if (response) {
+        effects.value.push(...response.data);
+        effectsPagination.value = response.pagination;
+    }
+};
+
+const onEffectUpdated = effect => {
+    const element = effects.value.find(element => element.id === effect.id);
+    if (element) Object.assign(element, effect);
+
+    closeEffectsForm();
+};
+
+const onEffectCreated = () => {
+    fetchEffects();
+    closeEffectsForm();
+};
+
+const onEffectDeleted = () => {
+    fetchEffects();
+};
+
+const deleteEffect = async effect => {
+    const confirmed = await confirm(
+        `Вы действительно хотите удалить эффект "#${effect.id} ${effect.title} (${effect.kind})"?`
+    );
+    if (!confirmed) return;
+
+    const deleted = await api.effect.delete(effect.id);
+    if (deleted) {
+        notify.success('Эффект успешно удалено.');
+        await fetchEffects();
+    }
+};
+
+const editEffect = effect => {
+    editingEffect.value = effect;
+    effectsFormIsVisible.value = true;
 };
 
 const loadFields = async () => {
@@ -500,7 +613,10 @@ const refreshQuestions = async () => {
     refreshIsLoading.value = false;
 };
 
-fetchQuestions();
-fetchFields();
-fetchQuestionAnswers();
+onMounted(() => {
+    fetchQuestions();
+    fetchFields();
+    fetchQuestionAnswers();
+    fetchEffects();
+});
 </script>

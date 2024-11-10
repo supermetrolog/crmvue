@@ -37,21 +37,24 @@
                 v-for="addition in question.answers.tab"
                 :key="addition.id"
                 :html="addition.value"
+                class="mr-1"
                 :class="{
                     'dashboard-bg-success text-white': Boolean(addition.surveyQuestionAnswer?.value)
                 }"
             />
         </div>
         <div v-if="hasTextQuestions">
-            <Textarea
-                v-for="addition in question.answers['text-answer']"
-                :key="addition.id"
-                disabled
-                :model-value="addition.surveyQuestionAnswer?.value"
-                :label="addition.value"
-                class="messenger-quiz-question__field mt-1"
-                auto-height
-            />
+            <slot name="textarea" :answers="question.answers['text-answer']">
+                <Textarea
+                    v-for="addition in question.answers['text-answer']"
+                    :key="addition.id"
+                    disabled
+                    :model-value="addition.surveyQuestionAnswer?.value"
+                    :label="addition.value"
+                    class="messenger-quiz-question__field mt-1"
+                    auto-height
+                />
+            </slot>
         </div>
         <div v-if="hasCheckboxQuestions" class="messenger-quiz-question__interests">
             <Chip

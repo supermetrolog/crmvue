@@ -13,7 +13,7 @@
                 <MultiSelect
                     v-model="form.category"
                     :v="v$.form.category"
-                    class="col-4"
+                    class="col-3"
                     label="Категория"
                     :options="categoryOptions"
                     required
@@ -23,7 +23,7 @@
                     v-model="form.field_id"
                     :v="v$.form.field_id"
                     label="Поле"
-                    class="col-4"
+                    class="col-3"
                     :options="fields"
                 />
                 <Input
@@ -31,7 +31,7 @@
                     v-model="form.field_id"
                     :v="v$.form.field_id"
                     required
-                    class="col-4"
+                    class="col-3"
                     type="number"
                     label="ID поля"
                 />
@@ -40,7 +40,7 @@
                     v-model="form.question_id"
                     :v="v$.form.question_id"
                     label="Вопрос"
-                    class="col-4"
+                    class="col-3"
                     :options="questions"
                 />
                 <Input
@@ -48,9 +48,17 @@
                     v-model="form.question_id"
                     :v="v$.form.question_id"
                     required
-                    class="col-4"
+                    class="col-3"
                     type="number"
                     label="ID вопроса"
+                />
+                <MultiSelect
+                    v-model="form.effect_ids"
+                    label="События"
+                    class="col-3"
+                    mode="tags"
+                    searchable
+                    :options="effects"
                 />
                 <Textarea
                     v-model="form.value"
@@ -98,6 +106,10 @@ const props = defineProps({
         default: () => []
     },
     fields: {
+        type: Array,
+        default: () => []
+    },
+    effects: {
         type: Array,
         default: () => []
     },
