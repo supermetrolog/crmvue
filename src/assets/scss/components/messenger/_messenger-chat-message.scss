@@ -66,12 +66,18 @@
         max-width: 100%;
         width: 100%;
         margin: 15px 0;
-        opacity: .7;
+        opacity: .85;
 
         .messenger-chat-message {
             &__content {
                 width: 100%;
                 text-align: center;
+            }
+
+            &__wrapper {
+                max-width: 80%;
+                width: 80%;
+                margin: 0 auto;
             }
 
             &__footer {
@@ -343,6 +349,10 @@
         border-radius: 5px;
         font-weight: 500;
         color: #fff;
+    }
+
+    &__model {
+        font-weight: 600;
     }
 }
 

@@ -25,6 +25,7 @@
                 @deleted="onQuestionAnswerDeleted"
                 :fields="fieldsOptions"
                 :questions="questionsOptions"
+                :effects="effectsOptions"
                 :form-data="editingQuestionAnswer"
             />
         </Teleport>
@@ -214,7 +215,7 @@ import FormField from '@/components/Forms/FormField.vue';
 import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
 import FormQuestion from '@/components/Forms/FormQuestion.vue';
 import MessengerQuizQuestion from '@/components/Messenger/Quiz/MessengerQuizQuestion.vue';
-import { computed, ref, shallowRef } from 'vue';
+import { computed, onMounted, ref, shallowRef } from 'vue';
 import api from '@/api/api.js';
 import EmptyData from '@/components/common/EmptyData.vue';
 import FormQuestionAnswer from '@/components/Forms/FormQuestionAnswer.vue';
@@ -261,6 +262,10 @@ const questionAnswers = ref([]);
 const { isLoading: answersIsLoading } = useDelayedLoader();
 const questionAnswersPagination = ref(null);
 
+const effects = ref([]);
+const { isLoading: effectsIsLoading } = useDelayedLoader();
+const effectsPagination = ref(null);
+
 const viewQuestionsIsVisible = shallowRef(false);
 const fieldFormIsVisible = shallowRef(false);
 const questionFormIsVisible = shallowRef(false);
@@ -285,6 +290,13 @@ const questionsOptions = computed(() => {
     return questions.value.map(element => ({
         value: element.id,
         label: `#${element.id} ${element.text}`
+    }));
+});
+
+const effectsOptions = computed(() => {
+    return effects.value.map(effect => ({
+        value: effect.id,
+        label: effect.title
     }));
 });
 
@@ -337,6 +349,18 @@ const fetchQuestionAnswers = async (page = 1) => {
     }
 
     answersIsLoading.value = false;
+};
+
+const fetchEffects = async (page = 1) => {
+    effectsIsLoading.value = true;
+
+    const response = await api.effect.list(page);
+    if (response) {
+        effects.value = response.data;
+        effectsPagination.value = response.pagination;
+    }
+
+    effectsIsLoading.value = false;
 };
 
 const loadFields = async () => {
@@ -500,7 +524,10 @@ const refreshQuestions = async () => {
     refreshIsLoading.value = false;
 };
 
-fetchQuestions();
-fetchFields();
-fetchQuestionAnswers();
+onMounted(() => {
+    fetchQuestions();
+    fetchFields();
+    fetchQuestionAnswers();
+    fetchEffects();
+});
 </script>

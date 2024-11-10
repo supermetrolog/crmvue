@@ -126,7 +126,7 @@
             <DashboardChip v-else class="dashboard-bg-success-l offer-table-item__chip">
                 Актив
             </DashboardChip>
-            <OfferTableItemCall @click="openSurvey" :call="offer.last_call" />
+            <OfferTableItemCall @click="openInSurvey" :call="offer.last_call" />
             <HoverActionsButton
                 @click="openInChat"
                 class="my-2 mx-auto offer-table-item__chat"
@@ -221,7 +221,7 @@ const props = defineProps({
 const { isLoading: blocksIsLoading } = useDelayedLoader();
 const { isLoading: relationsIsLoading } = useDelayedLoader();
 const store = useStore();
-const { openChat } = useMessenger();
+const { openChat, openSurvey } = useMessenger();
 
 const currentRelationTab = shallowRef(null);
 const relatedOffers = shallowRef([]);
@@ -303,7 +303,26 @@ const hideBlocks = () => {
 const openInChat = () =>
     openChat(props.offer.company_id, props.offer.object_id, messenger.dialogTypes.OBJECT);
 
-const openSurvey = () => {};
+const openInSurvey = () => {
+    let surveyType;
+    const dealType = props.offer.deal_type ?? dealOptions.typeStatement.RENT;
+
+    if (
+        dealType === dealOptions.typeStatement.RENT ||
+        dealType === dealOptions.typeStatement.SALE
+    ) {
+        surveyType = messenger.surveyType.OBJECT;
+    } else {
+        surveyType = messenger.surveyType.COMPANY;
+    }
+
+    openSurvey(
+        messenger.dialogTypes.OBJECT,
+        surveyType,
+        props.offer.object_id,
+        props.offer.company_id
+    );
+};
 
 const openPDF = () => {
     window.open(

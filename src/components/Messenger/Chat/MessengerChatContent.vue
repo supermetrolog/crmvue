@@ -30,8 +30,19 @@
                         class="messenger-chat__label"
                         :date="message.label"
                     />
+                    <MessengerChatNotification
+                        v-else-if="message.is_system"
+                        @viewed="debouncedReadMessage"
+                        @deleted="onMessageDeleted(message.id)"
+                        @reply="replyTo = message"
+                        @cancel-reply="replyTo = null"
+                        :message="message"
+                        :pinned="message.id === pinnedMessage?.id"
+                        :reply="message.id === replyTo?.id"
+                        :can-be-viewed="!message.is_viewed"
+                    />
                     <MessengerChatMessage
-                        v-else-if="message.from.model_type === 'user'"
+                        v-else
                         @viewed="debouncedReadMessage"
                         @deleted="onMessageDeleted(message.id)"
                         @reply="replyTo = message"
@@ -42,7 +53,6 @@
                         :reply="message.id === replyTo?.id"
                         :can-be-viewed="!message.is_viewed"
                     />
-                    <MessengerChatNotification v-else :message="message" />
                 </div>
             </template>
             <template #footer>

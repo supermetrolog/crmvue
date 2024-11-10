@@ -150,12 +150,38 @@
     }
 
     &__category {
-        @include mixins.flex-box($gap: 5px);
-        color: #05865f;
+        @include mixins.flex-box($wrap: true);
         font-weight: 600;
+        color: variables.$color_grey;
 
         i {
             font-size: 16px;
+        }
+    }
+
+    &__deal-type {
+        color: #9f3f56;
+        padding: 0 5px;
+
+        &.active {
+            color: #05865f;
+        }
+
+        &.deleted {
+            color: #6c474c;
+            opacity: .5;
+        }
+
+        &:last-child {
+            padding-right: 0;
+        }
+
+        &:first-child {
+            padding-left: 0;
+        }
+
+        &:not(&:last-child)  {
+            border-right: 2px solid #05865f;
         }
     }
 

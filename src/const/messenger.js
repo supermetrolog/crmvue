@@ -93,6 +93,22 @@ export const MAX_FILES_COUNT = 20;
 export const MAX_FILE_SIZE = 8388608; // 8 megabyte
 export const MAX_FILE_SIZE_HUMANIZE = '8МБ';
 
+export const objectChatMemberTypes = {
+    RENT_OR_SALE: 'rent_or_sale',
+    SUBLEASE: 'sublease',
+    STORAGE: 'response_storage'
+};
+
+const surveyType = {
+    OBJECT: 'object',
+    COMPANY: 'company'
+};
+
+const chatTabs = {
+    CHAT: 1,
+    SURVEY: 2
+};
+
 export const messenger = {
     buttons,
     categories,
@@ -101,5 +117,8 @@ export const messenger = {
     tabsGroups,
     tabsPlural,
     dialogTypes,
-    tabFilters
+    tabFilters,
+    objectChatMemberTypes,
+    surveyType,
+    chatTabs
 };

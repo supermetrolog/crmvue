@@ -27,6 +27,7 @@
                 <MessengerChatMessageAdditions
                     :tasks="message.tasks"
                     :notifications="message.notifications"
+                    :surveys="message.surveys"
                 />
                 <div
                     v-if="message.message"

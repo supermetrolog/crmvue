@@ -15,6 +15,11 @@
             :editable="userCanEdit(notification)"
             :draggable="userCanDrag(notification)"
         />
+        <MessengerChatMessageAdditionsSurvey
+            v-for="survey in surveys"
+            :key="survey.id"
+            :addition="survey"
+        />
     </div>
 </template>
 <script setup>
@@ -24,6 +29,7 @@ import { useStore } from 'vuex';
 import dayjs from 'dayjs';
 import api from '@/api/api.js';
 import { useNotify } from '@/utils/useNotify.js';
+import MessengerChatMessageAdditionsSurvey from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditionsSurvey.vue';
 
 defineProps({
     tasks: {
@@ -31,6 +37,10 @@ defineProps({
         required: true
     },
     notifications: {
+        type: Array,
+        required: true
+    },
+    surveys: {
         type: Array,
         required: true
     }

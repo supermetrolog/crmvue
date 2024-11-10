@@ -45,7 +45,7 @@
                 />
             </template>
             <template v-if="companies.length >= 20" #footer>
-                <InfiniteLoading @infinite="$emit('load', $event)">
+                <InfiniteLoading @infinite="$emit('load', $event)" class="pt-2">
                     <template #complete><span></span></template>
                     <template #spinner>
                         <MessengerDialogObjectSkeleton />
@@ -63,7 +63,7 @@ import { useStore } from 'vuex';
 import InfiniteLoading from 'v3-infinite-loading';
 import VirtualDragList from 'vue-virtual-draglist';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
-import { computed, shallowRef, toRef, watch } from 'vue';
+import { computed, toRef, useTemplateRef, watch } from 'vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { useSkeleton } from '@/composables/useSkeleton.js';
 import MessengerDialogCompany from '@/components/Messenger/Dialog/Company/MessengerDialogCompany.vue';
@@ -86,7 +86,7 @@ const { lastElementsCount } = useSkeleton(toRef(() => props.companies));
 const { show: showLastCallPopup } = useAsyncPopup('chatMemberLastCall');
 const { isLoading } = useDelayedLoader();
 
-const virtualList = shallowRef(null);
+const virtualList = useTemplateRef('virtualList');
 
 const currentDialogID = computed(() => store.state.Messenger.currentAsideDialogID);
 
