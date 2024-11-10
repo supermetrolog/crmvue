@@ -17,7 +17,8 @@ const beautifulRole = {
     2: 'Консультант',
     3: 'Модератор',
     4: 'Директор',
-    5: 'Программист'
+    5: 'Программист',
+    6: 'Системный'
 };
 
 const roleStatement = {
@@ -25,7 +26,8 @@ const roleStatement = {
     CONSULTANT: 2,
     MODERATOR: 3,
     DIRECTOR: 4,
-    ADMIN: 5
+    ADMIN: 5,
+    SYSTEM: 6
 };
 
 export const userOptions = {
