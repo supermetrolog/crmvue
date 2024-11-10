@@ -4,6 +4,10 @@ import { useNotify } from '@/utils/useNotify.js';
 import { LOCALSTORAGE_PREFIX, LS_ACCESS_TOKEN_KEY } from '@/utils/localStorage.js';
 import { useDocumentTitle } from '@/composables/useDocumentTitle.js';
 import OffersView from '@/views/Offers/Offers.vue';
+import OffersMain from '@/views/Offers/Main.vue';
+import CompaniesMain from '@/views/Companies/Companies.vue';
+import CompaniesView from '@/views/Companies/Company.vue';
+import CompaniesList from '@/views/Companies/Main.vue';
 
 const routes = [
     {
@@ -98,7 +102,7 @@ const routes = [
             auth: { isAuth: true, role: ['moderator', 'administrator'] },
             title: 'Список компаний'
         },
-        component: () => import('../views/Companies/Companies.vue'),
+        component: CompaniesMain,
         children: [
             {
                 path: '/companies/:id',
@@ -108,7 +112,7 @@ const routes = [
                     auth: { isAuth: true, role: ['moderator', 'administrator'] },
                     title: 'Обзор компании'
                 },
-                component: () => import('../views/Companies/Company.vue')
+                component: CompaniesView
             },
             {
                 path: '',
@@ -117,7 +121,7 @@ const routes = [
                     layout: 'default',
                     auth: { isAuth: true, role: ['moderator', 'administrator'] }
                 },
-                component: () => import('../views/Companies/Main.vue')
+                component: CompaniesList
             },
             {
                 path: 'requests',
@@ -305,7 +309,7 @@ const routes = [
                     layout: 'default',
                     auth: { isAuth: true, role: ['moderator', 'administrator'] }
                 },
-                component: () => import('../views/Offers/Main.vue')
+                component: OffersMain
             },
             {
                 path: 'map',

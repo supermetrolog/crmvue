@@ -1,6 +1,6 @@
 <template>
     <notifications position="bottom right" group="app" pause-on-hover />
-    <component :is="layoutComponent" v-if="isInitialized" />
+    <component :is="layoutComponent" />
 </template>
 
 <script setup>
@@ -9,7 +9,7 @@ import Login from '@/layouts/login.vue';
 import Empty from '@/layouts/empty.vue';
 import { Notifications } from '@kyvg/vue3-notification';
 import Mobile from '@/layouts/mobile.vue';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted } from 'vue';
 import { initializeDevice } from '@/composables/useMobile.js';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
@@ -26,8 +26,6 @@ const router = useRouter();
 const store = useStore();
 
 const isMobile = initializeDevice();
-
-const isInitialized = ref(false);
 
 const layoutComponent = computed(() => {
     if (route.meta.layout === 'login') return Login;
@@ -55,7 +53,6 @@ const initialize = async () => {
 initialize();
 
 onMounted(() => {
-    isInitialized.value = true;
     disableSplash();
 });
 </script>

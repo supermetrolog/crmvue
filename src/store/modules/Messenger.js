@@ -58,10 +58,8 @@ const getInitialState = () => ({
     currentPanelUserID: null,
     currentAsidePanel: null,
 
-    unreadMessageCount: 0,
-    unreadNotificationCount: 0,
-    unreadTaskCount: 0,
-    unreadReminderCount: 0,
+    currentChatTab: messenger.chatTabs.CHAT,
+    currentSurveyType: null,
 
     counts: {
         object: {
@@ -401,16 +399,6 @@ const Messenger = {
                 }
             }
         },
-        onQuizCompleted(state, lastCall) {
-            const chatMemberStateName = 'chatMembers' + ucFirst(state.currentDialog.model_type);
-
-            const chatMemberIndex = state[chatMemberStateName].data.findIndex(
-                element => element.id === state.currentDialog.id
-            );
-
-            if (chatMemberIndex !== -1)
-                state[chatMemberStateName].data[chatMemberIndex].last_call = lastCall;
-        },
         onContactUpdated(state, contact) {
             if (!state.currentPanel) return;
 
@@ -436,6 +424,9 @@ const Messenger = {
                 state.currentDialog.model.id === id
             )
                 state.currentDialog.model.logo = logo?.src;
+        },
+        selectChatTab(state, tab) {
+            state.currentChatTab = tab;
         }
     },
     actions: {
@@ -613,6 +604,24 @@ const Messenger = {
                 commit('setLessThenMessageId', messages[0].id);
             }
 
+            commit('selectChatTab', messenger.chatTabs.CHAT);
+            commit('setLoadingChat', false);
+        },
+        async selectSurvey({ commit, state }, { dialogID, dialogType }) {
+            if (dialogID === state.currentPanelDialogID) return;
+
+            commit('setCurrentCategory', null);
+            commit('setCurrentDialogType', dialogType);
+            commit('setCurrentPanelDialogID', dialogID);
+            commit('setMessages', []);
+            commit('setLastNotViewedMessage', null);
+            commit('setLoadingChat', true);
+
+            const dialog = await api.messenger.getDialog(dialogID);
+
+            commit('setCurrentChat', true);
+            commit('setCurrentDialog', dialog);
+            commit('selectChatTab', messenger.chatTabs.SURVEY);
             commit('setLoadingChat', false);
         },
         async getCompanyChats(_, { companyID, modelType, page = 1 }) {
@@ -923,6 +932,8 @@ const Messenger = {
                         'day'
                     );
                 else if (state.currentDialog.model_type === 'request')
+                    daysFromNow = dayjs().diff(state.currentDialog.model.updated_at, 'day');
+                else if (state.currentDialog.model_type === 'company')
                     daysFromNow = dayjs().diff(state.currentDialog.model.updated_at, 'day');
             }
 
