@@ -183,6 +183,10 @@ const props = defineProps({
     canEdit: {
         type: Boolean,
         default: false
+    },
+    canBeDisabled: {
+        type: Boolean,
+        default: true
     }
 });
 
@@ -223,7 +227,7 @@ const checkboxes = computed(() =>
     props.question.answers.checkbox.filter(element => element.deleted_at === null)
 );
 
-const isDisabled = computed(() => form.main === false);
+const isDisabled = computed(() => form.main === false && props.canBeDisabled);
 
 const initForm = () => {
     if (hasMainQuestion.value) form.main = null;
