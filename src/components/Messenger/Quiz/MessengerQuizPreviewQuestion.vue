@@ -20,13 +20,13 @@
                 <Chip
                     html="Да"
                     :class="{
-                        'dashboard-bg-success text-white': mainQuestionAnswer === 1
+                        'dashboard-bg-success text-white': Boolean(mainQuestionAnswer)
                     }"
                 />
                 <Chip
                     html="Нет"
                     :class="{
-                        'dashboard-bg-success text-white': mainQuestionAnswer === 0
+                        'dashboard-bg-success text-white': !Boolean(mainQuestionAnswer)
                     }"
                 />
             </div>
