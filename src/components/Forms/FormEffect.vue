@@ -2,30 +2,31 @@
     <Modal
         @close="emit('close')"
         show
-        :title="formData ? 'Редактирование вопроса' : 'Создание вопроса'"
+        :title="formData ? 'Редактирование эффекта' : 'Создание эффекта'"
         width="600"
     >
         <Form @submit="onSubmit">
             <Loader v-if="isLoading" />
             <FormGroup>
                 <Input
-                    v-model="form.text"
-                    :v="v$.form.text"
-                    label="Текст вопроса"
-                    class="col-12"
+                    v-model="form.title"
+                    :v="v$.form.title"
+                    label="Название эффекта"
+                    class="col-6"
                     required
                 />
-                <Input v-model="form.group" :v="v$.form.group" label="Группа" class="col-12" />
+                <Input
+                    v-model="form.kind"
+                    :disabled="formData"
+                    :v="v$.form.kind"
+                    label="KIND"
+                    class="col-6"
+                    required
+                />
+                <Textarea v-model="form.description" class="col-12" label="Описание эффекта" />
                 <div class="mx-auto d-flex gap-2">
                     <FormSubmit success>Сохранить</FormSubmit>
-                    <Button
-                        v-if="formData"
-                        @click="deleteQuestion"
-                        :disabled="formData.deleted_at !== null"
-                        danger
-                    >
-                        Удалить
-                    </Button>
+                    <Button v-if="formData" @click="deleteEffect" danger> Удалить </Button>
                 </div>
             </FormGroup>
         </Form>
@@ -45,6 +46,7 @@ import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
 import Button from '@/components/common/Button.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
+import Textarea from '@/components/common/Forms/Textarea.vue';
 
 const emit = defineEmits(['created', 'updated', 'close', 'deleted']);
 const props = defineProps({ formData: { type: Object, default: null } });
@@ -54,48 +56,52 @@ const { confirm } = useConfirm();
 
 const isLoading = shallowRef(false);
 const form = reactive({
-    text: null,
-    group: null
+    title: null,
+    kind: null,
+    description: null
 });
 
 const v$ = useVuelidate(
     {
         form: {
-            text: {
-                required: helpers.withMessage('Заполните поле', required)
+            title: {
+                required: helpers.withMessage('Заполните название', required)
+            },
+            kind: {
+                required: helpers.withMessage('Заполните kind', required)
             }
         }
     },
     { form }
 );
 
-const createQuestion = async () => {
-    const created = await api.question.create(form);
+const createEffect = async () => {
+    const created = await api.effect.create(form);
     if (created) {
-        notify.success('Question успешно создан.');
+        notify.success('Эффект успешно создан.');
         emit('created', created);
     }
 };
 
-const updateQuestion = async () => {
-    const updated = await api.question.update(props.formData.id, form);
+const updateEffect = async () => {
+    const updated = await api.effect.update(props.formData.id, form);
     if (updated) {
-        notify.success('Question успешно обновлен.');
+        notify.success('Эффект успешно обновлен.');
         emit('updated', updated);
     }
 };
 
-const deleteQuestion = async () => {
+const deleteEffect = async () => {
     const confirmed = await confirm(
-        'Вы уверены, что хотите удалить вопрос? Действие нельзя отменить'
+        'Вы уверены, что хотите удалить эффект? Действие нельзя отменить'
     );
     if (!confirmed) return;
 
     isLoading.value = true;
 
-    const deleted = await api.question.delete(props.formData.id);
+    const deleted = await api.effect.delete(props.formData.id);
     if (deleted) {
-        notify.success('Вопрос успешно удален.');
+        notify.success('Эффект успешно удален.');
         emit('deleted');
         emit('close');
     }
@@ -109,8 +115,8 @@ const onSubmit = async () => {
 
     isLoading.value = true;
 
-    if (props.formData) await updateQuestion();
-    else await createQuestion();
+    if (props.formData) await updateEffect();
+    else await createEffect();
 
     isLoading.value = false;
 };

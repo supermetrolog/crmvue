@@ -200,7 +200,7 @@ const props = defineProps({
     },
     placement: {
         type: String,
-        default: null
+        default: 'bottom'
     }
 });
 

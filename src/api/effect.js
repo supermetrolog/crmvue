@@ -7,7 +7,7 @@ import { STATUS_SUCCESS } from '@/api/helpers/statuses.js';
 const URL = '/effects';
 
 export default {
-    async create(options, payload) {
+    async create(payload) {
         const response = await axios.post(URL, payload);
 
         return responseToData(response);
