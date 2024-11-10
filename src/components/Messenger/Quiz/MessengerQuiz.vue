@@ -2,13 +2,7 @@
     <div class="messenger-quiz messenger-chat__content">
         <MessengerChatHeader />
         <div v-if="shouldCall" class="messenger-quiz__info">
-            <DashboardChip class="mw-100 dashboard-bg-warning">
-                <i class="fa-solid fa-exclamation-triangle" />
-                <span>
-                    Дата последнего звонка по объекту/запросу устарела. Пожалуйста, созвонитесь с
-                    прикрепленным к объекту/запросу лицом и актуализируйте информацию.
-                </span>
-            </DashboardChip>
+            <MessengerQuizWarning />
         </div>
         <div class="mt-2">
             <Spinner v-if="surveysIsLoading" class="small" label="Загрузка опросов"></Spinner>
@@ -27,51 +21,17 @@
         </div>
         <div class="messenger-quiz__wrapper">
             <MessengerQuizHeader
-                @change="recipientFormIsVisible = true"
+                @change="showContactPicker"
                 @edit="editContact"
                 :recipient="currentRecipient"
                 :loading="isLoading"
             />
-            <Modal
-                @close="recipientFormIsVisible = false"
-                title="Выбор контакта для опроса"
-                width="700"
-                :show="recipientFormIsVisible"
-            >
-                <MessengerChatFormRecipient
-                    @change="setCurrentRecipient"
-                    :current="currentRecipient"
-                    without-auto-toggle
-                    class="messenger-quiz__recipient-form"
-                />
-                <MessengerChatFormRecipientCard
-                    v-if="currentRecipient"
-                    :contact="currentRecipient"
-                    class="w-100 my-3"
-                />
-                <EmptyData v-else class="my-3">Опрос будет заполнен без контакта</EmptyData>
-                <MessengerButton
-                    @click="recipientFormIsVisible = false"
-                    color="success"
-                    class="mt-2 w-100"
-                >
-                    Закрыть
-                </MessengerButton>
-            </Modal>
             <p @click="$toggleQuizHelper" class="messenger-quiz__action">
                 <i class="fa-solid fa-chevron-left"></i>
-                <span>Отркыть список возможных вопросов клиенту</span>
+                <span>Открыть список возможных вопросов клиенту</span>
             </p>
             <Loader v-if="isLoading" class="my-4" />
-            <div class="messenger-quiz__content">
-                <MessengerQuizQuestion
-                    v-for="question in questions"
-                    ref="questionRefs"
-                    :key="question.id"
-                    :question="question"
-                    class="messenger-quiz__question"
-                />
-            </div>
+            <MessengerQuizForm ref="quizForm" />
             <div class="messenger-quiz__footer">
                 <MessengerButton @click="send" color="success" :disabled="isCompleted">
                     Готово
@@ -101,13 +61,29 @@
         >
             <MessengerQuizPreview :quiz-id="previewedSurveyId" />
         </Modal>
+        <Modal
+            @close="closeContactPicker"
+            title="Выбор контакта"
+            :width="1200"
+            :show="contactPickerIsVisible"
+        >
+            <DashboardChip class="dashboard-bg-warning-l mb-2 mx-auto w-auto text-center">
+                Выберите контакт, с которым происходил разговор по объекту/предложению/компании!
+            </DashboardChip>
+            <MessengerQuizRecipientPicker v-model="currentRecipient" />
+            <template #footer>
+                <Button @click="sendQuiz" :disabled="!currentRecipient" small success>
+                    Сохранить
+                </Button>
+                <Button small>Отменить</Button>
+            </template>
+        </Modal>
     </div>
 </template>
 <script setup>
-import MessengerQuizQuestion from '@/components/Messenger/Quiz/MessengerQuizQuestion.vue';
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';
 import { useStore } from 'vuex';
-import { computed, inject, onBeforeMount, onMounted, ref, shallowRef } from 'vue';
+import { computed, inject, onMounted, ref, shallowRef, useTemplateRef } from 'vue';
 import { useNotify } from '@/utils/useNotify.js';
 import { useConfirm } from '@/composables/useConfirm.js';
 import api from '@/api/api.js';
@@ -116,9 +92,6 @@ import Loader from '@/components/common/Loader.vue';
 import MessengerChatHeader from '@/components/Messenger/Chat/Header/MessengerChatHeader.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import Modal from '@/components/common/Modal.vue';
-import MessengerChatFormRecipient from '@/components/Messenger/Chat/Form/MessengerChatFormRecipient.vue';
-import MessengerChatFormRecipientCard from '@/components/Messenger/Chat/Form/MessengerChatFormRecipientCard.vue';
-import EmptyData from '@/components/common/EmptyData.vue';
 import MessengerQuizHeader from '@/components/Messenger/Quiz/MessengerQuizHeader.vue';
 import FormCompanyContact from '@/components/Forms/Company/FormCompanyContact.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
@@ -126,6 +99,10 @@ import MessengerQuizInlineElement from '@/components/Messenger/Quiz/MessengerQui
 import Button from '@/components/common/Button.vue';
 import Spinner from '@/components/common/Spinner.vue';
 import MessengerQuizPreview from '@/components/Messenger/Quiz/MessengerQuizPreview.vue';
+import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
+import MessengerQuizRecipientPicker from '@/components/Messenger/Quiz/MessengerQuizRecipientPicker.vue';
+import MessengerQuizForm from '@/components/Messenger/Quiz/MessengerQuizForm.vue';
+import MessengerQuizWarning from '@/components/Messenger/Quiz/MessengerQuizWarning.vue';
 
 const emit = defineEmits(['complete']);
 
@@ -133,14 +110,21 @@ const store = useStore();
 const notify = useNotify();
 const { confirm } = useConfirm();
 
+const {
+    show: showContactPicker,
+    isVisible: contactPickerIsVisible,
+    cancel: closeContactPicker,
+    submit: sendQuiz
+} = useAsyncPopup('quizContactPicker');
+
 const $openSchedule = inject('$openSchedule');
 const $toggleQuizHelper = inject('$toggleQuizHelper');
+
+const quizForm = useTemplateRef('quizForm');
 
 const isLoading = shallowRef(false);
 const isCompleted = shallowRef(false);
 const updateContactModalVisible = shallowRef(false);
-const questionRefs = ref([]);
-const recipientFormIsVisible = shallowRef(false);
 const currentRecipient = ref(store.state.Messenger.currentRecipient);
 const surveys = ref([]);
 const surveysCount = shallowRef(0);
@@ -148,7 +132,6 @@ const surveyPreviewIsOpen = shallowRef(false);
 const previewedSurveyId = shallowRef(null);
 
 const THIS_USER = computed(() => store.getters.THIS_USER);
-const questions = computed(() => store.state.Quizz.questions);
 
 const shouldCall = computed(() => {
     return (
@@ -173,59 +156,31 @@ const openSchedule = async () => {
     }
 };
 
-const fetchQuestions = async () => {
-    isLoading.value = true;
-    await store.dispatch('fetchQuestions');
-    isLoading.value = false;
-};
 const send = async () => {
-    if (currentRecipient.value === null) {
-        notify.info(
-            'Пожалуйста, выберите контакта, от корого вы узнали информацию.',
-            'Контакт для опроса'
-        );
-        return;
-    }
-
-    const confirmed = await confirm('Подтвердите заполнение опросника');
+    const confirmed = await confirm(
+        'Подтвердите заполнение опросника. Вы закончили заполнение полученной информации?'
+    );
     if (!confirmed) return;
 
+    const contact = await showContactPicker({});
+    if (!contact) return;
+
     isLoading.value = true;
 
-    const forms = questionRefs.value.map(element => element.getForm());
+    const answers = quizForm.value.getForm();
 
-    const created = await api.survey.create({
+    const createdSurvey = await api.survey.create({
         contact_id: currentRecipient.value.id,
         user_id: THIS_USER.value.id,
         chat_member_id: store.state.Messenger.currentDialog.id,
-        question_answers: forms.flat()
+        question_answers: answers
     });
 
     isLoading.value = false;
 
-    if (created) {
+    if (createdSurvey) {
         isCompleted.value = true;
-        notify.success('Опросник успешно сохранен');
-        updateLastCall();
-    }
-};
-
-const setCurrentRecipient = recipient => {
-    currentRecipient.value = recipient;
-};
-
-const updateLastCall = async () => {
-    const callObject = await api.call.createForChatMember(store.state.Messenger.currentDialog.id, {
-        user_id: store.getters.THIS_USER.id,
-        contact_id: currentRecipient.value.id
-    });
-
-    if (callObject) {
-        notify.success('Дата последнего звонка успешно обновлена');
-        store.state.Messenger.currentDialog.last_call = callObject;
-        store.commit('Messenger/onQuizCompleted', callObject);
-    } else {
-        notify.info('Произошла ошибка. Попробуйте еще раз.');
+        notify.success('Опрос успешно сохранен');
     }
 };
 
@@ -249,14 +204,10 @@ const fetchSurveys = async () => {
 
     const response = await store.dispatch('Messenger/getCurrentChatQuizzes');
     surveys.value = response.data.slice(0, 3);
-    surveysCount.value = response.pagination.pageCount;
+    surveysCount.value = response.pagination.totalCount;
 
     surveysIsLoading.value = false;
 };
-
-onBeforeMount(() => {
-    if (!questions.value.length) fetchQuestions();
-});
 
 const showSurvey = surveyId => {
     previewedSurveyId.value = surveyId;
@@ -269,5 +220,6 @@ const showSurveys = () => {
 
 onMounted(() => {
     if (store.getters['Messenger/currentChatHasLastCall']) fetchSurveys();
+    if (!store.state.User.consultantList.length) store.dispatch('FETCH_CONSULTANT_LIST');
 });
 </script>

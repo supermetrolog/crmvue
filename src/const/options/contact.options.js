@@ -52,9 +52,23 @@ const typeStatement = {
     PERSONAL: 0
 };
 
+const statusStatement = {
+    ACTIVE: 1,
+    PASSIVE: 0
+};
+
+const passiveWhy = {
+    0: 'Телефоны неактуальны',
+    1: 'Не работает в компании',
+    2: 'Заблокировано модератором',
+    3: 'Иное'
+};
+
 export const contactOptions = {
     positionList,
     position,
     typeStatement,
-    wayOfCommunicate
+    wayOfCommunicate,
+    statusStatement,
+    passiveWhy
 };

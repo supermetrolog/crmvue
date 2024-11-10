@@ -15,30 +15,35 @@
             :keeps="20"
         >
             <template #item="{ record }">
-                <MessengerDialogObject
-                    @click="
-                        selectChat({
-                            dialogID: record.id,
-                            dialogType: record.model_type
-                        })
-                    "
-                    @update-call="
-                        updateCall(
-                            {
-                                companyID: record.model.object.company?.id,
-                                chatMemberID: record.id
-                            },
-                            record
-                        )
-                    "
-                    :current="record.id === currentDialogID"
-                    :statistic="record.statistic"
-                    :model="record.model"
-                    :last-call="record.last_call"
-                />
-                <MessengerDialogPreview>
-                    <MessengerDialogObjectPreview :object-id="record.model.object.id" />
-                </MessengerDialogPreview>
+                <div>
+                    <MessengerDialogObject
+                        @click="
+                            selectChat({
+                                dialogID: record.id,
+                                dialogType: record.model_type
+                            })
+                        "
+                        @update-call="
+                            updateCall(
+                                {
+                                    companyID: record.model.object.company?.id,
+                                    chatMemberID: record.id
+                                },
+                                record
+                            )
+                        "
+                        :current="record.id === currentDialogID"
+                        :statistic="record.statistic"
+                        :model="record.model"
+                        :last-call="record.last_call"
+                    />
+                    <MessengerDialogPreview>
+                        <MessengerDialogObjectPreview
+                            :object-chat-member-type="record.model.type"
+                            :object-id="record.model.object.id"
+                        />
+                    </MessengerDialogPreview>
+                </div>
             </template>
             <template v-if="objects.length >= 20" #footer>
                 <InfiniteLoading @infinite="loadObjects">
@@ -79,18 +84,11 @@ const props = defineProps({
 const { isLoading } = useDelayedLoader(true);
 const store = useStore();
 const getCompanyObjects = async (page = 1) => {
-    const response = await store.dispatch('Messenger/getCompanyChats', {
+    return await store.dispatch('Messenger/getCompanyChats', {
         companyID: props.companyID,
         modelType: 'object',
         page
     });
-
-    return {
-        data: response.data.filter(object => {
-            return object.model.type === 'rent_or_sale';
-        }),
-        pagination: response.pagination
-    };
 };
 
 const { items: objects, pagination, load: loadObjects } = useInfiniteLoading(getCompanyObjects);

@@ -9,10 +9,11 @@ import Login from '@/layouts/login.vue';
 import Empty from '@/layouts/empty.vue';
 import { Notifications } from '@kyvg/vue3-notification';
 import Mobile from '@/layouts/mobile.vue';
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { initializeDevice } from '@/composables/useMobile.js';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
+import { useTimeoutFn } from '@vueuse/core';
 
 const LAYOUTS = {
     login: Login,
@@ -21,6 +22,7 @@ const LAYOUTS = {
 };
 
 const route = useRoute();
+const router = useRouter();
 const store = useStore();
 
 const isMobile = initializeDevice();
@@ -32,7 +34,27 @@ const layoutComponent = computed(() => {
     return LAYOUTS[route.meta.layout];
 });
 
-store.dispatch('INIT');
+const disableSplash = () => {
+    document.body.classList.add('splash-disabling');
+    useTimeoutFn(() => {
+        document.body.classList.remove('splash-disabling', 'splash');
+    }, 250);
+};
+
+const initialize = async () => {
+    const initialized = await store.dispatch('initialize');
+
+    if (!initialized) {
+        store.dispatch('destroy');
+        await router.push({ name: 'login' });
+    }
+};
+
+initialize();
+
+onMounted(() => {
+    disableSplash();
+});
 </script>
 <style lang="scss">
 @import '@/assets/scss/style.scss';

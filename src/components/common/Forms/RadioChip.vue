@@ -47,6 +47,6 @@ const isActive = computed(() => modelValue.value == props.value);
 const onChange = () => {
     if (props.unselect && props.value == field.value) modelValue.value = null;
     else modelValue.value = props.value;
-    emit('change');
+    emit('change', modelValue.value);
 };
 </script>

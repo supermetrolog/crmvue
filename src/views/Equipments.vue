@@ -242,7 +242,7 @@ const removeEquipment = async equipment => {
     const confirmed = await confirm('Вы уверены, что хотите безвозвратно удалить объект?');
     if (!confirmed) return;
 
-    const deleted = api.equipment.delete(equipment.id);
+    const deleted = await api.equipment.delete(equipment.id);
     if (deleted) {
         notify.success('Оборудование удалено');
 

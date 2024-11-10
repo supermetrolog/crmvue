@@ -27,6 +27,7 @@ import messengerTag from '@/api/messengerTag.js';
 import taskTag from '@/api/taskTag.js';
 import session from '@/api/session.js';
 import object from '@/api/object.js';
+import effect from '@/api/effect.js';
 
 export default {
     user,
@@ -57,5 +58,6 @@ export default {
     messengerTag,
     taskTag,
     session,
-    object
+    object,
+    effect
 };

@@ -1,4 +1,7 @@
 import { setRequestError } from '@/api/helpers/setRequestError.js';
+import axios from 'axios';
+
+const ACCESS_TOKEN_PREFIX = 'Bearer';
 
 let controller = new AbortController();
 
@@ -15,4 +18,8 @@ export function abortRequests() {
 export async function axiosResponseErrorInterceptor(error) {
     await setRequestError(error);
     return null;
+}
+
+export function setAccessToken(token) {
+    axios.defaults.headers.common['Authorization'] = `${ACCESS_TOKEN_PREFIX} ${token}`;
 }

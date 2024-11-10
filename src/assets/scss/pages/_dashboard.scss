@@ -482,8 +482,8 @@
 
 .dashboard-task-item-preview-contacts {
     padding: 5px 0;
-    min-width: 200px;
-    min-height: 200px;
+    min-width: 400px;
+    min-height: 400px;
 
     &__list {
         @include mixins.flex-box($d: column, $gap: 10px);
@@ -494,35 +494,80 @@
     }
 }
 
-.dashboard-task-item-preview-contact {
+.contact-card {
     background-color: variables.$bg-gray-l;
     padding: 5px;
     border-radius: 5px;
+    max-width: 400px;
+    position: relative;
 
     &__contacts {
-        @include mixins.flex-box($gap: 5px);
+        @include mixins.flex-box($gap: 5px, $wrap: true);
     }
 
     &__name {
         font-weight: 500;
+        max-width: calc(100% - 30px);
         @include mixins.transition(2);
     }
 
     &__column {
-        @include mixins.flex-box($d: column, $gap: 5px);
-        flex-basis: 50%;
+        min-width: 150px;
+        flex-basis: calc(calc(100% - 5px) / 2);
+    }
+
+    &__scroller {
+        max-height: 40px;
+        overflow-y: auto;
     }
 
     &__element {
         color: #ffffff;
     }
 
+    &__label {
+        color: #b9b4b4;
+        font-size: 13px;
+    }
+
+    &__value {
+    }
+
+    &__row {
+        font-size: 13px;
+    }
+
     &__position {
         color: #918c8c;
     }
 
-    &__label {
-        color: #e3dada;
+    &__passive {
+        padding: 3px 6px;
+        font-weight: 400;
         font-size: 13px;
+    }
+
+    &__warning {
+        padding: 2px 6px;
+        background-color: #9d3434;
+        width: max-content;
+        max-width: 100%;
+    }
+
+    &__button {
+        position: absolute;
+        right: 5px;
+        top: 5px;
+    }
+
+    &__ways {
+        @include mixins.flex-box($gap: 5px, $wrap: true);
+    }
+
+    &__way {
+        @include mixins.flex-box($gap: 5px, $a: center);
+        border-radius: 5px;
+        background-color: #7e7e7e;
+        padding: 2px 8px;
     }
 }

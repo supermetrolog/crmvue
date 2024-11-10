@@ -323,7 +323,8 @@ export const RoleList = {
     2: 'Консультант',
     3: 'Модератор',
     4: 'Директор',
-    5: 'Админ'
+    5: 'Админ',
+    6: 'Системный'
 };
 
 export const OldDbDirectionList = {

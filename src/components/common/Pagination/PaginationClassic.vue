@@ -42,7 +42,7 @@
 <script setup>
 import PaginationPage from '@/components/common/Pagination/PaginationPage.vue';
 import PaginationDescription from '@/components/common/Pagination/PaginationDescription.vue';
-import { computed, onUnmounted, shallowRef } from 'vue';
+import { computed, onUnmounted, shallowRef, watch } from 'vue';
 
 const emit = defineEmits(['next']);
 const props = defineProps({
@@ -68,6 +68,13 @@ const props = defineProps({
 
 let timeout = null;
 const nextPage = shallowRef(props.pagination.currentPage);
+
+watch(
+    () => props.pagination?.currentPage,
+    () => {
+        nextPage.value = props.pagination?.currentPage;
+    }
+);
 
 const isLastPage = computed(
     () =>

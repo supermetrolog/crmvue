@@ -40,7 +40,7 @@
                             <i v-tippy="'Основной Email'" class="fa-solid fa-crown mr-1"></i>
                             <span>{{ mainEmail.email }}</span>
                         </template>
-                        <span v-else-if="recipient.emails.length">
+                        <span v-else-if="recipient.emails?.length">
                             {{ recipient.emails[0].email }}
                         </span>
                         <span v-else class="color-warning">Email не заполнен!</span>
@@ -78,18 +78,18 @@
                     <HoverActionsButton
                         @click="commentsIsOpen = true"
                         small
-                        :disabled="!recipient.contactComments.length"
+                        :disabled="!recipient.comments?.length"
                         label="Посмотреть комментарии"
                         class="position-relative"
                     >
                         <span
                             class="messenger-quiz-header__comments"
                             :class="{
-                                'dashboard-bg-gray': recipient.contactComments.length === 0,
-                                'dashboard-bg-danger': recipient.contactComments.length > 0
+                                'dashboard-bg-gray': recipient.comments?.length === 0,
+                                'dashboard-bg-danger': recipient.comments?.length > 0
                             }"
                         >
-                            {{ recipient.contactComments.length }}
+                            {{ recipient.comments?.length }}
                         </span>
                         <i class="fa-solid fa-comments"></i>
                     </HoverActionsButton>
@@ -141,7 +141,7 @@
             @close="commentsIsOpen = false"
             :title="
                 recipient
-                    ? `Просмотр комментариев (${recipient.contactComments.length})`
+                    ? `Просмотр комментариев (${recipient.comments?.length})`
                     : 'Просмотр комментариев'
             "
             :width="600"
@@ -152,12 +152,9 @@
                 <span>Раздел в разработке. Сейчас доступен в режиме просмотра.</span>
             </DashboardChip>
             <div class="messenger-quiz-header-comments">
-                <div
-                    v-if="recipient.contactComments.length"
-                    class="messenger-quiz-header-comments__list"
-                >
+                <div v-if="recipient.comments.length" class="messenger-quiz-header-comments__list">
                     <DashboardChip
-                        v-for="comment in recipient.contactComments"
+                        v-for="comment in recipient.comments"
                         :key="comment.id"
                         class="dashboard-bg-success-l w-100"
                     >

@@ -11,19 +11,21 @@ import { userOptions } from '@/const/options/user.options.js';
 const User = {
     state: {
         consultantList: [],
-        thisUser: null,
         users: [],
-        consultants: []
+        consultants: [],
+        user: null
     },
     mutations: {
         updateConsultantList(state, data) {
             state.consultantList = data.map(element => {
                 return {
+                    id: element.id,
                     value: element.id,
                     label: element.userProfile.medium_name,
                     status: element.status,
                     avatar: element.userProfile.avatar,
                     short_name: element.userProfile.short_name,
+                    role_id: element.role,
                     role: userOptions.beautifulRole[element.role],
                     email: element.email,
                     phones: element.userProfile.phones.map(element => element.phone).join(', '),
@@ -32,7 +34,7 @@ const User = {
             });
         },
         setUser(state, user) {
-            state.thisUser = user;
+            state.user = user;
         },
         updateUsers(state, data) {
             state.users = data;
@@ -67,36 +69,34 @@ const User = {
             let data = await api.user.list(params);
             if (data) commit('updateUsers', data);
         },
-        async REFRESH_USER({ getters, commit }) {
-            const { accessToken, accessTokenId } = getAccessTokenFromLocalStorage();
-            if (!getters.THIS_USER || !accessToken || !accessTokenId) return;
-
-            let [newUserData, chatMemberUser] = await Promise.all([
-                api.user.get(getters.THIS_USER.id),
-                api.messenger.getUserChatMember(getters.THIS_USER.id)
+        async refreshUser({ commit, state }) {
+            const [userResponse, chatMemberId] = await Promise.all([
+                api.user.get(state.user.id),
+                api.messenger.getUserChatMember(state.user.id)
             ]);
 
-            if (!newUserData) return;
+            if (!userResponse) return false;
+            userResponse.chat_member_id = chatMemberId;
 
-            newUserData.chat_member_id = chatMemberUser;
-            setUserInLocalStorage(newUserData, accessToken, accessTokenId);
-            newUserData.access_token = accessToken;
-            newUserData.access_token_id = accessTokenId;
-            commit('setUser', newUserData);
+            const { accessToken, accessTokenId } = getAccessTokenFromLocalStorage();
+
+            setUserInLocalStorage(userResponse, accessToken, accessTokenId);
+
+            commit('setUser', userResponse);
+
+            return true;
         },
-        SET_USER({ getters, commit }) {
-            if (getters.THIS_USER) return getters.THIS_USER;
+        initializeUser({ commit }) {
             const user = getUserFromLocalStorage();
 
             if (user) {
-                const { accessToken, accessTokenId } = getAccessTokenFromLocalStorage();
-                user.access_token = accessToken;
-                user.access_token_id = accessTokenId;
-
                 commit('setUser', user);
+                return true;
             }
+
+            return false;
         },
-        DROP_USER({ commit }) {
+        dropUser({ commit }) {
             removeUserInLocalStorage();
             commit('setUser', null);
         },
@@ -108,7 +108,7 @@ const User = {
             if (user) {
                 setUserInLocalStorage(user.user, user.access_token, user.access_token_id);
 
-                dispatch('SET_USER');
+                dispatch('initializeUser');
                 login();
                 return true;
             }
@@ -117,9 +117,11 @@ const User = {
         },
         async logout({ dispatch }) {
             const response = await api.user.auth.logout();
+
             if (response !== false) {
-                dispatch('DESTROY');
+                dispatch('destroy');
             }
+
             return response;
         },
         async getConsultants({ state, commit }) {
@@ -155,23 +157,28 @@ const User = {
             return state.consultantList;
         },
         THIS_USER(state) {
-            return state.thisUser;
+            return state.user;
         },
         USERS(state) {
             return state.users;
         },
         isModerator(state) {
-            return state.thisUser.role > userOptions.roleStatement.CONSULTANT;
+            return state.user.role > userOptions.roleStatement.CONSULTANT;
         },
         isAdmin(state) {
-            return state.thisUser.role === userOptions.roleStatement.ADMIN;
+            return state.user.role === userOptions.roleStatement.ADMIN;
         },
         isDirector(state) {
-            return state.thisUser.role === userOptions.roleStatement.DIRECTOR;
+            return state.user.role === userOptions.roleStatement.DIRECTOR;
         },
         activeConsultants(state) {
             return state.consultants.filter(
                 element => element.status === userOptions.statusStatement.ACTIVE
+            );
+        },
+        moderator(state) {
+            return state.consultantList.find(
+                element => element.role_id === userOptions.roleStatement.MODERATOR
             );
         }
     }

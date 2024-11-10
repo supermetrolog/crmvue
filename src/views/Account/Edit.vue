@@ -183,7 +183,7 @@ export default {
                 const updated = await api.user.update(this.form.id, this.form);
 
                 if (updated) {
-                    await this.$store.dispatch('REFRESH_USER');
+                    await this.$store.dispatch('refreshUser');
                 } else {
                     this.$notify('При обновлении пользователя произошла ошибка. Попробуйте позже.');
                 }

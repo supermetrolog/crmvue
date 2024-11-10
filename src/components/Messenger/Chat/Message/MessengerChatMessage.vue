@@ -27,6 +27,7 @@
                 <MessengerChatMessageAdditions
                     :tasks="message.tasks"
                     :notifications="message.notifications"
+                    :surveys="message.surveys"
                 />
                 <div
                     v-if="message.message"
@@ -209,7 +210,7 @@ const viewLocale = () => {
     isViewed.value = true;
 };
 
-const { start: delayedViewLocale } = useTimeoutFn(viewLocale, 1100);
+const { start: delayedViewLocale } = useTimeoutFn(viewLocale, 1200, { immediate: false });
 
 const { stop } = useIntersectionObserver(
     target,

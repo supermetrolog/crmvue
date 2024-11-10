@@ -16,48 +16,45 @@ import Offers from './modules/Offers';
 import CallerManager from './modules/CallerManager';
 import Location from './modules/Location';
 import Complex from './modules/Complex';
-import axios from 'axios';
 import Messenger from '@/store/modules/Messenger';
 import Task from '@/store/modules/Task.js';
 import { useAuth } from '@/composables/useAuth.js';
 import Quizz from '@/store/modules/Quiz.js';
-import { getUserFromLocalStorage } from '@/utils/localStorage.js';
+import { getAccessTokenFromLocalStorage } from '@/utils/localStorage.js';
+import { setAccessToken } from '@/services/axios.js';
 
 const store = createStore({
     state: {},
     mutations: {},
     actions: {
-        SET_WINDOW_NAME(context) {
-            const currentTime = new Date().getTime();
-            window.name = `${currentTime}_${context.getters.THIS_USER.id}`;
-        },
-        UNSET_WINDOW_NAME() {
-            window.name = '';
-        },
-        async INIT({ dispatch, getters }) {
-            const { isAuth, login } = useAuth();
+        async initialize({ dispatch }) {
+            const { hasAccessToken, login } = useAuth();
 
-            if (!isAuth.value) {
-                if (getUserFromLocalStorage()) login();
-                else return false;
-            }
+            if (!hasAccessToken()) return false;
 
-            dispatch('SET_USER');
-            axios.defaults.headers.common['Authorization'] =
-                `Bearer ${getters.THIS_USER.access_token}`;
+            const userInitialized = dispatch('initializeUser');
+            if (!userInitialized) return false;
 
-            dispatch('SET_WINDOW_NAME');
+            const { accessToken } = getAccessTokenFromLocalStorage();
+            setAccessToken(accessToken);
+
             dispatch('WEBSOCKET_STOP');
             dispatch('WEBSOCKET_RUN');
-            await dispatch('REFRESH_USER');
+
+            const refreshed = await dispatch('refreshUser');
+            if (!refreshed) return false;
+
+            login();
+            return true;
         },
-        async DESTROY({ dispatch, commit }) {
+        destroy({ dispatch, commit }) {
             const { logout } = useAuth();
 
             dispatch('WEBSOCKET_STOP');
-            dispatch('DROP_USER');
-            dispatch('UNSET_WINDOW_NAME');
+            dispatch('dropUser');
             commit('Messenger/clearCountersInterval');
+            commit('Messenger/clearCachedMessage');
+
             logout();
         }
     },

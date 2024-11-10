@@ -40,7 +40,7 @@
             <MessengerDialogPhone
                 @click.stop="$emit('update-call')"
                 :last-call="lastCall"
-                :updated-at="updatedAt"
+                :updated-at="model.updated_at"
                 :disabled="isDisabled"
             />
             <MessengerDialogFunctions v-if="statistic" :counts="statistic" />
@@ -54,7 +54,6 @@ import Tooltip from '@/components/common/Tooltip.vue';
 import { computed } from 'vue';
 import { useStore } from 'vuex';
 import CompanyLogo from '@/components/Company/CompanyLogo.vue';
-import { toDateFormat } from '@/utils/formatter.js';
 import { alg } from '@/utils/alg.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { CompanyCategories } from '@/const/const.js';
@@ -82,7 +81,6 @@ const props = defineProps({
 const store = useStore();
 
 const isDisabled = computed(() => props.model.consultant_id !== store.getters.THIS_USER.id);
-const updatedAt = computed(() => toDateFormat(props.model.updated_at));
 
 const hasUndefinedName = computed(() => {
     return (

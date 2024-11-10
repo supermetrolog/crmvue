@@ -2,18 +2,34 @@
     <div class="messenger-quiz-preview-info">
         <DashboardCard class="dashboard-bg-light mb-3">
             <div class="messenger-quiz-preview-info__content">
+                <DashboardChip class="dashboard-bg-success-l">
+                    {{ groupName }}
+                </DashboardChip>
                 <DashboardChip class="dashboard-bg-gray-l">
-                    {{ quiz.user.userProfile.medium_name }}
+                    <div class="d-flex gap-1">
+                        <Avatar :src="quiz.user.userProfile.avatar" :size="20" />
+                        <span>{{ quiz.user.userProfile.medium_name }}</span>
+                    </div>
                 </DashboardChip>
                 <div class="messenger-quiz-preview-info__icon">
                     <i class="fa-solid fa-phone-volume" />
                 </div>
-                <DashboardChip class="dashboard-bg-gray-l">
-                    {{ fullName }}
-                </DashboardChip>
-                <DashboardChip v-if="quiz.contact.position" class="dashboard-bg-gray-l">
-                    {{ position }}
-                </DashboardChip>
+                <Tippy
+                    max-width="400"
+                    interactive
+                    content-class="messenger-quiz-preview-info__contact"
+                    placement="bottom"
+                >
+                    <template #default>
+                        <DashboardChip class="dashboard-bg-gray-l" with-icon>
+                            <span>{{ quiz.contact.full_name }}</span>
+                            <i class="fa-regular fa-question-circle" />
+                        </DashboardChip>
+                    </template>
+                    <template #content>
+                        <ContactCard :contact="quiz.contact" />
+                    </template>
+                </Tippy>
                 <DashboardChip class="ml-auto dashboard-bg-gray-l">
                     {{ createdAt }}
                 </DashboardChip>
@@ -26,7 +42,10 @@ import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
 import { computed } from 'vue';
 import { toDateFormat } from '@/utils/formatter.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
-import { contactOptions } from '@/const/options/contact.options.js';
+import { quizQuestionsGroupsLabel } from '@/const/quiz.js';
+import { Tippy } from 'vue-tippy';
+import ContactCard from '@/components/Contact/Card/ContactCard.vue';
+import Avatar from '@/components/common/Avatar.vue';
 
 const props = defineProps({
     quiz: {
@@ -35,15 +54,12 @@ const props = defineProps({
     }
 });
 
-const position = computed(() => contactOptions.position[props.quiz.contact.position]);
+const groupName = computed(() => {
+    if (props.quiz.questions.length) {
+        return quizQuestionsGroupsLabel[props.quiz.questions[0].group];
+    }
 
-const fullName = computed(() => {
-    if (props.quiz.contact.full_name) return props.quiz.contact.full_name;
-    else if (props.quiz.contact.middle_name || props.quiz.contact.first_name)
-        return `${props.quiz.contact.middle_name ?? ''} ${props.quiz.contact.first_name ?? ''}`;
-    else if (props.quiz.contact.type === contactOptions.typeStatement.GENERAL)
-        return 'Основной контакт';
-    return 'Без имени';
+    return 'Без группы';
 });
 
 const createdAt = computed(() => toDateFormat(props.quiz.created_at));

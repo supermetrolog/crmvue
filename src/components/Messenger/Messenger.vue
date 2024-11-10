@@ -258,7 +258,53 @@ const openChatByUserID = async userId => {
     return true;
 };
 
-defineExpose({ openChat, openChatByID, openChatByCompanyID, openChatByUserID });
+const openSurvey = async (dialogType, surveyType, objectId, companyID) => {
+    const dialogQuery = { model_type: dialogType };
+
+    switch (dialogType) {
+        case messenger.dialogTypes.OBJECT: {
+            dialogQuery.object_id = objectId;
+            break;
+        }
+        case messenger.dialogTypes.REQUEST: {
+            dialogQuery.model_id = objectId;
+            break;
+        }
+        case messenger.dialogTypes.COMPANY: {
+            dialogQuery.model_id = objectId;
+            break;
+        }
+        default: {
+            notify.info('Опросник для данного типа чатов не поддерживается');
+            return false;
+        }
+    }
+
+    const dialog = await api.messenger.getDialogByQuery(dialogQuery);
+
+    if (!dialog) {
+        notify.info('Чат не был найден в системе.');
+        return;
+    }
+
+    store.commit('Messenger/setCurrentPanel', null);
+    currentTab.name = dialog.model_type;
+    isOpen.value = true;
+
+    store.dispatch('Messenger/selectPanel', {
+        dialogType,
+        companyID,
+        dialogID: dialog.id,
+        anywayOpen: true
+    });
+
+    store.dispatch('Messenger/selectSurvey', {
+        dialogType,
+        dialogID: dialog.id
+    });
+};
+
+defineExpose({ openChat, openChatByID, openChatByCompanyID, openChatByUserID, openSurvey });
 
 onMounted(() => {
     document.addEventListener('keydown', escapeHandler);
