@@ -11,6 +11,14 @@ env:
   VITE_VUE_APP_API_URL: https://api.supermetrolog.ru/
   VITE_VUE_APP_HOST: https://clients.supermetrolog.ru
   VITE_VUE_APP_WS_URL: wss://api.supermetrolog.pro/websocket/
+  VITE_VUE_APP_UPLOADS_PATH: uploads/
+  VITE_VUE_APP_IMAGES_PATH: images/
+  VITE_VUE_APP_NOT_FOUND_FILENAME: no-image.jpg
+  VITE_VUE_APP_NOT_FOUND_AVATAR_NAME: no-avatar.png
+  VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_INFO: 60
+  VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_WARNING: 75
+  VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_DANGER: 90
+  VITE_VUE_APP_YANDEX_MAP_KEY: ${{ secrets.vue_app_yandex_map_key }}
 jobs:
   web-deploy:
     name: 🎉 Deploy
