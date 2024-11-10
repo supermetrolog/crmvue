@@ -17,7 +17,7 @@
                 </span>
                 <span
                     v-else
-                    v-tippy="'Был активен последний раз'"
+                    v-tippy="lastSeenTippy"
                     class="user-preview__status dashboard-bg-gray-l"
                 >
                     {{ lastSeen }}
@@ -32,6 +32,8 @@ import { computed } from 'vue';
 import { userOptions } from '@/const/options/user.options.js';
 import { dayjsFromMoscow } from '@/utils/index.js';
 import { useStore } from 'vuex';
+import dayjs from 'dayjs';
+import { toDateFormat } from '@/utils/formatter.js';
 
 const props = defineProps({
     user: {
@@ -45,11 +47,15 @@ const store = useStore();
 const role = computed(() => userOptions.role[props.user.role]);
 const lastSeen = computed(() => {
     if (!props.user.last_seen) return 'Неизвестно..';
-
     const dayjsDate = dayjsFromMoscow(props.user.last_seen);
 
-    return dayjsDate.fromNow();
+    if (dayjsDate.isToday()) return `Сегодня в ${dayjsDate.format('HH:mm')}`;
+    else if (dayjsDate.isYesterday()) return `Вчера в ${dayjsDate.format('HH:mm')}`;
+    else if (dayjsDate.isSame(dayjs(), 'year')) return dayjsDate.format('D.MM, HH:mm');
+    else return dayjsDate.format('D.MM.YY');
 });
+
+const lastSeenTippy = computed(() => `Последняя активность ${toDateFormat(props.user.last_seen)}`);
 
 const isSelf = computed(() => {
     return props.user.id === store.state.User.user.id;
