@@ -1,5 +1,6 @@
-import { shallowRef } from 'vue';
+import { computed, shallowRef } from 'vue';
 import { hasAccessTokenInLocalStorage } from '@/utils/localStorage.js';
+import { useStore } from 'vuex';
 
 const isAuth = shallowRef(false);
 const redirectRoute = shallowRef(null);
@@ -30,11 +31,10 @@ function hasAccessToken() {
     return hasAccessTokenInLocalStorage();
 }
 
-/**
- * Composable для взаимодействия с состоянием авторизации пользователя
- * @returns {{setRedirect: setRedirect, isAuth: shallowRef<boolean>, logout: logout,
- * redirectRoute: shallowRef<string|null>, login: login}}
- */
 export function useAuth() {
-    return { isAuth, login, logout, setRedirect, redirectRoute, hasAccessToken };
+    const store = useStore();
+
+    const currentUser = computed(() => store.state.User.user);
+
+    return { isAuth, login, logout, setRedirect, redirectRoute, hasAccessToken, currentUser };
 }

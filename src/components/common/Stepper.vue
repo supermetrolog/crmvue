@@ -95,10 +95,14 @@ const props = defineProps({
     v: {
         type: Object,
         default: null
+    },
+    step: {
+        type: Number,
+        default: 0
     }
 });
 
-const currentStep = shallowRef(0);
+const currentStep = shallowRef(props.step);
 const viewed = ref({});
 
 const progress = computed(() => (100 / props.steps.length) * (currentStep.value + 1));

@@ -2,6 +2,7 @@ import api from '@//api/api';
 import axios from 'axios';
 import { SuccessHandler } from '@/api/helpers/successHandler.js';
 import { setRequestError } from '@/api/helpers/setRequestError.js';
+import { responseToData } from '@/api/helpers/responseToData.js';
 
 const URL = '/chat-members';
 
@@ -119,6 +120,13 @@ export default {
             return null;
         }
     },
+    async sendMessageWithTask(memberID, message, taskPayload) {
+        const url = '/chat-member-messages/with-task';
+        const formData = { ...message, to_chat_member_id: memberID, task: taskPayload };
+
+        const response = await axios.post(url, formData);
+        return responseToData(response);
+    },
     async updateMessage(message) {
         const url = `/chat-member-messages/${message.id}`;
 
@@ -176,19 +184,6 @@ export default {
             return null;
         }
     },
-    async getCounters(userID) {
-        try {
-            const response = await Promise.all([
-                api.task.getCount({ deleted: 0, user_id: userID }),
-                api.task.getCount({ deleted: 0, status: 3, user_id: userID })
-            ]);
-
-            return { tasks: response[0] - response[1] };
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
-    },
     async readMessages(messageID) {
         try {
             const response = await axios.post('/chat-member-messages/view-message/' + messageID);
@@ -218,5 +213,12 @@ export default {
             await setRequestError();
             return false;
         }
+    },
+    async getChatMemberIdByQuery(params) {
+        const response = await axios.get(URL, { params });
+        const members = responseToData(response);
+
+        if (members?.length) return members[0].id;
+        return null;
     }
 };

@@ -178,13 +178,23 @@
     }
 
     &__field {
+        opacity: 1;
+
         .form__textarea {
+            font-size: 14px;
             height: 80px;
             border-radius: 5px;
             outline: none;
             min-height: 50px;
             max-height: 146px;
             border-color: #7e7e7e;
+        }
+
+        &.disabled {
+            .form__textarea {
+                min-height: 30px;
+                max-height: 30px;
+            }
         }
     }
 

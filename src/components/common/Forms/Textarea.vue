@@ -22,7 +22,7 @@
 
 <script setup>
 import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
-import { onMounted, ref, toRef, watch } from 'vue';
+import { onMounted, toRef, useTemplateRef, watch } from 'vue';
 import { useFormControlValidation } from '@/composables/useFormControlValidation.js';
 
 const modelValue = defineModel({ type: String, default: '' });
@@ -58,10 +58,14 @@ const props = defineProps({
     autoHeight: {
         type: Boolean,
         default: false
+    },
+    autofocus: {
+        type: Boolean,
+        default: false
     }
 });
 
-const textarea = ref(null);
+const textarea = useTemplateRef('textarea');
 
 const onInput = event => {
     validate();
@@ -85,5 +89,12 @@ if (props.autoHeight) {
 
 onMounted(() => {
     textarea.value.style.height = textarea.value.scrollHeight + 'px';
+    if (props.autofocus) focus();
 });
+
+const focus = () => {
+    textarea.value.focus();
+};
+
+defineExpose({ focus });
 </script>
