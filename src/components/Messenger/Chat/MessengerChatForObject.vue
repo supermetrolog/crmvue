@@ -178,6 +178,10 @@ watch(
 );
 
 const switchTab = tabId => {
+    if (tabId === messenger.chatTabs.CHAT) {
+        store.dispatch('Messenger/refreshMessages');
+    }
+
     store.state.Messenger.currentChatTab = tabId;
 };
 </script>

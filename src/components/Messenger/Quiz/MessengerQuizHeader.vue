@@ -101,22 +101,41 @@
                     >
                         <i class="fa-solid fa-pen" />
                     </HoverActionsButton>
-                    <HoverActionsButton
-                        @click="moveContact"
-                        :disabled="isCompanyContact"
-                        small
-                        label="Перенести контакт [В разработке]"
-                    >
-                        <i class="fa-solid fa-code-compare"></i>
-                    </HoverActionsButton>
-                    <HoverActionsButton
-                        @click="deleteContact"
-                        :disabled="isCompanyContact"
-                        small
-                        label="Удалить контакт [В разработке]"
-                    >
-                        <i class="fa-solid fa-trash" />
-                    </HoverActionsButton>
+
+                    <Tippy>
+                        <template #default>
+                            <HoverActionsButton
+                                @click="moveContact"
+                                :disabled="isCompanyContact"
+                                small
+                            >
+                                <i class="fa-solid fa-code-compare"></i>
+                            </HoverActionsButton>
+                        </template>
+                        <template #content>
+                            <p>Перенести контакт</p>
+                            <p class="color-light">
+                                Если контакт теперь относится к другой компании
+                            </p>
+                        </template>
+                    </Tippy>
+                    <Tippy>
+                        <template #default>
+                            <HoverActionsButton
+                                @click="deleteContact"
+                                :disabled="isCompanyContact"
+                                small
+                            >
+                                <i class="fa-solid fa-ban" />
+                            </HoverActionsButton>
+                        </template>
+                        <template #content>
+                            <p>Архивировать контакт</p>
+                            <p class="color-light">
+                                Если контакт больше неактуален или номера уже не существует
+                            </p>
+                        </template>
+                    </Tippy>
                 </div>
             </div>
         </div>
@@ -132,7 +151,7 @@
                 @click="$emit('change')"
                 class="ml-auto"
                 small
-                label="Изменить контакт"
+                label="Выбрать другой контакт"
             >
                 <i class="fa-solid fa-arrow-right" />
             </HoverActionsButton>
@@ -179,12 +198,16 @@ import Spinner from '@/components/common/Spinner.vue';
 import { contactOptions } from '@/const/options/contact.options.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import Modal from '@/components/common/Modal.vue';
-import { toDateFormat } from '@/utils/formatter.js';
 import Button from '@/components/common/Button.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import { useNotify } from '@/utils/useNotify.js';
+import { TASK_FORM_STEPS, useTaskManager } from '@/composables/useTaskManager.js';
+import api from '@/api/api.js';
+import { messenger } from '@/const/messenger.js';
+import { toBoldHTML } from '@/utils/formatter.js';
+import { Tippy } from 'vue-tippy';
 
-const emit = defineEmits(['change', 'edit']);
+defineEmits(['change', 'edit']);
 const props = defineProps({
     recipient: {
         type: [Object, null],
@@ -198,6 +221,7 @@ const props = defineProps({
 
 const store = useStore();
 const notify = useNotify();
+const { createTaskWithTemplate } = useTaskManager();
 
 const commentsIsOpen = shallowRef(false);
 
@@ -223,11 +247,55 @@ const hasFullnameWarning = computed(() => {
     );
 });
 
-const moveContact = () => {
-    notify.info('Функция находится в разработке..', 'Функция недоступна');
+const createTaskPayload = templateMessage => {
+    return createTaskWithTemplate({
+        message: templateMessage,
+        step: TASK_FORM_STEPS.MESSAGE,
+        focusMessage: true
+    });
 };
 
-const deleteContact = () => {
-    notify.info('Функция находится в разработке..', 'Функция недоступна');
+const sendMessageAboutContactIsArchived = async taskPayload => {
+    const chatMemberId = await api.messenger.getChatMemberIdByQuery({
+        model_type: messenger.dialogTypes.COMPANY,
+        model_id: props.recipient.company_id
+    });
+
+    if (!chatMemberId) {
+        notify.info('Чат компании не найден в системе.. Создайте задачу вручную.');
+        return;
+    }
+
+    const messagePayload = {
+        to_chat_member_id: chatMemberId,
+        message: `Контакт ${toBoldHTML(props.recipient.full_name)} (#${props.recipient.id}) больше не связан с этой компаний.`,
+        contact_ids: [props.recipient.id]
+    };
+
+    const createdMessage = await api.messenger.sendMessageWithTask(
+        chatMemberId,
+        messagePayload,
+        taskPayload
+    );
+
+    if (createdMessage) {
+        notify.success('Сообщение и задача успешно созданы');
+    } else {
+        notify.error('Произошла ошибка. Попробуйте еще раз..');
+    }
+};
+
+const moveContact = async () => {
+    const taskPayload = await createTaskPayload('Перенести контакт в другую компанию: ');
+    if (!taskPayload) return;
+
+    await sendMessageAboutContactIsArchived(taskPayload);
+};
+
+const deleteContact = async () => {
+    const taskPayload = await createTaskPayload('Нужно архивировать контакт');
+    if (!taskPayload) return;
+
+    await sendMessageAboutContactIsArchived(taskPayload);
 };
 </script>

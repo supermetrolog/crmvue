@@ -128,3 +128,7 @@ export function toFileSizeFormat(size) {
 
     return size.toFixed(2) + ' ' + sizeUnits[i].label;
 }
+
+export function toBoldHTML(text) {
+    return '<b>' + text + '</b>';
+}

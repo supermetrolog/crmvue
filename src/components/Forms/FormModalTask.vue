@@ -6,7 +6,7 @@
         :close-on-outside-click="false"
         :title="props ? 'Редактирование задачи' : 'Создание задачи'"
     >
-        <Stepper @complete="submit" :steps="steps" :v="v$.form" keep-alive>
+        <Stepper @complete="submit" :step="step" :steps="steps" :v="v$.form" keep-alive>
             <template #1>
                 <Spinner v-if="isLoading" center />
                 <UserPicker v-else v-model="form.user_id" single :users="consultants" />
@@ -62,7 +62,12 @@
                         </div>
                     </template>
                 </MultiSelect>
-                <Textarea v-model="form.message" class="col-12" label="Описание задачи" />
+                <Textarea
+                    v-model="form.message"
+                    :autofocus="autofocusMessage"
+                    class="col-12"
+                    label="Описание задачи"
+                />
             </template>
             <template #4>
                 <Spinner v-if="isLoading" center />
@@ -88,6 +93,7 @@ import { computed, onUnmounted, ref, shallowRef } from 'vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import dayjs from 'dayjs';
 import { useTagsOptions } from '@/composables/options/useTagsOptions.js';
+import { taskOptions } from '@/const/options/task.options.js';
 
 const store = useStore();
 const { getTagsOptions } = useTagsOptions();
@@ -164,6 +170,9 @@ const presets = [
     }
 ];
 
+const autofocusMessage = ref(false);
+
+const step = ref(0);
 const consultants = ref([]);
 const isLoading = shallowRef(false);
 const form = ref({
@@ -220,6 +229,8 @@ const {
 } = useAsyncPopup('taskCreator');
 
 onPopupShowed(() => {
+    step.value = props.value?.step ?? 0;
+
     if (!consultants.value.length) fetchConsultants();
 
     if (props.value)
@@ -230,12 +241,14 @@ onPopupShowed(() => {
                 start: props.value.start
             },
             user_id: props.value.user_id,
-            status: props.value.status ?? 1,
+            status: props.value.status ?? taskOptions.statusTypes.NEW,
             tags: props.value.tags ? props.value.tags.map(element => element.id) : [],
             observers: props.value.observers
                 ? props.value.observers.map(element => element.user_id)
                 : []
         };
+
+    if (props.value?.focusMessage) autofocusMessage.value = true;
 });
 
 const v$ = useVuelidate(

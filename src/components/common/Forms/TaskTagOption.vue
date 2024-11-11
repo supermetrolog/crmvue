@@ -1,7 +1,7 @@
 <template>
     <div class="d-flex align-items-center gap-2">
-        <span>{{ tag.name ?? tag.label }}</span>
         <div class="circle" :style="{ backgroundColor: color }"></div>
+        <span>{{ tag.name ?? tag.label }}</span>
     </div>
 </template>
 <script setup>

@@ -11,7 +11,7 @@
                 <span></span>
             </template>
             <template v-if="question.id === CUSTOM_QUESTION_ID" #after-content="{ disabled }">
-                <DashboardChip class="dashboard-bg-warning-l mb-2" with-icon>
+                <DashboardChip class="dashboard-bg-warning-l mb-2 w-auto">
                     <i class="fa-solid fa-exclamation-triangle"></i>
                     <span>
                         Данный вопрос находится в стадии доработки и не является окончательной
