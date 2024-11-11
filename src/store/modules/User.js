@@ -26,7 +26,7 @@ const User = {
                     avatar: element.userProfile.avatar,
                     short_name: element.userProfile.short_name,
                     role_id: element.role,
-                    role: userOptions.beautifulRole[element.role],
+                    role: userOptions.role[element.role],
                     email: element.email,
                     phones: element.userProfile.phones.map(element => element.phone).join(', '),
                     emails: element.userProfile.emails.map(element => element.email).join(', ')

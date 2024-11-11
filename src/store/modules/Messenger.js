@@ -7,6 +7,7 @@ import { messagesToSections } from '@/utils/mapper.js';
 import { ucFirst } from '@/utils/formatter.js';
 import { messenger } from '@/const/messenger.js';
 import { spliceById } from '@/utils/index.js';
+import { taskOptions } from '@/const/options/task.options.js';
 
 const needCacheMessage = (dialogID, asideID, panelID) => {
     // Лучше не трогать условие.. Оно долго выводилось
@@ -683,7 +684,6 @@ const Messenger = {
             notify('Произошла ошибка при отправке запроса');
             return false;
         },
-
         async reportContact(context, { contact }) {
             // ONLY TESTING
             notify(`${contact.full_name} отмечен(а) как неактуальный контакт`, { duration: 3000 });
@@ -693,20 +693,6 @@ const Messenger = {
                     id: context.state.messages.length + 1,
                     sender: null,
                     text: `<b>${context.rootGetters.THIS_USER?.userProfile?.full_name}</b> отметил контакт <b>${contact.full_name}</b> как <b>неактуальный</b>.`
-                }
-            ]);
-
-            return true;
-        },
-        async addCall(context, { contact, date }) {
-            // ONLY TESTING
-            const formattedDate = dayjs(date).format('DD.MM.YYYY, HH:mm');
-
-            context.commit('addMessages', [
-                {
-                    id: context.state.messages.length + 1,
-                    sender: null,
-                    text: `<b>${context.rootGetters.THIS_USER?.userProfile?.full_name}</b> назначил созвон с <b>${contact.full_name}</b> на <b>${formattedDate}</b>.`
                 }
             ]);
 
@@ -737,7 +723,7 @@ const Messenger = {
         async addTask({ commit }, { messageID, options }) {
             const addition = await api.task.createFromMessage(messageID, {
                 ...options,
-                status: 1
+                status: taskOptions.statusTypes.NEW
             });
 
             if (addition) {
@@ -801,11 +787,12 @@ const Messenger = {
                 page
             });
         },
-        async getCurrentChatQuizzes({ state }, params) {
+        async getCurrentChatQuizzes({ state }, params = {}) {
             return await api.survey.list({
                 chat_member_id: state.currentDialog.id,
-                page: params?.page ?? 1,
-                search: params?.search
+                page: params.page ?? 1,
+                search: params.search,
+                sort: params.sort
             });
         },
 
@@ -902,6 +889,32 @@ const Messenger = {
         async refreshTags({ commit, dispatch }) {
             commit('setTags', []);
             dispatch('fetchTags');
+        },
+        async refreshMessages({ state, commit }) {
+            const messages = await api.messenger.getMessages(state.currentPanelDialogID);
+
+            if (messages.length) {
+                commit('setMessages', messages);
+                commit('setLessThenMessageId', messages[0].id);
+            }
+        },
+        async onSurveyCreated({ state }, survey) {
+            const dialog = await api.messenger.getDialog(survey.chat_member_id);
+
+            if (!dialog) return;
+
+            const chatMemberStateName = 'chatMembers' + ucFirst(state.currentDialog.model_type);
+            const chatMemberIndex = state[chatMemberStateName].data.findIndex(
+                element => element.id === survey.chat_member_id
+            );
+
+            if (chatMemberIndex !== -1) {
+                state[chatMemberStateName].data[chatMemberIndex].last_call = dialog.last_call;
+            }
+
+            if (dialog.id === state.currentDialog?.id) {
+                state.currentDialog.last_call = dialog.last_call;
+            }
         }
     },
     getters: {

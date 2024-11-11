@@ -36,11 +36,17 @@
                 <MessengerButton @click="send" color="success" :disabled="isCompleted">
                     Готово
                 </MessengerButton>
-                <MessengerButton @click="openSchedule" disabled>
+                <!--                <MessengerButton @click="openSchedule"> Запланировать звонок </MessengerButton>-->
+                <MessengerButton @click="scheduleCall" :disabled="!currentRecipient">
                     Запланировать звонок
                 </MessengerButton>
-                <MessengerButton disabled>Контакт не актуален</MessengerButton>
-                <MessengerButton disabled color="danger">Снесен</MessengerButton>
+                <MessengerButton disabled>Контакты утеряны</MessengerButton>
+                <MessengerButton v-if="isObjectChatMember" disabled color="danger">
+                    Объект снесен
+                </MessengerButton>
+                <MessengerButton v-else color="danger" disabled>
+                    Компания ликвидирована
+                </MessengerButton>
             </div>
             <MessengerQuizComplete v-if="isCompleted" @close="close" />
         </div>
@@ -103,12 +109,22 @@ import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import MessengerQuizRecipientPicker from '@/components/Messenger/Quiz/MessengerQuizRecipientPicker.vue';
 import MessengerQuizForm from '@/components/Messenger/Quiz/MessengerQuizForm.vue';
 import MessengerQuizWarning from '@/components/Messenger/Quiz/MessengerQuizWarning.vue';
+import { TASK_FORM_STEPS, useTaskManager } from '@/composables/useTaskManager.js';
+import dayjs from 'dayjs';
+import { toBoldHTML } from '@/utils/formatter.js';
+import { useAuth } from '@/composables/useAuth.js';
+import { messenger } from '@/const/messenger.js';
+
+const SCHEDULING_CALL_DURATION = 30; // days
 
 const emit = defineEmits(['complete']);
 
 const store = useStore();
 const notify = useNotify();
 const { confirm } = useConfirm();
+const quizForm = useTemplateRef('quizForm');
+const { createTaskWithTemplate } = useTaskManager();
+const { currentUser } = useAuth();
 
 const {
     show: showContactPicker,
@@ -117,10 +133,8 @@ const {
     submit: sendQuiz
 } = useAsyncPopup('quizContactPicker');
 
-const $openSchedule = inject('$openSchedule');
+// const $openSchedule = inject('$openSchedule');
 const $toggleQuizHelper = inject('$toggleQuizHelper');
-
-const quizForm = useTemplateRef('quizForm');
 
 const isLoading = shallowRef(false);
 const isCompleted = shallowRef(false);
@@ -131,7 +145,12 @@ const surveysCount = shallowRef(0);
 const surveyPreviewIsOpen = shallowRef(false);
 const previewedSurveyId = shallowRef(null);
 
-const THIS_USER = computed(() => store.getters.THIS_USER);
+const isObjectChatMember = computed(() => {
+    return (
+        store.state.Messenger.currentDialog?.model?.type ===
+        messenger.objectChatMemberTypes.RENT_OR_SALE
+    );
+});
 
 const shouldCall = computed(() => {
     return (
@@ -144,17 +163,17 @@ const { isLoading: surveysIsLoading } = useDelayedLoader(
     store.getters['Messenger/currentChatHasLastCall']
 );
 
-const openSchedule = async () => {
-    const schedule = await $openSchedule();
-
-    if (schedule) {
-        await store.dispatch('Messenger/addCall', {
-            date: schedule,
-            contact: currentRecipient.value
-        });
-        notify.info('Дата следующего звонка успешно выбрана');
-    }
-};
+// const openSchedule = async () => {
+//     const schedule = await $openSchedule();
+//
+//     if (schedule) {
+//         await store.dispatch('Messenger/addCall', {
+//             date: schedule,
+//             contact: currentRecipient.value
+//         });
+//         notify.info('Дата следующего звонка успешно выбрана');
+//     }
+// };
 
 const send = async () => {
     const confirmed = await confirm(
@@ -171,7 +190,7 @@ const send = async () => {
 
     const createdSurvey = await api.survey.create({
         contact_id: currentRecipient.value.id,
-        user_id: THIS_USER.value.id,
+        user_id: currentUser.value.id,
         chat_member_id: store.state.Messenger.currentDialog.id,
         question_answers: answers
     });
@@ -179,6 +198,7 @@ const send = async () => {
     isLoading.value = false;
 
     if (createdSurvey) {
+        store.dispatch('Messenger/onSurveyCreated', createdSurvey);
         isCompleted.value = true;
         notify.success('Опрос успешно сохранен');
     }
@@ -202,8 +222,10 @@ const onContactUpdated = async contactId => {
 const fetchSurveys = async () => {
     surveysIsLoading.value = true;
 
-    const response = await store.dispatch('Messenger/getCurrentChatQuizzes');
-    surveys.value = response.data.slice(0, 3);
+    const response = await store.dispatch('Messenger/getCurrentChatQuizzes', {
+        sort: '-created_at'
+    });
+    surveys.value = response.data.slice(0, 3).reverse();
     surveysCount.value = response.pagination.totalCount;
 
     surveysIsLoading.value = false;
@@ -216,6 +238,34 @@ const showSurvey = surveyId => {
 
 const showSurveys = () => {
     notify.info('Функция находится в разработке..', 'Функция недоступна');
+};
+
+const scheduleCall = async () => {
+    const taskPayload = await createTaskWithTemplate({
+        message: `Прозвонить контакта (${currentRecipient.value?.full_name ?? `Общий контакт компании #${currentRecipient.value?.company_id}`})`,
+        step: TASK_FORM_STEPS.DATE,
+        end: dayjs().add(SCHEDULING_CALL_DURATION, 'day').toDate(),
+        user_id: currentUser.value.id
+    });
+
+    if (!taskPayload) return;
+
+    const messagePayload = {
+        message: `Запланировал звонок на ${toBoldHTML(dayjs(taskPayload.end).format('D.MM.YY'))}`,
+        contact_ids: currentRecipient.value ? [currentRecipient.value.id] : []
+    };
+
+    const createdMessage = await api.messenger.sendMessageWithTask(
+        store.state.Messenger.currentDialog.id,
+        messagePayload,
+        taskPayload
+    );
+
+    if (createdMessage) {
+        notify.success('Сообщение и задача успешно созданы');
+    } else {
+        notify.error('Произошла ошибка. Попробуйте еще раз..');
+    }
 };
 
 onMounted(() => {

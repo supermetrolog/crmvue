@@ -49,10 +49,15 @@
                     v-for="addition in question.answers['text-answer']"
                     :key="addition.id"
                     disabled
-                    :model-value="addition.surveyQuestionAnswer?.value"
+                    :model-value="
+                        addition.surveyQuestionAnswer?.value?.length
+                            ? addition.surveyQuestionAnswer?.value
+                            : '-'
+                    "
                     :label="addition.value"
                     class="messenger-quiz-question__field mt-1"
-                    auto-height
+                    :class="{ disabled: !addition.surveyQuestionAnswer?.value?.length }"
+                    :auto-height="addition.surveyQuestionAnswer?.value?.length"
                 />
             </slot>
         </div>

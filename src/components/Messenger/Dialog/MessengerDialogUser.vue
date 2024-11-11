@@ -35,5 +35,5 @@ const props = defineProps({
     }
 });
 
-const role = computed(() => userOptions.beautifulRole[props.model.role]);
+const role = computed(() => userOptions.role[props.model.role]);
 </script>
