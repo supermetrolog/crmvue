@@ -31,6 +31,7 @@ import { computed, onMounted, ref } from 'vue';
 import api from '@/api/api.js';
 import dayjs from 'dayjs';
 import UserPreview from '@/components/User/UserPreview.vue';
+import { userOptions } from '@/const/options/user.options.js';
 
 const isLoading = ref(true);
 const users = ref([]);
@@ -46,7 +47,9 @@ const unknownUsers = computed(() => users.value.filter(user => !user.last_seen))
 const fetchUsers = async () => {
     isLoading.value = true;
 
-    users.value = await api.user.list();
+    const response = await api.user.list();
+    if (response)
+        users.value = response.filter(user => user.role !== userOptions.roleStatement.SYSTEM);
 
     isLoading.value = false;
 };
