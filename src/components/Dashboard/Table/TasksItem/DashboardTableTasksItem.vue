@@ -7,12 +7,14 @@
             self: isForMe,
             myself: isMyTask,
             viewing: isViewing,
-            viewed: isViewed,
+            viewed: isViewedByCurrentUser,
             canceled: isCanceled
         }"
     >
         <div class="dashboard-card-task__labels" :class="{ moved: isMyTask || isViewing }">
-            <DashboardTableTasksItemLabel v-if="isNew">Новая</DashboardTableTasksItemLabel>
+            <DashboardTableTasksItemLabel v-if="isObservingByCurrentUser && !isViewedByCurrentUser">
+                Не просмотрена
+            </DashboardTableTasksItemLabel>
             <DashboardTableTasksItemLabel v-if="isCanceled" class="canceled">
                 Отложено до {{ impossibleDate }}
             </DashboardTableTasksItemLabel>
@@ -43,7 +45,10 @@
             v-tippy="'Вы являетесь наблюдателем'"
             class="dashboard-card-task__icon dashboard-card-task__way"
         >
-            <i class="fa-solid fa-eye" :class="{ 'dashboard-cl-success': isViewed }"></i>
+            <i
+                class="fa-solid fa-eye"
+                :class="{ 'dashboard-cl-success': isViewedByCurrentUser }"
+            ></i>
         </div>
         <div @click="$emit('view', $event)" class="dashboard-card-task__body">
             <div class="dashboard-card-task__content">
@@ -66,27 +71,34 @@
                         v-if="!isForMe && task.observers?.length"
                         class="dashboard-card-task__viewers"
                     >
-                        <Avatar
+                        <DashboardTableTasksItemObserver
                             v-for="observer in observers"
                             :key="observer.user.id"
-                            v-tippy="`${observer.user.userProfile.medium_name} наблюдает`"
-                            :src="observer.user.userProfile.avatar"
-                            :size="40"
-                            class="dashboard-card-task__user"
-                            :class="{ 'dashboard-card-task__not-viewed': !observer.viewed_at }"
+                            :observer="observer"
                         />
                     </div>
-                    <Avatar
-                        v-if="!isForMe"
-                        v-tippy="`Назначена для ${task.user.userProfile.medium_name}`"
-                        :src="task.user.userProfile.avatar"
-                        :size="55"
-                        rectangle
-                        class="dashboard-card-task__user"
-                        :class="{
-                            'dashboard-card-task__not-viewed': !task.is_viewed && !isCompleted
-                        }"
-                    />
+                    <Tippy>
+                        <template #default>
+                            <Avatar
+                                v-if="!isForMe"
+                                :src="task.user.userProfile.avatar"
+                                :size="55"
+                                rectangle
+                                class="dashboard-card-task__user"
+                                :class="{
+                                    'dashboard-card-task__not-viewed':
+                                        !task.is_viewed && !isCompleted
+                                }"
+                            />
+                        </template>
+                        <template #content>
+                            <p>Назначена для {{ task.user.userProfile.medium_name }}</p>
+                            <p v-if="task.is_viewed" class="color-light">
+                                Просмотрена {{ viewedAt }}
+                            </p>
+                            <p v-else class="color-light">Не просмотрена</p>
+                        </template>
+                    </Tippy>
                 </div>
             </div>
             <DashboardTableTasksItemDate :class="{ active: isForMe }" :task="task" />
@@ -101,11 +113,13 @@ import Avatar from '@/components/common/Avatar.vue';
 import { computed } from 'vue';
 import { taskOptions } from '@/const/options/task.options.js';
 import DashboardTableTasksItemSystem from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemSystem.vue';
-import { useStore } from 'vuex';
 import DashboardTableTasksItemDate from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemDate.vue';
 import DashboardTableTasksItemLabel from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemLabel.vue';
-import { toDateFormat } from '@/utils/formatter.js';
+import { toBeautifulDateFormat, toDateFormat } from '@/utils/formatter.js';
 import { dayjsFromMoscow } from '@/utils/index.js';
+import { Tippy } from 'vue-tippy';
+import { useAuth } from '@/composables/useAuth.js';
+import DashboardTableTasksItemObserver from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemObserver.vue';
 
 defineEmits(['view']);
 const props = defineProps({
@@ -115,27 +129,31 @@ const props = defineProps({
     }
 });
 
-const store = useStore();
+const { currentUser } = useAuth();
 
-const isNew = computed(() => props.task.status === taskOptions.statusTypes.NEW);
 const isMyTask = computed(() => {
     return (
         props.task.created_by_type === 'user' &&
-        Number(props.task.created_by_id) === Number(store.getters.THIS_USER.id)
+        Number(props.task.created_by_id) === Number(currentUser.value.id)
     );
 });
 const isForMe = computed(() => {
-    return Number(props.task.user_id) === Number(store.getters.THIS_USER.id);
+    return Number(props.task.user_id) === Number(currentUser.value.id);
 });
-const isObserving = computed(() =>
-    props.task.observers.some(observer => observer.user_id === store.getters.THIS_USER.id)
+
+const isObservingByCurrentUser = computed(() =>
+    props.task.observers.some(observer => observer.user_id === currentUser.value.id)
 );
-const isViewed = computed(() =>
+
+const isViewedByCurrentUser = computed(() =>
     props.task.observers.some(
-        observer => observer.user_id === store.getters.THIS_USER.id && observer.viewed_at !== null
+        observer => observer.user_id === currentUser.value.id && observer.viewed_at !== null
     )
 );
-const isViewing = computed(() => !isMyTask.value && !isForMe.value && isObserving.value);
+
+const isViewing = computed(
+    () => !isMyTask.value && !isForMe.value && isObservingByCurrentUser.value
+);
 const isCompleted = computed(() => props.task.status === taskOptions.statusTypes.COMPLETED);
 const expiredDayjs = computed(() => dayjsFromMoscow(props.task.end));
 const isCanceled = computed(() => props.task.status === taskOptions.statusTypes.CANCELED);
@@ -148,5 +166,9 @@ const impossibleDate = computed(() => {
 
 const observers = computed(() => {
     return props.task.observers.filter(element => element.user_id !== props.task.user_id);
+});
+
+const viewedAt = computed(() => {
+    return toBeautifulDateFormat(props.task.viewed_at);
 });
 </script>

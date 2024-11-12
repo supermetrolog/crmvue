@@ -236,10 +236,20 @@
 }
 
 .dashboard-task-item-preview {
-    min-height: 450px;
+    min-height: 390px;
     width: 900px;
 
-    @include mixins.flex-box();
+    &__content {
+        @include mixins.flex-box();
+    }
+
+    &__header {
+        width: 100%;
+        padding-top: 5px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #afaeae;
+        @include mixins.flex-box($j: space-between);
+    }
 
     &__column {
         width: 450px;
@@ -256,9 +266,6 @@
     }
 
     &__actions {
-        padding-top: 5px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #afaeae;
         @include mixins.flex-box($gap: 10px);
     }
 
@@ -368,8 +375,9 @@
 
     &__form {
         border-top: 1px solid #afaeae;
-        margin-top: 7px;
-        padding-top: 7px;
+        border-bottom: 1px solid #afaeae;
+        margin: 7px 0;
+        padding: 7px 0;
     }
 
     &__textarea {
@@ -396,6 +404,28 @@
 
         &:hover {
             color: #625c5c;
+        }
+    }
+
+    &__users {
+        @include mixins.flex-box($a: center, $gap: 5px);
+    }
+
+    &__arrow {
+        font-size: 20px;
+    }
+
+    &__observers {
+        height: 100%;
+        padding: 6px 8px;
+        border: 1px solid #afaeae;
+        border-radius: 20px;
+        font-weight: 500;
+        font-size: 16px;
+        @include mixins.flex-box($a: center, $gap: 5px);
+
+        i {
+            font-size: 20px;
         }
     }
 }

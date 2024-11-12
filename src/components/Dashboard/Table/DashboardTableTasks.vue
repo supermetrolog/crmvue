@@ -18,7 +18,6 @@
 <script setup>
 import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItem.vue';
 import DashboardTasksItemSkeleton from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemSkeleton.vue';
-import { useStore } from 'vuex';
 import EmptyData from '@/components/common/EmptyData.vue';
 import { computed, h, ref, shallowRef, watch } from 'vue';
 import DashboardTableTasksItemPreview from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemPreview.vue';
@@ -26,6 +25,7 @@ import { useTippy } from 'vue-tippy';
 import api from '@/api/api.js';
 import { toDateFormat } from '@/utils/formatter.js';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
+import { useAuth } from '@/composables/useAuth.js';
 
 const emit = defineEmits(['task-updated']);
 const props = defineProps({
@@ -40,7 +40,7 @@ const props = defineProps({
 });
 
 const { openMessenger } = useMessenger();
-const store = useStore();
+const { currentUserId, currentUserIsModerator } = useAuth();
 
 const lastElementsCount = shallowRef(5);
 const currentTask = ref(null);
@@ -58,17 +58,17 @@ const userCanDrag = computed(() => {
     if (!currentTask.value) return false;
     return Boolean(
         currentTask.value.deleted_at === null &&
-            (Number(currentTask.value.created_by_id) === Number(store.getters.THIS_USER.id) ||
-                Number(currentTask.value.user_id) === Number(store.getters.THIS_USER.id) ||
-                store.getters.isModerator)
+            (Number(currentTask.value.created_by_id) === Number(currentUserId.value) ||
+                Number(currentTask.value.user_id) === Number(currentUserId.value) ||
+                currentUserIsModerator.value)
     );
 });
 
 const userCanEdit = computed(() => {
     if (!currentTask.value) return false;
     return Boolean(
-        Number(currentTask.value.created_by_id) === Number(store.getters.THIS_USER.id) ||
-            store.getters.isModerator
+        Number(currentTask.value.created_by_id) === Number(currentUserId.value) ||
+            currentUserIsModerator.value
     );
 });
 
@@ -118,7 +118,7 @@ const { show, setProps, hide } = useTippy(() => document.body, {
             },
             onRead() {
                 const viewerIndex = currentTask.value.observers.findIndex(
-                    element => element.user_id === store.getters.THIS_USER.id
+                    element => element.user_id === currentUserId.value
                 );
                 if (viewerIndex !== -1)
                     currentTask.value.observers[viewerIndex].viewed_at = toDateFormat(Date.now());
@@ -126,12 +126,13 @@ const { show, setProps, hide } = useTippy(() => document.body, {
                 emit('task-updated', {
                     id: currentTask.value.id,
                     observers: currentTask.value.observers,
-                    is_viewed: currentTask.value.user_id === store.getters.THIS_USER.id
+                    is_viewed: currentTask.value.user_id === currentUserId.value,
+                    viewed_at: Date.now()
                 });
             }
         })
     ),
-    placement: 'bottom-start',
+    placement: 'bottom',
     trigger: 'manual',
     interactive: true,
     theme: 'white',
@@ -143,7 +144,7 @@ const { show, setProps, hide } = useTippy(() => document.body, {
             {
                 name: 'flip',
                 options: {
-                    fallbackPlacements: ['bottom', 'right']
+                    fallbackPlacements: ['top']
                 }
             },
             {
