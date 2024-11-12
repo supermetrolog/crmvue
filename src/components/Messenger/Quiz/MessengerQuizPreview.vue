@@ -12,13 +12,6 @@
                 >
                     <template v-if="question.id === CUSTOM_QUESTION_ID" #textarea="{ answers }">
                         <template v-if="hasCompanyInfo(answers)">
-                            <DashboardChip class="dashboard-bg-warning-l mt-2" with-icon>
-                                <i class="fa-solid fa-exclamation-triangle"></i>
-                                <span
-                                    >Вопрос находится в доработке. В скором времени будет
-                                    отображаться подробная информация о компаниях.</span
-                                >
-                            </DashboardChip>
                             <DashboardChip class="my-2 dashboard-bg-light">
                                 На объекте сидят:
                             </DashboardChip>
@@ -26,7 +19,9 @@
                                 <MessengerQuizPreviewCompany
                                     v-for="company in toCompanies(answers)"
                                     :key="company.company_id"
-                                    :company-id="company.company_id"
+                                    :company="company"
+                                    :name="companyNames[company.company_id]"
+                                    :loading="companiesIsLoading"
                                 />
                             </div>
                         </template>
@@ -41,7 +36,7 @@
 </template>
 <script setup>
 import MessengerQuizPreviewQuestion from '@/components/Messenger/Quiz/MessengerQuizPreviewQuestion.vue';
-import { onMounted, ref, shallowRef } from 'vue';
+import { computed, onMounted, ref, shallowReactive } from 'vue';
 import Spinner from '@/components/common/Spinner.vue';
 import api from '@/api/api.js';
 import MessengerQuizPreviewInfo from '@/components/Messenger/Quiz/MessengerQuizPreviewInfo.vue';
@@ -57,8 +52,17 @@ const props = defineProps({
     }
 });
 
-const isLoading = shallowRef(false);
+const isLoading = ref(false);
+const companiesIsLoading = ref(false);
 const quiz = ref(null);
+
+const companyNames = shallowReactive({});
+
+const hasQuestionWithCompaniesInfo = computed(() => {
+    if (!quiz.value) return false;
+
+    return quiz.value.questions.some(question => question.id === CUSTOM_QUESTION_ID);
+});
 
 const toCompanies = answer => {
     return answer[0].surveyQuestionAnswer.value;
@@ -68,13 +72,39 @@ const hasCompanyInfo = answer => {
     return answer[0].surveyQuestionAnswer.value?.length;
 };
 
-const getQuiz = async () => {
+const fetchQuiz = async () => {
     isLoading.value = true;
     quiz.value = await api.survey.get(props.quizId);
     isLoading.value = false;
 };
 
-onMounted(() => {
-    getQuiz();
+const injectCompanyNames = companies => {
+    for (const company of companies) {
+        companyNames[company.id] = company.full_name;
+    }
+};
+
+const fetchCompanies = async () => {
+    const question = quiz.value.questions.find(question => question.id === CUSTOM_QUESTION_ID);
+
+    const answer = question?.answers?.['text-answer']?.[0]?.surveyQuestionAnswer?.value;
+    if (!answer || !(answer instanceof Array)) return;
+
+    const companyIds = answer.map(company => company.company_id);
+
+    companiesIsLoading.value = true;
+
+    const companies = await api.companies.searchCompanies({ id: companyIds });
+    if (companies.data.length) injectCompanyNames(companies.data);
+
+    companiesIsLoading.value = false;
+};
+
+onMounted(async () => {
+    await fetchQuiz();
+
+    if (hasQuestionWithCompaniesInfo.value) {
+        await fetchCompanies();
+    }
 });
 </script>

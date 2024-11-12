@@ -31,6 +31,7 @@
                 no-results-text="Ничего не найдено"
                 no-options-text="Список пуст"
                 :open-direction="placement"
+                :object="object"
             >
                 <template v-if="$slots.singlelabel" #singlelabel="{ value }">
                     <div class="multiselect-single-label">
@@ -201,6 +202,10 @@ const props = defineProps({
     placement: {
         type: String,
         default: 'bottom'
+    },
+    object: {
+        type: Boolean,
+        default: false
     }
 });
 
