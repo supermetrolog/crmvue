@@ -1,28 +1,25 @@
 <template>
-    <div class="messenger-quiz-form-company-picker">
-        <Form>
-            <FormGroup>
-                <Input
-                    v-model="modelValue"
-                    label="Площадь"
-                    placeholder="Введите площадь.."
-                    unit="м<sup>2</sup>"
-                />
-            </FormGroup>
-        </Form>
+    <div class="messenger-quiz-form-company-picker-element">
+        <span>{{ company.name }}</span>
+        <template v-if="company.area">
+            <i class="fa-solid fa-arrow-right"></i>
+            <WithUnitType :unit-type="unitTypes.SQUARE_METERS">
+                {{ company.area }}
+            </WithUnitType>
+        </template>
+        <i
+            v-tippy="'Удалить'"
+            @click="$emit('delete')"
+            class="messenger-quiz-form-company-picker-element__button fa-solid fa-xmark"
+        />
     </div>
 </template>
 <script setup>
-import Form from '@/components/common/Forms/Form.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
-import Input from '@/components/common/Forms/Input.vue';
+import WithUnitType from '@/components/common/WithUnitType.vue';
+import { unitTypes } from '@/const/unitTypes.js';
 
-const modelValue = defineModel('area');
+defineEmits(['delete']);
 defineProps({
-    disabled: {
-        type: Boolean,
-        default: false
-    },
     company: {
         type: Object,
         required: true

@@ -14,8 +14,8 @@
                 <DashboardChip class="dashboard-bg-warning-l mb-2 w-auto">
                     <i class="fa-solid fa-exclamation-triangle"></i>
                     <span>
-                        Данный вопрос находится в стадии доработки и не является окончательной
-                        версией. Указание площади появится совсем скоро.
+                        Данный вопрос находится в стадии доработки. Рассылка в чаты компаний
+                        появится совсем скоро.
                     </span>
                 </DashboardChip>
                 <MessengerQuizFormCompanyPicker v-model="companies" :disabled="disabled" />
@@ -43,7 +43,8 @@ const companies = ref([]);
 
 const injectCompaniesToForm = (form, companies) => {
     form[3][1].value = companies.map(company => ({
-        company_id: company
+        company_id: company.id,
+        area: company.area
     }));
 };
 
