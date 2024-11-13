@@ -145,11 +145,16 @@ const filters = reactive({
     userId: null,
     tags: [],
     type: [],
-    status: []
+    status: [
+        taskOptions.statusTypes.NEW,
+        taskOptions.statusTypes.IN_PROGRESS,
+        taskOptions.statusTypes.CANCELED
+    ]
 });
 
 const sortingOptions = [
     { value: '-updated_at', label: 'По умолчанию' },
+    { value: 'viewed_at', label: 'Сначала непросмотренные' },
     { value: 'created_at', label: 'Сначала старые' },
     { value: '-created_at', label: 'Сначала новые' },
     { value: 'end', label: 'Сначала истекающие' }

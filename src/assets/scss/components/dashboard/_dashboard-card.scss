@@ -205,6 +205,17 @@
         .dashboard-card-task-date {
             background-color: #b4e3aa;
         }
+
+        .dashboard-card-task__labels {
+            opacity: .2;
+            @include mixins.transition(opacity);
+        }
+
+        &:hover {
+            .dashboard-card-task__labels {
+                opacity: 1;
+            }
+        }
     }
 
     &.canceled {
