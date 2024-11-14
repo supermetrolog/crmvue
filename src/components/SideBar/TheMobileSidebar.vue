@@ -6,7 +6,7 @@
                     <img
                         class="sidebar-mobile__image"
                         alt="rays arma logo"
-                        src="@/assets/image/pl-logo.png"
+                        src="@/assets/image/logo.png"
                     />
                 </router-link>
                 <button @click.prevent="$emit('close')" class="sidebar-mobile__close">
