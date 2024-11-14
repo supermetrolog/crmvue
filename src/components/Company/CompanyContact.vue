@@ -10,8 +10,11 @@
             <PhoneNumber
                 v-for="phone of contact.phones"
                 :key="phone.id"
+                @click="$emit('open-phone')"
                 :phone="phone"
                 :contact="contact"
+                :hidden="hidden"
+                clickable
                 class="company-contact__phone"
             />
         </div>
@@ -31,18 +34,28 @@
 import { computed } from 'vue';
 import { entityOptions } from '@/const/options/options.js';
 import PhoneNumber from '@/components/common/PhoneNumber.vue';
+import { contactOptions } from '@/const/options/contact.options.js';
 
+defineEmits(['open-phone']);
 const props = defineProps({
-    contact: { type: Object, required: true },
-    inactive: { type: Boolean, default: false }
+    contact: {
+        type: Object,
+        required: true
+    },
+    inactive: {
+        type: Boolean,
+        default: false
+    },
+    hidden: {
+        type: Boolean,
+        default: false
+    }
 });
 
-const position = computed(() => entityOptions.contact.position[props.contact.position]);
+const position = computed(() => contactOptions.position[props.contact.position]);
 const fullName = computed(() => {
     if (props.contact.full_name) return props.contact.full_name;
-    else if (props.contact.middle_name || props.contact.first_name)
-        return `${props.contact.middle_name} ${props.contact.first_name}`;
-    else if (props.contact.type === entityOptions.contact.typeStatement.GENERAL)
+    if (props.contact.type === entityOptions.contact.typeStatement.GENERAL)
         return 'Основной контакт';
     return 'Без имени';
 });

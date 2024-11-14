@@ -1,65 +1,68 @@
 <template>
-    <a
-        @click.prevent.stop="openExternal"
-        class="phone-number"
-        :class="classList"
-        :href="'tel:' + phone.phone"
-    >
+    <a @click.prevent.stop="openExternal" href="#" class="phone-number" :class="classList">
         {{ phoneText }}
     </a>
 </template>
 
-<script>
+<script setup>
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
+import { computed } from 'vue';
 
-export default {
-    name: 'PhoneNumber',
-    emits: ['created-contact'],
-    props: {
-        phone: {
-            type: Object,
-            default: null
-        },
-        text: {
-            type: String,
-            default: null
-        },
-        contact: {
-            type: Object,
-            default: null
-        },
-        classList: {
-            type: String,
-            default: 'text-center'
-        },
-        readOnly: {
-            type: Boolean,
-            default: false
-        }
+const emit = defineEmits(['created-contact']);
+const props = defineProps({
+    phone: {
+        type: Object,
+        default: null
     },
-    setup() {
-        const { show } = useAsyncPopup('PhoneNumber');
-        return { show };
+    text: {
+        type: String,
+        default: null
     },
-    computed: {
-        phoneText() {
-            if (this.text) return this.text;
-            let name = this.phone.phone;
-            if (this.phone.exten) name += ' => ' + this.phone.exten;
-            return name;
-        }
+    contact: {
+        type: Object,
+        default: null
     },
-    methods: {
-        async openExternal() {
-            const newContactCreated = this.show({
-                phone: this.phone,
-                contact: this.contact,
-                classList: this.classList,
-                readOnly: this.readOnly
-            });
-
-            if (newContactCreated) this.$emit('created-contact');
-        }
+    classList: {
+        type: String,
+        default: 'text-center'
+    },
+    readOnly: {
+        type: Boolean,
+        default: false
+    },
+    clickable: {
+        type: Boolean,
+        default: false
+    },
+    hidden: {
+        type: Boolean,
+        default: false
     }
+});
+
+const { show } = useAsyncPopup('PhoneNumber');
+
+const phoneText = computed(() => {
+    if (props.text) return props.text;
+
+    let name = props.phone.phone;
+
+    if (props.hidden) name = name.slice(0, -4) + '...';
+
+    if (props.phone.exten) name += ' => ' + props.phone.exten;
+    return name;
+});
+
+const openExternal = async () => {
+    if (props.clickable) return;
+
+    const newContactCreated = await show({
+        phone: props.phone,
+        contact: props.contact,
+        classList: props.classList,
+        readOnly: props.readOnly
+    });
+
+    if (newContactCreated) emit('created-contact');
 };
 </script>
