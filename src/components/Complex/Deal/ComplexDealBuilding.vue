@@ -106,7 +106,7 @@ const actionButtons = computed(() => {
             handler: () => {
                 const urlLink = $url.pdf(
                     { type_id: 2, offer_id: props.deal.id, object_id: props.deal.object_id },
-                    store.getters.THIS_USER
+                    store.getters.THIS_USER.id
                 );
                 window.open(urlLink, '_blank');
             }

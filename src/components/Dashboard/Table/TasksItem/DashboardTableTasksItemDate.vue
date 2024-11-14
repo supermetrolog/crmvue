@@ -12,7 +12,9 @@
             />
             <i
                 v-if="isForMe"
-                v-tippy="task.is_viewed ? 'Задача просмотрена' : 'Задача не просмотрена'"
+                v-tippy="
+                    task.is_viewed ? `Задача просмотрена ${viewedAt}` : 'Задача не просмотрена'
+                "
                 class="dashboard-card-task__icon fa-solid fa-eye ml-1"
                 :class="{
                     'dashboard-cl-success': task.is_viewed,
@@ -29,6 +31,7 @@ import { computed } from 'vue';
 import { taskOptions } from '@/const/options/task.options.js';
 import { useStore } from 'vuex';
 import { dayjsFromMoscow } from '@/utils/index.js';
+import { toBeautifulDateFormat } from '@/utils/formatter.js';
 
 const props = defineProps({
     task: {
@@ -47,4 +50,6 @@ const isForMe = computed(() => Number(props.task.user_id) === Number(store.gette
 const expiredDate = computed(() => {
     return expiredDayjs.value.format('DD.MM.YYYY');
 });
+
+const viewedAt = computed(() => toBeautifulDateFormat(props.task.viewed_at));
 </script>

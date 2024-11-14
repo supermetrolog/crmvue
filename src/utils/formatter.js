@@ -93,6 +93,15 @@ export function toDateFormat(date, format = 'D.MM.YY, HH:mm') {
     return dayjs(date).format(format);
 }
 
+export function toBeautifulDateFormat(date) {
+    const dayjsDate = typeof date === 'string' ? dayjsFromMoscow(date) : dayjs(date);
+
+    if (dayjsDate.isToday()) return `Сегодня в ${dayjsDate.format('HH:mm')}`;
+    else if (dayjsDate.isYesterday()) return `Вчера в ${dayjsDate.format('HH:mm')}`;
+    else if (dayjsDate.isSame(dayjs(), 'year')) return dayjsDate.format('D.MM, HH:mm');
+    else return dayjsDate.format('D.MM.YY HH:mm');
+}
+
 /**
  * Преобразование в корректный URL (добавление https:// в случае отсутствия)
  *

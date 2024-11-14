@@ -3,7 +3,7 @@
         <Loader v-if="isLoading" />
         <Spinner v-if="loading" class="absolute-center" />
         <template v-else>
-            <div class="dashboard-task-item-preview__column">
+            <div class="dashboard-task-item-preview__header">
                 <div class="dashboard-task-item-preview__actions">
                     <HoverActionsButton
                         v-if="canBeViewed"
@@ -48,212 +48,263 @@
                         <i class="fa-solid fa-trash" />
                     </HoverActionsButton>
                 </div>
-                <div class="dashboard-task-item-preview__description">
-                    <div class="dashboard-task-item-preview__chips">
-                        <DashboardChip class="dashboard-task-item-preview__chip">
-                            Задача #{{ task.id }}
-                        </DashboardChip>
-                        <DashboardChip
-                            class="dashboard-task-item-preview__chip dashboard-task-item-preview__status"
-                        >
-                            <i :class="statusIcon" />
-                            <span>{{ status }}</span>
-                        </DashboardChip>
-                        <DashboardChip
-                            v-if="isAlreadyExpired"
-                            class="dashboard-bg-danger text-white"
-                        >
-                            Просрочено
-                        </DashboardChip>
-                    </div>
-                    <template v-if="task.tags?.length">
-                        <p class="dashboard-task-item-preview__label my-1">Теги:</p>
-                        <div class="dashboard-task-item-preview__chips">
-                            <DashboardChip
-                                v-for="tag in task.tags"
-                                :key="tag.id"
-                                class="dashboard-task-item-preview__tag"
-                                :style="{ backgroundColor: '#' + tag.color }"
-                            >
-                                <span>{{ tag.name ?? tag.label }}</span>
-                            </DashboardChip>
-                        </div>
-                    </template>
-                    <p class="dashboard-task-item-preview__label my-1">Описание задачи:</p>
-                    <div class="dashboard-task-item-preview__message">
-                        <p>{{ task.message }}</p>
-                    </div>
-                </div>
-                <div class="dashboard-task-item-preview__info">
-                    <DashboardTableTasksItemPreviewRow label="Создано">
-                        {{ createdDate }}
-                    </DashboardTableTasksItemPreviewRow>
-                    <DashboardTableTasksItemPreviewRow label="Обновлено">
-                        {{ updatedDate }}
-                    </DashboardTableTasksItemPreviewRow>
-                    <DashboardTableTasksItemPreviewRow v-if="isDeleted" label="Удалено">
-                        {{ deletedDate }}
-                    </DashboardTableTasksItemPreviewRow>
-                    <DashboardTableTasksItemPreviewRow label="Исполнение с">
-                        <span v-if="task.start">{{ startDate }}</span>
-                    </DashboardTableTasksItemPreviewRow>
-                    <DashboardTableTasksItemPreviewRow label="Срок выполнения">
-                        <span>{{ dayToExpired }} до {{ expiredDate }}</span>
-                        <span v-if="isAlreadyExpired" class="error-message">
-                            (просрочено на {{ dayToExpiredFromNow }})
-                        </span>
-                        <span v-else-if="!isCompleted"> (осталось {{ dayToExpiredFromNow }})</span>
-                    </DashboardTableTasksItemPreviewRow>
-                    <DashboardTableTasksItemPreviewRow v-if="isCanceled" label="Отложено">
-                        до {{ impossibleDate }}
-                    </DashboardTableTasksItemPreviewRow>
-                    <DashboardTableTasksItemPreviewRow label="Автор">
-                        <span v-if="task.created_by_type === 'user'">
-                            {{ task.created_by.userProfile.medium_name }}
-                        </span>
-                        <span v-else>Система</span>
-                    </DashboardTableTasksItemPreviewRow>
-                    <DashboardTableTasksItemPreviewRow label="Ответственный">
-                        <span v-if="task.user">
-                            {{ task.user.userProfile.medium_name }}
-                        </span>
-                        <span v-else>-</span>
-                    </DashboardTableTasksItemPreviewRow>
-                    <DashboardTableTasksItemPreviewRow label="Наблюдатели">
-                        <template v-if="task.observers?.length">{{ viewersText }}</template>
-                        <span v-else>-</span>
-                    </DashboardTableTasksItemPreviewRow>
-                </div>
-                <div class="dashboard-task-item-preview__form">
-                    <Textarea
-                        v-model="newComment"
-                        class="mb-1 dashboard-task-item-preview__textarea"
-                        label="Новый комментарий"
+                <div class="dashboard-task-item-preview__users">
+                    <Avatar
+                        v-tippy="`Создана сотрудником ${task.created_by.userProfile.medium_name}`"
+                        :src="task.created_by.userProfile.avatar"
+                        :size="35"
                     />
-                    <button
-                        @click.prevent="createComment"
-                        :disabled="!newComment?.length"
-                        class="dashboard-task-item-preview__button"
-                    >
-                        Отправить
-                    </button>
-                </div>
-                <AnimationTransition :speed="0.3">
-                    <DashboardTableTasksItemPreviewStatus
-                        v-if="moveSettingsIsVisible"
-                        @toggle="changeStatus"
-                        @close="moveSettingsIsVisible = false"
-                        :loading="statusIsChanging"
-                        :status="task.status"
-                        :task-id="task.id"
-                    />
-                </AnimationTransition>
-            </div>
-            <div class="dashboard-task-item-preview__column">
-                <p class="dashboard-task-item-preview__label my-1">Последний комментарий:</p>
-                <div class="dashboard-task-item-preview__message">
-                    <template v-if="task.last_comment">
-                        <DashboardTableTasksItemPreviewComment
-                            class="mb-1"
-                            :comment="task.last_comment"
-                        />
-                        <button
-                            @click.prevent="openComments"
-                            class="dashboard-task-item-preview__button"
-                        >
-                            Открыть комментарии
-                        </button>
-                    </template>
-                    <EmptyLabel v-else>Комментарии отсутствуют</EmptyLabel>
-                    <AnimationTransition :speed="0.3">
-                        <div
-                            v-if="task.last_comment == null"
-                            class="dashboard-task-item-preview__form"
-                        >
-                            <Textarea
-                                v-model="newComment"
-                                class="mb-1 dashboard-task-item-preview__textarea"
-                                label="Оставьте первый комментарий"
-                            />
-                            <button
-                                @click.prevent="createComment"
-                                :disabled="!newComment?.length"
-                                class="dashboard-task-item-preview__button"
-                            >
-                                Отправить
-                            </button>
-                        </div>
-                    </AnimationTransition>
-                </div>
-                <div
-                    v-if="task.related_by?.chat_member_id"
-                    class="dashboard-task-item-preview__relation"
-                >
-                    <p class="dashboard-task-item-preview__label mb-1">По чату в задачнике:</p>
-                    <component
-                        :is="currentDialogComponent"
-                        @click="toChat"
-                        :model="task.related_by.chat_member.model"
-                    />
-                    <div class="d-flex mt-1 gap-2">
-                        <button
-                            @click.prevent="toChat"
-                            class="dashboard-task-item-preview__button"
-                            :class="objectCompanyId ? 'w-50' : 'w-100'"
-                        >
-                            <span>Открыть чат</span>
-                            <i class="fa-solid fa-arrow-up-right-from-square ml-2"></i>
-                        </button>
-                        <button
-                            v-if="objectCompanyId"
-                            @click.prevent="toCompany"
-                            class="dashboard-task-item-preview__button w-50"
-                        >
-                            <span>Открыть компанию</span>
-                            <i class="fa-solid fa-arrow-up-right-from-square ml-2"></i>
-                        </button>
-                    </div>
-                    <Tippy
-                        v-if="objectCompanyId"
-                        interactive
-                        max-width="500"
-                        :interactive-border="30"
-                        :on-show="onTriggerContacts"
-                        :on-hide="onUntriggerContacts"
-                        :delay="[300, null]"
-                    >
+                    <i class="dashboard-task-item-preview__arrow fa-solid fa-arrow-right-long"></i>
+                    <Tippy>
                         <template #default>
-                            <button class="dashboard-task-item-preview__button w-100 mt-1">
-                                <span>Список контактов</span>
-                                <i class="fa-solid fa-contact-card ml-2"></i>
-                            </button>
+                            <Avatar
+                                :src="task.user.userProfile.avatar"
+                                :size="35"
+                                rectangle
+                                class="dashboard-card-task__user"
+                                :class="{
+                                    'dashboard-card-task__not-viewed':
+                                        !task.is_viewed && !isCompleted
+                                }"
+                            />
                         </template>
                         <template #content>
-                            <DashboardTableTasksItemPreviewContacts
-                                :visible="contactsIsVisible"
-                                :company-id="objectCompanyId"
-                            />
+                            <p>Назначена для {{ task.user.userProfile.medium_name }}</p>
+                            <p v-if="task.is_viewed" class="color-light">
+                                Просмотрена {{ viewedAt }}
+                            </p>
+                            <p v-else class="color-light">Не просмотрена</p>
+                        </template>
+                    </Tippy>
+                    <Tippy v-if="observers.length" interactive>
+                        <div class="dashboard-task-item-preview__observers">
+                            <span>+ {{ observers.length }}</span>
+                            <i class="fa-solid fa-eye" />
+                        </div>
+                        <template #content>
+                            <p class="mb-1">Список всех наблюдателей:</p>
+                            <div class="d-flex gap-1 flex-wrap">
+                                <DashboardTableTasksItemObserver
+                                    v-for="observer in observers"
+                                    :key="observer.id"
+                                    :observer="observer"
+                                    :size="30"
+                                />
+                            </div>
                         </template>
                     </Tippy>
                 </div>
-                <div
-                    v-if="task.related_by?.chat_member_message_id"
-                    class="dashboard-task-item-preview__relation"
-                >
-                    <p class="dashboard-task-item-preview__label mb-1">Прикреплено к сообщению:</p>
-                    <MessengerChatShortMessage
-                        class="dashboard-task-item-preview__chat-message"
-                        :message="chatMemberMessage"
-                    />
+            </div>
+            <div class="dashboard-task-item-preview__content">
+                <div class="dashboard-task-item-preview__column">
+                    <div class="dashboard-task-item-preview__description">
+                        <div class="dashboard-task-item-preview__chips">
+                            <DashboardChip class="dashboard-task-item-preview__chip">
+                                Задача #{{ task.id }}
+                            </DashboardChip>
+                            <DashboardChip
+                                class="dashboard-task-item-preview__chip dashboard-task-item-preview__status"
+                            >
+                                <i :class="statusIcon" />
+                                <span>{{ status }}</span>
+                                <span v-if="isCanceled">до {{ impossibleDate }}</span>
+                            </DashboardChip>
+                            <DashboardChip
+                                v-if="isAlreadyExpired"
+                                class="dashboard-bg-danger text-white"
+                            >
+                                Просрочено
+                            </DashboardChip>
+                        </div>
+                        <template v-if="task.tags?.length">
+                            <p class="dashboard-task-item-preview__label my-1">Теги:</p>
+                            <div class="dashboard-task-item-preview__chips">
+                                <DashboardChip
+                                    v-for="tag in task.tags"
+                                    :key="tag.id"
+                                    class="dashboard-task-item-preview__tag"
+                                    :style="{ backgroundColor: '#' + tag.color }"
+                                >
+                                    <span>{{ tag.name ?? tag.label }}</span>
+                                </DashboardChip>
+                            </div>
+                        </template>
+                        <p class="dashboard-task-item-preview__label my-1">Описание задачи:</p>
+                        <div class="dashboard-task-item-preview__message">
+                            <p>{{ task.message }}</p>
+                        </div>
+                    </div>
+                    <p class="dashboard-task-item-preview__label my-1">Последний комментарий:</p>
+                    <div class="dashboard-task-item-preview__message">
+                        <template v-if="task.last_comment">
+                            <DashboardTableTasksItemPreviewComment
+                                class="mb-1"
+                                :comment="task.last_comment"
+                            />
+                            <button
+                                @click.prevent="openComments"
+                                class="dashboard-task-item-preview__button"
+                            >
+                                Открыть комментарии
+                            </button>
+                        </template>
+                        <EmptyLabel v-else>Комментарии отсутствуют</EmptyLabel>
+                    </div>
+                    <div class="dashboard-task-item-preview__form">
+                        <Textarea
+                            v-model="newComment"
+                            class="mb-1 dashboard-task-item-preview__textarea"
+                            label="Новый комментарий"
+                        />
+                        <button
+                            @click.prevent="createComment"
+                            :disabled="!newComment?.length"
+                            class="dashboard-task-item-preview__button"
+                        >
+                            Отправить
+                        </button>
+                    </div>
+                    <AccordionSimple>
+                        <template #title>
+                            <AccordionSimpleTriggerButton label="Дополнительная информация" />
+                        </template>
+                        <template #body>
+                            <div class="dashboard-task-item-preview__info mt-1">
+                                <DashboardTableTasksItemPreviewRow label="Создано">
+                                    {{ createdDate }}
+                                </DashboardTableTasksItemPreviewRow>
+                                <DashboardTableTasksItemPreviewRow label="Обновлено">
+                                    {{ updatedDate }}
+                                </DashboardTableTasksItemPreviewRow>
+                                <DashboardTableTasksItemPreviewRow v-if="isDeleted" label="Удалено">
+                                    {{ deletedDate }}
+                                </DashboardTableTasksItemPreviewRow>
+                                <DashboardTableTasksItemPreviewRow
+                                    v-if="task.start"
+                                    label="Исполнение с"
+                                >
+                                    <span>{{ startDate }}</span>
+                                </DashboardTableTasksItemPreviewRow>
+                                <DashboardTableTasksItemPreviewRow label="Срок выполнения">
+                                    <span>{{ dayToExpired }} до {{ expiredDate }}</span>
+                                    <span v-if="isAlreadyExpired" class="error-message">
+                                        (просрочено на {{ dayToExpiredFromNow }})
+                                    </span>
+                                    <span v-else-if="!isCompleted">
+                                        (осталось {{ dayToExpiredFromNow }})</span
+                                    >
+                                </DashboardTableTasksItemPreviewRow>
+                                <DashboardTableTasksItemPreviewRow
+                                    v-if="isCanceled"
+                                    label="Отложено"
+                                >
+                                    до {{ impossibleDate }}
+                                </DashboardTableTasksItemPreviewRow>
+                                <DashboardTableTasksItemPreviewRow label="Автор">
+                                    <span v-if="task.is_system">Система</span>
+                                    <span v-else>
+                                        {{ task.created_by.userProfile.medium_name }}
+                                    </span>
+                                </DashboardTableTasksItemPreviewRow>
+                                <DashboardTableTasksItemPreviewRow label="Исполнитель">
+                                    <span v-if="task.user">
+                                        {{ task.user.userProfile.medium_name }}
+                                    </span>
+                                    <span v-else>-</span>
+                                </DashboardTableTasksItemPreviewRow>
+                                <DashboardTableTasksItemPreviewRow label="Наблюдатели">
+                                    <template v-if="task.observers?.length">
+                                        {{ viewersText }}
+                                    </template>
+                                    <span v-else>-</span>
+                                </DashboardTableTasksItemPreviewRow>
+                            </div>
+                        </template>
+                    </AccordionSimple>
+                    <AnimationTransition :speed="0.3">
+                        <DashboardTableTasksItemPreviewStatus
+                            v-if="moveSettingsIsVisible"
+                            @toggle="changeStatus"
+                            @close="moveSettingsIsVisible = false"
+                            :loading="statusIsChanging"
+                            :status="task.status"
+                            :task-id="task.id"
+                        />
+                    </AnimationTransition>
                 </div>
-                <AnimationTransition :speed="0.3">
-                    <DashboardTableTasksItemPreviewComments
-                        v-if="commentsIsOpen"
-                        @close="commentsIsOpen = false"
-                        @added-comment="onCommentCreated"
-                        :task-id="task.id"
-                    />
-                </AnimationTransition>
+                <div class="dashboard-task-item-preview__column">
+                    <div
+                        v-if="task.related_by?.chat_member_id"
+                        class="dashboard-task-item-preview__relation"
+                    >
+                        <p class="dashboard-task-item-preview__label mb-1">По чату в задачнике:</p>
+                        <component
+                            :is="currentDialogComponent"
+                            @click="toChat"
+                            :model="task.related_by.chat_member.model"
+                        />
+                        <div class="d-flex mt-1 gap-2">
+                            <button
+                                @click.prevent="toChat"
+                                class="dashboard-task-item-preview__button"
+                                :class="objectCompanyId ? 'w-50' : 'w-100'"
+                            >
+                                <span>Открыть чат</span>
+                                <i class="fa-solid fa-arrow-up-right-from-square ml-2"></i>
+                            </button>
+                            <button
+                                v-if="objectCompanyId"
+                                @click.prevent="toCompany"
+                                class="dashboard-task-item-preview__button w-50"
+                            >
+                                <span>Открыть компанию</span>
+                                <i class="fa-solid fa-arrow-up-right-from-square ml-2"></i>
+                            </button>
+                        </div>
+                        <Tippy
+                            v-if="objectCompanyId"
+                            interactive
+                            max-width="500"
+                            :interactive-border="30"
+                            :on-show="onTriggerContacts"
+                            :on-hide="onUntriggerContacts"
+                            :delay="[300, null]"
+                        >
+                            <template #default>
+                                <button class="dashboard-task-item-preview__button w-100 mt-1">
+                                    <span>Список контактов</span>
+                                    <i class="fa-solid fa-contact-card ml-2"></i>
+                                </button>
+                            </template>
+                            <template #content>
+                                <DashboardTableTasksItemPreviewContacts
+                                    :visible="contactsIsVisible"
+                                    :company-id="objectCompanyId"
+                                />
+                            </template>
+                        </Tippy>
+                    </div>
+                    <div
+                        v-if="task.related_by?.chat_member_message_id"
+                        class="dashboard-task-item-preview__relation"
+                    >
+                        <p class="dashboard-task-item-preview__label mb-1">
+                            Прикреплено к сообщению:
+                        </p>
+                        <MessengerChatShortMessage
+                            class="dashboard-task-item-preview__chat-message"
+                            :message="chatMemberMessage"
+                        />
+                    </div>
+                    <AnimationTransition :speed="0.3">
+                        <DashboardTableTasksItemPreviewComments
+                            v-if="commentsIsOpen"
+                            @close="commentsIsOpen = false"
+                            @added-comment="onCommentCreated"
+                            :task-id="task.id"
+                        />
+                    </AnimationTransition>
+                </div>
             </div>
         </template>
     </div>
@@ -285,13 +336,17 @@ import Textarea from '@/components/common/Forms/Textarea.vue';
 import { debounce } from '@/utils/debounce.js';
 import MessengerDialogUser from '@/components/Messenger/Dialog/MessengerDialogUser.vue';
 import { dayjsFromMoscow } from '@/utils/index.js';
-import { toDateFormat } from '@/utils/formatter.js';
+import { toBeautifulDateFormat, toDateFormat } from '@/utils/formatter.js';
 import Loader from '@/components/common/Loader.vue';
 import { messenger } from '@/const/messenger.js';
 import { getLinkCompany } from '@/utils/url.js';
 import { Tippy } from 'vue-tippy';
 import DashboardTableTasksItemPreviewContacts from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemPreviewContacts.vue';
 import MessengerDialogCompany from '@/components/Messenger/Dialog/Company/MessengerDialogCompany.vue';
+import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
+import AccordionSimpleTriggerButton from '@/components/common/Accordion/AccordionSimpleTriggerButton.vue';
+import Avatar from '@/components/common/Avatar.vue';
+import DashboardTableTasksItemObserver from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemObserver.vue';
 
 const DAYS_TO_IMPOSSIBLE = 30;
 
@@ -345,7 +400,7 @@ const expiredDate = computed(() => {
     return expiredDayjs.value.format('D MMMM YYYY');
 });
 const startDate = computed(() => toDateFormat(props.task.start, 'D MMMM YYYY'));
-const impossibleDate = computed(() => toDateFormat(props.task.impossible_to, 'D MMMM YYYY'));
+const impossibleDate = computed(() => toDateFormat(props.task.impossible_to, 'D.MM.YY'));
 const dayToExpired = computed(() => {
     const diff = Math.abs(
         expiredDayjs.value.diff(props.task.start ?? props.task.created_at, 'days')
@@ -393,6 +448,14 @@ const canBeSuspend = computed(() => {
         !isCompleted.value
     );
 });
+
+const observers = computed(() =>
+    props.task.observers.filter(observer => observer.user.id !== props.task.user.id)
+);
+
+const slicedObservers = computed(() => observers.value.slice(0, 3));
+
+const observersDiff = computed(() => props.task.observers.length - observers.value.length);
 
 const clearState = () => {
     newComment.value = null;
@@ -451,6 +514,10 @@ const objectCompanyId = computed(() => {
         return props.task.related_by.chat_member.model.id;
 
     return null;
+});
+
+const viewedAt = computed(() => {
+    return toBeautifulDateFormat(props.task.viewed_at);
 });
 
 watch(

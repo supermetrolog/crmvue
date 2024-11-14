@@ -19,7 +19,7 @@
             <slot name="tag" :option="option"></slot>
         </template>
         <template #singlelabel="{ value }">
-            <CompanyPickerOption class="custom" :option="value" />
+            <CompanyPickerOption class="custom w-auto" :option="value" />
         </template>
     </MultiSelect>
 </template>

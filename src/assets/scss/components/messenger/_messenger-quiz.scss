@@ -11,6 +11,7 @@
         margin: 10px;
         border: 1px solid #000;
         background-color: #F3F3F3;
+        position: relative;
     }
 
     &__header {
@@ -194,6 +195,7 @@
             .form__textarea {
                 min-height: 30px;
                 max-height: 30px;
+                overflow: hidden;
             }
         }
     }
@@ -526,12 +528,27 @@
 }
 
 .messenger-quiz-form-company-picker {
-    &__tag {
-        background-color: transparent!important;
-        border: 2px solid variables.$bg-success-l;
+    &__list {
+        @include mixins.flex-box($gap: 5px, $wrap: true);
     }
+}
 
-    .input {
-        border: 1px solid black;
+.messenger-quiz-form-company-picker-element {
+    border: 1px solid #d1d5db;
+    padding: 3px 6px;
+    width: max-content;
+    max-width: 100%;
+    background-color: #fff;
+    border-radius: 5px;
+    @include mixins.flex-box($gap: 3px, $a: center);
+
+    &__button {
+        font-size: 16px;
+        cursor: pointer;
+        @include mixins.transition(color);
+
+        &:hover {
+            color: variables.$bg-danger;
+        }
     }
 }

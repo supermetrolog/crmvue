@@ -218,4 +218,12 @@ const reset = () => {
     statusModelValue.value = [];
     typeModelValue.value = [];
 };
+
+const init = () => {
+    statusModelValue.value.forEach(statusId => {
+        field[taskOptions.statusNames[statusId].toLowerCase()] = true;
+    });
+};
+
+init();
 </script>
