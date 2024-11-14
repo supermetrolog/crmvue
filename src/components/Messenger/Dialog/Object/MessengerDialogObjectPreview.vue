@@ -104,6 +104,7 @@
         </MessengerDialogPreviewTab>
         <MessengerDialogPreviewTab title="Проверьте цену и параметры сделки!">
             <Tabs
+                ref="tabs"
                 nav-class="messenger-dialog-preview__tabs"
                 nav-item-class="messenger-dialog-preview__tab"
                 nav-item-link-class="messenger-dialog-preview__tab-link"
@@ -112,6 +113,7 @@
             >
                 <Tab
                     v-if="objectChatMemberType === objectChatMemberTypes.RENT_OR_SALE"
+                    id="rent"
                     name="Аренда"
                     :is-disabled="!rentOfferMix"
                 >
@@ -122,6 +124,7 @@
                 </Tab>
                 <Tab
                     v-if="objectChatMemberType === objectChatMemberTypes.RENT_OR_SALE"
+                    id="sale"
                     name="Продажа"
                     :is-disabled="!saleOfferMix"
                 >
@@ -156,7 +159,7 @@
 </template>
 <script setup>
 import MessengerDialogPreviewTab from '@/components/Messenger/Dialog/Preview/MessengerDialogPreviewTab.vue';
-import { computed, onMounted, shallowRef } from 'vue';
+import { computed, onMounted, shallowRef, useTemplateRef } from 'vue';
 import MessengerDialogPreviewRow from '@/components/Messenger/Dialog/Preview/MessengerDialogPreviewRow.vue';
 import api from '@/api/api.js';
 import plural from 'plural-ru';
@@ -169,7 +172,6 @@ import { toNumberFormat } from '@/utils/formatter.js';
 import MessengerDialogObjectPreviewRent from '@/components/Messenger/Dialog/Object/MessengerDialogObjectPreviewRent.vue';
 import { dealOptions } from '@/const/options/deal.options.js';
 import EditableObjectPurposes from '@/components/Object/EditableObjectPurposes.vue';
-import Tabs from '@/components/common/Tabs/Tabs.vue';
 import Tab from '@/components/common/Tabs/Tab.vue';
 import MessengerDialogObjectPreviewSale from '@/components/Messenger/Dialog/Object/MessengerDialogObjectPreviewSale.vue';
 import MessengerDialogObjectPreviewStorage from '@/components/Messenger/Dialog/Object/MessengerDialogObjectPreviewStorage.vue';
@@ -186,8 +188,14 @@ const props = defineProps({
     objectChatMemberType: {
         type: String,
         required: true
+    },
+    opened: {
+        type: Boolean,
+        default: false
     }
 });
+
+const tabs = useTemplateRef('tabs');
 
 const isLoading = shallowRef(true);
 const object = shallowRef(null);
@@ -249,6 +257,15 @@ const subleaseOfferMix = computed(() =>
     object.value.offerMix.find(element => element.deal_type === dealOptions.typeStatement.SUBLEASE)
 );
 
+const selectActiveTab = () => {
+    if (
+        props.objectChatMemberType === objectChatMemberTypes.RENT_OR_SALE &&
+        !rentOfferMix.value &&
+        saleOfferMix.value
+    )
+        tabs.value.selectTab('#sale');
+};
+
 const fetchObject = async () => {
     isLoading.value = true;
 
@@ -262,7 +279,8 @@ const updatePurposes = async purposes => {
     console.log(purposes);
 };
 
-onMounted(() => {
-    fetchObject();
+onMounted(async () => {
+    await fetchObject();
+    selectActiveTab();
 });
 </script>
