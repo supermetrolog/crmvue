@@ -287,7 +287,6 @@ const openSurvey = async (dialogType, surveyType, objectId, companyID) => {
         return;
     }
 
-    store.commit('Messenger/setCurrentPanel', null);
     currentTab.name = dialog.model_type;
     isOpen.value = true;
 
