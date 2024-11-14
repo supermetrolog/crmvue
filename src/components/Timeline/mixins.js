@@ -479,7 +479,7 @@ export const TimelineStepWithLetterMixin = {
         preparedLetterMessage() {
             const formData = {
                 company_id: this.currentRequest?.company_id,
-                subject: 'Список предложений от Pennylane Realty',
+                subject: 'Список предложений от RAYS ARMA',
                 wayOfSending: [0],
                 message: this.letterMessage
             };

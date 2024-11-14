@@ -5,7 +5,7 @@
                 <router-link class="sidebar-mobile__logo" to="/">
                     <img
                         class="sidebar-mobile__image"
-                        alt="penny lane logo"
+                        alt="rays arma logo"
                         src="@/assets/image/pl-logo.png"
                     />
                 </router-link>
