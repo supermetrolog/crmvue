@@ -16,16 +16,7 @@
             >
                 <i class="fa-solid fa-exclamation"></i>
             </HoverActionsButton>
-            <HoverActionsButton
-                @click="
-                    $createAddition({
-                        messageID: message.id,
-                        additionType: 'task',
-                        successMessage: 'Задача успешно создана!'
-                    })
-                "
-                label="Добавить задачу"
-            >
+            <HoverActionsButton @click="createTask(message.id)" label="Добавить задачу">
                 <i class="fa-solid fa-bolt"></i>
             </HoverActionsButton>
             <HoverActionsButton
@@ -82,6 +73,7 @@ const props = defineProps({
 
 const store = useStore();
 const $createAddition = inject('$createAddition');
+const createTask = inject('$createTask');
 
 const isRecent = computed(
     () => dayjs().diff(dayjsFromMoscow(props.message.created_at), 'minute') < 10

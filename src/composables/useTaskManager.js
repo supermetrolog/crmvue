@@ -22,8 +22,10 @@ export function useTaskManager() {
             message = '',
             start = dayjs().toDate(),
             end = dayjs().add(DEFAULT_TASK_DURATION, 'day').toDate(),
-            step,
-            focusMessage = false
+            step = TASK_FORM_STEPS.USER,
+            focusMessage = false,
+            customDescription = true,
+            additionalContent = {}
         } = template;
 
         return show({
@@ -34,7 +36,9 @@ export function useTaskManager() {
             tags,
             observers,
             step,
-            focusMessage
+            focusMessage,
+            customDescription,
+            additionalContent
         });
     }
 

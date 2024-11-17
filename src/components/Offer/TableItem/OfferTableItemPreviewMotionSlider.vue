@@ -33,7 +33,7 @@
 
 <script setup>
 import { useElementHover } from '@vueuse/core';
-import { computed, ref, shallowRef } from 'vue';
+import { computed, shallowRef, useTemplateRef } from 'vue';
 import { $generatorURL } from '@/plugins/url.js';
 import { vElementHover } from '@vueuse/components';
 import LazyImage from '@/components/common/LazyImage.vue';
@@ -49,7 +49,7 @@ const props = defineProps({
     }
 });
 
-const slider = ref(null);
+const slider = useTemplateRef('slider');
 const currentPhotoID = shallowRef(0);
 
 const preparedPhotos = computed(() => {

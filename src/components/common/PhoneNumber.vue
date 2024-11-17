@@ -1,5 +1,5 @@
 <template>
-    <a @click.prevent.stop="openExternal" href="#" class="phone-number" :class="classList">
+    <a @click.prevent="openExternal" href="#" class="phone-number" :class="classList">
         {{ phoneText }}
     </a>
 </template>
