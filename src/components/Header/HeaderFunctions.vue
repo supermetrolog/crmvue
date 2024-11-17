@@ -72,10 +72,9 @@ import plural from 'plural-ru';
 import api from '@/api/api.js';
 import Spinner from '@/components/common/Spinner.vue';
 import { useDocumentVisibility, useIntervalFn } from '@vueuse/core';
-import dayjs from 'dayjs';
 import HeaderActivity from '@/components/Header/HeaderActivity.vue';
 
-const ACTIVITY_INTERVAL = 180000;
+const ACTIVITY_INTERVAL = 120000;
 const ONLINE_INTERVAL = 60000;
 
 const store = useStore();
@@ -91,8 +90,6 @@ const activityIsVisible = ref(false);
 const activityCount = ref(1);
 const isLoading = ref(true);
 const activityIsLoading = ref(true);
-
-let pausedTime = null;
 
 const preparedActivityCount = computed(() => Number(activityCount.value || 1));
 
@@ -126,19 +123,11 @@ watch(documentVisibility, (current, prev) => {
         onlineInterval.resume();
         activityInterval.resume();
 
-        if (pausedTime) {
-            const diff = dayjs().diff(pausedTime, 'ms');
-            if (diff > ACTIVITY_INTERVAL / 2) {
-                fetchOnline();
-                setUserIsOnline();
-            }
-
-            pausedTime = null;
-        }
+        fetchOnline();
+        setUserIsOnline();
     } else {
         onlineInterval.pause();
         activityInterval.pause();
-        pausedTime = dayjs();
     }
 });
 
