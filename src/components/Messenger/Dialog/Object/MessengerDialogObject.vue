@@ -2,7 +2,13 @@
     <div class="messenger-dialog messenger-dialog-offer" :class="{ current: current }">
         <div class="messenger-dialog__body messenger-dialog-offer__body">
             <div class="messenger-dialog-offer__preview">
+                <OfferTableItemPreviewMotionSlider
+                    v-if="motionSlider"
+                    :thumb="model.object.thumb"
+                    :photos="model.object.photos ?? []"
+                />
                 <LazyImage
+                    v-else
                     :src="model.object.thumb"
                     class="messenger-dialog-offer__image"
                     alt="file image"
@@ -40,6 +46,7 @@ import { computed } from 'vue';
 import { getCompanyName } from '@/utils/formatter.js';
 import { useStore } from 'vuex';
 import MessengerDialogObjectDealType from '@/components/Messenger/Dialog/Object/MessengerDialogObjectDealType.vue';
+import OfferTableItemPreviewMotionSlider from '@/components/Offer/TableItem/OfferTableItemPreviewMotionSlider.vue';
 
 defineEmits(['update-call']);
 const props = defineProps({
@@ -60,6 +67,10 @@ const props = defineProps({
         default: null
     },
     allDealTypes: {
+        type: Boolean,
+        default: false
+    },
+    motionSlider: {
         type: Boolean,
         default: false
     }

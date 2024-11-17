@@ -36,6 +36,7 @@
                         :statistic="record.statistic"
                         :model="record.model"
                         :last-call="record.last_call"
+                        motion-slider
                     />
                     <MessengerDialogPreview
                         :opened="
