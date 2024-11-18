@@ -36,11 +36,12 @@
             :href="offerUrl"
             target="_blank"
         >
-            <NoImage v-if="!offer.thumb" />
+            <LazyImage v-if="offer.preview" :src="offer.preview" />
+            <NoImage v-else-if="!offer.thumb" />
             <OfferTableItemPreviewMotionSlider
                 v-else
                 :thumb="offer.thumb"
-                :photos="offer.object?.photo ?? offer.photos ?? []"
+                :photos="offer.object?.photo ?? offer.photos ?? [offer.image]"
             />
             <div class="offer-table-item-preview__parameters">
                 <span

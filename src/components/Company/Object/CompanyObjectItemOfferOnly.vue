@@ -136,7 +136,7 @@
                         <div class="font-weight-bold">
                             <with-unit-type
                                 v-if="offer.deal_type === 1 || offer.deal_type === 4"
-                                :unit-type="unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR"
+                                :unit-type="unitTypes.RUB_PER_SQUARE_METERS"
                             >
                                 {{ offer.calc_price_warehouse }}
                             </with-unit-type>
