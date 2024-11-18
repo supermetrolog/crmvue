@@ -29,7 +29,13 @@
                 </WithUnitType>
             </DashboardChip>
         </div>
-        <a class="offer-table-item-preview__container" :href="offerUrl" target="_blank">
+        <component
+            :is="as"
+            @click="$emit('click-preview')"
+            class="offer-table-item-preview__container"
+            :href="offerUrl"
+            target="_blank"
+        >
             <NoImage v-if="!offer.thumb" />
             <OfferTableItemPreviewMotionSlider
                 v-else
@@ -56,7 +62,7 @@
                 </span>
                 <span v-if="offer.is_fake" class="offer-table-item-preview__chip">Фейк</span>
             </div>
-        </a>
+        </component>
         <div class="offer-table-item-preview__types">
             <template v-if="offer.object_type?.length">
                 <DashboardChip
@@ -84,6 +90,7 @@ import { toNumberFormat } from '@/utils/formatter.js';
 import { getLinkOfferByObject, getLinkOfferOldByObject } from '@/utils/url.js';
 import NoImage from '@/components/common/NoImage.vue';
 
+defineEmits(['click-preview']);
 const props = defineProps({
     offer: {
         type: Object,
@@ -92,6 +99,10 @@ const props = defineProps({
     isPassive: {
         type: Boolean,
         default: false
+    },
+    as: {
+        type: String,
+        default: 'a'
     }
 });
 

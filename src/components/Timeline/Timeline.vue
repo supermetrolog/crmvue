@@ -1,5 +1,10 @@
 <template>
-    <Modal @close="$emit('close')" show class="fullscreen modal-timeline">
+    <Modal
+        @close="$emit('close')"
+        show
+        :close-on-press-esc="false"
+        class="fullscreen modal-timeline"
+    >
         <template #header>
             <TimelineHeader
                 v-if="!isGeneralLoading && timeline"
@@ -16,10 +21,17 @@
         <template v-else-if="timeline">
             <div class="timeline-page">
                 <div v-if="currentTab === 'main'" class="timeline-page__wrapper row">
+                    <div class="col-2">
+                        <TimelineTree
+                            @select="changeStep"
+                            :selected="selectedStep?.number"
+                            :current="timeline.timelineSteps"
+                        />
+                    </div>
                     <div class="col-10">
                         <div class="timeline-page__content" :class="{ disabled: disabled }">
-                            <Loader v-if="isStepLoading" />
-                            <div class="timeline-page__current">
+                            <Loader v-if="isStepLoading || stepIsChanging" />
+                            <div v-else class="timeline-page__current">
                                 <AnimationTransition :speed="0.5">
                                     <component
                                         :is="componentStepName"
@@ -38,13 +50,6 @@
                                 @close="backdropIsVisible = false"
                             />
                         </div>
-                    </div>
-                    <div class="col-2">
-                        <TimelineTree
-                            @select="changeStep"
-                            :selected="selectedStep?.number"
-                            :current="timeline.timelineSteps"
-                        />
                     </div>
                 </div>
                 <TimelineExtraBlock
@@ -120,8 +125,9 @@ export default {
     setup() {
         const { isLoading: isGeneralLoading } = useDelayedLoader();
         const { isLoading: isStepLoading } = useDelayedLoader();
+        const { isLoading: stepIsChanging } = useDelayedLoader();
 
-        return { isGeneralLoading, isStepLoading };
+        return { isGeneralLoading, isStepLoading, stepIsChanging };
     },
     data() {
         return {
@@ -234,6 +240,8 @@ export default {
             }
         },
         async changeStep(payload) {
+            this.stepIsChanging = true;
+
             const query = {
                 ...this.$route.query,
                 step: payload.step
@@ -243,6 +251,8 @@ export default {
             else delete query.point;
 
             await this.$router.push({ query });
+
+            this.stepIsChanging = false;
         },
         async fetchTimeline(withLoader = false) {
             if (withLoader) this.isGeneralLoading = true;

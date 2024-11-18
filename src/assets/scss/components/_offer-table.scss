@@ -478,6 +478,8 @@
 }
 
 .offer-table-item-mobile {
+    position: relative;
+
     @include mixins.media('max', 'md') {
         font-size: 14px;
     }
@@ -530,6 +532,47 @@
             width: 100%;
             object-fit: cover;
         }
+    }
+
+    &.general {
+        background-color: lighten($color: variables.$color_secondary, $amount: 45);;
+
+        .offer-table-item-mobile__button {
+            border: 1px solid #fff;
+        }
+    }
+
+    &.selected {
+        background-color: rgba(16, 185, 129, 0.25);
+    }
+
+    &__unselect {
+        position: absolute;
+        top: 90px;
+        left: 15px;
+        background-color: rgba(0, 0, 0, 0.4);
+        @include mixins.flex-box($a: center, $j: center);
+        width: calc(100% - 30px);
+        height: 180px;
+        z-index: 10;
+        cursor: pointer;
+
+        i {
+            padding: 0 4px;
+            font-weight: bold;
+            font-size: 64px;
+            color: variables.$color_success;
+        }
+    }
+
+    &__extra {
+        font-size: 14px;
+    }
+
+    &__block {
+        position: absolute;
+        top: -35px;
+        right: 0;
     }
 }
 
