@@ -3,7 +3,7 @@
         <div class="login__header">
             <div class="row no-gutters mb-4">
                 <div class="col-12 logo">
-                    <img src="@/assets/image/pl-logo.png" alt="PENNY LANE REALTY" />
+                    <img src="@/assets/image/logo.png" alt="RAYS ARMA" />
                 </div>
             </div>
             <div class="row no-gutters">

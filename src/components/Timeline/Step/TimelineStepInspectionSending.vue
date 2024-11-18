@@ -300,11 +300,11 @@ export default {
         },
         prepareLetterMessage(selfSend) {
             const formData = {
-                subject: 'Маршрут по предложенным объектам от Pennylane Realty',
+                subject: 'Маршрут по предложенным объектам от RAYS ARMA',
                 wayOfSending: [0],
                 selfSend: selfSend ? 1 : 0,
                 company_id: this.currentRequest.company_id,
-                message: `<span>Маршрут на Яндекс-Картах по предложенным объектам доступен по <a href=${this.routeLink}>ссылке</a></span><p>С уважением, ${this.THIS_USER.userProfile.medium_name}</p><p>менеджер PLR</p>`
+                message: `<span>Маршрут на Яндекс-Картах по предложенным объектам доступен по <a href=${this.routeLink}>ссылке</a></span><p>С уважением, ${this.THIS_USER.userProfile.medium_name}</p><p>менеджер RAYS ARMA</p>`
             };
 
             if (this.defaultContactForSending !== null) {

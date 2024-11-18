@@ -5,8 +5,8 @@
                 <router-link class="sidebar-mobile__logo" to="/">
                     <img
                         class="sidebar-mobile__image"
-                        alt="penny lane logo"
-                        src="@/assets/image/pl-logo.png"
+                        alt="rays arma logo"
+                        src="@/assets/image/logo.png"
                     />
                 </router-link>
                 <button @click.prevent="$emit('close')" class="sidebar-mobile__close">

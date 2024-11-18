@@ -131,7 +131,7 @@ const props = defineProps({
 });
 
 const dealOwner = computed(() => {
-    if (props.deal.is_our) return 'Penny Lane Realty';
+    if (props.deal.is_our) return 'RAYS ARMA';
     else
         return 'Конкурент: ' + props.deal.competitor
             ? getCompanyName(props.deal.competitor, props.deal.competitor_company_id)
