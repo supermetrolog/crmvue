@@ -68,7 +68,8 @@ const fieldOptions = {
 const fieldTypeOptions = {
     boolean: 'Boolean',
     string: 'String',
-    integer: 'Integer'
+    integer: 'Integer',
+    json: 'Json'
 };
 
 const notify = useNotify();
