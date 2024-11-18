@@ -10,7 +10,7 @@
                 class="form__input"
                 :class="[
                     validationClass,
-                    { 'form__input--unit': unit, 'form__input--rounded': rounded }
+                    { 'form__input--unit': unit, 'form__input--rounded': rounded, active: hasValue }
                 ]"
                 :style="unit ? paddingRightStyle : undefined"
                 :type="type"
@@ -123,6 +123,10 @@ const paddingRightStyle = computed(() => {
     let unitWidth = props.unit.replaceAll('/', '').replaceAll('<sup>', '').length * 10;
     let validationWidth = props.v && props.v.$dirty ? 20 : 0;
     return `padding-right: ${unitWidth + 20 + validationWidth}px`;
+});
+
+const hasValue = computed(() => {
+    return modelValue.value != null && modelValue.value !== '';
 });
 
 watch(
