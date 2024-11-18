@@ -17,9 +17,9 @@ export function useTaskManager() {
     async function createTaskWithTemplate(template = {}) {
         const {
             tags = [],
-            user_id = store.getters.moderator.id,
+            user_id = store.getters?.moderator?.id,
             observers = [],
-            message = '',
+            message = null,
             start = dayjs().toDate(),
             end = dayjs().add(DEFAULT_TASK_DURATION, 'day').toDate(),
             step = TASK_FORM_STEPS.USER,

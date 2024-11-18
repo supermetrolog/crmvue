@@ -14,7 +14,6 @@ import MessengerChatForUser from '@/components/Messenger/Chat/MessengerChatForUs
 import dayjs from 'dayjs';
 import api from '@/api/api.js';
 import { useTaskManager } from '@/composables/useTaskManager.js';
-import { useAuth } from '@/composables/useAuth.js';
 import { useStore } from 'vuex';
 import { useNotify } from '@/utils/useNotify.js';
 
@@ -30,7 +29,6 @@ const props = defineProps({
 const store = useStore();
 const notify = useNotify();
 const { createTaskWithTemplate } = useTaskManager();
-const { currentUserId } = useAuth();
 
 const currentMessengerChatComponent = computed(() => {
     if (props.currentTab.name === messenger.tabs.USERS) return MessengerChatForUser;
@@ -63,7 +61,6 @@ const generateTemplate = () => {
     return {
         message: '',
         end: dayjs().add(SCHEDULING_CALL_DURATION, 'day').toDate(),
-        user_id: currentUserId.value,
         customDescription,
         additionalContent
     };

@@ -6,6 +6,9 @@
         :close-on-outside-click="false"
         :title="props ? 'Редактирование задачи' : 'Создание задачи'"
     >
+        <div>
+            <DashboardTableTasksItem :task="taskPreview" />
+        </div>
         <Stepper @complete="submit" :step="step" :steps="steps" :v="v$.form" keep-alive>
             <template #1>
                 <Spinner v-if="isLoading" center />
@@ -110,9 +113,12 @@ import dayjs from 'dayjs';
 import { useTagsOptions } from '@/composables/options/useTagsOptions.js';
 import { taskOptions } from '@/const/options/task.options.js';
 import FormModalTaskDescription from '@/components/Forms/FormModalTaskDescription.vue';
+import { useAuth } from '@/composables/useAuth.js';
+import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItem.vue';
 
 const store = useStore();
 const { getTagsOptions } = useTagsOptions();
+const { currentUser } = useAuth();
 
 const steps = [
     {
@@ -204,6 +210,33 @@ const form = ref({
     user_id: null,
     status: 1,
     observers: []
+});
+
+const taskPreview = computed(() => {
+    return {
+        tags: [],
+        id: 1,
+        created_by_type: 'user',
+        created_by_id: currentUser.value.id,
+        created_by: currentUser.value,
+        message: form.value.message || 'Заполните описание..',
+        status: 1,
+        observers: selectedObservers.value,
+        user_id: form.value.user_id,
+        user: selectedUser.value,
+        end: form.value.date.end
+    };
+});
+
+const selectedUser = computed(() => {
+    return consultants.value.find(element => element.id === form.value.user_id);
+});
+
+const selectedObservers = computed(() => {
+    return form.value.observers.map(element => ({
+        user_id: element,
+        user: consultantsForObservers.value.find(el => el.id === element)
+    }));
 });
 
 const consultantsForObservers = computed(() => {
