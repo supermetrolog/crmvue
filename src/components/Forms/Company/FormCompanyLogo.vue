@@ -1,5 +1,6 @@
 <template>
     <div class="form-company-logo">
+        <Loader v-if="isUpdating" class="small" />
         <div class="row mb-1">
             <div class="col-12">
                 <div class="d-flex align-items-center mb-2">
@@ -156,6 +157,7 @@ import { useNotify } from '@/utils/useNotify.js';
 import Progress from '@/components/common/Progress.vue';
 import ImageCropper from '@/components/common/ImageCropper.vue';
 import Modal from '@/components/common/Modal.vue';
+import Loader from '@/components/common/Loader.vue';
 
 const emit = defineEmits(['updated', 'deleted', 'canceled', 'edited']);
 const props = defineProps({
