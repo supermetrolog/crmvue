@@ -397,6 +397,10 @@
         &--title {
             padding-left: 40px;
         }
+
+        &.active {
+            border-color: rgba(139, 137, 232, 0.7);
+        }
     }
 
 
@@ -825,6 +829,10 @@
         &.custom {
             opacity: .2;
         }
+    }
+
+    &.active {
+        border-color: rgba(139, 137, 232, 0.7);
     }
 }
 

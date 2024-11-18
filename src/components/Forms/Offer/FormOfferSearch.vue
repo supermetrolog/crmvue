@@ -1,4 +1,5 @@
 <template>
+    {{ form }}
     <div class="company-request-search-form">
         <Form @submit="onSubmit">
             <FormGroup class="mb-2">
@@ -23,14 +24,14 @@
                             <i v-else class="fas fa-angle-down"></i>
                         </Button>
                         <Button
-                            @click="clickFavorites"
+                            @click="toggleFavorites"
                             warning
                             :active="form.favorites"
                             :badge="favoritesCount || false"
                         >
                             избранные
                         </Button>
-                        <Button @click="resetForm" :disabled="!filterCount" danger>
+                        <Button @click="resetForm" :disabled="resetIsDisabled" danger>
                             Сбросить фильтры
                         </Button>
                         <AnimationTransition>
@@ -53,39 +54,24 @@
                     :show="extraVisible"
                     title="Фильтры предложений"
                     width="1200"
+                    style="z-index: 5000"
                 >
                     <Form>
                         <FormGroup class="mb-2">
-                            <MultiSelect
+                            <ConsultantPicker
                                 v-model="form.agent_id"
-                                label="Консультант"
-                                class="col-12 col-md-4"
-                                :options="
-                                    async () => {
-                                        return await FETCH_CONSULTANT_LIST();
-                                    }
-                                "
+                                :options="getConsultantsOptions"
+                                class="col-12 col-md-3"
                             />
                             <MultiSelect
                                 v-model="form.deal_type"
                                 label="Тип сделки"
-                                class="col-md-2 col-12"
-                                :options="dealTypeList"
+                                class="col-md-3 col-12 mb-2"
+                                :options="DealTypeList"
+                                placeholder="Выберите тип.."
                             />
                             <Input
-                                v-if="typeof form.approximateDistanceFromMKAD == 'undefined'"
-                                v-model="form.rangeMaxDistanceFromMKAD"
-                                maska="###"
-                                placeholder="не более"
-                                label="Удаленность от МКАД"
-                                class="col-md-3 col-12"
-                                unit="км"
-                                type="number"
-                                :v="v$.form.rangeMaxDistanceFromMKAD"
-                                reactive
-                            />
-                            <Input
-                                v-else
+                                v-if="hasApproximateDistance"
                                 v-model="form.approximateDistanceFromMKAD"
                                 maska="###"
                                 placeholder="не более"
@@ -93,6 +79,17 @@
                                 class="col-md-3 col-12"
                                 unit="км"
                                 type="number"
+                            />
+                            <Input
+                                v-else
+                                v-model="form.rangeMaxDistanceFromMKAD"
+                                :v="v$.form.rangeMaxDistanceFromMKAD"
+                                placeholder="не более"
+                                label="Удаленность от МКАД"
+                                class="col-md-3 col-12"
+                                unit="км"
+                                type="number"
+                                reactive
                             />
                             <Input
                                 v-model="form.rangeMinElectricity"
@@ -105,13 +102,11 @@
                                 :v="v$.form.rangeMinElectricity"
                                 reactive
                             />
-                        </FormGroup>
-                        <FormGroup class="mb-2">
                             <DoubleInput
                                 v-model:first="form.rangeMinArea"
                                 v-model:second="form.rangeMaxArea"
                                 label="S пола"
-                                class="col-4"
+                                class="col-md-3 col-12"
                                 unit="м<sup>2</sup>"
                                 type="number"
                                 :validators="formAreaValidators"
@@ -121,7 +116,7 @@
                                 v-model:first="form.rangeMinPricePerFloor"
                                 v-model:second="form.rangeMaxPricePerFloor"
                                 label="Цена (продажи, аренды, о-х)"
-                                class="col-4"
+                                class="col-md-3 col-12"
                                 unit="₽"
                                 type="number"
                                 reactive
@@ -131,26 +126,21 @@
                                 v-model:first="form.rangeMinCeilingHeight"
                                 v-model:second="form.rangeMaxCeilingHeight"
                                 label="Высота потолков"
-                                class="col-4"
+                                class="col-md-3 col-12"
                                 unit="м"
                                 type="number"
                                 reactive
                                 :validators="formCeilingHeightValidators"
                             />
-                        </FormGroup>
-                        <FormGroup class="mb-2">
                             <MultiSelect
                                 v-model="form.fakeRegion"
                                 @change="changeRegion"
                                 label="Регионы"
-                                class="col-md-3 col-6"
-                                mode="single"
-                                :options="
-                                    async () => {
-                                        await FETCH_REGION_LIST();
-                                        return REGION_LIST;
-                                    }
-                                "
+                                placeholder="Выберите регион.."
+                                can-deselect
+                                class="col-md-3 col-sm-6 col-12"
+                                searchable
+                                :options="getRegionsOptions"
                             />
                         </FormGroup>
                         <FormGroup class="mb-2">
@@ -159,7 +149,7 @@
                                     <span class="form__subtitle">Округа Москвы</span>
                                     <div class="form__row mt-1">
                                         <CheckboxChip
-                                            v-for="(districtItem, index) in districtList"
+                                            v-for="(districtItem, index) in DistrictList"
                                             :key="index"
                                             v-model="form.district_moscow"
                                             :value="index"
@@ -173,7 +163,7 @@
                                     <span class="form__subtitle">Направления МО</span>
                                     <div class="form__row mt-1">
                                         <CheckboxChip
-                                            v-for="(directionItem, index) in directionList"
+                                            v-for="(directionItem, index) in DirectionList"
                                             :key="index"
                                             v-model="form.direction"
                                             :value="index"
@@ -182,135 +172,95 @@
                                     </div>
                                 </div>
                             </AnimationTransition>
-                            <div class="col-2">
-                                <span class="form__subtitle">Классы</span>
-                                <div class="form__row mt-1">
-                                    <CheckboxChip
-                                        v-for="(objectClass, index) in objectClassList"
-                                        :key="index"
-                                        v-model="form.class"
-                                        :value="index"
-                                        :text="objectClass"
-                                    />
-                                </div>
-                            </div>
-                            <div class="col-5">
-                                <span class="form__subtitle">Тип ворот</span>
-                                <div class="form__row mt-1">
-                                    <CheckboxChip
-                                        v-for="(gateType, index) in gateTypeList"
-                                        :key="index"
-                                        v-model="form.gates"
-                                        :value="index"
-                                        :text="gateType"
-                                    />
-                                </div>
-                            </div>
-                            <div class="col-5">
-                                <span class="form__subtitle">Тип пола</span>
-                                <div class="form__row mt-1">
-                                    <CheckboxChip
-                                        v-for="(floorType, index) in floorTypesFUCKOptions"
-                                        :key="index"
-                                        v-model="form.floor_types"
-                                        :value="index"
-                                        :text="floorType"
-                                    />
-                                </div>
-                            </div>
+                            <CheckboxOptions
+                                v-model="form.class"
+                                class="col-md-2 col-12"
+                                label="Классы"
+                                :options="ObjectClassList"
+                            />
+                            <CheckboxOptions
+                                v-model="form.gates"
+                                class="col-md-5 col-12"
+                                label="Тип ворот"
+                                :options="GateTypeList"
+                            />
+                            <CheckboxOptions
+                                v-model="form.floor_types"
+                                class="col-md-5 col-12"
+                                label="Тип пола"
+                                :options="realFloorTypeOptions"
+                            />
                         </FormGroup>
-                        <FormGroup class="mb-2">
-                            <div class="col-7">
-                                <span class="form__subtitle">Прочее</span>
-                                <div class="form__row mt-1">
-                                    <CheckboxChip
-                                        v-model="form.water"
-                                        :value="form.water"
-                                        text="Вода"
-                                        multiple
-                                    />
-                                    <CheckboxChip
-                                        v-model="form.gas"
-                                        :value="form.gas"
-                                        text="Газ"
-                                        multiple
-                                    />
-                                    <CheckboxChip
-                                        v-model="form.steam"
-                                        :value="form.steam"
-                                        text="Пар"
-                                        multiple
-                                    />
-                                    <CheckboxChip
-                                        v-model="form.sewage_central"
-                                        :value="form.sewage_central"
-                                        text="Канализация"
-                                        multiple
-                                    />
-                                    <CheckboxChip
-                                        v-model="form.racks"
-                                        :value="form.racks"
-                                        text="Стелажи"
-                                        multiple
-                                    />
-                                    <CheckboxChip
-                                        v-model="form.railway"
-                                        :value="form.railway"
-                                        text="Ж/Д ветка"
-                                        multiple
-                                    />
-                                    <CheckboxChip
-                                        v-model="form.has_cranes"
-                                        :value="form.has_cranes"
-                                        text="Краны"
-                                        multiple
-                                    />
-                                    <CheckboxChip
-                                        v-model="form.firstFloorOnly"
-                                        :value="form.firstFloorOnly"
-                                        text="Только 1 этаж"
-                                        multiple
-                                    />
-                                </div>
-                            </div>
-                        </FormGroup>
-                        <FormGroup class="mb-2">
-                            <div class="col-2">
-                                <span class="form__subtitle">Статус</span>
-                                <div class="form__row mt-1">
-                                    <RadioChip
-                                        v-model="form.status"
-                                        label="Актив"
-                                        :value="1"
-                                        unselect
-                                    />
-                                    <RadioChip
-                                        v-model="form.status"
-                                        label="Пассив"
-                                        :value="2"
-                                        unselect
-                                    />
-                                </div>
-                            </div>
-                            <div class="col-2">
-                                <span class="form__subtitle">Отопление</span>
-                                <div class="form__row mt-1">
-                                    <RadioChip
-                                        v-model="form.heated"
-                                        label="Да"
-                                        :value="1"
-                                        unselect
-                                    />
-                                    <RadioChip
-                                        v-model="form.heated"
-                                        label="Нет"
-                                        :value="2"
-                                        unselect
-                                    />
-                                </div>
-                            </div>
-                        </FormGroup>
-                        <FormGroup class="mb-2">
+                        <p class="form__block">Коммуникации</p>
+                        <div class="row">
+                            <SwitchSlider
+                                v-model="form.heated"
+                                class="col-12 col-lg-6 col-xxl-4"
+                                label="Отопление"
+                                :false-value="2"
+                            />
+                            <SwitchSlider
+                                v-model="form.water"
+                                class="col-12 col-lg-6 col-xxl-4"
+                                label="Вода"
+                                :false-value="2"
+                            />
+                            <SwitchSlider
+                                v-model="form.gas"
+                                class="col-12 col-lg-6 col-xxl-4"
+                                label="Газ"
+                                :false-value="2"
+                            />
+                            <SwitchSlider
+                                v-model="form.steam"
+                                class="col-12 col-lg-6 col-xxl-4"
+                                label="Пар"
+                                :false-value="2"
+                            />
+                            <SwitchSlider
+                                v-model="form.sewage_central"
+                                class="col-12 col-lg-6 col-xxl-4"
+                                label="Канализация"
+                                :false-value="2"
+                            />
+                            <SwitchSlider
+                                v-model="form.racks"
+                                class="col-12 col-lg-6 col-xxl-4"
+                                label="Стелажи"
+                                :false-value="2"
+                            />
+                            <SwitchSlider
+                                v-model="form.railway"
+                                class="col-12 col-lg-6 col-xxl-4"
+                                label="Ж/Д ветка"
+                                :false-value="2"
+                            />
+                            <SwitchSlider
+                                v-model="form.has_cranes"
+                                class="col-12 col-lg-6 col-xxl-4"
+                                label="Краны"
+                                :false-value="2"
+                            />
+                            <SwitchSlider
+                                v-model="form.firstFloorOnly"
+                                class="col-12 col-lg-6 col-xxl-4"
+                                label="Только 1 этаж"
+                                :false-value="2"
+                            />
+                        </div>
+                        <p class="form__block">Статус</p>
+                        <div class="row mt-2">
+                            <SwitchSlider
+                                v-model="form.status"
+                                class="col-12 col-lg-6 col-xxl-4"
+                                label="Статус"
+                                unknown-title="Любой"
+                                true-title="Актив"
+                                false-title="Пассив"
+                                :false-value="2"
+                            />
+                        </div>
+                        <div class="row mt-2">
                             <div class="col-12">
                                 <span class="form__subtitle">Тип объекта</span>
                                 <div class="row mt-2">
@@ -340,82 +290,35 @@
                                     />
                                 </div>
                             </div>
-                        </FormGroup>
-                        <FormGroup class="mb-2">
-                            <div class="col-12 mt-2">
-                                <span class="form__subtitle">Реклама</span>
-                                <div class="form__row justify-content-around">
-                                    <div class="form__column">
-                                        <span class="form__subtitle">Realtor.ru</span>
-                                        <div class="form__row">
-                                            <RadioChip
-                                                v-model="form.ad_realtor"
-                                                label="Да"
-                                                :value="1"
-                                                unselect
-                                            />
-                                            <RadioChip
-                                                v-model="form.ad_realtor"
-                                                label="Нет"
-                                                :value="0"
-                                                unselect
-                                            />
-                                        </div>
-                                    </div>
-                                    <div class="form__column">
-                                        <span class="form__subtitle">Циан</span>
-                                        <div class="form__row">
-                                            <RadioChip
-                                                v-model="form.ad_cian"
-                                                label="Да"
-                                                :value="1"
-                                                unselect
-                                            />
-                                            <RadioChip
-                                                v-model="form.ad_cian"
-                                                label="Нет"
-                                                :value="0"
-                                                unselect
-                                            />
-                                        </div>
-                                    </div>
-                                    <div class="form__column">
-                                        <span class="form__subtitle">Яндекс</span>
-                                        <div class="form__row">
-                                            <RadioChip
-                                                v-model="form.ad_yandex"
-                                                label="Да"
-                                                :value="1"
-                                                unselect
-                                            />
-                                            <RadioChip
-                                                v-model="form.ad_yandex"
-                                                label="Нет"
-                                                :value="0"
-                                                unselect
-                                            />
-                                        </div>
-                                    </div>
-                                    <div class="form__column">
-                                        <span class="form__subtitle">Бесплатные</span>
-                                        <div class="form__row">
-                                            <RadioChip
-                                                v-model="form.ad_free"
-                                                label="Да"
-                                                :value="1"
-                                                unselect
-                                            />
-                                            <RadioChip
-                                                v-model="form.ad_free"
-                                                label="Нет"
-                                                :value="0"
-                                                unselect
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
+                            <p class="form__block">Реклама</p>
+                            <div class="row">
+                                <SwitchSlider
+                                    v-model="form.ad_avito"
+                                    class="col-12 col-lg-6 col-xl-4"
+                                    label="Авито"
+                                />
+                                <SwitchSlider
+                                    v-model="form.ad_realtor"
+                                    class="col-12 col-lg-6 col-xl-4"
+                                    label="Realtor.ru"
+                                />
+                                <SwitchSlider
+                                    v-model="form.ad_cian"
+                                    class="col-12 col-lg-6 col-xl-4"
+                                    label="Циан"
+                                />
+                                <SwitchSlider
+                                    v-model="form.ad_yandex"
+                                    class="col-12 col-lg-6 col-xl-4"
+                                    label="Яндекс"
+                                />
+                                <SwitchSlider
+                                    v-model="form.ad_free"
+                                    class="col-12 col-lg-6 col-xl-4"
+                                    label="Бесплатные"
+                                />
                             </div>
-                        </FormGroup>
+                        </div>
                     </Form>
                 </Modal>
             </teleport>
@@ -423,8 +326,7 @@
     </div>
 </template>
 
-<script>
-import { FormMixin } from '@/components/Forms/mixins.js';
+<script setup>
 import Button from '@/components/common/Button.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
@@ -433,58 +335,254 @@ import {
     ceilingHeightValidators,
     pricePerFloorValidators
 } from '@//validators/fields';
-import { onlyPositiveNumber } from '@//validators';
 import useVuelidate from '@vuelidate/core';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
-import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import Modal from '@/components/common/Modal.vue';
 import ObjectTypePicker from '@/components/common/Forms/ObjectTypePicker.vue';
 import { objectPurposesWithSectionsOptions } from '@/const/options/object.options.js';
+import ConsultantPicker from '@/components/common/Forms/ConsultantPicker/ConsultantPicker.vue';
+import { useRegionsOptions } from '@/composables/options/useRegionsOptions.js';
+import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
+import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { useStore } from 'vuex';
+import { helpers, minValue } from '@vuelidate/validators';
+import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import Form from '@/components/common/Forms/Form.vue';
+import Input from '@/components/common/Forms/Input.vue';
+import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
+import {
+    DealTypeList,
+    DirectionList,
+    DistrictList,
+    GateTypeList,
+    ObjectClassList
+} from '@/const/const.js';
+import { realFloorTypeOptions } from '@/const/options/floor.options.js';
+import CheckboxOptions from '@/components/common/Forms/CheckboxOptions.vue';
+import SwitchSlider from '@/components/common/Forms/SwitchSlider.vue';
+import { useDebounceFn } from '@vueuse/core';
 
-export default {
-    name: 'FormOfferSearch',
-    components: {
-        ObjectTypePicker,
-        Modal,
-        RadioChip,
-        CheckboxChip,
-        DoubleInput,
-        AnimationTransition,
-        Button
+const emit = defineEmits(['close', 'search', 'reset', 'resetSelected']);
+const props = defineProps({
+    additionalButtons: {
+        type: Array,
+        default: () => []
     },
-    mixins: [FormMixin],
-    data() {
-        return {
-            v$: useVuelidate()
-        };
+    objectsCount: {
+        type: Number,
+        default: 0
     },
-    computed: {
-        objectPurposesWithSectionsOptions() {
-            return objectPurposesWithSectionsOptions;
-        },
-        formCeilingHeightValidators() {
-            return ceilingHeightValidators(this.form.rangeMaxCeilingHeight);
-        },
-        formPricePerFloorValidators() {
-            return pricePerFloorValidators(this.form.rangeMaxPricePerFloor);
-        },
-        formAreaValidators() {
-            return areaRangeValidators(this.form.rangeMaxArea);
+    noUrl: {
+        type: Boolean,
+        default: false
+    },
+    queryParams: {
+        type: Object
+    }
+});
+
+const REGIONS = {
+    MSK_AND_MO: 'mskandmo',
+    MSK_INSIDE_MKAD: 'mskinsidemkad',
+    MO_AND_MSK_OUTSIDE_MKAD: 'moandmskoutsidemkad',
+    MO_AND_REGIONS: 'moandregionneardy'
+};
+
+const defaultForm = {
+    all: null,
+    rangeMinElectricity: null,
+    rangeMaxDistanceFromMKAD: null,
+    deal_type: null,
+    agent_id: null,
+    rangeMaxArea: null,
+    rangeMinArea: null,
+    rangeMaxPricePerFloor: null,
+    rangeMinPricePerFloor: null,
+    rangeMinCeilingHeight: null,
+    rangeMaxCeilingHeight: null,
+    class: [],
+    gates: [],
+    heated: null,
+    water: null,
+    gas: null,
+    steam: null,
+    sewage_central: null,
+    is_fake: null,
+    racks: null,
+    railway: null,
+    has_cranes: null,
+    floor_types: [],
+    purposes: [],
+    object_type: [],
+    region: [],
+    fakeRegion: null,
+    direction: [],
+    district_moscow: [],
+    status: null,
+    firstFloorOnly: null,
+    ad_realtor: null,
+    ad_cian: null,
+    ad_yandex: null,
+    ad_free: null,
+    ad_avito: null,
+    favorites: null,
+    outside_mkad: null,
+    region_neardy: null
+};
+
+const store = useStore();
+
+const form = reactive({});
+const extraVisible = ref(false);
+
+const { getRegionsOptions } = useRegionsOptions();
+const { getConsultantsOptions } = useConsultantsOptions();
+
+const formCeilingHeightValidators = computed(() =>
+    ceilingHeightValidators(form.rangeMaxCeilingHeight)
+);
+const formPricePerFloorValidators = computed(() =>
+    pricePerFloorValidators(form.rangeMaxPricePerFloor)
+);
+const formAreaValidators = computed(() => areaRangeValidators(form.rangeMaxArea));
+
+const resetIsDisabled = computed(() => {
+    return filterCount.value === 0 && (form?.all?.length === 0 || form?.all == null);
+});
+const favoritesCount = computed(() => store.getters.FAVORITES_OFFERS.length);
+const filterCount = computed(() => {
+    let count = 0;
+
+    Object.keys(defaultForm).forEach(key => {
+        const value = form[key];
+        if (
+            value !== null &&
+            value !== '' &&
+            key !== 'fakeRegion' &&
+            key !== 'region_neardy' &&
+            key !== 'outside_mkad'
+        ) {
+            if (Array.isArray(value)) {
+                if (value.length) count++;
+            } else {
+                count++;
+            }
+        }
+    });
+
+    return count;
+});
+
+const v$ = useVuelidate(
+    {
+        form: {
+            rangeMaxDistanceFromMKAD: {
+                min: helpers.withMessage('Некорректная минимальная удаленность', minValue(0))
+            },
+            rangeMinElectricity: {
+                min: helpers.withMessage('Некорректное минимальное электричество', minValue(0))
+            }
         }
     },
-    validations() {
-        return {
-            form: {
-                rangeMaxDistanceFromMKAD: {
-                    min: onlyPositiveNumber('Некорректная отрицательная удаленность')
-                },
-                rangeMinElectricity: {
-                    min: onlyPositiveNumber()
-                }
-            }
-        };
+    {
+        form
     }
-};
-</script>
+);
 
-<style></style>
+const onSubmit = async () => {
+    emit('search', form);
+};
+
+const toggleFavorites = () => {
+    if (form.favorites) form.favorites = null;
+    else form.favorites = 1;
+};
+
+const setDefaultRegionOptions = () => {
+    form.direction = [];
+    form.district_moscow = [];
+    form.region_neardy = null;
+    form.outside_mkad = null;
+};
+
+const toDefaultForm = () => {
+    Object.keys(defaultForm).forEach(key => {
+        form[key] = defaultForm[key];
+    });
+
+    form.all = null;
+};
+
+const resetForm = () => {
+    toDefaultForm();
+    emit('reset');
+};
+
+const changeRegion = () => {
+    setDefaultRegionOptions();
+
+    if (
+        form.fakeRegion == null ||
+        (Array.isArray(form.fakeRegion) && form.fakeRegion.length === 0)
+    ) {
+        form.region = [];
+        return;
+    }
+
+    switch (form.fakeRegion) {
+        case REGIONS.MSK_AND_MO: {
+            form.region = [1, 6];
+            return;
+        }
+        case REGIONS.MSK_INSIDE_MKAD: {
+            form.region = [6];
+            form.outside_mkad = 0;
+            return;
+        }
+        case REGIONS.MO_AND_MSK_OUTSIDE_MKAD: {
+            form.region = [1, 6];
+            form.outside_mkad = 1;
+            return;
+        }
+        case REGIONS.MO_AND_REGIONS: {
+            form.region = [1];
+            form.region_neardy = 1;
+            return;
+        }
+    }
+
+    form.region = [form.fakeRegion];
+};
+
+const hasApproximateDistance = computed(() => {
+    return Object.hasOwnProperty.call(form, 'approximateDistanceFromMKAD');
+});
+
+const setQueryFields = async () => {
+    Object.assign(form, props.queryParams);
+};
+
+toDefaultForm();
+
+watch(
+    () => props.queryParams,
+    () => {
+        setQueryFields();
+    },
+    { deep: true }
+);
+
+const debouncedOnSubmit = useDebounceFn(onSubmit, 500);
+
+watch(
+    form,
+    () => {
+        debouncedOnSubmit();
+    },
+    { deep: true }
+);
+
+onMounted(() => {
+    setQueryFields();
+});
+</script>

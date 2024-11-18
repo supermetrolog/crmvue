@@ -351,26 +351,78 @@
 }
 
 .messenger-quiz-header {
-    color: #fff;
     padding: 10px;
-    background-color: #566B6E;
+    background-color: #dcd8d8;
     min-height: 100px;
     position: relative;
+    border-bottom: 1px solid rgba(0, 0, 0, .2);
 
     &:has(.messenger-quiz-header__empty) {
         min-height: 70px;
     }
 
-    &__username {
+    &__empty {
+        @include mixins.flex-box($a: center, $gap: 10px);
         font-weight: 500;
     }
 
-    &__username-warning {
+    &__list {
+        @include mixins.flex-box($gap: 5px);
+        padding-bottom: 5px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+
+        &::-webkit-scrollbar {
+            height: 5px;
+            background-color: lighten(variables.$color_grey, 30);
+        }
+    }
+
+    &__contact {
+        width: calc(calc(100% - 10px) / 3);
+    }
+}
+
+.messenger-quiz-contact {
+    background-color: variables.$bg-gray-l;
+    padding: 10px;
+    border-radius: 5px;
+    flex-shrink: 0;
+    cursor: pointer;
+    @include mixins.flex-box($gap: 5px, $j: space-between);
+    @include mixins.transition(background-color, color);
+
+    &:hover, &.active {
+        background-color: variables.$bg-success;
+        color: #fff;
+
+        .messenger-quiz-contact {
+            &__error {
+                color: #450000;
+            }
+
+            &__button {
+                border-color: rgba(255, 255, 255, .5);
+            }
+        }
+    }
+
+    &__actions {
+        @include mixins.flex-box($gap: 5px, $d: column);
+    }
+
+    &__username {
+        font-weight: 500;
+        @include mixins.text-overflow();
+    }
+
+    &__error {
         font-size: 12px;
+        font-weight: 500;
+        @include mixins.transition(color);
     }
 
     &__staff {
-        color: #b7b7b7;
         font-size: 13px;
     }
 
@@ -381,19 +433,12 @@
     &__warning {
         font-size: 13px;
         padding: 1px 5px;
-        margin: 5px 0 -5px -15px;
+        margin: 5px 0 -5px -10px;
         width: max-content;
         max-width: 100%;
+        color: #fff;
         background-color: variables.$color_danger_dark;
         @include mixins.text-overflow(2);
-    }
-
-    &__contacts {
-        @include mixins.flex-box($d: column);
-    }
-
-    &__contact {
-        @include mixins.flex-box($d: column, $gap: 2px);
     }
 
     &__phone {
@@ -422,9 +467,23 @@
         @include mixins.flex-box($a: center, $j: center);
     }
 
-    &__empty {
-        @include mixins.flex-box($a: center, $gap: 10px);
-        font-weight: 500;
+    &__button {
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        @include mixins.transition(border, color, background-color);
+    }
+
+    &__contacts {
+        @include mixins.flex-box($gap: 5px, $a: center);
+    }
+
+    &__column {
+        @include mixins.flex-box($d: column, $gap: 3px, $a: flex-start);
+    }
+
+    &__helper {
+        padding: 2px 4px;
+        background-color: variables.$bg-gray-l;
+        border-radius: 5px;
     }
 }
 

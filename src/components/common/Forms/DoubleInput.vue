@@ -19,7 +19,11 @@
                     :class="[
                         firstInputValidationClass,
                         paddingLeftStyleFirst,
-                        { 'form__input--unit': unit, 'form__input--title': !withoutCaption }
+                        {
+                            'form__input--unit': unit,
+                            'form__input--title': !withoutCaption,
+                            active: firstHasValue
+                        }
                     ]"
                     :style="[paddingRightStyle.first, paddingLeftStyleFirst]"
                     :type="type"
@@ -39,7 +43,11 @@
                     class="form__input"
                     :class="[
                         secondInputValidationClass,
-                        { 'form__input--unit': unit, 'form__input--title': !withoutCaption }
+                        {
+                            'form__input--unit': unit,
+                            'form__input--title': !withoutCaption,
+                            active: secondHasValue
+                        }
                     ]"
                     :style="[paddingRightStyle.second, paddingLeftStyleSecond]"
                     :type="type"
@@ -217,6 +225,12 @@ export default {
             return (
                 (this.secondHasErrors || !empty(this.second)) && !this.disabled && !this.reactive
             );
+        },
+        firstHasValue() {
+            return this.first != null && this.first !== '';
+        },
+        secondHasValue() {
+            return this.second != null && this.second !== '';
         }
     },
     methods: {

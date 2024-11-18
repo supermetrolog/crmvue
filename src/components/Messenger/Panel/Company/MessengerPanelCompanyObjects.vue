@@ -36,8 +36,14 @@
                         :statistic="record.statistic"
                         :model="record.model"
                         :last-call="record.last_call"
+                        motion-slider
                     />
-                    <MessengerDialogPreview>
+                    <MessengerDialogPreview
+                        :opened="
+                            record.id === currentDialogID &&
+                            currentTab === messenger.chatTabs.SURVEY
+                        "
+                    >
                         <MessengerDialogObjectPreview
                             :object-chat-member-type="record.model.type"
                             :object-id="record.model.object.id"
@@ -70,6 +76,7 @@ import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import { computed, inject, onMounted, watch } from 'vue';
 import MessengerDialogObjectPreview from '@/components/Messenger/Dialog/Object/MessengerDialogObjectPreview.vue';
 import MessengerDialogPreview from '@/components/Messenger/Dialog/Preview/MessengerDialogPreview.vue';
+import { messenger } from '@/const/messenger.js';
 
 const lastRenderedObjectCount = inject('lastRenderedObjectCount');
 const setLastRendererObjectCount = inject('setLastRendererObjectCount');
@@ -96,6 +103,7 @@ const { items: objects, pagination, load: loadObjects } = useInfiniteLoading(get
 const { show: showLastCallPopup } = useAsyncPopup('chatMemberLastCall');
 
 const currentDialogID = computed(() => store.state.Messenger.currentPanelDialogID);
+const currentTab = computed(() => store.state.Messenger.currentChatTab);
 
 watch(isLoading, value => {
     if (!value) setLastRendererObjectCount(Math.min(objects.value.length, 3) || 1);

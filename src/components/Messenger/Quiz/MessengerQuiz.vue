@@ -20,23 +20,13 @@
             </div>
         </div>
         <div class="messenger-quiz__wrapper">
-            <MessengerQuizHeader
-                @change="showContactPicker"
-                @edit="editContact"
-                :recipient="currentRecipient"
-                :loading="isLoading"
-            />
-            <p @click="$toggleQuizHelper" class="messenger-quiz__action">
-                <i class="fa-solid fa-chevron-left"></i>
-                <span>Открыть список возможных вопросов клиенту</span>
-            </p>
+            <MessengerQuizHeader v-model:contact="currentRecipient" />
             <Loader v-if="isLoading" class="my-4" />
             <MessengerQuizForm ref="quizForm" />
             <div class="messenger-quiz__footer">
                 <MessengerButton @click="send" color="success" :disabled="isCompleted">
                     Готово
                 </MessengerButton>
-                <!--                <MessengerButton @click="openSchedule"> Запланировать звонок </MessengerButton>-->
                 <MessengerButton @click="scheduleCall" :disabled="!currentRecipient">
                     Запланировать звонок
                 </MessengerButton>
@@ -50,14 +40,6 @@
             </div>
             <MessengerQuizComplete v-if="isCompleted" @close="close" />
         </div>
-        <teleport to="body">
-            <FormCompanyContact
-                v-if="updateContactModalVisible"
-                @close="updateContactModalVisible = false"
-                @updated="onContactUpdated"
-                :formdata="currentRecipient"
-            />
-        </teleport>
         <Modal
             @close="surveyPreviewIsOpen = false"
             :show="surveyPreviewIsOpen"
@@ -89,7 +71,7 @@
 <script setup>
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';
 import { useStore } from 'vuex';
-import { computed, inject, onMounted, ref, shallowRef, useTemplateRef } from 'vue';
+import { computed, onMounted, ref, shallowRef, useTemplateRef } from 'vue';
 import { useNotify } from '@/utils/useNotify.js';
 import { useConfirm } from '@/composables/useConfirm.js';
 import api from '@/api/api.js';
@@ -99,7 +81,6 @@ import MessengerChatHeader from '@/components/Messenger/Chat/Header/MessengerCha
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import Modal from '@/components/common/Modal.vue';
 import MessengerQuizHeader from '@/components/Messenger/Quiz/MessengerQuizHeader.vue';
-import FormCompanyContact from '@/components/Forms/Company/FormCompanyContact.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import MessengerQuizInlineElement from '@/components/Messenger/Quiz/MessengerQuizInlineElement.vue';
 import Button from '@/components/common/Button.vue';
@@ -133,17 +114,14 @@ const {
     submit: sendQuiz
 } = useAsyncPopup('quizContactPicker');
 
-// const $openSchedule = inject('$openSchedule');
-const $toggleQuizHelper = inject('$toggleQuizHelper');
+const isLoading = ref(false);
+const isCompleted = ref(false);
 
-const isLoading = shallowRef(false);
-const isCompleted = shallowRef(false);
-const updateContactModalVisible = shallowRef(false);
-const currentRecipient = ref(store.state.Messenger.currentRecipient);
+const currentRecipient = shallowRef(null);
 const surveys = ref([]);
-const surveysCount = shallowRef(0);
-const surveyPreviewIsOpen = shallowRef(false);
-const previewedSurveyId = shallowRef(null);
+const surveysCount = ref(0);
+const surveyPreviewIsOpen = ref(false);
+const previewedSurveyId = ref(null);
 
 const isObjectChatMember = computed(() => {
     return (
@@ -162,18 +140,6 @@ const shouldCall = computed(() => {
 const { isLoading: surveysIsLoading } = useDelayedLoader(
     store.getters['Messenger/currentChatHasLastCall']
 );
-
-// const openSchedule = async () => {
-//     const schedule = await $openSchedule();
-//
-//     if (schedule) {
-//         await store.dispatch('Messenger/addCall', {
-//             date: schedule,
-//             contact: currentRecipient.value
-//         });
-//         notify.info('Дата следующего звонка успешно выбрана');
-//     }
-// };
 
 const send = async () => {
     const confirmed = await confirm(
@@ -206,17 +172,6 @@ const send = async () => {
 
 const close = () => {
     emit('completed');
-};
-
-const editContact = () => {
-    updateContactModalVisible.value = true;
-};
-
-const onContactUpdated = async contactId => {
-    const contacts = await api.contacts.getByCompany(currentRecipient.value?.company_id);
-    const newContact = contacts.find(contact => contact.id === contactId);
-
-    if (newContact) store.commit('Messenger/onContactUpdated', newContact);
 };
 
 const fetchSurveys = async () => {

@@ -59,7 +59,12 @@
             <p v-else>&#8212;</p>
         </Td>
         <Td class="company-table-item__contacts">
-            <CompanyContact v-if="company.mainContact" :contact="company.mainContact" />
+            <CompanyContact
+                v-if="company.mainContact"
+                @open-phone="openInSurvey"
+                hidden
+                :contact="company.mainContact"
+            />
             <p v-else class="text-center">&#8212;</p>
         </Td>
         <Td class="text-center company-table-item__survey"><span>&#8212;</span></Td>
@@ -137,7 +142,7 @@ import { messenger } from '@/const/messenger.js';
 
 const store = useStore();
 const router = useRouter();
-const { openChat } = useMessenger();
+const { openChat, openSurvey } = useMessenger();
 
 const props = defineProps({
     company: { type: Object, required: true },
@@ -181,5 +186,12 @@ const openInChat = () => {
     openChat(props.company.id, props.company.id, messenger.dialogTypes.COMPANY);
 };
 
-const openSurvey = () => {};
+const openInSurvey = () => {
+    openSurvey(
+        messenger.dialogTypes.COMPANY,
+        messenger.surveyType.COMPANY,
+        props.company.id,
+        props.company.id
+    );
+};
 </script>

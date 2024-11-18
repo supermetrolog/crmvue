@@ -9,20 +9,6 @@
                 class="dashboard-task-item-preview__close fa-regular fa-xmark-circle"
             />
         </div>
-        <div class="dashboard-task-item-preview-status__preview gap-2">
-            <span class="dashboard-task-item-preview__label">Текущий статус:</span>
-            <DashboardChip class="dashboard-task-item-preview-status__chip">
-                {{ status }}
-            </DashboardChip>
-            <AnimationTransition :speed="0.4">
-                <div v-if="taskIsChanged" class="d-flex align-items-center gap-2">
-                    <i class="fa-solid fa-arrow-right" />
-                    <DashboardChip class="dashboard-task-item-preview-status__chip">
-                        {{ newStatus }}
-                    </DashboardChip>
-                </div>
-            </AnimationTransition>
-        </div>
         <p class="dashboard-task-item-preview__label">Выберите статус:</p>
         <div class="dashboard-task-item-preview-status__list">
             <HoverActionsButton
@@ -108,7 +94,6 @@ import Textarea from '@/components/common/Forms/Textarea.vue';
 import Input from '@/components/common/Forms/Input.vue';
 import useVuelidate from '@vuelidate/core';
 import { helpers, requiredIf } from '@vuelidate/validators';
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import Loader from '@/components/common/Loader.vue';
 import Form from '@/components/common/Forms/Form.vue';
@@ -153,9 +138,6 @@ const canBeSaved = computed(() => {
             impossibleTo.value !== props.impossibleTo)
     );
 });
-const status = computed(() => taskOptions.status[props.status]);
-const newStatus = computed(() => taskOptions.status[current.value]);
-const taskIsChanged = computed(() => current.value !== props.status);
 
 const v$ = useVuelidate(
     {

@@ -289,13 +289,13 @@ const onUpdateLogo = logo => {
     closeForm();
 
     notify.success('Логотип компании обновлен');
-    if (store.state.company) store.state.company.logo = logo;
+    store.commit('setCompanyLogo', logo);
 };
 
 const onDeleteLogo = () => {
     closeForm();
 
     notify.success('Логотип компании удален');
-    if (store.state.company) store.state.company.logo = null;
+    store.commit('setCompanyLogo', null);
 };
 </script>

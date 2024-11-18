@@ -145,11 +145,7 @@ const filters = reactive({
     userId: null,
     tags: [],
     type: [],
-    status: [
-        taskOptions.statusTypes.NEW,
-        taskOptions.statusTypes.IN_PROGRESS,
-        taskOptions.statusTypes.CANCELED
-    ]
+    status: []
 });
 
 const sortingOptions = [

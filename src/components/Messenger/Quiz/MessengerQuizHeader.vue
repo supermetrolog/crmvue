@@ -1,168 +1,26 @@
 <template>
     <div class="messenger-quiz-header">
-        <Spinner v-if="loading" />
-        <div v-else-if="recipient" class="row">
-            <div class="col-6">
-                <div class="messenger-quiz-header__info">
-                    <p class="messenger-quiz-header__username">
-                        <i
-                            v-if="recipient.faceToFaceMeeting"
-                            v-tippy="'Была личная (очная) встреча'"
-                            class="fa-solid fa-street-view mr-1"
-                        />
-                        <i
-                            v-if="recipient.good"
-                            v-tippy="'Хорошие взаимоотношения'"
-                            class="fa-regular fa-face-smile-beam mr-1"
-                        />
-                        <i
-                            v-if="recipient.isMain"
-                            v-tippy="'Основной контакт'"
-                            class="fa-solid fa-crown mr-1"
-                        />
-                        <span>{{ recipient.full_name }}</span>
-                        <span
-                            v-if="hasFullnameWarning"
-                            class="messenger-quiz-header__username-warning color-warning"
-                        >
-                            [ФИО заполнено не полностью]
-                        </span>
-                    </p>
-                    <p class="messenger-quiz-header__staff">
-                        <span v-if="recipient.position">
-                            {{ position }}
-                        </span>
-                        <span v-else-if="recipient.position_unknown">Должность неизвестна..</span>
-                        <span v-else class="color-warning">Должность не заполнена!</span>
-                    </p>
-                    <p class="messenger-quiz-header__email">
-                        <template v-if="mainEmail">
-                            <i v-tippy="'Основной Email'" class="fa-solid fa-crown mr-1"></i>
-                            <span>{{ mainEmail.email }}</span>
-                        </template>
-                        <span v-else-if="recipient.emails?.length">
-                            {{ recipient.emails[0].email }}
-                        </span>
-                        <span v-else class="color-warning">Email не заполнен!</span>
-                    </p>
-                    <div
-                        v-if="recipient.warning"
-                        v-tippy="recipient.warning_why_comment"
-                        class="messenger-quiz-header__warning"
-                    >
-                        <span>Внимание! {{ recipient.warning_why_comment }}</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="messenger-quiz-header__contacts">
-                    <p v-if="mainPhone">
-                        <i v-tippy="'Основной телефон'" class="fa-solid fa-crown mr-1"></i>
-                        <PhoneNumber
-                            :phone="mainPhone"
-                            :contact="recipient"
-                            class="messenger-quiz-header__phone"
-                        />
-                    </p>
-                    <PhoneNumber
-                        v-for="phone in phones"
-                        :key="phone.id"
-                        :phone="phone"
-                        :contact="recipient"
-                        class="messenger-quiz-header__phone"
-                    />
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="messenger-quiz-header__actions">
-                    <HoverActionsButton
-                        @click="commentsIsOpen = true"
-                        small
-                        :disabled="!recipient.comments?.length"
-                        label="Посмотреть комментарии"
-                        class="position-relative"
-                    >
-                        <span
-                            class="messenger-quiz-header__comments"
-                            :class="{
-                                'dashboard-bg-gray': recipient.comments?.length === 0,
-                                'dashboard-bg-danger': recipient.comments?.length > 0
-                            }"
-                        >
-                            {{ recipient.comments?.length }}
-                        </span>
-                        <i class="fa-solid fa-comments"></i>
-                    </HoverActionsButton>
-                    <HoverActionsButton
-                        @click="$emit('edit')"
-                        :disabled="isCompanyContact"
-                        small
-                        label="Редактировать контакт"
-                    >
-                        <i class="fa-solid fa-pen" />
-                    </HoverActionsButton>
-
-                    <Tippy>
-                        <template #default>
-                            <HoverActionsButton
-                                @click="moveContact"
-                                :disabled="isCompanyContact"
-                                small
-                            >
-                                <i class="fa-solid fa-code-compare"></i>
-                            </HoverActionsButton>
-                        </template>
-                        <template #content>
-                            <p>Перенести контакт</p>
-                            <p class="color-light">
-                                Если контакт теперь относится к другой компании
-                            </p>
-                        </template>
-                    </Tippy>
-                    <Tippy>
-                        <template #default>
-                            <HoverActionsButton
-                                @click="deleteContact"
-                                :disabled="isCompanyContact"
-                                small
-                            >
-                                <i class="fa-solid fa-ban" />
-                            </HoverActionsButton>
-                        </template>
-                        <template #content>
-                            <p>Архивировать контакт</p>
-                            <p class="color-light">
-                                Если контакт больше неактуален или номера уже не существует
-                            </p>
-                        </template>
-                    </Tippy>
-                </div>
-            </div>
-        </div>
-        <div v-else class="messenger-quiz-header__empty">
-            <DashboardChip class="dashboard-chip--with-icon dashboard-bg-light text-dark">
-                <i class="fa-solid fa-phone-slash"></i>
-            </DashboardChip>
-            <p>Без контакта</p>
-        </div>
-        <div class="messenger-quiz-header__more">
-            <p>{{ pluralContactsCount }}</p>
-            <HoverActionsButton
-                @click="$emit('change')"
-                class="ml-auto"
-                small
-                label="Выбрать другой контакт"
-            >
-                <i class="fa-solid fa-arrow-right" />
-            </HoverActionsButton>
+        <DashboardChip class="dashboard-bg-gray-l mb-1">
+            Список контактов ({{ company?.contacts?.length }}):
+        </DashboardChip>
+        <Spinner v-if="isLoading" class="small" label="Загрузка контактов.." />
+        <div ref="contactsListEl" @wheel.prevent class="messenger-quiz-header__list">
+            <MessengerQuizContact
+                v-for="contact in contacts"
+                :key="contact.id"
+                @show-comments="showComments(contact)"
+                @edit="editContact(contact)"
+                @delete="deleteContact(contact)"
+                @move="moveContact(contact)"
+                @click="selectCurrentContact(contact)"
+                :contact="contact"
+                :active="currentContact?.id === contact.id"
+                class="messenger-quiz-header__contact"
+            />
         </div>
         <Modal
             @close="commentsIsOpen = false"
-            :title="
-                recipient
-                    ? `Просмотр комментариев (${recipient.comments?.length})`
-                    : 'Просмотр комментариев'
-            "
+            :title="`Просмотр комментариев (${comments.length})`"
             :width="600"
             :show="commentsIsOpen"
         >
@@ -171,14 +29,21 @@
                 <span>Раздел в разработке. Сейчас доступен в режиме просмотра.</span>
             </DashboardChip>
             <div class="messenger-quiz-header-comments">
-                <div v-if="recipient.comments.length" class="messenger-quiz-header-comments__list">
+                <div v-if="comments.length" class="messenger-quiz-header-comments__list">
                     <DashboardChip
-                        v-for="comment in recipient.comments"
+                        v-for="comment in comments"
                         :key="comment.id"
                         class="dashboard-bg-success-l w-100"
                     >
                         <p>{{ comment.comment }}</p>
-                        <small class="text-grey">{{ toDateFormat(comment.created_at) }}</small>
+                        <p>
+                            <small>
+                                <span>{{ comment.author.userProfile.medium_name }}</span>
+                                <span class="text-grey ml-1">
+                                    {{ toDateFormat(comment.created_at) }}
+                                </span>
+                            </small>
+                        </p>
                     </DashboardChip>
                 </div>
                 <EmptyData v-else>Список комментариев пуст..</EmptyData>
@@ -187,15 +52,20 @@
                 </div>
             </div>
         </Modal>
+        <teleport to="body">
+            <FormCompanyContact
+                v-if="formIsVisible"
+                @close="closeForm"
+                @updated="onContactUpdated"
+                :formdata="updatingContact"
+            />
+        </teleport>
     </div>
 </template>
 <script setup>
 import { useStore } from 'vuex';
-import { computed, shallowRef } from 'vue';
-import plural from 'plural-ru';
-import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
+import { computed, onMounted, ref, shallowRef, useTemplateRef } from 'vue';
 import Spinner from '@/components/common/Spinner.vue';
-import { contactOptions } from '@/const/options/contact.options.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import Modal from '@/components/common/Modal.vue';
 import Button from '@/components/common/Button.vue';
@@ -204,47 +74,32 @@ import { useNotify } from '@/utils/useNotify.js';
 import { TASK_FORM_STEPS, useTaskManager } from '@/composables/useTaskManager.js';
 import api from '@/api/api.js';
 import { messenger } from '@/const/messenger.js';
-import { toBoldHTML } from '@/utils/formatter.js';
-import { Tippy } from 'vue-tippy';
+import { toBoldHTML, toDateFormat } from '@/utils/formatter.js';
+import MessengerQuizContact from '@/components/Messenger/Quiz/MessengerQuizContact.vue';
+import { useHorizontalScroll } from '@/composables/useHorizontalScroll.js';
+import FormCompanyContact from '@/components/Forms/Company/FormCompanyContact.vue';
 
-defineEmits(['change', 'edit']);
-const props = defineProps({
-    recipient: {
-        type: [Object, null],
-        required: true
-    },
-    loading: {
-        type: Boolean,
-        default: false
-    }
-});
+const currentContact = defineModel('contact');
 
 const store = useStore();
 const notify = useNotify();
 const { createTaskWithTemplate } = useTaskManager();
+const contactsListEl = useTemplateRef('contactsListEl');
 
-const commentsIsOpen = shallowRef(false);
+useHorizontalScroll(contactsListEl);
+
+const commentsIsOpen = ref(false);
+const comments = shallowRef([]);
+
+const formIsVisible = ref(false);
+const updatingContact = shallowRef(null);
+
+const isLoading = ref(false);
+const contacts = ref([]);
 
 const company = computed(() => store.state.Messenger.currentPanel);
-
-const pluralContactsCount = computed(() => {
-    return plural(company.value?.contacts?.length, '+%d контакт', '+%d контакта', '+%d контактов');
-});
-
-const position = computed(() => contactOptions.position[props.recipient.position]);
-const mainPhone = computed(() => {
-    return props.recipient.phones.find(phone => phone.isMain);
-});
-const mainEmail = computed(() => {
-    return props.recipient.emails.find(email => email.isMain);
-});
-
-const isCompanyContact = computed(() => props.recipient.type === 1);
-const phones = computed(() => props.recipient.phones.filter(element => !element.isMain));
-const hasFullnameWarning = computed(() => {
-    return (
-        !props.recipient.last_name || !props.recipient.first_name || !props.recipient.middle_name
-    );
+const mainContact = computed(() => {
+    return contacts.value.find(contact => contact.isMain);
 });
 
 const createTaskPayload = templateMessage => {
@@ -255,10 +110,10 @@ const createTaskPayload = templateMessage => {
     });
 };
 
-const sendMessageAboutContactIsArchived = async taskPayload => {
+const sendMessageAboutContactIsArchived = async (taskPayload, contact) => {
     const chatMemberId = await api.messenger.getChatMemberIdByQuery({
         model_type: messenger.dialogTypes.COMPANY,
-        model_id: props.recipient.company_id
+        model_id: company.value.id
     });
 
     if (!chatMemberId) {
@@ -268,8 +123,8 @@ const sendMessageAboutContactIsArchived = async taskPayload => {
 
     const messagePayload = {
         to_chat_member_id: chatMemberId,
-        message: `Контакт ${toBoldHTML(props.recipient.full_name)} (#${props.recipient.id}) больше не связан с этой компаний.`,
-        contact_ids: [props.recipient.id]
+        message: `Контакт ${toBoldHTML(contact.full_name)} (#${contact.id}) больше не связан с этой компаний.`,
+        contact_ids: [contact.id]
     };
 
     const createdMessage = await api.messenger.sendMessageWithTask(
@@ -285,17 +140,60 @@ const sendMessageAboutContactIsArchived = async taskPayload => {
     }
 };
 
-const moveContact = async () => {
-    const taskPayload = await createTaskPayload('Перенести контакт в другую компанию: ');
+const selectCurrentContact = contact => {
+    currentContact.value = contact;
+};
+
+const moveContact = async contact => {
+    const taskPayload = await createTaskPayload('Перенести контакт в другую компанию: ', contact);
     if (!taskPayload) return;
 
     await sendMessageAboutContactIsArchived(taskPayload);
 };
 
-const deleteContact = async () => {
-    const taskPayload = await createTaskPayload('Нужно архивировать контакт');
+const deleteContact = async contact => {
+    const taskPayload = await createTaskPayload('Нужно архивировать контакт', contact);
     if (!taskPayload) return;
 
     await sendMessageAboutContactIsArchived(taskPayload);
 };
+
+const showComments = contact => {
+    comments.value = contact.comments;
+    commentsIsOpen.value = true;
+};
+
+const fetchContacts = async () => {
+    isLoading.value = true;
+
+    contacts.value = await api.contacts.getByCompany(company.value.id);
+
+    isLoading.value = false;
+};
+
+const setInitialCurrentContact = () => {
+    currentContact.value = mainContact.value ?? contacts.value[0];
+};
+
+const closeForm = () => {
+    formIsVisible.value = false;
+    updatingContact.value = null;
+};
+
+const editContact = contact => {
+    updatingContact.value = contact;
+    formIsVisible.value = true;
+};
+
+const onContactUpdated = async (_, contact) => {
+    const contactIndex = contacts.value.findIndex(element => element.id === contact.id);
+    if (contactIndex !== -1) Object.assign(contacts.value[contactIndex], contact);
+
+    store.commit('Messenger/onContactUpdated', contact);
+};
+
+onMounted(async () => {
+    await fetchContacts();
+    setInitialCurrentContact();
+});
 </script>

@@ -6,6 +6,9 @@
         :close-on-outside-click="false"
         :title="props ? 'Редактирование задачи' : 'Создание задачи'"
     >
+        <div>
+            <DashboardTableTasksItem :task="taskPreview" />
+        </div>
         <Stepper @complete="submit" :step="step" :steps="steps" :v="v$.form" keep-alive>
             <template #1>
                 <Spinner v-if="isLoading" center />
@@ -33,41 +36,56 @@
                 </div>
             </template>
             <template #3>
-                <MultiSelect
-                    v-model="form.tags"
-                    label="Тэги"
-                    mode="tags"
-                    searchable
-                    class="col-12 mb-2"
-                    :options="getTagsOptions"
-                    :resolve-on-load="true"
-                    :close-on-select="false"
-                    placeholder="&nbsp;&nbsp;Выберите тэг.."
-                >
-                    <template #option="{ option }">
-                        <TaskTagOption :tag="option" />
-                    </template>
-                    <template #tag="{ option, disabled, handleTagRemove }">
-                        <div
-                            class="multiselect-tag"
-                            :style="{ backgroundColor: '#' + option.color, color: '#fff' }"
-                        >
-                            <span>{{ option.label }}</span>
-                            <i
-                                v-if="!disabled"
-                                v-tippy="'Удалить'"
-                                @click="handleTagRemove(option, $event)"
-                                class="ml-1 fa-solid fa-close"
-                            />
-                        </div>
-                    </template>
-                </MultiSelect>
-                <Textarea
-                    v-model="form.message"
-                    :autofocus="autofocusMessage"
-                    class="col-12"
-                    label="Описание задачи"
-                />
+                <div class="row">
+                    <MultiSelect
+                        v-model="form.tags"
+                        label="Тэги"
+                        mode="tags"
+                        searchable
+                        class="col-12 mb-2"
+                        :options="getTagsOptions"
+                        :resolve-on-load="true"
+                        :close-on-select="false"
+                        placeholder="&nbsp;&nbsp;Выберите тэг.."
+                    >
+                        <template #option="{ option }">
+                            <TaskTagOption :tag="option" />
+                        </template>
+                        <template #tag="{ option, disabled, handleTagRemove }">
+                            <div
+                                class="multiselect-tag"
+                                :style="{ backgroundColor: '#' + option.color, color: '#fff' }"
+                            >
+                                <span>{{ option.label }}</span>
+                                <i
+                                    v-if="!disabled"
+                                    v-tippy="'Удалить'"
+                                    @click="handleTagRemove(option, $event)"
+                                    class="ml-1 fa-solid fa-close"
+                                />
+                            </div>
+                        </template>
+                    </MultiSelect>
+                </div>
+                <div class="row">
+                    <Textarea
+                        v-model="form.message"
+                        :autofocus="autofocusMessage"
+                        :v="v$.form.message"
+                        minlength="16"
+                        :class="{ 'col-7': hasCustomDescription, 'col-12': !hasCustomDescription }"
+                        label="Описание задачи"
+                        placeholder="Заполните описание.."
+                        helper="Опишите задачу, что нужно сделать, почему и с каким объектом/компанией это связано!"
+                        required
+                    />
+                    <FormModalTaskDescription
+                        v-if="hasCustomDescription"
+                        :template="additionalContent.modelType"
+                        :info="additionalContent"
+                        class="col-5"
+                    />
+                </div>
             </template>
             <template #4>
                 <Spinner v-if="isLoading" center />
@@ -82,7 +100,7 @@ import DatePicker from '@/components/common/Forms/DatePicker/DatePicker.vue';
 import Spinner from '@/components/common/Spinner.vue';
 import Modal from '@/components/common/Modal.vue';
 import UserPicker from '@/components/common/Forms/UserPicker/UserPicker.vue';
-import { helpers, required } from '@vuelidate/validators';
+import { helpers, minLength, required } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import Textarea from '@/components/common/Forms/Textarea.vue';
 import { useStore } from 'vuex';
@@ -94,9 +112,13 @@ import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import dayjs from 'dayjs';
 import { useTagsOptions } from '@/composables/options/useTagsOptions.js';
 import { taskOptions } from '@/const/options/task.options.js';
+import FormModalTaskDescription from '@/components/Forms/FormModalTaskDescription.vue';
+import { useAuth } from '@/composables/useAuth.js';
+import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItem.vue';
 
 const store = useStore();
 const { getTagsOptions } = useTagsOptions();
+const { currentUser } = useAuth();
 
 const steps = [
     {
@@ -174,7 +196,10 @@ const autofocusMessage = ref(false);
 
 const step = ref(0);
 const consultants = ref([]);
-const isLoading = shallowRef(false);
+const isLoading = ref(false);
+const hasCustomDescription = ref(false);
+const additionalContent = shallowRef({});
+
 const form = ref({
     message: null,
     date: {
@@ -185,6 +210,33 @@ const form = ref({
     user_id: null,
     status: 1,
     observers: []
+});
+
+const taskPreview = computed(() => {
+    return {
+        tags: [],
+        id: 1,
+        created_by_type: 'user',
+        created_by_id: currentUser.value.id,
+        created_by: currentUser.value,
+        message: form.value.message || 'Заполните описание..',
+        status: 1,
+        observers: selectedObservers.value,
+        user_id: form.value.user_id,
+        user: selectedUser.value,
+        end: form.value.date.end
+    };
+});
+
+const selectedUser = computed(() => {
+    return consultants.value.find(element => element.id === form.value.user_id);
+});
+
+const selectedObservers = computed(() => {
+    return form.value.observers.map(element => ({
+        user_id: element,
+        user: consultantsForObservers.value.find(el => el.id === element)
+    }));
 });
 
 const consultantsForObservers = computed(() => {
@@ -230,6 +282,8 @@ const {
 
 onPopupShowed(() => {
     step.value = props.value?.step ?? 0;
+    hasCustomDescription.value = props.value?.customDescription ?? false;
+    additionalContent.value = props.value?.additionalContent ?? {};
 
     if (!consultants.value.length) fetchConsultants();
 
@@ -263,7 +317,11 @@ const v$ = useVuelidate(
                 minLength: helpers.withMessage('Выберите сотрудника!', required)
             },
             message: {
-                required: helpers.withMessage('Описание задачи является обязательным!', required)
+                required: helpers.withMessage('Описание задачи является обязательным!', required),
+                minLength: helpers.withMessage(
+                    'Описание задачи не может быть меньше 16 символов!',
+                    minLength(16)
+                )
             }
         }
     },

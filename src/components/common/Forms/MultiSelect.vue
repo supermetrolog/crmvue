@@ -9,7 +9,7 @@
                 v-model="field"
                 @change="onChange($event)"
                 class="form__multiselect"
-                :class="[validationClass, extraClasses]"
+                :class="[validationClass, extraClasses, { active: hasValue }]"
                 :placeholder="placeholder"
                 :mode="mode"
                 append-to-body
@@ -218,6 +218,10 @@ const { hasValidationError, validate, validationClass } = useFormControlValidati
     field,
     { reactive: props.reactive }
 );
+
+const hasValue = computed(() => {
+    return field.value != null && field.value !== '';
+});
 
 const setData = () => {
     if (modelValue.value?.length)

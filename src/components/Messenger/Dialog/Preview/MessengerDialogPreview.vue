@@ -1,6 +1,6 @@
 <template>
     <div class="messenger-dialog-preview">
-        <AccordionSimple without-render>
+        <AccordionSimple :opened="opened" without-render>
             <template #title>
                 <AccordionSimpleTriggerButton label="Характеристики" />
             </template>
@@ -15,4 +15,11 @@
 <script setup>
 import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
 import AccordionSimpleTriggerButton from '@/components/common/Accordion/AccordionSimpleTriggerButton.vue';
+
+defineProps({
+    opened: {
+        type: Boolean,
+        default: false
+    }
+});
 </script>

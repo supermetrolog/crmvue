@@ -609,7 +609,10 @@ const Messenger = {
             commit('setLoadingChat', false);
         },
         async selectSurvey({ commit, state }, { dialogID, dialogType }) {
-            if (dialogID === state.currentPanelDialogID) return;
+            if (dialogID === state.currentPanelDialogID) {
+                commit('selectChatTab', messenger.chatTabs.SURVEY);
+                return;
+            }
 
             commit('setCurrentCategory', null);
             commit('setCurrentDialogType', dialogType);
