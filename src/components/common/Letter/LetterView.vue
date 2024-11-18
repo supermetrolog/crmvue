@@ -78,7 +78,7 @@
             </template>
         </KeyValue>
         <div class="objects mt-2">
-            <CompanyObjectsList label="test" :objects="offers" disabled col="col-3" />
+            <CompanyObjectsList label="test" :objects="offers" disabled col="col-4" />
         </div>
     </div>
 </template>

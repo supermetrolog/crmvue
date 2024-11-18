@@ -383,7 +383,7 @@ const v$ = useVuelidate(
 const updateContact = async () => {
     const updated = await api.contacts.update(props.formdata.id, form);
     if (updated) {
-        emit('updated', props.formdata.id);
+        emit('updated', props.formdata.id, updated);
         emit('close');
     }
 };

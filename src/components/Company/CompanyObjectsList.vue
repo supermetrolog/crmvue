@@ -1,5 +1,5 @@
 <template>
-    <div class="objects-list row">
+    <div class="objects-list row position-relative">
         <div class="col-12">
             <div class="row">
                 <div v-if="label" class="col-12">
@@ -23,8 +23,8 @@
                     />
                     <CompanyObjectItemOfferOnly
                         v-else
-                        @select="$emit('select', $event)"
-                        @unselect="$emit('unselect', $event)"
+                        @select="$emit('select', object)"
+                        @unselect="$emit('unselect', object)"
                         @addComment="addComment"
                         @deleteFavoriteOffer="$emit('deleteFavoriteOffer')"
                         :disabled="disabled"

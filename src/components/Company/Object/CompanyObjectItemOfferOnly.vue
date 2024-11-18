@@ -1,308 +1,406 @@
 <template>
     <div>
-        <div
-            class="object-offer object-offer--only"
-            :class="[
-                {
-                    passive: isPassive,
-                    general: offer.type_id === 2,
-                    selected: isSelected
-                }
-            ]"
+        <DashboardCard
+            class="offer-table-item-mobile"
+            :class="{
+                passive: isPassive,
+                selected: isSelected,
+                general: offer.type_id === 2,
+                'animated-background': isNewRecommended
+            }"
         >
-            <div class="row no-gutters object-offer__info">
-                <div class="col-12 align-self-center">
-                    <div class="object-offer__preview">
-                        <div class="object-offer__chips">
-                            <DashboardChip v-if="offer.deal_type_name" class="object-offer__chip">
-                                {{ offer.deal_type_name }}
-                            </DashboardChip>
-                            <DashboardChip
-                                v-else-if="isPassive"
-                                class="object-offer__chip dashboard-bg-danger text-white"
-                            >
-                                Пассив
-                            </DashboardChip>
-                            <DashboardChip v-tippy="'Класс объекта'" class="object-offer__chip">
-                                {{ offer.class_name }}
-                            </DashboardChip>
-                            <DashboardChip
-                                v-if="offer.duplicate_count > 1"
-                                v-tippy="'Количество отправлений'"
-                                class="object-offer__duplicate"
-                            >
-                                {{ offer.duplicate_count }}
-                            </DashboardChip>
-                            <DashboardChip class="object-offer__chip ml-auto">
-                                {{ offer.visual_id }}
-                            </DashboardChip>
-                        </div>
-                        <span
-                            v-if="offer.test_only"
-                            class="object-offer__badge object-offer__test-only"
-                        >
-                            Тестовый лот
-                        </span>
-                        <span
-                            v-if="offer.type_id === 2"
-                            class="object-offer__badge object-offer__is-main"
-                        >
-                            Общий
-                        </span>
-                        <span
-                            v-else-if="offer.type_id === 1"
-                            class="object-offer__badge object-offer__is-block"
-                        >
-                            Блок
-                        </span>
-                        <span v-else class="object-offer__badge object-offer__is-undefined">
-                            Неизвестно
-                        </span>
-                        <a
-                            @click.prevent="select"
-                            class="object-offer__photo"
-                            href="#"
-                            target="_blank"
-                        >
-                            <VLazyImage :src="offer.thumb" alt="image" />
-                        </a>
-                        <div
-                            @click.prevent="$emit('unselect', offer)"
-                            class="object-offer__unselect"
-                        >
-                            <i class="fas fa-check" />
-                        </div>
-                    </div>
-                </div>
-                <div
-                    class="col-12 px-2 object-offer__content text-center"
-                    :class="{ 'animated-background': isNewRecommended }"
+            <OfferTableItemPreview
+                @click-preview="select"
+                :is-passive="isPassive"
+                :offer="offer"
+                as="div"
+                class="mb-1"
+            />
+            <div
+                v-if="isSelected"
+                @click.prevent="$emit('unselect', offer)"
+                class="offer-table-item-mobile__unselect"
+            >
+                <i class="fas fa-check" />
+            </div>
+            <div class="d-flex gap-1 mb-1 position-relative">
+                <DashboardChip
+                    v-if="offer.duplicate_count > 1"
+                    v-tippy="'Количество отправлений'"
+                    class="dashboard-bg-warning"
+                    with-icon
                 >
-                    <DashboardChip
-                        v-if="isPassive"
-                        class="dashboard-bg-danger text-white mx-auto mb-1"
-                    >
-                        Пассив
-                    </DashboardChip>
-                    <Form v-if="isSelected" class="object-offer__form mb-2">
-                        <textarea
-                            ref="comment"
-                            v-model.trim="localComment"
-                            @blur="unfocusTextarea"
-                            @keypress.enter="enterTextarea"
-                            class="form__textarea"
-                            rows="3"
-                            placeholder="Комментарий клиенту"
-                        />
-                    </Form>
-                    <div class="object-offer__actions mb-2">
+                    <i class="fa-regular fa-paper-plane"></i>
+                    <span>{{ offer.duplicate_count }}</span>
+                </DashboardChip>
+                <DashboardChip
+                    v-if="offer.type_id === 2"
+                    class="offer-table-item-mobile__block dashboard-bg-primary text-white"
+                >
+                    Общий
+                </DashboardChip>
+                <DashboardChip
+                    v-else-if="offer.type_id === 1"
+                    class="offer-table-item-mobile__block dashboard-bg-primary-l"
+                >
+                    Блок
+                </DashboardChip>
+                <DashboardChip
+                    v-else
+                    class="offer-table-item-mobile__block dashboard-bg-warning text-white"
+                >
+                    Неизвестно
+                </DashboardChip>
+            </div>
+            <div class="offer-table-item-mobile__header">
+                <DashboardChip class="dashboard-bg-light">
+                    {{ offer.visual_id }}
+                </DashboardChip>
+                <div class="offer-table-item-mobile__actions">
+                    <a :href="offerUrl" target="_blank">
                         <HoverActionsButton
-                            v-if="offer.type_id !== 3"
-                            @click="toggleFavorite(offer)"
+                            v-tippy="'Открыть страницу предложения'"
+                            class="offer-table-item-mobile__button"
+                        >
+                            <i class="fa-solid fa-eye" />
+                        </HoverActionsButton>
+                    </a>
+                    <template v-if="offer.type_id !== 3">
+                        <HoverActionsButton
+                            @click="toggleFavorite"
+                            class="offer-table-item-mobile__button"
                             :label="isFavorite ? 'Удалить из избранного' : 'Добавить в избранное'"
                             :active="isFavorite"
                         >
                             <i class="fa-solid fa-star" />
                         </HoverActionsButton>
-                        <a v-if="offer.type_id !== 3" :href="pdfUrl" target="_blank">
-                            <HoverActionsButton v-tippy="'Открыть в PDF'">
+                        <a :href="pdfUrl" target="_blank">
+                            <HoverActionsButton
+                                class="offer-table-item-mobile__button"
+                                label="Открыть PDF"
+                            >
                                 <i class="fa-solid fa-file-pdf" />
                             </HoverActionsButton>
                         </a>
-                        <a :href="$url.offerByObject(offer)" target="_blank">
-                            <HoverActionsButton v-tippy="'Открыть страницу предложения'">
-                                <i class="fa-solid fa-eye" />
-                            </HoverActionsButton>
-                        </a>
-                    </div>
-                    <div class="object-offer__location">
-                        {{ location }}
-                    </div>
-                    <p class="mb-1">{{ offer.object_type_name }}</p>
-                    <div v-if="offer.deal_type" class="object-offer__price mb-1">
-                        <DashboardChip class="dashboard-bg-success-l">
-                            <div class="d-flex align-items-center gap-2">
-                                <i class="fa-solid fa-ruble-sign" />
-                                <with-unit-type
-                                    v-if="offer.deal_type === 1 || offer.deal_type === 4"
-                                    :unit-type="unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR"
-                                >
-                                    {{ offer.calc_price_warehouse }}
-                                </with-unit-type>
-                                <with-unit-type
-                                    v-else-if="offer.deal_type === 2"
-                                    :unit-type="unitTypes.RUB_PER_SQUARE_METERS"
-                                >
-                                    {{ offer.calc_price_sale }}
-                                </with-unit-type>
-                            </div>
-                        </DashboardChip>
-                        <DashboardChip v-if="taxForm" class="dashboard-bg-gray-l">
-                            {{ taxForm }}
-                        </DashboardChip>
-                    </div>
-                    <DashboardChip class="dashboard-bg-success-l mx-auto">
-                        <div class="d-flex align-items-center gap-2">
-                            <i class="fa-solid fa-square-full" />
-                            <with-unit-type :unit-type="unitTypes.SQUARE_METERS">
-                                {{ offer.calc_area_general }}
-                            </with-unit-type>
-                        </div>
-                    </DashboardChip>
-                </div>
-                <div class="col-12">
-                    <AccordionSimple without-render>
-                        <template #title>
-                            <AccordionSimpleTrigger>
-                                <DashboardChip class="dashboard-bg-light w-100 br-0">
-                                    <div class="d-flex justify-content-center gap-2">
-                                        <span>Дополнительная информация</span>
-                                        <AccordionSimpleTriggerIcon />
-                                    </div>
-                                </DashboardChip>
-                            </AccordionSimpleTrigger>
-                        </template>
-                        <template #body>
-                            <CompanyObjectItemOfferOnlyExternal
-                                :currentStepID="currentStepID"
-                                :offer="offer"
-                            />
-                        </template>
-                    </AccordionSimple>
+                    </template>
                 </div>
             </div>
-        </div>
+            <Form v-if="isSelected" class="object-offer__form mb-2">
+                <textarea
+                    v-if="isSelected"
+                    ref="commentEl"
+                    v-model.trim="localComment"
+                    @blur="unfocusTextarea"
+                    @keypress.enter="enterTextarea"
+                    class="form__textarea"
+                    rows="3"
+                    placeholder="Комментарий клиенту"
+                />
+            </Form>
+            <div class="object-offer__location my-1">
+                {{ location }}
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="offer-table-item-area">
+                        <with-unit-type
+                            :unit-type="unitTypes.SQUARE_METERS"
+                            class="offer-table-item-area__title"
+                        >
+                            {{ offer.calc_area_general }}
+                        </with-unit-type>
+                        <div class="offer-table-item-area__additional">
+                            <p class="offer-table-item-area__item">
+                                <with-unit-type :unit-type="unitTypes.SQUARE_METERS">
+                                    {{ offer.calc_area_mezzanine }}
+                                </with-unit-type>
+                                <span> - мезонин</span>
+                            </p>
+                            <p class="offer-table-item-area__item">
+                                <with-unit-type :unit-type="unitTypes.SQUARE_METERS">
+                                    {{ offer.calc_area_office }}
+                                </with-unit-type>
+                                <span> - офисы</span>
+                            </p>
+                            <p class="offer-table-item-area__item">
+                                <with-unit-type :unit-type="unitTypes.SQUARE_METERS">
+                                    {{ offer.calc_area_tech }}
+                                </with-unit-type>
+                                <span> - технич.</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div v-if="offer.deal_type" class="offer-table-item-price">
+                        <div class="font-weight-bold">
+                            <with-unit-type
+                                v-if="offer.deal_type === 1 || offer.deal_type === 4"
+                                :unit-type="unitTypes.RUB_PER_SQUARE_METERS"
+                            >
+                                {{ offer.calc_price_warehouse }}
+                            </with-unit-type>
+                            <with-unit-type
+                                v-else-if="offer.deal_type === 2"
+                                :unit-type="unitTypes.RUB_PER_SQUARE_METERS"
+                            >
+                                {{ offer.calc_price_sale }}
+                            </with-unit-type>
+                            <p v-else-if="offer.deal_type === 3">
+                                {{ offer.calc_price_safe_pallet }} <small>руб за 1 п. м.</small>
+                            </p>
+                        </div>
+                        <span v-if="taxForm" class="offer-table-item-price__additional">
+                            {{ taxForm }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <AccordionSimple without-render class="mt-1">
+                <template #title>
+                    <AccordionSimpleTrigger>
+                        <DashboardChip class="offer-table-item-mobile__dropdown dashboard-bg-light">
+                            <div class="d-flex justify-content-center gap-2">
+                                <span>Подробнее</span>
+                                <AccordionSimpleTriggerIcon />
+                            </div>
+                        </DashboardChip>
+                    </AccordionSimpleTrigger>
+                </template>
+                <template #body>
+                    <div class="py-1 offer-table-item-mobile__extra">
+                        <OfferTableItemMobileAddress :offer="offer" class="mb-1" />
+                        <DashboardChip
+                            v-if="offer.from_mkad"
+                            class="dashboard-bg-light w-100 text-center"
+                        >
+                            {{ offer.from_mkad }} <small>км от МКАД</small>
+                        </DashboardChip>
+                        <hr />
+                        <div v-if="offer.comments?.length" class="object-offer__comments">
+                            <p v-if="offer.comments?.length" class="offer-table-item-mobile__label">
+                                Комментарии
+                            </p>
+                            <p
+                                v-for="comment in offer.comments"
+                                :key="comment.id"
+                                class="object-offer__comment"
+                                :class="{ current: comment.timeline_step_id === currentStepID }"
+                            >
+                                {{ comment.comment }}
+                            </p>
+                            <hr />
+                        </div>
+                        <p class="offer-table-item-mobile__label">Параметры</p>
+                        <div class="d-flex flex-column">
+                            <CompanyObjectItemProperty title="Площадь объекта">
+                                <with-unit-type :unit-type="unitTypes.SQUARE_METERS">
+                                    {{ $formatter.number(offer.area_building) }}
+                                </with-unit-type>
+                            </CompanyObjectItemProperty>
+                            <CompanyObjectItemProperty title="Этажи">
+                                {{ offer.calc_floors }}
+                            </CompanyObjectItemProperty>
+                            <CompanyObjectItemProperty title="Потолки">
+                                <with-unit-type :unit-type="unitTypes.METERS">
+                                    {{ offer.calc_ceilingHeight }}
+                                </with-unit-type>
+                            </CompanyObjectItemProperty>
+                            <CompanyObjectItemProperty title="Электричество">
+                                <with-unit-type :unit-type="unitTypes.KILOWATT">
+                                    {{ $formatter.number(offer.power_value) }}
+                                </with-unit-type>
+                            </CompanyObjectItemProperty>
+                            <CompanyObjectItemProperty title="Тип ворот">
+                                {{ offer.gate_type || '-' }}
+                            </CompanyObjectItemProperty>
+                            <CompanyObjectItemProperty title="Отапливаемый">
+                                {{ offer.heated ? 'Да' : 'Нет' }}
+                            </CompanyObjectItemProperty>
+                            <CompanyObjectItemProperty title="Антипыль">
+                                {{ offer.self_leveling ? 'Да' : 'Нет' }}
+                            </CompanyObjectItemProperty>
+                            <CompanyObjectItemProperty title="Краны">
+                                {{ offer.has_cranes ? 'Да' : 'Нет' }}
+                            </CompanyObjectItemProperty>
+                            <CompanyObjectItemProperty title="От МКАД">
+                                {{ offer.from_mkad }} <small>км</small>
+                            </CompanyObjectItemProperty>
+                        </div>
+                        <p class="offer-table-item-mobile__label">Статус</p>
+                        <DashboardChip
+                            v-if="offer.status === 1"
+                            class="dashboard-bg-success-l w-100 text-center my-1"
+                        >
+                            Актив
+                        </DashboardChip>
+                        <DashboardChip
+                            v-else
+                            class="dashboard-bg-danger text-white w-100 text-center my-1"
+                        >
+                            Пассив
+                        </DashboardChip>
+                        <p class="offer-table-item-mobile__label">Реклама</p>
+                        <div class="offer-table-item-mobile__advertisements my-1">
+                            <DashboardChip class="dashboard-bg-light">Realtor.ru</DashboardChip>
+                            <DashboardChip v-if="offer.ad_cian" class="dashboard-bg-light">
+                                Циан
+                            </DashboardChip>
+                            <DashboardChip v-if="offer.ad_yandex" class="dashboard-bg-light">
+                                Яндекс
+                            </DashboardChip>
+                            <DashboardChip v-if="offer.ad_avito" class="dashboard-bg-light">
+                                Авито
+                            </DashboardChip>
+                            <DashboardChip v-if="offer.ad_free" class="dashboard-bg-light">
+                                Бесплатные
+                            </DashboardChip>
+                        </div>
+                        <p class="offer-table-item-mobile__label">Ручное описание</p>
+                        <div class="object-offer__block">
+                            <p>
+                                {{ offer.object.description || '—' }}
+                            </p>
+                        </div>
+                        <p class="offer-table-item-mobile__label">Авто описание</p>
+                        <div class="object-offer__block">
+                            <p>
+                                {{ offer.object.description_auto || '—' }}
+                            </p>
+                        </div>
+                    </div>
+                </template>
+            </AccordionSimple>
+        </DashboardCard>
     </div>
 </template>
 
-<script>
+<script setup>
 import { TaxFormList } from '@/const/const.js';
-import { mapActions, mapGetters } from 'vuex';
+import { useStore } from 'vuex';
 import { unitTypes } from '@/const/unitTypes.js';
 import AccordionSimpleTriggerIcon from '@/components/common/Accordion/AccordionSimpleTriggerIcon.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
 import AccordionSimpleTrigger from '@/components/common/Accordion/AccordionSimpleTrigger.vue';
-import CompanyObjectItemOfferOnlyExternal from '@/components/Company/Object/CompanyObjectItemOfferOnlyExternal.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
-import VLazyImage from 'v-lazy-image';
-import Form from '@/components/common/Forms/Form.vue';
 import WithUnitType from '@/components/common/WithUnitType.vue';
+import OfferTableItemMobileAddress from '@/components/Offer/TableItem/OfferTableItemMobileAddress.vue';
+import OfferTableItemPreview from '@/components/Offer/TableItem/Preview/OfferTableItemPreview.vue';
+import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
+import { computed, nextTick, onBeforeMount, ref, useTemplateRef } from 'vue';
+import { useAuth } from '@/composables/useAuth.js';
+import { useRoute } from 'vue-router';
+import { getLinkOfferByObject, getLinkPDF } from '@/utils/url.js';
+import CompanyObjectItemProperty from '@/components/Company/Object/CompanyObjectItemProperty.vue';
+import Form from '@/components/common/Forms/Form.vue';
 
-export default {
-    name: 'CompanyObjectItemOfferOnly',
-    components: {
-        WithUnitType,
-        Form,
-        VLazyImage,
-        HoverActionsButton,
-        CompanyObjectItemOfferOnlyExternal,
-        AccordionSimpleTrigger,
-        AccordionSimple,
-        DashboardChip,
-        AccordionSimpleTriggerIcon
+const emit = defineEmits(['select', 'unselect', 'addComment', 'deleteFavoriteOffer']);
+const props = defineProps({
+    offer: {
+        type: Object
     },
-    emits: ['select', 'unselect', 'addComment', 'deleteFavoriteOffer'],
-    props: {
-        offer: {
-            type: Object
-        },
-        isSelected: {
-            type: Boolean,
-            default: false
-        },
-        col: {
-            type: String,
-            default: 'col-4'
-        },
-        disabled: {
-            type: Boolean,
-            default: true
-        },
-        currentStepID: {
-            type: Number,
-            default: 0
-        }
+    isSelected: {
+        type: Boolean,
+        default: false
     },
-    data() {
-        return {
-            extraInfoVisible: false,
-            localComment: null
-        };
+    col: {
+        type: String,
+        default: 'col-4'
     },
-    computed: {
-        unitTypes() {
-            return unitTypes;
-        },
-        ...mapGetters(['THIS_USER', 'FAVORITES_OFFERS']),
-        isNewRecommended() {
-            const newRecommended = this.$route.query.new_original_id;
-            if (!newRecommended) return false;
-
-            if (Array.isArray(newRecommended)) {
-                return newRecommended.includes(this.offer.original_id.toString());
-            }
-            return Number(newRecommended) === this.offer.original_id;
-        },
-        pdfUrl() {
-            return this.$url.pdf(
-                {
-                    type_id: 2,
-                    offer_id: this.offer.original_id,
-                    object_id: this.offer.object_id
-                },
-                this.THIS_USER.id
-            );
-        },
-        taxForm() {
-            if (this.offer.generalOffersMix?.offer?.tax_form)
-                return TaxFormList[this.offer.generalOffersMix.offer.tax_form - 1].label;
-            return null;
-        },
-        isFavorite() {
-            return this.$store.state.Offers.favoritesOffersCache[this.offer.original_id];
-        },
-        isPassive() {
-            return this.offer.status !== 1;
-        },
-        location() {
-            return [
-                this.offer.district_name,
-                this.offer.region_name,
-                this.offer.district_moscow_name,
-                this.offer.direction_name
-            ]
-                .filter(Boolean)
-                .join(' — ');
-        }
+    disabled: {
+        type: Boolean,
+        default: true
     },
-    methods: {
-        ...mapActions(['ADD_FAVORITES_OFFER', 'DELETE_FAVORITES_OFFERS']),
-        select() {
-            if (this.disabled || this.offer.type_id === 3) return;
-
-            this.$emit('select', this.offer);
-            this.$nextTick(() => {
-                this.$refs.comment.focus();
-            });
-        },
-        enterTextarea() {
-            this.$refs.comment.blur();
-        },
-        unfocusTextarea() {
-            this.$emit('addComment', this.offer.id, this.localComment);
-        },
-        async toggleFavorite(offer) {
-            if (!this.isFavorite) return await this.ADD_FAVORITES_OFFER(offer);
-
-            await this.DELETE_FAVORITES_OFFERS(offer);
-            this.$emit('deleteFavoriteOffer', offer);
-        }
-    },
-    created() {
-        if (this.offer.comment) this.localComment = this.offer.comment;
+    currentStepID: {
+        type: Number,
+        default: 0
     }
+});
+
+const store = useStore();
+const route = useRoute();
+const { currentUser } = useAuth();
+const commentEl = useTemplateRef('commentEl');
+
+const localComment = ref(null);
+
+const isNewRecommended = computed(() => {
+    const newRecommended = route.query.new_original_id;
+    if (!newRecommended) return false;
+
+    if (Array.isArray(newRecommended)) {
+        return newRecommended.includes(props.offer.original_id.toString());
+    }
+
+    return Number(newRecommended) === props.offer.original_id;
+});
+
+const pdfUrl = computed(() => {
+    return getLinkPDF(
+        {
+            type_id: 2,
+            offer_id: props.offer.original_id,
+            object_id: props.offer.object_id
+        },
+        currentUser.value.id
+    );
+});
+
+const offerUrl = computed(() => {
+    return getLinkOfferByObject(props.offer);
+});
+
+const taxForm = computed(() => {
+    if (props.offer.generalOffersMix?.offer?.tax_form)
+        return TaxFormList[props.offer.generalOffersMix.offer.tax_form - 1].label;
+    return null;
+});
+
+const isFavorite = computed(() => {
+    return store.state.Offers.favoritesOffersCache[props.offer.original_id];
+});
+
+const isPassive = computed(() => props.offer.status !== 1);
+const location = computed(() => {
+    return [
+        props.offer.district_name,
+        props.offer.region_name,
+        props.offer.district_moscow_name,
+        props.offer.direction_name
+    ]
+        .filter(Boolean)
+        .join(' — ');
+});
+
+const select = () => {
+    if (props.disabled || props.offer.type_id === 3) return;
+
+    emit('select', props.offer);
+
+    nextTick(() => {
+        commentEl.value.focus();
+    });
 };
+
+const enterTextarea = () => {
+    commentEl.value.blur();
+};
+
+const unfocusTextarea = () => {
+    emit('addComment', props.offer.id, localComment.value);
+};
+
+const toggleFavorite = async () => {
+    if (!isFavorite.value) return await store.dispatch('ADD_FAVORITES_OFFER', props.offer);
+
+    await store.dispatch('DELETE_FAVORITES_OFFERS', props.offer);
+    emit('deleteFavoriteOffer', props.offer);
+};
+
+onBeforeMount(() => {
+    if (props.offer.comment) localComment.value = props.offer.comment;
+});
 </script>
 
 <style>

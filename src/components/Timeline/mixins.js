@@ -431,7 +431,7 @@ export const TimelineStepWithSearchableObjectsMixin = {
             await this.fetchObjects();
         }
     },
-    created() {
+    mounted() {
         this.fetchData();
     }
 };

@@ -1,5 +1,5 @@
 <template>
-    <div @click="$emit('select')" class="messenger-bar-tab">
+    <div @click="$emit('select')" class="messenger-bar-tab" :class="{ visible: isVisible }">
         <div class="messenger-bar-tab__list">
             <div v-tippy="label" class="messenger-bar-tab__icon mb-1">
                 <slot name="icon">
@@ -124,5 +124,13 @@ const callsButtonTitleAll = computed(() => {
     if (props.counts.outdated_call_count_all > 0)
         return plural(props.counts.outdated_call_count_all, ...messenger.buttons.calls_all.plural);
     return messenger.buttons.calls.empty;
+});
+
+const isVisible = computed(() => {
+    return (
+        props.counts.unread_message_count > 0 ||
+        props.counts.unread_notification_count > 0 ||
+        props.counts.unread_task_count > 0
+    );
 });
 </script>

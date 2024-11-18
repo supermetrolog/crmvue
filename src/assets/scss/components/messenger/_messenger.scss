@@ -20,7 +20,7 @@
         }
 
         .messenger-bar-tab {
-            opacity: 1;
+            opacity: 1!important;
         }
     }
 
@@ -54,7 +54,7 @@
 }
 
 .messenger-bar {
-    transform: translateX(-47px) translateY(calc(50vh - 50%));
+    transform: translateX(-44px) translateY(calc(50vh - 50%));
     position: absolute;
     z-index: 20;
     box-shadow: 0 0 15px 5px rgba(13, 31, 47, .2);
@@ -62,14 +62,18 @@
     width: max-content;
 
     &__company-icon {
-        margin-left: -5px;
+        margin-left: -2px;
+    }
+
+    &:has(.messenger-bar-tab.visible) .messenger-bar-tab {
+        opacity: .8;
     }
 }
 
 .messenger-bar-tab {
     opacity: .3;
     background-color: #fff;
-    padding: 10px 8px;
+    padding: 8px 7px;
     cursor: pointer;
     border-left: 1px solid rgba(0, 0, 0, 0.4);
     border-bottom: 1px solid rgba(0, 0, 0, 0.4);

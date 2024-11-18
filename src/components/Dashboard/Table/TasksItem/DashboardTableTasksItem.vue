@@ -77,10 +77,9 @@
                             :observer="observer"
                         />
                     </div>
-                    <Tippy>
+                    <Tippy v-if="!isForMe && task.user">
                         <template #default>
                             <Avatar
-                                v-if="!isForMe"
                                 :src="task.user.userProfile.avatar"
                                 :size="55"
                                 rectangle
@@ -158,7 +157,7 @@ const isCompleted = computed(() => props.task.status === taskOptions.statusTypes
 const expiredDayjs = computed(() => dayjsFromMoscow(props.task.end));
 const isCanceled = computed(() => props.task.status === taskOptions.statusTypes.CANCELED);
 const isAlreadyExpired = computed(() => expiredDayjs.value.isBefore(dayjs()) && !isCompleted.value);
-const isDeleted = computed(() => props.task.deleted_at !== null);
+const isDeleted = computed(() => props.task.deleted_at != null);
 const impossibleDate = computed(() => {
     if (props.task.impossible_to) return toDateFormat(props.task.impossible_to, 'D.MM.YY');
     return 'неизвестной даты';

@@ -453,10 +453,6 @@ const observers = computed(() =>
     props.task.observers.filter(observer => observer.user.id !== props.task.user.id)
 );
 
-const slicedObservers = computed(() => observers.value.slice(0, 3));
-
-const observersDiff = computed(() => props.task.observers.length - observers.value.length);
-
 const clearState = () => {
     newComment.value = null;
     moveSettingsIsVisible.value = false;

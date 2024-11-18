@@ -39,6 +39,9 @@ const Companies = {
         },
         updateCompanyInTheBankList(state, data) {
             state.companyInTheBankList = data;
+        },
+        setCompanyLogo(state, logo) {
+            if (state.company) state.company.logo = logo;
         }
     },
     actions: {

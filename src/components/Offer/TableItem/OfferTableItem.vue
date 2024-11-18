@@ -66,8 +66,10 @@
             />
             <CompanyContact
                 v-if="contact"
-                class="offer-table-item__company-element"
+                @open-phone="openInSurvey"
                 :contact="contact"
+                hidden
+                class="offer-table-item__company-element"
             />
         </Td>
         <Td class="offer-table-item__consultant">

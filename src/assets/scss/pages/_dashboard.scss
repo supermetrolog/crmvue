@@ -436,9 +436,9 @@
     box-shadow: 0 0 10px 1px rgba(0, 0, 0, .4);
     position: absolute;
     width: calc(100% - 20px);
-    top: 20px;
+    top: 10px;
     left: 10px;
-    height: calc(100% - 40px);
+    height: calc(100% - 10px);
     border-radius: 10px;
     overflow-y: auto;
     @include mixins.flex-box($d: column, $gap: 10px);
@@ -475,16 +475,6 @@
 
     .form__textarea, .form__input {
         border-color: #b9b0b0;
-    }
-
-    &__preview {
-        @include mixins.flex-box($a: center);
-        border-bottom: 1px solid #afaeae;
-        padding-bottom: 7px;
-    }
-
-    &__chip {
-        background-color: #d6d6d6;
     }
 }
 

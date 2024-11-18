@@ -893,6 +893,8 @@ tr.TableRequestRow {
 }
 
 .phone-number {
+    color: inherit;
+
     &__loading {
         height: 600px;
     }
