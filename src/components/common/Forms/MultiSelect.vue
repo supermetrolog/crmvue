@@ -220,7 +220,7 @@ const { hasValidationError, validate, validationClass } = useFormControlValidati
 );
 
 const hasValue = computed(() => {
-    return field.value != null && field.value !== '';
+    return field.value != null && field.value !== '' && field.value?.length;
 });
 
 const setData = () => {
