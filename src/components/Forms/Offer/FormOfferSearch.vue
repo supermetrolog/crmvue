@@ -1,5 +1,4 @@
 <template>
-    {{ form }}
     <div class="company-request-search-form">
         <Form @submit="onSubmit">
             <FormGroup class="mb-2">
