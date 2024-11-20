@@ -9,7 +9,7 @@
                 v-model="field"
                 @change="onChange($event)"
                 class="form__multiselect"
-                :class="[validationClass, extraClasses, { active: hasValue }]"
+                :class="[validationClass, extraClasses, { filled: hasValue }]"
                 :placeholder="placeholder"
                 :mode="mode"
                 append-to-body
@@ -244,7 +244,12 @@ const { hasValidationError, validate, validationClass } = useFormControlValidati
 );
 
 const hasValue = computed(() => {
-    return field.value != null && field.value !== '' && field.value?.length;
+    if (isNullish(field.value)) return false;
+
+    if (isArray(field.value)) return field.value.length;
+    if (isString(field.value)) return isNotEmptyString(field.value);
+
+    return isNotNullish(field.value);
 });
 
 const setData = () => {
