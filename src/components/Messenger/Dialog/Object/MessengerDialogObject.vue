@@ -14,6 +14,13 @@
                     alt="file image"
                 />
                 <span class="messenger-dialog-offer__id">ID{{ model.object.id }}</span>
+                <Avatar
+                    v-if="model.object.consultant"
+                    :size="30"
+                    :label="`${model.object.consultant.userProfile.medium_name} - консультант`"
+                    :src="model.object.consultant.userProfile.avatar"
+                    class="messenger-dialog__avatar"
+                />
             </div>
             <div class="messenger-dialog-offer__description">
                 <p v-if="model.object.company" class="messenger-dialog-offer__company">
@@ -24,13 +31,6 @@
                     <Tooltip :text="model.object.address" icon="fa-solid fa-earth-americas" />
                     <span>{{ model.object.address }}</span>
                 </p>
-                <Avatar
-                    v-if="model.object.consultant"
-                    :size="30"
-                    :label="`${model.object.consultant.userProfile.medium_name} - консультант`"
-                    :src="model.object.consultant.userProfile.avatar"
-                    class="messenger-dialog__avatar"
-                />
             </div>
         </div>
         <div class="messenger-dialog__footer">

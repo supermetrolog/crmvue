@@ -98,9 +98,10 @@
 
     &__avatar {
         position: absolute;
-        left: 20px;
-        bottom: 15px;
+        left: 5px;
+        bottom: 5px;
         border: 1px solid rgba(0, 0, 0, .25);
+        @include mixins.transition(opacity);
     }
 }
 
@@ -117,6 +118,10 @@
         flex-basis: 50%;
         height: max-content;
         flex-shrink: 0;
+    }
+
+    &:has(&__preview:hover) .messenger-dialog__avatar {
+        opacity: .2;
     }
 
     &__image {

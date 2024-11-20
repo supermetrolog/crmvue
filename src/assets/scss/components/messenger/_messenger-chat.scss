@@ -166,6 +166,10 @@
     &__address {
         @include mixins.text-overflow();
     }
+
+    &__info {
+        @include mixins.flex-box($gap: 5px, $a: center);
+    }
 }
 
 .messenger-chat-header-object {
