@@ -1,53 +1,44 @@
 <template>
-    <Modal @close="$emit('close')" show width="900" title="Настройка фильтров">
-        <component :is="currentFiltersComponent" v-model="localeModelValue" />
+    <Modal @close="$emit('close')" show width="600" title="Настройка фильтров">
+        <component :is="currentFiltersComponent" v-model="modelValue" />
         <template #footer>
-            <MessengerButton @click="apply" color="success">Применить</MessengerButton>
-            <MessengerButton @click="$emit('close')">Отмена</MessengerButton>
-            <MessengerButton @click="clear" :disabled="!hasFilters" color="danger">
-                Очистить фильтры
-            </MessengerButton>
+            <Button @click="$emit('close')" small>Закрыть</Button>
+            <Button @click="clear" :disabled="!hasFilters" danger small>Очистить фильтры</Button>
         </template>
     </Modal>
 </template>
 <script setup>
 import Modal from '@/components/common/Modal.vue';
-import MessengerButton from '@/components/Messenger/MessengerButton.vue';
-import { computed, onBeforeMount, ref } from 'vue';
+import { computed } from 'vue';
 import { useStore } from 'vuex';
 import { messenger } from '@/const/messenger.js';
 import MessengerAsideFiltersForConsultants from '@/components/Messenger/Aside/Filters/MessengerAsideFiltersForConsultants.vue';
 import MessengerAsideFiltersForObjects from '@/components/Messenger/Aside/Filters/MessengerAsideFiltersForObjects.vue';
+import Button from '@/components/common/Button.vue';
 
 const COMPONENTS = {
     [messenger.tabs.OBJECTS]: MessengerAsideFiltersForObjects,
     [messenger.tabs.REQUESTS]: MessengerAsideFiltersForObjects,
+    [messenger.tabs.COMPANIES]: MessengerAsideFiltersForObjects,
     [messenger.tabs.USERS]: MessengerAsideFiltersForConsultants
 };
 
+const modelValue = defineModel();
+defineEmits(['close']);
+
 const store = useStore();
 
-const modelValue = defineModel({ type: Array, default: () => [] });
-const localeModelValue = ref([]);
-
-const hasFilters = computed(() => localeModelValue.value.length || modelValue.value.length);
+const hasFilters = computed(() => {
+    return Object.values(modelValue.value).filter(Boolean).length;
+});
 
 const clear = () => {
-    modelValue.value = [];
-    localeModelValue.value = [];
-};
-
-const apply = () => {
-    modelValue.value = localeModelValue.value;
+    modelValue.value = {};
 };
 
 const currentFiltersComponent = computed(() => {
     if (store.state.Messenger.currentAsidePanel)
         return COMPONENTS[store.state.Messenger.currentAsidePanel];
     return COMPONENTS[messenger.tabs.OBJECTS];
-});
-
-onBeforeMount(() => {
-    if (modelValue.value.length) localeModelValue.value = modelValue.value;
 });
 </script>

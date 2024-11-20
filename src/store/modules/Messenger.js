@@ -443,44 +443,18 @@ const Messenger = {
         async updateDialogs({ state, commit }, payload) {
             commit('setLoadingAside', true);
 
-            const options = {
-                object: {},
-                request: {},
-                company: {}
-            };
-
             if (alg.isNumeric(state.querySearch)) {
-                options.object.object_id = state.querySearch;
-                options.request.model_id = state.querySearch;
-                options.company.model_id = state.querySearch;
+                payload.object.object_id = state.querySearch;
+                payload.company.model_id = state.querySearch;
             } else {
-                options.object.search = state.querySearch;
-                options.request.search = state.querySearch;
-                options.company.search = state.querySearch;
-            }
-
-            switch (state.currentAsidePanel) {
-                case messenger.tabs.OBJECTS: {
-                    Object.assign(options.object, payload);
-                    break;
-                }
-                case messenger.tabs.REQUESTS: {
-                    Object.assign(options.request, payload);
-                    break;
-                }
-                case messenger.tabs.COMPANIES: {
-                    Object.assign(options.request, payload);
-                    break;
-                }
-                default: {
-                    break;
-                }
+                payload.object.search = state.querySearch;
+                payload.company.search = state.querySearch;
             }
 
             const chats = await Promise.all([
-                api.messenger.getChats({ model_type: 'object', ...options.object }),
+                api.messenger.getChats({ model_type: 'object', ...payload.object }),
+                api.messenger.getChats({ model_type: 'company', ...payload.company })
                 // api.messenger.getChats({ model_type: 'request', ...options.request }),
-                api.messenger.getChats({ model_type: 'company', ...options.company })
             ]);
 
             if (chats) {

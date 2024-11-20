@@ -23,7 +23,7 @@ import MessengerLoader from '@/components/Messenger/MessengerLoader.vue';
 import { computed, shallowRef } from 'vue';
 import MessengerAsideSorting from '@/components/Messenger/Aside/MessengerAsideSorting.vue';
 
-const filters = defineModel('filters', { type: Array, default: () => [] });
+const filters = defineModel('filters');
 const sorts = defineModel('sort', { type: Array, default: () => [] });
 defineProps({
     title: {

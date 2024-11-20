@@ -1,9 +1,10 @@
 <template>
     <MessengerAsideSection
-        class="messenger-aside-offers"
-        :class="{ loading: isLoading }"
+        v-model:filters="filters"
         :loading="isLoading"
         :title="`Предложения (${objects.length}/${pagination?.totalCount || 0})`"
+        :class="{ loading: isLoading }"
+        class="messenger-aside-offers"
     >
         <div v-if="isLoading" class="messenger-aside__list">
             <MessengerDialogObjectSkeleton v-for="i in lastElementsCount" :key="i" />
@@ -68,6 +69,7 @@ import { computed, shallowRef, toRef, watch } from 'vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { useSkeleton } from '@/composables/useSkeleton.js';
 
+const filters = defineModel('filters', { type: Object });
 defineEmits(['load']);
 const props = defineProps({
     objects: {

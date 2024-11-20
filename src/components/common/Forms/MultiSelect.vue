@@ -72,13 +72,26 @@
         </label>
         <ValidationMessage v-if="hasValidationError" :message="v.$errors[0].$message" />
         <div v-if="multiple && field?.length && localeOptions?.length" class="form__chips mt-2">
-            <Chip
+            <div
                 v-for="(element, index) in selectedOptions"
                 :key="multipleProperty ? element.value : element"
-                @delete="removeElement(index)"
-                :value="multipleProperty ? element.value : element"
-                :html="multipleProperty ? element[multipleProperty] : localeOptions[element]"
-            />
+            >
+                <slot
+                    name="chip"
+                    :removeByIndex="removeElement"
+                    :index="index"
+                    :option="element"
+                    :options="selectedOptions"
+                >
+                    <Chip
+                        @delete="removeElement(index)"
+                        :value="multipleProperty ? element.value : element"
+                        :html="
+                            multipleProperty ? element[multipleProperty] : localeOptions[element]
+                        "
+                    />
+                </slot>
+            </div>
         </div>
         <slot />
     </div>
@@ -90,6 +103,12 @@ import Chip from '@/components/common/Chip.vue';
 import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
 import { computed, ref, toRef, watch } from 'vue';
 import { useFormControlValidation } from '@/composables/useFormControlValidation.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isArray } from '@/utils/helpers/array/isArray.js';
+import { isString } from '@/utils/helpers/string/isString.js';
+import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import plural from 'plural-ru';
 
 const emit = defineEmits(['change']);
 const props = defineProps({
@@ -172,7 +191,12 @@ const props = defineProps({
     multipleLabel: {
         type: Function,
         default: n => {
-            return `выбрано => ${n.length}`;
+            return plural(
+                n.length,
+                'Выбран %d элемент',
+                'Выбраны %d элемента',
+                'Выбрано %d элементов'
+            );
         }
     },
     multiple: {
@@ -245,7 +269,7 @@ const selectedOptions = computed(() => {
         return field.value.map(element => {
             return localeOptions.value.find(item => item.value == element);
         });
-    } else return localeOptions;
+    } else return field.value;
 });
 
 watch(modelValue, newValue => {

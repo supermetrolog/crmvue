@@ -13,12 +13,14 @@
         >
             <MessengerAsideObjects
                 ref="asideOffers"
+                v-model:filters="filters.object"
                 @load="load($event, 'object')"
                 :objects="chatMembersObjects.data"
                 :pagination="chatMembersObjects.pagination"
             />
             <MessengerAsideCompanies
                 ref="asideCompanies"
+                v-model:filters="filters.company"
                 @load="load($event, 'company')"
                 :companies="chatMembersCompanies.data"
                 :pagination="chatMembersCompanies.pagination"
@@ -30,7 +32,7 @@
 import MessengerAsideHeader from '@/components/Messenger/Aside/MessengerAsideHeader.vue';
 import { useStore } from 'vuex';
 import MessengerAsideObjects from '@/components/Messenger/Aside/MessengerAsideObjects.vue';
-import { computed, onBeforeMount, shallowRef, useTemplateRef, watch } from 'vue';
+import { computed, onBeforeMount, reactive, ref, useTemplateRef, watch } from 'vue';
 import { messenger } from '@/const/messenger.js';
 import { useDebounceFn, useElementSize } from '@vueuse/core';
 import MessengerAsideCompanies from '@/components/Messenger/Aside/MessengerAsideCompanies.vue';
@@ -46,7 +48,11 @@ const store = useStore();
 
 const asideOffers = useTemplateRef('asideOffers');
 const asideCompanies = useTemplateRef('asideCompanies');
-const isReversing = shallowRef(false);
+const isReversing = ref(false);
+const filters = reactive({
+    object: {},
+    company: {}
+});
 
 const { height: offersListHeight } = useElementSize(asideOffers);
 const { height: companiesListHeight } = useElementSize(asideCompanies);
@@ -66,12 +72,31 @@ watch(isReversed, () => {
     debouncedStopReversing();
 });
 
+watch(
+    filters,
+    () => {
+        debouncedUpdateDialog();
+    },
+    { deep: true }
+);
+
+const createPayload = () => {
+    const payload = {
+        company: { ...filters.company },
+        object: { ...filters.object }
+    };
+
+    payload[store.state.Messenger.currentAsidePanel].sort = props.currentTab.sort
+        ? `${props.currentTab.sort},-default`
+        : '-default';
+
+    return payload;
+};
+
 const load = async ($state, modelType) => {
     const isLastPage = await store.dispatch('Messenger/loadDialogs', {
         modelType,
-        payload: {
-            sort: props.currentTab.sort ? `${props.currentTab.sort},-default` : '-default'
-        }
+        payload: createPayload()
     });
 
     if (isLastPage) $state.complete();
@@ -86,10 +111,8 @@ watch(
     }
 );
 
-const updateDialogs = () =>
-    store.dispatch('Messenger/updateDialogs', {
-        sort: props.currentTab.sort ? `${props.currentTab.sort},-default` : '-default'
-    });
+const updateDialogs = () => store.dispatch('Messenger/updateDialogs', createPayload());
+const debouncedUpdateDialog = useDebounceFn(updateDialogs, 500);
 
 onBeforeMount(() => {
     if (!hasQuery.value && !hasDialogs.value) updateDialogs();
