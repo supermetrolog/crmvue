@@ -10,6 +10,13 @@
                     :size="75"
                 />
                 <span class="messenger-dialog-company__id">ID{{ model.id }}</span>
+                <Avatar
+                    v-if="model.consultant"
+                    :size="30"
+                    :label="`${model.consultant.userProfile.medium_name} - консультант`"
+                    :src="model.consultant.userProfile.avatar"
+                    class="messenger-dialog__avatar messenger-dialog-company__avatar"
+                />
             </div>
             <div class="messenger-dialog-company__description">
                 <p v-if="hasUndefinedName" class="messenger-warning">[Нет уникального названия]</p>
@@ -57,6 +64,7 @@ import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 import { alg } from '@/utils/alg.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { CompanyCategories } from '@/const/const.js';
+import Avatar from '@/components/common/Avatar.vue';
 
 defineEmits(['update-call']);
 const props = defineProps({
