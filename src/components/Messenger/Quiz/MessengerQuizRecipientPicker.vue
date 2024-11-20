@@ -21,7 +21,7 @@
 import { useStore } from 'vuex';
 import { computed } from 'vue';
 import MessengerQuizRecipient from '@/components/Messenger/Quiz/MessengerQuizRecipient.vue';
-import { entityOptions } from '@/const/options/options.js';
+import { contactOptions } from '@/const/options/contact.options.js';
 
 const modelValue = defineModel();
 
@@ -30,7 +30,7 @@ const store = useStore();
 const company = computed(() => store.state.Messenger.currentPanel);
 const mainContact = computed(() => {
     const contact = company.value.contacts.find(
-        contact => contact.type === entityOptions.contact.typeStatement.GENERAL
+        contact => contact.type === contactOptions.typeStatement.GENERAL
     );
 
     if (contact)
@@ -44,9 +44,12 @@ const mainContact = computed(() => {
 });
 
 const contacts = computed(() => {
-    return company.value.contacts.filter(
-        contact => contact.type !== entityOptions.contact.typeStatement.GENERAL
-    );
+    return company.value.contacts.filter(contact => {
+        return (
+            contact.type !== contactOptions.typeStatement.GENERAL &&
+            contact.status === contactOptions.statusStatement.ACTIVE
+        );
+    });
 });
 
 const setRecipient = recipient => {
