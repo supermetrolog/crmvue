@@ -48,6 +48,14 @@
                             :max="3"
                             color="yellow"
                         />
+                        <span>|</span>
+                        <Avatar
+                            v-if="company.consultant"
+                            :size="30"
+                            :label="`${company.consultant.userProfile.medium_name} - консультант компании`"
+                            :src="company.consultant.userProfile.avatar"
+                            class="messenger-panel-company__avatar"
+                        />
                     </div>
                 </div>
             </div>
@@ -119,6 +127,7 @@ import Modal from '@/components/common/Modal.vue';
 import { useStore } from 'vuex';
 import { useNotify } from '@/utils/useNotify.js';
 import FormCompanyLogo from '@/components/Forms/Company/FormCompanyLogo.vue';
+import Avatar from '@/components/common/Avatar.vue';
 
 defineEmits(['edit']);
 const props = defineProps({

@@ -63,6 +63,7 @@ import MessengerDialogUser from '@/components/Messenger/Dialog/MessengerDialogUs
 import MessengerAsideConsultantsHeader from '@/components/Messenger/Aside/MessengerAsideConsultantsHeader.vue';
 import { useSkeleton } from '@/composables/useSkeleton.js';
 import MessengerDialogUserSkeleton from '@/components/Messenger/Dialog/MessengerDialogUserSkeleton.vue';
+import { useDebounceFn } from '@vueuse/core';
 
 const props = defineProps({
     currentTab: {
@@ -75,7 +76,9 @@ const store = useStore();
 const { isLoading } = useDelayedLoader();
 
 const virtualList = shallowRef(null);
-const filters = ref([{ key: 'status', value: 10 }]);
+const filters = ref({
+    status: 10
+});
 const sorts = ref(null);
 
 const consultants = computed(() => store.state.Messenger.chatMembersUser.data);
@@ -87,19 +90,16 @@ const hasDialogs = computed(() => consultants.value.length);
 const { lastElementsCount } = useSkeleton(consultants, { defaultCounts: 10 });
 
 const createPayload = () => {
-    const payload = filters.value.reduce((acc, element) => {
-        acc[element.key] = element.value;
-        return acc;
-    }, {});
-
-    payload.sort = props.currentTab.sort ? `${props.currentTab.sort},-default` : '-default';
-
-    return payload;
+    return {
+        sort: props.currentTab.sort ? `${props.currentTab.sort},-default` : '-default',
+        ...filters.value
+    };
 };
 
 const updateDialogs = () => {
     store.dispatch('Messenger/updateConsultantsDialogs', createPayload());
 };
+const debouncedUpdateDialog = useDebounceFn(updateDialogs, 500);
 
 onBeforeMount(() => {
     if (!hasQuery.value && !hasDialogs.value) updateDialogs();
@@ -124,7 +124,7 @@ watch(
 watch(
     filters,
     () => {
-        updateDialogs();
+        debouncedUpdateDialog();
     },
     { deep: true }
 );

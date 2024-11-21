@@ -38,6 +38,9 @@
             @click.stop="filersIsOpened = true"
             class="messenger-aside-sorting__button rounded-icon"
         >
+            <span v-if="filtersCount" class="messenger-aside-sorting__badge">
+                {{ filtersCount }}
+            </span>
             <i class="fa-solid fa-filter"></i>
         </button>
         <teleport to="body">
@@ -51,9 +54,10 @@
 </template>
 <script setup>
 import FormModalMessengerFilters from '@/components/Forms/FormModalMessengerFilters.vue';
-import { shallowRef } from 'vue';
+import { computed, ref } from 'vue';
+import { isEmpty } from '@/utils/helpers/common/isEmpty.js';
 
-const filters = defineModel('filters', { type: Array, default: () => [] });
+const filters = defineModel('filters');
 // const sorts = defineModel('sort');
 defineProps({
     title: {
@@ -62,5 +66,9 @@ defineProps({
     }
 });
 
-const filersIsOpened = shallowRef(false);
+const filersIsOpened = ref(false);
+
+const filtersCount = computed(() => {
+    return Object.values(filters.value).filter(element => !isEmpty(element)).length;
+});
 </script>

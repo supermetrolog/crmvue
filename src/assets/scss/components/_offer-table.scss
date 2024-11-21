@@ -89,6 +89,10 @@
                 color: #000;
                 text-decoration: underline;
             }
+
+            &__info {
+                color: variables.$color_grey;
+            }
         }
     }
 

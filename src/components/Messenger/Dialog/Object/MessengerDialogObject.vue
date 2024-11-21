@@ -14,6 +14,13 @@
                     alt="file image"
                 />
                 <span class="messenger-dialog-offer__id">ID{{ model.object.id }}</span>
+                <Avatar
+                    v-if="model.object.consultant"
+                    :size="30"
+                    :label="`${model.object.consultant.userProfile.medium_name} - консультант`"
+                    :src="model.object.consultant.userProfile.avatar"
+                    class="messenger-dialog__avatar"
+                />
             </div>
             <div class="messenger-dialog-offer__description">
                 <p v-if="model.object.company" class="messenger-dialog-offer__company">
@@ -47,6 +54,7 @@ import { getCompanyName } from '@/utils/formatter.js';
 import { useStore } from 'vuex';
 import MessengerDialogObjectDealType from '@/components/Messenger/Dialog/Object/MessengerDialogObjectDealType.vue';
 import OfferTableItemPreviewMotionSlider from '@/components/Offer/TableItem/OfferTableItemPreviewMotionSlider.vue';
+import Avatar from '@/components/common/Avatar.vue';
 
 defineEmits(['update-call']);
 const props = defineProps({
