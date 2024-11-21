@@ -1,6 +1,6 @@
 <template>
     <div ref="slider" class="offer-table-item-motion-slider">
-        <LazyImage :src="thumb" />
+        <LazyImage class="offer-table-item-motion-slider__main" :src="thumb" />
         <div v-if="photos?.length > 1 && isHovered" class="offer-table-item-motion-slider__list">
             <img
                 v-for="element in preparedPhotos"

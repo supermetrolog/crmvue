@@ -19,15 +19,18 @@
                 />
                 <span v-tippy="contact.full_name">{{ contact.full_name }}</span>
             </p>
-            <p v-if="hasFullnameWarning" class="messenger-quiz-contact__error color-error">
+            <p
+                v-if="hasFullnameWarning && !isCompanyContact"
+                class="messenger-quiz-contact__error color-error"
+            >
                 [ФИО заполнено не полностью]
             </p>
-            <p class="messenger-quiz-contact__staff">
+            <p v-if="!isCompanyContact" class="messenger-quiz-contact__staff">
                 <span v-if="contact.position_unknown">Должность неизвестна..</span>
                 <span v-else-if="contact.position">
                     {{ position }}
                 </span>
-                <span v-else class="color-warning">Должность не заполнена!</span>
+                <span v-else class="color-error">Должность не заполнена!</span>
             </p>
             <p class="messenger-quiz-contact__email">
                 <template v-if="mainEmail">
@@ -93,7 +96,7 @@
                 <span>Внимание! {{ contact.warning_why_comment }}</span>
             </div>
         </div>
-        <div class="messenger-quiz-contact__actions">
+        <div v-if="!isCompanyContact" class="messenger-quiz-contact__actions">
             <HoverActionsButton
                 @click="$emit('show-comments')"
                 small
@@ -159,7 +162,7 @@
     </div>
 </template>
 <script setup>
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import { contactOptions } from '@/const/options/contact.options.js';
 import { Tippy } from 'vue-tippy';
@@ -179,8 +182,6 @@ const props = defineProps({
         default: false
     }
 });
-
-const commentsIsOpen = ref(false);
 
 const position = computed(() => contactOptions.position[props.contact.position]);
 

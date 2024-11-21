@@ -564,21 +564,36 @@ const Messenger = {
             commit('setLastNotViewedMessage', null);
             commit('setLoadingChat', true);
 
-            const [dialog, messages, pinned] = await Promise.all([
-                api.messenger.getDialog(dialogID),
+            const dialog = await api.messenger.getDialog(dialogID);
+            if (!dialog) {
+                commit('setLoadingChat', false);
+                return false;
+            }
+
+            commit('setCurrentDialog', dialog);
+
+            if (
+                getters.currentDaysCountAfterLastCall >
+                import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_WARNING
+            ) {
+                commit('selectChatTab', messenger.chatTabs.SURVEY);
+                commit('setLoadingChat', false);
+                return;
+            }
+
+            const [messages, pinned] = await Promise.all([
                 api.messenger.getMessages(dialogID),
                 api.messenger.getPinned(dialogID)
             ]);
 
             commit('setCurrentPinned', pinned);
-            commit('setCurrentChat', true);
-            commit('setCurrentDialog', dialog);
 
             if (messages.length) {
                 commit('setMessages', messages);
                 commit('setLessThenMessageId', messages[0].id);
             }
 
+            commit('setCurrentChat', true);
             commit('selectChatTab', messenger.chatTabs.CHAT);
             commit('setLoadingChat', false);
         },

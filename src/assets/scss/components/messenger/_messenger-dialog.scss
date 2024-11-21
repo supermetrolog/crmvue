@@ -117,7 +117,12 @@
         width: 100%;
         flex-basis: 50%;
         height: max-content;
+        max-height: 110px;
         flex-shrink: 0;
+
+        img {
+            max-height: 110px;
+        }
     }
 
     &:has(&__preview:hover) .messenger-dialog__avatar {
