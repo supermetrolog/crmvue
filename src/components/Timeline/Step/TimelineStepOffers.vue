@@ -21,7 +21,7 @@
                         :objects="selectedObjects"
                         :selected-objects="selectedObjects"
                         disabled
-                        col="col-3"
+                        col="col-4"
                         label="Выбранные предложения"
                     />
                 </FormLetter>
