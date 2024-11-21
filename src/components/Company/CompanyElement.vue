@@ -3,7 +3,7 @@
         <div class="company-element__main">
             <CompanyLogo
                 :company-id="company.id"
-                :company-name="company.full_name"
+                :company-name="companyName"
                 :src="company.logo"
                 :size="42"
             />
@@ -13,8 +13,7 @@
                     :to="'/companies/' + company.id"
                     target="_blank"
                 >
-                    <span v-if="!company.noName">{{ company.full_name }}</span>
-                    <span v-else>Компания #{{ company.id }}</span>
+                    <span>{{ companyName }}</span>
                 </router-link>
                 <div v-if="company.rating" class="company-element__rating">
                     <Rating :rating="company.rating" />
@@ -40,6 +39,7 @@ import plural from 'plural-ru';
 import { entityOptions } from '@/const/options/options.js';
 import { computed } from 'vue';
 import CompanyLogo from '@/components/Company/CompanyLogo.vue';
+import { getCompanyName } from '@/utils/formatter.js';
 
 const props = defineProps({
     company: {
@@ -60,4 +60,6 @@ const contactsLength = computed(() => {
         return props.company.contacts_count;
     }
 });
+
+const companyName = computed(() => getCompanyName(props.company));
 </script>
