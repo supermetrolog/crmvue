@@ -133,8 +133,9 @@ import CompanyContact from '@/components/Company/CompanyContact.vue';
 import CompanyElement from '@/components/Company/CompanyElement.vue';
 import { computed } from 'vue';
 import { useStore } from 'vuex';
-import { $generatorURL } from '@/plugins/url.js';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
+import { useAuth } from '@/composables/useAuth.js';
+import { getLinkPDF } from '@/utils/url.js';
 
 const emit = defineEmits(['favorite-deleted']);
 const props = defineProps({
@@ -145,6 +146,7 @@ const props = defineProps({
 });
 
 const { openChat } = useMessenger();
+const { currentUserId } = useAuth();
 const store = useStore();
 
 const contact = computed(() => {
@@ -169,13 +171,13 @@ const openInChat = () => {
 
 const openPDF = () => {
     window.open(
-        $generatorURL.pdf(
+        getLinkPDF(
             {
                 type_id: 2,
                 offer_id: props.offer.original_id,
                 object_id: props.offer.object_id
             },
-            store.getters.THIS_USER
+            currentUserId.value
         ),
         '_blank'
     );
