@@ -36,6 +36,7 @@ import { computed, onBeforeMount, reactive, ref, useTemplateRef, watch } from 'v
 import { messenger } from '@/const/messenger.js';
 import { useDebounceFn, useElementSize } from '@vueuse/core';
 import MessengerAsideCompanies from '@/components/Messenger/Aside/MessengerAsideCompanies.vue';
+import { useAuth } from '@/composables/useAuth.js';
 
 const props = defineProps({
     currentTab: {
@@ -45,13 +46,18 @@ const props = defineProps({
 });
 
 const store = useStore();
+const { currentUserId } = useAuth();
 
 const asideOffers = useTemplateRef('asideOffers');
 const asideCompanies = useTemplateRef('asideCompanies');
 const isReversing = ref(false);
 const filters = reactive({
-    object: {},
-    company: {}
+    object: {
+        consultant_ids: [currentUserId.value]
+    },
+    company: {
+        consultant_ids: [currentUserId.value]
+    }
 });
 
 const { height: offersListHeight } = useElementSize(asideOffers);
