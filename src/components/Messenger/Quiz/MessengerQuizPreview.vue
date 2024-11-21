@@ -42,6 +42,7 @@ import api from '@/api/api.js';
 import MessengerQuizPreviewInfo from '@/components/Messenger/Quiz/MessengerQuizPreviewInfo.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import MessengerQuizPreviewCompany from '@/components/Messenger/Quiz/MessengerQuizPreviewCompany.vue';
+import { getCompanyName } from '@/utils/formatter.js';
 
 const CUSTOM_QUESTION_ID = 8;
 
@@ -80,7 +81,7 @@ const fetchQuiz = async () => {
 
 const injectCompanyNames = companies => {
     for (const company of companies) {
-        companyNames[company.id] = company.full_name;
+        companyNames[company.id] = getCompanyName(company);
     }
 };
 

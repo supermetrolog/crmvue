@@ -25,6 +25,11 @@ const customRequiredNameEng = (value, form) => {
     );
 };
 
+function customRequiredIndividualFullName(value, form, vm) {
+    if (form.is_individual) return required.$validator(form.individual_full_name, form, vm);
+    return true;
+}
+
 const customRequiredPassiveWhy = (_, form) => {
     return form.status || required.$validator(form.passive_why);
 };
@@ -102,6 +107,12 @@ export const validationRulesForCompany = {
     },
     passive_why: {
         customRequiredPassiveWhy: helpers.withMessage('Выберите причину', customRequiredPassiveWhy)
+    },
+    individual_full_name: {
+        required: helpers.withMessage(
+            'Заполните данные физ.лица для обращения',
+            customRequiredIndividualFullName
+        )
     }
 };
 

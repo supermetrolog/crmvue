@@ -256,11 +256,11 @@ import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
 import { mapGetters } from 'vuex';
-import { alg } from '@/utils/alg.js';
 import DashboardCardRequestObjectTypes from '@/components/Dashboard/Card/Request/DashboardCardRequestObjectTypes.vue';
 import DashboardCardRequestRequirements from '@/components/Dashboard/Card/Request/DashboardCardRequestRequirements.vue';
 import DashboardCardRequestAddress from '@/components/Dashboard/Card/Request/DashboardCardRequestAddress.vue';
 import DashboardCardRequestStatus from '@/components/Dashboard/Card/Request/DashboardCardRequestStatus.vue';
+import { getCompanyName } from '@/utils/formatter.js';
 
 export default {
     name: 'DashboardCardRequestView',
@@ -325,9 +325,7 @@ export default {
             return this.request.status === 0;
         },
         companyName() {
-            return alg.isNumeric(this.request.company.full_name)
-                ? 'Компания №' + this.request.company.full_name
-                : this.request.company.full_name;
+            return getCompanyName(this.request.company, this.request.company_id);
         },
         ...mapGetters({ currentUser: 'THIS_USER' })
     },

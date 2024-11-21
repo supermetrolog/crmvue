@@ -550,12 +550,14 @@
     }
 
     &__row {
-        display: block;
+        cursor: pointer;
+        @include mixins.flex-box($gap: 5px);
 
         input {
             width: 20px;
             height: 20px;
             margin: 0!important;
+            cursor: pointer;
         }
     }
 }

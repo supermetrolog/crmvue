@@ -8,7 +8,7 @@
                 :to="'/companies/' + company.id"
                 target="_blank"
             >
-                {{ company.full_name }}
+                {{ companyName }}
             </router-link>
             <p class="object-holding-company__message">
                 <span>
@@ -32,7 +32,8 @@
 import plural from 'plural-ru';
 import { useStore } from 'vuex';
 import Rating from '@/components/common/Rating.vue';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import { getCompanyName } from '@/utils/formatter.js';
 
 const store = useStore();
 
@@ -44,6 +45,8 @@ const props = defineProps({
 });
 
 const contacts = ref([]);
+
+const companyName = computed(() => getCompanyName(props.company));
 
 onMounted(async () => {
     contacts.value = await store.dispatch('FETCH_COMPANY_CONTACTS', props.company.id);

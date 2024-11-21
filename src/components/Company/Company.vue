@@ -15,7 +15,7 @@
                 <div class="col-12">
                     <DashboardChip class="dashboard-bg-light w-100">
                         <span class="company-detail-info__title">
-                            {{ company.full_name }} (ID: {{ company.id }})
+                            {{ companyName }} (ID: {{ company.id }})
                         </span>
                     </DashboardChip>
                 </div>
@@ -201,6 +201,7 @@ import Progress from '@/components/common/Progress.vue';
 import File from '@/components/common/Forms/File.vue';
 import AccordionSimpleTriggerButton from '@/components/common/Accordion/AccordionSimpleTriggerButton.vue';
 import { computed } from 'vue';
+import { getCompanyName } from '@/utils/formatter.js';
 
 const emit = defineEmits(['start-editing']);
 const props = defineProps({
@@ -209,6 +210,8 @@ const props = defineProps({
         required: true
     }
 });
+
+const companyName = computed(() => getCompanyName(props.company));
 
 const generalContact = computed(() => props.company.contacts.find(item => item.type === 1));
 const formOfOrganization = computed(

@@ -1,10 +1,11 @@
 import api from '@/api/api.js';
 import { unref } from 'vue';
+import { getCompanyName } from '@/utils/formatter.js';
 
 function companyToOption(company) {
     return {
         value: company.id,
-        label: company.full_name,
+        label: getCompanyName(company),
         logo: company.logo
     };
 }

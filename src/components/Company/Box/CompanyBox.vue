@@ -3,7 +3,7 @@
         <template #header>
             <div class="company-box-main__header">
                 <span class="company-box-main__title">
-                    {{ company.full_name }}
+                    {{ companyName }}
                 </span>
                 <div class="company-box-main__actions">
                     <HoverActionsButton @click="$emit('edit-company')" small label="Редактировать">
@@ -236,6 +236,7 @@ import FormCompanyLogo from '@/components/Forms/Company/FormCompanyLogo.vue';
 import Modal from '@/components/common/Modal.vue';
 import { useNotify } from '@/utils/useNotify.js';
 import { useStore } from 'vuex';
+import { getCompanyName } from '@/utils/formatter.js';
 
 defineEmits(['create-contact', 'edit-company']);
 
@@ -279,6 +280,8 @@ const activityGroup = computed(() => {
 const activityProfile = computed(() => {
     return ActivityProfileList[props.company.activityProfile].label;
 });
+
+const companyName = computed(() => getCompanyName(props.company));
 
 const closeForm = () => {
     logoFormIsVisible.value = false;

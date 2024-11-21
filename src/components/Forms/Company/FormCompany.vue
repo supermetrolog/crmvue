@@ -11,53 +11,55 @@
             <Tabs :options="{ useUrlFragment: false }">
                 <Loader v-if="isLoading" />
                 <Tab name="Основное">
-                    <div class="row mb-2">
+                    <FormGroup>
                         <div class="col-6">
                             <div class="row">
                                 <Input
                                     v-model.trim="form.nameRu"
                                     :disabled="form.noName"
                                     :v="v$.form.nameRu"
-                                    :maska="{
-                                        mask: 'Z*',
-                                        tokens: { Z: { pattern: /[а-яА-Я0-9 (--)]/ } }
-                                    }"
                                     :required="!form.nameEng"
                                     label="Название Ru"
                                     class="col-12"
                                 />
-                                <Switch
-                                    v-model="form.noName"
-                                    :transform="Number"
-                                    false-title="С названием"
-                                    true-title="Без названия"
-                                    class="col-12"
-                                />
+                                <div class="col-12">
+                                    <div class="d-flex gap-3">
+                                        <Checkbox v-model="form.noName" numeric>
+                                            Без названия
+                                        </Checkbox>
+                                        <Checkbox v-model="form.is_individual" numeric>
+                                            Физическое лицо
+                                        </Checkbox>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <Input
                             v-model.trim="form.nameEng"
                             :disabled="form.noName"
                             :v="v$.form.nameEng"
-                            :maska="{
-                                mask: 'Z*',
-                                tokens: { Z: { pattern: /[a-zA-Z0-9 (--)]/ } }
-                            }"
                             :required="!form.nameRu"
                             label="Название Eng"
                             class="col-6"
                         />
-                    </div>
-                    <div class="row mb-2">
+                    </FormGroup>
+                    <AnimationTransition :speed="0.6">
+                        <FormGroup v-if="form.is_individual">
+                            <Input
+                                v-model.trim="form.individual_full_name"
+                                :v="v$.form.individual_full_name"
+                                required
+                                label="ФИО физ.лица"
+                                class="col-12"
+                            />
+                        </FormGroup>
+                    </AnimationTransition>
+                    <FormGroup>
                         <Input
                             v-model.trim="form.nameBrand"
                             :v="v$.form.nameBrand"
-                            :maska="{
-                                mask: 'Z*',
-                                tokens: { Z: { pattern: /[а-яА-Яa-zA-Z0-9 (--)]/ } }
-                            }"
                             label="Название Brand"
-                            class="col-5"
+                            class="col-4"
                         />
                         <MultiSelect
                             v-model="form.companyGroup_id"
@@ -71,11 +73,11 @@
                             :disabled="form.noName"
                             label="ФО"
                             title="Форма организации"
-                            class="col-3"
+                            class="col-4"
                             :options="CompanyFormOrganization"
                         />
-                    </div>
-                    <div class="row mb-2">
+                    </FormGroup>
+                    <FormGroup>
                         <MultiSelect
                             v-model="form.officeAdress"
                             :title="form.officeAdress"
@@ -93,8 +95,8 @@
                                 }
                             "
                         />
-                    </div>
-                    <div class="row">
+                    </FormGroup>
+                    <FormGroup>
                         <ConsultantPicker
                             v-model="form.consultant_id"
                             :v="v$.form.consultant_id"
@@ -111,8 +113,8 @@
                             property-name="website"
                             class="col-6"
                         />
-                    </div>
-                    <div class="row mt-2">
+                    </FormGroup>
+                    <FormGroup>
                         <PropogationDoubleInput
                             v-model="form.contacts.phones"
                             :v="v$.form.contacts.phones"
@@ -137,39 +139,49 @@
                             label="Email"
                             class="col-6"
                         />
-                    </div>
-                    <div class="row mt-2">
-                        <div class="col-12">
-                            <span class="form__subtitle">Категория</span>
-                            <div class="form__row mt-1">
-                                <CheckboxChip
-                                    v-for="(category, index) in CompanyCategories"
-                                    :key="index"
-                                    v-model="form.categories"
-                                    :v="v$.form.categories"
-                                    :value="index"
-                                    :text="category"
-                                    property="category"
-                                />
+                    </FormGroup>
+                    <FormGroup>
+                        <CheckboxOptions
+                            v-model="form.categories"
+                            class="col-12"
+                            :v="v$.form.categories"
+                            label="Категория"
+                            property="category"
+                            :options="CompanyCategories"
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-12">
+                                    <span class="form__subtitle">Статус</span>
+                                    <div class="form__row mt-1">
+                                        <RadioChip
+                                            v-model="form.status"
+                                            label="Пассив"
+                                            :value="0"
+                                        />
+                                        <RadioChip v-model="form.status" label="Актив" :value="1" />
+                                    </div>
+                                </div>
+                                <AnimationTransition :speed="0.6">
+                                    <div v-if="!form.status" class="col-12">
+                                        <MultiSelect
+                                            v-model="form.passive_why"
+                                            :v="v$.form.passive_why"
+                                            required
+                                            label="Причина пассива"
+                                            :options="PassiveWhy"
+                                        />
+                                        <Textarea
+                                            v-model="form.passive_why_comment"
+                                            class="col-12 p-0 pt-1"
+                                        />
+                                    </div>
+                                </AnimationTransition>
                             </div>
                         </div>
-                        <div class="col-6 mt-2">
-                            <span class="form__subtitle">Прочее</span>
-                            <CheckboxChip
-                                v-model="form.processed"
-                                :value="form.processed"
-                                text="Обработано"
-                                class="mt-1"
-                            />
-                        </div>
-                        <div class="col-6 mt-2">
-                            <span class="form__subtitle">Статус</span>
-                            <div class="form__row mt-1">
-                                <RadioChip v-model="form.status" label="Пассив" :value="0" />
-                                <RadioChip v-model="form.status" label="Актив" :value="1" />
-                            </div>
-                        </div>
-                        <div class="col-6 mt-2">
+                        <div class="col-6">
                             <div class="row">
                                 <RadioStars
                                     v-model="form.rating"
@@ -198,22 +210,7 @@
                                 </div>
                             </div>
                         </div>
-                        <AnimationTransition>
-                            <div v-if="!form.status" class="col-4 mt-2">
-                                <MultiSelect
-                                    v-model="form.passive_why"
-                                    :v="v$.form.passive_why"
-                                    required
-                                    label="Причина пассива"
-                                    :options="PassiveWhy"
-                                />
-                                <Textarea
-                                    v-model="form.passive_why_comment"
-                                    class="col-12 p-0 pt-1"
-                                />
-                            </div>
-                        </AnimationTransition>
-                    </div>
+                    </FormGroup>
                     <div class="row mt-2">
                         <Textarea v-model="form.description" label="Описание" class="col-12" />
                     </div>
@@ -411,7 +408,6 @@ import {
 import { yandexmap } from '@/utils/yandexMap.js';
 import Modal from '@/components/common/Modal.vue';
 import Loader from '@/components/common/Loader.vue';
-import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { validateEmail, validateUrl } from '@//validators';
@@ -419,7 +415,6 @@ import Submit from '@/components/common/Forms/FormSubmit.vue';
 import { computed, reactive, shallowRef } from 'vue';
 import { normalizeDataForCompanyForm } from '@/utils/normalizeForm.js';
 import { validationRulesForCompany } from '@/validators/rules.js';
-import Switch from '@/components/common/Forms/Switch.vue';
 import api from '@/api/api.js';
 import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
 import ConsultantPicker from '@/components/common/Forms/ConsultantPicker/ConsultantPicker.vue';
@@ -427,6 +422,9 @@ import { useCompanyGroupsOptions } from '@/composables/options/useCompanyGroupsO
 import { useBanksOptions } from '@/composables/options/useBanksOptions.js';
 import { useProductRangesOptions } from '@/composables/options/useProductRangesOptions.js';
 import { useFormData } from '@/utils/useFormData.js';
+import Checkbox from '@/components/common/Forms/Checkbox.vue';
+import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import CheckboxOptions from '@/components/common/Forms/CheckboxOptions.vue';
 
 const emit = defineEmits(['updated', 'created', 'close']);
 const props = defineProps({
@@ -470,6 +468,7 @@ const { form } = useFormData(
         okpo: null,
         okved: null,
         processed: 0,
+        is_individual: 0,
         productRanges: [],
         signatoryLastName: null,
         signatoryMiddleName: null,
