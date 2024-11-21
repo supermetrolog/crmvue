@@ -169,6 +169,9 @@ import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';
 import AccordionSimpleTrigger from '@/components/common/Accordion/AccordionSimpleTrigger.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
+import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isEmptyArray } from '@/utils/helpers/array/isEmptyArray.js';
+import { isEmpty } from '@/utils/helpers/common/isEmpty.js';
 
 defineEmits(['edit', 'delete', 'edit-answer', 'add-answer']);
 const props = defineProps({
@@ -193,21 +196,17 @@ const props = defineProps({
 const form = reactive({});
 const accordion = useTemplateRef('accordion');
 
-const hasFullAnswer = computed(() =>
-    Object.values(form).every(element => {
-        if (element == null) return false;
-        if (Array.isArray(element)) return element.length;
-        if (typeof element === 'string') return element.length;
-        if (typeof element === 'object') {
-            return Object.values(element).every(_element => {
-                if (typeof _element === 'string') return _element.length;
-                return _element != null;
-            });
-        }
+const hasFullAnswer = computed(() => {
+    if (isNullish(form.main)) return false;
 
-        return true;
-    })
-);
+    if (hasTabQuestions.value && isEmptyArray(form.tab) && isNullish(form.radio)) return false;
+
+    if (hasTextQuestions.value && Object.values(form.description).every(isEmpty)) return false;
+
+    // May be something expressions here if needed
+
+    return true;
+});
 
 const hasMainQuestion = computed(() => Boolean(props.question.answers?.['yes-no']));
 const hasTabQuestions = computed(() => Boolean(props.question.answers?.tab));
