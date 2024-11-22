@@ -194,16 +194,11 @@ export default {
         }
     },
     async getStatistics(chatMemberIds, modelTypes = ['object', 'request']) {
-        try {
-            const response = await axios.get(`${URL}/statistic`, {
-                params: { chat_member_ids: chatMemberIds, model_types: modelTypes }
-            });
+        const response = await axios.get(`${URL}/statistic`, {
+            params: { chat_member_ids: chatMemberIds, model_types: modelTypes }
+        });
 
-            return SuccessHandler.getData(response);
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
+        return responseToData(response);
     },
     async deleteMessage(id) {
         try {
