@@ -1,26 +1,21 @@
 import { alg } from '@/utils/alg.js';
 import dayjs from 'dayjs';
 import { dayjsFromMoscow } from '@/utils/index.js';
+import isNullish from '@vueform/multiselect/src/utils/isNullish.js';
 
-/**
- * Сформировать название компании
- *
- * @param {object} company - Компания
- * @param {number} companyID - ID компании
- * @returns {string} - Название компании
- */
-export const getCompanyName = (company, companyID) => {
-    if (!company || company?.noName) return 'Компания #' + companyID;
+export function getCompanyName(company, companyID = null) {
+    if (isNullish(company)) return `Компания #${companyID}`;
+
+    if (company.is_individual && company.noName)
+        return `${company.individual_full_name} (физ.лицо)`;
 
     if (company.full_name) return company.full_name;
-
-    if (alg.isNumeric(company.nameRu)) return 'Компания №' + company.nameRu;
 
     let companyName = company.nameRu;
     if (company.nameEng) companyName += ' - ' + company.nameEng;
 
     return companyName;
-};
+}
 
 export function getContactFullName(contact) {
     if (contact.full_name) return contact.full_name;

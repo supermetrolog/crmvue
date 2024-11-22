@@ -12,13 +12,18 @@
             <div class="company-table-item__main">
                 <CompanyLogo
                     :company-id="company.id"
-                    :company-name="company.full_name"
+                    :company-name="companyName"
                     :src="company.logo"
                 />
                 <div>
                     <a class="company-table-item__title" :href="companyUrl" target="_blank">
                         <h4 :class="{ 'text-warning': isPassive }">
-                            {{ company.full_name }}
+                            <i
+                                v-if="company.is_individual"
+                                v-tippy="'Физ.лицо'"
+                                class="fa-solid fa-user-tie mr-1"
+                            ></i>
+                            <span>{{ companyName }}</span>
                         </h4>
                     </a>
                     <p v-if="company.companyGroup" class="company-table-item__company-group">
@@ -136,7 +141,7 @@ import TableDateBlock from '@/components/common/Table/TableDateBlock.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { getLinkCompany } from '@/utils/url.js';
-import { ucFirst } from '@/utils/formatter.js';
+import { getCompanyName, ucFirst } from '@/utils/formatter.js';
 import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 import { messenger } from '@/const/messenger.js';
 
@@ -168,6 +173,7 @@ const passiveWhyComment = computed(() => {
 });
 
 const companyUrl = computed(() => getLinkCompany(props.company.id));
+const companyName = computed(() => getCompanyName(props.company));
 
 const openTimeline = requestID => {
     const route = router.resolve({

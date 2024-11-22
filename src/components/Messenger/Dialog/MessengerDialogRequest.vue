@@ -8,6 +8,13 @@
             <i class="fa-solid fa-fire"></i>
         </span>
         <div class="messenger-dialog__body messenger-dialog-request__body">
+            <Avatar
+                v-if="model.consultant"
+                :size="30"
+                :label="`${model.consultant.userProfile.medium_name} - консультант`"
+                :src="model.consultant.userProfile.avatar"
+                class="messenger-dialog__avatar messenger-dialog-request__avatar"
+            />
             <p class="messenger-dialog-request__header">
                 <span class="messenger-dialog-request__id">ID{{ model.id }}</span>
                 <span v-if="model.company" class="messenger-dialog-request__company">
@@ -90,6 +97,7 @@ import { dealOptions } from '@/const/options/deal.options.js';
 import { locationOptions } from '@/const/options/location.options.js';
 import { getCompanyName, toNumberOrRangeFormat } from '@/utils/formatter.js';
 import { useStore } from 'vuex';
+import Avatar from '@/components/common/Avatar.vue';
 
 defineEmits(['update-call']);
 const props = defineProps({

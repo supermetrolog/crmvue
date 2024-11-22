@@ -1,18 +1,18 @@
 <template>
-    <div @click.stop class="checkbox">
-        <div class="checkbox__row">
+    <div class="checkbox">
+        <label class="checkbox__row">
             <input
                 v-model="modelValue"
                 @change.stop="onChange"
                 :checked="checked"
                 type="checkbox"
                 :class="validationClass"
-                :true-value="trueValue"
-                :false-value="falseValue"
+                :true-value="numeric ? 1 : trueValue"
+                :false-value="numeric ? 0 : falseValue"
                 :disabled="disabled"
             />
             <slot />
-        </div>
+        </label>
         <ValidationMessage v-if="hasValidationError" :message="v.$errors[0].$message" />
     </div>
 </template>
@@ -54,6 +54,10 @@ const props = defineProps({
         default: false
     },
     checked: {
+        type: Boolean,
+        default: false
+    },
+    numeric: {
         type: Boolean,
         default: false
     }

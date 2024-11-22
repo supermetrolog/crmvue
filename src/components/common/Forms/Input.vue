@@ -10,7 +10,7 @@
                 class="form__input"
                 :class="[
                     validationClass,
-                    { 'form__input--unit': unit, 'form__input--rounded': rounded, active: hasValue }
+                    { 'form__input--unit': unit, 'form__input--rounded': rounded, filled: hasValue }
                 ]"
                 :style="unit ? paddingRightStyle : undefined"
                 :type="type"
@@ -51,6 +51,11 @@ import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
 import { computed, onMounted, ref, shallowRef, toRef, watch } from 'vue';
 import { onClickOutside } from '@vueuse/core';
 import { useFormControlValidation } from '@/composables/useFormControlValidation.js';
+import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isArray } from '@/utils/helpers/array/isArray.js';
+import { isString } from '@/utils/helpers/string/isString.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 const modelValue = defineModel({
     type: [String, Number],
@@ -126,7 +131,12 @@ const paddingRightStyle = computed(() => {
 });
 
 const hasValue = computed(() => {
-    return modelValue.value != null && modelValue.value !== '';
+    if (isNullish(modelValue.value)) return false;
+
+    if (isArray(modelValue.value)) return modelValue.value.length;
+    if (isString(modelValue.value)) return isNotEmptyString(modelValue.value);
+
+    return isNotNullish(modelValue.value);
 });
 
 watch(

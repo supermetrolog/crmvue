@@ -443,44 +443,18 @@ const Messenger = {
         async updateDialogs({ state, commit }, payload) {
             commit('setLoadingAside', true);
 
-            const options = {
-                object: {},
-                request: {},
-                company: {}
-            };
-
             if (alg.isNumeric(state.querySearch)) {
-                options.object.object_id = state.querySearch;
-                options.request.model_id = state.querySearch;
-                options.company.model_id = state.querySearch;
+                payload.object.object_id = state.querySearch;
+                payload.company.model_id = state.querySearch;
             } else {
-                options.object.search = state.querySearch;
-                options.request.search = state.querySearch;
-                options.company.search = state.querySearch;
-            }
-
-            switch (state.currentAsidePanel) {
-                case messenger.tabs.OBJECTS: {
-                    Object.assign(options.object, payload);
-                    break;
-                }
-                case messenger.tabs.REQUESTS: {
-                    Object.assign(options.request, payload);
-                    break;
-                }
-                case messenger.tabs.COMPANIES: {
-                    Object.assign(options.request, payload);
-                    break;
-                }
-                default: {
-                    break;
-                }
+                payload.object.search = state.querySearch;
+                payload.company.search = state.querySearch;
             }
 
             const chats = await Promise.all([
-                api.messenger.getChats({ model_type: 'object', ...options.object }),
+                api.messenger.getChats({ model_type: 'object', ...payload.object }),
+                api.messenger.getChats({ model_type: 'company', ...payload.company })
                 // api.messenger.getChats({ model_type: 'request', ...options.request }),
-                api.messenger.getChats({ model_type: 'company', ...options.company })
             ]);
 
             if (chats) {
@@ -590,21 +564,36 @@ const Messenger = {
             commit('setLastNotViewedMessage', null);
             commit('setLoadingChat', true);
 
-            const [dialog, messages, pinned] = await Promise.all([
-                api.messenger.getDialog(dialogID),
+            const dialog = await api.messenger.getDialog(dialogID);
+            if (!dialog) {
+                commit('setLoadingChat', false);
+                return false;
+            }
+
+            commit('setCurrentDialog', dialog);
+
+            if (
+                getters.currentDaysCountAfterLastCall >
+                import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_WARNING
+            ) {
+                commit('selectChatTab', messenger.chatTabs.SURVEY);
+                commit('setLoadingChat', false);
+                return;
+            }
+
+            const [messages, pinned] = await Promise.all([
                 api.messenger.getMessages(dialogID),
                 api.messenger.getPinned(dialogID)
             ]);
 
             commit('setCurrentPinned', pinned);
-            commit('setCurrentChat', true);
-            commit('setCurrentDialog', dialog);
 
             if (messages.length) {
                 commit('setMessages', messages);
                 commit('setLessThenMessageId', messages[0].id);
             }
 
+            commit('setCurrentChat', true);
             commit('selectChatTab', messenger.chatTabs.CHAT);
             commit('setLoadingChat', false);
         },

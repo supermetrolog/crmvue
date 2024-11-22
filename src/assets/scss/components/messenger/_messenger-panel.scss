@@ -161,6 +161,10 @@
             }
         }
     }
+
+    &__consultant {
+        @include mixins.flex-box($gap: 5px, $a: center);
+    }
 }
 
 .messenger-panel-consultant {

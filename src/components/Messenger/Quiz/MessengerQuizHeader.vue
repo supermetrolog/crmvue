@@ -1,9 +1,9 @@
 <template>
     <div class="messenger-quiz-header">
-        <DashboardChip class="dashboard-bg-gray-l mb-1">
-            Список контактов ({{ company?.contacts?.length }}):
-        </DashboardChip>
         <Spinner v-if="isLoading" class="small" label="Загрузка контактов.." />
+        <DashboardChip v-else class="dashboard-bg-gray-l mb-1">
+            Список контактов ({{ contacts.length }}):
+        </DashboardChip>
         <div ref="contactsListEl" @wheel.prevent class="messenger-quiz-header__list">
             <MessengerQuizContact
                 v-for="contact in contacts"
@@ -78,6 +78,7 @@ import { toBoldHTML, toDateFormat } from '@/utils/formatter.js';
 import MessengerQuizContact from '@/components/Messenger/Quiz/MessengerQuizContact.vue';
 import { useHorizontalScroll } from '@/composables/useHorizontalScroll.js';
 import FormCompanyContact from '@/components/Forms/Company/FormCompanyContact.vue';
+import { contactOptions } from '@/const/options/contact.options.js';
 
 const currentContact = defineModel('contact');
 
@@ -166,7 +167,11 @@ const showComments = contact => {
 const fetchContacts = async () => {
     isLoading.value = true;
 
-    contacts.value = await api.contacts.getByCompany(company.value.id);
+    const response = await api.contacts.getByCompany(company.value.id);
+    if (response?.length)
+        contacts.value = response.filter(
+            contact => contact.status === contactOptions.statusStatement.ACTIVE
+        );
 
     isLoading.value = false;
 };
@@ -187,7 +192,11 @@ const editContact = contact => {
 
 const onContactUpdated = async (_, contact) => {
     const contactIndex = contacts.value.findIndex(element => element.id === contact.id);
-    if (contactIndex !== -1) Object.assign(contacts.value[contactIndex], contact);
+    if (contactIndex !== -1) {
+        if (contact.status === contactOptions.statusStatement.PASSIVE)
+            contacts.value.splice(contactIndex, 1);
+        else Object.assign(contacts.value[contactIndex], contact);
+    }
 
     store.commit('Messenger/onContactUpdated', contact);
 };

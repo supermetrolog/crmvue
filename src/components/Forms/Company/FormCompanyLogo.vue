@@ -64,7 +64,7 @@
                     />
                     <div v-if="company" class="form-company-logo__description">
                         <p class="form-company-logo__company">
-                            {{ company.full_name }}
+                            {{ companyName }}
                         </p>
                         <div class="form-company-logo__categories mt-1">
                             <DashboardChip
@@ -158,6 +158,7 @@ import Progress from '@/components/common/Progress.vue';
 import ImageCropper from '@/components/common/ImageCropper.vue';
 import Modal from '@/components/common/Modal.vue';
 import Loader from '@/components/common/Loader.vue';
+import { getCompanyName } from '@/utils/formatter.js';
 
 const emit = defineEmits(['updated', 'deleted', 'canceled', 'edited']);
 const props = defineProps({
@@ -204,6 +205,7 @@ const currentLogo = computed(() => {
 const canBeSaved = computed(() => newLogo.value || logoShouldBeDeleted.value);
 const canBeEdit = computed(() => newLogo.value && !logoShouldBeDeleted.value);
 
+const companyName = computed(() => getCompanyName(props.company));
 const categories = computed(() => {
     return props.company.categories.map(element => {
         return {

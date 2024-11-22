@@ -108,7 +108,7 @@ import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { mapGetters } from 'vuex';
-import { alg } from '@/utils/alg.js';
+import { getCompanyName } from '@/utils/formatter.js';
 
 dayjs.extend(customParseFormat);
 
@@ -219,9 +219,7 @@ export default {
             return this.request.status === 0;
         },
         companyName() {
-            return alg.isNumeric(this.request.company.full_name)
-                ? 'Компания №' + this.request.company.full_name
-                : this.request.company.full_name;
+            return getCompanyName(this.request.company, this.request.company_id);
         }
     }
 };

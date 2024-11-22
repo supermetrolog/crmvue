@@ -16,7 +16,6 @@
             />
         </template>
         <Loader v-if="isLoading" />
-        <Spinner v-if="isFetching" />
         <Form v-else @submit="onSubmit">
             <div class="row">
                 <Input v-model="form.middle_name" label="Фамилия" class="col-4" />
@@ -118,23 +117,23 @@
                             :options="PositionList"
                             :disabled="form.position_unknown"
                         />
-                        <CheckboxChip
+                        <Checkbox
                             v-model="form.position_unknown"
                             @change="onChangePositionUnknown"
-                            danger
-                            text="Должность неизвестна"
-                        />
+                            class="col-4"
+                        >
+                            Должность неизвестна
+                        </Checkbox>
                     </div>
                 </div>
             </div>
             <div class="row mt-2">
-                <MultiSelect
+                <ConsultantPicker
                     v-model="form.consultant_id"
-                    label="Консультант"
                     class="col-6"
                     :v="v$.form.consultant_id"
                     required
-                    :options="consultantList"
+                    :options="getConsultantsOptions"
                 />
                 <MultiSelect
                     v-model="form.company_id"
@@ -241,12 +240,14 @@ import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import Submit from '@/components/common/Forms/FormSubmit.vue';
-import Spinner from '@/components/common/Spinner.vue';
-import { computed, onMounted, reactive, shallowRef, toRef } from 'vue';
+import { reactive, ref, toRef } from 'vue';
 import { useFormData } from '@/utils/useFormData.js';
 import Switch from '@/components/common/Forms/Switch.vue';
 import { useSearchCompany } from '@/composables/useSearchCompany.js';
 import api from '@/api/api.js';
+import Checkbox from '@/components/common/Forms/Checkbox.vue';
+import ConsultantPicker from '@/components/common/Forms/ConsultantPicker/ConsultantPicker.vue';
+import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
 
 const emit = defineEmits(['close', 'updated', 'created']);
 const props = defineProps({
@@ -260,6 +261,7 @@ const props = defineProps({
     }
 });
 
+const { getConsultantsOptions } = useConsultantsOptions();
 const store = useStore();
 const { form } = useFormData(
     reactive({
@@ -287,10 +289,7 @@ const { form } = useFormData(
     props.formdata
 );
 
-const isLoading = shallowRef(false);
-const isFetching = shallowRef(true);
-
-const consultantList = computed(() => store.getters.CONSULTANT_LIST);
+const isLoading = ref(false);
 
 const formContactsEmailsValidators = [{ func: validateEmail, message: 'Укажите корректный Email' }];
 const formContactsPhonesValidators = [
@@ -322,15 +321,15 @@ const v$ = useVuelidate(
         form: {
             position: {
                 customRequredPosition: helpers.withMessage(
-                    'выберите должность',
+                    'Выберите должность',
                     customRequiredPosition
                 )
             },
             consultant_id: {
-                required: helpers.withMessage('выберите консультанта', required)
+                required: helpers.withMessage('Выберите консультанта', required)
             },
             first_name: {
-                required: helpers.withMessage('введите имя', required)
+                required: helpers.withMessage('Введите имя', required)
             },
             company_id: {
                 required: helpers.withMessage('Выберите компанию', required)
@@ -447,15 +446,5 @@ const normalizeForm = () => {
     form.invalidPhones = form.invalidPhones.filter(element => element.phone.length);
 };
 
-const fetchConsultants = async () => {
-    isFetching.value = true;
-    await store.dispatch('FETCH_CONSULTANT_LIST');
-    isFetching.value = false;
-};
-
 if (props.company_id) form.company_id = props.company_id;
-
-onMounted(() => {
-    fetchConsultants();
-});
 </script>

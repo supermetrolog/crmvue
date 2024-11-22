@@ -89,6 +89,10 @@
                 color: #000;
                 text-decoration: underline;
             }
+
+            &__info {
+                color: variables.$color_grey;
+            }
         }
     }
 
@@ -638,6 +642,12 @@
         &.active {
             border-bottom-color: variables.$color_light_blue;
         }
+    }
+
+    &__main {
+        max-height: 100%;
+        width: 100%;
+        object-fit: cover;
     }
 }
 

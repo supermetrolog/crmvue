@@ -56,14 +56,14 @@
             :show="contactPickerIsVisible"
         >
             <DashboardChip class="dashboard-bg-warning-l mb-2 mx-auto w-auto text-center">
-                Выберите контакт, с которым происходил разговор по объекту/предложению/компании!
+                Подтвердите контакт, с которым происходил разговор по объекту/предложению/компании!
             </DashboardChip>
             <MessengerQuizRecipientPicker v-model="currentRecipient" />
             <template #footer>
                 <Button @click="sendQuiz" :disabled="!currentRecipient" small success>
                     Сохранить
                 </Button>
-                <Button small>Отменить</Button>
+                <Button @click="closeContactPicker" small>Отменить</Button>
             </template>
         </Modal>
     </div>

@@ -15,7 +15,7 @@
                 :current-tab="currentTab"
                 :title="title"
             />
-            <h2 v-else>{{ company.full_name }}</h2>
+            <h2 v-else>{{ companyName }}</h2>
         </template>
         <Spinner v-if="isGeneralLoading" class="mt-5 absolute-center" />
         <template v-else-if="timeline">
@@ -93,6 +93,7 @@ import TimelineExtraBlock from '@/components/Timeline/TimelineExtraBlock.vue';
 import TimelineStepDealDecision from '@/components/Timeline/Step/TimelineStepDealDecision.vue';
 import TimelineStepDealConfirmation from '@/components/Timeline/Step/TimelineStepDealConfirmation.vue';
 import { Timeline } from '@/const/const.js';
+import { getCompanyName } from '@/utils/formatter.js';
 
 export default {
     name: 'Timeline',
@@ -191,6 +192,9 @@ export default {
             }
 
             return title;
+        },
+        companyName() {
+            return getCompanyName(this.company);
         }
     },
     watch: {

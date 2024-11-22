@@ -20,7 +20,7 @@
                     <div class="row no-gutters">
                         <div class="col-12">
                             <div
-                                v-if="company.categories.length"
+                                v-if="company.categories?.length"
                                 class="company-grid-card__list mb-2"
                             >
                                 <DashboardChip
@@ -33,11 +33,14 @@
                             </div>
                             <Progress :percent="company.progress_percent" />
                         </div>
-                        <div class="col-12">
+                        <div v-if="company.contacts?.length" class="col-12">
                             <p class="company-grid-card__subtitle">
-                                Контакты ({{ company.contacts.length }})
+                                Контакты ({{ company.contacts_count }})
                             </p>
-                            <div v-if="company.contacts.length" class="company-grid-card__contacts">
+                            <div
+                                v-if="company.contacts?.length"
+                                class="company-grid-card__contacts"
+                            >
                                 <CompanyContact
                                     v-for="contact in company.contacts"
                                     :key="contact.id"
@@ -54,7 +57,7 @@
                                         Запросы: {{ company.requests_count }}
                                     </DashboardChip>
                                     <DashboardChip class="dashboard-bg-light">
-                                        Предложения: {{ company.offers_count }}
+                                        Предложения: {{ company.offers_count ?? '-' }}
                                     </DashboardChip>
                                     <DashboardChip class="dashboard-bg-light">
                                         Сделки: {{ company.objects_count }}
