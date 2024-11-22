@@ -120,6 +120,7 @@
                         <Checkbox
                             v-model="form.position_unknown"
                             @change="onChangePositionUnknown"
+                            numeric
                             class="col-4"
                         >
                             Должность неизвестна
@@ -284,7 +285,9 @@ const { form } = useFormData(
         passive_why_comment: null,
         warning_why_comment: null,
         position_unknown: 0,
-        isMain: null
+        isMain: null,
+        is_individual: false,
+        individual_full_name: null
     }),
     props.formdata
 );
