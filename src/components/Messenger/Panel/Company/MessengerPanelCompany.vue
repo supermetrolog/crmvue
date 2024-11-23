@@ -38,7 +38,14 @@
                         <span v-if="hasUndefinedName" class="messenger-warning bold">
                             НЕТ УНИКАЛЬНОГО НАЗВАНИЯ
                         </span>
-                        <span v-else>{{ companyName }}</span>
+                        <template v-else>
+                            <i
+                                v-if="company.is_individual"
+                                v-tippy="'Физ.лицо'"
+                                class="fa-solid fa-user-tie mr-1"
+                            />
+                            <span>{{ companyName }}</span>
+                        </template>
                     </a>
                     <div class="messenger-panel-company__subtitle">
                         <span>ID{{ company.id }} | </span>

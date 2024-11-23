@@ -28,6 +28,7 @@ import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 import { alg } from '@/utils/alg.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { CompanyCategories } from '@/const/const.js';
+import { getCompanyName } from '@/utils/formatter.js';
 
 const props = defineProps({
     dialog: {
@@ -38,7 +39,7 @@ const props = defineProps({
 
 const hasUndefinedName = computed(() => {
     return (
-        props.dialog.model.noName ||
+        (props.dialog.model.noName && !props.dialog.model.is_individual) ||
         ((!props.dialog.model.nameRu ||
             (alg.isNumeric(props.dialog.model.nameRu) &&
                 Number(props.dialog.model.nameRu) === props.dialog.model.id)) &&
@@ -46,11 +47,7 @@ const hasUndefinedName = computed(() => {
     );
 });
 
-const companyName = computed(() => {
-    if (alg.isNumeric(props.dialog.model.full_name))
-        return `Компания #${props.dialog.model.full_name}`;
-    return props.dialog.model.full_name;
-});
+const companyName = computed(() => getCompanyName(props.dialog.model));
 
 const categories = computed(() => {
     return props.dialog.model.categories.map(element => {

@@ -13,6 +13,11 @@
                     :to="'/companies/' + company.id"
                     target="_blank"
                 >
+                    <i
+                        v-if="company.is_individual"
+                        v-tippy="'Физ.лицо'"
+                        class="fa-solid fa-user-tie mr-1"
+                    ></i>
                     <span>{{ companyName }}</span>
                 </router-link>
                 <div v-if="company.rating" class="company-element__rating">

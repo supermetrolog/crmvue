@@ -64,7 +64,12 @@
                     />
                     <div v-if="company" class="form-company-logo__description">
                         <p class="form-company-logo__company">
-                            {{ companyName }}
+                            <i
+                                v-if="company.is_individual"
+                                v-tippy="'Физ.лицо'"
+                                class="fa-solid fa-user-tie mr-1"
+                            ></i>
+                            <span>{{ companyName }}</span>
                         </p>
                         <div class="form-company-logo__categories mt-1">
                             <DashboardChip
