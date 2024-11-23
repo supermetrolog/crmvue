@@ -1,61 +1,36 @@
 import axios from 'axios';
-import { setRequestError } from '@/api/helpers/setRequestError.js';
-import { SuccessHandler } from '@/api/helpers/successHandler.js';
+import { responseToData } from '@/api/helpers/responseToData.js';
+import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData.js';
+import { responseHasStatus } from '@/api/helpers/responseHasStatus.js';
+import { STATUS_SUCCESS } from '@/api/helpers/statuses.js';
 
 const URL = '/alerts';
 
 export default {
-    async createFromMessage(messageID, options) {
-        const url = `/chat-member-messages/create-notification/${messageID}`;
-
-        try {
-            const response = await axios.post(url, {
+    async createFromMessage(messageId, params) {
+        const response = await axios.post(
+            `/chat-member-messages/create-notification/${messageId}`,
+            {
                 channel: 'web',
-                ...options
-            });
-            return SuccessHandler.getData(response);
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
+                ...params
+            }
+        );
+        return responseToData(response);
     },
     async get(id) {
-        try {
-            const response = await axios.get(`${URL}/${id}`);
-            return SuccessHandler.getData(response);
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
+        const response = await axios.get(`${URL}/${id}`);
+        return responseToData(response);
     },
-    async list(options) {
-        try {
-            const response = await axios.get(URL, options);
-            return {
-                data: SuccessHandler.getData(response),
-                pagination: SuccessHandler.getPaginationData(response)
-            };
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
+    async list(params) {
+        const response = await axios.get(URL, { params });
+        return responseToPaginatedData(response);
     },
     async delete(id) {
-        try {
-            const response = await axios.delete(`${URL}/${id}`);
-            return response.status === 200;
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
+        const response = await axios.delete(`${URL}/${id}`);
+        return responseHasStatus(response, STATUS_SUCCESS);
     },
     async update(id, payload) {
-        try {
-            const response = await axios.put(`${URL}/${id}`, payload);
-            return response.data;
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
+        const response = await axios.put(`${URL}/${id}`, payload);
+        return responseToData(response);
     }
 };

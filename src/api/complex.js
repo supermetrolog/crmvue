@@ -1,22 +1,13 @@
 import axios from 'axios';
-import { setRequestError } from '@/api/helpers/setRequestError.js';
-import { SuccessHandler } from '@/api/helpers/successHandler.js';
+import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData.js';
 
 export default {
     async fetchComplex(id, params) {
         const query = new URLSearchParams(params).toString();
         const url = query ? `complex/${id}?${query}` : `complex/${id}`;
 
-        try {
-            const response = await axios.get(url);
-
-            return {
-                data: SuccessHandler.getData(response),
-                pagination: SuccessHandler.getPaginationData(response)
-            };
-        } catch (e) {
-            setRequestError(e);
-        }
+        const response = await axios.get(url);
+        return responseToPaginatedData(response);
     },
 
     async getComplexWithObjects(complexId) {
@@ -69,7 +60,6 @@ export default {
               objects.cranes.location,
               objects.cranes.type,
               objects.elevatorsRecords.elevatorType
-            ,
             `
         });
     }

@@ -179,7 +179,6 @@ import { computed, onBeforeMount, reactive, ref, shallowRef } from 'vue';
 import { validationRulesForCompanyDeal } from '@/validators/rules.js';
 import Switch from '@/components/common/Forms/Switch.vue';
 import VLazyImage from 'v-lazy-image';
-import axios from 'axios';
 
 const emit = defineEmits(['updated', 'created', 'close']);
 const props = defineProps({
@@ -267,9 +266,9 @@ const contractTermVisible = () => {
 };
 
 const update = async () => {
-    const updated = store.dispatch('UPDATE_DEAL', form);
+    const updatedDeal = await api.deal.update(form.id, form);
 
-    if (updated) {
+    if (updatedDeal) {
         emit('updated', form);
         emit('close');
     }
@@ -278,9 +277,9 @@ const update = async () => {
 };
 
 const create = async () => {
-    const created = store.dispatch('CREATE_DEAL', form);
+    const createdDeal = await api.deal.create(form);
 
-    if (created) {
+    if (createdDeal) {
         emit('created', form);
         emit('close');
     }
@@ -309,7 +308,7 @@ const onChangeCompany = async () => {
 
     if (!form.company_id) return;
 
-    const requestList = await api.request.searchRequests({
+    const requestList = await api.request.search({
         company_id: form.company_id,
         status: [1, 0]
     });
@@ -334,7 +333,7 @@ const searchCompany = async query => {
                 props.formData ? props.formData.company_id : props.company_id
             );
 
-            requestList = await api.request.searchRequests({
+            requestList = await api.request.search({
                 company_id: props.formData ? props.formData.company_id : props.company_id
             });
         }

@@ -1,33 +1,26 @@
 import axios from 'axios';
-import { setRequestError } from '@/api/helpers/setRequestError.js';
-import { SuccessHandler } from '@/api/helpers/successHandler.js';
+import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData.js';
+import { responseToData } from '@/api/helpers/responseToData.js';
+
+const URL = '/calendars';
 
 export default {
-    async fetchCalendar(consultant_id, page) {
-        const url = `calendars/${consultant_id}?expand=caller,phoneFrom,phoneFrom.contact,phoneTo,phoneTo.contact&per-page=${
-            page * 10
-        }&sort=-created_at`;
-        let data = false;
-        await axios
-            .get(url)
-            .then(Response => {
-                data = {};
-                data.data = SuccessHandler.getData(Response);
-                data.pagination = SuccessHandler.getPaginationData(Response);
-            })
-            .catch(e => setRequestError(e));
-        return data;
-    },
-    async createEvent(formdata) {
-        const url = `calendars`;
-        let data = false;
-        await axios
-            .post(url, formdata)
-            .then(Response => {
-                data = SuccessHandler.getData(Response);
-            })
-            .catch(e => setRequestError(e));
+    async getByConsultantId(consultantId, page = 1) {
+        const params = {
+            expand: 'caller,phoneFrom,phoneFrom.contact,phoneTo,phoneTo.contact',
+            'per-page': page * 10,
+            sort: '-created_at'
+        };
 
-        return data;
+        const response = await axios.get(`${URL}/${consultantId}`, { params });
+        return responseToPaginatedData(response);
+    },
+    async createEvent(payload) {
+        const response = await axios.post(URL, payload);
+        return responseToData(response);
+    },
+    async updateEvent(id, payload) {
+        const response = await axios.patch(`${URL}/${id}`, payload);
+        return responseToData(response);
     }
 };

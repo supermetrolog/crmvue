@@ -1,102 +1,39 @@
 import axios from 'axios';
-import { setRequestError } from '@/api/helpers/setRequestError.js';
-import { SuccessHandler } from '@/api/helpers/successHandler.js';
+import { responseToData } from '@/api/helpers/responseToData.js';
+import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData.js';
+import { responseHasStatus } from '@/api/helpers/responseHasStatus.js';
+import { STATUS_SUCCESS } from '@/api/helpers/statuses.js';
+
+const URL = '/reminders';
 
 export default {
-    async createFromMessage(messageID, options) {
-        const url = `/chat-member-messages/create-reminder/${messageID}`;
-
-        try {
-            const response = await axios.post(url, options);
-            return response.data;
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
+    async createFromMessage(messageId, payload) {
+        const response = await axios.post(
+            `/chat-member-messages/create-reminder/${messageId}`,
+            payload
+        );
+        return responseToData(response);
     },
-    async create(options, config = { many: false }) {
-        const url = config.many ? '/reminders/for-users' : '/reminders';
-        try {
-            const response = await axios.post(url, options);
-            return response.data;
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
+    async create(payload, config = { many: false }) {
+        const url = config.many ? `${URL}/for-users` : URL;
+
+        const response = await axios.post(url, payload);
+        return responseToData(response);
     },
-    async get(options) {
-        const params = new URLSearchParams(options).toString();
-        const url = params ? `/reminders?${params}` : '/reminders';
-
-        try {
-            const response = await axios.get(url);
-
-            return {
-                data: SuccessHandler.getData(response),
-                pagination: SuccessHandler.getPaginationData(response)
-            };
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
+    async update(id, payload) {
+        const response = await axios.patch(`${URL}/${id}`, payload);
+        return responseToData(response);
     },
-    async delete(reminderID) {
-        const url = `/reminders/${reminderID}`;
-
-        try {
-            const response = await axios.delete(url);
-
-            return response.status === 200;
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
+    async list(params) {
+        const response = await axios.get(URL, { params });
+        return responseToPaginatedData(response);
     },
-    async update(reminderID, payload) {
-        const url = `/reminders/${reminderID}`;
-
-        try {
-            const response = await axios.put(url, payload);
-            return response.data;
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
+    async delete(id) {
+        const response = await axios.delete(`${URL}/${id}`);
+        return responseHasStatus(response, STATUS_SUCCESS);
     },
-    async changeStatus(reminderID, status) {
-        const url = `/reminders/change-status/${reminderID}`;
-
-        try {
-            const response = await axios.post(url, { status });
-            return response.data;
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
-    },
-    async getCount(options) {
-        const params = new URLSearchParams(options).toString();
-
-        try {
-            const response = await axios.get(params ? `/reminders?${params}` : '/reminders');
-            const pagination = SuccessHandler.getPaginationData(response);
-
-            return pagination.totalCount;
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
-    },
-    async getStatistics(options) {
-        const params = new URLSearchParams(options).toString();
-        const url = params ? `/reminders/statistic?${params}` : '/reminders/statistic';
-
-        try {
-            const response = await axios.get(url);
-            return response.data?.length ? response.data[0] : null;
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
+    async changeStatus(id, status) {
+        const response = await axios.post(`${URL}/change-status/${id}`, { status });
+        return responseToData(response);
     }
 };

@@ -1,5 +1,4 @@
 import { createStore } from 'vuex';
-import Calendar from './modules/Calendar';
 import Timeline from './modules/Timeline';
 import CompanyRequest from './modules/CompanyRequest';
 import CompanyContact from './modules/CompanyContact';
@@ -10,7 +9,6 @@ import Objects from './modules/Objects';
 import Websocket from './modules/Websocket';
 import Call from './modules/Call';
 import User from './modules/User';
-import Deal from './modules/Deal';
 import CompanyObjects from './modules/CompanyObjects';
 import Offers from './modules/Offers';
 import CallerManager from './modules/CallerManager';
@@ -61,7 +59,6 @@ const store = createStore({
     getters: {},
     modules: {
         Timeline,
-        Calendar,
         CompanyRequest,
         CompanyContact,
         CompanyLogs,
@@ -71,7 +68,6 @@ const store = createStore({
         Websocket,
         Call,
         User,
-        Deal,
         CompanyObjects,
         Offers,
         CallerManager,

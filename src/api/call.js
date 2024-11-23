@@ -1,75 +1,36 @@
 import axios from 'axios';
-import { setRequestError } from '@/api/helpers/setRequestError.js';
-import { SuccessHandler } from '@/api/helpers/successHandler.js';
+import { responseToData } from '@/api/helpers/responseToData.js';
+import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData.js';
+import { responseHasStatus } from '@/api/helpers/responseHasStatus.js';
+import { STATUS_SUCCESS } from '@/api/helpers/statuses.js';
+
+const URL = '/calls';
 
 export default {
-    async createForChatMember(chatMemberID, options) {
-        const url = `/chat-members/${chatMemberID}/called`;
-
-        try {
-            const response = await axios.post(url, options);
-            return response.data;
-        } catch (e) {
-            setRequestError(e);
-            return null;
-        }
+    async createForChatMember(chatMemberId, payload) {
+        const response = await axios.post(`/chat-members/${chatMemberId}/called`, payload);
+        return responseToData(response);
     },
     async create(options) {
-        try {
-            const response = await axios.post('/calls', options);
-            return response.data;
-        } catch (e) {
-            setRequestError(e);
-            return null;
-        }
+        const response = await axios.post('/calls', options);
+        return responseToData(response);
     },
-    async get(options) {
-        const params = new URLSearchParams(options).toString();
-        const url = params ? `/calls?${params}` : '/calls';
+    async list(params) {
+        const stringParams = new URLSearchParams(params).toString();
 
-        try {
-            const response = await axios.get(url);
-
-            return {
-                data: SuccessHandler.getData(response),
-                pagination: SuccessHandler.getPaginationData(response)
-            };
-        } catch (e) {
-            setRequestError(e);
-            return null;
-        }
+        const response = await axios.get(URL + (stringParams ? `?${stringParams}` : ''));
+        return responseToPaginatedData(response);
     },
-    async getByID(id) {
-        const url = `/calls/${id}`;
-
-        try {
-            const response = await axios.get(url);
-            return response.data;
-        } catch (e) {
-            setRequestError(e);
-            return null;
-        }
+    async get(id) {
+        const response = await axios.get(`${URL}/${id}`);
+        return responseToData(response);
     },
-    async delete(callID) {
-        const url = `/calls/${callID}`;
-
-        try {
-            const response = await axios.delete(url);
-            return response.status === 200;
-        } catch (e) {
-            setRequestError(e);
-            return null;
-        }
+    async delete(id) {
+        const response = await axios.delete(`${URL}/${id}`);
+        return responseHasStatus(response, STATUS_SUCCESS);
     },
-    async update(callID, payload) {
-        const url = `/calls/${callID}`;
-
-        try {
-            const response = await axios.put(url, payload);
-            return response.data;
-        } catch (e) {
-            setRequestError(e);
-            return null;
-        }
+    async update(id, payload) {
+        const response = await axios.put(`${URL}/${id}`, payload);
+        return responseToData(response);
     }
 };

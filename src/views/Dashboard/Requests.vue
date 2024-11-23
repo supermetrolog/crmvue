@@ -211,7 +211,7 @@ export default {
             const userParams = this.targetUser ? { consultant_id: this.targetUser.id } : {};
             const query = { ...this.$route.query, ...userParams };
 
-            this.requests = await api.request.searchRequests(query);
+            this.requests = await api.request.search(query);
 
             this.loadingState = false;
         },
@@ -225,7 +225,7 @@ export default {
             }
         },
         async updateRequest(request) {
-            const requestResponse = await api.request.searchRequests({
+            const requestResponse = await api.request.search({
                 id: request.id
             });
 

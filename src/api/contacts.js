@@ -2,7 +2,7 @@ import axios from 'axios';
 import { responseToData } from '@/api/helpers/responseToData.js';
 import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData.js';
 
-const URL = 'contacts';
+const URL = '/contacts';
 
 export default {
     async getByCompany(companyId) {
@@ -37,6 +37,7 @@ export default {
     },
     async createComment(payload) {
         const expand = 'author,author.userProfile';
+
         const response = await axios.post(`${URL}/create-comment`, payload, { params: { expand } });
         return responseToData(response);
     }

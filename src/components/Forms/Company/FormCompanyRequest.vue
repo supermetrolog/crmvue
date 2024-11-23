@@ -374,6 +374,7 @@ import Tab from '@/components/common/Tabs/Tab.vue';
 import SwitchSlider from '@/components/common/Forms/SwitchSlider.vue';
 import VueEditor from '@/components/common/Forms/VueEditor.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import api from '@/api/api.js';
 
 const store = useStore();
 
@@ -473,16 +474,19 @@ const normalizeFormData = () => {
 };
 
 const updateRequest = async () => {
-    const updated = await store.dispatch('UPDATE_REQUEST', form);
+    const updated = await api.request.update(props.formData.id, form);
+
     if (updated) {
-        emit('updated');
+        emit('updated', updated);
         emit('close');
     }
 };
+
 const createRequest = async () => {
-    const updated = await store.dispatch('CREATE_REQUEST', form);
-    if (updated) {
-        emit('created');
+    const created = await api.request.create(form);
+
+    if (created) {
+        emit('created', created);
         emit('close');
     }
 };

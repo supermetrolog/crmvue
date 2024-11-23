@@ -102,6 +102,7 @@ import { mapActions } from 'vuex';
 import Modal from '@/components/common/Modal.vue';
 import Loader from '@/components/common/Loader.vue';
 import CompanyRequestItem from '@/components/Company/Request/CompanyRequestItem.vue';
+import api from '@/api/api.js';
 
 export default {
     name: 'CompanyRequestList',
@@ -133,7 +134,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions(['DELETE_REQUEST', 'CREATE_REQUEST']),
+        ...mapActions(['DELETE_REQUEST']),
         openCompanyRequestFormForUpdate(request) {
             this.$emit('openCompanyRequestFormForUpdate', request);
         },
@@ -149,7 +150,9 @@ export default {
         },
         async cloneRequest(request) {
             this.cloneLoader = true;
-            await this.CREATE_REQUEST(request);
+
+            await api.request.create(request);
+
             this.cloneLoader = false;
             this.clonedRequestItem = null;
             this.$emit('cloned');

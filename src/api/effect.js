@@ -9,7 +9,6 @@ const URL = '/effects';
 export default {
     async create(payload) {
         const response = await axios.post(URL, payload);
-
         return responseToData(response);
     },
     async list(params) {

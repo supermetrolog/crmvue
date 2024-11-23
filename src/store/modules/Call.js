@@ -291,7 +291,7 @@ const Call = {
     actions: {
         async FETCH_CALLS_COUNT(context) {
             const user = context.getters.THIS_USER;
-            const count = await api.calls.fetchCount(user.userProfile.caller_id);
+            const count = await api.calls.count(user.userProfile.caller_id);
             context.commit('updateCallsCount', count);
         },
         async SEARCH_CALLS(context, { query, concat = false }) {
