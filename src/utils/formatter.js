@@ -9,6 +9,8 @@ export function getCompanyName(company, companyID = null) {
     if (company.is_individual && company.noName)
         return `${company.individual_full_name} (физ.лицо)`;
 
+    if (company.noName) return `Компания #${company.id} (без названия)`;
+
     if (company.full_name) return company.full_name;
 
     let companyName = company.nameRu;
