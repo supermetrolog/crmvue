@@ -362,28 +362,33 @@ export const TimelineStepWithSearchableObjectsMixin = {
         ...mapActions(['SEARCH_FAVORITES_OFFERS']),
         async fetchObjects(query = {}, withLoader = true) {
             if (withLoader) this.isSearchLoading = true;
-            query = {
+
+            const _query = {
                 type_id: [1, 2, 3],
-                page: this.currentPage,
                 'per-page': 20,
                 expand: 'object,offer,generalOffersMix.offer,comments',
                 timeline_id: this.TIMELINE.id,
-                ...query
+                ...query,
+                page: this.currentPage
             };
 
-            const { setHash, confirmHash } = useQueryHash('search-favorite-offers');
-            setHash(query);
-
-            if (!this.FAVORITES_OFFERS.length) await this.SEARCH_FAVORITES_OFFERS();
-            if (query.favorites) {
-                query.original_id = this.FAVORITES_OFFERS.map(item => item.original_id);
-                query.object_id = this.FAVORITES_OFFERS.map(item => item.object_id);
-                query.complex_id = this.FAVORITES_OFFERS.map(item => item.complex_id);
+            if (_query.status === 2) {
+                _query.type_id = [3];
             }
 
-            const data = await api.companyObjects.searchOffers(query);
+            const { setHash, confirmHash } = useQueryHash('search-favorite-offers');
+            setHash(_query);
 
-            if (confirmHash(query)) this.setObjects(data);
+            if (!this.FAVORITES_OFFERS.length) await this.SEARCH_FAVORITES_OFFERS();
+            if (_query.favorites) {
+                _query.original_id = this.FAVORITES_OFFERS.map(item => item.original_id);
+                _query.object_id = this.FAVORITES_OFFERS.map(item => item.object_id);
+                _query.complex_id = this.FAVORITES_OFFERS.map(item => item.complex_id);
+            }
+
+            const data = await api.companyObjects.searchOffers(_query);
+
+            if (confirmHash(_query)) this.setObjects(data);
 
             if (withLoader) this.isSearchLoading = false;
         },
@@ -399,33 +404,19 @@ export const TimelineStepWithSearchableObjectsMixin = {
 
             this.isDefaultLoading = false;
         },
-        setObjects(data) {
-            if (
-                Array.isArray(this.objects) &&
-                Array.isArray(data.data) &&
-                this.searchParams?.page > 1
-            )
-                this.objects = this.objects.concat(data.data);
-            else this.objects = data.data;
-
-            this.pagination = data.pagination;
-        },
         async search(params, withLoader = true) {
             this.searchParams = params;
             this.searchMode = true;
             await this.fetchObjects(params, withLoader);
         },
         async refresh() {
-            this.searchParams.page = 1;
+            this.currentPage = 1;
             await this.search(this.searchParams);
         },
-        async loadMore() {
-            this.nextPage();
-            if (this.searchMode) await this.fetchObjects(this.searchParams);
-            else await this.fetchObjects();
-        },
-        nextPage() {
-            this.searchParams.page = this.searchParams.page ? this.searchParams.page + 1 : 2;
+        nextPage(page) {
+            if (page) this.currentPage = page;
+            else this.currentPage++;
+            this.fetchObjects(this.searchParams, true);
         },
         async fetchData() {
             await this.fetchObjects();
@@ -479,7 +470,7 @@ export const TimelineStepWithLetterMixin = {
         preparedLetterMessage() {
             const formData = {
                 company_id: this.currentRequest?.company_id,
-                subject: 'Список предложений от Pennylane Realty',
+                subject: 'Список предложений от RAYS ARMA',
                 wayOfSending: [0],
                 message: this.letterMessage
             };

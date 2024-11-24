@@ -1,61 +1,40 @@
 import axios from 'axios';
-import { setRequestError } from '@/api/helpers/setRequestError.js';
-import { SuccessHandler } from '@/api/helpers/successHandler.js';
+import { responseToData } from '@/api/helpers/responseToData.js';
+
+const URL = '/timeline';
 
 export default {
-    async getTimeline(consultant_id, request_id) {
-        const url = `timeline?consultant_id=${consultant_id}&request_id=${request_id}&expand=timelineSteps.timelineStepObjects.comments,timelineSteps.timelineStepObjects.offer.object,timelineSteps.timelineStepFeedbackways,timelineSteps.timelineActionComments,consultant,consultant.userProfile,timelineActionComments`;
-        let data = false;
-        await axios
-            .get(url)
-            .then(Response => {
-                data = SuccessHandler.getData(Response);
-            })
-            .catch(e => setRequestError(e));
-        return data;
+    async getByConsultantAndRequest(consultantId, requestId) {
+        const params = {
+            consultant_id: consultantId,
+            request_id: requestId,
+            expand:
+                'timelineSteps.timelineStepObjects.comments,' +
+                'timelineSteps.timelineStepObjects.offer.object,' +
+                'timelineSteps.timelineStepFeedbackways,' +
+                'timelineSteps.timelineActionComments,' +
+                'consultant,' +
+                'consultant.userProfile,' +
+                'timelineActionComments'
+        };
+
+        const response = await axios.get(URL, { params });
+        return responseToData(response);
     },
-    async getTimelineComments(timeline_id) {
-        const url = `timeline/action-comments/${timeline_id}`;
-        let data = false;
-        await axios
-            .get(url)
-            .then(Response => {
-                data = SuccessHandler.getData(Response);
-            })
-            .catch(e => setRequestError(e));
-        return data;
+    async getTimelineComments(timelineId) {
+        const response = await axios.get(`${URL}/action-comments/${timelineId}`);
+        return responseToData(response);
     },
-    async updateTimelineStep(newData) {
-        const url = `timeline/update-step/${newData.id}`;
-        let data = false;
-        await axios
-            .patch(url, newData)
-            .then(Response => {
-                data = SuccessHandler.getData(Response);
-            })
-            .catch(e => setRequestError(e));
-        return data;
+    async updateTimelineStep(timelineStepId, payload) {
+        const response = await axios.patch(`${URL}/update-step/${timelineStepId}`, payload);
+        return responseToData(response);
     },
-    async sendObjects(messageData) {
-        const url = `timeline/send-objects`;
-        let data = false;
-        await axios
-            .post(url, messageData)
-            .then(Response => {
-                data = SuccessHandler.getData(Response);
-            })
-            .catch(e => setRequestError(e));
-        return data;
+    async sendObjects(payload) {
+        const response = await axios.post(`${URL}/send-objects`, payload);
+        return responseToData(response);
     },
-    async addActionComments(comments) {
-        const url = `timeline/add-action-comments`;
-        let data = false;
-        await axios
-            .post(url, comments)
-            .then(Response => {
-                data = SuccessHandler.getData(Response);
-            })
-            .catch(e => setRequestError(e));
-        return data;
+    async addActionComments(payload) {
+        const response = await axios.post(`${URL}/add-action-comments`, payload);
+        return responseToData(response);
     }
 };

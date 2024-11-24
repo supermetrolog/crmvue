@@ -3,7 +3,12 @@
         <template #header>
             <div class="company-box-main__header">
                 <span class="company-box-main__title">
-                    {{ companyName }}
+                    <i
+                        v-if="company.is_individual"
+                        v-tippy="'Физ.лицо'"
+                        class="fa-solid fa-user-tie mr-1"
+                    ></i>
+                    <span>{{ companyName }}</span>
                 </span>
                 <div class="company-box-main__actions">
                     <HoverActionsButton @click="$emit('edit-company')" small label="Редактировать">

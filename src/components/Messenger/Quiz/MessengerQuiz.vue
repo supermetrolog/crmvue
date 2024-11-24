@@ -60,10 +60,25 @@
             </DashboardChip>
             <MessengerQuizRecipientPicker v-model="currentRecipient" />
             <template #footer>
-                <Button @click="sendQuiz" :disabled="!currentRecipient" small success>
+                <Button @click="submitContactPicker" :disabled="!currentRecipient" small success>
                     Сохранить
                 </Button>
                 <Button @click="closeContactPicker" small>Отменить</Button>
+            </template>
+        </Modal>
+        <Modal
+            @close="closeTaskSuggestion"
+            title="Создание задачи"
+            :width="400"
+            :show="taskSuggestionIsVisible"
+        >
+            <h3 class="text-center">Создать задачу для офис.менеджера или другого сотрудника?</h3>
+
+            <template #footer>
+                <Button @click="createTaskTemplate" :disabled="!currentRecipient" small success>
+                    Создать задачу
+                </Button>
+                <Button @click="closeTaskSuggestion" small>Пропустить</Button>
             </template>
         </Modal>
     </div>
@@ -97,6 +112,7 @@ import { useAuth } from '@/composables/useAuth.js';
 import { messenger } from '@/const/messenger.js';
 
 const SCHEDULING_CALL_DURATION = 30; // days
+const TASK_DURATION = 7; // days
 
 const emit = defineEmits(['complete']);
 
@@ -111,8 +127,15 @@ const {
     show: showContactPicker,
     isVisible: contactPickerIsVisible,
     cancel: closeContactPicker,
-    submit: sendQuiz
+    submit: submitContactPicker
 } = useAsyncPopup('quizContactPicker');
+
+const {
+    show: suggestTask,
+    isVisible: taskSuggestionIsVisible,
+    cancel: closeTaskSuggestion,
+    submit: createTaskTemplate
+} = useAsyncPopup('taskSuggestion');
 
 const isLoading = ref(false);
 const isCompleted = ref(false);
@@ -142,6 +165,8 @@ const { isLoading: surveysIsLoading } = useDelayedLoader(
 );
 
 const send = async () => {
+    let taskPayload;
+
     const confirmed = await confirm(
         'Подтвердите заполнение опросника. Вы закончили заполнение полученной информации?'
     );
@@ -149,6 +174,17 @@ const send = async () => {
 
     const contact = await showContactPicker({});
     if (!contact) return;
+
+    const taskShouldBeCreated = await suggestTask({});
+    if (taskShouldBeCreated) {
+        taskPayload = await createTaskWithTemplate({
+            message: `Обработать информацию опроса! `,
+            step: TASK_FORM_STEPS.MESSAGE,
+            end: dayjs().add(TASK_DURATION, 'day').toDate()
+        });
+
+        if (!taskPayload) return;
+    }
 
     isLoading.value = true;
 
@@ -161,13 +197,15 @@ const send = async () => {
         question_answers: answers
     });
 
-    isLoading.value = false;
-
     if (createdSurvey) {
+        if (taskPayload) await createTask(taskPayload);
+
         store.dispatch('Messenger/onSurveyCreated', createdSurvey);
         isCompleted.value = true;
         notify.success('Опрос успешно сохранен');
     }
+
+    isLoading.value = false;
 };
 
 const close = () => {
@@ -194,6 +232,25 @@ const showSurvey = surveyId => {
 const showSurveys = () => {
     notify.info('Функция находится в разработке..', 'Функция недоступна');
 };
+
+async function createTask(taskPayload) {
+    const messagePayload = {
+        message: `Заполнил опросник. Прошу ознакомиться и обработать информацию!`,
+        contact_ids: currentRecipient.value ? [currentRecipient.value.id] : []
+    };
+
+    const createdMessage = await api.messenger.sendMessageWithTask(
+        store.state.Messenger.currentDialog.id,
+        messagePayload,
+        taskPayload
+    );
+
+    if (createdMessage) {
+        notify.success('Сообщение и задача успешно созданы');
+    } else {
+        notify.error('Произошла ошибка. Попробуйте еще раз..');
+    }
+}
 
 const scheduleCall = async () => {
     const taskPayload = await createTaskWithTemplate({

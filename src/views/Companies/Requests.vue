@@ -155,7 +155,7 @@ const toggleDisableRequest = async request => {
 };
 
 const onRequestUpdated = async request => {
-    const requestResponse = await api.request.searchRequests({
+    const requestResponse = await api.request.search({
         id: request.id
     });
 

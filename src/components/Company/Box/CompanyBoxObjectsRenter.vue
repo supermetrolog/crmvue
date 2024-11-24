@@ -17,7 +17,7 @@
             </p>
             <ul class="company-box-objects-renter__list">
                 <CompanyBoxObjectsRenterParameter label="Чья сделка">
-                    <template v-if="deal.is_our === 1">PENNY LANE REALTY</template>
+                    <template v-if="deal.is_our === 1">RAYS ARMA</template>
                     <template v-else-if="deal.is_competitor">
                         {{ deal.competitor.full_name || 'Неизвестно' }}
                     </template>

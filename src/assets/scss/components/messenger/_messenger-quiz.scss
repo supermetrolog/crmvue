@@ -485,6 +485,10 @@
         background-color: variables.$bg-gray-l;
         border-radius: 5px;
     }
+
+    &__info {
+        max-width: calc(100% - 30px);
+    }
 }
 
 .messenger-quiz-recipient {

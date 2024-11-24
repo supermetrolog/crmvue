@@ -8,7 +8,7 @@
             ></div>
         </div>
         <div class="progress__label">
-            <p>{{ percent }}% {{ title }}</p>
+            <p>{{ formattedPercent }}% {{ title }}</p>
         </div>
     </div>
 </template>
@@ -18,7 +18,8 @@ import { computed } from 'vue';
 
 const props = defineProps({
     percent: {
-        type: Number
+        type: Number,
+        default: 0
     },
     title: {
         type: String,
@@ -29,6 +30,8 @@ const props = defineProps({
         default: 4
     }
 });
+
+const formattedPercent = computed(() => Math.floor(props.percent));
 
 const percentClass = computed(() => {
     if (props.percent < 30) return 'bg-danger';

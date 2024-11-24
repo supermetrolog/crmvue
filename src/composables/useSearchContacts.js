@@ -11,7 +11,7 @@ export function useSearchContacts(companyID) {
         );
 
         contacts.value = multiselectAdapter(response.data, 'id', contact =>
-            contact.type === 1 ? 'Основной контакт' : contact.first_and_last_name
+            contact.type === 1 ? 'Основной контакт' : contact.full_name
         );
     }
 

@@ -31,6 +31,7 @@ import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import useValidate from '@vuelidate/core';
 import { mapActions, mapGetters } from 'vuex';
 import { helpers, required } from '@vuelidate/validators';
+import api from '@/api/api.js';
 
 export default {
     name: 'FormModalCompanyRequestClone',
@@ -72,7 +73,7 @@ export default {
         };
     },
     methods: {
-        ...mapActions(['FETCH_CONSULTANT_LIST', 'CREATE_REQUEST']),
+        ...mapActions(['FETCH_CONSULTANT_LIST']),
         async onSubmit() {
             this.v$.$validate();
             if (this.v$.form.$error) {
@@ -88,9 +89,10 @@ export default {
             delete request.created_at;
             delete request.updated_at;
             request.status = 1;
-            if (await this.CREATE_REQUEST(request)) {
-                this.$emit('cloned');
-            }
+
+            const createdRequest = await api.request.create(request);
+            if (createdRequest) this.$emit('cloned');
+
             this.loader = false;
         }
     },

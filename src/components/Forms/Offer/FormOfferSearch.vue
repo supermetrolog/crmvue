@@ -1,5 +1,4 @@
 <template>
-    {{ form }}
     <div class="company-request-search-form">
         <Form @submit="onSubmit">
             <FormGroup class="mb-2">
@@ -139,6 +138,7 @@
                                 placeholder="Выберите регион.."
                                 can-deselect
                                 class="col-md-3 col-sm-6 col-12"
+                                district_moscow
                                 searchable
                                 :options="getRegionsOptions"
                             />
@@ -152,7 +152,7 @@
                                             v-for="(districtItem, index) in DistrictList"
                                             :key="index"
                                             v-model="form.district_moscow"
-                                            :value="index"
+                                            :value="Number(index)"
                                             :text="districtItem"
                                         />
                                     </div>
@@ -166,7 +166,7 @@
                                             v-for="(directionItem, index) in DirectionList"
                                             :key="index"
                                             v-model="form.direction"
-                                            :value="index"
+                                            :value="Number(index)"
                                             :text="directionItem.short"
                                         />
                                     </div>
@@ -361,8 +361,10 @@ import { realFloorTypeOptions } from '@/const/options/floor.options.js';
 import CheckboxOptions from '@/components/common/Forms/CheckboxOptions.vue';
 import SwitchSlider from '@/components/common/Forms/SwitchSlider.vue';
 import { useDebounceFn } from '@vueuse/core';
+import { isArray } from '@/utils/helpers/array/isArray.js';
+import { cloneObject } from '@/utils/index.js';
 
-const emit = defineEmits(['close', 'search', 'reset', 'resetSelected']);
+const emit = defineEmits(['close', 'search', 'reset', 'resetSelected', 'changed-query']);
 const props = defineProps({
     additionalButtons: {
         type: Array,
@@ -507,7 +509,9 @@ const setDefaultRegionOptions = () => {
 
 const toDefaultForm = () => {
     Object.keys(defaultForm).forEach(key => {
-        form[key] = defaultForm[key];
+        if (typeof defaultForm[key] === 'object' || isArray(defaultForm[key]))
+            form[key] = cloneObject(defaultForm[key]);
+        else form[key] = defaultForm[key];
     });
 
     form.all = null;
@@ -580,6 +584,13 @@ watch(
         debouncedOnSubmit();
     },
     { deep: true }
+);
+
+watch(
+    () => form.all,
+    () => {
+        emit('changed-query');
+    }
 );
 
 onMounted(() => {

@@ -1,37 +1,33 @@
 import axios from 'axios';
-import { setRequestError } from '@/api/helpers/setRequestError.js';
-import { SuccessHandler } from '@/api/helpers/successHandler.js';
+import { responseToData } from '@/api/helpers/responseToData.js';
+import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData.js';
+
+const URL = '/requests';
 
 export default {
-    async getRequests(id) {
-        const url =
-            'requests/company-requests/' +
-            id +
-            '?expand=contact.emails,company,consultant.userProfile,directions,districts,gateTypes,objectClasses,objectTypes,objectTypesGeneral,regions.info,deal.company,deal.offer,deal.consultant.userProfile,deal.offer.generalOffersMix,deal.competitor,timeline_progress&sort=-created_at';
+    async byCompanyId(companyId) {
+        const params = {
+            expand:
+                'company,' +
+                'consultant.userProfile,' +
+                'contact.emails,' +
+                'directions,districts,gateTypes,objectClasses,objectTypes,objectTypesGeneral,' +
+                'regions.info,' +
+                'deal.company,deal.offer,deal.consultant.userProfile,deal.offer.generalOffersMix,deal.competitor,' +
+                'timeline_progress',
+            sort: '-created_at'
+        };
 
-        let data = false;
-        await axios
-            .get(url)
-            .then(Response => {
-                data = SuccessHandler.getData(Response);
-            })
-            .catch(e => setRequestError(e));
-        return data;
+        const response = await axios.get(`${URL}/company-requests/${companyId}`, { params });
+        return responseToData(response);
     },
-    async getRequest(id) {
-        const url = 'requests/' + id;
-        let data = false;
-        await axios
-            .get(url)
-            .then(Response => {
-                data = SuccessHandler.getData(Response);
-            })
-            .catch(e => setRequestError(e));
-        return data[0];
+    async get(id) {
+        const response = await axios.get(`${URL}/${id}`);
+        return responseToData(response);
     },
-    async searchRequests(query, expand = null) {
-        expand =
-            expand ||
+    async search(query = {}, expand = null) {
+        const _expand =
+            expand ??
             'regions.info,' +
                 'directions,' +
                 'districts,' +
@@ -42,71 +38,29 @@ export default {
                 'objectClasses,objectTypes,objectTypesGeneral,' +
                 'contact,contact.emails,contact.phones';
 
-        query = new URLSearchParams(query).toString();
-        let url = 'requests?' + query + '&expand=' + expand;
-        let data = false;
-        await axios.get(url).then(Response => {
-            data = {};
-            data.data = SuccessHandler.getData(Response);
-            data.pagination = SuccessHandler.getPaginationData(Response);
-        });
-        return data;
-    },
-    async createRequest(formdata) {
-        const url = 'requests';
-        let data = false;
-        await axios
-            .post(url, formdata)
-            .then(Response => {
-                data = SuccessHandler.getData(Response);
-            })
-            .catch(e => setRequestError(e));
-        return data;
-    },
-    async updateRequest(formdata) {
-        const url = `requests/${formdata.id}`;
-        let data = false;
-        await axios
-            .patch(url, formdata)
-            .then(Response => {
-                data = SuccessHandler.getData(Response);
-            })
-            .catch(e => setRequestError(e));
-        return data;
-    },
-    async deleteRequest(request_id) {
-        const url = `requests/${request_id}`;
-        let data = false;
-        await axios
-            .delete(url)
-            .then(Response => {
-                data = SuccessHandler.getData(Response);
-            })
-            .catch(e => setRequestError(e));
-        return data;
-    },
+        const stringParams = new URLSearchParams(query).toString();
 
-    async disable(request_id, formdata) {
-        const url = `requests/disable/${request_id}`;
-        let data = false;
-        await axios
-            .patch(url, formdata)
-            .then(Response => {
-                data = SuccessHandler.getData(Response);
-            })
-            .catch(e => setRequestError(e));
-        return data;
+        const response = await axios.get(`${URL}?${stringParams}&expand=${_expand}`);
+        return responseToPaginatedData(response);
     },
-
-    async undisable(request_id) {
-        const url = `requests/undisable/${request_id}`;
-        let data = false;
-        await axios
-            .patch(url)
-            .then(Response => {
-                data = SuccessHandler.getData(Response);
-            })
-            .catch(e => setRequestError(e));
-        return data;
+    async create(payload) {
+        const response = await axios.post(URL, payload);
+        return responseToData(response);
+    },
+    async update(id, payload) {
+        const response = await axios.patch(`${URL}/${id}`, payload);
+        return responseToData(response);
+    },
+    async delete(id) {
+        const response = await axios.delete(`${URL}/${id}`);
+        return responseToData(response);
+    },
+    async disable(id, payload) {
+        const response = await axios.patch(`${URL}/disable/${id}`, payload);
+        return responseToData(response);
+    },
+    async undisable(id) {
+        const response = await axios.patch(`${URL}/undisable/${id}`);
+        return responseToData(response);
     }
 };

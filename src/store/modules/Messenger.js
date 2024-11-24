@@ -284,10 +284,10 @@ const Messenger = {
             const initialState = getInitialState();
             Object.keys(initialState).forEach(key => (state[key] = initialState[key]));
         },
-        setCounts(state, counts) {
-            state.counts.object = counts[0].value[0];
-            state.counts.company = counts[1].value[0];
-            state.counts.user = counts[2].value[0];
+        setStatisticsByModelTypes(state, { modelTypes = [], statistics }) {
+            modelTypes.forEach(modelType => {
+                state.counts[modelType] = statistics[0];
+            });
         },
         setLastNotViewedMessage(state, messageID) {
             state.lastNotViewedMessageID = messageID;
@@ -431,14 +431,17 @@ const Messenger = {
         }
     },
     actions: {
-        async updateCounters({ rootGetters, commit }) {
-            const response = await Promise.allSettled([
-                api.messenger.getStatistics([rootGetters.THIS_USER?.chat_member_id], ['object']),
-                api.messenger.getStatistics([rootGetters.THIS_USER?.chat_member_id], ['company']),
-                api.messenger.getStatistics([rootGetters.THIS_USER?.chat_member_id], ['user'])
-            ]);
+        async updateStatistics({ rootGetters, commit }, modelTypes) {
+            const response = await api.messenger.getStatistics(
+                [rootGetters.THIS_USER?.chat_member_id],
+                modelTypes
+            );
 
-            if (response) commit('setCounts', response);
+            if (response)
+                commit('setStatisticsByModelTypes', {
+                    modelTypes,
+                    statistics: response
+                });
         },
         async updateDialogs({ state, commit }, payload) {
             commit('setLoadingAside', true);

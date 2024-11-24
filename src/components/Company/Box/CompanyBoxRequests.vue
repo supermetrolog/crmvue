@@ -46,7 +46,6 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
 import api from '@/api/api';
 import CompanyBoxRequestsList from '@/components/Company/Box/CompanyBoxRequestsList.vue';
 import DealList from '@/components/Deal/DealList.vue';
@@ -97,7 +96,6 @@ export default {
         }
     },
     methods: {
-        ...mapActions(['CREATE_REQUEST']),
         closeModal() {
             this.disabledRequestItem = null;
             this.clonedRequestItem = null;

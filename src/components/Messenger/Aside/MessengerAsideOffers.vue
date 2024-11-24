@@ -32,7 +32,7 @@
 import MessengerAsideHeader from '@/components/Messenger/Aside/MessengerAsideHeader.vue';
 import { useStore } from 'vuex';
 import MessengerAsideObjects from '@/components/Messenger/Aside/MessengerAsideObjects.vue';
-import { computed, onBeforeMount, reactive, ref, useTemplateRef, watch } from 'vue';
+import { computed, onMounted, reactive, ref, useTemplateRef, watch } from 'vue';
 import { messenger } from '@/const/messenger.js';
 import { useDebounceFn, useElementSize } from '@vueuse/core';
 import MessengerAsideCompanies from '@/components/Messenger/Aside/MessengerAsideCompanies.vue';
@@ -120,7 +120,7 @@ watch(
 const updateDialogs = () => store.dispatch('Messenger/updateDialogs', createPayload());
 const debouncedUpdateDialog = useDebounceFn(updateDialogs, 500);
 
-onBeforeMount(() => {
+onMounted(() => {
     if (!hasQuery.value && !hasDialogs.value) updateDialogs();
 });
 </script>

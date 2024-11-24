@@ -1,7 +1,9 @@
 import axios from 'axios';
-import { setRequestError } from '@/api/helpers/setRequestError.js';
-import { SuccessHandler } from '@/api/helpers/successHandler.js';
 import { formToPayload } from '@/utils/index.js';
+import { responseToData } from '@/api/helpers/responseToData.js';
+import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData.js';
+import { responseHasStatus } from '@/api/helpers/responseHasStatus.js';
+import { STATUS_SUCCESS } from '@/api/helpers/statuses.js';
 
 const URL = '/equipment';
 
@@ -30,61 +32,27 @@ const params = [
 
 export default {
     async create(options) {
-        try {
-            const response = await axios.postForm(URL, options);
-            return response.data;
-        } catch (e) {
-            setRequestError(e);
-            return null;
-        }
+        const response = await axios.postForm(URL, options);
+        return responseToData(response);
     },
     async list(options) {
-        try {
-            const response = await axios.get(URL, { params: options });
-
-            return {
-                data: SuccessHandler.getData(response),
-                pagination: SuccessHandler.getPaginationData(response)
-            };
-        } catch (e) {
-            setRequestError(e);
-            return null;
-        }
+        const response = await axios.get(URL, { params: options });
+        return responseToPaginatedData(response);
     },
     async get(id) {
-        try {
-            const response = await axios.get(`${URL}/${id}`);
-            return response.data;
-        } catch (e) {
-            setRequestError(e);
-            return null;
-        }
+        const response = await axios.get(`${URL}/${id}`);
+        return responseToData(response);
     },
     async delete(id) {
-        try {
-            const response = await axios.delete(`${URL}/${id}`);
-            return response.status === 200;
-        } catch (e) {
-            setRequestError(e);
-            return null;
-        }
+        const response = await axios.delete(`${URL}/${id}`);
+        return responseHasStatus(response, STATUS_SUCCESS);
     },
     async update(id, payload) {
-        try {
-            const response = await axios.patchForm(`${URL}/${id}`, formToPayload(payload, params));
-            return response.data;
-        } catch (e) {
-            setRequestError(e);
-            return null;
-        }
+        const response = await axios.patchForm(`${URL}/${id}`, formToPayload(payload, params));
+        return responseToData(response);
     },
     async called(id, payload) {
-        try {
-            const response = await axios.post(`${URL}/${id}/called`, payload);
-            return response.data;
-        } catch (e) {
-            setRequestError(e);
-            return null;
-        }
+        const response = await axios.post(`${URL}/${id}/called`, payload);
+        return responseToData(response);
     }
 };

@@ -24,13 +24,13 @@ const CompanyLogs = {
             if (context.state.page === context.state.pagination || context.state.totalCount === 0) {
                 return 'complete';
             } else {
-                const response = await api.companyLogs.getCompanyLogs(id, context.state.page + 1);
+                const response = await api.companyLogs.listByCompanyId(id, context.state.page + 1);
                 context.commit('updateCompanyLogs', response);
                 return 'loaded';
             }
         },
         async POST_COMPANY_LOG(context, formdata) {
-            const log = await api.companyLogs.addLogComment(formdata);
+            const log = await api.companyLogs.create(formdata);
             if (log == false) {
                 return;
             }

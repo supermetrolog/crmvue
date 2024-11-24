@@ -1,57 +1,30 @@
 import axios from 'axios';
-import { setRequestError } from '@/api/helpers/setRequestError.js';
-import { SuccessHandler } from '@/api/helpers/successHandler.js';
+import { responseToData } from '@/api/helpers/responseToData.js';
+import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData.js';
+import { responseHasStatus } from '@/api/helpers/responseHasStatus.js';
+import { STATUS_SUCCESS } from '@/api/helpers/statuses.js';
 
 const URL = '/surveys';
 
 export default {
     async create(options) {
-        try {
-            const response = await axios.post(URL + '/with-survey-question-answer', options);
-            return response.data;
-        } catch (e) {
-            setRequestError(e);
-            return null;
-        }
+        const response = await axios.post(URL + '/with-survey-question-answer', options);
+        return responseToData(response);
     },
     async get(id) {
-        try {
-            const response = await axios.get(`${URL}/${id}/with-questions`);
-            return response.data;
-        } catch (e) {
-            setRequestError(e);
-            return null;
-        }
+        const response = await axios.get(`${URL}/${id}/with-questions`);
+        return responseToData(response);
     },
-    async list(options) {
-        try {
-            const response = await axios.get(URL, { params: options });
-
-            return {
-                data: SuccessHandler.getData(response),
-                pagination: SuccessHandler.getPaginationData(response)
-            };
-        } catch (e) {
-            setRequestError(e);
-            return null;
-        }
+    async list(params) {
+        const response = await axios.get(URL, { params });
+        return responseToPaginatedData(response);
     },
     async delete(id) {
-        try {
-            const response = await axios.delete(`${URL}/${id}`);
-            return response.status === 200;
-        } catch (e) {
-            setRequestError(e);
-            return null;
-        }
+        const response = await axios.delete(`${URL}/${id}`);
+        return responseHasStatus(response.status, STATUS_SUCCESS);
     },
     async update(id, payload) {
-        try {
-            const response = await axios.put(`${URL}/${id}`, payload);
-            return response.data;
-        } catch (e) {
-            setRequestError(e);
-            return null;
-        }
+        const response = await axios.put(`${URL}/${id}`, payload);
+        return responseToData(response);
     }
 };

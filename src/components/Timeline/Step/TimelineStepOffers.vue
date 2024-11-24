@@ -21,7 +21,7 @@
                         :objects="selectedObjects"
                         :selected-objects="selectedObjects"
                         disabled
-                        col="col-3"
+                        col="col-4"
                         label="Выбранные предложения"
                     />
                 </FormLetter>
@@ -153,6 +153,7 @@
                 </div>
                 <FormOfferSearch
                     @search="search"
+                    @changed-query="currentPage = 1"
                     @reset="currentRecommendedFilter = null"
                     @resetSelected="reset"
                     :additional-buttons="
@@ -167,8 +168,14 @@
                     "
                     no-url
                     :query-params="queryParams"
-                    class="mb-2 px-4"
+                    class="mb-2 col-12"
                     :class="{ 'action-open': controlPanelHeight > 50 }"
+                />
+                <PaginationClassic
+                    v-if="pagination"
+                    @next="nextPage"
+                    class="col-12"
+                    :pagination="pagination"
                 />
                 <CompanyObjectsList
                     @select="select"
@@ -184,7 +191,12 @@
                     :pagination="pagination"
                     :current-step-id="step.id"
                 />
-                <Pagination @load-more="loadMore" :pagination="pagination" class="text-center" />
+                <PaginationClassic
+                    v-if="pagination"
+                    @next="nextPage"
+                    class="col-12"
+                    :pagination="pagination"
+                />
             </div>
         </div>
     </div>
@@ -202,21 +214,22 @@ import CompanyObjectsList from '@/components/Company/CompanyObjectsList.vue';
 import FormLetter from '@/components/Forms/FormLetter.vue';
 import plural from 'plural-ru';
 import RefreshButton from '@/components/common/RefreshButton.vue';
-import Pagination from '@/components/common/Pagination/Pagination.vue';
 import Tooltip from '@/components/common/Tooltip.vue';
 import FormOfferSearch from '@/components/Forms/Offer/FormOfferSearch.vue';
 import { entityOptions } from '@/const/options/options.js';
 import { deleteEmptyFields } from '@/utils/deleteEmptyFields.js';
 import { TimelineRecommendedDescriptions } from '@/const/const.js';
 import TimelineSearchRecommendations from '@/components/Timeline/TimelineSearchRecommedations.vue';
+import { regionsToFakeRegion } from '@/utils/normalizeForm.js';
+import PaginationClassic from '@/components/common/Pagination/PaginationClassic.vue';
 
 export default {
     name: 'TimelineStepOffers',
     components: {
+        PaginationClassic,
         TimelineSearchRecommendations,
         FormOfferSearch,
         Tooltip,
-        Pagination,
         RefreshButton,
         FormLetter,
         CompanyObjectsList,
@@ -283,6 +296,7 @@ export default {
         recommendations: () => TimelineRecommendedDescriptions,
         totalRecommendedQuery() {
             const request = this.currentRequest;
+
             const query = {
                 rangeMinElectricity: request.electricity,
                 rangeMaxDistanceFromMKAD: this.getPercent(request.distanceFromMKAD, 130),
@@ -298,18 +312,25 @@ export default {
                 status: 1,
                 type_id: [1, 2],
                 gates: request.gateTypes.map(item => item.gate_type),
+                fakeRegion: regionsToFakeRegion(
+                    request.regions.map(item => item.region),
+                    request
+                ),
                 direction: request.directions.map(item => item.direction),
                 district_moscow: request.districts.map(item => item.district),
                 region_neardy: request.region_neardy,
                 outside_mkad: request.outside_mkad,
                 firstFloorOnly: request.firstFloorOnly ? 1 : null,
                 sort_original_id: this.$route.query.new_original_id ?? null,
-                sort: this.$route.query.new_original_id ? '-original_ids' : null
+                sort: this.$route.query.new_original_id ? '-original_ids' : null,
+                purposes: []
             };
+
             if (request.dealType + 1 === entityOptions.deal.typeStatement.SALE) {
                 query.rangeMaxArea = this.getPercent(request.maxArea, 130);
                 query.rangeMinArea = this.getPercent(request.minArea, 80);
             }
+
             return query;
         },
         mediumRecommendedQuery() {
@@ -339,7 +360,8 @@ export default {
                         },
                         true
                     )
-                )
+                ),
+                purposes: []
             };
             if (request.dealType + 1 === entityOptions.deal.typeStatement.SALE) {
                 query.rangeMaxPricePerFloor = this.getPercent(request.pricePerFloor, 150);
@@ -363,7 +385,12 @@ export default {
                 direction: request.directions.map(item => item.direction),
                 district_moscow: request.districts.map(item => item.district),
                 region_neardy: request.region_neardy,
-                outside_mkad: request.outside_mkad
+                outside_mkad: request.outside_mkad,
+                fakeRegion: regionsToFakeRegion(
+                    request.regions.map(item => item.region),
+                    request
+                ),
+                purposes: []
             };
             if (request.dealType + 1 === entityOptions.deal.typeStatement.SALE) {
                 query.rangeMaxArea = this.getPercent(request.maxArea, 130);
@@ -396,6 +423,7 @@ export default {
                 return;
             }
 
+            this.currentPage = 1;
             this.currentRecommendedFilter = filter;
             this.queryParams = {
                 ...this.$options.defaultQueryParams,
@@ -404,6 +432,10 @@ export default {
         },
         fetchData() {
             this.changeRecommendedFilter(1, this.totalRecommendedQuery);
+        },
+        setObjects(data) {
+            this.objects = data.data;
+            this.pagination = data.pagination;
         },
         async deleteFavoriteOffer() {
             if (this.searchParams.favorites) {
@@ -422,5 +454,3 @@ export default {
     }
 };
 </script>
-
-<style></style>

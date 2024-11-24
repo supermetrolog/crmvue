@@ -1,6 +1,7 @@
 <template>
     <MultiSelect
         v-model="modelValue"
+        @change="$emit('change', $event)"
         :label="label"
         searchable
         can-deselect
@@ -29,6 +30,7 @@ import CompanyPickerOption from '@/components/common/Forms/CompanyPicker/Company
 
 const modelValue = defineModel();
 
+defineEmits(['change']);
 defineProps({
     closeOnSelect: {
         type: Boolean,

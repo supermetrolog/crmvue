@@ -21,7 +21,12 @@
             <div class="messenger-dialog-company__description">
                 <p v-if="hasUndefinedName" class="messenger-warning">[Нет уникального названия]</p>
                 <p class="messenger-dialog-company__company">
-                    {{ companyName }}
+                    <i
+                        v-if="model.is_individual"
+                        v-tippy="'Физ.лицо'"
+                        class="fa-solid fa-user-tie mr-1"
+                    ></i>
+                    <span>{{ companyName }}</span>
                 </p>
                 <div class="messenger-dialog-company__categories mt-1">
                     <DashboardChip
@@ -59,12 +64,13 @@ import MessengerDialogPhone from '@/components/Messenger/Dialog/MessengerDialogP
 import MessengerDialogFunctions from '@/components/Messenger/Dialog/MessengerDialogFunctions.vue';
 import Tooltip from '@/components/common/Tooltip.vue';
 import { computed } from 'vue';
-import { useStore } from 'vuex';
 import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 import { alg } from '@/utils/alg.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { CompanyCategories } from '@/const/const.js';
 import Avatar from '@/components/common/Avatar.vue';
+import { getCompanyName } from '@/utils/formatter.js';
+import { useAuth } from '@/composables/useAuth.js';
 
 defineEmits(['update-call']);
 const props = defineProps({
@@ -86,23 +92,20 @@ const props = defineProps({
     }
 });
 
-const store = useStore();
+const { currentUserId } = useAuth();
 
-const isDisabled = computed(() => props.model.consultant_id !== store.getters.THIS_USER.id);
+const isDisabled = computed(() => props.model.consultant_id !== currentUserId.value);
 
 const hasUndefinedName = computed(() => {
     return (
-        props.model.noName ||
+        (props.model.noName && !props.model.is_individual) ||
         ((!props.model.nameRu ||
             (alg.isNumeric(props.model.nameRu) && Number(props.model.nameRu) === props.model.id)) &&
             !props.model.nameEng)
     );
 });
 
-const companyName = computed(() => {
-    if (alg.isNumeric(props.model.full_name)) return `Компания #${props.model.full_name}`;
-    return props.model.full_name;
-});
+const companyName = computed(() => getCompanyName(props.model));
 
 const categories = computed(() => {
     return props.model.categories.map(element => {

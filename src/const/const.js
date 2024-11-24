@@ -213,8 +213,8 @@ export const FloorTypesFUCK = {
     4: 'Стяжка'
 };
 export const unknownMovingDate = {
-    0: 'рассматривает постоянно',
-    1: 'нет конкретики по сроку'
+    0: 'Рассматривает постоянно',
+    1: 'Нет конкретики по сроку'
 };
 export const ObjectClassList = {
     0: 'A',

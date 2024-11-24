@@ -26,12 +26,16 @@ const Timeline = {
     },
     actions: {
         async FETCH_TIMELINE(context, data) {
-            const timeline = await api.timeline.getTimeline(data.consultant_id, data.request_id);
+            const timeline = await api.timeline.getByConsultantAndRequest(
+                data.consultant_id,
+                data.request_id
+            );
+
             context.commit('updateTimeline', timeline);
         },
         async UPDATE_STEP(context, newStep) {
             // context.commit('updateStep', newStep)
-            return await api.timeline.updateTimelineStep(newStep);
+            return await api.timeline.updateTimelineStep(newStep.id, newStep);
         },
         async CREATE_NEW_BRANCH(context, step) {
             context.commit('createNewBranch', step);

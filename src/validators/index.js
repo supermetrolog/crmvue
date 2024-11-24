@@ -1,8 +1,9 @@
 import { helpers } from '@vuelidate/validators';
+
 export const onlyPattern = pattern => helpers.regex(pattern);
 
-export const onlyEnglish = onlyPattern(/^[a-zA-Z\s\d"'@.,-]*$/g);
-export const onlyRussian = onlyPattern(/^[а-яА-ЯёЁ\s\d"'@.,-]*$/g);
+export const onlyEnglish = onlyPattern(/^[a-zA-Z\s\d"'&@.,-]*$/g);
+export const onlyRussian = onlyPattern(/^[а-яА-ЯёЁ\s\d"'&@.,-]*$/g);
 export const every = validator => value => {
     return value.every(element =>
         validator.$validator ? validator.$validator(element) : validator(element)
