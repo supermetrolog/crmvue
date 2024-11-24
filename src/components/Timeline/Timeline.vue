@@ -181,7 +181,7 @@ export default {
             );
         },
         title() {
-            let title = 'Бизнес процесс: ' + getCompanyName(this.company);
+            let title = getCompanyName(this.company);
 
             const currentTimeline = this.timelineList.find(
                 timeline => timeline.consultant.id === Number(this.$route.query.consultant_id)
