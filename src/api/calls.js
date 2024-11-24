@@ -1,55 +1,30 @@
 import axios from 'axios';
-import { setRequestError } from '@/api/helpers/setRequestError.js';
-import { SuccessHandler } from '@/api/helpers/successHandler.js';
+import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData.js';
+import { responseToData } from '@/api/helpers/responseToData.js';
+
+const URL = '/calllists';
 
 export default {
     async search(query) {
-        query = new URLSearchParams(query).toString();
-        const url = `calllists?${query}&expand=caller,phoneFrom.contact.company,phoneTo.contact.company`;
-        let data = false;
-        await axios
-            .get(url)
-            .then(Response => {
-                data = {};
-                data.data = SuccessHandler.getData(Response);
-                data.pagination = SuccessHandler.getPaginationData(Response);
-            })
-            .catch(e => setRequestError(e));
-        return data;
-    },
-    async fetchCount(consultant_id) {
-        const url = `calllists/${consultant_id}/count`;
-        let data = false;
-        await axios
-            .get(url)
-            .then(Response => {
-                data = SuccessHandler.getData(Response);
-            })
-            .catch(e => setRequestError(e));
-        return data;
-    },
-    async viewedNotCount(consultant_id) {
-        const url = `calllists/${consultant_id}/viewed-not-count`;
-        let data = false;
-        await axios
-            .get(url)
-            .then(Response => {
-                data = SuccessHandler.getData(Response);
-            })
-            .catch(e => setRequestError(e));
+        const stringParams = new URLSearchParams(query).toString();
 
-        return data;
-    },
-    async viewedAll(consultant_id) {
-        const url = `calllists/${consultant_id}/viewed-all`;
-        let data = false;
-        await axios
-            .get(url)
-            .then(Response => {
-                data = SuccessHandler.getData(Response);
-            })
-            .catch(e => setRequestError(e));
+        const expand = 'caller,phoneFrom.contact.company,phoneTo.contact.company';
 
-        return data;
+        const url = `${URL}?expand=${expand}` + (stringParams ? `&${stringParams}` : '');
+
+        const response = await axios.get(url);
+        return responseToPaginatedData(response);
+    },
+    async count(consultantId) {
+        const response = await axios.get(`${URL}/${consultantId}/count`);
+        return responseToData(response);
+    },
+    async viewedNotCount(consultantId) {
+        const response = await axios.get(`${URL}/${consultantId}/viewed-not-count`);
+        return responseToData(response);
+    },
+    async viewedAll(consultantId) {
+        const response = await axios.get(`${URL}/${consultantId}/viewed-all`);
+        return responseToData(response);
     }
 };

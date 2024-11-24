@@ -6,55 +6,45 @@
             @start-editing="$emit('start-editing', $event)"
             @create-comment="createComment"
             @delete-contact="deleteContact"
-            :contact="contact"
             :read-only="readOnly"
+            :contact
         />
     </div>
 </template>
 
-<script>
-import { mapActions } from 'vuex';
+<script setup>
+import { useStore } from 'vuex';
 import CompanyContactItem from '@/components/Company/Contact/CompanyContactItem.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
 
-export default {
-    name: 'CompanyContactList',
-    components: {
-        CompanyContactItem
+const emit = defineEmits(['start-editing', 'created-comment', 'deleted']);
+defineProps({
+    contacts: {
+        type: Array,
+        default: () => []
     },
-    emits: ['start-editing', 'created-comment', 'deleted'],
-    props: {
-        contacts: {
-            type: Array,
-            default: () => []
-        },
-        readOnly: {
-            type: Boolean,
-            default: false
-        }
-    },
-    setup() {
-        const { confirm } = useConfirm();
-        return { confirm };
-    },
-    methods: {
-        ...mapActions(['DELETE_CONTACT', 'CREATE_CONTACT_COMMENT']),
-        async createComment(data) {
-            await this.CREATE_CONTACT_COMMENT(data);
-            this.$emit('created-comment');
-        },
-        async deleteContact(contact) {
-            const confirmed = await this.confirm(
-                'Вы уверены, что хотите удалить контакт ' + contact.header + '?'
-            );
-
-            if (confirmed) {
-                await this.DELETE_CONTACT(this.deletingContact);
-                this.$emit('deleted');
-            }
-        }
+    readOnly: {
+        type: Boolean,
+        default: false
     }
-};
-</script>
+});
 
-<style></style>
+const store = useStore();
+const { confirm } = useConfirm();
+
+async function createComment(payload) {
+    const created = await store.dispatch('CREATE_CONTACT_COMMENT', payload);
+    if (created) emit('created-comment');
+}
+
+async function deleteContact(contact) {
+    const confirmed = await confirm(
+        'Вы уверены, что хотите удалить контакт "' + contact.full_name + '"?'
+    );
+
+    if (!confirmed) return;
+
+    const deleted = await store.dispatch('DELETE_CONTACT', contact);
+    if (deleted) emit('deleted');
+}
+</script>

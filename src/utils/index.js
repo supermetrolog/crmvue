@@ -48,7 +48,7 @@ export default {
                 });
             });
             data.push({
-                label: contact.type ? 'Общий контакт' : contact.first_and_last_name,
+                label: contact.type ? 'Общий контакт' : contact.full_name,
                 options: array
             });
         });
@@ -72,22 +72,10 @@ export default {
             });
             if (!array.length) return;
             data.push({
-                label: contact.type ? 'Общий контакт' : contact.first_and_last_name,
+                label: contact.type ? 'Общий контакт' : contact.full_name,
                 options: array
             });
         });
-        return data;
-    },
-    normalizeDataForCompanyForm(data) {
-        data.contacts = data.contacts.find(item => item.type == 1);
-        if (!data.contacts) {
-            data.contacts = {
-                emails: [],
-                phones: [],
-                websites: []
-            };
-            return data;
-        }
         return data;
     },
     normalizeDataForUserForm(data) {

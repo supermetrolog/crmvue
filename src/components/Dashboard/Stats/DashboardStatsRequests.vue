@@ -169,7 +169,7 @@ const fetchRequests = async () => {
 
     const userParams = props.user ? { consultant_id: props.user } : {};
 
-    const response = await api.request.searchRequests({
+    const response = await api.request.search({
         ...userParams,
         sort: '-related_updated_at,-updated_at'
     });

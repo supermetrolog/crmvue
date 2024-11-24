@@ -34,9 +34,9 @@ import Loader from '@/components/common/Loader.vue';
 import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import Input from '@/components/common/Forms/Input.vue';
 import { helpers, required } from '@vuelidate/validators';
-import { mapActions } from 'vuex';
 import useValidate from '@vuelidate/core';
 import Submit from '@/components/common/Forms/FormSubmit.vue';
+import api from '@/api/api.js';
 
 export default {
     name: 'FormModalEvent',
@@ -83,7 +83,6 @@ export default {
         };
     },
     methods: {
-        ...mapActions(['CREATE_CALENDAR_EVENT', 'UPDATE_CALENDAR_EVENT']),
         async onSubmit() {
             this.v$.$validate();
 
@@ -97,10 +96,12 @@ export default {
             }
         },
         async create() {
-            if (await this.CREATE_CALENDAR_EVENT(this.form)) this.$emit('created', this.form);
+            const createdEvent = await api.calendar.createEvent(this.form);
+            if (createdEvent) this.$emit('created', this.form);
         },
         async update() {
-            if (await this.UPDATE_CALENDAR_EVENT(this.form)) this.$emit('updated', this.form);
+            const updatedEvent = await api.calendar.updateEvent(this.form);
+            if (updatedEvent) this.$emit('updated', this.form);
         }
     },
     mounted() {

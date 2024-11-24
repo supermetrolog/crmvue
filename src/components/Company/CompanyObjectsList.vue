@@ -8,11 +8,6 @@
                 <div v-if="!objects.length && !loader" class="col-12">
                     <EmptyData>Данные отсутствуют</EmptyData>
                 </div>
-                <CompanyObjectsListPagination
-                    v-if="pagination?.pageCount"
-                    :pagination="pagination"
-                    class="col-12"
-                />
                 <Loader v-if="loader" />
                 <template v-for="object in objects" :key="object.id">
                     <CompanyObjectItemNoOffer
@@ -34,11 +29,6 @@
                         :currentStepID="currentStepId"
                     />
                 </template>
-                <CompanyObjectsListPagination
-                    v-if="pagination?.pageCount"
-                    :pagination="pagination"
-                    class="col-12"
-                />
             </div>
         </div>
         <hr v-if="withSeparator && !loader" />
@@ -49,7 +39,6 @@
 import CompanyObjectItemOfferOnly from '@/components/Company/Object/CompanyObjectItemOfferOnly.vue';
 import Loader from '@/components/common/Loader.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
-import CompanyObjectsListPagination from '@/components/Company/CompanyObjectsListPagination.vue';
 import CompanyObjectItemNoOffer from '@/components/Company/Object/CompanyObjectItemNoOffer.vue';
 
 const emit = defineEmits(['select', 'unselect', 'addComment', 'deleteFavoriteOffer']);

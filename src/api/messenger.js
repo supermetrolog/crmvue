@@ -1,24 +1,16 @@
 import api from '@//api/api';
 import axios from 'axios';
-import { SuccessHandler } from '@/api/helpers/successHandler.js';
-import { setRequestError } from '@/api/helpers/setRequestError.js';
 import { responseToData } from '@/api/helpers/responseToData.js';
+import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData.js';
+import { responseHasStatus } from '@/api/helpers/responseHasStatus.js';
+import { STATUS_SUCCESS } from '@/api/helpers/statuses.js';
 
 const URL = '/chat-members';
 
 export default {
     async getChats(params) {
-        try {
-            const response = await axios.get(URL, { params });
-
-            return {
-                data: SuccessHandler.getData(response),
-                pagination: SuccessHandler.getPaginationData(response)
-            };
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
+        const response = await axios.get(URL, { params });
+        return responseToPaginatedData(response);
     },
     async getPanel(companyID) {
         return await api.companies.getCompany(companyID);
@@ -27,22 +19,16 @@ export default {
         return await api.user.get(id);
     },
     async getDialog(id) {
-        try {
-            const response = await axios.get(`${URL}/${id}`);
-            return response.data ?? null;
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
+        const response = await axios.get(`${URL}/${id}`);
+        return responseToData(response);
     },
     async getDialogByQuery(params) {
-        try {
-            const response = await axios.get(URL, { params });
-            return response.data?.length ? response.data[0] : null;
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
+        const response = await axios.get(URL, { params });
+
+        const data = responseToData(response);
+
+        if (data?.length) return data[0];
+        return null;
     },
     async getMessages(memberID, idLessThen = null) {
         const params = new URLSearchParams({ to_chat_member_id: memberID });
@@ -50,75 +36,42 @@ export default {
 
         const url = `/chat-member-messages?${params.toString()}`;
 
-        try {
-            const response = await axios.get(url);
-            return SuccessHandler.getData(response);
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
+        const response = await axios.get(url);
+        return responseToData(response);
     },
     async getMessagesByQuery(query) {
         const params = new URLSearchParams(query).toString();
         const url = `/chat-member-messages?${params}`;
 
-        try {
-            const response = await axios.get(url);
-            return {
-                data: SuccessHandler.getData(response),
-                pagination: SuccessHandler.getPaginationData(response)
-            };
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
+        const response = await axios.get(url);
+        return responseToPaginatedData(response);
     },
     async pinMessage(memberID, messageID) {
         const url = `/chat-members/pin-message`;
         const payload = { chat_member_id: memberID, chat_member_message_id: messageID };
 
-        try {
-            const response = await axios.post(url, payload);
-            return response.status === 200;
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
+        const response = await axios.post(url, payload);
+        return responseHasStatus(response, STATUS_SUCCESS);
     },
     async unpinMessage(memberID) {
         const url = `/chat-members/unpin-message`;
         const payload = { chat_member_id: memberID };
 
-        try {
-            const response = await axios.post(url, payload);
-            return response.status === 200;
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
+        const response = await axios.post(url, payload);
+        return responseHasStatus(response, STATUS_SUCCESS);
     },
     async getPinned(dialogID) {
         const url = `/chat-members/${dialogID}/pinned-message`;
 
-        try {
-            const response = await axios.get(url);
-            return response.data ?? null;
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
+        const response = await axios.get(url);
+        return responseToData(response);
     },
     async sendMessage(memberID, message) {
         const url = '/chat-member-messages';
         const formData = { ...message, to_chat_member_id: memberID };
 
-        try {
-            const response = await axios.postForm(url, formData);
-            return response.data;
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
+        const response = await axios.postForm(url, formData);
+        return responseToData(response);
     },
     async sendMessageWithTask(memberID, message, taskPayload) {
         const url = '/chat-member-messages/with-task';
@@ -130,89 +83,53 @@ export default {
     async updateMessage(message) {
         const url = `/chat-member-messages/${message.id}`;
 
-        try {
-            const response = await axios.patchForm(url, message);
-            return response.data;
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
+        const response = await axios.patchForm(url, message);
+        return responseToData(response);
     },
     async getMedia(chatMemberID, { extension = null, page = 1 }) {
         const url =
             `/chat-members/${chatMemberID}/media` +
             (extension ? `?extension=${extension}&page=${page}` : `?page=${page}`);
 
-        try {
-            const response = await axios.get(url);
-            return {
-                data: SuccessHandler.getData(response),
-                pagination: SuccessHandler.getPaginationData(response)
-            };
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
+        const response = await axios.get(url);
+        return responseToPaginatedData(response);
     },
     async getUserChatMembers() {
-        try {
-            const [firstPart, secondPart, lastPart] = await Promise.all([
-                axios.get('/chat-members?model_type=user'),
-                axios.get('/chat-members?model_type=user&page=2'),
-                axios.get('/chat-members?model_type=user&page=3')
-            ]);
+        const [firstPart, secondPart, lastPart] = await Promise.all([
+            axios.get('/chat-members?model_type=user'),
+            axios.get('/chat-members?model_type=user&page=2'),
+            axios.get('/chat-members?model_type=user&page=3')
+        ]);
 
-            const chatMembers = {};
+        const chatMembers = {};
 
-            firstPart.data.forEach(element => (chatMembers[element.model_id] = element.id));
-            secondPart.data.forEach(element => (chatMembers[element.model_id] = element.id));
-            lastPart.data.forEach(element => (chatMembers[element.model_id] = element.id));
+        firstPart.data.forEach(element => (chatMembers[element.model_id] = element.id));
+        secondPart.data.forEach(element => (chatMembers[element.model_id] = element.id));
+        lastPart.data.forEach(element => (chatMembers[element.model_id] = element.id));
 
-            return chatMembers;
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
+        return chatMembers;
     },
     async getUserChatMember(userID) {
-        try {
-            const response = await axios.get('/chat-members?model_type=user&model_id=' + userID);
+        const response = await axios.get('/chat-members?model_type=user&model_id=' + userID);
+        const data = responseToData(response);
 
-            return response?.data?.length ? response.data[0].id : null;
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
+        if (data?.length) return data[0].id;
+        return null;
     },
     async readMessages(messageID) {
-        try {
-            const response = await axios.post('/chat-member-messages/view-message/' + messageID);
-            return response.status === 200;
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
+        const response = await axios.post('/chat-member-messages/view-message/' + messageID);
+        return responseHasStatus(response, STATUS_SUCCESS);
     },
     async getStatistics(chatMemberIds, modelTypes = ['object', 'request']) {
-        try {
-            const response = await axios.get(`${URL}/statistic`, {
-                params: { chat_member_ids: chatMemberIds, model_types: modelTypes }
-            });
+        const response = await axios.get(`${URL}/statistic`, {
+            params: { chat_member_ids: chatMemberIds, model_types: modelTypes }
+        });
 
-            return SuccessHandler.getData(response);
-        } catch (e) {
-            await setRequestError(e);
-            return null;
-        }
+        return responseToData(response);
     },
     async deleteMessage(id) {
-        try {
-            const response = await axios.delete(`/chat-member-messages/${id}`);
-            return response.status === 200;
-        } catch (e) {
-            await setRequestError();
-            return false;
-        }
+        const response = await axios.delete(`/chat-member-messages/${id}`);
+        return responseHasStatus(response, STATUS_SUCCESS);
     },
     async getChatMemberIdByQuery(params) {
         const response = await axios.get(URL, { params });

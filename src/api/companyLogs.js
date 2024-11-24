@@ -1,30 +1,22 @@
 import axios from 'axios';
-import { setRequestError } from '@/api/helpers/setRequestError.js';
-import { SuccessHandler } from '@/api/helpers/successHandler.js';
+import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData.js';
+import { responseToData } from '@/api/helpers/responseToData.js';
+
+const URL = '/company-events-log';
 
 export default {
-    async getCompanyLogs(id, page) {
-        const url = `company-events-log?company_id=${id}&expand=user.userProfile&page=${page}`;
-        let data = false;
-        await axios
-            .get(url)
-            .then(Response => {
-                data = {};
-                data.data = SuccessHandler.getData(Response);
-                data.pagination = SuccessHandler.getPaginationData(Response);
-            })
-            .catch(e => setRequestError(e));
-        return data;
+    async listByCompanyId(companyId, page = 1) {
+        const params = {
+            company_id: companyId,
+            page,
+            expand: 'user.userProfile'
+        };
+
+        const response = await axios.get(URL, { params });
+        return responseToPaginatedData(response);
     },
-    async addLogComment(formdata) {
-        const url = `company-events-log`;
-        let data = false;
-        await axios
-            .post(url, formdata)
-            .then(Response => {
-                data = SuccessHandler.getData(Response);
-            })
-            .catch(e => setRequestError(e));
-        return data;
+    async create(payload) {
+        const response = await axios.post(URL, payload);
+        return responseToData(response);
     }
 };

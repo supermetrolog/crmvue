@@ -23,6 +23,8 @@ const CompanyContact = {
         async DELETE_CONTACT({ commit }, contact) {
             const deleted = await api.contacts.delete(contact.id);
             if (deleted) commit('deleteContact', contact.id);
+
+            return !!deleted;
         },
         async FETCH_COMPANY_CONTACTS(context, company_id) {
             const response = await api.contacts.getByCompany(company_id);
@@ -37,6 +39,8 @@ const CompanyContact = {
             const newComment = await api.contacts.createComment(payload);
 
             if (newComment) commit('createComment', newComment);
+
+            return !!newComment;
         }
     },
 

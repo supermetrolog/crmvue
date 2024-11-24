@@ -90,6 +90,7 @@ import { unitTypes } from '@/const/unitTypes.js';
 import { toNumberFormat } from '@/utils/formatter.js';
 import { getLinkOfferByObject, getLinkOfferOldByObject } from '@/utils/url.js';
 import NoImage from '@/components/common/NoImage.vue';
+import LazyImage from '@/components/common/LazyImage.vue';
 
 defineEmits(['click-preview']);
 const props = defineProps({

@@ -129,6 +129,8 @@ const openChat = async (companyID, objectID, modelType = 'object') => {
     )
         store.commit('Messenger/setCurrentPanel', null);
 
+    store.commit('Messenger/setCurrentAsidePanel', dialog.model_type);
+
     store.dispatch('Messenger/selectPanel', {
         companyID: companyID,
         dialogID: dialog.id,

@@ -849,7 +849,7 @@ tr.TableRequestRow {
     }
 
     &__actions {
-        @include mixins.flex-box($gap: 10px);
+        @include mixins.flex-box($gap: 10px, $j: center);
 
         .messenger-button {
             flex-grow: 1;

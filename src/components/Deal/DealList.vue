@@ -18,10 +18,10 @@
 </template>
 
 <script setup>
-import { useStore } from 'vuex';
 import DealListItem from '@/components/Deal/DealListItem.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
 import { shallowRef } from 'vue';
+import api from '@/api/api.js';
 
 const emit = defineEmits(['update', 'deleted']);
 defineProps({
@@ -31,7 +31,6 @@ defineProps({
     }
 });
 
-const store = useStore();
 const { confirm } = useConfirm();
 const isLoading = shallowRef(false);
 const deleteDeal = async deal => {
@@ -39,10 +38,10 @@ const deleteDeal = async deal => {
     if (!confirmed) return;
 
     isLoading.value = true;
-    await store.dispatch('DELETE_DEAL', deal);
+    const deleted = await api.deal.delete(deal.id, deal);
     isLoading.value = false;
 
-    emit('deleted');
+    if (deleted) emit('deleted');
 };
 
 const updateDeal = deal => {

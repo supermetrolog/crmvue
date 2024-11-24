@@ -112,6 +112,7 @@ import { computed, onBeforeMount, onUnmounted, provide, ref, shallowRef, watch }
 import { useRoute, useRouter } from 'vue-router';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { useDocumentTitle } from '@/composables/useDocumentTitle.js';
+import { messenger } from '@/const/messenger.js';
 
 provide('openContact', openContact);
 provide('createContactComment', createContactComment);
@@ -120,7 +121,7 @@ const store = useStore();
 const route = useRoute();
 const router = useRouter();
 const { confirm } = useConfirm();
-const { openChatByCompanyId } = useMessenger();
+const { openChat } = useMessenger();
 const { setTitle } = useDocumentTitle();
 
 const companyIsLoading = shallowRef(false);
@@ -277,7 +278,7 @@ const deleteContact = async () => {
 };
 
 const openInChat = () => {
-    openChatByCompanyId(COMPANY.value.id);
+    openChat(COMPANY.value.id, COMPANY.value.id, messenger.dialogTypes.COMPANY);
 };
 
 onBeforeMount(() => {

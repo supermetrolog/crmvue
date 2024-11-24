@@ -16,6 +16,7 @@ import api from '@/api/api.js';
 import { useTaskManager } from '@/composables/useTaskManager.js';
 import { useStore } from 'vuex';
 import { useNotify } from '@/utils/useNotify.js';
+import { getCompanyName } from '@/utils/formatter.js';
 
 const SCHEDULING_CALL_DURATION = 7; // days
 
@@ -55,7 +56,7 @@ const generateTemplate = () => {
         customDescription = true;
 
         additionalContent.address = dialog.model.legal_address || dialog.model.office_address;
-        additionalContent.companyName = dialog.model.full_name;
+        additionalContent.companyName = getCompanyName(dialog.model);
     }
 
     return {

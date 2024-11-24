@@ -6,7 +6,7 @@
             :class="{ active: current?.name === messenger.tabs.OBJECTS }"
             :counts="objectCounts"
             :current="current.sort"
-            :loading="isInitialLoading"
+            :loading="isInitialLoading.objects"
         >
             <template #icon>
                 <IconWarehouse />
@@ -18,7 +18,7 @@
             :class="{ active: current?.name === messenger.tabs.COMPANIES }"
             :counts="companiesCounts"
             :current="current.sort"
-            :loading="isInitialLoading"
+            :loading="isInitialLoading.companies"
         >
             <template #icon>
                 <IconCompanies class="messenger-bar__company-icon" />
@@ -31,13 +31,13 @@
             :class="{ active: current?.name === messenger.tabs.USERS }"
             :counts="userCounts"
             :current="current.sort"
-            :loading="isInitialLoading"
+            :loading="isInitialLoading.users"
         />
     </div>
 </template>
 <script setup>
 import MessengerBarTab from '@/components/Messenger/MessengerBarTab.vue';
-import { computed, onMounted, shallowRef, watch } from 'vue';
+import { computed, onMounted, shallowReactive, watch } from 'vue';
 import { useStore } from 'vuex';
 import { messenger } from '@/const/messenger.js';
 import IconWarehouse from '@/components/common/Icons/IconWarehouse.vue';
@@ -55,15 +55,23 @@ defineProps({
 
 const store = useStore();
 
-const isInitialLoading = shallowRef(true);
+const isInitialLoading = shallowReactive({
+    objects: true,
+    companies: true,
+    users: true
+});
 
 const objectCounts = computed(() => store.state.Messenger.counts.object);
 const companiesCounts = computed(() => store.state.Messenger.counts.company);
 const userCounts = computed(() => store.state.Messenger.counts.user);
 
-const statisticsInterval = useIntervalFn(() => {
-    store.dispatch('Messenger/updateCounters');
-}, DELAY_BETWEEN_UPDATING_STATISTICS);
+function updateStatistics() {
+    store.dispatch('Messenger/updateStatistics', [messenger.dialogTypes.OBJECT]);
+    store.dispatch('Messenger/updateStatistics', [messenger.dialogTypes.COMPANY]);
+    store.dispatch('Messenger/updateStatistics', [messenger.dialogTypes.USER]);
+}
+
+const statisticsInterval = useIntervalFn(updateStatistics, DELAY_BETWEEN_UPDATING_STATISTICS);
 
 const documentVisibility = useDocumentVisibility();
 
@@ -75,9 +83,31 @@ watch(documentVisibility, (current, prev) => {
     }
 });
 
-onMounted(async () => {
-    isInitialLoading.value = true;
-    await store.dispatch('Messenger/updateCounters');
-    isInitialLoading.value = false;
+async function fetchObjectsStatistics() {
+    isInitialLoading.objects = true;
+    await store.dispatch('Messenger/updateStatistics', [messenger.dialogTypes.OBJECT]);
+    isInitialLoading.objects = false;
+}
+
+async function fetchCompaniesStatistics() {
+    isInitialLoading.companies = true;
+    await store.dispatch('Messenger/updateStatistics', [messenger.dialogTypes.COMPANY]);
+    isInitialLoading.companies = false;
+}
+
+async function fetchUsersStatistics() {
+    isInitialLoading.users = true;
+    await store.dispatch('Messenger/updateStatistics', [messenger.dialogTypes.USER]);
+    isInitialLoading.users = false;
+}
+
+function fetchStatistics() {
+    fetchObjectsStatistics();
+    fetchCompaniesStatistics();
+    fetchUsersStatistics();
+}
+
+onMounted(() => {
+    fetchStatistics();
 });
 </script>

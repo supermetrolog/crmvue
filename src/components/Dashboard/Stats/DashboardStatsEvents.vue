@@ -66,7 +66,7 @@ const fetchEvents = async () => {
     isLoading.value = true;
 
     const userParams = props.user ? { user_id: props.user } : {};
-    const response = await api.reminder.get(userParams);
+    const response = await api.reminder.list(userParams);
 
     if (response) {
         events.value = response.data ?? [];

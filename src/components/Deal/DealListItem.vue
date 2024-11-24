@@ -67,10 +67,10 @@
 <script setup>
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import { computed } from 'vue';
-import { $generatorURL as $url } from '@/plugins/url.js';
 import DealListItemRow from '@/components/Deal/DealListItemRow.vue';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
+import { getLinkCompany, getLinkOfferByObject } from '@/utils/url.js';
 
 defineEmits(['update', 'delete']);
 const props = defineProps({
@@ -84,7 +84,7 @@ const props = defineProps({
 });
 
 const offerUrl = computed(() =>
-    $url.offerByObject(props.deal.offer ? props.deal.offer : props.deal)
+    getLinkOfferByObject(props.deal.offer ? props.deal.offer : props.deal)
 );
-const competitorUrl = computed(() => $url.company(props.deal.competitor.id));
+const competitorUrl = computed(() => getLinkCompany(props.deal.competitor.id));
 </script>

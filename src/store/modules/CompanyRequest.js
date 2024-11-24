@@ -28,31 +28,22 @@ const CompanyRequest = {
             const { setHash, confirmHash } = useQueryHash('company-requests');
             setHash(query);
 
-            const data = await api.request.searchRequests(query);
+            const data = await api.request.search(query);
             if (data) {
                 if (confirmHash(query)) commit('updateRequests', { data, concat });
                 else return false;
             }
             return data;
         },
-        async CREATE_REQUEST(context, formdata) {
-            return await api.request.createRequest(formdata);
-        },
-        async UPDATE_REQUEST(context, formdata) {
-            return await api.request.updateRequest(formdata);
-        },
         async DELETE_REQUEST(context, request) {
-            if (await api.request.deleteRequest(request.id)) {
+            if (await api.request.delete(request.id)) {
                 context.commit('deleteRequest', request.id);
             }
         },
         async FETCH_COMPANY_REQUESTS(context, id) {
-            const requests = await api.request.getRequests(id);
+            const requests = await api.request.byCompanyId(id);
             context.commit('updateCompanyRequests', requests);
             return requests;
-        },
-        async getCompanyRequests(_, id) {
-            return await api.request.getRequests(id);
         }
     },
 
