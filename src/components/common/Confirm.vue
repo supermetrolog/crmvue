@@ -8,15 +8,15 @@
     >
         <p class="confirm__text">{{ message }}</p>
         <div class="confirm__actions">
-            <MessengerButton @click="submit" color="success">Подтвердить</MessengerButton>
-            <MessengerButton @click="cancel" color="danger">Отмена</MessengerButton>
+            <Button @click="submit" success>Подтвердить</Button>
+            <Button @click="cancel" danger>Отмена</Button>
         </div>
     </Modal>
 </template>
 <script setup>
 import Modal from '@/components/common/Modal.vue';
-import MessengerButton from '@/components/Messenger/MessengerButton.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
+import Button from '@/components/common/Button.vue';
 
 const { isVisible, message, cancel, submit } = useConfirm();
 </script>
