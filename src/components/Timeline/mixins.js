@@ -372,6 +372,10 @@ export const TimelineStepWithSearchableObjectsMixin = {
                 page: this.currentPage
             };
 
+            if (_query.status === 2) {
+                _query.type_id = [3];
+            }
+
             const { setHash, confirmHash } = useQueryHash('search-favorite-offers');
             setHash(_query);
 
