@@ -18,7 +18,7 @@
                         v-tippy="'Физ.лицо'"
                         class="fa-solid fa-user-tie mr-1"
                     ></i>
-                    <span>{{ companyName }}</span>
+                    <span :class="{ 'error-message': company.noName }">{{ companyName }}</span>
                 </router-link>
                 <div v-if="company.rating" class="company-element__rating">
                     <Rating :rating="company.rating" />
