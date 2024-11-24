@@ -131,7 +131,7 @@ import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
 import Button from '@/components/common/Button.vue';
 import CompanyContactItemComments from '@/components/Company/Contact/CompanyContactItemComments.vue';
-import { computed, shallowRef } from 'vue';
+import { computed, ref } from 'vue';
 import { contactOptions } from '@/const/options/contact.options.js';
 
 const emit = defineEmits(['start-editing', 'delete-contact', 'create-comment']);
@@ -146,11 +146,9 @@ const props = defineProps({
     }
 });
 
-const extraInfoIsVisible = shallowRef(false);
+const extraInfoIsVisible = ref(false);
 
-const name = computed(() =>
-    props.contact.type ? 'Общий контакт' : props.contact.first_and_last_name
-);
+const name = computed(() => (props.contact.type ? 'Общий контакт' : props.contact.full_name));
 const position = computed(() => contactOptions.position[props.contact.position]);
 const wayOfCommunicate = computed(() =>
     props.contact.wayOfInformings.map(element => contactOptions.wayOfCommunicate[element.way])

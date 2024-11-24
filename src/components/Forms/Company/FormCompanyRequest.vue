@@ -16,34 +16,24 @@
                 <Tab name="Основное">
                     <FormGroup>
                         <Input v-model="form.name" label="Название" class="col-4" />
-                        <MultiSelect
+                        <CompanyPicker
                             v-model="form.company_id"
                             @change="onChangeCompany"
-                            :v="v$.form.company_id"
-                            extra-classes="long-text"
                             label="Компания"
-                            required
+                            :options="searchCompany"
+                            placement="top"
                             class="col-4"
-                            :filterResults="false"
-                            :min-chars="1"
-                            :resolve-on-load="true"
-                            :delay="300"
-                            :searchable="true"
-                            :options="
-                                async query => {
-                                    return await searchCompany(query);
-                                }
-                            "
+                            required
                         />
                         <MultiSelect
                             v-model="form.contact_id"
+                            :disabled="!form.company_id"
+                            :v="v$.form.contact_id"
+                            :options="contacts"
                             extra-classes="long-text"
                             label="Контакт"
                             required
                             class="col-4"
-                            :disabled="!form.company_id"
-                            :v="v$.form.contact_id"
-                            :options="contacts"
                         />
                         <MultiSelect
                             v-model="form.dealType"
@@ -53,33 +43,28 @@
                             class="col-4"
                             :options="DealTypeList"
                         />
-                        <MultiSelect
+                        <ConsultantPicker
                             v-model="form.consultant_id"
                             :v="v$.form.consultant_id"
-                            required
-                            label="Консультант"
                             class="col-4"
-                            :options="CONSULTANT_LIST"
+                            required
+                            :options="getConsultantsOptions"
                         />
                         <MultiSelect
                             v-model="form.regions"
                             @change="changeRegion"
                             :v="v$.form.regions"
-                            label="Регионы"
-                            class="col-4"
+                            :options="getRegionsOptions"
                             :close-on-select="false"
                             :hide-selected="false"
+                            multiple-property="label"
+                            label="Регионы"
+                            class="col-4"
                             mode="multiple"
                             name="region"
+                            searchable
                             multiple
                             required
-                            multiple-property="label"
-                            :options="
-                                async () => {
-                                    await FETCH_REGION_LIST();
-                                    return REGION_LIST.filter(elem => Number.isInteger(elem.value));
-                                }
-                            "
                         />
                         <AnimationTransition>
                             <CheckboxOptions
@@ -150,7 +135,7 @@
                                 :disabled="form.unknownMovingDate"
                                 label="Дата переезда"
                                 type="date"
-                                required
+                                :required="isNullish(form.unknownMovingDate)"
                             />
                             <div class="form__row mt-1">
                                 <RadioOptions
@@ -324,10 +309,13 @@
                     <VueEditor v-model="form.description" class="col-12" />
                 </Tab>
             </Tabs>
-            <FormGroup class="mt-4">
-                <Submit class="col-4 mx-auto">
-                    {{ formData ? 'Сохранить' : 'Создать' }}
-                </Submit>
+            <FormGroup class="mt-3">
+                <div class="d-flex gap-2 mx-auto">
+                    <Submit success>
+                        {{ formData ? 'Сохранить' : 'Создать' }}
+                    </Submit>
+                    <Button danger>Отмена</Button>
+                </div>
             </FormGroup>
         </Form>
     </Modal>
@@ -362,7 +350,7 @@ import { cloneObject } from '@/utils/index.js';
 import ObjectTypePicker from '@/components/common/Forms/ObjectTypePicker.vue';
 import { objectPurposesWithSectionsOptions } from '@/const/options/object.options.js';
 import { validationRulesForRequest } from '@/validators/rules/request.js';
-import { computed, onBeforeMount, reactive, shallowRef, toRef } from 'vue';
+import { computed, onBeforeMount, reactive, ref, toRef } from 'vue';
 import { useSearchCompany } from '@/composables/useSearchCompany.js';
 import { useSearchContacts } from '@/composables/useSearchContacts.js';
 import Switch from '@/components/common/Forms/Switch.vue';
@@ -375,6 +363,12 @@ import SwitchSlider from '@/components/common/Forms/SwitchSlider.vue';
 import VueEditor from '@/components/common/Forms/VueEditor.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import api from '@/api/api.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import CompanyPicker from '@/components/common/Forms/CompanyPicker/CompanyPicker.vue';
+import Button from '@/components/common/Button.vue';
+import ConsultantPicker from '@/components/common/Forms/ConsultantPicker/ConsultantPicker.vue';
+import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
+import { useRegionsOptions } from '@/composables/options/useRegionsOptions.js';
 
 const store = useStore();
 
@@ -389,6 +383,9 @@ const props = defineProps({
         default: null
     }
 });
+
+const { getConsultantsOptions } = useConsultantsOptions();
+const { getRegionsOptions } = useRegionsOptions();
 
 const form = reactive({
     company_id: null,
@@ -434,14 +431,13 @@ const form = reactive({
     contact_id: null
 });
 
-const isLoading = shallowRef(false);
+const isLoading = ref(false);
 
 const v$ = useVuelidate({ form: validationRulesForRequest }, { form });
 
 const formCeilingHeightValidators = computed(() => ceilingHeightValidators(form.maxCeilingHeight));
 const formAreaValidators = computed(() => areaRangeValidators(form.maxArea));
 
-const CONSULTANT_LIST = computed(() => store.getters.CONSULTANT_LIST);
 const REGION_LIST = computed(() => store.getters.REGION_LIST);
 const pricePerFloorUnit = computed(() => {
     if (form.dealType === null || form.dealType === undefined || form.dealType === 1) return '₽';
@@ -539,19 +535,15 @@ const changeRegion = () => {
 };
 
 onBeforeMount(() => {
-    isLoading.value = true;
-
-    store.dispatch('FETCH_CONSULTANT_LIST');
     if (props.companyId) {
         form.company_id = props.companyId;
         searchContacts();
     }
+
     if (props.formData) {
         Object.assign(form, cloneObject(props.formData));
         normalizeFormData();
         searchContacts();
     }
-
-    isLoading.value = false;
 });
 </script>

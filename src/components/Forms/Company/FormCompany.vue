@@ -469,6 +469,7 @@ const { form } = useFormData(
         okved: null,
         processed: 0,
         is_individual: 0,
+        individual_full_name: null,
         productRanges: [],
         signatoryLastName: null,
         signatoryMiddleName: null,

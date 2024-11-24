@@ -2,6 +2,19 @@
     <DashboardCard>
         <div class="company-detail-info">
             <div class="company-detail-info__actions">
+                <Tippy>
+                    <HoverActionsButton v-if="companyWarnings.length">
+                        <i class="fa-regular fa-question-circle"></i>
+                    </HoverActionsButton>
+                    <template #content>
+                        <div>
+                            <p class="color-light">Необходимо заполнить:</p>
+                            <p v-for="warning in companyWarnings" :key="warning.key">
+                                - {{ warning.label }}
+                            </p>
+                        </div>
+                    </template>
+                </Tippy>
                 <a :href="$url.company(company.id)" target="_blank">
                     <HoverActionsButton label="Перейти на страницу компании">
                         <i class="fa-solid fa-eye"></i>
@@ -20,7 +33,7 @@
                     </DashboardChip>
                 </div>
                 <div class="col-12">
-                    <Progress :percent="company.progress_percent" :height="8" />
+                    <Progress :percent="companyProgress" :height="8" />
                 </div>
                 <div class="col-12 mb-2">
                     <div class="d-flex align-items-end gap-2">
@@ -202,6 +215,8 @@ import File from '@/components/common/Forms/File.vue';
 import AccordionSimpleTriggerButton from '@/components/common/Accordion/AccordionSimpleTriggerButton.vue';
 import { computed } from 'vue';
 import { getCompanyName } from '@/utils/formatter.js';
+import { companyProperties } from '@/const/properties/company.properties.js';
+import { Tippy } from 'vue-tippy';
 
 const emit = defineEmits(['start-editing']);
 const props = defineProps({
@@ -230,5 +245,26 @@ const statusTippy = computed(() => {
     let text = PassiveWhy[this.company.passive_why].label;
     if (this.company.passive_why_comment) text += ': ' + this.company.passive_why_comment;
     return text;
+});
+
+const companyWarnings = computed(() => {
+    return companyProperties.progressCharacteristics.reduce((acc, property) => {
+        const isValid = property.validator(props.company[property.key], props.company);
+
+        if (!isValid)
+            acc.push({
+                key: property.key,
+                label: property.label
+            });
+
+        return acc;
+    }, []);
+});
+
+const companyProgress = computed(() => {
+    return (
+        100 -
+        (companyWarnings.value.length / companyProperties.progressCharacteristics.length) * 100
+    );
 });
 </script>
