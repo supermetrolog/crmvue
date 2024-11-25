@@ -4,7 +4,11 @@
             <template #title>
                 <div @click="toggle" class="messenger-aside-section__header">
                     <MessengerAsideHeading :title="title" />
-                    <MessengerAsideSorting v-model:filters="filters" v-model:sort="sorts" />
+                    <MessengerAsideSorting
+                        v-model:filters="filters"
+                        v-model:sort="sorts"
+                        @reset="$emit('reset')"
+                    />
                     <MessengerLoader :active="loading" />
                 </div>
             </template>
@@ -25,6 +29,7 @@ import MessengerAsideSorting from '@/components/Messenger/Aside/MessengerAsideSo
 
 const filters = defineModel('filters');
 const sorts = defineModel('sort', { type: Array, default: () => [] });
+defineEmits(['reset']);
 defineProps({
     title: {
         type: String,

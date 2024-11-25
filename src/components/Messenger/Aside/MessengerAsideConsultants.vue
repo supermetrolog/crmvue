@@ -5,6 +5,7 @@
             <MessengerAsideSection
                 v-model:filters="filters"
                 v-model:sort="sorts"
+                @reset="resetFilters"
                 class="messenger-aside-users"
                 :loading="isLoading"
                 :title="`Сотрудники (${consultants.length}/${pagination?.totalCount || 0})`"
@@ -148,4 +149,8 @@ const selectPanel = options => {
     store.dispatch('Messenger/selectPanel', options);
     store.dispatch('Messenger/selectChat', options);
 };
+
+function resetFilters() {
+    filters.value = {};
+}
 </script>

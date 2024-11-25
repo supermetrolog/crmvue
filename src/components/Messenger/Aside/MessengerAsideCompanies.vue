@@ -1,5 +1,7 @@
 <template>
     <MessengerAsideSection
+        v-model:filters="filters"
+        @reset="resetFilters"
         class="messenger-aside-companies"
         :class="{ loading: isLoading }"
         :loading="isLoading"
@@ -8,7 +10,7 @@
         <div v-if="isLoading" class="messenger-aside__list">
             <MessengerDialogObjectSkeleton v-for="i in lastElementsCount" :key="i" />
         </div>
-        <EmptyData v-else-if="!companies.length" no-rounded>Предложения не найдены..</EmptyData>
+        <EmptyData v-else-if="!companies.length" no-rounded>Компании не найдены..</EmptyData>
         <VirtualDragList
             v-if="companies.length"
             v-show="!isLoading"
@@ -68,6 +70,7 @@ import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { useSkeleton } from '@/composables/useSkeleton.js';
 import MessengerDialogCompany from '@/components/Messenger/Dialog/Company/MessengerDialogCompany.vue';
 
+const filters = defineModel('filters');
 defineEmits(['load']);
 const props = defineProps({
     companies: {
@@ -111,4 +114,8 @@ const updateCall = async (payload, record) => {
     const response = await showLastCallPopup(payload);
     if (response) record.last_call = response.lastCall;
 };
+
+function resetFilters() {
+    filters.value = {};
+}
 </script>
