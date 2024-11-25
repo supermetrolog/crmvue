@@ -1,6 +1,7 @@
 <template>
     <MessengerAsideSection
         v-model:filters="filters"
+        @reset="resetFilters"
         :loading="isLoading"
         :title="`Предложения (${objects.length}/${pagination?.totalCount || 0})`"
         :class="{ loading: isLoading }"
@@ -113,4 +114,8 @@ const updateCall = async (payload, record) => {
     const response = await showLastCallPopup(payload);
     if (response) record.last_call = response.lastCall;
 };
+
+function resetFilters() {
+    filters.value = {};
+}
 </script>

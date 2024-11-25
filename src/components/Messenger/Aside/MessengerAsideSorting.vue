@@ -33,6 +33,16 @@
         <!--                </a>-->
         <!--            </div>-->
         <!--        </VDropdown>-->
+        <AnimationTransition :speed="0.5">
+            <button
+                v-if="filtersCount"
+                v-tippy="'Сбросить фильтры'"
+                @click.stop="$emit('reset')"
+                class="messenger-aside-sorting__button rounded-icon dashboard-bg-primary-l"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </AnimationTransition>
         <button
             v-tippy="'Фильтр'"
             @click.stop="filersIsOpened = true"
@@ -56,9 +66,11 @@
 import FormModalMessengerFilters from '@/components/Forms/FormModalMessengerFilters.vue';
 import { computed, ref } from 'vue';
 import { isEmpty } from '@/utils/helpers/common/isEmpty.js';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
 
 const filters = defineModel('filters');
 // const sorts = defineModel('sort');
+defineEmits(['reset']);
 defineProps({
     title: {
         type: String,
