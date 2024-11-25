@@ -564,5 +564,11 @@ export const filtersAliases = {
     ad_free: 'Бесплатно:',
     ad_avito: 'Авито:',
     favorites: 'Избранные',
-    sort: 'Сортировка:'
+    sort: 'Сортировка:',
+    nameRu: 'Название Ru:',
+    nameEng: 'Название Eng:',
+    dateStart: 'Создано после:',
+    dateEnd: 'Создано до:',
+    status: 'Статус:',
+    all: 'Поисковой запрос'
 };

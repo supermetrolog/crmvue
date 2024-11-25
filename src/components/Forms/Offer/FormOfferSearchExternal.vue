@@ -2,7 +2,7 @@
     <Form class="row">
         <div class="col-12 col-md-6">
             <Input
-                v-model="querySearch"
+                v-model="form.all"
                 label="Поиск"
                 placeholder="ID, адрес, собственник, телефон, ФИО"
                 class="main-input"
@@ -11,6 +11,7 @@
         <div class="col-12 col-md-2 align-self-end">
             <div class="offer-search__actions">
                 <Button @click="$emit('open-filters')" icon :badge="filterCount || false">
+                    <span>Фильтры</span>
                     <i class="icon fa-solid fa-sliders"></i>
                 </Button>
                 <div>
@@ -44,7 +45,7 @@
                 <!--                    <i class="fa-solid fa-heart"></i>-->
                 <!--                    <span>Сохранить поиск</span>-->
                 <!--                </Button>-->
-                <Button @click="resetForm" :disabled="!filterCount" icon small>
+                <Button @click="resetForm" :disabled="!filterCount" icon danger small>
                     <i class="fa-solid fa-circle-xmark"></i>
                     <span>Сбросить фильтры</span>
                 </Button>
@@ -56,7 +57,7 @@
 <script setup>
 import Button from '@/components/common/Button.vue';
 import ButtonLink from '@/components/common/ButtonLink.vue';
-import { computed, reactive, watch } from 'vue';
+import { computed, onBeforeMount, reactive, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import Form from '@/components/common/Forms/Form.vue';
 import Input from '@/components/common/Forms/Input.vue';
@@ -64,7 +65,6 @@ import { waitHash } from '@/utils/index.js';
 import { useDebounceFn } from '@vueuse/core';
 import { deleteEmptyFields } from '@/utils/deleteEmptyFields.js';
 import { toCleanObject } from '@/utils/toCleanObjects.js';
-import { useQuerySearch } from '@/composables/useQuerySearch.js';
 
 defineEmits(['open-filters']);
 defineProps({
@@ -133,7 +133,6 @@ const route = useRoute();
 const router = useRouter();
 
 const form = reactive({});
-const { querySearch } = useQuerySearch();
 
 const filterCount = computed(() => {
     let count = 0;
@@ -199,7 +198,6 @@ watch(
 );
 
 const toDefaultForm = () => {
-    querySearch.value = null;
     Object.keys(filterAttrs).forEach(key => {
         form[key] = filterAttrs[key];
     });
@@ -219,6 +217,10 @@ const onSubmit = async () => {
     deleteEmptyFields(query);
     await router.replace({ query });
 };
+
+onBeforeMount(() => {
+    form.all = route.query.all;
+});
 
 const debouncedOnSubmit = useDebounceFn(onSubmit, 500);
 </script>

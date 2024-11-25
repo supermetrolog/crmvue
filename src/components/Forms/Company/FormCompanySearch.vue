@@ -1,7 +1,7 @@
 <template>
     <Form @submit="onSubmit">
         <FormGroup>
-            <div class="col-12 col-md-8">
+            <div class="col-12 col-md-6">
                 <Input
                     v-model="form.all"
                     @keydown.enter="onSubmit"
@@ -14,13 +14,18 @@
                     <Button
                         @click="extraIsVisible = !extraIsVisible"
                         :badge="filtersCount || false"
+                        icon
                     >
-                        Фильтры
-                    </Button>
-                    <Button @click="resetForm" :disabled="!filtersCount" danger>
-                        Сбросить фильтры
+                        <span>Фильтры</span>
+                        <i class="icon fa-solid fa-sliders"></i>
                     </Button>
                 </div>
+            </div>
+            <div class="col-12">
+                <Button @click="resetForm" :disabled="!filtersCount" danger small icon>
+                    <i class="fa-solid fa-xmark-circle"></i>
+                    <span>Сбросить фильтры</span>
+                </Button>
             </div>
         </FormGroup>
         <teleport to="body">
@@ -87,9 +92,10 @@
                         />
                         <RadioOptions
                             v-model="form.status"
+                            :options="ActivePassive"
+                            unselect
                             class="col-md-4 col-12"
                             label="Статус"
-                            :options="ActivePassive"
                         />
                     </FormGroup>
                 </Form>
