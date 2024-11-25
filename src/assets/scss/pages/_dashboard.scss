@@ -428,6 +428,11 @@
             font-size: 20px;
         }
     }
+
+    .messenger-chat-message__body {
+        max-height: 200px;
+        overflow-y: auto;
+    }
 }
 
 .dashboard-task-item-preview-status {
