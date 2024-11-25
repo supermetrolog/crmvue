@@ -18,7 +18,7 @@
                 <div class="col-12 my-2">
                     <div class="company-table__filters">
                         <Chip
-                            v-for="item in selectedFilterList"
+                            v-for="item in humanizedSelectedQueryFilters"
                             :key="item.value"
                             @delete="removeFilter(item.value)"
                             :value="item.value"
@@ -93,13 +93,14 @@ import { useMobile } from '@/composables/useMobile.js';
 import { computed, shallowRef, useTemplateRef } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useTableContent } from '@/composables/useTableContent.js';
-import { ActivePassiveFUCK, filtersAliases, GateTypeList, YesNo } from '@/const/const.js';
+import { ActivePassiveFUCK, GateTypeList, YesNo } from '@/const/const.js';
 import { dealOptions } from '@/const/options/deal.options.js';
 import { objectOptions } from '@/const/options/object.options.js';
 import { defaultsOptions } from '@/const/options/options.js';
 import { floorOptions } from '@/const/options/floor.options.js';
 import { locationOptions } from '@/const/options/location.options.js';
 import FormOfferSearchExternal from '@/components/Forms/Offer/FormOfferSearchExternal.vue';
+import { useSelectedFilters } from '@/composables/useSelectedFilters.js';
 
 const isMobile = useMobile();
 const store = useStore();
@@ -117,33 +118,6 @@ const consultants = computed(() => store.getters.CONSULTANT_LIST);
 const offersPagination = computed(() => store.getters.OFFERS_PAGINATION);
 const offers = computed(() => store.getters.OFFERS);
 const favoritesOffers = computed(() => store.getters.FAVORITES_OFFERS);
-
-const selectedFilterList = computed(() => {
-    const filters = [];
-    const query = { ...route.query };
-
-    delete query.region_neardy;
-    delete query.all;
-    delete query.page;
-    delete query.outside_mkad;
-
-    for (const key in query) {
-        const value = query[key];
-
-        if (key === 'region') {
-            filters.push(humanizeFilter(key, query.fakeRegion));
-        } else if (
-            value !== null &&
-            value !== '' &&
-            key !== 'fakeRegion' &&
-            !(Array.isArray(value) && value.length === 0)
-        ) {
-            filters.push(humanizeFilter(key, value));
-        }
-    }
-
-    return filters;
-});
 
 const currentViewComponentName = computed(() => {
     if (isMobile) return OfferTableMobile;
@@ -258,22 +232,7 @@ const gettersForFilters = {
     sort: value => value
 };
 
-const humanizeFilter = (key, value) => {
-    const option = {
-        value: key
-    };
-
-    const label = filtersAliases[key] ?? null;
-    const _value = Object.hasOwn(gettersForFilters, key) ? gettersForFilters[key](value) : null;
-
-    if (!label && !_value) {
-        option.label = 'undefined';
-    } else {
-        option.label = [label, _value].filter(el => el !== null).join(' ');
-    }
-
-    return option;
-};
+const { humanizedSelectedQueryFilters } = useSelectedFilters({}, gettersForFilters);
 
 const searchFavoritesOffers = () => store.dispatch('SEARCH_FAVORITES_OFFERS');
 
