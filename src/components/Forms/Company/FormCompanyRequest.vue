@@ -54,7 +54,7 @@
                             v-model="form.regions"
                             @change="changeRegion"
                             :v="v$.form.regions"
-                            :options="getRegionsOptions"
+                            :options="getClearedRegionsOptions"
                             :close-on-select="false"
                             :hide-selected="false"
                             multiple-property="label"
@@ -385,7 +385,7 @@ const props = defineProps({
 });
 
 const { getConsultantsOptions } = useConsultantsOptions();
-const { getRegionsOptions } = useRegionsOptions();
+const { getClearedRegionsOptions } = useRegionsOptions();
 
 const form = reactive({
     company_id: null,
