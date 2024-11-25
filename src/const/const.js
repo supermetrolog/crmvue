@@ -570,5 +570,7 @@ export const filtersAliases = {
     dateStart: 'Создано после:',
     dateEnd: 'Создано до:',
     status: 'Статус:',
-    all: 'Поисковой запрос'
+    all: 'Поисковой запрос',
+    consultant_id: 'Консультант:',
+    agent_id: 'Консультант:'
 };
