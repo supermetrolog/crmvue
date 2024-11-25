@@ -580,8 +580,10 @@ const Messenger = {
                 import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_WARNING
             ) {
                 commit('selectChatTab', messenger.chatTabs.SURVEY);
+                commit('setCurrentChat', true);
                 commit('setLoadingChat', false);
-                return;
+            } else {
+                commit('selectChatTab', messenger.chatTabs.CHAT);
             }
 
             const [messages, pinned] = await Promise.all([
@@ -597,7 +599,6 @@ const Messenger = {
             }
 
             commit('setCurrentChat', true);
-            commit('selectChatTab', messenger.chatTabs.CHAT);
             commit('setLoadingChat', false);
         },
         async selectSurvey({ commit, state }, { dialogID, dialogType }) {
