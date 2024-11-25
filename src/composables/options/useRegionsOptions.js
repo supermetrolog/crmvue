@@ -1,6 +1,7 @@
 import { createOptionsComposable } from '@/composables/options/createOptionsComposable.js';
 import { useStore } from 'vuex';
 import { computed } from 'vue';
+import { isNumber } from '@/utils/helpers/number/isNumber.js';
 
 export function useRegionsOptions() {
     const store = useStore();
@@ -15,10 +16,16 @@ export function useRegionsOptions() {
         () => store.dispatch('FETCH_REGION_LIST')
     );
 
+    async function getClearedRegionsOptions() {
+        const regions = await getRegionsOptions();
+        return regions.filter(element => isNumber(element.value));
+    }
+
     return {
         regionsOptions,
         getRegionsOptions,
         refreshRegionsOptions,
-        isFetching
+        isFetching,
+        getClearedRegionsOptions
     };
 }
