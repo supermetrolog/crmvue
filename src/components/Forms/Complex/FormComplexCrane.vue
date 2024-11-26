@@ -151,7 +151,7 @@ import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import useVuelidate from '@vuelidate/core';
 import { onBeforeMount, reactive, shallowRef } from 'vue';
 import { validationRulesForCrane } from '@/validators/rules/crane.js';
-import { cloneObject } from '@/utils/index.js';
+import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
 import VueEditor from '@/components/common/Forms/VueEditor.vue';
 

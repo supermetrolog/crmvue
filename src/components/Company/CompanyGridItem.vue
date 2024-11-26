@@ -91,7 +91,7 @@
 <script setup>
 import { computed } from 'vue';
 import { CompanyCategories } from '@/const/const.js';
-import { getCompanyName } from '@/utils/formatter.js';
+import { getCompanyName } from '@/utils/formatters/models/company.js';
 import Progress from '@/components/common/Progress.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import EmptyLabel from '@/components/common/EmptyLabel.vue';

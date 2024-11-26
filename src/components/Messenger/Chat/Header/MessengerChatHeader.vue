@@ -26,7 +26,7 @@
 <script setup>
 import { useStore } from 'vuex';
 import { computed, inject } from 'vue';
-import { ucFirst } from '@/utils/formatter.js';
+import { ucFirst } from '@/utils/formatters/string.js';
 import { getLinkComplex } from '@/utils/url.js';
 import MessengerChatHeaderObject from '@/components/Messenger/Chat/Header/MessengerChatHeaderObject.vue';
 import MessengerChatHeaderRequest from '@/components/Messenger/Chat/Header/MessengerChatHeaderRequest.vue';

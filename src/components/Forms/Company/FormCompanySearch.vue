@@ -119,7 +119,7 @@ import Button from '@/components/common/Button.vue';
 import { helpers } from '@vuelidate/validators';
 import { maxDate, onlyEnglish, onlyRussian } from '@//validators';
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
-import { deleteEmptyFields } from '@/utils/deleteEmptyFields.js';
+import { deleteEmptyFields } from '@/utils/helpers/object/deleteEmptyFields.js';
 import Modal from '@/components/common/Modal.vue';
 import { computed, reactive, shallowRef } from 'vue';
 import { useRoute, useRouter } from 'vue-router';

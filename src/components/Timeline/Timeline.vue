@@ -93,7 +93,7 @@ import TimelineExtraBlock from '@/components/Timeline/TimelineExtraBlock.vue';
 import TimelineStepDealDecision from '@/components/Timeline/Step/TimelineStepDealDecision.vue';
 import TimelineStepDealConfirmation from '@/components/Timeline/Step/TimelineStepDealConfirmation.vue';
 import { Timeline } from '@/const/const.js';
-import { getCompanyName } from '@/utils/formatter.js';
+import { getCompanyName } from '@/utils/formatters/models/company.js';
 
 export default {
     name: 'Timeline',

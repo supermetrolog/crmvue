@@ -3,6 +3,7 @@ import { reducer } from '@/utils/reducer.js';
 import { alg } from '@/utils/alg';
 import { entityProperties } from '@/const/properties/properties';
 import { entityOptions } from '@/const/options/options';
+import { strictMin } from '@/utils/helpers/common/strictMin.js';
 
 const AREA_TYPES = [
     { property: ['floor', 'mezzanine'], labelTemplate: '$1' },
@@ -92,7 +93,7 @@ const Offers = {
                     if (block.is_solid) {
                         reducerMinLambda = (acc, element) => acc + element.valueMin;
                     } else {
-                        reducerMinLambda = (acc, element) => alg.strictMin(acc, element.valueMin);
+                        reducerMinLambda = (acc, element) => strictMin(acc, element.valueMin);
                     }
 
                     const formatAreaProperties = Object.keys(areaProperties).reduce((acc, key) => {

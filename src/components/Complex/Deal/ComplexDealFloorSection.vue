@@ -37,7 +37,7 @@ import WithUnitType from '@/components/common/WithUnitType.vue';
 import Form from '@/components/common/Forms/Form.vue';
 import { entityOptions } from '@/const/options/options';
 import { computed, shallowRef } from 'vue';
-import { toNumberOrRangeFormat } from '@/utils/formatter.js';
+import { toNumberOrRangeFormat } from '@/utils/formatters/number.js';
 
 defineEmits(['editSection']);
 

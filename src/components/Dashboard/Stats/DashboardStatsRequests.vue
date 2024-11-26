@@ -142,7 +142,8 @@ import { useStore } from 'vuex';
 import dayjs from 'dayjs';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { computed, onMounted, ref, watch } from 'vue';
-import { getCompanyName, ucFirst } from '@/utils/formatter.js';
+import { getCompanyName } from '@/utils/formatters/models/company.js';
+import { ucFirst } from '@/utils/formatters/string.js';
 
 const props = defineProps({
     user: {

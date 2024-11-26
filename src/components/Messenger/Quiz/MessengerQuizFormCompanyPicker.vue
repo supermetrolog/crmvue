@@ -57,7 +57,7 @@ import MessengerQuizFormCompanyPickerElement from '@/components/Messenger/Quiz/M
 import Input from '@/components/common/Forms/Input.vue';
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';
 import Button from '@/components/common/Button.vue';
-import { spliceById } from '@/utils/index.js';
+import { spliceById } from '@/utils/helpers/array/spliceById.js';
 
 const modelValue = defineModel();
 defineProps({

@@ -44,7 +44,7 @@ import TimelineInfo from '@/components/Timeline/TimelineInfo.vue';
 import Button from '@/components/common/Button.vue';
 import { FeedbackWaysConfirmedComment } from '@/components/Timeline/comments.js';
 import TimelineFeedbackPicker from '@/components/Timeline/TimelineFeedbackPicker.vue';
-import { waitHash } from '@/utils/index.js';
+import { waitHash } from '@/utils/helpers/common/waitHash.js';
 
 export default {
     name: 'TimelineStepFeedbackCommunication',

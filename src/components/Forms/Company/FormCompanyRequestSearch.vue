@@ -320,7 +320,7 @@ import {
 import useVuelidate from '@vuelidate/core';
 import { onlyPositiveNumber } from '@//validators';
 import Modal from '@/components/common/Modal.vue';
-import { deleteEmptyFields } from '@/utils/deleteEmptyFields.js';
+import { deleteEmptyFields } from '@/utils/helpers/object/deleteEmptyFields.js';
 import { useSearchForm } from '@/composables/useSearchForm.js';
 import { useRoute, useRouter } from 'vue-router';
 import { computed, onBeforeMount, reactive, shallowRef } from 'vue';

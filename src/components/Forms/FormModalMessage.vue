@@ -66,7 +66,7 @@ import Button from '@/components/common/Button.vue';
 import Textarea from '@/components/common/Forms/Textarea.vue';
 import MessengerChatFormRecipient from '@/components/Messenger/Chat/Form/MessengerChatFormRecipient.vue';
 import Form from '@/components/common/Forms/Form.vue';
-import { cloneObject } from '@/utils/index.js';
+import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import MessengerChatFormAttachments from '@/components/Messenger/Chat/Form/MessengerChatFormAttachments.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';

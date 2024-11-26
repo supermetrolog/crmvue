@@ -16,7 +16,7 @@ import api from '@/api/api.js';
 import { useTaskManager } from '@/composables/useTaskManager.js';
 import { useStore } from 'vuex';
 import { useNotify } from '@/utils/useNotify.js';
-import { getCompanyName } from '@/utils/formatter.js';
+import { getCompanyName } from '@/utils/formatters/models/company.js';
 
 const SCHEDULING_CALL_DURATION = 7; // days
 
@@ -46,14 +46,17 @@ const generateTemplate = () => {
     };
 
     if (dialogType === messenger.dialogTypes.OBJECT) {
+        const object = dialog.model.object;
+
         customDescription = true;
 
-        additionalContent.address = dialog.model.object.address;
-        additionalContent.companyId = dialog.model.object.company_id;
-        additionalContent.area =
-            dialog.model.object.area_floor_full || dialog.model.object.area_building;
+        additionalContent.address = object.address;
+        additionalContent.companyId = object.company_id;
+        additionalContent.objectId = object.id;
+        additionalContent.area = object.area_floor_full || object.area_building;
     } else if (dialogType === messenger.dialogTypes.COMPANY) {
         customDescription = true;
+        //ID 455. Москва, 14000 м2 | Наташа прозвони поговори
 
         additionalContent.address = dialog.model.legal_address || dialog.model.office_address;
         additionalContent.companyName = getCompanyName(dialog.model);
@@ -67,7 +70,7 @@ const generateTemplate = () => {
     };
 };
 
-const createTask = async messageId => {
+async function createTask(messageId) {
     const taskPayload = await createTaskWithTemplate(generateTemplate());
 
     if (!taskPayload) return;
@@ -77,7 +80,7 @@ const createTask = async messageId => {
     if (task) notify.success('Задача успешно создана!');
 
     return task;
-};
+}
 
 provide('$createTask', createTask);
 </script>

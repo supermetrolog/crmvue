@@ -21,7 +21,7 @@
  * @param {Boolean} [withResult = false] - Нужно ли возвращать измененный объект
  * @returns {Object|string[]} - Измененный объект, если ``withResult = true``. Иначе список удаленых ключей
  */
-export const deleteEmptyFields = (object, withResult = false) => {
+export function deleteEmptyFields(object, withResult = false) {
     const deletedFields = [];
 
     for (const key in object) {
@@ -41,4 +41,4 @@ export const deleteEmptyFields = (object, withResult = false) => {
     }
 
     return withResult ? object : deletedFields;
-};
+}

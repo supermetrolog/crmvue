@@ -9,7 +9,7 @@
 import MessengerChatMessage from '@/components/Messenger/Chat/Message/MessengerChatMessage.vue';
 import Modal from '@/components/common/Modal.vue';
 import { useStore } from 'vuex';
-import { dayjsFromMoscow } from '@/utils/index.js';
+import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 import { computed } from 'vue';
 
 defineEmits(['close']);

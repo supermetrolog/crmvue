@@ -157,13 +157,13 @@ import { CompanyCategories } from '@/const/const.js';
 import { useEventListener } from '@vueuse/core';
 import { SIZE_TO_COMPRESSION } from '@/const/messenger.js';
 import imageCompression from 'browser-image-compression';
-import { blobToFile } from '@/utils/index.js';
+import { blobToFile } from '@/utils/helpers/forms/blobToFile.js';
 import { useNotify } from '@/utils/useNotify.js';
 import Progress from '@/components/common/Progress.vue';
 import ImageCropper from '@/components/common/ImageCropper.vue';
 import Modal from '@/components/common/Modal.vue';
 import Loader from '@/components/common/Loader.vue';
-import { getCompanyName } from '@/utils/formatter.js';
+import { getCompanyName } from '@/utils/formatters/models/company.js';
 
 const emit = defineEmits(['updated', 'deleted', 'canceled', 'edited']);
 const props = defineProps({

@@ -97,7 +97,7 @@
 import DashboardCardNavLink from '@/components/Dashboard/Card/DashboardCardNavLink.vue';
 import { computed, inject, shallowReactive, toRef } from 'vue';
 import { taskOptions } from '@/const/options/task.options.js';
-import { spliceWithPrimitive } from '@/utils/index.js';
+import { spliceWithPrimitive } from '@/utils/helpers/array/spliceWithPrimitive.js';
 import { useStore } from 'vuex';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import Button from '@/components/common/Button.vue';

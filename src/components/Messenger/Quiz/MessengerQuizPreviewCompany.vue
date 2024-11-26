@@ -22,7 +22,7 @@ import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { getLinkCompany } from '@/utils/url.js';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
-import { toNumberFormat } from '@/utils/formatter.js';
+import { toNumberFormat } from '@/utils/formatters/number.js';
 import Spinner from '@/components/common/Spinner.vue';
 
 const props = defineProps({

@@ -346,7 +346,7 @@ import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
 import { areaRangeValidators, ceilingHeightValidators } from '@//validators/fields';
-import { cloneObject } from '@/utils/index.js';
+import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 import ObjectTypePicker from '@/components/common/Forms/ObjectTypePicker.vue';
 import { objectPurposesWithSectionsOptions } from '@/const/options/object.options.js';
 import { validationRulesForRequest } from '@/validators/rules/request.js';

@@ -107,7 +107,7 @@ import MessengerQuizForm from '@/components/Messenger/Quiz/MessengerQuizForm.vue
 import MessengerQuizWarning from '@/components/Messenger/Quiz/MessengerQuizWarning.vue';
 import { TASK_FORM_STEPS, useTaskManager } from '@/composables/useTaskManager.js';
 import dayjs from 'dayjs';
-import { toBoldHTML } from '@/utils/formatter.js';
+import { toBoldHTML } from '@/utils/formatters/html.js';
 import { useAuth } from '@/composables/useAuth.js';
 import { messenger } from '@/const/messenger.js';
 

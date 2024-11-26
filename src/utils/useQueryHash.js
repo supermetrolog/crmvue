@@ -1,4 +1,4 @@
-import { waitHash } from '@/utils/index.js';
+import { waitHash } from '@/utils/helpers/common/waitHash.js';
 
 const hashSet = {};
 export function useQueryHash(key) {

@@ -540,7 +540,7 @@ import { onBeforeMount, reactive, shallowRef } from 'vue';
 import { validationRulesForComplex } from '@/validators/rules/complex.js';
 import Switch from '@/components/common/Forms/Switch.vue';
 import Tab from '@/components/common/Tabs/Tab.vue';
-import { cloneObject } from '@/utils/index.js';
+import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 import DescriptionEditor from '@/components/common/Forms/DescriptionEditor.vue';
 import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
 import { entityOptions } from '@/const/options/options.js';

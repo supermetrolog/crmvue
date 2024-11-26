@@ -141,7 +141,8 @@ import TableDateBlock from '@/components/common/Table/TableDateBlock.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { getLinkCompany } from '@/utils/url.js';
-import { getCompanyName, ucFirst } from '@/utils/formatter.js';
+import { getCompanyName } from '@/utils/formatters/models/company.js';
+import { ucFirst } from '@/utils/formatters/string.js';
 import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 import { messenger } from '@/const/messenger.js';
 

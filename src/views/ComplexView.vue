@@ -59,11 +59,11 @@ import ComplexPhotoDownloader from '@/components/Complex/ComplexPhotoDownloader.
 import { computed, onBeforeMount, provide, shallowRef, useTemplateRef, watch } from 'vue';
 import { getLinkComplexOld } from '@/utils/url.js';
 import { useRoute, useRouter } from 'vue-router';
-import { toDateFormat } from '@/utils/formatter.js';
 import { useConfirm } from '@/composables/useConfirm.js';
 import EmptyData from '@/components/common/EmptyData.vue';
 import Loader from '@/components/common/Loader.vue';
 import { useDocumentTitle } from '@/composables/useDocumentTitle.js';
+import { toDateFormat } from '@/utils/formatters/date.js';
 
 const store = useStore();
 const route = useRoute();

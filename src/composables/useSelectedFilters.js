@@ -23,8 +23,6 @@ export function useSelectedFilters(form = {}, humanizeGetters = {}) {
             ? toValue(humanizeGetters)[key](value)
             : null;
 
-        console.log(_value, label, option, key, value);
-
         if (isNullish(label) && isNullish(_value)) option.label = '[не определено]';
         else option.label = joinWithFilter([label, _value], isNotNullish);
 

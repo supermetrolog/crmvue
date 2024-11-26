@@ -130,7 +130,7 @@ import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
 import Button from '@/components/common/Button.vue';
 import Form from '@/components/common/Forms/Form.vue';
-import { cloneObject } from '@/utils/index.js';
+import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 import VueEditor from '@/components/common/Forms/VueEditor.vue';
 
 defineEmits(['close']);

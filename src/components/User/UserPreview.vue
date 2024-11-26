@@ -30,10 +30,9 @@
 import Avatar from '@/components/common/Avatar.vue';
 import { computed } from 'vue';
 import { userOptions } from '@/const/options/user.options.js';
-import { dayjsFromMoscow } from '@/utils/index.js';
+import { dayjsFromMoscow, toDateFormat } from '@/utils/formatters/date.js';
 import { useStore } from 'vuex';
 import dayjs from 'dayjs';
-import { toDateFormat } from '@/utils/formatter.js';
 
 const props = defineProps({
     user: {

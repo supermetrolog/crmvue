@@ -26,8 +26,7 @@
 <script setup>
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { computed } from 'vue';
-import { toDateFormat } from '@/utils/formatter.js';
-import { dayjsFromMoscow } from '@/utils/index.js';
+import { dayjsFromMoscow, toDateFormat } from '@/utils/formatters/date.js';
 import dayjs from 'dayjs';
 
 const props = defineProps({

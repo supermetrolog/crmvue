@@ -64,7 +64,7 @@
 
 <script setup>
 import WithUnitType from '@/components/common/WithUnitType.vue';
-import { toCorrectFormat, toNumberOrRangeFormat } from '@/utils/formatter.js';
+import { toCorrectFormat, toNumberOrRangeFormat } from '@/utils/formatters/number.js';
 
 const modelValue = defineModel('more', { type: Boolean, default: false });
 defineProps({

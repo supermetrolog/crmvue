@@ -36,7 +36,7 @@ import { entityProperties } from '@/const/properties/properties';
 import { reducer } from '@/utils/reducer.js';
 import EmptyData from '@/components/common/EmptyData.vue';
 import { computed } from 'vue';
-import { toNumberFormat, toNumberOrRangeFormat } from '@/utils/formatter.js';
+import { toNumberFormat, toNumberOrRangeFormat } from '@/utils/formatters/number.js';
 
 const props = defineProps({
     priceOption: {

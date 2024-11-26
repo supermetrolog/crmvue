@@ -30,8 +30,7 @@ import dayjs from 'dayjs';
 import { computed } from 'vue';
 import { taskOptions } from '@/const/options/task.options.js';
 import { useStore } from 'vuex';
-import { dayjsFromMoscow } from '@/utils/index.js';
-import { toBeautifulDateFormat } from '@/utils/formatter.js';
+import { dayjsFromMoscow, toBeautifulDateFormat } from '@/utils/formatters/date.js';
 
 const props = defineProps({
     task: {

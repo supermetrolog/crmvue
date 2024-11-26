@@ -131,7 +131,7 @@ import WithUnitType from '@/components/common/WithUnitType.vue';
 import Progress from '@/components/common/Progress.vue';
 import { unitTypes } from '@/const/unitTypes.js';
 import { computed } from 'vue';
-import { ucFirst } from '@/utils/formatter.js';
+import { ucFirst } from '@/utils/formatters/string.js';
 import { DealTypeList, DirectionList, DistrictList, PassiveWhyRequest } from '@/const/const.js';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import Avatar from '@/components/common/Avatar.vue';

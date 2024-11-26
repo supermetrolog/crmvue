@@ -23,7 +23,7 @@
 <script setup>
 import Form from '@/components/common/Forms/Form.vue';
 import Input from '@/components/common/Forms/Input.vue';
-import { debounce } from '@/utils/debounce.js';
+import { debounce } from '@/utils/common/debounce.js';
 import { useStore } from 'vuex';
 import { computed } from 'vue';
 

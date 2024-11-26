@@ -241,7 +241,7 @@ import FormCompanyLogo from '@/components/Forms/Company/FormCompanyLogo.vue';
 import Modal from '@/components/common/Modal.vue';
 import { useNotify } from '@/utils/useNotify.js';
 import { useStore } from 'vuex';
-import { getCompanyName } from '@/utils/formatter.js';
+import { getCompanyName } from '@/utils/formatters/models/company.js';
 
 defineEmits(['create-contact', 'edit-company']);
 

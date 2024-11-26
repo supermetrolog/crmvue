@@ -393,7 +393,7 @@ import {
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import RadioGroup from '@/components/common/Forms/RadioGroup.vue';
 import { entityOptions } from '@/const/options/options';
-import { cloneObject } from '@/utils/index.js';
+import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 
 export default {
     name: 'FormComplexFloorBlock',

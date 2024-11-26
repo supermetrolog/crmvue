@@ -1,7 +1,8 @@
-import { alg } from '@/utils/alg';
 import { formatterObject } from '@/plugins';
 import { deleteObjectsWithEmptyProperties } from '@/utils/deleteObjectsWithEmptyProperties.js';
-import { dayjsFromMoscow } from '@/utils/index.js';
+
+import { dayjsFromMoscow } from '@/utils/formatters/date.js';
+import { chunk } from '@/utils/helpers/array/chunk.js';
 
 const propertiesToTableFormat = (object, props) => {
     return Object.keys(props).reduce((acc, property) => {
@@ -38,7 +39,7 @@ const propertiesToTableFormat = (object, props) => {
         // Обработка свойств в виде тип-количество ([1, 4, 2, 6] - 4шт. типа 1, 6шт. типа 2)
         else if (currentPropertyObject.count && currentPropertyObject.types) {
             if (object[property] instanceof Array && object[property].length) {
-                const pairs = alg.chunk(object[property], 2);
+                const pairs = chunk(object[property], 2);
 
                 const types = pairs.reduce((acc, pair) => {
                     if (pair[0] in acc) acc[pair[0]] += pair[1];

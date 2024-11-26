@@ -24,7 +24,7 @@
 <script setup>
 import Input from '@/components/common/Forms/Input.vue';
 import UserPickerElement from '@/components/common/Forms/UserPicker/UserPickerElement.vue';
-import { debounce } from '@/utils/debounce.js';
+import { debounce } from '@/utils/common/debounce.js';
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';
 import { computed, ref, shallowRef, watch } from 'vue';
 import { useStore } from 'vuex';
