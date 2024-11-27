@@ -9,7 +9,9 @@
                 <span v-else>от {{ companyName }}</span>
                 <span class="messenger-chat-header__id">, ID{{ dialog.model.id }}</span>
             </p>
-            <p class="messenger-chat-header__address">{{ dialog.model.office_address }}</p>
+            <p class="messenger-chat-header__address">
+                {{ dialog.model.office_address ?? dialog.model.officeAdress }}
+            </p>
             <div class="messenger-chat-header-company__categories mt-1">
                 <DashboardChip
                     v-for="category in categories"

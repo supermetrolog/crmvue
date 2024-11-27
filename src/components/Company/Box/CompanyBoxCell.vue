@@ -4,8 +4,4 @@
     </div>
 </template>
 
-<script>
-export default {
-    name: 'CompanyBoxCell'
-};
-</script>
+<script setup></script>
