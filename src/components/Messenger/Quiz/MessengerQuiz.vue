@@ -31,10 +31,20 @@
                     Запланировать звонок
                 </MessengerButton>
                 <MessengerButton disabled>Контакты утеряны</MessengerButton>
-                <MessengerButton v-if="isObjectChatMember" disabled color="danger">
+                <MessengerButton
+                    v-if="isObjectChatMember"
+                    @click="onObjectDestroyed"
+                    :disabled="objectIsPassive"
+                    color="danger"
+                >
                     Объект снесен
                 </MessengerButton>
-                <MessengerButton v-else color="danger" disabled>
+                <MessengerButton
+                    v-else
+                    @click="onCompanyDestroyed"
+                    :disabled="companyIsPassive"
+                    color="danger"
+                >
                     Компания ликвидирована
                 </MessengerButton>
             </div>
@@ -110,6 +120,7 @@ import dayjs from 'dayjs';
 import { toBoldHTML } from '@/utils/formatters/html.js';
 import { useAuth } from '@/composables/useAuth.js';
 import { messenger } from '@/const/messenger.js';
+import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 
 const SCHEDULING_CALL_DURATION = 30; // days
 const TASK_DURATION = 7; // days
@@ -159,6 +170,11 @@ const shouldCall = computed(() => {
         import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_WARNING
     );
 });
+
+const companyIsPassive = computed(() => !store.state.Messenger.currentPanel.status);
+const objectIsPassive = computed(
+    () => store.state.Messenger.currentDialog.model.object.status !== 1
+);
 
 const { isLoading: surveysIsLoading } = useDelayedLoader(
     store.getters['Messenger/currentChatHasLastCall']
@@ -279,6 +295,67 @@ const scheduleCall = async () => {
         notify.error('Произошла ошибка. Попробуйте еще раз..');
     }
 };
+
+async function onCompanyDestroyed() {
+    const company = store.state.Messenger.currentPanel;
+
+    const taskPayload = await createTaskWithTemplate({
+        message: `Компания ${getCompanyShortName(company)} ликвидирована, отправить в пассив`,
+        step: TASK_FORM_STEPS.MESSAGE,
+        end: dayjs().add(SCHEDULING_CALL_DURATION, 'day').toDate()
+    });
+
+    if (!taskPayload) return;
+
+    const messagePayload = {
+        message: `<b>Компания ликвидирована!</b>`
+    };
+
+    const currentCompanyDialogId = await api.messenger.getChatMemberIdByQuery({
+        model_type: messenger.dialogTypes.COMPANY,
+        model_id: company.id
+    });
+
+    const createdMessage = await api.messenger.sendMessageWithTask(
+        currentCompanyDialogId,
+        messagePayload,
+        taskPayload
+    );
+
+    if (createdMessage) {
+        notify.success('Сообщение и задача успешно созданы');
+    } else {
+        notify.error('Произошла ошибка. Попробуйте еще раз..');
+    }
+}
+
+async function onObjectDestroyed() {
+    const object = store.state.Messenger.currentDialog.model.object;
+
+    const taskPayload = await createTaskWithTemplate({
+        message: `Объект #${object.id} снесен, отправить в пассив`,
+        step: TASK_FORM_STEPS.MESSAGE,
+        end: dayjs().add(SCHEDULING_CALL_DURATION, 'day').toDate()
+    });
+
+    if (!taskPayload) return;
+
+    const messagePayload = {
+        message: `<b>Объект снесен!</b>`
+    };
+
+    const createdMessage = await api.messenger.sendMessageWithTask(
+        store.state.Messenger.currentDialog.id,
+        messagePayload,
+        taskPayload
+    );
+
+    if (createdMessage) {
+        notify.success('Сообщение и задача успешно созданы');
+    } else {
+        notify.error('Произошла ошибка. Попробуйте еще раз..');
+    }
+}
 
 onMounted(() => {
     if (store.getters['Messenger/currentChatHasLastCall']) fetchSurveys();

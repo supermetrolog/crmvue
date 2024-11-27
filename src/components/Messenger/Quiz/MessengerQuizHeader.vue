@@ -150,14 +150,14 @@ const moveContact = async contact => {
     const taskPayload = await createTaskPayload('Перенести контакт в другую компанию: ', contact);
     if (!taskPayload) return;
 
-    await sendMessageAboutContactIsArchived(taskPayload);
+    await sendMessageAboutContactIsArchived(taskPayload, contact);
 };
 
 const deleteContact = async contact => {
     const taskPayload = await createTaskPayload('Нужно архивировать контакт', contact);
     if (!taskPayload) return;
 
-    await sendMessageAboutContactIsArchived(taskPayload);
+    await sendMessageAboutContactIsArchived(taskPayload, contact);
 };
 
 const showComments = contact => {
