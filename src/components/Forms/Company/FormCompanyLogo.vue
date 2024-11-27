@@ -81,7 +81,9 @@
                             </DashboardChip>
                         </div>
                         <p class="form-company-logo__address mt-1">
-                            <span v-if="company.office_address">{{ company.office_address }}</span>
+                            <span v-if="company.officeAdress || company.office_address">
+                                {{ company.officeAdress ?? company.office_address }}
+                            </span>
                             <span v-else class="messenger-warning">Адрес офиса не заполнен</span>
                         </p>
                     </div>
