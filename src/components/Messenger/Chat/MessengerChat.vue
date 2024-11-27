@@ -16,7 +16,11 @@ import api from '@/api/api.js';
 import { useTaskManager } from '@/composables/useTaskManager.js';
 import { useStore } from 'vuex';
 import { useNotify } from '@/utils/useNotify.js';
-import { getCompanyName } from '@/utils/formatters/models/company.js';
+import { getCompanyName, getCompanyShortName } from '@/utils/formatters/models/company.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
+import { getObjectMbUniqueAddress } from '@/utils/formatters/models/object.js';
+import { isEmpty } from '@/utils/helpers/common/isEmpty.js';
 
 const SCHEDULING_CALL_DURATION = 7; // days
 
@@ -40,6 +44,7 @@ const generateTemplate = () => {
     const dialogType = store.state.Messenger.currentDialogType;
     const dialog = store.state.Messenger.currentDialog;
     let customDescription = false;
+    let message = '';
 
     const additionalContent = {
         modelType: dialogType
@@ -47,23 +52,38 @@ const generateTemplate = () => {
 
     if (dialogType === messenger.dialogTypes.OBJECT) {
         const object = dialog.model.object;
+        const messageTemplate = [`ID ${object.id}`];
 
         customDescription = true;
 
-        additionalContent.address = object.address;
+        if (isNotNullish(object.address) && isNotEmptyString(object.address)) {
+            additionalContent.address = object.address;
+            messageTemplate.push(getObjectMbUniqueAddress(object.address));
+        }
+
         additionalContent.companyId = object.company_id;
         additionalContent.objectId = object.id;
         additionalContent.area = object.area_floor_full || object.area_building;
-    } else if (dialogType === messenger.dialogTypes.COMPANY) {
-        customDescription = true;
-        //ID 455. Москва, 14000 м2 | Наташа прозвони поговори
 
-        additionalContent.address = dialog.model.legal_address || dialog.model.office_address;
-        additionalContent.companyName = getCompanyName(dialog.model);
+        if (isNotNullish(additionalContent.area) && !isEmpty(additionalContent.area)) {
+            messageTemplate.push(`${additionalContent.area} м2`);
+        }
+
+        message = messageTemplate.join(', ') + ', ';
+    } else if (dialogType === messenger.dialogTypes.COMPANY) {
+        const company = dialog.model;
+        const messageTemplate = [`Компания ${getCompanyShortName(company)}`];
+
+        customDescription = true;
+
+        additionalContent.address = company.legal_address || company.office_address;
+        additionalContent.companyName = getCompanyName(company);
+
+        message = messageTemplate.join(', ') + ', ';
     }
 
     return {
-        message: '',
+        message,
         end: dayjs().add(SCHEDULING_CALL_DURATION, 'day').toDate(),
         customDescription,
         additionalContent
@@ -77,7 +97,14 @@ async function createTask(messageId) {
 
     const task = await api.task.createFromMessage(messageId, taskPayload);
 
-    if (task) notify.success('Задача успешно создана!');
+    if (task) {
+        notify.success('Задача успешно создана!');
+        store.commit('Messenger/addAddition', {
+            additionType: 'task',
+            addition: task,
+            messageID: messageId
+        });
+    }
 
     return task;
 }
