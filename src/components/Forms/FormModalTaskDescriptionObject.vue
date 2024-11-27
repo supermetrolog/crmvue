@@ -4,6 +4,7 @@
         <Spinner v-if="isLoading" class="small mt-3" label="Загрузка данных." />
         <template v-else>
             <p>Компания: {{ company?.full_name ?? '-' }}</p>
+            <p>ID объекта: {{ info.objectId ?? '-' }}</p>
             <WithUnitType v-if="info.area" :unit-type="unitTypes.SQUARE_METERS">
                 Полная площадь: {{ area }}
             </WithUnitType>

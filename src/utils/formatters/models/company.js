@@ -21,3 +21,12 @@ export function getCompanyName(company, companyID = null) {
 
     return companyName;
 }
+
+export function getCompanyShortName(company) {
+    if (company.is_individual && company.noName)
+        return `${company.individual_full_name} (физ.лицо)`;
+
+    if (company.noName) return `#${company.id}`;
+
+    return company.nameRu || company.nameEng;
+}

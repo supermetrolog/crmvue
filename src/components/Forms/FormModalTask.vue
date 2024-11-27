@@ -9,7 +9,7 @@
         <div>
             <DashboardTableTasksItem :task="taskPreview" />
         </div>
-        <Stepper @complete="submit" :step="step" :steps="steps" :v="v$.form" keep-alive>
+        <Stepper v-model:step="step" @complete="submit" :steps="steps" :v="v$.form" keep-alive>
             <template #1>
                 <Spinner v-if="isLoading" center />
                 <UserPicker v-else v-model="form.user_id" single :users="consultants" />
@@ -32,7 +32,7 @@
                             </DashboardChip>
                         </div>
                     </div>
-                    <DatePicker v-model="form.date.end" size="70px" />
+                    <DatePicker v-model="form.date.end" size="50px" />
                 </div>
             </template>
             <template #3>
@@ -69,6 +69,7 @@
                 </div>
                 <div class="row">
                     <Textarea
+                        ref="messageEl"
                         v-model="form.message"
                         :autofocus="autofocusMessage"
                         :v="v$.form.message"
@@ -107,7 +108,7 @@ import { useStore } from 'vuex';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import TaskTagOption from '@/components/common/Forms/TaskTagOption.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
-import { computed, onUnmounted, ref, shallowRef } from 'vue';
+import { computed, nextTick, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import dayjs from 'dayjs';
 import { useTagsOptions } from '@/composables/options/useTagsOptions.js';
@@ -115,6 +116,7 @@ import { taskOptions } from '@/const/options/task.options.js';
 import FormModalTaskDescription from '@/components/Forms/FormModalTaskDescription.vue';
 import { useAuth } from '@/composables/useAuth.js';
 import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItem.vue';
+import { useTimeoutFn } from '@vueuse/core';
 
 const store = useStore();
 const { getTagsOptions } = useTagsOptions();
@@ -144,11 +146,6 @@ const presets = [
         id: 1,
         value: 1,
         label: '1 день'
-    },
-    {
-        id: 2,
-        value: 2,
-        label: '2 дня'
     },
     {
         id: 3,
@@ -200,6 +197,8 @@ const isLoading = ref(false);
 const hasCustomDescription = ref(false);
 const additionalContent = shallowRef({});
 
+const messageEl = useTemplateRef('messageEl');
+
 const form = ref({
     message: null,
     date: {
@@ -249,6 +248,10 @@ const consultantsForObservers = computed(() => {
 const currentRange = computed(() => {
     if (form.value.date.end === null) return 0;
     return Math.round(dayjs(form.value.date.end).diff(dayjs(), 'day', true));
+});
+
+watch(step, value => {
+    if (value === 2) nextTick(() => useTimeoutFn(messageEl.value.focus, 1000, { immediate: true }));
 });
 
 const clearForm = () => {
