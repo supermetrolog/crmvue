@@ -110,7 +110,7 @@ import { mapper } from '@/utils/mapper';
 import { entityProperties } from '@/const/properties/properties';
 import ComplexPurposes from '@/components/Complex/ComplexPurposes.vue';
 import { computed, reactive, shallowRef } from 'vue';
-import { toNumberFormat } from '@/utils/formatter.js';
+import { toNumberFormat } from '@/utils/formatters/number.js';
 import ComplexHoldingParametersFloors from '@/components/Complex/Holding/ComplexHoldingParametersFloors.vue';
 
 const store = useStore();

@@ -54,7 +54,7 @@
 <script>
 import { unitTypes } from '@/const/unitTypes';
 import ComplexOfferArea from '@/components/Complex/Offer/ComplexOfferArea.vue';
-import { alg } from '@/utils/alg';
+import { strictMin } from '@/utils/helpers/common/strictMin.js';
 import ComplexOfferPrice from '@/components/Complex/Offer/ComplexOfferPrice.vue';
 import { reducer } from '@/utils/reducer.js';
 import ComplexOfferStatus from '@/components/Complex/Offer/ComplexOfferStatus.vue';
@@ -177,7 +177,7 @@ export default {
                         'valueMax'
                     );
 
-                    priceTableTitleObject.valueMin = alg.strictMin(
+                    priceTableTitleObject.valueMin = strictMin(
                         rangeValueMin,
                         reducer.min(this.price.service, 'value')
                     );

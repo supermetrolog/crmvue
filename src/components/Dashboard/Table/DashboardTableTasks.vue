@@ -23,7 +23,7 @@ import { computed, h, ref, shallowRef, watch } from 'vue';
 import DashboardTableTasksItemPreview from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemPreview.vue';
 import { useTippy } from 'vue-tippy';
 import api from '@/api/api.js';
-import { toDateFormat } from '@/utils/formatter.js';
+import { toDateFormat } from '@/utils/formatters/date.js';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { useAuth } from '@/composables/useAuth.js';
 

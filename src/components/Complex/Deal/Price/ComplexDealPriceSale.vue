@@ -34,7 +34,7 @@ import { unitTypes } from '@/const/unitTypes';
 import EmptyData from '@/components/common/EmptyData.vue';
 import { reducer } from '@/utils/reducer.js';
 import { computed } from 'vue';
-import { toNumberOrRangeFormat } from '@/utils/formatter.js';
+import { toNumberOrRangeFormat } from '@/utils/formatters/number.js';
 
 const props = defineProps({
     deal: {

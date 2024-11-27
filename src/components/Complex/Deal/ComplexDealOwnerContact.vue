@@ -36,7 +36,7 @@
 <script setup>
 import { PositionList } from '@/const/const';
 import { computed } from 'vue';
-import { toInitialsFormat } from '@/utils/formatter.js';
+import { toInitialsFormat } from '@/utils/formatters/string.js';
 
 const props = defineProps({
     contact: {

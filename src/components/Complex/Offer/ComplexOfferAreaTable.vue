@@ -7,7 +7,7 @@
                     class="trade-offer-table__value"
                     :unit-type="unitTypes.SQUARE_METERS"
                 >
-                    {{ $formatter.numberOrRangeNew(area.valueMin, area.valueMax) }}
+                    {{ areaRangeFormat }}
                 </with-unit-type>
                 <Tooltip v-if="tooltip" icon="fa-regular fa-circle-question">
                     <template #content>
@@ -23,10 +23,7 @@
                                     :unit-type="unitTypes.SQUARE_METERS"
                                 >
                                     {{
-                                        $formatter.numberOrRangeNew(
-                                            property.valueMin,
-                                            property.valueMax
-                                        )
+                                        toNumberOrRangeFormat(property.valueMin, property.valueMax)
                                     }}
                                 </with-unit-type>
                             </li>
@@ -46,46 +43,41 @@
                     class="trade-offer-table__value"
                     :unit-type="unitTypes.SQUARE_METERS"
                 >
-                    {{ $formatter.numberOrRangeNew(property.valueMin, property.valueMax) }}
+                    {{ toNumberOrRangeFormat(property.valueMin, property.valueMax) }}
                 </with-unit-type>
             </li>
         </ul>
     </div>
 </template>
-<script>
+<script setup>
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes';
 import Tooltip from '@/components/common/Tooltip.vue';
-import { predicate } from '@/utils/predicate.js';
+import { compareByProperty } from '@/utils/predicate.js';
+import { computed } from 'vue';
+import { toNumberOrRangeFormat } from '@/utils/formatters/number.js';
 
-export default {
-    name: 'ComplexOfferAreaTable',
-    components: { Tooltip, WithUnitType },
-    props: {
-        area: {
-            type: Object,
-            required: true
-        },
-        title: {
-            type: String,
-            required: true
-        },
-        unitType: {
-            type: String,
-            default: null
-        },
-        tooltip: {
-            type: Boolean,
-            default: false
-        }
+const props = defineProps({
+    area: {
+        type: Object,
+        required: true
     },
-    computed: {
-        unitTypes() {
-            return unitTypes;
-        },
-        areaProperties() {
-            return [...this.area.description].sort(predicate.compareByProperty('label'));
-        }
+    title: {
+        type: String,
+        required: true
+    },
+    unitType: {
+        type: String,
+        default: null
+    },
+    tooltip: {
+        type: Boolean,
+        default: false
     }
-};
+});
+
+const areaProperties = computed(() => props.area.description.toSorted(compareByProperty('label')));
+const areaRangeFormat = computed(() =>
+    toNumberOrRangeFormat(props.area.valueMin, props.area.valueMax)
+);
 </script>

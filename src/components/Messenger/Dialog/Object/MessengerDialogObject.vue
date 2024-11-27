@@ -50,7 +50,7 @@ import MessengerDialogFunctions from '@/components/Messenger/Dialog/MessengerDia
 import LazyImage from '@/components/common/LazyImage.vue';
 import Tooltip from '@/components/common/Tooltip.vue';
 import { computed } from 'vue';
-import { getCompanyName } from '@/utils/formatter.js';
+import { getCompanyName } from '@/utils/formatters/models/company.js';
 import { useStore } from 'vuex';
 import MessengerDialogObjectDealType from '@/components/Messenger/Dialog/Object/MessengerDialogObjectDealType.vue';
 import OfferTableItemPreviewMotionSlider from '@/components/Offer/TableItem/OfferTableItemPreviewMotionSlider.vue';

@@ -17,7 +17,7 @@ import api from '@/api/api.js';
 import Spinner from '@/components/common/Spinner.vue';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
-import { toNumberFormat } from '@/utils/formatter.js';
+import { toNumberFormat } from '@/utils/formatters/number.js';
 
 const props = defineProps({
     info: {

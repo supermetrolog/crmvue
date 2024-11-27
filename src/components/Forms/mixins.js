@@ -21,10 +21,11 @@ import {
     YesNo,
     YesNoFUCK
 } from '@/const/const.js';
-import { assignQueryToForm, cloneObject } from '@/utils/index.js';
+import { assignQueryToForm } from '@/utils/helpers/forms/assignQueryToForm.js';
+import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 import { watch } from 'vue';
-import { debounce } from '@/utils/debounce.js';
-import { deleteEmptyFields } from '@/utils/deleteEmptyFields.js';
+import { debounce } from '@/utils/common/debounce.js';
+import { deleteEmptyFields } from '@/utils/helpers/object/deleteEmptyFields.js';
 
 export const FormMixin = {
     mixins: [SearchFormMixin],

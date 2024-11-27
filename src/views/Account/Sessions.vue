@@ -47,10 +47,10 @@ import { useStore } from 'vuex';
 import AccountSessionSkeleton from '@/components/Account/AccountSessionSkeleton.vue';
 import { useSkeleton } from '@/composables/useSkeleton.js';
 import { useConfirm } from '@/composables/useConfirm.js';
-import { spliceById } from '@/utils/index.js';
 import { useNotify } from '@/utils/useNotify.js';
 import Button from '@/components/common/Button.vue';
-import { getAccessTokenFromLocalStorage } from '@/utils/localStorage.js';
+import { getAccessTokenFromLocalStorage } from '@/services/localStorage.js';
+import { spliceById } from '@/utils/helpers/array/spliceById.js';
 
 const store = useStore();
 const { isLoading } = useDelayedLoader();

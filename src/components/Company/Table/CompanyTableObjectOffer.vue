@@ -14,7 +14,7 @@ import { computed } from 'vue';
 import { entityOptions } from '@/const/options/options.js';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
-import { toNumberOrRangeFormat } from '@/utils/formatter.js';
+import { toNumberOrRangeFormat } from '@/utils/formatters/number.js';
 
 const props = defineProps({ offer: { type: Object, required: true } });
 

@@ -24,7 +24,7 @@
 </template>
 <script setup>
 import WithUnitType from '@/components/common/WithUnitType.vue';
-import { toNumberFormat } from '@/utils/formatter.js';
+import { toNumberFormat } from '@/utils/formatters/number.js';
 
 defineProps({
     properties: {

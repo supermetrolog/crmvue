@@ -95,7 +95,8 @@ import { requestOptions } from '@/const/options/request.options.js';
 import { companyOptions } from '@/const/options/company.options.js';
 import { dealOptions } from '@/const/options/deal.options.js';
 import { locationOptions } from '@/const/options/location.options.js';
-import { getCompanyName, toNumberOrRangeFormat } from '@/utils/formatter.js';
+import { getCompanyName } from '@/utils/formatters/models/company.js';
+import { toNumberOrRangeFormat } from '@/utils/formatters/number.js';
 import { useStore } from 'vuex';
 import Avatar from '@/components/common/Avatar.vue';
 

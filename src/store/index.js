@@ -18,7 +18,7 @@ import Messenger from '@/store/modules/Messenger';
 import Task from '@/store/modules/Task.js';
 import { useAuth } from '@/composables/useAuth.js';
 import Quizz from '@/store/modules/Quiz.js';
-import { getAccessTokenFromLocalStorage } from '@/utils/localStorage.js';
+import { getAccessTokenFromLocalStorage } from '@/services/localStorage.js';
 import { setAccessToken } from '@/services/axios.js';
 
 const store = createStore({

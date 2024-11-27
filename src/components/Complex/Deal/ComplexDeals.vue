@@ -56,7 +56,7 @@ import ComplexDealItem from '@/components/Complex/Deal/ComplexDealItem.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import Button from '@/components/common/Button.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
-import { cloneObject } from '@/utils/index.js';
+import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 import { computed, onMounted, shallowRef } from 'vue';
 import { useRoute } from 'vue-router';
 

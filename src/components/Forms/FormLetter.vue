@@ -103,7 +103,7 @@ import plural from 'plural-ru';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
-import { contains } from '@/utils/contains.js';
+import { contains } from '@/utils/helpers/array/contains.js';
 import VueEditor from '@/components/common/Forms/VueEditor.vue';
 
 export default {

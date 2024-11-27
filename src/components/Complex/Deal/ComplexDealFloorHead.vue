@@ -31,7 +31,7 @@
 import { unitTypes } from '@/const/unitTypes';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { computed } from 'vue';
-import { toNumberFormat } from '@/utils/formatter.js';
+import { toNumberFormat } from '@/utils/formatters/number.js';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 
 defineEmits(['openForm', 'openEditForm']);

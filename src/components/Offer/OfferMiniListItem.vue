@@ -110,7 +110,8 @@ import Switch from '@/components/common/Forms/Switch.vue';
 import { computed, shallowRef } from 'vue';
 import api from '@/api/api.js';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
-import { toNumberOrRangeFormat, ucFirst } from '@/utils/formatter.js';
+import { toNumberOrRangeFormat } from '@/utils/formatters/number.js';
+import { ucFirst } from '@/utils/formatters/string.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 
 const emit = defineEmits(['toggle-avito', 'open-pdf', 'toggle-favorite']);

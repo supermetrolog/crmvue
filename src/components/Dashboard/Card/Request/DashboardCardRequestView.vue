@@ -260,7 +260,7 @@ import DashboardCardRequestObjectTypes from '@/components/Dashboard/Card/Request
 import DashboardCardRequestRequirements from '@/components/Dashboard/Card/Request/DashboardCardRequestRequirements.vue';
 import DashboardCardRequestAddress from '@/components/Dashboard/Card/Request/DashboardCardRequestAddress.vue';
 import DashboardCardRequestStatus from '@/components/Dashboard/Card/Request/DashboardCardRequestStatus.vue';
-import { getCompanyName } from '@/utils/formatter.js';
+import { getCompanyName } from '@/utils/formatters/models/company.js';
 
 export default {
     name: 'DashboardCardRequestView',

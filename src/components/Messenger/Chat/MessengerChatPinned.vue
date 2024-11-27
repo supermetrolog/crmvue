@@ -20,7 +20,7 @@ import plural from 'plural-ru';
 import MessengerChatPinnedView from '@/components/Messenger/Chat/MessengerChatPinnedView.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
 import { computed, ref } from 'vue';
-import { toDateFormat } from '@/utils/formatter.js';
+import { toDateFormat } from '@/utils/formatters/date.js';
 import { useNotify } from '@/utils/useNotify.js';
 import { useStore } from 'vuex';
 

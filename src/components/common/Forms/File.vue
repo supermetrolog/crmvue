@@ -66,7 +66,7 @@ import VLazyImage from 'v-lazy-image';
 import Tooltip from '@/components/common/Tooltip.vue';
 import { fileTypes } from '@/const/types';
 import { computed } from 'vue';
-import { toFileSizeFormat } from '@/utils/formatter.js';
+import { toFileSizeFormat } from '@/utils/formatters/number.js';
 import { getLinkUploadedFile } from '@/utils/url.js';
 import { usePreviewer } from '@/composables/usePreviewer.js';
 

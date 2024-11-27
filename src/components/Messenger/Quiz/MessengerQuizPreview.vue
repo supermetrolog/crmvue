@@ -42,7 +42,7 @@ import api from '@/api/api.js';
 import MessengerQuizPreviewInfo from '@/components/Messenger/Quiz/MessengerQuizPreviewInfo.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import MessengerQuizPreviewCompany from '@/components/Messenger/Quiz/MessengerQuizPreviewCompany.vue';
-import { getCompanyName } from '@/utils/formatter.js';
+import { getCompanyName } from '@/utils/formatters/models/company.js';
 
 const CUSTOM_QUESTION_ID = 8;
 

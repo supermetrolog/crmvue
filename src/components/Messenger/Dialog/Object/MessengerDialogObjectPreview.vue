@@ -168,7 +168,7 @@ import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
 import { complexOptions } from '@/const/options/complex.options.js';
 import MessengerDialogObjectPreviewParking from '@/components/Messenger/Dialog/Object/MessengerDialogObjectPreviewParking.vue';
-import { toNumberFormat } from '@/utils/formatter.js';
+import { toNumberFormat } from '@/utils/formatters/number.js';
 import MessengerDialogObjectPreviewRent from '@/components/Messenger/Dialog/Object/MessengerDialogObjectPreviewRent.vue';
 import { dealOptions } from '@/const/options/deal.options.js';
 import EditableObjectPurposes from '@/components/Object/EditableObjectPurposes.vue';

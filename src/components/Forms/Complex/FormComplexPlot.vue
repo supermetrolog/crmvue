@@ -579,7 +579,7 @@ import Input from '@/components/common/Forms/Input.vue';
 import Submit from '@/components/common/Forms/FormSubmit.vue';
 import Form from '@/components/common/Forms/Form.vue';
 import { computed, onBeforeMount, reactive, shallowRef, toRef } from 'vue';
-import { cloneObject } from '@/utils/index.js';
+import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 import useVuelidate from '@vuelidate/core';
 import { validationRulesForComplexPlot } from '@/validators/rules/complex-plot.js';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';

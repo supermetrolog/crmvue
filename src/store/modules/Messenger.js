@@ -4,9 +4,9 @@ import { alg } from '@/utils/alg.js';
 import { entityOptions } from '@/const/options/options.js';
 import { notify } from '@kyvg/vue3-notification';
 import { messagesToSections } from '@/utils/mapper.js';
-import { ucFirst } from '@/utils/formatter.js';
+import { ucFirst } from '@/utils/formatters/string.js';
 import { messenger } from '@/const/messenger.js';
-import { spliceById } from '@/utils/index.js';
+import { spliceById } from '@/utils/helpers/array/spliceById.js';
 import { taskOptions } from '@/const/options/task.options.js';
 
 const needCacheMessage = (dialogID, asideID, panelID) => {
@@ -457,7 +457,6 @@ const Messenger = {
             const chats = await Promise.all([
                 api.messenger.getChats({ model_type: 'object', ...payload.object }),
                 api.messenger.getChats({ model_type: 'company', ...payload.company })
-                // api.messenger.getChats({ model_type: 'request', ...options.request }),
             ]);
 
             if (chats) {

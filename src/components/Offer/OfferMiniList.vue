@@ -44,7 +44,7 @@ import Tr from '@/components/common/Table/Tr.vue';
 import Th from '@/components/common/Table/Th.vue';
 import OfferMiniListItem from '@/components/Offer/OfferMiniListItem.vue';
 import { computed, shallowReactive } from 'vue';
-import { predicate } from '@/utils/predicate.js';
+import { compareByProperty } from '@/utils/predicate.js';
 import { useStore } from 'vuex';
 import { useNotify } from '@/utils/useNotify.js';
 import { getLinkPDF } from '@/utils/url.js';
@@ -60,7 +60,7 @@ const props = defineProps({
 const store = useStore();
 const notify = useNotify();
 
-const sortedOffers = computed(() => props.offers.toSorted(predicate.compareByProperty('id')));
+const sortedOffers = computed(() => props.offers.toSorted(compareByProperty('id')));
 const archivedOffers = computed(() => sortedOffers.value.filter(element => element.status === 2));
 const activeOffers = computed(() => sortedOffers.value.filter(element => element.status === 1));
 

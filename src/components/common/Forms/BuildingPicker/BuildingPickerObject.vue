@@ -32,7 +32,7 @@ import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
 import { computed } from 'vue';
-import { toNumberFormat } from '@/utils/formatter.js';
+import { toNumberFormat } from '@/utils/formatters/number.js';
 
 const emit = defineEmits(['toggle']);
 const props = defineProps({

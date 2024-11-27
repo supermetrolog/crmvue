@@ -1,7 +1,7 @@
 import { computed, shallowRef, unref, watch } from 'vue';
 import { noop, tryOnBeforeMount, tryOnScopeDispose } from '@vueuse/core';
 import { useRoute, useRouter } from 'vue-router';
-import { toCleanObject } from '@/utils/toCleanObjects.js';
+import { toCleanObject } from '@/utils/helpers/object/toCleanObjects.js';
 
 const compareArrays = (first, second) => {
     if (!Array.isArray(first) || !Array.isArray(second)) return false;

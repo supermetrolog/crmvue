@@ -95,8 +95,9 @@ import useValidate from '@vuelidate/core';
 import { helpers, or, required, requiredIf } from '@vuelidate/validators';
 import Submit from '@/components/common/Forms/FormSubmit.vue';
 import Loader from '@/components/common/Loader.vue';
-import Utils, { cloneObject } from '@/utils';
+import Utils from '@/utils';
 import api from '@/api/api.js';
+import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 
 export default {
     name: 'AccountEdit',

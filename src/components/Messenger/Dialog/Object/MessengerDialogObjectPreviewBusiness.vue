@@ -40,7 +40,7 @@
 <script setup>
 import MessengerDialogPreviewTippyRow from '@/components/Messenger/Dialog/Preview/MessengerDialogPreviewTippyRow.vue';
 import WithUnitType from '@/components/common/WithUnitType.vue';
-import { toNumberFormat } from '@/utils/formatter.js';
+import { toNumberFormat } from '@/utils/formatters/number.js';
 import { unitTypes } from '@/const/unitTypes.js';
 
 defineProps({

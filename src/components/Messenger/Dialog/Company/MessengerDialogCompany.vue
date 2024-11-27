@@ -69,7 +69,7 @@ import { alg } from '@/utils/alg.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { CompanyCategories } from '@/const/const.js';
 import Avatar from '@/components/common/Avatar.vue';
-import { getCompanyName } from '@/utils/formatter.js';
+import { getCompanyName } from '@/utils/formatters/models/company.js';
 import { useAuth } from '@/composables/useAuth.js';
 
 defineEmits(['update-call']);

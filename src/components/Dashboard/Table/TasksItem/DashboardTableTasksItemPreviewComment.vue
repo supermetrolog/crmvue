@@ -12,7 +12,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import { toDateFormat } from '@/utils/formatter.js';
+import { toDateFormat } from '@/utils/formatters/date.js';
 
 const props = defineProps({
     comment: {

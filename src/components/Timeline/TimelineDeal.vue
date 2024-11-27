@@ -120,7 +120,8 @@ import Avatar from '@/components/common/Avatar.vue';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import OfferTableMobileItem from '@/components/Offer/OfferTableMobileItem.vue';
 import { computed } from 'vue';
-import { getCompanyName, toNumberFormat } from '@/utils/formatter.js';
+import { getCompanyName } from '@/utils/formatters/models/company.js';
+import { toNumberFormat } from '@/utils/formatters/number.js';
 import { unitTypes } from '@/const/unitTypes.js';
 
 const props = defineProps({

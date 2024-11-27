@@ -14,7 +14,7 @@ import MessengerChatSettingsFiles from '@/components/Messenger/Chat/Settings/Mes
 import MessengerChatSettingsQuizzes from '@/components/Messenger/Chat/Settings/MessengerChatSettingsQuizzes.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { computed } from 'vue';
-import { ucFirst } from '@/utils/formatter.js';
+import { ucFirst } from '@/utils/formatters/string.js';
 
 defineOptions({
     components: {

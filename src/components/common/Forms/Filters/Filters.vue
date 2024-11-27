@@ -37,7 +37,8 @@ import FiltersGroup from '@/components/common/Forms/Filters/FiltersGroup.vue';
 import FiltersOptions from '@/components/common/Forms/Filters/FiltersOptions.vue';
 import FiltersCategory from '@/components/common/Forms/Filters/FiltersCategory.vue';
 import Button from '@/components/common/Button.vue';
-import { getObjectWithoutEmptyFields, waitHash } from '@/utils/index.js';
+import { getObjectWithoutEmptyFields } from '@/utils/helpers/object/getObjectWithoutEmptyFields.js';
+import { waitHash } from '@/utils/helpers/common/waitHash.js';
 import useVuelidate from '@vuelidate/core';
 
 export default {

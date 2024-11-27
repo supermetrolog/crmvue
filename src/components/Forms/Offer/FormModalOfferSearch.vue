@@ -323,9 +323,9 @@ import {
     ObjectClassList
 } from '@/const/const.js';
 import { computed, onBeforeUnmount, onMounted, reactive, watch } from 'vue';
-import { deleteEmptyFields } from '@/utils/deleteEmptyFields.js';
+import { deleteEmptyFields } from '@/utils/helpers/object/deleteEmptyFields.js';
 import { useRoute, useRouter } from 'vue-router';
-import { singleToArrayByKeys } from '@/utils/alg.js';
+import { singleToArrayByKeys } from '@/utils/helpers/object/singleToArrayByKeys.js';
 import { useStore } from 'vuex';
 import { helpers, minValue } from '@vuelidate/validators';
 import { realFloorTypeOptions } from '@/const/options/floor.options.js';

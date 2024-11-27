@@ -129,7 +129,7 @@ import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import Modal from '@/components/common/Modal.vue';
 import FormGroup from '@/components/common/Forms/FormGroup.vue';
-import { optionsToList } from '@/utils/index.js';
+import { optionsToList } from '@/utils/helpers/forms/optionsToList.js';
 import { multiselectAdapter, multiselectAdapterToObject } from '@/utils/adapters.js';
 import { entityOptions } from '@/const/options/options.js';
 import { pricePerFloorValidators } from '@/validators/fields.js';

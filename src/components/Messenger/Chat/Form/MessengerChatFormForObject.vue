@@ -64,7 +64,7 @@ import { computed, inject, onBeforeMount, ref, shallowRef } from 'vue';
 import imageCompression from 'browser-image-compression';
 import { useNotify } from '@/utils/useNotify.js';
 import { MAX_FILES_COUNT, SIZE_TO_COMPRESSION } from '@/const/messenger.js';
-import { blobToFile } from '@/utils/index.js';
+import { blobToFile } from '@/utils/helpers/forms/blobToFile.js';
 import Loader from '@/components/common/Loader.vue';
 import MessengerChatFormReply from '@/components/Messenger/Chat/Form/MessengerChatFormReply.vue';
 

@@ -33,7 +33,7 @@ import plural from 'plural-ru';
 import { useStore } from 'vuex';
 import Rating from '@/components/common/Rating.vue';
 import { computed, onMounted, ref } from 'vue';
-import { getCompanyName } from '@/utils/formatter.js';
+import { getCompanyName } from '@/utils/formatters/models/company.js';
 
 const store = useStore();
 

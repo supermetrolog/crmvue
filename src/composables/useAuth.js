@@ -1,5 +1,5 @@
 import { computed, shallowRef } from 'vue';
-import { hasAccessTokenInLocalStorage } from '@/utils/localStorage.js';
+import { hasAccessTokenInLocalStorage } from '@/services/localStorage.js';
 import { useStore } from 'vuex';
 import { userOptions } from '@/const/options/user.options.js';
 

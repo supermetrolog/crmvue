@@ -94,7 +94,7 @@
 <script setup>
 import { entityOptions } from '@/const/options/options';
 import { entityProperties } from '@/const/properties/properties';
-import { ucFirst } from '@/utils/formatter.js';
+import { ucFirst } from '@/utils/formatters/string.js';
 import { computed } from 'vue';
 
 const props = defineProps({
