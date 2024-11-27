@@ -34,7 +34,13 @@
                         :href="'/companies/' + company.id"
                         target="_blank"
                         class="messenger-panel-company__name"
+                        :class="{ passive: isPassive }"
                     >
+                        <i
+                            v-if="isPassive"
+                            v-tippy="'Компания в пассиве'"
+                            class="fa-solid fa-ban mr-1"
+                        ></i>
                         <span v-if="hasUndefinedName" class="messenger-warning bold">
                             НЕТ УНИКАЛЬНОГО НАЗВАНИЯ
                         </span>
@@ -155,7 +161,7 @@ const logoEdited = ref(false);
 
 const hasUndefinedName = computed(() => {
     return (
-        props.company.noName ||
+        (props.company.noName && !props.company.is_individual) ||
         ((!props.company.nameRu ||
             (alg.isNumeric(props.company.nameRu) &&
                 Number(props.company.nameRu) === props.company.id)) &&
@@ -185,6 +191,8 @@ const productRanges = computed(() => {
 });
 
 const companyName = computed(() => getCompanyName(props.company, props.company.id));
+
+const isPassive = computed(() => !props.company.status);
 
 const toChat = () => {
     openChat(props.company.id, props.company.id, messenger.dialogTypes.COMPANY);
