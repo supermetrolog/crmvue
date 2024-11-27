@@ -31,7 +31,12 @@
                     Запланировать звонок
                 </MessengerButton>
                 <MessengerButton disabled>Контакты утеряны</MessengerButton>
-                <MessengerButton v-if="isObjectChatMember" disabled color="danger">
+                <MessengerButton
+                    v-if="isObjectChatMember"
+                    @click="onObjectDestroyed"
+                    :disabled="objectIsPassive"
+                    color="danger"
+                >
                     Объект снесен
                 </MessengerButton>
                 <MessengerButton
@@ -167,6 +172,9 @@ const shouldCall = computed(() => {
 });
 
 const companyIsPassive = computed(() => !store.state.Messenger.currentPanel.status);
+const objectIsPassive = computed(
+    () => store.state.Messenger.currentDialog.model.object.status !== 1
+);
 
 const { isLoading: surveysIsLoading } = useDelayedLoader(
     store.getters['Messenger/currentChatHasLastCall']
@@ -300,7 +308,7 @@ async function onCompanyDestroyed() {
     if (!taskPayload) return;
 
     const messagePayload = {
-        message: `Компания ликвидирована`
+        message: `<b>Компания ликвидирована!</b>`
     };
 
     const currentCompanyDialogId = await api.messenger.getChatMemberIdByQuery({
@@ -310,6 +318,34 @@ async function onCompanyDestroyed() {
 
     const createdMessage = await api.messenger.sendMessageWithTask(
         currentCompanyDialogId,
+        messagePayload,
+        taskPayload
+    );
+
+    if (createdMessage) {
+        notify.success('Сообщение и задача успешно созданы');
+    } else {
+        notify.error('Произошла ошибка. Попробуйте еще раз..');
+    }
+}
+
+async function onObjectDestroyed() {
+    const object = store.state.Messenger.currentDialog.model.object;
+
+    const taskPayload = await createTaskWithTemplate({
+        message: `Объект #${object.id} снесен, отправить в пассив`,
+        step: TASK_FORM_STEPS.MESSAGE,
+        end: dayjs().add(SCHEDULING_CALL_DURATION, 'day').toDate()
+    });
+
+    if (!taskPayload) return;
+
+    const messagePayload = {
+        message: `<b>Объект снесен!</b>`
+    };
+
+    const createdMessage = await api.messenger.sendMessageWithTask(
+        store.state.Messenger.currentDialog.id,
         messagePayload,
         taskPayload
     );
