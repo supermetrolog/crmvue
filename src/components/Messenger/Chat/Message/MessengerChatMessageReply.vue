@@ -56,7 +56,8 @@
 <script setup>
 import { entityOptions } from '@/const/options/options';
 import { computed } from 'vue';
-import { toDateFormat, ucFirst } from '@/utils/formatter.js';
+import { toDateFormat } from '@/utils/formatters/date.js';
+import { ucFirst } from '@/utils/formatters/string.js';
 import Avatar from '@/components/common/Avatar.vue';
 import plural from 'plural-ru';
 import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';

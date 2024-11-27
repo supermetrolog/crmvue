@@ -22,7 +22,7 @@ import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import DashboardTableTasksItemPreview from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemPreview.vue';
 import Modal from '@/components/common/Modal.vue';
 import { useStore } from 'vuex';
-import { toDateFormat } from '@/utils/formatter.js';
+import { toDateFormat } from '@/utils/formatters/date.js';
 import api from '@/api/api.js';
 import Spinner from '@/components/common/Spinner.vue';
 

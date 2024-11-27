@@ -9,7 +9,9 @@
                 <span v-else>от {{ companyName }}</span>
                 <span class="messenger-chat-header__id">, ID{{ dialog.model.id }}</span>
             </p>
-            <p class="messenger-chat-header__address">{{ dialog.model.office_address }}</p>
+            <p class="messenger-chat-header__address">
+                {{ dialog.model.office_address ?? dialog.model.officeAdress }}
+            </p>
             <div class="messenger-chat-header-company__categories mt-1">
                 <DashboardChip
                     v-for="category in categories"
@@ -28,7 +30,7 @@ import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 import { alg } from '@/utils/alg.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { CompanyCategories } from '@/const/const.js';
-import { getCompanyName } from '@/utils/formatter.js';
+import { getCompanyName } from '@/utils/formatters/models/company.js';
 
 const props = defineProps({
     dialog: {

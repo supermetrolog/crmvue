@@ -362,7 +362,7 @@ import CheckboxOptions from '@/components/common/Forms/CheckboxOptions.vue';
 import SwitchSlider from '@/components/common/Forms/SwitchSlider.vue';
 import { useDebounceFn } from '@vueuse/core';
 import { isArray } from '@/utils/helpers/array/isArray.js';
-import { cloneObject } from '@/utils/index.js';
+import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 
 const emit = defineEmits(['close', 'search', 'reset', 'resetSelected', 'changed-query']);
 const props = defineProps({

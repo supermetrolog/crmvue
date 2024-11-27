@@ -60,9 +60,6 @@
                 <span v-else class="messenger-warning">???</span>
             </template>
         </MessengerDialogPreviewRow>
-        <MessengerDialogPreviewRow label="включает">
-            <span class="color-light">[в разработке]</span>
-        </MessengerDialogPreviewRow>
         <MessengerDialogPreviewRow label="договоренность %">
             <MessengerDialogPreviewTippy
                 v-if="
@@ -172,7 +169,7 @@ import { unitTypes } from '@/const/unitTypes.js';
 import { computed } from 'vue';
 import MessengerDialogObjectPreviewCommission from '@/components/Messenger/Dialog/Object/MessengerDialogObjectPreviewCommission.vue';
 import MessengerDialogObjectPreviewOpex from '@/components/Messenger/Dialog/Object/MessengerDialogObjectPreviewOpex.vue';
-import { toNumberFormat, toNumberOrRangeFormat } from '@/utils/formatter.js';
+import { toNumberFormat, toNumberOrRangeFormat } from '@/utils/formatters/number.js';
 import MessengerDialogObjectPreviewServices from '@/components/Messenger/Dialog/Object/MessengerDialogObjectPreviewServices.vue';
 import { dealOptions } from '@/const/options/deal.options.js';
 import MessengerDialogPreviewTippy from '@/components/Messenger/Dialog/Preview/MessengerDialogPreviewTippy.vue';

@@ -34,7 +34,13 @@
                         :href="'/companies/' + company.id"
                         target="_blank"
                         class="messenger-panel-company__name"
+                        :class="{ passive: isPassive }"
                     >
+                        <i
+                            v-if="isPassive"
+                            v-tippy="'Компания в пассиве'"
+                            class="fa-solid fa-ban mr-1"
+                        ></i>
                         <span v-if="hasUndefinedName" class="messenger-warning bold">
                             НЕТ УНИКАЛЬНОГО НАЗВАНИЯ
                         </span>
@@ -123,7 +129,8 @@ import Rating from '@/components/common/Rating.vue';
 import MessengerPanelCompanyTabs from '@/components/Messenger/Panel/Company/MessengerPanelCompanyTabs.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import { computed, ref } from 'vue';
-import { getCompanyName, toCorrectUrl, ucFirst } from '@/utils/formatter.js';
+import { getCompanyName } from '@/utils/formatters/models/company.js';
+import { toCorrectUrl, ucFirst } from '@/utils/formatters/string.js';
 import { companyOptions } from '@/const/options/company.options.js';
 import { contactOptions } from '@/const/options/contact.options.js';
 import { alg } from '@/utils/alg.js';
@@ -154,7 +161,7 @@ const logoEdited = ref(false);
 
 const hasUndefinedName = computed(() => {
     return (
-        props.company.noName ||
+        (props.company.noName && !props.company.is_individual) ||
         ((!props.company.nameRu ||
             (alg.isNumeric(props.company.nameRu) &&
                 Number(props.company.nameRu) === props.company.id)) &&
@@ -184,6 +191,8 @@ const productRanges = computed(() => {
 });
 
 const companyName = computed(() => getCompanyName(props.company, props.company.id));
+
+const isPassive = computed(() => !props.company.status);
 
 const toChat = () => {
     openChat(props.company.id, props.company.id, messenger.dialogTypes.COMPANY);

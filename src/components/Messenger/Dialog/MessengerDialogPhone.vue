@@ -22,7 +22,7 @@ import dayjs from 'dayjs';
 import plural from 'plural-ru';
 import Tooltip from '@/components/common/Tooltip.vue';
 import { computed } from 'vue';
-import { toDateFormat } from '@/utils/formatter.js';
+import { toDateFormat } from '@/utils/formatters/date.js';
 
 const props = defineProps({
     lastCall: {

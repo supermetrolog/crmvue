@@ -72,7 +72,7 @@ import Avatar from '@/components/common/Avatar.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import { computed } from 'vue';
 import { userOptions } from '@/const/options/user.options.js';
-import { toDateFormat } from '@/utils/formatter.js';
+import { toDateFormat } from '@/utils/formatters/date.js';
 
 defineEmits(['delete', 'edit', 'show-sessions', 'restore', 'archive']);
 const props = defineProps({

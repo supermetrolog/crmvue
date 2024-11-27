@@ -80,7 +80,7 @@ import { fileTypes } from '@/const/types';
 import File from '@/components/common/Forms/File.vue';
 import { VueDraggableNext } from 'vue-draggable-next';
 import imageCompression from 'browser-image-compression';
-import { blobToFile } from '@/utils/index.js';
+import { blobToFile } from '@/utils/helpers/forms/blobToFile.js';
 import { SIZE_TO_COMPRESSION } from '@/const/messenger.js';
 
 const compressionOptions = {

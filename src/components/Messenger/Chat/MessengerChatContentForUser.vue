@@ -71,7 +71,7 @@ import MessengerChatNotification from '@/components/Messenger/Chat/MessengerChat
 import InfiniteLoading from 'v3-infinite-loading';
 import MessengerChatPinned from '@/components/Messenger/Chat/MessengerChatPinned.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import { debounce } from '@/utils/debounce.js';
+import { debounce } from '@/utils/common/debounce.js';
 import MessengerChatScrollButton from '@/components/Messenger/Chat/MessengerChatScrollButton.vue';
 import { useElementBounding } from '@vueuse/core';
 import { computed, nextTick, onMounted, ref, shallowRef, watch } from 'vue';

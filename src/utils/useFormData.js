@@ -1,6 +1,6 @@
-import { cloneObject } from '@/utils/index.js';
 import { isEmpty } from '@/utils/helpers/common/isEmpty.js';
 import { isArray } from '@/utils/helpers/array/isArray.js';
+import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 
 function _updateForm(form, formData) {
     if (isEmpty(formData)) return;

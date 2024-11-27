@@ -27,7 +27,7 @@ import { entityOptions } from '@/const/options/options';
 import ComplexDealDetailsService from '@/components/Complex/Deal/Details/ComplexDealDetailsService.vue';
 import ComplexDealDetailsSpecialTerms from '@/components/Complex/Deal/Details/ComplexDealDetailsSpecialTerms.vue';
 import { computed } from 'vue';
-import { toNumberOrRangeFormat } from '@/utils/formatter.js';
+import { toNumberOrRangeFormat } from '@/utils/formatters/number.js';
 import { dealOptions } from '@/const/options/deal.options.js';
 
 const props = defineProps({

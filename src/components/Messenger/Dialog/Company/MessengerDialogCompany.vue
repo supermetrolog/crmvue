@@ -20,7 +20,12 @@
             </div>
             <div class="messenger-dialog-company__description">
                 <p v-if="hasUndefinedName" class="messenger-warning">[Нет уникального названия]</p>
-                <p class="messenger-dialog-company__company">
+                <p class="messenger-dialog-company__company" :class="{ passive: isPassive }">
+                    <i
+                        v-if="isPassive"
+                        v-tippy="'Компания в пассиве'"
+                        class="fa-solid fa-ban mr-1"
+                    ></i>
                     <i
                         v-if="model.is_individual"
                         v-tippy="'Физ.лицо'"
@@ -69,7 +74,7 @@ import { alg } from '@/utils/alg.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { CompanyCategories } from '@/const/const.js';
 import Avatar from '@/components/common/Avatar.vue';
-import { getCompanyName } from '@/utils/formatter.js';
+import { getCompanyName } from '@/utils/formatters/models/company.js';
 import { useAuth } from '@/composables/useAuth.js';
 
 defineEmits(['update-call']);
@@ -94,6 +99,7 @@ const props = defineProps({
 
 const { currentUserId } = useAuth();
 
+const isPassive = computed(() => !props.model.status);
 const isDisabled = computed(() => props.model.consultant_id !== currentUserId.value);
 
 const hasUndefinedName = computed(() => {

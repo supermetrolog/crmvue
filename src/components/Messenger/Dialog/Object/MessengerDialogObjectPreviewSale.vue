@@ -122,7 +122,7 @@ import MessengerDialogObjectPreviewBusiness from '@/components/Messenger/Dialog/
 import MessengerDialogPreviewTippy from '@/components/Messenger/Dialog/Preview/MessengerDialogPreviewTippy.vue';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
-import { toNumberOrRangeFormat } from '../../../../utils/formatter.js';
+import { toNumberOrRangeFormat } from '@/utils/formatters/number.js';
 
 const props = defineProps({
     offerMix: {

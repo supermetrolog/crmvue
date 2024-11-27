@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { formToPayload } from '@/utils/index.js';
+import { formToPayload } from '@/utils/helpers/forms/formToPayload.js';
 import { responseToData } from '@/api/helpers/responseToData.js';
 import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData.js';
 import { responseHasStatus } from '@/api/helpers/responseHasStatus.js';

@@ -63,10 +63,13 @@
             <div v-if="correctObjects.length" class="col-12">
                 <div v-if="hasArchivedOffers" class="row mb-2">
                     <div class="col-12">
-                        <DashboardChip class="dashboard-bg-warning-l mx-auto">
+                        <DashboardChip class="dashboard-bg-warning-l">
                             <p>
-                                В некоторых выбранных предложениях отсутствует необходимая для
-                                построеная маршрута информация об адресе.
+                                <i class="fa-solid fa-exclamation-triangle"></i>
+                                <span
+                                    >В некоторых выбранных предложениях отсутствует необходимая для
+                                    построеная маршрута информация об адресе.</span
+                                >
                             </p>
                             <p>
                                 Показано {{ correctObjects.length }} из
@@ -134,13 +137,13 @@
                             <VirtualDragList
                                 v-model="correctObjects"
                                 group="routes"
-                                :data-key="'id'"
+                                data-key="dataKey"
                                 :keeps="10"
                                 chosenClass="chosen"
                                 wrapClass="timeline-routes__item"
                                 lockAxis="x"
                             >
-                                <template #item="{ record, index }" class="timeline-routes__item">
+                                <template #item="{ record, index }">
                                     <div class="timeline-routes__item">
                                         <DashboardCard class="timeline-routes__route">
                                             <div class="row">
@@ -208,6 +211,7 @@ import CompanyObjectsList from '@/components/Company/CompanyObjectsList.vue';
 import FormLetter from '@/components/Forms/FormLetter.vue';
 import Modal from '@/components/common/Modal.vue';
 import { InspectionSendingRouteComment } from '@/components/Timeline/comments.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 export default {
     name: 'TimelineStepInspectionSending',
@@ -339,13 +343,13 @@ export default {
         }
     },
     created() {
-        this.correctObjects = this.data.timelineStepObjects.filter(
-            element => element.offer !== null
-        );
+        this.correctObjects = this.data.timelineStepObjects.reduce((acc, object) => {
+            if (isNotNullish(object.offer)) acc.push({ ...object, dataKey: object.id.toString() });
+
+            return acc;
+        }, []);
 
         this.getLocation();
     }
 };
 </script>
-
-<style></style>

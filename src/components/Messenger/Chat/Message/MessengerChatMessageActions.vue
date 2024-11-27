@@ -53,7 +53,7 @@ import HoverActionsButton from '@/components/common/HoverActions/HoverActionsBut
 import { useStore } from 'vuex';
 import { computed, inject } from 'vue';
 import dayjs from 'dayjs';
-import { dayjsFromMoscow } from '@/utils/index.js';
+import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 
 defineEmits(['pin', 'edit', 'pin-to-object', 'delete', 'reply']);
 const props = defineProps({

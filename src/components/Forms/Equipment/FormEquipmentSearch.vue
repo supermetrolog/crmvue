@@ -4,7 +4,7 @@
             <div class="col-12">
                 <div class="d-flex align-items-end flex-column flex-md-row">
                     <Input
-                        v-model="debouncedQuerySearch"
+                        v-model="querySearch"
                         label="Поиск"
                         placeholder="ID, адрес, собственник, название, описание"
                         class="w-100"
@@ -40,7 +40,6 @@
 import Form from '@/components/common/Forms/Form.vue';
 import Button from '@/components/common/Button.vue';
 import Input from '@/components/common/Forms/Input.vue';
-import { DebouncedQuerySearchMixin } from '@/components/common/Forms/debounced.mixins';
 import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import FormEquipmentFilters from '@/components/Forms/Equipment/FormEquipmentFilters.vue';
 
@@ -53,12 +52,12 @@ export default {
         Button,
         Form
     },
-    mixins: [DebouncedQuerySearchMixin],
     emits: ['changed'],
     data() {
         return {
             filtersIsVisible: false,
-            filtersCount: 0
+            filtersCount: 0,
+            querySearch: null
         };
     },
     computed: {

@@ -2,14 +2,19 @@
     <CompanyBoxLayout class="company-box-main">
         <template #header>
             <div class="company-box-main__header">
-                <span class="company-box-main__title">
-                    <i
-                        v-if="company.is_individual"
-                        v-tippy="'Физ.лицо'"
-                        class="fa-solid fa-user-tie mr-1"
-                    ></i>
-                    <span>{{ companyName }}</span>
-                </span>
+                <div>
+                    <p class="company-box-main__title">
+                        <i
+                            v-if="company.is_individual"
+                            v-tippy="'Физ.лицо'"
+                            class="fa-solid fa-user-tie mr-1"
+                        ></i>
+                        <span>{{ companyName }}</span>
+                    </p>
+                    <p v-if="company.companyGroup" class="company-box-main__group">
+                        {{ company.companyGroup.full_name }}
+                    </p>
+                </div>
                 <div class="company-box-main__actions">
                     <HoverActionsButton @click="$emit('edit-company')" small label="Редактировать">
                         <i class="fa-solid fa-pen" />
@@ -17,11 +22,11 @@
                 </div>
                 <div class="company-box-main__info ml-md-auto">
                     <DashboardChip
-                        v-for="(category, key) in categories"
-                        :key="key"
+                        v-for="category in categories"
+                        :key="category.id"
                         class="dashboard-bg-success-l"
                     >
-                        {{ category }}
+                        {{ category.label }}
                     </DashboardChip>
                     <span>ID {{ company.id }}</span>
                     <Rating v-if="company.rating" :rating="company.rating" color="yellow" />
@@ -37,7 +42,7 @@
                                 <a
                                     v-for="website in websites"
                                     :key="website"
-                                    :href="$formatter.toCorrectUrl(website)"
+                                    :href="toCorrectUrl(website)"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
@@ -46,12 +51,12 @@
                             </div>
                         </CompanyBoxRow>
                         <CompanyBoxRow label="Группа деятельности">
-                            <span v-if="!!company.activityGroup">
+                            <span v-if="hasActivityGroup">
                                 {{ activityGroup }}
                             </span>
                         </CompanyBoxRow>
                         <CompanyBoxRow label="Профиль деятельности">
-                            <span v-if="!!company.activityProfile">
+                            <span v-if="hasActivityProfile">
                                 {{ activityProfile }}
                             </span>
                         </CompanyBoxRow>
@@ -61,38 +66,42 @@
                             </span>
                         </CompanyBoxRow>
                         <CompanyBoxRow label="Внес">
-                            <span v-if="company.consultant?.userProfile?.short_name">
+                            <span v-if="company.consultant">
                                 {{ company.consultant.userProfile.short_name }}
                             </span>
                         </CompanyBoxRow>
                         <CompanyBoxRow label="Поступление">
                             <span v-if="company.created_at">
-                                {{ $formatter.toDate(company.created_at, 'DD.MM.YY, HH:mm') }}
+                                {{ createdAt }}
                             </span>
                         </CompanyBoxRow>
                         <CompanyBoxRow label="Обновление">
                             <span v-if="company.updated_at">
-                                {{ $formatter.toDate(company.updated_at, 'DD.MM.YY, HH:mm') }}
+                                {{ updatedAt }}
                             </span>
                         </CompanyBoxRow>
                     </ul>
                 </div>
                 <div class="company-box-main__block">
-                    <Tabs :options="{ useUrlFragment: false }">
-                        <Tab name="Логотип">
-                            <CompanyLogo
-                                v-tippy="'Нажмите, чтобы редактировать логотип'"
-                                @click="logoFormIsVisible = true"
-                                as="div"
-                                :company-id="company.id"
-                                :src="company.logo?.src"
-                                class="company-box-main__logo mr-2"
-                                :size="90"
-                            />
-                        </Tab>
+                    <Tabs nav-item-link-class="company-box-main__tab dashboard-chip">
                         <Tab name="Описание">
-                            <span v-if="!!company.description">{{ company.description }}</span>
-                            <span v-else>Не указано</span>
+                            <div class="d-flex gap-3">
+                                <CompanyLogo
+                                    v-tippy="'Нажмите, чтобы редактировать логотип'"
+                                    @click="logoFormIsVisible = true"
+                                    as="div"
+                                    :company-id="company.id"
+                                    :src="company.logo?.src"
+                                    class="company-box-main__logo"
+                                    :size="130"
+                                />
+                                <div class="company-box-main__description">
+                                    <p v-if="company.description">
+                                        {{ company.description }}
+                                    </p>
+                                    <p v-else>Описание не указано</p>
+                                </div>
+                            </div>
                         </Tab>
                         <Tab name="Адрес">
                             <span v-if="!!company.officeAdress">
@@ -241,7 +250,10 @@ import FormCompanyLogo from '@/components/Forms/Company/FormCompanyLogo.vue';
 import Modal from '@/components/common/Modal.vue';
 import { useNotify } from '@/utils/useNotify.js';
 import { useStore } from 'vuex';
-import { getCompanyName } from '@/utils/formatter.js';
+import { getCompanyName } from '@/utils/formatters/models/company.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { toDateFormat } from '@/utils/formatters/date.js';
+import { toCorrectUrl } from '@/utils/formatters/string.js';
 
 defineEmits(['create-contact', 'edit-company']);
 
@@ -269,7 +281,10 @@ const productRanges = computed(() => {
 });
 
 const categories = computed(() => {
-    return props.company.categories.map(item => CompanyCategories[item.category]);
+    return props.company.categories.map(item => ({
+        id: item.id,
+        label: CompanyCategories[item.category]
+    }));
 });
 
 const websites = computed(() => {
@@ -277,6 +292,12 @@ const websites = computed(() => {
     if (commonContact) return commonContact.websites.map(item => item.website);
     return [];
 });
+
+const createdAt = computed(() => toDateFormat(props.company.created_at, 'DD.MM.YYYY'));
+const updatedAt = computed(() => toDateFormat(props.company.updated_at, 'DD.MM.YYYY'));
+
+const hasActivityGroup = computed(() => isNotNullish(props.company.activityGroup));
+const hasActivityProfile = computed(() => isNotNullish(props.company.activityProfile));
 
 const activityGroup = computed(() => {
     return ActivityGroupList[props.company.activityGroup].label;

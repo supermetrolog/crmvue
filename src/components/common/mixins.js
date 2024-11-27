@@ -1,47 +1,4 @@
-import { deleteEmptyFields } from '@/utils/deleteEmptyFields.js';
-
-export const TableContentMixin = {
-    data() {
-        return {
-            mounted: false,
-            loader: true,
-            watcher: null
-        };
-    },
-    methods: {
-        async next(number) {
-            let query = { ...this.$route.query };
-            query.page = number;
-            await this.$router.replace({ query });
-        },
-        async initialRouteSettings() {
-            let query = { ...this.$route.query };
-            const queryLength = Object.keys(this.$route.query).length;
-            if (!queryLength) {
-                query.consultant_id = this.THIS_USER.id;
-            }
-            await this.$router.replace({ query });
-        }
-    },
-    async mounted() {
-        await this.initialRouteSettings();
-        this.mounted = true;
-        this.watcher = this.$watch('$route', (newValue, oldValue) => {
-            if (newValue.path === oldValue.path && newValue.fullPath !== oldValue.fullPath) {
-                this.getContent();
-            }
-        });
-        await this.getContent();
-    },
-
-    beforeUnmount() {
-        this.mounted = false;
-        if (this.watcher != null) {
-            this.watcher();
-        }
-    }
-};
-
+import { deleteEmptyFields } from '@/utils/helpers/object/deleteEmptyFields.js';
 import { mapActions, mapGetters } from 'vuex';
 import { watch } from 'vue';
 

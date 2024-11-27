@@ -30,7 +30,7 @@
 import { useStore } from 'vuex';
 import { computed } from 'vue';
 import { objectOptions } from '@/const/options/object.options.js';
-import { getCompanyName } from '@/utils/formatter.js';
+import { getCompanyName } from '@/utils/formatters/models/company.js';
 import LazyImage from '@/components/common/LazyImage.vue';
 import Avatar from '@/components/common/Avatar.vue';
 

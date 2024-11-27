@@ -1,7 +1,7 @@
-import { cloneObject } from '@/utils/index.js';
 import { useStore } from 'vuex';
 import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 
 export function useTimelineStep(step) {
     const store = useStore();

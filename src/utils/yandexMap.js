@@ -1,4 +1,5 @@
 import { loadYmap } from 'vue-yandex-maps';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 export const yandexmap = {
     settings: {
@@ -12,105 +13,103 @@ export const yandexmap = {
         await loadYmap({ ...this.settings, debug: true });
     },
     getObjectsCoords(objects, userLocation) {
-        let coords = [];
-        coords.push({ original_id: -1, coord: userLocation });
-        objects.forEach(object => {
-            let tempObj;
-            if (object.offer) {
-                tempObj = object.offer;
-            } else {
-                tempObj = object;
-            }
-            coords.push({
-                original_id: tempObj.original_id,
-                coord: [+tempObj.latitude, +tempObj.longitude]
-            });
-        });
-        return coords;
+        return objects.reduce(
+            (acc, object) => {
+                const originalObject = isNotNullish(object.offer) ? object.offer : object;
+
+                acc.push({
+                    original_id: originalObject.original_id,
+                    coord: [+originalObject.latitude, +originalObject.longitude]
+                });
+
+                return acc;
+            },
+            [{ original_id: -1, coord: userLocation }]
+        );
     },
     getDistances(coords) {
         let distances = [];
 
         function getMinDistances(coords, idx = -1, i = coords.length - 2) {
-            if (i < 0) {
-                return;
-            }
+            if (i < 0) return;
 
             const startPoint = coords.find(item => item.original_id === idx);
             coords = coords.filter(coord => coord.original_id !== startPoint.original_id);
             i--;
 
-            let routes = [];
-            coords.forEach(coordDuplicate => {
-                routes.push({
-                    id: coordDuplicate.original_id,
-                    distance: parseInt(
-                        window.ymaps.coordSystem.geo.getDistance(
-                            startPoint.coord,
-                            coordDuplicate.coord
-                        )
-                    )
-                });
-            });
+            const routes = coords.map(coord => ({
+                id: coord.original_id,
+                distance: parseInt(
+                    window.ymaps.coordSystem.geo.getDistance(startPoint.coord, coord.coord)
+                )
+            }));
 
-            distances.push({ id: startPoint.original_id, routes: routes });
+            distances.push({ id: startPoint.original_id, routes });
 
-            let nextPoint = routes.sort((a, b) => a.distance - b.distance)[0];
+            const nextPoint = routes.sort((a, b) => a.distance - b.distance)[0];
             if (nextPoint) {
                 getMinDistances(coords, nextPoint.id, i);
             }
         }
 
         getMinDistances(coords, -1);
+
         return distances;
     },
     getMinimumDistance(distances) {
-        let resultArray = [];
-        distances.forEach(item => resultArray.push(item.routes[0]));
-        return resultArray;
+        return distances.map(element => element.routes[0]);
     },
     async getOptimizeRoutes(objects, userLocation) {
-        const coords = await this.getObjectsCoords(objects, userLocation);
+        const coords = this.getObjectsCoords(objects, userLocation);
+
         await this.init();
-        const distances = await this.getDistances(coords);
-        const minDistance = await this.getMinimumDistance(distances);
+
+        const distances = this.getDistances(coords);
+        const minDistance = this.getMinimumDistance(distances);
+
         return [...minDistance.map(item => item.id)];
     },
-
     async findAddress(query) {
-        // Геокодируем введённые данные.
-        if (!query || !window.ymaps || !window.ymaps.geocode) {
+        if (!query || !window.ymaps || !window.ymaps.geocode) return [];
+
+        try {
+            const addresses = [];
+
+            const preparedQuery = 'россия ' + query;
+
+            const response = await window.ymaps.geocode(preparedQuery);
+
+            const geoObjects = response.geoObjects;
+            geoObjects.each(item => {
+                addresses.push(item.getAddressLine());
+            });
+
+            return addresses;
+        } catch (e) {
             return [];
         }
-        query = 'россия ' + query;
-        let result = [];
-        await window.ymaps.geocode(query).then(function (res) {
-            let obj = res.geoObjects;
-            obj.each(item => {
-                result.push(item.getAddressLine());
-            });
-        });
-        return result;
     },
     async findCoordinates(query) {
-        if (!query || !window.ymaps || !window.ymaps.geocode) {
+        if (!query || !window.ymaps || !window.ymaps.geocode) return [];
+
+        const preparedQuery = 'россия ' + query;
+
+        try {
+            const response = await window.ymaps.geocode(preparedQuery);
+
+            const geoObject = response.geoObjects.get(0);
+            return geoObject.geometry.getCoordinates();
+        } catch (e) {
             return [];
         }
-        query = 'россия ' + query;
-        let result = await window.ymaps.geocode(query).then(function (res) {
-            var firstGeoObject = res.geoObjects.get(0),
-                coords = firstGeoObject.geometry.getCoordinates(),
-                result = coords;
-            return result;
-        });
-        return result;
     },
     async getAddress(query, currentAddress = null) {
         await this.init();
-        let address = await this.findAddress(query);
-        if (currentAddress) {
-            address.push(currentAddress);
-        }
+
+        const address = await this.findAddress(query);
+
+        if (currentAddress) address.push(currentAddress);
+
         return address;
     }
 };

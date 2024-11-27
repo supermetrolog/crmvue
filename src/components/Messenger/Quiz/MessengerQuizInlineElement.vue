@@ -21,7 +21,8 @@
 <script setup>
 import Avatar from '@/components/common/Avatar.vue';
 import { computed } from 'vue';
-import { getContactFullName, toDateFormat } from '@/utils/formatter.js';
+import { getContactFullName } from '@/utils/formatters/models/contact.js';
+import { toDateFormat } from '@/utils/formatters/date.js';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 
 defineEmits(['show']);

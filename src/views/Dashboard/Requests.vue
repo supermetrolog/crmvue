@@ -103,7 +103,6 @@ import Button from '@/components/common/Button.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import Form from '@/components/common/Forms/Form.vue';
 import FormGroup from '@/components/common/Forms/FormGroup.vue';
-import { waitHash } from '@/utils/index.js';
 import api from '@/api/api.js';
 import { LoaderMixin } from '@/components/Messenger/loader.mixin.js';
 import DashboardCardRequest from '@/components/Dashboard/Card/Request/DashboardCardRequest.vue';
@@ -113,6 +112,7 @@ import FormModalCompanyRequestDisable from '@/components/Forms/Company/FormModal
 import FormCompanyRequest from '@/components/Forms/Company/FormCompanyRequest.vue';
 import DashboardCardRequestView from '@/components/Dashboard/Card/Request/DashboardCardRequestView.vue';
 import FormCompanyRequestSearch from '@/components/Forms/Company/FormCompanyRequestSearch.vue';
+import { waitHash } from '@/utils/helpers/common/waitHash.js';
 
 export default {
     name: 'DashboardRequests',

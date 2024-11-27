@@ -61,10 +61,10 @@ import { computed, onBeforeMount, reactive, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import Form from '@/components/common/Forms/Form.vue';
 import Input from '@/components/common/Forms/Input.vue';
-import { waitHash } from '@/utils/index.js';
+import { waitHash } from '@/utils/helpers/common/waitHash.js';
 import { useDebounceFn } from '@vueuse/core';
-import { deleteEmptyFields } from '@/utils/deleteEmptyFields.js';
-import { toCleanObject } from '@/utils/toCleanObjects.js';
+import { deleteEmptyFields } from '@/utils/helpers/object/deleteEmptyFields.js';
+import { toCleanObject } from '@/utils/helpers/object/toCleanObjects.js';
 
 defineEmits(['open-filters']);
 defineProps({

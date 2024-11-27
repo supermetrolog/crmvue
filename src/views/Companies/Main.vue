@@ -95,10 +95,10 @@ import Chip from '@/components/common/Chip.vue';
 import { useSelectedFilters } from '@/composables/useSelectedFilters.js';
 import { ActivePassive, CompanyCategories } from '@/const/const.js';
 import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
-import { toDateFormat } from '@/utils/formatter.js';
 import { isArray } from '@/utils/helpers/array/isArray.js';
 import { isEmptyArray } from '@/utils/helpers/array/isEmptyArray.js';
 import { companyOptions } from '@/const/options/company.options.js';
+import { toDateFormat } from '@/utils/formatters/date.js';
 
 const route = useRoute();
 const router = useRouter();

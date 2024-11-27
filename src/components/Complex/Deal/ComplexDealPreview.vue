@@ -46,7 +46,7 @@ import { mapper } from '@/utils/mapper';
 import { entityProperties } from '@/const/properties/properties';
 import { reducer } from '@/utils/reducer.js';
 import { computed, inject } from 'vue';
-import { toNumberOrRangeFormat } from '@/utils/formatter.js';
+import { toNumberOrRangeFormat } from '@/utils/formatters/number.js';
 
 defineEmits(['choose', 'edit']);
 const objectIsLand = inject('objectIsLand');

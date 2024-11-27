@@ -125,7 +125,7 @@ import api from '@/api/api.js';
 import DashboardTableTasksFilters from '@/components/Dashboard/Table/DashboardTableTasksFilters.vue';
 import { computed, inject, onBeforeMount, reactive, ref, shallowRef, toRef, watch } from 'vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
-import { debounce } from '@/utils/debounce.js';
+import { debounce } from '@/utils/common/debounce.js';
 import { useQueryHash } from '@/utils/useQueryHash.js';
 import gsap from 'gsap';
 import { useTagsOptions } from '@/composables/options/useTagsOptions.js';

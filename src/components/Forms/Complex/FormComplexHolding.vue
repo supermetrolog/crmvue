@@ -251,7 +251,7 @@ import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
 import { entityOptions } from '@/const/options/options';
 import { onBeforeMount, reactive, shallowRef, toRef } from 'vue';
-import { cloneObject } from '@/utils/index.js';
+import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 import Input from '@/components/common/Forms/Input.vue';
 import FileInput from '@/components/common/Forms/FileInput.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';

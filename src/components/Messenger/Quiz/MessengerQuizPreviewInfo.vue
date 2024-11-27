@@ -40,7 +40,7 @@
 <script setup>
 import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
 import { computed } from 'vue';
-import { toDateFormat } from '@/utils/formatter.js';
+import { toDateFormat } from '@/utils/formatters/date.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { quizQuestionsGroupsLabel } from '@/const/quiz.js';
 import { Tippy } from 'vue-tippy';

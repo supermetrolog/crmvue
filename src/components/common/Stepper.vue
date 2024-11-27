@@ -80,8 +80,9 @@
 <script setup>
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import { computed, ref, shallowRef } from 'vue';
+import { computed, ref } from 'vue';
 
+const currentStep = defineModel('step', { type: Number, default: 0 });
 const emit = defineEmits(['complete']);
 const props = defineProps({
     keepAlive: {
@@ -95,14 +96,9 @@ const props = defineProps({
     v: {
         type: Object,
         default: null
-    },
-    step: {
-        type: Number,
-        default: 0
     }
 });
 
-const currentStep = shallowRef(props.step);
 const viewed = ref({});
 
 const progress = computed(() => (100 / props.steps.length) * (currentStep.value + 1));

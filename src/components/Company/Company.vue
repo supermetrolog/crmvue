@@ -214,9 +214,9 @@ import Progress from '@/components/common/Progress.vue';
 import File from '@/components/common/Forms/File.vue';
 import AccordionSimpleTriggerButton from '@/components/common/Accordion/AccordionSimpleTriggerButton.vue';
 import { computed } from 'vue';
-import { getCompanyName } from '@/utils/formatter.js';
 import { companyProperties } from '@/const/properties/company.properties.js';
 import { Tippy } from 'vue-tippy';
+import {getCompanyName} from "@/utils/formatters/models/company.js";
 
 const emit = defineEmits(['start-editing']);
 const props = defineProps({

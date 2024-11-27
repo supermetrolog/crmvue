@@ -217,7 +217,7 @@ import RefreshButton from '@/components/common/RefreshButton.vue';
 import Tooltip from '@/components/common/Tooltip.vue';
 import FormOfferSearch from '@/components/Forms/Offer/FormOfferSearch.vue';
 import { entityOptions } from '@/const/options/options.js';
-import { deleteEmptyFields } from '@/utils/deleteEmptyFields.js';
+import { deleteEmptyFields } from '@/utils/helpers/object/deleteEmptyFields.js';
 import { TimelineRecommendedDescriptions } from '@/const/const.js';
 import TimelineSearchRecommendations from '@/components/Timeline/TimelineSearchRecommedations.vue';
 import { regionsToFakeRegion } from '@/utils/normalizeForm.js';

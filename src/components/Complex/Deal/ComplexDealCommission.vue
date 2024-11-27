@@ -34,7 +34,7 @@
 import { entityOptions } from '@/const/options/options';
 import ComplexDealCommissionItem from '@/components/Complex/Deal/ComplexDealCommissionItem.vue';
 import { computed } from 'vue';
-import { toNumberFormat } from '@/utils/formatter.js';
+import { toNumberFormat } from '@/utils/formatters/number.js';
 
 const props = defineProps({
     commissions: {

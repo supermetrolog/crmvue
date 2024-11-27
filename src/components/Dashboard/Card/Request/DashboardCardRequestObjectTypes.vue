@@ -73,7 +73,7 @@
 <script setup>
 import { entityOptions } from '@/const/options/options.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
-import { cloneObject } from '@/utils/index.js';
+import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 import { computed } from 'vue';
 
 const props = defineProps({

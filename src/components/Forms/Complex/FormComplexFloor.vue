@@ -339,7 +339,7 @@
 </template>
 
 <script setup>
-import { cloneObject } from '@/utils';
+import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
 import {

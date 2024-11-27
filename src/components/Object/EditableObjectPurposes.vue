@@ -64,8 +64,8 @@
 import ObjectPurposes from '@/components/Object/ObjectPurposes.vue';
 import { computed, ref, watch } from 'vue';
 import ObjectPurpose from '@/components/Object/ObjectPurpose.vue';
-import { spliceWithPrimitive } from '@/utils/index.js';
-import { isEmptyObject } from '@/utils/alg.js';
+import { spliceWithPrimitive } from '@/utils/helpers/array/spliceWithPrimitive.js';
+import { isEmptyObject } from '@/utils/helpers/object/isEmptyObject.js';
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 

@@ -5,7 +5,7 @@ import {
     getUserFromLocalStorage,
     removeUserInLocalStorage,
     setUserInLocalStorage
-} from '@/utils/localStorage.js';
+} from '@/services/localStorage.js';
 import { userOptions } from '@/const/options/user.options.js';
 
 const User = {

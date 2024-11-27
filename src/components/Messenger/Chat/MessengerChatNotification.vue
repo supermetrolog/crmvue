@@ -75,7 +75,7 @@ import MessengerChatMessageAttachments from '@/components/Messenger/Chat/Message
 import Loader from '@/components/common/Loader.vue';
 import MessengerChatMessageAdditions from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditions.vue';
 import MessengerChatMessageActions from '@/components/Messenger/Chat/Message/MessengerChatMessageActions.vue';
-import { ucFirst } from '@/utils/formatter.js';
+import { ucFirst } from '@/utils/formatters/string.js';
 import { entityOptions } from '@/const/options/options.js';
 import { useStore } from 'vuex';
 import { useNotify } from '@/utils/useNotify.js';

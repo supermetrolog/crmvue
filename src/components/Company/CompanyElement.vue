@@ -44,7 +44,7 @@ import plural from 'plural-ru';
 import { entityOptions } from '@/const/options/options.js';
 import { computed } from 'vue';
 import CompanyLogo from '@/components/Company/CompanyLogo.vue';
-import { getCompanyName } from '@/utils/formatter.js';
+import { getCompanyName } from '@/utils/formatters/models/company.js';
 
 const props = defineProps({
     company: {

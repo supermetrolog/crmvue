@@ -61,8 +61,7 @@ const EXPIRES_DATE_LIMIT = 7;
 <script setup>
 import { computed } from 'vue';
 import { UAParser } from 'ua-parser-js';
-import { dayjsFromMoscow } from '@/utils/index.js';
-import { toDateFormat } from '@/utils/formatter.js';
+import { dayjsFromMoscow, toDateFormat } from '@/utils/formatters/date.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import dayjs from 'dayjs';
 import plural from 'plural-ru';

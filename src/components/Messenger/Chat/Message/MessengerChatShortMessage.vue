@@ -41,7 +41,7 @@
 import { entityOptions } from '@/const/options/options';
 import Avatar from '@/components/common/Avatar.vue';
 import { computed } from 'vue';
-import { ucFirst } from '@/utils/formatter.js';
+import { ucFirst } from '@/utils/formatters/string.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import plural from 'plural-ru';
 

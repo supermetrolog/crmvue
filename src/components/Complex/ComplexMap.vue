@@ -79,7 +79,7 @@ import YandexMapMarker from '@/components/common/YandexMap/YandexMapMarker.vue';
 import Tooltip from '@/components/common/Tooltip.vue';
 import ComplexMapDescription from '@/components/Complex/ComplexMapDescription.vue';
 import { onUnmounted, reactive, shallowRef } from 'vue';
-import { ucFirst } from '@/utils/formatter.js';
+import { ucFirst } from '@/utils/formatters/string.js';
 
 defineProps({
     location: {

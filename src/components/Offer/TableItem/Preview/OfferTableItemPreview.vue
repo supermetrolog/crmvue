@@ -87,7 +87,7 @@ import OfferTableItemPreviewMotionSlider from '@/components/Offer/TableItem/Offe
 import { dealOptions } from '@/const/options/deal.options.js';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
-import { toNumberFormat } from '@/utils/formatter.js';
+import { toNumberFormat } from '@/utils/formatters/number.js';
 import { getLinkOfferByObject, getLinkOfferOldByObject } from '@/utils/url.js';
 import NoImage from '@/components/common/NoImage.vue';
 import LazyImage from '@/components/common/LazyImage.vue';

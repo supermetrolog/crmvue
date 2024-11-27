@@ -1,6 +1,7 @@
 import api from '@/api/api.js';
 import { unref } from 'vue';
-import { getCompanyName } from '@/utils/formatter.js';
+
+import { getCompanyName } from '@/utils/formatters/models/company.js';
 
 function companyToOption(company) {
     return {

@@ -1,5 +1,5 @@
 import api from '@/api/api';
-import { deleteEmptyFields } from '@/utils/deleteEmptyFields.js';
+import { deleteEmptyFields } from '@/utils/helpers/object/deleteEmptyFields.js';
 import { useQueryHash } from '@/utils/useQueryHash.js';
 
 const Offers = {

@@ -32,7 +32,7 @@
 
 .company-box-main {
     &__header {
-        @include mixins.flex-box($a: center);
+        @include mixins.flex-box($a: flex-start);
         @include mixins.media('max', 'md') {
             flex-wrap: wrap;
             gap: 10px;
@@ -49,7 +49,7 @@
     }
 
     &__actions {
-        margin-left: 10px;
+        margin-left: 15px;
         @include mixins.flex-box($a: center, $gap: 5px);
     }
 
@@ -152,6 +152,27 @@
                 opacity: 1;
             }
         }
+    }
+
+    &__description {
+        max-height: 130px;
+        overflow-y: auto;
+    }
+
+    .tabs-component-tabs {
+        gap: 5px;
+    }
+
+    &__tab {
+        color: inherit;
+
+        &:hover, &.is-active {
+            background-color: variables.$bg-success-l;
+        }
+    }
+
+    &__group {
+        font-size: 14px;
     }
 }
 
