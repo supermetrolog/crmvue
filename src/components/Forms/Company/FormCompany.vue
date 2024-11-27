@@ -2,6 +2,7 @@
     <Modal
         @close="$emit('close')"
         :title="formData ? 'Редактирование компании' : 'Создание компании'"
+        :close-on-outside-click="false"
         class="modal-form-company"
         width="1000"
         has-tabs
