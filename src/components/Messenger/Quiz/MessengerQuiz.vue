@@ -31,14 +31,16 @@
                     Запланировать звонок
                 </MessengerButton>
                 <MessengerButton disabled>Контакты утеряны</MessengerButton>
-                <MessengerButton
-                    v-if="isObjectChatMember"
-                    @click="onObjectDestroyed"
-                    :disabled="objectIsPassive"
-                    color="danger"
-                >
-                    Объект снесен
-                </MessengerButton>
+                <template v-if="isObjectChatMember">
+                    <MessengerButton @click="onObjectSold">Объект продан</MessengerButton>
+                    <MessengerButton
+                        @click="onObjectDestroyed"
+                        :disabled="objectIsPassive"
+                        color="danger"
+                    >
+                        Объект снесен
+                    </MessengerButton>
+                </template>
                 <MessengerButton
                     v-else
                     @click="onCompanyDestroyed"
@@ -342,6 +344,34 @@ async function onObjectDestroyed() {
 
     const messagePayload = {
         message: `<b>Объект снесен!</b>`
+    };
+
+    const createdMessage = await api.messenger.sendMessageWithTask(
+        store.state.Messenger.currentDialog.id,
+        messagePayload,
+        taskPayload
+    );
+
+    if (createdMessage) {
+        notify.success('Сообщение и задача успешно созданы');
+    } else {
+        notify.error('Произошла ошибка. Попробуйте еще раз..');
+    }
+}
+
+async function onObjectSold() {
+    const object = store.state.Messenger.currentDialog.model.object;
+
+    const taskPayload = await createTaskWithTemplate({
+        message: `Объект #${object.id} продан `,
+        step: TASK_FORM_STEPS.MESSAGE,
+        end: dayjs().add(SCHEDULING_CALL_DURATION, 'day').toDate()
+    });
+
+    if (!taskPayload) return;
+
+    const messagePayload = {
+        message: `<b>Объект продан!</b> Компания ${getCompanyShortName(store.state.Messenger.currentPanel)} больше не владелец`
     };
 
     const createdMessage = await api.messenger.sendMessageWithTask(
