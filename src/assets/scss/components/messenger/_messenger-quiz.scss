@@ -381,6 +381,10 @@
     &__contact {
         width: calc(calc(100% - 10px) / 3);
     }
+
+    &__heading {
+        @include mixins.flex-box($a: center, $gap: 5px);
+    }
 }
 
 .messenger-quiz-contact {

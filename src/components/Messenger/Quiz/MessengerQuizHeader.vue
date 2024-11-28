@@ -6,7 +6,7 @@
                 Список контактов ({{ contacts.length }}):
             </DashboardChip>
             <HoverActionsButton
-                @click="formIsVisible = true"
+                @click="suggestTask"
                 label="Добавить контакт"
                 class="dashboard-bg-gray-l"
                 small
@@ -62,6 +62,21 @@
                 </div>
             </div>
         </Modal>
+        <Modal
+            @close="closeTaskSuggestion"
+            title="Создание контакта"
+            :width="600"
+            :show="taskSuggestionIsVisible"
+        >
+            <h3 class="text-center">
+                Заполнить данные контакта или создать задачу для офис-менеджера?
+            </h3>
+
+            <template #footer>
+                <Button @click="createContact" small>Заполнить контакта</Button>
+                <Button @click="createTask" small>Создать задачу офис-менеджеру</Button>
+            </template>
+        </Modal>
         <teleport to="body">
             <FormCompanyContact
                 v-if="formIsVisible"
@@ -95,6 +110,7 @@ import { contactOptions } from '@/const/options/contact.options.js';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 
 const currentContact = defineModel('contact');
+const emit = defineEmits(['create-contact']);
 
 const store = useStore();
 const notify = useNotify();
@@ -116,6 +132,8 @@ const company = computed(() => store.state.Messenger.currentPanel);
 const mainContact = computed(() => {
     return contacts.value.find(contact => contact.isMain);
 });
+
+const taskSuggestionIsVisible = ref(false);
 
 const createTaskPayload = templateMessage => {
     return createTaskWithTemplate({
@@ -217,6 +235,24 @@ const onContactUpdated = async (_, contact) => {
 
 function onContactCreated(contact) {
     contacts.value.unshift(contact);
+}
+
+function suggestTask() {
+    taskSuggestionIsVisible.value = true;
+}
+
+function closeTaskSuggestion() {
+    taskSuggestionIsVisible.value = false;
+}
+
+function createContact() {
+    closeTaskSuggestion();
+    formIsVisible.value = true;
+}
+
+function createTask() {
+    closeTaskSuggestion();
+    emit('create-contact');
 }
 
 onMounted(async () => {
