@@ -346,6 +346,7 @@ import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
 import AccordionSimpleTriggerButton from '@/components/common/Accordion/AccordionSimpleTriggerButton.vue';
 import Avatar from '@/components/common/Avatar.vue';
 import DashboardTableTasksItemObserver from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemObserver.vue';
+import { useAuth } from '@/composables/useAuth.js';
 
 const DAYS_TO_IMPOSSIBLE = 30;
 
@@ -377,6 +378,7 @@ const notify = useNotify();
 const { confirm } = useConfirm();
 const { show: showTaskCreator } = useAsyncPopup('taskCreator');
 const store = useStore();
+const { currentUserId } = useAuth();
 
 const newComment = shallowRef(null);
 const moveSettingsIsVisible = shallowRef(false);
@@ -413,7 +415,16 @@ const dayToExpiredFromNow = computed(() =>
 );
 const status = computed(() => taskOptions.status[props.task.status]);
 const statusIcon = computed(() => taskOptions.statusIcon[props.task.status]);
-const canBeDeleted = computed(() => store.getters.isAdmin || store.getters.isDirector);
+
+const isRecent = computed(
+    () => dayjs().diff(dayjsFromMoscow(props.task.created_at), 'minute') < 20
+);
+
+const canBeDeleted = computed(() => () => {
+    if (store.getters.isAdmin || store.getters.isDirector) return true;
+
+    return currentUserId.value === props.task.created_by_id && isRecent.value;
+});
 const canBeViewed = computed(() => {
     if (props.task?.observers?.length) {
         return props.task.observers.some(
