@@ -218,7 +218,6 @@
 </template>
 
 <script setup>
-import { useStore } from 'vuex';
 import useVuelidate from '@vuelidate/core';
 import { helpers, or, required } from '@vuelidate/validators';
 import { ActivePassive, FeedbackIcons, PassiveWhyContact, PositionList } from '@/const/const.js';
@@ -263,7 +262,6 @@ const props = defineProps({
 });
 
 const { getConsultantsOptions } = useConsultantsOptions();
-const store = useStore();
 const { form } = useFormData(
     reactive({
         company_id: null,
@@ -391,9 +389,9 @@ const updateContact = async () => {
 };
 
 const createContact = async () => {
-    const created = await api.contacts.create(form);
-    if (created) {
-        emit('created');
+    const createdContact = await api.contacts.create(form);
+    if (createdContact) {
+        emit('created', createdContact);
         emit('close');
     }
 };

@@ -1,9 +1,19 @@
 <template>
     <div class="messenger-quiz-header">
         <Spinner v-if="isLoading" class="small" label="Загрузка контактов.." />
-        <DashboardChip v-else class="dashboard-bg-gray-l mb-1">
-            Список контактов ({{ contacts.length }}):
-        </DashboardChip>
+        <div v-else class="messenger-quiz-header__heading mb-1">
+            <DashboardChip class="dashboard-bg-gray-l">
+                Список контактов ({{ contacts.length }}):
+            </DashboardChip>
+            <HoverActionsButton
+                @click="formIsVisible = true"
+                label="Добавить контакт"
+                class="dashboard-bg-gray-l"
+                small
+            >
+                <i class="fa-solid fa-user-plus"></i>
+            </HoverActionsButton>
+        </div>
         <div ref="contactsListEl" @wheel.prevent class="messenger-quiz-header__list">
             <MessengerQuizContact
                 v-for="contact in contacts"
@@ -56,8 +66,10 @@
             <FormCompanyContact
                 v-if="formIsVisible"
                 @close="closeForm"
+                @created="onContactCreated"
                 @updated="onContactUpdated"
                 :formdata="updatingContact"
+                :company_id="company?.id"
             />
         </teleport>
     </div>
@@ -80,6 +92,7 @@ import MessengerQuizContact from '@/components/Messenger/Quiz/MessengerQuizConta
 import { useHorizontalScroll } from '@/composables/useHorizontalScroll.js';
 import FormCompanyContact from '@/components/Forms/Company/FormCompanyContact.vue';
 import { contactOptions } from '@/const/options/contact.options.js';
+import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 
 const currentContact = defineModel('contact');
 
@@ -201,6 +214,10 @@ const onContactUpdated = async (_, contact) => {
 
     store.commit('Messenger/onContactUpdated', contact);
 };
+
+function onContactCreated(contact) {
+    contacts.value.unshift(contact);
+}
 
 onMounted(async () => {
     await fetchContacts();
