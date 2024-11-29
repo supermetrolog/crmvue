@@ -1,11 +1,6 @@
 <template>
     <div class="messenger-panel">
-        <MessengerTabs @switch="switchTab" :current="currentTab" :tabs="tabs">
-            <template #renter>
-                <span class="messenger-tabs__count mb-2">0</span>
-                <span>Арендаторы</span>
-            </template>
-        </MessengerTabs>
+        <MessengerTabs @switch="switchTab" :current="currentTab" :tabs="tabs" />
         <MessengerPanelLoader v-if="isLoading" />
         <MessengerPanelEmpty v-else-if="!hasPanel" />
         <div v-if="hasPanel" v-show="!isLoading" class="messenger-panel__wrapper">
@@ -28,14 +23,10 @@ import MessengerPanelRenter from '@/components/Messenger/Panel/MessengerPanelRen
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 
 const PANEL_TABS = {
-    COMPANY: 1,
-    RENTER: 2
+    COMPANY: 1
 };
 
-const tabs = [
-    { id: PANEL_TABS.COMPANY, key: 'company', label: 'Компания' },
-    { id: PANEL_TABS.RENTER, key: 'renter' }
-];
+const tabs = [{ id: PANEL_TABS.COMPANY, key: 'company', label: 'Компания' }];
 
 const store = useStore();
 const { isLoading } = useDelayedLoader();
