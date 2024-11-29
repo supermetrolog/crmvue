@@ -1,9 +1,19 @@
 <template>
     <div class="messenger-quiz-header">
         <Spinner v-if="isLoading" class="small" label="Загрузка контактов.." />
-        <DashboardChip v-else class="dashboard-bg-gray-l mb-1">
-            Список контактов ({{ contacts.length }}):
-        </DashboardChip>
+        <div v-else class="messenger-quiz-header__heading mb-1">
+            <DashboardChip class="dashboard-bg-gray-l">
+                Список контактов ({{ contacts.length }}):
+            </DashboardChip>
+            <HoverActionsButton
+                @click="suggestTask"
+                label="Добавить контакт"
+                class="dashboard-bg-gray-l"
+                small
+            >
+                <i class="fa-solid fa-user-plus"></i>
+            </HoverActionsButton>
+        </div>
         <div ref="contactsListEl" @wheel.prevent class="messenger-quiz-header__list">
             <MessengerQuizContact
                 v-for="contact in contacts"
@@ -52,12 +62,29 @@
                 </div>
             </div>
         </Modal>
+        <Modal
+            @close="closeTaskSuggestion"
+            title="Создание контакта"
+            :width="600"
+            :show="taskSuggestionIsVisible"
+        >
+            <h3 class="text-center">
+                Заполнить данные контакта или создать задачу для офис-менеджера?
+            </h3>
+
+            <template #footer>
+                <Button @click="createContact" small>Заполнить контакта</Button>
+                <Button @click="createTask" small>Создать задачу офис-менеджеру</Button>
+            </template>
+        </Modal>
         <teleport to="body">
             <FormCompanyContact
                 v-if="formIsVisible"
                 @close="closeForm"
+                @created="onContactCreated"
                 @updated="onContactUpdated"
                 :formdata="updatingContact"
+                :company_id="company?.id"
             />
         </teleport>
     </div>
@@ -80,8 +107,10 @@ import MessengerQuizContact from '@/components/Messenger/Quiz/MessengerQuizConta
 import { useHorizontalScroll } from '@/composables/useHorizontalScroll.js';
 import FormCompanyContact from '@/components/Forms/Company/FormCompanyContact.vue';
 import { contactOptions } from '@/const/options/contact.options.js';
+import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 
 const currentContact = defineModel('contact');
+const emit = defineEmits(['create-contact']);
 
 const store = useStore();
 const notify = useNotify();
@@ -103,6 +132,8 @@ const company = computed(() => store.state.Messenger.currentPanel);
 const mainContact = computed(() => {
     return contacts.value.find(contact => contact.isMain);
 });
+
+const taskSuggestionIsVisible = ref(false);
 
 const createTaskPayload = templateMessage => {
     return createTaskWithTemplate({
@@ -201,6 +232,28 @@ const onContactUpdated = async (_, contact) => {
 
     store.commit('Messenger/onContactUpdated', contact);
 };
+
+function onContactCreated(contact) {
+    contacts.value.unshift(contact);
+}
+
+function suggestTask() {
+    taskSuggestionIsVisible.value = true;
+}
+
+function closeTaskSuggestion() {
+    taskSuggestionIsVisible.value = false;
+}
+
+function createContact() {
+    closeTaskSuggestion();
+    formIsVisible.value = true;
+}
+
+function createTask() {
+    closeTaskSuggestion();
+    emit('create-contact');
+}
 
 onMounted(async () => {
     await fetchContacts();
