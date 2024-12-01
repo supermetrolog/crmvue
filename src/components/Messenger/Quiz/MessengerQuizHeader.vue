@@ -201,9 +201,9 @@ const fetchContacts = async () => {
 
     const response = await api.contacts.getByCompany(company.value.id);
     if (response?.length)
-        contacts.value = response.filter(
-            contact => contact.status === contactOptions.statusStatement.ACTIVE
-        );
+        contacts.value = response
+            .filter(contact => contact.status === contactOptions.statusStatement.ACTIVE)
+            .sort((first, second) => second.isMain - first.isMain);
 
     isLoading.value = false;
 };

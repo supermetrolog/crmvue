@@ -100,7 +100,8 @@
 
     &__icon-phone {
         font-size: 24px;
-        transform: rotateX(180deg);
+        transform: rotateZ(180deg);
+        margin-bottom: 5px;
     }
 
     &__tab-quiz {
@@ -137,6 +138,7 @@
     &__preview {
         width: 100px;
         height: 54px;
+        position: relative;
 
         img {
             object-fit: cover;
@@ -150,11 +152,16 @@
     }
 
     &__title {
-        font-weight: 500;
+        font-weight: 600;
     }
 
     &__id {
-        opacity: .5;
+        padding: 2px 4px;
+        position: absolute;
+        top: 1px;
+        left: 1px;
+        background-color: rgba(255, 255, 255, 0.9);
+        font-weight: 600;
     }
 
     &__deals {
@@ -186,6 +193,14 @@
     &__category {
         font-size: 13px!important;
         padding: 3px 7px!important;
+    }
+
+    &__id {
+        top: 11px;
+        left: 11px;
+        padding: 2px 4px;
+        border-right: 1px solid rgba(0, 0, 0, 0.2);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
     }
 }
 

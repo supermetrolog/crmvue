@@ -66,6 +66,7 @@
     &__site {
         color: #828282;
         font-weight: 500;
+        max-width: calc(100% - 30px);
     }
 
     &__option {
