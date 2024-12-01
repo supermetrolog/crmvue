@@ -8,10 +8,10 @@
     @include mixins.flex-box($d: column);
 
     &__wrapper {
-        margin: 10px;
-        border: 1px solid #000;
-        background-color: #F3F3F3;
+        padding: 10px;
         position: relative;
+        background-color: #F3F3F3;
+        border-bottom: 1px solid rgba(0, 0, 0, .1);
     }
 
     &__header {
@@ -355,7 +355,6 @@
     background-color: #dcd8d8;
     min-height: 100px;
     position: relative;
-    border-bottom: 1px solid rgba(0, 0, 0, .2);
 
     &:has(.messenger-quiz-header__empty) {
         min-height: 70px;
@@ -393,6 +392,7 @@
     border-radius: 5px;
     flex-shrink: 0;
     cursor: pointer;
+    border: 1px solid rgba(0, 0, 0, .2);
     @include mixins.flex-box($gap: 5px, $j: space-between);
     @include mixins.transition(background-color, color);
 

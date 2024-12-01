@@ -8,8 +8,8 @@
                             <Spinner class="absolute-center mini" />
                         </div>
                         <template v-else>
-                            <i class="fa-solid fa-square-phone-flip messenger-chat__icon-phone" />
-                            <span v-if="currentDialog?.last_call"> Опрос {{ lastCallDate }} </span>
+                            <i class="fa-solid fa-phone-volume messenger-chat__icon-phone" />
+                            <span v-if="currentDialog?.last_call">Опрос {{ lastCallDate }}</span>
                             <span v-else>ЗАПОЛНИТЕ ОПРОС!</span>
                         </template>
                     </template>
@@ -100,21 +100,18 @@ const lastCallDate = computed(() =>
 );
 
 const quizTabClass = computed(() => {
-    if (
-        store.getters['Messenger/currentDaysCountAfterLastCall'] >=
-        import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_DANGER
-    ) {
-        return 'bg-danger text-white';
+    const daysAfterLastCall = store.getters['Messenger/currentDaysCountAfterLastCall'];
+    let baseClass = 'not-selectable';
+
+    if (daysAfterLastCall <= import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_WARNING) {
+        return `${baseClass} success`;
     }
 
-    if (
-        store.getters['Messenger/currentDaysCountAfterLastCall'] >=
-        import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_WARNING
-    ) {
-        return 'bg-warning';
+    if (daysAfterLastCall <= import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_DANGER) {
+        return `${baseClass} bg-warning`;
     }
 
-    return null;
+    return `${baseClass} bg-danger text-white`;
 });
 
 const tabs = computed(() => [
@@ -123,7 +120,7 @@ const tabs = computed(() => [
         id: messenger.chatTabs.SURVEY,
         key: 'quiz',
         label: 'Заполните опрос',
-        class: !isLoading.value ? quizTabClass.value : undefined
+        class: !isLoading.value ? quizTabClass.value : 'not-selectable'
     }
 ]);
 

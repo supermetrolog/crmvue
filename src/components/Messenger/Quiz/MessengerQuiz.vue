@@ -1,23 +1,18 @@
 <template>
     <div class="messenger-quiz messenger-chat__content">
         <MessengerChatHeader />
-        <div v-if="shouldCall" class="messenger-quiz__info">
-            <MessengerQuizWarning />
-        </div>
-        <div class="mt-2">
-            <Spinner v-if="surveysIsLoading" class="small" label="Загрузка опросов"></Spinner>
-            <div v-else-if="surveys.length" class="messenger-quiz__surveys">
-                <Button v-tippy="'В разработке..'" @click="showSurveys" class="ml-auto" small icon>
-                    <i class="fa-solid fa-eye"></i>
-                    <span>Посмотреть полный список завершенных опросов ({{ surveysCount }})</span>
-                </Button>
-                <MessengerQuizInlineElement
-                    v-for="survey in surveys"
-                    :key="survey.id"
-                    @show="showSurvey(survey.id)"
-                    :quiz="survey"
-                />
-            </div>
+        <Spinner v-if="surveysIsLoading" class="small mt-2" label="Загрузка опросов"></Spinner>
+        <div v-else-if="surveys.length" class="messenger-quiz__surveys mt-2">
+            <Button v-tippy="'В разработке..'" @click="showSurveys" class="ml-auto" small icon>
+                <i class="fa-solid fa-eye"></i>
+                <span>Посмотреть полный список завершенных опросов ({{ surveysCount }})</span>
+            </Button>
+            <MessengerQuizInlineElement
+                v-for="survey in surveys"
+                :key="survey.id"
+                @show="showSurvey(survey.id)"
+                :quiz="survey"
+            />
         </div>
         <div class="messenger-quiz__wrapper">
             <MessengerQuizHeader
@@ -33,7 +28,6 @@
                 <MessengerButton @click="scheduleCall" :disabled="!currentRecipient">
                     Запланировать звонок
                 </MessengerButton>
-                <MessengerButton disabled>Контакты утеряны</MessengerButton>
                 <template v-if="isObjectChatMember">
                     <MessengerButton @click="onObjectSold">Объект продан</MessengerButton>
                     <MessengerButton
@@ -44,14 +38,6 @@
                         Объект снесен
                     </MessengerButton>
                 </template>
-                <MessengerButton
-                    v-else
-                    @click="onCompanyDestroyed"
-                    :disabled="companyIsPassive"
-                    color="danger"
-                >
-                    Компания ликвидирована
-                </MessengerButton>
             </div>
             <MessengerQuizComplete v-if="isCompleted" @close="close" />
         </div>
@@ -104,7 +90,6 @@ import MessengerQuizPreview from '@/components/Messenger/Quiz/MessengerQuizPrevi
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import MessengerQuizRecipientPicker from '@/components/Messenger/Quiz/MessengerQuizRecipientPicker.vue';
 import MessengerQuizForm from '@/components/Messenger/Quiz/MessengerQuizForm.vue';
-import MessengerQuizWarning from '@/components/Messenger/Quiz/MessengerQuizWarning.vue';
 import { TASK_FORM_STEPS, useTaskManager } from '@/composables/useTaskManager.js';
 import dayjs from 'dayjs';
 import { toBoldHTML } from '@/utils/formatters/html.js';
@@ -143,13 +128,6 @@ const isObjectChatMember = computed(() => {
     return (
         store.state.Messenger.currentDialog?.model?.type ===
         messenger.objectChatMemberTypes.RENT_OR_SALE
-    );
-});
-
-const shouldCall = computed(() => {
-    return (
-        store.getters['Messenger/currentDaysCountAfterLastCall'] >
-        import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_WARNING
     );
 });
 
@@ -243,39 +221,6 @@ const scheduleCall = async () => {
         notify.error('Произошла ошибка. Попробуйте еще раз..');
     }
 };
-
-async function onCompanyDestroyed() {
-    const company = store.state.Messenger.currentPanel;
-
-    const taskPayload = await createTaskWithTemplate({
-        message: `Компания ${getCompanyShortName(company)} ликвидирована, отправить в пассив`,
-        step: TASK_FORM_STEPS.MESSAGE,
-        end: dayjs().add(SCHEDULING_CALL_DURATION, 'day').toDate()
-    });
-
-    if (!taskPayload) return;
-
-    const messagePayload = {
-        message: `<b>Компания ликвидирована!</b>`
-    };
-
-    const currentCompanyDialogId = await api.messenger.getChatMemberIdByQuery({
-        model_type: messenger.dialogTypes.COMPANY,
-        model_id: company.id
-    });
-
-    const createdMessage = await api.messenger.sendMessageWithTask(
-        currentCompanyDialogId,
-        messagePayload,
-        taskPayload
-    );
-
-    if (createdMessage) {
-        notify.success('Сообщение и задача успешно созданы');
-    } else {
-        notify.error('Произошла ошибка. Попробуйте еще раз..');
-    }
-}
 
 async function onObjectDestroyed() {
     const object = store.state.Messenger.currentDialog.model.object;
