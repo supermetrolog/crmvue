@@ -1,26 +1,24 @@
 <template>
     <div class="messenger-quiz messenger-chat__content">
         <MessengerChatHeader />
-        <div v-if="shouldCall" class="messenger-quiz__info">
-            <MessengerQuizWarning />
-        </div>
-        <div class="mt-2">
-            <Spinner v-if="surveysIsLoading" class="small" label="Загрузка опросов"></Spinner>
-            <div v-else-if="surveys.length" class="messenger-quiz__surveys">
-                <Button v-tippy="'В разработке..'" @click="showSurveys" class="ml-auto" small icon>
-                    <i class="fa-solid fa-eye"></i>
-                    <span>Посмотреть полный список завершенных опросов ({{ surveysCount }})</span>
-                </Button>
-                <MessengerQuizInlineElement
-                    v-for="survey in surveys"
-                    :key="survey.id"
-                    @show="showSurvey(survey.id)"
-                    :quiz="survey"
-                />
-            </div>
+        <Spinner v-if="surveysIsLoading" class="small mt-2" label="Загрузка опросов"></Spinner>
+        <div v-else-if="surveys.length" class="messenger-quiz__surveys mt-2">
+            <Button v-tippy="'В разработке..'" @click="showSurveys" class="ml-auto" small icon>
+                <i class="fa-solid fa-eye"></i>
+                <span>Посмотреть полный список завершенных опросов ({{ surveysCount }})</span>
+            </Button>
+            <MessengerQuizInlineElement
+                v-for="survey in surveys"
+                :key="survey.id"
+                @show="showSurvey(survey.id)"
+                :quiz="survey"
+            />
         </div>
         <div class="messenger-quiz__wrapper">
-            <MessengerQuizHeader v-model:contact="currentRecipient" />
+            <MessengerQuizHeader
+                v-model:contact="currentRecipient"
+                @create-contact="createContact"
+            />
             <Loader v-if="isLoading" class="my-4" />
             <MessengerQuizForm ref="quizForm" />
             <div class="messenger-quiz__footer">
@@ -30,23 +28,16 @@
                 <MessengerButton @click="scheduleCall" :disabled="!currentRecipient">
                     Запланировать звонок
                 </MessengerButton>
-                <MessengerButton disabled>Контакты утеряны</MessengerButton>
-                <MessengerButton
-                    v-if="isObjectChatMember"
-                    @click="onObjectDestroyed"
-                    :disabled="objectIsPassive"
-                    color="danger"
-                >
-                    Объект снесен
-                </MessengerButton>
-                <MessengerButton
-                    v-else
-                    @click="onCompanyDestroyed"
-                    :disabled="companyIsPassive"
-                    color="danger"
-                >
-                    Компания ликвидирована
-                </MessengerButton>
+                <template v-if="isObjectChatMember">
+                    <MessengerButton @click="onObjectSold">Объект продан</MessengerButton>
+                    <MessengerButton
+                        @click="onObjectDestroyed"
+                        :disabled="objectIsPassive"
+                        color="danger"
+                    >
+                        Объект снесен
+                    </MessengerButton>
+                </template>
             </div>
             <MessengerQuizComplete v-if="isCompleted" @close="close" />
         </div>
@@ -76,21 +67,6 @@
                 <Button @click="closeContactPicker" small>Отменить</Button>
             </template>
         </Modal>
-        <Modal
-            @close="closeTaskSuggestion"
-            title="Создание задачи"
-            :width="400"
-            :show="taskSuggestionIsVisible"
-        >
-            <h3 class="text-center">Создать задачу для офис.менеджера или другого сотрудника?</h3>
-
-            <template #footer>
-                <Button @click="createTaskTemplate" :disabled="!currentRecipient" small success>
-                    Создать задачу
-                </Button>
-                <Button @click="closeTaskSuggestion" small>Пропустить</Button>
-            </template>
-        </Modal>
     </div>
 </template>
 <script setup>
@@ -114,7 +90,6 @@ import MessengerQuizPreview from '@/components/Messenger/Quiz/MessengerQuizPrevi
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import MessengerQuizRecipientPicker from '@/components/Messenger/Quiz/MessengerQuizRecipientPicker.vue';
 import MessengerQuizForm from '@/components/Messenger/Quiz/MessengerQuizForm.vue';
-import MessengerQuizWarning from '@/components/Messenger/Quiz/MessengerQuizWarning.vue';
 import { TASK_FORM_STEPS, useTaskManager } from '@/composables/useTaskManager.js';
 import dayjs from 'dayjs';
 import { toBoldHTML } from '@/utils/formatters/html.js';
@@ -123,7 +98,6 @@ import { messenger } from '@/const/messenger.js';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 
 const SCHEDULING_CALL_DURATION = 30; // days
-const TASK_DURATION = 7; // days
 
 const emit = defineEmits(['complete']);
 
@@ -141,13 +115,6 @@ const {
     submit: submitContactPicker
 } = useAsyncPopup('quizContactPicker');
 
-const {
-    show: suggestTask,
-    isVisible: taskSuggestionIsVisible,
-    cancel: closeTaskSuggestion,
-    submit: createTaskTemplate
-} = useAsyncPopup('taskSuggestion');
-
 const isLoading = ref(false);
 const isCompleted = ref(false);
 
@@ -164,13 +131,6 @@ const isObjectChatMember = computed(() => {
     );
 });
 
-const shouldCall = computed(() => {
-    return (
-        store.getters['Messenger/currentDaysCountAfterLastCall'] >
-        import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_WARNING
-    );
-});
-
 const companyIsPassive = computed(() => !store.state.Messenger.currentPanel.status);
 const objectIsPassive = computed(
     () => store.state.Messenger.currentDialog.model.object.status !== 1
@@ -181,8 +141,6 @@ const { isLoading: surveysIsLoading } = useDelayedLoader(
 );
 
 const send = async () => {
-    let taskPayload;
-
     const confirmed = await confirm(
         'Подтвердите заполнение опросника. Вы закончили заполнение полученной информации?'
     );
@@ -190,17 +148,6 @@ const send = async () => {
 
     const contact = await showContactPicker({});
     if (!contact) return;
-
-    const taskShouldBeCreated = await suggestTask({});
-    if (taskShouldBeCreated) {
-        taskPayload = await createTaskWithTemplate({
-            message: `Обработать информацию опроса! `,
-            step: TASK_FORM_STEPS.MESSAGE,
-            end: dayjs().add(TASK_DURATION, 'day').toDate()
-        });
-
-        if (!taskPayload) return;
-    }
 
     isLoading.value = true;
 
@@ -214,8 +161,6 @@ const send = async () => {
     });
 
     if (createdSurvey) {
-        if (taskPayload) await createTask(taskPayload);
-
         store.dispatch('Messenger/onSurveyCreated', createdSurvey);
         isCompleted.value = true;
         notify.success('Опрос успешно сохранен');
@@ -249,25 +194,6 @@ const showSurveys = () => {
     notify.info('Функция находится в разработке..', 'Функция недоступна');
 };
 
-async function createTask(taskPayload) {
-    const messagePayload = {
-        message: `Заполнил опросник. Прошу ознакомиться и обработать информацию!`,
-        contact_ids: currentRecipient.value ? [currentRecipient.value.id] : []
-    };
-
-    const createdMessage = await api.messenger.sendMessageWithTask(
-        store.state.Messenger.currentDialog.id,
-        messagePayload,
-        taskPayload
-    );
-
-    if (createdMessage) {
-        notify.success('Сообщение и задача успешно созданы');
-    } else {
-        notify.error('Произошла ошибка. Попробуйте еще раз..');
-    }
-}
-
 const scheduleCall = async () => {
     const taskPayload = await createTaskWithTemplate({
         message: `Прозвонить контакта (${currentRecipient.value?.full_name ?? `Общий контакт компании #${currentRecipient.value?.company_id}`})`,
@@ -296,39 +222,6 @@ const scheduleCall = async () => {
     }
 };
 
-async function onCompanyDestroyed() {
-    const company = store.state.Messenger.currentPanel;
-
-    const taskPayload = await createTaskWithTemplate({
-        message: `Компания ${getCompanyShortName(company)} ликвидирована, отправить в пассив`,
-        step: TASK_FORM_STEPS.MESSAGE,
-        end: dayjs().add(SCHEDULING_CALL_DURATION, 'day').toDate()
-    });
-
-    if (!taskPayload) return;
-
-    const messagePayload = {
-        message: `<b>Компания ликвидирована!</b>`
-    };
-
-    const currentCompanyDialogId = await api.messenger.getChatMemberIdByQuery({
-        model_type: messenger.dialogTypes.COMPANY,
-        model_id: company.id
-    });
-
-    const createdMessage = await api.messenger.sendMessageWithTask(
-        currentCompanyDialogId,
-        messagePayload,
-        taskPayload
-    );
-
-    if (createdMessage) {
-        notify.success('Сообщение и задача успешно созданы');
-    } else {
-        notify.error('Произошла ошибка. Попробуйте еще раз..');
-    }
-}
-
 async function onObjectDestroyed() {
     const object = store.state.Messenger.currentDialog.model.object;
 
@@ -346,6 +239,65 @@ async function onObjectDestroyed() {
 
     const createdMessage = await api.messenger.sendMessageWithTask(
         store.state.Messenger.currentDialog.id,
+        messagePayload,
+        taskPayload
+    );
+
+    if (createdMessage) {
+        notify.success('Сообщение и задача успешно созданы');
+    } else {
+        notify.error('Произошла ошибка. Попробуйте еще раз..');
+    }
+}
+
+async function onObjectSold() {
+    const object = store.state.Messenger.currentDialog.model.object;
+
+    const taskPayload = await createTaskWithTemplate({
+        message: `Объект #${object.id} продан `,
+        step: TASK_FORM_STEPS.MESSAGE,
+        end: dayjs().add(SCHEDULING_CALL_DURATION, 'day').toDate()
+    });
+
+    if (!taskPayload) return;
+
+    const messagePayload = {
+        message: `<b>Объект продан!</b> Компания ${getCompanyShortName(store.state.Messenger.currentPanel)} больше не владелец`
+    };
+
+    const createdMessage = await api.messenger.sendMessageWithTask(
+        store.state.Messenger.currentDialog.id,
+        messagePayload,
+        taskPayload
+    );
+
+    if (createdMessage) {
+        notify.success('Сообщение и задача успешно созданы');
+    } else {
+        notify.error('Произошла ошибка. Попробуйте еще раз..');
+    }
+}
+
+async function createContact() {
+    const taskPayload = await createTaskWithTemplate({
+        message: `Добавить новый контакт в компании ${getCompanyShortName(store.state.Messenger.currentPanel)}`,
+        step: TASK_FORM_STEPS.MESSAGE,
+        end: dayjs().add(SCHEDULING_CALL_DURATION, 'day').toDate()
+    });
+
+    if (!taskPayload) return;
+
+    const messagePayload = {
+        message: `Добавлен новый контакт компании!`
+    };
+
+    const currentCompanyDialogId = await api.messenger.getChatMemberIdByQuery({
+        model_type: messenger.dialogTypes.COMPANY,
+        model_id: store.state.Messenger.currentPanel?.id
+    });
+
+    const createdMessage = await api.messenger.sendMessageWithTask(
+        currentCompanyDialogId,
         messagePayload,
         taskPayload
     );

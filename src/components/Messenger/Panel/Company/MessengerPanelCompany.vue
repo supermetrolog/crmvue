@@ -18,6 +18,14 @@
                 >
                     <i class="fa-solid fa-comment"></i>
                 </HoverActionsButton>
+                <HoverActionsButton
+                    @click="onCompanyDestroyed"
+                    label="Компания ликвидирована"
+                    class="messenger-panel-company__action dashboard-bg-danger-l"
+                    small
+                >
+                    <i class="fa-solid fa-trash"></i>
+                </HoverActionsButton>
             </div>
             <div class="messenger-panel-company__header">
                 <CompanyLogo
@@ -129,7 +137,7 @@ import Rating from '@/components/common/Rating.vue';
 import MessengerPanelCompanyTabs from '@/components/Messenger/Panel/Company/MessengerPanelCompanyTabs.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import { computed, ref } from 'vue';
-import { getCompanyName } from '@/utils/formatters/models/company.js';
+import { getCompanyName, getCompanyShortName } from '@/utils/formatters/models/company.js';
 import { toCorrectUrl, ucFirst } from '@/utils/formatters/string.js';
 import { companyOptions } from '@/const/options/company.options.js';
 import { contactOptions } from '@/const/options/contact.options.js';
@@ -142,6 +150,8 @@ import { useStore } from 'vuex';
 import { useNotify } from '@/utils/useNotify.js';
 import FormCompanyLogo from '@/components/Forms/Company/FormCompanyLogo.vue';
 import Avatar from '@/components/common/Avatar.vue';
+import { TASK_FORM_STEPS, useTaskManager } from '@/composables/useTaskManager.js';
+import api from '@/api/api.js';
 
 defineEmits(['edit']);
 const props = defineProps({
@@ -216,4 +226,38 @@ const onDeleteLogo = () => {
     notify.success('Логотип компании удален');
     store.commit('Messenger/onCompanyLogoUpdated', { id: props.company.id });
 };
+
+const { createTaskWithTemplate } = useTaskManager();
+
+async function onCompanyDestroyed() {
+    const company = store.state.Messenger.currentPanel;
+
+    const taskPayload = await createTaskWithTemplate({
+        message: `Компания ${getCompanyShortName(company)} ликвидирована, отправить в пассив`,
+        step: TASK_FORM_STEPS.MESSAGE
+    });
+
+    if (!taskPayload) return;
+
+    const messagePayload = {
+        message: `<b>Компания ликвидирована!</b>`
+    };
+
+    const currentCompanyDialogId = await api.messenger.getChatMemberIdByQuery({
+        model_type: messenger.dialogTypes.COMPANY,
+        model_id: company.id
+    });
+
+    const createdMessage = await api.messenger.sendMessageWithTask(
+        currentCompanyDialogId,
+        messagePayload,
+        taskPayload
+    );
+
+    if (createdMessage) {
+        notify.success('Сообщение и задача успешно созданы');
+    } else {
+        notify.error('Произошла ошибка. Попробуйте еще раз..');
+    }
+}
 </script>

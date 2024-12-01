@@ -1,13 +1,15 @@
 <template>
     <div class="messenger-chat-header-company">
-        <CompanyLogo :size="55" :company-id="dialog.model.id" :src="dialog.model.logo" />
+        <CompanyLogo :size="60" :company-id="dialog.model.id" :src="dialog.model.logo" />
+        <span class="messenger-chat-header__id messenger-chat-header-company__id">
+            ID{{ dialog.model.id }}
+        </span>
         <div class="messenger-chat-header__description">
             <p class="messenger-chat-header__title">
                 <span v-if="hasUndefinedName" class="messenger-warning">
                     [Нет уникального названия]
                 </span>
                 <span v-else>от {{ companyName }}</span>
-                <span class="messenger-chat-header__id">, ID{{ dialog.model.id }}</span>
             </p>
             <p class="messenger-chat-header__address">
                 {{ dialog.model.office_address ?? dialog.model.officeAdress }}

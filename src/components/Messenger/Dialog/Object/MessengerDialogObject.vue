@@ -26,7 +26,7 @@
                 <p v-if="model.object.company" class="messenger-dialog-offer__company">
                     {{ companyName }}
                 </p>
-                <MessengerDialogObjectDealType :type="model.type" :object="model.object" />
+                <MessengerDialogObjectDealType :type="model.type" :offers="model.object.offers" />
                 <p class="messenger-dialog-offer__address">
                     <Tooltip :text="model.object.address" icon="fa-solid fa-earth-americas" />
                     <span>{{ model.object.address }}</span>

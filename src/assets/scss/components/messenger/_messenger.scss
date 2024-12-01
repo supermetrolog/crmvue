@@ -207,7 +207,12 @@
             background-color:  #6fd2b1;
         }
 
-        &.active {
+        &.success {
+            background-color: #6fd2b1;
+            font-weight: 500;
+        }
+
+        &.active:not(.not-selectable) {
             background-color:  #6fd2b1;
             color: #000!important;
 

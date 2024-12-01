@@ -1,5 +1,5 @@
 <template>
-    <p v-if="object?.offers?.length" class="messenger-dialog-offer__category">
+    <p v-if="offers?.length" class="messenger-dialog-offer__category">
         <span
             v-for="dealType in preparedOffers"
             :key="dealType.id"
@@ -20,8 +20,8 @@ import { dealOptions } from '@/const/options/deal.options.js';
 import { objectChatMemberTypes } from '@/const/messenger.js';
 
 const props = defineProps({
-    object: {
-        type: Object,
+    offers: {
+        type: Array,
         required: true
     },
     type: {
@@ -32,7 +32,7 @@ const props = defineProps({
 
 const filteredTypes = computed(() => {
     if (props.type === objectChatMemberTypes.RENT_OR_SALE) {
-        return props.object.offers.filter(
+        return props.offers.filter(
             element =>
                 element.deal_type === dealOptions.typeStatement.RENT ||
                 element.deal_type === dealOptions.typeStatement.SALE
@@ -40,14 +40,12 @@ const filteredTypes = computed(() => {
     }
 
     if (props.type === objectChatMemberTypes.SUBLEASE) {
-        return props.object.offers.filter(
+        return props.offers.filter(
             element => element.deal_type === dealOptions.typeStatement.SUBLEASE
         );
     }
 
-    return props.object.offers.filter(
-        element => element.deal_type === dealOptions.typeStatement.STORAGE
-    );
+    return props.offers.filter(element => element.deal_type === dealOptions.typeStatement.STORAGE);
 });
 
 const preparedOffers = computed(() => {
