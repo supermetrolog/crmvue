@@ -56,7 +56,7 @@ const hasPanel = shallowRef(false);
 const isActive = shallowRef(false);
 const timeout = shallowRef(null);
 
-const { currentTab } = createMessengerContext();
+const { currentTab, filters } = createMessengerContext();
 
 provide('$openAttachments', () => attachments.value?.open());
 
@@ -212,6 +212,8 @@ const selectTab = (tab, tabSorting = null) => {
     } else if (tabSorting !== null) {
         currentTab.sort = tabSorting;
     }
+
+    if (tabSorting) filters[tab] = {};
 
     store.commit('Messenger/setCurrentAsidePanel', tab);
 
