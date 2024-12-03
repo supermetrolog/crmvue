@@ -27,7 +27,7 @@
                         class="text-danger d-block"
                         :class="{ 'text-grey': request.status !== 1 }"
                     >
-                        <b>срочный запрос</b>
+                        <b>срочно</b>
                     </p>
                 </div>
                 <div class="col-12">
@@ -52,7 +52,7 @@
             </p>
             <p v-else>&#8212;</p>
         </Td>
-        <Td class="text-center py-1">
+        <Td class="text-center request-table__region py-1">
             <div>
                 <p v-if="request.regions.length">
                     {{ regionsText }}
@@ -75,7 +75,7 @@
                 </p>
             </div>
         </Td>
-        <Td>
+        <Td class="request-table__company">
             <CompanyElement
                 v-if="request.company"
                 class="request-table-item__company"
@@ -98,28 +98,39 @@
             />
             <p v-else>&#8212;</p>
         </Td>
-        <Td class="text-center request-table__date" sort="updated_at">
-            <p>
-                {{ request.updated_at_format ?? request.created_at_format }}
-            </p>
-        </Td>
-        <Td class="text-center request-table__status" sort="status">
-            <h4 v-if="request.status === 1" class="text-success">Актив</h4>
-            <span
-                v-else-if="request.status === 2"
-                class="request-table__badge badge badge-blue-green"
+        <Td class="text-center request-table__status" sort="updated_at">
+            <DashboardChip
+                v-if="isPassive"
+                v-tippy="passiveWhyComment"
+                class="dashboard-bg-danger offer-table-item__chip text-white"
             >
+                Пассив
+            </DashboardChip>
+            <DashboardChip
+                v-else-if="isActive"
+                class="dashboard-bg-success-l offer-table-item__chip"
+            >
+                Актив
+            </DashboardChip>
+            <DashboardChip v-else class="dashboard-bg-primary-l offer-table-item__chip">
                 Завершен
-            </span>
-            <span v-else class="request-table__badge badge badge-warning">Пассив</span>
-            <div v-if="!request.status" class="request-table__passive-why">
-                <p class="text-warning d-inline-block">
-                    <b>{{ passiveWhy }}</b>
-                    <span v-if="request.passive_why_comment" class="text-dark">
-                        : {{ request.passive_why_comment }}
-                    </span>
-                </p>
-            </div>
+            </DashboardChip>
+            <!--            <OfferTableItemCall @click="openSurvey" :call="company.last_call" />-->
+            <!--            <HoverActionsButton-->
+            <!--                @click="openInChat"-->
+            <!--                class="my-2 mx-auto offer-table-item__chat"-->
+            <!--                :label="`У вас ${offer.unread_message_count} непрочитанных сообщений по этой компании`"-->
+            <!--            >-->
+            <!--                <div class="d-flex flex-column">-->
+            <!--                    <i class="fa-solid fa-comment" />-->
+            <!--                    <span>{{ offer.unread_message_count }}</span>-->
+            <!--                </div>-->
+            <!--            </HoverActionsButton>-->
+            <TableDateBlock
+                class="text-center"
+                :date="request.updated_at || request.created_at"
+                label="Обновление"
+            />
         </Td>
     </Tr>
 </template>
@@ -130,13 +141,15 @@ import Tr from '@/components/common/Table/Tr.vue';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import Progress from '@/components/common/Progress.vue';
 import { unitTypes } from '@/const/unitTypes.js';
-import { computed } from 'vue';
+import { computed, defineProps } from 'vue';
 import { ucFirst } from '@/utils/formatters/string.js';
 import { DealTypeList, DirectionList, DistrictList, PassiveWhyRequest } from '@/const/const.js';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import Avatar from '@/components/common/Avatar.vue';
 import CompanyElement from '@/components/Company/CompanyElement.vue';
 import CompanyContact from '@/components/Company/CompanyContact.vue';
+import TableDateBlock from '@/components/common/Table/TableDateBlock.vue';
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 
 defineEmits(['to-chat', 'view']);
 const props = defineProps({
@@ -156,5 +169,14 @@ const districtsText = computed(() =>
     props.request.districts.map(elem => DistrictList[elem.district]).join(', ')
 );
 const dealType = computed(() => DealTypeList[props.request.dealType].label);
-const passiveWhy = computed(() => PassiveWhyRequest[props.request.passive_why].label);
+
+const isPassive = computed(() => !props.request.status);
+const isActive = computed(() => props.request.status === 1);
+
+const passiveWhyComment = computed(() => {
+    if (!props.request.passive_why) return 'Причина не указана';
+    let text = PassiveWhyRequest[props.request.passive_why].label;
+    if (props.request.passive_why_comment) text += ': ' + props.request.passive_why_comment;
+    return text;
+});
 </script>
