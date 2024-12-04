@@ -36,9 +36,11 @@ import PopupsWrapper from '@/components/common/PopupsWrapper.vue';
 import { createMessengerContext } from '@/components/Messenger/useMessenger.js';
 import MessengerOpeningLoader from '@/components/Messenger/MessengerOpeningLoader.vue';
 import { createPreviewer } from '@/composables/usePreviewer.js';
+import { useActivityTracking } from '@/composables/useActivityTracking/useActivityTracking.js';
 
 const store = useStore();
 const { isVisible: confettiIsVisible, duration } = useConfetti();
+useActivityTracking();
 
 const messenger = useTemplateRef('messenger');
 const previewer = useTemplateRef('previewer');
