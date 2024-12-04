@@ -22,6 +22,9 @@ import Previewer from '@/components/common/Previewer.vue';
 import TheMobileHeader from '@/components/Header/TheMobileHeader.vue';
 import PopupsWrapper from '@/components/common/PopupsWrapper.vue';
 import { provide, shallowRef } from 'vue';
+import { useActivityTracking } from '@/composables/useActivityTracking/useActivityTracking.js';
+
+useActivityTracking();
 
 const previewer = shallowRef(null);
 

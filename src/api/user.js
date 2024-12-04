@@ -56,8 +56,8 @@ export default {
         const response = await axios.get(`${URL}/${id}/restore`);
         return responseToData(response);
     },
-    async activity() {
-        const response = await axios.post(`${URL}/activity`);
+    async activity(payload) {
+        const response = await axios.post(`${URL}/activity`, payload);
         return responseHasStatus(response, STATUS_SUCCESS);
     },
     async online() {

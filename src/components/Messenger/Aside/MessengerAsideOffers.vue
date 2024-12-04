@@ -32,11 +32,11 @@
 import MessengerAsideHeader from '@/components/Messenger/Aside/MessengerAsideHeader.vue';
 import { useStore } from 'vuex';
 import MessengerAsideObjects from '@/components/Messenger/Aside/MessengerAsideObjects.vue';
-import { computed, onMounted, reactive, ref, useTemplateRef, watch } from 'vue';
+import { computed, onMounted, ref, useTemplateRef, watch } from 'vue';
 import { messenger } from '@/const/messenger.js';
 import { useDebounceFn, useElementSize } from '@vueuse/core';
 import MessengerAsideCompanies from '@/components/Messenger/Aside/MessengerAsideCompanies.vue';
-import { useAuth } from '@/composables/useAuth.js';
+import { useMessengerContext } from '@/components/Messenger/useMessengerContext.js';
 
 const props = defineProps({
     currentTab: {
@@ -46,19 +46,11 @@ const props = defineProps({
 });
 
 const store = useStore();
-const { currentUserId } = useAuth();
+const { filters } = useMessengerContext();
 
 const asideOffers = useTemplateRef('asideOffers');
 const asideCompanies = useTemplateRef('asideCompanies');
 const isReversing = ref(false);
-const filters = reactive({
-    object: {
-        consultant_ids: [currentUserId.value]
-    },
-    company: {
-        consultant_ids: [currentUserId.value]
-    }
-});
 
 const { height: offersListHeight } = useElementSize(asideOffers);
 const { height: companiesListHeight } = useElementSize(asideCompanies);
@@ -79,11 +71,11 @@ watch(isReversed, () => {
 });
 
 watch(
-    filters,
-    () => {
-        debouncedUpdateDialog();
-    },
-    { deep: true }
+    () => [props.currentTab.name, props.currentTab.sort],
+    ([newTabName, newTabSort], [oldTabName, oldTabSort]) => {
+        if (newTabSort !== oldTabSort) debouncedUpdateDialogs();
+        else if (newTabSort !== null && newTabName !== oldTabName) debouncedUpdateDialogs();
+    }
 );
 
 const createPayload = () => {
@@ -109,16 +101,10 @@ const load = async ($state, modelType) => {
     else $state.loaded();
 };
 
-watch(
-    () => [props.currentTab.name, props.currentTab.sort],
-    ([newTabName, newTabSort], [oldTabName, oldTabSort]) => {
-        if (newTabSort !== oldTabSort) updateDialogs();
-        else if (newTabSort !== null && newTabName !== oldTabName) updateDialogs();
-    }
-);
-
 const updateDialogs = () => store.dispatch('Messenger/updateDialogs', createPayload());
-const debouncedUpdateDialog = useDebounceFn(updateDialogs, 500);
+const debouncedUpdateDialogs = useDebounceFn(updateDialogs, 500);
+
+watch(filters, debouncedUpdateDialogs, { deep: true });
 
 onMounted(() => {
     if (!hasQuery.value && !hasDialogs.value) updateDialogs();

@@ -3,7 +3,7 @@
         <MessengerAsideConsultantsHeader @load="updateDialogs" />
         <div class="messenger-aside__body">
             <MessengerAsideSection
-                v-model:filters="filters"
+                v-model:filters="filters.user"
                 v-model:sort="sorts"
                 @reset="resetFilters"
                 class="messenger-aside-users"
@@ -65,6 +65,7 @@ import MessengerAsideConsultantsHeader from '@/components/Messenger/Aside/Messen
 import { useSkeleton } from '@/composables/useSkeleton.js';
 import MessengerDialogUserSkeleton from '@/components/Messenger/Dialog/MessengerDialogUserSkeleton.vue';
 import { useDebounceFn } from '@vueuse/core';
+import { useMessengerContext } from '@/components/Messenger/useMessengerContext.js';
 
 const props = defineProps({
     currentTab: {
@@ -77,9 +78,8 @@ const store = useStore();
 const { isLoading } = useDelayedLoader();
 
 const virtualList = shallowRef(null);
-const filters = ref({
-    status: 10
-});
+
+const { filters } = useMessengerContext();
 const sorts = ref(null);
 
 const consultants = computed(() => store.state.Messenger.chatMembersUser.data);
@@ -93,14 +93,14 @@ const { lastElementsCount } = useSkeleton(consultants, { defaultCounts: 10 });
 const createPayload = () => {
     return {
         sort: props.currentTab.sort ? `${props.currentTab.sort},-default` : '-default',
-        ...filters.value
+        ...filters.user
     };
 };
 
 const updateDialogs = () => {
     store.dispatch('Messenger/updateConsultantsDialogs', createPayload());
 };
-const debouncedUpdateDialog = useDebounceFn(updateDialogs, 500);
+const debouncedUpdateDialogs = useDebounceFn(updateDialogs, 500);
 
 onBeforeMount(() => {
     if (!hasQuery.value && !hasDialogs.value) updateDialogs();
@@ -122,20 +122,8 @@ watch(
     }
 );
 
-watch(
-    filters,
-    () => {
-        debouncedUpdateDialog();
-    },
-    { deep: true }
-);
-
-watch(
-    () => props.currentTab.sort,
-    () => {
-        updateDialogs();
-    }
-);
+watch(filters, debouncedUpdateDialogs, { deep: true });
+watch(() => props.currentTab.sort, debouncedUpdateDialogs);
 
 const load = async $state => {
     const isLastPage = await store.dispatch('Messenger/loadDialogs', {
@@ -151,6 +139,6 @@ const selectPanel = options => {
 };
 
 function resetFilters() {
-    filters.value = {};
+    filters.user = {};
 }
 </script>
