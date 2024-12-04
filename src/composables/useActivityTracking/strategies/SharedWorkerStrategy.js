@@ -58,6 +58,7 @@ export class SharedWorkerStrategy extends BaseTrackingStrategy {
             document.addEventListener('visibilitychange', this.handleVisibilityChange);
 
             this.reportVisibilityState();
+            this.onActivity();
 
             port.start();
         } catch (err) {
