@@ -74,7 +74,6 @@ import Spinner from '@/components/common/Spinner.vue';
 import { useDocumentVisibility, useIntervalFn } from '@vueuse/core';
 import HeaderActivity from '@/components/Header/HeaderActivity.vue';
 
-const ACTIVITY_INTERVAL = 120000;
 const ONLINE_INTERVAL = 60000;
 
 const store = useStore();
@@ -121,13 +120,10 @@ const activityClickOutside = [
 watch(documentVisibility, (current, prev) => {
     if (current === 'visible' && prev === 'hidden') {
         onlineInterval.resume();
-        activityInterval.resume();
 
         fetchOnline();
-        setUserIsOnline();
     } else {
         onlineInterval.pause();
-        activityInterval.pause();
     }
 });
 
@@ -136,17 +132,11 @@ const fetchOnline = async () => {
     if (response) activityCount.value = response.online_count;
 };
 
-const setUserIsOnline = async () => {
-    await api.user.activity();
-};
-
-const activityInterval = useIntervalFn(fetchOnline, ACTIVITY_INTERVAL);
-const onlineInterval = useIntervalFn(setUserIsOnline, ONLINE_INTERVAL);
+const onlineInterval = useIntervalFn(fetchOnline, ONLINE_INTERVAL);
 
 const fetchInitialOnline = async () => {
     activityIsLoading.value = true;
 
-    await setUserIsOnline();
     await fetchOnline();
 
     activityIsLoading.value = false;

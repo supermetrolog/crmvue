@@ -51,7 +51,6 @@
                         />
                         <Input
                             v-model="form.userProfile.caller_id"
-                            :disabled="!!formData"
                             label="Добавочный номер"
                             maska="##########"
                             class="col-4"
