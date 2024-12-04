@@ -7,7 +7,7 @@
         <span v-if="badge !== null" class="dashboard-card-link__badge">
             {{ badge }}
         </span>
-        <Checkbox @change="$emit('select')" :disabled="disabled" :checked="active" />
+        <Checkbox :disabled="disabled" :checked="active" />
     </div>
 </template>
 

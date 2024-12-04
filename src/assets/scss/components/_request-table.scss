@@ -15,7 +15,7 @@
     }
 
     &__deal {
-        width: 300px;
+        width: 250px;
 
         h4 {
             text-transform: capitalize;
@@ -30,34 +30,30 @@
     }
 
     &__status {
-        width: 130px;
-    }
-
-    &__date {
-        width: 140px;
-    }
-
-    &__badge {
-        font-size: 12px;
-        width: 100%;
-        height: auto;
-        border-radius: 0;
-        padding: 5px 10px;
-        text-transform: uppercase;
+        width: 110px;
     }
 
     &__price {
-        width: 250px;
+        width: 230px;
     }
 
     &__area  {
         width: 250px;
     }
+
+    &__region {
+        width: 400px;
+    }
+
+    &__company {
+        width: 280px;
+    }
 }
 
 .request-table-item {
     td {
-        padding: 5px 10px!important;
+        padding: 10px!important;
+        vertical-align: top;
     }
 
     &__buttons {

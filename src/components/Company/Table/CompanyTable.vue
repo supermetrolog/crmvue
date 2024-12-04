@@ -9,7 +9,7 @@
                 <Th>опросник</Th>
                 <Th>консультант</Th>
                 <Th>Задачи бд</Th>
-                <Th sort="created_at">Дата</Th>
+                <Th sort="created_at">обновление</Th>
             </Tr>
         </template>
         <template #tbody>
