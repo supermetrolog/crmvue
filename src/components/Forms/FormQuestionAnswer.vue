@@ -135,7 +135,8 @@ const form = reactive({
     field_id: null,
     question_id: null,
     value: null,
-    message: null
+    message: null,
+    effect_ids: []
 });
 
 const valueIsRequired = computed(() => {
@@ -211,7 +212,16 @@ const onSubmit = async () => {
     isLoading.value = false;
 };
 
+function assignFormDataToForm() {
+    form.category = props.formData.category;
+    form.field_id = props.formData.field_id;
+    form.question_id = props.formData.question_id;
+    form.value = props.formData.value;
+    form.message = props.formData.message;
+    form.effect_ids = props.formData.effects?.map(effect => effect.id) ?? [];
+}
+
 if (props.formData) {
-    Object.assign(form, { ...props.formData });
+    assignFormDataToForm();
 }
 </script>
