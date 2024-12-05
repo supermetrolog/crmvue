@@ -582,7 +582,7 @@ const toImpossible = async () => {
 
     await changeStatus({
         status: taskOptions.statusTypes.CANCELED,
-        impossible_to: dayjs(props.task.end).subtract(DAYS_TO_IMPOSSIBLE, 'day').toDate()
+        impossible_to: dayjsFromMoscow(props.task.end).subtract(DAYS_TO_IMPOSSIBLE, 'day').toDate()
     });
 
     isLoading.value = false;
