@@ -462,7 +462,7 @@ export const TimelineStepWithLetterMixin = {
                 messageText += `Эл. почта: <a href="mailto:${this.THIS_USER.userProfile.emails[0].email}">${this.THIS_USER.userProfile.emails[0].email}</a>, `;
             }
 
-            messageText += 'веб.сайт: <a href="www.raysarma.ru">www.industry.realtor.ru</a></p>';
+            messageText += 'веб.сайт: <a href="www.raysarma.ru">www.raysarma.ru</a></p>';
 
             return messageAuthor + messageAuthorPosition + messageText;
         },
