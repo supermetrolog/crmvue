@@ -4,7 +4,7 @@
         :show="isVisible"
         width="1200"
         :close-on-outside-click="false"
-        :title="props ? 'Редактирование задачи' : 'Создание задачи'"
+        :title="isEditing ? 'Редактирование задачи' : 'Создание задачи'"
     >
         <div>
             <DashboardTableTasksItem :task="taskPreview" />
@@ -15,7 +15,7 @@
                 <UserPicker
                     v-else
                     v-model="form.user_id"
-                    :disabled="Boolean(props)"
+                    :disabled="isEditing"
                     single
                     :users="consultants"
                 />
@@ -123,6 +123,8 @@ import FormModalTaskDescription from '@/components/Forms/FormModalTaskDescriptio
 import { useAuth } from '@/composables/useAuth.js';
 import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItem.vue';
 import { useTimeoutFn } from '@vueuse/core';
+import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 const store = useStore();
 const { getTagsOptions } = useTagsOptions();
@@ -362,6 +364,8 @@ const close = () => {
 const selectRange = range => {
     form.value.date.end = dayjs().add(range, 'day').toDate();
 };
+
+const isEditing = computed(() => isNotNullish(props.value?.task?.id));
 
 onUnmounted(() => {
     destroyPopup();
