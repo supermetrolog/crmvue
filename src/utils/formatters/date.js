@@ -7,7 +7,7 @@ import dayjs from 'dayjs';
  * @return {dayjs.Dayjs}
  */
 export function dayjsFromMoscow(stringDate) {
-    return dayjs(stringDate.replace(/-/g, '/') + 'Z+3');
+    return dayjs(stringDate.replace(/-/g, '/') + 'Z+3', 'YYYY/MM/DD HH:mm:ssZ');
 }
 
 /**

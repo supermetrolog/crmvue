@@ -12,7 +12,13 @@
         <Stepper v-model:step="step" @complete="submit" :steps="steps" :v="v$.form" keep-alive>
             <template #1>
                 <Spinner v-if="isLoading" center />
-                <UserPicker v-else v-model="form.user_id" single :users="consultants" />
+                <UserPicker
+                    v-else
+                    v-model="form.user_id"
+                    :disabled="Boolean(props)"
+                    single
+                    :users="consultants"
+                />
             </template>
             <template #2>
                 <div class="d-flex justify-content-center gap-3">
