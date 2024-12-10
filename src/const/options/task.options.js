@@ -5,7 +5,8 @@ const statusTypes = {
     COMPLETED: 3,
     CANCELED: 4,
     EXPIRED: 5,
-    DELETED: 6
+    DELETED: 6,
+    NOT_COMPLETED: 7
 };
 
 const clearStatusTypes = {
