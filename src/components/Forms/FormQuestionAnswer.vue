@@ -2,10 +2,8 @@
     <Modal
         @close="emit('close')"
         show
-        :title="
-            formData && formData.id ? 'Редактирование варианта ответа' : 'Создание варианта ответа'
-        "
-        width="1200"
+        :title="formData?.id ? 'Редактирование варианта ответа' : 'Создание варианта ответа'"
+        width="1000"
     >
         <Form @submit="onSubmit">
             <Loader v-if="isLoading" />
@@ -13,7 +11,7 @@
                 <MultiSelect
                     v-model="form.category"
                     :v="v$.form.category"
-                    class="col-3"
+                    class="col-6"
                     label="Категория"
                     :options="categoryOptions"
                     required
@@ -23,7 +21,7 @@
                     v-model="form.field_id"
                     :v="v$.form.field_id"
                     label="Поле"
-                    class="col-3"
+                    class="col-6"
                     :options="fields"
                 />
                 <Input
@@ -31,7 +29,7 @@
                     v-model="form.field_id"
                     :v="v$.form.field_id"
                     required
-                    class="col-3"
+                    class="col-6"
                     type="number"
                     label="ID поля"
                 />
@@ -39,8 +37,9 @@
                     v-if="questions.length"
                     v-model="form.question_id"
                     :v="v$.form.question_id"
+                    searchable
                     label="Вопрос"
-                    class="col-3"
+                    class="col-6"
                     :options="questions"
                 />
                 <Input
@@ -48,14 +47,14 @@
                     v-model="form.question_id"
                     :v="v$.form.question_id"
                     required
-                    class="col-3"
+                    class="col-6"
                     type="number"
                     label="ID вопроса"
                 />
                 <MultiSelect
                     v-model="form.effect_ids"
                     label="События"
-                    class="col-3"
+                    class="col-6"
                     mode="tags"
                     searchable
                     :options="effects"
@@ -67,6 +66,7 @@
                     class="col-12"
                     label="Заголовок ответа"
                 />
+                <Textarea v-model="form.message" class="col-12" label="Сообщение в случае ответа" />
                 <div class="mx-auto d-flex gap-2">
                     <FormSubmit success>Сохранить</FormSubmit>
                     <Button
@@ -134,7 +134,9 @@ const form = reactive({
     category: null,
     field_id: null,
     question_id: null,
-    value: null
+    value: null,
+    message: null,
+    effect_ids: []
 });
 
 const valueIsRequired = computed(() => {
@@ -210,7 +212,16 @@ const onSubmit = async () => {
     isLoading.value = false;
 };
 
+function assignFormDataToForm() {
+    form.category = props.formData.category;
+    form.field_id = props.formData.field_id;
+    form.question_id = props.formData.question_id;
+    form.value = props.formData.value;
+    form.message = props.formData.message;
+    form.effect_ids = props.formData.effects?.map(effect => effect.id) ?? [];
+}
+
 if (props.formData) {
-    Object.assign(form, { ...props.formData });
+    assignFormDataToForm();
 }
 </script>

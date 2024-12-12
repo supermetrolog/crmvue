@@ -7,7 +7,7 @@
         </template>
         <template #content>
             <div v-if="!services.length" class="company-box-empty">
-                <EmptyData class="company-box-empty__data"> Нет данных </EmptyData>
+                <InProgress />
             </div>
         </template>
     </CompanyBoxLayout>
@@ -15,11 +15,11 @@
 
 <script>
 import CompanyBoxLayout from '@/components/Company/Box/CompanyBoxLayout.vue';
-import EmptyData from '@/components/common/EmptyData.vue';
+import InProgress from '@/components/common/InProgress.vue';
 
 export default {
     name: 'CompanyBoxServices',
-    components: { EmptyData, CompanyBoxLayout },
+    components: { InProgress, CompanyBoxLayout },
     props: {
         services: {
             type: Array,

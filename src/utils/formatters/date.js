@@ -7,7 +7,7 @@ import dayjs from 'dayjs';
  * @return {dayjs.Dayjs}
  */
 export function dayjsFromMoscow(stringDate) {
-    return dayjs(stringDate + 'Z+3');
+    return dayjs(stringDate + '+03', 'YYYY.MM.DD HH:mm:ssZZ');
 }
 
 /**
@@ -28,5 +28,13 @@ export function toBeautifulDateFormat(date) {
     if (dayjsDate.isToday()) return `Сегодня в ${dayjsDate.format('HH:mm')}`;
     else if (dayjsDate.isYesterday()) return `Вчера в ${dayjsDate.format('HH:mm')}`;
     else if (dayjsDate.isSame(dayjs(), 'year')) return dayjsDate.format('D.MM, HH:mm');
-    else return dayjsDate.format('D.MM.YY HH:mm');
+    else return dayjsDate.format('D.MM.YY, HH:mm');
+}
+
+/**
+ * @param {dayjs.Dayjs} date1
+ * @param {?dayjs.Dayjs} date2
+ */
+export function isSameYear(date1, date2 = dayjs()) {
+    return date1.isSame(date2, 'year');
 }

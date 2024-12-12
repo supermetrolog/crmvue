@@ -10,8 +10,7 @@
                     <Th>регион</Th>
                     <Th>компания</Th>
                     <Th>консультант</Th>
-                    <Th sort="updated_at">дата обновления</Th>
-                    <Th sort="status">статус</Th>
+                    <Th sort="updated_at">обновление</Th>
                 </Tr>
             </template>
             <template #tbody>

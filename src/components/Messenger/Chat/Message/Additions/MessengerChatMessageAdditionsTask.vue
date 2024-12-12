@@ -90,6 +90,7 @@ import Avatar from '@/components/common/Avatar.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { Tippy } from 'vue-tippy';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
+import { dayjsFromMoscow, toDateFormat } from '@/utils/formatters/date.js';
 
 const emit = defineEmits(['read']);
 const props = defineProps({
@@ -112,8 +113,8 @@ const { show: showTaskPreviewer } = useAsyncPopup('messengerTaskPreview');
 const store = useStore();
 
 const usersText = computed(() => props.addition.user.userProfile.middle_name);
-const expiredDate = computed(() => dayjs(props.addition.end).format('DD.MM.YYYY'));
-const isExpired = computed(() => dayjs(props.addition.end).diff(dayjs(), 'day') <= 3);
+const expiredDate = computed(() => toDateFormat(props.addition.end, 'DD.MM.YYYY'));
+const isExpired = computed(() => dayjsFromMoscow(props.addition.end).diff(dayjs(), 'day') <= 3);
 const isCompleted = computed(
     () =>
         props.addition.status === taskOptions.statusTypes.COMPLETED ||

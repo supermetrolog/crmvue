@@ -8,38 +8,40 @@
             :class="{ 'modal--with-tabs': hasTabs, 'modal--relative': relative }"
         >
             <div @click="onBlackoutClick" class="modal__blackout"></div>
-            <div
-                class="modal__container animate__animated"
-                :class="{
-                    animate__headShake: !canBeClosed
-                }"
-            >
-                <div class="modal__header">
-                    <p v-if="title">
-                        {{ title }}
-                    </p>
-                    <slot name="header"></slot>
-                    <div class="modal__close">
-                        <i
-                            v-tippy="'Закрыть окно'"
-                            @click.prevent="close"
-                            class="icon fa-solid fa-xmark"
-                        ></i>
+            <slot name="container">
+                <div
+                    class="modal__container animate__animated"
+                    :class="{
+                        animate__headShake: !canBeClosed
+                    }"
+                >
+                    <div class="modal__header">
+                        <p v-if="title">
+                            {{ title }}
+                        </p>
+                        <slot name="header"></slot>
+                        <div class="modal__close">
+                            <i
+                                v-tippy="'Закрыть окно'"
+                                @click.prevent="close"
+                                class="icon fa-solid fa-xmark"
+                            ></i>
+                        </div>
                     </div>
-                </div>
-                <div class="modal__body">
-                    <div class="container-fluid">
-                        <slot></slot>
+                    <div class="modal__body">
+                        <div class="container-fluid">
+                            <slot></slot>
+                        </div>
                     </div>
-                </div>
-                <div v-if="$slots.footer" class="modal__footer">
-                    <div class="container-fluid">
-                        <div class="modal__buttons">
-                            <slot name="footer"></slot>
+                    <div v-if="$slots.footer" class="modal__footer">
+                        <div class="container-fluid">
+                            <div class="modal__buttons">
+                                <slot name="footer"></slot>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </slot>
         </div>
     </Transition>
 </template>

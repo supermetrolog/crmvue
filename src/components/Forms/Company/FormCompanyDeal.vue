@@ -179,6 +179,7 @@ import { computed, onBeforeMount, reactive, ref, shallowRef } from 'vue';
 import { validationRulesForCompanyDeal } from '@/validators/rules.js';
 import Switch from '@/components/common/Forms/Switch.vue';
 import VLazyImage from 'v-lazy-image';
+import { useValidationNotify } from '@/composables/useValidationNotify.js';
 
 const emit = defineEmits(['updated', 'created', 'close']);
 const props = defineProps({
@@ -287,8 +288,10 @@ const create = async () => {
     isLoading.value = false;
 };
 
+const { validateWithNotify } = useValidationNotify(v$);
+
 const onSubmit = () => {
-    v$.value.$validate();
+    validateWithNotify();
 
     if (!form.clientLegalEntity) form.formOfOrganization = null;
 

@@ -2,6 +2,7 @@
     <div class="dashboard-aside__filters">
         <Button @click="reset" class="w-100" :disabled="!hasFilters" small danger>Сбросить</Button>
         <div class="dashboard-aside__menu mt-3">
+            <p class="dashboard-aside__label">Статусы</p>
             <DashboardCardNavLink
                 @select="toggleAll"
                 :icon="{
@@ -59,6 +60,21 @@
             </DashboardCardNavLink>
         </div>
         <hr />
+        <div>
+            <p class="dashboard-aside__label mb-2">Дополнительно</p>
+            <DashboardCardNavLink
+                @select="toggleNotCompleted"
+                :icon="{
+                    name: 'fa-solid fa-hourglass-half',
+                    class: 'dashboard-bg-danger-l'
+                }"
+                :badge="notCompletedCount"
+                :active="field.not_completed"
+            >
+                Невыполненные
+            </DashboardCardNavLink>
+        </div>
+        <hr />
         <template v-if="$slots.filters">
             <div class="dashboard-aside__menu my-1">
                 <slot name="filters" />
@@ -107,7 +123,7 @@ const store = useStore();
 const statusModelValue = defineModel('status', { type: Array, default: () => [] });
 const typeModelValue = defineModel('type', { type: Array, default: () => [] });
 
-defineProps({
+const props = defineProps({
     counts: {
         type: Object,
         required: true
@@ -124,7 +140,8 @@ const field = shallowReactive({
     in_progress: false,
     completed: false,
     expired: false,
-    canceled: false
+    canceled: false,
+    not_completed: false
 });
 
 const types = shallowReactive({
@@ -163,7 +180,13 @@ const hasFilters = computed(() => {
     return typeModelValue.value.length || statusModelValue.value.length;
 });
 
+const notCompletedCount = computed(() => {
+    return props.counts.total.toFixed() - props.counts.done.toFixed();
+});
+
 const toggleField = key => {
+    field.not_completed = false;
+
     field[key] = !field[key];
 
     const fieldId = taskOptions.clearStatusTypes[key.toUpperCase()];
@@ -209,6 +232,22 @@ const toggleAll = () => {
     else Object.keys(field).forEach(key => (field[key] = true));
 
     statusModelValue.value = [];
+};
+
+const toggleNotCompleted = () => {
+    if (!field.not_completed) reset();
+
+    field.not_completed = !field.not_completed;
+
+    if (field.not_completed) {
+        statusModelValue.value = [
+            taskOptions.clearStatusTypes.NEW,
+            taskOptions.clearStatusTypes.IN_PROGRESS
+        ];
+
+        field.new = true;
+        field.in_progress = true;
+    } else reset();
 };
 
 const reset = () => {

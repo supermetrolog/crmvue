@@ -1,6 +1,6 @@
 <template>
-    <div class="dashboard-task-item-preview__category">{{ label }}:</div>
-    <div class="dashboard-task-item-preview__value">
+    <div class="task-card__category">{{ label }}:</div>
+    <div class="task-card__value">
         <slot />
     </div>
 </template>

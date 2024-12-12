@@ -5,7 +5,8 @@ const statusTypes = {
     COMPLETED: 3,
     CANCELED: 4,
     EXPIRED: 5,
-    DELETED: 6
+    DELETED: 6,
+    NOT_COMPLETED: 7
 };
 
 const clearStatusTypes = {
@@ -60,6 +61,14 @@ const typeStatement = {
     VIEWING: 'observer_id'
 };
 
+const historyTextByType = {
+    created: 'Задача создана',
+    deleted: 'Задача удалена',
+    restored: 'Задача восстановлена',
+    status_changed: 'Статус задачи изменен',
+    assigned: 'Изменен исполнитель'
+};
+
 export const taskOptions = {
     statusTypes,
     statusNames,
@@ -68,5 +77,6 @@ export const taskOptions = {
     statusColor,
     statusIcon,
     typeStatement,
-    clearStatusTypes
+    clearStatusTypes,
+    historyTextByType
 };

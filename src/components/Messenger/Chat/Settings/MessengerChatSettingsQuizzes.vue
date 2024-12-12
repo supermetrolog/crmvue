@@ -60,7 +60,6 @@ import MessengerQuizElement from '@/components/Messenger/Quiz/MessengerQuizEleme
 import Modal from '@/components/common/Modal.vue';
 import MessengerQuizPreview from '@/components/Messenger/Quiz/MessengerQuizPreview.vue';
 import Input from '@/components/common/Forms/Input.vue';
-import dayjs from 'dayjs';
 import MessengerQuizElementSkeleton from '@/components/Messenger/Quiz/MessengerQuizElementSkeleton.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { useInfiniteLoading } from '@/composables/useInfiniteLoading.js';
@@ -70,6 +69,7 @@ import Spinner from '@/components/common/Spinner.vue';
 import InfiniteLoading from 'v3-infinite-loading';
 import EmptyLabel from '@/components/common/EmptyLabel.vue';
 import { useStore } from 'vuex';
+import { toDateFormat } from '@/utils/formatters/date.js';
 
 defineEmits(['close']);
 
@@ -98,7 +98,7 @@ const currentQuizPreviewTitle = computed(() => {
     if (currentQuizPreview.value.contact) title += `, с ${currentQuizPreview.value.contact}, от `;
     else title += ', без вонка, от ';
 
-    return title + dayjs(currentQuizPreview.value.created_at).format('DD.MM.YYYY');
+    return title + toDateFormat(currentQuizPreview.value.created_at, 'DD.MM.YYYY');
 });
 
 watch(querySearch, () => {

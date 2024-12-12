@@ -1,8 +1,10 @@
 <template>
-    <Modal @close="submit" :show="isVisible" title="Просмотр задачи" width="970">
-        <div class="messenger-task-preview">
-            <Spinner v-if="isLoading" class="absolute-center" />
-            <DashboardTableTasksItemPreview
+    <Modal @close="submit" :show="isVisible" title="Просмотр задачи" :width="1100">
+        <template #container>
+            <div v-if="isLoading" class="messenger-task-previewer">
+                <Spinner class="absolute-center" label="Загрузка задачи.." />
+            </div>
+            <TaskCard
                 v-else
                 @updated="onUpdated"
                 @to-chat="submit"
@@ -13,23 +15,24 @@
                 :editable="userCanEdit"
                 visible
             />
-        </div>
+        </template>
     </Modal>
 </template>
 <script setup>
-import { computed, onUnmounted, ref, shallowRef } from 'vue';
+import { computed, onUnmounted, ref } from 'vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
-import DashboardTableTasksItemPreview from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemPreview.vue';
 import Modal from '@/components/common/Modal.vue';
 import { useStore } from 'vuex';
 import { toDateFormat } from '@/utils/formatters/date.js';
 import api from '@/api/api.js';
 import Spinner from '@/components/common/Spinner.vue';
+import TaskCard from '@/components/TaskCard/TaskCard.vue';
+import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 
 const store = useStore();
 
 const currentTask = ref(null);
-const isLoading = shallowRef(false);
+const { isLoading } = useDelayedLoader();
 
 const readTask = () => {
     const viewerIndex = currentTask.value.observers.findIndex(

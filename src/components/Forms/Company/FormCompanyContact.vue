@@ -248,6 +248,7 @@ import api from '@/api/api.js';
 import Checkbox from '@/components/common/Forms/Checkbox.vue';
 import ConsultantPicker from '@/components/common/Forms/ConsultantPicker/ConsultantPicker.vue';
 import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
+import { useValidationNotify } from '@/composables/useValidationNotify.js';
 
 const emit = defineEmits(['close', 'updated', 'created']);
 const props = defineProps({
@@ -396,8 +397,10 @@ const createContact = async () => {
     }
 };
 
+const { validateWithNotify } = useValidationNotify(v$);
+
 const onSubmit = async () => {
-    v$.value.$validate();
+    validateWithNotify();
     if (v$.value.form.$error) return;
 
     isLoading.value = true;
