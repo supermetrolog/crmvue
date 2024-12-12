@@ -123,7 +123,6 @@ import FormModalTaskDescription from '@/components/Forms/FormModalTaskDescriptio
 import { useAuth } from '@/composables/useAuth.js';
 import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItem.vue';
 import { useTimeoutFn } from '@vueuse/core';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 const store = useStore();
@@ -240,10 +239,17 @@ const selectedUser = computed(() => {
 });
 
 const selectedObservers = computed(() => {
-    return form.value.observers.map(element => ({
-        user_id: element,
-        user: consultantsForObservers.value.find(el => el.id === element)
-    }));
+    return form.value.observers.reduce((acc, element) => {
+        const user = consultants.value.find(el => el.id === element);
+
+        if (user)
+            acc.push({
+                user_id: element,
+                user
+            });
+
+        return acc;
+    }, []);
 });
 
 const consultantsForObservers = computed(() => {
