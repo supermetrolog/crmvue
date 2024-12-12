@@ -840,6 +840,10 @@
             background-color: #f0f0f0;
         }
     }
+
+    &-placeholder {
+        text-wrap-mode: nowrap;
+    }
 }
 
 .double-input {
