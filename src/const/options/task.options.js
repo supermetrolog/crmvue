@@ -61,6 +61,14 @@ const typeStatement = {
     VIEWING: 'observer_id'
 };
 
+const historyTextByType = {
+    created: 'Задача создана',
+    deleted: 'Задача удалена',
+    restored: 'Задача восстановлена',
+    status_changed: 'Статус задачи изменен',
+    assigned: 'Изменен исполнитель'
+};
+
 export const taskOptions = {
     statusTypes,
     statusNames,
@@ -69,5 +77,6 @@ export const taskOptions = {
     statusColor,
     statusIcon,
     typeStatement,
-    clearStatusTypes
+    clearStatusTypes,
+    historyTextByType
 };

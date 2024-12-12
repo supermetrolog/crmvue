@@ -12,6 +12,26 @@
             />
             <EmptyData v-if="!tasks.length">Список задач пуст..</EmptyData>
         </template>
+        <Modal @close="previewIsVisible = false" :show="previewIsVisible">
+            <template #container>
+                <div v-if="previewIsLoading" class="dashboard-tasks-table__card">
+                    <Spinner label="Загрузка задачи.." class="absolute-center" />
+                </div>
+                <TaskCard
+                    v-else
+                    @read="onRead"
+                    @to-chat="toChat"
+                    @updated="onUpdated"
+                    @deleted-comment="onDeletedComment"
+                    @added-comment="onAddedComment"
+                    @history-changed="onChangedHistory"
+                    class="dashboard-tasks-table__card"
+                    :task="currentTask"
+                    :draggable="userCanDrag"
+                    :editable="userCanEdit"
+                />
+            </template>
+        </Modal>
     </div>
 </template>
 
@@ -20,12 +40,14 @@ import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/Dash
 import DashboardTasksItemSkeleton from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemSkeleton.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import { computed, h, ref, shallowRef, watch } from 'vue';
-import DashboardTableTasksItemPreview from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemPreview.vue';
-import { useTippy } from 'vue-tippy';
+import TaskCard from '@/components/TaskCard/TaskCard.vue';
 import api from '@/api/api.js';
-import { toDateFormat } from '@/utils/formatters/date.js';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { useAuth } from '@/composables/useAuth.js';
+import Modal from '@/components/common/Modal.vue';
+import Spinner from '@/components/common/Spinner.vue';
+import { toDateFormat } from '@/utils/formatters/date.js';
+import { spliceById } from '@/utils/helpers/array/spliceById.js';
 
 const emit = defineEmits(['task-updated']);
 const props = defineProps({
@@ -74,95 +96,63 @@ const userCanEdit = computed(() => {
 
 const fetchTaskPreview = async id => {
     previewIsLoading.value = true;
+
     const response = await api.task.getOne(id);
+
     if (response) currentTask.value = response;
     previewIsLoading.value = false;
 };
 
-const openPreviewer = (task, event) => {
-    if (currentTask.value && currentTask.value.id === task.id && previewIsVisible.value) return;
-
+const openPreviewer = task => {
     fetchTaskPreview(task.id);
 
     previewIsVisible.value = true;
-    setProps({
-        getReferenceClientRect: () => ({
-            width: 0,
-            height: 0,
-            top: event.clientY,
-            bottom: event.clientY,
-            left: event.clientX,
-            right: event.clientX
-        })
-    });
-
-    show();
 };
 
-const { show, setProps, hide } = useTippy(() => document.body, {
-    content: computed(() =>
-        h(DashboardTableTasksItemPreview, {
-            task: currentTask.value,
-            draggable: userCanDrag.value,
-            editable: userCanEdit.value,
-            visible: previewIsVisible.value,
-            loading: previewIsLoading.value,
-            onUpdated(task) {
-                Object.assign(currentTask.value, task);
-                const currentTaskIndex = props.tasks.findIndex(element => element.id === task.id);
-                if (currentTaskIndex !== -1) Object.assign(props.tasks[currentTaskIndex], task);
-            },
-            async onToChat(payload) {
-                const opened = await openMessenger(payload);
-                if (opened) hide();
-            },
-            onRead() {
-                const viewerIndex = currentTask.value.observers.findIndex(
-                    element => element.user_id === currentUserId.value
-                );
-                if (viewerIndex !== -1)
-                    currentTask.value.observers[viewerIndex].viewed_at = toDateFormat(Date.now());
+function onRead() {
+    const viewerIndex = currentTask.value.observers.findIndex(
+        element => element.user_id === currentUserId.value
+    );
+    if (viewerIndex !== -1)
+        currentTask.value.observers[viewerIndex].viewed_at = toDateFormat(Date.now());
 
-                emit('task-updated', {
-                    id: currentTask.value.id,
-                    observers: currentTask.value.observers,
-                    is_viewed: currentTask.value.user_id === currentUserId.value,
-                    viewed_at: Date.now()
-                });
-            }
-        })
-    ),
-    placement: 'bottom',
-    trigger: 'manual',
-    interactive: true,
-    theme: 'white',
-    arrow: false,
-    offset: [10, 10],
-    popperOptions: {
-        strategy: 'fixed',
-        modifiers: [
-            {
-                name: 'flip',
-                options: {
-                    fallbackPlacements: ['top']
-                }
-            },
-            {
-                name: 'preventOverflow',
-                options: {
-                    altAxis: true,
-                    tether: false
-                }
-            }
-        ]
-    },
-    onClickOutside() {
-        previewIsVisible.value = false;
-    },
-    onHidden() {
-        previewIsVisible.value = false;
-    },
-    zIndex: 3333,
-    maxWidth: 1000
-});
+    emit('task-updated', {
+        id: currentTask.value.id,
+        observers: currentTask.value.observers,
+        is_viewed: currentTask.value.user_id === currentUserId.value,
+        viewed_at: Date.now()
+    });
+}
+
+async function toChat(payload) {
+    const opened = await openMessenger(payload);
+    if (opened) hide();
+}
+
+function hide() {
+    previewIsVisible.value = false;
+    currentTask.value = false;
+}
+
+function onUpdated(task) {
+    Object.assign(currentTask.value, task);
+
+    const currentTaskIndex = props.tasks.findIndex(element => element.id === task.id);
+
+    if (currentTaskIndex !== -1) Object.assign(props.tasks[currentTaskIndex], task);
+}
+
+function onDeletedComment(commentId) {
+    currentTask.value.comments_count--;
+    spliceById(currentTask.value.last_comments, commentId);
+}
+
+function onAddedComment(comment) {
+    currentTask.value.comments_count++;
+    currentTask.value.last_comments.unshift(comment);
+}
+
+function onChangedHistory(count) {
+    currentTask.value.histories_count = count;
+}
 </script>

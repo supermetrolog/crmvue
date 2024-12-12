@@ -12,7 +12,7 @@
                 :class="[validationClass, extraClasses, { filled: hasValue }]"
                 :placeholder="placeholder"
                 :mode="mode"
-                append-to-body
+                :append-to-body="appendToBody"
                 :options="_options"
                 :close-on-select="closeOnSelect"
                 :clear-on-select="clearOnSelect"
@@ -230,6 +230,10 @@ const props = defineProps({
     object: {
         type: Boolean,
         default: false
+    },
+    appendToBody: {
+        type: Boolean,
+        default: true
     }
 });
 

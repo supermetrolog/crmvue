@@ -115,6 +115,24 @@
 
 .dashboard-tasks-table {
     @include mixins.flex-box($d: column, $gap: 25px);
+
+    &__card {
+        position: relative;
+        background-color: #fff;
+        color: variables.$color_dark;
+        max-height: 95%;
+        min-width: 300px;
+        overflow: hidden;
+        margin: 20px;
+        z-index: 4002;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+        border-radius: 5px;
+        transition: all 0.5s ease;
+        padding: 10px;
+        min-height: 390px;
+        width: 1100px;
+        max-width: 100%;
+    }
 }
 
 .dashboard-rounded-icon {
@@ -236,290 +254,6 @@
 
     &:hover {
         color: variables.$bg-success
-    }
-}
-
-.dashboard-task-item-preview {
-    min-height: 390px;
-    width: 900px;
-
-    &__content {
-        @include mixins.flex-box();
-    }
-
-    &__header {
-        width: 100%;
-        padding-top: 5px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #afaeae;
-        @include mixins.flex-box($j: space-between);
-    }
-
-    &__column {
-        width: 450px;
-        position: relative;
-
-        &:first-child {
-            padding-right: 9px;
-            border-right: 1px solid #afaeae;
-        }
-
-        &:last-child {
-            padding-left: 9px;
-        }
-    }
-
-    &__actions {
-        @include mixins.flex-box($gap: 10px);
-    }
-
-    &__description {
-        margin: 10px 0;
-    }
-
-    &__label {
-        color: #888686;
-        font-weight: 500;
-    }
-
-    &__message {
-        background-color: #e8e5e5;
-        border-radius: 5px;
-        padding: 10px;
-    }
-
-    &__chip {
-        background-color: #d6d6d6;
-    }
-
-    &__tag {
-        color: #fff;
-    }
-
-    &__chips {
-        @include mixins.flex-box($gap: 5px, $wrap: true);
-    }
-
-    &__info {
-        display: grid;
-        grid-template-columns: 1fr 2fr;
-        grid-gap: 5px;
-    }
-
-    &__category {
-        color: #837f7f;
-    }
-
-    &__relation {
-        margin-top: 10px;
-    }
-
-    .messenger-dialog {
-        background-color: #d6d6d6;
-    }
-
-    .messenger-dialog-request__id, .messenger-dialog-offer__id {
-        color: #000;
-    }
-
-    &__button {
-        background-color: #c0bbbb;
-        width: max-content;
-        color: #000;
-        border: none;
-        border-radius: 5px;
-        padding: 5px 7px;
-        @include mixins.transition(background-color);
-        @include mixins.clear-button;
-
-        @include mixins.hover {
-            background-color: #B3D7C6;
-        }
-
-        &[disabled] {
-            opacity: .6;
-        }
-    }
-
-    &__comments {
-        padding: 10px;
-        background-color: #fff;
-        box-shadow: 0 0 10px 1px rgba(0, 0, 0, .4);
-        position: absolute;
-        width: calc(100% - 20px);
-        top: 20px;
-        left: 10px;
-        height: calc(100% - 40px);
-        border-radius: 10px;
-        @include mixins.flex-box($d: column, $gap: 10px);
-    }
-
-    &__comments-list {
-        height: 100%;
-        max-height: 100%;
-        overflow-y: auto;
-    }
-
-    &__list {
-        @include mixins.flex-box($d: column, $j: flex-end, $gap: 10px);
-    }
-
-    &__chat-message {
-        color: #000!important;
-
-        .messenger-chat-message__wrapper {
-            max-width: 100%;
-        }
-
-        .messenger-chat-message__content {
-            background-color: #d6d6d6;
-            box-shadow: unset;
-        }
-    }
-
-    &__form {
-        border-top: 1px solid #afaeae;
-        border-bottom: 1px solid #afaeae;
-        margin: 7px 0;
-        padding: 7px 0;
-    }
-
-    &__textarea {
-        .form__textarea {
-            border-color: #b9b0b0;
-            height: 40px;
-            min-height: 40px;
-        }
-
-        .form__label {
-            color: #888686;
-        }
-    }
-
-    &__status {
-        @include mixins.flex-box($gap: 5px, $a: center);
-    }
-
-    &__close {
-        font-size: 20px;
-        color: #837f7f;
-        cursor: pointer;
-        @include mixins.transition(color);
-
-        &:hover {
-            color: #625c5c;
-        }
-    }
-
-    &__users {
-        @include mixins.flex-box($a: center, $gap: 5px);
-    }
-
-    &__arrow {
-        font-size: 20px;
-    }
-
-    &__observers {
-        height: 100%;
-        padding: 6px 8px;
-        border: 1px solid #afaeae;
-        border-radius: 20px;
-        font-weight: 500;
-        font-size: 16px;
-        @include mixins.flex-box($a: center, $gap: 5px);
-
-        i {
-            font-size: 20px;
-        }
-    }
-
-    .messenger-chat-message__body {
-        max-height: 200px;
-        overflow-y: auto;
-    }
-}
-
-.dashboard-task-item-preview-status {
-    padding: 10px;
-    background-color: #fff;
-    box-shadow: 0 0 10px 1px rgba(0, 0, 0, .4);
-    position: absolute;
-    width: calc(100% - 20px);
-    top: 10px;
-    left: 10px;
-    height: calc(100% - 10px);
-    border-radius: 10px;
-    overflow-y: auto;
-    @include mixins.flex-box($d: column, $gap: 10px);
-
-    &__header {
-        @include mixins.flex-box($j: space-between);
-        padding-bottom: 7px;
-        border-bottom: 1px solid #afaeae;
-    }
-
-    &__form {
-        border-top: 1px solid #afaeae;
-        margin-top: 7px;
-        padding-top: 7px;
-    }
-
-    &__element {
-        width: 60px;
-        height: 60px;
-        font-size: 22px;
-    }
-
-    &__list {
-        @include mixins.flex-box($gap: 5px, $a: center, $j: space-between);
-    }
-
-    &__arrow {
-        font-size: 20px;
-    }
-
-    .form__label {
-        color: #ada8a8;
-    }
-
-    .form__textarea, .form__input {
-        border-color: #b9b0b0;
-    }
-}
-
-
-
-.dashboard-task-item-preview-comment {
-    padding: 5px;
-    background-color: #c5c0c0;
-    border-radius: 3px;
-
-    &__content {
-        p {
-            word-break: break-word;
-        }
-    }
-
-    &__footer {
-        margin-top: 3px;
-        border-top: 1px solid #afaeae;
-        padding-top: 3px;
-        color: #6e6b6b;
-        @include mixins.flex-box($a: center, $j: space-between);
-    }
-}
-
-.dashboard-task-item-preview-contacts {
-    padding: 5px 0;
-    min-width: 400px;
-    min-height: 400px;
-
-    &__list {
-        @include mixins.flex-box($d: column, $gap: 10px);
-        max-height: 500px;
-        overflow-y: auto;
-        scrollbar-gutter: stable;
-        padding-right: 5px;
     }
 }
 

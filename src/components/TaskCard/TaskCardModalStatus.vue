@@ -1,49 +1,40 @@
 <template>
-    <div class="dashboard-task-item-preview-status">
-        <Loader v-if="loading" />
-        <div class="dashboard-task-item-preview-status__header">
-            <p class="dashboard-task-item-preview__label">Изменение статуса задачи</p>
-            <i
-                v-tippy="'Закрыть'"
-                @click="$emit('close')"
-                class="dashboard-task-item-preview__close fa-regular fa-xmark-circle"
-            />
-        </div>
-        <p class="dashboard-task-item-preview__label">Выберите статус:</p>
-        <div class="dashboard-task-item-preview-status__list">
+    <TaskCardModal @close="$emit('close')" :loading title="Изменение статуса задачи">
+        <p class="task-card__label">Выберите статус:</p>
+        <div class="task-card-modal__list">
             <HoverActionsButton
                 @click="current = taskOptions.statusTypes.CANCELED"
-                class="dashboard-task-item-preview-status__element"
+                class="task-card-modal__element"
                 :disabled="isCanceled"
                 :active="isCanceled"
                 label="Отложена"
             >
                 <i class="fa-solid fa-pause"></i>
             </HoverActionsButton>
-            <i class="fa-solid fa-arrow-left dashboard-task-item-preview-status__arrow" />
+            <i class="fa-solid fa-arrow-left task-card-modal__arrow" />
             <HoverActionsButton
                 @click="current = taskOptions.statusTypes.NEW"
-                class="dashboard-task-item-preview-status__element"
+                class="task-card-modal__element"
                 disabled
                 :active="isNew"
                 label="Новая"
             >
                 <i class="fa-solid fa-plus"></i>
             </HoverActionsButton>
-            <i class="fa-solid fa-arrow-right dashboard-task-item-preview-status__arrow" />
+            <i class="fa-solid fa-arrow-right task-card-modal__arrow" />
             <HoverActionsButton
                 @click="current = taskOptions.statusTypes.IN_PROGRESS"
-                class="dashboard-task-item-preview-status__element"
+                class="task-card-modal__element"
                 :disabled="isInProgress"
                 :active="isInProgress"
                 label="В процессе"
             >
                 <i class="fa-solid fa-hourglass-half"></i>
             </HoverActionsButton>
-            <i class="fa-solid fa-arrow-right dashboard-task-item-preview-status__arrow" />
+            <i class="fa-solid fa-arrow-right task-card-modal__arrow" />
             <HoverActionsButton
                 @click="current = taskOptions.statusTypes.COMPLETED"
-                class="dashboard-task-item-preview-status__element"
+                class="task-card-modal__element"
                 :disabled="isCompleted"
                 :active="isCompleted"
                 label="Выполнена"
@@ -51,14 +42,14 @@
                 <i class="fa-regular fa-circle-check"></i>
             </HoverActionsButton>
         </div>
-        <Form class="dashboard-task-item-preview-status__form">
+        <Form class="task-card-modal__form">
             <AnimationTransition :speed="0.3">
                 <Input
                     v-if="isCanceled"
                     v-model="impossibleTo"
                     :v="v$.impossibleTo"
                     required
-                    class="dashboard-task-item-preview-status__field mb-2"
+                    class="task-card-modal__field mb-2"
                     type="date"
                     label="Отложено до"
                 />
@@ -67,23 +58,17 @@
                 v-model="comment"
                 auto-height
                 :disabled="!canBeSaved"
-                class="dashboard-task-item-preview-status__field"
+                class="task-card-modal__field"
                 label="Комментарий"
             />
             <div class="d-flex gap-2 mt-2">
-                <button
-                    @click.prevent="toggle"
-                    :disabled="!canBeSaved || loading"
-                    class="dashboard-task-item-preview__button"
-                >
+                <TaskCardButton @click.prevent="toggle" :disabled="!canBeSaved || loading">
                     Сохранить
-                </button>
-                <button @click.prevent="$emit('close')" class="dashboard-task-item-preview__button">
-                    Отмена
-                </button>
+                </TaskCardButton>
+                <TaskCardButton @click.prevent="$emit('close')"> Отмена </TaskCardButton>
             </div>
         </Form>
-    </div>
+    </TaskCardModal>
 </template>
 
 <script setup>
@@ -95,8 +80,9 @@ import Input from '@/components/common/Forms/Input.vue';
 import useVuelidate from '@vuelidate/core';
 import { helpers, requiredIf } from '@vuelidate/validators';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import Loader from '@/components/common/Loader.vue';
 import Form from '@/components/common/Forms/Form.vue';
+import TaskCardButton from '@/components/TaskCard/TaskCardButton.vue';
+import TaskCardModal from '@/components/TaskCard/TaskCardModal.vue';
 
 const emit = defineEmits(['toggle', 'close']);
 const props = defineProps({

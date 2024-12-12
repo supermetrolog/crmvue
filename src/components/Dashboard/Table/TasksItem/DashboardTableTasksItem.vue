@@ -73,7 +73,7 @@
                     >
                         <DashboardTableTasksItemObserver
                             v-for="observer in observers"
-                            :key="observer.user.id"
+                            :key="observer.user_id"
                             :observer="observer"
                         />
                     </div>
