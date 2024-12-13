@@ -136,7 +136,7 @@ import TaskCardComments from '@/components/TaskCard/TaskCardComments.vue';
 import TaskCardHistory from '@/components/TaskCard/History/TaskCardHistory.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 
-const DAYS_TO_IMPOSSIBLE = 30;
+const DAYS_TO_IMPOSSIBLE = 14;
 
 const emit = defineEmits([
     'updated',
