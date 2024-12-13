@@ -371,7 +371,7 @@ const selectRange = range => {
     form.value.date.end = dayjs().add(range, 'day').toDate();
 };
 
-const isEditing = computed(() => isNotNullish(props.value?.task?.id));
+const isEditing = computed(() => isNotNullish(props.value?.id));
 
 onUnmounted(() => {
     destroyPopup();
