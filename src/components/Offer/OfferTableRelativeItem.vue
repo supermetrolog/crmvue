@@ -88,12 +88,12 @@
                     <DashboardChip v-else class="dashboard-bg-danger text-white">
                         Пассив
                     </DashboardChip>
-                    <TableDateBlock class="mt-1" :date="updatedAt" label="Обновление" />
+                    <TableDateBlock class="mt-1" :date="updatedAt" label="Дата обновления" />
                     <TableDateBlock
                         v-if="offer.last_call"
                         class="mt-1"
                         :date="offer.last_call.created_at"
-                        label="Звонок"
+                        label="Дата последнего звонка"
                     />
                 </div>
             </div>

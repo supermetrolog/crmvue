@@ -24,7 +24,7 @@
                     class="messenger-panel-company__action dashboard-bg-danger-l"
                     small
                 >
-                    <i class="fa-solid fa-trash"></i>
+                    <i class="fa-solid fa-ban"></i>
                 </HoverActionsButton>
             </div>
             <div class="messenger-panel-company__header">

@@ -1,13 +1,13 @@
 <template>
-    <div class="table-date-block">
-        <p class="table-date-block__name">{{ label }}</p>
-        <p class="table-date-block__value">{{ day }}</p>
-        <p class="table-date-block__time">{{ time }}</p>
-    </div>
+    <DashboardChip v-tippy="label" class="table-date-block dashboard-bg-light" with-icon>
+        <i class="fa-solid fa-clock-rotate-left"></i>
+        <span class="table-date-block__value">{{ day }}, {{ time }}</span>
+    </DashboardChip>
 </template>
 <script setup>
 import dayjs from 'dayjs';
 import { computed } from 'vue';
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 
 const props = defineProps({
     label: { type: String, required: true },

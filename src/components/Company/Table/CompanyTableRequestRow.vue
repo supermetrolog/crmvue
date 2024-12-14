@@ -18,7 +18,7 @@
         </td>
         <td>
             <div class="d-flex justify-content-center">
-                <TableDateBlock :date="date" label="Обновление" />
+                <TableDateBlock :date="date" label="Дата обновления" />
             </div>
         </td>
     </tr>

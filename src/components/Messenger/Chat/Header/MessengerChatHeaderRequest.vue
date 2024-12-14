@@ -2,10 +2,7 @@
     <div class="messenger-chat-header-request">
         <div class="messenger-chat-header__description">
             <p class="messenger-chat-header__title">
-                <span>
-                    Запрос от {{ $formatter.companyName(company, dialog.model.company_id) }}
-                </span>
-                <span class="messenger-chat-header__id">, ID{{ dialog.model.id }} </span>
+                <span>Запрос #{{ dialog.model.id }} от {{ companyName }}</span>
             </p>
             <p class="messenger-chat-header__deals">
                 <i v-if="isActive" class="fa-solid fa-up-long"></i>
@@ -30,6 +27,7 @@ import { computed } from 'vue';
 import { locationOptions } from '@/const/options/location.options.js';
 import { dealOptions } from '@/const/options/deal.options.js';
 import { requestOptions } from '@/const/options/request.options.js';
+import { getCompanyName } from '@/utils/formatters/models/company.js';
 
 const props = defineProps({
     dialog: {
@@ -41,6 +39,7 @@ const props = defineProps({
 const store = useStore();
 
 const company = computed(() => store.state.Messenger.currentPanel);
+const companyName = computed(() => getCompanyName(company.value));
 
 const dealType = computed(() => {
     return dealOptions.type[props.dialog.model.dealType + 1];

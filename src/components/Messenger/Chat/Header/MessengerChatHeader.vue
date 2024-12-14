@@ -5,9 +5,9 @@
         </div>
         <div class="messenger-chat-header__functions">
             <a
-                v-if="currentDialog.model_type === 'object' && linkToObject"
+                v-if="linkToChatMember"
                 v-tippy="'Открыть на сайте'"
-                :href="linkToObject"
+                :href="linkToChatMember"
                 target="_blank"
                 class="messenger-chat-header__function rounded-icon"
             >
@@ -27,11 +27,13 @@
 import { useStore } from 'vuex';
 import { computed, inject } from 'vue';
 import { ucFirst } from '@/utils/formatters/string.js';
-import { getLinkComplex } from '@/utils/url.js';
+import { getLinkCompany, getLinkComplex, getTimelineLink } from '@/utils/url.js';
 import MessengerChatHeaderObject from '@/components/Messenger/Chat/Header/MessengerChatHeaderObject.vue';
 import MessengerChatHeaderRequest from '@/components/Messenger/Chat/Header/MessengerChatHeaderRequest.vue';
 import MessengerChatHeaderUser from '@/components/Messenger/Chat/Header/MessengerChatHeaderUser.vue';
 import MessengerChatHeaderCompany from '@/components/Messenger/Chat/Header/MessengerChatHeaderCompany.vue';
+import { messenger } from '@/const/messenger.js';
+import { useAuth } from '@/composables/useAuth.js';
 
 const COMPONENTS = {
     MessengerChatHeaderObject: MessengerChatHeaderObject,
@@ -41,6 +43,7 @@ const COMPONENTS = {
 };
 
 const store = useStore();
+const { currentUserId } = useAuth();
 
 const $toggleSettings = inject('$toggleSettings');
 
@@ -48,9 +51,21 @@ const currentDialog = computed(() => store.state.Messenger.currentDialog);
 const currentComponentName = computed(
     () => COMPONENTS['MessengerChatHeader' + ucFirst(currentDialog.value.model_type)]
 );
-const linkToObject = computed(() => {
-    if (currentDialog.value.model.object.complex_id)
+const linkToChatMember = computed(() => {
+    if (currentDialog.value.model?.object?.complex_id)
         return getLinkComplex(currentDialog.value.model.object.complex_id);
+
+    if (currentDialog.value.model_type === messenger.dialogTypes.COMPANY)
+        return getLinkCompany(currentDialog.value.model.id);
+
+    if (currentDialog.value.model_type === messenger.dialogTypes.REQUEST) {
+        return getTimelineLink(
+            currentDialog.value.model.company_id,
+            currentDialog.value.model.id,
+            currentUserId.value
+        );
+    }
+
     return null;
 });
 </script>

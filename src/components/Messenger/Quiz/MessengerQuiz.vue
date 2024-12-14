@@ -1,46 +1,45 @@
 <template>
     <div class="messenger-quiz messenger-chat__content">
         <MessengerChatHeader />
-        <Spinner v-if="surveysIsLoading" class="small mt-2" label="Загрузка опросов"></Spinner>
-        <div v-else-if="surveys.length" class="messenger-quiz__surveys mt-2">
-            <Button v-tippy="'В разработке..'" @click="showSurveys" class="ml-auto" small icon>
-                <i class="fa-solid fa-eye"></i>
-                <span>Посмотреть полный список завершенных опросов ({{ surveysCount }})</span>
-            </Button>
-            <MessengerQuizInlineElement
-                v-for="survey in surveys"
-                :key="survey.id"
-                @show="showSurvey(survey.id)"
-                :quiz="survey"
-            />
-        </div>
-        <div class="messenger-quiz__wrapper">
-            <MessengerQuizHeader
-                v-model:contact="currentRecipient"
-                @create-contact="createContact"
-            />
-            <Loader v-if="isLoading" class="my-4" />
-            <MessengerQuizForm ref="quizForm" />
-            <div class="messenger-quiz__footer">
-                <MessengerButton @click="send" color="success" :disabled="isCompleted">
-                    Готово
-                </MessengerButton>
-                <MessengerButton @click="scheduleCall" :disabled="!currentRecipient">
-                    Запланировать звонок
-                </MessengerButton>
-                <template v-if="isObjectChatMember">
-                    <MessengerButton @click="onObjectSold">Объект продан</MessengerButton>
-                    <MessengerButton
-                        @click="onObjectDestroyed"
-                        :disabled="objectIsPassive"
-                        color="danger"
-                    >
-                        Объект снесен
-                    </MessengerButton>
-                </template>
+        <Spinner v-if="isGeneralLoading" class="absolute-center" label="Загрузка данных.." />
+        <template v-else>
+            <div v-if="surveys.length" class="messenger-quiz__surveys mt-2">
+                <Button v-tippy="'В разработке..'" @click="showSurveys" class="ml-auto" small icon>
+                    <i class="fa-solid fa-eye"></i>
+                    <span>Посмотреть полный список завершенных опросов ({{ surveysCount }})</span>
+                </Button>
+                <MessengerQuizInlineElement
+                    v-for="survey in surveys"
+                    :key="survey.id"
+                    @show="showSurvey(survey.id)"
+                    :quiz="survey"
+                />
             </div>
-            <MessengerQuizComplete v-if="isCompleted" @close="close" />
-        </div>
+            <div class="messenger-quiz__wrapper">
+                <Loader v-if="isLoading" class="my-4" />
+                <MessengerQuizContacts
+                    v-if="contacts.length"
+                    v-model:contact="currentRecipient"
+                    @suggest="suggestTask"
+                    @edit="editContact"
+                    @schedule-call="scheduleCall"
+                    :contacts
+                />
+                <MessengerQuizForm
+                    ref="quizForm"
+                    @suggest-contact="suggestTask"
+                    :disabled="!contacts.length"
+                />
+                <MessengerQuizFooter
+                    v-if="contacts.length"
+                    @complete="send"
+                    @object-destroyed="onObjectDestroyed"
+                    @object-sold="onObjectSold"
+                    :disabled="isCompleted"
+                />
+                <MessengerQuizComplete v-if="isCompleted" @close="close" />
+            </div>
+        </template>
         <Modal
             @close="surveyPreviewIsOpen = false"
             :show="surveyPreviewIsOpen"
@@ -67,10 +66,33 @@
                 <Button @click="closeContactPicker" small>Отменить</Button>
             </template>
         </Modal>
+        <Modal
+            @close="closeTaskSuggestion"
+            title="Создание контакта"
+            :width="600"
+            :show="taskSuggestionIsVisible"
+        >
+            <h3 class="text-center">
+                Заполнить данные контакта или создать задачу для офис-менеджера?
+            </h3>
+            <template #footer>
+                <Button @click="createContact" small>Заполнить контакта</Button>
+                <Button @click="confirmTaskSuggestion" small>Создать задачу</Button>
+            </template>
+        </Modal>
+        <teleport to="body">
+            <FormCompanyContact
+                v-if="formIsVisible"
+                @close="closeForm"
+                @created="onContactCreated"
+                @updated="onContactUpdated"
+                :formdata="updatingContact"
+                :company_id="company?.id"
+            />
+        </teleport>
     </div>
 </template>
 <script setup>
-import MessengerButton from '@/components/Messenger/MessengerButton.vue';
 import { useStore } from 'vuex';
 import { computed, onMounted, ref, shallowRef, useTemplateRef } from 'vue';
 import { useNotify } from '@/utils/useNotify.js';
@@ -81,7 +103,7 @@ import Loader from '@/components/common/Loader.vue';
 import MessengerChatHeader from '@/components/Messenger/Chat/Header/MessengerChatHeader.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import Modal from '@/components/common/Modal.vue';
-import MessengerQuizHeader from '@/components/Messenger/Quiz/MessengerQuizHeader.vue';
+import MessengerQuizContacts from '@/components/Messenger/Quiz/MessengerQuizContacts.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import MessengerQuizInlineElement from '@/components/Messenger/Quiz/MessengerQuizInlineElement.vue';
 import Button from '@/components/common/Button.vue';
@@ -96,6 +118,9 @@ import { toBoldHTML } from '@/utils/formatters/html.js';
 import { useAuth } from '@/composables/useAuth.js';
 import { messenger } from '@/const/messenger.js';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
+import { contactOptions } from '@/const/options/contact.options.js';
+import FormCompanyContact from '@/components/Forms/Company/FormCompanyContact.vue';
+import MessengerQuizFooter from '@/components/Messenger/Quiz/MessengerQuizFooter.vue';
 
 const SCHEDULING_CALL_DURATION = 30; // days
 
@@ -105,7 +130,6 @@ const store = useStore();
 const notify = useNotify();
 const { confirm } = useConfirm();
 const quizForm = useTemplateRef('quizForm');
-const { createTaskWithTemplate } = useTaskManager();
 const { currentUser } = useAuth();
 
 const {
@@ -117,24 +141,10 @@ const {
 
 const isLoading = ref(false);
 const isCompleted = ref(false);
-
-const currentRecipient = shallowRef(null);
 const surveys = ref([]);
 const surveysCount = ref(0);
 const surveyPreviewIsOpen = ref(false);
 const previewedSurveyId = ref(null);
-
-const isObjectChatMember = computed(() => {
-    return (
-        store.state.Messenger.currentDialog?.model?.type ===
-        messenger.objectChatMemberTypes.RENT_OR_SALE
-    );
-});
-
-const companyIsPassive = computed(() => !store.state.Messenger.currentPanel.status);
-const objectIsPassive = computed(
-    () => store.state.Messenger.currentDialog.model.object.status !== 1
-);
 
 const { isLoading: surveysIsLoading } = useDelayedLoader(
     store.getters['Messenger/currentChatHasLastCall']
@@ -194,9 +204,13 @@ const showSurveys = () => {
     notify.info('Функция находится в разработке..', 'Функция недоступна');
 };
 
-const scheduleCall = async () => {
+// TASKS
+
+const { createTaskWithTemplate } = useTaskManager();
+
+async function scheduleCall(contact) {
     const taskPayload = await createTaskWithTemplate({
-        message: `Прозвонить контакта (${currentRecipient.value?.full_name ?? `Общий контакт компании #${currentRecipient.value?.company_id}`})`,
+        message: `Прозвонить контакта (${contact.full_name ?? `Общий контакт компании #${contact.company_id}`})`,
         step: TASK_FORM_STEPS.DATE,
         end: dayjs().add(SCHEDULING_CALL_DURATION, 'day').toDate(),
         user_id: currentUser.value.id
@@ -206,7 +220,7 @@ const scheduleCall = async () => {
 
     const messagePayload = {
         message: `Запланировал звонок на ${toBoldHTML(dayjs(taskPayload.end).format('D.MM.YY'))}`,
-        contact_ids: currentRecipient.value ? [currentRecipient.value.id] : []
+        contact_ids: [contact.id]
     };
 
     const createdMessage = await api.messenger.sendMessageWithTask(
@@ -220,15 +234,14 @@ const scheduleCall = async () => {
     } else {
         notify.error('Произошла ошибка. Попробуйте еще раз..');
     }
-};
+}
 
 async function onObjectDestroyed() {
     const object = store.state.Messenger.currentDialog.model.object;
 
     const taskPayload = await createTaskWithTemplate({
         message: `Объект #${object.id} снесен, отправить в пассив`,
-        step: TASK_FORM_STEPS.MESSAGE,
-        end: dayjs().add(SCHEDULING_CALL_DURATION, 'day').toDate()
+        step: TASK_FORM_STEPS.MESSAGE
     });
 
     if (!taskPayload) return;
@@ -255,8 +268,7 @@ async function onObjectSold() {
 
     const taskPayload = await createTaskWithTemplate({
         message: `Объект #${object.id} продан `,
-        step: TASK_FORM_STEPS.MESSAGE,
-        end: dayjs().add(SCHEDULING_CALL_DURATION, 'day').toDate()
+        step: TASK_FORM_STEPS.MESSAGE
     });
 
     if (!taskPayload) return;
@@ -278,11 +290,10 @@ async function onObjectSold() {
     }
 }
 
-async function createContact() {
+async function createContactTask() {
     const taskPayload = await createTaskWithTemplate({
         message: `Добавить новый контакт в компании ${getCompanyShortName(store.state.Messenger.currentPanel)}`,
-        step: TASK_FORM_STEPS.MESSAGE,
-        end: dayjs().add(SCHEDULING_CALL_DURATION, 'day').toDate()
+        step: TASK_FORM_STEPS.MESSAGE
     });
 
     if (!taskPayload) return;
@@ -309,8 +320,90 @@ async function createContact() {
     }
 }
 
-onMounted(() => {
+function suggestTask() {
+    taskSuggestionIsVisible.value = true;
+}
+
+function closeTaskSuggestion() {
+    taskSuggestionIsVisible.value = false;
+}
+
+onMounted(async () => {
     if (store.getters['Messenger/currentChatHasLastCall']) fetchSurveys();
     if (!store.state.User.consultantList.length) store.dispatch('FETCH_CONSULTANT_LIST');
+
+    await fetchContacts();
+    setInitialCurrentContact();
 });
+
+// CONTACTS
+
+const contactsIsLoading = ref(false);
+const contacts = ref([]);
+const currentRecipient = shallowRef(null);
+
+const taskSuggestionIsVisible = ref(false);
+const formIsVisible = ref(false);
+const updatingContact = shallowRef(null);
+
+const company = computed(() => store.state.Messenger.currentPanel);
+
+function setInitialCurrentContact() {
+    currentRecipient.value = contacts.value.find(contact => contact.isMain) ?? contacts.value[0];
+}
+
+async function fetchContacts() {
+    contactsIsLoading.value = true;
+
+    const response = await api.contacts.getByCompany(company.value.id);
+
+    if (response?.length) {
+        contacts.value = response
+            .filter(contact => contact.status === contactOptions.statusStatement.ACTIVE)
+            .sort((first, second) => second.isMain - first.isMain);
+    }
+
+    contactsIsLoading.value = false;
+}
+
+function onContactCreated(contact) {
+    contacts.value.unshift(contact);
+}
+
+async function onContactUpdated(_, contact) {
+    const contactIndex = contacts.value.findIndex(element => element.id === contact.id);
+    if (contactIndex !== -1) {
+        if (contact.status === contactOptions.statusStatement.PASSIVE)
+            contacts.value.splice(contactIndex, 1);
+        else Object.assign(contacts.value[contactIndex], contact);
+    }
+
+    store.commit('Messenger/onContactUpdated', contact);
+}
+
+function createContact() {
+    closeTaskSuggestion();
+    formIsVisible.value = true;
+}
+
+function confirmTaskSuggestion() {
+    closeTaskSuggestion();
+    createContactTask();
+}
+
+function closeForm() {
+    formIsVisible.value = false;
+    updatingContact.value = null;
+}
+
+function editContact(contact) {
+    updatingContact.value = contact;
+    formIsVisible.value = true;
+}
+
+// COMPUTES
+
+const isGeneralLoading = computed(
+    () => contactsIsLoading.value || surveysIsLoading.value || isLoading.value
+);
 </script>

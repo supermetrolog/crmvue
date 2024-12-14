@@ -1,11 +1,21 @@
 <template>
     <div class="messenger-quiz__content">
+        <div v-if="disabled" class="messenger-quiz__disabled">
+            <DashboardChip class="dashboard-bg-primary">
+                Отстутствуют активные контакты
+            </DashboardChip>
+            <Button @click="$emit('suggest-contact')" small icon class="dashboard-bg-primary">
+                <i class="fa-solid fa-user-plus" />
+                <span>Создать контакт</span>
+            </Button>
+        </div>
         <Loader v-if="isLoading" />
         <component
             :is="currentTemplateComponent"
             v-else
             ref="quizForm"
             :questions="filteredQuestions"
+            :disabled
         />
     </div>
 </template>
@@ -17,6 +27,13 @@ import { computed, onMounted, ref, useTemplateRef } from 'vue';
 import Loader from '@/components/common/Loader.vue';
 import { quizQuestionsGroups } from '@/const/quiz.js';
 import { messenger } from '@/const/messenger.js';
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import Button from '@/components/common/Button.vue';
+
+defineEmits(['suggest-contact']);
+defineProps({
+    disabled: Boolean
+});
 
 const TEMPLATES = {
     object: MessengerQuizFormObjectTemplate,
