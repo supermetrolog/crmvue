@@ -102,21 +102,7 @@
             </div>
         </Td>
         <Td class="offer-table-item__advertisement">
-            <div class="offer-table-item__advertisements">
-                <DashboardChip v-if="offer.ad_realtor" class="dashboard-bg-light">
-                    Realtor.ru
-                </DashboardChip>
-                <DashboardChip v-if="offer.ad_cian" class="dashboard-bg-light">Циан</DashboardChip>
-                <DashboardChip v-if="offer.ad_yandex" class="dashboard-bg-light">
-                    Яндекс
-                </DashboardChip>
-                <DashboardChip v-if="offer.ad_avito" class="dashboard-bg-light">
-                    Авито
-                </DashboardChip>
-                <DashboardChip v-if="offer.ad_free" class="dashboard-bg-light">
-                    Бесплатные
-                </DashboardChip>
-            </div>
+            <OfferTableItemAdv :offer />
         </Td>
         <Td class="offer-table-item__date" sort="last_update">
             <DashboardChip
@@ -128,18 +114,15 @@
             <DashboardChip v-else class="dashboard-bg-success-l offer-table-item__chip">
                 Актив
             </DashboardChip>
-            <OfferTableItemCall @click="openInSurvey" :call="offer.last_call" />
-            <HoverActionsButton
-                @click="openInChat"
-                class="my-2 mx-auto offer-table-item__chat"
-                :label="`У вас ${offer.unread_message_count} непрочитанных сообщений по этому объекту`"
-            >
-                <div class="d-flex flex-column">
-                    <i class="fa-solid fa-comment" />
-                    <span>{{ offer.unread_message_count }}</span>
-                </div>
-            </HoverActionsButton>
-            <TableDateBlock class="text-center" :date="updatedAt" label="Обновление" />
+            <OfferTableItemCall
+                @to-survey="openInSurvey"
+                @to-chat="openInChat"
+                :call="offer.last_call"
+                :created-at="updatedAt"
+                :without-contacts="!hasActiveContact"
+                class="mt-1"
+            />
+            <TableDateBlock class="mt-1" :date="updatedAt" label="Дата обновления" />
         </Td>
     </Tr>
     <DropDown>
@@ -199,6 +182,8 @@ import OfferTableItemCall from '@/components/Offer/TableItem/OfferTableItemCall.
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { getLinkPDF } from '@/utils/url.js';
 import { messenger } from '@/const/messenger.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import OfferTableItemAdv from '@/components/Offer/TableItem/OfferTableItemAdv.vue';
 
 const emit = defineEmits(['favorite-deleted', 'open-survey']);
 const props = defineProps({
@@ -346,4 +331,10 @@ const toggleFavorite = async () => {
     await store.dispatch('DELETE_FAVORITES_OFFERS', props.offer);
     emit('favorite-deleted', props.offer);
 };
+
+const hasActiveContact = computed(() => {
+    if (isNullish(props.offer.contact)) return false;
+
+    return props.offer.contact.status !== 0;
+});
 </script>

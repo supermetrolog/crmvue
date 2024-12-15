@@ -73,7 +73,7 @@
                     >
                         <DashboardTableTasksItemObserver
                             v-for="observer in observers"
-                            :key="observer.user.id"
+                            :key="observer.user_id"
                             :observer="observer"
                         />
                     </div>
@@ -118,6 +118,7 @@ import { dayjsFromMoscow, toBeautifulDateFormat, toDateFormat } from '@/utils/fo
 import { Tippy } from 'vue-tippy';
 import { useAuth } from '@/composables/useAuth.js';
 import DashboardTableTasksItemObserver from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemObserver.vue';
+import { isString } from '@/utils/helpers/string/isString.js';
 
 defineEmits(['view']);
 const props = defineProps({
@@ -153,7 +154,10 @@ const isViewing = computed(
     () => !isMyTask.value && !isForMe.value && isObservingByCurrentUser.value
 );
 const isCompleted = computed(() => props.task.status === taskOptions.statusTypes.COMPLETED);
-const expiredDayjs = computed(() => dayjsFromMoscow(props.task.end));
+const expiredDayjs = computed(() => {
+    if (isString(props.task.end)) return dayjsFromMoscow(props.task.end);
+    return dayjs(props.task.end);
+});
 const isCanceled = computed(() => props.task.status === taskOptions.statusTypes.CANCELED);
 const isAlreadyExpired = computed(() => expiredDayjs.value.isBefore(dayjs()) && !isCompleted.value);
 const isDeleted = computed(() => props.task.deleted_at != null);

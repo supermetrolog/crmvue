@@ -8,12 +8,17 @@
                 @click="toggleUser(user.id)"
                 :selected="searchCache[index]"
                 :user="user"
-                :class="{ selected: selectedUsers[user.id], current: currentUser.id === user.id }"
+                :class="{
+                    selected: selectedUsers[user.id],
+                    current: currentUser.id === user.id,
+                    disabled: disabled
+                }"
             />
         </div>
         <MessengerButton
             v-if="!single"
             @click="toggleSelectedAll"
+            :disabled="disabled"
             class="w-100"
             :class="{ active: modelValue.length === users.length }"
         >
@@ -40,6 +45,10 @@ const props = defineProps({
         default: () => []
     },
     single: {
+        type: Boolean,
+        default: false
+    },
+    disabled: {
         type: Boolean,
         default: false
     }

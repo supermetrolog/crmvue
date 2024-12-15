@@ -322,7 +322,6 @@
 </template>
 
 <script setup>
-import { useStore } from 'vuex';
 import useVuelidate from '@vuelidate/core';
 import {
     DealTypeList,
@@ -369,8 +368,7 @@ import Button from '@/components/common/Button.vue';
 import ConsultantPicker from '@/components/common/Forms/ConsultantPicker/ConsultantPicker.vue';
 import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
 import { useRegionsOptions } from '@/composables/options/useRegionsOptions.js';
-
-const store = useStore();
+import { useValidationNotify } from '@/composables/useValidationNotify.js';
 
 const emit = defineEmits(['close', 'created', 'updated']);
 const props = defineProps({
@@ -438,7 +436,6 @@ const v$ = useVuelidate({ form: validationRulesForRequest }, { form });
 const formCeilingHeightValidators = computed(() => ceilingHeightValidators(form.maxCeilingHeight));
 const formAreaValidators = computed(() => areaRangeValidators(form.maxArea));
 
-const REGION_LIST = computed(() => store.getters.REGION_LIST);
 const pricePerFloorUnit = computed(() => {
     if (form.dealType === null || form.dealType === undefined || form.dealType === 1) return '₽';
     return '₽ за м<sup>2</sup>/год';
@@ -446,8 +443,6 @@ const pricePerFloorUnit = computed(() => {
 const hasDirections = computed(() => form.regions.some(item => item.region === 1));
 const hasDistricts = computed(() => form.regions.some(item => item.region === 6));
 const isPassive = computed(() => form.status === entityOptions.request.statusStatement.PASSIVE);
-
-const FETCH_REGION_LIST = () => store.dispatch('FETCH_REGION_LIST');
 
 const normalizeForm = () => {
     if (!form.regions.some(item => Number(item.region) === 6)) {
@@ -487,8 +482,10 @@ const createRequest = async () => {
     }
 };
 
+const { validateWithNotify } = useValidationNotify(v$);
+
 const onSubmit = async () => {
-    v$.value.$validate();
+    validateWithNotify();
 
     if (!v$.value.form.$error) {
         normalizeForm();

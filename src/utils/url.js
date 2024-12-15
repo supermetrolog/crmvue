@@ -106,3 +106,7 @@ export function getLinkUploadedFile(filename) {
     }
     return getApiUploads() + filename;
 }
+
+export function getTimelineLink(companyId, requestId, userId) {
+    return `${HOST}/companies/${companyId}?request_id=${requestId}&consultant_id=${userId}&step=0`;
+}

@@ -426,6 +426,7 @@ import { useFormData } from '@/utils/useFormData.js';
 import Checkbox from '@/components/common/Forms/Checkbox.vue';
 import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import CheckboxOptions from '@/components/common/Forms/CheckboxOptions.vue';
+import { useValidationNotify } from '@/composables/useValidationNotify.js';
 
 const emit = defineEmits(['updated', 'created', 'close']);
 const props = defineProps({
@@ -538,8 +539,10 @@ const createCompany = async () => {
     }
 };
 
+const { validateWithNotify } = useValidationNotify(v$);
+
 const onSubmit = async () => {
-    v$.value.$validate();
+    validateWithNotify();
 
     if (!v$.value.form.$error) {
         isLoading.value = true;

@@ -4,7 +4,7 @@
         :show="isVisible"
         width="1200"
         :close-on-outside-click="false"
-        :title="props ? 'Редактирование задачи' : 'Создание задачи'"
+        :title="isEditing ? 'Редактирование задачи' : 'Создание задачи'"
     >
         <div>
             <DashboardTableTasksItem :task="taskPreview" />
@@ -12,7 +12,13 @@
         <Stepper v-model:step="step" @complete="submit" :steps="steps" :v="v$.form" keep-alive>
             <template #1>
                 <Spinner v-if="isLoading" center />
-                <UserPicker v-else v-model="form.user_id" single :users="consultants" />
+                <UserPicker
+                    v-else
+                    v-model="form.user_id"
+                    :disabled="isEditing"
+                    single
+                    :users="consultants"
+                />
             </template>
             <template #2>
                 <div class="d-flex justify-content-center gap-3">
@@ -117,6 +123,7 @@ import FormModalTaskDescription from '@/components/Forms/FormModalTaskDescriptio
 import { useAuth } from '@/composables/useAuth.js';
 import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItem.vue';
 import { useTimeoutFn } from '@vueuse/core';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 const store = useStore();
 const { getTagsOptions } = useTagsOptions();
@@ -232,10 +239,17 @@ const selectedUser = computed(() => {
 });
 
 const selectedObservers = computed(() => {
-    return form.value.observers.map(element => ({
-        user_id: element,
-        user: consultantsForObservers.value.find(el => el.id === element)
-    }));
+    return form.value.observers.reduce((acc, element) => {
+        const user = consultants.value.find(el => el.id === element);
+
+        if (user)
+            acc.push({
+                user_id: element,
+                user
+            });
+
+        return acc;
+    }, []);
 });
 
 const consultantsForObservers = computed(() => {
@@ -356,6 +370,8 @@ const close = () => {
 const selectRange = range => {
     form.value.date.end = dayjs().add(range, 'day').toDate();
 };
+
+const isEditing = computed(() => isNotNullish(props.value?.id));
 
 onUnmounted(() => {
     destroyPopup();

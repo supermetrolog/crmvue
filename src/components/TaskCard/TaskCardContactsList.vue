@@ -1,9 +1,9 @@
 <template>
-    <div class="dashboard-task-item-preview-contacts">
+    <div class="task-card-contacts">
         <Spinner v-if="isLoading" label="Загрузка контактов.." class="small absolute-center" />
         <EmptyLabel v-else-if="isError">Произошла ошибка. Попробуйте позже</EmptyLabel>
         <EmptyLabel v-else-if="!contacts.length">Список контактов пуст..</EmptyLabel>
-        <div v-show="!isLoading" class="dashboard-task-item-preview-contacts__list">
+        <div v-show="!isLoading" class="task-card-contacts__list">
             <ContactCard v-for="contact in contacts" :key="contact.id" :contact="contact" />
         </div>
     </div>

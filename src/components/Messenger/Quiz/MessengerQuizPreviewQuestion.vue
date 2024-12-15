@@ -20,13 +20,21 @@
                 <Chip
                     html="Да"
                     :class="{
-                        'dashboard-bg-success text-white': Boolean(mainQuestionAnswer)
+                        'dashboard-bg-success text-white':
+                            Boolean(mainQuestionAnswer) && isNotNullish(mainQuestionAnswer)
                     }"
                 />
                 <Chip
                     html="Нет"
                     :class="{
-                        'dashboard-bg-success text-white': !Boolean(mainQuestionAnswer)
+                        'dashboard-bg-success text-white':
+                            !Boolean(mainQuestionAnswer) && isNotNullish(mainQuestionAnswer)
+                    }"
+                />
+                <Chip
+                    html="Не ответил"
+                    :class="{
+                        'dashboard-bg-success text-white': isNullish(mainQuestionAnswer)
                     }"
                 />
             </div>
@@ -77,6 +85,8 @@
 import Textarea from '@/components/common/Forms/Textarea.vue';
 import Chip from '@/components/common/Chip.vue';
 import { computed } from 'vue';
+import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 const props = defineProps({
     question: {

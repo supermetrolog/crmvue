@@ -57,6 +57,15 @@ export default {
         const response = await axios.post(`${URL}/${id}/comments`, payload);
         return responseToData(response);
     },
+    async loadComments(id, lastCommentId) {
+        const response = await axios.get(`/task-comments`, {
+            params: {
+                task_id: id,
+                id_less_then: lastCommentId
+            }
+        });
+        return responseToData(response);
+    },
     async getCount(params) {
         const response = await axios.get(URL, { params });
         return responseToPagination(response)?.totalCount;
@@ -83,5 +92,17 @@ export default {
     async read(taskID) {
         const response = await axios.post(`${URL}/${taskID}/read`);
         return responseHasStatus(response, STATUS_SUCCESS);
+    },
+    async assign(taskId, payload) {
+        const response = await axios.post(`${URL}/${taskId}/assign`, payload);
+        return responseToData(response, STATUS_SUCCESS);
+    },
+    async history(taskId) {
+        const response = await axios.get(`${URL}/${taskId}/history`);
+        return responseToData(response);
+    },
+    async restore(id) {
+        const response = await axios.patch(`${URL}/${id}/restore`);
+        return responseToData(response);
     }
 };

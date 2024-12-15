@@ -28,6 +28,7 @@ import taskTag from '@/api/taskTag.js';
 import session from '@/api/session.js';
 import object from '@/api/object.js';
 import effect from '@/api/effect.js';
+import taskComment from '@/api/taskComment.js';
 
 export default {
     user,
@@ -59,5 +60,6 @@ export default {
     taskTag,
     session,
     object,
-    effect
+    effect,
+    taskComment
 };
