@@ -98,20 +98,10 @@
                 Актив
             </DashboardChip>
             <!--            <OfferTableItemCall @click="openSurvey" :call="company.last_call" />-->
-            <!--            <HoverActionsButton-->
-            <!--                @click="openInChat"-->
-            <!--                class="my-2 mx-auto offer-table-item__chat"-->
-            <!--                :label="`У вас ${offer.unread_message_count} непрочитанных сообщений по этой компании`"-->
-            <!--            >-->
-            <!--                <div class="d-flex flex-column">-->
-            <!--                    <i class="fa-solid fa-comment" />-->
-            <!--                    <span>{{ offer.unread_message_count }}</span>-->
-            <!--                </div>-->
-            <!--            </HoverActionsButton>-->
             <TableDateBlock
-                class="text-center"
+                class="mt-1"
                 :date="company.updated_at || company.created_at"
-                label="Обновление"
+                label="Дата обновления"
             />
         </Td>
     </Tr>

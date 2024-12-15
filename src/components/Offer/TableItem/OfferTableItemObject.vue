@@ -49,7 +49,7 @@
                     <DashboardChip v-else class="dashboard-bg-danger text-white">
                         Пассив
                     </DashboardChip>
-                    <TableDateBlock class="mt-1" :date="updatedAt" label="Обновление" />
+                    <TableDateBlock class="mt-1" :date="updatedAt" label="Дата обновления" />
                 </div>
             </div>
         </Td>

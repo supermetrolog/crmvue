@@ -113,6 +113,7 @@
 
     &__date {
         width: 140px;
+        min-width: 140px;
     }
 
     &__icon {
@@ -204,30 +205,6 @@
         text-align: center;
     }
 
-    &__call {
-        width: 100%!important;
-        text-align: center;
-        cursor: pointer;
-        background-color: variables.$bg-success-l;
-        margin-top: 5px;
-        justify-content: center;
-
-        @include mixins.hover {
-            background-color: variables.$bg-success;
-            color: #fff;
-        }
-
-        &.expired {
-            background-color: variables.$bg-danger;
-            color: #fff;
-
-            @include mixins.hover {
-                background-color: variables.$bg-danger-l;
-                color: #000;
-            }
-        }
-    }
-
     &__chat {
         margin: 10px auto;
         background-color: variables.$bg-success-l;
@@ -282,16 +259,10 @@
 }
 
 .table-date-block {
-    &__name {
-        color: variables.$color_grey;
-        font-size: 12px;
-    }
+    width: 100%!important;
+    padding: 5px 7px!important;
 
     &__value {
-        font-size: 14px;
-    }
-
-    &__time {
         font-size: 12px;
         color: variables.$color_grey;
     }
@@ -654,5 +625,38 @@
 .offer-table-item-preview-area {
     &__description {
         color: #afafaf
+    }
+}
+
+.offer-table-item-call {
+    &__chip {
+        text-align: center;
+        width: 100%!important;
+        cursor: pointer;
+        background-color: variables.$bg-success-l;
+
+        @include mixins.hover {
+            background-color: variables.$bg-success;
+            color: #fff;
+        }
+
+        &.expired {
+            background-color: variables.$bg-danger;
+            color: #fff;
+
+            @include mixins.hover {
+                background-color: variables.$bg-danger-l;
+                color: #000;
+            }
+        }
+
+        &.warning {
+            background-color: variables.$bg-warning;
+        }
+    }
+
+    &__help {
+        font-weight: 400;
+        font-size: 12px;
     }
 }

@@ -1,6 +1,13 @@
 <template>
     <div class="company-contact" :class="{ inactive: inactive }">
-        <p class="company-contact__name">{{ fullName }}</p>
+        <p class="company-contact__name">
+            <i
+                v-if="isPassive"
+                v-tippy="'Контакт в пассиве'"
+                class="fa-solid fa-phone-slash mr-1"
+            ></i>
+            <span>{{ fullName }}</span>
+        </p>
         <p v-if="contact.position" class="company-contact__position">{{ position }}</p>
         <p v-else-if="contact.position_unknown" class="company-contact__position">
             Должность неизвестна
@@ -59,4 +66,6 @@ const fullName = computed(() => {
         return 'Основной контакт';
     return 'Без имени';
 });
+
+const isPassive = computed(() => props.contact.status === 0);
 </script>

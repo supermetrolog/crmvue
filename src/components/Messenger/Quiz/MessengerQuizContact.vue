@@ -100,7 +100,6 @@
             <HoverActionsButton
                 @click="$emit('show-comments')"
                 small
-                :disabled="!contact.comments?.length"
                 label="Посмотреть комментарии"
                 class="messenger-quiz-contact__button position-relative"
             >
@@ -115,9 +114,25 @@
                 </span>
                 <i class="fa-solid fa-comments"></i>
             </HoverActionsButton>
+            <Tippy>
+                <template #default>
+                    <HoverActionsButton
+                        @click="$emit('schedule-call')"
+                        small
+                        class="messenger-quiz-contact__button"
+                    >
+                        <i class="fa-solid fa-phone" />
+                    </HoverActionsButton>
+                </template>
+                <template #content>
+                    <p>Запланировать звонок</p>
+                    <p class="color-light">
+                        Будет создана задача для запланированного звонка с контактом
+                    </p>
+                </template>
+            </Tippy>
             <HoverActionsButton
                 @click="$emit('edit')"
-                :disabled="isCompanyContact"
                 small
                 label="Редактировать контакт"
                 class="messenger-quiz-contact__button"
@@ -128,7 +143,6 @@
                 <template #default>
                     <HoverActionsButton
                         @click="$emit('move')"
-                        :disabled="isCompanyContact"
                         small
                         class="messenger-quiz-contact__button"
                     >
@@ -144,9 +158,8 @@
                 <template #default>
                     <HoverActionsButton
                         @click="$emit('delete')"
-                        :disabled="isCompanyContact"
                         small
-                        class="messenger-quiz-contact__button"
+                        class="messenger-quiz-contact__button danger"
                     >
                         <i class="fa-solid fa-ban" />
                     </HoverActionsButton>
@@ -167,7 +180,7 @@ import HoverActionsButton from '@/components/common/HoverActions/HoverActionsBut
 import { contactOptions } from '@/const/options/contact.options.js';
 import { Tippy } from 'vue-tippy';
 
-defineEmits(['edit', 'delete', 'move', 'show-comments']);
+defineEmits(['edit', 'delete', 'move', 'show-comments', 'schedule-call']);
 const props = defineProps({
     contact: {
         type: [Object, null],
