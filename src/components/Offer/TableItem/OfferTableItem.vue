@@ -333,9 +333,11 @@ const toggleFavorite = async () => {
 };
 
 const hasActiveContact = computed(() => {
-    if (isNullish(props.offer.contact)) return false;
+    if (!props.offer.company) return false;
 
-    return props.offer.contact.status !== 0;
+    if (props.offer.company.contacts_count === 1 && props.offer.contact?.status === 0) return false;
+
+    return props.offer.company.contacts_count > 0;
 });
 
 const objectCreatedAt = computed(() => props.offer.object.publ_time * 1000);
