@@ -634,6 +634,7 @@
         width: 100%!important;
         cursor: pointer;
         background-color: variables.$bg-success-l;
+        justify-content: center;
 
         @include mixins.hover {
             background-color: variables.$bg-success;
