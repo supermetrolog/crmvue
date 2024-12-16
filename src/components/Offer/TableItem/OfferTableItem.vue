@@ -118,7 +118,7 @@
                 @to-survey="openInSurvey"
                 @to-chat="openInChat"
                 :call="offer.last_call"
-                :created-at="updatedAt"
+                :created-at="objectCreatedAt"
                 :without-contacts="!hasActiveContact"
                 class="mt-1"
             />
@@ -337,4 +337,6 @@ const hasActiveContact = computed(() => {
 
     return props.offer.contact.status !== 0;
 });
+
+const objectCreatedAt = computed(() => props.offer.object.publ_time * 1000);
 </script>

@@ -25,16 +25,16 @@
                 <span>{{ lastCallIsExpired ? 'Прозвонить!' : lastCallDate }}</span>
             </DashboardChip>
         </template>
-        <!--        <DashboardChip-->
-        <!--            v-else-if="isRecentlyCreated"-->
-        <!--            v-tippy="-->
-        <!--                'Предложение недавно добавлено в систему. Нажмите, чтобы перейти в чат предложения.'-->
-        <!--            "-->
-        <!--            class="offer-table-item-call__chip"-->
-        <!--        >-->
-        <!--            <p class="offer-table-item-call__help">Новая сделка</p>-->
-        <!--            <p>от {{ createdAtFormat }}</p>-->
-        <!--        </DashboardChip>-->
+        <DashboardChip
+            v-else-if="isRecentlyCreated"
+            v-tippy="
+                'Предложение недавно добавлено в систему. Нажмите, чтобы перейти в чат предложения.'
+            "
+            class="offer-table-item-call__chip"
+        >
+            <p class="offer-table-item-call__help">Новая сделка</p>
+            <p>от {{ createdAtFormat }}</p>
+        </DashboardChip>
         <DashboardChip
             v-else
             v-tippy="
@@ -61,7 +61,7 @@ const props = defineProps({
         default: null
     },
     createdAt: {
-        type: String,
+        type: [String, Number],
         default: null
     },
     withoutContacts: Boolean
@@ -70,12 +70,12 @@ const props = defineProps({
 // TODO: У нас нет даты создания, нужно что-то придумать на беке
 const isRecentlyCreated = computed(
     () =>
-        dayjs(props.createdAt).diff(dayjs(), 'days') <
+        dayjs().diff(dayjs(props.createdAt), 'days') <
         import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_DANGER
 );
 
 const lastCallDate = computed(() => toDateFormat(props.call, 'D.MM.YYYY'));
-const lastCallDiffInDays = computed(() => dayjsFromMoscow(props.call).diff(dayjs(), 'days'));
+const lastCallDiffInDays = computed(() => dayjs().diff(dayjsFromMoscow(props.call), 'days'));
 const lastCallIsExpired = computed(
     () => lastCallDiffInDays.value > import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_WARNING
 );
