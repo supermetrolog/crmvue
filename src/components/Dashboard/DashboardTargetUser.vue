@@ -1,12 +1,31 @@
 <template>
-    <DashboardChip @click="formIsVisible = true" class="dashboard-page__switch">
-        {{ modelValue ? targetUsername : 'Общее' }}
-    </DashboardChip>
-    <teleport to="body">
-        <Modal @close="formIsVisible = false" :show="formIsVisible" title="Выбор сотрудника">
-            <UserPicker v-model="value" single :users="consultants" />
-        </Modal>
-    </teleport>
+    <div class="d-flex">
+        <DashboardChip class="dashboard-bg-success-l" with-icon>
+            <span>{{ modelValue ? targetUsername : 'Общее' }}</span>
+        </DashboardChip>
+        <DashboardChip
+            v-tippy="'Выберите сотрудника для просмотра'"
+            @click="formIsVisible = true"
+            class="dashboard-page__switch"
+            with-icon
+        >
+            <i class="fa-solid fa-pen" />
+        </DashboardChip>
+        <DashboardChip
+            v-if="modelValue"
+            v-tippy="'Отменить выбор'"
+            @click="modelValue = null"
+            class="dashboard-page__switch"
+            with-icon
+        >
+            <i class="fa-solid fa-xmark" />
+        </DashboardChip>
+        <teleport to="body">
+            <Modal @close="formIsVisible = false" :show="formIsVisible" title="Выбор сотрудника">
+                <UserPicker v-model="value" single :users="consultants" />
+            </Modal>
+        </teleport>
+    </div>
 </template>
 <script setup>
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
@@ -15,7 +34,7 @@ import Modal from '@/components/common/Modal.vue';
 import { computed, ref, shallowRef } from 'vue';
 import { useStore } from 'vuex';
 
-const modelValue = defineModel({ type: Object, required: true });
+const modelValue = defineModel({ type: Object });
 
 const store = useStore();
 

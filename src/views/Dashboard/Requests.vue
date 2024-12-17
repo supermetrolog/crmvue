@@ -4,7 +4,7 @@
             <div class="row mb-4">
                 <div class="col-12 mb-2 d-flex align-items-center">
                     <h1>Запросы</h1>
-                    <DashboardTargetUser v-model="targetUser" />
+                    <DashboardTargetUser v-model="targetUser" class="ml-2" />
                 </div>
             </div>
             <Form class="dashboard-requests-page__form mb-4">

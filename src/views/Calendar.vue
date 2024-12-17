@@ -4,7 +4,7 @@
         <div v-if="false" class="row">
             <div class="col-12 mb-2 d-flex align-items-center">
                 <h2>Календарь событий</h2>
-                <DashboardTargetUser v-model="targetUser" />
+                <DashboardTargetUser v-model="targetUser" class="ml-2" />
             </div>
             <div class="col-12 col-xl-8">
                 <Calendar
