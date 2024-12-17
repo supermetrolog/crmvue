@@ -136,10 +136,7 @@ function hide() {
 
 function onUpdated(task) {
     Object.assign(currentTask.value, task);
-
-    const currentTaskIndex = props.tasks.findIndex(element => element.id === task.id);
-
-    if (currentTaskIndex !== -1) Object.assign(props.tasks[currentTaskIndex], task);
+    emit('task-updated', task);
 }
 
 function onDeletedComment(commentId) {
