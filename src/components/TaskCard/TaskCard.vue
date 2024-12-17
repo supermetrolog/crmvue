@@ -109,7 +109,7 @@
 
 <script setup>
 import TaskCardStatus from '@/components/TaskCard/TaskCardModalStatus.vue';
-import { computed, ref, watch } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import api from '@/api/api.js';
 import { useNotify } from '@/utils/useNotify.js';
 import { useConfirm } from '@/composables/useConfirm.js';
@@ -167,33 +167,6 @@ const store = useStore();
 
 const { isLoading } = useDelayedLoader();
 
-function clearState() {
-    moveSettingsIsVisible.value = false;
-    assignerFormIsVisible.value = false;
-}
-
-// READ
-
-watch(
-    () => props.visible,
-    newValue => {
-        if (newValue) {
-            if (canBeViewed.value) debouncedReadTask();
-        }
-    }
-);
-
-watch(
-    () => props.task?.id,
-    () => {
-        clearState();
-
-        if (props.visible && canBeViewed.value) {
-            debouncedReadTask();
-        }
-    }
-);
-
 const canBeViewed = computed(() => {
     if (props.task?.observers?.length) {
         return props.task.observers.some(
@@ -204,6 +177,10 @@ const canBeViewed = computed(() => {
     }
 
     return false;
+});
+
+onMounted(() => {
+    if (canBeViewed.value) debouncedReadTask();
 });
 
 async function readTask() {
