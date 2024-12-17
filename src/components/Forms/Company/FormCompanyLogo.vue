@@ -160,7 +160,7 @@ import { useEventListener } from '@vueuse/core';
 import { SIZE_TO_COMPRESSION } from '@/const/messenger.js';
 import imageCompression from 'browser-image-compression';
 import { blobToFile } from '@/utils/helpers/forms/blobToFile.js';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import Progress from '@/components/common/Progress.vue';
 import ImageCropper from '@/components/common/ImageCropper.vue';
 import Modal from '@/components/common/Modal.vue';

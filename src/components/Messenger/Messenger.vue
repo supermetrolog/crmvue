@@ -41,7 +41,7 @@ import {
     shallowRef,
     watch
 } from 'vue';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import { messenger } from '@/const/messenger.js';
 import MessengerTaskPreview from '@/components/Messenger/MessengerTaskPreview.vue';
 import FormModalMessage from '@/components/Forms/FormModalMessage.vue';

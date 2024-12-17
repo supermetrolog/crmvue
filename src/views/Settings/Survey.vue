@@ -259,7 +259,7 @@ import EmptyData from '@/components/common/EmptyData.vue';
 import FormQuestionAnswer from '@/components/Forms/FormQuestionAnswer.vue';
 import Spinner from '@/components/common/Spinner.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import Button from '@/components/common/Button.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';

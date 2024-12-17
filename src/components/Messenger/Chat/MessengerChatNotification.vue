@@ -78,7 +78,7 @@ import MessengerChatMessageActions from '@/components/Messenger/Chat/Message/Mes
 import { ucFirst } from '@/utils/formatters/string.js';
 import { entityOptions } from '@/const/options/options.js';
 import { useStore } from 'vuex';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import { useConfirm } from '@/composables/useConfirm.js';
 import api from '@/api/api.js';
 import { useIntersectionObserver, useTimeoutFn } from '@vueuse/core';

@@ -29,7 +29,7 @@ import FormModalTaskStatus from '@/components/Forms/FormModalTaskStatus.vue';
 import api from '@/api/api.js';
 import { computed, provide, ref, shallowRef, watch } from 'vue';
 import { ucFirst } from '@/utils/formatters/string.js';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import MessengerChatContent from '@/components/Messenger/Chat/MessengerChatContent.vue';

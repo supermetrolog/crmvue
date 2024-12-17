@@ -30,11 +30,11 @@ import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import { reactive, shallowRef } from 'vue';
 import { equipmentOptions } from '@/const/options/equipment.options.js';
 import Textarea from '@/components/common/Forms/Textarea.vue';
-import { useFormData } from '@/utils/useFormData.js';
+import { useFormData } from '@/utils/use/useFormData.js';
 import { helpers, required } from '@vuelidate/validators';
 import FormSubmit from '@/components/common/Forms/FormSubmit.vue';
 import Loader from '@/components/common/Loader.vue';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 
 const emit = defineEmits(['close', 'updated']);
 const props = defineProps({

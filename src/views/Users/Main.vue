@@ -107,7 +107,7 @@ import Modal from '@/components/common/Modal.vue';
 import AccountSessionSkeleton from '@/components/Account/AccountSessionSkeleton.vue';
 import AccountSession from '@/components/Account/AccountSession.vue';
 import api from '@/api/api.js';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import { useConfirm } from '@/composables/useConfirm.js';
 import Switch from '@/components/common/Forms/Switch.vue';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';

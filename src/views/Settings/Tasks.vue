@@ -72,7 +72,7 @@ import SettingsFormElement from '@/components/Settings/SettingsFormElement.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { ref, shallowRef } from 'vue';
 import api from '@/api/api.js';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import { useConfirm } from '@/composables/useConfirm.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { useStore } from 'vuex';

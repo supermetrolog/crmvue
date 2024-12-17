@@ -1,8 +1,9 @@
 import { messenger } from '@/const/messenger.js';
 import { useStore } from 'vuex';
-import { computed, shallowReactive, watch } from 'vue';
+import { computed, ref, shallowReactive, watch } from 'vue';
 import { createSharedComposable, useDocumentVisibility, useIntervalFn } from '@vueuse/core';
 import { DELAY_BETWEEN_UPDATING_STATISTICS } from '@/configs/messenger.config.js';
+import { useCachedAsyncFunction } from '@/utils/use/useCachedAsyncFunction.js';
 
 function useMessengerStatistic() {
     const store = useStore();
@@ -16,16 +17,6 @@ function useMessengerStatistic() {
     const someIsLoading = computed(
         () => isInitialLoading.objects || isInitialLoading.companies || isInitialLoading.users
     );
-
-    function updateStatistics() {
-        store.dispatch('Messenger/updateStatistics', [messenger.dialogTypes.OBJECT]);
-        store.dispatch('Messenger/updateStatistics', [messenger.dialogTypes.COMPANY]);
-        store.dispatch('Messenger/updateStatistics', [messenger.dialogTypes.USER]);
-    }
-
-    const objectCounts = computed(() => store.state.Messenger.counts.object);
-    const companiesCounts = computed(() => store.state.Messenger.counts.company);
-    const userCounts = computed(() => store.state.Messenger.counts.user);
 
     async function fetchObjectsStatistics() {
         isInitialLoading.objects = true;
@@ -45,23 +36,33 @@ function useMessengerStatistic() {
         isInitialLoading.users = false;
     }
 
-    let fetchingPromise = null;
+    const objectCounts = computed(() => store.state.Messenger.counts.object);
+    const companiesCounts = computed(() => store.state.Messenger.counts.company);
+    const userCounts = computed(() => store.state.Messenger.counts.user);
 
-    async function fetchStatistics() {
-        console.log('fetch request');
-
-        if (fetchingPromise) return fetchingPromise;
-
-        console.log('fetch process');
-
-        fetchingPromise = Promise.allSettled([
+    const fetchStatistics = useCachedAsyncFunction(async () => {
+        await Promise.allSettled([
             fetchObjectsStatistics(),
             fetchCompaniesStatistics(),
             fetchUsersStatistics()
         ]);
+    });
 
-        return fetchingPromise;
-    }
+    // updating
+
+    const isUpdating = ref(false);
+
+    const updateStatistics = useCachedAsyncFunction(async () => {
+        isUpdating.value = true;
+
+        await Promise.allSettled([
+            store.dispatch('Messenger/updateStatistics', [messenger.dialogTypes.OBJECT]),
+            store.dispatch('Messenger/updateStatistics', [messenger.dialogTypes.COMPANY]),
+            store.dispatch('Messenger/updateStatistics', [messenger.dialogTypes.USER])
+        ]);
+
+        isUpdating.value = false;
+    });
 
     const statisticsInterval = useIntervalFn(updateStatistics, DELAY_BETWEEN_UPDATING_STATISTICS);
     const documentVisibility = useDocumentVisibility();
@@ -84,7 +85,8 @@ function useMessengerStatistic() {
         fetchUsersStatistics,
         fetchStatistics,
         isInitialLoading,
-        someIsLoading
+        someIsLoading,
+        isUpdating
     };
 }
 

@@ -111,7 +111,7 @@
 import TaskCardStatus from '@/components/TaskCard/TaskCardModalStatus.vue';
 import { computed, onMounted, ref } from 'vue';
 import api from '@/api/api.js';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import { useConfirm } from '@/composables/useConfirm.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import dayjs from 'dayjs';

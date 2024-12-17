@@ -1,5 +1,5 @@
 import api from '@/api/api';
-import { useQueryHash } from '@/utils/useQueryHash.js';
+import { useQueryHash } from '@/utils/use/useQueryHash.js';
 
 const CompanyRequest = {
     state: {

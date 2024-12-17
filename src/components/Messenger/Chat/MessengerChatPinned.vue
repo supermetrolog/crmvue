@@ -21,7 +21,7 @@ import MessengerChatPinnedView from '@/components/Messenger/Chat/MessengerChatPi
 import { useConfirm } from '@/composables/useConfirm.js';
 import { computed, ref } from 'vue';
 import { toDateFormat } from '@/utils/formatters/date.js';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import { useStore } from 'vuex';
 
 const props = defineProps({

@@ -1,7 +1,7 @@
 import { onMounted, onUnmounted, ref, shallowRef } from 'vue';
 import { SharedWorkerStrategy } from '@/composables/useActivityTracking/strategies/SharedWorkerStrategy.js';
 import { FallbackStrategy } from '@/composables/useActivityTracking/strategies/FallbackStrategy.js';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import api from '@/api/api.js';
 import { useRoute } from 'vue-router';
 

@@ -247,7 +247,7 @@ import { useNotification } from '@kyvg/vue3-notification';
 import Loader from '@/components/common/Loader.vue';
 import { equipmentOptions } from '@/const/options/equipment.options.js';
 import Textarea from '@/components/common/Forms/Textarea.vue';
-import { useFormData } from '@/utils/useFormData.js';
+import { useFormData } from '@/utils/use/useFormData.js';
 import InProgress from '@/components/common/InProgress.vue';
 
 const store = useStore();
