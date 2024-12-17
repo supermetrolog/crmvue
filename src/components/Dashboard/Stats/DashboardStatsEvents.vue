@@ -6,7 +6,8 @@
                 <MessengerButton @click="fetchEvents">Обновить</MessengerButton>
             </div>
         </template>
-        <div class="row">
+        <InProgress />
+        <div v-if="false" class="row">
             <div class="col-6">
                 <Scheduler v-model="date" @changed="onChangeDate" @mode-changed="onModeChanged" />
             </div>
