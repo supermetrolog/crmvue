@@ -89,7 +89,7 @@ import { computed, inject, reactive, watch } from 'vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { useStore } from 'vuex';
 import { taskOptions } from '@/const/options/task.options.js';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 
 const $targetUser = inject('$targetUser');

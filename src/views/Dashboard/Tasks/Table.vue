@@ -126,7 +126,7 @@ import DashboardTableTasksFilters from '@/components/Dashboard/Table/DashboardTa
 import { computed, inject, onBeforeMount, reactive, ref, shallowRef, toRef, watch } from 'vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { debounce } from '@/utils/common/debounce.js';
-import { useQueryHash } from '@/utils/useQueryHash.js';
+import { useQueryHash } from '@/utils/use/useQueryHash.js';
 import gsap from 'gsap';
 import { useTagsOptions } from '@/composables/options/useTagsOptions.js';
 import TaskTagOption from '@/components/common/Forms/TaskTagOption.vue';
