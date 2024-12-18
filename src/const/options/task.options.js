@@ -66,7 +66,8 @@ const historyTextByType = {
     deleted: 'Задача удалена',
     restored: 'Задача восстановлена',
     status_changed: 'Статус задачи изменен',
-    assigned: 'Изменен исполнитель'
+    assigned: 'Изменен исполнитель',
+    observed: 'Просмотрел задачу'
 };
 
 export const taskOptions = {
