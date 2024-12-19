@@ -49,7 +49,7 @@ import Spinner from '@/components/common/Spinner.vue';
 import { toDateFormat } from '@/utils/formatters/date.js';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
 
-const emit = defineEmits(['task-updated']);
+const emit = defineEmits(['task-updated', 'hide']);
 const props = defineProps({
     tasks: {
         type: Array,
@@ -126,7 +126,10 @@ function onRead() {
 
 async function toChat(payload) {
     const opened = await openMessenger(payload);
-    if (opened) hide();
+    if (opened) {
+        hide();
+        emit('hide');
+    }
 }
 
 function hide() {
