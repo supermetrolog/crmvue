@@ -6,7 +6,7 @@
         label="Новые задачи"
     >
         <template #modal="{ close }">
-            <HeaderSummaryTasksContent @close="close" @count-updated="onCountUpdated" />
+            <HeaderSummaryTasksContent @close="close" @count-updated="onCountUpdated" :count />
         </template>
     </HeaderSummarySection>
 </template>

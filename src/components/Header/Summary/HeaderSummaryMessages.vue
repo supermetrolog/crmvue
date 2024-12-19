@@ -7,7 +7,7 @@
         label="Новые сообщения"
     >
         <template #modal="{ close }">
-            <HeaderSummaryMessagesContent @close="close" />
+            <HeaderSummaryMessagesContent @close="close" :count />
         </template>
     </HeaderSummarySection>
 </template>

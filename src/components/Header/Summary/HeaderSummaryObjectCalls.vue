@@ -8,7 +8,7 @@
         class="warning"
     >
         <template #modal="{ close }">
-            <HeaderSummaryObjectCallsContent @close="close" />
+            <HeaderSummaryObjectCallsContent @close="close" :count />
         </template>
     </HeaderSummarySection>
 </template>

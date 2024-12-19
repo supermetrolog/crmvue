@@ -5,7 +5,14 @@
             <i class="fa-solid fa-refresh" />
         </Button>
         <div class="header-summary__list my-2">
+            <HeaderSummaryEmpty
+                v-if="count === 0"
+                :loading="isLoading"
+                empty-title="Новых задач нет. Отлично!"
+                loading-title="Поиск задач.."
+            />
             <DashboardTableTasks
+                v-else
                 @hide="emit('close')"
                 @task-updated="onTaskUpdated"
                 :tasks="tasks.data"
@@ -13,7 +20,7 @@
             />
         </div>
         <PaginationClassic
-            v-if="!isLoading && tasks.pagination"
+            v-if="!isLoading && tasks.pagination?.totalCount"
             @next="fetchTasks"
             :pagination="tasks.pagination"
         />
@@ -29,11 +36,18 @@ import PaginationClassic from '@/components/common/Pagination/PaginationClassic.
 import DashboardTableTasks from '@/components/Dashboard/Table/DashboardTableTasks.vue';
 import { taskOptions } from '@/const/options/task.options.js';
 import Button from '@/components/common/Button.vue';
+import HeaderSummaryEmpty from '@/components/Header/Summary/HeaderSummaryEmpty.vue';
 
 const emit = defineEmits(['count-updated', 'close']);
+const props = defineProps({
+    count: {
+        type: Number,
+        default: 0
+    }
+});
 
 const { currentUserId } = useAuth();
-const { isLoading } = useDelayedLoader();
+const { isLoading } = useDelayedLoader(props.count > 0);
 
 const tasks = reactive({
     data: [],
@@ -58,7 +72,9 @@ async function fetchTasks(page = 1) {
     isLoading.value = false;
 }
 
-onMounted(fetchTasks);
+onMounted(() => {
+    if (props.count > 0) fetchTasks();
+});
 
 function onTaskUpdated(task) {
     const taskIndex = tasks.data.findIndex(element => element.id === task.id);

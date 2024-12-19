@@ -204,6 +204,15 @@
         padding: 25px 10px 10px;
         border: 1px solid rgba(0, 0, 0, .1);
     }
+
+    &__empty {
+        @include mixins.flex-box($a: center, $j: center, $d: column);
+        font-weight: 500;
+
+        .dashboard-chip {
+            font-size: 16px!important;
+        }
+    }
 }
 
 .header-summary-section {

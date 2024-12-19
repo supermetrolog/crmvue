@@ -1,7 +1,7 @@
 <template>
     <div class="header-summary-messages-content">
         <HeaderSummaryDialogs
-            :title="`Требуется обзвон клиентов (${companiesCounts.outdated_call_count})`"
+            :title="`Список клиентов для обзвона (${companiesCounts.outdated_call_count})`"
         >
             <template #actions>
                 <Button @click="fetchChats" :disabled="isLoading" class="ml-auto mb-2" small icon>
@@ -10,8 +10,8 @@
                 </Button>
             </template>
             <HeaderSummaryDialogsGrid
-                :loading="isLoading"
-                :class="{ disabled: !chats.data.length && !isLoading }"
+                :loading="isLoading && count > 0"
+                :class="{ disabled: !chats.data.length }"
             >
                 <MessengerDialogCompany
                     v-for="chat in chats.data"
@@ -21,8 +21,15 @@
                     :statistic="chat.statistic"
                     class="header-summary-dialogs__dialog"
                 />
+                <template #empty>
+                    <HeaderSummaryEmpty
+                        :loading="isLoading"
+                        empty-title="Обзвон клиентов не требуется. Отлично!"
+                        loading-title="Исследование клиентов.."
+                    />
+                </template>
             </HeaderSummaryDialogsGrid>
-            <template v-if="!isLoading && chats.pagination">
+            <template v-if="!isLoading && chats.pagination?.totalCount">
                 <hr />
                 <PaginationClassic @next="fetchChats" :pagination="chats.pagination" />
             </template>
@@ -33,7 +40,6 @@
 import { onMounted, reactive } from 'vue';
 import api from '@/api/api.js';
 import { useAuth } from '@/composables/useAuth.js';
-import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import PaginationClassic from '@/components/common/Pagination/PaginationClassic.vue';
 import Button from '@/components/common/Button.vue';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
@@ -42,8 +48,16 @@ import { messenger } from '@/const/messenger.js';
 import { useSharedMessengerStatistic } from '@/components/Messenger/useSharedMessengerStatistic.js';
 import HeaderSummaryDialogs from '@/components/Header/Summary/Dialogs/HeaderSummaryDialogs.vue';
 import HeaderSummaryDialogsGrid from '@/components/Header/Summary/Dialogs/HeaderSummaryDialogsGrid.vue';
+import HeaderSummaryEmpty from '@/components/Header/Summary/HeaderSummaryEmpty.vue';
+import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 
 const emit = defineEmits(['close']);
+const props = defineProps({
+    count: {
+        type: Number,
+        default: 0
+    }
+});
 
 const { currentUserId } = useAuth();
 const { companiesCounts } = useSharedMessengerStatistic();
@@ -53,7 +67,7 @@ const chats = reactive({
     pagination: null
 });
 
-const { isLoading } = useDelayedLoader(true);
+const { isLoading } = useDelayedLoader(props.count > 0);
 
 async function fetchChats(page = 1) {
     isLoading.value = true;
@@ -73,7 +87,9 @@ async function fetchChats(page = 1) {
     isLoading.value = false;
 }
 
-onMounted(fetchChats);
+onMounted(() => {
+    if (props.count > 0) fetchChats();
+});
 
 // chat
 

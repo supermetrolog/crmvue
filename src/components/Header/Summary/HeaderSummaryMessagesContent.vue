@@ -4,7 +4,7 @@
             <span>Обновить все</span>
             <i class="fa-solid fa-refresh" />
         </Button>
-        <div class="header-summary-messages-content__grid">
+        <div v-if="count > 0" class="header-summary-messages-content__grid">
             <HeaderSummaryDialogs
                 :title="`Чаты сотрудников (${chats.user.pagination?.totalCount ?? userCounts.unread_message_count})`"
             >
@@ -115,11 +115,16 @@
                 </template>
             </HeaderSummaryDialogs>
         </div>
+        <HeaderSummaryEmpty
+            v-else
+            :loading="someIsLoading"
+            empty-title="Новых сообщений нет. Отлично!"
+            loading-title="Поиск сообщений.."
+        />
     </div>
 </template>
 <script setup>
-import { onMounted, reactive } from 'vue';
-
+import { computed, onMounted, reactive } from 'vue';
 import api from '@/api/api.js';
 import Button from '@/components/common/Button.vue';
 import MessengerDialogUser from '@/components/Messenger/Dialog/MessengerDialogUser.vue';
@@ -131,8 +136,15 @@ import { useSharedMessengerStatistic } from '@/components/Messenger/useSharedMes
 import HeaderSummaryDialogs from '@/components/Header/Summary/Dialogs/HeaderSummaryDialogs.vue';
 import HeaderSummaryDialogsList from '@/components/Header/Summary/Dialogs/HeaderSummaryDialogsList.vue';
 import PaginationClassic from '@/components/common/Pagination/PaginationClassic.vue';
+import HeaderSummaryEmpty from '@/components/Header/Summary/HeaderSummaryEmpty.vue';
 
 const emit = defineEmits(['close']);
+const props = defineProps({
+    count: {
+        type: Number,
+        default: 0
+    }
+});
 
 const { companiesCounts, userCounts, objectCounts } = useSharedMessengerStatistic();
 
@@ -152,10 +164,12 @@ const chats = reactive({
 });
 
 const loaders = reactive({
-    [messenger.dialogTypes.USER]: true,
-    [messenger.dialogTypes.COMPANY]: true,
-    [messenger.dialogTypes.OBJECT]: true
+    [messenger.dialogTypes.USER]: props.count > 0,
+    [messenger.dialogTypes.COMPANY]: props.count > 0,
+    [messenger.dialogTypes.OBJECT]: props.count > 0
 });
+
+const someIsLoading = computed(() => loaders.user || loaders.company || loaders.object);
 
 async function fetchChats(modelType, page = 1) {
     loaders[modelType] = true;
@@ -180,7 +194,9 @@ function fetchAll() {
     fetchChats(messenger.dialogTypes.OBJECT);
 }
 
-onMounted(fetchAll);
+onMounted(() => {
+    if (props.count > 0) fetchAll();
+});
 
 // chat
 

@@ -1,11 +1,13 @@
 <template>
     <div class="header-summary-dialogs__list">
-        <Spinner v-if="loading" class="small absolute-center" />
+        <Spinner v-if="loading" small class="absolute-center" />
         <slot v-else>
-            <DashboardChip class="dashboard-bg-gray-l mt-5 mx-auto" with-icon>
-                <span>Список пуст</span>
-                <i class="fa-solid fa-comment-slash"></i>
-            </DashboardChip>
+            <slot name="empty">
+                <DashboardChip class="dashboard-bg-gray-l mt-5 mx-auto" with-icon>
+                    <span>Список пуст</span>
+                    <i class="fa-solid fa-comment-slash"></i>
+                </DashboardChip>
+            </slot>
         </slot>
     </div>
 </template>
