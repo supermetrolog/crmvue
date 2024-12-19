@@ -31,7 +31,7 @@ export function createMessengerContext(element) {
     const openChatByUserId = createOpenHandler((...args) =>
         element.value.openChatByUserID(...args)
     );
-    const openChatByCompanyId = createOpenHandler(args =>
+    const openChatByCompanyId = createOpenHandler((...args) =>
         element.value.openChatByCompanyID(...args)
     );
     const openChatById = createOpenHandler((...args) => element.value.openChatByID(...args));
