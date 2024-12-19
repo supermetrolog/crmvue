@@ -5,8 +5,8 @@
         :count
         label="Новые задачи"
     >
-        <template #modal>
-            <HeaderSummaryTasksContent @count-updated="onCountUpdated" />
+        <template #modal="{ close }">
+            <HeaderSummaryTasksContent @close="close" @count-updated="onCountUpdated" />
         </template>
     </HeaderSummarySection>
 </template>

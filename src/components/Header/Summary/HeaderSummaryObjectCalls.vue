@@ -1,19 +1,26 @@
 <template>
     <HeaderSummarySection
-        :modal-title="`Просмотр объектов для обзвона (${count})`"
+        :loading="someIsLoading"
+        :modal-width="1000"
+        :modal-title="`Просмотр предложений для обзвона (${count})`"
         :count
-        label="Обзвон объектов"
+        label="Обзвон предложений"
         class="warning"
     >
-        <template #modal>
-            <InProgress />
+        <template #modal="{ close }">
+            <HeaderSummaryObjectCallsContent @close="close" />
         </template>
     </HeaderSummarySection>
 </template>
 <script setup>
-import { ref } from 'vue';
+import { computed, onMounted } from 'vue';
 import HeaderSummarySection from '@/components/Header/Summary/HeaderSummarySection.vue';
-import InProgress from '@/components/common/InProgress.vue';
+import { useSharedMessengerStatistic } from '@/components/Messenger/useSharedMessengerStatistic.js';
+import HeaderSummaryObjectCallsContent from '@/components/Header/Summary/HeaderSummaryObjectCallsContent.vue';
 
-const count = ref(0);
+const { objectCounts, fetchStatistics, someIsLoading } = useSharedMessengerStatistic();
+
+const count = computed(() => objectCounts?.value?.outdated_call_count ?? 0);
+
+onMounted(fetchStatistics);
 </script>

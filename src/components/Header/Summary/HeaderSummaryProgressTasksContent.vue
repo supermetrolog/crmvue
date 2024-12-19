@@ -4,15 +4,17 @@
             <span>Обновить</span>
             <i class="fa-solid fa-refresh" />
         </Button>
-        <DashboardTableTasks
-            @task-updated="onTaskUpdated"
-            :tasks="tasks.data"
-            :is-loading="isLoading"
-            class="mb-3 pt-3"
-        />
+        <div class="header-summary__list my-2">
+            <DashboardTableTasks
+                @hide="emit('close')"
+                @task-updated="onTaskUpdated"
+                :tasks="tasks.data"
+                :is-loading="isLoading"
+            />
+        </div>
         <PaginationClassic
             v-if="!isLoading && tasks.pagination"
-            @next="loadTasks"
+            @next="fetchTasks"
             :pagination="tasks.pagination"
         />
     </div>
@@ -28,7 +30,7 @@ import DashboardTableTasks from '@/components/Dashboard/Table/DashboardTableTask
 import { taskOptions } from '@/const/options/task.options.js';
 import Button from '@/components/common/Button.vue';
 
-const emit = defineEmits(['count-updated']);
+const emit = defineEmits(['count-updated', 'close']);
 
 const { currentUserId } = useAuth();
 const { isLoading } = useDelayedLoader();
@@ -57,8 +59,6 @@ async function fetchTasks(page = 1) {
 }
 
 onMounted(fetchTasks);
-
-const loadTasks = page => fetchTasks(page);
 
 function onTaskUpdated(task) {
     const taskIndex = tasks.data.findIndex(element => element.id === task.id);

@@ -5,8 +5,8 @@
         :count
         label="Невыполненные задачи"
     >
-        <template #modal>
-            <HeaderSummaryProgressTasksContent @count-updated="onCountUpdated" />
+        <template #modal="{ close }">
+            <HeaderSummaryProgressTasksContent @close="close" @count-updated="onCountUpdated" />
         </template>
     </HeaderSummarySection>
 </template>

@@ -15,7 +15,7 @@
                 :show="modalIsVisible"
                 :title="modalTitle"
             >
-                <slot name="modal" />
+                <slot name="modal" :close="closeModal" />
             </Modal>
         </teleport>
     </div>
