@@ -5,23 +5,62 @@ export const Menu = {
             name: 'Дашборд',
             icon: 'fa-solid fa-chart-line',
             url: '/dashboard',
-            internal: 'dashboard',
-            key: 'dashboard'
+            key: 'dashboard',
+            internal: [
+                {
+                    id: 0,
+                    name: 'Сводка',
+                    url: '/dashboard',
+                    icon: 'fa-solid fa-chart-line',
+                    exact: true
+                },
+                {
+                    id: 1,
+                    name: 'Запросы',
+                    url: '/dashboard/requests',
+                    icon: 'fa-solid fa-user-clock'
+                }
+            ]
         },
         {
             id: 0,
             name: 'Компании',
             icon: 'fa-solid fa-industry',
             url: '/companies',
-            internal: 'companies',
-            key: 'company'
+            key: 'company',
+            internal: [
+                {
+                    id: 0,
+                    name: 'Выдача',
+                    url: '/companies',
+                    exact: true,
+                    icon: 'fa-solid fa-industry'
+                },
+                {
+                    id: 1,
+                    name: 'Группы компаний',
+                    url: '/companies/groups',
+                    icon: 'fa-solid fa-people-group'
+                },
+                {
+                    id: 2,
+                    name: 'Запросы',
+                    url: '/companies/requests',
+                    icon: 'fa-solid fa-user-clock'
+                },
+                {
+                    id: 3,
+                    name: 'Сделки',
+                    url: '/companies/deals',
+                    icon: 'fa-regular fa-handshake'
+                }
+            ]
         },
         {
             id: 6,
             name: 'Предложка',
             icon: 'fas fa-city',
             url: '/offers',
-            internal: 'offers',
             key: 'offers'
         },
         {
@@ -51,7 +90,22 @@ export const Menu = {
             icon: 'fas fa-cog',
             url: '/settings',
             key: 'settings',
-            internal: 'settings'
+            internal: [
+                {
+                    id: 0,
+                    name: 'Опросник',
+                    url: '/settings/survey',
+                    icon: 'fa-solid fa-square-poll-horizontal',
+                    exact: true
+                },
+                {
+                    id: 1,
+                    name: 'Мессенджер',
+                    url: '/settings/messenger',
+                    icon: 'fa-solid fa-message'
+                },
+                { id: 2, name: 'Задачи', url: '/settings/tasks', icon: 'fa-solid fa-list-check' }
+            ]
         },
         {
             id: 4,
@@ -59,7 +113,21 @@ export const Menu = {
             icon: 'fas fa-users',
             url: '/users',
             key: 'users',
-            internal: 'users'
+            internal: [
+                {
+                    id: 0,
+                    name: 'Управление',
+                    url: '/users',
+                    icon: 'fa-solid fa-users',
+                    exact: true
+                },
+                {
+                    id: 1,
+                    name: 'Безопасность',
+                    url: '/users/sessions',
+                    icon: 'fa-solid fa-shield-halved'
+                }
+            ]
         }
     ],
     agent: [
@@ -68,23 +136,62 @@ export const Menu = {
             name: 'Дашборд',
             icon: 'fa-solid fa-chart-line',
             url: '/dashboard',
-            internal: 'dashboard',
-            key: 'dashboard'
+            key: 'dashboard',
+            internal: [
+                {
+                    id: 0,
+                    name: 'Сводка',
+                    url: '/dashboard',
+                    icon: 'fa-solid fa-chart-line',
+                    exact: true
+                },
+                {
+                    id: 1,
+                    name: 'Запросы',
+                    url: '/dashboard/requests',
+                    icon: 'fa-solid fa-user-clock'
+                }
+            ]
         },
         {
             id: 0,
             name: 'Компании',
             icon: 'fa-solid fa-industry',
             url: '/companies',
-            internal: 'companies',
-            key: 'company'
+            key: 'company',
+            internal: [
+                {
+                    id: 0,
+                    name: 'Выдача',
+                    url: '/companies',
+                    icon: 'fa-solid fa-industry',
+                    exact: true
+                },
+                {
+                    id: 1,
+                    name: 'Группы компаний',
+                    url: '/companies/groups',
+                    icon: 'fa-solid fa-people-group'
+                },
+                {
+                    id: 2,
+                    name: 'Запросы',
+                    url: '/companies/requests',
+                    icon: 'fa-solid fa-user-clock'
+                },
+                {
+                    id: 3,
+                    name: 'Сделки',
+                    url: '/companies/deals',
+                    icon: 'fa-regular fa-handshake'
+                }
+            ]
         },
         {
             id: 6,
             name: 'Предложка',
             icon: 'fa-solid fa-city',
             url: '/offers',
-            internal: 'offers',
             key: 'offers'
         },
         {
@@ -99,7 +206,6 @@ export const Menu = {
             name: 'Календарь',
             icon: 'fa-solid fa-calendar-days',
             url: '/calendar',
-            exact: true,
             key: 'calendar'
         },
         {
@@ -109,37 +215,5 @@ export const Menu = {
             url: '/account',
             key: 'account'
         }
-    ]
-};
-export const InternalMenu = {
-    statistic: [
-        { id: 0, name: 'Общая', url: '/statistic/', exact: true },
-        { id: 1, name: 'Сделка', url: '/statistic/deal' },
-        { id: 2, name: 'Брак', url: '/statistic/brak' }
-    ],
-    offers: [
-        { id: 0, name: 'Главная', url: '/offers/', exact: true },
-        { id: 1, name: 'Карта', url: '/offers/map' }
-    ],
-    companies: [
-        { id: 0, name: 'Главная', url: '/companies', exact: true },
-        { id: 1, name: 'Группы компаний', url: '/companies/groups' },
-        { id: 2, name: 'Запросы', url: '/companies/requests' },
-        { id: 3, name: 'Сделки', url: '/companies/deals' }
-    ],
-    dashboard: [
-        { id: 0, name: 'Главная', url: '/dashboard', exact: true },
-        { id: 1, name: 'Сводка', url: '/dashboard/company' },
-        { id: 2, name: 'Задачи', url: '/dashboard/tasks/table' },
-        { id: 3, name: 'Запросы', url: '/dashboard/requests' }
-    ],
-    settings: [
-        { id: 0, name: 'Опросник', url: '/settings/survey' },
-        { id: 1, name: 'Мессенджер', url: '/settings/messenger' },
-        { id: 1, name: 'Задачи', url: '/settings/tasks' }
-    ],
-    users: [
-        { id: 0, name: 'Управление', url: '/users' },
-        { id: 1, name: 'Безопасность', url: '/users/sessions' }
     ]
 };

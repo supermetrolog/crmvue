@@ -16,7 +16,7 @@
         <template #body>
             <div class="sidebar-mobile-menu__accordion-body">
                 <router-link
-                    v-for="element in InternalMenu[link.internal]"
+                    v-for="element in link.internal"
                     :key="element.id"
                     class="sidebar-mobile-menu__link"
                     exact-active-class="active"
@@ -33,7 +33,6 @@
 import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
 import AccordionSimpleTrigger from '@/components/common/Accordion/AccordionSimpleTrigger.vue';
 import AccordionSimpleTriggerIcon from '@/components/common/Accordion/AccordionSimpleTriggerIcon.vue';
-import { InternalMenu } from '@/const/menu.js';
 
 defineProps({
     link: {

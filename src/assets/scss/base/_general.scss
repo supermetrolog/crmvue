@@ -26,7 +26,7 @@ main {
     background-color: variables.$color_overflow;
 
     @include mixins.media("min", "md") {
-        padding: 100px 30px 50px 100px;
+        padding: 100px 30px 50px 110px;
     }
 }
 
