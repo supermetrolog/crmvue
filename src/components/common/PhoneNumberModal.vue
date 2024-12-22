@@ -4,19 +4,16 @@
             <Spinner class="absolute-center" />
         </div>
         <div v-else class="row">
-            <div v-if="company" class="col-6">
-                <h3 class="text-center">Компания</h3>
-                <div class="inner-y">
-                    <Company
-                        @start-editing="companyFormIsVisible = true"
-                        :company="company"
-                        class="mx-2"
-                    />
-                </div>
-            </div>
-            <div v-if="contact" class="col-6" :class="{ 'col-12': !company }">
-                <h3 class="mb-2 text-center">Контакт</h3>
+            <div v-if="contact" class="col-4" :class="{ 'col-12': !company }">
+                <h3 class="mb-2">Контакт</h3>
                 <div v-if="currentContactForCall">
+                    <div class="mb-2">
+                        <DashboardChip
+                            class="dashboard-bg-success-l phone-number__main w-100 text-center"
+                        >
+                            {{ phone.phone }}{{ phone.exten ? ` => ${phone.exten}` : '' }}
+                        </DashboardChip>
+                    </div>
                     <CompanyContactList
                         @created-comment="refreshContacts"
                         @deleted="refreshContacts"
@@ -24,27 +21,9 @@
                         :contacts="[currentContactForCall]"
                         :read-only="readOnly"
                     />
-                    <div class="mt-3">
-                        <DashboardChip class="dashboard-bg-success-l phone-number__main mx-auto">
-                            {{ phone.phone }}{{ phone.exten ? ` => ${phone.exten}` : '' }}
-                        </DashboardChip>
-                        <Button icon success class="w-100 mt-1">
-                            <i class="fas fa-phone-volume" />
-                            <span>Позвонить</span>
-                        </Button>
-                    </div>
                 </div>
-                <h3 class="mb-1 mt-4 text-center">Все контакты</h3>
-                <CompanyContactList
-                    @created-comment="refreshContacts"
-                    @deleted="refreshContacts"
-                    @start-editing="startEditing"
-                    :contacts="companyContacts"
-                    :read-only="readOnly"
-                    class="inner-y phone-number__contacts"
-                />
             </div>
-            <div v-else class="offset-3 col-6">
+            <div v-else class="col-4">
                 <DashboardCard>
                     <DashboardChip
                         class="dashboard-bg-danger-l phone-number__main w-100 text-center mb-4"
@@ -54,14 +33,27 @@
                     <DashboardChip class="dashboard-bg-success-l phone-number__main mx-auto mb-2">
                         {{ phone.phone }}{{ phone.exten ? ` => ${phone.exten}` : '' }}
                     </DashboardChip>
-                    <Button icon success class="mb-2 w-100">
-                        <span>Позвонить</span>
-                        <i class="fas fa-phone-volume mr-1"></i>
-                    </Button>
                     <Button @click="companyContactFormIsVisible = true" class="w-100">
                         Создать контакт
                     </Button>
                 </DashboardCard>
+            </div>
+            <div class="col-8">
+                <h3 class="pl-2">Все контакты</h3>
+                <CompanyContactList
+                    @created-comment="refreshContacts"
+                    @deleted="refreshContacts"
+                    @start-editing="startEditing"
+                    :contacts="companyContacts"
+                    :read-only="readOnly"
+                    class="inner-y phone-number__contacts"
+                />
+            </div>
+            <div class="col-12">
+                <hr />
+            </div>
+            <div v-if="company" class="col-12">
+                <CompanyPreview @start-editing="companyFormIsVisible = true" :company="company" />
             </div>
         </div>
         <FormCompanyContact
@@ -91,7 +83,7 @@ import api from '@/api/api';
 import Modal from '@/components/common/Modal.vue';
 import FormCompanyContact from '@/components/Forms/Company/FormCompanyContact.vue';
 import CompanyContactList from '@/components/Company/Contact/CompanyContactList.vue';
-import Company from '@/components/Company/Company.vue';
+import CompanyPreview from '@/components/Company/Preview/CompanyPreview.vue';
 import Spinner from '@/components/common/Spinner.vue';
 import Button from '@/components/common/Button.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
@@ -110,7 +102,7 @@ export default {
         CompanyContactList,
         Modal,
         FormCompanyContact,
-        Company
+        CompanyPreview
     },
     emits: ['close', 'created-contact'],
     props: {
