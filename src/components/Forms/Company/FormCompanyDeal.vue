@@ -81,6 +81,8 @@
                     label="Площадь сделки"
                     class="col-6"
                     maska="##########"
+                    type="number"
+                    unit="м<sup>2</sup>"
                 />
                 <MultiSelect
                     v-model="form.company_id"
@@ -147,10 +149,11 @@
                 <Input v-model="form.dealDate" label="Дата сделки" type="date" class="col-3" />
                 <Input
                     v-model="form.contractTerm"
-                    label="Срок контракта в месяцах"
+                    label="Срок контракта"
                     :disabled="!contractTermVisible"
                     class="col-3"
                     maska="####"
+                    unit="мес."
                 />
             </FormGroup>
             <FormGroup>

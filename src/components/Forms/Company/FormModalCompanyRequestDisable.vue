@@ -1,5 +1,5 @@
 <template>
-    <Modal @close="$emit('close')" :show="show" width="550" :title="title">
+    <Modal @close="$emit('close')" width="550" :title="title">
         <FormCompanyRequestDisable @disabled="$emit('disabled')" :request_id="request_id" />
     </Modal>
 </template>
@@ -12,15 +12,11 @@ defineEmits(['close', 'disabled']);
 defineProps({
     title: {
         type: String,
-        default: 'Завершения запроса'
+        default: 'Завершение запроса'
     },
     request_id: {
         type: Number,
         required: true
-    },
-    show: {
-        type: Boolean,
-        default: true
     }
 });
 </script>

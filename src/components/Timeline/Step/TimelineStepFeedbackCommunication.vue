@@ -4,11 +4,11 @@
             <div class="col-12 mb-2">
                 <TimelineInfo
                     @next="$emit('next-step')"
-                    title="Обратная связь от клиента"
+                    title="3. Обратная связь от клиента"
                     :success="data.timelineStepFeedbackways.length"
                     :disabled="isDisabled"
                 >
-                    <p>Шаг 2. Укажите, каким способом была получена обратная связь</p>
+                    <p>3.2. Укажите, каким способом была получена обратная связь</p>
                     <template #footer>
                         <TimelineFeedbackPicker
                             v-model="ways"
@@ -16,20 +16,20 @@
                             :disabled="disabled || isDisabled"
                         />
                         <div class="d-flex gap-2">
-                            <Button
+                            <TimelineButton
                                 @click="confirm"
                                 success
                                 :disabled="disabled || !actionsIsVisible"
                             >
                                 Подтвердить выбор
-                            </Button>
-                            <Button
+                            </TimelineButton>
+                            <TimelineButton
                                 @click="cancel"
                                 danger
                                 :disabled="disabled || !actionsIsVisible"
                             >
                                 Отменить выбор
-                            </Button>
+                            </TimelineButton>
                         </div>
                     </template>
                 </TimelineInfo>
@@ -41,16 +41,16 @@
 <script>
 import { TimelineStepMixin } from '@/components/Timeline/mixins.js';
 import TimelineInfo from '@/components/Timeline/TimelineInfo.vue';
-import Button from '@/components/common/Button.vue';
 import { FeedbackWaysConfirmedComment } from '@/components/Timeline/comments.js';
 import TimelineFeedbackPicker from '@/components/Timeline/TimelineFeedbackPicker.vue';
 import { waitHash } from '@/utils/helpers/common/waitHash.js';
+import TimelineButton from '@/components/Timeline/TimelineButton.vue';
 
 export default {
     name: 'TimelineStepFeedbackCommunication',
     components: {
+        TimelineButton,
         TimelineFeedbackPicker,
-        Button,
         TimelineInfo
     },
     mixins: [TimelineStepMixin],
@@ -100,5 +100,3 @@ export default {
     }
 };
 </script>
-
-<style></style>

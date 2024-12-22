@@ -81,9 +81,9 @@
                 :request="requestView"
             />
             <FormModalCompanyRequestDisable
-                v-if="formCompleteIsVisible"
                 @close="formCompleteIsVisible = false"
                 @disabled="updateRequest(completeRequest)"
+                :show="formCompleteIsVisible"
                 :request_id="completeRequest.id"
             />
             <FormCompanyRequest

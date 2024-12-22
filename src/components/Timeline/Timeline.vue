@@ -1,21 +1,21 @@
 <template>
     <Modal
         @close="$emit('close')"
-        show
         :close-on-press-esc="false"
+        show
         class="fullscreen modal-timeline"
     >
         <template #header>
+            <TimelineHeaderSkeleton v-if="isGeneralLoading" />
             <TimelineHeader
-                v-if="!isGeneralLoading && timeline"
+                v-else
                 @change-tab="changeTab"
                 @close="$emit('close')"
-                :disabled="disabled"
+                @edit="requestFormIsVisible = true"
+                :disabled="isDisabled"
                 :request="currentRequest"
                 :current-tab="currentTab"
-                :title="title"
             />
-            <h2 v-else>{{ companyName }}</h2>
         </template>
         <Spinner v-if="isGeneralLoading" class="mt-5 absolute-center" />
         <template v-else-if="timeline">
@@ -29,24 +29,24 @@
                         />
                     </div>
                     <div class="col-10">
-                        <div class="timeline-page__content" :class="{ disabled: disabled }">
-                            <Loader v-if="isStepLoading || stepIsChanging" />
-                            <div v-else class="timeline-page__current">
+                        <div class="timeline-page__content" :class="{ disabled: isDisabled }">
+                            <Loader v-if="stepIsLoading || stepIsChanging" />
+                            <div v-if="!stepIsChanging" class="timeline-page__current">
                                 <AnimationTransition :speed="0.5">
                                     <component
-                                        :is="componentStepName"
+                                        :is="currentStepComponent"
                                         @updated-objects="onObjectsUpdated"
                                         @update-step="updateStep"
                                         @next-step="nextStep"
+                                        @edit-request="requestFormIsVisible = true"
                                         :step="selectedStep"
-                                        :loader-for-step="loaderForStep"
-                                        :disabled="disabled"
+                                        :disabled="isDisabled"
                                     >
                                     </component>
                                 </AnimationTransition>
                             </div>
                             <TimelineBackdrop
-                                v-if="disabled && backdropIsVisible"
+                                v-if="isDisabled && backdropIsVisible"
                                 @close="backdropIsVisible = false"
                             />
                         </div>
@@ -56,17 +56,25 @@
                     v-else-if="currentTab === 'log'"
                     @commentAdded="updateTimeline"
                     :step="selectedStep"
-                    :disabled="disabled"
+                    :disabled="isDisabled"
                 />
             </div>
         </template>
         <EmptyData v-else>Информация о таймлайне не была найдена..</EmptyData>
+        <teleport to="body">
+            <FormCompanyRequest
+                v-if="requestFormIsVisible"
+                @close="requestFormIsVisible = false"
+                @updated="fetchRequests"
+                :company-id="company.id"
+                :form-data="currentRequest"
+            />
+        </teleport>
     </Modal>
 </template>
 
-<script>
-import { mapActions, mapGetters } from 'vuex';
-
+<script setup>
+import { useStore } from 'vuex';
 import TimelineStepMeetingActivity from '@/components/Timeline/Step/TimelineStepMeetingActivity.vue';
 import TimelineStepMeetingConfirmation from '@/components/Timeline/Step/TimelineStepMeetingConfirmation.vue';
 import TimelineStepFeedbackInterest from '@/components/Timeline/Step/TimelineStepFeedbackInterest.vue';
@@ -92,207 +100,211 @@ import TimelineStepTalk from '@/components/Timeline/Step/TimelineStepTalk.vue';
 import TimelineExtraBlock from '@/components/Timeline/TimelineExtraBlock.vue';
 import TimelineStepDealDecision from '@/components/Timeline/Step/TimelineStepDealDecision.vue';
 import TimelineStepDealConfirmation from '@/components/Timeline/Step/TimelineStepDealConfirmation.vue';
-import { Timeline } from '@/const/const.js';
+import { Timeline as steps } from '@/const/const.js';
 import { getCompanyName } from '@/utils/formatters/models/company.js';
+import { computed, onMounted, ref, watch } from 'vue';
+import { useAuth } from '@/composables/useAuth.js';
+import { useRoute, useRouter } from 'vue-router';
+import { requestOptions } from '@/const/options/request.options.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import TimelineHeaderSkeleton from '@/components/Timeline/TimelineHeaderSkeleton.vue';
+import FormCompanyRequest from '@/components/Forms/Company/FormCompanyRequest.vue';
 
-export default {
-    name: 'Timeline',
-    components: {
-        TimelineExtraBlock,
-        TimelineBackdrop,
-        AnimationTransition,
-        Tab,
-        Tabs,
-        TimelineTree,
-        EmptyData,
-        Spinner,
-        Loader,
-        Modal,
-        TimelineHeader,
-        TimelineStepMeetingActivity,
-        TimelineStepMeetingConfirmation,
-        TimelineStepOffers,
-        TimelineStepFeedbackInterest,
-        TimelineStepFeedbackCommunication,
-        TimelineStepInspectionObjects,
-        TimelineStepInspectionSending,
-        TimelineStepVisit,
-        TimelineStepInterest,
-        TimelineStepTalk,
-        TimelineStepDealDecision,
-        TimelineStepDealConfirmation
-    },
-    emits: ['close'],
-    setup() {
-        const { isLoading: isGeneralLoading } = useDelayedLoader();
-        const { isLoading: isStepLoading } = useDelayedLoader();
-        const { isLoading: stepIsChanging } = useDelayedLoader();
+defineEmits(['close']);
 
-        return { isGeneralLoading, isStepLoading, stepIsChanging };
-    },
-    data() {
-        return {
-            loaderForStep: false,
-            objects: [],
-            timelineNotFoundFlag: false,
-            currentTab: 'main',
-            backdropIsVisible: true
-        };
-    },
-    computed: {
-        ...mapGetters({
-            timeline: 'TIMELINE',
-            company: 'COMPANY',
-            companyContact: 'COMPANY_CONTACTS',
-            currentUser: 'THIS_USER',
-            timelineList: 'TIMELINE_LIST',
-            companyRequests: 'COMPANY_REQUESTS'
-        }),
-        steps: () => Timeline,
-        selectedStep() {
-            if (!this.timeline) return null;
-            if (this.$route.query.step) return this.timeline.timelineSteps[this.$route.query.step];
-            return null;
-        },
-        componentStepName() {
-            const stepTemplate = this.steps[this.$route.query.step];
+const { isLoading: stepIsLoading } = useDelayedLoader();
+const { isLoading: stepIsChanging } = useDelayedLoader();
 
-            const stepName = stepTemplate.steps?.length
-                ? stepTemplate.steps[this.$route.query?.point ?? 0].name
-                : stepTemplate.name;
+const currentTab = ref('main');
+const backdropIsVisible = ref(true);
 
-            return `TimelineStep${stepName}`;
-        },
-        currentRequest() {
-            if (Array.isArray(this.companyRequests))
-                return this.companyRequests.find(
-                    item => item.id === Number(this.$route.query.request_id)
-                );
-            return null;
-        },
-        disabled() {
-            return (
-                !this.timeline ||
-                !this.currentRequest ||
-                Number(this.$route.query.consultant_id) !== this.currentUser.id ||
-                this.currentRequest.status === entityOptions.request.statusStatement.COMPLETED ||
-                this.currentRequest.status === entityOptions.request.statusStatement.PASSIVE ||
-                this.timeline.status === 0
-            );
-        },
-        title() {
-            let title = getCompanyName(this.company);
+const store = useStore();
+const { currentUserId } = useAuth();
 
-            const currentTimeline = this.timelineList.find(
-                timeline => timeline.consultant.id === Number(this.$route.query.consultant_id)
-            );
+const company = computed(() => store.state.Companies.company);
+const requests = computed(() => store.state.CompanyRequest.companyRequests);
 
-            if (currentTimeline) {
-                title += ' - ' + currentTimeline.consultant.userProfile.short_name;
-            }
+const route = useRoute();
 
-            return title;
-        },
-        companyName() {
-            return getCompanyName(this.company);
-        }
-    },
-    watch: {
-        async $route(after, before) {
-            if (Number(before.query.consultant_id) !== Number(after.query.consultant_id))
-                await this.fetchTimeline();
-        }
-    },
-    methods: {
-        ...mapActions(['FETCH_TIMELINE', 'UPDATE_STEP', 'FETCH_COMPANY_REQUESTS']),
-        changeTab(tab) {
-            this.currentTab = tab;
-        },
-        async onObjectsUpdated(data, goToNext = false, fn = null) {
-            this.isStepLoading = true;
+const selectedStep = computed(() => {
+    if (!timeline.value) return null;
+    if (route.query.step) return timeline.value.timelineSteps[route.query.step];
+});
 
-            await this.fetchTimeline();
-
-            if (goToNext && data.number !== 7) await this.nextStep();
-            if (fn) fn();
-            this.isStepLoading = false;
-        },
-        async updateStep(data, goToNext = false, fn = null) {
-            this.isStepLoading = true;
-            const stepUpdated = await this.UPDATE_STEP(data);
-
-            if (stepUpdated) {
-                await this.fetchTimeline();
-                if (goToNext) await this.nextStep();
-            }
-
-            if (fn) fn();
-
-            this.isStepLoading = false;
-        },
-        async nextStep() {
-            const currentStepTemplate = this.steps[this.selectedStep.number];
-            const currentStep = Number(this.$route.query.step);
-
-            if (currentStepTemplate.steps?.length) {
-                const currentPoint = this.$route.query.point ? Number(this.$route.query.point) : 0;
-                if (currentPoint < currentStepTemplate.steps.length - 1)
-                    await this.changeStep({ step: currentStep, point: currentPoint + 1 });
-                else await this.changeStep({ step: currentStep + 1 });
-            } else {
-                await this.changeStep({ step: currentStep + 1 });
-            }
-        },
-        async changeStep(payload) {
-            this.stepIsChanging = true;
-
-            const query = {
-                ...this.$route.query,
-                step: payload.step
-            };
-
-            if (payload.point !== undefined) query.point = payload.point;
-            else delete query.point;
-
-            await this.$router.push({ query });
-
-            this.stepIsChanging = false;
-        },
-        async fetchTimeline(withLoader = false) {
-            if (withLoader) this.isGeneralLoading = true;
-
-            await this.FETCH_TIMELINE(this.$route.query);
-
-            if (withLoader) this.isGeneralLoading = false;
-            return Boolean(this.timeline);
-        },
-        async updateTimeline() {
-            await this.FETCH_TIMELINE(this.$route.query);
-        },
-        getPriorityStep() {
-            let highPriorityTimelineStep = null;
-
-            this.timeline.timelineSteps.forEach(step => {
-                if (step.status === 0 && highPriorityTimelineStep === null)
-                    highPriorityTimelineStep = step.number;
-            });
-
-            return highPriorityTimelineStep || 0;
-        },
-        async moveToPriorityStep() {
-            const highPriorityTimelineStep = this.getPriorityStep();
-
-            const query = {
-                ...this.$route.query,
-                step: highPriorityTimelineStep
-            };
-
-            await this.$router.push({ query });
-        }
-    },
-    async created() {
-        const timelineExist = await this.fetchTimeline(true);
-        if (timelineExist) this.moveToPriorityStep();
-    }
+const COMPONENTS = {
+    MeetingActivity: TimelineStepMeetingActivity,
+    MeetingConfirmation: TimelineStepMeetingConfirmation,
+    FeedbackInterest: TimelineStepFeedbackInterest,
+    FeedbackCommunication: TimelineStepFeedbackCommunication,
+    Offers: TimelineStepOffers,
+    InspectionObjects: TimelineStepInspectionObjects,
+    InspectionSending: TimelineStepInspectionSending,
+    Visit: TimelineStepVisit,
+    Interest: TimelineStepInterest,
+    Talk: TimelineStepTalk,
+    DealDecision: TimelineStepDealDecision,
+    DealConfirmation: TimelineStepDealConfirmation
 };
+
+const currentStepComponent = computed(() => {
+    const template = steps[route.query.step];
+
+    if (template.steps?.length) return COMPONENTS[template.steps[route.query?.point ?? 0].name];
+    return COMPONENTS[template.name];
+});
+
+const currentRequest = computed(() => {
+    return requests.value.find(item => item.id === Number(route.query.request_id));
+});
+
+const isDisabled = computed(() => {
+    return (
+        !timeline.value ||
+        !currentRequest.value ||
+        Number(route.query.consultant_id) !== currentUserId.value ||
+        currentRequest.value.status === requestOptions.statusStatement.COMPLETED ||
+        currentRequest.value.status === requestOptions.statusStatement.PASSIVE ||
+        timeline.value.status === 0
+    );
+});
+
+function changeTab(tab) {
+    currentTab.value = tab;
+}
+
+async function onObjectsUpdated(data, goToNext = false, callback = null) {
+    stepIsChanging.value = true;
+
+    await fetchTimeline();
+
+    if (goToNext && data.number !== 7) await nextStep();
+    if (isNotNullish(callback)) callback();
+
+    stepIsChanging.value = false;
+}
+
+async function updateStep(data, goToNext = false, callback = null) {
+    stepIsLoading.value = true;
+
+    const stepUpdated = await store.dispatch('UPDATE_STEP', data);
+
+    if (stepUpdated) {
+        await fetchTimeline();
+
+        stepIsChanging.value = true;
+
+        if (goToNext) await nextStep();
+
+        stepIsChanging.value = false;
+    }
+
+    if (isNotNullish(callback)) callback();
+
+    stepIsLoading.value = false;
+}
+
+async function nextStep() {
+    const currentStepTemplate = steps[selectedStep.value.number];
+    const currentStep = Number(route.query.step);
+
+    const payload = {
+        step: currentStep
+    };
+
+    if (currentStepTemplate.steps?.length) {
+        const currentPoint = route.query.point ? Number(route.query.point) : 0;
+
+        if (currentPoint < currentStepTemplate.steps.length - 1) payload.point = currentPoint + 1;
+        else payload.step = currentStep + 1;
+    } else {
+        payload.step = currentStep + 1;
+    }
+
+    await changeStep(payload);
+}
+
+const router = useRouter();
+
+async function changeStep(payload) {
+    stepIsChanging.value = false;
+
+    const query = {
+        ...route.query,
+        step: payload.step
+    };
+
+    if (isNotNullish(payload.point)) query.point = payload.point;
+    else delete query.point;
+
+    await router.push({ query });
+
+    stepIsChanging.value = false;
+}
+
+// timeline
+
+const timeline = computed(() => store.state.Timeline.timeline);
+
+const { isLoading: isGeneralLoading } = useDelayedLoader(true);
+
+async function fetchTimeline(withLoader = false) {
+    if (withLoader) isGeneralLoading.value = true;
+
+    await store.dispatch('FETCH_TIMELINE', route.query);
+
+    if (withLoader) isGeneralLoading.value = false;
+    return Boolean(timeline.value);
+}
+
+watch(
+    () => route.query?.consultant_id,
+    (newValue, oldValue) => {
+        if (newValue !== oldValue) fetchTimeline();
+    },
+    { deep: true }
+);
+
+async function updateTimeline() {
+    await store.dispatch('FETCH_TIMELINE', route.query);
+}
+
+// priority
+
+function getPriorityStep() {
+    let highPriorityTimelineStep = null;
+
+    for (let i = 0; i < timeline.value.timelineSteps.length; i++) {
+        if (timeline.value.timelineSteps[i].status === 0) {
+            highPriorityTimelineStep = timeline.value.timelineSteps[i].number;
+            break;
+        }
+    }
+
+    return highPriorityTimelineStep ?? 0;
+}
+
+function moveToPriorityStep() {
+    const highPriorityTimelineStep = getPriorityStep();
+
+    const query = {
+        ...route.query,
+        step: highPriorityTimelineStep
+    };
+
+    router.push({ query });
+}
+
+onMounted(async () => {
+    const timelineExist = await fetchTimeline(true);
+    if (timelineExist) moveToPriorityStep();
+});
+
+// request
+
+const requestFormIsVisible = ref(false);
+
+function fetchRequests() {
+    store.dispatch('FETCH_COMPANY_REQUESTS', route.params.id);
+}
 </script>

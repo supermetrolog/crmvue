@@ -1,6 +1,7 @@
 .skeleton {
     position: relative;
     color: transparent!important;
+    pointer-events: none;
 
     &::before {
         content: '';

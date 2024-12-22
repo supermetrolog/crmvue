@@ -1,6 +1,6 @@
 <template>
     <div class="timeline-tree-item">
-        <TimelineTreeStepPoint
+        <TimelineTreeStepRow
             @click="select({ step: step.id })"
             :step="step"
             :done="isDone"
@@ -10,7 +10,7 @@
             :icon="step.icon"
             :process="isProcess"
         />
-        <div v-if="step.steps" class="timeline-tree-item__steps my-2">
+        <div v-if="step.steps" class="timeline-tree-item__steps">
             <TimelineTreeStepPoint
                 v-for="point in step.steps"
                 :key="point.id"
@@ -27,10 +27,11 @@
 
 <script>
 import TimelineTreeStepPoint from '@/components/Timeline/TimelineTreeStepPoint.vue';
+import TimelineTreeStepRow from '@/components/Timeline/TimelineTreeStepRow.vue';
 
 export default {
     name: 'TimelineTreeStep',
-    components: { TimelineTreeStepPoint },
+    components: { TimelineTreeStepRow, TimelineTreeStepPoint },
     emits: ['select'],
     props: {
         step: {

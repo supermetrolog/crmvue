@@ -23,17 +23,17 @@
             <div class="col-12 mb-2">
                 <TimelineInfo
                     @next="$emit('next-step')"
-                    title="Организация осмотра объектов"
+                    title="4. Организация осмотра объектов"
                     :success="data.additional"
                     :disabled="!data.timelineStepObjects.length"
                 >
                     <p>
-                        Шаг 2. Скорректируйте маршрут и отправьте всю необходимую информацию по
+                        4.2. Скорректируйте маршрут и отправьте всю необходимую информацию по
                         объектам клиенту.
                     </p>
                     <template #footer>
                         <div class="d-flex gap-2 flex-wrap align-items-center">
-                            <Button
+                            <TimelineButton
                                 v-tippy="
                                     'Нажмите, чтобы отправить клиенту ссылку на созданный маршрут'
                                 "
@@ -44,8 +44,8 @@
                             >
                                 <span>Отправить клиенту</span>
                                 <i class="fas fa-paper-plane icon"></i>
-                            </Button>
-                            <Button
+                            </TimelineButton>
+                            <TimelineButton
                                 v-tippy="
                                     'Нажмите, чтобы отправить себе ссылку на созданный маршрут'
                                 "
@@ -55,7 +55,7 @@
                             >
                                 <span>Отправить себе</span>
                                 <i class="fa-solid fa-paper-plane icon"></i>
-                            </Button>
+                            </TimelineButton>
                         </div>
                     </template>
                 </TimelineInfo>
@@ -212,10 +212,12 @@ import FormLetter from '@/components/Forms/FormLetter.vue';
 import Modal from '@/components/common/Modal.vue';
 import { InspectionSendingRouteComment } from '@/components/Timeline/comments.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import TimelineButton from '@/components/Timeline/TimelineButton.vue';
 
 export default {
     name: 'TimelineStepInspectionSending',
     components: {
+        TimelineButton,
         Modal,
         FormLetter,
         CompanyObjectsList,

@@ -1,0 +1,92 @@
+@use '../../utils/mixins';
+@use '../../utils/variables';
+
+.request-preview {
+    &__header {
+        @include mixins.flex-box($gap: 5px, $a: center, $wrap: true);
+    }
+
+    &__parameters {
+        @include mixins.flex-box($gap: 10px);
+    }
+
+    &__box {
+        padding: 10px;
+        border: 1px solid rgba(0, 0, 0, .1);
+        border-radius: 5px;
+        height: 400px;
+        overflow-y: auto;
+    }
+
+    &__tabs {
+        border-left: 1px solid  #e7e7e777;
+        border-right: 1px solid  #e7e7e777;
+        border-bottom: 1px solid  #e7e7e777;
+        flex-grow: 1;
+        height: 400px;
+
+        .tabs-component-tabs {
+            gap: 5px;
+            background-color: #e7e7e7;
+            padding: 15px;
+        }
+
+        .tabs-component-panels {
+            padding: 15px!important;
+        }
+    }
+
+    &__subtitle {
+        color: #838385;
+        font-size: 14px;
+        font-weight: 300;
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: 24px auto;
+    }
+}
+
+.request-preview-requirements {
+    &__icon {
+        display: inline-block;
+        text-align: center;
+        color: #838385;
+        width: 20px;
+        margin-right: 3px;
+    }
+
+    &__value {
+        font-weight: 500;
+        font-size: 14px;
+    }
+}
+
+.request-preview-location {
+    font-size: 14px;
+
+    &__name {
+        font-weight: 500;
+    }
+}
+
+.request-preview-tab {
+    color: inherit;
+
+    &:hover, &.is-active {
+        background-color: variables.$bg-success-l;
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    &__list {
+        list-style: none;
+        display: table;
+        width: 100%;
+    }
+}

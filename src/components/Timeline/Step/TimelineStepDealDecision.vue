@@ -4,35 +4,31 @@
             <div class="col-12 mb-2">
                 <TimelineInfo
                     @next="$emit('next-step')"
-                    title="Оформление сделки"
+                    title="8. Оформление сделки"
                     :success="data.timelineStepObjects.length"
                 >
-                    <p>Шаг 1. Выберите объект, по которому произошла сделка.</p>
+                    <p>8.1. Выберите объект, по которому произошла сделка.</p>
                     <template #footer>
                         <div class="d-flex gap-2 flex-wrap">
-                            <Button
+                            <TimelineButton
                                 v-tippy="'Нажмите, чтобы сохранить информацию об объектах'"
                                 @click="submit"
                                 success
                                 :disabled="disabled || !selectedObjects.length"
-                                solid
-                                icon
                             >
                                 <span>Сделка подписана!</span>
                                 <i class="fa-solid fa-champagne-glasses icon"></i>
-                            </Button>
-                            <Button
+                            </TimelineButton>
+                            <TimelineButton
                                 v-tippy="'Нажмите, чтобы сохранить информацию об объектах'"
                                 @click="selectNegative"
                                 :disabled="disabled"
                                 :active="step.negative"
                                 danger
-                                solid
-                                icon
                             >
                                 <span>Сделка провалилась</span>
                                 <i class="fa-regular fa-face-rolling-eyes icon"></i>
-                            </Button>
+                            </TimelineButton>
                         </div>
                     </template>
                 </TimelineInfo>
@@ -78,10 +74,11 @@ import CompanyObjectsList from '@/components/Company/CompanyObjectsList.vue';
 import TimelineInfo from '@/components/Timeline/TimelineInfo.vue';
 import { DealDoneComment, DealOffersNotFound } from '@/components/Timeline/comments.js';
 import Button from '@/components/common/Button.vue';
+import TimelineButton from '@/components/Timeline/TimelineButton.vue';
 
 export default {
     name: 'TimelineStepDealDecision',
-    components: { Button, TimelineInfo, CompanyObjectsList },
+    components: { TimelineButton, TimelineInfo, CompanyObjectsList },
     mixins: [TimelineStepWithObjectsMixin],
     computed: {},
     methods: {

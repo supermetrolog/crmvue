@@ -58,7 +58,7 @@ export class CallbackComment extends Comment {
 
 export class CallingErrorComment extends CommentWithAutoSetComment {
     _setComment() {
-        this.comment = 'Не удалось дозвониться, попытайтесь позднее';
+        this.comment = 'Шаг поставлен на паузу';
     }
 }
 

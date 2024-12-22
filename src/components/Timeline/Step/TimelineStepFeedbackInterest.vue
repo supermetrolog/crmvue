@@ -4,10 +4,10 @@
             <div class="col-12 mb-2">
                 <TimelineInfo
                     @next="$emit('next-step')"
-                    title="Обратная связь от клиента"
+                    title="3. Обратная связь от клиента"
                     :success="data.timelineStepObjects.length"
                 >
-                    <p>Шаг 1. Выберите объекты, которые заинтересовали клиента</p>
+                    <p>3.1. Выберите объекты, которые заинтересовали клиента</p>
                     <p v-if="data.timelineStepObjects.length">
                         На данный момент клиента
                         {{ infoText }}.

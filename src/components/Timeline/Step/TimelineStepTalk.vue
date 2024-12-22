@@ -4,7 +4,7 @@
             <div class="col-12 mb-2">
                 <TimelineInfo
                     @next="$emit('next-step')"
-                    title="Подготовка к переговорам"
+                    title="7. Подготовка к переговорам"
                     :success="data.timelineStepObjects.length"
                 >
                     <p>Отметьте объекты, по которым клиент готов провести переговоры.</p>
