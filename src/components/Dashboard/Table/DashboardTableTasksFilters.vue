@@ -82,7 +82,7 @@
             <hr />
         </template>
         <AnimationTransition :speed="0.4">
-            <div v-if="targetUser" class="dashboard-aside__menu mt-3">
+            <div v-if="target" class="dashboard-aside__menu mt-3">
                 <DashboardCardNavLink
                     @select="toggleType('received')"
                     :badge="relations.by_user.toFixed()"
@@ -111,14 +111,13 @@
 </template>
 <script setup>
 import DashboardCardNavLink from '@/components/Dashboard/Card/DashboardCardNavLink.vue';
-import { computed, inject, shallowReactive, toRef } from 'vue';
+import { computed, shallowReactive } from 'vue';
 import { taskOptions } from '@/const/options/task.options.js';
 import { spliceWithPrimitive } from '@/utils/helpers/array/spliceWithPrimitive.js';
 import { useStore } from 'vuex';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import Button from '@/components/common/Button.vue';
 
-const $targetUser = inject('$targetUser');
 const store = useStore();
 const statusModelValue = defineModel('status', { type: Array, default: () => [] });
 const typeModelValue = defineModel('type', { type: Array, default: () => [] });
@@ -131,7 +130,8 @@ const props = defineProps({
     relations: {
         type: Object,
         required: true
-    }
+    },
+    target: Number
 });
 
 const field = shallowReactive({
@@ -150,12 +150,10 @@ const types = shallowReactive({
     viewing: false
 });
 
-const targetUser = toRef($targetUser);
-
 const currentConsultant = computed(() => {
-    if (!targetUser.value) return null;
-    if (targetUser.value.id === store.getters.THIS_USER.id) return null;
-    return store.state.User.consultants.find(element => element.id === targetUser.value.id);
+    if (!props.target) return null;
+    if (props.target === store.getters.THIS_USER.id) return null;
+    return store.state.User.consultants.find(element => element.id === props.target);
 });
 
 const receivedLabel = computed(() => {

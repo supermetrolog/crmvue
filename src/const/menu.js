@@ -23,6 +23,13 @@ export const Menu = {
             ]
         },
         {
+            id: 9,
+            name: 'Задачи',
+            icon: 'fa-solid fa-list-check',
+            url: '/tasks',
+            key: 'tasks'
+        },
+        {
             id: 0,
             name: 'Компании',
             icon: 'fa-solid fa-industry',
@@ -152,6 +159,13 @@ export const Menu = {
                     icon: 'fa-solid fa-user-clock'
                 }
             ]
+        },
+        {
+            id: 9,
+            name: 'Задачи',
+            icon: 'fa-solid fa-list-check',
+            url: '/tasks',
+            key: 'tasks'
         },
         {
             id: 0,
