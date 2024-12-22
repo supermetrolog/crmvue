@@ -349,7 +349,10 @@ const assignerIsChanging = ref(false);
 async function assign(payload) {
     assignerIsChanging.value = true;
 
-    const response = await api.task.assign(props.task.id, { user_id: payload.assigner });
+    const response = await api.task.assign(props.task.id, {
+        user_id: payload.assigner,
+        comment: payload.comment
+    });
 
     if (response) {
         notify.success(`Задача успешно назначена на ${response.user.userProfile.medium_name}`);

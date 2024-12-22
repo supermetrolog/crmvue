@@ -8,7 +8,6 @@
         />
         <Form class="task-card-modal__form">
             <Textarea
-                v-if="false"
                 v-model="comment"
                 auto-height
                 :disabled="!canBeSaved"
@@ -63,13 +62,9 @@ watch(
     }
 );
 
-function createMessage() {
-    return '';
-}
-
 function formToPayload() {
     return {
-        comment: createMessage(),
+        comment: comment.value,
         assigner: assigner.value
     };
 }
