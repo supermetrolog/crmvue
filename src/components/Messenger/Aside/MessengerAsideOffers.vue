@@ -94,7 +94,7 @@ const createPayload = () => {
 const load = async ($state, modelType) => {
     const isLastPage = await store.dispatch('Messenger/loadDialogs', {
         modelType,
-        payload: createPayload()
+        payload: createPayload()[modelType]
     });
 
     if (isLastPage) $state.complete();

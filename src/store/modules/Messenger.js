@@ -1,6 +1,5 @@
 import api from '@//api/api';
 import dayjs from 'dayjs';
-import { alg } from '@/utils/alg.js';
 import { entityOptions } from '@/const/options/options.js';
 import { notify } from '@kyvg/vue3-notification';
 import { messagesToSections } from '@/utils/mapper.js';
@@ -8,6 +7,9 @@ import { ucFirst } from '@/utils/formatters/string.js';
 import { messenger } from '@/const/messenger.js';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
 import { taskOptions } from '@/const/options/task.options.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNumeric } from '@/utils/helpers/common/isNumeric.js';
+import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
 
 const needCacheMessage = (dialogID, asideID, panelID) => {
     // Лучше не трогать условие.. Оно долго выводилось
@@ -446,12 +448,14 @@ const Messenger = {
         async updateDialogs({ state, commit }, payload) {
             commit('setLoadingAside', true);
 
-            if (alg.isNumeric(state.querySearch)) {
-                payload.object.object_id = state.querySearch;
-                payload.company.model_id = state.querySearch;
-            } else {
-                payload.object.search = state.querySearch;
-                payload.company.search = state.querySearch;
+            if (isNotNullish(state.querySearch) && isNotEmptyString(state.querySearch)) {
+                if (isNumeric(state.querySearch)) {
+                    payload.object.object_id = state.querySearch;
+                    payload.company.model_id = state.querySearch;
+                } else {
+                    payload.object.search = state.querySearch;
+                    payload.company.search = state.querySearch;
+                }
             }
 
             const chats = await Promise.all([
