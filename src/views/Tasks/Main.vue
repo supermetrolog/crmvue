@@ -145,7 +145,7 @@ import { useTagsOptions } from '@/composables/options/useTagsOptions.js';
 import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { taskOptions } from '@/const/options/task.options.js';
-import { useQueryHash } from '@/utils/useQueryHash.js';
+import { useQueryHash } from '@/utils/use/useQueryHash.js';
 import api from '@/api/api.js';
 import gsap from 'gsap';
 import { debounce } from '@/utils/common/debounce.js';
