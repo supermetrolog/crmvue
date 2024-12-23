@@ -62,7 +62,7 @@ import FormModalMessageAlert from '@/components/Forms/FormModalMessageAlert.vue'
 import { computed, provide, useTemplateRef, watch } from 'vue';
 import { toDateFormat } from '@/utils/formatters/date.js';
 import { ucFirst } from '@/utils/formatters/string.js';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import MessengerTabs from '@/components/Messenger/MessengerTabs.vue';

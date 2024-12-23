@@ -95,7 +95,7 @@
 <script setup>
 import { useStore } from 'vuex';
 import { computed, onMounted, ref, shallowRef, useTemplateRef } from 'vue';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import { useConfirm } from '@/composables/useConfirm.js';
 import api from '@/api/api.js';
 import MessengerQuizComplete from '@/components/Messenger/Quiz/MessengerQuizComplete.vue';

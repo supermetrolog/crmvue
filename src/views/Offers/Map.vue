@@ -52,7 +52,7 @@ import OfferYmap from '@/components/Offer/OfferYmap.vue';
 import Chip from '@/components/common/Chip.vue';
 import { computed, onUpdated, ref, shallowReactive, shallowRef, useTemplateRef } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useQueryHash } from '@/utils/useQueryHash.js';
+import { useQueryHash } from '@/utils/use/useQueryHash.js';
 import { dealOptions } from '@/const/options/deal.options.js';
 import { objectOptions } from '@/const/options/object.options.js';
 import { ActivePassiveFUCK, filtersAliases, GateTypeList, YesNo } from '@/const/const.js';

@@ -75,7 +75,7 @@ import api from '@/api/api.js';
 import TaskCardComment from '@/components/TaskCard/TaskCardComment.vue';
 import { ref, shallowRef, watch } from 'vue';
 import Textarea from '@/components/common/Forms/Textarea.vue';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import Loader from '@/components/common/Loader.vue';
 import TaskCardButton from '@/components/TaskCard/TaskCardButton.vue';
 import { useConfirm } from '@/composables/useConfirm.js';

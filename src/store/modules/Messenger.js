@@ -577,17 +577,7 @@ const Messenger = {
             }
 
             commit('setCurrentDialog', dialog);
-
-            if (
-                getters.currentDaysCountAfterLastCall >
-                import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_WARNING
-            ) {
-                commit('selectChatTab', messenger.chatTabs.SURVEY);
-                commit('setCurrentChat', true);
-                commit('setLoadingChat', false);
-            } else {
-                commit('selectChatTab', messenger.chatTabs.CHAT);
-            }
+            commit('selectChatTab', messenger.chatTabs.CHAT);
 
             const [messages, pinned] = await Promise.all([
                 api.messenger.getMessages(dialogID),

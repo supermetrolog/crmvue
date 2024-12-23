@@ -184,11 +184,6 @@ const openInChat = () => {
 };
 
 const openInSurvey = () => {
-    openSurvey(
-        messenger.dialogTypes.COMPANY,
-        messenger.surveyType.COMPANY,
-        props.company.id,
-        props.company.id
-    );
+    openSurvey(messenger.dialogTypes.COMPANY, props.company.id, props.company.id);
 };
 </script>

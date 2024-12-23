@@ -422,7 +422,7 @@ import ConsultantPicker from '@/components/common/Forms/ConsultantPicker/Consult
 import { useCompanyGroupsOptions } from '@/composables/options/useCompanyGroupsOptions.js';
 import { useBanksOptions } from '@/composables/options/useBanksOptions.js';
 import { useProductRangesOptions } from '@/composables/options/useProductRangesOptions.js';
-import { useFormData } from '@/utils/useFormData.js';
+import { useFormData } from '@/utils/use/useFormData.js';
 import Checkbox from '@/components/common/Forms/Checkbox.vue';
 import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import CheckboxOptions from '@/components/common/Forms/CheckboxOptions.vue';

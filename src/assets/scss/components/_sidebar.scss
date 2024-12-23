@@ -3,14 +3,14 @@
 
 .sidebar {
     height: 100%;
-    width: 70px;
+    width: 80px;
     position: fixed;
     z-index: 9;
     background-color: variables.$color_sidebar_bg;
     box-shadow: 4px 0 10px rgba(0, 0, 0, 0.25);
 
     &__avatar {
-        padding: 10px 5px 5px;
+        padding: 10px 10px 5px;
     }
 
     &__nav {
@@ -36,12 +36,27 @@
         width: 100%;
         height: 100%;
         transition: color .15s ease;
+        position: relative;
 
         &:hover {
             color: #46cdcf;
         }
 
-        &.active {
+        &.active:not(.exact-active):not(.internal) {
+            background-color: rgba(247, 247, 247, 0.15);
+        }
+
+        &.active:not(.exact-active):not(.internal)::before {
+            content: '';
+            position: absolute;
+            height: 100%;
+            width: 3px;
+            background-color: rgba(255, 255, 255, 0.5);
+            right: 0;
+            top: 0;
+        }
+
+        &.exact-active {
             background-color: #f7f7f7;
             color: #11698e;
             font-weight: 700;
@@ -52,6 +67,17 @@
         font-size: 22px;
         margin-top: 5px;
         display: block;
+    }
+
+    &__internal {
+        @include mixins.flex-box($gap: 5px);
+    }
+
+    &__internal-item {
+        width: 80px;
+        background-color: variables.$bg-gray-l;
+        border-radius: 5px;
+        overflow: hidden;
     }
 }
 

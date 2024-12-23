@@ -53,7 +53,7 @@ import MessengerChatFormCategories from '@/components/Messenger/Chat/Form/Messen
 import MessengerChatFormAttachments from '@/components/Messenger/Chat/Form/MessengerChatFormAttachments.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { computed, inject, onMounted, ref, shallowRef } from 'vue';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import imageCompression from 'browser-image-compression';
 import { MAX_FILES_COUNT, SIZE_TO_COMPRESSION } from '@/const/messenger.js';
 import { blobToFile } from '@/utils/helpers/forms/blobToFile.js';

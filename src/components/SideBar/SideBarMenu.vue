@@ -8,21 +8,14 @@
 
 <script setup>
 import { Menu } from '@/const/menu.js';
-import { useStore } from 'vuex';
 import SideBarMenuItem from '@/components/SideBar/SideBarMenuItem.vue';
 import { computed } from 'vue';
-import { userOptions } from '@/const/options/user.options.js';
+import { useAuth } from '@/composables/useAuth.js';
 
-const store = useStore();
+const { currentUserId, currentUserIsAdmin, currentUserIsDirector } = useAuth();
 
 const menu = computed(() => {
-    if (
-        store.getters.THIS_USER &&
-        (store.getters.THIS_USER.username === 'admin' ||
-            store.getters.THIS_USER.role === userOptions.roleStatement.ADMIN ||
-            store.getters.THIS_USER.role === userOptions.roleStatement.DIRECTOR)
-    )
-        return Menu.admin;
+    if (currentUserId && (currentUserIsAdmin || currentUserIsDirector)) return Menu.admin;
     return Menu.agent;
 });
 </script>

@@ -1,4 +1,4 @@
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 
 export function useValidationNotify(v$) {
     const notify = useNotify();

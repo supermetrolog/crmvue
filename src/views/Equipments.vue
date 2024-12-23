@@ -103,7 +103,7 @@ import { useStore } from 'vuex';
 import FormEquipmentPassive from '@/components/Forms/Equipment/FormEquipmentPassive.vue';
 import { equipmentOptions } from '@/const/options/equipment.options.js';
 import { useConfirm } from '@/composables/useConfirm.js';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import dayjs from 'dayjs';
 
 const route = useRoute();

@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useAuth } from '@/composables/useAuth.js';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import { LOCALSTORAGE_PREFIX, LS_ACCESS_TOKEN_KEY } from '@/services/localStorage.js';
 import { useDocumentTitle } from '@/composables/useDocumentTitle.js';
 import OffersView from '@/views/Offers/Offers.vue';

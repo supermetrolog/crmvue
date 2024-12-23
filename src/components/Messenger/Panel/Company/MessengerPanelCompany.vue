@@ -147,7 +147,7 @@ import { messenger } from '@/const/messenger.js';
 import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 import Modal from '@/components/common/Modal.vue';
 import { useStore } from 'vuex';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import FormCompanyLogo from '@/components/Forms/Company/FormCompanyLogo.vue';
 import Avatar from '@/components/common/Avatar.vue';
 import { TASK_FORM_STEPS, useTaskManager } from '@/composables/useTaskManager.js';

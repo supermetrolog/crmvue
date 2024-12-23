@@ -43,7 +43,7 @@ import { useStore } from 'vuex';
 import { ref, shallowRef, useTemplateRef } from 'vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import Modal from '@/components/common/Modal.vue';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import { TASK_FORM_STEPS, useTaskManager } from '@/composables/useTaskManager.js';
 import api from '@/api/api.js';
 import { messenger } from '@/const/messenger.js';

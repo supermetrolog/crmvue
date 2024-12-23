@@ -28,7 +28,7 @@ import MessengerChatMessageAdditionsAlert from '@/components/Messenger/Chat/Mess
 import { useStore } from 'vuex';
 import dayjs from 'dayjs';
 import api from '@/api/api.js';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import MessengerChatMessageAdditionsSurvey from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditionsSurvey.vue';
 
 defineProps({
