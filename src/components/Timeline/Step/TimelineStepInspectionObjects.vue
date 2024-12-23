@@ -25,46 +25,42 @@
             <div class="col-12 mb-2">
                 <TimelineInfo
                     @next="$emit('next-step')"
-                    title="Организация осмотра объектов"
+                    title="4. Организация осмотра объектов"
                     :success="data.timelineStepObjects.length"
                 >
-                    <p>Шаг 1. Отметьте объекты, которые клиент хотел бы осмотреть</p>
+                    <p>4.1. Отметьте объекты, которые клиент хотел бы осмотреть</p>
                     <p v-if="data.timelineStepObjects.length">
                         На данный момент клиента
                         {{ infoText }}.
                     </p>
                     <template #footer>
                         <div class="d-flex gap-2 flex-wrap align-items-center">
-                            <Button
+                            <TimelineButton
                                 v-tippy="'Нажмите, чтобы сохранить результат'"
                                 @click="submit"
                                 :disabled="!selectedObjects.length || disabled"
-                                icon
                             >
                                 <span>Готово</span>
-                                <i class="fa-solid fa-check icon"></i>
-                            </Button>
-                            <Button
+                                <i class="fa-solid fa-thumbs-up icon"></i>
+                            </TimelineButton>
+                            <TimelineButton
                                 v-tippy="'Нажмите, чтобы отправить презентации с объектами клиенту'"
                                 @click="sendModalIsVisible = true"
                                 :disabled="!selectedObjects.length || disabled"
                                 success
-                                icon
                             >
                                 <span>Отправить презентации</span>
                                 <i class="fa-solid fa-paper-plane icon"></i>
-                            </Button>
-                            <Button
+                            </TimelineButton>
+                            <TimelineButton
                                 @click="selectNegative"
                                 :active="step.negative"
                                 :disabled="disabled"
-                                icon
-                                solid
                                 danger
                             >
                                 <span>Нет подходящих</span>
                                 <i class="fa-solid fa-frown-open icon"></i>
-                            </Button>
+                            </TimelineButton>
                         </div>
                     </template>
                 </TimelineInfo>
@@ -111,17 +107,17 @@ import {
 import TimelineInfo from '@/components/Timeline/TimelineInfo.vue';
 import plural from 'plural-ru';
 import CompanyObjectsList from '@/components/Company/CompanyObjectsList.vue';
-import Button from '@/components/common/Button.vue';
 import FormLetter from '@/components/Forms/FormLetter.vue';
 import Modal from '@/components/common/Modal.vue';
 import { InspectionDoneComment, InspectionOffersNotFound } from '@/components/Timeline/comments.js';
+import TimelineButton from '@/components/Timeline/TimelineButton.vue';
 
 export default {
     name: 'TimelineStepInspectionObjects',
     components: {
+        TimelineButton,
         Modal,
         FormLetter,
-        Button,
         CompanyObjectsList,
         TimelineInfo
     },

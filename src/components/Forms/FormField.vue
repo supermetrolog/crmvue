@@ -47,7 +47,7 @@ import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import FormSubmit from '@/components/common/Forms/FormSubmit.vue';
 import useVuelidate from '@vuelidate/core';
 import api from '@/api/api.js';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import { helpers, required } from '@vuelidate/validators';
 import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';

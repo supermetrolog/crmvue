@@ -10,24 +10,24 @@
         </button>
     </div>
 </template>
-<script>
-export default {
-    name: 'CopyField',
-    props: {
-        value: {
-            type: [String, Number],
-            default: null
-        },
-        message: {
-            type: String,
-            default: 'Значение скопировано'
-        }
+<script setup>
+import { useNotify } from '@/utils/useNotify.js';
+
+const props = defineProps({
+    value: {
+        type: [String, Number],
+        default: null
     },
-    methods: {
-        async copy() {
-            await navigator.clipboard.writeText(this.value);
-            this.$notify(this.message);
-        }
+    message: {
+        type: String,
+        default: 'Значение скопировано'
     }
-};
+});
+
+const notify = useNotify();
+
+async function copy() {
+    await navigator.clipboard.writeText(props.value);
+    notify.info(props.message);
+}
 </script>

@@ -73,9 +73,9 @@
 <script setup>
 import api from '@/api/api.js';
 import TaskCardComment from '@/components/TaskCard/TaskCardComment.vue';
-import { ref, shallowRef } from 'vue';
+import { ref, shallowRef, watch } from 'vue';
 import Textarea from '@/components/common/Forms/Textarea.vue';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import Loader from '@/components/common/Loader.vue';
 import TaskCardButton from '@/components/TaskCard/TaskCardButton.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
@@ -94,6 +94,13 @@ const props = defineProps({
 });
 
 const comments = shallowRef([...props.task.last_comments]);
+
+watch(
+    () => props.task.last_comments[0]?.id,
+    () => {
+        comments.value.unshift(props.task.last_comments[0]);
+    }
+);
 
 const notify = useNotify();
 

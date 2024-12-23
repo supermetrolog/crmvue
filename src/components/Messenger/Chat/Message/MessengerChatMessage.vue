@@ -77,7 +77,7 @@ import MessengerChatMessageAdditions from '@/components/Messenger/Chat/Message/A
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import MessengerChatMessageAttachments from '@/components/Messenger/Chat/Message/MessengerChatMessageAttachments.vue';
 import { computed, provide, ref, useTemplateRef } from 'vue';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import { ucFirst } from '@/utils/formatters/string.js';
 import { useConfirm } from '@/composables/useConfirm.js';
 import api from '@/api/api.js';

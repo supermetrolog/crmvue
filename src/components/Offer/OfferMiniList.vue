@@ -46,7 +46,7 @@ import OfferMiniListItem from '@/components/Offer/OfferMiniListItem.vue';
 import { computed, shallowReactive } from 'vue';
 import { compareByProperty } from '@/utils/predicate.js';
 import { useStore } from 'vuex';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import { getLinkPDF } from '@/utils/url.js';
 
 defineEmits(['toggle-avito']);

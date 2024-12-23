@@ -1,67 +1,65 @@
 <template>
-    <div class="timeline-tree-step" :class="className">
-        <div class="timeline-tree-step__point" :class="{ done: done }">
-            <i
-                v-if="selected"
-                class="fa-solid fa-circle-play timeline-tree-step__icon-selected"
-            ></i>
-            <i v-else-if="attention" class="fa-solid fa-circle-exclamation"></i>
-            <i v-else-if="process" class="fa-solid fa-clock timeline-tree-step__icon-selected"></i>
-            <i v-else-if="done" class="fa-solid fa-circle-check dashboard-cl-success"></i>
-        </div>
-        <i v-if="icon" class="timeline-tree-step__icon icon" :class="icon" />
-        <span class="timeline-tree-step__label">{{ step.label }}</span>
+    <div class="timeline-tree-step timeline-tree-step-point" :class="className">
+        <div class="timeline-tree-step__point" :class="{ done: done, general: !point }"></div>
+        <span class="timeline-tree-step__label">{{ step.visual_id }}. {{ step.label }}</span>
+        <svg
+            v-if="selected"
+            class="timeline-tree-step__caret"
+            viewBox="0 0 12 36"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <path d="M0 17.75V0L11.5 17.75L0 35.5V17.75Z" fill="currentColor" />
+        </svg>
     </div>
 </template>
 
-<script>
-export default {
-    name: 'TimelineTreeStepPoint',
-    props: {
-        step: {
-            type: Object,
-            required: true
-        },
-        available: {
-            type: Boolean,
-            default: false
-        },
-        selected: {
-            type: Boolean,
-            default: false
-        },
-        done: {
-            type: Boolean,
-            default: false
-        },
-        icon: {
-            type: String,
-            default: null
-        },
-        point: {
-            type: Boolean,
-            default: false
-        },
-        process: {
-            type: Boolean,
-            default: false
-        },
-        attention: {
-            type: Boolean,
-            default: false
-        }
+<script setup>
+import { computed } from 'vue';
+
+const props = defineProps({
+    step: {
+        type: Object,
+        required: true
     },
-    computed: {
-        className() {
-            return {
-                disabled: !this.available,
-                point: this.point,
-                'timeline-tree-step--available': this.available,
-                'timeline-tree-step--selected': this.selected,
-                'timeline-tree-step--done': this.done,
-                'timeline-tree-step--in-process': this.process
-            };
-        }
+    available: {
+        type: Boolean,
+        default: false
+    },
+    selected: {
+        type: Boolean,
+        default: false
+    },
+    done: {
+        type: Boolean,
+        default: false
+    },
+    icon: {
+        type: String,
+        default: null
+    },
+    point: {
+        type: Boolean,
+        default: false
+    },
+    process: {
+        type: Boolean,
+        default: false
+    },
+    attention: {
+        type: Boolean,
+        default: false
     }
-};
+});
+
+const className = computed(() => {
+    return {
+        disabled: !props.available,
+        point: props.point,
+        available: props.available,
+        selected: props.selected,
+        done: props.done,
+        'in-process': props.process
+    };
+});
 </script>

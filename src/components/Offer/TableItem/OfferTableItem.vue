@@ -181,7 +181,7 @@ import OfferTableItem from '@/components/Offer/TableItem/OfferTableItem.vue';
 import OfferTableItemCall from '@/components/Offer/TableItem/OfferTableItemCall.vue';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { getLinkPDF } from '@/utils/url.js';
-import { messenger } from '@/const/messenger.js';
+import { messenger, objectChatMemberTypes } from '@/const/messenger.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import OfferTableItemAdv from '@/components/Offer/TableItem/OfferTableItemAdv.vue';
 
@@ -291,23 +291,29 @@ const openInChat = () =>
     openChat(props.offer.company_id, props.offer.object_id, messenger.dialogTypes.OBJECT);
 
 const openInSurvey = () => {
-    let surveyType;
+    let offerType;
     const dealType = props.offer.deal_type ?? dealOptions.typeStatement.RENT;
 
-    if (
-        dealType === dealOptions.typeStatement.RENT ||
-        dealType === dealOptions.typeStatement.SALE
-    ) {
-        surveyType = messenger.surveyType.OBJECT;
-    } else {
-        surveyType = messenger.surveyType.COMPANY;
+    switch (dealType) {
+        case dealOptions.typeStatement.RENT:
+            offerType = objectChatMemberTypes.RENT_OR_SALE;
+            break;
+        case dealOptions.typeStatement.SALE:
+            offerType = objectChatMemberTypes.RENT_OR_SALE;
+            break;
+        case dealOptions.typeStatement.STORAGE:
+            offerType = objectChatMemberTypes.STORAGE;
+            break;
+        case dealOptions.typeStatement.SUBLEASE:
+            offerType = objectChatMemberTypes.SUBLEASE;
+            break;
     }
 
     openSurvey(
         messenger.dialogTypes.OBJECT,
-        surveyType,
         props.offer.object_id,
-        props.offer.company_id
+        props.offer.company_id,
+        offerType
     );
 };
 

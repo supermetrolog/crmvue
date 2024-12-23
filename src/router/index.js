@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useAuth } from '@/composables/useAuth.js';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import { LOCALSTORAGE_PREFIX, LS_ACCESS_TOKEN_KEY } from '@/services/localStorage.js';
 import { useDocumentTitle } from '@/composables/useDocumentTitle.js';
 import OffersView from '@/views/Offers/Offers.vue';
@@ -246,7 +246,7 @@ const routes = [
         name: 'dashboard',
         meta: {
             layout: 'default',
-            auth: { isAuth: true, role: ['moderator', 'administrator'] },
+            auth: { isAuth: true },
             title: 'Дашборд'
         },
         component: () => import('../views/Dashboard/View.vue'),
@@ -255,32 +255,6 @@ const routes = [
                 path: '',
                 name: 'dashboard-main',
                 component: () => import('../views/Dashboard/Main.vue')
-            },
-            {
-                path: 'company',
-                name: 'dashboard-company',
-                component: () => import('../views/Dashboard/Company.vue')
-            },
-            {
-                path: 'tasks',
-                name: 'dashboard-tasks',
-                meta: {
-                    title: ['Задачи', 'Дашборд']
-                },
-                component: () => import('../views/Dashboard/Tasks/Main.vue'),
-                redirect: { name: 'dashboard-tasks-board' },
-                children: [
-                    {
-                        path: 'board',
-                        name: 'dashboard-tasks-board',
-                        component: () => import('../views/Dashboard/Tasks/Board.vue')
-                    },
-                    {
-                        path: 'table',
-                        name: 'dashboard-tasks-table',
-                        component: () => import('../views/Dashboard/Tasks/Table.vue')
-                    }
-                ]
             },
             {
                 path: 'requests',
@@ -293,11 +267,21 @@ const routes = [
         ]
     },
     {
+        path: '/tasks',
+        name: 'tasks',
+        meta: {
+            layout: 'default',
+            title: 'Задачи',
+            auth: { isAuth: true, role: ['moderator', 'administrator'] }
+        },
+        component: () => import('../views/Tasks/Main.vue')
+    },
+    {
         path: '/offers',
         name: 'offers',
         meta: {
             layout: 'default',
-            auth: { isAuth: true, role: ['moderator', 'administrator'] },
+            auth: { isAuth: true },
             title: 'Предложения'
         },
         component: OffersView,

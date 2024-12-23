@@ -37,13 +37,11 @@
 </template>
 <script setup>
 import MessengerBarTab from '@/components/Messenger/MessengerBarTab.vue';
-import { computed, onMounted, shallowReactive, watch } from 'vue';
-import { useStore } from 'vuex';
+import { onMounted } from 'vue';
 import { messenger } from '@/const/messenger.js';
 import IconWarehouse from '@/components/common/Icons/IconWarehouse.vue';
-import { useDocumentVisibility, useIntervalFn } from '@vueuse/core';
-import { DELAY_BETWEEN_UPDATING_STATISTICS } from '@/configs/messenger.config.js';
 import IconCompanies from '@/components/common/Icons/IconCompanies.vue';
+import { useSharedMessengerStatistic } from '@/components/Messenger/useSharedMessengerStatistic.js';
 
 defineEmits(['select']);
 defineProps({
@@ -53,61 +51,8 @@ defineProps({
     }
 });
 
-const store = useStore();
+const { fetchStatistics, userCounts, objectCounts, companiesCounts, isInitialLoading } =
+    useSharedMessengerStatistic();
 
-const isInitialLoading = shallowReactive({
-    objects: true,
-    companies: true,
-    users: true
-});
-
-const objectCounts = computed(() => store.state.Messenger.counts.object);
-const companiesCounts = computed(() => store.state.Messenger.counts.company);
-const userCounts = computed(() => store.state.Messenger.counts.user);
-
-function updateStatistics() {
-    store.dispatch('Messenger/updateStatistics', [messenger.dialogTypes.OBJECT]);
-    store.dispatch('Messenger/updateStatistics', [messenger.dialogTypes.COMPANY]);
-    store.dispatch('Messenger/updateStatistics', [messenger.dialogTypes.USER]);
-}
-
-const statisticsInterval = useIntervalFn(updateStatistics, DELAY_BETWEEN_UPDATING_STATISTICS);
-
-const documentVisibility = useDocumentVisibility();
-
-watch(documentVisibility, (current, prev) => {
-    if (current === 'visible' && prev === 'hidden') {
-        statisticsInterval.resume();
-    } else {
-        statisticsInterval.pause();
-    }
-});
-
-async function fetchObjectsStatistics() {
-    isInitialLoading.objects = true;
-    await store.dispatch('Messenger/updateStatistics', [messenger.dialogTypes.OBJECT]);
-    isInitialLoading.objects = false;
-}
-
-async function fetchCompaniesStatistics() {
-    isInitialLoading.companies = true;
-    await store.dispatch('Messenger/updateStatistics', [messenger.dialogTypes.COMPANY]);
-    isInitialLoading.companies = false;
-}
-
-async function fetchUsersStatistics() {
-    isInitialLoading.users = true;
-    await store.dispatch('Messenger/updateStatistics', [messenger.dialogTypes.USER]);
-    isInitialLoading.users = false;
-}
-
-function fetchStatistics() {
-    fetchObjectsStatistics();
-    fetchCompaniesStatistics();
-    fetchUsersStatistics();
-}
-
-onMounted(() => {
-    fetchStatistics();
-});
+onMounted(fetchStatistics);
 </script>

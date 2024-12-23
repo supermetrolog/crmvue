@@ -41,7 +41,7 @@ import {
     shallowRef,
     watch
 } from 'vue';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import { messenger } from '@/const/messenger.js';
 import MessengerTaskPreview from '@/components/Messenger/MessengerTaskPreview.vue';
 import FormModalMessage from '@/components/Forms/FormModalMessage.vue';
@@ -90,12 +90,13 @@ const escapeHandler = event => {
     if (isActive.value && event.code === 'Escape') isOpen.value = false;
 };
 
-const openChat = async (companyID, objectID, modelType = 'object') => {
+const openChat = async (companyID, objectID, modelType = 'object', type = null) => {
     const query = { model_type: modelType };
 
     switch (modelType) {
         case 'object': {
             query.object_id = objectID;
+            query.type = type;
             break;
         }
         case 'request': {
@@ -152,26 +153,36 @@ const openChat = async (companyID, objectID, modelType = 'object') => {
 };
 
 const openChatByID = async chatMemberID => {
-    const dialog = await api.messenger.getDialogByQuery({ id: chatMemberID });
+    const dialog = await api.messenger.getDialog(chatMemberID);
 
     if (!dialog) {
         notify.info('Данные о чате не были найдены в системе.');
-        return;
+        return false;
     }
 
-    let companyID = null;
+    const params = {
+        dialogID: dialog.id,
+        dialogType: dialog.model_type,
+        anywayOpen: true
+    };
 
     switch (dialog.model_type) {
         case 'object': {
-            companyID = dialog.model.object.company?.id;
+            params.companyID = dialog.model.object.company_id;
             break;
         }
         case 'request': {
-            companyID = dialog.model.company_id;
+            params.companyID = dialog.model.company_id;
+            break;
+        }
+        case 'company': {
+            params.companyID = dialog.model.id;
             break;
         }
         case 'user': {
-            return;
+            params.userID = dialog.model.id;
+            store.commit('Messenger/setCurrentAsidePanel', messenger.tabs.USERS);
+            break;
         }
     }
 
@@ -179,19 +190,8 @@ const openChatByID = async chatMemberID => {
     currentTab.name = dialog.model_type;
     isOpen.value = true;
 
-    store.dispatch('Messenger/selectPanel', {
-        companyID,
-        dialogID: dialog.id,
-        dialogType: dialog.model_type,
-        anywayOpen: true
-    });
-
-    store.dispatch('Messenger/selectChat', {
-        dialogID: dialog.id,
-        companyID,
-        dialogType: dialog.model_type,
-        anywayOpen: true
-    });
+    store.dispatch('Messenger/selectPanel', params);
+    store.dispatch('Messenger/selectChat', params);
 
     return true;
 };
@@ -233,7 +233,10 @@ const openChatByCompanyID = companyID => {
 };
 
 const openChatByUserID = async userId => {
-    const dialog = await api.messenger.getDialogByQuery({ user_id: userId });
+    const dialog = await api.messenger.getDialogByQuery({
+        user_id: userId,
+        model_type: messenger.dialogTypes.USER
+    });
 
     if (!dialog) {
         notify.info('Данные о чате не были найдены в системе.');
@@ -262,12 +265,13 @@ const openChatByUserID = async userId => {
     return true;
 };
 
-const openSurvey = async (dialogType, surveyType, objectId, companyID) => {
+const openSurvey = async (dialogType, objectId, companyID, type = null) => {
     const dialogQuery = { model_type: dialogType };
 
     switch (dialogType) {
         case messenger.dialogTypes.OBJECT: {
             dialogQuery.object_id = objectId;
+            dialogQuery.type = type;
             break;
         }
         case messenger.dialogTypes.REQUEST: {
@@ -288,9 +292,10 @@ const openSurvey = async (dialogType, surveyType, objectId, companyID) => {
 
     if (!dialog) {
         notify.info('Чат не был найден в системе.');
-        return;
+        return false;
     }
 
+    store.commit('Messenger/setCurrentAsidePanel', dialog.model_type);
     currentTab.name = dialog.model_type;
     isOpen.value = true;
 
@@ -305,6 +310,8 @@ const openSurvey = async (dialogType, surveyType, objectId, companyID) => {
         dialogType,
         dialogID: dialog.id
     });
+
+    return true;
 };
 
 defineExpose({ openChat, openChatByID, openChatByCompanyID, openChatByUserID, openSurvey });

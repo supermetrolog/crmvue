@@ -8,7 +8,7 @@ import CommentWithAutoSetComment, {
     SendOffersComment
 } from '@/components/Timeline/comments.js';
 import { notify } from '@kyvg/vue3-notification';
-import { useQueryHash } from '@/utils/useQueryHash.js';
+import { useQueryHash } from '@/utils/use/useQueryHash.js';
 
 export const TimelineStepMixin = {
     emits: ['update-step', 'updated-objects', 'next-step'],

@@ -248,7 +248,7 @@ import HoverActionsButton from '@/components/common/HoverActions/HoverActionsBut
 import CompanyBoxLayout from '@/components/Company/Box/CompanyBoxLayout.vue';
 import FormCompanyLogo from '@/components/Forms/Company/FormCompanyLogo.vue';
 import Modal from '@/components/common/Modal.vue';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import { useStore } from 'vuex';
 import { getCompanyName } from '@/utils/formatters/models/company.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';

@@ -62,7 +62,7 @@ import useVuelidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
 import { computed, inject, onBeforeMount, ref, shallowRef } from 'vue';
 import imageCompression from 'browser-image-compression';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import { MAX_FILES_COUNT, SIZE_TO_COMPRESSION } from '@/const/messenger.js';
 import { blobToFile } from '@/utils/helpers/forms/blobToFile.js';
 import Loader from '@/components/common/Loader.vue';

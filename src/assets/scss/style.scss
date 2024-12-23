@@ -137,7 +137,7 @@ tr.TableRequestRow {
 
 //********** vue-notification-group **********
 .vue-notification-group {
-    margin-top: 50px;
+    margin-top: 85px;
 }
 
 // ********* SCROLLER **********
@@ -882,7 +882,7 @@ tr.TableRequestRow {
 }
 
 .company-contact-list {
-    @include mixins.flex-box($d: column, $gap: 10px);
+    @include mixins.flex-box($gap: 10px);
 }
 
 .inner-y {

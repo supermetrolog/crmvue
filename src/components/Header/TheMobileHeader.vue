@@ -6,12 +6,12 @@
             </button>
             <div class="mobile-header__avatar">
                 <router-link to="/account">
-                    <Avatar v-if="THIS_USER" size="45" :src="THIS_USER.userProfile?.avatar" />
+                    <Avatar :size="45" :src="currentUser.userProfile?.avatar" />
                 </router-link>
             </div>
             <div v-if="route.meta?.title" class="mobile-header__title ml-auto">
                 <DashboardChip class="dashboard-bg-success-l text-white">
-                    {{ route.meta.title }}
+                    {{ currentRouteTitle }}
                 </DashboardChip>
             </div>
         </div>
@@ -25,20 +25,24 @@
 <script setup>
 import Avatar from '@/components/common/Avatar.vue';
 import { computed, shallowRef } from 'vue';
-import { useStore } from 'vuex';
 import TheMobileSidebar from '@/components/SideBar/TheMobileSidebar.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { useRoute } from 'vue-router';
+import { useAuth } from '@/composables/useAuth.js';
+import { isArray } from '@/utils/helpers/array/isArray.js';
 
-const store = useStore();
+const { currentUser } = useAuth();
 const route = useRoute();
 
 const sidebarIsOpen = shallowRef(false);
 
-const THIS_USER = computed(() => store.getters.THIS_USER);
-
 const toggle = () => {
     sidebarIsOpen.value = !sidebarIsOpen.value;
 };
+
+const currentRouteTitle = computed(() => {
+    if (isArray(route.meta.title)) return route.meta.title.join(' | ');
+    return route.meta.title;
+});
 </script>

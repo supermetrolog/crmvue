@@ -1,50 +1,42 @@
 <template>
     <div class="d-flex gap-2 flex-wrap">
-        <Button
+        <TimelineButton
             v-tippy="'Нажмите, чтобы сохранить ваш результат'"
             @click="$emit('done')"
             :disabled="disabled || !objectsLength"
             success
-            solid
-            icon
         >
-            <span>Готово</span>
-            <i class="fa-solid fa-check icon"></i>
-        </Button>
-        <Button
+            <span>Подтвердить</span>
+            <i class="fa-solid fa-thumbs-up icon"></i>
+        </TimelineButton>
+        <TimelineButton
             v-tippy="'В случае нахождения более подходящих предложений вам придет уведомление!'"
             @click="$emit('negative')"
             :active="isNegative"
             :disabled="disabled"
             danger
-            solid
-            icon
         >
             <span>Нет подходящих</span>
-            <i class="fa-solid fa-frown-open icon"></i>
-        </Button>
+            <i class="fa-regular fa-frown-open icon"></i>
+        </TimelineButton>
     </div>
 </template>
-<script>
-import Button from '@/components/common/Button.vue';
+<script setup>
+import TimelineButton from '@/components/Timeline/TimelineButton.vue';
 
-export default {
-    name: 'TimelineStepDefaultButtons',
-    components: { Button },
-    emits: ['negative', 'done'],
-    props: {
-        disabled: {
-            type: Boolean,
-            default: false
-        },
-        objectsLength: {
-            type: Number,
-            default: 0
-        },
-        isNegative: {
-            type: Boolean,
-            default: false
-        }
+defineEmits(['negative', 'done']);
+defineProps({
+    disabled: {
+        type: Boolean,
+        default: false
+    },
+    objectsLength: {
+        type: Number,
+        default: 0
+    },
+    isNegative: {
+        type: Boolean,
+        default: false
     }
-};
+});
 </script>

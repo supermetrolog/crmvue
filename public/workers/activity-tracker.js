@@ -1,5 +1,3 @@
-console.log('worker');
-
 const WORKER_EVENTS = {
     CONNECTED: 'CONNECTED',
     ACTIVITY_UPDATE: 'ACTIVITY_UPDATE',

@@ -38,7 +38,7 @@ import MessengerChatMessageAdditionsItem from '@/components/Messenger/Chat/Messa
 import { useConfirm } from '@/composables/useConfirm.js';
 import { computed, inject } from 'vue';
 import { useStore } from 'vuex';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 
 const store = useStore();
 const { confirm } = useConfirm();

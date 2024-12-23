@@ -241,7 +241,7 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import Submit from '@/components/common/Forms/FormSubmit.vue';
 import { reactive, ref, toRef } from 'vue';
-import { useFormData } from '@/utils/useFormData.js';
+import { useFormData } from '@/utils/use/useFormData.js';
 import Switch from '@/components/common/Forms/Switch.vue';
 import { useSearchCompany } from '@/composables/useSearchCompany.js';
 import api from '@/api/api.js';

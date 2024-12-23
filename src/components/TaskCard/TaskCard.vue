@@ -109,9 +109,9 @@
 
 <script setup>
 import TaskCardStatus from '@/components/TaskCard/TaskCardModalStatus.vue';
-import { computed, ref, watch } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import api from '@/api/api.js';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import { useConfirm } from '@/composables/useConfirm.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import dayjs from 'dayjs';
@@ -167,33 +167,6 @@ const store = useStore();
 
 const { isLoading } = useDelayedLoader();
 
-function clearState() {
-    moveSettingsIsVisible.value = false;
-    assignerFormIsVisible.value = false;
-}
-
-// READ
-
-watch(
-    () => props.visible,
-    newValue => {
-        if (newValue) {
-            if (canBeViewed.value) debouncedReadTask();
-        }
-    }
-);
-
-watch(
-    () => props.task?.id,
-    () => {
-        clearState();
-
-        if (props.visible && canBeViewed.value) {
-            debouncedReadTask();
-        }
-    }
-);
-
 const canBeViewed = computed(() => {
     if (props.task?.observers?.length) {
         return props.task.observers.some(
@@ -204,6 +177,10 @@ const canBeViewed = computed(() => {
     }
 
     return false;
+});
+
+onMounted(() => {
+    if (canBeViewed.value) debouncedReadTask();
 });
 
 async function readTask() {
@@ -349,7 +326,10 @@ const assignerIsChanging = ref(false);
 async function assign(payload) {
     assignerIsChanging.value = true;
 
-    const response = await api.task.assign(props.task.id, { user_id: payload.assigner });
+    const response = await api.task.assign(props.task.id, {
+        user_id: payload.assigner,
+        comment: payload.comment
+    });
 
     if (response) {
         notify.success(`Задача успешно назначена на ${response.user.userProfile.medium_name}`);

@@ -95,7 +95,7 @@ export default {
     },
     async assign(taskId, payload) {
         const response = await axios.post(`${URL}/${taskId}/assign`, payload);
-        return responseToData(response, STATUS_SUCCESS);
+        return responseToData(response);
     },
     async history(taskId) {
         const response = await axios.get(`${URL}/${taskId}/history`);

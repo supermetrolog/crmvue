@@ -1,0 +1,40 @@
+$color-dark: #505050;
+$color-warning: #e49f4f;
+$color-light: #f7f7f7;
+$color-danger: #b80000;
+
+.ui-chip {
+    display: inline-block;
+    background-color: $color-light;
+    border: 1px solid rgba(0, 0, 0, .15);
+    border-radius: 3px;
+    padding: 3px 7px;
+    font-size: 14px;
+    font-weight: 500;
+
+    &--danger {
+        background-color: $color-danger;
+        color: #fff;
+    }
+
+    &--dark {
+        background-color: $color-dark;
+        color: #fff;
+    }
+
+    &--warning {
+        background-color: $color-warning;
+        color: #fff;
+    }
+
+    &:has(i) {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    &--big {
+        font-size: 16px;
+        padding: 15px 10px;
+    }
+}

@@ -1,6 +1,6 @@
 <template>
     <div class="user-picker">
-        <Input v-model="debouncedUserQuerySearch" rounded placeholder="Введите имя брокера.." />
+        <Input v-model="debouncedUserQuerySearch" rounded placeholder="Введите сотрудника.." />
         <div ref="list" class="user-picker__list">
             <UserPickerElement
                 v-for="(user, index) in users"

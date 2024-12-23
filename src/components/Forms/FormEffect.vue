@@ -39,7 +39,7 @@ import { reactive, shallowRef } from 'vue';
 import FormSubmit from '@/components/common/Forms/FormSubmit.vue';
 import useVuelidate from '@vuelidate/core';
 import api from '@/api/api.js';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import { helpers, required } from '@vuelidate/validators';
 import Input from '@/components/common/Forms/Input.vue';
 import Loader from '@/components/common/Loader.vue';

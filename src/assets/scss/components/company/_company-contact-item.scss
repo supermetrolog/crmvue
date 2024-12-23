@@ -3,6 +3,7 @@
 
 .company-contact-item {
     opacity: .6;
+    min-width: 350px;
 
     &.active {
         opacity: 1;

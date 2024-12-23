@@ -4,7 +4,7 @@
             <div class="col-12 mb-2">
                 <TimelineInfo
                     @next="$emit('next-step')"
-                    title="Анализ показа объектов"
+                    title="6. Анализ показа объектов"
                     :success="data.timelineStepObjects.length"
                 >
                     <p>Отметьте объекты, которые заинтересовали клиента во время показа.</p>
