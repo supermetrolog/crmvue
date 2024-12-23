@@ -71,7 +71,7 @@ import { computed, ref } from 'vue';
 import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 import FormCompanyLogo from '@/components/Forms/Company/FormCompanyLogo.vue';
 import Modal from '@/components/common/Modal.vue';
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 import Tab from '@/components/common/Tabs/Tab.vue';
 import Tabs from '@/components/common/Tabs/Tabs.vue';
 import { toCorrectUrl } from '@/utils/formatters/string.js';

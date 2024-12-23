@@ -11,7 +11,7 @@
     </div>
 </template>
 <script setup>
-import { useNotify } from '@/utils/useNotify.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 
 const props = defineProps({
     value: {

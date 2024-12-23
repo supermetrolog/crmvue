@@ -84,7 +84,7 @@
                 @close="formCompleteIsVisible = false"
                 @disabled="updateRequest(completeRequest)"
                 :show="formCompleteIsVisible"
-                :request_id="completeRequest.id"
+                :request_id="completeRequest?.id"
             />
             <FormCompanyRequest
                 v-if="formRequestIsVisible"
