@@ -39,7 +39,7 @@
 import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItem.vue';
 import DashboardTasksItemSkeleton from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemSkeleton.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
-import { computed, h, ref, shallowRef, watch } from 'vue';
+import { computed, ref, shallowRef, watch } from 'vue';
 import TaskCard from '@/components/TaskCard/TaskCard.vue';
 import api from '@/api/api.js';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';

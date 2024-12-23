@@ -9,6 +9,8 @@
                 @updated="onUpdated"
                 @to-chat="submit"
                 @read="readTask"
+                @added-comment="onAddedComment"
+                @deleted-comment="onDeletedComment"
                 class="messenger-task-previewer"
                 :task="currentTask"
                 :draggable="userCanDrag"
@@ -28,13 +30,37 @@ import api from '@/api/api.js';
 import Spinner from '@/components/common/Spinner.vue';
 import TaskCard from '@/components/TaskCard/TaskCard.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
+import { spliceById } from '@/utils/helpers/array/spliceById.js';
 
 const store = useStore();
+
+const {
+    isVisible,
+    onPopupShowed,
+    destroy: destroyPopup,
+    submit: _submit,
+    cancel,
+    props
+} = useAsyncPopup('messengerTaskPreview');
+
+onPopupShowed(async () => {
+    await fetchTask(props.value.task.id);
+});
 
 const currentTask = ref(null);
 const { isLoading } = useDelayedLoader();
 
-const readTask = () => {
+async function fetchTask(taskId) {
+    isLoading.value = true;
+
+    const task = await api.task.getOne(taskId);
+    if (task) currentTask.value = task;
+    else cancel();
+
+    isLoading.value = false;
+}
+
+function readTask() {
     const viewerIndex = currentTask.value.observers.findIndex(
         element => element.user_id === store.getters.THIS_USER.id
     );
@@ -46,34 +72,25 @@ const readTask = () => {
         observers: currentTask.value.observers,
         is_viewed: currentTask.value.user_id === store.getters.THIS_USER.id
     });
-};
+}
 
-const {
-    isVisible,
-    onPopupShowed,
-    destroy: destroyPopup,
-    submit: _submit,
-    cancel,
-    props
-} = useAsyncPopup('messengerTaskPreview');
+function submit() {
+    _submit(currentTask.value);
+}
 
-const fetchTask = async taskId => {
-    isLoading.value = true;
+function onUpdated(task) {
+    Object.assign(currentTask.value, task);
+}
 
-    const task = await api.task.getOne(taskId);
-    if (task) currentTask.value = task;
-    else cancel();
+function onAddedComment(comment) {
+    currentTask.value.comments_count++;
+    currentTask.value.last_comments.unshift(comment);
+}
 
-    isLoading.value = false;
-};
-
-onPopupShowed(async () => {
-    await fetchTask(props.value.task.id);
-});
-
-onUnmounted(() => {
-    destroyPopup();
-});
+function onDeletedComment(commentId) {
+    currentTask.value.comments_count--;
+    spliceById(currentTask.value.last_comments, commentId);
+}
 
 const userCanEdit = computed(() => {
     if (!currentTask.value) return false;
@@ -93,11 +110,7 @@ const userCanDrag = computed(() => {
     );
 });
 
-const onUpdated = task => {
-    Object.assign(currentTask.value, task);
-};
-
-const submit = () => {
-    _submit(currentTask.value);
-};
+onUnmounted(() => {
+    destroyPopup();
+});
 </script>
