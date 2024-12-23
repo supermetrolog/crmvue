@@ -1,5 +1,5 @@
 <template>
-    <div class="company-contact-list">
+    <div ref="listElement" @wheel.prevent class="company-contact-list">
         <CompanyContactItem
             v-for="contact of contacts"
             :key="contact.id"
@@ -16,6 +16,8 @@
 import { useStore } from 'vuex';
 import CompanyContactItem from '@/components/Company/Contact/CompanyContactItem.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
+import { useTemplateRef } from 'vue';
+import { useHorizontalScroll } from '@/composables/useHorizontalScroll.js';
 
 const emit = defineEmits(['start-editing', 'created-comment', 'deleted']);
 defineProps({
@@ -28,6 +30,10 @@ defineProps({
         default: false
     }
 });
+
+const listElement = useTemplateRef('listElement');
+
+useHorizontalScroll(listElement);
 
 const store = useStore();
 const { confirm } = useConfirm();

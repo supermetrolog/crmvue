@@ -29,9 +29,9 @@
             </div>
             <teleport to="body">
                 <FormModalCompanyRequestDisable
-                    v-if="disabledRequestItem"
                     @close="disabledRequestItem = null"
                     @disabled="onRequestIsDisabled"
+                    :show="disabledRequestItem"
                     :request_id="disabledRequestItem?.id"
                 />
                 <FormModalCompanyRequestClone

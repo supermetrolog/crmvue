@@ -22,20 +22,20 @@
             <div class="col-12 mb-2">
                 <TimelineInfo
                     @next="$emit('next-step')"
-                    title="Оформление сделки"
+                    title="8. Оформление сделки"
                     :success="currentRequest.deal"
                     :disabled="!data.timelineStepObjects.length"
                     without-next
                 >
-                    <p>Шаг 2. Заполните данные по сделке.</p>
+                    <p>8.2. Заполните данные по сделке.</p>
                     <template #footer>
-                        <Button
+                        <TimelineButton
                             @click="dealFormIsVisible = true"
-                            succes
+                            success
                             :disabled="disabled || !data.timelineStepObjects.length"
                         >
                             Создать сделку
-                        </Button>
+                        </TimelineButton>
                     </template>
                 </TimelineInfo>
             </div>
@@ -48,14 +48,14 @@
 
 <script setup>
 import TimelineInfo from '@/components/Timeline/TimelineInfo.vue';
-import Button from '@/components/common/Button.vue';
 import FormCompanyDeal from '@/components/Forms/Company/FormCompanyDeal.vue';
 import { useStore } from 'vuex';
 import { useTimelineStep } from '@/composables/useTimelineStep.js';
 import { shallowRef, toRef } from 'vue';
 import { useRoute } from 'vue-router';
-import TimelineDeal from '@/components/Timeline/TimelineDeal.vue';
 import { useConfetti } from '@/composables/useConfetti.js';
+import TimelineDeal from '@/components/Timeline/TimelineDeal.vue';
+import TimelineButton from '@/components/Timeline/TimelineButton.vue';
 
 const store = useStore();
 const route = useRoute();

@@ -3,18 +3,21 @@ import { unitTypes } from '@/const/unitTypes';
 export const Timeline = [
     {
         id: 0,
+        visual_id: '1',
         name: 'Meeting',
-        label: 'Знакомство',
+        label: 'Знакомство с клиентом',
         icon: 'fa-solid fa-phone-alt',
         steps: [
             {
                 id: 0,
+                visual_id: '1.1',
                 name: 'MeetingActivity',
                 label: 'Изучение деятельности',
                 checkDone: point => point.additional === 1
             },
             {
                 id: 1,
+                visual_id: '1.2',
                 name: 'MeetingConfirmation',
                 label: 'Подтверждение запроса',
                 checkDone: point => point.done === 1
@@ -23,12 +26,14 @@ export const Timeline = [
     },
     {
         id: 1,
+        visual_id: '2',
         name: 'Offers',
         label: 'Предложение',
         icon: 'fa-solid fa-city'
     },
     {
         id: 2,
+        visual_id: '3',
         name: 'Feedback',
         label: 'Обратная связь',
         icon: 'fa-solid fa-bullhorn',
@@ -37,10 +42,12 @@ export const Timeline = [
                 id: 0,
                 name: 'FeedbackInterest',
                 label: 'Интерес клиента',
+                visual_id: '3.1',
                 checkDone: point => point.timelineStepObjects.length > 0
             },
             {
                 id: 1,
+                visual_id: '3.2',
                 name: 'FeedbackCommunication',
                 label: 'Способ связи',
                 checkDone: point => point.timelineStepFeedbackways.length > 0
@@ -49,56 +56,65 @@ export const Timeline = [
     },
     {
         id: 3,
+        visual_id: '4',
         name: 'Inspection',
         label: 'Организация осмотров',
         icon: 'fa-solid fa-map-location-dot',
         steps: [
             {
                 id: 0,
+                visual_id: '4.1',
                 name: 'InspectionObjects',
                 label: 'Объекты для просмотра',
                 checkDone: point => point.timelineStepObjects.length > 0
             },
             {
                 id: 1,
+                visual_id: '4.2',
                 name: 'InspectionSending',
-                label: 'Отправление информации',
+                label: 'Маршрутный лист',
                 checkDone: point => point.additional === 1
             }
         ]
     },
     {
         id: 4,
+        visual_id: '5',
         name: 'Visit',
         label: 'Показы',
         icon: 'fa-solid fa-eye'
     },
     {
         id: 5,
+        visual_id: '6',
         name: 'Interest',
         label: 'Интерес к объектам',
         icon: 'fa-solid fa-heartbeat'
     },
     {
         id: 6,
+        visual_id: '7',
         name: 'Talk',
         label: 'Переговоры',
         icon: 'fa-solid fa-comments-dollar'
     },
     {
         id: 7,
+        visual_id: '8',
         name: 'Deal',
         label: 'Сделка',
         icon: 'fa-regular fa-handshake',
         steps: [
             {
                 id: 0,
+                visual_id: '8.1',
                 name: 'DealDecision',
                 label: 'Решение по объекту',
                 checkDone: point => point.timelineStepObjects.length > 0
             },
             {
                 id: 1,
+                visual_id: '8.2',
                 name: 'DealConfirmation',
                 label: 'Заключение сделки',
                 checkDone: point => point.status === 1

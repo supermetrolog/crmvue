@@ -1,185 +1,147 @@
 <template>
     <div class="timeline-page-header">
-        <div class="d-flex align-items-center">
-            <h2 class="timeline-page-header__title">{{ title }}</h2>
-            <TimelineStatus class="mx-2" :request="request" :disabled="timeline.status === 0" />
-            <div class="timeline-page-header__consultants d-flex gap-2 ml-auto">
-                <Button
-                    v-for="timelineItem in timelineList"
-                    :key="timelineItem.id"
-                    @click="changeTimeline(timelineItem.consultant_id)"
-                    class="timeline-page-header__consultant"
-                    info
-                    :class="{ active: isViewedUser(timelineItem.consultant.id) }"
-                >
-                    {{ timelineItem.consultant.userProfile.short_name }}
-                </Button>
-            </div>
-            <div class="timeline-page-header__functions d-flex gap-2 ml-2">
-                <Button
-                    @click="disableFormIsVisible = true"
-                    info
-                    class="dashboard-bg-danger-l timeline-page-header__function"
-                    :disabled="disabled"
-                >
-                    Завершить
-                </Button>
-                <Button
-                    @click="dealFormIsVisible = true"
-                    info
-                    class="dashboard-bg-success-l timeline-page-header__function"
-                    :disabled="disabled"
-                >
-                    Создать сделку
-                </Button>
-                <Button info class="timeline-page-header__function" :disabled="true">
-                    Передать
-                </Button>
-                <Button info class="timeline-page-header__function" :disabled="true">
-                    Отказатся
-                </Button>
-            </div>
+        <div class="timeline-page-header__row">
+            <TimelineHeaderInfo class="timeline-page-header__info" :company :request />
+            <TimelineHeaderActions
+                @disable="disableFormIsVisible = true"
+                @complete="dealFormIsVisible = true"
+                @edit="$emit('edit')"
+                :request
+                :consultants
+            />
         </div>
-        <div class="mt-2 d-flex gap-3">
-            <Button @click="$emit('change-tab', 'main')" :info="currentTab !== 'main'">
-                Прохождение Таймлайна
-            </Button>
-            <Button
+        <div class="timeline-page-header__tabs">
+            <TimelineButton
+                @click="$emit('change-tab', 'main')"
+                :class="{ active: currentTab === 'main' }"
+                info
+                solid
+                class="timeline-page-header__button"
+            >
+                Прохождение таймлайна
+            </TimelineButton>
+            <TimelineButton
                 v-tippy="messagesTippy"
                 @click="$emit('change-tab', 'log')"
-                :class="{ 'animate__animated animate__flash': messagesHasAnimation }"
+                :class="{
+                    'animate__animated animate__flash': messagesHasAnimation,
+                    active: currentTab === 'log'
+                }"
                 :badge="messagesCount"
-                :info="currentTab !== 'log'"
+                solid
+                info
+                class="timeline-page-header__button"
             >
-                Логи Таймлайна
-            </Button>
+                Логи таймлайна
+            </TimelineButton>
         </div>
         <teleport to="body">
             <FormModalCompanyRequestDisable
-                v-if="disableFormIsVisible"
                 @close="disableFormIsVisible = false"
-                @disabled="onDisabledTimeline"
+                @disabled="updateRequests"
+                :show="disableFormIsVisible"
                 :request_id="request.id"
             />
             <FormCompanyDeal
                 v-if="dealFormIsVisible"
                 @close="dealFormIsVisible = false"
-                @created="onCreatedDeal"
+                @created="updateRequests"
                 :company_id="request.company_id"
                 :request_id="request.id"
                 :deal-type="request.dealType"
-                :is-our-deal="true"
+                is-our-deal
             />
         </teleport>
     </div>
 </template>
 
-<script>
-import { mapGetters } from 'vuex';
-import Button from '@/components/common/Button.vue';
+<script setup>
+import { useStore } from 'vuex';
 import FormModalCompanyRequestDisable from '@/components/Forms/Company/FormModalCompanyRequestDisable.vue';
 import FormCompanyDeal from '@/components/Forms/Company/FormCompanyDeal.vue';
-import TimelineStatus from '@/components/Timeline/TimelineStatus.vue';
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
+import TimelineHeaderInfo from '@/components/Timeline/TimelineHeaderInfo.vue';
+import TimelineHeaderActions from '@/components/Timeline/TimelineHeaderActions.vue';
+import TimelineButton from '@/components/Timeline/TimelineButton.vue';
 
-export default {
-    name: 'TimelineHeader',
-    components: {
-        TimelineStatus,
-        FormCompanyDeal,
-        FormModalCompanyRequestDisable,
-        Button
+const emit = defineEmits(['change-tab', 'edit']);
+const props = defineProps({
+    disabled: {
+        type: Boolean,
+        default: false
     },
-    emits: ['change-tab'],
-    props: {
-        disabled: {
-            type: Boolean,
-            default: false
-        },
-        request: {
-            type: Object,
-            required: true
-        },
-        currentTab: {
-            type: String,
-            default: 'main'
-        },
-        title: {
-            type: String,
-            default: null
-        }
+    request: {
+        type: Object,
+        required: true
     },
-    data() {
-        return {
-            disableFormIsVisible: false,
-            dealFormIsVisible: false,
-            messagesHasAnimation: false,
-            messagesAnimation: null
-        };
-    },
-    computed: {
-        ...mapGetters({ timelineList: 'TIMELINE_LIST', timeline: 'TIMELINE' }),
-        messagesCount() {
-            return this.timeline.timelineSteps.reduce(
-                (total, current) => total + current.timelineActionComments?.length,
-                0
-            );
-        },
-        messagesTippy() {
-            const totalText = 'Всего сообщений по таймлайну: ' + this.messagesCount + '<br>';
-
-            const currentStep = this.timeline.timelineSteps[Number(this.$route.query.step) || 0];
-
-            if (!currentStep) return totalText;
-
-            const localText =
-                'Сообщений на текущем шаге: ' + currentStep.timelineActionComments?.length;
-
-            return totalText + localText;
-        }
-    },
-    watch: {
-        messagesCount(newValue, oldValue) {
-            if (newValue > oldValue) this.createAnimation();
-        }
-    },
-    methods: {
-        async onCreatedDeal() {
-            await this.$store.dispatch('FETCH_COMPANY_REQUESTS', this.request.company_id);
-            this.$emit('close');
-        },
-        async onDisabledTimeline() {
-            await this.$store.dispatch('FETCH_COMPANY_REQUESTS', this.request.company_id);
-            this.$emit('close');
-        },
-        async changeTimeline(consultant_id) {
-            let query = {
-                ...this.$route.query
-            };
-
-            query.consultant_id = consultant_id;
-            query.step = 0;
-
-            await this.$router.push({ query: query });
-        },
-        isViewedUser(userID) {
-            return Number(this.$route.query.consultant_id) === Number(userID);
-        },
-        clearAnimation() {
-            clearTimeout(this.messagesAnimation);
-            this.messagesAnimation = null;
-        },
-        createAnimation() {
-            this.clearAnimation();
-            this.messagesHasAnimation = true;
-
-            setTimeout(() => {
-                this.messagesHasAnimation = false;
-                this.clearAnimation();
-            }, 1000);
-        }
-    },
-    beforeUnmount() {
-        this.clearAnimation();
+    currentTab: {
+        type: String,
+        default: 'main'
     }
-};
+});
+
+const store = useStore();
+const route = useRoute();
+
+const disableFormIsVisible = ref(false);
+const dealFormIsVisible = ref(false);
+const messagesHasAnimation = ref(false);
+
+const timeline = computed(() => store.state.Timeline.timeline);
+
+const consultants = computed(() => {
+    return store.state.Timeline.timelineList.map(element => element.consultant);
+});
+
+const messagesCount = computed(() => {
+    return timeline.value.timelineSteps.reduce(
+        (total, current) => total + current.timelineActionComments?.length,
+        0
+    );
+});
+
+watch(messagesCount, (newValue, oldValue) => {
+    if (newValue > oldValue) createAnimation();
+});
+
+const messagesTippy = computed(() => {
+    const totalText = 'Всего сообщений по таймлайну: ' + messagesCount.value + '<br>';
+
+    const currentStep = timeline.value.timelineSteps[Number(route.query.step) || 0];
+
+    if (!currentStep) return totalText;
+
+    const localText = 'Сообщений на текущем шаге: ' + currentStep.timelineActionComments?.length;
+
+    return totalText + localText;
+});
+
+const company = computed(() => store.state.Companies.company);
+
+// animations
+
+let messagesAnimation;
+
+function createAnimation() {
+    clearAnimation();
+    messagesHasAnimation.value = true;
+
+    messagesAnimation = setTimeout(() => {
+        messagesHasAnimation.value = false;
+        clearAnimation();
+    }, 1000);
+}
+
+function clearAnimation() {
+    clearTimeout(messagesAnimation);
+    messagesAnimation = null;
+}
+
+async function updateRequests() {
+    await store.dispatch('FETCH_COMPANY_REQUESTS', props.request.company_id);
+    emit('close');
+}
+
+onBeforeUnmount(clearAnimation);
 </script>

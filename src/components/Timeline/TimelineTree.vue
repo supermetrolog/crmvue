@@ -1,6 +1,5 @@
 <template>
     <div class="timeline-tree">
-        <p class="timeline-tree__title">Прогресс таймлайна</p>
         <div class="timeline-tree__progress">
             <span class="timeline-tree__line"></span>
             <TimelineTreeStep

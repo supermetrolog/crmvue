@@ -2,11 +2,19 @@
     <div>
         <div class="company-box-main__subtitle mb-2">
             <strong>Контакты</strong>
-            <HoverActionsButton @click="$emit('create')" small label="Создать контакт">
+            <HoverActionsButton
+                @click="$emit('create')"
+                :disabled="loading"
+                small
+                label="Создать контакт"
+            >
                 <i class="fa-solid fa-plus" />
             </HoverActionsButton>
         </div>
-        <div class="company-box-main__contacts">
+        <div v-if="loading" class="company-box-main__contacts">
+            <CompanyBoxContactListItemSkeleton v-for="key in 5" :key="key" />
+        </div>
+        <div v-show="!loading" ref="listElement" @wheel.prevent class="company-box-main__contacts">
             <CompanyBoxContactListItem
                 v-for="contact in contacts"
                 :key="contact.id"
@@ -17,28 +25,30 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import CompanyBoxContactListItem from './CompanyBoxContactListItem.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
+import { inject, useTemplateRef } from 'vue';
+import { useHorizontalScroll } from '@/composables/useHorizontalScroll.js';
+import CompanyBoxContactListItemSkeleton from '@/components/Company/Box/CompanyBoxContactListItemSkeleton.vue';
 
-export default {
-    name: 'CompanyBoxContactList',
-    components: {
-        HoverActionsButton,
-        CompanyBoxContactListItem
+const emit = defineEmits(['create', 'show']);
+defineProps({
+    contacts: {
+        type: Array,
+        required: true
     },
-    emits: ['create'],
-    inject: ['openContact'],
-    props: {
-        contacts: {
-            type: Array,
-            required: true
-        }
-    },
-    methods: {
-        show(contact) {
-            this.openContact(contact);
-        }
-    }
-};
+    loading: Boolean
+});
+
+const openContact = inject('openContact');
+
+function show(contact) {
+    if (openContact) openContact(contact);
+
+    emit('show', contact);
+}
+
+const listElement = useTemplateRef('listElement');
+useHorizontalScroll(listElement);
 </script>

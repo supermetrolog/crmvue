@@ -67,7 +67,7 @@
                             <div class="col-4">
                                 <div class="dashboard-card-view__block">
                                     <p class="dashboard-card-view__helper">Совершено</p>
-                                    <p>{{ deal.dealDate_format }}</p>
+                                    <p>{{ dealDate }}</p>
                                 </div>
                             </div>
                             <div class="col-4">
@@ -95,11 +95,6 @@
                 </div>
                 <div class="col-5">
                     <DashboardCard class="mb-2">
-                        <p class="dashboard-card-view__subtitle mb-2">Объект сделки</p>
-                        <OfferTableMobileItem v-if="deal.offer" :offer="deal.offer" />
-                        <p v-else>-</p>
-                    </DashboardCard>
-                    <DashboardCard class="mb-2">
                         <p class="dashboard-card-view__subtitle mb-2">Консультант</p>
                         <div class="d-flex align-items-center">
                             <Avatar :src="deal.consultant.userProfile.avatar" size="40" />
@@ -107,6 +102,11 @@
                                 {{ deal.consultant.userProfile.medium_name }}
                             </span>
                         </div>
+                    </DashboardCard>
+                    <DashboardCard class="mb-2">
+                        <p class="dashboard-card-view__subtitle mb-2">Объект сделки</p>
+                        <OfferTableMobileItem v-if="deal.offer" :offer="deal.offer" />
+                        <p v-else>-</p>
                     </DashboardCard>
                 </div>
             </div>
@@ -123,6 +123,8 @@ import { computed } from 'vue';
 import { getCompanyName } from '@/utils/formatters/models/company.js';
 import { toNumberFormat } from '@/utils/formatters/number.js';
 import { unitTypes } from '@/const/unitTypes.js';
+import dayjs from 'dayjs';
+import OfferTableItem from '@/components/Offer/TableItem/OfferTableItem.vue';
 
 const props = defineProps({
     deal: {
@@ -138,4 +140,6 @@ const dealOwner = computed(() => {
             ? getCompanyName(props.deal.competitor, props.deal.competitor_company_id)
             : 'не указан';
 });
+
+const dealDate = computed(() => dayjs(props.deal.dealDate).format('D.MM.YY'));
 </script>

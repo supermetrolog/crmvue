@@ -31,7 +31,7 @@
             <div class="col-12 mb-2">
                 <TimelineInfo
                     @next="$emit('next-step')"
-                    title="Предложение возможных вариантов"
+                    title="2. Предложение возможных вариантов"
                     :success="step.status === 1"
                 >
                     <p>
@@ -40,13 +40,11 @@
                     </p>
                     <template #footer>
                         <div class="d-flex gap-2">
-                            <Button
+                            <TimelineButton
                                 v-tippy="'Отправить презентации с объектами клиенту'"
                                 @click="sendModalIsVisible = true"
                                 success
-                                solid
                                 :disabled="!selectedObjects.length || disabled"
-                                icon
                             >
                                 <span>
                                     <span>Отправить</span>
@@ -55,14 +53,12 @@
                                     </span>
                                 </span>
                                 <i class="fa-solid fa-paper-plane icon"></i>
-                            </Button>
-                            <Button
+                            </TimelineButton>
+                            <TimelineButton
                                 v-tippy="'Уже отправил предложения другим способом'"
                                 @click="selectAlreadySent"
                                 :active="data.negative"
                                 :disabled="!selectedObjects.length || disabled"
-                                solid
-                                icon
                             >
                                 <span>
                                     <span>Отметить как отправленные</span>
@@ -71,8 +67,8 @@
                                     </span>
                                 </span>
                                 <i class="fa-solid fa-envelope-circle-check icon"></i>
-                            </Button>
-                            <Button
+                            </TimelineButton>
+                            <TimelineButton
                                 @click="selectNegative"
                                 danger
                                 :active="data.negative"
@@ -82,7 +78,7 @@
                             >
                                 <span>Нет подходящих</span>
                                 <i class="fa-solid fa-frown-open icon"></i>
-                            </Button>
+                            </TimelineButton>
                         </div>
                     </template>
                 </TimelineInfo>
@@ -222,10 +218,12 @@ import { TimelineRecommendedDescriptions } from '@/const/const.js';
 import TimelineSearchRecommendations from '@/components/Timeline/TimelineSearchRecommedations.vue';
 import { regionsToFakeRegion } from '@/utils/normalizeForm.js';
 import PaginationClassic from '@/components/common/Pagination/PaginationClassic.vue';
+import TimelineButton from '@/components/Timeline/TimelineButton.vue';
 
 export default {
     name: 'TimelineStepOffers',
     components: {
+        TimelineButton,
         PaginationClassic,
         TimelineSearchRecommendations,
         FormOfferSearch,

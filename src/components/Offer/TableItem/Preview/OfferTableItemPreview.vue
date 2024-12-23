@@ -22,7 +22,12 @@
             <DashboardChip v-tippy="'Класс объекта'" class="dashboard-bg-danger-l">
                 {{ offer.class_name }}
             </DashboardChip>
-            <DashboardChip v-tippy="'Общая площадь объекта'" class="dashboard-bg-gray-l" with-icon>
+            <DashboardChip
+                v-if="offer.object"
+                v-tippy="'Общая площадь объекта'"
+                class="dashboard-bg-gray-l"
+                with-icon
+            >
                 <i class="fa-solid fa-expand"></i>
                 <WithUnitType :unit-type="unitTypes.SQUARE_METERS">
                     {{ fullArea }}
