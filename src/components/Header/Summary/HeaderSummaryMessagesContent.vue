@@ -1,6 +1,6 @@
 <template>
     <div class="header-summary-messages-content">
-        <Button @click="fetchAll" :disabled="loaders.user" class="ml-auto mb-2" small icon>
+        <Button @click="fetchAll" :disabled="someIsLoading" class="ml-auto mb-2" small icon>
             <span>Обновить все</span>
             <i class="fa-solid fa-refresh" />
         </Button>
