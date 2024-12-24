@@ -920,6 +920,10 @@ tr.TableRequestRow {
     }
 }
 
+.tippy-content {
+    word-break: break-word;
+}
+
 .tippy-box[data-theme~='bordered'] {
     border: 1px solid rgba(126, 126, 126, 0.5);
     box-shadow: 0 0 10px 1px rgba(0, 0, 0, .2)
