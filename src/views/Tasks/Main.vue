@@ -150,6 +150,7 @@ import api from '@/api/api.js';
 import gsap from 'gsap';
 import { debounce } from '@/utils/common/debounce.js';
 import DashboardTargetUser from '@/components/Dashboard/DashboardTargetUser.vue';
+import { useFavoriteTasks } from '@/composables/useFavoriteTasks.js';
 
 const store = useStore();
 
@@ -375,4 +376,8 @@ const init = () => {
 onMounted(() => {
     init();
 });
+
+// favorites
+
+const { favoriteTasks, favoriteTasksIsLoading } = useFavoriteTasks();
 </script>
