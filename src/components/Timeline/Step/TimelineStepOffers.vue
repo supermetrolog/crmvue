@@ -101,8 +101,27 @@
                     "
                     class="alt mb-2"
                 />
-                <div class="d-flex gap-1 justify-content-end">
-                    <RefreshButton @click="refresh" :disabled="isSearchLoading" class="mr-2" />
+                <FormOfferSearch
+                    @search="search"
+                    @changed-query="currentPage = 1"
+                    @reset="currentRecommendedFilter = null"
+                    @resetSelected="reset"
+                    :additional-buttons="
+                        selectedObjects.length
+                            ? [
+                                  {
+                                      label: 'сбросить выбранное',
+                                      event: 'resetSelected'
+                                  }
+                              ]
+                            : []
+                    "
+                    no-url
+                    :query-params="queryParams"
+                    :class="{ 'action-open': controlPanelHeight > 50 }"
+                    class="mb-2"
+                />
+                <div class="d-flex gap-1 mb-3">
                     <Button
                         @click="changeRecommendedFilter(1, totalRecommendedQuery)"
                         :active="currentRecommendedFilter === 1"
@@ -146,33 +165,9 @@
                             </template>
                         </Tooltip>
                     </Button>
+                    <RefreshButton @click="refresh" :disabled="isSearchLoading" class="ml-auto" />
                 </div>
-                <FormOfferSearch
-                    @search="search"
-                    @changed-query="currentPage = 1"
-                    @reset="currentRecommendedFilter = null"
-                    @resetSelected="reset"
-                    :additional-buttons="
-                        selectedObjects.length
-                            ? [
-                                  {
-                                      label: 'сбросить выбранное',
-                                      event: 'resetSelected'
-                                  }
-                              ]
-                            : []
-                    "
-                    no-url
-                    :query-params="queryParams"
-                    class="mb-2 col-12"
-                    :class="{ 'action-open': controlPanelHeight > 50 }"
-                />
-                <PaginationClassic
-                    v-if="pagination"
-                    @next="nextPage"
-                    class="col-12"
-                    :pagination="pagination"
-                />
+                <PaginationClassic v-if="pagination" @next="nextPage" :pagination="pagination" />
                 <CompanyObjectsList
                     @select="select"
                     @unselect="unselect"
@@ -186,13 +181,9 @@
                     :view-mode="viewMode"
                     :pagination="pagination"
                     :current-step-id="step.id"
+                    class="alt my-2"
                 />
-                <PaginationClassic
-                    v-if="pagination"
-                    @next="nextPage"
-                    class="col-12"
-                    :pagination="pagination"
-                />
+                <PaginationClassic v-if="pagination" @next="nextPage" :pagination="pagination" />
             </div>
         </div>
     </div>

@@ -42,7 +42,13 @@
         }
     }
 
-    @include mixins.bg-color-scheme(warning #f88f01 #a46104, success #10b981 #009665, danger #f93154 #cb1132, info #e7e7e7 #d3d3d3 #000);
+    @include mixins.bg-color-scheme(
+                    warning #f88f01 #a46104,
+                    success #10b981 #009665,
+                    danger #f93154 #cb1132,
+                    info #e7e7e7 #d3d3d3 #000,
+                    dark #505050 #2a454c
+    );
 
     &--small {
         padding: 5px 10px;

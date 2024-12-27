@@ -1,7 +1,6 @@
 import { computed } from 'vue';
 import { toValue } from '@vueuse/core';
 import { useRoute } from 'vue-router';
-import { filtersAliases } from '@/const/const.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { isEmpty } from '@/utils/helpers/common/isEmpty.js';
 import { isArray } from '@/utils/helpers/array/isArray.js';
@@ -10,7 +9,55 @@ import { isEmptyObject } from '@/utils/helpers/object/isEmptyObject.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import { joinWithFilter } from '@/utils/helpers/array/joinWithFilter.js';
 
-export function useSelectedFilters(form = {}, humanizeGetters = {}) {
+export const filtersAliases = {
+    polygon: 'Область на карте',
+    rangeMaxArea: 'До:',
+    rangeMinArea: 'От:',
+    rangeMaxDistanceFromMKAD: 'От МКАД:',
+    rangeMinElectricity: 'От:',
+    rangeMaxPricePerFloor: 'До:',
+    rangeMinPricePerFloor: 'От:',
+    rangeMinCeilingHeight: 'Потолки От:',
+    rangeMaxCeilingHeight: 'Потолки До:',
+    class: 'Класс:',
+    heated: 'Отопление:',
+    water: 'Вода',
+    gas: 'Газ',
+    steam: 'Пар',
+    sewage_central: 'КНС',
+    is_fake: 'Показать фейковые',
+    racks: 'Стеллажи',
+    railway: 'Ж/Д ветка',
+    has_cranes: 'Краны',
+    firstFloorOnly: 'Только 1 этаж',
+    ad_realtor: 'Realtor.ru:',
+    ad_cian: 'Циан:',
+    ad_yandex: 'Яндекс:',
+    ad_free: 'Бесплатно:',
+    ad_avito: 'Авито:',
+    favorites: 'Избранные',
+    sort: 'Сортировка:',
+    nameRu: 'Название Ru:',
+    nameEng: 'Название Eng:',
+    dateStart: 'Создано после:',
+    dateEnd: 'Создано до:',
+    status: 'Статус:',
+    all: 'Поисковой запрос',
+    consultant_id: 'Консультант:',
+    agent_id: 'Консультант:'
+};
+
+const INGORING_FILTERS = new Set([
+    'page',
+    'region_neardy',
+    'outside_mkad',
+    'type_id',
+    'withoutOffersFromQuery'
+]);
+
+export function useSelectedFilters(form = {}, humanizeGetters = {}, options = {}) {
+    const { useFakeRegion = true } = toValue(options);
+
     const route = useRoute();
 
     function humanizeFilter(key, value) {
@@ -23,7 +70,7 @@ export function useSelectedFilters(form = {}, humanizeGetters = {}) {
             ? toValue(humanizeGetters)[key](value)
             : null;
 
-        if (isNullish(label) && isNullish(_value)) option.label = '[не определено]';
+        if (isNullish(label) && isNullish(_value)) option.label = `[${key}]`;
         else option.label = joinWithFilter([label, _value], isNotNullish);
 
         return option;
@@ -31,17 +78,14 @@ export function useSelectedFilters(form = {}, humanizeGetters = {}) {
 
     const selectedQueryFilters = computed(() => {
         const filters = [];
-        const query = { ...route.query };
 
-        delete query.region_neardy;
-        delete query.page;
-        delete query.outside_mkad;
+        for (const key in route.query) {
+            if (INGORING_FILTERS.has(key)) continue;
 
-        for (const key in query) {
-            const value = query[key];
+            const value = route.query[key];
 
-            if (key === 'region') {
-                filters.push({ key, value: query.fakeRegion });
+            if (key === 'region' && useFakeRegion) {
+                filters.push({ key, value: route.query.fakeRegion });
             } else if (
                 isNotNullish(value) &&
                 !isEmpty(value) &&
@@ -58,27 +102,24 @@ export function useSelectedFilters(form = {}, humanizeGetters = {}) {
     const selectedFilters = computed(() => {
         const filters = [];
 
-        const query = { ...toValue(form) };
+        const query = toValue(form);
 
         if (isEmptyObject(query)) return filters;
 
-        delete query.region_neardy;
-        delete query.all;
-        delete query.page;
-        delete query.outside_mkad;
-
         for (const key in query) {
+            if (INGORING_FILTERS.has(key)) continue;
+
             const value = query[key];
 
-            if (key === 'region') {
-                filters.push(humanizeFilter(key, query.fakeRegion));
+            if (key === 'region' && useFakeRegion) {
+                filters.push({ key, value: query.fakeRegion });
             } else if (
-                value !== null &&
+                isNotNullish(value) &&
                 value !== '' &&
                 key !== 'fakeRegion' &&
-                !(Array.isArray(value) && value.length === 0)
+                !(isArray(value) && isEmptyArray(value))
             ) {
-                filters.push(humanizeFilter(key, value));
+                filters.push({ key, value });
             }
         }
 
