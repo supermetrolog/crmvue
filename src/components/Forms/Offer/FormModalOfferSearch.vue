@@ -313,7 +313,6 @@ import {
     pricePerFloorValidators
 } from '@//validators/fields';
 import ObjectTypePicker from '@/components/common/Forms/ObjectTypePicker.vue';
-import { objectPurposesWithSectionsOptions } from '@/const/options/object.options.js';
 import CheckboxOptions from '@/components/common/Forms/CheckboxOptions.vue';
 import {
     DealTypeList,
@@ -334,6 +333,47 @@ import { useQuerySearch } from '@/composables/useQuerySearch.js';
 import { useRegionsOptions } from '@/composables/options/useRegionsOptions.js';
 import ConsultantPicker from '@/components/common/Forms/ConsultantPicker/ConsultantPicker.vue';
 import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
+
+const objectPurposesWithSectionsOptions = {
+    warehouse: {
+        0: { name: 'Сухой склад', icon: 'fa-solid fa-warehouse' },
+        1: { name: 'Холодильник (0/+5С)', icon: 'fa-solid fa-temperature-half' },
+        14: { name: 'Пищевое (склад)', icon: 'fas fa-utensils' },
+        2: { name: 'Морозильник (до -25С)', icon: 'fa-solid fa-snowflake' },
+        3: { name: 'Алкогольный склад', icon: 'fa-solid fa-beer-mug-empty' },
+        4: { name: 'Фармацевтический склад', icon: 'fa-solid fa-suitcase-medical' },
+        5: { name: 'Овощехранилище', icon: 'fa-solid fa-lemon' },
+        6: { name: 'Грузоперевозки/логистика', icon: 'fa-solid fa-truck' },
+        7: { name: 'Опасные грузы', icon: 'fa-solid fa-skull-crossbones' },
+        8: { name: 'Холодный склад', icon: 'fas fa-warehouse alt' },
+        9: { name: 'Архив', icon: 'fas fa-archive' },
+        10: { name: 'Досуг/развлечения', icon: 'fas fa-volleyball-ball' }
+    },
+    production: {
+        12: { name: 'Сборочное', icon: 'fas fa-industry' },
+        13: { name: 'Швейное', icon: 'fab fa-shirtsinbulk' },
+        15: { name: 'Автосервис/мойка', icon: 'fas fa-car' },
+        11: { name: 'Пищевое (пр-во)', icon: 'fas fa-utensils' },
+        16: { name: 'Деревообработка', icon: 'fas fa-tree' },
+        17: { name: 'Металлообработка', icon: 'fas fa-gavel' },
+        18: { name: 'ЖБИ/камень', icon: 'fas fa-chess-rook' },
+        19: { name: 'Машиностроение', icon: 'fas fa-cogs' },
+        20: { name: 'ПВХ/полимеры/минералы', icon: 'fas fa-bong' },
+        21: { name: 'Фарм/косметика/алкоголь', icon: 'fas fa-pills' },
+        22: { name: '1-3 класс опасности', icon: 'fas fa-biohazard' },
+        23: { name: 'Прачечная', icon: 'fas fa-tshirt' },
+        24: { name: 'Типография', icon: 'fas fa-print' }
+    },
+    plot: {
+        25: { name: 'Хранение/стоянка', icon: 'fas fa-pallet' },
+        26: { name: 'Автосервис/услуги (стройка)', icon: 'fas fa-burn' },
+        27: { name: 'Производство/склад (стройка)', icon: 'far fa-square' },
+        28: { name: 'Торговый центр (стройка)', icon: 'fas fa-store-alt' },
+        29: { name: '1-3 класс опасности', icon: 'fas fa-biohazard' },
+        30: { name: 'Досуг/развлечения', icon: 'fas fa-volleyball-ball' },
+        31: { name: 'АЗС (стройка)', icon: 'fas fa-gas-pump' }
+    }
+};
 
 const emit = defineEmits(['close', 'search', 'reset']);
 
