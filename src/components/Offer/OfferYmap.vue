@@ -8,7 +8,7 @@
         :settings="yandexMapOptions.settings"
         :styles="styles"
         :controls="yandexMapOptions.controls"
-        :behaviors="['drag', 'scrollZoom', 'multiTouch']"
+        :behaviors="['drag', 'scrollZoom', 'multiTouch', 'selection']"
         :polygon-coordinates="polygonCoordinates"
     >
         <YandexMapLoader :show="loading" label="Поиск объектов на карте.." />

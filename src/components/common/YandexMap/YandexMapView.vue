@@ -10,6 +10,7 @@
             :detailed-controls="detailedControls"
             :behaviors="behaviors.filter(elem => elem !== 'selection')"
             :style="styles"
+            :options="options"
         >
             <YandexMapSelectionBehavior
                 v-if="behaviors.includes('selection')"
@@ -87,7 +88,7 @@ export default {
         },
         behaviors: {
             type: Array,
-            default: () => ['drag', 'multiTouch']
+            default: () => ['drag', 'multiTouch', 'selection']
         },
         clusterOptions: {
             type: Object,
@@ -187,12 +188,20 @@ export default {
         },
         //emit objectClick
         objectEventHandler(event) {
-            this.$emit('object-' + event.get('type'), event.get('objectId'), this.getObjectManager());
+            this.$emit(
+                'object-' + event.get('type'),
+                event.get('objectId'),
+                this.getObjectManager()
+            );
         },
 
         //emit clusterClick
         clusterEventHandler(event) {
-            this.$emit('cluster-' + event.get('type'), event.get('objectId'), this.getObjectManager());
+            this.$emit(
+                'cluster-' + event.get('type'),
+                event.get('objectId'),
+                this.getObjectManager()
+            );
         },
 
         addMarkersToObjectManager(markers) {
