@@ -274,10 +274,17 @@ const getForm = () => {
     }
 
     if (hasTextQuestions.value) {
-        const answers = props.question.answers['text-answer'].map(element => ({
-            question_answer_id: element.id,
-            value: form.description[element.id]
-        }));
+        const answers = props.question.answers['text-answer'].map(element => {
+            const data = {
+                question_answer_id: element.id
+            };
+
+            if (form.description[element.id]?.length) {
+                data.value = form.description[element.id];
+            }
+
+            return data;
+        });
 
         list.push(...answers);
     }

@@ -31,6 +31,7 @@
             v-tippy="
                 'Предложение недавно добавлено в систему. Нажмите, чтобы перейти в чат предложения.'
             "
+            @click="$emit('to-chat')"
             class="offer-table-item-call__chip"
         >
             <p class="offer-table-item-call__help">Новая сделка</p>
@@ -62,7 +63,7 @@ const props = defineProps({
         default: null
     },
     createdAt: {
-        type: String,
+        type: [String, Number],
         default: null
     },
     withoutContacts: Boolean
@@ -70,12 +71,12 @@ const props = defineProps({
 
 const isRecentlyCreated = computed(
     () =>
-        dayjs(props.createdAt).diff(dayjs(), 'days') <
+        dayjs().diff(dayjs(props.createdAt), 'days') <
         import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_DANGER
 );
 
 const lastCallDate = computed(() => toDateFormat(props.call, 'D.MM.YYYY'));
-const lastCallDiffInDays = computed(() => dayjsFromMoscow(props.call).diff(dayjs(), 'days'));
+const lastCallDiffInDays = computed(() => dayjs().diff(dayjsFromMoscow(props.call), 'days'));
 const lastCallIsExpired = computed(
     () => lastCallDiffInDays.value > import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_WARNING
 );

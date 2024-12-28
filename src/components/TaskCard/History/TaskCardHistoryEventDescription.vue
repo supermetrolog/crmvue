@@ -3,7 +3,7 @@
         <TaskCardHistoryEventRow label="Описание">
             <div class="d-flex align-items-center">
                 <DashboardChip
-                    v-tippy="prevSnapshot?.message"
+                    v-tippy="{ content: prevSnapshot?.message, maxWidth: 600 }"
                     class="task-card-history-event__help danger"
                     with-icon
                 >
@@ -12,7 +12,7 @@
                 </DashboardChip>
                 <i class="fa-solid fa-arrow-right-long mx-2"></i>
                 <DashboardChip
-                    v-tippy="snapshot.message"
+                    v-tippy="{ content: snapshot.message, maxWidth: 600 }"
                     class="task-card-history-event__help success"
                     with-icon
                 >

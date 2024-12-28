@@ -14,41 +14,26 @@
 </template>
 <script setup>
 import { computed } from 'vue';
+import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
+import { isString } from '@/utils/helpers/string/isString.js';
+import { isNumber } from '@/utils/helpers/number/isNumber.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.js';
 
 defineEmits(['click']);
 const props = defineProps({
-    icon: {
-        type: Boolean,
-        default: false
-    },
     title: {
         type: String,
         default: ''
     },
-    warning: {
-        type: Boolean,
-        default: false
-    },
-    small: {
-        type: Boolean,
-        default: false
-    },
-    success: {
-        type: Boolean,
-        default: false
-    },
-    info: {
-        type: Boolean,
-        default: false
-    },
-    danger: {
-        type: Boolean,
-        default: false
-    },
-    badge: {
-        type: [String, Number, Boolean],
-        default: false
-    },
+    icon: Boolean,
+    warning: Boolean,
+    small: Boolean,
+    success: Boolean,
+    info: Boolean,
+    danger: Boolean,
+    solid: Boolean,
+    dark: Boolean,
+    badge: [String, Number],
     active: {
         type: [Boolean, Number, String],
         default: true
@@ -56,14 +41,15 @@ const props = defineProps({
     disabled: {
         type: [Boolean, Number],
         default: false
-    },
-    solid: {
-        type: Boolean,
-        default: false
     }
 });
 
-const hasBadge = computed(() => props.badge !== false);
+const hasBadge = computed(() => {
+    if (isNullish(props.badge)) return false;
+    if (isString(props.badge)) return isNotEmptyString(props.badge);
+    if (isNumber(props.badge)) return props.badge > 0;
+});
+
 const classButton = computed(() => ({
     'button--icon': props.icon,
     'button--warning': props.warning,
@@ -72,6 +58,7 @@ const classButton = computed(() => ({
     'button--info': props.info,
     'button--danger': props.danger,
     'button--disabled': !props.active,
-    'button--solid': props.solid
+    'button--solid': props.solid,
+    'button--dark': props.dark
 }));
 </script>

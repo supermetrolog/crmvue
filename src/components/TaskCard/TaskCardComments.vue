@@ -79,11 +79,12 @@ import { useNotify } from '@/utils/use/useNotify.js';
 import Loader from '@/components/common/Loader.vue';
 import TaskCardButton from '@/components/TaskCard/TaskCardButton.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
-import { spliceById } from '@/utils/helpers/array/spliceById.js';
 import Modal from '@/components/common/Modal.vue';
 import Form from '@/components/common/Forms/Form.vue';
 import Spinner from '@/components/common/Spinner.vue';
 import InfiniteLoading from 'v3-infinite-loading';
+import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { spliceById } from '@/utils/helpers/array/spliceById.js';
 
 const emit = defineEmits(['created', 'deleted']);
 const props = defineProps({
@@ -97,8 +98,15 @@ const comments = shallowRef([...props.task.last_comments]);
 
 watch(
     () => props.task.last_comments[0]?.id,
-    () => {
-        comments.value.unshift(props.task.last_comments[0]);
+    (newValue, oldValue) => {
+        if (isNullish(newValue)) return;
+
+        if (isNullish(oldValue)) comments.value = [...props.task.last_comments];
+        else if (newValue > oldValue)
+            comments.value.unshift(
+                ...props.task.last_comments.filter(comment => comment.id > oldValue)
+            );
+        else comments.value = comments.value.filter(comment => comment.id <= newValue);
     }
 );
 
@@ -185,7 +193,6 @@ async function addComment() {
     const response = await api.task.createComment(props.task.id, { message: newComment.value });
 
     if (response) {
-        comments.value.unshift(response);
         newComment.value = '';
         notify.success('Комментарий успешно добавлен.');
         emit('created', response);

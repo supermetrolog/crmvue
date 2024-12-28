@@ -1,35 +1,33 @@
 <template>
-    <div class="objects-list row position-relative">
-        <div class="col-12">
-            <div class="row">
-                <div v-if="label" class="col-12">
-                    <h4>{{ label }}</h4>
-                </div>
-                <div v-if="!objects.length && !loader" class="col-12">
-                    <EmptyData>Данные отсутствуют</EmptyData>
-                </div>
-                <Loader v-if="loader" />
-                <template v-for="object in objects" :key="object.id">
-                    <CompanyObjectItemNoOffer
-                        v-if="object.noOffer"
-                        :offer="object"
-                        :class="col"
-                        :currentStepID="currentStepId"
-                    />
-                    <CompanyObjectItemOfferOnly
-                        v-else
-                        @select="$emit('select', object)"
-                        @unselect="$emit('unselect', object)"
-                        @addComment="addComment"
-                        @deleteFavoriteOffer="$emit('deleteFavoriteOffer')"
-                        :disabled="disabled"
-                        :offer="object"
-                        :is-selected="selectedObjects.some(item => item.id === object.id)"
-                        :class="col"
-                        :currentStepID="currentStepId"
-                    />
-                </template>
+    <div class="objects-list position-relative">
+        <div class="row">
+            <div v-if="label" class="col-12">
+                <h4>{{ label }}</h4>
             </div>
+            <div v-if="!objects.length && !loader" class="col-12">
+                <EmptyData>Данные отсутствуют</EmptyData>
+            </div>
+            <Loader v-if="loader" />
+            <template v-for="object in objects" :key="object.id">
+                <CompanyObjectItemNoOffer
+                    v-if="object.noOffer"
+                    :offer="object"
+                    :class="col"
+                    :currentStepID="currentStepId"
+                />
+                <CompanyObjectItemOfferOnly
+                    v-else
+                    @select="$emit('select', object)"
+                    @unselect="$emit('unselect', object)"
+                    @addComment="addComment"
+                    @deleteFavoriteOffer="$emit('deleteFavoriteOffer')"
+                    :disabled="disabled"
+                    :offer="object"
+                    :is-selected="selectedObjects.some(item => item.id === object.id)"
+                    :class="col"
+                    :currentStepID="currentStepId"
+                />
+            </template>
         </div>
         <hr v-if="withSeparator && !loader" />
     </div>
