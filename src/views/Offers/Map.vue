@@ -55,13 +55,14 @@ import { useRoute, useRouter } from 'vue-router';
 import { useQueryHash } from '@/utils/use/useQueryHash.js';
 import { dealOptions } from '@/const/options/deal.options.js';
 import { objectOptions } from '@/const/options/object.options.js';
-import { ActivePassiveFUCK, filtersAliases, GateTypeList, YesNo } from '@/const/const.js';
+import { ActivePassiveFUCK, GateTypeList, YesNo } from '@/const/const.js';
 import { defaultsOptions } from '@/const/options/options.js';
 import { floorOptions } from '@/const/options/floor.options.js';
 import { locationOptions } from '@/const/options/location.options.js';
 import { useTableContent } from '@/composables/useTableContent.js';
 import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
 import { tryOnMounted } from '@vueuse/core';
+import { filtersAliases } from '@/composables/useSelectedFilters.js';
 
 const yandexMapStyles = shallowReactive({
     width: '100%',
@@ -309,13 +310,17 @@ const fetchOffers = async (withLoader = true) => {
         });
     }
 
+    if (query.polygon) {
+        query.polygon = query.polygon.join(',');
+    }
+
     const currentHash = setHash(query);
 
     const response = await api.offers.searchMap(query);
 
     if (Array.isArray(response.data)) {
         offers.value = response.data;
-        counts.objects = response.pagination.totalCount;
+        counts.objects = response.pagination?.totalCount;
 
         delete query.objectsOnly;
         fetchCounts(query, currentHash);

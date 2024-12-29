@@ -313,7 +313,6 @@ import {
     pricePerFloorValidators
 } from '@//validators/fields';
 import ObjectTypePicker from '@/components/common/Forms/ObjectTypePicker.vue';
-import { objectPurposesWithSectionsOptions } from '@/const/options/object.options.js';
 import CheckboxOptions from '@/components/common/Forms/CheckboxOptions.vue';
 import {
     DealTypeList,
@@ -334,6 +333,7 @@ import { useQuerySearch } from '@/composables/useQuerySearch.js';
 import { useRegionsOptions } from '@/composables/options/useRegionsOptions.js';
 import ConsultantPicker from '@/components/common/Forms/ConsultantPicker/ConsultantPicker.vue';
 import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
+import { objectPurposesWithSectionsOptions } from '@/const/options/object.options.js';
 
 const emit = defineEmits(['close', 'search', 'reset']);
 
