@@ -98,29 +98,55 @@
                                             label="Сортировка"
                                             :options="sortingOptions"
                                         />
-                                        <div class="col-12">
-                                            <PaginationClassic
-                                                v-if="tasks.data?.length"
-                                                @next="setNextPage"
-                                                :pagination="tasks.pagination"
-                                                class="mb-2"
-                                            />
+                                        <div class="col-12 mb-2">
+                                            <div class="d-flex align-items-end">
+                                                <AnimationTransition :speed="0.6">
+                                                    <PaginationClassic
+                                                        v-if="tasks.data?.length && !isFavoriteView"
+                                                        @next="setNextPage"
+                                                        :pagination="tasks.pagination"
+                                                    />
+                                                </AnimationTransition>
+                                                <Button
+                                                    @click="toggleFavoriteView"
+                                                    :disabled="isLoading"
+                                                    :active="isFavoriteView"
+                                                    small
+                                                    warning
+                                                    icon
+                                                    :badge="favoriteTasks.length"
+                                                    class="ml-auto"
+                                                >
+                                                    <i class="fa-solid fa-star" />
+                                                    <span>Избранное</span>
+                                                </Button>
+                                            </div>
                                         </div>
                                     </FormGroup>
                                 </Form>
                             </div>
                         </template>
-                        <DashboardTableTasks
-                            @task-updated="onTaskUpdated"
-                            :is-loading="isLoading"
-                            :tasks="tasks.data"
-                        />
-                        <PaginationClassic
-                            v-if="tasks.data?.length"
-                            @next="setNextPage"
-                            class="mt-3"
-                            :pagination="tasks.pagination"
-                        />
+                        <AnimationTransition :speed="0.2">
+                            <DashboardTableFavoriteTasks
+                                v-if="isFavoriteView"
+                                :tasks="favoriteTasks"
+                                class="mb-4"
+                            />
+                            <DashboardTableTasks
+                                v-else
+                                @task-updated="onTaskUpdated"
+                                :is-loading="isLoading"
+                                :tasks="tasks.data"
+                            />
+                        </AnimationTransition>
+                        <AnimationTransition :speed="0.6">
+                            <PaginationClassic
+                                v-if="tasks.data?.length && !isFavoriteView"
+                                @next="setNextPage"
+                                class="mt-3"
+                                :pagination="tasks.pagination"
+                            />
+                        </AnimationTransition>
                     </DashboardCard>
                 </div>
             </div>
@@ -151,6 +177,8 @@ import gsap from 'gsap';
 import { debounce } from '@/utils/common/debounce.js';
 import DashboardTargetUser from '@/components/Dashboard/DashboardTargetUser.vue';
 import { useFavoriteTasks } from '@/composables/useFavoriteTasks.js';
+import DashboardTableFavoriteTasks from '@/components/Dashboard/Table/DashboardTableFavoriteTasks.vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
 
 const store = useStore();
 
@@ -379,5 +407,13 @@ onMounted(() => {
 
 // favorites
 
-const { favoriteTasks, favoriteTasksIsLoading } = useFavoriteTasks();
+const { fetchFavoriteTasks, favoriteTasks } = useFavoriteTasks();
+
+onMounted(fetchFavoriteTasks);
+
+const isFavoriteView = ref(false);
+
+function toggleFavoriteView() {
+    isFavoriteView.value = !isFavoriteView.value;
+}
 </script>
