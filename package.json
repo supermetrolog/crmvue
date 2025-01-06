@@ -46,7 +46,7 @@
     "vue-draggable-next": "^2.1.1",
     "vue-router": "^4.0.0-0",
     "vue-tippy": "^6.4.1",
-    "vue-virtual-draglist": "3.3.5",
+    "vue-virtual-draglist": "3.3.8",
     "vue-virtual-scroller": "^2.0.0-beta.8",
     "vue-yandex-maps": "0.11.0",
     "vue3-lottie": "^3.3.1",
