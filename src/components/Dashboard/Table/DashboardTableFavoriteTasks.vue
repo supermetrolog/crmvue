@@ -6,6 +6,7 @@
         </DashboardChip>
         <VirtualDragList
             v-model="currentTasks"
+            @drop="onDropTask"
             group="tasks"
             data-key="id"
             :keeps="40"
@@ -14,7 +15,10 @@
             lockAxis="x"
         >
             <template #item="{ record }">
-                <DashboardTableTasksItem @view="openPreviewer(record, $event)" :task="record" />
+                <DashboardTableTasksItem
+                    @view="openPreviewer(record.task, $event)"
+                    :task="record.task"
+                />
             </template>
         </VirtualDragList>
         <EmptyData v-if="!tasks.length">Список избранного пуст..</EmptyData>
@@ -56,7 +60,7 @@ import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import VirtualDragList from 'vue-virtual-draglist';
 
-const emit = defineEmits(['task-updated', 'hide']);
+const emit = defineEmits(['task-updated', 'hide', 'position-changed']);
 const props = defineProps({
     tasks: {
         type: Array,
@@ -151,5 +155,24 @@ function onAddedComment(comment) {
 
 function onChangedHistory(count) {
     currentTask.value.histories_count = count;
+}
+
+// dnd
+
+async function onDropTask(dropEvent) {
+    if (dropEvent.newIndex === dropEvent.oldIndex) return;
+
+    const payload = {
+        prev_id: dropEvent.newIndex > 0 ? currentTasks.value[dropEvent.newIndex - 1].id : null,
+        next_id:
+            dropEvent.newIndex < currentTasks.value.length - 1
+                ? currentTasks.value[dropEvent.newIndex + 1].id
+                : null
+    };
+
+    const changed = await api.taskFavorite.changePosition(dropEvent.item.id, payload);
+    if (changed) {
+        emit('position-changed', dropEvent.oldIndex, dropEvent.newIndex);
+    }
 }
 </script>

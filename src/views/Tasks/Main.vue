@@ -127,8 +127,10 @@
                             </div>
                         </template>
                         <AnimationTransition :speed="0.2">
+                            {{ favoriteTasks.map(element => element.task.id) }}
                             <DashboardTableFavoriteTasks
                                 v-if="isFavoriteView"
+                                @position-changed="changeFavoriteTaskPosition"
                                 :tasks="favoriteTasks"
                                 class="mb-4"
                             />
@@ -415,5 +417,17 @@ const isFavoriteView = ref(false);
 
 function toggleFavoriteView() {
     isFavoriteView.value = !isFavoriteView.value;
+}
+
+function changeFavoriteTaskPosition(from, to) {
+    const task = favoriteTasks.value[from];
+
+    if (from > to) {
+        favoriteTasks.value.splice(from, 1);
+        favoriteTasks.value.splice(to, 0, task);
+    } else {
+        favoriteTasks.value.splice(to, 0, task);
+        favoriteTasks.value.splice(from, 1);
+    }
 }
 </script>
