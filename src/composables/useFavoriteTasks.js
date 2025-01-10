@@ -27,7 +27,7 @@ function _useFavoriteTasks() {
 
     async function removeTaskFromFavorite(taskId) {
         const taskFavorite = favoriteTasksEntities.value.find(
-            favoriteElement => favoriteElement.task_id === taskId
+            favoriteElement => favoriteElement.task.id === taskId
         );
 
         if (isNullish(taskFavorite)) return;
@@ -49,7 +49,7 @@ function _useFavoriteTasks() {
             favoriteTasksEntities.value = response;
 
             favoriteTasksCacheSet.value = new Set(
-                favoriteTasksEntities.value.map(favoriteElement => favoriteElement.task_id)
+                favoriteTasksEntities.value.map(favoriteElement => favoriteElement.task.id)
             );
         }
 
