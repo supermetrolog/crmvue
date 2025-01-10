@@ -73,7 +73,8 @@ function _useFavoriteTasks() {
         removeTaskFromFavorite,
         fetchFavoriteTasks,
         toggleFavoriteTask,
-        favoriteTasksIsLoading
+        favoriteTasksIsLoading,
+        favoriteTasksEntities
     };
 }
 

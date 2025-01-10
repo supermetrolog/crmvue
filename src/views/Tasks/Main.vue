@@ -114,7 +114,7 @@
                                                     small
                                                     warning
                                                     icon
-                                                    :badge="favoriteTasks.length"
+                                                    :badge="favoriteTasksEntities.length"
                                                     class="ml-auto"
                                                 >
                                                     <i class="fa-solid fa-star" />
@@ -126,12 +126,12 @@
                                 </Form>
                             </div>
                         </template>
+                        {{ favoriteTasksEntities.map(element => element.task.id) }}
                         <AnimationTransition :speed="0.2">
-                            {{ favoriteTasks.map(element => element.task.id) }}
                             <DashboardTableFavoriteTasks
                                 v-if="isFavoriteView"
                                 @position-changed="changeFavoriteTaskPosition"
-                                :tasks="favoriteTasks"
+                                :tasks="favoriteTasksEntities"
                                 class="mb-4"
                             />
                             <DashboardTableTasks
@@ -409,7 +409,7 @@ onMounted(() => {
 
 // favorites
 
-const { fetchFavoriteTasks, favoriteTasks } = useFavoriteTasks();
+const { fetchFavoriteTasks, favoriteTasksEntities } = useFavoriteTasks();
 
 onMounted(fetchFavoriteTasks);
 
@@ -420,14 +420,14 @@ function toggleFavoriteView() {
 }
 
 function changeFavoriteTaskPosition(from, to) {
-    const task = favoriteTasks.value[from];
+    const task = favoriteTasksEntities.value[from];
 
     if (from > to) {
-        favoriteTasks.value.splice(from, 1);
-        favoriteTasks.value.splice(to, 0, task);
+        favoriteTasksEntities.value.splice(from, 1);
+        favoriteTasksEntities.value.splice(to, 0, task);
     } else {
-        favoriteTasks.value.splice(to, 0, task);
-        favoriteTasks.value.splice(from, 1);
+        favoriteTasksEntities.value.splice(to, 0, task);
+        favoriteTasksEntities.value.splice(from, 1);
     }
 }
 </script>
