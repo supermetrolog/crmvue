@@ -23,14 +23,16 @@
                         <span v-if="showId" class="mr-1">#{{ question.id }}</span>
                         <span>{{ question.text }}</span>
                     </p>
-                    <RadioGroup
-                        v-if="question.answers?.['yes-no']"
-                        v-model="form.main"
-                        class="messenger-quiz-question__main"
-                        :first="false"
-                        :second="true"
-                        unselect
-                    />
+                    <div v-if="question.answers?.['yes-no']" class="messenger-quiz-question__main">
+                        <RadioChip v-model="form.main" :value="true" label="Да" unselect />
+                        <RadioChip v-model="form.main" :value="false" label="Нет" unselect />
+                        <RadioChip
+                            v-model="hasNullMainAnswer"
+                            :value="true"
+                            label="Не ответил"
+                            unselect
+                        />
+                    </div>
                     <MessengerButton
                         v-else-if="canEdit"
                         @click="$emit('add-answer', question.id, 'yes-no')"
@@ -158,11 +160,10 @@
     </div>
 </template>
 <script setup>
-import RadioGroup from '@/components/common/Forms/RadioGroup.vue';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import Textarea from '@/components/common/Forms/Textarea.vue';
 import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
-import { computed, reactive, useTemplateRef, watch } from 'vue';
+import { computed, reactive, ref, useTemplateRef, watch } from 'vue';
 import Button from '@/components/common/Button.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
@@ -172,6 +173,7 @@ import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import { isEmptyArray } from '@/utils/helpers/array/isEmptyArray.js';
 import { isEmpty } from '@/utils/helpers/common/isEmpty.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 defineEmits(['edit', 'delete', 'edit-answer', 'add-answer']);
 const props = defineProps({
@@ -195,6 +197,19 @@ const props = defineProps({
 
 const form = reactive({});
 const accordion = useTemplateRef('accordion');
+
+const hasNullMainAnswer = ref(false);
+
+watch(hasNullMainAnswer, value => {
+    if (value) form.main = null;
+});
+
+watch(
+    () => form.main,
+    value => {
+        if (isNotNullish(value)) hasNullMainAnswer.value = false;
+    }
+);
 
 const hasFullAnswer = computed(() => {
     if (isNullish(form.main)) return false;
@@ -226,7 +241,9 @@ const checkboxes = computed(() =>
     props.question.answers.checkbox.filter(element => element.deleted_at === null)
 );
 
-const isDisabled = computed(() => form.main === false && props.canBeDisabled);
+const isDisabled = computed(() => {
+    return (form.main === false || hasNullMainAnswer.value) && props.canBeDisabled;
+});
 
 const initForm = () => {
     if (hasMainQuestion.value) form.main = null;
