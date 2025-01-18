@@ -15,8 +15,8 @@
             v-if="companies.length"
             v-show="!isLoading"
             ref="virtualList"
+            v-model="currentCompanies"
             disabled
-            :data-source="companies"
             data-key="id"
             class="messenger-aside__list"
             :keeps="20"
@@ -90,6 +90,12 @@ const { show: showLastCallPopup } = useAsyncPopup('chatMemberLastCall');
 const { isLoading } = useDelayedLoader();
 
 const virtualList = useTemplateRef('virtualList');
+const currentCompanies = computed({
+    get() {
+        return props.companies;
+    },
+    set() {}
+});
 
 const currentDialogID = computed(() => store.state.Messenger.currentAsideDialogID);
 

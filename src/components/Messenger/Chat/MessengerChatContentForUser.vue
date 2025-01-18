@@ -6,8 +6,8 @@
         </AnimationTransition>
         <VirtualDragList
             ref="virtual"
+            v-model="messages"
             disabled
-            :data-source="messages"
             data-key="id"
             :keeps="60"
             class="messenger-chat__virtual"

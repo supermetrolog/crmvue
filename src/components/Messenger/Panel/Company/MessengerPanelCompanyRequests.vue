@@ -8,8 +8,8 @@
             v-if="requests.length"
             v-show="!isLoading"
             ref="virtualList"
+            v-model="requests"
             disabled
-            :data-source="requests"
             data-key="id"
             class="messenger-panel-company__list"
             :keeps="20"
