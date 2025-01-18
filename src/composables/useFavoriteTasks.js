@@ -5,11 +5,13 @@ import { useAuth } from '@/composables/useAuth.js';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import { useCachedAsyncFunction } from '@/utils/use/useCachedAsyncFunction.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 
 const favoriteTasksCacheSet = ref(new Set());
 
 function _useFavoriteTasks() {
     const { currentUserId } = useAuth();
+    const notify = useNotify();
 
     const favoriteTasksEntities = ref([]);
     const favoriteTasksIsLoading = ref(false);
@@ -22,6 +24,7 @@ function _useFavoriteTasks() {
         if (response) {
             favoriteTasksEntities.value.push(response);
             favoriteTasksCacheSet.value.add(taskId);
+            notify.success('Задача добавлена в избранное.');
         }
     }
 
@@ -37,6 +40,7 @@ function _useFavoriteTasks() {
         if (response) {
             spliceById(favoriteTasksEntities.value, taskFavorite.id);
             favoriteTasksCacheSet.value.delete(taskId);
+            notify.info('Задача удалена из избранного.');
         }
     }
 
@@ -64,6 +68,26 @@ function _useFavoriteTasks() {
         return favoriteTasksCacheSet.value.has(taskId);
     }
 
+    async function changeTaskFavoritePosition(taskId, payload, from, to) {
+        const changed = await api.taskFavorite.changePosition(taskId, payload);
+
+        if (changed) {
+            const task = favoriteTasksEntities.value[from];
+
+            if (from > to) {
+                favoriteTasksEntities.value.splice(from, 1);
+                favoriteTasksEntities.value.splice(to, 0, task);
+            } else {
+                favoriteTasksEntities.value.splice(to, 0, task);
+                favoriteTasksEntities.value.splice(from, 1);
+            }
+        } else {
+            await fetchFavoriteTasks();
+        }
+
+        return changed;
+    }
+
     fetchFavoriteTasks();
 
     return {
@@ -74,7 +98,8 @@ function _useFavoriteTasks() {
         fetchFavoriteTasks,
         toggleFavoriteTask,
         favoriteTasksIsLoading,
-        favoriteTasksEntities
+        favoriteTasksEntities,
+        changeTaskFavoritePosition
     };
 }
 

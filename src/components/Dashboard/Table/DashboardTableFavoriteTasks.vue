@@ -1,9 +1,5 @@
 <template>
     <div class="dashboard-favorite-tasks-table">
-        <DashboardChip class="dashboard-bg-warning-l mb-4" with-icon>
-            <i class="fa-solid fa-star"></i>
-            <span>Избранный задачи</span>
-        </DashboardChip>
         <VirtualDragList
             v-model="currentTasks"
             @drop="onDropTask"
@@ -21,7 +17,7 @@
                 />
             </template>
         </VirtualDragList>
-        <EmptyData v-if="!tasks.length">Список избранного пуст..</EmptyData>
+        <EmptyData v-if="!favoriteTasksEntities.length">Список избранного пуст..</EmptyData>
         <Modal @close="previewIsVisible = false" :show="previewIsVisible">
             <template #container>
                 <div v-if="previewIsLoading" class="dashboard-tasks-table__card">
@@ -47,7 +43,7 @@
 
 <script setup>
 import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItem.vue';
-import { computed, ref, shallowRef } from 'vue';
+import { computed, ref, shallowRef, watch } from 'vue';
 import TaskCard from '@/components/TaskCard/TaskCard.vue';
 import api from '@/api/api.js';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
@@ -56,19 +52,13 @@ import Modal from '@/components/common/Modal.vue';
 import Spinner from '@/components/common/Spinner.vue';
 import { toDateFormat } from '@/utils/formatters/date.js';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import VirtualDragList from 'vue-virtual-draglist';
+import { useFavoriteTasks } from '@/composables/useFavoriteTasks.js';
 
 const emit = defineEmits(['task-updated', 'hide', 'position-changed']);
-const props = defineProps({
-    tasks: {
-        type: Array,
-        default: () => []
-    }
-});
 
-const currentTasks = ref([...props.tasks]);
+const currentTasks = ref([]);
 
 const { openMessenger } = useMessenger();
 const { currentUserId, currentUserIsModerator } = useAuth();
@@ -159,6 +149,8 @@ function onChangedHistory(count) {
 
 // dnd
 
+const { favoriteTasksEntities, changeTaskFavoritePosition } = useFavoriteTasks();
+
 async function onDropTask(dropEvent) {
     if (dropEvent.newIndex === dropEvent.oldIndex) return;
 
@@ -170,9 +162,26 @@ async function onDropTask(dropEvent) {
                 : null
     };
 
-    const changed = await api.taskFavorite.changePosition(dropEvent.item.id, payload);
-    if (changed) {
-        emit('position-changed', dropEvent.oldIndex, dropEvent.newIndex);
-    }
+    const changed = await changeTaskFavoritePosition(
+        dropEvent.item.id,
+        payload,
+        dropEvent.oldIndex,
+        dropEvent.newIndex
+    );
+
+    if (!changed) generateCurrentTasks();
 }
+
+function generateCurrentTasks() {
+    currentTasks.value = [...favoriteTasksEntities.value];
+}
+
+generateCurrentTasks();
+
+watch(
+    () => favoriteTasksEntities.value.length,
+    value => {
+        if (currentTasks.value.length !== value) generateCurrentTasks();
+    }
+);
 </script>

@@ -126,14 +126,14 @@
                                 </Form>
                             </div>
                         </template>
-                        {{ favoriteTasksEntities.map(element => element.task.id) }}
                         <AnimationTransition :speed="0.2">
-                            <DashboardTableFavoriteTasks
-                                v-if="isFavoriteView"
-                                @position-changed="changeFavoriteTaskPosition"
-                                :tasks="favoriteTasksEntities"
-                                class="mb-4"
-                            />
+                            <div v-if="isFavoriteView">
+                                <DashboardChip class="dashboard-bg-warning-l mb-4" with-icon>
+                                    <i class="fa-solid fa-star"></i>
+                                    <span>Избранные задачи</span>
+                                </DashboardChip>
+                                <DashboardTableFavoriteTasks class="mb-4" />
+                            </div>
                             <DashboardTableTasks
                                 v-else
                                 @task-updated="onTaskUpdated"
@@ -181,6 +181,7 @@ import DashboardTargetUser from '@/components/Dashboard/DashboardTargetUser.vue'
 import { useFavoriteTasks } from '@/composables/useFavoriteTasks.js';
 import DashboardTableFavoriteTasks from '@/components/Dashboard/Table/DashboardTableFavoriteTasks.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 
 const store = useStore();
 
@@ -417,17 +418,5 @@ const isFavoriteView = ref(false);
 
 function toggleFavoriteView() {
     isFavoriteView.value = !isFavoriteView.value;
-}
-
-function changeFavoriteTaskPosition(from, to) {
-    const task = favoriteTasksEntities.value[from];
-
-    if (from > to) {
-        favoriteTasksEntities.value.splice(from, 1);
-        favoriteTasksEntities.value.splice(to, 0, task);
-    } else {
-        favoriteTasksEntities.value.splice(to, 0, task);
-        favoriteTasksEntities.value.splice(from, 1);
-    }
 }
 </script>

@@ -19,7 +19,7 @@ export default {
         return responseToData(response);
     },
     async changePosition(id, payload) {
-        const response = await axios.post(`${URL}/${id}`, payload);
+        const response = await axios.post(`${URL}/${id}/change-position`, payload);
         return responseHasStatus(response, STATUS_SUCCESS);
     }
 };
