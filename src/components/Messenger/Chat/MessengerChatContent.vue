@@ -74,7 +74,7 @@ import MessengerChatHeader from '@/components/Messenger/Chat/Header/MessengerCha
 import MessengerChatForm from '@/components/Messenger/Chat/Form/MessengerChatForm.vue';
 import { useStore } from 'vuex';
 import MessengerChatLabel from '@/components/Messenger/Chat/MessengerChatLabel.vue';
-import MessengerChatNotification from '@/components/Messenger/Chat/MessengerChatNotification.vue';
+import MessengerChatNotification from '@/components/Messenger/Chat/Notification/MessengerChatNotification.vue';
 import InfiniteLoading from 'v3-infinite-loading';
 import MessengerChatPinned from '@/components/Messenger/Chat/MessengerChatPinned.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
