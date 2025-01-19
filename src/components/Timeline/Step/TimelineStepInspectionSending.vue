@@ -137,7 +137,7 @@
                             <VirtualDragList
                                 v-model="correctObjects"
                                 group="routes"
-                                data-key="dataKey"
+                                data-key="id"
                                 :keeps="10"
                                 chosenClass="chosen"
                                 wrapClass="timeline-routes__item"
@@ -345,12 +345,9 @@ export default {
         }
     },
     created() {
-        this.correctObjects = this.data.timelineStepObjects.reduce((acc, object) => {
-            if (isNotNullish(object.offer)) acc.push({ ...object, dataKey: object.id.toString() });
-
-            return acc;
-        }, []);
-
+        this.correctObjects = this.data.timelineStepObjects.filter(object =>
+            isNotNullish(object.offer)
+        );
         this.getLocation();
     }
 };

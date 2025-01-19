@@ -1,75 +1,78 @@
 <template>
     <div class="task-card__header">
         <div class="task-card__actions">
-            <HoverActionsButton v-if="viewable" @click="$emit('read')" label="Отметить прочитанным">
-                <i class="fa-solid fa-user-check"></i>
-            </HoverActionsButton>
-            <HoverActionsButton
+            <UIButtonIcon
+                @click="$emit('toggle-favorite')"
+                :class="isFavorite ? 'fa-solid' : 'fa-regular'"
+                :label="isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'"
+                :active="isFavorite"
+                class="fa-star"
+            >
+            </UIButtonIcon>
+            <UIButtonIcon
+                v-if="viewable"
+                @click="$emit('read')"
+                label="Отметить прочитанным"
+                icon="fa-solid fa-user-check"
+            />
+            <UIButtonIcon
                 v-if="task.related_by"
                 @click="$emit('to-chat')"
                 label="Перейти в чат"
-            >
-                <i class="fa-solid fa-comment-alt" />
-            </HoverActionsButton>
+                icon="fa-solid fa-comment-alt"
+            />
             <template v-if="!isDeleted">
                 <div v-if="draggable && canBeDragged" class="dashboard-card-task__moves">
-                    <HoverActionsButton
+                    <UIButtonIcon
                         @click.stop="$emit('change-status')"
                         label="Изменить статус"
                         :disabled
-                    >
-                        <i class="fa-solid fa-arrow-right-arrow-left"></i>
-                    </HoverActionsButton>
+                        icon="fa-solid fa-arrow-right-arrow-left"
+                    />
                 </div>
                 <div v-if="canBeSuspend" class="dashboard-card-task__moves">
-                    <HoverActionsButton
+                    <UIButtonIcon
                         @click.stop="$emit('to-impossible')"
                         label="Отложить"
                         :disabled
-                    >
-                        <i class="fa-solid fa-eye-slash"></i>
-                    </HoverActionsButton>
+                        icon="fa-solid fa-eye-slash"
+                    />
                 </div>
-                <HoverActionsButton
+                <UIButtonIcon
                     v-if="canBeAssigned"
                     @click="$emit('assign')"
                     label="Переназначить"
                     :disabled
-                >
-                    <i class="fa-solid fa-user-tag"></i>
-                </HoverActionsButton>
+                    icon="fa-solid fa-user-tag"
+                />
             </template>
-            <HoverActionsButton
+            <UIButtonIcon
                 v-if="editable && canBeEdit"
                 @click="$emit('edit')"
                 label="Редактировать"
                 :disabled
-            >
-                <i class="fa-solid fa-pen" />
-            </HoverActionsButton>
-            <HoverActionsButton
+                icon="fa-solid fa-pen"
+            />
+            <UIButtonIcon
                 v-if="isDeleted && canBeRestored"
                 @click="$emit('restore')"
                 label="Восстановить"
                 :disabled
-            >
-                <i class="fa-solid fa-trash-restore" />
-            </HoverActionsButton>
-            <HoverActionsButton
+                icon="fa-solid fa-trash-restore"
+            />
+            <UIButtonIcon
                 v-else-if="canBeDeleted"
                 @click="$emit('delete')"
                 label="Удалить"
-                :disabled="disabled"
-            >
-                <i class="fa-solid fa-trash" />
-            </HoverActionsButton>
+                :disabled
+                icon="fa-solid fa-trash"
+            />
         </div>
         <TaskCardHeaderTargets :task />
     </div>
 </template>
 
 <script setup>
-import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import { computed } from 'vue';
 import dayjs from 'dayjs';
 import { taskOptions } from '@/const/options/task.options.js';
@@ -77,6 +80,8 @@ import { useStore } from 'vuex';
 import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 import { useAuth } from '@/composables/useAuth.js';
 import TaskCardHeaderTargets from '@/components/TaskCard/TaskCardHeaderTargets.vue';
+import { useFavoriteTasks } from '@/composables/useFavoriteTasks.js';
+import UIButtonIcon from '@/components/common/UI/UIButtonIcon.vue';
 
 defineEmits([
     'to-chat',
@@ -86,7 +91,8 @@ defineEmits([
     'assign',
     'delete',
     'restore',
-    'edit'
+    'edit',
+    'toggle-favorite'
 ]);
 
 const props = defineProps({
@@ -122,6 +128,10 @@ const isCanceled = computed(() => props.task.status === taskOptions.statusTypes.
 const isRecent = computed(
     () => dayjs().diff(dayjsFromMoscow(props.task.created_at), 'minute') < 20
 );
+
+const { isFavoriteTask } = useFavoriteTasks();
+
+const isFavorite = computed(() => isFavoriteTask(props.task.id));
 
 const canBeDeleted = computed(() => () => {
     if (currentUserIsModerator.value) return true;
