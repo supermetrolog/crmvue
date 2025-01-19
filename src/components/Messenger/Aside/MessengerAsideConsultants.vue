@@ -20,8 +20,8 @@
                     v-if="consultants.length"
                     v-show="!isLoading"
                     ref="virtualList"
+                    v-model="consultants"
                     disabled
-                    :data-source="consultants"
                     data-key="id"
                     class="messenger-aside__list"
                     :keeps="30"

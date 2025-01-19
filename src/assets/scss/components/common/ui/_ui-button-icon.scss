@@ -1,0 +1,37 @@
+@use "../../../utils/mixins";
+@use "../../../utils/variables";
+
+.ui-button-icon {
+    @include mixins.flex-box($a: center, $j: center);
+    @include mixins.transition(background-color .5s, color .5s);
+    height: 35px;
+    width: 35px;
+    outline: none;
+    border-radius: 50%;
+    font-size: 16px;
+    font-weight: 500;
+    border: none;
+    background-color: rgb(211, 211, 211);
+    text-align: center;
+    flex-shrink: 0;
+
+    &:not([disabled]) {
+        cursor: pointer;
+    }
+
+    &.active {
+        background-color: #10b981;
+        color: #fff;
+    }
+
+    @include mixins.hover {
+        background-color: rgba(15, 102, 116, 0.9);
+        color: #fff;
+    }
+
+    &.small {
+        height: 28px;
+        width: 28px;
+        font-size: 14px;
+    }
+}

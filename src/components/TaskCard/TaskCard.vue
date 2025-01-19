@@ -10,6 +10,7 @@
             @assign="assignerFormIsVisible = !assignerFormIsVisible"
             @change-status="moveSettingsIsVisible = !moveSettingsIsVisible"
             @to-impossible="toImpossible"
+            @toggle-favorite="toggleFavoriteTask(task.id)"
             :disabled="moveSettingsIsVisible || assignerFormIsVisible"
             :viewable="canBeViewed"
             :task
@@ -135,6 +136,7 @@ import InProgress from '@/components/common/InProgress.vue';
 import TaskCardComments from '@/components/TaskCard/TaskCardComments.vue';
 import TaskCardHistory from '@/components/TaskCard/History/TaskCardHistory.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
+import { useFavoriteTasks } from '@/composables/useFavoriteTasks.js';
 
 const DAYS_TO_IMPOSSIBLE = 14;
 
@@ -237,6 +239,10 @@ async function toImpossible() {
 
     isLoading.value = false;
 }
+
+// FAVORITE
+
+const { toggleFavoriteTask } = useFavoriteTasks();
 
 // STATE CHANGING
 

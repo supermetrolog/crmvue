@@ -22,7 +22,8 @@
                         {
                             'form__input--unit': unit,
                             'form__input--title': !withoutCaption,
-                            active: firstHasValue
+                            active: firstHasValue,
+                            filled: firstHasValue
                         }
                     ]"
                     :style="[paddingRightStyle.first, paddingLeftStyleFirst]"
@@ -46,7 +47,8 @@
                         {
                             'form__input--unit': unit,
                             'form__input--title': !withoutCaption,
-                            active: secondHasValue
+                            active: secondHasValue,
+                            filled: secondHasValue
                         }
                     ]"
                     :style="[paddingRightStyle.second, paddingLeftStyleSecond]"

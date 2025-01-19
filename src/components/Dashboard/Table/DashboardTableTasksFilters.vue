@@ -68,7 +68,7 @@
                     name: 'fa-solid fa-hourglass-half',
                     class: 'dashboard-bg-danger-l'
                 }"
-                :badge="notCompletedCount"
+                badge="-"
                 :active="field.not_completed"
             >
                 Невыполненные
@@ -176,10 +176,6 @@ const viewingLabel = computed(() => {
 
 const hasFilters = computed(() => {
     return typeModelValue.value.length || statusModelValue.value.length;
-});
-
-const notCompletedCount = computed(() => {
-    return props.counts.total.toFixed() - props.counts.done.toFixed();
 });
 
 const toggleField = key => {

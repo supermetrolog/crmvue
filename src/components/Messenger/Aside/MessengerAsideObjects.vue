@@ -15,8 +15,8 @@
             v-if="objects.length"
             v-show="!isLoading"
             ref="virtualList"
+            v-model="currentObjects"
             disabled
-            :data-source="objects"
             data-key="id"
             class="messenger-aside__list"
             :keeps="20"
@@ -66,7 +66,7 @@ import { useStore } from 'vuex';
 import InfiniteLoading from 'v3-infinite-loading';
 import VirtualDragList from 'vue-virtual-draglist';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
-import { computed, shallowRef, toRef, watch } from 'vue';
+import { computed, toRef, useTemplateRef, watch } from 'vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { useSkeleton } from '@/composables/useSkeleton.js';
 
@@ -89,7 +89,13 @@ const { lastElementsCount } = useSkeleton(toRef(() => props.objects));
 const { show: showLastCallPopup } = useAsyncPopup('chatMemberLastCall');
 const { isLoading } = useDelayedLoader();
 
-const virtualList = shallowRef(null);
+const virtualList = useTemplateRef('virtualList');
+const currentObjects = computed({
+    get() {
+        return props.objects;
+    },
+    set() {}
+});
 
 const currentDialogID = computed(() => store.state.Messenger.currentAsideDialogID);
 

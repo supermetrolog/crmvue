@@ -14,6 +14,10 @@ const ValidationErrorHttpStatusCode = 422;
 const AuthErrorHttpStatusCode = 401;
 
 function getTitle(data) {
+    if ('success' in data) {
+        return `Ошибка #${data.status ?? data.code}`;
+    }
+
     return data.name + ' (Ошибка #' + (data.status ?? data.code) + ')';
 }
 

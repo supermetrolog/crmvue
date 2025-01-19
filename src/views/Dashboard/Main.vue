@@ -8,7 +8,8 @@
                 </div>
                 <div class="col-xl-9">
                     <DashboardStatsTasksCount :user="targetUser?.id" class="mb-3" />
-                    <DashboardStatsEvents :user="targetUser?.id" class="mb-3" />
+                    <DashboardFavoriteTasks :user="targetUser?.id" class="mb-3" />
+                    <!--                    <DashboardStatsEvents :user="targetUser?.id" class="mb-3" />-->
                     <DashboardStatsRequests :user="targetUser?.id" />
                 </div>
                 <div class="col-xl-3">
@@ -27,8 +28,8 @@ import InProgress from '@/components/common/InProgress.vue';
 import DashboardStatsTasksCount from '@/components/Dashboard/Stats/DashboardStatsTasksCount.vue';
 import DashboardStatsMessages from '@/components/Dashboard/Stats/DashboardStatsMessages.vue';
 import DashboardStatsRequests from '@/components/Dashboard/Stats/DashboardStatsRequests.vue';
-import DashboardStatsEvents from '@/components/Dashboard/Stats/DashboardStatsEvents.vue';
 import DashboardTargetUser from '@/components/Dashboard/DashboardTargetUser.vue';
+import DashboardFavoriteTasks from '@/components/Dashboard/DashboardFavoriteTasks.vue';
 import { ref } from 'vue';
 import { useStore } from 'vuex';
 

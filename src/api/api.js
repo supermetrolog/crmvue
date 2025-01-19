@@ -29,6 +29,7 @@ import session from '@/api/session.js';
 import object from '@/api/object.js';
 import effect from '@/api/effect.js';
 import taskComment from '@/api/taskComment.js';
+import taskFavorite from '@/api/taskFavorite.js';
 
 export default {
     user,
@@ -61,5 +62,6 @@ export default {
     session,
     object,
     effect,
-    taskComment
+    taskComment,
+    taskFavorite
 };

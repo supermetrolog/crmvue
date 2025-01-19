@@ -27,8 +27,13 @@
                     :notifications="message.notifications"
                     :surveys="message.surveys"
                 />
+                <MessengerChatNotificationTemplate
+                    v-if="message.template"
+                    :template="message.template"
+                    :message
+                />
                 <div
-                    v-if="message.message"
+                    v-else-if="message.message"
                     class="messenger-chat-message__body"
                     v-html="message.message"
                 ></div>
@@ -82,6 +87,7 @@ import { useNotify } from '@/utils/use/useNotify.js';
 import { useConfirm } from '@/composables/useConfirm.js';
 import api from '@/api/api.js';
 import { useIntersectionObserver, useTimeoutFn } from '@vueuse/core';
+import MessengerChatNotificationTemplate from '@/components/Messenger/Chat/Notification/MessengerChatNotificationTemplate.vue';
 
 const emit = defineEmits(['deleted', 'reply', 'cancel-reply', 'viewed']);
 const props = defineProps({

@@ -12,6 +12,13 @@
         }"
     >
         <div class="dashboard-card-task__labels" :class="{ moved: isMyTask || isViewing }">
+            <DashboardTableTasksItemLabel
+                v-if="isFavorite"
+                v-tippy="'В избранном'"
+                class="dashboard-bg-warning"
+            >
+                <i class="fa-solid fa-star" />
+            </DashboardTableTasksItemLabel>
             <DashboardTableTasksItemLabel v-if="isObservingByCurrentUser && !isViewedByCurrentUser">
                 Не просмотрена
             </DashboardTableTasksItemLabel>
@@ -119,6 +126,7 @@ import { Tippy } from 'vue-tippy';
 import { useAuth } from '@/composables/useAuth.js';
 import DashboardTableTasksItemObserver from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemObserver.vue';
 import { isString } from '@/utils/helpers/string/isString.js';
+import { useFavoriteTasks } from '@/composables/useFavoriteTasks.js';
 
 defineEmits(['view']);
 const props = defineProps({
@@ -161,6 +169,7 @@ const expiredDayjs = computed(() => {
 const isCanceled = computed(() => props.task.status === taskOptions.statusTypes.CANCELED);
 const isAlreadyExpired = computed(() => expiredDayjs.value.isBefore(dayjs()) && !isCompleted.value);
 const isDeleted = computed(() => props.task.deleted_at != null);
+
 const impossibleDate = computed(() => {
     if (props.task.impossible_to) return toDateFormat(props.task.impossible_to, 'D.MM.YY');
     return 'неизвестной даты';
@@ -173,4 +182,10 @@ const observers = computed(() => {
 const viewedAt = computed(() => {
     return toBeautifulDateFormat(props.task.viewed_at);
 });
+
+// favorites
+
+const { isFavoriteTask } = useFavoriteTasks();
+
+const isFavorite = computed(() => isFavoriteTask(props.task.id));
 </script>
