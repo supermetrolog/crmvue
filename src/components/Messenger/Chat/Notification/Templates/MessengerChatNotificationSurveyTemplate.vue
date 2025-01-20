@@ -4,9 +4,11 @@
             <span class="messenger-chat-template-survey__title mr-2">Опросник заполнен!</span>
             <span class="messenger-chat-template-survey__info">
                 <span v-tippy="originalDate" class="mr-1">{{ formattedDate }},</span>
-                <span class="mr-1 font-weight-bold">{{ senderShortName }}</span>
-                <span class="mr-1">с</span>
-                <span class="font-weight-bold">{{ recipientUsername }}</span>
+                <template v-if="survey">
+                    <span class="mr-1 font-weight-bold">{{ senderShortName }}</span>
+                    <span class="mr-1">с</span>
+                    <span class="font-weight-bold">{{ recipientUsername }}</span>
+                </template>
             </span>
         </p>
         <MessengerChatNotificationSurveyTemplateSkeleton v-if="surveyIsLoading" />
@@ -49,7 +51,7 @@ const originalDate = computed(() => {
 // user
 
 const senderShortName = computed(() => {
-    return props.message.from.model.userProfile.medium_name;
+    return survey.value.user.userProfile.medium_name;
 });
 
 // survey
