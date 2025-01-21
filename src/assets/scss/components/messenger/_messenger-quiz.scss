@@ -249,6 +249,11 @@
             border-color: #7e7e7e;
         }
     }
+
+    &__task {
+        border: 1px solid rgba(0, 0, 0, .1);
+        border-radius: 0;
+    }
 }
 
 .messenger-quiz-helper {

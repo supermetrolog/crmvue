@@ -7,7 +7,7 @@
             observed: isObserved
         }"
     >
-        <template v-if="addition.tags.length" #header>
+        <template v-if="addition.tags.length && showTags" #header>
             <div class="messenger-chat-message-addition__tags">
                 <div
                     v-for="tag in addition.tags"
@@ -105,6 +105,10 @@ const props = defineProps({
     draggable: {
         type: Boolean,
         default: false
+    },
+    showTags: {
+        type: Boolean,
+        default: true
     }
 });
 

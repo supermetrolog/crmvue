@@ -8,6 +8,6 @@ export const quizQuestionsGroupsLabel = {
     [quizQuestionsGroups.COMPANY]: 'Клиентский'
 };
 
-export const questions = {
-    groups: quizQuestionsGroups
+export const quizEffectKinds = {
+    COMPANIES_ON_OBJECT_IDENTIFIED: 'companies-on-object-identified'
 };
