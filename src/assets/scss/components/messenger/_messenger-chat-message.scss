@@ -437,3 +437,31 @@
         }
     }
 }
+
+.messenger-chat-template-unavailable-contact {
+    &__name {
+        color: variables.$cl-primary;
+        text-decoration: underline;
+    }
+}
+
+.messenger-chat-message-template {
+    &__header {
+        @include mixins.flex-box($gap: 7px, $a: center);
+        padding: 7px 10px;
+    }
+
+    &__icon {
+        font-size: 20px;
+    }
+
+    &__title {
+        font-size: 15px;
+        font-weight: 500;
+    }
+
+    &__body {
+        border-top: 1px solid rgba(0, 0, 0, .1);
+        padding: 7px 10px;
+    }
+}

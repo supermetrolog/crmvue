@@ -89,6 +89,7 @@ import api from '@/api/api.js';
 import { toBoldHTML } from '@/utils/formatters/html.js';
 import MessengerQuizContacts from '@/components/Messenger/Quiz/MessengerQuizContacts.vue';
 import MessengerQuizQuestionCallUnavailable from '@/components/Messenger/Quiz/Question/MessengerQuizQuestionCallUnavailable.vue';
+import { capitalizeString } from '@/utils/helpers/string/capitalizeString.js';
 
 const contactModel = defineModel('contact');
 const emit = defineEmits(['suggest-contact', 'schedule-call', 'mark-contact-as-unavailable']);
@@ -253,7 +254,7 @@ async function sendMessageAboutContactIsArchived(taskPayload, contact) {
 
 async function sendMessageAboutContactIsUnavailable(data) {
     const messagePayload = {
-        message: `Контакт ${toBoldHTML(contactModel.value.full_name)} (#${contactModel.value.id}) ${data.result.toLowerCase()}. ${data.description}`,
+        message: `${data.result}. ${capitalizeString(data.description)}`,
         contact_ids: [contactModel.value.id],
         template: messengerTemplates.UNAVAILABLE_CONTACT
     };
