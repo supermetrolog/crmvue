@@ -5,6 +5,7 @@
             :key="question.id"
             ref="questionEls"
             :question="question"
+            :disabled
             class="messenger-quiz__question"
         >
             <template v-if="question.id === CUSTOM_QUESTION_ID" #description>
@@ -24,7 +25,7 @@
     </div>
 </template>
 <script setup>
-import MessengerQuizQuestion from '@/components/Messenger/Quiz/MessengerQuizQuestion.vue';
+import MessengerQuizQuestion from '@/components/Messenger/Quiz/Question/MessengerQuizQuestion.vue';
 import { ref, useTemplateRef } from 'vue';
 import MessengerQuizFormCompanyPicker from '@/components/Messenger/Quiz/MessengerQuizFormCompanyPicker.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
@@ -35,7 +36,8 @@ defineProps({
     questions: {
         type: Array,
         required: true
-    }
+    },
+    disabled: Boolean
 });
 const questionEls = useTemplateRef('questionEls');
 

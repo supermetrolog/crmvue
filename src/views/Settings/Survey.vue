@@ -252,7 +252,7 @@
 import FormField from '@/components/Forms/FormField.vue';
 import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
 import FormQuestion from '@/components/Forms/FormQuestion.vue';
-import MessengerQuizQuestion from '@/components/Messenger/Quiz/MessengerQuizQuestion.vue';
+import MessengerQuizQuestion from '@/components/Messenger/Quiz/Question/MessengerQuizQuestion.vue';
 import { computed, onMounted, ref, shallowRef } from 'vue';
 import api from '@/api/api.js';
 import EmptyData from '@/components/common/EmptyData.vue';

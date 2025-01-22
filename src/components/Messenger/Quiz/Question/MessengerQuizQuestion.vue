@@ -7,18 +7,9 @@
                     <Button @click="$emit('delete')" small danger>Удалить</Button>
                 </div>
                 <div class="messenger-quiz-question__header">
-                    <i
-                        v-if="hasFullAnswer || isDisabled"
-                        class="fa-solid fa-circle-check color-success animate__animated animate__tada"
-                    ></i>
-                    <i
-                        v-else-if="form.main != null"
-                        class="fa-solid fa-circle-exclamation color-warning animate__animated animate__pulse"
-                    ></i>
-                    <i
-                        v-else
-                        class="fa-solid fa-circle-exclamation color-danger animate__animated animate__flash"
-                    ></i>
+                    <MessengerQuizQuestionSuccessIcon v-if="hasFullAnswer || isDisabled" />
+                    <MessengerQuizQuestionWarningIcon v-else-if="form.main != null" />
+                    <MessengerQuizQuestionDangerIcon v-else />
                     <p class="messenger-quiz-question__title">
                         <span v-if="showId" class="mr-1">#{{ question.id }}</span>
                         <span>{{ question.text }}</span>
@@ -172,6 +163,9 @@ import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import { isEmptyArray } from '@/utils/helpers/array/isEmptyArray.js';
 import { isEmpty } from '@/utils/helpers/common/isEmpty.js';
+import MessengerQuizQuestionSuccessIcon from '@/components/Messenger/Quiz/Question/MessengerQuizQuestionSuccessIcon.vue';
+import MessengerQuizQuestionDangerIcon from '@/components/Messenger/Quiz/Question/MessengerQuizQuestionDangerIcon.vue';
+import MessengerQuizQuestionWarningIcon from '@/components/Messenger/Quiz/Question/MessengerQuizQuestionWarningIcon.vue';
 
 defineEmits(['edit', 'delete', 'edit-answer', 'add-answer']);
 const props = defineProps({
@@ -190,7 +184,8 @@ const props = defineProps({
     canBeDisabled: {
         type: Boolean,
         default: true
-    }
+    },
+    disabled: Boolean
 });
 
 const form = reactive({});
@@ -226,7 +221,7 @@ const checkboxes = computed(() =>
     props.question.answers.checkbox.filter(element => element.deleted_at === null)
 );
 
-const isDisabled = computed(() => form.main === false && props.canBeDisabled);
+const isDisabled = computed(() => props.disabled || (form.main === false && props.canBeDisabled));
 
 const initForm = () => {
     if (hasMainQuestion.value) form.main = null;
