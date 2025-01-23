@@ -114,7 +114,7 @@ const mainQuestionAnswer = computed(() => {
 const tasks = computed(() => {
     return Object.keys(props.question.answers).reduce((acc, answerKey) => {
         const answerTasks = props.question.answers[answerKey].reduce((acc_, answer) => {
-            if (answer.surveyQuestionAnswer.tasks?.length) {
+            if (answer.surveyQuestionAnswer?.tasks?.length) {
                 acc_.push(...answer.surveyQuestionAnswer.tasks);
             }
 
