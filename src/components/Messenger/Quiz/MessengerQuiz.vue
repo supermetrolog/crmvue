@@ -112,7 +112,7 @@ import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import MessengerQuizInlineElement from '@/components/Messenger/Quiz/MessengerQuizInlineElement.vue';
 import Button from '@/components/common/Button.vue';
 import Spinner from '@/components/common/Spinner.vue';
-import MessengerQuizPreview from '@/components/Messenger/Quiz/MessengerQuizPreview.vue';
+import MessengerQuizPreview from '@/components/Messenger/Quiz/Preview/MessengerQuizPreview.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import MessengerQuizRecipientPicker from '@/components/Messenger/Quiz/MessengerQuizRecipientPicker.vue';
 import MessengerQuizForm from '@/components/Messenger/Quiz/MessengerQuizForm.vue';

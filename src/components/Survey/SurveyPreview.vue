@@ -9,7 +9,7 @@
 import { onUnmounted, ref } from 'vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import Modal from '@/components/common/Modal.vue';
-import MessengerQuizPreview from '@/components/Messenger/Quiz/MessengerQuizPreview.vue';
+import MessengerQuizPreview from '@/components/Messenger/Quiz/Preview/MessengerQuizPreview.vue';
 
 const quizId = ref(null);
 

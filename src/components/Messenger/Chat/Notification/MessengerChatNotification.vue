@@ -22,21 +22,23 @@
                     :editable="false"
                 />
                 <MessengerChatMessageReply v-if="message.reply_to_id" :message="message.reply_to" />
-                <MessengerChatMessageAdditions
-                    :tasks="message.tasks"
-                    :notifications="message.notifications"
-                    :surveys="message.surveys"
-                />
                 <MessengerChatNotificationTemplate
                     v-if="message.template"
                     :template="message.template"
                     :message
                 />
-                <div
-                    v-else-if="message.message"
-                    class="messenger-chat-message__body"
-                    v-html="message.message"
-                ></div>
+                <template v-else>
+                    <MessengerChatMessageAdditions
+                        :tasks="message.tasks"
+                        :notifications="message.notifications"
+                        :surveys="message.surveys"
+                    />
+                    <div
+                        v-if="message.message"
+                        class="messenger-chat-message__body"
+                        v-html="message.message"
+                    ></div>
+                </template>
                 <AnimationTransition>
                     <MessengerChatMessageAttachments
                         v-if="message.files.length"

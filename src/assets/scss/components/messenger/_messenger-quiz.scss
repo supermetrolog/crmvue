@@ -258,6 +258,11 @@
         color: variables.$cl-success;
         text-decoration: underline;
     }
+
+    &__task {
+        border: 1px solid rgba(0, 0, 0, .1);
+        border-radius: 0;
+    }
 }
 
 .messenger-quiz-helper {
