@@ -29,8 +29,13 @@
                     :notifications="message.notifications"
                     :surveys="message.surveys"
                 />
+                <MessengerChatMessageTemplate
+                    v-if="message.template"
+                    :template="message.template"
+                    :message
+                />
                 <div
-                    v-if="message.message"
+                    v-else-if="message.message"
                     class="messenger-chat-message__body"
                     v-html="message.message"
                 ></div>
@@ -86,6 +91,7 @@ import MessengerChatMessageReplyInfo from '@/components/Messenger/Chat/Message/M
 import MessengerChatMessageReply from '@/components/Messenger/Chat/Message/MessengerChatMessageReply.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import { useIntersectionObserver, useTimeoutFn } from '@vueuse/core';
+import MessengerChatMessageTemplate from '@/components/Messenger/Chat/Message/MessengerChatMessageTemplate.vue';
 
 const store = useStore();
 const notify = useNotify();
