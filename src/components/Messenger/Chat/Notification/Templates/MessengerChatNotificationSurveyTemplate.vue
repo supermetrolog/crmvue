@@ -73,7 +73,13 @@ function setExtraTasks(survey) {
     const taskIds = survey.questions
         .map(question =>
             Object.values(question.answers).map(answers =>
-                answers.map(answer => answer.surveyQuestionAnswer.tasks.map(task => task.id))
+                answers.map(answer => {
+                    if (answer.surveyQuestionAnswer?.tasks?.length) {
+                        return answer.surveyQuestionAnswer.tasks.map(task => task.id);
+                    }
+
+                    return [];
+                })
             )
         )
         .flat(3);
