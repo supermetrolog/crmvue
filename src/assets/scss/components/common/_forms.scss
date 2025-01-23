@@ -458,6 +458,13 @@
 
     &__subtitle {
         font-weight: 500;
+
+        &.required::after {
+            content: "*";
+            font-size: 18px;
+            margin-left: 2px;
+            color: variables.$color_danger;
+        }
     }
 
     &__group {

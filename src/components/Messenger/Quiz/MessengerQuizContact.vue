@@ -51,6 +51,7 @@
                         :phone="mainPhone"
                         :contact="contact"
                         clickable
+                        :hidden="!active"
                         class="messenger-quiz-contact__phone"
                     />
                 </span>
@@ -59,6 +60,7 @@
                     :phone="contact.phones[0]"
                     :contact="contact"
                     clickable
+                    :hidden="!active"
                     class="messenger-quiz-contact__phone"
                 />
                 <span v-else class="messenger-quiz-contact__error color-error">
@@ -81,7 +83,7 @@
                                         v-tippy="'Основной телефон'"
                                         class="fa-solid fa-crown mr-1"
                                     ></i>
-                                    <PhoneNumber :phone="phone" clickable />
+                                    <PhoneNumber :phone="phone" clickable :hidden="!active" />
                                 </p>
                             </div>
                         </template>
@@ -114,23 +116,6 @@
                 </span>
                 <i class="fa-solid fa-comments"></i>
             </HoverActionsButton>
-            <Tippy>
-                <template #default>
-                    <HoverActionsButton
-                        @click="$emit('schedule-call')"
-                        small
-                        class="messenger-quiz-contact__button"
-                    >
-                        <i class="fa-solid fa-phone" />
-                    </HoverActionsButton>
-                </template>
-                <template #content>
-                    <p>Запланировать звонок</p>
-                    <p class="color-light">
-                        Будет создана задача для запланированного звонка с контактом
-                    </p>
-                </template>
-            </Tippy>
             <HoverActionsButton
                 @click="$emit('edit')"
                 small
@@ -139,38 +124,6 @@
             >
                 <i class="fa-solid fa-pen" />
             </HoverActionsButton>
-            <Tippy>
-                <template #default>
-                    <HoverActionsButton
-                        @click="$emit('move')"
-                        small
-                        class="messenger-quiz-contact__button"
-                    >
-                        <i class="fa-solid fa-code-compare"></i>
-                    </HoverActionsButton>
-                </template>
-                <template #content>
-                    <p>Перенести контакт</p>
-                    <p class="color-light">Если контакт теперь относится к другой компании</p>
-                </template>
-            </Tippy>
-            <Tippy>
-                <template #default>
-                    <HoverActionsButton
-                        @click="$emit('delete')"
-                        small
-                        class="messenger-quiz-contact__button danger"
-                    >
-                        <i class="fa-solid fa-ban" />
-                    </HoverActionsButton>
-                </template>
-                <template #content>
-                    <p>Архивировать контакт</p>
-                    <p class="color-light">
-                        Если контакт больше неактуален или номера уже не существует
-                    </p>
-                </template>
-            </Tippy>
         </div>
     </div>
 </template>

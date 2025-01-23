@@ -109,6 +109,12 @@ const chatTabs = {
     SURVEY: 2
 };
 
+export const messengerTemplates = {
+    SURVEY: 'survey',
+    UNAVAILABLE_CONTACT: 'unavailable_contact',
+    UNAVAILABLE_SURVEY: 'unavailable_survey'
+};
+
 export const messenger = {
     buttons,
     categories,

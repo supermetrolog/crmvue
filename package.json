@@ -11,7 +11,9 @@
     "dev": "vite",
     "preview": "vite preview",
     "docs": "jsdoc --configure jsdoc.json --verbose",
-    "test": "vitest"
+    "test": "vitest",
+    "count:sfc:linux": "find . -type f -name '*.vue' ! -path '*/node_modules/*' | wc -l",
+    "count:sfc:windows": "Get-ChildItem -Recurse -Include *.vue -Exclude '*/node_modules/*' | Measure-Object -Line"
   },
   "dependencies": {
     "@floating-ui/vue": "^1.0.6",

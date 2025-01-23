@@ -18,17 +18,21 @@
             <div class="messenger-quiz__wrapper">
                 <Loader v-if="isLoading" class="my-4" />
                 <MessengerQuizContacts
-                    v-if="contacts.length"
                     v-model:contact="currentRecipient"
                     @suggest="suggestTask"
                     @edit="editContact"
-                    @schedule-call="scheduleCall"
-                    :contacts
+                    label="Список доступных контактов"
+                    :contacts="availableContacts"
                 />
                 <MessengerQuizForm
                     ref="quizForm"
+                    v-model:contact="currentRecipient"
                     @suggest-contact="suggestTask"
+                    @schedule-call="scheduleCall(currentRecipient)"
+                    @mark-contact-as-unavailable="markContactAsUnavailable"
                     :disabled="!contacts.length"
+                    :contacts="availableContacts"
+                    :unavailable-contacts="unavailableContacts"
                 />
                 <MessengerQuizFooter
                     v-if="contacts.length"
@@ -116,11 +120,12 @@ import { TASK_FORM_STEPS, useTaskManager } from '@/composables/useTaskManager.js
 import dayjs from 'dayjs';
 import { toBoldHTML } from '@/utils/formatters/html.js';
 import { useAuth } from '@/composables/useAuth.js';
-import { messenger } from '@/const/messenger.js';
+import { messenger, messengerTemplates } from '@/const/messenger.js';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 import { contactOptions } from '@/const/options/contact.options.js';
 import FormCompanyContact from '@/components/Forms/Company/FormCompanyContact.vue';
 import MessengerQuizFooter from '@/components/Messenger/Quiz/MessengerQuizFooter.vue';
+import { useMessengerQuizTaskSuggest } from '@/components/Messenger/Quiz/useMessengerQuizTaskSuggest.js';
 
 const SCHEDULING_CALL_DURATION = 30; // days
 
@@ -156,6 +161,20 @@ const send = async () => {
     );
     if (!confirmed) return;
 
+    if (!availableContacts.value.length) {
+        isLoading.value = true;
+
+        const messageCreated = await sendMessageAboutSurveyIsUnavailable();
+
+        isLoading.value = false;
+
+        if (messageCreated) {
+            isCompleted.value = true;
+        }
+
+        return;
+    }
+
     const contact = await showContactPicker({});
     if (!contact) return;
 
@@ -178,6 +197,26 @@ const send = async () => {
 
     isLoading.value = false;
 };
+
+async function sendMessageAboutSurveyIsUnavailable() {
+    const messagePayload = {
+        message: 'Не удалось дозвониться до контактов опросника',
+        template: messengerTemplates.UNAVAILABLE_SURVEY
+    };
+
+    const createdMessage = await api.messenger.sendMessage(
+        store.state.Messenger.currentDialog.id,
+        messagePayload
+    );
+
+    if (createdMessage) {
+        notify.success('Сообщение успешно создано');
+
+        return true;
+    }
+
+    return false;
+}
 
 const close = () => {
     emit('completed');
@@ -400,6 +439,9 @@ function editContact(contact) {
     updatingContact.value = contact;
     formIsVisible.value = true;
 }
+
+const { markContactAsUnavailable, availableContacts, unavailableContacts } =
+    useMessengerQuizTaskSuggest(contacts);
 
 // COMPUTES
 

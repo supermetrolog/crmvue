@@ -127,14 +127,18 @@
 .messenger-quiz-question {
     padding: 10px;
 
+    &--call {
+        border-bottom: 1px solid rgba(0, 0, 0, .1);
+    }
+
     &__header {
         @include mixins.flex-box($a: center, $gap: 5px);
         font-weight: 500;
+    }
 
-        i {
+    &__icon {
             font-size: 28px;
             margin-right: 5px;
-        }
     }
 
     &__title {
@@ -248,6 +252,11 @@
             font-size: 15px;
             border-color: #7e7e7e;
         }
+    }
+
+    &__contact {
+        color: variables.$cl-success;
+        text-decoration: underline;
     }
 
     &__task {
@@ -401,6 +410,10 @@
             height: 5px;
             background-color: lighten(variables.$color_grey, 30);
         }
+    }
+
+    &__grid {
+        @include mixins.flex-box($gap: 5px, $wrap: true);
     }
 
     &__contact {
