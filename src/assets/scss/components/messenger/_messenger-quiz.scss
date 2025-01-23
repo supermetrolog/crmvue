@@ -243,9 +243,7 @@
     }
 
     &__main {
-        .radio-group__list {
-            flex-direction: row-reverse;
-        }
+        @include mixins.flex-box($gap: 5px);
 
         .radio-chip {
             font-weight: 600;
