@@ -26,7 +26,8 @@ import { useAuth } from '@/composables/useAuth.js';
 const { currentUserId, currentUserIsAdmin, currentUserIsDirector } = useAuth();
 
 const menu = computed(() => {
-    if (currentUserId && (currentUserIsAdmin || currentUserIsDirector)) return Menu.admin;
+    if (currentUserId.value && (currentUserIsAdmin.value || currentUserIsDirector.value))
+        return Menu.admin;
     return Menu.agent;
 });
 </script>

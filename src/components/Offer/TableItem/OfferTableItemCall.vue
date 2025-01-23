@@ -17,7 +17,7 @@
                 v-tippy="
                     `Дата последнего звонка по предложению - ${lastCallDate}. Нажмите, чтобы перейти к опроснику и обновить информацию.`
                 "
-                @click="$emit('to-chat')"
+                @click="$emit('to-survey')"
                 class="offer-table-item-call__chip"
                 :class="{ expired: lastCallIsExpired }"
                 with-icon
@@ -42,6 +42,7 @@
             v-tippy="
                 'Дата последнего звонка неизвестна. По предложению еще не было зафиксированных звонков. Нажмите, чтобы перейти к опроснику и обновить информацию.'
             "
+            @click="$emit('to-survey')"
             class="offer-table-item-call__chip expired"
             with-icon
         >
