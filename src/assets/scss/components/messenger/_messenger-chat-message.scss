@@ -400,6 +400,7 @@
 
 .messenger-chat-template-survey {
     &__header {
+        @include mixins.flex-box($gap: 10px, $a: flex-end);
         text-align: start;
         margin: 0 10px;
         padding: 5px 0;
@@ -420,9 +421,11 @@
     }
 
     .messenger-quiz-question {
+        @include mixins.flex-box($d: column, $gap: 5px);
         padding: 5px 10px;
 
         &__title {
+            text-align: start;
             margin-right: 0;
             max-width: 85%;
             font-size: 14px;
@@ -434,6 +437,16 @@
             background-color: variables.$color_light;
             padding: 3px;
             border: 1px solid rgba(0, 0, 0, .1);
+        }
+
+        &__additions {
+            margin: 0;
+        }
+
+        &__interests {
+            background-color: transparent;
+            border: none;
+            padding: 0;
         }
     }
 }

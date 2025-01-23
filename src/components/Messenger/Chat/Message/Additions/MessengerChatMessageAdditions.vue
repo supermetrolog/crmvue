@@ -42,7 +42,7 @@ defineProps({
     },
     surveys: {
         type: Array,
-        required: true
+        default: () => []
     }
 });
 

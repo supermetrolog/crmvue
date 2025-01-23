@@ -79,6 +79,15 @@
                 }"
             />
         </div>
+        <div class="d-flex flex-column mt-2">
+            <MessengerChatMessageAdditionsTask
+                v-for="task in tasks"
+                :key="task.id"
+                :addition="task"
+                :show-tags="false"
+                class="messenger-quiz-question__task"
+            />
+        </div>
     </div>
 </template>
 <script setup>
@@ -87,6 +96,7 @@ import Chip from '@/components/common/Chip.vue';
 import { computed } from 'vue';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import MessengerChatMessageAdditionsTask from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditionsTask.vue';
 
 const props = defineProps({
     question: {
@@ -120,5 +130,23 @@ const mainQuestionAnswer = computed(() => {
     if (props.question.answers['yes-no'][0].surveyQuestionAnswer)
         return props.question.answers['yes-no'][0].surveyQuestionAnswer.value;
     return null;
+});
+
+const tasks = computed(() => {
+    return Object.keys(props.question.answers).reduce((acc, answerKey) => {
+        const answerTasks = props.question.answers[answerKey].reduce((acc_, answer) => {
+            if (answer.surveyQuestionAnswer.tasks?.length) {
+                acc_.push(...answer.surveyQuestionAnswer.tasks);
+            }
+
+            return acc_;
+        }, []);
+
+        if (answerTasks.length) {
+            acc.push(...answerTasks);
+        }
+
+        return acc;
+    }, []);
 });
 </script>
