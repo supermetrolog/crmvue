@@ -188,6 +188,7 @@ async function send() {
 
         if (!createdSurvey) {
             notify.info('Произошла ошибка при сохранении опросника, попробуйте позже');
+            loaders.final = false;
             return;
         }
 
@@ -206,6 +207,7 @@ async function send() {
             notify.info(
                 'Не удалось установить связь с чатом, создайте задачи по контактам вручную..'
             );
+            loaders.final = false;
             return;
         }
 
