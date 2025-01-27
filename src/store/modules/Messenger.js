@@ -887,14 +887,13 @@ const Messenger = {
                 commit('setLessThenMessageId', messages[0].id);
             }
         },
-        async onSurveyCreated({ state }, survey) {
-            const dialog = await api.messenger.getDialog(survey.chat_member_id);
-
+        async onSurveyCompleted({ state }, chatMemberId) {
+            const dialog = await api.messenger.getDialog(chatMemberId);
             if (!dialog) return;
 
             const chatMemberStateName = 'chatMembers' + ucFirst(state.currentDialog.model_type);
             const chatMemberIndex = state[chatMemberStateName].data.findIndex(
-                element => element.id === survey.chat_member_id
+                element => element.id === chatMemberId
             );
 
             if (chatMemberIndex !== -1) {

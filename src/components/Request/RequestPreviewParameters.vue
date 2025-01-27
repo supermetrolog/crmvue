@@ -1,22 +1,22 @@
 <template>
     <div class="request-preview__parameters">
-        <UIChip color="dark" size="big">
+        <UiChip color="dark" size="big">
             <WithUnitType :unit-type="unitTypes.SQUARE_METERS">
                 {{ area }}
             </WithUnitType>
-        </UIChip>
-        <UIChip v-if="request.movingDate" class="dashboard-cl-danger" size="big">
+        </UiChip>
+        <UiChip v-if="request.movingDate" class="dashboard-cl-danger" size="big">
             <i class="fa-regular fa-clock icon mr-1"></i>
             <span>переезд до {{ movingDate }}</span>
-        </UIChip>
-        <UIChip v-else-if="hasMovingOptions" size="big">
+        </UiChip>
+        <UiChip v-else-if="hasMovingOptions" size="big">
             <i class="fa-regular fa-clock icon"></i>
             <span>{{ movingOption }}</span>
-        </UIChip>
+        </UiChip>
     </div>
 </template>
 <script setup>
-import UIChip from '@/components/common/UI/UIChip.vue';
+import UiChip from '@/components/common/UI/UiChip.vue';
 import { computed } from 'vue';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';

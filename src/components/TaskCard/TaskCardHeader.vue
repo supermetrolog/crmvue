@@ -1,21 +1,21 @@
 <template>
     <div class="task-card__header">
         <div class="task-card__actions">
-            <UIButtonIcon
+            <UiButtonIcon
                 @click="$emit('toggle-favorite')"
                 :class="isFavorite ? 'fa-solid' : 'fa-regular'"
                 :label="isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'"
                 :active="isFavorite"
                 class="fa-star"
             >
-            </UIButtonIcon>
-            <UIButtonIcon
+            </UiButtonIcon>
+            <UiButtonIcon
                 v-if="viewable"
                 @click="$emit('read')"
                 label="Отметить прочитанным"
                 icon="fa-solid fa-user-check"
             />
-            <UIButtonIcon
+            <UiButtonIcon
                 v-if="task.related_by"
                 @click="$emit('to-chat')"
                 label="Перейти в чат"
@@ -23,7 +23,7 @@
             />
             <template v-if="!isDeleted">
                 <div v-if="draggable && canBeDragged" class="dashboard-card-task__moves">
-                    <UIButtonIcon
+                    <UiButtonIcon
                         @click.stop="$emit('change-status')"
                         label="Изменить статус"
                         :disabled
@@ -31,14 +31,14 @@
                     />
                 </div>
                 <div v-if="canBeSuspend" class="dashboard-card-task__moves">
-                    <UIButtonIcon
+                    <UiButtonIcon
                         @click.stop="$emit('to-impossible')"
                         label="Отложить"
                         :disabled
                         icon="fa-solid fa-eye-slash"
                     />
                 </div>
-                <UIButtonIcon
+                <UiButtonIcon
                     v-if="canBeAssigned"
                     @click="$emit('assign')"
                     label="Переназначить"
@@ -46,21 +46,21 @@
                     icon="fa-solid fa-user-tag"
                 />
             </template>
-            <UIButtonIcon
+            <UiButtonIcon
                 v-if="editable && canBeEdit"
                 @click="$emit('edit')"
                 label="Редактировать"
                 :disabled
                 icon="fa-solid fa-pen"
             />
-            <UIButtonIcon
+            <UiButtonIcon
                 v-if="isDeleted && canBeRestored"
                 @click="$emit('restore')"
                 label="Восстановить"
                 :disabled
                 icon="fa-solid fa-trash-restore"
             />
-            <UIButtonIcon
+            <UiButtonIcon
                 v-else-if="canBeDeleted"
                 @click="$emit('delete')"
                 label="Удалить"
@@ -81,7 +81,7 @@ import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 import { useAuth } from '@/composables/useAuth.js';
 import TaskCardHeaderTargets from '@/components/TaskCard/TaskCardHeaderTargets.vue';
 import { useFavoriteTasks } from '@/composables/useFavoriteTasks.js';
-import UIButtonIcon from '@/components/common/UI/UIButtonIcon.vue';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 
 defineEmits([
     'to-chat',

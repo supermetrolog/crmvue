@@ -1,14 +1,14 @@
 <template>
     <Transition name="modal" appear>
         <div
-            v-if="show || visibleModel"
+            v-if="visibleModel"
             class="modal active"
             role="dialog"
             :style="{ '--modal-width': width ? width + 'px' : 'auto' }"
             :class="{ 'modal--with-tabs': hasTabs, 'modal--relative': relative }"
         >
             <div @click="onBlackoutClick" class="modal__blackout"></div>
-            <slot name="container">
+            <slot name="container" :close="close">
                 <div
                     class="modal__container animate__animated"
                     :class="{
@@ -30,13 +30,13 @@
                     </div>
                     <div class="modal__body">
                         <div class="container-fluid">
-                            <slot></slot>
+                            <slot :close="close"></slot>
                         </div>
                     </div>
                     <div v-if="$slots.footer" class="modal__footer">
                         <div class="container-fluid">
                             <div class="modal__buttons">
-                                <slot name="footer"></slot>
+                                <slot name="footer" :close="close"></slot>
                             </div>
                         </div>
                     </div>
@@ -47,28 +47,23 @@
 </template>
 
 <script setup>
-import { computed, onBeforeUnmount, ref, shallowRef, watch } from 'vue';
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { useTimeoutFn } from '@vueuse/core';
 
 const visibleModel = defineModel('visible');
 const emit = defineEmits(['close']);
 const props = defineProps({
     title: {
-        type: String
+        type: String,
+        required: true
     },
-    hasTabs: {
-        type: Boolean,
-        default: false
-    },
-    relative: {
-        type: Boolean,
-        default: false
-    },
+    hasTabs: Boolean,
+    relative: Boolean,
+    show: Boolean,
     width: {
         type: [Number, String],
         default: null
     },
-    show: Boolean,
     minHeight: {
         type: Number,
         default: 50
@@ -83,37 +78,39 @@ const props = defineProps({
     }
 });
 
-const alreadyHidden = shallowRef(false);
+const minHeightSize = computed(() => props.minHeight + 'px');
+
+// close logic
+
+function close() {
+    visibleModel.value = false;
+    emit('closed');
+}
+
 const canBeClosed = ref(true);
+
 const { start: showCloseErrorAnimation } = useTimeoutFn(() => {
     canBeClosed.value = true;
 }, 500);
 
-const minHeightSize = computed(() => props.minHeight + 'px');
-
-const onBlackoutClick = () => {
+function onBlackoutClick() {
     if (props.closeOnOutsideClick) close();
     else tryShowCloseErrorAnimation();
-};
-const close = () => emit('close');
-const escapeHandler = event => {
-    event.stopImmediatePropagation();
+}
 
-    if (event.code === 'Escape') {
-        if (props.closeOnPressEsc) close();
-        else tryShowCloseErrorAnimation();
-    }
-};
-
-const tryShowCloseErrorAnimation = () => {
+function tryShowCloseErrorAnimation() {
     if (canBeClosed.value) {
         canBeClosed.value = false;
         showCloseErrorAnimation();
     }
-};
+}
+
+// visibility
+
+const alreadyHidden = ref(false);
 
 watch(
-    () => props.show,
+    visibleModel,
     value => {
         if (value) {
             document.addEventListener('keydown', escapeHandler, true);
@@ -133,6 +130,15 @@ watch(
     },
     { immediate: true }
 );
+
+function escapeHandler(event) {
+    event.stopImmediatePropagation();
+
+    if (event.code === 'Escape') {
+        if (props.closeOnPressEsc) close();
+        else tryShowCloseErrorAnimation();
+    }
+}
 
 onBeforeUnmount(() => {
     document.removeEventListener('keydown', escapeHandler, true);

@@ -21,20 +21,26 @@
                         @click="togglePanel('photos')"
                         :class="{ active: currentPanel === 'photos' }"
                     >
-                        Список всех фотографий
+                        Фотографии
                     </MessengerChatSettingsLink>
                     <MessengerChatSettingsLink
                         @click="togglePanel('files')"
                         :class="{ active: currentPanel === 'files' }"
                     >
-                        Список всех файлов
+                        Файлы
                     </MessengerChatSettingsLink>
                     <MessengerChatSettingsLink
                         @click="togglePanel('quizzes')"
                         :class="{ active: currentPanel === 'quizzes' }"
                     >
-                        Список завершенных опросов
+                        Завершенные опросы
                     </MessengerChatSettingsLink>
+                    <!--                    <MessengerChatSettingsLink-->
+                    <!--                        @click="togglePanel('quizzes')"-->
+                    <!--                        :class="{ active: currentPanel === 'quizzes' }"-->
+                    <!--                    >-->
+                    <!--                        Звонки клиентам-->
+                    <!--                    </MessengerChatSettingsLink>-->
                 </div>
                 <div class="messenger-chat-settings__footer">
                     <MessengerButton disabled color="danger" class="w-100">

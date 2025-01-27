@@ -80,6 +80,13 @@ export default {
         const response = await axios.post(url, formData);
         return responseToData(response);
     },
+    async sendMessageWithTasks(memberID, message, taskPayloads) {
+        const url = '/chat-member-messages/with-tasks';
+        const formData = { ...message, to_chat_member_id: memberID, tasks: taskPayloads };
+
+        const response = await axios.post(url, formData);
+        return responseToData(response);
+    },
     async updateMessage(message) {
         const url = `/chat-member-messages/${message.id}`;
 
@@ -137,5 +144,11 @@ export default {
 
         if (members?.length) return members[0].id;
         return null;
+    },
+    async createTasks(messageId, payloads) {
+        const url = `/chat-member-messages/create-tasks/${messageId}`;
+
+        const response = await axios.post(url, { tasks: payloads });
+        return responseToData(response);
     }
 };

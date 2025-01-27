@@ -36,7 +36,8 @@ defineProps({
     contact: {
         type: Object,
         required: true
-    }
+    },
+    callScheduled: Boolean
 });
 
 const mainAnswer = ref(false);

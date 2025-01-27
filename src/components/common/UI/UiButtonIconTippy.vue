@@ -1,7 +1,7 @@
 <template>
     <Tippy>
         <template #default>
-            <UIButtonIcon
+            <UiButtonIcon
                 @click="$emit('schedule-call')"
                 :active
                 :small
@@ -10,7 +10,7 @@
                 <slot name="icon">
                     <i :class="icon" />
                 </slot>
-            </UIButtonIcon>
+            </UiButtonIcon>
         </template>
         <template #content>
             <slot name="content" />
@@ -19,7 +19,7 @@
 </template>
 <script setup>
 import { Tippy } from 'vue-tippy';
-import UIButtonIcon from '@/components/common/UI/UIButtonIcon.vue';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 
 defineProps({
     label: String,

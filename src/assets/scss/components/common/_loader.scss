@@ -1,3 +1,5 @@
+@use "../../utils/variables";
+
 .loader {
     position: absolute;
     top: 0;
@@ -26,6 +28,13 @@
         height: 50px;
         top: calc(50% - 25px);
         left: calc(50% - 25px);
+    }
+
+
+    .spinner__label {
+        background-color: variables.$bg-success;
+        color: #fff;
+        width: max-content;
     }
 }
 

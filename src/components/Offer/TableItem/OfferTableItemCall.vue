@@ -70,11 +70,7 @@ const props = defineProps({
     withoutContacts: Boolean
 });
 
-const isRecentlyCreated = computed(
-    () =>
-        dayjs().diff(dayjs(props.createdAt), 'days') <
-        import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_DANGER
-);
+const isRecentlyCreated = computed(() => dayjs().diff(dayjs(props.createdAt), 'days') < 7);
 
 const lastCallDate = computed(() => toDateFormat(props.call, 'D.MM.YYYY'));
 const lastCallDiffInDays = computed(() => dayjs().diff(dayjsFromMoscow(props.call), 'days'));
