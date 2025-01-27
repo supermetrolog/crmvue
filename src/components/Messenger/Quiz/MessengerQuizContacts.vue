@@ -5,7 +5,7 @@
                 {{ label }} ({{ contacts.length }}):
             </DashboardChip>
             <HoverActionsButton
-                @click="$emit('suggest')"
+                @click="$emit('suggest-create')"
                 label="Добавить контакт"
                 class="dashboard-bg-gray-l"
                 small
@@ -29,6 +29,7 @@
                 @click="selectCurrentContact(contact)"
                 :contact="contact"
                 :active="currentContact?.id === contact.id"
+                :disabled="selectedContactsSet.has(contact.id) && currentContact?.id !== contact.id"
                 class="messenger-quiz-header__contact"
             />
         </div>
@@ -47,7 +48,7 @@
     </div>
 </template>
 <script setup>
-import { ref, shallowRef, useTemplateRef } from 'vue';
+import { computed, ref, shallowRef, useTemplateRef } from 'vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import Modal from '@/components/common/Modal.vue';
 import MessengerQuizContact from '@/components/Messenger/Quiz/MessengerQuizContact.vue';
@@ -57,11 +58,15 @@ import MessengerQuizContactsComments from '@/components/Messenger/Quiz/Messenger
 import Button from '@/components/common/Button.vue';
 
 const currentContact = defineModel('contact');
-defineEmits(['suggest', 'edit', 'schedule-call']);
+const emit = defineEmits(['suggest-create', 'edit', 'selected']);
 const props = defineProps({
     contacts: {
         type: Array,
         required: true
+    },
+    selectedContacts: {
+        type: Array,
+        default: () => []
     },
     label: {
         type: String,
@@ -78,6 +83,7 @@ if (!props.grid) {
 
 function selectCurrentContact(contact) {
     currentContact.value = contact;
+    emit('selected', contact);
 }
 
 // COMMENTS
@@ -93,4 +99,8 @@ function showComments(contact) {
 function closeCommentsModal() {
     commentsModalIsOpen.value = false;
 }
+
+const selectedContactsSet = computed(
+    () => new Set(props.selectedContacts.map(contact => contact.entity.id))
+);
 </script>

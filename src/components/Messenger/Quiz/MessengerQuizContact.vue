@@ -1,5 +1,5 @@
 <template>
-    <div class="messenger-quiz-contact" :class="{ active: active }">
+    <div class="messenger-quiz-contact" :class="{ active: active, disabled: disabled }">
         <div class="messenger-quiz-contact__info">
             <p class="messenger-quiz-contact__username">
                 <i
@@ -135,18 +135,10 @@ import { Tippy } from 'vue-tippy';
 
 defineEmits(['edit', 'delete', 'move', 'show-comments', 'schedule-call']);
 const props = defineProps({
-    contact: {
-        type: [Object, null],
-        required: true
-    },
-    loading: {
-        type: Boolean,
-        default: false
-    },
-    active: {
-        type: Boolean,
-        default: false
-    }
+    contact: Object,
+    loading: Boolean,
+    active: Boolean,
+    disabled: Boolean
 });
 
 const position = computed(() => contactOptions.position[props.contact.position]);

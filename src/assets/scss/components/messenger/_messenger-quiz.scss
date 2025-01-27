@@ -178,10 +178,14 @@
                 border-bottom-right-radius: 10px;
             }
         }
+
+        .radio-options .form__row {
+            gap: 0;
+            margin-top: 0!important;
+        }
     }
 
     &__interests {
-
         position: relative;
         z-index: 2;
         margin-top: -3px;
@@ -436,6 +440,11 @@
     border: 1px solid rgba(0, 0, 0, .2);
     @include mixins.flex-box($gap: 5px, $j: space-between);
     @include mixins.transition(background-color, color);
+
+    &.disabled {
+        opacity: .4;
+        pointer-events: none;
+    }
 
     &:hover, &.active {
         background-color: variables.$bg-success;

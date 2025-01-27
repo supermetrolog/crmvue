@@ -15,12 +15,25 @@
                         <span>{{ question.text }}</span>
                     </p>
                     <div v-if="question.answers?.['yes-no']" class="messenger-quiz-question__main">
-                        <RadioChip v-model="form.main" :value="true" label="Да" unselect />
-                        <RadioChip v-model="form.main" :value="false" label="Нет" unselect />
+                        <RadioChip
+                            v-model="form.main"
+                            :disabled
+                            :value="true"
+                            label="Да"
+                            unselect
+                        />
+                        <RadioChip
+                            v-model="form.main"
+                            :disabled
+                            :value="false"
+                            label="Нет"
+                            unselect
+                        />
                         <RadioChip
                             v-model="hasNullMainAnswer"
                             :value="true"
                             label="Не ответил"
+                            :disabled
                             unselect
                         />
                     </div>
@@ -91,6 +104,7 @@
                                     class="messenger-quiz-question__field"
                                     auto-height
                                     :disabled="isDisabled"
+                                    :min-height="80"
                                 />
                                 <div v-if="canEdit" class="messenger-quiz-question__edits">
                                     <HoverActionsButton
@@ -237,11 +251,13 @@ const checkboxes = computed(() =>
 );
 
 const isDisabled = computed(() => {
-    return props.disabled || ((form.main === false || hasNullMainAnswer.value) && props.canBeDisabled);
+    return (
+        props.disabled || ((form.main === false || hasNullMainAnswer.value) && props.canBeDisabled)
+    );
 });
 
 const initForm = () => {
-    if (hasMainQuestion.value) form.main = null;
+    if (hasMainQuestion.value) form.main = undefined;
     if (hasTabQuestions.value) {
         form.tab = [];
         form.radio = null;
@@ -271,7 +287,8 @@ const getForm = () => {
     if (hasMainQuestion.value)
         list.push({
             question_answer_id: props.question.answers['yes-no'][0].id,
-            value: form.main
+            value: hasNullMainAnswer.value ? null : isNullish(form.main) ? undefined : form.main,
+            type: 'main'
         });
 
     if (hasTabQuestions.value) {

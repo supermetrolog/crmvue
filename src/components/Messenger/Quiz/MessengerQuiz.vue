@@ -1,38 +1,30 @@
 <template>
     <div class="messenger-quiz messenger-chat__content">
         <MessengerChatHeader />
+        <MessengerQuizPreviews v-show="!isGeneralLoading" class="my-2" />
         <Spinner v-if="isGeneralLoading" class="absolute-center" label="Загрузка данных.." />
         <template v-else>
-            <div v-if="surveys.length" class="messenger-quiz__surveys mt-2">
-                <Button v-tippy="'В разработке..'" @click="showSurveys" class="ml-auto" small icon>
-                    <i class="fa-solid fa-eye"></i>
-                    <span>Посмотреть полный список завершенных опросов ({{ surveysCount }})</span>
-                </Button>
-                <MessengerQuizInlineElement
-                    v-for="survey in surveys"
-                    :key="survey.id"
-                    @show="showSurvey(survey.id)"
-                    :quiz="survey"
-                />
-            </div>
             <div class="messenger-quiz__wrapper">
-                <Loader v-if="isLoading" class="my-4" />
+                <Loader v-if="loaders.final" :label="currentLoadingLabel" class="my-4" />
                 <MessengerQuizContacts
                     v-model:contact="currentRecipient"
-                    @suggest="suggestTask"
+                    @suggest-create="suggestCreateContact"
                     @edit="editContact"
                     label="Список доступных контактов"
                     :contacts="availableContacts"
+                    :selected-contacts="selectedContacts"
                 />
                 <MessengerQuizForm
                     ref="quizForm"
                     v-model:contact="currentRecipient"
-                    @suggest-contact="suggestTask"
-                    @schedule-call="scheduleCall(currentRecipient)"
-                    @mark-contact-as-unavailable="markContactAsUnavailable"
+                    v-model:selected-contacts="selectedContacts"
+                    @suggest-create-contact="suggestCreateContact"
+                    @toggle-call-schedule="toggleCallSchedule"
+                    @select-next-contact="selectNextContact"
+                    @change-last-contact="changeLastContact"
                     :disabled="!contacts.length"
                     :contacts="availableContacts"
-                    :unavailable-contacts="unavailableContacts"
+                    :available-contacts="notSelectedContacts"
                 />
                 <MessengerQuizFooter
                     v-if="contacts.length"
@@ -45,45 +37,32 @@
             </div>
         </template>
         <Modal
-            @close="surveyPreviewIsOpen = false"
-            :show="surveyPreviewIsOpen"
-            :width="900"
-            :min-height="700"
-            title="Просмотр результатов опросника"
-        >
-            <MessengerQuizPreview :quiz-id="previewedSurveyId" />
-        </Modal>
-        <Modal
-            @close="closeContactPicker"
             title="Выбор контакта"
             :width="1200"
             :show="contactPickerIsVisible"
+            :close-on-press-esc="false"
+            :close-on-outside-click="false"
         >
             <DashboardChip class="dashboard-bg-warning-l mb-2 mx-auto w-auto text-center">
-                Подтвердите контакт, с которым происходил разговор по объекту/предложению/компании!
+                Подтвердите контакт, с которым в итоге происходил разговор по
+                объекту/предложению/компании!
             </DashboardChip>
-            <MessengerQuizRecipientPicker v-model="currentRecipient" />
+            <MessengerQuizContacts
+                @selected="finalContact = $event"
+                label="Список прозвоненных контактов"
+                :contacts="finalSelectedContacts"
+            />
             <template #footer>
-                <Button @click="submitContactPicker" :disabled="!currentRecipient" small success>
+                <Button @click="submitContactPicker" :disabled="!finalContact" small success>
                     Сохранить
                 </Button>
-                <Button @click="closeContactPicker" small>Отменить</Button>
             </template>
         </Modal>
-        <Modal
-            @close="closeTaskSuggestion"
-            title="Создание контакта"
-            :width="600"
-            :show="taskSuggestionIsVisible"
-        >
-            <h3 class="text-center">
-                Заполнить данные контакта или создать задачу для офис-менеджера?
-            </h3>
-            <template #footer>
-                <Button @click="createContact" small>Заполнить контакта</Button>
-                <Button @click="confirmTaskSuggestion" small>Создать задачу</Button>
-            </template>
-        </Modal>
+        <MessengerQuizContactTaskSuggestModal
+            v-model:visible="taskSuggestionIsVisible"
+            @create-task="confirmTaskSuggestion"
+            @created-contact="createContact"
+        />
         <teleport to="body">
             <FormCompanyContact
                 v-if="formIsVisible"
@@ -98,7 +77,7 @@
 </template>
 <script setup>
 import { useStore } from 'vuex';
-import { computed, onMounted, ref, shallowRef, useTemplateRef } from 'vue';
+import { computed, onMounted, reactive, ref, shallowRef, useTemplateRef } from 'vue';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { useConfirm } from '@/composables/useConfirm.js';
 import api from '@/api/api.js';
@@ -108,26 +87,26 @@ import MessengerChatHeader from '@/components/Messenger/Chat/Header/MessengerCha
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import Modal from '@/components/common/Modal.vue';
 import MessengerQuizContacts from '@/components/Messenger/Quiz/MessengerQuizContacts.vue';
-import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
-import MessengerQuizInlineElement from '@/components/Messenger/Quiz/MessengerQuizInlineElement.vue';
 import Button from '@/components/common/Button.vue';
 import Spinner from '@/components/common/Spinner.vue';
-import MessengerQuizPreview from '@/components/Messenger/Quiz/Preview/MessengerQuizPreview.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
-import MessengerQuizRecipientPicker from '@/components/Messenger/Quiz/MessengerQuizRecipientPicker.vue';
-import MessengerQuizForm from '@/components/Messenger/Quiz/MessengerQuizForm.vue';
+import MessengerQuizForm from '@/components/Messenger/Quiz/Form/MessengerQuizForm.vue';
 import { TASK_FORM_STEPS, useTaskManager } from '@/composables/useTaskManager.js';
 import dayjs from 'dayjs';
-import { toBoldHTML } from '@/utils/formatters/html.js';
 import { useAuth } from '@/composables/useAuth.js';
-import { messenger, messengerTemplates } from '@/const/messenger.js';
+import { messenger } from '@/const/messenger.js';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 import { contactOptions } from '@/const/options/contact.options.js';
 import FormCompanyContact from '@/components/Forms/Company/FormCompanyContact.vue';
 import MessengerQuizFooter from '@/components/Messenger/Quiz/MessengerQuizFooter.vue';
-import { useMessengerQuizTaskSuggest } from '@/components/Messenger/Quiz/useMessengerQuizTaskSuggest.js';
+import { useMessengerQuizContactSuggest } from '@/components/Messenger/Quiz/useMessengerQuizContactSuggest.js';
+import MessengerQuizPreviews from '@/components/Messenger/Quiz/MessengerQuizPreviews.vue';
+import MessengerQuizContactTaskSuggestModal from '@/components/Messenger/Quiz/MessengerQuizContactTaskSuggestModal.vue';
+import { getContactFullName } from '@/utils/formatters/models/contact.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { useMessengerQuiz } from '@/components/Messenger/Quiz/useMessengerQuiz.js';
 
-const SCHEDULING_CALL_DURATION = 30; // days
+const SCHEDULING_CALL_DURATION = 7; // days
 
 const emit = defineEmits(['complete']);
 
@@ -138,142 +117,185 @@ const quizForm = useTemplateRef('quizForm');
 const { currentUser } = useAuth();
 
 const {
-    show: showContactPicker,
+    show: showFinalContactPicker,
     isVisible: contactPickerIsVisible,
-    cancel: closeContactPicker,
     submit: submitContactPicker
 } = useAsyncPopup('quizContactPicker');
 
-const isLoading = ref(false);
 const isCompleted = ref(false);
-const surveys = ref([]);
-const surveysCount = ref(0);
-const surveyPreviewIsOpen = ref(false);
-const previewedSurveyId = ref(null);
 
-const { isLoading: surveysIsLoading } = useDelayedLoader(
-    store.getters['Messenger/currentChatHasLastCall']
-);
+const loaders = reactive({
+    final: false,
+    surveyCreating: false,
+    messageSearching: false,
+    messageCreating: false,
+    tasksCreating: false,
+    callsCreating: false,
+    scheduledCallsCreating: false
+});
 
-const send = async () => {
+const currentLoadingLabel = computed(() => {
+    if (loaders.surveyCreating) return 'Сохранение результатов опроса..';
+    if (loaders.messageSearching) return 'Отправка сообщений в чат..';
+    if (loaders.messageCreating) return 'Отправка сообщений в чат..';
+    if (loaders.tasksCreating) return 'Создание задач..';
+    if (loaders.callsCreating) return 'Фиксация звонков..';
+    if (loaders.scheduledCallsCreating) return 'Сохранение запланированных звонков..';
+    if (loaders.final) return 'Загрузка результатов..';
+    return null;
+});
+
+const finalContact = ref(null);
+const finalSelectedContacts = shallowRef([]);
+
+const {
+    createSurvey,
+    findSurveyMessage,
+    createPotentialTasks,
+    createCallsWithContacts,
+    createScheduledCallTasks,
+    sendMessageAboutSurveyIsUnavailable
+} = useMessengerQuiz();
+
+async function send() {
+    const valid = quizForm.value.validate();
+    if (!valid) return;
+
     const confirmed = await confirm(
-        'Подтвердите заполнение опросника. Вы закончили заполнение полученной информации?'
+        'Подтвердите заполнение опросника. Вы закончили заполнение информации?'
     );
     if (!confirmed) return;
 
-    if (!availableContacts.value.length) {
-        isLoading.value = true;
-
-        const messageCreated = await sendMessageAboutSurveyIsUnavailable();
-
-        isLoading.value = false;
-
-        if (messageCreated) {
-            isCompleted.value = true;
-        }
-
-        return;
-    }
-
-    const contact = await showContactPicker({});
-    if (!contact) return;
-
-    isLoading.value = true;
+    const chatMemberId = store.state.Messenger.currentDialog.id;
 
     const answers = quizForm.value.getForm();
+    finalSelectedContacts.value = selectedContacts.value.map(element => element.entity);
 
-    const createdSurvey = await api.survey.create({
-        contact_id: currentRecipient.value.id,
-        user_id: currentUser.value.id,
-        chat_member_id: store.state.Messenger.currentDialog.id,
-        question_answers: answers
+    const hasAnswers = answers.some(element => {
+        return isNotNullish(element.type) && element.type === 'main' && element.value !== undefined;
     });
 
-    if (createdSurvey) {
-        store.dispatch('Messenger/onSurveyCreated', createdSurvey);
-        isCompleted.value = true;
-        notify.success('Опрос успешно сохранен');
+    if (hasAnswers) {
+        finalContact.value = currentRecipient.value;
+
+        await showFinalContactPicker();
+
+        loaders.final = true;
+
+        loaders.surveyCreating = true;
+        const createdSurvey = await createSurvey(finalContact.value, answers);
+        loaders.surveyCreating = false;
+
+        if (!createdSurvey) {
+            notify.info('Произошла ошибка при сохранении опросника, попробуйте позже');
+            return;
+        }
+
+        loaders.callsCreating = true;
+        await createCallsWithContacts(
+            selectedContacts.value.filter(element => element.entity.id !== finalContact.value.id),
+            chatMemberId
+        );
+        loaders.callsCreating = false;
+
+        loaders.messageSearching = true;
+        const surveyMessage = await findSurveyMessage(createdSurvey.id, chatMemberId);
+        loaders.messageSearching = false;
+
+        if (!surveyMessage) {
+            notify.info(
+                'Не удалось установить связь с чатом, создайте задачи по контактам вручную..'
+            );
+            return;
+        }
+
+        loaders.tasksCreating = true;
+        await createPotentialTasks(selectedContacts.value, surveyMessage.id, createdSurvey.id);
+        loaders.tasksCreating = false;
+
+        loaders.scheduledCallsCreating = true;
+        await createScheduledCallTasks(scheduledCalls.value, surveyMessage.id, createdSurvey.id);
+        loaders.scheduledCallsCreating = false;
+
+        loaders.final = false;
+    } else {
+        loaders.final = true;
+
+        loaders.callsCreating = true;
+        await createCallsWithContacts(selectedContacts.value, chatMemberId);
+        loaders.callsCreating = false;
+
+        loaders.messageCreating = true;
+        const createdMessage = await sendMessageAboutSurveyIsUnavailable(
+            chatMemberId,
+            selectedContacts.value
+        );
+        loaders.messageCreating = false;
+
+        if (createdMessage) {
+            loaders.tasksCreating = true;
+            await createPotentialTasks(selectedContacts.value, createdMessage.id);
+            loaders.tasksCreating = false;
+        }
+
+        loaders.scheduledCallsCreating = true;
+        await createScheduledCallTasks(scheduledCalls.value, createdMessage.id);
+        loaders.scheduledCallsCreating = false;
+
+        loaders.final = false;
     }
 
-    isLoading.value = false;
-};
+    store.dispatch('Messenger/onSurveyCompleted', chatMemberId);
+    isCompleted.value = true;
 
-async function sendMessageAboutSurveyIsUnavailable() {
-    const messagePayload = {
-        message: 'Не удалось дозвониться до контактов опросника',
-        template: messengerTemplates.UNAVAILABLE_SURVEY
-    };
-
-    const createdMessage = await api.messenger.sendMessage(
-        store.state.Messenger.currentDialog.id,
-        messagePayload
-    );
-
-    if (createdMessage) {
-        notify.success('Сообщение успешно создано');
-
-        return true;
-    }
-
-    return false;
+    notify.success('Задачи и звонки успешно созданы..');
 }
 
 const close = () => {
     emit('completed');
 };
 
-const fetchSurveys = async () => {
-    surveysIsLoading.value = true;
-
-    const response = await store.dispatch('Messenger/getCurrentChatQuizzes', {
-        sort: '-created_at'
-    });
-    surveys.value = response.data.slice(0, 3).reverse();
-    surveysCount.value = response.pagination.totalCount;
-
-    surveysIsLoading.value = false;
-};
-
-const showSurvey = surveyId => {
-    previewedSurveyId.value = surveyId;
-    surveyPreviewIsOpen.value = true;
-};
-
-const showSurveys = () => {
-    notify.info('Функция находится в разработке..', 'Функция недоступна');
-};
-
-// TASKS
+// schedule call
 
 const { createTaskWithTemplate } = useTaskManager();
 
+const scheduledCalls = ref([]);
+
 async function scheduleCall(contact) {
     const taskPayload = await createTaskWithTemplate({
-        message: `Прозвонить контакта (${contact.full_name ?? `Общий контакт компании #${contact.company_id}`})`,
+        message: `Прозвонить контакта (${getContactFullName(contact)})`,
         step: TASK_FORM_STEPS.DATE,
         end: dayjs().add(SCHEDULING_CALL_DURATION, 'day').toDate(),
         user_id: currentUser.value.id
     });
 
-    if (!taskPayload) return;
+    if (taskPayload) {
+        scheduledCalls.value.push({ payload: taskPayload, contactId: contact.id });
 
-    const messagePayload = {
-        message: `Запланировал звонок на ${toBoldHTML(dayjs(taskPayload.end).format('D.MM.YY'))}`,
-        contact_ids: [contact.id]
-    };
-
-    const createdMessage = await api.messenger.sendMessageWithTask(
-        store.state.Messenger.currentDialog.id,
-        messagePayload,
-        taskPayload
-    );
-
-    if (createdMessage) {
-        notify.success('Сообщение и задача успешно созданы');
-    } else {
-        notify.error('Произошла ошибка. Попробуйте еще раз..');
+        const contactIndex = selectedContacts.value.findIndex(
+            element => element.entity.id === contact.id
+        );
+        if (contactIndex !== -1)
+            selectedContacts.value[contactIndex].form.scheduled = taskPayload.end;
     }
 }
+
+async function toggleCallSchedule(contact) {
+    const contactIndex = scheduledCalls.value.findIndex(
+        element => element.contactId === contact.id
+    );
+    if (contactIndex === -1) scheduleCall(contact);
+    else {
+        const confirmed = await confirm('Вы действительно хотите отменить звонок?');
+        if (!confirmed) return;
+
+        scheduledCalls.value.splice(contactIndex, 1);
+        selectedContacts.value.find(element => element.entity.id === contact.id).form.scheduled =
+            false;
+    }
+}
+
+// object destroyed
 
 async function onObjectDestroyed() {
     const object = store.state.Messenger.currentDialog.model.object;
@@ -359,7 +381,7 @@ async function createContactTask() {
     }
 }
 
-function suggestTask() {
+function suggestCreateContact() {
     taskSuggestionIsVisible.value = true;
 }
 
@@ -367,13 +389,15 @@ function closeTaskSuggestion() {
     taskSuggestionIsVisible.value = false;
 }
 
-onMounted(async () => {
-    if (store.getters['Messenger/currentChatHasLastCall']) fetchSurveys();
-    if (!store.state.User.consultantList.length) store.dispatch('FETCH_CONSULTANT_LIST');
+function createContact() {
+    closeTaskSuggestion();
+    formIsVisible.value = true;
+}
 
-    await fetchContacts();
-    setInitialCurrentContact();
-});
+function confirmTaskSuggestion() {
+    closeTaskSuggestion();
+    createContactTask();
+}
 
 // CONTACTS
 
@@ -389,6 +413,8 @@ const company = computed(() => store.state.Messenger.currentPanel);
 
 function setInitialCurrentContact() {
     currentRecipient.value = contacts.value.find(contact => contact.isMain) ?? contacts.value[0];
+
+    if (currentRecipient.value) selectContact(currentRecipient.value);
 }
 
 async function fetchContacts() {
@@ -402,8 +428,16 @@ async function fetchContacts() {
             .sort((first, second) => second.isMain - first.isMain);
     }
 
+    setInitialCurrentContact();
+
     contactsIsLoading.value = false;
 }
+
+onMounted(async () => {
+    if (!store.state.User.consultantList.length) store.dispatch('FETCH_CONSULTANT_LIST');
+
+    await fetchContacts();
+});
 
 function onContactCreated(contact) {
     contacts.value.unshift(contact);
@@ -420,16 +454,6 @@ async function onContactUpdated(_, contact) {
     store.commit('Messenger/onContactUpdated', contact);
 }
 
-function createContact() {
-    closeTaskSuggestion();
-    formIsVisible.value = true;
-}
-
-function confirmTaskSuggestion() {
-    closeTaskSuggestion();
-    createContactTask();
-}
-
 function closeForm() {
     formIsVisible.value = false;
     updatingContact.value = null;
@@ -440,12 +464,20 @@ function editContact(contact) {
     formIsVisible.value = true;
 }
 
-const { markContactAsUnavailable, availableContacts, unavailableContacts } =
-    useMessengerQuizTaskSuggest(contacts);
+const {
+    availableContacts,
+    notSelectedContacts,
+    selectedContacts,
+    selectContact,
+    changeLastContact
+} = useMessengerQuizContactSuggest(contacts);
+
+function selectNextContact(contact) {
+    selectContact(contact);
+    currentRecipient.value = contact;
+}
 
 // COMPUTES
 
-const isGeneralLoading = computed(
-    () => contactsIsLoading.value || surveysIsLoading.value || isLoading.value
-);
+const isGeneralLoading = computed(() => contactsIsLoading.value);
 </script>

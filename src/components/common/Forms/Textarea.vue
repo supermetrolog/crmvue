@@ -25,7 +25,7 @@
 
 <script setup>
 import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
-import { onMounted, toRef, useTemplateRef, watch } from 'vue';
+import { computed, onMounted, toRef, useTemplateRef, watch } from 'vue';
 import { useFormControlValidation } from '@/composables/useFormControlValidation.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 
@@ -70,6 +70,14 @@ const props = defineProps({
     helper: {
         type: String,
         default: null
+    },
+    minHeight: {
+        type: Number,
+        default: 100
+    },
+    maxHeight: {
+        type: Number,
+        default: null
     }
 });
 
@@ -105,4 +113,13 @@ const focus = () => {
 };
 
 defineExpose({ focus });
+
+const minHeightInPx = computed(() => (props.minHeight ? `${props.minHeight}px` : null));
+const maxHeightInPx = computed(() => (props.maxHeight ? `${props.maxHeight}px` : null));
 </script>
+<style scoped>
+.form__textarea {
+    min-height: v-bind(minHeightInPx);
+    max-height: v-bind(maxHeightInPx);
+}
+</style>

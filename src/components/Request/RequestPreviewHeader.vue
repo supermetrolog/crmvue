@@ -1,22 +1,22 @@
 <template>
     <div class="request-preview__header">
-        <UIChip v-if="isPassive" color="danger">
+        <UiChip v-if="isPassive" color="danger">
             <span>Пассив</span>
             <i v-tippy="statusTippy" class="fa-regular fa-question-circle" />
-        </UIChip>
-        <UIChip v-if="request.expressRequest" color="danger">Срочно!</UIChip>
-        <UIChip>#{{ request.id }}</UIChip>
-        <UIChip color="dark">{{ dealType }}</UIChip>
-        <UIChip v-for="element in generalObjectTypes" :key="element.id" color="dark">
+        </UiChip>
+        <UiChip v-if="request.expressRequest" color="danger">Срочно!</UiChip>
+        <UiChip>#{{ request.id }}</UiChip>
+        <UiChip color="dark">{{ dealType }}</UiChip>
+        <UiChip v-for="element in generalObjectTypes" :key="element.id" color="dark">
             {{ element.label }}
-        </UIChip>
-        <UIChip v-for="element in objectTypes" :key="element.id">
+        </UiChip>
+        <UiChip v-for="element in objectTypes" :key="element.id">
             {{ element.object.name }}
-        </UIChip>
+        </UiChip>
     </div>
 </template>
 <script setup>
-import UIChip from '@/components/common/UI/UIChip.vue';
+import UiChip from '@/components/common/UI/UiChip.vue';
 import { computed } from 'vue';
 import { requestOptions } from '@/const/options/request.options.js';
 import { PassiveWhyRequest } from '@/const/const.js';
