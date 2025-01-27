@@ -1,10 +1,10 @@
 <template>
     <div class="company-preview__header">
         <Tippy v-if="companyWarnings.length">
-            <UIChip color="danger">
+            <UiChip color="danger">
                 <span>Необходимо заполнить!</span>
                 <i class="fa-regular fa-circle-question" />
-            </UIChip>
+            </UiChip>
             <template #content>
                 <div>
                     <p class="color-light">Необходимо заполнить ({{ companyWarnings.length }}):</p>
@@ -14,23 +14,23 @@
                 </div>
             </template>
         </Tippy>
-        <UIChip v-if="isPassive" color="danger">
+        <UiChip v-if="isPassive" color="danger">
             <span>Пассив</span>
             <i v-tippy="statusTippy" class="fa-regular fa-question-circle" />
-        </UIChip>
-        <UIChip>#{{ company.id }}</UIChip>
-        <UIChip v-for="category in categories" :key="category.id" color="dark">
+        </UiChip>
+        <UiChip>#{{ company.id }}</UiChip>
+        <UiChip v-for="category in categories" :key="category.id" color="dark">
             {{ category.label }}
-        </UIChip>
-        <UIChip color="dark">{{ activityGroup }}</UIChip>
-        <UIChip color="dark">{{ activityProfile }}</UIChip>
-        <UIChip v-for="productRange in productRanges" :key="productRange.id" color="dark">
+        </UiChip>
+        <UiChip color="dark">{{ activityGroup }}</UiChip>
+        <UiChip color="dark">{{ activityProfile }}</UiChip>
+        <UiChip v-for="productRange in productRanges" :key="productRange.id" color="dark">
             {{ productRange.label }}
-        </UIChip>
-        <UIChip v-if="company.consultant" color="warning">
+        </UiChip>
+        <UiChip v-if="company.consultant" color="warning">
             <i class="fa-solid fa-person-arrow-up-from-line" />
             <span>{{ company.consultant.userProfile.medium_name }}</span>
-        </UIChip>
+        </UiChip>
         <CompanyPreviewRating :rating="company.rating" />
     </div>
 </template>
@@ -45,7 +45,7 @@ import {
 import { computed } from 'vue';
 import { companyProperties } from '@/const/properties/company.properties.js';
 import { Tippy } from 'vue-tippy';
-import UIChip from '@/components/common/UI/UIChip.vue';
+import UiChip from '@/components/common/UI/UiChip.vue';
 import CompanyPreviewRating from '@/components/Company/Preview/CompanyPreviewRating.vue';
 
 const props = defineProps({

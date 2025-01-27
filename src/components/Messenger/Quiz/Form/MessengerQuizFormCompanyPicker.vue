@@ -53,7 +53,7 @@ import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import { useSearchCompany } from '@/composables/useSearchCompany.js';
 import CompanyPicker from '@/components/common/Forms/CompanyPicker/CompanyPicker.vue';
 import Modal from '@/components/common/Modal.vue';
-import MessengerQuizFormCompanyPickerElement from '@/components/Messenger/Quiz/MessengerQuizFormCompanyPickerElement.vue';
+import MessengerQuizFormCompanyPickerElement from '@/components/Messenger/Quiz/Form/MessengerQuizFormCompanyPickerElement.vue';
 import Input from '@/components/common/Forms/Input.vue';
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';
 import Button from '@/components/common/Button.vue';

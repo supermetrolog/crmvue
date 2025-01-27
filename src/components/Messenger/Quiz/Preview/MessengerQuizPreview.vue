@@ -19,6 +19,15 @@
                     >
                         <MessengerQuizPreviewCompanyTemplate :answers="answers" />
                     </template>
+                    <template
+                        v-else-if="
+                            questionWithRelevantRequestsInfo &&
+                            question.id === questionWithRelevantRequestsInfo.id
+                        "
+                        #textarea="{ answers }"
+                    >
+                        <MessengerQuizPreviewRequestsTemplate :answers="answers" />
+                    </template>
                 </MessengerQuizPreviewQuestion>
             </div>
         </div>
@@ -32,6 +41,7 @@ import api from '@/api/api.js';
 import MessengerQuizPreviewInfo from '@/components/Messenger/Quiz/Preview/MessengerQuizPreviewInfo.vue';
 import { quizEffectKinds } from '@/const/quiz.js';
 import MessengerQuizPreviewCompanyTemplate from '@/components/Messenger/Quiz/Preview/Template/MessengerQuizPreviewCompanyTemplate.vue';
+import MessengerQuizPreviewRequestsTemplate from '@/components/Messenger/Quiz/Preview/Template/MessengerQuizPreviewRequestsTemplate.vue';
 
 const props = defineProps({
     quizId: {
@@ -49,6 +59,19 @@ const questionWithCompaniesInfo = computed(() => {
             question.answers['text-answer'].some(element =>
                 element.effects.some(
                     effect => effect.kind === quizEffectKinds.COMPANIES_ON_OBJECT_IDENTIFIED
+                )
+            )
+        );
+    });
+});
+
+const questionWithRelevantRequestsInfo = computed(() => {
+    return quiz.value.questions.find(question => {
+        return (
+            'text-answer' in question.answers &&
+            question.answers['text-answer'].some(element =>
+                element.effects.some(
+                    effect => effect.kind === quizEffectKinds.REQUESTS_NO_LONGER_RELEVANT
                 )
             )
         );

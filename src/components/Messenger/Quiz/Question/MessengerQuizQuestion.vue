@@ -15,13 +15,26 @@
                         <span>{{ question.text }}</span>
                     </p>
                     <div v-if="question.answers?.['yes-no']" class="messenger-quiz-question__main">
-                        <RadioChip v-model="form.main" :value="true" label="Да" unselect />
-                        <RadioChip v-model="form.main" :value="false" label="Нет" unselect />
+                        <RadioChip
+                            v-model="form.main"
+                            :disabled="disabled || disabledByTemplate"
+                            :value="true"
+                            unselect
+                            label="Да"
+                        />
+                        <RadioChip
+                            v-model="form.main"
+                            :disabled="disabled || disabledByTemplate"
+                            :value="false"
+                            unselect
+                            label="Нет"
+                        />
                         <RadioChip
                             v-model="hasNullMainAnswer"
                             :value="true"
-                            label="Не ответил"
+                            :disabled="disabled || disabledByTemplate"
                             unselect
+                            label="Не ответил"
                         />
                     </div>
                     <MessengerButton
@@ -41,7 +54,7 @@
                     Основные опции
                 </DashboardChip>
                 <div class="messenger-quiz-question__additions">
-                    <slot name="additions" :disabled="isDisabled">
+                    <slot name="additions" :disabled="isDisabled" :main-answer="form.main">
                         <template v-if="question.answers?.tab">
                             <CheckboxChip
                                 v-for="answer in checkboxTabs"
@@ -79,7 +92,12 @@
                     </slot>
                 </div>
                 <div>
-                    <slot name="description">
+                    <slot
+                        name="description"
+                        :disabled="isDisabled"
+                        :main-answer="form.main"
+                        :toggle-disabled="toggleDisabled"
+                    >
                         <DashboardChip v-if="canEdit" class="dashboard-bg-warning-l mt-2 mb-1">
                             Текстовые поля
                         </DashboardChip>
@@ -91,6 +109,7 @@
                                     class="messenger-quiz-question__field"
                                     auto-height
                                     :disabled="isDisabled"
+                                    :min-height="80"
                                 />
                                 <div v-if="canEdit" class="messenger-quiz-question__edits">
                                     <HoverActionsButton
@@ -190,6 +209,12 @@ const props = defineProps({
     disabled: Boolean
 });
 
+const disabledByTemplate = ref(false);
+
+function toggleDisabled() {
+    disabledByTemplate.value = !disabledByTemplate.value;
+}
+
 const form = reactive({});
 const accordion = useTemplateRef('accordion');
 
@@ -237,11 +262,15 @@ const checkboxes = computed(() =>
 );
 
 const isDisabled = computed(() => {
-    return props.disabled || ((form.main === false || hasNullMainAnswer.value) && props.canBeDisabled);
+    return (
+        props.disabled ||
+        ((form.main === false || hasNullMainAnswer.value) && props.canBeDisabled) ||
+        disabledByTemplate.value
+    );
 });
 
 const initForm = () => {
-    if (hasMainQuestion.value) form.main = null;
+    if (hasMainQuestion.value) form.main = undefined;
     if (hasTabQuestions.value) {
         form.tab = [];
         form.radio = null;
@@ -271,7 +300,8 @@ const getForm = () => {
     if (hasMainQuestion.value)
         list.push({
             question_answer_id: props.question.answers['yes-no'][0].id,
-            value: form.main
+            value: hasNullMainAnswer.value ? null : isNullish(form.main) ? undefined : form.main,
+            type: 'main'
         });
 
     if (hasTabQuestions.value) {

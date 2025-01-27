@@ -27,7 +27,7 @@
 <script setup>
 import MessengerQuizQuestion from '@/components/Messenger/Quiz/Question/MessengerQuizQuestion.vue';
 import { ref, useTemplateRef } from 'vue';
-import MessengerQuizFormCompanyPicker from '@/components/Messenger/Quiz/MessengerQuizFormCompanyPicker.vue';
+import MessengerQuizFormCompanyPicker from '@/components/Messenger/Quiz/Form/MessengerQuizFormCompanyPicker.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 
 const CUSTOM_QUESTION_ID = 8;

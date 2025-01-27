@@ -9,5 +9,6 @@ export const quizQuestionsGroupsLabel = {
 };
 
 export const quizEffectKinds = {
-    COMPANIES_ON_OBJECT_IDENTIFIED: 'companies-on-object-identified'
+    COMPANIES_ON_OBJECT_IDENTIFIED: 'companies-on-object-identified',
+    REQUESTS_NO_LONGER_RELEVANT: 'requests-no-longer-relevant'
 };
