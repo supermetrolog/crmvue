@@ -4,7 +4,7 @@
         :title="formData ? 'Редактирование компании' : 'Создание компании'"
         :close-on-outside-click="false"
         class="modal-form-company"
-        width="1000"
+        :width="1200"
         has-tabs
         show
     >
@@ -12,6 +12,49 @@
             <Tabs sticky>
                 <Loader v-if="isLoading" />
                 <Tab required name="Основное">
+                    <FormGroup>
+                        <div class="col-12">
+                            <div class="row align-items-end">
+                                <RadioStars
+                                    v-model="form.rating"
+                                    label="Величина компании"
+                                    class="col-4"
+                                />
+                                <div class="col-8">
+                                    <div class="d-flex gap-1">
+                                        <DashboardChip
+                                            @click="form.rating = 1"
+                                            class="dashboard-bg-light px-2 py-1 text-danger c-pointer"
+                                        >
+                                            <i class="fas fa-star"></i>
+                                            - маленькая
+                                        </DashboardChip>
+                                        <DashboardChip
+                                            @click="form.rating = 3"
+                                            class="dashboard-bg-light px-2 py-1 text-primary c-pointer"
+                                        >
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            - средняя
+                                        </DashboardChip>
+                                        <DashboardChip
+                                            @click="form.rating = 5"
+                                            class="dashboard-bg-light px-2 py-1 text-warning c-pointer"
+                                        >
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            - большая
+                                        </DashboardChip>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </FormGroup>
+                    <FormDivider />
                     <FormGroup>
                         <div class="col-6">
                             <div class="row">
@@ -142,79 +185,38 @@
                         />
                     </FormGroup>
                     <FormGroup>
+                        <div class="col-3">
+                            <span class="form__subtitle">Статус</span>
+                            <div class="form__row mt-1">
+                                <RadioChip v-model="form.status" label="Пассив" :value="0" />
+                                <RadioChip v-model="form.status" label="Актив" :value="1" />
+                            </div>
+                        </div>
                         <CheckboxOptions
                             v-model="form.categories"
-                            class="col-12"
+                            class="col-9"
                             :v="v$.form.categories"
                             label="Категория"
                             property="category"
                             :options="CompanyCategories"
                         />
-                    </FormGroup>
-                    <FormGroup>
-                        <div class="col-6">
-                            <div class="row">
-                                <div class="col-12">
-                                    <span class="form__subtitle">Статус</span>
-                                    <div class="form__row mt-1">
-                                        <RadioChip
-                                            v-model="form.status"
-                                            label="Пассив"
-                                            :value="0"
-                                        />
-                                        <RadioChip v-model="form.status" label="Актив" :value="1" />
-                                    </div>
-                                </div>
-                                <AnimationTransition :speed="0.6">
-                                    <div v-if="!form.status" class="col-12">
-                                        <MultiSelect
-                                            v-model="form.passive_why"
-                                            :v="v$.form.passive_why"
-                                            required
-                                            label="Причина пассива"
-                                            :options="PassiveWhy"
-                                        />
-                                        <Textarea
-                                            v-model="form.passive_why_comment"
-                                            class="col-12 p-0 pt-1"
-                                        />
-                                    </div>
-                                </AnimationTransition>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="row">
-                                <RadioStars
-                                    v-model="form.rating"
-                                    label="Рейтинг"
-                                    class="col-12 mt-2"
+                        <AnimationTransition :speed="0.6">
+                            <div v-if="!form.status" class="col-12">
+                                <MultiSelect
+                                    v-model="form.passive_why"
+                                    :v="v$.form.passive_why"
+                                    required
+                                    label="Причина пассива"
+                                    :options="PassiveWhy"
                                 />
-                                <div class="col-12 mt-1">
-                                    <span>
-                                        <i class="fas fa-star"></i>
-                                        - не важно,
-                                    </span>
-                                    <span>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        - важно,
-                                    </span>
-                                    <span>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        - очень важно
-                                    </span>
-                                </div>
+                                <Textarea
+                                    v-model="form.passive_why_comment"
+                                    class="col-12 p-0 pt-1"
+                                    placeholder="Комментарий"
+                                />
                             </div>
-                        </div>
+                        </AnimationTransition>
                     </FormGroup>
-                    <div class="row mt-2">
-                        <Textarea v-model="form.description" label="Описание" class="col-12" />
-                    </div>
                 </Tab>
                 <Tab required name="Деятельность">
                     <div class="row">
@@ -249,6 +251,9 @@
                             :options="getProductRangeOptions"
                             name="product"
                         />
+                    </div>
+                    <div class="row mt-2">
+                        <Textarea v-model="form.description" label="Описание" class="col-12" />
                     </div>
                 </Tab>
                 <Tab name="Реквизиты">
@@ -379,12 +384,12 @@
                         </FileInput>
                     </div>
                 </Tab>
-                <div class="row mt-4 align-self-end">
-                    <Submit success class="col-3 mx-auto">
-                        {{ formData ? 'Сохранить' : 'Создать' }}
-                    </Submit>
-                </div>
             </Tabs>
+            <div class="row mt-3 align-self-end">
+                <Submit success class="col-3 mx-auto">
+                    {{ formData ? 'Сохранить' : 'Создать' }}
+                </Submit>
+            </div>
         </Form>
     </Modal>
 </template>
@@ -427,6 +432,8 @@ import Checkbox from '@/components/common/Forms/Checkbox.vue';
 import FormGroup from '@/components/common/Forms/FormGroup.vue';
 import CheckboxOptions from '@/components/common/Forms/CheckboxOptions.vue';
 import { useValidationNotify } from '@/composables/useValidationNotify.js';
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import FormDivider from '@/components/common/Forms/FormDivider.vue';
 
 const emit = defineEmits(['updated', 'created', 'close']);
 const props = defineProps({

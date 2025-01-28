@@ -490,6 +490,22 @@
     &__stars {
         @include mixins.flex-box($gap: 5px, $a: center);
         width: max-content;
+
+        i {
+            @include mixins.transition(color .5s);
+        }
+
+        &.danger {
+            color: variables.$color_danger!important;
+        }
+
+        &.normal {
+            color: variables.$color_primary!important;
+        }
+
+        &.good {
+            color: variables.$color_warning!important;
+        }
     }
 
     &__star {
@@ -497,6 +513,7 @@
         border: none;
         font-size: 30px;
         cursor: pointer;
+        color: inherit;
 
         &:hover {
             opacity: .6;

@@ -30,8 +30,7 @@ function errorsToNotifications(errors) {
 }
 
 function handleValidationError(data) {
-    data.name = 'Ошибка валидации';
-    notifyOptions.title = getTitle(data);
+    notifyOptions.title = 'Ошибка валидации';
 
     if (data.message) {
         data.message = JSON.parse(data.message);
