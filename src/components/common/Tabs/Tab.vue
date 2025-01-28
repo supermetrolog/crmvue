@@ -1,5 +1,9 @@
 <template>
-    <VTab ref="tab" v-bind="$attrs">
+    <VTab
+        ref="tab"
+        v-bind="$attrs"
+        :suffix="required ? '<span class=\'tabs-component-tab-required\'>*</span>' : undefined"
+    >
         <template v-if="!withTransition">
             <slot v-if="alwaysRender || isActive" />
         </template>
@@ -12,6 +16,8 @@
 import { Tab as VTab } from 'vue3-tabs-component';
 import { computed, inject, ref } from 'vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
+
+defineProps({ required: Boolean });
 
 const alwaysRender = inject('always-render', false);
 const withTransition = inject('with-transition', false);

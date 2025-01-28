@@ -9,9 +9,9 @@
         show
     >
         <Form @submit="onSubmit">
-            <Tabs :options="{ useUrlFragment: false }">
+            <Tabs sticky>
                 <Loader v-if="isLoading" />
-                <Tab name="Основное">
+                <Tab required name="Основное">
                     <FormGroup>
                         <div class="col-6">
                             <div class="row">
@@ -216,7 +216,7 @@
                         <Textarea v-model="form.description" label="Описание" class="col-12" />
                     </div>
                 </Tab>
-                <Tab name="Деятельность">
+                <Tab required name="Деятельность">
                     <div class="row">
                         <MultiSelect
                             v-model="form.activityGroup"
