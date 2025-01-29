@@ -6,15 +6,17 @@
         />
         <Loader v-if="isLoading" />
         <template v-else>
-            <MessengerQuizQuestionCall
-                v-for="contact in selectedContacts"
-                :key="contact.entity.id"
-                ref="selectedContactsEls"
-                v-model:form="contact.form"
-                @toggle-call-schedule="$emit('toggle-call-schedule', contact.entity)"
-                :contact="contact.entity"
-                class="messenger-quiz__question"
-            />
+            <template v-if="!disabled">
+                <MessengerQuizQuestionCall
+                    v-for="contact in selectedContacts"
+                    :key="contact.entity.id"
+                    ref="selectedContactsEls"
+                    v-model:form="contact.form"
+                    @toggle-call-schedule="$emit('toggle-call-schedule', contact.entity)"
+                    :contact="contact.entity"
+                    class="messenger-quiz__question"
+                />
+            </template>
             <AnimationTransition v-if="contacts.length && selectedContacts.length" :speed="0.5">
                 <MessengerQuizFormContactSuggestButton
                     v-if="contactCanBeSuggested"

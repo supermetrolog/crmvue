@@ -22,12 +22,12 @@
                     @toggle-call-schedule="toggleCallSchedule"
                     @select-next-contact="selectNextContact"
                     @change-last-contact="changeLastContact"
-                    :disabled="!contacts.length"
                     :contacts="availableContacts"
                     :available-contacts="notSelectedContacts"
+                    :disabled
                 />
                 <MessengerQuizFooter
-                    v-if="contacts.length"
+                    v-if="contacts.length && !disabled"
                     @complete="send"
                     @object-destroyed="onObjectDestroyed"
                     @object-sold="onObjectSold"
@@ -109,6 +109,7 @@ import { useMessengerQuiz } from '@/components/Messenger/Quiz/useMessengerQuiz.j
 const SCHEDULING_CALL_DURATION = 7; // days
 
 const emit = defineEmits(['complete']);
+defineProps({ disabled: Boolean });
 
 const store = useStore();
 const notify = useNotify();

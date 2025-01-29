@@ -7,6 +7,10 @@
                         <div v-if="isLoading" class="messenger-tabs__loading">
                             <Spinner class="absolute-center mini" />
                         </div>
+                        <template v-else-if="company && !hasActiveContact">
+                            <i class="fa-solid fa-users-slash messenger-chat__icon-phone"></i>
+                            <span>НЕТ КОНТАКТОВ!</span>
+                        </template>
                         <template v-else>
                             <i class="fa-solid fa-phone-volume messenger-chat__icon-phone" />
                             <span v-if="currentDialog?.last_call">Опрос {{ lastCallDate }}</span>
@@ -18,6 +22,9 @@
                             <Spinner class="mini" />
                             <p>Загрузка данных о последнем звонке..</p>
                         </div>
+                        <template v-else-if="company && !hasActiveContact">
+                            <span>У компании нет активных контактов!</span>
+                        </template>
                         <div v-else-if="currentDialog">
                             <div v-if="shouldCall" class="mb-1">
                                 <p class="messenger-warning">ИНФОРМАЦИЯ УСТАРЕЛА!</p>
@@ -37,7 +44,11 @@
         <div v-else-if="currentPanel && currentChat" class="messenger-chat__wrapper">
             <AnimationTransition :speed="0.4">
                 <MessengerChatContent v-if="currentTab === messenger.chatTabs.CHAT" />
-                <MessengerQuiz v-else @completed="switchTab(messenger.chatTabs.CHAT)" />
+                <MessengerQuiz
+                    v-else
+                    @completed="switchTab(messenger.chatTabs.CHAT)"
+                    :disabled="!hasActiveContact"
+                />
             </AnimationTransition>
             <MessengerQuizHelper ref="quizHelper" />
             <MessengerChatSettings ref="chatSettings" />
@@ -70,6 +81,7 @@ import MessengerQuizHelper from '@/components/Messenger/Quiz/MessengerQuizHelper
 import Spinner from '@/components/common/Spinner.vue';
 import { Tippy } from 'vue-tippy';
 import { messenger } from '@/const/messenger.js';
+import { isActiveContact, isPersonalContact } from '@/utils/helpers/models/contact.js';
 
 const store = useStore();
 const notify = useNotify();
@@ -100,6 +112,9 @@ const lastCallDate = computed(() =>
 );
 
 const quizTabClass = computed(() => {
+    if (company.value && !hasActiveContact.value)
+        return 'not-selectable dashboard-bg-gray text-white';
+
     const daysAfterLastCall = store.getters['Messenger/currentDaysCountAfterLastCall'];
     let baseClass = 'not-selectable';
 
@@ -182,4 +197,17 @@ const switchTab = tabId => {
 
     store.state.Messenger.currentChatTab = tabId;
 };
+
+// contacts
+
+const company = computed(() => store.state.Messenger.currentPanel);
+
+const contacts = computed(() => {
+    return company.value.contacts.filter(isPersonalContact);
+});
+
+const hasActiveContact = computed(() => {
+    if (company.value) return contacts.value.some(isActiveContact);
+    return false;
+});
 </script>
