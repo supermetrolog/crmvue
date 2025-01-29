@@ -27,6 +27,11 @@
                         class="fa-solid fa-ban mr-1"
                     ></i>
                     <i
+                        v-if="isWithoutActiveContacts"
+                        v-tippy="'Компания без контактов'"
+                        class="fa-solid fa-users-slash mr-1"
+                    ></i>
+                    <i
                         v-if="model.is_individual"
                         v-tippy="'Физ.лицо'"
                         class="fa-solid fa-user-tie mr-1"
@@ -101,6 +106,7 @@ const { currentUserId } = useAuth();
 
 const isPassive = computed(() => !props.model.status);
 const isDisabled = computed(() => props.model.consultant_id !== currentUserId.value);
+const isWithoutActiveContacts = computed(() => props.model.status === 2);
 
 const hasUndefinedName = computed(() => {
     return (

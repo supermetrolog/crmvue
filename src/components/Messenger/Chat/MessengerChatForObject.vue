@@ -12,7 +12,10 @@
         <MessengerChatLoader v-if="isLoading" />
         <div v-else-if="currentPanel && currentChat" class="messenger-chat__wrapper">
             <AnimationTransition :speed="0.4">
-                <MessengerChatContent v-if="currentTab === messenger.chatTabs.CHAT" />
+                <MessengerChatContent
+                    v-if="currentTab === messenger.chatTabs.CHAT"
+                    :disabled="isWithoutActiveContacts"
+                />
                 <MessengerQuiz
                     v-else
                     @completed="switchTab(messenger.chatTabs.CHAT)"
@@ -165,6 +168,8 @@ const company = computed(() => store.state.Messenger.currentPanel);
 const contacts = computed(() => {
     return company.value.contacts.filter(isPersonalContact);
 });
+
+const isWithoutActiveContacts = computed(() => company.value.status === 2);
 
 const hasActiveContact = computed(() => {
     if (company.value) return contacts.value.some(isActiveContact);

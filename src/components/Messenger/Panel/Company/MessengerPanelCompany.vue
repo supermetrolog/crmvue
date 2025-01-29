@@ -46,6 +46,11 @@
                             v-tippy="'Компания в пассиве'"
                             class="fa-solid fa-ban mr-1"
                         ></i>
+                        <i
+                            v-if="isWithoutActiveContacts"
+                            v-tippy="'Компания без контактов'"
+                            class="fa-solid fa-users-slash mr-1"
+                        ></i>
                         <span
                             v-if="hasUndefinedName"
                             class="messenger-warning messenger-warning--animated bold"
@@ -212,6 +217,7 @@ const productRanges = computed(() => {
 const companyName = computed(() => getCompanyName(props.company, props.company.id));
 
 const isPassive = computed(() => !props.company.status);
+const isWithoutActiveContacts = computed(() => props.company.status === 2);
 
 const toChat = () => {
     openChat(props.company.id, props.company.id, messenger.dialogTypes.COMPANY);
