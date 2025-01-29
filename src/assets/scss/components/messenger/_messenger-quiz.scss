@@ -350,7 +350,7 @@
 }
 
 .messenger-quiz-preview {
-    font-size: 12px;
+    font-size: 14px;
 
     &__list {
         @include mixins.flex-box($d: column, $gap: 10px);
@@ -776,5 +776,13 @@
         span:last-child {
             margin-left: 5px;
         }
+    }
+}
+
+.messenger-quiz-preview-tasks {
+    padding: 10px;
+
+    .dashboard-card-task__body {
+        background-color: #fff;
     }
 }
