@@ -38,6 +38,16 @@
             <p>от {{ createdAtFormat }}</p>
         </DashboardChip>
         <DashboardChip
+            v-else-if="withoutContacts"
+            v-tippy="
+                'К предложению не прикреплен активный контакт. Нажмите, чтобы перейти в чат предложения.'
+            "
+            @click="$emit('to-chat')"
+            class="offer-table-item-call__chip dashboard-bg-gray-l"
+        >
+            <p>Нет контактов</p>
+        </DashboardChip>
+        <DashboardChip
             v-else
             v-tippy="
                 'Дата последнего звонка неизвестна. По предложению еще не было зафиксированных звонков. Нажмите, чтобы перейти к опроснику и обновить информацию.'

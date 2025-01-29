@@ -94,6 +94,14 @@
             >
                 Пассив
             </DashboardChip>
+            <DashboardChip
+                v-else-if="isWithoutActiveContacts"
+                with-icon
+                class="dashboard-bg-gray-l offer-table-item__chip"
+            >
+                <i class="fa-solid fa-users-slash" />
+                <span>Без контактов</span>
+            </DashboardChip>
             <DashboardChip v-else class="dashboard-bg-success-l offer-table-item__chip">
                 Актив
             </DashboardChip>
@@ -156,6 +164,8 @@ const categories = computed(() =>
     props.company.categories.map(({ category }) => CompanyCategories[category])
 );
 const isPassive = computed(() => props.company.status === 0);
+const isWithoutActiveContacts = computed(() => props.company.status === 2);
+
 const passiveWhyComment = computed(() => {
     if (!props.company.passive_why) return 'Причина не указана';
     let text = PassiveWhy[props.company.passive_why].label;

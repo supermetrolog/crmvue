@@ -40,15 +40,12 @@ import MessengerSchedule from '@/components/Messenger/Schedule/MessengerSchedule
 import MessengerChatSettings from '@/components/Messenger/Chat/Settings/MessengerChatSettings.vue';
 import FormModalMessageAlert from '@/components/Forms/FormModalMessageAlert.vue';
 import { computed, provide, useTemplateRef, watch } from 'vue';
-import { toDateFormat } from '@/utils/formatters/date.js';
 import { ucFirst } from '@/utils/formatters/string.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import MessengerTabs from '@/components/Messenger/MessengerTabs.vue';
 import MessengerQuizHelper from '@/components/Messenger/Quiz/MessengerQuizHelper.vue';
-import Spinner from '@/components/common/Spinner.vue';
-import { Tippy } from 'vue-tippy';
 import { messenger } from '@/const/messenger.js';
 import { isActiveContact, isPersonalContact } from '@/utils/helpers/models/contact.js';
 import MessengerChatForObjectCallTab from '@/components/Messenger/Chat/MessengerChatForObjectCallTab.vue';
@@ -98,7 +95,7 @@ const tabs = computed(() => [
         id: messenger.chatTabs.SURVEY,
         key: 'quiz',
         label: 'Заполните опрос',
-        class: !isLoading.value ? quizTabClass.value : 'not-selectable'
+        class: !isLoading.value && currentDialog.value ? quizTabClass.value : 'not-selectable'
     }
 ]);
 

@@ -68,8 +68,8 @@
                 v-if="contact"
                 @open-phone="openInSurvey"
                 :contact="contact"
-                hidden
                 class="offer-table-item__company-element"
+                hidden
             />
         </Td>
         <Td class="offer-table-item__consultant">
@@ -341,7 +341,7 @@ const toggleFavorite = async () => {
 const hasActiveContact = computed(() => {
     if (!props.offer.company) return false;
 
-    if (props.offer.company.contacts_count === 1 && props.offer.contact?.status === 0) return false;
+    if (props.offer.company.status === 2) return false;
 
     return props.offer.company.contacts_count > 0;
 });
