@@ -53,20 +53,22 @@
         </div>
         <div v-if="hasTextQuestions">
             <slot name="textarea" :answers="question.answers['text-answer']">
-                <Textarea
-                    v-for="addition in question.answers['text-answer']"
-                    :key="addition.id"
-                    disabled
-                    :model-value="
-                        addition.surveyQuestionAnswer?.value?.length
-                            ? addition.surveyQuestionAnswer?.value
-                            : '-'
-                    "
-                    :label="addition.value"
-                    class="messenger-quiz-question__field mt-1"
-                    :class="{ disabled: !addition.surveyQuestionAnswer?.value?.length }"
-                    :auto-height="addition.surveyQuestionAnswer?.value?.length"
-                />
+                <div v-for="addition in question.answers['text-answer']" :key="addition.id">
+                    <Textarea
+                        v-if="addition.surveyQuestionAnswer?.value?.length"
+                        disabled
+                        :model-value="
+                            addition.surveyQuestionAnswer?.value?.length
+                                ? addition.surveyQuestionAnswer?.value
+                                : '-'
+                        "
+                        :label="addition.value"
+                        class="messenger-quiz-question__field mt-1"
+                        :class="{ disabled: !addition.surveyQuestionAnswer?.value?.length }"
+                        :auto-height="addition.surveyQuestionAnswer?.value?.length"
+                    />
+                    <span v-else>Комментарии отсутствуют</span>
+                </div>
             </slot>
         </div>
         <div v-if="hasCheckboxQuestions" class="messenger-quiz-question__interests">

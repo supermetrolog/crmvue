@@ -5,6 +5,18 @@
     font-size: 12px;
     color: variables.$color_grey;
 
+    &.danger i.fill {
+        color: variables.$color_danger!important;
+    }
+
+    &.normal i.fill {
+        color: variables.$color_primary!important;
+    }
+
+    &.good i.fill {
+        color: variables.$color_warning!important;
+    }
+
     i.fill {
         color: darken($color: variables.$color_danger, $amount: 25);
     }

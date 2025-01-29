@@ -2,6 +2,13 @@
 @use '../../utils/mixins';
 
 .tabs-component {
+    &.sticky &-tabs {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        background-color: rgb(237 237 237);
+    }
+
     &-tabs {
         background-color: variables.$color_grey_alt;
         padding: 10px;;
@@ -68,6 +75,14 @@
                     background-color: variables.$color_danger !important;
                 }
             }
+        }
+
+        &-required {
+            color: variables.$color_danger;
+            font-size: 18px;
+            position: absolute;
+            top: 5px;
+            right: 5px;
         }
     }
 
