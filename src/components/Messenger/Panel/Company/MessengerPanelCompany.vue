@@ -2,30 +2,27 @@
     <div class="messenger-panel-company">
         <div class="messenger-panel-company__card">
             <div class="messenger-panel-company__actions">
-                <HoverActionsButton
+                <UiButtonIcon
                     @click="$emit('edit')"
                     label="Редактировать компанию"
                     class="messenger-panel-company__action"
+                    icon="fa-solid fa-pen"
                     small
-                >
-                    <i class="fa-solid fa-pen"></i>
-                </HoverActionsButton>
-                <HoverActionsButton
+                />
+                <UiButtonIcon
                     @click="toChat"
                     label="Перейти в чат компании"
                     class="messenger-panel-company__action"
+                    icon="fa-solid fa-comment"
                     small
-                >
-                    <i class="fa-solid fa-comment"></i>
-                </HoverActionsButton>
-                <HoverActionsButton
+                />
+                <UiButtonIcon
                     @click="onCompanyDestroyed"
                     label="Компания ликвидирована"
                     class="messenger-panel-company__action dashboard-bg-danger-l"
+                    icon="fa-solid fa-ban"
                     small
-                >
-                    <i class="fa-solid fa-ban"></i>
-                </HoverActionsButton>
+                />
             </div>
             <div class="messenger-panel-company__header">
                 <CompanyLogo
@@ -49,7 +46,10 @@
                             v-tippy="'Компания в пассиве'"
                             class="fa-solid fa-ban mr-1"
                         ></i>
-                        <span v-if="hasUndefinedName" class="messenger-warning bold">
+                        <span
+                            v-if="hasUndefinedName"
+                            class="messenger-warning messenger-warning--animated bold"
+                        >
                             НЕТ УНИКАЛЬНОГО НАЗВАНИЯ
                         </span>
                         <template v-else>
@@ -86,7 +86,10 @@
                     {{ website }}
                 </a>
             </p>
-            <p v-else class="messenger-panel-company__site messenger-warning bold">
+            <p
+                v-else
+                class="messenger-panel-company__site messenger-warning messenger-warning--animated bold"
+            >
                 Сайт: не заполнен
             </p>
             <ul class="messenger-panel-company__options">
@@ -94,19 +97,25 @@
                     <span>- {{ activityGroup }}</span>
                 </li>
                 <li v-else class="messenger-panel-company__option">
-                    <span class="messenger-warning">- Группа деятельности не заполнена</span>
+                    <span class="messenger-warning messenger-warning--animated"
+                        >- Группа деятельности не заполнена</span
+                    >
                 </li>
                 <li v-if="activityProfile" class="messenger-panel-company__option">
                     <span>- {{ activityProfile }}</span>
                 </li>
                 <li v-else class="messenger-panel-company__option">
-                    <span class="messenger-warning">- Профиль деятельности не заполнен</span>
+                    <span class="messenger-warning messenger-warning--animated"
+                        >- Профиль деятельности не заполнен</span
+                    >
                 </li>
                 <li v-if="productRanges" class="messenger-panel-company__option">
                     <span>- {{ productRanges }}</span>
                 </li>
                 <li v-else class="messenger-panel-company__option">
-                    <span class="messenger-warning">- Номенклатура товара не заполнена</span>
+                    <span class="messenger-warning messenger-warning--animated"
+                        >- Номенклатура товара не заполнена</span
+                    >
                 </li>
             </ul>
         </div>
@@ -135,7 +144,6 @@
 <script setup>
 import Rating from '@/components/common/Rating.vue';
 import MessengerPanelCompanyTabs from '@/components/Messenger/Panel/Company/MessengerPanelCompanyTabs.vue';
-import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import { computed, ref } from 'vue';
 import { getCompanyName, getCompanyShortName } from '@/utils/formatters/models/company.js';
 import { toCorrectUrl, ucFirst } from '@/utils/formatters/string.js';
@@ -152,6 +160,7 @@ import FormCompanyLogo from '@/components/Forms/Company/FormCompanyLogo.vue';
 import Avatar from '@/components/common/Avatar.vue';
 import { TASK_FORM_STEPS, useTaskManager } from '@/composables/useTaskManager.js';
 import api from '@/api/api.js';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 
 defineEmits(['edit']);
 const props = defineProps({

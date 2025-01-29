@@ -2,42 +2,11 @@
     <div class="messenger-chat">
         <MessengerTabs @switch="switchTab" :current="currentTab" :tabs="tabs">
             <template #quiz>
-                <tippy tag="div" class="messenger-chat__tab-quiz">
-                    <template #default>
-                        <div v-if="isLoading" class="messenger-tabs__loading">
-                            <Spinner class="absolute-center mini" />
-                        </div>
-                        <template v-else-if="company && !hasActiveContact">
-                            <i class="fa-solid fa-users-slash messenger-chat__icon-phone"></i>
-                            <span>НЕТ КОНТАКТОВ!</span>
-                        </template>
-                        <template v-else>
-                            <i class="fa-solid fa-phone-volume messenger-chat__icon-phone" />
-                            <span v-if="currentDialog?.last_call">Опрос {{ lastCallDate }}</span>
-                            <span v-else>ЗАПОЛНИТЕ ОПРОС!</span>
-                        </template>
-                    </template>
-                    <template #content>
-                        <div v-if="isLoading" class="d-flex align-items-center gap-2 p-2">
-                            <Spinner class="mini" />
-                            <p>Загрузка данных о последнем звонке..</p>
-                        </div>
-                        <template v-else-if="company && !hasActiveContact">
-                            <span>У компании нет активных контактов!</span>
-                        </template>
-                        <div v-else-if="currentDialog">
-                            <div v-if="shouldCall" class="mb-1">
-                                <p class="messenger-warning">ИНФОРМАЦИЯ УСТАРЕЛА!</p>
-                                <p class="messenger-warning">СОЗВОНИТЕСЬ И ЗАПОЛНИТЕ ОПРОСНИК!</p>
-                            </div>
-                            <p v-if="currentDialog?.last_call">
-                                Последний опрос был заполнен {{ lastCallDate }}, звонивший:
-                                {{ currentDialog.last_call.user.userProfile.medium_name }}
-                            </p>
-                            <p v-else>Звонок по объекту отсутствует или не заполнен.</p>
-                        </div>
-                    </template>
-                </tippy>
+                <MessengerChatForObjectCallTab
+                    :loading="isLoading"
+                    :company
+                    :dialog="currentDialog"
+                />
             </template>
         </MessengerTabs>
         <MessengerChatLoader v-if="isLoading" />
@@ -82,6 +51,8 @@ import Spinner from '@/components/common/Spinner.vue';
 import { Tippy } from 'vue-tippy';
 import { messenger } from '@/const/messenger.js';
 import { isActiveContact, isPersonalContact } from '@/utils/helpers/models/contact.js';
+import MessengerChatForObjectCallTab from '@/components/Messenger/Chat/MessengerChatForObjectCallTab.vue';
+import { CALL_STATUSES } from '@/components/Messenger/Quiz/useMessengerQuiz.js';
 
 const store = useStore();
 const notify = useNotify();
@@ -99,17 +70,7 @@ const quizHelper = useTemplateRef('quizHelper');
 const chatSettings = useTemplateRef('chatSettings');
 
 const currentTab = computed(() => store.state.Messenger.currentChatTab);
-
 const currentDialog = computed(() => store.state.Messenger.currentDialog);
-const shouldCall = computed(() => {
-    return (
-        store.getters['Messenger/currentDaysCountAfterLastCall'] >=
-        import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_DANGER
-    );
-});
-const lastCallDate = computed(() =>
-    toDateFormat(currentDialog.value.last_call.created_at, 'D.MM.YY')
-);
 
 const quizTabClass = computed(() => {
     if (company.value && !hasActiveContact.value)
@@ -119,6 +80,8 @@ const quizTabClass = computed(() => {
     let baseClass = 'not-selectable';
 
     if (daysAfterLastCall <= import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_WARNING) {
+        if (currentDialog.value.last_call.status !== CALL_STATUSES.COMPLETED)
+            return `${baseClass} dashboard-bg-gray text-white`;
         return `${baseClass} success`;
     }
 

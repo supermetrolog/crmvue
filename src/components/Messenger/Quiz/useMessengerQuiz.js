@@ -20,12 +20,12 @@ export const CONTACT_CALL_REASONS = {
     BLOCKED: 3
 };
 
-const CALL_TYPES = {
+export const CALL_TYPES = {
     OUTGOING: 0,
     INCOMING: 1
 };
 
-const CALL_STATUSES = {
+export const CALL_STATUSES = {
     MISSED: 0,
     COMPLETED: 1,
     BUSY: 2,
@@ -33,6 +33,16 @@ const CALL_STATUSES = {
     REJECTED: 4,
     ANGY: 5,
     BLOCKED: 6
+};
+
+export const CALL_STATUSES_TEXT = {
+    [CALL_STATUSES.MISSED]: 'Клиент не взял трубку',
+    [CALL_STATUSES.COMPLETED]: 'Клиент ответил',
+    [CALL_STATUSES.BUSY]: 'Телефон занят',
+    [CALL_STATUSES.NOT_AVAILABLE]: 'Телефон недоступен',
+    [CALL_STATUSES.REJECTED]: 'Вызов отклонен',
+    [CALL_STATUSES.ANGY]: 'Клиент отказался отвечать',
+    [CALL_STATUSES.BLOCKED]: 'Телефон заблокирован'
 };
 
 const DELETE_CONTACT_TASK_DURATION = 3;
