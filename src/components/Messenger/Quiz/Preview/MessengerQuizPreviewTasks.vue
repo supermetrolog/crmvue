@@ -30,7 +30,7 @@ const tasks = defineModel('tasks');
 defineEmits(['hide']);
 
 const pluralTasksCount = computed(() =>
-    plural(tasks.value.length, '%d задача', '%d задачи', '%d задач')
+    plural(tasks.value.length, '+%d задача', '+%d задачи', '+%d задач')
 );
 
 const completedTasksCount = computed(() =>

@@ -1,6 +1,10 @@
 <template>
     <div class="messenger-chat-notification-template messenger-chat-template-survey">
-        <MessengerChatMessageAdditions :tasks="extraTasks" :notifications="message.notifications" />
+        <MessengerChatMessageAdditions
+            v-if="!short"
+            :tasks="extraTasks"
+            :notifications="message.notifications"
+        />
         <p class="messenger-chat-template-survey__header">
             <UiButtonIcon
                 @click="showPreview"
@@ -19,7 +23,7 @@
             </span>
         </p>
         <MessengerChatNotificationSurveyTemplateSkeleton v-if="surveyIsLoading" />
-        <MessengerChatNotificationSurveyTemplatePreview v-else-if="survey" :survey />
+        <MessengerChatNotificationSurveyTemplatePreview v-else-if="survey" :survey :short />
     </div>
 </template>
 <script setup>
@@ -37,7 +41,8 @@ const props = defineProps({
     message: {
         type: Object,
         required: true
-    }
+    },
+    short: Boolean
 });
 
 // recipient
@@ -101,7 +106,7 @@ async function fetchSurvey() {
     if (response) {
         survey.value = response;
 
-        setExtraTasks(response);
+        if (!props.short) setExtraTasks(response);
     }
 
     surveyIsLoading.value = false;

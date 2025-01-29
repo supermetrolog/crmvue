@@ -1,5 +1,10 @@
 <template>
-    <component :is="templateComponent" class="messenger-chat-notification-template" :message />
+    <component
+        :is="templateComponent"
+        class="messenger-chat-notification-template"
+        :message
+        :short
+    />
 </template>
 <script setup>
 import { computed } from 'vue';
@@ -18,7 +23,8 @@ const props = defineProps({
     template: {
         type: String,
         required: true
-    }
+    },
+    short: Boolean
 });
 
 const templateComponent = computed(

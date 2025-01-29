@@ -21,7 +21,13 @@
         </div>
         <div v-if="task.related_by?.chat_member_message_id" class="task-card__relation">
             <p class="task-card__label mb-1">Прикреплено к сообщению:</p>
+            <MessengerChatShortNotification
+                v-if="chatMemberMessage.is_system"
+                class="task-card__chat-notification"
+                :message="chatMemberMessage"
+            />
             <MessengerChatShortMessage
+                v-else
                 class="task-card__chat-message"
                 :message="chatMemberMessage"
             />
@@ -40,6 +46,7 @@ import { messenger } from '@/const/messenger.js';
 import MessengerDialogCompany from '@/components/Messenger/Dialog/Company/MessengerDialogCompany.vue';
 import TaskCardButton from '@/components/TaskCard/TaskCardButton.vue';
 import TaskCardContactsTippy from '@/components/TaskCard/TaskCardContactsPreview.vue';
+import MessengerChatShortNotification from '@/components/Messenger/Chat/Notification/MessengerChatShortNotification.vue';
 
 defineEmits(['to-chat', 'to-company']);
 const props = defineProps({
