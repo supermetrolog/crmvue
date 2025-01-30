@@ -217,7 +217,7 @@ const productRanges = computed(() => {
 const companyName = computed(() => getCompanyName(props.company, props.company.id));
 
 const isPassive = computed(() => !props.company.status);
-const isWithoutActiveContacts = computed(() => props.company.status === 2);
+const isWithoutActiveContacts = computed(() => props.company.active_contacts_count === 0);
 
 const toChat = () => {
     openChat(props.company.id, props.company.id, messenger.dialogTypes.COMPANY);

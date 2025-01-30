@@ -106,7 +106,7 @@ const { currentUserId } = useAuth();
 
 const isPassive = computed(() => !props.model.status);
 const isDisabled = computed(() => props.model.consultant_id !== currentUserId.value);
-const isWithoutActiveContacts = computed(() => props.model.status === 2);
+const isWithoutActiveContacts = computed(() => props.model.active_contacts_count === 0);
 
 const hasUndefinedName = computed(() => {
     return (

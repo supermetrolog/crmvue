@@ -164,7 +164,7 @@ const categories = computed(() =>
     props.company.categories.map(({ category }) => CompanyCategories[category])
 );
 const isPassive = computed(() => props.company.status === 0);
-const isWithoutActiveContacts = computed(() => props.company.status === 2);
+const isWithoutActiveContacts = computed(() => props.company.active_contacts_count === 0);
 
 const passiveWhyComment = computed(() => {
     if (!props.company.passive_why) return 'Причина не указана';

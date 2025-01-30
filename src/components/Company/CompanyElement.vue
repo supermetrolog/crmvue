@@ -32,7 +32,14 @@
         </div>
         <p class="company-element__info">
             <span>
-                {{ plural(contactsLength, '%d контакт', '%d контакта', '%d контактов') }},
+                {{
+                    plural(
+                        company?.active_contacts_count ?? 0,
+                        '%d контакт',
+                        '%d контакта',
+                        '%d контактов'
+                    )
+                }},
             </span>
             <span>
                 {{ plural(company.requests_count, '%d запрос', '%d запроса', '%d запросов') }},
@@ -58,20 +65,6 @@ const props = defineProps({
     }
 });
 
-const contactsLength = computed(() => {
-    if (Object.hasOwn(props.company, 'contacts')) {
-        if (!props.company.contacts?.length) return 0;
-
-        return props.company.contacts.reduce(
-            (acc, contact) =>
-                acc + (isPersonalContact(contact) && isActiveContact(contact) ? 1 : 0),
-            0
-        );
-    } else {
-        return props.company.contacts_count;
-    }
-});
-
 const companyName = computed(() => getCompanyName(props.company));
-const isWithoutActiveContacts = computed(() => props.company.status === 2);
+const isWithoutActiveContacts = computed(() => props.company.active_contacts_count === 0);
 </script>

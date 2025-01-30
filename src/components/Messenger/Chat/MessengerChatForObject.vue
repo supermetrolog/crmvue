@@ -169,7 +169,7 @@ const contacts = computed(() => {
     return company.value.contacts.filter(isPersonalContact);
 });
 
-const isWithoutActiveContacts = computed(() => company.value.status === 2);
+const isWithoutActiveContacts = computed(() => company.value.active_contacts_count === 0);
 
 const hasActiveContact = computed(() => {
     if (company.value) return contacts.value.some(isActiveContact);
