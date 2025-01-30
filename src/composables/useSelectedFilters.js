@@ -1,4 +1,4 @@
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { toValue } from '@vueuse/core';
 import { useRoute } from 'vue-router';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
@@ -8,6 +8,7 @@ import { isEmptyArray } from '@/utils/helpers/array/isEmptyArray.js';
 import { isEmptyObject } from '@/utils/helpers/object/isEmptyObject.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import { joinWithFilter } from '@/utils/helpers/array/joinWithFilter.js';
+import { useStore } from 'vuex';
 
 export const filtersAliases = {
     polygon: 'Область на карте',
@@ -47,7 +48,7 @@ export const filtersAliases = {
     agent_id: 'Консультант:'
 };
 
-const INGORING_FILTERS = new Set([
+const IGNORING_FILTERS = new Set([
     'page',
     'region_neardy',
     'outside_mkad',
@@ -80,7 +81,7 @@ export function useSelectedFilters(form = {}, humanizeGetters = {}, options = {}
         const filters = [];
 
         for (const key in route.query) {
-            if (INGORING_FILTERS.has(key)) continue;
+            if (IGNORING_FILTERS.has(key)) continue;
 
             const value = route.query[key];
 
@@ -107,7 +108,7 @@ export function useSelectedFilters(form = {}, humanizeGetters = {}, options = {}
         if (isEmptyObject(query)) return filters;
 
         for (const key in query) {
-            if (INGORING_FILTERS.has(key)) continue;
+            if (IGNORING_FILTERS.has(key)) continue;
 
             const value = query[key];
 
@@ -136,6 +137,12 @@ export function useSelectedFilters(form = {}, humanizeGetters = {}, options = {}
 
     const filtersCount = computed(() => selectedFilters.value.length);
     const queryFiltersCount = computed(() => selectedQueryFilters.value.length);
+
+    const store = useStore();
+
+    onMounted(() => {
+        if (!store.getters.REGION_LIST?.length) store.dispatch('FETCH_REGION_LIST');
+    });
 
     return {
         filtersCount,
