@@ -156,8 +156,8 @@
 }
 
 .messenger-warning {
-    color: #f93154!important;
     font-weight: 500;
+    color: #f93154!important;
 
     &--simple {
         color: #fff!important;
@@ -166,6 +166,36 @@
 
     &.bold {
         font-weight: 600;
+    }
+
+    &--animated {
+        display: block;
+        animation: shake 4s;
+        animation-iteration-count: infinite;
+    }
+}
+
+@keyframes shake {
+    from, 50%, to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+
+    40%, 60% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+
+    43%, 49% {
+        transform: translate3d(0, -3px, 0);
+    }
+
+    46%, 52% {
+        transform: translate3d(0, 3px, 0);
+    }
+
+    45%, 55% {
+        opacity: .3;
     }
 }
 

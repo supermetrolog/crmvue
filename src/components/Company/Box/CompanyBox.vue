@@ -29,7 +29,7 @@
                         {{ category.label }}
                     </DashboardChip>
                     <span>ID {{ company.id }}</span>
-                    <Rating v-if="company.rating" :rating="company.rating" color="yellow" />
+                    <Rating v-if="company.rating" :rating="company.rating" />
                 </div>
             </div>
         </template>

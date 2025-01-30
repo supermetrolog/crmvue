@@ -25,10 +25,7 @@ import { isEmpty } from '@/utils/helpers/common/isEmpty.js';
 const SCHEDULING_CALL_DURATION = 7; // days
 
 const props = defineProps({
-    currentTab: {
-        type: Object,
-        default: null
-    }
+    currentTab: Object
 });
 
 const store = useStore();
@@ -36,7 +33,7 @@ const notify = useNotify();
 const { createTaskWithTemplate } = useTaskManager();
 
 const currentMessengerChatComponent = computed(() => {
-    if (props.currentTab.name === messenger.tabs.USERS) return MessengerChatForUser;
+    if (props.currentTab?.name === messenger.tabs.USERS) return MessengerChatForUser;
     else return MessengerChatForObject;
 });
 

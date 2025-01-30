@@ -1,7 +1,7 @@
 <template>
     <Modal @close="cancel" :show="isVisible" title="Просмотр опросника" width="970">
         <div class="survey-preview">
-            <MessengerQuizPreview :quiz-id="quizId" />
+            <MessengerQuizPreview @hide="cancel" :quiz-id="quizId" />
         </div>
     </Modal>
 </template>

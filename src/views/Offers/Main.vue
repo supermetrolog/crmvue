@@ -245,7 +245,7 @@ const getOffers = async (withLoader = true) => {
     query.expand =
         'contact.emails,contact.phones,' +
         'object,' +
-        'company.mainContact.phones,company.mainContact.emails,company.objects_count,company.requests_count,company.contacts_count,' +
+        'company.mainContact.phones,company.mainContact.emails,company.objects_count,company.requests_count,company.active_contacts_count,' +
         'offer,' +
         'consultant.userProfile';
 

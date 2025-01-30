@@ -14,6 +14,11 @@
                     target="_blank"
                 >
                     <i
+                        v-if="isWithoutActiveContacts"
+                        v-tippy="'Компания без контактов'"
+                        class="fa-solid fa-users-slash mr-1"
+                    />
+                    <i
                         v-if="company.is_individual"
                         v-tippy="'Физ.лицо'"
                         class="fa-solid fa-user-tie mr-1"
@@ -27,7 +32,14 @@
         </div>
         <p class="company-element__info">
             <span>
-                {{ plural(contactsLength, '%d контакт', '%d контакта', '%d контактов') }},
+                {{
+                    plural(
+                        company?.active_contacts_count ?? 0,
+                        '%d контакт',
+                        '%d контакта',
+                        '%d контактов'
+                    )
+                }},
             </span>
             <span>
                 {{ plural(company.requests_count, '%d запрос', '%d запроса', '%d запросов') }},
@@ -41,10 +53,10 @@
 <script setup>
 import Rating from '@/components/common/Rating.vue';
 import plural from 'plural-ru';
-import { entityOptions } from '@/const/options/options.js';
 import { computed } from 'vue';
 import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 import { getCompanyName } from '@/utils/formatters/models/company.js';
+import { isActiveContact, isPersonalContact } from '@/utils/helpers/models/contact.js';
 
 const props = defineProps({
     company: {
@@ -53,18 +65,6 @@ const props = defineProps({
     }
 });
 
-const contactsLength = computed(() => {
-    if (Object.hasOwn(props.company, 'contacts')) {
-        if (!props.company.contacts?.length) return 0;
-
-        return props.company.contacts.reduce(
-            (acc, contact) => acc + contact.type === entityOptions.contact.typeStatement.PERSONAL,
-            0
-        );
-    } else {
-        return props.company.contacts_count;
-    }
-});
-
 const companyName = computed(() => getCompanyName(props.company));
+const isWithoutActiveContacts = computed(() => props.company.active_contacts_count === 0);
 </script>
